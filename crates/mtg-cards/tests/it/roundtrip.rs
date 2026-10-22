@@ -686,7 +686,8 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                     )
                     .prop_map(Produce::OneOf),
                     (1u32..3).prop_map(Produce::ChosenColor),
-                    select(vec![ManaType::Red, ManaType::Colorless]).prop_map(Produce::OrChosenColor),
+                    select(vec![ManaType::Red, ManaType::Colorless])
+                        .prop_map(Produce::OrChosenColor),
                     (1u32..3).prop_map(Produce::CommanderIdentity),
                     (selector(), 1u32..3, any::<bool>()).prop_map(|(among, count, colorless)| {
                         Produce::ProducedBy {

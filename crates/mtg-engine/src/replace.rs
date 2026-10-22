@@ -1266,8 +1266,20 @@ impl Pass<'_> {
                 let alike = pool
                     .iter()
                     .all(|c| matches!(c.action, Action::Replace(ReplaceBy::Prevent)));
+                // Entering tapped, a choice made as it enters and the counters it enters with each change a part of the
+                // entering of their own, so the order is not a choice (a Thriving land is tapped and asks for a color).
+                let apart = pool.iter().all(|c| {
+                    matches!(
+                        c.action,
+                        Action::Replace(
+                            ReplaceBy::Tapped
+                                | ReplaceBy::Choose(_)
+                                | ReplaceBy::WithCounters { .. }
+                        )
+                    )
+                });
                 if let [only, ..] = pool.as_slice()
-                    && (pool.len() == 1 || alike)
+                    && (pool.len() == 1 || alike || apart)
                 {
                     (*only).clone()
                 } else {
@@ -2172,7 +2184,10 @@ impl Pass<'_> {
                     let text = match kind {
                         EntersChoice::Color => "Choose a color.".to_owned(),
                         EntersChoice::ColorOtherThan(other) => {
-                            format!("Choose a color other than {}.", format!("{other:?}").to_lowercase())
+                            format!(
+                                "Choose a color other than {}.",
+                                format!("{other:?}").to_lowercase()
+                            )
                         }
                         EntersChoice::CreatureType => "Choose a creature type.".to_owned(),
                         EntersChoice::Player => "Choose a player.".to_owned(),

@@ -18,9 +18,7 @@ use super::lands;
 use super::life_gain;
 use super::prevention;
 use super::render::{self, capitalize, counts_stats, is_a_type, stats_text};
-use super::selectors::{
-    Form, all, color, color_name, granted_text, phrase, phrase_text, subtype,
-};
+use super::selectors::{Form, all, color, color_name, granted_text, phrase, phrase_text, subtype};
 use super::tokens::Reader;
 use super::triggers::{self, article};
 use crate::ability::{Ability, CostChange};

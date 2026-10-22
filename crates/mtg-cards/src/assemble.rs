@@ -421,6 +421,37 @@ fn picked_by_the_planner(item: &CostItem) -> bool {
     }
 }
 
+/// What a mana effect adds each time, in the shape the engine activates.
+fn produced(mana: &Produce) -> Option<ManaProduced<'_>> {
+    Some(match mana {
+        Produce::Fixed(list) => {
+            let (&first, rest) = list.split_first()?;
+            if rest.iter().all(|other| *other == first) {
+                ManaProduced::Fixed {
+                    mana: first,
+                    count: u32::try_from(list.len()).ok()?,
+                }
+            } else {
+                ManaProduced::Mixed(list)
+            }
+        }
+        Produce::AnyColor(count) => ManaProduced::AnyColor(*count),
+        Produce::OneOf(types) => ManaProduced::OneOf(types),
+        Produce::ChosenColor(count) => ManaProduced::ChosenColor(*count),
+        Produce::OrChosenColor(mana) => ManaProduced::OrChosenColor(*mana),
+        Produce::CommanderIdentity(count) => ManaProduced::CommanderIdentity(*count),
+        Produce::ProducedBy {
+            among,
+            count,
+            colorless,
+        } => ManaProduced::ProducedBy {
+            among,
+            count: *count,
+            colorless: *colorless,
+        },
+    })
+}
+
 /// The shape of a mana ability the engine activates at priority, if `ability` has it.
 ///
 /// The first effect adds mana to the controller's pool and the rest each ask nothing; one effect of a kind.
@@ -478,33 +509,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
     else {
         return None;
     };
-    let produces = match mana {
-        Produce::Fixed(list) => {
-            let (&first, rest) = list.split_first()?;
-            if rest.iter().all(|other| *other == first) {
-                ManaProduced::Fixed {
-                    mana: first,
-                    count: u32::try_from(list.len()).ok()?,
-                }
-            } else {
-                ManaProduced::Mixed(list)
-            }
-        }
-        Produce::AnyColor(count) => ManaProduced::AnyColor(*count),
-        Produce::OneOf(types) => ManaProduced::OneOf(types),
-        Produce::ChosenColor(count) => ManaProduced::ChosenColor(*count),
-        Produce::OrChosenColor(mana) => ManaProduced::OrChosenColor(*mana),
-        Produce::CommanderIdentity(count) => ManaProduced::CommanderIdentity(*count),
-        Produce::ProducedBy {
-            among,
-            count,
-            colorless,
-        } => ManaProduced::ProducedBy {
-            among,
-            count: *count,
-            colorless: *colorless,
-        },
-    };
+    let produces = produced(mana)?;
     let distinct = then
         .iter()
         .enumerate()

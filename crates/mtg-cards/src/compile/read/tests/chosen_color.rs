@@ -14,7 +14,10 @@ use super::*;
     "As it enters, choose a color other than blue.",
     r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"Choose":{"ColorOtherThan":"Blue"}}}}"#
 )]
-#[case::any_color("As ~ enters, choose a color.", r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"Choose":"Color"}}}"#)]
+#[case::any_color(
+    "As ~ enters, choose a color.",
+    r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"Choose":"Color"}}}"#
+)]
 #[case::tapped_with_counters(
     "~ enters tapped with two charge counters on it.",
     r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"WithCounters":{"counter":"charge","count":2,"tapped":true}}}}"#
@@ -27,11 +30,11 @@ use super::*;
     "~ enters with a charge counter on it.",
     r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"WithCounters":{"counter":"charge","count":1}}}}"#
 )]
-#[case::tapped("~ enters tapped.", r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":"Tapped"}}"#)]
-fn an_entering_wording_reads_as_the_hand_written_files_say(
-    #[case] text: &str,
-    #[case] json: &str,
-) {
+#[case::tapped(
+    "~ enters tapped.",
+    r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":"Tapped"}}"#
+)]
+fn an_entering_wording_reads_as_the_hand_written_files_say(#[case] text: &str, #[case] json: &str) {
     reads_as(text, ClauseKind::Static, false, json);
 }
 
