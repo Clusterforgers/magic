@@ -157,6 +157,12 @@ pub enum Keyword {
     DoctorsCompanion,
     /// Choose a Background: the second commander may be a Background enchantment (CR 702.124).
     ChooseABackground,
+    /// Unearth with its cost: from a graveyard at sorcery speed the card returns with haste and is exiled at the next end step (CR 702.84).
+    Unearth(Cost),
+    /// Escape with its cost: the card may be cast from a graveyard for it, which includes exiling other cards of the graveyard (CR 702.138).
+    Escape(Cost),
+    /// Rebound: a spell cast from its owner's hand is exiled as it resolves and cast free at their next upkeep (CR 702.88).
+    Rebound,
     /// Echo with its cost (CR 702.30): at the beginning of its controller's upkeep, if it came under their control since their last turn began, it is sacrificed unless they pay the cost.
     Echo(Cost),
     /// Cumulative upkeep with its cost (CR 702.24): at the beginning of its controller's upkeep an age counter is put on it, then it is sacrificed unless they pay the cost once for each age counter.
@@ -237,6 +243,9 @@ impl Keyword {
         "Partner group",
         "Doctor's companion",
         "Choose a Background",
+        "Unearth",
+        "Escape",
+        "Rebound",
         "Echo",
         "Cumulative upkeep",
         "Undying",
@@ -313,6 +322,9 @@ impl Keyword {
             Keyword::PartnerGroup(_) => "Partner group",
             Keyword::DoctorsCompanion => "Doctor's companion",
             Keyword::ChooseABackground => "Choose a Background",
+            Keyword::Unearth(_) => "Unearth",
+            Keyword::Escape(_) => "Escape",
+            Keyword::Rebound => "Rebound",
             Keyword::Echo(_) => "Echo",
             Keyword::CumulativeUpkeep(_) => "Cumulative upkeep",
             Keyword::Undying => "Undying",
@@ -397,7 +409,7 @@ mod tests {
             Keyword::Mutate(cost.clone()),
             Keyword::Encore(cost.clone()),
             Keyword::Squad(cost.clone()),
-            Keyword::Foretell(cost),
+            Keyword::Foretell(cost.clone()),
             Keyword::Daybound,
             Keyword::Nightbound,
             Keyword::Wither,
@@ -412,6 +424,9 @@ mod tests {
             Keyword::PartnerGroup("Friends forever".into()),
             Keyword::DoctorsCompanion,
             Keyword::ChooseABackground,
+            Keyword::Unearth(cost.clone()),
+            Keyword::Escape(cost),
+            Keyword::Rebound,
             Keyword::Echo(Cost::default()),
             Keyword::CumulativeUpkeep(Cost::default()),
             Keyword::Undying,

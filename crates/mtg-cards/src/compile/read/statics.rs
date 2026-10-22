@@ -23,7 +23,7 @@ use crate::mana::ManaCostX;
 use crate::modify::{GameRule, Modification};
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::{EntersChoice, ReplaceBy, ReplaceWhen};
-use crate::value::{Amount, Cmp, Condition};
+use crate::value::{Amount, CastWay, Cmp, Condition};
 
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
@@ -63,11 +63,14 @@ fn replacement(by: ReplaceBy, condition: Option<Condition>) -> Ability {
 }
 
 /// "~ enters tapped.", "~ enters tapped unless you control two or more basic lands.",
-/// "~ enters with two +1/+1 counters on it."
+/// "~ enters with two +1/+1 counters on it.", "~ escapes with a +1/+1 counter on it."
 fn entering(r: &mut Reader<'_>) -> Option<Ability> {
     r.source().then_some(())?;
-    r.need("enters")?;
-    if r.word("tapped") {
+    let escaped = r.word("escapes");
+    if !escaped {
+        r.need("enters")?;
+    }
+    if !escaped && r.word("tapped") {
         let condition = if r.word("unless") {
             Some(Condition::Not(Box::new(holds(r)?)))
         } else {
@@ -80,7 +83,7 @@ fn entering(r: &mut Reader<'_>) -> Option<Ability> {
     r.need("on it")?;
     Some(replacement(
         ReplaceBy::WithCounters { counter, count },
-        None,
+        escaped.then_some(Condition::CastWith(CastWay::Escape)),
     ))
 }
 
@@ -605,6 +608,13 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
                 .into_iter()
                 .collect()
         }
+        (
+            ReplaceBy::WithCounters { counter, count },
+            Some(Condition::CastWith(CastWay::Escape)),
+        ) => counters::entering_text(counter, count)
+            .map(|counters| format!("~ escapes with {counters} on it"))
+            .into_iter()
+            .collect(),
         (ReplaceBy::Choose(EntersChoice::Color), None) => {
             vec!["As ~ enters, choose a color".to_owned()]
         }

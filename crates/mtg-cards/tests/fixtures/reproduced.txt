@@ -6,9 +6,11 @@ Ancient Ziggurat
 Arcane Signet
 Archon of Cruelty
 Arrogant Wurm
+Artful Maneuver
 Arvad the Cursed
 Augury Raven
 Azorius Chancery
+Azorius Signet
 Azure Fleet Admiral
 Basking Rootwalla
 Battlefield Forge
@@ -39,6 +41,7 @@ Command Tower
 Consider
 Copper-Leaf Angel
 Counterspell
+Crystal Quarry
 Curate
 Curse of Predation
 Curse of the Forsaken
@@ -59,6 +62,7 @@ Dockside Extortionist
 Doom Blade
 Doom Whisperer
 Dream's Grip
+Dregscape Zombie
 Drudge Skeletons
 Dual Casting
 Dualcaster Mage
@@ -82,11 +86,13 @@ Forced March
 Fork
 Forum of Amity
 Foundry Inspector
+Fruit of Tizerus
 Furtive Homunculus
 Gadwick, the Wizened
 Game-Trail Changeling
 Giant Growth
 Gilded Lotus
+Glimpse of Freedom
 Glorious Anthem
 Goblin Spy
 Goblin War Buggy
@@ -107,6 +113,7 @@ Inkwell Leviathan
 Invisible Stalker
 Izzet Charm
 Jungle Lion
+Kathari Screecher
 Kessig Wolf Run
 Kitchen Finks
 Kongming, "Sleeping Dragon"
@@ -148,6 +155,7 @@ Pillar of the Paruns
 Plague Myr
 Plague Stinger
 Pouncing Jaguar
+Prismatic Lens
 Professional Face-Breaker
 Putrid Goblin
 Questing Beast
@@ -155,6 +163,7 @@ Rakdos Headliner
 Rally the Ranks
 Rampant Growth
 Reckless Impulse
+Reconstructed Thopter
 Reflecting Pool
 Reiterate
 Reverberate
@@ -180,6 +189,7 @@ Sinister Starfish
 Skeletal Changeling
 Skizzik Surger
 Skullclamp
+Skycloud Expanse
 Skysovereign, Consul Flagship
 Slip Through Space
 Smuggler's Copter
@@ -191,6 +201,7 @@ Soul Shepherd
 Souldrinker
 Spectral Rider
 Squirrel Nest
+Staggershock
 Steam Vents
 Stoke the Flames
 Strangleroot Geist
@@ -210,6 +221,7 @@ Thalia, Guardian of Thraben
 The Spear of Bashenga
 The Thing, Ben Grimm
 Thieving Magpie
+Thopter Fabricator
 Throne of the High City
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
@@ -220,6 +232,7 @@ Twincast
 Uktabi Efreet
 Umbral Collar Zealot
 Underworld Dreams
+Underworld Rage-Hound
 Universal Automaton
 Vampire Cutthroat
 Vengeful Vampire

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "be9d1346-4416-4ade-ae84-7a4121e0bd12",
+  "name": "Dregscape Zombie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dregscape Zombie",
+      "oracle_fingerprint": "48c7883e15fbf193e9742b749d9d2cac",
+      "abilities": [{ "Keyword": { "Unearth": "{B}" } }]
+    }
+  ]
+}

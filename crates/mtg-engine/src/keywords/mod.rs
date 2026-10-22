@@ -27,6 +27,7 @@ mod enchant;
 mod encore;
 mod entwine;
 mod equip;
+mod escape;
 mod evoke;
 mod fear;
 mod first_strike;
@@ -61,6 +62,7 @@ mod protection;
 mod provided;
 mod prowess;
 mod reach;
+mod rebound;
 mod reconfigure;
 mod shadow;
 mod shroud;
@@ -73,6 +75,7 @@ mod toxic;
 mod trample;
 mod undaunted;
 mod undying;
+mod unearth;
 mod vigilance;
 mod ward;
 mod wither;
@@ -387,6 +390,9 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::PartnerGroup(_) => &partner_group::PartnerGroup,
         Keyword::DoctorsCompanion => &doctors_companion::DoctorsCompanion,
         Keyword::ChooseABackground => &choose_a_background::ChooseABackground,
+        Keyword::Unearth(_) => &unearth::Unearth,
+        Keyword::Escape(_) => &escape::Escape,
+        Keyword::Rebound => &rebound::Rebound,
         Keyword::Echo(_) => &echo::Echo,
         Keyword::CumulativeUpkeep(_) => &cumulative_upkeep::CumulativeUpkeep,
         Keyword::Undying => &undying::Undying,
@@ -635,6 +641,9 @@ mod tests {
             Keyword::PartnerGroup("Friends forever".into()),
             Keyword::DoctorsCompanion,
             Keyword::ChooseABackground,
+            Keyword::Unearth(cost()),
+            Keyword::Escape(cost()),
+            Keyword::Rebound,
             Keyword::Echo(cost()),
             Keyword::CumulativeUpkeep(cost()),
             Keyword::Undying,
@@ -702,6 +711,9 @@ mod tests {
         "Keyword.PartnerGroup",
         "Keyword.DoctorsCompanion",
         "Keyword.ChooseABackground",
+        "Keyword.Unearth",
+        "Keyword.Escape",
+        "Keyword.Rebound",
         "Keyword.Echo",
         "Keyword.CumulativeUpkeep",
         "Keyword.Undying",
@@ -810,6 +822,9 @@ mod tests {
     #[case::partner_group(Keyword::PartnerGroup("Friends forever".into()), Hooks::none())]
     #[case::doctors_companion(Keyword::DoctorsCompanion, Hooks::none())]
     #[case::choose_a_background(Keyword::ChooseABackground, Hooks::none())]
+    #[case::unearth(Keyword::Unearth(Cost::mana("{B}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::escape(Keyword::Escape(Cost::mana("{B}".parse().unwrap())), Hooks::none())]
+    #[case::rebound(Keyword::Rebound, Hooks::none())]
     #[case::echo(Keyword::Echo(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::cumulative_upkeep(Keyword::CumulativeUpkeep(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::undying(Keyword::Undying, Hooks { abilities: 1, ..Hooks::none() })]

@@ -250,6 +250,9 @@ const RUNS: &[&str] = &[
     "Keyword.PartnerGroup",
     "Keyword.DoctorsCompanion",
     "Keyword.ChooseABackground",
+    "Keyword.Unearth",
+    "Keyword.Escape",
+    "Keyword.Rebound",
     "Keyword.Echo",
     "Keyword.CumulativeUpkeep",
     "Keyword.Undying",
@@ -548,6 +551,9 @@ mod tests {
     #[case::partner_group("Keyword.PartnerGroup", true)]
     #[case::doctors_companion("Keyword.DoctorsCompanion", true)]
     #[case::choose_a_background("Keyword.ChooseABackground", true)]
+    #[case::unearth("Keyword.Unearth", true)]
+    #[case::escape("Keyword.Escape", true)]
+    #[case::rebound("Keyword.Rebound", true)]
     #[case::echo("Keyword.Echo", true)]
     #[case::cumulative_upkeep("Keyword.CumulativeUpkeep", true)]
     #[case::undying("Keyword.Undying", true)]

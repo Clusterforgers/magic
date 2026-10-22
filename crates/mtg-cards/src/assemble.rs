@@ -328,10 +328,11 @@ impl ManaProduced<'_> {
     }
 }
 
-/// A mana ability of the shape the engine activates at priority: no targets, instant speed from the battlefield, an
-/// optional condition ("Activate only if you control a Swamp"), a cost of `{T}`, sacrificing the source and fixed
+/// A mana ability of the shape the engine activates: no targets, instant speed from the battlefield, an optional
+/// condition ("Activate only if you control a Swamp"), a cost of `{T}`, sacrificing the source, mana and fixed
 /// amounts of life, energy and counters of the source, mana added to its controller's pool (some number of times) and
-/// then effects that need no answer from anyone (CR 605.3b).
+/// then effects that need no answer from anyone (CR 605.3b). The mana of its cost is paid from the pool when it is
+/// activated, so an ability with one is a source of a payment only (a Signet).
 ///
 /// The plain `{T}: Add {X}` has this shape and is carried as an [`AbilityDef`]; the others (Treasure, Sol Ring, Gaea's
 /// Cradle, the painlands, the bouncelands) stay in the rules of the card.
@@ -345,6 +346,8 @@ pub struct ManaShape<'a> {
     pub tap: bool,
     /// The source is sacrificed.
     pub sacrifice: bool,
+    /// The mana of its cost (`{1}` for a Signet), paid from mana already in the pool; empty when it costs none.
+    pub mana: ManaCost,
     /// The other parts of its cost: life, energy, counters of the source.
     pub pays: Vec<&'a CostItem>,
     /// What must hold to activate it.
@@ -365,6 +368,7 @@ impl ManaShape<'_> {
         ) && self.times.is_one()
             && self.then.is_empty()
             && self.pays.is_empty()
+            && self.mana.symbols().is_empty()
             && self.condition.is_none()
     }
 }
@@ -416,10 +420,18 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
     };
     let (mut tap, mut sacrifice) = (false, false);
     let mut pays = Vec::new();
+    let mut cost_mana = None;
     for item in &cost.0 {
         let seen = match item {
             CostItem::Tap => &mut tap,
             CostItem::SacrificeSelf => &mut sacrifice,
+            // A cost with an X or a Phyrexian symbol is not paid from the pool alone.
+            CostItem::Mana(paid) if !paid.has_x() && paid.rest().life_symbols() == 0 => {
+                if cost_mana.replace(paid.rest().clone()).is_some() {
+                    return None;
+                }
+                continue;
+            }
             other if pays_with_activation(other) => {
                 pays.push(other);
                 continue;
@@ -482,6 +494,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             times,
             tap,
             sacrifice,
+            mana: cost_mana.unwrap_or_default(),
             pays,
             condition: condition.as_ref(),
             then,
@@ -1111,6 +1124,14 @@ mod tests {
     )]
     #[case::costs_mana(
         r#"{"Activated":{"cost":[{"Mana":"{1}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        Some((ManaProduced::AnyColor(1), true, false, 0))
+    )]
+    #[case::costs_mana_with_a_phyrexian_symbol(
+        r#"{"Activated":{"cost":[{"Mana":"{B/P}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        None
+    )]
+    #[case::costs_mana_twice(
+        r#"{"Activated":{"cost":[{"Mana":"{1}"},{"Mana":"{W}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
         None
     )]
     #[case::costs_life(
@@ -1195,6 +1216,14 @@ mod tests {
     )]
     #[case::a_mana_cost(
         r#"{"Activated":{"cost":[{"Mana":"{1}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::a_mana_cost_with_an_x(
+        r#"{"Activated":{"cost":[{"Mana":"{X}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        Some("Ability.ManaAbility.Other")
+    )]
+    #[case::a_mana_cost_without_a_tap(
+        r#"{"Activated":{"cost":[{"Mana":"{1}"}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
         Some("Ability.ManaAbility.Other")
     )]
     #[case::mixed_mana(

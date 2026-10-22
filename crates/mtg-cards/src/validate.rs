@@ -698,7 +698,10 @@ impl<'a> Walker<'a> {
                 self.payment_of_the_source(cost);
             }
             // The cost of these is paid as the cost of an activated ability the keyword adds.
-            Keyword::Equip(cost) | Keyword::Reconfigure(cost) | Keyword::Cycling(cost) => {
+            Keyword::Equip(cost)
+            | Keyword::Reconfigure(cost)
+            | Keyword::Cycling(cost)
+            | Keyword::Unearth(cost) => {
                 self.at("cost", |w| w.cost(cost));
             }
             // The cost of these is paid as the spell is announced: the mana, and the parts the engine pays there.
@@ -707,7 +710,8 @@ impl<'a> Walker<'a> {
             | Keyword::Madness(cost)
             | Keyword::Buyback(cost)
             | Keyword::Entwine(cost)
-            | Keyword::Evoke(cost) => {
+            | Keyword::Evoke(cost)
+            | Keyword::Escape(cost) => {
                 self.at("cost", |w| w.cost(cost));
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost);
             }

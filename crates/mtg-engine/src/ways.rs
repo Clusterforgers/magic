@@ -170,6 +170,12 @@ pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> 
                 cost,
                 matches!(zone, Zone::Graveyard(_)),
             ),
+            Keyword::Escape(cost) => (
+                CastWay::Escape,
+                "Escape",
+                cost,
+                matches!(zone, Zone::Graveyard(_)),
+            ),
             Keyword::Evoke(cost) => (CastWay::Evoke, "Evoke", cost, in_hand),
             Keyword::Overload(cost) => (CastWay::Overload, "Overload", cost, in_hand),
             Keyword::Foretell(cost) => (
@@ -184,7 +190,7 @@ pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> 
             continue;
         }
         // Overload and foretell are paid with mana alone.
-        let cost = if matches!(way, CastWay::Flashback | CastWay::Evoke) {
+        let cost = if matches!(way, CastWay::Flashback | CastWay::Evoke | CastWay::Escape) {
             cast_cost(cost)
         } else {
             mana_only(cost).map(|mana| (mana, Vec::new()))
