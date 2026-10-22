@@ -1,0 +1,21 @@
+{
+  "oracle_id": "03a3f54e-9289-4d99-beab-bfa0988a050e",
+  "name": "Guardian Gladewalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guardian Gladewalker",
+      "oracle_fingerprint": "f1d12d2127fbabd17b810fcbd3839b7d",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

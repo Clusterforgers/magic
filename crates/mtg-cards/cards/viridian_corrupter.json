@@ -1,0 +1,21 @@
+{
+  "oracle_id": "8ba5e97b-3eac-4291-8674-4b402a5554bc",
+  "name": "Viridian Corrupter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viridian Corrupter",
+      "oracle_fingerprint": "8166cb58f98e75d876e8037819914cb7",
+      "abilities": [
+        { "Keyword": "Infect" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -160,7 +160,7 @@ fn leaves(game: &mut GameState, name: &str) {
 }
 
 /// The modifications the engine runs.
-const MODIFICATIONS: [&str; 17] = [
+const MODIFICATIONS: [&str; 18] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
@@ -168,6 +168,7 @@ const MODIFICATIONS: [&str; 17] = [
     r#"{"RemoveType":"Creature"}"#,
     r#"{"AddSubtype":"Elf"}"#,
     r#"{"SetCreatureTypes":["Weird"]}"#,
+    r#""AddAllCreatureTypes""#,
     r#"{"SetColors":["Blue"]}"#,
     r#"{"AddKeyword":"Haste"}"#,
     r#"{"RemoveKeyword":"Flying"}"#,
@@ -204,6 +205,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::RemoveType(_)
             | mtg_cards::modify::Modification::AddSubtype(_)
             | mtg_cards::modify::Modification::SetCreatureTypes(_)
+            | mtg_cards::modify::Modification::AddAllCreatureTypes
             | mtg_cards::modify::Modification::SetColors(_)
             | mtg_cards::modify::Modification::AddKeyword(_)
             // Only an effect has it, and it works out its keyword with an answer, so it is not a row of the table.
@@ -808,7 +810,9 @@ fn lifelink_gains_life_for_whoever_controls_the_source_now() {
         vec![vec![totem(steal)], vec![lifelinker]],
     );
     let ogre = named(&game, "Ogre").id;
-    let events = crate::damage::dealt(&game, ogre, crate::combat::DamageTarget::Player(FOE), 3);
+    let dealer = crate::damage::Dealer::live(&game, ogre);
+    let events =
+        crate::damage::dealt_by(&game, &dealer, crate::combat::DamageTarget::Player(FOE), 3);
     assert!(
         events.contains(&Event::LifeGained {
             player: ME,

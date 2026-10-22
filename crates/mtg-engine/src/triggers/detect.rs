@@ -18,7 +18,7 @@ use crate::abilities::{AbilityRef, AbilitySource, Cause};
 use crate::ability_reader::{abilities_of, provided_here, working_here};
 use crate::characteristics::{controller_of, controller_of_object};
 use crate::choose::{Choices, Target};
-use crate::combat::{AttackTarget, DamageTarget};
+use crate::combat::{AttackTarget, DamageForm, DamageTarget};
 use crate::events::{Event, ResolutionOutcome, ZoneCause};
 use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::replace::in_combat_damage;
@@ -443,6 +443,7 @@ fn about_players_and_permanents(
             source,
             target,
             amount,
+            form,
             ..
         } => {
             found.push(Happened::Damaged {
@@ -458,8 +459,10 @@ fn about_players_and_permanents(
                 },
                 amount: *amount,
             });
-            // Damage to a player makes them lose that much life (CR 120.3a).
-            if let DamageTarget::Player(player) = target {
+            // Damage to a player makes them lose that much life (CR 120.3a), unless it is infect (poison counters, CR 120.3b).
+            if let DamageTarget::Player(player) = target
+                && !matches!(form, DamageForm::Infect)
+            {
                 found.push(Happened::LifeLost {
                     player: *player,
                     amount: *amount,

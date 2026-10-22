@@ -1,0 +1,20 @@
+{
+  "oracle_id": "2f328e05-5edf-4b21-9c2a-50dcf1e7b3ec",
+  "name": "Plague Myr",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plague Myr",
+      "oracle_fingerprint": "94f369473a31fbdce07afa846df94ff1",
+      "abilities": [
+        { "Keyword": "Infect" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

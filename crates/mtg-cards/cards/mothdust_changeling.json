@@ -1,0 +1,28 @@
+{
+  "oracle_id": "52237e6b-19f6-405c-a668-545c4ccb1b6d",
+  "name": "Mothdust Changeling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mothdust Changeling",
+      "oracle_fingerprint": "8edad988ecb993e76f99a8eff426515d",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

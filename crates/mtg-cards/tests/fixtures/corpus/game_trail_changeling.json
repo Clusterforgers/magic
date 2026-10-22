@@ -1,0 +1,28 @@
+{
+  "id": "7bc76a7f-516f-4d0b-b024-39d5c8096a9f",
+  "oracle_id": "384611fb-aca2-4e2d-9125-44ea034de08b",
+  "name": "Game-Trail Changeling",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mor",
+  "collector_number": "123",
+  "rarity": "common",
+  "released_at": "2008-02-01",
+  "digital": false,
+  "mana_cost": "{3}{G}{G}",
+  "cmc": 5,
+  "type_line": "Creature — Shapeshifter",
+  "oracle_text": "Changeling (This card is every creature type.)\nTrample",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Trample",
+    "Changeling"
+  ]
+}

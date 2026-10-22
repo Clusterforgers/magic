@@ -28,7 +28,9 @@ use mtg_cards::value::CounterKind;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
 use crate::abilities::{AbilityRef, AbilitySource, Grant};
-use crate::ability_reader::{definition_has_static, printed, provided, working_here};
+use crate::ability_reader::{
+    definition_has_static, printed, printed_and_provided, provided, working_here,
+};
 use crate::characteristics::{Characteristics, base};
 use crate::effects::{ContinuousEffect, Layer, Modification, Selector};
 use crate::events::Event;
@@ -216,6 +218,7 @@ impl Held {
             | Modification::RemoveType(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
+            | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
             | Modification::SetPowerToughness { .. }
             | Modification::ModifyPowerToughness { .. }
@@ -421,7 +424,8 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         Wanted::AddType(_)
         | Wanted::RemoveType(_)
         | Wanted::AddSubtype(_)
-        | Wanted::SetCreatureTypes(_) => Layer::Type,
+        | Wanted::SetCreatureTypes(_)
+        | Wanted::AddAllCreatureTypes => Layer::Type,
         Wanted::SetColors(_) => Layer::Color,
         Wanted::AddKeyword(_)
         | Wanted::AddProtectionFromChosenColor
@@ -984,8 +988,9 @@ pub(crate) fn outside(
     view: Option<View<'_>>,
 ) -> Characteristics {
     let mut chars = base(object);
+    let abilities = printed_and_provided(object);
     let mut changes: Vec<(Layer, usize, usize, &Wanted)> = Vec::new();
-    for (address, rules) in printed(object) {
+    for (address, rules) in &abilities {
         let rule = address.ability;
         if let Ability::Static {
             mods,
@@ -1017,6 +1022,8 @@ pub(crate) fn outside(
     chars
 }
 
+#[cfg(test)]
+mod characteristic_keywords;
 #[cfg(test)]
 mod counters;
 #[cfg(test)]

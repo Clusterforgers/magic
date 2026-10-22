@@ -1,0 +1,29 @@
+{
+  "oracle_id": "2516949d-75bb-4aea-a41d-0298bb129471",
+  "name": "Slip Through Space",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slip Through Space",
+      "oracle_fingerprint": "4813a973f5232f1c5c802f4c9452904e",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

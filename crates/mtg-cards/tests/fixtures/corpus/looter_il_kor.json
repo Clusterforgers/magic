@@ -1,0 +1,27 @@
+{
+  "id": "7083c77c-166f-4c6f-a2ca-dd1b877ff5f7",
+  "oracle_id": "c87e3b1d-2d24-4f1c-84e8-1c21a347cdc2",
+  "name": "Looter il-Kor",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "102",
+  "rarity": "common",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2,
+  "type_line": "Creature — Kor Rogue",
+  "oracle_text": "Shadow (This creature can block or be blocked by only creatures with shadow.)\nWhenever this creature deals damage to an opponent, draw a card, then discard a card.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Shadow"
+  ]
+}

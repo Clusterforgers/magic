@@ -1,0 +1,15 @@
+{
+  "oracle_id": "b9d388ca-1a63-4a11-bf33-9f7b87305a52",
+  "name": "Skeletal Changeling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skeletal Changeling",
+      "oracle_fingerprint": "2c89375b91c1df0e16e9ff09a1febb64",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        { "Activated": { "cost": "{1}{B}", "effects": [{ "Regenerate": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

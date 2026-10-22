@@ -570,7 +570,7 @@ impl<'a> Scope<'a> {
                 .card
                 .is_some_and(|c| c.card().supertypes.contains(supertype)),
             Pred::Subtype(subtype) => {
-                seen.chars.subtypes.contains(subtype)
+                seen.chars.has_subtype(&[], subtype)
                     || seen
                         .card
                         .is_some_and(|c| seen.chars.has_subtype(&c.card().subtypes, subtype))
@@ -624,7 +624,7 @@ impl<'a> Scope<'a> {
             }
             Pred::ChosenSubtype => {
                 matches!(self.entered_choice(), Some(Chosen::CreatureType(subtype))
-                    if seen.chars.subtypes.contains(subtype)
+                    if seen.chars.has_subtype(&[], subtype)
                         || seen.card.is_some_and(|c| seen.chars.has_subtype(&c.card().subtypes, subtype)))
             }
             Pred::Compare { stat, op, to } => match Self::stat(seen, *stat) {

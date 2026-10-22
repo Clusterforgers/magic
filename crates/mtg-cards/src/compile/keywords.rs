@@ -3,7 +3,7 @@
 use std::ops::Range;
 use std::str::FromStr;
 
-use mtg_core::card::CardType;
+use mtg_core::card::{CardType, Subtype};
 use mtg_core::color::Color;
 
 use crate::cost::{Cost, CostItem};
@@ -51,6 +51,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("storm", Params::None),
     ("battle cry", Params::None),
     ("fuse", Params::None),
+    ("landwalk", Params::None),
     ("partner", Params::Dash),
     ("companion", Params::Dash),
     ("ward", Params::Cost),
@@ -347,9 +348,30 @@ pub fn read(item: &str) -> Option<Keyword> {
         "partner with" => Some(Keyword::PartnerWith(rest.to_owned())),
         "protection" => protection(rest).map(Keyword::Protection),
         "companion" => Some(Keyword::Companion),
+        "toxic" => rest
+            .parse()
+            .ok()
+            .filter(|poison| *poison > 0)
+            .map(Keyword::Toxic),
+        "landwalk" => landwalk(item),
         name if rest.is_empty() => plain(name),
         _ => None,
     }
+}
+
+/// The land types a landwalk can name.
+const LAND_TYPES: [&str; 6] = ["Plains", "Island", "Swamp", "Mountain", "Forest", "Desert"];
+
+/// A landwalk keyword (`Islandwalk`): the land type it names, as a selector over the lands it looks for.
+fn landwalk(item: &str) -> Option<Keyword> {
+    let word = item.split([' ', '\u{2014}']).next()?;
+    let kind = word.get(..word.len().checked_sub("walk".len())?)?;
+    let land = LAND_TYPES
+        .iter()
+        .find(|land| land.eq_ignore_ascii_case(kind))?;
+    Some(Keyword::Landwalk(Selector(vec![Pred::Subtype(Subtype(
+        (*land).to_owned(),
+    ))])))
 }
 
 /// A keyword without parameters.
@@ -385,6 +407,13 @@ fn plain(name: &str) -> Option<Keyword> {
         "myriad" => Keyword::Myriad,
         "daybound" => Keyword::Daybound,
         "nightbound" => Keyword::Nightbound,
+        "wither" => Keyword::Wither,
+        "fear" => Keyword::Fear,
+        "intimidate" => Keyword::Intimidate,
+        "skulk" => Keyword::Skulk,
+        "shadow" => Keyword::Shadow,
+        "split second" => Keyword::SplitSecond,
+        "undaunted" => Keyword::Undaunted,
         _ => return None,
     })
 }
@@ -484,6 +513,10 @@ mod tests {
     use mtg_core::card::Subtype;
     use rstest::rstest;
 
+    fn walks(land: &str) -> Keyword {
+        Keyword::Landwalk(Selector(vec![Pred::Subtype(Subtype(land.to_owned()))]))
+    }
+
     fn mana(text: &str) -> Cost {
         Cost::mana(text.parse().unwrap())
     }
@@ -549,6 +582,18 @@ mod tests {
     #[case::fuse("Fuse", Keyword::Fuse)]
     #[case::daybound("Daybound", Keyword::Daybound)]
     #[case::nightbound("nightbound", Keyword::Nightbound)]
+    #[case::wither("Wither", Keyword::Wither)]
+    #[case::toxic("Toxic 1", Keyword::Toxic(1))]
+    #[case::toxic_three("Toxic 3", Keyword::Toxic(3))]
+    #[case::fear("fear", Keyword::Fear)]
+    #[case::intimidate("Intimidate", Keyword::Intimidate)]
+    #[case::skulk("Skulk", Keyword::Skulk)]
+    #[case::shadow("Shadow", Keyword::Shadow)]
+    #[case::split_second("Split second", Keyword::SplitSecond)]
+    #[case::undaunted("Undaunted", Keyword::Undaunted)]
+    #[case::islandwalk("Islandwalk", walks("Island"))]
+    #[case::forestwalk("forestwalk", walks("Forest"))]
+    #[case::desertwalk("Desertwalk", walks("Desert"))]
     #[case::equip("Equip {1}", Keyword::Equip(mana("{1}")))]
     #[case::equip_two("Equip {2}{G}", Keyword::Equip(mana("{2}{G}")))]
     #[case::kicker("Kicker {4}", Keyword::Kicker(mana("{4}")))]
@@ -681,7 +726,7 @@ mod tests {
     #[case::a_parameter_on_changeling("Changeling {1}")]
     #[case::level_up("Level up {1}{U}")]
     #[case::typecycling("Plainscycling {2}")]
-    #[case::landwalk("Islandwalk")]
+    #[case::landwalk_of_a_type_that_is_not_a_land_type("Cowwalk")]
     #[case::parameter_on_a_plain_keyword("Flying {2}")]
     #[case::suspend_without_time("Suspend {U}")]
     #[case::not_a_keyword("Draw a card.")]
@@ -799,6 +844,15 @@ mod tests {
             "Foretell {1}",
             "Daybound",
             "Nightbound",
+            "Wither",
+            "Toxic 2",
+            "Fear",
+            "Intimidate",
+            "Swampwalk",
+            "Skulk",
+            "Shadow",
+            "Split second",
+            "Undaunted",
             "Partner with Someone",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];
@@ -806,9 +860,10 @@ mod tests {
         for sample in samples {
             let keyword = read(sample).unwrap_or_else(|| panic!("{sample} is not read"));
             assert!(
-                sample
-                    .to_ascii_lowercase()
-                    .starts_with(&keyword.name().to_ascii_lowercase()),
+                keyword.name() == "Landwalk"
+                    || sample
+                        .to_ascii_lowercase()
+                        .starts_with(&keyword.name().to_ascii_lowercase()),
                 "{sample} read as {}",
                 keyword.name()
             );

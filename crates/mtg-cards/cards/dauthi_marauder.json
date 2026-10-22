@@ -1,0 +1,12 @@
+{
+  "oracle_id": "cb754749-a769-4c9c-b62b-4972dfc5069f",
+  "name": "Dauthi Marauder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dauthi Marauder",
+      "oracle_fingerprint": "4f5894644dbc3cc42eea91e0fc7addce",
+      "abilities": [{ "Keyword": "Shadow" }]
+    }
+  ]
+}

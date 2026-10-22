@@ -1,0 +1,12 @@
+{
+  "oracle_id": "508248d1-09a4-4e41-a4c9-286618e5061e",
+  "name": "Bog Wraith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bog Wraith",
+      "oracle_fingerprint": "0cb8985ac7da064a0e285c23eebb532d",
+      "abilities": [{ "Keyword": { "Landwalk": [{ "Subtype": "Swamp" }] } }]
+    }
+  ]
+}

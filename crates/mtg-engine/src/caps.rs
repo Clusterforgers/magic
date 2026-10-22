@@ -144,6 +144,7 @@ const RUNS: &[&str] = &[
     "Mod.RemoveType",
     "Mod.AddSubtype",
     "Mod.SetCreatureTypes",
+    "Mod.AddAllCreatureTypes",
     "Mod.SetColors",
     "Mod.RemoveKeyword",
     "Mod.GrantAbility",
@@ -204,6 +205,16 @@ const RUNS: &[&str] = &[
     "Keyword.Nightbound",
     "Keyword.Fuse",
     "Keyword.Crew",
+    "Keyword.Changeling",
+    "Keyword.Devoid",
+    "Keyword.Infect",
+    "Keyword.Wither",
+    "Keyword.Toxic",
+    "Keyword.Fear",
+    "Keyword.Intimidate",
+    "Keyword.Landwalk",
+    "Keyword.Skulk",
+    "Keyword.Shadow",
     "Condition.CastWith",
     "Rule.MayCast",
     "Condition.Kicked",
@@ -303,6 +314,17 @@ mod tests {
     #[case::day_and_night("Keyword.Daybound", true)]
     #[case::the_night_face("Keyword.Nightbound", true)]
     #[case::fusing("Keyword.Fuse", true)]
+    #[case::every_creature_type("Keyword.Changeling", true)]
+    #[case::no_color("Keyword.Devoid", true)]
+    #[case::poison("Keyword.Infect", true)]
+    #[case::counters("Keyword.Wither", true)]
+    #[case::toxic("Keyword.Toxic", true)]
+    #[case::evasion_by_color("Keyword.Fear", true)]
+    #[case::evasion_by_color_shared("Keyword.Intimidate", true)]
+    #[case::evasion_by_land("Keyword.Landwalk", true)]
+    #[case::evasion_by_power("Keyword.Skulk", true)]
+    #[case::evasion_by_shadow("Keyword.Shadow", true)]
+    #[case::all_creature_types("Mod.AddAllCreatureTypes", true)]
     #[case::replacement_effects("Ability.Replacement", true)]
     #[case::replacing_token_creation("ReplaceWhen.TokenCreation", true)]
     #[case::replacing_damage("ReplaceWhen.Damage", true)]
@@ -499,9 +521,6 @@ mod tests {
     #[case::the_highest_life_total("Amount.HighestLife", true)]
     #[case::choosing_a_player_as_it_enters("ReplaceBy.Choose.Player", false)]
     #[case::choosing_an_opponent_as_it_enters("ReplaceBy.Choose.Opponent", false)]
-    #[case::changeling("Keyword.Changeling", false)]
-    #[case::devoid("Keyword.Devoid", false)]
-    #[case::infect("Keyword.Infect", false)]
     #[case::myriad("Keyword.Myriad", false)]
     #[case::crew("Keyword.Crew", true)]
     #[case::tapping_creatures_for_their_power_as_a_cost("Cost.TapPower", true)]

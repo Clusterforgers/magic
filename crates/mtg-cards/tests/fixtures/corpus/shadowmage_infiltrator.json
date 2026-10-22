@@ -1,0 +1,29 @@
+{
+  "id": "2ac920d7-013f-40ad-b79f-0bb59062d42a",
+  "oracle_id": "3a6f886b-2043-47e9-9c0f-f7913a6fa67d",
+  "name": "Shadowmage Infiltrator",
+  "lang": "en",
+  "layout": "normal",
+  "set": "otc",
+  "collector_number": "240",
+  "rarity": "rare",
+  "released_at": "2024-04-19",
+  "digital": false,
+  "mana_cost": "{1}{U}{B}",
+  "cmc": 3,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "Fear (This creature can't be blocked except by artifact creatures and/or black creatures.)\nWhenever this creature deals combat damage to a player, you may draw a card.",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Fear"
+  ]
+}

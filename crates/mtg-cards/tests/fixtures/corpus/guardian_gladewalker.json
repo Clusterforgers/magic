@@ -1,0 +1,27 @@
+{
+  "id": "587eed42-5111-4161-9af5-bf76556c542a",
+  "oracle_id": "03a3f54e-9289-4d99-beab-bfa0988a050e",
+  "name": "Guardian Gladewalker",
+  "lang": "en",
+  "layout": "normal",
+  "set": "khm",
+  "collector_number": "174",
+  "rarity": "common",
+  "released_at": "2021-02-05",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2,
+  "type_line": "Creature — Shapeshifter",
+  "oracle_text": "Changeling (This card is every creature type.)\nWhen this creature enters, put a +1/+1 counter on target creature.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Changeling"
+  ]
+}

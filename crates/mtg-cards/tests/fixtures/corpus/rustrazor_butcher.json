@@ -1,0 +1,28 @@
+{
+  "id": "daa0dd3e-51d1-4d75-b0f4-835992f420d6",
+  "oracle_id": "58fd5a3c-83ca-4f6a-99db-21d5e03f2345",
+  "name": "Rustrazor Butcher",
+  "lang": "en",
+  "layout": "normal",
+  "set": "shm",
+  "collector_number": "105",
+  "rarity": "common",
+  "released_at": "2008-05-02",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2,
+  "type_line": "Creature — Goblin Warrior",
+  "oracle_text": "First strike\nWither (This deals damage to creatures in the form of -1/-1 counters.)",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "First strike",
+    "Wither"
+  ]
+}

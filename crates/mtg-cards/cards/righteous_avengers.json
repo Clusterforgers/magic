@@ -1,0 +1,12 @@
+{
+  "oracle_id": "e7c07e41-3654-47da-afe3-88aae4c034b6",
+  "name": "Righteous Avengers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Righteous Avengers",
+      "oracle_fingerprint": "ef95711a31cbd23570c2d0c6b122fa2f",
+      "abilities": [{ "Keyword": { "Landwalk": [{ "Subtype": "Plains" }] } }]
+    }
+  ]
+}
