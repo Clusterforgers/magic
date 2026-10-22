@@ -1,5 +1,5 @@
-//! Keyword actions of creatures: "it explores", "target creature you control explores, then it explores again"
-//! (`Effect::Explore`). The writer's side is an arm of the renderer.
+//! Keyword actions of creatures: "it explores", "it connives", "target creature you control explores, then it explores again"
+//! (`Effect::Explore`, `Effect::Connive`). The writer's side is an arm of the renderer.
 
 use super::effects::{is_on_the_battlefield, target_object};
 use super::tokens::Reader;
@@ -37,6 +37,13 @@ pub fn explore(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         effects.push(Effect::Explore { what });
     }
     Some(effects)
+}
+
+/// "~ connives.", "it connives." and "target creature you control connives.": one creature connives.
+pub fn connive(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    let what = creature(r)?;
+    r.need("connives")?;
+    Some(vec![Effect::Connive { what }])
 }
 
 /// ", then it explores again".

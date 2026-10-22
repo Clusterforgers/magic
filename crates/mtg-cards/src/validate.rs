@@ -912,6 +912,7 @@ impl<'a> Walker<'a> {
             }
             TriggerPattern::Tapped { what }
             | TriggerPattern::Explored { what }
+            | TriggerPattern::Connived { what }
             | TriggerPattern::Untapped { what }
             | TriggerPattern::Blocks { what }
             | TriggerPattern::BecomesBlocked { what }
@@ -962,6 +963,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::BecomesMonarch { .. }
                 | TriggerPattern::Proliferated { .. }
                 | TriggerPattern::Explored { .. }
+                | TriggerPattern::Connived { .. }
                 | TriggerPattern::SpellCast { .. }
                 | TriggerPattern::BecomesTarget { .. }
                 | TriggerPattern::GroupAttacks { .. }

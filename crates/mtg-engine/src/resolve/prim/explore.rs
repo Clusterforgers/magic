@@ -1,6 +1,7 @@
 //! `Effect::Explore`: creatures explore (CR 701.44).
 
 use mtg_cards::effect::Effect;
+use mtg_cards::refs::Ref;
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -15,28 +16,21 @@ use crate::resolve::{Cx, ResolveError, Run};
 use crate::wording;
 use crate::zones::Zone;
 
-/// A creature that explores: its controller, and the permanent when it is still on the battlefield to get the counter.
-struct Explorer {
-    object: ObjectId,
-    player: PlayerId,
-    permanent: Option<ObjectRef>,
+/// A creature that does a keyword action: its controller, and the permanent when it is still on the battlefield to
+/// get the counter.
+pub(super) struct Actor {
+    pub(super) object: ObjectId,
+    pub(super) player: PlayerId,
+    pub(super) permanent: Option<ObjectRef>,
 }
 
-/// Each creature the effect names explores in turn, once each. Its controller (as it was, when the creature has left
-/// the battlefield and the ability remembers it) reveals the top card of their library: a land goes to their hand;
-/// any other card, or no card because the library is empty, gives the creature a +1/+1 counter if it is still on the
-/// battlefield, and the player may put a revealed card into their graveyard (asked with `ChooseCards` over that card,
-/// none or one, since seeing it is the point). A card that stays on top is the one the next explore reveals. Every
-/// answer is in before anything happens; each explore is an `Explored`, the `Revealed` of its card and the moves and
-/// the counter that follow, the counter as a proposed `CountersChanged` that a replacement effect sees.
-pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Explore { what } = effect else {
-        return Err(wrong_effect("Explore"));
-    };
+/// The creatures `what` names that act, once each: one on the battlefield acts for its controller, one that has left
+/// it acts for the controller the ability remembers (last known information), and one it cannot find does not act.
+pub(super) fn actors(cx: &Cx<'_>, what: &Ref) -> Result<Vec<Actor>, ResolveError> {
     let state = cx.state();
-    let mut explorers: Vec<Explorer> = Vec::new();
+    let mut found: Vec<Actor> = Vec::new();
     for named in cx.scope.objects(what)? {
-        if explorers.iter().any(|seen| seen.object == named.id) {
+        if found.iter().any(|seen| seen.object == named.id) {
             continue;
         }
         let live = state.object(named.id).filter(|object| {
@@ -50,18 +44,33 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             },
         };
         if state.is_alive(player) {
-            explorers.push(Explorer {
+            found.push(Actor {
                 object: named.id,
                 player,
                 permanent,
             });
         }
     }
+    Ok(found)
+}
+
+/// Each creature the effect names explores in turn, once each. Its controller (as it was, when the creature has left
+/// the battlefield and the ability remembers it) reveals the top card of their library: a land goes to their hand;
+/// any other card, or no card because the library is empty, gives the creature a +1/+1 counter if it is still on the
+/// battlefield, and the player may put a revealed card into their graveyard (asked with `ChooseCards` over that card,
+/// none or one, since seeing it is the point). A card that stays on top is the one the next explore reveals. Every
+/// answer is in before anything happens; each explore is an `Explored`, the `Revealed` of its card and the moves and
+/// the counter that follow, the counter as a proposed `CountersChanged` that a replacement effect sees.
+pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
+    let Effect::Explore { what } = effect else {
+        return Err(wrong_effect("Explore"));
+    };
+    let explorers = actors(cx, what)?;
     Stop::settle(explorations(cx, &explorers).map(Run::events))
 }
 
 /// The events of each exploration, asking in turn.
-fn explorations(cx: &Cx<'_>, explorers: &[Explorer]) -> Result<Vec<Event>, Stop> {
+fn explorations(cx: &Cx<'_>, explorers: &[Actor]) -> Result<Vec<Event>, Stop> {
     let state = cx.state();
     let mut questions = Questions::new(cx);
     let mut events = Vec::new();

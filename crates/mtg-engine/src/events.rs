@@ -563,6 +563,13 @@ pub enum Event {
         /// Its controller, who revealed the card.
         player: PlayerId,
     },
+    /// A creature connived (CR 701.50): the draw, the discard and the counter are the events that follow it.
+    Connived {
+        /// The creature that connived.
+        object: ObjectId,
+        /// Its controller, who drew and discarded.
+        player: PlayerId,
+    },
     /// The game became day or night (CR 726).
     DayNightChanged {
         /// What it became.
@@ -638,6 +645,7 @@ impl ZoneCause {
 
 impl Event {
     /// Objects this event moves or changes, for incremental consistency checks.
+    #[allow(clippy::too_many_lines)]
     pub fn touched_objects(&self) -> Vec<ObjectId> {
         match self {
             Event::LibraryShuffled { .. }
@@ -726,6 +734,7 @@ impl Event {
             | Event::CardDrawn { object, .. }
             | Event::CardDiscarded { object, .. }
             | Event::Explored { object, .. }
+            | Event::Connived { object, .. }
             | Event::Cycled { object, .. }
             | Event::CreatureDied { object, .. }
             | Event::CopyEnded { object }

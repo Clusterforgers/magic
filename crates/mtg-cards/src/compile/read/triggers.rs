@@ -417,6 +417,8 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         return Some(TriggerPattern::Untapped { what: what.clone() });
     } else if r.word("explores") {
         return Some(TriggerPattern::Explored { what: what.clone() });
+    } else if r.word("connives") {
+        return Some(TriggerPattern::Connived { what: what.clone() });
     } else if r.words("becomes attached to") {
         return Some(TriggerPattern::Attached {
             what: what.clone(),
@@ -637,6 +639,7 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),
         TriggerPattern::Untapped { what } => said(what, "becomes untapped"),
         TriggerPattern::Explored { what } => said(what, "explores"),
+        TriggerPattern::Connived { what } => said(what, "connives"),
         TriggerPattern::Attached { what, to } if !what.is_empty() && !to.is_empty() => {
             said(what, &format!("becomes attached to {}", subject_text(to)?))
         }

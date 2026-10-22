@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d7ae0009-3747-4f3a-a613-3e640b0219a0",
+  "name": "Echo Inspector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Echo Inspector",
+      "oracle_fingerprint": "6187ca6dd6ecf188bdfb342f7f9a8426",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Connive": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -114,6 +114,8 @@ enum Happened {
     Proliferated { player: PlayerId },
     /// A creature explored.
     Explored { object: ObjectId, player: PlayerId },
+    /// A creature connived.
+    Connived { object: ObjectId, player: PlayerId },
     /// Everything of one kind of state (before or after) that happened in the batch, for the patterns of events that
     /// happen together.
     Batch(Vec<Happened>),
@@ -532,6 +534,10 @@ fn about_players_and_permanents(
             object: *object,
             player: *player,
         }),
+        Event::Connived { object, player } => found.push(Happened::Connived {
+            object: *object,
+            player: *player,
+        }),
         _ => {}
     }
 }
@@ -757,6 +763,7 @@ fn matching_event(
 }
 
 /// What `pattern` finds in the events about permanents: taps, counters, blocks, attackers and attachments.
+#[allow(clippy::too_many_lines)]
 fn matching_permanents(
     pattern: &TriggerPattern,
     happened: &Happened,
@@ -773,17 +780,20 @@ fn matching_permanents(
         (
             TriggerPattern::Explored { what },
             Happened::Explored {
-                object: explorer,
+                object: actor,
+                player,
+            },
+        )
+        | (
+            TriggerPattern::Connived { what },
+            Happened::Connived {
+                object: actor,
                 player,
             },
         ) => {
-            let explorer = object(*explorer)?;
-            picks(what, explorer)?.then(|| {
-                cause(
-                    state,
-                    vec![Target::Player(*player), Target::Object(explorer)],
-                )
-            })
+            let actor = object(*actor)?;
+            picks(what, actor)?
+                .then(|| cause(state, vec![Target::Player(*player), Target::Object(actor)]))
         }
         (TriggerPattern::Tapped { what }, Happened::Tapped { object: tapped })
         | (TriggerPattern::Untapped { what }, Happened::Untapped { object: tapped }) => {
@@ -1300,6 +1310,7 @@ mod tests {
     #[case::becoming_tapped(r#"{"Tapped":{"what":[]}}"#)]
     #[case::becoming_untapped(r#"{"Untapped":{"what":[]}}"#)]
     #[case::exploring(r#"{"Explored":{"what":[]}}"#)]
+    #[case::conniving(r#"{"Connived":{"what":[]}}"#)]
     #[case::tapping_for_mana(r#"{"TappedForMana":{"what":[]}}"#)]
     #[case::blocking(r#"{"Blocks":{"what":[]}}"#)]
     #[case::becoming_blocked(r#"{"BecomesBlocked":{"what":[]}}"#)]

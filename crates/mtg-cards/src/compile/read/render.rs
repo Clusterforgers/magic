@@ -43,6 +43,7 @@ pub fn ability(ability: &Ability) -> Option<String> {
 /// Every wording of an ability the readers produce. The effects of one player in a row are one
 /// sentence ("you draw a card and gain 3 life") or several ("draw a card. You gain 3 life"), and
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
+#[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
     let mut texts = ability_texts(ability);
     let singulars: Vec<String> = texts
@@ -125,14 +126,17 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(pronouns);
     }
-    // A trigger about the card itself may say "it explores" for the card (Seekers' Squire).
+    // A trigger about the card itself may say "it explores" or "it connives" for the card (Seekers' Squire).
     if matches!(ability, Ability::Triggered { when, .. } if itself_acts(when)) {
-        let pronouns: Vec<String> = texts
-            .iter()
-            .filter(|text| text.contains(", ~ explores"))
-            .map(|text| text.replacen(", ~ explores", ", it explores", 1))
-            .collect();
-        texts.extend(pronouns);
+        for verb in ["explores", "connives"] {
+            let (named, pronoun) = (format!(", ~ {verb}"), format!(", it {verb}"));
+            let pronouns: Vec<String> = texts
+                .iter()
+                .filter(|text| text.contains(&named))
+                .map(|text| text.replacen(&named, &pronoun, 1))
+                .collect();
+            texts.extend(pronouns);
+        }
     }
     // A trigger about damage the source deals may say "it deals" for the source (Questing Beast).
     if matches!(
@@ -1138,6 +1142,9 @@ impl Writer<'_> {
             Effect::Explore {
                 what: what @ (Ref::This | Ref::Target(0)),
             } => format!("{} explores", self.object(what)?),
+            Effect::Connive {
+                what: what @ (Ref::This | Ref::Target(0)),
+            } => format!("{} connives", self.object(what)?),
             Effect::Transform { what } => format!("transform {}", self.object(what)?),
             Effect::If {
                 condition,

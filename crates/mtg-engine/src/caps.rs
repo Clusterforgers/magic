@@ -56,6 +56,7 @@ const RUNS: &[&str] = &[
     "Trigger.BecomesMonarch",
     "Trigger.Proliferated",
     "Trigger.Explored",
+    "Trigger.Connived",
     "Trigger.Batch",
     "Trigger.Nth",
     "Amount.Triggering",
@@ -124,6 +125,7 @@ const RUNS: &[&str] = &[
     "Effect.Surveil",
     "Effect.Proliferate",
     "Effect.Explore",
+    "Effect.Connive",
     "Effect.BecomeMonarch",
     "Condition.Monarch",
     "Effect.CreateToken",
@@ -507,7 +509,7 @@ mod tests {
     #[case::adapting("Effect.Adapt", false)]
     #[case::bolstering("Effect.Bolster", false)]
     #[case::exploring("Effect.Explore", true)]
-    #[case::conniving("Effect.Connive", false)]
+    #[case::conniving("Effect.Connive", true)]
     #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]
     #[case::exiling_the_top_cards("Effect.ExileTop", true)]
     #[case::casting_during_a_resolution("Effect.CastFromZone", true)]
@@ -549,6 +551,7 @@ mod tests {
     #[case::becoming_the_monarch_triggers("Trigger.BecomesMonarch", true)]
     #[case::proliferating_triggers("Trigger.Proliferated", true)]
     #[case::exploring_triggers("Trigger.Explored", true)]
+    #[case::conniving_triggers("Trigger.Connived", true)]
     #[case::batch_triggers("Trigger.Batch", true)]
     #[case::nth_triggers("Trigger.Nth", true)]
     #[case::event_amounts("Amount.Triggering", true)]

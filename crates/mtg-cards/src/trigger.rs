@@ -261,6 +261,12 @@ pub enum TriggerPattern {
         /// The creature that explores.
         what: Selector,
     },
+    /// A creature matching the selector connives ("whenever a creature you control connives"); `Triggering` is its
+    /// controller.
+    Connived {
+        /// The creature that connives.
+        what: Selector,
+    },
     /// A step begins ("at the beginning of ...").
     StepBegins {
         /// The step.

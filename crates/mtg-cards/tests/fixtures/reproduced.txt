@@ -9,6 +9,7 @@ Archon of Cruelty
 Arrogant Wurm
 Artful Maneuver
 Arvad the Cursed
+Atlantean Skirmisher
 Augury Raven
 Azorius Chancery
 Azorius Signet
@@ -87,6 +88,7 @@ Drudge Skeletons
 Dual Casting
 Dualcaster Mage
 Durkwood Baloth
+Echo Inspector
 Elven Ambush
 Empyrial Plate
 Epic Proportions
@@ -212,13 +214,16 @@ Psychosis Crawler
 Putrid Goblin
 Pygmy Kavu
 Questing Beast
+Raffine's Informant
 Rakdos Headliner
 Rally the Ranks
 Rampant Growth
 Reckless Impulse
 Reconstructed Thopter
+Red Room Recruit
 Reflecting Pool
 Reiterate
+Revel Ruiner
 Reverberate
 Rhox Faithmender
 Rhystic Study

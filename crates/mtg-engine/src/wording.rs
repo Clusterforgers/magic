@@ -404,6 +404,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             format!("{} explores", subject(what)),
             what.0 == [Pred::This],
         ),
+        TriggerPattern::Connived { what } => (
+            format!("{} connives", subject(what)),
+            what.0 == [Pred::This],
+        ),
         TriggerPattern::Cycled { what, by } => {
             let (name, s) = who(by);
             let card = if what.is_empty() {
