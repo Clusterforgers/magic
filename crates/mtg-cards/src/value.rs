@@ -86,6 +86,11 @@ impl CastWay {
     pub const fn replaces_cost(self) -> bool {
         !matches!(self, CastWay::JumpStart | CastWay::Retrace)
     }
+
+    /// Whether a spell cast this way is exiled when it leaves the stack (flashback, jump-start).
+    pub const fn exiles_the_spell(self) -> bool {
+        matches!(self, CastWay::Flashback | CastWay::JumpStart)
+    }
 }
 
 /// A kind of counter.

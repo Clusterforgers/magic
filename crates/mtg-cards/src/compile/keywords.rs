@@ -895,6 +895,8 @@ mod tests {
         }
     }
 
+    // One sample line for each keyword of the DSL.
+    #[allow(clippy::too_many_lines)]
     #[test]
     fn a_keyword_read_carries_the_name_it_was_printed_with() {
         let samples = [

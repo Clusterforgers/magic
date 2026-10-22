@@ -146,7 +146,10 @@ fn the_activation_needs_the_mana_of_its_cost(
     #[case] mountains: usize,
 ) -> Result<(), ScriptError> {
     let driver = game(card, lands(mountain, mountains))?;
-    assert!(driver.offered_abilities(card)?.is_empty());
+    assert!(
+        driver.offered_abilities(card)?.is_empty(),
+        "{card} cannot be paid for"
+    );
     Ok(())
 }
 
@@ -181,12 +184,15 @@ fn the_card_is_gone_once_it_is_embalmed_so_the_ability_is_offered_once() -> Resu
 {
     let mut driver = game("Sacred Cat", lands(plains, 2))?;
     activate(&mut driver, "Sacred Cat")?;
-    assert!(
-        driver.offered_abilities("Sacred Cat").is_err()
-            || driver.offered_abilities("Sacred Cat")?.is_empty(),
+    assert_eq!(
+        driver.state().zone(Zone::Graveyard(pid(0))),
+        [],
         "the card left the graveyard to pay for the first activation"
     );
     settle(&mut driver)?;
-    assert!(driver.offered_abilities("Sacred Cat")?.is_empty());
+    assert!(
+        driver.offered_abilities("Sacred Cat")?.is_empty(),
+        "the token is not in a graveyard"
+    );
     Ok(())
 }

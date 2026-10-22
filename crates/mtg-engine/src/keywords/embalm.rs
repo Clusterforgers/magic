@@ -122,7 +122,7 @@ mod tests {
         );
         assert_eq!(*timing, Timing::Sorcery);
         assert_eq!(*from, ZoneKind::Graveyard);
-        assert!(targets.is_empty());
+        assert_eq!(*targets, Vec::new());
         let [
             Effect::CreateToken {
                 token:
@@ -149,15 +149,14 @@ mod tests {
     #[case::unearth(Keyword::Unearth(mana()))]
     #[case::the_other_of_the_pair(Keyword::Eternalize(mana()))]
     fn embalm_adds_nothing_for_another_keyword(#[case] keyword: Keyword) {
-        assert!(Embalm.adds_abilities(&keyword).is_empty());
+        assert_eq!(Embalm.adds_abilities(&keyword), Vec::new());
     }
 
     #[test]
     fn eternalize_adds_nothing_for_embalm() {
-        assert!(
-            Eternalize
-                .adds_abilities(&Keyword::Embalm(mana()))
-                .is_empty()
+        assert_eq!(
+            Eternalize.adds_abilities(&Keyword::Embalm(mana())),
+            Vec::new()
         );
     }
 }
