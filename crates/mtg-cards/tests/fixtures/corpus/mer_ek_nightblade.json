@@ -1,0 +1,27 @@
+{
+  "id": "ade8f32c-d188-4a36-98a4-584b6ef95902",
+  "oracle_id": "56a8554c-d427-44ca-a01d-9e12c89acd1e",
+  "name": "Mer-Ek Nightblade",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ima",
+  "collector_number": "97",
+  "rarity": "uncommon",
+  "released_at": "2017-11-17",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Orc Assassin",
+  "oracle_text": "Outlast {B} ({B}, {T}: Put a +1/+1 counter on this creature. Outlast only as a sorcery.)\nEach creature you control with a +1/+1 counter on it has deathtouch.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Outlast"
+  ]
+}

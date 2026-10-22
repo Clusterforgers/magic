@@ -93,6 +93,8 @@ pub enum Keyword {
     Flashback(Cost),
     /// Madness with its cost.
     Madness(Cost),
+    /// Dredge N (CR 702.52): in a graveyard, a player who would draw a card may instead mill N cards and return this card to their hand.
+    Dredge(u32),
     /// Morph with its cost.
     Morph(Cost),
     /// Disguise with its cost.
@@ -179,6 +181,14 @@ pub enum Keyword {
     Undying,
     /// Persist (CR 702.79): when it dies, if it had no -1/-1 counter on it, it returns with a -1/-1 counter.
     Persist,
+    /// Level up with its cost (CR 702.87): "{cost}: Put a level counter on this permanent. Level up only as a sorcery."
+    LevelUp(Cost),
+    /// Outlast with its cost (CR 702.107): "{cost}, {T}: Put a +1/+1 counter on this permanent. Outlast only as a sorcery."
+    Outlast(Cost),
+    /// Saddle with its power (CR 702.171): tapping other creatures with that total power makes the Mount saddled until end of turn, at sorcery speed.
+    Saddle(u32),
+    /// Saddled (CR 702.171b): the designation of a Mount whose saddle ability resolved this turn, granted until end of turn.
+    Saddled,
     /// Ravenous (CR 702.156): it enters with X +1/+1 counters, and its controller draws a card when it enters if X is 5 or more.
     Ravenous,
     /// Jump-start (CR 702.133): the card may be cast from a graveyard by discarding a card in addition to its other costs, and is then exiled.
@@ -243,6 +253,7 @@ impl Keyword {
         "Entwine",
         "Flashback",
         "Madness",
+        "Dredge",
         "Morph",
         "Disguise",
         "Suspend",
@@ -283,6 +294,10 @@ impl Keyword {
         "Cumulative upkeep",
         "Undying",
         "Persist",
+        "Level up",
+        "Outlast",
+        "Saddle",
+        "Saddled",
         "Ravenous",
         "Jump-start",
         "Retrace",
@@ -334,6 +349,7 @@ impl Keyword {
             Keyword::Entwine(_) => "Entwine",
             Keyword::Flashback(_) => "Flashback",
             Keyword::Madness(_) => "Madness",
+            Keyword::Dredge(_) => "Dredge",
             Keyword::Morph(_) => "Morph",
             Keyword::Disguise(_) => "Disguise",
             Keyword::Suspend { .. } => "Suspend",
@@ -374,6 +390,10 @@ impl Keyword {
             Keyword::CumulativeUpkeep(_) => "Cumulative upkeep",
             Keyword::Undying => "Undying",
             Keyword::Persist => "Persist",
+            Keyword::LevelUp(_) => "Level up",
+            Keyword::Outlast(_) => "Outlast",
+            Keyword::Saddle(_) => "Saddle",
+            Keyword::Saddled => "Saddled",
             Keyword::Ravenous => "Ravenous",
             Keyword::JumpStart => "Jump-start",
             Keyword::Retrace => "Retrace",
@@ -448,6 +468,7 @@ mod tests {
             Keyword::Entwine(cost.clone()),
             Keyword::Flashback(cost.clone()),
             Keyword::Madness(cost.clone()),
+            Keyword::Dredge(3),
             Keyword::Morph(cost.clone()),
             Keyword::Disguise(cost.clone()),
             Keyword::Suspend {
@@ -491,6 +512,10 @@ mod tests {
             Keyword::CumulativeUpkeep(Cost::default()),
             Keyword::Undying,
             Keyword::Persist,
+            Keyword::LevelUp(Cost::default()),
+            Keyword::Outlast(Cost::default()),
+            Keyword::Saddle(2),
+            Keyword::Saddled,
             Keyword::Ravenous,
             Keyword::JumpStart,
             Keyword::Retrace,

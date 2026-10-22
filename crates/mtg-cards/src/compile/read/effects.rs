@@ -499,6 +499,15 @@ pub(super) fn describes_a_kind(pred: &Pred) -> bool {
 /// hand.": a move to the owner's hand.
 fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("return")?;
+    // The permanent itself once the ability has spoken of the card: "return it to its owner's hand" (a card that
+    // returns from the graveyard says its name, and is the table's).
+    if r.it == Some(Ref::This) && r.word("it") {
+        r.need("to its owner's hand")?;
+        return Some(vec![Effect::Move {
+            what: Ref::This,
+            to: Destination::Hand,
+        }]);
+    }
     let what = target_object(r)?;
     let Some(Targetable::Object(selector)) = r.targets.first().map(|spec| &spec.what) else {
         return None;

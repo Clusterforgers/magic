@@ -1,10 +1,13 @@
 Abbot of Keral Keep
 Aberrant
 Abzan Advantage
+Abzan Battle Priest
+Abzan Falconer
 Abzan Skycaptain
 Adorned Pouncer
 Aeromunculus
 Aether Hub
+Ainok Bond-Kin
 Ajani's Pridemate
 Alpha Deathclaw
 Anafenza, Kin-Tree Spirit
@@ -54,15 +57,18 @@ Brain Freeze
 Brainstorm
 Branchblight Stalker
 Briarblade Adept
+Bridled Bighorn
 Brightstone Ritual
 Bronzeplate Boar
 Broodbirth Viper
 Broodstar
 Cached Defenses
 Cackling Counterpart
+Cadaverous Bloom
 Caldaia Strongarm
 Caller of the Pack
 Capsize
+Caravan Escort
 Carnage Tyrant
 Cascade Bluffs
 Cathars' Crusade
@@ -80,6 +86,7 @@ Consider
 Consign // Oblivion
 Contentious Plan
 Copper-Leaf Angel
+Coralhelm Commander
 Counterspell
 Courser of Kruphix
 Crucible of Worlds
@@ -98,6 +105,7 @@ Cut // Ribbons
 Cyclonic Rift
 Cytoshape
 Dalek Squadron
+Darkblast
 Darksteel Juggernaut
 Dauthi Horror
 Dauthi Marauder
@@ -131,6 +139,7 @@ Durkwood Baloth
 Eagles of the North
 Easterling Vanguard
 Echo Inspector
+Echo Mage
 Echoes of the Kin Tree
 Elven Ambush
 Elvish Aberration
@@ -194,12 +203,14 @@ Goldlust Triad
 Grapeshot
 Graven Cairns
 Graveshifter
+Greater Mossdog
 Grim Initiate
 Grisly Salvage
 Growing Ranks
 Gruul Cluestone
 Guardian Gladewalker
 Gurmag Angler
+Hada Spy Patrol
 Hall of Triumph
 Haughty Djinn
 Hengegate Pathway // Mistgate Pathway
@@ -228,6 +239,7 @@ Jungle Lion
 Kalemne's Captain
 Karn's Bastion
 Kathari Screecher
+Kazandu Tuskcaller
 Keep Watch
 Kessig Wolf Run
 Kinjalli's Sunwing
@@ -252,6 +264,7 @@ Lord of Extinction
 Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
 Lurching Rotbeast
+Mana Bloom
 Manabarbs
 Manor Gate
 Map the Wastes
@@ -265,6 +278,7 @@ Maverick Thopterist
 Mayhem Patrol
 Megrim
 Memory Guardian
+Mer-Ek Nightblade
 Merfolk Branchwalker
 Mesmeric Orb
 Midnight Banshee
@@ -320,6 +334,7 @@ Radical Idea
 Raffine's Informant
 Rakdos Headliner
 Rally the Ranks
+Ramos, Dragon Engine
 Rampant Growth
 Ravenous Leucrocota
 Reckless Impulse
@@ -362,6 +377,8 @@ Seekers' Squire
 Serra Angel
 Servant of the Conduit
 Shadowmage Infiltrator
+Shambling Shell
+Shenanigans
 Siege Wurm
 Sinister Sabotage
 Sinister Starfish
@@ -398,6 +415,7 @@ Stoke the Flames
 Strangleroot Geist
 Strionic Resonator
 Stroke of Genius
+Student of Warfare
 Sultai Devotee
 Summer Bloom
 Sundering Growth
@@ -439,6 +457,7 @@ Traumatic Visions
 Treasure Cruise
 Trove Tracker
 Tumble Magnet
+Tuskguard Captain
 Twilight Mire
 Twincast
 Uktabi Efreet

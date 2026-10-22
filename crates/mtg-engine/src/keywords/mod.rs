@@ -26,6 +26,7 @@ mod devoid;
 mod disguise;
 mod doctors_companion;
 mod double_strike;
+mod dredge;
 mod echo;
 mod embalm;
 mod enchant;
@@ -51,6 +52,7 @@ mod intimidate;
 mod jump_start;
 mod kicker;
 mod landwalk;
+mod level_up;
 mod lifelink;
 mod living_weapon;
 mod madness;
@@ -61,6 +63,7 @@ mod mutate;
 mod myriad;
 mod nightbound;
 mod ninjutsu;
+mod outlast;
 mod overload;
 mod partner;
 mod partner_group;
@@ -75,6 +78,7 @@ mod reach;
 mod rebound;
 mod reconfigure;
 mod retrace;
+mod saddle;
 mod shadow;
 mod shroud;
 mod skulk;
@@ -373,6 +377,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Multikicker(_) => &multikicker::Multikicker,
         Keyword::Flashback(_) => &flashback::Flashback,
         Keyword::Madness(_) => &madness::Madness,
+        Keyword::Dredge(_) => &dredge::Dredge,
         Keyword::Morph(_) => &morph::Morph,
         Keyword::Disguise(_) => &disguise::Disguise,
         Keyword::Suspend { .. } => &suspend::Suspend,
@@ -413,6 +418,10 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::CumulativeUpkeep(_) => &cumulative_upkeep::CumulativeUpkeep,
         Keyword::Undying => &undying::Undying,
         Keyword::Persist => &persist::Persist,
+        Keyword::LevelUp(_) => &level_up::LevelUp,
+        Keyword::Outlast(_) => &outlast::Outlast,
+        Keyword::Saddle(_) => &saddle::Saddle,
+        Keyword::Saddled => &saddle::Saddled,
         Keyword::Ravenous => &ravenous::Ravenous,
         Keyword::JumpStart => &jump_start::JumpStart,
         Keyword::Retrace => &retrace::Retrace,
@@ -633,6 +642,7 @@ mod tests {
             Keyword::Entwine(cost()),
             Keyword::Flashback(cost()),
             Keyword::Madness(cost()),
+            Keyword::Dredge(3),
             Keyword::Morph(cost()),
             Keyword::Disguise(cost()),
             Keyword::Suspend {
@@ -676,6 +686,10 @@ mod tests {
             Keyword::CumulativeUpkeep(cost()),
             Keyword::Undying,
             Keyword::Persist,
+            Keyword::LevelUp(cost()),
+            Keyword::Outlast(cost()),
+            Keyword::Saddle(2),
+            Keyword::Saddled,
             Keyword::Ravenous,
             Keyword::JumpStart,
             Keyword::Retrace,
@@ -729,6 +743,7 @@ mod tests {
         "Keyword.Convoke",
         "Keyword.Delve",
         "Keyword.Madness",
+        "Keyword.Dredge",
         "Keyword.Suspend",
         "Keyword.Foretell",
         "Keyword.Daybound",
@@ -761,6 +776,10 @@ mod tests {
         "Keyword.CumulativeUpkeep",
         "Keyword.Undying",
         "Keyword.Persist",
+        "Keyword.LevelUp",
+        "Keyword.Outlast",
+        "Keyword.Saddle",
+        "Keyword.Saddled",
         "Keyword.Myriad",
         "Keyword.Squad",
         "Keyword.Ravenous",
@@ -863,12 +882,17 @@ mod tests {
     #[case::reconfigure(Keyword::Reconfigure(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 3, ..Hooks::none() })]
     #[case::living_weapon(Keyword::LivingWeapon, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::crew(Keyword::Crew(3), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::saddle(Keyword::Saddle(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::saddled(Keyword::Saddled, Hooks::none())]
+    #[case::level_up(Keyword::LevelUp(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::outlast(Keyword::Outlast(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::evoke(Keyword::Evoke(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::flashback(Keyword::Flashback(Cost::mana("{2}".parse().unwrap())), Hooks::none())]
     #[case::overload(Keyword::Overload(Cost::mana("{2}".parse().unwrap())), Hooks::none())]
     #[case::cascade(Keyword::Cascade, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::storm(Keyword::Storm, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::madness(Keyword::Madness(Cost::mana("{R}".parse().unwrap())), Hooks { abilities: 2, ..Hooks::none() })]
+    #[case::dredge(Keyword::Dredge(3), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::changeling(Keyword::Changeling, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::devoid(Keyword::Devoid, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::partner(Keyword::Partner, Hooks::none())]

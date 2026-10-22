@@ -1,0 +1,22 @@
+{
+  "oracle_id": "8a4028cd-6004-4fb0-a044-0bee662a78e1",
+  "name": "Ainok Bond-Kin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ainok Bond-Kin",
+      "oracle_fingerprint": "beba522bb4952ef182aea4bfb581ad05",
+      "abilities": [
+        { "Keyword": { "Outlast": "{1}{W}" } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "HasCounter": "+1/+1" }]
+            },
+            "mods": [{ "AddKeyword": "FirstStrike" }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "905f1b28-8d53-4163-9118-414dad789509",
+  "oracle_id": "8db3152a-11b1-4c59-a745-1c40a9b235b7",
+  "name": "Hada Spy Patrol",
+  "lang": "en",
+  "layout": "leveler",
+  "set": "cma",
+  "collector_number": "40",
+  "rarity": "uncommon",
+  "released_at": "2017-06-09",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Rogue",
+  "oracle_text": "Level up {2}{U} ({2}{U}: Put a level counter on this. Level up only as a sorcery.)\nLEVEL 1-2\n2/2\nThis creature can't be blocked.\nLEVEL 3+\n3/3\nShroud (This creature can't be the target of spells or abilities.)\nThis creature can't be blocked.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Shroud",
+    "Level Up"
+  ]
+}

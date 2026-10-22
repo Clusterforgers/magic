@@ -1,0 +1,28 @@
+{
+  "id": "817602f9-0844-4ba2-bd7c-380fcd0c15ff",
+  "oracle_id": "9a9c221d-9bb4-4ec4-b5db-cb26db6065df",
+  "name": "Caravan Escort",
+  "lang": "en",
+  "layout": "leveler",
+  "set": "ddp",
+  "collector_number": "3",
+  "rarity": "common",
+  "released_at": "2015-08-28",
+  "digital": false,
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "Level up {2} ({2}: Put a level counter on this. Level up only as a sorcery.)\nLEVEL 1-4\n2/2\nLEVEL 5+\n5/5\nFirst strike",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "First strike",
+    "Level Up"
+  ]
+}

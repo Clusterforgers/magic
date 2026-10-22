@@ -77,7 +77,14 @@ fn check(printed: &PrintedCard) -> Compiled {
     if card.impl_status != ImplStatus::Manual {
         // The spell clauses of a face read into one ability, the others one each.
         assert_eq!(manual, unread, "{compiled:?}");
-        assert!(read_abilities <= read, "{compiled:?}");
+        // A level block reads into an ability for each of its lines.
+        let level_lines: usize = compiled
+            .clauses
+            .iter()
+            .filter(|clause| clause.read && clause.text.starts_with("LEVEL "))
+            .map(|clause| clause.text.lines().count())
+            .sum();
+        assert!(read_abilities <= read + level_lines, "{compiled:?}");
     }
     let source = Source {
         path: format!("cards/{}.json", slug(&card.name)),
