@@ -161,7 +161,7 @@ pub fn sloth_lord() -> Result<Arc<CardDefinition>, CorpusError> {
 }
 
 /// The names of the cards that have a static ability, which a game uses when they enter the battlefield.
-pub const STATIC_CARDS: [&str; 15] = [
+pub const STATIC_CARDS: &[&str] = &[
     "Glorious Anthem",
     "Levitation",
     "Goblin Chieftain",
@@ -273,7 +273,7 @@ mod tests {
     fn a_statics_deck_is_sixty_cards_with_every_card_that_has_a_static_ability() {
         let deck = statics_deck(&mut GameRng::substream(1, 13_000)).unwrap();
         assert_eq!(deck.len(), 60);
-        for name in STATIC_CARDS {
+        for &name in STATIC_CARDS {
             assert!(deck.iter().any(|card| card.name == name), "{name}");
         }
         let setup = statics_fuzz_setup(3, 5).unwrap();

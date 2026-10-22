@@ -20,7 +20,7 @@ use crate::corpus::{self, CorpusError};
 const LANDS: usize = 24;
 
 /// The corpus cards of an evasion deck, with their copies.
-pub const EVASION_CARDS: [(&str, usize); 7] = [
+pub const EVASION_CARDS: &[(&str, usize)] = &[
     ("Questing Beast", 3),
     ("Invisible Stalker", 3),
     ("Fog", 2),
@@ -74,7 +74,7 @@ pub fn evasion_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, Corpu
         Color::Red,
     ];
     let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS).map(|i| land(colors[i % 5])).collect();
-    for (name, copies) in EVASION_CARDS {
+    for &(name, copies) in EVASION_CARDS {
         deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
     }
     let small = r#"[{"CantBeBlockedBy":[{"Type":"Creature"},{"Compare":{"stat":"Power","op":"Le","to":2}}]}]"#;
@@ -142,7 +142,7 @@ mod tests {
             deck.iter().map(|card| card.name.clone()).collect()
         };
         assert_eq!(names(&first), names(&again));
-        for (name, _) in EVASION_CARDS {
+        for &(name, _) in EVASION_CARDS {
             assert!(names(&first).iter().any(|held| held == name), "{name}");
         }
     }

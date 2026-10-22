@@ -115,7 +115,7 @@ fn seeded_zone_games_finish_and_keep_every_invariant(#[case] players: usize) {
     // The Masterpiece is a sorcery for seven mana that the games seldom reach; its discard is counted below.
     for name in ZONE_CORPUS_CARDS
         .iter()
-        .chain(&ZONE_SYNTHETIC_CARDS)
+        .chain(ZONE_SYNTHETIC_CARDS)
         .filter(|name| **name != "Elemental Masterpiece")
     {
         assert!(

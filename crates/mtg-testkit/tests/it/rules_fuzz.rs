@@ -72,7 +72,7 @@ fn seeded_rule_games_finish_and_keep_every_invariant(#[case] players: usize) {
         seen.add(&end, &outcome.events);
     }
     let campaign = format!("{} games of {players} seats", games());
-    for name in RULE_CARDS {
+    for &name in RULE_CARDS {
         assert!(
             seen.entered.get(name).copied().unwrap_or(0) > 0,
             "{name} never entered play in {campaign}"

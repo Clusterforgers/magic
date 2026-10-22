@@ -16,7 +16,7 @@ use crate::corpus::{self, CorpusError};
 const LANDS: usize = 25;
 
 /// The corpus cards of a combat-keyword deck, with their copies.
-pub const COMBAT_KEYWORD_CARDS: [(&str, usize); 22] = [
+pub const COMBAT_KEYWORD_CARDS: &[(&str, usize)] = &[
     ("Plague Stinger", 3),
     ("Pestilent Syphoner", 2),
     ("Bilious Skulldweller", 2),
@@ -52,7 +52,7 @@ pub fn combat_keyword_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>
     ];
     let mut deck: Vec<Arc<CardDefinition>> =
         (0..LANDS).map(|i| land(colors[i % colors.len()])).collect();
-    for (name, copies) in COMBAT_KEYWORD_CARDS {
+    for &(name, copies) in COMBAT_KEYWORD_CARDS {
         deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
     }
     deck.extend(std::iter::repeat_n(free_creature("Mite", 1, 1), 4));
@@ -88,7 +88,7 @@ mod tests {
             deck.iter().map(|card| card.name.clone()).collect()
         };
         assert_eq!(names(&first), names(&again));
-        for (name, copies) in COMBAT_KEYWORD_CARDS {
+        for &(name, copies) in COMBAT_KEYWORD_CARDS {
             let held = first.iter().filter(|card| card.name == name).count();
             assert_eq!(held, copies, "{name}");
         }
