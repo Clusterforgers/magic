@@ -164,6 +164,8 @@ mod miracle;
 mod miracle_fuzz;
 mod monarch;
 mod monarch_wordings;
+mod morph;
+mod morph_fuzz;
 mod mulligan;
 mod ninjutsu;
 mod object_nth;

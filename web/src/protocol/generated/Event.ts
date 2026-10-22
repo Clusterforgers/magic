@@ -561,6 +561,14 @@ object: ObjectId,
 /**
  * Its controller.
  */
+player: PlayerId, } } | { "TurnedFaceUp": { 
+/**
+ * The permanent that was turned face up.
+ */
+object: ObjectId, 
+/**
+ * Its controller, who turned it.
+ */
 player: PlayerId, } } | { "Adapted": { 
 /**
  * The creature that adapted.

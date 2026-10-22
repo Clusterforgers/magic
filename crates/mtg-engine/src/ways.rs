@@ -109,10 +109,14 @@ pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> 
     let Some(card) = state.object(id) else {
         return Vec::new();
     };
-    if card.kind() != ObjectKind::Card || card.base_types().contains(CardType::Land) {
+    if card.kind() != ObjectKind::Card {
         return Vec::new();
     }
     let zone = card.zone();
+    // A land is played, never cast, except face down: a land card with morph is a 2/2 creature spell then (CR 702.37c).
+    if card.base_types().contains(CardType::Land) {
+        return face_down_only(state, player, id);
+    }
     let allowed = match zone {
         Zone::Hand(owner) | Zone::Graveyard(owner) | Zone::Command(owner) => owner == player,
         // Only the top card of a library may be cast, by a permission.
@@ -264,6 +268,24 @@ fn keyword_way(
         instant,
         parts,
     })
+}
+
+/// The one way a land card in its owner's hand is cast: face down, when it has morph, megamorph or disguise.
+fn face_down_only(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
+    let in_hand = state
+        .object(id)
+        .is_some_and(|card| card.zone() == Zone::Hand(player));
+    let has = keywords_of(state, id).into_iter().any(|keyword| {
+        matches!(
+            keyword,
+            Keyword::Morph(_) | Keyword::Megamorph(_) | Keyword::Disguise(_)
+        )
+    });
+    if in_hand && has {
+        vec![face_down_way(false)]
+    } else {
+        Vec::new()
+    }
 }
 
 /// The way of casting a card with morph, megamorph or disguise face down as a 2/2 creature spell for {3} (CR 702.37c, 702.168a).

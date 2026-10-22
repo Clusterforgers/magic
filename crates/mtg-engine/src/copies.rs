@@ -368,6 +368,13 @@ pub(crate) fn copiable_values(
     if let Some(copy) = &shot.copy {
         return Some(copy.copiable());
     }
+    // A face-down permanent was the 2/2 of CR 708.2a, not its card.
+    if let Some(shown) = shot
+        .face_down
+        .and_then(crate::object::FaceDown::characteristics)
+    {
+        return Some(shown.copiable());
+    }
     let card = state
         .source_object(reference.id)
         .filter(|card| card.kind() != ObjectKind::Ability)?;

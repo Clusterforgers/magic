@@ -8,4 +8,4 @@ export type FaceDown = { "Foretold": {
 /**
  * The number of the turn it was foretold in.
  */
-turn: number, } };
+turn: number, } } | "Morph" | "Disguise";

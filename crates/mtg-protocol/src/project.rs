@@ -164,6 +164,22 @@ fn type_list(types: CardTypes) -> Vec<CardType> {
         .collect()
 }
 
+/// What the viewer reads of the copy effect an object is under, or of the spell it copies.
+fn copy_view(state: &GameState, sight: &Sight<'_>, object: &GameObject) -> Option<CopyView> {
+    object
+        .copy_effect()
+        .map(mtg_engine::copies::CopyEffect::of)
+        .or_else(|| object.copied_from())
+        .map(|original| CopyView {
+            // The original is named only while the viewer can see that very object.
+            of: Some(original.id).filter(|original_id| {
+                state.object(*original_id).is_some_and(|seen| {
+                    seen.counter() == original.counter && !matches!(sight.look(seen), Look::Hidden)
+                })
+            }),
+        })
+}
+
 impl ObjectView {
     /// The view of `id` for `viewer`, or `None` when the object is unknown or hidden from them.
     pub fn of(state: &GameState, viewer: PlayerId, id: ObjectId) -> Option<ObjectView> {
@@ -271,19 +287,7 @@ impl ObjectView {
             },
             face_down: object.face_down().is_some(),
             face: object.face().filter(|_| printed),
-            copy: object
-                .copy_effect()
-                .map(mtg_engine::copies::CopyEffect::of)
-                .or_else(|| object.copied_from())
-                .map(|original| CopyView {
-                    // The original is named only while the viewer can see that very object.
-                    of: Some(original.id).filter(|original_id| {
-                        state.object(*original_id).is_some_and(|seen| {
-                            seen.counter() == original.counter
-                                && !matches!(sight.look(seen), Look::Hidden)
-                        })
-                    }),
-                }),
+            copy: copy_view(state, sight, object),
             // The clauses the engine leaves to the table are printed on the card every seat can read.
             manual: if printed {
                 card.manual.clone()

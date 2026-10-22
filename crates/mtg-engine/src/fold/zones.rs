@@ -182,6 +182,59 @@ fn note_aftermath(state: &mut GameState, spell: ObjectId, from: Zone) {
     }
 }
 
+/// A card is cast: it moves to the stack as the spell, with what was announced for it, and lies face down when it is cast that way.
+fn spell_cast(
+    state: &mut GameState,
+    player: PlayerId,
+    object: ObjectId,
+    choices: &Choices,
+) -> Result<(), EngineError> {
+    state.tally(player, Tally::Cast);
+    for target in choices.targeted_objects() {
+        state.tally_object(target, Some(player), Tally::Targeted);
+    }
+    // A card is cast from its hand, or from the zone a permission names (CR 601.3): never from play.
+    let from = state
+        .objects
+        .get(&object)
+        .map(|spell| spell.zone)
+        .ok_or_else(|| invalid(format!("unknown object {object:?}")))?;
+    if matches!(from, Zone::Stack | Zone::Battlefield) {
+        return Err(invalid(format!(
+            "{object:?} is in {from:?}, not a card to cast"
+        )));
+    }
+    expect_in(state, object, from)?;
+    // The tax counts casts from the command zone (CR 903.8).
+    state.commanders.cast(object, from);
+    move_object(state, object, Zone::Stack, Placement::Top)?;
+    set_controller(state, object, player);
+    // The face cast is the card a spell is from now on: its buyback and flashback below are those of the face.
+    if let Some(spell) = state.objects.get_mut(&object) {
+        spell.choices.clone_from(choices);
+        spell.cast_from_hand = matches!(from, Zone::Hand(_));
+        spell.cast_from_graveyard = matches!(from, Zone::Graveyard(_));
+        if choices.way == Some(CastWay::FaceDown) {
+            spell.face_down = Some(FaceDown::cast_as(&spell.def));
+        }
+    }
+    note_rebound(state, object, from);
+    note_aftermath(state, object, from);
+    // A spell cast for its flashback cost, or with its buyback cost paid, is moved by a replacement effect.
+    let bought_back = state.objects.get(&object).is_some_and(|spell| {
+        payments(spell.card(), &choices.optional_costs, OptionalKind::Buyback) > 0
+    });
+    // An Adventure that resolves is exiled by a replacement as well (CR 715.4).
+    let adventure = state.objects.get(&object).is_some_and(|spell| {
+        spell.whole_card().layout == Layout::Adventure && spell.face() == Some(1)
+    });
+    if choices.way.is_some_and(CastWay::exiles_the_spell) || bought_back || adventure {
+        state.possible.replacements = true;
+    }
+    reset_passes(state);
+    Ok(())
+}
+
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::LandPlayed {
@@ -193,51 +246,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             player,
             object,
             choices,
-        } => {
-            state.tally(*player, Tally::Cast);
-            for target in choices.targeted_objects() {
-                state.tally_object(target, Some(*player), Tally::Targeted);
-            }
-            // A card is cast from its hand, or from the zone a permission names (CR 601.3): never from play.
-            let from = state
-                .objects
-                .get(object)
-                .map(|spell| spell.zone)
-                .ok_or_else(|| invalid(format!("unknown object {object:?}")))?;
-            if matches!(from, Zone::Stack | Zone::Battlefield) {
-                return Err(invalid(format!(
-                    "{object:?} is in {from:?}, not a card to cast"
-                )));
-            }
-            expect_in(state, *object, from)?;
-            // The tax counts casts from the command zone (CR 903.8).
-            state.commanders.cast(*object, from);
-            move_object(state, *object, Zone::Stack, Placement::Top)?;
-            set_controller(state, *object, *player);
-            // The face cast is the card a spell is from now on: its buyback and flashback below are those of the face.
-            if let Some(spell) = state.objects.get_mut(object) {
-                spell.choices.clone_from(choices);
-                spell.cast_from_hand = matches!(from, Zone::Hand(_));
-                spell.cast_from_graveyard = matches!(from, Zone::Graveyard(_));
-                if choices.way == Some(CastWay::FaceDown) {
-                    spell.face_down = Some(FaceDown::cast_as(&spell.def));
-                }
-            }
-            note_rebound(state, *object, from);
-            note_aftermath(state, *object, from);
-            // A spell cast for its flashback cost, or with its buyback cost paid, is moved by a replacement effect.
-            let bought_back = state.objects.get(object).is_some_and(|spell| {
-                payments(spell.card(), &choices.optional_costs, OptionalKind::Buyback) > 0
-            });
-            // An Adventure that resolves is exiled by a replacement as well (CR 715.4).
-            let adventure = state.objects.get(object).is_some_and(|spell| {
-                spell.whole_card().layout == Layout::Adventure && spell.face() == Some(1)
-            });
-            if choices.way.is_some_and(CastWay::exiles_the_spell) || bought_back || adventure {
-                state.possible.replacements = true;
-            }
-            reset_passes(state);
-        }
+        } => spell_cast(state, *player, *object, choices)?,
         Event::SpellResolved { object } => resolve_spell(state, *object)?,
         Event::ZoneChanged {
             object,
