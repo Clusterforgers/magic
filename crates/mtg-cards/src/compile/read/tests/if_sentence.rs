@@ -99,3 +99,17 @@ fn a_condition_the_template_does_not_model_stays_unread(#[case] text: &str) {
 fn the_card_is_the_only_place_the_counters_are_counted(#[case] text: &str) {
     assert_eq!(activated(text), None, "{text}");
 }
+
+#[rstest]
+fn every_count_kind_and_wording_writes_back_as_it_was_read(
+    #[values("two", "five", "twenty")] number: &str,
+    #[values("or more", "or fewer")] bound: &str,
+    #[values("charge", "time", "+1/+1", "-1/-1", "hatchling", "poison")] kind: &str,
+    #[values("~", "it")] pronoun: &str,
+    #[values("If", "Then if")] opener: &str,
+) {
+    let text = format!(
+        "Whenever ~ attacks, put a {kind} counter on ~. {opener} there are {number} {bound} {kind} counters on {pronoun}, remove all of them and transform {pronoun}."
+    );
+    golden(&text, ClauseKind::Triggered, false);
+}
