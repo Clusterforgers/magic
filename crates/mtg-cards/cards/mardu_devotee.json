@@ -1,0 +1,26 @@
+{
+  "oracle_id": "24ee57b5-a505-4264-97ca-8b8dfb12298e",
+  "name": "Mardu Devotee",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mardu Devotee",
+      "oracle_fingerprint": "826e446f4c7168b80d89335f876eb4cc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "limit": "OncePerTurn",
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "White", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

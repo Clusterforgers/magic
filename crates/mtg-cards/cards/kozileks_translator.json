@@ -1,0 +1,21 @@
+{
+  "oracle_id": "6766c5e4-baa7-4db4-a900-c08fbcd98f5d",
+  "name": "Kozilek's Translator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kozilek's Translator",
+      "oracle_fingerprint": "1ea067a268d19e73f73feb019543c1b6",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 1 }],
+            "limit": "OncePerTurn",
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

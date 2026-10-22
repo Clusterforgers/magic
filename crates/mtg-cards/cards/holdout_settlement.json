@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e6b77545-de5c-4f4a-b7ea-83498fb33ba8",
+  "name": "Holdout Settlement",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Holdout Settlement",
+      "oracle_fingerprint": "606e34567bb4152bfcef29507693cc49",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "TapPermanents": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

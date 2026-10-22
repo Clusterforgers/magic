@@ -343,16 +343,17 @@ pub(crate) fn variants(
     found.into_iter().map(|(.., variant)| variant).collect()
 }
 
-/// The sources that are not creatures tapped for convoke.
-pub(crate) fn without_tapped(sources: &[ManaOption], used: &Used, kept: &Used) -> Vec<ManaOption> {
+/// The sources that are not creatures tapped for convoke, and what their costs may take without those creatures.
+pub fn without_tapped(sources: &[ManaOption], used: &Used, kept: &Used) -> Vec<ManaOption> {
     if used.convoke.is_empty() && kept.convoke.is_empty() {
         return sources.to_vec();
     }
-    sources
+    let left: Vec<ManaOption> = sources
         .iter()
         .filter(|o| !used.taps(o.source.object) && !kept.taps(o.source.object))
         .cloned()
-        .collect()
+        .collect();
+    crate::mana_takes::without_taken(&left, &|id| used.taps(id) || kept.taps(id))
 }
 
 /// The two lists `kept` and `more` as one.

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "bdeb440d-a714-40e8-9038-f651e6ae45fb",
+  "name": "Springleaf Drum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Springleaf Drum",
+      "oracle_fingerprint": "37391aca476431bfd3b1e2fcfe616265",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "TapPermanents": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

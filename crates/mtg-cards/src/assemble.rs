@@ -11,7 +11,7 @@ use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::{Color, ColorSet};
 use mtg_core::mana::{ManaCost, ManaType, ParseManaCostError};
 
-use crate::ability::{Ability, Timing};
+use crate::ability::{Ability, Limit, Timing};
 use crate::card::{Card, TokenSpec};
 use crate::cost::CostItem;
 use crate::definition::{AbilityDef, CardDefinition, Layout, ManaAbility, ManualClause};
@@ -352,6 +352,10 @@ pub struct ManaShape<'a> {
     pub pays: Vec<&'a CostItem>,
     /// What must hold to activate it.
     pub condition: Option<&'a Condition>,
+    /// It can be activated once each turn ("Activate only once each turn").
+    pub once: bool,
+    /// The parts of its cost that take other permanents the payer controls: tapping or sacrificing some number of them.
+    pub picks: Vec<&'a CostItem>,
     /// What it does besides adding mana.
     pub then: &'a [Effect],
     /// What the mana may be spent on; none listed means anything.
@@ -370,6 +374,8 @@ impl ManaShape<'_> {
             && self.pays.is_empty()
             && self.mana.symbols().is_empty()
             && self.condition.is_none()
+            && !self.once
+            && self.picks.is_empty()
     }
 }
 
@@ -402,6 +408,17 @@ fn pays_with_activation(item: &CostItem) -> bool {
     }
 }
 
+/// Whether `item` is a part of a mana ability's cost that takes other permanents of the payer, which the payment picks:
+/// tapping some number of untapped permanents or sacrificing some number of permanents.
+fn picked_by_the_planner(item: &CostItem) -> bool {
+    match item {
+        CostItem::TapPermanents { count, .. } | CostItem::Sacrifice { count, .. } => {
+            matches!(count, Amount::Fixed(number) if *number > 0)
+        }
+        _ => false,
+    }
+}
+
 /// The shape of a mana ability the engine activates at priority, if `ability` has it.
 ///
 /// The first effect adds mana to the controller's pool and the rest each ask nothing; one effect of a kind.
@@ -410,7 +427,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
         cost,
         timing: Timing::Instant,
         condition,
-        limit: None,
+        limit,
         from: ZoneKind::Battlefield,
         targets,
         effects,
@@ -420,6 +437,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
     };
     let (mut tap, mut sacrifice) = (false, false);
     let mut pays = Vec::new();
+    let mut picks = Vec::new();
     let mut cost_mana = None;
     for item in &cost.0 {
         let seen = match item {
@@ -434,6 +452,10 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             }
             other if pays_with_activation(other) => {
                 pays.push(other);
+                continue;
+            }
+            other if picked_by_the_planner(other) => {
+                picks.push(other);
                 continue;
             }
             _ => return None,
@@ -485,7 +507,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
         .enumerate()
         .all(|(i, effect)| then[..i].iter().all(|before| !same_kind(before, effect)));
     (targets.is_empty()
-        && (tap || sacrifice || !pays.is_empty())
+        && (tap || sacrifice || !pays.is_empty() || !picks.is_empty() || limit.is_some())
         && then.iter().all(needs_no_answer)
         && distinct
         && produces.each() > 0)
@@ -497,6 +519,8 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             mana: cost_mana.unwrap_or_default(),
             pays,
             condition: condition.as_ref(),
+            once: *limit == Some(Limit::OncePerTurn),
+            picks,
             then,
             only,
         })
@@ -1050,6 +1074,14 @@ mod tests {
         r#"{"Activated":{"cost":["SacrificeSelf"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#,
         Some((ManaProduced::Fixed { mana: ManaType::Red, count: 1 }, false, true, 0))
     )]
+    #[case::a_limit_and_a_mana_cost(
+        r#"{"Activated":{"cost":"{1}","limit":"OncePerTurn","effects":[{"AddMana":{"mana":{"OneOf":["Red","White"]}}}]}}"#,
+        Some((ManaProduced::OneOf(&[ManaType::Red, ManaType::White]), false, false, 0))
+    )]
+    #[case::a_limit_alone_has_no_cost_to_pay_for_it(
+        r#"{"Activated":{"cost":"{1}","effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#,
+        None
+    )]
     #[case::the_plain_ability_has_the_shape_too(
         r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
         Some((GREEN, true, false, 0))
@@ -1118,9 +1150,9 @@ mod tests {
         r#"{"Activated":{"cost":["Tap","Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
         None
     )]
-    #[case::sacrifices_another(
+    #[case::sacrifices_another_without_the_tap(
         r#"{"Activated":{"cost":[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
-        None
+        Some((ManaProduced::AnyColor(1), false, false, 0))
     )]
     #[case::costs_mana(
         r#"{"Activated":{"cost":[{"Mana":"{1}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
@@ -1176,7 +1208,7 @@ mod tests {
     )]
     #[case::once_a_turn(
         r#"{"Activated":{"cost":["Tap"],"limit":"OncePerTurn","effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
-        None
+        Some((GREEN, true, false, 0))
     )]
     #[case::from_the_graveyard(
         r#"{"Activated":{"cost":["Tap"],"from":"Graveyard","effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
@@ -1226,6 +1258,14 @@ mod tests {
         r#"{"Activated":{"cost":[{"Mana":"{1}"}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
         Some("Ability.ManaAbility.Other")
     )]
+    #[case::once_each_turn_with_a_mana_cost(
+        r#"{"Activated":{"cost":"{1}","limit":"OncePerTurn","effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::once_each_turn_paying_life(
+        r#"{"Activated":{"cost":[{"PayLife":1}],"limit":"OncePerTurn","effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
     #[case::mixed_mana(
         r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["White","Blue"]}}}]}}"#,
         Some("Ability.ManaAbility.Complex")
@@ -1244,7 +1284,7 @@ mod tests {
     )]
     #[case::tapping_another_permanent(
         r#"{"Activated":{"cost":["Tap",{"TapPermanents":{"filter":[{"Type":"Creature"}]}}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
-        Some("Ability.ManaAbility.Other")
+        Some("Ability.ManaAbility.Complex")
     )]
     #[case::not_a_mana_ability(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#, None)]
     #[case::a_spell_that_adds_mana(
