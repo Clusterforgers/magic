@@ -6,9 +6,12 @@ Ancient Ziggurat
 Arcane Signet
 Archon of Cruelty
 Arrogant Wurm
+Artful Maneuver
 Arvad the Cursed
 Augury Raven
 Azorius Chancery
+Azorius Signet
+Azure Fleet Admiral
 Basking Rootwalla
 Battlefield Forge
 Behold the Multiverse
@@ -38,13 +41,17 @@ Command Tower
 Consider
 Copper-Leaf Angel
 Counterspell
+Crystal Quarry
 Curate
 Curse of Predation
 Curse of the Forsaken
 Curse of the Nightly Hunt
+Custodi Lich
 Cyclonic Rift
+Cytoshape
 Dauthi Horror
 Dauthi Marauder
+Dawnglade Regent
 Death Ward
 Deep Analysis
 Deepfathom Skulker
@@ -55,7 +62,10 @@ Dockside Extortionist
 Doom Blade
 Doom Whisperer
 Dream's Grip
+Dregscape Zombie
 Drudge Skeletons
+Dual Casting
+Dualcaster Mage
 Durkwood Baloth
 Epic Proportions
 Eternal Witness
@@ -72,13 +82,16 @@ Flooded Strand
 Fog
 Followed Footsteps
 Forced March
+Fork
 Forum of Amity
 Foundry Inspector
+Fruit of Tizerus
 Furtive Homunculus
 Gadwick, the Wizened
 Game-Trail Changeling
 Giant Growth
 Gilded Lotus
+Glimpse of Freedom
 Glorious Anthem
 Goblin Spy
 Grapeshot
@@ -97,12 +110,14 @@ Inkwell Leviathan
 Invisible Stalker
 Izzet Charm
 Jungle Lion
+Kathari Screecher
 Kessig Wolf Run
 Kongming, "Sleeping Dragon"
 Krenko's Enforcer
 Lat-Nam Adept
 Levitation
 Lightning Bolt
+Lithoform Engine
 Lizard Blades
 Llanowar Behemoth
 Llanowar Elves
@@ -133,12 +148,16 @@ Phantasmal Image
 Pillar of the Paruns
 Plague Myr
 Plague Stinger
+Prismatic Lens
 Professional Face-Breaker
 Questing Beast
 Rally the Ranks
 Rampant Growth
 Reckless Impulse
+Reconstructed Thopter
 Reflecting Pool
+Reiterate
+Reverberate
 Rhystic Study
 Rift Bolt
 Righteous Avengers
@@ -158,6 +177,7 @@ Sinister Sabotage
 Sinister Starfish
 Skeletal Changeling
 Skullclamp
+Skycloud Expanse
 Skysovereign, Consul Flagship
 Slip Through Space
 Smuggler's Copter
@@ -168,8 +188,11 @@ Soltari Foot Soldier
 Soul Shepherd
 Souldrinker
 Spectral Rider
+Squirrel Nest
+Staggershock
 Steam Vents
 Stoke the Flames
+Strionic Resonator
 Stroke of Genius
 Sundering Growth
 Supreme Verdict
@@ -180,17 +203,22 @@ Tainted Isle
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
 Tendo Ice Bridge
+Tendrils of Agony
 Thalia, Guardian of Thraben
+The Spear of Bashenga
 The Thing, Ben Grimm
 Thieving Magpie
+Thopter Fabricator
 Throne of the High City
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Treasure Cruise
 Tumble Magnet
+Twincast
 Umbral Collar Zealot
 Underworld Dreams
+Underworld Rage-Hound
 Universal Automaton
 Vampire Cutthroat
 Vestige of Emrakul

@@ -19,7 +19,13 @@ use crate::pump_cards::{gust, rush, shrink};
 const LANDS: usize = 24;
 
 /// The names of the synthetic creatures of an nth deck.
-pub const NTH_CARDS: [&str; 4] = ["Nth Brute", "Nth Bulwark", "Nth Magnet", "Nth Rival"];
+#[rustfmt::skip]
+pub const NTH_CARDS: &[&str] = &[
+    "Nth Brute",
+    "Nth Bulwark",
+    "Nth Magnet",
+    "Nth Rival",
+];
 
 /// The corpus creature of an nth deck.
 pub const MENTOR: &str = "Seedglaive Mentor";

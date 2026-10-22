@@ -17,7 +17,7 @@ use crate::part_cards::cycler;
 const LANDS: usize = 25;
 
 /// The corpus cards of the event triggers, with their copies in a deck.
-pub const EVENT_CARDS: [(&str, usize); 8] = [
+pub const EVENT_CARDS: &[(&str, usize)] = &[
     ("Ajani's Pridemate", 3),
     ("Thieving Magpie", 3),
     ("Underworld Dreams", 3),
@@ -39,7 +39,7 @@ pub fn events_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, Corpus
         Color::Red,
     ];
     let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS).map(|i| land(colors[i % 5])).collect();
-    for (name, copies) in EVENT_CARDS {
+    for &(name, copies) in EVENT_CARDS {
         deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
     }
     for (name, copies) in [

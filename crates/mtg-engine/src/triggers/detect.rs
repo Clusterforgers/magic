@@ -108,6 +108,8 @@ enum Happened {
     Attached { attachment: ObjectId, to: ObjectId },
     /// A player cycled a card.
     Cycled { player: PlayerId, card: ObjectId },
+    /// A player became the monarch.
+    BecameMonarch { player: PlayerId },
     /// Everything of one kind of state (before or after) that happened in the batch, for the patterns of events that
     /// happen together.
     Batch(Vec<Happened>),
@@ -519,6 +521,7 @@ fn about_players_and_permanents(
             player: *player,
             card: *object,
         }),
+        Event::MonarchChanged { player } => found.push(Happened::BecameMonarch { player: *player }),
         _ => {}
     }
 }
@@ -719,8 +722,11 @@ fn matching_event(
         }
         (TriggerPattern::LifeGained { who }, Happened::LifeGained { player, .. })
         | (TriggerPattern::LifeLost { who }, Happened::LifeLost { player, .. })
-        | (TriggerPattern::Drew { who }, Happened::Drew { player, .. }) => by(who, player)
-            .then(|| counted(state, vec![Target::Player(*player)], happened.amount())),
+        | (TriggerPattern::Drew { who }, Happened::Drew { player, .. })
+        | (TriggerPattern::BecomesMonarch { who }, Happened::BecameMonarch { player }) => {
+            by(who, player)
+                .then(|| counted(state, vec![Target::Player(*player)], happened.amount()))
+        }
         (
             TriggerPattern::Discarded { what, by: who },
             Happened::Moved {
@@ -1275,6 +1281,7 @@ mod tests {
     #[case::counters_removed(r#"{"CountersRemoved":{}}"#)]
     #[case::attaching(r#"{"Attached":{}}"#)]
     #[case::cycling(r#"{"Cycled":{}}"#)]
+    #[case::becoming_the_monarch(r#"{"BecomesMonarch":{}}"#)]
     fn the_patterns_of_events_about_players_and_permanents_trigger_on_no_other_event(
         #[case] when: &str,
     ) {

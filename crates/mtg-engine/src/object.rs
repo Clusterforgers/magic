@@ -197,6 +197,8 @@ pub struct GameObject {
     pub(crate) face_down: Option<FaceDown>,
     /// The player who may cast the card from exile as the permanent card of an Adventure it was exiled "on" (CR 715.4); a zone change clears it.
     pub(crate) adventure: Option<PlayerId>,
+    /// The spell was cast from its owner's hand (rebound reads it); a zone change clears it.
+    pub(crate) cast_from_hand: bool,
     pub(crate) kind: ObjectKind,
     pub(crate) choices: Choices,
     pub(crate) ability: Option<Box<AbilityObject>>,
@@ -219,6 +221,7 @@ impl GameObject {
             card_counters: BTreeMap::new(),
             face_down: None,
             adventure: None,
+            cast_from_hand: false,
             kind: ObjectKind::Card,
             choices: Choices::default(),
             ability: None,
@@ -249,6 +252,7 @@ impl GameObject {
             card_counters: BTreeMap::new(),
             face_down: None,
             adventure: None,
+            cast_from_hand: false,
             kind: ObjectKind::Ability,
             choices,
             ability: Some(Box::new(ability)),
@@ -377,6 +381,11 @@ impl GameObject {
         }
     }
 
+    /// Whether the spell was cast from its owner's hand.
+    pub const fn cast_from_hand(&self) -> bool {
+        self.cast_from_hand
+    }
+
     /// The player who may cast the card from exile as the creature of the Adventure it was exiled on.
     pub const fn on_adventure(&self) -> Option<PlayerId> {
         self.adventure
@@ -425,6 +434,7 @@ impl PartialEq for GameObject {
             && self.card_counters == other.card_counters
             && self.face_down == other.face_down
             && self.adventure == other.adventure
+            && self.cast_from_hand == other.cast_from_hand
             && self.counter == other.counter
             && self.kind == other.kind
             && self.choices == other.choices
@@ -447,6 +457,10 @@ impl Hash for GameObject {
         self.card_counters.hash(state);
         self.face_down.hash(state);
         self.adventure.hash(state);
+        // Left out while it is off, so the hash of a game without rebound is the one it always had.
+        if self.cast_from_hand {
+            true.hash(state);
+        }
         self.counter.hash(state);
         self.kind.hash(state);
         self.choices.hash(state);

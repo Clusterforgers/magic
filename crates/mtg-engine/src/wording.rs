@@ -292,6 +292,7 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let whom = match at {
                 Ref::AttachedPlayer => "enchanted player",
                 Ref::You => "you",
+                Ref::Monarch => "the monarch",
                 _ => "a player",
             };
             (format!("{} attacks {whom}", subject(what)), false)
@@ -328,6 +329,7 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let owner = match whose {
                 Ref::You => "your",
                 Ref::Opponents => "an opponent's",
+                Ref::Monarch => "the monarch's",
                 _ => "each",
             };
             let when = if *step == Step::BeginCombat {
@@ -366,6 +368,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         TriggerPattern::LifeLost { who: by } => {
             let (name, s) = who(by);
             (format!("{name} lose{s} life"), false)
+        }
+        TriggerPattern::BecomesMonarch { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} become{s} the monarch"), false)
         }
         TriggerPattern::Drew { who: by } => {
             let (name, s) = who(by);
@@ -1163,6 +1169,26 @@ mod tests {
     #[case::you_cycle(r#"{"Cycled":{"by":"You"}}"#, "Whenever you cycle a card")]
     #[case::a_player_cycles(r#"{"Cycled":{}}"#, "Whenever a player cycles a card")]
     #[case::you_cycle_this(r#"{"Cycled":{"what":["This"],"by":"You"}}"#, "When you cycle it")]
+    #[case::you_become_the_monarch(
+        r#"{"BecomesMonarch":{"who":"You"}}"#,
+        "Whenever you become the monarch"
+    )]
+    #[case::an_opponent_becomes_the_monarch(
+        r#"{"BecomesMonarch":{"who":"Opponents"}}"#,
+        "Whenever an opponent becomes the monarch"
+    )]
+    #[case::a_player_becomes_the_monarch(
+        r#"{"BecomesMonarch":{}}"#,
+        "Whenever a player becomes the monarch"
+    )]
+    #[case::attacking_the_monarch(
+        r#"{"AttacksPlayer":{"what":[{"Type":"Creature"}],"at":"Monarch"}}"#,
+        "Whenever a creature attacks the monarch"
+    )]
+    #[case::the_monarchs_end_step(
+        r#"{"StepBegins":{"step":"End","whose":"Monarch"}}"#,
+        "At the beginning of the monarch's end step"
+    )]
     fn a_trigger_pattern_reads_as_a_card_says_it(#[case] json: &str, #[case] expected: &str) {
         assert_eq!(words(json), expected);
     }

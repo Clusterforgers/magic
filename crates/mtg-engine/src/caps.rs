@@ -53,6 +53,7 @@ const RUNS: &[&str] = &[
     "Trigger.CountersRemoved",
     "Trigger.Attached",
     "Trigger.Cycled",
+    "Trigger.BecomesMonarch",
     "Trigger.Batch",
     "Trigger.Nth",
     "Amount.Triggering",
@@ -249,6 +250,9 @@ const RUNS: &[&str] = &[
     "Keyword.PartnerGroup",
     "Keyword.DoctorsCompanion",
     "Keyword.ChooseABackground",
+    "Keyword.Unearth",
+    "Keyword.Escape",
+    "Keyword.Rebound",
     "Rule.CanBeCommander",
 ];
 
@@ -524,6 +528,7 @@ mod tests {
     #[case::counter_removal_triggers("Trigger.CountersRemoved", true)]
     #[case::attach_triggers("Trigger.Attached", true)]
     #[case::cycle_triggers("Trigger.Cycled", true)]
+    #[case::becoming_the_monarch_triggers("Trigger.BecomesMonarch", true)]
     #[case::batch_triggers("Trigger.Batch", true)]
     #[case::nth_triggers("Trigger.Nth", true)]
     #[case::event_amounts("Amount.Triggering", true)]
@@ -541,6 +546,9 @@ mod tests {
     #[case::partner_group("Keyword.PartnerGroup", true)]
     #[case::doctors_companion("Keyword.DoctorsCompanion", true)]
     #[case::choose_a_background("Keyword.ChooseABackground", true)]
+    #[case::unearth("Keyword.Unearth", true)]
+    #[case::escape("Keyword.Escape", true)]
+    #[case::rebound("Keyword.Rebound", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]
     #[case::the_highest_life_total("Amount.HighestLife", true)]

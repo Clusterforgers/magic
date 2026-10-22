@@ -1,0 +1,40 @@
+{
+  "oracle_id": "e7a0b370-913d-4e96-8fb4-5df168405073",
+  "name": "The Spear of Bashenga",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Spear of Bashenga",
+      "oracle_fingerprint": "0a9afd23fe2a655cb807e448ab90a189",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Not": { "Monarch": "EachPlayer" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "AttacksPlayer": { "what": [{ "Is": "Attached" }], "at": "Monarch" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Tapped", { "Not": { "Type": "Land" } }, { "ControlledBy": "Monarch" }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

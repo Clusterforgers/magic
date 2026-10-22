@@ -109,6 +109,7 @@ pub fn process(
             leaves_stack_by_flashback(state, &item)
                 || returns_by_buyback(state, &item)
                 || exiles_by_adventure(state, &item)
+                || exiles_by_rebound(state, &item)
                 || commander_leaves(state, event)
         })
     {
@@ -135,6 +136,7 @@ pub fn process(
         next_id: state.next_object().get(),
         slots: slots_of(proposed),
         draws_changed: false,
+        pulled: Vec::new(),
         activated: Vec::new(),
     };
     step.activated = step
@@ -250,6 +252,9 @@ enum Origin {
     /// The spell that resolved with its buyback cost paid, which returns to its owner's hand instead of going to the
     /// graveyard (CR 702.27a).
     Buyback,
+    /// The spell with rebound that resolved after it was cast from a hand, which is exiled instead of going to its
+    /// owner's graveyard and cast from exile at the next upkeep (CR 702.88a).
+    Rebound,
     /// The spell that resolved as an Adventure, which is exiled instead of going to its owner's graveyard (CR 715.4).
     Adventure,
     /// A commander that would be put into a hand or a library, which its owner may put into the command zone instead
@@ -257,12 +262,35 @@ enum Origin {
     Commander,
 }
 
-/// Whether the event puts a commander into a hand or a library, where its owner may send it to the command zone.
+impl Origin {
+    /// The index of the ability among its object's rules that the question of the order shows; 0 for what is no ability.
+    const fn ability_index(self) -> usize {
+        match self {
+            Origin::Ability(address) => address.ability,
+            Origin::Copied(index) => index,
+            _ => 0,
+        }
+    }
+
+    /// The shield this is, if it is one.
+    const fn shield(self) -> Option<EffectId> {
+        match self {
+            Origin::Shield(id) => Some(id),
+            _ => None,
+        }
+    }
+}
+
+/// Whether the event puts a commander into a hand or a library (a draw included), where its owner may send it to the
+/// command zone.
 fn commander_leaves(state: &GameState, event: &Event) -> bool {
     state.commanders.any()
-        && moving(state, event).is_some_and(|(object, _, to)| {
-            matches!(to, Zone::Hand(_) | Zone::Library(_)) && state.is_commander(object)
-        })
+        && match event {
+            Event::CardDrawn { object, .. } => state.is_commander(*object),
+            _ => moving(state, event).is_some_and(|(object, _, to)| {
+                matches!(to, Zone::Hand(_) | Zone::Library(_)) && state.is_commander(object)
+            }),
+        }
 }
 
 /// Whether the item is the resolution of an instant or sorcery whose buyback cost was paid: a spell that was countered
@@ -289,6 +317,23 @@ fn exiles_by_adventure(state: &GameState, item: &Item) -> bool {
             spell.kind() == ObjectKind::Card
                 && spell.whole_card().layout == Layout::Adventure
                 && spell.face() == Some(1)
+        })
+}
+
+/// Whether the item is the resolution of a spell with rebound that was cast from its owner's hand, which is exiled in
+/// place of going to the graveyard (CR 702.88a).
+fn exiles_by_rebound(state: &GameState, item: &Item) -> bool {
+    let Item::One(event @ Event::SpellResolved { object }) = item else {
+        return false;
+    };
+    entering(state, event).is_none()
+        && state.object(*object).is_some_and(|spell| {
+            // A copy of a spell is no card, and was not cast from a hand.
+            spell.kind() == ObjectKind::Card
+                && spell.cast_from_hand()
+                && keywords::keywords_of(state, spell.id())
+                    .iter()
+                    .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Rebound))
         })
 }
 
@@ -582,6 +627,8 @@ struct Pass<'a> {
     next_id: u64,
     slots: Vec<Slot>,
     draws_changed: bool,
+    /// The commanders put into the command zone in place of being drawn: the draws after them take the cards below.
+    pulled: Vec<ObjectId>,
     /// The objects that activated an ability in this batch: what they pay is a cost, not an effect.
     activated: Vec<ObjectId>,
 }
@@ -877,10 +924,39 @@ impl Pass<'_> {
             found.extend(self.flashback_candidate(slot));
             found.extend(self.buyback_candidate(slot));
             found.extend(self.adventure_candidate(slot));
-            found.extend(self.commander_candidate(slot, &unit));
+            found.extend(self.rebound_candidate(slot));
         }
+        found.extend(self.commander_candidate(at, &unit));
         found.sort_by_key(|candidate| candidate.origin);
         Ok(found)
+    }
+
+    /// The card the draw at `at` takes: the one the event names, or once a draw of the batch was changed, the top card
+    /// that the draws before it and the commanders pulled into the command zone leave.
+    fn drawn_at(&self, at: usize) -> Option<ObjectId> {
+        let Item::One(Event::CardDrawn { player, object }) = &self.slots[at].item else {
+            return None;
+        };
+        if !self.draws_changed {
+            return Some(*object);
+        }
+        let before = self.slots[..at]
+            .iter()
+            .filter(|slot| {
+                matches!(
+                    &slot.item,
+                    Item::One(Event::CardDrawn { player: who, .. } | Event::DrewFromEmptyLibrary { player: who })
+                        if who == player
+                )
+            })
+            .count();
+        self.state
+            .zone(Zone::Library(*player))
+            .iter()
+            .rev()
+            .filter(|card| !self.pulled.contains(card))
+            .nth(before)
+            .copied()
     }
 
     /// The exile of a spell cast for its flashback cost that leaves the stack, when it has not been applied.
@@ -900,6 +976,25 @@ impl Pass<'_> {
             controller: spell.controller(),
             action: Action::Replace(ReplaceBy::MoveTo(ZoneKind::Exile)),
             is_self: true,
+        })
+    }
+
+    /// The exile of a spell with rebound that resolved after it was cast from a hand, when it has not been applied.
+    fn rebound_candidate(&self, slot: &Slot) -> Option<Candidate> {
+        if slot.applied.contains(&Origin::Rebound) || !exiles_by_rebound(self.state, &slot.item) {
+            return None;
+        }
+        let Item::One(Event::SpellResolved { object }) = &slot.item else {
+            return None;
+        };
+        let spell = self.state.object(*object)?;
+        Some(Candidate {
+            origin: Origin::Rebound,
+            object: spell.reference(),
+            controller: spell.controller(),
+            action: Action::Replace(ReplaceBy::MoveTo(ZoneKind::Exile)),
+            // The rule is no effect of the spell, so a replacement of the graveyard move (Rest in Peace) is ordered with it (CR 616.1).
+            is_self: false,
         })
     }
 
@@ -928,18 +1023,21 @@ impl Pass<'_> {
         })
     }
 
-    /// The command zone in place of a hand or a library for a commander, when its owner has not been asked yet (CR 903.9b).
-    fn commander_candidate(&self, slot: &Slot, unit: &Unit) -> Option<Candidate> {
-        let Unit::Move { object, to, .. } = unit else {
-            return None;
+    /// The command zone in place of a hand or a library for a commander, when its owner has not been asked yet
+    /// (CR 903.9b). A draw puts the card into a hand, so a commander that would be drawn is offered it too.
+    fn commander_candidate(&self, at: usize, unit: &Unit) -> Option<Candidate> {
+        let (object, to) = match unit {
+            Unit::Move { object, to, .. } => (*object, *to),
+            Unit::Draw { player } => (self.drawn_at(at)?, Zone::Hand(*player)),
+            _ => return None,
         };
-        if slot.applied.contains(&Origin::Commander)
+        if self.slots[at].applied.contains(&Origin::Commander)
             || !matches!(to, Zone::Hand(_) | Zone::Library(_))
-            || !self.state.is_commander(*object)
+            || !self.state.is_commander(object)
         {
             return None;
         }
-        let card = self.state.object(*object)?;
+        let card = self.state.object(object)?;
         self.state.is_alive(card.owner()).then(|| Candidate {
             origin: Origin::Commander,
             object: card.reference(),
@@ -1181,26 +1279,8 @@ impl Pass<'_> {
                                         .iter()
                                         .map(|c| ReplacementCandidate {
                                             source: c.object.id,
-                                            ability: match c.origin {
-                                                Origin::Ability(address) => address.ability,
-                                                Origin::Copied(index) => index,
-                                                Origin::Shield(_)
-                                                | Origin::Protection
-                                                | Origin::Flashback
-                                                | Origin::Buyback
-                                                | Origin::Adventure
-                                                | Origin::Commander => 0,
-                                            },
-                                            shield: match c.origin {
-                                                Origin::Shield(id) => Some(id),
-                                                Origin::Ability(_)
-                                                | Origin::Copied(_)
-                                                | Origin::Protection
-                                                | Origin::Flashback
-                                                | Origin::Buyback
-                                                | Origin::Adventure
-                                                | Origin::Commander => None,
-                                            },
+                                            ability: c.origin.ability_index(),
+                                            shield: c.origin.shield(),
                                         })
                                         .collect(),
                                     text: self.describe(&self.slots[at].item),
@@ -1374,6 +1454,7 @@ impl Pass<'_> {
                     .zone(Zone::Library(drawn))
                     .iter()
                     .rev()
+                    .filter(|card| !self.pulled.contains(card))
                     .nth(*nth)
                     .copied();
                 *nth += 1;
@@ -1439,12 +1520,34 @@ impl Pass<'_> {
                     self.redirect(at, *object, *from, destination, &applied);
                 }
             }
+            (ReplaceBy::MoveTo(ZoneKind::Command), Unit::Draw { player }) => {
+                self.slots[at].applied.clone_from(&applied);
+                self.pull_drawn_commander(at, *player, &applied);
+            }
             (_, Unit::Enter { object, controller }) => {
                 return self.enter(at, candidate, by, *object, *controller, applied);
             }
             _ => self.slots[at].applied = applied,
         }
         Ok(Applied::Done)
+    }
+
+    /// Puts the commander the draw at `at` would take into its owner's command zone instead: no card is drawn.
+    fn pull_drawn_commander(&mut self, at: usize, player: PlayerId, applied: &[Origin]) {
+        let Some(object) = self.drawn_at(at) else {
+            return;
+        };
+        let Some(owner) = self.state.object(object).map(GameObject::owner) else {
+            return;
+        };
+        self.pulled.push(object);
+        self.redirect(
+            at,
+            object,
+            Zone::Library(player),
+            Zone::Command(owner),
+            applied,
+        );
     }
 
     /// Takes from the damage of the event what the effect prevents: all of it, or as much as the effect has left (the
@@ -1605,10 +1708,18 @@ impl Pass<'_> {
         };
         let slots: Vec<Slot> = rebuilt
             .into_iter()
-            .map(|item| Slot {
-                item,
-                applied: applied.to_vec(),
-                frozen: false,
+            .enumerate()
+            .map(|(index, item)| {
+                let mut applied = applied.to_vec();
+                // The question of the commander was about the first card drawn: another draw takes another card.
+                if index > 0 && matches!(item, Item::One(Event::CardDrawn { .. })) {
+                    applied.retain(|origin| *origin != Origin::Commander);
+                }
+                Slot {
+                    item,
+                    applied,
+                    frozen: false,
+                }
             })
             .collect();
         self.slots.splice(at..=at, slots);
@@ -1631,6 +1742,40 @@ impl Pass<'_> {
         if now == 0 {
             self.slots.remove(at + 1);
         }
+    }
+
+    /// The delayed trigger that lets the controller of a rebound spell cast the card from exile at the beginning of their
+    /// next upkeep, without paying its mana cost (CR 702.88a). It names the card as the object it becomes in exile.
+    fn rebound_cast(&self, spell: ObjectId) -> Option<Event> {
+        let object = self.state.object(spell)?;
+        let mut snapshot = crate::snapshot::snapshot(self.state, spell)?;
+        snapshot.counter += 1;
+        snapshot.zone = Zone::Exile;
+        Some(Event::DelayedTriggerCreated(Box::new(
+            crate::triggers::DelayedCreated {
+                id: crate::triggers::DelayedId(self.state.next_delayed),
+                source: ObjectRef {
+                    id: spell,
+                    counter: object.counter() + 1,
+                },
+                snapshot,
+                controller: object.controller(),
+                ability: 0,
+                when: mtg_cards::trigger::TriggerPattern::StepBegins {
+                    step: mtg_cards::trigger::Step::Upkeep,
+                    whose: Ref::You,
+                },
+                once: true,
+                effects: vec![mtg_cards::effect::Effect::CastFromZone {
+                    who: Ref::You,
+                    what: Ref::This,
+                    free: true,
+                    way: None,
+                    otherwise: Vec::new(),
+                }],
+                bindings: Vec::new(),
+            },
+        )))
     }
 
     /// Sends the object that would move to `destination` instead.
@@ -1656,6 +1801,7 @@ impl Pass<'_> {
             Event::ZoneChanged { cause, .. } => vec![moved(cause)],
             Event::CreatureDied { .. } => vec![moved(ZoneCause::StateBased)],
             Event::CardDiscarded { .. } => vec![moved(ZoneCause::Discarded)],
+            Event::CardDrawn { .. } => vec![moved(ZoneCause::Moved)],
             Event::SpellResolved { .. } => {
                 // An Adventure that the Adventure rule exiles is on an adventure; one that another effect exiled is
                 // not (CR 715.4).
@@ -1671,6 +1817,12 @@ impl Pass<'_> {
                     .first()
                     .copied();
                 std::iter::once(moved(cause))
+                    .chain(
+                        applied
+                            .contains(&Origin::Rebound)
+                            .then(|| self.rebound_cast(object))
+                            .flatten(),
+                    )
                     .chain(holder.map(|player| Event::PriorityGranted { player }))
                     .collect()
             }
@@ -1939,6 +2091,7 @@ impl Pass<'_> {
             None => {
                 let to = match self.unit(&self.slots[at].item) {
                     Unit::Move { to, .. } => zone_word(to),
+                    Unit::Draw { .. } => "drawing it",
                     _ => "another zone",
                 };
                 let name = self

@@ -75,7 +75,7 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
         ClauseKind::Triggered
     } else if is_activated(body) {
         ClauseKind::Activated
-    } else if body.starts_with("Choose ") || body == "Spree" {
+    } else if (body.starts_with("Choose ") && body.contains('\u{2014}')) || body == "Spree" {
         ClauseKind::Modal
     } else if spell && !SPELL_RULES.iter().any(|rule| body.starts_with(rule)) {
         ClauseKind::Spell
@@ -273,6 +273,16 @@ mod tests {
         Spell
     )]
     #[case::scry("Scry 1.", true, Spell)]
+    #[case::choose_a_permanent(
+        "Choose a nonlegendary creature on the battlefield. Target creature becomes a copy of that creature until end of turn.",
+        true,
+        Spell
+    )]
+    #[case::choose_without_modes(
+        "Choose a creature or planeswalker, then destroy all other creatures and planeswalkers.",
+        true,
+        Spell
+    )]
     #[case::cost_increase(
         "This spell costs {1} more to cast for each target beyond the first.",
         true,

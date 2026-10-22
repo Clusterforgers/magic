@@ -189,7 +189,7 @@ pub fn legendary_relic() -> Arc<CardDefinition> {
 }
 
 /// The corpus Auras, Equipment and legends the deck holds.
-pub const ATTACH_CORPUS_CARDS: [&str; 12] = [
+pub const ATTACH_CORPUS_CARDS: &[&str] = &[
     "Pacifism",
     "Epic Proportions",
     "Control Magic",
@@ -205,7 +205,7 @@ pub const ATTACH_CORPUS_CARDS: [&str; 12] = [
 ];
 
 /// The cards of this module and the plain ones the deck is made of.
-pub const ATTACH_SYNTHETIC_CARDS: [&str; 13] = [
+pub const ATTACH_SYNTHETIC_CARDS: &[&str] = &[
     "Mighty Aura",
     "Winged Aura",
     "Hex Aura",
@@ -322,7 +322,7 @@ mod tests {
     fn an_aura_deck_is_sixty_cards_with_every_aura_legend_and_removal() {
         let deck = attach_deck(&mut GameRng::substream(1, 19_000)).unwrap();
         assert_eq!(deck.len(), 60);
-        for name in ATTACH_CORPUS_CARDS.iter().chain(&ATTACH_SYNTHETIC_CARDS) {
+        for name in ATTACH_CORPUS_CARDS.iter().chain(ATTACH_SYNTHETIC_CARDS) {
             assert!(deck.iter().any(|card| card.name == *name), "{name}");
         }
         let setup = attach_fuzz_setup(3, 5).unwrap();

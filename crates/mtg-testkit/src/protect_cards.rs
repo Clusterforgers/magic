@@ -16,14 +16,14 @@ use crate::corpus::{self, CorpusError};
 const LANDS: usize = 22;
 
 /// Cards of the corpus that have protection or give it, with how many of each.
-pub const PROTECT_CARDS: [(&str, usize); 3] = [
+pub const PROTECT_CARDS: &[(&str, usize)] = &[
     ("Black Knight", 3),
     ("Kor Firewalker", 3),
     ("Mother of Runes", 3),
 ];
 
 /// Cards of the corpus that damage, enchant, equip, target and block them.
-const CORPUS_CARDS: [(&str, usize); 11] = [
+pub const CORPUS_CARDS: &[(&str, usize)] = &[
     ("Lightning Bolt", 3),
     ("Burst Lightning", 1),
     ("Pacifism", 2),
@@ -47,7 +47,7 @@ pub fn protect_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, Corpu
         Color::Black,
     ];
     let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS).map(|i| land(colors[i % 5])).collect();
-    for (name, copies) in PROTECT_CARDS.into_iter().chain(CORPUS_CARDS) {
+    for &(name, copies) in PROTECT_CARDS.iter().chain(CORPUS_CARDS) {
         deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
     }
     for (card, copies) in [
@@ -80,7 +80,7 @@ mod tests {
     fn a_protection_deck_holds_every_card_and_is_fixed_by_its_seed() {
         let deck = protect_deck(&mut GameRng::substream(7, 1)).unwrap();
         assert!(deck.len() >= 60, "{}", deck.len());
-        for (name, _) in PROTECT_CARDS.into_iter().chain(CORPUS_CARDS) {
+        for &(name, _) in PROTECT_CARDS.iter().chain(CORPUS_CARDS) {
             assert!(deck.iter().any(|card| card.name == name), "{name}");
         }
         let again = protect_deck(&mut GameRng::substream(7, 1)).unwrap();

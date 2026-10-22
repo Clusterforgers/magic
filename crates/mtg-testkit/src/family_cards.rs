@@ -17,7 +17,7 @@ use crate::corpus::{self, CorpusError};
 const LANDS: usize = 25;
 
 /// The corpus cards of the trigger families, with their copies in a deck.
-pub const FAMILY_CARDS: [(&str, usize); 8] = [
+pub const FAMILY_CARDS: &[(&str, usize)] = &[
     ("Skullclamp", 3),
     ("Sword of Body and Mind", 2),
     ("The Thing, Ben Grimm", 2),
@@ -40,7 +40,7 @@ pub fn families_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, Corp
         Color::Green,
     ];
     let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS).map(|i| land(colors[i % 6])).collect();
-    for (name, copies) in FAMILY_CARDS {
+    for &(name, copies) in FAMILY_CARDS {
         deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
     }
     deck.extend(std::iter::repeat_n(corpus::card("Brainstorm")?, 2));

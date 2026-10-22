@@ -240,7 +240,7 @@ fn has(r: &mut Reader<'_>, mods: &mut Vec<Modification>) -> Option<()> {
 }
 
 /// What follows "it's": a type or subtype in addition to the others, colors, or a power and toughness.
-fn is(r: &mut Reader<'_>) -> Option<Modification> {
+pub(super) fn is(r: &mut Reader<'_>) -> Option<Modification> {
     if let Some(number) = r.number() {
         r.punct('/').then_some(())?;
         let toughness = r.number()?;

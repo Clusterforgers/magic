@@ -62,7 +62,7 @@ pub fn grudge_wall() -> Result<Arc<CardDefinition>, CorpusError> {
 
 /// The names of the cards that change a rule of the game, which a game uses when they enter the battlefield or are
 /// cast.
-pub const RULE_CARDS: [&str; 13] = [
+pub const RULE_CARDS: &[&str] = &[
     "Darksteel Juggernaut",
     "Warmonger Hellkite",
     "Courtly Provocateur",
@@ -158,7 +158,7 @@ mod tests {
     fn a_rules_deck_is_sixty_cards_with_every_card_that_changes_a_rule() {
         let deck = rules_deck(&mut GameRng::substream(1, 14_000)).unwrap();
         assert_eq!(deck.len(), 60);
-        for name in RULE_CARDS {
+        for &name in RULE_CARDS {
             assert!(deck.iter().any(|card| card.name == name), "{name}");
         }
         let setup = rules_fuzz_setup(3, 5).unwrap();

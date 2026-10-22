@@ -15,7 +15,7 @@ use crate::cards::{creature, land};
 use crate::corpus;
 
 /// The corpus cards whose X is read after they resolve.
-pub const X_AFTER_CARDS: [&str; 6] = [
+pub const X_AFTER_CARDS: &[&str] = &[
     "Walking Ballista",
     "Hangarback Walker",
     "Gadwick, the Wizened",

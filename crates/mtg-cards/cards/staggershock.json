@@ -1,0 +1,20 @@
+{
+  "oracle_id": "056c3b7d-b603-40b8-8404-18c2eb7e7129",
+  "name": "Staggershock",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Staggershock",
+      "oracle_fingerprint": "f63afbe5a858b4c2730c59d2bb1f97d4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        { "Keyword": "Rebound" }
+      ]
+    }
+  ]
+}

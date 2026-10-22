@@ -4,23 +4,26 @@
 //! is played revealed; a creature, the creature an Aura or Equipment is attached to, or a group of
 //! creatures gets a bonus or a keyword; spells cost more or less. Read from the wording and written back the same way.
 
+use std::sync::Arc;
+
 use mtg_core::card::Subtype;
 
+use super::abilities;
 use super::amounts::{count_word, number_word};
 use super::copies;
 use super::counters;
 use super::effects::{granted, power_toughness};
 use super::prevention;
-use super::render::{capitalize, is_a_type, signed_text};
+use super::render::{self, capitalize, is_a_type, signed_text};
 use super::selectors::{Form, all, granted_text, phrase, phrase_text, subtype};
 use super::tokens::Reader;
-use super::triggers::article;
+use super::triggers::{self, article};
 use crate::ability::{Ability, CostChange};
 use crate::mana::ManaCostX;
 use crate::modify::{GameRule, Modification};
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::{EntersChoice, ReplaceBy, ReplaceWhen};
-use crate::value::{Amount, Cmp, Condition};
+use crate::value::{Amount, CastWay, Cmp, Condition};
 
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
@@ -60,11 +63,14 @@ fn replacement(by: ReplaceBy, condition: Option<Condition>) -> Ability {
 }
 
 /// "~ enters tapped.", "~ enters tapped unless you control two or more basic lands.",
-/// "~ enters with two +1/+1 counters on it."
+/// "~ enters with two +1/+1 counters on it.", "~ escapes with a +1/+1 counter on it."
 fn entering(r: &mut Reader<'_>) -> Option<Ability> {
     r.source().then_some(())?;
-    r.need("enters")?;
-    if r.word("tapped") {
+    let escaped = r.word("escapes");
+    if !escaped {
+        r.need("enters")?;
+    }
+    if !escaped && r.word("tapped") {
         let condition = if r.word("unless") {
             Some(Condition::Not(Box::new(holds(r)?)))
         } else {
@@ -77,7 +83,7 @@ fn entering(r: &mut Reader<'_>) -> Option<Ability> {
     r.need("on it")?;
     Some(replacement(
         ReplaceBy::WithCounters { counter, count },
-        None,
+        escaped.then_some(Condition::CastWith(CastWay::Escape)),
     ))
 }
 
@@ -336,6 +342,17 @@ fn subject(r: &mut Reader<'_>, itself: bool) -> Option<(Ref, bool)> {
     plural(r).map(|group| (group, true))
 }
 
+/// "Enchanted land has ...": an Aura that enchants something other than a creature gives it an ability, and the data
+/// holds the permanent as `Attached` all the same. Only a verb "has" follows; the writer says "land", "artifact" and
+/// "permanent" for an ability given and no other noun.
+fn enchanted_other(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
+    r.attempt(|r| {
+        r.word("enchanted").then_some(())?;
+        (r.word("land") || r.word("artifact") || r.word("permanent")).then_some(())?;
+        (r.peek_word() == Some("has")).then_some((Ref::Attached, false))
+    })
+}
+
 /// "~ can't block.", "Enchanted creature can't attack or block.", "~ can't be blocked.", "~ can't be blocked by
 /// creatures with power 2 or less."
 fn cannot(r: &mut Reader<'_>) -> Option<Ability> {
@@ -364,7 +381,12 @@ fn cannot(r: &mut Reader<'_>) -> Option<Ability> {
 /// long as an opponent has 10 or less life."; an X means nothing to a permanent, so it is not read. The card itself is
 /// given something only under a condition.
 fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
-    let (affected, plural) = subject(r, true)?;
+    // The condition may come first: "As long as you're the monarch, permanents you control have hexproof."
+    let leading = r.attempt(|r| {
+        let condition = as_long_as(r)?;
+        r.punct(',').then_some(condition)
+    });
+    let (affected, plural) = subject(r, true).or_else(|| enchanted_other(r))?;
     let x_free = std::mem::replace(&mut r.x_free, false);
     let mods = r.attempt(|r| {
         let (gets, has) = if plural {
@@ -376,21 +398,40 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
             let mut mods = vec![power_toughness(r)?];
             if r.word("and") {
                 r.word(has).then_some(())?;
-                mods.extend(granted(r)?);
+                mods.extend(gives(r)?);
             }
             Some(mods)
         } else {
             r.word(has).then_some(())?;
-            granted(r)
+            gives(r)
         }
     });
     r.x_free = x_free;
     let mods = mods?;
-    let condition = r.attempt(as_long_as);
+    let condition = leading.or_else(|| r.attempt(as_long_as));
     if affected == Ref::This && condition.is_none() {
         return None;
     }
     Some(statics(affected, mods, condition))
+}
+
+/// What a permanent is given: keywords, or one activated ability in quotes ("Enchanted creature has \"{R}, {T}: Copy
+/// target instant or sorcery spell you control.\""). A mana ability stays with the table.
+fn gives(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
+    match r.quoted(|r| abilities::activated(r).filter(|ability| !ability.is_mana_ability())) {
+        Some(ability) => Some(vec![Modification::GrantAbility(Arc::new(ability))]),
+        None => granted(r),
+    }
+}
+
+/// What `gives` reads, written back.
+fn given_text(mods: &[Modification]) -> Option<String> {
+    match mods {
+        [Modification::GrantAbility(ability)] if matches!(**ability, Ability::Activated { .. }) => {
+            Some(format!("\"{}\"", render::ability(ability)?))
+        }
+        _ => granted_text(mods),
+    }
 }
 
 /// " as long as an opponent has 10 or less life", " as long as you control a Plains", " as long as it's your turn".
@@ -399,13 +440,15 @@ fn as_long_as(r: &mut Reader<'_>) -> Option<Condition> {
     if r.words("it's your turn") {
         return Some(Condition::YourTurn);
     }
-    holds(r)
+    triggers::monarch_condition(r).or_else(|| holds(r))
 }
 
 /// What `as_long_as` reads, written back.
 fn as_long_as_texts(condition: &Condition) -> Vec<String> {
     if *condition == Condition::YourTurn {
         vec!["it's your turn".to_owned()]
+    } else if let Some(monarch) = triggers::monarch_text(condition) {
+        vec![monarch]
     } else {
         holds_texts(condition)
     }
@@ -565,6 +608,13 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
                 .into_iter()
                 .collect()
         }
+        (
+            ReplaceBy::WithCounters { counter, count },
+            Some(Condition::CastWith(CastWay::Escape)),
+        ) => counters::entering_text(counter, count)
+            .map(|counters| format!("~ escapes with {counters} on it"))
+            .into_iter()
+            .collect(),
         (ReplaceBy::Choose(EntersChoice::Color), None) => {
             vec!["As ~ enters, choose a color".to_owned()]
         }
@@ -819,14 +869,28 @@ fn static_texts(
     condition: Option<&Condition>,
 ) -> Vec<String> {
     // The wordings of the condition, each as the tail of the sentence; one empty tail for no condition.
-    let tails: Vec<String> = match condition {
-        None => vec![String::new()],
-        Some(condition) => as_long_as_texts(condition)
-            .into_iter()
+    let helds: Vec<String> = condition.map(as_long_as_texts).unwrap_or_default();
+    let tails: Vec<String> = if condition.is_some() {
+        helds
+            .iter()
             .map(|held| format!(" as long as {held}"))
-            .collect(),
+            .collect()
+    } else {
+        vec![String::new()]
     };
-    subjects(affected, true)
+    let mut subjects = subjects(affected, true);
+    // An Aura that gives an ability may enchant a land, an artifact or any permanent.
+    if *affected == Ref::Attached && matches!(mods, [Modification::GrantAbility(_)]) {
+        subjects.extend(
+            [
+                "Enchanted land",
+                "Enchanted artifact",
+                "Enchanted permanent",
+            ]
+            .map(|subject| (subject.to_owned(), false)),
+        );
+    }
+    subjects
         .into_iter()
         .filter_map(|(subject, plural)| {
             let predicate = predicate(
@@ -838,9 +902,18 @@ fn static_texts(
             Some((subject, predicate))
         })
         .flat_map(|(subject, predicate)| {
-            tails
+            // The condition may also come first: "As long as you're the monarch, creatures you control have flying."
+            let leading = helds.iter().map(|held| {
+                let mut words = subject.chars();
+                let lowered: String = words.next().map_or_else(String::new, |first| {
+                    first.to_lowercase().chain(words).collect()
+                });
+                format!("as long as {held}, {lowered} {predicate}")
+            });
+            let trailing = tails
                 .iter()
-                .map(move |tail| format!("{subject} {predicate}{tail}"))
+                .map(|tail| format!("{subject} {predicate}{tail}"));
+            trailing.chain(leading).collect::<Vec<_>>()
         })
         .collect()
 }
@@ -893,7 +966,7 @@ fn predicate(
     };
     let mut parts: Vec<String> = stats.into_iter().collect();
     if !rest.is_empty() {
-        parts.push(format!("{has} {}", granted_text(rest)?));
+        parts.push(format!("{has} {}", given_text(rest)?));
     }
     (!parts.is_empty()).then(|| parts.join(" and "))
 }

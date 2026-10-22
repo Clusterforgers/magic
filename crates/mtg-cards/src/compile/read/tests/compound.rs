@@ -109,7 +109,7 @@ fn more_oracle_wordings_of_one_subject_in_a_trigger_read_and_write_back(#[case] 
 }
 
 #[rstest]
-#[case::a_second_subject("Target player draws two cards and you lose 2 life.")]
+#[case::a_second_subject("Target player draws two cards and each opponent loses 2 life.")]
 #[case::a_repeated_subject("You draw a card and you gain 3 life.")]
 #[case::a_repeated_target("Target player draws a card and target player loses 1 life.")]
 #[case::then("Target player draws a card, then discards a card.")]

@@ -15,7 +15,7 @@ use crate::cards::{creature, land};
 use crate::corpus;
 
 /// The corpus cards that pay costs with parts other than mana, and the artifact they sacrifice.
-pub const EXTRA_COST_CARDS: [&str; 7] = [
+pub const EXTRA_COST_CARDS: &[&str] = &[
     "Capsize",
     "Dream's Grip",
     "Voltage Surge",

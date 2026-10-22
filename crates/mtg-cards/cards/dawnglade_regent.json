@@ -1,0 +1,26 @@
+{
+  "oracle_id": "bb1c6266-5e25-4a5b-b15a-faeda3ce04dc",
+  "name": "Dawnglade Regent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dawnglade Regent",
+      "oracle_fingerprint": "9a272f3d1a2df3830ea4c09cbb5afe72",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": { "Monarch": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

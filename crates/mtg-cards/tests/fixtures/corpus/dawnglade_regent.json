@@ -1,0 +1,25 @@
+{
+  "id": "d26025f0-72c0-4875-b2d7-916666b835d9",
+  "oracle_id": "bb1c6266-5e25-4a5b-b15a-faeda3ce04dc",
+  "name": "Dawnglade Regent",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmr",
+  "collector_number": "222",
+  "rarity": "rare",
+  "released_at": "2020-11-20",
+  "digital": false,
+  "mana_cost": "{5}{G}{G}",
+  "cmc": 7,
+  "type_line": "Creature — Elk",
+  "oracle_text": "When this creature enters, you become the monarch.\nAs long as you're the monarch, permanents you control have hexproof.",
+  "power": "8",
+  "toughness": "8",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}
