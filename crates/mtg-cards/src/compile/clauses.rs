@@ -42,13 +42,33 @@ pub fn split(text: &Normalized) -> Vec<RawClause> {
                     });
                 }
             }
-            None => clauses.push(RawClause {
-                range: line,
-                ends_line: true,
-            }),
+            None => match entering_split(&line_text) {
+                Some(first) => {
+                    clauses.push(RawClause {
+                        range: line.start..line.start + first,
+                        ends_line: false,
+                    });
+                    clauses.push(RawClause {
+                        range: line.start + first + 1..line.end,
+                        ends_line: true,
+                    });
+                }
+                None => clauses.push(RawClause {
+                    range: line,
+                    ends_line: true,
+                }),
+            },
         }
     }
     clauses
+}
+
+/// Where the first sentence of "This land enters tapped. As it enters, choose a color." ends, in characters from the
+/// start of the line: entering tapped and the choice made as it enters are two abilities on one line.
+fn entering_split(line: &str) -> Option<usize> {
+    let (first, rest) = line.split_once(". ")?;
+    let tapped = first.ends_with(" enters tapped") || first.ends_with(" enters the battlefield tapped");
+    (tapped && rest.starts_with("As ")).then(|| first.chars().count() + 1)
 }
 
 /// A mode of a modal spell or a cost of a Spree spell.

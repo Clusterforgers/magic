@@ -88,6 +88,8 @@ pub enum Produce {
     OneOf(Vec<ManaType>),
     /// This many mana of the color chosen as the source entered the battlefield.
     ChosenColor(u32),
+    /// One mana of this type or of the color chosen as the source entered the battlefield ("Add {R} or one mana of the chosen color").
+    OrChosenColor(ManaType),
     /// This many mana of any one color in the identity of the controller's commander.
     CommanderIdentity(u32),
     /// This many mana of any one color that an object matching the selector could produce ("any type" adds colorless).

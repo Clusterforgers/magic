@@ -1290,6 +1290,7 @@ impl<'a> Walker<'a> {
                     | Produce::AnyColor(_)
                     | Produce::OneOf(_)
                     | Produce::ChosenColor(_)
+                    | Produce::OrChosenColor(_)
                     | Produce::CommanderIdentity(_) => {}
                 }
                 // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.

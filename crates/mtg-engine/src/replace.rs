@@ -1898,7 +1898,11 @@ impl Pass<'_> {
         };
         match by {
             ReplaceBy::Tapped => tapped(self, at),
-            ReplaceBy::WithCounters { counter, count } => {
+            ReplaceBy::WithCounters {
+                counter,
+                count,
+                tapped: and_tapped,
+            } => {
                 let scope = Scope::announcing(self.state, candidate.controller, candidate.object);
                 let number = scope.amount(count)?.max(0);
                 if let (Some(card), Ok(delta)) = (self.state.object(object), i32::try_from(number))
@@ -1921,6 +1925,9 @@ impl Pass<'_> {
                         frozen: false,
                     };
                     self.slots.insert(at + 1, follow);
+                }
+                if *and_tapped {
+                    tapped(self, at);
                 }
             }
             ReplaceBy::PayLifeOrTapped(life) => {
@@ -2163,17 +2170,20 @@ impl Pass<'_> {
             _ => match self.answer() {
                 None => {
                     let text = match kind {
-                        EntersChoice::Color => "Choose a color.",
-                        EntersChoice::CreatureType => "Choose a creature type.",
-                        EntersChoice::Player => "Choose a player.",
-                        EntersChoice::Opponent => "Choose an opponent.",
+                        EntersChoice::Color => "Choose a color.".to_owned(),
+                        EntersChoice::ColorOtherThan(other) => {
+                            format!("Choose a color other than {}.", format!("{other:?}").to_lowercase())
+                        }
+                        EntersChoice::CreatureType => "Choose a creature type.".to_owned(),
+                        EntersChoice::Player => "Choose a player.".to_owned(),
+                        EntersChoice::Opponent => "Choose an opponent.".to_owned(),
                     };
                     return Ok(Asked::Ask(Decision {
                         player: controller,
                         kind: DecisionKind::ChooseOption(OptionOptions {
                             source,
                             options,
-                            text: text.into(),
+                            text,
                         }),
                     }));
                 }
@@ -2196,12 +2206,18 @@ impl Pass<'_> {
         })))
     }
 
-    /// What a player may choose as a permanent enters: the five colours, or the creature types of the cards in the game.
+    /// What a player may choose as a permanent enters: the five colours (less the one a choice excludes), or the creature types of the cards in the game.
     fn options_of(&self, kind: EntersChoice) -> Vec<ChoiceOption> {
         match kind {
             EntersChoice::Color => Color::ALL
                 .iter()
                 .copied()
+                .map(ChoiceOption::Color)
+                .collect(),
+            EntersChoice::ColorOtherThan(other) => Color::ALL
+                .iter()
+                .copied()
+                .filter(|color| *color != other)
                 .map(ChoiceOption::Color)
                 .collect(),
             EntersChoice::CreatureType => {

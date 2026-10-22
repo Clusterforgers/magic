@@ -186,6 +186,16 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                     _ => Vec::new(),
                 }
             }
+            ManaProduced::OrChosenColor(printed) => {
+                let mut types = vec![printed];
+                if let Some(Chosen::Color(color)) =
+                    object.permanent().and_then(PermanentState::chosen)
+                    && mana_of(*color) != printed
+                {
+                    types.push(mana_of(*color));
+                }
+                types.into_iter().map(|t| vec![t]).collect()
+            }
             ManaProduced::CommanderIdentity(count) => identity_types(state, player)
                 .into_iter()
                 .map(|t| vec![t; count as usize])

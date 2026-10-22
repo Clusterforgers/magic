@@ -858,6 +858,12 @@ fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         Produce::AnyColor(count)
     } else if r.words("one mana of the chosen color") {
         Produce::ChosenColor(1)
+    } else if let Some(mana) = r.attempt(|r| {
+        let mana = mana_type(r.symbol()?)?;
+        r.need("or one mana of the chosen color")?;
+        Some(mana)
+    }) {
+        Produce::OrChosenColor(mana)
     } else if let Some(list) = r.attempt(choice) {
         Produce::OneOf(list)
     } else {

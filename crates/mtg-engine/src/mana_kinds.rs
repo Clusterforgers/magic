@@ -129,6 +129,14 @@ fn types_of(
                     found.push(mana_of(*color));
                 }
             }
+            ManaProduced::OrChosenColor(printed) => {
+                found.push(printed);
+                if let Some(Chosen::Color(color)) =
+                    object.permanent().and_then(PermanentState::chosen)
+                {
+                    found.push(mana_of(*color));
+                }
+            }
             ManaProduced::CommanderIdentity(_) => found.extend(identity_types(state, controller)),
             ManaProduced::ProducedBy {
                 among, colorless, ..
