@@ -24,13 +24,10 @@ struct Seen {
 impl Seen {
     fn add(&mut self, game: &mtg_engine::GameState, events: &[Event]) {
         for event in events {
-            match event {
-                Event::SpellResolved { object } => {
-                    if let Some(object) = game.object(*object) {
-                        *self.cast.entry(object.card().name.clone()).or_default() += 1;
-                    }
-                }
-                _ => {}
+            if let Event::SpellResolved { object } = event
+                && let Some(object) = game.object(*object)
+            {
+                *self.cast.entry(object.card().name.clone()).or_default() += 1;
             }
         }
     }

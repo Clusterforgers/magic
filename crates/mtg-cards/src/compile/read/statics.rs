@@ -576,7 +576,7 @@ fn cost_subject_text(applies_to: &Selector) -> Option<String> {
         match pred {
             Pred::ControlledBy(Ref::You) if who.is_none() => who = Some(" you cast"),
             Pred::ControlledBy(Ref::Opponents) if who.is_none() => {
-                who = Some(" your opponents cast")
+                who = Some(" your opponents cast");
             }
             Pred::ControlledBy(_) => return None,
             _ if *pred == not_cast_from_hand() => other = true,
