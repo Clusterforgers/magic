@@ -1,0 +1,26 @@
+{
+  "oracle_id": "69fc70b8-b143-4662-ac95-e2743037239d",
+  "name": "Thriving Isle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thriving Isle",
+      "oracle_fingerprint": "ed8281d543fa23b0fb66ec9085ee39bf",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "ColorOtherThan": "Blue" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OrChosenColor": "Blue" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -152,9 +152,10 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Blocking
         | Pred::Unblocked
         | Pred::In(_)
+        | Pred::CastFrom(_)
         | Pred::HasCounter(_)
         | Pred::Named(_) => Traits::NONE,
-        Pred::Is(who) | Pred::OwnedBy(who) => reads_of_ref(who),
+        Pred::Is(who) | Pred::OwnedBy(who) | Pred::AttackingPlayer(who) => reads_of_ref(who),
         Pred::Type(_) => Traits::TYPES,
         Pred::Subtype(_) | Pred::ChosenSubtype => Traits::SUBTYPES,
         Pred::Color(_) | Pred::Colorless | Pred::ChosenColor => Traits::COLORS,

@@ -396,6 +396,31 @@ fn proliferating_triggers_for_the_players_the_pattern_names_and_names_the_player
 }
 
 #[rstest]
+#[case::i_amass(r#"{"Amassed":{"who":"You"}}"#, ME, 1)]
+#[case::they_amass_not_me(r#"{"Amassed":{"who":"You"}}"#, FOE, 0)]
+#[case::an_opponent_amasses(r#"{"Amassed":{"who":"Opponents"}}"#, FOE, 1)]
+#[case::anyone_amasses(r#"{"Amassed":{}}"#, FOE, 1)]
+fn amassing_triggers_for_the_players_the_pattern_names_and_names_the_player(
+    #[case] when: &str,
+    #[case] player: PlayerId,
+    #[case] expected: usize,
+) {
+    let pre = board(when);
+    let army = ObjectId(1);
+    let found = fires(
+        &pre,
+        &[Event::Amassed {
+            object: army,
+            player,
+        }],
+    );
+    assert_eq!(found.len(), expected);
+    if expected == 1 {
+        assert_eq!(found[0].cause.subjects, vec![Target::Player(player)]);
+    }
+}
+
+#[rstest]
 #[case::my_creature(
     r#"{"Explored":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#,
     "Bear",

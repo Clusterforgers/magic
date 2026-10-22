@@ -1,6 +1,7 @@
 //! Effects: a sentence is read into the effects of one template. A template reads the whole
 //! sentence or nothing; to add a wording, write a template and list it in [`TEMPLATES`].
 
+use mtg_core::card::Subtype;
 use mtg_core::mana::ManaType;
 
 use super::among;
@@ -8,6 +9,7 @@ use super::amounts::{
     cards, cards_counted, counted, counted_parts, counted_stats, for_each, its_stat, number_word,
     points,
 };
+use super::attackers;
 use super::cast;
 use super::conditional;
 use super::copies;
@@ -71,12 +73,13 @@ const TEMPLATES: [Template; 34] = [
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
-pub(super) const IMPERATIVES: [Template; 11] = [
+pub(super) const IMPERATIVES: [Template; 12] = [
     chain,
     removal,
     return_card,
     return_chosen,
     copies::token_copy,
+    copy_spells::copy,
     create::tokens,
     counters::put,
     counters::remove,
@@ -104,6 +107,11 @@ pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
         return true;
     }
     if r.attempt(|r| payments::after_may(r, effects)).is_some() {
+        return true;
+    }
+    if r.attempt(|r| attackers::does_the_same(r, effects))
+        .is_some()
+    {
         return true;
     }
     for template in templates().chain([unless_pays as Template]) {
@@ -263,6 +271,10 @@ fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
             count: points(r)?,
         },
         "proliferate" => Effect::Proliferate { who },
+        "amass" => Effect::Amass {
+            subtype: Subtype(super::selectors::plural_subtype(r)?),
+            count: points(r)?,
+        },
         // The card sacrifices itself: "sacrifice ~", and "sacrifice it" once the ability has spoken of the card.
         "sacrifice" => {
             (r.source() || (r.it == Some(Ref::This) && r.word("it"))).then_some(())?;
@@ -882,6 +894,12 @@ fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         Produce::AnyColor(count)
     } else if r.words("one mana of the chosen color") {
         Produce::ChosenColor(1)
+    } else if let Some(mana) = r.attempt(|r| {
+        let mana = mana_type(r.symbol()?)?;
+        r.need("or one mana of the chosen color")?;
+        Some(mana)
+    }) {
+        Produce::OrChosenColor(mana)
     } else if let Some(lists) = r.attempt(choice_of_lists) {
         Produce::OneOfLists(lists)
     } else if let Some(list) = r.attempt(choice) {

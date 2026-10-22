@@ -1,0 +1,23 @@
+{
+  "cmc": 7,
+  "collector_number": "130",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "2c573d12-4c69-4a54-b1b9-236c003ba98a",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{6}{U}",
+  "name": "Swarm Intelligence",
+  "oracle_id": "4a7a5ea9-b633-459f-bcd4-40de53afce0e",
+  "oracle_text": "Whenever you cast an instant or sorcery spell, you may copy that spell. You may choose new targets for the copy.",
+  "rarity": "rare",
+  "released_at": "2021-04-23",
+  "set": "c21",
+  "type_line": "Enchantment"
+}

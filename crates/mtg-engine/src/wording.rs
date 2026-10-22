@@ -78,6 +78,10 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::Tapped => adjectives.push("tapped".to_owned()),
             Pred::Untapped => adjectives.push("untapped".to_owned()),
             Pred::Attacking => adjectives.push("attacking".to_owned()),
+            Pred::AttackingPlayer(Ref::AttachedPlayer) => {
+                tail.push("attacking enchanted player".to_owned());
+            }
+            Pred::AttackingPlayer(Ref::You) => tail.push("attacking you".to_owned()),
             Pred::Blocking => adjectives.push("blocking".to_owned()),
             Pred::Unblocked => adjectives.push("unblocked".to_owned()),
             Pred::ControlledBy(Ref::You) => tail.push("you control".to_owned()),
@@ -299,6 +303,29 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             };
             (format!("{} attacks {whom}", subject(what)), false)
         }
+        TriggerPattern::PlayerAttacked { who: attacked } => {
+            let text = match attacked {
+                Ref::You => "you are attacked".to_owned(),
+                Ref::AttachedPlayer => "enchanted player is attacked".to_owned(),
+                other => format!("{} is attacked", who(other).0),
+            };
+            (text, false)
+        }
+        TriggerPattern::PlayerAttacks { by, at } => {
+            let (name, s) = match by {
+                Ref::AttachedPlayer => ("enchanted player", "s"),
+                other => who(other),
+            };
+            let whom = match at {
+                Ref::AttachedPlayer => "enchanted player",
+                Ref::You => "you",
+                _ => "a player",
+            };
+            (
+                format!("{name} attack{s} {whom} with one or more creatures"),
+                false,
+            )
+        }
         TriggerPattern::BecomesTarget { what, by } => {
             let whose = match by.0.as_slice() {
                 [Pred::ControlledBy(Ref::Opponents)] => " an opponent controls",
@@ -378,6 +405,13 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         TriggerPattern::Proliferated { who: by } => {
             let (name, s) = who(by);
             (format!("{name} proliferate{s}"), false)
+        }
+        TriggerPattern::Amassed { who: by } => {
+            let (name, s) = who(by);
+            (
+                format!("{name} amass{}", if s.is_empty() { "" } else { "es" }),
+                false,
+            )
         }
         TriggerPattern::Drew { who: by } => {
             let (name, s) = who(by);
@@ -1211,6 +1245,11 @@ mod tests {
         "Whenever an opponent becomes the monarch"
     )]
     #[case::you_proliferate(r#"{"Proliferated":{"who":"You"}}"#, "Whenever you proliferate")]
+    #[case::you_amass(r#"{"Amassed":{"who":"You"}}"#, "Whenever you amass")]
+    #[case::an_opponent_amasses(
+        r#"{"Amassed":{"who":"Opponents"}}"#,
+        "Whenever an opponent amasses"
+    )]
     #[case::a_player_becomes_the_monarch(
         r#"{"BecomesMonarch":{}}"#,
         "Whenever a player becomes the monarch"

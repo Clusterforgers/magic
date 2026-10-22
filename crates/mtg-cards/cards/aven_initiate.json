@@ -1,0 +1,12 @@
+{
+  "oracle_id": "c872012d-b598-4076-8385-2e3771c0306f",
+  "name": "Aven Initiate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aven Initiate",
+      "oracle_fingerprint": "524c5aa1e3e8e9de049ddd08b8b649f1",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": { "Embalm": "{6}{U}" } }]
+    }
+  ]
+}

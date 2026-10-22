@@ -1,0 +1,21 @@
+{
+  "id": "c4ceb589-c741-44ac-98c8-3d997953ee61",
+  "oracle_id": "dde6bce5-8bbe-4866-b5aa-2c05c7d37241",
+  "name": "Black Dragon Gate",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "347",
+  "rarity": "common",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Gate",
+  "oracle_text": "This land enters tapped.\nAs this land enters, choose a color other than black.\n{T}: Add {B} or one mana of the chosen color.",
+  "colors": [],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

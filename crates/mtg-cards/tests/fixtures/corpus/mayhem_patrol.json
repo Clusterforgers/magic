@@ -1,0 +1,28 @@
+{
+  "id": "50162cdd-ba30-48df-93ff-197c7f4a2913",
+  "oracle_id": "f77a9160-1d37-476d-8908-29ddcc982328",
+  "name": "Mayhem Patrol",
+  "lang": "en",
+  "layout": "normal",
+  "set": "snc",
+  "collector_number": "114",
+  "rarity": "common",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Creature — Devil Warrior",
+  "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nWhenever this creature attacks, target creature gets +1/+0 until end of turn.\nBlitz {1}{R} (If you cast this spell for its blitz cost, it gains haste and \"When this creature dies, draw a card.\" Sacrifice it at the beginning of the next end step.)",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Blitz",
+    "Menace"
+  ]
+}

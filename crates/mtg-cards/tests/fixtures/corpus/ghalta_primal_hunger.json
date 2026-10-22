@@ -1,0 +1,27 @@
+{
+  "id": "6a9c39e4-a8cf-42dd-8d0e-45634b335546",
+  "oracle_id": "b0b6be0c-41cf-4757-9f0e-87227b6ba6b3",
+  "name": "Ghalta, Primal Hunger",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fdn",
+  "collector_number": "222",
+  "rarity": "rare",
+  "released_at": "2024-11-15",
+  "digital": false,
+  "mana_cost": "{10}{G}{G}",
+  "cmc": 12,
+  "type_line": "Legendary Creature — Elder Dinosaur",
+  "oracle_text": "This spell costs {X} less to cast, where X is the total power of creatures you control.\nTrample (This creature can deal excess combat damage to the player or planeswalker it's attacking.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Trample"
+  ],
+  "power": "12",
+  "toughness": "12"
+}

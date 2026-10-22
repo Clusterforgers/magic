@@ -33,6 +33,8 @@ const RUNS: &[&str] = &[
     "Trigger.State",
     "Trigger.Attacks",
     "Trigger.AttacksPlayer",
+    "Trigger.PlayerAttacked",
+    "Trigger.PlayerAttacks",
     "Trigger.SpellCast",
     "Trigger.Sacrificed",
     "Trigger.StepBegins",
@@ -57,6 +59,7 @@ const RUNS: &[&str] = &[
     "Trigger.Proliferated",
     "Trigger.Explored",
     "Trigger.Connived",
+    "Trigger.Amassed",
     "Trigger.Batch",
     "Trigger.Nth",
     "Amount.Triggering",
@@ -109,6 +112,7 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.OneOf",
     "Effect.AddMana.OneOfLists",
     "Effect.AddMana.ChosenColor",
+    "Effect.AddMana.OrChosenColor",
     "Effect.AddMana.Restricted",
     "Effect.AddMana.CommanderIdentity",
     "Effect.AddMana.ProducedBy",
@@ -127,6 +131,7 @@ const RUNS: &[&str] = &[
     "Effect.Proliferate",
     "Effect.Explore",
     "Effect.Connive",
+    "Effect.Amass",
     "Effect.BecomeMonarch",
     "Condition.Monarch",
     "Effect.CreateToken",
@@ -268,11 +273,16 @@ const RUNS: &[&str] = &[
     "Keyword.Rebound",
     "Keyword.Aftermath",
     "Keyword.Dash",
+    "Keyword.Blitz",
     "Keyword.Ninjutsu",
     "Keyword.Echo",
     "Keyword.CumulativeUpkeep",
     "Keyword.Undying",
     "Keyword.Persist",
+    "Keyword.JumpStart",
+    "Keyword.Retrace",
+    "Keyword.Embalm",
+    "Keyword.Eternalize",
     "Condition.NewlyControlled",
     "Rule.CanBeCommander",
 ];
@@ -505,7 +515,7 @@ mod tests {
     #[case::goading("Effect.Goad", false)]
     #[case::fighting("Effect.Fight", false)]
     #[case::becoming_the_monarch("Effect.BecomeMonarch", true)]
-    #[case::amassing("Effect.Amass", false)]
+    #[case::amassing("Effect.Amass", true)]
     #[case::monstrosity("Effect.Monstrosity", false)]
     #[case::adapting("Effect.Adapt", false)]
     #[case::bolstering("Effect.Bolster", false)]
@@ -522,6 +532,7 @@ mod tests {
     #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]
     #[case::a_choice_of_lists_of_mana("Effect.AddMana.OneOfLists", true)]
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]
+    #[case::mana_of_a_type_or_the_chosen_color("Effect.AddMana.OrChosenColor", true)]
     #[case::mana_restricted_to_what_it_may_be_spent_on("Effect.AddMana.Restricted", true)]
     #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", true)]
     #[case::mana_a_land_could_produce("Effect.AddMana.ProducedBy", true)]
@@ -554,6 +565,7 @@ mod tests {
     #[case::proliferating_triggers("Trigger.Proliferated", true)]
     #[case::exploring_triggers("Trigger.Explored", true)]
     #[case::conniving_triggers("Trigger.Connived", true)]
+    #[case::amassing_triggers("Trigger.Amassed", true)]
     #[case::batch_triggers("Trigger.Batch", true)]
     #[case::nth_triggers("Trigger.Nth", true)]
     #[case::event_amounts("Amount.Triggering", true)]
@@ -576,12 +588,17 @@ mod tests {
     #[case::rebound("Keyword.Rebound", true)]
     #[case::aftermath("Keyword.Aftermath", true)]
     #[case::dash("Keyword.Dash", true)]
+    #[case::blitz("Keyword.Blitz", true)]
     #[case::ninjutsu("Keyword.Ninjutsu", true)]
     #[case::joining_an_attack("Effect.JoinAttack", true)]
     #[case::echo("Keyword.Echo", true)]
     #[case::cumulative_upkeep("Keyword.CumulativeUpkeep", true)]
     #[case::undying("Keyword.Undying", true)]
     #[case::persist("Keyword.Persist", true)]
+    #[case::jump_start("Keyword.JumpStart", true)]
+    #[case::retrace("Keyword.Retrace", true)]
+    #[case::embalm("Keyword.Embalm", true)]
+    #[case::eternalize("Keyword.Eternalize", true)]
     #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]
