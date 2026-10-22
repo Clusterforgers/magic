@@ -3,7 +3,9 @@
 
 use mtg_core::mana::ManaType;
 
-use super::amounts::{cards, its_stat, number_word, points};
+use super::amounts::{
+    cards, cards_counted, counted, counted_parts, for_each, its_stat, number_word, points,
+};
 use super::cast;
 use super::conditional;
 use super::copies;
@@ -266,11 +268,11 @@ fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         }
         "draw" => Effect::Draw {
             who,
-            count: cards(r)?,
+            count: cards_counted(r)?,
         },
         "mill" => Effect::Mill {
             who,
-            count: cards(r)?,
+            count: cards_counted(r)?,
         },
         "shuffle" => {
             r.need("your library")?;
@@ -320,7 +322,8 @@ fn life(r: &mut Reader<'_>) -> Option<Amount> {
         return its_stat(r);
     }
     let amount = points(r)?;
-    r.word("life").then_some(amount)
+    r.word("life").then_some(())?;
+    counted(r, amount)
 }
 
 /// A player draws, discards, mills, gains, loses or sacrifices; one subject may have several verb
@@ -359,6 +362,20 @@ fn phrases(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
     }) {
         effects.extend(next);
     }
+    // "draws a card and loses 1 life for each creature": which verb phrases the count belongs to is not the card's to say.
+    let counts = |effect: &Effect| {
+        matches!(
+            effect,
+            Effect::Draw { count, .. }
+                | Effect::Mill { count, .. }
+                | Effect::GainLife { amount: count, .. }
+                | Effect::LoseLife { amount: count, .. }
+                if counted_parts(count).is_some()
+        )
+    };
+    if effects.len() > 1 && effects.iter().any(counts) {
+        return None;
+    }
     Some(effects)
 }
 
@@ -376,11 +393,11 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
     Some(match r.take_word()? {
         "draw" | "draws" => Effect::Draw {
             who,
-            count: cards(r)?,
+            count: cards_counted(r)?,
         },
         "mill" | "mills" => Effect::Mill {
             who,
-            count: cards(r)?,
+            count: cards_counted(r)?,
         },
         "discard" | "discards" => {
             let count = cards(r)?;
@@ -843,11 +860,16 @@ fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         }
         Produce::Fixed(list)
     };
+    // "Add {R} for each Goblin you control." adds the mana once for each; a number of times has no wording.
+    let times = match r.attempt(for_each) {
+        Some(each) => each,
+        None => Amount::one(),
+    };
     let only = spend::only(r).unwrap_or_default();
     Some(vec![Effect::AddMana {
         who: Ref::You,
         mana,
-        times: Amount::one(),
+        times,
         only,
     }])
 }

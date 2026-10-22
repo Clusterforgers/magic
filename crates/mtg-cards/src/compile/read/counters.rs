@@ -2,7 +2,7 @@
 //! another, read from "put a +1/+1 counter on ~", "remove two charge counters from target
 //! permanent" and "move a +1/+1 counter from target creature onto ~" and written back the same way.
 
-use super::amounts::{count_word, number_word};
+use super::amounts::{self, count_word, number_word};
 use super::effects::target_object;
 use super::selectors::each;
 use super::tokens::Reader;
@@ -71,6 +71,16 @@ pub(super) fn kind(r: &mut Reader<'_>) -> Option<CounterKind> {
     })
 }
 
+/// "charge counter on ~", "+1/+1 counter on it": the counters on the card, as "for each" counts them.
+pub(super) fn counted(r: &mut Reader<'_>) -> Option<Amount> {
+    let counter = kind(r)?;
+    r.need("counter on")?;
+    (r.source() || (r.it == Some(Ref::This) && r.word("it"))).then_some(Amount::Counters {
+        on: Ref::This,
+        counter,
+    })
+}
+
 /// How many counters of what kind: "a +1/+1 counter", "two charge counters".
 pub(super) fn counters(r: &mut Reader<'_>) -> Option<(CounterKind, u32)> {
     let number = number_word(r.take_word()?)?;
@@ -130,6 +140,8 @@ pub fn put(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if on == Ref::This {
         r.it = Some(Ref::This);
     }
+    // "Put a +1/+1 counter on target creature for each Elf you control."
+    let count = amounts::counted(r, count)?;
     Some(vec![Effect::PutCounters { on, counter, count }])
 }
 

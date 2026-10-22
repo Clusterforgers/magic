@@ -195,6 +195,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
             .iter()
             .fold(Traits::NONE, |all, part| all.or(reads_of_amount(part))),
         Amount::EvenShare(total) => reads_of_amount(total),
+        Amount::Times { of, .. } => reads_of_amount(of),
         Amount::Devotion(_) => Traits::CONTROL,
         Amount::Greatest { of, stat } | Amount::Total { of, stat } => {
             reads_of_selector(of).or(reads_of_stat(*stat))

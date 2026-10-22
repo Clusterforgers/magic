@@ -403,6 +403,10 @@ impl<'a> Walker<'a> {
                     self.at(format!("[{i}]"), |w| w.amount(part));
                 }
             }
+            Amount::Times { of, .. } => {
+                self.amounting = Amounting::of(sharing);
+                self.at("of", |w| w.amount(of));
+            }
             Amount::Divided => {
                 if !sharing {
                     self.uses("Amount", "Divided.Elsewhere");

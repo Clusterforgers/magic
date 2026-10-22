@@ -1,7 +1,10 @@
 //! Amounts: counts of cards, points of life, damage or scrying, and the characteristic of an
 //! object, read from their words and written back the same way.
 
+use super::counters;
+use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
+use crate::refs::{Pred, Ref};
 use crate::value::{Amount, StatKind};
 
 /// The count words "one" to "twenty", in order.
@@ -60,6 +63,14 @@ pub fn cards(r: &mut Reader<'_>) -> Option<Amount> {
     })
 }
 
+/// How many cards, or a card for each thing counted: "a card", "two cards for each creature you control".
+pub fn cards_counted(r: &mut Reader<'_>) -> Option<Amount> {
+    r.attempt(|r| {
+        let base = cards(r)?;
+        counted(r, base)
+    })
+}
+
 /// How many points of life, damage or scrying: digits, X, or "that much" (what the trigger's event was).
 pub fn points(r: &mut Reader<'_>) -> Option<Amount> {
     if r.words("that much") {
@@ -99,8 +110,96 @@ pub const fn stat_name(stat: StatKind) -> Option<&'static str> {
     }
 }
 
-/// "a card", "two cards", "X cards".
+/// What "for each" counts: "creature you control", "Goblin on the battlefield", "creature card in your graveyard",
+/// "opponent", "charge counter on ~".
+pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
+    r.attempt(|r| {
+        r.need("for each")?;
+        if let Some(counted) = r.attempt(counters::counted) {
+            return Some(counted);
+        }
+        if r.word("opponent") {
+            return Some(Amount::Players(Ref::Opponents));
+        }
+        let selector = phrase(r, Form::Count)?;
+        // A group that no one holds stands on the battlefield.
+        if !selector.0.iter().any(holds) {
+            r.words("on the battlefield");
+        }
+        Some(Amount::Count(selector))
+    })
+}
+
+/// Whether the predicate says who holds the objects or where they are.
+fn holds(pred: &Pred) -> bool {
+    match pred {
+        // An attacking or blocking creature is on the battlefield, and the card does not say so.
+        Pred::ControlledBy(_)
+        | Pred::OwnedBy(_)
+        | Pred::In(_)
+        | Pred::Attacking
+        | Pred::Blocking => true,
+        Pred::Not(inner) => holds(inner),
+        _ => false,
+    }
+}
+
+/// An amount the effect gives for each thing counted: "a card for each creature you control" is the count itself, "two
+/// cards for each ..." is the count times two. Without "for each" the amount is `base`.
+pub fn counted(r: &mut Reader<'_>, base: Amount) -> Option<Amount> {
+    let Some(each) = r.attempt(for_each) else {
+        return Some(base);
+    };
+    match base {
+        Amount::Fixed(1) => Some(each),
+        Amount::Fixed(by) if by != 0 => Some(Amount::Times {
+            by,
+            of: Box::new(each),
+        }),
+        _ => None,
+    }
+}
+
+/// What "for each" counts, as the card words it after "for each ".
+pub fn for_each_text(counted: &Amount) -> Option<String> {
+    Some(match counted {
+        Amount::Count(selector) => {
+            let phrase = phrase_text(selector, Form::Count)?;
+            if selector.0.iter().any(holds) {
+                phrase
+            } else {
+                format!("{phrase} on the battlefield")
+            }
+        }
+        Amount::Players(Ref::Opponents) => "opponent".to_owned(),
+        Amount::Counters {
+            on: Ref::This,
+            counter,
+        } => format!("{} counter on ~", counters::kind_text(counter)?),
+        _ => return None,
+    })
+}
+
+/// A counted amount split into what each thing counted gives (a fixed amount) and the words "for each ...":
+/// `None` for an amount that is not counted.
+pub fn counted_parts(amount: &Amount) -> Option<(Amount, String)> {
+    match amount {
+        Amount::Times { by, of } => Some((
+            Amount::Fixed(*by),
+            format!("for each {}", for_each_text(of)?),
+        )),
+        other => Some((
+            Amount::Fixed(1),
+            format!("for each {}", for_each_text(other)?),
+        )),
+    }
+}
+
+/// "a card", "two cards", "X cards", "a card for each creature you control".
 pub fn cards_text(amount: &Amount) -> Option<String> {
+    if let Some((each, tail)) = counted_parts(amount) {
+        return Some(format!("{} {tail}", cards_text(&each)?));
+    }
     match amount {
         Amount::Fixed(1) => Some("a card".to_owned()),
         Amount::Fixed(number) => Some(format!(
