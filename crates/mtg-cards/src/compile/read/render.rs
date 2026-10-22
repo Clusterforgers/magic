@@ -11,12 +11,14 @@ use super::create;
 use super::effects::{BACK, RETURNED, returns_itself};
 use super::library;
 use super::modal::{BULLET, DASH};
+use super::payments;
+use super::prevention;
 use super::selectors::{Form, granted_text, phrase_text, spec_text};
 use super::spend;
 use super::statics;
 use super::triggers::{article, condition_text, cycled_itself, pattern_text, targeted_itself};
 use crate::ability::{Ability, Limit, Timing};
-use crate::cost::{Cost, CostItem};
+use crate::cost::Cost;
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce};
 use crate::modify::{Duration, Modification};
 use crate::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
@@ -55,6 +57,21 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .iter()
             .filter(|text| text.contains(": ~ deals "))
             .map(|text| text.replacen(": ~ deals ", ": It deals ", 1))
+            .collect();
+        texts.extend(pronouns);
+    }
+    // A trigger about damage the source deals may say "it deals" for the source (Questing Beast).
+    if matches!(
+        ability,
+        Ability::Triggered {
+            when: TriggerPattern::DealsDamage { .. },
+            ..
+        }
+    ) {
+        let pronouns: Vec<String> = texts
+            .iter()
+            .filter(|text| text.contains(", ~ deals "))
+            .map(|text| text.replacen(", ~ deals ", ", it deals ", 1))
             .collect();
         texts.extend(pronouns);
     }
@@ -528,14 +545,6 @@ pub(super) fn is_a_type(pred: &Pred) -> bool {
     }
 }
 
-/// The mana of a payment as the card prints it: `{2}`, `{U}{R}`.
-fn cost_text(cost: &Cost) -> Option<String> {
-    match cost.0.as_slice() {
-        [CostItem::Mana(mana)] if !mana.has_x() => Some(mana.to_string()),
-        _ => None,
-    }
-}
-
 fn at_random(random: bool) -> &'static str {
     if random { " at random" } else { "" }
 }
@@ -773,7 +782,7 @@ impl Writer<'_> {
                 cost,
                 paid,
                 unpaid,
-            } if paid.is_empty() => self.unless_pays(who, cost, unpaid)?,
+            } => self.payment(who, cost, paid, unpaid)?,
             _ => return cast::text(effect).or_else(|| self.keyword_action(effect)),
         })
     }
@@ -804,21 +813,36 @@ impl Writer<'_> {
                     "becomes"
                 }
             ),
-            _ => return None,
+            _ => return prevention::effect_text(effect),
         })
     }
 
-    /// "counter target spell unless its controller pays {2}".
-    fn unless_pays(&mut self, who: &Ref, cost: &Cost, unpaid: &[Effect]) -> Option<String> {
-        let [inner] = unpaid else {
-            return None;
-        };
-        let happens = self.effect(inner)?;
-        let payer = self.player(who)?;
-        Some(format!(
-            "{happens} unless {payer} pays {}",
-            cost_text(cost)?
-        ))
+    /// "counter target spell unless its controller pays {2}", "you may pay {1}. If you do, draw a card".
+    fn payment(
+        &mut self,
+        who: &Ref,
+        cost: &Cost,
+        paid: &[Effect],
+        unpaid: &[Effect],
+    ) -> Option<String> {
+        match (paid, unpaid) {
+            ([], [inner]) => {
+                let happens = self.effect(inner)?;
+                let payer = self.player(who)?;
+                Some(format!(
+                    "{happens} {}",
+                    payments::unless_text(&payer, who, cost)?
+                ))
+            }
+            ([_, ..], []) if *who == Ref::You => {
+                let mut texts = Vec::new();
+                for effect in paid {
+                    texts.push(self.effect(effect)?);
+                }
+                payments::may_pay_text(cost, &texts.join(", then "))
+            }
+            _ => None,
+        }
     }
 
     /// Who does something: "you", "target player", "each opponent", "its controller".

@@ -303,6 +303,10 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.words(form.opponents()) {
         return Some(Pred::ControlledBy(Ref::Opponents));
     }
+    // The player a trigger is about: "planeswalker that player controls".
+    if r.that_player && r.words("that player controls") {
+        return Some(Pred::ControlledBy(Ref::Triggering));
+    }
     r.attempt(|r| {
         r.need("with")?;
         if let Some(keyword) = keyword(r) {
@@ -330,6 +334,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
     Some(match pred {
         Pred::ControlledBy(Ref::You) => "you control".to_owned(),
         Pred::ControlledBy(Ref::Opponents) => form.opponents().to_owned(),
+        Pred::ControlledBy(Ref::Triggering) => "that player controls".to_owned(),
         Pred::Not(inner) if **inner == Pred::ControlledBy(Ref::You) => {
             "you don't control".to_owned()
         }
