@@ -24,6 +24,7 @@ mod combat_preview;
 mod commander;
 mod commander_fuzz;
 mod commander_identity;
+mod commander_objects;
 mod common;
 mod concede;
 mod concede_mid_cast;

@@ -223,6 +223,12 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Choose",
     "ReplaceBy.PayLifeOrTapped",
     "ReplaceBy.AsCopy",
+    "Keyword.Partner",
+    "Keyword.PartnerWith",
+    "Keyword.PartnerGroup",
+    "Keyword.DoctorsCompanion",
+    "Keyword.ChooseABackground",
+    "Rule.CanBeCommander",
 ];
 
 /// The capabilities of this engine.
@@ -487,7 +493,12 @@ mod tests {
     #[case::creatures_that_cant_be_blocked_by_some("Mod.CantBeBlockedBy", true)]
     #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", false)]
     #[case::additional_land_plays("Rule.AdditionalLandPlays", false)]
-    #[case::commander_eligibility("Rule.CanBeCommander", false)]
+    #[case::commander_eligibility("Rule.CanBeCommander", true)]
+    #[case::partner("Keyword.Partner", true)]
+    #[case::partner_with("Keyword.PartnerWith", true)]
+    #[case::partner_group("Keyword.PartnerGroup", true)]
+    #[case::doctors_companion("Keyword.DoctorsCompanion", true)]
+    #[case::choose_a_background("Keyword.ChooseABackground", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]
     #[case::the_highest_life_total("Amount.HighestLife", true)]

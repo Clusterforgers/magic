@@ -377,6 +377,8 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::AdditionalLandPlays { .. } => {
             return Err(ResolveError::Unsupported("Rule.AdditionalLandPlays"));
         }
+        // Eligibility is read from the definition when a seat is checked (`CardDefinition::can_be_commander`); no
+        // rule is ever in force and an effect cannot start one.
         GameRule::CanBeCommander => return Err(ResolveError::Unsupported("Rule.CanBeCommander")),
     })
 }

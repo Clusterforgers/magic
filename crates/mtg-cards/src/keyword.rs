@@ -126,11 +126,18 @@ pub enum Keyword {
     Daybound,
     /// Nightbound (CR 702.145): the permanent is turned to its day face when it becomes day.
     Nightbound,
+    /// Partner with a text (`Partner—Friends forever`, `Partner—Character select`): two commanders that both have the
+    /// same text pair (CR 702.124).
+    PartnerGroup(String),
+    /// Doctor's companion: the second commander beside a legendary Time Lord Doctor (CR 702.124).
+    DoctorsCompanion,
+    /// Choose a Background: the second commander may be a Background enchantment (CR 702.124).
+    ChooseABackground,
 }
 
 impl Keyword {
     /// Scryfall's spelling of every keyword in this enum, for matching a record's `keywords`.
-    pub const NAMES: [&'static str; 54] = [
+    pub const NAMES: [&'static str; 57] = [
         "Flash",
         "Flying",
         "Reach",
@@ -185,6 +192,9 @@ impl Keyword {
         "Foretell",
         "Daybound",
         "Nightbound",
+        "Partner group",
+        "Doctor's companion",
+        "Choose a Background",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -244,6 +254,9 @@ impl Keyword {
             Keyword::Foretell(_) => "Foretell",
             Keyword::Daybound => "Daybound",
             Keyword::Nightbound => "Nightbound",
+            Keyword::PartnerGroup(_) => "Partner group",
+            Keyword::DoctorsCompanion => "Doctor's companion",
+            Keyword::ChooseABackground => "Choose a Background",
         }
     }
 
@@ -326,6 +339,9 @@ mod tests {
             Keyword::Foretell(cost),
             Keyword::Daybound,
             Keyword::Nightbound,
+            Keyword::PartnerGroup("Friends forever".into()),
+            Keyword::DoctorsCompanion,
+            Keyword::ChooseABackground,
         ]
     }
 

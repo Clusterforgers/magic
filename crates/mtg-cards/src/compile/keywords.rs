@@ -341,11 +341,22 @@ pub fn read(item: &str) -> Option<Keyword> {
         "suspend" => suspend(rest),
         "enchant" => enchant(rest).map(Keyword::Enchant),
         "partner with" => Some(Keyword::PartnerWith(rest.to_owned())),
+        "partner" if rest.starts_with('\u{2014}') => partner_group(rest),
         "protection" => protection(rest).map(Keyword::Protection),
         "companion" => Some(Keyword::Companion),
         name if rest.is_empty() => plain(name),
         _ => None,
     }
+}
+
+/// The text of a `Partner—<text>` item (`Friends forever`, `Character select`), the group of commanders that pair.
+fn partner_group(rest: &str) -> Option<Keyword> {
+    let text = rest
+        .trim_start_matches('\u{2014}')
+        .trim()
+        .trim_end_matches('.')
+        .trim();
+    (!text.is_empty()).then(|| Keyword::PartnerGroup(text.to_owned()))
 }
 
 /// A keyword without parameters.
@@ -381,6 +392,8 @@ fn plain(name: &str) -> Option<Keyword> {
         "myriad" => Keyword::Myriad,
         "daybound" => Keyword::Daybound,
         "nightbound" => Keyword::Nightbound,
+        "doctor's companion" => Keyword::DoctorsCompanion,
+        "choose a background" => Keyword::ChooseABackground,
         _ => return None,
     })
 }
@@ -628,6 +641,22 @@ mod tests {
         "Partner with Pir, Imaginative Rascal",
         Keyword::PartnerWith("Pir, Imaginative Rascal".into())
     )]
+    #[case::partner_friends(
+        "Partner\u{2014}Friends forever",
+        Keyword::PartnerGroup("Friends forever".into())
+    )]
+    #[case::partner_character_select(
+        "Partner\u{2014}Character select",
+        Keyword::PartnerGroup("Character select".into())
+    )]
+    #[case::partner_survivors("partner\u{2014}Survivors.", Keyword::PartnerGroup("Survivors".into()))]
+    #[case::partner_father_and_son(
+        "Partner\u{2014}Father & son",
+        Keyword::PartnerGroup("Father & son".into())
+    )]
+    #[case::doctors_companion("Doctor's companion", Keyword::DoctorsCompanion)]
+    #[case::lowercase_doctors_companion("doctor's companion", Keyword::DoctorsCompanion)]
+    #[case::choose_a_background("Choose a Background", Keyword::ChooseABackground)]
     fn declared_keywords_are_read(#[case] item: &str, #[case] expected: Keyword) {
         assert_eq!(read(item), Some(expected));
     }
@@ -644,7 +673,8 @@ mod tests {
     #[case::enchant_player("Enchant player")]
     #[case::enchant_with_a_condition("Enchant creature you control")]
     #[case::enchant_two_types("Enchant creature or planeswalker")]
-    #[case::partner_friends("Partner\u{2014}Friends forever")]
+    #[case::partner_without_a_text("Partner\u{2014}")]
+    #[case::doctors_companion_with_a_cost("Doctor's companion {1}")]
     #[case::undeclared("Undying")]
     #[case::crew_x("Crew X")]
     #[case::crew_nothing("Crew 0")]
@@ -702,9 +732,19 @@ mod tests {
         assert!(!is_keyword_line(line));
     }
 
+    /// The name a keyword is printed with when it is not the DSL's: every "Partner—text" is a `Partner` line.
+    fn printed(name: &str) -> &str {
+        if name == "Partner group" {
+            "Partner"
+        } else {
+            name
+        }
+    }
+
     #[test]
     fn every_keyword_the_dsl_declares_is_recognised_by_name() {
         for name in Keyword::NAMES {
+            let name = printed(name);
             assert!(
                 KEYWORDS
                     .iter()
@@ -770,6 +810,9 @@ mod tests {
             "Daybound",
             "Nightbound",
             "Partner with Someone",
+            "Partner\u{2014}Friends forever",
+            "Doctor's companion",
+            "Choose a Background",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];
         let mut seen = Vec::new();
@@ -778,7 +821,7 @@ mod tests {
             assert!(
                 sample
                     .to_ascii_lowercase()
-                    .starts_with(&keyword.name().to_ascii_lowercase()),
+                    .starts_with(&printed(keyword.name()).to_ascii_lowercase()),
                 "{sample} read as {}",
                 keyword.name()
             );
