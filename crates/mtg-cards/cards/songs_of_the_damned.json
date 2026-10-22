@@ -1,0 +1,27 @@
+{
+  "oracle_id": "39419d29-47e7-4d71-953b-96a2e14ae964",
+  "name": "Songs of the Damned",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Songs of the Damned",
+      "oracle_fingerprint": "7b2e75f8c3f16131797cf5de53339340",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Black"] },
+                  "times": {
+                    "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

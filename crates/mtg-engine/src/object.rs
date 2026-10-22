@@ -85,6 +85,9 @@ pub struct PermanentState {
     pub(crate) damage: u32,
     pub(crate) deathtouched: bool,
     pub(crate) summoning_sick: bool,
+    /// The player whose turn began with it new to them: it had not been under their control since their previous turn
+    /// began. Echo reads it in the upkeep (CR 702.30a), after the turn has cleared `summoning_sick`.
+    pub(crate) new_to: Option<PlayerId>,
     pub(crate) counters: BTreeMap<CounterKind, u32>,
     pub(crate) attached_to: Option<ObjectRef>,
     /// The player it is attached to (an Aura that enchants a player, CR 303.4); never set together with `attached_to`.
@@ -145,6 +148,12 @@ impl PermanentState {
     /// Whether the controller has not yet controlled it since their turn began.
     pub const fn summoning_sick(&self) -> bool {
         self.summoning_sick
+    }
+
+    /// Whether it was new to `player` when their current turn began: it had not been under their control since their
+    /// previous turn began. What echo asks in the upkeep.
+    pub fn is_new_to(&self, player: PlayerId) -> bool {
+        self.new_to == Some(player)
     }
 
     /// The counters on the permanent, by kind in a fixed order; a kind it has none of is not listed.

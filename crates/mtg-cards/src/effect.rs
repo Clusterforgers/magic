@@ -63,6 +63,9 @@ pub enum Destination {
         /// Enters under this player's control; its owner's when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         under: Option<Ref>,
+        /// Counters it enters with, each kind with its number (undying: one +1/+1 counter).
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        counters: Vec<(CounterKind, u32)>,
     },
     /// Its owner's library.
     Library {
@@ -369,6 +372,11 @@ pub enum Effect {
         /// The object they are attached to.
         to: Ref,
     },
+    /// Puts a creature that just entered the battlefield into combat, tapped and attacking the player or planeswalker the creature that the cost of the ability returned to its owner's hand was attacking (CR 702.49a, 508.4); it was never declared as an attacker.
+    JoinAttack {
+        /// The creature that joins the attack.
+        what: Ref,
+    },
     /// Unattaches Auras, Equipment or Fortifications from what they are attached to (CR 701.3d).
     Unattach {
         /// The permanents unattached; one attached to nothing stays as it is.
@@ -628,6 +636,9 @@ pub enum Effect {
         who: Ref,
         /// The cost.
         cost: Cost,
+        /// How many times the cost is paid at once ("for each age counter"); nothing is asked when it is 0.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        times: Amount,
         /// Done when the cost is paid.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         paid: Vec<Effect>,
@@ -772,7 +783,7 @@ mod tests {
         r#"{"Destroy":{"what":{"Target":0}}}"#
     )]
     #[case::move_to_battlefield_tapped(
-        Effect::Move { what: Ref::Bound("land".into()), to: Destination::Battlefield { tapped: true, under: None } },
+        Effect::Move { what: Ref::Bound("land".into()), to: Destination::Battlefield { tapped: true, under: None, counters: vec![] } },
         r#"{"Move":{"what":{"Bound":"land"},"to":{"Battlefield":{"tapped":true}}}}"#
     )]
     #[case::search(
@@ -780,7 +791,7 @@ mod tests {
         r#"{"Search":{"filter":[{"Supertype":"Basic"}],"as":"land"}}"#
     )]
     #[case::pay(
-        Effect::Pay { who: Ref::Triggering, cost: Cost::mana("{1}".parse().unwrap()), paid: vec![], unpaid: vec![Effect::Draw { who: Ref::You, count: Amount::one() }] },
+        Effect::Pay { who: Ref::Triggering, cost: Cost::mana("{1}".parse().unwrap()), times: Amount::one(), paid: vec![], unpaid: vec![Effect::Draw { who: Ref::You, count: Amount::one() }] },
         r#"{"Pay":{"who":"Triggering","cost":"{1}","unpaid":[{"Draw":{}}]}}"#
     )]
     #[case::put_a_poison_counter_on_a_player(

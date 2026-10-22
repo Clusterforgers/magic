@@ -1,0 +1,20 @@
+{
+  "oracle_id": "b6e972ae-cc2d-4c7e-9f49-c0616dc82064",
+  "name": "Mardu Shadowspear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mardu Shadowspear",
+      "oracle_fingerprint": "60b5b2714639dc05b33c89be44faef66",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+          }
+        },
+        { "Keyword": { "Dash": "{1}{B}" } }
+      ]
+    }
+  ]
+}

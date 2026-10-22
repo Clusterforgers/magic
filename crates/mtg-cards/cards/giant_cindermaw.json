@@ -1,0 +1,15 @@
+{
+  "oracle_id": "bd0c0e85-ff24-46c9-a547-4f633355c131",
+  "name": "Giant Cindermaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giant Cindermaw",
+      "oracle_fingerprint": "bad9293fcb9d221d8de87352bbb876a6",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Rule": { "rule": { "CantGainLife": "EachPlayer" } } }
+      ]
+    }
+  ]
+}

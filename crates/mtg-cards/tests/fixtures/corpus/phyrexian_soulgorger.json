@@ -1,0 +1,23 @@
+{
+  "id": "9d4325ea-2e84-4871-a8d6-a42b1d3d6765",
+  "oracle_id": "b6e36e77-0cea-4b7a-b968-774b1e74a992",
+  "name": "Phyrexian Soulgorger",
+  "lang": "en",
+  "layout": "normal",
+  "set": "csp",
+  "collector_number": "141",
+  "rarity": "rare",
+  "released_at": "2006-07-21",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3,
+  "type_line": "Snow Artifact Creature — Phyrexian Construct",
+  "oracle_text": "Cumulative upkeep—Sacrifice a creature. (At the beginning of your upkeep, put an age counter on this permanent, then sacrifice it unless you pay its upkeep cost for each age counter on it.)",
+  "power": "8",
+  "toughness": "8",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Cumulative upkeep"
+  ]
+}

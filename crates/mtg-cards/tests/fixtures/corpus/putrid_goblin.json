@@ -1,0 +1,27 @@
+{
+  "id": "333406d5-abcc-4629-a33b-395d0662ba1b",
+  "oracle_id": "27faa94b-c7a7-45e7-8630-80126fab74ba",
+  "name": "Putrid Goblin",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mh1",
+  "collector_number": "101",
+  "rarity": "common",
+  "released_at": "2019-06-14",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2,
+  "type_line": "Creature — Zombie Goblin",
+  "oracle_text": "Persist (When this creature dies, if it had no -1/-1 counters on it, return it to the battlefield under its owner's control with a -1/-1 counter on it.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Persist"
+  ]
+}

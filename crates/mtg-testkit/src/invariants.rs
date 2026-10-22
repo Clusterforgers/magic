@@ -218,9 +218,12 @@ fn check_attachments_settled(state: &GameState) -> Result<(), Violation> {
             if !fits || host.id() == id {
                 return Err(bad("is attached to what it may not be"));
             }
-            // An Equipment that is a creature equips nothing (CR 301.5c), so one attached is none while attached (CR 702.151b).
+            // An Equipment that is a creature equips nothing unless it has reconfigure (CR 301.5c, 702.151).
             if printed("Equipment")
                 && characteristics(state, id).is_some_and(|chars| chars.is_creature())
+                && !keywords_of(state, id)
+                    .iter()
+                    .any(|keyword| matches!(keyword, Keyword::Reconfigure(_)))
             {
                 return Err(bad(
                     "is an Equipment attached to a creature though it is one",

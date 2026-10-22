@@ -90,7 +90,7 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
     let text = normalize::normalize(&shown.oracle_text, &own_names(shown));
     let (spell, aura) = (is_spell(shown), is_aura(shown));
     let x_free = shown.mana_cost.contains("{X}");
-    let own = own_subtypes(shown);
+    let own = own_face(shown);
     let mut pending = Vec::new();
     for raw in clauses::split(&text) {
         let clause_text = text.slice(raw.range.clone());
@@ -195,7 +195,7 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
 /// Whether a spell or static clause is a keyword line the keyword reader does not know
 /// (`Mayhem {1}{B}`): one line without a closing period that no template reads. It is kept as a
 /// keyword clause so that it does not stand in the way of the effect lines around it.
-fn is_unread_keyword_line(text: &str, kind: ClauseKind, x_free: bool, own: &[String]) -> bool {
+fn is_unread_keyword_line(text: &str, kind: ClauseKind, x_free: bool, own: &read::Own) -> bool {
     matches!(kind, ClauseKind::Spell | ClauseKind::Static)
         && !text.contains('\n')
         && !text.trim_end().ends_with(['.', '"', '\u{201d}'])
@@ -215,12 +215,19 @@ fn own_names(face: &PrintedFace) -> Vec<String> {
     names
 }
 
-/// The subtypes on the face's type line, which the readers take for subtypes whether or not the rules' list has them.
-fn own_subtypes(face: &PrintedFace) -> Vec<String> {
-    face.type_line
-        .split_once('\u{2014}')
-        .map(|(_, subtypes)| subtypes.split_whitespace().map(str::to_owned).collect())
-        .unwrap_or_default()
+/// What the readers take from the face besides its text: the subtypes on its type line, which count as subtypes
+/// whether or not the rules' list has them, and the power and toughness when they are printed as numbers.
+fn own_face(face: &PrintedFace) -> read::Own {
+    let number = |printed: &Option<String>| printed.as_deref().and_then(|text| text.parse().ok());
+    read::Own {
+        subtypes: face
+            .type_line
+            .split_once('\u{2014}')
+            .map(|(_, subtypes)| subtypes.split_whitespace().map(str::to_owned).collect())
+            .unwrap_or_default(),
+        power: number(&face.power),
+        toughness: number(&face.toughness),
+    }
 }
 
 /// Whether the face is an Aura.
@@ -382,7 +389,11 @@ mod tests {
         "Draw a card.\nGoad target creature.",
         Some(ImplStatus::Manual)
     )]
-    #[case::unreadable_keyword_only("Creature \u{2014} Elf", "Undying", Some(ImplStatus::Manual))]
+    #[case::unreadable_keyword_only(
+        "Creature \u{2014} Elf",
+        "Horsemanship",
+        Some(ImplStatus::Manual)
+    )]
     #[case::reminder_only("Basic Land \u{2014} Forest", "({T}: Add {G}.)", None)]
     #[case::vanilla("Creature \u{2014} Bear", "", None)]
     #[case::whitespace_only("Creature \u{2014} Bear", "  \n ", None)]

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "a8828c17-190b-4e64-a0f2-8d14c013d692",
+  "name": "Rakdos Headliner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rakdos Headliner",
+      "oracle_fingerprint": "4e18bc3149c52120ac288eeb2b9079aa",
+      "abilities": [{ "Keyword": "Haste" }, { "Keyword": { "Echo": [{ "Discard": {} }] } }]
+    }
+  ]
+}

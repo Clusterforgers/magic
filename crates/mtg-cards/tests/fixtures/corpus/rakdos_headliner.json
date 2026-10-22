@@ -1,0 +1,30 @@
+{
+  "id": "aad6576b-605c-4007-a2a7-0d7550520d6d",
+  "oracle_id": "a8828c17-190b-4e64-a0f2-8d14c013d692",
+  "name": "Rakdos Headliner",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mh2",
+  "collector_number": "210",
+  "rarity": "uncommon",
+  "released_at": "2021-06-18",
+  "digital": false,
+  "mana_cost": "{B}{R}",
+  "cmc": 2,
+  "type_line": "Creature — Devil",
+  "oracle_text": "Haste\nEcho—Discard a card. (At the beginning of your upkeep, if this came under your control since the beginning of your last upkeep, sacrifice it unless you pay its echo cost.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [
+    "Haste",
+    "Echo"
+  ]
+}

@@ -11,7 +11,7 @@
 //! control, attack and block restrictions, characteristic-defining abilities and the power and toughness they define), the
 //! rules of the game as effects and as static abilities (attack and block requirements, spells that can't be countered,
 //! players who can't gain life, draw or search, a revealed library top, triggers that trigger again), the keywords of
-//! combat, flash, hexproof, enchant, equip, reconfigure, kicker and multikicker, flashback, evoke and overload, cycling, permissions to cast (from another zone, without paying, as though with flash), cost modifiers, attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
+//! combat, flash, hexproof, enchant, equip, reconfigure, kicker and multikicker, flashback, evoke and overload, cycling, permissions to cast (from another zone, without paying, as though with flash), cost modifiers, attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry, echo, cumulative upkeep, undying, persist), and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::{FACES, PLAIN_MANA_ABILITY, VARIABLE_STATS, X_COST};
@@ -58,6 +58,9 @@ const RUNS: &[&str] = &[
     "Trigger.Nth",
     "Amount.Triggering",
     "Amount.Players",
+    "Amount.Greatest",
+    "Amount.Total",
+    "Amount.CardTypes",
     "Amount.LowestLife",
     "Amount.HighestLife",
     "Cost.Tap",
@@ -113,6 +116,7 @@ const RUNS: &[&str] = &[
     "Effect.Untap",
     "Effect.Attach",
     "Effect.Unattach",
+    "Effect.JoinAttack",
     "Effect.Transform",
     "Effect.WinGame",
     "Effect.Surveil",
@@ -256,6 +260,13 @@ const RUNS: &[&str] = &[
     "Keyword.Escape",
     "Keyword.Rebound",
     "Keyword.Aftermath",
+    "Keyword.Dash",
+    "Keyword.Ninjutsu",
+    "Keyword.Echo",
+    "Keyword.CumulativeUpkeep",
+    "Keyword.Undying",
+    "Keyword.Persist",
+    "Condition.NewlyControlled",
     "Rule.CanBeCommander",
 ];
 
@@ -507,9 +518,9 @@ mod tests {
     #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", true)]
     #[case::mana_a_land_could_produce("Effect.AddMana.ProducedBy", true)]
     #[case::devotion("Amount.Devotion", false)]
-    #[case::the_greatest_value("Amount.Greatest", false)]
-    #[case::totals("Amount.Total", false)]
-    #[case::card_types_among_cards("Amount.CardTypes", false)]
+    #[case::the_greatest_value("Amount.Greatest", true)]
+    #[case::totals("Amount.Total", true)]
+    #[case::card_types_among_cards("Amount.CardTypes", true)]
     #[case::paying_energy("Cost.PayEnergy", true)]
     #[case::paying_a_counted_amount_of_energy("Cost.PayEnergy.Counted", false)]
     #[case::removing_counters_as_a_cost("Cost.RemoveCounters", true)]
@@ -553,6 +564,14 @@ mod tests {
     #[case::escape("Keyword.Escape", true)]
     #[case::rebound("Keyword.Rebound", true)]
     #[case::aftermath("Keyword.Aftermath", true)]
+    #[case::dash("Keyword.Dash", true)]
+    #[case::ninjutsu("Keyword.Ninjutsu", true)]
+    #[case::joining_an_attack("Effect.JoinAttack", true)]
+    #[case::echo("Keyword.Echo", true)]
+    #[case::cumulative_upkeep("Keyword.CumulativeUpkeep", true)]
+    #[case::undying("Keyword.Undying", true)]
+    #[case::persist("Keyword.Persist", true)]
+    #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]
     #[case::the_highest_life_total("Amount.HighestLife", true)]

@@ -1,0 +1,27 @@
+{
+  "id": "8d134465-8d7d-458b-99e5-e6aa6d285214",
+  "oracle_id": "3ba81fbe-2c53-495b-9a2b-f124475bd71b",
+  "name": "Drove of Elves",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cma",
+  "collector_number": "101",
+  "rarity": "uncommon",
+  "released_at": "2017-06-09",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Elf",
+  "oracle_text": "Hexproof\nDrove of Elves's power and toughness are each equal to the number of green permanents you control.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Hexproof"
+  ],
+  "power": "*",
+  "toughness": "*"
+}

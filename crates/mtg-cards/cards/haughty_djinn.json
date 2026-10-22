@@ -1,0 +1,45 @@
+{
+  "oracle_id": "44036bb5-f300-40bd-9180-6b246315d886",
+  "name": "Haughty Djinn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haughty Djinn",
+      "oracle_fingerprint": "abe56de18227d6b58c368bc1402862d9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "toughness": 4
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        }
+      ]
+    }
+  ]
+}

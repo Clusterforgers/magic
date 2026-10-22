@@ -9,6 +9,7 @@ use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::effect::Effect;
 use mtg_cards::mana::ManaCostX;
 use mtg_cards::refs::{Pred, Ref, Selector, Targetable, ZoneKind};
+use mtg_cards::value::Amount;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_engine::GameSetup;
@@ -27,6 +28,7 @@ fn payment(who: Ref, price: Cost, paid: Vec<Effect>, unpaid: Vec<Effect>) -> Eff
     Effect::Pay {
         who,
         cost: price,
+        times: Amount::one(),
         paid,
         unpaid,
     }

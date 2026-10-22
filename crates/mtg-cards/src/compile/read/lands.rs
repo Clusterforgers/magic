@@ -4,6 +4,7 @@
 
 use super::amounts::{count_word, number_word};
 use super::effects::Template;
+use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
 use crate::ability::Ability;
 use crate::effect::Effect;
@@ -157,4 +158,49 @@ pub fn from_a_zone_text(permission: &CastPermission) -> Option<String> {
         }
         _ => None,
     }
+}
+
+/// "You may cast creature spells from the top of your library.", "You may cast Merfolk spells from the top of your
+/// library.": a `MayCast` permission over the cards that match, cast from the library.
+pub fn cast_from_the_top(r: &mut Reader<'_>) -> Option<Ability> {
+    r.need("you may cast")?;
+    let spells = phrase(r, Form::All)?;
+    let [Pred::Spell, kinds @ ..] = spells.0.as_slice() else {
+        return None;
+    };
+    (!kinds.is_empty()).then_some(())?;
+    r.need("from the top of your library")?;
+    Some(Ability::Rule {
+        rule: GameRule::MayCast(CastPermission {
+            who: Ref::You,
+            what: Selector(kinds.to_vec()),
+            from: Some(ZoneKind::Library),
+            free: false,
+            flash: false,
+            only: None,
+            play: false,
+        }),
+        condition: None,
+        from: ZoneKind::Battlefield,
+    })
+}
+
+/// The wording of the permission `cast_from_the_top` reads.
+pub fn cast_from_the_top_text(permission: &CastPermission) -> Option<String> {
+    let ordinary = permission.who == Ref::You
+        && permission.from == Some(ZoneKind::Library)
+        && !permission.free
+        && !permission.flash
+        && permission.only.is_none()
+        && !permission.play
+        && !permission.what.0.is_empty();
+    if !ordinary {
+        return None;
+    }
+    let mut preds = vec![Pred::Spell];
+    preds.extend(permission.what.0.iter().cloned());
+    let spells = phrase_text(&Selector(preds), Form::All)?;
+    Some(format!(
+        "You may cast {spells} from the top of your library"
+    ))
 }

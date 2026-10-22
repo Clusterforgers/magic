@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ea5e3401-bd6c-47bb-a52a-8eec5f09455d",
+  "name": "Lord of Extinction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lord of Extinction",
+      "oracle_fingerprint": "dff37d49658c89d6722384dd47a7817d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "In": "Graveyard" }] },
+                  "toughness": { "Count": [{ "In": "Graveyard" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

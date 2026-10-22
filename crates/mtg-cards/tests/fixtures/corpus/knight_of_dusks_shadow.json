@@ -1,0 +1,27 @@
+{
+  "id": "33dfd2fe-e0e0-465c-b730-a30e6f5c271c",
+  "oracle_id": "815ae30f-f455-4795-96eb-4bcc41d415e8",
+  "name": "Knight of Dusk's Shadow",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dmu",
+  "collector_number": "96",
+  "rarity": "uncommon",
+  "released_at": "2022-09-09",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nYour opponents can't gain life.\n{1}{B}: This creature gets +1/+1 until end of turn.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Menace"
+  ],
+  "power": "2",
+  "toughness": "2"
+}

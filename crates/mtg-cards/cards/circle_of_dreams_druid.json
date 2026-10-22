@@ -1,0 +1,26 @@
+{
+  "oracle_id": "1c857fa4-e823-494d-9ea4-7eb9e719c9b6",
+  "name": "Circle of Dreams Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Circle of Dreams Druid",
+      "oracle_fingerprint": "e2b7b50a42dc61bccaf8c06ddc2ed7bd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green"] },
+                  "times": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

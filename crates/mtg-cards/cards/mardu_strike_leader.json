@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9be8e04f-f87f-4477-93f3-c546e9b346f0",
+  "name": "Mardu Strike Leader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mardu Strike Leader",
+      "oracle_fingerprint": "24bbaccd73e6d5a8b0a53670c17c93ae",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Warrior",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Warrior"],
+                      "power": 2,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Dash": "{3}{B}" } }
+      ]
+    }
+  ]
+}

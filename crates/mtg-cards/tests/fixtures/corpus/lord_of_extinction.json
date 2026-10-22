@@ -1,0 +1,27 @@
+{
+  "id": "4aaf4d64-b5ef-44ae-b25a-7a5ea8f72170",
+  "oracle_id": "ea5e3401-bd6c-47bb-a52a-8eec5f09455d",
+  "name": "Lord of Extinction",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "295",
+  "rarity": "mythic",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{3}{B}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Elemental",
+  "oracle_text": "Lord of Extinction's power and toughness are each equal to the number of cards in all graveyards.",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [],
+  "power": "*",
+  "toughness": "*"
+}

@@ -17,8 +17,10 @@ pub mod commander_cards;
 pub mod copy_cards;
 pub mod corpus;
 pub mod cost_cards;
+pub mod count_cards;
 pub mod counter_cards;
 pub mod decks;
+pub mod defining_cards;
 pub mod driver;
 pub mod evasion_cards;
 pub mod event_cards;
@@ -52,6 +54,7 @@ pub mod script_error;
 pub mod small_cards;
 pub mod static_cards;
 pub mod trigger_cards;
+pub mod upkeep_cards;
 pub mod vehicle_cards;
 pub mod windows;
 pub mod x_after_cards;
@@ -70,11 +73,13 @@ pub use combat_keyword_cards::combat_keywords_fuzz_setup;
 pub use commander_cards::{commander_fuzz_setup, partner_fuzz_setup};
 pub use copy_cards::{copy_fuzz_setup, spell_copy_fuzz_setup};
 pub use cost_cards::cost_fuzz_setup;
+pub use count_cards::count_fuzz_setup;
 pub use counter_cards::counters_fuzz_setup;
 pub use decks::{
     archon_fuzz_setup, fuzz_setup, keyword_fuzz_setup, library_fuzz_setup, ramp_fuzz_setup,
     removal_fuzz_setup, spell_fuzz_setup, symbol_fuzz_setup, trigger_fuzz_setup,
 };
+pub use defining_cards::defining_fuzz_setup;
 pub use driver::Driver;
 pub use evasion_cards::evasion_fuzz_setup;
 pub use event_cards::events_fuzz_setup;
@@ -108,6 +113,7 @@ pub use scenario::{
 pub use script_error::ScriptError;
 pub use small_cards::small_fuzz_setup;
 pub use static_cards::statics_fuzz_setup;
+pub use upkeep_cards::upkeep_fuzz_setup;
 pub use vehicle_cards::vehicle_fuzz_setup;
 pub use windows::{SeatWindows, Windows};
 pub use x_after_cards::x_after_fuzz_setup;

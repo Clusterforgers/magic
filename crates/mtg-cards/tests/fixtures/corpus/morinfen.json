@@ -1,0 +1,28 @@
+{
+  "id": "b5006ad3-16ca-4be3-8d56-d4fe4e9e0a44",
+  "oracle_id": "d69f3aaf-8462-432d-afaf-4176ac04962b",
+  "name": "Morinfen",
+  "lang": "en",
+  "layout": "normal",
+  "set": "wth",
+  "collector_number": "75",
+  "rarity": "rare",
+  "released_at": "1997-06-09",
+  "digital": false,
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5,
+  "type_line": "Legendary Creature — Phyrexian Horror",
+  "oracle_text": "Flying\nCumulative upkeep—Pay 1 life. (At the beginning of your upkeep, put an age counter on this permanent, then sacrifice it unless you pay its upkeep cost for each age counter on it.)",
+  "power": "5",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Cumulative upkeep",
+    "Flying"
+  ]
+}

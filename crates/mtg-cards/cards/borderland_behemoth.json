@@ -1,0 +1,41 @@
+{
+  "oracle_id": "378a78d8-9001-4aa5-a66b-2aca27fa8180",
+  "name": "Borderland Behemoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Borderland Behemoth",
+      "oracle_fingerprint": "28ea10f96a4ca8a0cc26d49332e9736e",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": 4,
+                      "of": {
+                        "Count": [{ "Subtype": "Giant" }, "Other", { "ControlledBy": "You" }]
+                      }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": 4,
+                      "of": {
+                        "Count": [{ "Subtype": "Giant" }, "Other", { "ControlledBy": "You" }]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

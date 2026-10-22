@@ -1,0 +1,21 @@
+{
+  "id": "d0f42a19-c180-45b1-9f4c-787cf3a4a649",
+  "oracle_id": "2876e74f-a242-4995-9702-0b737a1ab67a",
+  "name": "Psychosis Crawler",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "234",
+  "rarity": "rare",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{5}",
+  "cmc": 5.0,
+  "type_line": "Artifact Creature — Phyrexian Horror",
+  "oracle_text": "Psychosis Crawler's power and toughness are each equal to the number of cards in your hand.\nWhenever you draw a card, each opponent loses 1 life.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "power": "*",
+  "toughness": "*"
+}

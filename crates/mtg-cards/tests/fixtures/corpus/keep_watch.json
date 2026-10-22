@@ -1,0 +1,23 @@
+{
+  "id": "e98489bc-b5fd-43f2-9afb-198e34e70723",
+  "oracle_id": "847b5be5-cb0c-4857-bcd9-c5cfe55fdaeb",
+  "name": "Keep Watch",
+  "lang": "en",
+  "layout": "normal",
+  "set": "hop",
+  "collector_number": "10",
+  "rarity": "common",
+  "released_at": "2009-09-04",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Draw a card for each attacking creature.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

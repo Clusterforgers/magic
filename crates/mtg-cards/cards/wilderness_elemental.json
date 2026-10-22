@@ -1,0 +1,34 @@
+{
+  "oracle_id": "478d1acf-93fa-4695-83be-693b839ebf80",
+  "name": "Wilderness Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wilderness Elemental",
+      "oracle_fingerprint": "58751fd49eddec2a81a3cc194858abd8",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Not": { "Supertype": "Basic" } },
+                      { "ControlledBy": "Opponents" }
+                    ]
+                  },
+                  "toughness": 3
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

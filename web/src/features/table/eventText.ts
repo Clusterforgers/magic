@@ -439,6 +439,10 @@ function describePublic(event: Event, n: EventNames): LogLine {
   if ('Unattached' in event) {
     return line(`${n.card(event.Unattached.object)} becomes unattached`)
   }
+  if ('JoinedAttack' in event) {
+    const { object, target } = event.JoinedAttack
+    return line(`${n.card(object)} enters attacking ${attackTarget(target, n)}`)
+  }
   if ('TurnBegan' in event) {
     return line(`Turn ${event.TurnBegan.number} begins: ${n.seat(event.TurnBegan.active)}'s turn`)
   }

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "17425a60-7554-4740-9455-976edd63c106",
+  "name": "Hound of Griselbrand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hound of Griselbrand",
+      "oracle_fingerprint": "1c5c480022762331a27a162698665e3e",
+      "abilities": [{ "Keyword": "DoubleStrike" }, { "Keyword": "Undying" }]
+    }
+  ]
+}

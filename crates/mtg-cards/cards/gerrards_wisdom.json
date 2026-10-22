@@ -1,0 +1,29 @@
+{
+  "oracle_id": "3e30e8f2-f437-4620-a3bc-dd9c29ae6570",
+  "name": "Gerrard's Wisdom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gerrard's Wisdom",
+      "oracle_fingerprint": "3e4bcb818156b665ff8f0a3c22f556aa",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
