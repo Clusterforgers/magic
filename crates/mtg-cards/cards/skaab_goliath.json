@@ -1,0 +1,20 @@
+{
+  "oracle_id": "498707db-258f-423a-9ff6-9e294fce84d6",
+  "name": "Skaab Goliath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skaab Goliath",
+      "oracle_fingerprint": "4492cd2f8f10dc18a93cbff90f794a32",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }], "count": 2 } }],
+            "required": true
+          }
+        },
+        { "Keyword": "Trample" }
+      ]
+    }
+  ]
+}

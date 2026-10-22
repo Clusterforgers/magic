@@ -35,6 +35,7 @@ mod player_aura_view;
 mod preview_fixture;
 mod projection;
 mod refill_hidden;
+mod required_cost_hidden;
 mod rest;
 mod rest_cards;
 mod rest_decks;

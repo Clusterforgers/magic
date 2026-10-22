@@ -1,0 +1,20 @@
+{
+  "oracle_id": "10fd868f-45b3-4e2f-89d9-5c0b8a92f9fe",
+  "name": "Stitched Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stitched Drake",
+      "oracle_fingerprint": "b7c1b7ae8729e7a8d36bebbff42f3080",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        { "Keyword": "Flying" }
+      ]
+    }
+  ]
+}

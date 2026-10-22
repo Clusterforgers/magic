@@ -1,0 +1,20 @@
+{
+  "oracle_id": "6d87415b-0618-48e1-9510-320c4611ecda",
+  "name": "Withering Boon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Withering Boon",
+      "oracle_fingerprint": "d5dba06656645a7b2a5f8467a195a364",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "PayLife": 3 }], "required": true } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Type": "Creature" }] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

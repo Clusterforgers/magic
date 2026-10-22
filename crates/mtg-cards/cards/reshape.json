@@ -1,0 +1,36 @@
+{
+  "oracle_id": "42a3855d-25ab-45b3-9e5d-9a0f3da35a05",
+  "name": "Reshape",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reshape",
+      "oracle_fingerprint": "db430d875963b22af5dcf895e9252d3d",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Artifact" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                  ],
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

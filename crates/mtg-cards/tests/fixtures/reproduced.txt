@@ -15,6 +15,7 @@ Ajani's Pridemate
 Akrasan Squire
 Akroma's Vengeance
 Alpha Deathclaw
+Altar's Reap
 Ambitious Aetherborn
 Anafenza, Kin-Tree Spirit
 Ancestral Vision
@@ -99,6 +100,7 @@ Caravan Escort
 Carnage Tyrant
 Cascade Bluffs
 Cathars' Crusade
+Cathartic Reunion
 Celestial Archon
 Celestial Crusader
 Changeling Outcast
@@ -127,6 +129,7 @@ Courser of Kruphix
 Cram Session
 Crib Swap
 Crocanura
+Crop Rotation
 Crucible of Worlds
 Crystal Quarry
 Curate
@@ -187,6 +190,7 @@ Easterling Vanguard
 Echo Inspector
 Echo Mage
 Echoes of the Kin Tree
+Electric Revelation
 Elegant Edgecrafters
 Elven Ambush
 Elvish Aberration
@@ -280,7 +284,9 @@ Hada Spy Patrol
 Hall of Triumph
 Hammer Dropper
 Hangar Scrounger
+Harrow
 Haughty Djinn
+Headless Skaab
 Hearthhull, the Worldseed
 Hengegate Pathway // Mistgate Pathway
 Herald of Anguish
@@ -332,6 +338,7 @@ Krenko's Enforcer
 Krosan Grip
 Lat-Nam Adept
 Latchkey Faerie
+Laughing Mad
 Lavacore Elemental
 Lazotep Reaver
 Levitation
@@ -349,6 +356,7 @@ Ludevic's Test Subject // Ludevic's Abomination
 Lumen-Class Frigate
 Lurching Rotbeast
 Make Disappear
+Makeshift Mauler
 Mana Bloom
 Manabarbs
 Manor Gate
@@ -448,7 +456,9 @@ Reflecting Pool
 Reiterate
 Rejuvenation Chamber
 Relentless Advance
+Relentless Skaabs
 Rescue Skiff
+Reshape
 Revel Ruiner
 Reverberate
 Reverse Engineer
@@ -500,6 +510,7 @@ Sinister Starfish
 Sinuous Vermin
 Siren Lookout
 Sister Repentia
+Skaab Goliath
 Skeletal Changeling
 Skirk Prospector
 Skitter Eel
@@ -537,6 +548,7 @@ Steady Progress
 Steam Vents
 Steampath Charger
 Steelburr Champion
+Stitched Drake
 Stoke the Flames
 Stonewood Invocation
 Storm Fleet Swashbuckler
@@ -582,6 +594,7 @@ Thopter Fabricator
 Thorn-Thrash Viashino
 Thought Monitor
 Thoughtcast
+Thrill of Possibility
 Thriving Bluff
 Thriving Grove
 Thriving Heath
@@ -597,6 +610,7 @@ Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Tithe Drinker
 Tithebearer Giant
+Trash for Treasure
 Traumatic Visions
 Treasure Cruise
 Trove Tracker
@@ -622,6 +636,7 @@ Vanishment
 Vanquish the Horde
 Vengeful Vampire
 Vestige of Emrakul
+Village Rites
 Viridian Corrupter
 Visionary Augmenter
 Vivid Crag
@@ -639,11 +654,13 @@ Wasteland Raider
 Weaponcraft Enthusiast
 Wear // Tear
 Wedgelight Rammer
+Weigh Down
 Whir of Invention
 Wild Wasteland
 Wilderness Elemental
 Wings of the Guard
 Wipe Away
+Withering Boon
 Wooded Bastion
 Woodripper
 Wrath of God

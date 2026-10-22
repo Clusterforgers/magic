@@ -1,0 +1,28 @@
+{
+  "oracle_id": "28b46183-c62f-47b1-9fee-3ba148202cab",
+  "name": "Crop Rotation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crop Rotation",
+      "oracle_fingerprint": "27a136ffecec1f87af7745898caf11f2",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [{ "Type": "Land" }], "as": "land" } },
+              { "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

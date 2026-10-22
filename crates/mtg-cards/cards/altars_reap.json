@@ -1,0 +1,20 @@
+{
+  "oracle_id": "6a125750-2b8c-4f9d-8173-ac8d14c91ddb",
+  "name": "Altar's Reap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Altar's Reap",
+      "oracle_fingerprint": "c35fcea4edc49b0a5e42bbaec5073eb2",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }] } }
+      ]
+    }
+  ]
+}

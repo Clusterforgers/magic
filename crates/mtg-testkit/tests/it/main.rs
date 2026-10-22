@@ -195,6 +195,7 @@ mod removal_spells;
 mod removal_stack;
 mod replacement;
 mod replacement_fuzz;
+mod required_costs;
 mod restricted_fuzz;
 mod restricted_mana;
 mod rules_fuzz;

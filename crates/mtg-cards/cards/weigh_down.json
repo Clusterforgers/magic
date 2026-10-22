@@ -1,0 +1,33 @@
+{
+  "oracle_id": "51f1ceb9-2305-4a4e-b422-7dd7f8deef98",
+  "name": "Weigh Down",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Weigh Down",
+      "oracle_fingerprint": "787ae012e8e603068a8ed8a18ebacf19",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": -3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

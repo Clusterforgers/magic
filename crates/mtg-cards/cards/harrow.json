@@ -1,0 +1,34 @@
+{
+  "oracle_id": "705509e9-a034-4a5a-9c65-66f58748b8a2",
+  "name": "Harrow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harrow",
+      "oracle_fingerprint": "e7ada4d1b7200978180467b1f8e4b19a",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": { "min": 0, "max": 2 },
+                  "as": "land"
+                }
+              },
+              { "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
