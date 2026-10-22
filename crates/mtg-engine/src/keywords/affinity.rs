@@ -60,7 +60,10 @@ mod tests {
         #[case] kind: Selector,
         #[case] per: &str,
     ) {
-        assert_eq!(Affinity.adds_abilities(&Keyword::Affinity(kind)), [written(per)]);
+        assert_eq!(
+            Affinity.adds_abilities(&Keyword::Affinity(kind)),
+            [written(per)]
+        );
     }
 
     #[rstest]

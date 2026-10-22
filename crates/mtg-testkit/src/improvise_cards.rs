@@ -52,9 +52,11 @@ fn with_keywords(
         .with_type(CardType::Creature)
         .with_mana_cost(cost_of(cost)?)
         .with_power_toughness(2, 2);
-    Ok(Arc::new(keywords.into_iter().fold(base, |card, keyword| {
-        card.with_rules(Ability::Keyword(keyword))
-    })))
+    Ok(Arc::new(
+        keywords.into_iter().fold(base, |card, keyword| {
+            card.with_rules(Ability::Keyword(keyword))
+        }),
+    ))
 }
 
 /// Affinity for the permanents of one card type.

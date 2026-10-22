@@ -85,10 +85,7 @@ mod tests {
             find: serde_json::from_str::<Selector>(find).unwrap(),
             cost: Cost::mana(mana.parse().unwrap()),
         };
-        assert_eq!(
-            Typecycling.adds_abilities(&keyword),
-            [written(cost, find)]
-        );
+        assert_eq!(Typecycling.adds_abilities(&keyword), [written(cost, find)]);
     }
 
     #[rstest]

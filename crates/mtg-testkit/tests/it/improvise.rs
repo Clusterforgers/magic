@@ -202,13 +202,22 @@ fn the_payment_taps_the_artifacts_named_before_the_mana(#[values(2, 3, 4)] seats
         .position(|e| matches!(e, Event::ManaAdded { .. }))
         .unwrap();
     for artifact in &artifacts {
-        assert!(at_tap(artifact) < first_mana, "the artifact taps before the mana");
+        assert!(
+            at_tap(artifact) < first_mana,
+            "the artifact taps before the mana"
+        );
     }
     assert_eq!(tapped_count(&driver, "Island"), 2);
     assert_eq!(
         artifacts
             .iter()
-            .filter(|id| driver.state().object(**id).unwrap().permanent().unwrap().tapped())
+            .filter(|id| driver
+                .state()
+                .object(**id)
+                .unwrap()
+                .permanent()
+                .unwrap()
+                .tapped())
             .count(),
         3
     );
@@ -225,7 +234,13 @@ fn an_artifact_that_taps_for_mana_improvises_for_one_instead(#[values(2, 3, 4)] 
     ));
     begin(&mut driver, "Reverse Engineer");
     driver
-        .pay_helped_by(&["Island", "Island"], &[], &["Sol Ring", "Trinket", "Gadget"], &[], 0)
+        .pay_helped_by(
+            &["Island", "Island"],
+            &[],
+            &["Sol Ring", "Trinket", "Gadget"],
+            &[],
+            0,
+        )
         .unwrap();
     assert_eq!(tapped_count(&driver, "Sol Ring"), 1);
     assert_eq!(driver.state().stack().len(), 1);
@@ -248,18 +263,38 @@ fn an_artifact_that_is_not_offered_is_refused(#[values(2, 3, 4)] seats: usize) {
         improvise: vec![trinkets[0], trinkets[1], bear],
         ..Payment::default()
     };
-    payment.taps = driver.pay_options().unwrap().sources.iter().map(|o| o.source).collect();
-    assert_eq!(refused(&mut driver, payment), PaymentError::NotOffered(bear));
+    payment.taps = driver
+        .pay_options()
+        .unwrap()
+        .sources
+        .iter()
+        .map(|o| o.source)
+        .collect();
+    assert_eq!(
+        refused(&mut driver, payment),
+        PaymentError::NotOffered(bear)
+    );
 }
 
 #[rstest]
 fn an_artifact_named_twice_is_refused(#[values(2, 3, 4)] seats: usize) {
-    let mut driver = driver(table(seats, "Reverse Engineer", &["Island", "Island"], &["Trinket"; 3]));
+    let mut driver = driver(table(
+        seats,
+        "Reverse Engineer",
+        &["Island", "Island"],
+        &["Trinket"; 3],
+    ));
     begin(&mut driver, "Reverse Engineer");
     let trinkets = ids_of(&driver, "Trinket");
     let payment = Payment {
         improvise: vec![trinkets[0], trinkets[0], trinkets[1]],
-        taps: driver.pay_options().unwrap().sources.iter().map(|o| o.source).collect(),
+        taps: driver
+            .pay_options()
+            .unwrap()
+            .sources
+            .iter()
+            .map(|o| o.source)
+            .collect(),
         ..Payment::default()
     };
     assert_eq!(
@@ -270,11 +305,22 @@ fn an_artifact_named_twice_is_refused(#[values(2, 3, 4)] seats: usize) {
 
 #[rstest]
 fn more_artifacts_than_the_generic_cost_asks_are_refused(#[values(2, 3, 4)] seats: usize) {
-    let mut driver = driver(table(seats, "Reverse Engineer", &["Island", "Island"], &["Trinket"; 4]));
+    let mut driver = driver(table(
+        seats,
+        "Reverse Engineer",
+        &["Island", "Island"],
+        &["Trinket"; 4],
+    ));
     begin(&mut driver, "Reverse Engineer");
     let payment = Payment {
         improvise: ids_of(&driver, "Trinket"),
-        taps: driver.pay_options().unwrap().sources.iter().map(|o| o.source).collect(),
+        taps: driver
+            .pay_options()
+            .unwrap()
+            .sources
+            .iter()
+            .map(|o| o.source)
+            .collect(),
         ..Payment::default()
     };
     assert_eq!(refused(&mut driver, payment), PaymentError::HelpedTooMuch);
@@ -282,21 +328,40 @@ fn more_artifacts_than_the_generic_cost_asks_are_refused(#[values(2, 3, 4)] seat
 
 #[rstest]
 fn an_artifact_also_tapped_for_mana_is_refused(#[values(2, 3, 4)] seats: usize) {
-    let mut driver = driver(table(seats, "Reverse Engineer", &["Island", "Island"], &["Sol Ring", "Trinket"]));
+    let mut driver = driver(table(
+        seats,
+        "Reverse Engineer",
+        &["Island", "Island"],
+        &["Sol Ring", "Trinket"],
+    ));
     begin(&mut driver, "Reverse Engineer");
     let ring = ids_of(&driver, "Sol Ring")[0];
-    let mut taps: Vec<ManaSource> = driver.pay_options().unwrap().sources.iter().map(|o| o.source).collect();
-    taps.push(ManaSource { object: ring, ability: 0 });
+    let mut taps: Vec<ManaSource> = driver
+        .pay_options()
+        .unwrap()
+        .sources
+        .iter()
+        .map(|o| o.source)
+        .collect();
+    taps.push(ManaSource {
+        object: ring,
+        ability: 0,
+    });
     let payment = Payment {
         improvise: vec![ring, ids_of(&driver, "Trinket")[0]],
         taps,
         ..Payment::default()
     };
-    assert_eq!(refused(&mut driver, payment), PaymentError::ObjectTappedTwice(ring));
+    assert_eq!(
+        refused(&mut driver, payment),
+        PaymentError::ObjectTappedTwice(ring)
+    );
 }
 
 #[rstest]
-fn an_artifact_creature_taps_for_convoke_or_improvise_and_not_both(#[values(2, 3, 4)] seats: usize) {
+fn an_artifact_creature_taps_for_convoke_or_improvise_and_not_both(
+    #[values(2, 3, 4)] seats: usize,
+) {
     let mut driver = driver(table(
         seats,
         "Improvise Convoke Bear",
@@ -309,12 +374,18 @@ fn an_artifact_creature_taps_for_convoke_or_improvise_and_not_both(#[values(2, 3
     assert!(options.help.improvise.contains(&clockwork));
     assert!(options.help.convoke.iter().any(|o| o.creature == clockwork));
     let payment = Payment {
-        convoke: vec![Convoked { creature: clockwork, pays: None }],
+        convoke: vec![Convoked {
+            creature: clockwork,
+            pays: None,
+        }],
         improvise: vec![clockwork],
         taps: options.sources.iter().map(|o| o.source).collect(),
         ..Payment::default()
     };
-    assert_eq!(refused(&mut driver, payment), PaymentError::HelpedTwice(clockwork));
+    assert_eq!(
+        refused(&mut driver, payment),
+        PaymentError::HelpedTwice(clockwork)
+    );
 }
 
 // Automatic payment
@@ -365,7 +436,12 @@ fn improvise_stands_beside_convoke_and_delve(
 
 #[test]
 fn a_game_with_artifacts_tapped_for_improvise_replays_to_the_same_state() {
-    let mut driver = driver(table(2, "Reverse Engineer", &["Island", "Island"], &["Trinket"; 3]));
+    let mut driver = driver(table(
+        2,
+        "Reverse Engineer",
+        &["Island", "Island"],
+        &["Trinket"; 3],
+    ));
     begin(&mut driver, "Reverse Engineer");
     driver.answer(Answer::PayMana(PayChoice::Auto)).unwrap();
     let replayed = mtg_engine::replay(driver.engine().setup(), driver.engine().events()).unwrap();

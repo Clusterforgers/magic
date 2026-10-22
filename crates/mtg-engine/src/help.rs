@@ -336,7 +336,12 @@ fn tappers(help: Help<'_>, kept: &Used, occupied: &[ObjectId]) -> Vec<Tapper> {
     let improvising = help
         .improvise
         .iter()
-        .filter(|artifact| !help.convoke.iter().any(|option| option.creature == **artifact))
+        .filter(|artifact| {
+            !help
+                .convoke
+                .iter()
+                .any(|option| option.creature == **artifact)
+        })
         .map(|&object| Tapper {
             object,
             colors: Vec::new(),
@@ -562,6 +567,134 @@ mod tests {
         assert!(paid_two[0].used.taps(ObjectId(10)));
         let paid_one: Vec<&Variant> = found.iter().filter(|v| v.used.count() == 1).collect();
         assert_eq!(paid_one.len(), 2);
+    }
+
+    #[rstest]
+    #[case::an_artifact_pays_generic("{2}{R}", vec![], &[1], vec!["{2}{R}", "{1}{R}"])]
+    #[case::artifacts_stop_at_the_generic_part("{1}{R}", vec![], &[1, 2, 3], vec!["{1}{R}", "{R}"])]
+    #[case::artifacts_never_pay_a_colour("{R}", vec![], &[1], vec!["{R}"])]
+    #[case::an_artifact_creature_is_offered_once("{1}{R}", vec![(10, vec![Color::Red])], &[10], vec!["{1}{R}", "{R}", "{1}"])]
+    #[case::a_creature_and_an_artifact("{1}{R}", vec![(10, vec![Color::Red])], &[11], vec!["{1}{R}", "{R}", "{1}", "{0}"])]
+    #[case::artifacts_and_cards_share_the_generic_part("{2}", vec![], &[1, 2], vec!["{2}", "{1}", "{0}"])]
+    fn artifacts_that_improvise_pay_the_generic_part_of_a_plain_cost_fewest_first(
+        #[case] text: &str,
+        #[case] creatures: Vec<(u64, Vec<Color>)>,
+        #[case] artifacts: &[u64],
+        #[case] expected: Vec<&str>,
+    ) {
+        let offer: Vec<ConvokeOption> = creatures.iter().map(|(id, c)| creature(*id, c)).collect();
+        let help = Help {
+            convoke: &offer,
+            improvise: &cards(artifacts),
+            delve: &[],
+        };
+        let found = variants(&cost(text), help, &Used::default(), &[], &[]);
+        let counts: Vec<usize> = found.iter().map(|v| v.used.count()).collect();
+        assert!(
+            counts.windows(2).all(|pair| pair[0] <= pair[1]),
+            "{counts:?}"
+        );
+        let mut got = costs(&found);
+        got.sort();
+        let mut want: Vec<String> = expected.iter().map(ToString::to_string).collect();
+        want.sort();
+        assert_eq!(got, want);
+        // An artifact creature that convokes is named under convoke, and never twice.
+        for variant in &found {
+            let convoked: Vec<ObjectId> = variant.used.convoke.iter().map(|c| c.creature).collect();
+            assert!(variant.used.improvise.iter().all(|a| !convoked.contains(a)));
+        }
+    }
+
+    #[test]
+    fn an_artifact_that_is_also_a_mana_source_improvises_or_taps_for_mana_and_not_both() {
+        let source = ManaOption::new(
+            ManaSource {
+                object: ObjectId(10),
+                ability: 0,
+            },
+            ManaType::Colorless,
+        );
+        let help = Help {
+            convoke: &[],
+            improvise: &cards(&[10, 11]),
+            delve: &[],
+        };
+        let found = variants(&cost("{2}"), help, &Used::default(), &[], &[source]);
+        // Both artifacts improvise (the source stays untapped for nothing), or one of them does and the other is a source.
+        let both: Vec<&Variant> = found.iter().filter(|v| v.used.count() == 2).collect();
+        assert_eq!(both.len(), 1);
+        assert!(both[0].used.taps(ObjectId(10)) && both[0].used.taps(ObjectId(11)));
+        let one: Vec<&Variant> = found.iter().filter(|v| v.used.count() == 1).collect();
+        assert_eq!(one.len(), 2, "the source or the plain artifact improvises");
+    }
+
+    #[rstest]
+    #[case::one_artifact(&[1], &[], Some("{R}"))]
+    #[case::two_artifacts_for_one_generic(&[1, 2], &[], None)]
+    #[case::an_artifact_and_a_card_for_one_generic(&[1], &[7], None)]
+    #[case::an_artifact_is_not_a_colour(&[], &[], Some("{1}{R}"))]
+    fn reducing_a_cost_takes_the_artifacts_off_the_generic_part(
+        #[case] improvise: &[u64],
+        #[case] delve: &[u64],
+        #[case] expected: Option<&str>,
+    ) {
+        let used = Used {
+            improvise: cards(improvise),
+            delve: cards(delve),
+            ..Used::default()
+        };
+        let reduced = reduce(&cost("{1}{R}"), &used).ok().map(|c| c.to_string());
+        assert_eq!(reduced.as_deref(), expected);
+    }
+
+    #[rstest]
+    #[case::fine(&[1], &[], &[], Ok(()))]
+    #[case::not_offered(&[9], &[], &[], Err(PaymentError::NotOffered(ObjectId(9))))]
+    #[case::twice(&[1, 1], &[], &[], Err(PaymentError::HelpedTwice(ObjectId(1))))]
+    #[case::tapped(&[1], &[1], &[], Err(PaymentError::AlreadyTapped(ObjectId(1))))]
+    #[case::also_tapped_for_mana(&[1], &[], &[1], Err(PaymentError::ObjectTappedTwice(ObjectId(1))))]
+    fn the_artifacts_named_are_checked_against_the_offer(
+        #[case] improvise: &[u64],
+        #[case] unusable: &[u64],
+        #[case] for_mana: &[u64],
+        #[case] expected: Result<(), PaymentError>,
+    ) {
+        let help = Help {
+            convoke: &[],
+            improvise: &cards(&[1]),
+            delve: &[],
+        };
+        let used = Used {
+            improvise: cards(improvise),
+            ..Used::default()
+        };
+        assert_eq!(
+            check(&used, help, &cards(unusable), &cards(for_mana)),
+            expected
+        );
+    }
+
+    #[test]
+    fn an_artifact_creature_named_for_convoke_and_improvise_helps_twice() {
+        let offer = [creature(1, &[Color::Red])];
+        let help = Help {
+            convoke: &offer,
+            improvise: &cards(&[1]),
+            delve: &[],
+        };
+        let used = Used {
+            convoke: vec![Convoked {
+                creature: ObjectId(1),
+                pays: None,
+            }],
+            improvise: cards(&[1]),
+            ..Used::default()
+        };
+        assert_eq!(
+            check(&used, help, &[], &[]),
+            Err(PaymentError::HelpedTwice(ObjectId(1)))
+        );
     }
 
     #[rstest]

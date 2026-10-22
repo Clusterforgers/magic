@@ -392,11 +392,7 @@ impl RandomBot {
     }
 
     /// Some of the creatures and cards offered, each creature paying {1} or a colour the plain `cost` still needs.
-    fn random_help(
-        &mut self,
-        cost: &ManaCost,
-        options: &PayOptions,
-    ) -> Used {
+    fn random_help(&mut self, cost: &ManaCost, options: &PayOptions) -> Used {
         let mut needs = ManaType::ALL.map(|mana| cost.required(mana));
         let mut generic = cost.generic();
         let mut creatures = options.help.convoke.clone();

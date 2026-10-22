@@ -757,7 +757,9 @@ impl<'a> Walker<'a> {
                     self.uses("Keyword", "Enchant.Elsewhere");
                 }
             }
-            Keyword::Protection(quality) | Keyword::Landwalk(quality) | Keyword::Affinity(quality) => {
+            Keyword::Protection(quality)
+            | Keyword::Landwalk(quality)
+            | Keyword::Affinity(quality) => {
                 self.selector(quality);
             }
             // The cost is paid as the cost of the activated ability the keyword adds.
