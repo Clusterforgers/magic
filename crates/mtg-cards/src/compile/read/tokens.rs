@@ -294,6 +294,8 @@ pub struct Reader<'a> {
     pub that_permanent: bool,
     /// The subtypes on the card's own type line, which are subtypes whether or not the rules' list has them.
     pub subtypes: Vec<String>,
+    /// Whether the trigger is about an attack at the monarch, so "that player controls" is the monarch's.
+    pub at_monarch: bool,
     /// Whether the ability works from the graveyard (its event is not about the card itself), so "return this card
     /// from your graveyard to the battlefield" has a card to return.
     pub from_graveyard: bool,
@@ -311,6 +313,7 @@ impl<'a> Reader<'a> {
             that_player: false,
             that_permanent: false,
             subtypes: Vec::new(),
+            at_monarch: false,
             from_graveyard: false,
         }
     }

@@ -434,6 +434,7 @@ impl<'a> Scope<'a> {
                 .map(Target::Player)
                 .into_iter()
                 .collect(),
+            Ref::Monarch => state.monarch().map(Target::Player).into_iter().collect(),
             Ref::Bound(name) => self
                 .bindings
                 .get(name)

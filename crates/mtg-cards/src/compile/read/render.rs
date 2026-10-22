@@ -74,6 +74,24 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(pronouns);
     }
+    // The player attacked is "that player" in a trigger on an attack at the monarch.
+    if matches!(
+        ability,
+        Ability::Triggered {
+            when: TriggerPattern::AttacksPlayer {
+                at: Ref::Monarch,
+                ..
+            },
+            ..
+        }
+    ) {
+        let pronouns: Vec<String> = texts
+            .iter()
+            .filter(|text| text.contains("the monarch controls"))
+            .map(|text| text.replace("the monarch controls", "that player controls"))
+            .collect();
+        texts.extend(pronouns);
+    }
     // An activated ability that opens with damage may say "It deals" for the source (Walking Ballista).
     if matches!(ability, Ability::Activated { .. }) {
         let pronouns: Vec<String> = texts

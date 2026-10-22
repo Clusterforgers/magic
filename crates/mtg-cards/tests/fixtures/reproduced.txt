@@ -9,6 +9,7 @@ Arrogant Wurm
 Arvad the Cursed
 Augury Raven
 Azorius Chancery
+Azure Fleet Admiral
 Azusa, Lost but Seeking
 Basking Rootwalla
 Battle Sliver
@@ -46,10 +47,12 @@ Curate
 Curse of Predation
 Curse of the Forsaken
 Curse of the Nightly Hunt
+Custodi Lich
 Cyclonic Rift
 Cytoshape
 Dauthi Horror
 Dauthi Marauder
+Dawnglade Regent
 Death Ward
 Deep Analysis
 Deepfathom Skulker
@@ -202,6 +205,7 @@ Tavern Ruffian // Tavern Smasher
 Tendo Ice Bridge
 Tendrils of Agony
 Thalia, Guardian of Thraben
+The Spear of Bashenga
 The Thing, Ben Grimm
 Thieving Magpie
 Throne of the High City

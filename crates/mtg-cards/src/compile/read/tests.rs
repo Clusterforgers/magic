@@ -173,6 +173,7 @@ mod life;
 mod lords;
 mod may;
 mod modes;
+mod monarch;
 mod pay;
 mod payments;
 mod prevention;
