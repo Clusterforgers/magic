@@ -1447,15 +1447,15 @@ impl Writer<'_> {
         for recipient in recipients {
             to.push(self.recipient(recipient)?);
         }
-        let mut text = format!(
-            "~ deals {} damage to {}",
+        let gained = match life {
+            Some(life) => format!(" and you gain {}", self.life(life)?),
+            None => String::new(),
+        };
+        Some(format!(
+            "~ deals {} damage to {}{gained}",
             points_text(dealt?)?,
             to.join(" and ")
-        );
-        if let Some(life) = life {
-            text.push_str(&format!(" and you gain {}", self.life(life)?));
-        }
-        Some(text)
+        ))
     }
 
     /// The objects a verb acts on: the target in full, or "all creatures".
