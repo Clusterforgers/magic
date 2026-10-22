@@ -193,8 +193,12 @@ fn keyword_way(
     let (way, name, cost, from_here) = match keyword {
         Keyword::Flashback(cost) => (CastWay::Flashback, "Flashback", cost, in_graveyard),
         Keyword::Escape(cost) => (CastWay::Escape, "Escape", cost, in_graveyard),
-        Keyword::JumpStart if in_graveyard => return discard_way(state, id, CastWay::JumpStart, instant),
-        Keyword::Retrace if in_graveyard => return discard_way(state, id, CastWay::Retrace, instant),
+        Keyword::JumpStart if in_graveyard => {
+            return discard_way(state, id, CastWay::JumpStart, instant);
+        }
+        Keyword::Retrace if in_graveyard => {
+            return discard_way(state, id, CastWay::Retrace, instant);
+        }
         Keyword::Evoke(cost) => (CastWay::Evoke, "Evoke", cost, in_hand),
         Keyword::Overload(cost) => (CastWay::Overload, "Overload", cost, in_hand),
         Keyword::Dash(cost) => (

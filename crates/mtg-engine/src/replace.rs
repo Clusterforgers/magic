@@ -349,8 +349,11 @@ fn leaves_stack_exiled(state: &GameState, item: &Item) -> bool {
             && to != Zone::Exile
             && state.object(object).is_some_and(|spell| {
                 spell.kind() == ObjectKind::Card
-                    && (matches!(spell.choices().way, Some(CastWay::Flashback | CastWay::JumpStart))
-                        || (spell.cast_from_graveyard() && keywords::aftermath::has(state, object)))
+                    && (matches!(
+                        spell.choices().way,
+                        Some(CastWay::Flashback | CastWay::JumpStart)
+                    ) || (spell.cast_from_graveyard()
+                        && keywords::aftermath::has(state, object)))
             })
     })
 }

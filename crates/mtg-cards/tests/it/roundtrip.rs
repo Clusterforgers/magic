@@ -605,12 +605,11 @@ fn token_ref() -> impl Strategy<Value = TokenRef> {
                     abilities: keywords.into_iter().map(Ability::Keyword).collect(),
                 }))
             }),
-        (reference(), vec(modification(), 0..2))
-            .prop_map(|(of, except)| TokenRef::CopyOf {
-                of,
-                except,
-                no_mana_cost: false,
-            }),
+        (reference(), vec(modification(), 0..2)).prop_map(|(of, except)| TokenRef::CopyOf {
+            of,
+            except,
+            no_mana_cost: false,
+        }),
         (reference(), any::<bool>()).prop_map(|(of, no_mana_cost)| TokenRef::CopyOf {
             of,
             except: vec![],
