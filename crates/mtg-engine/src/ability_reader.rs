@@ -19,6 +19,7 @@ use crate::effects::Modification;
 use crate::keywords;
 use crate::object::{GameObject, ObjectKind};
 use crate::resolve::zone_kind;
+use crate::snapshot::Snapshot;
 use crate::state::GameState;
 use crate::triggers::{has_state_trigger, triggers_something};
 use crate::zones::Zone;
@@ -287,24 +288,78 @@ fn provided_at(keyword: &Keyword, index: usize) -> Option<Arc<Ability>> {
 /// ability that is on its way (a cost sacrificed its source) is still the one that was named. Whether the object has
 /// the ability now is for [`abilities_of`] to say.
 pub fn ability(state: &GameState, address: AbilityRef) -> Option<Arc<Ability>> {
-    let object = holder(state, address.object)?;
+    read(state, address, None)
+}
+
+/// [`ability`] for an object that has left since `shot` was taken: a trigger that looks back (CR 603.10a) reads the
+/// abilities the object had in the zone it left, so a copy that died is not read as the card that lies in the
+/// graveyard.
+pub(crate) fn ability_as_it_was(
+    state: &GameState,
+    address: AbilityRef,
+    shot: &Snapshot,
+) -> Option<Arc<Ability>> {
+    read(state, address, Some(shot))
+}
+
+fn read(state: &GameState, address: AbilityRef, shot: Option<&Snapshot>) -> Option<Arc<Ability>> {
+    holder(state, address.object)?;
     match address.source {
-        AbilitySource::Printed => object.card().rules.get(address.ability).cloned(),
+        AbilitySource::Printed => card_of(state, address.object, shot)?
+            .rules
+            .get(address.ability)
+            .cloned(),
         AbilitySource::Granted(_) if address.ability != 0 => None,
         AbilitySource::Granted(grant) => granted_ability(state, grant),
         AbilitySource::PrintedKeyword(_) | AbilitySource::GrantedKeyword(_) => {
-            provided_at(&keyword_adding(state, address)?, address.ability)
+            provided_at(&keyword_added(state, address, shot)?, address.ability)
         }
+    }
+}
+
+/// The card whose rules the abilities of `id` are read from. An object that has changed zones since `shot` was taken
+/// is a new object (CR 400.7) that is no longer under the copy effect it was, so the values of that copy are in its
+/// last known information.
+fn card_of<'a>(
+    state: &'a GameState,
+    id: ObjectId,
+    shot: Option<&'a Snapshot>,
+) -> Option<&'a CardDefinition> {
+    let object = holder(state, id)?;
+    let left = shot.filter(|shot| shot.id == id && shot.counter != object.counter());
+    match left.and_then(|shot| shot.copy.as_deref()) {
+        Some(copy) => Some(copy),
+        None => Some(object.card()),
     }
 }
 
 /// The keyword that adds the ability `address` names, when a keyword does: the card's rule, or the keyword the
 /// effect or static ability gave.
 pub(crate) fn keyword_adding(state: &GameState, address: AbilityRef) -> Option<Keyword> {
+    keyword_added(state, address, None)
+}
+
+/// [`keyword_adding`] for an object that has left since `shot` was taken.
+pub(crate) fn keyword_adding_as_it_was(
+    state: &GameState,
+    address: AbilityRef,
+    shot: &Snapshot,
+) -> Option<Keyword> {
+    keyword_added(state, address, Some(shot))
+}
+
+fn keyword_added(
+    state: &GameState,
+    address: AbilityRef,
+    shot: Option<&Snapshot>,
+) -> Option<Keyword> {
     match address.source {
         AbilitySource::PrintedKeyword(rule) => {
-            let object = holder(state, address.object)?;
-            match object.card().rules.get(rule).map(|rules| &**rules) {
+            match card_of(state, address.object, shot)?
+                .rules
+                .get(rule)
+                .map(|rules| &**rules)
+            {
                 Some(Ability::Keyword(keyword)) => Some(keyword.clone()),
                 _ => None,
             }
