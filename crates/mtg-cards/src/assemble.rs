@@ -1124,6 +1124,14 @@ mod tests {
     )]
     #[case::costs_mana(
         r#"{"Activated":{"cost":[{"Mana":"{1}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        Some((ManaProduced::AnyColor(1), true, false, 0))
+    )]
+    #[case::costs_mana_with_a_phyrexian_symbol(
+        r#"{"Activated":{"cost":[{"Mana":"{B/P}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        None
+    )]
+    #[case::costs_mana_twice(
+        r#"{"Activated":{"cost":[{"Mana":"{1}"},{"Mana":"{W}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
         None
     )]
     #[case::costs_life(
@@ -1208,6 +1216,14 @@ mod tests {
     )]
     #[case::a_mana_cost(
         r#"{"Activated":{"cost":[{"Mana":"{1}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::a_mana_cost_with_an_x(
+        r#"{"Activated":{"cost":[{"Mana":"{X}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        Some("Ability.ManaAbility.Other")
+    )]
+    #[case::a_mana_cost_without_a_tap(
+        r#"{"Activated":{"cost":[{"Mana":"{1}"}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
         Some("Ability.ManaAbility.Other")
     )]
     #[case::mixed_mana(

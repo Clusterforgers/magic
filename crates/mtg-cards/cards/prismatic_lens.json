@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e3056f28-868b-401a-a528-7528d639bdeb",
+  "name": "Prismatic Lens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prismatic Lens",
+      "oracle_fingerprint": "ba3523af97773aaa16fe88311cd588b9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ca68648f-fe3a-4770-9842-a3dc2310f099",
+  "name": "Crystal Quarry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crystal Quarry",
+      "oracle_fingerprint": "5b0f1fd1aace6bf4710daaf01dd3b1f1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["White", "Blue", "Black", "Red", "Green"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

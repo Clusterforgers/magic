@@ -247,6 +247,22 @@ mod mana {
         "{T}: Add {W} or {B}. Activate only if you control a Swamp.",
         r#"{"Activated":{"cost":["Tap"],"condition":{"Compare":{"left":{"Count":[{"Subtype":"Swamp"},{"ControlledBy":"You"}]},"op":"Ge","right":1}},"effects":[{"AddMana":{"mana":{"OneOf":["White","Black"]}}}]}}"#
     )]
+    #[case::a_signet(
+        "{1}, {T}: Add {W}{U}.",
+        r#"{"Activated":{"cost":[{"Mana":"{1}"},"Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["White","Blue"]}}}]}}"#
+    )]
+    #[case::a_prism(
+        "{1}, {T}: Add one mana of any color.",
+        r#"{"Activated":{"cost":[{"Mana":"{1}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#
+    )]
+    #[case::a_quarry(
+        "{5}, {T}: Add {W}{U}{B}{R}{G}.",
+        r#"{"Activated":{"cost":[{"Mana":"{5}"},"Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["White","Blue","Black","Red","Green"]}}}]}}"#
+    )]
+    #[case::a_hybrid_cost(
+        "{W/U}, {T}: Add {W}{U}.",
+        r#"{"Activated":{"cost":[{"Mana":"{W/U}"},"Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["White","Blue"]}}}]}}"#
+    )]
     fn a_mana_ability_that_depends_on_the_game_reads_with_its_cost_and_condition(
         #[case] text: &str,
         #[case] json: &str,
