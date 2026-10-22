@@ -84,6 +84,16 @@ pub fn enchant_filter(text: &str) -> Option<Selector> {
     reader.end().then_some(selector)
 }
 
+/// What an affinity counts, from the words after "Affinity for" ("artifacts", "artifact creatures", "Equipment",
+/// "Islands", "tokens"), when all of the text reads.
+pub fn affinity_filter(text: &str) -> Option<Selector> {
+    let tokens = tokenize(&format!("all {text}"));
+    let mut reader = Reader::new(&tokens, false);
+    reader.word("all").then_some(())?;
+    let selector = selectors::phrase(&mut reader, selectors::Form::All)?;
+    reader.end().then_some(selector)
+}
+
 /// Reads a spell, a modal, a triggered or an activated clause into an ability, or `None` when it
 /// is not a wording the templates know. The text of a spell may run over several lines, which are
 /// its sentences in order; a modal's lines are its bullets. An ability word before a dash

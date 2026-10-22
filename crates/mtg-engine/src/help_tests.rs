@@ -123,6 +123,7 @@ impl World {
     fn help(&self) -> Help<'_> {
         Help {
             convoke: &self.creatures,
+            improvise: &[],
             delve: &self.graveyard,
         }
     }
@@ -330,6 +331,7 @@ fn a_creature_pays_only_for_a_colour_it_is(
     let creatures = [red_creature(5)];
     let help = Help {
         convoke: &creatures,
+        improvise: &[],
         delve: &[],
     };
     let pool = ManaPool::default();

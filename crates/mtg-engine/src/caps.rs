@@ -283,6 +283,9 @@ const RUNS: &[&str] = &[
     "Keyword.Retrace",
     "Keyword.Embalm",
     "Keyword.Eternalize",
+    "Keyword.Improvise",
+    "Keyword.Affinity",
+    "Keyword.Typecycling",
     "Condition.NewlyControlled",
     "Rule.CanBeCommander",
 ];
@@ -599,6 +602,9 @@ mod tests {
     #[case::retrace("Keyword.Retrace", true)]
     #[case::embalm("Keyword.Embalm", true)]
     #[case::eternalize("Keyword.Eternalize", true)]
+    #[case::improvise("Keyword.Improvise", true)]
+    #[case::affinity("Keyword.Affinity", true)]
+    #[case::typecycling("Keyword.Typecycling", true)]
     #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]

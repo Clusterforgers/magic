@@ -757,7 +757,14 @@ impl<'a> Walker<'a> {
                     self.uses("Keyword", "Enchant.Elsewhere");
                 }
             }
-            Keyword::Protection(quality) | Keyword::Landwalk(quality) => self.selector(quality),
+            Keyword::Protection(quality) | Keyword::Landwalk(quality) | Keyword::Affinity(quality) => {
+                self.selector(quality);
+            }
+            // The cost is paid as the cost of the activated ability the keyword adds.
+            Keyword::Typecycling { find, cost } => {
+                self.at("cost", |w| w.cost(cost));
+                self.at("find", |w| w.selector(find));
+            }
             Keyword::Toxic(0) => self.problem("toxic needs a number of at least 1"),
             Keyword::PartnerWith(name) => {
                 self.names
@@ -2211,12 +2218,18 @@ fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str) -> bool {
                 // Scryfall lists `Enchant` for an Aura that enchants a player as it does for any other.
                 || (matches!(k, Keyword::EnchantPlayer { .. })
                     && "Enchant".eq_ignore_ascii_case(keyword))
+                // Scryfall lists `Cycling` as well for a typecycling card (CR 702.29).
+                || (matches!(k, Keyword::Typecycling { .. })
+                    && Keyword::Cycling(Cost::default()).name().eq_ignore_ascii_case(keyword))
         }
         Ability::Manual { span, .. } => printed
             .faces
             .get(face)
             .and_then(|shown| span.slice(&shown.oracle_text))
-            .is_some_and(|clause| names_keyword(clause, keyword)),
+            .is_some_and(|clause| {
+                names_keyword(clause, keyword)
+                    || (keyword.eq_ignore_ascii_case("Typecycling") && names_typecycling(clause))
+            }),
         _ => false,
     })
 }
@@ -2231,6 +2244,14 @@ fn names_keyword(clause: &str, keyword: &str) -> bool {
             .get(at + found.len()..)
             .and_then(|rest| rest.chars().next());
         !after.is_some_and(char::is_alphanumeric)
+    })
+}
+
+/// Whether the clause has a word that is a typecycling: some letters before `cycling` (`Plainscycling`).
+fn names_typecycling(clause: &str) -> bool {
+    clause.split(|c: char| !c.is_alphabetic()).any(|word| {
+        let word = word.to_ascii_lowercase();
+        word.len() > "cycling".len() && word.ends_with("cycling")
     })
 }
 
@@ -3186,6 +3207,24 @@ mod printed_keywords {
         &[(BIRD, "Plainscycling {2}", r#"{"Manual":{"reason":"x","span":{"start":0,"end":17}}}"#)],
         &["Plainscycling", "Cycling"],
         &[]
+    )]
+    #[case::plainscycling_is_typecycling(
+        "Partial",
+        &[(BIRD, "Plainscycling {2}", r#"{"Manual":{"reason":"x","span":{"start":0,"end":17}}}"#)],
+        &["Plainscycling", "Typecycling"],
+        &[]
+    )]
+    #[case::a_typecycling_ability_is_cycling_and_typecycling(
+        "Full",
+        &[(BIRD, "Plainscycling {2}", r#"{"Keyword":{"Typecycling":{"find":[{"Subtype":"Plains"}],"cost":[{"Mana":"{2}"}]}}}"#)],
+        &["Plainscycling", "Landcycling", "Typecycling", "Cycling"],
+        &[]
+    )]
+    #[case::cycling_is_not_typecycling(
+        "Partial",
+        &[(BIRD, "Cycling {2}", r#"{"Manual":{"reason":"x","span":{"start":0,"end":11}}}"#)],
+        &["Typecycling"],
+        &["Typecycling"]
     )]
     #[case::an_aura_grants_a_keyword(
         "Partial",
