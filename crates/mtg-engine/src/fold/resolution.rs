@@ -24,10 +24,15 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             origin,
             ..
         } => {
-            if state.source_object(source.id).is_none() {
+            let Some(object) = state.source_object(source.id) else {
                 return Err(invalid(format!(
                     "{source:?} activated an ability and is gone"
                 )));
+            };
+            if object.counter() != source.counter {
+                // A cost moved the source (sacrificed it): the new object cannot use the ability again, and the ability
+                // goes on the stack with the rules of the snapshot.
+                return Ok(());
             }
             let address = AbilityRef {
                 object: source.id,
@@ -131,7 +136,7 @@ fn put_on_stack(state: &mut GameState, put: &PutOnStack) -> Result<(), EngineErr
             ability: put.ability,
             source: put.origin,
         };
-        let rules = ability_reader::ability(state, address)
+        let rules = ability_reader::ability_as_it_was(state, address, &put.snapshot)
             .ok_or_else(|| invalid(format!("{source:?} has no ability {}", put.ability)))?;
         (rules, Bindings::new())
     };

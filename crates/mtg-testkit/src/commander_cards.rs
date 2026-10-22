@@ -7,7 +7,6 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::support::Support;
-use mtg_cards::trigger::ReplaceBy;
 use mtg_core::card::{CardType, Supertype};
 use mtg_core::color::{Color, ColorSet};
 use mtg_engine::GameSetup;
@@ -63,20 +62,6 @@ fn basics(identity: ColorSet) -> Vec<Arc<CardDefinition>> {
     }
 }
 
-/// Whether the card enters the battlefield as a copy of another permanent; the copies have a bug of their own that a
-/// campaign over the whole corpus meets (a copy that dies at once is read as the card it copies).
-fn enters_as_a_copy(card: &CardDefinition) -> bool {
-    card.rules.iter().any(|rules| {
-        matches!(
-            &**rules,
-            Ability::Replacement {
-                by: ReplaceBy::AsCopy { .. },
-                ..
-            }
-        )
-    })
-}
-
 /// The corpus cards the engine plays whole.
 fn playable() -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
     let corpus = corpus::corpus()?;
@@ -105,7 +90,6 @@ fn deck_for(
         .filter(|card| commanders.iter().all(|leader| card.name != leader.name))
         .filter(|card| card.color_identity().is_subset_of(identity))
         .filter(|card| card.singleton_limit() == Some(1))
-        .filter(|card| !enters_as_a_copy(card))
         .collect();
     rng.shuffle(&mut spells);
     spells.truncate(MOST_SPELLS);

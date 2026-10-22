@@ -1,4 +1,4 @@
-//! Goal: a permanent that dies as it enters, or later, triggers from the abilities it had when it left, with and without a copy effect, at tables of two, three and four seats: a creature that is toughness 0 after the layers (an opponent's static ability) is put into the graveyard by state-based actions before any trigger goes on the stack, and its "when this dies" and "whenever a creature you control dies" abilities are read from the card it was (a plain card), from the creature a Clone copied and from the creature a Phantasmal Image copied, never from the card that lies in the graveyard; the same holds for a copy that is killed after it entered, and the log replays to the live state.
+//! Goal: a permanent that dies as it enters, or later, triggers from the abilities it had when it left, with and without a copy effect, at tables of two, three and four seats: a creature that is toughness 0 after the layers (an opponent's static ability) is put into the graveyard by state-based actions before any trigger goes on the stack, and its "when this dies" and "whenever a creature you control dies" abilities are read from the card it was (a plain card), from the creature a Clone copied and from the creature a Phantasmal Image copied, never from the card that lies in the graveyard; the same holds for a copy that is killed after it entered and for a copy that is sacrificed to pay for an ability it has (the ability goes on the stack with the rules of the copy), and the log replays to the live state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -91,12 +91,12 @@ impl Way {
 
 /// Seat 0 holds the card for `way` over four Islands and a Mountain; seat 1 controls the creature to copy and, when
 /// `banner`, the banner that makes seat 0's creatures toughness 0.
-fn game(seats: usize, way: Way, dying: Dying, banner: bool) -> Scenario {
+fn game(seats: usize, way: Way, creature: &Arc<CardDefinition>, banner: bool) -> Scenario {
     let hand = match way {
-        Way::Plain => dying.creature(),
+        Way::Plain => Arc::clone(creature),
         Way::Clone | Way::PhantasmalImage => card(way.cast()).unwrap(),
     };
-    let foe = [ready(dying.creature())]
+    let foe = [ready(Arc::clone(creature))]
         .into_iter()
         .chain(banner.then(|| ready(withering_banner())));
     Scenario::new(seats)
@@ -153,8 +153,9 @@ fn a_permanent_that_dies_as_it_enters_triggers_from_the_abilities_it_had(
     #[values(Way::Plain, Way::Clone, Way::PhantasmalImage)] way: Way,
     #[values(Dying::ThisDies, Dying::YourCreatureDies)] dying: Dying,
 ) -> Result<(), ScriptError> {
-    let setup = game(seats, way, dying, true).setup().unwrap();
-    let mut driver = Driver::from_scenario(game(seats, way, dying, true))?;
+    let creature = dying.creature();
+    let setup = game(seats, way, &creature, true).setup().unwrap();
+    let mut driver = Driver::from_scenario(game(seats, way, &creature, true))?;
     let before = (life(&driver, 0), life(&driver, 1));
     play_in(&mut driver, way, seats)?;
     assert_eq!(
@@ -182,8 +183,9 @@ fn a_copy_that_is_destroyed_after_it_entered_triggers_from_the_abilities_it_had(
     #[values(Way::Clone, Way::PhantasmalImage)] way: Way,
     #[values(Dying::ThisDies, Dying::YourCreatureDies)] dying: Dying,
 ) -> Result<(), ScriptError> {
+    let creature = dying.creature();
     let scenario = || {
-        game(seats, way, dying, false).hand(
+        game(seats, way, &creature, false).hand(
             0,
             [card(way.cast()).unwrap(), card("Lightning Bolt").unwrap()],
         )
@@ -198,7 +200,36 @@ fn a_copy_that_is_destroyed_after_it_entered_triggers_from_the_abilities_it_had(
     driver.cast_at("Lightning Bolt", &[target])?;
     run(&mut driver, seats)?;
     assert_eq!(life(&driver, 0), before + GAIN);
-    assert!(controlled(&driver, 0, "Grave Sentinel").is_empty());
+    assert_eq!(controlled(&driver, 0, "Grave Sentinel").len(), 0);
+    replays(&driver, &setup);
+    Ok(())
+}
+
+/// A 1/3 creature with "Sacrifice this creature: You gain 2 life."
+fn mogg_sentinel() -> Arc<CardDefinition> {
+    let json = r#"{"Activated":{"cost":["SacrificeSelf"],"effects":[{"GainLife":{"amount":2}}]}}"#;
+    sized_creature_with(
+        "Mogg Sentinel",
+        1,
+        3,
+        vec![serde_json::from_str::<Ability>(json).unwrap()],
+    )
+}
+
+#[rstest]
+fn a_copy_that_is_sacrificed_to_pay_for_its_ability_puts_that_ability_on_the_stack(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(Way::Clone, Way::PhantasmalImage)] way: Way,
+) -> Result<(), ScriptError> {
+    let creature = mogg_sentinel();
+    let setup = game(seats, way, &creature, false).setup().unwrap();
+    let mut driver = Driver::from_scenario(game(seats, way, &creature, false))?;
+    play_in(&mut driver, way, seats)?;
+    let before = life(&driver, 0);
+    driver.begin_activation("Mogg Sentinel")?;
+    run(&mut driver, seats)?;
+    assert_eq!(life(&driver, 0), before + GAIN);
+    assert_eq!(controlled(&driver, 0, "Mogg Sentinel").len(), 0);
     replays(&driver, &setup);
     Ok(())
 }

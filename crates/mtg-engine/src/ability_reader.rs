@@ -318,23 +318,19 @@ fn read(state: &GameState, address: AbilityRef, shot: Option<&Snapshot>) -> Opti
 }
 
 /// The card whose rules the abilities of `id` are read from. An object that has changed zones since `shot` was taken
-/// is a new object (CR 400.7) that has neither the copy effect it was under nor the face it was in use as, so the
-/// card it had is in its last known information.
+/// is a new object (CR 400.7) that is no longer under the copy effect it was, so the values of that copy are in its
+/// last known information.
 fn card_of<'a>(
     state: &'a GameState,
     id: ObjectId,
     shot: Option<&'a Snapshot>,
 ) -> Option<&'a CardDefinition> {
     let object = holder(state, id)?;
-    if let Some(shot) = shot.filter(|shot| shot.id == id && shot.counter != object.counter()) {
-        if let Some(copy) = &shot.copy {
-            return Some(copy);
-        }
-        if let Some(face) = shot.face {
-            return Some(object.whole_card().face(face));
-        }
+    let left = shot.filter(|shot| shot.id == id && shot.counter != object.counter());
+    match left.and_then(|shot| shot.copy.as_deref()) {
+        Some(copy) => Some(copy),
+        None => Some(object.card()),
     }
-    Some(object.card())
 }
 
 /// The keyword that adds the ability `address` names, when a keyword does: the card's rule, or the keyword the
