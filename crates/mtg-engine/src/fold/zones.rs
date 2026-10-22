@@ -151,6 +151,18 @@ fn land_played(
     Ok(())
 }
 
+/// A spell with rebound that is cast from a hand is exiled by a replacement effect as it resolves (CR 702.88a), so the
+/// game has replacement effects to look for.
+fn note_rebound(state: &mut GameState, spell: ObjectId, from: Zone) {
+    if matches!(from, Zone::Hand(_))
+        && crate::keywords::keywords_of(state, spell)
+            .iter()
+            .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Rebound))
+    {
+        state.possible.replacements = true;
+    }
+}
+
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::LandPlayed {
@@ -188,14 +200,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 spell.choices.clone_from(choices);
                 spell.cast_from_hand = matches!(from, Zone::Hand(_));
             }
-            // A spell cast from a hand with rebound is exiled by a replacement effect as it resolves.
-            if matches!(from, Zone::Hand(_))
-                && crate::keywords::keywords_of(state, *object)
-                    .iter()
-                    .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Rebound))
-            {
-                state.possible.replacements = true;
-            }
+            note_rebound(state, *object, from);
             // A spell cast for its flashback cost, or with its buyback cost paid, is moved by a replacement effect.
             let bought_back = state.objects.get(object).is_some_and(|spell| {
                 payments(spell.card(), &choices.optional_costs, OptionalKind::Buyback) > 0

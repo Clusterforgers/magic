@@ -71,14 +71,19 @@ fn cast_and_resolve(driver: &mut Driver) -> Result<(), ScriptError> {
 }
 
 #[test]
-fn the_spell_is_exiled_as_it_resolves_and_cast_for_free_at_the_next_upkeep() -> Result<(), ScriptError> {
+fn the_spell_is_exiled_as_it_resolves_and_cast_for_free_at_the_next_upkeep()
+-> Result<(), ScriptError> {
     let mut driver = game()?;
     cast_and_resolve(&mut driver)?;
     assert_eq!(life(&driver, 1), 18);
     assert!(find(driver.state(), Zone::Exile, "Staggershock").is_some());
     assert!(find(driver.state(), Zone::Graveyard(pid(0)), "Staggershock").is_none());
     driver.idle_until(2, Step::Upkeep)?;
-    assert_eq!(life(&driver, 1), 18, "the upkeep of the other player casts nothing");
+    assert_eq!(
+        life(&driver, 1),
+        18,
+        "the upkeep of the other player casts nothing"
+    );
     driver.idle_until(3, Step::Upkeep)?;
     let events = settle(&mut driver, true, 1)?;
     assert_eq!(life(&driver, 1), 16, "the second cast dealt 2 damage");
@@ -97,7 +102,9 @@ fn the_spell_is_exiled_as_it_resolves_and_cast_for_free_at_the_next_upkeep() -> 
 
 #[rstest]
 #[case::declined(false)]
-fn a_declined_cast_leaves_the_card_in_exile_for_good(#[case] accept: bool) -> Result<(), ScriptError> {
+fn a_declined_cast_leaves_the_card_in_exile_for_good(
+    #[case] accept: bool,
+) -> Result<(), ScriptError> {
     let mut driver = game()?;
     cast_and_resolve(&mut driver)?;
     driver.idle_until(3, Step::Upkeep)?;
@@ -115,7 +122,8 @@ fn a_declined_cast_leaves_the_card_in_exile_for_good(#[case] accept: bool) -> Re
 }
 
 #[test]
-fn a_spell_that_is_countered_goes_to_the_graveyard_and_does_not_rebound() -> Result<(), ScriptError> {
+fn a_spell_that_is_countered_goes_to_the_graveyard_and_does_not_rebound() -> Result<(), ScriptError>
+{
     let mut driver = Driver::from_scenario(
         Scenario::new(2)
             .hand_named(0, ["Staggershock"])

@@ -91,7 +91,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("changeling", Params::None),
     ("devoid", Params::None),
     ("rebound", Params::None),
-        ("retrace", Params::None),
+    ("retrace", Params::None),
     ("split second", Params::None),
     ("haunt", Params::None),
     ("improvise", Params::None),

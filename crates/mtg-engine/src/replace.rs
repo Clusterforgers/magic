@@ -262,6 +262,25 @@ enum Origin {
     Commander,
 }
 
+impl Origin {
+    /// The index of the ability among its object's rules that the question of the order shows; 0 for what is no ability.
+    const fn ability_index(self) -> usize {
+        match self {
+            Origin::Ability(address) => address.ability,
+            Origin::Copied(index) => index,
+            _ => 0,
+        }
+    }
+
+    /// The shield this is, if it is one.
+    const fn shield(self) -> Option<EffectId> {
+        match self {
+            Origin::Shield(id) => Some(id),
+            _ => None,
+        }
+    }
+}
+
 /// Whether the event puts a commander into a hand or a library (a draw included), where its owner may send it to the
 /// command zone.
 fn commander_leaves(state: &GameState, event: &Event) -> bool {
@@ -1260,28 +1279,8 @@ impl Pass<'_> {
                                         .iter()
                                         .map(|c| ReplacementCandidate {
                                             source: c.object.id,
-                                            ability: match c.origin {
-                                                Origin::Ability(address) => address.ability,
-                                                Origin::Copied(index) => index,
-                                                Origin::Shield(_)
-                                                | Origin::Protection
-                                                | Origin::Flashback
-                                                | Origin::Buyback
-                                                | Origin::Adventure
-                                                | Origin::Rebound
-                                                | Origin::Commander => 0,
-                                            },
-                                            shield: match c.origin {
-                                                Origin::Shield(id) => Some(id),
-                                                Origin::Ability(_)
-                                                | Origin::Copied(_)
-                                                | Origin::Protection
-                                                | Origin::Flashback
-                                                | Origin::Buyback
-                                                | Origin::Adventure
-                                                | Origin::Rebound
-                                                | Origin::Commander => None,
-                                            },
+                                            ability: c.origin.ability_index(),
+                                            shield: c.origin.shield(),
                                         })
                                         .collect(),
                                     text: self.describe(&self.slots[at].item),

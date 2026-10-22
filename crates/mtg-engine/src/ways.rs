@@ -190,10 +190,7 @@ pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> 
             continue;
         }
         // Overload and foretell are paid with mana alone.
-        let cost = if matches!(
-            way,
-            CastWay::Flashback | CastWay::Evoke | CastWay::Escape
-        ) {
+        let cost = if matches!(way, CastWay::Flashback | CastWay::Evoke | CastWay::Escape) {
             cast_cost(cost)
         } else {
             mana_only(cost).map(|mana| (mana, Vec::new()))

@@ -143,10 +143,14 @@ mod tests {
         assert_eq!(paid, &cost);
         assert_eq!(*timing, Timing::Sorcery);
         assert_eq!(*from, ZoneKind::Graveyard);
-        assert!(targets.is_empty());
+        assert_eq!(*targets, Vec::new());
         assert!(matches!(
             effects.as_slice(),
-            [Effect::Choose { .. }, Effect::Move { .. }, Effect::If { .. }]
+            [
+                Effect::Choose { .. },
+                Effect::Move { .. },
+                Effect::If { .. }
+            ]
         ));
     }
 

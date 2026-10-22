@@ -94,7 +94,16 @@ fn the_pick_is_asked_of_its_caster_alone_refuses_a_card_not_offered_and_logs_not
 -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(
         Scenario::new(2)
-            .graveyard_named(0, ["Fruit of Tizerus", FODDER[0], FODDER[1], FODDER[2], FODDER[3]])
+            .graveyard_named(
+                0,
+                [
+                    "Fruit of Tizerus",
+                    FODDER[0],
+                    FODDER[1],
+                    FODDER[2],
+                    FODDER[3],
+                ],
+            )
             .graveyard_named(1, ["Artful Maneuver"])
             .hand_named(0, ["Artful Maneuver"])
             .battlefield(0, (0..4).map(|_| ready(swamp()))),
@@ -103,7 +112,12 @@ fn the_pick_is_asked_of_its_caster_alone_refuses_a_card_not_offered_and_logs_not
     driver.expect_decision(0, "choose-cards")?;
     assert_eq!(
         offered(&driver),
-        ["Dregscape Zombie", "Kathari Screecher", "Reconstructed Thopter", "Staggershock"],
+        [
+            "Dregscape Zombie",
+            "Kathari Screecher",
+            "Reconstructed Thopter",
+            "Staggershock"
+        ],
         "the other cards of the caster's graveyard, not the card itself or a card of another zone"
     );
     let logged = driver.engine().events().len();
@@ -118,8 +132,16 @@ fn the_pick_is_asked_of_its_caster_alone_refuses_a_card_not_offered_and_logs_not
         driver.expect_decision(0, "choose-cards")?;
     }
     let too_few = find(driver.state(), Zone::Graveyard(pid(0)), FODDER[0]);
-    assert!(driver.answer(Answer::ChooseCards(CardsChoice(vec![too_few]))).is_err());
-    assert_eq!(driver.engine().events().len(), logged, "nothing is logged yet");
+    assert!(
+        driver
+            .answer(Answer::ChooseCards(CardsChoice(vec![too_few])))
+            .is_err()
+    );
+    assert_eq!(
+        driver.engine().events().len(),
+        logged,
+        "nothing is logged yet"
+    );
     let picks: Vec<ObjectId> = FODDER[..3]
         .iter()
         .map(|name| find(driver.state(), Zone::Graveyard(pid(0)), name))
@@ -127,11 +149,23 @@ fn the_pick_is_asked_of_its_caster_alone_refuses_a_card_not_offered_and_logs_not
     driver.answer(Answer::ChooseCards(CardsChoice(picks.clone())))?;
     let target = driver.target_player(1);
     driver.choose_targets(&[target])?;
-    assert_eq!(driver.engine().events().len(), logged, "the picks wait for the payment");
+    assert_eq!(
+        driver.engine().events().len(),
+        logged,
+        "the picks wait for the payment"
+    );
     let events = driver.answer(Answer::PayMana(PayChoice::Auto))?;
     let exiled = events
         .iter()
-        .filter(|event| matches!(event, Event::ZoneChanged { to: Zone::Exile, .. }))
+        .filter(|event| {
+            matches!(
+                event,
+                Event::ZoneChanged {
+                    to: Zone::Exile,
+                    ..
+                }
+            )
+        })
         .count();
     assert_eq!(exiled, 3, "the exile is public once the spell is paid for");
     assert_eq!(count(driver.state(), Zone::Exile), 3);
@@ -158,8 +192,16 @@ fn the_card_goes_to_the_graveyard_after_it_resolves_and_is_not_exiled() -> Resul
     driver.pass()?;
     assert_eq!(driver.state().player(pid(1)).unwrap().life(), 18);
     find(driver.state(), Zone::Graveyard(pid(0)), "Fruit of Tizerus");
-    assert_eq!(count(driver.state(), Zone::Exile), 3, "only the picks are exiled");
-    assert_eq!(count(driver.state(), Zone::Graveyard(pid(0))), 2, "the spell and the card left over");
+    assert_eq!(
+        count(driver.state(), Zone::Exile),
+        3,
+        "only the picks are exiled"
+    );
+    assert_eq!(
+        count(driver.state(), Zone::Graveyard(pid(0))),
+        2,
+        "the spell and the card left over"
+    );
     Ok(())
 }
 
@@ -172,7 +214,16 @@ fn rage_hound(escape: bool) -> Result<Driver, ScriptError> {
     let scenario = Scenario::new(2).battlefield(0, lands);
     let mut driver = Driver::from_scenario(if escape {
         scenario
-            .graveyard_named(0, ["Underworld Rage-Hound", FODDER[0], FODDER[1], FODDER[2], FODDER[3]])
+            .graveyard_named(
+                0,
+                [
+                    "Underworld Rage-Hound",
+                    FODDER[0],
+                    FODDER[1],
+                    FODDER[2],
+                    FODDER[3],
+                ],
+            )
             .hand_named(0, ["Cackling Counterpart"])
     } else {
         scenario.hand_named(0, ["Underworld Rage-Hound", "Cackling Counterpart"])
@@ -231,8 +282,15 @@ fn a_copy_of_the_escaped_permanent_has_no_counter() -> Result<(), ScriptError> {
         .filter(|id| name_of(driver.state(), *id) == "Underworld Rage-Hound")
         .collect();
     assert_eq!(hounds.len(), 2, "the original and its copy");
-    let counters: Vec<u32> = hounds.iter().map(|id| plus_counters(&driver, *id)).collect();
-    assert_eq!(counters.iter().sum::<u32>(), 1, "only the one that escaped: {counters:?}");
+    let counters: Vec<u32> = hounds
+        .iter()
+        .map(|id| plus_counters(&driver, *id))
+        .collect();
+    assert_eq!(
+        counters.iter().sum::<u32>(),
+        1,
+        "only the one that escaped: {counters:?}"
+    );
     Ok(())
 }
 
@@ -240,7 +298,16 @@ fn a_copy_of_the_escaped_permanent_has_no_counter() -> Result<(), ScriptError> {
 fn rest_in_peace_sends_the_escaped_spell_on_to_exile() -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(
         Scenario::new(2)
-            .graveyard_named(0, ["Fruit of Tizerus", FODDER[0], FODDER[1], FODDER[2], FODDER[3]])
+            .graveyard_named(
+                0,
+                [
+                    "Fruit of Tizerus",
+                    FODDER[0],
+                    FODDER[1],
+                    FODDER[2],
+                    FODDER[3],
+                ],
+            )
             .battlefield_named(1, ["Rest in Peace"])
             .battlefield(0, (0..4).map(|_| ready(swamp()))),
     )?;

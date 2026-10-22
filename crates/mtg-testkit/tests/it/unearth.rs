@@ -74,7 +74,11 @@ fn unearth_returns_the_card_with_haste_and_exiles_it_at_the_end_step(
     let before = find(driver.state(), Zone::Graveyard(pid(0)), card);
     let counter = driver.state().object(before).unwrap().counter();
     unearth(&mut driver, card)?;
-    assert_eq!(driver.state().zone(Zone::Stack).len(), 1, "an ability, not a spell");
+    assert_eq!(
+        driver.state().zone(Zone::Stack).len(),
+        1,
+        "an ability, not a spell"
+    );
     settle(&mut driver)?;
     let id = on_battlefield(driver.state(), card).expect("the card returned");
     assert_eq!(driver.state().object(id).unwrap().counter(), counter + 1);
@@ -83,7 +87,7 @@ fn unearth_returns_the_card_with_haste_and_exiles_it_at_the_end_step(
     settle(&mut driver)?;
     assert!(on_battlefield(driver.state(), card).is_none());
     find(driver.state(), Zone::Exile, card);
-    assert!(driver.state().zone(Zone::Graveyard(pid(0))).is_empty());
+    assert_eq!(driver.state().zone(Zone::Graveyard(pid(0))), []);
     assert_replays(&driver);
     Ok(())
 }
@@ -96,7 +100,11 @@ fn the_unearthed_creature_can_attack_the_turn_it_returns() -> Result<(), ScriptE
     driver.idle_until(1, Step::DeclareAttackers)?;
     driver.attack(&[("Dregscape Zombie", 1)])?;
     driver.idle_until(1, Step::End)?;
-    assert_eq!(driver.state().player(pid(1)).unwrap().life(), 18, "it dealt its 2 damage");
+    assert_eq!(
+        driver.state().player(pid(1)).unwrap().life(),
+        18,
+        "it dealt its 2 damage"
+    );
     Ok(())
 }
 
@@ -165,13 +173,14 @@ fn a_creature_that_would_die_is_exiled_instead(#[case] removal: &str) -> Result<
     settle(&mut driver)?;
     assert!(on_battlefield(driver.state(), "Dregscape Zombie").is_none());
     find(driver.state(), Zone::Exile, "Dregscape Zombie");
-    assert!(driver.state().zone(Zone::Graveyard(pid(0))).is_empty());
+    assert_eq!(driver.state().zone(Zone::Graveyard(pid(0))), []);
     assert_replays(&driver);
     Ok(())
 }
 
 #[test]
-fn the_ability_does_nothing_when_the_card_left_the_graveyard_in_response() -> Result<(), ScriptError> {
+fn the_ability_does_nothing_when_the_card_left_the_graveyard_in_response() -> Result<(), ScriptError>
+{
     let mut driver = Driver::from_scenario(
         Scenario::new(2)
             .graveyard_named(0, ["Dregscape Zombie"])
