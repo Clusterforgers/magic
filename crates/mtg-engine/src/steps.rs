@@ -274,6 +274,16 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
             .filter(|e| ends_with_turn(state, e.duration, e.turn, e.controller))
             .map(|e| Event::RuleExpired { id: e.id }),
     );
+    // "Until end of turn" copy effects end with the other effects of the turn (CR 514.2).
+    events.extend(
+        state
+            .objects()
+            .filter(|o| {
+                o.copy_effect()
+                    .is_some_and(crate::copies::CopyEffect::is_temporary)
+            })
+            .map(|o| Event::CopyEnded { object: o.id() }),
+    );
     events.extend(pool_emptying(state));
     if turn_limit_reached(state) {
         // The turn is wound down first, so the result reads the life totals after the mana burn.

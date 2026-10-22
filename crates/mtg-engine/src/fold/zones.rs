@@ -341,8 +341,9 @@ fn owner_of(state: &GameState, id: ObjectId) -> Result<PlayerId, EngineError> {
 }
 
 fn resolve_spell(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
-    if state.zones.get(Zone::Stack).last() != Some(&id) {
-        return Err(invalid(format!("{id:?} is not the top of the stack")));
+    // What a resolution put on the stack (a copy, a spell cast during it) is above the spell, which leaves from beneath it.
+    if !state.zones.get(Zone::Stack).contains(&id) {
+        return Err(invalid(format!("{id:?} is not on the stack")));
     }
     let types = state
         .object(id)

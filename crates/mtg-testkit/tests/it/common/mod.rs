@@ -100,6 +100,7 @@ pub fn spell(
 
 pub mod casting;
 pub mod combat;
+pub mod copying;
 pub mod forecast;
 pub mod house;
 pub mod keywords;

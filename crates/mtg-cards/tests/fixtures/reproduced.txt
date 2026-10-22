@@ -15,6 +15,7 @@ Blaze
 Bloodbraid Elf
 Bloodghast
 Bonesplitter
+Brain Freeze
 Brainstorm
 Bronzeplate Boar
 Cackling Counterpart
@@ -52,6 +53,7 @@ Gadwick, the Wizened
 Giant Growth
 Glorious Anthem
 Goblin Spy
+Grapeshot
 Growing Ranks
 Gurmag Angler
 Hall of Triumph

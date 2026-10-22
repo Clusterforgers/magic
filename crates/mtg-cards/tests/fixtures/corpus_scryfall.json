@@ -6010,5 +6010,290 @@
     "keywords": [
       "Populate"
     ]
+  },
+  {
+    "id": "f38eec33-a40e-4739-ad2c-2f57008cef4e",
+    "oracle_id": "8f878efc-850f-43d2-a6fe-5ea8d1dd5afb",
+    "name": "Twincast",
+    "lang": "en",
+    "layout": "normal",
+    "set": "m10",
+    "collector_number": "78",
+    "rarity": "rare",
+    "released_at": "2009-07-17",
+    "digital": false,
+    "mana_cost": "{U}{U}",
+    "cmc": 2,
+    "type_line": "Instant",
+    "oracle_text": "Copy target instant or sorcery spell. You may choose new targets for the copy.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "5996feb4-02ac-45e8-a7f2-966cf74391dc",
+    "oracle_id": "a1f55890-31c5-4ed4-a2cd-7a4a9f05f8ca",
+    "name": "Reverberate",
+    "lang": "en",
+    "layout": "normal",
+    "set": "m13",
+    "collector_number": "145",
+    "rarity": "rare",
+    "released_at": "2012-07-13",
+    "digital": false,
+    "mana_cost": "{R}{R}",
+    "cmc": 2,
+    "type_line": "Instant",
+    "oracle_text": "Copy target instant or sorcery spell. You may choose new targets for the copy.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "99302c41-434f-41ff-a61a-2c3681a0c135",
+    "oracle_id": "38394ee3-6726-4f91-bc25-36bce0c6aab9",
+    "name": "Reiterate",
+    "lang": "en",
+    "layout": "normal",
+    "set": "tsr",
+    "collector_number": "182",
+    "rarity": "rare",
+    "released_at": "2021-03-19",
+    "digital": false,
+    "mana_cost": "{1}{R}{R}",
+    "cmc": 3,
+    "type_line": "Instant",
+    "oracle_text": "Buyback {3} (You may pay an additional {3} as you cast this spell. If you do, put this card into your hand as it resolves.)\nCopy target instant or sorcery spell. You may choose new targets for the copy.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Buyback"
+    ]
+  },
+  {
+    "id": "e4ff994a-bddd-486d-9a7b-a8959b4cf1dd",
+    "oracle_id": "50c53ae0-51ba-4046-ac74-87c65e688032",
+    "name": "Fork",
+    "lang": "en",
+    "layout": "normal",
+    "set": "me4",
+    "collector_number": "116",
+    "rarity": "rare",
+    "released_at": "2011-01-10",
+    "digital": true,
+    "mana_cost": "{R}{R}",
+    "cmc": 2,
+    "type_line": "Instant",
+    "oracle_text": "Copy target instant or sorcery spell, except that the copy is red. You may choose new targets for the copy.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "defcc4a3-40e0-4f5d-b23c-6cd6a614abc1",
+    "oracle_id": "8eb7c0a5-6190-40de-b473-2d1daa3bbe28",
+    "name": "Dualcaster Mage",
+    "lang": "en",
+    "layout": "normal",
+    "set": "c21",
+    "collector_number": "165",
+    "rarity": "rare",
+    "released_at": "2021-04-23",
+    "digital": false,
+    "mana_cost": "{1}{R}{R}",
+    "cmc": 3,
+    "type_line": "Creature — Human Wizard",
+    "oracle_text": "Flash\nWhen this creature enters, copy target instant or sorcery spell. You may choose new targets for the copy.",
+    "power": "2",
+    "toughness": "2",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Flash"
+    ]
+  },
+  {
+    "id": "e3e2d90a-3557-49d5-9986-cb50fd31f396",
+    "oracle_id": "ebd2d760-5ad8-4027-b124-171822f3edfe",
+    "name": "Grapeshot",
+    "lang": "en",
+    "layout": "normal",
+    "set": "msc",
+    "collector_number": "803",
+    "rarity": "common",
+    "released_at": "2026-06-26",
+    "digital": false,
+    "mana_cost": "{1}{R}",
+    "cmc": 2,
+    "type_line": "Sorcery",
+    "oracle_text": "Grapeshot deals 1 damage to any target.\nStorm (When you cast this spell, copy it for each spell cast before it this turn. You may choose new targets for the copies.)",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Storm"
+    ]
+  },
+  {
+    "id": "3a2d7cf9-dddb-4de3-b4f2-c52e3ec8fb4b",
+    "oracle_id": "464c0150-3dbc-403b-9ada-fef25ab1f29d",
+    "name": "Brain Freeze",
+    "lang": "en",
+    "layout": "normal",
+    "set": "vma",
+    "collector_number": "57",
+    "rarity": "uncommon",
+    "released_at": "2014-06-16",
+    "digital": true,
+    "mana_cost": "{1}{U}",
+    "cmc": 2,
+    "type_line": "Instant",
+    "oracle_text": "Target player mills three cards.\nStorm (When you cast this spell, copy it for each spell cast before it this turn. You may choose new targets for the copies.)",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Storm",
+      "Mill"
+    ]
+  },
+  {
+    "id": "6f26faca-f338-4ce5-a218-6a61d40fc50a",
+    "oracle_id": "78db3190-59bc-4033-95bc-32d8ed872b6a",
+    "name": "Tendrils of Agony",
+    "lang": "en",
+    "layout": "normal",
+    "set": "vma",
+    "collector_number": "142",
+    "rarity": "uncommon",
+    "released_at": "2014-06-16",
+    "digital": true,
+    "mana_cost": "{2}{B}{B}",
+    "cmc": 4,
+    "type_line": "Sorcery",
+    "oracle_text": "Target player loses 2 life and you gain 2 life.\nStorm (When you cast this spell, copy it for each spell cast before it this turn. You may choose new targets for the copies.)",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": [
+      "Storm"
+    ]
+  },
+  {
+    "id": "b9edb215-f967-4968-905e-d1dc3b5d3424",
+    "oracle_id": "cf751552-156f-4f81-ac94-9814dce099f9",
+    "name": "Strionic Resonator",
+    "lang": "en",
+    "layout": "normal",
+    "set": "moc",
+    "collector_number": "384",
+    "rarity": "rare",
+    "released_at": "2023-04-21",
+    "digital": false,
+    "mana_cost": "{2}",
+    "cmc": 2,
+    "type_line": "Artifact",
+    "oracle_text": "{2}, {T}: Copy target triggered ability you control. You may choose new targets for the copy. (A triggered ability uses the words \"when,\" \"whenever,\" or \"at.\")",
+    "colors": [],
+    "color_identity": [],
+    "keywords": []
+  },
+  {
+    "id": "6683416a-5820-4cd0-b28a-60a53239e9ef",
+    "oracle_id": "0bf299da-1854-4153-baea-3cee2eb01ee8",
+    "name": "Lithoform Engine",
+    "lang": "en",
+    "layout": "normal",
+    "set": "znr",
+    "collector_number": "245",
+    "rarity": "mythic",
+    "released_at": "2020-09-25",
+    "digital": false,
+    "mana_cost": "{4}",
+    "cmc": 4,
+    "type_line": "Legendary Artifact",
+    "oracle_text": "{2}, {T}: Copy target activated or triggered ability you control. You may choose new targets for the copy.\n{3}, {T}: Copy target instant or sorcery spell you control. You may choose new targets for the copy.\n{4}, {T}: Copy target permanent spell you control. (The copy becomes a token.)",
+    "colors": [],
+    "color_identity": [],
+    "keywords": []
+  },
+  {
+    "id": "7aa45bfd-7075-470d-8aaa-16e34109eb5a",
+    "oracle_id": "4d22b01b-63dd-4698-a221-0acaefb2000b",
+    "name": "Dual Casting",
+    "lang": "en",
+    "layout": "normal",
+    "set": "avr",
+    "collector_number": "133",
+    "rarity": "rare",
+    "released_at": "2012-05-04",
+    "digital": false,
+    "mana_cost": "{1}{R}",
+    "cmc": 2,
+    "type_line": "Enchantment — Aura",
+    "oracle_text": "Enchant creature\nEnchanted creature has \"{R}, {T}: Copy target instant or sorcery spell you control. You may choose new targets for the copy.\"",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Enchant"
+    ]
+  },
+  {
+    "id": "758023cb-548a-4a98-a355-f5c6e9eab5ff",
+    "oracle_id": "14221c18-7801-49c9-a2c8-53b8c5181d63",
+    "name": "Cytoshape",
+    "lang": "en",
+    "layout": "normal",
+    "set": "dis",
+    "collector_number": "108",
+    "rarity": "rare",
+    "released_at": "2006-05-05",
+    "digital": false,
+    "mana_cost": "{1}{G}{U}",
+    "cmc": 3,
+    "type_line": "Instant",
+    "oracle_text": "Choose a nonlegendary creature on the battlefield. Target creature becomes a copy of that creature until end of turn.",
+    "colors": [
+      "G",
+      "U"
+    ],
+    "color_identity": [
+      "G",
+      "U"
+    ],
+    "keywords": []
   }
 ]

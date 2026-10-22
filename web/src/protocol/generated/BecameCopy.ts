@@ -15,4 +15,8 @@ object: ObjectId,
 /**
  * The object it copies, as it was.
  */
-of: ObjectRef, };
+of: ObjectRef, 
+/**
+ * The copy ends in the cleanup step of the turn, and the permanent is what it was before ("until end of turn").
+ */
+until_end_of_turn?: boolean, };

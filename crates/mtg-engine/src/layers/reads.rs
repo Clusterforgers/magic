@@ -138,6 +138,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Supertype(_)
         | Pred::Token
         | Pred::Spell
+        | Pred::Ability(_)
         | Pred::Tapped
         | Pred::Untapped
         | Pred::Attacking

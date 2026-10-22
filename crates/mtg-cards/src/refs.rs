@@ -94,6 +94,15 @@ impl Ref {
     }
 }
 
+/// Which kind of ability on the stack a predicate selects.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum AbilityKind {
+    /// An activated ability, a loyalty ability included.
+    Activated,
+    /// A triggered ability.
+    Triggered,
+}
+
 /// A condition on one object; selectors hold a list of them that must all be true.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -118,6 +127,8 @@ pub enum Pred {
     Token,
     /// Is a spell on the stack.
     Spell,
+    /// Is an activated or a triggered ability on the stack (a mana ability never is one).
+    Ability(AbilityKind),
     /// Is tapped.
     Tapped,
     /// Is untapped.

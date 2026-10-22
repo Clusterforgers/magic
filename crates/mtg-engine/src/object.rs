@@ -193,6 +193,8 @@ pub struct GameObject {
     pub(crate) kind: ObjectKind,
     pub(crate) choices: Choices,
     pub(crate) ability: Option<Box<AbilityObject>>,
+    /// The spell or ability on the stack this one is a copy of (CR 707.10).
+    pub(crate) stack_copy: Option<ObjectRef>,
 }
 
 impl GameObject {
@@ -213,6 +215,7 @@ impl GameObject {
             kind: ObjectKind::Card,
             choices: Choices::default(),
             ability: None,
+            stack_copy: None,
         }
     }
 
@@ -242,6 +245,7 @@ impl GameObject {
             kind: ObjectKind::Ability,
             choices,
             ability: Some(Box::new(ability)),
+            stack_copy: None,
         }
     }
 
@@ -278,7 +282,7 @@ impl GameObject {
     pub fn paid_costs(&self) -> &[usize] {
         match &self.permanent {
             Some(permanent) => permanent.paid(),
-            None if self.kind == ObjectKind::Card && self.zone == Zone::Stack => {
+            None if self.kind != ObjectKind::Ability && self.zone == Zone::Stack => {
                 &self.choices.optional_costs
             }
             None => &[],
@@ -290,7 +294,9 @@ impl GameObject {
     pub fn cast_way(&self) -> Option<CastWay> {
         match &self.permanent {
             Some(permanent) => permanent.way,
-            None if self.kind == ObjectKind::Card && self.zone == Zone::Stack => self.choices.way,
+            None if self.kind != ObjectKind::Ability && self.zone == Zone::Stack => {
+                self.choices.way
+            }
             None => None,
         }
     }
@@ -300,9 +306,19 @@ impl GameObject {
     pub fn announced_x(&self) -> Option<u32> {
         match &self.permanent {
             Some(permanent) => permanent.x(),
-            None if self.kind == ObjectKind::Card && self.zone == Zone::Stack => self.choices.x,
+            None if self.kind != ObjectKind::Ability && self.zone == Zone::Stack => self.choices.x,
             None => None,
         }
+    }
+
+    /// The spell or ability on the stack this object is a copy of, as it was when copied (CR 707.10); none for anything else.
+    pub const fn copied_from(&self) -> Option<ObjectRef> {
+        self.stack_copy
+    }
+
+    /// Whether this is a copy of a spell on the stack: a spell that is no card, and ceases to exist when it leaves the stack (CR 707.10).
+    pub fn is_spell_copy(&self) -> bool {
+        self.kind == ObjectKind::Token && self.zone == Zone::Stack
     }
 
     /// The ability this object is, if it is one on the stack.
@@ -406,6 +422,7 @@ impl PartialEq for GameObject {
             && self.kind == other.kind
             && self.choices == other.choices
             && self.ability == other.ability
+            && self.stack_copy == other.stack_copy
     }
 }
 
@@ -427,5 +444,9 @@ impl Hash for GameObject {
         self.kind.hash(state);
         self.choices.hash(state);
         self.ability.hash(state);
+        // Left out while there is none, so the hash of a game without copies is the one it always had.
+        if let Some(copied) = self.stack_copy {
+            copied.hash(state);
+        }
     }
 }

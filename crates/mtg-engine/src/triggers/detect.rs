@@ -43,11 +43,12 @@ enum Happened {
     Created { object: ObjectId },
     /// A creature was declared as an attacker, the `nth` time this turn for it.
     Attacked { attacker: ObjectId, nth: u32 },
-    /// A player cast a spell, the `nth` of their turn.
+    /// A player cast a spell, the `nth` of their turn, after `before` spells that every player cast this turn.
     Cast {
         player: PlayerId,
         spell: ObjectId,
         nth: u32,
+        before: u32,
     },
     /// Something was chosen as a  of a spell or ability: the `nth` time this turn for it by what the same player
     /// controls, the `nth_any` time by what anyone controls.
@@ -126,6 +127,7 @@ impl Happened {
             | Happened::LifeGained { amount, .. }
             | Happened::LifeLost { amount, .. } => *amount,
             Happened::Counters { delta, .. } => delta.unsigned_abs(),
+            Happened::Cast { before, .. } => *before,
             _ => 0,
         }
     }
@@ -259,11 +261,26 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                     player: *player,
                     spell: *object,
                     nth,
+                    before: cast_before(post, later),
                 });
                 found.extend(targeted(look, choices, (*object, *player)));
             }
             Event::AbilityPutOnStack(put) => {
                 found.extend(targeted(look, &put.choices, (put.object, put.controller)));
+            }
+            Event::SpellCopied(copy) => {
+                found.extend(targeted(
+                    look,
+                    &copy.choices,
+                    (copy.object, copy.controller),
+                ));
+            }
+            Event::AbilityCopied(copy) => {
+                found.extend(targeted(
+                    look,
+                    &copy.choices,
+                    (copy.object, copy.controller),
+                ));
             }
             Event::StepBegan { step } => found.push(Happened::Step {
                 step: *step,
@@ -273,6 +290,21 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
         }
     }
     found
+}
+
+/// How many spells every player cast this turn before the one the event casts: the count after the batch less that spell
+/// and the casts that follow it in the batch (`later`).
+fn cast_before(post: &GameState, later: &[Event]) -> u32 {
+    let total: u32 = post
+        .players()
+        .iter()
+        .map(|player| post.tallied(player.id(), Tally::Cast))
+        .sum();
+    let after = later
+        .iter()
+        .filter(|event| matches!(event, Event::SpellCast { .. }))
+        .count();
+    total.saturating_sub(u32::try_from(after).unwrap_or(u32::MAX).saturating_add(1))
 }
 
 /// Which time of the turn the event of `player` and kind `kind` is: the count after the batch less the events of that kind
@@ -327,6 +359,12 @@ fn object_ordinal(look: Look<'_>, object: ObjectRef, by: Option<PlayerId>, kind:
         ) => by_them(*player) && choices.targeted_objects().contains(&object),
         (Tally::Targeted, Event::AbilityPutOnStack(put)) => {
             by_them(put.controller) && put.choices.targeted_objects().contains(&object)
+        }
+        (Tally::Targeted, Event::SpellCopied(copy)) => {
+            by_them(copy.controller) && copy.choices.targeted_objects().contains(&object)
+        }
+        (Tally::Targeted, Event::AbilityCopied(copy)) => {
+            by_them(copy.controller) && copy.choices.targeted_objects().contains(&object)
         }
         _ => false,
     };
@@ -548,7 +586,7 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
             let reference = object(*spell)?;
             let subjects = vec![Target::Player(*player), Target::Object(reference)];
             (scope.players(by).ok()?.contains(player) && scope.selects(what, reference).ok()?)
-                .then(|| cause(state, subjects))
+                .then(|| counted(state, subjects, happened.amount()))
         }
         (
             TriggerPattern::Sacrificed { what, by },

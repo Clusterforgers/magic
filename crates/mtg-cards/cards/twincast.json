@@ -1,0 +1,25 @@
+{
+  "oracle_id": "8f878efc-850f-43d2-a6fe-5ea8d1dd5afb",
+  "name": "Twincast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twincast",
+      "oracle_fingerprint": "ca9a1d032a97c6511cab7dbf3a570b0b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

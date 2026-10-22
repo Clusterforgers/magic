@@ -60,7 +60,7 @@ pub use bot::RandomBot;
 pub use cascade_cards::cascade_fuzz_setup;
 pub use choice_cards::choice_fuzz_setup;
 pub use commander_cards::commander_fuzz_setup;
-pub use copy_cards::copy_fuzz_setup;
+pub use copy_cards::{copy_fuzz_setup, spell_copy_fuzz_setup};
 pub use cost_cards::cost_fuzz_setup;
 pub use counter_cards::counters_fuzz_setup;
 pub use decks::{
