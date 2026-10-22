@@ -3,6 +3,7 @@
 
 use mtg_core::mana::ManaType;
 
+use super::among;
 use super::amounts::{cards, its_stat, number_word, points};
 use super::cast;
 use super::conditional;
@@ -29,7 +30,7 @@ use crate::value::{Amount, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 31] = [
+const TEMPLATES: [Template; 32] = [
     modal::modal,
     cast::discover_sentence,
     cast::exile_until,
@@ -56,6 +57,7 @@ const TEMPLATES: [Template; 31] = [
     counters::moving,
     add_mana,
     library::search,
+    among::among,
     library::look,
     library::put_on_library,
     return_itself,
