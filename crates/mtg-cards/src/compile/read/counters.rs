@@ -38,7 +38,7 @@ const RULES_COUNTERS: [&str; 19] = [
 
 /// "+1/+1" or "-1/-1", the counters that change a creature's size, or a word that names another
 /// kind: "charge", "poison", "time".
-fn kind(r: &mut Reader<'_>) -> Option<CounterKind> {
+pub(super) fn kind(r: &mut Reader<'_>) -> Option<CounterKind> {
     let size = r.attempt(|r| {
         let plus = r.punct('+');
         if !plus {
@@ -124,6 +124,10 @@ pub fn put(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         Some(objects) => objects,
         None => place(r)?,
     };
+    // The card the counters went on is what a later "it" means ("Then if there are five or more counters on it").
+    if on == Ref::This {
+        r.it = Some(Ref::This);
+    }
     Some(vec![Effect::PutCounters { on, counter, count }])
 }
 
@@ -159,7 +163,7 @@ pub fn moving(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 }
 
 /// The words for a kind of counter.
-fn kind_text(counter: &CounterKind) -> Option<&str> {
+pub(super) fn kind_text(counter: &CounterKind) -> Option<&str> {
     match counter {
         CounterKind::Other(name) if !name.chars().all(|c| c.is_ascii_lowercase()) => None,
         CounterKind::Other(name) if name.is_empty() => None,

@@ -81,7 +81,7 @@ fn one_of(mut preds: Vec<Pred>) -> Pred {
 
 /// "basic land", "Plains or Island", "legendary Dragon creature", "artifact or creature", then
 /// "card" or "cards", then what the card has: "with mana value 3 or less".
-fn filter(r: &mut Reader<'_>, plural: bool) -> Option<Selector> {
+pub(super) fn filter(r: &mut Reader<'_>, plural: bool) -> Option<Selector> {
     let mut preds = Vec::new();
     while let Some(pred) = r
         .peek_word()
@@ -345,7 +345,7 @@ fn names_text(pred: &Pred) -> Option<(u8, String)> {
 
 /// The filter of a search as the card words it, without its count: "basic land card",
 /// "Plains or Island cards", "creature card with mana value 3 or less".
-fn filter_text(filter: &Selector, plural: bool) -> Option<String> {
+pub(super) fn filter_text(filter: &Selector, plural: bool) -> Option<String> {
     let (mut head, mut tail) = (Vec::new(), Vec::new());
     let mut stage = 0;
     for pred in &filter.0 {

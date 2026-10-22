@@ -5,6 +5,7 @@
 
 use super::amounts::{cards_text, count_word, points_text, stat_name};
 use super::cast;
+use super::conditional;
 use super::costs;
 use super::counters;
 use super::create;
@@ -13,6 +14,7 @@ use super::library;
 use super::modal::{BULLET, DASH};
 use super::payments;
 use super::prevention;
+use super::reveal;
 use super::selectors::{Form, granted_text, phrase_text, spec_text};
 use super::spend;
 use super::statics;
@@ -209,6 +211,7 @@ fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Vec<String>> 
     masks
         .into_iter()
         .filter_map(|mask| written(targets, effects, mask))
+        .flat_map(|sentences| conditional::wordings(&sentences))
         .collect()
 }
 
@@ -231,6 +234,16 @@ fn written(targets: &[TargetSpec], effects: &[Effect], mask: u32) -> Option<Vec<
                 return None;
             }
             sentences.push(text);
+            start += used;
+            continue;
+        }
+        // A look at the top card, the reveal and what follows it are three sentences, which no joint splits.
+        if let Some((condition, then, used)) = reveal::shape(&effects[start..]) {
+            if (mask >> start) & ((1 << used) - 1) != 0 {
+                return None;
+            }
+            let tail = writer.consequence(condition, then)?;
+            sentences.push(reveal::text(condition, &tail)?);
             start += used;
             continue;
         }
@@ -472,6 +485,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::PutCounters { .. }
                 | Effect::RemoveCounters { .. }
                 | Effect::MoveCounters { .. }
+                | Effect::Transform { .. }
         )
 }
 
@@ -790,8 +804,21 @@ impl Writer<'_> {
         })
     }
 
-    /// "surveil 2", "proliferate", "you become the monarch", "return ~ from your graveyard to the battlefield": a
-    /// keyword action, a designation or the card returning itself.
+    /// The effects after a condition, as steps joined by "and": "remove all of them and transform ~".
+    fn consequence(&mut self, condition: &Condition, then: &[Effect]) -> Option<String> {
+        let mut steps = Vec::with_capacity(then.len());
+        for effect in then {
+            steps.push(match conditional::remove_all_text(condition, effect) {
+                Some(text) => text,
+                None => self.effect(effect)?,
+            });
+        }
+        (!steps.is_empty()).then(|| join_list(&steps))
+    }
+
+    /// "surveil 2", "proliferate", "transform ~", "you become the monarch", "return ~ from your graveyard to the
+    /// battlefield", "if there are five or more charge counters on ~, transform ~": a keyword action, a designation,
+    /// the card returning itself or an effect on a condition.
     fn keyword_action(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
             Effect::Move {
@@ -807,6 +834,16 @@ impl Writer<'_> {
                 count,
             } => format!("surveil {}", points_text(count)?),
             Effect::Proliferate { who: Ref::You } => "proliferate".to_owned(),
+            Effect::Transform { what } => format!("transform {}", self.object(what)?),
+            Effect::If {
+                condition,
+                then,
+                otherwise,
+            } if otherwise.is_empty() => format!(
+                "if {}, {}",
+                conditional::condition_text(condition)?,
+                self.consequence(condition, then)?
+            ),
             Effect::BecomeMonarch { who } => format!(
                 "{} {} the monarch",
                 self.player(who)?,
