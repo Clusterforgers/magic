@@ -1706,7 +1706,8 @@ impl Pass<'_> {
                 // The questions of the commander and of a dredge were about the first card drawn: another draw is
                 // another event.
                 if index > 0 && matches!(item, Item::One(Event::CardDrawn { .. })) {
-                    applied.retain(|origin| !matches!(origin, Origin::Commander | Origin::Dredge(_)));
+                    applied
+                        .retain(|origin| !matches!(origin, Origin::Commander | Origin::Dredge(_)));
                 }
                 Slot {
                     item,

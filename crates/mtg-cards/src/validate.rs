@@ -714,7 +714,6 @@ impl<'a> Walker<'a> {
             Keyword::Kicker(cost)
             | Keyword::Flashback(cost)
             | Keyword::Madness(cost)
-            | Keyword::Miracle(cost)
             | Keyword::Buyback(cost)
             | Keyword::Entwine(cost)
             | Keyword::Evoke(cost)

@@ -104,7 +104,10 @@ fn resolve(driver: &mut Driver, says: &[Say]) -> Result<(usize, usize), ScriptEr
     for _ in 0..200 {
         match driver.decision()?.kind.clone() {
             DecisionKind::YesNo(options) => {
-                let yes = match given.next().unwrap_or_else(|| panic!("an answer for {options:?}")) {
+                let yes = match given
+                    .next()
+                    .unwrap_or_else(|| panic!("an answer for {options:?}"))
+                {
                     Yes => true,
                     No => false,
                     First(name) => panic!("a yes or no was asked, not the order of {name}"),
@@ -155,9 +158,7 @@ fn replays(driver: &Driver, setup: &GameSetup) {
 
 /// The number of questions of the answers that are not an order of effects.
 fn questions(says: &[Say]) -> usize {
-    says.iter()
-        .filter(|say| matches!(say, Yes | No))
-        .count()
+    says.iter().filter(|say| matches!(say, Yes | No)).count()
 }
 
 #[rstest]
@@ -203,7 +204,11 @@ fn dredge_replaces_a_draw_when_its_owner_says_so(
     let log = driver.engine().events()[begun..].to_vec();
     assert_eq!(asked, questions(shape.says), "{log:?}");
     assert_eq!(ordered, shape.says.len() - asked, "{log:?}");
-    assert_eq!(sorted(&driver, Zone::Hand(pid(SEAT))), shape.hand, "{log:?}");
+    assert_eq!(
+        sorted(&driver, Zone::Hand(pid(SEAT))),
+        shape.hand,
+        "{log:?}"
+    );
     assert_eq!(
         sorted(&driver, Zone::Graveyard(pid(SEAT))),
         shape.after,
@@ -273,7 +278,10 @@ fn commander_table(seats: usize) -> Scenario {
         .format(Arc::new(Commander))
         .commanders(SEAT, [legend("Cmd", 1, &[Color::Red], 2, 2)])
         .graveyard_named(SEAT, [MOSSDOG])
-        .library(SEAT, (0..8).map(|n| free_creature(&format!("Lib {n}"), 1, 1)))
+        .library(
+            SEAT,
+            (0..8).map(|n| free_creature(&format!("Lib {n}"), 1, 1)),
+        )
 }
 
 /// Moves the commander to the top of the library, keeping it there against the question of the command zone.
@@ -319,7 +327,11 @@ fn a_commander_on_top_is_milled_or_drawn_by_the_order_of_the_effects(
     let log = driver.engine().events()[begun..].to_vec();
     assert_eq!((asked, ordered), (questions(says), 1), "{log:?}");
     assert_eq!(sorted(&driver, Zone::Hand(pid(SEAT))), hand, "{log:?}");
-    assert_eq!(sorted(&driver, Zone::Command(pid(SEAT))), command, "{log:?}");
+    assert_eq!(
+        sorted(&driver, Zone::Command(pid(SEAT))),
+        command,
+        "{log:?}"
+    );
     assert_eq!(
         sorted(&driver, Zone::Graveyard(pid(SEAT))),
         graveyard,

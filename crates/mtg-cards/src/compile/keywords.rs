@@ -328,7 +328,6 @@ pub fn read(item: &str) -> Option<Keyword> {
         "entwine" => spell_cost(rest).map(Keyword::Entwine),
         "flashback" => spell_cost(rest).map(Keyword::Flashback),
         "madness" => spell_cost(rest).map(Keyword::Madness),
-        "miracle" => spell_cost(rest).map(Keyword::Miracle),
         "dredge" => rest
             .parse()
             .ok()
@@ -657,7 +656,6 @@ mod tests {
     )]
     #[case::cycling("Cycling {2}", Keyword::Cycling(mana("{2}")))]
     #[case::madness("Madness {R}", Keyword::Madness(mana("{R}")))]
-    #[case::miracle("Miracle {1}{W}", Keyword::Miracle(mana("{1}{W}")))]
     #[case::dredge("Dredge 3", Keyword::Dredge(3))]
     #[case::dredge_six("Dredge 6", Keyword::Dredge(6))]
     #[case::morph("Morph {3}{B}", Keyword::Morph(mana("{3}{B}")))]
@@ -932,7 +930,6 @@ mod tests {
             "Entwine {1}",
             "Flashback {1}",
             "Madness {1}",
-            "Miracle {W}",
             "Dredge 2",
             "Morph {1}",
             "Disguise {1}",

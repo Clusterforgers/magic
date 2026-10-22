@@ -23,8 +23,8 @@ mod delve;
 mod devoid;
 mod disguise;
 mod doctors_companion;
-mod dredge;
 mod double_strike;
+mod dredge;
 mod echo;
 mod enchant;
 mod encore;
@@ -49,7 +49,6 @@ mod landwalk;
 mod lifelink;
 mod living_weapon;
 mod madness;
-mod miracle;
 mod menace;
 mod morph;
 mod multikicker;
@@ -367,7 +366,6 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Flashback(_) => &flashback::Flashback,
         Keyword::Madness(_) => &madness::Madness,
         Keyword::Dredge(_) => &dredge::Dredge,
-        Keyword::Miracle(_) => &miracle::Miracle,
         Keyword::Morph(_) => &morph::Morph,
         Keyword::Disguise(_) => &disguise::Disguise,
         Keyword::Suspend { .. } => &suspend::Suspend,
@@ -620,7 +618,6 @@ mod tests {
             Keyword::Flashback(cost()),
             Keyword::Madness(cost()),
             Keyword::Dredge(3),
-            Keyword::Miracle(cost()),
             Keyword::Morph(cost()),
             Keyword::Disguise(cost()),
             Keyword::Suspend {
@@ -835,7 +832,6 @@ mod tests {
     #[case::storm(Keyword::Storm, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::madness(Keyword::Madness(Cost::mana("{R}".parse().unwrap())), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::dredge(Keyword::Dredge(3), Hooks { abilities: 1, ..Hooks::none() })]
-    #[case::miracle(Keyword::Miracle(Cost::mana("{W}".parse().unwrap())), Hooks::none())]
     #[case::changeling(Keyword::Changeling, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::devoid(Keyword::Devoid, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::partner(Keyword::Partner, Hooks::none())]
