@@ -289,6 +289,14 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
     options
 }
 
+/// What declaring `attackers` costs in mana (CR 508.1h): the taxes in force added up, each attacker for what it attacks.
+pub fn attack_cost(
+    state: &GameState,
+    attackers: &[(ObjectId, AttackTarget)],
+) -> mtg_core::mana::ManaCost {
+    attack_tax::total(state, attackers)
+}
+
 /// Players being attacked, in turn order after the active player.
 pub(crate) fn defending_players(state: &GameState) -> Vec<PlayerId> {
     let active = state.turn().active();

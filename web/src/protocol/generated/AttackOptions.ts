@@ -14,4 +14,10 @@ attackers: Array<AttackerOption>,
  * The creatures among `attackers` that a rule requires to attack (CR 508.1d); the declaration names each of them.
  * Left out while there are none.
  */
-required?: Array<ObjectId>, };
+required?: Array<ObjectId>, 
+/**
+ * The mana the player can surely spend on what the attack costs, whichever creatures attack (a floor, not a limit):
+ * the mana floating and that of the untapped permanents that are not creatures that may attack. Left out while
+ * nothing is taxed.
+ */
+mana?: number, };
