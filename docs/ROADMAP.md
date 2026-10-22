@@ -23,7 +23,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Triggers and keywords: (c6) triggered and upkeep keywords, the triggered keywords of (c2b), (c4b) level-ups and stations, (c3b) and (c3c) keyword actions and Monarch wordings, (n1d5) day and night effects, (o2c).
 - Statics and layers: (c8), (c7b), (o1c).
 - Compiler wordings, no engine change: (c10) one piece per wording family, (o2b), (c11) layouts and long-tail mechanics, (c9c).
-- Commander and server: (cmd2e), (hr5b), the `manual_play` flag stored with the game, the turn without an active player in the table view, Companion.
+- Commander and server: (hr5b), the `manual_play` flag stored with the game, the turn without an active player in the table view, Companion.
 - Tooling: the lists of keywords (`RUN`, `NAMES` and the `Caps` lists) become slices without a length, so branches that add keywords do not conflict.
 - After the card system: "Views complete", the Gate, then the web (M5 prompts for the decision kinds the engine asks, the manual-action menu, table states) and M7.
 - After each round: `mtg-cli ingest` and `compile` refresh the real database, `coverage` is re-run and the numbers go on the M6 target line; `fetch scryfall --printings` fills the printings once.
@@ -155,7 +155,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (cmd2) `Commander` on the server and in the lobby: the `commander` format of `POST /api/games` (2 to 6 seats), a deck's command zone or a precon's commander board as the seat's commanders in the recipe and its fingerprint, a resume that rebuilds the same game, the format in the lobby row, and the Commander precons `playable` (195 of the 198 real ones; `docs/server.md`, Precons)
 - [x] (cmd2b) The engine reads the commander rules the deck check accepts: "can be your commander", Partner, Partner with (with its fetch trigger), Partner—text (Friends forever, Character select), Doctor's companion and Choose a Background, so 195 of the 198 real precons start (the other 3 are blocked by the deck check; `docs/engine.md`, Commander)
 - [x] (cmd2d) Engine tests for the commander as an object: a token and a card that is a copy of a commander, an exile and return, the identity of a pair, and Partner pairs in the fuzz games at 2 to 6 seats
-- [~] (cmd2e) (branch cmd2e-draw-commander) A commander that would be drawn offers the command zone instead (CR 903.9b): the draw replacement of `replace.rs` (`Unit::Draw`) names the commander on top of the library like a move to a hand does, with a table test at 2 to 6 seats
+- [x] (cmd2e) A commander that would be drawn offers the command zone instead (CR 903.9b): the draw replacement of `replace.rs` (`Unit::Draw`) names the commander on top of the library like a move to a hand does, with a table test at 2 to 6 seats
 - [x] (hr4b) The deck relaxations of a game's house rules reach the server's deck check: a stored deck or a precon that `deck_report` refuses for a rule the table relaxed (singleton, colour identity, size, copies, a pair of commanders) is judged by the engine's `validate_seat` under the table's rules instead
 - [x] (cmd2c) `GET /api/games/{id}` names the format of the game (`GameInfo.format`, with the web's `GameInfo` literals)
 - [ ] (hr5b) The deck check for a table takes `precon:<code>` as its deck without an account, and the web's lobby picker shows each deck's verdict at the table (`game`) before joining
