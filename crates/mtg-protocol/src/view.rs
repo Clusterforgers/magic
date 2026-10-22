@@ -45,6 +45,16 @@ pub struct PermanentView {
     pub summoning_sick: bool,
 }
 
+/// That a permanent is a copy of another object (CR 707): its name, types and abilities shown are the copiable values of
+/// the original.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct CopyView {
+    /// The object it copies, while that is an object the viewer can see; left out once it has left or is hidden.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub of: Option<ObjectId>,
+}
+
 /// A loyalty ability of a planeswalker and what activating it does to the loyalty counters.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct LoyaltyAbilityView {
@@ -131,6 +141,10 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub face: Option<u8>,
+    /// Set while the permanent is a copy of another object; the values above are those of the copy effect.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub copy: Option<CopyView>,
     /// The clauses of its rules text the engine does not run, as the card prints them, for every seat to follow; left out
     /// while there are none. The card's controller does them by hand.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]

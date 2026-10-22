@@ -840,10 +840,7 @@ impl Pass<'_> {
             // about entering apply in place of its own.
             let own_abilities: Vec<(AbilityRef, Arc<Ability>, bool)> =
                 match self.entering_copy(*object) {
-                    Some(copy) => copy
-                        .definition
-                        .rules
-                        .iter()
+                    Some(copy) => crate::ability_reader::printed_rules(&copy.definition)
                         .enumerate()
                         .map(|(index, rules)| {
                             (AbilityRef::printed(*object, index), Arc::clone(rules), true)

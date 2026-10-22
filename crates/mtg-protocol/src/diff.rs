@@ -72,6 +72,7 @@ mod tests {
             }),
             face_down: false,
             face: None,
+            copy: None,
             kind: ObjectKind::Card,
             source: None,
             targets: Vec::new(),

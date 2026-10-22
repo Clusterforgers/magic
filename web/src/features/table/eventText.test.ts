@@ -55,6 +55,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Ana moves Forest to their graveyard by hand',
   ],
   Transformed: [{ Transformed: { object: 3, face: 1 } }, 'Forest transforms'],
+  BecameCopy: [
+    { BecameCopy: { object: 3, of: { id: 5, counter: 0 } } },
+    'Forest becomes a copy of Serra Angel',
+  ],
   DayNightChanged: [{ DayNightChanged: { to: 'Night' } }, 'It becomes night'],
   MulliganPhaseEnded: ['MulliganPhaseEnded', 'The mulligan phase ends'],
   TurnBegan: [{ TurnBegan: { number: 3, active: 1 } }, "Turn 3 begins: Bo's turn"],

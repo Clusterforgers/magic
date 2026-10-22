@@ -190,7 +190,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a token maker creates the number asked for each player it names, under that player's control, with the characteristics and the abilities of the description it names (inline or predefined), tapped when it says so; a token enters attacking only on its controller's own attack after attackers are declared, and the controller is asked which defender only when there is more than one; an unknown token is refused and a copy waits for its task.
+    //! Goal: a token maker creates the number asked for each player it names, under that player's control, with the characteristics and the abilities of the description it names (inline or predefined), tapped when it says so; a token enters attacking only on its controller's own attack after attackers are declared, and the controller is asked which defender only when there is more than one; an unknown token is refused and a copy has the values of what it copies.
     use rstest::rstest;
 
     use super::*;
@@ -373,18 +373,58 @@ mod tests {
         assert!(matches!(error, ResolveError::Invalid(_)), "{error:?}");
     }
 
+    #[rstest]
+    #[case::one(1, 1)]
+    #[case::three(3, 3)]
+    #[case::none(0, 0)]
+    fn a_token_that_is_a_copy_has_the_values_of_the_object_it_copies(
+        #[case] count: usize,
+        #[case] made: usize,
+    ) {
+        let game = game(2);
+        let source = game.zone(Zone::Battlefield)[0];
+        let extra = format!(r#","count":{count}"#);
+        let tokens = tokens(
+            run_with(&game, Vec::new(), &effect(r#"{"CopyOf":{"of":"This"}}"#, &extra)).unwrap(),
+        );
+        assert_eq!(tokens.len(), made);
+        for token in &tokens {
+            assert_eq!(token.name, "Source");
+            assert_eq!(token.copy_of.map(|of| of.id), Some(source));
+            assert_eq!(token.definition.power, Some(1));
+        }
+    }
+
     #[test]
-    fn a_copy_waits_for_the_copy_effects() {
+    fn the_exceptions_of_a_copy_are_part_of_its_values() {
+        let game = game(2);
+        let tokens = tokens(
+            run_with(
+                &game,
+                Vec::new(),
+                &effect(
+                    r#"{"CopyOf":{"of":"This","except":[{"AddSubtype":"Illusion"},{"AddKeyword":"Haste"}]}}"#,
+                    "",
+                ),
+            )
+            .unwrap(),
+        );
+        let [token] = tokens.as_slice() else {
+            panic!("one token");
+        };
+        assert_eq!(token.definition.subtypes, [mtg_core::card::Subtype("Illusion".into())]);
+        assert_eq!(crate::ability_reader::printed_rules(&token.definition).count(), 1);
+    }
+
+    #[test]
+    fn a_modification_that_is_no_exception_is_refused() {
         let error = run_with(
             &game(2),
             Vec::new(),
-            &effect(r#"{"CopyOf":{"of":"This"}}"#, ""),
+            &effect(r#"{"CopyOf":{"of":"This","except":["SwitchPT"]}}"#, ""),
         )
         .unwrap_err();
-        assert!(matches!(
-            error,
-            ResolveError::Unsupported("Effect.CreateToken.Copy")
-        ));
+        assert!(matches!(error, ResolveError::Unsupported(_)), "{error:?}");
     }
 
     #[test]

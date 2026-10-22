@@ -14,7 +14,7 @@ use mtg_engine::state::GameState;
 use mtg_engine::zones::Zone;
 
 use crate::view::{
-    AttackerView, CombatView, LoyaltyAbilityView, ObjectView, PermanentView, PlayerView,
+    AttackerView, CombatView, CopyView, LoyaltyAbilityView, ObjectView, PermanentView, PlayerView,
     PriorityView, StateView, TableView, TurnView, ZoneView,
 };
 
@@ -235,6 +235,15 @@ impl ObjectView {
             },
             face_down: object.face_down().is_some(),
             face: object.face().filter(|_| printed),
+            copy: object.copy_effect().map(|copy| CopyView {
+                // The original is named only while the viewer can see that very object.
+                of: Some(copy.of().id).filter(|original| {
+                    state.object(*original).is_some_and(|seen| {
+                        seen.counter() == copy.of().counter
+                            && !matches!(sight.look(seen), Look::Hidden)
+                    })
+                }),
+            }),
             // The clauses the engine leaves to the table are printed on the card every seat can read.
             manual: if printed {
                 card.manual.clone()
@@ -271,6 +280,7 @@ impl ObjectView {
             attachments: Vec::new(),
             face_down: true,
             face: None,
+            copy: None,
             manual: Vec::new(),
         }
     }

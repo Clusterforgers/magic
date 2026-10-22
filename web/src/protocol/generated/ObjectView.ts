@@ -2,6 +2,7 @@
 import type { AbilityDef } from "./AbilityDef";
 import type { CardType } from "./CardType";
 import type { Color } from "./Color";
+import type { CopyView } from "./CopyView";
 import type { CounterKind } from "./CounterKind";
 import type { LoyaltyAbilityView } from "./LoyaltyAbilityView";
 import type { ManaCost } from "./ManaCost";
@@ -121,6 +122,10 @@ face_down?: boolean,
  * or both halves of a split card.
  */
 face?: number, 
+/**
+ * Set while the permanent is a copy of another object; the values above are those of the copy effect.
+ */
+copy?: CopyView, 
 /**
  * The clauses of its rules text the engine does not run, as the card prints them, for every seat to follow; left out
  * while there are none. The card's controller does them by hand.
