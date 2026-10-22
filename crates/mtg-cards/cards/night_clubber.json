@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4d2abfe1-f5f8-4ed5-915d-bfe98c6321ee",
+  "name": "Night Clubber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Night Clubber",
+      "oracle_fingerprint": "f81f21bc183a9e03eaa9305d23c3000d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Blitz": "{2}{B}" } }
+      ]
+    }
+  ]
+}

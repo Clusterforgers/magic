@@ -7,9 +7,13 @@
 //! permanent that makes mana first and is taken after is activated by hand before the payment. The engine picks the
 //! permanents (`assignment`); [`solving`] finds the payment that is wanted most among those whose sources can all take.
 
+use std::borrow::Cow;
+
 use mtg_core::ids::ObjectId;
 
 use crate::mana::{ManaOption, ManaSource, Payment};
+use crate::state::GameState;
+use crate::zones::Zone;
 
 /// The most plans [`solving`] tries beyond the first.
 const BUDGET: usize = 256;
@@ -199,6 +203,29 @@ pub(crate) fn without_taken(
         .collect()
 }
 
+/// `sources` for paying for the card `id`: no cost takes the card from the hand it waits in, since it is on the stack
+/// (or in exile) by the time the payment is made.
+pub(crate) fn for_card<'a>(
+    state: &GameState,
+    sources: &'a [ManaOption],
+    id: ObjectId,
+) -> Cow<'a, [ManaOption]> {
+    let in_hand = state
+        .object(id)
+        .is_some_and(|object| matches!(object.zone(), Zone::Hand(_)));
+    let mentioned = |option: &ManaOption| {
+        option
+            .takes
+            .iter()
+            .any(|take| take.exile && take.from.contains(&id))
+    };
+    if in_hand && sources.iter().any(mentioned) {
+        Cow::Owned(without_taken(sources, &|other| other == id))
+    } else {
+        Cow::Borrowed(sources)
+    }
+}
+
 /// The sources of `payment` among `sources`, which `assignment` reads.
 pub(crate) fn sources_of<'a>(
     sources: &'a [ManaOption],
@@ -225,6 +252,7 @@ mod tests {
                 .iter()
                 .map(|(count, from)| Take {
                     sacrifice: false,
+                    exile: false,
                     count: *count,
                     from: from.iter().map(|id| ObjectId(*id)).collect(),
                 })

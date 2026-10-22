@@ -208,19 +208,10 @@ fn another_player_acts_and_you_follow(#[case] text: &str, #[case] json: &str) {
 #[case::the_wrong_sentence(
     "Copy target instant or sorcery spell. You may choose new targets for it."
 )]
-#[case::twice("Copy target instant or sorcery spell twice.")]
 #[case::it("Copy it.")]
 #[case::that_spell("Copy that spell. You may choose new targets for the copy.")]
 #[case::a_creature("Copy target creature.")]
 #[case::a_card_in_a_graveyard("Copy target instant card in your graveyard.")]
-#[case::a_keyword_exception(
-    "Copy target instant or sorcery spell, except that the copy has flying."
-)]
-#[case::a_type_exception(
-    "Copy target instant or sorcery spell, except that the copy is a Dragon in addition to its other types."
-)]
-#[case::a_size_exception("Copy target instant or sorcery spell, except that the copy is 3/3.")]
-#[case::an_exception_without_that("Copy target instant or sorcery spell, except the copy is red.")]
 #[case::an_exception_without_a_comma(
     "Copy target instant or sorcery spell except that the copy is red."
 )]
@@ -229,6 +220,10 @@ fn another_player_acts_and_you_follow(#[case] text: &str, #[case] json: &str) {
 #[case::any_ability("Copy target ability. You may choose new targets for the copy.")]
 #[case::a_loyalty_ability("Copy target loyalty ability you control.")]
 #[case::an_opponents_ability("Copy target triggered ability an opponent controls.")]
+#[case::an_ability_twice("Copy target triggered ability you control twice.")]
+#[case::an_exception_with_a_dangling_subject(
+    "Copy target instant or sorcery spell, except that the copy"
+)]
 #[case::an_ability_with_an_exception(
     "Copy target triggered ability you control, except that the copy is red."
 )]
@@ -295,7 +290,6 @@ fn near_misses_of_giving_an_ability_stay_unread(#[case] text: &str) {
 
 #[rstest]
 #[case::two_other_players("Target player loses 2 life and target opponent gains 2 life.")]
-#[case::you_after_you("You draw a card and you gain 1 life.")]
 #[case::a_dangling_and("Target player loses 2 life and you")]
 #[case::you_with_no_verb("Target player loses 2 life and you a card.")]
 fn near_misses_of_a_second_player_stay_unread(#[case] text: &str) {

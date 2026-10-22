@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b7a68899-c0d3-49e0-854b-19268ae9b89d",
+  "name": "Vivid Grove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vivid Grove",
+      "oracle_fingerprint": "4a6011f28c60a9d5bb380e37611fec95",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "charge", "count": 2, "tapped": true } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": "charge" } }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "15f1fe23-5af4-4fc4-8cde-2e0bf9f9be0c",
+  "name": "Citadel Gate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Citadel Gate",
+      "oracle_fingerprint": "8a394f90565f424f586d4e8ae1b3cb2a",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "ColorOtherThan": "White" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OrChosenColor": "White" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

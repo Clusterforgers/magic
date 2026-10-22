@@ -1,0 +1,14 @@
+{
+  "oracle_id": "559c9949-faaf-41bc-9349-b6738b4763a2",
+  "name": "Sauroform Hybrid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sauroform Hybrid",
+      "oracle_fingerprint": "45e137c365a8c04af7f2ccbf2564cdfd",
+      "abilities": [
+        { "Activated": { "cost": "{4}{G}{G}", "effects": [{ "Adapt": { "count": 4 } }] } }
+      ]
+    }
+  ]
+}

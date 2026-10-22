@@ -143,9 +143,6 @@ fn a_count_by_for_each_reads_as_the_count_of_a_selector(
 #[case::any_counter("You gain 1 life for each counter on ~.")]
 #[case::mana_times("Add {R}{R} for each Goblin you control and {G}.")]
 #[case::for_each_first("For each creature you control, draw a card.")]
-#[case::tapped_tokens(
-    "Create a tapped 1/1 white Soldier creature token for each creature you control."
-)]
 fn a_count_the_templates_do_not_model_stays_unread(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Spell, false), None, "{text}");
 }

@@ -1,0 +1,28 @@
+{
+  "id": "0795101e-07d9-419a-adca-3eb57536fd5f",
+  "oracle_id": "78a1f291-22ed-41f1-87fd-0bdc97f9c065",
+  "name": "Ghostblade Eidolon",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c15",
+  "collector_number": "70",
+  "rarity": "uncommon",
+  "released_at": "2015-11-13",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment Creature — Spirit",
+  "oracle_text": "Bestow {5}{W} (If you cast this card for its bestow cost, it's an Aura spell with enchant creature. It becomes a creature again if it's not attached.)\nDouble strike (This creature deals both first-strike and regular combat damage.)\nEnchanted creature gets +1/+1 and has double strike.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Bestow",
+    "Double strike"
+  ]
+}

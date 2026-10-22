@@ -1,0 +1,27 @@
+{
+  "oracle_id": "64ee02f1-afdb-474b-a893-31538ad7219a",
+  "name": "Jagged Barrens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jagged Barrens",
+      "oracle_fingerprint": "09c80ee5e027b56eaf4a99a039e792ae",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Black", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

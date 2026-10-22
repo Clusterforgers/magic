@@ -1,0 +1,31 @@
+{
+  "oracle_id": "152b91c9-cc07-4ca8-944f-9bc2242a2283",
+  "name": "Whir of Invention",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whir of Invention",
+      "oracle_fingerprint": "662ebf962260e7e8e253306924a208ec",
+      "abilities": [
+        { "Keyword": "Improvise" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Artifact" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                  ],
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -517,3 +517,17 @@ fn a_payment_that_spends_restricted_mana_on_a_signets_cost_is_refused() {
         .is_err()
     );
 }
+
+#[rstest]
+#[case::creature_mana(CardType::Creature, false)]
+#[case::enchantment_mana(CardType::Enchantment, true)]
+fn a_bestowed_creature_spell_is_an_aura_spell_for_the_mana_restrictions(
+    #[case] restricted_to: CardType,
+    #[case] allowed: bool,
+) {
+    let spend = spell_of(&[CardType::Enchantment, CardType::Creature], false);
+    assert!(spend.allows(&only_for(CardType::Creature)));
+    let bestowed = spend.bestowed();
+    assert_eq!(bestowed.allows(&only_for(restricted_to)), allowed);
+    assert!(bestowed.traits.subtypes.iter().any(|s| s.0 == "Aura"));
+}

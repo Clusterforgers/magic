@@ -1,0 +1,21 @@
+{
+  "oracle_id": "aedcd2fb-813a-4915-b7b9-ac7479863462",
+  "name": "Boon Satyr",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boon Satyr",
+      "oracle_fingerprint": "a9ec3e6a27b54808572d6e06c05372c5",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Bestow": "{3}{G}{G}" } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 4, "toughness": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

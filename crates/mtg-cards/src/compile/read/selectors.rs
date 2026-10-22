@@ -9,13 +9,14 @@ use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 
 use super::amounts::{count_word, number_word, stat_name};
+use super::counters;
 use super::subtypes::{plural_subtype as plural_subtype_word, singular_subtype};
 use super::tokens::Reader;
 use crate::compile::keywords;
 use crate::keyword::Keyword;
 use crate::modify::Modification;
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
-use crate::value::{Amount, Cmp, StatKind};
+use crate::value::{Amount, Cmp, CounterKind, StatKind};
 
 const COLORS: [(&str, Color); 5] = [
     ("white", Color::White),
@@ -286,7 +287,11 @@ pub fn granted_text(mods: &[Modification]) -> Option<String> {
             protecting = false;
         }
     }
-    Some(parts.join(" and "))
+    // Cards write three or more as a list: "flying, vigilance, and haste".
+    Some(match parts.as_slice() {
+        [rest @ .., last] if rest.len() >= 2 => format!("{}, and {last}", rest.join(", ")),
+        _ => parts.join(" and "),
+    })
 }
 
 pub(super) fn stat_word(r: &mut Reader<'_>) -> Option<StatKind> {
@@ -322,8 +327,17 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.that_player && r.words("that player controls") {
         return Some(Pred::ControlledBy(Ref::Triggering));
     }
+    if let Some(keyword) = r.attempt(|r| {
+        r.need("without")?;
+        keyword(r)
+    }) {
+        return Some(not(Pred::HasKeyword(keyword)));
+    }
     r.attempt(|r| {
         r.need("with")?;
+        if let Some(kind) = r.attempt(counter_on_it) {
+            return Some(Pred::HasCounter(kind));
+        }
         if let Some(keyword) = keyword(r) {
             return Some(Pred::HasKeyword(keyword));
         }
@@ -356,6 +370,15 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             "you don't control".to_owned()
         }
         Pred::HasKeyword(keyword) => format!("with {}", keyword_text(keyword)?),
+        // Only a lone creature is "each ... with a counter on it"; the plural and the other forms stay unwritten.
+        Pred::HasCounter(kind) if matches!(form, Form::Each) => {
+            let words = counters::trigger_kind_text(Some(kind))?;
+            format!("with {words} on it")
+        }
+        Pred::Not(inner) => match &**inner {
+            Pred::HasKeyword(keyword) => format!("without {}", keyword_text(keyword)?),
+            _ => return None,
+        },
         Pred::Compare { stat, op, to } => {
             let number = match to {
                 Amount::Fixed(number) => number.to_string(),
@@ -374,6 +397,13 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
     })
 }
 
+/// "a +1/+1 counter on it", "a level counter on it": the counter an object holds, after "with".
+fn counter_on_it(r: &mut Reader<'_>) -> Option<CounterKind> {
+    (r.word("a") || r.word("an")).then_some(())?;
+    let kind = counters::trigger_kind(r)?;
+    r.words("on it").then_some(kind)
+}
+
 /// A subtype as it is written ("Clue", "Soldier"), of the rules' list or of the card's own type line; any other
 /// capitalized word is not read.
 pub fn subtype(r: &mut Reader<'_>) -> Option<String> {
@@ -384,7 +414,7 @@ pub fn subtype(r: &mut Reader<'_>) -> Option<String> {
 }
 
 /// A group of one subtype as it is written in the plural ("Heroes", "Elves", "Spies"): the subtype in the singular.
-fn plural_subtype(r: &mut Reader<'_>) -> Option<String> {
+pub(super) fn plural_subtype(r: &mut Reader<'_>) -> Option<String> {
     r.attempt(|r| {
         let name = group_name(r)?;
         singular_subtype(&name, |one| r.is_subtype(one))

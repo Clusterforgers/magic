@@ -1,0 +1,20 @@
+{
+  "oracle_id": "54e34440-c890-4a07-83c6-63a2f7a65639",
+  "name": "Direct Current",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Direct Current",
+      "oracle_fingerprint": "2a74b9df48283a8cf36024ffb5ea9acc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        { "Keyword": "JumpStart" }
+      ]
+    }
+  ]
+}

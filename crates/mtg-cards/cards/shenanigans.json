@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1d9b94af-3bfa-4257-8347-675468f0b0e5",
+  "name": "Shenanigans",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shenanigans",
+      "oracle_fingerprint": "020cd9f13ba6af07168f18e4914dfc20",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Dredge": 1 } }
+      ]
+    }
+  ]
+}

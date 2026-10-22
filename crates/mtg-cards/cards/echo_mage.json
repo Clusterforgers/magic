@@ -1,0 +1,104 @@
+{
+  "oracle_id": "fb98f6b7-5986-4c5d-98fc-e5c4106f48bf",
+  "name": "Echo Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Echo Mage",
+      "oracle_fingerprint": "e2d4b10b11dc6762acf09d8558a0ccda",
+      "abilities": [
+        { "Keyword": { "LevelUp": "{1}{U}" } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetPT": { "power": 2, "toughness": 4 } }],
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                    "op": "Ge",
+                    "right": 2
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                    "op": "Le",
+                    "right": 3
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}{U}" }, "Tap"],
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                    "op": "Ge",
+                    "right": 2
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                    "op": "Le",
+                    "right": 3
+                  }
+                }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetPT": { "power": 2, "toughness": 5 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}{U}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "CopySpell": { "what": { "Target": 0 }, "count": 2, "new_targets": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

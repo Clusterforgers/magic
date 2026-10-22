@@ -1,0 +1,20 @@
+{
+  "oracle_id": "74cd099c-8476-4f75-bc1a-8b166f696163",
+  "name": "Ultramarines Honour Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ultramarines Honour Guard",
+      "oracle_fingerprint": "34c8c3b3101827b2fe2b671e347f1147",
+      "abilities": [
+        { "Keyword": { "Squad": "{2}" } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

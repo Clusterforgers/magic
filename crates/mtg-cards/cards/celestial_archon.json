@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d2b29bb0-9fb5-46cd-a546-fa6c4ff6113c",
+  "name": "Celestial Archon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Celestial Archon",
+      "oracle_fingerprint": "f6a449c875a3f092da9e896e3dff4c10",
+      "abilities": [
+        { "Keyword": { "Bestow": "{5}{W}{W}" } },
+        { "Keyword": "Flying" },
+        { "Keyword": "FirstStrike" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 4, "toughness": 4 } },
+              { "AddKeyword": "Flying" },
+              { "AddKeyword": "FirstStrike" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

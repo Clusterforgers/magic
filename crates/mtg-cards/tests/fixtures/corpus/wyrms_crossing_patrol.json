@@ -1,0 +1,27 @@
+{
+  "id": "f00a57fc-b4a6-48fa-a20c-864c10099e4b",
+  "oracle_id": "fad2d14f-8825-4b08-8804-010d9659f6dc",
+  "name": "Wyrm's Crossing Patrol",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "51",
+  "rarity": "common",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Creature — Human Soldier",
+  "oracle_text": "Myriad (Whenever this creature attacks, for each opponent other than defending player, you may create a token copy that's tapped and attacking that player or a planeswalker they control. Exile the tokens at end of combat.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Myriad"
+  ]
+}

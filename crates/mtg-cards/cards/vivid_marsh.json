@@ -1,0 +1,31 @@
+{
+  "oracle_id": "20b32052-f66f-4eb8-b56e-00d531907f19",
+  "name": "Vivid Marsh",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vivid Marsh",
+      "oracle_fingerprint": "2e1a395b21ec336e2f6a0f5425673f34",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "charge", "count": 2, "tapped": true } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": "charge" } }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e519cebf-0f09-4da9-abef-82928738514d",
+  "name": "Eagles of the North",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eagles of the North",
+      "oracle_fingerprint": "ead63050594bb8a9f1c90b8a854077b8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Typecycling": { "find": [{ "Subtype": "Plains" }], "cost": "{1}" } } }
+      ]
+    }
+  ]
+}

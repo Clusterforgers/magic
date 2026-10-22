@@ -1,0 +1,27 @@
+{
+  "id": "2c695df6-6bf2-4e6b-8500-e3116137ca27",
+  "oracle_id": "5a343a5f-3f9b-43c3-8532-8391de7a5443",
+  "name": "Jacked Rabbit",
+  "lang": "en",
+  "layout": "normal",
+  "set": "blc",
+  "collector_number": "9",
+  "rarity": "rare",
+  "released_at": "2024-08-02",
+  "digital": false,
+  "mana_cost": "{X}{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Rabbit Warrior",
+  "oracle_text": "Ravenous (This creature enters with X +1/+1 counters on it. If X is 5 or more, draw a card when it enters.)\nWhenever this creature attacks, create a number of 1/1 white Rabbit creature tokens equal to this creature's power.",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Ravenous"
+  ]
+}

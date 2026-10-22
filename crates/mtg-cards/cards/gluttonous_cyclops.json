@@ -1,0 +1,14 @@
+{
+  "oracle_id": "35101c6c-0bcc-4b1f-9cb5-a82e4d2f8220",
+  "name": "Gluttonous Cyclops",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gluttonous Cyclops",
+      "oracle_fingerprint": "d6f90f2034b1086eb46fdc56acc30d80",
+      "abilities": [
+        { "Activated": { "cost": "{5}{R}{R}", "effects": [{ "Monstrosity": { "count": 3 } }] } }
+      ]
+    }
+  ]
+}

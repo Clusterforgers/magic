@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b0b6be0c-41cf-4757-9f0e-87227b6ba6b3",
+  "name": "Ghalta, Primal Hunger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghalta, Primal Hunger",
+      "oracle_fingerprint": "a7a1e7f0268c7cda2672531520ce64cf",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Total": {
+                "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "stat": "Power"
+              }
+            }
+          }
+        },
+        { "Keyword": "Trample" }
+      ]
+    }
+  ]
+}

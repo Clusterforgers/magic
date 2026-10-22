@@ -21,6 +21,7 @@ use crate::announce::payments;
 use crate::characteristics::{Characteristics, characteristics, controller_of, seen_as};
 use crate::choose::legal_from;
 use crate::choose::{Choices, Target};
+use crate::combat::AttackTarget;
 use crate::keywords::{self, OptionalKind};
 use crate::layers::{Held, View, outside};
 use crate::object::{Chosen, GameObject, ObjectKind, ObjectRef, PermanentState};
@@ -598,11 +599,19 @@ impl<'a> Scope<'a> {
             }
             Pred::Tapped => seen.tapped == Some(true),
             Pred::Untapped => seen.tapped == Some(false),
+            Pred::Monstrous => matches!(seen.counters, Counted::Live(held) if held.monstrous()),
             Pred::Attacking => state
                 .combat()
                 .attackers()
                 .iter()
                 .any(|a| a.object() == reference.id),
+            Pred::AttackingPlayer(who) => {
+                let attacked = self.players(who)?;
+                state.combat().attackers().iter().any(|a| {
+                    a.object() == reference.id
+                        && matches!(a.target(), AttackTarget::Player(player) if attacked.contains(&player))
+                })
+            }
             Pred::Blocking => state
                 .combat()
                 .attackers()
@@ -612,6 +621,7 @@ impl<'a> Scope<'a> {
             Pred::ControlledBy(who) => self.players(who)?.contains(&seen.controller),
             Pred::OwnedBy(who) => self.players(who)?.contains(&seen.owner),
             Pred::In(kind) => zone_kind(seen.zone) == *kind,
+            Pred::CastFrom(kind) => self.cast_from(seen, *kind),
             // An object that has changed zones since it was named has the keywords its snapshot holds (CR 608.2h).
             Pred::HasKeyword(keyword) => match seen.keywords {
                 Some(held) => held.contains(keyword),
@@ -659,6 +669,7 @@ impl<'a> Scope<'a> {
         match stat {
             StatKind::Power => seen.chars.power.map(i64::from),
             StatKind::Toughness => seen.chars.toughness.map(i64::from),
+            StatKind::Colors => i64::try_from(seen.chars.colors.iter().count()).ok(),
             // A spell on the stack counts the X it was cast with for each {X} of its cost (CR 202.3e).
             StatKind::ManaValue => seen.card.map(|c| {
                 let card = c.card();
@@ -851,7 +862,30 @@ impl<'a> Scope<'a> {
                 .object(self.source.id)
                 .filter(|object| object.counter() == self.source.counter)
                 .and_then(GameObject::cast_way)
+                .or_else(|| {
+                    self.snapshot_of(self.source)
+                        .and_then(|snapshot| snapshot.way)
+                })
         })
+    }
+
+    /// Whether `seen` is a spell cast from a zone of this kind: a spell being announced still lies there, one on the
+    /// stack remembers a hand or a graveyard.
+    fn cast_from(&self, seen: &Seen<'_>, kind: ZoneKind) -> bool {
+        let Some(spell) = seen
+            .card
+            .filter(|_| seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability)
+        else {
+            return false;
+        };
+        if self.casting.is_some_and(|(cast, _)| cast == spell.id()) {
+            return zone_kind(spell.zone()) == kind;
+        }
+        match kind {
+            ZoneKind::Hand => spell.cast_from_hand(),
+            ZoneKind::Graveyard => spell.cast_from_graveyard(),
+            _ => false,
+        }
     }
 
     /// Whether a condition is true now.

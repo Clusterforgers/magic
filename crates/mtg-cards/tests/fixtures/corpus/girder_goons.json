@@ -1,0 +1,27 @@
+{
+  "id": "4bfd6449-31a1-4572-8f9c-3f6f4670dc9d",
+  "oracle_id": "655961a3-94b5-4600-b9f1-f93163d03a49",
+  "name": "Girder Goons",
+  "lang": "en",
+  "layout": "normal",
+  "set": "snc",
+  "collector_number": "80",
+  "rarity": "common",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Ogre Warrior",
+  "oracle_text": "When this creature dies, create a tapped 2/2 black Rogue creature token.\nBlitz {3}{B} (If you cast this spell for its blitz cost, it gains haste and \"When this creature dies, draw a card.\" Sacrifice it at the beginning of the next end step.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Blitz"
+  ]
+}

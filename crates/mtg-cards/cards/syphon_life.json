@@ -1,0 +1,23 @@
+{
+  "oracle_id": "c9367dd3-1a50-4eae-993e-c055dc6c4dc5",
+  "name": "Syphon Life",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Syphon Life",
+      "oracle_fingerprint": "0dd0fc058c18d1920a04fe0088aabb21",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        },
+        { "Keyword": "Retrace" }
+      ]
+    }
+  ]
+}

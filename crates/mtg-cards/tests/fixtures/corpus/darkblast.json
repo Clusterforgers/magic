@@ -1,0 +1,26 @@
+{
+  "id": "0dcaba91-06d3-4492-9e07-36a1b858ca47",
+  "oracle_id": "64446130-46d0-4129-a718-ed6a04218100",
+  "name": "Darkblast",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rav",
+  "collector_number": "82",
+  "rarity": "uncommon",
+  "released_at": "2005-10-07",
+  "digital": false,
+  "mana_cost": "{B}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Target creature gets -1/-1 until end of turn.\nDredge 3 (If you would draw a card, you may mill three cards instead. If you do, return this card from your graveyard to your hand.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Dredge",
+    "Mill"
+  ]
+}

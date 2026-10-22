@@ -1,0 +1,28 @@
+{
+  "id": "18a6ea89-417c-4ee0-a410-8a0067b92967",
+  "oracle_id": "9deded8b-cec4-4ede-a50b-131404d456d4",
+  "name": "Thought Monitor",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoc",
+  "collector_number": "79",
+  "rarity": "rare",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "{6}{U}",
+  "cmc": 7.0,
+  "type_line": "Artifact Creature — Construct",
+  "oracle_text": "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)\nFlying\nWhen this creature enters, draw two cards.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Affinity"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "92c0346d-c375-4851-9806-5d3b9b83425f",
+  "name": "Kinsbaile Courier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kinsbaile Courier",
+      "oracle_fingerprint": "27451e5933b0f8da11bddd7e2ae46d3f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        { "Keyword": { "Encore": "{2}{W}" } }
+      ]
+    }
+  ]
+}
