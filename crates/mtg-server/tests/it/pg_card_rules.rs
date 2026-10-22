@@ -313,7 +313,7 @@ fn ids() -> Vec<String> {
 }
 
 fn oracle() -> DeckRef {
-    DeckRef::Oracle { cards: ids() }
+    DeckRef::oracle(ids())
 }
 
 #[sqlx::test(migrations = false)]
