@@ -16,12 +16,16 @@ use mtg_testkit::{Driver, Scenario, ScriptError, ready, sick};
 use rstest::rstest;
 
 /// Seat 0 controls the manland and a Forest for its cost; seat 1 controls an Ogre.
-fn table(seats: usize, name: &str, came_this_turn: bool) -> Result<Scenario, ScriptError> {
+fn table(seats: usize, name: &str, came_this_turn: bool) -> Scenario {
     let land = card(name).unwrap();
-    let land = if came_this_turn { sick(land) } else { ready(land) };
-    Ok(Scenario::new(seats)
+    let land = if came_this_turn {
+        sick(land)
+    } else {
+        ready(land)
+    };
+    Scenario::new(seats)
         .battlefield(0, [land, ready(forest())])
-        .battlefield(1, [ready(free_creature("Ogre", 3, 4))]))
+        .battlefield(1, [ready(free_creature("Ogre", 3, 4))])
 }
 
 /// Pays the manland's cost with the Forest (and the other lands there are) and lets the ability resolve.
@@ -65,7 +69,7 @@ fn has_keyword(driver: &Driver, name: &str, keyword: &str) -> bool {
 fn a_manland_is_a_creature_and_a_land_until_the_end_of_the_turn_and_a_plain_land_after_it(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let mut driver = Driver::from_scenario(table(seats, "Mutavault", false)?)?;
+    let mut driver = Driver::from_scenario(table(seats, "Mutavault", false))?;
     assert!(!is_creature(&driver, "Mutavault"));
     animate(&mut driver, "Mutavault")?;
     assert!(is_creature(&driver, "Mutavault"));
@@ -82,7 +86,7 @@ fn a_manland_is_a_creature_and_a_land_until_the_end_of_the_turn_and_a_plain_land
 fn a_manland_attacks_and_deals_its_damage(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let mut driver = Driver::from_scenario(table(seats, "Mutavault", false)?)?;
+    let mut driver = Driver::from_scenario(table(seats, "Mutavault", false))?;
     let life = driver.state().player(pid(1)).unwrap().life();
     animate(&mut driver, "Mutavault")?;
     driver.pass_until(Step::DeclareAttackers)?;
@@ -111,11 +115,8 @@ fn a_manland_has_the_colors_types_and_keywords_of_its_wording(
         .battlefield(1, [ready(free_creature("Ogre", 3, 4))]);
     let mut driver = Driver::from_scenario(scenario)?;
     animate(&mut driver, "Celestial Colonnade")?;
-    let found = characteristics(
-        driver.state(),
-        driver.id_of("Celestial Colonnade").unwrap(),
-    )
-    .unwrap();
+    let found =
+        characteristics(driver.state(), driver.id_of("Celestial Colonnade").unwrap()).unwrap();
     assert!(found.is_creature());
     assert!(found.colors.contains(Color::White) && found.colors.contains(Color::Blue));
     assert_eq!(stats(&driver, "Celestial Colonnade"), (4, 4));
@@ -128,7 +129,7 @@ fn a_manland_has_the_colors_types_and_keywords_of_its_wording(
 fn a_manland_that_came_under_control_this_turn_cannot_attack(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let mut driver = Driver::from_scenario(table(seats, "Mutavault", true)?)?;
+    let mut driver = Driver::from_scenario(table(seats, "Mutavault", true))?;
     animate(&mut driver, "Mutavault")?;
     assert!(is_creature(&driver, "Mutavault"));
     driver.pass_until(Step::DeclareAttackers).ok();
@@ -147,8 +148,8 @@ fn a_manland_that_came_under_control_this_turn_cannot_attack(
 fn the_log_of_a_game_with_a_manland_replays_to_the_live_state(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let setup = table(seats, "Mutavault", false)?.setup().unwrap();
-    let mut driver = Driver::from_scenario(table(seats, "Mutavault", false)?)?;
+    let setup = table(seats, "Mutavault", false).setup().unwrap();
+    let mut driver = Driver::from_scenario(table(seats, "Mutavault", false))?;
     animate(&mut driver, "Mutavault")?;
     driver.pass_until(Step::DeclareAttackers)?;
     driver.attack(&[("Mutavault", 1)])?;

@@ -251,7 +251,9 @@ fn becoming(effect: &Effect) -> Option<String> {
 
 /// The sentence with "Until end of turn," first and the duration last dropped.
 fn leading(sentence: &str) -> String {
-    let body = sentence.strip_suffix(" until end of turn").unwrap_or(sentence);
+    let body = sentence
+        .strip_suffix(" until end of turn")
+        .unwrap_or(sentence);
     format!("Until end of turn, {body}")
 }
 
@@ -285,15 +287,13 @@ pub(super) fn wordings(ability: &Ability, texts: &[String]) -> Vec<String> {
             }
         }
     }
-    found.extend(quoted_wordings(ability, texts.iter().chain(&found)));
+    let all: Vec<String> = texts.iter().chain(&found).cloned().collect();
+    found.extend(quoted_wordings(ability, &all));
     found
 }
 
 /// The wordings of the abilities in quotes ("put a +1/+1 counter on it") in each text that has the first one.
-fn quoted_wordings<'a>(
-    ability: &Ability,
-    texts: impl Iterator<Item = &'a String> + Clone,
-) -> Vec<String> {
+fn quoted_wordings(ability: &Ability, texts: &[String]) -> Vec<String> {
     let granted = ability.effects().iter().flat_map(|effect| match effect {
         Effect::Continuous { mods, .. } => mods.as_slice(),
         _ => &[],
@@ -308,7 +308,7 @@ fn quoted_wordings<'a>(
             continue;
         };
         let first = format!("\"{first}\"");
-        for text in texts.clone().filter(|text| text.contains(&first)) {
+        for text in texts.iter().filter(|text| text.contains(&first)) {
             for other in others {
                 found.push(text.replace(&first, &format!("\"{other}\"")));
             }
