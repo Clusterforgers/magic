@@ -54,6 +54,7 @@ const RUNS: &[&str] = &[
     "Trigger.Attached",
     "Trigger.Cycled",
     "Trigger.BecomesMonarch",
+    "Trigger.Proliferated",
     "Trigger.Batch",
     "Trigger.Nth",
     "Amount.Triggering",
@@ -116,6 +117,7 @@ const RUNS: &[&str] = &[
     "Effect.Transform",
     "Effect.WinGame",
     "Effect.Surveil",
+    "Effect.Proliferate",
     "Effect.BecomeMonarch",
     "Condition.Monarch",
     "Effect.CreateToken",
@@ -488,7 +490,7 @@ mod tests {
     #[case::kicker("Keyword.Kicker", true)]
     #[case::multikicker("Keyword.Multikicker", true)]
     #[case::surveilling("Effect.Surveil", true)]
-    #[case::proliferating("Effect.Proliferate", false)]
+    #[case::proliferating("Effect.Proliferate", true)]
     #[case::goading("Effect.Goad", false)]
     #[case::fighting("Effect.Fight", false)]
     #[case::becoming_the_monarch("Effect.BecomeMonarch", true)]
@@ -537,6 +539,7 @@ mod tests {
     #[case::attach_triggers("Trigger.Attached", true)]
     #[case::cycle_triggers("Trigger.Cycled", true)]
     #[case::becoming_the_monarch_triggers("Trigger.BecomesMonarch", true)]
+    #[case::proliferating_triggers("Trigger.Proliferated", true)]
     #[case::batch_triggers("Trigger.Batch", true)]
     #[case::nth_triggers("Trigger.Nth", true)]
     #[case::event_amounts("Amount.Triggering", true)]

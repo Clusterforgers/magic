@@ -25,6 +25,7 @@ Blight Mamba
 Blightwidow
 Bloodbraid Elf
 Bloodghast
+Bloom Hulk
 Bog Wraith
 Boggart Ram-Gang
 Bonesplitter
@@ -42,6 +43,7 @@ Cold-Eyed Selkie
 Command Tower
 Consider
 Consign // Oblivion
+Contentious Plan
 Copper-Leaf Angel
 Counterspell
 Courser of Kruphix
@@ -123,6 +125,7 @@ Inkwell Leviathan
 Invisible Stalker
 Izzet Charm
 Jungle Lion
+Karn's Bastion
 Kathari Screecher
 Kessig Wolf Run
 Kitchen Finks
@@ -189,6 +192,7 @@ Rustrazor Butcher
 Safehold Elite
 Sanguine Bond
 Saw It Coming
+Scheming Aspirant
 Scuzzback Marauders
 Seedglaive Mentor
 Serra Angel
@@ -215,6 +219,7 @@ Sphinx of Jwar Isle
 Spring // Mind
 Squirrel Nest
 Staggershock
+Steady Progress
 Steam Vents
 Stoke the Flames
 Strangleroot Geist

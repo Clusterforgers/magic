@@ -8,6 +8,7 @@ use mtg_cards::effect::Effect;
 use mtg_cards::refs::{AbilityKind, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::trigger::{Step, TriggerPattern};
 use mtg_cards::value::{Amount, Cmp, Condition, StatKind};
+use mtg_core::ids::PlayerId;
 
 /// "a" or "an" ahead of `word`.
 fn article(word: &str) -> &'static str {
@@ -373,6 +374,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} become{s} the monarch"), false)
         }
+        TriggerPattern::Proliferated { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} proliferate{s}"), false)
+        }
         TriggerPattern::Drew { who: by } => {
             let (name, s) = who(by);
             (format!("{name} draw{s} a card"), false)
@@ -647,6 +652,22 @@ pub(crate) const SCRY: &str = "Put any number of the cards on the bottom of your
 
 /// What a surveil asks about the cards looked at.
 pub(crate) const SURVEIL: &str = "Put any number of the cards into your graveyard.";
+
+/// What a proliferate asks about the permanents with counters.
+pub(crate) const PROLIFERATE: &str =
+    "Choose any number of permanents with counters to proliferate.";
+
+/// What a proliferate asks about a player who holds counters: `holder` is one of them, `proliferating` the one who chooses.
+pub(crate) fn proliferate_player(proliferating: PlayerId, holder: PlayerId) -> String {
+    if proliferating == holder {
+        "Proliferate yourself: another counter of each kind you have?".to_owned()
+    } else {
+        format!(
+            "Proliferate seat {}: another counter of each kind they have?",
+            holder.index() + 1
+        )
+    }
+}
 
 /// What the order of cards put into a library asks: "Put the cards on top of your library in any order."
 pub(crate) fn library_order(bottom: bool) -> String {
@@ -1177,6 +1198,7 @@ mod tests {
         r#"{"BecomesMonarch":{"who":"Opponents"}}"#,
         "Whenever an opponent becomes the monarch"
     )]
+    #[case::you_proliferate(r#"{"Proliferated":{"who":"You"}}"#, "Whenever you proliferate")]
     #[case::a_player_becomes_the_monarch(
         r#"{"BecomesMonarch":{}}"#,
         "Whenever a player becomes the monarch"

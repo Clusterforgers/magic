@@ -1,0 +1,24 @@
+{
+  "id": "22017ec2-3552-4865-af76-dba042b141f5",
+  "oracle_id": "9fb8cd81-403a-4988-8f1c-b8eccf8abd9c",
+  "name": "Karn's Bastion",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoc",
+  "collector_number": "163",
+  "rarity": "rare",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{4}, {T}: Proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Proliferate"
+  ],
+  "produced_mana": [
+    "C"
+  ]
+}

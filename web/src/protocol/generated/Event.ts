@@ -517,6 +517,10 @@ object: ObjectId, } } | { "MonarchChanged": {
 /**
  * The new monarch.
  */
+player: PlayerId, } } | { "Proliferated": { 
+/**
+ * Who proliferated.
+ */
 player: PlayerId, } } | { "DayNightChanged": { 
 /**
  * What it became.

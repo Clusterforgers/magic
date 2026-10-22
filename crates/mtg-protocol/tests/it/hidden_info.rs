@@ -1150,6 +1150,87 @@ fn the_seat_that_surveils_sees_the_cards_and_the_others_see_only_what_goes_into_
 }
 
 #[rstest]
+fn a_proliferate_and_the_counters_it_gives_are_public_and_its_choices_name_only_permanents_on_the_battlefield(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    let wolf = mtg_testkit::with_counters(
+        mtg_testkit::ready(mtg_testkit::cards::free_creature("Wolf", 2, 2)),
+        mtg_cards::value::CounterKind::PlusOnePlusOne,
+        1,
+    );
+    let mut scenario = mtg_testkit::Scenario::new(seats)
+        .hand(0, [mtg_testkit::corpus::card("Contentious Plan").unwrap()])
+        .battlefield(
+            0,
+            [
+                mtg_testkit::ready(mtg_testkit::cards::island()),
+                mtg_testkit::ready(mtg_testkit::cards::island()),
+                wolf,
+            ],
+        );
+    for seat in 0..seats {
+        scenario = scenario.library_named(seat, LIBRARY);
+    }
+    let asked = std::cell::RefCell::new(Vec::new());
+    let answer = |decision: &Decision| match &decision.kind {
+        DecisionKind::ChooseCards(options) => mtg_engine::decision::Answer::ChooseCards(
+            mtg_engine::choose::CardsChoice(options.from.clone()),
+        ),
+        other => panic!("unexpected {}", other.name()),
+    };
+    let (after, events, batches) = play_spell(scenario, seats, "Contentious Plan", |decision| {
+        asked.borrow_mut().push(decision.player);
+        answer(decision)
+    });
+    assert_eq!(
+        asked.into_inner(),
+        [PlayerId(0)],
+        "only the proliferating seat is asked"
+    );
+    let wolf = after
+        .objects()
+        .find(|o| o.card().name == "Wolf")
+        .map(GameObject::id)
+        .unwrap();
+    assert!(events.iter().any(|event| matches!(
+        event,
+        mtg_engine::Event::Proliferated {
+            player: PlayerId(0)
+        }
+    )));
+    let drawn = events
+        .iter()
+        .find_map(|event| match event {
+            mtg_engine::Event::CardDrawn { object, .. } => Some(*object),
+            _ => None,
+        })
+        .expect("Contentious Plan draws");
+    let name = after.object(drawn).unwrap().card().name.clone();
+    for (seat, batch) in batches.iter().enumerate() {
+        assert!(
+            batch.events.iter().any(|event| matches!(
+                event,
+                mtg_protocol::EventView::Public(mtg_engine::Event::Proliferated {
+                    player: PlayerId(0)
+                })
+            )),
+            "seat {seat} is told who proliferated"
+        );
+        assert!(
+            batch.events.iter().any(|event| matches!(
+                event,
+                mtg_protocol::EventView::Public(mtg_engine::Event::CountersChanged(changed))
+                    if changed.on.object().is_some_and(|o| o.id == wolf) && changed.delta == 1
+            )),
+            "seat {seat} sees the counter the Wolf got"
+        );
+        if seat != 0 {
+            assert_clean(batch, &BTreeMap::from([(drawn, name.clone())]));
+        }
+    }
+}
+
+#[rstest]
 fn the_seat_that_looks_at_libraries_sees_the_cards_and_no_other_seat_does_not_even_the_owner(
     #[values(2, 3, 4)] seats: usize,
 ) {

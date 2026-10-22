@@ -1,0 +1,27 @@
+{
+  "id": "8de80f71-82b5-499c-afc0-6bbae6b896ad",
+  "oracle_id": "cf4a3b1a-4b87-473e-be1f-3aa3da45c28e",
+  "name": "Scheming Aspirant",
+  "lang": "en",
+  "layout": "normal",
+  "set": "one",
+  "collector_number": "107",
+  "rarity": "uncommon",
+  "released_at": "2023-02-10",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2,
+  "type_line": "Creature — Phyrexian Advisor",
+  "oracle_text": "Whenever you proliferate, each opponent loses 2 life and you gain 2 life.",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Proliferate"
+  ]
+}
