@@ -9,7 +9,7 @@ use super::tokens::Reader;
 use crate::keyword::Keyword;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::{Step, TriggerPattern};
-use crate::value::{Amount, Cmp, Condition, CounterKind};
+use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 use mtg_core::card::CardType;
 
 /// Whether the pattern is "when you cycle this card", the one trigger that works from the graveyard.
@@ -547,6 +547,9 @@ fn damage_dealt(r: &mut Reader<'_>, source: &Selector) -> Option<TriggerPattern>
 
 /// The condition of an intervening "if": "you have 40 or more life", "you're the monarch", "there is no monarch".
 pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
+    if let Some(paid) = r.attempt(|r| cost_paid(r, false)) {
+        return Some(paid);
+    }
     if let Some(monarch) = monarch_condition(r) {
         return Some(monarch);
     }
@@ -568,6 +571,34 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
         op,
         right: Amount::Fixed(number),
     })
+}
+
+/// The alternative costs a permanent or spell can be asked about: "its prowl cost was paid".
+const PAID_WAYS: [(&str, CastWay); 1] = [("prowl", CastWay::Prowl)];
+
+/// "its prowl cost was paid", or "this spell's prowl cost was paid" with `spell`: it was cast for that alternative cost.
+pub fn cost_paid(r: &mut Reader<'_>, spell: bool) -> Option<Condition> {
+    if spell {
+        r.source().then_some(())?;
+        r.punct('\'').then_some(())?;
+        r.need("s")?;
+    } else {
+        r.need("its")?;
+    }
+    let word = r.take_word()?;
+    let way = PAID_WAYS.iter().find(|(name, _)| *name == word)?.1;
+    r.need("cost was paid")?;
+    Some(Condition::CastWith(way))
+}
+
+/// The condition `cost_paid` reads, written back for the same `spell`.
+pub fn cost_paid_text(condition: &Condition, spell: bool) -> Option<String> {
+    let Condition::CastWith(way) = condition else {
+        return None;
+    };
+    let name = PAID_WAYS.iter().find(|(_, paid)| paid == way)?.0;
+    let owner = if spell { "this spell's" } else { "its" };
+    Some(format!("{owner} {name} cost was paid"))
 }
 
 /// "while saddled" after an attack: the creature is saddled (CR 702.171b).
@@ -629,6 +660,9 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
 
 /// The condition as the card words it, after "if".
 pub fn condition_text(condition: &Condition) -> Option<String> {
+    if let Some(paid) = cost_paid_text(condition, false) {
+        return Some(paid);
+    }
     if let Some(monarch) = monarch_text(condition) {
         return Some(monarch);
     }

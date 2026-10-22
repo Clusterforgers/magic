@@ -155,6 +155,7 @@ mod among;
 mod attacked_player;
 mod audit;
 mod cast;
+mod cast_cost_paid;
 mod chosen_color;
 mod compound;
 mod conditions;

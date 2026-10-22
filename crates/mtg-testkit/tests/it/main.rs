@@ -180,6 +180,7 @@ mod priority_stack;
 mod proliferate;
 mod protection;
 mod protection_fuzz;
+mod prowl;
 mod pump_fuzz;
 mod pump_spells;
 mod rebound;

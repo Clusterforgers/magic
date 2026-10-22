@@ -4,6 +4,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::hash::{Hash, Hasher};
 use std::sync::Arc;
 
+use mtg_core::card::Subtype;
 use mtg_core::house::HouseRules;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
@@ -101,6 +102,19 @@ pub(crate) struct Tallies {
     /// How many events of each kind each object has had, by the player who caused them where that matters (the
     /// controller of what targets it; `None` counts them all). An object that changed zones is a new one.
     pub(crate) objects: BTreeMap<(ObjectRef, Option<PlayerId>, Tally), u32>,
+    /// The creatures that dealt combat damage to a player, in the order they did.
+    pub(crate) hits: Vec<CombatHit>,
+}
+
+/// A creature that dealt combat damage to a player this turn, as it was then (prowl, CR 702.76).
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub(crate) struct CombatHit {
+    /// Who controlled it.
+    pub(crate) controller: PlayerId,
+    /// Its creature types.
+    pub(crate) types: Vec<Subtype>,
+    /// It had every creature type (changeling).
+    pub(crate) every_type: bool,
 }
 
 /// The state of one game; a pure fold of events over the initial setup.
@@ -380,6 +394,22 @@ impl GameState {
         self.tallies.objects.get(&key).copied().unwrap_or(0)
     }
 
+    /// Whether a creature `player` controlled dealt combat damage to a player this turn and shared a creature type with
+    /// a card that has the types `types` (every one when `every_type`): the condition of prowl (CR 702.76a).
+    pub(crate) fn dealt_combat_damage_with(
+        &self,
+        player: PlayerId,
+        types: &[Subtype],
+        every_type: bool,
+    ) -> bool {
+        self.tallies.hits.iter().any(|hit| {
+            hit.controller == player
+                && ((every_type && (hit.every_type || !hit.types.is_empty()))
+                    || (hit.every_type && !types.is_empty())
+                    || hit.types.iter().any(|t| types.contains(t)))
+        })
+    }
+
     /// Whether a loyalty ability of the planeswalker `permanent` has been activated this turn (CR 606.3).
     pub(crate) fn loyalty_spent(&self, permanent: ObjectRef) -> bool {
         self.loyalty_used.contains(&permanent)
@@ -502,6 +532,9 @@ impl Hash for GameState {
         if !self.tallies.objects.is_empty() {
             self.tallies.objects.hash(state);
         }
+        if !self.tallies.hits.is_empty() {
+            self.tallies.hits.hash(state);
+        }
         self.result.hash(state);
         // A game that has seen neither day nor night hashes as it did before they existed.
         if let Some(day_night) = self.day_night {
@@ -522,7 +555,7 @@ impl Hash for GameState {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: the active player is none once they have left the game, the first player in turn order of that turn is the next seat in the game, wrapping round the table and skipping the seats that left before, and a round ends with the last seat in play before the first player.
+    //! Goal: the active player is none once they have left the game, the first player in turn order of that turn is the next seat in the game, wrapping round the table and skipping the seats that left before, a round ends with the last seat in play before the first player, and the creatures that dealt combat damage this turn open prowl for the cards that share a creature type with one and are forgotten at the next turn.
     use mtg_core::ids::PlayerId;
     use rstest::rstest;
 
@@ -590,5 +623,50 @@ mod tests {
             apply_event(&mut game, &lost).unwrap();
         }
         assert_eq!(game.ends_round(), ends);
+    }
+
+    fn subtypes(names: &[&str]) -> Vec<Subtype> {
+        names
+            .iter()
+            .map(|name| Subtype((*name).to_owned()))
+            .collect()
+    }
+
+    #[rstest]
+    #[case::a_shared_type(0, &["Goblin", "Rogue"], false, 0, &["Rogue"], false, true)]
+    #[case::no_shared_type(0, &["Goblin"], false, 0, &["Rogue"], false, false)]
+    #[case::a_creature_of_another_player(1, &["Rogue"], false, 0, &["Rogue"], false, false)]
+    #[case::a_changeling_spell_and_a_creature_with_a_type(0, &["Elf"], false, 0, &[], true, true)]
+    #[case::a_changeling_creature_and_a_spell_with_a_type(0, &[], true, 0, &["Rogue"], false, true)]
+    #[case::a_creature_with_no_type_and_a_changeling_spell(0, &[], false, 0, &[], true, false)]
+    #[case::a_changeling_creature_and_a_changeling_spell(0, &[], true, 0, &[], true, true)]
+    fn a_creature_that_dealt_combat_damage_opens_prowl_for_a_card_that_shares_a_type(
+        #[case] hit_by: usize,
+        #[case] creature_types: &[&str],
+        #[case] creature_has_every_type: bool,
+        #[case] caster: usize,
+        #[case] card_types: &[&str],
+        #[case] card_has_every_type: bool,
+        #[case] open: bool,
+    ) {
+        let mut game =
+            GameState::from_setup(&setup(vec![Vec::new(); 3], vec![Vec::new(); 3])).unwrap();
+        game.tallies.hits.push(CombatHit {
+            controller: PlayerId::from_index(hit_by),
+            types: subtypes(creature_types),
+            every_type: creature_has_every_type,
+        });
+        let found = game.dealt_combat_damage_with(
+            PlayerId::from_index(caster),
+            &subtypes(card_types),
+            card_has_every_type,
+        );
+        assert_eq!(found, open);
+        game.clear_turn_uses();
+        assert!(!game.dealt_combat_damage_with(
+            PlayerId::from_index(caster),
+            &subtypes(card_types),
+            card_has_every_type
+        ));
     }
 }
