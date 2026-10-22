@@ -1,0 +1,29 @@
+{
+  "id": "ae25d91f-5489-4cd8-8634-42bcd32d4cf1",
+  "oracle_id": "506a972d-d226-44dc-95b7-a6e7a63d76cd",
+  "name": "Rocksteady, Mutant Marauder",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tmc",
+  "collector_number": "33",
+  "rarity": "rare",
+  "released_at": "2026-03-06",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Rhino Mutant",
+  "oracle_text": "Partner with Bebop, Skull & Crossbones (When this creature enters, target player may put Bebop into their hand from their library, then shuffle.)\nTrample\nWhenever another nontoken creature you control enters, put a +1/+1 counter on target creature.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Partner with",
+    "Partner",
+    "Trample"
+  ]
+}

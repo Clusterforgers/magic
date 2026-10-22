@@ -1,0 +1,29 @@
+{
+  "id": "af2a1494-9c0d-4590-999b-2c52725dc5d0",
+  "oracle_id": "59a405d7-2f28-41b8-a5bb-011f45a5fdf2",
+  "name": "Bebop, Skull & Crossbones",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tmc",
+  "collector_number": "15",
+  "rarity": "rare",
+  "released_at": "2026-03-06",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Boar Mutant",
+  "oracle_text": "Partner with Rocksteady, Mutant Marauder (When this creature enters, target player may put Rocksteady into their hand from their library, then shuffle.)\nDeathtouch\nWhenever Bebop deals combat damage to a player, you may draw X cards, where X is the number of counters on Bebop. If you do, you lose X life.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Partner with",
+    "Partner",
+    "Deathtouch"
+  ]
+}

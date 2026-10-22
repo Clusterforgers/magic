@@ -1346,7 +1346,12 @@ impl<'a> Walker<'a> {
                 w.at("affected", |w| w.reference(affected, Kind::Object));
                 w.at("mods", |w| w.mods(mods));
             }
-            Effect::Rule { rule, .. } => w.at("rule", |w| w.rule(rule)),
+            Effect::Rule { rule, .. } => w.at("rule", |w| {
+                w.rule(rule);
+                if matches!(rule, GameRule::CanBeCommander) {
+                    w.problem("a card can be a commander by a static ability, not by an effect");
+                }
+            }),
             Effect::Regenerate { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::Shield { when, by, .. } => {
                 w.at("when", |w| w.replace_when(when));
@@ -2148,8 +2153,8 @@ fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str) -> bool {
     card.abilities().any(|(face, ability)| match ability {
         Ability::Keyword(k) => {
             k.name().eq_ignore_ascii_case(keyword)
-                // Scryfall lists `Partner` as well for a "Partner with" card (CR 702.124).
-                || (matches!(k, Keyword::PartnerWith(_))
+                // Scryfall lists `Partner` as well for a "Partner with" card and a "Partner—text" card (CR 702.124).
+                || (matches!(k, Keyword::PartnerWith(_) | Keyword::PartnerGroup(_))
                     && Keyword::Partner.name().eq_ignore_ascii_case(keyword))
                 // Scryfall lists `Enchant` for an Aura that enchants a player as it does for any other.
                 || (matches!(k, Keyword::EnchantPlayer { .. })

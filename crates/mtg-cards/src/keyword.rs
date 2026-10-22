@@ -150,11 +150,18 @@ pub enum Keyword {
     SplitSecond,
     /// Undaunted (CR 702.125): this spell costs {1} less to cast for each opponent.
     Undaunted,
+    /// Partner with a text (`Partner—Friends forever`, `Partner—Character select`): two commanders that both have the
+    /// same text pair (CR 702.124).
+    PartnerGroup(String),
+    /// Doctor's companion: the second commander beside a legendary Time Lord Doctor (CR 702.124).
+    DoctorsCompanion,
+    /// Choose a Background: the second commander may be a Background enchantment (CR 702.124).
+    ChooseABackground,
 }
 
 impl Keyword {
     /// Scryfall's spelling of every keyword in this enum, for matching a record's `keywords`.
-    pub const NAMES: [&'static str; 64] = [
+    pub const NAMES: [&'static str; 67] = [
         "Flash",
         "Flying",
         "Reach",
@@ -219,6 +226,9 @@ impl Keyword {
         "Shadow",
         "Split second",
         "Undaunted",
+        "Partner group",
+        "Doctor's companion",
+        "Choose a Background",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -288,6 +298,9 @@ impl Keyword {
             Keyword::Shadow => "Shadow",
             Keyword::SplitSecond => "Split second",
             Keyword::Undaunted => "Undaunted",
+            Keyword::PartnerGroup(_) => "Partner group",
+            Keyword::DoctorsCompanion => "Doctor's companion",
+            Keyword::ChooseABackground => "Choose a Background",
         }
     }
 
@@ -380,6 +393,9 @@ mod tests {
             Keyword::Shadow,
             Keyword::SplitSecond,
             Keyword::Undaunted,
+            Keyword::PartnerGroup("Friends forever".into()),
+            Keyword::DoctorsCompanion,
+            Keyword::ChooseABackground,
         ]
     }
 

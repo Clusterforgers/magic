@@ -8,6 +8,7 @@ mod battle_cry;
 mod buyback;
 mod cascade;
 mod changeling;
+mod choose_a_background;
 mod companion;
 mod convoke;
 mod crew;
@@ -18,6 +19,7 @@ mod defender;
 mod delve;
 mod devoid;
 mod disguise;
+mod doctors_companion;
 mod double_strike;
 mod enchant;
 mod encore;
@@ -49,6 +51,7 @@ mod myriad;
 mod nightbound;
 mod overload;
 mod partner;
+mod partner_group;
 mod partner_with;
 mod protection;
 #[cfg(test)]
@@ -377,6 +380,9 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Shadow => &shadow::Shadow,
         Keyword::SplitSecond => &split_second::SplitSecond,
         Keyword::Undaunted => &undaunted::Undaunted,
+        Keyword::PartnerGroup(_) => &partner_group::PartnerGroup,
+        Keyword::DoctorsCompanion => &doctors_companion::DoctorsCompanion,
+        Keyword::ChooseABackground => &choose_a_background::ChooseABackground,
     }
 }
 
@@ -618,11 +624,14 @@ mod tests {
             Keyword::Shadow,
             Keyword::SplitSecond,
             Keyword::Undaunted,
+            Keyword::PartnerGroup("Friends forever".into()),
+            Keyword::DoctorsCompanion,
+            Keyword::ChooseABackground,
         ]
     }
 
     /// The keywords whose rules the engine runs, named as the capabilities name them.
-    const RUN: [&str; 53] = [
+    const RUN: [&str; 58] = [
         "Keyword.Flash",
         "Keyword.Flying",
         "Keyword.Reach",
@@ -676,6 +685,11 @@ mod tests {
         "Keyword.Landwalk",
         "Keyword.Skulk",
         "Keyword.Shadow",
+        "Keyword.Partner",
+        "Keyword.PartnerWith",
+        "Keyword.PartnerGroup",
+        "Keyword.DoctorsCompanion",
+        "Keyword.ChooseABackground",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -775,6 +789,11 @@ mod tests {
     #[case::madness(Keyword::Madness(Cost::mana("{R}".parse().unwrap())), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::changeling(Keyword::Changeling, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::devoid(Keyword::Devoid, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::partner(Keyword::Partner, Hooks::none())]
+    #[case::partner_with(Keyword::PartnerWith("Pir, Imaginative Rascal".into()), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::partner_group(Keyword::PartnerGroup("Friends forever".into()), Hooks::none())]
+    #[case::doctors_companion(Keyword::DoctorsCompanion, Hooks::none())]
+    #[case::choose_a_background(Keyword::ChooseABackground, Hooks::none())]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);

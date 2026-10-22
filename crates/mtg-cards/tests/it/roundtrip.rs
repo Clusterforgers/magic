@@ -231,6 +231,8 @@ fn keyword() -> impl Strategy<Value = Keyword> {
             Keyword::Devoid,
             Keyword::Infect,
             Keyword::Myriad,
+            Keyword::DoctorsCompanion,
+            Keyword::ChooseABackground,
         ]),
         (1u32..10).prop_map(Keyword::Crew),
         cost().prop_map(Keyword::Mutate),
@@ -252,6 +254,7 @@ fn keyword() -> impl Strategy<Value = Keyword> {
         cost().prop_map(Keyword::Evoke),
         cost().prop_map(Keyword::Overload),
         text().prop_map(Keyword::PartnerWith),
+        text().prop_map(Keyword::PartnerGroup),
     ]
 }
 

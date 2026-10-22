@@ -68,8 +68,16 @@ fn check_commanders(
             });
         }
     }
-    match commanders.iter().find(|card| !card.can_be_commander()) {
-        Some(card) => Err(DeckError::NotACommander {
+    // A Background is a commander only beside a card that chooses one (CR 702.124).
+    let ineligible = commanders.iter().enumerate().find(|(at, card)| {
+        !card.can_be_commander()
+            && !commanders
+                .iter()
+                .enumerate()
+                .any(|(other, beside)| other != *at && card.can_be_commander_beside(beside))
+    });
+    match ineligible {
+        Some((_, card)) => Err(DeckError::NotACommander {
             name: card.name.clone(),
         }),
         None => Ok(()),
@@ -402,6 +410,147 @@ mod tests {
     fn partners_make_a_legal_pair() {
         let pair = vec![partner("A", "{R}"), partner("B", "{R}")];
         assert_eq!(check(&spells(98), &pair), Ok(()));
+    }
+
+    /// A red legendary creature (or a legendary enchantment when `types` names one) with the subtypes and keyword.
+    fn kind(
+        name: &str,
+        types: &[CardType],
+        subtypes: &[&str],
+        keyword: &str,
+    ) -> Arc<CardDefinition> {
+        let mut card = CardDefinition::new(name)
+            .with_supertype(Supertype::Legendary)
+            .with_mana_cost(ManaCost::parse("{R}").unwrap());
+        for ty in types {
+            card = card.with_type(*ty);
+        }
+        for subtype in subtypes {
+            card = card.with_subtype(*subtype);
+        }
+        if !keyword.is_empty() {
+            let rule: Ability =
+                serde_json::from_str(&format!(r#"{{"Keyword":{keyword}}}"#)).unwrap();
+            card = card.with_rules(rule);
+        }
+        Arc::new(card)
+    }
+
+    fn creature(name: &str, subtypes: &[&str], keyword: &str) -> Arc<CardDefinition> {
+        kind(name, &[CardType::Creature], subtypes, keyword)
+    }
+
+    fn background(name: &str) -> Arc<CardDefinition> {
+        kind(name, &[CardType::Enchantment], &["Background"], "")
+    }
+
+    fn doctor() -> Arc<CardDefinition> {
+        creature("The Doctor", &["Time Lord", "Doctor"], "")
+    }
+
+    #[rstest]
+    #[case::friends_forever(
+        vec![creature("A", &[], r#"{"PartnerGroup":"Friends forever"}"#), creature("B", &[], r#"{"PartnerGroup":"Friends forever"}"#)],
+        None
+    )]
+    #[case::two_groups(
+        vec![creature("A", &[], r#"{"PartnerGroup":"Friends forever"}"#), creature("B", &[], r#"{"PartnerGroup":"Character select"}"#)],
+        Some(DeckError::NotPartners { first: "A".into(), second: "B".into() })
+    )]
+    #[case::a_group_and_partner(
+        vec![creature("A", &[], r#"{"PartnerGroup":"Friends forever"}"#), partner("B", "{R}")],
+        Some(DeckError::NotPartners { first: "A".into(), second: "B".into() })
+    )]
+    #[case::partners_that_name_each_other(
+        vec![creature("A", &[], r#"{"PartnerWith":"B"}"#), creature("B", &[], r#"{"PartnerWith":"A"}"#)],
+        None
+    )]
+    #[case::a_doctors_companion_and_the_doctor(
+        vec![creature("Rose", &["Human"], r#""DoctorsCompanion""#), doctor()],
+        None
+    )]
+    #[case::the_doctor_first(
+        vec![doctor(), creature("Rose", &["Human"], r#""DoctorsCompanion""#)],
+        None
+    )]
+    #[case::a_companion_and_another_creature(
+        vec![creature("Rose", &["Human"], r#""DoctorsCompanion""#), creature("Other", &["Human"], "")],
+        Some(DeckError::NotPartners { first: "Rose".into(), second: "Other".into() })
+    )]
+    #[case::two_companions(
+        vec![creature("Rose", &["Human"], r#""DoctorsCompanion""#), creature("Donna", &["Human"], r#""DoctorsCompanion""#)],
+        Some(DeckError::NotPartners { first: "Rose".into(), second: "Donna".into() })
+    )]
+    #[case::a_chooser_and_a_background(
+        vec![creature("Karlach", &["Tiefling"], r#""ChooseABackground""#), background("Folk Hero")],
+        None
+    )]
+    #[case::a_background_first(
+        vec![background("Folk Hero"), creature("Karlach", &["Tiefling"], r#""ChooseABackground""#)],
+        None
+    )]
+    #[case::a_background_and_a_plain_creature(
+        vec![background("Folk Hero"), creature("Other", &[], "")],
+        Some(DeckError::NotPartners { first: "Folk Hero".into(), second: "Other".into() })
+    )]
+    #[case::a_background_alone(
+        vec![background("Folk Hero")],
+        Some(DeckError::NotACommander { name: "Folk Hero".into() })
+    )]
+    #[case::two_backgrounds(
+        vec![background("Folk Hero"), background("Acolyte")],
+        Some(DeckError::NotPartners { first: "Folk Hero".into(), second: "Acolyte".into() })
+    )]
+    fn the_partner_kinds_pair_by_their_own_rules(
+        #[case] commanders: Vec<Arc<CardDefinition>>,
+        #[case] error: Option<DeckError>,
+    ) {
+        let deck = spells(100 - commanders.len());
+        assert_eq!(check(&deck, &commanders), error.map_or(Ok(()), Err));
+    }
+
+    #[test]
+    fn a_background_is_a_commander_only_beside_a_chooser_whatever_the_table_allows() {
+        let house = HouseRules {
+            commanders_per_seat: Some(2),
+            ..HouseRules::default()
+        };
+        let beside_a_creature = vec![background("Folk Hero"), creature("Other", &[], "")];
+        assert_eq!(
+            under(&house, &spells(98), &beside_a_creature),
+            Err(DeckError::NotACommander {
+                name: "Folk Hero".into()
+            })
+        );
+        let beside_a_chooser = vec![
+            background("Folk Hero"),
+            creature("Karlach", &["Tiefling"], r#""ChooseABackground""#),
+        ];
+        assert_eq!(under(&house, &spells(98), &beside_a_chooser), Ok(()));
+    }
+
+    #[test]
+    fn the_colour_identity_of_a_pair_of_the_new_kinds_is_the_two_together() {
+        let blue_background = Arc::new(
+            (*background("Sage"))
+                .clone()
+                .with_mana_cost(ManaCost::parse("{U}").unwrap()),
+        );
+        let pair = vec![
+            creature("Karlach", &["Tiefling"], r#""ChooseABackground""#),
+            blue_background,
+        ];
+        let blue = card("Blue", "{U}");
+        let mut deck = spells(97);
+        deck.push(blue);
+        assert_eq!(check(&deck, &pair), Ok(()));
+        let green = card("Green", "{G}");
+        deck.pop();
+        deck.push(green);
+        assert!(matches!(
+            check(&deck, &pair),
+            Err(DeckError::OutsideColorIdentity { .. })
+        ));
     }
 
     #[test]
