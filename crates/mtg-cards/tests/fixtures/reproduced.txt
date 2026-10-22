@@ -309,6 +309,7 @@ Invisible Stalker
 Iridescent Vinelasher
 Iron League Steed
 Izzet Charm
+Jacked Rabbit
 Jadelight Ranger
 Jagged Barrens
 Jaspera Sentinel
@@ -575,6 +576,7 @@ Tender Wildguide
 Tendershoot Dryad
 Tendo Ice Bridge
 Tendrils of Agony
+Termagant Swarm
 Thalia, Guardian of Thraben
 The Seriema
 The Spear of Bashenga

@@ -80,6 +80,7 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         }
     );
     r.cast_spell = casts_a_spell(&when);
+    r.subject = triggers::event_subject(&when);
     r.attacker = matches!(&when, TriggerPattern::Attacks { what } if *what == Selector::this());
     r.attacked = matches!(
         when,
@@ -204,6 +205,7 @@ pub fn activated(r: &mut Reader<'_>) -> Option<Ability> {
     r.punct(':').then_some(())?;
     // An X in the cost is the payer's to choose, so the effects may use it.
     r.x_free |= cost.has_x();
+    r.subject = Some(Ref::This);
     let effects = sentences(r, true)?;
     let (timing, limit, condition) = restrictions(r)?;
     let targets = std::mem::take(&mut r.targets);
