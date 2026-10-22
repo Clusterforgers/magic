@@ -6,9 +6,11 @@ Ancient Ziggurat
 Arcane Signet
 Archon of Cruelty
 Arrogant Wurm
+Artful Maneuver
 Arvad the Cursed
 Augury Raven
 Azorius Chancery
+Azorius Signet
 Azure Fleet Admiral
 Azusa, Lost but Seeking
 Basking Rootwalla
@@ -43,6 +45,7 @@ Copper-Leaf Angel
 Counterspell
 Courser of Kruphix
 Crucible of Worlds
+Crystal Quarry
 Curate
 Curse of Predation
 Curse of the Forsaken
@@ -64,6 +67,7 @@ Doom Blade
 Doom Whisperer
 Dragonspeaker Shaman
 Dream's Grip
+Dregscape Zombie
 Drudge Skeletons
 Dual Casting
 Dualcaster Mage
@@ -88,11 +92,13 @@ Forced March
 Fork
 Forum of Amity
 Foundry Inspector
+Fruit of Tizerus
 Furtive Homunculus
 Gadwick, the Wizened
 Game-Trail Changeling
 Giant Growth
 Gilded Lotus
+Glimpse of Freedom
 Glorious Anthem
 Goblin Chieftain
 Goblin Spy
@@ -112,6 +118,7 @@ Inkwell Leviathan
 Invisible Stalker
 Izzet Charm
 Jungle Lion
+Kathari Screecher
 Kessig Wolf Run
 Kongming, "Sleeping Dragon"
 Krenko's Enforcer
@@ -150,11 +157,13 @@ Phantasmal Image
 Pillar of the Paruns
 Plague Myr
 Plague Stinger
+Prismatic Lens
 Professional Face-Breaker
 Questing Beast
 Rally the Ranks
 Rampant Growth
 Reckless Impulse
+Reconstructed Thopter
 Reflecting Pool
 Reiterate
 Reverberate
@@ -177,6 +186,7 @@ Sinister Sabotage
 Sinister Starfish
 Skeletal Changeling
 Skullclamp
+Skycloud Expanse
 Skysovereign, Consul Flagship
 Slip Through Space
 Smuggler's Copter
@@ -189,6 +199,7 @@ Souldrinker
 Spectral Rider
 Sphinx of Jwar Isle
 Squirrel Nest
+Staggershock
 Steam Vents
 Stoke the Flames
 Strionic Resonator
@@ -208,6 +219,7 @@ Thalia, Guardian of Thraben
 The Spear of Bashenga
 The Thing, Ben Grimm
 Thieving Magpie
+Thopter Fabricator
 Throne of the High City
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
@@ -217,6 +229,7 @@ Tumble Magnet
 Twincast
 Umbral Collar Zealot
 Underworld Dreams
+Underworld Rage-Hound
 Universal Automaton
 Vampire Cutthroat
 Vestige of Emrakul

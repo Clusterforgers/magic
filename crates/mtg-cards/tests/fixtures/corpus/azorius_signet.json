@@ -1,0 +1,26 @@
+{
+  "id": "af690536-b0bc-4d85-8bb8-f6856b9f927b",
+  "oracle_id": "e018773f-95b3-49a3-9674-6f04ddef2092",
+  "name": "Azorius Signet",
+  "lang": "en",
+  "layout": "normal",
+  "set": "frc",
+  "collector_number": "53",
+  "rarity": "uncommon",
+  "released_at": "2026-10-02",
+  "digital": false,
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact",
+  "oracle_text": "{1}, {T}: Add {W}{U}.",
+  "colors": [],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "U",
+    "W"
+  ]
+}

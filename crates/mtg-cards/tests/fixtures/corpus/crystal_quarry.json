@@ -1,0 +1,33 @@
+{
+  "id": "55999d8e-50f8-4c8b-a0c3-f3256af62491",
+  "oracle_id": "ca68648f-fe3a-4770-9842-a3dc2310f099",
+  "name": "Crystal Quarry",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dmc",
+  "collector_number": "206",
+  "rarity": "rare",
+  "released_at": "2022-09-09",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{5}, {T}: Add {W}{U}{B}{R}{G}.",
+  "colors": [],
+  "color_identity": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "C",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

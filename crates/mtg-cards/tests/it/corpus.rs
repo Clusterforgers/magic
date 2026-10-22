@@ -206,7 +206,7 @@ fn declared_status_decides_the_support_when_the_engine_runs_everything(#[case] c
     for shown in printed() {
         let record = library.support(&shown, &caps);
         let expected = match shown.name.as_str() {
-            "Aven Mindcensor" | "Bebop, Skull & Crossbones" => Support::Partial,
+            "Aven Mindcensor" | "Bebop, Skull & Crossbones" | "Gemrazer" => Support::Partial,
             _ => Support::Verified,
         };
         assert_eq!(
@@ -449,6 +449,10 @@ fn clause_spans_cut_out_the_sentences_they_name() {
         (
             "Bebop, Skull & Crossbones",
             "Whenever Bebop deals combat damage to a player, you may draw X cards, where X is the number of counters on Bebop. If you do, you lose X life.",
+        ),
+        (
+            "Gemrazer",
+            "Whenever this creature mutates, destroy target artifact or enchantment an opponent controls.",
         ),
     ];
     assert_eq!(

@@ -252,6 +252,9 @@ const RUNS: &[&str] = &[
     "Keyword.PartnerGroup",
     "Keyword.DoctorsCompanion",
     "Keyword.ChooseABackground",
+    "Keyword.Unearth",
+    "Keyword.Escape",
+    "Keyword.Rebound",
     "Rule.CanBeCommander",
 ];
 
@@ -545,6 +548,9 @@ mod tests {
     #[case::partner_group("Keyword.PartnerGroup", true)]
     #[case::doctors_companion("Keyword.DoctorsCompanion", true)]
     #[case::choose_a_background("Keyword.ChooseABackground", true)]
+    #[case::unearth("Keyword.Unearth", true)]
+    #[case::escape("Keyword.Escape", true)]
+    #[case::rebound("Keyword.Rebound", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]
     #[case::the_highest_life_total("Amount.HighestLife", true)]

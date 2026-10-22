@@ -1,0 +1,27 @@
+{
+  "id": "74e8d3a8-5937-4108-b2fe-23e049379345",
+  "oracle_id": "e3056f28-868b-401a-a528-7528d639bdeb",
+  "name": "Prismatic Lens",
+  "lang": "en",
+  "layout": "normal",
+  "set": "otc",
+  "collector_number": "264",
+  "rarity": "uncommon",
+  "released_at": "2024-04-19",
+  "digital": false,
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact",
+  "oracle_text": "{T}: Add {C}.\n{1}, {T}: Add one mana of any color.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "C",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

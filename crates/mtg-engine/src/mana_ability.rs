@@ -154,6 +154,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                     only: only.clone(),
                     also,
                     life,
+                    cost: shape.mana.clone(),
                 })
             })
             .collect();

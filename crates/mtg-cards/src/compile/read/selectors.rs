@@ -50,6 +50,11 @@ const KEYWORDS: &[&str] = &[
     "menace",
     "indestructible",
     "hexproof",
+    "shroud",
+    "defender",
+    "prowess",
+    "changeling",
+    "infect",
 ];
 
 /// How a phrase is introduced, which decides its number, how it joins card types and how it names

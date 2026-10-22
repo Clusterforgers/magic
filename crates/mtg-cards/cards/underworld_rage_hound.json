@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a1418e8d-dea5-43e1-b041-3f6a88f9a6d7",
+  "name": "Underworld Rage-Hound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Underworld Rage-Hound",
+      "oracle_fingerprint": "e611b9b272725f31035b87226ca8433c",
+      "abilities": [
+        { "Rule": { "rule": { "MustAttack": "This" } } },
+        {
+          "Keyword": {
+            "Escape": [
+              { "Mana": "{3}{R}" },
+              { "ExileFromGraveyard": { "filter": ["Other"], "count": 3 } }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": { "CastWith": "Escape" }
+          }
+        }
+      ]
+    }
+  ]
+}

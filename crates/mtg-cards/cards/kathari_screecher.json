@@ -1,0 +1,12 @@
+{
+  "oracle_id": "fb51bafe-5a70-4910-a42e-ef75d9dd2f0a",
+  "name": "Kathari Screecher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kathari Screecher",
+      "oracle_fingerprint": "edf94ec72057df44d93abf5cfe0be180",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": { "Unearth": "{2}{U}" } }]
+    }
+  ]
+}
