@@ -44,6 +44,7 @@ mod corpus_cards;
 mod cost_fuzz;
 mod cost_modifiers;
 mod cost_parts;
+mod countdown_keywords;
 mod counted_amounts;
 mod counted_costs;
 mod counter_effects;
