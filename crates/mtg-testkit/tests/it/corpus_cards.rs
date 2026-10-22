@@ -214,7 +214,7 @@ const CARDS: [(&str, Support, usize); 175] = [
     ("Forced March", Verified, 1),
     ("Invisible Stalker", Verified, 2),
     ("Aven Mindcensor", Partial, 2),
-    ("Courser of Kruphix", Partial, 3),
+    ("Courser of Kruphix", Partial, 2),
 ];
 
 #[test]
