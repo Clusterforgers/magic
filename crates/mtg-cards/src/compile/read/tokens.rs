@@ -187,9 +187,37 @@ fn then_as_sentence(text: &str) -> String {
 }
 
 /// Whether two wordings are the same text once whitespace, a closing period, the card's own name
-/// ("this creature" for `~`) and ", then" for a new sentence are normalized.
+/// ("this creature" for `~`), ", then" for a new sentence and the order of the symbols in a run of mana symbols
+/// (`{G}{W}` and `{W}{G}` are one cost) are normalized.
 pub fn same_text(left: &str, right: &str) -> bool {
-    without_period(&canonical(left)) == without_period(&canonical(right))
+    let sorted = |text: &str| symbols_sorted(without_period(&canonical(text)));
+    sorted(left) == sorted(right)
+}
+
+/// The text with the symbols of each run of adjacent mana symbols in one fixed order: a cost has no order, and the
+/// renderer writes the one the data keeps.
+pub fn symbols_sorted(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+    let mut run: Vec<&str> = Vec::new();
+    let mut rest = text;
+    loop {
+        let symbol = rest
+            .strip_prefix('{')
+            .and_then(|tail| tail.find('}'))
+            .and_then(|end| rest.split_at_checked(end + 2));
+        if let Some((symbol, after)) = symbol {
+            run.push(symbol);
+            rest = after;
+            continue;
+        }
+        run.sort_unstable();
+        run.drain(..).for_each(|symbol| out.push_str(symbol));
+        let mut chars = rest.chars();
+        let Some(next) = chars.next() else { break };
+        out.push(next);
+        rest = chars.as_str();
+    }
+    out
 }
 
 /// The text without its closing period.

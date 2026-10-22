@@ -25,8 +25,7 @@ use super::spend;
 use super::statics;
 use super::subtypes::plural_subtype;
 use super::triggers::{
-    article, condition_text, cycled_itself, entered_or_attacked, itself_acts, pattern_text,
-    targeted_itself,
+    article, condition_text, cycled_itself, dies_itself, itself_acts, pattern_text, targeted_itself,
 };
 use crate::ability::{Ability, Limit, Timing};
 use crate::cost::Cost;
@@ -122,8 +121,9 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(pronouns);
     }
-    // A trigger about the card itself entering or attacking may say "it deals" for the card (Skysovereign).
-    if matches!(ability, Ability::Triggered { when, .. } if entered_or_attacked(when)) {
+    // A trigger about the card itself entering, attacking or dying may say "it deals" for the card (Skysovereign).
+    if matches!(ability, Ability::Triggered { when, .. } if itself_acts(when) || dies_itself(when))
+    {
         let pronouns: Vec<String> = texts
             .iter()
             .filter(|text| text.contains(", ~ deals "))
@@ -488,7 +488,11 @@ fn written(
                     sentences.push(format!("{pronoun} can't be regenerated"));
                 }
             }
-            group => sentences.push(writer.compound(group)?),
+            group => sentences.push(
+                writer
+                    .damage_group(group)
+                    .or_else(|| writer.compound(group))?,
+            ),
         }
         start = end;
     }
@@ -1406,6 +1410,58 @@ impl Writer<'_> {
             rest = &rest[run..];
         }
         Some(clauses.join(" and "))
+    }
+
+    /// Damage to two recipients that are no targets and the life gained with it as one sentence: "~ deals 2 damage to each
+    /// creature and each player", "~ deals 3 damage to any target and you gain 3 life".
+    fn damage_group(&mut self, group: &[Effect]) -> Option<String> {
+        let (damage, life) = match group.split_last() {
+            Some((
+                Effect::GainLife {
+                    who: Ref::You,
+                    amount,
+                },
+                rest,
+            )) => (rest, Some(amount)),
+            _ => (group, None),
+        };
+        let mut dealt = None;
+        let mut recipients = Vec::with_capacity(damage.len());
+        for effect in damage {
+            let Effect::DealDamage {
+                source: None,
+                to,
+                amount,
+            } = effect
+            else {
+                return None;
+            };
+            if *dealt.get_or_insert(amount) != amount {
+                return None;
+            }
+            recipients.push(to);
+        }
+        // One group of objects and one of players, as the reader has them.
+        let objects = recipients
+            .iter()
+            .filter(|to| matches!(to, Ref::Each(_)))
+            .count();
+        if recipients.len() > 2 || (recipients.len() == 2 && objects != 1) {
+            return None;
+        }
+        let mut to = Vec::with_capacity(2);
+        for recipient in recipients {
+            to.push(self.recipient(recipient)?);
+        }
+        let gained = match life {
+            Some(life) => format!(" and you gain {}", self.life(life)?),
+            None => String::new(),
+        };
+        Some(format!(
+            "~ deals {} damage to {}{gained}",
+            points_text(dealt?)?,
+            to.join(" and ")
+        ))
     }
 
     /// The objects a verb acts on: the target in full, or "all creatures".

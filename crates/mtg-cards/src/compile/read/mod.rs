@@ -12,7 +12,7 @@
 //! of a choice), `triggers` (the event of a triggered ability), `costs` (what is paid before the
 //! colon), `abilities` (a spell ability, a triggered ability, an activated ability), `conditional`
 //! (an effect that depends on a condition), `reveal` (looking at the top card and revealing it),
-//! `copies` (a token that is a copy, populate, entering as a copy), `copy_spells` (a copy of a spell or an ability, a
+//! `damage` (what deals damage to whom and the life gained with it), `copies` (a token that is a copy, populate, entering as a copy), `copy_spells` (a copy of a spell or an ability, a
 //! permanent that becomes a copy), `defining` (the power and toughness a card defines for itself), `life_gain` (replacements and rules about gaining life), `transform`, `draws` (draw and discard wordings), `actions` (the keyword actions of creatures) and
 //! `render`.
 
@@ -28,6 +28,7 @@ mod copy_spells;
 mod costs;
 mod counters;
 mod create;
+mod damage;
 mod defining;
 mod draws;
 mod effects;

@@ -147,6 +147,7 @@ Explore
 Exquisite Huntmaster
 Faithful Watchdog
 Faithless Looting
+Famine
 Faramir, Steward of Gondor
 Favorable Winds
 Fear of Failed Tests
@@ -196,6 +197,7 @@ Graveshifter
 Grim Initiate
 Grisly Salvage
 Growing Ranks
+Gruul Cluestone
 Guardian Gladewalker
 Gurmag Angler
 Hall of Triumph
@@ -220,6 +222,7 @@ Invading Manticore
 Invisible Stalker
 Izzet Charm
 Jadelight Ranger
+Jagged Barrens
 Jaspera Sentinel
 Jungle Lion
 Kalemne's Captain
@@ -433,6 +436,7 @@ Tilonalli's Skinshifter
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
+Tithebearer Giant
 Traumatic Visions
 Treasure Cruise
 Trove Tracker

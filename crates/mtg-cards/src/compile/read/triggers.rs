@@ -44,22 +44,16 @@ pub fn targeted_itself(pattern: &TriggerPattern) -> bool {
     }
 }
 
-/// Whether the pattern is the card itself entering the battlefield or attacking ("enters or attacks"), so the card's
-/// effects may call it "it".
-pub fn entered_or_attacked(pattern: &TriggerPattern) -> bool {
-    let TriggerPattern::AnyOf(patterns) = pattern else {
-        return false;
-    };
-    let itself = |pattern: &TriggerPattern| match pattern {
-        TriggerPattern::Attacks { what }
-        | TriggerPattern::ZoneChange {
+/// Whether the pattern is the card itself dying, so the card's damage may say "it deals".
+pub fn dies_itself(pattern: &TriggerPattern) -> bool {
+    matches!(
+        pattern,
+        TriggerPattern::ZoneChange {
             what,
-            to: Some(ZoneKind::Battlefield),
-            ..
-        } => what.0 == [Pred::This],
-        _ => false,
-    };
-    patterns.len() > 1 && patterns.iter().all(itself)
+            from: Some(ZoneKind::Battlefield),
+            to: Some(ZoneKind::Graveyard),
+        } if what.0 == [Pred::This]
+    )
 }
 
 /// The steps a trigger names and the words for each.

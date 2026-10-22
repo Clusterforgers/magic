@@ -322,6 +322,12 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.that_player && r.words("that player controls") {
         return Some(Pred::ControlledBy(Ref::Triggering));
     }
+    if let Some(keyword) = r.attempt(|r| {
+        r.need("without")?;
+        keyword(r)
+    }) {
+        return Some(not(Pred::HasKeyword(keyword)));
+    }
     r.attempt(|r| {
         r.need("with")?;
         if let Some(keyword) = keyword(r) {
@@ -356,6 +362,10 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             "you don't control".to_owned()
         }
         Pred::HasKeyword(keyword) => format!("with {}", keyword_text(keyword)?),
+        Pred::Not(inner) => match &**inner {
+            Pred::HasKeyword(keyword) => format!("without {}", keyword_text(keyword)?),
+            _ => return None,
+        },
         Pred::Compare { stat, op, to } => {
             let number = match to {
                 Amount::Fixed(number) => number.to_string(),
