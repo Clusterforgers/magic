@@ -8,7 +8,7 @@ use mtg_cards::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenR
 use mtg_cards::keyword::Keyword;
 use mtg_cards::load::{canonical, parse_json};
 use mtg_cards::mana::ManaCostX;
-use mtg_cards::modify::{Duration, GameRule, Modification};
+use mtg_cards::modify::{CastPermission, Duration, GameRule, Modification};
 use mtg_cards::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::spend::{SpendFilter, SpendOn};
 use mtg_cards::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, Step, TriggerPattern};
@@ -416,6 +416,7 @@ fn duration() -> impl Strategy<Value = Duration> {
         Duration::UntilEndOfTurn,
         Duration::UntilEndOfCombat,
         Duration::UntilYourNextTurn,
+        Duration::UntilEndOfYourNextTurn,
         Duration::WhileSourceOnBattlefield,
         Duration::Forever,
     ])
@@ -437,6 +438,26 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
         (reference(), amount())
             .prop_map(|(who, count)| GameRule::AdditionalLandPlays { who, count }),
         Just(GameRule::CanBeCommander),
+        (
+            reference(),
+            selector(),
+            proptest::option::of(zone()),
+            any::<bool>(),
+            any::<bool>(),
+            proptest::option::of(reference()),
+            any::<bool>(),
+        )
+            .prop_map(|(who, what, from, free, flash, only, play)| {
+                GameRule::MayCast(CastPermission {
+                    who,
+                    what,
+                    from,
+                    free,
+                    flash,
+                    only,
+                    play,
+                })
+            }),
         trigger_pattern().prop_map(|cause| GameRule::TriggerAgain { cause }),
     ]
 }
@@ -681,6 +702,11 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                     exiled_as
                 }
             ),
+            (who(), amount(), bound_name()).prop_map(|(who, count, bind)| Effect::ExileTop {
+                who,
+                count,
+                bind
+            }),
             who().prop_map(|who| Effect::TimeTravel { who }),
             who().prop_map(|who| Effect::ExtraTurn { who }),
             (who(), token_ref(), amount(), any::<bool>(), any::<bool>()).prop_map(

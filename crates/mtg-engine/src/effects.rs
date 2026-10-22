@@ -235,7 +235,8 @@ pub(crate) fn lasts(
     match duration {
         // `UntilEndOfTurn` ends with the cleanup step, which logs the expiry (CR 514.2); `UntilEndOfYourNextTurn` ends
         // the same way, in the cleanup step of the next turn its controller has.
-        Duration::UntilEndOfTurn | Duration::UntilEndOfYourNextTurn | Duration::Forever => true,
+        Duration::UntilEndOfTurn | Duration::Forever => true,
+        Duration::UntilEndOfYourNextTurn => state.is_alive(controller),
         Duration::UntilEndOfCombat => turn.number() == began && turn.step() <= Step::EndCombat,
         Duration::UntilYourNextTurn => {
             state.is_alive(controller) && !(turn.number() != began && turn.active() == controller)
@@ -444,6 +445,9 @@ mod tests {
     #[case::your_turn_when_another_seat_plays(Duration::UntilYourNextTurn, (4, FOE, Step::Main1), true)]
     #[case::your_turn_when_it_comes_again(Duration::UntilYourNextTurn, (5, ME, Step::Upkeep), false)]
     #[case::source_stays(Duration::WhileSourceOnBattlefield, (3, ME, Step::Main1), true)]
+    #[case::the_end_of_your_next_turn_in_the_turn_it_began(Duration::UntilEndOfYourNextTurn, (3, ME, Step::End), true)]
+    #[case::the_end_of_your_next_turn_in_another_seats_turn(Duration::UntilEndOfYourNextTurn, (4, FOE, Step::Main1), true)]
+    #[case::the_end_of_your_next_turn_in_that_turn(Duration::UntilEndOfYourNextTurn, (5, ME, Step::Main2), true)]
     fn each_duration_lasts_as_long_as_its_rule_says(
         #[case] duration: Duration,
         #[case] now: (u32, PlayerId, Step),
@@ -453,6 +457,40 @@ mod tests {
         let effect = effect(&game, duration, ME);
         at(&mut game, now.0, now.1, now.2);
         assert_eq!(effect.is_active(&game), active);
+    }
+
+    #[rstest]
+    #[case::end_of_turn_in_the_turn(Duration::UntilEndOfTurn, (3, ME), true)]
+    #[case::end_of_turn_in_a_later_turn(Duration::UntilEndOfTurn, (4, FOE), true)]
+    #[case::forever(Duration::Forever, (3, ME), false)]
+    #[case::your_next_turn_begins_ends_nothing_at_cleanup(Duration::UntilYourNextTurn, (5, ME), false)]
+    #[case::the_turn_it_began_in(Duration::UntilEndOfYourNextTurn, (3, ME), false)]
+    #[case::another_seats_turn(Duration::UntilEndOfYourNextTurn, (4, FOE), false)]
+    #[case::your_next_turn(Duration::UntilEndOfYourNextTurn, (5, ME), true)]
+    #[case::a_later_turn_of_yours(Duration::UntilEndOfYourNextTurn, (7, ME), true)]
+    #[case::the_turn_after_yours(Duration::UntilEndOfYourNextTurn, (6, FOE), false)]
+    fn the_cleanup_of_a_turn_ends_the_durations_that_end_with_it(
+        #[case] duration: Duration,
+        #[case] now: (u32, PlayerId),
+        #[case] ends: bool,
+    ) {
+        let mut game = game();
+        at(&mut game, now.0, now.1, Step::Cleanup);
+        assert_eq!(ends_with_turn(&game, duration, 3, ME), ends);
+    }
+
+    #[test]
+    fn an_effect_waiting_for_the_end_of_the_next_turn_of_a_player_who_left_is_over() {
+        let mut game = game();
+        let effect = effect(&game, Duration::UntilEndOfYourNextTurn, FOE);
+        at(&mut game, 3, ME, Step::Main1);
+        assert!(effect.is_active(&game));
+        let lost = Event::PlayerLost {
+            player: FOE,
+            reason: LossReason::Conceded,
+        };
+        apply_event(&mut game, &lost).unwrap();
+        assert!(!effect.is_active(&game));
     }
 
     #[test]

@@ -27,7 +27,15 @@ free: boolean,
 /**
  * They are cast as though they had flash.
  */
-flash: boolean, } } | { "TriggerAgain": unknown } | { "DamageCantBePrevented": { 
+flash: boolean, 
+/**
+ * Only these objects, as they were named when the rule began; every card `what` selects when absent.
+ */
+only: Array<ObjectRef> | null, 
+/**
+ * A land among the cards may be played too.
+ */
+play: boolean, } } | { "TriggerAgain": unknown } | { "DamageCantBePrevented": { 
 /**
  * The sources, judged when the damage would be dealt.
  */

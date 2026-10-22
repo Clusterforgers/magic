@@ -83,6 +83,7 @@ const SCALAR_KEYS: &[&str] = &[
     "Command",
     "AnyColor",
     "color_indicator",
+    "who",
 ];
 
 /// How often (in answers) a full snapshot is checked; events are checked after every answer.

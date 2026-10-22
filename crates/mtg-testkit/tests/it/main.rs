@@ -55,6 +55,8 @@ mod house_turn;
 mod hybrid_payment;
 mod if_effects;
 mod illegal_answers;
+mod impulse;
+mod impulse_fuzz;
 mod keywords_attack;
 mod keywords_damage;
 mod keywords_flash;

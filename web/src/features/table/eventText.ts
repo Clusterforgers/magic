@@ -111,6 +111,7 @@ function durationWords(
     UntilEndOfTurn: ' until end of turn',
     UntilEndOfCombat: ' until end of combat',
     UntilYourNextTurn: " until their controller's next turn",
+    UntilEndOfYourNextTurn: " until the end of their controller's next turn",
     WhileSourceOnBattlefield:
       source === null ? ' while its source stays' : ` while ${n.card(source.id)} stays`,
     Forever: '',
@@ -133,7 +134,10 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   else if ('CantSearch' in rule) what = `${seats(rule.CantSearch)} can't search libraries`
   else if ('RevealTop' in rule)
     what = `${seats(rule.RevealTop)} play with the top card of their library revealed`
-  else if ('DamageCantBePrevented' in rule) what = "Damage can't be prevented"
+  else if ('MayCast' in rule) {
+    const { who, only, play } = rule.MayCast
+    what = `${seats(who)} may ${play ? 'play' : 'cast'} ${only === null ? 'cards they could not' : named(only)}`
+  } else if ('DamageCantBePrevented' in rule) what = "Damage can't be prevented"
   else if ('PreventDamage' in rule) {
     const { left } = rule.PreventDamage
     what = left === null ? 'Damage is prevented' : `The next ${left} damage is prevented`

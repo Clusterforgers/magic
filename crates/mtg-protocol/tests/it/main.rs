@@ -15,6 +15,7 @@ mod exile_open;
 mod foretell_view;
 mod hidden_info;
 mod house_rules_view;
+mod impulse_hidden;
 mod keyword_view;
 mod lobby_message;
 mod loyalty_view;

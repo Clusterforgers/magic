@@ -621,6 +621,43 @@ describe('events with more than one shape', () => {
       ruleEffect({ RevealTop: [2] }, 'UntilEndOfTurn'),
       'Cy play with the top card of their library revealed until end of turn',
     ],
+    [
+      ruleEffect(
+        {
+          MayCast: {
+            who: [0],
+            what: [],
+            from: 'Exile',
+            free: false,
+            flash: false,
+            only: [{ id: 4, counter: 1 }],
+            play: true,
+          },
+        },
+        'UntilEndOfTurn',
+      ),
+      'Ana may play Lightning Bolt until end of turn',
+    ],
+    [
+      ruleEffect(
+        {
+          MayCast: {
+            who: [0],
+            what: [],
+            from: 'Exile',
+            free: false,
+            flash: false,
+            only: [
+              { id: 1, counter: 1 },
+              { id: 2, counter: 1 },
+            ],
+            play: false,
+          },
+        },
+        'UntilEndOfYourNextTurn',
+      ),
+      "Ana may cast Grizzly Bears and Hill Giant until the end of their controller's next turn",
+    ],
     [ruleEffect({ TriggerAgain: null }, 'Forever'), 'Triggered abilities trigger an additional time'],
   ])('says what a change to a rule does (%#)', (created, text) => {
     expect(say({ RuleCreated: { effect: created } })).toBe(text)

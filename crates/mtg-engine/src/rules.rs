@@ -911,6 +911,108 @@ mod tests {
         );
     }
 
+    /// Moves `object` through each zone in turn, from the zone it is in; the object it is then is a new one.
+    fn moved_through(game: &mut GameState, object: ObjectId, zones: &[Zone]) -> ObjectRef {
+        for to in zones {
+            let from = game.object(object).unwrap().zone();
+            let event = Event::ZoneChanged {
+                object,
+                from,
+                to: *to,
+                cause: ZoneCause::Exiled,
+            };
+            apply_event(game, &event).unwrap();
+        }
+        game.object(object).unwrap().reference()
+    }
+
+    /// Exiles the permanent `name`.
+    fn exiled(game: &mut GameState, name: &str) -> ObjectRef {
+        let object = id(game, name);
+        moved_through(game, object, &[Zone::Exile])
+    }
+
+    fn permission(only: Option<Vec<ObjectRef>>, play: bool) -> Rule {
+        Rule::MayCast {
+            who: vec![ME],
+            what: mtg_cards::refs::Selector::default(),
+            from: Some(ZoneKind::Exile),
+            free: false,
+            flash: false,
+            only,
+            play,
+        }
+    }
+
+    #[rstest]
+    #[case::the_card_named(0, ME, true)]
+    #[case::another_player(0, FOE, false)]
+    #[case::the_other_card(1, ME, false)]
+    fn a_permission_to_play_covers_the_exiled_cards_it_names_and_no_other(
+        #[case] card: usize,
+        #[case] player: PlayerId,
+        #[case] covered: bool,
+    ) {
+        let mut game = game(Vec::new());
+        let named = [exiled(&mut game, "Wolf"), exiled(&mut game, "Bear")];
+        put_in_force(&mut game, permission(Some(vec![named[0]]), true));
+        let [permission] = cast_permissions(&game) else {
+            panic!("one permission");
+        };
+        let object = game.object(named[card].id).unwrap();
+        assert_eq!(permission.covers(&game, player, object), covered);
+        assert_eq!(permission.plays(&game, player, object), covered);
+    }
+
+    #[test]
+    fn a_permission_without_the_play_covers_a_cast_and_no_land_play() {
+        let mut game = game(Vec::new());
+        let wolf = exiled(&mut game, "Wolf");
+        put_in_force(&mut game, permission(Some(vec![wolf]), false));
+        let [permission] = cast_permissions(&game) else {
+            panic!("one permission");
+        };
+        let object = game.object(wolf.id).unwrap();
+        assert!(permission.covers(&game, ME, object));
+        assert!(!permission.plays(&game, ME, object));
+    }
+
+    #[test]
+    fn a_card_that_left_exile_and_came_back_is_a_new_object_the_permission_does_not_cover() {
+        let mut game = game(Vec::new());
+        let wolf = exiled(&mut game, "Wolf");
+        let bear = exiled(&mut game, "Bear");
+        put_in_force(&mut game, permission(Some(vec![wolf, bear]), true));
+        let back = moved_through(&mut game, wolf.id, &[Zone::Graveyard(ME), Zone::Exile]);
+        assert_ne!(back.counter, wolf.counter);
+        let [permission] = cast_permissions(&game) else {
+            panic!("one permission while a card it names is where it was");
+        };
+        assert!(!permission.covers(&game, ME, game.object(back.id).unwrap()));
+        assert!(permission.covers(&game, ME, game.object(bear.id).unwrap()));
+        moved_through(&mut game, bear.id, &[Zone::Graveyard(FOE)]);
+        assert!(
+            cast_permissions(&game).is_empty(),
+            "every card it names is gone"
+        );
+        assert!(
+            game.rule_effects()
+                .iter()
+                .all(|rule| !rule.is_active(&game))
+        );
+    }
+
+    #[rstest]
+    #[case::no_card(Some(Vec::new()), true)]
+    #[case::a_card(Some(vec![ObjectRef { id: ObjectId(0), counter: 0 }]), false)]
+    #[case::any_card(None, false)]
+    fn a_permission_that_names_no_card_begins_nothing(
+        #[case] only: Option<Vec<ObjectRef>>,
+        #[case] nothing: bool,
+    ) {
+        assert_eq!(names_nothing(&permission(only, true)), nothing);
+    }
+
     #[test]
     fn two_rules_of_one_kind_name_whoever_either_names_and_each_ends_alone() {
         let mut game = game(vec![rule_ability(r#"{"CantGainLife":"You"}"#)]);

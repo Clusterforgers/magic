@@ -2711,6 +2711,22 @@ mod tests {
         r#"{"Spell":{"effects":[{"LookAtTop":{"as":"Top Cards"}}]}}"#,
         "`Top Cards` is not a name"
     )]
+    #[case::an_exile_of_the_top_bound_twice(
+        r#"{"Spell":{"effects":[{"ExileTop":{"as":"impulse"}},{"ExileTop":{"as":"impulse"}}]}}"#,
+        "`impulse` is already bound"
+    )]
+    #[case::an_exile_of_the_top_of_a_player_card(
+        r#"{"Spell":{"effects":[{"ExileTop":{"who":{"Each":[]},"as":"impulse"}}]}}"#,
+        "faces[0].abilities[0].Spell.effects[0].ExileTop.who: expected a player but this is an object"
+    )]
+    #[case::a_permission_for_cards_nothing_exiled_named(
+        r#"{"Spell":{"effects":[{"Rule":{"rule":{"MayCast":{"from":"Exile","only":{"Bound":"impulse"},"play":true}},"duration":"UntilEndOfTurn"}}]}}"#,
+        "faces[0].abilities[0].Spell.effects[0].Rule.rule.MayCast.only: `impulse` is not bound by an earlier step"
+    )]
+    #[case::a_permission_for_a_player(
+        r#"{"Spell":{"effects":[{"Rule":{"rule":{"MayCast":{"from":"Exile","only":"You","play":true}},"duration":"UntilEndOfTurn"}}]}}"#,
+        "faces[0].abilities[0].Spell.effects[0].Rule.rule.MayCast.only: expected an object but this is a player"
+    )]
     #[case::triggering_outside_a_trigger(
         r#"{"Spell":{"effects":[{"Draw":{"who":"Triggering"}}]}}"#,
         "`Triggering` is only valid in a triggered ability"
