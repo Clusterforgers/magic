@@ -1,0 +1,27 @@
+{
+  "id": "d1ac1534-ce78-467d-abf4-67a2e11cfac5",
+  "oracle_id": "da4bf807-93f3-41b7-8bfd-aa63a551754e",
+  "name": "Galadhrim Brigade",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ltc",
+  "collector_number": "502",
+  "rarity": "rare",
+  "released_at": "2023-11-03",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Elf Soldier",
+  "oracle_text": "Squad {1}{G} (As an additional cost to cast this spell, you may pay {1}{G} any number of times. When this creature enters, create that many tokens that are copies of it.)\nOther Elves you control get +1/+1.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Squad"
+  ]
+}

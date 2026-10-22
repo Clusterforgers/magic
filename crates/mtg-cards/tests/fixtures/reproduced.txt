@@ -1,4 +1,5 @@
 Abbot of Keral Keep
+Aberrant
 Abzan Advantage
 Abzan Skycaptain
 Adorned Pouncer
@@ -27,6 +28,7 @@ Azorius Chancery
 Azorius Signet
 Azure Fleet Admiral
 Azusa, Lost but Seeking
+Banshee of the Dread Choir
 Basking Rootwalla
 Battle Sliver
 Battlefield Forge
@@ -50,11 +52,14 @@ Borderland Behemoth
 Brain Freeze
 Brainstorm
 Branchblight Stalker
+Briarblade Adept
 Brightstone Ritual
 Bronzeplate Boar
+Broodbirth Viper
 Cached Defenses
 Cackling Counterpart
 Caldaia Strongarm
+Caller of the Pack
 Capsize
 Carnage Tyrant
 Cascade Bluffs
@@ -89,6 +94,7 @@ Custodi Lich
 Cut // Ribbons
 Cyclonic Rift
 Cytoshape
+Dalek Squadron
 Darksteel Juggernaut
 Dauthi Horror
 Dauthi Marauder
@@ -131,6 +137,7 @@ Ethereal Armor
 Exotic Orchard
 Exploration
 Explore
+Exquisite Huntmaster
 Faithful Watchdog
 Faithless Looting
 Faramir, Steward of Gondor
@@ -158,6 +165,7 @@ Fruit of Tizerus
 Furtive Homunculus
 Gadwick, the Wizened
 Gaea's Cradle
+Galadhrim Brigade
 Game-Trail Changeling
 Gerrard's Wisdom
 Ghalta, Primal Hunger
@@ -172,6 +180,7 @@ Goblin Chieftain
 Goblin Spy
 Goblin War Buggy
 Goblin-town Flunkies
+Goldlust Triad
 Grapeshot
 Graven Cairns
 Graveshifter
@@ -184,6 +193,7 @@ Hall of Triumph
 Haughty Djinn
 Hengegate Pathway // Mistgate Pathway
 Herald of the Dreadhorde
+Herald of the Host
 Hero of Bladehold
 Holdout Settlement
 Honor Troll
@@ -194,6 +204,7 @@ Hulking Raptor
 Idyllic Beachfront
 Ill-Tempered Cyclops
 Impostor of the Sixth Pride
+Impulsive Pilferer
 Inkwell Leviathan
 Invading Manticore
 Invisible Stalker
@@ -207,6 +218,7 @@ Kathari Screecher
 Keep Watch
 Kessig Wolf Run
 Kinjalli's Sunwing
+Kinsbaile Courier
 Kitchen Finks
 Knight of Dusk's Shadow
 Kolaghan Skirmisher
@@ -276,6 +288,7 @@ Pinion Feast
 Plague Myr
 Plague Stinger
 Pouncing Jaguar
+Powder Ganger
 Primeval Protector
 Prismatic Lens
 Professional Face-Breaker
@@ -310,6 +323,7 @@ Rugged Prairie
 Rumbleweed
 Rummaging Goblin
 Rustrazor Butcher
+Ruthless Radrat
 Sacred Cat
 Safehold Elite
 Sage of the Beyond
@@ -350,6 +364,7 @@ Soltari Foot Soldier
 Songs of the Damned
 Soul Shepherd
 Souldrinker
+Space Marine Devastator
 Spectral Rider
 Sphinx of Jwar Isle
 Spring // Mind
@@ -372,6 +387,7 @@ Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
 Syphon Life
+Tabaxi Toucaneers
 Tah-Crop Skirmisher
 Tainted Isle
 Taurean Mauler
@@ -390,21 +406,25 @@ Thriving Heath
 Thriving Isle
 Thriving Moor
 Throne of the High City
+Tiamat's Fanatics
 Tilonalli's Skinshifter
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Treasure Cruise
+Trove Tracker
 Tumble Magnet
 Twilight Mire
 Twincast
 Uktabi Efreet
+Ultramarines Honour Guard
 Umbral Collar Zealot
 Underworld Dreams
 Underworld Rage-Hound
 Universal Automaton
 Urabrask the Hidden
 Vampire Cutthroat
+Vanguard Suppressor
 Vanquish the Horde
 Vengeful Vampire
 Vestige of Emrakul
@@ -416,12 +436,15 @@ Vivid Marsh
 Vivid Meadow
 Walking Ballista
 Wanderbrine Preacher
+Warchief Giant
 Wargate
 Warmonger Hellkite
+Wasteland Raider
 Wear // Tear
 Wilderness Elemental
 Wooded Bastion
 Wrath of God
+Wyrm's Crossing Patrol
 Young Wolf
 Zendikar Farguide
 Zodiac Goat

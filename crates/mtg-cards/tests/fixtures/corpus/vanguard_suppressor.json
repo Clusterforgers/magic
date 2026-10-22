@@ -1,0 +1,29 @@
+{
+  "id": "3331d7dd-95c8-4813-a1eb-3966a2c08502",
+  "oracle_id": "b7c48f87-bdef-4cef-a1c4-5b4d0b7a26cd",
+  "name": "Vanguard Suppressor",
+  "lang": "en",
+  "layout": "normal",
+  "set": "40k",
+  "collector_number": "27",
+  "rarity": "rare",
+  "released_at": "2022-10-07",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Astartes Warrior",
+  "oracle_text": "Squad {2} (As an additional cost to cast this spell, you may pay {2} any number of times. When this creature enters, create that many tokens that are copies of it.)\nFlying\nSuppressing Fire — Whenever this creature deals combat damage to a player, draw a card.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Suppressing Fire",
+    "Squad"
+  ]
+}

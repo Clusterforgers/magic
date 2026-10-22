@@ -168,6 +168,7 @@ mod counter_actions;
 mod counters;
 mod create;
 mod defining;
+mod draws;
 mod enchanted_player;
 mod enters;
 mod enters_tapped;
@@ -472,7 +473,6 @@ mod cards_and_life {
 
     #[rstest]
     #[case::equal_to("Draw cards equal to the number of creatures you control.")]
-    #[case::you_and_you("You draw two cards and you lose 2 life.")]
     #[case::unless("Target player draws a card unless they discard a card.")]
     #[case::if_you_do("Draw a card. If you do, gain 1 life.")]
     #[case::if_first("If you control a creature, draw a card.")]

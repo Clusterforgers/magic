@@ -153,6 +153,7 @@ const RUNS: &[&str] = &[
     "Ability.Static.Defining",
     "Ability.Rule",
     "Rule.MustAttack",
+    "Rule.MustAttackPlayers",
     "Rule.MustBlock",
     "Rule.CantBeCountered",
     "Rule.CantGainLife",
@@ -285,10 +286,15 @@ const RUNS: &[&str] = &[
     "Keyword.CumulativeUpkeep",
     "Keyword.Undying",
     "Keyword.Persist",
+    "Keyword.Myriad",
+    "Keyword.Squad",
+    "Keyword.Ravenous",
+    "Effect.MyriadCopies",
     "Keyword.JumpStart",
     "Keyword.Retrace",
     "Keyword.Embalm",
     "Keyword.Eternalize",
+    "Keyword.Encore",
     "Condition.NewlyControlled",
     "Rule.CanBeCommander",
 ];
@@ -604,6 +610,8 @@ mod tests {
     #[case::cumulative_upkeep("Keyword.CumulativeUpkeep", true)]
     #[case::undying("Keyword.Undying", true)]
     #[case::persist("Keyword.Persist", true)]
+    #[case::ravenous("Keyword.Ravenous", true)]
+    #[case::copies_for_the_other_defenders("Effect.MyriadCopies", true)]
     #[case::jump_start("Keyword.JumpStart", true)]
     #[case::retrace("Keyword.Retrace", true)]
     #[case::embalm("Keyword.Embalm", true)]
@@ -614,12 +622,13 @@ mod tests {
     #[case::the_highest_life_total("Amount.HighestLife", true)]
     #[case::choosing_a_player_as_it_enters("ReplaceBy.Choose.Player", false)]
     #[case::choosing_an_opponent_as_it_enters("ReplaceBy.Choose.Opponent", false)]
-    #[case::myriad("Keyword.Myriad", false)]
+    #[case::myriad("Keyword.Myriad", true)]
     #[case::crew("Keyword.Crew", true)]
     #[case::tapping_creatures_for_their_power_as_a_cost("Cost.TapPower", true)]
     #[case::mutate("Keyword.Mutate", false)]
-    #[case::encore("Keyword.Encore", false)]
-    #[case::squad("Keyword.Squad", false)]
+    #[case::encore("Keyword.Encore", true)]
+    #[case::pairing_attackers_with_players("Rule.MustAttackPlayers", true)]
+    #[case::squad("Keyword.Squad", true)]
     #[case::x_costs(X_COST, true)]
     #[case::x_read_after_resolving("Amount.X.Elsewhere", false)]
     #[case::paying_x_in_an_effect("Effect.Pay.X", false)]

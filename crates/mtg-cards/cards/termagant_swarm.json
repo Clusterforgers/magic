@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e7d8b8ea-07d7-4b6c-aa49-6a2ad185a304",
+  "name": "Termagant Swarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Termagant Swarm",
+      "oracle_fingerprint": "907eee0a04a3218c6565422915af1952",
+      "abilities": [
+        { "Keyword": "Ravenous" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Tyranid",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Tyranid"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

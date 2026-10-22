@@ -105,7 +105,6 @@ fn more_of_the_new_events_read_and_write_back(#[case] text: &str) {
 #[case::a_batch_of_a_cast("Whenever one or more spells are cast, draw a card.")]
 #[case::the_nth_of_something_else("Whenever you gain your second life each turn, draw a card.")]
 #[case::a_sixth("Whenever you draw your sixth card each turn, draw a card.")]
-#[case::another_player_nth("Whenever an opponent draws their second card each turn, draw a card.")]
 fn other_wordings_of_the_new_events_stay_unread(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Triggered, false), None, "{text}");
 }

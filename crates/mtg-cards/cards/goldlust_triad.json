@@ -1,0 +1,21 @@
+{
+  "oracle_id": "86d76078-9af3-45a7-90d6-72946afdc78b",
+  "name": "Goldlust Triad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goldlust Triad",
+      "oracle_fingerprint": "d6db09056953ad5dbffebdc1f953305e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Myriad" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "444b75d9-f7c7-4a13-9318-02d7bbd80c9c",
+  "oracle_id": "393ef069-ea6b-4969-b878-d942281cc918",
+  "name": "Exquisite Huntmaster",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmr",
+  "collector_number": "122",
+  "rarity": "common",
+  "released_at": "2020-11-20",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Elf Warrior",
+  "oracle_text": "When this creature dies, create a 1/1 green Elf Warrior creature token.\nEncore {4}{B} ({4}{B}, Exile this card from your graveyard: For each opponent, create a token copy that attacks that opponent this turn if able. They gain haste. Sacrifice them at the beginning of the next end step. Activate only as a sorcery.)",
+  "power": "4",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Encore"
+  ]
+}

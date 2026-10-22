@@ -334,7 +334,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "overload" => cost(rest).map(Keyword::Overload),
         "mutate" => cost(rest).map(Keyword::Mutate),
         "encore" => cost(rest).map(Keyword::Encore),
-        "squad" => cost(rest).map(Keyword::Squad),
+        "squad" => spell_cost(rest).map(Keyword::Squad),
         "foretell" => cost(rest).map(Keyword::Foretell),
         "unearth" => spell_cost(rest).map(Keyword::Unearth),
         "embalm" => spell_cost(rest).map(Keyword::Embalm),
@@ -440,6 +440,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "aftermath" => Keyword::Aftermath,
         "undying" => Keyword::Undying,
         "persist" => Keyword::Persist,
+        "ravenous" => Keyword::Ravenous,
         "jump-start" => Keyword::JumpStart,
         "retrace" => Keyword::Retrace,
         _ => return None,
@@ -663,6 +664,10 @@ mod tests {
     #[case::mutate("Mutate {1}{G}{G}", Keyword::Mutate(mana("{1}{G}{G}")))]
     #[case::encore("Encore {5}{R}", Keyword::Encore(mana("{5}{R}")))]
     #[case::squad("Squad {2}", Keyword::Squad(mana("{2}")))]
+    #[case::squad_discarding(
+        "Squad\u{2014}{1}, Discard a card.",
+        Keyword::Squad(Cost(vec![CostItem::Mana("{1}".parse().unwrap()), CostItem::Discard { count: Amount::one(), filter: None }]))
+    )]
     #[case::echo("Echo {2}{R}", Keyword::Echo(mana("{2}{R}")))]
     #[case::echo_lowercase("echo {G}", Keyword::Echo(mana("{G}")))]
     #[case::echo_discarding(
@@ -694,6 +699,7 @@ mod tests {
     )]
     #[case::undying("Undying", Keyword::Undying)]
     #[case::persist("persist", Keyword::Persist)]
+    #[case::ravenous("Ravenous", Keyword::Ravenous)]
     #[case::foretell("Foretell {1}{U}", Keyword::Foretell(mana("{1}{U}")))]
     #[case::foretell_for_nothing("Foretell {0}", Keyword::Foretell(mana("{0}")))]
     #[case::unearth("Unearth {1}{B}", Keyword::Unearth(mana("{1}{B}")))]
@@ -956,6 +962,7 @@ mod tests {
             "Cumulative upkeep {1}",
             "Undying",
             "Persist",
+            "Ravenous",
             "Foretell {1}",
             "Daybound",
             "Nightbound",

@@ -722,6 +722,7 @@ impl<'a> Walker<'a> {
             }
             // The cost of these is paid as the spell is announced: the mana, and the parts the engine pays there.
             Keyword::Kicker(cost)
+            | Keyword::Squad(cost)
             | Keyword::Flashback(cost)
             | Keyword::Madness(cost)
             | Keyword::Buyback(cost)
@@ -739,7 +740,6 @@ impl<'a> Walker<'a> {
             | Keyword::Overload(cost)
             | Keyword::Mutate(cost)
             | Keyword::Encore(cost)
-            | Keyword::Squad(cost)
             | Keyword::Foretell(cost)
             | Keyword::Suspend { cost, .. } => {
                 self.at("cost", |w| w.cost(cost));
@@ -1260,6 +1260,12 @@ impl<'a> Walker<'a> {
             }
             Effect::Unattach { what } | Effect::JoinAttack { what } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
+            }
+            Effect::MyriadCopies { of, bind } => {
+                w.at("of", |w| w.reference(of, Kind::Object));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
             }
             Effect::Shuffle { who }
             | Effect::WinGame { who }
@@ -1793,6 +1799,10 @@ impl<'a> Walker<'a> {
             GameRule::MustAttack(who)
             | GameRule::MustBlock(who)
             | GameRule::CantBeCountered(who) => self.at(tag, |w| w.reference(who, Kind::Object)),
+            GameRule::MustAttackPlayers { who, players } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Object));
+                w.at("players", |w| w.reference(players, Kind::Player));
+            }),
             GameRule::CantGainLife(who)
             | GameRule::CantDraw(who)
             | GameRule::CantSearch(who)
