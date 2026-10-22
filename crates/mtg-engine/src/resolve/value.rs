@@ -558,7 +558,7 @@ impl<'a> Scope<'a> {
                 seen.chars.subtypes.contains(subtype)
                     || seen
                         .card
-                        .is_some_and(|c| c.card().subtypes.contains(subtype))
+                        .is_some_and(|c| seen.chars.has_subtype(&c.card().subtypes, subtype))
             }
             Pred::Color(color) => seen.chars.colors.contains(*color),
             Pred::Colorless => seen.chars.colors.is_empty(),
@@ -594,7 +594,7 @@ impl<'a> Scope<'a> {
             Pred::ChosenSubtype => {
                 matches!(self.entered_choice(), Some(Chosen::CreatureType(subtype))
                     if seen.chars.subtypes.contains(subtype)
-                        || seen.card.is_some_and(|c| c.card().subtypes.contains(subtype)))
+                        || seen.card.is_some_and(|c| seen.chars.has_subtype(&c.card().subtypes, subtype)))
             }
             Pred::Compare { stat, op, to } => match Self::stat(seen, *stat) {
                 Some(value) => op.holds(value, self.amount(to)?),

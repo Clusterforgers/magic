@@ -140,6 +140,7 @@ mod triggers_order;
 mod triggers_resume;
 mod triggers_stack;
 mod triggers_targets;
+mod turn_burn;
 mod turn_structure;
 mod win_effects;
 mod windows_games;

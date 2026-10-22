@@ -87,6 +87,68 @@ pub enum Supertype {
 #[serde(transparent)]
 pub struct Subtype(pub String);
 
+/// The subtypes that are not creature types: land, artifact, enchantment, spell and battle types (CR 205.3g to 205.3q).
+const OTHER_TYPES: &[&str] = &[
+    "Plains",
+    "Island",
+    "Swamp",
+    "Mountain",
+    "Forest",
+    "Desert",
+    "Gate",
+    "Lair",
+    "Locus",
+    "Mine",
+    "Power-Plant",
+    "Tower",
+    "Urza's",
+    "Cave",
+    "Sphere",
+    "Equipment",
+    "Fortification",
+    "Vehicle",
+    "Clue",
+    "Food",
+    "Treasure",
+    "Blood",
+    "Gold",
+    "Powerstone",
+    "Incubator",
+    "Junk",
+    "Map",
+    "Shard",
+    "Contraption",
+    "Attraction",
+    "Aura",
+    "Background",
+    "Cartouche",
+    "Case",
+    "Class",
+    "Curse",
+    "Role",
+    "Room",
+    "Saga",
+    "Shrine",
+    "Arcane",
+    "Trap",
+    "Lesson",
+    "Omen",
+    "Siege",
+    "Adventure",
+    "Dungeon",
+    "Plane",
+    "Scheme",
+    "Vanguard",
+    "Phenomenon",
+];
+
+impl Subtype {
+    /// Whether the subtype is a creature type, which an effect that sets creature types replaces (CR 205.1b).
+    pub fn is_creature_type(&self) -> bool {
+        !OTHER_TYPES.contains(&self.0.as_str())
+    }
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: card types know which of them are permanent types and collect into compact sets.
@@ -99,6 +161,16 @@ mod tests {
         }
         assert!(CardType::Creature.is_permanent_type());
         assert!(CardType::Land.is_permanent_type());
+    }
+
+    #[test]
+    fn only_the_creature_types_are_replaced_by_an_effect_that_sets_them() {
+        for creature in ["Elf", "Weird", "Angel", "Equipment-Golem"] {
+            assert!(Subtype(creature.into()).is_creature_type(), "{creature}");
+        }
+        for other in ["Forest", "Equipment", "Aura", "Treasure", "Saga", "Siege"] {
+            assert!(!Subtype(other.into()).is_creature_type(), "{other}");
+        }
     }
 
     #[test]

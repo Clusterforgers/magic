@@ -17,6 +17,10 @@ types: CardTypes,
  */
 subtypes?: Array<Subtype>, 
 /**
+ * An effect replaced the creature types: the printed ones no longer count, only those in `subtypes` do.
+ */
+creature_types_set?: boolean, 
+/**
  * Colors.
  */
 colors: ColorSet, 

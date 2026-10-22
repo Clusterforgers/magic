@@ -43,7 +43,7 @@ impl Traits {
 pub(crate) fn writes(modification: &Modification) -> Traits {
     match modification {
         Modification::AddType(_) | Modification::RemoveType(_) => Traits::TYPES,
-        Modification::AddSubtype(_) => Traits::SUBTYPES,
+        Modification::AddSubtype(_) | Modification::SetCreatureTypes(_) => Traits::SUBTYPES,
         Modification::SetColors(_) => Traits::COLORS,
         Modification::AddKeyword(_) | Modification::RemoveKeyword(_) => Traits::KEYWORDS,
         Modification::LoseAbilities => Traits::KEYWORDS.or(Traits::RULES),
@@ -64,7 +64,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
 pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
     match wanted {
         Wanted::AddType(_) | Wanted::RemoveType(_) => Traits::TYPES,
-        Wanted::AddSubtype(_) => Traits::SUBTYPES,
+        Wanted::AddSubtype(_) | Wanted::SetCreatureTypes(_) => Traits::SUBTYPES,
         Wanted::SetColors(_) => Traits::COLORS,
         Wanted::AddKeyword(_) | Wanted::AddProtectionFromChosenColor | Wanted::RemoveKeyword(_) => {
             Traits::KEYWORDS
@@ -94,6 +94,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::AddType(_)
         | Wanted::RemoveType(_)
         | Wanted::AddSubtype(_)
+        | Wanted::SetCreatureTypes(_)
         | Wanted::SetColors(_)
         | Wanted::AddKeyword(_)
         | Wanted::AddProtectionFromChosenColor

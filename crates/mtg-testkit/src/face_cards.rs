@@ -13,7 +13,7 @@ use crate::corpus;
 
 /// The corpus cards the face deck is made of besides lands: split cards (one with fuse) and the cards they target, an
 /// Adventure, two modal double-faced cards and transforming ones (an upkeep trigger, an activated ability, day and night).
-pub const FACE_CARDS: [&str; 13] = [
+pub const FACE_CARDS: [&str; 14] = [
     "Fire // Ice",
     "Bonecrusher Giant // Stomp",
     "Hengegate Pathway // Mistgate Pathway",
@@ -25,6 +25,7 @@ pub const FACE_CARDS: [&str; 13] = [
     "Ludevic's Test Subject // Ludevic's Abomination",
     "Tavern Ruffian // Tavern Smasher",
     "Wear // Tear",
+    "Turn // Burn",
     "Sol Ring",
     "Glorious Anthem",
 ];

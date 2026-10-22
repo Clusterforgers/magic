@@ -103,7 +103,12 @@ fn traits_of(state: &GameState, id: ObjectId) -> SpendTraits {
         return SpendTraits::default();
     };
     let card = object.card();
-    let mut subtypes = card.subtypes.clone();
+    let mut subtypes: Vec<_> = card
+        .subtypes
+        .iter()
+        .filter(|subtype| chars.has_subtype(&card.subtypes, subtype))
+        .cloned()
+        .collect();
     for subtype in chars.subtypes {
         if !subtypes.contains(&subtype) {
             subtypes.push(subtype);

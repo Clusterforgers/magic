@@ -92,6 +92,8 @@ pub enum Modification {
     RemoveType(CardType),
     /// Adds a subtype (layer 4).
     AddSubtype(Subtype),
+    /// Replaces the creature types with these (layer 4); the other subtypes stay (CR 205.1b).
+    SetCreatureTypes(Vec<Subtype>),
     /// Replaces the colors (layer 5).
     SetColors(ColorSet),
     /// Adds a keyword ability (layer 6); `keywords_of` reads it and `characteristics` leaves it alone.
@@ -147,7 +149,8 @@ impl Modification {
             Modification::SetController(_) => Layer::Control,
             Modification::AddType(_)
             | Modification::RemoveType(_)
-            | Modification::AddSubtype(_) => Layer::Type,
+            | Modification::AddSubtype(_)
+            | Modification::SetCreatureTypes(_) => Layer::Type,
             Modification::SetColors(_) => Layer::Color,
             Modification::AddKeyword(_)
             | Modification::RemoveKeyword(_)
@@ -170,6 +173,15 @@ impl Modification {
             Modification::AddSubtype(subtype) => {
                 if !chars.subtypes.contains(subtype) {
                     chars.subtypes.push(subtype.clone());
+                }
+            }
+            Modification::SetCreatureTypes(types) => {
+                chars.subtypes.retain(|subtype| !subtype.is_creature_type());
+                chars.creature_types_set = true;
+                for subtype in types {
+                    if !chars.subtypes.contains(subtype) {
+                        chars.subtypes.push(subtype.clone());
+                    }
                 }
             }
             Modification::SetColors(colors) => chars.colors = *colors,

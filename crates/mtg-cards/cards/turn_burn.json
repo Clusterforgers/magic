@@ -1,0 +1,46 @@
+{
+  "oracle_id": "41841bbf-1c51-494b-b299-c997cce88e44",
+  "name": "Turn // Burn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turn",
+      "oracle_fingerprint": "3bddb36c2919dc519960013731dd29dd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    "LoseAbilities",
+                    { "SetCreatureTypes": ["Weird"] },
+                    { "SetColors": ["Red"] },
+                    { "SetPT": { "power": 0, "toughness": 1 } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    },
+    {
+      "name": "Burn",
+      "oracle_fingerprint": "4bb29a832b508d2a2a2263f29d969973",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    }
+  ]
+}

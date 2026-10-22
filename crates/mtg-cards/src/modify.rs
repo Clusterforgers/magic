@@ -39,6 +39,8 @@ pub enum Modification {
     RemoveType(CardType),
     /// Adds a subtype (layer 4).
     AddSubtype(Subtype),
+    /// Replaces the creature types with these (layer 4): "becomes a red Weird" (CR 205.1b).
+    SetCreatureTypes(Vec<Subtype>),
     /// Replaces the colors (layer 5).
     SetColors(Vec<Color>),
     /// Adds a keyword ability (layer 6).
@@ -71,7 +73,8 @@ impl Modification {
             Modification::SetController(_) => Some("2"),
             Modification::AddType(_)
             | Modification::RemoveType(_)
-            | Modification::AddSubtype(_) => Some("4"),
+            | Modification::AddSubtype(_)
+            | Modification::SetCreatureTypes(_) => Some("4"),
             Modification::SetColors(_) => Some("5"),
             Modification::AddKeyword(_)
             | Modification::AddProtectionFromChosenColor

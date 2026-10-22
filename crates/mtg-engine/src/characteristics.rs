@@ -23,6 +23,10 @@ pub struct Characteristics {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Subtype>>", optional))]
     pub subtypes: Vec<Subtype>,
+    /// An effect replaced the creature types: the printed ones no longer count, only those in `subtypes` do.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub creature_types_set: bool,
     /// Colors.
     pub colors: ColorSet,
     /// Power, if the object has one.
@@ -39,11 +43,20 @@ impl Characteristics {
         self.types.contains(CardType::Creature)
     }
 
+    /// Whether the object is `subtype`, given the subtypes its card prints: one an effect gave, or a printed one that
+    /// no effect replaced (CR 205.1b).
+    pub fn has_subtype(&self, printed: &[Subtype], subtype: &Subtype) -> bool {
+        self.subtypes.contains(subtype)
+            || (printed.contains(subtype)
+                && !(self.creature_types_set && subtype.is_creature_type()))
+    }
+
     /// What nothing has: no types, colors, power, toughness or abilities.
     pub(crate) fn empty() -> Characteristics {
         Characteristics {
             types: CardTypes::default(),
             subtypes: Vec::new(),
+            creature_types_set: false,
             colors: ColorSet::default(),
             power: None,
             toughness: None,
@@ -155,6 +168,7 @@ pub(crate) fn base(object: &GameObject) -> Characteristics {
     Characteristics {
         types: object.base_types(),
         subtypes: Vec::new(),
+        creature_types_set: false,
         colors: card.colors(),
         power: card.power,
         toughness: card.toughness,
@@ -336,6 +350,7 @@ mod tests {
     #[case::a_type_taken_away(Modification::RemoveType(CardType::Creature), &[], &[], 0, 0)]
     #[case::a_type_it_does_not_have(Modification::RemoveType(CardType::Land), &[CardType::Creature], &[], 0, 0)]
     #[case::a_subtype(Modification::AddSubtype(Subtype("Elf".into())), &[CardType::Creature], &["Elf"], 0, 0)]
+    #[case::creature_types(Modification::SetCreatureTypes(vec![Subtype("Weird".into())]), &[CardType::Creature], &["Weird"], 0, 0)]
     #[case::colours(Modification::SetColors(ColorSet::EMPTY.with(mtg_core::color::Color::Blue)), &[CardType::Creature], &[], 1, 0)]
     #[case::control(Modification::SetController(PlayerId(1)), &[CardType::Creature], &[], 0, 1)]
     fn a_modification_changes_what_its_layer_says(

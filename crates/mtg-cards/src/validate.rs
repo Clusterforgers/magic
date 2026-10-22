@@ -745,6 +745,7 @@ impl<'a> Walker<'a> {
             | Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::AddSubtype(_)
+            | Modification::SetCreatureTypes(_)
             | Modification::SetColors(_)
             | Modification::AddProtectionFromChosenColor
             | Modification::LoseAbilities

@@ -137,6 +137,7 @@ const RUNS: &[&str] = &[
     "Mod.AddType",
     "Mod.RemoveType",
     "Mod.AddSubtype",
+    "Mod.SetCreatureTypes",
     "Mod.SetColors",
     "Mod.RemoveKeyword",
     "Mod.GrantAbility",
