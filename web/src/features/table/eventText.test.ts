@@ -73,6 +73,8 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   DayNightChanged: [{ DayNightChanged: { to: 'Night' } }, 'It becomes night'],
   MonarchChanged: [{ MonarchChanged: { player: 1 } }, 'Bo becomes the monarch'],
   Proliferated: [{ Proliferated: { player: 1 } }, 'Bo proliferates'],
+  Explored: [{ Explored: { object: 3, player: 1 } }, 'Forest explores'],
+  Connived: [{ Connived: { object: 3, player: 1 } }, 'Forest connives'],
   CommanderStayed: [{ CommanderStayed: { object: 3 } }, 'Forest stays where it is'],
   MulliganPhaseEnded: ['MulliganPhaseEnded', 'The mulligan phase ends'],
   TurnBegan: [{ TurnBegan: { number: 3, active: 1 } }, "Turn 3 begins: Bo's turn"],

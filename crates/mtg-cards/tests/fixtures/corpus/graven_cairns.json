@@ -1,0 +1,27 @@
+{
+  "id": "74a13fea-4f48-428b-b42b-4ba63d4752ed",
+  "oracle_id": "5004b84a-33b7-4f6f-b2c2-7086b9087535",
+  "name": "Graven Cairns",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "280",
+  "rarity": "rare",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{B/R}, {T}: Add {B}{B}, {B}{R}, or {R}{R}.",
+  "colors": [],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "C",
+    "R"
+  ]
+}

@@ -395,6 +395,45 @@ fn proliferating_triggers_for_the_players_the_pattern_names_and_names_the_player
     }
 }
 
+#[rstest]
+#[case::my_creature(
+    r#"{"Explored":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#,
+    "Bear",
+    ME,
+    1
+)]
+#[case::their_creature_is_not_mine(
+    r#"{"Explored":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#,
+    "Ogre",
+    FOE,
+    0
+)]
+#[case::any_creature(r#"{"Explored":{"what":[{"Type":"Creature"}]}}"#, "Ogre", FOE, 1)]
+#[case::the_watcher_itself(r#"{"Explored":{"what":["This"]}}"#, "Watcher", ME, 1)]
+#[case::another_creature_is_not_the_watcher(r#"{"Explored":{"what":["This"]}}"#, "Bear", ME, 0)]
+fn exploring_triggers_for_the_creatures_the_pattern_names_and_names_the_creature_and_its_controller(
+    #[case] when: &str,
+    #[case] creature: &str,
+    #[case] player: PlayerId,
+    #[case] expected: usize,
+) {
+    let pre = board(when);
+    let object = pre
+        .objects()
+        .find(|o| o.card().name == creature)
+        .map(crate::object::GameObject::id)
+        .unwrap();
+    let found = fires(&pre, &[Event::Explored { object, player }]);
+    assert_eq!(found.len(), expected);
+    if expected == 1 {
+        assert_eq!(
+            found[0].cause.subjects.first(),
+            Some(&Target::Player(player))
+        );
+        assert_eq!(found[0].cause.subjects.len(), 2);
+    }
+}
+
 #[test]
 fn a_discard_that_is_not_cycling_does_not_trigger_a_cycling_pattern_and_the_cycling_of_a_card_also_discards_it()
  {

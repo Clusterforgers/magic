@@ -1,0 +1,19 @@
+{
+  "oracle_id": "4e60c38c-cbf5-4ff7-8fff-634f7e3086cc",
+  "name": "Red Room Recruit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Red Room Recruit",
+      "oracle_fingerprint": "15e1a90af83f0cc78215b8cb778864ed",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Connive": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

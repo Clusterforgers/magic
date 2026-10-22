@@ -1,0 +1,31 @@
+{
+  "oracle_id": "8e7641e1-e814-4d5a-9cb3-71ad2f4ceee8",
+  "name": "Rugged Prairie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rugged Prairie",
+      "oracle_fingerprint": "c3203d838cc2791fd8ecf1bc55683c44",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R/W}" }, "Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "OneOfLists": [["Red", "Red"], ["Red", "White"], ["White", "White"]] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

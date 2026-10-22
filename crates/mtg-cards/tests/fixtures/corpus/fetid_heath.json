@@ -1,0 +1,27 @@
+{
+  "id": "ae07ff9f-d5a8-4220-b08f-fe8fad5adcb7",
+  "oracle_id": "42bf259d-4bb9-49c3-b4ec-223dca62f4d6",
+  "name": "Fetid Heath",
+  "lang": "en",
+  "layout": "normal",
+  "set": "frc",
+  "collector_number": "72",
+  "rarity": "rare",
+  "released_at": "2026-10-02",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{W/B}, {T}: Add {W}{W}, {W}{B}, or {B}{B}.",
+  "colors": [],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "C",
+    "W"
+  ]
+}

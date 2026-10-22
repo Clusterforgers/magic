@@ -1,0 +1,27 @@
+{
+  "id": "1927d645-ca43-4b8e-9932-7e70acca7aa6",
+  "oracle_id": "d99a1d9a-7721-4331-bf22-1c6ee0bd825a",
+  "name": "Fire-Lit Thicket",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2xm",
+  "collector_number": "317",
+  "rarity": "rare",
+  "released_at": "2020-08-07",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{R/G}, {T}: Add {R}{R}, {R}{G}, or {G}{G}.",
+  "colors": [],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "C",
+    "G",
+    "R"
+  ]
+}

@@ -86,6 +86,8 @@ pub enum Produce {
     AnyColor(u32),
     /// One mana of a type chosen when added from at least two ("Add {W} or {U}").
     OneOf(Vec<ManaType>),
+    /// All the mana of one list, the list chosen when added from at least two ("Add {W}{W}, {W}{U}, or {U}{U}").
+    OneOfLists(Vec<Vec<ManaType>>),
     /// This many mana of the color chosen as the source entered the battlefield.
     ChosenColor(u32),
     /// This many mana of any one color in the identity of the controller's commander.

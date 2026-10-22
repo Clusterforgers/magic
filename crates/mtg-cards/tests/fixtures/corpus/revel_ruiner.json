@@ -1,0 +1,28 @@
+{
+  "id": "e3fbe7f0-8a91-4832-8953-54ab3669372c",
+  "oracle_id": "adfb28ca-2ba6-4104-b731-f8fd9367f7ec",
+  "name": "Revel Ruiner",
+  "lang": "en",
+  "layout": "normal",
+  "set": "snc",
+  "collector_number": "91",
+  "rarity": "common",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Octopus Rogue",
+  "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nWhen this creature enters, it connives. (Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on this creature.)",
+  "power": "3",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Menace",
+    "Connive"
+  ]
+}
