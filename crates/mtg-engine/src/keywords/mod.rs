@@ -631,7 +631,7 @@ mod tests {
     }
 
     /// The keywords whose rules the engine runs, named as the capabilities name them.
-    const RUN: [&str; 58] = [
+    const RUN: &[&str] = &[
         "Keyword.Flash",
         "Keyword.Flying",
         "Keyword.Reach",
@@ -848,6 +848,18 @@ mod tests {
         let mut claimed = claimed;
         claimed.sort();
         assert_eq!(claimed, want);
+    }
+
+    #[test]
+    fn the_run_list_names_a_keyword_variant_once_each() {
+        let variants: Vec<String> = every_keyword().iter().map(name_of_variant).collect();
+        let mut seen = Vec::new();
+        for name in RUN.iter().copied() {
+            let variant = name.strip_prefix("Keyword.").unwrap_or(name);
+            assert!(variants.iter().any(|known| known == variant), "{name}");
+            assert!(!seen.contains(&name), "{name} is listed twice");
+            seen.push(name);
+        }
     }
 
     fn holder(keywords: &[Keyword]) -> Arc<CardDefinition> {
