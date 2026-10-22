@@ -19,7 +19,7 @@ One item is one piece of about 15 minutes; tick it in the commit that finishes i
 Ready pieces, grouped by the code they touch. A group runs one piece at a time, groups run side by side (about six agents at once); a piece is claimed with `[~]` and pushed before it starts, and `git merge main` plus the full `scripts/check.sh` end it.
 
 - Costs and announcement: (g2e), (g6d), (g5c), (c1d), (c1c), Undaunted of (c2b).
-- Cast ways and zones: (c5b) recursion and alternative cast ways, (n2) face-down objects, (n1d3) meld.
+- Cast ways and zones: (c5b) recursion and alternative cast ways, (c5g), (n2) face-down objects, (n1d3) meld.
 - Triggers and keywords: (c6b) triggered and upkeep keywords, the triggered keywords of (c2b), (c4b) level-ups and stations, (c3b) and (c3d) keyword actions and the remaining Monarch cards, (n1d5) day and night effects, (o2c).
 - Statics and layers: (c8), (c7b), (o1d).
 - Compiler wordings, no engine change: (c10) one piece per wording family, (o2d), (c11) layouts and long-tail mechanics, (c9c).
