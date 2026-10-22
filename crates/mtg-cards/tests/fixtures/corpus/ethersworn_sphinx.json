@@ -1,0 +1,31 @@
+{
+  "id": "315ae21a-4d95-488e-812b-0d018219af6c",
+  "oracle_id": "71366469-04ea-4526-bf24-7abc02fdc5ab",
+  "name": "Ethersworn Sphinx",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mh2",
+  "collector_number": "195",
+  "rarity": "uncommon",
+  "released_at": "2021-06-18",
+  "digital": false,
+  "mana_cost": "{7}{W}{U}",
+  "cmc": 9.0,
+  "type_line": "Artifact Creature — Sphinx",
+  "oracle_text": "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)\nFlying\nCascade (When you cast this spell, exile cards from the top of your library until you exile a nonland card with lesser mana value. You may cast it without paying its mana cost. Put the exiled cards on the bottom in a random order.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Cascade",
+    "Flying",
+    "Affinity"
+  ]
+}

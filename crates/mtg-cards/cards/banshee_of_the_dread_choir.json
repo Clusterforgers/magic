@@ -1,0 +1,20 @@
+{
+  "oracle_id": "282b4dbf-ec00-48ba-8010-73bee489fa7a",
+  "name": "Banshee of the Dread Choir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Banshee of the Dread Choir",
+      "oracle_fingerprint": "0b610764ed85171d47e36df4caba04c4",
+      "abilities": [
+        { "Keyword": "Myriad" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Discard": { "who": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

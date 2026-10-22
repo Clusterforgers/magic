@@ -340,8 +340,8 @@ fn exiles_by_rebound(state: &GameState, item: &Item) -> bool {
         })
 }
 
-/// Whether the item moves a spell cast for its flashback cost, or the half of a split card with aftermath that was cast
-/// from a graveyard, from the stack to any zone but exile.
+/// Whether the item moves a spell cast for its flashback cost or with jump-start, or the half of a split card with
+/// aftermath that was cast from a graveyard, from the stack to any zone but exile.
 fn leaves_stack_exiled(state: &GameState, item: &Item) -> bool {
     let Item::One(event) = item else {
         return false;
@@ -351,7 +351,7 @@ fn leaves_stack_exiled(state: &GameState, item: &Item) -> bool {
             && to != Zone::Exile
             && state.object(object).is_some_and(|spell| {
                 spell.kind() == ObjectKind::Card
-                    && (spell.choices().way == Some(CastWay::Flashback)
+                    && (spell.choices().way.is_some_and(CastWay::exiles_the_spell)
                         || (spell.cast_from_graveyard() && keywords::aftermath::has(state, object)))
             })
     })
@@ -1256,8 +1256,20 @@ impl Pass<'_> {
                 let alike = pool
                     .iter()
                     .all(|c| matches!(c.action, Action::Replace(ReplaceBy::Prevent)));
+                // Entering tapped, a choice made as it enters and the counters it enters with each change a part of the
+                // entering of their own, so the order is not a choice (a Thriving land is tapped and asks for a color).
+                let apart = pool.iter().all(|c| {
+                    matches!(
+                        c.action,
+                        Action::Replace(
+                            ReplaceBy::Tapped
+                                | ReplaceBy::Choose(_)
+                                | ReplaceBy::WithCounters { .. }
+                        )
+                    )
+                });
                 if let [only, ..] = pool.as_slice()
-                    && (pool.len() == 1 || alike)
+                    && (pool.len() == 1 || alike || apart)
                 {
                     (*only).clone()
                 } else {
@@ -1889,7 +1901,11 @@ impl Pass<'_> {
         };
         match by {
             ReplaceBy::Tapped => tapped(self, at),
-            ReplaceBy::WithCounters { counter, count } => {
+            ReplaceBy::WithCounters {
+                counter,
+                count,
+                tapped: and_tapped,
+            } => {
                 let scope = Scope::announcing(self.state, candidate.controller, candidate.object);
                 let number = scope.amount(count)?.max(0);
                 if let (Some(card), Ok(delta)) = (self.state.object(object), i32::try_from(number))
@@ -1912,6 +1928,9 @@ impl Pass<'_> {
                         frozen: false,
                     };
                     self.slots.insert(at + 1, follow);
+                }
+                if *and_tapped {
+                    tapped(self, at);
                 }
             }
             ReplaceBy::PayLifeOrTapped(life) => {
@@ -2165,17 +2184,23 @@ impl Pass<'_> {
             _ => match self.answer() {
                 None => {
                     let text = match kind {
-                        EntersChoice::Color => "Choose a color.",
-                        EntersChoice::CreatureType => "Choose a creature type.",
-                        EntersChoice::Player => "Choose a player.",
-                        EntersChoice::Opponent => "Choose an opponent.",
+                        EntersChoice::Color => "Choose a color.".to_owned(),
+                        EntersChoice::ColorOtherThan(other) => {
+                            format!(
+                                "Choose a color other than {}.",
+                                format!("{other:?}").to_lowercase()
+                            )
+                        }
+                        EntersChoice::CreatureType => "Choose a creature type.".to_owned(),
+                        EntersChoice::Player => "Choose a player.".to_owned(),
+                        EntersChoice::Opponent => "Choose an opponent.".to_owned(),
                     };
                     return Ok(Asked::Ask(Decision {
                         player: controller,
                         kind: DecisionKind::ChooseOption(OptionOptions {
                             source,
                             options,
-                            text: text.into(),
+                            text,
                         }),
                     }));
                 }
@@ -2198,12 +2223,18 @@ impl Pass<'_> {
         })))
     }
 
-    /// What a player may choose as a permanent enters: the five colours, or the creature types of the cards in the game.
+    /// What a player may choose as a permanent enters: the five colours (less the one a choice excludes), or the creature types of the cards in the game.
     fn options_of(&self, kind: EntersChoice) -> Vec<ChoiceOption> {
         match kind {
             EntersChoice::Color => Color::ALL
                 .iter()
                 .copied()
+                .map(ChoiceOption::Color)
+                .collect(),
+            EntersChoice::ColorOtherThan(other) => Color::ALL
+                .iter()
+                .copied()
+                .filter(|color| *color != other)
                 .map(ChoiceOption::Color)
                 .collect(),
             EntersChoice::CreatureType => {

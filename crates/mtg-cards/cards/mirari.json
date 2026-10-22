@@ -1,0 +1,31 @@
+{
+  "oracle_id": "8f6a2fce-719e-4745-80d3-aabce5c9bafa",
+  "name": "Mirari",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirari",
+      "oracle_fingerprint": "66d7455c187a41599531bbf8f6e07769",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{3}",
+                  "paid": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

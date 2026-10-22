@@ -1,0 +1,12 @@
+{
+  "oracle_id": "24ce3dbe-2b61-43a6-ab16-32b37e385127",
+  "name": "Proven Combatant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Proven Combatant",
+      "oracle_fingerprint": "096f7088c7b08f85a628834f4d6c01ac",
+      "abilities": [{ "Keyword": { "Eternalize": "{4}{U}{U}" } }]
+    }
+  ]
+}

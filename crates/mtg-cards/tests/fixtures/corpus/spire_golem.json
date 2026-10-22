@@ -1,0 +1,24 @@
+{
+  "id": "b299c599-1a10-4122-ac0b-8f52a9cec7b6",
+  "oracle_id": "bfdc6bbc-7402-40ae-91be-658afca2f145",
+  "name": "Spire Golem",
+  "lang": "en",
+  "layout": "normal",
+  "set": "jvc",
+  "collector_number": "16",
+  "rarity": "common",
+  "released_at": "2014-12-05",
+  "digital": false,
+  "mana_cost": "{6}",
+  "cmc": 6.0,
+  "type_line": "Artifact Creature — Golem",
+  "oracle_text": "Affinity for Islands (This spell costs {1} less to cast for each Island you control.)\nFlying",
+  "power": "2",
+  "toughness": "4",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Flying",
+    "Affinity"
+  ]
+}

@@ -88,7 +88,7 @@ pub(crate) fn activation_events(
                 // Cycling is the discard of its cost; it is logged beside it, for what triggers on cycling.
                 if matches!(
                     ability_reader::keyword_adding(state, ability),
-                    Some(Keyword::Cycling(_))
+                    Some(Keyword::Cycling(_) | Keyword::Typecycling { .. })
                 ) {
                     events.push(Event::Cycled {
                         player,
@@ -190,6 +190,7 @@ fn unusable(state: &GameState, player: PlayerId, options: &PayOptions) -> Vec<Ob
         .filter(|o| !o.tapless)
         .map(|o| o.source.object)
         .chain(options.help.convoke.iter().map(|o| o.creature))
+        .chain(options.help.improvise.iter().copied())
         .filter(tapped)
         .collect();
     gone.extend(
@@ -247,13 +248,9 @@ fn payment_events(
         .filter_map(|tap| options.sources.iter().find(|o| o.source == *tap))
         .cloned()
         .collect();
-    // The creatures tapped for convoke are tapped first and are not there to take.
-    let paying = without_taken(&paying, &|id| {
-        payment
-            .convoke
-            .iter()
-            .any(|convoked| convoked.creature == id)
-    });
+    // The permanents tapped for convoke or improvise are tapped first and are not there to take.
+    let helped = crate::help::Used::new(&payment.convoke, &payment.improvise, &[]);
+    let paying = without_taken(&paying, &|id| helped.taps(id));
     let mut taken = assignment(&paying.iter().collect::<Vec<_>>())
         .ok_or(IllegalAnswer::NotOffered("permanents to take"))?;
     let mut events = Vec::new();
@@ -265,11 +262,14 @@ fn payment_events(
         });
     }
     events.extend(announced);
-    // The creatures tapped and the cards exiled to help pay (CR 702.51, CR 702.66), before the mana.
-    for convoked in &payment.convoke {
-        events.push(Event::PermanentTapped {
-            object: convoked.creature,
-        });
+    // The creatures and artifacts tapped and the cards exiled to help pay (CR 702.51, CR 702.126, CR 702.66), before the mana.
+    for object in payment
+        .convoke
+        .iter()
+        .map(|convoked| convoked.creature)
+        .chain(payment.improvise.iter().copied())
+    {
+        events.push(Event::PermanentTapped { object });
     }
     for &card in &payment.delve {
         events.push(Event::ZoneChanged {

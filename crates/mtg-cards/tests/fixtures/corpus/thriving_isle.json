@@ -1,0 +1,21 @@
+{
+  "id": "58a3b5a5-eba0-4b4e-869a-5387ec7dd2b8",
+  "oracle_id": "69fc70b8-b143-4662-ac95-e2743037239d",
+  "name": "Thriving Isle",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "581",
+  "rarity": "common",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land enters tapped. As it enters, choose a color other than blue.\n{T}: Add {U} or one mana of the chosen color.",
+  "colors": [],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

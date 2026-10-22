@@ -73,8 +73,26 @@ pub enum CastWay {
     Escape,
     /// Dash (CR 702.109): the creature has haste and returns to its owner's hand at the next end step.
     Dash,
+    /// Blitz (CR 702.152): the creature has haste and "When this creature dies, draw a card" and is sacrificed at the next end step.
+    Blitz,
+    /// Jump-start (CR 702.133): from a graveyard for its mana cost and the discard of a card; exiled when it leaves the stack.
+    JumpStart,
+    /// Retrace (CR 702.81): from a graveyard for its mana cost and the discard of a land card.
+    Retrace,
     /// Without paying its mana cost, by a permission or an effect (CR 118.9).
     Free,
+}
+
+impl CastWay {
+    /// Whether the way pays another cost in place of the mana cost (CR 118.9); jump-start and retrace add a cost to it.
+    pub const fn replaces_cost(self) -> bool {
+        !matches!(self, CastWay::JumpStart | CastWay::Retrace)
+    }
+
+    /// Whether a spell cast this way is exiled when it leaves the stack (flashback, jump-start).
+    pub const fn exiles_the_spell(self) -> bool {
+        matches!(self, CastWay::Flashback | CastWay::JumpStart)
+    }
 }
 
 /// A kind of counter.
@@ -414,12 +432,32 @@ pub enum Condition {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: amounts are bare numbers when fixed and keep serde's tagged shape otherwise, with errors that say what was expected.
+    //! Goal: amounts are bare numbers when fixed and keep serde's tagged shape otherwise, with errors that say what was expected; of the ways to cast, only jump-start and retrace keep the mana cost.
     use super::*;
     use mtg_core::card::CardType;
     use rstest::rstest;
 
     use crate::refs::Pred;
+
+    #[rstest]
+    #[case::flashback(CastWay::Flashback, true)]
+    #[case::evoke(CastWay::Evoke, true)]
+    #[case::overload(CastWay::Overload, true)]
+    #[case::madness(CastWay::Madness, true)]
+    #[case::suspend(CastWay::Suspend, true)]
+    #[case::foretold(CastWay::Foretold, true)]
+    #[case::escape(CastWay::Escape, true)]
+    #[case::dash(CastWay::Dash, true)]
+    #[case::blitz(CastWay::Blitz, true)]
+    #[case::free(CastWay::Free, true)]
+    #[case::jump_start(CastWay::JumpStart, false)]
+    #[case::retrace(CastWay::Retrace, false)]
+    fn only_a_way_that_adds_a_cost_keeps_the_mana_cost(
+        #[case] way: CastWay,
+        #[case] replaces: bool,
+    ) {
+        assert_eq!(way.replaces_cost(), replaces);
+    }
 
     #[rstest]
     #[case::fixed(Amount::Fixed(3), "3")]

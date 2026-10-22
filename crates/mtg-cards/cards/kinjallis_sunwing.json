@@ -1,0 +1,22 @@
+{
+  "oracle_id": "b9243163-b726-432e-830f-86132aa7f34a",
+  "name": "Kinjalli's Sunwing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kinjalli's Sunwing",
+      "oracle_fingerprint": "567fded0b9e39f0bfb4b2b3e48b192d6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": { "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+            },
+            "by": "Tapped"
+          }
+        }
+      ]
+    }
+  ]
+}

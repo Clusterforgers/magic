@@ -1,0 +1,15 @@
+{
+  "oracle_id": "f56596be-e12f-4ab6-af61-3ef8dc87134c",
+  "name": "Reverse Engineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reverse Engineer",
+      "oracle_fingerprint": "f2f4594d068b702cf8971163ddc5c069",
+      "abilities": [
+        { "Keyword": "Improvise" },
+        { "Spell": { "effects": [{ "Draw": { "count": 3 } }] } }
+      ]
+    }
+  ]
+}

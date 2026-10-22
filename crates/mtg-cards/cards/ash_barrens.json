@@ -1,0 +1,24 @@
+{
+  "oracle_id": "58257464-278e-45fa-8e0b-bcd9a7500bc1",
+  "name": "Ash Barrens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ash Barrens",
+      "oracle_fingerprint": "11b4a162b8244898823083a23bc471b9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Keyword": {
+            "Typecycling": { "find": [{ "Type": "Land" }, { "Supertype": "Basic" }], "cost": "{1}" }
+          }
+        }
+      ]
+    }
+  ]
+}

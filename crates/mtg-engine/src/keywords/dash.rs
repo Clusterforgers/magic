@@ -28,31 +28,41 @@ impl KeywordRules for Dash {
         if !matches!(keyword, Keyword::Dash(_)) {
             return Vec::new();
         }
-        vec![haste(), return_at_end_step()]
+        vec![
+            haste_when_cast(CastWay::Dash),
+            at_next_end_step(
+                CastWay::Dash,
+                DASHED,
+                Effect::Move {
+                    what: Ref::Bound(DASHED.to_owned()),
+                    to: Destination::Hand,
+                },
+            ),
+        ]
     }
 }
 
-/// "If its dash cost was paid, it has haste."
-fn haste() -> Ability {
+/// "If its dash (or blitz) cost was paid, it has haste."
+pub(super) fn haste_when_cast(way: CastWay) -> Ability {
     Ability::Static {
         affected: Ref::This,
         mods: vec![Modification::AddKeyword(Keyword::Haste)],
-        condition: Some(Condition::CastWith(CastWay::Dash)),
+        condition: Some(Condition::CastWith(way)),
         defining: false,
         from: ZoneKind::Battlefield,
     }
 }
 
-/// "When it enters, if its dash cost was paid, return it to its owner's hand at the beginning of the next end step."
-fn return_at_end_step() -> Ability {
-    let dashed = Ref::Bound(DASHED.to_owned());
+/// "When it enters, if it was cast for its dash (or blitz) cost, `effect` happens at the beginning of the next end step."
+/// The permanent that entered is bound as `name`, so one that left and came back is not touched (CR 400.7).
+pub(super) fn at_next_end_step(way: CastWay, name: &str, effect: Effect) -> Ability {
     Ability::Triggered {
         when: TriggerPattern::ZoneChange {
             what: Selector::this(),
             from: None,
             to: Some(ZoneKind::Battlefield),
         },
-        intervening_if: Some(Condition::CastWith(CastWay::Dash)),
+        intervening_if: Some(Condition::CastWith(way)),
         limit: None,
         from: ZoneKind::Battlefield,
         targets: Vec::new(),
@@ -61,7 +71,7 @@ fn return_at_end_step() -> Ability {
                 who: Ref::You,
                 from: Ref::This,
                 count: Bounds::default(),
-                bind: DASHED.to_owned(),
+                bind: name.to_owned(),
                 rest_as: None,
             },
             Effect::DelayedTrigger {
@@ -70,10 +80,7 @@ fn return_at_end_step() -> Ability {
                     whose: Ref::EachPlayer,
                 },
                 once: true,
-                effects: vec![Effect::Move {
-                    what: dashed,
-                    to: Destination::Hand,
-                }],
+                effects: vec![effect],
             },
         ],
     }
