@@ -2,6 +2,7 @@ Abbot of Keral Keep
 Aether Hub
 Ajani's Pridemate
 Ancestral Vision
+Ancient Hydra
 Ancient Ziggurat
 Angel of Vitality
 Arcane Signet
@@ -11,6 +12,7 @@ Artful Maneuver
 Arvad the Cursed
 Atlantean Skirmisher
 Augury Raven
+Aven Riftwatcher
 Azorius Chancery
 Azorius Signet
 Azure Fleet Admiral
@@ -22,6 +24,7 @@ Behold the Multiverse
 Bilious Skulldweller
 Bird Admirer // Wing Shredder
 Black Knight
+Blastoderm
 Blaze
 Blight Mamba
 Blightwidow
@@ -39,6 +42,7 @@ Branchblight Stalker
 Brightstone Ritual
 Bronzeplate Boar
 Cackling Counterpart
+Calciderm
 Capsize
 Carnage Tyrant
 Cascade Bluffs
@@ -46,6 +50,7 @@ Cathars' Crusade
 Changeling Outcast
 Circle of Dreams Druid
 Clone
+Cloudskate
 Cold-Eyed Selkie
 Collective Unconscious
 Command Tower
@@ -71,6 +76,7 @@ Dauthi Marauder
 Dawnglade Regent
 Death Ward
 Deep Analysis
+Deep Forest Hermit
 Deepfathom Skulker
 Defile
 Delver of Secrets // Insectile Aberration
@@ -118,6 +124,7 @@ Forced March
 Fork
 Forum of Amity
 Foundry Inspector
+Four Knocks
 Fruit of Tizerus
 Furtive Homunculus
 Gadwick, the Wizened
@@ -155,6 +162,7 @@ Invisible Stalker
 Izzet Charm
 Jadelight Ranger
 Jaspera Sentinel
+Jolting Merfolk
 Jungle Lion
 Karn's Bastion
 Kathari Screecher
@@ -167,6 +175,7 @@ Kongming, "Sleeping Dragon"
 Kozilek's Translator
 Krenko's Enforcer
 Lat-Nam Adept
+Lavacore Elemental
 Levitation
 Lhurgoyf
 Lightning Bolt
@@ -215,6 +224,7 @@ Pacifism
 Pale Bears
 Pestilent Syphoner
 Phantasmal Image
+Phyrexian Prowler
 Phyrexian Soulgorger
 Pillar of the Paruns
 Plague Myr
@@ -235,6 +245,7 @@ Reconstructed Thopter
 Red Room Recruit
 Reflecting Pool
 Reiterate
+Rejuvenation Chamber
 Revel Ruiner
 Reverberate
 Rhox Faithmender
@@ -267,6 +278,8 @@ Skirk Prospector
 Skizzik Surger
 Skullclamp
 Skycloud Expanse
+Skyshroud Behemoth
+Skyshroud Ridgeback
 Skysovereign, Consul Flagship
 Slip Through Space
 Smuggler's Copter
@@ -277,6 +290,7 @@ Soltari Foot Soldier
 Songs of the Damned
 Soul Shepherd
 Souldrinker
+Soultether Golem
 Spectral Rider
 Sphinx of Jwar Isle
 Spring // Mind
@@ -327,11 +341,13 @@ Vestige of Emrakul
 Viridian Corrupter
 Walking Ballista
 Wanderbrine Preacher
+Waning Wurm
 Wargate
 Warmonger Hellkite
 Wear // Tear
 Wilderness Elemental
 Wooded Bastion
+Woodripper
 Wrath of God
 Young Wolf
 Zendikar Farguide

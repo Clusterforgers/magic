@@ -1,0 +1,27 @@
+{
+  "id": "1c01d17e-45a2-4b6f-aaa5-2af9c8f26181",
+  "oracle_id": "77bee041-6f96-44e3-a18c-b52e508b9bdf",
+  "name": "Skyshroud Behemoth",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nem",
+  "collector_number": "116",
+  "rarity": "rare",
+  "released_at": "2000-02-14",
+  "digital": false,
+  "mana_cost": "{5}{G}{G}",
+  "cmc": 7.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "Fading 2 (This creature enters with two fade counters on it. At the beginning of your upkeep, remove a fade counter from it. If you can't, sacrifice it.)\nThis creature enters tapped.",
+  "power": "10",
+  "toughness": "10",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Fading"
+  ]
+}

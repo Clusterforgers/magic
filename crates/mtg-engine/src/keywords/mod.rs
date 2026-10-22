@@ -25,6 +25,7 @@ mod disguise;
 mod doctors_companion;
 mod double_strike;
 mod echo;
+mod fading;
 mod enchant;
 mod encore;
 mod entwine;
@@ -78,6 +79,7 @@ mod toxic;
 mod trample;
 mod undaunted;
 mod undying;
+mod vanishing;
 mod unearth;
 mod vigilance;
 mod ward;
@@ -403,6 +405,8 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::CumulativeUpkeep(_) => &cumulative_upkeep::CumulativeUpkeep,
         Keyword::Undying => &undying::Undying,
         Keyword::Persist => &persist::Persist,
+        Keyword::Vanishing(_) => &vanishing::Vanishing,
+        Keyword::Fading(_) => &fading::Fading,
     }
 }
 
@@ -657,6 +661,8 @@ mod tests {
             Keyword::CumulativeUpkeep(cost()),
             Keyword::Undying,
             Keyword::Persist,
+            Keyword::Vanishing(3),
+            Keyword::Fading(3),
         ]
     }
 
@@ -730,6 +736,8 @@ mod tests {
         "Keyword.CumulativeUpkeep",
         "Keyword.Undying",
         "Keyword.Persist",
+        "Keyword.Vanishing",
+        "Keyword.Fading",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -844,6 +852,8 @@ mod tests {
     #[case::cumulative_upkeep(Keyword::CumulativeUpkeep(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::undying(Keyword::Undying, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::persist(Keyword::Persist, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::vanishing(Keyword::Vanishing(3), Hooks { abilities: 3, ..Hooks::none() })]
+    #[case::fading(Keyword::Fading(3), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);

@@ -1,0 +1,15 @@
+{
+  "oracle_id": "77bee041-6f96-44e3-a18c-b52e508b9bdf",
+  "name": "Skyshroud Behemoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyshroud Behemoth",
+      "oracle_fingerprint": "263f0a99762e095f9221359d374842ef",
+      "abilities": [
+        { "Keyword": { "Fading": 2 } },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } }
+      ]
+    }
+  ]
+}

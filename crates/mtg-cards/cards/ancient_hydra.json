@@ -1,0 +1,21 @@
+{
+  "oracle_id": "8e1d3722-9bd1-4ab7-b4a5-9265fca3aba9",
+  "name": "Ancient Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancient Hydra",
+      "oracle_fingerprint": "c8842b6510508e7e91da1a450d3d4412",
+      "abilities": [
+        { "Keyword": { "Fading": 5 } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "RemoveCounters": { "counter": { "Other": "fade" } } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

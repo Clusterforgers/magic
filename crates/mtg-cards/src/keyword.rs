@@ -177,6 +177,10 @@ pub enum Keyword {
     Undying,
     /// Persist (CR 702.79): when it dies, if it had no -1/-1 counter on it, it returns with a -1/-1 counter.
     Persist,
+    /// Vanishing N (CR 702.63): it enters with N time counters, at the beginning of its controller's upkeep one is removed, and it is sacrificed when the last is removed.
+    Vanishing(u32),
+    /// Fading N (CR 702.32): it enters with N fade counters, at the beginning of its controller's upkeep one is removed, and it is sacrificed if none can be.
+    Fading(u32),
 }
 
 impl Keyword {
@@ -259,6 +263,8 @@ impl Keyword {
         "Cumulative upkeep",
         "Undying",
         "Persist",
+        "Vanishing",
+        "Fading",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -341,6 +347,8 @@ impl Keyword {
             Keyword::CumulativeUpkeep(_) => "Cumulative upkeep",
             Keyword::Undying => "Undying",
             Keyword::Persist => "Persist",
+            Keyword::Vanishing(_) => "Vanishing",
+            Keyword::Fading(_) => "Fading",
         }
     }
 
@@ -446,6 +454,8 @@ mod tests {
             Keyword::CumulativeUpkeep(Cost::default()),
             Keyword::Undying,
             Keyword::Persist,
+            Keyword::Vanishing(3),
+            Keyword::Fading(3),
         ]
     }
 

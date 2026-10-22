@@ -342,6 +342,16 @@ pub fn read(item: &str) -> Option<Keyword> {
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
         "echo" => spell_cost(rest).map(Keyword::Echo),
         "cumulative upkeep" => spell_cost(rest).map(Keyword::CumulativeUpkeep),
+        "vanishing" => rest
+            .parse()
+            .ok()
+            .filter(|time| *time > 0)
+            .map(Keyword::Vanishing),
+        "fading" => rest
+            .parse()
+            .ok()
+            .filter(|fade| *fade > 0)
+            .map(Keyword::Fading),
         "crew" => rest
             .parse()
             .ok()
@@ -706,6 +716,8 @@ mod tests {
         ]))
     )]
     #[case::crew("Crew 3", Keyword::Crew(3))]
+    #[case::vanishing("Vanishing 3", Keyword::Vanishing(3))]
+    #[case::fading("Fading 5", Keyword::Fading(5))]
     #[case::changeling("Changeling", Keyword::Changeling)]
     #[case::devoid("Devoid", Keyword::Devoid)]
     #[case::infect("Infect", Keyword::Infect)]
@@ -940,6 +952,8 @@ mod tests {
             "Cumulative upkeep {1}",
             "Undying",
             "Persist",
+            "Vanishing 3",
+            "Fading 5",
             "Foretell {1}",
             "Daybound",
             "Nightbound",

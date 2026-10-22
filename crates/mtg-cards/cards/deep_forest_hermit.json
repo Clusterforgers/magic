@@ -1,0 +1,42 @@
+{
+  "oracle_id": "80e9a42e-f4f4-4bfc-91a2-ad124737dca2",
+  "name": "Deep Forest Hermit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deep Forest Hermit",
+      "oracle_fingerprint": "5a125a1ba84e16931385a66cabfcb8a5",
+      "abilities": [
+        { "Keyword": { "Vanishing": 3 } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Squirrel",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Squirrel"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 4
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Squirrel" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}
