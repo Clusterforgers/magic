@@ -195,3 +195,257 @@ pub(crate) fn copiable_values(
     }
     Some(whole.face(face).copiable())
 }
+
+#[cfg(test)]
+mod tests {
+    //! Goal: a copy effect is the first layer: the copiable values are what an object prints, or what the copy it is under gives, and never what other effects made of it; every other effect (a pump, a set of power and toughness, a type) applies on top whatever the order of the timestamps, a later copy effect replaces an earlier one, a copy never changes the original or any other object, a copy that has left is read by last known information, and only a permanent can become a copy.
+    use mtg_core::card::CardType;
+    use mtg_core::ids::{EffectId, PlayerId};
+    use proptest::prelude::*;
+    use rstest::rstest;
+
+    use super::*;
+    use crate::characteristics::characteristics;
+    use crate::effects::{ContinuousEffect, Duration, Modification, Selector};
+    use crate::events::{Event, ZoneCause};
+    use crate::fixtures::{creature, state};
+    use crate::fold::apply_event;
+    use crate::snapshot::snapshot;
+    use crate::zones::Zone;
+
+    const NAMES: [&str; 6] = ["Bear", "Wolf", "Ogre", "Copy A", "Copy B", "Copy C"];
+
+    fn game() -> GameState {
+        state(
+            vec![vec![], vec![]],
+            vec![
+                vec![
+                    creature("Bear", 2, 2),
+                    creature("Wolf", 4, 4),
+                    creature("Ogre", 3, 5),
+                    creature("Copy A", 1, 1),
+                    creature("Copy B", 1, 1),
+                    creature("Copy C", 1, 1),
+                ],
+                vec![],
+            ],
+        )
+    }
+
+    /// The object that starts the game as the card `name`, which may be a copy of something else later.
+    fn start(name: &str) -> ObjectRef {
+        let game = game();
+        game.objects()
+            .find(|object| object.card().name == name)
+            .map(GameObject::reference)
+            .unwrap()
+    }
+
+    fn become_copy(game: &mut GameState, object: &str, of: &str) {
+        let of = start(of);
+        let definition = copiable_values(game, of, None).unwrap();
+        let event = Event::BecameCopy(BecameCopy {
+            object: start(object).id,
+            of,
+            definition: Arc::new(definition),
+        });
+        apply_event(game, &event).unwrap();
+    }
+
+    fn effect(game: &mut GameState, object: &str, modification: Modification, timestamp: u64) {
+        let id = EffectId(game.effects.len() as u64);
+        game.effects.push(ContinuousEffect::new(
+            id,
+            Selector::Objects(vec![start(object)]),
+            modification,
+            Duration::UntilEndOfTurn,
+            timestamp,
+        ));
+        game.layers.reset();
+    }
+
+    fn shown(game: &GameState, object: &str) -> (Option<i32>, Option<i32>, bool) {
+        let chars = characteristics(game, start(object).id).unwrap();
+        (
+            chars.power,
+            chars.toughness,
+            chars.types.contains(CardType::Artifact),
+        )
+    }
+
+    #[test]
+    fn the_copiable_values_are_what_the_card_prints_and_not_what_effects_made_of_it() {
+        let mut game = game();
+        effect(
+            &mut game,
+            "Bear",
+            Modification::ModifyPowerToughness {
+                power: 3,
+                toughness: 3,
+            },
+            5,
+        );
+        effect(&mut game, "Bear", Modification::AddType(CardType::Artifact), 6);
+        assert_eq!(shown(&game, "Bear"), (Some(5), Some(5), true));
+        let values = copiable_values(&game, start("Bear"), None).unwrap();
+        assert_eq!((values.power, values.toughness), (Some(2), Some(2)));
+        assert!(!values.types.contains(&CardType::Artifact));
+        assert!(values.faces.is_empty());
+    }
+
+    /// What happens to Copy A, in order.
+    #[derive(Clone, Copy)]
+    enum Step {
+        Become(&'static str),
+        Pump(i32),
+        Set(i32, i32),
+        Artifact,
+    }
+    use Step::{Artifact, Become, Pump, Set};
+
+    #[rstest]
+    #[case::nothing(&[], (1, 1, false))]
+    #[case::a_copy(&[Become("Wolf")], (4, 4, false))]
+    #[case::the_later_copy_replaces_the_earlier(&[Become("Wolf"), Become("Ogre")], (3, 5, false))]
+    #[case::a_pump_stays_on_top_of_a_later_copy(&[Pump(1), Become("Wolf")], (5, 5, false))]
+    #[case::a_pump_stays_on_top_of_an_earlier_copy(&[Become("Wolf"), Pump(1)], (5, 5, false))]
+    #[case::a_set_stays_on_top_of_a_later_copy(&[Set(2, 2), Become("Wolf")], (2, 2, false))]
+    #[case::a_type_change_between_two_copies_stays(&[Become("Wolf"), Artifact, Become("Ogre")], (3, 5, true))]
+    #[case::a_type_change_before_a_copy_stays(&[Artifact, Become("Bear")], (2, 2, true))]
+    #[case::a_pump_and_a_set_after_two_copies(&[Become("Wolf"), Become("Bear"), Set(1, 1), Pump(2)], (3, 3, false))]
+    fn a_copy_effect_comes_before_every_other_effect_whatever_the_timestamps(
+        #[case] steps: &[Step],
+        #[case] expected: (i32, i32, bool),
+    ) {
+        let mut game = game();
+        for (at, step) in steps.iter().enumerate() {
+            // The effects carry timestamps that run backwards, so a copy never wins by being later.
+            let stamp = 100 - at as u64;
+            match step {
+                Become(of) => become_copy(&mut game, "Copy A", of),
+                Pump(by) => effect(
+                    &mut game,
+                    "Copy A",
+                    Modification::ModifyPowerToughness {
+                        power: *by,
+                        toughness: *by,
+                    },
+                    stamp,
+                ),
+                Set(power, toughness) => effect(
+                    &mut game,
+                    "Copy A",
+                    Modification::SetPowerToughness {
+                        power: *power,
+                        toughness: *toughness,
+                    },
+                    stamp,
+                ),
+                Artifact => effect(
+                    &mut game,
+                    "Copy A",
+                    Modification::AddType(CardType::Artifact),
+                    stamp,
+                ),
+            }
+        }
+        assert_eq!(
+            shown(&game, "Copy A"),
+            (Some(expected.0), Some(expected.1), expected.2)
+        );
+    }
+
+    #[test]
+    fn a_later_copy_effect_has_a_later_timestamp_and_replaces_the_earlier() {
+        let mut game = game();
+        become_copy(&mut game, "Copy A", "Wolf");
+        let a = start("Copy A").id;
+        let stamp = |game: &GameState| game.object(a).unwrap().copy_effect().unwrap().timestamp();
+        let before = stamp(&game);
+        become_copy(&mut game, "Copy A", "Ogre");
+        assert!(stamp(&game) > before);
+        assert_eq!(game.object(a).unwrap().card().name, "Ogre");
+    }
+
+    #[test]
+    fn a_copy_of_a_copy_has_the_values_the_first_copy_has() {
+        let mut game = game();
+        become_copy(&mut game, "Copy A", "Wolf");
+        let values = copiable_values(&game, start("Copy A"), None).unwrap();
+        assert_eq!((values.name.as_str(), values.power), ("Wolf", Some(4)));
+        assert!(values.faces.is_empty());
+    }
+
+    #[test]
+    fn only_a_permanent_becomes_a_copy_and_the_state_hash_sees_the_copy() {
+        let mut game = game();
+        let before = game.state_hash();
+        become_copy(&mut game, "Copy A", "Wolf");
+        assert_ne!(game.state_hash(), before);
+        let a = start("Copy A").id;
+        let left = Event::ZoneChanged {
+            object: a,
+            from: Zone::Battlefield,
+            to: Zone::Graveyard(PlayerId(0)),
+            cause: ZoneCause::Destroyed,
+        };
+        apply_event(&mut game, &left).unwrap();
+        // The card leaves its copy effect behind (CR 400.7), and a card that is not on the battlefield becomes no copy.
+        assert!(game.object(a).unwrap().copy_effect().is_none());
+        assert_eq!(game.object(a).unwrap().card().name, "Copy A");
+        let late = Event::BecameCopy(BecameCopy {
+            object: a,
+            of: start("Wolf"),
+            definition: Arc::new(creature("Wolf", 4, 4).copiable()),
+        });
+        assert!(apply_event(&mut game, &late).is_err());
+    }
+
+    #[test]
+    fn a_copy_that_has_left_is_read_by_last_known_information() {
+        let mut game = game();
+        become_copy(&mut game, "Copy A", "Wolf");
+        let a = start("Copy A");
+        let shot = snapshot(&game, a.id).unwrap();
+        let left = Event::ZoneChanged {
+            object: a.id,
+            from: Zone::Battlefield,
+            to: Zone::Graveyard(PlayerId(0)),
+            cause: ZoneCause::Destroyed,
+        };
+        apply_event(&mut game, &left).unwrap();
+        // The card Copy A is a new object now; the snapshot still says that what left was a Wolf.
+        assert!(game.object(a.id).unwrap().counter() != a.counter);
+        let values = copiable_values(&game, a, Some(&shot)).unwrap();
+        assert_eq!((values.name.as_str(), values.power), ("Wolf", Some(4)));
+        assert!(copiable_values(&game, a, None).is_none());
+    }
+
+    proptest! {
+        #[test]
+        fn a_copy_never_changes_the_original_or_an_object_that_is_not_copied(
+            moves in proptest::collection::vec((3usize..6, 0usize..3), 0..12),
+        ) {
+            let mut game = game();
+            let before: Vec<_> = NAMES.iter().map(|name| shown(&game, name)).collect();
+            let mut last = [None; 3];
+            for (target, source) in &moves {
+                become_copy(&mut game, NAMES[*target], NAMES[*source]);
+                last[*target - 3] = Some(*source);
+            }
+            for (at, name) in NAMES.iter().enumerate().take(3) {
+                prop_assert_eq!(shown(&game, name), before[at], "the original {} is untouched", name);
+            }
+            for (at, copied) in last.iter().enumerate() {
+                let (power, toughness, _) = shown(&game, NAMES[3 + at]);
+                match copied {
+                    Some(source) => prop_assert_eq!(
+                        (power, toughness),
+                        (before[*source].0, before[*source].1)
+                    ),
+                    None => prop_assert_eq!((power, toughness), (Some(1), Some(1))),
+                }
+            }
+        }
+    }
+}
