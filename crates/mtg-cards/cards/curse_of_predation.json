@@ -1,0 +1,22 @@
+{
+  "oracle_id": "69ea4ce2-f749-4d5b-a392-efcfdce14a30",
+  "name": "Curse of Predation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Predation",
+      "oracle_fingerprint": "25a1f1ee21f9f1092371de58bc529868",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayer": { "what": [{ "Type": "Creature" }], "at": "AttachedPlayer" }
+            },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -15,11 +15,12 @@ use axum::http::header::{CONTENT_DISPOSITION, CONTENT_TYPE};
 use axum::http::{HeaderMap, HeaderValue, StatusCode};
 use axum::response::{IntoResponse, Response};
 use mtg_cards::deck::{DeckReport, StoredCheck, marker};
+use mtg_core::house::HouseRules;
 use mtg_db::{CreateDeckError, DeckDraft, DeckId, DeckRepo, StoredDeck};
 use mtg_import::decklist::ExportFormat;
 use mtg_protocol::rest::{
     CheckRequest, DeckBody, DeckErrorCode, DeckList, DeckListItem, DeckView, ImportRequest,
-    ImportResult, MAX_DECKS_PER_USER,
+    ImportResult, MAX_DECKS_PER_USER, TableRules,
 };
 use serde_json::Value;
 use sqlx::types::uuid::Uuid;
@@ -28,7 +29,10 @@ use crate::api::{ApiError, read_json_limited};
 use crate::card_api::failed;
 use crate::cards::CardSource;
 use crate::deck_cards::{Line, Loaded, check_body, check_format, check_lines};
+use crate::deck_choice::judge_at_table;
 use crate::deck_import;
+use crate::game_id::GameId;
+use crate::recipe::FormatKind;
 use crate::server::AppState;
 
 /// Largest body of a deck, a check or a save, in bytes.
@@ -297,11 +301,13 @@ pub(crate) async fn check(
     let headers = request.headers().clone();
     let s = session(&app, &headers).await?;
     let body: CheckRequest = read_json_limited(request, DECK_BODY_LIMIT).await?;
+    let table = table_of(&app, body.game.as_deref(), body.table.as_ref())?;
     let (format, lines) = match body {
         CheckRequest {
             deck: Some(id),
             format: None,
             cards: None,
+            ..
         } => {
             let id = Uuid::parse_str(&id).map(DeckId).map_err(|_| not_found())?;
             let deck = s
@@ -317,6 +323,7 @@ pub(crate) async fn check(
             deck: None,
             format: Some(format),
             cards: Some(cards),
+            ..
         } => (check_format(&format)?, check_lines(&cards)?),
         _ => {
             return Err(ApiError::invalid(
@@ -326,7 +333,41 @@ pub(crate) async fn check(
     };
     let loaded = Loaded::load(s.cards, &lines).await?;
     loaded.require(&lines)?;
-    Ok(Json(loaded.report(&format, &lines)))
+    let mut report = loaded.report(&format, &lines);
+    if let Some((kind, house)) = table {
+        judge_at_table(s.cards, &lines, &mut report, kind, &house).await?;
+    }
+    Ok(Json(report))
+}
+
+/// The format and house rules a check is for: those of the game it names, or the table it
+/// describes; none for a check of the deck alone. Naming both, an unknown game, a format the server
+/// does not play or a rule out of range is refused.
+fn table_of(
+    app: &AppState,
+    game: Option<&str>,
+    table: Option<&TableRules>,
+) -> Result<Option<(FormatKind, HouseRules)>, ApiError> {
+    match (game, table) {
+        (None, None) => Ok(None),
+        (Some(id), None) => {
+            let id: GameId = id.parse().map_err(|_| ApiError::not_found())?;
+            app.registry()
+                .deck_rules(id)
+                .map(Some)
+                .ok_or_else(ApiError::not_found)
+        }
+        (None, Some(table)) => {
+            let format = FormatKind::parse(&table.format)
+                .ok_or_else(|| ApiError::invalid("table.format is \"normal\" or \"commander\""))?;
+            let house = table.house_rules.clone().unwrap_or_default();
+            house.validate()?;
+            Ok(Some((format, house)))
+        }
+        (Some(_), Some(_)) => Err(ApiError::invalid(
+            "name the game or describe the table, not both",
+        )),
+    }
 }
 
 /// `POST /api/decks/import`: reads a pasted list in any format `mtg-import` reads and answers the

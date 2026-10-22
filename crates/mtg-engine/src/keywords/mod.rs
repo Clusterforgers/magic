@@ -302,6 +302,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Reconfigure(_) => &reconfigure::Reconfigure,
         Keyword::LivingWeapon => &living_weapon::LivingWeapon,
         Keyword::Enchant(_) => &enchant::Enchant,
+        Keyword::EnchantPlayer { .. } => &enchant::EnchantPlayer,
         Keyword::Cycling(_) => &cycling::Cycling,
         Keyword::Kicker(_) => &kicker::Kicker,
         Keyword::Buyback(_) => &buyback::Buyback,
@@ -527,6 +528,7 @@ mod tests {
             Keyword::Reconfigure(cost()),
             Keyword::LivingWeapon,
             Keyword::Enchant(Selector::default()),
+            Keyword::EnchantPlayer { opponent: false },
             Keyword::Cycling(cost()),
             Keyword::Kicker(cost()),
             Keyword::Multikicker(cost()),
@@ -579,6 +581,7 @@ mod tests {
         "Keyword.BattleCry",
         "Keyword.Ward",
         "Keyword.Enchant",
+        "Keyword.EnchantPlayer",
         "Keyword.Equip",
         "Keyword.Reconfigure",
         "Keyword.LivingWeapon",
@@ -687,6 +690,7 @@ mod tests {
     #[case::battle_cry(Keyword::BattleCry, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ward(Keyword::Ward(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::enchant(Keyword::Enchant(Selector::default()), Hooks::none())]
+    #[case::enchant_player(Keyword::EnchantPlayer { opponent: true }, Hooks::none())]
     #[case::equip(Keyword::Equip(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::reconfigure(Keyword::Reconfigure(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 3, ..Hooks::none() })]
     #[case::living_weapon(Keyword::LivingWeapon, Hooks { abilities: 1, ..Hooks::none() })]

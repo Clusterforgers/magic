@@ -478,7 +478,15 @@ object: ObjectId,
 /**
  * The permanent it is attached to.
  */
-to: ObjectId, } } | { "Unattached": { 
+to: ObjectId, } } | { "AttachedToPlayer": { 
+/**
+ * The Aura.
+ */
+object: ObjectId, 
+/**
+ * The player it enchants.
+ */
+player: PlayerId, } } | { "Unattached": { 
 /**
  * The permanent.
  */

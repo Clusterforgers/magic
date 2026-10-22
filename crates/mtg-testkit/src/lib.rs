@@ -95,7 +95,7 @@ pub use pump_cards::pump_fuzz_setup;
 pub use replace_cards::replace_fuzz_setup;
 pub use rule_cards::rules_fuzz_setup;
 pub use scenario::{
-    Scenario, ScenarioError, attached_to, damaged, ready, sick, tapped, with_counters,
+    Scenario, ScenarioError, attached_to, damaged, enchanting, ready, sick, tapped, with_counters,
 };
 pub use script_error::ScriptError;
 pub use small_cards::small_fuzz_setup;

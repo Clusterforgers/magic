@@ -1,0 +1,25 @@
+{
+  "id": "9af69b5e-f713-4af6-9990-f99be7801f73",
+  "oracle_id": "e00f8d6b-5bb1-4625-9fa4-114cdc381bd4",
+  "name": "Curse of the Forsaken",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cma",
+  "collector_number": "8",
+  "rarity": "uncommon",
+  "released_at": "2017-06-09",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura Curse",
+  "oracle_text": "Enchant player\nWhenever a creature attacks enchanted player, its controller gains 1 life.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

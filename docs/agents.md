@@ -31,6 +31,9 @@ Report (max 15 lines): files added, public API in one line each, test counts, de
 - After a restart, run `git worktree list` and read each worktree's `git status` before resuming or redoing anything.
 - Run as many agents at once as are certain not to affect each other: different crates, modules, roadmap items, e2e ports and scratch databases, never the same file or decision. Structure items that reshape shared code run alone.
 - Disk: every worktree builds its own `target/` (tens of GB each). After merging an agent, remove its worktree and branch (`git worktree remove`, then `git branch -d`); an agent deletes its own `target/` in its last step. Keep one agent worktree per running agent.
+- Push `main` to origin after every merge and before launching agents: an `isolation: worktree` agent branches from `origin/main`, and agents run elsewhere see a claimed piece (`[~]` in the roadmap) only once it is pushed.
+- Run about six agents at once at most (24 cores): each runs one cargo job at a time and ends with `git merge main` and the full `scripts/check.sh`; the orchestrator fast-forwards `main` to its tip when `main` is an ancestor and otherwise sends the agent back to merge.
+- Coverage pieces measure the Verified counts in a scratch database (`ingest`, `compile`, `coverage` with `--database-url`), never in `magic`; the numbers go to the M6 target line.
 
 ### Parallel agents
 

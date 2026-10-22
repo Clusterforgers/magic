@@ -67,6 +67,8 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("evoke", Params::Cost),
     ("overload", Params::Cost),
     ("enchant", Params::Text),
+    ("enchant player", Params::None),
+    ("enchant opponent", Params::None),
     ("partner with", Params::Text),
     ("hexproof from", Params::Text),
     ("protection", Params::Text),
@@ -339,7 +341,9 @@ pub fn read(item: &str) -> Option<Keyword> {
             .filter(|power| *power > 0)
             .map(Keyword::Crew),
         "suspend" => suspend(rest),
-        "enchant" => enchant(rest).map(Keyword::Enchant),
+        "enchant" => super::read::enchant_filter(rest).map(Keyword::Enchant),
+        "enchant player" => Some(Keyword::EnchantPlayer { opponent: false }),
+        "enchant opponent" => Some(Keyword::EnchantPlayer { opponent: true }),
         "partner with" => Some(Keyword::PartnerWith(rest.to_owned())),
         "protection" => protection(rest).map(Keyword::Protection),
         "companion" => Some(Keyword::Companion),
@@ -472,23 +476,12 @@ fn suspend(rest: &str) -> Option<Keyword> {
     })
 }
 
-/// What an Aura enchants, when it is one card type.
-fn enchant(rest: &str) -> Option<Selector> {
-    let card_type = match rest.to_ascii_lowercase().as_str() {
-        "creature" => CardType::Creature,
-        "land" => CardType::Land,
-        "artifact" => CardType::Artifact,
-        "enchantment" => CardType::Enchantment,
-        "planeswalker" => CardType::Planeswalker,
-        _ => return None,
-    };
-    Some(Selector(vec![Pred::Type(card_type)]))
-}
-
 #[cfg(test)]
 mod tests {
     //! Goal: keyword lines are recognised in every wording the cards print, the keywords the DSL declares read with their parameters, and anything else stays unread.
     use super::*;
+    use crate::refs::Ref;
+    use mtg_core::card::Subtype;
     use rstest::rstest;
 
     fn mana(text: &str) -> Cost {
@@ -620,6 +613,41 @@ mod tests {
     #[case::suspend("Suspend 4\u{2014}{U}", Keyword::Suspend { time: 4, cost: mana("{U}") })]
     #[case::enchant("Enchant creature", Keyword::Enchant(creature()))]
     #[case::enchant_land("Enchant land", Keyword::Enchant(Selector(vec![Pred::Type(CardType::Land)])))]
+    #[case::enchant_a_player("Enchant player", Keyword::EnchantPlayer { opponent: false })]
+    #[case::enchant_an_opponent("Enchant opponent", Keyword::EnchantPlayer { opponent: true })]
+    #[case::enchant_your_creature(
+        "Enchant creature you control",
+        Keyword::Enchant(Selector(vec![Pred::Type(CardType::Creature), Pred::ControlledBy(Ref::You)]))
+    )]
+    #[case::enchant_their_creature(
+        "Enchant creature an opponent controls",
+        Keyword::Enchant(Selector(vec![Pred::Type(CardType::Creature), Pred::ControlledBy(Ref::Opponents)]))
+    )]
+    #[case::enchant_a_permanent("Enchant permanent", Keyword::Enchant(Selector::default()))]
+    #[case::enchant_a_nonland_permanent(
+        "Enchant nonland permanent",
+        Keyword::Enchant(Selector(vec![Pred::Not(Box::new(Pred::Type(CardType::Land)))]))
+    )]
+    #[case::enchant_two_types(
+        "Enchant artifact or land",
+        Keyword::Enchant(Selector(vec![Pred::AnyOf(vec![Pred::Type(CardType::Artifact), Pred::Type(CardType::Land)])]))
+    )]
+    #[case::enchant_three_types(
+        "Enchant creature, land, or planeswalker",
+        Keyword::Enchant(Selector(vec![Pred::AnyOf(vec![
+            Pred::Type(CardType::Creature),
+            Pred::Type(CardType::Land),
+            Pred::Type(CardType::Planeswalker),
+        ])]))
+    )]
+    #[case::enchant_your_artifact(
+        "Enchant artifact you control",
+        Keyword::Enchant(Selector(vec![Pred::Type(CardType::Artifact), Pred::ControlledBy(Ref::You)]))
+    )]
+    #[case::enchant_a_subtype(
+        "Enchant Forest",
+        Keyword::Enchant(Selector(vec![Pred::Subtype(Subtype("Forest".into()))]))
+    )]
     #[case::companion(
         "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         Keyword::Companion
@@ -641,9 +669,10 @@ mod tests {
     #[case::protection_without_a_quality("Protection from")]
     #[case::cycling_by_sacrifice("Cycling\u{2014}Sacrifice a land.")]
     #[case::ward_sacrifice("Ward\u{2014}Sacrifice a permanent.")]
-    #[case::enchant_player("Enchant player")]
-    #[case::enchant_with_a_condition("Enchant creature you control")]
-    #[case::enchant_two_types("Enchant creature or planeswalker")]
+    #[case::enchant_a_card_in_a_graveyard("Enchant creature card in a graveyard")]
+    #[case::enchant_with_a_quality_the_table_keeps("Enchant noncommander creature")]
+    #[case::enchant_with_another_aura("Enchant creature with another Aura attached to it")]
+    #[case::enchant_nothing("Enchant")]
     #[case::partner_friends("Partner\u{2014}Friends forever")]
     #[case::undeclared("Undying")]
     #[case::crew_x("Crew X")]
@@ -758,6 +787,7 @@ mod tests {
             "Evoke {1}",
             "Overload {1}",
             "Living weapon",
+            "Enchant player",
             "Changeling",
             "Devoid",
             "Infect",

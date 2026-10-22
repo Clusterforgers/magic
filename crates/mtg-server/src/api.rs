@@ -308,6 +308,7 @@ pub(crate) async fn game(
         .await
         .ok_or_else(ApiError::not_found)?;
     Ok(Json(GameInfo {
+        format: game.format.as_str().to_owned(),
         started: game.started,
         seats: game
             .seats

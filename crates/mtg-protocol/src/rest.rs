@@ -26,7 +26,7 @@ pub use decks::{
     CardSuggestion, CheckRequest, DeckBody, DeckErrorCode, DeckLineBody, DeckLineView, DeckList,
     DeckListItem, DeckView, IgnoredCards, ImportRequest, ImportResult, ImportSource, ListProblem,
     MAX_DECK_CARDS, MAX_DECK_LINES, MAX_DECK_NAME_CHARS, MAX_DECK_NOTES_CHARS, MAX_DECKS_PER_USER,
-    MAX_IMPORT_CHARS, MAX_IMPORT_LINES, UnresolvedLine, UnresolvedReason,
+    MAX_IMPORT_CHARS, MAX_IMPORT_LINES, TableRules, UnresolvedLine, UnresolvedReason,
 };
 pub use lobbies::{
     ChooseDeck, DeckBlockedBody, DeckChoiceErrorCode, GameInfo, GameSeat, JoinCodeRequest,
