@@ -1071,9 +1071,7 @@ impl Writer<'_> {
             Effect::PutCounters { .. }
             | Effect::RemoveCounters { .. }
             | Effect::MoveCounters { .. } => self.counters(effect)?,
-            Effect::CreateToken { .. } => {
-                create::text(effect, self.per).or_else(|| self.copy_token(effect, false))?
-            }
+            Effect::CreateToken { .. } => self.created(effect)?,
             Effect::DealDamage {
                 source: None,
                 to,
@@ -1222,6 +1220,18 @@ impl Writer<'_> {
         }
         let subject = self.object(first)?;
         Some((format!("{subject} explores, then it explores again"), 2))
+    }
+
+    /// Tokens created: "create a Treasure token" for you, "target opponent creates a Treasure token" for another player.
+    fn created(&mut self, effect: &Effect) -> Option<String> {
+        match effect {
+            Effect::CreateToken { who, .. } if *who != Ref::You => Some(format!(
+                "{} {}",
+                self.player(who)?,
+                create::text(effect, self.per)?
+            )),
+            _ => create::text(effect, self.per).or_else(|| self.copy_token(effect, false)),
+        }
     }
 
     /// Who does something: "you", "target player", "each opponent", "its controller".

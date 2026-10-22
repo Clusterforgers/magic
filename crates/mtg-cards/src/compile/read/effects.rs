@@ -387,8 +387,8 @@ fn phrases(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
 
 /// One verb phrase: what a player does, or "create a token" for you.
 fn verb_phrase(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
-    if *who == Ref::You && r.peek_word() == Some("create") {
-        return create::tokens(r);
+    if matches!(r.peek_word(), Some("create" | "creates")) {
+        return create::made_by(r, who.clone());
     }
     predicate(r, who).map(|effect| vec![effect])
 }

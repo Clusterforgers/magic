@@ -79,8 +79,39 @@ fn one_of(mut preds: Vec<Pred>) -> Pred {
     }
 }
 
-/// "basic land", "Plains or Island", "legendary Dragon creature", "artifact or creature", then
-/// "card" or "cards", then what the card has: "with mana value 3 or less".
+/// A card type word.
+fn one_type(r: &mut Reader<'_>) -> Option<CardType> {
+    let found = r.peek_word().and_then(card_type)?;
+    r.skip();
+    Some(found)
+}
+
+/// The items of a list as a card words it: "Plains", "Plains or Island", "Forest, Plains, or Island" (the comma
+/// before "or" only in a list of three or more).
+fn listed<T>(
+    r: &mut Reader<'_>,
+    mut item: impl FnMut(&mut Reader<'_>) -> Option<T>,
+) -> Option<Vec<T>> {
+    let mut found = vec![item(r)?];
+    loop {
+        let more = r.attempt(|r| {
+            let comma = r.punct(',');
+            let or = r.word("or");
+            (comma || or).then_some(())?;
+            Some((comma, or, item(r)?))
+        });
+        let Some((comma, or, next)) = more else {
+            return (found.len() == 1).then_some(found);
+        };
+        found.push(next);
+        if or {
+            return (comma == (found.len() > 2)).then_some(found);
+        }
+    }
+}
+
+/// "basic land", "Plains or Island", "Forest, Plains, or Island", "legendary Dragon creature", "artifact or creature",
+/// then "card" or "cards", then what the card has: "with mana value 3 or less".
 pub(super) fn filter(r: &mut Reader<'_>, plural: bool) -> Option<Selector> {
     let mut preds = Vec::new();
     while let Some(pred) = r
@@ -91,14 +122,7 @@ pub(super) fn filter(r: &mut Reader<'_>, plural: bool) -> Option<Selector> {
         r.skip();
         preds.push(pred);
     }
-    if let Some(first) = subtype(r) {
-        let mut names = vec![first];
-        while let Some(next) = r.attempt(|r| {
-            r.need("or")?;
-            subtype(r)
-        }) {
-            names.push(next);
-        }
+    if let Some(names) = r.attempt(|r| listed(r, subtype)) {
         preds.push(one_of(
             names
                 .into_iter()
@@ -106,16 +130,12 @@ pub(super) fn filter(r: &mut Reader<'_>, plural: bool) -> Option<Selector> {
                 .collect(),
         ));
     }
-    let mut types = Vec::new();
-    while let Some(found) = r.peek_word().and_then(card_type) {
-        r.skip();
-        types.push(Pred::Type(found));
-        if r.word_at(0) == Some("or") && r.word_at(1).and_then(card_type).is_some() {
-            r.skip();
-        } else {
-            break;
-        }
-    }
+    let mut types: Vec<Pred> = r
+        .attempt(|r| listed(r, one_type))
+        .unwrap_or_default()
+        .into_iter()
+        .map(Pred::Type)
+        .collect();
     if types.is_empty() && r.word("permanent") {
         types = PERMANENTS.iter().map(|kind| Pred::Type(*kind)).collect();
     }
@@ -343,6 +363,15 @@ pub fn put_on_library(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     }])
 }
 
+/// Two or more items as a card words them: "Plains or Island", "Forest, Plains, or Island".
+fn list_text(words: &[String]) -> String {
+    match words {
+        [first, last] => format!("{first} or {last}"),
+        [rest @ .., last] => format!("{}, or {last}", rest.join(", ")),
+        [] => String::new(),
+    }
+}
+
 /// The card types and subtypes of a predicate, as the words before "card".
 fn names_text(pred: &Pred) -> Option<(u8, String)> {
     match pred {
@@ -360,7 +389,7 @@ fn names_text(pred: &Pred) -> Option<(u8, String)> {
                 return None;
             }
             let words: Vec<String> = names.into_iter().map(|(_, name)| name).collect();
-            Some((slot, words.join(" or ")))
+            Some((slot, list_text(&words)))
         }
         _ => None,
     }
