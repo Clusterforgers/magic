@@ -2,6 +2,7 @@
 //! reader that walks them together with what the clause has asked for so far.
 
 use super::subtypes::is_subtype;
+use crate::mana::ManaCostX;
 use crate::refs::{Ref, TargetSpec};
 
 /// One token of a clause.
@@ -117,11 +118,28 @@ pub fn canonical(text: &str) -> String {
             out.push(format!("{create} a Clue token{tail}"));
             at += 1;
         } else {
-            out.push(word.to_owned());
+            out.push(in_cost_order(word));
             at += 1;
         }
     }
     then_as_sentence(&out.join(" "))
+}
+
+/// A word that begins with mana symbols, with those symbols in the order a mana cost is written: a card may print
+/// "{2}{G}{U}" where the cost is kept as "{2}{U}{G}". Any other word stays as it is.
+fn in_cost_order(word: &str) -> String {
+    let mut run = 0;
+    while word[run..].starts_with('{') {
+        match word[run..].find('}') {
+            Some(close) => run += close + 1,
+            None => break,
+        }
+    }
+    let (symbols, tail) = word.split_at(run);
+    match symbols.parse::<ManaCostX>() {
+        Ok(cost) if run > 0 => format!("{cost}{tail}"),
+        _ => word.to_owned(),
+    }
 }
 
 /// A pronoun for the object a verb or a copy is about, and how many words it takes: "a token that's a copy of that

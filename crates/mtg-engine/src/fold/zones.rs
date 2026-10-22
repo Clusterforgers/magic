@@ -86,6 +86,7 @@ pub(super) fn move_object(
     if to == Zone::Battlefield {
         object.permanent = Some(PermanentState {
             tapped: false,
+            monstrous: false,
             damage: 0,
             deathtouched: false,
             summoning_sick: true,

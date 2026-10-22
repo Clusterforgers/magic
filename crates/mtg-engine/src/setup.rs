@@ -256,6 +256,7 @@ fn preset_state(
     }
     PermanentState {
         tapped: preset.tapped,
+        monstrous: false,
         damage: preset.damage,
         deathtouched: false,
         summoning_sick: preset.summoning_sick,

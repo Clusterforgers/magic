@@ -459,6 +459,74 @@ fn exploring_triggers_for_the_creatures_the_pattern_names_and_names_the_creature
     }
 }
 
+#[rstest]
+#[case::i_become_monstrous(r#"{"BecomesMonstrous":{"what":["This"]}}"#, "Watcher", true, ME, 1)]
+#[case::another_creature_is_not_the_watcher(r#"{"BecomesMonstrous":{"what":["This"]}}"#, "Bear", true, ME, 0)]
+#[case::my_creature(r#"{"BecomesMonstrous":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#, "Bear", true, ME, 1)]
+#[case::their_creature_is_not_mine(r#"{"BecomesMonstrous":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#, "Ogre", true, FOE, 0)]
+#[case::i_adapt(r#"{"Adapted":{"what":["This"]}}"#, "Watcher", false, ME, 1)]
+#[case::another_creature_adapts_not_me(r#"{"Adapted":{"what":["This"]}}"#, "Bear", false, ME, 0)]
+#[case::any_creature_adapts(r#"{"Adapted":{"what":[{"Type":"Creature"}]}}"#, "Ogre", false, FOE, 1)]
+fn becoming_monstrous_and_adapting_trigger_for_the_creatures_the_pattern_names_and_name_the_creature_and_its_controller(
+    #[case] when: &str,
+    #[case] creature: &str,
+    #[case] monstrous: bool,
+    #[case] player: PlayerId,
+    #[case] expected: usize,
+) {
+    let pre = board(when);
+    let object = pre
+        .objects()
+        .find(|o| o.card().name == creature)
+        .map(crate::object::GameObject::id)
+        .unwrap();
+    let event = if monstrous {
+        Event::Monstrous { object, player }
+    } else {
+        Event::Adapted { object, player }
+    };
+    // Neither pattern answers the other action.
+    let other = if monstrous {
+        Event::Adapted { object, player }
+    } else {
+        Event::Monstrous { object, player }
+    };
+    assert_eq!(fires(&pre, &[other]).len(), 0);
+    let found = fires(&pre, &[event]);
+    assert_eq!(found.len(), expected);
+    if expected == 1 {
+        assert_eq!(
+            found[0].cause.subjects.first(),
+            Some(&Target::Player(player))
+        );
+        assert_eq!(found[0].cause.subjects.len(), 2);
+    }
+}
+
+#[rstest]
+#[case::i_bolster(r#"{"Bolstered":{"who":"You"}}"#, ME, 1)]
+#[case::they_bolster_not_me(r#"{"Bolstered":{"who":"You"}}"#, FOE, 0)]
+#[case::an_opponent_bolsters(r#"{"Bolstered":{"who":"Opponents"}}"#, FOE, 1)]
+#[case::anyone_bolsters(r#"{"Bolstered":{}}"#, FOE, 1)]
+fn bolstering_triggers_for_the_players_the_pattern_names_and_names_the_player(
+    #[case] when: &str,
+    #[case] player: PlayerId,
+    #[case] expected: usize,
+) {
+    let pre = board(when);
+    let found = fires(
+        &pre,
+        &[Event::Bolstered {
+            object: ObjectId(1),
+            player,
+        }],
+    );
+    assert_eq!(found.len(), expected);
+    if expected == 1 {
+        assert_eq!(found[0].cause.subjects, vec![Target::Player(player)]);
+    }
+}
+
 #[test]
 fn a_discard_that_is_not_cycling_does_not_trigger_a_cycling_pattern_and_the_cycling_of_a_card_also_discards_it()
  {

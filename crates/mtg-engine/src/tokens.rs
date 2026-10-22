@@ -74,6 +74,7 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
     token.kind = ObjectKind::Token;
     token.permanent = Some(PermanentState {
         tapped: event.tapped,
+        monstrous: false,
         damage: 0,
         deathtouched: false,
         summoning_sick: true,

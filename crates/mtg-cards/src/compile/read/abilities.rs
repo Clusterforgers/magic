@@ -141,6 +141,7 @@ fn about_a_player(when: &TriggerPattern) -> bool {
             | TriggerPattern::BecomesMonarch { .. }
             | TriggerPattern::Proliferated { .. }
             | TriggerPattern::Amassed { .. }
+            | TriggerPattern::Bolstered { .. }
             | TriggerPattern::Cycled { .. }
             | TriggerPattern::TappedForMana { .. }
             | TriggerPattern::PlayerAttacks { .. }

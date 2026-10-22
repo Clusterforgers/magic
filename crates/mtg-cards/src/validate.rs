@@ -373,6 +373,7 @@ impl<'a> Walker<'a> {
             | Pred::Ability(_)
             | Pred::Tapped
             | Pred::Untapped
+            | Pred::Monstrous
             | Pred::Attacking
             | Pred::Blocking
             | Pred::Unblocked
@@ -919,6 +920,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::BecomesMonarch { who }
             | TriggerPattern::Proliferated { who }
             | TriggerPattern::Amassed { who }
+            | TriggerPattern::Bolstered { who }
             | TriggerPattern::Drew { who } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
@@ -931,6 +933,8 @@ impl<'a> Walker<'a> {
             TriggerPattern::Tapped { what }
             | TriggerPattern::Explored { what }
             | TriggerPattern::Connived { what }
+            | TriggerPattern::BecomesMonstrous { what }
+            | TriggerPattern::Adapted { what }
             | TriggerPattern::Untapped { what }
             | TriggerPattern::Blocks { what }
             | TriggerPattern::BecomesBlocked { what }
@@ -983,6 +987,9 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::Amassed { .. }
                 | TriggerPattern::Explored { .. }
                 | TriggerPattern::Connived { .. }
+                | TriggerPattern::BecomesMonstrous { .. }
+                | TriggerPattern::Adapted { .. }
+                | TriggerPattern::Bolstered { .. }
                 | TriggerPattern::SpellCast { .. }
                 | TriggerPattern::BecomesTarget { .. }
                 | TriggerPattern::GroupAttacks { .. }
