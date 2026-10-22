@@ -18,6 +18,7 @@ mod choice_fuzz;
 mod choose_cards;
 mod choose_decisions;
 mod combat_damage;
+mod commander_fuzz;
 mod combat_declarations;
 mod combat_forecast;
 mod combat_preview;

@@ -1680,6 +1680,14 @@ impl Pass<'_> {
             })
             .collect();
         self.slots.splice(at..=at, slots);
+        // An object sent elsewhere is not among the cards an effect then bottoms or shuffles into the library.
+        for slot in &mut self.slots {
+            match &mut slot.item {
+                Item::One(Event::LibraryBottomed { cards, .. }) => cards.retain(|id| *id != object),
+                Item::One(Event::LibraryShuffled { order, .. }) => order.retain(|id| *id != object),
+                _ => {}
+            }
+        }
     }
 
     /// The `Entered` event that follows the enter event of `object`, made when the batch has none yet.

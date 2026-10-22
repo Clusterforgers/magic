@@ -1,0 +1,117 @@
+//! Commander games for tests: legendary commanders, 100-card singleton decks built from the corpus within a commander's
+//! color identity, and setups of 2 to 6 seats.
+
+use std::sync::Arc;
+
+use mtg_cards::CardDefinition;
+use mtg_cards::ability::Ability;
+use mtg_cards::trigger::ReplaceBy;
+use mtg_cards::support::Support;
+use mtg_core::card::{CardType, Supertype};
+use mtg_core::color::{Color, ColorSet};
+use mtg_engine::GameSetup;
+use mtg_engine::format::Commander;
+use mtg_engine::rng::GameRng;
+
+use crate::cards::{cost, land, wastes};
+use crate::corpus::{self, CorpusError};
+
+/// Cards of the deck besides its commander.
+pub const DECK_CARDS: usize = 99;
+/// The most distinct corpus cards one generated deck holds; basic lands fill the rest.
+const MOST_SPELLS: usize = 60;
+
+/// A legendary creature costing `generic` and one colored mana per entry of `colors`.
+pub fn legend(
+    name: &str,
+    generic: u32,
+    colors: &[Color],
+    power: i32,
+    toughness: i32,
+) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_mana_cost(cost(generic, colors))
+            .with_supertype(Supertype::Legendary)
+            .with_type(CardType::Creature)
+            .with_power_toughness(power, toughness),
+    )
+}
+
+/// A basic land of each color of `identity`, or Wastes for a colorless identity.
+fn basics(identity: ColorSet) -> Vec<Arc<CardDefinition>> {
+    let lands: Vec<_> = identity.iter().map(land).collect();
+    if lands.is_empty() {
+        vec![wastes()]
+    } else {
+        lands
+    }
+}
+
+/// Whether the card enters the battlefield as a copy of another permanent; the copies have a bug of their own that a
+/// campaign over the whole corpus meets (a copy that dies at once is read as the card it copies).
+fn enters_as_a_copy(card: &CardDefinition) -> bool {
+    card.rules.iter().any(|rules| {
+        matches!(
+            &**rules,
+            Ability::Replacement {
+                by: ReplaceBy::AsCopy { .. },
+                ..
+            }
+        )
+    })
+}
+
+/// A legal Commander deck led by a legendary creature of the corpus: the 99 other cards (distinct corpus cards the
+/// engine plays whole, within the commander's color identity, and basic lands to fill), and the commander. Everything
+/// is derived from `rng`.
+pub fn commander_deck(
+    rng: &mut GameRng,
+) -> Result<(Vec<Arc<CardDefinition>>, Arc<CardDefinition>), CorpusError> {
+    let corpus = corpus::corpus()?;
+    let mut playable = Vec::new();
+    for name in corpus.names() {
+        if corpus.support(name)?.support == Support::Verified {
+            playable.push(corpus.card(name)?);
+        }
+    }
+    let leaders: Vec<_> = playable
+        .iter()
+        .filter(|card| card.can_be_commander())
+        .cloned()
+        .collect();
+    let commander = leaders
+        .get(rng.index(leaders.len().max(1)))
+        .cloned()
+        .ok_or_else(|| CorpusError::Data("the corpus has no commander".into()))?;
+    let identity = commander.color_identity();
+    let mut spells: Vec<_> = playable
+        .into_iter()
+        .filter(|card| card.name != commander.name && card.color_identity().is_subset_of(identity))
+        .filter(|card| card.singleton_limit() == Some(1))
+        .filter(|card| !enters_as_a_copy(card))
+        .collect();
+    rng.shuffle(&mut spells);
+    spells.truncate(MOST_SPELLS);
+    let basics = basics(identity);
+    let mut deck = spells;
+    let mut next = 0;
+    while deck.len() < DECK_CARDS {
+        deck.push(Arc::clone(&basics[next % basics.len()]));
+        next += 1;
+    }
+    rng.shuffle(&mut deck);
+    Ok((deck, commander))
+}
+
+/// A Commander game of `players` seats with [`commander_deck`]s, fully determined by `seed`.
+pub fn commander_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusError> {
+    let mut decks = Vec::with_capacity(players);
+    let mut commanders = Vec::with_capacity(players);
+    for seat in 0u64..players as u64 {
+        let (deck, commander) = commander_deck(&mut GameRng::substream(seed, 9_000 + seat))?;
+        decks.push(deck);
+        commanders.push(vec![commander]);
+    }
+    Ok(GameSetup::new(Arc::new(Commander), seed, decks).with_commanders(commanders))
+}
