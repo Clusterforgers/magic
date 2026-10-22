@@ -517,6 +517,12 @@ pub enum Event {
         /// What they did.
         action: Box<ManualAction>,
     },
+    /// The owner of a commander in a graveyard or exile chose to leave it there (CR 903.9a); they are asked again if
+    /// it moves and lies in a graveyard or exile once more.
+    CommanderStayed {
+        /// The commander.
+        object: ObjectId,
+    },
 }
 
 /// How the resolution of a spell or ability ended.
@@ -619,6 +625,7 @@ impl Event {
             | Event::LifeGained { .. }
             | Event::LifeLost { .. }
             | Event::ManualAction { .. }
+            | Event::CommanderStayed { .. }
             | Event::LibraryLooked(_)
             | Event::CardsFound(_)
             | Event::Revealed(_) => Vec::new(),

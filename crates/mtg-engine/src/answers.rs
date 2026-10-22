@@ -125,6 +125,16 @@ pub(crate) fn handle(
         (DecisionKind::OrderCards(options), Answer::OrderCards(choice)) => {
             choose::order_answer(player, options, choice)
         }
+        // Nothing resolving and nothing announced: the question is the owner's choice for a commander in a graveyard or
+        // exile (CR 903.9a).
+        (DecisionKind::YesNo(options), Answer::YesNo(choice))
+            if state.resolving().is_none()
+                && pending.is_none()
+                && !replacing
+                && crate::commanders::asks(state, options) =>
+        {
+            crate::commanders::answer(state, options, choice)
+        }
         (DecisionKind::YesNo(options), Answer::YesNo(choice)) => {
             choose::yes_no_answer(player, options, choice)
         }

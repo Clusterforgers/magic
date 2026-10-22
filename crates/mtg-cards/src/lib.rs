@@ -15,6 +15,7 @@ pub mod deck;
 pub mod definition;
 pub mod effect;
 pub mod generated;
+mod identity;
 pub mod keyword;
 pub mod load;
 pub mod mana;

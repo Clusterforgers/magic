@@ -13,8 +13,10 @@ use crate::player::LossReason;
 use crate::state::{GameResult, GameState};
 use crate::turn::{MAX_HAND_SIZE, POISON_LOSS};
 
+mod commander;
 mod ruleset;
 
+pub use commander::Commander;
 pub use ruleset::RuleSet;
 
 /// Why a deck is not legal in a format.
@@ -37,6 +39,50 @@ pub enum DeckError {
         max: usize,
         /// Copies in the deck.
         got: usize,
+    },
+    /// The deck is not the size the format asks for.
+    #[error("deck has {got} cards but needs exactly {expected}")]
+    WrongSize {
+        /// Required size.
+        expected: usize,
+        /// Cards in the deck, commanders included.
+        got: usize,
+    },
+    /// The format has no command zone, so a seat cannot start with commanders.
+    #[error("this format has no command zone, so a deck cannot name commanders")]
+    CommandersNotAllowed,
+    /// A Commander deck names no commander.
+    #[error("a Commander deck needs a commander")]
+    NoCommander,
+    /// More commanders than a pair.
+    #[error("a deck has one commander or a pair of partners, not {got}")]
+    TooManyCommanders {
+        /// Commanders named.
+        got: usize,
+    },
+    /// A card that cannot be a commander.
+    #[error("{name} cannot be a commander: it is no legendary creature and does not say it can be")]
+    NotACommander {
+        /// Card name.
+        name: String,
+    },
+    /// Two commanders that are not partners.
+    #[error("{first} and {second} cannot be commanders together")]
+    NotPartners {
+        /// The first commander.
+        first: String,
+        /// The second commander.
+        second: String,
+    },
+    /// A card with a color outside the commanders' color identity.
+    #[error("{name} has {outside} in its color identity, outside the commanders' ({identity})")]
+    OutsideColorIdentity {
+        /// Card name.
+        name: String,
+        /// The colors of the card outside the identity, as WUBRG letters.
+        outside: String,
+        /// The commanders' color identity, as WUBRG letters (`C` when colorless).
+        identity: String,
     },
 }
 
@@ -65,9 +111,8 @@ pub enum ExtraZone {
 
 /// Format-specific rules. A game reads the ones its table can override through [`RuleSet`], never from here.
 ///
-/// Extension point (M5): `Commander` implements this trait with 100-card singleton validation,
-/// [`ExtraZone::Command`], 40 starting life, a free first mulligan and a commander-damage
-/// [`loss_condition`](FormatRules::loss_condition); the engine core does not change.
+/// [`Normal`] and [`Commander`] implement it: Commander adds a command zone, commanders, colour identity, a free first
+/// mulligan, a tax on casting a commander and a [`loss_condition`](FormatRules::loss_condition) for commander damage.
 pub trait FormatRules: Debug + Send + Sync {
     /// Short stable name, hashed into the game state.
     fn name(&self) -> &'static str;
@@ -75,6 +120,19 @@ pub trait FormatRules: Debug + Send + Sync {
     fn starting_life(&self) -> i32;
     /// Checks a player's deck.
     fn validate_deck(&self, deck: &[Arc<CardDefinition>]) -> Result<(), DeckError>;
+    /// Checks a seat: its `deck` (every card but the commanders) and the `commanders` it starts with in the command
+    /// zone. A format without a command zone refuses commanders.
+    fn validate_seat(
+        &self,
+        deck: &[Arc<CardDefinition>],
+        commanders: &[Arc<CardDefinition>],
+    ) -> Result<(), DeckError> {
+        if commanders.is_empty() {
+            self.validate_deck(deck)
+        } else {
+            Err(DeckError::CommandersNotAllowed)
+        }
+    }
     /// The opening-hand mulligan rule.
     fn mulligan_rule(&self) -> MulliganRule;
     /// Zones beyond library, hand, battlefield, graveyard, stack and exile.
@@ -90,6 +148,14 @@ pub trait FormatRules: Debug + Send + Sync {
     /// The poison counters that make a player lose (CR 704.5c).
     fn poison_threshold(&self) -> u32 {
         POISON_LOSS
+    }
+    /// The generic mana a commander costs more for each time it was cast from the command zone (CR 903.8).
+    fn commander_tax(&self) -> u32 {
+        0
+    }
+    /// The combat damage from one commander that makes a player lose, if the format has the rule (CR 903.10a).
+    fn commander_damage(&self) -> Option<u32> {
+        None
     }
     /// A format-specific reason `player` has lost, checked with state-based actions.
     fn loss_condition(&self, _state: &GameState, _player: PlayerId) -> Option<LossReason> {

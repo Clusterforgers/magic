@@ -204,6 +204,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::PriorityPassed { player } => pass_priority(state, *player)?,
         Event::Transformed { object, face } => set_face(state, *object, *face)?,
         Event::DayNightChanged { to } => state.day_night = Some(*to),
+        Event::CommanderStayed { object } => state.commanders.stay(*object),
         Event::PermanentTapped { object } => set_tapped(state, *object, true)?,
         Event::PermanentUntapped { object } => set_tapped(state, *object, false)?,
         Event::ManaAdded {

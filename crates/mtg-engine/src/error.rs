@@ -72,6 +72,12 @@ pub enum SetupError {
         /// The validation failure.
         source: DeckError,
     },
+    /// A seat starts with commanders in a format that has no command zone.
+    #[error("seat {seat} starts with commanders but the format has no command zone")]
+    NoCommandZone {
+        /// The first seat that names commanders.
+        seat: usize,
+    },
     /// A house rule is outside the range its rule allows.
     #[error("invalid house rule: {0}")]
     HouseRules(#[from] HouseRuleError),

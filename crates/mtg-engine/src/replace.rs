@@ -109,6 +109,7 @@ pub fn process(
             leaves_stack_by_flashback(state, &item)
                 || returns_by_buyback(state, &item)
                 || exiles_by_adventure(state, &item)
+                || commander_leaves(state, event)
         })
     {
         return Ok(Processed::Events(proposed));
@@ -251,6 +252,17 @@ enum Origin {
     Buyback,
     /// The spell that resolved as an Adventure, which is exiled instead of going to its owner's graveyard (CR 715.4).
     Adventure,
+    /// A commander that would be put into a hand or a library, which its owner may put into the command zone instead
+    /// (CR 903.9b).
+    Commander,
+}
+
+/// Whether the event puts a commander into a hand or a library, where its owner may send it to the command zone.
+fn commander_leaves(state: &GameState, event: &Event) -> bool {
+    state.commanders.any()
+        && moving(state, event).is_some_and(|(object, _, to)| {
+            matches!(to, Zone::Hand(_) | Zone::Library(_)) && state.is_commander(object)
+        })
 }
 
 /// Whether the item is the resolution of an instant or sorcery whose buyback cost was paid: a spell that was countered
@@ -861,6 +873,7 @@ impl Pass<'_> {
             found.extend(self.flashback_candidate(slot));
             found.extend(self.buyback_candidate(slot));
             found.extend(self.adventure_candidate(slot));
+            found.extend(self.commander_candidate(slot, &unit));
         }
         found.sort_by_key(|candidate| candidate.origin);
         Ok(found)
@@ -905,6 +918,28 @@ impl Pass<'_> {
             controller: spell.controller(),
             action: Action::Replace(ReplaceBy::MoveTo(ZoneKind::Exile)),
             // The rule is no effect of the spell, so a replacement of the graveyard move (Rest in Peace) is ordered with it (CR 616.1).
+            is_self: false,
+        })
+    }
+
+    /// The command zone in place of a hand or a library for a commander, when its owner has not been asked yet (CR 903.9b).
+    fn commander_candidate(&self, slot: &Slot, unit: &Unit) -> Option<Candidate> {
+        let Unit::Move { object, to, .. } = unit else {
+            return None;
+        };
+        if slot.applied.contains(&Origin::Commander)
+            || !matches!(to, Zone::Hand(_) | Zone::Library(_))
+            || !self.state.is_commander(*object)
+        {
+            return None;
+        }
+        let card = self.state.object(*object)?;
+        self.state.is_alive(card.owner()).then(|| Candidate {
+            origin: Origin::Commander,
+            object: card.reference(),
+            controller: card.owner(),
+            action: Action::Replace(ReplaceBy::MoveTo(ZoneKind::Command)),
+            // The rule is no effect of the commander, so it is ordered with the others (CR 616.1).
             is_self: false,
         })
     }
@@ -1147,7 +1182,8 @@ impl Pass<'_> {
                                                 | Origin::Protection
                                                 | Origin::Flashback
                                                 | Origin::Buyback
-                                                | Origin::Adventure => 0,
+                                                | Origin::Adventure
+                                                | Origin::Commander => 0,
                                             },
                                             shield: match c.origin {
                                                 Origin::Shield(id) => Some(id),
@@ -1156,7 +1192,8 @@ impl Pass<'_> {
                                                 | Origin::Protection
                                                 | Origin::Flashback
                                                 | Origin::Buyback
-                                                | Origin::Adventure => None,
+                                                | Origin::Adventure
+                                                | Origin::Commander => None,
                                             },
                                         })
                                         .collect(),
@@ -1181,6 +1218,17 @@ impl Pass<'_> {
                 Asked::Ask(decision) => return Ok(Run::Ask(decision)),
                 Asked::Got(pick) => pick,
             };
+            // The replacement of a commander is a choice of its owner: no leaves it where it was going.
+            if chosen.origin == Origin::Commander {
+                match self.may_go_to_command_zone(slot, &chosen)? {
+                    Asked::Ask(decision) => return Ok(Run::Ask(decision)),
+                    Asked::Got(true) => {}
+                    Asked::Got(false) => {
+                        self.slots[slot].applied.push(Origin::Commander);
+                        continue;
+                    }
+                }
+            }
             match self.apply(slot, &chosen)? {
                 Applied::Ask(decision) => return Ok(Run::Ask(decision)),
                 Applied::Done => {}
@@ -1381,6 +1429,7 @@ impl Pass<'_> {
                 let destination = match kind {
                     ZoneKind::Exile => Zone::Exile,
                     ZoneKind::Hand => Zone::Hand(owner),
+                    ZoneKind::Command => Zone::Command(owner),
                     _ => Zone::Graveyard(owner),
                 };
                 self.slots[at].applied.clone_from(&applied);
@@ -1857,6 +1906,39 @@ impl Pass<'_> {
             of,
             definition: Arc::new(values),
         })))
+    }
+
+    /// Whether the owner of a commander puts it into the command zone in place of the hand or library it would go to
+    /// (CR 903.9b): asked yes or no.
+    fn may_go_to_command_zone(
+        &mut self,
+        at: usize,
+        candidate: &Candidate,
+    ) -> Result<Asked<bool>, EngineError> {
+        let owner = candidate.controller;
+        match self.answer() {
+            None => {
+                let to = match self.unit(&self.slots[at].item) {
+                    Unit::Move { to, .. } => zone_word(to),
+                    _ => "another zone",
+                };
+                let name = self
+                    .state
+                    .object(candidate.object.id)
+                    .map_or("the commander", |card| card.card().name.as_str());
+                Ok(Asked::Ask(Decision {
+                    player: owner,
+                    kind: DecisionKind::YesNo(YesNoOptions::new(
+                        candidate.object.id,
+                        format!("Put {name} into the command zone instead of {to}?"),
+                    )),
+                }))
+            }
+            Some((who, Choice::YesNo(yes))) if *who == owner => Ok(Asked::Got(*yes)),
+            Some(other) => Err(Self::invalid(format!(
+                "{other:?} is no answer to the commander question of {owner:?}"
+            ))),
+        }
     }
 
     /// Whether `controller` pays `life` as the card enters: asked yes or no, with No the only answer when they cannot

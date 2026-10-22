@@ -123,6 +123,8 @@ pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> 
         return Vec::new();
     }
     let in_hand = matches!(zone, Zone::Hand(_));
+    // A commander is cast from its owner's command zone for its mana cost and the tax (CR 903.8).
+    let from_command = matches!(zone, Zone::Command(_)) && state.is_commander(id);
     // The creature card of an Adventure that was exiled on an adventure (CR 715.4).
     let on_adventure =
         zone == Zone::Exile && card.on_adventure() == Some(player) && card.face().is_none();
@@ -140,7 +142,7 @@ pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> 
     let by_permission = permissions
         .iter()
         .any(|permission| !permission.free && permission.from == Some(zone_kind(zone)));
-    if (in_hand || by_permission || on_adventure)
+    if (in_hand || from_command || by_permission || on_adventure)
         && let Some(cost) = printed
     {
         ways.push(Way {
