@@ -45,7 +45,7 @@ fn settle(driver: &mut Driver) -> Result<(), ScriptError> {
 fn activate(driver: &mut Driver, name: &str) -> Result<(), ScriptError> {
     driver.begin_activation(name)?;
     if let DecisionKind::ChooseCards(options) = &driver.decision()?.kind {
-        let all = CardsChoice(options.from.iter().copied().collect());
+        let all = CardsChoice(options.from.clone());
         driver.answer(Answer::ChooseCards(all))?;
     }
     if matches!(driver.decision()?.kind, DecisionKind::PayMana(_)) {
@@ -256,7 +256,10 @@ fn outlast_at_the_wrong_time_is_not_offered(
     let scenario =
         table(seats, vec![ready(corpus("Abzan Falconer"))], 1).at(when.0, when.1, when.2);
     let driver = Driver::from_scenario(scenario)?;
-    assert!(driver.offered_abilities("Abzan Falconer")?.is_empty());
+    assert_eq!(
+        driver.offered_abilities("Abzan Falconer")?,
+        Vec::<usize>::new()
+    );
     Ok(())
 }
 

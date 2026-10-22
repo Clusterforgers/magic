@@ -107,27 +107,8 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
             && span
                 .slice(&shown.oracle_text)
                 .is_some_and(normalize::reminder_mentions_counter);
-        let mut more = Vec::new();
-        let ability = match kind {
-            ClauseKind::Keyword => keywords::read(&clause_text)
-                // `check_printed` accepts Enchant on an Aura only.
-                .filter(|keyword| aura || !matches!(keyword, Keyword::Enchant(_)))
-                .map(Ability::Keyword),
-            ClauseKind::Static if clause_text.starts_with("LEVEL ") => {
-                let mut block = read::level_block(&clause_text, x_free, &own)
-                    .unwrap_or_default()
-                    .into_iter();
-                let first = block.next();
-                more = block.collect();
-                first
-            }
-            ClauseKind::Triggered | ClauseKind::Activated | ClauseKind::Static
-                if !reminds_counter =>
-            {
-                read::clause_with(&clause_text, kind, x_free, &own)
-            }
-            _ => None,
-        };
+        let (ability, more) =
+            read_clause(&clause_text, kind, (aura, reminds_counter), x_free, &own);
         pending.push(Pending {
             span,
             text: clause_text,
@@ -205,6 +186,37 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
         });
     }
     abilities
+}
+
+/// The ability a clause reads into, and the abilities after it that the same clause reads into (a level block reads into
+/// one ability for each of its lines). `aura` says whether the face is an Aura and `reminds_counter` whether the
+/// reminder text of the clause explains a counter, which the reading would lose.
+fn read_clause(
+    text: &str,
+    kind: ClauseKind,
+    (aura, reminds_counter): (bool, bool),
+    x_free: bool,
+    own: &read::Own,
+) -> (Option<Ability>, Vec<Ability>) {
+    match kind {
+        ClauseKind::Keyword => (
+            keywords::read(text)
+                // `check_printed` accepts Enchant on an Aura only.
+                .filter(|keyword| aura || !matches!(keyword, Keyword::Enchant(_)))
+                .map(Ability::Keyword),
+            Vec::new(),
+        ),
+        ClauseKind::Static if text.starts_with("LEVEL ") => {
+            let mut block = read::level_block(text, x_free, own)
+                .unwrap_or_default()
+                .into_iter();
+            (block.next(), block.collect())
+        }
+        ClauseKind::Triggered | ClauseKind::Activated | ClauseKind::Static if !reminds_counter => {
+            (read::clause_with(text, kind, x_free, own), Vec::new())
+        }
+        _ => (None, Vec::new()),
+    }
 }
 
 /// Whether a spell or static clause is a keyword line the keyword reader does not know
