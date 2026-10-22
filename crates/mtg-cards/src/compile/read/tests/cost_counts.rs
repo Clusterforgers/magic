@@ -12,7 +12,8 @@ fn itself(per: &str) -> String {
     )
 }
 
-const CREATURE_CARDS: &str = r#"{"Count":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]}"#;
+const CREATURE_CARDS: &str =
+    r#"{"Count":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]}"#;
 
 #[rstest]
 #[case::creature_cards_in_your_graveyard(
@@ -132,13 +133,21 @@ fn spells_cast_from_anywhere_other_than_the_hand(#[case] text: &str, #[case] jso
 #[case::the_number_of_with_x(
     "This spell costs {X} less to cast, where X is the number of artifacts you control."
 )]
-#[case::where_x_without_x("This spell costs {1} less to cast, where X is the greatest power among creatures you control.")]
+#[case::where_x_without_x(
+    "This spell costs {1} less to cast, where X is the greatest power among creatures you control."
+)]
 #[case::x_without_where("This spell costs {X} less to cast.")]
 #[case::a_party("This spell costs {1} less to cast for each creature in your party.")]
-#[case::a_subtype_of_cards("This spell costs {1} less to cast for each Elf card in your graveyard.")]
+#[case::a_subtype_of_cards(
+    "This spell costs {1} less to cast for each Elf card in your graveyard."
+)]
 #[case::counted_by_a_target("This spell costs {1} less to cast for each target.")]
-#[case::another_player("This spell costs {1} less to cast for each creature card in their graveyard.")]
-#[case::from_elsewhere_without_you("Spells cast from anywhere other than your hand cost {1} less to cast.")]
+#[case::another_player(
+    "This spell costs {1} less to cast for each creature card in their graveyard."
+)]
+#[case::from_elsewhere_without_you(
+    "Spells cast from anywhere other than your hand cost {1} less to cast."
+)]
 #[case::from_the_graveyard("Spells you cast from your graveyard cost {1} less to cast.")]
 #[case::this_turn("This spell costs {1} less to cast for each creature that died this turn.")]
 #[case::a_sum_of_two_counts(

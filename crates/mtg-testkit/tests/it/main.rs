@@ -48,6 +48,8 @@ mod counted_amounts;
 mod counted_costs;
 mod counter_effects;
 mod counters_fuzz;
+mod counting_costs;
+mod counting_fuzz;
 mod damage_forms;
 mod dash;
 mod day_night;

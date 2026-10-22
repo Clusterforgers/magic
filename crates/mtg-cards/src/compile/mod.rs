@@ -146,7 +146,8 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
         .is_some_and(|ability| !ability.targets().is_empty());
     if !has_targets {
         for clause in &mut pending {
-            if matches!(&clause.ability, Some(Ability::CostModifier { per, .. }) if read::counts_targets(per)) {
+            if matches!(&clause.ability, Some(Ability::CostModifier { per, .. }) if read::counts_targets(per))
+            {
                 clause.ability = None;
                 clause.read = false;
             }

@@ -575,7 +575,9 @@ fn cost_subject_text(applies_to: &Selector) -> Option<String> {
     for pred in &applies_to.0 {
         match pred {
             Pred::ControlledBy(Ref::You) if who.is_none() => who = Some(" you cast"),
-            Pred::ControlledBy(Ref::Opponents) if who.is_none() => who = Some(" your opponents cast"),
+            Pred::ControlledBy(Ref::Opponents) if who.is_none() => {
+                who = Some(" your opponents cast")
+            }
             Pred::ControlledBy(_) => return None,
             _ if *pred == not_cast_from_hand() => other = true,
             _ => spells.push(pred.clone()),
@@ -591,7 +593,10 @@ fn cost_subject_text(applies_to: &Selector) -> Option<String> {
     } else {
         ""
     };
-    Some(format!("{}{cast}{from}", phrase_text(&selector, Form::All)?))
+    Some(format!(
+        "{}{cast}{from}",
+        phrase_text(&selector, Form::All)?
+    ))
 }
 
 /// The wording of a cost modifier the template reads.
@@ -613,7 +618,10 @@ fn cost_modifier_texts(
     let (mana, tail) = if per.is_one() {
         (mana.to_string(), String::new())
     } else if itself && *per == beyond_the_first() {
-        (mana.to_string(), " for each target beyond the first".to_owned())
+        (
+            mana.to_string(),
+            " for each target beyond the first".to_owned(),
+        )
     } else if let Some(each) = for_each_text(per) {
         (mana.to_string(), format!(" for each {each}"))
     } else if matches!(per, Amount::Greatest { .. } | Amount::Total { .. })
