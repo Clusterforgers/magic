@@ -1,0 +1,26 @@
+{
+  "id": "136f1e4e-ca24-45cb-a39c-4dd159bb1488",
+  "oracle_id": "0baabe39-72ae-47bd-a095-cbf7eb8a6361",
+  "name": "Ancient Ziggurat",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ecc",
+  "collector_number": "144",
+  "rarity": "uncommon",
+  "released_at": "2026-01-23",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add one mana of any color. Spend this mana only to cast a creature spell.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

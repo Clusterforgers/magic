@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "1a297bae-f259-4fc7-b76a-285f972d69e3",
+  "oracle_id": "579cbd92-797f-4cdf-91ed-fca7a523eae5",
+  "multiverse_ids": [],
+  "resource_id": "A5FEB1F4DE860A63BF3AA3400AABE99EF855AA6BC6D930A584E6B813A0EA918C",
+  "mtgo_id": 150767,
+  "tcgplayer_id": 697556,
+  "cardmarket_id": 891825,
+  "name": "Deep Analysis",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/1a297bae-f259-4fc7-b76a-285f972d69e3",
+  "scryfall_uri": "https://scryfall.com/card/msc/149/deep-analysis?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:40:40Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/a/1a297bae-f259-4fc7-b76a-285f972d69e3.jpg?1783903240",
+    "normal": "https://cards.scryfall.io/normal/front/1/a/1a297bae-f259-4fc7-b76a-285f972d69e3.jpg?1783903240",
+    "large": "https://cards.scryfall.io/large/front/1/a/1a297bae-f259-4fc7-b76a-285f972d69e3.jpg?1783903240",
+    "png": "https://cards.scryfall.io/png/front/1/a/1a297bae-f259-4fc7-b76a-285f972d69e3.png?1783903240",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/a/1a297bae-f259-4fc7-b76a-285f972d69e3.jpg?1783903240",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/a/1a297bae-f259-4fc7-b76a-285f972d69e3.jpg?1783903240",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/a/1a297bae-f259-4fc7-b76a-285f972d69e3.webp?1783903240",
+    "grid": "https://cards.scryfall.io/grid/front/1/a/1a297bae-f259-4fc7-b76a-285f972d69e3.webp?1783903240",
+    "display": "https://cards.scryfall.io/display/front/1/a/1a297bae-f259-4fc7-b76a-285f972d69e3.webp?1783903240",
+    "art": "https://cards.scryfall.io/art/front/1/a/1a297bae-f259-4fc7-b76a-285f972d69e3.webp?1783903240",
+    "crop": "https://cards.scryfall.io/crop/front/1/a/1a297bae-f259-4fc7-b76a-285f972d69e3.webp?1783903240",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/a/1a297bae-f259-4fc7-b76a-285f972d69e3.jpg?1783903240"
+  },
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Target player draws two cards.\nFlashback—{1}{U}, Pay 3 life. (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flashback"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1a297bae-f259-4fc7-b76a-285f972d69e3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A579cbd92-797f-4cdf-91ed-fca7a523eae5&unique=prints",
+  "collector_number": "149",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "One thing is sure: Reed Richards will always overthink things.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Michael MacRae",
+  "artist_ids": [
+    "4704d907-4fb1-402c-858f-bacf989fa156"
+  ],
+  "illustration_id": "4b580ec0-bfc5-478d-aa42-69f784d2d4ae",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 1451,
+  "penny_rank": 683,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDeep%2BAnalysis",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDeep%2BAnalysis",
+    "edhrec": "https://edhrec.com/route/?cc=Deep+Analysis"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697556%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=891825&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/150767?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

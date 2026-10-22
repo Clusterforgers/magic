@@ -1,0 +1,28 @@
+{
+  "id": "a9947cfd-91d6-479e-a7f6-2a2050f020f3",
+  "oracle_id": "ee05fc58-1356-4b2f-b9ce-bda8cc716aee",
+  "name": "Augury Raven",
+  "lang": "en",
+  "layout": "normal",
+  "set": "khm",
+  "collector_number": "44",
+  "rarity": "common",
+  "released_at": "2021-02-05",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Bird",
+  "oracle_text": "Flying\nForetell {1}{U} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Foretell"
+  ]
+}

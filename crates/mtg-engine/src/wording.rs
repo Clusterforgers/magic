@@ -5,7 +5,7 @@
 //! They are hints for a person choosing, not rules: a predicate with no short phrase is left out.
 
 use mtg_cards::effect::Effect;
-use mtg_cards::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use mtg_cards::refs::{AbilityKind, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::trigger::{Step, TriggerPattern};
 use mtg_cards::value::{Amount, Cmp, Condition, StatKind};
 
@@ -72,6 +72,8 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::Colorless => adjectives.push("colorless".to_owned()),
             Pred::Token => adjectives.push("token".to_owned()),
             Pred::Spell => nouns.push("spell".to_owned()),
+            Pred::Ability(AbilityKind::Activated) => nouns.push("activated ability".to_owned()),
+            Pred::Ability(AbilityKind::Triggered) => nouns.push("triggered ability".to_owned()),
             Pred::Tapped => adjectives.push("tapped".to_owned()),
             Pred::Untapped => adjectives.push("untapped".to_owned()),
             Pred::Attacking => adjectives.push("attacking".to_owned()),

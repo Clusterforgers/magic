@@ -1,0 +1,23 @@
+{
+  "id": "b16d0422-61ea-4039-b1c1-e590ace9156e",
+  "oracle_id": "0596920f-9946-42f4-a03b-24aab67f9f1b",
+  "name": "Blaze",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bbd",
+  "collector_number": "167",
+  "rarity": "uncommon",
+  "released_at": "2018-06-08",
+  "digital": false,
+  "mana_cost": "{X}{R}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Blaze deals X damage to any target.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

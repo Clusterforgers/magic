@@ -1,0 +1,26 @@
+{
+  "id": "f85ab5f9-508e-45de-8fa1-ce1f16552ffc",
+  "oracle_id": "32e5339e-9e4f-46f8-b305-f9d6d3ba8bb5",
+  "name": "Lotus Petal",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tpr",
+  "collector_number": "225",
+  "rarity": "uncommon",
+  "released_at": "2015-05-06",
+  "digital": true,
+  "mana_cost": "{0}",
+  "cmc": 0.0,
+  "type_line": "Artifact",
+  "oracle_text": "{T}, Sacrifice this artifact: Add one mana of any color.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

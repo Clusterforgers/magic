@@ -1,0 +1,25 @@
+{
+  "id": "7aa45bfd-7075-470d-8aaa-16e34109eb5a",
+  "oracle_id": "4d22b01b-63dd-4698-a221-0acaefb2000b",
+  "name": "Dual Casting",
+  "lang": "en",
+  "layout": "normal",
+  "set": "avr",
+  "collector_number": "133",
+  "rarity": "rare",
+  "released_at": "2012-05-04",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature has \"{R}, {T}: Copy target instant or sorcery spell you control. You may choose new targets for the copy.\"",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

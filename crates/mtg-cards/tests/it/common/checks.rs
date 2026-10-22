@@ -1,4 +1,4 @@
-//! Goal: the checks of a corpus (a card directory and its Scryfall fixture) that stand for every count a table once held: files pair with records, fingerprints are current, the compiler's status follows its clauses, and the compiled sources load (this is not a test module itself).
+//! Goal: the checks of a corpus (a card directory and its Scryfall fixture directory) that stand for every count a table once held: files pair with records, fingerprints are current, the compiler's status follows its clauses, and the compiled sources load (this is not a test module itself).
 
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
@@ -8,6 +8,7 @@ use mtg_cards::compile::compile;
 use mtg_cards::load::{Library, Source, canonical, parse_json, slug};
 use mtg_cards::support::{PrintedCard, has_rules_text, oracle_fingerprint};
 use mtg_import::scryfall::{CardRecord, cards};
+use serde_json::Value;
 
 /// The command that rewrites the fingerprints of the card files and adds the reproduced cards to the ratchet list.
 pub const UPDATE: &str = "MTG_UPDATE_CARDS=1 cargo test -p mtg-cards corpus::";
@@ -15,12 +16,12 @@ pub const UPDATE: &str = "MTG_UPDATE_CARDS=1 cargo test -p mtg-cards corpus::";
 /// Where the steps for a new corpus card are written down.
 pub const ADDING: &str = "docs/cards-dsl.md, \"Adding a corpus card\"";
 
-/// A card directory and the text of the Scryfall fixture it is checked against: the repository's own, or a copy a test changes.
+/// A card directory and the Scryfall fixture directory it is checked against: the repository's own, or a copy a test changes.
 pub struct Corpus {
     /// The directory of rules files (`cards/`), with `tokens/` inside.
     pub dir: PathBuf,
-    /// The fixture: a JSON array of Scryfall objects.
-    pub fixture: String,
+    /// The fixture: a directory of Scryfall objects, one `<slug of the card's name>.json` file per card.
+    pub fixture: PathBuf,
 }
 
 /// The files with this extension directly in `dir`, in path order.
@@ -83,7 +84,7 @@ impl Corpus {
     pub fn repo() -> Corpus {
         Corpus {
             dir: super::cards_dir(),
-            fixture: super::FIXTURE.to_owned(),
+            fixture: super::fixture_dir(),
         }
     }
 
@@ -111,11 +112,81 @@ impl Corpus {
             .collect()
     }
 
-    /// The imported records of the fixture.
-    pub fn records(&self) -> Vec<CardRecord> {
-        cards(self.fixture.as_bytes())
-            .map(|record| record.expect("the fixture holds only valid records"))
+    /// The fixture files (`corpus/*.json`), in file-name order.
+    pub fn fixture_files(&self) -> Vec<PathBuf> {
+        json_in(&self.fixture)
+    }
+
+    /// The name and text of each fixture file, in file-name order.
+    fn fixture_texts(&self) -> Vec<(String, String)> {
+        self.fixture_files()
+            .into_iter()
+            .map(|path| {
+                let file = path.file_name().expect("a file name");
+                let text = std::fs::read_to_string(&path).expect("a fixture file");
+                (file.to_string_lossy().into_owned(), text)
+            })
             .collect()
+    }
+
+    /// The Scryfall objects of the fixture as stored, in file-name order.
+    pub fn fixture_values(&self) -> Vec<Value> {
+        self.fixture_texts()
+            .into_iter()
+            .map(|(file, text)| {
+                serde_json::from_str(&text).unwrap_or_else(|e| panic!("{file}: {e}"))
+            })
+            .collect()
+    }
+
+    /// The imported record of each fixture file with the file's name, in file-name order.
+    pub fn records_with_files(&self) -> Vec<(String, CardRecord)> {
+        self.fixture_texts()
+            .into_iter()
+            .map(|(file, text)| {
+                // The importer reads a bulk array and isolates a bad entry; one object is an array of one.
+                let mut found: Vec<_> = cards(format!("[{text}]").as_bytes()).collect();
+                assert_eq!(found.len(), 1, "{file} holds one Scryfall object");
+                let record = found
+                    .remove(0)
+                    .unwrap_or_else(|e| panic!("{file}: not a valid record: {e:?}"));
+                (file, record)
+            })
+            .collect()
+    }
+
+    /// The imported records of the fixture, in file-name order.
+    pub fn records(&self) -> Vec<CardRecord> {
+        self.records_with_files()
+            .into_iter()
+            .map(|(_, record)| record)
+            .collect()
+    }
+
+    /// Every fixture file that is not named after the slug of its card's name, or does not end in one newline.
+    pub fn fixture_problems(&self) -> Vec<String> {
+        let mut problems = Vec::new();
+        for ((file, record), (_, text)) in self
+            .records_with_files()
+            .into_iter()
+            .zip(self.fixture_texts())
+        {
+            let wanted = format!("{}.json", slug(&record.name));
+            if file != wanted {
+                problems.push(format!(
+                    "{}: tests/fixtures/corpus/{file} is not named after its card; rename it to \
+                     {wanted} ({ADDING})",
+                    record.name
+                ));
+            }
+            if !text.ends_with('\n') || text.ends_with("\n\n") {
+                problems.push(format!(
+                    "{}: tests/fixtures/corpus/{file} does not end in exactly one newline ({ADDING})",
+                    record.name
+                ));
+            }
+        }
+        problems
     }
 
     /// The imported cards of the fixture.
@@ -180,7 +251,7 @@ impl Corpus {
 
     /// Every card file without exactly one fixture record, and every fixture record without exactly one card file.
     pub fn pairing_problems(&self) -> Vec<String> {
-        let mut files: BTreeMap<String, Vec<String>> = BTreeMap::new();
+        let mut files: BTreeMap<String, Vec<(String, String)>> = BTreeMap::new();
         for path in self.card_files() {
             let file = path.file_name().expect("a file name").to_string_lossy();
             let text = std::fs::read_to_string(&path).expect("a card file");
@@ -188,14 +259,14 @@ impl Corpus {
             files
                 .entry(card.oracle_id)
                 .or_default()
-                .push(format!("{} ({file})", card.name));
+                .push((card.name, file.into_owned()));
         }
-        let mut records: BTreeMap<String, Vec<String>> = BTreeMap::new();
-        for record in self.records() {
+        let mut records: BTreeMap<String, Vec<(String, String)>> = BTreeMap::new();
+        for (file, record) in self.records_with_files() {
             records
                 .entry(record.oracle_id.to_string())
                 .or_default()
-                .push(record.name);
+                .push((record.name, file));
         }
         let mut problems = Vec::new();
         for (id, named) in &files {
@@ -203,23 +274,29 @@ impl Corpus {
                 problems.push(format!("{named:?} share the oracle id {id}"));
             }
             if !records.contains_key(id) {
-                problems.push(format!(
-                    "{}: no record in the fixture has its oracle id; add the Scryfall object to \
-                     tests/fixtures/corpus_scryfall.json ({ADDING})",
-                    named.join(", ")
-                ));
+                for (name, file) in named {
+                    problems.push(format!(
+                        "{name} (cards/{file}): no file of tests/fixtures/corpus/ has its oracle id; \
+                         add its Scryfall object as tests/fixtures/corpus/{}.json ({ADDING})",
+                        slug(name)
+                    ));
+                }
             }
         }
         for (id, named) in &records {
             if named.len() > 1 {
-                problems.push(format!("the fixture holds {named:?} more than once ({id})"));
+                problems.push(format!(
+                    "the fixture holds {named:?} with one oracle id ({id}); one file for each card"
+                ));
             }
             if !files.contains_key(id) {
-                problems.push(format!(
-                    "{}: the fixture has a record but cards/ has no file with its oracle id; add \
-                     cards/<slug>.json ({ADDING})",
-                    named.join(", ")
-                ));
+                for (name, file) in named {
+                    problems.push(format!(
+                        "{name} (tests/fixtures/corpus/{file}): cards/ has no file with its oracle \
+                         id; add cards/{}.json, then run `{UPDATE}` ({ADDING})",
+                        slug(name)
+                    ));
+                }
             }
         }
         problems

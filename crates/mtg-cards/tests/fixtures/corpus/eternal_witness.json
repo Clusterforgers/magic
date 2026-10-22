@@ -1,0 +1,25 @@
+{
+  "id": "39704000-65d3-4d39-849e-a3b617376bbc",
+  "oracle_id": "30b24e8e-3b0e-4d8e-90f3-f66eb7c1858c",
+  "name": "Eternal Witness",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "286",
+  "rarity": "uncommon",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{1}{G}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Shaman",
+  "oracle_text": "When this creature enters, you may return target card from your graveyard to your hand.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

@@ -1,0 +1,26 @@
+{
+  "id": "806d4e61-004f-4e52-b2e8-ba11b922cc7d",
+  "oracle_id": "cc2b6e58-2d6f-495e-95f3-9496105c4cba",
+  "name": "Jace Beleren",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "850",
+  "rarity": "mythic",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{1}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Legendary Planeswalker — Jace",
+  "oracle_text": "+2: Each player draws a card.\n−1: Target player draws a card.\n−10: Target player mills twenty cards.",
+  "loyalty": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Mill"
+  ]
+}

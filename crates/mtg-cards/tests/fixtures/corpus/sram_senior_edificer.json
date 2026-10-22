@@ -1,0 +1,25 @@
+{
+  "id": "8fbd18ce-0ac3-4b52-9cd0-0af7e0244207",
+  "oracle_id": "7e00b0cd-d212-4604-ba07-da21f4fe00b0",
+  "name": "Sram, Senior Edificer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "176",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Dwarf Advisor",
+  "oracle_text": "Whenever you cast an Aura, Equipment, or Vehicle spell, draw a card.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "power": "2",
+  "toughness": "2"
+}

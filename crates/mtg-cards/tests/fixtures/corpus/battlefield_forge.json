@@ -1,0 +1,27 @@
+{
+  "id": "ef7d3676-b1db-4329-9201-18f8a6c54ea6",
+  "oracle_id": "6b75b94e-83b7-457e-ac41-7ca90b5a59aa",
+  "name": "Battlefield Forge",
+  "lang": "en",
+  "layout": "normal",
+  "set": "frc",
+  "collector_number": "65",
+  "rarity": "rare",
+  "released_at": "2026-10-02",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{T}: Add {R} or {W}. This land deals 1 damage to you.",
+  "colors": [],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "C",
+    "R",
+    "W"
+  ]
+}

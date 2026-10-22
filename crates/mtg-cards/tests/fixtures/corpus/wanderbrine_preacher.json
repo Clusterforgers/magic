@@ -1,0 +1,25 @@
+{
+  "id": "3fc3f5f2-5a83-4358-8f23-42f26f345140",
+  "oracle_id": "4b4dcdb1-0017-494f-8d83-6706b188e575",
+  "name": "Wanderbrine Preacher",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ecl",
+  "collector_number": "41",
+  "rarity": "common",
+  "released_at": "2026-01-23",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Merfolk Cleric",
+  "oracle_text": "Whenever this creature becomes tapped, you gain 2 life.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

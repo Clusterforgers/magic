@@ -1,0 +1,25 @@
+{
+  "id": "a865fdc5-955a-4c4a-90c0-342c15fd7bbc",
+  "oracle_id": "9e2adca5-f39c-4a09-bcce-8238ebac2c4a",
+  "name": "Cackling Counterpart",
+  "lang": "en",
+  "layout": "normal",
+  "set": "inr",
+  "collector_number": "55",
+  "rarity": "uncommon",
+  "released_at": "2025-01-24",
+  "digital": false,
+  "mana_cost": "{1}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Create a token that's a copy of target creature you control.\nFlashback {5}{U}{U} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flashback"
+  ]
+}

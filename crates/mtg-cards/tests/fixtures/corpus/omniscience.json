@@ -1,0 +1,23 @@
+{
+  "id": "d33d91d0-1506-45e4-9def-975bf901815e",
+  "oracle_id": "730e39e6-c61d-48b5-8827-bfd952bf1be7",
+  "name": "Omniscience",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fdn",
+  "collector_number": "161",
+  "rarity": "mythic",
+  "released_at": "2024-11-15",
+  "digital": false,
+  "mana_cost": "{7}{U}{U}{U}",
+  "cmc": 10.0,
+  "type_line": "Enchantment",
+  "oracle_text": "You may cast spells from your hand without paying their mana costs.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

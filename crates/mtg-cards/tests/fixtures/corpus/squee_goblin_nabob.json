@@ -1,0 +1,25 @@
+{
+  "id": "8aabc541-ff2a-416f-a973-44eda8ec4706",
+  "oracle_id": "0ef760f4-bbec-4735-8d60-fc24d973452a",
+  "name": "Squee, Goblin Nabob",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "254",
+  "rarity": "uncommon",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Goblin",
+  "oracle_text": "At the beginning of your upkeep, you may return this card from your graveyard to your hand.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

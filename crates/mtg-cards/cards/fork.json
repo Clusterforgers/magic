@@ -1,0 +1,33 @@
+{
+  "oracle_id": "50c53ae0-51ba-4046-ac74-87c65e688032",
+  "name": "Fork",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fork",
+      "oracle_fingerprint": "e605a8ff006df85e3f346237edcad3ee",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CopySpell": {
+                  "what": { "Target": 0 },
+                  "new_targets": true,
+                  "except": [{ "SetColors": ["Red"] }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

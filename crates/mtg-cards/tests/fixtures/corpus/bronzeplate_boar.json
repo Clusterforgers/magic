@@ -1,0 +1,28 @@
+{
+  "id": "7c8f5da8-13a8-4b39-8ddc-7661892924af",
+  "oracle_id": "0a09f825-0484-40b4-8adf-1028385db480",
+  "name": "Bronzeplate Boar",
+  "lang": "en",
+  "layout": "normal",
+  "set": "neo",
+  "collector_number": "135",
+  "rarity": "uncommon",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Artifact Creature — Equipment Boar",
+  "oracle_text": "Trample\nEquipped creature gets +3/+2 and has trample.\nReconfigure {5} ({5}: Attach to target creature you control; or unattach from a creature. Reconfigure only as a sorcery. While attached, this isn't a creature.)",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Trample",
+    "Reconfigure"
+  ]
+}

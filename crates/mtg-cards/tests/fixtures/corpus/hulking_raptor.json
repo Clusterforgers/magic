@@ -1,0 +1,30 @@
+{
+  "id": "45f763af-5a6a-404c-8e8c-4dbed71277bc",
+  "oracle_id": "9f2e7533-cfc1-4dd8-a9b8-09cdc712ef2f",
+  "name": "Hulking Raptor",
+  "lang": "en",
+  "layout": "normal",
+  "set": "lci",
+  "collector_number": "191",
+  "rarity": "rare",
+  "released_at": "2023-11-17",
+  "digital": false,
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Dinosaur",
+  "oracle_text": "Ward {2}\nAt the beginning of your first main phase, add {G}{G}.",
+  "power": "5",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Ward"
+  ],
+  "produced_mana": [
+    "G"
+  ]
+}

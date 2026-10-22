@@ -1,0 +1,39 @@
+{
+  "id": "7ef37cb3-d803-47d7-8a01-9c803aa2eadc",
+  "oracle_id": "461b3f2f-fcee-4160-abfa-061f8b6a784f",
+  "name": "Hengegate Pathway // Mistgate Pathway",
+  "lang": "en",
+  "layout": "modal_dfc",
+  "set": "khm",
+  "collector_number": "260",
+  "rarity": "rare",
+  "released_at": "2021-02-05",
+  "digital": false,
+  "cmc": 0.0,
+  "type_line": "Land // Land",
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "U",
+    "W"
+  ],
+  "card_faces": [
+    {
+      "name": "Hengegate Pathway",
+      "mana_cost": "",
+      "type_line": "Land",
+      "oracle_text": "{T}: Add {W}.",
+      "colors": []
+    },
+    {
+      "name": "Mistgate Pathway",
+      "mana_cost": "",
+      "type_line": "Land",
+      "oracle_text": "{T}: Add {U}.",
+      "colors": []
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "id": "1d7b2d05-ce5c-4b73-8fa6-d9b69619d58c",
+  "oracle_id": "73a3b9a1-37a0-469a-9557-8c118a1ee78f",
+  "name": "Tavern Ruffian // Tavern Smasher",
+  "lang": "en",
+  "layout": "transform",
+  "set": "mid",
+  "collector_number": "163",
+  "rarity": "common",
+  "released_at": "2021-09-24",
+  "digital": false,
+  "cmc": 4.0,
+  "type_line": "Creature — Human Warrior Werewolf // Creature — Werewolf",
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Transform",
+    "Daybound",
+    "Nightbound"
+  ],
+  "card_faces": [
+    {
+      "name": "Tavern Ruffian",
+      "mana_cost": "{3}{R}",
+      "type_line": "Creature — Human Warrior Werewolf",
+      "oracle_text": "Daybound (If a player casts no spells during their own turn, it becomes night next turn.)",
+      "power": "2",
+      "toughness": "5",
+      "colors": [
+        "R"
+      ]
+    },
+    {
+      "name": "Tavern Smasher",
+      "mana_cost": "",
+      "type_line": "Creature — Werewolf",
+      "oracle_text": "Nightbound (If a player casts at least two spells during their own turn, it becomes day next turn.)",
+      "power": "6",
+      "toughness": "5",
+      "colors": [
+        "R"
+      ]
+    }
+  ]
+}

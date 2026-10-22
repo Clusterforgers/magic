@@ -1,0 +1,25 @@
+{
+  "id": "84992800-9bad-4598-afd4-f1e59d2e0956",
+  "oracle_id": "cd0d7141-46d2-4aa3-bc77-6b3b4513803e",
+  "name": "Control Magic",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cma",
+  "collector_number": "34",
+  "rarity": "uncommon",
+  "released_at": "2017-06-09",
+  "digital": false,
+  "mana_cost": "{2}{U}{U}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nYou control enchanted creature.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

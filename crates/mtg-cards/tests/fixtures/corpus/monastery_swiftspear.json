@@ -1,0 +1,28 @@
+{
+  "id": "d6bfa227-4309-40ed-952c-279595eab17e",
+  "oracle_id": "dafd2713-d1bc-474b-b390-d2ff20b5375e",
+  "name": "Monastery Swiftspear",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bro",
+  "collector_number": "144",
+  "rarity": "uncommon",
+  "released_at": "2022-11-18",
+  "digital": false,
+  "mana_cost": "{R}",
+  "cmc": 1.0,
+  "type_line": "Creature — Human Monk",
+  "oracle_text": "Haste\nProwess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Prowess",
+    "Haste"
+  ]
+}

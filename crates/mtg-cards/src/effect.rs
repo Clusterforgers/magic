@@ -523,6 +523,46 @@ pub enum Effect {
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
     },
+    /// Copies spells on the stack (CR 707.10): each copy is put on the stack above the spell, not cast, with the modes, X,
+    /// costs paid and targets of the original. Its controller may choose new targets for it when `new_targets` is set.
+    CopySpell {
+        /// The spells copied.
+        what: Ref,
+        /// How many copies of each.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+        /// The controller of the copy may choose new targets for it ("You may choose new targets for the copy").
+        #[serde(default, skip_serializing_if = "is_false")]
+        new_targets: bool,
+        /// Changes the copy has ("except that the copy is red").
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        except: Vec<Modification>,
+    },
+    /// Copies activated and triggered abilities on the stack (CR 707.10): each copy is put on the stack above the ability,
+    /// not activated and not triggered, with the choices of the original.
+    CopyAbility {
+        /// The abilities copied.
+        what: Ref,
+        /// How many copies of each.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+        /// The controller of the copy may choose new targets for it.
+        #[serde(default, skip_serializing_if = "is_false")]
+        new_targets: bool,
+    },
+    /// The permanents become copies of an object for a while ("becomes a copy of target creature until end of turn",
+    /// CR 707.2): the copy effect is the first layer, and the permanent is what it was again when it ends.
+    BecomeCopy {
+        /// The permanents that become copies.
+        what: Ref,
+        /// The object copied.
+        of: Ref,
+        /// Changes the copy has.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        except: Vec<Modification>,
+        /// How long the copy lasts.
+        duration: Duration,
+    },
     /// Creates a continuous effect from this resolution; the objects are fixed now (CR 611.2c).
     Continuous {
         /// The objects changed.

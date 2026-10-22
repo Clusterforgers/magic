@@ -1,0 +1,25 @@
+{
+  "id": "70c9e4fd-e987-4653-abb1-e32971745db2",
+  "oracle_id": "21e9e1a9-5d6d-473e-adab-6a1e8e2b0ebd",
+  "name": "Kongming, \"Sleeping Dragon\"",
+  "lang": "en",
+  "layout": "normal",
+  "set": "a25",
+  "collector_number": "20",
+  "rarity": "uncommon",
+  "released_at": "2018-03-16",
+  "digital": false,
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Advisor",
+  "oracle_text": "Other creatures you control get +1/+1.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "power": "2",
+  "toughness": "2"
+}

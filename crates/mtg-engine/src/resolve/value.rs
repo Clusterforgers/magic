@@ -7,8 +7,9 @@
 use std::borrow::Cow;
 use std::collections::BTreeMap;
 
+use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use mtg_cards::refs::{AbilityKind, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::value::{Amount, CastWay, Condition, CounterKind, StatKind};
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -128,10 +129,19 @@ impl Counted<'_> {
 
 /// The X a spell on the stack was cast with; 0 for anything else (CR 202.3e).
 fn stacked_x(object: &GameObject) -> u32 {
-    if object.zone() == Zone::Stack && object.kind() == ObjectKind::Card {
+    if object.zone() == Zone::Stack && object.kind() != ObjectKind::Ability {
         object.choices().x.unwrap_or(0)
     } else {
         0
+    }
+}
+
+/// Whether the predicate holds only for objects on the stack (a spell, an ability, or one of several that are).
+fn on_the_stack(pred: &Pred) -> bool {
+    match pred {
+        Pred::Spell | Pred::Ability(_) => true,
+        Pred::AnyOf(any) => !any.is_empty() && any.iter().all(on_the_stack),
+        _ => false,
     }
 }
 
@@ -503,7 +513,7 @@ impl<'a> Scope<'a> {
             Some(ZoneKind::Stack) => vec![Zone::Stack],
             Some(ZoneKind::Exile) => vec![Zone::Exile],
             Some(ZoneKind::Command) => seats().map(Zone::Command).collect(),
-            None if selector.0.contains(&Pred::Spell) => vec![Zone::Stack],
+            None if selector.0.iter().any(on_the_stack) => vec![Zone::Stack],
             Some(ZoneKind::Battlefield) | None => vec![Zone::Battlefield],
         }
     }
@@ -564,6 +574,22 @@ impl<'a> Scope<'a> {
             Pred::Colorless => seen.chars.colors.is_empty(),
             Pred::Token => seen.kind == ObjectKind::Token,
             Pred::Spell => seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability,
+            Pred::Ability(kind) => {
+                seen.zone == Zone::Stack
+                    && seen
+                        .card
+                        .and_then(GameObject::ability)
+                        .is_some_and(|ability| {
+                            matches!(
+                                (kind, ability.rules()),
+                                (AbilityKind::Triggered, Ability::Triggered { .. })
+                                    | (
+                                        AbilityKind::Activated,
+                                        Ability::Activated { .. } | Ability::Loyalty { .. }
+                                    )
+                            )
+                        })
+            }
             Pred::Tapped => seen.tapped == Some(true),
             Pred::Untapped => seen.tapped == Some(false),
             Pred::Attacking => state

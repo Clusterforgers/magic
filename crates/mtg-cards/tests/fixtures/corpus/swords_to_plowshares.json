@@ -1,0 +1,23 @@
+{
+  "id": "f7e12477-d59f-442b-a678-1be746d0b7be",
+  "oracle_id": "b1544f21-7e98-461b-aed5-e748b0168c52",
+  "name": "Swords to Plowshares",
+  "lang": "en",
+  "layout": "normal",
+  "set": "frc",
+  "collector_number": "37",
+  "rarity": "uncommon",
+  "released_at": "2026-10-02",
+  "digital": false,
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Exile target creature. Its controller gains life equal to its power.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

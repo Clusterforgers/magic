@@ -1,0 +1,27 @@
+{
+  "id": "9f06be97-71c8-46c8-a1c2-5da3af25e6de",
+  "oracle_id": "771be8ad-5ab5-40b1-ad9b-e5e834949d32",
+  "name": "Lurching Rotbeast",
+  "lang": "en",
+  "layout": "normal",
+  "set": "hou",
+  "collector_number": "69",
+  "rarity": "common",
+  "released_at": "2017-07-14",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Zombie Beast",
+  "oracle_text": "Cycling {B} ({B}, Discard this card: Draw a card.)",
+  "power": "4",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Cycling"
+  ]
+}

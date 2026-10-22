@@ -1,0 +1,30 @@
+{
+  "id": "e2f12f6f-9383-47e6-a44f-2834ad130e51",
+  "oracle_id": "3f0c9466-5ab9-4205-a84f-b4b27b5a678e",
+  "name": "Bloodbraid Elf",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2x2",
+  "collector_number": "184",
+  "rarity": "uncommon",
+  "released_at": "2022-07-08",
+  "digital": false,
+  "mana_cost": "{2}{R}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Elf Berserker",
+  "oracle_text": "Haste (This creature can attack and {T} as soon as it comes under your control.)\nCascade (When you cast this spell, exile cards from the top of your library until you exile a nonland card that costs less. You may cast it without paying its mana cost. Put the exiled cards on the bottom in a random order.)",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Haste",
+    "Cascade"
+  ]
+}

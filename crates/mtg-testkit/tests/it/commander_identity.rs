@@ -5,14 +5,17 @@ use mtg_cards::support::Support;
 use mtg_import::scryfall::cards;
 use mtg_testkit::corpus::corpus;
 
-const SCRYFALL: &str = include_str!("../../../mtg-cards/tests/fixtures/corpus_scryfall.json");
+/// The fixture files as one JSON array of Scryfall objects.
+fn scryfall() -> String {
+    mtg_testkit::corpus::scryfall_array().unwrap()
+}
 
 #[test]
 fn the_derived_identity_is_scryfalls_for_every_corpus_card() {
     let corpus = corpus().unwrap();
     let mut wrong = Vec::new();
     let mut total = 0;
-    for record in cards(SCRYFALL.as_bytes()) {
+    for record in cards(scryfall().as_bytes()) {
         let record = record.unwrap();
         let card = corpus.card(&record.name).unwrap();
         total += 1;

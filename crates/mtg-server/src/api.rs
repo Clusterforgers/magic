@@ -342,7 +342,7 @@ pub(crate) async fn create_game(
     let mut decks = Vec::with_capacity(names.len());
     for (index, seat) in body.seats.iter().enumerate() {
         decks.push(match seat.deck.as_deref() {
-            Some(id) => Some(starting_deck(&app, &headers, index, id, options.format).await?),
+            Some(id) => Some(starting_deck(&app, &headers, index, id, &options).await?),
             None => None,
         });
     }
@@ -434,7 +434,7 @@ async fn starting_deck(
     headers: &HeaderMap,
     index: usize,
     id: &str,
-    format: FormatKind,
+    options: &GameOptions,
 ) -> Result<ChosenDeck, ApiError> {
     let found = if index == 0 || deck_choice::precon_code(id).is_some() {
         deck_choice::resolve(app, headers, id).await
@@ -443,10 +443,12 @@ async fn starting_deck(
     };
     // The game's own rules judge the deck too: a demo deck has no commander, a Commander deck no
     // place in a Normal game.
-    let found = found.and_then(|deck| match deck.issues_in(format) {
-        issues if issues.is_empty() => Ok(deck),
-        issues => Err(Refused::Blocked(issues)),
-    });
+    let found = found.and_then(
+        |deck| match deck.issues_in(options.format, &options.house_rules) {
+            issues if issues.is_empty() => Ok(deck),
+            issues => Err(Refused::Blocked(issues)),
+        },
+    );
     found.map_err(|refused| {
         refused.into_error_with(
             StatusCode::BAD_REQUEST,

@@ -13,8 +13,9 @@ use axum::http::{HeaderMap, StatusCode};
 use mtg_cards::CardDefinition;
 use mtg_cards::deck::{DeckReport, DeckState, DeckZone, Issue, IssueCode};
 use mtg_cards::support::Support;
+use mtg_core::house::HouseRules;
 use mtg_db::DeckId;
-use mtg_engine::format::{Commander, DeckError, FormatRules, Normal};
+use mtg_engine::format::{Commander, DeckError, FormatRules, Normal, RuleSet};
 use mtg_protocol::SeatDeck;
 use mtg_protocol::rest::{DeckBlockedBody, DeckChoiceErrorCode, PRECON_DECK_PREFIX};
 use sqlx::types::uuid::Uuid;
@@ -264,11 +265,12 @@ pub(crate) fn no_command_zone() -> Issue {
 /// The rules of `format` that a seat's library and commanders break, in the words of the deck
 /// check: a Normal game has no command zone and wants 60 cards with at most four copies of a card,
 /// a Commander game the engine's `validate_seat` (the commander, the size, the singleton rule and
-/// the colour identity).
+/// the colour identity) under the deck relaxations of the game's `house` rules.
 pub(crate) fn format_issues(
     format: FormatKind,
     library: &[Arc<CardDefinition>],
     commanders: &[Arc<CardDefinition>],
+    house: &HouseRules,
 ) -> Vec<Issue> {
     match format {
         FormatKind::Normal => {
@@ -282,7 +284,7 @@ pub(crate) fn format_issues(
             issues
         }
         FormatKind::Commander => Commander
-            .validate_seat(library, commanders)
+            .validate_seat(library, commanders, &RuleSet::new(&Commander, house))
             .err()
             .map(|error| engine_issue(error, format))
             .into_iter()

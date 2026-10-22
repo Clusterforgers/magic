@@ -1,0 +1,30 @@
+{
+  "id": "475d3d3a-8df7-42e8-adeb-5810e48ddaa7",
+  "oracle_id": "d561dcff-0a19-46ac-9dee-f374c840d532",
+  "name": "Arvad the Cursed",
+  "lang": "en",
+  "layout": "normal",
+  "set": "moc",
+  "collector_number": "317",
+  "rarity": "uncommon",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{3}{W}{B}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Vampire Knight",
+  "oracle_text": "Deathtouch, lifelink\nOther legendary creatures you control get +2/+2.",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Lifelink",
+    "Deathtouch"
+  ],
+  "power": "3",
+  "toughness": "3"
+}

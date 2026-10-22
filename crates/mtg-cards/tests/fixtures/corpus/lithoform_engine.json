@@ -1,0 +1,19 @@
+{
+  "id": "6683416a-5820-4cd0-b28a-60a53239e9ef",
+  "oracle_id": "0bf299da-1854-4153-baea-3cee2eb01ee8",
+  "name": "Lithoform Engine",
+  "lang": "en",
+  "layout": "normal",
+  "set": "znr",
+  "collector_number": "245",
+  "rarity": "mythic",
+  "released_at": "2020-09-25",
+  "digital": false,
+  "mana_cost": "{4}",
+  "cmc": 4,
+  "type_line": "Legendary Artifact",
+  "oracle_text": "{2}, {T}: Copy target activated or triggered ability you control. You may choose new targets for the copy.\n{3}, {T}: Copy target instant or sorcery spell you control. You may choose new targets for the copy.\n{4}, {T}: Copy target permanent spell you control. (The copy becomes a token.)",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

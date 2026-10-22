@@ -22,11 +22,11 @@ use serde_json::{Value, json};
 use sqlx::PgPool;
 
 /// The real cards of the rules corpus, trimmed Scryfall objects without legalities.
-const CORPUS: &str = include_str!("../../../mtg-cards/tests/fixtures/corpus_scryfall.json");
-
 fn objects() -> &'static Vec<Value> {
     static OBJECTS: OnceLock<Vec<Value>> = OnceLock::new();
-    OBJECTS.get_or_init(|| serde_json::from_str(CORPUS).unwrap())
+    OBJECTS.get_or_init(|| {
+        serde_json::from_str(&mtg_testkit::corpus::scryfall_array().unwrap()).unwrap()
+    })
 }
 
 fn oracle(name: &str) -> String {

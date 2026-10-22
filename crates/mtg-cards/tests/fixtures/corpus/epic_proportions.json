@@ -1,0 +1,26 @@
+{
+  "id": "7412373a-da0f-4bec-866c-5e1087f49914",
+  "oracle_id": "ad8edfdf-6915-4fc2-9226-3aae95951935",
+  "name": "Epic Proportions",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c18",
+  "collector_number": "142",
+  "rarity": "rare",
+  "released_at": "2018-08-10",
+  "digital": false,
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Flash\nEnchant creature\nEnchanted creature gets +5/+5 and has trample.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant",
+    "Flash"
+  ]
+}

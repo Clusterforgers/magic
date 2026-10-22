@@ -1,0 +1,25 @@
+{
+  "id": "4ccd0ada-92b2-48f3-b5ae-96346fc138b6",
+  "oracle_id": "2b8afa9f-4236-4c02-a8d5-3c145caecfd6",
+  "name": "Rift Bolt",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2x2",
+  "collector_number": "122",
+  "rarity": "common",
+  "released_at": "2022-07-08",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Rift Bolt deals 3 damage to any target.\nSuspend 1—{R} (Rather than cast this card from your hand, you may pay {R} and exile it with a time counter on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Suspend"
+  ]
+}

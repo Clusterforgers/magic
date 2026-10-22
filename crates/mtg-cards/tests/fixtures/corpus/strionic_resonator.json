@@ -1,0 +1,19 @@
+{
+  "id": "b9edb215-f967-4968-905e-d1dc3b5d3424",
+  "oracle_id": "cf751552-156f-4f81-ac94-9814dce099f9",
+  "name": "Strionic Resonator",
+  "lang": "en",
+  "layout": "normal",
+  "set": "moc",
+  "collector_number": "384",
+  "rarity": "rare",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{2}",
+  "cmc": 2,
+  "type_line": "Artifact",
+  "oracle_text": "{2}, {T}: Copy target triggered ability you control. You may choose new targets for the copy. (A triggered ability uses the words \"when,\" \"whenever,\" or \"at.\")",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

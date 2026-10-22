@@ -1,0 +1,23 @@
+{
+  "id": "2555ec7b-5cc2-4ffd-9344-6368019feff9",
+  "oracle_id": "9b9a10ff-5a5d-4df8-88aa-18d84ff9117c",
+  "name": "Inspiring Call",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tle",
+  "collector_number": "168",
+  "rarity": "uncommon",
+  "released_at": "2025-11-21",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Draw a card for each creature you control with a +1/+1 counter on it. Those creatures gain indestructible until end of turn. (Damage and effects that say \"destroy\" don't destroy them.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

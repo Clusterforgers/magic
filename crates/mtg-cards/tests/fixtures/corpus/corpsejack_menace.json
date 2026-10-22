@@ -1,0 +1,27 @@
+{
+  "id": "29538ff4-e28f-44d9-af23-6796edd56268",
+  "oracle_id": "ca0cc02b-b106-4eca-9388-d4b48dd3be49",
+  "name": "Corpsejack Menace",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cm2",
+  "collector_number": "152",
+  "rarity": "rare",
+  "released_at": "2018-06-08",
+  "digital": false,
+  "mana_cost": "{2}{B}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Fungus",
+  "oracle_text": "If one or more +1/+1 counters would be put on a creature you control, twice that many +1/+1 counters are put on it instead.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": []
+}

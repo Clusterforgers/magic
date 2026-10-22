@@ -1,0 +1,25 @@
+{
+  "id": "2a89a099-8805-4b26-babd-5d9f48ee406a",
+  "oracle_id": "5f1e8aa2-6b85-4e2e-92e4-876470447d6f",
+  "name": "Goblin Spy",
+  "lang": "en",
+  "layout": "normal",
+  "set": "inv",
+  "collector_number": "145",
+  "rarity": "uncommon",
+  "released_at": "2000-10-02",
+  "digital": false,
+  "mana_cost": "{R}",
+  "cmc": 1.0,
+  "type_line": "Creature — Goblin Rogue",
+  "oracle_text": "Play with the top card of your library revealed.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "power": "1",
+  "toughness": "1"
+}

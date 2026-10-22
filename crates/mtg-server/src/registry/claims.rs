@@ -11,6 +11,7 @@
 use std::sync::Arc;
 
 use mtg_cards::deck::Issue;
+use mtg_core::house::HouseRules;
 use mtg_core::ids::PlayerId;
 use mtg_protocol::SeatDeck;
 use thiserror::Error;
@@ -121,6 +122,8 @@ struct Table {
     turn: Arc<tokio::sync::Mutex<()>>,
     /// The format the game is played under, which judges the decks its seats choose.
     format: FormatKind,
+    /// What the creator set in place of the format's values, which the decks are judged under.
+    house_rules: HouseRules,
     /// The records to write to: present when the game is in the database.
     records: Option<GameRecords>,
 }
@@ -169,7 +172,7 @@ impl Registry {
         }
         // After the game is found, so a refusal tells only a visitor who may see the game its format.
         if let Some(deck) = &deck {
-            let issues = deck.issues_in(table.format);
+            let issues = deck.issues_in(table.format, &table.house_rules);
             if !issues.is_empty() {
                 return Err(ClaimError::DeckBlocked(issues));
             }
@@ -303,7 +306,7 @@ impl Registry {
         if by != seat {
             return Err(TableError::NotAllowed);
         }
-        let issues = deck.issues_in(table.format);
+        let issues = deck.issues_in(table.format, &table.house_rules);
         if !issues.is_empty() {
             return Err(TableError::DeckBlocked(issues));
         }
@@ -390,6 +393,7 @@ impl Registry {
             handle: entry.handle.clone(),
             turn: Arc::clone(&entry.turn),
             format: entry.format,
+            house_rules: entry.house_rules.clone(),
             records,
         })
     }

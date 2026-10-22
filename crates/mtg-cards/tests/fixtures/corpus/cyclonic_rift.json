@@ -1,0 +1,25 @@
+{
+  "id": "dfb7c4b9-f2f4-4d4e-baf2-86551c8150fe",
+  "oracle_id": "d75b9c82-1b49-4c3e-a1b5-aeef57d6644b",
+  "name": "Cyclonic Rift",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rvr",
+  "collector_number": "40",
+  "rarity": "mythic",
+  "released_at": "2024-01-12",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Return target nonland permanent you don't control to its owner's hand.\nOverload {6}{U} (You may cast this spell for its overload cost. If you do, change \"target\" in its text to \"each.\")",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Overload"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "id": "472efa7f-203f-4c48-b9ad-505e18f2976f",
+  "oracle_id": "892d318e-34bd-4fca-a2a1-0c3534c68068",
+  "name": "Rosheen Meanderer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ima",
+  "collector_number": "206",
+  "rarity": "uncommon",
+  "released_at": "2017-11-17",
+  "digital": false,
+  "mana_cost": "{3}{R/G}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Giant Shaman",
+  "oracle_text": "{T}: Add {C}{C}{C}{C}. Spend this mana only on costs that contain {X}.",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "C"
+  ],
+  "power": "4",
+  "toughness": "4"
+}

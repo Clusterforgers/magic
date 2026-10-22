@@ -124,10 +124,10 @@ impl ChosenDeck {
         &self.commanders
     }
 
-    /// The rules of `format` the cards break, in the words of the deck check; none when the format
-    /// accepts the deck.
-    pub fn issues_in(&self, format: FormatKind) -> Vec<Issue> {
-        format_issues(format, &self.cards, &self.commanders)
+    /// The rules of `format`, under the `house` rules of the game, that the cards break, in the words
+    /// of the deck check; none when the format accepts the deck.
+    pub fn issues_in(&self, format: FormatKind, house: &HouseRules) -> Vec<Issue> {
+        format_issues(format, &self.cards, &self.commanders, house)
     }
 }
 

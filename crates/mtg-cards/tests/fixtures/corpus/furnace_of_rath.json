@@ -1,0 +1,25 @@
+{
+  "id": "d7f0e720-3c32-4040-b663-7f99ad5bc810",
+  "oracle_id": "68715465-6cf9-4006-87e9-31f227fe9ed3",
+  "name": "Furnace of Rath",
+  "lang": "en",
+  "layout": "normal",
+  "set": "hop",
+  "collector_number": "55",
+  "rarity": "rare",
+  "released_at": "2009-09-04",
+  "digital": false,
+  "mana_cost": "{1}{R}{R}{R}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "If a source would deal damage to a permanent or player, it deals double that damage to that permanent or player instead.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Double"
+  ]
+}

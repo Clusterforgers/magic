@@ -1,0 +1,23 @@
+{
+  "id": "17d154d3-7ae5-43ff-9978-d974285e2c89",
+  "oracle_id": "e3886fe8-9b76-4613-8891-4ec74657c087",
+  "name": "Glorious Anthem",
+  "lang": "en",
+  "layout": "normal",
+  "set": "m21",
+  "collector_number": "21",
+  "rarity": "rare",
+  "released_at": "2020-07-03",
+  "digital": false,
+  "mana_cost": "{1}{W}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Creatures you control get +1/+1.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

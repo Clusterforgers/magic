@@ -1,0 +1,25 @@
+{
+  "id": "1d3a3a1d-c393-4a57-8a0e-5907d1722331",
+  "oracle_id": "f07bd49d-8e71-4d56-be2a-638514011318",
+  "name": "Fiery Temper",
+  "lang": "en",
+  "layout": "normal",
+  "set": "inr",
+  "collector_number": "154",
+  "rarity": "uncommon",
+  "released_at": "2025-01-24",
+  "digital": false,
+  "mana_cost": "{1}{R}{R}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Fiery Temper deals 3 damage to any target.\nMadness {R} (If you discard this card, discard it into exile. When you do, cast it for its madness cost or put it into your graveyard.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Madness"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "254391a3-c12a-4944-9da5-ae166094480f",
+  "oracle_id": "2055eb91-ee36-4752-a6dc-581eaef335c8",
+  "name": "Rummaging Goblin",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmr",
+  "collector_number": "198",
+  "rarity": "common",
+  "released_at": "2020-11-20",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Goblin Rogue",
+  "oracle_text": "{T}, Discard a card: Draw a card.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

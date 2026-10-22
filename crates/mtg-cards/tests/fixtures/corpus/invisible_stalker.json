@@ -1,0 +1,27 @@
+{
+  "id": "14d265aa-c1d8-4faa-b282-5c273ab725fd",
+  "oracle_id": "1a137a67-4156-45c8-aae9-838f688e12bd",
+  "name": "Invisible Stalker",
+  "lang": "en",
+  "layout": "normal",
+  "set": "znc",
+  "collector_number": "27",
+  "rarity": "uncommon",
+  "released_at": "2020-09-25",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Rogue",
+  "oracle_text": "Hexproof (This creature can't be the target of spells or abilities your opponents control.)\nThis creature can't be blocked.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Hexproof"
+  ]
+}

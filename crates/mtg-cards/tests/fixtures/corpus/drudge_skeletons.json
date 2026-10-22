@@ -1,0 +1,28 @@
+{
+  "id": "bd6f73bc-3181-40fa-9156-b73e4280e747",
+  "oracle_id": "c180ed02-07f4-4538-9bea-8c249234a8e2",
+  "name": "Drudge Skeletons",
+  "lang": "en",
+  "layout": "normal",
+  "set": "gvl",
+  "collector_number": "36",
+  "rarity": "common",
+  "released_at": "2014-12-05",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Skeleton",
+  "oracle_text": "{B}: Regenerate this creature. (The next time this creature would be destroyed this turn, instead tap it, remove it from combat, and heal all damage on it.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Heal",
+    "Regenerate"
+  ]
+}

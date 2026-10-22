@@ -1,0 +1,19 @@
+{
+  "id": "44067327-6fe3-4222-b591-6d14d0e360d7",
+  "oracle_id": "60d640a4-032b-4279-ac75-8f200ca776fb",
+  "name": "Vedalken Orrery",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2x2",
+  "collector_number": "317",
+  "rarity": "rare",
+  "released_at": "2022-07-08",
+  "digital": false,
+  "mana_cost": "{4}",
+  "cmc": 4.0,
+  "type_line": "Artifact",
+  "oracle_text": "You may cast spells as though they had flash.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

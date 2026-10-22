@@ -5,7 +5,8 @@ use crate::common;
 
 use common::{Bot, drive, roomy};
 use mtg_core::house::{
-    AttackRange, EmptyLibrary, HandLimit, Handicap, HouseRules, MulliganStyle, SkipFirstDraw,
+    AttackRange, CommanderDamageLimit, DeckRules, EmptyLibrary, HandLimit, Handicap, HouseRules,
+    MulliganStyle, SkipFirstDraw,
 };
 use mtg_core::ids::PlayerId;
 use mtg_engine::replay;
@@ -67,6 +68,15 @@ fn some_rules() -> HouseRules {
         revealed_library_top: Some(true),
         opening_hand_smoothing: Some(true),
         mulligan_style: Some(MulliganStyle::Vancouver),
+        commander_tax: Some(1),
+        commander_damage: Some(CommanderDamageLimit::Lethal(30)),
+        deck: DeckRules {
+            singleton: Some(false),
+            colour_identity: Some(false),
+            deck_size: Some(60),
+            max_copies: Some(4),
+        },
+        commanders_per_seat: Some(2),
         handicaps: vec![Handicap {
             seat: PlayerId(1),
             starting_life: Some(9),
@@ -132,6 +142,10 @@ async fn a_game_made_under_house_rules_comes_back_under_them_and_ends_as_the_sam
                 "revealed_library_top": true,
                 "opening_hand_smoothing": true,
                 "mulligan_style": "vancouver",
+                "commander_tax": 1,
+                "commander_damage": { "lethal": 30 },
+                "deck": { "singleton": false, "colour_identity": false, "deck_size": 60, "max_copies": 4 },
+                "commanders_per_seat": 2,
                 "handicaps": [{ "seat": 1, "starting_life": 9, "opening_hand_size": 4 }],
             })
         );

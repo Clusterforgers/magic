@@ -1,0 +1,25 @@
+{
+  "id": "409f9b88-f03e-40b6-9883-68c14c37c0de",
+  "oracle_id": "14c8f55d-d177-4c25-a931-ebeb9e6062a0",
+  "name": "Grizzly Bears",
+  "lang": "en",
+  "layout": "normal",
+  "set": "10e",
+  "collector_number": "268",
+  "rarity": "common",
+  "released_at": "2007-07-13",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Bear",
+  "oracle_text": "",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

@@ -1,0 +1,25 @@
+{
+  "id": "877a1bb9-5eae-453a-bec0-a9de20ea6815",
+  "oracle_id": "90edaf33-d0ab-47e0-8f6a-6fba38286e6e",
+  "name": "Saw It Coming",
+  "lang": "en",
+  "layout": "normal",
+  "set": "khm",
+  "collector_number": "76",
+  "rarity": "uncommon",
+  "released_at": "2021-02-05",
+  "digital": false,
+  "mana_cost": "{1}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Counter target spell.\nForetell {1}{U} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Foretell"
+  ]
+}

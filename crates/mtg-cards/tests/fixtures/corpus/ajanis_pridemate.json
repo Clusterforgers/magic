@@ -1,0 +1,25 @@
+{
+  "id": "222c1a68-e34c-4103-b1be-17d4ceaef6ce",
+  "oracle_id": "95e94dea-5ac0-4d6f-adec-ca147aee861f",
+  "name": "Ajani's Pridemate",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fdn",
+  "collector_number": "135",
+  "rarity": "uncommon",
+  "released_at": "2024-11-15",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Cat Soldier",
+  "oracle_text": "Whenever you gain life, put a +1/+1 counter on this creature.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

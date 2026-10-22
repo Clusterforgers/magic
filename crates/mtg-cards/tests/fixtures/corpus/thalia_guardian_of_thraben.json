@@ -1,0 +1,27 @@
+{
+  "id": "c9f8b8fb-1cd8-450e-a1fe-892e7a323479",
+  "oracle_id": "9b7f1d05-707c-4ed3-9f0e-8ced1232c2ee",
+  "name": "Thalia, Guardian of Thraben",
+  "lang": "en",
+  "layout": "normal",
+  "set": "vow",
+  "collector_number": "38",
+  "rarity": "rare",
+  "released_at": "2021-11-19",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Soldier",
+  "oracle_text": "First strike\nNoncreature spells cost {1} more to cast.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "First strike"
+  ],
+  "power": "2",
+  "toughness": "1"
+}

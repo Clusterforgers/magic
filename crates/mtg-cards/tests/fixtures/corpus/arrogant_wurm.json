@@ -1,0 +1,28 @@
+{
+  "id": "2dd6977e-269a-4cd1-99ad-37846a0647a7",
+  "oracle_id": "dc7f0c33-80ea-453e-a237-473f077f038e",
+  "name": "Arrogant Wurm",
+  "lang": "en",
+  "layout": "normal",
+  "set": "vma",
+  "collector_number": "195",
+  "rarity": "common",
+  "released_at": "2014-06-16",
+  "digital": true,
+  "mana_cost": "{3}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Wurm",
+  "oracle_text": "Trample\nMadness {2}{G} (If you discard this card, discard it into exile. When you do, cast it for its madness cost or put it into your graveyard.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Madness",
+    "Trample"
+  ]
+}

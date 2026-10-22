@@ -1,0 +1,25 @@
+{
+  "id": "9159e250-4eec-4ec4-80e1-42259331b3b9",
+  "oracle_id": "ef32258a-d567-4fbc-ab85-8c00080f5b36",
+  "name": "Maro",
+  "lang": "en",
+  "layout": "normal",
+  "set": "9ed",
+  "collector_number": "254",
+  "rarity": "rare",
+  "released_at": "2005-07-29",
+  "digital": false,
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Elemental",
+  "oracle_text": "Maro's power and toughness are each equal to the number of cards in your hand.",
+  "power": "*",
+  "toughness": "*",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

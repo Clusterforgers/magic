@@ -1,0 +1,19 @@
+{
+  "id": "998d0cc8-ca2a-41c3-ab65-d05c26ab8278",
+  "oracle_id": "76678885-3674-443d-b9a2-2a460cf6aac0",
+  "name": "Panharmonicon",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2x2",
+  "collector_number": "310",
+  "rarity": "rare",
+  "released_at": "2022-07-08",
+  "digital": false,
+  "mana_cost": "{4}",
+  "cmc": 4.0,
+  "type_line": "Artifact",
+  "oracle_text": "If an artifact or creature entering causes a triggered ability of a permanent you control to trigger, that ability triggers an additional time.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

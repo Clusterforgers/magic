@@ -1,0 +1,23 @@
+{
+  "id": "55c84e9f-ccbb-4fbc-98e1-4072968a1f8a",
+  "oracle_id": "5794b58e-f3b6-4637-b288-283b3a72a718",
+  "name": "Mindlock Orb",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ala",
+  "collector_number": "51",
+  "rarity": "rare",
+  "released_at": "2008-10-03",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Artifact",
+  "oracle_text": "Players can't search libraries.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

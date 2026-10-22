@@ -1,0 +1,28 @@
+{
+  "id": "6a0b230b-d391-4998-a3f7-7b158a0ec2cd",
+  "oracle_id": "68954295-54e3-4303-a6bc-fc4547a4e3a3",
+  "name": "Llanowar Elves",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fdn",
+  "collector_number": "227",
+  "rarity": "common",
+  "released_at": "2024-11-15",
+  "digital": false,
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Creature — Elf Druid",
+  "oracle_text": "{T}: Add {G}.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "G"
+  ]
+}

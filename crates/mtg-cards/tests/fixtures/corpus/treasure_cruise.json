@@ -1,0 +1,25 @@
+{
+  "id": "42c45880-15c7-4259-8066-c04d031d8216",
+  "oracle_id": "5b6bdf5a-2742-4851-92cd-a857a3852836",
+  "name": "Treasure Cruise",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "205",
+  "rarity": "common",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{7}{U}",
+  "cmc": 8.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Delve (Each card you exile from your graveyard while casting this spell pays for {1}.)\nDraw three cards.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Delve"
+  ]
+}

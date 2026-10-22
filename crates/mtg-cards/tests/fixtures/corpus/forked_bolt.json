@@ -1,0 +1,23 @@
+{
+  "id": "364ed745-0dff-477a-a2c5-987639936337",
+  "oracle_id": "e0548f0d-4aec-4c39-8c34-52bfa2bf7c60",
+  "name": "Forked Bolt",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ddp",
+  "collector_number": "60",
+  "rarity": "common",
+  "released_at": "2015-08-28",
+  "digital": false,
+  "mana_cost": "{R}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Forked Bolt deals 2 damage divided as you choose among one or two targets.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

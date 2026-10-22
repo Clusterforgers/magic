@@ -1,0 +1,27 @@
+{
+  "id": "89fcc35b-76fa-4408-8620-a1e11b2caf1f",
+  "oracle_id": "368b4052-174e-4458-a6e6-eaf8093aa0fe",
+  "name": "Goblin Chieftain",
+  "lang": "en",
+  "layout": "normal",
+  "set": "jmp",
+  "collector_number": "324",
+  "rarity": "rare",
+  "released_at": "2020-07-17",
+  "digital": false,
+  "mana_cost": "{1}{R}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Goblin",
+  "oracle_text": "Haste (This creature can attack and {T} as soon as it comes under your control.)\nOther Goblin creatures you control get +1/+1 and have haste.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Haste"
+  ]
+}

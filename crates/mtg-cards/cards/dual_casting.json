@@ -1,0 +1,40 @@
+{
+  "oracle_id": "4d22b01b-63dd-4698-a221-0acaefb2000b",
+  "name": "Dual Casting",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dual Casting",
+      "oracle_fingerprint": "eddb0b9144bef3efac02ee43056a74c0",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{R}" }, "Tap"],
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [
+                            "Spell",
+                            { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                            { "ControlledBy": "You" }
+                          ]
+                        }
+                      }
+                    ],
+                    "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

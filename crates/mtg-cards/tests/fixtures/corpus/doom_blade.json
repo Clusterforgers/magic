@@ -1,0 +1,23 @@
+{
+  "id": "5dcd0c4e-4047-47a2-8969-c62616d457c2",
+  "oracle_id": "59e7f2ae-4535-4191-98be-3e65b6b2befa",
+  "name": "Doom Blade",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "576",
+  "rarity": "uncommon",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Destroy target nonblack creature.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

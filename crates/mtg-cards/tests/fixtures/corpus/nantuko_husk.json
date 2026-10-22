@@ -1,0 +1,25 @@
+{
+  "id": "3915c0be-7e9c-45bc-9c83-80beba469a81",
+  "oracle_id": "0dcefc00-9425-43e3-bd47-1e34fff8b0e2",
+  "name": "Nantuko Husk",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ori",
+  "collector_number": "109",
+  "rarity": "common",
+  "released_at": "2015-07-17",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Zombie Insect",
+  "oracle_text": "Sacrifice a creature: This creature gets +2/+2 until end of turn.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

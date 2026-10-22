@@ -1,0 +1,24 @@
+{
+  "id": "25b0b816-0583-44aa-9dc5-f3ff48993a51",
+  "oracle_id": "7c427c3d-ecd8-45ef-bebd-8f10f4a311db",
+  "name": "Gaea's Cradle",
+  "lang": "en",
+  "layout": "normal",
+  "set": "usg",
+  "collector_number": "321",
+  "rarity": "rare",
+  "released_at": "1998-10-12",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Legendary Land",
+  "oracle_text": "{T}: Add {G} for each creature you control.",
+  "colors": [],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "G"
+  ]
+}

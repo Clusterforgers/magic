@@ -1,0 +1,27 @@
+{
+  "id": "cedd44eb-f381-46e1-bcb0-88416b4ce33d",
+  "oracle_id": "315772f2-abd2-4681-b8c8-1db4b0ccbbcd",
+  "name": "Gurmag Angler",
+  "lang": "en",
+  "layout": "normal",
+  "set": "uma",
+  "collector_number": "102",
+  "rarity": "common",
+  "released_at": "2018-12-07",
+  "digital": false,
+  "mana_cost": "{6}{B}",
+  "cmc": 7.0,
+  "type_line": "Creature — Zombie Fish",
+  "oracle_text": "Delve (Each card you exile from your graveyard while casting this spell pays for {1}.)",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Delve"
+  ]
+}

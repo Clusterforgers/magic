@@ -1,0 +1,23 @@
+{
+  "id": "f2c4f80e-84a0-463b-82c3-5c6503809351",
+  "oracle_id": "01546b7d-a233-4176-8843-d732074dc5b6",
+  "name": "Doubling Season",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fdn",
+  "collector_number": "216",
+  "rarity": "mythic",
+  "released_at": "2024-11-15",
+  "digital": false,
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "If an effect would create one or more tokens under your control, it creates twice that many of those tokens instead.\nIf an effect would put one or more counters on a permanent you control, it puts twice that many of those counters on that permanent instead.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

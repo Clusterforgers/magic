@@ -1,0 +1,25 @@
+{
+  "id": "681149f2-0802-4ab7-9521-3b3c7281f55d",
+  "oracle_id": "79085dea-8daa-41c0-a975-61e3e6da2e26",
+  "name": "Shielded by Faith",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "172",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{1}{W}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature has indestructible.\nWhenever a creature enters, you may attach this Aura to that creature.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

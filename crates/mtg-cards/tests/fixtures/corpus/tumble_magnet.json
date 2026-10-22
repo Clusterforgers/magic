@@ -1,0 +1,19 @@
+{
+  "id": "74baa632-d046-401a-9172-1ab6284240bc",
+  "oracle_id": "0481adcd-b66d-432e-80ba-3a4718bb3a7d",
+  "name": "Tumble Magnet",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2xm",
+  "collector_number": "304",
+  "rarity": "common",
+  "released_at": "2020-08-07",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact",
+  "oracle_text": "This artifact enters with three charge counters on it.\n{T}, Remove a charge counter from this artifact: Tap target artifact or creature.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

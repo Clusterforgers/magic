@@ -1,0 +1,25 @@
+{
+  "id": "3892f1c5-937e-4ef4-b6f9-e0c0ded070d0",
+  "oracle_id": "0230de18-8d15-4cfa-9d42-7ccddd9f9570",
+  "name": "Supreme Verdict",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clu",
+  "collector_number": "211",
+  "rarity": "rare",
+  "released_at": "2024-02-23",
+  "digital": false,
+  "mana_cost": "{1}{W}{W}{U}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "This spell can't be countered.\nDestroy all creatures.",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": []
+}

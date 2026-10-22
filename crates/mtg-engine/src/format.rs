@@ -54,9 +54,11 @@ pub enum DeckError {
     /// A Commander deck names no commander.
     #[error("a Commander deck needs a commander")]
     NoCommander,
-    /// More commanders than a pair.
-    #[error("a deck has one commander or a pair of partners, not {got}")]
+    /// More commanders than the game allows.
+    #[error("a deck has at most {max} commanders, not {got}")]
     TooManyCommanders {
+        /// The most commanders a seat may start with.
+        max: usize,
         /// Commanders named.
         got: usize,
     },
@@ -121,11 +123,13 @@ pub trait FormatRules: Debug + Send + Sync {
     /// Checks a player's deck.
     fn validate_deck(&self, deck: &[Arc<CardDefinition>]) -> Result<(), DeckError>;
     /// Checks a seat: its `deck` (every card but the commanders) and the `commanders` it starts with in the command
-    /// zone. A format without a command zone refuses commanders.
+    /// zone, under the `rules` of the game (the deck relaxations of its house rules). A format without a command zone
+    /// refuses commanders and has no relaxations.
     fn validate_seat(
         &self,
         deck: &[Arc<CardDefinition>],
         commanders: &[Arc<CardDefinition>],
+        _rules: &RuleSet<'_>,
     ) -> Result<(), DeckError> {
         if commanders.is_empty() {
             self.validate_deck(deck)

@@ -1,0 +1,23 @@
+{
+  "id": "63e5124a-67c0-44ed-8085-28bf37816423",
+  "oracle_id": "94b703c4-5584-4913-8365-7e9f2f535c2d",
+  "name": "Levitation",
+  "lang": "en",
+  "layout": "normal",
+  "set": "m12",
+  "collector_number": "61",
+  "rarity": "uncommon",
+  "released_at": "2011-07-15",
+  "digital": false,
+  "mana_cost": "{2}{U}{U}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Creatures you control have flying.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

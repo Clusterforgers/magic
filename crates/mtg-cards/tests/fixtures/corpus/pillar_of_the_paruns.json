@@ -1,0 +1,26 @@
+{
+  "id": "4c66bacf-ad9a-40c3-a2b7-464be8d4dd24",
+  "oracle_id": "677b8ce7-f922-4ee3-b311-f199da9b352b",
+  "name": "Pillar of the Paruns",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2x2",
+  "collector_number": "328",
+  "rarity": "rare",
+  "released_at": "2022-07-08",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add one mana of any color. Spend this mana only to cast a multicolored spell.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "60da801e-c47c-4aac-928c-2e7eab2d24c6",
+  "oracle_id": "2f8872fe-84dc-4cda-a253-e7503a5c96a3",
+  "name": "Wolfbriar Elemental",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cma",
+  "collector_number": "168",
+  "rarity": "rare",
+  "released_at": "2017-06-09",
+  "digital": false,
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Elemental",
+  "oracle_text": "Multikicker {G} (You may pay an additional {G} any number of times as you cast this spell.)\nWhen this creature enters, create a 2/2 green Wolf creature token for each time it was kicked.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Multikicker"
+  ]
+}

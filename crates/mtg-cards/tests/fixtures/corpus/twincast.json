@@ -1,0 +1,23 @@
+{
+  "id": "f38eec33-a40e-4739-ad2c-2f57008cef4e",
+  "oracle_id": "8f878efc-850f-43d2-a6fe-5ea8d1dd5afb",
+  "name": "Twincast",
+  "lang": "en",
+  "layout": "normal",
+  "set": "m10",
+  "collector_number": "78",
+  "rarity": "rare",
+  "released_at": "2009-07-17",
+  "digital": false,
+  "mana_cost": "{U}{U}",
+  "cmc": 2,
+  "type_line": "Instant",
+  "oracle_text": "Copy target instant or sorcery spell. You may choose new targets for the copy.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

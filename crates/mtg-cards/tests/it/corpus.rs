@@ -9,7 +9,7 @@ use std::path::Path;
 use mtg_cards::ability::Ability;
 use mtg_cards::card::{Card, TokenFile};
 use mtg_cards::keyword::Keyword;
-use mtg_cards::load::{Library, canonical, parse_json};
+use mtg_cards::load::{Library, canonical, parse_json, slug};
 use mtg_cards::support::{Caps, Support};
 use mtg_cards::validate::used_primitives;
 use rstest::rstest;
@@ -50,6 +50,50 @@ fn the_corpus_loads_every_card_file_and_every_token_file() {
 fn every_card_file_has_exactly_one_fixture_record_and_the_reverse() {
     let problems = Corpus::repo().pairing_problems();
     assert!(problems.is_empty(), "{problems:#?}");
+}
+
+#[test]
+fn the_fixture_directory_has_one_file_per_card_named_by_slug_and_no_oracle_id_twice() {
+    let corpus = Corpus::repo();
+    let files: Vec<String> = corpus
+        .fixture_files()
+        .iter()
+        .map(|path| path.file_name().unwrap().to_string_lossy().into_owned())
+        .collect();
+    assert!(
+        !files.is_empty(),
+        "no fixture files in {:?}",
+        corpus.fixture
+    );
+    let mut sorted = files.clone();
+    sorted.sort();
+    assert_eq!(files, sorted, "the files load in file-name order");
+
+    let records = corpus.records_with_files();
+    assert_eq!(records.len(), files.len(), "one record in each file");
+    assert_eq!(corpus.fixture_values().len(), files.len());
+    for (file, record) in &records {
+        assert_eq!(*file, format!("{}.json", slug(&record.name)), "{ADDING}");
+    }
+    let ids: BTreeSet<_> = records
+        .iter()
+        .map(|(_, record)| record.oracle_id.to_string())
+        .collect();
+    assert_eq!(
+        ids.len(),
+        records.len(),
+        "an oracle id in two files ({ADDING})"
+    );
+    let problems = corpus.fixture_problems();
+    assert!(problems.is_empty(), "{problems:#?}");
+
+    // A card's fixture file has the name of its rules file.
+    let cards: Vec<String> = corpus
+        .card_files()
+        .iter()
+        .map(|path| path.file_name().unwrap().to_string_lossy().into_owned())
+        .collect();
+    assert_eq!(files, cards, "{ADDING}");
 }
 
 #[test]

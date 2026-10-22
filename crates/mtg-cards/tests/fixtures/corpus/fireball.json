@@ -1,0 +1,23 @@
+{
+  "id": "df45a43e-a5b7-4fd4-873b-7b3c021be198",
+  "oracle_id": "aa7714b0-2bfb-458a-8ebf-37ec2c53383e",
+  "name": "Fireball",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "175",
+  "rarity": "uncommon",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "{X}{R}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "This spell costs {1} more to cast for each target beyond the first.\nFireball deals X damage divided evenly, rounded down, among any number of targets.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

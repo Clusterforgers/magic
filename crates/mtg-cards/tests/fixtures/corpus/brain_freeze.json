@@ -1,0 +1,26 @@
+{
+  "id": "3a2d7cf9-dddb-4de3-b4f2-c52e3ec8fb4b",
+  "oracle_id": "464c0150-3dbc-403b-9ada-fef25ab1f29d",
+  "name": "Brain Freeze",
+  "lang": "en",
+  "layout": "normal",
+  "set": "vma",
+  "collector_number": "57",
+  "rarity": "uncommon",
+  "released_at": "2014-06-16",
+  "digital": true,
+  "mana_cost": "{1}{U}",
+  "cmc": 2,
+  "type_line": "Instant",
+  "oracle_text": "Target player mills three cards.\nStorm (When you cast this spell, copy it for each spell cast before it this turn. You may choose new targets for the copies.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Storm",
+    "Mill"
+  ]
+}

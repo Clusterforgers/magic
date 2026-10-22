@@ -1,0 +1,47 @@
+{
+  "id": "3e96f9a6-c215-42b1-aa02-8e6143fe5bd7",
+  "oracle_id": "c31e9db3-5d9d-470a-871a-b4b5b0536db5",
+  "name": "Tireless Hauler // Dire-Strain Brawler",
+  "lang": "en",
+  "layout": "transform",
+  "set": "mid",
+  "collector_number": "203",
+  "rarity": "common",
+  "released_at": "2021-09-24",
+  "digital": false,
+  "cmc": 5.0,
+  "type_line": "Creature — Human Werewolf // Creature — Werewolf",
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Vigilance",
+    "Transform",
+    "Daybound",
+    "Nightbound"
+  ],
+  "card_faces": [
+    {
+      "name": "Tireless Hauler",
+      "mana_cost": "{4}{G}",
+      "type_line": "Creature — Human Werewolf",
+      "oracle_text": "Vigilance\nDaybound (If a player casts no spells during their own turn, it becomes night next turn.)",
+      "power": "4",
+      "toughness": "5",
+      "colors": [
+        "G"
+      ]
+    },
+    {
+      "name": "Dire-Strain Brawler",
+      "mana_cost": "",
+      "type_line": "Creature — Werewolf",
+      "oracle_text": "Vigilance\nNightbound (If a player casts at least two spells during their own turn, it becomes day next turn.)",
+      "power": "6",
+      "toughness": "6",
+      "colors": [
+        "G"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "id": "ebf5e16f-a8bd-419f-b5ca-8c7fce09c4f1",
+  "oracle_id": "53175678-1f5c-4889-9086-66381b3ddc3a",
+  "name": "Ludevic's Test Subject // Ludevic's Abomination",
+  "lang": "en",
+  "layout": "transform",
+  "set": "isd",
+  "collector_number": "64",
+  "rarity": "rare",
+  "released_at": "2011-09-30",
+  "digital": false,
+  "cmc": 2.0,
+  "type_line": "Creature — Lizard Egg // Creature — Lizard Horror",
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Transform",
+    "Trample",
+    "Defender"
+  ],
+  "card_faces": [
+    {
+      "name": "Ludevic's Test Subject",
+      "mana_cost": "{1}{U}",
+      "type_line": "Creature — Lizard Egg",
+      "oracle_text": "Defender\n{1}{U}: Put a hatchling counter on this creature. Then if there are five or more hatchling counters on it, remove all of them and transform it.",
+      "power": "0",
+      "toughness": "3",
+      "colors": [
+        "U"
+      ]
+    },
+    {
+      "name": "Ludevic's Abomination",
+      "mana_cost": "",
+      "type_line": "Creature — Lizard Horror",
+      "oracle_text": "Trample",
+      "power": "13",
+      "toughness": "13",
+      "colors": [
+        "U"
+      ]
+    }
+  ]
+}

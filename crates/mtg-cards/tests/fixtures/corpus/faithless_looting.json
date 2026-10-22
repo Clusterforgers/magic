@@ -1,0 +1,25 @@
+{
+  "id": "fc019ffa-4461-4f3d-ab8d-e4d20e77ca0c",
+  "oracle_id": "3d6fa57a-aa53-4b5c-b8af-a7612c823117",
+  "name": "Faithless Looting",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "244",
+  "rarity": "common",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{R}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Draw two cards, then discard two cards.\nFlashback {2}{R} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flashback"
+  ]
+}

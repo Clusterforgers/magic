@@ -1,0 +1,25 @@
+{
+  "id": "aec5d380-d354-4750-931a-6c91853e2edc",
+  "oracle_id": "ac2086fe-98ee-4280-9c7c-c5c2d6548a8b",
+  "name": "Burst Lightning",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fdn",
+  "collector_number": "192",
+  "rarity": "common",
+  "released_at": "2024-11-15",
+  "digital": false,
+  "mana_cost": "{R}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Kicker {4} (You may pay an additional {4} as you cast this spell.)\nBurst Lightning deals 2 damage to any target. If this spell was kicked, it deals 4 damage instead.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Kicker"
+  ]
+}

@@ -26,14 +26,16 @@ use net::{Browser, PASSWORD, TestServer, bot_config, register};
 use serde_json::{Value, json};
 use sqlx::PgPool;
 
-/// Scryfall objects (trimmed) of the corpus cards, as the importer reads them.
-const SCRYFALL: &str = include_str!("../../../mtg-cards/tests/fixtures/corpus_scryfall.json");
+/// The Scryfall objects (trimmed, without legalities) of the corpus cards: the fixture files as one JSON array.
+fn scryfall() -> String {
+    mtg_testkit::corpus::scryfall_array().unwrap()
+}
 
 /// The card the tests keep out of the rules files and compile instead.
 const GROWTH: &str = "Giant Growth";
 
 fn records() -> Vec<CardRecord> {
-    cards(SCRYFALL.as_bytes()).map(Result::unwrap).collect()
+    cards(scryfall().as_bytes()).map(Result::unwrap).collect()
 }
 
 fn id_of(name: &str) -> String {
@@ -60,7 +62,7 @@ async fn seeded(pool: &PgPool) -> Database {
     let db = Database::from_pool(pool.clone());
     db.migrate().await.unwrap();
     db.importer()
-        .import_cards(cards(SCRYFALL.as_bytes()))
+        .import_cards(cards(scryfall().as_bytes()))
         .await
         .unwrap();
     db

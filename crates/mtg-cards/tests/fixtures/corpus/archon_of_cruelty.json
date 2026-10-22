@@ -1,0 +1,27 @@
+{
+  "id": "95ff951b-a098-409c-86c8-373b6c9f8331",
+  "oracle_id": "aa1a6646-c1e6-4bff-9092-43ee3e137914",
+  "name": "Archon of Cruelty",
+  "lang": "en",
+  "layout": "normal",
+  "set": "frc",
+  "collector_number": "47",
+  "rarity": "mythic",
+  "released_at": "2026-10-02",
+  "digital": false,
+  "mana_cost": "{6}{B}{B}",
+  "cmc": 8.0,
+  "type_line": "Creature — Archon",
+  "oracle_text": "Flying\nWhenever this creature enters or attacks, target opponent sacrifices a creature or planeswalker of their choice, discards a card, and loses 3 life. You draw a card and gain 3 life.",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

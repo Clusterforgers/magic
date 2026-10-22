@@ -1,0 +1,27 @@
+{
+  "id": "6ea45414-4047-4921-b77d-dfcba2fe7694",
+  "oracle_id": "bec6fb31-60a3-432f-ba36-aebf172f8b27",
+  "name": "Growing Ranks",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c19",
+  "collector_number": "193",
+  "rarity": "rare",
+  "released_at": "2019-08-23",
+  "digital": false,
+  "mana_cost": "{2}{G/W}{G/W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "At the beginning of your upkeep, populate. (Create a token that's a copy of a creature token you control.)",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Populate"
+  ]
+}

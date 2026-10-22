@@ -1,0 +1,21 @@
+{
+  "id": "16debeb1-fb2b-4172-b6da-726416d4fb38",
+  "oracle_id": "18f22960-87ec-43cd-82ea-ec5cabf49ad3",
+  "name": "Foundry Inspector",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "385",
+  "rarity": "common",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact Creature — Construct",
+  "oracle_text": "Artifact spells you cast cost {1} less to cast.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "power": "3",
+  "toughness": "2"
+}

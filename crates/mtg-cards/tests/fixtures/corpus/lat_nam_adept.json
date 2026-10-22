@@ -1,0 +1,25 @@
+{
+  "id": "a1e088de-e99f-4706-89e0-a7efdaf9403a",
+  "oracle_id": "0d5a1870-6d26-47e7-a86c-f3ff15cb0707",
+  "name": "Lat-Nam Adept",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bro",
+  "collector_number": "56",
+  "rarity": "common",
+  "released_at": "2022-11-18",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "Whenever you draw your second card each turn, put a +1/+1 counter on this creature.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

@@ -1,0 +1,23 @@
+{
+  "id": "beeb5419-828e-4a84-b4f3-87bc6f4cc594",
+  "oracle_id": "0cc6d683-366f-4ae4-be60-20ad9621fdaf",
+  "name": "Stroke of Genius",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "203",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{X}{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Target player draws X cards.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

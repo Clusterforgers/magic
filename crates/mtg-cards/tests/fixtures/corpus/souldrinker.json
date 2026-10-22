@@ -1,0 +1,25 @@
+{
+  "id": "48c03fa5-c8cc-4b39-a673-c23e41a5802a",
+  "oracle_id": "624d4bda-448f-43d1-92b6-53a77afe2374",
+  "name": "Souldrinker",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dvd",
+  "collector_number": "39",
+  "rarity": "uncommon",
+  "released_at": "2014-12-05",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Spirit",
+  "oracle_text": "Pay 3 life: Put a +1/+1 counter on this creature.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

@@ -1,0 +1,25 @@
+{
+  "id": "f47054d9-ab6c-4d66-8744-b458721a6c98",
+  "oracle_id": "4364bef8-f7ec-487c-9b64-b55c4afb864e",
+  "name": "Llanowar Behemoth",
+  "lang": "en",
+  "layout": "normal",
+  "set": "9ed",
+  "collector_number": "252",
+  "rarity": "uncommon",
+  "released_at": "2005-07-29",
+  "digital": false,
+  "mana_cost": "{3}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Elemental",
+  "oracle_text": "Tap an untapped creature you control: This creature gets +1/+1 until end of turn.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

@@ -1,0 +1,19 @@
+{
+  "id": "8f85e12c-196b-4459-b81f-0c9c854e9f57",
+  "oracle_id": "f3c7af78-a77d-4134-82a2-a5ce84285a84",
+  "name": "Flooded Strand",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mh3",
+  "collector_number": "220",
+  "rarity": "rare",
+  "released_at": "2024-06-14",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}, Pay 1 life, Sacrifice this land: Search your library for a Plains or Island card, put it onto the battlefield, then shuffle.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

@@ -1,0 +1,28 @@
+{
+  "id": "42acbf52-b137-44f0-a815-2817fe8d2da2",
+  "oracle_id": "04152e7a-969c-4858-841b-0a569a9fc1bf",
+  "name": "Professional Face-Breaker",
+  "lang": "en",
+  "layout": "normal",
+  "set": "snc",
+  "collector_number": "116",
+  "rarity": "rare",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "Menace\nWhenever one or more creatures you control deal combat damage to a player, create a Treasure token.\nSacrifice a Treasure: Exile the top card of your library. You may play that card this turn.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Treasure",
+    "Menace"
+  ]
+}

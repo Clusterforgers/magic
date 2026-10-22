@@ -1,0 +1,25 @@
+{
+  "id": "62ddce0d-f22a-4fcd-9a4a-d71938750ba1",
+  "oracle_id": "c7530ecd-e22f-41e7-a76b-de32809901c8",
+  "name": "Gadwick, the Wizened",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eld",
+  "collector_number": "48",
+  "rarity": "rare",
+  "released_at": "2019-10-04",
+  "digital": false,
+  "mana_cost": "{X}{U}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Wizard",
+  "oracle_text": "When Gadwick enters, draw X cards.\nWhenever you cast a blue spell, tap target nonland permanent an opponent controls.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

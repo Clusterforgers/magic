@@ -1,0 +1,27 @@
+{
+  "id": "c5f37e36-c004-4b89-a668-5cd984c59019",
+  "oracle_id": "bf7710cb-70cb-42fb-b840-cc4f385daa7a",
+  "name": "Covetous Dragon",
+  "lang": "en",
+  "layout": "normal",
+  "set": "uds",
+  "collector_number": "80",
+  "rarity": "rare",
+  "released_at": "1999-06-07",
+  "digital": false,
+  "mana_cost": "{4}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Dragon",
+  "oracle_text": "Flying\nWhen you control no artifacts, sacrifice this creature.",
+  "power": "6",
+  "toughness": "5",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "621f9a58-0bc8-40dd-aef1-43618274d6fe",
+  "oracle_id": "95a0ca48-d924-47f4-86ed-42c673ee778c",
+  "name": "Samite Healer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "10e",
+  "collector_number": "38",
+  "rarity": "common",
+  "released_at": "2007-07-13",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Cleric",
+  "oracle_text": "{T}: Prevent the next 1 damage that would be dealt to any target this turn.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

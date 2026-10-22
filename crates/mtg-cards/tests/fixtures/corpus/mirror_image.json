@@ -1,0 +1,25 @@
+{
+  "id": "5b3ffc69-f21b-410e-8993-8c1b4669fc19",
+  "oracle_id": "7275fb8c-571a-4c4c-889a-829419332e51",
+  "name": "Mirror Image",
+  "lang": "en",
+  "layout": "normal",
+  "set": "m19",
+  "collector_number": "61",
+  "rarity": "uncommon",
+  "released_at": "2018-07-13",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Shapeshifter",
+  "oracle_text": "You may have this creature enter as a copy of a creature you control.",
+  "power": "0",
+  "toughness": "0",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

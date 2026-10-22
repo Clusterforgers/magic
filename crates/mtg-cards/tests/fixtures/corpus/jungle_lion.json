@@ -1,0 +1,25 @@
+{
+  "id": "71142f87-2ffd-4736-b796-e22dc410c9cd",
+  "oracle_id": "45b42694-9ee8-44f3-9de3-aa2c0f1b6a13",
+  "name": "Jungle Lion",
+  "lang": "en",
+  "layout": "normal",
+  "set": "me3",
+  "collector_number": "125",
+  "rarity": "common",
+  "released_at": "2009-09-07",
+  "digital": true,
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Creature — Cat",
+  "oracle_text": "This creature can't block.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

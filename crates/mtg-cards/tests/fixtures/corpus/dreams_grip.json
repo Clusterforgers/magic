@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "7ffaa6a2-7c86-45b4-8892-b837e05f11a6",
+  "oracle_id": "8b239262-c392-4ec6-9ae1-8b4a076e4bf0",
+  "multiverse_ids": [
+    48159
+  ],
+  "mtgo_id": 20107,
+  "mtgo_foil_id": 20108,
+  "tcgplayer_id": 11357,
+  "cardmarket_id": 34,
+  "name": "Dream's Grip",
+  "lang": "en",
+  "released_at": "2003-10-02",
+  "uri": "https://api.scryfall.com/cards/7ffaa6a2-7c86-45b4-8892-b837e05f11a6",
+  "scryfall_uri": "https://scryfall.com/card/mrd/34/dreams-grip?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:09:16Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/f/7ffaa6a2-7c86-45b4-8892-b837e05f11a6.jpg?1783944556",
+    "normal": "https://cards.scryfall.io/normal/front/7/f/7ffaa6a2-7c86-45b4-8892-b837e05f11a6.jpg?1783944556",
+    "large": "https://cards.scryfall.io/large/front/7/f/7ffaa6a2-7c86-45b4-8892-b837e05f11a6.jpg?1783944556",
+    "png": "https://cards.scryfall.io/png/front/7/f/7ffaa6a2-7c86-45b4-8892-b837e05f11a6.png?1783944556",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/f/7ffaa6a2-7c86-45b4-8892-b837e05f11a6.jpg?1783944556",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/f/7ffaa6a2-7c86-45b4-8892-b837e05f11a6.jpg?1783944556",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/f/7ffaa6a2-7c86-45b4-8892-b837e05f11a6.webp?1783944556",
+    "grid": "https://cards.scryfall.io/grid/front/7/f/7ffaa6a2-7c86-45b4-8892-b837e05f11a6.webp?1783944556",
+    "display": "https://cards.scryfall.io/display/front/7/f/7ffaa6a2-7c86-45b4-8892-b837e05f11a6.webp?1783944556",
+    "art": "https://cards.scryfall.io/art/front/7/f/7ffaa6a2-7c86-45b4-8892-b837e05f11a6.webp?1783944556",
+    "crop": "https://cards.scryfall.io/crop/front/7/f/7ffaa6a2-7c86-45b4-8892-b837e05f11a6.webp?1783944556",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/f/7ffaa6a2-7c86-45b4-8892-b837e05f11a6.jpg?1783944556"
+  },
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Choose one —\n• Tap target permanent.\n• Untap target permanent.\nEntwine {1} (Choose both if you pay the entwine cost.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Entwine"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "1d4f90ba-8d4a-4ee5-bc2f-e2d6bffe4955",
+  "set": "mrd",
+  "set_name": "Mirrodin",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/1d4f90ba-8d4a-4ee5-bc2f-e2d6bffe4955",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amrd&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mrd?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7ffaa6a2-7c86-45b4-8892-b837e05f11a6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8b239262-c392-4ec6-9ae1-8b4a076e4bf0&unique=prints",
+  "collector_number": "34",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jim Nelson",
+  "artist_ids": [
+    "aa9f64d1-29e1-4c82-877e-44c18183f40b"
+  ],
+  "illustration_id": "c5fd25c1-a923-4990-9230-81d9d2fa484a",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 9269,
+  "penny_rank": 8613,
+  "prices": {
+    "usd": "0.39",
+    "usd_foil": "7.86",
+    "usd_etched": null,
+    "eur": "0.35",
+    "eur_foil": "1.82",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=48159&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDream%2527s%2BGrip",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDream%2527s%2BGrip",
+    "edhrec": "https://edhrec.com/route/?cc=Dream%27s+Grip"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F11357%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=34&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/20107?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

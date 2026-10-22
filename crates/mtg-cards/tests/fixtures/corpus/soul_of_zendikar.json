@@ -1,0 +1,27 @@
+{
+  "id": "108a4330-d9dd-429d-a2f8-c355ff914883",
+  "oracle_id": "87217160-0687-4482-b9a3-91bad8527675",
+  "name": "Soul of Zendikar",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c19",
+  "collector_number": "182",
+  "rarity": "mythic",
+  "released_at": "2019-08-23",
+  "digital": false,
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Creature — Avatar",
+  "oracle_text": "Reach\n{3}{G}{G}: Create a 3/3 green Beast creature token.\n{3}{G}{G}, Exile this card from your graveyard: Create a 3/3 green Beast creature token.",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach"
+  ]
+}

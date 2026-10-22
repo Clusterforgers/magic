@@ -34,6 +34,7 @@ mod rest_decks;
 mod rest_lobbies;
 mod rest_precons;
 mod seat_deck;
+mod spell_copy_view;
 mod sync;
 mod table_hidden;
 mod transcript;

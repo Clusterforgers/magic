@@ -1,0 +1,25 @@
+{
+  "id": "88f41175-880f-491e-96c3-bf52f3c0db5d",
+  "oracle_id": "cffb9b7f-d52c-43e0-a4a6-b06dea83eb53",
+  "name": "Naban, Dean of Iteration",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dom",
+  "collector_number": "58",
+  "rarity": "rare",
+  "released_at": "2018-04-27",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Wizard",
+  "oracle_text": "If a Wizard you control entering causes a triggered ability of a permanent you control to trigger, that ability triggers an additional time.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "power": "2",
+  "toughness": "1"
+}

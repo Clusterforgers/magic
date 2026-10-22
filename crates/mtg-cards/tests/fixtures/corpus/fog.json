@@ -1,0 +1,23 @@
+{
+  "id": "bbc3152e-7b3b-4ac6-8b33-abfebde216aa",
+  "oracle_id": "27e9db49-7af7-4bef-ad4c-bf5dfb92030d",
+  "name": "Fog",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ema",
+  "collector_number": "167",
+  "rarity": "common",
+  "released_at": "2016-06-10",
+  "digital": false,
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Prevent all combat damage that would be dealt this turn.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

@@ -16,6 +16,7 @@ use mtg_cards::deck::{
 };
 use mtg_cards::load::Library;
 use mtg_cards::{Caps, CardDefinition};
+use mtg_core::house::HouseRules;
 use mtg_db::{
     DbError, DeckBoard, IndexVersion, PreconDeckDetail, PreconDeckId, PreconVersion, RulesVersion,
 };
@@ -207,7 +208,7 @@ impl<'a> Judge<'a> {
         // The engine's check is the second line: a deck the report already blocks needs no repeat.
         let mut issues = report.legality.clone();
         if issues.is_empty() {
-            issues = format_issues(kind, &cards, &leaders);
+            issues = format_issues(kind, &cards, &leaders, &HouseRules::default());
         }
         let playable = issues.is_empty() && report.summary.state != DeckState::Blocked;
         Judged {

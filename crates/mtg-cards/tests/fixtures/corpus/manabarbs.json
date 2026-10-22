@@ -1,0 +1,23 @@
+{
+  "id": "adf081d5-e644-4f46-8bc8-a754b089acb4",
+  "oracle_id": "0f1afedd-c60f-454f-b84a-c8117aec0128",
+  "name": "Manabarbs",
+  "lang": "en",
+  "layout": "normal",
+  "set": "m12",
+  "collector_number": "150",
+  "rarity": "rare",
+  "released_at": "2011-07-15",
+  "digital": false,
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever a player taps a land for mana, this enchantment deals 1 damage to that player.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}
