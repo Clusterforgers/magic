@@ -162,6 +162,7 @@ mod counted;
 mod counters;
 mod create;
 mod defining;
+mod attacked_player;
 mod enchanted_player;
 mod enters;
 mod event_batches;

@@ -4,6 +4,7 @@
 //! same sequence.
 
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
+use super::attackers;
 use super::cast;
 use super::conditional;
 use super::copies;
@@ -91,6 +92,21 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .map(|text| text.replace("the monarch controls", "that player controls"))
             .collect();
         texts.extend(pronouns);
+    }
+    // A trigger on an attack at a player may name the one who draws ("you draw a card").
+    if matches!(
+        ability,
+        Ability::Triggered {
+            when: TriggerPattern::PlayerAttacked { .. } | TriggerPattern::PlayerAttacks { .. },
+            ..
+        }
+    ) {
+        let named: Vec<String> = texts
+            .iter()
+            .filter(|text| text.contains(", draw "))
+            .map(|text| text.replacen(", draw ", ", you draw ", 1))
+            .collect();
+        texts.extend(named);
     }
     // The counters counted by "for each" may be those "on it" for the card.
     let pronouns: Vec<String> = texts
@@ -323,6 +339,16 @@ fn written(
     mask: u32,
     per: bool,
 ) -> Option<Vec<String>> {
+    // The effects of an attack at the enchanted player and the same again for the opponents who attack: one sentence
+    // more, which no joint splits.
+    if let Some(head) = attackers::repeated(effects) {
+        if mask >> (head.len() - 1) != 0 {
+            return None;
+        }
+        let mut sentences = written(targets, head, mask, per)?;
+        sentences.push(attackers::sentence(head).to_owned());
+        return Some(sentences);
+    }
     let mut writer = Writer {
         targets,
         named: false,

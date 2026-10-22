@@ -48,6 +48,10 @@ enum Happened {
         attacker: ObjectId,
         player: PlayerId,
     },
+    /// Creatures were declared as attackers of a player, once for the declaration (not for a planeswalker).
+    PlayerAttacked { at: PlayerId },
+    /// A player declared creatures as attackers of a player, once for each pair of players in the declaration.
+    PlayerAttacks { by: PlayerId, at: PlayerId },
     /// A player cast a spell, the `nth` of their turn, after `before` spells that every player cast this turn.
     Cast {
         player: PlayerId,
@@ -261,6 +265,26 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                     }),
                     AttackTarget::Planeswalker(_) => None,
                 }));
+                let mut pairs: Vec<(PlayerId, PlayerId)> = Vec::new();
+                for (attacker, at) in attackers {
+                    if let AttackTarget::Player(at) = at
+                        && let Some(by) =
+                            controller_of(post, *attacker).or_else(|| controller_of(pre, *attacker))
+                        && !pairs.contains(&(by, *at))
+                    {
+                        pairs.push((by, *at));
+                    }
+                }
+                for (_, at) in &pairs {
+                    if !found.contains(&Happened::PlayerAttacked { at: *at }) {
+                        found.push(Happened::PlayerAttacked { at: *at });
+                    }
+                }
+                found.extend(
+                    pairs
+                        .into_iter()
+                        .map(|(by, at)| Happened::PlayerAttacks { by, at }),
+                );
                 if !attackers.is_empty() {
                     found.push(Happened::AttackedTogether {
                         attackers: attackers.iter().map(|(attacker, _)| *attacker).collect(),
@@ -613,6 +637,20 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
             (scope.players(at).ok()?.contains(player) && scope.selects(what, reference).ok()?)
                 .then(|| cause(state, vec![Target::Object(reference)]))
         }
+        (TriggerPattern::PlayerAttacked { who }, Happened::PlayerAttacked { at }) => scope
+            .players(who)
+            .ok()?
+            .contains(at)
+            .then(|| cause(state, vec![Target::Player(*at)])),
+        (
+            TriggerPattern::PlayerAttacks { by, at },
+            Happened::PlayerAttacks {
+                by: attacker,
+                at: attacked,
+            },
+        ) => (scope.players(by).ok()?.contains(attacker)
+            && scope.players(at).ok()?.contains(attacked))
+        .then(|| cause(state, vec![Target::Player(*attacker)])),
         (TriggerPattern::SpellCast { what, by }, Happened::Cast { player, spell, .. }) => {
             let reference = object(*spell)?;
             let subjects = vec![Target::Player(*player), Target::Object(reference)];

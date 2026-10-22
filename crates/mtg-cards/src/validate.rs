@@ -336,7 +336,9 @@ impl<'a> Walker<'a> {
 
     fn pred(&mut self, pred: &Pred) {
         match pred {
-            Pred::ControlledBy(r) | Pred::OwnedBy(r) => self.reference(r, Kind::Player),
+            Pred::ControlledBy(r) | Pred::OwnedBy(r) | Pred::AttackingPlayer(r) => {
+                self.reference(r, Kind::Player);
+            }
             Pred::Is(r) => self.reference(r, Kind::Object),
             Pred::HasKeyword(keyword) => self.keyword(keyword),
             Pred::Named(name) => self
@@ -878,6 +880,13 @@ impl<'a> Walker<'a> {
             }
             TriggerPattern::AttacksPlayer { what, at } => {
                 self.at("what", |w| w.selector(what));
+                self.at("at", |w| w.reference(at, Kind::Player));
+            }
+            TriggerPattern::PlayerAttacked { who } => {
+                self.at("who", |w| w.reference(who, Kind::Player));
+            }
+            TriggerPattern::PlayerAttacks { by, at } => {
+                self.at("by", |w| w.reference(by, Kind::Player));
                 self.at("at", |w| w.reference(at, Kind::Player));
             }
             TriggerPattern::BecomesTarget { what, by } => {

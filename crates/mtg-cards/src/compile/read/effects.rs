@@ -4,6 +4,7 @@
 use mtg_core::mana::ManaType;
 
 use super::among;
+use super::attackers;
 use super::amounts::{
     cards, cards_counted, counted, counted_parts, counted_stats, for_each, its_stat, number_word,
     points,
@@ -102,6 +103,9 @@ pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
         return true;
     }
     if r.attempt(|r| payments::after_may(r, effects)).is_some() {
+        return true;
+    }
+    if r.attempt(|r| attackers::does_the_same(r, effects)).is_some() {
         return true;
     }
     for template in templates().chain([unless_pays as Template]) {

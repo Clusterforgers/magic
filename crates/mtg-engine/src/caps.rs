@@ -33,6 +33,8 @@ const RUNS: &[&str] = &[
     "Trigger.State",
     "Trigger.Attacks",
     "Trigger.AttacksPlayer",
+    "Trigger.PlayerAttacked",
+    "Trigger.PlayerAttacks",
     "Trigger.SpellCast",
     "Trigger.Sacrificed",
     "Trigger.StepBegins",
