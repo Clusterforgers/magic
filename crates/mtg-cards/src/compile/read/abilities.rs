@@ -6,7 +6,7 @@ use super::tokens::Reader;
 use super::{costs, effects, modal, statics, triggers};
 use crate::ability::{Ability, Limit, Timing};
 use crate::effect::Effect;
-use crate::refs::{Pred, Ref, ZoneKind};
+use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::TriggerPattern;
 use crate::value::Condition;
 
@@ -75,6 +75,8 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
             ..
         }
     );
+    r.cast_spell = casts_a_spell(&when);
+    r.attacker = matches!(&when, TriggerPattern::Attacks { what } if *what == Selector::this());
     r.attacked = matches!(
         when,
         TriggerPattern::PlayerAttacked {
@@ -114,6 +116,15 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     })
 }
 
+/// Whether the event is a spell being cast, in every one of the events joined by "or", also the nth in a turn.
+fn casts_a_spell(when: &TriggerPattern) -> bool {
+    match when {
+        TriggerPattern::AnyOf(events) => events.iter().all(casts_a_spell),
+        TriggerPattern::Nth { event, .. } => casts_a_spell(event),
+        _ => matches!(when, TriggerPattern::SpellCast { .. }),
+    }
+}
+
 /// Whether the event is about a player ("that player" in the effects is who cast the spell, drew the card, lost the
 /// life or was dealt the damage), in every one of the events joined by "or".
 fn about_a_player(when: &TriggerPattern) -> bool {
@@ -129,6 +140,7 @@ fn about_a_player(when: &TriggerPattern) -> bool {
             | TriggerPattern::LifeLost { .. }
             | TriggerPattern::BecomesMonarch { .. }
             | TriggerPattern::Proliferated { .. }
+            | TriggerPattern::Amassed { .. }
             | TriggerPattern::Cycled { .. }
             | TriggerPattern::TappedForMana { .. }
             | TriggerPattern::PlayerAttacks { .. }

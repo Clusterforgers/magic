@@ -8,6 +8,7 @@ mod active_leaves_fuzz;
 mod aftermath;
 mod alternative_costs;
 mod alternative_fuzz;
+mod amass;
 mod announce_division;
 mod archon_fuzz;
 mod attach_fuzz;

@@ -1,0 +1,27 @@
+{
+  "id": "594bbe43-a8aa-42aa-bc49-cb4f3bc05cad",
+  "oracle_id": "85643f9b-49ea-434b-9f27-c1431064345e",
+  "name": "Lazotep Reaver",
+  "lang": "en",
+  "layout": "normal",
+  "set": "war",
+  "collector_number": "96",
+  "rarity": "common",
+  "released_at": "2019-05-03",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Zombie Beast",
+  "oracle_text": "When this creature enters, amass Zombies 1. (Put a +1/+1 counter on an Army you control. It's also a Zombie. If you don't control an Army, create a 0/0 black Zombie Army creature token first.)",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Amass"
+  ]
+}

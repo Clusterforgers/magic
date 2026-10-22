@@ -12,6 +12,7 @@ Artful Maneuver
 Arvad the Cursed
 Atlantean Skirmisher
 Augury Raven
+Aven Eternal
 Aven Initiate
 Azorius Chancery
 Azorius Signet
@@ -100,7 +101,9 @@ Drove of Elves
 Drudge Skeletons
 Dual Casting
 Dualcaster Mage
+Dunland Crebain
 Durkwood Baloth
+Easterling Vanguard
 Echo Inspector
 Elven Ambush
 Elvish Rejuvenator
@@ -116,6 +119,7 @@ Faithless Looting
 Faramir, Steward of Gondor
 Favorable Winds
 Fear of Failed Tests
+Fearsome Goblin Pair
 Felidar Sovereign
 Fellwar Stone
 Fetid Heath
@@ -146,9 +150,11 @@ Glorious Anthem
 Goblin Chieftain
 Goblin Spy
 Goblin War Buggy
+Goblin-town Flunkies
 Grapeshot
 Graven Cairns
 Graveshifter
+Grim Initiate
 Grisly Salvage
 Growing Ranks
 Guardian Gladewalker
@@ -156,6 +162,7 @@ Gurmag Angler
 Hall of Triumph
 Haughty Djinn
 Hengegate Pathway // Mistgate Pathway
+Herald of the Dreadhorde
 Hero of Bladehold
 Holdout Settlement
 Honor Troll
@@ -165,6 +172,7 @@ Hulking Raptor
 Idyllic Beachfront
 Impostor of the Sixth Pride
 Inkwell Leviathan
+Invading Manticore
 Invisible Stalker
 Izzet Charm
 Jadelight Ranger
@@ -181,6 +189,7 @@ Kongming, "Sleeping Dragon"
 Kozilek's Translator
 Krenko's Enforcer
 Lat-Nam Adept
+Lazotep Reaver
 Levitation
 Lhurgoyf
 Lightning Bolt
@@ -205,6 +214,7 @@ Megrim
 Merfolk Branchwalker
 Mesmeric Orb
 Midnight Banshee
+Mirari
 Mirror Image
 Mishra's Workshop
 Mizzium Mortars
@@ -252,6 +262,7 @@ Reconstructed Thopter
 Red Room Recruit
 Reflecting Pool
 Reiterate
+Relentless Advance
 Revel Ruiner
 Reverberate
 Rhox Faithmender
@@ -313,6 +324,7 @@ Summer Bloom
 Sundering Growth
 Sunken Ruins
 Supreme Verdict
+Swarm Intelligence
 Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
@@ -335,6 +347,7 @@ Thriving Heath
 Thriving Isle
 Thriving Moor
 Throne of the High City
+Tilonalli's Skinshifter
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker

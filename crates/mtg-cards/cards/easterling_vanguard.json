@@ -1,0 +1,19 @@
+{
+  "oracle_id": "149887fa-6b2d-495e-b3e0-b2ac7d3dc838",
+  "name": "Easterling Vanguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Easterling Vanguard",
+      "oracle_fingerprint": "041b3075aef529a732edc1b72b69195f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Amass": { "subtype": "Orc", "count": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

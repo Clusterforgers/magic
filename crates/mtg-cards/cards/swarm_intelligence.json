@@ -1,0 +1,30 @@
+{
+  "oracle_id": "4a7a5ea9-b633-459f-bcd4-40de53afce0e",
+  "name": "Swarm Intelligence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swarm Intelligence",
+      "oracle_fingerprint": "e36e6fa22c50b6d6cebd1a33c8e92442",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
