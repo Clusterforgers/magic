@@ -859,6 +859,10 @@ impl<'a> Scope<'a> {
                 .object(self.source.id)
                 .filter(|object| object.counter() == self.source.counter)
                 .and_then(GameObject::cast_way)
+                .or_else(|| {
+                    self.snapshot_of(self.source)
+                        .and_then(|snapshot| snapshot.way)
+                })
         })
     }
 

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f77a9160-1d37-476d-8908-29ddcc982328",
+  "name": "Mayhem Patrol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mayhem Patrol",
+      "oracle_fingerprint": "198ce508d410eaaa1801d38cd04c83a0",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Blitz": "{1}{R}" } }
+      ]
+    }
+  ]
+}

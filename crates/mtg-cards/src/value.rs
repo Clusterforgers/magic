@@ -73,6 +73,8 @@ pub enum CastWay {
     Escape,
     /// Dash (CR 702.109): the creature has haste and returns to its owner's hand at the next end step.
     Dash,
+    /// Blitz (CR 702.152): the creature has haste and "When this creature dies, draw a card" and is sacrificed at the next end step.
+    Blitz,
     /// Jump-start (CR 702.133): from a graveyard for its mana cost and the discard of a card; exiled when it leaves the stack.
     JumpStart,
     /// Retrace (CR 702.81): from a graveyard for its mana cost and the discard of a land card.
@@ -446,6 +448,7 @@ mod tests {
     #[case::foretold(CastWay::Foretold, true)]
     #[case::escape(CastWay::Escape, true)]
     #[case::dash(CastWay::Dash, true)]
+    #[case::blitz(CastWay::Blitz, true)]
     #[case::free(CastWay::Free, true)]
     #[case::jump_start(CastWay::JumpStart, false)]
     #[case::retrace(CastWay::Retrace, false)]

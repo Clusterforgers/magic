@@ -207,6 +207,12 @@ fn keyword_way(
             cost,
             in_hand && is_creature(state, id),
         ),
+        Keyword::Blitz(cost) => (
+            CastWay::Blitz,
+            "Blitz",
+            cost,
+            in_hand && is_creature(state, id),
+        ),
         Keyword::Foretell(cost) => (
             CastWay::Foretold,
             "Foretell",
@@ -221,7 +227,7 @@ fn keyword_way(
     // Overload and foretell are paid with mana alone.
     let (mana, parts) = if matches!(
         way,
-        CastWay::Flashback | CastWay::Evoke | CastWay::Escape | CastWay::Dash
+        CastWay::Flashback | CastWay::Evoke | CastWay::Escape | CastWay::Dash | CastWay::Blitz
     ) {
         cast_cost(cost)?
     } else {

@@ -6,6 +6,7 @@
 
 pub(crate) mod aftermath;
 mod battle_cry;
+mod blitz;
 mod buyback;
 mod cascade;
 mod changeling;
@@ -402,6 +403,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Rebound => &rebound::Rebound,
         Keyword::Aftermath => &aftermath::Aftermath,
         Keyword::Dash(_) => &dash::Dash,
+        Keyword::Blitz(_) => &blitz::Blitz,
         Keyword::Ninjutsu(_) => &ninjutsu::Ninjutsu,
         Keyword::Echo(_) => &echo::Echo,
         Keyword::CumulativeUpkeep(_) => &cumulative_upkeep::CumulativeUpkeep,
@@ -660,6 +662,7 @@ mod tests {
             Keyword::Rebound,
             Keyword::Aftermath,
             Keyword::Dash(cost()),
+            Keyword::Blitz(cost()),
             Keyword::Ninjutsu(cost()),
             Keyword::Echo(cost()),
             Keyword::CumulativeUpkeep(cost()),
@@ -737,6 +740,7 @@ mod tests {
         "Keyword.Rebound",
         "Keyword.Aftermath",
         "Keyword.Dash",
+        "Keyword.Blitz",
         "Keyword.Ninjutsu",
         "Keyword.Echo",
         "Keyword.CumulativeUpkeep",
@@ -855,6 +859,7 @@ mod tests {
     #[case::rebound(Keyword::Rebound, Hooks::none())]
     #[case::aftermath(Keyword::Aftermath, Hooks::none())]
     #[case::dash(Keyword::Dash(Cost::mana("{1}{R}".parse().unwrap())), Hooks { abilities: 2, ..Hooks::none() })]
+    #[case::blitz(Keyword::Blitz(Cost::mana("{1}{R}".parse().unwrap())), Hooks { abilities: 3, ..Hooks::none() })]
     #[case::ninjutsu(Keyword::Ninjutsu(Cost::mana("{1}{U}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::echo(Keyword::Echo(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::cumulative_upkeep(Keyword::CumulativeUpkeep(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]

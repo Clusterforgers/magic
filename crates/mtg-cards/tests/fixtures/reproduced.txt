@@ -41,6 +41,7 @@ Branchblight Stalker
 Brightstone Ritual
 Bronzeplate Boar
 Cackling Counterpart
+Caldaia Strongarm
 Capsize
 Carnage Tyrant
 Cascade Bluffs
@@ -196,6 +197,7 @@ Mardu Shadowspear
 Mardu Strike Leader
 Maro
 Master of Etherium
+Mayhem Patrol
 Megrim
 Merfolk Branchwalker
 Mesmeric Orb
@@ -213,6 +215,7 @@ Murderous Cut
 Muscle Sliver
 Mystic Gate
 Nantuko Husk
+Night Clubber
 Nighthawk Scavenger
 Nightmare
 Nightveil Sprite
@@ -253,6 +256,7 @@ Rhox Faithmender
 Rhystic Study
 Rift Bolt
 Righteous Avengers
+Riveteers Requisitioner
 Rocksteady, Mutant Marauder
 Rootborn Defenses
 Rosheen Meanderer

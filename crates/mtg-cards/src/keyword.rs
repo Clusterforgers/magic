@@ -167,6 +167,8 @@ pub enum Keyword {
     Aftermath,
     /// Dash with its cost: an alternative cost for a creature spell, which gains haste and returns to its owner's hand at the next end step (CR 702.109).
     Dash(Cost),
+    /// Blitz with its cost: an alternative cost for a creature spell, which gains haste and "When this creature dies, draw a card" and is sacrificed at the next end step (CR 702.152).
+    Blitz(Cost),
     /// Ninjutsu with its cost: from the hand during combat after blockers are declared, an unblocked attacker returns to its owner's hand and the card enters tapped and attacking (CR 702.49).
     Ninjutsu(Cost),
     /// Echo with its cost (CR 702.30): at the beginning of its controller's upkeep, if it came under their control since their last turn began, it is sacrificed unless they pay the cost.
@@ -262,6 +264,7 @@ impl Keyword {
         "Rebound",
         "Aftermath",
         "Dash",
+        "Blitz",
         "Ninjutsu",
         "Echo",
         "Cumulative upkeep",
@@ -348,6 +351,7 @@ impl Keyword {
             Keyword::Rebound => "Rebound",
             Keyword::Aftermath => "Aftermath",
             Keyword::Dash(_) => "Dash",
+            Keyword::Blitz(_) => "Blitz",
             Keyword::Ninjutsu(_) => "Ninjutsu",
             Keyword::Echo(_) => "Echo",
             Keyword::CumulativeUpkeep(_) => "Cumulative upkeep",
@@ -457,6 +461,7 @@ mod tests {
             Keyword::Rebound,
             Keyword::Aftermath,
             Keyword::Dash(cost.clone()),
+            Keyword::Blitz(cost.clone()),
             Keyword::Ninjutsu(cost),
             Keyword::Echo(Cost::default()),
             Keyword::CumulativeUpkeep(Cost::default()),

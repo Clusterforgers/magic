@@ -341,6 +341,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "eternalize" => spell_cost(rest).map(Keyword::Eternalize),
         "escape" => spell_cost(rest).map(Keyword::Escape),
         "dash" => spell_cost(rest).map(Keyword::Dash),
+        "blitz" => spell_cost(rest).map(Keyword::Blitz),
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
         "echo" => spell_cost(rest).map(Keyword::Echo),
         "cumulative upkeep" => spell_cost(rest).map(Keyword::CumulativeUpkeep),
@@ -708,6 +709,11 @@ mod tests {
     )]
     #[case::aftermath("Aftermath", Keyword::Aftermath)]
     #[case::dash("Dash {2}{R}", Keyword::Dash(mana("{2}{R}")))]
+    #[case::blitz("Blitz {2}{R}", Keyword::Blitz(mana("{2}{R}")))]
+    #[case::blitz_with_reminder(
+        "Blitz {3}{B} (If you cast this spell for its blitz cost, it gains haste and \"When this creature dies, draw a card.\" Sacrifice it at the beginning of the next end step.)",
+        Keyword::Blitz(mana("{3}{B}"))
+    )]
     #[case::ninjutsu("Ninjutsu {1}{U}", Keyword::Ninjutsu(mana("{1}{U}")))]
     #[case::ninjutsu_for_one_mana("ninjutsu {B}", Keyword::Ninjutsu(mana("{B}")))]
     #[case::escape_exiling_cards(
@@ -979,6 +985,7 @@ mod tests {
             "Embalm {1}",
             "Eternalize {1}",
             "Dash {1}",
+            "Blitz {1}",
             "Ninjutsu {1}{U}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];

@@ -249,6 +249,7 @@ fn keyword() -> impl Strategy<Value = Keyword> {
         cost().prop_map(Keyword::Embalm),
         cost().prop_map(Keyword::Eternalize),
         cost().prop_map(Keyword::Dash),
+        cost().prop_map(Keyword::Blitz),
         cost().prop_map(Keyword::Ninjutsu),
         cost().prop_map(Keyword::Foretell),
         cost().prop_map(Keyword::Echo),
