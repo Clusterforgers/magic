@@ -323,6 +323,21 @@ pub(crate) fn spell_cast(
     events
 }
 
+/// The events of a spell being cast: what its way and optional costs pay besides mana (`parts`, with the objects picked
+/// for them in `choices`), then `SpellCast`. `None` when a pick is missing.
+pub(crate) fn spell_events(
+    state: &GameState,
+    player: PlayerId,
+    spell: ObjectId,
+    parts: &[Part],
+    choices: &Choices,
+    granted: bool,
+) -> Option<Vec<Event>> {
+    let mut events = parts::pay(state, player, spell, parts, choices.cost_picks())?;
+    events.extend(spell_cast(player, spell, choices, granted));
+    Some(events)
+}
+
 /// The events that say what a payment is for, which come between the life paid and the mana: the cast of the spell,
 /// the activation of the ability, or the answer "paid" to the effect that asked.
 fn announcement(
@@ -342,12 +357,22 @@ fn announcement(
             special: Some(Special::Foretell),
             ..
         }) => foretell::events(state, *card).ok_or_else(unexpected),
-        Some(Pending {
-            what: What::Spell(spell),
+        Some(
+            pending @ Pending {
+                what: What::Spell(spell),
+                choices,
+                granted,
+                ..
+            },
+        ) => spell_events(
+            state,
+            player,
+            *spell,
+            &pending.cost_parts(),
             choices,
-            granted,
-            ..
-        }) => Ok(spell_cast(player, *spell, choices, granted.is_some())),
+            granted.is_some(),
+        )
+        .ok_or_else(unexpected),
         Some(Pending {
             what: What::Ability(ability),
             choices,

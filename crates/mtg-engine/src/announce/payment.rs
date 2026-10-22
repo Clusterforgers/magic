@@ -30,7 +30,10 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Next {
         }
         // A spell a resolution lets the player cast for nothing needs no payment decision.
         (What::Spell(spell), Some(cost))
-            if ctx.granted.is_some() && cost.mana_value() == 0 && total.life == 0 =>
+            if ctx.granted.is_some()
+                && cost.mana_value() == 0
+                && total.life == 0
+                && ctx.needs.cost_parts(work.choices).is_empty() =>
         {
             Next::Commit(spell_cast(ctx.player, *spell, work.choices, true))
         }

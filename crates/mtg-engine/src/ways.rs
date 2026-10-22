@@ -18,6 +18,7 @@ use crate::help;
 use crate::keywords::{self, foretell, keywords_of};
 use crate::mana::{ManaOption, ManaPool, can_afford, can_afford_with};
 use crate::object::{FaceDown, ObjectKind};
+use crate::parts::Part;
 use crate::price::Price;
 use crate::priority::{mana_options, sorcery_timing};
 use crate::resolve::{spell_ability, zone_kind};
@@ -37,6 +38,8 @@ pub(crate) struct Way {
     pub(crate) mana: Option<ManaCost>,
     /// The card may be cast whenever its caster has priority, as an instant is.
     pub(crate) instant: bool,
+    /// What paying the way takes besides mana: life and the objects the player picks.
+    pub(crate) parts: Vec<Part>,
 }
 
 impl Way {
@@ -53,6 +56,40 @@ fn mana_only(cost: &mtg_cards::cost::Cost) -> Option<ManaCost> {
         return None;
     }
     price.mana
+}
+
+/// The mana and the parts of the cost of a keyword that is paid as a spell is cast (flashback, evoke, overload, madness):
+/// the mana, and life and the objects the player picks. A cost that taps or loses its source, counts X or removes counters
+/// is not paid; nor is one with nothing to pay.
+fn cast_cost(cost: &mtg_cards::cost::Cost) -> Option<(ManaCost, Vec<Part>)> {
+    let price = Price::announced(cost).ok()?;
+    let unpaid = price.tap
+        || price.moves_source()
+        || price.x > 0
+        || (price.mana.is_none() && price.parts.is_empty())
+        || price
+            .parts
+            .iter()
+            .any(|part| part.is_counted() || matches!(part, Part::Counters { .. }));
+    (!unpaid).then(|| (price.mana.unwrap_or(ManaCost::ZERO), price.parts))
+}
+
+/// A cost in words: its mana, then its parts.
+fn cost_words(mana: &ManaCost, parts: &[Part]) -> String {
+    let mut words: Vec<String> = Vec::new();
+    if mana.mana_value() > 0 || parts.is_empty() {
+        words.push(mana.to_string());
+    }
+    words.extend(parts.iter().map(Part::text));
+    words.join(", ")
+}
+
+/// Whether `player` can give what the parts of a way take besides mana for the card `id`.
+fn parts_payable(state: &GameState, player: PlayerId, id: ObjectId, parts: &[Part]) -> bool {
+    parts.is_empty()
+        || Price::casting(parts.to_vec())
+            .claimed(state, player, id)
+            .is_some()
 }
 
 /// Every way `player` may cast the card `id` from where it is, whatever the timing and the mana in hand.
@@ -97,6 +134,7 @@ pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> 
             label: format!("Cast for {cost}"),
             mana: None,
             instant,
+            parts: Vec::new(),
         });
     }
     if permissions.iter().any(|permission| permission.free) {
@@ -105,6 +143,7 @@ pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> 
             label: "Cast without paying its mana cost".to_owned(),
             mana: Some(ManaCost::default()),
             instant,
+            parts: Vec::new(),
         });
     }
     for keyword in keywords_of(state, id) {
@@ -128,14 +167,21 @@ pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> 
         if !from_here || ways.iter().any(|w| w.alternative == Some(way)) {
             continue;
         }
-        let Some(mana) = mana_only(cost) else {
+        // Overload and foretell are paid with mana alone.
+        let cost = if matches!(way, CastWay::Flashback | CastWay::Evoke) {
+            cast_cost(cost)
+        } else {
+            mana_only(cost).map(|mana| (mana, Vec::new()))
+        };
+        let Some((mana, parts)) = cost else {
             continue;
         };
         ways.push(Way {
             alternative: Some(way),
-            label: format!("{name} {mana}"),
+            label: format!("{name} {}", cost_words(&mana, &parts)),
             mana: Some(mana),
             instant,
+            parts,
         });
     }
     ways
@@ -169,12 +215,13 @@ pub(crate) fn granted(
         return Vec::new();
     }
     if way == Some(CastWay::Madness) {
-        return madness_cost(state, id)
-            .map(|mana| Way {
+        return madness_way(state, id)
+            .map(|(mana, parts)| Way {
                 alternative: Some(CastWay::Madness),
-                label: format!("Madness {mana}"),
+                label: format!("Madness {}", cost_words(&mana, &parts)),
                 mana: Some(mana),
                 instant: true,
+                parts,
             })
             .into_iter()
             .collect();
@@ -185,6 +232,7 @@ pub(crate) fn granted(
             label: "Cast without paying its mana cost".to_owned(),
             mana: Some(ManaCost::default()),
             instant: true,
+            parts: Vec::new(),
         }];
     }
     card.card()
@@ -195,6 +243,7 @@ pub(crate) fn granted(
             label: format!("Cast for {cost}"),
             mana: None,
             instant: true,
+            parts: Vec::new(),
         })
         .into_iter()
         .collect()
@@ -272,13 +321,18 @@ pub(crate) fn can_foretell(
         && can_afford(&cost, pool, sources, life, &Spend::other())
 }
 
-/// The mana of the madness cost of the card `id` (CR 702.35), when it has one that is paid with mana alone.
+/// The mana of the madness cost of the card `id` (CR 702.35), when it has one the engine pays.
 pub(crate) fn madness_cost(state: &GameState, id: ObjectId) -> Option<ManaCost> {
+    madness_way(state, id).map(|(mana, _)| mana)
+}
+
+/// The mana and the other parts of the madness cost of the card `id`.
+fn madness_way(state: &GameState, id: ObjectId) -> Option<(ManaCost, Vec<Part>)> {
     keywords_of(state, id).into_iter().find_map(|keyword| {
         let Keyword::Madness(cost) = keyword else {
             return None;
         };
-        mana_only(cost)
+        cast_cost(cost)
     })
 }
 
@@ -302,6 +356,7 @@ pub(crate) fn grantable(
     let help = help::offered(state, player, id);
     granted(state, id, free, way).iter().any(|way| {
         announceable_in(state, player, id, way.alternative)
+            && parts_payable(state, player, id, &way.parts)
             && way
                 .cost(card.card().mana_cost.as_ref())
                 .is_some_and(|cost| {
@@ -357,6 +412,7 @@ pub(crate) fn castable_now(
     of(state, player, id).iter().any(|way| {
         (way.instant || sorcery_timing(state, player))
             && announceable_in(state, player, id, way.alternative)
+            && parts_payable(state, player, id, &way.parts)
             && way
                 .cost(card.card().mana_cost.as_ref())
                 .is_some_and(|cost| {

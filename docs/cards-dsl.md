@@ -105,6 +105,7 @@ Static     { affected: Ref, mods: [Modification], condition?, defining = false, 
 Rule       { rule: GameRule, condition?, from = Battlefield }   a static ability that changes a rule of the game
 Replacement{ when: ReplaceWhen, by: ReplaceBy, condition?, from = Battlefield }
 CostModifier{ applies_to: Selector, change: Increase|Reduce, mana: ManaCostX, per = 1, condition? }
+AdditionalCost{ cost: Cost }                                     "As an additional cost to cast this spell, you may ..."; read as Condition AdditionalCostPaid
 Keyword(Keyword)
 Manual     { reason: String, span: Span }                        an unmodelled clause
 ```
@@ -146,7 +147,8 @@ ReplaceBy   = Multiply(n) | Add(n) | Prevent | PreventUpTo(n) | Instead([Effect]
             | Tapped | WithCounters{counter,count} | Choose(Color|CreatureType|Player|Opponent) | PayLifeOrTapped(n)
 CostItem    = Mana(ManaCostX) | Tap | Untap | PayLife(Amount) | SacrificeSelf | ExileSelf | DiscardSelf
             | Sacrifice{filter,count} | Discard{count,filter?} | PayEnergy(Amount) | RemoveCounters{counter,count}
-            | TapPermanents{filter,count} | ExileFromGraveyard{filter,count} | ReturnToHand{filter,count}
+            | TapPermanents{filter,count} | ExileFromGraveyard{filter,count} | ExileFromHand{filter,count}
+            | ReturnToHand{filter,count}
 Modification= ModifyPT{power,toughness} SetPT{..} SwitchPT AddType AddSubtype SetColors
             | AddKeyword AddProtectionFromChosenColor RemoveKeyword SetController(Ref) CantAttack CantBlock
             | CantBeBlocked CantBeBlockedBy(Selector)
@@ -155,7 +157,7 @@ GameRule    = DamageCantBePrevented{source?,combat?} | MustAttack(Ref) | MustBlo
             | CantGainLife(Ref) | CantDraw(Ref) | CantSearch(Ref) | RevealTop(Ref) | TriggerAgain{cause: TriggerPattern}
             | MayCast{who = You, what?, from?, free?, flash?, only?, play?}
             | LookAtTopAnyTime(Ref) | NoMaxHandSize(Ref) | AdditionalLandPlays{who,count} | CanBeCommander
-Keyword     = Flying | Reach | FirstStrike | ... | Shroud | Protection(Selector) | Ward(Cost) | Equip(Cost) | Enchant(Selector) | Kicker(Cost) | ...
+Keyword     = Flying | Reach | FirstStrike | ... | Shroud | Protection(Selector) | Ward(Cost) | Equip(Cost) | Enchant(Selector) | Kicker(Cost) | Buyback(Cost) | Entwine(Cost) | ...
             | Crew(n) | Mutate(Cost) | Encore(Cost) | Squad(Cost) | Foretell(Cost) | Changeling | Devoid | Myriad | Infect
 ```
 
@@ -171,7 +173,7 @@ TargetSpec{ what: AnyTarget | Player | Opponent | Object(Selector) | Either([..]
 Amount    = n | X | Kicks | Count(Selector) | Stat{of,stat} | Life(Ref) | Counters{on,counter} | Sum([Amount])
           | Divided | EvenShare(Amount) | TargetCount(i) | Devotion([Color]) | Greatest{of,stat} | Total{of,stat}
           | CardTypes(Selector) | Players(Ref) | LowestLife(Ref) | HighestLife(Ref) | Triggering
-Condition = Not | All | Any | Compare{left,op,right} | Matches{subject,selector} | Kicked | CastWith(Flashback|Evoke|Overload|Madness|Suspend|Foretold|Free) | YourTurn | Performed
+Condition = Not | All | Any | Compare{left,op,right} | Matches{subject,selector} | Kicked | AdditionalCostPaid | CastWith(Flashback|Evoke|Overload|Madness|Suspend|Foretold|Free) | YourTurn | Performed
           | Monarch(Ref) | CitysBlessing(Ref)
 ```
 
@@ -317,6 +319,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 | Data | `{"Keyword": {"Ward": "{2}"}}`. `Keyword` is an enum in `keyword.rs` with `name()` in Scryfall's spelling (compared with the record's `keywords`). It declares every keyword the roadmap lists. |
 | Engine | `keywords/mod.rs` maps each variant to a `KeywordRules` value defined in `keywords/<name>.rs`; a keyword without its task is a stub that changes nothing. A keyword task replaces its stub and adds its `Caps` entry in `caps.rs`. `keywords_of(state, id)` is the one reader of the keywords an object has: the keyword abilities `ability_reader` lists, with layer 6 joining there: the keywords continuous effects grant (`AddKeyword`) follow in timestamp order, never twice; `RemoveKeyword` removes one and `LoseAbilities` every keyword so far, in the same order, so a keyword granted after them stays. The keywords of combat, hexproof and flash are built, and ward, prowess and battle cry as triggered abilities (`engine.md`, Combat and keywords). `player_keywords(state, player)` is the same reader for a player (hexproof, CR 702.11d). |
 | Convoke, delve | No hook: the payment reads the keywords (`help::offered`, `engine.md`, Payment); `Keyword.Convoke` and `Keyword.Delve` are in `Caps`, and the compiler reads the keyword lines and their reminder text. |
+| Optional costs | `additional_cost` gives the costs of kicker, multikicker, buyback and entwine, and `Ability::AdditionalCost` one of its own; each is asked with the cast (`engine.md`, Announcement). A kicker, buyback, entwine, flashback, evoke or madness cost may hold life and parts that pick objects (`Kicker—Sacrifice a creature`, `Evoke—Exile a red card from your hand`, `Flashback—{1}{U}, Pay 3 life`); the compiler reads them in words, and the walker names `Keyword.Cost.<part>` only for the keywords that pay none and for counters removed or an X amount. |
 | Hooks | `restricts_blocking`, `answers_evasion`, `min_blockers`, `forbids_attacking`, `ignores_summoning_sickness`, `attacks_untapped`, `is_indestructible`, `modifies_damage`, `restricts_targeting`, `restricts_player_targeting`, `protects_from`, `grants_timing`, `adds_abilities`. Combat, damage, state-based actions, targeting (`protects` and `protects_player`, part of `legal_targets`) and casting at instant speed (`grants_instant_timing`) call theirs; a stub answers "no". A keyword expressible in the DSL (ward, prowess, battle cry, equip, reconfigure, living weapon) returns abilities from `adds_abilities`, activated, triggered and static ones, which `ability_reader` lists after the keyword under `AbilitySource::PrintedKeyword` or `GrantedKeyword`, and is tested like any card; one that bends rules machinery (flying, first strike, trample) is a hook in combat or damage code. |
 
 ## Validation
@@ -443,6 +446,7 @@ This is `crates/mtg-cards/cards/archon_of_cruelty.json`; a test keeps the two eq
 | Targets, damage | Lightning Bolt, Burst Lightning (kicker), Fireball (X, even split, cost per extra target), Fire // Ice (split, divided damage, Fuse) |
 | Optional costs | Burst Lightning and Gatekeeper of Malakir (kicker, the second with an enters trigger that reads it), Wolfbriar Elemental (multikicker, a Wolf for each payment) (Verified) |
 | Impulse draw (Verified) | Professional Face-Breaker (the Treasure it makes in combat and the ability that sacrifices it), Abbot of Keral Keep (prowess, and the card exiled when it enters) and Reckless Impulse (two cards, until the end of the next turn) |
+| Costs with parts beyond mana (Verified) | Capsize (buyback), Dream's Grip (entwine), Voltage Surge ("as an additional cost, you may sacrifice an artifact", read by `AdditionalCostPaid`), Vicious Offering (kicker that sacrifices a creature), Deep Analysis (flashback that pays life), Endurance (evoke that exiles a card from the hand) |
 | Alternative costs and cast permissions (Verified) | Faithless Looting (flashback), Mulldrifter (evoke, with the enters trigger), Cyclonic Rift and Mizzium Mortars (overload), Omniscience (cast from the hand without paying) and Vedalken Orrery (as though flash) |
 | Madness and suspend (Verified) | Fiery Temper, Basking Rootwalla and Arrogant Wurm (madness), Rift Bolt, Ancestral Vision and Durkwood Baloth (suspend) |
 | Foretell (Verified) | Behold the Multiverse, Saw It Coming and Demon Bolt (instants cast from exile for the foretell cost), Augury Raven (a creature) |

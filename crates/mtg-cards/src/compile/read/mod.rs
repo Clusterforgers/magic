@@ -38,7 +38,17 @@ pub use tokens::same_text;
 
 use super::{ClauseKind, classify};
 use crate::ability::Ability;
+use crate::cost::Cost;
 use tokens::{Reader, tokenize};
+
+/// The cost a keyword of a spell prints in words ("Sacrifice a creature", "{1}{U}, Pay 3 life"), when all of the text
+/// reads as the parts of one cost.
+pub fn cost_in_words(text: &str) -> Option<Cost> {
+    let tokens = tokenize(text);
+    let mut reader = Reader::new(&tokens, false);
+    let cost = costs::cost(&mut reader)?;
+    reader.end().then_some(cost)
+}
 
 /// Reads a spell, a modal, a triggered or an activated clause into an ability, or `None` when it
 /// is not a wording the templates know. The text of a spell may run over several lines, which are

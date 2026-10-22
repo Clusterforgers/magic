@@ -24,7 +24,7 @@ use crate::value::{Amount, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 7] = [
+const TEMPLATES: [Template; 8] = [
     entering,
     as_entering,
     rule,
@@ -32,6 +32,7 @@ const TEMPLATES: [Template; 7] = [
     cost_modifier,
     modifies,
     prevention::static_rule,
+    super::costs::additional,
 ];
 
 /// A static ability that is a whole sentence: the shape and its period.

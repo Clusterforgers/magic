@@ -434,8 +434,11 @@ fn head(r: &mut Reader<'_>, form: Form) -> Option<(Vec<CardType>, Noun)> {
     }
 }
 
-/// "from your graveyard": the zone and its owner.
+/// "from your graveyard", "from your hand": the zone and its owner.
 fn zone_suffix(r: &mut Reader<'_>) -> Option<[Pred; 2]> {
+    if r.words("from your hand") {
+        return Some([Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]);
+    }
     r.words("from your graveyard")
         .then_some([Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)])
 }
@@ -496,13 +499,17 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     let (mut subtype, mut card) = (None, false);
     let mut rest = preds.iter().peekable();
     while let Some(pred) = rest.next() {
-        if matches!(pred, Pred::In(ZoneKind::Graveyard))
+        if let Pred::In(zone @ (ZoneKind::Graveyard | ZoneKind::Hand)) = pred
             && rest
                 .next_if(|next| **next == Pred::OwnedBy(Ref::You))
                 .is_some()
         {
             card = true;
-            suffixes.push("from your graveyard".to_owned());
+            suffixes.push(if *zone == ZoneKind::Hand {
+                "from your hand".to_owned()
+            } else {
+                "from your graveyard".to_owned()
+            });
         } else if let Pred::Subtype(Subtype(name)) = pred {
             if subtype.replace(name.as_str()).is_some() {
                 return None;

@@ -4,7 +4,7 @@
 
 use mtg_cards::keyword::Keyword;
 
-use super::{AdditionalCost, KeywordRules};
+use super::{AdditionalCost, KeywordRules, OptionalKind};
 
 /// The rules of multikicker.
 #[derive(Debug)]
@@ -19,6 +19,7 @@ impl KeywordRules for Multikicker {
             name: "Multikicker",
             cost: cost.clone(),
             repeatable: true,
+            kind: OptionalKind::Kicker,
         })
     }
 }

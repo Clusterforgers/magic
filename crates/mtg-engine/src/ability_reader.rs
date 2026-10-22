@@ -42,6 +42,12 @@ pub(crate) fn printed(object: &GameObject) -> impl Iterator<Item = (AbilityRef, 
         .map(|(index, rules)| (AbilityRef::printed(object.id(), index), rules))
 }
 
+/// The rules printed on a card with this definition, in order: what a spell announces and what the cards of a hand or a
+/// graveyard are read for, with no object to address them.
+pub(crate) fn printed_rules(definition: &CardDefinition) -> impl Iterator<Item = &Arc<Ability>> {
+    definition.rules.iter()
+}
+
 /// The zone an ability works from, for the kinds that name one (`from`): where its source must be for it to be
 /// activated, to trigger, to apply or to replace.
 pub(crate) const fn works_from(ability: &Ability) -> Option<ZoneKind> {

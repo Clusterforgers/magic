@@ -79,6 +79,10 @@ pub enum Keyword {
     Kicker(Cost),
     /// Multikicker with its cost.
     Multikicker(Cost),
+    /// Buyback with its cost: the spell returns to its owner's hand as it resolves when the cost was paid (CR 702.27).
+    Buyback(Cost),
+    /// Entwine with its cost: all modes are chosen when the cost is paid (CR 702.42).
+    Entwine(Cost),
     /// Flashback with its cost.
     Flashback(Cost),
     /// Madness with its cost.
@@ -122,7 +126,7 @@ pub enum Keyword {
 
 impl Keyword {
     /// Scryfall's spelling of every keyword in this enum, for matching a record's `keywords`.
-    pub const NAMES: [&'static str; 50] = [
+    pub const NAMES: [&'static str; 52] = [
         "Flash",
         "Flying",
         "Reach",
@@ -156,6 +160,8 @@ impl Keyword {
         "Cycling",
         "Kicker",
         "Multikicker",
+        "Buyback",
+        "Entwine",
         "Flashback",
         "Madness",
         "Morph",
@@ -211,6 +217,8 @@ impl Keyword {
             Keyword::Cycling(_) => "Cycling",
             Keyword::Kicker(_) => "Kicker",
             Keyword::Multikicker(_) => "Multikicker",
+            Keyword::Buyback(_) => "Buyback",
+            Keyword::Entwine(_) => "Entwine",
             Keyword::Flashback(_) => "Flashback",
             Keyword::Madness(_) => "Madness",
             Keyword::Morph(_) => "Morph",
@@ -286,6 +294,8 @@ mod tests {
             Keyword::Cycling(cost.clone()),
             Keyword::Kicker(cost.clone()),
             Keyword::Multikicker(cost.clone()),
+            Keyword::Buyback(cost.clone()),
+            Keyword::Entwine(cost.clone()),
             Keyword::Flashback(cost.clone()),
             Keyword::Madness(cost.clone()),
             Keyword::Morph(cost.clone()),

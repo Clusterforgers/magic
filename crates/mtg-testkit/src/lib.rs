@@ -18,6 +18,7 @@ pub mod driver;
 pub mod evasion_cards;
 pub mod event_cards;
 pub mod expect;
+pub mod extra_cost_cards;
 pub mod family_cards;
 pub mod foretell_cards;
 pub mod harness;
@@ -62,6 +63,7 @@ pub use decks::{
 pub use driver::Driver;
 pub use evasion_cards::evasion_fuzz_setup;
 pub use event_cards::events_fuzz_setup;
+pub use extra_cost_cards::extra_cost_fuzz_setup;
 pub use family_cards::families_fuzz_setup;
 pub use foretell_cards::foretell_fuzz_setup;
 pub use harness::{FailureKind, GameFailure, GameOutcome, PlayOptions, play_game, play_game_with};

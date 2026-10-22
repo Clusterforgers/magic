@@ -5,6 +5,7 @@
 //! keywords an object has through [`keywords_of`] and the helpers below it, never from the rules of the card.
 
 mod battle_cry;
+mod buyback;
 mod cascade;
 mod changeling;
 mod companion;
@@ -19,6 +20,7 @@ mod disguise;
 mod double_strike;
 mod enchant;
 mod encore;
+mod entwine;
 mod equip;
 mod evoke;
 mod first_strike;
@@ -141,7 +143,20 @@ impl Source<'static> {
     }
 }
 
-/// A cost a keyword lets the caster pay in addition: kicker and multikicker.
+/// What paying an optional cost does, which says what reads it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum OptionalKind {
+    /// Kicker or multikicker: read as `Condition::Kicked` and `Amount::Kicks`.
+    Kicker,
+    /// Buyback: the spell returns to its owner's hand as it resolves.
+    Buyback,
+    /// Entwine: every mode is chosen.
+    Entwine,
+    /// "As an additional cost to cast this spell, you may ...": read as `Condition::AdditionalCostPaid`.
+    Additional,
+}
+
+/// A cost a keyword lets the caster pay in addition: kicker, multikicker, buyback and entwine.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AdditionalCost {
     /// The keyword as the card prints it, before its cost: `Kicker`.
@@ -150,6 +165,8 @@ pub struct AdditionalCost {
     pub cost: Cost,
     /// Whether it may be paid any number of times (multikicker) and not only once.
     pub repeatable: bool,
+    /// What paying it does.
+    pub kind: OptionalKind,
 }
 
 /// What a keyword does to the rules machinery; every hook defaults to doing nothing.
@@ -285,6 +302,8 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Enchant(_) => &enchant::Enchant,
         Keyword::Cycling(_) => &cycling::Cycling,
         Keyword::Kicker(_) => &kicker::Kicker,
+        Keyword::Buyback(_) => &buyback::Buyback,
+        Keyword::Entwine(_) => &entwine::Entwine,
         Keyword::Multikicker(_) => &multikicker::Multikicker,
         Keyword::Flashback(_) => &flashback::Flashback,
         Keyword::Madness(_) => &madness::Madness,
@@ -507,6 +526,8 @@ mod tests {
             Keyword::Cycling(cost()),
             Keyword::Kicker(cost()),
             Keyword::Multikicker(cost()),
+            Keyword::Buyback(cost()),
+            Keyword::Entwine(cost()),
             Keyword::Flashback(cost()),
             Keyword::Madness(cost()),
             Keyword::Morph(cost()),
@@ -531,7 +552,7 @@ mod tests {
     }
 
     /// The keywords whose rules the engine runs, named as the capabilities name them.
-    const RUN: [&str; 35] = [
+    const RUN: [&str; 37] = [
         "Keyword.Flash",
         "Keyword.Flying",
         "Keyword.Reach",
@@ -557,6 +578,8 @@ mod tests {
         "Keyword.LivingWeapon",
         "Keyword.Kicker",
         "Keyword.Multikicker",
+        "Keyword.Buyback",
+        "Keyword.Entwine",
         "Keyword.Flashback",
         "Keyword.Evoke",
         "Keyword.Overload",
@@ -667,15 +690,23 @@ mod tests {
     }
 
     #[test]
-    fn only_kicker_and_multikicker_add_a_cost_and_only_multikicker_repeats() {
-        let given: Vec<(&str, bool)> = every_keyword()
+    fn only_kicker_multikicker_buyback_and_entwine_add_a_cost_and_only_multikicker_repeats() {
+        let given: Vec<(&str, bool, OptionalKind)> = every_keyword()
             .iter()
             .filter_map(|keyword| {
                 let extra = rules(keyword).additional_cost(keyword)?;
-                Some((extra.name, extra.repeatable))
+                Some((extra.name, extra.repeatable, extra.kind))
             })
             .collect();
-        assert_eq!(given, [("Kicker", false), ("Multikicker", true)]);
+        assert_eq!(
+            given,
+            [
+                ("Kicker", false, OptionalKind::Kicker),
+                ("Multikicker", true, OptionalKind::Kicker),
+                ("Buyback", false, OptionalKind::Buyback),
+                ("Entwine", false, OptionalKind::Entwine),
+            ]
+        );
     }
 
     #[test]

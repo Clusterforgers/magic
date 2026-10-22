@@ -37,6 +37,8 @@ pub(crate) struct Price {
     pub(crate) x: u32,
     /// The other parts, in the order the cost prints them: life, counters removed, the objects the player picks.
     pub(crate) parts: Vec<Part>,
+    /// The parts are paid for a spell being cast: the card itself is never picked for them.
+    pub(crate) casting: bool,
 }
 
 /// The name `Caps` gives a cost part, for the parts the engine does not pay.
@@ -56,6 +58,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::TapPermanents { .. } => "Cost.TapPermanents",
         CostItem::ExileFromGraveyard { .. } => "Cost.ExileFromGraveyard",
         CostItem::ReturnToHand { .. } => "Cost.ReturnToHand",
+        CostItem::ExileFromHand { .. } => "Cost.ExileFromHand",
     }
 }
 
@@ -116,7 +119,17 @@ impl Price {
             mana: mana.then(|| ManaCost::from_symbols(symbols)),
             x,
             parts,
+            casting: false,
         })
+    }
+
+    /// The parts a spell pays besides its mana as it is cast: those of the way it is cast and of its optional costs.
+    pub(crate) fn casting(parts: Vec<Part>) -> Price {
+        Price {
+            parts,
+            casting: true,
+            ..Price::default()
+        }
     }
 
     /// The price with every counted part taking the X announced; X is 0 for an ability that announces none.
@@ -146,7 +159,7 @@ impl Price {
         picked: &[Vec<ObjectId>],
     ) -> Vec<ObjectId> {
         let mut barred: Vec<ObjectId> = picked.iter().flatten().copied().collect();
-        if self.moves_source() || (self.tap && part.taps()) {
+        if self.casting || self.moves_source() || (self.tap && part.taps()) {
             barred.push(source);
         }
         barred
@@ -277,6 +290,7 @@ mod tests {
                 mana: mana(expected),
                 x: 0,
                 parts: Vec::new(),
+                casting: false,
             })
         );
     }

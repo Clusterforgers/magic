@@ -4,6 +4,7 @@
 //! The mana of the total is what the payment step asks for, from the sources that may pay it.
 
 use mtg_cards::ability::Ability;
+use mtg_core::ids::ObjectId;
 use mtg_core::mana::ManaCost;
 
 use super::payment::spend;
@@ -64,7 +65,21 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<(Option<ManaCost>, Vec<Ma
     match ctx.what {
         What::Spell(spell) => {
             let cost = ctx.state.object(*spell)?.card().mana_cost.clone();
-            Some((cost, mana_options(ctx.state, ctx.player), 0))
+            let mut sources = mana_options(ctx.state, ctx.player);
+            // The parts of the way it is cast and of its optional costs: the life they pay is not there for Phyrexian
+            // mana, and what they sacrifice, tap or return is not there to tap for mana. Before the picks are made the
+            // player is assumed to give what leaves the most mana.
+            let price = Price::casting(ctx.needs.cost_parts(choices));
+            if price.parts.is_empty() {
+                return Some((cost, sources, 0));
+            }
+            let taken: Vec<ObjectId> = if choices.cost_picks().is_empty() {
+                price.claimed(ctx.state, ctx.player, *spell)?
+            } else {
+                choices.cost_picks().iter().flatten().copied().collect()
+            };
+            sources.retain(|option| !taken.contains(&option.source.object));
+            Some((cost, sources, price.life()))
         }
         What::Ability(ability) => match ctx.ability? {
             Ability::Activated { cost, .. } => {

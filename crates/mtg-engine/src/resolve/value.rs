@@ -16,10 +16,11 @@ use thiserror::Error;
 
 use super::share::{OUTSIDE_A_DIVISION, Share};
 use crate::abilities::Cause;
+use crate::announce::payments;
 use crate::characteristics::{Characteristics, characteristics, seen_as};
 use crate::choose::legal_from;
 use crate::choose::{Choices, Target};
-use crate::keywords;
+use crate::keywords::{self, OptionalKind};
 use crate::layers::{Held, View, outside};
 use crate::object::{Chosen, GameObject, ObjectKind, ObjectRef, PermanentState};
 use crate::snapshot::Snapshot;
@@ -719,7 +720,7 @@ impl<'a> Scope<'a> {
                 .map_err(|_| ResolveError::Invalid("too many players".into()))?,
             Amount::LowestLife(who) => self.lives(who)?.min().unwrap_or(i64::from(i32::MAX)),
             Amount::HighestLife(who) => self.lives(who)?.max().unwrap_or(i64::from(i32::MIN)),
-            Amount::Kicks => i64::try_from(self.paid_costs().len())
+            Amount::Kicks => i64::try_from(self.payments(OptionalKind::Kicker))
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
             Amount::Triggering => self
                 .cause
@@ -766,6 +767,13 @@ impl<'a> Scope<'a> {
             .object(self.source.id)
             .filter(|object| object.counter() == self.source.counter)
             .map_or(&[], GameObject::paid_costs)
+    }
+
+    /// How many times the optional costs of `kind` were paid (`paid_costs`), read against the costs the card prints.
+    fn payments(&self, kind: OptionalKind) -> usize {
+        self.state
+            .object(self.source.id)
+            .map_or(0, |source| payments(source.card(), self.paid_costs(), kind))
     }
 
     /// The alternative cost the spell was cast for: what the spell or ability announced, else what the spell its source is
@@ -816,7 +824,8 @@ impl<'a> Scope<'a> {
                 }
                 holds
             }
-            Condition::Kicked => !self.paid_costs().is_empty(),
+            Condition::Kicked => self.payments(OptionalKind::Kicker) > 0,
+            Condition::AdditionalCostPaid => self.payments(OptionalKind::Additional) > 0,
             Condition::CastWith(way) => self.cast_way() == Some(*way),
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
             Condition::Monarch(_) => return Err(ResolveError::Unsupported("the monarch")),

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "1779af8e-38fc-4043-b5fa-ee16a7ea840c",
+  "name": "Voltage Surge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voltage Surge",
+      "oracle_fingerprint": "c552304a1b9a35fd779ff8de7e7828ec",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }] } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }],
+                  "otherwise": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -140,6 +140,20 @@ fn is_legal(
     })
 }
 
+/// Whether every mode of `modal` has the targets it needs, which choosing all of them (entwine) asks for.
+pub(crate) fn every_mode_is_legal(
+    state: &GameState,
+    source: ObjectId,
+    controller: PlayerId,
+    modal: &Modal<'_>,
+    cause: Option<&Cause>,
+) -> bool {
+    modal
+        .modes
+        .iter()
+        .all(|mode| is_legal(state, source, controller, mode, cause))
+}
+
 /// What a mode is called in the prompt: the label the card gives it, else the oracle wording of what it does (a
 /// compiled mode has no label), with the card's own name where the wording says `~`.
 fn label_of(mode: &Mode, card: Option<&str>) -> Option<String> {

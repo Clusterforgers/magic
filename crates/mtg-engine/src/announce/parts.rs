@@ -1,10 +1,13 @@
-//! The permanents and cards that pay the parts of an ability's cost (CR 601.2b, 601.2h).
+//! The permanents and cards that pay the parts of an ability's cost, and of the optional and alternative costs of a
+//! spell (CR 601.2b, 601.2h).
 //!
 //! A part that takes objects (a sacrifice, a discard, an exile from a graveyard, tapped creatures, a return to hand) asks
 //! `ChooseCards` for them, one part at a time in the order the cost prints them, from what the player controls or holds
 //! and no earlier part has taken. A part with no more candidates than it takes is not asked; one with fewer cannot be
 //! paid and rewinds the announcement. The picks are kept in `Choices.cost_picks` and paid with the events of the
-//! activation (`cast.rs`).
+//! activation or the cast (`cast.rs`). The card being cast is never offered for its own cost.
+
+use std::borrow::Cow;
 
 use mtg_cards::ability::Ability;
 
@@ -25,8 +28,20 @@ pub(super) fn read(what: &What, rules: Option<&Ability>) -> Option<Box<Price>> {
     }
 }
 
+/// The price whose parts are announced: that of the activated ability, or the parts a spell pays besides its mana
+/// (those of the way it is cast and of its optional costs), once those are chosen.
+fn price_of<'a>(ctx: &'a Ctx<'_>, choices: &Choices) -> Option<Cow<'a, Price>> {
+    match ctx.what {
+        What::Spell(_) => {
+            let parts = ctx.needs.cost_parts(choices);
+            (!parts.is_empty()).then(|| Cow::Owned(Price::casting(parts)))
+        }
+        _ => ctx.needs.price.as_deref().map(Cow::Borrowed),
+    }
+}
+
 pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
-    let price = ctx.needs.price.as_ref()?;
+    let price = price_of(ctx, work.choices)?;
     if work.choices.cost_picks().is_empty()
         && price.claimed(ctx.state, ctx.player, ctx.source).is_none()
     {
