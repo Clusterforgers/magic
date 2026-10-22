@@ -10,6 +10,8 @@ mod detect;
 mod detect_batches;
 #[cfg(test)]
 mod detect_events;
+#[cfg(test)]
+mod detect_nth;
 mod queue;
 mod reads_x;
 mod state;
