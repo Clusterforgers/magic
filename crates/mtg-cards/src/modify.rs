@@ -299,7 +299,7 @@ mod tests {
             mana: "{W/P}".parse().unwrap(),
             per: Amount::Fixed(2),
         },
-        r#"{"AttackTax":{"who":"Opponents","attacked":"Both","attackers":[{"Type":"Creature"}],"mana":"{W/P}","per":{"Fixed":2}}}"#
+        r#"{"AttackTax":{"who":"Opponents","attacked":"Both","attackers":[{"Type":"Creature"}],"mana":"{W/P}","per":2}}"#
     )]
     #[case(
         GameRule::DamageCantBePrevented { source: Selector::default(), combat: None },

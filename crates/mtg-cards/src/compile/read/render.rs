@@ -1311,7 +1311,11 @@ impl Writer<'_> {
                     "becomes"
                 }
             ),
-            _ => return prevention::effect_text(effect).or_else(|| lands::effect_text(effect)),
+            _ => {
+                return prevention::effect_text(effect)
+                    .or_else(|| lands::effect_text(effect))
+                    .or_else(|| super::attack_tax::effect_text(effect));
+            }
         })
     }
 

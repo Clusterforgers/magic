@@ -27,6 +27,7 @@ Angel of Vitality
 Angelic Ascension
 Arbor Colossus
 Arcane Signet
+Archon of Absolution
 Archon of Cruelty
 Archway Commons
 Armguard Familiar
@@ -47,6 +48,7 @@ Azorius Chancery
 Azorius Signet
 Azure Fleet Admiral
 Azusa, Lost but Seeking
+Baird, Steward of Argive
 Banshee of the Dread Choir
 Basilica Screecher
 Basking Rootwalla
@@ -234,6 +236,7 @@ Flooded Strand
 Flowerfoot Swordmaster
 Fog
 Followed Footsteps
+Forbidding Spirit
 Forced March
 Fork
 Forum of Amity
@@ -250,6 +253,7 @@ Generous Ent
 Gerrard's Wisdom
 Ghalta, Primal Hunger
 Ghostblade Eidolon
+Ghostly Prison
 Giant Cindermaw
 Giant Growth
 Gilded Goose
@@ -405,6 +409,7 @@ Nightmare
 Nightveil Sprite
 Ninja of the Deep Hours
 Ninja of the New Moon
+Norn's Annex
 Notion Rain
 Nyxborn Behemoth
 Opt
@@ -436,6 +441,7 @@ Primeval Protector
 Prismatic Lens
 Professional Face-Breaker
 Professor of Symbology
+Propaganda
 Propeller Pioneer
 Prosperous Bandit
 Proven Combatant
@@ -538,6 +544,7 @@ Souldrinker
 Soultether Golem
 Space Marine Devastator
 Spectral Rider
+Sphere of Safety
 Sphinx of Jwar Isle
 Spire Golem
 Spire Winder
@@ -662,6 +669,7 @@ Weigh Down
 Whir of Invention
 Wild Wasteland
 Wilderness Elemental
+Windborn Muse
 Wings of the Guard
 Wipe Away
 Withering Boon
