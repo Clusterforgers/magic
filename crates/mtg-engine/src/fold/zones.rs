@@ -50,6 +50,7 @@ pub(super) fn move_object(
     object.card_counters.clear();
     object.face_down = None;
     object.adventure = None;
+    object.cast_from_hand = false;
     // What the spell paid for stays with the permanent it becomes, for its abilities to read.
     let paid = if from == Zone::Stack && to == Zone::Battlefield {
         std::mem::take(&mut object.choices.optional_costs)
@@ -185,6 +186,15 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             // The face cast is the card a spell is from now on: its buyback and flashback below are those of the face.
             if let Some(spell) = state.objects.get_mut(object) {
                 spell.choices.clone_from(choices);
+                spell.cast_from_hand = matches!(from, Zone::Hand(_));
+            }
+            // A spell cast from a hand with rebound is exiled by a replacement effect as it resolves.
+            if matches!(from, Zone::Hand(_))
+                && crate::keywords::keywords_of(state, *object)
+                    .iter()
+                    .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Rebound))
+            {
+                state.possible.replacements = true;
             }
             // A spell cast for its flashback cost, or with its buyback cost paid, is moved by a replacement effect.
             let bought_back = state.objects.get(object).is_some_and(|spell| {

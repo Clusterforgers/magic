@@ -109,6 +109,7 @@ pub fn process(
             leaves_stack_by_flashback(state, &item)
                 || returns_by_buyback(state, &item)
                 || exiles_by_adventure(state, &item)
+                || exiles_by_rebound(state, &item)
                 || commander_leaves(state, event)
         })
     {
@@ -251,6 +252,9 @@ enum Origin {
     /// The spell that resolved with its buyback cost paid, which returns to its owner's hand instead of going to the
     /// graveyard (CR 702.27a).
     Buyback,
+    /// The spell with rebound that resolved after it was cast from a hand, which is exiled instead of going to its
+    /// owner's graveyard and cast from exile at the next upkeep (CR 702.88a).
+    Rebound,
     /// The spell that resolved as an Adventure, which is exiled instead of going to its owner's graveyard (CR 715.4).
     Adventure,
     /// A commander that would be put into a hand or a library, which its owner may put into the command zone instead
@@ -294,6 +298,23 @@ fn exiles_by_adventure(state: &GameState, item: &Item) -> bool {
             spell.kind() == ObjectKind::Card
                 && spell.whole_card().layout == Layout::Adventure
                 && spell.face() == Some(1)
+        })
+}
+
+/// Whether the item is the resolution of a spell with rebound that was cast from its owner's hand, which is exiled in
+/// place of going to the graveyard (CR 702.88a).
+fn exiles_by_rebound(state: &GameState, item: &Item) -> bool {
+    let Item::One(event @ Event::SpellResolved { object }) = item else {
+        return false;
+    };
+    entering(state, event).is_none()
+        && state.object(*object).is_some_and(|spell| {
+            // A copy of a spell is no card, and was not cast from a hand.
+            spell.kind() == ObjectKind::Card
+                && spell.cast_from_hand()
+                && keywords::keywords_of(state, spell.id())
+                    .iter()
+                    .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Rebound))
         })
 }
 
@@ -884,6 +905,7 @@ impl Pass<'_> {
             found.extend(self.flashback_candidate(slot));
             found.extend(self.buyback_candidate(slot));
             found.extend(self.adventure_candidate(slot));
+            found.extend(self.rebound_candidate(slot));
         }
         found.extend(self.commander_candidate(at, &unit));
         found.sort_by_key(|candidate| candidate.origin);
@@ -935,6 +957,25 @@ impl Pass<'_> {
             controller: spell.controller(),
             action: Action::Replace(ReplaceBy::MoveTo(ZoneKind::Exile)),
             is_self: true,
+        })
+    }
+
+    /// The exile of a spell with rebound that resolved after it was cast from a hand, when it has not been applied.
+    fn rebound_candidate(&self, slot: &Slot) -> Option<Candidate> {
+        if slot.applied.contains(&Origin::Rebound) || !exiles_by_rebound(self.state, &slot.item) {
+            return None;
+        }
+        let Item::One(Event::SpellResolved { object }) = &slot.item else {
+            return None;
+        };
+        let spell = self.state.object(*object)?;
+        Some(Candidate {
+            origin: Origin::Rebound,
+            object: spell.reference(),
+            controller: spell.controller(),
+            action: Action::Replace(ReplaceBy::MoveTo(ZoneKind::Exile)),
+            // The rule is no effect of the spell, so a replacement of the graveyard move (Rest in Peace) is ordered with it (CR 616.1).
+            is_self: false,
         })
     }
 
@@ -1227,6 +1268,7 @@ impl Pass<'_> {
                                                 | Origin::Flashback
                                                 | Origin::Buyback
                                                 | Origin::Adventure
+                                                | Origin::Rebound
                                                 | Origin::Commander => 0,
                                             },
                                             shield: match c.origin {
@@ -1237,6 +1279,7 @@ impl Pass<'_> {
                                                 | Origin::Flashback
                                                 | Origin::Buyback
                                                 | Origin::Adventure
+                                                | Origin::Rebound
                                                 | Origin::Commander => None,
                                             },
                                         })
@@ -1702,6 +1745,40 @@ impl Pass<'_> {
         }
     }
 
+    /// The delayed trigger that lets the controller of a rebound spell cast the card from exile at the beginning of their
+    /// next upkeep, without paying its mana cost (CR 702.88a). It names the card as the object it becomes in exile.
+    fn rebound_cast(&self, spell: ObjectId) -> Option<Event> {
+        let object = self.state.object(spell)?;
+        let mut snapshot = crate::snapshot::snapshot(self.state, spell)?;
+        snapshot.counter += 1;
+        snapshot.zone = Zone::Exile;
+        Some(Event::DelayedTriggerCreated(Box::new(
+            crate::triggers::DelayedCreated {
+                id: crate::triggers::DelayedId(self.state.next_delayed),
+                source: ObjectRef {
+                    id: spell,
+                    counter: object.counter() + 1,
+                },
+                snapshot,
+                controller: object.controller(),
+                ability: 0,
+                when: mtg_cards::trigger::TriggerPattern::StepBegins {
+                    step: mtg_cards::trigger::Step::Upkeep,
+                    whose: Ref::You,
+                },
+                once: true,
+                effects: vec![mtg_cards::effect::Effect::CastFromZone {
+                    who: Ref::You,
+                    what: Ref::This,
+                    free: true,
+                    way: None,
+                    otherwise: Vec::new(),
+                }],
+                bindings: Vec::new(),
+            },
+        )))
+    }
+
     /// Sends the object that would move to `destination` instead.
     fn redirect(
         &mut self,
@@ -1741,6 +1818,12 @@ impl Pass<'_> {
                     .first()
                     .copied();
                 std::iter::once(moved(cause))
+                    .chain(
+                        applied
+                            .contains(&Origin::Rebound)
+                            .then(|| self.rebound_cast(object))
+                            .flatten(),
+                    )
                     .chain(holder.map(|player| Event::PriorityGranted { player }))
                     .collect()
             }
