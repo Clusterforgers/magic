@@ -33,8 +33,10 @@ Bloodghast
 Bloom Hulk
 Bog Wraith
 Boggart Ram-Gang
+Bola Slinger
 Bonesplitter
 Boon Reflection
+Boon-Bringer Valkyrie
 Borderland Behemoth
 Brain Freeze
 Brainstorm
@@ -48,6 +50,7 @@ Carnage Tyrant
 Cascade Bluffs
 Cathars' Crusade
 Changeling Outcast
+Chomping Kavu
 Circle of Dreams Druid
 Clone
 Cloudskate
@@ -56,6 +59,7 @@ Collective Unconscious
 Command Tower
 Consider
 Consign // Oblivion
+Consuming Aetherborn
 Contentious Plan
 Copper-Leaf Angel
 Counterspell
@@ -75,6 +79,7 @@ Dauthi Horror
 Dauthi Marauder
 Dawnglade Regent
 Death Ward
+Death-Greeter's Champion
 Deep Analysis
 Deep Forest Hermit
 Deepfathom Skulker
@@ -110,6 +115,7 @@ Faithless Looting
 Faramir, Steward of Gondor
 Favorable Winds
 Fear of Failed Tests
+Fearless Skald
 Felidar Sovereign
 Fellwar Stone
 Fetid Heath
@@ -139,6 +145,7 @@ Glorious Anthem
 Goblin Chieftain
 Goblin Spy
 Goblin War Buggy
+Golden-Scale Aeronaut
 Grapeshot
 Graven Cairns
 Graveshifter
@@ -147,6 +154,7 @@ Growing Ranks
 Guardian Gladewalker
 Gurmag Angler
 Hall of Triumph
+Hangar Scrounger
 Haughty Djinn
 Hengegate Pathway // Mistgate Pathway
 Hero of Bladehold
@@ -243,6 +251,7 @@ Rampant Growth
 Reckless Impulse
 Reconstructed Thopter
 Red Room Recruit
+Redcap Heelslasher
 Reflecting Pool
 Reiterate
 Rejuvenation Chamber
@@ -259,17 +268,21 @@ Rugged Prairie
 Rummaging Goblin
 Rustrazor Butcher
 Safehold Elite
+Saiba Cryptomancer
 Sanguine Bond
 Satyr Wayfinder
 Saw It Coming
 Scheming Aspirant
+Scorn-Blade Berserker
 Scuzzback Marauders
 Seedglaive Mentor
 Seekers' Squire
+Serpent-Blade Assailant
 Serra Angel
 Servant of the Conduit
 Shadowmage Infiltrator
 Siege Wurm
+Sigiled Sentinel
 Sinister Sabotage
 Sinister Starfish
 Siren Lookout

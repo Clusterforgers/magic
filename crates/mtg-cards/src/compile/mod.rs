@@ -18,6 +18,7 @@ use std::collections::BTreeSet;
 use crate::ability::Ability;
 use crate::card::{Card, Face, ImplStatus, Span};
 use crate::keyword::Keyword;
+use crate::modify::Modification;
 use crate::support::{PrintedCard, PrintedFace, has_rules_text, oracle_fingerprint};
 
 pub use classify::ClauseKind;
@@ -174,6 +175,7 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
             only.read = only.ability.is_some();
         }
     }
+    give_backup(&mut pending);
     let mut abilities = Vec::new();
     for clause in pending {
         match clause.ability {
@@ -190,6 +192,53 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
         });
     }
     abilities
+}
+
+/// Backup lists the abilities that follow it on the face (the other backups aside), which its target gains: a backup
+/// followed by a clause left to the table, or by an ability that cannot be granted, is left to the table too.
+fn give_backup(pending: &mut [Pending]) {
+    for at in 0..pending.len() {
+        if !matches!(
+            pending[at].ability,
+            Some(Ability::Keyword(Keyword::Backup { .. }))
+        ) {
+            continue;
+        }
+        let mut listed = Vec::new();
+        let mut all_read = true;
+        for clause in &pending[at + 1..] {
+            match &clause.ability {
+                Some(Ability::Keyword(Keyword::Backup { .. })) => {}
+                Some(ability) if can_be_granted(ability) => listed.push(ability.clone()),
+                _ => all_read = false,
+            }
+        }
+        if all_read {
+            if let Some(Ability::Keyword(Keyword::Backup { abilities, .. })) =
+                &mut pending[at].ability
+            {
+                *abilities = listed;
+            }
+        } else {
+            pending[at].ability = None;
+            pending[at].read = false;
+        }
+    }
+}
+
+/// Whether an ability of a face can be given to another creature: a keyword, or an activated, triggered or static ability
+/// that does not define characteristics or give abilities in turn.
+fn can_be_granted(ability: &Ability) -> bool {
+    match ability {
+        Ability::Keyword(_) | Ability::Activated { .. } | Ability::Triggered { .. } => true,
+        Ability::Static { mods, defining, .. } => {
+            !defining
+                && !mods
+                    .iter()
+                    .any(|modification| matches!(modification, Modification::GrantAbility(_)))
+        }
+        _ => false,
+    }
 }
 
 /// Whether a spell or static clause is a keyword line the keyword reader does not know

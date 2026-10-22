@@ -1,0 +1,28 @@
+{
+  "id": "3c7ca435-aa84-4d35-80db-d1c74b878b12",
+  "oracle_id": "d2134b68-d73f-4090-aaec-b2ee5c9f9f04",
+  "name": "Redcap Heelslasher",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mom",
+  "collector_number": "161",
+  "rarity": "common",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Goblin Rogue",
+  "oracle_text": "Backup 1 (When this creature enters, put a +1/+1 counter on target creature. If that's another creature, it gains the following ability until end of turn.)\nFirst strike",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Backup",
+    "First strike"
+  ]
+}

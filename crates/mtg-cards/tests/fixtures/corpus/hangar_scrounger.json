@@ -1,0 +1,27 @@
+{
+  "id": "c2551b01-4d88-47f3-b54d-96ec03e093f8",
+  "oracle_id": "d1b74fb9-8ef3-40be-bc79-45ffb4c597eb",
+  "name": "Hangar Scrounger",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mom",
+  "collector_number": "142",
+  "rarity": "common",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Dwarf Pilot",
+  "oracle_text": "Backup 1 (When this creature enters, put a +1/+1 counter on target creature. If that's another creature, it gains the following ability until end of turn.)\nWhenever this creature becomes tapped, you may discard a card. If you do, draw a card.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Backup"
+  ]
+}

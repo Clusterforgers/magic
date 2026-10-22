@@ -1,0 +1,16 @@
+{
+  "oracle_id": "81abb451-5ee0-4f90-bacc-a8ff69726a27",
+  "name": "Death-Greeter's Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death-Greeter's Champion",
+      "oracle_fingerprint": "c3f61f0c5e8fd515618923ee86b7d06b",
+      "abilities": [
+        { "Keyword": { "Dash": "{3}{R}" } },
+        { "Keyword": { "Backup": { "count": 1, "abilities": [{ "Keyword": "DoubleStrike" }] } } },
+        { "Keyword": "DoubleStrike" }
+      ]
+    }
+  ]
+}

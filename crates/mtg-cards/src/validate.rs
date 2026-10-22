@@ -736,6 +736,18 @@ impl<'a> Walker<'a> {
                 self.parts_that_need_an_announcement("Keyword", "Cost", cost);
             }
             Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
+            Keyword::Backup { count, abilities } => {
+                if *count == 0 {
+                    self.problem("backup needs a number of at least 1");
+                }
+                // The abilities that follow the keyword are what the target gains.
+                for ability in abilities {
+                    match ability {
+                        Ability::Keyword(granted) => self.keyword(granted),
+                        other => self.granted(other),
+                    }
+                }
+            }
             Keyword::Enchant(selector) => {
                 self.selector(selector);
                 // An Aura is attached to a permanent; one that enchants a card in another zone waits for the cards that do.

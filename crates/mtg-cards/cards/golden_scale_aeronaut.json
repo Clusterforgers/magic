@@ -1,0 +1,15 @@
+{
+  "oracle_id": "d388080d-5ad4-4e27-b361-340f410423a7",
+  "name": "Golden-Scale Aeronaut",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Golden-Scale Aeronaut",
+      "oracle_fingerprint": "50da12ae6885ef16c3cb74c3d003af18",
+      "abilities": [
+        { "Keyword": { "Backup": { "count": 1, "abilities": [{ "Keyword": "Flying" }] } } },
+        { "Keyword": "Flying" }
+      ]
+    }
+  ]
+}

@@ -5,6 +5,7 @@
 //! keywords an object has through [`keywords_of`] and the helpers below it, never from the rules of the card.
 
 pub(crate) mod aftermath;
+mod backup;
 mod battle_cry;
 mod buyback;
 mod cascade;
@@ -407,6 +408,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Persist => &persist::Persist,
         Keyword::Vanishing(_) => &vanishing::Vanishing,
         Keyword::Fading(_) => &fading::Fading,
+        Keyword::Backup { .. } => &backup::Backup,
     }
 }
 
@@ -663,6 +665,10 @@ mod tests {
             Keyword::Persist,
             Keyword::Vanishing(3),
             Keyword::Fading(3),
+            Keyword::Backup {
+                count: 1,
+                abilities: vec![],
+            },
         ]
     }
 
@@ -738,6 +744,7 @@ mod tests {
         "Keyword.Persist",
         "Keyword.Vanishing",
         "Keyword.Fading",
+        "Keyword.Backup",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -854,6 +861,7 @@ mod tests {
     #[case::persist(Keyword::Persist, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::vanishing(Keyword::Vanishing(3), Hooks { abilities: 3, ..Hooks::none() })]
     #[case::fading(Keyword::Fading(3), Hooks { abilities: 2, ..Hooks::none() })]
+    #[case::backup(Keyword::Backup { count: 1, abilities: vec![] }, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);

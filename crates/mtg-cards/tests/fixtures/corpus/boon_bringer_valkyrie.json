@@ -1,0 +1,30 @@
+{
+  "id": "84e1cc7d-e645-4b0e-b117-63f93528ed12",
+  "oracle_id": "8652d88f-edca-4235-b942-6e7467608de8",
+  "name": "Boon-Bringer Valkyrie",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mom",
+  "collector_number": "9",
+  "rarity": "rare",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Angel Warrior",
+  "oracle_text": "Backup 1 (When this creature enters, put a +1/+1 counter on target creature. If that's another creature, it gains the following abilities until end of turn.)\nFlying, first strike, lifelink",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Lifelink",
+    "Backup",
+    "First strike"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "7f65b178-51d6-4dcb-a1cc-4b4dcb2237cd",
+  "oracle_id": "79c90a68-1c31-4e16-be53-1304132da80f",
+  "name": "Sigiled Sentinel",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mom",
+  "collector_number": "37",
+  "rarity": "common",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "Backup 1 (When this creature enters, put a +1/+1 counter on target creature. If that's another creature, it gains the following ability until end of turn.)\nVigilance",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Vigilance",
+    "Backup"
+  ]
+}

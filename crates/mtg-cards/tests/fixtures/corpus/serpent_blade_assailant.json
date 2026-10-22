@@ -1,0 +1,28 @@
+{
+  "id": "6fabc49f-b665-4c56-b06e-03220f7918bb",
+  "oracle_id": "66a131ae-dbb2-4e7b-b6ce-7695f47c8f87",
+  "name": "Serpent-Blade Assailant",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mom",
+  "collector_number": "205",
+  "rarity": "common",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Elf Warrior",
+  "oracle_text": "Backup 1 (When this creature enters, put a +1/+1 counter on target creature. If that's another creature, it gains the following ability until end of turn.)\nDeathtouch",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Backup",
+    "Deathtouch"
+  ]
+}

@@ -2,6 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
+use crate::ability::Ability;
 use crate::cost::Cost;
 use crate::refs::Selector;
 
@@ -181,6 +182,14 @@ pub enum Keyword {
     Vanishing(u32),
     /// Fading N (CR 702.32): it enters with N fade counters, at the beginning of its controller's upkeep one is removed, and it is sacrificed if none can be.
     Fading(u32),
+    /// Backup N (CR 702.165): when it enters, N +1/+1 counters go on target creature; if that is another creature it gains `abilities`, those listed after the keyword on the card, until end of turn.
+    Backup {
+        /// How many +1/+1 counters.
+        count: u32,
+        /// The abilities that follow the keyword on the card, set by the compiler.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        abilities: Vec<Ability>,
+    },
 }
 
 impl Keyword {
@@ -265,6 +274,7 @@ impl Keyword {
         "Persist",
         "Vanishing",
         "Fading",
+        "Backup",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -349,6 +359,7 @@ impl Keyword {
             Keyword::Persist => "Persist",
             Keyword::Vanishing(_) => "Vanishing",
             Keyword::Fading(_) => "Fading",
+            Keyword::Backup { .. } => "Backup",
         }
     }
 
@@ -456,6 +467,10 @@ mod tests {
             Keyword::Persist,
             Keyword::Vanishing(3),
             Keyword::Fading(3),
+            Keyword::Backup {
+                count: 1,
+                abilities: vec![Ability::Keyword(Keyword::Flying)],
+            },
         ]
     }
 
