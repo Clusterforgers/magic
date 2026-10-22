@@ -1,0 +1,27 @@
+{
+  "id": "fa32d90e-1153-42ab-b8ff-0eb82698692c",
+  "oracle_id": "e9f5feb2-2c1a-46ce-885a-4f378d7d10af",
+  "name": "Mystic Gate",
+  "lang": "en",
+  "layout": "normal",
+  "set": "frc",
+  "collector_number": "76",
+  "rarity": "rare",
+  "released_at": "2026-10-02",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{W/U}, {T}: Add {W}{W}, {W}{U}, or {U}{U}.",
+  "colors": [],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "C",
+    "U",
+    "W"
+  ]
+}

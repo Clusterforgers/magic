@@ -699,6 +699,21 @@ fn mana_text(mana: &Produce) -> Option<String> {
                 [] => return None,
             }
         }
+        Produce::OneOfLists(lists) if lists.len() > 1 => {
+            let texts: Vec<String> = lists
+                .iter()
+                .map(|list| {
+                    list.iter()
+                        .map(|mana| format!("{{{}}}", mana.symbol()))
+                        .collect::<String>()
+                })
+                .collect();
+            match texts.as_slice() {
+                [first, second] => format!("{first} or {second}"),
+                [init @ .., final_one] => format!("{}, or {final_one}", init.join(", ")),
+                [] => return None,
+            }
+        }
         _ => return None,
     })
 }

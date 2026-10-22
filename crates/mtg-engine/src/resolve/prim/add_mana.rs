@@ -1,8 +1,9 @@
 //! `Effect::AddMana`: mana goes into a player's pool (CR 106.4).
 
 use mtg_cards::effect::{Effect, Produce};
+use mtg_cards::spend::SpendOn;
 use mtg_core::color::Color;
-use mtg_core::ids::PlayerId;
+use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 
 use super::{unsupported, wrong_effect};
@@ -99,6 +100,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         Produce::AnyColor(each) => (COLORS.iter().copied().map(mana_of).collect(), *each),
         Produce::OneOf(types) => (types.clone(), 1),
+        Produce::OneOfLists(lists) => {
+            let added = Added {
+                players: &players,
+                times,
+                source,
+                only,
+            };
+            return choose_list(cx, &added, lists);
+        }
         // What depends on the game is read for the one player who adds it; none is added when the list is empty.
         Produce::CommanderIdentity(each) => match players.as_slice() {
             [player] => (identity_types(state, *player), *each),
@@ -175,6 +185,62 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             },
             usize::try_from(each).unwrap_or(0),
         ));
+    }
+    Ok(Run::events(events))
+}
+
+/// Who adds mana, how many times, and from what.
+struct Added<'a> {
+    players: &'a [PlayerId],
+    times: usize,
+    source: Option<ObjectId>,
+    only: &'a [SpendOn],
+}
+
+/// Each addition asks its player to pick one of `lists` ("Add {W}{W}, {W}{U}, or {U}{U}") and adds all the mana of the
+/// list picked; one list is not asked.
+fn choose_list(
+    cx: &Cx<'_>,
+    added: &Added<'_>,
+    lists: &[Vec<ManaType>],
+) -> Result<Run, ResolveError> {
+    let options: Vec<ChoiceOption> = lists
+        .iter()
+        .map(|list| {
+            ChoiceOption::Label(
+                list.iter()
+                    .map(|kind| format!("{{{}}}", kind.symbol()))
+                    .collect(),
+            )
+        })
+        .collect();
+    let choosers: Vec<OptionChooser> = added
+        .players
+        .iter()
+        .flat_map(|player| std::iter::repeat_n(*player, added.times))
+        .map(|player| OptionChooser {
+            player,
+            options: options.clone(),
+            text: "Choose the mana to add.".into(),
+        })
+        .collect();
+    let taken = match pick_options(cx, &choosers)? {
+        Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
+        Optioned::Done(taken) => taken,
+    };
+    let mut events = Vec::new();
+    for (player, index) in taken {
+        let Some(list) = lists.get(index) else {
+            return Err(ResolveError::Invalid(format!(
+                "no list of mana is option {index}"
+            )));
+        };
+        events.extend(list.iter().map(|&mana| Event::ManaAdded {
+            player,
+            mana,
+            source: added.source,
+            only: added.only.to_vec(),
+        }));
     }
     Ok(Run::events(events))
 }

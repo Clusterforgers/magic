@@ -1,0 +1,27 @@
+{
+  "id": "36b591ec-0231-4b91-a132-eb3aedfdf8fa",
+  "oracle_id": "61b85077-64aa-4bcc-890d-2d88da9543c0",
+  "name": "Wooded Bastion",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2xm",
+  "collector_number": "332",
+  "rarity": "rare",
+  "released_at": "2020-08-07",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{G/W}, {T}: Add {G}{G}, {G}{W}, or {W}{W}.",
+  "colors": [],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "C",
+    "G",
+    "W"
+  ]
+}

@@ -40,6 +40,7 @@ Bronzeplate Boar
 Cackling Counterpart
 Capsize
 Carnage Tyrant
+Cascade Bluffs
 Cathars' Crusade
 Changeling Outcast
 Circle of Dreams Druid
@@ -101,8 +102,11 @@ Favorable Winds
 Fear of Failed Tests
 Felidar Sovereign
 Fellwar Stone
+Fetid Heath
 Fiery Temper
+Fire-Lit Thicket
 Firestorm Hellkite
+Flooded Grove
 Flooded Strand
 Fog
 Followed Footsteps
@@ -125,6 +129,7 @@ Goblin Chieftain
 Goblin Spy
 Goblin War Buggy
 Grapeshot
+Graven Cairns
 Graveshifter
 Growing Ranks
 Guardian Gladewalker
@@ -189,6 +194,7 @@ Mukotai Ambusher
 Mulldrifter
 Murderous Cut
 Muscle Sliver
+Mystic Gate
 Nantuko Husk
 Nighthawk Scavenger
 Nightmare
@@ -228,6 +234,7 @@ Righteous Avengers
 Rocksteady, Mutant Marauder
 Rootborn Defenses
 Rosheen Meanderer
+Rugged Prairie
 Rummaging Goblin
 Rustrazor Butcher
 Safehold Elite
@@ -272,6 +279,7 @@ Stroke of Genius
 Sultai Devotee
 Summer Bloom
 Sundering Growth
+Sunken Ruins
 Supreme Verdict
 Swiftfoot Boots
 Sword of Body and Mind
@@ -293,6 +301,7 @@ Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Treasure Cruise
 Tumble Magnet
+Twilight Mire
 Twincast
 Uktabi Efreet
 Umbral Collar Zealot
@@ -309,6 +318,7 @@ Wargate
 Warmonger Hellkite
 Wear // Tear
 Wilderness Elemental
+Wooded Bastion
 Wrath of God
 Young Wolf
 Zendikar Farguide

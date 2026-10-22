@@ -189,25 +189,32 @@ fn color_of(mana: ManaType) -> Option<Color> {
 }
 
 /// Adds the colors of the mana symbols in the strings of an ability's serialized form, and of the mana an effect
-/// names by type (`Fixed`, `OneOf`).
+/// names by type (`Fixed`, `OneOf`, `OneOfLists`).
 fn scan(value: &Value, set: &mut ColorSet) {
     match value {
         Value::String(text) => symbols(text, set),
         Value::Array(items) => items.iter().for_each(|item| scan(item, set)),
         Value::Object(fields) => {
             for (key, inner) in fields {
-                if matches!(key.as_str(), "Fixed" | "OneOf")
-                    && let Value::Array(types) = inner
-                {
-                    for name in types.iter().filter_map(Value::as_str) {
-                        if let Some(color) = Color::ALL.iter().find(|c| format!("{c:?}") == name) {
-                            *set = set.with(*color);
-                        }
-                    }
+                if matches!(key.as_str(), "Fixed" | "OneOf" | "OneOfLists") {
+                    named(inner, set);
                 }
                 scan(inner, set);
             }
         }
+        _ => {}
+    }
+}
+
+/// Adds the colors of the types of mana named in `value`, a list of names or a list of such lists.
+fn named(value: &Value, set: &mut ColorSet) {
+    match value {
+        Value::String(name) => {
+            if let Some(color) = Color::ALL.iter().find(|c| format!("{c:?}") == *name) {
+                *set = set.with(*color);
+            }
+        }
+        Value::Array(items) => items.iter().for_each(|item| named(item, set)),
         _ => {}
     }
 }

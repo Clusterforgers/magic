@@ -298,6 +298,8 @@ pub enum ManaProduced<'a> {
     AnyColor(u32),
     /// One mana of a type its controller picks from these when the ability is activated.
     OneOf(&'a [ManaType]),
+    /// All the mana of one list its controller picks from these when the ability is activated.
+    OneOfLists(&'a [Vec<ManaType>]),
     /// This many mana of the colour the source chose as it entered.
     ChosenColor(u32),
     /// This many mana of one colour of its controller's commander's colour identity, picked when activated.
@@ -323,6 +325,11 @@ impl ManaProduced<'_> {
             | ManaProduced::CommanderIdentity(count)
             | ManaProduced::ProducedBy { count, .. } => *count,
             ManaProduced::OneOf(_) => 1,
+            ManaProduced::OneOfLists(lists) => lists
+                .iter()
+                .map(|list| u32::try_from(list.len()).unwrap_or(u32::MAX))
+                .min()
+                .unwrap_or(0),
             ManaProduced::Mixed(list) => u32::try_from(list.len()).unwrap_or(u32::MAX),
         }
     }
@@ -490,6 +497,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
         }
         Produce::AnyColor(count) => ManaProduced::AnyColor(*count),
         Produce::OneOf(types) => ManaProduced::OneOf(types),
+        Produce::OneOfLists(lists) => ManaProduced::OneOfLists(lists),
         Produce::ChosenColor(count) => ManaProduced::ChosenColor(*count),
         Produce::CommanderIdentity(count) => ManaProduced::CommanderIdentity(*count),
         Produce::ProducedBy {

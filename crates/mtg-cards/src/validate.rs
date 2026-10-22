@@ -1283,12 +1283,19 @@ impl<'a> Walker<'a> {
                     Produce::OneOf(list) if list.len() < 2 => {
                         w.problem("a choice of mana needs at least two types");
                     }
+                    Produce::OneOfLists(lists) if lists.len() < 2 => {
+                        w.problem("a choice of mana needs at least two lists");
+                    }
+                    Produce::OneOfLists(lists) if lists.iter().any(Vec::is_empty) => {
+                        w.problem("a list of mana adds no mana");
+                    }
                     Produce::ProducedBy { among, .. } => w.at("mana", |w| {
                         w.at("ProducedBy", |w| w.at("among", |w| w.selector(among)));
                     }),
                     Produce::Fixed(_)
                     | Produce::AnyColor(_)
                     | Produce::OneOf(_)
+                    | Produce::OneOfLists(_)
                     | Produce::ChosenColor(_)
                     | Produce::CommanderIdentity(_) => {}
                 }

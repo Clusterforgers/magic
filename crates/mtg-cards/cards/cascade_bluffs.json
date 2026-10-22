@@ -1,0 +1,31 @@
+{
+  "oracle_id": "f1603384-4361-49c9-98aa-7785fc3504c4",
+  "name": "Cascade Bluffs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cascade Bluffs",
+      "oracle_fingerprint": "8cec2aca8f5e7f80055e3e79ad476826",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U/R}" }, "Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "OneOfLists": [["Blue", "Blue"], ["Blue", "Red"], ["Red", "Red"]] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
