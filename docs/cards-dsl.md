@@ -152,7 +152,7 @@ ReplaceBy   = Multiply(n) | Add(n) | Prevent | PreventUpTo(n) | Instead([Effect]
             | AsCopy{of: Selector, except: [Modification]}
 CostItem    = Mana(ManaCostX) | Tap | Untap | PayLife(Amount) | SacrificeSelf | ExileSelf | DiscardSelf
             | Sacrifice{filter,count} | Discard{count,filter?} | PayEnergy(Amount) | RemoveCounters{counter,count}
-            | TapPermanents{filter,count} | ExileFromGraveyard{filter,count} | ExileFromHand{filter,count}
+            | TapPermanents{filter,count} | TapPower{filter,power} | ExileFromGraveyard{filter,count} | ExileFromHand{filter,count}
             | ReturnToHand{filter,count}
 Modification= ModifyPT{power,toughness} SetPT{..} SwitchPT AddType AddSubtype SetCreatureTypes SetColors
             | AddKeyword AddProtectionFromChosenColor RemoveKeyword SetController(Ref) CantAttack CantBlock
@@ -489,6 +489,7 @@ This is `crates/mtg-cards/cards/archon_of_cruelty.json`; a test keeps the two eq
 | Planeswalkers (Verified) | Jace, the Mind Sculptor (look at a library, Brainstorm, bounce, exile a library and shuffle a hand into it), Jace Beleren (each player draws, a target player draws or mills twenty), Ajani, Caller of the Pride (a counter on up to one creature, flying and double strike, a Cat for each life) and Garruk Wildspeaker (untap two lands, a Beast, +3/+3 and trample) |
 | Trigger families (Verified) | Skullclamp (the equipped creature dies), Sword of Body and Mind (protection from two colours, combat damage by the equipped creature, a token and "that player" mills), The Thing, Ben Grimm (a batch of damage from Heroes), Lat-Nam Adept (the second card of a turn), Sanguine Bond and Fear of Failed Tests (the amount of the event), Bloodghast (haste while an opponent has 10 or less life, landfall from the graveyard), Seedglaive Mentor (the first time each turn it is targeted by its controller's spell or ability) |
 | Auras (Verified) | Pacifism, Epic Proportions (flash, a pump and a keyword), Control Magic (`SetController` through `Attached`), Squirrel Nest (an Aura on a land that gives it an ability) and Shielded by Faith (`Attach` in a trigger) |
+| Vehicles (Verified) | Smuggler's Copter (an attack or block trigger with a loot), Skysovereign (damage to a target when it enters or attacks), Goliath Truck (counters on another attacking creature), Thopter Fabricator (the second card drawn each turn), each with `Crew N` |
 | Equipment (Verified) | Bonesplitter (a pump through `Attached`, `Equip {1}`), Swiftfoot Boots (two keywords through `Attached`), Batterskull (living weapon, a pump with two keywords, a bounce to hand) and the Equipment creatures with `Reconfigure`: Lizard Blades (double strike), Bronzeplate Boar (a pump and trample) and Armguard Familiar (a pump and ward, a keyword that brings its own trigger) |
 | Legends (Verified) | Arvad the Cursed and Kongming, "Sleeping Dragon" (lords) and Sram, Senior Edificer (a trigger on Aura spells); two of a name meet the legend rule |
 | Mana abilities | Llanowar Elves, Sol Ring, Gaea's Cradle, Battlefield Forge (a painland), Lotus Petal |
@@ -518,7 +519,7 @@ Vocabulary of other engines against this DSL. Sources: P = phase.rs (MIT or Apac
 | `CastFromZone` as an effect (cascade, discover, madness, suspend) | P, X | (g4b), (g4c) |
 | Impulse draw (`ExileTop`, `MayCast` with `only` and `play`, `UntilEndOfYourNextTurn`) | P, X | (i4e) |
 | `CopySpell`, `BecomeCopy` | P, X, F | (o) |
-| Costs: PayLife, Sacrifice, Discard, ExileFromGraveyard, TapPermanents, RemoveCounters, ReturnToHand with a fixed amount | P, X, F | the engine announces and pays them (`parts/`, `engine.md`) |
+| Costs: PayLife, Sacrifice, Discard, ExileFromGraveyard, TapPermanents, TapPower (crew), RemoveCounters, ReturnToHand with a fixed amount | P, X, F | the engine announces and pays them (`parts/`, `engine.md`) |
 | Costs: PayEnergy, counted amounts (X) | P, X, F | Engine pays them; Solstice Zealot and Copper-Leaf Angel are Verified; (g6b) |
 | Costs: RemoveCounters with X, Mill, Reveal, Exert, Unattach, OneOf | P, X, F | (g) |
 | `ChooseOption` effect (colour, type, name, player) with a remembered choice | P, X, F | (j) |

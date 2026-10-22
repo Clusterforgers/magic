@@ -1,0 +1,32 @@
+{
+  "oracle_id": "49136bdc-bc50-49a2-999a-1ef9c16ea130",
+  "name": "Smuggler's Copter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smuggler's Copter",
+      "oracle_fingerprint": "6686603eb77ac6dc139577663c733ece",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Draw": {} },
+                    { "If": { "condition": "Performed", "then": [{ "Discard": {} }] } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}

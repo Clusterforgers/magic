@@ -399,13 +399,11 @@ impl Pick {
 
     /// The fewest and the most objects the question takes from `offered` candidates.
     pub(crate) fn bounds(&self, offered: usize) -> (u32, u32) {
-        match self.kind {
-            Kind::TapPower => (1, u32::try_from(offered).unwrap_or(u32::MAX)),
-            _ => {
-                let count = u32::try_from(self.count).unwrap_or(u32::MAX);
-                (count, count)
-            }
+        if self.kind == Kind::TapPower {
+            return (1, u32::try_from(offered).unwrap_or(u32::MAX));
         }
+        let count = u32::try_from(self.count).unwrap_or(u32::MAX);
+        (count, count)
     }
 
     /// Whether `picked` are too weak for the part, and the power they and the part have: a pick by power only.

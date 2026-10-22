@@ -277,7 +277,7 @@ fn crewing_a_vehicle_that_is_a_creature_changes_nothing(
     let mut driver = Driver::from_scenario(table(seats, 2, members))?;
     crew(&mut driver, &["Bear"])?;
     assert!(is_creature(&driver, "Skiff"));
-    assert!(!driver.offered_abilities("Skiff")?.is_empty());
+    assert_eq!(driver.offered_abilities("Skiff")?, [0]);
     crew(&mut driver, &["Wolf"])?;
     assert!(is_creature(&driver, "Skiff"));
     assert_eq!(stats(&driver, "Skiff"), (4, 4));
@@ -310,7 +310,7 @@ fn a_vehicle_that_leaves_before_the_ability_resolves_is_not_animated(
             .iter()
             .all(|id| common::name_of(driver.state(), *id) != "Skiff")
     );
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack().len(), 0);
     Ok(())
 }
 
@@ -375,4 +375,60 @@ fn the_log_of_a_crewed_game_replays_to_the_live_state(
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.state().state_hash());
     Ok(())
+}
+
+// Whole games
+
+#[test]
+fn bot_games_with_vehicles_keep_every_invariant_crew_and_replay() {
+    use std::sync::Mutex;
+
+    use mtg_engine::Event;
+    use mtg_testkit::vehicle_cards::VEHICLE_CARDS;
+    use mtg_testkit::{PlayOptions, play_game_with, vehicle_fuzz_setup};
+
+    use crate::common::seeds::for_each_seed;
+
+    // Crew abilities activated and Vehicles cast in all the games.
+    let seen = Mutex::new((0u64, 0u64));
+    let games = std::env::var("MTG_FUZZ_GAMES")
+        .ok()
+        .and_then(|v| v.parse().ok())
+        .unwrap_or(40);
+    for_each_seed(0..games, |seed| {
+        for players in [2, 3, 4] {
+            let outcome = play_game_with(
+                vehicle_fuzz_setup(players, seed),
+                seed,
+                PlayOptions::default(),
+            )
+            .unwrap_or_else(|failure| panic!("{failure}"));
+            let replayed = replay(&vehicle_fuzz_setup(players, seed), &outcome.events).unwrap();
+            assert_eq!(replayed.state_hash(), outcome.final_hash, "seed {seed}");
+            let mut seen = seen.lock().unwrap();
+            for event in &outcome.events {
+                match event {
+                    Event::AbilityActivated { source, .. } => {
+                        let name = replayed.object(source.id).map(|o| o.card().name.clone());
+                        if name.is_some_and(|name| {
+                            name.starts_with("Plain Vehicle")
+                                || VEHICLE_CARDS.contains(&name.as_str())
+                        }) {
+                            seen.0 += 1;
+                        }
+                    }
+                    Event::SpellCast { object, .. } => {
+                        let name = replayed.object(*object).map(|o| o.card().name.clone());
+                        if name.is_some_and(|name| name.starts_with("Plain Vehicle")) {
+                            seen.1 += 1;
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+    });
+    let (crewed, cast) = seen.into_inner().unwrap();
+    assert!(cast > 0, "some Vehicles were cast");
+    assert!(crewed > 0, "some Vehicle was crewed");
 }

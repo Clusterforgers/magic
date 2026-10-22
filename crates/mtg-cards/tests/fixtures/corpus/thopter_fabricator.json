@@ -1,0 +1,28 @@
+{
+  "id": "8924b785-b140-4212-a1eb-a10340e09fea",
+  "oracle_id": "8aab9181-c306-471a-8061-9a7a7654dab5",
+  "name": "Thopter Fabricator",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dft",
+  "collector_number": "68",
+  "rarity": "rare",
+  "released_at": "2025-02-14",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Vehicle",
+  "oracle_text": "Flying\nWhenever you draw your second card each turn, create a 1/1 colorless Thopter artifact creature token with flying.\nCrew 2",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Crew"
+  ]
+}

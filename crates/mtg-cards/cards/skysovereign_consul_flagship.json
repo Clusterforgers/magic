@@ -1,0 +1,36 @@
+{
+  "oracle_id": "50b14338-9318-4327-a1dd-c0ef38903cc4",
+  "name": "Skysovereign, Consul Flagship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skysovereign, Consul Flagship",
+      "oracle_fingerprint": "4d05bd87d8140298c0f8acf445239f7a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        },
+        { "Keyword": { "Crew": 3 } }
+      ]
+    }
+  ]
+}

@@ -19,7 +19,9 @@ use super::reveal;
 use super::selectors::{Form, granted_text, phrase_text, spec_text};
 use super::spend;
 use super::statics;
-use super::triggers::{article, condition_text, cycled_itself, pattern_text, targeted_itself};
+use super::triggers::{
+    article, condition_text, cycled_itself, entered_or_attacked, pattern_text, targeted_itself,
+};
 use crate::ability::{Ability, Limit, Timing};
 use crate::cost::Cost;
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
@@ -61,6 +63,15 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .iter()
             .filter(|text| text.contains(": ~ deals "))
             .map(|text| text.replacen(": ~ deals ", ": It deals ", 1))
+            .collect();
+        texts.extend(pronouns);
+    }
+    // A trigger about the card itself entering or attacking may say "it deals" for the card (Skysovereign).
+    if matches!(ability, Ability::Triggered { when, .. } if entered_or_attacked(when)) {
+        let pronouns: Vec<String> = texts
+            .iter()
+            .filter(|text| text.contains(", ~ deals "))
+            .map(|text| text.replacen(", ~ deals ", ", it deals ", 1))
             .collect();
         texts.extend(pronouns);
     }

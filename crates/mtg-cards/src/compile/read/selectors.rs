@@ -676,7 +676,12 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
                 _ => return None,
             },
             Targetable::Object(selector) => {
-                format!("target {}", phrase_text(selector, Form::Target)?)
+                let phrase = phrase_text(selector, Form::Target)?;
+                // The card puts "another" before "target": "another target attacking creature".
+                match phrase.strip_prefix("other ") {
+                    Some(rest) => format!("another target {rest}"),
+                    None => format!("target {phrase}"),
+                }
             }
         });
     }

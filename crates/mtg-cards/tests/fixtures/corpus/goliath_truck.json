@@ -1,0 +1,24 @@
+{
+  "id": "347a5d65-ef0f-4859-b433-807af500f52d",
+  "oracle_id": "d94144b0-8967-4904-bb6b-44b0022d1f19",
+  "name": "Goliath Truck",
+  "lang": "en",
+  "layout": "normal",
+  "set": "40k",
+  "collector_number": "158",
+  "rarity": "uncommon",
+  "released_at": "2022-10-07",
+  "digital": false,
+  "mana_cost": "{4}",
+  "cmc": 4.0,
+  "type_line": "Artifact — Vehicle",
+  "oracle_text": "Stowage — Whenever this Vehicle attacks, put two +1/+1 counters on another target attacking creature.\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Stowage",
+    "Crew"
+  ]
+}
