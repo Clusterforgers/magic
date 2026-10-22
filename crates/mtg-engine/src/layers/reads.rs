@@ -123,6 +123,9 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Attached
         | Ref::AttachedPlayer
         | Ref::Monarch
+        | Ref::Defending
+        | Ref::Attacked
+        | Ref::MostLife
         | Ref::Bound(_) => Traits::NONE,
         Ref::ControllerOf(inner) => Traits::CONTROL.or(reads_of_ref(inner)),
         Ref::OwnerOf(inner) => reads_of_ref(inner),

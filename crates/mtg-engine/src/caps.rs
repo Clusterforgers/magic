@@ -273,6 +273,14 @@ const RUNS: &[&str] = &[
     "Keyword.CumulativeUpkeep",
     "Keyword.Undying",
     "Keyword.Persist",
+    "Keyword.Exalted",
+    "Keyword.Melee",
+    "Keyword.Mentor",
+    "Keyword.Dethrone",
+    "Keyword.Annihilator",
+    "Keyword.Extort",
+    "Keyword.Evolve",
+    "Trigger.AttacksAlone",
     "Condition.NewlyControlled",
     "Rule.CanBeCommander",
 ];
@@ -582,6 +590,14 @@ mod tests {
     #[case::cumulative_upkeep("Keyword.CumulativeUpkeep", true)]
     #[case::undying("Keyword.Undying", true)]
     #[case::persist("Keyword.Persist", true)]
+    #[case::exalted("Keyword.Exalted", true)]
+    #[case::melee("Keyword.Melee", true)]
+    #[case::mentor("Keyword.Mentor", true)]
+    #[case::dethrone("Keyword.Dethrone", true)]
+    #[case::annihilator("Keyword.Annihilator", true)]
+    #[case::extort("Keyword.Extort", true)]
+    #[case::evolve("Keyword.Evolve", true)]
+    #[case::attacks_alone("Trigger.AttacksAlone", true)]
     #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]

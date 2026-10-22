@@ -1,0 +1,28 @@
+{
+  "id": "4b22520d-c495-4528-9b24-4aa19e046a9e",
+  "oracle_id": "b68e99df-7899-493e-9453-59da14ff7de4",
+  "name": "Sigiled Paladin",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ala",
+  "collector_number": "27",
+  "rarity": "uncommon",
+  "released_at": "2008-10-03",
+  "digital": false,
+  "mana_cost": "{W}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "First strike\nExalted (Whenever a creature you control attacks alone, that creature gets +1/+1 until end of turn.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Exalted",
+    "First strike"
+  ]
+}

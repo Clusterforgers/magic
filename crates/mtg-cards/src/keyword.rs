@@ -177,6 +177,20 @@ pub enum Keyword {
     Undying,
     /// Persist (CR 702.79): when it dies, if it had no -1/-1 counter on it, it returns with a -1/-1 counter.
     Persist,
+    /// Exalted (CR 702.83): whenever a creature you control attacks alone, it gets +1/+1 until end of turn.
+    Exalted,
+    /// Melee (CR 702.121): whenever it attacks, it gets +1/+1 until end of turn for each opponent you attacked this combat.
+    Melee,
+    /// Mentor (CR 702.134): whenever it attacks, a +1/+1 counter goes on target attacking creature with lesser power.
+    Mentor,
+    /// Dethrone (CR 702.105): whenever it attacks the player with the most life or tied for most life, it gets a +1/+1 counter.
+    Dethrone,
+    /// Annihilator N (CR 702.86): whenever it attacks, the defending player sacrifices N permanents.
+    Annihilator(u32),
+    /// Extort (CR 702.101): whenever you cast a spell, you may pay {W/B}; each opponent then loses 1 life and you gain that much.
+    Extort,
+    /// Evolve (CR 702.100): whenever a creature enters under your control with greater power or toughness, it gets a +1/+1 counter.
+    Evolve,
 }
 
 impl Keyword {
@@ -259,6 +273,13 @@ impl Keyword {
         "Cumulative upkeep",
         "Undying",
         "Persist",
+        "Exalted",
+        "Melee",
+        "Mentor",
+        "Dethrone",
+        "Annihilator",
+        "Extort",
+        "Evolve",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -341,6 +362,13 @@ impl Keyword {
             Keyword::CumulativeUpkeep(_) => "Cumulative upkeep",
             Keyword::Undying => "Undying",
             Keyword::Persist => "Persist",
+            Keyword::Exalted => "Exalted",
+            Keyword::Melee => "Melee",
+            Keyword::Mentor => "Mentor",
+            Keyword::Dethrone => "Dethrone",
+            Keyword::Annihilator(_) => "Annihilator",
+            Keyword::Extort => "Extort",
+            Keyword::Evolve => "Evolve",
         }
     }
 
@@ -446,6 +474,13 @@ mod tests {
             Keyword::CumulativeUpkeep(Cost::default()),
             Keyword::Undying,
             Keyword::Persist,
+            Keyword::Exalted,
+            Keyword::Melee,
+            Keyword::Mentor,
+            Keyword::Dethrone,
+            Keyword::Annihilator(2),
+            Keyword::Extort,
+            Keyword::Evolve,
         ]
     }
 

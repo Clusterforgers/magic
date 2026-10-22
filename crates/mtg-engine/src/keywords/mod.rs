@@ -6,6 +6,7 @@
 
 pub(crate) mod aftermath;
 mod battle_cry;
+mod annihilator;
 mod buyback;
 mod cascade;
 mod changeling;
@@ -24,13 +25,17 @@ mod devoid;
 mod disguise;
 mod doctors_companion;
 mod double_strike;
+mod dethrone;
 mod echo;
 mod enchant;
+mod evolve;
 mod encore;
 mod entwine;
 mod equip;
 mod escape;
+mod exalted;
 mod evoke;
+mod extort;
 mod fear;
 mod first_strike;
 mod flash;
@@ -48,7 +53,9 @@ mod landwalk;
 mod lifelink;
 mod living_weapon;
 mod madness;
+mod melee;
 mod menace;
+mod mentor;
 mod morph;
 mod multikicker;
 mod mutate;
@@ -403,6 +410,13 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::CumulativeUpkeep(_) => &cumulative_upkeep::CumulativeUpkeep,
         Keyword::Undying => &undying::Undying,
         Keyword::Persist => &persist::Persist,
+        Keyword::Exalted => &exalted::Exalted,
+        Keyword::Melee => &melee::Melee,
+        Keyword::Mentor => &mentor::Mentor,
+        Keyword::Dethrone => &dethrone::Dethrone,
+        Keyword::Annihilator(_) => &annihilator::Annihilator,
+        Keyword::Extort => &extort::Extort,
+        Keyword::Evolve => &evolve::Evolve,
     }
 }
 
@@ -657,6 +671,13 @@ mod tests {
             Keyword::CumulativeUpkeep(cost()),
             Keyword::Undying,
             Keyword::Persist,
+            Keyword::Exalted,
+            Keyword::Melee,
+            Keyword::Mentor,
+            Keyword::Dethrone,
+            Keyword::Annihilator(2),
+            Keyword::Extort,
+            Keyword::Evolve,
         ]
     }
 
@@ -730,6 +751,13 @@ mod tests {
         "Keyword.CumulativeUpkeep",
         "Keyword.Undying",
         "Keyword.Persist",
+        "Keyword.Exalted",
+        "Keyword.Melee",
+        "Keyword.Mentor",
+        "Keyword.Dethrone",
+        "Keyword.Annihilator",
+        "Keyword.Extort",
+        "Keyword.Evolve",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -844,6 +872,13 @@ mod tests {
     #[case::cumulative_upkeep(Keyword::CumulativeUpkeep(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::undying(Keyword::Undying, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::persist(Keyword::Persist, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::exalted(Keyword::Exalted, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::melee(Keyword::Melee, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::mentor(Keyword::Mentor, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::dethrone(Keyword::Dethrone, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::annihilator(Keyword::Annihilator(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::extort(Keyword::Extort, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::evolve(Keyword::Evolve, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);

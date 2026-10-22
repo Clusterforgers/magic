@@ -1,0 +1,12 @@
+{
+  "oracle_id": "06b1fd96-a3ad-4ebd-9ea4-b3cfb4c9c43d",
+  "name": "Tithe Drinker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tithe Drinker",
+      "oracle_fingerprint": "601d1977939da75a6c314f1cb50a1414",
+      "abilities": [{ "Keyword": "Lifelink" }, { "Keyword": "Extort" }]
+    }
+  ]
+}

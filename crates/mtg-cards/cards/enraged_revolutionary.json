@@ -1,0 +1,12 @@
+{
+  "oracle_id": "f4b8e856-17a9-44db-bce6-312a6bd2af32",
+  "name": "Enraged Revolutionary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enraged Revolutionary",
+      "oracle_fingerprint": "3e2042297d8db98685e945c205a6a4e8",
+      "abilities": [{ "Keyword": "Dethrone" }]
+    }
+  ]
+}

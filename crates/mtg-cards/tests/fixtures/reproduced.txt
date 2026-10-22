@@ -1,6 +1,8 @@
 Abbot of Keral Keep
+Adaptive Snapjaw
 Aether Hub
 Ajani's Pridemate
+Akrasan Squire
 Ancestral Vision
 Ancient Ziggurat
 Angel of Vitality
@@ -11,11 +13,14 @@ Artful Maneuver
 Arvad the Cursed
 Atlantean Skirmisher
 Augury Raven
+Aven Squire
 Azorius Chancery
 Azorius Signet
 Azure Fleet Admiral
 Azusa, Lost but Seeking
+Basilica Screecher
 Basking Rootwalla
+Battering Krasis
 Battle Sliver
 Battlefield Forge
 Behold the Multiverse
@@ -46,6 +51,7 @@ Cathars' Crusade
 Changeling Outcast
 Circle of Dreams Druid
 Clone
+Cloudfin Raptor
 Cold-Eyed Selkie
 Collective Unconscious
 Command Tower
@@ -55,6 +61,7 @@ Contentious Plan
 Copper-Leaf Angel
 Counterspell
 Courser of Kruphix
+Crocanura
 Crucible of Worlds
 Crystal Quarry
 Curate
@@ -75,6 +82,7 @@ Deepfathom Skulker
 Defile
 Delver of Secrets // Insectile Aberration
 Demon Bolt
+Deputized Protester
 Dire Fleet Interloper
 Disembowel
 Dockside Extortionist
@@ -93,6 +101,7 @@ Echo Inspector
 Elven Ambush
 Elvish Rejuvenator
 Empyrial Plate
+Enraged Revolutionary
 Epic Proportions
 Eternal Witness
 Ethereal Armor
@@ -135,11 +144,13 @@ Goblin War Buggy
 Grapeshot
 Graven Cairns
 Graveshifter
+Grenzo's Cutthroat
 Grisly Salvage
 Growing Ranks
 Guardian Gladewalker
 Gurmag Angler
 Hall of Triumph
+Hammer Dropper
 Haughty Djinn
 Hengegate Pathway // Mistgate Pathway
 Hero of Bladehold
@@ -160,6 +171,7 @@ Karn's Bastion
 Kathari Screecher
 Keep Watch
 Kessig Wolf Run
+Kingpin's Pet
 Kitchen Finks
 Knight of Dusk's Shadow
 Kolaghan Skirmisher
@@ -180,6 +192,7 @@ Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
 Lurching Rotbeast
 Manabarbs
+Marchesa's Emissary
 Mardu Devotee
 Mardu Scout
 Mardu Shadowspear
@@ -213,6 +226,7 @@ Opt
 Otherworldly Gaze
 Pacifism
 Pale Bears
+Parhelion Patrol
 Pestilent Syphoner
 Phantasmal Image
 Phyrexian Soulgorger
@@ -237,6 +251,7 @@ Reflecting Pool
 Reiterate
 Revel Ruiner
 Reverberate
+Rhox Charger
 Rhox Faithmender
 Rhystic Study
 Rift Bolt
@@ -259,6 +274,7 @@ Serra Angel
 Servant of the Conduit
 Shadowmage Infiltrator
 Siege Wurm
+Sigiled Paladin
 Sinister Sabotage
 Sinister Starfish
 Siren Lookout
@@ -292,11 +308,13 @@ Stroke of Genius
 Sultai Devotee
 Summer Bloom
 Sundering Growth
+Sunhome Stalwart
 Sunken Ruins
 Supreme Verdict
 Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
+Syndic of Tithes
 Tainted Isle
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
@@ -312,11 +330,13 @@ Throne of the High City
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
+Tithe Drinker
 Treasure Cruise
 Tumble Magnet
 Twilight Mire
 Twincast
 Uktabi Efreet
+Ulamog's Crusher
 Umbral Collar Zealot
 Underworld Dreams
 Underworld Rage-Hound
@@ -331,6 +351,7 @@ Wargate
 Warmonger Hellkite
 Wear // Tear
 Wilderness Elemental
+Wings of the Guard
 Wooded Bastion
 Wrath of God
 Young Wolf

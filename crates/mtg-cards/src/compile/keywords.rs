@@ -360,6 +360,11 @@ pub fn read(item: &str) -> Option<Keyword> {
             .ok()
             .filter(|poison| *poison > 0)
             .map(Keyword::Toxic),
+        "annihilator" => rest
+            .parse()
+            .ok()
+            .filter(|sacrificed| *sacrificed > 0)
+            .map(Keyword::Annihilator),
         "landwalk" => landwalk(item),
         name if rest.is_empty() => plain(name),
         _ => None,
@@ -437,6 +442,12 @@ fn plain(name: &str) -> Option<Keyword> {
         "aftermath" => Keyword::Aftermath,
         "undying" => Keyword::Undying,
         "persist" => Keyword::Persist,
+        "exalted" => Keyword::Exalted,
+        "melee" => Keyword::Melee,
+        "mentor" => Keyword::Mentor,
+        "dethrone" => Keyword::Dethrone,
+        "extort" => Keyword::Extort,
+        "evolve" => Keyword::Evolve,
         _ => return None,
     })
 }
@@ -689,6 +700,14 @@ mod tests {
     )]
     #[case::undying("Undying", Keyword::Undying)]
     #[case::persist("persist", Keyword::Persist)]
+    #[case::exalted("Exalted", Keyword::Exalted)]
+    #[case::melee("Melee", Keyword::Melee)]
+    #[case::mentor("Mentor", Keyword::Mentor)]
+    #[case::dethrone("dethrone", Keyword::Dethrone)]
+    #[case::extort("Extort", Keyword::Extort)]
+    #[case::evolve("Evolve", Keyword::Evolve)]
+    #[case::annihilator("Annihilator 2", Keyword::Annihilator(2))]
+    #[case::annihilator_six("Annihilator 6", Keyword::Annihilator(6))]
     #[case::foretell("Foretell {1}{U}", Keyword::Foretell(mana("{1}{U}")))]
     #[case::foretell_for_nothing("Foretell {0}", Keyword::Foretell(mana("{0}")))]
     #[case::unearth("Unearth {1}{B}", Keyword::Unearth(mana("{1}{B}")))]
@@ -940,6 +959,13 @@ mod tests {
             "Cumulative upkeep {1}",
             "Undying",
             "Persist",
+            "Exalted",
+            "Melee",
+            "Mentor",
+            "Dethrone",
+            "Annihilator 2",
+            "Extort",
+            "Evolve",
             "Foretell {1}",
             "Daybound",
             "Nightbound",

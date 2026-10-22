@@ -1,0 +1,28 @@
+{
+  "id": "4084a009-f366-416b-b82d-a762189abf43",
+  "oracle_id": "73c0a809-fb0e-4773-a385-a6e32feb03cd",
+  "name": "Wings of the Guard",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cn2",
+  "collector_number": "26",
+  "rarity": "common",
+  "released_at": "2016-08-26",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Bird",
+  "oracle_text": "Flying\nMelee (Whenever this creature attacks, it gets +1/+1 until end of turn for each opponent you attacked this combat.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Melee"
+  ]
+}

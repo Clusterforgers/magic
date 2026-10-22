@@ -43,6 +43,8 @@ enum Happened {
     Created { object: ObjectId },
     /// A creature was declared as an attacker, the `nth` time this turn for it.
     Attacked { attacker: ObjectId, nth: u32 },
+    /// A creature was declared as the only attacker.
+    AttackedAlone { attacker: ObjectId },
     /// A creature was declared as an attacker of a player.
     AttackedPlayer {
         attacker: ObjectId,
@@ -258,6 +260,11 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                         object_ordinal(look, object, None, Tally::Attacked)
                     }),
                 }));
+                if let [(attacker, _)] = attackers.as_slice() {
+                    found.push(Happened::AttackedAlone {
+                        attacker: *attacker,
+                    });
+                }
                 found.extend(attackers.iter().filter_map(|(attacker, at)| match at {
                     AttackTarget::Player(player) => Some(Happened::AttackedPlayer {
                         attacker: *attacker,
@@ -612,6 +619,13 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
             .then(|| cause(state, vec![Target::Object(reference)]))
         }
         (TriggerPattern::Attacks { what }, Happened::Attacked { attacker, .. }) => {
+            let reference = object(*attacker)?;
+            scope
+                .selects(what, reference)
+                .ok()?
+                .then(|| cause(state, vec![Target::Object(reference)]))
+        }
+        (TriggerPattern::AttacksAlone { what }, Happened::AttackedAlone { attacker }) => {
             let reference = object(*attacker)?;
             scope
                 .selects(what, reference)
