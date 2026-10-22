@@ -69,6 +69,8 @@ mod defining_fuzz;
 mod determinism_replay;
 mod discard_casts;
 mod divided_resolution;
+mod dredge;
+mod dredge_fuzz;
 mod elimination;
 mod embalm;
 mod enchant_player;

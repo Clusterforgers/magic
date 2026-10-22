@@ -242,6 +242,8 @@ fn slots_of(events: Vec<Event>) -> Vec<Slot> {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 enum Origin {
     Ability(AbilityRef),
+    /// The dredge of a card in a graveyard, which its owner may decline for one draw and be asked about again for another.
+    Dredge(AbilityRef),
     /// The rule at this index among the copiable values of a card that enters as a copy.
     Copied(usize),
     Shield(EffectId),
@@ -267,7 +269,7 @@ impl Origin {
     /// The index of the ability among its object's rules that the question of the order shows; 0 for what is no ability.
     const fn ability_index(self) -> usize {
         match self {
-            Origin::Ability(address) => address.ability,
+            Origin::Ability(address) | Origin::Dredge(address) => address.ability,
             Origin::Copied(index) => index,
             _ => 0,
         }
@@ -547,6 +549,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
 fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
     match by {
         ReplaceBy::PreventUpTo(_) => matches!(unit, Unit::Damage { .. }),
+        ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
         ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::Prevent => matches!(
             unit,
             Unit::Tokens { .. }
@@ -867,6 +870,8 @@ impl Pass<'_> {
             };
             let origin = if source.copied {
                 Origin::Copied(source.address.ability)
+            } else if matches!(by, ReplaceBy::Dredge(_)) {
+                Origin::Dredge(source.address)
             } else {
                 Origin::Ability(source.address)
             };
@@ -874,6 +879,7 @@ impl Pass<'_> {
                 || found.iter().any(|c| c.origin == origin)
                 || !applies_to(by, &unit)
                 || (unpreventable && Action::Replace(by.clone()).prevents())
+                || matches!(by, ReplaceBy::Dredge(cards) if !step.can_dredge(at, source.object.id, *cards))
                 || !step.matches(source, when, &unit)?
             {
                 return Ok(());
@@ -944,23 +950,7 @@ impl Pass<'_> {
         if !self.draws_changed {
             return Some(*object);
         }
-        let before = self.slots[..at]
-            .iter()
-            .filter(|slot| {
-                matches!(
-                    &slot.item,
-                    Item::One(Event::CardDrawn { player: who, .. } | Event::DrewFromEmptyLibrary { player: who })
-                        if who == player
-                )
-            })
-            .count();
-        self.state
-            .zone(Zone::Library(*player))
-            .iter()
-            .rev()
-            .filter(|card| !self.pulled.contains(card))
-            .nth(before)
-            .copied()
+        self.library_at(at, *player).first().copied()
     }
 
     /// The exile of a spell cast for its flashback cost or by aftermath that leaves the stack, when it has not been applied.
@@ -1319,12 +1309,10 @@ impl Pass<'_> {
                 Asked::Ask(decision) => return Ok(Run::Ask(decision)),
                 Asked::Got(pick) => pick,
             };
-            if chosen.origin == Origin::Commander {
-                match self.may_go_to_command_zone(slot, &chosen)? {
-                    Asked::Ask(decision) => return Ok(Run::Ask(decision)),
-                    Asked::Got(false) => continue,
-                    Asked::Got(true) => {}
-                }
+            match self.confirmed(slot, &chosen)? {
+                Asked::Ask(decision) => return Ok(Run::Ask(decision)),
+                Asked::Got(false) => continue,
+                Asked::Got(true) => {}
             }
             match self.apply(slot, &chosen)? {
                 Applied::Ask(decision) => return Ok(Run::Ask(decision)),
@@ -1535,6 +1523,7 @@ impl Pass<'_> {
                     self.redirect(at, *object, *from, destination, &applied);
                 }
             }
+            (ReplaceBy::Dredge(cards), Unit::Draw { .. }) => self.dredge(at, candidate, *cards),
             (ReplaceBy::MoveTo(ZoneKind::Command), Unit::Draw { player }) => {
                 self.slots[at].applied.clone_from(&applied);
                 self.pull_drawn_commander(at, *player, &applied);
@@ -1726,9 +1715,11 @@ impl Pass<'_> {
             .enumerate()
             .map(|(index, item)| {
                 let mut applied = applied.to_vec();
-                // The question of the commander was about the first card drawn: another draw takes another card.
+                // The questions of the commander and of a dredge were about the first card drawn: another draw is
+                // another event.
                 if index > 0 && matches!(item, Item::One(Event::CardDrawn { .. })) {
-                    applied.retain(|origin| *origin != Origin::Commander);
+                    applied
+                        .retain(|origin| !matches!(origin, Origin::Commander | Origin::Dredge(_)));
                 }
                 Slot {
                     item,
@@ -2101,6 +2092,17 @@ impl Pass<'_> {
         })))
     }
 
+    /// Whether the effect that was picked applies: the optional ones ask their player first (the commander rule, dredge).
+    fn confirmed(&mut self, at: usize, candidate: &Candidate) -> Result<Asked<bool>, EngineError> {
+        match &candidate.action {
+            Action::Replace(ReplaceBy::Dredge(cards)) => self.dredge_wanted(at, candidate, *cards),
+            _ if candidate.origin == Origin::Commander => {
+                self.may_go_to_command_zone(at, candidate)
+            }
+            _ => Ok(Asked::Got(true)),
+        }
+    }
+
     /// Whether the owner of a commander puts it into the command zone in place of the hand or library it would go to
     /// (CR 903.9b): asked yes or no. A no is remembered for the item, which then goes where it was going.
     fn may_go_to_command_zone(
@@ -2265,6 +2267,8 @@ fn zone_word(zone: Zone) -> &'static str {
         Zone::Command(_) => "the command zone",
     }
 }
+
+mod dredge;
 
 #[cfg(test)]
 mod shields;

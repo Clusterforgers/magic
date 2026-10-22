@@ -769,6 +769,7 @@ impl<'a> Walker<'a> {
                 self.at("find", |w| w.selector(find));
             }
             Keyword::Toxic(0) => self.problem("toxic needs a number of at least 1"),
+            Keyword::Dredge(0) => self.problem("dredge needs a number of at least 1"),
             Keyword::PartnerWith(name) => {
                 self.names
                     .push((self.face, self.current_path(), name.clone()));
@@ -1948,6 +1949,14 @@ impl<'a> Walker<'a> {
                     self.problem("needs at least one effect");
                 }
                 self.effect_list("Instead", effects, false);
+            }
+            ReplaceBy::Dredge(cards) => {
+                if !matches!(when, ReplaceWhen::Draw { .. }) {
+                    self.problem("`Dredge` replaces a `Draw`");
+                }
+                if *cards == 0 {
+                    self.problem("dredging no cards is drawing");
+                }
             }
             ReplaceBy::MoveTo(_)
                 if !matches!(

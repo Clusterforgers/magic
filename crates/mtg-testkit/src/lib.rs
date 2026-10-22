@@ -26,6 +26,7 @@ pub mod curse_cards;
 pub mod decks;
 pub mod defining_cards;
 pub mod discard_cast_cards;
+pub mod dredge_cards;
 pub mod driver;
 pub mod encore_cards;
 pub mod evasion_cards;
@@ -92,6 +93,7 @@ pub use decks::{
 };
 pub use defining_cards::defining_fuzz_setup;
 pub use discard_cast_cards::discard_cast_fuzz_setup;
+pub use dredge_cards::dredge_fuzz_setup;
 pub use driver::Driver;
 pub use encore_cards::encore_fuzz_setup;
 pub use evasion_cards::evasion_fuzz_setup;

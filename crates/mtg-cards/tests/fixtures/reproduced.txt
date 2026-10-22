@@ -99,6 +99,7 @@ Cut // Ribbons
 Cyclonic Rift
 Cytoshape
 Dalek Squadron
+Darkblast
 Darksteel Juggernaut
 Dauthi Horror
 Dauthi Marauder
@@ -194,6 +195,7 @@ Goldlust Triad
 Grapeshot
 Graven Cairns
 Graveshifter
+Greater Mossdog
 Grim Initiate
 Grisly Salvage
 Growing Ranks
@@ -364,6 +366,8 @@ Seekers' Squire
 Serra Angel
 Servant of the Conduit
 Shadowmage Infiltrator
+Shambling Shell
+Shenanigans
 Siege Wurm
 Sinister Sabotage
 Sinister Starfish
