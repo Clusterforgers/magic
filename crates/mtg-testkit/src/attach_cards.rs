@@ -84,6 +84,32 @@ pub fn rune_aura() -> Result<Arc<CardDefinition>, CorpusError> {
     )
 }
 
+/// `{1}{B}` Aura: enchant opponent. Whenever enchanted player draws a card, they lose 1 life.
+pub fn spite_aura() -> Result<Arc<CardDefinition>, CorpusError> {
+    let card = CardDefinition::new("Spite Aura")
+        .with_type(CardType::Enchantment)
+        .with_subtype("Aura")
+        .with_mana_cost(cost(1, &[Color::Black]))
+        .with_rules(rules(r#"{"Keyword":{"EnchantPlayer":{"opponent":true}}}"#)?)
+        .with_rules(rules(
+            r#"{"Triggered":{"when":{"Drew":{"who":"AttachedPlayer"}},"effects":[{"LoseLife":{"who":"AttachedPlayer","amount":1}}]}}"#,
+        )?);
+    Ok(Arc::new(card))
+}
+
+/// `{1}{B}` Aura: enchant player. Creatures enchanted player controls get -1/-1.
+pub fn blight_aura() -> Result<Arc<CardDefinition>, CorpusError> {
+    let card = CardDefinition::new("Blight Aura")
+        .with_type(CardType::Enchantment)
+        .with_subtype("Aura")
+        .with_mana_cost(cost(1, &[Color::Black]))
+        .with_rules(rules(r#"{"Keyword":{"EnchantPlayer":{}}}"#)?)
+        .with_rules(rules(
+            r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"AttachedPlayer"}]},"mods":[{"ModifyPT":{"power":-1,"toughness":-1}}]}}"#,
+        )?);
+    Ok(Arc::new(card))
+}
+
 /// An Equipment of this cost whose equipped creature gets `power`/`toughness` and that equips for `equip` (a mana cost).
 fn equipment(
     name: &str,

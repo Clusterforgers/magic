@@ -160,9 +160,29 @@ fn check_attachments_settled(state: &GameState) -> Result<(), Violation> {
         };
         let printed = |name: &str| object.card().subtypes.iter().any(|s| s.0 == name);
         let attached = object.permanent().and_then(PermanentState::attached_to);
+        let enchanted = state.player_host_of(id);
         let host = state.host_of(id).and_then(|host| state.object(host));
         let bad = |why: &str| Violation::Bookkeeping(format!("{id:?} {why} at a decision point"));
         if printed("Aura") {
+            if let Some(player) = enchanted {
+                let controller = controller_of(state, id).unwrap_or(object.controller());
+                for keyword in keywords_of(state, id) {
+                    if matches!(keyword, Keyword::EnchantPlayer { opponent: true })
+                        && player == controller
+                    {
+                        return Err(bad(
+                            "enchants its own controller though it enchants opponents",
+                        ));
+                    }
+                }
+                if !keywords_of(state, id)
+                    .iter()
+                    .any(|keyword| matches!(keyword, Keyword::EnchantPlayer { .. }))
+                {
+                    return Err(bad("enchants a player though it may not"));
+                }
+                continue;
+            }
             let Some(host) = host else {
                 // An Aura with a clause left to the table has its enchant ability in it and waits for its controller to
                 // attach it by hand (`manual.rs`), so it stays unattached.
@@ -206,7 +226,7 @@ fn check_attachments_settled(state: &GameState) -> Result<(), Violation> {
                     "is an Equipment attached to a creature though it is one",
                 ));
             }
-        } else if attached.is_some() {
+        } else if attached.is_some() || enchanted.is_some() {
             return Err(bad(
                 "is attached though it is no Aura, Equipment or Fortification",
             ));
@@ -488,6 +508,8 @@ pub struct InvariantChecker {
     expected_object_counters: BTreeMap<ObjectId, BTreeMap<CounterKind, i64>>,
     expected_player_counters: BTreeMap<PlayerId, BTreeMap<CounterKind, i64>>,
     expected_attached: BTreeMap<ObjectId, ObjectRef>,
+    /// The player each Aura that enchants one is attached to, as the events say.
+    expected_enchanted: BTreeMap<ObjectId, PlayerId>,
     loyalty_turns: BTreeMap<ObjectRef, u32>,
     zones_seen: BTreeMap<ObjectId, (Zone, u32)>,
     events_seen: usize,
@@ -533,9 +555,14 @@ impl InvariantChecker {
             .objects()
             .filter_map(|o| Some((o.id(), o.permanent()?.attached_to()?)))
             .collect();
+        let expected_enchanted = shadow
+            .objects()
+            .filter_map(|o| Some((o.id(), o.permanent()?.attached_player()?)))
+            .collect();
         Ok(InvariantChecker {
             setup: setup.clone(),
             expected_attached,
+            expected_enchanted,
             expected_objects: shadow.object_count(),
             expected_life: shadow.players().iter().map(Player::life).collect(),
             expected_pool: vec![[0; 6]; shadow.players().len()],
@@ -613,6 +640,14 @@ impl InvariantChecker {
                     "{:?} is attached to {held:?} but the events say {:?}",
                     object.id(),
                     self.expected_attached.get(&object.id())
+                )));
+            }
+            let enchanting = object.permanent().and_then(PermanentState::attached_player);
+            if enchanting != self.expected_enchanted.get(&object.id()).copied() {
+                return Err(Violation::Bookkeeping(format!(
+                    "{:?} enchants {enchanting:?} but the events say {:?}",
+                    object.id(),
+                    self.expected_enchanted.get(&object.id())
                 )));
             }
         }
@@ -836,9 +871,20 @@ impl InvariantChecker {
                 // nor does it come back attached to anything.
                 self.expected_object_counters.remove(object);
                 self.expected_attached.remove(object);
+                self.expected_enchanted.remove(object);
                 Ok(())
             }
             Event::CountersChanged(changed) => self.adjust_counters(changed),
+            Event::Attached { .. } | Event::AttachedToPlayer { .. } | Event::Unattached { .. } => {
+                self.account_attachment(event)
+            }
+            _ => Ok(()),
+        }
+    }
+
+    /// What an attach, an attach to a player and an unattach leave every attachment attached to.
+    fn account_attachment(&mut self, event: &Event) -> Result<(), Violation> {
+        match event {
             Event::Attached { object, to } => {
                 let host = self
                     .shadow
@@ -846,14 +892,19 @@ impl InvariantChecker {
                     .map(mtg_engine::object::GameObject::reference)
                     .ok_or_else(|| zone_error(format!("{object:?} attached to missing {to:?}")))?;
                 self.expected_attached.insert(*object, host);
-                Ok(())
+                self.expected_enchanted.remove(object);
+            }
+            Event::AttachedToPlayer { object, player } => {
+                self.expected_attached.remove(object);
+                self.expected_enchanted.insert(*object, *player);
             }
             Event::Unattached { object } => {
                 self.expected_attached.remove(object);
-                Ok(())
+                self.expected_enchanted.remove(object);
             }
-            _ => Ok(()),
+            _ => {}
         }
+        Ok(())
     }
 
     /// Damage to a permanent is marked on a creature (CR 120.3e) and removes that many loyalty counters from a

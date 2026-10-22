@@ -1,4 +1,4 @@
-//! Goal: the deck bodies keep their documented JSON shape and refuse what a client may not send, the check report and the stored check travel exactly as `docs/deck-check.md` defines them, every error code has one spelling shared by serde and `as_str`, and the TypeScript bindings carry the deck types with their unions.
+//! Goal: the deck bodies keep their documented JSON shape and refuse what a client may not send, the check report and the stored check travel exactly as `docs/deck-check.md` defines them, every error code has one spelling shared by serde and `as_str`, and the TypeScript bindings carry the deck types with their unions, and a check may name the game or the rules of the table that judges the deck.
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -137,6 +137,36 @@ fn the_check_request_takes_a_deck_or_a_list_and_nothing_else() {
     assert_eq!(inline.deck, None);
     assert_eq!(inline.cards.unwrap().len(), 1);
     assert!(serde_json::from_value::<CheckRequest>(json!({"deck": ID, "name": "x"})).is_err());
+}
+
+#[test]
+fn the_check_request_may_name_the_table_that_judges_the_deck() {
+    let by_game: CheckRequest = serde_json::from_value(json!({"deck": ID, "game": "g-1"})).unwrap();
+    assert_eq!(by_game.game.as_deref(), Some("g-1"));
+    assert_eq!(by_game.table, None);
+    let described: CheckRequest = serde_json::from_value(json!({
+        "deck": ID,
+        "table": {"format": "commander", "house_rules": {"deck": {"singleton": false}}}
+    }))
+    .unwrap();
+    let table = described.table.unwrap();
+    assert_eq!(table.format, "commander");
+    assert_eq!(table.house_rules.unwrap().deck.singleton, Some(false));
+    let bare: CheckRequest =
+        serde_json::from_value(json!({"deck": ID, "table": {"format": "normal"}})).unwrap();
+    assert_eq!(bare.table.unwrap().house_rules, None);
+    // Left out of the JSON while absent, and a rule the table does not know is refused.
+    let plain: CheckRequest = serde_json::from_value(json!({"deck": ID})).unwrap();
+    let value = serde_json::to_value(&plain).unwrap();
+    assert!(value.get("game").is_none() && value.get("table").is_none());
+    for body in [
+        json!({"deck": ID, "table": {}}),
+        json!({"deck": ID, "table": {"format": "normal", "banana": 1}}),
+        json!({"deck": ID, "table": {"format": "commander", "house_rules": {"banana": 1}}}),
+        json!({"deck": ID, "game": 7}),
+    ] {
+        assert!(serde_json::from_value::<CheckRequest>(body).is_err());
+    }
 }
 
 #[test]
@@ -356,6 +386,7 @@ fn the_bindings_carry_the_deck_types() {
         "DeckList.ts",
         "DeckListItem.ts",
         "CheckRequest.ts",
+        "TableRules.ts",
         "ImportRequest.ts",
         "ImportResult.ts",
         "ImportSource.ts",

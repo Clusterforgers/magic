@@ -8,3 +8,9 @@ use super::KeywordRules;
 pub(super) struct Enchant;
 
 impl KeywordRules for Enchant {}
+
+/// The rules of enchant player and enchant opponent: the same through `attach.rs`, with a player as the target.
+#[derive(Debug)]
+pub(super) struct EnchantPlayer;
+
+impl KeywordRules for EnchantPlayer {}

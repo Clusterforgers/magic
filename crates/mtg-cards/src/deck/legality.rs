@@ -5,6 +5,7 @@
 use std::collections::BTreeMap;
 
 use mtg_core::color::{Color, ColorSet};
+use mtg_core::house::HouseRules;
 use serde::{Deserialize, Serialize};
 
 use super::{CardFacts, DeckZone, Legality, name_of};
@@ -106,6 +107,33 @@ pub enum IssueCode {
     Banned,
     /// A card that is not in the format's card pool.
     NotLegal,
+}
+
+impl IssueCode {
+    /// Whether the deck rules of some table can lift this issue: the size, the copies, the colour identity and the
+    /// pair of commanders are rules a table may change, the others hold at every table.
+    pub const fn liftable(self) -> bool {
+        matches!(
+            self,
+            IssueCode::DeckSize
+                | IssueCode::Copies
+                | IssueCode::ColorIdentity
+                | IssueCode::CommanderPair
+        )
+    }
+
+    /// Whether the deck rules of a table with `house` rules lift this issue: the format's own check no longer applies,
+    /// and the engine's `validate_seat` under the table's rules judges the rule instead.
+    pub fn lifted_by(self, house: &HouseRules) -> bool {
+        let deck = &house.deck;
+        match self {
+            IssueCode::DeckSize => deck.deck_size.is_some(),
+            IssueCode::Copies => deck.singleton == Some(false),
+            IssueCode::ColorIdentity => deck.colour_identity == Some(false),
+            IssueCode::CommanderPair => house.commanders_per_seat == Some(2),
+            _ => false,
+        }
+    }
 }
 
 /// One way a deck breaks the rules of its format.
