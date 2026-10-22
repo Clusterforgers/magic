@@ -145,6 +145,7 @@ ReplaceWhen = TokenCreation{controller} | Damage{to?,source?,combat?} | ZoneChan
             | CountersPut{on?,counter?} | LifeGain{who} | Draw{who} | Enters{what}
 ReplaceBy   = Multiply(n) | Add(n) | Prevent | PreventUpTo(n) | Instead([Effect]) | MoveTo(zone)
             | Tapped | WithCounters{counter,count} | Choose(Color|CreatureType|Player|Opponent) | PayLifeOrTapped(n)
+            | AsCopy{of: Selector, except: [Modification]}
 CostItem    = Mana(ManaCostX) | Tap | Untap | PayLife(Amount) | SacrificeSelf | ExileSelf | DiscardSelf
             | Sacrifice{filter,count} | Discard{count,filter?} | PayEnergy(Amount) | RemoveCounters{counter,count}
             | TapPermanents{filter,count} | ExileFromGraveyard{filter,count} | ExileFromHand{filter,count}
@@ -311,6 +312,16 @@ State is the fold of events; the engine is a pure function from state to `Progre
 | Durations | `UntilEndOfTurn` ends in the cleanup step with the damage (CR 514.2); `UntilEndOfCombat` after the end of combat step; `UntilYourNextTurn` when the controller's next turn begins; `WhileSourceOnBattlefield` follows the source named on the effect; `Forever` ends only when every object it names is gone. All five run. |
 | Dependencies | Within a layer an effect follows those it depends on; otherwise effects apply by timestamp, after the characteristic-defining abilities of the layer (CR 613.3). A depends on B when applying B to what it applies to changes whether A exists (its source has the ability, its condition holds), which objects A applies to or what A does to them (CR 613.8a); the engine finds it by trying B on copies of those objects and asking A again, for the pairs where one reads (`Pred::Type`, `Subtype`, `Color`, `HasKeyword`, `Compare`, `ControlledBy` and the amounts and conditions around them) what the other writes (the characteristics its modification changes). The order is chosen again after each effect applies; a loop of dependencies goes by timestamp (CR 613.8b). The modifications of one `Static` never depend on each other. |
 | Characteristic-defining | A `Static` with `defining: true` (CR 604.3) is a characteristic-defining ability: `affected` is `This`, no `condition`, no `from`, and its modifications are `SetPT` (layer 7a), `SetColors`, `AddType` or `AddSubtype`, so Nightmare's power and toughness are each the number of Swamps its controller controls. It works in every zone, so a card in a hand, a graveyard, exile, a library or on the stack has the characteristics it defines, with its controller the owner, and a printed `*` is a number once an ability defines it (`Card.VariableStats`). On the battlefield it applies first in its layer and neither it nor another effect depends on the other kind. It is `Ability.Static.Defining` in `Caps`. |
+
+### Copies
+
+| Part | Rule |
+|---|---|
+| Token copy | `CreateToken{ token: CopyOf{ of: Ref, except: [Modification] } }` ("create a token that's a copy of target creature you control", "... of it", "... of enchanted creature"): one token for each object `of` names, with the copiable values of that object (CR 707.2) and the exceptions applied to them; an object that has left is read by last known information, and a transformed permanent makes no token yet (`n1d4`). It is `Effect.CreateToken.Copy` in `Caps`. |
+| Enters as a copy | `Replacement{ when: Enters{what: This}, by: AsCopy{ of: Selector, except: [Modification] } }`: "You may have this enter as a copy of any creature on the battlefield" is `of: [Type(Creature)]`, "a creature you control" adds `ControlledBy(You)`, and Phantasmal Image's exceptions are `AddSubtype(Illusion)` and a `GrantAbility` of its trigger. It is `ReplaceBy.AsCopy` in `Caps`. |
+| Exceptions | `AddType`, `AddSubtype`, `AddKeyword`, `GrantAbility`, `SetColors` and `SetPT` with fixed amounts are part of the copiable values. Any other modification in an `except` list is named `Copy.Except.<Mod>`, so the card is not Verified. |
+| Populate | "Populate" is a `Choose{ from: Each([Type(Creature), Token, ControlledBy(You)]), as }` followed by a `CreateToken` of `CopyOf{ of: Bound(as) }`. |
+| Still waiting for (o2) | Spell copies and storm, copies of abilities, a copy that lasts for a duration ("becomes a copy until end of turn"), the payment of a copy of a spell (g5c) and the copy of a transformed permanent (n1d4). |
 
 ## Keywords
 

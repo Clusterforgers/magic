@@ -285,12 +285,17 @@ mod tests {
             },
             5,
         );
-        effect(&mut game, "Bear", Modification::AddType(CardType::Artifact), 6);
+        effect(
+            &mut game,
+            "Bear",
+            Modification::AddType(CardType::Artifact),
+            6,
+        );
         assert_eq!(shown(&game, "Bear"), (Some(5), Some(5), true));
         let values = copiable_values(&game, start("Bear"), None).unwrap();
         assert_eq!((values.power, values.toughness), (Some(2), Some(2)));
         assert!(!values.types.contains(&CardType::Artifact));
-        assert!(values.faces.is_empty());
+        assert_eq!(values.faces, []);
     }
 
     /// What happens to Copy A, in order.
@@ -373,7 +378,7 @@ mod tests {
         become_copy(&mut game, "Copy A", "Wolf");
         let values = copiable_values(&game, start("Copy A"), None).unwrap();
         assert_eq!((values.name.as_str(), values.power), ("Wolf", Some(4)));
-        assert!(values.faces.is_empty());
+        assert_eq!(values.faces, []);
     }
 
     #[test]
@@ -415,7 +420,7 @@ mod tests {
         };
         apply_event(&mut game, &left).unwrap();
         // The card Copy A is a new object now; the snapshot still says that what left was a Wolf.
-        assert!(game.object(a.id).unwrap().counter() != a.counter);
+        assert_ne!(game.object(a.id).unwrap().counter(), a.counter);
         let values = copiable_values(&game, a, Some(&shot)).unwrap();
         assert_eq!((values.name.as_str(), values.power), ("Wolf", Some(4)));
         assert!(copiable_values(&game, a, None).is_none());
@@ -438,13 +443,9 @@ mod tests {
             }
             for (at, copied) in last.iter().enumerate() {
                 let (power, toughness, _) = shown(&game, NAMES[3 + at]);
-                match copied {
-                    Some(source) => prop_assert_eq!(
-                        (power, toughness),
-                        (before[*source].0, before[*source].1)
-                    ),
-                    None => prop_assert_eq!((power, toughness), (Some(1), Some(1))),
-                }
+                // A copy is what its last source is; one that was never made a copy is still what it prints.
+                let want = copied.map_or((Some(1), Some(1)), |source| (before[source].0, before[source].1));
+                prop_assert_eq!((power, toughness), want);
             }
         }
     }

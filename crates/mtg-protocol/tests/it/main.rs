@@ -9,6 +9,7 @@ mod bindings;
 mod cast_hidden;
 mod combat_forecast;
 mod common;
+mod copy_view;
 mod counter_view;
 mod effect_view;
 mod exile_open;

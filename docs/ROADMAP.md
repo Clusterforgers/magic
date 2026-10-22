@@ -113,7 +113,9 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] (n1d4) The copy of a transformed permanent (waits for (o))
 - [x] (n1c) Faces, what (n1a) left: compiler goldens for faces and the walker names of transform, a test that a modal back face leaves the battlefield as its front face, the bot plays `PlayLandFace`, the enter replacement of a back-face land is read from the face, and the Adventure exile is ordered with graveyard replacements such as Rest in Peace
 - [ ] (n2) Face-down objects (morph, disguise, manifest, cloak): a `FaceDown` kind each with its characteristics, who may look at it and turning it face up, on the face-down rule of (g4d)
-- [ ] (o) Copies: a token that copies an object, spell copies, enters as a copy, populate, storm; copiable values as the first layer
+- [x] (o1) Copies: copiable values as the first layer (`copies.rs`), token copies (`TokenRef::CopyOf`), enters as a copy (`ReplaceBy::AsCopy`) and populate; Clone, Phantasmal Image, Mirror Image, Cackling Counterpart, Rootborn Defenses, Growing Ranks, Followed Footsteps and Sundering Growth are Verified
+- [ ] (o1b) The compiler reads and writes the copy wordings ("create a token that's a copy of target creature you control", "... of it", "enter as a copy of any creature on the battlefield, except it's an Illusion in addition to its other types", "populate") with goldens, so that Clone, Phantasmal Image, Cackling Counterpart and Rootborn Defenses are reproduced from their text
+- [ ] (o2) Spell copies and storm, copies of abilities, a copy for a duration ("becomes a copy until end of turn"), the payment of a copy of a spell for (g5c), and the copy of a transformed permanent for (n1d4)
 
 ### Manual cards and views
 - [x] (p) Manual cards: a card the engine does not run is cast and resolves without effects, and its controller applies generic logged actions (move, counters, life, token, tap) through the same primitives, visible to every seat

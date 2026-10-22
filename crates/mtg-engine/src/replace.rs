@@ -40,9 +40,8 @@ use crate::ability_reader::{abilities_of, provided_here, working_here};
 use crate::announce::payments;
 use crate::characteristics::controller_of_object;
 use crate::choose::{
-    CardsOptions,
-    Choice, ChoiceOption, OptionOptions, ReplacementCandidate, ReplacementOptions, Target,
-    YesNoOptions,
+    CardsOptions, Choice, ChoiceOption, OptionOptions, ReplacementCandidate, ReplacementOptions,
+    Target, YesNoOptions,
 };
 use crate::combat::DamageTarget;
 use crate::copies::{BecameCopy, copiable_values, may_be_copied};
@@ -836,22 +835,7 @@ impl Pass<'_> {
             && card.zone() != Zone::Battlefield
         {
             let controller = controller_of_object(self.state, card);
-            // A card that enters as a copy has the copied values from the start (CR 614.12a): the effects they print
-            // about entering apply in place of its own.
-            let own_abilities: Vec<(AbilityRef, Arc<Ability>, bool)> =
-                match self.entering_copy(*object) {
-                    Some(copy) => crate::ability_reader::printed_rules(&copy.definition)
-                        .enumerate()
-                        .map(|(index, rules)| {
-                            (AbilityRef::printed(*object, index), Arc::clone(rules), true)
-                        })
-                        .collect(),
-                    None => abilities_of(self.state, *object)
-                        .into_iter()
-                        .map(|(address, rules)| (address, rules, false))
-                        .collect(),
-                };
-            for (address, rules, copied) in own_abilities {
+            for (address, rules, copied) in self.own_abilities(*object) {
                 let own = Source {
                     address,
                     ability: rules,
@@ -1779,6 +1763,22 @@ impl Pass<'_> {
             slot.applied = applied;
         }
         Ok(Applied::Done)
+    }
+
+    /// The abilities of a card that enters, each with whether it is read from copied values. A card that enters as a copy
+    /// has the copied values from the start (CR 614.12a), so the effects they print about entering apply in place of
+    /// its own.
+    fn own_abilities(&self, object: ObjectId) -> Vec<(AbilityRef, Arc<Ability>, bool)> {
+        match self.entering_copy(object) {
+            Some(copy) => crate::ability_reader::printed_rules(&copy.definition)
+                .enumerate()
+                .map(|(index, rules)| (AbilityRef::printed(object, index), Arc::clone(rules), true))
+                .collect(),
+            None => abilities_of(self.state, object)
+                .into_iter()
+                .map(|(address, rules)| (address, rules, false))
+                .collect(),
+        }
     }
 
     /// The copy the batch makes `object` as it enters, once the replacement that chose it has applied.

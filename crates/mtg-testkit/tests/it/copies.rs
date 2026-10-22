@@ -142,7 +142,10 @@ fn clone_copies_the_values_of_the_creature_and_none_of_its_counters_or_damage(
     assert_eq!(stats(&driver, copy), (Some(3), Some(4)));
     assert!(characteristics(driver.state(), copy).unwrap().is_creature());
     assert_eq!(
-        (counters_on(&driver, copy), object.permanent().unwrap().damage()),
+        (
+            counters_on(&driver, copy),
+            object.permanent().unwrap().damage()
+        ),
         (0, 0)
     );
     // It has the abilities of the Hero, battle cry and the attack trigger.
@@ -150,7 +153,7 @@ fn clone_copies_the_values_of_the_creature_and_none_of_its_counters_or_damage(
         abilities_of(driver.state(), copy).len(),
         abilities_of(driver.state(), hero).len()
     );
-    assert!(!abilities_of(driver.state(), copy).is_empty());
+    assert_ne!(abilities_of(driver.state(), copy).len(), 0);
     assert_eq!(object.owner(), pid(0));
     // The original is not touched.
     assert_eq!((stats(&driver, hero), counters_on(&driver, hero)), before);
@@ -164,7 +167,10 @@ fn clone_copies_the_values_of_the_creature_and_none_of_its_counters_or_damage(
             .copy()
             .is_none()
     );
-    assert!(names(driver.state(), Zone::Hand(pid(0))).is_empty());
+    assert_eq!(
+        names(driver.state(), Zone::Hand(pid(0))),
+        Vec::<String>::new()
+    );
     replays(&driver, &setup);
     Ok(())
 }
@@ -235,10 +241,7 @@ fn the_enters_replacement_of_the_copied_card_applies_to_the_copy() -> Result<(),
         Scenario::new(2)
             .hand(
                 0,
-                [
-                    card("Faithful Watchdog").unwrap(),
-                    card("Clone").unwrap(),
-                ],
+                [card("Faithful Watchdog").unwrap(), card("Clone").unwrap()],
             )
             .battlefield(0, permanents)
     };
@@ -266,10 +269,7 @@ fn the_enters_replacement_of_the_copied_card_applies_to_the_copy() -> Result<(),
 fn a_copy_of_a_copy_has_the_values_of_the_first_original() -> Result<(), ScriptError> {
     let scenario = || {
         Scenario::new(2)
-            .hand(
-                0,
-                [card("Clone").unwrap(), card("Mirror Image").unwrap()],
-            )
+            .hand(0, [card("Clone").unwrap(), card("Mirror Image").unwrap()])
             .battlefield(0, lands(8))
             .battlefield(1, [ready(card(HERO).unwrap())])
     };
@@ -327,8 +327,7 @@ fn phantasmal_image_keeps_its_exceptions_and_is_sacrificed_when_it_becomes_a_tar
     let setup = scenario().setup().unwrap();
     let mut driver = Driver::from_scenario(scenario())?;
     let hero = named(&driver, HERO)[0];
-    cast_until_asked(&mut driver, "Phantasmal Image", &["Island", "Island"])?
-        .expect("a question");
+    cast_until_asked(&mut driver, "Phantasmal Image", &["Island", "Island"])?.expect("a question");
     answer_cards(&mut driver, &[hero])?;
     settle(&mut driver)?;
     let image = *named(&driver, HERO).iter().find(|id| **id != hero).unwrap();
@@ -361,7 +360,10 @@ fn phantasmal_image_keeps_its_exceptions_and_is_sacrificed_when_it_becomes_a_tar
     driver.cast_at("Spark", &[aim])?;
     settle(&mut driver)?;
     let graveyard = names(driver.state(), Zone::Graveyard(pid(0)));
-    assert!(graveyard.contains(&"Phantasmal Image".to_owned()), "{graveyard:?}");
+    assert!(
+        graveyard.contains(&"Phantasmal Image".to_owned()),
+        "{graveyard:?}"
+    );
     assert_eq!(named(&driver, HERO), [hero]);
     replays(&driver, &setup);
     Ok(())
@@ -524,7 +526,10 @@ fn populate_copies_a_creature_token_chosen_among_those_its_controller_controls(
             .of()
             .id;
         assert_eq!(of, chosen);
-        assert_eq!(driver.state().object(*copy).unwrap().kind(), ObjectKind::Token);
+        assert_eq!(
+            driver.state().object(*copy).unwrap().kind(),
+            ObjectKind::Token
+        );
     }
     // The rest of the spell still happens: the creatures gain indestructible.
     let indestructible = |id: ObjectId| {

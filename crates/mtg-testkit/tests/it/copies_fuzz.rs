@@ -103,7 +103,10 @@ fn a_rebuilt_engine_asks_what_the_original_asks_including_what_to_copy(
             engine.apply(answer)?;
         }
     }
-    assert!(questions > 0, "nobody was asked what to copy at {players} seats");
+    assert!(
+        questions > 0,
+        "nobody was asked what to copy at {players} seats"
+    );
     Ok(())
 }
 
