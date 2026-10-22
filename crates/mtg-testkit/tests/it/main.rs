@@ -106,6 +106,7 @@ mod manual_fuzz;
 mod manual_triggers;
 mod mill_effects;
 mod monarch;
+mod monarch_wordings;
 mod mulligan;
 mod object_nth;
 mod part_fuzz;

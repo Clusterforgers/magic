@@ -33,6 +33,11 @@ const OPPONENT_AT_TEN: &str =
     r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Trample"}],"condition":CONDITION}}"#,
     r#"{"Compare":{"left":{"LowestLife":"EachPlayer"},"op":"Le","right":5}}"#
 )]
+#[case::the_condition_first(
+    "As long as it's your turn, this creature has haste.",
+    r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Haste"}],"condition":CONDITION}}"#,
+    r#""YourTurn""#
+)]
 #[case::a_bonus_for_itself(
     "This creature gets +2/+2 as long as it's your turn.",
     r#"{"Static":{"affected":"This","mods":[{"ModifyPT":{"power":2,"toughness":2}}],"condition":CONDITION}}"#,
@@ -87,7 +92,6 @@ fn a_static_ability_under_a_condition_reads_as_the_hand_written_files_say(
 #[case::more_than_a_life_total(
     "This creature has haste as long as an opponent has more than 10 life."
 )]
-#[case::the_condition_first("As long as it's your turn, this creature has haste.")]
 #[case::another_turn("This creature has haste as long as it's an opponent's turn.")]
 #[case::two_conditions(
     "This creature has haste as long as it's your turn and you control a Plains."

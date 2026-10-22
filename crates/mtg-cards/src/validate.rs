@@ -289,7 +289,7 @@ impl<'a> Walker<'a> {
 
     fn reference(&mut self, r: &Ref, want: Kind) {
         match r {
-            Ref::You | Ref::Opponents | Ref::EachPlayer | Ref::AttachedPlayer => {
+            Ref::You | Ref::Opponents | Ref::EachPlayer | Ref::AttachedPlayer | Ref::Monarch => {
                 self.expect(Kind::Player, want);
             }
             Ref::This | Ref::Attached => self.expect(Kind::Object, want),
@@ -884,6 +884,7 @@ impl<'a> Walker<'a> {
             }
             TriggerPattern::LifeGained { who }
             | TriggerPattern::LifeLost { who }
+            | TriggerPattern::BecomesMonarch { who }
             | TriggerPattern::Drew { who } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
@@ -941,6 +942,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::AnyOf(_)
                 | TriggerPattern::State { .. }
                 | TriggerPattern::StepBegins { .. }
+                | TriggerPattern::BecomesMonarch { .. }
                 | TriggerPattern::SpellCast { .. }
                 | TriggerPattern::BecomesTarget { .. }
                 | TriggerPattern::GroupAttacks { .. }

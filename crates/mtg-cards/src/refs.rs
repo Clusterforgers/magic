@@ -64,6 +64,8 @@ pub enum Ref {
     Attached,
     /// The player the source is attached to ("enchanted player").
     AttachedPlayer,
+    /// The monarch ("the monarch"); nobody while no player is the monarch.
+    Monarch,
     /// The result an earlier step bound with `as`.
     Bound(String),
     /// The controller of the referenced object.

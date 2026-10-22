@@ -14,7 +14,7 @@ use super::prevention;
 use super::render::{capitalize, is_a_type, signed_text};
 use super::selectors::{Form, all, granted_text, phrase, phrase_text, subtype};
 use super::tokens::Reader;
-use super::triggers::article;
+use super::triggers::{self, article};
 use crate::ability::{Ability, CostChange};
 use crate::mana::ManaCostX;
 use crate::modify::{GameRule, Modification};
@@ -364,6 +364,11 @@ fn cannot(r: &mut Reader<'_>) -> Option<Ability> {
 /// long as an opponent has 10 or less life."; an X means nothing to a permanent, so it is not read. The card itself is
 /// given something only under a condition.
 fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
+    // The condition may come first: "As long as you're the monarch, permanents you control have hexproof."
+    let leading = r.attempt(|r| {
+        let condition = as_long_as(r)?;
+        r.punct(',').then_some(condition)
+    });
     let (affected, plural) = subject(r, true)?;
     let x_free = std::mem::replace(&mut r.x_free, false);
     let mods = r.attempt(|r| {
@@ -386,7 +391,7 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
     });
     r.x_free = x_free;
     let mods = mods?;
-    let condition = r.attempt(as_long_as);
+    let condition = leading.or_else(|| r.attempt(as_long_as));
     if affected == Ref::This && condition.is_none() {
         return None;
     }
@@ -399,13 +404,15 @@ fn as_long_as(r: &mut Reader<'_>) -> Option<Condition> {
     if r.words("it's your turn") {
         return Some(Condition::YourTurn);
     }
-    holds(r)
+    triggers::monarch_condition(r).or_else(|| holds(r))
 }
 
 /// What `as_long_as` reads, written back.
 fn as_long_as_texts(condition: &Condition) -> Vec<String> {
     if *condition == Condition::YourTurn {
         vec!["it's your turn".to_owned()]
+    } else if let Some(monarch) = triggers::monarch_text(condition) {
+        vec![monarch]
     } else {
         holds_texts(condition)
     }
@@ -819,12 +826,14 @@ fn static_texts(
     condition: Option<&Condition>,
 ) -> Vec<String> {
     // The wordings of the condition, each as the tail of the sentence; one empty tail for no condition.
-    let tails: Vec<String> = match condition {
-        None => vec![String::new()],
-        Some(condition) => as_long_as_texts(condition)
-            .into_iter()
+    let helds: Vec<String> = condition.map(as_long_as_texts).unwrap_or_default();
+    let tails: Vec<String> = if condition.is_some() {
+        helds
+            .iter()
             .map(|held| format!(" as long as {held}"))
-            .collect(),
+            .collect()
+    } else {
+        vec![String::new()]
     };
     subjects(affected, true)
         .into_iter()
@@ -838,9 +847,18 @@ fn static_texts(
             Some((subject, predicate))
         })
         .flat_map(|(subject, predicate)| {
-            tails
+            // The condition may also come first: "As long as you're the monarch, creatures you control have flying."
+            let leading = helds.iter().map(|held| {
+                let mut words = subject.chars();
+                let lowered: String = words.next().map_or_else(String::new, |first| {
+                    first.to_lowercase().chain(words).collect()
+                });
+                format!("as long as {held}, {lowered} {predicate}")
+            });
+            let trailing = tails
                 .iter()
-                .map(move |tail| format!("{subject} {predicate}{tail}"))
+                .map(|tail| format!("{subject} {predicate}{tail}"));
+            trailing.chain(leading).collect::<Vec<_>>()
         })
         .collect()
 }
