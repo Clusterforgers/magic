@@ -25,6 +25,8 @@ pub enum LossReason {
     Format(String),
     /// Another player reached the life total that wins the game, a house rule.
     OpponentReachedLife,
+    /// Dealt 21 or more combat damage by one commander (CR 903.10a).
+    CommanderDamage,
 }
 
 /// Whether a player is still in the game.

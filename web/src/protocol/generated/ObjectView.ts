@@ -123,7 +123,8 @@ face_down?: boolean,
  */
 face?: number, 
 /**
- * Set while the permanent is a copy of another object; the values above are those of the copy effect.
+ * Set while the permanent is a copy of another object, or the object is a copy of a spell or ability on the stack; the
+ * values above are those of the copy effect or of the original.
  */
 copy?: CopyView, 
 /**

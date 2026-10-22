@@ -423,6 +423,7 @@ function describePublic(event: Event, n: EventNames): LogLine {
     return line(`${n.seat(controller)} copies the ability of ${n.card(of.id)}`)
   }
   if ('CopyEnded' in event) return line(`${n.card(event.CopyEnded.object)} stops being a copy`)
+  if ('CommanderStayed' in event) return line(`${n.card(event.CommanderStayed.object)} stays where it is`)
   if ('DayNightChanged' in event)
     return line(`It becomes ${event.DayNightChanged.to === 'Day' ? 'day' : 'night'}`)
   if ('Unattached' in event) {

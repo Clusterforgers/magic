@@ -13,6 +13,8 @@ export function describeLoss(reason: LossReason): string {
       return 'had too many poison counters'
     case 'Conceded':
       return 'conceded'
+    case 'CommanderDamage':
+      return 'was dealt 21 or more combat damage by one commander'
     case 'OpponentReachedLife':
       return 'lost to a player at the winning life total'
   }

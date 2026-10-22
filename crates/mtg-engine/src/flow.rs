@@ -1,6 +1,7 @@
 //! The engine's control loop as a pure function of state: what happens next?
 
 use crate::announce::Pending;
+use crate::commanders;
 use crate::decision::Decision;
 use crate::error::EngineError;
 use crate::events::Event;
@@ -55,6 +56,10 @@ fn next_in_turns(state: &GameState) -> Progress {
     // The legend rule is a state-based action that asks (CR 704.5j); it waits for the end of the game and the removal of
     // the objects of players who left, so it never asks about a permanent that is gone.
     if let Some(decision) = legend::decision(state) {
+        return Progress::Decide(decision);
+    }
+    // So is the owner's choice to put a commander from a graveyard or exile into the command zone (CR 903.9a).
+    if let Some(decision) = commanders::decision(state) {
         return Progress::Decide(decision);
     }
     // A state is true where a player would receive priority, after state-based actions (CR 603.8).

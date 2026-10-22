@@ -259,6 +259,39 @@ pub(crate) fn engine_issue(error: DeckError) -> Issue {
             oracle_id: None,
             name: Some(name),
         },
+        // The Commander format's rules, in the words of the engine's error.
+        other => {
+            let (code, zone, name) = match &other {
+                DeckError::WrongSize { .. } => (IssueCode::DeckSize, DeckZone::Main, None),
+                DeckError::CommandersNotAllowed => {
+                    (IssueCode::NoCommanderZone, DeckZone::Commander, None)
+                }
+                DeckError::NoCommander | DeckError::TooManyCommanders { .. } => {
+                    (IssueCode::CommanderCount, DeckZone::Commander, None)
+                }
+                DeckError::NotACommander { name } => (
+                    IssueCode::CommanderEligibility,
+                    DeckZone::Commander,
+                    Some(name.clone()),
+                ),
+                DeckError::NotPartners { .. } => {
+                    (IssueCode::CommanderPair, DeckZone::Commander, None)
+                }
+                DeckError::OutsideColorIdentity { name, .. } => {
+                    (IssueCode::ColorIdentity, DeckZone::Main, Some(name.clone()))
+                }
+                DeckError::TooFewCards { .. } | DeckError::TooManyCopies { .. } => {
+                    (IssueCode::DeckSize, DeckZone::Main, None)
+                }
+            };
+            Issue {
+                code,
+                message: other.to_string(),
+                zone: Some(zone),
+                oracle_id: None,
+                name,
+            }
+        }
     }
 }
 
