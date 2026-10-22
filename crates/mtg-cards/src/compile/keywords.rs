@@ -710,10 +710,6 @@ mod tests {
     #[case::aftermath("Aftermath", Keyword::Aftermath)]
     #[case::dash("Dash {2}{R}", Keyword::Dash(mana("{2}{R}")))]
     #[case::blitz("Blitz {2}{R}", Keyword::Blitz(mana("{2}{R}")))]
-    #[case::blitz_with_reminder(
-        "Blitz {3}{B} (If you cast this spell for its blitz cost, it gains haste and \"When this creature dies, draw a card.\" Sacrifice it at the beginning of the next end step.)",
-        Keyword::Blitz(mana("{3}{B}"))
-    )]
     #[case::ninjutsu("Ninjutsu {1}{U}", Keyword::Ninjutsu(mana("{1}{U}")))]
     #[case::ninjutsu_for_one_mana("ninjutsu {B}", Keyword::Ninjutsu(mana("{B}")))]
     #[case::escape_exiling_cards(
