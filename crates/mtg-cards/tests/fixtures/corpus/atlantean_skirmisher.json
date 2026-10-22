@@ -1,0 +1,27 @@
+{
+  "id": "c95ad4af-bb71-4ca2-bcc0-2c27c3b9ecc3",
+  "oracle_id": "8f1c21d6-bf85-4e31-a978-6423c40650d2",
+  "name": "Atlantean Skirmisher",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "616",
+  "rarity": "uncommon",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Merfolk Rogue",
+  "oracle_text": "Whenever this creature attacks, it connives. (Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on this creature.)",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Connive"
+  ]
+}

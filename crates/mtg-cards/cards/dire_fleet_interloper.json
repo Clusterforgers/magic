@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7ae7cfde-8f2a-4e66-abe2-c15477e9fac3",
+  "name": "Dire Fleet Interloper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dire Fleet Interloper",
+      "oracle_fingerprint": "52e17497cf0f3fcb4f5602e099b1bebc",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Explore": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

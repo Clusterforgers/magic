@@ -1,0 +1,20 @@
+{
+  "oracle_id": "adfb28ca-2ba6-4104-b731-f8fd9367f7ec",
+  "name": "Revel Ruiner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Revel Ruiner",
+      "oracle_fingerprint": "4c4721cc955f13117bebd3320edbd43e",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Connive": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

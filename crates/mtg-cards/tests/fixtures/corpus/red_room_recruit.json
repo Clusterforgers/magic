@@ -1,0 +1,27 @@
+{
+  "id": "f52a5ba3-a618-4f52-9d33-ba85345eb627",
+  "oracle_id": "4e60c38c-cbf5-4ff7-8fff-634f7e3086cc",
+  "name": "Red Room Recruit",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msh",
+  "collector_number": "110",
+  "rarity": "common",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Spy Villain",
+  "oracle_text": "When this creature enters, it connives. (Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on this creature.)",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Connive"
+  ]
+}

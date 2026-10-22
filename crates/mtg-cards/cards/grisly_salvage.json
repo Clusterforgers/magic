@@ -1,0 +1,36 @@
+{
+  "oracle_id": "a89ebf63-63c9-42cd-98b4-ec852cd9b0a8",
+  "name": "Grisly Salvage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grisly Salvage",
+      "oracle_fingerprint": "79a37d382bc103f775a78d3af23c3e22",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

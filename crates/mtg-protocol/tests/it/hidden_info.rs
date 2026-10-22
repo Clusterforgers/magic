@@ -1231,6 +1231,143 @@ fn a_proliferate_and_the_counters_it_gives_are_public_and_its_choices_name_only_
 }
 
 #[rstest]
+fn an_explore_reveals_its_card_to_every_seat_asks_only_its_controller_and_shows_nothing_below_it(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] land: bool,
+    #[values(true, false)] graveyard: bool,
+) {
+    let mut cards: Vec<_> = LIBRARY
+        .iter()
+        .map(|name| mtg_testkit::corpus::card(name).unwrap())
+        .collect();
+    if land {
+        cards.insert(0, mtg_testkit::cards::island());
+    }
+    let below = cards[1].name.clone();
+    let mut scenario = mtg_testkit::Scenario::new(seats)
+        .hand(0, [mtg_testkit::corpus::card("Siren Lookout").unwrap()])
+        .battlefield(0, vec![mtg_testkit::ready(mtg_testkit::cards::island()); 3]);
+    for seat in 0..seats {
+        scenario = scenario.library(seat, cards.clone());
+    }
+    let asked = std::cell::RefCell::new(Vec::new());
+    let answer = |decision: &Decision| match &decision.kind {
+        DecisionKind::ChooseCards(options) => {
+            asked
+                .borrow_mut()
+                .push((decision.player, options.from.clone()));
+            mtg_engine::decision::Answer::ChooseCards(mtg_engine::choose::CardsChoice(
+                if graveyard {
+                    options.from.clone()
+                } else {
+                    Vec::new()
+                },
+            ))
+        }
+        other => panic!("unexpected {}", other.name()),
+    };
+    let (after, events, batches) = play_spell(scenario, seats, "Siren Lookout", answer);
+    let revealed = events
+        .iter()
+        .find_map(|event| match event {
+            mtg_engine::Event::Revealed(revealed) => Some(revealed.clone()),
+            _ => None,
+        })
+        .expect("the explore reveals a card");
+    assert_eq!(revealed.player, PlayerId(0));
+    let asked = asked.into_inner();
+    if land {
+        assert!(asked.is_empty(), "a land is not offered to the graveyard");
+    } else {
+        assert_eq!(asked, [(PlayerId(0), revealed.cards.clone())]);
+    }
+    let second = after
+        .objects()
+        .find(|o| o.card().name == below && o.owner() == PlayerId(0))
+        .map(GameObject::id)
+        .unwrap();
+    for (seat, batch) in batches.iter().enumerate() {
+        assert!(
+            batch.events.iter().any(|event| matches!(
+                event,
+                mtg_protocol::EventView::Public(mtg_engine::Event::Explored {
+                    player: PlayerId(0),
+                    ..
+                })
+            )),
+            "seat {seat} is told who explored"
+        );
+        assert!(
+            batch.events.iter().any(|event| matches!(
+                event,
+                mtg_protocol::EventView::Public(mtg_engine::Event::Revealed(r)) if *r == revealed
+            )),
+            "seat {seat} sees the revealed card"
+        );
+        assert_clean(batch, &BTreeMap::from([(second, below.clone())]));
+    }
+}
+
+#[rstest]
+fn a_connive_asks_only_its_controller_and_the_others_do_not_see_the_card_drawn_unless_it_is_discarded(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] discard_the_drawn_card: bool,
+) {
+    let mut scenario = mtg_testkit::Scenario::new(seats)
+        .hand(
+            0,
+            [
+                mtg_testkit::corpus::card("Echo Inspector").unwrap(),
+                mtg_testkit::corpus::card("Giant Growth").unwrap(),
+            ],
+        )
+        .battlefield(0, vec![mtg_testkit::ready(mtg_testkit::cards::island()); 4]);
+    for seat in 0..seats {
+        scenario = scenario.library_named(seat, LIBRARY);
+    }
+    let asked = std::cell::RefCell::new(Vec::new());
+    let answer = |decision: &Decision| match &decision.kind {
+        DecisionKind::ChooseCards(options) => {
+            asked.borrow_mut().push(decision.player);
+            let pick = usize::from(discard_the_drawn_card);
+            mtg_engine::decision::Answer::ChooseCards(mtg_engine::choose::CardsChoice(vec![
+                options.from[pick],
+            ]))
+        }
+        other => panic!("unexpected {}", other.name()),
+    };
+    let (after, events, batches) = play_spell(scenario, seats, "Echo Inspector", answer);
+    assert_eq!(
+        asked.into_inner(),
+        [PlayerId(0)],
+        "only the controller is asked"
+    );
+    let drawn = events
+        .iter()
+        .find_map(|event| match event {
+            mtg_engine::Event::CardDrawn { object, .. } => Some(*object),
+            _ => None,
+        })
+        .expect("the connive draws");
+    let name = after.object(drawn).unwrap().card().name.clone();
+    for (seat, batch) in batches.iter().enumerate() {
+        assert!(
+            batch.events.iter().any(|event| matches!(
+                event,
+                mtg_protocol::EventView::Public(mtg_engine::Event::Connived {
+                    player: PlayerId(0),
+                    ..
+                })
+            )),
+            "seat {seat} is told who connived"
+        );
+        if seat != 0 && !discard_the_drawn_card {
+            assert_clean(batch, &BTreeMap::from([(drawn, name.clone())]));
+        }
+    }
+}
+
+#[rstest]
 fn the_seat_that_looks_at_libraries_sees_the_cards_and_no_other_seat_does_not_even_the_owner(
     #[values(2, 3, 4)] seats: usize,
 ) {

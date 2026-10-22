@@ -529,6 +529,22 @@ player: PlayerId, } } | { "Proliferated": {
 /**
  * Who proliferated.
  */
+player: PlayerId, } } | { "Explored": { 
+/**
+ * The creature that explored.
+ */
+object: ObjectId, 
+/**
+ * Its controller, who revealed the card.
+ */
+player: PlayerId, } } | { "Connived": { 
+/**
+ * The creature that connived.
+ */
+object: ObjectId, 
+/**
+ * Its controller, who drew and discarded.
+ */
 player: PlayerId, } } | { "DayNightChanged": { 
 /**
  * What it became.

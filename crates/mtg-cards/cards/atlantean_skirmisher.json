@@ -1,0 +1,19 @@
+{
+  "oracle_id": "8f1c21d6-bf85-4e31-a978-6423c40650d2",
+  "name": "Atlantean Skirmisher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Atlantean Skirmisher",
+      "oracle_fingerprint": "4c3f4df4b4a0d91716d405049b5a4466",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "Connive": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

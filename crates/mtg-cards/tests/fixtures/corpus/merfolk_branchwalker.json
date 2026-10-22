@@ -1,0 +1,27 @@
+{
+  "id": "2c6f0d4a-4827-47b6-8af6-803949c195f8",
+  "oracle_id": "24b5dbe3-578a-4897-8215-e723f00a8f1a",
+  "name": "Merfolk Branchwalker",
+  "lang": "en",
+  "layout": "normal",
+  "set": "xln",
+  "collector_number": "197",
+  "rarity": "uncommon",
+  "released_at": "2017-09-29",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Merfolk Scout",
+  "oracle_text": "When this creature enters, it explores. (Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on this creature, then put the card back or put it into your graveyard.)",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Explore"
+  ]
+}

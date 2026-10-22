@@ -9,6 +9,7 @@ Archon of Cruelty
 Arrogant Wurm
 Artful Maneuver
 Arvad the Cursed
+Atlantean Skirmisher
 Augury Raven
 Azorius Chancery
 Azorius Signet
@@ -74,6 +75,7 @@ Deepfathom Skulker
 Defile
 Delver of Secrets // Insectile Aberration
 Demon Bolt
+Dire Fleet Interloper
 Disembowel
 Dockside Extortionist
 Dokuchi Shadow-Walker
@@ -87,7 +89,9 @@ Drudge Skeletons
 Dual Casting
 Dualcaster Mage
 Durkwood Baloth
+Echo Inspector
 Elven Ambush
+Elvish Rejuvenator
 Empyrial Plate
 Epic Proportions
 Eternal Witness
@@ -131,6 +135,7 @@ Goblin War Buggy
 Grapeshot
 Graven Cairns
 Graveshifter
+Grisly Salvage
 Growing Ranks
 Guardian Gladewalker
 Gurmag Angler
@@ -148,6 +153,7 @@ Impostor of the Sixth Pride
 Inkwell Leviathan
 Invisible Stalker
 Izzet Charm
+Jadelight Ranger
 Jaspera Sentinel
 Jungle Lion
 Karn's Bastion
@@ -181,6 +187,7 @@ Mardu Strike Leader
 Maro
 Master of Etherium
 Megrim
+Merfolk Branchwalker
 Mesmeric Orb
 Midnight Banshee
 Mirror Image
@@ -219,13 +226,16 @@ Psychosis Crawler
 Putrid Goblin
 Pygmy Kavu
 Questing Beast
+Raffine's Informant
 Rakdos Headliner
 Rally the Ranks
 Rampant Growth
 Reckless Impulse
 Reconstructed Thopter
+Red Room Recruit
 Reflecting Pool
 Reiterate
+Revel Ruiner
 Reverberate
 Rhox Faithmender
 Rhystic Study
@@ -239,16 +249,19 @@ Rummaging Goblin
 Rustrazor Butcher
 Safehold Elite
 Sanguine Bond
+Satyr Wayfinder
 Saw It Coming
 Scheming Aspirant
 Scuzzback Marauders
 Seedglaive Mentor
+Seekers' Squire
 Serra Angel
 Servant of the Conduit
 Shadowmage Infiltrator
 Siege Wurm
 Sinister Sabotage
 Sinister Starfish
+Siren Lookout
 Skeletal Changeling
 Skirk Prospector
 Skizzik Surger

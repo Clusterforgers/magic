@@ -22,7 +22,8 @@ use super::selectors::{Form, granted_text, phrase_text, spec_text};
 use super::spend;
 use super::statics;
 use super::triggers::{
-    article, condition_text, cycled_itself, entered_or_attacked, pattern_text, targeted_itself,
+    article, condition_text, cycled_itself, entered_or_attacked, itself_acts, pattern_text,
+    targeted_itself,
 };
 use crate::ability::{Ability, Limit, Timing};
 use crate::cost::Cost;
@@ -42,6 +43,7 @@ pub fn ability(ability: &Ability) -> Option<String> {
 /// Every wording of an ability the readers produce. The effects of one player in a row are one
 /// sentence ("you draw a card and gain 3 life") or several ("draw a card. You gain 3 life"), and
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
+#[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
     let mut texts = ability_texts(ability);
     let singulars: Vec<String> = texts
@@ -123,6 +125,18 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .map(|text| text.replacen(", ~ deals ", ", it deals ", 1))
             .collect();
         texts.extend(pronouns);
+    }
+    // A trigger about the card itself may say "it explores" or "it connives" for the card (Seekers' Squire).
+    if matches!(ability, Ability::Triggered { when, .. } if itself_acts(when)) {
+        for verb in ["explores", "connives"] {
+            let (named, pronoun) = (format!(", ~ {verb}"), format!(", it {verb}"));
+            let pronouns: Vec<String> = texts
+                .iter()
+                .filter(|text| text.contains(&named))
+                .map(|text| text.replacen(&named, &pronoun, 1))
+                .collect();
+            texts.extend(pronouns);
+        }
     }
     // A trigger about damage the source deals may say "it deals" for the source (Questing Beast).
     if matches!(
@@ -336,6 +350,7 @@ fn written(
         if let Some((text, used)) = cast::discover_text(&effects[start..])
             .or_else(|| cast::impulse_text(&effects[start..]))
             .or_else(|| library::sequence(&effects[start..]))
+            .or_else(|| writer.explore_twice(&effects[start..]))
         {
             if (mask >> start) & ((1 << used) - 1) != 0 {
                 return None;
@@ -1135,6 +1150,12 @@ impl Writer<'_> {
                 count,
             } => format!("surveil {}", points_text(count)?),
             Effect::Proliferate { who: Ref::You } => "proliferate".to_owned(),
+            Effect::Explore {
+                what: what @ (Ref::This | Ref::Target(0)),
+            } => format!("{} explores", self.object(what)?),
+            Effect::Connive {
+                what: what @ (Ref::This | Ref::Target(0)),
+            } => format!("{} connives", self.object(what)?),
             Effect::Transform { what } => format!("transform {}", self.object(what)?),
             Effect::If {
                 condition,
@@ -1184,6 +1205,23 @@ impl Writer<'_> {
             }
             _ => None,
         }
+    }
+
+    /// "~ explores, then it explores again": one creature that explores twice is one sentence, which no joint splits.
+    fn explore_twice(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
+        let [
+            Effect::Explore { what: first },
+            Effect::Explore { what: second },
+            ..,
+        ] = effects
+        else {
+            return None;
+        };
+        if first != second || !matches!(first, Ref::This | Ref::Target(0)) {
+            return None;
+        }
+        let subject = self.object(first)?;
+        Some((format!("{subject} explores, then it explores again"), 2))
     }
 
     /// Who does something: "you", "target player", "each opponent", "its controller".
