@@ -490,6 +490,32 @@ mod tests {
         assert_eq!(snapshots, []);
     }
 
+    #[rstest]
+    #[case::none(r#"{"Battlefield":{}}"#, &[])]
+    #[case::one_plus_counter(r#"{"Battlefield":{"counters":[["+1/+1",1]]}}"#, &[(CounterKind::PlusOnePlusOne, 1)])]
+    #[case::two_minus_counters(r#"{"Battlefield":{"counters":[["-1/-1",2]]}}"#, &[(CounterKind::MinusOneMinusOne, 2)])]
+    #[case::two_kinds(r#"{"Battlefield":{"counters":[["+1/+1",1],["charge",3]]}}"#, &[(CounterKind::PlusOnePlusOne, 1), (CounterKind::Charge, 3)])]
+    fn a_card_put_onto_the_battlefield_enters_with_the_counters_the_move_names(
+        #[case] to: &str,
+        #[case] expected: &[(CounterKind, u32)],
+    ) {
+        let game = game();
+        let card = hand(&game, ME)[0];
+        let (events, _) = done(run_with(&game, &[card], Vec::new(), &moving(to)).unwrap());
+        // The counters are proposed beside the move for the object the card becomes.
+        let folded = after(&game, &events);
+        let permanent = folded.object(card).unwrap().permanent().unwrap();
+        for (kind, count) in expected {
+            assert_eq!(permanent.counters_of(kind), *count, "{kind:?}");
+        }
+        assert_eq!(permanent.counters().count(), expected.len());
+        assert_eq!(
+            events.len(),
+            1 + expected.len(),
+            "the move and one change of counters for each kind"
+        );
+    }
+
     #[test]
     fn a_permanent_leaves_the_battlefield_with_a_snapshot_of_what_it_was() {
         let game = game();

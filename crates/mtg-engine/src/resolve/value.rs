@@ -880,7 +880,7 @@ impl<'a> Scope<'a> {
                             .object(named.id)
                             .filter(|object| object.counter() == named.counter)
                             .and_then(GameObject::permanent)
-                            .is_some_and(PermanentState::fresh)
+                            .is_some_and(|permanent| permanent.is_new_to(self.controller))
                             && controller_of(self.state, named.id) == Some(self.controller)
                     })
             }
@@ -1592,6 +1592,61 @@ mod tests {
         }
         let condition: Condition = serde_json::from_str(json).unwrap();
         assert_eq!(scope(&game).holds(&condition), Ok(holds));
+    }
+
+    #[rstest]
+    #[case::new_to_its_controller(r#"{"NewlyControlled":"This"}"#, true, 0, true)]
+    #[case::held_since_the_turn_began(r#"{"NewlyControlled":"This"}"#, false, 0, false)]
+    #[case::the_object_is_not_the_controllers(r#"{"NewlyControlled":"This"}"#, true, 1, false)]
+    #[case::not(r#"{"Not":{"NewlyControlled":"This"}}"#, true, 0, false)]
+    #[case::nothing_named(
+        r#"{"NewlyControlled":{"Each":[{"Named":"Nothing"}]}}"#,
+        true,
+        0,
+        false
+    )]
+    fn a_permanent_new_to_its_controller_is_read_from_what_the_turn_recorded(
+        #[case] json: &str,
+        #[case] fresh: bool,
+        #[case] controller: usize,
+        #[case] holds: bool,
+    ) {
+        let mut game = game();
+        let relic = named(&game, "Relic", 0);
+        let permanent = game
+            .objects
+            .get_mut(&relic.id)
+            .and_then(|object| object.permanent.as_mut())
+            .unwrap();
+        permanent.new_to = fresh.then_some(PlayerId(0));
+        let condition: Condition = serde_json::from_str(json).unwrap();
+        let scope = Scope::announcing(&game, PlayerId::from_index(controller), relic);
+        assert_eq!(scope.holds(&condition), Ok(holds));
+    }
+
+    #[test]
+    fn a_permanent_that_changed_zones_is_not_the_one_a_condition_named() {
+        let mut game = game();
+        let relic = named(&game, "Relic", 0);
+        let permanent = game
+            .objects
+            .get_mut(&relic.id)
+            .and_then(|object| object.permanent.as_mut())
+            .unwrap();
+        permanent.new_to = Some(PlayerId(0));
+        let condition: Condition = serde_json::from_str(r#"{"NewlyControlled":"This"}"#).unwrap();
+        crate::fold::apply_event(
+            &mut game,
+            &Event::ZoneChanged {
+                object: relic.id,
+                from: Zone::Battlefield,
+                to: Zone::Hand(PlayerId(0)),
+                cause: crate::events::ZoneCause::Moved,
+            },
+        )
+        .unwrap();
+        let scope = Scope::announcing(&game, PlayerId(0), relic);
+        assert_eq!(scope.holds(&condition), Ok(false));
     }
 
     #[rstest]

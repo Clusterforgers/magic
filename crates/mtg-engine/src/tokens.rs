@@ -77,7 +77,7 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
         damage: 0,
         deathtouched: false,
         summoning_sick: true,
-        fresh: false,
+        new_to: None,
         counters: BTreeMap::new(),
         attached_to: None,
         attached_player: None,

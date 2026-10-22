@@ -1039,7 +1039,9 @@ impl Writer<'_> {
                         under: None,
                         counters,
                     },
-            } if counters.is_empty() => "return ~ from your graveyard to the battlefield".to_owned(),
+            } if counters.is_empty() => {
+                "return ~ from your graveyard to the battlefield".to_owned()
+            }
             Effect::Surveil {
                 who: Ref::You,
                 count,

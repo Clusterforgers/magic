@@ -666,7 +666,10 @@ mod tests {
         }]))
     )]
     #[case::cumulative_upkeep("Cumulative upkeep {1}", Keyword::CumulativeUpkeep(mana("{1}")))]
-    #[case::cumulative_upkeep_two_colours("Cumulative upkeep {U}{R}", Keyword::CumulativeUpkeep(mana("{U}{R}")))]
+    #[case::cumulative_upkeep_two_colours(
+        "Cumulative upkeep {U}{R}",
+        Keyword::CumulativeUpkeep(mana("{U}{R}"))
+    )]
     #[case::cumulative_upkeep_in_life(
         "Cumulative upkeep\u{2014}Pay 1 life.",
         Keyword::CumulativeUpkeep(Cost(vec![CostItem::PayLife(Amount::Fixed(1))]))

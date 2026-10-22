@@ -824,15 +824,17 @@ fn effect() -> impl Strategy<Value = Effect> {
                     way,
                     otherwise,
                 }),
-            (reference(), cost(), amount(), list(), list()).prop_map(|(who, cost, times, paid, unpaid)| {
-                Effect::Pay {
-                    who,
-                    cost,
-                    times,
-                    paid,
-                    unpaid,
+            (reference(), cost(), amount(), list(), list()).prop_map(
+                |(who, cost, times, paid, unpaid)| {
+                    Effect::Pay {
+                        who,
+                        cost,
+                        times,
+                        paid,
+                        unpaid,
+                    }
                 }
-            }),
+            ),
             (trigger_pattern(), any::<bool>(), list()).prop_map(|(when, once, effects)| {
                 Effect::DelayedTrigger {
                     when,

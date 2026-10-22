@@ -207,8 +207,11 @@ fn echo_is_paid_or_the_permanent_is_sacrificed(
     assert_eq!(in_graveyard(&driver, 0, "Echoer"), !paid);
     if paid {
         // It is not asked again: the creature has been held since the turn began.
-        driver.idle_until(next_upkeep(seats) + u32::try_from(seats).unwrap(), Step::Upkeep)?;
-        assert!(driver.state().stack().is_empty());
+        driver.idle_until(
+            next_upkeep(seats) + u32::try_from(seats).unwrap(),
+            Step::Upkeep,
+        )?;
+        assert_eq!(driver.state().stack(), []);
         assert!(on_battlefield(&driver, "Echoer"));
     }
     assert_replays(&driver, &setup)
@@ -227,7 +230,7 @@ fn echo_is_not_asked_of_a_permanent_held_since_the_turn_began(
     let setup = build().setup()?;
     let mut driver = Driver::from_scenario(build())?;
     driver.idle_until(next_upkeep(seats), Step::Upkeep)?;
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack(), []);
     assert!(on_battlefield(&driver, "Echoer"));
     assert_replays(&driver, &setup)
 }
@@ -238,8 +241,7 @@ fn echo_is_asked_of_the_player_who_took_control_of_a_permanent(
 ) -> Result<(), ScriptError> {
     // Seat 1 has held the Echoer for a long time; seat 0 takes it, and owes echo at its own next upkeep.
     let build = || {
-        table(seats, vec![ready(forest())])
-            .battlefield(1, [ready(echoer("Echoer", mana("{1}")))])
+        table(seats, vec![ready(forest())]).battlefield(1, [ready(echoer("Echoer", mana("{1}")))])
     };
     let setup = build().setup()?;
     let mut driver = Driver::from_scenario(build())?;
@@ -338,14 +340,18 @@ fn each_instance_of_echo_is_asked_and_a_sacrifice_ends_the_rest(
                     .state()
                     .object(**id)
                     .and_then(|object| object.permanent())
-                    .is_some_and(|permanent| permanent.tapped())
+                    .is_some_and(mtg_engine::object::PermanentState::tapped)
         })
         .count();
     assert_eq!(tapped, paid, "each payment tapped a land");
     assert_replays(&driver, &setup)
 }
 
-fn age_table(seats: usize, ager: Arc<CardDefinition>, extra: Vec<mtg_engine::setup::PresetPermanent>) -> Scenario {
+fn age_table(
+    seats: usize,
+    ager: Arc<CardDefinition>,
+    extra: Vec<mtg_engine::setup::PresetPermanent>,
+) -> Scenario {
     table(seats, [vec![ready(ager)], extra].concat())
 }
 
@@ -464,12 +470,8 @@ fn the_age_counters_are_shared_by_the_instances_of_cumulative_upkeep(
         CardDefinition::new("Twice")
             .with_type(CardType::Creature)
             .with_power_toughness(2, 2)
-            .with_rules(Ability::Keyword(
-                Keyword::CumulativeUpkeep(mana("{1}")),
-            ))
-            .with_rules(Ability::Keyword(
-                Keyword::CumulativeUpkeep(mana("{1}")),
-            )),
+            .with_rules(Ability::Keyword(Keyword::CumulativeUpkeep(mana("{1}"))))
+            .with_rules(Ability::Keyword(Keyword::CumulativeUpkeep(mana("{1}")))),
     );
     let build = || age_table(seats, twice.clone(), lands(4));
     let setup = build().setup()?;
@@ -526,14 +528,17 @@ fn undying_and_persist_return_the_card_with_a_counter_unless_it_had_one(
     case: (bool, Vec<CounterKind>, bool, u32, u32),
 ) -> Result<(), ScriptError> {
     let (undying, preset, returns, plus, minus) = case;
-    let card = if undying { undier("Dier") } else { persister("Dier") };
+    let card = if undying {
+        undier("Dier")
+    } else {
+        persister("Dier")
+    };
     let mut dier = ready(card);
     for kind in preset {
         dier = with_counters(dier, kind, 1);
     }
-    let build = || {
-        table(seats, vec![dier.clone(), ready(mountain())]).hand(0, vec![burn("Bolt", 9)])
-    };
+    let build =
+        || table(seats, vec![dier.clone(), ready(mountain())]).hand(0, vec![burn("Bolt", 9)]);
     let setup = build().setup()?;
     let mut driver = Driver::from_scenario(build())?;
     let target = driver.target_named("Dier")?;
@@ -542,8 +547,14 @@ fn undying_and_persist_return_the_card_with_a_counter_unless_it_had_one(
     assert_eq!(on_battlefield(&driver, "Dier"), returns);
     assert_eq!(in_graveyard(&driver, 0, "Dier"), !returns);
     if returns {
-        assert_eq!(counters_on(&driver, "Dier", &CounterKind::PlusOnePlusOne), plus);
-        assert_eq!(counters_on(&driver, "Dier", &CounterKind::MinusOneMinusOne), minus);
+        assert_eq!(
+            counters_on(&driver, "Dier", &CounterKind::PlusOnePlusOne),
+            plus
+        );
+        assert_eq!(
+            counters_on(&driver, "Dier", &CounterKind::MinusOneMinusOne),
+            minus
+        );
     }
     assert_replays(&driver, &setup)
 }
@@ -553,10 +564,17 @@ fn a_returned_creature_that_dies_again_stays_dead(
     #[values(2, 3, 4)] seats: usize,
     #[values(true, false)] undying: bool,
 ) -> Result<(), ScriptError> {
-    let card = if undying { undier("Dier") } else { persister("Dier") };
+    let card = if undying {
+        undier("Dier")
+    } else {
+        persister("Dier")
+    };
     let build = || {
-        table(seats, vec![ready(card.clone()), ready(mountain()), ready(mountain())])
-            .hand(0, vec![burn("Bolt", 9), burn("Bolt", 9)])
+        table(
+            seats,
+            vec![ready(card.clone()), ready(mountain()), ready(mountain())],
+        )
+        .hand(0, vec![burn("Bolt", 9), burn("Bolt", 9)])
     };
     let setup = build().setup()?;
     let mut driver = Driver::from_scenario(build())?;
@@ -622,7 +640,11 @@ fn a_card_that_left_the_graveyard_in_response_is_not_returned(
     #[values(2, 3, 4)] seats: usize,
     #[values(true, false)] undying: bool,
 ) -> Result<(), ScriptError> {
-    let card = if undying { undier("Dier") } else { persister("Dier") };
+    let card = if undying {
+        undier("Dier")
+    } else {
+        persister("Dier")
+    };
     let build = || {
         table(seats, vec![ready(card.clone()), ready(mountain())])
             .hand(0, vec![burn("Bolt", 9), exiler()])
@@ -781,9 +803,8 @@ fn wisp_maker() -> Arc<CardDefinition> {
 fn a_token_with_undying_ceases_to_exist_and_is_not_returned(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let build = || {
-        table(seats, vec![ready(mountain())]).hand(0, vec![wisp_maker(), burn("Bolt", 9)])
-    };
+    let build =
+        || table(seats, vec![ready(mountain())]).hand(0, vec![wisp_maker(), burn("Bolt", 9)]);
     let setup = build().setup()?;
     let mut driver = Driver::from_scenario(build())?;
     driver.cast("Maker")?;

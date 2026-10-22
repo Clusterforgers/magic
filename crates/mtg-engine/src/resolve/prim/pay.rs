@@ -589,6 +589,36 @@ mod tests {
     }
 
     #[rstest]
+    #[case::none_asks_nothing_and_has_paid("{1}", "0", 0, &[], PAID)]
+    #[case::none_of_a_cost_nobody_can_pay("{9}", "0", 0, &[], PAID)]
+    #[case::once("{1}", "1", 2, &[], Said::Asks(0, "Pay {1}?".into()))]
+    #[case::twice("{1}", "2", 2, &[], Said::Asks(0, "Pay {2}?".into()))]
+    #[case::three_times_with_two_lands("{1}", "3", 2, &[], Said::Declines(0, "Pay {3}?".into()))]
+    #[case::two_colours_twice("{G}{1}", "2", 4, &[], Said::Asks(0, "Pay {2}{G}{G}?".into()))]
+    #[case::life_twice("[{\"PayLife\":1}]", "2", 0, &[], Said::Asks(0, "Pay 1 life, pay 1 life?".into()))]
+    #[case::yes_to_twice("{1}", "2", 2, &[(0, true)], Said::Pays(0, "{2}".into(), false))]
+    #[case::paid_twice("{1}", "2", 2, &[(0, true), (0, true)], PAID)]
+    #[case::declined("{1}", "2", 2, &[(0, false)], UNPAID)]
+    fn a_cost_paid_several_times_is_asked_as_all_of_them_together_and_none_is_paid_without_a_question(
+        #[case] cost: &str,
+        #[case] times: &str,
+        #[case] lands: usize,
+        #[case] given: &[(usize, bool)],
+        #[case] said_: Said,
+    ) {
+        let cost = if cost.starts_with('[') {
+            cost.to_owned()
+        } else {
+            format!("\"{cost}\"")
+        };
+        let effect = effect(&format!(
+            r#"{{"Pay":{{"cost":{cost},"times":{times},"paid":[{{"Draw":{{}}}}],"unpaid":[{{"Draw":{{}}}}]}}}}"#
+        ));
+        let game = game(&[lands, 0]);
+        assert_eq!(said(run_with(&game, given, &effect)), said_);
+    }
+
+    #[rstest]
     #[case::the_first_is_asked(&[3, 3, 3, 3], &[], asks(1))]
     #[case::the_first_says_no(&[3, 3, 3, 3], &[(1, false)], asks(2))]
     #[case::two_say_no(&[3, 3, 3, 3], &[(1, false), (2, false)], asks(3))]
