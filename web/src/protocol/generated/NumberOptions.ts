@@ -18,6 +18,10 @@ min: number,
  */
 max: number | null, 
 /**
+ * Numbers between `min` and `max` that are not allowed (an X with no legal target); empty when every one is.
+ */
+except?: Array<number>, 
+/**
  * What the number is for in the words of a card ("Choose a value for X."); empty when the engine gave none.
  */
 text?: string, 
