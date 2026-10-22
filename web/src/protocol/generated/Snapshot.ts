@@ -50,4 +50,8 @@ attachments: Array<ObjectId>,
 /**
  * Why it lay face down, when it did: the characteristics above are for the players who may look at it.
  */
-face_down?: FaceDown, };
+face_down?: FaceDown, 
+/**
+ * The X it was cast with, as the object remembers it (CR 107.3m): a spell on the stack and the permanent it became.
+ */
+x?: number, };

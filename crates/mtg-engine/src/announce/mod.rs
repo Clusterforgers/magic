@@ -283,6 +283,8 @@ impl Pending {
             Answered::Way(_) => Phase::Alternative,
             Answered::Targets(_) => Phase::Targets,
             Answered::Cards(_) => Phase::Parts,
+            // The X of a counted part is asked while the parts are, before the picks that depend on it.
+            Answered::Number(_) if self.done.asked == Some(Phase::Parts) => Phase::Parts,
             // A number is asked for X, and for the times a repeatable optional cost is paid, which comes once the
             // costs that are paid once are settled.
             Answered::Number(_)
@@ -511,3 +513,6 @@ mod through_engine;
 
 #[cfg(test)]
 mod kicks;
+
+#[cfg(test)]
+mod x_after;

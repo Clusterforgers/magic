@@ -40,6 +40,10 @@ pub struct Snapshot {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub face_down: Option<FaceDown>,
+    /// The X it was cast with, as the object remembers it (CR 107.3m): a spell on the stack and the permanent it became.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub x: Option<u32>,
 }
 
 impl Snapshot {
@@ -81,6 +85,7 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
         ),
         attachments: state.attachments_of(id),
         face_down: object.face_down(),
+        x: object.announced_x(),
     })
 }
 

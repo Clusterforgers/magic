@@ -93,9 +93,17 @@ pub struct PermanentState {
     pub(crate) paid: Vec<usize>,
     /// The alternative cost the spell was cast for.
     pub(crate) way: Option<CastWay>,
+    /// The X the spell was cast with, which its enters triggers and replacements read (CR 107.3m); the permanent
+    /// itself has X = 0.
+    pub(crate) x: Option<u32>,
 }
 
 impl PermanentState {
+    /// The X the spell that became the permanent was cast with; its enters triggers and replacements read it (CR 107.3m).
+    pub const fn x(&self) -> Option<u32> {
+        self.x
+    }
+
     /// The optional costs (kicker) paid as the spell that became the permanent was cast, by index, a repeatable cost
     /// once for each payment; its abilities read them.
     pub fn paid(&self) -> &[usize] {
@@ -267,6 +275,16 @@ impl GameObject {
         match &self.permanent {
             Some(permanent) => permanent.way,
             None if self.kind == ObjectKind::Card && self.zone == Zone::Stack => self.choices.way,
+            None => None,
+        }
+    }
+
+    /// The X this card was cast with: what the spell announced while it is on the stack and what the permanent
+    /// remembers after; none elsewhere, where X is 0 (CR 107.3g, 202.3e).
+    pub fn announced_x(&self) -> Option<u32> {
+        match &self.permanent {
+            Some(permanent) => permanent.x(),
+            None if self.kind == ObjectKind::Card && self.zone == Zone::Stack => self.choices.x,
             None => None,
         }
     }

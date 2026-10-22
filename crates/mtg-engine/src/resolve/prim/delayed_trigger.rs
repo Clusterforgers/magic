@@ -23,7 +23,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let source = cx.scope.source;
     let gone = || ResolveError::Invalid("the source of a delayed trigger is gone".into());
     // The source as it is, else as the resolution knows it (it may have left the battlefield since it was chosen).
-    let snapshot = snapshot(state, source.id)
+    let mut snapshot = snapshot(state, source.id)
         .filter(|shot| shot.counter == source.counter)
         .or_else(|| {
             cx.scope
@@ -33,6 +33,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 .map(|shot| (*shot).clone())
         })
         .ok_or_else(gone)?;
+    // It reads the X of the spell or ability that sets it up, whatever its source remembers (CR 107.3k).
+    snapshot.x = cx.scope.announced_x();
     let object = state.object(cx.resolving.object()).ok_or_else(gone)?;
     // The ability whose resolution this is: the one an ability object came from, else the spell ability of the card.
     let ability = object.ability().map_or_else(

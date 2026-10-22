@@ -1,0 +1,29 @@
+{
+  "oracle_id": "457dc141-bc72-42ad-b482-c78183462e34",
+  "name": "Forced March",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forced March",
+      "oracle_fingerprint": "b65a792e68b025fd999fd7009563b47b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

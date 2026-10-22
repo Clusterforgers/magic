@@ -50,7 +50,7 @@ pub(crate) fn activation_events(
     let mut events = Vec::new();
     match &*rules {
         Ability::Activated { cost, .. } => {
-            let price = Price::announced(cost).ok()?;
+            let price = Price::announced(cost).ok()?.at(choices.x.unwrap_or(0));
             if price.tap {
                 events.push(Event::PermanentTapped {
                     object: ability.object,

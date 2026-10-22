@@ -253,7 +253,7 @@ fn every_ordered_run_of_cost_parts_with_every_effect_and_restriction_writes_back
 #[case::a_restriction_first("{T}: Activate only as a sorcery. Draw a card.")]
 #[case::a_creature_you_control("{T}, Sacrifice a creature you control: Draw a card.")]
 #[case::a_creature_card("{T}, Sacrifice a creature card: Draw a card.")]
-#[case::a_variable_count("Sacrifice X creatures: Draw a card.")]
+#[case::a_count_that_is_a_stat("Sacrifice creatures equal to its power: Draw a card.")]
 #[case::one_of_several("Sacrifice one creature: Draw a card.")]
 #[case::a_plural_for_one("Sacrifice a creatures: Draw a card.")]
 #[case::a_singular_for_many("Sacrifice two creature: Draw a card.")]

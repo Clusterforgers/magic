@@ -6,14 +6,17 @@
 //! the same question, from 0 to the loyalty counters of the planeswalker, and removes that many.
 
 use mtg_cards::ability::{Ability, LoyaltyCost};
+use mtg_cards::refs::{Pred, ZoneKind};
+use mtg_cards::trigger::TriggerPattern;
 use mtg_cards::value::CounterKind;
 use mtg_core::mana::{ManaCost, ManaSymbol};
 
-use super::{Ctx, Next, What, Work, total};
+use super::{Ctx, Next, What, Work, parts, total};
 use crate::choose::{Choices, NumberOptions};
 use crate::decision::DecisionKind;
 use crate::price::Price;
 use crate::state::GameState;
+use crate::triggers::PendingTrigger;
 
 /// The most the search for the largest X goes on: a payment this large is more mana than any game has.
 const MOST_X: u32 = 1_000;
@@ -28,6 +31,8 @@ pub(crate) enum XCost {
     },
     /// The `-X` of a loyalty ability: X loyalty counters are removed.
     Loyalty,
+    /// The amount of a part of an ability's cost (life, counters, energy, objects picked): X of them are paid.
+    Parts,
 }
 
 impl XCost {
@@ -37,7 +42,13 @@ impl XCost {
         let symbols = match what {
             What::Spell(spell) => u32::from(state.object(*spell)?.card().x_in_cost),
             What::Ability(_) => match rules? {
-                Ability::Activated { cost, .. } => Price::announced(cost).ok()?.x,
+                Ability::Activated { cost, .. } => {
+                    let price = Price::announced(cost).ok()?;
+                    if price.x == 0 && price.counted() {
+                        return Some(XCost::Parts);
+                    }
+                    price.x
+                }
                 Ability::Loyalty {
                     cost: LoyaltyCost::MinusX,
                     ..
@@ -55,6 +66,8 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         return None;
     }
     if ctx.needs.x.is_none() {
+        // A trigger that reads the X of the spell or ability it came from remembers it as it goes on the stack.
+        work.choices.x = ctx.triggered.and_then(remembered);
         work.done.x = true;
         return None;
     }
@@ -83,6 +96,26 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     })))
 }
 
+/// The X a waiting trigger reads: that of the spell or ability that set it up (a delayed trigger) or, when it triggers on its own permanent entering,
+/// of the spell that permanent came from (CR 107.3m). Any
+/// other trigger of a permanent reads X as 0.
+fn remembered(waiting: &PendingTrigger) -> Option<u32> {
+    let trigger = waiting.trigger();
+    let reads = trigger.delayed.is_some()
+        || matches!(
+            waiting.rules(),
+            Ability::Triggered {
+                when: TriggerPattern::ZoneChange {
+                    what,
+                    to: Some(ZoneKind::Battlefield),
+                    ..
+                },
+                ..
+            } if what.0.contains(&Pred::This)
+        );
+    reads.then_some(trigger.snapshot.x).flatten()
+}
+
 /// `mana` with X paid: X generic mana for each `{X}` of the cost.
 pub(super) fn add(ctx: &Ctx<'_>, choices: &Choices, mana: Option<ManaCost>) -> Option<ManaCost> {
     let Some(XCost::Mana { symbols }) = &ctx.needs.x else {
@@ -104,7 +137,11 @@ fn largest(ctx: &Ctx<'_>, choices: &Choices) -> Option<u32> {
                 .permanent()?
                 .counters_of(&CounterKind::Loyalty),
         ),
-        XCost::Mana { .. } => largest_payable(ctx, choices),
+        XCost::Mana { .. } => {
+            let payable = largest_payable(ctx, choices)?;
+            Some(parts::most(ctx, choices).map_or(payable, |most| most.min(payable)))
+        }
+        XCost::Parts => parts::most(ctx, choices),
     }
 }
 
