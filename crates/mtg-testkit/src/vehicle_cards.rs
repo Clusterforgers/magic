@@ -16,7 +16,7 @@ use crate::cards::{cost, creature, land};
 use crate::corpus;
 
 /// The corpus Vehicles the games draw.
-pub const VEHICLE_CARDS: [&str; 4] = [
+pub const VEHICLE_CARDS: &[&str] = &[
     "Smuggler's Copter",
     "Skysovereign, Consul Flagship",
     "Goliath Truck",

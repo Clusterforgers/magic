@@ -187,7 +187,7 @@ pub fn veteran_recruiter() -> Result<Arc<CardDefinition>, CorpusError> {
 }
 
 /// The corpus cards that put counters on creatures and players, or read them.
-pub const COUNTER_CORPUS_CARDS: [&str; 4] = [
+pub const COUNTER_CORPUS_CARDS: &[&str] = &[
     "Tireless Tracker",
     "Cathars' Crusade",
     "Inspiring Call",
@@ -195,7 +195,7 @@ pub const COUNTER_CORPUS_CARDS: [&str; 4] = [
 ];
 
 /// The cards of this module.
-pub const COUNTER_SYNTHETIC_CARDS: [&str; 11] = [
+pub const COUNTER_SYNTHETIC_CARDS: &[&str] = &[
     "Growth Spurt",
     "Sap",
     "Wither Wave",
@@ -307,7 +307,7 @@ mod tests {
     fn a_counters_deck_is_sixty_cards_with_every_card_that_puts_or_reads_counters() {
         let deck = counters_deck(&mut GameRng::substream(1, 16_000)).unwrap();
         assert_eq!(deck.len(), 60);
-        for name in COUNTER_CORPUS_CARDS.iter().chain(&COUNTER_SYNTHETIC_CARDS) {
+        for name in COUNTER_CORPUS_CARDS.iter().chain(COUNTER_SYNTHETIC_CARDS) {
             assert!(deck.iter().any(|card| card.name == *name), "{name}");
         }
         let setup = counters_fuzz_setup(3, 5).unwrap();

@@ -665,7 +665,7 @@ fn a_seeded_evasion_game_is_the_same_game_every_time_and_replays_to_its_state(
 
 #[test]
 fn the_cards_of_an_evasion_deck_are_all_in_the_corpus() {
-    for (name, _) in EVASION_CARDS {
+    for &(name, _) in EVASION_CARDS {
         assert!(card(name).is_ok(), "{name}");
     }
 }

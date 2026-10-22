@@ -193,7 +193,7 @@ pub fn double_phyrexian() -> Arc<CardDefinition> {
 }
 
 /// The cards of this module that are permanents with a modifier.
-pub const MODIFIER_CARDS: [&str; 10] = [
+pub const MODIFIER_CARDS: &[&str] = &[
     "Tax Rock",
     "Sphere",
     "Hostile Tax",

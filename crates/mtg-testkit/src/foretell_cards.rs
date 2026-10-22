@@ -12,7 +12,7 @@ use crate::cards::land;
 use crate::corpus;
 
 /// The corpus cards the foretell deck is made of besides lands: the keyword and what it can be cast against.
-pub const FORETELL_CARDS: [&str; 8] = [
+pub const FORETELL_CARDS: &[&str] = &[
     "Behold the Multiverse",
     "Saw It Coming",
     "Demon Bolt",
