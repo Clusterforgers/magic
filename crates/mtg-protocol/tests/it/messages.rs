@@ -232,6 +232,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             mana_abilities: vec![option.clone()],
             abilities: Vec::new(),
             suspendable: Vec::new(),
+            foretellable: Vec::new(),
             can_act: true,
             can_pass: true,
         })),
@@ -314,6 +315,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             mana_abilities: Vec::new(),
             abilities: vec![AbilityRef::printed(a, 0)],
             suspendable: Vec::new(),
+            foretellable: Vec::new(),
             can_act: true,
             can_pass: true,
         })),
@@ -1552,6 +1554,7 @@ fn what_a_vanilla_message_never_carried_stays_out_of_it() {
         mana_abilities: Vec::new(),
         abilities: Vec::new(),
         suspendable: Vec::new(),
+        foretellable: Vec::new(),
         can_act: true,
         can_pass: true,
     };

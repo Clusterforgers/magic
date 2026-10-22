@@ -14,6 +14,18 @@ use crate::state::{GameState, Stage};
 use crate::zones::Zone;
 
 impl GameState {
+    /// Whether `viewer` may look at what the object is: anyone may unless it lies face down (CR 708), and then only
+    /// the player its kind of face-down names (CR 702.143a: the owner of a foretold card). This is the one rule the
+    /// views, the log and the snapshots read for a face-down object.
+    pub fn may_look_at(&self, viewer: PlayerId, id: ObjectId) -> bool {
+        let Some(object) = self.object(id) else {
+            return false;
+        };
+        object
+            .face_down()
+            .is_none_or(|how| how.may_look(object.owner(), viewer))
+    }
+
     /// Whether `viewer` may identify the object beyond what its zone shows: the top card of a library that a rule
     /// reveals is shown to every seat, and the resolution in progress may have shown it to them, which holds while it is
     /// still the card it was shown: a new zone makes a new object (CR 400.7), and that one is judged by its zone alone.
@@ -78,7 +90,7 @@ pub fn offered_cards(state: &GameState) -> Option<(PlayerId, Vec<ObjectId>)> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: what a resolution shows is known to exactly the seats it was shown to: the cards looked at, found or scried to that seat alone, the cards revealed to every seat, nothing outside a resolution, nothing once the resolution has ended or the card has become another object by changing zones.
+    //! Goal: what a resolution shows is known to exactly the seats it was shown to: the cards looked at, found or scried to that seat alone, the cards revealed to every seat, nothing outside a resolution, nothing once the resolution has ended or the card has become another object by changing zones; a foretold card is looked at by its owner alone until it changes zones.
     use rstest::rstest;
 
     use super::*;
@@ -86,6 +98,7 @@ mod tests {
     use crate::fixtures::{creature, state};
     use crate::fold::apply_event;
     use crate::library::{CardsFound, LibraryLooked, Revealed, Scried};
+    use crate::object::FaceDown;
     use crate::resolve::Resolving;
     use crate::zones::Zone;
 
@@ -210,6 +223,57 @@ mod tests {
         apply_event(&mut game, &reveal).unwrap();
         apply_event(&mut game, &reveal).unwrap();
         assert_eq!(game.resolving().unwrap().shown().len(), 1);
+    }
+
+    #[rstest]
+    #[case::the_owner(0, true)]
+    #[case::an_opponent(1, false)]
+    #[case::the_other_opponent(2, false)]
+    #[case::a_spectator(3, false)]
+    fn only_the_owner_may_look_at_a_foretold_card(#[case] viewer: usize, #[case] looks: bool) {
+        let mut game = state(
+            vec![vec![creature("Card", 1, 1)], vec![], vec![]],
+            vec![vec![], vec![], vec![]],
+        );
+        let viewer = PlayerId::from_index(viewer);
+        let card = game
+            .objects()
+            .find(|o| o.card().name == "Card")
+            .map(GameObject::id)
+            .unwrap();
+        let from = game.object(card).unwrap().zone();
+        assert!(game.may_look_at(viewer, card), "a face-up card is open");
+        let foretell = Event::ZoneChanged {
+            object: card,
+            from,
+            to: Zone::Exile,
+            cause: ZoneCause::Foretold,
+        };
+        apply_event(&mut game, &foretell).unwrap();
+        let object = game.object(card).unwrap();
+        assert_eq!(
+            object.face_down(),
+            Some(FaceDown::Foretold {
+                turn: game.turn().number()
+            })
+        );
+        assert_eq!(game.may_look_at(viewer, card), looks);
+        // A new zone makes a new object that lies face up (CR 400.7).
+        let leave = Event::ZoneChanged {
+            object: card,
+            from: Zone::Exile,
+            to: Zone::Graveyard(ME),
+            cause: ZoneCause::Moved,
+        };
+        apply_event(&mut game, &leave).unwrap();
+        assert_eq!(game.object(card).unwrap().face_down(), None);
+        assert!(game.may_look_at(viewer, card));
+    }
+
+    #[test]
+    fn nobody_may_look_at_an_object_the_game_does_not_have() {
+        let game = game();
+        assert!(!game.may_look_at(ME, ObjectId(9_999)));
     }
 
     #[test]

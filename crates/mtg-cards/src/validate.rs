@@ -44,11 +44,14 @@ fn tag_of<T: Serialize>(value: &T) -> String {
     }
 }
 
-/// Whether the part of a cost that counts holds a fixed number: the engine pays no other (`Cost.PayLife.Counted`).
+/// Whether the part of a cost that counts holds a fixed number or the X announced: the engine pays no other amount
+/// (`Cost.PayLife.Counted`).
 fn is_fixed(item: &CostItem) -> bool {
-    let fixed = |amount: &Amount| matches!(amount, Amount::Fixed(number) if *number >= 0);
+    let fixed = |amount: &Amount| {
+        matches!(amount, Amount::Fixed(number) if *number >= 0) || *amount == Amount::X
+    };
     match item {
-        CostItem::PayLife(amount) => fixed(amount),
+        CostItem::PayLife(amount) | CostItem::PayEnergy(amount) => fixed(amount),
         CostItem::RemoveCounters { count, .. }
         | CostItem::Sacrifice { count, .. }
         | CostItem::Discard { count, .. }
@@ -560,10 +563,10 @@ impl<'a> Walker<'a> {
         }
     }
 
-    /// Losing the source (sacrificing, exiling or discarding it) is paid as part of an ability's cost; no effect asks a
-    /// player to pay it yet, so a payment that asks for it names what is missing.
+    /// A payment an effect asks takes mana, life, counters, energy and picked objects. Losing the source (sacrificing,
+    /// exiling or discarding it) is paid as part of an ability's cost; no effect asks a player to pay it yet, so a
+    /// payment that asks for it names what is missing.
     fn payment_of_the_source(&mut self, cost: &Cost) {
-        self.parts_that_need_an_announcement("Effect", "Pay", cost);
         for (item, name) in [
             (CostItem::SacrificeSelf, "Pay.SacrificeSelf"),
             (CostItem::ExileSelf, "Pay.ExileSelf"),
@@ -574,7 +577,7 @@ impl<'a> Walker<'a> {
             }
         }
         // There is no announcement to choose an X in the middle of a resolution.
-        if has_x_mana(cost) {
+        if cost.has_x() {
             self.uses("Effect", "Pay.X");
         }
     }
@@ -1403,6 +1406,9 @@ impl<'a> Walker<'a> {
         targets: &[TargetSpec],
         effects: &[Effect],
     ) {
+        // The X a part of the cost counts is the one the ability announces.
+        self.x_free = cost.has_x();
+        self.x_now = self.x_free;
         self.at("cost", |w| w.cost(cost));
         self.at("from", |w| w.activated_zone(cost, from));
         if let Some(condition) = condition {
@@ -1411,12 +1417,11 @@ impl<'a> Walker<'a> {
             self.at("condition", |w| w.condition(condition));
         }
         self.x_free = cost.has_x();
-        // An `{X}` of the mana is asked as the ability is announced; another X in a cost (life) is not.
-        let x_mana = has_x_mana(cost);
-        if x_mana {
+        // An `{X}` of the mana and a part that counts X are asked as the ability is announced.
+        if has_x_mana(cost) {
             self.uses("Cost", "Mana.X");
         }
-        self.x_now = x_mana;
+        self.x_now = cost.has_x();
         self.body(targets, effects, false);
     }
 

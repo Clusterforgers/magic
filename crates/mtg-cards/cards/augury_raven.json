@@ -1,0 +1,12 @@
+{
+  "oracle_id": "ee05fc58-1356-4b2f-b9ce-bda8cc716aee",
+  "name": "Augury Raven",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Augury Raven",
+      "oracle_fingerprint": "66612e996c04155b0b2bf98418e688c9",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": { "Foretell": "{1}{U}" } }]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d9517c5d-66d0-4178-96fb-a8c04f311ad8",
+  "name": "Aven Mindcensor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aven Mindcensor",
+      "oracle_fingerprint": "060845af547d4f8541f920d086340813",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "No way yet to limit a search of a library to its top cards.",
+            "span": { "start": 13, "end": 116 }
+          }
+        }
+      ]
+    }
+  ]
+}

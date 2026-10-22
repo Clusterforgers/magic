@@ -1,6 +1,7 @@
 //! Tokens: a clause's normalized text as words, numbers, mana symbols and punctuation, and the
 //! reader that walks them together with what the clause has asked for so far.
 
+use super::subtypes::is_subtype;
 use crate::refs::{Ref, TargetSpec};
 
 /// One token of a clause.
@@ -237,7 +238,9 @@ fn merge_source(tokens: Vec<Token>) -> Vec<Token> {
     merged
 }
 
-/// A reader over a clause's tokens, with the targets the clause has asked for so far.
+/// A reader over a clause's tokens, with the targets the clause has asked for so far. The flags are independent facts
+/// about the ability being read.
+#[allow(clippy::struct_excessive_bools)]
 pub struct Reader<'a> {
     tokens: &'a [Token],
     at: usize,
@@ -252,6 +255,11 @@ pub struct Reader<'a> {
     pub that_player: bool,
     /// Whether the event of the trigger is about one permanent: "that permanent's controller" is who controls it.
     pub that_permanent: bool,
+    /// The subtypes on the card's own type line, which are subtypes whether or not the rules' list has them.
+    pub subtypes: Vec<String>,
+    /// Whether the ability works from the graveyard (its event is not about the card itself), so "return this card
+    /// from your graveyard to the battlefield" has a card to return.
+    pub from_graveyard: bool,
 }
 
 impl<'a> Reader<'a> {
@@ -265,7 +273,14 @@ impl<'a> Reader<'a> {
             it: None,
             that_player: false,
             that_permanent: false,
+            subtypes: Vec::new(),
+            from_graveyard: false,
         }
+    }
+
+    /// Whether the word is a subtype: one of the rules' list or of the card's own type line.
+    pub fn is_subtype(&self, word: &str) -> bool {
+        is_subtype(word) || self.subtypes.iter().any(|own| own == word)
     }
 
     /// Whether every token has been read.

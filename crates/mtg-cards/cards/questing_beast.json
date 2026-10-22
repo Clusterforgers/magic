@@ -1,7 +1,7 @@
 {
   "oracle_id": "b685757b-521e-4353-a233-97052359723d",
   "name": "Questing Beast",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Questing Beast",
@@ -24,15 +24,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "No way yet to say that combat damage dealt by a set of creatures can't be prevented.",
-            "span": { "start": 96, "end": 174 }
+          "Rule": {
+            "rule": {
+              "DamageCantBePrevented": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "combat": true
+              }
+            }
           }
         },
         {
-          "Manual": {
-            "reason": "Needs a trigger on combat damage dealt to a player and the amount of that damage.",
-            "span": { "start": 175, "end": 305 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents", "combat": true } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Planeswalker" }, { "ControlledBy": "Triggering" }] }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }]
           }
         }
       ]

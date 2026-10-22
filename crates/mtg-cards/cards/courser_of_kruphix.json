@@ -1,0 +1,31 @@
+{
+  "oracle_id": "46779609-4fa7-4fd2-b5b4-7d4d749339e6",
+  "name": "Courser of Kruphix",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Courser of Kruphix",
+      "oracle_fingerprint": "2cdfff15811b3e10ba084d199efe7160",
+      "abilities": [
+        { "Rule": { "rule": { "RevealTop": "You" } } },
+        {
+          "Manual": {
+            "reason": "No way yet to play lands from the top of a library.",
+            "span": { "start": 49, "end": 97 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -8,6 +8,7 @@
 
 mod alternative;
 mod division;
+pub(crate) mod foretell;
 mod legality;
 mod modes;
 mod modifiers;
@@ -201,6 +202,16 @@ pub(crate) struct Done {
     asked: Option<Phase>,
 }
 
+/// A special action that pays a cost and does not use the stack (CR 116.2): the cost is paid through the normal payment
+/// decision and the card moves to exile with the payment.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum Special {
+    /// Suspend (CR 702.62a).
+    Suspend,
+    /// Foretell (CR 702.143a).
+    Foretell,
+}
+
 /// A cast or activation that has begun and is not paid for yet.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct Pending {
@@ -212,8 +223,8 @@ pub(crate) struct Pending {
     pub(crate) done: Done,
     /// Set when a resolution casts the spell.
     pub(crate) granted: Option<Granted>,
-    /// Set when the card is being suspended, a special action that pays its suspend cost and does not use the stack.
-    pub(crate) suspending: bool,
+    /// Set when the card is the subject of a special action that pays a cost and does not use the stack.
+    pub(crate) special: Option<Special>,
     needs: Option<Needs>,
 }
 
@@ -226,7 +237,7 @@ impl Pending {
             done: Done::default(),
             granted: None,
             needs: None,
-            suspending: false,
+            special: None,
         }
     }
 
@@ -243,10 +254,10 @@ impl Pending {
         }
     }
 
-    /// The suspending of `card` from the hand by `player`: only the payment of its suspend cost is asked.
-    pub(crate) fn suspending(player: PlayerId, card: ObjectId) -> Self {
+    /// The special action `special` on `card` from the hand by `player`: only the payment of its cost is asked.
+    pub(crate) fn special(player: PlayerId, card: ObjectId, special: Special) -> Self {
         Pending {
-            suspending: true,
+            special: Some(special),
             ..Pending::new(player, What::Spell(card))
         }
     }
@@ -272,6 +283,8 @@ impl Pending {
             Answered::Way(_) => Phase::Alternative,
             Answered::Targets(_) => Phase::Targets,
             Answered::Cards(_) => Phase::Parts,
+            // The X of a counted part is asked while the parts are, before the picks that depend on it.
+            Answered::Number(_) if self.done.asked == Some(Phase::Parts) => Phase::Parts,
             // A number is asked for X, and for the times a repeatable optional cost is paid, which comes once the
             // costs that are paid once are settled.
             Answered::Number(_)
@@ -442,11 +455,16 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         choices,
         done,
         granted,
-        suspending,
+        special,
         needs,
     } = pending;
-    if *suspending && let What::Spell(card) = what {
-        return suspend::next(state, *player, *card);
+    if let Some(special) = special
+        && let What::Spell(card) = what
+    {
+        return match special {
+            Special::Suspend => suspend::next(state, *player, *card),
+            Special::Foretell => foretell::next(state, *player, *card),
+        };
     }
     let what: &What = what;
     let held = rules_of(state, what);

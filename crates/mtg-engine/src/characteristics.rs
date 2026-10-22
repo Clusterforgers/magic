@@ -9,6 +9,7 @@ use serde::{Deserialize, Serialize};
 use crate::effects::Modification;
 use crate::layers::outside;
 use crate::object::{GameObject, ObjectKind};
+use crate::resolve::Scope;
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -109,6 +110,34 @@ pub(crate) fn cant_block(state: &GameState, id: ObjectId) -> bool {
     restricted(state, id, |modification| {
         matches!(modification, Modification::CantBlock)
     })
+}
+
+/// Whether an effect that applies to the attacker `attacker` says the creature `blocker` can't block it ("can't be
+/// blocked", "can't be blocked by creatures with power 2 or less"): the one place the block rules read these restrictions.
+/// The selector judges `blocker` as the layers leave it now, when blockers are declared.
+pub(crate) fn cant_be_blocked_by(state: &GameState, attacker: ObjectId, blocker: ObjectId) -> bool {
+    let Some(blocker) = state.object(blocker).map(GameObject::reference) else {
+        return false;
+    };
+    state
+        .object(attacker)
+        .filter(|object| object.zone() == Zone::Battlefield)
+        .and_then(|object| state.layers().get(object.id()))
+        .is_some_and(|held| {
+            held.applied
+                .iter()
+                .any(|applied| match &applied.modification {
+                    Modification::CantBeBlocked => true,
+                    Modification::CantBeBlockedBy {
+                        by,
+                        controller,
+                        source,
+                    } => Scope::announcing(state, *controller, *source)
+                        .selects(by, blocker)
+                        .unwrap_or(false),
+                    _ => false,
+                })
+        })
 }
 
 /// Whether a modification that `is` applies to the permanent `id` once the layers are through with it.

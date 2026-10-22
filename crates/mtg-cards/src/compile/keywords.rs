@@ -388,22 +388,46 @@ fn protection(rest: &str) -> Option<Selector> {
         .strip_prefix("from ")?
         .trim_end_matches('.')
         .to_ascii_lowercase();
-    let pred = match word.as_str() {
-        "everything" => return Some(Selector::default()),
-        "white" => Pred::Color(Color::White),
-        "blue" => Pred::Color(Color::Blue),
-        "black" => Pred::Color(Color::Black),
-        "red" => Pred::Color(Color::Red),
-        "green" => Pred::Color(Color::Green),
-        "colorless" => Pred::Colorless,
-        "creatures" => Pred::Type(CardType::Creature),
-        "artifacts" => Pred::Type(CardType::Artifact),
-        "enchantments" => Pred::Type(CardType::Enchantment),
-        "planeswalkers" => Pred::Type(CardType::Planeswalker),
-        "lands" => Pred::Type(CardType::Land),
-        _ => return None,
-    };
-    Some(Selector(vec![pred]))
+    quality(&word)
+}
+
+/// The words of a protection quality, each with the sources it names.
+const QUALITIES: [(&str, Pred); 11] = [
+    ("white", Pred::Color(Color::White)),
+    ("blue", Pred::Color(Color::Blue)),
+    ("black", Pred::Color(Color::Black)),
+    ("red", Pred::Color(Color::Red)),
+    ("green", Pred::Color(Color::Green)),
+    ("colorless", Pred::Colorless),
+    ("creatures", Pred::Type(CardType::Creature)),
+    ("artifacts", Pred::Type(CardType::Artifact)),
+    ("enchantments", Pred::Type(CardType::Enchantment)),
+    ("planeswalkers", Pred::Type(CardType::Planeswalker)),
+    ("lands", Pred::Type(CardType::Land)),
+];
+
+/// The sources a protection quality names, from its word in lowercase ("red", "creatures", "everything"). The empty
+/// selector matches every source.
+pub fn quality(word: &str) -> Option<Selector> {
+    if word == "everything" {
+        return Some(Selector::default());
+    }
+    QUALITIES
+        .iter()
+        .find(|(name, _)| *name == word)
+        .map(|(_, pred)| Selector(vec![pred.clone()]))
+}
+
+/// The word of a protection quality, the inverse of `quality`.
+pub fn quality_word(quality: &Selector) -> Option<&'static str> {
+    match quality.0.as_slice() {
+        [] => Some("everything"),
+        [only] => QUALITIES
+            .iter()
+            .find(|(_, pred)| pred == only)
+            .map(|(name, _)| *name),
+        _ => None,
+    }
 }
 
 /// A cost: mana symbols, or a dash and `Pay N life` or `Discard a card`.
@@ -463,6 +487,39 @@ mod tests {
     }
 
     #[rstest]
+    #[case("white")]
+    #[case("blue")]
+    #[case("black")]
+    #[case("red")]
+    #[case("green")]
+    #[case("colorless")]
+    #[case("creatures")]
+    #[case("artifacts")]
+    #[case("enchantments")]
+    #[case("planeswalkers")]
+    #[case("lands")]
+    #[case("everything")]
+    fn a_protection_quality_is_written_as_it_is_read(#[case] word: &str) {
+        let quality = quality(word).unwrap();
+        assert_eq!(quality_word(&quality), Some(word));
+    }
+
+    #[rstest]
+    #[case("White")]
+    #[case("vampires")]
+    #[case("red and blue")]
+    #[case("")]
+    fn any_other_word_is_no_protection_quality(#[case] word: &str) {
+        assert_eq!(quality(word), None);
+    }
+
+    #[test]
+    fn a_selector_of_two_predicates_has_no_quality_word() {
+        let two = Selector(vec![Pred::Colorless, Pred::Type(CardType::Creature)]);
+        assert_eq!(quality_word(&two), None);
+    }
+
+    #[rstest]
     #[case::flying("Flying", Keyword::Flying)]
     #[case::lowercase("flying", Keyword::Flying)]
     #[case::two_words("First strike", Keyword::FirstStrike)]
@@ -500,6 +557,7 @@ mod tests {
     #[case::encore("Encore {5}{R}", Keyword::Encore(mana("{5}{R}")))]
     #[case::squad("Squad {2}", Keyword::Squad(mana("{2}")))]
     #[case::foretell("Foretell {1}{U}", Keyword::Foretell(mana("{1}{U}")))]
+    #[case::foretell_for_nothing("Foretell {0}", Keyword::Foretell(mana("{0}")))]
     #[case::crew("Crew 3", Keyword::Crew(3))]
     #[case::changeling("Changeling", Keyword::Changeling)]
     #[case::devoid("Devoid", Keyword::Devoid)]

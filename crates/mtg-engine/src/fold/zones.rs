@@ -44,6 +44,7 @@ pub(super) fn move_object(
     // A new zone makes it a new object (CR 400.7); what was announced for it on the stack goes with the stack.
     object.counter += 1;
     object.card_counters.clear();
+    object.face_down = None;
     // What the spell paid for stays with the permanent it becomes, for its abilities to read.
     let paid = if from == Zone::Stack && to == Zone::Battlefield {
         std::mem::take(&mut object.choices.optional_costs)
@@ -147,7 +148,10 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
         }
         Event::SpellResolved { object } => resolve_spell(state, *object)?,
         Event::ZoneChanged {
-            object, from, to, ..
+            object,
+            from,
+            to,
+            cause,
         } => {
             expect_in(state, *object, *from)?;
             if state.object(*object).map(GameObject::kind) == Some(ObjectKind::Ability) {
@@ -156,6 +160,11 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 )));
             }
             move_object(state, *object, *to, Placement::Top)?;
+            if let Some(how) = cause.face_down(state.turn.number())
+                && let Some(object) = state.objects.get_mut(object)
+            {
+                object.face_down = Some(how);
+            }
         }
         Event::Entered {
             object,

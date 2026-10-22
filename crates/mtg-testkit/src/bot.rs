@@ -268,6 +268,12 @@ impl RandomBot {
                 .iter()
                 .map(|o| PriorityAction::Suspend(*o)),
         );
+        actions.extend(
+            options
+                .foretellable
+                .iter()
+                .map(|o| PriorityAction::Foretell(*o)),
+        );
         actions[self.rng.index(actions.len())]
     }
 

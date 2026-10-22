@@ -1,0 +1,20 @@
+{
+  "oracle_id": "90edaf33-d0ab-47e0-8f6a-6fba38286e6e",
+  "name": "Saw It Coming",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saw It Coming",
+      "oracle_fingerprint": "5ddacdd637987ac8bc475a19a3cd6908",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Foretell": "{1}{U}" } }
+      ]
+    }
+  ]
+}

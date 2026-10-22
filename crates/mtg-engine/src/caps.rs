@@ -67,6 +67,7 @@ const RUNS: &[&str] = &[
     "Cost.ExileSelf",
     "Cost.DiscardSelf",
     "Cost.PayLife",
+    "Cost.PayEnergy",
     "Cost.Sacrifice",
     "Cost.Discard",
     "Cost.RemoveCounters",
@@ -139,6 +140,8 @@ const RUNS: &[&str] = &[
     "Mod.SetController",
     "Mod.CantAttack",
     "Mod.CantBlock",
+    "Mod.CantBeBlocked",
+    "Mod.CantBeBlockedBy",
     "Effect.DelayedTrigger",
     "Effect.If",
     "Effect.May",
@@ -179,6 +182,7 @@ const RUNS: &[&str] = &[
     "Keyword.Delve",
     "Keyword.Madness",
     "Keyword.Suspend",
+    "Keyword.Foretell",
     "Condition.CastWith",
     "Rule.MayCast",
     "Condition.Kicked",
@@ -422,7 +426,8 @@ mod tests {
     #[case::the_greatest_value("Amount.Greatest", false)]
     #[case::totals("Amount.Total", false)]
     #[case::card_types_among_cards("Amount.CardTypes", false)]
-    #[case::paying_energy("Cost.PayEnergy", false)]
+    #[case::paying_energy("Cost.PayEnergy", true)]
+    #[case::paying_a_counted_amount_of_energy("Cost.PayEnergy.Counted", false)]
     #[case::removing_counters_as_a_cost("Cost.RemoveCounters", true)]
     #[case::tapping_permanents_as_a_cost("Cost.TapPermanents", true)]
     #[case::exiling_from_a_graveyard_as_a_cost("Cost.ExileFromGraveyard", true)]
@@ -448,8 +453,8 @@ mod tests {
     #[case::if_you_do("Condition.Performed", false)]
     #[case::the_monarch("Condition.Monarch", false)]
     #[case::the_citys_blessing("Condition.CitysBlessing", false)]
-    #[case::unblockable_creatures("Mod.CantBeBlocked", false)]
-    #[case::creatures_that_cant_be_blocked_by_some("Mod.CantBeBlockedBy", false)]
+    #[case::unblockable_creatures("Mod.CantBeBlocked", true)]
+    #[case::creatures_that_cant_be_blocked_by_some("Mod.CantBeBlockedBy", true)]
     #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", false)]
     #[case::additional_land_plays("Rule.AdditionalLandPlays", false)]
     #[case::commander_eligibility("Rule.CanBeCommander", false)]

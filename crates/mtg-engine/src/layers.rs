@@ -220,7 +220,9 @@ impl Held {
             | Modification::ModifyPowerToughness { .. }
             | Modification::SwitchPowerToughness
             | Modification::CantAttack
-            | Modification::CantBlock => {}
+            | Modification::CantBlock
+            | Modification::CantBeBlocked
+            | Modification::CantBeBlockedBy { .. } => {}
         }
     }
 }

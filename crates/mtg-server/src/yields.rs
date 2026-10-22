@@ -477,6 +477,7 @@ mod tests {
                 mana_abilities: Vec::new(),
                 abilities: Vec::new(),
                 suspendable: Vec::new(),
+                foretellable: Vec::new(),
                 can_act,
                 can_pass: true,
             })),

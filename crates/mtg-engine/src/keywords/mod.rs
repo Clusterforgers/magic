@@ -25,7 +25,7 @@ mod first_strike;
 mod flash;
 mod flashback;
 mod flying;
-mod foretell;
+pub(crate) mod foretell;
 mod fuse;
 mod haste;
 mod hexproof;
@@ -531,7 +531,7 @@ mod tests {
     }
 
     /// The keywords whose rules the engine runs, named as the capabilities name them.
-    const RUN: [&str; 34] = [
+    const RUN: [&str; 35] = [
         "Keyword.Flash",
         "Keyword.Flying",
         "Keyword.Reach",
@@ -566,6 +566,7 @@ mod tests {
         "Keyword.Delve",
         "Keyword.Madness",
         "Keyword.Suspend",
+        "Keyword.Foretell",
     ];
 
     /// What a keyword answers to each hook that does not need a game.

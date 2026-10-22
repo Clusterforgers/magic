@@ -239,6 +239,7 @@ const MORE: [Event, string][] = [
     "Forest moves to Ana's hand",
   ],
   [{ ZoneChanged: { object: 3, from: 'Battlefield', to: 'Exile', cause: 'Moved' } }, 'Forest moves to exile'],
+  [{ ZoneChanged: { object: 3, from: { Hand: 0 }, to: 'Exile', cause: 'Foretold' } }, 'Forest is foretold'],
   [
     { ZoneChanged: { object: 3, from: 'Stack', to: 'Battlefield', cause: 'Moved' } },
     'Forest moves to the battlefield',
@@ -372,6 +373,11 @@ describe('describeEvent', () => {
 
   it.each(Object.entries(HIDDEN))('says the hidden event %s in one sentence', (_name, [event, text]) => {
     expect(describeEvent({ Hidden: event }, names).text).toBe(text)
+  })
+
+  it('tells the others who foretold and nothing about the card', () => {
+    const hidden: HiddenEvent = { ZoneChanged: { from: { Hand: 1 }, to: 'Exile', cause: 'Foretold' } }
+    expect(describeEvent({ Hidden: hidden }, names)).toEqual({ text: 'Bo foretells a card', minor: false })
   })
 
   it.each(MORE)('says the pipeline event %j in the right words', (event, text) => {
@@ -557,6 +563,15 @@ describe('events with more than one shape', () => {
       'Hill Giant has power and toughness switched until end of turn',
     ],
     [effect(objects(2), 'CantBlock', 'UntilEndOfTurn'), "Hill Giant can't block until end of turn"],
+    [effect(objects(2), 'CantBeBlocked', 'UntilEndOfTurn'), "Hill Giant can't be blocked until end of turn"],
+    [
+      effect(
+        objects(2),
+        { CantBeBlockedBy: { by: [], controller: 0, source: { id: 1, counter: 0 } } },
+        'UntilEndOfTurn',
+      ),
+      "Hill Giant can't be blocked by some creatures until end of turn",
+    ],
     [
       effect(objects(2), { AddSubtype: 'Elf' }, 'UntilEndOfTurn'),
       'Hill Giant becomes Elf too until end of turn',

@@ -2,7 +2,7 @@
 //! in the order it is printed and written back the same way.
 
 use super::amounts::{cards, cards_text, count_word, number_word, points, points_text};
-use super::counters::{counters, text as counters_text};
+use super::counters::{entering, text as counters_text};
 use super::effects::describes_a_kind;
 use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
@@ -15,11 +15,19 @@ use crate::value::Amount;
 /// The parts of a cost, separated by commas: `{T}`, `{Q}`, a run of mana symbols, "Pay 2 life",
 /// "Sacrifice ~", "Sacrifice another creature", "Discard a card".
 pub fn cost(r: &mut Reader<'_>) -> Option<Cost> {
+    // An X in a cost is the one the player announces as they activate the ability: "Pay X life", "Sacrifice X creatures".
+    let before = std::mem::replace(&mut r.x_free, true);
+    let items = items(r);
+    r.x_free = before;
+    items.map(Cost)
+}
+
+fn items(r: &mut Reader<'_>) -> Option<Vec<CostItem>> {
     let mut items = vec![item(r)?];
     while r.punct(',') {
         items.push(item(r)?);
     }
-    Some(Cost(items))
+    Some(items)
 }
 
 /// One part of a cost.
@@ -57,7 +65,7 @@ fn mana(r: &mut Reader<'_>) -> Option<ManaCostX> {
 fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
     if r.word("pay") {
         if let Some(energy) = r.attempt(energy) {
-            return Some(CostItem::PayEnergy(Amount::Fixed(energy)));
+            return Some(CostItem::PayEnergy(energy));
         }
         let amount = points(r)?;
         r.word("life").then_some(())?;
@@ -89,13 +97,17 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
     sacrifice(r)
 }
 
-/// "a" or "an" for one, a number above one for several: how many a cost takes and how the phrase after it reads.
-fn how_many(r: &mut Reader<'_>) -> Option<(Form, i32)> {
+/// "a" or "an" for one, a number above one for several, X for the number announced: how many a cost takes and how the
+/// phrase after it reads.
+fn how_many(r: &mut Reader<'_>) -> Option<(Form, Amount)> {
     if r.word("a") || r.word("an") {
-        return Some((Form::Subject, 1));
+        return Some((Form::Subject, Amount::one()));
+    }
+    if r.x_free && r.word("x") {
+        return Some((Form::Targets, Amount::X));
     }
     let number = number_word(r.take_word()?).filter(|number| *number > 1)?;
-    Some((Form::Targets, i32::try_from(number).ok()?))
+    Some((Form::Targets, Amount::Fixed(i32::try_from(number).ok()?)))
 }
 
 /// Takes one `pred` out of a filter; `None` when it is not there.
@@ -119,7 +131,7 @@ fn tap(r: &mut Reader<'_>) -> Option<CostItem> {
     without(&mut filter, &Pred::ControlledBy(Ref::You))?;
     Some(CostItem::TapPermanents {
         filter: kinds_only(filter)?,
-        count: Amount::Fixed(count),
+        count,
     })
 }
 
@@ -131,7 +143,7 @@ fn exile(r: &mut Reader<'_>) -> Option<CostItem> {
     without(&mut filter, &Pred::OwnedBy(Ref::You))?;
     Some(CostItem::ExileFromGraveyard {
         filter: kinds_only(filter)?,
-        count: Amount::Fixed(count),
+        count,
     })
 }
 
@@ -149,17 +161,24 @@ fn bounce(r: &mut Reader<'_>) -> Option<CostItem> {
 
 /// "Remove a charge counter from ~": counters of the card itself.
 fn remove(r: &mut Reader<'_>) -> Option<CostItem> {
-    let (counter, number) = counters(r)?;
+    let (counter, count) = entering(r)?;
     r.need("from")?;
     r.source().then_some(())?;
-    Some(CostItem::RemoveCounters {
-        counter,
-        count: Amount::Fixed(i32::try_from(number).ok()?),
-    })
+    Some(CostItem::RemoveCounters { counter, count })
 }
 
-/// A run of energy symbols: "{E}{E}" is two energy.
-fn energy(r: &mut Reader<'_>) -> Option<i32> {
+/// The energy symbols of an amount: "{E}{E}" for two, "X {E}" for the number announced.
+pub(super) fn energy_text(amount: &Amount) -> Option<String> {
+    match amount {
+        Amount::Fixed(count) if *count > 0 => Some("{E}".repeat(usize::try_from(*count).ok()?)),
+        Amount::X => Some("X {E}".to_owned()),
+        _ => None,
+    }
+}
+
+/// A run of energy symbols: "{E}{E}" is two energy, "X {E}" the number announced.
+pub(super) fn energy(r: &mut Reader<'_>) -> Option<Amount> {
+    let x = r.x_free && r.word("x");
     let mut count = 0;
     while r
         .attempt(|r| r.symbol().filter(|symbol| *symbol == "E"))
@@ -167,23 +186,24 @@ fn energy(r: &mut Reader<'_>) -> Option<i32> {
     {
         count += 1;
     }
-    (count > 0).then_some(count)
+    match (x, count) {
+        (true, 1) => Some(Amount::X),
+        (false, 1..) => Some(Amount::Fixed(count)),
+        _ => None,
+    }
 }
 
 /// What is sacrificed: "a creature", "another artifact", "two Goblins".
 fn sacrifice(r: &mut Reader<'_>) -> Option<CostItem> {
     let (filter, count) = if r.word("a") || r.word("an") || r.peek_word() == Some("another") {
-        (phrase(r, Form::Subject)?, 1)
+        (phrase(r, Form::Subject)?, Amount::one())
     } else {
-        let number = number_word(r.take_word()?).filter(|number| *number > 1)?;
-        (phrase(r, Form::Targets)?, number)
+        let (_, count) = how_many(r)?;
+        (phrase(r, Form::Targets)?, count)
     };
     // The payer sacrifices what they control: a cost says nothing of who controls it or where it is.
     filter.0.iter().all(is_cost_filter).then_some(())?;
-    Some(CostItem::Sacrifice {
-        filter,
-        count: Amount::Fixed(i32::try_from(count).ok()?),
-    })
+    Some(CostItem::Sacrifice { filter, count })
 }
 
 /// Whether a predicate of a sacrificed permanent says what kind it is, or that it is another one.
@@ -208,6 +228,7 @@ fn item_text(item: &CostItem) -> Option<String> {
         CostItem::PayEnergy(Amount::Fixed(count)) if *count > 0 => {
             format!("Pay {}", "{E}".repeat(usize::try_from(*count).ok()?))
         }
+        CostItem::PayEnergy(Amount::X) => "Pay X {E}".to_owned(),
         CostItem::Sacrifice { filter, count } => sacrifice_text(filter, count)?,
         CostItem::Discard {
             count,
@@ -239,6 +260,9 @@ fn item_text(item: &CostItem) -> Option<String> {
 
 /// "a creature you control", "two untapped creatures you control": what a cost takes, in the words `phrase` reads.
 fn taken_text(said: &Selector, count: &Amount) -> Option<String> {
+    if *count == Amount::X {
+        return Some(format!("X {}", phrase_text(said, Form::Targets)?));
+    }
     let Amount::Fixed(number) = count else {
         return None;
     };
@@ -255,12 +279,18 @@ fn taken_text(said: &Selector, count: &Amount) -> Option<String> {
 
 /// "a creature", "another creature", "two other creatures".
 fn sacrifice_text(filter: &Selector, count: &Amount) -> Option<String> {
-    let Amount::Fixed(number) = count else {
-        return None;
-    };
     if filter.0.is_empty() || !filter.0.iter().all(is_cost_filter) {
         return None;
     }
+    if *count == Amount::X {
+        return Some(format!(
+            "Sacrifice X {}",
+            phrase_text(filter, Form::Targets)?
+        ));
+    }
+    let Amount::Fixed(number) = count else {
+        return None;
+    };
     if *number == 1 {
         let text = phrase_text(filter, Form::Subject)?;
         return Some(if filter.0.contains(&Pred::Other) {

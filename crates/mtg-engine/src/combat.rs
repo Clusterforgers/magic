@@ -4,7 +4,9 @@ use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
-use crate::characteristics::{cant_attack, cant_block, characteristics, controller_of};
+use crate::characteristics::{
+    cant_attack, cant_be_blocked_by, cant_block, characteristics, controller_of,
+};
 use crate::decision::{AttackOptions, AttackerOption, BlockOptions, BlockerOption};
 use crate::error::IllegalAnswer;
 use crate::events::Event;
@@ -248,7 +250,10 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
             let can_block: Vec<ObjectId> = blockable
                 .iter()
                 .copied()
-                .filter(|attacker| !keywords::stops_block(state, *attacker, object))
+                .filter(|attacker| {
+                    !keywords::stops_block(state, *attacker, object)
+                        && !cant_be_blocked_by(state, *attacker, object)
+                })
                 .collect();
             (object, can_block)
         })

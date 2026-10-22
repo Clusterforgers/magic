@@ -2,7 +2,7 @@
 
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
-use crate::announce::{Answered, Next, Pending, What, announce};
+use crate::announce::{Answered, Next, Pending, Special, What, announce};
 use crate::answers::{Outcome, handle};
 use crate::characteristics::controller_of_object;
 use crate::choose::Choice;
@@ -337,7 +337,11 @@ impl Engine {
                 Ok(())
             }
             Outcome::BeginSuspend(card) => {
-                self.pending = Some(Pending::suspending(player, card));
+                self.pending = Some(Pending::special(player, card, Special::Suspend));
+                Ok(())
+            }
+            Outcome::BeginForetell(card) => {
+                self.pending = Some(Pending::special(player, card, Special::Foretell));
                 Ok(())
             }
             Outcome::Modes(modes) => self.announced(Answered::Modes(modes)),

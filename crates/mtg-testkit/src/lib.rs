@@ -15,9 +15,11 @@ pub mod cost_cards;
 pub mod counter_cards;
 pub mod decks;
 pub mod driver;
+pub mod evasion_cards;
 pub mod event_cards;
 pub mod expect;
 pub mod family_cards;
+pub mod foretell_cards;
 pub mod harness;
 pub mod help_cards;
 pub mod invariants;
@@ -56,8 +58,10 @@ pub use decks::{
     removal_fuzz_setup, spell_fuzz_setup, symbol_fuzz_setup, trigger_fuzz_setup,
 };
 pub use driver::Driver;
+pub use evasion_cards::evasion_fuzz_setup;
 pub use event_cards::events_fuzz_setup;
 pub use family_cards::families_fuzz_setup;
+pub use foretell_cards::foretell_fuzz_setup;
 pub use harness::{FailureKind, GameFailure, GameOutcome, PlayOptions, play_game, play_game_with};
 pub use help_cards::help_fuzz_setup;
 pub use invariants::{InvariantChecker, Violation, check_settled, check_state};

@@ -1,7 +1,9 @@
 //! Suspending a card (CR 702.62a): a special action that does not use the stack. The announcement is only the payment of
 //! the suspend cost, which can be backed out of; the events that follow it exile the card face up with its time counters.
+//! The payment is shared with foretell (`announce/foretell.rs`).
 
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::mana::ManaCost;
 
 use super::Next;
 use crate::cast::payment_decision;
@@ -24,9 +26,20 @@ pub(super) fn next(state: &GameState, player: PlayerId, card: ObjectId) -> Next 
     let Some((_, cost)) = ways::suspend_of(state, card) else {
         return Next::Drop;
     };
-    // A suspend cost of nothing needs no payment decision.
+    pay(state, player, card, cost, || events(state, card))
+}
+
+/// The payment decision of `cost` for a special action on `card`, which completes with `events` once it is paid. A cost of
+/// nothing needs no payment decision, and one that cannot be paid drops the action.
+pub(super) fn pay(
+    state: &GameState,
+    player: PlayerId,
+    card: ObjectId,
+    cost: ManaCost,
+    events: impl FnOnce() -> Option<Vec<Event>>,
+) -> Next {
     if cost.mana_value() == 0 {
-        return events(state, card).map_or(Next::Drop, Next::Commit);
+        return events().map_or(Next::Drop, Next::Commit);
     }
     let options = payment_decision(
         state,

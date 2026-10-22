@@ -4181,6 +4181,61 @@
     ]
   },
   {
+    "id": "14d265aa-c1d8-4faa-b282-5c273ab725fd",
+    "oracle_id": "1a137a67-4156-45c8-aae9-838f688e12bd",
+    "name": "Invisible Stalker",
+    "lang": "en",
+    "layout": "normal",
+    "set": "znc",
+    "collector_number": "27",
+    "rarity": "uncommon",
+    "released_at": "2020-09-25",
+    "digital": false,
+    "mana_cost": "{1}{U}",
+    "cmc": 2.0,
+    "type_line": "Creature — Human Rogue",
+    "oracle_text": "Hexproof (This creature can't be the target of spells or abilities your opponents control.)\nThis creature can't be blocked.",
+    "power": "1",
+    "toughness": "1",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Hexproof"
+    ]
+  },
+  {
+    "id": "d4cf468f-4e9d-4551-a0ed-10bd6a2316ad",
+    "oracle_id": "d9517c5d-66d0-4178-96fb-a8c04f311ad8",
+    "name": "Aven Mindcensor",
+    "lang": "en",
+    "layout": "normal",
+    "set": "clb",
+    "collector_number": "688",
+    "rarity": "uncommon",
+    "released_at": "2022-06-10",
+    "digital": false,
+    "mana_cost": "{2}{W}",
+    "cmc": 3.0,
+    "type_line": "Creature — Bird Wizard",
+    "oracle_text": "Flash\nFlying\nIf an opponent would search a library, that player searches the top four cards of that library instead.",
+    "power": "2",
+    "toughness": "1",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [
+      "Flying",
+      "Flash"
+    ]
+  },
+  {
     "id": "36eae0e1-7100-449d-a259-7abfcd429117",
     "oracle_id": "457dc141-bc72-42ad-b482-c78183462e34",
     "name": "Forced March",
@@ -4292,6 +4347,185 @@
     "colors": [],
     "color_identity": [],
     "keywords": []
+  },
+  {
+    "id": "f10539e3-d4bc-4f71-a00f-8e94bb97509d",
+    "oracle_id": "1ec63280-ae5b-4892-8854-de2d8127ea83",
+    "name": "Solstice Zealot",
+    "lang": "en",
+    "layout": "normal",
+    "set": "mh3",
+    "collector_number": "43",
+    "rarity": "common",
+    "released_at": "2024-06-14",
+    "digital": false,
+    "mana_cost": "{2}{W}",
+    "cmc": 3,
+    "type_line": "Creature — Rhino Cleric",
+    "oracle_text": "When this creature enters, you get {E}{E} (two energy counters).\n{T}, Pay {E}: Tap target creature.",
+    "power": "2",
+    "toughness": "3",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "7be413dd-d6e0-4bd3-8c14-4dbe44e8ee41",
+    "oracle_id": "efab5a30-74ee-4959-b7cd-2a5d25d18327",
+    "name": "Copper-Leaf Angel",
+    "lang": "en",
+    "layout": "normal",
+    "set": "pcy",
+    "collector_number": "137",
+    "rarity": "rare",
+    "released_at": "2000-06-05",
+    "digital": false,
+    "mana_cost": "{5}",
+    "cmc": 5,
+    "type_line": "Artifact Creature — Angel",
+    "oracle_text": "Flying\n{T}, Sacrifice X lands: Put X +1/+1 counters on this creature.",
+    "power": "2",
+    "toughness": "2",
+    "colors": [],
+    "color_identity": [],
+    "keywords": [
+      "Flying"
+    ]
+  },
+  {
+    "id": "dc63d2ea-a980-466e-9ebb-f28008f84c3d",
+    "oracle_id": "46779609-4fa7-4fd2-b5b4-7d4d749339e6",
+    "name": "Courser of Kruphix",
+    "lang": "en",
+    "layout": "normal",
+    "set": "cmm",
+    "collector_number": "888",
+    "rarity": "rare",
+    "released_at": "2023-08-04",
+    "digital": false,
+    "mana_cost": "{1}{G}{G}",
+    "cmc": 3.0,
+    "type_line": "Enchantment Creature — Centaur",
+    "oracle_text": "Play with the top card of your library revealed.\nYou may play lands from the top of your library.\nLandfall — Whenever a land you control enters, you gain 1 life.",
+    "power": "2",
+    "toughness": "4",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Landfall"
+    ]
+  },
+  {
+    "id": "a9947cfd-91d6-479e-a7f6-2a2050f020f3",
+    "oracle_id": "ee05fc58-1356-4b2f-b9ce-bda8cc716aee",
+    "name": "Augury Raven",
+    "lang": "en",
+    "layout": "normal",
+    "set": "khm",
+    "collector_number": "44",
+    "rarity": "common",
+    "released_at": "2021-02-05",
+    "digital": false,
+    "mana_cost": "{3}{U}",
+    "cmc": 4.0,
+    "type_line": "Creature — Bird",
+    "oracle_text": "Flying\nForetell {1}{U} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)",
+    "power": "3",
+    "toughness": "3",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Flying",
+      "Foretell"
+    ]
+  },
+  {
+    "id": "27855a38-a682-4f97-ad22-ac625e86faec",
+    "oracle_id": "d7d2f701-77df-4169-bf98-0d51d6886e9b",
+    "name": "Behold the Multiverse",
+    "lang": "en",
+    "layout": "normal",
+    "set": "khm",
+    "collector_number": "46",
+    "rarity": "common",
+    "released_at": "2021-02-05",
+    "digital": false,
+    "mana_cost": "{3}{U}",
+    "cmc": 4.0,
+    "type_line": "Instant",
+    "oracle_text": "Scry 2, then draw two cards.\nForetell {1}{U} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Foretell",
+      "Scry"
+    ]
+  },
+  {
+    "id": "3c43bf24-399e-407a-a563-bb04f93a0497",
+    "oracle_id": "6e786f0b-e2cb-40ee-96bc-81945a0b35a3",
+    "name": "Demon Bolt",
+    "lang": "en",
+    "layout": "normal",
+    "set": "clb",
+    "collector_number": "787",
+    "rarity": "common",
+    "released_at": "2022-06-10",
+    "digital": false,
+    "mana_cost": "{2}{R}",
+    "cmc": 3.0,
+    "type_line": "Instant",
+    "oracle_text": "Demon Bolt deals 4 damage to target creature or planeswalker.\nForetell {R} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Foretell"
+    ]
+  },
+  {
+    "id": "877a1bb9-5eae-453a-bec0-a9de20ea6815",
+    "oracle_id": "90edaf33-d0ab-47e0-8f6a-6fba38286e6e",
+    "name": "Saw It Coming",
+    "lang": "en",
+    "layout": "normal",
+    "set": "khm",
+    "collector_number": "76",
+    "rarity": "uncommon",
+    "released_at": "2021-02-05",
+    "digital": false,
+    "mana_cost": "{1}{U}{U}",
+    "cmc": 3.0,
+    "type_line": "Instant",
+    "oracle_text": "Counter target spell.\nForetell {1}{U} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Foretell"
+    ]
   },
   {
     "id": "8f4fe11d-c404-489a-b17f-34f33b1597e8",

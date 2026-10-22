@@ -1,0 +1,26 @@
+{
+  "oracle_id": "6e786f0b-e2cb-40ee-96bc-81945a0b35a3",
+  "name": "Demon Bolt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demon Bolt",
+      "oracle_fingerprint": "d9bffaca1c0aed6717f892e85ac65951",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        },
+        { "Keyword": { "Foretell": "{R}" } }
+      ]
+    }
+  ]
+}

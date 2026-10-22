@@ -14,8 +14,10 @@ use common::{cards_dir, printed, token_sources};
 
 /// Every corpus card with the status it compiles to (`None` when its text is only reminder text) and
 /// how many of its clauses are read out of how many.
-const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 171] = [
+const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 180] = [
     ("Act of Treason", Some(Manual), 0, 1),
+    ("Solstice Zealot", Some(Full), 2, 2),
+    ("Copper-Leaf Angel", Some(Full), 2, 2),
     ("Nantuko Husk", Some(Full), 1, 1),
     ("Rummaging Goblin", Some(Full), 1, 1),
     ("Soul Shepherd", Some(Full), 1, 1),
@@ -177,9 +179,9 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 171] = [
     ("Lat-Nam Adept", Some(Full), 1, 1),
     ("Fear of Failed Tests", Some(Full), 1, 1),
     ("Sanguine Bond", Some(Full), 1, 1),
-    ("Sword of Body and Mind", Some(Partial), 1, 3),
-    ("The Thing, Ben Grimm", Some(Partial), 1, 2),
-    ("Bloodghast", Some(Partial), 1, 3),
+    ("Sword of Body and Mind", Some(Full), 3, 3),
+    ("The Thing, Ben Grimm", Some(Full), 2, 2),
+    ("Bloodghast", Some(Full), 3, 3),
     ("Stoke the Flames", Some(Full), 2, 2),
     ("Gurmag Angler", Some(Full), 1, 1),
     ("Treasure Cruise", Some(Full), 2, 2),
@@ -190,6 +192,13 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 171] = [
     ("Gadwick, the Wizened", Some(Full), 2, 2),
     ("Disembowel", Some(Full), 1, 1),
     ("Forced March", Some(Full), 1, 1),
+    ("Invisible Stalker", Some(Full), 2, 2),
+    ("Aven Mindcensor", Some(Partial), 2, 3),
+    ("Courser of Kruphix", Some(Partial), 2, 3),
+    ("Behold the Multiverse", Some(Full), 2, 2),
+    ("Saw It Coming", Some(Full), 2, 2),
+    ("Demon Bolt", Some(Full), 2, 2),
+    ("Augury Raven", Some(Full), 2, 2),
     ("Wargate", Some(Full), 1, 1),
 ];
 
@@ -222,7 +231,7 @@ fn the_table_lists_every_corpus_card_once() {
 #[test]
 fn every_corpus_card_earns_the_status_in_the_table() {
     let corpus = compiled_corpus();
-    assert_eq!(corpus.len(), 171);
+    assert_eq!(corpus.len(), 180);
     let mut differing = Vec::new();
     for (card, compiled) in &corpus {
         let row = EXPECTED.iter().find(|row| row.0 == card.name).unwrap();
@@ -248,7 +257,7 @@ fn every_compiled_card_loads_and_matches_the_imported_text() {
         .filter_map(|(_, compiled)| compiled.card.as_ref())
         .map(source_of)
         .collect();
-    assert_eq!(sources.len(), 169);
+    assert_eq!(sources.len(), 178);
     sources.extend(token_sources());
     let library = Library::from_sources(&sources).unwrap_or_else(|errors| panic!("{errors}"));
     let imported: Vec<PrintedCard> = corpus.into_iter().map(|(card, _)| card).collect();

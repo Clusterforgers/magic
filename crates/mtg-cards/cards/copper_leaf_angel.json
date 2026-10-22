@@ -1,0 +1,20 @@
+{
+  "oracle_id": "efab5a30-74ee-4959-b7cd-2a5d25d18327",
+  "name": "Copper-Leaf Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Copper-Leaf Angel",
+      "oracle_fingerprint": "caf813dfe17b7116f546d8a8dd2fe0b5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Land" }], "count": "X" } }],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

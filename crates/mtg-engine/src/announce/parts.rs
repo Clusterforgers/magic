@@ -8,8 +8,8 @@
 
 use mtg_cards::ability::Ability;
 
-use super::{Ctx, Next, What, Work};
-use crate::choose::CardsOptions;
+use super::{Ctx, Next, What, Work, x};
+use crate::choose::{CardsOptions, Choices};
 use crate::decision::DecisionKind;
 use crate::parts::{Part, Payer};
 use crate::price::Price;
@@ -34,12 +34,19 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     }
     let mut settled = 0;
     for part in &price.parts {
-        let Part::Pick(pick) = part else { continue };
+        // A counted part needs X first, which is asked when the parts come to it (CR 601.2b).
+        if part.is_counted()
+            && let Some(next) = x::run(ctx, work)
+        {
+            return Some(next);
+        }
+        let part = part.at(work.choices.x.unwrap_or(0));
+        let Part::Pick(pick) = &part else { continue };
         if settled < work.choices.cost_picks().len() {
             settled += 1;
             continue;
         }
-        let barred = price.barred(part, ctx.source, work.choices.cost_picks());
+        let barred = price.barred(&part, ctx.source, work.choices.cost_picks());
         let candidates = pick.candidates(&Payer {
             state: ctx.state,
             player: ctx.player,
@@ -49,9 +56,10 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         if candidates.len() < pick.count {
             return Some(Next::Drop);
         }
-        // Nothing to choose between: the part takes what there is.
-        if candidates.len() == pick.count {
-            work.choices.pick_for_cost(candidates);
+        // Nothing to choose between: the part takes what there is, or nothing for X = 0.
+        if candidates.len() == pick.count || pick.count == 0 {
+            work.choices
+                .pick_for_cost(candidates.into_iter().take(pick.count).collect());
             settled += 1;
             continue;
         }
@@ -66,4 +74,24 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         })));
     }
     None
+}
+
+/// The most X the counted parts of the cost allow, `None` when no part is counted: each part can take as much as the
+/// player has of what it takes, after the picks made for the parts before it.
+pub(super) fn most(ctx: &Ctx<'_>, choices: &Choices) -> Option<u32> {
+    let price = ctx.needs.price.as_ref()?;
+    price
+        .parts
+        .iter()
+        .filter(|part| part.is_counted())
+        .filter_map(|part| {
+            let barred = price.barred(part, ctx.source, choices.cost_picks());
+            part.most(&Payer {
+                state: ctx.state,
+                player: ctx.player,
+                source: ctx.source,
+                barred: &barred,
+            })
+        })
+        .min()
 }

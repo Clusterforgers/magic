@@ -443,6 +443,69 @@ pub fn is_subtype(word: &str) -> bool {
     SUBTYPES.binary_search(&word).is_ok()
 }
 
+/// The subtypes whose plural is not the singular with an "s": the plural of each.
+const IRREGULAR_PLURALS: [(&str, &str); 12] = [
+    ("Cyclops", "Cyclopes"),
+    ("Dwarf", "Dwarves"),
+    ("Elf", "Elves"),
+    ("Fungus", "Fungi"),
+    ("Hero", "Heroes"),
+    ("Homunculus", "Homunculi"),
+    ("Locus", "Loci"),
+    ("Mouse", "Mice"),
+    ("Ox", "Oxen"),
+    ("Thief", "Thieves"),
+    ("Werewolf", "Werewolves"),
+    ("Wolf", "Wolves"),
+];
+
+/// The subtypes written the same in the plural.
+const SAME_PLURAL: [&str; 8] = [
+    "Aurochs", "Dauthi", "Eldrazi", "Fish", "Plains", "Samurai", "Soltari", "Thalakos",
+];
+
+/// A subtype in the plural, the way a rules text writes a group of them ("Heroes", "Elves", "Spies", "Foxes").
+pub fn plural_subtype(singular: &str) -> String {
+    if SAME_PLURAL.contains(&singular) {
+        return singular.to_owned();
+    }
+    if let Some((_, plural)) = IRREGULAR_PLURALS.iter().find(|(one, _)| *one == singular) {
+        return (*plural).to_owned();
+    }
+    if let Some(stem) = singular.strip_suffix('y')
+        && !stem.ends_with(['a', 'e', 'i', 'o', 'u'])
+    {
+        return format!("{stem}ies");
+    }
+    if singular.ends_with(['s', 'x', 'z']) || singular.ends_with("ch") || singular.ends_with("sh") {
+        return format!("{singular}es");
+    }
+    format!("{singular}s")
+}
+
+/// The subtype a plural names, when the plural is that of a subtype `known` accepts: only a word that
+/// `plural_subtype` writes from the subtype is read, so a rendering reads back as what it was.
+pub fn singular_subtype(word: &str, known: impl Fn(&str) -> bool) -> Option<String> {
+    let mut candidates = vec![word.to_owned()];
+    candidates.extend(
+        IRREGULAR_PLURALS
+            .iter()
+            .filter(|(_, plural)| *plural == word)
+            .map(|(one, _)| (*one).to_owned()),
+    );
+    if let Some(stem) = word.strip_suffix("ies") {
+        candidates.push(format!("{stem}y"));
+    }
+    for suffix in ["es", "s"] {
+        if let Some(stem) = word.strip_suffix(suffix) {
+            candidates.push(stem.to_owned());
+        }
+    }
+    candidates
+        .into_iter()
+        .find(|one| known(one) && plural_subtype(one) == word)
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: the subtype list stays sorted and holds the types the readers rely on and none of the names that look like them.
@@ -468,6 +531,66 @@ mod tests {
     #[case("Spirit")]
     fn the_types_the_readers_use_are_subtypes(#[case] word: &str) {
         assert!(is_subtype(word));
+    }
+
+    #[rstest]
+    #[case("Goblin", "Goblins")]
+    #[case("Hero", "Heroes")]
+    #[case("Elf", "Elves")]
+    #[case("Wolf", "Wolves")]
+    #[case("Werewolf", "Werewolves")]
+    #[case("Dwarf", "Dwarves")]
+    #[case("Spy", "Spies")]
+    #[case("Mercenary", "Mercenaries")]
+    #[case("Donkey", "Donkeys")]
+    #[case("Fox", "Foxes")]
+    #[case("Sphinx", "Sphinxes")]
+    #[case("Octopus", "Octopuses")]
+    #[case("Leech", "Leeches")]
+    #[case("Fungus", "Fungi")]
+    #[case("Mouse", "Mice")]
+    #[case("Plains", "Plains")]
+    #[case("Fish", "Fish")]
+    #[case("Samurai", "Samurai")]
+    #[case("Armadillo", "Armadillos")]
+    fn plurals_are_written_as_rules_text_writes_them(#[case] one: &str, #[case] many: &str) {
+        assert_eq!(plural_subtype(one), many);
+        assert_eq!(singular_subtype(many, is_subtype).as_deref(), Some(one));
+    }
+
+    #[test]
+    fn every_subtype_of_the_list_reads_back_from_its_plural() {
+        for one in SUBTYPES {
+            let many = plural_subtype(one);
+            assert_eq!(
+                singular_subtype(&many, is_subtype).as_deref(),
+                Some(one),
+                "{one} -> {many}"
+            );
+        }
+    }
+
+    #[rstest]
+    #[case("Elfs")]
+    #[case("Goblinss")]
+    #[case("Heroees")]
+    #[case("Zorks")]
+    #[case("Creatures")]
+    #[case("Wolfs")]
+    #[case("Mouses")]
+    fn a_plural_that_is_not_one_of_a_subtype_is_not_read(#[case] word: &str) {
+        assert_eq!(singular_subtype(word, is_subtype), None);
+    }
+
+    #[test]
+    fn a_subtype_the_caller_knows_is_read_in_the_plural() {
+        let known = |word: &str| word == "Gizmo" || word == "Gadfly";
+        assert_eq!(singular_subtype("Gizmos", known).as_deref(), Some("Gizmo"));
+        assert_eq!(
+            singular_subtype("Gadflies", known).as_deref(),
+            Some("Gadfly")
+        );
+        assert_eq!(singular_subtype("Widgets", known), None);
     }
 
     #[rstest]

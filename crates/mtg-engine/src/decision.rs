@@ -157,6 +157,10 @@ pub struct PriorityOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub suspendable: Vec<ObjectId>,
+    /// Cards in the hand that can be foretold now (a special action during their owner's turn that does not use the stack, CR 702.143).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
+    pub foretellable: Vec<ObjectId>,
     /// Whether anything useful can be done now: a land to play, a spell to cast or an ability that is not a
     /// mana ability. Tapping for mana alone never counts, so a player with only `mana_abilities` has nothing to do.
     pub can_act: bool,
@@ -406,6 +410,8 @@ pub enum PriorityAction {
     Activate(AbilityRef),
     /// Suspend this card from the hand (CR 702.62, a special action): pay its suspend cost and exile it with time counters.
     Suspend(ObjectId),
+    /// Foretell this card from the hand (CR 702.143, a special action): pay {2} and exile it face down.
+    Foretell(ObjectId),
 }
 
 /// How to pay for a spell.

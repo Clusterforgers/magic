@@ -78,7 +78,7 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<(Option<ManaCost>, Vec<Ma
                         .flatten()
                         .any(|picked| *picked == option.source.object)
                 });
-                let life = price.life();
+                let life = price.life_at(choices.x.unwrap_or(0));
                 Some((price.mana, sources, life))
             }
             _ => Some((None, Vec::new(), 0)),
