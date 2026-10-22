@@ -49,10 +49,12 @@ pub(crate) enum Outcome {
 
 /// Checks `answer` against `decision`; the result is only built from legal options.
 ///
-/// `pending` is the cast or activation in progress, whose announcements its payment puts on the spell or ability.
+/// `pending` is the cast or activation in progress, whose announcements its payment puts on the spell or ability;
+/// `replacing` says the decision is a question of the replacement step.
 pub(crate) fn handle(
     state: &GameState,
     pending: Option<&Pending>,
+    replacing: bool,
     decision: &Decision,
     answer: Answer,
 ) -> Result<Outcome, EngineError> {
@@ -113,7 +115,7 @@ pub(crate) fn handle(
         }
         // Nothing resolving and nothing announced: the question is the legend rule of the state-based actions.
         (DecisionKind::ChooseCards(options), Answer::ChooseCards(choice))
-            if state.resolving().is_none() && pending.is_none() =>
+            if state.resolving().is_none() && pending.is_none() && !replacing =>
         {
             crate::legend::answer(state, options, &choice)
         }

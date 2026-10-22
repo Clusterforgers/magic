@@ -25,6 +25,7 @@ mod common;
 mod concede;
 mod concede_mid_cast;
 mod continuous_effects;
+mod copies;
 mod corpus_cards;
 mod cost_fuzz;
 mod cost_modifiers;
