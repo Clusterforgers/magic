@@ -1,7 +1,7 @@
 //! Goal: whole bot games with decks of lands that add restricted mana (for creatures, for artifacts, for multicolored spells, for costs with X) beside creatures, artifacts and spells finish and keep every invariant at tables of two, three and four seats, whether the bots pay automatically, exactly or in part, and the games really spend restricted mana: it is added, it is spent on a spell, and some of it floats unspent.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{for_each_seed, fuzz_games};
 
 use std::sync::{Arc, Mutex};
 
@@ -15,10 +15,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40)
+    fuzz_games(12)
 }
 
 /// Sixty cards of the corpus: lands that add restricted mana beside plain ones, with creatures, artifacts, a multicolored

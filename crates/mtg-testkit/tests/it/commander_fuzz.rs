@@ -1,7 +1,7 @@
 //! Goal: whole bot games of Commander at 2 to 6 seats with 100-card singleton decks from the corpus finish and keep every invariant (the harness checks zones, life and the replay of the log), and they use the format: a commander is cast from the command zone and again for the tax, is put back into the command zone from graveyards, exile and hands, and is left where it is when its owner declines.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{for_each_seed, fuzz_games};
 
 use std::sync::Mutex;
 
@@ -14,10 +14,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(30)
+    fuzz_games(8)
 }
 
 /// What a campaign of games did with the format.

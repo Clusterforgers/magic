@@ -1,7 +1,7 @@
 //! Goal: whole bot games with decks of X spells, X abilities and a `-X` planeswalker finish and keep every invariant at tables of two, three and four seats, and the games really use X: spells and abilities are announced with X above nothing and with nothing, the mana an X spell or ability spends is its cost plus X for each `{X}`, a `-X` takes exactly the counters X names, every X announced is kept in the choices of the object on the stack, and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{for_each_seed, fuzz_games};
 
 use std::sync::Mutex;
 
@@ -14,10 +14,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40)
+    fuzz_games(40)
 }
 
 /// What a campaign saw.

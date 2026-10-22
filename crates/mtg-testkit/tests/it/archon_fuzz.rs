@@ -1,6 +1,7 @@
 //! Goal: whole bot games with decks of Archon of Cruelty, edicts, discard spells, planeswalkers and creatures finish and keep every invariant (zones, life, the journal, no trigger waiting while a player has priority, the replay of the log equal to the live state) for many seeds at tables of two, three and four seats, and the games really use the choice of cards: players are asked to sacrifice and discard by an ability or spell another seat controls, permanents are sacrificed and cards discarded; an engine rebuilt from the log at each decision asks the same question, and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use std::collections::BTreeMap;
 
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -13,10 +14,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`. These are short, since an Archon decides a game quickly.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(60)
+    fuzz_games(60)
 }
 
 #[derive(Default)]

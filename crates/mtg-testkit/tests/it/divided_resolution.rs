@@ -24,7 +24,7 @@ use mtg_testkit::{
 };
 use rstest::rstest;
 
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{for_each_seed, fuzz_games};
 
 /// Seat 0 holds `card` with two Mountains and two Forests and controls Pal and Pal Two (1/1 each); seat 1 controls Bear
 /// (2/2) and Ogre (4/4) and holds Zap, which deals 3 damage for `{R}`, with a Mountain to cast it.
@@ -413,10 +413,7 @@ struct Seen {
 #[case(4)]
 fn bot_games_with_divided_spells_deal_what_their_divisions_say(#[case] players: usize) {
     let seen = std::sync::Mutex::new(Seen::default());
-    let games = std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40);
+    let games = fuzz_games(40);
     for_each_seed(0..games, |seed| {
         let outcome = play_game_with(
             split_fuzz_setup(players, seed),
