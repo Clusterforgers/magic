@@ -26,6 +26,10 @@ use super::*;
     "Whenever ~ attacks, each other creature you control gets +1/+1 until end of turn.",
     ClauseKind::Triggered
 )]
+#[case::where_x_is_its_power(
+    "Whenever ~ attacks, each other creature you control gets +X/+X until end of turn, where X is ~'s power.",
+    ClauseKind::Triggered
+)]
 #[case::in_an_activation(
     "{2}{R}: Each creature you control gets +1/+0 until end of turn.",
     ClauseKind::Activated
