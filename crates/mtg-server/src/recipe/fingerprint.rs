@@ -9,7 +9,8 @@
 //!
 //! The encoding, version 1, is UTF-8 text: the line `mtg-deck/v1`, the number of cards, then one
 //! line per card in deck order holding the card's serde JSON with every object's keys sorted and no
-//! whitespace. It follows the card's serde form, so a change to any field of [`CardDefinition`], or to
+//! whitespace. A seat with commanders adds the line `commanders`, their number and one line each, so
+//! a deck without any hashes as it did before Commander. It follows the card's serde form, so a change to any field of [`CardDefinition`], or to
 //! how one is written, changes the fingerprint; that includes a new field, which changes every
 //! fingerprint unless it is left out of the JSON while it holds its default (the pinned values in the
 //! tests notice). The stored text is `v1:` and the 64 lowercase hex digits of the digest. A different
@@ -56,7 +57,16 @@ pub enum FingerprintError {
 impl DeckFingerprint {
     /// The fingerprint of `cards`, the deck exactly as the engine is given it: order and size count.
     pub fn of(cards: &[Arc<CardDefinition>]) -> Result<DeckFingerprint, FingerprintError> {
-        let text = encode(cards)?;
+        DeckFingerprint::of_seat(cards, &[])
+    }
+
+    /// The fingerprint of a seat's library and its commanders, the cards the engine is given for
+    /// the seat. Without commanders it equals [`DeckFingerprint::of`].
+    pub fn of_seat(
+        cards: &[Arc<CardDefinition>],
+        commanders: &[Arc<CardDefinition>],
+    ) -> Result<DeckFingerprint, FingerprintError> {
+        let text = encode(cards, commanders)?;
         Ok(DeckFingerprint(Sha256::digest(text.as_bytes()).into()))
     }
 }
@@ -119,18 +129,33 @@ fn hex_value(digit: u8) -> Option<u8> {
 }
 
 /// The canonical text of a deck, described in the module docs.
-fn encode(cards: &[Arc<CardDefinition>]) -> Result<String, FingerprintError> {
+fn encode(
+    cards: &[Arc<CardDefinition>],
+    commanders: &[Arc<CardDefinition>],
+) -> Result<String, FingerprintError> {
     let mut text = format!("mtg-deck/v{FINGERPRINT_VERSION}\n{}\n", cards.len());
+    write_cards(cards, &mut text)?;
+    if !commanders.is_empty() {
+        text.push_str("commanders\n");
+        text.push_str(&commanders.len().to_string());
+        text.push('\n');
+        write_cards(commanders, &mut text)?;
+    }
+    Ok(text)
+}
+
+/// One line per card: its serde JSON with sorted keys.
+fn write_cards(cards: &[Arc<CardDefinition>], text: &mut String) -> Result<(), FingerprintError> {
     for card in cards {
         let unencodable = |error: serde_json::Error| FingerprintError::Encode {
             card: card.name.clone(),
             reason: error.to_string(),
         };
         let value = serde_json::to_value(card.as_ref()).map_err(unencodable)?;
-        write_sorted(&value, &mut text).map_err(unencodable)?;
+        write_sorted(&value, text).map_err(unencodable)?;
         text.push('\n');
     }
-    Ok(text)
+    Ok(())
 }
 
 /// Appends `value` as compact JSON with every object's keys in byte order, whatever order the value
@@ -216,7 +241,7 @@ mod tests {
             .with_mana_cost(ManaCost::parse("{G}").unwrap())
             .with_x_in_cost(1)
             .with_loyalty(3);
-        let text = encode(&[Arc::new(hydra)]).unwrap();
+        let text = encode(&[Arc::new(hydra)], &[]).unwrap();
         assert_eq!(
             text,
             concat!(
@@ -225,7 +250,7 @@ mod tests {
                 "\n"
             )
         );
-        let forest = encode(&[basic_land(Color::Green)]).unwrap();
+        let forest = encode(&[basic_land(Color::Green)], &[]).unwrap();
         for later in ["x_in_cost", "loyalty", "defense", "color_indicator"] {
             assert!(
                 !forest.contains(later),
@@ -248,7 +273,7 @@ mod tests {
             r#"{"abilities":[],"mana_cost":[{"Generic":1},{"Colored":"Green"}],"name":"Grizzly Bears","power":2,"subtypes":[],"supertypes":[],"toughness":2,"types":["Creature"]}"#,
             "\n",
         );
-        assert_eq!(encode(&cards).unwrap(), expected);
+        assert_eq!(encode(&cards, &[]).unwrap(), expected);
         // The digest of exactly that text, as `sha256sum` computes it.
         assert_eq!(
             fingerprint(&cards).to_string(),
@@ -445,7 +470,7 @@ mod tests {
             3
         );
         assert_eq!(
-            encode(&[]).unwrap(),
+            encode(&[], &[]).unwrap(),
             format!("mtg-deck/v{FINGERPRINT_VERSION}\n0\n")
         );
     }

@@ -15,7 +15,7 @@ game: string,
  */
 host: string, 
 /**
- * The format key the game is played under, `normal` today.
+ * The format key the game is played under: `normal` or `commander`.
  */
 format: string, 
 /**

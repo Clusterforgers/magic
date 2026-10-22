@@ -85,6 +85,7 @@ impl From<ClaimError> for ApiError {
                 "that game has already started",
             ),
             ClaimError::BadName => invalid_name(),
+            ClaimError::DeckBlocked(ref issues) => deck_choice::blocked(issues),
             ClaimError::Record(_) => {
                 tracing::error!(%error, "a seat could not be claimed");
                 failure(
@@ -120,6 +121,7 @@ impl From<TableError> for ApiError {
                 LobbyErrorCode::Started,
                 "that game has already started",
             ),
+            TableError::DeckBlocked(ref issues) => deck_choice::blocked(issues),
             TableError::Ready => ApiError::new(
                 StatusCode::CONFLICT,
                 DeckChoiceErrorCode::SeatReady.as_str(),

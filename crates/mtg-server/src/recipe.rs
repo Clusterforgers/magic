@@ -24,20 +24,24 @@ use mtg_cards::CardDefinition;
 use mtg_core::house::HouseRules;
 use mtg_engine::GameSetup;
 use mtg_engine::error::SetupError;
-use mtg_engine::format::{FormatRules, Normal};
+use mtg_engine::format::{Commander, FormatRules, Normal};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 pub use fingerprint::{DeckFingerprint, FINGERPRINT_VERSION, FingerprintError};
 
+use crate::api::MAX_SEATS;
 use crate::demo;
 
 /// The format a game follows.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum FormatKind {
     /// Constructed 60-card games.
+    #[default]
     Normal,
+    /// Commander: a 100-card singleton deck led by its commanders, played from a command zone.
+    Commander,
 }
 
 impl FormatKind {
@@ -45,6 +49,30 @@ impl FormatKind {
     pub const fn as_str(self) -> &'static str {
         match self {
             FormatKind::Normal => "normal",
+            FormatKind::Commander => "commander",
+        }
+    }
+
+    /// The format with this wire key.
+    pub fn parse(key: &str) -> Option<FormatKind> {
+        [FormatKind::Normal, FormatKind::Commander]
+            .into_iter()
+            .find(|kind| kind.as_str() == key)
+    }
+
+    /// The most seats a game of this format has; every format has at least two.
+    pub const fn max_seats(self) -> usize {
+        match self {
+            FormatKind::Normal => MAX_SEATS,
+            FormatKind::Commander => 6,
+        }
+    }
+
+    /// The engine's rules of the format.
+    pub fn rules(self) -> Arc<dyn FormatRules> {
+        match self {
+            FormatKind::Normal => Arc::new(Normal),
+            FormatKind::Commander => Arc::new(Commander),
         }
     }
 }
@@ -61,16 +89,38 @@ pub enum DeckRef {
     /// A deck of cards named by their Scryfall oracle ids, one entry per card in the deck, in deck
     /// order. The definitions come from the card database and the rules files.
     Oracle {
-        /// The oracle id of every card, copies repeated.
+        /// The oracle id of every card of the library, copies repeated.
         cards: Vec<String>,
+        /// The oracle ids of the seat's commanders, one or a pair of partners; left out of the stored
+        /// form for a deck without any, which is also how a recipe stored before Commander reads.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        commanders: Vec<String>,
     },
+}
+
+impl DeckRef {
+    /// A deck of oracle ids without commanders.
+    pub fn oracle(cards: Vec<String>) -> DeckRef {
+        DeckRef::Oracle {
+            cards,
+            commanders: Vec::new(),
+        }
+    }
 }
 
 impl fmt::Display for DeckRef {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             DeckRef::Demo { id } => write!(f, "demo deck {id:?}"),
-            DeckRef::Oracle { cards } => write!(f, "deck of {} cards by oracle id", cards.len()),
+            DeckRef::Oracle { cards, commanders } if commanders.is_empty() => {
+                write!(f, "deck of {} cards by oracle id", cards.len())
+            }
+            DeckRef::Oracle { cards, commanders } => write!(
+                f,
+                "deck of {} cards and {} commander(s) by oracle id",
+                cards.len(),
+                commanders.len()
+            ),
         }
     }
 }
@@ -122,6 +172,12 @@ impl Catalog {
             Err(missing)
         }
     }
+}
+
+/// The cards one seat's deck names.
+struct SeatCards {
+    library: Vec<Arc<CardDefinition>>,
+    commanders: Vec<Arc<CardDefinition>>,
 }
 
 /// Everything needed to rebuild a game's [`GameSetup`].
@@ -197,8 +253,22 @@ impl GameRecipe {
     /// A Normal-format recipe with one deck per seat and no fingerprints; a game that is being
     /// created takes them with [`GameRecipe::with_fingerprints`].
     pub fn normal(seed: u64, decks: impl IntoIterator<Item = DeckRef>) -> GameRecipe {
+        GameRecipe::of(FormatKind::Normal, seed, decks)
+    }
+
+    /// A Commander recipe with one deck per seat, each naming its commanders, and no fingerprints.
+    pub fn commander(seed: u64, decks: impl IntoIterator<Item = DeckRef>) -> GameRecipe {
+        GameRecipe::of(FormatKind::Commander, seed, decks)
+    }
+
+    /// A recipe of `format` with one deck per seat and no fingerprints.
+    pub fn of(
+        format: FormatKind,
+        seed: u64,
+        decks: impl IntoIterator<Item = DeckRef>,
+    ) -> GameRecipe {
         GameRecipe {
-            format: FormatKind::Normal,
+            format,
             house_rules: HouseRules::default(),
             seed,
             decks: decks.into_iter().collect(),
@@ -222,22 +292,23 @@ impl GameRecipe {
 
     /// Like [`GameRecipe::with_fingerprints`], with the definitions of the oracle ids the decks name.
     pub fn with_fingerprints_from(mut self, catalog: &Catalog) -> Result<GameRecipe, RecipeError> {
-        let decks = self.resolve(catalog)?;
-        self.fingerprints = decks
+        let seats = self.resolve(catalog)?;
+        self.fingerprints = seats
             .iter()
-            .map(|cards| DeckFingerprint::of(cards))
+            .map(|seat| DeckFingerprint::of_seat(&seat.library, &seat.commanders))
             .collect::<Result<_, _>>()?;
         Ok(self)
     }
 
-    /// The oracle ids that the decks of the recipe name, once each, in the order they first appear;
-    /// empty when no seat plays a deck of oracle ids, so no card database is needed.
+    /// The oracle ids that the decks of the recipe name, commanders included, once each, in the
+    /// order they first appear; empty when no seat plays a deck of oracle ids, so no card database
+    /// is needed.
     pub fn oracle_ids(&self) -> Vec<String> {
         let mut seen = BTreeSet::new();
         self.decks
             .iter()
             .filter_map(|deck| match deck {
-                DeckRef::Oracle { cards } => Some(cards),
+                DeckRef::Oracle { cards, commanders } => Some(cards.iter().chain(commanders)),
                 DeckRef::Demo { .. } => None,
             })
             .flatten()
@@ -263,50 +334,70 @@ impl GameRecipe {
     /// builds a game with decks of oracle ids this way, from cards assembled out of the database as
     /// it is now.
     pub fn build_with(&self, catalog: &Catalog) -> Result<GameSetup, RecipeError> {
-        let format: Arc<dyn FormatRules> = match self.format {
-            FormatKind::Normal => Arc::new(Normal),
-        };
-        let decks = self.resolve(catalog)?;
-        self.check(&decks)?;
-        let setup =
-            GameSetup::new(format, self.seed, decks).with_house_rules(self.house_rules.clone());
+        let seats = self.resolve(catalog)?;
+        self.check(&seats)?;
+        let (libraries, commanders): (Vec<_>, Vec<_>) = seats
+            .into_iter()
+            .map(|seat| (seat.library, seat.commanders))
+            .unzip();
+        let setup = GameSetup::new(self.format.rules(), self.seed, libraries)
+            .with_commanders(commanders)
+            .with_house_rules(self.house_rules.clone());
         setup.validate()?;
         Ok(setup)
     }
 
-    /// The cards of every seat's deck, in deck order.
-    fn resolve(&self, catalog: &Catalog) -> Result<Vec<Vec<Arc<CardDefinition>>>, RecipeError> {
-        let mut decks = Vec::with_capacity(self.decks.len());
+    /// The library and the commanders of every seat, in deck order.
+    fn resolve(&self, catalog: &Catalog) -> Result<Vec<SeatCards>, RecipeError> {
+        let mut seats = Vec::with_capacity(self.decks.len());
         for (seat, deck) in self.decks.iter().enumerate() {
-            decks.push(match deck {
-                DeckRef::Demo { id } => demo::find(id)
-                    .ok_or_else(|| RecipeError::UnknownDeck {
-                        seat,
-                        id: id.clone(),
-                    })?
-                    .cards(),
-                DeckRef::Oracle { cards } => catalog
-                    .deck(cards)
-                    .map_err(|ids| RecipeError::UnknownCards { seat, ids })?,
+            seats.push(match deck {
+                DeckRef::Demo { id } if id == demo::COMMANDER_STAND_IN => {
+                    let (commander, library) = demo::commander_stand_in();
+                    SeatCards {
+                        library,
+                        commanders: vec![commander],
+                    }
+                }
+                DeckRef::Demo { id } => SeatCards {
+                    library: demo::find(id)
+                        .ok_or_else(|| RecipeError::UnknownDeck {
+                            seat,
+                            id: id.clone(),
+                        })?
+                        .cards(),
+                    commanders: Vec::new(),
+                },
+                DeckRef::Oracle { cards, commanders } => {
+                    let ids: Vec<String> = cards.iter().chain(commanders).cloned().collect();
+                    let mut library = catalog
+                        .deck(&ids)
+                        .map_err(|ids| RecipeError::UnknownCards { seat, ids })?;
+                    let commanders = library.split_off(cards.len());
+                    SeatCards {
+                        library,
+                        commanders,
+                    }
+                }
             });
         }
-        Ok(decks)
+        Ok(seats)
     }
 
     /// Compares each deck with its stored fingerprint; a recipe without fingerprints passes.
-    fn check(&self, decks: &[Vec<Arc<CardDefinition>>]) -> Result<(), RecipeError> {
+    fn check(&self, seats: &[SeatCards]) -> Result<(), RecipeError> {
         if !self.is_fingerprinted() {
             return Ok(());
         }
-        if self.fingerprints.len() != decks.len() {
+        if self.fingerprints.len() != seats.len() {
             return Err(RecipeError::FingerprintCount {
-                decks: decks.len(),
+                decks: seats.len(),
                 fingerprints: self.fingerprints.len(),
             });
         }
-        let seats = self.decks.iter().zip(decks).zip(&self.fingerprints);
-        for (seat, ((deck, cards), stored)) in seats.enumerate() {
-            let current = DeckFingerprint::of(cards)?;
+        let checked = self.decks.iter().zip(seats).zip(&self.fingerprints);
+        for (seat, ((deck, cards), stored)) in checked.enumerate() {
+            let current = DeckFingerprint::of_seat(&cards.library, &cards.commanders)?;
             if current != *stored {
                 return Err(RecipeError::DeckChanged {
                     seat,
@@ -639,7 +730,7 @@ mod tests {
     }
 
     fn oracle(ids: Vec<String>) -> DeckRef {
-        DeckRef::Oracle { cards: ids }
+        DeckRef::oracle(ids)
     }
 
     /// The definitions of `ids()`; a creature's power says which of two builds this is.
@@ -801,7 +892,7 @@ mod tests {
     }
 
     #[rstest]
-    #[case::no_such_format(json!({"format": "commander", "seed": 1, "decks": []}))]
+    #[case::no_such_format(json!({"format": "modern", "seed": 1, "decks": []}))]
     #[case::no_such_deck_kind(json!({"format": "normal", "seed": 1, "decks": [{"kind": "list", "cards": []}]}))]
     #[case::negative_seed(json!({"format": "normal", "seed": -1, "decks": []}))]
     #[case::missing_seed(json!({"format": "normal", "decks": []}))]
@@ -834,5 +925,217 @@ mod tests {
             ),
             None => assert!(matches!(error, RecipeError::Setup(_)), "{error}"),
         }
+    }
+
+    #[rstest]
+    #[case::normal("normal", Some(FormatKind::Normal), MAX_SEATS)]
+    #[case::commander("commander", Some(FormatKind::Commander), 6)]
+    #[case::unknown("modern", None, 0)]
+    #[case::capitals("Commander", None, 0)]
+    #[case::empty("", None, 0)]
+    fn a_format_is_named_by_its_wire_key_and_limits_its_table(
+        #[case] key: &str,
+        #[case] expected: Option<FormatKind>,
+        #[case] most: usize,
+    ) {
+        assert_eq!(FormatKind::parse(key), expected);
+        if let Some(kind) = expected {
+            assert_eq!(kind.as_str(), key);
+            assert_eq!(kind.max_seats(), most);
+            assert_eq!(kind.rules().name(), key);
+            let stored = serde_json::to_value(kind).unwrap();
+            assert_eq!(stored, json!(key));
+        }
+    }
+
+    /// The ids of a Commander library: 60 Forests and 39 bears, each bear once.
+    fn library_ids() -> Vec<String> {
+        (0..99)
+            .map(|i| {
+                if i < 60 {
+                    "forest".into()
+                } else {
+                    format!("bear-{i}")
+                }
+            })
+            .collect()
+    }
+
+    /// The definitions of `library_ids()` and of the commander `chief`, whose power says which of
+    /// two builds this is.
+    fn led_catalog(power: i32) -> Catalog {
+        let mut cards = vec![(
+            "forest".to_owned(),
+            mtg_cards::vanilla::basic_land(Color::Green),
+        )];
+        for i in 60..99 {
+            let bear = mtg_cards::vanilla::creature(&format!("Bear {i}"), 1, &[Color::Green], 2, 2);
+            cards.push((format!("bear-{i}"), bear));
+        }
+        let chief = CardDefinition::new("Chief")
+            .with_type(mtg_core::card::CardType::Creature)
+            .with_supertype(mtg_core::card::Supertype::Legendary)
+            .with_mana_cost(mtg_core::mana::ManaCost::parse("{2}{G}").unwrap())
+            .with_power_toughness(power, 3);
+        cards.push(("chief".to_owned(), Arc::new(chief)));
+        Catalog::new(cards)
+    }
+
+    fn led(commanders: &[&str]) -> DeckRef {
+        DeckRef::Oracle {
+            cards: library_ids(),
+            commanders: commanders.iter().map(|id| (*id).to_owned()).collect(),
+        }
+    }
+
+    fn commander_recipe(seats: usize, power: i32) -> GameRecipe {
+        GameRecipe::commander(11, vec![led(&["chief"]); seats])
+            .with_fingerprints_from(&led_catalog(power))
+            .unwrap()
+    }
+
+    #[rstest]
+    #[case::two(2)]
+    #[case::three(3)]
+    #[case::four(4)]
+    #[case::six(6)]
+    fn a_commander_recipe_rebuilds_the_game_with_each_seats_commander_in_its_command_zone(
+        #[case] seats: usize,
+    ) {
+        let recipe = commander_recipe(seats, 3);
+        assert_eq!(recipe.fingerprints.len(), seats);
+        let back: GameRecipe =
+            serde_json::from_str(&serde_json::to_string(&recipe).unwrap()).unwrap();
+        assert_eq!(back, recipe);
+
+        let (first, second) = (
+            recipe.build_with(&led_catalog(3)).unwrap(),
+            back.build_with(&led_catalog(3)).unwrap(),
+        );
+        assert_eq!(first.format.name(), "commander");
+        assert_eq!(first.players.len(), seats);
+        for player in &first.players {
+            assert_eq!(player.library.len(), 99);
+            assert_eq!(player.commanders.len(), 1);
+            assert_eq!(player.commanders[0].name, "Chief");
+        }
+        let hash = |setup: &GameSetup| GameState::from_setup(setup).unwrap().state_hash();
+        assert_eq!(hash(&first), hash(&second));
+    }
+
+    #[test]
+    fn the_stored_shape_of_a_commander_recipe_names_the_commanders_beside_the_library() {
+        let recipe = GameRecipe::commander(5, [led(&["chief"]), led(&["a", "b"])]);
+        let stored = serde_json::to_value(&recipe).unwrap();
+        assert_eq!(stored["format"], "commander");
+        assert_eq!(stored["decks"][0]["kind"], "oracle");
+        assert_eq!(stored["decks"][0]["commanders"], json!(["chief"]));
+        assert_eq!(stored["decks"][1]["commanders"], json!(["a", "b"]));
+        assert_eq!(
+            stored["decks"][0]["cards"].as_array().map(Vec::len),
+            Some(99)
+        );
+        let back: GameRecipe = serde_json::from_value(stored).unwrap();
+        assert_eq!(back, recipe);
+        // A deck without commanders keeps the shape it had before the format existed.
+        let plain =
+            serde_json::to_value(GameRecipe::normal(5, [oracle(vec!["a".into()])])).unwrap();
+        assert!(plain["decks"][0].get("commanders").is_none());
+    }
+
+    #[test]
+    fn the_oracle_ids_of_a_commander_recipe_include_the_commanders() {
+        let recipe = GameRecipe::commander(1, [led(&["chief"]), led(&["chief", "other"])]);
+        let ids = recipe.oracle_ids();
+        assert_eq!(ids.first().map(String::as_str), Some("forest"));
+        assert_eq!(&ids[ids.len() - 2..], ["chief", "other"]);
+        assert_eq!(ids.len(), 1 + 39 + 2, "forest, 39 bears, two commanders");
+    }
+
+    #[test]
+    fn a_changed_commander_fails_the_resume_like_a_changed_library_card() {
+        let recipe = commander_recipe(2, 3);
+        match recipe.build_with(&led_catalog(4)).unwrap_err() {
+            RecipeError::DeckChanged { seat, deck, .. } => {
+                assert_eq!(seat, 0);
+                assert!(deck.contains("1 commander"), "{deck}");
+            }
+            other => panic!("{other}"),
+        }
+        assert!(recipe.build_with(&led_catalog(3)).is_ok());
+    }
+
+    #[test]
+    fn a_commander_the_catalog_lacks_is_named_with_the_cards_it_lacks() {
+        let recipe = GameRecipe::commander(1, [led(&["chief"]), led(&["chief"])]);
+        let error = recipe.build_with(&Catalog::default()).unwrap_err();
+        match error {
+            RecipeError::UnknownCards { seat, ids } => {
+                assert_eq!(seat, 0);
+                assert!(ids.contains(&"chief".to_owned()) && ids.contains(&"forest".to_owned()));
+            }
+            other => panic!("{other}"),
+        }
+    }
+
+    #[rstest]
+    #[case::two(2)]
+    #[case::three(3)]
+    #[case::four(4)]
+    #[case::six(6)]
+    fn seats_without_a_deck_hold_a_stand_in_the_format_accepts(#[case] seats: usize) {
+        let stand_in = DeckRef::Demo {
+            id: demo::COMMANDER_STAND_IN.into(),
+        };
+        let recipe = GameRecipe::commander(1, vec![stand_in.clone(); seats])
+            .with_fingerprints()
+            .unwrap();
+        let setup = recipe.build().unwrap();
+        assert!(
+            setup
+                .players
+                .iter()
+                .all(|p| p.commanders.len() == 1 && p.library.len() == 99)
+        );
+        // Only the Commander format has a command zone for it.
+        let normal = GameRecipe::normal(1, vec![stand_in; seats]);
+        assert!(matches!(normal.build().unwrap_err(), RecipeError::Setup(_)));
+    }
+
+    #[test]
+    fn a_recipe_stored_before_commanders_existed_reads_with_none() {
+        let stored = json!({
+            "format": "normal",
+            "seed": 4,
+            "decks": [{ "kind": "oracle", "cards": ["a", "b"] }],
+        });
+        let recipe: GameRecipe = serde_json::from_value(stored.clone()).unwrap();
+        assert_eq!(
+            recipe.decks,
+            [DeckRef::oracle(vec!["a".into(), "b".into()])]
+        );
+        assert_eq!(serde_json::to_value(&recipe).unwrap(), stored);
+    }
+
+    #[test]
+    fn a_commander_fingerprint_depends_on_the_commanders_and_a_plain_one_does_not() {
+        let catalog = led_catalog(3);
+        let library = catalog.deck(&library_ids()).unwrap();
+        let chief = catalog.deck(&["chief".to_owned()]).unwrap();
+        let plain = DeckFingerprint::of(&library).unwrap();
+        assert_eq!(DeckFingerprint::of_seat(&library, &[]).unwrap(), plain);
+        let led = DeckFingerprint::of_seat(&library, &chief).unwrap();
+        assert_ne!(led, plain);
+        // The same cards as library cards are another deck than as commanders.
+        let moved: Vec<_> = library.iter().chain(&chief).cloned().collect();
+        assert_ne!(DeckFingerprint::of(&moved).unwrap(), led);
+        assert_ne!(
+            DeckFingerprint::of_seat(
+                &library,
+                &led_catalog(4).deck(&["chief".to_owned()]).unwrap()
+            )
+            .unwrap(),
+            led
+        );
     }
 }

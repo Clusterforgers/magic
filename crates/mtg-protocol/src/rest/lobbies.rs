@@ -44,7 +44,7 @@ pub struct LobbyGame {
     pub game: String,
     /// What the host, who holds seat 0, is called.
     pub host: String,
-    /// The format key the game is played under, `normal` today.
+    /// The format key the game is played under: `normal` or `commander`.
     pub format: String,
     /// What the host set in place of the format's values; left out when nothing is set.
     #[serde(default, skip_serializing_if = "Option::is_none")]

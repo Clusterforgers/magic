@@ -81,13 +81,13 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
             continue;
         }
         let pays = parts_of(&shape.pays);
-        let payer = Payer {
+        let owner = Payer {
             state,
             player,
             source: id,
             barred: &[],
         };
-        if pays.iter().any(|part| part.payable(&payer, &[]).is_none()) {
+        if pays.iter().any(|part| part.payable(&owner, &[]).is_none()) {
             continue;
         }
         let life: u32 = pays

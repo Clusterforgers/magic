@@ -289,7 +289,7 @@ fn the_commanders_identity_decides_the_colours_a_tower_and_a_signet_add(
 #[test]
 fn a_tower_adds_nothing_without_a_commander() {
     let driver = Driver::from_scenario(table("{R}", &["Command Tower"], &[])).unwrap();
-    assert!(offered(&driver).is_empty());
+    assert_eq!(offered(&driver).len(), 0);
     assert!(!castable(&driver));
 }
 
@@ -351,22 +351,16 @@ fn mana_of_a_type_my_lands_could_produce(
 }
 
 #[test]
-fn a_summoning_sick_creature_still_pays_a_cost_without_a_tap() {
-    let pent = with_counters(
-        permanent("Servant of the Conduit"),
-        CounterKind::Other("energy".into()),
-        0,
-    );
+fn a_summoning_sick_creature_cannot_pay_the_tap_of_a_mana_ability_even_with_the_energy() {
     let scenario = Scenario::new(2)
         .hand(0, [spell("{U}")])
         .counters(0, CounterKind::Other("energy".into()), 1)
         .battlefield(
             0,
             [mtg_testkit::sick(card("Servant of the Conduit").unwrap())],
-        )
-        .battlefield(1, [pent]);
+        );
     let driver = Driver::from_scenario(scenario).unwrap();
-    assert!(offered(&driver).is_empty(), "its cost has a {{T}}");
+    assert_eq!(offered(&driver).len(), 0, "its cost has a {{T}}");
 }
 
 /// Sixty cards: lands and mana sources of every kind of this task, with creatures and spells to pay for.

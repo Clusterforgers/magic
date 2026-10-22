@@ -26,7 +26,6 @@ use std::time::Instant;
 use mtg_core::house::HouseRules;
 use mtg_core::ids::PlayerId;
 use mtg_engine::GameSetup;
-use mtg_engine::format::Normal;
 use mtg_engine::state::GameResult;
 use sqlx::PgPool;
 use thiserror::Error;
@@ -108,6 +107,9 @@ pub struct GameOptions {
     /// What the creator sets in place of the format's values; a game made with [`Registry::create_decked`]
     /// plays under them, one made from a recipe under the recipe's.
     pub house_rules: HouseRules,
+    /// The format of a game made with [`Registry::create_decked`]; a game made from a recipe plays
+    /// the recipe's.
+    pub format: FormatKind,
 }
 
 /// A new game and the secret credential of each seat that is held.
@@ -423,7 +425,7 @@ impl Registry {
         self.create_decked(names, decks, options, host).await
     }
 
-    /// Creates a Normal game whose seats start with `decks`, one entry per seat: the deck a seat
+    /// Creates a game of `options.format` whose seats start with `decks`, one entry per seat: the deck a seat
     /// plays until its holder chooses another, which is also the deck it returns to when a player
     /// gives it back. A seat with `None` has no deck and cannot press Ready until it chooses one;
     /// the recipe holds [`demo::stand_in`] for it meanwhile.
@@ -442,21 +444,27 @@ impl Registry {
             Some(seed) => seed,
             None => random_seed()?,
         };
-        let stand_in = ChosenDeck::demo(demo::stand_in()).map_err(RecipeError::from)?;
+        let stand_in = match options.format {
+            FormatKind::Normal => ChosenDeck::demo(demo::stand_in()),
+            FormatKind::Commander => ChosenDeck::commander_stand_in(),
+        }
+        .map_err(RecipeError::from)?;
         let held: Vec<&ChosenDeck> = decks
             .iter()
             .map(|deck| deck.as_ref().unwrap_or(&stand_in))
             .collect();
         // The decks as they are now, kept so that a later boot can tell when a deploy changed one.
         let recipe = GameRecipe {
-            format: FormatKind::Normal,
+            format: options.format,
             house_rules: options.house_rules.clone(),
             seed,
             decks: held.iter().map(|deck| deck.reference().clone()).collect(),
             fingerprints: held.iter().map(|deck| *deck.fingerprint()).collect(),
         };
         let libraries = held.iter().map(|deck| deck.cards().to_vec()).collect();
-        let setup = GameSetup::new(Arc::new(Normal), seed, libraries)
+        let commanders = held.iter().map(|deck| deck.commanders().to_vec()).collect();
+        let setup = GameSetup::new(options.format.rules(), seed, libraries)
+            .with_commanders(commanders)
             .with_house_rules(options.house_rules.clone());
         // Refused like a recipe that does not build: too few seats, a deck the format does not allow.
         setup.validate().map_err(RecipeError::from)?;
@@ -540,16 +548,18 @@ impl Registry {
             code_digest: Some(*code.digest().as_bytes()),
         };
         let house_rules = setup.house_rules.clone();
+        let format = recipe
+            .as_ref()
+            .map_or(options.format, |recipe| recipe.format);
         let decks = decks.map(|defaults| {
-            SeatDecks::new(FormatKind::Normal, setup.seed, defaults)
-                .with_house_rules(house_rules.clone())
+            SeatDecks::new(format, setup.seed, defaults).with_house_rules(house_rules.clone())
         });
         let handle = self
             .start(id, setup, recipe.as_ref(), &meta, &slots, decks)
             .await?;
         let parts = Parts {
             visibility: options.visibility,
-            format: recipe.as_ref().map_or(FormatKind::Normal, |r| r.format),
+            format,
             house_rules,
             code: Some(code.digest()),
             recorded: persistent,
