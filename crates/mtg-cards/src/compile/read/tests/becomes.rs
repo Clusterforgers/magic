@@ -1,4 +1,4 @@
-//! Goal: a permanent that becomes a creature until end of turn (the manlands: size, colors, creature types, artifact, keywords, all creature types and an ability in quotes, the duration first or last, "It's still a land." and "It can't be blocked this turn.") reads into one `Continuous` effect of the card, writes back as the same text, and the near-misses stay with the table.
+//! Goal: a permanent that becomes a creature until end of turn (the manlands: size, colors, creature types, artifact, keywords, all creature types and an ability in quotes, the duration first or last, "It's still a land." and "It can't be blocked this turn.") reads into one `Continuous` effect of the card, writes back as the same text, and the near-misses stay with the table; a land that enters tapped "if you control two or more other lands" reads and writes back too.
 use super::*;
 use crate::effect::Effect;
 use crate::keyword::Keyword;
@@ -75,11 +75,26 @@ fn size(power: i32, toughness: i32) -> Modification {
 #[case::a_quoted_trigger(
     "{3}{R}: Until end of turn, this land becomes a 3/2 red Goblin creature with \"Whenever this creature attacks, create a 1/1 red Goblin creature token that's tapped and attacking.\" It's still a land."
 )]
+#[case::a_quoted_trigger_about_the_creature(
+    "{2}{R}{G}: Until end of turn, this land becomes a 3/3 red and green Elemental creature with \"Whenever this creature attacks, put a +1/+1 counter on it.\" It's still a land."
+)]
+#[case::a_keyword_and_a_quoted_trigger(
+    "{3}{R}: Until end of turn, this land becomes a 3/3 red Beholder creature with menace and \"Whenever this creature attacks, draw a card.\" It's still a land."
+)]
 #[case::a_quoted_ability(
     "{1}{B}{R}: Until end of turn, this land becomes a 2/2 black and red Elemental creature with \"{X}: This creature gets +X/+0 until end of turn.\" It's still a land."
 )]
 fn a_card_that_becomes_a_creature_reads_and_writes_back(#[case] text: &str) {
     golden(text, ClauseKind::Activated, false);
+}
+
+#[test]
+fn the_pump_beside_a_manland_names_its_creature_type() {
+    golden(
+        "{1}, {T}: Target attacking Assembly-Worker gets +2/+2 until end of turn.",
+        ClauseKind::Activated,
+        false,
+    );
 }
 
 #[test]
@@ -161,4 +176,21 @@ fn it_cant_be_blocked_is_a_second_effect_of_the_card() {
 )]
 fn near_misses_of_a_card_becoming_a_creature_stay_with_the_table(#[case] text: &str) {
     assert!(activated(text).is_none(), "{text}");
+}
+
+#[rstest]
+#[case::two_other_lands("If you control two or more other lands, this land enters tapped.")]
+#[case::a_plains("If you control a Plains, ~ enters tapped.")]
+#[case::opponents_lands("If your opponents control eight or more lands, this land enters tapped.")]
+fn a_land_that_enters_tapped_when_it_controls_other_lands(#[case] text: &str) {
+    golden(text, ClauseKind::Static, false);
+}
+
+#[rstest]
+#[case::untapped("If you control two or more other lands, this land enters untapped.")]
+#[case::a_spell("If you control two or more other lands, draw a card.")]
+#[case::a_life_total("If an opponent has 10 or less life, this land enters tapped.")]
+#[case::without_the_comma("If you control two or more other lands this land enters tapped.")]
+fn near_misses_of_a_land_entering_tapped_stay_with_the_table(#[case] text: &str) {
+    assert!(clause(text, ClauseKind::Static, false).is_none(), "{text}");
 }

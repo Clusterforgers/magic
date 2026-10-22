@@ -151,6 +151,7 @@ mod madness_fuzz;
 mod mana_abilities;
 mod mana_cost_abilities;
 mod mana_costs;
+mod manlands;
 mod mana_fuzz;
 mod mana_limits;
 mod mana_payment;

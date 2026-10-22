@@ -1,0 +1,22 @@
+{
+  "id": "6b3cc59a-7ea5-4eb5-9bf9-5a9c07f80e2c",
+  "oracle_id": "6b3cc59a-7ea5-4eb5-9bf9-5a9c07f80e2b",
+  "name": "Mutavault",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mm2",
+  "collector_number": "240",
+  "rarity": "mythic",
+  "released_at": "2015-06-19",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{1}: This land becomes a 2/2 creature with all creature types until end of turn. It's still a land.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "C"
+  ]
+}

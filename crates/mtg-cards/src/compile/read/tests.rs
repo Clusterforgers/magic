@@ -172,6 +172,7 @@ mod defining;
 mod draws;
 mod enchanted_player;
 mod enters;
+mod each_pump;
 mod enters_tapped;
 mod event_batches;
 mod events;

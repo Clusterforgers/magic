@@ -15,6 +15,7 @@ use super::counters;
 use super::create;
 use super::draws;
 use super::effects::{BACK, RETURNED, returns_itself};
+use super::group_pump;
 use super::lands;
 use super::library;
 use super::modal::{BULLET, DASH};
@@ -167,6 +168,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     let more = draws::wordings(ability, &texts);
     texts.extend(more);
     let more = becomes::wordings(ability, &texts);
+    texts.extend(more);
+    let more = group_pump::wordings(ability, &texts);
     texts.extend(more);
     texts
 }

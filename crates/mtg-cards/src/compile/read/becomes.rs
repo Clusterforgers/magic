@@ -285,5 +285,34 @@ pub(super) fn wordings(ability: &Ability, texts: &[String]) -> Vec<String> {
             }
         }
     }
+    found.extend(quoted_wordings(ability, texts.iter().chain(&found)));
+    found
+}
+
+/// The wordings of the abilities in quotes ("put a +1/+1 counter on it") in each text that has the first one.
+fn quoted_wordings<'a>(
+    ability: &Ability,
+    texts: impl Iterator<Item = &'a String> + Clone,
+) -> Vec<String> {
+    let granted = ability.effects().iter().flat_map(|effect| match effect {
+        Effect::Continuous { mods, .. } => mods.as_slice(),
+        _ => &[],
+    });
+    let mut found = Vec::new();
+    for modification in granted {
+        let Modification::GrantAbility(given) = modification else {
+            continue;
+        };
+        let variants = render::variants(given);
+        let Some((first, others)) = variants.split_first() else {
+            continue;
+        };
+        let first = format!("\"{first}\"");
+        for text in texts.clone().filter(|text| text.contains(&first)) {
+            for other in others {
+                found.push(text.replace(&first, &format!("\"{other}\"")));
+            }
+        }
+    }
     found
 }
