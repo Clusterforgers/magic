@@ -284,3 +284,66 @@ fn a_returned_creature_can_be_dashed_again_on_the_next_turn(
     assert_replays(&driver);
     Ok(())
 }
+
+#[rstest]
+#[case::bounced_only(2, "", Zone::Hand(pid(0)))]
+#[case::bounced_and_cast_again(4, "mana", Zone::Battlefield)]
+#[case::bounced_and_dashed_again(4, "dash", Zone::Hand(pid(0)))]
+fn a_dashed_creature_bounced_by_an_opponent_is_not_returned_again_by_the_old_trigger(
+    #[case] mountains: usize,
+    #[case] again: &str,
+    #[case] end: Zone,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let scenario = game(seats, &["Mardu Scout"], lands(mountains, mountain))
+        .hand_named(1, ["Cyclonic Rift"])
+        .battlefield(1, [ready(island()), ready(island())]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    dash(&mut driver, "Mardu Scout")?;
+    // Seat 0 passes with an empty stack, so seat 1 holds priority and bounces the creature.
+    driver.pass()?;
+    let at = driver.target_named("Mardu Scout")?;
+    driver.cast_at("Cyclonic Rift", &[at])?;
+    settle(&mut driver)?;
+    assert!(on_battlefield(driver.state(), "Mardu Scout").is_none());
+    assert_eq!(count(driver.state(), Zone::Hand(pid(0)), "Mardu Scout"), 1);
+    match again {
+        "dash" => dash(&mut driver, "Mardu Scout")?,
+        "mana" => {
+            driver.begin_cast("Mardu Scout")?;
+            if matches!(driver.decision()?.kind, DecisionKind::ChooseOption(_)) {
+                choose_way(&mut driver, "Cast for")?;
+            }
+            pay(&mut driver)?;
+            settle(&mut driver)?;
+            let id = on_battlefield(driver.state(), "Mardu Scout").unwrap();
+            assert!(!has_keyword(driver.state(), id, &Keyword::Haste));
+        }
+        _ => {}
+    }
+    driver.idle_until(1, Step::End)?;
+    // Two triggers of one controller at the end step are put in an order first.
+    while !matches!(driver.decision()?.kind, DecisionKind::Priority(_))
+        || !driver.state().stack().is_empty()
+    {
+        driver.answer_passively()?;
+    }
+    let zone_of_card = |zone: Zone| count(driver.state(), zone, "Mardu Scout");
+    assert_eq!(zone_of_card(end), 1, "the card is in {end:?}");
+    assert_eq!(
+        [
+            Zone::Hand(pid(0)),
+            Zone::Graveyard(pid(0)),
+            Zone::Exile,
+            Zone::Battlefield
+        ]
+        .into_iter()
+        .map(zone_of_card)
+        .sum::<usize>(),
+        1,
+        "once, and in no other zone"
+    );
+    assert_eq!(driver.state().stack(), []);
+    assert_replays(&driver);
+    Ok(())
+}
