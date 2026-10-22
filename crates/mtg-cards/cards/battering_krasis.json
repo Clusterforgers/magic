@@ -1,0 +1,12 @@
+{
+  "oracle_id": "3d0c1301-4fa7-4245-a13f-f613188eb638",
+  "name": "Battering Krasis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battering Krasis",
+      "oracle_fingerprint": "6a541766997ffe2cdb487f6dae4d0568",
+      "abilities": [{ "Keyword": "Trample" }, { "Keyword": "Evolve" }]
+    }
+  ]
+}

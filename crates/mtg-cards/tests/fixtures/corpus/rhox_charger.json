@@ -1,0 +1,28 @@
+{
+  "id": "8aaae6a3-ae3c-4b7e-82e8-69147f61ee18",
+  "oracle_id": "e1b7db10-58a1-46fc-ac6c-287393ed96c2",
+  "name": "Rhox Charger",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ala",
+  "collector_number": "145",
+  "rarity": "uncommon",
+  "released_at": "2008-10-03",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Rhino Soldier",
+  "oracle_text": "Trample\nExalted (Whenever a creature you control attacks alone, that creature gets +1/+1 until end of turn.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Exalted",
+    "Trample"
+  ]
+}

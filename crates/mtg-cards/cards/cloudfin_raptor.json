@@ -1,0 +1,12 @@
+{
+  "oracle_id": "cb0e1afa-fd9e-4bf9-bcb1-6e8110d6e2ff",
+  "name": "Cloudfin Raptor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloudfin Raptor",
+      "oracle_fingerprint": "e3f5034e995c360e7664316209ca2030",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Evolve" }]
+    }
+  ]
+}

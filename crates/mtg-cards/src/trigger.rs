@@ -71,6 +71,12 @@ pub enum TriggerPattern {
         /// The attacker.
         what: Selector,
     },
+    /// A creature matching the selector attacks alone: it is the only creature declared as an attacker; `Triggering` is
+    /// the attacker.
+    AttacksAlone {
+        /// The attacker.
+        what: Selector,
+    },
     /// A creature matching the selector attacks a player ("whenever a creature attacks enchanted player"); `Triggering`
     /// is the attacker.
     AttacksPlayer {

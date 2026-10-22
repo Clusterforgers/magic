@@ -1,0 +1,28 @@
+{
+  "id": "567a2444-30c4-49aa-a1f4-b5f4fb98d6fa",
+  "oracle_id": "7a67cb39-6b53-4f2b-a52c-3861119eba12",
+  "name": "Marchesa's Emissary",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cns",
+  "collector_number": "21",
+  "rarity": "common",
+  "released_at": "2014-06-06",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Rogue",
+  "oracle_text": "Hexproof (This creature can't be the target of spells or abilities your opponents control.)\nDethrone (Whenever this creature attacks the player with the most life or tied for most life, put a +1/+1 counter on it.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Hexproof",
+    "Dethrone"
+  ]
+}

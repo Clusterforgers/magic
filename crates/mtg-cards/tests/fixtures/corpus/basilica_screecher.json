@@ -1,0 +1,28 @@
+{
+  "id": "5b28ac31-7ac0-458d-937c-75ff8ecd92cb",
+  "oracle_id": "752ebcba-97fb-43a3-8811-d244164b3e16",
+  "name": "Basilica Screecher",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clu",
+  "collector_number": "105",
+  "rarity": "common",
+  "released_at": "2024-02-23",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Bat",
+  "oracle_text": "Flying\nExtort (Whenever you cast a spell, you may pay {W/B}. If you do, each opponent loses 1 life and you gain that much life.)",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Extort"
+  ]
+}

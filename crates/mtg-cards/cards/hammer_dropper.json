@@ -1,0 +1,12 @@
+{
+  "oracle_id": "088c9fa7-65ec-48c6-90cc-9087bc9df43e",
+  "name": "Hammer Dropper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hammer Dropper",
+      "oracle_fingerprint": "83d6cbd4da36019f1104b7b54f6ffaa1",
+      "abilities": [{ "Keyword": "Mentor" }]
+    }
+  ]
+}

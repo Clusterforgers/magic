@@ -1,0 +1,29 @@
+{
+  "id": "5cdd3703-4b3a-4d63-bf7c-88341a52f397",
+  "oracle_id": "d4891bfc-12b7-4412-be11-d02e6d014463",
+  "name": "Parhelion Patrol",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clu",
+  "collector_number": "68",
+  "rarity": "common",
+  "released_at": "2024-02-23",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "Flying\nVigilance (Attacking doesn't cause this creature to tap.)\nMentor (Whenever this creature attacks, put a +1/+1 counter on target attacking creature with lesser power.)",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Mentor",
+    "Vigilance"
+  ]
+}

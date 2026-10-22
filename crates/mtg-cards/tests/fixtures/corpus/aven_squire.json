@@ -1,0 +1,28 @@
+{
+  "id": "e60a0c43-9f47-404a-8acf-508173e7062f",
+  "oracle_id": "01518a87-6b16-4b7b-805d-b652404c6356",
+  "name": "Aven Squire",
+  "lang": "en",
+  "layout": "normal",
+  "set": "m13",
+  "collector_number": "6",
+  "rarity": "common",
+  "released_at": "2012-07-13",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Bird Soldier",
+  "oracle_text": "Flying\nExalted (Whenever a creature you control attacks alone, that creature gets +1/+1 until end of turn.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Exalted"
+  ]
+}

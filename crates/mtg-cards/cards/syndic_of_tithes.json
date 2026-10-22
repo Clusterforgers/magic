@@ -1,0 +1,12 @@
+{
+  "oracle_id": "8f5c52d2-0583-4c94-a043-15b2118877fa",
+  "name": "Syndic of Tithes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Syndic of Tithes",
+      "oracle_fingerprint": "176d90df84f82c3540064dfef67534da",
+      "abilities": [{ "Keyword": "Extort" }]
+    }
+  ]
+}

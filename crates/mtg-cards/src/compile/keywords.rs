@@ -380,6 +380,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "protection" => protection(rest).map(Keyword::Protection),
         "companion" => Some(Keyword::Companion),
         "toxic" => positive(rest).map(Keyword::Toxic),
+        "annihilator" => positive(rest).map(Keyword::Annihilator),
         "landwalk" => landwalk(item),
         "affinity for" => super::read::affinity_filter(rest).map(Keyword::Affinity),
         "typecycling" => typecycling(item, rest),
@@ -507,6 +508,12 @@ fn plain(name: &str) -> Option<Keyword> {
         "aftermath" => Keyword::Aftermath,
         "undying" => Keyword::Undying,
         "persist" => Keyword::Persist,
+        "exalted" => Keyword::Exalted,
+        "melee" => Keyword::Melee,
+        "mentor" => Keyword::Mentor,
+        "dethrone" => Keyword::Dethrone,
+        "extort" => Keyword::Extort,
+        "evolve" => Keyword::Evolve,
         "saddled" => Keyword::Saddled,
         "ravenous" => Keyword::Ravenous,
         "ascend" => Keyword::Ascend,
@@ -795,6 +802,14 @@ mod tests {
     )]
     #[case::undying("Undying", Keyword::Undying)]
     #[case::persist("persist", Keyword::Persist)]
+    #[case::exalted("Exalted", Keyword::Exalted)]
+    #[case::melee("Melee", Keyword::Melee)]
+    #[case::mentor("Mentor", Keyword::Mentor)]
+    #[case::dethrone("dethrone", Keyword::Dethrone)]
+    #[case::extort("Extort", Keyword::Extort)]
+    #[case::evolve("Evolve", Keyword::Evolve)]
+    #[case::annihilator("Annihilator 2", Keyword::Annihilator(2))]
+    #[case::annihilator_six("Annihilator 6", Keyword::Annihilator(6))]
     #[case::ravenous("Ravenous", Keyword::Ravenous)]
     #[case::ascend("Ascend", Keyword::Ascend)]
     #[case::fabricate("Fabricate 2", Keyword::Fabricate(2))]
@@ -1088,6 +1103,13 @@ mod tests {
             "Cumulative upkeep {1}",
             "Undying",
             "Persist",
+            "Exalted",
+            "Melee",
+            "Mentor",
+            "Dethrone",
+            "Annihilator 2",
+            "Extort",
+            "Evolve",
             "Vanishing 3",
             "Fading 5",
             "Backup 1",
