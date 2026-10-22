@@ -929,18 +929,32 @@ impl<'a> Walker<'a> {
         self.at("Batch", |w| w.trigger_pattern(inner));
     }
 
-    /// The nth time in a turn is counted for cards drawn, spells cast and life gained.
+    /// The nth time in a turn is counted for cards drawn, spells cast and life gained by a player, and for attacks,
+    /// targets (of what anyone controls or the controller of the ability) and damage dealt to an object.
     fn nth(&mut self, event: &TriggerPattern, nth: u32) {
         if nth == 0 {
             self.at("nth", |w| w.problem("the first time is 1"));
         }
-        if !matches!(
-            event,
+        let counted = match event {
             TriggerPattern::Drew { .. }
-                | TriggerPattern::SpellCast { .. }
-                | TriggerPattern::LifeGained { .. }
-        ) {
-            self.problem("only cards drawn, spells cast and life gained are counted in a turn");
+            | TriggerPattern::SpellCast { .. }
+            | TriggerPattern::LifeGained { .. }
+            | TriggerPattern::Attacks { .. } => true,
+            TriggerPattern::BecomesTarget { by, .. } => {
+                by.is_empty() || by.0 == [Pred::ControlledBy(Ref::You)]
+            }
+            // Damage is counted for the object that is dealt it, from any source.
+            TriggerPattern::DealsDamage {
+                source,
+                to: Some(to),
+                combat: None,
+            } => source.is_empty() && !matches!(to, Ref::You | Ref::Opponents | Ref::EachPlayer),
+            _ => false,
+        };
+        if !counted {
+            self.problem(
+                "only cards drawn, spells cast, life gained, attacks, becoming a target of what anyone or you control and damage dealt to an object from any source are counted in a turn",
+            );
         }
         self.at("event", |w| w.trigger_pattern(event));
     }

@@ -9,6 +9,7 @@ use mtg_core::card::Subtype;
 use super::amounts::{count_word, number_word};
 use super::counters;
 use super::effects::{granted, power_toughness};
+use super::prevention;
 use super::render::{capitalize, is_a_type, signed_text};
 use super::selectors::{Form, all, granted_text, phrase, phrase_text, subtype};
 use super::tokens::Reader;
@@ -23,13 +24,14 @@ use crate::value::{Amount, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 7] = [
+const TEMPLATES: [Template; 8] = [
     entering,
     as_entering,
     rule,
     cannot,
     cost_modifier,
     modifies,
+    prevention::static_rule,
     super::costs::additional,
 ];
 
@@ -748,6 +750,9 @@ fn rule_texts(rule: &GameRule, from: ZoneKind) -> Vec<String> {
         }
         (GameRule::MustAttack(who), ZoneKind::Battlefield) => each_combat(who, "attack"),
         (GameRule::MustBlock(who), ZoneKind::Battlefield) => each_combat(who, "block"),
+        (GameRule::DamageCantBePrevented { source, combat }, ZoneKind::Battlefield) => {
+            prevention::static_texts(source, *combat)
+        }
         _ => Vec::new(),
     }
 }

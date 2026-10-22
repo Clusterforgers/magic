@@ -12,7 +12,7 @@ use crate::error::EngineError;
 use crate::events::{Event, ResolutionOutcome};
 use crate::object::{GameObject, ObjectKind};
 use crate::resolve::{Bindings, Resolving};
-use crate::state::GameState;
+use crate::state::{GameState, Tally};
 use crate::zones::{Placement, Zone};
 
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
@@ -110,6 +110,9 @@ fn put_on_stack(state: &mut GameState, put: &PutOnStack) -> Result<(), EngineErr
     let id = put.object;
     if state.objects.contains_key(&id) {
         return Err(invalid(format!("{id:?} already exists")));
+    }
+    for target in put.choices.targeted_objects() {
+        state.tally_object(target, Some(put.controller), Tally::Targeted);
     }
     let source = put.source;
     // A triggered ability leaves the queue as it goes on the stack and takes what waited with it: the rules of a
