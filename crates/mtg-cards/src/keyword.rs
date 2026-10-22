@@ -163,6 +163,8 @@ pub enum Keyword {
     Escape(Cost),
     /// Rebound: a spell cast from its owner's hand is exiled as it resolves and cast free at their next upkeep (CR 702.88).
     Rebound,
+    /// Aftermath: the second half of a split card is cast only from a graveyard and is exiled when it leaves the stack (CR 702.127).
+    Aftermath,
 }
 
 impl Keyword {
@@ -238,6 +240,7 @@ impl Keyword {
         "Unearth",
         "Escape",
         "Rebound",
+        "Aftermath",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -313,6 +316,7 @@ impl Keyword {
             Keyword::Unearth(_) => "Unearth",
             Keyword::Escape(_) => "Escape",
             Keyword::Rebound => "Rebound",
+            Keyword::Aftermath => "Aftermath",
         }
     }
 
@@ -411,6 +415,7 @@ mod tests {
             Keyword::Unearth(cost.clone()),
             Keyword::Escape(cost),
             Keyword::Rebound,
+            Keyword::Aftermath,
         ]
     }
 

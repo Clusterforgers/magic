@@ -38,6 +38,7 @@ Clone
 Cold-Eyed Selkie
 Command Tower
 Consider
+Consign // Oblivion
 Copper-Leaf Angel
 Counterspell
 Curate
@@ -45,6 +46,7 @@ Curse of Predation
 Curse of the Forsaken
 Curse of the Nightly Hunt
 Custodi Lich
+Cut // Ribbons
 Cyclonic Rift
 Cytoshape
 Dauthi Horror
@@ -184,6 +186,7 @@ Soltari Foot Soldier
 Soul Shepherd
 Souldrinker
 Spectral Rider
+Spring // Mind
 Squirrel Nest
 Staggershock
 Steam Vents

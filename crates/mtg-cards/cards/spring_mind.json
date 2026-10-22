@@ -1,0 +1,34 @@
+{
+  "oracle_id": "6dd7e861-7ae2-49e6-a9ab-8fd761939e22",
+  "name": "Spring // Mind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spring",
+      "oracle_fingerprint": "af7e6d11de38817e1097a328f0258bfe",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mind",
+      "oracle_fingerprint": "343f90ad45beea8b62d1c7f7e23e96f9",
+      "abilities": [
+        { "Keyword": "Aftermath" },
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }] } }
+      ]
+    }
+  ]
+}
