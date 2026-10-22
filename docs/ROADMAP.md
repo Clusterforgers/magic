@@ -157,7 +157,18 @@ The server is settled first, then the web is built once against the final types.
 ## M6 Coverage
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
 - [ ] Coverage dashboard in the web over `Library::support`: states, reasons and clause spans per card, ranked by saved-deck demand; target: 100% of the chosen precons (`docs/deck-check.md`)
-- [ ] (h) Keywords, keyword actions and wordings the DSL and the compiler lack, sagas, classes, designations, extra turns and the other long-tail mechanics: one task each (primitive, template, golden), in the order of the report's demand
+- [ ] Target: every stored card Verified, or as near as the rules allow; `mtg-cli coverage` (compile first) ranks the blockers, each piece below states the cards it frees, and after each round `compile` and `coverage` are re-run and the numbers recorded here (15.9% of the 6,429 stored precon cards, 40.8% of copies, on 2026-10-22)
+- [ ] (c1) Mana abilities beyond a plain tap for mana (`Ability.ManaAbility.Other`: filter lands, storage lands, "any color that a land an opponent controls could produce", activation conditions such as "only if you control a Swamp", mana of a count or a choice with costs); the blocker holding back the most cards (90)
+- [ ] (c2) Characteristic and combat keywords: Changeling, Devoid, Infect, Wither, Toxic, Fear, Intimidate, the landwalks, Skulk, Shadow, Split second, Ascend, Undaunted, Exalted, Melee, Mentor, Dethrone, Annihilator, Extort, Evolve
+- [ ] (c3) Keyword actions and designations: Surveil, the Monarch, Proliferate, Time travel, Amass, Adapt, Monstrosity, Explore, Bolster, Fabricate, Investigate, Connive, Learn and the city's blessing
+- [ ] (c4) Vehicles and level-ups: Crew, Station, Saddle, Level up, Outlast, Reconfigure
+- [ ] (c5) Recursion and alternative cast ways: Escape, Aftermath, Jump-start, Retrace, Unearth, Embalm, Eternalize, Encore, Rebound, Dredge, Dash, Blitz, Ninjutsu, Miracle, Prowl, Demonstrate, Cipher, Hideaway
+- [ ] (c6) Triggered keywords and upkeep keywords: Undying, Persist, Backup, Devour, Echo, Vanishing, Cumulative upkeep, Fading, Myriad, Squad, Casualty, Offspring, Gift, Ravenous (the copy keywords after (o2))
+- [ ] (c7) Auras and attachment: Enchant player, Enchant creature you control or an opponent controls, Bestow, Mutate, Umbra armor, attach-time rules
+- [ ] (c8) Statics and characteristic-defining abilities: lords ("All Slivers get +1/+1"), "power and toughness are equal to", cost reductions ("This spell costs {M} less", "Dragon spells you cast cost"), Strive, "you may play lands from your graveyard", additional land plays, looking at the top card any time, "skip your draw step", life-gain and enter replacements, "creatures can't attack you unless"
+- [ ] (c9) Commander-specific keywords: Partner, Partner with, Doctor's companion, Choose a Background, Partner—Character select, Job select, "can be your commander" (with the partner line of M4)
+- [ ] (c10) Unread spell, trigger and activated wordings ranked by the cards each holds back (`mtg-cli coverage`, the unread lists): one piece per wording family (draw and discard, damage and life, tokens, search and tutors, counters, exile and return, pump and protection, sacrifice and destroy, mill and graveyard, choose and vote), each with its templates, goldens and Verified cards
+- [ ] (c11) Sagas, classes, rooms, battles and the other layouts, extra turns and extra combats, the initiative and dungeons, and the remaining long-tail mechanics found by the report, one task each
 
 ## M7 Product
 - [ ] (B3) Deck check, remaining in the web: each precon's state in the precon browser (the server lists it, `GET /api/precons`; `docs/server.md`, Precons)
