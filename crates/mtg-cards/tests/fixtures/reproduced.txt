@@ -10,6 +10,7 @@ Artful Maneuver
 Arvad the Cursed
 Augury Raven
 Azorius Chancery
+Azorius Signet
 Azure Fleet Admiral
 Basking Rootwalla
 Battlefield Forge
@@ -41,6 +42,7 @@ Consider
 Consign // Oblivion
 Copper-Leaf Angel
 Counterspell
+Crystal Quarry
 Curate
 Curse of Predation
 Curse of the Forsaken
@@ -148,6 +150,7 @@ Phantasmal Image
 Pillar of the Paruns
 Plague Myr
 Plague Stinger
+Prismatic Lens
 Professional Face-Breaker
 Questing Beast
 Rally the Ranks
@@ -176,6 +179,7 @@ Sinister Sabotage
 Sinister Starfish
 Skeletal Changeling
 Skullclamp
+Skycloud Expanse
 Skysovereign, Consul Flagship
 Slip Through Space
 Smuggler's Copter

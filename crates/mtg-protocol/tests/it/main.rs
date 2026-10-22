@@ -24,6 +24,7 @@ mod impulse_hidden;
 mod keyword_view;
 mod lobby_message;
 mod loyalty_view;
+mod mana_cost_hidden;
 mod manual_view;
 mod messages;
 mod monarch_view;

@@ -20,7 +20,7 @@ type State = (Needs, u32);
 
 /// How much a plan is wanted, lower first.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, PartialOrd, Ord)]
-struct Weight {
+pub(crate) struct Weight {
     /// Sources sacrificed.
     sacrifices: u32,
     /// Sources that do more than add mana.
@@ -31,6 +31,19 @@ struct Weight {
     unrestricted: u32,
     /// How far the types used are from the commonest ones.
     scarcity: u32,
+}
+
+impl Weight {
+    /// The weight with `option` used too, among `all` sources of which `plenty` make the type it produces.
+    pub(crate) fn with(self, option: &ManaOption, all: u32, plenty: u32) -> Weight {
+        Weight {
+            sacrifices: self.sacrifices + u32::from(option.sacrifice),
+            extras: self.extras + u32::from(option.extra),
+            taps: self.taps + 1,
+            unrestricted: self.unrestricted + u32::from(option.only.is_empty()),
+            scarcity: self.scarcity + all.saturating_sub(plenty),
+        }
+    }
 }
 
 /// The sources to use so that the options they are used for make `needs` of each type and `generic` more mana of any
@@ -60,13 +73,7 @@ pub(crate) fn plan(
                 }
                 let amount = u32::try_from(made.len()).unwrap_or(u32::MAX);
                 let after: State = (left, state.1.saturating_sub(amount));
-                let used = Weight {
-                    sacrifices: weight.sacrifices + u32::from(option.sacrifice),
-                    extras: weight.extras + u32::from(option.extra),
-                    taps: weight.taps + 1,
-                    unrestricted: weight.unrestricted + u32::from(option.only.is_empty()),
-                    scarcity: weight.scarcity + (all - plenty(option.produces)),
-                };
+                let used = weight.with(option, all, plenty(option.produces));
                 if next.get(&after).is_none_or(|(held, _)| used < *held) {
                     let mut chosen = picks.clone();
                     chosen.push(option.source);
@@ -137,7 +144,7 @@ fn covers(cost: &ManaCost, made: &[ManaType], value: u32) -> Result<(), PaymentE
 }
 
 /// The mana of `made` that pays `cost`, in the order made: each type's requirement first, then any for the generic part.
-fn select(cost: &ManaCost, made: &[ManaType]) -> Vec<ManaType> {
+pub(crate) fn select(cost: &ManaCost, made: &[ManaType]) -> Vec<ManaType> {
     let mut wanted: Needs = [0; 6];
     for mana in ManaType::ALL {
         wanted[mana.index()] = cost.required(mana);
@@ -307,6 +314,7 @@ mod tests {
             only: Vec::new(),
             also: Vec::new(),
             life: 0,
+            cost: ManaCost::ZERO,
         }
     }
 

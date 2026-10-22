@@ -131,6 +131,9 @@ pub enum PaymentError {
     /// The mana chosen so far cannot all go toward the cost, so no completion exists.
     #[error("the chosen mana would be wasted")]
     Wasted,
+    /// A source whose mana cost cannot be paid from the mana in the pool when it is used.
+    #[error("the mana cost of {0:?} cannot be paid from the mana made before it")]
+    CostUnpayable(ManaSource),
     /// What is left cannot pay the rest of the cost.
     #[error("the rest of the cost cannot be paid from the remaining mana")]
     CannotComplete,
