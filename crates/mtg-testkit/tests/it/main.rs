@@ -94,6 +94,7 @@ mod graveyard_fuzz;
 mod harness_selfcheck;
 mod help_fuzz;
 mod help_payment;
+mod improvise;
 mod house_commander;
 mod house_rules;
 mod house_table;
