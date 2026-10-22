@@ -2958,7 +2958,7 @@ mod tests {
     )]
     #[case::unknown_token(
         r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Named":"blood"}}}]}}"#,
-        "unknown token `gold`"
+        "unknown token `blood`"
     )]
     #[case::divided_without_division(
         r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"Divided"}}]}}"#,
