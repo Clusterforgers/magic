@@ -29,6 +29,9 @@ const OFF: Pace = Pace {
     response: None,
     blocks: None,
     think: None,
+    active: None,
+    extension: None,
+    grace: std::time::Duration::ZERO,
     dwell: Dwell::OFF,
 };
 
@@ -38,6 +41,9 @@ const DEFAULT: Pace = Pace {
     response: Some(Duration::from_secs(10)),
     blocks: Some(Duration::from_secs(45)),
     think: Some(Duration::from_secs(60)),
+    active: None,
+    extension: None,
+    grace: std::time::Duration::ZERO,
     dwell: Dwell::OFF,
 };
 
@@ -189,6 +195,7 @@ fn shape(message: &ServerMessage) -> String {
         ServerMessage::Yielding { until: None } => "yield none".into(),
         ServerMessage::Stops { .. } => "stops".into(),
         ServerMessage::FullControl { .. } => "full control".into(),
+        ServerMessage::Bank { .. } => "bank".into(),
     }
 }
 

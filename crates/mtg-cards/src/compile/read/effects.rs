@@ -5,6 +5,7 @@ use mtg_core::mana::ManaType;
 
 use super::amounts::{cards, its_stat, number_word, points};
 use super::cast;
+use super::conditional;
 use super::costs;
 use super::counters;
 use super::create;
@@ -23,7 +24,7 @@ use crate::refs::{Bounds, Pred, Ref, Selector, Targetable, ZoneKind};
 use crate::value::{Amount, CounterKind};
 
 /// A template: the effects of the sentence it reads, or `None` when the sentence is not its shape.
-type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
+pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
 const TEMPLATES: [Template; 26] = [
@@ -56,7 +57,7 @@ const TEMPLATES: [Template; 26] = [
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
-const IMPERATIVES: [Template; 10] = [
+pub(super) const IMPERATIVES: [Template; 10] = [
     chain,
     removal,
     return_card,
@@ -69,6 +70,12 @@ const IMPERATIVES: [Template; 10] = [
     return_itself,
 ];
 
+/// Every sentence shape, in the order they are tried: the shapes of `conditional` first, which read a sentence
+/// that another shape would read in part.
+fn templates() -> impl Iterator<Item = Template> {
+    conditional::TEMPLATES.into_iter().chain(TEMPLATES)
+}
+
 /// Reads the next sentence and its period into `effects`; false when it is not a shape the
 /// templates read.
 pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
@@ -78,7 +85,7 @@ pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
     if r.attempt(|r| regeneration(r, effects)).is_some() {
         return true;
     }
-    for template in TEMPLATES.into_iter().chain([unless_pays as Template]) {
+    for template in templates().chain([unless_pays as Template]) {
         let read = r.attempt(|r| {
             let found = template(r)?;
             r.sentence_end().then_some(found)
@@ -94,7 +101,7 @@ pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
 /// "Counter target spell unless its controller pays {2}.", "You may draw a card unless that player
 /// pays {1}.": the sentence before "unless" is what happens when the player does not pay.
 fn unless_pays(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    TEMPLATES.into_iter().find_map(|template| {
+    templates().find_map(|template| {
         r.attempt(|r| {
             let unpaid = template(r)?;
             r.need("unless")?;
@@ -111,9 +118,7 @@ fn unless_pays(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 
 /// The effects of the next sentence, up to its period.
 pub(super) fn one_sentence(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    TEMPLATES
-        .into_iter()
-        .find_map(|template| r.attempt(template))
+    templates().find_map(|template| r.attempt(template))
 }
 
 /// The mana of a payment: `{2}`, `{U}{R}`; an `{X}` is not the payer's to choose.
@@ -149,18 +154,21 @@ fn regeneration(r: &mut Reader<'_>, effects: &mut [Effect]) -> Option<()> {
 /// "You may draw a card.": one step that the controller may do.
 fn may(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("you may")?;
-    IMPERATIVES.iter().find_map(|template| {
-        r.attempt(|r| {
-            let found = template(r)?;
-            // A chain of steps is not one choice: "may" would have to say which steps it covers.
-            (found.len() == 1).then(|| {
-                vec![Effect::May {
-                    who: Ref::You,
-                    effects: found,
-                }]
+    IMPERATIVES
+        .iter()
+        .chain(&conditional::IMPERATIVES)
+        .find_map(|template| {
+            r.attempt(|r| {
+                let found = template(r)?;
+                // A chain of steps is not one choice: "may" would have to say which steps it covers.
+                (found.len() == 1).then(|| {
+                    vec![Effect::May {
+                        who: Ref::You,
+                        effects: found,
+                    }]
+                })
             })
         })
-    })
 }
 
 /// Steps of "you" joined by ", then": "Scry 1, then draw a card."
@@ -616,7 +624,7 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 }
 
 /// Whether what a verb acts on is named by a selector that looks only at the battlefield: no zone is named.
-fn is_on_the_battlefield(r: &Reader<'_>, what: &Ref) -> bool {
+pub(super) fn is_on_the_battlefield(r: &Reader<'_>, what: &Ref) -> bool {
     let looks_elsewhere =
         |selector: &Selector| selector.0.iter().any(|pred| matches!(pred, Pred::In(_)));
     match what {

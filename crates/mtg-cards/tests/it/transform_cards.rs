@@ -173,3 +173,29 @@ fn a_split_card_with_fuse_carries_the_spell_of_both_halves() {
     let plain = library().assemble(&printed_of(&record), &Caps::everything());
     assert_eq!(plain.definition.rules, []);
 }
+
+#[rstest]
+#[case::delver(
+    "Delver of Secrets // Insectile Aberration",
+    &["Effect.LookAtTop", "Effect.May", "Effect.Reveal", "Effect.If", "Effect.Transform"]
+)]
+#[case::ludevic(
+    "Ludevic's Test Subject // Ludevic's Abomination",
+    &["Effect.PutCounters", "Effect.If", "Effect.RemoveCounters", "Effect.Transform"]
+)]
+fn the_compiled_rules_of_a_transforming_card_name_what_the_engine_must_run(
+    #[case] name: &str,
+    #[case] names: &[&str],
+) {
+    let record = records().into_iter().find(|r| r.name == name).unwrap();
+    let compiled = mtg_cards::compile::compile(&printed_of(&record));
+    let card = compiled.card.unwrap();
+    assert_eq!(card.impl_status, mtg_cards::card::ImplStatus::Full);
+    let used: std::collections::BTreeSet<String> = card
+        .abilities()
+        .flat_map(|(_, ability)| used_primitives(ability))
+        .collect();
+    for wanted in names {
+        assert!(used.contains(*wanted), "{wanted} in {used:?}");
+    }
+}

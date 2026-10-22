@@ -197,6 +197,7 @@ fn alike(heard: &[Taped]) -> Vec<ServerMessage> {
                 id,
                 mut decision,
                 deadline_ms,
+                show_after_ms,
             } => {
                 if let DecisionKind::YesNo(options) = &mut decision.kind {
                     options.only_no = false;
@@ -206,6 +207,7 @@ fn alike(heard: &[Taped]) -> Vec<ServerMessage> {
                     id,
                     decision,
                     deadline_ms,
+                    show_after_ms,
                 }
             }
             other => other,

@@ -52,7 +52,7 @@ use serde::de::DeserializeOwned;
 use serde_json::json;
 
 const CLIENT_VARIANTS: usize = 13;
-const SERVER_VARIANTS: usize = 12;
+const SERVER_VARIANTS: usize = 13;
 
 const YIELDS: [YieldUntil; 3] = [
     YieldUntil::Resolve,
@@ -121,6 +121,7 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::Lobby { .. } => 9,
         ServerMessage::Stops { .. } => 10,
         ServerMessage::FullControl { .. } => 11,
+        ServerMessage::Bank { .. } => 12,
     }
 }
 
@@ -624,6 +625,10 @@ fn server_samples() -> Vec<ServerMessage> {
             .map(|stop| ServerMessage::Stops { stops: vec![stop] }),
     );
     out.extend(MODES.map(|mode| ServerMessage::FullControl { mode }));
+    out.extend([0, 1, 3].map(|bank| ServerMessage::Bank {
+        seat: PlayerId(1),
+        bank,
+    }));
     for code in [
         ErrorCode::UnsupportedVersion,
         ErrorCode::BadMessage,
@@ -637,22 +642,25 @@ fn server_samples() -> Vec<ServerMessage> {
             message: format!("{code:?}"),
         });
     }
-    // Every other decision runs on a clock, so both shapes are covered for several kinds.
-    out.extend(
-        decision_kinds()
-            .into_iter()
-            .chain(pipeline_decision_kinds())
-            .zip([Some(10_000), None].into_iter().cycle())
-            .map(|(kind, deadline_ms)| ServerMessage::Decision {
-                id: DecisionId(8),
-                decision: Decision {
-                    player: PlayerId(0),
-                    kind,
-                },
-                deadline_ms,
-            }),
-    );
+    out.extend(clocked_decisions());
     out
+}
+
+/// Every decision kind, alternately on a clock (with a delay before the countdown) and without one.
+fn clocked_decisions() -> impl Iterator<Item = ServerMessage> {
+    decision_kinds()
+        .into_iter()
+        .chain(pipeline_decision_kinds())
+        .zip([Some(10_000), None].into_iter().cycle())
+        .map(|(kind, deadline_ms)| ServerMessage::Decision {
+            id: DecisionId(8),
+            decision: Decision {
+                player: PlayerId(0),
+                kind,
+            },
+            deadline_ms,
+            show_after_ms: deadline_ms.map(|ms| ms / 3),
+        })
 }
 
 #[test]
@@ -850,6 +858,7 @@ fn client_wire_shape_is_flat_and_tagged(
             kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], min_blockers: vec![], required: vec![] }),
         },
         deadline_ms: Some(45_000),
+        show_after_ms: None,
     },
     json!({
         "type": "Decision", "id": 3, "deadline_ms": 45_000,
@@ -864,6 +873,7 @@ fn client_wire_shape_is_flat_and_tagged(
             kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], min_blockers: vec![], required: vec![] }),
         },
         deadline_ms: None,
+        show_after_ms: None,
     },
     json!({
         "type": "Decision", "id": 4,

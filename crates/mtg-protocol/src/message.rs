@@ -265,6 +265,11 @@ pub enum ServerMessage {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[ts(optional)]
         deadline_ms: Option<u64>,
+        /// Milliseconds after this message arrives at which the countdown shows; absent when there is no clock or the
+        /// countdown shows at once. The clock runs from the moment the decision is issued all the same.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[ts(optional)]
+        show_after_ms: Option<u64>,
     },
     /// The reply to [`ClientMessage::Preview`]: what combat damage would do for the answer tried.
     Forecast {
@@ -326,5 +331,15 @@ pub enum ServerMessage {
     FullControl {
         /// The mode now in force.
         mode: FullControlMode,
+    },
+    /// A seat's bank of clock extensions changed with no event to carry it: an extension was spent at the deadline.
+    ///
+    /// Public: sent to every connected seat. An extension that is earned arrives in the `bank` of the seat's
+    /// `PlayerView` in the batch of the events that ended the turn.
+    Bank {
+        /// The seat whose bank changed.
+        seat: PlayerId,
+        /// Extensions the seat now holds.
+        bank: u8,
     },
 }

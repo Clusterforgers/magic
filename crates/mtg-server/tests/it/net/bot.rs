@@ -174,6 +174,7 @@ impl WsBot {
                 id,
                 decision,
                 deadline_ms,
+                ..
             } => {
                 assert_eq!(decision.player, me, "a decision for another seat");
                 self.decisions += 1;
@@ -188,7 +189,8 @@ impl WsBot {
             | ServerMessage::Lobby { .. }
             | ServerMessage::Yielding { .. }
             | ServerMessage::Stops { .. }
-            | ServerMessage::FullControl { .. } => {}
+            | ServerMessage::FullControl { .. }
+            | ServerMessage::Bank { .. } => {}
             ServerMessage::GameOver { result } => return Some(Stop::Over(result)),
             ServerMessage::Forecast { .. } => {
                 panic!("a bot never previews, so it is sent no forecast")

@@ -10,11 +10,14 @@
 //! at and shuffling a library), `counters` (putting, removing and moving them), `statics` (how a
 //! permanent enters, what it can't do, what it gives), `modal` (the modes
 //! of a choice), `triggers` (the event of a triggered ability), `costs` (what is paid before the
-//! colon), `abilities` (a spell ability, a triggered ability, an activated ability) and `render`.
+//! colon), `abilities` (a spell ability, a triggered ability, an activated ability), `conditional`
+//! (an effect that depends on a condition), `reveal` (looking at the top card and revealing it),
+//! `transform` and `render`.
 
 mod abilities;
 mod amounts;
 mod cast;
+mod conditional;
 mod costs;
 mod counters;
 mod create;
@@ -24,6 +27,7 @@ mod modal;
 mod payments;
 mod prevention;
 mod render;
+mod reveal;
 mod selectors;
 mod spend;
 mod statics;
@@ -31,6 +35,7 @@ mod subtypes;
 #[cfg(test)]
 mod tests;
 mod tokens;
+mod transform;
 mod triggers;
 
 pub use render::{ability as render_ability, mode as render_mode, variants as render_variants};

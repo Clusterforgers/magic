@@ -45,6 +45,9 @@ pub fn windowed_config() -> ServerConfig {
                 response: None,
                 blocks: None,
                 think: None,
+                active: None,
+                extension: None,
+                grace: std::time::Duration::ZERO,
                 dwell: Dwell::OFF,
             },
             ..config.game

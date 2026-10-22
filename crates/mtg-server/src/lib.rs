@@ -42,7 +42,10 @@
 //!   order of cards) (10 s)
 //!   and on declaring blockers (45 s); at the deadline the server answers for the seat (a pass, no blocks,
 //!   the safe answer to the question) the same way, so a late answer is stale. Every other decision waits
-//!   as long as it takes.
+//!   as long as it takes, unless `MTG_ACTIVE_SECS` gives the active player a clock. A seat that finishes
+//!   three turns of its own without a clock running out earns an extension (at most three, `Pace::extension`
+//!   long); at a deadline it spends one instead of being answered for. The countdown shows after
+//!   `Pace::grace`.
 //! - **Chat** is broadcast to connected seats and never stored.
 //! - **Previews** (`ClientMessage::Preview`) are advice about a pending attack or block: the actor answers
 //!   each with one `Forecast` (empty when there is none or the seat is over its rate limit), never an
@@ -77,6 +80,7 @@ mod accounts;
 mod actor;
 mod api;
 mod auth;
+mod bank;
 mod card_api;
 mod cards;
 pub mod config;

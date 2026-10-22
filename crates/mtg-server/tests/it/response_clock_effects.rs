@@ -27,6 +27,9 @@ const DEFAULT: Pace = Pace {
     response: Some(RESPONSE),
     blocks: Some(Duration::from_secs(45)),
     think: Some(Duration::from_secs(60)),
+    active: None,
+    extension: None,
+    grace: std::time::Duration::ZERO,
     dwell: Dwell::OFF,
 };
 
@@ -84,6 +87,7 @@ async fn decision_of(client: &mut Client) -> (DecisionId, Decision, Option<u64>)
                 id,
                 decision,
                 deadline_ms,
+                ..
             } => Some((*id, decision.clone(), *deadline_ms)),
             _ => None,
         })

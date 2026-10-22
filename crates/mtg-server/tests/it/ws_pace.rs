@@ -119,6 +119,9 @@ async fn a_decision_without_a_clock_leaves_the_field_out() {
     // The mulligan is the first decision, and it has no clock when the think clock is off.
     let off = Pace {
         think: None,
+        active: None,
+        extension: None,
+        grace: std::time::Duration::ZERO,
         ..Pace::default()
     };
     let server = TestServer::start(paced_with(off)).await;

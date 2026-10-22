@@ -626,7 +626,7 @@ mod tests {
 
     #[test]
     fn every_face_of_a_double_faced_card_carries_its_own_fingerprint_and_name() {
-        let front = "Haste\nAt the beginning of your upkeep, transform Delver of Secrets.";
+        let front = "Haste\nAt the beginning of your upkeep, goad target creature.";
         let back = "Flying";
         let compiled = compile(&card(vec![
             face("Delver of Secrets", "Creature \u{2014} Human Wizard", front),
@@ -652,7 +652,7 @@ mod tests {
         );
         assert_eq!(
             compiled.clauses[1].text,
-            "At the beginning of your upkeep, transform ~."
+            "At the beginning of your upkeep, goad target creature."
         );
     }
 

@@ -47,6 +47,7 @@ function sharePlayer(previous: PlayerView, next: PlayerView): PlayerView {
     library: keep(previous.library, next.library),
     graveyard: keep(previous.graveyard, next.graveyard),
     command: keep(previous.command, next.command),
+    bank: next.bank,
   }
 }
 
@@ -149,4 +150,13 @@ export function fromSnapshot(previous: StateView | null, snapshot: StateView): S
 /** The objects of a view keyed by id, for lookups from ids found in zones, the stack and decisions. */
 export function indexById(objects: readonly ObjectView[]): Readonly<Record<ObjectId, ObjectView>> {
   return Object.fromEntries(objects.map((object): [ObjectId, ObjectView] => [object.id, object]))
+}
+
+/** The view with the bank of clock extensions of `seat` set; the server tells a spent extension with no events. */
+export function withBank(view: StateView, seat: number, bank: number): StateView {
+  if (view.players.every((player) => player.seat !== seat || player.bank === bank)) return view
+  return {
+    ...view,
+    players: view.players.map((player) => (player.seat === seat ? { ...player, bank } : player)),
+  }
 }

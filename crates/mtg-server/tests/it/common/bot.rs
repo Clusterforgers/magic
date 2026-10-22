@@ -142,6 +142,7 @@ impl Bot {
                 id,
                 decision,
                 deadline_ms,
+                ..
             } => {
                 assert_eq!(
                     decision.player, self.seat,
@@ -164,7 +165,8 @@ impl Bot {
             ServerMessage::Chat { .. }
             | ServerMessage::Lobby { .. }
             | ServerMessage::Stops { .. }
-            | ServerMessage::FullControl { .. } => {}
+            | ServerMessage::FullControl { .. }
+            | ServerMessage::Bank { .. } => {}
             ServerMessage::GameOver { result } => return Progress::Over(result),
             ServerMessage::Forecast { .. } => {
                 panic!("a bot never previews, so it is sent no forecast")

@@ -25,6 +25,7 @@ Counterspell
 Cyclonic Rift
 Death Ward
 Deep Analysis
+Delver of Secrets // Insectile Aberration
 Demon Bolt
 Disembowel
 Dockside Extortionist
@@ -66,6 +67,7 @@ Lizard Blades
 Llanowar Behemoth
 Llanowar Elves
 Lotus Petal
+Ludevic's Test Subject // Ludevic's Abomination
 Lurching Rotbeast
 Manabarbs
 Megrim
