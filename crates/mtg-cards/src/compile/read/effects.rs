@@ -467,6 +467,7 @@ pub(super) fn describes_a_kind(pred: &Pred) -> bool {
         | Pred::Untapped
         | Pred::Attacking
         | Pred::Blocking
+        | Pred::Unblocked
         | Pred::HasKeyword(_)
         | Pred::Compare { .. } => true,
         Pred::Not(inner) => describes_a_kind(inner),

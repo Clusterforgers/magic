@@ -1,0 +1,12 @@
+{
+  "oracle_id": "ade4ffa5-6609-44eb-8f1a-45e7203d90e3",
+  "name": "Kolaghan Skirmisher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kolaghan Skirmisher",
+      "oracle_fingerprint": "9bee63b10ee273fddbe4e56a887bd39b",
+      "abilities": [{ "Keyword": { "Dash": "{2}{B}" } }]
+    }
+  ]
+}

@@ -368,6 +368,7 @@ impl<'a> Walker<'a> {
             | Pred::Untapped
             | Pred::Attacking
             | Pred::Blocking
+            | Pred::Unblocked
             | Pred::HasCounter(_)
             | Pred::ChosenColor
             | Pred::ChosenSubtype
@@ -705,7 +706,8 @@ impl<'a> Walker<'a> {
             Keyword::Equip(cost)
             | Keyword::Reconfigure(cost)
             | Keyword::Cycling(cost)
-            | Keyword::Unearth(cost) => {
+            | Keyword::Unearth(cost)
+            | Keyword::Ninjutsu(cost) => {
                 self.at("cost", |w| w.cost(cost));
             }
             // The cost of these is paid as the spell is announced: the mana, and the parts the engine pays there.
@@ -715,7 +717,8 @@ impl<'a> Walker<'a> {
             | Keyword::Buyback(cost)
             | Keyword::Entwine(cost)
             | Keyword::Evoke(cost)
-            | Keyword::Escape(cost) => {
+            | Keyword::Escape(cost)
+            | Keyword::Dash(cost) => {
                 self.at("cost", |w| w.cost(cost));
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost);
             }
@@ -1223,7 +1226,7 @@ impl<'a> Walker<'a> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("to", |w| w.reference(to, Kind::Object));
             }
-            Effect::Unattach { what } => {
+            Effect::Unattach { what } | Effect::JoinAttack { what } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
             }
             Effect::Shuffle { who }

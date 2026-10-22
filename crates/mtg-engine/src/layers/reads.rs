@@ -150,6 +150,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Untapped
         | Pred::Attacking
         | Pred::Blocking
+        | Pred::Unblocked
         | Pred::In(_)
         | Pred::HasCounter(_)
         | Pred::Named(_) => Traits::NONE,

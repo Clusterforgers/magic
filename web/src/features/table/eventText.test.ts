@@ -51,6 +51,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Attached: [{ Attached: { object: 3, to: 1 } }, 'Forest becomes attached to Grizzly Bears'],
   AttachedToPlayer: [{ AttachedToPlayer: { object: 3, player: 1 } }, 'Forest enchants Bo'],
   Unattached: [{ Unattached: { object: 3 } }, 'Forest becomes unattached'],
+  JoinedAttack: [{ JoinedAttack: { object: 3, target: { Player: 0 } } }, 'Forest enters attacking Ana'],
   ManualAction: [
     { ManualAction: { player: 0, action: { Move: { object: 3, to: 'Graveyard' } } } },
     'Ana moves Forest to their graveyard by hand',
