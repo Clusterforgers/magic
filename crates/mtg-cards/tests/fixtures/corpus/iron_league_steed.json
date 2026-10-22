@@ -1,0 +1,24 @@
+{
+  "id": "60370058-da94-444b-aafd-23202296070b",
+  "oracle_id": "bafeab74-918b-4fcd-8057-55922dbc1784",
+  "name": "Iron League Steed",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2xm",
+  "collector_number": "263",
+  "rarity": "common",
+  "released_at": "2020-08-07",
+  "digital": false,
+  "mana_cost": "{4}",
+  "cmc": 4.0,
+  "type_line": "Artifact Creature — Construct",
+  "oracle_text": "Haste\nFabricate 1 (When this creature enters, put a +1/+1 counter on it or create a 1/1 colorless Servo artifact creature token.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Haste",
+    "Fabricate"
+  ]
+}

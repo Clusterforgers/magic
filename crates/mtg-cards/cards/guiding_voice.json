@@ -1,0 +1,22 @@
+{
+  "oracle_id": "5c7e7c9e-00d1-497e-bee7-278bbd82e234",
+  "name": "Guiding Voice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guiding Voice",
+      "oracle_fingerprint": "479424c1daceef86df3b9e03a0dec634",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "Learn": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

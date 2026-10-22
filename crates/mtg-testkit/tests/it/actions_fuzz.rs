@@ -25,6 +25,9 @@ struct Seen {
     monstrosities: u64,
     adaptations: u64,
     bolsterings: u64,
+    servos: u64,
+    learns: u64,
+    blessings: u64,
 }
 
 impl Seen {
@@ -44,6 +47,9 @@ impl Seen {
                 Event::Monstrous { .. } => self.monstrosities += 1,
                 Event::Adapted { .. } => self.adaptations += 1,
                 Event::Bolstered { .. } => self.bolsterings += 1,
+                Event::TokenCreated(token) if token.name == "Servo" => self.servos += 1,
+                Event::Learned { .. } => self.learns += 1,
+                Event::CitysBlessingGained { .. } => self.blessings += 1,
                 Event::MonarchChanged { player } => {
                     self.monarchs += 1;
                     self.taken_from_another += u64::from(monarch.is_some_and(|was| was != *player));
@@ -78,6 +84,12 @@ fn seeded_action_games_finish_and_keep_every_invariant(#[case] players: usize) {
     );
     assert!(seen.adaptations > 0, "no creature adapted in {campaign}");
     assert!(seen.bolsterings > 0, "nobody bolstered in {campaign}");
+    assert!(seen.servos > 0, "nobody made a Servo in {campaign}");
+    assert!(seen.learns > 0, "nobody learned in {campaign}");
+    assert!(
+        seen.blessings > 0,
+        "nobody got the city's blessing in {campaign}"
+    );
     assert!(
         seen.kept_on_top > 0 && seen.sent_to_the_graveyard > 0,
         "surveils kept cards on top and put cards into the graveyard in {campaign}"

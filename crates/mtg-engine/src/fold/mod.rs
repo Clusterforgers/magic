@@ -232,6 +232,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Amassed { .. }
         | Event::Adapted { .. }
         | Event::Bolstered { .. }
+        | Event::Learned { .. }
         | Event::Proliferated { .. } => {}
         Event::PriorityGranted { player } => {
             state.priority = Some(PriorityState {

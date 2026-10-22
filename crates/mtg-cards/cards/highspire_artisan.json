@@ -1,0 +1,12 @@
+{
+  "oracle_id": "fc8c54c4-a436-43cc-888b-f4ba3e751c16",
+  "name": "Highspire Artisan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Highspire Artisan",
+      "oracle_fingerprint": "303668f58378db5c1a0a0fe0672b113f",
+      "abilities": [{ "Keyword": "Reach" }, { "Keyword": { "Fabricate": 1 } }]
+    }
+  ]
+}

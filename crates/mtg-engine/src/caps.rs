@@ -139,6 +139,7 @@ const RUNS: &[&str] = &[
     "Effect.Adapt",
     "Effect.Bolster",
     "Effect.Fabricate",
+    "Effect.Learn",
     "Effect.BecomeMonarch",
     "Condition.Monarch",
     "Effect.CreateToken",
@@ -546,6 +547,7 @@ mod tests {
     #[case::adapting("Effect.Adapt", true)]
     #[case::bolstering("Effect.Bolster", true)]
     #[case::fabricating("Effect.Fabricate", true)]
+    #[case::learning("Effect.Learn", true)]
     #[case::exploring("Effect.Explore", true)]
     #[case::conniving("Effect.Connive", true)]
     #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]

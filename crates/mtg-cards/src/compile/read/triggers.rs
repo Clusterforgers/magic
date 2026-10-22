@@ -598,6 +598,8 @@ pub fn monarch_condition(r: &mut Reader<'_>) -> Option<Condition> {
         Some(Condition::Monarch(Ref::Opponents))
     } else if r.words("there is no monarch") {
         Some(no_monarch())
+    } else if r.words("you have the city's blessing") {
+        Some(Condition::CitysBlessing(Ref::You))
     } else {
         None
     }
@@ -613,6 +615,7 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
     Some(match condition {
         Condition::Monarch(Ref::You) => "you're the monarch".to_owned(),
         Condition::Monarch(Ref::Opponents) => "an opponent is the monarch".to_owned(),
+        Condition::CitysBlessing(Ref::You) => "you have the city's blessing".to_owned(),
         condition if *condition == no_monarch() => "there is no monarch".to_owned(),
         _ => return None,
     })

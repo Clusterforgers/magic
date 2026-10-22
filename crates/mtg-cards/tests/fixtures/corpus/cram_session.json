@@ -1,0 +1,27 @@
+{
+  "id": "c59a249f-35ed-447a-845b-32ba5a53124e",
+  "oracle_id": "6e5b8bb2-9dd8-4986-9d0a-659114be5a2a",
+  "name": "Cram Session",
+  "lang": "en",
+  "layout": "normal",
+  "set": "stx",
+  "collector_number": "170",
+  "rarity": "common",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{1}{B/G}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "You gain 4 life.\nLearn. (You may reveal a Lesson card you own from outside the game and put it into your hand, or discard a card to draw a card.)",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Learn"
+  ]
+}

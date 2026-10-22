@@ -1,0 +1,30 @@
+{
+  "oracle_id": "29423b70-7cb7-4617-898c-78a38eb233ad",
+  "name": "Field Trip",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Field Trip",
+      "oracle_fingerprint": "b7e7a773e72a60aed7c3f6af705e1477",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Subtype": "Forest" }],
+                  "as": "land"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} },
+              { "Learn": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

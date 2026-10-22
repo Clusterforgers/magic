@@ -1,0 +1,27 @@
+{
+  "id": "918691b1-f927-4027-a444-adc418f3ab16",
+  "oracle_id": "1782bfd7-7d8f-4ed2-9d45-ba9adb41e996",
+  "name": "Visionary Augmenter",
+  "lang": "en",
+  "layout": "normal",
+  "set": "kld",
+  "collector_number": "34",
+  "rarity": "uncommon",
+  "released_at": "2016-09-30",
+  "digital": false,
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Dwarf Artificer",
+  "oracle_text": "Fabricate 2 (When this creature enters, put two +1/+1 counters on it or create two 1/1 colorless Servo artifact creature tokens.)",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Fabricate"
+  ]
+}

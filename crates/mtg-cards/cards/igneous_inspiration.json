@@ -1,0 +1,19 @@
+{
+  "oracle_id": "2e31af8f-5e94-4888-857d-911253eac2cd",
+  "name": "Igneous Inspiration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Igneous Inspiration",
+      "oracle_fingerprint": "1ffacd574b5ce07d3092f17fec0bb471",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }, { "Learn": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

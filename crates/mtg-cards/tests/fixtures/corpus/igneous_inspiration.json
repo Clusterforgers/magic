@@ -1,0 +1,25 @@
+{
+  "id": "5781ad7b-dc1b-4cc1-9e72-6e714b9ba1de",
+  "oracle_id": "2e31af8f-5e94-4888-857d-911253eac2cd",
+  "name": "Igneous Inspiration",
+  "lang": "en",
+  "layout": "normal",
+  "set": "stx",
+  "collector_number": "107",
+  "rarity": "uncommon",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Igneous Inspiration deals 3 damage to any target.\nLearn. (You may reveal a Lesson card you own from outside the game and put it into your hand, or discard a card to draw a card.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Learn"
+  ]
+}

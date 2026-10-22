@@ -1,0 +1,22 @@
+{
+  "oracle_id": "a7c36b66-4f58-41af-b1c5-704ff0d9eac8",
+  "name": "Deadeye Brawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deadeye Brawler",
+      "oracle_fingerprint": "67bdc8899bc46f64c8e9c9a60a51268d",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Ascend" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "if": { "CitysBlessing": "You" },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

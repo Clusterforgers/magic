@@ -1,0 +1,12 @@
+{
+  "oracle_id": "dda9ac6c-1ab2-4f77-b499-f03d587163d8",
+  "name": "Pop Quiz",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pop Quiz",
+      "oracle_fingerprint": "d3c979646d8447f4c28de26a40d1317e",
+      "abilities": [{ "Spell": { "effects": [{ "Draw": {} }, { "Learn": {} }] } }]
+    }
+  ]
+}

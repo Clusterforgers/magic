@@ -4,16 +4,19 @@ Abzan Advantage
 Abzan Battle Priest
 Abzan Falconer
 Abzan Skycaptain
+Accomplished Automaton
 Adorned Pouncer
 Aeromunculus
 Aether Hub
 Ainok Bond-Kin
 Ajani's Pridemate
 Alpha Deathclaw
+Ambitious Aetherborn
 Anafenza, Kin-Tree Spirit
 Ancestral Vision
 Ancient Stone Idol
 Ancient Ziggurat
+Angel of Invention
 Angel of Vitality
 Arbor Colossus
 Arcane Signet
@@ -92,6 +95,7 @@ Copper-Leaf Angel
 Coralhelm Commander
 Counterspell
 Courser of Kruphix
+Cram Session
 Crucible of Worlds
 Crystal Quarry
 Curate
@@ -113,6 +117,7 @@ Darksteel Juggernaut
 Dauthi Horror
 Dauthi Marauder
 Dawnglade Regent
+Deadeye Brawler
 Death Ward
 Deep Analysis
 Deepfathom Skulker
@@ -139,15 +144,18 @@ Dual Casting
 Dualcaster Mage
 Dunland Crebain
 Durkwood Baloth
+Dusk Charger
 Eagles of the North
 Easterling Vanguard
 Echo Inspector
 Echo Mage
 Echoes of the Kin Tree
+Elegant Edgecrafters
 Elven Ambush
 Elvish Aberration
 Elvish Rejuvenator
 Empyrial Plate
+Enthusiastic Study
 Epic Proportions
 Eternal Witness
 Ethereal Armor
@@ -156,6 +164,7 @@ Exotic Orchard
 Exploration
 Explore
 Exquisite Huntmaster
+Eyetwitch
 Faithful Watchdog
 Faithless Looting
 Famine
@@ -166,6 +175,7 @@ Fearsome Goblin Pair
 Felidar Sovereign
 Fellwar Stone
 Fetid Heath
+Field Trip
 Fiery Fall
 Fiery Temper
 Fire-Lit Thicket
@@ -197,8 +207,10 @@ Gilded Goose
 Gilded Lotus
 Girder Goons
 Glimpse of Freedom
+Glint-Sleeve Artisan
 Glorious Anthem
 Gluttonous Cyclops
+Gnarled Professor
 Goblin Chieftain
 Goblin Spy
 Goblin War Buggy
@@ -213,6 +225,7 @@ Grisly Salvage
 Growing Ranks
 Gruul Cluestone
 Guardian Gladewalker
+Guiding Voice
 Gurmag Angler
 Hada Spy Patrol
 Hall of Triumph
@@ -222,6 +235,7 @@ Herald of Anguish
 Herald of the Dreadhorde
 Herald of the Host
 Hero of Bladehold
+Highspire Artisan
 Holdout Settlement
 Honor Troll
 Honor's Reward
@@ -229,12 +243,15 @@ Horizon Canopy
 Hound of Griselbrand
 Hulking Raptor
 Idyllic Beachfront
+Igneous Inspiration
 Ill-Tempered Cyclops
+Illustrious Wanderglyph
 Impostor of the Sixth Pride
 Impulsive Pilferer
 Inkwell Leviathan
 Invading Manticore
 Invisible Stalker
+Iron League Steed
 Izzet Charm
 Jadelight Ranger
 Jagged Barrens
@@ -278,6 +295,8 @@ Mardu Shadowspear
 Mardu Strike Leader
 Maro
 Master of Etherium
+Maulfist Squad
+Mausoleum Harpy
 Maverick Thopterist
 Mayhem Patrol
 Megrim
@@ -314,9 +333,11 @@ Opt
 Orchard Strider
 Organic Extinction
 Otherworldly Gaze
+Overgrown Arch
 Pacifism
 Pale Bears
 Panther Robot
+Peema Outrider
 Pestilent Syphoner
 Phantasmal Image
 Phyrexian Soulgorger
@@ -324,11 +345,15 @@ Pillar of the Paruns
 Pinion Feast
 Plague Myr
 Plague Stinger
+Poet's Quill
+Pop Quiz
 Pouncing Jaguar
 Powder Ganger
 Primeval Protector
 Prismatic Lens
 Professional Face-Breaker
+Professor of Symbology
+Propeller Pioneer
 Proven Combatant
 Psychosis Crawler
 Putrid Goblin
@@ -395,9 +420,11 @@ Skittering Crustacean
 Skizzik Surger
 Skullclamp
 Skycloud Expanse
+Skymarcher Aspirant
 Skysovereign, Consul Flagship
 Slip Through Space
 Smuggler's Copter
+Snubhorn Sentry
 Sodden Verdure
 Sol Ring
 Solstice Zealot
@@ -409,6 +436,7 @@ Space Marine Devastator
 Spectral Rider
 Sphinx of Jwar Isle
 Spire Golem
+Spire Winder
 Spring // Mind
 Springleaf Drum
 Squirrel Nest
@@ -416,10 +444,12 @@ Staggershock
 Steady Progress
 Steam Vents
 Stoke the Flames
+Storm Fleet Swashbuckler
 Strangleroot Geist
 Strionic Resonator
 Stroke of Genius
 Student of Warfare
+Study Break
 Sultai Devotee
 Summer Bloom
 Sundering Growth
@@ -436,6 +466,7 @@ Tainted Isle
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
 Temur Devotee
+Tendershoot Dryad
 Tendo Ice Bridge
 Tendrils of Agony
 Thalia, Guardian of Thraben
@@ -479,6 +510,7 @@ Vanquish the Horde
 Vengeful Vampire
 Vestige of Emrakul
 Viridian Corrupter
+Visionary Augmenter
 Vivid Crag
 Vivid Creek
 Vivid Grove
@@ -490,6 +522,7 @@ Warchief Giant
 Wargate
 Warmonger Hellkite
 Wasteland Raider
+Weaponcraft Enthusiast
 Wear // Tear
 Whir of Invention
 Wilderness Elemental

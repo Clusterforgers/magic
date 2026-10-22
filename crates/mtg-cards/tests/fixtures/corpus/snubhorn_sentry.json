@@ -1,0 +1,27 @@
+{
+  "id": "3ee111e7-5309-46d5-b3ea-a049b3962c23",
+  "oracle_id": "fc8d3933-f7fe-4849-aae7-737ce6f067de",
+  "name": "Snubhorn Sentry",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rix",
+  "collector_number": "23",
+  "rarity": "common",
+  "released_at": "2018-01-19",
+  "digital": false,
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Creature — Dinosaur",
+  "oracle_text": "Ascend (If you control ten or more permanents, you get the city's blessing for the rest of the game.)\nThis creature gets +3/+0 as long as you have the city's blessing.",
+  "power": "0",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Ascend"
+  ]
+}

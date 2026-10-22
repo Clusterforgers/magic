@@ -555,6 +555,11 @@ pub enum Event {
         /// Who got it.
         player: PlayerId,
     },
+    /// A player learned (CR 701.48): the discard and the draw are the events that follow it.
+    Learned {
+        /// Who learned.
+        player: PlayerId,
+    },
     /// A player proliferated (CR 701.34): the counters it gave are the `CountersChanged` events that follow it.
     Proliferated {
         /// Who proliferated.
@@ -701,6 +706,7 @@ impl Event {
             | Event::DayNightChanged { .. }
             | Event::MonarchChanged { .. }
             | Event::CitysBlessingGained { .. }
+            | Event::Learned { .. }
             | Event::Proliferated { .. }
             | Event::PriorityGranted { .. }
             | Event::PriorityPassed { .. }

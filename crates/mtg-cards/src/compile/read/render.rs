@@ -1239,6 +1239,7 @@ impl Writer<'_> {
                 count,
             } => format!("surveil {}", points_text(count)?),
             Effect::Proliferate { who: Ref::You } => "proliferate".to_owned(),
+            Effect::Learn { who: Ref::You } => "learn".to_owned(),
             Effect::Monstrosity { count } => format!("monstrosity {}", points_text(count)?),
             Effect::Adapt { count } => format!("adapt {}", points_text(count)?),
             Effect::Bolster { count } => format!("bolster {}", points_text(count)?),

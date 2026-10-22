@@ -1288,6 +1288,7 @@ impl<'a> Walker<'a> {
             | Effect::Proliferate { who }
             | Effect::BecomeMonarch { who }
             | Effect::TimeTravel { who }
+            | Effect::Learn { who }
             | Effect::ExtraTurn { who } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
             }

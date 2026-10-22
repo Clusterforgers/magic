@@ -1,0 +1,21 @@
+{
+  "oracle_id": "e0190e13-89f6-4b51-a277-bf3eb842963e",
+  "name": "Dusk Charger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dusk Charger",
+      "oracle_fingerprint": "3fb8cc37f9a200809e6b55cb7a8dca1d",
+      "abilities": [
+        { "Keyword": "Ascend" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": { "CitysBlessing": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

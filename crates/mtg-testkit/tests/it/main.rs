@@ -89,6 +89,7 @@ mod event_triggers;
 mod exile_hand_mana;
 mod explore;
 mod extra_costs;
+mod fabricate_learn;
 mod face_rules;
 mod faces;
 mod faces_fuzz;

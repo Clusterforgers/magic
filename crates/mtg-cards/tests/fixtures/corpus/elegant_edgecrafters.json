@@ -1,0 +1,27 @@
+{
+  "id": "352941f3-951e-428d-bec4-7790c3ea7cb2",
+  "oracle_id": "eeb3d282-97df-4df2-8bea-9432e21b6d62",
+  "name": "Elegant Edgecrafters",
+  "lang": "en",
+  "layout": "normal",
+  "set": "kld",
+  "collector_number": "154",
+  "rarity": "uncommon",
+  "released_at": "2016-09-30",
+  "digital": false,
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Creature — Elf Artificer",
+  "oracle_text": "This creature can't be blocked by creatures with power 2 or less.\nFabricate 2 (When this creature enters, put two +1/+1 counters on it or create two 1/1 colorless Servo artifact creature tokens.)",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Fabricate"
+  ]
+}

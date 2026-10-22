@@ -516,6 +516,12 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         otherwise: Vec<Effect>,
     },
+    /// The player learns (CR 701.48): they may discard a card, and draw a card if they do; a Lesson from outside the game is not available.
+    Learn {
+        /// Who learns.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
     /// The player time travels (CR 701.56): each suspended card and permanent with a time counter gains or loses one.
     TimeTravel {
         /// Who time travels.

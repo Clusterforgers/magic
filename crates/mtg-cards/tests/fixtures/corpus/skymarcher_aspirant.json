@@ -1,0 +1,27 @@
+{
+  "id": "9473190f-5e96-4cf7-a0fa-a77d916acc2e",
+  "oracle_id": "0b6db929-1b6a-4372-8146-aa047258b552",
+  "name": "Skymarcher Aspirant",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rix",
+  "collector_number": "21",
+  "rarity": "uncommon",
+  "released_at": "2018-01-19",
+  "digital": false,
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Creature — Vampire Soldier",
+  "oracle_text": "Ascend (If you control ten or more permanents, you get the city's blessing for the rest of the game.)\nThis creature has flying as long as you have the city's blessing.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Ascend"
+  ]
+}

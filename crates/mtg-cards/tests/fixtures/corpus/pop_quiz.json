@@ -1,0 +1,25 @@
+{
+  "id": "d16892d8-9d10-45de-ab79-0e645c4b5588",
+  "oracle_id": "dda9ac6c-1ab2-4f77-b499-f03d587163d8",
+  "name": "Pop Quiz",
+  "lang": "en",
+  "layout": "normal",
+  "set": "stx",
+  "collector_number": "49",
+  "rarity": "common",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Draw a card.\nLearn. (You may reveal a Lesson card you own from outside the game and put it into your hand, or discard a card to draw a card.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Learn"
+  ]
+}
