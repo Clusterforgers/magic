@@ -61,3 +61,103 @@ pub(super) fn zombie_copy(cost: &Cost, more: Vec<Modification>, color: Color) ->
         }],
     }
 }
+
+#[cfg(test)]
+mod tests {
+    //! Goal: embalm and eternalize each add one sorcery-speed ability from a graveyard whose cost is the keyword cost and the exile of the card, making one token copy of the card that is a Zombie of the right colour with no mana cost (and a 4/4 for eternalize); no other keyword adds one.
+    use mtg_cards::effect::{Effect, TokenRef};
+    use rstest::rstest;
+
+    use super::super::eternalize::Eternalize;
+    use super::*;
+
+    fn mana() -> Cost {
+        Cost::mana("{2}{W}".parse().unwrap())
+    }
+
+    fn zombie(color: Color) -> Vec<Modification> {
+        vec![
+            Modification::SetColors(vec![color]),
+            Modification::AddSubtype(Subtype("Zombie".to_owned())),
+        ]
+    }
+
+    #[rstest]
+    #[case::embalm(Keyword::Embalm(mana()), zombie(Color::White))]
+    #[case::eternalize(
+        Keyword::Eternalize(mana()),
+        [
+            zombie(Color::Black),
+            vec![Modification::SetPT { power: Amount::Fixed(4), toughness: Amount::Fixed(4) }],
+        ]
+        .concat()
+    )]
+    fn the_ability_exiles_the_card_for_the_cost_and_makes_a_zombie_copy(
+        #[case] keyword: Keyword,
+        #[case] except: Vec<Modification>,
+    ) {
+        let added = match &keyword {
+            Keyword::Embalm(_) => Embalm.adds_abilities(&keyword),
+            _ => Eternalize.adds_abilities(&keyword),
+        };
+        let [
+            Ability::Activated {
+                cost,
+                timing,
+                from,
+                targets,
+                effects,
+                ..
+            },
+        ] = added.as_slice()
+        else {
+            panic!("one activated ability: {added:?}");
+        };
+        assert_eq!(
+            cost.0,
+            [
+                CostItem::Mana("{2}{W}".parse().unwrap()),
+                CostItem::ExileSelf
+            ]
+        );
+        assert_eq!(*timing, Timing::Sorcery);
+        assert_eq!(*from, ZoneKind::Graveyard);
+        assert!(targets.is_empty());
+        let [
+            Effect::CreateToken {
+                token:
+                    TokenRef::CopyOf {
+                        of,
+                        except: made,
+                        no_mana_cost,
+                    },
+                count,
+                ..
+            },
+        ] = effects.as_slice()
+        else {
+            panic!("one token copy: {effects:?}");
+        };
+        assert_eq!(
+            (of, made, *no_mana_cost, count),
+            (&Ref::This, &except, true, &Amount::one())
+        );
+    }
+
+    #[rstest]
+    #[case::other_keyword(Keyword::Flying)]
+    #[case::unearth(Keyword::Unearth(mana()))]
+    #[case::the_other_of_the_pair(Keyword::Eternalize(mana()))]
+    fn embalm_adds_nothing_for_another_keyword(#[case] keyword: Keyword) {
+        assert!(Embalm.adds_abilities(&keyword).is_empty());
+    }
+
+    #[test]
+    fn eternalize_adds_nothing_for_embalm() {
+        assert!(
+            Eternalize
+                .adds_abilities(&Keyword::Embalm(mana()))
+                .is_empty()
+        );
+    }
+}

@@ -425,12 +425,31 @@ pub enum Condition {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: amounts are bare numbers when fixed and keep serde's tagged shape otherwise, with errors that say what was expected.
+    //! Goal: amounts are bare numbers when fixed and keep serde's tagged shape otherwise, with errors that say what was expected; of the ways to cast, only jump-start and retrace keep the mana cost.
     use super::*;
     use mtg_core::card::CardType;
     use rstest::rstest;
 
     use crate::refs::Pred;
+
+    #[rstest]
+    #[case::flashback(CastWay::Flashback, true)]
+    #[case::evoke(CastWay::Evoke, true)]
+    #[case::overload(CastWay::Overload, true)]
+    #[case::madness(CastWay::Madness, true)]
+    #[case::suspend(CastWay::Suspend, true)]
+    #[case::foretold(CastWay::Foretold, true)]
+    #[case::escape(CastWay::Escape, true)]
+    #[case::dash(CastWay::Dash, true)]
+    #[case::free(CastWay::Free, true)]
+    #[case::jump_start(CastWay::JumpStart, false)]
+    #[case::retrace(CastWay::Retrace, false)]
+    fn only_a_way_that_adds_a_cost_keeps_the_mana_cost(
+        #[case] way: CastWay,
+        #[case] replaces: bool,
+    ) {
+        assert_eq!(way.replaces_cost(), replaces);
+    }
 
     #[rstest]
     #[case::fixed(Amount::Fixed(3), "3")]
