@@ -1,4 +1,4 @@
-//! Goal: escape is a cast from the graveyard for its mana and the exile of other cards of the graveyard: it is offered only with enough other cards and the mana, never counts the card itself, asks the exile of its caster alone and refuses a card it did not offer, logs nothing of the picks until the spell is paid for, leaves the card where it goes after it resolves (no exile), gives "escapes with" counters only to the permanent that escaped and not to a cast from the hand or a copy, and a graveyard that is emptied by Rest in Peace sends the spell on to exile.
+//! Goal: escape is a cast from the graveyard for its mana and the exile of other cards of the graveyard: it is offered only with enough other cards of its owner's graveyard and the mana of its colours (a cast that cannot be paid is refused and leaves no trace), never counts the card itself, asks the exile of its caster alone and refuses a card it did not offer, logs nothing of the picks until the spell is paid for, leaves the card where it goes after it resolves (no exile), gives "escapes with" counters only to the permanent that escaped and not to a cast from the hand or a copy, and a graveyard that is emptied by Rest in Peace sends the spell on to exile.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -86,6 +86,47 @@ fn escape_is_offered_with_enough_other_cards_and_the_mana(
 ) -> Result<(), ScriptError> {
     let driver = game("Fruit of Tizerus", &FODDER[..others], lands)?;
     assert_eq!(castable(&driver, "Fruit of Tizerus"), offered_now);
+    Ok(())
+}
+
+#[rstest]
+#[case::too_few_other_cards_with_the_mana(2, 0, 4, 0, false)]
+#[case::the_cards_of_another_graveyard_do_not_count(2, 3, 4, 0, false)]
+#[case::too_little_mana_with_the_cards(3, 0, 3, 0, false)]
+#[case::mana_of_the_wrong_colour_with_the_cards(3, 0, 0, 4, false)]
+#[case::the_cards_and_the_mana(3, 0, 4, 0, true)]
+#[case::the_cards_and_mana_of_two_colours(3, 0, 2, 2, true)]
+fn a_cost_that_cannot_be_paid_is_not_offered_and_a_cast_is_refused_without_a_trace(
+    #[case] own: usize,
+    #[case] foe: usize,
+    #[case] swamps: usize,
+    #[case] islands: usize,
+    #[case] payable: bool,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let lands = (0..swamps)
+        .map(|_| ready(swamp()))
+        .chain((0..islands).map(|_| ready(island())));
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .graveyard_named(
+                0,
+                std::iter::once("Fruit of Tizerus").chain(FODDER[..own].iter().copied()),
+            )
+            .graveyard_named(1, FODDER[..foe].iter().copied())
+            .battlefield(0, lands),
+    )?;
+    assert_eq!(castable(&driver, "Fruit of Tizerus"), payable);
+    let events = driver.engine().events().len();
+    let hash = driver.state().state_hash();
+    if payable {
+        driver.begin_cast("Fruit of Tizerus")?;
+    } else {
+        assert!(driver.begin_cast("Fruit of Tizerus").is_err());
+        assert_eq!(driver.engine().events().len(), events, "nothing is logged");
+        assert_eq!(driver.state().state_hash(), hash, "nothing changed");
+        assert_eq!(count(driver.state(), Zone::Exile), 0);
+    }
     Ok(())
 }
 

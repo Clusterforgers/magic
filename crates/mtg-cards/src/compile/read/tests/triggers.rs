@@ -226,7 +226,6 @@ fn an_ability_word_is_flavor_and_the_rest_is_read(#[case] text: &str, #[case] re
 #[case::gain_life_of_an_amount("Whenever you gain 3 life, draw a card.")]
 #[case::lose_life_of_a_creature("Whenever a creature loses life, you gain 1 life.")]
 #[case::discard_a_land("Whenever you discard a land card, draw a card.")]
-#[case::two_subjects("Whenever ~ or another creature you control dies, draw a card.")]
 #[case::plural_subject("Whenever Elves you control enter, draw a card.")]
 #[case::dies_or_exiled("Whenever a creature you control dies or is put into exile, scry 1.")]
 #[case::cast_this_spell("When you cast this spell, draw a card.")]

@@ -154,13 +154,17 @@ fn it_is_a_sorcery_so_it_is_not_offered_with_a_spell_on_the_stack_or_on_another_
 }
 
 #[rstest]
-#[case::damage("Lightning Bolt")]
-fn a_creature_that_would_die_is_exiled_instead(#[case] removal: &str) -> Result<(), ScriptError> {
+#[case::damage("Lightning Bolt", vec![mountain()])]
+#[case::bounce("Cyclonic Rift", vec![island(), island()])]
+fn a_creature_that_would_leave_is_exiled_instead(
+    #[case] removal: &str,
+    #[case] lands: Vec<std::sync::Arc<mtg_cards::CardDefinition>>,
+) -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(
         Scenario::new(2)
             .graveyard_named(0, ["Dregscape Zombie"])
             .battlefield(0, [ready(swamp())])
-            .battlefield(1, [ready(mountain())])
+            .battlefield(1, lands.into_iter().map(ready))
             .hand_named(1, [removal]),
     )?;
     unearth(&mut driver, "Dregscape Zombie")?;
@@ -174,6 +178,11 @@ fn a_creature_that_would_die_is_exiled_instead(#[case] removal: &str) -> Result<
     assert!(on_battlefield(driver.state(), "Dregscape Zombie").is_none());
     find(driver.state(), Zone::Exile, "Dregscape Zombie");
     assert_eq!(driver.state().zone(Zone::Graveyard(pid(0))), []);
+    assert_eq!(
+        driver.state().zone(Zone::Hand(pid(0))),
+        [],
+        "a bounce does not put it into the hand"
+    );
     assert_replays(&driver);
     Ok(())
 }
@@ -200,6 +209,114 @@ fn the_ability_does_nothing_when_the_card_left_the_graveyard_in_response() -> Re
         driver.state().zone(Zone::Stack).is_empty(),
         "no delayed trigger was set up for a card that did not return"
     );
+    assert_replays(&driver);
+    Ok(())
+}
+
+/// Passes priority and answers every other question passively until the stack is empty.
+fn settle_all(driver: &mut Driver) -> Result<(), ScriptError> {
+    for _ in 0..40 {
+        let priority = matches!(driver.decision()?.kind, DecisionKind::Priority(_));
+        if priority && driver.state().stack().is_empty() {
+            return Ok(());
+        }
+        driver.answer_passively()?;
+    }
+    Err(ScriptError::Stuck("the stack".to_owned()))
+}
+
+/// Every permanent called `name` in play.
+fn in_play(state: &GameState, name: &str) -> Vec<ObjectId> {
+    state
+        .zone(Zone::Battlefield)
+        .iter()
+        .copied()
+        .filter(|id| name_of(state, *id) == name)
+        .collect()
+}
+
+#[test]
+fn a_copy_of_the_unearthed_creature_has_no_haste_and_stays_after_the_end_step()
+-> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(2)
+            .graveyard_named(0, ["Dregscape Zombie"])
+            .hand_named(0, ["Cackling Counterpart"])
+            .battlefield(
+                0,
+                [
+                    ready(swamp()),
+                    ready(island()),
+                    ready(island()),
+                    ready(island()),
+                ],
+            ),
+    )?;
+    unearth(&mut driver, "Dregscape Zombie")?;
+    settle(&mut driver)?;
+    let original = on_battlefield(driver.state(), "Dregscape Zombie").unwrap();
+    let at = driver.target_named("Dregscape Zombie")?;
+    driver.cast_at("Cackling Counterpart", &[at])?;
+    settle(&mut driver)?;
+    let zombies = in_play(driver.state(), "Dregscape Zombie");
+    assert_eq!(zombies.len(), 2, "the original and its copy");
+    let copy = zombies.into_iter().find(|id| *id != original).unwrap();
+    assert!(has_keyword(driver.state(), original, &Keyword::Haste));
+    assert!(
+        !has_keyword(driver.state(), copy, &Keyword::Haste),
+        "the haste is no copiable value"
+    );
+    driver.idle_until(1, Step::End)?;
+    settle(&mut driver)?;
+    assert_eq!(
+        in_play(driver.state(), "Dregscape Zombie"),
+        [copy],
+        "only the card that was unearthed is exiled"
+    );
+    find(driver.state(), Zone::Exile, "Dregscape Zombie");
+    assert_replays(&driver);
+    Ok(())
+}
+
+#[rstest]
+#[case::the_same_card_twice(&["Dregscape Zombie", "Dregscape Zombie"], 2, 0)]
+#[case::two_cards(&["Dregscape Zombie", "Kathari Screecher"], 1, 3)]
+fn two_activations_in_one_turn_return_both_cards_and_exile_both_at_the_end_step(
+    #[case] cards: &[&str],
+    #[case] swamps: usize,
+    #[case] islands: usize,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let lands = (0..swamps)
+        .map(|_| ready(swamp()))
+        .chain((0..islands).map(|_| ready(island())));
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .graveyard_named(0, cards.iter().copied())
+            .battlefield(0, lands),
+    )?;
+    for name in cards {
+        unearth(&mut driver, name)?;
+        settle(&mut driver)?;
+    }
+    assert_eq!(driver.state().zone(Zone::Graveyard(pid(0))), []);
+    let back: Vec<ObjectId> = driver
+        .state()
+        .zone(Zone::Battlefield)
+        .iter()
+        .copied()
+        .filter(|id| cards.contains(&name_of(driver.state(), *id).as_str()))
+        .collect();
+    assert_eq!(back.len(), cards.len(), "both cards returned");
+    for id in back {
+        assert!(has_keyword(driver.state(), id, &Keyword::Haste));
+    }
+    driver.idle_until(1, Step::End)?;
+    settle_all(&mut driver)?;
+    for name in cards {
+        assert!(in_play(driver.state(), name).is_empty(), "{name} is gone");
+    }
+    assert_eq!(driver.state().zone(Zone::Exile).len(), cards.len());
     assert_replays(&driver);
     Ok(())
 }
