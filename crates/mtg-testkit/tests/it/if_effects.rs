@@ -255,10 +255,10 @@ const LOYALTY_OF_A_MATCH: &str = r#"{"Matches":{"subject":"This","selector":[{"C
 #[case::counters(with_condition(COUNTERS), &[])]
 #[case::loyalty(with_condition(LOYALTY), &[])]
 #[case::loyalty_of_a_match(with_condition(LOYALTY_OF_A_MATCH), &[])]
-#[case::the_monarch(with_condition(r#"{"Monarch":"You"}"#), &["Condition.Monarch"])]
-#[case::not_the_monarch(with_condition(r#"{"Not":{"Monarch":"You"}}"#), &["Condition.Monarch"])]
+#[case::the_citys_blessing(with_condition(r#"{"CitysBlessing":"You"}"#), &["Condition.CitysBlessing"])]
+#[case::not_the_citys_blessing(with_condition(r#"{"Not":{"CitysBlessing":"You"}}"#), &["Condition.CitysBlessing"])]
 #[case::one_of_all(with_condition(&format!(r#"{{"All":["YourTurn",{COUNTERS}]}}"#)), &[])]
-#[case::one_of_any(with_condition(&format!(r#"{{"Any":[{LOYALTY},{{"Monarch":"You"}}]}}"#)), &["Condition.Monarch"])]
+#[case::one_of_any(with_condition(&format!(r#"{{"Any":[{LOYALTY},{{"CitysBlessing":"You"}}]}}"#)), &["Condition.CitysBlessing"])]
 #[case::inside_the_then_of_another_if(
     format!(r#"{{"Spell":{{"effects":[{{"If":{{"condition":"YourTurn","then":[{{"If":{{"condition":{COUNTERS},"then":[]}}}}]}}}}]}}}}"#),
     &[]
