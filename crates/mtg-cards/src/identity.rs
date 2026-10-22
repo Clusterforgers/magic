@@ -302,6 +302,7 @@ mod tests {
     #[case::activated_cost(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":"{2}{U}","effects":[{"Draw":{}}]}}"#)), "U")]
     #[case::activated_hybrid_cost(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":"{B/G}","effects":[{"Draw":{}}]}}"#)), "BG")]
     #[case::added_mana(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green","Colorless"]}}}]}}"#)), "G")]
+    #[case::added_lists_of_mana(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOfLists":[["Red","Red"],["Red","Black"],["Black","Colorless"]]}}}]}}"#)), "BR")]
     #[case::any_color_adds_none(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#)), "")]
     #[case::rules_text_clause(costing("{1}").with_manual("{W}, {T}: Draw a card.", "not run"), "W")]
     #[case::reminder_text_is_no_rules_text(costing("{1}").with_manual("Flash (You may cast this for {W}.)", "not run"), "")]

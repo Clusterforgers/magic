@@ -685,6 +685,14 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                         2..4
                     )
                     .prop_map(Produce::OneOf),
+                    vec(
+                        vec(
+                            select(vec![ManaType::White, ManaType::Blue, ManaType::Colorless]),
+                            1..3
+                        ),
+                        2..4
+                    )
+                    .prop_map(Produce::OneOfLists),
                     (1u32..3).prop_map(Produce::ChosenColor),
                     (1u32..3).prop_map(Produce::CommanderIdentity),
                     (selector(), 1u32..3, any::<bool>()).prop_map(|(among, count, colorless)| {

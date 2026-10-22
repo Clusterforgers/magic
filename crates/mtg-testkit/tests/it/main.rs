@@ -68,6 +68,7 @@ mod extra_costs;
 mod face_rules;
 mod faces;
 mod faces_fuzz;
+mod filter_lands;
 mod forecast_hidden;
 mod forecast_matches_games;
 mod forecast_replacement;

@@ -56,6 +56,10 @@ fn names(list: &[&str]) -> BTreeSet<String> {
     r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOf":["White","Blue"]}}}]}}"#,
     &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Effect.AddMana", "Effect.AddMana.OneOf"]
 )]
+#[case::a_choice_of_lists_of_mana(
+    r#"{"Activated":{"cost":[{"Mana":"{W/U}"},"Tap"],"effects":[{"AddMana":{"mana":{"OneOfLists":[["White","White"],["White","Blue"],["Blue","Blue"]]}}}]}}"#,
+    &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Cost.Mana", "Effect.AddMana", "Effect.AddMana.OneOfLists"]
+)]
 #[case::mana_of_the_chosen_color(
     r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"ChosenColor":1}}}]}}"#,
     &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Effect.AddMana", "Effect.AddMana.ChosenColor"]
@@ -238,6 +242,14 @@ fn a_node_validates_round_trips_and_names_its_primitive(
 #[case::a_choice_of_one_mana(
     r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOf":["White"]}}}]}}"#,
     "a choice of mana needs at least two types"
+)]
+#[case::a_choice_of_one_list(
+    r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOfLists":[["White","Blue"]]}}}]}}"#,
+    "a choice of mana needs at least two lists"
+)]
+#[case::a_choice_with_an_empty_list(
+    r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOfLists":[["White","Blue"],[]]}}}]}}"#,
+    "a list of mana adds no mana"
 )]
 #[case::no_chosen_mana(
     r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"ChosenColor":0}}}]}}"#,

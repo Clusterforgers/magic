@@ -650,17 +650,20 @@ fn add_text(mana: &Produce, times: &Amount, only: &[SpendOn]) -> Option<String> 
     }
 }
 
+/// "{W}{U}": the symbols of mana added together.
+fn symbols_text(list: &[mtg_core::mana::ManaType]) -> String {
+    let mut symbols = String::new();
+    for mana in list {
+        symbols.push('{');
+        symbols.push(mana.symbol());
+        symbols.push('}');
+    }
+    symbols
+}
+
 fn mana_text(mana: &Produce) -> Option<String> {
     Some(match mana {
-        Produce::Fixed(list) if !list.is_empty() => {
-            let mut symbols = String::new();
-            for mana in list {
-                symbols.push('{');
-                symbols.push(mana.symbol());
-                symbols.push('}');
-            }
-            symbols
-        }
+        Produce::Fixed(list) if !list.is_empty() => symbols_text(list),
         Produce::AnyColor(1) => "one mana of any color".to_owned(),
         Produce::AnyColor(count @ 2..) => {
             format!("{} mana of any one color", count_word(*count)?)
@@ -700,14 +703,7 @@ fn mana_text(mana: &Produce) -> Option<String> {
             }
         }
         Produce::OneOfLists(lists) if lists.len() > 1 => {
-            let texts: Vec<String> = lists
-                .iter()
-                .map(|list| {
-                    list.iter()
-                        .map(|mana| format!("{{{}}}", mana.symbol()))
-                        .collect::<String>()
-                })
-                .collect();
+            let texts: Vec<String> = lists.iter().map(|list| symbols_text(list)).collect();
             match texts.as_slice() {
                 [first, second] => format!("{first} or {second}"),
                 [init @ .., final_one] => format!("{}, or {final_one}", init.join(", ")),

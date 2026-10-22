@@ -52,6 +52,21 @@ use super::*;
     ClauseKind::Activated,
     r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOf":["Colorless","Green"]}}}]}}"#
 )]
+#[case::a_choice_of_lists(
+    "{W/U}, {T}: Add {W}{W}, {W}{U}, or {U}{U}.",
+    ClauseKind::Activated,
+    r#"{"Activated":{"cost":[{"Mana":"{W/U}"},"Tap"],"effects":[{"AddMana":{"mana":{"OneOfLists":[["White","White"],["White","Blue"],["Blue","Blue"]]}}}]}}"#
+)]
+#[case::a_choice_of_two_lists(
+    "{T}: Add {C}{C} or {G}{G}.",
+    ClauseKind::Activated,
+    r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOfLists":[["Colorless","Colorless"],["Green","Green"]]}}}]}}"#
+)]
+#[case::lists_of_different_lengths(
+    "{T}: Add {R}, {R}{G}, or {G}{G}{G}.",
+    ClauseKind::Activated,
+    r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOfLists":[["Red"],["Red","Green"],["Green","Green","Green"]]}}}]}}"#
+)]
 #[case::the_chosen_color(
     "{T}: Add one mana of the chosen color.",
     ClauseKind::Activated,
