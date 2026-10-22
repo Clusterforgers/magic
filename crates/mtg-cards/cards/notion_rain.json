@@ -1,0 +1,22 @@
+{
+  "oracle_id": "f93dbe17-71d1-4542-96ff-81ac6da9513f",
+  "name": "Notion Rain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Notion Rain",
+      "oracle_fingerprint": "6ea27efd36180bc0b9b17f565d17a6ab",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Surveil": { "count": 2 } },
+              { "Draw": { "count": 2 } },
+              { "DealDamage": { "to": "You", "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -434,6 +434,22 @@ pub fn scryer(name: &str, generic: u32, count: i32) -> Arc<CardDefinition> {
     )
 }
 
+/// A sorcery for `{generic}{U}` with "Surveil `count`."
+pub fn surveiler(name: &str, generic: u32, count: i32) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Sorcery)
+            .with_mana_cost(cost(generic, &[Color::Blue]))
+            .with_rules(Ability::Spell {
+                targets: Vec::new(),
+                effects: vec![Effect::Surveil {
+                    who: Ref::You,
+                    count: Amount::Fixed(count),
+                }],
+            }),
+    )
+}
+
 /// An instant for `{U}` with "Look at the top two cards of each opponent's library, then put them on the bottom of
 /// it in any order."
 pub fn bottomer(name: &str) -> Arc<CardDefinition> {

@@ -1,0 +1,25 @@
+{
+  "id": "78cd258b-431e-42f7-a938-76ebc80d528d",
+  "oracle_id": "75e8907d-f726-4a63-ba8b-c0fd4936734e",
+  "name": "Curate",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "99",
+  "rarity": "common",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2,
+  "type_line": "Instant",
+  "oracle_text": "Surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)\nDraw a card.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Surveil"
+  ]
+}

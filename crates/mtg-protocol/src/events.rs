@@ -82,6 +82,16 @@ pub enum HiddenEvent {
         /// Cards put on the bottom.
         bottom: u32,
     },
+    /// A player surveilled and chose which cards stay on top, which only they know; the cards put into the graveyard
+    /// follow as moves everyone sees.
+    Surveilled {
+        /// Who surveilled.
+        player: PlayerId,
+        /// Cards that stay on top.
+        top: u32,
+        /// Cards put into the graveyard.
+        graveyard: u32,
+    },
     /// A card moved between zones the viewer cannot see into, so which card is withheld.
     ZoneChanged {
         /// Where it was.
@@ -218,6 +228,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         Event::LibraryLooked(_)
         | Event::CardsFound(_)
         | Event::Scried(_)
+        | Event::Surveilled(_)
         | Event::ZoneChanged { .. }
         | Event::ChoiceMade { .. }
         | Event::StepDone { .. } => redact_effects(before, event, viewer),
@@ -330,6 +341,13 @@ fn redact_effects(before: &GameState, event: &Event, viewer: PlayerId) -> Option
             top: count(scried.top.len()),
             bottom: count(scried.bottom.len()),
         }),
+        Event::Surveilled(surveilled) if surveilled.player != viewer => {
+            Some(HiddenEvent::Surveilled {
+                player: surveilled.player,
+                top: count(surveilled.top.len()),
+                graveyard: count(surveilled.graveyard.len()),
+            })
+        }
         // A card that moves between places the viewer cannot see into is not told apart, and neither is one that
         // lies face down at either end and that the viewer may not look at.
         Event::ZoneChanged {
@@ -526,7 +544,7 @@ mod tests {
     use mtg_engine::choose::{Choice, Choices, Target};
     use mtg_engine::counters::CountersChanged;
     use mtg_engine::events::{ResolutionOutcome, ZoneCause};
-    use mtg_engine::library::{CardsFound, LibraryLooked, Revealed, Scried};
+    use mtg_engine::library::{CardsFound, LibraryLooked, Revealed, Scried, Surveilled};
     use mtg_engine::snapshot::snapshot;
     use mtg_engine::tokens::TokenCreated;
     use mtg_engine::triggers::{DelayedCreated, DelayedId, Triggered};
@@ -589,9 +607,22 @@ mod tests {
             top: vec![t.library],
             bottom: vec![t.hand],
         });
-        for event in [&looked, &found, &scried] {
+        let surveilled = Event::Surveilled(Surveilled {
+            player: OWNER,
+            top: vec![t.library],
+            graveyard: vec![t.hand],
+        });
+        for event in [&looked, &found, &scried, &surveilled] {
             assert_eq!(told(&t.state, event, OWNER), Ok(()), "{event:?}");
         }
+        assert_eq!(
+            told(&t.state, &surveilled, OTHER),
+            Err(HiddenEvent::Surveilled {
+                player: OWNER,
+                top: 1,
+                graveyard: 1
+            })
+        );
         assert_eq!(
             told(&t.state, &looked, OTHER),
             Err(HiddenEvent::LibraryLooked {

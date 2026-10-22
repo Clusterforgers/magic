@@ -1,0 +1,12 @@
+{
+  "oracle_id": "58321467-41d6-4419-bcb2-cd3e60f677b3",
+  "name": "Sinister Starfish",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sinister Starfish",
+      "oracle_fingerprint": "0de9a49f129d872596092bd7aaba5d65",
+      "abilities": [{ "Activated": { "cost": ["Tap"], "effects": [{ "Surveil": {} }] } }]
+    }
+  ]
+}

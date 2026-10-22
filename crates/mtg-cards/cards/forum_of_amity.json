@@ -1,0 +1,23 @@
+{
+  "oracle_id": "349ea6c7-6b3e-417f-b082-b712e2b1635b",
+  "name": "Forum of Amity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forum of Amity",
+      "oracle_fingerprint": "11e591b0a5404d47ac306cf81f533708",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["White", "Black"] } } }]
+          }
+        },
+        {
+          "Activated": { "cost": [{ "Mana": "{2}{W}{B}" }, "Tap"], "effects": [{ "Surveil": {} }] }
+        }
+      ]
+    }
+  ]
+}

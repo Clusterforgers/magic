@@ -236,6 +236,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   CardsFound: [{ CardsFound: { player: 1, zone: { Library: 1 }, cards: [3] } }, 'Bo finds 1 card'],
   Scried: [{ Scried: { player: 0, top: [1], bottom: [2, 3] } }, 'Ana scries 3'],
+  Surveilled: [{ Surveilled: { player: 0, top: [1], graveyard: [2, 3] } }, 'Ana surveils 3'],
   Revealed: [{ Revealed: { player: 0, cards: [1, 2] } }, 'Ana reveals Grizzly Bears and Hill Giant'],
 }
 
@@ -329,6 +330,7 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   LibraryLooked: [{ LibraryLooked: { player: 1, count: 2 } }, 'Bo looks at 2 cards of their library'],
   CardsFound: [{ CardsFound: { player: 1, count: 1 } }, 'Bo finds 1 card'],
   Scried: [{ Scried: { player: 1, top: 1, bottom: 1 } }, 'Bo scries 2'],
+  Surveilled: [{ Surveilled: { player: 1, top: 1, graveyard: 2 } }, 'Bo surveils 3'],
   ZoneChanged: [
     { ZoneChanged: { from: { Library: 1 }, to: { Hand: 1 }, cause: 'Moved' } },
     "A card moves to Bo's hand",

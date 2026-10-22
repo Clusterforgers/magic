@@ -2,6 +2,7 @@
 
 mod abilities;
 mod ability_costs;
+mod actions_fuzz;
 mod active_leaves;
 mod active_leaves_fuzz;
 mod alternative_costs;
@@ -138,6 +139,7 @@ mod state_based_actions;
 mod state_triggers;
 mod static_abilities;
 mod statics_fuzz;
+mod surveil;
 mod suspend;
 mod symbol_fuzz;
 mod tap_effects;

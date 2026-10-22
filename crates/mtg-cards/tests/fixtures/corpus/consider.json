@@ -1,0 +1,25 @@
+{
+  "id": "4f28e706-c488-4525-ad8a-977a5fa77f80",
+  "oracle_id": "4c9bcba6-87b5-4fb3-97ee-6fe5b739337d",
+  "name": "Consider",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tle",
+  "collector_number": "157",
+  "rarity": "common",
+  "released_at": "2025-11-21",
+  "digital": false,
+  "mana_cost": "{U}",
+  "cmc": 1,
+  "type_line": "Instant",
+  "oracle_text": "Surveil 1. (Look at the top card of your library. You may put it into your graveyard.)\nDraw a card.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Surveil"
+  ]
+}

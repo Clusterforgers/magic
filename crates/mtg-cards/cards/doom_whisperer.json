@@ -1,0 +1,16 @@
+{
+  "oracle_id": "4a01db2e-cd43-4b1a-a480-169018f82501",
+  "name": "Doom Whisperer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doom Whisperer",
+      "oracle_fingerprint": "24dd92446eb408e34492c3095439a2ec",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        { "Activated": { "cost": [{ "PayLife": 2 }], "effects": [{ "Surveil": { "count": 2 } }] } }
+      ]
+    }
+  ]
+}

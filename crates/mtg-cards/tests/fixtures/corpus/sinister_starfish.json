@@ -1,0 +1,27 @@
+{
+  "id": "5f75b7f4-249c-4b10-a06d-6b7654cccc46",
+  "oracle_id": "58321467-41d6-4419-bcb2-cd3e60f677b3",
+  "name": "Sinister Starfish",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "140",
+  "rarity": "common",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2,
+  "type_line": "Creature — Starfish",
+  "oracle_text": "{T}: Surveil 1. (Look at the top card of your library. You may put it into your graveyard.)",
+  "power": "0",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Surveil"
+  ]
+}

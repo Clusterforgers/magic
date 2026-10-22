@@ -1,0 +1,27 @@
+{
+  "id": "98648b8a-2cf0-4c10-ab13-c88b2e03fc15",
+  "oracle_id": "12db6263-75c2-442f-a1a5-7af7915f8f9f",
+  "name": "Umbral Collar Zealot",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "227",
+  "rarity": "uncommon",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2,
+  "type_line": "Creature — Human Cleric",
+  "oracle_text": "Sacrifice another creature or artifact: Surveil 1. (Look at the top card of your library. You may put it into your graveyard.)",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Surveil"
+  ]
+}

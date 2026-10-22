@@ -249,6 +249,7 @@ mod tests {
                 "Effect.Unattach",
                 "Effect.Transform",
                 "Effect.WinGame",
+                "Effect.Surveil",
                 "Effect.ExileUntil",
                 "Effect.ExileTop",
                 "Effect.CastFromZone",

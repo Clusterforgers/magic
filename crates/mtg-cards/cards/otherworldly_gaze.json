@@ -1,0 +1,15 @@
+{
+  "oracle_id": "be668c2d-71ea-4346-8980-1fbf5e4cbed3",
+  "name": "Otherworldly Gaze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Otherworldly Gaze",
+      "oracle_fingerprint": "87a35865e74e377303e7e23aad92c668",
+      "abilities": [
+        { "Spell": { "effects": [{ "Surveil": { "count": 3 } }] } },
+        { "Keyword": { "Flashback": "{1}{U}" } }
+      ]
+    }
+  ]
+}

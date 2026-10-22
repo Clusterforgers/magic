@@ -14,7 +14,7 @@ use crate::choose::Choices;
 use crate::error::EngineError;
 use crate::events::{Event, ZoneCause};
 use crate::keywords::OptionalKind;
-use crate::library::Scried;
+use crate::library::{Scried, Surveilled};
 use crate::object::{GameObject, ObjectKind, PermanentState};
 use crate::state::{GameState, Tally};
 use crate::zones::{Placement, Zone};
@@ -303,6 +303,39 @@ pub(super) fn scry(state: &mut GameState, scried: &Scried) -> Result<(), EngineE
         .copied()
         .collect();
     state.zones.set(zone, arranged);
+    Ok(())
+}
+
+/// Arranges the cards a surveil looked at: they are the top cards of the library, `top` goes on top as it lies from
+/// the top down and `graveyard` just beneath it, where the moves that follow take it from.
+pub(super) fn surveil(state: &mut GameState, surveilled: &Surveilled) -> Result<(), EngineError> {
+    let zone = Zone::Library(surveilled.player);
+    let library = state.zones.get(zone);
+    let looked: Vec<ObjectId> = surveilled
+        .top
+        .iter()
+        .chain(&surveilled.graveyard)
+        .copied()
+        .collect();
+    let Some(split) = library.len().checked_sub(looked.len()) else {
+        return Err(invalid(
+            "a surveil looked at more cards than the library holds",
+        ));
+    };
+    let (rest, on_top) = library.split_at(split);
+    if !same_cards(on_top, &looked) {
+        return Err(invalid(
+            "a surveil did not look at the top cards of the library",
+        ));
+    }
+    let arranged = rest
+        .iter()
+        .chain(surveilled.graveyard.iter().rev())
+        .chain(surveilled.top.iter().rev())
+        .copied()
+        .collect();
+    state.zones.set(zone, arranged);
+    crate::sight::show(state, Some(surveilled.player), &looked);
     Ok(())
 }
 

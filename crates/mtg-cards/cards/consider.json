@@ -1,0 +1,12 @@
+{
+  "oracle_id": "4c9bcba6-87b5-4fb3-97ee-6fe5b739337d",
+  "name": "Consider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consider",
+      "oracle_fingerprint": "09d6b1512d351d402a63efdf1267efc1",
+      "abilities": [{ "Spell": { "effects": [{ "Surveil": {} }, { "Draw": {} }] } }]
+    }
+  ]
+}

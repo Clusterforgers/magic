@@ -1,0 +1,27 @@
+{
+  "id": "66ed78c5-be23-4fcb-9143-e6574cd6ec68",
+  "oracle_id": "f93dbe17-71d1-4542-96ff-81ac6da9513f",
+  "name": "Notion Rain",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "217",
+  "rarity": "common",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{1}{U}{B}",
+  "cmc": 3,
+  "type_line": "Sorcery",
+  "oracle_text": "Surveil 2, then draw two cards. Notion Rain deals 2 damage to you. (To surveil 2, look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Surveil"
+  ]
+}

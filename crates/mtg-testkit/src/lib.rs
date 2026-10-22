@@ -3,6 +3,7 @@
 //! Build a state with [`Scenario`], drive it with [`Driver`] (scripted answers by card name),
 //! check engine invariants with [`InvariantChecker`], and fuzz whole games with [`play_game`].
 
+pub mod action_cards;
 pub mod alternative_cards;
 pub mod announce_cards;
 pub mod attach_cards;
@@ -53,6 +54,7 @@ pub mod x_after_cards;
 pub mod x_cards;
 pub mod zone_cards;
 
+pub use action_cards::actions_fuzz_setup;
 pub use alternative_cards::alternative_fuzz_setup;
 pub use announce_cards::split_fuzz_setup;
 pub use attach_cards::attach_fuzz_setup;

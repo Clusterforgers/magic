@@ -1074,6 +1074,81 @@ fn the_seat_that_scries_sees_the_cards_and_no_other_seat_does(#[values(2, 3, 4)]
 }
 
 #[rstest]
+fn the_seat_that_surveils_sees_the_cards_and_the_others_see_only_what_goes_into_the_graveyard(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(false, true)] graveyard: bool,
+) {
+    let scenario = library_table(seats, mtg_testkit::corpus::card("Consider").unwrap(), &[]);
+    let answer = move |decision: &Decision| match &decision.kind {
+        DecisionKind::ChooseCards(options) if graveyard => {
+            mtg_engine::decision::Answer::ChooseCards(mtg_engine::choose::CardsChoice(
+                options.from.clone(),
+            ))
+        }
+        DecisionKind::ChooseCards(_) => {
+            mtg_engine::decision::Answer::ChooseCards(mtg_engine::choose::CardsChoice(Vec::new()))
+        }
+        other => panic!("unexpected {}", other.name()),
+    };
+    let (after, events, batches) = play_spell(scenario, seats, "Consider", answer);
+    let surveilled = events
+        .iter()
+        .find_map(|event| match event {
+            mtg_engine::Event::Surveilled(surveilled) => Some(surveilled.clone()),
+            _ => None,
+        })
+        .expect("Consider surveilled");
+    assert!(
+        batches[0].events.iter().any(|event| matches!(
+            event,
+            mtg_protocol::EventView::Public(mtg_engine::Event::Surveilled(s)) if *s == surveilled
+        )),
+        "the seat that surveilled is told which card it looked at"
+    );
+    let looked = surveilled
+        .top
+        .iter()
+        .chain(&surveilled.graveyard)
+        .copied()
+        .next()
+        .expect("one card was looked at");
+    let name = after.object(looked).unwrap().card().name.clone();
+    for batch in &batches[1..] {
+        assert!(
+            batch.events.iter().any(|event| matches!(
+                event,
+                mtg_protocol::EventView::Hidden(mtg_protocol::HiddenEvent::Surveilled {
+                    player: PlayerId(0),
+                    top,
+                    graveyard: sent
+                }) if *top == u32::from(!graveyard) && *sent == u32::from(graveyard)
+            )),
+            "the others are told how many cards stayed and how many went"
+        );
+        assert!(!batch.events.iter().any(|event| matches!(
+            event,
+            mtg_protocol::EventView::Public(mtg_engine::Event::Surveilled(_))
+        )));
+        if graveyard {
+            // A graveyard is open: the move names the card where it lands.
+            assert!(
+                batch.events.iter().any(|event| matches!(
+                    event,
+                    mtg_protocol::EventView::Public(mtg_engine::Event::ZoneChanged {
+                        object,
+                        to: Zone::Graveyard(PlayerId(0)),
+                        ..
+                    }) if *object == looked
+                )),
+                "the card put into the graveyard is named to every seat"
+            );
+        } else {
+            assert_clean(batch, &BTreeMap::from([(looked, name.clone())]));
+        }
+    }
+}
+
+#[rstest]
 fn the_seat_that_looks_at_libraries_sees_the_cards_and_no_other_seat_does_not_even_the_owner(
     #[values(2, 3, 4)] seats: usize,
 ) {

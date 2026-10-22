@@ -35,6 +35,7 @@ import type { Snapshot } from "./Snapshot";
 import type { SpellCopy } from "./SpellCopy";
 import type { SpendOn } from "./SpendOn";
 import type { Step } from "./Step";
+import type { Surveilled } from "./Surveilled";
 import type { Target } from "./Target";
 import type { TokenCreated } from "./TokenCreated";
 import type { Triggered } from "./Triggered";
@@ -442,7 +443,7 @@ player: PlayerId,
 /**
  * How much, at least 1.
  */
-amount: number, } } | { "CountersChanged": CountersChanged } | { "TokenCreated": TokenCreated } | { "LibraryLooked": LibraryLooked } | { "CardsFound": CardsFound } | { "Scried": Scried } | { "Revealed": Revealed } | { "LibraryBottomed": { 
+amount: number, } } | { "CountersChanged": CountersChanged } | { "TokenCreated": TokenCreated } | { "LibraryLooked": LibraryLooked } | { "CardsFound": CardsFound } | { "Scried": Scried } | { "Surveilled": Surveilled } | { "Revealed": Revealed } | { "LibraryBottomed": { 
 /**
  * Whose library.
  */

@@ -1,0 +1,29 @@
+{
+  "id": "e8aabcaf-0968-402f-bc9f-289756e4d4b7",
+  "oracle_id": "4a01db2e-cd43-4b1a-a480-169018f82501",
+  "name": "Doom Whisperer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "128",
+  "rarity": "mythic",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5,
+  "type_line": "Creature — Nightmare Demon",
+  "oracle_text": "Flying, trample\nPay 2 life: Surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Surveil",
+    "Trample"
+  ]
+}

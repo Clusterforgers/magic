@@ -28,7 +28,7 @@ use mtg_engine::events::{ResolutionOutcome, ZoneCause};
 use mtg_engine::forecast::{
     AttackerForecast, CombatForecast, CreatureForecast, ForecastDamage, PlayerForecast,
 };
-use mtg_engine::library::{CardsFound, LibraryLooked, Revealed, Scried};
+use mtg_engine::library::{CardsFound, LibraryLooked, Revealed, Scried, Surveilled};
 use mtg_engine::mana::{ManaOption, ManaPool, ManaSource, Payment};
 use mtg_engine::object::{Chosen, ObjectRef};
 use mtg_engine::snapshot::snapshot;
@@ -703,6 +703,11 @@ fn every_event_view_variant_round_trips() {
             player,
             top: 1,
             bottom: 2,
+        },
+        HiddenEvent::Surveilled {
+            player,
+            top: 2,
+            graveyard: 1,
         },
         HiddenEvent::ZoneChanged {
             from: Zone::Library(player),
@@ -1400,6 +1405,11 @@ fn primitive_events() -> Vec<Event> {
             player,
             top: vec![a],
             bottom: vec![b],
+        }),
+        Event::Surveilled(Surveilled {
+            player,
+            top: vec![a],
+            graveyard: vec![b],
         }),
         Event::Revealed(Revealed {
             player,

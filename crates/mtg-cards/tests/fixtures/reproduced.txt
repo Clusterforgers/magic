@@ -23,8 +23,10 @@ Capsize
 Carnage Tyrant
 Cathars' Crusade
 Clone
+Consider
 Copper-Leaf Angel
 Counterspell
+Curate
 Cyclonic Rift
 Death Ward
 Deep Analysis
@@ -33,6 +35,7 @@ Demon Bolt
 Disembowel
 Dockside Extortionist
 Doom Blade
+Doom Whisperer
 Dream's Grip
 Drudge Skeletons
 Durkwood Baloth
@@ -48,6 +51,7 @@ Flooded Strand
 Fog
 Followed Footsteps
 Forced March
+Forum of Amity
 Foundry Inspector
 Gadwick, the Wizened
 Giant Growth
@@ -85,7 +89,10 @@ Monastery Swiftspear
 Mulldrifter
 Murderous Cut
 Nantuko Husk
+Nightveil Sprite
+Notion Rain
 Opt
+Otherworldly Gaze
 Pacifism
 Phantasmal Image
 Pillar of the Paruns
@@ -104,6 +111,8 @@ Saw It Coming
 Seedglaive Mentor
 Serra Angel
 Siege Wurm
+Sinister Sabotage
+Sinister Starfish
 Skullclamp
 Sodden Verdure
 Sol Ring
@@ -126,6 +135,7 @@ Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Treasure Cruise
 Tumble Magnet
+Umbral Collar Zealot
 Underworld Dreams
 Walking Ballista
 Wanderbrine Preacher

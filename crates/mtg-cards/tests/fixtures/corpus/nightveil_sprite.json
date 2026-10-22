@@ -1,0 +1,28 @@
+{
+  "id": "82f806fe-3970-4ae2-b232-d99002d46062",
+  "oracle_id": "8ac23863-0aa7-41bc-b9b7-c5f0566172cf",
+  "name": "Nightveil Sprite",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "113",
+  "rarity": "uncommon",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2,
+  "type_line": "Creature — Faerie Rogue",
+  "oracle_text": "Flying\nWhenever this creature attacks, surveil 1. (Look at the top card of your library. You may put it into your graveyard.)",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Surveil"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "75e8907d-f726-4a63-ba8b-c0fd4936734e",
+  "name": "Curate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curate",
+      "oracle_fingerprint": "d07d8efbcfabb39ac1d2eaeed5aaa412",
+      "abilities": [{ "Spell": { "effects": [{ "Surveil": { "count": 2 } }, { "Draw": {} }] } }]
+    }
+  ]
+}

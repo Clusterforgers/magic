@@ -1,0 +1,19 @@
+{
+  "oracle_id": "973fd4d4-9255-4825-85b7-503606c4e932",
+  "name": "Sinister Sabotage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sinister Sabotage",
+      "oracle_fingerprint": "82132cce74ba09f300b016fccbfd3ad3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }, { "Surveil": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -73,7 +73,19 @@ top: number,
 /**
  * Cards put on the bottom.
  */
-bottom: number, } } | { "ZoneChanged": { 
+bottom: number, } } | { "Surveilled": { 
+/**
+ * Who surveilled.
+ */
+player: PlayerId, 
+/**
+ * Cards that stay on top.
+ */
+top: number, 
+/**
+ * Cards put into the graveyard.
+ */
+graveyard: number, } } | { "ZoneChanged": { 
 /**
  * Where it was.
  */

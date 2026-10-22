@@ -1,0 +1,20 @@
+{
+  "oracle_id": "8ac23863-0aa7-41bc-b9b7-c5f0566172cf",
+  "name": "Nightveil Sprite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nightveil Sprite",
+      "oracle_fingerprint": "754221ef62ee7283eed2b5a7e1df2f3d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "Surveil": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

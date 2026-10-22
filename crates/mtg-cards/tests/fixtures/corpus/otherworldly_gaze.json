@@ -1,0 +1,26 @@
+{
+  "id": "40bafd2b-acd4-46f0-abb2-139e2918ae99",
+  "oracle_id": "be668c2d-71ea-4346-8980-1fbf5e4cbed3",
+  "name": "Otherworldly Gaze",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "122",
+  "rarity": "common",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{U}",
+  "cmc": 1,
+  "type_line": "Instant",
+  "oracle_text": "Surveil 3. (Look at the top three cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)\nFlashback {1}{U} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Surveil",
+    "Flashback"
+  ]
+}

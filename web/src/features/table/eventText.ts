@@ -274,6 +274,7 @@ const PIPELINE = [
   'LibraryLooked',
   'CardsFound',
   'Scried',
+  'Surveilled',
   'Revealed',
 ] as const
 type PipelineName = (typeof PIPELINE)[number]
@@ -350,6 +351,10 @@ function describePipeline(event: PipelineEvent, n: EventNames): LogLine {
   if ('Scried' in event) {
     const { player, top, bottom } = event.Scried
     return line(`${n.seat(player)} scries ${top.length + bottom.length}`)
+  }
+  if ('Surveilled' in event) {
+    const { player, top, graveyard } = event.Surveilled
+    return line(`${n.seat(player)} surveils ${top.length + graveyard.length}`)
   }
   const { player, cards: shown } = event.Revealed
   return line(`${n.seat(player)} reveals ${joinWords(shown.map(n.card))}`)
@@ -546,6 +551,10 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   if ('Scried' in event) {
     const { player, top, bottom } = event.Scried
     return line(`${n.seat(player)} scries ${top + bottom}`)
+  }
+  if ('Surveilled' in event) {
+    const { player, top, graveyard } = event.Surveilled
+    return line(`${n.seat(player)} surveils ${top + graveyard}`)
   }
   if ('ZoneChanged' in event) {
     const { from, to, cause } = event.ZoneChanged

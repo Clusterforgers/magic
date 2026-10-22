@@ -12,7 +12,7 @@ use crate::copies::{AbilityCopy, BecameCopy, SpellCopy};
 use crate::counters::CountersChanged;
 use crate::day_night::DayNight;
 use crate::effects::ContinuousEffect;
-use crate::library::{CardsFound, LibraryLooked, Revealed, Scried};
+use crate::library::{CardsFound, LibraryLooked, Revealed, Scried, Surveilled};
 use crate::manual::ManualAction;
 use crate::object::{Chosen, FaceDown, ObjectRef};
 use crate::player::LossReason;
@@ -456,6 +456,8 @@ pub enum Event {
     CardsFound(CardsFound),
     /// A player scried.
     Scried(Scried),
+    /// A player surveilled.
+    Surveilled(Surveilled),
     /// A player revealed cards.
     Revealed(Revealed),
     /// Cards of a library were put on its bottom.
@@ -649,6 +651,12 @@ impl Event {
             | Event::CardsBottomed { cards, .. }
             | Event::LibraryBottomed { cards, .. } => cards.clone(),
             Event::Scried(scried) => scried.top.iter().chain(&scried.bottom).copied().collect(),
+            Event::Surveilled(surveilled) => surveilled
+                .top
+                .iter()
+                .chain(&surveilled.graveyard)
+                .copied()
+                .collect(),
             Event::TokenCreated(token) => vec![token.object],
             Event::BecameCopy(copy) => vec![copy.object],
             Event::SpellCopied(copy) => vec![copy.object],

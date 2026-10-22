@@ -1,0 +1,28 @@
+{
+  "id": "1de6c6cc-0c55-4997-8623-d7f796bd9ab8",
+  "oracle_id": "349ea6c7-6b3e-417f-b082-b712e2b1635b",
+  "name": "Forum of Amity",
+  "lang": "en",
+  "layout": "normal",
+  "set": "sos",
+  "collector_number": "256",
+  "rarity": "common",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0,
+  "type_line": "Land",
+  "oracle_text": "This land enters tapped.\n{T}: Add {W} or {B}.\n{2}{W}{B}, {T}: Surveil 1. (Look at the top card of your library. You may put it into your graveyard.)",
+  "colors": [],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Surveil"
+  ],
+  "produced_mana": [
+    "B",
+    "W"
+  ]
+}

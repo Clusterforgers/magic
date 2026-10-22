@@ -19,7 +19,7 @@ use crate::copies::SpellCopy;
 use crate::counters::CountersChanged;
 use crate::events::{Event, ResolutionOutcome, ZoneCause};
 use crate::fixtures::{creature, state};
-use crate::library::{CardsFound, LibraryLooked, Revealed, Scried};
+use crate::library::{CardsFound, LibraryLooked, Revealed, Scried, Surveilled};
 use crate::object::{ObjectKind, ObjectRef};
 use crate::snapshot::snapshot;
 use crate::state::GameState;
@@ -773,6 +773,76 @@ fn a_scry_of_cards_that_are_not_the_top_of_the_library_is_refused(
     });
     assert!(apply_event(&mut game, &event).is_err());
     assert_eq!(game.state_hash(), before);
+}
+
+#[rstest]
+#[case::all_stay_in_the_same_order(&[0, 1, 2], &[], &["Library 4", "Library 3", "Library 2", "Library 1", "Library 0"])]
+#[case::two_stay_reversed(&[1, 0], &[], &["Library 4", "Library 3", "Library 2", "Library 0", "Library 1"])]
+#[case::the_others_lie_just_beneath(&[2], &[0, 1], &["Library 4", "Library 3", "Library 1", "Library 0", "Library 2"])]
+#[case::all_wait_for_the_graveyard(&[], &[0, 1, 2], &["Library 4", "Library 3", "Library 2", "Library 1", "Library 0"])]
+#[case::a_surveil_of_nothing(&[], &[], &["Library 4", "Library 3", "Library 2", "Library 1", "Library 0"])]
+fn a_surveil_arranges_the_cards_looked_at_with_those_that_stay_on_top(
+    #[case] top: &[usize],
+    #[case] graveyard: &[usize],
+    #[case] expected: &[&str],
+) {
+    let mut game = game();
+    let event = Event::Surveilled(Surveilled {
+        player: PlayerId(0),
+        top: from_the_top(&game, top),
+        graveyard: from_the_top(&game, graveyard),
+    });
+    fold(&mut game, &[event]);
+    assert_eq!(library_names(&game), expected);
+}
+
+#[rstest]
+#[case::more_than_the_library_holds(&[0, 1, 2, 3, 4, 5], &[])]
+#[case::cards_that_are_not_the_top_ones(&[1, 2], &[])]
+#[case::the_same_card_twice(&[0], &[0])]
+#[case::a_card_from_below(&[0], &[4])]
+fn a_surveil_of_cards_that_are_not_the_top_of_the_library_is_refused(
+    #[case] top: &[usize],
+    #[case] graveyard: &[usize],
+) {
+    let mut game = game();
+    let before = game.state_hash();
+    let pick = |numbers: &[usize]| {
+        let library = game.zone(Zone::Library(PlayerId(0)));
+        numbers
+            .iter()
+            .map(|n| {
+                library
+                    .len()
+                    .checked_sub(1 + n)
+                    .map_or(ObjectId(900), |at| library[at])
+            })
+            .collect::<Vec<_>>()
+    };
+    let event = Event::Surveilled(Surveilled {
+        player: PlayerId(0),
+        top: pick(top),
+        graveyard: pick(graveyard),
+    });
+    assert!(apply_event(&mut game, &event).is_err());
+    assert_eq!(game.state_hash(), before);
+}
+
+#[test]
+fn a_surveil_shows_the_cards_to_the_player_who_looked_while_the_resolution_lasts() {
+    let mut game = game();
+    let looked = from_the_top(&game, &[0, 1]);
+    game.resolving = Some(crate::resolve::Resolving::begin(totem_id(&game)));
+    let event = Event::Surveilled(Surveilled {
+        player: PlayerId(0),
+        top: vec![looked[0]],
+        graveyard: vec![looked[1]],
+    });
+    apply_event(&mut game, &event).unwrap();
+    for card in &looked {
+        assert!(game.is_shown_to(PlayerId(0), *card));
+        assert!(!game.is_shown_to(PlayerId(1), *card));
+    }
 }
 
 #[rstest]

@@ -110,6 +110,7 @@ const RUNS: &[&str] = &[
     "Effect.Unattach",
     "Effect.Transform",
     "Effect.WinGame",
+    "Effect.Surveil",
     "Effect.CreateToken",
     "Effect.CreateToken.Copy",
     "Effect.CopySpell",
@@ -428,7 +429,7 @@ mod tests {
     #[case::ward("Keyword.Ward", true)]
     #[case::kicker("Keyword.Kicker", true)]
     #[case::multikicker("Keyword.Multikicker", true)]
-    #[case::surveilling("Effect.Surveil", false)]
+    #[case::surveilling("Effect.Surveil", true)]
     #[case::proliferating("Effect.Proliferate", false)]
     #[case::goading("Effect.Goad", false)]
     #[case::fighting("Effect.Fight", false)]

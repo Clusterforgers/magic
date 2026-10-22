@@ -134,6 +134,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             sight::show(state, Some(scried.player), &seen);
             Ok(())
         }
+        Event::Surveilled(surveilled) => zones::surveil(state, surveilled),
         Event::LibraryBottomed {
             player,
             cards,

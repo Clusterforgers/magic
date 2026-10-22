@@ -1,0 +1,89 @@
+//! Goal: whole bot games at two, three and four seats with the keyword-action cards (Consider, Curate, Notion Rain, Sinister Sabotage, Doom Whisperer) finish and keep every invariant (zones, life, the journal, the replay of the log equal to the live state) for many seeds, and across the seeds players surveil, keep cards on top and put cards into the graveyard, an engine rebuilt from the log at each decision asks the same question, and a seeded game is the same game every time.
+#![allow(clippy::unwrap_used, clippy::expect_used)]
+
+use mtg_engine::{Engine, EngineError, Event};
+use mtg_testkit::{RandomBot, actions_fuzz_setup, play_game};
+use rstest::rstest;
+
+/// Games per table size; override with `MTG_FUZZ_GAMES`.
+fn games() -> u64 {
+    std::env::var("MTG_FUZZ_GAMES")
+        .ok()
+        .and_then(|v| v.parse().ok())
+        .unwrap_or(30)
+}
+
+#[derive(Default)]
+struct Seen {
+    surveils: u64,
+    kept_on_top: u64,
+    sent_to_the_graveyard: u64,
+}
+
+impl Seen {
+    fn add(&mut self, events: &[Event]) {
+        for event in events {
+            if let Event::Surveilled(surveilled) = event {
+                self.surveils += 1;
+                self.kept_on_top += u64::from(!surveilled.top.is_empty());
+                self.sent_to_the_graveyard += u64::from(!surveilled.graveyard.is_empty());
+            }
+        }
+    }
+}
+
+#[rstest]
+#[case(2)]
+#[case(3)]
+#[case(4)]
+fn seeded_action_games_finish_and_keep_every_invariant(#[case] players: usize) {
+    let mut seen = Seen::default();
+    for seed in 0..games() {
+        let outcome = play_game(actions_fuzz_setup(players, seed), seed)
+            .unwrap_or_else(|failure| panic!("{failure}"));
+        seen.add(&outcome.events);
+    }
+    let campaign = format!("{} games of {players} seats", games());
+    assert!(seen.surveils > 0, "nobody surveilled in {campaign}");
+    assert!(
+        seen.kept_on_top > 0 && seen.sent_to_the_graveyard > 0,
+        "surveils kept cards on top and put cards into the graveyard in {campaign}"
+    );
+}
+
+#[rstest]
+fn a_rebuilt_engine_asks_what_the_original_asks_about_actions(
+    #[values(2, 3)] players: usize,
+) -> Result<(), EngineError> {
+    for seed in 0..6 {
+        let setup = actions_fuzz_setup(players, seed);
+        let mut engine = Engine::new(setup.clone())?;
+        let mut bots: Vec<RandomBot> = (0..players as u64)
+            .map(|seat| RandomBot::new(seed, seat))
+            .collect();
+        for step in 0..1500 {
+            let Some(decision) = engine.decision().cloned() else {
+                break;
+            };
+            let resumed = Engine::resume(setup.clone(), engine.events().to_vec())?;
+            assert_eq!(
+                resumed.state_hash(),
+                engine.state_hash(),
+                "seed {seed} step {step}"
+            );
+            let answer = bots[decision.player.index()].choose(&decision);
+            engine.apply(answer)?;
+        }
+    }
+    Ok(())
+}
+
+#[test]
+fn a_seeded_action_game_is_the_same_game_every_time() {
+    for seed in [3, 17, 91] {
+        let first = play_game(actions_fuzz_setup(3, seed), seed).unwrap();
+        let second = play_game(actions_fuzz_setup(3, seed), seed).unwrap();
+        assert_eq!(first.events, second.events);
+        assert_eq!(first.final_hash, second.final_hash);
+    }
+}

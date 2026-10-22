@@ -623,6 +623,9 @@ pub(crate) const ENCHANT: &str = "Choose what the Aura enchants.";
 /// What a scry asks about the cards looked at.
 pub(crate) const SCRY: &str = "Put any number of the cards on the bottom of your library.";
 
+/// What a surveil asks about the cards looked at.
+pub(crate) const SURVEIL: &str = "Put any number of the cards into your graveyard.";
+
 /// What the order of cards put into a library asks: "Put the cards on top of your library in any order."
 pub(crate) fn library_order(bottom: bool) -> String {
     let place = if bottom { "the bottom" } else { "top" };
@@ -659,6 +662,10 @@ fn verb_phrase(effect: &Effect) -> Option<String> {
             who: Ref::You,
             count: Amount::Fixed(n),
         } => format!("scry {n}"),
+        Effect::Surveil {
+            who: Ref::You,
+            count: Amount::Fixed(n),
+        } => format!("surveil {n}"),
         Effect::GainLife {
             who: Ref::You,
             amount: Amount::Fixed(n),

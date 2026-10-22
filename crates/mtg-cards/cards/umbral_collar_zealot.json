@@ -1,0 +1,25 @@
+{
+  "oracle_id": "12db6263-75c2-442f-a1a5-7af7915f8f9f",
+  "name": "Umbral Collar Zealot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Umbral Collar Zealot",
+      "oracle_fingerprint": "367bd5406fed67f00ea81b245ea894d7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }, "Other"]
+                }
+              }
+            ],
+            "effects": [{ "Surveil": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

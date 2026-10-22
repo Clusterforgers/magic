@@ -1,7 +1,7 @@
-//! Looking at libraries: what the `LibraryLooked`, `CardsFound`, `Scried` and `Revealed` events say.
+//! Looking at libraries: what the `LibraryLooked`, `CardsFound`, `Scried`, `Surveilled` and `Revealed` events say.
 //!
-//! They tell what a player learned; only `Scried` also changes the game, by putting the cards looked at back
-//! (`fold/zones.rs`). The first three are private to the player who looked, so the protocol shows other seats counts
+//! They tell what a player learned; `Scried` and `Surveilled` also change the game, by putting the cards looked at
+//! back (`fold/zones.rs`). The first three are private to the player who looked, so the protocol shows other seats counts
 //! only; a reveal is public.
 
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -55,6 +55,23 @@ pub struct Scried {
     pub top: Vec<ObjectId>,
     /// The cards put on the bottom, the last of them the bottom card.
     pub bottom: Vec<ObjectId>,
+}
+
+/// A player surveilled: some of the cards looked at stay on top, the others are to be put into the graveyard
+/// (CR 701.25).
+///
+/// Together the two lists are the top cards of the library. The event puts the cards that stay on top in their order
+/// and leaves the others just beneath them; the moves to the graveyard follow as `ZoneChanged` events, so the
+/// replacement effects see each one.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct Surveilled {
+    /// Who surveilled.
+    pub player: PlayerId,
+    /// The cards that stay on top, the next card drawn first.
+    pub top: Vec<ObjectId>,
+    /// The cards that go into the graveyard.
+    pub graveyard: Vec<ObjectId>,
 }
 
 /// A player revealed cards to every player.
