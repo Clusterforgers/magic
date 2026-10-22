@@ -8,6 +8,7 @@
 
 mod alternative;
 mod division;
+mod face;
 pub(crate) mod foretell;
 mod legality;
 mod modes;
@@ -32,6 +33,7 @@ use crate::choose::{Choices, Target};
 use crate::decision::{Decision, DecisionKind};
 use crate::error::EngineError;
 use crate::events::Event;
+use crate::faces;
 use crate::parts::Part;
 use crate::price::Price;
 use crate::resolve::spell_ability;
@@ -57,6 +59,8 @@ pub(crate) enum What {
 /// One step of the announcement, named by the rule of CR 601.2 it carries out.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum Phase {
+    /// The face of a card with several faces the spell is cast as (CR 601.2a, 712.2, 715.3, 709.3).
+    Face,
     /// The modes of a modal spell or ability (CR 601.2b, 700.2).
     Modes,
     /// The alternative cost the spell is cast for (CR 601.2b, 118.9).
@@ -99,7 +103,12 @@ impl Phase {
     #[cfg(test)]
     pub(crate) const fn rule(self) -> char {
         match self {
-            Phase::Modes | Phase::Alternative | Phase::Optional | Phase::Parts | Phase::X => 'b',
+            Phase::Face
+            | Phase::Modes
+            | Phase::Alternative
+            | Phase::Optional
+            | Phase::Parts
+            | Phase::X => 'b',
             Phase::Targets => 'c',
             Phase::Division => 'd',
             Phase::Legality => 'e',
@@ -111,6 +120,8 @@ impl Phase {
     /// The step's question, the events that complete the announcement, or `None` to go on to the next step.
     fn run(self, ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         match self {
+            // The face is settled before the steps that read the card (`announce`).
+            Phase::Face => None,
             Phase::Modes => modes::run(ctx, work),
             Phase::Alternative => alternative::run(ctx, work),
             Phase::Optional => optional::run(ctx, work),
@@ -197,6 +208,10 @@ impl Needs {
 #[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub(crate) struct Done {
+    /// The face of the card is settled: chosen, or the card has one.
+    pub(crate) face: bool,
+    /// The face the player picked among those offered, by position in the options.
+    pub(crate) face_picked: Option<usize>,
     /// The modes are settled: chosen, or there are none to choose. Choosing none is a choice too.
     pub(crate) modes: bool,
     /// The way the spell is cast is settled.
@@ -302,6 +317,7 @@ impl Pending {
     pub(crate) fn accept(&mut self, answered: Answered) -> Result<(), EngineError> {
         let wanted = match answered {
             Answered::Modes(_) => Phase::Modes,
+            Answered::Way(_) if self.done.asked == Some(Phase::Face) => Phase::Face,
             Answered::Way(_) => Phase::Alternative,
             Answered::Targets(_) => Phase::Targets,
             Answered::Cards(_) => Phase::Parts,
@@ -330,6 +346,7 @@ impl Pending {
                 self.choices.modes = modes;
                 self.done.modes = true;
             }
+            Answered::Way(pick) if wanted == Phase::Face => self.done.face_picked = Some(pick),
             Answered::Way(pick) => self.done.way_picked = Some(pick),
             Answered::Cards(cards) => self.choices.pick_for_cost(cards),
             Answered::Targets(targets) => self.choices.targets.push(targets),
@@ -489,6 +506,18 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         };
     }
     let what: &What = what;
+    // The card is the face it is cast as from the first question on.
+    let faced;
+    let state = match what {
+        What::Spell(card) if faces::is_multi_face(state, *card) => {
+            if let Some(next) = face::run(state, *player, *card, *granted, choices, done) {
+                return next;
+            }
+            faced = state.with_face(*card, choices.face);
+            &*faced
+        }
+        _ => state,
+    };
     let held = rules_of(state, what);
     let needs: &Needs =
         needs.get_or_insert_with(|| Needs::of(state, *player, what, held.as_deref(), *granted));

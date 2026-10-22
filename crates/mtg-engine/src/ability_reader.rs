@@ -35,7 +35,7 @@ fn holder(state: &GameState, id: ObjectId) -> Option<&GameObject> {
 /// The abilities printed on the card of `object`, each with its address, in the order of the card's rules.
 pub(crate) fn printed(object: &GameObject) -> impl Iterator<Item = (AbilityRef, &Arc<Ability>)> {
     object
-        .def
+        .card()
         .rules
         .iter()
         .enumerate()
@@ -267,7 +267,7 @@ fn provided_at(keyword: &Keyword, index: usize) -> Option<Arc<Ability>> {
 pub fn ability(state: &GameState, address: AbilityRef) -> Option<Arc<Ability>> {
     let object = holder(state, address.object)?;
     match address.source {
-        AbilitySource::Printed => object.def.rules.get(address.ability).cloned(),
+        AbilitySource::Printed => object.card().rules.get(address.ability).cloned(),
         AbilitySource::Granted(_) if address.ability != 0 => None,
         AbilitySource::Granted(grant) => granted_ability(state, grant),
         AbilitySource::PrintedKeyword(_) | AbilitySource::GrantedKeyword(_) => {
@@ -282,7 +282,7 @@ pub(crate) fn keyword_adding(state: &GameState, address: AbilityRef) -> Option<K
     match address.source {
         AbilitySource::PrintedKeyword(rule) => {
             let object = holder(state, address.object)?;
-            match object.def.rules.get(rule).map(|rules| &**rules) {
+            match object.card().rules.get(rule).map(|rules| &**rules) {
                 Some(Ability::Keyword(keyword)) => Some(keyword.clone()),
                 _ => None,
             }
@@ -300,7 +300,7 @@ fn static_mod(
     rule: usize,
     index: usize,
 ) -> Option<WantedModification> {
-    match &**holder(state, source)?.def.rules.get(rule)? {
+    match &**holder(state, source)?.card().rules.get(rule)? {
         Ability::Static { mods, .. } => mods.get(index).cloned(),
         Ability::Keyword(keyword) => keywords::rules(keyword)
             .adds_abilities(keyword)
@@ -727,7 +727,7 @@ mod tests {
 
     #[rstest]
     #[case::the_rules_of_an_object("let r = object.card().rules.get(0);", "rules", &["card()"])]
-    #[case::a_definition("let r = object.def.rules.iter();", "rules", &["def"])]
+    #[case::a_definition("let r = object.card().rules.iter();", "rules", &["def"])]
     #[case::a_bound_card("for r in card.rules.iter() {}", "rules", &["card"])]
     #[case::a_chain_over_several_lines(
         "object\n    .card()\n    .rules\n    .iter()",

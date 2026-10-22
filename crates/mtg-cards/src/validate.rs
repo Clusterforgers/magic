@@ -2980,6 +2980,7 @@ mod printed_keywords {
         );
         let card: Card = serde_json::from_str(&json).unwrap();
         let shown = PrintedCard {
+            layout: String::new(),
             oracle_id: ID.into(),
             name,
             keywords: keywords.iter().map(|k| (*k).to_owned()).collect(),

@@ -28,6 +28,7 @@ fn card_of(faces: Vec<PrintedFace>) -> PrintedCard {
         .collect::<Vec<_>>()
         .join(" // ");
     PrintedCard {
+        layout: String::new(),
         oracle_id: ID.into(),
         name,
         keywords: vec![],

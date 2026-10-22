@@ -233,6 +233,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             abilities: Vec::new(),
             suspendable: Vec::new(),
             foretellable: Vec::new(),
+            faces: Vec::new(),
             can_act: true,
             can_pass: true,
         })),
@@ -316,6 +317,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             abilities: vec![AbilityRef::printed(a, 0)],
             suspendable: Vec::new(),
             foretellable: Vec::new(),
+            faces: Vec::new(),
             can_act: true,
             can_pass: true,
         })),
@@ -1267,6 +1269,7 @@ fn pipeline_events() -> Vec<Event> {
         division: vec![(target, 2)],
         optional_costs: vec![0],
         way: Some(mtg_cards::value::CastWay::Evoke),
+        face: Some(1),
         cost_picks: Some(Box::new(vec![vec![a], vec![b, a]])),
     };
     vec![
@@ -1555,6 +1558,7 @@ fn what_a_vanilla_message_never_carried_stays_out_of_it() {
         abilities: Vec::new(),
         suspendable: Vec::new(),
         foretellable: Vec::new(),
+        faces: Vec::new(),
         can_act: true,
         can_pass: true,
     };

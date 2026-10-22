@@ -83,7 +83,7 @@ fn gathered(state: &GameState, spell: ObjectId, caster: PlayerId) -> Vec<Modifie
         else {
             continue;
         };
-        if !definition_has_cost_modifier(&object.def) {
+        if !definition_has_cost_modifier(object.card()) {
             continue;
         }
         let controller = if id == spell {

@@ -89,6 +89,7 @@ mod tests {
 
     fn bolt() -> PrintedCard {
         PrintedCard {
+            layout: String::new(),
             oracle_id: "4457ed35-7c10-48c8-9776-456485fdf070".into(),
             name: "Lightning Bolt".into(),
             keywords: Vec::new(),

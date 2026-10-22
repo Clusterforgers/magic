@@ -2,7 +2,7 @@
 //! definition the engine plays, with the support record that says how far to trust it.
 //!
 //! Design record: `docs/cards-dsl.md`, "Printed side and rules". The definition is that of the front
-//! face; a card with several faces is `Manual` until the engine plays the others.
+//! face, or the whole card with its faces for the layouts the engine plays; any other card with several faces is `Manual`.
 
 use std::collections::BTreeSet;
 use std::sync::Arc;
@@ -14,7 +14,7 @@ use mtg_core::mana::{ManaCost, ManaType, ParseManaCostError};
 use crate::ability::{Ability, Timing};
 use crate::card::{Card, TokenSpec};
 use crate::cost::CostItem;
-use crate::definition::{AbilityDef, CardDefinition, ManaAbility};
+use crate::definition::{AbilityDef, CardDefinition, Layout, ManaAbility};
 use crate::effect::{Effect, Produce};
 use crate::mana::ManaCostX;
 use crate::refs::{Ref, ZoneKind};
@@ -30,7 +30,7 @@ use crate::value::Amount;
 pub const PLAIN_MANA_ABILITY: &str = "Ability.ManaAbility";
 /// The engine pays `{X}` in the mana cost of a spell.
 pub const X_COST: &str = "Card.XCost";
-/// The engine plays every face of a card that has more than one.
+/// The engine plays the faces of a card that has more than one, for the layouts it knows (split, adventure, modal double-faced).
 pub const FACES: &str = "Card.Faces";
 /// The engine knows a power, toughness, loyalty or defense that is not a number (`*`).
 pub const VARIABLE_STATS: &str = "Card.VariableStats";
@@ -62,28 +62,72 @@ pub struct Assembled {
 /// basic land types give are part of the printed side (CR 305.6), so they are always there.
 pub fn assemble(printed: &PrintedCard, rules: Option<&Card>, caps: &Caps) -> Assembled {
     let record = support(rules, printed, caps);
-    let mut definition = match printed.faces.first() {
-        Some(front) => printed_side(front),
-        None => CardDefinition::new(printed.name.clone()),
-    };
-    definition
-        .abilities
-        .extend(intrinsic_abilities(&definition));
-    if matches!(record.support, Support::Verified | Support::Partial)
-        && let Some(front) = rules.and_then(|card| card.faces.first())
-    {
-        let runs = |ability: &&Ability| caps.missing(&used_primitives(ability)).is_empty();
-        for lowered in front.abilities.iter().filter(runs).filter_map(lower) {
-            match lowered {
-                Lowered::Mana(mana) => definition.abilities.push(AbilityDef::Mana(mana)),
-                Lowered::Rules(rules) => definition.rules.push(rules),
+    let attach = matches!(record.support, Support::Verified | Support::Partial);
+    let face_of = |index: usize| -> CardDefinition {
+        let mut definition = printed_side(&printed.faces[index]);
+        definition
+            .abilities
+            .extend(intrinsic_abilities(&definition));
+        if attach && let Some(face) = rules.and_then(|card| card.faces.get(index)) {
+            let runs = |ability: &&Ability| caps.missing(&used_primitives(ability)).is_empty();
+            for lowered in face.abilities.iter().filter(runs).filter_map(lower) {
+                match lowered {
+                    Lowered::Mana(mana) => definition.abilities.push(AbilityDef::Mana(mana)),
+                    Lowered::Rules(rules) => definition.rules.push(rules),
+                }
             }
         }
-    }
+        definition
+    };
+    let definition = match (played_layout(printed, caps), printed.faces.len()) {
+        (Some(layout), count) => whole_card(printed, layout, (0..count).map(face_of).collect()),
+        (None, 0) => CardDefinition::new(printed.name.clone()),
+        (None, _) => face_of(0),
+    };
     Assembled {
         definition,
         support: record,
     }
+}
+
+/// The layout of a card with several faces when the engine plays it: two faces of a shape it knows.
+pub(crate) fn played_layout(printed: &PrintedCard, caps: &Caps) -> Option<Layout> {
+    (printed.faces.len() == 2 && caps.runs(FACES))
+        .then(|| Layout::from_scryfall(&printed.layout))
+        .flatten()
+}
+
+/// A card with several faces as the engine plays it: the card outside the stack and the battlefield, and its faces.
+///
+/// A split card is both halves there (CR 709.4): two names, the combined colors and types and the mana symbols
+/// of both costs, so its mana value is their sum. The other two layouts are their front face.
+fn whole_card(printed: &PrintedCard, layout: Layout, faces: Vec<CardDefinition>) -> CardDefinition {
+    let mut whole = match layout {
+        Layout::Split => {
+            let mut whole = CardDefinition::new(printed.name.clone());
+            let symbols = faces
+                .iter()
+                .filter_map(|face| face.mana_cost.as_ref())
+                .flat_map(|cost| cost.symbols().iter().copied());
+            whole.mana_cost = Some(ManaCost::from_symbols(symbols));
+            for face in &faces {
+                whole.types.extend(face.types.iter().copied());
+                whole.supertypes.extend(face.supertypes.iter().copied());
+            }
+            let union: ColorSet = faces.iter().flat_map(|face| face.colors().iter()).collect();
+            let from_cost = whole
+                .mana_cost
+                .as_ref()
+                .map(ManaCost::colors)
+                .unwrap_or_default();
+            whole.color_indicator = (union != from_cost).then_some(union);
+            whole
+        }
+        _ => faces[0].clone(),
+    };
+    whole.layout = layout;
+    whole.faces = faces;
+    whole
 }
 
 /// The mana a plain `{T}: Add {X}` adds: no targets, no limit, usable at instant speed from the
@@ -339,19 +383,9 @@ fn intrinsic_abilities(definition: &CardDefinition) -> Vec<AbilityDef> {
 /// every face the engine does not play.
 pub(crate) fn printed_gaps(printed: &PrintedCard, caps: &Caps) -> Vec<Clause> {
     let mut clauses = Vec::new();
-    if let Some(front) = printed.faces.first() {
-        for gap in read_face(front).gaps {
-            if gap.needs.is_none_or(|name| !caps.runs(name)) {
-                clauses.push(Clause {
-                    face: 0,
-                    span: whole_text(&front.oracle_text),
-                    reason: gap.reason,
-                });
-            }
-        }
-    }
-    if !caps.runs(FACES) {
-        for (face, shown) in printed.faces.iter().enumerate().skip(1) {
+    let played = played_layout(printed, caps).is_some();
+    for (face, shown) in printed.faces.iter().enumerate() {
+        if face > 0 && !played {
             clauses.push(Clause {
                 face,
                 span: whole_text(&shown.oracle_text),
@@ -360,6 +394,16 @@ pub(crate) fn printed_gaps(printed: &PrintedCard, caps: &Caps) -> Vec<Clause> {
                     shown.name
                 ),
             });
+            continue;
+        }
+        for gap in read_face(shown).gaps {
+            if gap.needs.is_none_or(|name| !caps.runs(name)) {
+                clauses.push(Clause {
+                    face,
+                    span: whole_text(&shown.oracle_text),
+                    reason: gap.reason,
+                });
+            }
         }
     }
     clauses
@@ -578,6 +622,8 @@ fn printed_side(face: &PrintedFace) -> CardDefinition {
         color_indicator: (!shown.is_empty() && shown != from_cost).then_some(shown),
         abilities: Vec::new(),
         rules: Vec::new(),
+        layout: Layout::Normal,
+        faces: Vec::new(),
     }
 }
 
@@ -601,6 +647,7 @@ mod tests {
 
     fn card(front: PrintedFace) -> PrintedCard {
         PrintedCard {
+            layout: String::new(),
             oracle_id: "4457ed35-7c10-48c8-9776-456485fdf070".into(),
             name: front.name.clone(),
             keywords: vec![],
@@ -1227,6 +1274,7 @@ mod tests {
     #[test]
     fn a_record_without_faces_still_makes_a_named_definition() {
         let bare = PrintedCard {
+            layout: String::new(),
             oracle_id: "x".into(),
             name: "Nothing".into(),
             ..PrintedCard::default()

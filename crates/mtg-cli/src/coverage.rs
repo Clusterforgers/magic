@@ -126,6 +126,7 @@ fn printed_face(face: &StoredFace) -> PrintedFace {
 /// A stored card as the strings the compiler reads (the same as `mtg-server`'s `printed_card`).
 pub(crate) fn printed_card(card: &Card) -> PrintedCard {
     PrintedCard {
+        layout: card.layout.keyword().to_owned(),
         oracle_id: card.oracle_id.as_str().to_owned(),
         name: card.name.clone(),
         keywords: card.keywords.clone(),

@@ -136,6 +136,10 @@ pub enum Event {
         player: PlayerId,
         /// The land.
         object: ObjectId,
+        /// The face of a card with several faces it was played as (the back face of a modal double-faced card).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        face: Option<u8>,
     },
     /// A spell was cast and put on the stack.
     SpellCast {
@@ -519,6 +523,8 @@ pub enum ZoneCause {
     Exiled,
     /// It was exiled face down by foretelling (CR 702.143a): it lies face down, and only its owner may look at it.
     Foretold,
+    /// It resolved as an Adventure (CR 715.4) and was exiled instead of going to its owner's graveyard: its controller may cast the card from exile.
+    Adventure,
     /// It was countered (CR 701.6).
     Countered,
     /// It was milled (CR 701.17).

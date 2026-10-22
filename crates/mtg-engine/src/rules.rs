@@ -444,7 +444,7 @@ fn gather(state: &GameState) -> RulesInForce {
                 continue;
             };
             // A rule can only be printed, so a card that prints none has none whatever the layers did.
-            if !definition_has_rule(&object.def) {
+            if !definition_has_rule(object.card()) {
                 continue;
             }
             let controller = controller_of_object(state, object);

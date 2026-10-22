@@ -21,16 +21,15 @@ use mtg_cards::effect::Effect;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::Modification;
 use mtg_cards::trigger::TriggerPattern;
-use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::ids::PlayerId;
 use serde::{Deserialize, Serialize};
 
 use crate::abilities::{AbilitySource, Cause};
-use crate::ability_reader::{abilities_of, definition_triggers};
+use crate::ability_reader::definition_triggers;
 use crate::events::Event;
 use crate::keywords;
 use crate::object::ObjectRef;
 use crate::snapshot::Snapshot;
-use crate::state::GameState;
 
 pub use delayed::{Delayed, DelayedCreated, DelayedId};
 pub use detect::detect;
@@ -164,11 +163,4 @@ pub(crate) fn introduces(events: &[Event]) -> bool {
         },
         _ => false,
     })
-}
-
-/// Whether `id` can ever trigger something: it has a triggered ability or an effect that sets one up or gives one.
-pub(crate) fn can_trigger(state: &GameState, id: ObjectId) -> bool {
-    abilities_of(state, id)
-        .iter()
-        .any(|(_, rules)| triggers_something(rules))
 }

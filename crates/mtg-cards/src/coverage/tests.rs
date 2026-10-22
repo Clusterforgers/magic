@@ -12,6 +12,7 @@ fn id(n: u32) -> String {
 
 fn printed(n: u32, name: &str, type_line: &str, text: &str) -> PrintedCard {
     PrintedCard {
+        layout: String::new(),
         oracle_id: id(n),
         name: name.into(),
         keywords: vec![],
@@ -291,6 +292,7 @@ fn rules_written_for_older_text_are_stale_and_unplayable_cards_say_so() {
 #[test]
 fn the_embedded_library_is_the_hand_written_rules() {
     let bolt = PrintedCard {
+        layout: String::new(),
         oracle_id: "4457ed35-7c10-48c8-9776-456485fdf070".into(),
         name: "Lightning Bolt".into(),
         keywords: vec![],

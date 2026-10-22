@@ -11,7 +11,7 @@ use super::{invalid, player_mut, priority_to_active, reset_passes};
 use crate::announce::payments;
 use crate::choose::Choices;
 use crate::error::EngineError;
-use crate::events::Event;
+use crate::events::{Event, ZoneCause};
 use crate::keywords::OptionalKind;
 use crate::library::Scried;
 use crate::object::{GameObject, ObjectKind, PermanentState};
@@ -47,6 +47,7 @@ pub(super) fn move_object(
     object.counter += 1;
     object.card_counters.clear();
     object.face_down = None;
+    object.adventure = None;
     // What the spell paid for stays with the permanent it becomes, for its abilities to read.
     let paid = if from == Zone::Stack && to == Zone::Battlefield {
         std::mem::take(&mut object.choices.optional_costs)
@@ -60,6 +61,12 @@ pub(super) fn move_object(
     };
     let x = if from == Zone::Stack && to == Zone::Battlefield {
         object.choices.x
+    } else {
+        None
+    };
+    // A modal double-faced card that resolves from the stack is the face it was cast as.
+    let face = if from == Zone::Stack && to == Zone::Battlefield {
+        object.choices.face
     } else {
         None
     };
@@ -86,6 +93,7 @@ pub(super) fn move_object(
             paid,
             way,
             x,
+            face,
         });
     } else if to != Zone::Stack {
         object.controller = object.owner;
@@ -113,7 +121,11 @@ fn set_controller(state: &mut GameState, id: ObjectId, player: PlayerId) {
 
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
-        Event::LandPlayed { player, object } => {
+        Event::LandPlayed {
+            player,
+            object,
+            face,
+        } => {
             // A land is played from a hand, or from exile when a permission lets its player (CR 305.1).
             let from = if state.zones.get(Zone::Exile).contains(object) {
                 Zone::Exile
@@ -123,6 +135,13 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             expect_in(state, *object, from)?;
             move_object(state, *object, Zone::Battlefield, Placement::Top)?;
             set_controller(state, *object, *player);
+            if let Some(permanent) = state
+                .objects
+                .get_mut(object)
+                .and_then(|land| land.permanent.as_mut())
+            {
+                permanent.face = *face;
+            }
             state.turn.lands_played += 1;
             reset_passes(state);
         }
@@ -149,15 +168,16 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             expect_in(state, *object, from)?;
             move_object(state, *object, Zone::Stack, Placement::Top)?;
             set_controller(state, *object, *player);
+            // The face cast is the card a spell is from now on: its buyback and flashback below are those of the face.
+            if let Some(spell) = state.objects.get_mut(object) {
+                spell.choices.clone_from(choices);
+            }
             // A spell cast for its flashback cost, or with its buyback cost paid, is moved by a replacement effect.
             let bought_back = state.objects.get(object).is_some_and(|spell| {
                 payments(spell.card(), &choices.optional_costs, OptionalKind::Buyback) > 0
             });
             if choices.way == Some(CastWay::Flashback) || bought_back {
                 state.possible.replacements = true;
-            }
-            if let Some(spell) = state.objects.get_mut(object) {
-                spell.choices.clone_from(choices);
             }
             reset_passes(state);
         }
@@ -174,7 +194,13 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     "{object:?} is an ability, which does not change zones"
                 )));
             }
+            let before = state.objects.get(object).map(|o| o.controller);
             move_object(state, *object, *to, Placement::Top)?;
+            if *cause == ZoneCause::Adventure
+                && let Some(card) = state.objects.get_mut(object)
+            {
+                card.adventure = before;
+            }
             if let Some(how) = cause.face_down(state.turn.number())
                 && let Some(object) = state.objects.get_mut(object)
             {

@@ -66,6 +66,7 @@ fn printed_face(face: &StoredFace) -> PrintedFace {
 /// A stored card (the import record as the `cards` table keeps it) as the strings assembly reads.
 pub fn printed_card(card: &Card) -> PrintedCard {
     PrintedCard {
+        layout: card.layout.keyword().to_owned(),
         oracle_id: card.oracle_id.to_string(),
         name: card.name.clone(),
         keywords: card.keywords.clone(),

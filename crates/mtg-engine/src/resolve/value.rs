@@ -54,6 +54,7 @@ static NO_CHOICES: Choices = Choices {
     division: Vec::new(),
     optional_costs: Vec::new(),
     way: None,
+    face: None,
     cost_picks: None,
 };
 static NO_BINDINGS: Bindings = BTreeMap::new();

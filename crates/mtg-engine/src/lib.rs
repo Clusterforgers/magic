@@ -10,6 +10,7 @@ mod answers;
 mod attach;
 mod cast;
 mod damage;
+mod faces;
 #[cfg(test)]
 mod fixtures;
 mod flow;
@@ -74,7 +75,7 @@ pub mod zones;
 
 pub use caps::caps;
 pub use characteristics::{Characteristics, characteristics};
-pub use decision::{Answer, Decision, DecisionKind};
+pub use decision::{Answer, Decision, DecisionKind, FaceOption};
 pub use engine::{Checkpoint, Engine, replay};
 pub use error::{EngineError, PreviewError};
 pub use events::Event;

@@ -43,6 +43,8 @@ pub struct PrintedCard {
     pub name: String,
     /// Scryfall's keyword list (it includes keyword actions and ability words).
     pub keywords: Vec<String>,
+    /// Scryfall's `layout` keyword (`split`, `adventure`, `modal_dfc`, `transform`...); empty when unknown.
+    pub layout: String,
     /// The faces in Scryfall's order.
     pub faces: Vec<PrintedFace>,
 }
@@ -401,6 +403,7 @@ mod tests {
 
     fn printed(text: &str) -> PrintedCard {
         PrintedCard {
+            layout: String::new(),
             oracle_id: "4457ed35-7c10-48c8-9776-456485fdf070".into(),
             name: "Lightning Bolt".into(),
             keywords: vec![],

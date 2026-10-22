@@ -25,6 +25,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::sync::Arc;
 
 use mtg_cards::ability::Ability;
+use mtg_cards::definition::Layout;
 use mtg_cards::refs::{Ref, ZoneKind};
 use mtg_cards::trigger::{EntersChoice, ReplaceBy, ReplaceWhen};
 use mtg_cards::value::{CastWay, CounterKind};
@@ -227,6 +228,8 @@ enum Origin {
     /// The spell that resolved with its buyback cost paid, which returns to its owner's hand instead of going to the
     /// graveyard (CR 702.27a).
     Buyback,
+    /// The spell that resolved as an Adventure, which is exiled instead of going to its owner's graveyard (CR 715.4).
+    Adventure,
 }
 
 /// Whether the item is the resolution of an instant or sorcery whose buyback cost was paid: a spell that was countered
@@ -367,7 +370,7 @@ enum Unit {
 /// The card that enters the battlefield with this event, and under whose control.
 fn entering(state: &GameState, event: &Event) -> Option<(ObjectId, PlayerId)> {
     match event {
-        Event::LandPlayed { player, object } => Some((*object, *player)),
+        Event::LandPlayed { player, object, .. } => Some((*object, *player)),
         Event::SpellResolved { object } => {
             let spell = state.object(*object)?;
             let types = spell.base_types();
@@ -828,9 +831,32 @@ impl Pass<'_> {
         }
         if matches!(&unit, Unit::Move { .. }) {
             found.extend(self.buyback_candidate(slot));
+            found.extend(self.adventure_candidate(slot));
         }
         found.sort_by_key(|candidate| candidate.origin);
         Ok(found)
+    }
+
+    /// The exile of a spell that resolved as an Adventure, when it has not been applied.
+    fn adventure_candidate(&self, slot: &Slot) -> Option<Candidate> {
+        let Item::One(event @ Event::SpellResolved { object }) = &slot.item else {
+            return None;
+        };
+        let spell = self.state.object(*object)?;
+        let adventure = spell.whole_card().layout == Layout::Adventure && spell.face() == Some(1);
+        if slot.applied.contains(&Origin::Adventure)
+            || !adventure
+            || entering(self.state, event).is_some()
+        {
+            return None;
+        }
+        Some(Candidate {
+            origin: Origin::Adventure,
+            object: spell.reference(),
+            controller: spell.controller(),
+            action: Action::Replace(ReplaceBy::MoveTo(ZoneKind::Exile)),
+            is_self: true,
+        })
     }
 
     /// The return of a spell that resolved with its buyback cost paid to its owner's hand, when it has not been applied.
@@ -1069,14 +1095,16 @@ impl Pass<'_> {
                                                 Origin::Shield(_)
                                                 | Origin::Protection
                                                 | Origin::Flashback
-                                                | Origin::Buyback => 0,
+                                                | Origin::Buyback
+                                                | Origin::Adventure => 0,
                                             },
                                             shield: match c.origin {
                                                 Origin::Shield(id) => Some(id),
                                                 Origin::Ability(_)
                                                 | Origin::Protection
                                                 | Origin::Flashback
-                                                | Origin::Buyback => None,
+                                                | Origin::Buyback
+                                                | Origin::Adventure => None,
                                             },
                                         })
                                         .collect(),
@@ -1518,13 +1546,21 @@ impl Pass<'_> {
             Event::CreatureDied { .. } => vec![moved(ZoneCause::StateBased)],
             Event::CardDiscarded { .. } => vec![moved(ZoneCause::Discarded)],
             Event::SpellResolved { .. } => {
+                // An Adventure that resolves is exiled on an adventure (CR 715.4).
+                let cause = if self.state.object(object).is_some_and(|spell| {
+                    spell.face() == Some(1) && spell.whole_card().layout == Layout::Adventure
+                }) {
+                    ZoneCause::Adventure
+                } else {
+                    ZoneCause::Moved
+                };
                 // The spell would have gone to its owner's graveyard and then given priority to the active player.
                 let holder = self
                     .state
                     .turn_order_from(self.state.turn().active())
                     .first()
                     .copied();
-                std::iter::once(moved(ZoneCause::Moved))
+                std::iter::once(moved(cause))
                     .chain(holder.map(|player| Event::PriorityGranted { player }))
                     .collect()
             }
@@ -1937,6 +1973,7 @@ mod tests {
         let batch = vec![Event::LandPlayed {
             player: ME,
             object: card,
+            face: None,
         }];
         let result = events(process(&game, batch, &[]));
         // The move, then the counters the effect added and the doubler doubled: four, with nobody asked.

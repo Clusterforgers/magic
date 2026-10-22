@@ -161,11 +161,34 @@ pub struct PriorityOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub foretellable: Vec<ObjectId>,
+    /// The faces of the cards with several faces that can be cast or played now, with their costs: a split card's halves, an
+    /// Adventure, the back face of a modal double-faced card. `castable` and `playable_lands` list the card itself.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<FaceOption>>", optional))]
+    pub faces: Vec<FaceOption>,
     /// Whether anything useful can be done now: a land to play, a spell to cast or an ability that is not a
     /// mana ability. Tapping for mana alone never counts, so a player with only `mana_abilities` has nothing to do.
     pub can_act: bool,
     /// Passing is always legal.
     pub can_pass: bool,
+}
+
+/// A face of a card with several faces that a player can cast or play now.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct FaceOption {
+    /// The card.
+    pub card: ObjectId,
+    /// The face, as its position among the card's faces.
+    pub face: u8,
+    /// The name of the face.
+    pub name: String,
+    /// What it costs to cast; none for a land.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub cost: Option<ManaCost>,
+    /// Whether the face is a land to play, not a spell to cast.
+    pub land: bool,
 }
 
 /// Options while paying for a spell.
@@ -402,6 +425,8 @@ pub enum PriorityAction {
     Pass,
     /// Play this land from hand.
     PlayLand(ObjectId),
+    /// Play this land from hand as the face of a card with several faces at this position (CR 712.12).
+    PlayLandFace(ObjectId, u8),
     /// Start casting this spell from hand (leads to a payment decision).
     CastSpell(ObjectId),
     /// Activate this mana ability.

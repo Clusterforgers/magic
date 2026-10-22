@@ -165,6 +165,7 @@ fn facts(spec: &Spec) -> (String, CardFacts) {
     }
     let card = CardFacts {
         printed: PrintedCard {
+            layout: String::new(),
             oracle_id: id(spec.n),
             name: spec.name.to_owned(),
             keywords: spec.keywords.iter().map(|k| (*k).to_owned()).collect(),

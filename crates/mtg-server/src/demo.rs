@@ -162,6 +162,7 @@ pub fn stand_in() -> &'static DemoDeck {
 /// The imported record as the strings assembly reads.
 fn printed_card(record: &CardRecord) -> PrintedCard {
     PrintedCard {
+        layout: record.layout.keyword().to_owned(),
         oracle_id: record.oracle_id.to_string(),
         name: record.name.clone(),
         keywords: record.keywords.clone(),

@@ -193,6 +193,7 @@ mod tests {
                 abilities: Vec::new(),
                 suspendable: Vec::new(),
                 foretellable: Vec::new(),
+                faces: Vec::new(),
                 can_act,
                 can_pass: true,
             })),

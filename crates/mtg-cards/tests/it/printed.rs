@@ -9,6 +9,7 @@ const ID: &str = "4457ed35-7c10-48c8-9776-456485fdf070";
 
 fn printed(type_line: &str, mana_cost: &str, text: &str, keywords: &[&str]) -> PrintedCard {
     PrintedCard {
+        layout: String::new(),
         oracle_id: ID.into(),
         name: "Test Card".into(),
         keywords: keywords.iter().map(|k| (*k).to_owned()).collect(),

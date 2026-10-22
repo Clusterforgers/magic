@@ -43,7 +43,7 @@ fn bot_games_with_impulse_cards_keep_every_invariant_and_play_cards_from_exile()
                         assert_eq!(exiled.remove(object), Some(*player), "seed {seed}");
                         *seen.entry("cast from exile").or_default() += 1;
                     }
-                    Event::LandPlayed { object, player } if exiled.contains_key(object) => {
+                    Event::LandPlayed { object, player, .. } if exiled.contains_key(object) => {
                         assert_eq!(exiled.remove(object), Some(*player), "seed {seed}");
                         *seen.entry("land played from exile").or_default() += 1;
                     }

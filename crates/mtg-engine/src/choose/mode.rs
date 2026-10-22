@@ -175,7 +175,9 @@ pub(crate) fn mode_options(
     can_cancel: bool,
     cause: Option<&Cause>,
 ) -> Option<ModeOptions> {
-    let card = state.object(source).map(|object| object.def.name.as_str());
+    let card = state
+        .object(source)
+        .map(|object| object.card().name.as_str());
     let modes: Vec<ModeOption> = modal
         .modes
         .iter()

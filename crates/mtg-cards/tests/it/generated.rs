@@ -176,6 +176,7 @@ fn a_compiled_mode_renders_as_its_bullet() {
     use mtg_cards::support::PrintedFace;
 
     let printed = PrintedCard {
+        layout: String::new(),
         oracle_id: "00000000-0000-0000-0000-000000000003".into(),
         name: "Test Charm".into(),
         keywords: Vec::new(),

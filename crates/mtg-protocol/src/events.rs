@@ -884,6 +884,7 @@ mod tests {
         let played = Event::LandPlayed {
             player: OWNER,
             object: t.hand,
+            face: None,
         };
         apply_event(&mut t.state, &played).unwrap();
         let event = Event::AbilityTriggered(Box::new(in_hand));

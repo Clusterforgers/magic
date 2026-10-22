@@ -35,6 +35,39 @@ const fn is_zero(count: &u8) -> bool {
     *count == 0
 }
 
+/// How the faces of a card with more than one are used (CR 708 to 715).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum Layout {
+    /// One face.
+    #[default]
+    Normal,
+    /// A split card (CR 709): both halves everywhere but on the stack, where only the half cast counts.
+    Split,
+    /// A card with an Adventure (CR 715): the permanent card everywhere but on the stack cast as the Adventure.
+    Adventure,
+    /// A modal double-faced card (CR 712): the front face everywhere but on the stack and the battlefield, where the face chosen counts.
+    ModalDfc,
+}
+
+impl Layout {
+    /// The layout a Scryfall `layout` keyword names, if the engine plays it.
+    pub fn from_scryfall(keyword: &str) -> Option<Layout> {
+        match keyword {
+            "split" => Some(Layout::Split),
+            "adventure" => Some(Layout::Adventure),
+            "modal_dfc" => Some(Layout::ModalDfc),
+            _ => None,
+        }
+    }
+
+    /// Whether this is the layout of a card with a single face, so serialization can leave it out.
+    #[allow(clippy::trivially_copy_pass_by_ref)]
+    pub const fn is_normal(&self) -> bool {
+        matches!(self, Layout::Normal)
+    }
+}
+
 /// The static, printed side of a card.
 ///
 /// A field added after the first fingerprints were stored is left out of the serialized form while it
@@ -75,6 +108,12 @@ pub struct CardDefinition {
     /// An ability is named by its index in this list.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub rules: Vec<Arc<Ability>>,
+    /// How the faces of the card are used; the fields above are the card outside the stack and the battlefield.
+    #[serde(default, skip_serializing_if = "Layout::is_normal")]
+    pub layout: Layout,
+    /// Every face of a card with more than one, in Scryfall's order, each with its own rules; empty for a card with one face.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub faces: Vec<CardDefinition>,
 }
 
 impl CardDefinition {
@@ -94,7 +133,32 @@ impl CardDefinition {
             color_indicator: None,
             abilities: Vec::new(),
             rules: Vec::new(),
+            layout: Layout::Normal,
+            faces: Vec::new(),
         }
+    }
+
+    /// Sets the faces of a card with more than one and how they are used.
+    #[must_use]
+    pub fn with_faces(mut self, layout: Layout, faces: Vec<CardDefinition>) -> Self {
+        self.layout = layout;
+        self.faces = faces;
+        self
+    }
+
+    /// The face `index` of a card with several faces, or the card itself when it has none.
+    pub fn face(&self, index: u8) -> &CardDefinition {
+        self.faces.get(usize::from(index)).unwrap_or(self)
+    }
+
+    /// Whether the card has more than one face.
+    pub fn is_multi_face(&self) -> bool {
+        !self.faces.is_empty()
+    }
+
+    /// The card as a whole and each of its faces: every definition a rule of the card may be printed on.
+    pub fn each_face(&self) -> impl Iterator<Item = &CardDefinition> {
+        std::iter::once(self).chain(self.faces.iter())
     }
 
     /// Sets the mana cost.

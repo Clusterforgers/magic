@@ -342,6 +342,7 @@ mod tests {
 
     fn card(id: u64, name: &str, text: &str) -> PrintedCard {
         PrintedCard {
+            layout: String::new(),
             oracle_id: format!("00000000-0000-0000-0000-{id:012}"),
             name: name.into(),
             keywords: Vec::new(),

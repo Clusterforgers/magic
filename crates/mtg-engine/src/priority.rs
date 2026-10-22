@@ -15,12 +15,13 @@ use crate::announce::some_x_has_targets;
 use crate::answers::Outcome;
 use crate::characteristics::{characteristics, controller_of_object};
 use crate::choose::announceable;
-use crate::decision::{PriorityAction, PriorityOptions};
+use crate::decision::{FaceOption, PriorityAction, PriorityOptions};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
+use crate::faces;
 use crate::keywords;
 use crate::loyalty;
-use crate::mana::{ManaOption, can_afford};
+use crate::mana::{ManaOption, ManaPool, can_afford};
 use crate::mana_ability;
 use crate::object::GameObject;
 use crate::player::Player;
@@ -267,6 +268,50 @@ pub(crate) fn can_act(
         || !special_actions.is_empty()
 }
 
+/// The faces of the cards with several faces that can be cast now (`castable`) or played as a land, each with its cost.
+fn face_options(
+    state: &GameState,
+    player: PlayerId,
+    castable: &[ObjectId],
+    may_play_land: bool,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    life: i32,
+) -> Vec<FaceOption> {
+    let mut found = Vec::new();
+    let hand = state.zone(Zone::Hand(player));
+    for &card in hand.iter().chain(castable) {
+        if !faces::is_multi_face(state, card) || found.iter().any(|o: &FaceOption| o.card == card) {
+            continue;
+        }
+        let listed = |face: Option<u8>, land: bool| {
+            let (name, cost) = faces::describe(state, card, face);
+            FaceOption {
+                card,
+                face: face.unwrap_or(0),
+                name,
+                cost: if land { None } else { cost },
+                land,
+            }
+        };
+        if may_play_land && hand.contains(&card) {
+            found.extend(
+                faces::land_faces(state, card)
+                    .into_iter()
+                    .map(|face| listed(face, true)),
+            );
+        }
+        if castable.contains(&card) {
+            found.extend(
+                faces::castable_faces(state, player, card, pool, sources, life)
+                    .into_iter()
+                    .map(|face| listed(face, false)),
+            );
+        }
+    }
+    found
+}
+
 /// Everything `player` may do while holding priority.
 pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityOptions {
     let hand = state.zone(Zone::Hand(player));
@@ -307,6 +352,15 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .filter(|id| ways::can_foretell(state, player, *id, &pool, &all_mana, life))
         .collect();
     let abilities = other_abilities(state, player);
+    let faces = face_options(
+        state,
+        player,
+        &castable,
+        may_play_land,
+        &pool,
+        &all_mana,
+        life,
+    );
     let mana_abilities = all_mana;
     PriorityOptions {
         can_act: can_act(
@@ -314,13 +368,14 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
             &castable,
             &abilities,
             &[suspendable.as_slice(), foretellable.as_slice()].concat(),
-        ),
+        ) || !faces.is_empty(),
         playable_lands,
         castable,
         mana_abilities,
         abilities,
         suspendable,
         foretellable,
+        faces,
         can_pass: true,
     }
 }
@@ -338,7 +393,26 @@ pub(crate) fn answer(
             if !options.playable_lands.contains(&object) {
                 return Err(IllegalAnswer::NotOffered("land").into());
             }
-            Ok(Outcome::Events(vec![Event::LandPlayed { player, object }]))
+            Ok(Outcome::Events(vec![Event::LandPlayed {
+                player,
+                object,
+                face: None,
+            }]))
+        }
+        PriorityAction::PlayLandFace(object, face) => {
+            let offered = options
+                .faces
+                .iter()
+                .any(|option| option.land && option.card == object && option.face == face);
+            if !offered {
+                return Err(IllegalAnswer::NotOffered("land").into());
+            }
+            // The front face of an adventure or modal double-faced card is the card itself.
+            Ok(Outcome::Events(vec![Event::LandPlayed {
+                player,
+                object,
+                face: (face != 0).then_some(face),
+            }]))
         }
         PriorityAction::CastSpell(object) => {
             if !options.castable.contains(&object) {

@@ -96,6 +96,8 @@ pub struct PermanentState {
     /// The X the spell was cast with, which its enters triggers and replacements read (CR 107.3m); the permanent
     /// itself has X = 0.
     pub(crate) x: Option<u32>,
+    /// The face of a card with several faces the permanent is (a modal double-faced card played as its back face).
+    pub(crate) face: Option<u8>,
 }
 
 impl PermanentState {
@@ -178,6 +180,8 @@ pub struct GameObject {
     pub(crate) card_counters: BTreeMap<CounterKind, u32>,
     /// Why the object lies face down, or `None` when it lies face up.
     pub(crate) face_down: Option<FaceDown>,
+    /// The player who may cast the card from exile as the permanent card of an Adventure it was exiled "on" (CR 715.4); a zone change clears it.
+    pub(crate) adventure: Option<PlayerId>,
     pub(crate) kind: ObjectKind,
     pub(crate) choices: Choices,
     pub(crate) ability: Option<Box<AbilityObject>>,
@@ -197,6 +201,7 @@ impl GameObject {
             counter: 0,
             card_counters: BTreeMap::new(),
             face_down: None,
+            adventure: None,
             kind: ObjectKind::Card,
             choices: Choices::default(),
             ability: None,
@@ -208,9 +213,11 @@ impl GameObject {
         id: ObjectId,
         controller: PlayerId,
         source: &GameObject,
-        choices: Choices,
+        mut choices: Choices,
         ability: AbilityObject,
     ) -> Self {
+        // Its source was in use as this face when the ability went on the stack, and the ability reads its name and types from it.
+        choices.face = source.face();
         GameObject {
             id,
             owner: controller,
@@ -223,6 +230,7 @@ impl GameObject {
             counter: 0,
             card_counters: BTreeMap::new(),
             face_down: None,
+            adventure: None,
             kind: ObjectKind::Ability,
             choices,
             ability: Some(Box::new(ability)),
@@ -304,14 +312,40 @@ impl GameObject {
         self.controller
     }
 
-    /// The printed card definition.
+    /// The printed definition of the object: the face it is in use as (`face`), else the card as a whole.
     pub fn card(&self) -> &CardDefinition {
+        match self.face() {
+            Some(face) => self.def.face(face),
+            None => &self.def,
+        }
+    }
+
+    /// The whole card, with every face it has, whichever one is in use.
+    pub fn whole_card(&self) -> &CardDefinition {
         &self.def
     }
 
-    /// The printed card types (no effects applied).
-    pub const fn base_types(&self) -> CardTypes {
-        self.base_types
+    /// The face of a card with several faces the object is in use as: the one chosen while it is a spell on the stack
+    /// and a permanent, none elsewhere, where the card is its front face (or both halves of a split card).
+    pub fn face(&self) -> Option<u8> {
+        // Only a spell on the stack, an ability and a trial of a cast (`GameState::with_face`) hold a face in their choices.
+        match &self.permanent {
+            Some(permanent) => permanent.face,
+            None => self.choices.face,
+        }
+    }
+
+    /// The player who may cast the card from exile as the creature of the Adventure it was exiled on.
+    pub const fn on_adventure(&self) -> Option<PlayerId> {
+        self.adventure
+    }
+
+    /// The printed card types of the face in use (no effects applied).
+    pub fn base_types(&self) -> CardTypes {
+        match self.face() {
+            Some(face) if self.kind != ObjectKind::Ability => self.def.face(face).type_set(),
+            _ => self.base_types,
+        }
     }
 
     /// The zone the object is in.
@@ -345,6 +379,7 @@ impl PartialEq for GameObject {
             && self.permanent == other.permanent
             && self.card_counters == other.card_counters
             && self.face_down == other.face_down
+            && self.adventure == other.adventure
             && self.counter == other.counter
             && self.kind == other.kind
             && self.choices == other.choices
@@ -365,6 +400,7 @@ impl Hash for GameObject {
         self.permanent.hash(state);
         self.card_counters.hash(state);
         self.face_down.hash(state);
+        self.adventure.hash(state);
         self.counter.hash(state);
         self.kind.hash(state);
         self.choices.hash(state);

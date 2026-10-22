@@ -74,6 +74,7 @@ fn a_counter_the_card_gives_its_meaning_to_still_reads(#[case] text: &str) {
 
 fn card_with(text: &str) -> PrintedCard {
     PrintedCard {
+        layout: String::new(),
         oracle_id: "4457ed35-7c10-48c8-9776-456485fdf070".into(),
         name: "Test Card".into(),
         keywords: vec![],

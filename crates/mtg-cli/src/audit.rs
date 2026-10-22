@@ -244,6 +244,7 @@ mod tests {
 
     fn card(n: usize, text: &str) -> PrintedCard {
         PrintedCard {
+            layout: String::new(),
             oracle_id: format!("00000000-0000-4000-8000-{n:012}"),
             name: format!("Card {n:03}"),
             keywords: vec![],
@@ -378,6 +379,7 @@ mod tests {
     #[test]
     fn the_lines_of_a_spell_are_one_reading() {
         let cards = vec![PrintedCard {
+            layout: String::new(),
             oracle_id: "00000000-0000-4000-8000-000000000009".into(),
             name: "Study".into(),
             keywords: vec![],

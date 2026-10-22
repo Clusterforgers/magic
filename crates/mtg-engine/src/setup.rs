@@ -237,6 +237,7 @@ fn preset_state(
         paid: Vec::new(),
         way: None,
         x: None,
+        face: None,
     }
 }
 
@@ -369,25 +370,41 @@ impl GameState {
 
     /// Whether any card of the game can trigger something or has a static ability, which the state then watches for.
     fn note_what_cards_can_do(&mut self) {
-        let triggers = self
-            .objects()
-            .any(|object| crate::triggers::can_trigger(self, object.id()));
-        let statics = self
-            .objects()
-            .any(|object| crate::ability_reader::definition_has_static(&object.def));
+        let triggers = self.objects().any(|object| {
+            object
+                .def
+                .each_face()
+                .flat_map(|face| face.rules.iter())
+                .any(|rules| crate::triggers::triggers_something(rules))
+        });
+        let statics = self.objects().any(|object| {
+            object
+                .def
+                .each_face()
+                .any(crate::ability_reader::definition_has_static)
+        });
         self.triggers_possible = triggers;
         self.statics_possible = statics;
-        let rules = self
-            .objects()
-            .any(|object| crate::ability_reader::definition_has_rule(&object.def));
+        let rules = self.objects().any(|object| {
+            object
+                .def
+                .each_face()
+                .any(crate::ability_reader::definition_has_rule)
+        });
         self.rules_possible = rules;
-        let elsewhere = self
-            .objects()
-            .any(|object| crate::ability_reader::definition_works_elsewhere(&object.def));
+        let elsewhere = self.objects().any(|object| {
+            object
+                .def
+                .each_face()
+                .any(crate::ability_reader::definition_works_elsewhere)
+        });
         self.possible.elsewhere = elsewhere;
-        let states = self
-            .objects()
-            .any(|object| crate::ability_reader::definition_has_state_trigger(&object.def));
+        let states = self.objects().any(|object| {
+            object
+                .def
+                .each_face()
+                .any(crate::ability_reader::definition_has_state_trigger)
+        });
         self.possible.states = states;
         let counters = self.objects().any(|object| {
             object.permanent().is_some_and(|permanent| {
@@ -398,29 +415,44 @@ impl GameState {
         });
         self.possible.counters = counters;
         let attachments = self.objects().any(|object| {
-            crate::attach::definition_attaches(&object.def)
+            object
+                .def
+                .each_face()
+                .any(crate::attach::definition_attaches)
                 || object
                     .permanent()
                     .is_some_and(|permanent| permanent.attached_to().is_some())
         });
         self.possible.attachments = attachments;
-        let legends = self
-            .objects()
-            .any(|object| object.def.supertypes.contains(&Supertype::Legendary));
+        let legends = self.objects().any(|object| {
+            object
+                .def
+                .each_face()
+                .any(|face| face.supertypes.contains(&Supertype::Legendary))
+        });
         self.possible.legends = legends;
-        let costs = self
-            .objects()
-            .any(|object| crate::ability_reader::definition_has_cost_modifier(&object.def));
+        let costs = self.objects().any(|object| {
+            object
+                .def
+                .each_face()
+                .any(crate::ability_reader::definition_has_cost_modifier)
+        });
         self.possible.costs = costs;
-        let replacements = self
-            .objects()
-            .any(|object| crate::ability_reader::definition_has_replacement(&object.def));
+        let replacements = self.objects().any(|object| {
+            object
+                .def
+                .each_face()
+                .any(crate::ability_reader::definition_has_replacement)
+        });
         self.possible.replacements = replacements;
         // Copies of a card share a name and a definition, so each name is read once.
         let mut read = std::collections::BTreeSet::new();
         let protection = self.objects().any(|object| {
             read.insert(object.def.name.as_str())
-                && crate::ability_reader::definition_has_protection(&object.def)
+                && object
+                    .def
+                    .each_face()
+                    .any(crate::ability_reader::definition_has_protection)
         }) || self.players.iter().any(|player| {
             player
                 .keywords()

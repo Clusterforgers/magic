@@ -81,6 +81,7 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
         paid: Vec::new(),
         way: None,
         x: None,
+        face: None,
     });
     state.next_timestamp += 1;
     // A token can bring what no card of the game had: a triggered ability, a static ability, a legend.

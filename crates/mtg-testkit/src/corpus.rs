@@ -46,6 +46,7 @@ struct Entry {
 /// An imported record as the strings assembly reads: what the server makes of a stored card row, here from the record itself.
 pub fn printed_card(record: &CardRecord) -> PrintedCard {
     PrintedCard {
+        layout: record.layout.keyword().to_owned(),
         oracle_id: record.oracle_id.to_string(),
         name: record.name.clone(),
         keywords: record.keywords.clone(),

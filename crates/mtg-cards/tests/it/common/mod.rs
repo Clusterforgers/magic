@@ -28,6 +28,7 @@ pub fn token_sources() -> Vec<Source> {
 /// An imported record as the strings validation compares with.
 pub fn printed_of(record: &CardRecord) -> PrintedCard {
     PrintedCard {
+        layout: record.layout.keyword().to_owned(),
         oracle_id: record.oracle_id.to_string(),
         name: record.name.clone(),
         keywords: record.keywords.clone(),

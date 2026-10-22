@@ -115,6 +115,38 @@ impl Layout {
         }
     }
 
+    /// The Scryfall keyword of the layout; the inverse of [`Layout::parse`].
+    pub fn keyword(&self) -> &str {
+        match self {
+            Layout::Normal => "normal",
+            Layout::Split => "split",
+            Layout::Flip => "flip",
+            Layout::Transform => "transform",
+            Layout::ModalDfc => "modal_dfc",
+            Layout::Meld => "meld",
+            Layout::Leveler => "leveler",
+            Layout::Class => "class",
+            Layout::Case => "case",
+            Layout::Saga => "saga",
+            Layout::Adventure => "adventure",
+            Layout::Mutate => "mutate",
+            Layout::Prototype => "prototype",
+            Layout::Battle => "battle",
+            Layout::Planar => "planar",
+            Layout::Scheme => "scheme",
+            Layout::Vanguard => "vanguard",
+            Layout::Token => "token",
+            Layout::DoubleFacedToken => "double_faced_token",
+            Layout::Emblem => "emblem",
+            Layout::Augment => "augment",
+            Layout::Host => "host",
+            Layout::ArtSeries => "art_series",
+            Layout::FrontCard => "front_card",
+            Layout::ReversibleCard => "reversible_card",
+            Layout::Other(keyword) => keyword,
+        }
+    }
+
     /// Whether the object can be a main-deck, sideboard or commander card (unknown layouts count).
     pub fn is_deck_card(&self) -> bool {
         !matches!(

@@ -5,15 +5,17 @@
 //! `of` lists them for a card and a player; the options of a player offer a card when one of its ways can be used now
 //! (`castable_now`), and the announcement of the cast asks which one when there is more than one (`announce/alternative.rs`).
 
+use mtg_cards::definition::Layout;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::value::CastWay;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
-use crate::announce;
+use crate::announce::{self, Granted};
 use crate::attach;
 use crate::choose::announceable;
+use crate::faces;
 use crate::help;
 use crate::keywords::{self, foretell, keywords_of};
 use crate::mana::{ManaOption, ManaPool, can_afford, can_afford_with};
@@ -111,7 +113,14 @@ pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> 
     if !allowed {
         return Vec::new();
     }
+    // A split card is cast as one of its halves, never as both (CR 709.3a): its halves are tried one at a time.
+    if card.whole_card().layout == Layout::Split && card.face().is_none() {
+        return Vec::new();
+    }
     let in_hand = matches!(zone, Zone::Hand(_));
+    // The creature card of an Adventure that was exiled on an adventure (CR 715.4).
+    let on_adventure =
+        zone == Zone::Exile && card.on_adventure() == Some(player) && card.face().is_none();
     let permissions: Vec<_> = cast_permissions(state)
         .iter()
         .filter(|permission| permission.covers(state, player, card))
@@ -126,7 +135,7 @@ pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> 
     let by_permission = permissions
         .iter()
         .any(|permission| !permission.free && permission.from == Some(zone_kind(zone)));
-    if (in_hand || by_permission)
+    if (in_hand || by_permission || on_adventure)
         && let Some(cost) = printed
     {
         ways.push(Way {
@@ -209,6 +218,7 @@ pub(crate) fn granted(
         return Vec::new();
     };
     let castable = card.kind() == ObjectKind::Card
+        && !(card.whole_card().layout == Layout::Split && card.face().is_none())
         && !card.base_types().contains(CardType::Land)
         && !matches!(card.zone(), Zone::Battlefield | Zone::Stack);
     if !castable {
@@ -345,6 +355,20 @@ pub(crate) fn grantable(
     free: bool,
     way: Option<CastWay>,
 ) -> bool {
+    if faces::is_multi_face(state, id) {
+        return !faces::grantable_faces(state, player, id, Granted { free, way }).is_empty();
+    }
+    grantable_as_is(state, player, id, free, way)
+}
+
+/// [`grantable`] for the card as it stands: a card with several faces is judged as the face it is in use as.
+pub(crate) fn grantable_as_is(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    free: bool,
+    way: Option<CastWay>,
+) -> bool {
     let Some(card) = state.object(id) else {
         return false;
     };
@@ -397,6 +421,21 @@ pub(crate) fn announceable_in(
 /// Whether `player` can cast `id` now in some way: at a time the way allows, with targets to announce and mana to pay
 /// with what floats and what they control.
 pub(crate) fn castable_now(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    life: i32,
+) -> bool {
+    if faces::is_multi_face(state, id) {
+        return !faces::castable_faces(state, player, id, pool, sources, life).is_empty();
+    }
+    castable_as_is(state, player, id, pool, sources, life)
+}
+
+/// [`castable_now`] for the card as it stands: a card with several faces is judged as the face it is in use as.
+pub(crate) fn castable_as_is(
     state: &GameState,
     player: PlayerId,
     id: ObjectId,

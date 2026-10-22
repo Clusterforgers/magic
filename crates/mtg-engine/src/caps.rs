@@ -14,7 +14,7 @@
 //! combat, flash, hexproof, enchant, equip, reconfigure, kicker and multikicker, flashback, evoke and overload, cycling, permissions to cast (from another zone, without paying, as though with flash), cost modifiers, attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
 
 use mtg_cards::Caps;
-use mtg_cards::assemble::{PLAIN_MANA_ABILITY, VARIABLE_STATS, X_COST};
+use mtg_cards::assemble::{FACES, PLAIN_MANA_ABILITY, VARIABLE_STATS, X_COST};
 
 /// The primitives the engine runs, and the only list of them. A task that teaches the engine one adds its
 /// name here in the same change as the code: the test of the interpreter fails when a name is listed for an
@@ -63,6 +63,7 @@ const RUNS: &[&str] = &[
     "Cost.Mana.X",
     "Cost.Loyalty.X",
     X_COST,
+    FACES,
     "Cost.SacrificeSelf",
     "Cost.ExileSelf",
     "Cost.DiscardSelf",
@@ -481,7 +482,7 @@ mod tests {
     #[case::x_costs(X_COST, true)]
     #[case::x_read_after_resolving("Amount.X.Elsewhere", false)]
     #[case::paying_x_in_an_effect("Effect.Pay.X", false)]
-    #[case::faces(FACES, false)]
+    #[case::faces(FACES, true)]
     #[case::variable_stats(VARIABLE_STATS, true)]
     fn the_engine_runs_what_it_runs_today(#[case] name: &str, #[case] runs: bool) {
         assert_eq!(caps().runs(name), runs);

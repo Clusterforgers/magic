@@ -457,7 +457,7 @@ fn compute(state: &GameState) -> Layers {
         .zone(Zone::Battlefield)
         .iter()
         .filter_map(|id| state.object(*id))
-        .any(|object| definition_has_static(&object.def))
+        .any(|object| definition_has_static(object.card()))
         || (state.possible.elsewhere
             && state.objects().any(|object| {
                 object.zone() != Zone::Battlefield

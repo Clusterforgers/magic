@@ -164,7 +164,7 @@ impl Happened {
 fn moved(pre: &GameState, event: &Event, post: &GameState) -> Option<Happened> {
     let owner = |object: &ObjectId| pre.object(*object).map(GameObject::owner);
     let (object, from, to, cause) = match event {
-        Event::LandPlayed { player, object } => {
+        Event::LandPlayed { player, object, .. } => {
             let from = pre
                 .object(*object)
                 .map_or(Zone::Hand(*player), GameObject::zone);
@@ -1338,6 +1338,7 @@ mod tests {
         let played = Event::LandPlayed {
             player,
             object: id(&pre, field),
+            face: None,
         };
         let (post, found) = fire(&pre, &[played]);
         assert_eq!(found.len(), expected, "{:?}", who(&post, &found));
@@ -1706,10 +1707,12 @@ mod tests {
             Event::LandPlayed {
                 player: ME,
                 object: id(&pre, "Field"),
+                face: None,
             },
             Event::LandPlayed {
                 player: FOE,
                 object: id(&pre, "Their Field"),
+                face: None,
             },
         ];
         let (post, found) = fire(&pre, &lands);
@@ -1862,7 +1865,7 @@ mod tests {
         to: Zone::Battlefield,
         cause: ZoneCause::Moved,
     }], false)]
-    #[case::a_land_played(vec![Event::LandPlayed { player: ME, object: ObjectId(1) }], false)]
+    #[case::a_land_played(vec![Event::LandPlayed { player: ME, object: ObjectId(1), face: None }], false)]
     #[case::a_draw(vec![Event::CardDrawn { player: ME, object: ObjectId(1) }], false)]
     #[case::a_spell_cast(vec![Event::SpellCast { player: ME, object: ObjectId(1), choices: Choices::default() }], false)]
     #[case::a_step(vec![Event::StepBegan { step: Step::Upkeep }], false)]
@@ -1894,6 +1897,7 @@ mod tests {
             vec![Event::LandPlayed {
                 player: ME,
                 object: id(&pre, "Field"),
+                face: None,
             }],
             vec![Event::CardDrawn {
                 player: FOE,
