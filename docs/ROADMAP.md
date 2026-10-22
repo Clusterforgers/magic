@@ -21,7 +21,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Costs and announcement: (g2d), (g6d), (g5c), (c1b), (c1c), Undaunted of (c2b).
 - Cast ways and zones: (c5) recursion and alternative cast ways, (n2) face-down objects, (n1d3) meld.
 - Triggers and keywords: (c6) triggered and upkeep keywords, the triggered keywords of (c2b), (c4b) level-ups and stations, (c3b) and (c3c) keyword actions and Monarch wordings, (n1d5) day and night effects, (o2c).
-- Statics and layers: (c8), (c7b), (o1c).
+- Statics and layers: (c8), (c7b).
 - Compiler wordings, no engine change: (c10) one piece per wording family, (o2b), (c11) layouts and long-tail mechanics, (c9c).
 - Commander and server: (cmd2e), (hr5b), the `manual_play` flag stored with the game, the turn without an active player in the table view, Companion.
 - Tooling: the lists of keywords (`RUN`, `NAMES` and the `Caps` lists) become slices without a length, so branches that add keywords do not conflict.
@@ -134,7 +134,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (o2) Spell copies (`Effect::CopySpell`) and storm, copies of abilities (`Effect::CopyAbility`), a copy until end of turn (`Effect::BecomeCopy`) and the copy of a transformed permanent; Twincast, Reverberate, Reiterate, Fork, Dualcaster Mage, Dual Casting, Grapeshot, Brain Freeze, Tendrils of Agony, Strionic Resonator, Lithoform Engine and Cytoshape are Verified
 - [~] (o2b) (branch o2b-copy-wordings) The compiler reads and writes the copy wordings of spells and abilities ("Copy target instant or sorcery spell. You may choose new targets for the copy", "except that the copy is red", "Copy target triggered ability you control", "becomes a copy of that creature until end of turn", storm) with goldens, so that these cards are reproduced from their text
 - [ ] (o2c) A storm trigger or copy effect that resolves after its spell has left the stack copies it from last known information (the snapshot keeps the announced choices)
-- [~] (o1c) (branch o1c-copy-dies) A copy that dies as it enters (a Clone copy of a creature with toughness 0 after layers) reads its dies trigger from the copy's abilities and not from the Clone card ("has no triggered ability 1"), found in a 6-seat Commander fuzz game; the Commander fuzz deck excludes cards that enter as a copy until it is fixed
+- [x] (o1c) A copy that leaves the battlefield (it dies as it enters, is destroyed, or is sacrificed to pay for its own ability) triggers and puts its abilities on the stack from its last known copiable values and not from the card in the graveyard; the Commander fuzz deck keeps the cards that enter as a copy
 
 ### Manual cards and views
 - [x] (p) Manual cards: a card the engine does not run is cast and resolves without effects, and its controller applies generic logged actions (move, counters, life, token, tap) through the same primitives, visible to every seat
