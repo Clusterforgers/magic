@@ -1,0 +1,25 @@
+{
+  "id": "0279fd3c-9252-4958-9d7a-5f33aa25907e",
+  "oracle_id": "152b91c9-cc07-4ca8-944f-9bc2242a2283",
+  "name": "Whir of Invention",
+  "lang": "en",
+  "layout": "normal",
+  "set": "aer",
+  "collector_number": "49",
+  "rarity": "rare",
+  "released_at": "2017-01-20",
+  "digital": false,
+  "mana_cost": "{X}{U}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Improvise (Your artifacts can help cast this spell. Each artifact you tap after you're done activating mana abilities pays for {1}.)\nSearch your library for an artifact card with mana value X or less, put it onto the battlefield, then shuffle.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Improvise"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "3b6cbd2a-02ba-4afb-a081-0f25d830a8ee",
+  "name": "Caller of the Pack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caller of the Pack",
+      "oracle_fingerprint": "21f83a9233a831a6c3c5f2b0d64f4136",
+      "abilities": [{ "Keyword": "Trample" }, { "Keyword": "Myriad" }]
+    }
+  ]
+}

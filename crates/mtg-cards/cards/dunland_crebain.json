@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9dd755a5-0bef-4bde-92fa-14ef2a1a1410",
+  "name": "Dunland Crebain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dunland Crebain",
+      "oracle_fingerprint": "b60c3c634dbca161eb8c8952fd0e3182",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Amass": { "subtype": "Orc", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

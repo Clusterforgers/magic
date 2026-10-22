@@ -1,0 +1,16 @@
+{
+  "oracle_id": "89115ed5-95bf-4b81-b352-5481c3addbed",
+  "name": "Panther Robot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Panther Robot",
+      "oracle_fingerprint": "1b48d7914d7f330d21f8223f2fb3915a",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Type": "Artifact" }] } },
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" }
+      ]
+    }
+  ]
+}

@@ -80,7 +80,7 @@ fn part(r: &mut Reader<'_>) -> Option<Amount> {
 
 /// What is counted: "the number of ...", "the number of card types among ...", "your life total", "your devotion to
 /// black", "the greatest mana value among ...", "the total power of ...".
-fn counting(r: &mut Reader<'_>) -> Option<Amount> {
+pub(super) fn counting(r: &mut Reader<'_>) -> Option<Amount> {
     if r.words("your life total") {
         return Some(Amount::Life(Ref::You));
     }
@@ -228,7 +228,7 @@ fn value_text(amount: &Amount) -> Option<String> {
         .then(|| texts.join(" plus "))
 }
 
-fn counting_text(amount: &Amount) -> Option<String> {
+pub(super) fn counting_text(amount: &Amount) -> Option<String> {
     match amount {
         Amount::Life(Ref::You) => Some("your life total".to_owned()),
         Amount::CardTypes(of) => Some(format!(

@@ -169,6 +169,8 @@ pub enum Keyword {
     Dash(Cost),
     /// Bestow with its cost: the creature card may be cast as an Aura spell with enchant creature for it, and becomes a creature again when it is not attached (CR 702.103).
     Bestow(Cost),
+    /// Blitz with its cost: an alternative cost for a creature spell, which gains haste and "When this creature dies, draw a card" and is sacrificed at the next end step (CR 702.152).
+    Blitz(Cost),
     /// Ninjutsu with its cost: from the hand during combat after blockers are declared, an unblocked attacker returns to its owner's hand and the card enters tapped and attacking (CR 702.49).
     Ninjutsu(Cost),
     /// Echo with its cost (CR 702.30): at the beginning of its controller's upkeep, if it came under their control since their last turn began, it is sacrificed unless they pay the cost.
@@ -179,6 +181,27 @@ pub enum Keyword {
     Undying,
     /// Persist (CR 702.79): when it dies, if it had no -1/-1 counter on it, it returns with a -1/-1 counter.
     Persist,
+    /// Ravenous (CR 702.156): it enters with X +1/+1 counters, and its controller draws a card when it enters if X is 5 or more.
+    Ravenous,
+    /// Jump-start (CR 702.133): the card may be cast from a graveyard by discarding a card in addition to its other costs, and is then exiled.
+    JumpStart,
+    /// Retrace (CR 702.81): the card may be cast from a graveyard by discarding a land card in addition to its other costs.
+    Retrace,
+    /// Embalm with its cost (CR 702.128): from a graveyard at sorcery speed the card is exiled for a token copy that is a white Zombie with no mana cost.
+    Embalm(Cost),
+    /// Eternalize with its cost (CR 702.129): from a graveyard at sorcery speed the card is exiled for a token copy that is a 4/4 black Zombie with no mana cost.
+    Eternalize(Cost),
+    /// Improvise (CR 702.126): each artifact tapped while the spell is cast pays for {1} of its cost.
+    Improvise,
+    /// Affinity (CR 702.41): this spell costs {1} less to cast for each permanent its controller controls that the selector names (Affinity for artifacts).
+    Affinity(Selector),
+    /// Typecycling (CR 702.29): "[Cost], Discard this card: Search your library for a card the selector names, reveal it, put it into your hand, then shuffle" (Plainscycling, basic landcycling); it is a kind of cycling.
+    Typecycling {
+        /// What the card searched for must be.
+        find: Selector,
+        /// The cost, paid beside the discard.
+        cost: Cost,
+    },
 }
 
 impl Keyword {
@@ -257,11 +280,20 @@ impl Keyword {
         "Aftermath",
         "Dash",
         "Bestow",
+        "Blitz",
         "Ninjutsu",
         "Echo",
         "Cumulative upkeep",
         "Undying",
         "Persist",
+        "Ravenous",
+        "Jump-start",
+        "Retrace",
+        "Embalm",
+        "Eternalize",
+        "Improvise",
+        "Affinity",
+        "Typecycling",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -340,11 +372,20 @@ impl Keyword {
             Keyword::Aftermath => "Aftermath",
             Keyword::Dash(_) => "Dash",
             Keyword::Bestow(_) => "Bestow",
+            Keyword::Blitz(_) => "Blitz",
             Keyword::Ninjutsu(_) => "Ninjutsu",
             Keyword::Echo(_) => "Echo",
             Keyword::CumulativeUpkeep(_) => "Cumulative upkeep",
             Keyword::Undying => "Undying",
             Keyword::Persist => "Persist",
+            Keyword::Ravenous => "Ravenous",
+            Keyword::JumpStart => "Jump-start",
+            Keyword::Retrace => "Retrace",
+            Keyword::Embalm(_) => "Embalm",
+            Keyword::Eternalize(_) => "Eternalize",
+            Keyword::Improvise => "Improvise",
+            Keyword::Affinity(_) => "Affinity",
+            Keyword::Typecycling { .. } => "Typecycling",
         }
     }
 
@@ -355,9 +396,12 @@ impl Keyword {
             .any(|name| name.eq_ignore_ascii_case(printed))
     }
 
-    /// Whether this is a kicker or multikicker keyword.
+    /// Whether paying the cost of this keyword counts as a kick (`Amount::Kicks`): kicker, multikicker and squad.
     pub const fn is_kicker(&self) -> bool {
-        matches!(self, Keyword::Kicker(_) | Keyword::Multikicker(_))
+        matches!(
+            self,
+            Keyword::Kicker(_) | Keyword::Multikicker(_) | Keyword::Squad(_)
+        )
     }
 }
 
@@ -446,11 +490,23 @@ mod tests {
             Keyword::Aftermath,
             Keyword::Dash(cost.clone()),
             Keyword::Bestow(cost.clone()),
+            Keyword::Blitz(cost.clone()),
             Keyword::Ninjutsu(cost),
             Keyword::Echo(Cost::default()),
             Keyword::CumulativeUpkeep(Cost::default()),
             Keyword::Undying,
             Keyword::Persist,
+            Keyword::Ravenous,
+            Keyword::JumpStart,
+            Keyword::Retrace,
+            Keyword::Embalm(Cost::default()),
+            Keyword::Eternalize(Cost::default()),
+            Keyword::Improvise,
+            Keyword::Affinity(Selector::default()),
+            Keyword::Typecycling {
+                find: Selector::default(),
+                cost: Cost::default(),
+            },
         ]
     }
 

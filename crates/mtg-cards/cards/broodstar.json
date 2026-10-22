@@ -1,0 +1,29 @@
+{
+  "oracle_id": "428cc1cb-a491-4cc4-9436-28ee8acc37d6",
+  "name": "Broodstar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Broodstar",
+      "oracle_fingerprint": "5ed62787574b290ecdc91ef0fdd52da4",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Type": "Artifact" }] } },
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

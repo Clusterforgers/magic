@@ -1,0 +1,20 @@
+{
+  "oracle_id": "96264dde-c0b6-4912-afc4-18757f938a4d",
+  "name": "Grim Initiate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grim Initiate",
+      "oracle_fingerprint": "387394f814e61136406cd7e09fbe67c8",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Amass": { "subtype": "Zombie", "count": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

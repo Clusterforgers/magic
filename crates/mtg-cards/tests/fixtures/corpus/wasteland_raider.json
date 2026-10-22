@@ -1,0 +1,27 @@
+{
+  "id": "9eae2596-013a-4e9b-982b-e0fc8d1e78bf",
+  "oracle_id": "29439669-c9be-46f3-a62f-16de51fefe88",
+  "name": "Wasteland Raider",
+  "lang": "en",
+  "layout": "normal",
+  "set": "pip",
+  "collector_number": "52",
+  "rarity": "rare",
+  "released_at": "2024-03-08",
+  "digital": false,
+  "mana_cost": "{2}{B}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Mercenary",
+  "oracle_text": "Squad {2} (As an additional cost to cast this spell, you may pay {2} any number of times. When this creature enters, create that many tokens that are copies of it.)\nWhen this creature enters, each player sacrifices a creature of their choice.",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Squad"
+  ]
+}

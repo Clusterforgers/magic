@@ -1,0 +1,20 @@
+{
+  "oracle_id": "da4bf807-93f3-41b7-8bfd-aa63a551754e",
+  "name": "Galadhrim Brigade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Galadhrim Brigade",
+      "oracle_fingerprint": "65c035474f0882d37c30a179b43ca34f",
+      "abilities": [
+        { "Keyword": { "Squad": "{1}{G}" } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Elf" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

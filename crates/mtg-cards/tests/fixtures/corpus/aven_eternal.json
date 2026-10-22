@@ -1,0 +1,28 @@
+{
+  "id": "fe479484-a827-4d3c-8e35-e905e4f6664a",
+  "oracle_id": "ba7aad10-6897-4e85-a976-1bf9282de5de",
+  "name": "Aven Eternal",
+  "lang": "en",
+  "layout": "normal",
+  "set": "war",
+  "collector_number": "42",
+  "rarity": "common",
+  "released_at": "2019-05-03",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Zombie Bird Warrior",
+  "oracle_text": "Flying\nWhen this creature enters, amass Zombies 1. (Put a +1/+1 counter on an Army you control. It's also a Zombie. If you don't control an Army, create a 0/0 black Zombie Army creature token first.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Amass"
+  ]
+}

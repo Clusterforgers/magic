@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b845e69b-5d49-40ff-9cf7-d5cf2ccec7be",
+  "name": "Map the Wastes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Map the Wastes",
+      "oracle_fingerprint": "84b8c747664a10c7cab21b104995870b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} },
+              { "Bolster": { "count": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "6fab0fa0-d082-414e-9bcf-edc0fc1f6211",
+  "name": "Tah-Crop Skirmisher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tah-Crop Skirmisher",
+      "oracle_fingerprint": "d7ed4242c0e8d51e7eb3f896f4f4bd55",
+      "abilities": [{ "Keyword": { "Embalm": "{3}{U}" } }]
+    }
+  ]
+}

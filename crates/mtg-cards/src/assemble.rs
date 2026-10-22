@@ -302,6 +302,8 @@ pub enum ManaProduced<'a> {
     OneOfLists(&'a [Vec<ManaType>]),
     /// This many mana of the colour the source chose as it entered.
     ChosenColor(u32),
+    /// One mana of this type or of the colour the source chose as it entered, picked when the ability is activated.
+    OrChosenColor(ManaType),
     /// This many mana of one colour of its controller's commander's colour identity, picked when activated.
     CommanderIdentity(u32),
     /// This many mana of one colour (or type) that an object matching `among` could produce, picked when activated.
@@ -334,6 +336,7 @@ impl<'a> ManaProduced<'a> {
             Produce::OneOf(types) => ManaProduced::OneOf(types),
             Produce::OneOfLists(lists) => ManaProduced::OneOfLists(lists),
             Produce::ChosenColor(count) => ManaProduced::ChosenColor(*count),
+            Produce::OrChosenColor(mana) => ManaProduced::OrChosenColor(*mana),
             Produce::CommanderIdentity(count) => ManaProduced::CommanderIdentity(*count),
             Produce::ProducedBy {
                 among,
@@ -357,7 +360,7 @@ impl ManaProduced<'_> {
             | ManaProduced::ChosenColor(count)
             | ManaProduced::CommanderIdentity(count)
             | ManaProduced::ProducedBy { count, .. } => *count,
-            ManaProduced::OneOf(_) => 1,
+            ManaProduced::OneOf(_) | ManaProduced::OrChosenColor(_) => 1,
             ManaProduced::OneOfLists(lists) => lists
                 .iter()
                 .map(|list| u32::try_from(list.len()).unwrap_or(u32::MAX))

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "85643f9b-49ea-434b-9f27-c1431064345e",
+  "name": "Lazotep Reaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lazotep Reaver",
+      "oracle_fingerprint": "65f359fbc71f0e975f2b25a47c85e631",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Amass": { "subtype": "Zombie", "count": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

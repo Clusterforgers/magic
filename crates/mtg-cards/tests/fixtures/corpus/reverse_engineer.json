@@ -1,0 +1,25 @@
+{
+  "id": "07fff0a3-1315-42f7-9d36-4f5eaad0c62e",
+  "oracle_id": "f56596be-e12f-4ab6-af61-3ef8dc87134c",
+  "name": "Reverse Engineer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "116",
+  "rarity": "common",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{3}{U}{U}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Improvise (Your artifacts can help cast this spell. Each artifact you tap after you're done activating mana abilities pays for {1}.)\nDraw three cards.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Improvise"
+  ]
+}

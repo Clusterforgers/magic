@@ -1,0 +1,19 @@
+{
+  "oracle_id": "6bf9c91f-f278-4b97-8517-d062118c4e56",
+  "name": "Sandcrafter Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sandcrafter Mage",
+      "oracle_fingerprint": "1163251271cbf79ef57f97fe85cd2df2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Bolster": { "count": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}
