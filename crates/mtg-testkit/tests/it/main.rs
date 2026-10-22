@@ -71,6 +71,7 @@ mod dash;
 mod day_night;
 mod defining;
 mod defining_fuzz;
+mod demonstrate;
 mod determinism_replay;
 mod devour_casualty_offspring;
 mod devour_fuzz;

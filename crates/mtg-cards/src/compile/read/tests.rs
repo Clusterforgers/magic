@@ -209,6 +209,7 @@ mod top_cast;
 mod transform;
 mod triggers;
 mod vocabulary;
+mod where_x;
 mod x_after;
 
 mod mana {
@@ -789,7 +790,6 @@ mod pump {
 
     #[rstest]
     #[case::for_each("Target creature gets +1/+1 for each creature you control until end of turn.")]
-    #[case::where_x("Target creature gets +X/+X until end of turn, where X is its toughness.")]
     #[case::no_duration("Target creature gets +2/+2.")]
     #[case::next_turn("Target creature gets +2/+2 until your next turn.")]
     #[case::end_of_combat("Target creature gets +2/+2 until end of combat.")]

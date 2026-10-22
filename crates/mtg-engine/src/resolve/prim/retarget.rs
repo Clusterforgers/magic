@@ -40,7 +40,7 @@ pub(super) enum Retargeted {
     Done(Choices),
 }
 
-/// The choices of a copy of `original` made by the controller of the effect.
+/// The choices of a copy of `original` made by `player`, who controls the copy.
 ///
 /// Nobody is asked when no target of the original could be another one. Otherwise the controller of the copy is asked
 /// whether to choose new targets (No keeps every target of the original, legal or not, CR 707.10c), then
@@ -48,13 +48,13 @@ pub(super) enum Retargeted {
 /// are read in order from `answers`, the rest of the journal of the step.
 pub(super) fn retarget(
     cx: &Cx<'_>,
+    player: PlayerId,
     answers: &mut Iter<'_, (PlayerId, Choice)>,
     original: Original<'_>,
     may_choose: bool,
 ) -> Result<Retargeted, ResolveError> {
     let mut copy = original.choices.clone();
     copy.cost_picks = None;
-    let player = cx.controller();
     let state = cx.state();
     let specs = announced_specs(original.ability, &original.choices.modes);
     let mut changeable = Vec::new();

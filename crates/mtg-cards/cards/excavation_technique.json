@@ -1,0 +1,29 @@
+{
+  "oracle_id": "bcd3e6a1-7b76-408d-9236-3791c3e1064a",
+  "name": "Excavation Technique",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Excavation Technique",
+      "oracle_fingerprint": "8d807c9f7265daf8c24dd4fe3548d9fb",
+      "abilities": [
+        { "Keyword": "Demonstrate" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": { "Named": "treasure" },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

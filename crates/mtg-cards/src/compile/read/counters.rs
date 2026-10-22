@@ -116,7 +116,7 @@ pub(super) fn counters(r: &mut Reader<'_>) -> Option<(CounterKind, u32)> {
 /// How many counters a permanent enters with: "a +1/+1 counter", "two charge counters", "X +1/+1
 /// counters" (when the card's mana cost has an X).
 pub fn entering(r: &mut Reader<'_>) -> Option<(CounterKind, Amount)> {
-    let (count, number) = if r.x_free && r.word("x") {
+    let (count, number) = if r.x() {
         (Amount::X, None)
     } else {
         let number = number_word(r.take_word()?)?;

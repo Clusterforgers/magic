@@ -27,6 +27,7 @@ mod daybound;
 mod deathtouch;
 mod defender;
 mod delve;
+mod demonstrate;
 mod dethrone;
 mod devoid;
 mod devour;
@@ -469,6 +470,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Backup { .. } => &backup::Backup,
         Keyword::Devour { .. } => &devour::Devour,
         Keyword::Casualty(_) => &casualty::Casualty,
+        Keyword::Demonstrate => &demonstrate::Demonstrate,
         Keyword::Offspring(_) => &offspring::Offspring,
         Keyword::Ravenous => &ravenous::Ravenous,
         Keyword::Fabricate(_) => &fabricate::Fabricate,
@@ -804,6 +806,8 @@ mod tests {
             },
             Keyword::Casualty(2),
             Keyword::Offspring(cost()),
+            Keyword::Demonstrate,
+            Keyword::Hideaway(4),
         ]
     }
 
@@ -895,6 +899,7 @@ mod tests {
         "Keyword.Devour",
         "Keyword.Casualty",
         "Keyword.Offspring",
+        "Keyword.Demonstrate",
         "Keyword.LevelUp",
         "Keyword.Outlast",
         "Keyword.Saddle",
@@ -1057,6 +1062,7 @@ mod tests {
     #[case::backup(Keyword::Backup { count: 1, abilities: vec![] }, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::devour(Keyword::Devour { counters: 2, of: Selector::default() }, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::casualty(Keyword::Casualty(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::demonstrate(Keyword::Demonstrate, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::offspring(Keyword::Offspring(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::myriad(Keyword::Myriad, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::squad(Keyword::Squad(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
