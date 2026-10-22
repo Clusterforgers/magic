@@ -807,6 +807,7 @@ mod tests {
             Keyword::Casualty(2),
             Keyword::Offspring(cost()),
             Keyword::Demonstrate,
+            Keyword::Hideaway(4),
         ]
     }
 
