@@ -603,6 +603,7 @@ mod tests {
     use rstest::rstest;
 
     /// One value of every keyword, parameters included.
+    #[allow(clippy::too_many_lines)]
     fn every_keyword() -> Vec<Keyword> {
         let cost = || Cost::mana("{1}".parse().unwrap());
         vec![

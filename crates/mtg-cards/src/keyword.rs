@@ -431,6 +431,7 @@ mod tests {
     use super::*;
     use rstest::rstest;
 
+    #[allow(clippy::too_many_lines)]
     fn samples() -> Vec<Keyword> {
         let cost = Cost::default();
         vec![
