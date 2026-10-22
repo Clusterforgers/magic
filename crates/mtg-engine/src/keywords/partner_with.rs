@@ -75,6 +75,6 @@ mod tests {
         .unwrap();
         let keyword = Keyword::PartnerWith("Pir, Imaginative Rascal".into());
         assert_eq!(PartnerWith.adds_abilities(&keyword), [written]);
-        assert!(PartnerWith.adds_abilities(&Keyword::Partner).is_empty());
+        assert_eq!(PartnerWith.adds_abilities(&Keyword::Partner), Vec::new());
     }
 }

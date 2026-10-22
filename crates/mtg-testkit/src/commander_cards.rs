@@ -140,11 +140,12 @@ pub fn commander_deck(
     Ok((deck, commander))
 }
 
+/// A deck and its pair of partners.
+pub type PartnerDeck = (Vec<Arc<CardDefinition>>, [Arc<CardDefinition>; 2]);
+
 /// A legal Commander deck led by a pair of partners in two colors: the 98 other cards, within the two colors together,
 /// and the pair. Everything is derived from `rng`.
-pub fn partner_deck(
-    rng: &mut GameRng,
-) -> Result<(Vec<Arc<CardDefinition>>, [Arc<CardDefinition>; 2]), CorpusError> {
+pub fn partner_deck(rng: &mut GameRng) -> Result<PartnerDeck, CorpusError> {
     let at = rng.index(Color::ALL.len());
     let first = Color::ALL[at];
     let second = Color::ALL[(at + 1 + rng.index(Color::ALL.len() - 1)) % Color::ALL.len()];

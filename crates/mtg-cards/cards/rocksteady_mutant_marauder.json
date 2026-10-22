@@ -1,0 +1,32 @@
+{
+  "oracle_id": "506a972d-d226-44dc-95b7-a6e7a63d76cd",
+  "name": "Rocksteady, Mutant Marauder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rocksteady, Mutant Marauder",
+      "oracle_fingerprint": "39c58139c77a2e015a052f59c0466978",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Bebop, Skull & Crossbones" } },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

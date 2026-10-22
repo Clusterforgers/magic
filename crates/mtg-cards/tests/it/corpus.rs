@@ -206,7 +206,9 @@ fn declared_status_decides_the_support_when_the_engine_runs_everything(#[case] c
     for shown in printed() {
         let record = library.support(&shown, &caps);
         let expected = match shown.name.as_str() {
-            "Aven Mindcensor" | "Courser of Kruphix" => Support::Partial,
+            "Aven Mindcensor" | "Bebop, Skull & Crossbones" | "Courser of Kruphix" => {
+                Support::Partial
+            }
             _ => Support::Verified,
         };
         assert_eq!(
@@ -438,6 +440,10 @@ fn clause_spans_cut_out_the_sentences_they_name() {
         (
             "Aven Mindcensor",
             "If an opponent would search a library, that player searches the top four cards of that library instead.",
+        ),
+        (
+            "Bebop, Skull & Crossbones",
+            "Whenever Bebop deals combat damage to a player, you may draw X cards, where X is the number of counters on Bebop. If you do, you lose X life.",
         ),
         (
             "Courser of Kruphix",

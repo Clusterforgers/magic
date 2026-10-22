@@ -1,4 +1,4 @@
-//! Goal: over the real precons that `mtg-cli ingest` and `compile` stored (a database named by `MTG_REAL_DATABASE_URL`, never the development one), the list judges every precon by the same report as a stored deck, a precon is `playable` unless the report blocks it or the engine does not yet know a commander's rule (a planeswalker that can be a commander, a pair of partners of the newer kinds), every other precon makes a two-seat game that starts, and the precons that stay out are listed with their reasons. Ignored by default.
+//! Goal: over the real precons that `mtg-cli ingest` and `compile` stored (a database named by `MTG_REAL_DATABASE_URL`, never the development one), the list judges every precon by the same report as a stored deck, a precon is `playable` unless the report blocks it (the engine reads every commander rule the report accepts: eligibility and the partner kinds), every playable precon makes a two-seat game that starts, and the blocked ones are listed with their reasons. Ignored by default.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net;
@@ -48,7 +48,7 @@ async fn every_real_precon_is_judged_by_the_report_and_every_playable_one_starts
     assert!(!precons.is_empty(), "the database holds no precons");
 
     let mut by_state: BTreeMap<String, usize> = BTreeMap::new();
-    let (mut playable, mut engine_waits, mut blocked) = (0, Vec::new(), Vec::new());
+    let (mut playable, mut blocked) = (0, Vec::new());
     for item in precons {
         let state = item["state"].as_str().unwrap().to_owned();
         *by_state.entry(state.clone()).or_default() += 1;
@@ -62,27 +62,15 @@ async fn every_real_precon_is_judged_by_the_report_and_every_playable_one_starts
             .json();
         let issues = codes(&view);
         let line = format!("{code} [{state}] {}: {}", item["format"], issues.join(", "));
-        if state == "blocked" {
-            blocked.push(line);
-        } else {
-            // A precon the report passes is held back by the engine's check alone.
-            let reasons = ["commander_eligibility", "commander_pair"];
-            assert!(
-                issues.iter().all(|issue| reasons.contains(&issue.as_str())),
-                "{line}: {}",
-                view["issues"]
-            );
-            engine_waits.push(format!("{line} ({})", view["issues"][0]["message"]));
-        }
+        // The engine reads every commander rule the report accepts, so only the report holds a precon back.
+        assert_eq!(state, "blocked", "{line}: {}", view["issues"]);
+        blocked.push(line);
     }
     println!("states: {by_state:?}, playable: {playable}");
     for line in &blocked {
         println!("blocked by the check: {line}");
     }
-    for line in &engine_waits {
-        println!("waits for the engine: {line}");
-    }
-    assert_eq!(playable + blocked.len() + engine_waits.len(), precons.len());
+    assert_eq!(playable + blocked.len(), precons.len());
 
     let mut started = 0;
     for item in precons.iter().filter(|item| item["playable"] == true) {

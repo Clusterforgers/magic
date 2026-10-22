@@ -102,6 +102,7 @@ mod mill_effects;
 mod mulligan;
 mod object_nth;
 mod part_fuzz;
+mod partner_with;
 mod pay_fuzz;
 mod pay_parts;
 mod pay_unless;

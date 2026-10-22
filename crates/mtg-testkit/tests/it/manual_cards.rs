@@ -10,7 +10,7 @@ use mtg_engine::keywords::keywords_of;
 use mtg_engine::manual::ManualAction;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, PresetPermanent};
-use mtg_testkit::cards::{forest, free_creature, island, plains};
+use mtg_testkit::cards::{forest, free_creature, island, plains, swamp};
 use mtg_testkit::manual_cards::{
     manual_aura, manual_creature, manual_equipment, manual_instant, manual_sorcery,
     unverified_corpus_cards,
@@ -29,6 +29,7 @@ fn lands() -> Vec<PresetPermanent> {
         ready(plains()),
         ready(island()),
         ready(island()),
+        ready(swamp()),
     ]
 }
 
