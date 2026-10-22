@@ -7,7 +7,7 @@
 mod bounce;
 mod counters;
 mod discard;
-mod energy;
+pub(crate) mod energy;
 mod exile;
 mod exile_hand;
 mod life;

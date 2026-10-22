@@ -7,18 +7,23 @@ use super::Payer;
 use crate::choose::Target;
 use crate::counters::CountersChanged;
 use crate::events::Event;
+use crate::state::GameState;
 
 /// The kind of counter energy is.
 pub(crate) fn kind() -> CounterKind {
     CounterKind::Other("energy".to_owned())
 }
 
+/// The energy `player` holds.
+pub(crate) fn held(state: &GameState, player: PlayerId) -> u32 {
+    state
+        .player(player)
+        .map_or(0, |seat| seat.counters_of(&kind()))
+}
+
 /// The energy the payer holds.
 pub(super) fn most(payer: &Payer<'_>) -> u32 {
-    payer
-        .state
-        .player(payer.player)
-        .map_or(0, |seat| seat.counters_of(&kind()))
+    held(payer.state, payer.player)
 }
 
 /// Whether the payer holds that much energy.

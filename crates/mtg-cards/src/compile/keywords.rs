@@ -430,6 +430,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "split second" => Keyword::SplitSecond,
         "undaunted" => Keyword::Undaunted,
         "rebound" => Keyword::Rebound,
+        "aftermath" => Keyword::Aftermath,
         _ => return None,
     })
 }
@@ -656,6 +657,7 @@ mod tests {
     #[case::unearth("Unearth {1}{B}", Keyword::Unearth(mana("{1}{B}")))]
     #[case::unearth_in_mana_only_with_reminder("unearth {B}", Keyword::Unearth(mana("{B}")))]
     #[case::rebound("Rebound", Keyword::Rebound)]
+    #[case::aftermath("Aftermath", Keyword::Aftermath)]
     #[case::escape_exiling_cards(
         "Escape\u{2014}{2}{R}, Exile three other cards from your graveyard.",
         Keyword::Escape(Cost(vec![
@@ -913,6 +915,7 @@ mod tests {
             "Unearth {1}",
             "Escape {1}",
             "Rebound",
+            "Aftermath",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];
         let mut seen = Vec::new();

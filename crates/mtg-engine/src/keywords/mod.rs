@@ -4,6 +4,7 @@
 //! engine asks about: blocking, attacking, damage, targeting, timing and destruction. The engine reads the
 //! keywords an object has through [`keywords_of`] and the helpers below it, never from the rules of the card.
 
+pub(crate) mod aftermath;
 mod battle_cry;
 mod buyback;
 mod cascade;
@@ -389,6 +390,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Unearth(_) => &unearth::Unearth,
         Keyword::Escape(_) => &escape::Escape,
         Keyword::Rebound => &rebound::Rebound,
+        Keyword::Aftermath => &aftermath::Aftermath,
     }
 }
 
@@ -636,6 +638,7 @@ mod tests {
             Keyword::Unearth(cost()),
             Keyword::Escape(cost()),
             Keyword::Rebound,
+            Keyword::Aftermath,
         ]
     }
 
@@ -702,6 +705,7 @@ mod tests {
         "Keyword.Unearth",
         "Keyword.Escape",
         "Keyword.Rebound",
+        "Keyword.Aftermath",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -809,6 +813,7 @@ mod tests {
     #[case::unearth(Keyword::Unearth(Cost::mana("{B}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::escape(Keyword::Escape(Cost::mana("{B}".parse().unwrap())), Hooks::none())]
     #[case::rebound(Keyword::Rebound, Hooks::none())]
+    #[case::aftermath(Keyword::Aftermath, Hooks::none())]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);
