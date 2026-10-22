@@ -14,7 +14,7 @@ use mtg_cards::support::{Caps, Support, oracle_fingerprint};
 use mtg_cards::validate::used_primitives;
 use rstest::rstest;
 
-use common::{cards_dir, printed};
+use common::{ADDING, Corpus, UPDATE, cards_dir, printed};
 
 fn json_files(dir: &Path) -> Vec<std::path::PathBuf> {
     let mut found = Vec::new();
@@ -31,7 +31,7 @@ fn json_files(dir: &Path) -> Vec<std::path::PathBuf> {
 }
 
 fn library() -> Library {
-    Library::load_dir(&cards_dir()).unwrap_or_else(|errors| panic!("{errors}"))
+    Corpus::repo().library()
 }
 
 /// Rewrites every file in canonical form with the fingerprints of the imported text when
@@ -53,7 +53,7 @@ fn files_are_canonical_and_carry_current_fingerprints() {
                     .iter()
                     .find(|p| p.oracle_id == card.oracle_id)
                     .unwrap_or_else(|| {
-                        panic!("{name}: the fixture has no card with this oracle id")
+                        panic!("{name}: the fixture has no card with this oracle id ({ADDING})")
                     });
                 for (face, shown) in card.faces.iter_mut().zip(&shown.faces) {
                     face.oracle_fingerprint = oracle_fingerprint(&shown.oracle_text);
@@ -71,16 +71,43 @@ fn files_are_canonical_and_carry_current_fingerprints() {
     }
     assert!(
         stale.is_empty(),
-        "not in canonical form: {stale:?}; run `MTG_UPDATE_CARDS=1 cargo test -p mtg-cards corpus::`"
+        "not in canonical form: {stale:?}; run `{UPDATE}` ({ADDING})"
     );
 }
 
 #[test]
-fn the_corpus_loads_with_one_hundred_and_eighty_cards_and_three_tokens() {
+fn the_corpus_loads_every_card_file_and_every_token_file() {
+    let corpus = Corpus::repo();
     let library = library();
-    assert_eq!(library.cards().count(), 180);
-    let tokens: Vec<_> = library.tokens().map(|t| t.id.as_str()).collect();
-    assert_eq!(tokens, ["clue", "food", "treasure"]);
+    assert_eq!(library.cards().count(), corpus.card_files().len());
+    let stem = |path: &std::path::PathBuf| path.file_stem().unwrap().to_string_lossy().into_owned();
+    let on_disk: Vec<String> = corpus.token_files().iter().map(stem).collect();
+    let loaded: Vec<String> = library.tokens().map(|t| t.id.clone()).collect();
+    assert_eq!(loaded, on_disk);
+    for predefined in ["clue", "food", "treasure"] {
+        assert!(loaded.iter().any(|id| id == predefined), "{predefined}");
+    }
+}
+
+#[test]
+fn every_card_file_has_exactly_one_fixture_record_and_the_reverse() {
+    let problems = Corpus::repo().pairing_problems();
+    assert!(problems.is_empty(), "{problems:#?}");
+}
+
+#[test]
+fn the_fixture_records_have_distinct_names_and_the_corpus_has_as_many_cards_as_records() {
+    let corpus = Corpus::repo();
+    let records = corpus.records();
+    let names: BTreeSet<&str> = records.iter().map(|record| record.name.as_str()).collect();
+    assert_eq!(names.len(), records.len(), "a name twice ({ADDING})");
+    assert_eq!(records.len(), library().cards().count(), "{ADDING}");
+}
+
+#[test]
+fn the_fingerprints_of_every_card_are_current() {
+    let problems = Corpus::repo().fingerprint_problems();
+    assert!(problems.is_empty(), "{problems:#?}");
 }
 
 #[test]
@@ -88,7 +115,7 @@ fn the_corpus_matches_the_imported_cards() {
     let errors = library().check_printed(&printed());
     assert!(
         errors.is_empty(),
-        "{}",
+        "{}\n(a drifted fingerprint: run `{UPDATE}`; see {ADDING})",
         errors
             .iter()
             .map(ToString::to_string)

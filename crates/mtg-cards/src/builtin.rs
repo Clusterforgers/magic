@@ -42,31 +42,58 @@ pub fn library() -> Result<&'static Library, &'static LoadErrors> {
 #[cfg(test)]
 mod tests {
     //! Goal: the embedded library is the directory it was built from: every card and token file is in it, it validates, and asking twice gives the same library.
+    use std::path::{Path, PathBuf};
+
     use super::*;
+
+    fn root() -> PathBuf {
+        Path::new(env!("CARGO_MANIFEST_DIR")).to_path_buf()
+    }
+
+    /// The `.json` files directly in `dir`.
+    fn json_in(dir: &Path) -> Vec<PathBuf> {
+        std::fs::read_dir(dir)
+            .unwrap()
+            .flatten()
+            .map(|entry| entry.path())
+            .filter(|path| path.is_file() && path.extension().is_some_and(|e| e == "json"))
+            .collect()
+    }
 
     #[test]
     fn the_embedded_files_are_the_corpus() {
         let library = library().unwrap_or_else(|errors| panic!("{errors}"));
-        assert_eq!(library.cards().count(), 180);
-        assert_eq!(library.tokens().count(), 3);
+        assert_eq!(
+            library.cards().count(),
+            json_in(&root().join("cards")).len()
+        );
+        assert_eq!(
+            library.tokens().count(),
+            json_in(&root().join("cards/tokens")).len()
+        );
         assert!(library.card_by_name("Lightning Bolt").is_some());
         assert!(std::ptr::eq(library, self::library().unwrap()));
     }
 
     #[test]
     fn the_sources_are_named_like_the_directory_and_equal_its_files() {
-        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
         let sources = sources();
-        assert_eq!(sources.len(), 183);
         for source in &sources {
             assert!(source.path.starts_with("cards/"), "{}", source.path);
-            let text = std::fs::read_to_string(root.join(&source.path)).unwrap();
+            let text = std::fs::read_to_string(root().join(&source.path)).unwrap();
             assert_eq!(text, source.text, "{}", source.path);
         }
-        let mut paths: Vec<&str> = sources.iter().map(|s| s.path.as_str()).collect();
-        let sorted = paths.clone();
-        paths.sort_unstable();
-        assert_eq!(paths, sorted, "listed in path order");
+        let mut on_disk: Vec<String> = [root().join("cards"), root().join("cards/tokens")]
+            .iter()
+            .flat_map(|dir| json_in(dir))
+            .map(|path| {
+                let relative = path.strip_prefix(root()).unwrap();
+                relative.to_string_lossy().into_owned()
+            })
+            .collect();
+        on_disk.sort_unstable();
+        let paths: Vec<&str> = sources.iter().map(|s| s.path.as_str()).collect();
+        assert_eq!(paths, on_disk, "every file, listed in path order");
         assert!(paths.contains(&"cards/tokens/treasure.json"));
     }
 }

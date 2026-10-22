@@ -1,4 +1,4 @@
-//! Goal: all 40 corpus cards assemble into the characteristics their imported record prints whatever the engine runs, rules are attached only when the support record says the engine runs them, and a card comes out Verified, Partial or Manual as the capabilities allow.
+//! Goal: every corpus card assembles into the characteristics its imported record prints whatever the engine runs, rules are attached only when the support record says the engine runs them, and a card comes out Verified, Partial or Manual as the capabilities allow.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -15,10 +15,10 @@ use mtg_core::mana::ManaType;
 use mtg_import::scryfall::CardRecord;
 use rstest::rstest;
 
-use common::{cards_dir, printed_of, records};
+use common::{Corpus, printed_of, records};
 
 fn library() -> Library {
-    Library::load_dir(&cards_dir()).unwrap_or_else(|errors| panic!("{errors}"))
+    Corpus::repo().library()
 }
 
 fn letters(text: &str) -> ColorSet {
@@ -63,7 +63,7 @@ fn caps_of(names: &[&str]) -> Caps {
 #[case::everything(Caps::everything())]
 fn the_printed_side_of_every_corpus_card_equals_its_record(#[case] caps: Caps) {
     let records = records();
-    assert_eq!(records.len(), 180);
+    assert_eq!(records.len(), library().cards().count());
     for record in records {
         let name = &record.name;
         let front = &record.front;

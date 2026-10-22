@@ -4,203 +4,13 @@
 use crate::common;
 
 use mtg_cards::ability::Ability;
-use mtg_cards::card::ImplStatus::{Full, Manual, Partial};
-use mtg_cards::card::{Card, ImplStatus};
+use mtg_cards::card::Card;
+use mtg_cards::card::ImplStatus::Manual;
 use mtg_cards::compile::{Compiled, compile};
-use mtg_cards::load::{Library, Source, canonical, slug};
+use mtg_cards::load::canonical;
 use mtg_cards::support::{PrintedCard, oracle_fingerprint};
 
-use common::{cards_dir, printed, token_sources};
-
-/// Every corpus card with the status it compiles to (`None` when its text is only reminder text) and
-/// how many of its clauses are read out of how many.
-const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 180] = [
-    ("Act of Treason", Some(Manual), 0, 1),
-    ("Solstice Zealot", Some(Full), 2, 2),
-    ("Copper-Leaf Angel", Some(Full), 2, 2),
-    ("Nantuko Husk", Some(Full), 1, 1),
-    ("Rummaging Goblin", Some(Full), 1, 1),
-    ("Soul Shepherd", Some(Full), 1, 1),
-    ("Llanowar Behemoth", Some(Full), 1, 1),
-    ("Tumble Magnet", Some(Full), 2, 2),
-    ("Lurching Rotbeast", Some(Full), 1, 1),
-    ("Souldrinker", Some(Full), 1, 1),
-    ("Ajani, Caller of the Pride", Some(Manual), 0, 3),
-    ("Ancient Ziggurat", Some(Full), 1, 1),
-    ("Anger", Some(Partial), 1, 2),
-    ("Arvad the Cursed", Some(Full), 3, 3),
-    ("Anointed Procession", Some(Manual), 0, 1),
-    ("Archon of Cruelty", Some(Full), 2, 2),
-    ("Batterskull", Some(Partial), 3, 4),
-    ("Battlefield Forge", Some(Full), 2, 2),
-    ("Black Knight", Some(Full), 2, 2),
-    ("Bloodbraid Elf", Some(Full), 2, 2),
-    ("Fiery Temper", Some(Full), 2, 2),
-    ("Basking Rootwalla", Some(Full), 2, 2),
-    ("Arrogant Wurm", Some(Full), 2, 2),
-    ("Rift Bolt", Some(Full), 2, 2),
-    ("Ancestral Vision", Some(Full), 2, 2),
-    ("Durkwood Baloth", Some(Full), 1, 1),
-    ("Bonecrusher Giant // Stomp", Some(Manual), 0, 2),
-    ("Armguard Familiar", Some(Partial), 2, 3),
-    ("Bonesplitter", Some(Full), 2, 2),
-    ("Bronzeplate Boar", Some(Full), 3, 3),
-    ("Corpsejack Menace", Some(Manual), 0, 1),
-    ("Doubling Season", Some(Manual), 0, 2),
-    ("Faithful Watchdog", Some(Full), 2, 2),
-    ("Furnace of Rath", Some(Manual), 0, 1),
-    ("Hall of Triumph", Some(Full), 2, 2),
-    ("Hardened Scales", Some(Manual), 0, 1),
-    ("Idyllic Beachfront", Some(Full), 1, 1),
-    ("Lizard Blades", Some(Full), 3, 3),
-    ("Boneyard Scourge", Some(Partial), 1, 2),
-    ("Brainstorm", Some(Full), 1, 1),
-    ("Burst Lightning", Some(Partial), 1, 2),
-    ("Caress of Phyrexia", Some(Manual), 0, 1),
-    ("Carnage Tyrant", Some(Full), 3, 3),
-    ("Cathars' Crusade", Some(Full), 1, 1),
-    ("Control Magic", Some(Partial), 1, 2),
-    ("Counterspell", Some(Full), 1, 1),
-    ("Courtly Provocateur", Some(Manual), 0, 2),
-    ("Covetous Dragon", Some(Partial), 1, 2),
-    ("Cultivate", Some(Manual), 0, 1),
-    ("Darksteel Juggernaut", Some(Partial), 2, 3),
-    ("Death Ward", Some(Full), 1, 1),
-    (
-        "Delver of Secrets // Insectile Aberration",
-        Some(Partial),
-        1,
-        2,
-    ),
-    ("Dockside Extortionist", Some(Full), 1, 1),
-    ("Doom Blade", Some(Full), 1, 1),
-    ("Drudge Skeletons", Some(Full), 1, 1),
-    ("Elemental Masterpiece", Some(Partial), 1, 2),
-    ("Epic Proportions", Some(Full), 3, 3),
-    ("Eternal Witness", Some(Full), 1, 1),
-    ("Faithless Looting", Some(Full), 2, 2),
-    ("Favorable Winds", Some(Full), 1, 1),
-    ("Felidar Sovereign", Some(Full), 3, 3),
-    ("Fire // Ice", Some(Partial), 2, 3),
-    ("Fireball", Some(Manual), 0, 2),
-    ("Flooded Strand", Some(Full), 1, 1),
-    ("Fog", Some(Manual), 0, 1),
-    ("Forest", None, 0, 0),
-    ("Gaea's Cradle", Some(Manual), 0, 1),
-    ("Lotus Petal", Some(Full), 1, 1),
-    ("Mishra's Workshop", Some(Full), 1, 1),
-    ("Pillar of the Paruns", Some(Full), 1, 1),
-    ("Rosheen Meanderer", Some(Full), 1, 1),
-    ("Garruk Wildspeaker", Some(Manual), 0, 3),
-    ("Gatekeeper of Malakir", Some(Partial), 1, 2),
-    ("Giant Growth", Some(Full), 1, 1),
-    ("Glorious Anthem", Some(Full), 1, 1),
-    ("Goblin Chieftain", Some(Partial), 1, 2),
-    ("Goblin Spy", Some(Full), 1, 1),
-    ("Grizzly Bears", None, 0, 0),
-    ("Hero of Bladehold", Some(Full), 2, 2),
-    ("Hulking Raptor", Some(Full), 2, 2),
-    ("Humility", Some(Manual), 0, 1),
-    ("Inspiring Call", Some(Manual), 0, 1),
-    ("Izzet Charm", Some(Full), 1, 1),
-    ("Jace Beleren", Some(Manual), 0, 3),
-    ("Jace, the Mind Sculptor", Some(Manual), 0, 4),
-    ("Jungle Lion", Some(Full), 1, 1),
-    ("Kongming, \"Sleeping Dragon\"", Some(Full), 1, 1),
-    ("Kormus Bell", Some(Manual), 0, 1),
-    ("Levitation", Some(Full), 1, 1),
-    ("Lightning Bolt", Some(Full), 1, 1),
-    ("Llanowar Elves", Some(Full), 1, 1),
-    ("Maralen of the Mornsong", Some(Manual), 0, 2),
-    ("Kor Firewalker", Some(Partial), 1, 2),
-    ("Maro", Some(Manual), 0, 1),
-    ("Mending Hands", Some(Manual), 0, 1),
-    ("Mindlock Orb", Some(Manual), 0, 1),
-    ("Monastery Swiftspear", Some(Full), 2, 2),
-    ("Mother of Runes", Some(Manual), 0, 1),
-    ("Mulldrifter", Some(Full), 3, 3),
-    ("Naban, Dean of Iteration", Some(Manual), 0, 1),
-    ("Nightmare", Some(Partial), 1, 2),
-    ("Opt", Some(Full), 2, 2),
-    ("Pacifism", Some(Full), 2, 2),
-    ("Panharmonicon", Some(Manual), 0, 1),
-    ("Parallel Lives", Some(Manual), 0, 1),
-    ("Questing Beast", Some(Partial), 4, 6),
-    ("Rally the Ranks", Some(Full), 2, 2),
-    ("Rampaging Ferocidon", Some(Partial), 1, 3),
-    ("Rampant Growth", Some(Full), 1, 1),
-    ("Reassembling Skeleton", Some(Manual), 0, 1),
-    ("Rest in Peace", Some(Manual), 0, 2),
-    ("Rhox Faithmender", Some(Partial), 1, 2),
-    ("Rhystic Study", Some(Full), 1, 1),
-    ("Samite Healer", Some(Manual), 0, 1),
-    ("Serra Angel", Some(Full), 2, 2),
-    ("Sneak Attack", Some(Manual), 0, 1),
-    ("Sodden Verdure", Some(Full), 1, 1),
-    ("Sol Ring", Some(Full), 1, 1),
-    ("Soul of Zendikar", Some(Partial), 2, 3),
-    ("Shielded by Faith", Some(Partial), 2, 3),
-    ("Spellbreaker Behemoth", Some(Partial), 1, 2),
-    ("Sram, Senior Edificer", Some(Manual), 0, 1),
-    ("Squee, Goblin Nabob", Some(Manual), 0, 1),
-    ("Squirrel Nest", Some(Partial), 1, 2),
-    ("Steam Vents", Some(Full), 1, 1),
-    ("Supreme Verdict", Some(Full), 2, 2),
-    ("Swiftfoot Boots", Some(Full), 2, 2),
-    ("Swords to Plowshares", Some(Full), 1, 1),
-    ("Teysa Karlov", Some(Manual), 0, 2),
-    ("Thought Reflection", Some(Manual), 0, 1),
-    ("Tireless Tracker", Some(Full), 2, 2),
-    ("Transguild Courier", Some(Manual), 0, 1),
-    ("Warmonger Hellkite", Some(Full), 3, 3),
-    ("Wolfbriar Elemental", Some(Partial), 1, 2),
-    ("Wrath of God", Some(Full), 1, 1),
-    ("Blaze", Some(Full), 1, 1),
-    ("Stroke of Genius", Some(Full), 1, 1),
-    ("Kessig Wolf Run", Some(Full), 2, 2),
-    ("Tezzeret the Seeker", Some(Manual), 0, 3),
-    ("Forked Bolt", Some(Manual), 0, 1),
-    ("Armament Corps", Some(Manual), 0, 1),
-    ("Cyclonic Rift", Some(Full), 2, 2),
-    ("Mizzium Mortars", Some(Full), 2, 2),
-    ("Omniscience", Some(Manual), 0, 1),
-    ("Vedalken Orrery", Some(Manual), 0, 1),
-    ("Thalia, Guardian of Thraben", Some(Full), 2, 2),
-    ("Foundry Inspector", Some(Full), 1, 1),
-    ("Ajani's Pridemate", Some(Full), 1, 1),
-    ("Thieving Magpie", Some(Full), 2, 2),
-    ("Underworld Dreams", Some(Full), 1, 1),
-    ("Megrim", Some(Full), 1, 1),
-    ("Manabarbs", Some(Full), 1, 1),
-    ("Mesmeric Orb", Some(Full), 1, 1),
-    ("Wanderbrine Preacher", Some(Full), 1, 1),
-    ("Renewed Faith", Some(Partial), 2, 3),
-    ("Skullclamp", Some(Full), 3, 3),
-    ("Lat-Nam Adept", Some(Full), 1, 1),
-    ("Fear of Failed Tests", Some(Full), 1, 1),
-    ("Sanguine Bond", Some(Full), 1, 1),
-    ("Sword of Body and Mind", Some(Full), 3, 3),
-    ("The Thing, Ben Grimm", Some(Full), 2, 2),
-    ("Bloodghast", Some(Full), 3, 3),
-    ("Stoke the Flames", Some(Full), 2, 2),
-    ("Gurmag Angler", Some(Full), 1, 1),
-    ("Treasure Cruise", Some(Full), 2, 2),
-    ("Murderous Cut", Some(Full), 2, 2),
-    ("Siege Wurm", Some(Full), 2, 2),
-    ("Walking Ballista", Some(Full), 3, 3),
-    ("Hangarback Walker", Some(Partial), 2, 3),
-    ("Gadwick, the Wizened", Some(Full), 2, 2),
-    ("Disembowel", Some(Full), 1, 1),
-    ("Forced March", Some(Full), 1, 1),
-    ("Invisible Stalker", Some(Full), 2, 2),
-    ("Aven Mindcensor", Some(Partial), 2, 3),
-    ("Courser of Kruphix", Some(Partial), 2, 3),
-    ("Behold the Multiverse", Some(Full), 2, 2),
-    ("Saw It Coming", Some(Full), 2, 2),
-    ("Demon Bolt", Some(Full), 2, 2),
-    ("Augury Raven", Some(Full), 2, 2),
-    ("Wargate", Some(Full), 1, 1),
-];
+use common::{Corpus, printed};
 
 fn compiled_corpus() -> Vec<(PrintedCard, Compiled)> {
     printed()
@@ -212,57 +22,16 @@ fn compiled_corpus() -> Vec<(PrintedCard, Compiled)> {
         .collect()
 }
 
-fn source_of(card: &Card) -> Source {
-    Source {
-        path: format!("cards/{}.json", slug(&card.name)),
-        text: canonical(card),
-    }
-}
-
 #[test]
-fn the_table_lists_every_corpus_card_once() {
-    let mut names: Vec<_> = printed().into_iter().map(|card| card.name).collect();
-    let mut listed: Vec<_> = EXPECTED.iter().map(|row| row.0.to_owned()).collect();
-    names.sort();
-    listed.sort();
-    assert_eq!(names, listed);
-}
-
-#[test]
-fn every_corpus_card_earns_the_status_in_the_table() {
-    let corpus = compiled_corpus();
-    assert_eq!(corpus.len(), 180);
-    let mut differing = Vec::new();
-    for (card, compiled) in &corpus {
-        let row = EXPECTED.iter().find(|row| row.0 == card.name).unwrap();
-        let status = compiled.card.as_ref().map(|card| card.impl_status);
-        let read = compiled.clauses.iter().filter(|clause| clause.read).count();
-        let found = (status, read, compiled.clauses.len());
-        if found != (row.1, row.2, row.3) {
-            differing.push(format!(
-                "{}: {found:?}, expected {:?}",
-                card.name,
-                (row.1, row.2, row.3)
-            ));
-        }
-    }
-    assert!(differing.is_empty(), "{differing:#?}");
+fn every_corpus_card_earns_the_status_its_clauses_say() {
+    let problems = Corpus::repo().status_problems();
+    assert!(problems.is_empty(), "{problems:#?}");
 }
 
 #[test]
 fn every_compiled_card_loads_and_matches_the_imported_text() {
-    let corpus = compiled_corpus();
-    let mut sources: Vec<Source> = corpus
-        .iter()
-        .filter_map(|(_, compiled)| compiled.card.as_ref())
-        .map(source_of)
-        .collect();
-    assert_eq!(sources.len(), 178);
-    sources.extend(token_sources());
-    let library = Library::from_sources(&sources).unwrap_or_else(|errors| panic!("{errors}"));
-    let imported: Vec<PrintedCard> = corpus.into_iter().map(|(card, _)| card).collect();
-    let problems = library.check_printed(&imported);
-    assert!(problems.is_empty(), "{problems:?}");
+    let problems = Corpus::repo().compiled_problems();
+    assert!(problems.is_empty(), "{problems:#?}");
 }
 
 #[test]
@@ -336,7 +105,7 @@ fn a_live_card_has_one_manual_ability_for_each_unread_clause() {
 /// The keywords the compiler reads are among the abilities of the hand-written file of the same card, face by face.
 #[test]
 fn the_keywords_read_are_in_the_hand_written_files() {
-    let hand_written = Library::load_dir(&cards_dir()).unwrap_or_else(|errors| panic!("{errors}"));
+    let hand_written = Corpus::repo().library();
     for (printed, compiled) in compiled_corpus() {
         let Some(card) = compiled.card else { continue };
         let by_hand = hand_written.card(&printed.oracle_id).unwrap();

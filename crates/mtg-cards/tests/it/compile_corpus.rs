@@ -13,125 +13,10 @@ use mtg_cards::compile::{ClauseKind, Compiled, compile, render_variants, same_te
 use mtg_cards::load::Library;
 use mtg_cards::support::PrintedCard;
 
-use common::{cards_dir, printed};
-
-/// The corpus cards whose compiled abilities are the hand-written file's, face by face. A card joins
-/// the list when the templates reach it and never leaves; a card that matches but is not listed fails
-/// the test too, so the list is the ratchet.
-const REPRODUCED: [&str; 109] = [
-    "Skullclamp",
-    "Lat-Nam Adept",
-    "Fear of Failed Tests",
-    "Sanguine Bond",
-    "Ancient Ziggurat",
-    "Archon of Cruelty",
-    "Solstice Zealot",
-    "Copper-Leaf Angel",
-    "Llanowar Behemoth",
-    "Lurching Rotbeast",
-    "Nantuko Husk",
-    "Rummaging Goblin",
-    "Soul Shepherd",
-    "Souldrinker",
-    "Tumble Magnet",
-    "Arvad the Cursed",
-    "Battlefield Forge",
-    "Black Knight",
-    "Blaze",
-    "Bloodbraid Elf",
-    "Fiery Temper",
-    "Basking Rootwalla",
-    "Arrogant Wurm",
-    "Rift Bolt",
-    "Ancestral Vision",
-    "Durkwood Baloth",
-    "Bonesplitter",
-    "Brainstorm",
-    "Bronzeplate Boar",
-    "Carnage Tyrant",
-    "Cathars' Crusade",
-    "Counterspell",
-    "Cyclonic Rift",
-    "Death Ward",
-    "Dockside Extortionist",
-    "Doom Blade",
-    "Drudge Skeletons",
-    "Epic Proportions",
-    "Eternal Witness",
-    "Faithful Watchdog",
-    "Faithless Looting",
-    "Favorable Winds",
-    "Felidar Sovereign",
-    "Flooded Strand",
-    "Foundry Inspector",
-    "Giant Growth",
-    "Glorious Anthem",
-    "Goblin Spy",
-    "Hall of Triumph",
-    "Hero of Bladehold",
-    "Hulking Raptor",
-    "Idyllic Beachfront",
-    "Izzet Charm",
-    "Jungle Lion",
-    "Kessig Wolf Run",
-    "Kongming, \"Sleeping Dragon\"",
-    "Levitation",
-    "Lightning Bolt",
-    "Lizard Blades",
-    "Llanowar Elves",
-    "Mizzium Mortars",
-    "Monastery Swiftspear",
-    "Lotus Petal",
-    "Mishra's Workshop",
-    "Pillar of the Paruns",
-    "Rosheen Meanderer",
-    "Mulldrifter",
-    "Opt",
-    "Pacifism",
-    "Rally the Ranks",
-    "Rampant Growth",
-    "Rhystic Study",
-    "Serra Angel",
-    "Sodden Verdure",
-    "Sol Ring",
-    "Steam Vents",
-    "Stroke of Genius",
-    "Supreme Verdict",
-    "Swiftfoot Boots",
-    "Swords to Plowshares",
-    "Thalia, Guardian of Thraben",
-    "Tireless Tracker",
-    "Warmonger Hellkite",
-    "Wrath of God",
-    "Ajani's Pridemate",
-    "Manabarbs",
-    "Megrim",
-    "Mesmeric Orb",
-    "Thieving Magpie",
-    "Underworld Dreams",
-    "Wanderbrine Preacher",
-    "Stoke the Flames",
-    "Gurmag Angler",
-    "Treasure Cruise",
-    "Murderous Cut",
-    "Siege Wurm",
-    "The Thing, Ben Grimm",
-    "Bloodghast",
-    "Sword of Body and Mind",
-    "Gadwick, the Wizened",
-    "Disembowel",
-    "Forced March",
-    "Invisible Stalker",
-    "Walking Ballista",
-    "Behold the Multiverse",
-    "Saw It Coming",
-    "Demon Bolt",
-    "Augury Raven",
-    "Wargate",
-];
+use common::{ADDING, Corpus, UPDATE, printed};
 
 fn hand_written() -> Library {
-    Library::load_dir(&cards_dir()).unwrap_or_else(|errors| panic!("{errors}"))
+    Corpus::repo().library()
 }
 
 fn compiled_corpus() -> Vec<(PrintedCard, Compiled)> {
@@ -212,24 +97,80 @@ fn every_ability_the_compiler_reads_is_in_the_hand_written_file() {
     }
 }
 
+/// The ratchet list: the corpus cards whose compiled abilities are the hand-written file's, face by face, one
+/// name per line in sorted order so that branches adding names merge cleanly. A card joins the list when the
+/// templates reach it and never leaves; a card that matches but is not listed fails the test too.
+fn list_path() -> std::path::PathBuf {
+    std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/reproduced.txt")
+}
+
+/// The names in a list file, in file order.
+fn names_in(text: &str) -> Vec<String> {
+    text.lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .map(str::to_owned)
+        .collect()
+}
+
+/// The list file of these names: sorted, one per line, no duplicates.
+pub fn list_text(names: &BTreeSet<String>) -> String {
+    names.iter().map(|name| format!("{name}\n")).collect()
+}
+
+/// The corpus cards whose compiled abilities are the hand-written file's.
+pub fn reproduced(corpus: &Corpus) -> BTreeSet<String> {
+    let library = corpus.library();
+    corpus
+        .printed()
+        .into_iter()
+        .filter(|shown| {
+            library
+                .card(&shown.oracle_id)
+                .is_some_and(|by_hand| reproduces(&compile(shown), by_hand))
+        })
+        .map(|shown| shown.name)
+        .collect()
+}
+
+/// What keeps the cards `found` from being exactly those in the list `text`: a listed card that is no longer
+/// reproduced, a reproduced card that is not listed, a list that is not sorted without duplicates.
+pub fn ratchet_problems(found: &BTreeSet<String>, text: &str) -> Vec<String> {
+    let listed: BTreeSet<String> = names_in(text).into_iter().collect();
+    let mut problems = Vec::new();
+    let lost: Vec<_> = listed.difference(found).collect();
+    if !lost.is_empty() {
+        problems.push(format!(
+            "listed in tests/fixtures/reproduced.txt but no longer reproduced: {lost:?}"
+        ));
+    }
+    let new: Vec<_> = found.difference(&listed).collect();
+    if !new.is_empty() {
+        problems.push(format!(
+            "reproduced but not listed: add {new:?} to tests/fixtures/reproduced.txt, or run `{UPDATE}` ({ADDING})"
+        ));
+    }
+    if text != list_text(&listed) {
+        problems.push(format!(
+            "tests/fixtures/reproduced.txt is not one name per line, sorted, without duplicates; run `{UPDATE}`"
+        ));
+    }
+    problems
+}
+
 #[test]
 fn the_reproduced_cards_are_exactly_the_listed_ones() {
-    let library = hand_written();
-    let found: BTreeSet<String> = compiled_corpus()
-        .into_iter()
-        .filter(|(printed, compiled)| {
-            reproduces(compiled, library.card(&printed.oracle_id).unwrap())
-        })
-        .map(|(printed, _)| printed.name)
-        .collect();
-    let listed: BTreeSet<String> = REPRODUCED.iter().map(|name| (*name).to_owned()).collect();
-    let lost: Vec<_> = listed.difference(&found).collect();
-    let new: Vec<_> = found.difference(&listed).collect();
-    assert!(lost.is_empty(), "listed but no longer reproduced: {lost:?}");
-    assert!(
-        new.is_empty(),
-        "reproduced but not listed (add them to REPRODUCED): {new:?}"
-    );
+    let found = reproduced(&Corpus::repo());
+    let mut text = std::fs::read_to_string(list_path()).unwrap();
+    if std::env::var_os("MTG_UPDATE_CARDS").is_some() {
+        // The update only adds: a card that stopped matching stays listed and fails.
+        let mut listed: BTreeSet<String> = names_in(&text).into_iter().collect();
+        listed.extend(found.iter().cloned());
+        text = list_text(&listed);
+        std::fs::write(list_path(), &text).unwrap();
+    }
+    let problems = ratchet_problems(&found, &text);
+    assert!(problems.is_empty(), "{problems:#?}");
 }
 
 /// The corpus cards the compiler does not reproduce, each with the first clause it leaves unread.
@@ -238,8 +179,10 @@ fn the_reproduced_cards_are_exactly_the_listed_ones() {
 fn the_frontier_of_the_compiler() {
     let library = hand_written();
     let mut frontier = Vec::new();
+    let mut reproduced = 0;
     for (printed, compiled) in compiled_corpus() {
         if reproduces(&compiled, library.card(&printed.oracle_id).unwrap()) {
+            reproduced += 1;
             continue;
         }
         let first = compiled
@@ -254,7 +197,7 @@ fn the_frontier_of_the_compiler() {
     }
     eprintln!(
         "{} cards reproduced, frontier:\n{}",
-        REPRODUCED.len(),
+        reproduced,
         frontier.join("\n")
     );
 }
