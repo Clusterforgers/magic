@@ -339,11 +339,14 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
     };
     // CR 601.2c: a spell that needs a target is cast only when it has a legal one; CR 700.2a: a modal spell only when
     // enough of its modes can be chosen. A card is offered when some way to cast it can be used now (`ways`).
+    // Split second: no spell is cast and no ability that is not a mana ability is activated (CR 702.61a). Special
+    // actions and mana abilities stay.
+    let silenced = keywords::split_second_on_stack(state);
     let castable: Vec<ObjectId> = hand
         .iter()
         .copied()
         .chain(ways::elsewhere(state, player))
-        .filter(|id| ways::castable_now(state, player, *id, &pool, &all_mana, life))
+        .filter(|id| !silenced && ways::castable_now(state, player, *id, &pool, &all_mana, life))
         .collect();
     // A special action: no stack, so no target or modes are needed (CR 116.2f).
     let suspendable: Vec<ObjectId> = hand
@@ -356,7 +359,11 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .copied()
         .filter(|id| ways::can_foretell(state, player, *id, &pool, &all_mana, life))
         .collect();
-    let abilities = other_abilities(state, player);
+    let abilities = if silenced {
+        Vec::new()
+    } else {
+        other_abilities(state, player)
+    };
     let faces = face_options(
         state,
         player,

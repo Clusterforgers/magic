@@ -1,0 +1,25 @@
+{
+  "id": "2ece0707-72f7-4a0a-8c37-9fbe0c694f9b",
+  "oracle_id": "ad9b6737-22c4-45cc-976b-32743ed48462",
+  "name": "Wipe Away",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tsr",
+  "collector_number": "100",
+  "rarity": "uncommon",
+  "released_at": "2021-03-19",
+  "digital": false,
+  "mana_cost": "{1}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Split second (As long as this spell is on the stack, players can't cast spells or activate abilities that aren't mana abilities.)\nReturn target permanent to its owner's hand.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Split second"
+  ]
+}

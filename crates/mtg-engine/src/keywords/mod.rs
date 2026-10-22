@@ -339,6 +339,12 @@ pub trait KeywordRules: Debug + Sync {
         false
     }
 
+    /// Whether a spell with the keyword on the stack stops players from casting spells and activating abilities that are
+    /// not mana abilities (split second, CR 702.61).
+    fn silences_players(&self, _keyword: &Keyword) -> bool {
+        false
+    }
+
     /// The abilities the keyword stands for, written in the DSL like any card.
     fn adds_abilities(&self, _keyword: &Keyword) -> Vec<Ability> {
         Vec::new()
@@ -626,6 +632,16 @@ pub(crate) fn grants_instant_timing(state: &GameState, id: ObjectId) -> bool {
         .any(|keyword| rules(keyword).grants_timing(keyword))
 }
 
+/// Whether a spell on the stack silences the players: none may cast spells or activate abilities that are not mana
+/// abilities until it leaves (split second, CR 702.61). Mana abilities, special actions and triggers go on as usual.
+pub(crate) fn split_second_on_stack(state: &GameState) -> bool {
+    state.stack().iter().any(|&id| {
+        keywords_of(state, id)
+            .into_iter()
+            .any(|keyword| rules(keyword).silences_players(keyword))
+    })
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: every keyword the vocabulary declares has rules, the capabilities name exactly the keywords whose rules the engine runs, each keyword answers the hooks its row says and no others, and one function reads what an object has and one what a player has.
@@ -866,6 +882,8 @@ mod tests {
         "Keyword.Fabricate",
         "Keyword.Ascend",
         "Keyword.Encore",
+        "Keyword.SplitSecond",
+        "Keyword.Undaunted",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -882,6 +900,7 @@ mod tests {
         shields_player: bool,
         damage: DamageRules,
         timing: bool,
+        silences: bool,
         abilities: usize,
     }
 
@@ -898,6 +917,7 @@ mod tests {
                 shields_player: false,
                 damage: DamageRules::default(),
                 timing: false,
+                silences: false,
                 abilities: 0,
             }
         }
@@ -914,6 +934,7 @@ mod tests {
                 shields_player: rules.restricts_player_targeting(keyword, PlayerId(0), PlayerId(1)),
                 damage: rules.modifies_damage(keyword),
                 timing: rules.grants_timing(keyword),
+                silences: rules.silences_players(keyword),
                 abilities: rules.adds_abilities(keyword).len(),
             }
         }
@@ -933,6 +954,8 @@ mod tests {
 
     #[rstest]
     #[case::flash(Keyword::Flash, Hooks { timing: true, ..Hooks::none() })]
+    #[case::split_second(Keyword::SplitSecond, Hooks { silences: true, ..Hooks::none() })]
+    #[case::undaunted(Keyword::Undaunted, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::flying(Keyword::Flying, Hooks { answers_flying: true, ..Hooks::none() })]
     #[case::reach(Keyword::Reach, Hooks { answers_flying: true, ..Hooks::none() })]
     #[case::menace(Keyword::Menace, Hooks { min_blockers: 2, ..Hooks::none() })]

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e42b6bd7-8fdf-4452-85cc-9aed790ff682",
+  "name": "Coastal Breach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coastal Breach",
+      "oracle_fingerprint": "e363169f48b2a69afc28e00267cbb695",
+      "abilities": [
+        { "Keyword": "Undaunted" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Battlefield" }, { "Not": { "Type": "Land" } }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

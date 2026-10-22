@@ -1,0 +1,28 @@
+{
+  "id": "0aed10f9-8c52-400b-a432-a0d8c6458e87",
+  "oracle_id": "60e6a140-c7fb-4fbe-bd74-6bbb925080e7",
+  "name": "Sulfur Elemental",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tsr",
+  "collector_number": "195",
+  "rarity": "uncommon",
+  "released_at": "2021-03-19",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Elemental",
+  "oracle_text": "Flash\nSplit second (As long as this spell is on the stack, players can't cast spells or activate abilities that aren't mana abilities.)\nWhite creatures get +1/-1.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flash",
+    "Split second"
+  ]
+}

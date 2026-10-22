@@ -1,0 +1,29 @@
+{
+  "id": "56f371f5-9c2a-4a00-a4d2-e4f97ac0f3e0",
+  "oracle_id": "af06a811-7a57-4f68-9d87-7903e043f36d",
+  "name": "Celestial Crusader",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tsr",
+  "collector_number": "13",
+  "rarity": "uncommon",
+  "released_at": "2021-03-19",
+  "digital": false,
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Spirit",
+  "oracle_text": "Flash\nSplit second (As long as this spell is on the stack, players can't cast spells or activate abilities that aren't mana abilities.)\nFlying\nOther white creatures get +1/+1.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Flash",
+    "Split second"
+  ]
+}

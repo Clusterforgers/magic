@@ -1,0 +1,25 @@
+{
+  "id": "5d724faa-a988-4c08-875d-d18f48926a0a",
+  "oracle_id": "a3475ca6-d88e-4855-a554-1338624d1635",
+  "name": "Sudden Death",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tsr",
+  "collector_number": "143",
+  "rarity": "uncommon",
+  "released_at": "2021-03-19",
+  "digital": false,
+  "mana_cost": "{1}{B}{B}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Split second (As long as this spell is on the stack, players can't cast spells or activate abilities that aren't mana abilities.)\nTarget creature gets -4/-4 until end of turn.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Split second"
+  ]
+}

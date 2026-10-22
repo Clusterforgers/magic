@@ -1,0 +1,22 @@
+{
+  "oracle_id": "b95f704d-96b9-437e-8c49-aba874139e12",
+  "name": "Sudden Edict",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sudden Edict",
+      "oracle_fingerprint": "97a14eac9de777391471b82f780a53e1",
+      "abilities": [
+        { "Keyword": "SplitSecond" },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Sacrifice": { "who": { "Target": 0 }, "filter": [{ "Type": "Creature" }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

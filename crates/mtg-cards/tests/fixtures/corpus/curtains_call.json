@@ -1,0 +1,25 @@
+{
+  "id": "9899d9c7-7c68-4d10-8249-5d1193f77030",
+  "oracle_id": "cfb1b64b-bf78-4015-ac29-cdcdf2adaa02",
+  "name": "Curtains' Call",
+  "lang": "en",
+  "layout": "normal",
+  "set": "otc",
+  "collector_number": "130",
+  "rarity": "rare",
+  "released_at": "2024-04-19",
+  "digital": false,
+  "mana_cost": "{5}{B}",
+  "cmc": 6.0,
+  "type_line": "Instant",
+  "oracle_text": "Undaunted (This spell costs {1} less to cast for each opponent.)\nDestroy two target creatures.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Undaunted"
+  ]
+}

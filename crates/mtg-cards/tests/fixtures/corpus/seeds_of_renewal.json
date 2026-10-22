@@ -1,0 +1,25 @@
+{
+  "id": "ba13b3ba-c36e-4c79-aaa6-2c2619a2d999",
+  "oracle_id": "48d63b86-8ddd-4306-960f-98490d1d80b9",
+  "name": "Seeds of Renewal",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c16",
+  "collector_number": "24",
+  "rarity": "rare",
+  "released_at": "2016-11-11",
+  "digital": false,
+  "mana_cost": "{6}{G}",
+  "cmc": 7.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Undaunted (This spell costs {1} less to cast for each opponent.)\nReturn up to two target cards from your graveyard to your hand. Exile Seeds of Renewal.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Undaunted"
+  ]
+}

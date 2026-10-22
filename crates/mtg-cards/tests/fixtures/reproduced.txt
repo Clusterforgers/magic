@@ -95,6 +95,7 @@ Carnage Tyrant
 Cascade Bluffs
 Cathars' Crusade
 Celestial Archon
+Celestial Crusader
 Changeling Outcast
 Chartooth Cougar
 Chemister's Insight
@@ -308,6 +309,7 @@ Kolaghan Skirmisher
 Kongming, "Sleeping Dragon"
 Kozilek's Translator
 Krenko's Enforcer
+Krosan Grip
 Lat-Nam Adept
 Lavacore Elemental
 Lazotep Reaver
@@ -457,6 +459,7 @@ Servant of the Conduit
 Shadowmage Infiltrator
 Shambling Shell
 Shenanigans
+Siege Smash
 Siege Wurm
 Sigiled Paladin
 Sigiled Sentinel
@@ -499,12 +502,18 @@ Staggershock
 Steady Progress
 Steam Vents
 Stoke the Flames
+Stonewood Invocation
 Storm Fleet Swashbuckler
 Strangleroot Geist
 Strionic Resonator
 Stroke of Genius
 Student of Warfare
 Study Break
+Sublime Exhalation
+Sudden Death
+Sudden Edict
+Sudden Shock
+Sulfur Elemental
 Sultai Devotee
 Summer Bloom
 Sundering Growth
@@ -589,6 +598,7 @@ Wear // Tear
 Whir of Invention
 Wilderness Elemental
 Wings of the Guard
+Wipe Away
 Wooded Bastion
 Woodripper
 Wrath of God

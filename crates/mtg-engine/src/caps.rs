@@ -321,6 +321,8 @@ const RUNS: &[&str] = &[
     "Keyword.Improvise",
     "Keyword.Affinity",
     "Keyword.Typecycling",
+    "Keyword.SplitSecond",
+    "Keyword.Undaunted",
     "Keyword.Encore",
     "Condition.NewlyControlled",
     "Rule.CanBeCommander",
@@ -666,6 +668,8 @@ mod tests {
     #[case::improvise("Keyword.Improvise", true)]
     #[case::affinity("Keyword.Affinity", true)]
     #[case::typecycling("Keyword.Typecycling", true)]
+    #[case::split_second("Keyword.SplitSecond", true)]
+    #[case::undaunted("Keyword.Undaunted", true)]
     #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]
