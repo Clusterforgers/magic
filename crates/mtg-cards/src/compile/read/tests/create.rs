@@ -120,9 +120,8 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 
 #[rstest]
 #[case::tapped_first("Create a tapped Treasure token.")]
-#[case::with_an_ability("Create a 1/1 white Spirit creature token with flying.")]
+#[case::with_an_ability_the_dsl_lacks("Create a 1/1 white Spirit creature token with decayed.")]
 #[case::tapped_only("Create a 1/1 white Soldier creature token that's tapped.")]
-#[case::attacking_only("Create a 1/1 white Soldier creature token that's attacking.")]
 #[case::wrong_agreement_attacking(
     "Create a 1/1 white Soldier creature token that are tapped and attacking."
 )]

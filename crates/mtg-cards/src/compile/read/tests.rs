@@ -180,6 +180,7 @@ mod reveal;
 mod spell_copies;
 mod statics;
 mod tap_and_mill;
+mod token_keywords;
 mod transform;
 mod triggers;
 mod vocabulary;
