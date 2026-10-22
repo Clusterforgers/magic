@@ -331,11 +331,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "flashback" => spell_cost(rest).map(Keyword::Flashback),
         "madness" => spell_cost(rest).map(Keyword::Madness),
         "miracle" => spell_cost(rest).map(Keyword::Miracle),
-        "dredge" => rest
-            .parse()
-            .ok()
-            .filter(|cards| *cards > 0)
-            .map(Keyword::Dredge),
+        "dredge" => positive(rest).map(Keyword::Dredge),
         "morph" => cost(rest).map(Keyword::Morph),
         "disguise" => cost(rest).map(Keyword::Disguise),
         "evoke" => spell_cost(rest).map(Keyword::Evoke),
@@ -354,39 +350,15 @@ pub fn read(item: &str) -> Option<Keyword> {
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
         "echo" => spell_cost(rest).map(Keyword::Echo),
         "cumulative upkeep" => spell_cost(rest).map(Keyword::CumulativeUpkeep),
-        "vanishing" => rest
-            .parse()
-            .ok()
-            .filter(|time| *time > 0)
-            .map(Keyword::Vanishing),
-        "fading" => rest
-            .parse()
-            .ok()
-            .filter(|fade| *fade > 0)
-            .map(Keyword::Fading),
-        "backup" => rest
-            .parse()
-            .ok()
-            .filter(|count| *count > 0)
-            .map(|count| Keyword::Backup {
-                count,
-                abilities: Vec::new(),
-            }),
-        "crew" => rest
-            .parse()
-            .ok()
-            .filter(|power| *power > 0)
-            .map(Keyword::Crew),
-        "saddle" => rest
-            .parse()
-            .ok()
-            .filter(|power| *power > 0)
-            .map(Keyword::Saddle),
-        "fabricate" => rest
-            .parse()
-            .ok()
-            .filter(|number| *number > 0)
-            .map(Keyword::Fabricate),
+        "vanishing" => positive(rest).map(Keyword::Vanishing),
+        "fading" => positive(rest).map(Keyword::Fading),
+        "backup" => positive(rest).map(|count| Keyword::Backup {
+            count,
+            abilities: Vec::new(),
+        }),
+        "crew" => positive(rest).map(Keyword::Crew),
+        "saddle" => positive(rest).map(Keyword::Saddle),
+        "fabricate" => positive(rest).map(Keyword::Fabricate),
         "level up" => cost(rest).map(Keyword::LevelUp),
         "outlast" => cost(rest).map(Keyword::Outlast),
         "suspend" => suspend(rest),
@@ -397,11 +369,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "partner" if rest.starts_with('\u{2014}') => partner_group(rest),
         "protection" => protection(rest).map(Keyword::Protection),
         "companion" => Some(Keyword::Companion),
-        "toxic" => rest
-            .parse()
-            .ok()
-            .filter(|poison| *poison > 0)
-            .map(Keyword::Toxic),
+        "toxic" => positive(rest).map(Keyword::Toxic),
         "landwalk" => landwalk(item),
         "affinity for" => super::read::affinity_filter(rest).map(Keyword::Affinity),
         "typecycling" => typecycling(item, rest),
@@ -415,6 +383,11 @@ pub fn read(item: &str) -> Option<Keyword> {
         name if rest.is_empty() => plain(name),
         _ => None,
     }
+}
+
+/// A whole number above zero, as the counted keywords print it ("Crew 2", "Dredge 3").
+fn positive(rest: &str) -> Option<u32> {
+    rest.parse().ok().filter(|number| *number > 0)
 }
 
 /// The text of a `Partner—<text>` item (`Friends forever`, `Character select`), the group of commanders that pair.
