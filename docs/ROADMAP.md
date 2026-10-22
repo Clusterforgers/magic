@@ -24,7 +24,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Statics and layers: (c8), (c7b), (o1c).
 - Compiler wordings, no engine change: (c10) one piece per wording family, (o2b), (c11) layouts and long-tail mechanics, (c9c).
 - Commander and server: (cmd2e), (hr5b), the `manual_play` flag stored with the game, the turn without an active player in the table view, Companion.
-- Tooling: the lists of keywords (`RUN`, `NAMES` and the `Caps` lists) have no length parameter, so branches that add keywords do not conflict.
+- Tooling: the lists of keywords (`RUN`, `NAMES` and the `Caps` lists) become slices without a length, so branches that add keywords do not conflict.
 - After the card system: "Views complete", the Gate, then the web (M5 prompts for the decision kinds the engine asks, the manual-action menu, table states) and M7.
 - After each round: `mtg-cli ingest` and `compile` refresh the real database, `coverage` is re-run and the numbers go on the M6 target line; `fetch scryfall --printings` fills the printings once.
 
