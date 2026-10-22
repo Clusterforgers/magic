@@ -228,6 +228,16 @@ pub(crate) fn departures_first(state: &GameState) -> Vec<Event> {
     departures(state)
 }
 
+/// The end of the game once one player is left or none (CR 104.2a). The control loop checks it before the state-based
+/// actions go on, so a pass after the last loss asks nothing while the board still holds what the losers left.
+pub(crate) fn game_over(state: &GameState) -> Option<Event> {
+    if state.alive_players().nth(1).is_some() {
+        return None;
+    }
+    let result = state.ruleset().game_result(state)?;
+    Some(Event::GameEnded { result })
+}
+
 /// Housekeeping that follows stable passes: remove eliminated players' objects, drop ended effects and delayed triggers.
 pub(crate) fn housekeeping(state: &GameState) -> Vec<Event> {
     let departing = departures(state);
@@ -553,7 +563,15 @@ mod tests {
             player: leaver,
             reason: LossReason::Conceded,
         };
+        assert_eq!(game_over(&game), None);
         apply_event(&mut game, &lost).unwrap();
+        assert_eq!(
+            game_over(&game),
+            (!departs).then_some(Event::GameEnded {
+                result: crate::state::GameResult::Winner(PlayerId(0))
+            }),
+            "the game ends at once when one player is left"
+        );
         let owned: Vec<_> = game
             .objects()
             .filter(|o| o.owner() == leaver)

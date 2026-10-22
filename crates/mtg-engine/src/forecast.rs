@@ -288,6 +288,9 @@ impl Run {
             let mut events = sba::departures_first(&self.after);
             let mut state_based = false;
             if events.is_empty() {
+                events = sba::game_over(&self.after).into_iter().collect();
+            }
+            if events.is_empty() {
                 events = sba::check(&self.after);
                 state_based = !events.is_empty();
             }

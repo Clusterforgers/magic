@@ -40,7 +40,7 @@ pub(crate) fn next(state: &GameState) -> Progress {
 }
 
 /// The objects of players who left first (CR 800.4a), then a resolution (state-based actions wait for it to end,
-/// CR 704.3), then state-based actions to a fixpoint, then the game-end check, then the legend rule, then the state triggers whose state is true (CR 603.8), then the triggered
+/// CR 704.3), then the end of the game when one player is left (CR 104.2a), then state-based actions to a fixpoint, then the game-end check, then the legend rule, then the state triggers whose state is true (CR 603.8), then the triggered
 /// abilities waiting for the stack (CR 603.3), then the turn structure.
 fn next_in_turns(state: &GameState) -> Progress {
     let departing = sba::departures_first(state);
@@ -49,6 +49,9 @@ fn next_in_turns(state: &GameState) -> Progress {
     }
     if state.resolving().is_some() {
         return resolve::next(state);
+    }
+    if let Some(ended) = sba::game_over(state) {
+        return Progress::Events(vec![ended]);
     }
     let actions = sba::check(state);
     if !actions.is_empty() {
