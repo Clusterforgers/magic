@@ -14,6 +14,20 @@ One item is one piece of about 15 minutes; tick it in the commit that finishes i
 - Items that depend on nothing (import checks, account settings, deploy) wait in their milestone and can be taken at any time without rework.
 - A piece is claimed before it starts: its `[ ]` becomes `[~]` with the branch name, the commit is pushed to origin, and agents on other machines then see it taken; the tick in the commit that finishes it is pushed too. Local `main` is pushed after every merge, so `origin/main` is what worktrees and other machines start from.
 
+## Next up
+
+Ready pieces, grouped by the code they touch. A group runs one piece at a time, groups run side by side (about six agents at once); a piece is claimed with `[~]` and pushed before it starts, and `git merge main` plus the full `scripts/check.sh` end it.
+
+- Costs and announcement: (g2d), (g6d), (g5c), (c1b), (c1c), Undaunted of (c2b).
+- Cast ways and zones: (c5) recursion and alternative cast ways, (n2) face-down objects, (n1d3) meld.
+- Triggers and keywords: (c6) triggered and upkeep keywords, the triggered keywords of (c2b), (c4b) level-ups and stations, (c3) keyword actions (claimed), (n1d5) day and night effects, (o2c).
+- Statics and layers: (c8), (c7b), (o1c).
+- Compiler wordings, no engine change: (c10) one piece per wording family, (o2b), (c11) layouts and long-tail mechanics, (c9c).
+- Commander and server: (cmd2e), (hr5b), the `manual_play` flag stored with the game, the turn without an active player in the table view, Companion.
+- Tooling: the lists of keywords (`RUN`, `NAMES` and the `Caps` lists) have no length parameter, so branches that add keywords do not conflict.
+- After the card system: "Views complete", the Gate, then the web (M5 prompts for the decision kinds the engine asks, the manual-action menu, table states) and M7.
+- After each round: `mtg-cli ingest` and `compile` refresh the real database, `coverage` is re-run and the numbers go on the M6 target line; `fetch scryfall --printings` fills the printings once.
+
 ## Done
 
 - Foundations: workspace, lint rules, CI, `CLAUDE.md`, local Postgres, the React stack (`docs/spike-react.md`)
@@ -169,13 +183,14 @@ The server is settled first, then the web is built once against the final types.
 ## M6 Coverage
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
 - [ ] Coverage dashboard in the web over `Library::support`: states, reasons and clause spans per card, ranked by saved-deck demand; target: 100% of the chosen precons (`docs/deck-check.md`)
+- [ ] The lists of keywords (`RUN` in `keywords/mod.rs`, `NAMES` in `keyword.rs`, the `Caps` lists) are slices without a length, so branches that each add keywords stop conflicting on the length
 - [ ] Target: every stored card Verified, or as near as the rules allow; `mtg-cli coverage` (compile first) ranks the blockers, each piece below states the cards it frees, and after each round `compile` and `coverage` are re-run and the numbers recorded here (15.9% of the 6,429 stored precon cards, 40.8% of copies, on 2026-10-22; 16.1% (1,038 cards) and 41.0% after (c7a); (c2) freed 23 cards, 1,035 to 1,058 (16.1% to 16.5%) on the base before (c7a); (c4) Crew and "if you do": 1,046 cards (16.3%), 41.1% of copies on its own base; (c1) mixed mana, costs and the commander colours: 1,083 cards (16.8%), 45.5% of copies on its own base)
 - [x] (c1) Mana abilities beyond a plain tap for mana: mixed mana (bouncelands, Timeless Lotus), life, energy and counters of the source as costs (the painlands that pay life, Aether Hub, the storage lands), a counter put on the source, several mana of one colour, "Activate only if you control a Swamp", the commander's colours (Command Tower, Arcane Signet) and the colours lands could produce (Exotic Orchard, Reflecting Pool); 48 cards freed (1,035 to 1,083 Verified, copies 40.9% to 45.5%)
 - [ ] (c1b) Mana abilities with a mana cost (`Ability.ManaAbility.Other`): the Signets, the ten "{1}, {T}: Add {W}{U}" lands, "{1}, {T}: Add one mana of any color" (Prisms, Lens), the filter lands and Crystal Quarry; the cost's mana is paid from other sources inside `plan`, `check_payment`, `complete_payment` and the independent check of `mana.rs` (34 cards, about 400 copies)
 - [ ] (c1c) The rest of the mana abilities: tapping or sacrificing another permanent as the cost (Springleaf Drum, Jaspera Sentinel, Holdout Settlement, Gilded Goose, Skirk Prospector), "Activate only once each turn" (Mana Bloom, Ramos), mana counted by "where X is ..." or "for each", the Thriving lands and Gates (the chosen color) and "enters tapped with N charge counters" (the Vivid lands)
 - [x] (c2) Characteristic and combat keywords: Changeling, Devoid, Infect, Wither, Toxic, Fear, Intimidate, the landwalks, Skulk, Shadow (`docs/engine.md`, Combat and keywords)
 - [ ] (c2b) Split second (no spell or ability that is not a mana ability while the spell is on the stack), Undaunted (a cost modifier), Ascend, Exalted, Melee, Mentor, Dethrone, Annihilator, Extort, Evolve
-- [ ] (c3) Keyword actions and designations: Surveil, the Monarch, Proliferate, Time travel, Amass, Adapt, Monstrosity, Explore, Bolster, Fabricate, Investigate, Connive, Learn and the city's blessing
+- [~] (c3) (branch worktree-agent-a4e51f3c28d4fb133) Keyword actions and designations: Surveil, the Monarch, Proliferate, Time travel, Amass, Adapt, Monstrosity, Explore, Bolster, Fabricate, Investigate, Connive, Learn and the city's blessing
 - [x] (c4) Crew: the cost part `TapPower` (a counted pick of untapped creatures by total power, asked with `ChooseCards`), `Keyword.Crew`, `Condition.Performed` after a "may" (read and written by the compiler), Smuggler's Copter, Skysovereign, Goliath Truck and Thopter Fabricator Verified, a Vehicle fuzz deck
 - [ ] (c4b) Level up, Station, Outlast and Saddle (the keyword abilities and the level and station brackets as abilities conditioned on counters, with the compiler's bracket blocks), the activated and triggered "becomes an artifact creature until end of turn" shapes ("Another target Vehicle you control becomes ...", "Pay {E}{E}{E}{E}: This Vehicle becomes ..."), the event "becomes crewed", and a Reconfigure corpus card
 - [ ] (c5) Recursion and alternative cast ways: Escape, Aftermath, Jump-start, Retrace, Unearth, Embalm, Eternalize, Encore, Rebound, Dredge, Dash, Blitz, Ninjutsu, Miracle, Prowl, Demonstrate, Cipher, Hideaway
