@@ -1,0 +1,20 @@
+{
+  "oracle_id": "85ceb4ac-7a1c-4c7e-95a3-515a5b5d6116",
+  "name": "Goblin-town Flunkies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin-town Flunkies",
+      "oracle_fingerprint": "aa51ecbe4278f05035ff266375e1c4ae",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Amass": { "subtype": "Goblin", "count": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

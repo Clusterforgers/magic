@@ -63,14 +63,18 @@ pub(crate) fn mode_at(root: &[Effect], chosen: &[usize], position: &[usize]) -> 
     }
 }
 
-/// Where the effect after the one at `position` runs: inside the branch it enters, else the next sibling, else
-/// the effect after the one that holds the list. Past the last effect of the root it is the end, one beyond.
+/// Where the effect after the one at `position` runs: the effect itself again, inside the branch it enters, else the
+/// next sibling, else the effect after the one that holds the list. Past the last effect of the root it is the end,
+/// one beyond.
 pub(crate) fn after(
     root: &[Effect],
     chosen: &[usize],
     position: &[usize],
     next: Next,
 ) -> Vec<usize> {
+    if next == Next::Again {
+        return position.to_vec();
+    }
     if let Next::Enter(branch) = next
         && let Some(inside) = enter(root, chosen, position, branch)
     {
@@ -176,6 +180,7 @@ mod tests {
 
     #[rstest]
     #[case::to_the_next_sibling(&[0], Next::Sibling, &[1])]
+    #[case::to_the_same_effect(&[1, 0, 2], Next::Again, &[1, 0, 2])]
     #[case::into_then(&[1], Next::Enter(0), &[1, 0, 0])]
     #[case::into_otherwise(&[1], Next::Enter(1), &[1, 1, 0])]
     #[case::within_a_branch(&[1, 0, 0], Next::Sibling, &[1, 0, 1])]
