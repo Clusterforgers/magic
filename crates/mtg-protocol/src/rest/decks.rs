@@ -2,6 +2,7 @@
 //! check, import of pasted lists and the error codes of the card and deck endpoints.
 
 use mtg_cards::deck::{DeckReport, DeckState, DeckZone, StoredCheck, Summary};
+use mtg_core::house::HouseRules;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
@@ -141,6 +142,27 @@ pub struct CheckRequest {
     /// The unsaved list.
     #[serde(default)]
     pub cards: Option<Vec<DeckLineBody>>,
+    /// The id of a game whose format and house rules judge the deck: the report then holds the issues the deck has
+    /// at that table (a relaxed rule no longer counts, the engine's check under the table's rules does).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub game: Option<String>,
+    /// The rules of a table that does not exist yet, judging the deck like `game`; not together with `game`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub table: Option<TableRules>,
+}
+
+/// The rules a deck is judged under at a table: the game's format and what its creator set.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(deny_unknown_fields)]
+pub struct TableRules {
+    /// The format key of the game: `normal` or `commander`.
+    pub format: String,
+    /// What the creator sets in place of the format's values; absent for none.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub house_rules: Option<HouseRules>,
 }
 
 /// The kind of list a pasted text is written as; absent in a request means detect it.

@@ -70,6 +70,14 @@ pub enum TriggerPattern {
         /// The attacker.
         what: Selector,
     },
+    /// A creature matching the selector attacks a player ("whenever a creature attacks enchanted player"); `Triggering`
+    /// is the attacker.
+    AttacksPlayer {
+        /// The attacker.
+        what: Selector,
+        /// The player attacked.
+        at: Ref,
+    },
     /// An object matching the selector becomes the target of a spell or ability.
     BecomesTarget {
         /// The object targeted.

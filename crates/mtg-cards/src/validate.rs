@@ -286,7 +286,9 @@ impl<'a> Walker<'a> {
 
     fn reference(&mut self, r: &Ref, want: Kind) {
         match r {
-            Ref::You | Ref::Opponents | Ref::EachPlayer => self.expect(Kind::Player, want),
+            Ref::You | Ref::Opponents | Ref::EachPlayer | Ref::AttachedPlayer => {
+                self.expect(Kind::Player, want);
+            }
             Ref::This | Ref::Attached => self.expect(Kind::Object, want),
             Ref::Target(index) => {
                 let index = usize::from(*index);
@@ -847,6 +849,10 @@ impl<'a> Walker<'a> {
         match pattern {
             TriggerPattern::ZoneChange { what, .. } | TriggerPattern::Attacks { what } => {
                 self.at("what", |w| w.selector(what));
+            }
+            TriggerPattern::AttacksPlayer { what, at } => {
+                self.at("what", |w| w.selector(what));
+                self.at("at", |w| w.reference(at, Kind::Player));
             }
             TriggerPattern::BecomesTarget { what, by } => {
                 self.at("what", |w| w.selector(what));
@@ -2133,6 +2139,9 @@ fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str) -> bool {
                 // Scryfall lists `Partner` as well for a "Partner with" card (CR 702.124).
                 || (matches!(k, Keyword::PartnerWith(_))
                     && Keyword::Partner.name().eq_ignore_ascii_case(keyword))
+                // Scryfall lists `Enchant` for an Aura that enchants a player as it does for any other.
+                || (matches!(k, Keyword::EnchantPlayer { .. })
+                    && "Enchant".eq_ignore_ascii_case(keyword))
         }
         Ability::Manual { span, .. } => printed
             .faces
@@ -2200,7 +2209,9 @@ fn check_face_printed(
             Ability::Loyalty { .. } if !planeswalker => {
                 w.problem("a Loyalty ability belongs to a planeswalker");
             }
-            Ability::Keyword(Keyword::Enchant(_)) if !subtypes.contains(&"Aura") => {
+            Ability::Keyword(Keyword::Enchant(_) | Keyword::EnchantPlayer { .. })
+                if !subtypes.contains(&"Aura") =>
+            {
                 w.problem("Enchant belongs to an Aura");
             }
             Ability::Manual { span, .. }

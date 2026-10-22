@@ -427,6 +427,9 @@ function describePublic(event: Event, n: EventNames): LogLine {
   if ('CommanderStayed' in event) return line(`${n.card(event.CommanderStayed.object)} stays where it is`)
   if ('DayNightChanged' in event)
     return line(`It becomes ${event.DayNightChanged.to === 'Day' ? 'day' : 'night'}`)
+  if ('AttachedToPlayer' in event) {
+    return line(`${n.card(event.AttachedToPlayer.object)} enchants ${n.seat(event.AttachedToPlayer.player)}`)
+  }
   if ('Unattached' in event) {
     return line(`${n.card(event.Unattached.object)} becomes unattached`)
   }

@@ -73,6 +73,12 @@ pub enum Keyword {
     LivingWeapon,
     /// Enchant: what an Aura may enchant.
     Enchant(Selector),
+    /// Enchant player or enchant opponent: an Aura that enchants a player (CR 303.4).
+    EnchantPlayer {
+        /// Whether only an opponent of the Aura's controller may be enchanted.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        opponent: bool,
+    },
     /// Cycling with its cost.
     Cycling(Cost),
     /// Kicker with its cost.
@@ -148,7 +154,7 @@ pub enum Keyword {
 
 impl Keyword {
     /// Scryfall's spelling of every keyword in this enum, for matching a record's `keywords`.
-    pub const NAMES: [&'static str; 63] = [
+    pub const NAMES: [&'static str; 64] = [
         "Flash",
         "Flying",
         "Reach",
@@ -179,6 +185,7 @@ impl Keyword {
         "Reconfigure",
         "Living weapon",
         "Enchant",
+        "Enchant player",
         "Cycling",
         "Kicker",
         "Multikicker",
@@ -247,6 +254,7 @@ impl Keyword {
             Keyword::Reconfigure(_) => "Reconfigure",
             Keyword::LivingWeapon => "Living weapon",
             Keyword::Enchant(_) => "Enchant",
+            Keyword::EnchantPlayer { .. } => "Enchant player",
             Keyword::Cycling(_) => "Cycling",
             Keyword::Kicker(_) => "Kicker",
             Keyword::Multikicker(_) => "Multikicker",
@@ -335,6 +343,7 @@ mod tests {
             Keyword::Reconfigure(cost.clone()),
             Keyword::LivingWeapon,
             Keyword::Enchant(Selector::default()),
+            Keyword::EnchantPlayer { opponent: false },
             Keyword::Cycling(cost.clone()),
             Keyword::Kicker(cost.clone()),
             Keyword::Multikicker(cost.clone()),

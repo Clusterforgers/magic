@@ -352,8 +352,9 @@ impl GameRecipe {
         let mut seats = Vec::with_capacity(self.decks.len());
         for (seat, deck) in self.decks.iter().enumerate() {
             seats.push(match deck {
-                DeckRef::Demo { id } if id == demo::COMMANDER_STAND_IN => {
-                    let (commander, library) = demo::commander_stand_in();
+                DeckRef::Demo { id } if demo::commander_stand_in_size(id).is_some() => {
+                    let size = demo::commander_stand_in_size(id).unwrap_or_default();
+                    let (commander, library) = demo::commander_stand_in_of(size);
                     SeatCards {
                         library,
                         commanders: vec![commander],
@@ -1100,6 +1101,41 @@ mod tests {
         // Only the Commander format has a command zone for it.
         let normal = GameRecipe::normal(1, vec![stand_in; seats]);
         assert!(matches!(normal.build().unwrap_err(), RecipeError::Setup(_)));
+    }
+
+    #[rstest]
+    #[case::the_formats(100, "commander-stand-in")]
+    #[case::the_least(40, "commander-stand-in-40")]
+    #[case::fifty_one(51, "commander-stand-in-51")]
+    #[case::the_most(250, "commander-stand-in-250")]
+    fn a_stand_in_holds_the_deck_size_of_its_table(#[case] size: usize, #[case] id: &str) {
+        assert_eq!(demo::commander_stand_in_id(size), id);
+        assert_eq!(demo::commander_stand_in_size(id), Some(size));
+        let rules = HouseRules {
+            deck: mtg_core::house::DeckRules {
+                deck_size: u32::try_from(size).ok(),
+                ..Default::default()
+            },
+            ..HouseRules::default()
+        };
+        let stand_in = DeckRef::Demo { id: id.into() };
+        let recipe = GameRecipe::commander(1, vec![stand_in; 3])
+            .with_house_rules(rules)
+            .with_fingerprints()
+            .unwrap();
+        let setup = recipe.build().unwrap();
+        assert!(setup.players.iter().all(|p| p.library.len() == size - 1));
+    }
+
+    #[rstest]
+    #[case::other_deck("mono-red")]
+    #[case::no_size("commander-stand-in-")]
+    #[case::not_a_number("commander-stand-in-many")]
+    #[case::below_every_table("commander-stand-in-39")]
+    #[case::above_every_table("commander-stand-in-251")]
+    #[case::negative("commander-stand-in--5")]
+    fn only_a_size_a_table_can_set_names_a_stand_in(#[case] id: &str) {
+        assert_eq!(demo::commander_stand_in_size(id), None);
     }
 
     #[test]

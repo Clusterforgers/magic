@@ -19,6 +19,7 @@ const created = {
   ],
 }
 const game = {
+  format: 'normal',
   started: true,
   seats: [
     { seat: 0, name: 'Ana' },
@@ -145,6 +146,17 @@ describe('requests and answers', () => {
     expect(await createApi({ fetch: fake.fetch }).getGame('g-1')).toEqual({ ...older, visibility: 'invite' })
   })
 
+  it.each(['normal', 'commander'])('reads a game played in the %s format', async (format) => {
+    const fake = fakeFetch(() => jsonResponse(200, { ...game, format }))
+    expect((await createApi({ fetch: fake.fetch }).getGame('g-1')).format).toBe(format)
+  })
+
+  it('takes a server that names no format for one that plays Normal only', async () => {
+    const { format: _format, ...older } = game
+    const fake = fakeFetch(() => jsonResponse(200, older))
+    expect(await createApi({ fetch: fake.fetch }).getGame('g-1')).toEqual({ ...older, format: 'normal' })
+  })
+
   it('escapes the game id in the path', async () => {
     const fake = fakeFetch(() => jsonResponse(200, game))
     await createApi({ fetch: fake.fetch }).getGame('a/b?c')
@@ -266,6 +278,9 @@ describe('bodies that parse but do not have the documented shape', () => {
     ['getGame: result is an unknown word', (api) => api.getGame('g'), { ...game, result: 'Win' }],
     ['getGame: result is missing', (api) => api.getGame('g'), { started: true, seats: [], connected: [] }],
     ['getGame: visibility is an unknown word', (api) => api.getGame('g'), { ...game, visibility: 'friends' }],
+    ['getGame: format is a number', (api) => api.getGame('g'), { ...game, format: 1 }],
+    ['getGame: format is null', (api) => api.getGame('g'), { ...game, format: null }],
+    ['getGame: format is empty', (api) => api.getGame('g'), { ...game, format: '' }],
     ['getGame: visibility is null', (api) => api.getGame('g'), { ...game, visibility: null }],
     ['getGame: visibility is a number', (api) => api.getGame('g'), { ...game, visibility: 1 }],
     ['getGame: a seat has no name', (api) => api.getGame('g'), { ...game, seats: [{ seat: 0 }] }],

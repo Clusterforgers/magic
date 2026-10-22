@@ -504,6 +504,13 @@ pub enum Event {
         /// The permanent it is attached to.
         to: ObjectId,
     },
+    /// An Aura became attached to a player (CR 303.4); it takes a new timestamp (CR 613.7a).
+    AttachedToPlayer {
+        /// The Aura.
+        object: ObjectId,
+        /// The player it enchants.
+        player: PlayerId,
+    },
     /// A permanent stopped being attached to what it was attached to.
     Unattached {
         /// The permanent.
@@ -675,6 +682,7 @@ impl Event {
             | Event::SpellResolved { object }
             | Event::Entered { object, .. }
             | Event::Unattached { object }
+            | Event::AttachedToPlayer { object, .. }
             | Event::Transformed { object, .. }
             | Event::PermanentTapped { object }
             | Event::PermanentUntapped { object }

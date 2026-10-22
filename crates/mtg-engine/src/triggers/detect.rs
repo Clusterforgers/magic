@@ -18,7 +18,7 @@ use crate::abilities::{AbilityRef, AbilitySource, Cause};
 use crate::ability_reader::{abilities_of, provided_here, working_here};
 use crate::characteristics::{controller_of, controller_of_object};
 use crate::choose::{Choices, Target};
-use crate::combat::{DamageForm, DamageTarget};
+use crate::combat::{AttackTarget, DamageForm, DamageTarget};
 use crate::events::{Event, ResolutionOutcome, ZoneCause};
 use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::replace::in_combat_damage;
@@ -43,6 +43,11 @@ enum Happened {
     Created { object: ObjectId },
     /// A creature was declared as an attacker, the `nth` time this turn for it.
     Attacked { attacker: ObjectId, nth: u32 },
+    /// A creature was declared as an attacker of a player.
+    AttackedPlayer {
+        attacker: ObjectId,
+        player: PlayerId,
+    },
     /// A player cast a spell, the `nth` of their turn, after `before` spells that every player cast this turn.
     Cast {
         player: PlayerId,
@@ -244,6 +249,13 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                     nth: before(look, *attacker).map_or(0, |object| {
                         object_ordinal(look, object, None, Tally::Attacked)
                     }),
+                }));
+                found.extend(attackers.iter().filter_map(|(attacker, at)| match at {
+                    AttackTarget::Player(player) => Some(Happened::AttackedPlayer {
+                        attacker: *attacker,
+                        player: *player,
+                    }),
+                    AttackTarget::Planeswalker(_) => None,
                 }));
                 if !attackers.is_empty() {
                     found.push(Happened::AttackedTogether {
@@ -538,6 +550,8 @@ fn counted(state: &GameState, subjects: Vec<Target>, amount: u32) -> Cause {
 }
 
 /// What `pattern` finds in `happened`, judged in the state of `scope`, as the cause of the trigger.
+// One arm for each pair of a pattern and an event; they share the state and the closures above them.
+#[allow(clippy::too_many_lines)]
 fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> Option<Cause> {
     let state = scope.state;
     let object = |id: ObjectId| state.object(id).map(GameObject::reference);
@@ -583,6 +597,14 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
             scope
                 .selects(what, reference)
                 .ok()?
+                .then(|| cause(state, vec![Target::Object(reference)]))
+        }
+        (
+            TriggerPattern::AttacksPlayer { what, at },
+            Happened::AttackedPlayer { attacker, player },
+        ) => {
+            let reference = object(*attacker)?;
+            (scope.players(at).ok()?.contains(player) && scope.selects(what, reference).ok()?)
                 .then(|| cause(state, vec![Target::Object(reference)]))
         }
         (TriggerPattern::SpellCast { what, by }, Happened::Cast { player, spell, .. }) => {

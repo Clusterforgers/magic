@@ -79,6 +79,7 @@ mod tests {
             counters: Vec::new(),
             loyalty_abilities: Vec::new(),
             attached_to: None,
+            attached_player: None,
             attachments: Vec::new(),
             manual: Vec::new(),
         }
