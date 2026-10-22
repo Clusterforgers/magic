@@ -17,6 +17,7 @@ pub mod commander_cards;
 pub mod copy_cards;
 pub mod corpus;
 pub mod cost_cards;
+pub mod count_cards;
 pub mod counter_cards;
 pub mod decks;
 pub mod driver;
@@ -71,6 +72,7 @@ pub use combat_keyword_cards::combat_keywords_fuzz_setup;
 pub use commander_cards::{commander_fuzz_setup, partner_fuzz_setup};
 pub use copy_cards::{copy_fuzz_setup, spell_copy_fuzz_setup};
 pub use cost_cards::cost_fuzz_setup;
+pub use count_cards::count_fuzz_setup;
 pub use counter_cards::counters_fuzz_setup;
 pub use decks::{
     archon_fuzz_setup, fuzz_setup, keyword_fuzz_setup, library_fuzz_setup, ramp_fuzz_setup,
