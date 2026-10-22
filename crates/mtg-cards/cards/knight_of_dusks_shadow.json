@@ -1,0 +1,29 @@
+{
+  "oracle_id": "815ae30f-f455-4795-96eb-4bcc41d415e8",
+  "name": "Knight of Dusk's Shadow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knight of Dusk's Shadow",
+      "oracle_fingerprint": "a707e9dc4f9b32cda3daf97ad060126f",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Rule": { "rule": { "CantGainLife": "Opponents" } } },
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

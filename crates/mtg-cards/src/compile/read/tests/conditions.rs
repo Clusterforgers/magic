@@ -87,7 +87,7 @@ fn a_static_ability_under_a_condition_reads_as_the_hand_written_files_say(
 #[case::a_restriction_under_a_condition(
     "This creature can't block as long as you control a Plains."
 )]
-#[case::your_own_life("This creature has haste as long as you have 10 or less life.")]
+#[case::your_own_exact_life("This creature has haste as long as you have 10 life.")]
 #[case::an_exact_life_total("This creature has haste as long as an opponent has 10 life.")]
 #[case::more_than_a_life_total(
     "This creature has haste as long as an opponent has more than 10 life."
@@ -275,7 +275,10 @@ fn a_plural_that_is_not_a_subtype_stays_with_the_table(#[case] text: &str) {
 fn a_subtype_of_the_cards_own_type_line_is_read_in_the_singular_and_the_plural() {
     let text = "Whenever one or more Gizmos you control deal damage to a player, draw a card.";
     assert_eq!(trigger(text), None);
-    let own = vec!["Gizmo".to_owned()];
+    let own = Own {
+        subtypes: vec!["Gizmo".to_owned()],
+        ..Own::default()
+    };
     let read = clause_with(text, ClauseKind::Triggered, false, &own).unwrap();
     assert!(
         render_variants(&read)

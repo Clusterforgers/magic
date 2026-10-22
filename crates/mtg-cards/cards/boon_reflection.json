@@ -1,0 +1,12 @@
+{
+  "oracle_id": "b86d3142-568a-4eea-b1ae-5fcfc1453533",
+  "name": "Boon Reflection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boon Reflection",
+      "oracle_fingerprint": "6ca7e954c18ff46e3ce795d462f08e04",
+      "abilities": [{ "Replacement": { "when": { "LifeGain": {} }, "by": { "Multiply": 2 } } }]
+    }
+  ]
+}

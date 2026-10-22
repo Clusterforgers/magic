@@ -252,6 +252,7 @@ mod tests {
                 "Effect.Transform",
                 "Effect.WinGame",
                 "Effect.Surveil",
+                "Effect.Proliferate",
                 "Effect.BecomeMonarch",
                 "Effect.ExileUntil",
                 "Effect.ExileTop",

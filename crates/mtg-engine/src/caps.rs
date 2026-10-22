@@ -54,10 +54,14 @@ const RUNS: &[&str] = &[
     "Trigger.Attached",
     "Trigger.Cycled",
     "Trigger.BecomesMonarch",
+    "Trigger.Proliferated",
     "Trigger.Batch",
     "Trigger.Nth",
     "Amount.Triggering",
     "Amount.Players",
+    "Amount.Greatest",
+    "Amount.Total",
+    "Amount.CardTypes",
     "Amount.LowestLife",
     "Amount.HighestLife",
     "Cost.Tap",
@@ -117,6 +121,7 @@ const RUNS: &[&str] = &[
     "Effect.Transform",
     "Effect.WinGame",
     "Effect.Surveil",
+    "Effect.Proliferate",
     "Effect.BecomeMonarch",
     "Condition.Monarch",
     "Effect.CreateToken",
@@ -491,7 +496,7 @@ mod tests {
     #[case::kicker("Keyword.Kicker", true)]
     #[case::multikicker("Keyword.Multikicker", true)]
     #[case::surveilling("Effect.Surveil", true)]
-    #[case::proliferating("Effect.Proliferate", false)]
+    #[case::proliferating("Effect.Proliferate", true)]
     #[case::goading("Effect.Goad", false)]
     #[case::fighting("Effect.Fight", false)]
     #[case::becoming_the_monarch("Effect.BecomeMonarch", true)]
@@ -515,9 +520,9 @@ mod tests {
     #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", true)]
     #[case::mana_a_land_could_produce("Effect.AddMana.ProducedBy", true)]
     #[case::devotion("Amount.Devotion", false)]
-    #[case::the_greatest_value("Amount.Greatest", false)]
-    #[case::totals("Amount.Total", false)]
-    #[case::card_types_among_cards("Amount.CardTypes", false)]
+    #[case::the_greatest_value("Amount.Greatest", true)]
+    #[case::totals("Amount.Total", true)]
+    #[case::card_types_among_cards("Amount.CardTypes", true)]
     #[case::paying_energy("Cost.PayEnergy", true)]
     #[case::paying_a_counted_amount_of_energy("Cost.PayEnergy.Counted", false)]
     #[case::removing_counters_as_a_cost("Cost.RemoveCounters", true)]
@@ -540,6 +545,7 @@ mod tests {
     #[case::attach_triggers("Trigger.Attached", true)]
     #[case::cycle_triggers("Trigger.Cycled", true)]
     #[case::becoming_the_monarch_triggers("Trigger.BecomesMonarch", true)]
+    #[case::proliferating_triggers("Trigger.Proliferated", true)]
     #[case::batch_triggers("Trigger.Batch", true)]
     #[case::nth_triggers("Trigger.Nth", true)]
     #[case::event_amounts("Amount.Triggering", true)]

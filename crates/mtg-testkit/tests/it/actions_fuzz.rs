@@ -20,6 +20,7 @@ struct Seen {
     sent_to_the_graveyard: u64,
     monarchs: u64,
     taken_from_another: u64,
+    proliferates: u64,
 }
 
 impl Seen {
@@ -32,6 +33,7 @@ impl Seen {
                     self.kept_on_top += u64::from(!surveilled.top.is_empty());
                     self.sent_to_the_graveyard += u64::from(!surveilled.graveyard.is_empty());
                 }
+                Event::Proliferated { .. } => self.proliferates += 1,
                 Event::MonarchChanged { player } => {
                     self.monarchs += 1;
                     self.taken_from_another += u64::from(monarch.is_some_and(|was| was != *player));
@@ -56,6 +58,7 @@ fn seeded_action_games_finish_and_keep_every_invariant(#[case] players: usize) {
     }
     let campaign = format!("{} games of {players} seats", games());
     assert!(seen.surveils > 0, "nobody surveilled in {campaign}");
+    assert!(seen.proliferates > 0, "nobody proliferated in {campaign}");
     assert!(
         seen.kept_on_top > 0 && seen.sent_to_the_graveyard > 0,
         "surveils kept cards on top and put cards into the graveyard in {campaign}"

@@ -550,6 +550,11 @@ pub enum Event {
         /// The new monarch.
         player: PlayerId,
     },
+    /// A player proliferated (CR 701.34): the counters it gave are the `CountersChanged` events that follow it.
+    Proliferated {
+        /// Who proliferated.
+        player: PlayerId,
+    },
     /// The game became day or night (CR 726).
     DayNightChanged {
         /// What it became.
@@ -645,6 +650,7 @@ impl Event {
             | Event::NothingToDo { .. }
             | Event::DayNightChanged { .. }
             | Event::MonarchChanged { .. }
+            | Event::Proliferated { .. }
             | Event::PriorityGranted { .. }
             | Event::PriorityPassed { .. }
             | Event::ManaAdded { .. }

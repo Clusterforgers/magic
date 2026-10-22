@@ -1,0 +1,25 @@
+{
+  "id": "0d4032a7-600c-4b30-a012-fe3cde1be9c9",
+  "oracle_id": "b86d3142-568a-4eea-b1ae-5fcfc1453533",
+  "name": "Boon Reflection",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2xm",
+  "collector_number": "10",
+  "rarity": "rare",
+  "released_at": "2020-08-07",
+  "digital": false,
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "If you would gain life, you gain twice that much life instead.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "power": null,
+  "toughness": null
+}

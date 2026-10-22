@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3ba81fbe-2c53-495b-9a2b-f124475bd71b",
+  "name": "Drove of Elves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drove of Elves",
+      "oracle_fingerprint": "3268853536010bc630f46a8eb91e88ee",
+      "abilities": [
+        { "Keyword": "Hexproof" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Color": "Green" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Color": "Green" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

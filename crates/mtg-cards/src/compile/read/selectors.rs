@@ -289,7 +289,7 @@ pub fn granted_text(mods: &[Modification]) -> Option<String> {
     Some(parts.join(" and "))
 }
 
-fn stat_word(r: &mut Reader<'_>) -> Option<StatKind> {
+pub(super) fn stat_word(r: &mut Reader<'_>) -> Option<StatKind> {
     if r.word("power") {
         Some(StatKind::Power)
     } else if r.word("toughness") {
@@ -501,6 +501,12 @@ fn qualifier(r: &mut Reader<'_>) -> Option<Pred> {
 
 /// A phrase naming a set of objects ("nonblack creature", "creatures you control", "noncreature spell").
 pub fn phrase(r: &mut Reader<'_>, form: Form) -> Option<Selector> {
+    phrase_in(r, form, false)
+}
+
+/// A phrase like `phrase`, except that "cards" may stand without the zone they are in, which the caller reads next
+/// ("creature cards" before "in your graveyard").
+pub(super) fn phrase_in(r: &mut Reader<'_>, form: Form, unplaced: bool) -> Option<Selector> {
     r.attempt(|r| {
         let mut adjectives = Vec::new();
         while let Some(pred) = r.peek_word().and_then(|word| adjective(word, form)) {
@@ -562,7 +568,7 @@ pub fn phrase(r: &mut Reader<'_>, form: Form) -> Option<Selector> {
             }
         }
         let placed = preds.iter().any(|pred| matches!(pred, Pred::In(_)));
-        (noun != Noun::Card || placed).then_some(Selector(preds))
+        (noun != Noun::Card || placed || unplaced).then_some(Selector(preds))
     })
 }
 

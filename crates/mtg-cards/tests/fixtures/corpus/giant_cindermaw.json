@@ -1,0 +1,27 @@
+{
+  "id": "d65f5298-0e57-49cf-aaf5-2bb16f3e636c",
+  "oracle_id": "bd0c0e85-ff24-46c9-a547-4f633355c131",
+  "name": "Giant Cindermaw",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fdn",
+  "collector_number": "624",
+  "rarity": "uncommon",
+  "released_at": "2024-11-15",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Dinosaur Beast",
+  "oracle_text": "Trample (This creature can deal excess combat damage to the player or planeswalker it's attacking.)\nPlayers can't gain life.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Trample"
+  ],
+  "power": "4",
+  "toughness": "3"
+}

@@ -3,6 +3,7 @@ Aether Hub
 Ajani's Pridemate
 Ancestral Vision
 Ancient Ziggurat
+Angel of Vitality
 Arcane Signet
 Archon of Cruelty
 Arrogant Wurm
@@ -25,9 +26,11 @@ Blight Mamba
 Blightwidow
 Bloodbraid Elf
 Bloodghast
+Bloom Hulk
 Bog Wraith
 Boggart Ram-Gang
 Bonesplitter
+Boon Reflection
 Borderland Behemoth
 Brain Freeze
 Brainstorm
@@ -46,6 +49,7 @@ Collective Unconscious
 Command Tower
 Consider
 Consign // Oblivion
+Contentious Plan
 Copper-Leaf Angel
 Counterspell
 Courser of Kruphix
@@ -59,6 +63,7 @@ Custodi Lich
 Cut // Ribbons
 Cyclonic Rift
 Cytoshape
+Darksteel Juggernaut
 Dauthi Horror
 Dauthi Marauder
 Dawnglade Regent
@@ -76,6 +81,7 @@ Doom Whisperer
 Dragonspeaker Shaman
 Dream's Grip
 Dregscape Zombie
+Drove of Elves
 Drudge Skeletons
 Dual Casting
 Dualcaster Mage
@@ -110,6 +116,7 @@ Gadwick, the Wizened
 Gaea's Cradle
 Game-Trail Changeling
 Gerrard's Wisdom
+Giant Cindermaw
 Giant Growth
 Gilded Lotus
 Glimpse of Freedom
@@ -123,9 +130,11 @@ Growing Ranks
 Guardian Gladewalker
 Gurmag Angler
 Hall of Triumph
+Haughty Djinn
 Hengegate Pathway // Mistgate Pathway
 Hero of Bladehold
 Holdout Settlement
+Honor Troll
 Horizon Canopy
 Hound of Griselbrand
 Hulking Raptor
@@ -136,22 +145,26 @@ Invisible Stalker
 Izzet Charm
 Jaspera Sentinel
 Jungle Lion
+Karn's Bastion
 Kathari Screecher
 Keep Watch
 Kessig Wolf Run
 Kitchen Finks
+Knight of Dusk's Shadow
 Kolaghan Skirmisher
 Kongming, "Sleeping Dragon"
 Kozilek's Translator
 Krenko's Enforcer
 Lat-Nam Adept
 Levitation
+Lhurgoyf
 Lightning Bolt
 Lithoform Engine
 Lizard Blades
 Llanowar Behemoth
 Llanowar Elves
 Looter il-Kor
+Lord of Extinction
 Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
 Lurching Rotbeast
@@ -160,6 +173,8 @@ Mardu Devotee
 Mardu Scout
 Mardu Shadowspear
 Mardu Strike Leader
+Maro
+Master of Etherium
 Megrim
 Mesmeric Orb
 Midnight Banshee
@@ -168,12 +183,15 @@ Mishra's Workshop
 Mizzium Mortars
 Monastery Swiftspear
 Morinfen
+Mortivore
 Mothdust Changeling
 Mukotai Ambusher
 Mulldrifter
 Murderous Cut
 Muscle Sliver
 Nantuko Husk
+Nighthawk Scavenger
+Nightmare
 Nightveil Sprite
 Ninja of the Deep Hours
 Ninja of the New Moon
@@ -191,6 +209,7 @@ Plague Stinger
 Pouncing Jaguar
 Prismatic Lens
 Professional Face-Breaker
+Psychosis Crawler
 Putrid Goblin
 Pygmy Kavu
 Questing Beast
@@ -202,6 +221,7 @@ Reconstructed Thopter
 Reflecting Pool
 Reiterate
 Reverberate
+Rhox Faithmender
 Rhystic Study
 Rift Bolt
 Righteous Avengers
@@ -213,6 +233,7 @@ Rustrazor Butcher
 Safehold Elite
 Sanguine Bond
 Saw It Coming
+Scheming Aspirant
 Scuzzback Marauders
 Seedglaive Mentor
 Serra Angel
@@ -242,6 +263,7 @@ Spring // Mind
 Springleaf Drum
 Squirrel Nest
 Staggershock
+Steady Progress
 Steam Vents
 Stoke the Flames
 Strangleroot Geist
@@ -286,6 +308,7 @@ Wanderbrine Preacher
 Wargate
 Warmonger Hellkite
 Wear // Tear
+Wilderness Elemental
 Wrath of God
 Young Wolf
 Zendikar Farguide

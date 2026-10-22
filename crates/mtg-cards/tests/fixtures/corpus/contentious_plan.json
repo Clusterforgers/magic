@@ -1,0 +1,25 @@
+{
+  "id": "8e30deb6-9e1f-4545-ae30-c30ba6c7b3a0",
+  "oracle_id": "2fc6de19-9d04-422b-90bc-eee2f9f8c84c",
+  "name": "Contentious Plan",
+  "lang": "en",
+  "layout": "normal",
+  "set": "war",
+  "collector_number": "46",
+  "rarity": "common",
+  "released_at": "2019-05-03",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2,
+  "type_line": "Sorcery",
+  "oracle_text": "Proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)\nDraw a card.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Proliferate"
+  ]
+}

@@ -289,3 +289,53 @@ fn abilities_that_count_each_other_end_and_give_the_same_answer_each_time() {
     assert_eq!(first, (stats_of(&game, "Left"), stats_of(&game, "Right")));
     assert_eq!(first.0.1, Some(1));
 }
+
+/// A card whose power and toughness are the creature cards in all graveyards.
+fn goyf(name: &str) -> Arc<CardDefinition> {
+    let ability = r#"{"Static":{"affected":"This","mods":[{"SetPT":{"power":{"Count":[{"Type":"Creature"},{"In":"Graveyard"}]},"toughness":{"Count":[{"Type":"Creature"},{"In":"Graveyard"}]}}}],"defining":true}}"#;
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Creature)
+            .with_rules(rules(ability)),
+    )
+}
+
+#[test]
+fn cards_in_graveyards_that_count_the_creature_cards_of_graveyards_are_not_worked_out_for_each_other()
+ {
+    // Each counts the types of the others and not their power, so none needs another's count: sixteen of them take
+    // sixteen counts, not every order the cards can be counted in.
+    let (sent, received) = std::sync::mpsc::channel();
+    std::thread::spawn(move || {
+        let mut game_setup = setup(vec![vec![], vec![]], vec![vec![goyf("Alive")], vec![]]);
+        game_setup.players[0].graveyard = (0..14).map(|n| goyf(&format!("Dead {n}"))).collect();
+        game_setup.players[1].graveyard = vec![goyf("Dead 14"), goyf("Dead 15")];
+        let game = GameState::from_setup(&game_setup).unwrap();
+        let _ = sent.send((stats_of(&game, "Alive"), stats_of(&game, "Dead 0")));
+    });
+    let (alive, dead) = received
+        .recv_timeout(std::time::Duration::from_secs(60))
+        .expect("the counts did not end");
+    assert_eq!(alive, (Some(16), Some(16)));
+    assert_eq!(dead, (Some(16), Some(16)));
+}
+
+#[test]
+fn a_count_that_reads_power_works_out_the_power_of_the_cards_it_looks_at() {
+    // The total power of the creature cards in graveyards, read by a card in one: a Bones of 2, a goyf that counts the
+    // three cards and the reader itself, which is read as printed while its own ability is under way.
+    let ability = r#"{"Static":{"affected":"This","mods":[{"SetPT":{"power":{"Total":{"of":[{"Type":"Creature"},{"In":"Graveyard"}],"stat":"Power"}},"toughness":1}}],"defining":true}}"#;
+    let reader = Arc::new(
+        CardDefinition::new("Reader")
+            .with_type(CardType::Creature)
+            .with_rules(rules(ability)),
+    );
+    let mut game_setup = setup(
+        vec![vec![], vec![]],
+        vec![vec![creature("Bear", 2, 2)], vec![]],
+    );
+    game_setup.players[0].graveyard = vec![creature("Bones", 2, 2), goyf("Goyf"), reader];
+    let game = GameState::from_setup(&game_setup).unwrap();
+    assert_eq!(stats_of(&game, "Goyf"), (Some(3), Some(3)));
+    assert_eq!(stats_of(&game, "Reader"), (Some(5), Some(1)));
+}

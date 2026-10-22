@@ -13,7 +13,8 @@
 //! colon), `abilities` (a spell ability, a triggered ability, an activated ability), `conditional`
 //! (an effect that depends on a condition), `reveal` (looking at the top card and revealing it),
 //! `copies` (a token that is a copy, populate, entering as a copy), `copy_spells` (a copy of a spell or an ability, a
-//! permanent that becomes a copy), `transform` and `render`.
+//! permanent that becomes a copy), `defining` (the power and toughness a card defines for itself), `life_gain` (replacements and rules about gaining life), `transform` and
+//! `render`.
 
 mod abilities;
 mod among;
@@ -25,9 +26,11 @@ mod copy_spells;
 mod costs;
 mod counters;
 mod create;
+mod defining;
 mod effects;
 mod lands;
 mod library;
+mod life_gain;
 mod modal;
 mod payments;
 mod prevention;
@@ -80,17 +83,23 @@ pub fn enchant_filter(text: &str) -> Option<Selector> {
 /// `x_free` says the card's mana cost has an `{X}`, which an amount may use.
 #[cfg(test)]
 pub fn clause(text: &str, kind: ClauseKind, x_free: bool) -> Option<Ability> {
-    clause_with(text, kind, x_free, &[])
+    clause_with(text, kind, x_free, &Own::default())
 }
 
-/// Reads a clause like `clause`, with `subtypes` the subtypes on the card's own type line: a word among them is a
-/// subtype (in the singular or the plural) even where the rules' list does not have it.
-pub fn clause_with(
-    text: &str,
-    kind: ClauseKind,
-    x_free: bool,
-    subtypes: &[String],
-) -> Option<Ability> {
+/// What the readers know of the face a clause is on besides its text.
+#[derive(Debug, Clone, Default)]
+pub struct Own {
+    /// The subtypes on the type line: a word among them is a subtype (in the singular or the plural) even where the
+    /// rules' list does not have it.
+    pub subtypes: Vec<String>,
+    /// The printed power when it is a number.
+    pub power: Option<i32>,
+    /// The printed toughness when it is a number.
+    pub toughness: Option<i32>,
+}
+
+/// Reads a clause like `clause`, with what the face itself says (`Own`).
+pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
     let text = match kind {
         ClauseKind::Triggered => {
             let head = text.lines().next().unwrap_or_default();
@@ -100,7 +109,9 @@ pub fn clause_with(
     };
     let tokens = tokenize(text);
     let mut reader = Reader::new(&tokens, x_free);
-    reader.subtypes = subtypes.to_vec();
+    reader.subtypes.clone_from(&own.subtypes);
+    reader.power = own.power;
+    reader.toughness = own.toughness;
     let ability = match kind {
         ClauseKind::Spell => abilities::spell(&mut reader)?,
         ClauseKind::Modal => abilities::modal_spell(&mut reader)?,

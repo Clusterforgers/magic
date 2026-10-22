@@ -12,8 +12,10 @@ use super::abilities;
 use super::amounts::{count_word, counted_stats, number_word};
 use super::copies;
 use super::counters;
+use super::defining;
 use super::effects::{granted, power_toughness};
 use super::lands;
+use super::life_gain;
 use super::prevention;
 use super::render::{self, capitalize, counts_stats, is_a_type, stats_text};
 use super::selectors::{Form, all, granted_text, phrase, phrase_text, subtype};
@@ -29,8 +31,9 @@ use crate::value::{Amount, CastWay, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 11] = [
+const TEMPLATES: [Template; 13] = [
     entering,
+    life_gain::replacement,
     copies::enters_as_copy,
     as_entering,
     rule,
@@ -39,6 +42,7 @@ const TEMPLATES: [Template; 11] = [
     cannot,
     cost_modifier,
     modifies,
+    defining::ability,
     prevention::static_rule,
     super::costs::additional,
 ];
@@ -302,6 +306,9 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     if r.words("you may look at the top card of your library any time") {
         return Some(GameRule::LookAtTopAnyTime(Ref::You));
     }
+    if let Some(rule) = life_gain::rule(r) {
+        return Some(rule);
+    }
     lands::additional(r)
 }
 
@@ -434,15 +441,17 @@ fn as_long_as(r: &mut Reader<'_>) -> Option<Condition> {
     if r.words("it's your turn") {
         return Some(Condition::YourTurn);
     }
-    triggers::monarch_condition(r).or_else(|| holds(r))
+    triggers::monarch_condition(r)
+        .or_else(|| holds(r))
+        .or_else(|| r.attempt(triggers::condition))
 }
 
 /// What `as_long_as` reads, written back.
 fn as_long_as_texts(condition: &Condition) -> Vec<String> {
     if *condition == Condition::YourTurn {
         vec!["it's your turn".to_owned()]
-    } else if let Some(monarch) = triggers::monarch_text(condition) {
-        vec![monarch]
+    } else if let Some(written) = triggers::condition_text(condition) {
+        vec![written]
     } else {
         holds_texts(condition)
     }
@@ -581,6 +590,11 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             per,
             condition: None,
         } => cost_modifier_texts(applies_to, *change, mana, per),
+        Ability::Replacement {
+            when: ReplaceWhen::LifeGain { .. },
+            ..
+        } => life_gain::replacement_sentences(ability),
+        Ability::Static { defining: true, .. } => defining::sentences(ability),
         _ => Vec::new(),
     };
     sentences
@@ -792,6 +806,7 @@ fn rule_texts(rule: &GameRule, from: ZoneKind) -> Vec<String> {
                 .chain(lands::cast_from_the_top_text(permission))
                 .collect()
         }
+        (GameRule::CantGainLife(who), ZoneKind::Battlefield) => life_gain::rule_sentences(who),
         (GameRule::CanBeCommander, ZoneKind::Battlefield) => {
             vec!["~ can be your commander".to_owned()]
         }

@@ -1,0 +1,29 @@
+{
+  "id": "25d25e02-a266-4fad-bc8c-aa45487fab90",
+  "oracle_id": "478d1acf-93fa-4695-83be-693b839ebf80",
+  "name": "Wilderness Elemental",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c16",
+  "collector_number": "230",
+  "rarity": "uncommon",
+  "released_at": "2016-11-11",
+  "digital": false,
+  "mana_cost": "{1}{R}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Elemental",
+  "oracle_text": "Trample\nWilderness Elemental's power is equal to the number of nonbasic lands your opponents control.",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Trample"
+  ],
+  "power": "*",
+  "toughness": "3"
+}
