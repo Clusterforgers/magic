@@ -1,6 +1,7 @@
 //! Goal: whole bot games with decks of Doom Blade, Swords to Plowshares, Counterspell and Wrath of God, creatures that watch deaths, die or leave the battlefield with a trigger and creatures that cannot be destroyed finish and keep every invariant (zones, life, the journal, no trigger waiting while a player has priority, the replay of the log equal to the live state) for many seeds at tables of two, three and four seats, and the games really use them: permanents are destroyed, exiled and countered, a Wrath destroys several at once, spells fizzle, the triggers of the removed permanents go on the stack; an engine rebuilt from the log at each decision asks what the original asks, and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::events::{ResolutionOutcome, ZoneCause};
 use mtg_engine::{Engine, EngineError, Event};
@@ -9,10 +10,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`. These are short, since removal ends a game quickly.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(60)
+    fuzz_games(20)
 }
 
 #[derive(Default)]

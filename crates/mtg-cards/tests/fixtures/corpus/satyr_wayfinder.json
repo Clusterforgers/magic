@@ -1,0 +1,25 @@
+{
+  "id": "8bbbe65d-7162-42fb-94ee-d835d6c3f02a",
+  "oracle_id": "ead4c01a-e2ae-49c9-95d9-651d81005907",
+  "name": "Satyr Wayfinder",
+  "lang": "en",
+  "released_at": "2025-08-01",
+  "layout": "normal",
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Satyr",
+  "oracle_text": "When this creature enters, reveal the top four cards of your library. You may put a land card from among them into your hand. Put the rest into your graveyard.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "set": "eoc",
+  "collector_number": "106",
+  "digital": false,
+  "rarity": "common"
+}

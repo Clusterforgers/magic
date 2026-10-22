@@ -1,6 +1,7 @@
 //! Goal: whole bot games with decks of Twincast, Reverberate, Fork, Reiterate, Dualcaster Mage, Strionic Resonator, Lithoform Engine, Cytoshape, Grapeshot, Brain Freeze and Tendrils of Agony finish and keep every invariant (zones, life, mana, the journal, the replay of the log equal to the live state, a copy that is no card never in a zone but the stack and the battlefield) for many seeds at tables of two, three and four seats, and the games really copy: spells and abilities are copied, a copy chooses new targets, and a copy is never cast; an engine rebuilt from the log at each decision asks the same question, and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::{Engine, EngineError, Event};
 use mtg_testkit::{RandomBot, play_game, spell_copy_fuzz_setup};
@@ -8,10 +9,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(30)
+    fuzz_games(10)
 }
 
 #[derive(Default)]

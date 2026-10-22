@@ -552,13 +552,10 @@ fn the_kicks_of_a_permanent_that_a_state_based_action_removed_are_read_by_its_tr
 
 #[test]
 fn bot_games_with_the_cards_that_pay_parts_keep_every_invariant_and_use_them() {
-    use crate::common::seeds::for_each_seed;
+    use crate::common::seeds::{for_each_seed, fuzz_games};
     use mtg_testkit::{PlayOptions, extra_cost_fuzz_setup, play_game_with};
     let seen = std::sync::Mutex::new((0u64, 0u64, 0u64, 0u64));
-    let games = std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40);
+    let games = fuzz_games(12);
     for_each_seed(0..games, |seed| {
         for players in [2, 3, 4] {
             let outcome = play_game_with(

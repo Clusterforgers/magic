@@ -2,7 +2,7 @@
 
 use crate::common::house::{any_turn_rules, random_turn_rules};
 use crate::common::pid;
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{for_each_seed, fuzz_games_scaled};
 
 use std::sync::Arc;
 
@@ -394,10 +394,7 @@ fn random_rules_are_always_in_range_and_often_set() {
 
 /// Bot games played under random rules per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse::<u64>().ok())
-        .map_or(100, |n| (n / 5).max(1))
+    fuzz_games_scaled(100, 5)
 }
 
 #[rstest]

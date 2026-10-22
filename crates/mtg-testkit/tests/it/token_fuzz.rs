@@ -1,6 +1,7 @@
 //! Goal: whole bot games with token makers in the decks (Dockside Extortionist, Hero of Bladehold, Tireless Tracker, a Food maker and a watcher that counts tokens) finish and keep every invariant (zones with tokens that cease to exist, life, the journal, the replay of the log equal to the live state) for many seeds at tables of two, three and four seats, and the games really use tokens: Treasures are made and sacrificed for mana, Clues and Food are paid for and sacrificed, Soldiers enter attacking and tokens die or leave and cease to exist.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use std::collections::BTreeSet;
 use std::sync::Arc;
 
@@ -16,10 +17,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|value| value.parse().ok())
-        .unwrap_or(40)
+    fuzz_games(40)
 }
 
 /// Gains 1 life whenever a token its controller controls goes to a graveyard.

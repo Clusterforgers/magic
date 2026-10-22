@@ -6,7 +6,7 @@ use std::sync::Mutex;
 use mtg_engine::{Event, replay};
 use mtg_testkit::{PlayOptions, help_fuzz_setup, play_game_with};
 
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{for_each_seed, fuzz_games};
 
 /// What the games showed: payments that tapped creatures, payments that exiled cards, and the spells cast in all.
 #[derive(Default)]
@@ -19,10 +19,7 @@ struct Seen {
 #[test]
 fn bot_games_with_convoke_and_delve_keep_every_invariant_and_replay() {
     let seen = Mutex::new(Seen::default());
-    let games = std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40);
+    let games = fuzz_games(40);
     for_each_seed(0..games, |seed| {
         for (players, options) in [
             (2, PlayOptions::default()),

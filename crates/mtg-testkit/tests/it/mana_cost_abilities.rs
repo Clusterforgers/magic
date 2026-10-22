@@ -2,6 +2,7 @@
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
+use crate::common::seeds::fuzz_games;
 
 use std::sync::{Arc, Mutex};
 
@@ -215,10 +216,7 @@ fn paid_costs(events: &[Event]) -> u64 {
 #[case::four(4)]
 fn bot_games_with_these_sources_finish_and_keep_every_invariant(#[case] players: usize) {
     let seen = Mutex::new(0u64);
-    let games: u64 = std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(20);
+    let games: u64 = fuzz_games(20);
     for_each_seed(0..games, |seed| {
         let decks = (0..players).map(|_| deck()).collect();
         let setup = GameSetup::new(Arc::new(Normal), seed, decks);
