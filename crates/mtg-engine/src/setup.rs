@@ -511,20 +511,14 @@ impl GameState {
                 .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Protection(_)))
         });
         self.possible.protection = protection;
-        let day_night = self.objects().any(|object| {
-            object
-                .def
-                .each_face()
-                .any(crate::ability_reader::definition_has_day_night)
-        });
-        self.possible.day_night = day_night;
-        let ascend = self.objects().any(|object| {
-            object
-                .def
-                .each_face()
-                .any(crate::ability_reader::definition_has_ascend)
-        });
-        self.possible.ascend = ascend;
+        self.possible.day_night = self.any_face(crate::ability_reader::definition_has_day_night);
+        self.possible.ascend = self.any_face(crate::ability_reader::definition_has_ascend);
+    }
+
+    /// Whether some face of a card of the game satisfies `test`.
+    fn any_face(&self, test: fn(&mtg_cards::CardDefinition) -> bool) -> bool {
+        self.objects()
+            .any(|object| object.def.each_face().any(test))
     }
 }
 
