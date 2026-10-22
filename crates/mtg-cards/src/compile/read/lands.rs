@@ -3,6 +3,7 @@
 //! top of your library." Read from the wording and written back the same way.
 
 use super::amounts::{count_word, number_word};
+use super::effects::Template;
 use super::tokens::Reader;
 use crate::ability::Ability;
 use crate::effect::Effect;
@@ -12,7 +13,7 @@ use crate::value::Amount;
 use mtg_core::card::CardType;
 
 /// The effects of a spell: the land plays of one turn.
-pub const TEMPLATES: [fn(&mut Reader<'_>) -> Option<Vec<Effect>>; 1] = [additional_this_turn];
+pub const TEMPLATES: [Template; 1] = [additional_this_turn];
 
 /// How many more lands: "an additional land", "two additional lands", "up to three additional lands".
 fn how_many(r: &mut Reader<'_>, up_to: bool) -> Option<u32> {

@@ -9,7 +9,9 @@ Arrogant Wurm
 Arvad the Cursed
 Augury Raven
 Azorius Chancery
+Azusa, Lost but Seeking
 Basking Rootwalla
+Battle Sliver
 Battlefield Forge
 Behold the Multiverse
 Bilious Skulldweller
@@ -38,6 +40,8 @@ Command Tower
 Consider
 Copper-Leaf Angel
 Counterspell
+Courser of Kruphix
+Crucible of Worlds
 Curate
 Curse of Predation
 Curse of the Forsaken
@@ -55,6 +59,7 @@ Disembowel
 Dockside Extortionist
 Doom Blade
 Doom Whisperer
+Dragonspeaker Shaman
 Dream's Grip
 Drudge Skeletons
 Dual Casting
@@ -63,6 +68,8 @@ Durkwood Baloth
 Epic Proportions
 Eternal Witness
 Exotic Orchard
+Exploration
+Explore
 Faithful Watchdog
 Faithless Looting
 Faramir, Steward of Gondor
@@ -84,6 +91,7 @@ Game-Trail Changeling
 Giant Growth
 Gilded Lotus
 Glorious Anthem
+Goblin Chieftain
 Goblin Spy
 Grapeshot
 Graveshifter
@@ -126,6 +134,7 @@ Monastery Swiftspear
 Mothdust Changeling
 Mulldrifter
 Murderous Cut
+Muscle Sliver
 Nantuko Husk
 Nightveil Sprite
 Notion Rain
@@ -175,11 +184,13 @@ Soltari Foot Soldier
 Soul Shepherd
 Souldrinker
 Spectral Rider
+Sphinx of Jwar Isle
 Squirrel Nest
 Steam Vents
 Stoke the Flames
 Strionic Resonator
 Stroke of Genius
+Summer Bloom
 Sundering Growth
 Supreme Verdict
 Swiftfoot Boots

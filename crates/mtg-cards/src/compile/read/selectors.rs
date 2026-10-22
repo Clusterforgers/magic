@@ -467,12 +467,13 @@ fn qualifier(r: &mut Reader<'_>) -> Option<Pred> {
     r.attempt(|r| {
         let plural_noun = |word: Option<&str>| {
             word.is_some_and(|word| {
-                word == "tokens" || type_noun(word).is_some_and(|(_, plural)| plural)
+                matches!(word, "tokens" | "spells")
+                    || type_noun(word).is_some_and(|(_, plural)| plural)
             })
         };
         let name = r.attempt(|r| group_name(r).filter(|name| r.is_subtype(name)));
         if let Some(name) = name {
-            return plural_noun(r.peek_word()).then(|| Pred::Subtype(Subtype(name)));
+            return plural_noun(r.peek_word()).then_some(Pred::Subtype(Subtype(name)));
         }
         let (card_type, plural) = r.peek_word().and_then(type_noun)?;
         r.skip();
@@ -511,7 +512,9 @@ pub fn phrase(r: &mut Reader<'_>, form: Form) -> Option<Selector> {
             Noun::Spell => {
                 preds.push(Pred::Spell);
                 preds.extend(adjectives);
+                preds.extend(kinds);
                 preds.extend(type_pred);
+                preds.extend(subtypes);
             }
             Noun::Subtype(name) => {
                 preds.push(Pred::Subtype(Subtype(name.clone())));
@@ -597,8 +600,8 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     }
     let plural = form.plural();
     // A subtype is the noun by itself, or qualifies a plural noun ("Sliver creatures"); a spell is not a card in a zone.
-    let qualified = plural && !spell && !card && (!types.is_empty() || token);
-    if (subtype.is_some() && (spell || card || (!types.is_empty() && !qualified)))
+    let qualified = plural && !card && (spell || !types.is_empty() || token);
+    if (subtype.is_some() && (card || (spell && !plural) || (!types.is_empty() && !qualified)))
         || (spell && card)
         || (token && (spell || card))
         || (!kinds.is_empty() && !qualified)

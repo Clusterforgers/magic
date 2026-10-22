@@ -1211,7 +1211,11 @@ mod tests {
     /// A table of `seats` players: seat 0 controls the holder with the rules, a Forest sits in its hand and in its
     /// graveyard, and every seat has a library of five creatures.
     fn table(seats: usize, rules: Vec<Ability>) -> GameState {
-        let forest = || Arc::new(CardDefinition::basic_land(Some(mtg_core::color::Color::Green)));
+        let forest = || {
+            Arc::new(CardDefinition::basic_land(Some(
+                mtg_core::color::Color::Green,
+            )))
+        };
         let mut battlefields = vec![vec![holder(rules)]];
         battlefields.extend((1..seats).map(|_| Vec::new()));
         let mut hands = vec![vec![forest(), forest()]];
@@ -1239,11 +1243,16 @@ mod tests {
             _ => seats,
         };
         let look = rule_ability(&format!(r#"{{"LookAtTopAnyTime":"{who}"}}"#));
-        let lands = rule_ability(&format!(r#"{{"AdditionalLandPlays":{{"who":"{who}","count":2}}}}"#));
+        let lands = rule_ability(&format!(
+            r#"{{"AdditionalLandPlays":{{"who":"{who}","count":2}}}}"#
+        ));
         let game = table(seats, vec![look, lands]);
         let seats = (0..seats).map(|n| PlayerId(u64::try_from(n).unwrap()));
         assert_eq!(
-            seats.clone().filter(|seat| looks_at_top(&game, *seat)).count(),
+            seats
+                .clone()
+                .filter(|seat| looks_at_top(&game, *seat))
+                .count(),
             reached
         );
         assert_eq!(
@@ -1259,12 +1268,20 @@ mod tests {
         assert_eq!(extra_land_plays(&game, ME), 2);
         // A second permanent that has the rule joins the first: the count follows the sources in play.
         let wolf = id(&game, "Wolf");
-        let effect = effect(&game, Rule::AdditionalLandPlays(vec![(ME, 3)]), Duration::Forever);
+        let effect = effect(
+            &game,
+            Rule::AdditionalLandPlays(vec![(ME, 3)]),
+            Duration::Forever,
+        );
         apply_event(&mut game, &Event::RuleCreated { effect }).unwrap();
         assert_eq!(extra_land_plays(&game, ME), 5);
         assert_eq!(extra_land_plays(&game, FOE), 0);
         leaves(&mut game, "Holder");
-        assert_eq!(extra_land_plays(&game, ME), 3, "the effect outlasts the holder");
+        assert_eq!(
+            extra_land_plays(&game, ME),
+            3,
+            "the effect outlasts the holder"
+        );
         assert!(game.object(wolf).is_some());
     }
 
@@ -1273,7 +1290,8 @@ mod tests {
         let rules = vec![rule_ability(r#"{"AdditionalLandPlays":{}}"#)];
         let plain = table(2, Vec::new());
         let extra = table(2, rules);
-        let playable = |game: &GameState| crate::priority::priority_options(game, ME).playable_lands;
+        let playable =
+            |game: &GameState| crate::priority::priority_options(game, ME).playable_lands;
         let play = |game: &mut GameState| {
             let land = playable(game)[0];
             let event = Event::LandPlayed {
@@ -1287,10 +1305,10 @@ mod tests {
         assert_eq!(playable(&plain).len(), 2);
         play(&mut plain);
         play(&mut extra);
-        assert!(playable(&plain).is_empty(), "one land a turn");
+        assert_eq!(playable(&plain), Vec::<ObjectId>::new(), "one land a turn");
         assert_eq!(playable(&extra).len(), 1, "one more with the rule");
         play(&mut extra);
-        assert!(playable(&extra).is_empty());
+        assert_eq!(playable(&extra), Vec::<ObjectId>::new());
         extra.turn.lands_played = 0;
         assert_eq!(playable(&extra).len(), 0, "the hand is empty");
     }
@@ -1303,7 +1321,11 @@ mod tests {
         assert!(game.is_shown_to(ME, top));
         assert!(!game.is_shown_to(FOE, top), "an opponent does not see it");
         assert!(!game.is_shown_to(ME, second), "nothing below the top");
-        assert_eq!(game.revealed_top(ME), None, "it is not revealed to the table");
+        assert_eq!(
+            game.revealed_top(ME),
+            None,
+            "it is not revealed to the table"
+        );
         let drawn = Event::CardDrawn {
             player: ME,
             object: top,
@@ -1311,13 +1333,17 @@ mod tests {
         apply_event(&mut game, &drawn).unwrap();
         assert!(game.is_shown_to(ME, second), "the next card is the top");
         leaves(&mut game, "Holder");
-        assert!(!game.is_shown_to(ME, second), "the rule ended with its source");
+        assert!(
+            !game.is_shown_to(ME, second),
+            "the rule ended with its source"
+        );
     }
 
     #[test]
     fn a_land_in_the_graveyard_is_played_under_a_permission_to_play_lands_from_there() {
         let permission = r#"{"MayCast":{"what":[{"Type":"Land"}],"from":"Graveyard","play":true}}"#;
-        let playable = |game: &GameState| crate::priority::priority_options(game, ME).playable_lands;
+        let playable =
+            |game: &GameState| crate::priority::priority_options(game, ME).playable_lands;
         let graveyard = |game: &GameState| game.zone(Zone::Graveyard(ME)).to_vec();
         let mut game = table(2, vec![rule_ability(permission)]);
         let card = graveyard(&game)[0];
@@ -1329,11 +1355,14 @@ mod tests {
         };
         apply_event(&mut game, &event).unwrap();
         assert_eq!(game.object(card).unwrap().zone(), Zone::Battlefield);
-        assert!(graveyard(&game).is_empty());
+        assert_eq!(graveyard(&game), Vec::<ObjectId>::new());
         let without = table(2, Vec::new());
         assert!(!playable(&without).contains(&graveyard(&without)[0]));
         // The permission does not reach a graveyard of another seat.
-        assert!(crate::priority::priority_options(&game, FOE).playable_lands.is_empty());
+        assert_eq!(
+            crate::priority::priority_options(&game, FOE).playable_lands,
+            Vec::<ObjectId>::new()
+        );
     }
 
     #[test]

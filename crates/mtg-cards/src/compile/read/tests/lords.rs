@@ -72,7 +72,11 @@ const YOURS: &str = r#"{"ControlledBy":"You"}"#;
     &format!(r#"{CREATURE},{{"Subtype":"Elf"}},{{"Not":"Token"}},{YOURS}"#),
     PLUS_ONE
 )]
-fn a_group_is_given_a_bonus_or_a_keyword(#[case] text: &str, #[case] group: &str, #[case] given: &str) {
+fn a_group_is_given_a_bonus_or_a_keyword(
+    #[case] text: &str,
+    #[case] group: &str,
+    #[case] given: &str,
+) {
     reads_as(text, ClauseKind::Static, false, &lord(group, given));
 }
 
@@ -82,6 +86,33 @@ fn a_group_is_given_a_bonus_or_a_keyword(#[case] text: &str, #[case] group: &str
 #[case::a_spell_for_tokens("Creature tokens you control get +1/+1 until end of turn.")]
 fn the_same_groups_read_in_a_spell(#[case] text: &str) {
     golden(text, ClauseKind::Spell, false);
+}
+
+#[rstest]
+#[case::a_subtype_of_spells(
+    "Dragon spells you cast cost {1} less to cast.",
+    r#"{"CostModifier":{"applies_to":["Spell",{"Subtype":"Dragon"},{"ControlledBy":"You"}],"change":"Reduce","mana":"{1}"}}"#
+)]
+#[case::two_less(
+    "Villain spells you cast cost {2} less to cast.",
+    r#"{"CostModifier":{"applies_to":["Spell",{"Subtype":"Villain"},{"ControlledBy":"You"}],"change":"Reduce","mana":"{2}"}}"#
+)]
+#[case::more_for_opponents(
+    "Dragon spells your opponents cast cost {1} more to cast.",
+    r#"{"CostModifier":{"applies_to":["Spell",{"Subtype":"Dragon"},{"ControlledBy":"Opponents"}],"change":"Increase","mana":"{1}"}}"#
+)]
+fn spells_of_a_subtype_cost_less_or_more(#[case] text: &str, #[case] json: &str) {
+    reads_as(text, ClauseKind::Static, false, json);
+}
+
+#[rstest]
+#[case::a_subtype_and_a_card("Dragon cards you cast cost {1} less to cast.")]
+#[case::a_subtype_in_the_singular("Dragon spell you cast costs {1} less to cast.")]
+#[case::a_cost_that_counts(
+    "Dragon spells you cast cost {1} less to cast for each Dragon you control."
+)]
+fn near_misses_of_cost_modifiers_stay_with_the_table(#[case] text: &str) {
+    assert_eq!(clause(text, ClauseKind::Static, false), None, "{text}");
 }
 
 #[rstest]

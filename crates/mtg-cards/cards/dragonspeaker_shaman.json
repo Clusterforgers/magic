@@ -1,0 +1,20 @@
+{
+  "oracle_id": "6a29f36b-7911-4d84-a3ae-546b131d5159",
+  "name": "Dragonspeaker Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragonspeaker Shaman",
+      "oracle_fingerprint": "bf9e58529e930101f3636512f1276438",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Subtype": "Dragon" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        }
+      ]
+    }
+  ]
+}

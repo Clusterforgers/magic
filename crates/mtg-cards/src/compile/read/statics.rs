@@ -767,9 +767,9 @@ fn rule_texts(rule: &GameRule, from: ZoneKind) -> Vec<String> {
         (GameRule::AdditionalLandPlays { who, count }, ZoneKind::Battlefield) => {
             lands::additional_texts(who, count)
         }
-        (GameRule::MayCast(permission), ZoneKind::Battlefield) => lands::from_a_zone_text(permission)
-            .into_iter()
-            .collect(),
+        (GameRule::MayCast(permission), ZoneKind::Battlefield) => {
+            lands::from_a_zone_text(permission).into_iter().collect()
+        }
         (GameRule::CanBeCommander, ZoneKind::Battlefield) => {
             vec!["~ can be your commander".to_owned()]
         }
