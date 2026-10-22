@@ -126,6 +126,10 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub attached_to: Option<ObjectId>,
+    /// The player this one is attached to, when it is an Aura on the battlefield that enchants a player.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub attached_player: Option<PlayerId>,
     /// The permanents attached to this one, in id order; left out while there are none.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<ObjectId>>", optional)]
@@ -195,6 +199,10 @@ pub struct PlayerView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<(CounterKind, u32)>>", optional)]
     pub counters: Vec<(CounterKind, u32)>,
+    /// The Auras that enchant the player, in id order; public, and left out while there are none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<ObjectId>>", optional)]
+    pub enchanted_by: Vec<ObjectId>,
     /// Mulligans taken.
     pub mulligans: u32,
     /// Opening-hand progress.
@@ -221,6 +229,12 @@ pub struct PlayerView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<CommanderDamageView>>", optional)]
     pub commander_damage: Vec<CommanderDamageView>,
+    /// The combat damage from one commander that makes a player lose at this table: the table's amount or the
+    /// format's 21; left out when nothing makes a player lose to it (Normal, or a table that turned the rule off). The
+    /// same for every seat, so a client never derives it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub commander_lethal: Option<u32>,
     /// Clock extensions the seat holds (public). The engine does not know them: the server fills them in, and a view
     /// made from the engine state alone says 0.
     pub bank: u8,

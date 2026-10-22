@@ -288,6 +288,14 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         TriggerPattern::Attacks { what } => {
             (format!("{} attacks", subject(what)), what.0 == [Pred::This])
         }
+        TriggerPattern::AttacksPlayer { what, at } => {
+            let whom = match at {
+                Ref::AttachedPlayer => "enchanted player",
+                Ref::You => "you",
+                _ => "a player",
+            };
+            (format!("{} attacks {whom}", subject(what)), false)
+        }
         TriggerPattern::BecomesTarget { what, by } => {
             let whose = match by.0.as_slice() {
                 [Pred::ControlledBy(Ref::Opponents)] => " an opponent controls",

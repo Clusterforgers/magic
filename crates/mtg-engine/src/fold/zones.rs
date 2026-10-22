@@ -89,6 +89,7 @@ pub(super) fn move_object(
             summoning_sick: true,
             counters: BTreeMap::new(),
             attached_to: None,
+            attached_player: None,
             timestamp,
             observed: None,
             chosen: None,

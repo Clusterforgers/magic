@@ -43,6 +43,7 @@ mod day_night;
 mod determinism_replay;
 mod divided_resolution;
 mod elimination;
+mod enchant_player;
 mod enters;
 mod equipment;
 mod evasion;

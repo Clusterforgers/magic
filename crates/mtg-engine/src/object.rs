@@ -87,6 +87,8 @@ pub struct PermanentState {
     pub(crate) summoning_sick: bool,
     pub(crate) counters: BTreeMap<CounterKind, u32>,
     pub(crate) attached_to: Option<ObjectRef>,
+    /// The player it is attached to (an Aura that enchants a player, CR 303.4); never set together with `attached_to`.
+    pub(crate) attached_player: Option<PlayerId>,
     pub(crate) timestamp: u64,
     pub(crate) observed: Option<PlayerId>,
     pub(crate) chosen: Option<Chosen>,
@@ -169,6 +171,11 @@ impl PermanentState {
     /// The permanent it is attached to, named as it was when attached (an Aura or Equipment); `GameState::host_of` says whether that is still so.
     pub const fn attached_to(&self) -> Option<ObjectRef> {
         self.attached_to
+    }
+
+    /// The player it is attached to (an Aura that enchants a player); `GameState::player_host_of` says whether they are still in the game.
+    pub const fn attached_player(&self) -> Option<PlayerId> {
+        self.attached_player
     }
 }
 

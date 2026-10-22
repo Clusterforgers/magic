@@ -28,6 +28,7 @@ pub struct ChosenDeck {
     deck: DeckRef,
     fingerprint: DeckFingerprint,
     note: SeatDeck,
+    own_issues: Arc<[Issue]>,
 }
 
 impl ChosenDeck {
@@ -46,24 +47,32 @@ impl ChosenDeck {
                 format: DEMO_FORMAT.to_owned(),
                 manual_cards: 0,
             },
+            own_issues: Arc::from([]),
         })
     }
 
     /// What a Commander seat holds until its holder chooses a deck; the seat cannot be ready with it.
     pub fn commander_stand_in() -> Result<ChosenDeck, FingerprintError> {
-        let (commander, library) = demo::commander_stand_in();
+        ChosenDeck::commander_stand_in_of(demo::COMMANDER_DECK)
+    }
+
+    /// Like [`ChosenDeck::commander_stand_in`], for a table whose decks hold `size` cards, the
+    /// commander included, so the stand-in passes the table's own deck check.
+    pub fn commander_stand_in_of(size: usize) -> Result<ChosenDeck, FingerprintError> {
+        let (commander, library) = demo::commander_stand_in_of(size);
         Ok(ChosenDeck {
             fingerprint: DeckFingerprint::of_seat(&library, std::slice::from_ref(&commander))?,
             cards: library.into(),
             commanders: Arc::from([commander]),
             deck: DeckRef::Demo {
-                id: demo::COMMANDER_STAND_IN.to_owned(),
+                id: demo::commander_stand_in_id(size),
             },
             note: SeatDeck {
                 name: "No deck".to_owned(),
                 format: "commander".to_owned(),
                 manual_cards: 0,
             },
+            own_issues: Arc::from([]),
         })
     }
 
@@ -96,6 +105,7 @@ impl ChosenDeck {
                 commanders: commander_ids,
             },
             note,
+            own_issues: Arc::from([]),
         })
     }
 
@@ -124,10 +134,40 @@ impl ChosenDeck {
         &self.commanders
     }
 
-    /// The rules of `format`, under the `house` rules of the game, that the cards break, in the words
-    /// of the deck check; none when the format accepts the deck.
+    /// The deck with the issues its own check found (`deck_report` in the deck's format), which a
+    /// table's deck rules may lift ([`ChosenDeck::issues_in`]). Only issues of codes a table can lift
+    /// belong here: the others refuse the deck before it is chosen.
+    #[must_use]
+    pub(crate) fn with_own_issues(mut self, issues: Vec<Issue>) -> ChosenDeck {
+        self.own_issues = issues.into();
+        self
+    }
+
+    /// The rules of `format`, under the `house` rules of the game, that the deck breaks, in the words
+    /// of the deck check; none when the game accepts the deck.
+    ///
+    /// A Commander table that relaxed a rule the deck's own check refused for (size, copies, colour
+    /// identity, the pair of commanders) leaves that issue to the engine's `validate_seat` under the
+    /// table's rules; every other issue of the deck's check stands. The engine judges a deck whose
+    /// own check has nothing left.
     pub fn issues_in(&self, format: FormatKind, house: &HouseRules) -> Vec<Issue> {
-        format_issues(format, &self.cards, &self.commanders, house)
+        let none = HouseRules::default();
+        let house = if format == FormatKind::Commander {
+            house
+        } else {
+            &none
+        };
+        let own: Vec<Issue> = self
+            .own_issues
+            .iter()
+            .filter(|issue| !issue.code.lifted_by(house))
+            .cloned()
+            .collect();
+        if own.is_empty() {
+            format_issues(format, &self.cards, &self.commanders, house)
+        } else {
+            own
+        }
     }
 }
 
@@ -234,7 +274,8 @@ impl SeatDecks {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a lobby's decks follow the seats: a seat plays what it chose until it is given back and then what the game was made with, a seat without a deck keeps the recipe from being written, and only a change from the creation decks asks for a new recipe.
+    //! Goal: a lobby's decks follow the seats: a seat plays what it chose until it is given back and then what the game was made with, a seat without a deck keeps the recipe from being written, and only a change from the creation decks asks for a new recipe. A commander table lifts the issues of the deck's own check that its relaxed rules replace, and a Normal game lifts none.
+    use mtg_cards::deck::IssueCode;
     use mtg_cards::vanilla;
     use mtg_core::color::Color;
 
@@ -253,6 +294,66 @@ mod tests {
             manual_cards: 3,
         };
         ChosenDeck::stored(vec!["forest".to_owned(); 60], cards, note).unwrap()
+    }
+
+    fn issue(code: IssueCode) -> Issue {
+        Issue {
+            code,
+            message: "x".to_owned(),
+            zone: None,
+            oracle_id: None,
+            name: None,
+        }
+    }
+
+    #[rstest::rstest]
+    #[case::no_rules(HouseRules::default(), &[IssueCode::Copies, IssueCode::DeckSize])]
+    #[case::one_lifted(deck_rules(|d| d.singleton = Some(false)), &[IssueCode::DeckSize])]
+    #[case::both_lifted(deck_rules(|d| { d.singleton = Some(false); d.deck_size = Some(60); }), &[])]
+    #[case::another_rule(deck_rules(|d| d.colour_identity = Some(false)), &[IssueCode::Copies, IssueCode::DeckSize])]
+    fn a_commander_table_lifts_the_issues_of_the_rules_it_relaxed(
+        #[case] house: HouseRules,
+        #[case] left: &[IssueCode],
+    ) {
+        let (commander, library) = demo::commander_stand_in();
+        let note = SeatDeck {
+            name: "x".to_owned(),
+            format: "commander".to_owned(),
+            manual_cards: 0,
+        };
+        let own = vec![issue(IssueCode::Copies), issue(IssueCode::DeckSize)];
+        let chosen = ChosenDeck::led(vec![], library, vec![], vec![commander], note)
+            .unwrap()
+            .with_own_issues(own);
+        let codes: Vec<IssueCode> = chosen
+            .issues_in(FormatKind::Commander, &house)
+            .into_iter()
+            .map(|issue| issue.code)
+            .collect();
+        // What is left of the deck's own check is all that is said; when nothing is left, the engine
+        // judges the deck under the table's rules (a 100-card deck against a 60-card table).
+        let expected: Vec<IssueCode> = if left.is_empty() {
+            vec![IssueCode::DeckSize]
+        } else {
+            left.to_vec()
+        };
+        assert_eq!(codes, expected);
+        // A Normal game has no deck rules to lift anything.
+        let normal: Vec<IssueCode> = chosen
+            .issues_in(FormatKind::Normal, &house)
+            .into_iter()
+            .map(|issue| issue.code)
+            .collect();
+        assert_eq!(normal, [IssueCode::Copies, IssueCode::DeckSize]);
+    }
+
+    fn deck_rules(set: impl FnOnce(&mut mtg_core::house::DeckRules)) -> HouseRules {
+        let mut deck = mtg_core::house::DeckRules::default();
+        set(&mut deck);
+        HouseRules {
+            deck,
+            ..HouseRules::default()
+        }
     }
 
     fn lobby() -> SeatDecks {

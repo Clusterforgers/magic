@@ -49,6 +49,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     "Forest enters tapped under Bo's control",
   ],
   Attached: [{ Attached: { object: 3, to: 1 } }, 'Forest becomes attached to Grizzly Bears'],
+  AttachedToPlayer: [{ AttachedToPlayer: { object: 3, player: 1 } }, 'Forest enchants Bo'],
   Unattached: [{ Unattached: { object: 3 } }, 'Forest becomes unattached'],
   ManualAction: [
     { ManualAction: { player: 0, action: { Move: { object: 3, to: 'Graveyard' } } } },

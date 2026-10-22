@@ -81,6 +81,7 @@ fn an_empty_listing_is_an_empty_list() {
 /// A game of two seats of which the second is open, as the lookup shows it.
 fn lookup(started: bool, result: Option<GameResult>, visibility: Visibility) -> GameInfo {
     GameInfo {
+        format: "normal".into(),
         started,
         seats: vec![
             GameSeat {
@@ -106,6 +107,7 @@ fn the_game_lookup_has_the_documented_wire_shape() {
     assert_eq!(
         value,
         json!({
+            "format": "normal",
             "started": false,
             "seats": [{"seat": 0, "name": "Ann"}, {"seat": 1, "name": ""}],
             "connected": [0],
@@ -398,6 +400,7 @@ fn the_bindings_carry_the_game_browser_types() {
     assert!(files["Joined.ts"].contains("token: string | null"));
     assert!(files["VisibilityBody.ts"].contains("visibility: Visibility"));
     for field in [
+        "format: string",
         "started: boolean",
         "seats: Array<GameSeat>",
         "connected: Array<PlayerId>",

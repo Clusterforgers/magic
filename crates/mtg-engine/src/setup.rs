@@ -37,6 +37,8 @@ pub struct PresetPermanent {
     pub counters: Vec<(CounterKind, u32)>,
     /// The permanent it starts attached to, as (seat, place in that seat's `battlefield`).
     pub attached_to: Option<(usize, usize)>,
+    /// The seat of the player it starts attached to (an Aura that enchants a player).
+    pub attached_player: Option<usize>,
 }
 
 impl PresetPermanent {
@@ -49,6 +51,7 @@ impl PresetPermanent {
             damage: 0,
             counters: Vec::new(),
             attached_to: None,
+            attached_player: None,
         }
     }
 }
@@ -203,6 +206,12 @@ impl GameSetup {
                 }) {
                     return Err(SetupError::BadAttachment { seat, index });
                 }
+                if preset
+                    .attached_player
+                    .is_some_and(|enchanted| enchanted >= self.players.len())
+                {
+                    return Err(SetupError::BadAttachment { seat, index });
+                }
             }
         }
         if let Start::At { turn, active, step } = self.start {
@@ -229,6 +238,7 @@ impl GameSetup {
 fn preset_state(
     preset: &PresetPermanent,
     host: Option<ObjectId>,
+    enchanted: Option<PlayerId>,
     owner: PlayerId,
 ) -> PermanentState {
     let mut counters: BTreeMap<CounterKind, u32> = BTreeMap::new();
@@ -252,6 +262,7 @@ fn preset_state(
         counters,
         // Every object of a fresh game is on its first incarnation (counter 0).
         attached_to: host.map(|id| ObjectRef { id, counter: 0 }),
+        attached_player: enchanted,
         // The permanents of a starting position share one time; a game begins with them in play.
         timestamp: 0,
         observed: (!preset.summoning_sick).then_some(owner),
@@ -336,7 +347,8 @@ impl GameState {
             if let Some(object) = objects.get_mut(&id) {
                 let host = preset.attached_to.and_then(|place| placed.get(&place));
                 let owner = object.owner();
-                object.permanent = Some(preset_state(&preset, host.copied(), owner));
+                let enchanted = preset.attached_player.map(PlayerId::from_index);
+                object.permanent = Some(preset_state(&preset, host.copied(), enchanted, owner));
             }
         }
         let (stage, turn, first_player) = match setup.start {

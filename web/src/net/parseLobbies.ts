@@ -72,10 +72,12 @@ function readGameSeat(item: unknown): GameSeat | null {
 /**
  * The answer of `GET /api/games/{id}`. A server from before the lobby showed readiness sends no `ready` (nobody is
  * known to be ready then) and one from before visibility sends no `visibility` (it listed nothing, so its games were
- * invite-only); a field that is there must be right.
+ * invite-only) and one from before Commander sends no `format` (it played Normal only); a field that is there must be right.
  */
 export function readGameInfo(body: unknown): GameInfo | null {
   if (!isRecord(body) || !isFlag(body.started) || !Array.isArray(body.seats)) return null
+  const format = body.format === undefined ? 'normal' : body.format
+  if (!isText(format) || format === '') return null
   if (!isListOf(body.connected, isCount)) return null
   const ready = body.ready === undefined ? [] : body.ready
   if (!isListOf(ready, isCount)) return null
@@ -89,5 +91,5 @@ export function readGameInfo(body: unknown): GameInfo | null {
     if (seat === null) return null
     seats.push(seat)
   }
-  return { started: body.started, seats, connected: body.connected, ready, result, visibility }
+  return { format, started: body.started, seats, connected: body.connected, ready, result, visibility }
 }

@@ -45,6 +45,7 @@ pub use tokens::same_text;
 use super::{ClauseKind, classify};
 use crate::ability::Ability;
 use crate::cost::Cost;
+use crate::refs::Selector;
 use tokens::{Reader, tokenize};
 
 /// The cost a keyword of a spell prints in words ("Sacrifice a creature", "{1}{U}, Pay 3 life"), when all of the text
@@ -54,6 +55,18 @@ pub fn cost_in_words(text: &str) -> Option<Cost> {
     let mut reader = Reader::new(&tokens, false);
     let cost = costs::cost(&mut reader)?;
     reader.end().then_some(cost)
+}
+
+/// What an Aura may enchant, from the words after "Enchant": the objects a phrase names ("creature you control",
+/// "nonland permanent", "artifact or land", "creature, land, or planeswalker", "Forest"), when all of the text reads.
+pub fn enchant_filter(text: &str) -> Option<Selector> {
+    // An article in front keeps a subtype at the start from being read as the capital of a sentence.
+    let spelled = format!("a {}", text.replace(", or ", " or ").replace(", ", " or "));
+    let tokens = tokenize(&spelled);
+    let mut reader = Reader::new(&tokens, false);
+    reader.word("a").then_some(())?;
+    let selector = selectors::phrase(&mut reader, selectors::Form::Target)?;
+    reader.end().then_some(selector)
 }
 
 /// Reads a spell, a modal, a triggered or an activated clause into an ability, or `None` when it

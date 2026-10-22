@@ -116,6 +116,9 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::ShieldUsed { id, left } => crate::rules::fold_used(state, *id, *left),
         Event::CountersChanged(counters) => crate::counters::fold(state, counters),
         Event::Attached { object, to } => crate::attach::fold_attached(state, *object, *to),
+        Event::AttachedToPlayer { object, player } => {
+            crate::attach::fold_attached_to_player(state, *object, *player)
+        }
         Event::Unattached { object } => crate::attach::fold_unattached(state, *object),
         Event::TokenCreated(token) => crate::tokens::fold(state, token),
         Event::BecameCopy(copy) => crate::copies::fold(state, copy),
