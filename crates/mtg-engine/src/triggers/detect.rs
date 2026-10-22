@@ -44,7 +44,10 @@ enum Happened {
     /// A creature was declared as an attacker, the `nth` time this turn for it.
     Attacked { attacker: ObjectId, nth: u32 },
     /// A creature was declared as an attacker of a player.
-    AttackedPlayer { attacker: ObjectId, player: PlayerId },
+    AttackedPlayer {
+        attacker: ObjectId,
+        player: PlayerId,
+    },
     /// A player cast a spell, the `nth` of their turn, after `before` spells that every player cast this turn.
     Cast {
         player: PlayerId,

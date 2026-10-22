@@ -27,6 +27,23 @@ fn an_attack_on_the_enchanted_player_reads_as_a_trigger(#[case] text: &str, #[ca
 }
 
 #[rstest]
+#[case::a_draw_of_the_enchanted_player(
+    "Whenever enchanted player draws a card, you gain 2 life.",
+    r#"{"Triggered":{"when":{"Drew":{"who":"AttachedPlayer"}},"effects":[{"GainLife":{"amount":2}}]}}"#
+)]
+#[case::a_spell_of_the_enchanted_player(
+    "Whenever enchanted player casts a spell, you draw a card.",
+    r#"{"Triggered":{"when":{"SpellCast":{"by":"AttachedPlayer"}},"effects":[{"Draw":{}}]}}"#
+)]
+#[case::a_discard_of_the_enchanted_player(
+    "Whenever enchanted player discards a card, you draw a card.",
+    r#"{"Triggered":{"when":{"Discarded":{"by":"AttachedPlayer"}},"effects":[{"Draw":{}}]}}"#
+)]
+fn an_event_of_the_enchanted_player_reads_as_a_trigger(#[case] text: &str, #[case] json: &str) {
+    reads_as(text, ClauseKind::Triggered, false, json);
+}
+
+#[rstest]
 #[case::must_attack(
     "Creatures enchanted player controls attack each combat if able.",
     r#"{"Rule":{"rule":{"MustAttack":{"Each":[{"Type":"Creature"},{"ControlledBy":"AttachedPlayer"}]}}}}"#
@@ -40,17 +57,6 @@ fn the_creatures_of_the_enchanted_player_read_as_a_group(#[case] text: &str, #[c
 #[case::an_attack_on_you("Whenever a creature attacks you, put a +1/+1 counter on it.")]
 fn other_attacks_stay_with_the_table(#[case] text: &str) {
     assert_eq!(trigger(text), None);
-}
-
-#[test]
-fn probe() {
-    for text in [
-        "Whenever a creature attacks enchanted player, you gain 1 life.",
-        "Whenever a creature attacks enchanted player, its controller draws a card.",
-        "Whenever a creature attacks enchanted player, its controller gains 1 life.",
-    ] {
-        eprintln!("{text} => {:?}", trigger(text).map(|a| render_variants(&a)));
-    }
 }
 
 #[test]

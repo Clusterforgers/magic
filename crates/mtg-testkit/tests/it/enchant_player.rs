@@ -132,8 +132,13 @@ fn an_aura_enters_attached_to_the_player_it_targeted_in_the_batch_that_brings_it
         .iter()
         .position(|event| matches!(event, Event::SpellResolved { .. }))
         .unwrap();
-    let (Event::SpellResolved { object }, Event::AttachedToPlayer { object: attached, player }) =
-        (&events[at], &events[at + 1])
+    let (
+        Event::SpellResolved { object },
+        Event::AttachedToPlayer {
+            object: attached,
+            player,
+        },
+    ) = (&events[at], &events[at + 1])
     else {
         panic!("the attachment follows the spell in the same batch: {events:?}");
     };
@@ -143,7 +148,10 @@ fn an_aura_enters_attached_to_the_player_it_targeted_in_the_batch_that_brings_it
     assert_eq!(driver.state().player_host_of(id), Some(pid(enchanted)));
     assert_eq!(driver.state().host_of(id), None);
     assert_eq!(driver.state().attachments_of_player(pid(enchanted)), [id]);
-    assert_eq!(driver.state().attachments_of_player(pid(seats - 1)).len(), usize::from(seats - 1 == enchanted));
+    assert_eq!(
+        driver.state().attachments_of_player(pid(seats - 1)).len(),
+        usize::from(seats - 1 == enchanted)
+    );
     replays(&driver, &setup);
     Ok(())
 }
@@ -181,15 +189,13 @@ fn an_aura_goes_to_the_graveyard_when_the_player_it_enchants_leaves_the_game(
 #[test]
 fn an_aura_that_enchants_only_opponents_goes_to_the_graveyard_when_it_enchants_its_controller()
 -> Result<(), ScriptError> {
-    let driver = Driver::from_scenario(
-        Scenario::new(2).battlefield(
-            0,
-            [
-                enchanting(ready(spite_aura().unwrap()), 0),
-                enchanting(ready(card("Curse of Predation").unwrap()), 0),
-            ],
-        ),
-    )?;
+    let driver = Driver::from_scenario(Scenario::new(2).battlefield(
+        0,
+        [
+            enchanting(ready(spite_aura().unwrap()), 0),
+            enchanting(ready(card("Curse of Predation").unwrap()), 0),
+        ],
+    ))?;
     assert!(!on_the_battlefield(&driver, "Spite Aura"));
     assert!(on_the_battlefield(&driver, "Curse of Predation"));
     Ok(())
@@ -208,7 +214,10 @@ fn a_creature_attacking_the_enchanted_player_gets_a_counter_and_no_other_does(
     let scenario = || {
         Scenario::new(seats).battlefield(
             0,
-            [ready(bear()), enchanting(ready(card("Curse of Predation").unwrap()), 1)],
+            [
+                ready(bear()),
+                enchanting(ready(card("Curse of Predation").unwrap()), 1),
+            ],
         )
     };
     let setup = scenario().setup().unwrap();
@@ -225,12 +234,13 @@ fn a_creature_attacking_the_enchanted_player_gets_a_counter_and_no_other_does(
 fn the_controller_of_a_creature_attacking_the_enchanted_player_gains_a_life(
     #[values(2, 3)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let mut driver = Driver::from_scenario(
-        Scenario::new(seats).battlefield(
-            0,
-            [ready(bear()), enchanting(ready(card("Curse of the Forsaken").unwrap()), 1)],
-        ),
-    )?;
+    let mut driver = Driver::from_scenario(Scenario::new(seats).battlefield(
+        0,
+        [
+            ready(bear()),
+            enchanting(ready(card("Curse of the Forsaken").unwrap()), 1),
+        ],
+    ))?;
     let before = driver.state().player(pid(0)).unwrap().life();
     driver.pass_until(Step::DeclareAttackers)?;
     driver.attack(&[("Grizzly Bears", 1)])?;
@@ -250,7 +260,10 @@ fn the_creatures_of_the_enchanted_player_must_attack_and_no_other(
                 .battlefield(0, [ready(bear())])
                 .battlefield(
                     1,
-                    [enchanting(ready(card("Curse of the Nightly Hunt").unwrap()), enchanted)],
+                    [enchanting(
+                        ready(card("Curse of the Nightly Hunt").unwrap()),
+                        enchanted,
+                    )],
                 ),
         )?;
         driver.pass_until(Step::DeclareAttackers)?;
@@ -267,7 +280,9 @@ fn the_creatures_of_the_enchanted_player_must_attack_and_no_other(
 // What the Aura says of the enchanted player
 
 #[rstest]
-fn an_aura_trigger_names_the_enchanted_player(#[values(2, 3, 4)] seats: usize) -> Result<(), ScriptError> {
+fn an_aura_trigger_names_the_enchanted_player(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(
         Scenario::new(seats)
             .battlefield(0, [enchanting(ready(spite_aura().unwrap()), 1)])

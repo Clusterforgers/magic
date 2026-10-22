@@ -156,6 +156,8 @@ fn player(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
         Some((Ref::Opponents, true))
     } else if r.words("a player") {
         Some((Ref::EachPlayer, true))
+    } else if r.words("enchanted player") {
+        Some((Ref::AttachedPlayer, true))
     } else {
         None
     }
@@ -485,6 +487,7 @@ fn player_verb(by: &Ref, verb: &str) -> Option<String> {
         Ref::You => format!("you {verb}"),
         Ref::Opponents => format!("an opponent {verb}s"),
         Ref::EachPlayer => format!("a player {verb}s"),
+        Ref::AttachedPlayer => format!("enchanted player {verb}s"),
         _ => return None,
     })
 }

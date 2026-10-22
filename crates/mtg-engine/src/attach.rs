@@ -177,7 +177,10 @@ pub(crate) fn spell_target(state: &GameState, id: ObjectId) -> Option<TargetSpec
     {
         return None;
     }
-    let what = match (enchant_restriction(state, id), player_restriction(state, id)) {
+    let what = match (
+        enchant_restriction(state, id),
+        player_restriction(state, id),
+    ) {
         (Some(selector), _) => Targetable::Object(selector),
         (None, Some(true)) => Targetable::Opponent,
         (None, Some(false)) => Targetable::Player,
@@ -322,7 +325,9 @@ pub(crate) fn fold_attached_to_player(
     player: PlayerId,
 ) -> Result<(), EngineError> {
     if !state.is_alive(player) {
-        return Err(invalid(format!("{player:?} is not in the game to be enchanted")));
+        return Err(invalid(format!(
+            "{player:?} is not in the game to be enchanted"
+        )));
     }
     let stamp = state.next_timestamp;
     let permanent = state
@@ -408,6 +413,9 @@ pub(crate) fn state_based(state: &GameState, leaving: &[ObjectId]) -> Vec<Event>
     }
     events
 }
+
+#[cfg(test)]
+mod player_tests;
 
 #[cfg(test)]
 mod tests {

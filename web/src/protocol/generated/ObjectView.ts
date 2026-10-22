@@ -108,6 +108,10 @@ loyalty_abilities?: Array<LoyaltyAbilityView>,
  */
 attached_to?: ObjectId, 
 /**
+ * The player this one is attached to, when it is an Aura on the battlefield that enchants a player.
+ */
+attached_player?: PlayerId, 
+/**
  * The permanents attached to this one, in id order; left out while there are none.
  */
 attachments?: Array<ObjectId>, 

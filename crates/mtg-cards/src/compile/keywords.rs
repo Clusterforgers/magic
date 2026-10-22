@@ -476,7 +476,6 @@ fn suspend(rest: &str) -> Option<Keyword> {
     })
 }
 
-
 #[cfg(test)]
 mod tests {
     //! Goal: keyword lines are recognised in every wording the cards print, the keywords the DSL declares read with their parameters, and anything else stays unread.

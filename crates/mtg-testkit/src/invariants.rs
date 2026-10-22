@@ -170,7 +170,9 @@ fn check_attachments_settled(state: &GameState) -> Result<(), Violation> {
                     if matches!(keyword, Keyword::EnchantPlayer { opponent: true })
                         && player == controller
                     {
-                        return Err(bad("enchants its own controller though it enchants opponents"));
+                        return Err(bad(
+                            "enchants its own controller though it enchants opponents",
+                        ));
                     }
                 }
                 if !keywords_of(state, id)

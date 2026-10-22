@@ -24,6 +24,7 @@ mod lobby_message;
 mod loyalty_view;
 mod manual_view;
 mod messages;
+mod player_aura_view;
 mod preview_fixture;
 mod projection;
 mod refill_hidden;
