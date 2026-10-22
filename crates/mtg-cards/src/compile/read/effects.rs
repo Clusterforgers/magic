@@ -7,6 +7,7 @@ use super::amounts::{cards, its_stat, number_word, points};
 use super::cast;
 use super::conditional;
 use super::copies;
+use super::copy_spells;
 use super::costs;
 use super::counters;
 use super::create;
@@ -28,7 +29,7 @@ use crate::value::{Amount, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 28] = [
+const TEMPLATES: [Template; 31] = [
     modal::modal,
     cast::discover_sentence,
     cast::exile_until,
@@ -46,6 +47,9 @@ const TEMPLATES: [Template; 28] = [
     return_chosen,
     copies::token_copy,
     copies::populate,
+    copy_spells::copy,
+    copy_spells::becomes_copy,
+    copy_spells::choose_and_become,
     create::tokens,
     counters::put,
     counters::remove,
@@ -318,15 +322,22 @@ fn life(r: &mut Reader<'_>) -> Option<Amount> {
 
 /// A player draws, discards, mills, gains, loses or sacrifices; one subject may have several verb
 /// phrases, joined by "and" or in a list: "target opponent sacrifices a creature, discards a card,
-/// and loses 3 life". The player the event is about may act after "and": "you create a Wolf token and that player mills
-/// ten cards". The effects are those of the sentence, in order.
+/// and loses 3 life". The player the event is about may act after "and" ("you create a Wolf token and that player mills
+/// ten cards"), and so may you after another player ("target player loses 2 life and you gain 2 life"). The effects
+/// are those of the sentence, in order.
 fn player_effect(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let who = player(r)?;
     let mut effects = phrases(r, &who)?;
     // The sentences of two other players stay with the table.
     while let Some(more) = r.attempt(|r| {
         r.need("and")?;
-        let next = (r.that_player && r.words("that player")).then_some(Ref::Triggering)?;
+        let next = if r.that_player && r.words("that player") {
+            Ref::Triggering
+        } else if who != Ref::You && r.word("you") {
+            Ref::You
+        } else {
+            return None;
+        };
         phrases(r, &next)
     }) {
         effects.extend(more);

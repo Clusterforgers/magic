@@ -45,6 +45,7 @@ Curse of the Forsaken
 Curse of the Nightly Hunt
 Custodi Lich
 Cyclonic Rift
+Cytoshape
 Dauthi Horror
 Dauthi Marauder
 Dawnglade Regent
@@ -59,6 +60,8 @@ Doom Blade
 Doom Whisperer
 Dream's Grip
 Drudge Skeletons
+Dual Casting
+Dualcaster Mage
 Durkwood Baloth
 Epic Proportions
 Eternal Witness
@@ -75,6 +78,7 @@ Flooded Strand
 Fog
 Followed Footsteps
 Forced March
+Fork
 Forum of Amity
 Foundry Inspector
 Furtive Homunculus
@@ -106,6 +110,7 @@ Krenko's Enforcer
 Lat-Nam Adept
 Levitation
 Lightning Bolt
+Lithoform Engine
 Lizard Blades
 Llanowar Behemoth
 Llanowar Elves
@@ -142,6 +147,8 @@ Rally the Ranks
 Rampant Growth
 Reckless Impulse
 Reflecting Pool
+Reiterate
+Reverberate
 Rhystic Study
 Rift Bolt
 Righteous Avengers
@@ -171,8 +178,10 @@ Soltari Foot Soldier
 Soul Shepherd
 Souldrinker
 Spectral Rider
+Squirrel Nest
 Steam Vents
 Stoke the Flames
+Strionic Resonator
 Stroke of Genius
 Sundering Growth
 Supreme Verdict
@@ -183,6 +192,7 @@ Tainted Isle
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
 Tendo Ice Bridge
+Tendrils of Agony
 Thalia, Guardian of Thraben
 The Spear of Bashenga
 The Thing, Ben Grimm
@@ -193,6 +203,7 @@ Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Treasure Cruise
 Tumble Magnet
+Twincast
 Umbral Collar Zealot
 Underworld Dreams
 Universal Automaton

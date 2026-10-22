@@ -136,7 +136,7 @@ pub fn banish() -> Result<Arc<CardDefinition>, CorpusError> {
 }
 
 /// The corpus cards that work from a zone other than the battlefield or wait for a state.
-pub const ZONE_CORPUS_CARDS: [&str; 7] = [
+pub const ZONE_CORPUS_CARDS: &[&str] = &[
     "Reassembling Skeleton",
     "Soul of Zendikar",
     "Boneyard Scourge",
@@ -147,7 +147,7 @@ pub const ZONE_CORPUS_CARDS: [&str; 7] = [
 ];
 
 /// The creatures of this module that work from a zone other than the battlefield or wait for a state.
-pub const ZONE_SYNTHETIC_CARDS: [&str; 6] = [
+pub const ZONE_SYNTHETIC_CARDS: &[&str] = &[
     "Echo Wraith",
     "Wary Hound",
     "Thundering Cast",
@@ -254,7 +254,7 @@ mod tests {
     fn a_zones_deck_is_sixty_cards_with_every_card_that_works_from_another_zone() {
         let deck = zones_deck(&mut GameRng::substream(1, 15_000)).unwrap();
         assert_eq!(deck.len(), 60);
-        for name in ZONE_CORPUS_CARDS.iter().chain(&ZONE_SYNTHETIC_CARDS) {
+        for name in ZONE_CORPUS_CARDS.iter().chain(ZONE_SYNTHETIC_CARDS) {
             assert!(deck.iter().any(|card| card.name == *name), "{name}");
         }
         let setup = zones_fuzz_setup(3, 5).unwrap();

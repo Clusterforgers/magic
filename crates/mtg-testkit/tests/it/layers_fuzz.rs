@@ -103,7 +103,7 @@ fn seeded_layers_games_finish_and_keep_every_invariant(#[case] players: usize) {
     });
     let seen = seen.into_inner().unwrap();
     let campaign = format!("{} games of {players} seats", games());
-    for name in LAYER_CARDS {
+    for &name in LAYER_CARDS {
         assert!(
             seen.entered.get(name).copied().unwrap_or(0) > 0,
             "{name} never entered play in {campaign}"

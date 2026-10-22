@@ -128,7 +128,7 @@ pub fn x_walker() -> Result<Arc<CardDefinition>, CorpusError> {
 }
 
 /// The cards of this module.
-pub const X_CARDS: [&str; 7] = [
+pub const X_CARDS: &[&str] = &[
     "Blaze",
     "Stroke",
     "Twin Font",
@@ -226,7 +226,7 @@ mod tests {
         let deck = |seed: u64| x_deck(&mut GameRng::substream(seed, 19_000)).unwrap();
         let first = deck(5);
         assert_eq!(first.len(), 60);
-        for name in X_CARDS {
+        for &name in X_CARDS {
             assert!(first.iter().any(|card| card.name == name), "{name}");
         }
         let names = |cards: &[Arc<CardDefinition>]| -> Vec<String> {

@@ -14,7 +14,7 @@ use crate::cards::{creature, land};
 use crate::corpus;
 
 /// The corpus cards cast in another way than for their mana cost.
-pub const ALTERNATIVE_CARDS: [&str; 6] = [
+pub const ALTERNATIVE_CARDS: &[&str] = &[
     "Mulldrifter",
     "Faithless Looting",
     "Cyclonic Rift",

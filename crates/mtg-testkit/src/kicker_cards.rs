@@ -14,7 +14,7 @@ use crate::cards::{creature, land};
 use crate::corpus;
 
 /// The corpus cards that pay optional costs.
-pub const KICKED_CARDS: [&str; 3] = [
+pub const KICKED_CARDS: &[&str] = &[
     "Burst Lightning",
     "Gatekeeper of Malakir",
     "Wolfbriar Elemental",

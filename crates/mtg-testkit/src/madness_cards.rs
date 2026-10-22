@@ -12,7 +12,7 @@ use crate::cards::land;
 use crate::corpus;
 
 /// The corpus cards the madness and suspend deck is made of besides lands: the keywords and what discards.
-pub const MADNESS_CARDS: [&str; 10] = [
+pub const MADNESS_CARDS: &[&str] = &[
     "Fiery Temper",
     "Basking Rootwalla",
     "Arrogant Wurm",

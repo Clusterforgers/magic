@@ -7,6 +7,7 @@ use super::amounts::{cards_text, count_word, points_text, stat_name};
 use super::cast;
 use super::conditional;
 use super::copies;
+use super::copy_spells;
 use super::costs;
 use super::counters;
 use super::create;
@@ -335,6 +336,21 @@ fn written(targets: &[TargetSpec], effects: &[Effect], mask: u32) -> Option<Vec<
             }
             sentences.push(writer.copy_token(created, true)?);
             sentences.push(delay);
+            start += 2;
+            continue;
+        }
+        // A permanent chosen and the target that becomes a copy of it are two sentences, which no joint splits.
+        if let [
+            choose @ Effect::Choose { .. },
+            copy @ Effect::BecomeCopy { .. },
+            ..,
+        ] = &effects[start..]
+            && let Some(texts) = writer.become_copy(choose, copy)
+        {
+            if (mask >> start) & 0b11 != 0 {
+                return None;
+            }
+            sentences.extend(texts);
             start += 2;
             continue;
         }
@@ -854,9 +870,46 @@ impl Writer<'_> {
         copies::token_text(effect, &copied, delayed)
     }
 
+    /// A copy of a spell or an ability, or the card that becomes a copy of the target, naming the one target the first
+    /// time.
+    fn copy_effect(&mut self, effect: &Effect) -> Option<String> {
+        if let Effect::BecomeCopy { .. } = effect {
+            if !self.is_a_permanent(&Ref::Target(0)) {
+                return None;
+            }
+            let target = self.name_target()?;
+            return copy_spells::becomes_text(effect, &target);
+        }
+        if self.named {
+            return None;
+        }
+        let text = copy_spells::copy_text(effect, self.targets.first()?)?;
+        self.named = true;
+        Some(text)
+    }
+
+    /// The two sentences of a permanent chosen and a target that becomes a copy of it.
+    fn become_copy(&mut self, choose: &Effect, copy: &Effect) -> Option<[String; 2]> {
+        if !matches!(
+            copy,
+            Effect::BecomeCopy {
+                what: Ref::Target(0),
+                ..
+            }
+        ) || !self.is_a_permanent(&Ref::Target(0))
+        {
+            return None;
+        }
+        let target = self.name_target()?;
+        copy_spells::become_texts(choose, copy, &target)
+    }
+
     /// An effect as a sentence without its first capital and its period.
     fn effect(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
+            Effect::CopySpell { .. } | Effect::CopyAbility { .. } | Effect::BecomeCopy { .. } => {
+                self.copy_effect(effect)?
+            }
             Effect::Scry {
                 who: Ref::You,
                 count,

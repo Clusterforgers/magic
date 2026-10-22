@@ -7,6 +7,7 @@
       "name": "Reiterate",
       "oracle_fingerprint": "d3770caf39a9493ba336c30a906cd13a",
       "abilities": [
+        { "Keyword": { "Buyback": "{3}" } },
         {
           "Spell": {
             "targets": [
@@ -18,8 +19,7 @@
             ],
             "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
           }
-        },
-        { "Keyword": { "Buyback": "{3}" } }
+        }
       ]
     }
   ]
