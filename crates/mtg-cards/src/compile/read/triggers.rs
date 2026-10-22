@@ -58,6 +58,23 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
     }
 }
 
+/// The object a trigger's event is about, which a where clause calls "its" or "that creature": the card for an event of
+/// its own, the creature of the event otherwise.
+pub fn event_subject(pattern: &TriggerPattern) -> Option<Ref> {
+    let (TriggerPattern::Attacks { what }
+    | TriggerPattern::BecomesBlocked { what }
+    | TriggerPattern::Blocks { what }
+    | TriggerPattern::ZoneChange { what, .. }) = pattern
+    else {
+        return None;
+    };
+    Some(if what.0 == [Pred::This] {
+        Ref::This
+    } else {
+        Ref::Triggering
+    })
+}
+
 /// Whether the pattern is the card itself becoming a target (counted or not), so the card's effects may call it "it".
 pub fn targeted_itself(pattern: &TriggerPattern) -> bool {
     match pattern {
@@ -67,14 +84,14 @@ pub fn targeted_itself(pattern: &TriggerPattern) -> bool {
     }
 }
 
-/// Whether the pattern is the card itself dying, so the card's damage may say "it deals".
-pub fn dies_itself(pattern: &TriggerPattern) -> bool {
+/// Whether the pattern is the card itself dying or leaving the battlefield, so the card's damage may say "it deals".
+pub fn leaves_itself(pattern: &TriggerPattern) -> bool {
     matches!(
         pattern,
         TriggerPattern::ZoneChange {
             what,
             from: Some(ZoneKind::Battlefield),
-            to: Some(ZoneKind::Graveyard),
+            to: Some(ZoneKind::Graveyard) | None,
         } if what.0 == [Pred::This]
     )
 }

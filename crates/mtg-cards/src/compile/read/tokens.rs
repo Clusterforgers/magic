@@ -375,6 +375,12 @@ pub struct Reader<'a> {
     pub cast_spell: bool,
     /// Whether the event of the trigger is the card itself attacking, so "it" is the card.
     pub attacker: bool,
+    /// Whether the sentence ends with ", where X is its power" (a characteristic of an object), so `X` in it stands
+    /// for that amount, which `where_x::bind` puts in once the effects are read.
+    pub where_x: bool,
+    /// The object that "its" and "that creature" name in a where clause when no sentence named one: the card in an
+    /// activation and in a trigger of its own event, the creature of the event in a trigger of another's.
+    pub subject: Option<Ref>,
 }
 
 impl<'a> Reader<'a> {
@@ -397,7 +403,15 @@ impl<'a> Reader<'a> {
             from_graveyard: false,
             cast_spell: false,
             attacker: false,
+            where_x: false,
+            subject: None,
         }
+    }
+
+    /// Reads the `X` of an amount, which stands for the X the spell or ability announced or for the amount of the
+    /// sentence's where clause.
+    pub fn x(&mut self) -> bool {
+        (self.x_free || self.where_x) && self.word("x")
     }
 
     /// Whether the word is a subtype: one of the rules' list or of the card's own type line.
