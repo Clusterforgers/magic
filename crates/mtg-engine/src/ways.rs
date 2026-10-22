@@ -543,9 +543,15 @@ pub(crate) fn castable_as_is(
     let Some(card) = state.object(id) else {
         return false;
     };
-    let spend = Spend::for_spell(state, id, card.card().x_in_cost > 0);
+    let printed_spend = Spend::for_spell(state, id, card.card().x_in_cost > 0);
     let help = help::offered(state, player, id);
     of(state, player, id).iter().any(|way| {
+        // A bestowed spell is an Aura spell, whose mana restrictions read it so.
+        let spend = if way.alternative == Some(CastWay::Bestow) {
+            printed_spend.clone().bestowed()
+        } else {
+            printed_spend.clone()
+        };
         (way.instant || sorcery_timing(state, player))
             && announceable_in(state, player, id, way.alternative)
             && parts_payable(state, player, id, &way.parts)

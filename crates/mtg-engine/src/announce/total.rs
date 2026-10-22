@@ -14,6 +14,7 @@ use crate::help::{self, Offered};
 use crate::mana::{ManaOption, can_afford_with, reserve_energy};
 use crate::price::Price;
 use crate::priority::mana_options;
+use crate::spend::Spend;
 
 /// What a spell or ability costs to put on the stack.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -26,6 +27,8 @@ pub(crate) struct Total {
     pub(crate) life: u32,
     /// The creatures and graveyard cards that may pay part of the mana (convoke, delve), fixed after the total is.
     pub(crate) help: Offered,
+    /// What the mana is spent on, which a restriction of the mana reads.
+    pub(crate) spend: Spend,
 }
 
 pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
@@ -55,6 +58,7 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
         sources,
         life,
         help,
+        spend: spend(ctx, choices.way),
     })
 }
 
@@ -115,7 +119,7 @@ pub(super) fn affordable(ctx: &Ctx<'_>, total: &Total) -> bool {
             &total.sources,
             total.help.help(),
             life,
-            &spend(ctx),
+            &total.spend,
         )
     })
 }
