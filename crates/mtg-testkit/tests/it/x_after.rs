@@ -322,15 +322,12 @@ fn a_countered_ballista_puts_nothing_onto_the_battlefield() -> Result<(), Script
 
 #[test]
 fn bot_games_with_the_x_after_cards_keep_every_invariant_and_use_what_x_leaves_behind() {
-    use crate::common::seeds::for_each_seed;
+    use crate::common::seeds::{for_each_seed, fuzz_games};
     use mtg_engine::Event;
     use mtg_testkit::{PlayOptions, play_game_with, x_after_fuzz_setup};
 
     let seen = std::sync::Mutex::new((0u64, 0u64, 0u64));
-    let games = std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40);
+    let games = fuzz_games(40);
     for_each_seed(0..games, |seed| {
         for players in [2, 3, 4] {
             let outcome = play_game_with(

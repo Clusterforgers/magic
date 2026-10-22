@@ -1,6 +1,7 @@
 //! Goal: whole bot games with decks of Black Knight, Kor Firewalker and Mother of Runes against burn, Auras, Equipment, removal and creatures that attack and block finish and keep every invariant for many seeds at tables of two, three and four seats, and the games use protection: an independent ledger replays each log and finds that no damage is dealt to a creature by a source it has protection from, that no creature blocks one it has protection from, that nothing is attached to a permanent that has protection from it, and that Mother of Runes gave protection in some game.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{Pred, Selector};
 use mtg_core::ids::ObjectId;
@@ -13,10 +14,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40)
+    fuzz_games(40)
 }
 
 /// What a campaign saw protection do.

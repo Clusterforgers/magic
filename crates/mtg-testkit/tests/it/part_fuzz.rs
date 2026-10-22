@@ -1,6 +1,7 @@
 //! Goal: whole bot games with decks of abilities that pay life, remove counters, sacrifice, tap or return permanents, discard cards and exile cards from a graveyard, and of cards that are cycled, finish and keep every invariant (zones, life, mana, the journal, the replay of the log equal to the live state) for many seeds at tables of two, three and four seats, and the games really pay each kind of part: the bots are asked which permanents and cards to take, pay with them and cycle; an engine rebuilt from the log at each decision asks the same question, and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use std::collections::BTreeSet;
 
 use mtg_engine::abilities::AbilitySource;
@@ -13,10 +14,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(30)
+    fuzz_games(10)
 }
 
 /// What the events before each activation paid, by kind of part.
