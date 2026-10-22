@@ -705,6 +705,54 @@ mod tests {
     }
 
     #[rstest]
+    #[case("30", Some(30))]
+    #[case("0", None)]
+    #[case("", None)]
+    fn active_clock(#[case] text: &str, #[case] seconds: Option<u64>) {
+        let pace = load(&[("MTG_ACTIVE_SECS", text)]).unwrap().game.pace;
+        assert_eq!(pace.active, seconds.map(Duration::from_secs));
+        assert_eq!(pace.think, Some(Duration::from_secs(60)));
+    }
+
+    #[rstest]
+    #[case("5", Some(5))]
+    #[case("0", None)]
+    #[case("", Some(20))]
+    fn extension_length(#[case] text: &str, #[case] seconds: Option<u64>) {
+        let pace = load(&[("MTG_EXTENSION_SECS", text)]).unwrap().game.pace;
+        assert_eq!(pace.extension, seconds.map(Duration::from_secs));
+    }
+
+    #[rstest]
+    #[case("5", 5)]
+    #[case("0", 0)]
+    #[case("", 3)]
+    fn clock_grace(#[case] text: &str, #[case] seconds: u64) {
+        let pace = load(&[("MTG_CLOCK_GRACE_SECS", text)]).unwrap().game.pace;
+        assert_eq!(pace.grace, Duration::from_secs(seconds));
+    }
+
+    #[rstest]
+    #[case("-1")]
+    #[case("ten")]
+    #[case("1.5")]
+    #[case("86401")]
+    fn bad_bank_settings(#[case] text: &str) {
+        assert_eq!(
+            load(&[("MTG_ACTIVE_SECS", text)]),
+            Err(ConfigError::BadActiveSecs(text.to_owned()))
+        );
+        assert_eq!(
+            load(&[("MTG_EXTENSION_SECS", text)]),
+            Err(ConfigError::BadExtensionSecs(text.to_owned()))
+        );
+        assert_eq!(
+            load(&[("MTG_CLOCK_GRACE_SECS", text)]),
+            Err(ConfigError::BadClockGraceSecs(text.to_owned()))
+        );
+    }
+
+    #[rstest]
     #[case("-1")]
     #[case("ten")]
     #[case("1.5")]

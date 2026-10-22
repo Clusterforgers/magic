@@ -4,7 +4,7 @@ import type { EventBatch, StateView, TableView } from '@/protocol/generated'
 import { batchOf, clone, deepFreeze, must, relabel, tableOf, withTapped } from '@/test-utils/batches'
 import { expectFold, reference } from '@/test-utils/foldChecks'
 import { lateJoin } from '@/test-utils/transcripts'
-import { applyBatch, fromFirstBatch, fromSnapshot, indexById, sameJson } from './view'
+import { applyBatch, fromFirstBatch, fromSnapshot, indexById, sameJson, withBank } from './view'
 
 const base: StateView = lateJoin.expected
 const permanent = must(
@@ -271,6 +271,25 @@ describe('indexById', () => {
     for (const object of base.objects) expect(index[object.id]).toBe(object)
     expect(index[missingId]).toBeUndefined()
     expect(first && index[first.id]).toBe(first)
+  })
+})
+
+describe('withBank', () => {
+  it('sets the bank of one seat and shares everything else', () => {
+    const next = withBank(base, 1, 2)
+    expect(next.players.map((player) => player.bank)).toEqual(
+      base.players.map((player) => (player.seat === 1 ? 2 : player.bank)),
+    )
+    expect(next.objects).toBe(base.objects)
+    for (const player of base.players) {
+      if (player.seat !== 1) expect(next.players.find((p) => p.seat === player.seat)).toBe(player)
+    }
+  })
+
+  it('returns the same view when the bank is already that, or the seat is not at the table', () => {
+    const bank = base.players[0]?.bank ?? 0
+    expect(withBank(base, 0, bank)).toBe(base)
+    expect(withBank(base, 9, 3)).toBe(base)
   })
 })
 

@@ -59,10 +59,10 @@ impl Banks {
     pub(crate) fn watch(&mut self, state: &GameState) {
         let turn = state.turn();
         let now = (turn.number(), turn.active());
-        if let Some((number, seat)) = self.turn.replace(now) {
-            if number != now.0 {
-                self.finished(seat, state.is_alive(seat));
-            }
+        if let Some((number, seat)) = self.turn.replace(now)
+            && number != now.0
+        {
+            self.finished(seat, state.is_alive(seat));
         }
     }
 

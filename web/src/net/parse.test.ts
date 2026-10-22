@@ -86,6 +86,7 @@ const samples: Record<string, Record<string, unknown>> = {
     ],
   },
   FullControl: { type: 'FullControl', mode: 'NextWindow' },
+  Bank: { type: 'Bank', seat: 1, bank: 2 },
 }
 
 describe('parseFrame on real traffic', () => {
@@ -264,6 +265,15 @@ describe('parseFrame checks the fields of each message', () => {
     ['Decision', 'deadline_ms as a fraction', ['deadline_ms'], 99.5],
     ['Decision', 'deadline_ms as negative', ['deadline_ms'], -1],
     ['Decision', 'deadline_ms as null', ['deadline_ms'], null],
+    ['Decision', 'show_after_ms as text', ['show_after_ms'], '3000'],
+    ['Decision', 'show_after_ms as a fraction', ['show_after_ms'], 0.5],
+    ['Decision', 'show_after_ms as negative', ['show_after_ms'], -1],
+    ['Decision', 'show_after_ms as null', ['show_after_ms'], null],
+    ['Bank', 'seat as text', ['seat'], '1'],
+    ['Bank', 'seat as negative', ['seat'], -1],
+    ['Bank', 'bank as text', ['bank'], '2'],
+    ['Bank', 'bank as a fraction', ['bank'], 1.5],
+    ['Bank', 'bank as null', ['bank'], null],
     ['Decision', 'decision as text', ['decision'], 'Priority'],
     ['Decision', 'player as text', ['decision', 'player'], 'me'],
     ['Decision', 'kind as text', ['decision', 'kind'], 'Priority'],
@@ -380,6 +390,13 @@ describe('parseFrame checks the fields of each message', () => {
     const plain = parseFrame(wire(samples.Decision))
     expect(plain.ok && 'deadline_ms' in plain.message).toBe(false)
     expect(parseFrame(wire({ ...samples.Decision, deadline_ms: 0 })).ok).toBe(true)
+  })
+
+  it('keeps the delay before the countdown shows and leaves the field out when there is none', () => {
+    const delayed = { ...samples.Decision, deadline_ms: 10_000, show_after_ms: 3_000 }
+    expect(parseFrame(wire(delayed))).toEqual({ ok: true, message: delayed })
+    const plain = parseFrame(wire({ ...samples.Decision, deadline_ms: 10_000 }))
+    expect(plain.ok && 'show_after_ms' in plain.message).toBe(false)
   })
 
   it('accepts a draw and a winner as results', () => {

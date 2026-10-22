@@ -89,8 +89,6 @@ struct Pending {
     due: Option<Instant>,
     /// When the countdown shows; `None` for a decision without a clock or one that shows at once.
     shown_at: Option<Instant>,
-    /// Whether the clock has run out and the table is answering for the seat, so no extension is spent for it again.
-    expired: bool,
     /// Whether the decision is held back for the seat's dwell: never sent, and the table passes for the seat at `due`.
     hidden: bool,
 }
@@ -184,7 +182,7 @@ impl Running {
 
     /// Gives the pending decision's clock one more extension if its seat holds one.
     ///
-    /// Only a decision that was sent and whose clock has just run out for the first time is extended: the deadline
+    /// Only a decision that was sent is extended (a decision held back for a dwell never is): the deadline
     /// moves by the extension's length and the countdown shows at once. `None` when there is nothing to extend, so the
     /// table answers for the seat.
     pub(crate) fn extend(&mut self) -> Option<Extended> {
@@ -192,7 +190,7 @@ impl Running {
         let pending = self.pending.as_mut()?;
         let due = pending.due?;
         let seat = pending.decision.player;
-        if pending.hidden || pending.expired || !self.banks.spend(seat) {
+        if pending.hidden || !self.banks.spend(seat) {
             return None;
         }
         self.banks
@@ -226,12 +224,10 @@ impl Running {
         Some((pending.decision.player, pending.decision.kind.name()))
     }
 
-    /// Moves the clock of the pending decision, which has run out, to `due` to try again (nothing happens for a
-    /// decision without one); no extension is spent for it any more.
+    /// Moves the clock of the pending decision to `due` (nothing happens for a decision without one).
     pub(crate) fn postpone(&mut self, due: Instant) {
         if let Some(pending) = self.pending.as_mut().filter(|p| p.due.is_some()) {
             pending.due = Some(due);
-            pending.expired = true;
         }
     }
 
@@ -313,7 +309,6 @@ impl Running {
                 decision,
                 due: Some(now.checked_add(wait).unwrap_or(now)),
                 shown_at: None,
-                expired: false,
                 hidden: true,
             });
             return None;
@@ -334,7 +329,6 @@ impl Running {
             decision: decision.clone(),
             due,
             shown_at: delay.and_then(|delay| now.checked_add(delay)),
-            expired: false,
             hidden: false,
         });
         Some(Issued {

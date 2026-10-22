@@ -642,23 +642,25 @@ fn server_samples() -> Vec<ServerMessage> {
             message: format!("{code:?}"),
         });
     }
-    // Every other decision runs on a clock, so both shapes are covered for several kinds.
-    out.extend(
-        decision_kinds()
-            .into_iter()
-            .chain(pipeline_decision_kinds())
-            .zip([Some(10_000), None].into_iter().cycle())
-            .map(|(kind, deadline_ms)| ServerMessage::Decision {
-                id: DecisionId(8),
-                decision: Decision {
-                    player: PlayerId(0),
-                    kind,
-                },
-                deadline_ms,
-                show_after_ms: deadline_ms.map(|ms| ms / 3),
-            }),
-    );
+    out.extend(clocked_decisions());
     out
+}
+
+/// Every decision kind, alternately on a clock (with a delay before the countdown) and without one.
+fn clocked_decisions() -> impl Iterator<Item = ServerMessage> {
+    decision_kinds()
+        .into_iter()
+        .chain(pipeline_decision_kinds())
+        .zip([Some(10_000), None].into_iter().cycle())
+        .map(|(kind, deadline_ms)| ServerMessage::Decision {
+            id: DecisionId(8),
+            decision: Decision {
+                player: PlayerId(0),
+                kind,
+            },
+            deadline_ms,
+            show_after_ms: deadline_ms.map(|ms| ms / 3),
+        })
 }
 
 #[test]

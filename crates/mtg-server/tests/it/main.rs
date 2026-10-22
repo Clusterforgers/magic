@@ -57,6 +57,7 @@ mod shutdown;
 mod stops;
 mod store_contract;
 mod store_failures;
+mod timer_bank;
 mod visibility;
 mod windows;
 mod ws_games;

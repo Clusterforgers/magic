@@ -997,6 +997,9 @@ mod tests {
         assert_eq!(pace.response, Some(Duration::from_secs(10)));
         assert_eq!(pace.blocks, Some(Duration::from_secs(45)));
         assert_eq!(pace.think, Some(Duration::from_secs(60)));
+        assert_eq!(pace.active, None, "the active seat is not hurried");
+        assert_eq!(pace.extension, Some(Duration::from_secs(20)));
+        assert_eq!(pace.grace, Duration::from_secs(3));
         assert_eq!(
             pace.dwell.range(),
             (Duration::from_millis(250), Duration::from_millis(700))
@@ -1320,6 +1323,151 @@ mod tests {
             }
             .mode(),
             mode
+        );
+    }
+
+    /// One decision of every kind with the class its clock belongs to: the table a new kind has to be added to.
+    fn every_kind() -> Vec<(DecisionKind, Class)> {
+        vec![
+            (mulligan(), Class::Opening),
+            (bottoming(7, 1), Class::Opening),
+            (priority(true), Class::Response),
+            (priority(false), Class::Response),
+            (targets(true), Class::Response),
+            (order(2), Class::Response),
+            (replacements(2), Class::Response),
+            (question(), Class::Response),
+            (options(3), Class::Response),
+            (modes(3, 1, 1, false, true), Class::Response),
+            (number(0, Some(3), true), Class::Response),
+            (division(3, 2, true), Class::Response),
+            (costs(2, true), Class::Response),
+            (cards(3, 1, 1), Class::Response),
+            (ordering(3), Class::Response),
+            (blockers(), Class::Blocks),
+            (payment(true, true), Class::Think),
+            (damage(3, &[2, 2], false), Class::Think),
+            (attackers(&[]), Class::Think),
+            (discard(8, 1), Class::Think),
+        ]
+    }
+
+    #[test]
+    fn every_kind_has_a_class_and_the_table_names_each_kind() {
+        let names: std::collections::BTreeSet<_> =
+            every_kind().iter().map(|(kind, _)| kind.name()).collect();
+        assert_eq!(names.len(), 19, "one row for each decision kind: {names:?}");
+        for (kind, class) in every_kind() {
+            assert_eq!(Class::of(&kind), class, "{}", kind.name());
+        }
+    }
+
+    #[rstest]
+    #[case::no_active_clock(None)]
+    #[case::thirty_seconds(Some(30))]
+    fn the_active_seat_runs_on_the_active_length_for_every_kind_but_the_opening(
+        #[case] active: Option<u64>,
+    ) {
+        let settings = Pace {
+            active: active.map(Duration::from_secs),
+            ..pace()
+        };
+        for (kind, class) in every_kind() {
+            let got = settings.clock_for(&decision(ACTIVE, kind.clone()), ACTIVE);
+            let expected = match class {
+                Class::Opening => settings.think,
+                _ => settings.active,
+            };
+            assert_eq!(got, expected, "{}", kind.name());
+        }
+    }
+
+    #[test]
+    fn a_seat_that_is_not_the_active_player_never_runs_on_the_active_length() {
+        let settings = Pace {
+            active: Some(Duration::from_secs(30)),
+            ..pace()
+        };
+        for (kind, class) in every_kind() {
+            let expected = match class {
+                Class::Opening | Class::Think => settings.think,
+                Class::Response => settings.response,
+                Class::Blocks => settings.blocks,
+            };
+            for player in [OTHER, PlayerId(2), PlayerId(3)] {
+                let got = settings.clock_for(&decision(player, kind.clone()), ACTIVE);
+                assert_eq!(got, expected, "{}", kind.name());
+            }
+        }
+    }
+
+    #[test]
+    fn the_answer_at_the_deadline_is_the_same_for_the_active_seat_and_every_other() {
+        for (kind, _) in every_kind() {
+            let (active, other) = (
+                fallback(&decision(ACTIVE, kind.clone())),
+                fallback(&decision(OTHER, kind.clone())),
+            );
+            assert_eq!(active, other, "{}", kind.name());
+        }
+    }
+
+    #[rstest]
+    #[case::no_grace_shows_at_once(0, 10, 0)]
+    #[case::three_seconds_of_ten(3, 10, 3)]
+    #[case::three_seconds_of_forty_five(3, 45, 3)]
+    #[case::three_seconds_of_sixty(3, 60, 3)]
+    #[case::a_clock_just_longer_than_the_grace(3, 4, 3)]
+    #[case::a_clock_as_long_as_the_grace_shows_at_once(3, 3, 0)]
+    #[case::a_clock_shorter_than_the_grace_shows_at_once(30, 10, 0)]
+    fn the_countdown_is_delayed_by_the_grace_when_the_clock_is_longer(
+        #[case] grace: u64,
+        #[case] length: u64,
+        #[case] shown_after: u64,
+    ) {
+        let settings = Pace {
+            grace: Duration::from_secs(grace),
+            ..pace()
+        };
+        assert_eq!(
+            settings.shown_after(Duration::from_secs(length)),
+            Duration::from_secs(shown_after)
+        );
+    }
+
+    #[test]
+    fn the_delay_follows_the_clock_of_every_kind_and_seat_and_nothing_else() {
+        let settings = Pace {
+            active: Some(Duration::from_secs(30)),
+            ..pace()
+        };
+        for (kind, _) in every_kind() {
+            for player in [ACTIVE, OTHER, PlayerId(2), PlayerId(3)] {
+                let d = decision(player, kind.clone());
+                let length = settings.clock_for(&d, ACTIVE).expect("a clock");
+                assert_eq!(
+                    settings.shown_after(length),
+                    Duration::from_secs(3),
+                    "{}",
+                    kind.name()
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn the_priority_clock_and_its_delay_ignore_whether_the_seat_can_act() {
+        let settings = pace();
+        let shown = |can_act| {
+            let d = decision(OTHER, priority(can_act));
+            settings
+                .clock_for(&d, ACTIVE)
+                .map(|length| (length, settings.shown_after(length)))
+        };
+        assert_eq!(shown(true), shown(false));
+        assert_eq!(
+            shown(true),
+            Some((Duration::from_secs(10), Duration::from_secs(3)))
         );
     }
 
