@@ -116,7 +116,7 @@ fn a_permanent_counts_down_at_the_upkeeps_of_its_controller_and_is_sacrificed(
                 &[],
                 2,
                 2,
-                &[keyword.clone()],
+                std::slice::from_ref(&keyword),
             )],
             vec![],
         )
@@ -191,7 +191,12 @@ fn a_vanishing_permanent_without_counters_does_not_trigger_and_a_fading_one_is_s
         table(
             seats,
             vec![],
-            vec![ready(keyworded("Bare", 2, 2, &[keyword.clone()]))],
+            vec![ready(keyworded(
+                "Bare",
+                2,
+                2,
+                std::slice::from_ref(&keyword),
+            ))],
         )
     };
     let setup = build().setup()?;
@@ -250,7 +255,7 @@ fn the_upkeep_of_a_permanent_is_that_of_the_player_who_controls_it(
             seats,
             vec![],
             vec![with_counters(
-                ready(keyworded("Held", 2, 2, &[keyword.clone()])),
+                ready(keyworded("Held", 2, 2, std::slice::from_ref(&keyword))),
                 counter.clone(),
                 2,
             )],

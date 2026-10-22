@@ -176,6 +176,11 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
         }
     }
     give_backup(&mut pending);
+    place(index, pending, listed)
+}
+
+/// The abilities of the clauses, a clause left to the table as a manual one; the clauses are appended to `listed`.
+fn place(index: usize, pending: Vec<Pending>, listed: &mut Vec<Clause>) -> Vec<Ability> {
     let mut abilities = Vec::new();
     for clause in pending {
         match clause.ability {
