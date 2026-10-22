@@ -152,6 +152,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Blocking
         | Pred::Unblocked
         | Pred::In(_)
+        | Pred::CastFrom(_)
         | Pred::HasCounter(_)
         | Pred::Named(_) => Traits::NONE,
         Pred::Is(who) | Pred::OwnedBy(who) => reads_of_ref(who),

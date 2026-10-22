@@ -9,7 +9,7 @@ use std::sync::Arc;
 use mtg_core::card::Subtype;
 
 use super::abilities;
-use super::amounts::{count_word, counted_stats, number_word};
+use super::amounts::{count_word, counted_stats, for_each, for_each_text, number_word};
 use super::copies;
 use super::counters;
 use super::defining;
@@ -462,30 +462,66 @@ fn beyond_the_first() -> Amount {
     Amount::Sum(vec![Amount::TargetCount(0), Amount::Fixed(-1)])
 }
 
-/// "Noncreature spells cost {1} more to cast.", "Artifact spells you cast cost {1} less to cast.", "Spells your
-/// opponents cast cost {1} more to cast.", "This spell costs {1} more to cast for each target beyond the first."
-fn cost_modifier(r: &mut Reader<'_>) -> Option<Ability> {
-    let itself = r.source();
-    let mut applies_to = if itself {
-        Selector::this()
-    } else {
-        let spells = phrase(r, Form::All)?;
-        (spells.0.first() == Some(&Pred::Spell)).then_some(())?;
-        spells
-    };
-    if !itself {
-        if r.words("you cast") {
-            applies_to.0.push(Pred::ControlledBy(Ref::You));
-        } else if r.words("your opponents cast") {
-            applies_to.0.push(Pred::ControlledBy(Ref::Opponents));
-        }
+/// The spells a cost modifier names: "This spell", "Noncreature spells", "Artifact spells you cast", "Spells your opponents
+/// cast", "Spells you cast from anywhere other than your hand". The flag says the spell is the card itself.
+fn cost_subject(r: &mut Reader<'_>) -> Option<(Selector, bool)> {
+    if r.source() {
+        return Some((Selector::this(), true));
     }
-    r.need(if itself { "costs" } else { "cost" })?;
+    let mut applies_to = phrase(r, Form::All)?;
+    (applies_to.0.first() == Some(&Pred::Spell)).then_some(())?;
+    if r.words("you cast") {
+        applies_to.0.push(Pred::ControlledBy(Ref::You));
+    } else if r.words("your opponents cast") {
+        applies_to.0.push(Pred::ControlledBy(Ref::Opponents));
+    }
+    if r.words("from anywhere other than your hand") {
+        applies_to.0.push(not_cast_from_hand());
+    }
+    Some((applies_to, false))
+}
+
+/// "Cast from anywhere other than your hand".
+fn not_cast_from_hand() -> Pred {
+    Pred::Not(Box::new(Pred::CastFrom(ZoneKind::Hand)))
+}
+
+/// The mana of a cost change and whether it is `{X}` (then one mana is changed as many times as "where X is" counts).
+fn cost_mana(r: &mut Reader<'_>) -> Option<(ManaCostX, bool)> {
     let mut text = String::new();
     while let Some(symbol) = r.symbol() {
         text.extend(["{", symbol, "}"]);
     }
-    let mana: ManaCostX = text.parse().ok().filter(|mana: &ManaCostX| !mana.has_x())?;
+    let mana: ManaCostX = text.parse().ok()?;
+    if text == "{X}" {
+        return Some(("{1}".parse().ok()?, true));
+    }
+    (!mana.has_x()).then_some((mana, false))
+}
+
+/// How many times the mana changes the cost: once, for each target beyond the first, for each thing counted, or as
+/// many times as the number "where X is" gives.
+fn cost_times(r: &mut Reader<'_>, itself: bool, x: bool) -> Option<Amount> {
+    if x {
+        r.punct(',').then_some(())?;
+        r.need("where x is")?;
+        let amount = defining::counting(r)?;
+        return matches!(amount, Amount::Greatest { .. } | Amount::Total { .. }).then_some(amount);
+    }
+    if itself && r.words("for each target beyond the first") {
+        return Some(beyond_the_first());
+    }
+    Some(r.attempt(for_each).unwrap_or_else(Amount::one))
+}
+
+/// "Noncreature spells cost {1} more to cast.", "Artifact spells you cast cost {1} less to cast.", "Spells your
+/// opponents cast cost {1} more to cast.", "This spell costs {1} more to cast for each target beyond the first.",
+/// "This spell costs {1} less to cast for each creature card in your graveyard.", "This spell costs {X} less to cast,
+/// where X is the total power of creatures you control."
+fn cost_modifier(r: &mut Reader<'_>) -> Option<Ability> {
+    let (applies_to, itself) = cost_subject(r)?;
+    r.need(if itself { "costs" } else { "cost" })?;
+    let (mana, x) = cost_mana(r)?;
     let change = if r.word("more") {
         CostChange::Increase
     } else if r.word("less") {
@@ -494,11 +530,7 @@ fn cost_modifier(r: &mut Reader<'_>) -> Option<Ability> {
         return None;
     };
     r.need("to cast")?;
-    let per = if itself && r.words("for each target beyond the first") {
-        beyond_the_first()
-    } else {
-        Amount::one()
-    };
+    let per = cost_times(r, itself, x)?;
     Some(Ability::CostModifier {
         applies_to,
         change,
@@ -508,6 +540,35 @@ fn cost_modifier(r: &mut Reader<'_>) -> Option<Ability> {
     })
 }
 
+/// The spells a cost modifier names, as the card words them before "cost".
+fn cost_subject_text(applies_to: &Selector) -> Option<String> {
+    if *applies_to == Selector::this() {
+        return Some("~".to_owned());
+    }
+    let mut other = false;
+    let (mut who, mut spells) = (None, Vec::new());
+    for pred in &applies_to.0 {
+        match pred {
+            Pred::ControlledBy(Ref::You) if who.is_none() => who = Some(" you cast"),
+            Pred::ControlledBy(Ref::Opponents) if who.is_none() => who = Some(" your opponents cast"),
+            Pred::ControlledBy(_) => return None,
+            _ if *pred == not_cast_from_hand() => other = true,
+            _ => spells.push(pred.clone()),
+        }
+    }
+    let selector = Selector(spells);
+    (selector.0.first() == Some(&Pred::Spell)).then_some(())?;
+    let cast = who.unwrap_or("");
+    let from = if other && who.is_some() {
+        " from anywhere other than your hand"
+    } else if other {
+        return None;
+    } else {
+        ""
+    };
+    Some(format!("{}{cast}{from}", phrase_text(&selector, Form::All)?))
+}
+
 /// The wording of a cost modifier the template reads.
 fn cost_modifier_texts(
     applies_to: &Selector,
@@ -515,40 +576,32 @@ fn cost_modifier_texts(
     mana: &ManaCostX,
     per: &Amount,
 ) -> Vec<String> {
-    let head = if *applies_to == Selector::this() {
-        "~ costs".to_owned()
-    } else {
-        let (who, spells): (Vec<&Pred>, Vec<&Pred>) = applies_to
-            .0
-            .iter()
-            .partition(|pred| matches!(pred, Pred::ControlledBy(_)));
-        let cast = match who.as_slice() {
-            [] => "",
-            [Pred::ControlledBy(Ref::You)] => " you cast",
-            [Pred::ControlledBy(Ref::Opponents)] => " your opponents cast",
-            _ => return Vec::new(),
-        };
-        let selector = Selector(spells.into_iter().cloned().collect());
-        if selector.0.first() != Some(&Pred::Spell) || !per.is_one() {
-            return Vec::new();
-        }
-        let Some(phrase) = phrase_text(&selector, Form::All) else {
-            return Vec::new();
-        };
-        format!("{phrase}{cast} cost")
-    };
-    let tail = if *applies_to == Selector::this() && *per == beyond_the_first() {
-        " for each target beyond the first"
-    } else if per.is_one() {
-        ""
-    } else {
+    let itself = *applies_to == Selector::this();
+    let Some(subject) = cost_subject_text(applies_to) else {
         return Vec::new();
     };
+    let verb = if itself { "costs" } else { "cost" };
     let more = match change {
         CostChange::Increase => "more",
         CostChange::Reduce => "less",
     };
-    vec![format!("{head} {mana} {more} to cast{tail}")]
+    let (mana, tail) = if per.is_one() {
+        (mana.to_string(), String::new())
+    } else if itself && *per == beyond_the_first() {
+        (mana.to_string(), " for each target beyond the first".to_owned())
+    } else if let Some(each) = for_each_text(per) {
+        (mana.to_string(), format!(" for each {each}"))
+    } else if matches!(per, Amount::Greatest { .. } | Amount::Total { .. })
+        && mana.to_string() == "{1}"
+    {
+        let Some(count) = defining::counting_text(per) else {
+            return Vec::new();
+        };
+        ("{X}".to_owned(), format!(", where X is {count}"))
+    } else {
+        return Vec::new();
+    };
+    vec![format!("{subject} {verb} {mana} {more} to cast{tail}")]
 }
 
 fn statics(affected: Ref, mods: Vec<Modification>, condition: Option<Condition>) -> Ability {

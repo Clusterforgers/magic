@@ -446,9 +446,6 @@ fn a_cost_modifier_reads_as_the_hand_written_files_say(#[case] text: &str, #[cas
 }
 
 #[rstest]
-#[case::for_each_of_something(
-    "Spells you cast cost {1} less to cast for each creature you control."
-)]
 #[case::where_x("Spells cost {X} less to cast, where X is the number of artifacts you control.")]
 #[case::as_long_as("Spells cost {1} less to cast as long as it's your turn.")]
 #[case::no_amount("Spells cost less to cast.")]

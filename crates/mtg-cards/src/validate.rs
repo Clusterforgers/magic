@@ -345,6 +345,11 @@ impl<'a> Walker<'a> {
             Pred::Compare { to, .. } => {
                 self.at("to", |w| w.amount(to));
             }
+            Pred::CastFrom(zone) => {
+                if !matches!(zone, ZoneKind::Hand | ZoneKind::Graveyard) {
+                    self.problem("`CastFrom` names a hand or a graveyard");
+                }
+            }
             Pred::Not(inner) => self.pred(inner),
             Pred::AnyOf(preds) => {
                 if preds.is_empty() {

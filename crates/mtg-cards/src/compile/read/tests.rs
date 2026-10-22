@@ -159,6 +159,7 @@ mod cast;
 mod compound;
 mod conditions;
 mod copies;
+mod cost_counts;
 mod counted;
 mod counters;
 mod create;
