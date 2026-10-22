@@ -126,14 +126,16 @@ fn modern() -> Value {
     )
 }
 
-/// A hundred cards: Questing Beast, whose rules the corpus models in full, and ninety-nine Forests.
+/// A hundred cards: Questing Beast, whose rules the corpus models in full, Courser of Kruphix, which it models in part,
+/// and ninety-eight Forests.
 fn commander() -> Value {
     body(
         "Beast Mode",
         "commander",
         &[
             line("commander", "Questing Beast", 1),
-            line("main", "Forest", 99),
+            line("main", "Forest", 98),
+            line("main", "Courser of Kruphix", 1),
         ],
     )
 }

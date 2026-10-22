@@ -76,9 +76,9 @@ fn files_are_canonical_and_carry_current_fingerprints() {
 }
 
 #[test]
-fn the_corpus_loads_with_one_hundred_and_seventy_four_cards_and_three_tokens() {
+fn the_corpus_loads_with_one_hundred_and_seventy_five_cards_and_three_tokens() {
     let library = library();
-    assert_eq!(library.cards().count(), 174);
+    assert_eq!(library.cards().count(), 175);
     let tokens: Vec<_> = library.tokens().map(|t| t.id.as_str()).collect();
     assert_eq!(tokens, ["clue", "food", "treasure"]);
 }
@@ -178,7 +178,7 @@ fn declared_status_decides_the_support_when_the_engine_runs_everything(#[case] c
     for shown in printed() {
         let record = library.support(&shown, &caps);
         let expected = match shown.name.as_str() {
-            "Aven Mindcensor" => Support::Partial,
+            "Aven Mindcensor" | "Courser of Kruphix" => Support::Partial,
             _ => Support::Verified,
         };
         assert_eq!(
@@ -407,10 +407,16 @@ fn clause_spans_cut_out_the_sentences_they_name() {
             }
         }
     }
-    let expected = [(
-        "Aven Mindcensor",
-        "If an opponent would search a library, that player searches the top four cards of that library instead.",
-    )];
+    let expected = [
+        (
+            "Aven Mindcensor",
+            "If an opponent would search a library, that player searches the top four cards of that library instead.",
+        ),
+        (
+            "Courser of Kruphix",
+            "You may play lands from the top of your library.",
+        ),
+    ];
     assert_eq!(
         found,
         expected.map(|(name, clause)| (name.to_owned(), clause.to_owned()))
