@@ -77,7 +77,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (l3) The legend rule (CR 704.5j): a player who controls two legendary permanents of one name keeps one; Arvad the Cursed, Kongming and Sram are Verified
 - [x] (m1) `Attach`, Aura spells that target through `Enchant`, and the state-based actions of attachments (CR 704.5m to 704.5p); Pacifism, Epic Proportions, Control Magic, Squirrel Nest and Shielded by Faith are Verified
 - [x] (m2) Equipment with `Equip`, `Reconfigure` and living weapon; Bonesplitter, Swiftfoot Boots, Batterskull, Lizard Blades, Bronzeplate Boar and Armguard Familiar are Verified
-- [~] (m3) (branch m3-equipment-creature) Fix: an Equipment that is also a creature is attached to nothing (CR 301.5c, 704.5n): the state-based action unattaches it; found in `commander_fuzz::seeded_commander_games_finish_and_keep_every_invariant` case 3 (seed 24), where a planeswalker ultimate animated an equipped Equipment
+- [x] (m3) Fix: an Equipment that is also a creature is attached to nothing (CR 301.5c, 704.5n): the reconfigure exemption of `legal_host` kept an animated Equipment with reconfigure attached, and the state-based action now takes any Equipment that is a creature off its host (found in `commander_fuzz` case 3, seed 24)
 
 ### Replacement and prevention
 - [x] (j1) The replacement step: `Ability::Replacement` found through the reader, one `ReplaceWhen` for each event it can replace, self-replacement first, once per event (CR 614 to 616), and `ChooseReplacement` in engine, protocol, bots and the server's pace; Anointed Procession, Parallel Lives, Doubling Season, Hardened Scales, Corpsejack Menace, Rhox Faithmender, Thought Reflection, Furnace of Rath and Rest in Peace are Verified

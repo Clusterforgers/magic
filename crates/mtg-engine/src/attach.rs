@@ -75,9 +75,9 @@ pub(crate) fn enchant_restriction(state: &GameState, id: ObjectId) -> Option<Sel
     found.then_some(Selector(preds))
 }
 
-/// Whether `attachment` may be attached to `host` as they stand: the Aura enchants what its enchant ability allows and is
-/// not a creature (CR 303.4d, 303.4e), an Equipment that is not a creature equips another creature (CR 301.5c), a
-/// Fortification fortifies another land (CR 301.6). A permanent never attaches to itself.
+/// Whether `attachment` may become attached to `host` as they stand: the Aura enchants what its enchant ability allows and
+/// is not a creature (CR 303.4d, 303.4e), an Equipment equips another creature and is no creature, unless it has reconfigure
+/// (CR 301.5c), a Fortification fortifies another land (CR 301.6). A permanent never attaches to itself.
 pub(crate) fn legal_host(state: &GameState, attachment: ObjectId, host: ObjectId) -> bool {
     if attachment == host {
         return false;
@@ -106,6 +106,15 @@ pub(crate) fn legal_host(state: &GameState, attachment: ObjectId, host: ObjectId
         None => false,
     };
     allowed && !protects_host(state, attachment, host)
+}
+
+/// Whether `attachment` stays attached to `host`: it may become attached there and an Equipment is no creature. Reconfigure
+/// lets a creature Equipment become attached only because it stops being one then (CR 702.151b), so one that is a creature
+/// while attached, as an effect made it, comes off (CR 301.5c, 704.5n).
+fn may_stay_attached(state: &GameState, attachment: ObjectId, host: ObjectId) -> bool {
+    legal_host(state, attachment, host)
+        && (kind_of(state, attachment) != Some(Kind::Equipment)
+            || characteristics(state, attachment).is_some_and(|chars| !chars.is_creature()))
 }
 
 /// Whether the enchant ability of `id` is "enchant opponent" (`true`) or "enchant player" (`false`); `None` for an object
@@ -390,7 +399,7 @@ pub(crate) fn state_based(state: &GameState, leaving: &[ObjectId]) -> Vec<Event>
             permanent.attached_to().is_some() || permanent.attached_player().is_some()
         });
         let legal = || match (state.host_of(id), state.player_host_of(id)) {
-            (Some(host), _) => legal_host(state, id, host),
+            (Some(host), _) => may_stay_attached(state, id, host),
             (None, Some(player)) => legal_player_host(state, id, player),
             (None, None) => false,
         };
@@ -463,12 +472,14 @@ mod tests {
     const WALL: usize = 6;
     const GOLEM: usize = 7;
     const WOLF: usize = 8;
+    const RECONFIGURER: usize = 9;
     /// The Ogre of seat 1.
     const OGRE: (usize, usize) = (1, 0);
 
     /// Seat 0, in this order: a Bear, a Forest, a Halo Aura on creatures, a Curse Aura on creatures of opponents, a Rune
-    /// Aura on lands, a Blade Equipment, a Wall Fortification, a Golem Equipment that is a creature and a Wolf. Seat 1: an
-    /// Ogre. Each pair says which permanent of seat 0 starts attached to which.
+    /// Aura on lands, a Blade Equipment, a Wall Fortification, a Golem Equipment that is a creature, a Wolf and a
+    /// Reconfigurer Equipment that is a creature. Seat 1: an Ogre. Each pair says which permanent of seat 0 starts attached
+    /// to which.
     fn game(attached: &[(usize, (usize, usize))]) -> GameState {
         let mut game = setup(
             vec![vec![], vec![]],
@@ -651,6 +662,10 @@ mod tests {
     )]
     #[case::an_equipment_on_a_land_comes_off(with(&[(BLADE, (0, FOREST))]), &[("Blade", false)])]
     #[case::an_equipment_that_is_a_creature_comes_off(with(&[(GOLEM, (0, WOLF))]), &[("Golem", false)])]
+    #[case::an_equipment_with_reconfigure_is_no_creature_while_attached_and_stays(
+        with(&[(RECONFIGURER, (0, WOLF))]),
+        &[]
+    )]
     #[case::a_fortification_on_a_creature_comes_off(with(&[(WALL, (0, BEAR))]), &[("Wall", false)])]
     #[case::any_other_permanent_comes_off(with(&[(WOLF, (0, BEAR))]), &[("Wolf", false)])]
     fn the_state_based_actions_of_attachments(
