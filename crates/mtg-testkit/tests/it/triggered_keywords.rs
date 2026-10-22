@@ -578,7 +578,9 @@ fn evolve_compares_each_entering_creature_with_the_current_size(
         let hand: Vec<_> = entering
             .iter()
             .enumerate()
-            .map(|(at, (power, toughness))| free_creature(&format!("Entrant{at}"), *power, *toughness))
+            .map(|(at, (power, toughness))| {
+                free_creature(&format!("Entrant{at}"), *power, *toughness)
+            })
             .collect();
         let mut table = Scenario::new(seats)
             .at(1, 0, Step::Main1)

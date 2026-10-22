@@ -5,8 +5,8 @@
 //! keywords an object has through [`keywords_of`] and the helpers below it, never from the rules of the card.
 
 pub(crate) mod aftermath;
-mod battle_cry;
 mod annihilator;
+mod battle_cry;
 mod buyback;
 mod cascade;
 mod changeling;
@@ -21,20 +21,20 @@ mod daybound;
 mod deathtouch;
 mod defender;
 mod delve;
+mod dethrone;
 mod devoid;
 mod disguise;
 mod doctors_companion;
 mod double_strike;
-mod dethrone;
 mod echo;
 mod enchant;
-mod evolve;
 mod encore;
 mod entwine;
 mod equip;
 mod escape;
-mod exalted;
 mod evoke;
+mod evolve;
+mod exalted;
 mod extort;
 mod fear;
 mod first_strike;

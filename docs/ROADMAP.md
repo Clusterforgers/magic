@@ -20,7 +20,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 
 - Costs and announcement: (g2e), (g6d), (g5c), (c1c), (c1g), Undaunted of (c2b).
 - Cast ways and zones: (c5b) recursion and alternative cast ways, (c5g), (n2) face-down objects, (n1d3) meld.
-- Triggers and keywords: (c6b) triggered and upkeep keywords, the triggered keywords of (c2b), (c4b) level-ups and stations, (c3b) and (c3d) keyword actions and the remaining Monarch cards, (n1d5) day and night effects, (o2c).
+- Triggers and keywords: (c6b) triggered and upkeep keywords, (c4b) level-ups and stations, (c3b) and (c3d) keyword actions and the remaining Monarch cards, (n1d5) day and night effects, (o2c).
 - Statics and layers: (c8), (c7b), (o1d).
 - Compiler wordings, no engine change: (c10) one piece per wording family, (o2d), (c11) layouts and long-tail mechanics, (c9c).
 - Commander and server: (hr5b), the `manual_play` flag stored with the game, the turn without an active player in the table view, Companion.
@@ -203,7 +203,7 @@ The server is settled first, then the web is built once against the final types.
 - [x] (c1e) Mana abilities used once each turn and with a cost that taps or sacrifices another permanent: the engine picks the permanents inside a payment (`mana_takes.rs`), the independent check in `mana.rs` agrees; the Devotees, Kozilek's Translator, Springleaf Drum, Jaspera Sentinel, Holdout Settlement and Skirk Prospector are Verified
 - [ ] (c1g) A mana ability whose cost exiles a card from hand (Cadaverous Bloom) is a source of every payment, and a list choice with more than six lists is refused by the validator
 - [x] (c2) Characteristic and combat keywords: Changeling, Devoid, Infect, Wither, Toxic, Fear, Intimidate, the landwalks, Skulk, Shadow (`docs/engine.md`, Combat and keywords)
-- [ ] (c2b) Split second (no spell or ability that is not a mana ability while the spell is on the stack), Undaunted (a cost modifier), Ascend, Exalted, Melee, Mentor, Dethrone, Annihilator, Extort, Evolve
+- [ ] (c2b) Split second (no spell or ability that is not a mana ability while the spell is on the stack), Undaunted (a cost modifier), Ascend
 - [x] (c3) Surveil (the `Surveilled` event; 14 cards) and the Monarch (`MonarchChanged`, the end-step draw, the combat-damage steal, `Condition::Monarch` in an intervening "if"; 2 cards, 21 held back by other wordings)
 - [~] (c3b) (branch c3b-amass-counters) Keyword actions and designations, remaining: Time travel, Amass, Adapt, Monstrosity, Bolster, Fabricate, Learn and the city's blessing
 - [x] (c3e) Proliferate: the choice of permanents (`ChooseCards`) and players (`YesNo`) that hold counters, the `Proliferated` event and trigger pattern, Contentious Plan, Steady Progress, Bloom Hulk, Scheming Aspirant and Karn's Bastion Verified, the reminder text of the counter actions read by the compiler, the cards in the action fuzz deck
