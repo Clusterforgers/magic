@@ -371,7 +371,8 @@ mod tests {
 
     #[test]
     fn an_unknown_token_is_refused() {
-        let error = run_with(&game(2), Vec::new(), &effect(r#"{"Named":"gold"}"#, "")).unwrap_err();
+        let error =
+            run_with(&game(2), Vec::new(), &effect(r#"{"Named":"blood"}"#, "")).unwrap_err();
         assert!(matches!(error, ResolveError::Invalid(_)), "{error:?}");
     }
 

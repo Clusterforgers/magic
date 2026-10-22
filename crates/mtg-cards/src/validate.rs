@@ -2957,7 +2957,7 @@ mod tests {
         "abilities[0].Spell.effects[0].Attach.to: expected an object but this is a player"
     )]
     #[case::unknown_token(
-        r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Named":"gold"}}}]}}"#,
+        r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Named":"blood"}}}]}}"#,
         "unknown token `gold`"
     )]
     #[case::divided_without_division(
