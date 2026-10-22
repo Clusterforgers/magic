@@ -1,0 +1,20 @@
+{
+  "oracle_id": "24e9a1cb-b58b-491f-9d08-3f039a86851e",
+  "name": "Sister Repentia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sister Repentia",
+      "oracle_fingerprint": "7c1e0c592e05e05f52fe53e43e85e200",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "GainLife": { "amount": 2 } }, { "Draw": { "count": 2 } }]
+          }
+        },
+        { "Keyword": { "Miracle": "{W}{B}" } }
+      ]
+    }
+  ]
+}

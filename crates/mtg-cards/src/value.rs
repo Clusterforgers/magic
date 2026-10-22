@@ -65,6 +65,8 @@ pub enum CastWay {
     Overload,
     /// Madness (CR 702.35): from exile after it was discarded.
     Madness,
+    /// Miracle (CR 702.94): from a hand for its miracle cost when it is the first card its owner drew this turn.
+    Miracle,
     /// Suspend (CR 702.62): cast without paying its mana cost as the last time counter leaves; a creature has haste.
     Suspend,
     /// Foretell (CR 702.143): from exile, face down, on a later turn than it was foretold, for its foretell cost.

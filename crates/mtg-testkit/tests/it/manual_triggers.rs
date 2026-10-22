@@ -91,7 +91,10 @@ fn arrivals_for_one() -> Arc<CardDefinition> {
 fn draws_for_one() -> Arc<CardDefinition> {
     watcher(
         "Watcher",
-        TriggerPattern::Drew { who: Ref::You },
+        TriggerPattern::Drew {
+            who: Ref::You,
+            what: mtg_cards::refs::Selector::default(),
+        },
         vec![gain_life(1)],
     )
 }

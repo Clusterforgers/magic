@@ -113,6 +113,7 @@ mod lords;
 mod loyalty_fuzz;
 mod madness;
 mod madness_fuzz;
+mod miracle;
 mod mana_abilities;
 mod mana_cost_abilities;
 mod mana_costs;

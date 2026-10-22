@@ -714,6 +714,7 @@ impl<'a> Walker<'a> {
             Keyword::Kicker(cost)
             | Keyword::Flashback(cost)
             | Keyword::Madness(cost)
+            | Keyword::Miracle(cost)
             | Keyword::Buyback(cost)
             | Keyword::Entwine(cost)
             | Keyword::Evoke(cost)
@@ -900,9 +901,12 @@ impl<'a> Walker<'a> {
             TriggerPattern::LifeGained { who }
             | TriggerPattern::LifeLost { who }
             | TriggerPattern::BecomesMonarch { who }
-            | TriggerPattern::Proliferated { who }
-            | TriggerPattern::Drew { who } => {
+            | TriggerPattern::Proliferated { who } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
+            }
+            TriggerPattern::Drew { who, what } => {
+                self.at("who", |w| w.reference(who, Kind::Player));
+                self.at("what", |w| w.selector(what));
             }
             TriggerPattern::Discarded { what, by }
             | TriggerPattern::TappedForMana { what, by }
@@ -1207,9 +1211,12 @@ impl<'a> Walker<'a> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("what", |w| w.reference(what, Kind::Object));
                 if let Some(way) = way
-                    && !matches!(way, CastWay::Madness | CastWay::Suspend)
+                    && !matches!(
+                        way,
+                        CastWay::Madness | CastWay::Miracle | CastWay::Suspend
+                    )
                 {
-                    w.problem("only madness and suspend are cast for a way of their own");
+                    w.problem("only madness, miracle and suspend are cast for a way of their own");
                 }
                 w.effect_list("otherwise", otherwise, false);
             }

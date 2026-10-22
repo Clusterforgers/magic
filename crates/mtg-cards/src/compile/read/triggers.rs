@@ -266,14 +266,20 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         Some(TriggerPattern::LifeLost { who: by })
     } else if verb == if third { "draws" } else { "draw" } {
         if let Some(nth) = each_turn(r, "card") {
-            let event = TriggerPattern::Drew { who: by };
+            let event = TriggerPattern::Drew {
+                who: by,
+                what: Selector::default(),
+            };
             return Some(TriggerPattern::Nth {
                 event: Box::new(event),
                 nth,
             });
         }
         r.need("a card")?;
-        Some(TriggerPattern::Drew { who: by })
+        Some(TriggerPattern::Drew {
+            who: by,
+            what: Selector::default(),
+        })
     } else if verb == if third { "discards" } else { "discard" } {
         r.need("a card")?;
         Some(TriggerPattern::Discarded {
@@ -737,7 +743,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::LifeLost { who } => {
             Some(format!("Whenever {} life", player_verb(who, "lose")?))
         }
-        TriggerPattern::Drew { who } => {
+        TriggerPattern::Drew { who, what } if what.is_empty() => {
             Some(format!("Whenever {} a card", player_verb(who, "draw")?))
         }
         TriggerPattern::Discarded { what, by } if what.is_empty() => {
@@ -829,7 +835,10 @@ fn damaged_subject(to: &Ref) -> Option<Selector> {
 fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
     let ordinal = ORDINALS.get(usize::try_from(nth.checked_sub(1)?).ok()?)?;
     let (verb, noun) = match event {
-        TriggerPattern::Drew { who: Ref::You } => ("draw", "card"),
+        TriggerPattern::Drew {
+            who: Ref::You,
+            what,
+        } if what.is_empty() => ("draw", "card"),
         TriggerPattern::SpellCast { what, by: Ref::You } if what.is_empty() => ("cast", "spell"),
         TriggerPattern::Attacks { .. }
         | TriggerPattern::BecomesTarget { .. }

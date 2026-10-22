@@ -265,11 +265,15 @@ pub(crate) fn granted(
     {
         return Vec::new();
     }
-    if way == Some(CastWay::Madness) {
-        return madness_way(state, id)
+    if let Some(named @ (CastWay::Madness | CastWay::Miracle)) = way {
+        // Miracle is cast from the hand the card was drawn into (CR 702.94a).
+        if named == CastWay::Miracle && !matches!(card.zone(), Zone::Hand(_)) {
+            return Vec::new();
+        }
+        return keyword_cost(state, id, named)
             .map(|(mana, parts)| Way {
-                alternative: Some(CastWay::Madness),
-                label: format!("Madness {}", cost_words(&mana, &parts)),
+                alternative: Some(named),
+                label: format!("{} {}", way_name(named), cost_words(&mana, &parts)),
                 mana: Some(mana),
                 instant: true,
                 parts,
@@ -372,19 +376,34 @@ pub(crate) fn can_foretell(
         && can_afford(&cost, pool, sources, life, &Spend::other())
 }
 
-/// The mana of the madness cost of the card `id` (CR 702.35), when it has one the engine pays.
-pub(crate) fn madness_cost(state: &GameState, id: ObjectId) -> Option<ManaCost> {
-    madness_way(state, id).map(|(mana, _)| mana)
+/// The way and the mana of the madness or miracle cost of the card `id` (CR 702.35, 702.94) when a resolution casts it
+/// in that way and the card has a cost the engine pays.
+pub(crate) fn alternative_cost(
+    state: &GameState,
+    id: ObjectId,
+    way: Option<CastWay>,
+) -> Option<(CastWay, ManaCost)> {
+    let way = way.filter(|way| matches!(way, CastWay::Madness | CastWay::Miracle))?;
+    keyword_cost(state, id, way).map(|(mana, _)| (way, mana))
 }
 
-/// The mana and the other parts of the madness cost of the card `id`.
-fn madness_way(state: &GameState, id: ObjectId) -> Option<(ManaCost, Vec<Part>)> {
-    keywords_of(state, id).into_iter().find_map(|keyword| {
-        let Keyword::Madness(cost) = keyword else {
-            return None;
-        };
-        cast_cost(cost)
-    })
+/// The name a cost-bearing way goes by in a label.
+const fn way_name(way: CastWay) -> &'static str {
+    match way {
+        CastWay::Miracle => "Miracle",
+        _ => "Madness",
+    }
+}
+
+/// The mana and the other parts of the cost of the keyword that names `way` on the card `id` (madness or miracle).
+fn keyword_cost(state: &GameState, id: ObjectId, way: CastWay) -> Option<(ManaCost, Vec<Part>)> {
+    keywords_of(state, id)
+        .into_iter()
+        .find_map(|keyword| match (way, keyword) {
+            (CastWay::Madness, Keyword::Madness(cost))
+            | (CastWay::Miracle, Keyword::Miracle(cost)) => cast_cost(cost),
+            _ => None,
+        })
 }
 
 /// Whether a resolution can have `player` cast the card `id` now: its targets can be announced and, unless it is cast

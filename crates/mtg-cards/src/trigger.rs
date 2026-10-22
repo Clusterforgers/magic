@@ -146,6 +146,9 @@ pub enum TriggerPattern {
             skip_serializing_if = "Ref::is_each_player"
         )]
         who: Ref,
+        /// The card drawn ("when you draw this card"); any card when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
     },
     /// A player discards a card.
     Discarded {

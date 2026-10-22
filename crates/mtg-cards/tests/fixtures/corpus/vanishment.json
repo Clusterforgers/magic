@@ -1,0 +1,25 @@
+{
+  "id": "dece40c1-790c-4471-a790-1d356b345603",
+  "oracle_id": "a2ae1a1b-5c4f-46ed-90da-bd50ca914e7c",
+  "name": "Vanishment",
+  "lang": "en",
+  "layout": "normal",
+  "set": "avr",
+  "collector_number": "82",
+  "rarity": "uncommon",
+  "released_at": "2012-05-04",
+  "digital": false,
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Instant",
+  "oracle_text": "Put target nonland permanent on top of its owner's library.\nMiracle {U} (You may cast this card for its miracle cost when you draw it if it's the first card you drew this turn.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Miracle"
+  ]
+}

@@ -262,6 +262,7 @@ Siege Wurm
 Sinister Sabotage
 Sinister Starfish
 Siren Lookout
+Sister Repentia
 Skeletal Changeling
 Skirk Prospector
 Skizzik Surger
@@ -309,6 +310,7 @@ The Thing, Ben Grimm
 Thieving Magpie
 Thopter Fabricator
 Throne of the High City
+Thunderous Wrath
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
@@ -322,6 +324,7 @@ Underworld Dreams
 Underworld Rage-Hound
 Universal Automaton
 Vampire Cutthroat
+Vanishment
 Vengeful Vampire
 Vestige of Emrakul
 Viridian Corrupter

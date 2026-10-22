@@ -93,6 +93,8 @@ pub enum Keyword {
     Flashback(Cost),
     /// Madness with its cost.
     Madness(Cost),
+    /// Miracle with its cost: the card may be cast for it when it is the first card its owner drew this turn (CR 702.94).
+    Miracle(Cost),
     /// Morph with its cost.
     Morph(Cost),
     /// Disguise with its cost.
@@ -220,6 +222,7 @@ impl Keyword {
         "Entwine",
         "Flashback",
         "Madness",
+        "Miracle",
         "Morph",
         "Disguise",
         "Suspend",
@@ -302,6 +305,7 @@ impl Keyword {
             Keyword::Entwine(_) => "Entwine",
             Keyword::Flashback(_) => "Flashback",
             Keyword::Madness(_) => "Madness",
+            Keyword::Miracle(_) => "Miracle",
             Keyword::Morph(_) => "Morph",
             Keyword::Disguise(_) => "Disguise",
             Keyword::Suspend { .. } => "Suspend",
@@ -404,6 +408,7 @@ mod tests {
             Keyword::Entwine(cost.clone()),
             Keyword::Flashback(cost.clone()),
             Keyword::Madness(cost.clone()),
+            Keyword::Miracle(cost.clone()),
             Keyword::Morph(cost.clone()),
             Keyword::Disguise(cost.clone()),
             Keyword::Suspend {
