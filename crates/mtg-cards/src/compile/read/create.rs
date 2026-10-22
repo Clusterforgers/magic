@@ -117,15 +117,29 @@ enum Quantity {
 /// many Treasure tokens.", "Investigate."
 pub fn tokens(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if r.word("investigate") {
-        return Some(vec![effect(
-            Ref::You,
-            TokenRef::Named("clue".to_owned()),
-            Amount::one(),
-            false,
-            false,
-        )]);
+        return Some(vec![clue(Ref::You)]);
     }
     made_by(r, Ref::You)
+}
+
+/// The Clue token a player creates when they investigate.
+pub fn clue(who: Ref) -> Effect {
+    effect(
+        who,
+        TokenRef::Named("clue".to_owned()),
+        Amount::one(),
+        false,
+        false,
+    )
+}
+
+/// The other wording of the tokens the controller of an object creates: "That creature's controller" for "Its controller".
+pub fn other_wordings(texts: &[String]) -> Vec<String> {
+    texts
+        .iter()
+        .filter(|text| text.contains("Its controller creates "))
+        .map(|text| text.replacen("Its controller", "That creature's controller", 1))
+        .collect()
 }
 
 /// The tokens a player creates: "create ..." for you, "creates ..." after another player ("target opponent creates

@@ -1,0 +1,23 @@
+{
+  "id": "4131fa63-5afc-4b63-a4b4-f47b4bced87f",
+  "oracle_id": "05849bd6-8f38-4031-be2b-e2aa03beb8cc",
+  "name": "Pongify",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "160",
+  "rarity": "uncommon",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Destroy target creature. It can't be regenerated. Its controller creates a 3/3 green Ape creature token.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

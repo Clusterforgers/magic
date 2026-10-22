@@ -9,6 +9,7 @@ Aeromunculus
 Aether Hub
 Ainok Bond-Kin
 Ajani's Pridemate
+Akroma's Vengeance
 Alpha Deathclaw
 Anafenza, Kin-Tree Spirit
 Ancestral Vision
@@ -16,9 +17,11 @@ Ancient Hydra
 Ancient Stone Idol
 Ancient Ziggurat
 Angel of Vitality
+Angelic Ascension
 Arbor Colossus
 Arcane Signet
 Archon of Cruelty
+Archway Commons
 Arrogant Wurm
 Artful Maneuver
 Arvad the Cursed
@@ -38,6 +41,7 @@ Banshee of the Dread Choir
 Basking Rootwalla
 Battle Sliver
 Battlefield Forge
+Beast Within
 Behold the Multiverse
 Bilious Skulldweller
 Bird Admirer // Wing Shredder
@@ -54,6 +58,8 @@ Bloom Hulk
 Bog Wraith
 Boggart Ram-Gang
 Bola Slinger
+Bone Shredder
+Bonecaller Cleric
 Bonesplitter
 Boon Reflection
 Boon Satyr
@@ -62,6 +68,7 @@ Borderland Behemoth
 Brain Freeze
 Brainstorm
 Branchblight Stalker
+Breath of Life
 Briarblade Adept
 Bridled Bighorn
 Brightstone Ritual
@@ -101,6 +108,7 @@ Copper-Leaf Angel
 Coralhelm Commander
 Counterspell
 Courser of Kruphix
+Crib Swap
 Crucible of Worlds
 Crystal Quarry
 Curate
@@ -218,6 +226,7 @@ Goblin War Buggy
 Goblin-town Flunkies
 Golden-Scale Aeronaut
 Goldlust Triad
+Goliath Truck
 Grapeshot
 Graven Cairns
 Graveshifter
@@ -316,6 +325,7 @@ Mukotai Ambusher
 Mulldrifter
 Murderous Cut
 Muscle Sliver
+Myr Retriever
 Mystic Gate
 Nantuko Husk
 Nessian Asp
@@ -342,6 +352,7 @@ Pillar of the Paruns
 Pinion Feast
 Plague Myr
 Plague Stinger
+Pongify
 Pouncing Jaguar
 Powder Ganger
 Primeval Protector

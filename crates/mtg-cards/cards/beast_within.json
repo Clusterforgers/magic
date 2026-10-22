@@ -1,0 +1,36 @@
+{
+  "oracle_id": "7735eeba-693b-47e2-bd51-414379cf1016",
+  "name": "Beast Within",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beast Within",
+      "oracle_fingerprint": "b22d3ad5f620f79a3b97a0eb2a478397",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": {
+                    "Custom": {
+                      "name": "Beast",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Beast"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

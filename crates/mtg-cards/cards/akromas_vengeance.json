@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ae19dce5-c9fc-4fbe-99b5-dc6a12124a68",
+  "name": "Akroma's Vengeance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Akroma's Vengeance",
+      "oracle_fingerprint": "95152d244115b5081b9ea7285abbe96c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{3}" } }
+      ]
+    }
+  ]
+}

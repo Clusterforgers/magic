@@ -44,6 +44,7 @@ mod concede;
 mod concede_mid_cast;
 mod connive;
 mod continuous_effects;
+mod controller_token;
 mod copies;
 mod copies_fuzz;
 mod copy_dies;
