@@ -265,10 +265,11 @@ pub fn granted_keywords(r: &mut Reader<'_>) -> Option<Vec<Keyword>> {
 /// The mana after "ward": "{1}", "{2}{U}".
 fn ward_cost(r: &mut Reader<'_>) -> Option<Cost> {
     let mut text = String::new();
-    while let Some(symbol) =
-        r.attempt(|r| r.symbol().filter(|symbol| !matches!(*symbol, "T" | "Q" | "X")))
-    {
-        text.push_str(&format!("{{{symbol}}}"));
+    while let Some(symbol) = r.attempt(|r| {
+        r.symbol()
+            .filter(|symbol| !matches!(*symbol, "T" | "Q" | "X"))
+    }) {
+        text = format!("{text}{{{symbol}}}");
     }
     text.parse().ok().map(Cost::mana)
 }

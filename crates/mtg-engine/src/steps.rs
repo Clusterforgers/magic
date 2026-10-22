@@ -190,7 +190,11 @@ fn priority_round(state: &GameState) -> Progress {
 /// The step after `step`: a skipped step does not begin at all (CR 614.10), so nothing triggers at its start.
 fn next_step(state: &GameState, step: Step) -> Step {
     match step {
-        Step::Upkeep if state.active_player().is_some_and(|p| skips_draw_step(state, p)) => {
+        Step::Upkeep
+            if state
+                .active_player()
+                .is_some_and(|p| skips_draw_step(state, p)) =>
+        {
             Step::Main1
         }
         Step::DeclareAttackers if state.combat().attackers().is_empty() => Step::EndCombat,

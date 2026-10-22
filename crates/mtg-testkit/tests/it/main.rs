@@ -80,6 +80,8 @@ mod format_hooks;
 mod fuse;
 mod fuzz_games;
 mod graveyard_fuzz;
+mod group_statics;
+mod group_statics_fuzz;
 mod harness_selfcheck;
 mod help_fuzz;
 mod help_payment;

@@ -45,6 +45,7 @@ Design notes for `mtg-engine` (the rules engine) and `mtg-testkit` (scenarios, b
 | `mulligan_style` | `london`, `paris`, `vancouver` | London is the format's rule: the full hand, then as many cards on the bottom as the mulligans taken beyond the free ones. Paris deals one card fewer for each such mulligan and bottoms none. Vancouver is Paris, and a seat that keeps a hand after a mulligan scries 1 (`MulliganStatus::Scrying`, the `ChooseCards` decision of the scry with the top card, answered by one `Scried`). `MulliganOptions` names `hand_if_mulligan`, `bottom_if_keep`, `bottom_if_mulligan`, `scry_if_keep` and `scry_if_mulligan`, so a client works out nothing. |
 
 - `Rule.NoMaxHandSize` is a card rule (`Rule::NoMaxHandSize` in force through `RulesInForce`); cleanup reads it with `no_max_hand_size` beside the house limit.
+- `Rule.SkipDrawStep` is a card rule read in `next_step`: the upkeep of its player's turn leads to the first main phase, so the draw step never begins and nothing triggers at its start (CR 614.10).
 
 ## Commander
 
