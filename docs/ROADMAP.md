@@ -107,6 +107,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 ### Faces and copies
 - [x] (n1a) Multi-face cards: the face model (`CardDefinition.layout` and `faces`, the face an object is in use as), split, adventure and modal double-faced cards chosen at the announcement and listed in `PriorityOptions.faces`, the Adventure exiled on an adventure and cast as the creature, `Card.Faces` lifted for those layouts; Bonecrusher Giant, Fire // Ice, Hengegate Pathway // Mistgate Pathway and Selfless Glyphweaver // Deadly Vanity are Verified
 - [ ] (n1b) Transform, meld, fuse (Turn // Burn, Wear // Tear cast as both halves) and daybound/nightbound: `Effect::Transform`, the face turned over on the battlefield, a copy of a face (o); Delver of Secrets is Verified
+- [ ] (n1c) Faces, what (n1a) left: compiler goldens for faces, the walker names of transform and meld, a test that a modal back face leaves the battlefield as its front face, the bot plays `PlayLandFace`, the enter replacement of a back-face land ("enters tapped") is read from the face, and the Adventure exile is seen by graveyard replacements such as Rest in Peace
 - [ ] (n2) Face-down objects (morph, disguise, manifest, cloak): a `FaceDown` kind each with its characteristics, who may look at it and turning it face up, on the face-down rule of (g4d)
 - [ ] (o) Copies: a token that copies an object, spell copies, enters as a copy, populate, storm; copiable values as the first layer
 
