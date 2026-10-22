@@ -8,15 +8,17 @@
 //! picked and paid with the others (`parts.rs`), and the spell, the permanent it becomes and their abilities remember
 //! them. A spell with entwine asks its costs before its modes, since paying entwine chooses them all.
 
+use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::Cost;
 use mtg_cards::value::CastWay;
-use mtg_cards::CardDefinition;
 use mtg_core::mana::ManaCost;
 
 use super::{Ctx, Next, What, Work, total};
 use crate::ability_reader;
-use crate::choose::{Choices, CostsOptions, NumberOptions, OptionalCost, every_mode_is_legal, modal_of};
+use crate::choose::{
+    Choices, CostsOptions, NumberOptions, OptionalCost, every_mode_is_legal, modal_of,
+};
 use crate::decision::DecisionKind;
 use crate::keywords::{self, OptionalKind};
 use crate::object::{GameObject, ObjectRef};
@@ -131,7 +133,7 @@ fn read_cost(printed: Printed) -> Optional {
             .parts
             .iter()
             .all(|part| !part.is_counted() && !matches!(part, Part::Counters { .. }))
-        && !(repeatable && !price.parts.is_empty());
+        && (!repeatable || price.parts.is_empty());
     Optional {
         label,
         mana,
@@ -273,9 +275,9 @@ fn offered_once(ctx: &Ctx<'_>, choices: &Choices) -> Vec<OptionalCost> {
 
 /// Whether the spell is modal and every one of its modes has the targets it needs, which entwine asks for.
 fn every_mode_legal(ctx: &Ctx<'_>) -> bool {
-    ctx.ability
-        .and_then(modal_of)
-        .is_some_and(|modal| every_mode_is_legal(ctx.state, ctx.source, ctx.player, &modal, ctx.cause()))
+    ctx.ability.and_then(modal_of).is_some_and(|modal| {
+        every_mode_is_legal(ctx.state, ctx.source, ctx.player, &modal, ctx.cause())
+    })
 }
 
 /// The most times the player can pay the repeatable cost `index` on top of what is chosen.

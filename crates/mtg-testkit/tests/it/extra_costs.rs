@@ -34,7 +34,10 @@ fn kick(driver: &mut Driver, costs: &[usize]) -> Result<Vec<Event>, ScriptError>
 /// The cards the pending question offers for a cost, by name.
 fn offered_picks(driver: &Driver) -> Vec<String> {
     let DecisionKind::ChooseCards(options) = &driver.decision().unwrap().kind else {
-        panic!("a pick was expected, not {}", driver.decision().unwrap().kind.name());
+        panic!(
+            "a pick was expected, not {}",
+            driver.decision().unwrap().kind.name()
+        );
     };
     let mut from: Vec<String> = options
         .from
@@ -72,7 +75,9 @@ fn replays(driver: &Driver, scenario: Scenario) {
 }
 
 fn zone_has(driver: &Driver, zone: Zone, name: &str) -> bool {
-    names(driver.state(), zone).iter().any(|found| found == name)
+    names(driver.state(), zone)
+        .iter()
+        .any(|found| found == name)
 }
 
 /// How the opponent answers the spell.
@@ -160,7 +165,8 @@ fn buyback_returns_the_spell_to_the_hand_only_when_it_resolves(
 }
 
 #[test]
-fn a_spell_bought_back_can_be_cast_again_and_asks_for_the_buyback_again() -> Result<(), ScriptError> {
+fn a_spell_bought_back_can_be_cast_again_and_asks_for_the_buyback_again() -> Result<(), ScriptError>
+{
     let mut driver = Driver::from_scenario(capsize_table(12))?;
     for _ in 0..2 {
         driver.begin_cast("Capsize")?;
@@ -296,7 +302,10 @@ fn an_optional_additional_cost_is_offered_only_when_its_part_can_be_paid(
         .unwrap();
     assert_eq!(sacrificed.is_some(), paid);
     if let Some(sacrificed) = sacrificed {
-        assert!(sacrificed < cast, "the artifact is paid before the spell is cast");
+        assert!(
+            sacrificed < cast,
+            "the artifact is paid before the spell is cast"
+        );
     }
     resolve(&mut driver)?;
     // Four damage kill the Giant, two do not.
@@ -356,7 +365,8 @@ fn a_kicker_that_sacrifices_a_creature_asks_which_and_pays_it_before_the_cast(
 }
 
 #[test]
-fn the_kicker_that_sacrifices_is_not_offered_to_a_player_with_no_creature_to_give() -> Result<(), ScriptError> {
+fn the_kicker_that_sacrifices_is_not_offered_to_a_player_with_no_creature_to_give()
+-> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(
         Scenario::new(2)
             .hand_named(0, ["Vicious Offering"])
@@ -395,10 +405,11 @@ fn flashback_with_life_is_offered_only_when_the_life_can_be_paid(
     driver.choose_targets(&[me])?;
     assert_eq!(driver.pay_options()?.cost.mana_value(), 2);
     let events = pay(&mut driver)?;
-    assert!(events.iter().any(|event| matches!(
-        event,
-        Event::LifePaid { amount: 3, .. }
-    )));
+    assert!(
+        events
+            .iter()
+            .any(|event| matches!(event, Event::LifePaid { amount: 3, .. }))
+    );
     resolve(&mut driver)?;
     assert_eq!(driver.state().player(pid(0)).unwrap().life(), life - 3);
     assert_eq!(names(driver.state(), Zone::Hand(pid(0))).len(), 2);
@@ -431,18 +442,38 @@ fn evoke_exiles_a_card_from_the_hand_and_the_permanent_is_sacrificed(
     assert_eq!(driver.pay_options()?.cost.mana_value(), 0);
     let events = pay(&mut driver)?;
     let exiled = events.iter().position(|event| {
-        matches!(event, Event::ZoneChanged { to: Zone::Exile, .. })
+        matches!(
+            event,
+            Event::ZoneChanged {
+                to: Zone::Exile,
+                ..
+            }
+        )
     });
     let cast = events
         .iter()
         .position(|event| matches!(event, Event::SpellCast { .. }))
         .unwrap();
-    assert!(exiled.unwrap() < cast, "the card is exiled before the spell is cast");
+    assert!(
+        exiled.unwrap() < cast,
+        "the card is exiled before the spell is cast"
+    );
     // The three Forests are untouched: the evoke cost has no mana.
     assert_eq!(
-        driver.state().zone(Zone::Battlefield).iter().filter(|id| {
-            driver.state().object(**id).unwrap().permanent().unwrap().tapped()
-        }).count(),
+        driver
+            .state()
+            .zone(Zone::Battlefield)
+            .iter()
+            .filter(|id| {
+                driver
+                    .state()
+                    .object(**id)
+                    .unwrap()
+                    .permanent()
+                    .unwrap()
+                    .tapped()
+            })
+            .count(),
         0
     );
     settle(&mut driver)?;
@@ -453,17 +484,15 @@ fn evoke_exiles_a_card_from_the_hand_and_the_permanent_is_sacrificed(
         names(driver.state(), Zone::Exile),
         driver.decision().map(|d| d.kind.name())
     );
-    assert_eq!(
-        zone_has(&driver, Zone::Exile, "Rampant Growth"),
-        asks
-    );
+    assert_eq!(zone_has(&driver, Zone::Exile, "Rampant Growth"), asks);
     assert_eq!(zone_has(&driver, Zone::Exile, "Giant Growth"), !asks);
     replays(&driver, endurance_table(hand));
     Ok(())
 }
 
 #[test]
-fn evoke_with_a_card_to_exile_is_not_offered_when_the_hand_has_no_other_green_card() -> Result<(), ScriptError> {
+fn evoke_with_a_card_to_exile_is_not_offered_when_the_hand_has_no_other_green_card()
+-> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(endurance_table(&["Lightning Bolt"]))?;
     driver.begin_cast("Endurance")?;
     // Only the mana cost: no question about the way.
@@ -498,12 +527,20 @@ fn the_kicks_of_a_permanent_that_a_state_based_action_removed_are_read_by_its_tr
     resolve(&mut driver)?;
     if kicked {
         // The trigger asks for its target as it goes on the stack, after the permanent is gone.
-        assert!(!zone_has(&driver, Zone::Battlefield, "Gatekeeper of Malakir"));
+        assert!(!zone_has(
+            &driver,
+            Zone::Battlefield,
+            "Gatekeeper of Malakir"
+        ));
         let foe = driver.target_player(1);
         driver.choose_targets(&[foe])?;
     }
     settle(&mut driver)?;
-    assert!(zone_has(&driver, Zone::Graveyard(pid(0)), "Gatekeeper of Malakir"));
+    assert!(zone_has(
+        &driver,
+        Zone::Graveyard(pid(0)),
+        "Gatekeeper of Malakir"
+    ));
     assert_eq!(
         zone_has(&driver, Zone::Graveyard(pid(1)), "Wall"),
         kicked,
@@ -553,14 +590,20 @@ fn bot_games_with_the_cards_that_pay_parts_keep_every_invariant_and_use_them() {
     });
     let (paid, picked, life, bought_back) = seen.into_inner().unwrap();
     assert!(paid > 0, "some spells paid an optional cost");
-    assert!(picked > 0, "some optional cost took objects the player picked");
+    assert!(
+        picked > 0,
+        "some optional cost took objects the player picked"
+    );
     assert!(life > 0, "some cost paid 3 life");
-    assert!(bought_back > 0, "some spell returned to a hand as it resolved");
+    assert!(
+        bought_back > 0,
+        "some spell returned to a hand as it resolved"
+    );
 }
 
 #[test]
-fn the_pick_from_the_hand_is_asked_of_its_player_alone_refuses_a_card_not_offered_and_logs_nothing_until_paid(
-) -> Result<(), ScriptError> {
+fn the_pick_from_the_hand_is_asked_of_its_player_alone_refuses_a_card_not_offered_and_logs_nothing_until_paid()
+-> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(endurance_table(&["Giant Growth", "Rampant Growth"]))?;
     driver.begin_cast("Endurance")?;
     choose_way(&mut driver, "Evoke")?;
@@ -578,7 +621,11 @@ fn the_pick_from_the_hand_is_asked_of_its_player_alone_refuses_a_card_not_offere
     let events = pay(&mut driver)?;
     assert!(events.iter().any(|event| matches!(
         event,
-        Event::ZoneChanged { to: Zone::Exile, cause: mtg_engine::events::ZoneCause::Exiled, .. }
+        Event::ZoneChanged {
+            to: Zone::Exile,
+            cause: mtg_engine::events::ZoneCause::Exiled,
+            ..
+        }
     )));
     Ok(())
 }

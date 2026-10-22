@@ -186,6 +186,8 @@ impl Amounting {
     }
 }
 
+// One flag for each fact about the card the walk checks a node against.
+#[allow(clippy::struct_excessive_bools)]
 struct Walker<'a> {
     tokens: &'a BTreeSet<String>,
     problems: Vec<Problem>,
@@ -510,7 +512,9 @@ impl<'a> Walker<'a> {
             Condition::AdditionalCostPaid => {
                 self.uses("Condition", "AdditionalCostPaid");
                 if !self.has_additional_cost {
-                    self.problem("`AdditionalCostPaid` needs an `AdditionalCost` ability on the card");
+                    self.problem(
+                        "`AdditionalCostPaid` needs an `AdditionalCost` ability on the card",
+                    );
                 }
             }
             Condition::CastWith(_) => self.uses("Condition", "CastWith"),
@@ -567,6 +571,26 @@ impl<'a> Walker<'a> {
                 }
             });
         }
+    }
+
+    /// An optional additional cost is paid by the caster as the spell is announced, never by the spell itself.
+    fn additional_cost(&mut self, cost: &Cost) {
+        self.at("cost", |w| w.cost(cost));
+        let by_the_source = cost.0.iter().any(|item| {
+            matches!(
+                item,
+                CostItem::Tap
+                    | CostItem::Untap
+                    | CostItem::SacrificeSelf
+                    | CostItem::ExileSelf
+                    | CostItem::DiscardSelf
+                    | CostItem::RemoveCounters { .. }
+            )
+        });
+        if by_the_source {
+            self.problem("an additional cost is paid by the caster, not by the spell itself");
+        }
+        self.parts_a_spell_cost_does_not_pay("Ability", "AdditionalCost", cost);
     }
 
     /// The parts of the cost of a keyword of a spell (kicker, buyback, entwine, flashback, evoke, madness) that the
@@ -1604,23 +1628,7 @@ impl<'a> Walker<'a> {
                 condition,
                 ..
             } => w.cost_modifier(applies_to, mana, per, condition.as_ref()),
-            Ability::AdditionalCost { cost } => {
-                w.at("cost", |w| w.cost(cost));
-                if cost.0.iter().any(|item| {
-                    matches!(
-                        item,
-                        CostItem::Tap
-                            | CostItem::Untap
-                            | CostItem::SacrificeSelf
-                            | CostItem::ExileSelf
-                            | CostItem::DiscardSelf
-                            | CostItem::RemoveCounters { .. }
-                    )
-                }) {
-                    w.problem("an additional cost is paid by the caster, not by the spell itself");
-                }
-                w.parts_a_spell_cost_does_not_pay("Ability", "AdditionalCost", cost);
-            }
+            Ability::AdditionalCost { cost } => w.additional_cost(cost),
             Ability::Keyword(keyword) => w.keyword(keyword),
             Ability::Manual { reason, span } => {
                 if reason.trim().is_empty() {

@@ -34,6 +34,7 @@ use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
 use crate::abilities::AbilityRef;
 use crate::ability_reader::{abilities_of, provided_here, working_here};
+use crate::announce::payments;
 use crate::characteristics::controller_of_object;
 use crate::choose::{
     Choice, ChoiceOption, OptionOptions, ReplacementCandidate, ReplacementOptions, Target,
@@ -44,7 +45,6 @@ use crate::counters::CountersChanged;
 use crate::decision::{Decision, DecisionKind};
 use crate::error::EngineError;
 use crate::events::{DeathCause, Event, ResolutionOutcome, ZoneCause};
-use crate::announce::payments;
 use crate::keywords::{self, Holder, OptionalKind};
 use crate::object::{Chosen, GameObject, ObjectKind, ObjectRef};
 use crate::resolve::{Scope, zone_kind};
@@ -86,12 +86,10 @@ pub fn process(
         && !proposed
             .iter()
             .any(|event| entering(state, event).is_some())
-        && !proposed
-            .iter()
-            .any(|event| {
-                let item = Item::One(event.clone());
-                leaves_stack_by_flashback(state, &item) || returns_by_buyback(state, &item)
-            })
+        && !proposed.iter().any(|event| {
+            let item = Item::One(event.clone());
+            leaves_stack_by_flashback(state, &item) || returns_by_buyback(state, &item)
+        })
     {
         return Ok(Processed::Events(proposed));
     }
@@ -828,22 +826,29 @@ impl Pass<'_> {
                 is_self: true,
             });
         }
-        if matches!(&unit, Unit::Move { .. })
-            && !slot.applied.contains(&Origin::Buyback)
-            && returns_by_buyback(self.state, &slot.item)
-            && let Item::One(Event::SpellResolved { object }) = &slot.item
-            && let Some(spell) = self.state.object(*object)
-        {
-            found.push(Candidate {
-                origin: Origin::Buyback,
-                object: spell.reference(),
-                controller: spell.controller(),
-                action: Action::Replace(ReplaceBy::MoveTo(ZoneKind::Hand)),
-                is_self: true,
-            });
+        if matches!(&unit, Unit::Move { .. }) {
+            found.extend(self.buyback_candidate(slot));
         }
         found.sort_by_key(|candidate| candidate.origin);
         Ok(found)
+    }
+
+    /// The return of a spell that resolved with its buyback cost paid to its owner's hand, when it has not been applied.
+    fn buyback_candidate(&self, slot: &Slot) -> Option<Candidate> {
+        if slot.applied.contains(&Origin::Buyback) || !returns_by_buyback(self.state, &slot.item) {
+            return None;
+        }
+        let Item::One(Event::SpellResolved { object }) = &slot.item else {
+            return None;
+        };
+        let spell = self.state.object(*object)?;
+        Some(Candidate {
+            origin: Origin::Buyback,
+            object: spell.reference(),
+            controller: spell.controller(),
+            action: Action::Replace(ReplaceBy::MoveTo(ZoneKind::Hand)),
+            is_self: true,
+        })
     }
 
     /// The protection that prevents all the damage `dealer` would deal to `target`, as the only effect that applies to it:

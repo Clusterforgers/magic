@@ -38,15 +38,22 @@ fn kind(card_type: CardType) -> Selector {
         count: Amount::one(),
     }])
 )]
-fn an_optional_additional_cost_reads_and_writes_back(#[case] text: &str, #[case] expected: Ability) {
+fn an_optional_additional_cost_reads_and_writes_back(
+    #[case] text: &str,
+    #[case] expected: Ability,
+) {
     assert_eq!(golden(text, ClauseKind::Static, false), expected);
 }
 
 #[rstest]
 #[case::mandatory("As an additional cost to cast this spell, discard a card.")]
 #[case::mandatory_sacrifice("As an additional cost to cast this spell, sacrifice a creature.")]
-#[case::any_number("As an additional cost to cast this spell, you may sacrifice any number of Spirits.")]
-#[case::revealing("As an additional cost to cast this spell, you may reveal a Dragon card from your hand.")]
+#[case::any_number(
+    "As an additional cost to cast this spell, you may sacrifice any number of Spirits."
+)]
+#[case::revealing(
+    "As an additional cost to cast this spell, you may reveal a Dragon card from your hand."
+)]
 fn a_cost_the_caster_must_pay_or_the_readers_do_not_model_stays_with_the_table(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Static, false), None);
 }

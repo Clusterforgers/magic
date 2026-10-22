@@ -346,7 +346,5 @@ pub(super) fn additional_text(cost: &Cost) -> Option<String> {
         let first = chars.next()?;
         first.to_lowercase().chain(chars).collect()
     };
-    Some(format!(
-        "As an additional cost to cast ~, you may {body}."
-    ))
+    Some(format!("As an additional cost to cast ~, you may {body}."))
 }
