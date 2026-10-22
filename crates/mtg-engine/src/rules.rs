@@ -8,7 +8,7 @@
 //! can change it (`GameState::rules`), and each rule is read by one function that the one place deciding it asks.
 
 use std::cell::Cell;
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::sync::OnceLock;
 
 use mtg_cards::ability::Ability;
@@ -50,6 +50,10 @@ pub enum Rule {
     RevealTop(Vec<PlayerId>),
     /// The players have no maximum hand size (CR 402.2).
     NoMaxHandSize(Vec<PlayerId>),
+    /// The players may look at the top card of their library any time.
+    LookAtTop(Vec<PlayerId>),
+    /// Each player may play this many lands more on each of their turns (CR 305.2).
+    AdditionalLandPlays(Vec<(PlayerId, u32)>),
     /// The players may cast the cards the selector picks from a zone, without paying their mana costs or as though they
     /// had flash (CR 601.3).
     MayCast {
@@ -194,6 +198,8 @@ pub(crate) struct RulesInForce {
     no_search: BTreeSet<PlayerId>,
     reveal_top: BTreeSet<PlayerId>,
     no_hand_limit: BTreeSet<PlayerId>,
+    look_top: BTreeSet<PlayerId>,
+    extra_lands: BTreeMap<PlayerId, u32>,
     again: Vec<Again>,
     unpreventable: Vec<Unpreventable>,
     casts: Vec<Cast>,
@@ -267,6 +273,13 @@ impl RulesInForce {
             Rule::CantSearch(players) => self.no_search.extend(players),
             Rule::RevealTop(players) => self.reveal_top.extend(players),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
+            Rule::LookAtTop(players) => self.look_top.extend(players),
+            Rule::AdditionalLandPlays(plays) => {
+                for (player, count) in plays {
+                    let total = self.extra_lands.entry(*player).or_default();
+                    *total = total.saturating_add(*count);
+                }
+            }
             Rule::TriggerAgain(cause) => {
                 if let Some(source) = source {
                     self.again.push(Again {
@@ -370,12 +383,17 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             play: permission.play,
         },
         GameRule::TriggerAgain { cause } => Rule::TriggerAgain(Box::new(cause.clone())),
-        GameRule::LookAtTopAnyTime(_) => {
-            return Err(ResolveError::Unsupported("Rule.LookAtTopAnyTime"));
-        }
+        GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
         GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
-        GameRule::AdditionalLandPlays { .. } => {
-            return Err(ResolveError::Unsupported("Rule.AdditionalLandPlays"));
+        GameRule::AdditionalLandPlays { who, count } => {
+            let count = u32::try_from(scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
+            Rule::AdditionalLandPlays(
+                scope
+                    .players(who)?
+                    .into_iter()
+                    .map(|player| (player, count))
+                    .collect(),
+            )
         }
         // Eligibility is read from the definition when a seat is checked (`CardDefinition::can_be_commander`); no
         // rule is ever in force and an effect cannot start one.
@@ -393,7 +411,9 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::CantDraw(players)
         | Rule::CantSearch(players)
         | Rule::RevealTop(players)
+        | Rule::LookAtTop(players)
         | Rule::NoMaxHandSize(players) => players.is_empty(),
+        Rule::AdditionalLandPlays(plays) => plays.iter().all(|(_, count)| *count == 0),
         Rule::MayCast { who, only, .. } => {
             who.is_empty() || only.as_ref().is_some_and(Vec::is_empty)
         }
@@ -490,6 +510,8 @@ static NONE: RulesInForce = RulesInForce {
     no_search: BTreeSet::new(),
     reveal_top: BTreeSet::new(),
     no_hand_limit: BTreeSet::new(),
+    look_top: BTreeSet::new(),
+    extra_lands: BTreeMap::new(),
     again: Vec::new(),
     unpreventable: Vec::new(),
     casts: Vec::new(),
@@ -626,6 +648,22 @@ pub(crate) fn no_max_hand_size(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_hand_limit.contains(&player)
 }
 
+/// Whether `player` may look at the top card of their library any time: the one place the sight of a seat reads this
+/// rule.
+pub(crate) fn looks_at_top(state: &GameState, player: PlayerId) -> bool {
+    state.rules().look_top.contains(&player)
+}
+
+/// How many lands more than the format's limit `player` may play in a turn: the one place a land play reads this rule.
+pub(crate) fn extra_land_plays(state: &GameState, player: PlayerId) -> u32 {
+    state
+        .rules()
+        .extra_lands
+        .get(&player)
+        .copied()
+        .unwrap_or_default()
+}
+
 /// Whether `player` can't search libraries: the one place a search reads this rule.
 pub fn cant_search(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_search.contains(&player)
@@ -681,11 +719,13 @@ mod tests {
         Draw(PlayerId),
         Search(PlayerId),
         Top(PlayerId),
+        Looks(PlayerId),
+        Plays(PlayerId, u32),
         Attack(&'static str),
         Block(&'static str),
     }
 
-    use Probe::{Attack, Block, Draw, Life, Search, Top};
+    use Probe::{Attack, Block, Draw, Life, Looks, Plays, Search, Top};
 
     fn ability(json: &str) -> Ability {
         serde_json::from_str(json).unwrap()
@@ -731,6 +771,8 @@ mod tests {
             Draw(player) => cant_draw(game, player),
             Search(player) => cant_search(game, player),
             Top(player) => game.revealed_top(player).is_some(),
+            Looks(player) => looks_at_top(game, player),
+            Plays(player, extra) => extra_land_plays(game, player) == extra,
             Attack(name) => must_attack(game, id(game, name)),
             Block(name) => must_block(game, id(game, name)),
         }
@@ -778,6 +820,15 @@ mod tests {
     #[case::my_top(r#"{"RevealTop":"You"}"#, &[(Top(ME), true), (Top(FOE), false)])]
     #[case::their_top(r#"{"RevealTop":"Opponents"}"#, &[(Top(ME), false), (Top(FOE), true)])]
     #[case::every_top(r#"{"RevealTop":"EachPlayer"}"#, &[(Top(ME), true), (Top(FOE), true)])]
+    #[case::my_look(r#"{"LookAtTopAnyTime":"You"}"#, &[(Looks(ME), true), (Looks(FOE), false)])]
+    #[case::their_look(r#"{"LookAtTopAnyTime":"Opponents"}"#, &[(Looks(ME), false), (Looks(FOE), true)])]
+    #[case::every_look(r#"{"LookAtTopAnyTime":"EachPlayer"}"#, &[(Looks(ME), true), (Looks(FOE), true)])]
+    #[case::looking_is_not_revealing(r#"{"LookAtTopAnyTime":"You"}"#, &[(Top(ME), false), (Top(FOE), false)])]
+    #[case::an_extra_land(r#"{"AdditionalLandPlays":{}}"#, &[(Plays(ME, 1), true), (Plays(FOE, 0), true), (Plays(FOE, 1), false)])]
+    #[case::two_extra_lands(r#"{"AdditionalLandPlays":{"count":2}}"#, &[(Plays(ME, 2), true), (Plays(ME, 1), false), (Plays(FOE, 0), true)])]
+    #[case::an_extra_land_each(r#"{"AdditionalLandPlays":{"who":"EachPlayer"}}"#, &[(Plays(ME, 1), true), (Plays(FOE, 1), true)])]
+    #[case::an_extra_land_for_them(r#"{"AdditionalLandPlays":{"who":"Opponents"}}"#, &[(Plays(ME, 0), true), (Plays(FOE, 1), true)])]
+    #[case::lands_by_a_count(r#"{"AdditionalLandPlays":{"count":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}"#, &[(Plays(ME, 2), true), (Plays(FOE, 0), true)])]
     #[case::this_attacks(r#"{"MustAttack":"This"}"#, &[(Attack("Holder"), true), (Attack("Wolf"), false), (Attack("Bear"), false)])]
     #[case::my_creatures_attack(r#"{"MustAttack":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#, &[(Attack("Holder"), true), (Attack("Wolf"), true), (Attack("Bear"), false)])]
     #[case::their_creatures_attack(r#"{"MustAttack":{"Each":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}}"#, &[(Attack("Holder"), false), (Attack("Wolf"), false), (Attack("Bear"), true)])]
@@ -800,6 +851,8 @@ mod tests {
     #[case::draws(r#"{"CantDraw":"EachPlayer"}"#, Draw(FOE))]
     #[case::searches(r#"{"CantSearch":"EachPlayer"}"#, Search(ME))]
     #[case::top(r#"{"RevealTop":"EachPlayer"}"#, Top(FOE))]
+    #[case::look(r#"{"LookAtTopAnyTime":"EachPlayer"}"#, Looks(ME))]
+    #[case::lands(r#"{"AdditionalLandPlays":{"who":"EachPlayer"}}"#, Plays(FOE, 1))]
     #[case::attack(r#"{"MustAttack":"This"}"#, Attack("Holder"))]
     #[case::block(r#"{"MustBlock":"This"}"#, Block("Holder"))]
     fn a_static_rule_stops_with_its_source(#[case] rule: &str, #[case] probe: Probe) {
@@ -1105,12 +1158,6 @@ mod tests {
     }
 
     #[rstest]
-    #[case::looking_at_the_top(r#"{"LookAtTopAnyTime":"You"}"#, "Rule.LookAtTopAnyTime")]
-    #[case::an_additional_land(r#"{"AdditionalLandPlays":{}}"#, "Rule.AdditionalLandPlays")]
-    #[case::two_additional_lands(
-        r#"{"AdditionalLandPlays":{"count":2}}"#,
-        "Rule.AdditionalLandPlays"
-    )]
     #[case::a_commander(r#""CanBeCommander""#, "Rule.CanBeCommander")]
     fn a_rule_the_engine_does_not_play_refuses_by_its_name(
         #[case] rule: &str,
@@ -1159,6 +1206,134 @@ mod tests {
         apply_event(&mut game, &drawn).unwrap();
         assert_eq!(game.revealed_top(ME), Some(second));
         assert!(game.is_shown_to(FOE, second) && !game.is_shown_to(FOE, top));
+    }
+
+    /// A table of `seats` players: seat 0 controls the holder with the rules, a Forest sits in its hand and in its
+    /// graveyard, and every seat has a library of five creatures.
+    fn table(seats: usize, rules: Vec<Ability>) -> GameState {
+        let forest = || Arc::new(CardDefinition::basic_land(Some(mtg_core::color::Color::Green)));
+        let mut battlefields = vec![vec![holder(rules)]];
+        battlefields.extend((1..seats).map(|_| Vec::new()));
+        let mut hands = vec![vec![forest(), forest()]];
+        hands.extend((1..seats).map(|_| Vec::new()));
+        let mut setup = crate::fixtures::setup(hands, battlefields);
+        setup.players[0].graveyard = vec![forest()];
+        match GameState::from_setup(&setup) {
+            Ok(state) => state,
+            Err(error) => panic!("the setup is valid: {error}"),
+        }
+    }
+
+    #[rstest]
+    #[case::you("You", 1)]
+    #[case::each_player("EachPlayer", 0)]
+    #[case::opponents("Opponents", 0)]
+    fn rules_about_players_reach_each_seat_of_a_table_of_two_to_four(
+        #[values(2, 3, 4)] seats: usize,
+        #[case] who: &str,
+        #[case] fixed: usize,
+    ) {
+        let reached = match who {
+            "You" => fixed,
+            "Opponents" => seats - 1,
+            _ => seats,
+        };
+        let look = rule_ability(&format!(r#"{{"LookAtTopAnyTime":"{who}"}}"#));
+        let lands = rule_ability(&format!(r#"{{"AdditionalLandPlays":{{"who":"{who}","count":2}}}}"#));
+        let game = table(seats, vec![look, lands]);
+        let seats = (0..seats).map(|n| PlayerId(u64::try_from(n).unwrap()));
+        assert_eq!(
+            seats.clone().filter(|seat| looks_at_top(&game, *seat)).count(),
+            reached
+        );
+        assert_eq!(
+            seats.map(|seat| extra_land_plays(&game, seat)).sum::<u32>(),
+            2 * u32::try_from(reached).unwrap()
+        );
+    }
+
+    #[test]
+    fn two_sources_of_extra_land_plays_add_up_and_each_ends_alone() {
+        let one = || rule_ability(r#"{"AdditionalLandPlays":{}}"#);
+        let mut game = game(vec![one(), one()]);
+        assert_eq!(extra_land_plays(&game, ME), 2);
+        // A second permanent that has the rule joins the first: the count follows the sources in play.
+        let wolf = id(&game, "Wolf");
+        let effect = effect(&game, Rule::AdditionalLandPlays(vec![(ME, 3)]), Duration::Forever);
+        apply_event(&mut game, &Event::RuleCreated { effect }).unwrap();
+        assert_eq!(extra_land_plays(&game, ME), 5);
+        assert_eq!(extra_land_plays(&game, FOE), 0);
+        leaves(&mut game, "Holder");
+        assert_eq!(extra_land_plays(&game, ME), 3, "the effect outlasts the holder");
+        assert!(game.object(wolf).is_some());
+    }
+
+    #[test]
+    fn extra_land_plays_let_the_active_player_play_more_lands_in_a_turn() {
+        let rules = vec![rule_ability(r#"{"AdditionalLandPlays":{}}"#)];
+        let plain = table(2, Vec::new());
+        let extra = table(2, rules);
+        let playable = |game: &GameState| crate::priority::priority_options(game, ME).playable_lands;
+        let play = |game: &mut GameState| {
+            let land = playable(game)[0];
+            let event = Event::LandPlayed {
+                player: ME,
+                object: land,
+                face: None,
+            };
+            apply_event(game, &event).unwrap();
+        };
+        let (mut plain, mut extra) = (plain, extra);
+        assert_eq!(playable(&plain).len(), 2);
+        play(&mut plain);
+        play(&mut extra);
+        assert!(playable(&plain).is_empty(), "one land a turn");
+        assert_eq!(playable(&extra).len(), 1, "one more with the rule");
+        play(&mut extra);
+        assert!(playable(&extra).is_empty());
+        extra.turn.lands_played = 0;
+        assert_eq!(playable(&extra).len(), 0, "the hand is empty");
+    }
+
+    #[test]
+    fn the_top_card_is_shown_to_its_owner_alone_while_a_rule_lets_them_look() {
+        let mut game = game(vec![rule_ability(r#"{"LookAtTopAnyTime":"You"}"#)]);
+        let library = game.zone(Zone::Library(ME)).to_vec();
+        let (top, second) = (library[library.len() - 1], library[library.len() - 2]);
+        assert!(game.is_shown_to(ME, top));
+        assert!(!game.is_shown_to(FOE, top), "an opponent does not see it");
+        assert!(!game.is_shown_to(ME, second), "nothing below the top");
+        assert_eq!(game.revealed_top(ME), None, "it is not revealed to the table");
+        let drawn = Event::CardDrawn {
+            player: ME,
+            object: top,
+        };
+        apply_event(&mut game, &drawn).unwrap();
+        assert!(game.is_shown_to(ME, second), "the next card is the top");
+        leaves(&mut game, "Holder");
+        assert!(!game.is_shown_to(ME, second), "the rule ended with its source");
+    }
+
+    #[test]
+    fn a_land_in_the_graveyard_is_played_under_a_permission_to_play_lands_from_there() {
+        let permission = r#"{"MayCast":{"what":[{"Type":"Land"}],"from":"Graveyard","play":true}}"#;
+        let playable = |game: &GameState| crate::priority::priority_options(game, ME).playable_lands;
+        let graveyard = |game: &GameState| game.zone(Zone::Graveyard(ME)).to_vec();
+        let mut game = table(2, vec![rule_ability(permission)]);
+        let card = graveyard(&game)[0];
+        assert!(playable(&game).contains(&card));
+        let event = Event::LandPlayed {
+            player: ME,
+            object: card,
+            face: None,
+        };
+        apply_event(&mut game, &event).unwrap();
+        assert_eq!(game.object(card).unwrap().zone(), Zone::Battlefield);
+        assert!(graveyard(&game).is_empty());
+        let without = table(2, Vec::new());
+        assert!(!playable(&without).contains(&graveyard(&without)[0]));
+        // The permission does not reach a graveyard of another seat.
+        assert!(crate::priority::priority_options(&game, FOE).playable_lands.is_empty());
     }
 
     #[test]

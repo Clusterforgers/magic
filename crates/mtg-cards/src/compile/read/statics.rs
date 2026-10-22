@@ -13,6 +13,7 @@ use super::amounts::{count_word, number_word};
 use super::copies;
 use super::counters;
 use super::effects::{granted, power_toughness};
+use super::lands;
 use super::prevention;
 use super::render::{self, capitalize, is_a_type, signed_text};
 use super::selectors::{Form, all, granted_text, phrase, phrase_text, subtype};
@@ -28,11 +29,12 @@ use crate::value::{Amount, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 9] = [
+const TEMPLATES: [Template; 10] = [
     entering,
     copies::enters_as_copy,
     as_entering,
     rule,
+    lands::from_a_zone,
     cannot,
     cost_modifier,
     modifies,
@@ -296,17 +298,7 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     if r.words("you may look at the top card of your library any time") {
         return Some(GameRule::LookAtTopAnyTime(Ref::You));
     }
-    let who = if r.words("you may play an additional land on each of your turns") {
-        Ref::You
-    } else if r.words("each player may play an additional land on each of their turns") {
-        Ref::EachPlayer
-    } else {
-        return None;
-    };
-    Some(GameRule::AdditionalLandPlays {
-        who,
-        count: Amount::one(),
-    })
+    lands::additional(r)
 }
 
 /// A group of permanents: "all creatures", "creatures you control", "other creatures you control",
@@ -772,17 +764,12 @@ fn rule_texts(rule: &GameRule, from: ZoneKind) -> Vec<String> {
         (GameRule::LookAtTopAnyTime(Ref::You), ZoneKind::Battlefield) => {
             vec!["You may look at the top card of your library any time".to_owned()]
         }
-        (GameRule::AdditionalLandPlays { who, count }, ZoneKind::Battlefield) if count.is_one() => {
-            match who {
-                Ref::You => {
-                    vec!["You may play an additional land on each of your turns".to_owned()]
-                }
-                Ref::EachPlayer => vec![
-                    "Each player may play an additional land on each of their turns".to_owned(),
-                ],
-                _ => Vec::new(),
-            }
+        (GameRule::AdditionalLandPlays { who, count }, ZoneKind::Battlefield) => {
+            lands::additional_texts(who, count)
         }
+        (GameRule::MayCast(permission), ZoneKind::Battlefield) => lands::from_a_zone_text(permission)
+            .into_iter()
+            .collect(),
         (GameRule::CanBeCommander, ZoneKind::Battlefield) => {
             vec!["~ can be your commander".to_owned()]
         }
@@ -840,7 +827,20 @@ fn subjects(affected: &Ref, itself: bool) -> Vec<(String, bool)> {
             } else {
                 ""
             };
-            vec![(format!("{prefix}{group}{chosen}"), true)]
+            let plain = format!("{prefix}{group}{chosen}");
+            // Slivers and tokens are everyone's: "All Sliver creatures get +1/+1", but "Creature tokens get -1/-0".
+            let everyones = prefix.is_empty()
+                && preds
+                    .iter()
+                    .any(|pred| matches!(pred, Pred::Subtype(_) | Pred::Token))
+                && !preds
+                    .iter()
+                    .any(|pred| matches!(pred, Pred::ControlledBy(_) | Pred::Other));
+            if everyones {
+                vec![(format!("all {plain}"), true), (plain, true)]
+            } else {
+                vec![(plain, true)]
+            }
         }
         _ => Vec::new(),
     }

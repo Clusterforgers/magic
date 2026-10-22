@@ -123,18 +123,18 @@ fn set_controller(state: &mut GameState, id: ObjectId, player: PlayerId) {
     }
 }
 
-/// A land played from a hand, or from exile when a permission lets its player (CR 305.1), as the face given.
+/// A land played from a hand, or from exile, a graveyard or a library when a permission lets its player (CR 305.1), as
+/// the face given.
 fn land_played(
     state: &mut GameState,
     player: PlayerId,
     object: ObjectId,
     face: Option<u8>,
 ) -> Result<(), EngineError> {
-    let from = if state.zones.get(Zone::Exile).contains(&object) {
-        Zone::Exile
-    } else {
-        Zone::Hand(player)
-    };
+    let from = [Zone::Exile, Zone::Graveyard(player), Zone::Library(player)]
+        .into_iter()
+        .find(|zone| state.zones.get(*zone).contains(&object))
+        .unwrap_or(Zone::Hand(player));
     expect_in(state, object, from)?;
     move_object(state, object, Zone::Battlefield, Placement::Top)?;
     set_controller(state, object, player);

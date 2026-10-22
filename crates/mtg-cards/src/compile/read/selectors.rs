@@ -373,9 +373,17 @@ pub fn subtype(r: &mut Reader<'_>) -> Option<String> {
 /// A group of one subtype as it is written in the plural ("Heroes", "Elves", "Spies"): the subtype in the singular.
 fn plural_subtype(r: &mut Reader<'_>) -> Option<String> {
     r.attempt(|r| {
-        let name = r.name()?;
-        singular_subtype(name, |one| r.is_subtype(one))
+        let name = group_name(r)?;
+        singular_subtype(&name, |one| r.is_subtype(one))
     })
+}
+
+/// The capitalized word of a group: a name inside a sentence, or the word that opens it.
+fn group_name(r: &mut Reader<'_>) -> Option<String> {
+    match r.name() {
+        Some(name) => Some(name.to_owned()),
+        None => r.opening_name(),
+    }
 }
 
 /// What ends a phrase: a card type or "permanent", "spell", "card", or a subtype.
@@ -389,6 +397,8 @@ enum Noun {
     Card,
     /// A subtype alone ("Clue"), singular only.
     Subtype(String),
+    /// "tokens", after the card types before it: "creature tokens".
+    Token,
 }
 
 /// The card types before the noun and the noun; "permanent" names no type.
@@ -431,6 +441,10 @@ fn head(r: &mut Reader<'_>, form: Form) -> Option<(Vec<CardType>, Noun)> {
             r.skip();
             Some((types, Noun::Plain))
         }
+        Some("tokens") if plural && forms.iter().all(|is_plural| !is_plural) => {
+            r.skip();
+            Some((types, Noun::Token))
+        }
         _ if !types.is_empty() && forms.iter().all(|is_plural| *is_plural == plural) => {
             Some((types, Noun::Plain))
         }
@@ -447,6 +461,25 @@ fn zone_suffix(r: &mut Reader<'_>) -> Option<[Pred; 2]> {
         .then_some([Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)])
 }
 
+/// A subtype or a card type in the singular that qualifies the plural noun after it: "Sliver creatures", "artifact
+/// creatures", "creature tokens" (the card types of a token are the noun).
+fn qualifier(r: &mut Reader<'_>) -> Option<Pred> {
+    r.attempt(|r| {
+        let plural_noun = |word: Option<&str>| {
+            word.is_some_and(|word| {
+                word == "tokens" || type_noun(word).is_some_and(|(_, plural)| plural)
+            })
+        };
+        let name = r.attempt(|r| group_name(r).filter(|name| r.is_subtype(name)));
+        if let Some(name) = name {
+            return plural_noun(r.peek_word()).then(|| Pred::Subtype(Subtype(name)));
+        }
+        let (card_type, plural) = r.peek_word().and_then(type_noun)?;
+        r.skip();
+        (!plural && plural_noun(r.peek_word())).then_some(Pred::Type(card_type))
+    })
+}
+
 /// A phrase naming a set of objects ("nonblack creature", "creatures you control", "noncreature spell").
 pub fn phrase(r: &mut Reader<'_>, form: Form) -> Option<Selector> {
     r.attempt(|r| {
@@ -457,6 +490,16 @@ pub fn phrase(r: &mut Reader<'_>, form: Form) -> Option<Selector> {
         }
         // The files put "other" after the adjectives it is printed before ("other legendary creatures").
         adjectives.sort_by_key(|pred| *pred == Pred::Other);
+        let mut qualifiers = Vec::new();
+        if form.plural() {
+            while let Some(pred) = qualifier(r) {
+                qualifiers.push(pred);
+            }
+        }
+        // The files list the card types first, then the subtype ("Creature, Goblin").
+        let (kinds, subtypes): (Vec<Pred>, Vec<Pred>) = qualifiers
+            .into_iter()
+            .partition(|pred| matches!(pred, Pred::Type(_)));
         let (types, noun) = head(r, form)?;
         let type_pred = match types.as_slice() {
             [] => None,
@@ -475,7 +518,16 @@ pub fn phrase(r: &mut Reader<'_>, form: Form) -> Option<Selector> {
                 preds.extend(adjectives);
             }
             Noun::Plain | Noun::Card => {
+                preds.extend(kinds);
                 preds.extend(type_pred);
+                preds.extend(subtypes);
+                preds.extend(adjectives);
+            }
+            Noun::Token => {
+                preds.extend(kinds);
+                preds.extend(type_pred);
+                preds.extend(subtypes);
+                preds.push(Pred::Token);
                 preds.extend(adjectives);
             }
         }
@@ -500,7 +552,8 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         _ => (false, selector.0.as_slice()),
     };
     let (mut adjectives, mut types, mut suffixes) = (Vec::new(), Vec::new(), Vec::new());
-    let (mut subtype, mut card) = (None, false);
+    let (mut subtype, mut card, mut token) = (None, false, false);
+    let mut kinds: Vec<CardType> = Vec::new();
     let mut rest = preds.iter().peekable();
     while let Some(pred) = rest.next() {
         if let Pred::In(zone @ (ZoneKind::Graveyard | ZoneKind::Hand)) = pred
@@ -524,9 +577,18 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
             } else {
                 adjectives.push(word);
             }
-        } else if let Some(found) = type_preds(pred) {
-            if !types.is_empty() {
+        } else if *pred == Pred::Token {
+            if token || !form.plural() {
                 return None;
+            }
+            token = true;
+        } else if let Some(found) = type_preds(pred) {
+            // A second card type before the noun qualifies it: "artifact creatures".
+            if !types.is_empty() {
+                if !form.plural() || types.len() != 1 || found.len() != 1 {
+                    return None;
+                }
+                kinds.append(&mut types);
             }
             types = found;
         } else {
@@ -534,15 +596,20 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         }
     }
     let plural = form.plural();
-    // A subtype is the noun by itself; a spell is not a card in a zone.
-    if (subtype.is_some() && (spell || card || !types.is_empty())) || (spell && card) {
+    // A subtype is the noun by itself, or qualifies a plural noun ("Sliver creatures"); a spell is not a card in a zone.
+    let qualified = plural && !spell && !card && (!types.is_empty() || token);
+    if (subtype.is_some() && (spell || card || (!types.is_empty() && !qualified)))
+        || (spell && card)
+        || (token && (spell || card))
+        || (!kinds.is_empty() && !qualified)
+    {
         return None;
     }
     let names: Vec<String> = types
         .iter()
         .map(|card_type| {
             let name = type_name(*card_type);
-            if plural && !spell && !card {
+            if plural && !spell && !card && !token {
                 plural_of(name)
             } else {
                 name.to_owned()
@@ -551,16 +618,23 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         .collect();
     let mut words = adjectives;
     words.extend(subtype.map(|name| {
-        if plural {
+        if plural && !qualified {
             plural_subtype_word(name)
         } else {
             name.to_owned()
         }
     }));
+    words.extend(
+        kinds
+            .iter()
+            .map(|card_type| type_name(*card_type).to_owned()),
+    );
     if !names.is_empty() {
         words.push(names.join(&format!(" {} ", form.connector())));
     }
-    if spell {
+    if token {
+        words.push("tokens".to_owned());
+    } else if spell {
         words.push(if plural { "spells" } else { "spell" }.to_owned());
     } else if card {
         words.push(if plural { "cards" } else { "card" }.to_owned());

@@ -1,0 +1,159 @@
+//! Lands played beyond the first and from other places: "You may play an additional land on each of your turns.", "You may
+//! play up to three additional lands this turn.", "You may play lands from your graveyard.", "You may play lands from the
+//! top of your library." Read from the wording and written back the same way.
+
+use super::amounts::{count_word, number_word};
+use super::tokens::Reader;
+use crate::ability::Ability;
+use crate::effect::Effect;
+use crate::modify::{CastPermission, Duration, GameRule};
+use crate::refs::{Pred, Ref, Selector, ZoneKind};
+use crate::value::Amount;
+use mtg_core::card::CardType;
+
+/// The effects of a spell: the land plays of one turn.
+pub const TEMPLATES: [fn(&mut Reader<'_>) -> Option<Vec<Effect>>; 1] = [additional_this_turn];
+
+/// How many more lands: "an additional land", "two additional lands", "up to three additional lands".
+fn how_many(r: &mut Reader<'_>, up_to: bool) -> Option<u32> {
+    if up_to {
+        r.need("up to")?;
+    }
+    let count = number_word(r.take_word()?)?;
+    let plural = r.word("additional") && r.peek_word() == Some("lands");
+    if plural {
+        r.skip();
+    } else {
+        r.need("land")?;
+    }
+    (plural == (count > 1)).then_some(count)
+}
+
+/// "You may play an additional land this turn.", "You may play up to three additional lands this turn."
+fn additional_this_turn(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("you may play")?;
+    let count = how_many(r, r.peek_word() == Some("up"))?;
+    r.need("this turn")?;
+    Some(vec![Effect::Rule {
+        rule: GameRule::AdditionalLandPlays {
+            who: Ref::You,
+            count: Amount::Fixed(i32::try_from(count).ok()?),
+        },
+        duration: Duration::UntilEndOfTurn,
+    }])
+}
+
+/// The effect `additional_this_turn` reads, written.
+pub fn effect_text(effect: &Effect) -> Option<String> {
+    let Effect::Rule {
+        rule:
+            GameRule::AdditionalLandPlays {
+                who: Ref::You,
+                count: Amount::Fixed(count),
+            },
+        duration: Duration::UntilEndOfTurn,
+    } = effect
+    else {
+        return None;
+    };
+    let count = u32::try_from(*count).ok().filter(|count| *count > 0)?;
+    Some(if count == 1 {
+        "you may play an additional land this turn".to_owned()
+    } else {
+        format!(
+            "you may play up to {} additional lands this turn",
+            count_word(count)?
+        )
+    })
+}
+
+/// "You may play an additional land on each of your turns.", "Each player may play an additional land on each of their
+/// turns."
+pub fn additional(r: &mut Reader<'_>) -> Option<GameRule> {
+    let who = if r.words("you may play") {
+        Ref::You
+    } else {
+        r.need("each player may play")?;
+        Ref::EachPlayer
+    };
+    let count = how_many(r, false)?;
+    let own = if who == Ref::You { "your" } else { "their" };
+    (r.words("on each of") || r.words("during each of")).then_some(())?;
+    r.need(own)?;
+    r.need("turns")?;
+    Some(GameRule::AdditionalLandPlays {
+        who,
+        count: Amount::Fixed(i32::try_from(count).ok()?),
+    })
+}
+
+/// The wordings of the rule `additional` reads.
+pub fn additional_texts(who: &Ref, count: &Amount) -> Vec<String> {
+    let Amount::Fixed(count) = count else {
+        return Vec::new();
+    };
+    let Some(count) = u32::try_from(*count).ok().filter(|count| *count > 0) else {
+        return Vec::new();
+    };
+    let (subject, own) = match who {
+        Ref::You => ("You may play", "your"),
+        Ref::EachPlayer => ("Each player may play", "their"),
+        _ => return Vec::new(),
+    };
+    let lands = if count == 1 {
+        "an additional land".to_owned()
+    } else if let Some(word) = count_word(count) {
+        format!("{word} additional lands")
+    } else {
+        return Vec::new();
+    };
+    ["on", "during"]
+        .iter()
+        .map(|preposition| format!("{subject} {lands} {preposition} each of {own} turns"))
+        .collect()
+}
+
+/// "You may play lands from your graveyard.", "You may play lands from the top of your library."
+pub fn from_a_zone(r: &mut Reader<'_>) -> Option<Ability> {
+    r.need("you may play lands from")?;
+    let from = if r.words("your graveyard") {
+        ZoneKind::Graveyard
+    } else {
+        r.need("the top of your library")?;
+        ZoneKind::Library
+    };
+    Some(Ability::Rule {
+        rule: GameRule::MayCast(CastPermission {
+            who: Ref::You,
+            what: Selector(vec![Pred::Type(CardType::Land)]),
+            from: Some(from),
+            free: false,
+            flash: false,
+            only: None,
+            play: true,
+        }),
+        condition: None,
+        from: ZoneKind::Battlefield,
+    })
+}
+
+/// The wording of the permission `from_a_zone` reads.
+pub fn from_a_zone_text(permission: &CastPermission) -> Option<String> {
+    let lands = Selector(vec![Pred::Type(CardType::Land)]);
+    let ordinary = permission.who == Ref::You
+        && permission.what == lands
+        && !permission.free
+        && !permission.flash
+        && permission.only.is_none()
+        && permission.play;
+    if !ordinary {
+        return None;
+    }
+    match permission.from {
+        Some(ZoneKind::Graveyard) => Some("You may play lands from your graveyard".to_owned()),
+        Some(ZoneKind::Library) => {
+            Some("You may play lands from the top of your library".to_owned())
+        }
+        _ => None,
+    }
+}
