@@ -353,6 +353,10 @@ fn a_quote_that_opens_an_ability_starts_a_sentence(#[case] text: &str, #[case] w
     "Whenever ~ becomes the target of a spell or ability, sacrifice ~.",
     r#"{"Triggered":{"when":{"BecomesTarget":{"what":["This"]}},"effects":[{"Sacrifice":{"filter":["This"]}}]}}"#
 )]
+#[case::when_it_enters_as_it(
+    "When ~ enters, sacrifice it.",
+    r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Sacrifice":{"filter":["This"]}}]}}"#
+)]
 #[case::when_it_enters(
     "When ~ enters, sacrifice ~.",
     r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Sacrifice":{"filter":["This"]}}]}}"#
@@ -362,7 +366,6 @@ fn a_card_that_sacrifices_itself_reads_it_as_the_card(#[case] text: &str, #[case
 }
 
 #[rstest]
-#[case::it_is_not_the_card("When ~ enters, sacrifice it.")]
 #[case::another_creature("Whenever a creature enters, sacrifice it.")]
 #[case::each_turn(
     "When ~ becomes the target of a spell or ability for the first time each turn, draw a card."

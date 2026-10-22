@@ -191,6 +191,7 @@ mod monarch;
 mod pay;
 mod payments;
 mod prevention;
+mod pump_wordings;
 mod put_back;
 mod removal_and_return;
 mod returns;
