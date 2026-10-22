@@ -244,6 +244,14 @@ impl RandomBot {
                 .iter()
                 .map(|o| PriorityAction::PlayLand(*o)),
         );
+        // A land face of a modal double-faced card is played as that face, the back one included.
+        actions.extend(
+            options
+                .faces
+                .iter()
+                .filter(|option| option.land)
+                .map(|option| PriorityAction::PlayLandFace(option.card, option.face)),
+        );
         actions.extend(
             options
                 .castable

@@ -41,6 +41,7 @@ mod equipment;
 mod evasion;
 mod event_triggers;
 mod extra_costs;
+mod face_rules;
 mod faces;
 mod faces_fuzz;
 mod forecast_hidden;

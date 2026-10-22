@@ -6,6 +6,7 @@ mod blocking_and_rules;
 mod common;
 mod compile;
 mod compile_corpus;
+mod compile_faces;
 mod compile_real;
 mod compile_shapes;
 mod corpus;
