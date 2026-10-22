@@ -1,0 +1,27 @@
+{
+  "id": "df797e0d-8ae2-4fdb-a33d-4ba7852b0172",
+  "oracle_id": "dc974eb4-72b9-4213-887b-8ee684b93420",
+  "name": "Flooded Grove",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "373",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{G/U}, {T}: Add {G}{G}, {G}{U}, or {U}{U}.",
+  "colors": [],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "C",
+    "G",
+    "U"
+  ]
+}

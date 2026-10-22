@@ -16,7 +16,7 @@ use mtg_testkit::{
 };
 use rstest::rstest;
 
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{for_each_seed, fuzz_games};
 
 /// Seat 0 holds `name` and controls `lands`; seat 1 controls a Bear.
 fn table(name: &str, lands: impl IntoIterator<Item = mtg_engine::PresetPermanent>) -> Scenario {
@@ -315,10 +315,7 @@ fn the_trigger_of_a_kicked_permanent_that_left_still_counts_the_kicks() -> Resul
 #[test]
 fn bot_games_with_kicked_cards_keep_every_invariant_and_use_the_optional_costs() {
     let seen = std::sync::Mutex::new((0u64, 0u64, 0u64, 0u64));
-    let games = std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40);
+    let games = fuzz_games(40);
     for_each_seed(0..games, |seed| {
         for players in [2, 4] {
             let outcome = play_game_with(

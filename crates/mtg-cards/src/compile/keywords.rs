@@ -337,6 +337,8 @@ pub fn read(item: &str) -> Option<Keyword> {
         "squad" => cost(rest).map(Keyword::Squad),
         "foretell" => cost(rest).map(Keyword::Foretell),
         "unearth" => spell_cost(rest).map(Keyword::Unearth),
+        "embalm" => spell_cost(rest).map(Keyword::Embalm),
+        "eternalize" => spell_cost(rest).map(Keyword::Eternalize),
         "escape" => spell_cost(rest).map(Keyword::Escape),
         "dash" => spell_cost(rest).map(Keyword::Dash),
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
@@ -437,6 +439,8 @@ fn plain(name: &str) -> Option<Keyword> {
         "aftermath" => Keyword::Aftermath,
         "undying" => Keyword::Undying,
         "persist" => Keyword::Persist,
+        "jump-start" => Keyword::JumpStart,
+        "retrace" => Keyword::Retrace,
         _ => return None,
     })
 }
@@ -694,6 +698,14 @@ mod tests {
     #[case::unearth("Unearth {1}{B}", Keyword::Unearth(mana("{1}{B}")))]
     #[case::unearth_in_mana_only_with_reminder("unearth {B}", Keyword::Unearth(mana("{B}")))]
     #[case::rebound("Rebound", Keyword::Rebound)]
+    #[case::jump_start("Jump-start", Keyword::JumpStart)]
+    #[case::retrace("retrace", Keyword::Retrace)]
+    #[case::embalm("Embalm {3}{W}", Keyword::Embalm(mana("{3}{W}")))]
+    #[case::eternalize("Eternalize {4}{U}{U}", Keyword::Eternalize(mana("{4}{U}{U}")))]
+    #[case::eternalize_with_a_life_cost(
+        "Eternalize—Pay 3 life.",
+        Keyword::Eternalize(Cost(vec![CostItem::PayLife(Amount::Fixed(3))]))
+    )]
     #[case::aftermath("Aftermath", Keyword::Aftermath)]
     #[case::dash("Dash {2}{R}", Keyword::Dash(mana("{2}{R}")))]
     #[case::ninjutsu("Ninjutsu {1}{U}", Keyword::Ninjutsu(mana("{1}{U}")))]
@@ -883,6 +895,8 @@ mod tests {
         }
     }
 
+    // One sample line for each keyword of the DSL.
+    #[allow(clippy::too_many_lines)]
     #[test]
     fn a_keyword_read_carries_the_name_it_was_printed_with() {
         let samples = [
@@ -960,6 +974,10 @@ mod tests {
             "Escape {1}",
             "Rebound",
             "Aftermath",
+            "Jump-start",
+            "Retrace",
+            "Embalm {1}",
+            "Eternalize {1}",
             "Dash {1}",
             "Ninjutsu {1}{U}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",

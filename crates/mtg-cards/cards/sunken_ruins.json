@@ -1,0 +1,33 @@
+{
+  "oracle_id": "e6415ffb-8b7a-41c3-bedf-0d4112b7b795",
+  "name": "Sunken Ruins",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunken Ruins",
+      "oracle_fingerprint": "33060bf85270a622d72346602932ab6b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U/B}" }, "Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "OneOfLists": [["Blue", "Blue"], ["Blue", "Black"], ["Black", "Black"]]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

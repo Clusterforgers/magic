@@ -65,7 +65,11 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     });
     let create = Effect::CreateToken {
         who: Ref::You,
-        token: TokenRef::CopyOf { of, except },
+        token: TokenRef::CopyOf {
+            of,
+            except,
+            no_mana_cost: false,
+        },
         count,
         tapped: false,
         attacking: false,
@@ -142,6 +146,7 @@ fn populate_steps() -> Vec<Effect> {
             token: TokenRef::CopyOf {
                 of: Ref::Bound(CHOSEN.to_owned()),
                 except: Vec::new(),
+                no_mana_cost: false,
             },
             count: Amount::one(),
             tapped: false,
@@ -406,7 +411,12 @@ pub(super) fn exceptions_text(mods: &[Modification], subject: Subject) -> Option
 pub(super) fn token_text(effect: &Effect, of: &str, delayed: bool) -> Option<String> {
     let Effect::CreateToken {
         who: Ref::You,
-        token: TokenRef::CopyOf { except, .. },
+        token:
+            TokenRef::CopyOf {
+                except,
+                no_mana_cost: false,
+                ..
+            },
         count,
         tapped: false,
         attacking: false,

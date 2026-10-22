@@ -48,6 +48,10 @@ enum Happened {
         attacker: ObjectId,
         player: PlayerId,
     },
+    /// Creatures were declared as attackers of a player, once for the declaration (not for a planeswalker).
+    PlayerAttacked { at: PlayerId },
+    /// A player declared creatures as attackers of a player, once for each pair of players in the declaration.
+    PlayerAttacks { by: PlayerId, at: PlayerId },
     /// A player cast a spell, the `nth` of their turn, after `before` spells that every player cast this turn.
     Cast {
         player: PlayerId,
@@ -112,6 +116,10 @@ enum Happened {
     BecameMonarch { player: PlayerId },
     /// A player proliferated.
     Proliferated { player: PlayerId },
+    /// A creature explored.
+    Explored { object: ObjectId, player: PlayerId },
+    /// A creature connived.
+    Connived { object: ObjectId, player: PlayerId },
     /// Everything of one kind of state (before or after) that happened in the batch, for the patterns of events that
     /// happen together.
     Batch(Vec<Happened>),
@@ -261,6 +269,26 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                     }),
                     AttackTarget::Planeswalker(_) => None,
                 }));
+                let mut pairs: Vec<(PlayerId, PlayerId)> = Vec::new();
+                for (attacker, at) in attackers {
+                    if let AttackTarget::Player(at) = at
+                        && let Some(by) =
+                            controller_of(post, *attacker).or_else(|| controller_of(pre, *attacker))
+                        && !pairs.contains(&(by, *at))
+                    {
+                        pairs.push((by, *at));
+                    }
+                }
+                for (_, at) in &pairs {
+                    if !found.contains(&Happened::PlayerAttacked { at: *at }) {
+                        found.push(Happened::PlayerAttacked { at: *at });
+                    }
+                }
+                found.extend(
+                    pairs
+                        .into_iter()
+                        .map(|(by, at)| Happened::PlayerAttacks { by, at }),
+                );
                 if !attackers.is_empty() {
                     found.push(Happened::AttackedTogether {
                         attackers: attackers.iter().map(|(attacker, _)| *attacker).collect(),
@@ -421,6 +449,7 @@ fn targeted(
 
 /// What `event` is, when it is about blocks, damage, life, cards drawn or cycled, taps, counters or attachments.
 /// `tapped` holds the permanents of the batch tapped so far whose mana has not been added.
+#[allow(clippy::too_many_lines)]
 fn about_players_and_permanents(
     event: &Event,
     look: Look<'_>,
@@ -525,6 +554,14 @@ fn about_players_and_permanents(
         }),
         Event::MonarchChanged { player } => found.push(Happened::BecameMonarch { player: *player }),
         Event::Proliferated { player } => found.push(Happened::Proliferated { player: *player }),
+        Event::Explored { object, player } => found.push(Happened::Explored {
+            object: *object,
+            player: *player,
+        }),
+        Event::Connived { object, player } => found.push(Happened::Connived {
+            object: *object,
+            player: *player,
+        }),
         _ => {}
     }
 }
@@ -613,6 +650,20 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
             (scope.players(at).ok()?.contains(player) && scope.selects(what, reference).ok()?)
                 .then(|| cause(state, vec![Target::Object(reference)]))
         }
+        (TriggerPattern::PlayerAttacked { who }, Happened::PlayerAttacked { at }) => scope
+            .players(who)
+            .ok()?
+            .contains(at)
+            .then(|| cause(state, vec![Target::Player(*at)])),
+        (
+            TriggerPattern::PlayerAttacks { by, at },
+            Happened::PlayerAttacks {
+                by: attacking,
+                at: defending,
+            },
+        ) => (scope.players(by).ok()?.contains(attacking)
+            && scope.players(at).ok()?.contains(defending))
+        .then(|| cause(state, vec![Target::Player(*attacking)])),
         (TriggerPattern::SpellCast { what, by }, Happened::Cast { player, spell, .. }) => {
             let reference = object(*spell)?;
             let subjects = vec![Target::Player(*player), Target::Object(reference)];
@@ -750,6 +801,7 @@ fn matching_event(
 }
 
 /// What `pattern` finds in the events about permanents: taps, counters, blocks, attackers and attachments.
+#[allow(clippy::too_many_lines)]
 fn matching_permanents(
     pattern: &TriggerPattern,
     happened: &Happened,
@@ -763,6 +815,24 @@ fn matching_permanents(
         wanted.as_ref().is_none_or(|wanted| wanted == kind)
     };
     match (pattern, happened) {
+        (
+            TriggerPattern::Explored { what },
+            Happened::Explored {
+                object: actor,
+                player,
+            },
+        )
+        | (
+            TriggerPattern::Connived { what },
+            Happened::Connived {
+                object: actor,
+                player,
+            },
+        ) => {
+            let actor = object(*actor)?;
+            picks(what, actor)?
+                .then(|| cause(state, vec![Target::Player(*player), Target::Object(actor)]))
+        }
         (TriggerPattern::Tapped { what }, Happened::Tapped { object: tapped })
         | (TriggerPattern::Untapped { what }, Happened::Untapped { object: tapped }) => {
             let tapped = object(*tapped)?;
@@ -1277,6 +1347,8 @@ mod tests {
     #[case::discarding(r#"{"Discarded":{}}"#)]
     #[case::becoming_tapped(r#"{"Tapped":{"what":[]}}"#)]
     #[case::becoming_untapped(r#"{"Untapped":{"what":[]}}"#)]
+    #[case::exploring(r#"{"Explored":{"what":[]}}"#)]
+    #[case::conniving(r#"{"Connived":{"what":[]}}"#)]
     #[case::tapping_for_mana(r#"{"TappedForMana":{"what":[]}}"#)]
     #[case::blocking(r#"{"Blocks":{"what":[]}}"#)]
     #[case::becoming_blocked(r#"{"BecomesBlocked":{"what":[]}}"#)]
@@ -1460,6 +1532,50 @@ mod tests {
             Zone::Hand(FOE),
             "the card is in a hand when the ability is photographed"
         );
+    }
+
+    /// A defender of the table below: a player, or a planeswalker (the Watcher stands in for one).
+    type Defender = Option<PlayerId>;
+
+    #[rstest]
+    #[case::a_player_is_attacked(r#"{"PlayerAttacked":{"who":"EachPlayer"}}"#, &[("Bear", Some(FOE))], &[Target::Player(FOE)])]
+    #[case::two_attackers_trigger_it_once(r#"{"PlayerAttacked":{"who":"EachPlayer"}}"#, &[("Bear", Some(FOE)), ("Watcher", Some(FOE))], &[Target::Player(FOE)])]
+    #[case::another_player_is_attacked(r#"{"PlayerAttacked":{"who":"You"}}"#, &[("Bear", Some(FOE))], &[])]
+    #[case::the_controller_is_attacked(r#"{"PlayerAttacked":{"who":"You"}}"#, &[("Ogre", Some(ME))], &[Target::Player(ME)])]
+    #[case::only_a_planeswalker_is_attacked(r#"{"PlayerAttacked":{"who":"EachPlayer"}}"#, &[("Bear", None)], &[])]
+    #[case::a_player_and_a_planeswalker(r#"{"PlayerAttacked":{"who":"EachPlayer"}}"#, &[("Bear", Some(FOE)), ("Watcher", None)], &[Target::Player(FOE)])]
+    #[case::a_player_attacks_an_opponent_once(r#"{"PlayerAttacks":{"at":"Opponents"}}"#, &[("Bear", Some(FOE)), ("Watcher", Some(FOE))], &[Target::Player(ME)])]
+    #[case::a_player_attacks_another(r#"{"PlayerAttacks":{"at":"You"}}"#, &[("Bear", Some(FOE))], &[])]
+    #[case::an_opponent_attacks_the_controller(r#"{"PlayerAttacks":{"by":"Opponents","at":"You"}}"#, &[("Ogre", Some(ME))], &[Target::Player(FOE)])]
+    #[case::the_controller_attacks_a_planeswalker(r#"{"PlayerAttacks":{"at":"Opponents"}}"#, &[("Bear", None)], &[])]
+    fn an_attack_at_a_player_triggers_once_for_the_player_or_for_the_attacker(
+        #[case] when: &str,
+        #[case] attacks: &[(&str, Defender)],
+        #[case] subjects: &[Target],
+    ) {
+        let pre = board(with("Watcher", vec![triggered(when)]));
+        let by = if attacks[0].0 == "Ogre" { FOE } else { ME };
+        let event = Event::AttackersDeclared {
+            player: by,
+            attackers: attacks
+                .iter()
+                .map(|(name, defender)| {
+                    let at = match defender {
+                        Some(player) => AttackTarget::Player(*player),
+                        None => AttackTarget::Planeswalker(id(&pre, "Ogre")),
+                    };
+                    (id(&pre, name), at)
+                })
+                .collect(),
+        };
+        let (_, found) = fire(&pre, &[event]);
+        let seen: Vec<Vec<Target>> = found.iter().map(|t| t.cause.subjects.clone()).collect();
+        let expected: Vec<Vec<Target>> = if subjects.is_empty() {
+            Vec::new()
+        } else {
+            vec![subjects.to_vec()]
+        };
+        assert_eq!(seen, expected);
     }
 
     #[test]

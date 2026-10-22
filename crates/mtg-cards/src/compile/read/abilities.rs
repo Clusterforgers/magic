@@ -60,6 +60,7 @@ pub fn modal_spell(r: &mut Reader<'_>) -> Option<Ability> {
 pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     let when = triggers::pattern(r)?;
     r.that_player = about_a_player(&when);
+    r.acts_itself = triggers::itself_acts(&when);
     r.that_permanent = matches!(
         when,
         TriggerPattern::Tapped { .. } | TriggerPattern::Untapped { .. }
@@ -76,6 +77,12 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     );
     r.cast_spell = casts_a_spell(&when);
     r.attacker = matches!(&when, TriggerPattern::Attacks { what } if *what == Selector::this());
+    r.attacked = matches!(
+        when,
+        TriggerPattern::PlayerAttacked {
+            who: Ref::AttachedPlayer
+        }
+    );
     // The creature that attacks is "it" and "its controller" is the player attacking.
     if matches!(when, TriggerPattern::AttacksPlayer { .. }) {
         r.it = Some(Ref::Triggering);
@@ -135,6 +142,7 @@ fn about_a_player(when: &TriggerPattern) -> bool {
             | TriggerPattern::Proliferated { .. }
             | TriggerPattern::Cycled { .. }
             | TriggerPattern::TappedForMana { .. }
+            | TriggerPattern::PlayerAttacks { .. }
             | TriggerPattern::DealsDamage {
                 to: Some(Ref::EachPlayer | Ref::Opponents),
                 ..

@@ -235,6 +235,8 @@ fn keyword() -> impl Strategy<Value = Keyword> {
             Keyword::ChooseABackground,
             Keyword::Rebound,
             Keyword::Aftermath,
+            Keyword::JumpStart,
+            Keyword::Retrace,
             Keyword::Undying,
             Keyword::Persist,
         ]),
@@ -244,6 +246,8 @@ fn keyword() -> impl Strategy<Value = Keyword> {
         cost().prop_map(Keyword::Squad),
         cost().prop_map(Keyword::Unearth),
         cost().prop_map(Keyword::Escape),
+        cost().prop_map(Keyword::Embalm),
+        cost().prop_map(Keyword::Eternalize),
         cost().prop_map(Keyword::Dash),
         cost().prop_map(Keyword::Ninjutsu),
         cost().prop_map(Keyword::Foretell),
@@ -601,8 +605,16 @@ fn token_ref() -> impl Strategy<Value = TokenRef> {
                     abilities: keywords.into_iter().map(Ability::Keyword).collect(),
                 }))
             }),
-        (reference(), vec(modification(), 0..2))
-            .prop_map(|(of, except)| TokenRef::CopyOf { of, except }),
+        (reference(), vec(modification(), 0..2)).prop_map(|(of, except)| TokenRef::CopyOf {
+            of,
+            except,
+            no_mana_cost: false,
+        }),
+        (reference(), any::<bool>()).prop_map(|(of, no_mana_cost)| TokenRef::CopyOf {
+            of,
+            except: vec![],
+            no_mana_cost,
+        }),
     ]
 }
 
@@ -685,6 +697,14 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                         2..4
                     )
                     .prop_map(Produce::OneOf),
+                    vec(
+                        vec(
+                            select(vec![ManaType::White, ManaType::Blue, ManaType::Colorless]),
+                            1..3
+                        ),
+                        2..4
+                    )
+                    .prop_map(Produce::OneOfLists),
                     (1u32..3).prop_map(Produce::ChosenColor),
                     (1u32..3).prop_map(Produce::CommanderIdentity),
                     (selector(), 1u32..3, any::<bool>()).prop_map(|(among, count, colorless)| {

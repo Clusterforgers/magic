@@ -1,0 +1,27 @@
+{
+  "id": "3cc8186b-b46f-46c0-8dfb-9e423e430048",
+  "oracle_id": "db623754-e078-4030-ba07-818803c348a8",
+  "name": "Twilight Mire",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "418",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{B/G}, {T}: Add {B}{B}, {B}{G}, or {G}{G}.",
+  "colors": [],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "C",
+    "G"
+  ]
+}

@@ -303,6 +303,9 @@ pub struct Reader<'a> {
     pub that_player: bool,
     /// Whether the event of the trigger is about one permanent: "that permanent's controller" is who controls it.
     pub that_permanent: bool,
+    /// Whether the event of the trigger is the card itself entering, attacking or dealing damage: "it" in a keyword
+    /// action ("it explores") is the card.
+    pub acts_itself: bool,
     /// The subtypes on the card's own type line, which are subtypes whether or not the rules' list has them.
     pub subtypes: Vec<String>,
     /// The power printed on the card when it is a number, which a characteristic-defining ability of the toughness
@@ -312,6 +315,9 @@ pub struct Reader<'a> {
     pub toughness: Option<i32>,
     /// Whether the trigger is about an attack at the monarch, so "that player controls" is the monarch's.
     pub at_monarch: bool,
+    /// Whether the trigger is about the enchanted player being attacked, so "each opponent attacking that player"
+    /// names the opponents with a creature attacking them.
+    pub attacked: bool,
     /// Whether the ability works from the graveyard (its event is not about the card itself), so "return this card
     /// from your graveyard to the battlefield" has a card to return.
     pub from_graveyard: bool,
@@ -332,10 +338,12 @@ impl<'a> Reader<'a> {
             it: None,
             that_player: false,
             that_permanent: false,
+            acts_itself: false,
             subtypes: Vec::new(),
             power: None,
             toughness: None,
             at_monarch: false,
+            attacked: false,
             from_graveyard: false,
             cast_spell: false,
             attacker: false,

@@ -1,4 +1,5 @@
 Abbot of Keral Keep
+Adorned Pouncer
 Aether Hub
 Ajani's Pridemate
 Ancestral Vision
@@ -9,7 +10,9 @@ Archon of Cruelty
 Arrogant Wurm
 Artful Maneuver
 Arvad the Cursed
+Atlantean Skirmisher
 Augury Raven
+Aven Initiate
 Azorius Chancery
 Azorius Signet
 Azure Fleet Admiral
@@ -40,8 +43,10 @@ Bronzeplate Boar
 Cackling Counterpart
 Capsize
 Carnage Tyrant
+Cascade Bluffs
 Cathars' Crusade
 Changeling Outcast
+Chemister's Insight
 Circle of Dreams Druid
 Clone
 Cold-Eyed Selkie
@@ -56,7 +61,12 @@ Courser of Kruphix
 Crucible of Worlds
 Crystal Quarry
 Curate
+Curse of Bounty
+Curse of Disturbance
+Curse of Opulence
 Curse of Predation
+Curse of Verbosity
+Curse of Vitality
 Curse of the Forsaken
 Curse of the Nightly Hunt
 Custodi Lich
@@ -73,6 +83,8 @@ Deepfathom Skulker
 Defile
 Delver of Secrets // Insectile Aberration
 Demon Bolt
+Dire Fleet Interloper
+Direct Current
 Disembowel
 Dockside Extortionist
 Dokuchi Shadow-Walker
@@ -86,7 +98,9 @@ Drudge Skeletons
 Dual Casting
 Dualcaster Mage
 Durkwood Baloth
+Echo Inspector
 Elven Ambush
+Elvish Rejuvenator
 Empyrial Plate
 Epic Proportions
 Eternal Witness
@@ -101,8 +115,12 @@ Favorable Winds
 Fear of Failed Tests
 Felidar Sovereign
 Fellwar Stone
+Fetid Heath
 Fiery Temper
+Fire-Lit Thicket
 Firestorm Hellkite
+Flame Jab
+Flooded Grove
 Flooded Strand
 Fog
 Followed Footsteps
@@ -125,7 +143,9 @@ Goblin Chieftain
 Goblin Spy
 Goblin War Buggy
 Grapeshot
+Graven Cairns
 Graveshifter
+Grisly Salvage
 Growing Ranks
 Guardian Gladewalker
 Gurmag Angler
@@ -143,6 +163,7 @@ Impostor of the Sixth Pride
 Inkwell Leviathan
 Invisible Stalker
 Izzet Charm
+Jadelight Ranger
 Jaspera Sentinel
 Jungle Lion
 Karn's Bastion
@@ -176,6 +197,7 @@ Mardu Strike Leader
 Maro
 Master of Etherium
 Megrim
+Merfolk Branchwalker
 Mesmeric Orb
 Midnight Banshee
 Mirari
@@ -190,6 +212,7 @@ Mukotai Ambusher
 Mulldrifter
 Murderous Cut
 Muscle Sliver
+Mystic Gate
 Nantuko Husk
 Nighthawk Scavenger
 Nightmare
@@ -210,17 +233,22 @@ Plague Stinger
 Pouncing Jaguar
 Prismatic Lens
 Professional Face-Breaker
+Proven Combatant
 Psychosis Crawler
 Putrid Goblin
 Pygmy Kavu
 Questing Beast
+Radical Idea
+Raffine's Informant
 Rakdos Headliner
 Rally the Ranks
 Rampant Growth
 Reckless Impulse
 Reconstructed Thopter
+Red Room Recruit
 Reflecting Pool
 Reiterate
+Revel Ruiner
 Reverberate
 Rhox Faithmender
 Rhystic Study
@@ -229,20 +257,25 @@ Righteous Avengers
 Rocksteady, Mutant Marauder
 Rootborn Defenses
 Rosheen Meanderer
+Rugged Prairie
 Rummaging Goblin
 Rustrazor Butcher
+Sacred Cat
 Safehold Elite
 Sanguine Bond
+Satyr Wayfinder
 Saw It Coming
 Scheming Aspirant
 Scuzzback Marauders
 Seedglaive Mentor
+Seekers' Squire
 Serra Angel
 Servant of the Conduit
 Shadowmage Infiltrator
 Siege Wurm
 Sinister Sabotage
 Sinister Starfish
+Siren Lookout
 Skeletal Changeling
 Skirk Prospector
 Skizzik Surger
@@ -273,11 +306,14 @@ Stroke of Genius
 Sultai Devotee
 Summer Bloom
 Sundering Growth
+Sunken Ruins
 Supreme Verdict
 Swarm Intelligence
 Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
+Syphon Life
+Tah-Crop Skirmisher
 Tainted Isle
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
@@ -296,6 +332,7 @@ Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Treasure Cruise
 Tumble Magnet
+Twilight Mire
 Twincast
 Uktabi Efreet
 Umbral Collar Zealot
@@ -312,6 +349,7 @@ Wargate
 Warmonger Hellkite
 Wear // Tear
 Wilderness Elemental
+Wooded Bastion
 Wrath of God
 Young Wolf
 Zendikar Farguide

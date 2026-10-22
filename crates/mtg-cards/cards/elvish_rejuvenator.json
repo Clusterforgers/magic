@@ -1,0 +1,39 @@
+{
+  "oracle_id": "71d14755-b81d-4aec-b94d-1637884a5844",
+  "name": "Elvish Rejuvenator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elvish Rejuvenator",
+      "oracle_fingerprint": "ac0241a1eb7f9458f356061d7c2908c3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "kept" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

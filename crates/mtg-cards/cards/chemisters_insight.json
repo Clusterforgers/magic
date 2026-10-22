@@ -1,0 +1,15 @@
+{
+  "oracle_id": "a2cb30d7-c0a9-4f79-bc19-fc88c4986725",
+  "name": "Chemister's Insight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chemister's Insight",
+      "oracle_fingerprint": "ce4b9792bb65ba06948ffef27cddb923",
+      "abilities": [
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }] } },
+        { "Keyword": "JumpStart" }
+      ]
+    }
+  ]
+}

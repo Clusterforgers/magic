@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ead4c01a-e2ae-49c9-95d9-651d81005907",
+  "name": "Satyr Wayfinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Satyr Wayfinder",
+      "oracle_fingerprint": "0882377811f433369e06adcc6974022b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

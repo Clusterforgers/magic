@@ -1,6 +1,7 @@
 //! Goal: whole bot games at two, three and four seats with decks of echo, cumulative upkeep, undying and persist cards (the corpus cards of the four keywords, a creature with undying and persist, burn and removal that kills them, and small creatures to sacrifice) finish and keep every invariant (zone changes, life, counters, the journal, the replay of the log equal to the live state), and the games really use the keywords: echo and cumulative upkeep triggers, age counters, creatures that come back with a +1/+1 or a -1/-1 counter, and the same games repeat from their seed.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use std::collections::BTreeSet;
 
 use mtg_cards::value::CounterKind;
@@ -12,10 +13,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|value| value.parse().ok())
-        .unwrap_or(40)
+    fuzz_games(40)
 }
 
 /// Cards of the deck by keyword.

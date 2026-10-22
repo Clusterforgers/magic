@@ -1,0 +1,25 @@
+{
+  "id": "03ef5cff-2e2b-4096-8310-4c5aabcb0eac",
+  "oracle_id": "71d14755-b81d-4aec-b94d-1637884a5844",
+  "name": "Elvish Rejuvenator",
+  "lang": "en",
+  "released_at": "2024-04-19",
+  "layout": "normal",
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Elf Druid",
+  "oracle_text": "When this creature enters, look at the top five cards of your library. You may put a land card from among them onto the battlefield tapped. Put the rest on the bottom of your library in a random order.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "set": "otc",
+  "collector_number": "191",
+  "digital": false,
+  "rarity": "common"
+}

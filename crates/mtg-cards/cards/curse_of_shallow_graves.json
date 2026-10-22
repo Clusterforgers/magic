@@ -1,0 +1,44 @@
+{
+  "oracle_id": "dc66dbed-f979-4ad1-b5f9-08538886167f",
+  "name": "Curse of Shallow Graves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Shallow Graves",
+      "oracle_fingerprint": "b1fabd75e8d3332c0d192e50b5f10b5c",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "at": "AttachedPlayer" } },
+            "effects": [
+              {
+                "May": {
+                  "who": "Triggering",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "who": "Triggering",
+                        "token": {
+                          "Custom": {
+                            "name": "Zombie",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Zombie"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        },
+                        "tapped": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
