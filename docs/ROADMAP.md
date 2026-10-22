@@ -20,7 +20,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 
 - Costs and announcement: (g2d), (g6d), (g5c), (c1b), (c1c), Undaunted of (c2b).
 - Cast ways and zones: (c5) recursion and alternative cast ways, (n2) face-down objects, (n1d3) meld.
-- Triggers and keywords: (c6) triggered and upkeep keywords, the triggered keywords of (c2b), (c4b) level-ups and stations, (c3b) and (c3c) keyword actions and Monarch wordings, (n1d5) day and night effects, (o2c).
+- Triggers and keywords: (c6) triggered and upkeep keywords, the triggered keywords of (c2b), (c4b) level-ups and stations, (c3b) and (c3d) keyword actions and the remaining Monarch cards, (n1d5) day and night effects, (o2c).
 - Statics and layers: (c8), (c7b), (o1c).
 - Compiler wordings, no engine change: (c10) one piece per wording family, (o2b), (c11) layouts and long-tail mechanics, (c9c).
 - Commander and server: (cmd2e), (hr5b), the `manual_play` flag stored with the game, the turn without an active player in the table view, Companion.
@@ -192,7 +192,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c2b) Split second (no spell or ability that is not a mana ability while the spell is on the stack), Undaunted (a cost modifier), Ascend, Exalted, Melee, Mentor, Dethrone, Annihilator, Extort, Evolve
 - [x] (c3) Surveil (the `Surveilled` event; 14 cards) and the Monarch (`MonarchChanged`, the end-step draw, the combat-damage steal, `Condition::Monarch` in an intervening "if"; 2 cards, 21 held back by other wordings)
 - [ ] (c3b) Keyword actions and designations, remaining: Proliferate, Time travel, Amass, Adapt, Monstrosity, Explore, Bolster, Fabricate, Connive, Learn and the city's blessing
-- [~] (c3c) (branch c3c-monarch-wordings) Monarch wordings: a trigger on becoming the monarch, "if there is no monarch", "as long as you're the monarch" and "the monarch controls"
+- [x] (c3c) Monarch wordings: `BecomesMonarch`, `Ref::Monarch` ("the monarch controls", "the monarch's end step", "attacks the monarch"), "if there is no monarch" and "as long as you're the monarch" before or after a static (Custodi Lich, Dawnglade Regent, The Spear of Bashenga and Azure Fleet Admiral Verified)
+- [ ] (c3d) The monarch cards still held back: "can't attack you" (Fealty to the Realm, Queen Mother Ramonda, with (c8)), damage that does not cause life loss (Archon of Coronation), "your commander" as a source (Archivist of Gondor, Paliano), the attacked player as "that player" (M'Baku), "as the turn began" (Knights of the Black Rose), "until an opponent becomes the monarch" (Palace Jailer) and "while you're the monarch" after an event (Regal Behemoth, Tamiyo)
 - [x] (c4) Crew: the cost part `TapPower` (a counted pick of untapped creatures by total power, asked with `ChooseCards`), `Keyword.Crew`, `Condition.Performed` after a "may" (read and written by the compiler), Smuggler's Copter, Skysovereign, Goliath Truck and Thopter Fabricator Verified, a Vehicle fuzz deck
 - [ ] (c4b) Level up, Station, Outlast and Saddle (the keyword abilities and the level and station brackets as abilities conditioned on counters, with the compiler's bracket blocks), the activated and triggered "becomes an artifact creature until end of turn" shapes ("Another target Vehicle you control becomes ...", "Pay {E}{E}{E}{E}: This Vehicle becomes ..."), the event "becomes crewed", and a Reconfigure corpus card
 - [ ] (c5) Recursion and alternative cast ways: Escape, Aftermath, Jump-start, Retrace, Unearth, Embalm, Eternalize, Encore, Rebound, Dredge, Dash, Blitz, Ninjutsu, Miracle, Prowl, Demonstrate, Cipher, Hideaway
