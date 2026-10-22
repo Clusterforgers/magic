@@ -423,6 +423,31 @@ fn cumulative_upkeep_in_life_takes_the_life_once_for_each_counter(
 }
 
 #[rstest]
+fn cumulative_upkeep_in_life_cannot_be_paid_with_less_life_than_all_of_it_takes(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    // Two life pays the first upkeep (1) and leaves one, which is not the two the second upkeep asks for.
+    let build = || age_table(seats, ager("Ager", pay_life(1)), Vec::new()).life(0, 2);
+    let setup = build().setup()?;
+    let mut driver = Driver::from_scenario(build())?;
+    let round = u32::try_from(seats).unwrap();
+    driver.idle_until(1 + round, Step::Upkeep)?;
+    assert!(until_question(&mut driver)?);
+    assert_eq!(asked(&driver), (0, "Pay 1 life?".to_owned(), false));
+    pay(&mut driver, "")?;
+    settle(&mut driver)?;
+    assert_eq!(driver.state().player(pid(0)).unwrap().life(), 1);
+    driver.idle_until(1 + round * 2, Step::Upkeep)?;
+    assert!(until_question(&mut driver)?);
+    assert_eq!(asked(&driver), (0, "Pay 2 life?".to_owned(), true));
+    assert!(driver.answer(yes_no(true)).is_err());
+    driver.answer(yes_no(false))?;
+    settle(&mut driver)?;
+    assert!(in_graveyard(&driver, 0, "Ager"));
+    assert_replays(&driver, &setup)
+}
+
+#[rstest]
 fn cumulative_upkeep_by_sacrifice_takes_a_creature_for_each_counter(
     #[values(2, 4)] seats: usize,
 ) -> Result<(), ScriptError> {

@@ -3,8 +3,9 @@
 
 use std::iter::Peekable;
 
-use mtg_cards::cost::Cost;
+use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::effect::Effect;
+use mtg_cards::value::Amount;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
@@ -92,12 +93,55 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     })
 }
 
-/// The cost paid `times` times at once: its parts repeated, so the mana adds up and every pick is made in turn.
+/// The cost paid `times` times at once: the mana repeated so that it adds up, and the number of life, energy, counters
+/// and objects every other part takes multiplied, so that the whole of it is asked, checked and paid as one part (two
+/// parts of 1 life would each look payable with 1 life).
 fn repeated(cost: &Cost, times: usize) -> Cost {
+    let factor = i32::try_from(times).unwrap_or(i32::MAX);
+    let times_over = |amount: &Amount| match amount {
+        Amount::Fixed(number) => Amount::Fixed(number.saturating_mul(factor)),
+        other => other.clone(),
+    };
     Cost(
-        std::iter::repeat_n(&cost.0, times)
-            .flatten()
-            .cloned()
+        cost.0
+            .iter()
+            .flat_map(|item| match item {
+                CostItem::Mana(_) => vec![item.clone(); times],
+                CostItem::PayLife(amount) => vec![CostItem::PayLife(times_over(amount))],
+                CostItem::PayEnergy(amount) => vec![CostItem::PayEnergy(times_over(amount))],
+                CostItem::RemoveCounters { counter, count } => vec![CostItem::RemoveCounters {
+                    counter: counter.clone(),
+                    count: times_over(count),
+                }],
+                CostItem::Sacrifice { filter, count } => vec![CostItem::Sacrifice {
+                    filter: filter.clone(),
+                    count: times_over(count),
+                }],
+                CostItem::Discard { count, filter } => vec![CostItem::Discard {
+                    count: times_over(count),
+                    filter: filter.clone(),
+                }],
+                CostItem::ExileFromGraveyard { filter, count } => {
+                    vec![CostItem::ExileFromGraveyard {
+                        filter: filter.clone(),
+                        count: times_over(count),
+                    }]
+                }
+                CostItem::ExileFromHand { filter, count } => vec![CostItem::ExileFromHand {
+                    filter: filter.clone(),
+                    count: times_over(count),
+                }],
+                CostItem::ReturnToHand { filter, count } => vec![CostItem::ReturnToHand {
+                    filter: filter.clone(),
+                    count: times_over(count),
+                }],
+                CostItem::TapPermanents { filter, count } => vec![CostItem::TapPermanents {
+                    filter: filter.clone(),
+                    count: times_over(count),
+                }],
+                // These are refused by `price_of` however often they are repeated.
+                other => vec![other.clone(); times],
+            })
             .collect(),
     )
 }
@@ -595,7 +639,7 @@ mod tests {
     #[case::twice("{1}", "2", 2, &[], Said::Asks(0, "Pay {2}?".into()))]
     #[case::three_times_with_two_lands("{1}", "3", 2, &[], Said::Declines(0, "Pay {3}?".into()))]
     #[case::two_colours_twice("{G}{1}", "2", 4, &[], Said::Asks(0, "Pay {2}{G}{G}?".into()))]
-    #[case::life_twice("[{\"PayLife\":1}]", "2", 0, &[], Said::Asks(0, "Pay 1 life, pay 1 life?".into()))]
+    #[case::life_twice("[{\"PayLife\":1}]", "2", 0, &[], Said::Asks(0, "Pay 2 life?".into()))]
     #[case::yes_to_twice("{1}", "2", 2, &[(0, true)], Said::Pays(0, "{2}".into(), false))]
     #[case::paid_twice("{1}", "2", 2, &[(0, true), (0, true)], PAID)]
     #[case::declined("{1}", "2", 2, &[(0, false)], UNPAID)]
@@ -616,6 +660,26 @@ mod tests {
         ));
         let game = game(&[lands, 0]);
         assert_eq!(said(run_with(&game, given, &effect)), said_);
+    }
+
+    #[rstest]
+    #[case::one_life_once_with_one("1", 19, Said::Asks(0, "Pay 1 life?".into()))]
+    #[case::one_life_twice_with_one("2", 19, Said::Declines(0, "Pay 2 life?".into()))]
+    #[case::one_life_twice_with_two("2", 18, Said::Asks(0, "Pay 2 life?".into()))]
+    #[case::one_life_three_times_with_two("3", 18, Said::Declines(0, "Pay 3 life?".into()))]
+    fn a_cost_in_life_paid_several_times_is_payable_only_with_the_life_for_all_of_it(
+        #[case] times: &str,
+        #[case] life_lost: u32,
+        #[case] said_: Said,
+    ) {
+        let effect = effect(&format!(
+            r#"{{"Pay":{{"cost":[{{"PayLife":1}}],"times":{times},"paid":[{{"Draw":{{}}}}],"unpaid":[{{"Draw":{{}}}}]}}}}"#
+        ));
+        let game = means(Means {
+            life_lost,
+            ..NOTHING
+        });
+        assert_eq!(said(run_with(&game, &[], &effect)), said_);
     }
 
     #[rstest]
