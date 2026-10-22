@@ -1,0 +1,19 @@
+{
+  "oracle_id": "24b5dbe3-578a-4897-8215-e723f00a8f1a",
+  "name": "Merfolk Branchwalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Merfolk Branchwalker",
+      "oracle_fingerprint": "f6cb65c0432d5a24773d30d9dbc9d9d7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Explore": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

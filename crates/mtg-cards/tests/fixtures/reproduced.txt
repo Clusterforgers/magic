@@ -73,6 +73,7 @@ Deepfathom Skulker
 Defile
 Delver of Secrets // Insectile Aberration
 Demon Bolt
+Dire Fleet Interloper
 Disembowel
 Dockside Extortionist
 Dokuchi Shadow-Walker
@@ -142,6 +143,7 @@ Impostor of the Sixth Pride
 Inkwell Leviathan
 Invisible Stalker
 Izzet Charm
+Jadelight Ranger
 Jungle Lion
 Karn's Bastion
 Kathari Screecher
@@ -172,6 +174,7 @@ Mardu Strike Leader
 Maro
 Master of Etherium
 Megrim
+Merfolk Branchwalker
 Mesmeric Orb
 Midnight Banshee
 Mirror Image
@@ -232,12 +235,14 @@ Saw It Coming
 Scheming Aspirant
 Scuzzback Marauders
 Seedglaive Mentor
+Seekers' Squire
 Serra Angel
 Servant of the Conduit
 Shadowmage Infiltrator
 Siege Wurm
 Sinister Sabotage
 Sinister Starfish
+Siren Lookout
 Skeletal Changeling
 Skizzik Surger
 Skullclamp

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "a494cbe7-a4a5-4657-9f68-3811fe56a17e",
+  "name": "Seekers' Squire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seekers' Squire",
+      "oracle_fingerprint": "f6cb65c0432d5a24773d30d9dbc9d9d7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Explore": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

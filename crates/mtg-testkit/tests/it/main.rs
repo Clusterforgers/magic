@@ -64,6 +64,7 @@ mod escape;
 mod evasion;
 mod evasion_keywords;
 mod event_triggers;
+mod explore;
 mod extra_costs;
 mod face_rules;
 mod faces;

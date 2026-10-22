@@ -1,0 +1,27 @@
+{
+  "id": "30573211-ba4d-41c7-a3cd-283aaf04dffb",
+  "oracle_id": "a494cbe7-a4a5-4657-9f68-3811fe56a17e",
+  "name": "Seekers' Squire",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2x2",
+  "collector_number": "87",
+  "rarity": "common",
+  "released_at": "2022-07-08",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Scout",
+  "oracle_text": "When this creature enters, it explores. (Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on this creature, then put the card back or put it into your graveyard.)",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Explore"
+  ]
+}

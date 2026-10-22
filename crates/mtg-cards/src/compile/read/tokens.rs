@@ -303,6 +303,9 @@ pub struct Reader<'a> {
     pub that_player: bool,
     /// Whether the event of the trigger is about one permanent: "that permanent's controller" is who controls it.
     pub that_permanent: bool,
+    /// Whether the event of the trigger is the card itself entering, attacking or dealing damage: "it" in a keyword
+    /// action ("it explores") is the card.
+    pub acts_itself: bool,
     /// The subtypes on the card's own type line, which are subtypes whether or not the rules' list has them.
     pub subtypes: Vec<String>,
     /// The power printed on the card when it is a number, which a characteristic-defining ability of the toughness
@@ -328,6 +331,7 @@ impl<'a> Reader<'a> {
             it: None,
             that_player: false,
             that_permanent: false,
+            acts_itself: false,
             subtypes: Vec::new(),
             power: None,
             toughness: None,

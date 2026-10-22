@@ -400,6 +400,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             format!("{} becomes untapped", subject(what)),
             what.0 == [Pred::This],
         ),
+        TriggerPattern::Explored { what } => (
+            format!("{} explores", subject(what)),
+            what.0 == [Pred::This],
+        ),
         TriggerPattern::Cycled { what, by } => {
             let (name, s) = who(by);
             let card = if what.is_empty() {
@@ -669,6 +673,9 @@ pub(crate) fn proliferate_player(proliferating: PlayerId, holder: PlayerId) -> S
         )
     }
 }
+
+/// What an explore asks about the revealed card that is not a land.
+pub(crate) const EXPLORE: &str = "You may put the revealed card into your graveyard.";
 
 /// What the order of cards put into a library asks: "Put the cards on top of your library in any order."
 pub(crate) fn library_order(bottom: bool) -> String {

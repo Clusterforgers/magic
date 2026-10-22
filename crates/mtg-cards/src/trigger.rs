@@ -255,6 +255,12 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// A creature matching the selector explores ("whenever a creature you control explores"); `Triggering` is its
+    /// controller.
+    Explored {
+        /// The creature that explores.
+        what: Selector,
+    },
     /// A step begins ("at the beginning of ...").
     StepBegins {
         /// The step.

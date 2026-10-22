@@ -1,0 +1,27 @@
+{
+  "id": "9fe5c719-f20d-4469-9750-fb689d5f3fc8",
+  "oracle_id": "0b5d174c-7d4d-4c31-a582-8169d3bc932a",
+  "name": "Jadelight Ranger",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rix",
+  "collector_number": "136",
+  "rarity": "rare",
+  "released_at": "2018-01-19",
+  "digital": false,
+  "mana_cost": "{1}{G}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Merfolk Scout Ranger",
+  "oracle_text": "When this creature enters, it explores, then it explores again. (Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on this creature, then put the card back or put it into your graveyard. Then repeat this process.)",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Explore"
+  ]
+}

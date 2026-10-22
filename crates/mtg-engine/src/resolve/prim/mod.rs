@@ -254,6 +254,7 @@ mod tests {
                 "Effect.Surveil",
                 "Effect.Proliferate",
                 "Effect.BecomeMonarch",
+                "Effect.Explore",
                 "Effect.ExileUntil",
                 "Effect.ExileTop",
                 "Effect.CastFromZone",

@@ -555,6 +555,14 @@ pub enum Event {
         /// Who proliferated.
         player: PlayerId,
     },
+    /// A creature explored (CR 701.44): the card it revealed is the `Revealed` that follows, what became of it the
+    /// moves and counters after that.
+    Explored {
+        /// The creature that explored.
+        object: ObjectId,
+        /// Its controller, who revealed the card.
+        player: PlayerId,
+    },
     /// The game became day or night (CR 726).
     DayNightChanged {
         /// What it became.
@@ -717,6 +725,7 @@ impl Event {
             | Event::Regenerated { object }
             | Event::CardDrawn { object, .. }
             | Event::CardDiscarded { object, .. }
+            | Event::Explored { object, .. }
             | Event::Cycled { object, .. }
             | Event::CreatureDied { object, .. }
             | Event::CopyEnded { object }
