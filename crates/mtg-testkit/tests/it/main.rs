@@ -39,6 +39,7 @@ mod enters;
 mod equipment;
 mod evasion;
 mod event_triggers;
+mod extra_costs;
 mod forecast_hidden;
 mod forecast_matches_games;
 mod forecast_replacement;
