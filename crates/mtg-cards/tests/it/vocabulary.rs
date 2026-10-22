@@ -90,7 +90,7 @@ fn names(list: &[&str]) -> BTreeSet<String> {
 )]
 #[case::if_you_dont(
     r#"{"Spell":{"effects":[{"Discard":{}},{"If":{"condition":{"Not":"Performed"},"then":[{"Draw":{}}]}}]}}"#,
-    &["Ability.Spell", "Condition.Performed", "Effect.Discard", "Effect.Draw", "Effect.If"]
+    &["Ability.Spell", "Condition.Performed", "Condition.Performed.Other", "Effect.Discard", "Effect.Draw", "Effect.If"]
 )]
 #[case::the_monarch(
     r#"{"Spell":{"effects":[{"If":{"condition":{"Monarch":"You"},"then":[{"Draw":{}}]}}]}}"#,

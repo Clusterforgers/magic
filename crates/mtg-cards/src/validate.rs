@@ -206,6 +206,8 @@ struct Walker<'a> {
     nested: u32,
     /// Where the walk stands in an effect list, for "if you do".
     after: After,
+    /// The effect before the one being walked is a `May`, whose acceptance "if you do" asks about.
+    after_may: bool,
     face: usize,
     spell_targets: Vec<TargetSpec>,
     x_uses: Vec<(usize, String)>,
@@ -227,6 +229,7 @@ impl<'a> Walker<'a> {
             amounting: Amounting::Other,
             nested: 0,
             after: After::Nothing,
+            after_may: false,
             face: 0,
             spell_targets: Vec::new(),
             x_uses: Vec::new(),
@@ -522,6 +525,10 @@ impl<'a> Walker<'a> {
             Condition::YourTurn => {}
             Condition::Performed => {
                 self.uses("Condition", "Performed");
+                // The engine knows only whether a `May` was accepted; any other effect before it waits.
+                if !self.after_may {
+                    self.uses("Condition", "Performed.Other");
+                }
                 if self.after != After::Condition {
                     self.problem("`Performed` is the condition of an `If` that follows the effect it asks about");
                 }
@@ -1068,13 +1075,14 @@ impl<'a> Walker<'a> {
 
     fn effect_list(&mut self, field: &str, list: &[Effect], top: bool) {
         self.scope.names.push(BTreeMap::new());
-        let saved = self.after;
+        let saved = (self.after, self.after_may);
         for (i, effect) in list.iter().enumerate() {
             let only = top && list.len() == 1;
             self.after = if i > 0 { After::Effect } else { After::Nothing };
+            self.after_may = i > 0 && matches!(list.get(i - 1), Some(Effect::May { .. }));
             self.at(format!("{field}[{i}]"), |w| w.effect(effect, only));
         }
-        self.after = saved;
+        (self.after, self.after_may) = saved;
         self.scope.names.pop();
     }
 

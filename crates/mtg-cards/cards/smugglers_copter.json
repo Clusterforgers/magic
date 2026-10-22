@@ -14,14 +14,8 @@
               "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
             },
             "effects": [
-              {
-                "May": {
-                  "effects": [
-                    { "Draw": {} },
-                    { "If": { "condition": "Performed", "then": [{ "Discard": {} }] } }
-                  ]
-                }
-              }
+              { "May": { "effects": [{ "Draw": {} }] } },
+              { "If": { "condition": "Performed", "then": [{ "Discard": {} }] } }
             ]
           }
         },

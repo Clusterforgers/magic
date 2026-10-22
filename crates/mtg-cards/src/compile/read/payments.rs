@@ -10,7 +10,23 @@ use super::tokens::Reader;
 use crate::cost::{Cost, CostItem};
 use crate::effect::Effect;
 use crate::refs::Ref;
-use crate::value::Amount;
+use crate::value::{Amount, Condition};
+
+/// "If you do, discard a card." after a sentence that was a "you may": the sentence runs when the player accepted it
+/// (CR 608.2c), which an `If` of `Performed` asks. After any other sentence it is not read.
+pub fn after_may(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> Option<()> {
+    matches!(effects.last()?, Effect::May { .. }).then_some(())?;
+    r.need("if you do")?;
+    r.punct(',').then_some(())?;
+    let then = one_sentence(r)?;
+    r.sentence_end().then(|| {
+        effects.push(Effect::If {
+            condition: Condition::Performed,
+            then,
+            otherwise: Vec::new(),
+        });
+    })
+}
 
 /// "You may pay {1}. If you do, draw a card.", "You may pay 2 life. If you do, ...", "You may sacrifice a creature. If
 /// you do, ...": the player pays or not, and the sentence after "if you do" follows a payment.

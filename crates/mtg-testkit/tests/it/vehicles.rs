@@ -377,6 +377,80 @@ fn the_log_of_a_crewed_game_replays_to_the_live_state(
     Ok(())
 }
 
+// "If you do" after a "may" (Smuggler's Copter)
+
+/// Seat 0 controls a crewed-ready Copter and a Cub, holds a Spare and has a Top and a Next in its library.
+fn copter_table(seats: usize) -> Scenario {
+    Scenario::new(seats)
+        .battlefield(
+            0,
+            [
+                ready(mtg_testkit::corpus::card("Smuggler's Copter").unwrap()),
+                member("sick", "Cub", 1),
+            ],
+        )
+        .hand(0, [free_creature("Spare", 1, 1)])
+        .library(0, [free_creature("Top", 1, 1), free_creature("Next", 1, 1)])
+        .battlefield(1, [ready(free_creature("Ogre", 3, 4))])
+}
+
+/// Crews the Copter, attacks with it and answers the loot's question `yes`; returns whether it asked for a discard.
+fn loot(driver: &mut Driver, yes: bool) -> Result<bool, ScriptError> {
+    driver.begin_activation("Smuggler's Copter")?;
+    settle(driver)?;
+    driver.pass_until(Step::DeclareAttackers)?;
+    driver.attack(&[("Smuggler's Copter", 1)])?;
+    let mut discards = false;
+    for _ in 0..50 {
+        let decision = driver.decision()?.clone();
+        match decision.kind {
+            DecisionKind::YesNo(_) => {
+                driver.answer(Answer::YesNo(mtg_engine::choose::YesNoChoice(yes)))?;
+            }
+            DecisionKind::ChooseCards(_) | DecisionKind::Discard(_) => {
+                discards = true;
+                driver.answer_passively()?;
+            }
+            _ if driver.state().turn().step() != Step::DeclareAttackers
+                && driver.state().stack().is_empty() =>
+            {
+                break;
+            }
+            _ => {
+                driver.answer_passively()?;
+            }
+        }
+    }
+    Ok(discards)
+}
+
+#[rstest]
+fn if_you_do_discards_only_after_the_draw_was_accepted(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] yes: bool,
+) -> Result<(), ScriptError> {
+    let scenario = || copter_table(seats);
+    let setup = scenario().setup().unwrap();
+    let mut driver = Driver::from_scenario(scenario())?;
+    let library = driver.state().zone(Zone::Library(pid(0))).len();
+    let discards = loot(&mut driver, yes)?;
+    assert_eq!(discards, yes, "a discard is asked only after a draw");
+    // Accepted: a card drawn and a card discarded, so the hand keeps its size, the library is one card shorter and
+    // the graveyard has the discard. Declined: nothing drawn and nothing discarded.
+    assert_eq!(driver.state().zone(Zone::Hand(pid(0))).len(), 1);
+    assert_eq!(
+        driver.state().zone(Zone::Library(pid(0))).len(),
+        library - usize::from(yes)
+    );
+    assert_eq!(
+        driver.state().zone(Zone::Graveyard(pid(0))).len(),
+        usize::from(yes)
+    );
+    let replayed = replay(&setup, driver.engine().events()).unwrap();
+    assert_eq!(replayed.state_hash(), driver.state().state_hash());
+    Ok(())
+}
+
 // Whole games
 
 #[test]

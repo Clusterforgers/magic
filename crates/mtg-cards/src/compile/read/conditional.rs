@@ -129,6 +129,9 @@ fn counted(condition: &Condition) -> Option<&CounterKind> {
 
 /// The condition as the card words it, after "if".
 pub fn condition_text(condition: &Condition) -> Option<String> {
+    if *condition == Condition::Performed {
+        return Some("you do".to_owned());
+    }
     let Condition::Compare {
         left: Amount::Counters {
             on: Ref::This,

@@ -205,6 +205,7 @@ const RUNS: &[&str] = &[
     "Condition.CastWith",
     "Rule.MayCast",
     "Condition.Kicked",
+    "Condition.Performed",
     "Amount.Kicks",
     "Ability.Replacement",
     "Ability.CostModifier",
@@ -482,7 +483,8 @@ mod tests {
     #[case::batch_triggers("Trigger.Batch", true)]
     #[case::nth_triggers("Trigger.Nth", true)]
     #[case::event_amounts("Amount.Triggering", true)]
-    #[case::if_you_do("Condition.Performed", false)]
+    #[case::if_you_do("Condition.Performed", true)]
+    #[case::if_you_do_after_another_effect("Condition.Performed.Other", false)]
     #[case::the_monarch("Condition.Monarch", false)]
     #[case::the_citys_blessing("Condition.CitysBlessing", false)]
     #[case::unblockable_creatures("Mod.CantBeBlocked", true)]
