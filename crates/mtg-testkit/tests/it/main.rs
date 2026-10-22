@@ -27,6 +27,7 @@ mod concede_mid_cast;
 mod continuous_effects;
 mod copies;
 mod copies_fuzz;
+mod copy_effects;
 mod corpus_cards;
 mod cost_fuzz;
 mod cost_modifiers;

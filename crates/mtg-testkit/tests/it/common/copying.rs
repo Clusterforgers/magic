@@ -2,7 +2,7 @@
 #![allow(dead_code, clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_core::ids::ObjectId;
-use mtg_engine::choose::{Target, YesNoChoice};
+use mtg_engine::choose::{Target, TargetChoice, YesNoChoice};
 use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, GameSetup, PresetPermanent, replay};
@@ -150,4 +150,29 @@ pub fn twincast(driver: &mut Driver, name: &str) -> Result<(), ScriptError> {
     driver.choose_targets(&[spell])?;
     driver.pay_tapping(&["Island", "Island"], 0)?;
     Ok(())
+}
+
+/// Answers No to every question about new targets and passes until the stack is empty.
+pub fn keep_targets_until_done(driver: &mut Driver, seats: usize) -> Result<(), ScriptError> {
+    for _ in 0..200 {
+        if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
+            return Ok(());
+        }
+        match &driver.decision()?.kind {
+            DecisionKind::YesNo(_) => {
+                say(driver, false)?;
+            }
+            DecisionKind::ChooseTargets(options) => {
+                let chosen = options
+                    .legal
+                    .iter()
+                    .copied()
+                    .take(options.min as usize)
+                    .collect();
+                driver.answer(Answer::ChooseTargets(TargetChoice::Targets(chosen)))?;
+            }
+            _ => pass_round(driver, seats)?,
+        }
+    }
+    Err(ScriptError::Stuck("the stack".into()))
 }

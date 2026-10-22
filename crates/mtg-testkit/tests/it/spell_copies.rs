@@ -3,6 +3,7 @@
 
 use crate::common;
 
+use common::copying::keep_targets_until_done;
 use common::copying::{
     casts, game, hand, lands, life, object_of, on_the_stack, pass_round, replays, run, say,
     spell_copies, twincast,
@@ -520,31 +521,6 @@ fn a_copy_of_a_copy_is_a_copy_of_the_spell_with_the_same_choices(
     assert!(copies.iter().all(|copy| driver.state().has_ceased(*copy)));
     replays(&driver, &setup);
     Ok(())
-}
-
-/// Answers No to every question about new targets and passes until the stack is empty.
-fn keep_targets_until_done(driver: &mut Driver, seats: usize) -> Result<(), ScriptError> {
-    for _ in 0..200 {
-        if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
-            return Ok(());
-        }
-        match &driver.decision()?.kind {
-            DecisionKind::YesNo(_) => {
-                say(driver, false)?;
-            }
-            DecisionKind::ChooseTargets(options) => {
-                let chosen = options
-                    .legal
-                    .iter()
-                    .copied()
-                    .take(options.min as usize)
-                    .collect();
-                driver.answer(Answer::ChooseTargets(TargetChoice::Targets(chosen)))?;
-            }
-            _ => pass_round(driver, seats)?,
-        }
-    }
-    Err(ScriptError::Stuck("the stack".into()))
 }
 
 #[rstest]

@@ -136,6 +136,15 @@ fn stacked_x(object: &GameObject) -> u32 {
     }
 }
 
+/// Whether the predicate holds only for objects on the stack (a spell, an ability, or one of several that are).
+fn on_the_stack(pred: &Pred) -> bool {
+    match pred {
+        Pred::Spell | Pred::Ability(_) => true,
+        Pred::AnyOf(any) => !any.is_empty() && any.iter().all(on_the_stack),
+        _ => false,
+    }
+}
+
 /// The kind of zone a zone is.
 pub(crate) const fn zone_kind(zone: Zone) -> ZoneKind {
     match zone {
@@ -504,13 +513,7 @@ impl<'a> Scope<'a> {
             Some(ZoneKind::Stack) => vec![Zone::Stack],
             Some(ZoneKind::Exile) => vec![Zone::Exile],
             Some(ZoneKind::Command) => seats().map(Zone::Command).collect(),
-            None if selector
-                .0
-                .iter()
-                .any(|pred| matches!(pred, Pred::Spell | Pred::Ability(_))) =>
-            {
-                vec![Zone::Stack]
-            }
+            None if selector.0.iter().any(on_the_stack) => vec![Zone::Stack],
             Some(ZoneKind::Battlefield) | None => vec![Zone::Battlefield],
         }
     }

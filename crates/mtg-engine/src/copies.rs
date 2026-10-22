@@ -607,6 +607,139 @@ mod tests {
         assert!(copiable_values(&game, a, None).is_none());
     }
 
+    fn become_copy_until_end_of_turn(game: &mut GameState, object: &str, of: &str) {
+        let of = start(of);
+        let definition = copiable_values(game, of, None).unwrap();
+        let event = Event::BecameCopy(BecameCopy {
+            object: start(object).id,
+            of,
+            definition: Arc::new(definition),
+            until_end_of_turn: true,
+        });
+        apply_event(game, &event).unwrap();
+    }
+
+    fn name_of(game: &GameState, object: &str) -> String {
+        game.object(start(object).id).unwrap().card().name.clone()
+    }
+
+    #[rstest]
+    #[case::over_nothing(&[], &["Wolf"], "Copy A", true)]
+    #[case::over_a_lasting_copy(&["Ogre"], &["Wolf"], "Ogre", true)]
+    #[case::over_two_temporary_ones(&["Ogre"], &["Wolf", "Bear"], "Ogre", true)]
+    #[case::a_lasting_copy_made_meanwhile_stays(&["Ogre"], &["Wolf", "!Bear"], "Bear", false)]
+    fn a_copy_until_end_of_turn_gives_way_to_what_the_permanent_was_when_it_ends(
+        #[case] lasting: &[&str],
+        #[case] then: &[&str],
+        #[case] after: &str,
+        #[case] ends: bool,
+    ) {
+        let mut game = game();
+        for of in lasting {
+            become_copy(&mut game, "Copy A", of);
+        }
+        let mut shown_first = None;
+        for of in then {
+            match of.strip_prefix('!') {
+                Some(of) => become_copy(&mut game, "Copy A", of),
+                None => become_copy_until_end_of_turn(&mut game, "Copy A", of),
+            }
+            shown_first.get_or_insert_with(|| name_of(&game, "Copy A"));
+        }
+        let last = then.last().unwrap().trim_start_matches('!');
+        assert_eq!(
+            name_of(&game, "Copy A"),
+            last,
+            "the latest copy effect applies"
+        );
+        let ended = Event::CopyEnded {
+            object: start("Copy A").id,
+        };
+        if !ends {
+            // A lasting copy made over the temporary ones replaced them: there is nothing to end.
+            assert!(apply_event(&mut game, &ended).is_err());
+            assert_eq!(name_of(&game, "Copy A"), after);
+            return;
+        }
+        apply_event(&mut game, &ended).unwrap();
+        assert_eq!(name_of(&game, "Copy A"), after);
+        assert_eq!(
+            game.object(start("Copy A").id)
+                .unwrap()
+                .copy_effect()
+                .is_some(),
+            after != "Copy A"
+        );
+        assert!(
+            apply_event(&mut game, &ended).is_err(),
+            "nothing temporary is left to end"
+        );
+    }
+
+    #[test]
+    fn a_copy_of_a_transformed_permanent_has_the_values_of_the_face_that_is_up_and_no_back_face() {
+        let front = mtg_cards::CardDefinition::new("Moth")
+            .with_type(CardType::Creature)
+            .with_power_toughness(1, 1);
+        let back = mtg_cards::CardDefinition::new("Butterfly")
+            .with_type(CardType::Creature)
+            .with_power_toughness(4, 4);
+        let dfc = Arc::new(
+            front
+                .clone()
+                .with_faces(mtg_cards::definition::Layout::Transform, vec![front, back]),
+        );
+        let mut game = crate::fixtures::state(
+            vec![vec![], vec![]],
+            vec![vec![dfc, creature("Copy A", 1, 1)], vec![]],
+        );
+        let moth = game
+            .objects()
+            .find(|o| o.card().name == "Moth")
+            .map(GameObject::reference)
+            .unwrap();
+        let front_values = copiable_values(&game, moth, None).unwrap();
+        assert_eq!(front_values.name, "Moth");
+        apply_event(
+            &mut game,
+            &Event::Transformed {
+                object: moth.id,
+                face: Some(1),
+            },
+        )
+        .unwrap();
+        let shot = snapshot(&game, moth.id).unwrap();
+        for values in [
+            copiable_values(&game, moth, None).unwrap(),
+            copiable_values(&game, moth, Some(&shot)).unwrap(),
+        ] {
+            assert_eq!(
+                (values.name.as_str(), values.power, values.faces.len()),
+                ("Butterfly", Some(4), 0)
+            );
+        }
+        // A copy of it keeps the back face's values and does not turn over with the original.
+        let copy = game
+            .objects()
+            .find(|o| o.card().name == "Copy A")
+            .map(GameObject::reference)
+            .unwrap();
+        let event = Event::BecameCopy(BecameCopy {
+            object: copy.id,
+            of: moth,
+            definition: Arc::new(copiable_values(&game, moth, None).unwrap()),
+            until_end_of_turn: false,
+        });
+        apply_event(&mut game, &event).unwrap();
+        assert_eq!(game.object(copy.id).unwrap().card().name, "Butterfly");
+        assert!(!may_be_copied_wrongly(&game, copy));
+    }
+
+    /// Whether the copy is a transforming permanent: it never is.
+    fn may_be_copied_wrongly(game: &GameState, copy: ObjectRef) -> bool {
+        game.object(copy.id).unwrap().whole_card().is_multi_face()
+    }
+
     proptest! {
         #[test]
         fn a_copy_never_changes_the_original_or_an_object_that_is_not_copied(
