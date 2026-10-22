@@ -267,6 +267,15 @@ mod tests {
     use rstest::rstest;
 
     #[test]
+    fn no_primitive_is_listed_twice() {
+        // `Caps` keeps the names in a set, which would hide a repeated line.
+        let mut seen = std::collections::BTreeSet::new();
+        for name in RUNS {
+            assert!(seen.insert(*name), "{name} is listed twice");
+        }
+    }
+
+    #[test]
     fn what_the_capabilities_cover_is_carried() {
         let caps = caps();
         let library = builtin::library().unwrap_or_else(|errors| panic!("{errors}"));

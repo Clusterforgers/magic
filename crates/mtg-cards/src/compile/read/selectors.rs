@@ -37,7 +37,7 @@ const TYPES: [(&str, CardType); 8] = [
 ];
 
 /// The keywords a creature can be given or asked for by name; each reads and writes as plain words.
-const KEYWORDS: [&str; 12] = [
+const KEYWORDS: &[&str] = &[
     "first strike",
     "double strike",
     "flying",
