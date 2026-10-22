@@ -135,8 +135,26 @@ impl RandomBot {
                     let required = options.required.contains(&option.object);
                     if (self.rng.below(2) == 0 || required) && !option.defenders.is_empty() {
                         let target = option.defenders[self.rng.index(option.defenders.len())];
+                        // A creature that is required to attack attacks where it costs nothing.
+                        let target = match option.free_defender() {
+                            Some(free) if required && option.tax.iter().any(|(t, _)| *t == target) => {
+                                free
+                            }
+                            _ => target,
+                        };
                         attackers.push((option.object, target));
                     }
+                }
+                // An attack that costs more than the player surely has is cut back to what it can pay (CR 508.1h),
+                // the creatures that are not required first.
+                while options.cost_of(&attackers).mana_value() > options.mana {
+                    let Some(at) = attackers
+                        .iter()
+                        .rposition(|(object, _)| !options.required.contains(object))
+                    else {
+                        break;
+                    };
+                    attackers.remove(at);
                 }
                 Answer::DeclareAttackers(attackers)
             }

@@ -421,6 +421,10 @@ fn announcement(
             choice: Choice::YesNo(true),
         }]),
         Some(Pending {
+            what: What::Attack(attackers),
+            ..
+        }) => Ok(crate::combat::attack_events(state, player, attackers)),
+        Some(Pending {
             what: What::Trigger(_),
             ..
         })

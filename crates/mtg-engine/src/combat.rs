@@ -4,6 +4,7 @@ use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
+use crate::attack_tax;
 use crate::characteristics::{
     cant_attack, cant_be_blocked_by, cant_block, characteristics, controller_of,
 };
@@ -259,26 +260,33 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
         .iter()
         .copied()
         .filter(|id| can_attack(state, *id, player))
-        .map(|object| AttackerOption {
-            object,
-            defenders: paired_defender(state, object, &defenders)
-                .map_or_else(|| defenders.clone(), |only| vec![only]),
+        .map(|object| {
+            AttackerOption::free(
+                object,
+                paired_defender(state, object, &defenders)
+                    .map_or_else(|| defenders.clone(), |only| vec![only]),
+            )
         })
         .collect::<Vec<_>>();
-    // A creature that can't attack any defender is not required to (it is "able" only with one to attack).
-    let required = attackers
+    let mut options = AttackOptions {
+        attackers,
+        required: Vec::new(),
+        mana: 0,
+    };
+    attack_tax::describe(state, player, &mut options);
+    // A creature that can't attack any defender is not required to (it is "able" only with one to attack), nor is one
+    // that can attack only by paying a cost: a requirement never makes a player pay (CR 508.1d).
+    options.required = options
+        .attackers
         .iter()
         .filter(|option| {
-            !option.defenders.is_empty()
+            option.free_defender().is_some()
                 && (must_attack(state, option.object)
                     || paired_defender(state, option.object, &defenders).is_some())
         })
         .map(|option| option.object)
         .collect();
-    AttackOptions {
-        attackers,
-        required,
-    }
+    options
 }
 
 /// Players being attacked, in turn order after the active player.

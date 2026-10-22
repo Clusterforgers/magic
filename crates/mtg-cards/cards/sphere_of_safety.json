@@ -1,0 +1,24 @@
+{
+  "oracle_id": "92f6c063-a740-4c3c-a60a-569fd298854d",
+  "name": "Sphere of Safety",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphere of Safety",
+      "oracle_fingerprint": "bcfdd1ab402de1afdc349e7dd8b18ae0",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "AttackTax": {
+                "attacked": "Both",
+                "mana": "{1}",
+                "per": { "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

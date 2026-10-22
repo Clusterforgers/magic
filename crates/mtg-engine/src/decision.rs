@@ -229,6 +229,12 @@ impl PayOptions {
     }
 }
 
+/// Whether a count is zero, so serialization can leave it out.
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_zero(count: &u32) -> bool {
+    *count == 0
+}
+
 /// One creature that may attack and the defenders it may attack.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -237,6 +243,30 @@ pub struct AttackerOption {
     pub object: ObjectId,
     /// Players and planeswalkers it may attack.
     pub defenders: Vec<AttackTarget>,
+    /// What it costs to attack each defender that an effect taxes (CR 508.1h): the attack is declared with the payment.
+    /// Left out while it costs nothing to attack any of them.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<(AttackTarget, ManaCost)>>", optional))]
+    pub tax: Vec<(AttackTarget, ManaCost)>,
+}
+
+impl AttackerOption {
+    /// An attacker that costs nothing to attack with.
+    pub fn free(object: ObjectId, defenders: Vec<AttackTarget>) -> Self {
+        AttackerOption {
+            object,
+            defenders,
+            tax: Vec::new(),
+        }
+    }
+
+    /// The first defender it may attack for nothing.
+    pub fn free_defender(&self) -> Option<AttackTarget> {
+        self.defenders
+            .iter()
+            .copied()
+            .find(|target| !self.tax.iter().any(|(taxed, _)| taxed == target))
+    }
 }
 
 /// Legal attackers.
@@ -250,22 +280,43 @@ pub struct AttackOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub required: Vec<ObjectId>,
+    /// The mana the player can surely spend on what the attack costs, whichever creatures attack (a floor, not a limit):
+    /// the mana floating and that of the untapped permanents that are not creatures that may attack. Left out while
+    /// nothing is taxed.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
+    pub mana: u32,
 }
 
 impl AttackOptions {
     /// The declaration that does only what the rules require: each creature that must attack, at the first defender
-    /// it may attack.
+    /// it may attack for nothing.
     pub fn required_attack(&self) -> Vec<(ObjectId, AttackTarget)> {
         self.attackers
             .iter()
             .filter(|option| self.required.contains(&option.object))
             .filter_map(|option| {
                 option
-                    .defenders
-                    .first()
-                    .map(|first| (option.object, *first))
+                    .free_defender()
+                    .map(|first| (option.object, first))
             })
             .collect()
+    }
+
+    /// What the declaration costs, each attacker for the defender it attacks (CR 508.1h).
+    pub fn cost_of(&self, attackers: &[(ObjectId, AttackTarget)]) -> ManaCost {
+        let symbols = attackers
+            .iter()
+            .filter_map(|(object, target)| {
+                let option = self.attackers.iter().find(|option| option.object == *object)?;
+                option
+                    .tax
+                    .iter()
+                    .find(|(taxed, _)| taxed == target)
+                    .map(|(_, cost)| cost.symbols().to_vec())
+            })
+            .flatten();
+        ManaCost::from_symbols(symbols)
     }
 }
 
@@ -606,16 +657,19 @@ mod tests {
 
     #[test]
     fn the_required_attack_names_each_required_creature_at_its_first_defender() {
-        let attack = |object: u64, defenders: &[u64]| AttackerOption {
-            object: id(object),
-            defenders: defenders
-                .iter()
-                .map(|player| AttackTarget::Player(PlayerId(*player)))
-                .collect(),
+        let attack = |object: u64, defenders: &[u64]| {
+            AttackerOption::free(
+                id(object),
+                defenders
+                    .iter()
+                    .map(|player| AttackTarget::Player(PlayerId(*player)))
+                    .collect(),
+            )
         };
         let options = AttackOptions {
             attackers: vec![attack(1, &[2, 3]), attack(2, &[3]), attack(3, &[])],
             required: vec![id(1), id(3)],
+            mana: 0,
         };
         assert_eq!(
             options.required_attack(),
@@ -629,6 +683,7 @@ mod tests {
         let plain = AttackOptions {
             attackers: Vec::new(),
             required: Vec::new(),
+            mana: 0,
         };
         assert_eq!(
             serde_json::to_string(&plain).unwrap(),

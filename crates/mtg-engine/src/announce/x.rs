@@ -55,7 +55,7 @@ impl XCost {
                 } => return Some(XCost::Loyalty),
                 _ => 0,
             },
-            What::Trigger(_) => 0,
+            What::Trigger(_) | What::Attack(_) => 0,
         };
         (symbols > 0).then_some(XCost::Mana { symbols })
     }

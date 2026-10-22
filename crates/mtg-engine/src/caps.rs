@@ -156,6 +156,7 @@ const RUNS: &[&str] = &[
     "Ability.Rule",
     "Rule.MustAttack",
     "Rule.MustAttackPlayers",
+    "Rule.AttackTax",
     "Rule.MustBlock",
     "Rule.CantBeCountered",
     "Rule.CantGainLife",
@@ -698,6 +699,7 @@ mod tests {
     #[case::mutate("Keyword.Mutate", false)]
     #[case::encore("Keyword.Encore", true)]
     #[case::pairing_attackers_with_players("Rule.MustAttackPlayers", true)]
+    #[case::taxing_attackers("Rule.AttackTax", true)]
     #[case::squad("Keyword.Squad", true)]
     #[case::x_costs(X_COST, true)]
     #[case::x_read_after_resolving("Amount.X.Elsewhere", false)]

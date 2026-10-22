@@ -216,6 +216,9 @@ pub enum IllegalAnswer {
         /// Supplied number.
         got: usize,
     },
+    /// The attack costs more than its player can pay (CR 508.1h): an effect taxes the creatures that attack.
+    #[error("the attack costs {0}, which its player cannot pay")]
+    AttackUnaffordable(String),
     /// The creatures tapped for a cost have less total power than it asks (crew).
     #[error("the creatures tapped have total power {got} but the cost asks {needed}")]
     TooLittlePower {

@@ -4,8 +4,9 @@ use mtg_core::ids::ObjectId;
 
 use crate::abilities::AbilityRef;
 use crate::announce::Pending;
+use crate::attack_tax;
 use crate::choose::{self, Target};
-use crate::combat::{attack_events, check_attackers, check_blockers};
+use crate::combat::{AttackTarget, check_attackers, check_blockers};
 use crate::damage::assignment_answer;
 use crate::decision::{Answer, Decision, DecisionKind};
 use crate::error::{EngineError, IllegalAnswer};
@@ -21,6 +22,8 @@ pub(crate) enum Outcome {
     Events(Vec<Event>),
     /// Start casting this spell; its announcement and payment are decided next.
     BeginCast(ObjectId),
+    /// This attack is declared once its cost is paid (CR 508.1h): the payment is decided next.
+    BeginAttack(Vec<(ObjectId, AttackTarget)>),
     /// Start activating this ability; its announcement is decided next.
     BeginActivation(AbilityRef),
     /// Start suspending this card from the hand: the payment of its suspend cost is decided next.
@@ -74,7 +77,7 @@ pub(crate) fn handle(
         }
         (DecisionKind::DeclareAttackers(options), Answer::DeclareAttackers(attackers)) => {
             check_attackers(options, &attackers)?;
-            Ok(Outcome::Events(attack_events(state, player, &attackers)))
+            attack_tax::declare(state, player, attackers)
         }
         (DecisionKind::DeclareBlockers(options), Answer::DeclareBlockers(blocks)) => {
             check_blockers(state, options, &blocks)?;
