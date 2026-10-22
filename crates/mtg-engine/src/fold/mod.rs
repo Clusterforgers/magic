@@ -250,6 +250,12 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::PermanentUntapped { object } => set_tapped(state, *object, false)?,
         Event::Monstrous { object, .. } => set_monstrous(state, *object)?,
         Event::TurnedFaceUp { object, .. } => turn_face_up(state, *object)?,
+        Event::Mutated {
+            object,
+            spell,
+            over,
+            ..
+        } => crate::merged::fold(state, *object, *spell, *over)?,
         Event::ManaAdded {
             player, mana, only, ..
         } => {

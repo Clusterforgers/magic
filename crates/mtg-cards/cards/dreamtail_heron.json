@@ -1,0 +1,18 @@
+{
+  "oracle_id": "1cadb1e1-19b6-4ce5-8eb5-7851cec7dfa3",
+  "name": "Dreamtail Heron",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreamtail Heron",
+      "oracle_fingerprint": "3d412b5f63ec7f2f8c16bbf354c79b54",
+      "abilities": [
+        { "Keyword": { "Mutate": "{3}{U}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": { "when": { "Mutates": { "what": ["This"] } }, "effects": [{ "Draw": {} }] }
+        }
+      ]
+    }
+  ]
+}

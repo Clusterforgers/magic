@@ -991,6 +991,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Connived { what }
             | TriggerPattern::BecomesMonstrous { what }
             | TriggerPattern::TurnedFaceUp { what }
+            | TriggerPattern::Mutates { what }
             | TriggerPattern::Adapted { what }
             | TriggerPattern::Untapped { what }
             | TriggerPattern::Blocks { what }
@@ -1046,6 +1047,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::Connived { .. }
                 | TriggerPattern::BecomesMonstrous { .. }
                 | TriggerPattern::TurnedFaceUp { .. }
+                | TriggerPattern::Mutates { .. }
                 | TriggerPattern::Adapted { .. }
                 | TriggerPattern::Bolstered { .. }
                 | TriggerPattern::SpellCast { .. }

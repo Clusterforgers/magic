@@ -596,6 +596,18 @@ pub enum Event {
         /// Its controller, who turned it.
         player: PlayerId,
     },
+    /// A mutating creature spell merged with a creature (CR 702.140b, 729.2): the spell left the stack and its card is
+    /// part of the permanent, which keeps its id, counters, attachments and status.
+    Mutated {
+        /// The merged permanent.
+        object: ObjectId,
+        /// The spell that merged with it; its card is an object again when the permanent leaves the battlefield.
+        spell: ObjectId,
+        /// Whether the spell went on top of the permanent (the permanent has its characteristics) or under it.
+        over: bool,
+        /// The controller of the spell.
+        player: PlayerId,
+    },
     /// A creature adapted (CR 701.46): the counters are the event before it.
     Adapted {
         /// The creature that adapted.
@@ -794,6 +806,7 @@ impl Event {
             | Event::CopyEnded { object }
             | Event::ObjectLeftGame { object } => vec![*object],
             Event::Attached { object, to } => vec![*object, *to],
+            Event::Mutated { object, spell, .. } => vec![*object, *spell],
             Event::AttackersDeclared { attackers, .. } => {
                 attackers.iter().map(|(o, _)| *o).collect()
             }

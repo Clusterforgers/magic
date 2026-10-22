@@ -341,7 +341,7 @@ fn card_of<'a>(
 ) -> Option<&'a CardDefinition> {
     let object = holder(state, id)?;
     let left = shot.filter(|shot| shot.id == id && shot.counter != object.counter());
-    match left.and_then(|shot| shot.copy.as_deref()) {
+    match left.and_then(|shot| shot.copy.as_deref().or(shot.merged.as_deref())) {
         Some(copy) => Some(copy),
         None => Some(object.card()),
     }

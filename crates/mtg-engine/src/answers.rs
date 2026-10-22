@@ -141,6 +141,16 @@ pub(crate) fn handle(
         {
             Ok(crate::commanders::answer(state, options, choice))
         }
+        // Nothing resolving and nothing announced, all players having passed: the question is whether a mutating
+        // creature spell goes over the creature it merges with or under it (CR 702.140b).
+        (DecisionKind::YesNo(options), Answer::YesNo(choice))
+            if state.resolving().is_none()
+                && pending.is_none()
+                && !replacing
+                && crate::merged::asks(state, options) =>
+        {
+            Ok(crate::merged::answer(state, options, choice))
+        }
         (DecisionKind::YesNo(options), Answer::YesNo(choice)) => {
             choose::yes_no_answer(player, options, choice)
         }

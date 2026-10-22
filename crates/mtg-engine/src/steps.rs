@@ -176,6 +176,10 @@ fn combat_damage(state: &GameState, pass: DamagePass) -> Progress {
 
 fn priority_round(state: &GameState) -> Progress {
     if all_passed(state) {
+        // A mutating creature spell asks its controller whether it goes over or under the creature (CR 702.140b).
+        if let Some(decision) = crate::merged::question(state) {
+            return Progress::Decide(decision);
+        }
         return Progress::Events(resolve_top(state).unwrap_or_else(|| leave_step(state)));
     }
     match state.priority() {

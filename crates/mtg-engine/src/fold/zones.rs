@@ -1,7 +1,5 @@
 //! Folding events that move objects between zones.
 
-use std::collections::BTreeMap;
-
 use mtg_cards::definition::Layout;
 use mtg_cards::value::CastWay;
 use mtg_core::card::CardType;
@@ -15,7 +13,7 @@ use crate::error::EngineError;
 use crate::events::{Event, ZoneCause};
 use crate::keywords::OptionalKind;
 use crate::library::{Scried, Surveilled};
-use crate::object::{Designations, FaceDown, GameObject, ObjectKind, PermanentState};
+use crate::object::{FaceDown, GameObject, ObjectKind, PermanentState};
 use crate::state::{GameState, Tally};
 use crate::zones::{Placement, Zone};
 
@@ -85,39 +83,26 @@ pub(super) fn move_object(
     if from == Zone::Stack {
         object.choices = Choices::default();
     }
+    let mut merged = Vec::new();
     if from == Zone::Battlefield {
+        merged = crate::merged::taken(&mut object.permanent);
         object.permanent = None;
         state.combat.remove_object(id);
         // Creatures attacking a planeswalker that leaves go on attacking nothing (CR 506.4c).
         state.combat.planeswalker_left(id);
     }
     if to == Zone::Battlefield {
-        object.permanent = Some(PermanentState {
-            tapped: false,
-            designations: Designations::default(),
-            damage: 0,
-            deathtouched: false,
-            summoning_sick: true,
-            new_to: None,
-            counters: BTreeMap::new(),
-            attached_to: None,
-            attached_player: None,
-            timestamp,
-            observed: None,
-            chosen: None,
-            paid,
-            way,
-            x,
-            face,
-            copy: None,
-        });
+        object.permanent = Some(PermanentState::entering(timestamp, paid, way, x, face));
     } else if to != Zone::Stack {
         object.controller = object.owner;
     }
+    let (owner, token) = (object.owner, object.kind == ObjectKind::Token);
     // A token is a token only on the battlefield (CR 111.7): anywhere else it ceases to exist.
-    if object.kind == ObjectKind::Token && to != Zone::Battlefield {
+    if token && to != Zone::Battlefield {
         crate::tokens::cease(state, id);
     }
+    // Each card of a merged permanent that left is an object of its own in the new zone (CR 729.3).
+    crate::merged::scatter(state, merged, owner, to, placement);
     Ok(())
 }
 

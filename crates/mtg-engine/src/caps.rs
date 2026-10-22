@@ -62,6 +62,7 @@ const RUNS: &[&str] = &[
     "Trigger.Amassed",
     "Trigger.BecomesMonstrous",
     "Trigger.TurnedFaceUp",
+    "Trigger.Mutates",
     "Trigger.Adapted",
     "Trigger.Bolstered",
     "Trigger.Batch",
@@ -291,6 +292,7 @@ const RUNS: &[&str] = &[
     "Keyword.Aftermath",
     "Keyword.Dash",
     "Keyword.Bestow",
+    "Keyword.Mutate",
     "Keyword.Blitz",
     "Keyword.Prowl",
     "Keyword.Ninjutsu",
@@ -700,7 +702,8 @@ mod tests {
     #[case::myriad("Keyword.Myriad", true)]
     #[case::crew("Keyword.Crew", true)]
     #[case::tapping_creatures_for_their_power_as_a_cost("Cost.TapPower", true)]
-    #[case::mutate("Keyword.Mutate", false)]
+    #[case::mutate("Keyword.Mutate", true)]
+    #[case::mutating_triggers("Trigger.Mutates", true)]
     #[case::encore("Keyword.Encore", true)]
     #[case::pairing_attackers_with_players("Rule.MustAttackPlayers", true)]
     #[case::squad("Keyword.Squad", true)]

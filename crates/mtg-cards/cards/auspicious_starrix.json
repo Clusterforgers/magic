@@ -1,0 +1,20 @@
+{
+  "oracle_id": "8432df19-dbf4-457b-8c0b-1f4b3a0a37d2",
+  "name": "Auspicious Starrix",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Auspicious Starrix",
+      "oracle_fingerprint": "4098a80365948a6c1ce765dd4c2d9436",
+      "abilities": [
+        { "Keyword": { "Mutate": "{5}{G}" } },
+        {
+          "Manual": {
+            "reason": "a triggered ability the compiler does not read yet",
+            "span": { "start": 187, "end": 400 }
+          }
+        }
+      ]
+    }
+  ]
+}

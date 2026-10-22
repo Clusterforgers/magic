@@ -1,0 +1,21 @@
+{
+  "oracle_id": "b42147e1-cf90-4c12-8abe-7f2931d0607c",
+  "name": "Cavern Whisperer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cavern Whisperer",
+      "oracle_fingerprint": "2a3fb4057bb1e183a2d9d799a9119704",
+      "abilities": [
+        { "Keyword": { "Mutate": "{3}{B}" } },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Mutates": { "what": ["This"] } },
+            "effects": [{ "Discard": { "who": "Opponents" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

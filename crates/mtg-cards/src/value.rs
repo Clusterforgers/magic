@@ -89,6 +89,8 @@ pub enum CastWay {
     Retrace,
     /// Morph, megamorph and disguise (CR 702.37c, 702.168): from a hand face down as a 2/2 creature spell for {3}; the permanent lies face down until it is turned face up.
     FaceDown,
+    /// Mutate (CR 702.140): a creature spell cast from a hand for its mutate cost that targets a non-Human creature with the same owner and merges with it as it resolves.
+    Mutate,
     /// Without paying its mana cost, by a permission or an effect (CR 118.9).
     Free,
 }
@@ -460,6 +462,7 @@ mod tests {
     #[case::dash(CastWay::Dash, true)]
     #[case::blitz(CastWay::Blitz, true)]
     #[case::prowl(CastWay::Prowl, true)]
+    #[case::mutate(CastWay::Mutate, true)]
     #[case::face_down(CastWay::FaceDown, true)]
     #[case::free(CastWay::Free, true)]
     #[case::jump_start(CastWay::JumpStart, false)]

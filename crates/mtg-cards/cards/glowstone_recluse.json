@@ -1,0 +1,21 @@
+{
+  "oracle_id": "b2b76070-f103-4f83-ad21-119e6352f2cd",
+  "name": "Glowstone Recluse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glowstone Recluse",
+      "oracle_fingerprint": "f93ac03b06d78d22fe6c9a111dbb7c2f",
+      "abilities": [
+        { "Keyword": { "Mutate": "{3}{G}" } },
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "Mutates": { "what": ["This"] } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

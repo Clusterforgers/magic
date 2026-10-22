@@ -7,6 +7,7 @@ import type { CounterKind } from "./CounterKind";
 import type { LoyaltyAbilityView } from "./LoyaltyAbilityView";
 import type { ManaCost } from "./ManaCost";
 import type { ManualClause } from "./ManualClause";
+import type { MergedCardView } from "./MergedCardView";
 import type { ObjectId } from "./ObjectId";
 import type { ObjectKind } from "./ObjectKind";
 import type { PermanentView } from "./PermanentView";
@@ -131,6 +132,11 @@ face?: number,
  * values above are those of the copy effect or of the original.
  */
 copy?: CopyView, 
+/**
+ * The cards of a merged permanent from the top down: the values above are those of the first card and the abilities
+ * those of all; left out for any other object.
+ */
+merged?: Array<MergedCardView>, 
 /**
  * The clauses of its rules text the engine does not run, as the card prints them, for every seat to follow; left out
  * while there are none. The card's controller does them by hand.

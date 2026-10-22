@@ -569,6 +569,22 @@ object: ObjectId,
 /**
  * Its controller, who turned it.
  */
+player: PlayerId, } } | { "Mutated": { 
+/**
+ * The merged permanent.
+ */
+object: ObjectId, 
+/**
+ * The spell that merged with it; its card is an object again when the permanent leaves the battlefield.
+ */
+spell: ObjectId, 
+/**
+ * Whether the spell went on top of the permanent (the permanent has its characteristics) or under it.
+ */
+over: boolean, 
+/**
+ * The controller of the spell.
+ */
 player: PlayerId, } } | { "Adapted": { 
 /**
  * The creature that adapted.

@@ -132,6 +132,8 @@ enum Happened {
     Monstrous { object: ObjectId, player: PlayerId },
     /// A permanent was turned face up.
     TurnedFaceUp { object: ObjectId, player: PlayerId },
+    /// A mutating creature spell merged with a creature.
+    Mutated { object: ObjectId, player: PlayerId },
     /// A creature adapted.
     Adapted { object: ObjectId, player: PlayerId },
     /// A player bolstered.
@@ -586,6 +588,10 @@ fn about_players_and_permanents(
             object: *object,
             player: *player,
         }),
+        Event::Mutated { object, player, .. } => found.push(Happened::Mutated {
+            object: *object,
+            player: *player,
+        }),
         Event::Adapted { object, player } => found.push(Happened::Adapted {
             object: *object,
             player: *player,
@@ -887,6 +893,13 @@ fn matching_permanents(
         | (
             TriggerPattern::TurnedFaceUp { what },
             Happened::TurnedFaceUp {
+                object: actor,
+                player,
+            },
+        )
+        | (
+            TriggerPattern::Mutates { what },
+            Happened::Mutated {
                 object: actor,
                 player,
             },
@@ -1433,6 +1446,7 @@ mod tests {
     #[case::becoming_monstrous(r#"{"BecomesMonstrous":{"what":[]}}"#)]
     #[case::being_turned_face_up(r#"{"TurnedFaceUp":{"what":[]}}"#)]
     #[case::adapting(r#"{"Adapted":{"what":[]}}"#)]
+    #[case::mutating(r#"{"Mutates":{"what":[]}}"#)]
     fn the_patterns_of_events_about_players_and_permanents_trigger_on_no_other_event(
         #[case] when: &str,
     ) {

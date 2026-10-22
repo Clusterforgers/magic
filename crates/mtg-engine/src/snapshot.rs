@@ -66,6 +66,11 @@ pub struct Snapshot {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(skip))]
     pub copy: Option<Arc<CardDefinition>>,
+    /// What it was made of when it was a merged permanent (CR 729): the characteristics of its topmost card with the
+    /// abilities of every card, which its abilities read after it has left; absent for any other object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub merged: Option<Arc<CardDefinition>>,
 }
 
 impl Snapshot {
@@ -112,6 +117,7 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
         way: object.cast_way(),
         face: object.face(),
         copy: object.copy_effect().map(crate::copies::CopyEffect::shared),
+        merged: object.merged().map(crate::merged::Merged::shared),
     })
 }
 

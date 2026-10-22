@@ -1,0 +1,39 @@
+{
+  "oracle_id": "7f93a368-9568-456c-9bd6-20d5fe5ad2f1",
+  "name": "Sawtusk Demolisher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sawtusk Demolisher",
+      "oracle_fingerprint": "04eff9429d33b762ec0d721df914750c",
+      "abilities": [
+        { "Keyword": { "Mutate": "{3}{G}" } },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Mutates": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Creature" } }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": {
+                    "Custom": {
+                      "name": "Beast",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Beast"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
