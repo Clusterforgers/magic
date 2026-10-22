@@ -1,0 +1,25 @@
+{
+  "id": "15af0592-a1cb-4b1e-b051-dde978939706",
+  "oracle_id": "a07698f6-5ad5-49a3-9da2-f82d407f5cd7",
+  "name": "Izzet Charm",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rvr",
+  "collector_number": "190",
+  "rarity": "uncommon",
+  "released_at": "2024-01-12",
+  "digital": false,
+  "mana_cost": "{U}{R}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Choose one —\n• Counter target noncreature spell unless its controller pays {2}.\n• Izzet Charm deals 2 damage to target creature.\n• Draw two cards, then discard two cards.",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": []
+}

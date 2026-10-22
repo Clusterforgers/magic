@@ -1,0 +1,29 @@
+{
+  "id": "a5c69876-809d-4af3-9fd6-3bac41541dad",
+  "oracle_id": "3b93427c-5b40-4119-96ae-7dce3ca2bbb9",
+  "name": "Armament Corps",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ktk",
+  "collector_number": "165",
+  "rarity": "uncommon",
+  "released_at": "2014-09-26",
+  "digital": false,
+  "mana_cost": "{2}{W}{B}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Human Soldier",
+  "oracle_text": "When this creature enters, distribute two +1/+1 counters among one or two target creatures you control.",
+  "colors": [
+    "B",
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "W"
+  ],
+  "keywords": [],
+  "power": "4",
+  "toughness": "4"
+}

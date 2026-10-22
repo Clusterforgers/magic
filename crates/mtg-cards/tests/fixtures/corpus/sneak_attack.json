@@ -1,0 +1,23 @@
+{
+  "id": "a45b4ca9-4355-4690-84c3-a7d44c367dbf",
+  "oracle_id": "e7aee670-e6ac-4b3a-b3d1-7b7013db8f3d",
+  "name": "Sneak Attack",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dmr",
+  "collector_number": "139",
+  "rarity": "mythic",
+  "released_at": "2023-01-13",
+  "digital": false,
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "{R}: You may put a creature card from your hand onto the battlefield. That creature gains haste. Sacrifice the creature at the beginning of the next end step.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

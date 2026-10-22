@@ -1,0 +1,25 @@
+{
+  "id": "50f1b7ba-7888-4f0d-a515-23dcf96bf87e",
+  "oracle_id": "04046ae4-5c51-434b-930c-f3b1d348bf4b",
+  "name": "Rootborn Defenses",
+  "lang": "en",
+  "layout": "normal",
+  "set": "plst",
+  "collector_number": "RVR-26",
+  "rarity": "common",
+  "released_at": "2026-08-10",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Populate. Creatures you control gain indestructible until end of turn. (To populate, create a token that's a copy of a creature token you control.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Populate"
+  ]
+}

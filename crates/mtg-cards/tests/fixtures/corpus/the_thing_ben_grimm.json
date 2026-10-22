@@ -1,0 +1,27 @@
+{
+  "id": "3f1933a8-046f-471a-afcf-cfb08ca0d239",
+  "oracle_id": "d566d5f1-5abd-405b-8553-d267ecbe72ab",
+  "name": "The Thing, Ben Grimm",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msh",
+  "collector_number": "190",
+  "rarity": "uncommon",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{5}{G}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Human Hero",
+  "oracle_text": "Trample\nWhenever one or more Heroes you control deal damage to a player, put two +1/+1 counters on The Thing.",
+  "power": "7",
+  "toughness": "7",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Trample"
+  ]
+}

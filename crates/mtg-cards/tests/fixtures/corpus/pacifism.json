@@ -1,0 +1,25 @@
+{
+  "id": "433eed50-81af-4a59-b624-57b6f5f1bb0f",
+  "oracle_id": "5f5e0b10-c8cf-450c-bfd3-bcb0528ec330",
+  "name": "Pacifism",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "575",
+  "rarity": "common",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature can't attack or block.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

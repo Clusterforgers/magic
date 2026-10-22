@@ -1,0 +1,23 @@
+{
+  "id": "e60deb92-f7dd-4f4e-9036-e47dd586f985",
+  "oracle_id": "8b755881-a72d-4e21-a369-d2924eb4585a",
+  "name": "Cultivate",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "172",
+  "rarity": "common",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Search your library for up to two basic land cards, reveal those cards, put one onto the battlefield tapped and the other into your hand, then shuffle.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

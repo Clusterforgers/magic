@@ -1,0 +1,29 @@
+{
+  "id": "b9afac99-a094-41a8-8323-90dec29691c4",
+  "oracle_id": "139fb542-89fd-4b9e-87e6-ec925bcca93a",
+  "name": "Faithful Watchdog",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mh3",
+  "collector_number": "185",
+  "rarity": "common",
+  "released_at": "2024-06-14",
+  "digital": false,
+  "mana_cost": "{G}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Dog",
+  "oracle_text": "Vigilance\nThis creature enters with three +1/+1 counters on it.",
+  "power": "0",
+  "toughness": "0",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Vigilance"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "d108c2b1-236e-4b8d-8445-d9749ccc4fea",
+  "oracle_id": "087f9ad7-e74f-40e2-8102-1ed2925d0418",
+  "name": "Rest in Peace",
+  "lang": "en",
+  "layout": "normal",
+  "set": "big",
+  "collector_number": "4",
+  "rarity": "mythic",
+  "released_at": "2024-04-19",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, exile all graveyards.\nIf a card or token would be put into a graveyard from anywhere, exile it instead.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

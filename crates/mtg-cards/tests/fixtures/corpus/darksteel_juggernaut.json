@@ -1,0 +1,23 @@
+{
+  "id": "22c4148a-477d-419e-8d6b-5d558048e0db",
+  "oracle_id": "4893a301-29a8-4a0e-845c-8ddb5cb8db25",
+  "name": "Darksteel Juggernaut",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c18",
+  "collector_number": "202",
+  "rarity": "rare",
+  "released_at": "2018-08-10",
+  "digital": false,
+  "mana_cost": "{5}",
+  "cmc": 5.0,
+  "type_line": "Artifact Creature — Juggernaut",
+  "oracle_text": "Indestructible\nDarksteel Juggernaut's power and toughness are each equal to the number of artifacts you control.\nThis creature attacks each combat if able.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Indestructible"
+  ],
+  "power": "*",
+  "toughness": "*"
+}

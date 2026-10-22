@@ -1,0 +1,27 @@
+{
+  "id": "c79a8938-aae6-42ff-888c-2783e11a8d4f",
+  "oracle_id": "2abe9303-d498-4aad-b6b2-8b5064bd2ffd",
+  "name": "Rhox Faithmender",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "128",
+  "rarity": "rare",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Rhino Monk",
+  "oracle_text": "Lifelink (Damage dealt by this creature also causes you to gain that much life.)\nIf you would gain life, you gain twice that much life instead.",
+  "power": "1",
+  "toughness": "5",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Lifelink"
+  ]
+}

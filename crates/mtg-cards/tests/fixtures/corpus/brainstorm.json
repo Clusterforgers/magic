@@ -1,0 +1,23 @@
+{
+  "id": "ec7d6864-7b6b-4f74-8474-9b9ec96b1d33",
+  "oracle_id": "36cd2364-d113-47d1-b2c4-b088d9eb88dd",
+  "name": "Brainstorm",
+  "lang": "en",
+  "layout": "normal",
+  "set": "frc",
+  "collector_number": "39",
+  "rarity": "common",
+  "released_at": "2026-10-02",
+  "digital": false,
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Draw three cards, then put two cards from your hand on top of your library in any order.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

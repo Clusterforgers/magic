@@ -1,0 +1,33 @@
+{
+  "id": "2496ab15-2a88-43fd-8d79-74758879157b",
+  "oracle_id": "86f94f8e-f45e-42fc-8ad6-e9bdfaaa997d",
+  "name": "Transguild Courier",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dmc",
+  "collector_number": "194",
+  "rarity": "uncommon",
+  "released_at": "2022-09-09",
+  "digital": false,
+  "mana_cost": "{4}",
+  "cmc": 4.0,
+  "type_line": "Artifact Creature — Golem",
+  "oracle_text": "Transguild Courier is all colors.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": []
+}

@@ -1,0 +1,25 @@
+{
+  "id": "a7d66dd3-330f-4b12-81f6-52d7a31013a9",
+  "oracle_id": "aa4ecefa-808e-4706-af16-4ea5af9743fc",
+  "name": "Renewed Faith",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dmr",
+  "collector_number": "23",
+  "rarity": "common",
+  "released_at": "2023-01-13",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "You gain 6 life.\nCycling {1}{W} ({1}{W}, Discard this card: Draw a card.)\nWhen you cycle this card, you may gain 2 life.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Cycling"
+  ]
+}

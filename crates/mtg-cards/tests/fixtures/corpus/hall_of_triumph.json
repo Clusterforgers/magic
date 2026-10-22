@@ -1,0 +1,19 @@
+{
+  "id": "634fd988-5d5c-4637-b7fd-05a41798ead8",
+  "oracle_id": "716632dd-2947-4641-a1db-50e0a2b0b4e8",
+  "name": "Hall of Triumph",
+  "lang": "en",
+  "layout": "normal",
+  "set": "jou",
+  "collector_number": "162",
+  "rarity": "rare",
+  "released_at": "2014-05-02",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Legendary Artifact",
+  "oracle_text": "As Hall of Triumph enters, choose a color.\nCreatures you control of the chosen color get +1/+1.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

@@ -1,0 +1,29 @@
+{
+  "id": "e41cf82d-3213-47ce-a015-6e51a8b07e4f",
+  "oracle_id": "b685757b-521e-4353-a233-97052359723d",
+  "name": "Questing Beast",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eld",
+  "collector_number": "171",
+  "rarity": "mythic",
+  "released_at": "2019-10-04",
+  "digital": false,
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Beast",
+  "oracle_text": "Vigilance, deathtouch, haste\nQuesting Beast can't be blocked by creatures with power 2 or less.\nCombat damage that would be dealt by creatures you control can't be prevented.\nWhenever Questing Beast deals combat damage to an opponent, it deals that much damage to target planeswalker that player controls.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Vigilance",
+    "Haste",
+    "Deathtouch"
+  ]
+}

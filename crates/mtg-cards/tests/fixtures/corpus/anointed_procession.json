@@ -1,0 +1,23 @@
+{
+  "id": "9a52c265-6920-4929-ba0a-70da08df01f1",
+  "oracle_id": "7246d45b-2185-4cdd-981b-5419b7d52bce",
+  "name": "Anointed Procession",
+  "lang": "en",
+  "layout": "normal",
+  "set": "akh",
+  "collector_number": "2",
+  "rarity": "rare",
+  "released_at": "2017-04-28",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "If an effect would create one or more tokens under your control, it creates twice that many of those tokens instead.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

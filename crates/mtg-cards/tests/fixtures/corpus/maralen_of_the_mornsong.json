@@ -1,0 +1,25 @@
+{
+  "id": "ba98d363-194b-4bc0-b9fe-987c498ab6fa",
+  "oracle_id": "0b40032b-711d-499f-8bb9-87855f1fce9e",
+  "name": "Maralen of the Mornsong",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mor",
+  "collector_number": "65",
+  "rarity": "rare",
+  "released_at": "2008-02-01",
+  "digital": false,
+  "mana_cost": "{1}{B}{B}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Elf Wizard",
+  "oracle_text": "Players can't draw cards.\nAt the beginning of each player's draw step, that player loses 3 life, searches their library for a card, puts it into their hand, then shuffles.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "power": "2",
+  "toughness": "3"
+}

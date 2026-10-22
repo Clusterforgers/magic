@@ -1,0 +1,26 @@
+{
+  "id": "27855a38-a682-4f97-ad22-ac625e86faec",
+  "oracle_id": "d7d2f701-77df-4169-bf98-0d51d6886e9b",
+  "name": "Behold the Multiverse",
+  "lang": "en",
+  "layout": "normal",
+  "set": "khm",
+  "collector_number": "46",
+  "rarity": "common",
+  "released_at": "2021-02-05",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Scry 2, then draw two cards.\nForetell {1}{U} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Foretell",
+    "Scry"
+  ]
+}

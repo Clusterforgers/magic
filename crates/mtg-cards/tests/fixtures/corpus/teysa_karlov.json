@@ -1,0 +1,27 @@
+{
+  "id": "cd14f1ce-7fcd-485c-b7ca-01c5b45fdc01",
+  "oracle_id": "644eeefd-e684-4ca8-8aef-a892ca130c07",
+  "name": "Teysa Karlov",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "359",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{2}{W}{B}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Advisor",
+  "oracle_text": "If a creature dying causes a triggered ability of a permanent you control to trigger, that ability triggers an additional time.\nCreature tokens you control have vigilance and lifelink.",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [],
+  "power": "2",
+  "toughness": "4"
+}

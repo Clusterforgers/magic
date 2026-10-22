@@ -1,0 +1,23 @@
+{
+  "id": "36eae0e1-7100-449d-a259-7abfcd429117",
+  "oracle_id": "457dc141-bc72-42ad-b482-c78183462e34",
+  "name": "Forced March",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mmq",
+  "collector_number": "136",
+  "rarity": "rare",
+  "released_at": "1999-10-04",
+  "digital": false,
+  "mana_cost": "{X}{B}{B}{B}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Destroy all creatures with mana value X or less.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

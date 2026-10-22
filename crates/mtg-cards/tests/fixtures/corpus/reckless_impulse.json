@@ -1,0 +1,23 @@
+{
+  "id": "5bca43d8-7c69-47f4-8f82-48dd2b6a7cba",
+  "oracle_id": "584cf0fd-112a-4ca6-9c0e-1f3228a7d325",
+  "name": "Reckless Impulse",
+  "lang": "en",
+  "layout": "normal",
+  "set": "trk",
+  "collector_number": "168",
+  "rarity": "common",
+  "released_at": "2026-11-13",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2,
+  "type_line": "Sorcery",
+  "oracle_text": "Exile the top two cards of your library. Until the end of your next turn, you may play those cards.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

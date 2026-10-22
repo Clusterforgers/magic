@@ -1,0 +1,28 @@
+{
+  "id": "7497f147-146d-4a76-b670-bd84e07352b3",
+  "oracle_id": "a7955f10-f502-4893-88ad-f36e7ff0af4f",
+  "name": "Armguard Familiar",
+  "lang": "en",
+  "layout": "normal",
+  "set": "neo",
+  "collector_number": "46",
+  "rarity": "common",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Artifact Creature — Equipment Beast",
+  "oracle_text": "Ward {2} (Whenever this permanent becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)\nEquipped creature gets +2/+1 and has ward {2}.\nReconfigure {4} ({4}: Attach to target creature you control; or unattach from a creature. Reconfigure only as a sorcery. While attached, this isn't a creature.)",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Ward",
+    "Reconfigure"
+  ]
+}

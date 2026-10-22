@@ -1,0 +1,25 @@
+{
+  "id": "a87c39df-7636-454b-8485-a1cc9362fd84",
+  "oracle_id": "34fd461b-a913-4a60-9477-ce2bd5c6fc5a",
+  "name": "Fear of Failed Tests",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsk",
+  "collector_number": "55",
+  "rarity": "uncommon",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Enchantment Creature — Nightmare",
+  "oracle_text": "Whenever this creature deals combat damage to a player, draw that many cards.",
+  "power": "2",
+  "toughness": "7",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

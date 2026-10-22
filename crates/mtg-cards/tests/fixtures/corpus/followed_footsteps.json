@@ -1,0 +1,25 @@
+{
+  "id": "fe153c49-da2d-42b0-a6d1-77508b0fe8a9",
+  "oracle_id": "732b1314-68bb-4d3d-9f3f-7e66e763caf5",
+  "name": "Followed Footsteps",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cn2",
+  "collector_number": "111",
+  "rarity": "rare",
+  "released_at": "2016-08-26",
+  "digital": false,
+  "mana_cost": "{3}{U}{U}",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nAt the beginning of your upkeep, create a token that's a copy of enchanted creature.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

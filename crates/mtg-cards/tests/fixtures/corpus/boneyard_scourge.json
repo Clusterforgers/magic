@@ -1,0 +1,27 @@
+{
+  "id": "55a3a094-48c5-4da5-8626-e30a0e8d8f3a",
+  "oracle_id": "eef40ab2-9e17-4e8d-9e58-1a82ab871b5b",
+  "name": "Boneyard Scourge",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c17",
+  "collector_number": "15",
+  "rarity": "rare",
+  "released_at": "2017-08-25",
+  "digital": false,
+  "mana_cost": "{2}{B}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Zombie Dragon",
+  "oracle_text": "Flying\nWhenever a Dragon you control dies while this card is in your graveyard, you may pay {1}{B}. If you do, return this card from your graveyard to the battlefield.",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

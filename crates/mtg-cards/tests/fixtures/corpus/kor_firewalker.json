@@ -1,0 +1,27 @@
+{
+  "id": "8dcd4a52-0c8f-4fca-b7dc-c2503794e5a4",
+  "oracle_id": "fb37ff1c-7461-4a16-b27f-6eef0db937fe",
+  "name": "Kor Firewalker",
+  "lang": "en",
+  "layout": "normal",
+  "set": "a25",
+  "collector_number": "21",
+  "rarity": "uncommon",
+  "released_at": "2018-03-16",
+  "digital": false,
+  "mana_cost": "{W}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Kor Soldier",
+  "oracle_text": "Protection from red\nWhenever a player casts a red spell, you may gain 1 life.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Protection"
+  ]
+}

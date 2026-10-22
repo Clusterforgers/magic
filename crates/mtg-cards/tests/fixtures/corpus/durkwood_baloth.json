@@ -1,0 +1,27 @@
+{
+  "id": "dce39dd1-ca51-420f-a627-1511192d34c2",
+  "oracle_id": "1732cd31-1393-426f-a2fe-9b6b3f27136b",
+  "name": "Durkwood Baloth",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tsr",
+  "collector_number": "200",
+  "rarity": "common",
+  "released_at": "2021-03-19",
+  "digital": false,
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "Suspend 5—{G} (Rather than cast this card from your hand, you may pay {G} and exile it with five time counters on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost. It has haste.)",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Suspend"
+  ]
+}

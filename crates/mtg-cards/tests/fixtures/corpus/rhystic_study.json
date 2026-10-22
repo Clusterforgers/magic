@@ -1,0 +1,23 @@
+{
+  "id": "9f37c5b6-a59c-45cd-9a99-e9357fe9ea1b",
+  "oracle_id": "53236dd7-845a-444c-96d5-f41ed7325d8f",
+  "name": "Rhystic Study",
+  "lang": "en",
+  "layout": "normal",
+  "set": "j22",
+  "collector_number": "114",
+  "rarity": "rare",
+  "released_at": "2022-12-02",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever an opponent casts a spell, you may draw a card unless that player pays {1}.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

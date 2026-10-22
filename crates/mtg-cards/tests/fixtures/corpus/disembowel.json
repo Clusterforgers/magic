@@ -1,0 +1,23 @@
+{
+  "id": "149576b0-d571-4f70-a58b-847ae4fb0173",
+  "oracle_id": "6fa90258-3c9f-4723-880f-31871c0772e0",
+  "name": "Disembowel",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rvr",
+  "collector_number": "74",
+  "rarity": "common",
+  "released_at": "2024-01-12",
+  "digital": false,
+  "mana_cost": "{X}{B}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Destroy target creature with mana value X.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

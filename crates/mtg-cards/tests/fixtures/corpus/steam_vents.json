@@ -1,0 +1,26 @@
+{
+  "id": "a83903c7-fd51-4526-aed2-359e946fea36",
+  "oracle_id": "17039058-822d-409f-938c-b727a366ba63",
+  "name": "Steam Vents",
+  "lang": "en",
+  "layout": "normal",
+  "set": "trk",
+  "collector_number": "298",
+  "rarity": "rare",
+  "released_at": "2026-11-13",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Island Mountain",
+  "oracle_text": "({T}: Add {U} or {R}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+  "colors": [],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "R",
+    "U"
+  ]
+}

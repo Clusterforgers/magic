@@ -1,0 +1,25 @@
+{
+  "id": "04113b3c-cc8f-4b15-9091-f82ea3df2e7c",
+  "oracle_id": "2249001c-08d5-4c0a-86f8-d97519a39f37",
+  "name": "Stoke the Flames",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mom",
+  "collector_number": "166",
+  "rarity": "uncommon",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{2}{R}{R}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)\nStoke the Flames deals 4 damage to any target.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Convoke"
+  ]
+}

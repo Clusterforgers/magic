@@ -1,0 +1,21 @@
+{
+  "id": "e24fbdbb-f2ae-4823-9d2a-4c505332aa5b",
+  "oracle_id": "03efb4f3-b8e2-4441-824f-886dc40712c4",
+  "name": "Mesmeric Orb",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2xm",
+  "collector_number": "272",
+  "rarity": "rare",
+  "released_at": "2020-08-07",
+  "digital": false,
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact",
+  "oracle_text": "Whenever a permanent becomes untapped, that permanent's controller mills a card.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Mill"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "96feebe2-0a6b-4df8-8e7d-ee0bb82ac0c1",
+  "oracle_id": "a2a380d8-4df7-4357-862c-ed3fb795db6c",
+  "name": "Sundering Growth",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c19",
+  "collector_number": "203",
+  "rarity": "common",
+  "released_at": "2019-08-23",
+  "digital": false,
+  "mana_cost": "{G/W}{G/W}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Destroy target artifact or enchantment, then populate. (Create a token that's a copy of a creature token you control.)",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Populate"
+  ]
+}

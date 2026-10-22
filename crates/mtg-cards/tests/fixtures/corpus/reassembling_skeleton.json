@@ -1,0 +1,25 @@
+{
+  "id": "4d431445-d7db-4ce1-b422-41494d9be1b4",
+  "oracle_id": "9dbc3530-b278-4c8d-b2cc-a09dfac9d5e5",
+  "name": "Reassembling Skeleton",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "195",
+  "rarity": "uncommon",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Skeleton Warrior",
+  "oracle_text": "{1}{B}: Return this card from your graveyard to the battlefield tapped.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

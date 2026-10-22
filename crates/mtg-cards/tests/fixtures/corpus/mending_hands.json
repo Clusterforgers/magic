@@ -1,0 +1,23 @@
+{
+  "id": "53709642-9d61-425f-9bcf-0c579404b521",
+  "oracle_id": "a612f30d-cd55-438b-a7de-8c80509183aa",
+  "name": "Mending Hands",
+  "lang": "en",
+  "layout": "normal",
+  "set": "9ed",
+  "collector_number": "29",
+  "rarity": "common",
+  "released_at": "2005-07-29",
+  "digital": false,
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Prevent the next 4 damage that would be dealt to any target this turn.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

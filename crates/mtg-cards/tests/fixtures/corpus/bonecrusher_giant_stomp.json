@@ -1,0 +1,40 @@
+{
+  "id": "b5b71cd2-de35-451f-b16e-2e3936169407",
+  "oracle_id": "d6d72f5f-8f5d-4180-b514-f22ff5482902",
+  "name": "Bonecrusher Giant // Stomp",
+  "lang": "en",
+  "layout": "adventure",
+  "set": "clb",
+  "collector_number": "781",
+  "rarity": "rare",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "{2}{R} // {1}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Giant // Instant — Adventure",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "card_faces": [
+    {
+      "name": "Bonecrusher Giant",
+      "mana_cost": "{2}{R}",
+      "type_line": "Creature — Giant",
+      "oracle_text": "Whenever this creature becomes the target of a spell, this creature deals 2 damage to that spell's controller.",
+      "power": "4",
+      "toughness": "3"
+    },
+    {
+      "name": "Stomp",
+      "mana_cost": "{1}{R}",
+      "type_line": "Instant — Adventure",
+      "oracle_text": "Damage can't be prevented this turn. Stomp deals 2 damage to any target."
+    }
+  ]
+}

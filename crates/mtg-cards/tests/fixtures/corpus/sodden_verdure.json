@@ -1,0 +1,26 @@
+{
+  "id": "0a451ab5-6244-48a0-a638-07da72b156b5",
+  "oracle_id": "0070db93-142b-4d04-afd3-836792dc134b",
+  "name": "Sodden Verdure",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "267",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Forest Island",
+  "oracle_text": "({T}: Add {G} or {U}.)\nThis land enters tapped unless you control two or more basic lands.",
+  "colors": [],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "G",
+    "U"
+  ]
+}

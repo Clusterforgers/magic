@@ -1,0 +1,23 @@
+{
+  "id": "3b04fca4-b4de-4343-ba58-d8aea39edc19",
+  "oracle_id": "633ad9e2-9f55-4a1c-9248-661ad4b0e1dc",
+  "name": "Megrim",
+  "lang": "en",
+  "layout": "normal",
+  "set": "m10",
+  "collector_number": "104",
+  "rarity": "uncommon",
+  "released_at": "2009-07-17",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever an opponent discards a card, this enchantment deals 2 damage to that player.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

@@ -1,0 +1,28 @@
+{
+  "id": "039499c3-0b35-4e8e-b0c9-bdf0b4cd90d5",
+  "oracle_id": "5ae3cbb9-9f0c-4077-ae7c-fba660d7fb4b",
+  "name": "Felidar Sovereign",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bfz",
+  "collector_number": "26",
+  "rarity": "rare",
+  "released_at": "2015-10-02",
+  "digital": false,
+  "mana_cost": "{4}{W}{W}",
+  "cmc": 6.0,
+  "type_line": "Creature — Cat Beast",
+  "oracle_text": "Vigilance (Attacking doesn't cause this creature to tap.)\nLifelink (Damage dealt by this creature also causes you to gain that much life.)\nAt the beginning of your upkeep, if you have 40 or more life, you win the game.",
+  "power": "4",
+  "toughness": "6",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Lifelink",
+    "Vigilance"
+  ]
+}

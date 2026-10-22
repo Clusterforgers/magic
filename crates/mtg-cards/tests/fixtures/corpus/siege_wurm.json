@@ -1,0 +1,28 @@
+{
+  "id": "19c55fc1-11e5-4e67-ba49-604f5b574c2d",
+  "oracle_id": "8a802eae-abfb-47fd-8458-1689055531ef",
+  "name": "Siege Wurm",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rvr",
+  "collector_number": "155",
+  "rarity": "common",
+  "released_at": "2024-01-12",
+  "digital": false,
+  "mana_cost": "{5}{G}{G}",
+  "cmc": 7.0,
+  "type_line": "Creature — Wurm",
+  "oracle_text": "Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)\nTrample",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Trample",
+    "Convoke"
+  ]
+}

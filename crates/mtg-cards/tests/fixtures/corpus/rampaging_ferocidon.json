@@ -1,0 +1,27 @@
+{
+  "id": "53c38f4e-81ec-45b3-a6cf-06a65b674978",
+  "oracle_id": "3e5ca524-8dd1-4f7f-a467-5210d768b8a1",
+  "name": "Rampaging Ferocidon",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "167",
+  "rarity": "rare",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Dinosaur",
+  "oracle_text": "Menace\nPlayers can't gain life.\nWhenever another creature enters, this creature deals 1 damage to that creature's controller.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Menace"
+  ],
+  "power": "3",
+  "toughness": "3"
+}

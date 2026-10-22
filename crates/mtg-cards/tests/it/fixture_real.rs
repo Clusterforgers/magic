@@ -1,4 +1,4 @@
-//! Goal: every record of `corpus_scryfall.json` equals the Oracle Cards record with the same oracle id, so no id, printing or text is invented.
+//! Goal: every record of `fixtures/corpus/*.json` equals the Oracle Cards record with the same oracle id, so no id, printing or text is invented.
 //!
 //! The comparison runs on an `mtg-cli` cache or on `MTG_REAL_DATA_DIR`: `cargo test -p mtg-cards fixture_real:: -- --ignored`.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
@@ -10,7 +10,7 @@ use std::path::{Path, PathBuf};
 use rstest::rstest;
 use serde_json::{Value, json};
 
-const FIXTURE: &str = include_str!("../fixtures/corpus_scryfall.json");
+use crate::common::Corpus;
 
 /// Fields of a record that must equal the real record, including the ones the fixture leaves out.
 const FIELDS: [&str; 20] = [
@@ -138,7 +138,7 @@ fn real_records(file: &Path, wanted: &[&str]) -> BTreeMap<String, Value> {
 #[test]
 #[ignore = "needs the mtg-cli cache or MTG_REAL_DATA_DIR"]
 fn every_fixture_record_equals_the_cached_oracle_card() {
-    let fixture: Vec<Value> = serde_json::from_str(FIXTURE).unwrap();
+    let fixture: Vec<Value> = Corpus::repo().fixture_values();
     let wanted: Vec<&str> = fixture
         .iter()
         .map(|record| record["oracle_id"].as_str().unwrap())
@@ -216,7 +216,7 @@ fn a_difference_names_the_field(#[case] change: Value, #[case] named: &[&str]) {
 
 #[test]
 fn the_fixture_records_are_complete_enough_to_compare() {
-    let fixture: Vec<Value> = serde_json::from_str(FIXTURE).unwrap();
+    let fixture: Vec<Value> = Corpus::repo().fixture_values();
     let mut ids: Vec<&str> = fixture
         .iter()
         .map(|record| record["oracle_id"].as_str().unwrap())

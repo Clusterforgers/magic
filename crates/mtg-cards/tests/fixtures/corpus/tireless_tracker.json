@@ -1,0 +1,28 @@
+{
+  "id": "66444549-ad9b-49c6-a7c6-34e977c1085d",
+  "oracle_id": "e6555cca-e608-4c87-b835-9cd47fd1f543",
+  "name": "Tireless Tracker",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoc",
+  "collector_number": "110",
+  "rarity": "rare",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Scout",
+  "oracle_text": "Landfall — Whenever a land you control enters, investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")\nWhenever you sacrifice a Clue, put a +1/+1 counter on this creature.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Investigate",
+    "Landfall"
+  ]
+}

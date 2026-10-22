@@ -1,0 +1,23 @@
+{
+  "id": "7be413dd-d6e0-4bd3-8c14-4dbe44e8ee41",
+  "oracle_id": "efab5a30-74ee-4959-b7cd-2a5d25d18327",
+  "name": "Copper-Leaf Angel",
+  "lang": "en",
+  "layout": "normal",
+  "set": "pcy",
+  "collector_number": "137",
+  "rarity": "rare",
+  "released_at": "2000-06-05",
+  "digital": false,
+  "mana_cost": "{5}",
+  "cmc": 5,
+  "type_line": "Artifact Creature — Angel",
+  "oracle_text": "Flying\n{T}, Sacrifice X lands: Put X +1/+1 counters on this creature.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Flying"
+  ]
+}

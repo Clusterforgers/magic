@@ -1,0 +1,28 @@
+{
+  "id": "db593d4f-d3c1-48ae-a55d-4b61d2cb5cc2",
+  "oracle_id": "9456c5b6-946d-403a-8ed0-dff9f921d98c",
+  "name": "Black Knight",
+  "lang": "en",
+  "layout": "normal",
+  "set": "me4",
+  "collector_number": "71",
+  "rarity": "uncommon",
+  "released_at": "2011-01-10",
+  "digital": true,
+  "mana_cost": "{B}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "First strike (This creature deals combat damage before creatures without first strike.)\nProtection from white (This creature can't be blocked, targeted, dealt damage, or enchanted by anything white.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "First strike",
+    "Protection"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "9ec075ba-db56-4dcf-b1dc-fe6270b7ab36",
+  "oracle_id": "9728dec9-d482-4c7a-8cdc-44d010dc878d",
+  "name": "Ancestral Vision",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "144",
+  "rarity": "rare",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Suspend 4—{U} (Rather than cast this card from your hand, pay {U} and exile it with four time counters on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost.)\nTarget player draws three cards.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Suspend"
+  ]
+}

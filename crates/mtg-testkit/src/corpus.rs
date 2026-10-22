@@ -1,11 +1,12 @@
 //! Real card data for engine tests: the cards of the `mtg-cards` corpus, by name.
 //!
-//! Each card is the imported Scryfall record of `crates/mtg-cards/tests/fixtures/corpus_scryfall.json`
+//! Each card is the imported Scryfall record of its file in `crates/mtg-cards/tests/fixtures/corpus/`
 //! put through the assembly the server uses, with the rules files of this repository and the
 //! capabilities of this engine, so a test plays what a game would be given. [`Corpus::new`] takes
 //! other capabilities, to see what a card becomes once the engine runs more.
 
 use std::collections::BTreeMap;
+use std::path::{Path, PathBuf};
 use std::sync::{Arc, OnceLock};
 
 use mtg_cards::assemble::Assembled;
@@ -15,8 +16,38 @@ use mtg_core::mana::ManaType;
 use mtg_import::scryfall::{CardRecord, cards};
 use thiserror::Error;
 
-/// Scryfall objects (trimmed) of every card of the corpus.
-const SCRYFALL: &str = include_str!("../../mtg-cards/tests/fixtures/corpus_scryfall.json");
+/// The directory of Scryfall objects (trimmed) of the corpus: one `<slug of the card's name>.json` file per card.
+pub fn fixture_dir() -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("../mtg-cards/tests/fixtures/corpus")
+}
+
+/// The files of [`fixture_dir`], in file-name order, as the one JSON array of Scryfall objects that the importer streams.
+pub fn scryfall_array() -> Result<String, CorpusError> {
+    let dir = fixture_dir();
+    let unreadable =
+        |error: std::io::Error| CorpusError::Data(format!("{}: {error}", dir.display()));
+    let mut files: Vec<PathBuf> = Vec::new();
+    for entry in std::fs::read_dir(&dir).map_err(unreadable)? {
+        let path = entry.map_err(unreadable)?.path();
+        if path
+            .extension()
+            .is_some_and(|extension| extension == "json")
+        {
+            files.push(path);
+        }
+    }
+    files.sort();
+    let mut array = String::from("[");
+    for (at, file) in files.iter().enumerate() {
+        if at > 0 {
+            array.push(',');
+        }
+        let text = std::fs::read_to_string(file).map_err(unreadable)?;
+        array.push_str(text.trim());
+    }
+    array.push(']');
+    Ok(array)
+}
 
 /// Why a corpus card could not be had.
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
@@ -79,7 +110,7 @@ impl Corpus {
             cards: Vec::new(),
             by_name: BTreeMap::new(),
         };
-        for record in cards(SCRYFALL.as_bytes()) {
+        for record in cards(scryfall_array()?.as_bytes()) {
             let record = record.map_err(|error| CorpusError::Data(error.to_string()))?;
             let assembled = rules.assemble(&printed_card(&record), caps);
             let at = corpus.cards.len();
@@ -112,7 +143,7 @@ impl Corpus {
         self.entry(name).map(|entry| &entry.assembled.support)
     }
 
-    /// The full names of all the cards, in the order of the fixture.
+    /// The full names of all the cards, in file-name order of the fixture.
     pub fn names(&self) -> impl Iterator<Item = &str> {
         self.cards.iter().map(|entry| entry.name.as_str())
     }
@@ -134,9 +165,30 @@ pub fn card(name: &str) -> Result<Arc<CardDefinition>, CorpusError> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: the corpus holds every card of the rules directory and of the fixture once, finds them by full name or face name in any case, and refuses a name it does not have.
+    //! Goal: the fixture directory loads as one array in file-name order, the corpus holds every card of the rules directory and of the fixture once, finds them by full name or face name in any case, and refuses a name it does not have.
     use super::*;
     use rstest::rstest;
+
+    #[test]
+    fn the_fixture_directory_loads_as_one_array_in_file_name_order() {
+        let files = std::fs::read_dir(fixture_dir()).unwrap().count();
+        let records: Vec<serde_json::Value> =
+            serde_json::from_str(&scryfall_array().unwrap()).unwrap();
+        assert_eq!(records.len(), files, "one object in each file");
+        let files: Vec<String> = records
+            .iter()
+            .map(|record| {
+                format!(
+                    "{}.json",
+                    mtg_cards::load::slug(record["name"].as_str().unwrap())
+                )
+            })
+            .collect();
+        assert!(
+            files.windows(2).all(|pair| pair[0] < pair[1]),
+            "the array follows the file names: {files:?}"
+        );
+    }
 
     #[test]
     fn every_card_file_and_fixture_record_is_there_once() {
@@ -148,7 +200,10 @@ mod tests {
         assert_eq!(sorted.len(), names.len(), "a name twice");
         let files = builtin::library().unwrap().cards().count();
         assert_eq!(names.len(), files, "one entry for each card file");
-        assert_eq!(names.len(), cards(SCRYFALL.as_bytes()).count());
+        assert_eq!(
+            names.len(),
+            cards(scryfall_array().unwrap().as_bytes()).count()
+        );
         for name in &names {
             assert!(
                 builtin::library().unwrap().card_by_name(name).is_some(),

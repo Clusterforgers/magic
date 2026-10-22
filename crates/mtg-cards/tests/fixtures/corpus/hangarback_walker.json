@@ -1,0 +1,21 @@
+{
+  "id": "cc387ccf-f746-4855-81e5-64f5a5e0fdda",
+  "oracle_id": "dde55256-5259-44e7-a267-fca45a7f0d04",
+  "name": "Hangarback Walker",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "348",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{X}{X}",
+  "cmc": 0.0,
+  "type_line": "Artifact Creature — Construct",
+  "oracle_text": "This creature enters with X +1/+1 counters on it.\nWhen this creature dies, create a 1/1 colorless Thopter artifact creature token with flying for each +1/+1 counter on this creature.\n{1}, {T}: Put a +1/+1 counter on this creature.",
+  "power": "0",
+  "toughness": "0",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

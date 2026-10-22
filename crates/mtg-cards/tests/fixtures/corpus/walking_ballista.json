@@ -1,0 +1,21 @@
+{
+  "id": "5272436e-74f0-44c4-a291-ea8ebc3f1525",
+  "oracle_id": "4b515bb0-f275-4400-8032-3173b799ab40",
+  "name": "Walking Ballista",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2xm",
+  "collector_number": "306",
+  "rarity": "rare",
+  "released_at": "2020-08-07",
+  "digital": false,
+  "mana_cost": "{X}{X}",
+  "cmc": 0.0,
+  "type_line": "Artifact Creature — Construct",
+  "oracle_text": "This creature enters with X +1/+1 counters on it.\n{4}: Put a +1/+1 counter on this creature.\nRemove a +1/+1 counter from this creature: It deals 1 damage to any target.",
+  "power": "0",
+  "toughness": "0",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

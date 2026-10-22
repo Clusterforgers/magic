@@ -1,0 +1,47 @@
+{
+  "id": "71ccc444-54c8-4f7c-a425-82bc3eea1eb0",
+  "oracle_id": "58bd02ae-2676-4c9c-b24e-2bd51be8bde7",
+  "name": "Bird Admirer // Wing Shredder",
+  "lang": "en",
+  "layout": "transform",
+  "set": "mid",
+  "collector_number": "169",
+  "rarity": "common",
+  "released_at": "2021-09-24",
+  "digital": false,
+  "cmc": 3.0,
+  "type_line": "Creature — Human Archer Werewolf // Creature — Werewolf",
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach",
+    "Transform",
+    "Daybound",
+    "Nightbound"
+  ],
+  "card_faces": [
+    {
+      "name": "Bird Admirer",
+      "mana_cost": "{2}{G}",
+      "type_line": "Creature — Human Archer Werewolf",
+      "oracle_text": "Reach\nDaybound (If a player casts no spells during their own turn, it becomes night next turn.)",
+      "power": "1",
+      "toughness": "4",
+      "colors": [
+        "G"
+      ]
+    },
+    {
+      "name": "Wing Shredder",
+      "mana_cost": "",
+      "type_line": "Creature — Werewolf",
+      "oracle_text": "Reach\nNightbound (If a player casts at least two spells during their own turn, it becomes day next turn.)",
+      "power": "3",
+      "toughness": "5",
+      "colors": [
+        "G"
+      ]
+    }
+  ]
+}

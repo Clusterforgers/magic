@@ -1,0 +1,25 @@
+{
+  "id": "6f2aa025-e041-4ed5-a046-9debc474fda0",
+  "oracle_id": "2d584333-b25e-4291-a2c9-80c6d9f8732a",
+  "name": "Squirrel Nest",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dmr",
+  "collector_number": "177",
+  "rarity": "uncommon",
+  "released_at": "2023-01-13",
+  "digital": false,
+  "mana_cost": "{1}{G}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant land\nEnchanted land has \"{T}: Create a 1/1 green Squirrel creature token.\"",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

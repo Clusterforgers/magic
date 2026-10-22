@@ -1,0 +1,34 @@
+{
+  "id": "9e2e3efb-75cb-430f-b9f4-cb58f3aeb91b",
+  "oracle_id": "697bcfe1-ecbf-42a1-bfc7-0766d48ca56b",
+  "name": "Dockside Extortionist",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2x2",
+  "collector_number": "107",
+  "rarity": "mythic",
+  "released_at": "2022-07-08",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Creature — Goblin Pirate",
+  "oracle_text": "When this creature enters, create X Treasure tokens, where X is the number of artifacts and enchantments your opponents control. (Treasure tokens are artifacts with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Treasure"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

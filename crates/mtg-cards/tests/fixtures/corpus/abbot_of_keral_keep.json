@@ -1,0 +1,27 @@
+{
+  "id": "cd94f624-9b35-4468-829f-106366f61c1a",
+  "oracle_id": "09be0f69-9c7f-491f-964d-bfbbc2d4251f",
+  "name": "Abbot of Keral Keep",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2x2",
+  "collector_number": "100",
+  "rarity": "rare",
+  "released_at": "2022-07-08",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2,
+  "type_line": "Creature — Human Monk",
+  "oracle_text": "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)\nWhen this creature enters, exile the top card of your library. Until end of turn, you may play that card.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Prowess"
+  ]
+}

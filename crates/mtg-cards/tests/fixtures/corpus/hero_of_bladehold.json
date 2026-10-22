@@ -1,0 +1,27 @@
+{
+  "id": "8ca58965-1dfa-40ac-b6c8-f957167ff066",
+  "oracle_id": "454a8902-8120-4373-96ee-bbf352b04e8d",
+  "name": "Hero of Bladehold",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "119",
+  "rarity": "mythic",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "Battle cry (Whenever this creature attacks, each other attacking creature gets +1/+0 until end of turn.)\nWhenever this creature attacks, create two 1/1 white Soldier creature tokens that are tapped and attacking.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Battle Cry"
+  ]
+}

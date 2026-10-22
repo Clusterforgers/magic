@@ -1,0 +1,34 @@
+{
+  "id": "4331a7a6-e98e-4517-b0f9-ace379426a94",
+  "oracle_id": "e9f5f87d-a485-4e69-9beb-49a51230bd53",
+  "name": "Elemental Masterpiece",
+  "lang": "en",
+  "layout": "normal",
+  "set": "stx",
+  "collector_number": "182",
+  "rarity": "common",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{5}{U}{R}",
+  "cmc": 7.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Create two 4/4 blue and red Elemental creature tokens.\n{U/R}{U/R}, Discard this card: Create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Treasure"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

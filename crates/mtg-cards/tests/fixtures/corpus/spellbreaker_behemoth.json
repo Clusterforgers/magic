@@ -1,0 +1,27 @@
+{
+  "id": "b8f73857-8bfb-400a-8c33-47c85276fb2a",
+  "oracle_id": "cba07472-7212-4411-a9f9-38a48870ad69",
+  "name": "Spellbreaker Behemoth",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c13",
+  "collector_number": "216",
+  "rarity": "rare",
+  "released_at": "2013-11-01",
+  "digital": false,
+  "mana_cost": "{1}{R}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "This spell can't be countered.\nCreature spells you control with power 5 or greater can't be countered.",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [],
+  "power": "5",
+  "toughness": "5"
+}

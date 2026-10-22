@@ -1,0 +1,22 @@
+{
+  "id": "aac0c8df-f01d-4178-8d66-ee603f814d24",
+  "oracle_id": "ba284fe6-bb29-455c-8321-9714a0cdc05e",
+  "name": "Mishra's Workshop",
+  "lang": "en",
+  "layout": "normal",
+  "set": "vma",
+  "collector_number": "305",
+  "rarity": "mythic",
+  "released_at": "2014-06-16",
+  "digital": true,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}{C}{C}. Spend this mana only to cast artifact spells.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "C"
+  ]
+}

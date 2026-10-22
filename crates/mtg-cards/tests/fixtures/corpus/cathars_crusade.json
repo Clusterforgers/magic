@@ -1,0 +1,23 @@
+{
+  "id": "5296e353-2efc-4d72-a877-7957eff630b9",
+  "oracle_id": "cc65ac73-5bef-4ecb-ad8e-39199084c027",
+  "name": "Cathars' Crusade",
+  "lang": "en",
+  "layout": "normal",
+  "set": "inr",
+  "collector_number": "17",
+  "rarity": "rare",
+  "released_at": "2025-01-24",
+  "digital": false,
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever a creature you control enters, put a +1/+1 counter on each creature you control.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

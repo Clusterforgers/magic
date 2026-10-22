@@ -1,0 +1,25 @@
+{
+  "id": "32da0d6c-64dd-4aec-b63e-953e96164603",
+  "oracle_id": "c6911265-54ef-4c16-bcf2-1ffb24b7d426",
+  "name": "Kessig Wolf Run",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "375",
+  "rarity": "rare",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{X}{R}{G}, {T}: Target creature gets +X/+0 and gains trample until end of turn.",
+  "colors": [],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "C"
+  ]
+}

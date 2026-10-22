@@ -1,0 +1,27 @@
+{
+  "id": "dc63d2ea-a980-466e-9ebb-f28008f84c3d",
+  "oracle_id": "46779609-4fa7-4fd2-b5b4-7d4d749339e6",
+  "name": "Courser of Kruphix",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "888",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{1}{G}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment Creature — Centaur",
+  "oracle_text": "Play with the top card of your library revealed.\nYou may play lands from the top of your library.\nLandfall — Whenever a land you control enters, you gain 1 life.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Landfall"
+  ]
+}

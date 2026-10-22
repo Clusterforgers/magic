@@ -1,0 +1,28 @@
+{
+  "id": "3bd78731-949c-464a-826a-92f86d784911",
+  "oracle_id": "8c411f4e-a091-447c-9450-d895b10b4985",
+  "name": "Carnage Tyrant",
+  "lang": "en",
+  "layout": "normal",
+  "set": "xln",
+  "collector_number": "179",
+  "rarity": "mythic",
+  "released_at": "2017-09-29",
+  "digital": false,
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Creature — Dinosaur",
+  "oracle_text": "This spell can't be countered.\nTrample, hexproof",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Hexproof",
+    "Trample"
+  ],
+  "power": "7",
+  "toughness": "6"
+}

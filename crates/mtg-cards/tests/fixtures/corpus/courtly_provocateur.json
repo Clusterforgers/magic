@@ -1,0 +1,25 @@
+{
+  "id": "ba912207-a8bf-4ffb-9967-34029cb09f7f",
+  "oracle_id": "3752277a-5b3c-4902-90a1-63acdac66dc9",
+  "name": "Courtly Provocateur",
+  "lang": "en",
+  "layout": "normal",
+  "set": "m13",
+  "collector_number": "46",
+  "rarity": "uncommon",
+  "released_at": "2012-07-13",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "{T}: Target creature attacks this turn if able.\n{T}: Target creature blocks this turn if able.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "power": "1",
+  "toughness": "1"
+}

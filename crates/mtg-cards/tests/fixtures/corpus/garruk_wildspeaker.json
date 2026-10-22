@@ -1,0 +1,24 @@
+{
+  "id": "08cf7ee6-ba30-42cd-a5b3-fd2fe7252f11",
+  "oracle_id": "186b4def-4fff-4a2b-bcbf-5318b0ac5fa9",
+  "name": "Garruk Wildspeaker",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmd",
+  "collector_number": "157",
+  "rarity": "mythic",
+  "released_at": "2011-06-17",
+  "digital": false,
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Legendary Planeswalker — Garruk",
+  "oracle_text": "+1: Untap two target lands.\n−1: Create a 3/3 green Beast creature token.\n−4: Creatures you control get +3/+3 and gain trample until end of turn.",
+  "loyalty": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

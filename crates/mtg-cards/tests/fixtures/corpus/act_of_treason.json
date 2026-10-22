@@ -1,0 +1,23 @@
+{
+  "id": "a1a9d323-fb40-411b-a0e7-64024bc6ba58",
+  "oracle_id": "9d08af23-9f4a-4097-9abc-3b17475ab744",
+  "name": "Act of Treason",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rvr",
+  "collector_number": "99",
+  "rarity": "common",
+  "released_at": "2024-01-12",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Gain control of target creature until end of turn. Untap that creature. It gains haste until end of turn. (It can attack and {T} this turn.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

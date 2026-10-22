@@ -1,0 +1,25 @@
+{
+  "id": "b2dadff2-883f-4134-a881-be145cdcbd84",
+  "oracle_id": "c0ce7d5a-68fd-41f3-b5ba-a1a178cee9ec",
+  "name": "Murderous Cut",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ktk",
+  "collector_number": "81",
+  "rarity": "uncommon",
+  "released_at": "2014-09-26",
+  "digital": false,
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Instant",
+  "oracle_text": "Delve (Each card you exile from your graveyard while casting this spell pays for {1}.)\nDestroy target creature.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Delve"
+  ]
+}

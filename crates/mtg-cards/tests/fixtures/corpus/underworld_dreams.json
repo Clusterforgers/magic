@@ -1,0 +1,23 @@
+{
+  "id": "03919c86-1c4a-43b0-a2db-54ca6ae1ac57",
+  "oracle_id": "967cf377-ae26-464d-85ac-8448b5a911f7",
+  "name": "Underworld Dreams",
+  "lang": "en",
+  "layout": "normal",
+  "set": "thb",
+  "collector_number": "121",
+  "rarity": "uncommon",
+  "released_at": "2020-01-24",
+  "digital": false,
+  "mana_cost": "{B}{B}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever an opponent draws a card, this enchantment deals 1 damage to that player.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

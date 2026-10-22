@@ -1,0 +1,40 @@
+{
+  "id": "e01cc65a-0e38-4f41-b9ed-796ef0355d0b",
+  "oracle_id": "9842734c-1eac-4509-a731-4c22017ae586",
+  "name": "Wear // Tear",
+  "lang": "en",
+  "layout": "split",
+  "set": "moc",
+  "collector_number": "343",
+  "rarity": "uncommon",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{1}{R} // {W}",
+  "cmc": 3.0,
+  "type_line": "Instant // Instant",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Fuse"
+  ],
+  "card_faces": [
+    {
+      "name": "Wear",
+      "mana_cost": "{1}{R}",
+      "type_line": "Instant",
+      "oracle_text": "Destroy target artifact.\nFuse (You may cast one or both halves of this card from your hand.)"
+    },
+    {
+      "name": "Tear",
+      "mana_cost": "{W}",
+      "type_line": "Instant",
+      "oracle_text": "Destroy target enchantment.\nFuse (You may cast one or both halves of this card from your hand.)"
+    }
+  ]
+}

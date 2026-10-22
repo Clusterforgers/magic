@@ -1,4 +1,4 @@
-//! Goal: shared helpers for the integration tests: the corpus directory, the imported Scryfall fixture and the checks of the corpus that derive every count from them (this is not a test module itself).
+//! Goal: shared helpers for the integration tests: the corpus directory, the directory of imported Scryfall fixtures and the checks of the corpus that derive every count from them (this is not a test module itself).
 #![allow(dead_code, clippy::expect_used, clippy::unwrap_used)]
 
 use std::path::{Path, PathBuf};
@@ -12,8 +12,10 @@ pub mod checks;
 
 pub use checks::{ADDING, Corpus, UPDATE, update_repo_once};
 
-/// Scryfall objects (trimmed) of every card in the corpus, from the 2026-10-18 Oracle Cards bulk file.
-const FIXTURE: &str = include_str!("../../fixtures/corpus_scryfall.json");
+/// The directory of Scryfall objects (Oracle Cards records), one `<slug>.json` file per card of the corpus.
+pub fn fixture_dir() -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/corpus")
+}
 
 /// The directory of rules files.
 pub fn cards_dir() -> PathBuf {

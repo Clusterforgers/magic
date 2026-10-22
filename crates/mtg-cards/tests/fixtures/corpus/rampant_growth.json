@@ -1,0 +1,23 @@
+{
+  "id": "b7c47024-5e08-4b17-b41a-7647f8b814b9",
+  "oracle_id": "8539f295-5d58-4436-a73a-b9277c4c7795",
+  "name": "Rampant Growth",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "265",
+  "rarity": "common",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Search your library for a basic land card, put that card onto the battlefield tapped, then shuffle.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

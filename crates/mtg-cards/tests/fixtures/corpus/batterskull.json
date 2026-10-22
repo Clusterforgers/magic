@@ -1,0 +1,22 @@
+{
+  "id": "b7f16fdf-a3f5-462d-a64a-789d893b6ef5",
+  "oracle_id": "d12e5ce0-5705-4c35-9a93-b883db52c80c",
+  "name": "Batterskull",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2xm",
+  "collector_number": "234",
+  "rarity": "mythic",
+  "released_at": "2020-08-07",
+  "digital": false,
+  "mana_cost": "{5}",
+  "cmc": 5.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Living weapon (When this Equipment enters, create a 0/0 black Phyrexian Germ creature token, then attach this to it.)\nEquipped creature gets +4/+4 and has vigilance and lifelink.\n{3}: Return this Equipment to its owner's hand.\nEquip {5}",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip",
+    "Living weapon"
+  ]
+}

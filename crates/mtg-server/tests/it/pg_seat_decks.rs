@@ -18,12 +18,14 @@ use serde_json::{Value, json};
 use sqlx::PgPool;
 use uuid::Uuid;
 
-/// The 40 real cards of the rules corpus, trimmed Scryfall objects without legalities.
-const CORPUS: &str = include_str!("../../../mtg-cards/tests/fixtures/corpus_scryfall.json");
+/// The Scryfall objects (trimmed, without legalities) of the corpus cards: the fixture files as one JSON array.
+fn scryfall() -> String {
+    mtg_testkit::corpus::scryfall_array().unwrap()
+}
 
 fn objects() -> &'static Vec<Value> {
     static OBJECTS: OnceLock<Vec<Value>> = OnceLock::new();
-    OBJECTS.get_or_init(|| serde_json::from_str(CORPUS).unwrap())
+    OBJECTS.get_or_init(|| serde_json::from_str(&scryfall()).unwrap())
 }
 
 fn oracle(name: &str) -> String {

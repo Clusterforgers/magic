@@ -1,0 +1,27 @@
+{
+  "id": "bbedbf64-cd51-4f40-9735-272bd86fdf84",
+  "oracle_id": "746d4445-f28d-41af-827a-2b613b9b84ee",
+  "name": "Warmonger Hellkite",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "814",
+  "rarity": "rare",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "{4}{R}{R}",
+  "cmc": 6.0,
+  "type_line": "Creature — Dragon",
+  "oracle_text": "Flying\nAll creatures attack each combat if able.\n{1}{R}: Attacking creatures get +1/+0 until end of turn.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "power": "5",
+  "toughness": "5"
+}

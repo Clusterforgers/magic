@@ -1,0 +1,23 @@
+{
+  "id": "1de89026-13a6-4ae3-9059-460bdd657285",
+  "oracle_id": "2361ca87-6352-4ba3-8d91-b3d71242914d",
+  "name": "Favorable Winds",
+  "lang": "en",
+  "layout": "normal",
+  "set": "gnt",
+  "collector_number": "21",
+  "rarity": "uncommon",
+  "released_at": "2018-11-16",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Creatures you control with flying get +1/+1.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

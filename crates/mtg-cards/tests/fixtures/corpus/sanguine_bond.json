@@ -1,0 +1,23 @@
+{
+  "id": "ad4de9f1-7a39-45af-828e-c59234d9e9b9",
+  "oracle_id": "73089a39-a2f6-4aa2-a058-e6551475153d",
+  "name": "Sanguine Bond",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c21",
+  "collector_number": "153",
+  "rarity": "rare",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever you gain life, target opponent loses that much life.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

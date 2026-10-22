@@ -1,0 +1,23 @@
+{
+  "id": "5ef987ad-a3dc-4ef5-90ec-9a8cfa95965b",
+  "oracle_id": "8253fcac-0c07-41e8-afa4-34021f9ef6f4",
+  "name": "Caress of Phyrexia",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nph",
+  "collector_number": "53",
+  "rarity": "uncommon",
+  "released_at": "2011-05-13",
+  "digital": false,
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Target player draws three cards, loses 3 life, and gets three poison counters.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

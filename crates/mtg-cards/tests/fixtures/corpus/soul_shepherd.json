@@ -1,0 +1,25 @@
+{
+  "id": "f45a39ba-5fbf-46c3-8dc7-3058ac6d24e8",
+  "oracle_id": "78dbcc18-291c-4b2c-9576-f8dc93914936",
+  "name": "Soul Shepherd",
+  "lang": "en",
+  "layout": "normal",
+  "set": "wth",
+  "collector_number": "26",
+  "rarity": "common",
+  "released_at": "1997-06-09",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Cleric",
+  "oracle_text": "{W}, Exile a creature card from your graveyard: You gain 1 life.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

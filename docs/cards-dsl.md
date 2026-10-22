@@ -43,7 +43,8 @@ Scope: the data model, loader, validation, support records, the corpus and card 
 |---|---|
 | `crates/mtg-cards/cards/<slug>.json` | Rules of one oracle card |
 | `crates/mtg-cards/cards/tokens/<id>.json` | A predefined token (Treasure, Clue, Food) |
-| `crates/mtg-cards/tests/fixtures/corpus_scryfall.json` | Imported Scryfall objects of the corpus |
+| `crates/mtg-cards/tests/fixtures/corpus/<slug>.json` | The imported Scryfall object of one corpus card |
+| `crates/mtg-cards/tests/fixtures/reproduced.txt` | The ratchet list: the corpus cards the compiler reproduces, one name per line, sorted |
 
 - `mtg_cards::builtin::library()` is the library of these files, embedded at build time (`build.rs`), so a server needs no directory and a deploy carries the rules it was tested with.
 - Canonical text: compact JSON in serde's field order, laid out by `mtg_cards::pretty` (a value stays on one line up to 100 columns, otherwise one entry per line).
@@ -54,12 +55,14 @@ Scope: the data model, loader, validation, support records, the corpus and card 
 
 No test holds a count of cards, sources, compiled sources, reproduced cards or fingerprints; each is derived from the card directory and the fixture, and a test asserts what the number stood for. A new card needs:
 
-1. Its rules file `crates/mtg-cards/cards/<slug>.json` (the slug is the file name of the card's name). A `Full` or `Partial` face starts with an empty `oracle_fingerprint`.
-2. Its Scryfall object appended to `crates/mtg-cards/tests/fixtures/corpus_scryfall.json`; the file and the record share the `oracle_id`, and each card has exactly one of each.
-3. `MTG_UPDATE_CARDS=1 cargo test -p mtg-cards corpus::` writes the file in canonical form with the fingerprints of the fixture's text and adds every card the compiler reproduces to `crates/mtg-cards/tests/fixtures/reproduced.txt` (one name per line, sorted, so branches adding names merge). It never removes a name: a listed card that stops being reproduced fails.
+1. Its rules file `crates/mtg-cards/cards/<slug>.json` (the slug is the card's name lowercased with every run of non-alphanumerics as `_`, `mtg_cards::load::slug`). A `Full` or `Partial` face starts with an empty `oracle_fingerprint`.
+2. Its Scryfall object as the new file `crates/mtg-cards/tests/fixtures/corpus/<slug>.json`, with the same slug: pretty-printed JSON of one object and a final newline (a multi-face or split card is one file named after the whole card name). The rules file and the fixture file share the `oracle_id`, and each card has exactly one of each. No other file changes for this step, so branches adding different cards never conflict here.
+3. `MTG_UPDATE_CARDS=1 cargo test -p mtg-cards corpus::` writes the rules file in canonical form with the fingerprints of the fixture's text and adds every card the compiler reproduces to `crates/mtg-cards/tests/fixtures/reproduced.txt`. It never removes a name: a listed card that stops being reproduced fails.
 4. `cargo test -p mtg-cards -p mtg-testkit`. A card the engine plays whole needs no row. A card it does not (Manual or Partial) is a row of `NOT_VERIFIED` in `crates/mtg-testkit/tests/it/corpus_cards.rs` with its state and the number of abilities it carries; a Verified card carries the abilities of its file, and each basic land type adds its mana ability.
 
-The tests report a card without its record or file, a stale or missing fingerprint, an unlisted reproduced card and an unexpected state with the card's name and this section. `tests/it/adding_a_card.rs` adds a card to a copy of the directory and the fixture and shows that no count or table needs an edit.
+`reproduced.txt` is a plain list in sorted order, one name per line, and the update inserts a name at its sorted position. Two branches that add different names conflict only where the names are adjacent; the resolution keeps both lines, and the update command restores the order if it is off.
+
+The tests report a card without its record or file, a fixture file that is not named after its card or lacks the final newline, two files with one oracle id, a stale or missing fingerprint, an unlisted reproduced card and an unexpected state with the card's name, the file to add and this section. The fixture directory loads in file-name order and no test depends on that order. `tests/it/adding_a_card.rs` adds a card to a copy of the directory and the fixture directory and shows that no count or table needs an edit.
 
 ## Printed side and rules
 

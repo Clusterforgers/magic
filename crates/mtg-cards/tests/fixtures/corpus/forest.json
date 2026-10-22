@@ -1,0 +1,24 @@
+{
+  "id": "2e781bfd-f8cb-4d20-b977-4359f3a21311",
+  "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+  "name": "Forest",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mdd",
+  "collector_number": "301",
+  "rarity": "common",
+  "released_at": "2027-04-09",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Basic Land — Forest",
+  "oracle_text": "({T}: Add {G}.)",
+  "colors": [],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "G"
+  ]
+}

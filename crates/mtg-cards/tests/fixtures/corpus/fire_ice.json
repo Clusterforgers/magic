@@ -1,0 +1,38 @@
+{
+  "id": "18303862-4726-4136-814f-157aa7006579",
+  "oracle_id": "ae92942b-919c-4ea9-b693-85fcef765d5a",
+  "name": "Fire // Ice",
+  "lang": "en",
+  "layout": "split",
+  "set": "dmr",
+  "collector_number": "215",
+  "rarity": "uncommon",
+  "released_at": "2023-01-13",
+  "digital": false,
+  "mana_cost": "{1}{R} // {1}{U}",
+  "cmc": 4.0,
+  "type_line": "Instant // Instant",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [],
+  "card_faces": [
+    {
+      "name": "Fire",
+      "mana_cost": "{1}{R}",
+      "type_line": "Instant",
+      "oracle_text": "Fire deals 2 damage divided as you choose among one or two targets."
+    },
+    {
+      "name": "Ice",
+      "mana_cost": "{1}{U}",
+      "type_line": "Instant",
+      "oracle_text": "Tap target permanent.\nDraw a card."
+    }
+  ]
+}

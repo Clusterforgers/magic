@@ -1,0 +1,28 @@
+{
+  "id": "b8c5e74c-96e7-4a1f-93b7-14d776fe4b2d",
+  "oracle_id": "4b7ac066-e5c7-43e6-9e7e-2739b24a905d",
+  "name": "Serra Angel",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fdn",
+  "collector_number": "740",
+  "rarity": "uncommon",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Angel",
+  "oracle_text": "Flying\nVigilance (Attacking doesn't cause this creature to tap.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Vigilance"
+  ]
+}

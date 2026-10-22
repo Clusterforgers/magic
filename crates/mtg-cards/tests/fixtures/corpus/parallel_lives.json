@@ -1,0 +1,23 @@
+{
+  "id": "01033dae-fec1-41f2-b7f2-cc6a43331790",
+  "oracle_id": "84dc94b2-95fb-4d53-aaa2-191cb645639f",
+  "name": "Parallel Lives",
+  "lang": "en",
+  "layout": "normal",
+  "set": "isd",
+  "collector_number": "199",
+  "rarity": "rare",
+  "released_at": "2011-09-30",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "If an effect would create one or more tokens under your control, it creates twice that many of those tokens instead.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

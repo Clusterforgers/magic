@@ -1,0 +1,25 @@
+{
+  "id": "a5e19147-e459-43a6-8ef0-e37968a462e3",
+  "oracle_id": "60433b48-d27f-413c-905c-43839b1943f1",
+  "name": "Mother of Runes",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "702",
+  "rarity": "uncommon",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Creature — Human Cleric",
+  "oracle_text": "{T}: Target creature you control gains protection from the color of your choice until end of turn.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

@@ -1,0 +1,22 @@
+{
+  "id": "1ffe5f80-a2ac-41b8-8fce-fd3485643557",
+  "oracle_id": "fac42229-4f5f-4d04-85dd-5031d4e435aa",
+  "name": "Sword of Body and Mind",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2xm",
+  "collector_number": "295",
+  "rarity": "mythic",
+  "released_at": "2020-08-07",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +2/+2 and has protection from green and from blue.\nWhenever equipped creature deals combat damage to a player, you create a 2/2 green Wolf creature token and that player mills ten cards.\nEquip {2}",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip",
+    "Mill"
+  ]
+}

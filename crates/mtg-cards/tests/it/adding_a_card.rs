@@ -29,16 +29,22 @@ fn copy_dir(from: &Path, to: &Path) {
 /// The repository's corpus copied under `root`.
 fn copy_of_repo(root: &Path) -> Corpus {
     let repo = Corpus::repo();
-    let dir = root.join("cards");
+    let (dir, fixture) = (root.join("cards"), root.join("corpus"));
     copy_dir(&repo.dir, &dir);
-    Corpus {
-        dir,
-        fixture: repo.fixture,
-    }
+    copy_dir(&repo.fixture, &fixture);
+    Corpus { dir, fixture }
 }
 
-fn records_of(corpus: &Corpus) -> Vec<Value> {
-    serde_json::from_str(&corpus.fixture).unwrap()
+fn read_record(corpus: &Corpus, name: &str) -> Value {
+    let path = corpus.fixture.join(format!("{}.json", slug(name)));
+    serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap()
+}
+
+/// Writes the record as the file of the card `name`: pretty-printed with a trailing newline.
+fn write_record(corpus: &Corpus, name: &str, record: &Value) {
+    let path = corpus.fixture.join(format!("{}.json", slug(name)));
+    let text = serde_json::to_string_pretty(record).unwrap() + "\n";
+    std::fs::write(path, text).unwrap();
 }
 
 fn read_card(corpus: &Corpus, name: &str) -> Value {
@@ -52,20 +58,18 @@ fn write_card(corpus: &Corpus, name: &str, card: &Value) {
 }
 
 /// Adds a card that is `name` under another name: its file, and its record in the fixture.
-fn add_twin(corpus: &mut Corpus, name: &str, twin: &str) {
+fn add_twin(corpus: &Corpus, name: &str, twin: &str) {
     let mut card = read_card(corpus, name);
     card["oracle_id"] = json!(TWIN_ORACLE_ID);
     card["name"] = json!(twin);
     card["faces"][0]["name"] = json!(twin);
     write_card(corpus, twin, &card);
 
-    let mut records = records_of(corpus);
-    let mut record = records.iter().find(|r| r["name"] == name).unwrap().clone();
+    let mut record = read_record(corpus, name);
     record["id"] = json!(TWIN_PRINTING_ID);
     record["oracle_id"] = json!(TWIN_ORACLE_ID);
     record["name"] = json!(twin);
-    records.push(record);
-    corpus.fixture = serde_json::to_string(&records).unwrap();
+    write_record(corpus, twin, &record);
 }
 
 fn assert_clean(problems: &[String]) {
@@ -83,21 +87,23 @@ fn a_new_card_needs_its_file_its_record_and_at_most_one_name_in_the_ratchet(
     #[case] reproduced_by_the_compiler: bool,
 ) {
     let temp = tempfile::tempdir().unwrap();
-    let mut corpus = copy_of_repo(temp.path());
+    let corpus = copy_of_repo(temp.path());
     let twin = format!("{name} Twin");
     let files_before = corpus.card_files().len();
     let reproduced_before = reproduced(&corpus);
     let list = list_text(&reproduced_before);
     assert_clean(&ratchet_problems(&reproduced_before, &list));
 
-    add_twin(&mut corpus, name, &twin);
+    add_twin(&corpus, name, &twin);
 
     // Every count follows from the files.
     assert_eq!(corpus.card_files().len(), files_before + 1);
+    assert_eq!(corpus.fixture_files().len(), files_before + 1);
     assert_eq!(corpus.records().len(), files_before + 1);
     assert_eq!(corpus.printed().len(), files_before + 1);
     assert_eq!(corpus.library().cards().count(), files_before + 1);
     // Every invariant a count stood for holds without an edit.
+    assert_clean(&corpus.fixture_problems());
     assert_clean(&corpus.pairing_problems());
     assert_clean(&corpus.fingerprint_problems());
     assert_clean(&corpus.status_problems());
@@ -123,42 +129,68 @@ fn a_new_card_needs_its_file_its_record_and_at_most_one_name_in_the_ratchet(
 fn a_record_without_a_file_and_a_file_without_a_record_are_reported_with_the_card_and_the_checklist()
  {
     let temp = tempfile::tempdir().unwrap();
-    let mut corpus = copy_of_repo(temp.path());
+    let corpus = copy_of_repo(temp.path());
     assert_clean(&corpus.pairing_problems());
 
     std::fs::remove_file(corpus.dir.join("giant_growth.json")).unwrap();
-    let mut records = records_of(&corpus);
-    records.retain(|record| record["name"] != "Lightning Bolt");
-    corpus.fixture = serde_json::to_string(&records).unwrap();
+    std::fs::remove_file(corpus.fixture.join("lightning_bolt.json")).unwrap();
 
     let problems = corpus.pairing_problems();
     assert_eq!(problems.len(), 2, "{problems:#?}");
     let of = |card: &str| problems.iter().find(|p| p.contains(card)).unwrap();
     assert!(
-        of("Giant Growth").contains("cards/<slug>.json") && of("Giant Growth").contains(ADDING)
+        of("Giant Growth").contains("add cards/giant_growth.json")
+            && of("Giant Growth").contains(UPDATE)
+            && of("Giant Growth").contains(ADDING)
     );
     assert!(
-        of("Lightning Bolt").contains("corpus_scryfall.json")
+        of("Lightning Bolt").contains("tests/fixtures/corpus/lightning_bolt.json")
             && of("Lightning Bolt").contains(ADDING)
     );
 }
 
 #[test]
+fn a_fixture_file_must_be_named_after_its_card_and_hold_one_card_once() {
+    let temp = tempfile::tempdir().unwrap();
+    let corpus = copy_of_repo(temp.path());
+    assert_clean(&corpus.fixture_problems());
+
+    // A misnamed file, a file without its final newline and a second file with the oracle id of Lightning Bolt.
+    let from = corpus.fixture.join("giant_growth.json");
+    std::fs::rename(&from, corpus.fixture.join("growth.json")).unwrap();
+    let bolt = corpus.fixture.join("lightning_bolt.json");
+    let text = std::fs::read_to_string(&bolt).unwrap();
+    std::fs::write(&bolt, text.trim_end()).unwrap();
+    std::fs::write(corpus.fixture.join("bolt_again.json"), &text).unwrap();
+
+    let problems = corpus.fixture_problems();
+    assert_eq!(problems.len(), 3, "{problems:#?}");
+    let of = |file: &str| {
+        let file = format!("tests/fixtures/corpus/{file} ");
+        problems.iter().find(|p| p.contains(&file)).unwrap()
+    };
+    assert!(of("growth.json").contains("giant_growth.json") && of("growth.json").contains(ADDING));
+    assert!(of("bolt_again.json").contains("lightning_bolt.json"));
+    let newline = problems.iter().find(|p| p.contains("newline")).unwrap();
+    assert!(newline.contains("lightning_bolt.json") && newline.contains(ADDING));
+
+    let pairing = corpus.pairing_problems();
+    assert_eq!(pairing.len(), 1, "{pairing:#?}");
+    assert!(pairing[0].contains("Lightning Bolt") && pairing[0].contains("one oracle id"));
+}
+
+#[test]
 fn a_missing_or_stale_fingerprint_is_reported_with_the_card_and_the_command() {
     let temp = tempfile::tempdir().unwrap();
-    let mut corpus = copy_of_repo(temp.path());
+    let corpus = copy_of_repo(temp.path());
     assert_clean(&corpus.fingerprint_problems());
 
     let mut card = read_card(&corpus, "Giant Growth");
     card["faces"][0]["oracle_fingerprint"] = json!("");
     write_card(&corpus, "Giant Growth", &card);
-    let mut records = records_of(&corpus);
-    for record in &mut records {
-        if record["name"] == "Lightning Bolt" {
-            record["oracle_text"] = json!("Lightning Bolt deals 4 damage to any target.");
-        }
-    }
-    corpus.fixture = serde_json::to_string(&records).unwrap();
+    let mut record = read_record(&corpus, "Lightning Bolt");
+    record["oracle_text"] = json!("Lightning Bolt deals 4 damage to any target.");
+    write_record(&corpus, "Lightning Bolt", &record);
 
     let problems = corpus.fingerprint_problems();
     assert_eq!(problems.len(), 2, "{problems:#?}");

@@ -1,0 +1,23 @@
+{
+  "id": "99cfd1a8-49fd-4cc0-96f2-f9f159ce5d55",
+  "oracle_id": "a1f3da21-af6d-450e-bf0b-985d158418e6",
+  "name": "Hardened Scales",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "272",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Enchantment",
+  "oracle_text": "If one or more +1/+1 counters would be put on a creature you control, that many plus one +1/+1 counters are put on it instead.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

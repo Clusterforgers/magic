@@ -1,0 +1,25 @@
+{
+  "id": "e7e9d19c-22d9-4451-b988-9ec71793c13d",
+  "oracle_id": "0544b707-ec67-43e3-a25d-fd7005ab673d",
+  "name": "Death Ward",
+  "lang": "en",
+  "layout": "normal",
+  "set": "me1",
+  "collector_number": "8",
+  "rarity": "common",
+  "released_at": "2007-09-10",
+  "digital": true,
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Regenerate target creature.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Regenerate"
+  ]
+}
