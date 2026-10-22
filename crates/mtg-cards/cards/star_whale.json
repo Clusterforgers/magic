@@ -1,0 +1,22 @@
+{
+  "oracle_id": "3e84d719-bb76-43a4-b61a-fee30c3aac68",
+  "name": "Star Whale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Star Whale",
+      "oracle_fingerprint": "30ca58552ca495d0323017183287829f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Ward": "{2}" } }]
+          }
+        },
+        { "Keyword": { "Suspend": { "time": 6, "cost": "{1}{U}" } } }
+      ]
+    }
+  ]
+}

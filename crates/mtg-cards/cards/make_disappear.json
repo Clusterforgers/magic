@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5f12f665-f083-48ae-b61a-541051c996ec",
+  "name": "Make Disappear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Make Disappear",
+      "oracle_fingerprint": "75e9ef8ae3c406dbf3385cbb978d470d",
+      "abilities": [
+        { "Keyword": { "Casualty": 1 } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{2}",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

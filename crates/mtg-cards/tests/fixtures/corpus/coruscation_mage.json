@@ -1,0 +1,27 @@
+{
+  "id": "dc2c1de0-6233-469a-be72-a050b97d2c8f",
+  "oracle_id": "88bb91b5-2ccd-4ce9-8cd4-e54d63c12abf",
+  "name": "Coruscation Mage",
+  "lang": "en",
+  "layout": "normal",
+  "set": "blb",
+  "collector_number": "131",
+  "rarity": "uncommon",
+  "released_at": "2024-08-02",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Creature — Otter Wizard",
+  "oracle_text": "Offspring {2} (You may pay an additional {2} as you cast this spell. If you do, when this creature enters, create a 1/1 token copy of it.)\nWhenever you cast a noncreature spell, this creature deals 1 damage to each opponent.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Offspring"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "73b1f962-22b7-4394-9796-24f7b0f8a42f",
+  "oracle_id": "d1f3d5ca-cb17-400f-8ed9-3b9a4f151b62",
+  "name": "Steelburr Champion",
+  "lang": "en",
+  "layout": "normal",
+  "set": "blc",
+  "collector_number": "12",
+  "rarity": "rare",
+  "released_at": "2024-08-02",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Mouse Soldier",
+  "oracle_text": "Offspring {1}{W} (You may pay an additional {1}{W} as you cast this spell. If you do, when this creature enters, create a 1/1 token copy of it.)\nVigilance\nWhenever an opponent casts a noncreature spell, put a +1/+1 counter on this creature.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Offspring",
+    "Vigilance"
+  ]
+}

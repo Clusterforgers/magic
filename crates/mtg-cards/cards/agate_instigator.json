@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e1a2bd31-b800-47cd-8866-1b849a601b09",
+  "name": "Agate Instigator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agate Instigator",
+      "oracle_fingerprint": "ec9d04db6f8a275179ce3fc7f5d67d6b",
+      "abilities": [
+        { "Keyword": { "Offspring": "{1}{R}" } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

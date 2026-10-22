@@ -1,0 +1,20 @@
+{
+  "oracle_id": "88bb91b5-2ccd-4ce9-8cd4-e54d63c12abf",
+  "name": "Coruscation Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coruscation Mage",
+      "oracle_fingerprint": "eb141e6c631cdf18d0dfedf3750a849d",
+      "abilities": [
+        { "Keyword": { "Offspring": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

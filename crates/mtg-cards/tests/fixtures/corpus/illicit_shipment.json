@@ -1,0 +1,25 @@
+{
+  "id": "1f7cced2-390b-499f-ace3-e52fd53d4712",
+  "oracle_id": "81d62f0a-b2ba-4e87-9003-e5472bd1101f",
+  "name": "Illicit Shipment",
+  "lang": "en",
+  "layout": "normal",
+  "set": "snc",
+  "collector_number": "83",
+  "rarity": "uncommon",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Casualty 3 (As you cast this spell, you may sacrifice a creature with power 3 or greater. When you do, copy this spell.)\nSearch your library for a card, put it into your hand, then shuffle.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Casualty"
+  ]
+}

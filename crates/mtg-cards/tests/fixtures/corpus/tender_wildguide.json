@@ -1,0 +1,27 @@
+{
+  "id": "6b8bfa91-adb0-4596-8c16-d8bb64fdb26d",
+  "oracle_id": "74868bc0-6081-4f46-a2c6-9521cd5465aa",
+  "name": "Tender Wildguide",
+  "lang": "en",
+  "layout": "normal",
+  "set": "blb",
+  "collector_number": "196",
+  "rarity": "rare",
+  "released_at": "2024-08-02",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Possum Druid",
+  "oracle_text": "Offspring {2} (You may pay an additional {2} as you cast this spell. If you do, when this creature enters, create a 1/1 token copy of it.)\n{T}: Add one mana of any color.\n{T}: Put a +1/+1 counter on this creature.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Offspring"
+  ]
+}

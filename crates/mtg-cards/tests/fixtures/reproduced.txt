@@ -9,6 +9,7 @@ Adaptive Snapjaw
 Adorned Pouncer
 Aeromunculus
 Aether Hub
+Agate Instigator
 Ainok Bond-Kin
 Ajani's Pridemate
 Akrasan Squire
@@ -27,6 +28,7 @@ Arbor Colossus
 Arcane Signet
 Archon of Cruelty
 Archway Commons
+Armguard Familiar
 Arrogant Wurm
 Artful Maneuver
 Arvad the Cursed
@@ -88,7 +90,9 @@ Cackling Counterpart
 Cadaverous Bloom
 Calciderm
 Caldaia Strongarm
+Caldera Hellion
 Caller of the Pack
+Caprichrome
 Capsize
 Caravan Escort
 Carnage Tyrant
@@ -116,6 +120,7 @@ Consuming Aetherborn
 Contentious Plan
 Copper-Leaf Angel
 Coralhelm Commander
+Coruscation Mage
 Counterspell
 Courser of Kruphix
 Cram Session
@@ -134,6 +139,7 @@ Curse of the Forsaken
 Curse of the Nightly Hunt
 Custodi Lich
 Cut // Ribbons
+Cut of the Profits
 Cyclonic Rift
 Cytoshape
 Dalek Squadron
@@ -173,6 +179,7 @@ Dualcaster Mage
 Dunland Crebain
 Durkwood Baloth
 Dusk Charger
+Duskshell Crawler
 Eagles of the North
 Easterling Vanguard
 Echo Inspector
@@ -202,12 +209,14 @@ Favorable Winds
 Fear of Failed Tests
 Fearless Skald
 Fearsome Goblin Pair
+Feaster of Fools
 Felidar Sovereign
 Fellwar Stone
 Fetid Heath
 Field Trip
 Fiery Fall
 Fiery Temper
+Finch Formation
 Fire-Lit Thicket
 Firestorm Hellkite
 Flame Jab
@@ -215,6 +224,7 @@ Fleecemane Lion
 Fleetfeather Cockatrice
 Flooded Grove
 Flooded Strand
+Flowerfoot Swordmaster
 Fog
 Followed Footsteps
 Forced March
@@ -241,6 +251,7 @@ Glimpse of Freedom
 Glint-Sleeve Artisan
 Glorious Anthem
 Gluttonous Cyclops
+Gluttonous Slime
 Gnarled Professor
 Goblin Chieftain
 Goblin Spy
@@ -249,6 +260,7 @@ Goblin-town Flunkies
 Golden-Scale Aeronaut
 Goldlust Triad
 Goliath Truck
+Gorger Wurm
 Grapeshot
 Graven Cairns
 Graveshifter
@@ -281,17 +293,21 @@ Hulking Raptor
 Idyllic Beachfront
 Igneous Inspiration
 Ill-Tempered Cyclops
+Illicit Shipment
 Illustrious Wanderglyph
 Impostor of the Sixth Pride
 Impulsive Pilferer
 Inkwell Leviathan
+Intrepid Rabbit
 Invading Manticore
 Invisible Stalker
+Iridescent Vinelasher
 Iron League Steed
 Izzet Charm
 Jadelight Ranger
 Jagged Barrens
 Jaspera Sentinel
+Join the Maestros
 Jolting Merfolk
 Jungle Lion
 Kalemne's Captain
@@ -311,10 +327,12 @@ Kozilek's Translator
 Krenko's Enforcer
 Krosan Grip
 Lat-Nam Adept
+Latchkey Faerie
 Lavacore Elemental
 Lazotep Reaver
 Levitation
 Lhurgoyf
+Light 'Em Up
 Lightning Bolt
 Lithoform Engine
 Lizard Blades
@@ -325,6 +343,7 @@ Lord of Extinction
 Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
 Lurching Rotbeast
+Make Disappear
 Mana Bloom
 Manabarbs
 Manor Gate
@@ -353,8 +372,10 @@ Mishra's Workshop
 Mizzium Mortars
 Monastery Swiftspear
 Morinfen
+Morsel Theft
 Mortivore
 Mothdust Changeling
+Mother of Runes
 Mukotai Ambusher
 Mulldrifter
 Murderous Cut
@@ -394,11 +415,14 @@ Pongify
 Pop Quiz
 Pouncing Jaguar
 Powder Ganger
+Predator Dragon
+Pridemalkin
 Primeval Protector
 Prismatic Lens
 Professional Face-Breaker
 Professor of Symbology
 Propeller Pioneer
+Prosperous Bandit
 Proven Combatant
 Psychosis Crawler
 Putrid Goblin
@@ -428,12 +452,14 @@ Rhystic Study
 Rift Bolt
 Righteous Avengers
 Riveteers Requisitioner
+Rob the Archives
 Rocksteady, Mutant Marauder
 Rootborn Defenses
 Rosheen Meanderer
 Rugged Prairie
 Rumbleweed
 Rummaging Goblin
+Rust-Shield Rampager
 Rustrazor Butcher
 Ruthless Radrat
 Sacred Cat
@@ -499,8 +525,12 @@ Spring // Mind
 Springleaf Drum
 Squirrel Nest
 Staggershock
+Star Whale
+Starscape Cleric
 Steady Progress
 Steam Vents
+Steampath Charger
+Steelburr Champion
 Stoke the Flames
 Stonewood Invocation
 Storm Fleet Swashbuckler
@@ -532,6 +562,7 @@ Tainted Isle
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
 Temur Devotee
+Tender Wildguide
 Tendershoot Dryad
 Tendo Ice Bridge
 Tendrils of Agony
@@ -540,6 +571,7 @@ The Spear of Bashenga
 The Thing, Ben Grimm
 Thieving Magpie
 Thopter Fabricator
+Thorn-Thrash Viashino
 Thought Monitor
 Thoughtcast
 Thriving Bluff
@@ -548,6 +580,7 @@ Thriving Heath
 Thriving Isle
 Thriving Moor
 Throne of the High City
+Thunder-Thrash Elder
 Thunderous Wrath
 Tiamat's Fanatics
 Tilonalli's Skinshifter
@@ -596,6 +629,7 @@ Wasteland Raider
 Weaponcraft Enthusiast
 Wear // Tear
 Whir of Invention
+Wild Wasteland
 Wilderness Elemental
 Wings of the Guard
 Wipe Away

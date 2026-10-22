@@ -1,0 +1,28 @@
+{
+  "id": "a77f0a5f-b350-4baf-a71a-861fb1f5f976",
+  "oracle_id": "5797684a-a022-45d2-aa2e-4d375b33017e",
+  "name": "Gluttonous Slime",
+  "lang": "en",
+  "layout": "normal",
+  "set": "pca",
+  "collector_number": "65",
+  "rarity": "uncommon",
+  "released_at": "2016-11-25",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Ooze",
+  "oracle_text": "Flash\nDevour 1 (As this creature enters, you may sacrifice any number of creatures. It enters with that many +1/+1 counters on it.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Flash",
+    "Devour"
+  ]
+}

@@ -341,6 +341,9 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     if r.words("players have no maximum hand size") {
         return Some(GameRule::NoMaxHandSize(Ref::EachPlayer));
     }
+    if r.words("skip your draw step") {
+        return Some(GameRule::SkipDrawStep(Ref::You));
+    }
     if r.words("you may look at the top card of your library any time") {
         return Some(GameRule::LookAtTopAnyTime(Ref::You));
     }
@@ -951,6 +954,9 @@ fn rule_texts(rule: &GameRule, from: ZoneKind) -> Vec<String> {
         }
         (GameRule::NoMaxHandSize(Ref::EachPlayer), ZoneKind::Battlefield) => {
             vec!["Players have no maximum hand size".to_owned()]
+        }
+        (GameRule::SkipDrawStep(Ref::You), ZoneKind::Battlefield) => {
+            vec!["Skip your draw step".to_owned()]
         }
         (GameRule::LookAtTopAnyTime(Ref::You), ZoneKind::Battlefield) => {
             vec!["You may look at the top card of your library any time".to_owned()]

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "849a7ae8-2b4e-4fa5-9607-2bfc961fee40",
+  "name": "Join the Maestros",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Join the Maestros",
+      "oracle_fingerprint": "6363fa73b7eae41f40e28827ee5a0b54",
+      "abilities": [
+        { "Keyword": { "Casualty": 2 } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ogre Warrior",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ogre", "Warrior"],
+                      "power": 4,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

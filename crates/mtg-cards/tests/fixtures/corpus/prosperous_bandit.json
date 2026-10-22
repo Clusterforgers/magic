@@ -1,0 +1,29 @@
+{
+  "id": "6b3a7194-25e8-4639-a490-96e9cfce0f84",
+  "oracle_id": "2a14670b-2ab6-4e1d-9b33-610a87bdb7ce",
+  "name": "Prosperous Bandit",
+  "lang": "en",
+  "layout": "normal",
+  "set": "blc",
+  "collector_number": "25",
+  "rarity": "rare",
+  "released_at": "2024-08-02",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Raccoon Rogue",
+  "oracle_text": "Offspring {1} (You may pay an additional {1} as you cast this spell. If you do, when this creature enters, create a 1/1 token copy of it.)\nFirst strike\nWhenever this creature deals combat damage to a player, create that many tapped Treasure tokens.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Offspring",
+    "First strike",
+    "Treasure"
+  ]
+}

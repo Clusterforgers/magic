@@ -176,6 +176,8 @@ pub enum Keyword {
     Bestow(Cost),
     /// Blitz with its cost: an alternative cost for a creature spell, which gains haste and "When this creature dies, draw a card" and is sacrificed at the next end step (CR 702.152).
     Blitz(Cost),
+    /// Prowl with its cost: an alternative cost for a spell, cast when a player was dealt combat damage this turn by a source its caster controlled that shared a creature type with it (CR 702.76).
+    Prowl(Cost),
     /// Ninjutsu with its cost: from the hand during combat after blockers are declared, an unblocked attacker returns to its owner's hand and the card enters tapped and attacking (CR 702.49).
     Ninjutsu(Cost),
     /// Echo with its cost (CR 702.30): at the beginning of its controller's upkeep, if it came under their control since their last turn began, it is sacrificed unless they pay the cost.
@@ -245,6 +247,17 @@ pub enum Keyword {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         abilities: Vec<Ability>,
     },
+    /// Devour (CR 702.82): as it enters, its controller may sacrifice any number of other permanents `of` matches, and it enters with `counters` +1/+1 counters for each.
+    Devour {
+        /// The +1/+1 counters for each permanent sacrificed.
+        counters: u32,
+        /// What may be sacrificed: creatures, artifacts, lands or Foods.
+        of: Selector,
+    },
+    /// Casualty N (CR 702.153): as an additional cost to cast the spell, its caster may sacrifice a creature with power N or greater; when they cast it, if they did, they copy it.
+    Casualty(u32),
+    /// Offspring with its cost (CR 702.175): the caster may pay it in addition as they cast the spell; when the creature enters, if they did, they create a 1/1 token copy of it.
+    Offspring(Cost),
 }
 
 impl Keyword {
@@ -326,6 +339,7 @@ impl Keyword {
         "Dash",
         "Bestow",
         "Blitz",
+        "Prowl",
         "Ninjutsu",
         "Echo",
         "Cumulative upkeep",
@@ -355,6 +369,9 @@ impl Keyword {
         "Vanishing",
         "Fading",
         "Backup",
+        "Devour",
+        "Casualty",
+        "Offspring",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -433,9 +450,7 @@ impl Keyword {
             Keyword::Escape(_) => "Escape",
             Keyword::Rebound => "Rebound",
             Keyword::Aftermath => "Aftermath",
-            Keyword::Dash(_) => "Dash",
             Keyword::Bestow(_) => "Bestow",
-            Keyword::Blitz(_) => "Blitz",
             Keyword::Ninjutsu(_) => "Ninjutsu",
             Keyword::Echo(_) => "Echo",
             Keyword::CumulativeUpkeep(_) => "Cumulative upkeep",
@@ -469,9 +484,22 @@ impl Keyword {
             Keyword::Typecycling { .. } => "Typecycling",
             Keyword::Fabricate(_) => "Fabricate",
             Keyword::Ascend => "Ascend",
+            other => other.counter_name(),
+        }
+    }
+
+    /// The names of the keywords that count, copy or devour (`name` is split to stay short; a test holds every keyword to its entry in `NAMES`).
+    const fn counter_name(&self) -> &'static str {
+        match self {
             Keyword::Vanishing(_) => "Vanishing",
             Keyword::Fading(_) => "Fading",
             Keyword::Backup { .. } => "Backup",
+            Keyword::Devour { .. } => "Devour",
+            Keyword::Casualty(_) => "Casualty",
+            Keyword::Offspring(_) => "Offspring",
+            Keyword::Dash(_) => "Dash",
+            Keyword::Blitz(_) => "Blitz",
+            Keyword::Prowl(_) => "Prowl",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
         }
@@ -482,6 +510,11 @@ impl Keyword {
         Keyword::NAMES
             .iter()
             .any(|name| name.eq_ignore_ascii_case(printed))
+    }
+
+    /// Whether the keyword gives the caster an optional additional cost that `Condition::AdditionalCostPaid` reads: casualty and offspring.
+    pub const fn has_additional_cost(&self) -> bool {
+        matches!(self, Keyword::Casualty(_) | Keyword::Offspring(_))
     }
 
     /// Whether paying the cost of this keyword counts as a kick (`Amount::Kicks`): kicker, multikicker and squad.
@@ -582,6 +615,7 @@ mod tests {
             Keyword::Dash(cost.clone()),
             Keyword::Bestow(cost.clone()),
             Keyword::Blitz(cost.clone()),
+            Keyword::Prowl(cost.clone()),
             Keyword::Ninjutsu(cost),
             Keyword::Echo(Cost::default()),
             Keyword::CumulativeUpkeep(Cost::default()),
@@ -617,6 +651,12 @@ mod tests {
                 count: 1,
                 abilities: vec![Ability::Keyword(Keyword::Flying)],
             },
+            Keyword::Devour {
+                counters: 2,
+                of: Selector::default(),
+            },
+            Keyword::Casualty(2),
+            Keyword::Offspring(Cost::default()),
         ]
     }
 

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "aef6c5b3-824f-4b7d-9671-1ed61d547717",
+  "name": "Thunder-Thrash Elder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thunder-Thrash Elder",
+      "oracle_fingerprint": "983a25b950e9b303b6c72db3a56e7b38",
+      "abilities": [{ "Keyword": { "Devour": { "counters": 3, "of": [{ "Type": "Creature" }] } } }]
+    }
+  ]
+}

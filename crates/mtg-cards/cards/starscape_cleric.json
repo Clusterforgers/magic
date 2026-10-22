@@ -1,0 +1,22 @@
+{
+  "oracle_id": "8d72ddb3-ef6e-4847-b6d4-5d85b1dd5802",
+  "name": "Starscape Cleric",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starscape Cleric",
+      "oracle_fingerprint": "ec2ff721d62e3a539283ffc00fd491d2",
+      "abilities": [
+        { "Keyword": { "Offspring": "{2}{B}" } },
+        { "Keyword": "Flying" },
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

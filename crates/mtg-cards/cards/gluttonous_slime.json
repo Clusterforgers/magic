@@ -1,0 +1,15 @@
+{
+  "oracle_id": "5797684a-a022-45d2-aa2e-4d375b33017e",
+  "name": "Gluttonous Slime",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gluttonous Slime",
+      "oracle_fingerprint": "54eb3a31d0383d107728e8ad777758f8",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Devour": { "counters": 1, "of": [{ "Type": "Creature" }] } } }
+      ]
+    }
+  ]
+}

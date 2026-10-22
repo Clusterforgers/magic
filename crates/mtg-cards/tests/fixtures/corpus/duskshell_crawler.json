@@ -1,0 +1,25 @@
+{
+  "id": "eb39a0c0-668f-4881-957a-3d09c50beaf4",
+  "oracle_id": "e54ad5a1-e79d-42db-a3e9-5caecae62c9f",
+  "name": "Duskshell Crawler",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clu",
+  "collector_number": "161",
+  "rarity": "common",
+  "released_at": "2024-02-23",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Insect",
+  "oracle_text": "When this creature enters, put a +1/+1 counter on target creature.\nEach creature you control with a +1/+1 counter on it has trample. (It can deal excess combat damage to the player or planeswalker it's attacking.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "power": "0",
+  "toughness": "3"
+}

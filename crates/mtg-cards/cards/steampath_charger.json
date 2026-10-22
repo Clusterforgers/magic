@@ -1,0 +1,21 @@
+{
+  "oracle_id": "75237b2c-232b-479a-ab3a-e1566c8a9fe7",
+  "name": "Steampath Charger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steampath Charger",
+      "oracle_fingerprint": "17b56eb7b0d4ba3a2e07ed69fc58cacf",
+      "abilities": [
+        { "Keyword": { "Offspring": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "ee31d56a-9b7e-4de0-81cb-3b7c76b6fbd5",
+  "oracle_id": "c6932bcf-d66b-42c1-8ca4-6a4573e0f6bf",
+  "name": "Light 'Em Up",
+  "lang": "en",
+  "layout": "normal",
+  "set": "snc",
+  "collector_number": "113",
+  "rarity": "common",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Casualty 2 (As you cast this spell, you may sacrifice a creature with power 2 or greater. When you do, copy this spell and you may choose a new target for the copy.)\nLight 'Em Up deals 2 damage to target creature or planeswalker.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Casualty"
+  ]
+}

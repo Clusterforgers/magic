@@ -1,0 +1,28 @@
+{
+  "id": "97ff118f-9c3c-43a2-8085-980c7fe7d227",
+  "oracle_id": "523d075d-b577-4f24-8c14-9a76761a2eaf",
+  "name": "Flowerfoot Swordmaster",
+  "lang": "en",
+  "layout": "normal",
+  "set": "blb",
+  "collector_number": "14",
+  "rarity": "uncommon",
+  "released_at": "2024-08-02",
+  "digital": false,
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Creature — Mouse Soldier",
+  "oracle_text": "Offspring {2} (You may pay an additional {2} as you cast this spell. If you do, when this creature enters, create a 1/1 token copy of it.)\nValiant — Whenever this creature becomes the target of a spell or ability you control for the first time each turn, Mice you control get +1/+0 until end of turn.",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Offspring",
+    "Valiant"
+  ]
+}
