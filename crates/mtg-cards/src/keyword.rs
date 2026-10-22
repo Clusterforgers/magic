@@ -161,7 +161,7 @@ pub enum Keyword {
 
 impl Keyword {
     /// Scryfall's spelling of every keyword in this enum, for matching a record's `keywords`.
-    pub const NAMES: [&'static str; 67] = [
+    pub const NAMES: &[&str] = &[
         "Flash",
         "Flying",
         "Reach",
@@ -407,6 +407,30 @@ mod tests {
         sorted.sort_unstable();
         sorted.dedup();
         assert_eq!(sorted.len(), names.len());
+    }
+
+    #[test]
+    fn names_list_every_variant_once_in_any_case() {
+        // Rust cannot count the variants of an enum, so the source is counted: rustfmt keeps one variant per
+        // line at four spaces, while docs, attributes and the fields of a struct variant do not start with a capital there.
+        let source = include_str!("keyword.rs");
+        let body = source
+            .split("pub enum Keyword {")
+            .nth(1)
+            .and_then(|rest| rest.split("\n}\n").next())
+            .unwrap_or_default();
+        let variants = body
+            .lines()
+            .filter_map(|line| line.strip_prefix("    "))
+            .filter(|rest| rest.starts_with(|c: char| c.is_ascii_uppercase()))
+            .count();
+        assert!(variants > 0, "the enum was not found in the source");
+        assert_eq!(Keyword::NAMES.len(), variants);
+        let lowercase: std::collections::BTreeSet<_> = Keyword::NAMES
+            .iter()
+            .map(|name| name.to_ascii_lowercase())
+            .collect();
+        assert_eq!(lowercase.len(), Keyword::NAMES.len());
     }
 
     #[rstest]

@@ -817,7 +817,7 @@ mod tests {
 
     #[test]
     fn every_keyword_the_dsl_declares_is_recognised_by_name() {
-        for name in Keyword::NAMES {
+        for name in Keyword::NAMES.iter().copied() {
             let name = printed(name);
             assert!(
                 KEYWORDS
