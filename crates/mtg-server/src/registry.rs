@@ -448,7 +448,13 @@ impl Registry {
         };
         let stand_in = match options.format {
             FormatKind::Normal => ChosenDeck::demo(demo::stand_in()),
-            FormatKind::Commander => ChosenDeck::commander_stand_in(),
+            FormatKind::Commander => ChosenDeck::commander_stand_in_of(
+                options
+                    .house_rules
+                    .deck
+                    .deck_size
+                    .map_or(demo::COMMANDER_DECK, |size| size as usize),
+            ),
         }
         .map_err(RecipeError::from)?;
         let held: Vec<&ChosenDeck> = decks
@@ -814,6 +820,15 @@ impl Registry {
             Some(records) => records.remove_failed(game, user).await,
             None => Ok(false),
         }
+    }
+
+    /// The format and house rules a game judges its decks by; `None` if there is no such game. They
+    /// are what the creator chose and the seats see in the table, so the id of the game is all a
+    /// visitor needs to ask which decks it takes.
+    pub fn deck_rules(&self, id: GameId) -> Option<(FormatKind, HouseRules)> {
+        let games = self.games();
+        let entry = games.get(&id)?;
+        Some((entry.format, entry.house_rules.clone()))
     }
 
     /// The public facts of a game; `None` if there is no such game or its actor is gone.

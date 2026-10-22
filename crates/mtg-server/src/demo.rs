@@ -167,6 +167,38 @@ pub const COMMANDER_STAND_IN: &str = "commander-stand-in";
 /// a legendary creature and 99 Forests, which the format accepts. The seat cannot press Ready
 /// before that, so the cards are never played. Returns the commander and the library.
 pub fn commander_stand_in() -> (Arc<CardDefinition>, Vec<Arc<CardDefinition>>) {
+    commander_stand_in_of(COMMANDER_DECK)
+}
+
+/// Cards in a Commander deck, its commander included, when the table sets no size.
+pub const COMMANDER_DECK: usize = 100;
+
+/// The id a recipe gives the stand-in of a table whose decks hold `size` cards with their commanders:
+/// [`COMMANDER_STAND_IN`] for the format's own size, that id and the size after a hyphen for another.
+pub fn commander_stand_in_id(size: usize) -> String {
+    if size == COMMANDER_DECK {
+        COMMANDER_STAND_IN.to_owned()
+    } else {
+        format!("{COMMANDER_STAND_IN}-{size}")
+    }
+}
+
+/// The deck size a stand-in id stands for; `None` for any other id or a size no table can set.
+pub fn commander_stand_in_size(id: &str) -> Option<usize> {
+    let size = if id == COMMANDER_STAND_IN {
+        COMMANDER_DECK
+    } else {
+        id.strip_prefix(COMMANDER_STAND_IN)?
+            .strip_prefix('-')?
+            .parse()
+            .ok()?
+    };
+    let allowed = mtg_core::house::DECK_SIZE;
+    (size == COMMANDER_DECK || allowed.contains(&u32::try_from(size).ok()?)).then_some(size)
+}
+
+/// Like [`commander_stand_in`], for a table whose decks hold `size` cards, the commander included.
+pub fn commander_stand_in_of(size: usize) -> (Arc<CardDefinition>, Vec<Arc<CardDefinition>>) {
     let commander = CardDefinition::new("Empty Seat")
         .with_type(CardType::Creature)
         .with_supertype(Supertype::Legendary)
@@ -175,7 +207,7 @@ pub fn commander_stand_in() -> (Arc<CardDefinition>, Vec<Arc<CardDefinition>>) {
             ManaSymbol::Colored(Color::Green),
         ]))
         .with_power_toughness(2, 2);
-    let library = std::iter::repeat_n(basic_land(Color::Green), 99).collect();
+    let library = std::iter::repeat_n(basic_land(Color::Green), size.saturating_sub(1)).collect();
     (Arc::new(commander), library)
 }
 

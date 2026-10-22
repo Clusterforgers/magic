@@ -29,7 +29,7 @@ fn objects() -> &'static Vec<Value> {
     })
 }
 
-fn oracle(name: &str) -> String {
+pub(crate) fn oracle(name: &str) -> String {
     objects()
         .iter()
         .find(|card| card["name"] == name)
@@ -40,7 +40,7 @@ fn oracle(name: &str) -> String {
 }
 
 /// The corpus with legalities: every card is legal in Commander and Modern.
-fn fixture() -> String {
+pub(crate) fn fixture() -> String {
     let mut all = objects().clone();
     for card in &mut all {
         card["legalities"] = json!({"commander": "legal", "modern": "legal"});
@@ -48,7 +48,7 @@ fn fixture() -> String {
     serde_json::to_string(&all).unwrap()
 }
 
-fn source(pool: &PgPool) -> CardSource {
+pub(crate) fn source(pool: &PgPool) -> CardSource {
     CardSource::new(pool.clone()).with_caps(Caps::everything())
 }
 
@@ -67,7 +67,7 @@ fn entry(name: &str, count: u32) -> PreconCard {
     }
 }
 
-fn precon_deck(
+pub(crate) fn precon_deck(
     name: &str,
     kind: &str,
     commander: &[(&str, u32)],
@@ -87,7 +87,7 @@ fn precon_deck(
 }
 
 /// A legal Commander deck with one card the rules model in part, so one copy is played by hand.
-fn beast_pack() -> PreconDeck {
+pub(crate) fn beast_pack() -> PreconDeck {
     precon_deck(
         "Beast Pack",
         "Commander Deck",
@@ -97,7 +97,7 @@ fn beast_pack() -> PreconDeck {
 }
 
 /// Too few cards for the format.
-fn short_pack() -> PreconDeck {
+pub(crate) fn short_pack() -> PreconDeck {
     precon_deck(
         "Short Pack",
         "Commander Deck",
@@ -107,7 +107,7 @@ fn short_pack() -> PreconDeck {
 }
 
 /// A red card under a green commander.
-fn red_pack() -> PreconDeck {
+pub(crate) fn red_pack() -> PreconDeck {
     precon_deck(
         "Red Pack",
         "Commander Deck",
@@ -117,7 +117,7 @@ fn red_pack() -> PreconDeck {
 }
 
 /// A commander that cannot lead a deck.
-fn bear_pack() -> PreconDeck {
+pub(crate) fn bear_pack() -> PreconDeck {
     precon_deck(
         "Bear Pack",
         "Commander Deck",
@@ -127,7 +127,7 @@ fn bear_pack() -> PreconDeck {
 }
 
 /// A card nobody stored.
-fn ghost_pack() -> PreconDeck {
+pub(crate) fn ghost_pack() -> PreconDeck {
     precon_deck(
         "Ghost Pack",
         "Commander Deck",
@@ -141,14 +141,14 @@ fn evergreen() -> PreconDeck {
     precon_deck("Evergreen Pack", "Starter Deck", &[], &[("Forest", 60)])
 }
 
-const BEAST: &str = "cmd-beast-pack";
-const SHORT: &str = "cmd-short-pack";
-const RED: &str = "cmd-red-pack";
-const BEAR: &str = "cmd-bear-pack";
-const GHOST: &str = "cmd-ghost-pack";
+pub(crate) const BEAST: &str = "cmd-beast-pack";
+pub(crate) const SHORT: &str = "cmd-short-pack";
+pub(crate) const RED: &str = "cmd-red-pack";
+pub(crate) const BEAR: &str = "cmd-bear-pack";
+pub(crate) const GHOST: &str = "cmd-ghost-pack";
 const EVERGREEN: &str = "cmd-evergreen-pack";
 
-fn on(code: &str) -> String {
+pub(crate) fn on(code: &str) -> String {
     format!("precon:{code}")
 }
 
@@ -186,16 +186,16 @@ async fn start_with(pool: &PgPool, config: ServerConfig) -> TestServer {
 
 // ---- stored decks ----
 
-fn line(zone: &str, name: &str, count: u32) -> Value {
+pub(crate) fn line(zone: &str, name: &str, count: u32) -> Value {
     json!({"zone": zone, "oracle_id": oracle(name), "printing_id": null, "count": count})
 }
 
-fn deck(name: &str, format: &str, lines: &[Value]) -> Value {
+pub(crate) fn deck(name: &str, format: &str, lines: &[Value]) -> Value {
     json!({"name": name, "format": format, "notes": "", "cards": lines})
 }
 
 /// A legal Commander deck led by `commander`: 99 Forests, which the identity of the commander allows.
-fn led_by(commander: &str) -> Value {
+pub(crate) fn led_by(commander: &str) -> Value {
     deck(
         commander,
         "commander",
@@ -210,7 +210,7 @@ const LEADERS: [&str; 3] = [
     "Rosheen Meanderer",
 ];
 
-async fn store(server: &TestServer, who: &Browser, deck: &Value) -> String {
+pub(crate) async fn store(server: &TestServer, who: &Browser, deck: &Value) -> String {
     let reply = who.post(server.addr, "/api/decks", &deck.to_string()).await;
     assert_eq!(reply.status, 201, "{}", reply.text());
     reply.json()["id"].as_str().unwrap().to_owned()
@@ -231,11 +231,11 @@ async fn players(server: &TestServer) -> Vec<(Browser, String, &'static str)> {
     all
 }
 
-fn create_body(seats: &[Value], held: usize) -> Value {
+pub(crate) fn create_body(seats: &[Value], held: usize) -> Value {
     json!({"format": "commander", "visibility": "public", "held": held, "seats": seats})
 }
 
-async fn join(server: &TestServer, who: &Browser, game: &str, deck: &str) -> net::Reply {
+pub(crate) async fn join(server: &TestServer, who: &Browser, game: &str, deck: &str) -> net::Reply {
     who.post(
         server.addr,
         &format!("/api/games/{game}/join"),
@@ -248,7 +248,7 @@ fn seat_path(game: &str, seat: usize) -> String {
     format!("/api/games/{game}/seats/{seat}/deck")
 }
 
-async fn choose(
+pub(crate) async fn choose(
     server: &TestServer,
     who: &Browser,
     game: &str,

@@ -211,6 +211,7 @@ export type { Subtype } from "./Subtype";
 export type { Summary } from "./Summary";
 export type { Supertype } from "./Supertype";
 export type { Support } from "./Support";
+export type { TableRules } from "./TableRules";
 export type { TableView } from "./TableView";
 export type { Target } from "./Target";
 export type { TargetChoice } from "./TargetChoice";
