@@ -286,6 +286,11 @@ pub fn granted_text(mods: &[Modification]) -> Option<String> {
     let mut parts: Vec<String> = Vec::new();
     let mut protecting = false;
     for modification in mods {
+        if *modification == Modification::AddProtectionFromChosenColor {
+            parts.push("protection from the color of your choice".to_owned());
+            protecting = false;
+            continue;
+        }
         let Modification::AddKeyword(keyword) = modification else {
             return None;
         };

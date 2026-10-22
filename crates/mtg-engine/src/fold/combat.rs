@@ -11,7 +11,7 @@ use crate::counters::{CountersChanged, change};
 use crate::error::EngineError;
 use crate::events::Event;
 use crate::object::GameObject;
-use crate::state::{GameState, Tally};
+use crate::state::{CombatHit, GameState, Tally};
 use crate::zones::Zone;
 
 fn on_battlefield(state: &GameState, id: mtg_core::ids::ObjectId) -> bool {
@@ -110,7 +110,11 @@ fn damage_player(
     id: mtg_core::ids::PlayerId,
     (amount, form, toxic): (u32, DamageForm, u32),
 ) -> Result<(), EngineError> {
-    let combat = state.commanders.any() && crate::replace::in_combat_damage(state);
+    let in_combat = crate::replace::in_combat_damage(state);
+    let combat = state.commanders.any() && in_combat;
+    if in_combat && amount > 0 {
+        record_hit(state, source);
+    }
     let player = player_mut(state, id)?;
     if form != DamageForm::Infect {
         player.life = player
@@ -135,6 +139,20 @@ fn damage_player(
         )?;
     }
     Ok(())
+}
+
+/// Notes that the creature `source` dealt combat damage to a player, with its controller and creature types as they are now
+/// (prowl, CR 702.76a).
+fn record_hit(state: &mut GameState, source: mtg_core::ids::ObjectId) {
+    let Some(controller) = crate::characteristics::controller_of(state, source) else {
+        return;
+    };
+    let (types, every_type) = crate::characteristics::creature_types(state, source);
+    state.tallies.hits.push(CombatHit {
+        controller,
+        types,
+        every_type,
+    });
 }
 
 /// Counts one more event of the kind for the object `id` (as it is now) this turn.

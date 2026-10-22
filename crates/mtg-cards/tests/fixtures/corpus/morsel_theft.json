@@ -1,0 +1,25 @@
+{
+  "id": "cac48152-81c0-4cdc-8e3c-bfbe7b068b28",
+  "oracle_id": "b58878ce-dd5a-4c43-882c-639de4f4a111",
+  "name": "Morsel Theft",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mor",
+  "collector_number": "68",
+  "rarity": "common",
+  "released_at": "2008-02-01",
+  "digital": false,
+  "mana_cost": "{2}{B}{B}",
+  "cmc": 4.0,
+  "type_line": "Kindred Sorcery — Rogue",
+  "oracle_text": "Prowl {1}{B} (You may cast this for its prowl cost if you dealt combat damage to a player this turn with a Rogue.)\nTarget player loses 3 life and you gain 3 life. If this spell's prowl cost was paid, draw a card.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Prowl"
+  ]
+}

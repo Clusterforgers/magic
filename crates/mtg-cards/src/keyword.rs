@@ -176,6 +176,8 @@ pub enum Keyword {
     Bestow(Cost),
     /// Blitz with its cost: an alternative cost for a creature spell, which gains haste and "When this creature dies, draw a card" and is sacrificed at the next end step (CR 702.152).
     Blitz(Cost),
+    /// Prowl with its cost: an alternative cost for a spell, cast when a player was dealt combat damage this turn by a source its caster controlled that shared a creature type with it (CR 702.76).
+    Prowl(Cost),
     /// Ninjutsu with its cost: from the hand during combat after blockers are declared, an unblocked attacker returns to its owner's hand and the card enters tapped and attacking (CR 702.49).
     Ninjutsu(Cost),
     /// Echo with its cost (CR 702.30): at the beginning of its controller's upkeep, if it came under their control since their last turn began, it is sacrificed unless they pay the cost.
@@ -326,6 +328,7 @@ impl Keyword {
         "Dash",
         "Bestow",
         "Blitz",
+        "Prowl",
         "Ninjutsu",
         "Echo",
         "Cumulative upkeep",
@@ -433,9 +436,7 @@ impl Keyword {
             Keyword::Escape(_) => "Escape",
             Keyword::Rebound => "Rebound",
             Keyword::Aftermath => "Aftermath",
-            Keyword::Dash(_) => "Dash",
             Keyword::Bestow(_) => "Bestow",
-            Keyword::Blitz(_) => "Blitz",
             Keyword::Ninjutsu(_) => "Ninjutsu",
             Keyword::Echo(_) => "Echo",
             Keyword::CumulativeUpkeep(_) => "Cumulative upkeep",
@@ -472,6 +473,9 @@ impl Keyword {
             Keyword::Vanishing(_) => "Vanishing",
             Keyword::Fading(_) => "Fading",
             Keyword::Backup { .. } => "Backup",
+            Keyword::Dash(_) => "Dash",
+            Keyword::Blitz(_) => "Blitz",
+            Keyword::Prowl(_) => "Prowl",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
         }
@@ -582,6 +586,7 @@ mod tests {
             Keyword::Dash(cost.clone()),
             Keyword::Bestow(cost.clone()),
             Keyword::Blitz(cost.clone()),
+            Keyword::Prowl(cost.clone()),
             Keyword::Ninjutsu(cost),
             Keyword::Echo(Cost::default()),
             Keyword::CumulativeUpkeep(Cost::default()),

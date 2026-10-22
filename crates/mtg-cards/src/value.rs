@@ -81,6 +81,8 @@ pub enum CastWay {
     Bestow,
     /// Blitz (CR 702.152): the creature has haste and "When this creature dies, draw a card" and is sacrificed at the next end step.
     Blitz,
+    /// Prowl (CR 702.76): a spell cast for its prowl cost, which its abilities read as "if its prowl cost was paid".
+    Prowl,
     /// Jump-start (CR 702.133): from a graveyard for its mana cost and the discard of a card; exiled when it leaves the stack.
     JumpStart,
     /// Retrace (CR 702.81): from a graveyard for its mana cost and the discard of a land card.
@@ -455,6 +457,7 @@ mod tests {
     #[case::escape(CastWay::Escape, true)]
     #[case::dash(CastWay::Dash, true)]
     #[case::blitz(CastWay::Blitz, true)]
+    #[case::prowl(CastWay::Prowl, true)]
     #[case::free(CastWay::Free, true)]
     #[case::jump_start(CastWay::JumpStart, false)]
     #[case::retrace(CastWay::Retrace, false)]

@@ -347,6 +347,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "dash" => spell_cost(rest).map(Keyword::Dash),
         "bestow" => spell_cost(rest).map(Keyword::Bestow),
         "blitz" => spell_cost(rest).map(Keyword::Blitz),
+        "prowl" => spell_cost(rest).map(Keyword::Prowl),
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
         "echo" => spell_cost(rest).map(Keyword::Echo),
         "cumulative upkeep" => spell_cost(rest).map(Keyword::CumulativeUpkeep),
@@ -803,6 +804,7 @@ mod tests {
         Keyword::Bestow(mana("{2}{W}{U}{B}{R}{G}"))
     )]
     #[case::blitz("Blitz {2}{R}", Keyword::Blitz(mana("{2}{R}")))]
+    #[case::prowl("Prowl {1}{B}", Keyword::Prowl(mana("{1}{B}")))]
     #[case::ninjutsu("Ninjutsu {1}{U}", Keyword::Ninjutsu(mana("{1}{U}")))]
     #[case::ninjutsu_for_one_mana("ninjutsu {B}", Keyword::Ninjutsu(mana("{B}")))]
     #[case::escape_exiling_cards(
@@ -1112,6 +1114,7 @@ mod tests {
             "Miracle {1}{W}",
             "Bestow {1}",
             "Blitz {1}",
+            "Prowl {1}",
             "Ninjutsu {1}{U}",
             "Improvise",
             "Affinity for artifacts",

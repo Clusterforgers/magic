@@ -311,6 +311,7 @@ Kongming, "Sleeping Dragon"
 Kozilek's Translator
 Krenko's Enforcer
 Lat-Nam Adept
+Latchkey Faerie
 Lavacore Elemental
 Lazotep Reaver
 Levitation
@@ -353,8 +354,10 @@ Mishra's Workshop
 Mizzium Mortars
 Monastery Swiftspear
 Morinfen
+Morsel Theft
 Mortivore
 Mothdust Changeling
+Mother of Runes
 Mukotai Ambusher
 Mulldrifter
 Murderous Cut

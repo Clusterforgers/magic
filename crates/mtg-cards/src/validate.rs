@@ -741,7 +741,8 @@ impl<'a> Walker<'a> {
             | Keyword::Escape(cost)
             | Keyword::Dash(cost)
             | Keyword::Bestow(cost)
-            | Keyword::Blitz(cost) => {
+            | Keyword::Blitz(cost)
+            | Keyword::Prowl(cost) => {
                 self.at("cost", |w| w.cost(cost));
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost);
             }

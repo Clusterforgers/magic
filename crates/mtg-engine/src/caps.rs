@@ -288,6 +288,7 @@ const RUNS: &[&str] = &[
     "Keyword.Dash",
     "Keyword.Bestow",
     "Keyword.Blitz",
+    "Keyword.Prowl",
     "Keyword.Ninjutsu",
     "Keyword.Echo",
     "Keyword.CumulativeUpkeep",
@@ -638,6 +639,7 @@ mod tests {
     #[case::dredge("Keyword.Dredge", true)]
     #[case::dredging("ReplaceBy.Dredge", true)]
     #[case::blitz("Keyword.Blitz", true)]
+    #[case::prowl("Keyword.Prowl", true)]
     #[case::ninjutsu("Keyword.Ninjutsu", true)]
     #[case::joining_an_attack("Effect.JoinAttack", true)]
     #[case::echo("Keyword.Echo", true)]

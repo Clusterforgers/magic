@@ -9,6 +9,7 @@ use super::effects::{self, Template};
 use super::reveal;
 use super::tokens::Reader;
 use super::transform;
+use super::triggers;
 use crate::effect::Effect;
 use crate::refs::Ref;
 use crate::value::{Amount, Cmp, Condition, CounterKind};
@@ -37,6 +38,9 @@ pub fn if_sentence(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// "there are five or more hatchling counters on ~", "... two or fewer ... on it": a count of the counters on the
 /// card, which "it" names when the sentence before acted on the card.
 fn condition(r: &mut Reader<'_>) -> Option<Condition> {
+    if let Some(paid) = r.attempt(|r| triggers::cost_paid(r, true)) {
+        return Some(paid);
+    }
     r.need("there are")?;
     let number = number_word(r.take_word()?).filter(|number| *number > 1)?;
     let op = if r.words("or more") {
@@ -129,6 +133,9 @@ fn counted(condition: &Condition) -> Option<&CounterKind> {
 
 /// The condition as the card words it, after "if".
 pub fn condition_text(condition: &Condition) -> Option<String> {
+    if let Some(paid) = triggers::cost_paid_text(condition, true) {
+        return Some(paid);
+    }
     if *condition == Condition::Performed {
         return Some("you do".to_owned());
     }
