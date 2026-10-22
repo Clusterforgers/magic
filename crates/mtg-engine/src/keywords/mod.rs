@@ -4,6 +4,7 @@
 //! engine asks about: blocking, attacking, damage, targeting, timing and destruction. The engine reads the
 //! keywords an object has through [`keywords_of`] and the helpers below it, never from the rules of the card.
 
+pub(crate) mod aftermath;
 mod battle_cry;
 mod buyback;
 mod cascade;
@@ -393,6 +394,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Unearth(_) => &unearth::Unearth,
         Keyword::Escape(_) => &escape::Escape,
         Keyword::Rebound => &rebound::Rebound,
+        Keyword::Aftermath => &aftermath::Aftermath,
         Keyword::Echo(_) => &echo::Echo,
         Keyword::CumulativeUpkeep(_) => &cumulative_upkeep::CumulativeUpkeep,
         Keyword::Undying => &undying::Undying,
@@ -644,6 +646,7 @@ mod tests {
             Keyword::Unearth(cost()),
             Keyword::Escape(cost()),
             Keyword::Rebound,
+            Keyword::Aftermath,
             Keyword::Echo(cost()),
             Keyword::CumulativeUpkeep(cost()),
             Keyword::Undying,
@@ -714,6 +717,7 @@ mod tests {
         "Keyword.Unearth",
         "Keyword.Escape",
         "Keyword.Rebound",
+        "Keyword.Aftermath",
         "Keyword.Echo",
         "Keyword.CumulativeUpkeep",
         "Keyword.Undying",
@@ -825,6 +829,7 @@ mod tests {
     #[case::unearth(Keyword::Unearth(Cost::mana("{B}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::escape(Keyword::Escape(Cost::mana("{B}".parse().unwrap())), Hooks::none())]
     #[case::rebound(Keyword::Rebound, Hooks::none())]
+    #[case::aftermath(Keyword::Aftermath, Hooks::none())]
     #[case::echo(Keyword::Echo(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::cumulative_upkeep(Keyword::CumulativeUpkeep(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::undying(Keyword::Undying, Hooks { abilities: 1, ..Hooks::none() })]

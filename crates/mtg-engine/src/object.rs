@@ -208,6 +208,8 @@ pub struct GameObject {
     pub(crate) adventure: Option<PlayerId>,
     /// The spell was cast from its owner's hand (rebound reads it); a zone change clears it.
     pub(crate) cast_from_hand: bool,
+    /// The spell was cast from a graveyard (aftermath reads it); a zone change clears it.
+    pub(crate) cast_from_graveyard: bool,
     pub(crate) kind: ObjectKind,
     pub(crate) choices: Choices,
     pub(crate) ability: Option<Box<AbilityObject>>,
@@ -231,6 +233,7 @@ impl GameObject {
             face_down: None,
             adventure: None,
             cast_from_hand: false,
+            cast_from_graveyard: false,
             kind: ObjectKind::Card,
             choices: Choices::default(),
             ability: None,
@@ -262,6 +265,7 @@ impl GameObject {
             face_down: None,
             adventure: None,
             cast_from_hand: false,
+            cast_from_graveyard: false,
             kind: ObjectKind::Ability,
             choices,
             ability: Some(Box::new(ability)),
@@ -395,6 +399,11 @@ impl GameObject {
         self.cast_from_hand
     }
 
+    /// Whether the spell was cast from a graveyard.
+    pub const fn cast_from_graveyard(&self) -> bool {
+        self.cast_from_graveyard
+    }
+
     /// The player who may cast the card from exile as the creature of the Adventure it was exiled on.
     pub const fn on_adventure(&self) -> Option<PlayerId> {
         self.adventure
@@ -444,6 +453,7 @@ impl PartialEq for GameObject {
             && self.face_down == other.face_down
             && self.adventure == other.adventure
             && self.cast_from_hand == other.cast_from_hand
+            && self.cast_from_graveyard == other.cast_from_graveyard
             && self.counter == other.counter
             && self.kind == other.kind
             && self.choices == other.choices
@@ -469,6 +479,9 @@ impl Hash for GameObject {
         // Left out while it is off, so the hash of a game without rebound is the one it always had.
         if self.cast_from_hand {
             true.hash(state);
+        }
+        if self.cast_from_graveyard {
+            "graveyard".hash(state);
         }
         self.counter.hash(state);
         self.kind.hash(state);

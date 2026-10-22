@@ -234,6 +234,7 @@ fn keyword() -> impl Strategy<Value = Keyword> {
             Keyword::DoctorsCompanion,
             Keyword::ChooseABackground,
             Keyword::Rebound,
+            Keyword::Aftermath,
             Keyword::Undying,
             Keyword::Persist,
         ]),

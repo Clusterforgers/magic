@@ -1,0 +1,19 @@
+{
+  "oracle_id": "06e0459f-d691-4470-884a-27c09b6612d2",
+  "name": "Muscle Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Muscle Sliver",
+      "oracle_fingerprint": "dcb262072deb36ce2460d4217dbb479c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Sliver" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

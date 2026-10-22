@@ -12,6 +12,7 @@ use super::costs;
 use super::counters;
 use super::create;
 use super::effects::{BACK, RETURNED, returns_itself};
+use super::lands;
 use super::library;
 use super::modal::{BULLET, DASH};
 use super::payments;
@@ -1066,7 +1067,7 @@ impl Writer<'_> {
                     "becomes"
                 }
             ),
-            _ => return prevention::effect_text(effect),
+            _ => return prevention::effect_text(effect).or_else(|| lands::effect_text(effect)),
         })
     }
 

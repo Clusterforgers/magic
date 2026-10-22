@@ -1,0 +1,12 @@
+{
+  "oracle_id": "6c2c8bf3-9bf8-4a86-89d3-3bb36260dc51",
+  "name": "Azusa, Lost but Seeking",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Azusa, Lost but Seeking",
+      "oracle_fingerprint": "7818cd84f925f3a3bbe1e498c032d8ba",
+      "abilities": [{ "Rule": { "rule": { "AdditionalLandPlays": { "count": 2 } } } }]
+    }
+  ]
+}

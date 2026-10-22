@@ -163,6 +163,8 @@ pub enum Keyword {
     Escape(Cost),
     /// Rebound: a spell cast from its owner's hand is exiled as it resolves and cast free at their next upkeep (CR 702.88).
     Rebound,
+    /// Aftermath: the second half of a split card is cast only from a graveyard and is exiled when it leaves the stack (CR 702.127).
+    Aftermath,
     /// Echo with its cost (CR 702.30): at the beginning of its controller's upkeep, if it came under their control since their last turn began, it is sacrificed unless they pay the cost.
     Echo(Cost),
     /// Cumulative upkeep with its cost (CR 702.24): at the beginning of its controller's upkeep an age counter is put on it, then it is sacrificed unless they pay the cost once for each age counter.
@@ -246,6 +248,7 @@ impl Keyword {
         "Unearth",
         "Escape",
         "Rebound",
+        "Aftermath",
         "Echo",
         "Cumulative upkeep",
         "Undying",
@@ -325,6 +328,7 @@ impl Keyword {
             Keyword::Unearth(_) => "Unearth",
             Keyword::Escape(_) => "Escape",
             Keyword::Rebound => "Rebound",
+            Keyword::Aftermath => "Aftermath",
             Keyword::Echo(_) => "Echo",
             Keyword::CumulativeUpkeep(_) => "Cumulative upkeep",
             Keyword::Undying => "Undying",
@@ -427,6 +431,7 @@ mod tests {
             Keyword::Unearth(cost.clone()),
             Keyword::Escape(cost),
             Keyword::Rebound,
+            Keyword::Aftermath,
             Keyword::Echo(Cost::default()),
             Keyword::CumulativeUpkeep(Cost::default()),
             Keyword::Undying,

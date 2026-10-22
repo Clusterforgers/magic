@@ -51,6 +51,7 @@ pub(super) fn move_object(
     object.face_down = None;
     object.adventure = None;
     object.cast_from_hand = false;
+    object.cast_from_graveyard = false;
     // What the spell paid for stays with the permanent it becomes, for its abilities to read.
     let paid = if from == Zone::Stack && to == Zone::Battlefield {
         std::mem::take(&mut object.choices.optional_costs)
@@ -125,18 +126,18 @@ fn set_controller(state: &mut GameState, id: ObjectId, player: PlayerId) {
     }
 }
 
-/// A land played from a hand, or from exile when a permission lets its player (CR 305.1), as the face given.
+/// A land played from a hand, or from exile, a graveyard or a library when a permission lets its player (CR 305.1), as
+/// the face given.
 fn land_played(
     state: &mut GameState,
     player: PlayerId,
     object: ObjectId,
     face: Option<u8>,
 ) -> Result<(), EngineError> {
-    let from = if state.zones.get(Zone::Exile).contains(&object) {
-        Zone::Exile
-    } else {
-        Zone::Hand(player)
-    };
+    let from = [Zone::Exile, Zone::Graveyard(player), Zone::Library(player)]
+        .into_iter()
+        .find(|zone| state.zones.get(*zone).contains(&object))
+        .unwrap_or(Zone::Hand(player));
     expect_in(state, object, from)?;
     move_object(state, object, Zone::Battlefield, Placement::Top)?;
     set_controller(state, object, player);
@@ -160,6 +161,14 @@ fn note_rebound(state: &mut GameState, spell: ObjectId, from: Zone) {
             .iter()
             .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Rebound))
     {
+        state.possible.replacements = true;
+    }
+}
+
+/// A spell with aftermath that is cast from a graveyard is exiled by a replacement effect when it leaves the stack
+/// (CR 702.127a), so the game has replacement effects to look for.
+fn note_aftermath(state: &mut GameState, spell: ObjectId, from: Zone) {
+    if matches!(from, Zone::Graveyard(_)) && crate::keywords::aftermath::has(state, spell) {
         state.possible.replacements = true;
     }
 }
@@ -200,8 +209,10 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             if let Some(spell) = state.objects.get_mut(object) {
                 spell.choices.clone_from(choices);
                 spell.cast_from_hand = matches!(from, Zone::Hand(_));
+                spell.cast_from_graveyard = matches!(from, Zone::Graveyard(_));
             }
             note_rebound(state, *object, from);
+            note_aftermath(state, *object, from);
             // A spell cast for its flashback cost, or with its buyback cost paid, is moved by a replacement effect.
             let bought_back = state.objects.get(object).is_some_and(|spell| {
                 payments(spell.card(), &choices.optional_costs, OptionalKind::Buyback) > 0

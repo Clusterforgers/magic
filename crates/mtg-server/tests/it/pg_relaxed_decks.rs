@@ -25,7 +25,7 @@ fn twice_pack() -> PreconDeck {
         "Twice Pack",
         "Commander Deck",
         &[("Questing Beast", 1)],
-        &[("Courser of Kruphix", 2), ("Forest", 97)],
+        &[("Gemrazer", 2), ("Forest", 97)],
     )
 }
 
@@ -86,13 +86,13 @@ fn refused(reply: &crate::net::Reply, why: &str) -> String {
         .to_owned()
 }
 
-/// A Commander deck of `commanders`, `copies` Courser of Kruphix and Forests to a hundred.
+/// A Commander deck of `commanders`, `copies` Gemrazer and Forests to a hundred.
 fn with_courser(commanders: &[&str], copies: u32) -> Value {
     let mut lines: Vec<Value> = commanders
         .iter()
         .map(|name| line("commander", name, 1))
         .collect();
-    lines.push(line("main", "Courser of Kruphix", copies));
+    lines.push(line("main", "Gemrazer", copies));
     let others = 100 - u32::try_from(commanders.len()).unwrap() - copies;
     lines.push(line("main", "Forest", others));
     deck("Courser", "commander", &lines)
@@ -416,7 +416,7 @@ async fn the_lobby_check_answers_for_the_table_of_a_game_or_of_described_rules(p
     // An unsaved list is judged the same way.
     let list = json!({"format": "commander", "table": described(singleton_off.clone()), "cards": [
         {"zone": "commander", "oracle_id": line("commander", "Questing Beast", 1)["oracle_id"], "count": 1},
-        {"zone": "main", "oracle_id": line("main", "Courser of Kruphix", 2)["oracle_id"], "count": 2},
+        {"zone": "main", "oracle_id": line("main", "Gemrazer", 2)["oracle_id"], "count": 2},
         {"zone": "main", "oracle_id": line("main", "Forest", 97)["oracle_id"], "count": 97},
     ]});
     let report = check(&server, &ann, &list).await;

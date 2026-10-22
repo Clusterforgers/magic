@@ -1,0 +1,40 @@
+{
+  "id": "1c1ead90-10d8-4217-80e4-6f40320c5569",
+  "oracle_id": "8fe7436b-2467-486e-8a2d-7cbf21a65da9",
+  "name": "Consign // Oblivion",
+  "lang": "en",
+  "layout": "split",
+  "set": "hou",
+  "collector_number": "149",
+  "rarity": "uncommon",
+  "released_at": "2017-07-14",
+  "digital": false,
+  "mana_cost": "{1}{U} // {4}{B}",
+  "cmc": 7.0,
+  "type_line": "Instant // Sorcery",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Aftermath"
+  ],
+  "card_faces": [
+    {
+      "name": "Consign",
+      "mana_cost": "{1}{U}",
+      "type_line": "Instant",
+      "oracle_text": "Return target nonland permanent to its owner's hand."
+    },
+    {
+      "name": "Oblivion",
+      "mana_cost": "{4}{B}",
+      "type_line": "Sorcery",
+      "oracle_text": "Aftermath (Cast this spell only from your graveyard. Then exile it.)\nTarget opponent discards two cards."
+    }
+  ]
+}

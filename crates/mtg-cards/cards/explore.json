@@ -1,0 +1,21 @@
+{
+  "oracle_id": "b8f566ea-8283-4afa-9ac8-737e26419283",
+  "name": "Explore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Explore",
+      "oracle_fingerprint": "0d11427057accc9850296edcc16be909",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Rule": { "rule": { "AdditionalLandPlays": {} }, "duration": "UntilEndOfTurn" } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

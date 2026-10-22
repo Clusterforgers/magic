@@ -1,0 +1,27 @@
+{
+  "oracle_id": "98a5bf1a-1088-4339-9a9b-6ee5e4956cf1",
+  "name": "Cut // Ribbons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cut",
+      "oracle_fingerprint": "75abe5f6c606e33559bee24ebe031d69",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ribbons",
+      "oracle_fingerprint": "3f5f75a4f785cb20c8f704458fbc648e",
+      "abilities": [
+        { "Keyword": "Aftermath" },
+        { "Spell": { "effects": [{ "LoseLife": { "who": "Opponents", "amount": "X" } }] } }
+      ]
+    }
+  ]
+}

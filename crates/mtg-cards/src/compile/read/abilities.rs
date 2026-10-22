@@ -59,21 +59,7 @@ pub fn modal_spell(r: &mut Reader<'_>) -> Option<Ability> {
 /// one of which must be read.
 pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     let when = triggers::pattern(r)?;
-    r.that_player = matches!(
-        when,
-        TriggerPattern::SpellCast { .. }
-            | TriggerPattern::Drew { .. }
-            | TriggerPattern::Discarded { .. }
-            | TriggerPattern::LifeGained { .. }
-            | TriggerPattern::LifeLost { .. }
-            | TriggerPattern::BecomesMonarch { .. }
-            | TriggerPattern::Cycled { .. }
-            | TriggerPattern::TappedForMana { .. }
-            | TriggerPattern::DealsDamage {
-                to: Some(Ref::EachPlayer | Ref::Opponents),
-                ..
-            }
-    );
+    r.that_player = about_a_player(&when);
     r.that_permanent = matches!(
         when,
         TriggerPattern::Tapped { .. } | TriggerPattern::Untapped { .. }
@@ -119,6 +105,29 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         targets: std::mem::take(&mut r.targets),
         effects,
     })
+}
+
+/// Whether the event is about a player ("that player" in the effects is who cast the spell, drew the card, lost the
+/// life or was dealt the damage), in every one of the events joined by "or".
+fn about_a_player(when: &TriggerPattern) -> bool {
+    if let TriggerPattern::AnyOf(events) = when {
+        return events.iter().all(about_a_player);
+    }
+    matches!(
+        when,
+        TriggerPattern::SpellCast { .. }
+            | TriggerPattern::Drew { .. }
+            | TriggerPattern::Discarded { .. }
+            | TriggerPattern::LifeGained { .. }
+            | TriggerPattern::LifeLost { .. }
+            | TriggerPattern::BecomesMonarch { .. }
+            | TriggerPattern::Cycled { .. }
+            | TriggerPattern::TappedForMana { .. }
+            | TriggerPattern::DealsDamage {
+                to: Some(Ref::EachPlayer | Ref::Opponents),
+                ..
+            }
+    )
 }
 
 /// "Activate only as a sorcery." and "Activate only once each turn.", alone or joined by "and only"; also "Activate only
