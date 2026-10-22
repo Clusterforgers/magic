@@ -54,6 +54,7 @@ export type { Credentials } from "./Credentials";
 export type { DamageOptions } from "./DamageOptions";
 export type { DamageShield } from "./DamageShield";
 export type { DamageTarget } from "./DamageTarget";
+export type { DayNight } from "./DayNight";
 export type { DeathCause } from "./DeathCause";
 export type { Decision } from "./Decision";
 export type { DecisionId } from "./DecisionId";

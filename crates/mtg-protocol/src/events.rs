@@ -271,6 +271,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Entered { .. }
         | Event::Attached { .. }
         | Event::Unattached { .. }
+        | Event::Transformed { .. }
+        | Event::DayNightChanged { .. }
         | Event::Revealed(_) => None,
     }
 }

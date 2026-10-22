@@ -14,6 +14,7 @@ use mtg_core::mana::ManaCost;
 use mtg_engine::abilities::AbilityRef;
 use mtg_engine::choose::Target;
 use mtg_engine::combat::AttackTarget;
+use mtg_engine::day_night::DayNight;
 use mtg_engine::forecast::CombatForecast;
 use mtg_engine::mana::ManaPool;
 use mtg_engine::object::ObjectKind;
@@ -183,6 +184,10 @@ pub struct TurnView {
     pub step: Step,
     /// Lands the active player has played this turn.
     pub lands_played: u32,
+    /// Whether it is day or night (CR 726); left out while it is neither.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub day_night: Option<DayNight>,
 }
 
 /// Who holds priority and who has passed in this round.

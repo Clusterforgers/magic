@@ -151,6 +151,28 @@ pub(crate) fn definition_has_protection(definition: &CardDefinition) -> bool {
     })
 }
 
+/// Whether a card with this definition has daybound or nightbound, so the game watches the day and night
+/// (`GameState::possible`).
+pub(crate) fn definition_has_day_night(definition: &CardDefinition) -> bool {
+    definition.rules.iter().any(|rules| {
+        matches!(
+            **rules,
+            Ability::Keyword(
+                mtg_cards::keyword::Keyword::Daybound | mtg_cards::keyword::Keyword::Nightbound
+            )
+        )
+    })
+}
+
+/// Whether the split card with this definition may be cast as both halves: the card as a whole holds the spell of its
+/// fused halves (CR 702.102) when it has fuse and a spell on each half.
+pub(crate) fn definition_fuses(definition: &CardDefinition) -> bool {
+    definition
+        .rules
+        .iter()
+        .any(|rules| matches!(**rules, Ability::Spell { .. }))
+}
+
 /// Whether a modification gives an ability that is a replacement effect.
 fn grants_replacement_by(modification: &WantedModification) -> bool {
     match modification {

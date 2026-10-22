@@ -48,6 +48,8 @@ pub enum Layout {
     Adventure,
     /// A modal double-faced card (CR 712): the front face everywhere but on the stack and the battlefield, where the face chosen counts.
     ModalDfc,
+    /// A transforming double-faced card (CR 712.3): the front face everywhere but on the battlefield, where the face it is turned to counts.
+    Transform,
 }
 
 impl Layout {
@@ -57,6 +59,7 @@ impl Layout {
             "split" => Some(Layout::Split),
             "adventure" => Some(Layout::Adventure),
             "modal_dfc" => Some(Layout::ModalDfc),
+            "transform" => Some(Layout::Transform),
             _ => None,
         }
     }

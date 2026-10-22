@@ -41,6 +41,7 @@ pub mod characteristics;
 pub mod choose;
 pub mod combat;
 pub mod counters;
+pub mod day_night;
 pub mod decision;
 pub mod effects;
 pub mod engine;
@@ -75,6 +76,7 @@ pub mod zones;
 
 pub use caps::caps;
 pub use characteristics::{Characteristics, characteristics};
+pub use day_night::DayNight;
 pub use decision::{Answer, Decision, DecisionKind, FaceOption};
 pub use engine::{Checkpoint, Engine, replay};
 pub use error::{EngineError, PreviewError};

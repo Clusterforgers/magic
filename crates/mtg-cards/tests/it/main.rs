@@ -14,4 +14,5 @@ mod fixture_real;
 mod generated;
 mod printed;
 mod roundtrip;
+mod transform_cards;
 mod vocabulary;

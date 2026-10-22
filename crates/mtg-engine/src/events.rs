@@ -9,6 +9,7 @@ use crate::abilities::{AbilitySource, Cause, PutOnStack};
 use crate::choose::{Choice, Choices, Target};
 use crate::combat::{AttackTarget, DamageTarget};
 use crate::counters::CountersChanged;
+use crate::day_night::DayNight;
 use crate::effects::ContinuousEffect;
 use crate::library::{CardsFound, LibraryLooked, Revealed, Scried};
 use crate::object::{Chosen, FaceDown, ObjectRef};
@@ -491,6 +492,20 @@ pub enum Event {
         /// The permanent.
         object: ObjectId,
     },
+    /// A transforming double-faced permanent was turned over (CR 701.28): the same object with the other face up.
+    Transformed {
+        /// The permanent.
+        object: ObjectId,
+        /// The face now up: none for the front face, the position of the back face otherwise.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        face: Option<u8>,
+    },
+    /// The game became day or night (CR 726).
+    DayNightChanged {
+        /// What it became.
+        to: DayNight,
+    },
 }
 
 /// How the resolution of a spell or ability ended.
@@ -566,6 +581,7 @@ impl Event {
             | Event::TurnBegan { .. }
             | Event::StepBegan { .. }
             | Event::NothingToDo { .. }
+            | Event::DayNightChanged { .. }
             | Event::PriorityGranted { .. }
             | Event::PriorityPassed { .. }
             | Event::ManaAdded { .. }
@@ -613,6 +629,7 @@ impl Event {
             | Event::SpellResolved { object }
             | Event::Entered { object, .. }
             | Event::Unattached { object }
+            | Event::Transformed { object, .. }
             | Event::PermanentTapped { object }
             | Event::PermanentUntapped { object }
             | Event::Regenerated { object }

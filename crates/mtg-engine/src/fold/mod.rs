@@ -196,6 +196,8 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             });
         }
         Event::PriorityPassed { player } => pass_priority(state, *player)?,
+        Event::Transformed { object, face } => set_face(state, *object, *face)?,
+        Event::DayNightChanged { to } => state.day_night = Some(*to),
         Event::PermanentTapped { object } => set_tapped(state, *object, true)?,
         Event::PermanentUntapped { object } => set_tapped(state, *object, false)?,
         Event::ManaAdded {
@@ -365,6 +367,26 @@ fn set_tapped(state: &mut GameState, id: ObjectId, tapped: bool) -> Result<(), E
         return Err(invalid(format!("{id:?} is already in that tapped state")));
     }
     perm.tapped = tapped;
+    Ok(())
+}
+
+/// A transforming double-faced permanent is turned to `face` (CR 701.28); its counters, attachments and the rest of what it
+/// remembers stay, since it is the same object.
+fn set_face(state: &mut GameState, id: ObjectId, face: Option<u8>) -> Result<(), EngineError> {
+    let object = state
+        .objects
+        .get_mut(&id)
+        .ok_or_else(|| invalid(format!("{id:?} does not exist")))?;
+    if object.def.layout != mtg_cards::definition::Layout::Transform {
+        return Err(invalid(format!(
+            "{id:?} is not a transforming double-faced card"
+        )));
+    }
+    let permanent = object
+        .permanent
+        .as_mut()
+        .ok_or_else(|| invalid(format!("{id:?} is not a permanent")))?;
+    permanent.face = face;
     Ok(())
 }
 

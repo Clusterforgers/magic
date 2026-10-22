@@ -320,6 +320,7 @@ impl TableView {
                 active: turn.active(),
                 step: turn.step(),
                 lands_played: turn.lands_played(),
+                day_night: state.day_night(),
             },
             priority: state.priority().map(|p| PriorityView {
                 holder: p.holder(),

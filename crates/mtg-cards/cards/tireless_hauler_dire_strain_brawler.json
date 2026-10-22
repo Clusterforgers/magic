@@ -1,0 +1,17 @@
+{
+  "oracle_id": "c31e9db3-5d9d-470a-871a-b4b5b0536db5",
+  "name": "Tireless Hauler // Dire-Strain Brawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tireless Hauler",
+      "oracle_fingerprint": "f5a41215206900f1d769a6e3a6ef14a7",
+      "abilities": [{ "Keyword": "Vigilance" }, { "Keyword": "Daybound" }]
+    },
+    {
+      "name": "Dire-Strain Brawler",
+      "oracle_fingerprint": "81177975bb37350fdc352662b47b8406",
+      "abilities": [{ "Keyword": "Vigilance" }, { "Keyword": "Nightbound" }]
+    }
+  ]
+}

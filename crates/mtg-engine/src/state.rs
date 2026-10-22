@@ -67,6 +67,8 @@ pub(crate) struct Possible {
     pub(crate) legends: bool,
     /// Some card or token made has a cost modifier, so the cost of a spell is worked out against the permanents.
     pub(crate) costs: bool,
+    /// Some card has daybound or nightbound, so the day and night are watched.
+    pub(crate) day_night: bool,
     /// Some card, token or player has protection or an effect that gives it, so damage is checked against it.
     pub(crate) protection: bool,
 }
@@ -146,6 +148,8 @@ pub struct GameState {
     /// What the cards of the game can do that the engine looks for only when they can.
     pub(crate) possible: Possible,
     pub(crate) result: Option<GameResult>,
+    /// Day or night (CR 726); neither until a permanent with daybound or nightbound appears.
+    pub(crate) day_night: Option<crate::day_night::DayNight>,
 }
 
 impl GameState {
@@ -476,6 +480,10 @@ impl Hash for GameState {
             self.tallies.objects.hash(state);
         }
         self.result.hash(state);
+        // A game that has seen neither day nor night hashes as it did before they existed.
+        if let Some(day_night) = self.day_night {
+            day_night.hash(state);
+        }
     }
 }
 

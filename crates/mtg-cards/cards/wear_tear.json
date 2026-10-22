@@ -1,0 +1,33 @@
+{
+  "oracle_id": "9842734c-1eac-4509-a731-4c22017ae586",
+  "name": "Wear // Tear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wear",
+      "oracle_fingerprint": "9bff5bf903ae316039af230b1a7a1963",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    },
+    {
+      "name": "Tear",
+      "oracle_fingerprint": "ee91fff1399b88c25872bd9a994f56a6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    }
+  ]
+}

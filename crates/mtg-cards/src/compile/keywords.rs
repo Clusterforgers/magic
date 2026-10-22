@@ -379,6 +379,8 @@ fn plain(name: &str) -> Option<Keyword> {
         "devoid" => Keyword::Devoid,
         "infect" => Keyword::Infect,
         "myriad" => Keyword::Myriad,
+        "daybound" => Keyword::Daybound,
+        "nightbound" => Keyword::Nightbound,
         _ => return None,
     })
 }
@@ -552,6 +554,8 @@ mod tests {
     )]
     #[case::partner("Partner", Keyword::Partner)]
     #[case::fuse("Fuse", Keyword::Fuse)]
+    #[case::daybound("Daybound", Keyword::Daybound)]
+    #[case::nightbound("nightbound", Keyword::Nightbound)]
     #[case::equip("Equip {1}", Keyword::Equip(mana("{1}")))]
     #[case::equip_two("Equip {2}{G}", Keyword::Equip(mana("{2}{G}")))]
     #[case::kicker("Kicker {4}", Keyword::Kicker(mana("{4}")))]
@@ -763,6 +767,8 @@ mod tests {
             "Encore {1}",
             "Squad {1}",
             "Foretell {1}",
+            "Daybound",
+            "Nightbound",
             "Partner with Someone",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];

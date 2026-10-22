@@ -49,6 +49,11 @@ pub struct Snapshot {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<usize>>", optional))]
     pub paid: Vec<usize>,
+    /// The face of a card with several faces it was in use as (the back face of a transformed permanent); left out for
+    /// the card as a whole.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub face: Option<u8>,
 }
 
 impl Snapshot {
@@ -92,6 +97,7 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
         face_down: object.face_down(),
         x: object.announced_x(),
         paid: object.paid_costs().to_vec(),
+        face: object.face(),
     })
 }
 

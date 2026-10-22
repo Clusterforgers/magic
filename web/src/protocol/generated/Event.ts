@@ -9,6 +9,7 @@ import type { Chosen } from "./Chosen";
 import type { ContinuousEffect } from "./ContinuousEffect";
 import type { CountersChanged } from "./CountersChanged";
 import type { DamageTarget } from "./DamageTarget";
+import type { DayNight } from "./DayNight";
 import type { DeathCause } from "./DeathCause";
 import type { DelayedCreated } from "./DelayedCreated";
 import type { DelayedId } from "./DelayedId";
@@ -477,4 +478,16 @@ to: ObjectId, } } | { "Unattached": {
 /**
  * The permanent.
  */
-object: ObjectId, } };
+object: ObjectId, } } | { "Transformed": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, 
+/**
+ * The face now up: none for the front face, the position of the back face otherwise.
+ */
+face?: number, } } | { "DayNightChanged": { 
+/**
+ * What it became.
+ */
+to: DayNight, } };

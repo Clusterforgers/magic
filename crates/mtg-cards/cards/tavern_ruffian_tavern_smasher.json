@@ -1,0 +1,17 @@
+{
+  "oracle_id": "73a3b9a1-37a0-469a-9557-8c118a1ee78f",
+  "name": "Tavern Ruffian // Tavern Smasher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tavern Ruffian",
+      "oracle_fingerprint": "acf7fe499ddd396a8c18aafb4c72f6b9",
+      "abilities": [{ "Keyword": "Daybound" }]
+    },
+    {
+      "name": "Tavern Smasher",
+      "oracle_fingerprint": "bdaab066eb6b8ec7beeccc316b01f527",
+      "abilities": [{ "Keyword": "Nightbound" }]
+    }
+  ]
+}

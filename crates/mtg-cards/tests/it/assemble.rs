@@ -230,11 +230,16 @@ fn rules_are_attached_only_when_the_support_record_says_the_engine_runs_them() {
                     "{}: carries more than its rules",
                     record.name
                 );
+                // The card as a whole of a split card with fuse also holds the spell of both halves.
+                let fused = |r: &std::sync::Arc<mtg_cards::ability::Ability>| {
+                    shown.layout == mtg_cards::definition::Layout::Split
+                        && matches!(**r, mtg_cards::ability::Ability::Spell { .. })
+                };
                 assert!(
                     shown
                         .rules
                         .iter()
-                        .all(|r| lowered.contains(&Lowered::Rules(r.clone()))),
+                        .all(|r| fused(r) || lowered.contains(&Lowered::Rules(r.clone()))),
                     "{}: carries more rules than it has",
                     record.name
                 );

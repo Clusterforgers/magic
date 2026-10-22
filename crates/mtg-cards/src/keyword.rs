@@ -122,11 +122,15 @@ pub enum Keyword {
     Squad(Cost),
     /// Foretell with its cost: a special action from the hand exiles the card face down, and it is cast later for its foretell cost (CR 702.143).
     Foretell(Cost),
+    /// Daybound (CR 702.145): the game becomes day when this permanent appears while it is neither, and the permanent is turned to its night face when it becomes night.
+    Daybound,
+    /// Nightbound (CR 702.145): the permanent is turned to its day face when it becomes day.
+    Nightbound,
 }
 
 impl Keyword {
     /// Scryfall's spelling of every keyword in this enum, for matching a record's `keywords`.
-    pub const NAMES: [&'static str; 52] = [
+    pub const NAMES: [&'static str; 54] = [
         "Flash",
         "Flying",
         "Reach",
@@ -179,6 +183,8 @@ impl Keyword {
         "Encore",
         "Squad",
         "Foretell",
+        "Daybound",
+        "Nightbound",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -236,6 +242,8 @@ impl Keyword {
             Keyword::Encore(_) => "Encore",
             Keyword::Squad(_) => "Squad",
             Keyword::Foretell(_) => "Foretell",
+            Keyword::Daybound => "Daybound",
+            Keyword::Nightbound => "Nightbound",
         }
     }
 
@@ -316,6 +324,8 @@ mod tests {
             Keyword::Encore(cost.clone()),
             Keyword::Squad(cost.clone()),
             Keyword::Foretell(cost),
+            Keyword::Daybound,
+            Keyword::Nightbound,
         ]
     }
 

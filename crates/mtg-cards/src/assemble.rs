@@ -16,6 +16,7 @@ use crate::card::{Card, TokenSpec};
 use crate::cost::CostItem;
 use crate::definition::{AbilityDef, CardDefinition, Layout, ManaAbility};
 use crate::effect::{Effect, Produce};
+use crate::keyword::Keyword;
 use crate::mana::ManaCostX;
 use crate::refs::{Ref, ZoneKind};
 use crate::spend::SpendOn;
@@ -121,6 +122,8 @@ fn whole_card(printed: &PrintedCard, layout: Layout, faces: Vec<CardDefinition>)
                 .map(ManaCost::colors)
                 .unwrap_or_default();
             whole.color_indicator = (union != from_cost).then_some(union);
+            // The card as a whole is what a fused split spell is (CR 702.102c), so it carries that spell's rules.
+            whole.rules.extend(fused_spell(&faces).map(Arc::new));
             whole
         }
         _ => faces[0].clone(),
@@ -128,6 +131,78 @@ fn whole_card(printed: &PrintedCard, layout: Layout, faces: Vec<CardDefinition>)
     whole.layout = layout;
     whole.faces = faces;
     whole
+}
+
+/// The spell a split card with fuse is when both halves are cast (CR 702.102c): the targets of the left half and then
+/// those of the right, and the effects of the left half and then those of the right with their targets renumbered after
+/// the left half's. `None` when a half has no spell or the card has no fuse, and when an amount is divided among targets
+/// (the announcement divides one specification only).
+fn fused_spell(halves: &[CardDefinition]) -> Option<Ability> {
+    let spells: Vec<&Ability> = halves
+        .iter()
+        .map(|half| {
+            half.rules
+                .iter()
+                .map(|rules| &**rules)
+                .find(|rules| matches!(rules, Ability::Spell { .. }))
+        })
+        .collect::<Option<_>>()?;
+    let fuse = halves.iter().any(|half| {
+        half.rules
+            .iter()
+            .any(|rules| matches!(**rules, Ability::Keyword(Keyword::Fuse)))
+    });
+    let [
+        Ability::Spell {
+            targets: left_targets,
+            effects: left_effects,
+        },
+        Ability::Spell {
+            targets: right_targets,
+            effects: right_effects,
+        },
+    ] = spells.as_slice()
+    else {
+        return None;
+    };
+    if !fuse
+        || left_targets
+            .iter()
+            .chain(right_targets)
+            .any(|spec| spec.divide.is_some())
+    {
+        return None;
+    }
+    let mut effects = serde_json::to_value(right_effects).ok()?;
+    shift_targets(&mut effects, u8::try_from(left_targets.len()).ok()?);
+    let mut fused = left_effects.clone();
+    fused.extend(serde_json::from_value::<Vec<Effect>>(effects).ok()?);
+    Some(Ability::Spell {
+        targets: left_targets.iter().chain(right_targets).cloned().collect(),
+        effects: fused,
+    })
+}
+
+/// Adds `by` to every target index a reference or an amount names in the JSON of some effects.
+fn shift_targets(value: &mut serde_json::Value, by: u8) {
+    match value {
+        serde_json::Value::Object(map) => {
+            for (key, inner) in map.iter_mut() {
+                match (key.as_str(), inner.as_u64()) {
+                    ("Target" | "TargetCount", Some(index)) => {
+                        *inner = serde_json::Value::from(index + u64::from(by));
+                    }
+                    _ => shift_targets(inner, by),
+                }
+            }
+        }
+        serde_json::Value::Array(items) => {
+            for item in items.iter_mut() {
+                shift_targets(item, by);
+            }
+        }
+        _ => {}
+    }
 }
 
 /// The mana a plain `{T}: Add {X}` adds: no targets, no limit, usable at instant speed from the
