@@ -26,7 +26,12 @@ fn the_derived_identity_is_scryfalls_for_every_corpus_card() {
         }
     }
     assert!(total > 200, "the corpus is read: {total} cards");
-    assert!(wrong.is_empty(), "{} of {total} differ:\n{}", wrong.len(), wrong.join("\n"));
+    assert!(
+        wrong.is_empty(),
+        "{} of {total} differ:\n{}",
+        wrong.len(),
+        wrong.join("\n")
+    );
 }
 
 #[test]

@@ -23,6 +23,7 @@ mod combat_forecast;
 mod combat_preview;
 mod commander;
 mod commander_fuzz;
+mod commander_identity;
 mod common;
 mod concede;
 mod concede_mid_cast;

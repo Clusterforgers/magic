@@ -8,6 +8,7 @@ mod batch_visibility;
 mod bindings;
 mod cast_hidden;
 mod combat_forecast;
+mod commander_view;
 mod common;
 mod copy_view;
 mod counter_view;

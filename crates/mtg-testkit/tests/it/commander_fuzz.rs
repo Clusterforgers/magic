@@ -86,4 +86,13 @@ fn seeded_commander_games_finish_and_keep_every_invariant(#[case] players: usize
     let seen = seen.into_inner().unwrap();
     eprintln!("{players} seats: {seen:?}");
     assert!(seen.cast_from_command > 0, "{seen:?}");
+    // The seeds are fixed, so what a full campaign meets does not change.
+    if games() >= 30 {
+        assert!(seen.cast_again > 0, "no commander was cast twice: {seen:?}");
+        assert!(
+            seen.returned_from_graveyard > 0,
+            "no commander came back from a graveyard: {seen:?}"
+        );
+        assert!(seen.stayed > 0, "no owner left a commander: {seen:?}");
+    }
 }
