@@ -12,6 +12,7 @@ mod alternative_fuzz;
 mod amass;
 mod announce_division;
 mod archon_fuzz;
+mod attack_tax;
 mod attach_fuzz;
 mod attachments;
 mod backup_keyword;
