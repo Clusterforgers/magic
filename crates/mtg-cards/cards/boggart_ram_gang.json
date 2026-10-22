@@ -1,0 +1,12 @@
+{
+  "oracle_id": "30d2437a-87c9-4f88-8fb8-b686d6522677",
+  "name": "Boggart Ram-Gang",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boggart Ram-Gang",
+      "oracle_fingerprint": "c1ebb9e6efdca2591bc457804dd23e41",
+      "abilities": [{ "Keyword": "Haste" }, { "Keyword": "Wither" }]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "3a6f886b-2043-47e9-9c0f-f7913a6fa67d",
+  "name": "Shadowmage Infiltrator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadowmage Infiltrator",
+      "oracle_fingerprint": "15a608d1c99741fc2fef0f50541b6848",
+      "abilities": [
+        { "Keyword": "Fear" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

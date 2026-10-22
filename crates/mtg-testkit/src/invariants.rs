@@ -804,23 +804,7 @@ impl InvariantChecker {
                 toxic,
                 ..
             } => match target {
-                DamageTarget::Player(p) => {
-                    // Infect: poison counters instead of life lost; toxic: poison counters on top.
-                    let poison = if *form == DamageForm::Infect {
-                        amount.saturating_add(*toxic)
-                    } else {
-                        self.lose_life(*p, *amount, "damage")?;
-                        *toxic
-                    };
-                    if poison == 0 {
-                        return Ok(());
-                    }
-                    self.adjust_counters(&CountersChanged {
-                        on: Target::Player(*p),
-                        counter: CounterKind::Poison,
-                        delta: i32::try_from(poison).unwrap_or(i32::MAX),
-                    })
-                }
+                DamageTarget::Player(p) => self.damage_player(*p, *amount, *form, *toxic),
                 DamageTarget::Object(o) => self.damage_object(*o, *amount, *form),
             },
             Event::AbilityActivated {
@@ -873,6 +857,30 @@ impl InvariantChecker {
             }
             _ => Ok(()),
         }
+    }
+
+    /// Damage to a player is life lost, or with infect poison counters instead; toxic gives poison counters on top.
+    fn damage_player(
+        &mut self,
+        player: PlayerId,
+        amount: u32,
+        form: DamageForm,
+        toxic: u32,
+    ) -> Result<(), Violation> {
+        let poison = if form == DamageForm::Infect {
+            amount.saturating_add(toxic)
+        } else {
+            self.lose_life(player, amount, "damage")?;
+            toxic
+        };
+        if poison == 0 {
+            return Ok(());
+        }
+        self.adjust_counters(&CountersChanged {
+            on: Target::Player(player),
+            counter: CounterKind::Poison,
+            delta: i32::try_from(poison).unwrap_or(i32::MAX),
+        })
     }
 
     /// Damage to a permanent is marked on a creature (CR 120.3e) and removes that many loyalty counters from a

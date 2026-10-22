@@ -1,0 +1,22 @@
+{
+  "oracle_id": "fd5ee26c-cc54-4dc0-b611-5cda14354a5e",
+  "name": "Taurean Mauler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Taurean Mauler",
+      "oracle_fingerprint": "fd0e597a64068d9d9c06bae1cdfae1f3",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "effects": [
+              { "May": { "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

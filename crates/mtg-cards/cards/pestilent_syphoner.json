@@ -1,0 +1,12 @@
+{
+  "oracle_id": "1b27303b-756e-45b9-956f-6bbbd83d31ab",
+  "name": "Pestilent Syphoner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pestilent Syphoner",
+      "oracle_fingerprint": "df3819b80c4e438ae9018b4785652d2d",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": { "Toxic": 1 } }]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "ce2ceeb0-03b6-48bc-a084-069176ebccb2",
+  "oracle_id": "0d9787e3-f482-4a98-95af-0438ed09c96c",
+  "name": "Krenko's Enforcer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "m15",
+  "collector_number": "152",
+  "rarity": "common",
+  "released_at": "2014-07-18",
+  "digital": false,
+  "mana_cost": "{1}{R}{R}",
+  "cmc": 3,
+  "type_line": "Creature — Goblin Warrior",
+  "oracle_text": "Intimidate (This creature can't be blocked except by artifact creatures and/or creatures that share a color with it.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Intimidate"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "6f1d8e26-304b-4571-9b33-7713265d9bbf",
+  "oracle_id": "b9d388ca-1a63-4a11-bf33-9f7b87305a52",
+  "name": "Skeletal Changeling",
+  "lang": "en",
+  "layout": "normal",
+  "set": "lrw",
+  "collector_number": "140",
+  "rarity": "common",
+  "released_at": "2007-10-12",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2,
+  "type_line": "Creature — Shapeshifter",
+  "oracle_text": "Changeling (This card is every creature type.)\n{1}{B}: Regenerate this creature.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Regenerate",
+    "Changeling"
+  ]
+}

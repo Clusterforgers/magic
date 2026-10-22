@@ -1,0 +1,20 @@
+{
+  "oracle_id": "07c20708-c305-46e7-a98e-c99f54aeafec",
+  "name": "Dauthi Horror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dauthi Horror",
+      "oracle_fingerprint": "374303e6c8926978b6787eff53e19ccb",
+      "abilities": [
+        { "Keyword": "Shadow" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CantBeBlockedBy": [{ "Type": "Creature" }, { "Color": "White" }] }]
+          }
+        }
+      ]
+    }
+  ]
+}

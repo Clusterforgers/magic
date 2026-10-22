@@ -1,0 +1,25 @@
+{
+  "id": "496a22cc-36dd-4d4d-b887-8c4733a29870",
+  "oracle_id": "a09a4556-8913-495c-8768-e05413c48f0b",
+  "name": "Deepfathom Skulker",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ogw",
+  "collector_number": "43",
+  "rarity": "rare",
+  "released_at": "2016-01-22",
+  "digital": false,
+  "mana_cost": "{5}{U}",
+  "cmc": 6,
+  "type_line": "Creature — Eldrazi",
+  "oracle_text": "Devoid (This card has no color.)\nWhenever a creature you control deals combat damage to a player, you may draw a card.\n{3}{C}: Target creature can't be blocked this turn. ({C} represents colorless mana.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Devoid"
+  ]
+}

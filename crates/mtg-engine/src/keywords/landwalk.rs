@@ -7,6 +7,7 @@ use mtg_core::ids::ObjectId;
 
 use super::KeywordRules;
 use crate::characteristics::controller_of;
+use crate::object::GameObject;
 use crate::resolve::Scope;
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -30,7 +31,7 @@ impl KeywordRules for Landwalk {
         let (Some(defending), Some(attacking), Some(source)) = (
             controller_of(state, blocker),
             controller_of(state, attacker),
-            state.object(attacker).map(|object| object.reference()),
+            state.object(attacker).map(GameObject::reference),
         ) else {
             return false;
         };

@@ -9,25 +9,36 @@ Augury Raven
 Basking Rootwalla
 Battlefield Forge
 Behold the Multiverse
+Bilious Skulldweller
 Bird Admirer // Wing Shredder
 Black Knight
 Blaze
+Blight Mamba
+Blightwidow
 Bloodbraid Elf
 Bloodghast
+Bog Wraith
+Boggart Ram-Gang
 Bonesplitter
 Brain Freeze
 Brainstorm
+Branchblight Stalker
 Bronzeplate Boar
 Cackling Counterpart
 Capsize
 Carnage Tyrant
 Cathars' Crusade
+Changeling Outcast
 Clone
+Cold-Eyed Selkie
 Copper-Leaf Angel
 Counterspell
 Cyclonic Rift
+Dauthi Horror
+Dauthi Marauder
 Death Ward
 Deep Analysis
+Deepfathom Skulker
 Delver of Secrets // Insectile Aberration
 Demon Bolt
 Disembowel
@@ -49,11 +60,14 @@ Fog
 Followed Footsteps
 Forced March
 Foundry Inspector
+Furtive Homunculus
 Gadwick, the Wizened
+Game-Trail Changeling
 Giant Growth
 Glorious Anthem
 Goblin Spy
 Grapeshot
+Graveshifter
 Growing Ranks
 Guardian Gladewalker
 Gurmag Angler
@@ -63,34 +77,43 @@ Hero of Bladehold
 Hulking Raptor
 Idyllic Beachfront
 Impostor of the Sixth Pride
+Inkwell Leviathan
 Invisible Stalker
 Izzet Charm
 Jungle Lion
 Kessig Wolf Run
 Kongming, "Sleeping Dragon"
+Krenko's Enforcer
 Lat-Nam Adept
 Levitation
 Lightning Bolt
 Lizard Blades
 Llanowar Behemoth
 Llanowar Elves
+Looter il-Kor
 Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
 Lurching Rotbeast
 Manabarbs
 Megrim
 Mesmeric Orb
+Midnight Banshee
 Mirror Image
 Mishra's Workshop
 Mizzium Mortars
 Monastery Swiftspear
+Mothdust Changeling
 Mulldrifter
 Murderous Cut
 Nantuko Husk
 Opt
 Pacifism
+Pale Bears
+Pestilent Syphoner
 Phantasmal Image
 Pillar of the Paruns
+Plague Myr
+Plague Stinger
 Professional Face-Breaker
 Questing Beast
 Rally the Ranks
@@ -98,21 +121,27 @@ Rampant Growth
 Reckless Impulse
 Rhystic Study
 Rift Bolt
+Righteous Avengers
 Rootborn Defenses
 Rosheen Meanderer
 Rummaging Goblin
+Rustrazor Butcher
 Sanguine Bond
 Saw It Coming
 Seedglaive Mentor
 Serra Angel
+Shadowmage Infiltrator
 Siege Wurm
+Skeletal Changeling
 Skullclamp
 Slip Through Space
 Sodden Verdure
 Sol Ring
 Solstice Zealot
+Soltari Foot Soldier
 Soul Shepherd
 Souldrinker
+Spectral Rider
 Steam Vents
 Stoke the Flames
 Stroke of Genius
@@ -121,6 +150,7 @@ Supreme Verdict
 Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
+Taurean Mauler
 Tavern Ruffian // Tavern Smasher
 Thalia, Guardian of Thraben
 The Thing, Ben Grimm
@@ -131,9 +161,14 @@ Treasure Cruise
 Tumble Magnet
 Underworld Dreams
 Universal Automaton
+Vampire Cutthroat
+Vestige of Emrakul
+Viridian Corrupter
 Walking Ballista
 Wanderbrine Preacher
 Wargate
 Warmonger Hellkite
 Wear // Tear
 Wrath of God
+Zendikar Farguide
+Zodiac Goat

@@ -1,0 +1,27 @@
+{
+  "id": "39938a5a-385b-47ba-a07b-8917cba14fd3",
+  "oracle_id": "fd5ee26c-cc54-4dc0-b611-5cda14354a5e",
+  "name": "Taurean Mauler",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "238",
+  "rarity": "rare",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3,
+  "type_line": "Creature — Shapeshifter",
+  "oracle_text": "Changeling (This card is every creature type.)\nWhenever an opponent casts a spell, you may put a +1/+1 counter on this creature.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Changeling"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "ab499df5-ed76-43ad-81b3-70afd0487ccd",
+  "oracle_id": "a61ef0cc-1da9-49f9-b0dc-01cf9f6205be",
+  "name": "Changeling Outcast",
+  "lang": "en",
+  "layout": "normal",
+  "set": "otc",
+  "collector_number": "128",
+  "rarity": "common",
+  "released_at": "2024-04-19",
+  "digital": false,
+  "mana_cost": "{B}",
+  "cmc": 1,
+  "type_line": "Creature — Shapeshifter",
+  "oracle_text": "Changeling (This card is every creature type.)\nThis creature can't block and can't be blocked.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Changeling"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "dadb02b9-d3a0-4b51-bbc3-53b2316cd70d",
+  "oracle_id": "1eebc02a-9a64-49b0-8322-c5ce671457ce",
+  "name": "Graveshifter",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ecl",
+  "collector_number": "104",
+  "rarity": "uncommon",
+  "released_at": "2026-01-23",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4,
+  "type_line": "Creature — Shapeshifter",
+  "oracle_text": "Changeling (This card is every creature type.)\nWhen this creature enters, you may return target creature card from your graveyard to your hand.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Changeling"
+  ]
+}

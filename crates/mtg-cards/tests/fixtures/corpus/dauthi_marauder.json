@@ -1,0 +1,27 @@
+{
+  "id": "01963759-c47e-408a-8de8-924224031c8a",
+  "oracle_id": "cb754749-a769-4c9c-b62b-4972dfc5069f",
+  "name": "Dauthi Marauder",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tpr",
+  "collector_number": "96",
+  "rarity": "uncommon",
+  "released_at": "2015-05-06",
+  "digital": true,
+  "mana_cost": "{2}{B}",
+  "cmc": 3,
+  "type_line": "Creature — Dauthi Minion",
+  "oracle_text": "Shadow (This creature can block or be blocked by only creatures with shadow.)",
+  "power": "3",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Shadow"
+  ]
+}

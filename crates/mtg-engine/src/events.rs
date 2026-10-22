@@ -31,7 +31,8 @@ const fn is_false(flag: &bool) -> bool {
     !*flag
 }
 
-/// Whether a count is zero, so serialization can leave it out.
+/// Whether a count is zero, so serialization can leave it out (serde hands over a reference).
+#[allow(clippy::trivially_copy_pass_by_ref)]
 const fn is_zero(count: &u32) -> bool {
     *count == 0
 }
@@ -293,7 +294,7 @@ pub enum Event {
         form: DamageForm,
         /// The poison counters the player dealt this combat damage also gets, from the toxic of the source (CR 702.164).
         #[serde(default, skip_serializing_if = "is_zero")]
-        #[cfg_attr(feature = "ts", ts(as = "Option<number>", optional))]
+        #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
         toxic: u32,
     },
     /// Combat ended and its state was cleared.

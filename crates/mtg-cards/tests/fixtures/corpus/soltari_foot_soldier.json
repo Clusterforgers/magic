@@ -1,0 +1,27 @@
+{
+  "id": "bdf295dc-72df-4097-b767-d89ab807bf2e",
+  "oracle_id": "6ccb3ac8-0509-431b-a196-d3cbf4fa80ae",
+  "name": "Soltari Foot Soldier",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tmp",
+  "collector_number": "43",
+  "rarity": "common",
+  "released_at": "1997-10-14",
+  "digital": false,
+  "mana_cost": "{W}",
+  "cmc": 1,
+  "type_line": "Creature — Soltari Soldier",
+  "oracle_text": "Shadow (This creature can block or be blocked by only creatures with shadow.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Shadow"
+  ]
+}

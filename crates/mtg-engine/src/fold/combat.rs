@@ -80,6 +80,41 @@ fn damage_object(
     Ok(())
 }
 
+/// Damage to a player: life lost, or with infect poison counters instead (CR 120.3a, 120.3b), and the poison counters of toxic
+/// (CR 702.164) on top; combat damage a commander deals counts toward commander damage (CR 903.10a).
+fn damage_player(
+    state: &mut GameState,
+    source: mtg_core::ids::ObjectId,
+    id: mtg_core::ids::PlayerId,
+    (amount, form, toxic): (u32, DamageForm, u32),
+) -> Result<(), EngineError> {
+    let combat = state.commanders.any() && crate::replace::in_combat_damage(state);
+    let player = player_mut(state, id)?;
+    if form != DamageForm::Infect {
+        player.life = player
+            .life
+            .saturating_sub(i32::try_from(amount).unwrap_or(i32::MAX));
+    }
+    let poison = match form {
+        DamageForm::Infect => amount.saturating_add(toxic),
+        _ => toxic,
+    };
+    if combat {
+        state.commanders.dealt(source, id, amount);
+    }
+    if poison > 0 {
+        crate::counters::fold(
+            state,
+            &CountersChanged {
+                on: Target::Player(id),
+                counter: CounterKind::Poison,
+                delta: i32::try_from(poison).map_err(|_| invalid("too many poison counters"))?,
+            },
+        )?;
+    }
+    Ok(())
+}
+
 /// Counts one more event of the kind for the object `id` (as it is now) this turn.
 fn tally(state: &mut GameState, id: mtg_core::ids::ObjectId, kind: Tally) {
     if let Some(reference) = state.object(id).map(GameObject::reference) {
@@ -156,33 +191,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             toxic,
         } => match target {
             DamageTarget::Player(id) => {
-                let combat = state.commanders.any() && crate::replace::in_combat_damage(state);
-                let player = player_mut(state, *id)?;
-                // Infect: the damage is poison counters, not life lost (CR 120.3b).
-                if *form != DamageForm::Infect {
-                    player.life = player
-                        .life
-                        .saturating_sub(i32::try_from(*amount).unwrap_or(i32::MAX));
-                }
-                let poison = match form {
-                    DamageForm::Infect => amount.saturating_add(*toxic),
-                    _ => *toxic,
-                };
-                // Combat damage a commander deals counts toward commander damage (CR 903.10a).
-                if combat {
-                    state.commanders.dealt(*source, *id, *amount);
-                }
-                if poison > 0 {
-                    crate::counters::fold(
-                        state,
-                        &CountersChanged {
-                            on: Target::Player(*id),
-                            counter: CounterKind::Poison,
-                            delta: i32::try_from(poison)
-                                .map_err(|_| invalid("too many poison counters"))?,
-                        },
-                    )?;
-                }
+                damage_player(state, *source, *id, (*amount, *form, *toxic))?;
             }
             DamageTarget::Object(id) => damage_object(state, *id, *amount, *deathtouch, *form)?,
         },

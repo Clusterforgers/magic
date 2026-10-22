@@ -1,0 +1,28 @@
+{
+  "id": "aae856bc-f65f-42ba-9344-1a30b356c041",
+  "oracle_id": "047e761e-7bbe-403b-86d7-cb9fb0b20b21",
+  "name": "Plague Stinger",
+  "lang": "en",
+  "layout": "normal",
+  "set": "som",
+  "collector_number": "75",
+  "rarity": "common",
+  "released_at": "2010-10-01",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2,
+  "type_line": "Creature — Phyrexian Insect Horror",
+  "oracle_text": "Flying\nInfect (This creature deals damage to creatures in the form of -1/-1 counters and to players in the form of poison counters.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Infect"
+  ]
+}

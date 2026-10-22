@@ -1,0 +1,29 @@
+{
+  "oracle_id": "1eebc02a-9a64-49b0-8322-c5ce671457ce",
+  "name": "Graveshifter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Graveshifter",
+      "oracle_fingerprint": "edf0da078e24deab8d70d8abca0e606b",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

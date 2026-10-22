@@ -1,0 +1,12 @@
+{
+  "oracle_id": "83bf5610-a798-4508-88d2-c60d96f60d23",
+  "name": "Bilious Skulldweller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bilious Skulldweller",
+      "oracle_fingerprint": "f570704d5af075ba201f3eec5c6ec3ac",
+      "abilities": [{ "Keyword": "Deathtouch" }, { "Keyword": { "Toxic": 1 } }]
+    }
+  ]
+}

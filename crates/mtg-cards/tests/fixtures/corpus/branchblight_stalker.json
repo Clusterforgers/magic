@@ -1,0 +1,27 @@
+{
+  "id": "e5290a4c-1f98-4e97-a407-f951e386b8b0",
+  "oracle_id": "ae685a9b-4cb8-4a8a-935d-378102431c51",
+  "name": "Branchblight Stalker",
+  "lang": "en",
+  "layout": "normal",
+  "set": "one",
+  "collector_number": "160",
+  "rarity": "common",
+  "released_at": "2023-02-10",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2,
+  "type_line": "Creature — Phyrexian Elf Scout",
+  "oracle_text": "Toxic 2 (Players dealt combat damage by this creature also get two poison counters.)",
+  "power": "3",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Toxic"
+  ]
+}
