@@ -1,0 +1,12 @@
+{
+  "oracle_id": "0c2841bb-038c-4fbf-8360-bc0a1522b58d",
+  "name": "Exploration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exploration",
+      "oracle_fingerprint": "e3bac298aa148bce52c37cfc489f03bb",
+      "abilities": [{ "Rule": { "rule": { "AdditionalLandPlays": {} } } }]
+    }
+  ]
+}

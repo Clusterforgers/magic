@@ -1,0 +1,22 @@
+{
+  "oracle_id": "3dfb0c0a-b68f-43b9-8475-28d0192fc4ed",
+  "name": "Gemrazer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Gemrazer",
+      "oracle_fingerprint": "a845b6378c5c4679eb84d604eab9730c",
+      "abilities": [
+        { "Keyword": { "Mutate": "{1}{G}{G}" } },
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "No trigger yet for a creature that mutates.",
+            "span": { "start": 205, "end": 297 }
+          }
+        }
+      ]
+    }
+  ]
+}

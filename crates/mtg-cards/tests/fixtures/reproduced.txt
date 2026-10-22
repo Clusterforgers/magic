@@ -12,7 +12,9 @@ Augury Raven
 Azorius Chancery
 Azorius Signet
 Azure Fleet Admiral
+Azusa, Lost but Seeking
 Basking Rootwalla
+Battle Sliver
 Battlefield Forge
 Behold the Multiverse
 Bilious Skulldweller
@@ -41,6 +43,8 @@ Command Tower
 Consider
 Copper-Leaf Angel
 Counterspell
+Courser of Kruphix
+Crucible of Worlds
 Crystal Quarry
 Curate
 Curse of Predation
@@ -61,6 +65,7 @@ Disembowel
 Dockside Extortionist
 Doom Blade
 Doom Whisperer
+Dragonspeaker Shaman
 Dream's Grip
 Dregscape Zombie
 Drudge Skeletons
@@ -70,6 +75,8 @@ Durkwood Baloth
 Epic Proportions
 Eternal Witness
 Exotic Orchard
+Exploration
+Explore
 Faithful Watchdog
 Faithless Looting
 Faramir, Steward of Gondor
@@ -94,6 +101,7 @@ Giant Growth
 Gilded Lotus
 Glimpse of Freedom
 Glorious Anthem
+Goblin Chieftain
 Goblin Spy
 Grapeshot
 Graveshifter
@@ -141,6 +149,7 @@ Monastery Swiftspear
 Mothdust Changeling
 Mulldrifter
 Murderous Cut
+Muscle Sliver
 Nantuko Husk
 Nightveil Sprite
 Notion Rain
@@ -194,6 +203,7 @@ Soltari Foot Soldier
 Soul Shepherd
 Souldrinker
 Spectral Rider
+Sphinx of Jwar Isle
 Springleaf Drum
 Squirrel Nest
 Staggershock
@@ -202,6 +212,7 @@ Stoke the Flames
 Strionic Resonator
 Stroke of Genius
 Sultai Devotee
+Summer Bloom
 Sundering Growth
 Supreme Verdict
 Swiftfoot Boots

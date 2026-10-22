@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "a38387c9-cee0-4ec1-800a-877d6a7edc2d",
+  "oracle_id": "3951f13e-f6dd-4d67-a088-23925baaf99b",
+  "multiverse_ids": [
+    451058
+  ],
+  "tcgplayer_id": 171487,
+  "cardmarket_id": 362036,
+  "name": "Sphinx of Jwar Isle",
+  "lang": "en",
+  "released_at": "2018-08-10",
+  "uri": "https://api.scryfall.com/cards/a38387c9-cee0-4ec1-800a-877d6a7edc2d",
+  "scryfall_uri": "https://scryfall.com/card/c18/103/sphinx-of-jwar-isle?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:18:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/3/a38387c9-cee0-4ec1-800a-877d6a7edc2d.jpg?1783934305",
+    "normal": "https://cards.scryfall.io/normal/front/a/3/a38387c9-cee0-4ec1-800a-877d6a7edc2d.jpg?1783934305",
+    "large": "https://cards.scryfall.io/large/front/a/3/a38387c9-cee0-4ec1-800a-877d6a7edc2d.jpg?1783934305",
+    "png": "https://cards.scryfall.io/png/front/a/3/a38387c9-cee0-4ec1-800a-877d6a7edc2d.png?1783934305",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/3/a38387c9-cee0-4ec1-800a-877d6a7edc2d.jpg?1783934305",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/3/a38387c9-cee0-4ec1-800a-877d6a7edc2d.jpg?1783934305",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/3/a38387c9-cee0-4ec1-800a-877d6a7edc2d.webp?1783934305",
+    "grid": "https://cards.scryfall.io/grid/front/a/3/a38387c9-cee0-4ec1-800a-877d6a7edc2d.webp?1783934305",
+    "display": "https://cards.scryfall.io/display/front/a/3/a38387c9-cee0-4ec1-800a-877d6a7edc2d.webp?1783934305",
+    "art": "https://cards.scryfall.io/art/front/a/3/a38387c9-cee0-4ec1-800a-877d6a7edc2d.webp?1783934305",
+    "crop": "https://cards.scryfall.io/crop/front/a/3/a38387c9-cee0-4ec1-800a-877d6a7edc2d.webp?1783934305",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/3/a38387c9-cee0-4ec1-800a-877d6a7edc2d.jpg?1783934305"
+  },
+  "mana_cost": "{4}{U}{U}",
+  "cmc": 6.0,
+  "type_line": "Creature — Sphinx",
+  "oracle_text": "Flying\nShroud (This creature can't be the target of spells or abilities.)\nYou may look at the top card of your library any time.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Shroud"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "06ce6bc2-85cd-4cca-85b1-8c620d3e0902",
+  "set": "c18",
+  "set_name": "Commander 2018",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/06ce6bc2-85cd-4cca-85b1-8c620d3e0902",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac18&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c18?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a38387c9-cee0-4ec1-800a-877d6a7edc2d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3951f13e-f6dd-4d67-a088-23925baaf99b&unique=prints",
+  "collector_number": "103",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Justin Sweet",
+  "artist_ids": [
+    "bb15780e-8f96-4823-b258-a7a9fd79b02c"
+  ],
+  "illustration_id": "efe8b7ee-502e-4a4c-93cd-8e3093de7324",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 19941,
+  "penny_rank": 9632,
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=451058&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSphinx%2Bof%2BJwar%2BIsle",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSphinx%2Bof%2BJwar%2BIsle",
+    "edhrec": "https://edhrec.com/route/?cc=Sphinx+of+Jwar+Isle"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F171487%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=362036&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Sphinx+of+Jwar+Isle&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

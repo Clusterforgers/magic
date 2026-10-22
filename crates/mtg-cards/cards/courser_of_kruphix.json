@@ -1,7 +1,7 @@
 {
   "oracle_id": "46779609-4fa7-4fd2-b5b4-7d4d749339e6",
   "name": "Courser of Kruphix",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Courser of Kruphix",
@@ -9,9 +9,8 @@
       "abilities": [
         { "Rule": { "rule": { "RevealTop": "You" } } },
         {
-          "Manual": {
-            "reason": "No way yet to play lands from the top of a library.",
-            "span": { "start": 49, "end": 97 }
+          "Rule": {
+            "rule": { "MayCast": { "what": [{ "Type": "Land" }], "from": "Library", "play": true } }
           }
         },
         {

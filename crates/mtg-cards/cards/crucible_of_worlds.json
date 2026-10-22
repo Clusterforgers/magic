@@ -1,0 +1,20 @@
+{
+  "oracle_id": "33c722cf-b4bf-431f-aefd-ee96241a7fbf",
+  "name": "Crucible of Worlds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crucible of Worlds",
+      "oracle_fingerprint": "1b0f605613678baf4d5b39c840009061",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": [{ "Type": "Land" }], "from": "Graveyard", "play": true }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
