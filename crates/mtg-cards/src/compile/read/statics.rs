@@ -18,7 +18,7 @@ use super::lands;
 use super::life_gain;
 use super::prevention;
 use super::render::{self, capitalize, counts_stats, is_a_type, stats_text};
-use super::selectors::{Form, all, granted_text, phrase, phrase_text, subtype};
+use super::selectors::{Form, all, each, granted_text, phrase, phrase_text, subtype};
 use super::tokens::Reader;
 use super::triggers::{self, article};
 use crate::ability::{Ability, CostChange};
@@ -31,8 +31,9 @@ use crate::value::{Amount, CastWay, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 13] = [
+const TEMPLATES: [Template; 14] = [
     entering,
+    others_entering,
     life_gain::replacement,
     copies::enters_as_copy,
     as_entering,
@@ -92,6 +93,19 @@ fn entering(r: &mut Reader<'_>) -> Option<Ability> {
         ReplaceBy::WithCounters { counter, count },
         escaped.then_some(Condition::CastWith(CastWay::Escape)),
     ))
+}
+
+/// "Creatures your opponents control enter tapped.", "Artifacts, creatures, and lands your opponents control enter
+/// tapped.": the permanents of a group enter tapped.
+fn others_entering(r: &mut Reader<'_>) -> Option<Ability> {
+    let what = phrase(r, Form::All)?;
+    r.need("enter tapped")?;
+    Some(Ability::Replacement {
+        when: ReplaceWhen::Enters { what },
+        by: ReplaceBy::Tapped,
+        condition: None,
+        from: ZoneKind::Battlefield,
+    })
 }
 
 /// "As ~ enters, choose a color.", "As ~ enters, you may pay 2 life. If you don't, it enters tapped."
@@ -303,6 +317,9 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     if r.words("players have no maximum hand size") {
         return Some(GameRule::NoMaxHandSize(Ref::EachPlayer));
     }
+    if r.words("skip your draw step") {
+        return Some(GameRule::SkipDrawStep(Ref::You));
+    }
     if r.words("you may look at the top card of your library any time") {
         return Some(GameRule::LookAtTopAnyTime(Ref::You));
     }
@@ -338,6 +355,10 @@ fn subject(r: &mut Reader<'_>, itself: bool) -> Option<(Ref, bool)> {
     });
     if attached.is_some() {
         return Some((Ref::Attached, false));
+    }
+    // "Each creature you control with a +1/+1 counter on it has trample": a group with a singular verb.
+    if let Some(group) = each(r) {
+        return Some((group, false));
     }
     plural(r).map(|group| (group, true))
 }
@@ -571,6 +592,15 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             condition,
             from: ZoneKind::Battlefield,
         } if *what == Selector::this() => entering_texts(by, condition.as_ref()),
+        Ability::Replacement {
+            when: ReplaceWhen::Enters { what },
+            by: ReplaceBy::Tapped,
+            condition: None,
+            from: ZoneKind::Battlefield,
+        } => phrase_text(what, Form::All)
+            .map(|group| format!("{group} enter tapped"))
+            .into_iter()
+            .collect(),
         Ability::Rule {
             rule,
             condition: None,
@@ -794,6 +824,9 @@ fn rule_texts(rule: &GameRule, from: ZoneKind) -> Vec<String> {
         (GameRule::NoMaxHandSize(Ref::EachPlayer), ZoneKind::Battlefield) => {
             vec!["Players have no maximum hand size".to_owned()]
         }
+        (GameRule::SkipDrawStep(Ref::You), ZoneKind::Battlefield) => {
+            vec!["Skip your draw step".to_owned()]
+        }
         (GameRule::LookAtTopAnyTime(Ref::You), ZoneKind::Battlefield) => {
             vec!["You may look at the top card of your library any time".to_owned()]
         }
@@ -873,11 +906,17 @@ fn subjects(affected: &Ref, itself: bool) -> Vec<(String, bool)> {
                 && !preds
                     .iter()
                     .any(|pred| matches!(pred, Pred::ControlledBy(_) | Pred::Other));
-            if everyones {
+            let mut found = if everyones {
                 vec![(format!("all {plain}"), true), (plain, true)]
             } else {
                 vec![(plain, true)]
+            };
+            if chosen.is_empty()
+                && let Some(group) = phrase_text(&Selector(preds.to_vec()), Form::Each)
+            {
+                found.push((format!("each {group}"), false));
             }
+            found
         }
         _ => Vec::new(),
     }

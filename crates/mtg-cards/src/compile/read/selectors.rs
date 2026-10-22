@@ -9,9 +9,11 @@ use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 
 use super::amounts::{count_word, number_word, stat_name};
+use super::counters;
 use super::subtypes::{plural_subtype as plural_subtype_word, singular_subtype};
 use super::tokens::Reader;
 use crate::compile::keywords;
+use crate::cost::{Cost, CostItem};
 use crate::keyword::Keyword;
 use crate::modify::Modification;
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
@@ -55,6 +57,7 @@ const KEYWORDS: &[&str] = &[
     "prowess",
     "changeling",
     "infect",
+    "skulk",
 ];
 
 /// How a phrase is introduced, which decides its number, how it joins card types and how it names
@@ -243,6 +246,9 @@ pub fn keyword_text(keyword: &Keyword) -> Option<String> {
 /// What one phrase of a list of keywords gives: a keyword by its words, or "protection from white and from black", one
 /// protection for each quality.
 pub fn granted_keywords(r: &mut Reader<'_>) -> Option<Vec<Keyword>> {
+    if r.word("ward") {
+        return ward_cost(r).map(|cost| vec![Keyword::Ward(cost)]);
+    }
     if !r.words("protection from") {
         return keyword(r).map(|keyword| vec![keyword]);
     }
@@ -254,6 +260,17 @@ pub fn granted_keywords(r: &mut Reader<'_>) -> Option<Vec<Keyword>> {
         found.push(next);
     }
     Some(found)
+}
+
+/// The mana after "ward": "{1}", "{2}{U}".
+fn ward_cost(r: &mut Reader<'_>) -> Option<Cost> {
+    let mut text = String::new();
+    while let Some(symbol) =
+        r.attempt(|r| r.symbol().filter(|symbol| !matches!(*symbol, "T" | "Q" | "X")))
+    {
+        text.push_str(&format!("{{{symbol}}}"));
+    }
+    text.parse().ok().map(Cost::mana)
 }
 
 fn protection_from(r: &mut Reader<'_>) -> Option<Keyword> {
@@ -281,6 +298,12 @@ pub fn granted_text(mods: &[Modification]) -> Option<String> {
                 _ => parts.push(format!("protection from {word}")),
             }
             protecting = true;
+        } else if let Keyword::Ward(Cost(items)) = keyword {
+            let [CostItem::Mana(mana)] = items.as_slice() else {
+                return None;
+            };
+            parts.push(format!("ward {mana}"));
+            protecting = false;
         } else {
             parts.push(keyword_text(keyword)?);
             protecting = false;
@@ -324,6 +347,15 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     }
     r.attempt(|r| {
         r.need("with")?;
+        // "with a +1/+1 counter on it".
+        if let Some(counter) = r.attempt(|r| {
+            (r.word("a") || r.word("an")).then_some(())?;
+            let counter = counters::trigger_kind(r)?;
+            r.need("on it")?;
+            Some(counter)
+        }) {
+            return Some(Pred::HasCounter(counter));
+        }
         if let Some(keyword) = keyword(r) {
             return Some(Pred::HasKeyword(keyword));
         }
@@ -356,6 +388,9 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             "you don't control".to_owned()
         }
         Pred::HasKeyword(keyword) => format!("with {}", keyword_text(keyword)?),
+        Pred::HasCounter(counter) => {
+            format!("with {} on it", counters::trigger_kind_text(Some(counter))?)
+        }
         Pred::Compare { stat, op, to } => {
             let number = match to {
                 Amount::Fixed(number) => number.to_string(),

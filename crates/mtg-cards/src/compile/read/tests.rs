@@ -169,6 +169,7 @@ mod event_batches;
 mod events;
 mod exile_bounce_shrink;
 mod for_each;
+mod group_statics;
 mod if_sentence;
 mod impulse;
 mod lands;
@@ -788,7 +789,6 @@ mod pump {
     )]
     #[case::conditional("If you control a Goblin, target creature gets +2/+2 until end of turn.")]
     #[case::a_keyword_list("Target creature gains flying, trample, and haste until end of turn.")]
-    #[case::a_cost_keyword("Target creature gains ward {2} until end of turn.")]
     #[case::x_without_an_x_cost("Target creature gets +X/+X until end of turn.")]
     #[case::negative_x("Target creature gets -X/-X until end of turn.")]
     #[case::not_a_number("Target creature gets +a/+b until end of turn.")]

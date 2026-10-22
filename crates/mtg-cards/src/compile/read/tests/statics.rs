@@ -364,7 +364,6 @@ fn a_bonus_or_a_keyword_reads_as_the_hand_written_files_say(
     "You may look at the top card of target player's library any time."
 )]
 #[case::commanders_of_others("Your commander can be your commander.")]
-#[case::another_permanent("Creatures your opponents control enter tapped.")]
 #[case::cant_be_countered_by_a_group("Spells you cast can't be countered.")]
 #[case::cant_block_unless("This creature can't block creatures with flying.")]
 #[case::attacks_if_able("This creature attacks if able.")]

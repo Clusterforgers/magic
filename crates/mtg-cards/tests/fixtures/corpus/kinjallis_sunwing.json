@@ -1,0 +1,27 @@
+{
+  "id": "04421508-b5ac-4466-9f77-dfef478d3cc2",
+  "oracle_id": "b9243163-b726-432e-830f-86132aa7f34a",
+  "name": "Kinjalli's Sunwing",
+  "lang": "en",
+  "layout": "normal",
+  "set": "lcc",
+  "collector_number": "130",
+  "rarity": "rare",
+  "released_at": "2023-11-17",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Dinosaur",
+  "oracle_text": "Flying\nCreatures your opponents control enter tapped.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "power": "2",
+  "toughness": "3"
+}

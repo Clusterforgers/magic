@@ -6,11 +6,13 @@ Ancient Ziggurat
 Angel of Vitality
 Arcane Signet
 Archon of Cruelty
+Armguard Familiar
 Arrogant Wurm
 Artful Maneuver
 Arvad the Cursed
 Atlantean Skirmisher
 Augury Raven
+Authority of the Consuls
 Azorius Chancery
 Azorius Signet
 Azure Fleet Admiral
@@ -89,6 +91,7 @@ Drudge Skeletons
 Dual Casting
 Dualcaster Mage
 Durkwood Baloth
+Duskshell Crawler
 Echo Inspector
 Elven Ambush
 Elvish Rejuvenator
@@ -160,6 +163,7 @@ Karn's Bastion
 Kathari Screecher
 Keep Watch
 Kessig Wolf Run
+Kinjalli's Sunwing
 Kitchen Finks
 Knight of Dusk's Shadow
 Kolaghan Skirmisher
@@ -220,6 +224,7 @@ Pillar of the Paruns
 Plague Myr
 Plague Stinger
 Pouncing Jaguar
+Pridemalkin
 Prismatic Lens
 Professional Face-Breaker
 Psychosis Crawler
@@ -283,6 +288,7 @@ Spring // Mind
 Springleaf Drum
 Squirrel Nest
 Staggershock
+Star Whale
 Steady Progress
 Steam Vents
 Stoke the Flames
@@ -321,6 +327,7 @@ Umbral Collar Zealot
 Underworld Dreams
 Underworld Rage-Hound
 Universal Automaton
+Urabrask the Hidden
 Vampire Cutthroat
 Vengeful Vampire
 Vestige of Emrakul
@@ -330,6 +337,7 @@ Wanderbrine Preacher
 Wargate
 Warmonger Hellkite
 Wear // Tear
+Wild Wasteland
 Wilderness Elemental
 Wooded Bastion
 Wrath of God

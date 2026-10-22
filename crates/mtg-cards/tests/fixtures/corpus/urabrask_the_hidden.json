@@ -1,0 +1,25 @@
+{
+  "id": "93970fae-19f7-41dd-9750-ca428ae1de7a",
+  "oracle_id": "5b2ffb53-86b7-4665-a5c7-b85b035b6c81",
+  "name": "Urabrask the Hidden",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "811",
+  "rarity": "mythic",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Phyrexian Praetor",
+  "oracle_text": "Creatures you control have haste.\nCreatures your opponents control enter tapped.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "power": "4",
+  "toughness": "4"
+}

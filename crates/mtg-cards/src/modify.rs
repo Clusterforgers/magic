@@ -174,6 +174,8 @@ pub enum GameRule {
     LookAtTopAnyTime(Ref),
     /// The players have no maximum hand size (CR 402.2).
     NoMaxHandSize(Ref),
+    /// The players skip their draw steps (CR 614.10): the step does not begin on their turns.
+    SkipDrawStep(Ref),
     /// The players may play additional lands each of their turns (CR 305.2).
     AdditionalLandPlays {
         /// Who may play them.
@@ -258,6 +260,7 @@ mod tests {
     )]
     #[case(GameRule::CantDraw(Ref::Opponents), r#"{"CantDraw":"Opponents"}"#)]
     #[case(GameRule::CantSearch(Ref::You), r#"{"CantSearch":"You"}"#)]
+    #[case(GameRule::SkipDrawStep(Ref::You), r#"{"SkipDrawStep":"You"}"#)]
     #[case(GameRule::RevealTop(Ref::You), r#"{"RevealTop":"You"}"#)]
     #[case(GameRule::LookAtTopAnyTime(Ref::You), r#"{"LookAtTopAnyTime":"You"}"#)]
     #[case(

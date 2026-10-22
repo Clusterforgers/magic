@@ -108,6 +108,28 @@ pub fn variants(ability: &Ability) -> Vec<String> {
         })
         .collect();
     texts.extend(pronouns);
+    // A group an earlier sentence counted may be "Those creatures" in a later one (Inspiring Call).
+    if let Ability::Spell { effects, .. } = ability {
+        for effect in effects {
+            let Effect::Continuous {
+                affected: Ref::Each(group),
+                ..
+            } = effect
+            else {
+                continue;
+            };
+            let Some(phrase) = phrase_text(group, Form::All) else {
+                continue;
+            };
+            let named = format!(". {} ", capitalize(&phrase));
+            let those: Vec<String> = texts
+                .iter()
+                .filter(|text| text.contains(&named))
+                .map(|text| text.replacen(&named, ". Those creatures ", 1))
+                .collect();
+            texts.extend(those);
+        }
+    }
     // An activated ability that opens with damage may say "It deals" for the source (Walking Ballista).
     if matches!(ability, Ability::Activated { .. }) {
         let pronouns: Vec<String> = texts

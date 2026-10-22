@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f9672b63-415a-448b-a3da-140df63a0f0c",
+  "name": "Pridemalkin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pridemalkin",
+      "oracle_fingerprint": "7222c184db8848f400885563834b22ab",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "HasCounter": "+1/+1" }]
+            },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        }
+      ]
+    }
+  ]
+}

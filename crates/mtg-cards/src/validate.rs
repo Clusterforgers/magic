@@ -1771,6 +1771,7 @@ impl<'a> Walker<'a> {
             | GameRule::CantSearch(who)
             | GameRule::RevealTop(who)
             | GameRule::LookAtTopAnyTime(who)
+            | GameRule::SkipDrawStep(who)
             | GameRule::NoMaxHandSize(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
             GameRule::MayCast(permission) => self.at(tag, |w| {
                 w.at("who", |w| w.reference(&permission.who, Kind::Player));

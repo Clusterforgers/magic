@@ -1,0 +1,30 @@
+{
+  "oracle_id": "4297ab35-9f16-4d9e-af77-010469ec4f59",
+  "name": "Wild Wasteland",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wild Wasteland",
+      "oracle_fingerprint": "10574839a769010315a0eb8e3098a9dd",
+      "abilities": [
+        { "Rule": { "rule": { "SkipDrawStep": "You" } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "ExileTop": { "count": 2, "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
