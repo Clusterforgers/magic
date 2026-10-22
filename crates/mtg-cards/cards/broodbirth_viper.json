@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a8455828-9c61-4ef9-a5f1-1f0cc6fbf446",
+  "name": "Broodbirth Viper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Broodbirth Viper",
+      "oracle_fingerprint": "38e2b39017b59ca6c28d08c560a662ee",
+      "abilities": [
+        { "Keyword": "Myriad" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

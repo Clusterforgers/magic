@@ -1,0 +1,15 @@
+{
+  "oracle_id": "8b46e077-f667-432f-ab5b-8256a7378311",
+  "name": "Nessian Asp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nessian Asp",
+      "oracle_fingerprint": "aaef0393c8a7e59a381beaf436e5fa20",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Activated": { "cost": "{6}{G}", "effects": [{ "Monstrosity": { "count": 4 } }] } }
+      ]
+    }
+  ]
+}

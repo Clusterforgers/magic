@@ -272,6 +272,18 @@ impl Driver {
         delve: &[&str],
         life: u32,
     ) -> Result<Vec<Event>, ScriptError> {
+        self.pay_helped_by(lands, convoke, &[], delve, life)
+    }
+
+    /// Answers the pending payment as `pay_helped` does, and taps the named artifacts for improvise (each pays {1}).
+    pub fn pay_helped_by(
+        &mut self,
+        lands: &[&str],
+        convoke: &[(&str, Option<Color>)],
+        improvise: &[&str],
+        delve: &[&str],
+        life: u32,
+    ) -> Result<Vec<Event>, ScriptError> {
         let mut payment = self.payment_tapping(lands, life)?;
         let DecisionKind::PayMana(options) = &self.decision()?.kind else {
             return Err(self.unexpected("pay-mana"));
@@ -288,6 +300,17 @@ impl Driver {
                 creature,
                 pays: *pays,
             });
+        }
+        for name in improvise {
+            let free = options
+                .help
+                .improvise
+                .iter()
+                .copied()
+                .filter(|id| !payment.improvise.contains(id));
+            payment
+                .improvise
+                .push(self.find(free, name, "artifacts that may improvise")?);
         }
         for name in delve {
             let free = options

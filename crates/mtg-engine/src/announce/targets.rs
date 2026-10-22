@@ -18,6 +18,10 @@ pub(super) fn specs(ctx: &Ctx<'_>, choices: &Choices) -> Vec<TargetSpec> {
     if choices.way == Some(CastWay::Overload) {
         return Vec::new();
     }
+    // A creature card cast for its bestow cost is an Aura spell with enchant creature (CR 702.103b).
+    if choices.way == Some(CastWay::Bestow) && matches!(ctx.what, What::Spell(_)) {
+        return vec![attach::bestow_target()];
+    }
     let modes = &choices.modes;
     if let What::Spell(spell) = ctx.what
         && let Some(spec) = attach::spell_target(ctx.state, *spell)

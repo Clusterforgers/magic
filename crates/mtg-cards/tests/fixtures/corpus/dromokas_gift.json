@@ -1,0 +1,25 @@
+{
+  "id": "a356afb6-19d7-459a-84ca-090924d45387",
+  "oracle_id": "1264da2f-4767-4bec-b4ed-1c625ac3cf95",
+  "name": "Dromoka's Gift",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dtk",
+  "collector_number": "184",
+  "rarity": "uncommon",
+  "released_at": "2015-03-27",
+  "digital": false,
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Instant",
+  "oracle_text": "Bolster 4. (Choose a creature with the least toughness among creatures you control and put four +1/+1 counters on it.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Bolster"
+  ]
+}

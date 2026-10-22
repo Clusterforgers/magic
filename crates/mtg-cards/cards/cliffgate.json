@@ -1,0 +1,26 @@
+{
+  "oracle_id": "1999b5ac-21fb-4d99-ad72-58bf507f9a59",
+  "name": "Cliffgate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cliffgate",
+      "oracle_fingerprint": "187eff82e2ea350dd770e0aabe071fb7",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "ColorOtherThan": "Red" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OrChosenColor": "Red" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "663e6ab0-ed99-4cec-86f7-843207c31e17",
+  "name": "Kalemne's Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kalemne's Captain",
+      "oracle_fingerprint": "994a13f47168ad295212258a281d217d",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Activated": { "cost": "{5}{W}{W}", "effects": [{ "Monstrosity": { "count": 3 } }] } },
+        {
+          "Triggered": {
+            "when": { "BecomesMonstrous": { "what": ["This"] } },
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

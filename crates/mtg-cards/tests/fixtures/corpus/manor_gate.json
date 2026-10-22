@@ -1,0 +1,21 @@
+{
+  "id": "793d4978-9e00-453d-8dc2-6d51ad6c26b7",
+  "oracle_id": "dd6e67c0-66a1-49b7-8a86-3cf4b209fd07",
+  "name": "Manor Gate",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "356",
+  "rarity": "common",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Gate",
+  "oracle_text": "This land enters tapped.\nAs this land enters, choose a color other than green.\n{T}: Add {G} or one mana of the chosen color.",
+  "colors": [],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

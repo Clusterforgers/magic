@@ -69,6 +69,18 @@ impl Spend {
         }
     }
 
+    /// The payment for a creature card cast for its bestow cost: an Aura spell, no creature spell (CR 702.103b).
+    #[must_use]
+    pub fn bestowed(mut self) -> Self {
+        let aura = mtg_core::card::Subtype("Aura".to_owned());
+        self.traits.types =
+            crate::effects::without(self.traits.types, mtg_core::card::CardType::Creature);
+        if !self.traits.subtypes.contains(&aura) {
+            self.traits.subtypes.push(aura);
+        }
+        self
+    }
+
     /// Activating an ability of `source`; `has_x` when its cost has {X}.
     pub fn for_ability(state: &GameState, source: ObjectId, has_x: bool) -> Self {
         Spend {

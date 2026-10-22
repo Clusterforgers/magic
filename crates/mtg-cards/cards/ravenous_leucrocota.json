@@ -1,0 +1,15 @@
+{
+  "oracle_id": "dcc5ca3f-5309-4833-bee4-f2508382ea06",
+  "name": "Ravenous Leucrocota",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ravenous Leucrocota",
+      "oracle_fingerprint": "706dc9513459fe022508a8fa80feaaed",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Activated": { "cost": "{6}{G}", "effects": [{ "Monstrosity": { "count": 3 } }] } }
+      ]
+    }
+  ]
+}

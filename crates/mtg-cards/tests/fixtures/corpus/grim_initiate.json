@@ -1,0 +1,28 @@
+{
+  "id": "29b6ec9d-3861-48bf-a198-dc7efba5d89c",
+  "oracle_id": "96264dde-c0b6-4912-afc4-18757f938a4d",
+  "name": "Grim Initiate",
+  "lang": "en",
+  "layout": "normal",
+  "set": "war",
+  "collector_number": "130",
+  "rarity": "common",
+  "released_at": "2019-05-03",
+  "digital": false,
+  "mana_cost": "{R}",
+  "cmc": 1.0,
+  "type_line": "Creature — Zombie Warrior",
+  "oracle_text": "First strike\nWhen this creature dies, amass Zombies 1. (Put a +1/+1 counter on an Army you control. It's also a Zombie. If you don't control an Army, create a 0/0 black Zombie Army creature token first.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Amass",
+    "First strike"
+  ]
+}

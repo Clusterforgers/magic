@@ -1,0 +1,29 @@
+{
+  "id": "e8d57d75-275d-45c8-85f4-aab230af35b2",
+  "oracle_id": "4371d5bc-1760-477b-822e-6d4999fb0a6b",
+  "name": "Herald of the Host",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "30",
+  "rarity": "uncommon",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Angel",
+  "oracle_text": "Flying, vigilance\nMyriad (Whenever this creature attacks, for each opponent other than defending player, you may create a token copy that's tapped and attacking that player or a planeswalker they control. Exile the tokens at end of combat.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Myriad",
+    "Flying",
+    "Vigilance"
+  ]
+}

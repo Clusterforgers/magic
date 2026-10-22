@@ -1,0 +1,35 @@
+{
+  "oracle_id": "393ef069-ea6b-4969-b878-d942281cc918",
+  "name": "Exquisite Huntmaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exquisite Huntmaster",
+      "oracle_fingerprint": "5bc551eeac78229bfce58c5031388adb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elf Warrior",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elf", "Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Encore": "{4}{B}" } }
+      ]
+    }
+  ]
+}

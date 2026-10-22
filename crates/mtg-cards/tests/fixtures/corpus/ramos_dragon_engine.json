@@ -1,0 +1,29 @@
+{
+  "id": "8f95f753-bbaa-4282-9cd9-f1737136fc9e",
+  "oracle_id": "3ed41d2d-211b-4013-8562-8c64d54cc43a",
+  "name": "Ramos, Dragon Engine",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fdn",
+  "collector_number": "678",
+  "rarity": "mythic",
+  "released_at": "2024-11-15",
+  "digital": false,
+  "mana_cost": "{6}",
+  "cmc": 6.0,
+  "type_line": "Legendary Artifact Creature — Dragon",
+  "oracle_text": "Flying\nWhenever you cast a spell, put a +1/+1 counter on Ramos for each of that spell's colors.\nRemove five +1/+1 counters from Ramos: Add {W}{W}{U}{U}{B}{B}{R}{R}{G}{G}. Activate only once each turn.",
+  "colors": [],
+  "color_identity": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "power": "4",
+  "toughness": "4"
+}

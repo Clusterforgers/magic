@@ -1,0 +1,21 @@
+{
+  "id": "eef65ebc-12d6-4438-a908-2a0c28329124",
+  "oracle_id": "a8052556-8962-4130-86a8-6fb7b6a324f7",
+  "name": "Thriving Grove",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "579",
+  "rarity": "common",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land enters tapped. As it enters, choose a color other than green.\n{T}: Add {G} or one mana of the chosen color.",
+  "colors": [],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

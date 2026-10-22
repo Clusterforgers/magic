@@ -1,0 +1,27 @@
+{
+  "id": "be1165a2-e697-4ceb-91ba-693a3a006f27",
+  "oracle_id": "aa149597-087a-4e1f-953c-2cd04e90a93b",
+  "name": "Tuskguard Captain",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "328",
+  "rarity": "common",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "Outlast {G} ({G}, {T}: Put a +1/+1 counter on this creature. Outlast only as a sorcery.)\nEach creature you control with a +1/+1 counter on it has trample.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Outlast"
+  ]
+}

@@ -20,11 +20,16 @@ use crate::refs::Ref;
 use crate::value::Amount;
 
 /// The predefined tokens, as a card names them and as their files are named.
-const NAMED: [(&str, &str); 3] = [("Treasure", "treasure"), ("Clue", "clue"), ("Food", "food")];
+const NAMED: [(&str, &str); 4] = [
+    ("Treasure", "treasure"),
+    ("Clue", "clue"),
+    ("Food", "food"),
+    ("Gold", "gold"),
+];
 
-fn effect(token: TokenRef, count: Amount, tapped: bool, attacking: bool) -> Effect {
+fn effect(who: Ref, token: TokenRef, count: Amount, tapped: bool, attacking: bool) -> Effect {
     Effect::CreateToken {
-        who: Ref::You,
+        who,
         token,
         count,
         tapped,
@@ -99,27 +104,45 @@ fn keyword_abilities(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
     Some(found)
 }
 
+/// How many tokens a card says: a number, X, or "that many".
+enum Quantity {
+    Number(u32),
+    X,
+    ThatMany,
+}
+
 /// "Create a Treasure token.", "Create two 1/1 white Soldier creature tokens that are tapped and
 /// attacking.", "Create X Treasure tokens, where X is the number of artifacts you control.",
-/// "Create a 1/1 white Spirit creature token with flying.", "Investigate."
+/// "Create a 1/1 white Spirit creature token with flying.", "Create two tapped Powerstone tokens.", "Create that
+/// many Treasure tokens.", "Investigate."
 pub fn tokens(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if r.word("investigate") {
         return Some(vec![effect(
+            Ref::You,
             TokenRef::Named("clue".to_owned()),
             Amount::one(),
             false,
             false,
         )]);
     }
-    r.need("create")?;
-    let variable = r.word("x");
-    let number = if variable {
-        None
+    made_by(r, Ref::You)
+}
+
+/// The tokens a player creates: "create ..." for you, "creates ..." after another player ("target opponent creates
+/// two 1/1 white Soldier creature tokens", "its controller creates a 3/3 green Beast creature token").
+pub fn made_by(r: &mut Reader<'_>, who: Ref) -> Option<Vec<Effect>> {
+    r.need(if who == Ref::You { "create" } else { "creates" })?;
+    let quantity = if r.words("that many") {
+        Quantity::ThatMany
+    } else if r.word("x") {
+        Quantity::X
     } else {
-        Some(number_word(r.take_word()?)?)
+        Quantity::Number(number_word(r.take_word()?)?)
     };
+    // "two tapped Powerstone tokens": tapped without attacking, before the token.
+    let tapped_alone = r.word("tapped");
     let mut token = token(r)?;
-    let single = number == Some(1);
+    let single = matches!(quantity, Quantity::Number(1));
     r.word(if single { "token" } else { "tokens" })
         .then_some(())?;
     if let Some(abilities) = r.attempt(keyword_abilities) {
@@ -133,20 +156,28 @@ pub fn tokens(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     } else {
         ("that are tapped and attacking", "that are attacking")
     };
-    let (tapped, attacking) = if r.words(tapped_and_attacking) {
+    let (tapped, attacking) = if tapped_alone {
+        (true, false)
+    } else if r.words(tapped_and_attacking) {
         (true, true)
     } else {
         (false, r.words(attacking_only))
     };
-    let count = if let Some(number) = number {
+    let count = match quantity {
         // "... token for each Elf you control": the count of the Elves, times the number when it is not one.
-        counted(r, Amount::Fixed(i32::try_from(number).ok()?))?
-    } else {
-        r.punct(',').then_some(())?;
-        r.need("where x is the number of")?;
-        Amount::Count(phrase(r, Form::All)?)
+        Quantity::Number(number) => counted(r, Amount::Fixed(i32::try_from(number).ok()?))?,
+        Quantity::ThatMany => Amount::Triggering,
+        Quantity::X if r.punct(',') => {
+            r.need("where x is the number of")?;
+            Amount::Count(phrase(r, Form::All)?)
+        }
+        // The X of the spell's or the ability's own cost.
+        Quantity::X => {
+            r.x_free.then_some(())?;
+            Amount::X
+        }
     };
-    Some(vec![effect(token, count, tapped, attacking)])
+    Some(vec![effect(who, token, count, tapped, attacking)])
 }
 
 /// The colors of a token as a card words them: "white and blue", "colorless".
@@ -219,7 +250,7 @@ fn keywords_text(token: &TokenRef) -> Option<String> {
 /// "X tokens, where X is the number of ..." or, with `per`, "a token for each ...".
 pub fn text(effect: &Effect, per: bool) -> Option<String> {
     let Effect::CreateToken {
-        who: Ref::You,
+        who,
         token,
         count,
         tapped,
@@ -229,24 +260,48 @@ pub fn text(effect: &Effect, per: bool) -> Option<String> {
     else {
         return None;
     };
-    // A token that enters tapped and not attacking has no wording of its own here.
+    let mut what = token_text(token)?;
+    // A token that enters tapped without attacking: "a tapped Treasure token".
     if *tapped && !*attacking {
-        return None;
+        what = format!("tapped {what}");
     }
-    let what = token_text(token)?;
     let with = keywords_text(token)?;
-    let (number, single, tail) = match count {
-        Amount::Fixed(1) => (article(&what).to_owned(), true, String::new()),
+    let (number, single, tail) = quantity_text(count, &what, per)?;
+    let verb = if *who == Ref::You {
+        "create"
+    } else {
+        "creates"
+    };
+    let noun = if single { "token" } else { "tokens" };
+    let entering = match (*tapped, *attacking, single) {
+        (_, false, _) => "",
+        (true, true, true) => " that's tapped and attacking",
+        (true, true, false) => " that are tapped and attacking",
+        (false, true, true) => " that's attacking",
+        (false, true, false) => " that are attacking",
+    };
+    Some(format!(
+        "{verb} {number} {what} {noun}{with}{entering}{tail}"
+    ))
+}
+
+/// How many tokens as a card words it, whether that is one token, and what follows the noun: "a", "two", "X" (with
+/// ", where X is the number of ..." for a count), "that many".
+fn quantity_text(count: &Amount, what: &str, per: bool) -> Option<(String, bool, String)> {
+    Some(match count {
+        Amount::Fixed(1) => (article(what).to_owned(), true, String::new()),
         Amount::Fixed(number) => (
             count_word(u32::try_from(*number).ok()?)?.to_owned(),
             false,
             String::new(),
         ),
+        Amount::X => ("X".to_owned(), false, String::new()),
+        Amount::Triggering => ("that many".to_owned(), false, String::new()),
         // The same count in the other wording: "a Goblin token for each Goblin you control".
         counted if per => {
             let (each, tail) = counted_parts(counted)?;
             let (number, single) = match each {
-                Amount::Fixed(1) => (article(&what).to_owned(), true),
+                Amount::Fixed(1) => (article(what).to_owned(), true),
                 Amount::Fixed(number) => {
                     (count_word(u32::try_from(number).ok()?)?.to_owned(), false)
                 }
@@ -263,16 +318,5 @@ pub fn text(effect: &Effect, per: bool) -> Option<String> {
             ),
         ),
         _ => return None,
-    };
-    let noun = if single { "token" } else { "tokens" };
-    let entering = match (*tapped, *attacking, single) {
-        (false, false, _) => "",
-        (true, _, true) => " that's tapped and attacking",
-        (true, _, false) => " that are tapped and attacking",
-        (false, true, true) => " that's attacking",
-        (false, true, false) => " that are attacking",
-    };
-    Some(format!(
-        "create {number} {what} {noun}{with}{entering}{tail}"
-    ))
+    })
 }

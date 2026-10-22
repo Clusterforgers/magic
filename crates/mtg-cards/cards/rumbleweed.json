@@ -1,0 +1,43 @@
+{
+  "oracle_id": "9cfc01a7-e291-4388-bd09-94846d72e291",
+  "name": "Rumbleweed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rumbleweed",
+      "oracle_fingerprint": "6ee49e8e69bbe591a55c120e78168d9b",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Count": [{ "Type": "Land" }, { "In": "Graveyard" }, { "OwnedBy": "You" }] }
+          }
+        },
+        { "Keyword": "Reach" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
+                  },
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 3 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

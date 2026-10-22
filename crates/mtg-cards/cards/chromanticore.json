@@ -1,0 +1,32 @@
+{
+  "oracle_id": "695ee4fe-356d-47fb-9442-d171b618151c",
+  "name": "Chromanticore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chromanticore",
+      "oracle_fingerprint": "53361abacf8a8dc708739fe75df96606",
+      "abilities": [
+        { "Keyword": { "Bestow": "{2}{W}{U}{B}{R}{G}" } },
+        { "Keyword": "Flying" },
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Lifelink" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 4, "toughness": 4 } },
+              { "AddKeyword": "Flying" },
+              { "AddKeyword": "FirstStrike" },
+              { "AddKeyword": "Vigilance" },
+              { "AddKeyword": "Trample" },
+              { "AddKeyword": "Lifelink" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

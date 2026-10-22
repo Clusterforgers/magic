@@ -1,0 +1,23 @@
+{
+  "id": "f392782b-7464-4617-b421-6b5d0e2880fc",
+  "oracle_id": "a332e80a-dc51-4dc6-bc85-e114a1c6fdb8",
+  "name": "Vanquish the Horde",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "146",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{6}{W}{W}",
+  "cmc": 8,
+  "type_line": "Sorcery",
+  "oracle_text": "This spell costs {1} less to cast for each creature on the battlefield.\nDestroy all creatures.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

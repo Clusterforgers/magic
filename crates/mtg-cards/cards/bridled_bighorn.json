@@ -1,0 +1,37 @@
+{
+  "oracle_id": "6a1ad848-6fda-46dd-aad8-2f6a5c71a696",
+  "name": "Bridled Bighorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bridled Bighorn",
+      "oracle_fingerprint": "176c4df8e0e923212d201b2d5fc56b8f",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "HasKeyword": "Saddled" }] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Sheep",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Sheep"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Saddle": 2 } }
+      ]
+    }
+  ]
+}

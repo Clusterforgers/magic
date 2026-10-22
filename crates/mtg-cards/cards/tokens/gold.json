@@ -1,0 +1,16 @@
+{
+  "id": "gold",
+  "token": {
+    "name": "Gold",
+    "types": ["Artifact"],
+    "subtypes": ["Gold"],
+    "abilities": [
+      {
+        "Activated": {
+          "cost": ["SacrificeSelf"],
+          "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+        }
+      }
+    ]
+  }
+}

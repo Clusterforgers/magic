@@ -1,0 +1,15 @@
+{
+  "oracle_id": "c5a5c17d-d1e4-4d23-9d2b-1c2febdcb0e7",
+  "name": "Universal Surveillance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Universal Surveillance",
+      "oracle_fingerprint": "d4b9a0e718e62b4c2f7711be90df6636",
+      "abilities": [
+        { "Keyword": "Improvise" },
+        { "Spell": { "effects": [{ "Draw": { "count": "X" } }] } }
+      ]
+    }
+  ]
+}

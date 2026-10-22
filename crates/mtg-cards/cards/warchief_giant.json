@@ -1,0 +1,12 @@
+{
+  "oracle_id": "589abb40-04b4-4dbe-9c2a-446b6c3075d1",
+  "name": "Warchief Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warchief Giant",
+      "oracle_fingerprint": "89ad6ce8e5f3f792e3f230304c29f481",
+      "abilities": [{ "Keyword": "Haste" }, { "Keyword": "Myriad" }]
+    }
+  ]
+}

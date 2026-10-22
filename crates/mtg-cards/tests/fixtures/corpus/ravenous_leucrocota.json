@@ -1,0 +1,28 @@
+{
+  "id": "dc504eb1-4684-47a1-b241-01c7bb5cc496",
+  "oracle_id": "dcc5ca3f-5309-4833-bee4-f2508382ea06",
+  "name": "Ravenous Leucrocota",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cn2",
+  "collector_number": "192",
+  "rarity": "common",
+  "released_at": "2016-08-26",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "Vigilance\n{6}{G}: Monstrosity 3. (If this creature isn't monstrous, put three +1/+1 counters on it and it becomes monstrous.)",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Vigilance",
+    "Monstrosity"
+  ]
+}

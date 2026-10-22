@@ -163,7 +163,16 @@ fn check_attachments_settled(state: &GameState) -> Result<(), Violation> {
         let enchanted = state.player_host_of(id);
         let host = state.host_of(id).and_then(|host| state.object(host));
         let bad = |why: &str| Violation::Bookkeeping(format!("{id:?} {why} at a decision point"));
-        if printed("Aura") {
+        if object.bestowed() {
+            // A bestowed Aura is no creature and is attached to one (CR 702.103b).
+            let creature = |id| characteristics(state, id).is_some_and(|chars| chars.is_creature());
+            if creature(id) {
+                return Err(bad("is a bestowed Aura though it is a creature"));
+            }
+            if !host.is_some_and(|host| creature(host.id())) {
+                return Err(bad("is a bestowed Aura on what is no creature"));
+            }
+        } else if printed("Aura") {
             if let Some(player) = enchanted {
                 let controller = controller_of(state, id).unwrap_or(object.controller());
                 for keyword in keywords_of(state, id) {

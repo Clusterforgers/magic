@@ -1,0 +1,23 @@
+{
+  "oracle_id": "b6d65fa3-26a9-44b2-a93d-a295bd080729",
+  "name": "Domesticated Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Domesticated Hydra",
+      "oracle_fingerprint": "78733c7ee7e5ca3b40542c256777f3f7",
+      "abilities": [
+        {
+          "Activated": { "cost": "{X}{G}{G}{G}", "effects": [{ "Monstrosity": { "count": "X" } }] }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Trample" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["Monstrous"] } }
+          }
+        }
+      ]
+    }
+  ]
+}
