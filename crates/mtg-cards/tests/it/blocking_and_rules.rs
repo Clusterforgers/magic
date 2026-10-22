@@ -116,6 +116,49 @@ const ENTERS: &str = r#""when":{"Enters":{"what":["This"]}}"#;
 #[case::encore(r#"{"Keyword":{"Encore":"{5}{R}"}}"#, &["Cost.Mana", "Keyword.Encore"])]
 #[case::squad(r#"{"Keyword":{"Squad":"{2}"}}"#, &["Cost.Mana", "Keyword.Squad"])]
 #[case::foretell(r#"{"Keyword":{"Foretell":"{1}{U}"}}"#, &["Cost.Mana", "Keyword.Foretell"])]
+#[case::buyback(r#"{"Keyword":{"Buyback":"{3}"}}"#, &["Cost.Mana", "Keyword.Buyback"])]
+#[case::entwine(r#"{"Keyword":{"Entwine":"{2}"}}"#, &["Cost.Mana", "Keyword.Entwine"])]
+#[case::a_kicker_that_sacrifices(
+    r#"{"Keyword":{"Kicker":[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}]}}"#,
+    &["Cost.Sacrifice", "Keyword.Kicker"]
+)]
+#[case::a_buyback_in_life(r#"{"Keyword":{"Buyback":[{"PayLife":4}]}}"#, &["Cost.PayLife", "Keyword.Buyback"])]
+#[case::an_entwine_that_discards(
+    r#"{"Keyword":{"Entwine":[{"Mana":"{1}"},{"Discard":{"count":2}}]}}"#,
+    &["Cost.Discard", "Cost.Mana", "Keyword.Entwine"]
+)]
+#[case::an_evoke_that_exiles_from_the_hand(
+    r#"{"Keyword":{"Evoke":[{"ExileFromHand":{"filter":[{"Color":"Red"}]}}]}}"#,
+    &["Cost.ExileFromHand", "Keyword.Evoke"]
+)]
+#[case::a_flashback_in_mana_and_life(
+    r#"{"Keyword":{"Flashback":[{"Mana":"{1}{U}"},{"PayLife":3}]}}"#,
+    &["Cost.Mana", "Cost.PayLife", "Keyword.Flashback"]
+)]
+#[case::a_madness_in_mana_and_life(
+    r#"{"Keyword":{"Madness":[{"Mana":"{2}{B}"},{"PayLife":8}]}}"#,
+    &["Cost.Mana", "Cost.PayLife", "Keyword.Madness"]
+)]
+#[case::an_optional_additional_cost(
+    r#"{"AdditionalCost":{"cost":[{"Sacrifice":{"filter":[{"Type":"Artifact"}]}}]}}"#,
+    &["Ability.AdditionalCost", "Cost.Sacrifice"]
+)]
+#[case::a_multikicker_with_a_part_is_still_named(
+    r#"{"Keyword":{"Multikicker":[{"Sacrifice":{"filter":[{"Type":"Land"}]}}]}}"#,
+    &["Cost.Sacrifice", "Keyword.Cost.Sacrifice", "Keyword.Multikicker"]
+)]
+#[case::a_suspend_with_a_part_is_still_named(
+    r#"{"Keyword":{"Suspend":{"time":2,"cost":[{"PayLife":2}]}}}"#,
+    &["Cost.PayLife", "Keyword.Cost.PayLife", "Keyword.Suspend"]
+)]
+#[case::a_flashback_that_counts_x_is_named(
+    r#"{"Keyword":{"Flashback":[{"Mana":"{R}{R}"},{"Sacrifice":{"filter":[{"Type":"Land"}],"count":"X"}}]}}"#,
+    &["Amount.X.Elsewhere", "Cost.Mana", "Cost.Sacrifice", "Keyword.Cost.Sacrifice.X", "Keyword.Flashback"]
+)]
+#[case::a_kicker_that_removes_counters_is_named(
+    r#"{"Keyword":{"Kicker":[{"RemoveCounters":{"counter":"charge"}}]}}"#,
+    &["Cost.RemoveCounters", "Keyword.Cost.RemoveCounters", "Keyword.Kicker"]
+)]
 #[case::a_granted_changeling(
     r#"{"Static":{"affected":"Attached","mods":[{"AddKeyword":"Changeling"}]}}"#,
     &["Ability.Static", "Keyword.Changeling", "Mod.AddKeyword"]

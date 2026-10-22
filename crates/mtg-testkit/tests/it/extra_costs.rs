@@ -512,3 +512,48 @@ fn the_kicks_of_a_permanent_that_a_state_based_action_removed_are_read_by_its_tr
     replays(&driver, scenario());
     Ok(())
 }
+
+#[test]
+fn bot_games_with_the_cards_that_pay_parts_keep_every_invariant_and_use_them() {
+    use crate::common::seeds::for_each_seed;
+    use mtg_testkit::{PlayOptions, extra_cost_fuzz_setup, play_game_with};
+    let seen = std::sync::Mutex::new((0u64, 0u64, 0u64, 0u64));
+    let games = std::env::var("MTG_FUZZ_GAMES")
+        .ok()
+        .and_then(|v| v.parse().ok())
+        .unwrap_or(40);
+    for_each_seed(0..games, |seed| {
+        for players in [2, 3, 4] {
+            let outcome = play_game_with(
+                extra_cost_fuzz_setup(players, seed),
+                seed,
+                PlayOptions::default(),
+            )
+            .unwrap_or_else(|failure| panic!("{failure}"));
+            let mut seen = seen.lock().unwrap();
+            for event in &outcome.events {
+                match event {
+                    // Spells paid with an optional cost, picks included.
+                    Event::SpellCast { choices, .. } if !choices.optional_costs.is_empty() => {
+                        seen.0 += 1;
+                        if choices.cost_picks().iter().any(|picked| !picked.is_empty()) {
+                            seen.1 += 1;
+                        }
+                    }
+                    Event::LifePaid { amount: 3, .. } => seen.2 += 1,
+                    Event::ZoneChanged {
+                        from: Zone::Stack,
+                        to: Zone::Hand(_),
+                        ..
+                    } => seen.3 += 1,
+                    _ => {}
+                }
+            }
+        }
+    });
+    let (paid, picked, life, bought_back) = seen.into_inner().unwrap();
+    assert!(paid > 0, "some spells paid an optional cost");
+    assert!(picked > 0, "some optional cost took objects the player picked");
+    assert!(life > 0, "some cost paid 3 life");
+    assert!(bought_back > 0, "some spell returned to a hand as it resolved");
+}
