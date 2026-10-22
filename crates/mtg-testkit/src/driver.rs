@@ -12,6 +12,7 @@ use mtg_engine::decision::{
 };
 use mtg_engine::effects::{Duration, Modification, Selector};
 use mtg_engine::help::Convoked;
+use mtg_engine::manual::ManualAction;
 use mtg_engine::mana::{ManaSource, Payment};
 use mtg_engine::rules::Rule;
 use mtg_engine::turn::Step;
@@ -184,6 +185,12 @@ impl Driver {
     pub fn pass(&mut self) -> Result<Vec<Event>, ScriptError> {
         self.priority()?;
         self.answer(Answer::Priority(PriorityAction::Pass))
+    }
+
+    /// The player holding priority takes a manual action by hand.
+    pub fn manual(&mut self, action: ManualAction) -> Result<Vec<Event>, ScriptError> {
+        self.priority()?;
+        self.answer(Answer::Priority(PriorityAction::Manual(action)))
     }
 
     /// The player holding priority plays the named land from hand.

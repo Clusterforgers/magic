@@ -9,6 +9,7 @@ use thiserror::Error;
 
 use crate::bot::RandomBot;
 use crate::invariants::{InvariantChecker, Violation};
+use crate::manual_script::ManualScript;
 use crate::windows::{Mode, SeatWindows, Windows};
 
 /// Whole-state invariants run every this many answers; per-event checks run on every event.
@@ -33,6 +34,9 @@ pub struct PlayOptions {
     /// Let each bot choose its stops and Full Control mode before the game ([`RandomBot::windows`]), as a seat that
     /// sets them in the lobby does; they replace what `auto_pass` gives that seat.
     pub bot_windows: bool,
+    /// Take a scripted manual action ([`ManualScript`]) at one priority decision in this many, in place of the bot's
+    /// answer; 0 never. The bots themselves never take one.
+    pub manual_every: usize,
 }
 
 impl Default for PlayOptions {
@@ -44,6 +48,7 @@ impl Default for PlayOptions {
             symbol_choices: false,
             auto_pass: false,
             bot_windows: false,
+            manual_every: 0,
         }
     }
 }
@@ -68,6 +73,8 @@ pub struct GameOutcome {
     pub replacement_asks: usize,
     /// How many times the engine asked a player to pick one of several options (a colour, a type, the damage a shield takes first).
     pub option_asks: usize,
+    /// How many manual actions the script took ([`PlayOptions::manual_every`]); they count in `answers` too.
+    pub manual_actions: usize,
 }
 
 /// What went wrong in a bot game.
@@ -178,6 +185,8 @@ pub fn play_game_with(
     windows.observe(engine.events());
 
     let pass = Answer::Priority(PriorityAction::Pass);
+    let mut script = ManualScript::new(seed, options.manual_every);
+    let mut manual_actions = 0;
     let mut answers = 0;
     let mut auto_passes = 0;
     let mut replacement_asks = 0;
@@ -203,9 +212,17 @@ pub fn play_game_with(
             option_asks += 1;
         }
         let table_passes = windows.passes(engine.state(), &decision);
+        let scripted = (!table_passes
+            && matches!(decision.kind, DecisionKind::Priority(_))
+            && script.due())
+        .then(|| script.action(engine.state(), decision.player))
+        .flatten();
         let answer = if table_passes {
             auto_passes += 1;
             pass.clone()
+        } else if let Some(action) = scripted {
+            manual_actions += 1;
+            Answer::Priority(PriorityAction::Manual(action))
         } else {
             bot.choose(&decision)
         };
@@ -224,6 +241,7 @@ pub fn play_game_with(
         .map(|outcome| GameOutcome {
             replacement_asks,
             option_asks,
+            manual_actions,
             ..outcome
         })
         .map_err(|kind| fail(kind, engine.events()))
@@ -302,5 +320,6 @@ fn finish(
         events: engine.events().to_vec(),
         replacement_asks: 0,
         option_asks: 0,
+        manual_actions: 0,
     })
 }

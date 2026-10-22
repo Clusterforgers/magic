@@ -24,6 +24,7 @@ use crate::caps::caps;
 use crate::choose::Target;
 use crate::counters::CountersChanged;
 use crate::events::{Event, ZoneCause};
+use crate::format::ExtraZone;
 use crate::loyalty;
 use crate::object::{GameObject, ObjectKind};
 use crate::rules::{cant_draw, cant_gain_life};
@@ -259,6 +260,7 @@ impl CustomToken {
         colors.sort_unstable();
         colors.dedup();
         let mut types = self.types.clone();
+        types.sort_unstable();
         types.dedup();
         Ok(TokenSpec {
             name: name.to_owned(),
@@ -414,6 +416,15 @@ pub enum ManualRefusal {
     BadToken(&'static str),
 }
 
+/// Whether `player` may take `action` in `state`, or why not; the check `PriorityAction::Manual` answers to.
+pub fn check(
+    state: &GameState,
+    player: PlayerId,
+    action: &ManualAction,
+) -> Result<(), ManualRefusal> {
+    events(state, player, action).map(drop)
+}
+
 /// The events of `action` taken by `player`, who holds priority: the `Event::ManualAction` that names it and the events of
 /// the change. Nothing is changed when the action is refused.
 pub(crate) fn events(
@@ -567,7 +578,8 @@ fn moves(
     }
     let owner = object.owner();
     let there = to.zone(owner);
-    if !state.zones.exists(there) {
+    let has_command_zone = state.format().extra_zones().contains(&ExtraZone::Command);
+    if !state.zones.exists(there) || (to == ManualZone::Command && !has_command_zone) {
         return Err(ManualRefusal::NoDestination(to));
     }
     let spell = object.base_types().contains(CardType::Instant)

@@ -254,6 +254,16 @@ impl CardDefinition {
         self
     }
 
+    /// Adds a clause of the rules text the engine does not run.
+    #[must_use]
+    pub fn with_manual(mut self, text: impl Into<String>, reason: impl Into<String>) -> Self {
+        self.manual.push(ManualClause {
+            text: text.into(),
+            reason: reason.into(),
+        });
+        self
+    }
+
     /// The basic land for `color`, or Wastes for `None`.
     pub fn basic_land(color: Option<Color>) -> Self {
         let (name, subtype, mana) = match color {

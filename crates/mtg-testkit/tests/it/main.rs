@@ -83,6 +83,8 @@ mod madness_fuzz;
 mod mana_abilities;
 mod mana_fuzz;
 mod mana_payment;
+mod manual_actions;
+mod manual_fuzz;
 mod mill_effects;
 mod mulligan;
 mod object_nth;
