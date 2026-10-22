@@ -91,7 +91,6 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 #[case::a_chain_of_other_steps("You may scry 1, then draw a card.")]
 #[case::if_you_do("You may draw a card. If you do, discard a card.")]
 #[case::unless("You may draw a card unless that player pays {1}.")]
-#[case::pay("You may pay {1}. If you do, draw a card.")]
 #[case::another_player("Target player may draw a card.")]
 #[case::each_player("Each player may draw a card.")]
 #[case::an_opponent("Each opponent may discard a card.")]

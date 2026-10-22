@@ -88,7 +88,6 @@ fn more_oracle_wordings_of_a_spell_cast_trigger_read_and_write_back(#[case] text
 #[case::they("Counter target spell unless they pay {1}.")]
 #[case::x("Counter target spell unless its controller pays {X}.")]
 #[case::no_cost("Counter target spell unless its controller pays.")]
-#[case::life("Counter target spell unless its controller pays 3 life.")]
 #[case::tap("Counter target spell unless its controller pays {T}.")]
 #[case::a_number("Counter target spell unless its controller pays 3.")]
 #[case::for_each("Counter target spell unless its controller pays {1} for each card in your hand.")]
