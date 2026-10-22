@@ -1,0 +1,23 @@
+{
+  "id": "9133b267-295d-4987-b1d6-f32a85b66081",
+  "oracle_id": "39419d29-47e7-4d71-953b-96a2e14ae964",
+  "name": "Songs of the Damned",
+  "lang": "en",
+  "layout": "normal",
+  "set": "uma",
+  "collector_number": "115",
+  "rarity": "uncommon",
+  "released_at": "2018-12-07",
+  "digital": false,
+  "mana_cost": "{B}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Add {B} for each creature card in your graveyard.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

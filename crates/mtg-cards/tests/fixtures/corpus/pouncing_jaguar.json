@@ -1,0 +1,27 @@
+{
+  "id": "d35ac6e5-3e46-4290-9683-51d6f54e4edf",
+  "oracle_id": "70a2b5ea-dae4-46e8-87eb-8c8d8dfb242b",
+  "name": "Pouncing Jaguar",
+  "lang": "en",
+  "layout": "normal",
+  "set": "usg",
+  "collector_number": "269",
+  "rarity": "common",
+  "released_at": "1998-10-12",
+  "digital": false,
+  "mana_cost": "{G}",
+  "cmc": 1,
+  "type_line": "Creature — Cat",
+  "oracle_text": "Echo {G} (At the beginning of your upkeep, if this came under your control since the beginning of your last upkeep, sacrifice it unless you pay its echo cost.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Echo"
+  ]
+}

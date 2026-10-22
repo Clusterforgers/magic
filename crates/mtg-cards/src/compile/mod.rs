@@ -389,7 +389,11 @@ mod tests {
         "Draw a card.\nGoad target creature.",
         Some(ImplStatus::Manual)
     )]
-    #[case::unreadable_keyword_only("Creature \u{2014} Elf", "Undying", Some(ImplStatus::Manual))]
+    #[case::unreadable_keyword_only(
+        "Creature \u{2014} Elf",
+        "Horsemanship",
+        Some(ImplStatus::Manual)
+    )]
     #[case::reminder_only("Basic Land \u{2014} Forest", "({T}: Add {G}.)", None)]
     #[case::vanilla("Creature \u{2014} Bear", "", None)]
     #[case::whitespace_only("Creature \u{2014} Bear", "  \n ", None)]

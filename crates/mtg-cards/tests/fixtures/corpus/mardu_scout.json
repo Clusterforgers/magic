@@ -1,0 +1,27 @@
+{
+  "id": "0e7891b8-ba69-4c5b-a29f-ee7bcf2374f0",
+  "oracle_id": "c18ab011-c5e0-4174-b623-d89e4d745ce6",
+  "name": "Mardu Scout",
+  "lang": "en",
+  "layout": "normal",
+  "set": "frf",
+  "collector_number": "108",
+  "rarity": "common",
+  "released_at": "2015-01-23",
+  "digital": false,
+  "mana_cost": "{R}{R}",
+  "cmc": 2.0,
+  "type_line": "Creature — Goblin Scout",
+  "oracle_text": "Dash {1}{R} (You may cast this spell for its dash cost. If you do, it gains haste, and it's returned from the battlefield to its owner's hand at the beginning of the next end step.)",
+  "power": "3",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Dash"
+  ]
+}

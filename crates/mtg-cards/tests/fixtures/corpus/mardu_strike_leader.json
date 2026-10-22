@@ -1,0 +1,27 @@
+{
+  "id": "626ed059-9bd1-4a18-ac85-7b00b8057426",
+  "oracle_id": "9be8e04f-f87f-4477-93f3-c546e9b346f0",
+  "name": "Mardu Strike Leader",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "761",
+  "rarity": "rare",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "Whenever this creature attacks, create a 2/1 black Warrior creature token.\nDash {3}{B} (You may cast this spell for its dash cost. If you do, it gains haste, and it's returned from the battlefield to its owner's hand at the beginning of the next end step.)",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Dash"
+  ]
+}

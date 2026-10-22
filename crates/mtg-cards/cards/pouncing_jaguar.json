@@ -1,0 +1,12 @@
+{
+  "oracle_id": "70a2b5ea-dae4-46e8-87eb-8c8d8dfb242b",
+  "name": "Pouncing Jaguar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pouncing Jaguar",
+      "oracle_fingerprint": "2834af9648b519227ad0159ebee1e6f2",
+      "abilities": [{ "Keyword": { "Echo": "{G}" } }]
+    }
+  ]
+}

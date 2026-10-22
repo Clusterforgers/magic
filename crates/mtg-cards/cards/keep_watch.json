@@ -1,0 +1,18 @@
+{
+  "oracle_id": "847b5be5-cb0c-4857-bcd9-c5cfe55fdaeb",
+  "name": "Keep Watch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keep Watch",
+      "oracle_fingerprint": "19fee65882d8d215798dc3e10da44b7f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [{ "Draw": { "count": { "Count": [{ "Type": "Creature" }, "Attacking"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

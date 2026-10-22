@@ -157,7 +157,6 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 #[case::each("Each creature gets -1/-1 until end of turn.")]
 #[case::without_all("Creatures get -1/-1 until end of turn.")]
 #[case::x("All creatures get -X/-X until end of turn.")]
-#[case::for_each("All creatures get -1/-1 until end of turn for each card in your hand.")]
 #[case::a_subtype("All Goblins get +1/+1 until end of turn.")]
 #[case::a_conditional("If you control a Goblin, all creatures get -1/-1 until end of turn.")]
 #[case::one_number("All creatures get -1 until end of turn.")]

@@ -1,0 +1,23 @@
+{
+  "id": "3b64755f-1381-4537-a12d-48da274993e6",
+  "oracle_id": "38abf769-e4ef-4b47-9c79-c8cda0b90f6c",
+  "name": "Collective Unconscious",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cma",
+  "collector_number": "97",
+  "rarity": "rare",
+  "released_at": "2017-06-09",
+  "digital": false,
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Draw a card for each creature you control.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

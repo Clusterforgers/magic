@@ -99,9 +99,6 @@ fn a_static_ability_under_a_condition_reads_as_the_hand_written_files_say(
 #[case::a_turn_among_others(
     "This creature has haste as long as it's your turn or you control a Plains."
 )]
-#[case::a_bonus_with_a_count(
-    "This creature gets +1/+1 for each creature you control as long as it's your turn."
-)]
 #[case::a_clause_after("This creature has haste as long as it's your turn, and it can't block.")]
 #[case::no_condition_words("This creature has haste as long as.")]
 #[case::as_long_as_it_is("This creature has haste as long as it's untapped.")]

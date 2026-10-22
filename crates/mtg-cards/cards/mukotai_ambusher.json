@@ -1,0 +1,12 @@
+{
+  "oracle_id": "3a3f0bf4-7a02-4a57-8a18-ff22f012e0ef",
+  "name": "Mukotai Ambusher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mukotai Ambusher",
+      "oracle_fingerprint": "ae50c03c4346831ed0e73156c8fabb2e",
+      "abilities": [{ "Keyword": { "Ninjutsu": "{1}{B}" } }, { "Keyword": "Lifelink" }]
+    }
+  ]
+}

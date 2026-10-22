@@ -30,17 +30,21 @@ Bog Wraith
 Boggart Ram-Gang
 Bonesplitter
 Boon Reflection
+Borderland Behemoth
 Brain Freeze
 Brainstorm
 Branchblight Stalker
+Brightstone Ritual
 Bronzeplate Boar
 Cackling Counterpart
 Capsize
 Carnage Tyrant
 Cathars' Crusade
 Changeling Outcast
+Circle of Dreams Druid
 Clone
 Cold-Eyed Selkie
+Collective Unconscious
 Command Tower
 Consider
 Consign // Oblivion
@@ -64,10 +68,12 @@ Dawnglade Regent
 Death Ward
 Deep Analysis
 Deepfathom Skulker
+Defile
 Delver of Secrets // Insectile Aberration
 Demon Bolt
 Disembowel
 Dockside Extortionist
+Dokuchi Shadow-Walker
 Doom Blade
 Doom Whisperer
 Dragonspeaker Shaman
@@ -78,8 +84,11 @@ Drudge Skeletons
 Dual Casting
 Dualcaster Mage
 Durkwood Baloth
+Elven Ambush
+Empyrial Plate
 Epic Proportions
 Eternal Witness
+Ethereal Armor
 Exotic Orchard
 Exploration
 Explore
@@ -91,6 +100,7 @@ Fear of Failed Tests
 Felidar Sovereign
 Fellwar Stone
 Fiery Temper
+Firestorm Hellkite
 Flooded Strand
 Fog
 Followed Footsteps
@@ -101,7 +111,9 @@ Foundry Inspector
 Fruit of Tizerus
 Furtive Homunculus
 Gadwick, the Wizened
+Gaea's Cradle
 Game-Trail Changeling
+Gerrard's Wisdom
 Giant Cindermaw
 Giant Growth
 Gilded Lotus
@@ -109,6 +121,7 @@ Glimpse of Freedom
 Glorious Anthem
 Goblin Chieftain
 Goblin Spy
+Goblin War Buggy
 Grapeshot
 Graveshifter
 Growing Ranks
@@ -120,6 +133,7 @@ Hengegate Pathway // Mistgate Pathway
 Hero of Bladehold
 Honor Troll
 Horizon Canopy
+Hound of Griselbrand
 Hulking Raptor
 Idyllic Beachfront
 Impostor of the Sixth Pride
@@ -128,8 +142,11 @@ Invisible Stalker
 Izzet Charm
 Jungle Lion
 Kathari Screecher
+Keep Watch
 Kessig Wolf Run
+Kitchen Finks
 Knight of Dusk's Shadow
+Kolaghan Skirmisher
 Kongming, "Sleeping Dragon"
 Krenko's Enforcer
 Lat-Nam Adept
@@ -146,6 +163,9 @@ Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
 Lurching Rotbeast
 Manabarbs
+Mardu Scout
+Mardu Shadowspear
+Mardu Strike Leader
 Maro
 Master of Etherium
 Megrim
@@ -155,8 +175,10 @@ Mirror Image
 Mishra's Workshop
 Mizzium Mortars
 Monastery Swiftspear
+Morinfen
 Mortivore
 Mothdust Changeling
+Mukotai Ambusher
 Mulldrifter
 Murderous Cut
 Muscle Sliver
@@ -164,6 +186,8 @@ Nantuko Husk
 Nighthawk Scavenger
 Nightmare
 Nightveil Sprite
+Ninja of the Deep Hours
+Ninja of the New Moon
 Notion Rain
 Opt
 Otherworldly Gaze
@@ -171,13 +195,18 @@ Pacifism
 Pale Bears
 Pestilent Syphoner
 Phantasmal Image
+Phyrexian Soulgorger
 Pillar of the Paruns
 Plague Myr
 Plague Stinger
+Pouncing Jaguar
 Prismatic Lens
 Professional Face-Breaker
 Psychosis Crawler
+Putrid Goblin
+Pygmy Kavu
 Questing Beast
+Rakdos Headliner
 Rally the Ranks
 Rampant Growth
 Reckless Impulse
@@ -194,8 +223,10 @@ Rootborn Defenses
 Rosheen Meanderer
 Rummaging Goblin
 Rustrazor Butcher
+Safehold Elite
 Sanguine Bond
 Saw It Coming
+Scuzzback Marauders
 Seedglaive Mentor
 Serra Angel
 Servant of the Conduit
@@ -204,6 +235,7 @@ Siege Wurm
 Sinister Sabotage
 Sinister Starfish
 Skeletal Changeling
+Skizzik Surger
 Skullclamp
 Skycloud Expanse
 Skysovereign, Consul Flagship
@@ -213,6 +245,7 @@ Sodden Verdure
 Sol Ring
 Solstice Zealot
 Soltari Foot Soldier
+Songs of the Damned
 Soul Shepherd
 Souldrinker
 Spectral Rider
@@ -222,6 +255,7 @@ Squirrel Nest
 Staggershock
 Steam Vents
 Stoke the Flames
+Strangleroot Geist
 Strionic Resonator
 Stroke of Genius
 Summer Bloom
@@ -247,11 +281,13 @@ Tireless Tracker
 Treasure Cruise
 Tumble Magnet
 Twincast
+Uktabi Efreet
 Umbral Collar Zealot
 Underworld Dreams
 Underworld Rage-Hound
 Universal Automaton
 Vampire Cutthroat
+Vengeful Vampire
 Vestige of Emrakul
 Viridian Corrupter
 Walking Ballista
@@ -261,5 +297,6 @@ Warmonger Hellkite
 Wear // Tear
 Wilderness Elemental
 Wrath of God
+Young Wolf
 Zendikar Farguide
 Zodiac Goat

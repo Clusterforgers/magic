@@ -150,6 +150,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Untapped
         | Pred::Attacking
         | Pred::Blocking
+        | Pred::Unblocked
         | Pred::In(_)
         | Pred::HasCounter(_)
         | Pred::Named(_) => Traits::NONE,
@@ -195,6 +196,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
             .iter()
             .fold(Traits::NONE, |all, part| all.or(reads_of_amount(part))),
         Amount::EvenShare(total) => reads_of_amount(total),
+        Amount::Times { of, .. } => reads_of_amount(of),
         Amount::Devotion(_) => Traits::CONTROL,
         Amount::Greatest { of, stat } | Amount::Total { of, stat } => {
             reads_of_selector(of).or(reads_of_stat(*stat))
@@ -215,6 +217,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
             reads_of_ref(subject).or(reads_of_selector(selector))
         }
         Condition::YourTurn => Traits::CONTROL,
+        Condition::NewlyControlled(what) => reads_of_ref(what).or(Traits::CONTROL),
         Condition::Kicked
         | Condition::AdditionalCostPaid
         | Condition::CastWith(_)

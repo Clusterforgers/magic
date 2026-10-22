@@ -1,0 +1,23 @@
+{
+  "id": "e43378f0-b518-499e-9950-c583bc2f11f8",
+  "oracle_id": "3e30e8f2-f437-4620-a3bc-dd9c29ae6570",
+  "name": "Gerrard's Wisdom",
+  "lang": "en",
+  "layout": "normal",
+  "set": "7ed",
+  "collector_number": "16",
+  "rarity": "uncommon",
+  "released_at": "2001-04-11",
+  "digital": false,
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "You gain 2 life for each card in your hand.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

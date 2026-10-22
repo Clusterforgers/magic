@@ -1,0 +1,27 @@
+{
+  "id": "e4cbde6a-fbc8-403a-98ad-769d25aa4732",
+  "oracle_id": "378a78d8-9001-4aa5-a66b-2aca27fa8180",
+  "name": "Borderland Behemoth",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cm2",
+  "collector_number": "87",
+  "rarity": "rare",
+  "released_at": "2018-06-08",
+  "digital": false,
+  "mana_cost": "{5}{R}{R}",
+  "cmc": 7.0,
+  "type_line": "Creature — Giant Warrior",
+  "oracle_text": "Trample\nThis creature gets +4/+4 for each other Giant you control.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Trample"
+  ]
+}

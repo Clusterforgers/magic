@@ -1,6 +1,6 @@
 //! A seeded deck of the corpus cards that are cast or put onto the battlefield in an unusual way: the halves of split
-//! cards with aftermath, with lands of their colours and creatures to target, block and fill the graveyards, for fuzz
-//! games.
+//! cards with aftermath and creatures with dash and ninjutsu, with lands of their colours and creatures to target, block and fill the
+//! graveyards, for fuzz games.
 
 use std::sync::Arc;
 
@@ -14,7 +14,15 @@ use crate::cards::{creature, land};
 use crate::corpus;
 
 /// The corpus cards that are cast or put onto the battlefield in an unusual way.
-pub const CAST_WAY_CARDS: [&str; 3] = ["Cut // Ribbons", "Consign // Oblivion", "Spring // Mind"];
+pub const CAST_WAY_CARDS: [&str; 7] = [
+    "Ninja of the New Moon",
+    "Mukotai Ambusher",
+    "Cut // Ribbons",
+    "Consign // Oblivion",
+    "Spring // Mind",
+    "Mardu Scout",
+    "Mardu Shadowspear",
+];
 
 /// A legal Normal deck of lands, four of each such card and creatures, derived entirely from `rng`.
 pub fn cast_way_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {

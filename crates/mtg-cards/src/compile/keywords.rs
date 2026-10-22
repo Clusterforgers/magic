@@ -338,6 +338,10 @@ pub fn read(item: &str) -> Option<Keyword> {
         "foretell" => cost(rest).map(Keyword::Foretell),
         "unearth" => spell_cost(rest).map(Keyword::Unearth),
         "escape" => spell_cost(rest).map(Keyword::Escape),
+        "dash" => spell_cost(rest).map(Keyword::Dash),
+        "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
+        "echo" => spell_cost(rest).map(Keyword::Echo),
+        "cumulative upkeep" => spell_cost(rest).map(Keyword::CumulativeUpkeep),
         "crew" => rest
             .parse()
             .ok()
@@ -431,6 +435,8 @@ fn plain(name: &str) -> Option<Keyword> {
         "undaunted" => Keyword::Undaunted,
         "rebound" => Keyword::Rebound,
         "aftermath" => Keyword::Aftermath,
+        "undying" => Keyword::Undying,
+        "persist" => Keyword::Persist,
         _ => return None,
     })
 }
@@ -652,12 +658,46 @@ mod tests {
     #[case::mutate("Mutate {1}{G}{G}", Keyword::Mutate(mana("{1}{G}{G}")))]
     #[case::encore("Encore {5}{R}", Keyword::Encore(mana("{5}{R}")))]
     #[case::squad("Squad {2}", Keyword::Squad(mana("{2}")))]
+    #[case::echo("Echo {2}{R}", Keyword::Echo(mana("{2}{R}")))]
+    #[case::echo_lowercase("echo {G}", Keyword::Echo(mana("{G}")))]
+    #[case::echo_discarding(
+        "Echo\u{2014}Discard a card.",
+        Keyword::Echo(Cost(vec![CostItem::Discard { count: Amount::one(), filter: None }]))
+    )]
+    #[case::echo_sacrificing(
+        "Echo\u{2014}Sacrifice two lands.",
+        Keyword::Echo(Cost(vec![CostItem::Sacrifice {
+            filter: Selector(vec![Pred::Type(CardType::Land)]),
+            count: Amount::Fixed(2),
+        }]))
+    )]
+    #[case::cumulative_upkeep("Cumulative upkeep {1}", Keyword::CumulativeUpkeep(mana("{1}")))]
+    #[case::cumulative_upkeep_two_colours(
+        "Cumulative upkeep {U}{R}",
+        Keyword::CumulativeUpkeep(mana("{U}{R}"))
+    )]
+    #[case::cumulative_upkeep_in_life(
+        "Cumulative upkeep\u{2014}Pay 1 life.",
+        Keyword::CumulativeUpkeep(Cost(vec![CostItem::PayLife(Amount::Fixed(1))]))
+    )]
+    #[case::cumulative_upkeep_sacrificing(
+        "Cumulative upkeep\u{2014}Sacrifice a creature.",
+        Keyword::CumulativeUpkeep(Cost(vec![CostItem::Sacrifice {
+            filter: creature(),
+            count: Amount::one(),
+        }]))
+    )]
+    #[case::undying("Undying", Keyword::Undying)]
+    #[case::persist("persist", Keyword::Persist)]
     #[case::foretell("Foretell {1}{U}", Keyword::Foretell(mana("{1}{U}")))]
     #[case::foretell_for_nothing("Foretell {0}", Keyword::Foretell(mana("{0}")))]
     #[case::unearth("Unearth {1}{B}", Keyword::Unearth(mana("{1}{B}")))]
     #[case::unearth_in_mana_only_with_reminder("unearth {B}", Keyword::Unearth(mana("{B}")))]
     #[case::rebound("Rebound", Keyword::Rebound)]
     #[case::aftermath("Aftermath", Keyword::Aftermath)]
+    #[case::dash("Dash {2}{R}", Keyword::Dash(mana("{2}{R}")))]
+    #[case::ninjutsu("Ninjutsu {1}{U}", Keyword::Ninjutsu(mana("{1}{U}")))]
+    #[case::ninjutsu_for_one_mana("ninjutsu {B}", Keyword::Ninjutsu(mana("{B}")))]
     #[case::escape_exiling_cards(
         "Escape\u{2014}{2}{R}, Exile three other cards from your graveyard.",
         Keyword::Escape(Cost(vec![
@@ -764,7 +804,7 @@ mod tests {
     #[case::enchant_nothing("Enchant")]
     #[case::partner_without_a_text("Partner\u{2014}")]
     #[case::doctors_companion_with_a_cost("Doctor's companion {1}")]
-    #[case::undeclared("Undying")]
+    #[case::undeclared("Horsemanship")]
     #[case::crew_x("Crew X")]
     #[case::crew_nothing("Crew 0")]
     #[case::mutate_without_a_cost("Mutate")]
@@ -785,7 +825,7 @@ mod tests {
     #[case::two_words_in_a_list("Flying, first strike, lifelink", &["Flying", "first strike", "lifelink"])]
     #[case::parameters_in_a_list("Flying, cycling {2}", &["Flying", "cycling {2}"])]
     #[case::semicolons("Flying; first strike", &["Flying", "first strike"])]
-    #[case::undeclared_in_a_list("Flying, undying", &["Flying", "undying"])]
+    #[case::undeclared_in_a_list("Flying, horsemanship", &["Flying", "horsemanship"])]
     #[case::cost_in_words("Ward\u{2014}Pay 3 life.", &["Ward\u{2014}Pay 3 life."])]
     #[case::cost_with_a_comma("Ward\u{2014}{2}, Pay 2 life.", &["Ward\u{2014}{2}, Pay 2 life."])]
     #[case::partner_name_with_a_comma("Partner with Pir, Imaginative Rascal", &["Partner with Pir, Imaginative Rascal"])]
@@ -896,6 +936,10 @@ mod tests {
             "Mutate {1}",
             "Encore {1}",
             "Squad {1}",
+            "Echo {1}",
+            "Cumulative upkeep {1}",
+            "Undying",
+            "Persist",
             "Foretell {1}",
             "Daybound",
             "Nightbound",
@@ -916,6 +960,8 @@ mod tests {
             "Escape {1}",
             "Rebound",
             "Aftermath",
+            "Dash {1}",
+            "Ninjutsu {1}{U}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];
         let mut seen = Vec::new();

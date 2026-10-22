@@ -6,7 +6,7 @@
 use mtg_core::card::Subtype;
 use mtg_core::color::Color;
 
-use super::amounts::{count_word, number_word};
+use super::amounts::{count_word, counted, counted_parts, number_word};
 use super::selectors::{
     Form, card_type, color, color_name, keyword, keyword_text, phrase, phrase_text, subtype,
     type_name,
@@ -139,7 +139,8 @@ pub fn tokens(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         (false, r.words(attacking_only))
     };
     let count = if let Some(number) = number {
-        Amount::Fixed(i32::try_from(number).ok()?)
+        // "... token for each Elf you control": the count of the Elves, times the number when it is not one.
+        counted(r, Amount::Fixed(i32::try_from(number).ok()?))?
     } else {
         r.punct(',').then_some(())?;
         r.need("where x is the number of")?;
@@ -214,8 +215,9 @@ fn keywords_text(token: &TokenRef) -> Option<String> {
     })
 }
 
-/// An effect that creates tokens, as a sentence without its first capital and period.
-pub fn text(effect: &Effect) -> Option<String> {
+/// An effect that creates tokens, as a sentence without its first capital and period. A count of things is worded
+/// "X tokens, where X is the number of ..." or, with `per`, "a token for each ...".
+pub fn text(effect: &Effect, per: bool) -> Option<String> {
     let Effect::CreateToken {
         who: Ref::You,
         token,
@@ -240,6 +242,18 @@ pub fn text(effect: &Effect) -> Option<String> {
             false,
             String::new(),
         ),
+        // The same count in the other wording: "a Goblin token for each Goblin you control".
+        counted if per => {
+            let (each, tail) = counted_parts(counted)?;
+            let (number, single) = match each {
+                Amount::Fixed(1) => (article(&what).to_owned(), true),
+                Amount::Fixed(number) => {
+                    (count_word(u32::try_from(number).ok()?)?.to_owned(), false)
+                }
+                _ => return None,
+            };
+            (number, single, format!(" {tail}"))
+        }
         Amount::Count(selector) => (
             "X".to_owned(),
             false,
