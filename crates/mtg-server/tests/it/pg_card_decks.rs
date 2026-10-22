@@ -53,7 +53,7 @@ fn deck_ids() -> Vec<String> {
 }
 
 fn oracle(ids: Vec<String>) -> DeckRef {
-    DeckRef::Oracle { cards: ids }
+    DeckRef::oracle(ids)
 }
 
 /// Both schemas migrated and the fixture imported: the server's tables for the games and the card

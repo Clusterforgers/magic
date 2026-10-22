@@ -116,10 +116,12 @@ impl<S: EventStore> GameActor<S> {
                 .decks
                 .as_mut()
                 .and_then(|decks| decks.reset(seat.index()))
-                .map(|deck| deck.cards().to_vec());
-            if let (Some(cards), Some(player)) = (default, self.setup.players.get_mut(seat.index()))
+                .map(|deck| (deck.cards().to_vec(), deck.commanders().to_vec()));
+            if let (Some((cards, commanders)), Some(player)) =
+                (default, self.setup.players.get_mut(seat.index()))
             {
                 player.library = cards;
+                player.commanders = commanders;
             }
         }
         self.push_roster();
@@ -135,6 +137,7 @@ impl<S: EventStore> GameActor<S> {
             return;
         };
         player.library = deck.cards().to_vec();
+        player.commanders = deck.commanders().to_vec();
         decks.choose(seat.index(), deck);
     }
 

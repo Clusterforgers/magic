@@ -9,13 +9,15 @@
 //! (`precons.rs`) and needs no account.
 
 use axum::http::{HeaderMap, StatusCode};
+use mtg_cards::CardDefinition;
 use mtg_cards::deck::{DeckReport, DeckState, DeckZone, Issue, IssueCode};
 use mtg_cards::support::Support;
 use mtg_db::DeckId;
-use mtg_engine::format::{DeckError, FormatRules, Normal};
+use mtg_engine::format::{Commander, DeckError, FormatRules, Normal};
 use mtg_protocol::SeatDeck;
 use mtg_protocol::rest::{DeckBlockedBody, DeckChoiceErrorCode, PRECON_DECK_PREFIX};
 use sqlx::types::uuid::Uuid;
+use std::sync::Arc;
 
 use crate::api::ApiError;
 use crate::card_api::failed;
@@ -23,6 +25,7 @@ use crate::deck_cards::{Line, Loaded};
 use crate::decks::lines_of;
 use crate::demo;
 use crate::precons::Judge;
+use crate::recipe::FormatKind;
 use crate::seat_deck::ChosenDeck;
 use crate::server::AppState;
 
@@ -65,7 +68,7 @@ impl Refused {
 }
 
 /// The 422 of a refused deck: the issues go in the body next to `error` and `message`.
-fn blocked(issues: &[Issue]) -> ApiError {
+pub(crate) fn blocked(issues: &[Issue]) -> ApiError {
     let body = DeckBlockedBody {
         error: DeckChoiceErrorCode::DeckBlocked,
         message: "that deck cannot be played in this game".to_owned(),
@@ -153,7 +156,14 @@ async fn precon(app: &AppState, code: &str) -> Result<ChosenDeck, Refused> {
         format: judged.format.to_owned(),
         manual_cards: manual_cards(&judged.report),
     };
-    ChosenDeck::stored(judged.library, judged.cards, note).map_err(|error| {
+    ChosenDeck::led(
+        judged.library,
+        judged.cards,
+        judged.commanders,
+        judged.leaders,
+        note,
+    )
+    .map_err(|error| {
         tracing::error!(%error, "a precon could not be fingerprinted");
         Refused::Failed(ApiError::new(
             StatusCode::INTERNAL_SERVER_ERROR,
@@ -181,24 +191,20 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
     let loaded = Loaded::load(source, &lines).await?;
     let report = loaded.report(&deck.format, &lines);
 
-    let mut issues = report.legality.clone();
-    if lines.iter().any(|line| line.zone == DeckZone::Commander) {
-        issues.push(no_command_zone());
-    }
-    if !issues.is_empty() || report.summary.state == DeckState::Blocked {
-        return Err(Refused::Blocked(issues));
+    if !report.legality.is_empty() || report.summary.state == DeckState::Blocked {
+        return Err(Refused::Blocked(report.legality.clone()));
     }
     let ids = library_ids(&lines);
-    let cards = source.deck(&ids).await.map_err(ApiError::from)?;
-    if let Err(error) = Normal.validate_deck(&cards) {
-        return Err(Refused::Blocked(vec![engine_issue(error)]));
-    }
+    let commander_ids = commander_ids(&lines);
+    let both: Vec<String> = ids.iter().chain(&commander_ids).cloned().collect();
+    let mut cards = source.deck(&both).await.map_err(ApiError::from)?;
+    let commanders = cards.split_off(ids.len());
     let note = SeatDeck {
         name: deck.name.clone(),
         format: deck.format.clone(),
         manual_cards: manual_cards(&report),
     };
-    ChosenDeck::stored(ids, cards, note).map_err(|error| {
+    ChosenDeck::led(ids, cards, commander_ids, commanders, note).map_err(|error| {
         tracing::error!(%error, "a stored deck could not be fingerprinted");
         Refused::Failed(ApiError::new(
             StatusCode::INTERNAL_SERVER_ERROR,
@@ -208,23 +214,37 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
     })
 }
 
-/// The oracle id of every card of the main deck, a line's copies one after the other, in line order:
-/// the library the game is given.
-pub(crate) fn library_ids(lines: &[Line]) -> Vec<String> {
+/// The oracle id of every card of a zone, a line's copies one after the other, in line order.
+fn zone_ids(lines: &[Line], zone: DeckZone) -> Vec<String> {
     lines
         .iter()
-        .filter(|line| line.zone == DeckZone::Main)
+        .filter(|line| line.zone == zone)
         .flat_map(|line| std::iter::repeat_n(line.oracle_id.clone(), line.count as usize))
         .collect()
 }
 
-/// Copies of the main deck's cards the game does not run whole; a card of the sideboard or the
-/// companion slot never reaches the game, so the table is told nothing of it.
+/// The oracle id of every card of the main deck, a line's copies one after the other, in line order:
+/// the library the game is given.
+pub(crate) fn library_ids(lines: &[Line]) -> Vec<String> {
+    zone_ids(lines, DeckZone::Main)
+}
+
+/// The oracle id of every card of the command zone: the commanders the seat starts with.
+pub(crate) fn commander_ids(lines: &[Line]) -> Vec<String> {
+    zone_ids(lines, DeckZone::Commander)
+}
+
+/// Copies of the cards a game plays (the main deck and the commanders) that it does not run whole;
+/// a card of the sideboard or the companion slot never reaches the game, so the table is told
+/// nothing of it.
 pub(crate) fn manual_cards(report: &DeckReport) -> u32 {
     report
         .cards
         .iter()
-        .filter(|card| card.zone == DeckZone::Main && card.support != Support::Verified)
+        .filter(|card| {
+            matches!(card.zone, DeckZone::Main | DeckZone::Commander)
+                && card.support != Support::Verified
+        })
         .map(|card| card.count)
         .fold(0, u32::saturating_add)
 }
@@ -240,13 +260,46 @@ pub(crate) fn no_command_zone() -> Issue {
     }
 }
 
+/// The rules of `format` that a seat's library and commanders break, in the words of the deck
+/// check: a Normal game has no command zone and wants 60 cards with at most four copies of a card,
+/// a Commander game the engine's `validate_seat` (the commander, the size, the singleton rule and
+/// the colour identity).
+pub(crate) fn format_issues(
+    format: FormatKind,
+    library: &[Arc<CardDefinition>],
+    commanders: &[Arc<CardDefinition>],
+) -> Vec<Issue> {
+    match format {
+        FormatKind::Normal => {
+            let mut issues = Vec::new();
+            if !commanders.is_empty() {
+                issues.push(no_command_zone());
+            }
+            if let Err(error) = Normal.validate_deck(library) {
+                issues.push(engine_issue(error, format));
+            }
+            issues
+        }
+        FormatKind::Commander => Commander
+            .validate_seat(library, commanders)
+            .err()
+            .map(|error| engine_issue(error, format))
+            .into_iter()
+            .collect(),
+    }
+}
+
 /// A rule of the game's format the deck breaks, in the words of the deck check.
-pub(crate) fn engine_issue(error: DeckError) -> Issue {
+pub(crate) fn engine_issue(error: DeckError, format: FormatKind) -> Issue {
+    let game = match format {
+        FormatKind::Normal => "Normal",
+        FormatKind::Commander => "Commander",
+    };
     match error {
         DeckError::TooFewCards { min, got } => Issue {
             code: IssueCode::DeckSize,
             message: format!(
-                "a Normal game needs at least {min} cards in the main deck; this has {got}"
+                "a {game} game needs at least {min} cards in the main deck; this has {got}"
             ),
             zone: Some(DeckZone::Main),
             oracle_id: None,
@@ -254,12 +307,12 @@ pub(crate) fn engine_issue(error: DeckError) -> Issue {
         },
         DeckError::TooManyCopies { name, max, got } => Issue {
             code: IssueCode::Copies,
-            message: format!("{name} appears {got} times; a Normal game allows {max}"),
+            message: format!("{name} appears {got} times; a {game} game allows {max}"),
             zone: Some(DeckZone::Main),
             oracle_id: None,
             name: Some(name),
         },
-        // The Commander format's rules, in the words of the engine's error.
+        // The Commander format's other rules, in the words of the engine's error.
         other => {
             let (code, zone, name) = match &other {
                 DeckError::WrongSize { .. } => (IssueCode::DeckSize, DeckZone::Main, None),
@@ -377,17 +430,23 @@ mod tests {
 
     #[test]
     fn the_rules_of_a_normal_game_become_issues_of_the_deck_check() {
-        let few = engine_issue(DeckError::TooFewCards { min: 60, got: 40 });
+        let few = engine_issue(
+            DeckError::TooFewCards { min: 60, got: 40 },
+            FormatKind::Normal,
+        );
         assert_eq!(
             (few.code, few.zone),
             (IssueCode::DeckSize, Some(DeckZone::Main))
         );
         assert!(few.message.contains("60") && few.message.contains("40"));
-        let many = engine_issue(DeckError::TooManyCopies {
-            name: "Lightning Bolt".into(),
-            max: 4,
-            got: 5,
-        });
+        let many = engine_issue(
+            DeckError::TooManyCopies {
+                name: "Lightning Bolt".into(),
+                max: 4,
+                got: 5,
+            },
+            FormatKind::Normal,
+        );
         assert_eq!(many.code, IssueCode::Copies);
         assert_eq!(many.name.as_deref(), Some("Lightning Bolt"));
         assert_eq!(no_command_zone().code, IssueCode::NoCommanderZone);

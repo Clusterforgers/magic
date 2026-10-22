@@ -13,10 +13,11 @@ use mtg_protocol::rest::{GameInfo, GameSeat};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-use crate::deck_choice;
+use crate::deck_choice::{self, Refused};
 use crate::demo::{self, DemoDeck};
 use crate::game_id::GameId;
 use crate::origin::origin_allowed;
+use crate::recipe::FormatKind;
 use crate::records::Visibility;
 use crate::registry::{ChosenDeck, CreateError, GameOptions};
 use crate::server::AppState;
@@ -341,7 +342,7 @@ pub(crate) async fn create_game(
     let mut decks = Vec::with_capacity(names.len());
     for (index, seat) in body.seats.iter().enumerate() {
         decks.push(match seat.deck.as_deref() {
-            Some(id) => Some(starting_deck(&app, &headers, index, id).await?),
+            Some(id) => Some(starting_deck(&app, &headers, index, id, options.format).await?),
             None => None,
         });
     }
@@ -433,12 +434,19 @@ async fn starting_deck(
     headers: &HeaderMap,
     index: usize,
     id: &str,
+    format: FormatKind,
 ) -> Result<ChosenDeck, ApiError> {
     let found = if index == 0 || deck_choice::precon_code(id).is_some() {
         deck_choice::resolve(app, headers, id).await
     } else {
         deck_choice::built_in(id)
     };
+    // The game's own rules judge the deck too: a demo deck has no commander, a Commander deck no
+    // place in a Normal game.
+    let found = found.and_then(|deck| match deck.issues_in(format) {
+        issues if issues.is_empty() => Ok(deck),
+        issues => Err(Refused::Blocked(issues)),
+    });
     found.map_err(|refused| {
         refused.into_error_with(
             StatusCode::BAD_REQUEST,
@@ -450,17 +458,18 @@ async fn starting_deck(
 /// Checks a creation request; returns the names of the seats and what the game is made with
 /// besides them.
 fn validate(body: &NewGame) -> Result<(Vec<String>, GameOptions), ApiError> {
-    if body.format != "normal" {
+    let Some(format) = FormatKind::parse(&body.format) else {
         return Err(ApiError::new(
             StatusCode::BAD_REQUEST,
             "unsupported_format",
-            "the only supported format is \"normal\"",
+            "the supported formats are \"normal\" and \"commander\"",
         ));
-    }
+    };
     let count = body.seats.len();
-    if !(MIN_SEATS..=MAX_SEATS).contains(&count) {
+    let most = format.max_seats();
+    if !(MIN_SEATS..=most).contains(&count) {
         return Err(ApiError::invalid(format!(
-            "a game needs {MIN_SEATS} to {MAX_SEATS} seats, got {count}"
+            "a game needs {MIN_SEATS} to {most} seats, got {count}"
         )));
     }
     let held = body.held.unwrap_or(count);
@@ -496,6 +505,7 @@ fn validate(body: &NewGame) -> Result<(Vec<String>, GameOptions), ApiError> {
         visibility: body.visibility,
         held: Some(held),
         house_rules: body.house_rules.clone(),
+        format,
     };
     Ok((seats, options))
 }

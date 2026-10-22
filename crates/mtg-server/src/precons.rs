@@ -19,14 +19,14 @@ use mtg_cards::{Caps, CardDefinition};
 use mtg_db::{
     DbError, DeckBoard, IndexVersion, PreconDeckDetail, PreconDeckId, PreconVersion, RulesVersion,
 };
-use mtg_engine::format::{FormatRules, Normal};
 use mtg_protocol::rest::PreconListItem;
 use thiserror::Error;
 use tokio::sync::Mutex;
 
 use crate::cards::{CardSource, CatalogError, Rules, card_facts, printed_card};
 use crate::deck_cards::Line;
-use crate::deck_choice::{engine_issue, library_ids, no_command_zone};
+use crate::deck_choice::{commander_ids, format_issues, library_ids};
+use crate::recipe::FormatKind;
 
 /// Longest code, in characters; a longer name is cut.
 const MAX_CODE_CHARS: usize = 80;
@@ -76,6 +76,10 @@ pub(crate) struct Judged {
     pub(crate) library: Vec<String>,
     /// Their definitions, in the same order.
     pub(crate) cards: Vec<Arc<CardDefinition>>,
+    /// The oracle id of every card of the commander board: the commanders a game starts with.
+    pub(crate) commanders: Vec<String>,
+    /// Their definitions, in the same order.
+    pub(crate) leaders: Vec<Arc<CardDefinition>>,
 }
 
 impl Judged {
@@ -189,13 +193,18 @@ impl<'a> Judge<'a> {
             .iter()
             .filter_map(|id| self.definitions.get(id).cloned())
             .collect();
+        let commanders = commander_ids(&lines);
+        let leaders: Vec<Arc<CardDefinition>> = commanders
+            .iter()
+            .filter_map(|id| self.definitions.get(id).cloned())
+            .collect();
+        let kind = if commanded {
+            FormatKind::Commander
+        } else {
+            FormatKind::Normal
+        };
         let mut issues = report.legality.clone();
-        if lines.iter().any(|line| line.zone == DeckZone::Commander) {
-            issues.push(no_command_zone());
-        }
-        if let Err(error) = Normal.validate_deck(&cards) {
-            issues.push(engine_issue(error));
-        }
+        issues.extend(format_issues(kind, &cards, &leaders));
         let playable = issues.is_empty() && report.summary.state != DeckState::Blocked;
         Judged {
             format,
@@ -205,6 +214,8 @@ impl<'a> Judge<'a> {
             lines,
             library,
             cards,
+            commanders,
+            leaders,
         }
     }
 }
