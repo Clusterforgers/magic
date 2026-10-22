@@ -184,3 +184,33 @@ fn the_bindings_carry_the_roster_and_not_ready() {
     assert!(server.contains("needed: number"));
     assert!(files["ClientMessage.ts"].contains("{ \"type\": \"NotReady\" }"));
 }
+
+/// A seat with a deck that holds `manual` cards the game does not run whole; `None` is a seat without a deck.
+fn with_deck(index: u64, manual: Option<u32>) -> LobbySeat {
+    LobbySeat {
+        deck: manual.map(|manual_cards| mtg_protocol::SeatDeck {
+            name: "Deck".to_owned(),
+            format: "normal".to_owned(),
+            manual_cards,
+        }),
+        ..seat(index, "Ana", true, false)
+    }
+}
+
+#[rstest]
+#[case::no_seats(&[], false)]
+#[case::seats_without_decks(&[None, None], false)]
+#[case::decks_the_game_plays_whole(&[Some(0), Some(0)], false)]
+#[case::one_deck_with_a_manual_card(&[Some(0), Some(1)], true)]
+#[case::several_decks_with_manual_cards(&[Some(3), None, Some(12)], true)]
+fn the_table_plays_with_manual_cards_when_any_deck_holds_one(
+    #[case] decks: &[Option<u32>],
+    #[case] expected: bool,
+) {
+    let seats: Vec<LobbySeat> = decks
+        .iter()
+        .enumerate()
+        .map(|(index, manual)| with_deck(index as u64, *manual))
+        .collect();
+    assert_eq!(mtg_protocol::manual_play(&seats), expected);
+}

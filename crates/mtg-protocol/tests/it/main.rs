@@ -20,6 +20,7 @@ mod impulse_hidden;
 mod keyword_view;
 mod lobby_message;
 mod loyalty_view;
+mod manual_view;
 mod messages;
 mod preview_fixture;
 mod projection;

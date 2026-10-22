@@ -16,6 +16,7 @@ use crate::choose::{
 use crate::combat::{AttackTarget, DamageTarget};
 use crate::help::{Help, Offered};
 use crate::mana::{ManaOption, ManaPool, ManaSource, Payment};
+use crate::manual::ManualAction;
 use crate::spend::Spend;
 
 /// A question for one player together with all of their legal options.
@@ -418,7 +419,7 @@ pub enum MulliganChoice {
 }
 
 /// What a player does with priority.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum PriorityAction {
     /// Pass priority.
@@ -437,6 +438,9 @@ pub enum PriorityAction {
     Suspend(ObjectId),
     /// Foretell this card from the hand (CR 702.143, a special action): pay {2} and exile it face down.
     Foretell(ObjectId),
+    /// Do something by hand for a card the engine does not run: a zone move, counters, life, a token and the like. Legal at
+    /// any priority, checked against the state (`manual.rs`).
+    Manual(ManualAction),
 }
 
 /// How to pay for a spell.

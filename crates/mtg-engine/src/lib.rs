@@ -56,6 +56,7 @@ pub mod keywords;
 pub mod library;
 pub mod loyalty;
 pub mod mana;
+pub mod manual;
 pub mod object;
 pub mod player;
 pub mod priority;

@@ -5,6 +5,7 @@ import type { Color } from "./Color";
 import type { CounterKind } from "./CounterKind";
 import type { LoyaltyAbilityView } from "./LoyaltyAbilityView";
 import type { ManaCost } from "./ManaCost";
+import type { ManualClause } from "./ManualClause";
 import type { ObjectId } from "./ObjectId";
 import type { ObjectKind } from "./ObjectKind";
 import type { PermanentView } from "./PermanentView";
@@ -119,4 +120,9 @@ face_down?: boolean,
  * modal double-faced card on the stack or the battlefield. Left out for the card as a whole, which is its front face
  * or both halves of a split card.
  */
-face?: number, };
+face?: number, 
+/**
+ * The clauses of its rules text the engine does not run, as the card prints them, for every seat to follow; left out
+ * while there are none. The card's controller does them by hand.
+ */
+manual?: Array<ManualClause>, };

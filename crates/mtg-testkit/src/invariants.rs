@@ -164,7 +164,12 @@ fn check_attachments_settled(state: &GameState) -> Result<(), Violation> {
         let bad = |why: &str| Violation::Bookkeeping(format!("{id:?} {why} at a decision point"));
         if printed("Aura") {
             let Some(host) = host else {
-                return Err(bad("is an Aura attached to nothing"));
+                // An Aura with a clause left to the table has its enchant ability in it and waits for its controller to
+                // attach it by hand (`manual.rs`), so it stays unattached.
+                if object.card().manual.is_empty() {
+                    return Err(bad("is an Aura attached to nothing"));
+                }
+                continue;
             };
             let controller = controller_of(state, id).unwrap_or(object.controller());
             let scope = Scope::announcing(state, controller, object.reference());

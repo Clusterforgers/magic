@@ -35,6 +35,16 @@ const fn is_zero(count: &u8) -> bool {
     *count == 0
 }
 
+/// A clause of a card's rules text that the engine does not run: the table follows it by hand.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct ManualClause {
+    /// The clause as the card prints it.
+    pub text: String,
+    /// Why the engine leaves it to the table, in plain words.
+    pub reason: String,
+}
+
 /// How the faces of a card with more than one are used (CR 708 to 715).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -114,6 +124,10 @@ pub struct CardDefinition {
     /// How the faces of the card are used; the fields above are the card outside the stack and the battlefield.
     #[serde(default, skip_serializing_if = "Layout::is_normal")]
     pub layout: Layout,
+    /// The clauses of this face's rules text the engine does not run. Every seat reads them as the card's own text; the
+    /// card is cast and resolves without them and its controller does them by hand.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub manual: Vec<ManualClause>,
     /// Every face of a card with more than one, in Scryfall's order, each with its own rules; empty for a card with one face.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub faces: Vec<CardDefinition>,
@@ -137,6 +151,7 @@ impl CardDefinition {
             abilities: Vec::new(),
             rules: Vec::new(),
             layout: Layout::Normal,
+            manual: Vec::new(),
             faces: Vec::new(),
         }
     }
@@ -239,6 +254,16 @@ impl CardDefinition {
     #[must_use]
     pub fn with_rules(mut self, ability: Ability) -> Self {
         self.rules.push(Arc::new(ability));
+        self
+    }
+
+    /// Adds a clause of the rules text the engine does not run.
+    #[must_use]
+    pub fn with_manual(mut self, text: impl Into<String>, reason: impl Into<String>) -> Self {
+        self.manual.push(ManualClause {
+            text: text.into(),
+            reason: reason.into(),
+        });
         self
     }
 

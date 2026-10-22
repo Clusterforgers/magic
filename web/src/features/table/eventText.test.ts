@@ -50,6 +50,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   Attached: [{ Attached: { object: 3, to: 1 } }, 'Forest becomes attached to Grizzly Bears'],
   Unattached: [{ Unattached: { object: 3 } }, 'Forest becomes unattached'],
+  ManualAction: [
+    { ManualAction: { player: 0, action: { Move: { object: 3, to: 'Graveyard' } } } },
+    'Ana moves Forest to their graveyard by hand',
+  ],
   Transformed: [{ Transformed: { object: 3, face: 1 } }, 'Forest transforms'],
   DayNightChanged: [{ DayNightChanged: { to: 'Night' } }, 'It becomes night'],
   MulliganPhaseEnded: ['MulliganPhaseEnded', 'The mulligan phase ends'],
@@ -316,6 +320,10 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
     "A card moves to Bo's hand",
   ],
   ChoiceMade: [{ ChoiceMade: { player: 1 } }, 'Bo chooses'],
+  ManualMove: [
+    { ManualMove: { player: 1, to: 'LibraryTop' } },
+    'Bo moves a card to the top of their library by hand',
+  ],
   StepDone: [{ StepDone: { position: [2] } }, 'A step of the resolution is done'],
   AbilityTriggered: [
     { AbilityTriggered: { source: { id: 6, counter: 0 }, ability: 1, controller: 0 } },

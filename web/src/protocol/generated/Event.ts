@@ -18,6 +18,7 @@ import type { GameResult } from "./GameResult";
 import type { LibraryLooked } from "./LibraryLooked";
 import type { LossReason } from "./LossReason";
 import type { ManaType } from "./ManaType";
+import type { ManualAction } from "./ManualAction";
 import type { NothingToDo } from "./NothingToDo";
 import type { ObjectId } from "./ObjectId";
 import type { ObjectRef } from "./ObjectRef";
@@ -490,4 +491,12 @@ face?: number, } } | { "DayNightChanged": {
 /**
  * What it became.
  */
-to: DayNight, } };
+to: DayNight, } } | { "ManualAction": { 
+/**
+ * Who took it.
+ */
+player: PlayerId, 
+/**
+ * What they did.
+ */
+action: ManualAction, } };

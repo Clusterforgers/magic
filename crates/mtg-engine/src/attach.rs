@@ -293,8 +293,11 @@ pub(crate) fn state_based(state: &GameState, leaving: &[ObjectId]) -> Vec<Event>
                 .host_of(id)
                 .is_some_and(|host| legal_host(state, id, host))
         };
+        // The enchant ability of an Aura the engine does not run is a clause the table follows: its controller attaches it
+        // by hand (`manual.rs`), so it waits unattached.
+        let by_hand = !attached && !object.card().manual.is_empty();
         match kind_of(state, id) {
-            Some(Kind::Aura) if !legal() => events.push(Event::ZoneChanged {
+            Some(Kind::Aura) if !legal() && !by_hand => events.push(Event::ZoneChanged {
                 object: id,
                 from: Zone::Battlefield,
                 to: Zone::Graveyard(object.owner()),

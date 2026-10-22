@@ -29,5 +29,5 @@ pub mod value;
 pub mod vanilla;
 
 pub use assemble::{Assembled, assemble};
-pub use definition::{AbilityDef, CardDefinition, ManaAbility};
+pub use definition::{AbilityDef, CardDefinition, ManaAbility, ManualClause};
 pub use support::{Caps, PrintedCard, PrintedFace};
