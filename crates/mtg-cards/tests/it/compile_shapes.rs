@@ -77,11 +77,13 @@ fn check(printed: &PrintedCard) -> Compiled {
     if card.impl_status != ImplStatus::Manual {
         // The spell clauses of a face read into one ability, the others one each.
         assert_eq!(manual, unread, "{compiled:?}");
-        // A level block reads into an ability for each of its lines.
+        // A level block and a station block read into an ability for each of their lines.
         let level_lines: usize = compiled
             .clauses
             .iter()
-            .filter(|clause| clause.read && clause.text.starts_with("LEVEL "))
+            .filter(|clause| {
+                clause.read && (clause.text.starts_with("LEVEL ") || clause.text.contains("+ | "))
+            })
             .map(|clause| clause.text.lines().count())
             .sum();
         assert!(read_abilities <= read + level_lines, "{compiled:?}");
@@ -110,6 +112,7 @@ fn check(printed: &PrintedCard) -> Compiled {
 #[case::spree("Spree\n+ {1} \u{2014} Draw a card.\n+ {2} \u{2014} Gain 2 life.", "Instant", &[Modal])]
 #[case::loyalty_with_minus_x("+1: Draw a card.\n\u{2212}X: ~ deals X damage.\n0: Scry 1.\n\u{2212}12: Win.", "Planeswalker \u{2014} Test", &[Loyalty, Loyalty, Loyalty, Loyalty])]
 #[case::level_up("Level up {1}{U}\nLEVEL 1-2\n1/1\nFlying\nLEVEL 3+\n2/2\n{T}: Draw a card.", "Creature \u{2014} Wizard", &[Keyword, Static, Static])]
+#[case::station("Station\n3+ | Flying, haste\n8+ | Flying\nWhenever ~ attacks, draw a card.", "Artifact \u{2014} Spacecraft", &[Keyword, Static, Static])]
 #[case::saga("I \u{2014} Draw a card.\nII, III \u{2014} Gain 2 life.", "Enchantment \u{2014} Saga", &[Triggered, Triggered])]
 #[case::spell_text("Draw two cards.\nDiscard a card.", "Sorcery", &[Spell, Spell])]
 #[case::spell_cost_rule("This spell costs {1} less to cast.\nDraw two cards.", "Sorcery", &[Static, Spell])]

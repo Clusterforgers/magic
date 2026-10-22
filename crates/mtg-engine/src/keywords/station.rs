@@ -55,7 +55,7 @@ mod tests {
 
     fn written() -> Ability {
         serde_json::from_str(
-            r#"{"Activated":{"cost":[{"TapPermanents":{"filter":[{"Type":"Creature"},"Other"]}}],"timing":"Sorcery","effects":[{"PutCounters":{"on":"This","counter":"Charge","count":{"Stat":{"of":"Paid","stat":"Power"}}}}]}}"#,
+            r#"{"Activated":{"cost":[{"TapPermanents":{"filter":[{"Type":"Creature"},"Other"]}}],"timing":"Sorcery","effects":[{"PutCounters":{"on":"This","counter":"charge","count":{"Stat":{"of":"Paid","stat":"Power"}}}}]}}"#,
         )
         .unwrap()
     }

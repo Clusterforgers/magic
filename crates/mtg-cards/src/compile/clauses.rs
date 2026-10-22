@@ -157,6 +157,10 @@ mod tests {
         "Level up {1}{U}\nLEVEL 2-3\n2/4\n{U}{U}, {T}: Copy target spell.\nLEVEL 4+\n2/5\n{U}{U}, {T}: Copy it twice.",
         &["Level up {1}{U}", "LEVEL 2-3\n2/4\n{U}{U}, {T}: Copy target spell.", "LEVEL 4+\n2/5\n{U}{U}, {T}: Copy it twice."]
     )]
+    #[case::station(
+        "When ~ enters, draw a card.\nStation\n2+ | Flying\n8+ | Haste\nWhenever ~ attacks, draw a card.",
+        &["When ~ enters, draw a card.", "Station", "2+ | Flying", "8+ | Haste\nWhenever ~ attacks, draw a card."]
+    )]
     #[case::only_reminder("({T}: Add {G}.)", &[])]
     #[case::reminder_after_keywords("Flying (It can fly.)\nHaste (It is fast.)", &["Flying", "Haste"])]
     #[case::empty("", &[])]
@@ -193,6 +197,7 @@ mod tests {
     #[case::keywords("Flying, first strike\nWhenever ~ attacks, draw.\n{T}: Add {G}.")]
     #[case::modes("Choose one \u{2014}\n\u{2022} A (x).\n\u{2022} B.\nFlying (y)")]
     #[case::levels("Level up {1}\nLEVEL 1-2\n1/1\nFlying\nLEVEL 3+\n2/2\nHaste")]
+    #[case::stations("Station\n3+ | Flying\n8+ | Haste\nDraw a card.")]
     #[case::unicode("\u{2212}1: Draw \u{2022} a card (z).\n+2: Look.")]
     fn clause_spans_are_in_bounds_and_disjoint(#[case] original: &str) {
         let text = normalize(original, &[]);

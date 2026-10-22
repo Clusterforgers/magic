@@ -205,6 +205,7 @@ mod state_based_actions;
 mod state_triggers;
 mod static_abilities;
 mod statics_fuzz;
+mod station;
 mod surveil;
 mod suspend;
 mod symbol_fuzz;

@@ -691,6 +691,11 @@ mod tests {
         "LEVEL 2-3\n2/4\nFlying",
         ClauseKind::Static
     )]
+    #[case::a_station_block_of_one_line(
+        "Artifact \u{2014} Spacecraft",
+        "8+ | Frobnicate",
+        ClauseKind::Static
+    )]
     fn only_a_line_without_a_period_that_nothing_reads_becomes_a_keyword_line(
         #[case] type_line: &str,
         #[case] text: &str,

@@ -302,6 +302,8 @@ mod tests {
         Static
     )]
     #[case::level_block("LEVEL 2-3\n2/4\n{U}{U}, {T}: Copy target spell.", false, Static)]
+    #[case::station_block("8+ | Flying\nWhenever ~ attacks, draw a card.", false, Static)]
+    #[case::station_block_of_one_line("3+ | Flying, haste", false, Static)]
     #[case::static_ability("Equipped creature gets +2/+0.", false, Static)]
     #[case::spell_text_with_a_trigger("When you cast this spell, draw a card.", true, Triggered)]
     fn spells_and_statics(#[case] text: &str, #[case] spell: bool, #[case] expected: ClauseKind) {
