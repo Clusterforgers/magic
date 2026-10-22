@@ -1,0 +1,27 @@
+{
+  "id": "25ea04d8-5d85-49d3-8d8d-7fe123d0ed6c",
+  "oracle_id": "61c89b11-65c9-4fda-bbcd-d84de25df801",
+  "name": "Aether Hub",
+  "lang": "en",
+  "layout": "normal",
+  "set": "kld",
+  "collector_number": "242",
+  "rarity": "uncommon",
+  "released_at": "2016-09-30",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "When this land enters, you get {E} (an energy counter).\n{T}: Add {C}.\n{T}, Pay {E}: Add one mana of any color.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "C",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

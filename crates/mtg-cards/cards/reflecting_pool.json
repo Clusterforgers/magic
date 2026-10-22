@@ -1,0 +1,31 @@
+{
+  "oracle_id": "67f43ac6-2a58-4b53-b5d7-0330e2a252e2",
+  "name": "Reflecting Pool",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reflecting Pool",
+      "oracle_fingerprint": "208266d8b6578cf977efab6681756a56",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "ProducedBy": {
+                      "among": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "count": 1,
+                      "colorless": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "9e006a4b-8dde-4416-8cb4-8401562d0fd5",
+  "name": "Tendo Ice Bridge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tendo Ice Bridge",
+      "oracle_fingerprint": "68621562c693f224bcc29f3ff7700651",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "charge", "count": 1 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": "charge" } }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

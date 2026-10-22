@@ -1,0 +1,25 @@
+{
+  "oracle_id": "262a5d83-506c-4781-9bc9-1a2b5d83955c",
+  "name": "Horizon Canopy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Horizon Canopy",
+      "oracle_fingerprint": "5f520ec4df627d5c4dd2848edb91060b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayLife": 1 }],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "White"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

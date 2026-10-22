@@ -206,6 +206,47 @@ mod mana {
     }
 
     #[rstest]
+    #[case::the_commanders_identity(
+        "{T}: Add one mana of any color in your commander's color identity.",
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"CommanderIdentity":1}}}]}}"#
+    )]
+    #[case::a_land_an_opponent_controls(
+        "{T}: Add one mana of any color that a land an opponent controls could produce.",
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"ProducedBy":{"among":[{"Type":"Land"},{"ControlledBy":"Opponents"}],"count":1}}}}]}}"#
+    )]
+    #[case::a_land_you_control(
+        "{T}: Add one mana of any color that a land you control could produce.",
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"ProducedBy":{"among":[{"Type":"Land"},{"ControlledBy":"You"}],"count":1}}}}]}}"#
+    )]
+    #[case::any_type(
+        "{T}: Add one mana of any type that a land you control could produce.",
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"ProducedBy":{"among":[{"Type":"Land"},{"ControlledBy":"You"}],"count":1,"colorless":true}}}}]}}"#
+    )]
+    #[case::a_cost_of_life(
+        "{T}, Pay 1 life: Add {G} or {W}.",
+        r#"{"Activated":{"cost":["Tap",{"PayLife":1}],"effects":[{"AddMana":{"mana":{"OneOf":["Green","White"]}}}]}}"#
+    )]
+    #[case::a_cost_of_energy(
+        "{T}, Pay {E}: Add one mana of any color.",
+        r#"{"Activated":{"cost":["Tap",{"PayEnergy":1}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#
+    )]
+    #[case::a_counter_removed(
+        "{T}, Remove a charge counter from ~: Add one mana of any color.",
+        r#"{"Activated":{"cost":["Tap",{"RemoveCounters":{"counter":"charge"}}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#
+    )]
+    #[case::only_if_you_control_a_swamp(
+        "{T}: Add {W} or {B}. Activate only if you control a Swamp.",
+        r#"{"Activated":{"cost":["Tap"],"condition":{"Compare":{"left":{"Count":[{"Subtype":"Swamp"},{"ControlledBy":"You"}]},"op":"Ge","right":1}},"effects":[{"AddMana":{"mana":{"OneOf":["White","Black"]}}}]}}"#
+    )]
+    fn a_mana_ability_that_depends_on_the_game_reads_with_its_cost_and_condition(
+        #[case] text: &str,
+        #[case] json: &str,
+    ) {
+        reads_as(text, ClauseKind::Activated, false, json);
+        golden(text, ClauseKind::Activated, false);
+    }
+
+    #[rstest]
     #[case("{T}: Add {W}.")]
     #[case("{T}: Add {U}.")]
     #[case("{T}: Add {B}.")]
@@ -282,7 +323,6 @@ mod mana {
     #[case::generic("{T}: Add {2}.")]
     #[case::snow("{T}: Add {S}.")]
     #[case::any_one_colour("{T}: Add two mana of any one color.")]
-    #[case::identity("{T}: Add one mana of any color in your commander's color identity.")]
     #[case::no_mana("{T}: Add")]
     #[case::not_a_cost("Draw a card: Add {G}.")]
     fn a_cost_a_choice_or_a_count_the_template_does_not_model_stays_unread(#[case] text: &str) {

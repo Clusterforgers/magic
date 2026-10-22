@@ -143,7 +143,7 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
         Ability::Activated {
             cost,
             timing,
-            condition: None,
+            condition,
             limit,
             from: ZoneKind::Battlefield,
             targets,
@@ -152,7 +152,17 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             let Some(head) = costs::text(cost) else {
                 return Vec::new();
             };
-            let tails = restriction_texts(*timing, *limit);
+            let tails = match condition {
+                None => restriction_texts(*timing, *limit),
+                // "Activate only if you control a Swamp." stands alone.
+                Some(condition) if *timing == Timing::Instant && limit.is_none() => {
+                    statics::control_texts(condition)
+                        .into_iter()
+                        .map(|held| format!("Activate only if {held}."))
+                        .collect()
+                }
+                Some(_) => return Vec::new(),
+            };
             alternatives(targets, effects)
                 .iter()
                 .flat_map(|sentences| {
@@ -550,6 +560,28 @@ fn mana_text(mana: &Produce) -> Option<String> {
         }
         Produce::AnyColor(1) => "one mana of any color".to_owned(),
         Produce::ChosenColor(1) => "one mana of the chosen color".to_owned(),
+        Produce::CommanderIdentity(1) => {
+            "one mana of any color in your commander's color identity".to_owned()
+        }
+        Produce::ProducedBy {
+            among,
+            count: 1,
+            colorless,
+        } => {
+            let kind = if *colorless { "type" } else { "color" };
+            let who = match among.0.as_slice() {
+                [
+                    Pred::Type(mtg_core::card::CardType::Land),
+                    Pred::ControlledBy(Ref::Opponents),
+                ] => "an opponent controls",
+                [
+                    Pred::Type(mtg_core::card::CardType::Land),
+                    Pred::ControlledBy(Ref::You),
+                ] => "you control",
+                _ => return None,
+            };
+            format!("one mana of any {kind} that a land {who} could produce")
+        }
         Produce::OneOf(list) if list.len() > 1 => {
             let symbols: Vec<String> = list
                 .iter()

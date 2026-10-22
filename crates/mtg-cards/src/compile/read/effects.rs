@@ -760,10 +760,48 @@ fn choice(r: &mut Reader<'_>) -> Option<Vec<ManaType>> {
     (list.len() > 1).then_some(list)
 }
 
-/// "Add {G}{G}.", "Add {W} or {U}.", "Add one mana of any color." or "Add one mana of the chosen color."
+/// The lands a mana ability looks at, as "a land an opponent controls" and "a land you control" say.
+fn lands_of(who: Ref) -> Selector {
+    Selector(vec![
+        Pred::Type(mtg_core::card::CardType::Land),
+        Pred::ControlledBy(who),
+    ])
+}
+
+/// "one mana of any color that a land an opponent controls could produce", "one mana of any type that a land you
+/// control could produce" (colorless counts as a type).
+fn could_produce(r: &mut Reader<'_>) -> Option<Produce> {
+    r.need("one mana of any")?;
+    let colorless = if r.word("type") {
+        true
+    } else {
+        r.word("color").then_some(false)?
+    };
+    r.need("that a land")?;
+    let among = if r.words("an opponent controls") {
+        lands_of(Ref::Opponents)
+    } else {
+        r.need("you control")?;
+        lands_of(Ref::You)
+    };
+    r.need("could produce")?;
+    Some(Produce::ProducedBy {
+        among,
+        count: 1,
+        colorless,
+    })
+}
+
+/// "Add {G}{G}.", "Add {W} or {U}.", "Add one mana of any color.", "Add one mana of the chosen color.", "Add one
+/// mana of any color in your commander's color identity." or "Add one mana of any color that a land an opponent
+/// controls could produce."
 fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("add")?;
-    let mana = if r.words("one mana of any color") {
+    let mana = if r.words("one mana of any color in your commander's color identity") {
+        Produce::CommanderIdentity(1)
+    } else if let Some(produced) = r.attempt(could_produce) {
+        produced
+    } else if r.words("one mana of any color") {
         Produce::AnyColor(1)
     } else if r.words("one mana of the chosen color") {
         Produce::ChosenColor(1)

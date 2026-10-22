@@ -1,0 +1,22 @@
+{
+  "oracle_id": "fec77e0a-433e-4d32-9260-e26a37f6ad23",
+  "name": "Timeless Lotus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Timeless Lotus",
+      "oracle_fingerprint": "063722fae0923cba54efb034d1518fa5",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["White", "Blue", "Black", "Red", "Green"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

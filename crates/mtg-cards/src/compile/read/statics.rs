@@ -186,7 +186,7 @@ fn low_life(r: &mut Reader<'_>) -> Option<Condition> {
 
 /// What a permanent must control for it not to enter tapped: "you control a Forest or a Plains",
 /// "you control two or fewer other lands", "your opponents control eight or more lands".
-fn control(r: &mut Reader<'_>) -> Option<Condition> {
+pub(super) fn control(r: &mut Reader<'_>) -> Option<Condition> {
     let who = if r.words("you control") {
         Ref::You
     } else if r.words("your opponents control") {
@@ -611,7 +611,7 @@ fn holds_texts(condition: &Condition) -> Vec<String> {
 
 /// "you control two or more basic lands", "you have two or more opponents", "an opponent has 10 or less life": one thing
 /// that holds, as `held` reads it.
-fn control_texts(condition: &Condition) -> Vec<String> {
+pub(super) fn control_texts(condition: &Condition) -> Vec<String> {
     if let Condition::Compare {
         left: Amount::Players(Ref::Opponents),
         op: Cmp::Ge,

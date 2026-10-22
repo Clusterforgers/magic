@@ -1,0 +1,26 @@
+{
+  "id": "93f7c880-9bae-4d29-b7b6-b6be6b2ffa89",
+  "oracle_id": "262a5d83-506c-4781-9bc9-1a2b5d83955c",
+  "name": "Horizon Canopy",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ima",
+  "collector_number": "240",
+  "rarity": "rare",
+  "released_at": "2017-11-17",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}, Pay 1 life: Add {G} or {W}.\n{1}, {T}, Sacrifice this land: Draw a card.",
+  "colors": [],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "G",
+    "W"
+  ]
+}

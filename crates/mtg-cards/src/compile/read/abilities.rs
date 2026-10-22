@@ -3,11 +3,12 @@
 //! activated an activated ability.
 
 use super::tokens::Reader;
-use super::{costs, effects, modal, triggers};
+use super::{costs, effects, modal, statics, triggers};
 use crate::ability::{Ability, Limit, Timing};
 use crate::effect::Effect;
 use crate::refs::{Pred, Ref, ZoneKind};
 use crate::trigger::TriggerPattern;
+use crate::value::Condition;
 
 /// The sentences of an ability, in order, every one read; `None` when one is not, or when a `Modal`
 /// is not the only effect (the modes keep their own targets, so the ability has none). With
@@ -108,10 +109,17 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     })
 }
 
-/// "Activate only as a sorcery." and "Activate only once each turn.", alone or joined by "and only".
-fn restrictions(r: &mut Reader<'_>) -> Option<(Timing, Option<Limit>)> {
+/// "Activate only as a sorcery." and "Activate only once each turn.", alone or joined by "and only"; also "Activate only
+/// if you control a Swamp." alone.
+fn restrictions(r: &mut Reader<'_>) -> Option<(Timing, Option<Limit>, Option<Condition>)> {
     if !r.words("activate only") {
-        return Some((Timing::Instant, None));
+        return Some((Timing::Instant, None, None));
+    }
+    if r.word("if") {
+        let condition = statics::control(r)?;
+        return r
+            .sentence_end()
+            .then_some((Timing::Instant, None, Some(condition)));
     }
     let (mut timing, mut limit) = (Timing::Instant, None);
     loop {
@@ -126,7 +134,7 @@ fn restrictions(r: &mut Reader<'_>) -> Option<(Timing, Option<Limit>)> {
             break;
         }
     }
-    r.sentence_end().then_some((timing, limit))
+    r.sentence_end().then_some((timing, limit, None))
 }
 
 /// An activated ability: a cost, a colon, sentences and the restrictions on when it may be
@@ -137,14 +145,14 @@ pub fn activated(r: &mut Reader<'_>) -> Option<Ability> {
     // An X in the cost is the payer's to choose, so the effects may use it.
     r.x_free |= cost.has_x();
     let effects = sentences(r, true)?;
-    let (timing, limit) = restrictions(r)?;
+    let (timing, limit, condition) = restrictions(r)?;
     let targets = std::mem::take(&mut r.targets);
     // An ability without targets that adds mana is a mana ability (CR 605.1a) whatever else it does and plays
     // without the stack; the data holds it whole, and the engine plays the shapes it reads (`mana_shape`).
     Some(Ability::Activated {
         cost,
         timing,
-        condition: None,
+        condition,
         limit,
         from: ZoneKind::Battlefield,
         targets,

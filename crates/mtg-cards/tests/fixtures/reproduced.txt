@@ -1,11 +1,14 @@
 Abbot of Keral Keep
+Aether Hub
 Ajani's Pridemate
 Ancestral Vision
 Ancient Ziggurat
+Arcane Signet
 Archon of Cruelty
 Arrogant Wurm
 Arvad the Cursed
 Augury Raven
+Azorius Chancery
 Basking Rootwalla
 Battlefield Forge
 Behold the Multiverse
@@ -23,6 +26,7 @@ Capsize
 Carnage Tyrant
 Cathars' Crusade
 Clone
+Command Tower
 Copper-Leaf Angel
 Counterspell
 Cyclonic Rift
@@ -38,11 +42,13 @@ Drudge Skeletons
 Durkwood Baloth
 Epic Proportions
 Eternal Witness
+Exotic Orchard
 Faithful Watchdog
 Faithless Looting
 Favorable Winds
 Fear of Failed Tests
 Felidar Sovereign
+Fellwar Stone
 Fiery Temper
 Flooded Strand
 Fog
@@ -59,6 +65,7 @@ Gurmag Angler
 Hall of Triumph
 Hengegate Pathway // Mistgate Pathway
 Hero of Bladehold
+Horizon Canopy
 Hulking Raptor
 Idyllic Beachfront
 Invisible Stalker
@@ -94,6 +101,7 @@ Questing Beast
 Rally the Ranks
 Rampant Growth
 Reckless Impulse
+Reflecting Pool
 Rhystic Study
 Rift Bolt
 Rootborn Defenses
@@ -103,6 +111,7 @@ Sanguine Bond
 Saw It Coming
 Seedglaive Mentor
 Serra Angel
+Servant of the Conduit
 Siege Wurm
 Skullclamp
 Sodden Verdure
@@ -118,10 +127,13 @@ Supreme Verdict
 Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
+Tainted Isle
 Tavern Ruffian // Tavern Smasher
+Tendo Ice Bridge
 Thalia, Guardian of Thraben
 The Thing, Ben Grimm
 Thieving Magpie
+Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Treasure Cruise
