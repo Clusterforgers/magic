@@ -187,3 +187,29 @@ fn an_activation_of_another_graveyard_stays_unread() {
         None
     );
 }
+
+/// "a", "a or b", "a, b, or c": the card types of a phrase as a card lists them.
+fn type_list(words: &[String], connector: &str) -> String {
+    match words {
+        [rest @ .., last] if !rest.is_empty() => {
+            let comma = if rest.len() > 1 { "," } else { "" };
+            format!("{}{comma} {connector} {last}", rest.join(", "))
+        }
+        _ => words.join(""),
+    }
+}
+
+proptest::proptest! {
+    #[test]
+    fn any_list_of_card_types_reads_and_writes_back(
+        picked in proptest::sample::subsequence(
+            vec!["artifact", "creature", "enchantment", "land", "planeswalker"],
+            1..=5,
+        )
+    ) {
+        let singular: Vec<String> = picked.iter().map(|word| (*word).to_owned()).collect();
+        let plural: Vec<String> = picked.iter().map(|word| format!("{word}s")).collect();
+        golden(&format!("Destroy target {}.", type_list(&singular, "or")), ClauseKind::Spell, false);
+        golden(&format!("Destroy all {}.", type_list(&plural, "and")), ClauseKind::Spell, false);
+    }
+}
