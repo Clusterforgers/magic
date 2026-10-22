@@ -22,6 +22,7 @@ use super::reveal;
 use super::selectors::{Form, granted_text, phrase_text, spec_text};
 use super::spend;
 use super::statics;
+use super::subtypes::plural_subtype;
 use super::triggers::{
     article, condition_text, cycled_itself, entered_or_attacked, itself_acts, pattern_text,
     targeted_itself,
@@ -1168,6 +1169,11 @@ impl Writer<'_> {
                 count,
             } => format!("surveil {}", points_text(count)?),
             Effect::Proliferate { who: Ref::You } => "proliferate".to_owned(),
+            Effect::Amass { subtype, count } => format!(
+                "amass {} {}",
+                plural_subtype(&subtype.0),
+                points_text(count)?
+            ),
             Effect::Explore {
                 what: what @ (Ref::This | Ref::Target(0)),
             } => format!("{} explores", self.object(what)?),

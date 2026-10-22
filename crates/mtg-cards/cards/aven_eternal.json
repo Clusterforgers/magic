@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ba7aad10-6897-4e85-a976-1bf9282de5de",
+  "name": "Aven Eternal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aven Eternal",
+      "oracle_fingerprint": "b37f50aab20255a5756ff3bb06c3e18d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Amass": { "subtype": "Zombie", "count": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

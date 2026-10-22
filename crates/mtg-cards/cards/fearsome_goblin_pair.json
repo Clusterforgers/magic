@@ -1,0 +1,19 @@
+{
+  "oracle_id": "edbd3d4e-78a2-4c03-936d-dcb24cf7c87c",
+  "name": "Fearsome Goblin Pair",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fearsome Goblin Pair",
+      "oracle_fingerprint": "f0b3c322462b76df546b9cbe350b78d7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Amass": { "subtype": "Goblin", "count": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -133,6 +133,8 @@ pub enum Next {
     Sibling,
     /// Into the effects of this branch of the effect (`then`, `paid`, a mode), or past it when it is empty.
     Enter(usize),
+    /// The same effect again once the events are folded, for an effect that needs the objects it creates.
+    Again,
 }
 
 /// What running one effect came to.

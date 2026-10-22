@@ -40,6 +40,10 @@ pub const COUNTER_CARDS: &[&str] = &[
     "Revel Ruiner",
     "Echo Inspector",
     "Atlantean Skirmisher",
+    "Aven Eternal",
+    "Lazotep Reaver",
+    "Herald of the Dreadhorde",
+    "Relentless Advance",
 ];
 
 /// A legal Normal deck in blue, black and green of the cards that act, three of each, with creatures to fill it,

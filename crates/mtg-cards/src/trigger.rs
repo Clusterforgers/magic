@@ -274,6 +274,15 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// A player amasses ("whenever you amass"); `Triggering` is that player.
+    Amassed {
+        /// Who amasses.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
     /// A creature matching the selector explores ("whenever a creature you control explores"); `Triggering` is its
     /// controller.
     Explored {

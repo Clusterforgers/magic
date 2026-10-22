@@ -912,6 +912,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::LifeLost { who }
             | TriggerPattern::BecomesMonarch { who }
             | TriggerPattern::Proliferated { who }
+            | TriggerPattern::Amassed { who }
             | TriggerPattern::Drew { who } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
@@ -973,6 +974,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::StepBegins { .. }
                 | TriggerPattern::BecomesMonarch { .. }
                 | TriggerPattern::Proliferated { .. }
+                | TriggerPattern::Amassed { .. }
                 | TriggerPattern::Explored { .. }
                 | TriggerPattern::Connived { .. }
                 | TriggerPattern::SpellCast { .. }
