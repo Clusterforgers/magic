@@ -236,7 +236,13 @@ fn rage_hound(escape: bool) -> Result<Driver, ScriptError> {
             .collect();
         driver.answer(Answer::ChooseCards(CardsChoice(picks)))?;
     }
-    driver.pay_tapping(&["Mountain", "Mountain", "Mountain", "Mountain"], 0)?;
+    // The Mountains pay, so the Islands are left for the copy: {1}{R} from the hand, {3}{R} by escape.
+    let paid: &[&str] = if escape {
+        &["Mountain"; 4]
+    } else {
+        &["Mountain"; 2]
+    };
+    driver.pay_tapping(paid, 0)?;
     driver.pass()?;
     driver.pass()?;
     Ok(driver)
