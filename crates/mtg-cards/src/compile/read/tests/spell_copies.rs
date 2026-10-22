@@ -221,7 +221,9 @@ fn another_player_acts_and_you_follow(#[case] text: &str, #[case] json: &str) {
 #[case::a_loyalty_ability("Copy target loyalty ability you control.")]
 #[case::an_opponents_ability("Copy target triggered ability an opponent controls.")]
 #[case::an_ability_twice("Copy target triggered ability you control twice.")]
-#[case::an_exception_with_a_dangling_subject("Copy target instant or sorcery spell, except that the copy")]
+#[case::an_exception_with_a_dangling_subject(
+    "Copy target instant or sorcery spell, except that the copy"
+)]
 #[case::an_ability_with_an_exception(
     "Copy target triggered ability you control, except that the copy is red."
 )]

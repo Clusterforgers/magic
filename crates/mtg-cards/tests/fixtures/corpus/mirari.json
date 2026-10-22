@@ -1,0 +1,19 @@
+{
+  "cmc": 5,
+  "collector_number": "246",
+  "color_identity": [],
+  "colors": [],
+  "digital": false,
+  "id": "7de1dfcf-f2e7-4c7c-8b00-c5d30a2d3f98",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{5}",
+  "name": "Mirari",
+  "oracle_id": "8f6a2fce-719e-4745-80d3-aabce5c9bafa",
+  "oracle_text": "Whenever you cast an instant or sorcery spell, you may pay {3}. If you do, copy that spell. You may choose new targets for the copy.",
+  "rarity": "rare",
+  "released_at": "2013-11-01",
+  "set": "c13",
+  "type_line": "Legendary Artifact"
+}

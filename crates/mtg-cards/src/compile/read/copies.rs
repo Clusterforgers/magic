@@ -10,18 +10,18 @@ use mtg_core::card::{CardType, Subtype};
 
 use super::abilities;
 use super::amounts::{count_word, number_word};
+use super::copy_spells;
 use super::create::colors_text;
 use super::render;
 use super::selectors::{
-    Form, card_type, color, granted_keywords, granted_text, phrase, phrase_text, subtype, target,
-    type_name,
+    Form, card_type, color, granted_keywords, granted_text, phrase, phrase_text, subtype, type_name,
 };
 use super::tokens::Reader;
 use super::triggers::article;
 use crate::ability::Ability;
 use crate::effect::{Effect, TokenRef};
 use crate::modify::Modification;
-use crate::refs::{Bounds, Pred, Ref, Selector, Targetable};
+use crate::refs::{Bounds, Pred, Ref, Selector};
 use crate::trigger::{ReplaceBy, ReplaceWhen, Step, TriggerPattern};
 use crate::value::Amount;
 
@@ -112,14 +112,7 @@ fn copied(r: &mut Reader<'_>) -> Option<Ref> {
     {
         return Some(Ref::Attached);
     }
-    r.attempt(|r| {
-        let of = target(r)?;
-        let spec = r.targets.first()?;
-        let permanent = spec.bounds.is_one()
-            && matches!(&spec.what, Targetable::Object(selector)
-                if !selector.0.iter().any(|pred| matches!(pred, Pred::In(_) | Pred::Spell)));
-        permanent.then_some(of)
-    })
+    copy_spells::permanent_target(r)
 }
 
 /// "populate": a creature token you control is chosen and a token that is a copy of it is created.
@@ -400,7 +393,11 @@ pub(super) fn exceptions_text(mods: &[Modification], subject: Subject) -> Option
             _ => return None,
         });
     }
-    let that = if subject == Subject::Copy { "that " } else { "" };
+    let that = if subject == Subject::Copy {
+        "that "
+    } else {
+        ""
+    };
     (!parts.is_empty()).then(|| format!("except {that}{}", parts.join(" and ")))
 }
 

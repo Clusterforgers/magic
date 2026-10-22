@@ -99,7 +99,8 @@ fn other_casts_are_copied_the_same_way(#[case] text: &str, #[case] json: &str) {
 
 #[test]
 fn a_count_of_x_needs_an_x_in_the_cost() {
-    let text = "Whenever you cast a spell, copy it X times. You may choose new targets for the copies.";
+    let text =
+        "Whenever you cast a spell, copy it X times. You may choose new targets for the copies.";
     let json = r#"{"Triggered":{"when":{"SpellCast":{"by":"You"}},"effects":[{"CopySpell":{"what":"Triggering","count":"X","new_targets":true}}]}}"#;
     reads_as(text, ClauseKind::Triggered, true, json);
     assert_eq!(clause(text, ClauseKind::Triggered, false), None);
@@ -177,9 +178,7 @@ fn a_targeted_spell_is_copied_more_than_once_or_with_other_exceptions(
 #[case::a_color_among_kinds(
     "Whenever you cast a spell, copy it, except the copy is a black Zombie in addition to its other types."
 )]
-#[case::a_legend(
-    "Whenever you cast a spell, copy it, except the copy isn't legendary."
-)]
+#[case::a_legend("Whenever you cast a spell, copy it, except the copy isn't legendary.")]
 #[case::a_name("Whenever you cast a spell, copy it, except the copy's name is Fork.")]
 #[case::once_each_turn(
     "Whenever you cast a spell, copy it. This ability triggers only once each turn."
@@ -252,6 +251,29 @@ fn a_permanent_enters_as_a_copy_with_several_kinds() {
     "Create a token that's a copy of target creature you control, except it isn't legendary."
 )]
 fn near_misses_of_a_token_copy_exception_stay_unread(#[case] text: &str) {
+    assert_eq!(spell(text), None, "{text}");
+}
+
+#[rstest]
+#[case::another_creature_you_control(
+    "Create a token that's a copy of another target creature you control.",
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"},"Other"]}}],"effects":[{"CreateToken":{"token":{"CopyOf":{"of":{"Target":0}}}}}]}}"#
+)]
+#[case::with_an_exception(
+    "Create a token that's a copy of another target creature you control, except it has haste.",
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"},"Other"]}}],"effects":[{"CreateToken":{"token":{"CopyOf":{"of":{"Target":0},"except":[{"AddKeyword":"Haste"}]}}}}]}}"#
+)]
+fn a_token_is_a_copy_of_another_target_creature(#[case] text: &str, #[case] json: &str) {
+    reads_as(text, ClauseKind::Spell, false, json);
+}
+
+#[rstest]
+#[case::another_spell("Create a token that's a copy of another target spell.")]
+#[case::another_card_in_a_graveyard(
+    "Create a token that's a copy of another target creature card in your graveyard."
+)]
+#[case::another_without_a_target("Create a token that's a copy of another creature you control.")]
+fn near_misses_of_a_token_that_copies_another_target_stay_unread(#[case] text: &str) {
     assert_eq!(spell(text), None, "{text}");
 }
 

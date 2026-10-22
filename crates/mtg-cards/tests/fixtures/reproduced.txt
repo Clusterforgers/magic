@@ -178,6 +178,7 @@ Master of Etherium
 Megrim
 Mesmeric Orb
 Midnight Banshee
+Mirari
 Mirror Image
 Mishra's Workshop
 Mizzium Mortars
@@ -273,6 +274,7 @@ Sultai Devotee
 Summer Bloom
 Sundering Growth
 Supreme Verdict
+Swarm Intelligence
 Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
@@ -288,6 +290,7 @@ The Thing, Ben Grimm
 Thieving Magpie
 Thopter Fabricator
 Throne of the High City
+Tilonalli's Skinshifter
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker

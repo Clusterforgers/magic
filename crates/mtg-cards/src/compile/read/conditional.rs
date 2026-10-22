@@ -233,7 +233,7 @@ fn replace_phrase(text: &str, from: &str, to: &str) -> Option<String> {
     let at = text.find(from)?;
     let (before, after) = (&text[..at], &text[at + from.len()..]);
     let word = |c: char| c.is_alphanumeric();
-    let alone = !(from.starts_with(word) && before.ends_with(word))
-        && !(from.ends_with(word) && after.starts_with(word));
+    let alone = !((from.starts_with(word) && before.ends_with(word))
+        || (from.ends_with(word) && after.starts_with(word)));
     alone.then(|| format!("{before}{to}{after}"))
 }

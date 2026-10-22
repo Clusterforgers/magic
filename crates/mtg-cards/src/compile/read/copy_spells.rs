@@ -237,7 +237,10 @@ pub(super) fn cast_text(effect: &Effect) -> Option<String> {
     else {
         return None;
     };
-    Some(format!("copy it{}", tail_text(count, *new_targets, except)?))
+    Some(format!(
+        "copy it{}",
+        tail_text(count, *new_targets, except)?
+    ))
 }
 
 /// How many copies there are, what they are besides the spell and the sentence about new targets, after the words
@@ -281,11 +284,16 @@ pub fn becomes_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 }
 
 /// One target permanent, "another target creature" also: not a spell, not a card in a zone.
-fn permanent_target(r: &mut Reader<'_>) -> Option<Ref> {
+pub(super) fn permanent_target(r: &mut Reader<'_>) -> Option<Ref> {
     r.attempt(|r| {
         let another = r.word("another");
         let of = target(r)?;
-        if another && let Some(TargetSpec { what: Targetable::Object(selector), .. }) = r.targets.first_mut() {
+        if another
+            && let Some(TargetSpec {
+                what: Targetable::Object(selector),
+                ..
+            }) = r.targets.first_mut()
+        {
             selector.0.push(Pred::Other);
         }
         let spec = r.targets.first()?;

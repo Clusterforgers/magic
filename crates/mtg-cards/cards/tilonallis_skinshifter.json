@@ -1,0 +1,40 @@
+{
+  "oracle_id": "23df9146-9fce-4769-b017-87aa36c79300",
+  "name": "Tilonalli's Skinshifter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tilonalli's Skinshifter",
+      "oracle_fingerprint": "49497c3818a17e4425984a25521ffe7c",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Supertype": "Legendary" } },
+                    "Attacking",
+                    "Other"
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": "This",
+                  "of": { "Target": 0 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
