@@ -136,7 +136,7 @@ fn more_oracle_wordings_of_modes_in_a_trigger_read_and_write_back(
 #[case::no_dash("Choose one\n\u{2022} Draw a card.\n\u{2022} You gain 2 life.".to_owned())]
 #[case::no_bullets("Choose one \u{2014} Draw a card. You gain 2 life.".to_owned())]
 #[case::another_bullet("Choose one \u{2014}\n- Draw a card.\n- You gain 2 life.".to_owned())]
-#[case::a_cost_on_a_mode(choose(&["You may pay {1}. If you do, draw a card.", "You gain 2 life."]))]
+#[case::a_cost_on_a_mode(choose(&["You may pay {1} and 2 life. If you do, draw a card.", "You gain 2 life."]))]
 #[case::a_choice_of_a_number(choose(&["Draw X cards.", "You gain 2 life."]))]
 #[case::a_plain_sentence("Draw a card.".to_owned())]
 fn a_choice_the_template_does_not_model_stays_unread(#[case] text: String) {

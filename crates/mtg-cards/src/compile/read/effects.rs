@@ -10,6 +10,8 @@ use super::counters;
 use super::create;
 use super::library;
 use super::modal;
+use super::payments;
+use super::prevention;
 use super::selectors::{Form, all, each, granted_keywords, phrase, target};
 use super::spend;
 use super::tokens::Reader;
@@ -24,11 +26,12 @@ use crate::value::{Amount, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 23] = [
+const TEMPLATES: [Template; 26] = [
     modal::modal,
     cast::discover_sentence,
     cast::exile_until,
     cast::exile_top,
+    payments::may_pay,
     may,
     chain,
     put_back,
@@ -48,6 +51,8 @@ const TEMPLATES: [Template; 23] = [
     library::look,
     library::put_on_library,
     return_itself,
+    prevention::rule_effect,
+    prevention::shield,
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
@@ -93,9 +98,7 @@ fn unless_pays(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         r.attempt(|r| {
             let unpaid = template(r)?;
             r.need("unless")?;
-            let who = payer(r, &unpaid)?;
-            r.need("pays")?;
-            let cost = mana_cost(r)?;
+            let (who, cost) = payments::unless(r, &unpaid)?;
             Some(vec![Effect::Pay {
                 who,
                 cost,
@@ -106,22 +109,15 @@ fn unless_pays(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     })
 }
 
-/// Who may pay: the controller of the spell that is countered, or the player the trigger is about.
-fn payer(r: &mut Reader<'_>, unpaid: &[Effect]) -> Option<Ref> {
-    if r.words("its controller") {
-        let countered = matches!(
-            unpaid,
-            [Effect::Counter {
-                what: Ref::Target(0)
-            }]
-        );
-        return countered.then(|| Ref::ControllerOf(Box::new(Ref::Target(0))));
-    }
-    (r.that_player && r.words("that player")).then_some(Ref::Triggering)
+/// The effects of the next sentence, up to its period.
+pub(super) fn one_sentence(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    TEMPLATES
+        .into_iter()
+        .find_map(|template| r.attempt(template))
 }
 
 /// The mana of a payment: `{2}`, `{U}{R}`; an `{X}` is not the payer's to choose.
-fn mana_cost(r: &mut Reader<'_>) -> Option<Cost> {
+pub(super) fn mana_cost(r: &mut Reader<'_>) -> Option<Cost> {
     let mut text = String::new();
     while let Some(symbol) = r.symbol() {
         text.push('{');
