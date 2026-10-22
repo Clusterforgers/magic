@@ -406,6 +406,9 @@ function describePublic(event: Event, n: EventNames): LogLine {
   if ('Attached' in event) {
     return line(`${n.card(event.Attached.object)} becomes attached to ${n.card(event.Attached.to)}`)
   }
+  if ('Transformed' in event) return line(`${n.card(event.Transformed.object)} transforms`)
+  if ('DayNightChanged' in event)
+    return line(`It becomes ${event.DayNightChanged.to === 'Day' ? 'day' : 'night'}`)
   if ('Unattached' in event) {
     return line(`${n.card(event.Unattached.object)} becomes unattached`)
   }

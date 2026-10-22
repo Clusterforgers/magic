@@ -9,6 +9,7 @@ Augury Raven
 Basking Rootwalla
 Battlefield Forge
 Behold the Multiverse
+Bird Admirer // Wing Shredder
 Black Knight
 Blaze
 Bloodbraid Elf
@@ -105,9 +106,11 @@ Supreme Verdict
 Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
+Tavern Ruffian // Tavern Smasher
 Thalia, Guardian of Thraben
 The Thing, Ben Grimm
 Thieving Magpie
+Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Treasure Cruise
 Tumble Magnet
@@ -116,4 +119,5 @@ Walking Ballista
 Wanderbrine Preacher
 Wargate
 Warmonger Hellkite
+Wear // Tear
 Wrath of God

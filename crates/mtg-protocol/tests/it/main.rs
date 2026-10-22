@@ -34,3 +34,4 @@ mod seat_deck;
 mod sync;
 mod table_hidden;
 mod transcript;
+mod transform_view;

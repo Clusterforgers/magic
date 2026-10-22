@@ -290,6 +290,10 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
         number: state.turn().number() + 1,
         active: state.next_alive_after(active).unwrap_or(active),
     });
+    // The spells the ending turn's active player cast are counted before the new turn clears the count (CR 726.3a).
+    if let Some(to) = crate::day_night::at_turn_start(state) {
+        events.push(Event::DayNightChanged { to });
+    }
     events.push(Event::StepBegan { step: Step::Untap });
     events
 }

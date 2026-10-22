@@ -13,10 +13,12 @@ use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
+use crate::ability_reader::definition_fuses;
 use crate::announce::Granted;
 use crate::mana::{ManaOption, ManaPool};
 use crate::state::GameState;
 use crate::ways;
+use crate::zones::Zone;
 
 impl GameState {
     /// This state with the card `id` in use as `face` (CR 601.2a): what the announcement of a cast and the options
@@ -42,10 +44,17 @@ pub(crate) fn candidates(state: &GameState, id: ObjectId) -> Vec<Option<u8>> {
     };
     let whole = object.whole_card();
     match whole.layout {
-        Layout::Normal => vec![None],
-        Layout::Split => (0..whole.faces.len())
-            .filter_map(|face| u8::try_from(face).ok().map(Some))
-            .collect(),
+        // A transforming double-faced card is cast as its front face (CR 712.14); the back face is only turned up.
+        Layout::Normal | Layout::Transform => vec![None],
+        Layout::Split => {
+            let halves = u8::try_from(whole.faces.len()).unwrap_or(u8::MAX);
+            // A position past the last half is the card cast as all of them, from a hand only (CR 702.102a).
+            let fused = matches!(object.zone(), Zone::Hand(_)) && definition_fuses(whole);
+            (0..halves)
+                .chain(fused.then_some(halves))
+                .map(Some)
+                .collect()
+        }
         // The permanent card of an Adventure in exile is cast as that card alone (CR 715.4).
         Layout::Adventure if object.on_adventure().is_some() => vec![None],
         Layout::Adventure | Layout::ModalDfc => vec![None, Some(1)],

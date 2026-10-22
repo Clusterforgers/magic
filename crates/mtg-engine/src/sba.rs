@@ -96,6 +96,7 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
     let mut events = losses(state);
     let refilled = refills_of(state, &events);
     events.extend(refilled);
+    events.extend(crate::day_night::sync(state));
     for &id in state.zone(Zone::Battlefield) {
         let Some(object) = state.object(id) else {
             continue;

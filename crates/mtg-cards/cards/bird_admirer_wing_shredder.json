@@ -1,0 +1,17 @@
+{
+  "oracle_id": "58bd02ae-2676-4c9c-b24e-2bd51be8bde7",
+  "name": "Bird Admirer // Wing Shredder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bird Admirer",
+      "oracle_fingerprint": "ac74da60c62f1e60f2fad176947c7478",
+      "abilities": [{ "Keyword": "Reach" }, { "Keyword": "Daybound" }]
+    },
+    {
+      "name": "Wing Shredder",
+      "oracle_fingerprint": "2e172f7a4d3a8706319a5646f66ee63c",
+      "abilities": [{ "Keyword": "Reach" }, { "Keyword": "Nightbound" }]
+    }
+  ]
+}

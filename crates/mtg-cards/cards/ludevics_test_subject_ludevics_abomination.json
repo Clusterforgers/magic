@@ -1,0 +1,50 @@
+{
+  "oracle_id": "53175678-1f5c-4889-9086-66381b3ddc3a",
+  "name": "Ludevic's Test Subject // Ludevic's Abomination",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ludevic's Test Subject",
+      "oracle_fingerprint": "a7b47a9d66a1c8bd306660c28833772b",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "hatchling" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "hatchling" } } },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [
+                    {
+                      "RemoveCounters": {
+                        "from": "This",
+                        "counter": { "Other": "hatchling" },
+                        "count": {
+                          "Counters": { "on": "This", "counter": { "Other": "hatchling" } }
+                        }
+                      }
+                    },
+                    { "Transform": { "what": "This" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ludevic's Abomination",
+      "oracle_fingerprint": "06d375c77047aa371fc0cbdea553e466",
+      "abilities": [{ "Keyword": "Trample" }]
+    }
+  ]
+}

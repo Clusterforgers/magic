@@ -12,6 +12,7 @@ mod companion;
 mod convoke;
 mod crew;
 mod cycling;
+mod daybound;
 mod deathtouch;
 mod defender;
 mod delve;
@@ -42,6 +43,7 @@ mod morph;
 mod multikicker;
 mod mutate;
 mod myriad;
+mod nightbound;
 mod overload;
 mod partner;
 mod partner_with;
@@ -322,6 +324,8 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Encore(_) => &encore::Encore,
         Keyword::Squad(_) => &squad::Squad,
         Keyword::Foretell(_) => &foretell::Foretell,
+        Keyword::Daybound => &daybound::Daybound,
+        Keyword::Nightbound => &nightbound::Nightbound,
     }
 }
 
@@ -548,11 +552,13 @@ mod tests {
             Keyword::Encore(cost()),
             Keyword::Squad(cost()),
             Keyword::Foretell(cost()),
+            Keyword::Daybound,
+            Keyword::Nightbound,
         ]
     }
 
     /// The keywords whose rules the engine runs, named as the capabilities name them.
-    const RUN: [&str; 37] = [
+    const RUN: [&str; 40] = [
         "Keyword.Flash",
         "Keyword.Flying",
         "Keyword.Reach",
@@ -590,6 +596,9 @@ mod tests {
         "Keyword.Madness",
         "Keyword.Suspend",
         "Keyword.Foretell",
+        "Keyword.Daybound",
+        "Keyword.Nightbound",
+        "Keyword.Fuse",
     ];
 
     /// What a keyword answers to each hook that does not need a game.

@@ -108,6 +108,7 @@ const RUNS: &[&str] = &[
     "Effect.Untap",
     "Effect.Attach",
     "Effect.Unattach",
+    "Effect.Transform",
     "Effect.WinGame",
     "Effect.CreateToken",
     "Effect.Continuous",
@@ -190,6 +191,9 @@ const RUNS: &[&str] = &[
     "Keyword.Madness",
     "Keyword.Suspend",
     "Keyword.Foretell",
+    "Keyword.Daybound",
+    "Keyword.Nightbound",
+    "Keyword.Fuse",
     "Condition.CastWith",
     "Rule.MayCast",
     "Condition.Kicked",
@@ -283,6 +287,10 @@ mod tests {
     #[case::reconfigure("Keyword.Reconfigure", true)]
     #[case::living_weapon("Keyword.LivingWeapon", true)]
     #[case::unattaching("Effect.Unattach", true)]
+    #[case::transforming("Effect.Transform", true)]
+    #[case::day_and_night("Keyword.Daybound", true)]
+    #[case::the_night_face("Keyword.Nightbound", true)]
+    #[case::fusing("Keyword.Fuse", true)]
     #[case::replacement_effects("Ability.Replacement", true)]
     #[case::replacing_token_creation("ReplaceWhen.TokenCreation", true)]
     #[case::replacing_damage("ReplaceWhen.Damage", true)]

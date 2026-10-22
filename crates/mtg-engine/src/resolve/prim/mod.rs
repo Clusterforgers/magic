@@ -238,6 +238,7 @@ mod tests {
                 "Effect.Untap",
                 "Effect.Attach",
                 "Effect.Unattach",
+                "Effect.Transform",
                 "Effect.WinGame",
                 "Effect.ExileUntil",
                 "Effect.ExileTop",

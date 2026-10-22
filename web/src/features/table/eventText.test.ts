@@ -54,6 +54,8 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { ManualAction: { player: 0, action: { Move: { object: 3, to: 'Graveyard' } } } },
     'Ana moves Forest to their graveyard by hand',
   ],
+  Transformed: [{ Transformed: { object: 3, face: 1 } }, 'Forest transforms'],
+  DayNightChanged: [{ DayNightChanged: { to: 'Night' } }, 'It becomes night'],
   MulliganPhaseEnded: ['MulliganPhaseEnded', 'The mulligan phase ends'],
   TurnBegan: [{ TurnBegan: { number: 3, active: 1 } }, "Turn 3 begins: Bo's turn"],
   StepBegan: [{ StepBegan: { step: 'DeclareAttackers' } }, 'Declare attackers begins'],

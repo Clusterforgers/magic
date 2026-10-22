@@ -22,15 +22,14 @@ use mtg_testkit::corpus::{card, corpus};
 use mtg_testkit::{Driver, Scenario, ScriptError, play_game, ready};
 use rstest::rstest;
 
-use Support::{Manual, Partial, Verified};
+use Support::{Partial, Verified};
 
 /// The corpus cards the engine does not play whole, each with the state its capabilities give it and the number of
 /// abilities its definition carries (mana abilities and rules together). Every other corpus card is Verified and carries
 /// the abilities of its file, and a basic land type adds the mana ability of that land type. A Manual card carries none
-/// (a transforming card is left to the table); a Partial card carries what the engine runs. A
+/// (the table resolves it); a Partial card carries what the engine runs. A
 /// card joins this list when the engine cannot yet play it whole and leaves it when it can.
 const NOT_VERIFIED: &[(&str, Support, usize)] = &[
-    ("Delver of Secrets // Insectile Aberration", Manual, 0),
     ("Aven Mindcensor", Partial, 2),
     ("Courser of Kruphix", Partial, 2),
 ];
@@ -301,46 +300,6 @@ fn a_card_that_makes_a_predefined_token_needs_what_its_abilities_need(
         assert!(
             used.contains(*primitive),
             "{name} needs {primitive}: {used:?}"
-        );
-    }
-}
-
-/// The primitives of the card's rules the engine does not run.
-fn lacking(name: &str) -> Vec<String> {
-    let caps = mtg_engine::caps();
-    let library = mtg_cards::builtin::library().unwrap();
-    let missing: BTreeSet<String> = library
-        .card_by_name(name)
-        .into_iter()
-        .flat_map(mtg_cards::card::Card::abilities)
-        .filter(|(_, ability)| !ability.is_manual())
-        .flat_map(|(_, ability)| caps.missing(&used_primitives(ability)))
-        .collect();
-    missing.into_iter().collect()
-}
-
-/// A "may", a choice, modes, a payment, a search and the library effects run now, so the corpus cards that use only
-/// those are Verified (Brainstorm, Cultivate, Eternal Witness, Izzet Charm, Opt, Rampant Growth, Rhystic Study); each of
-/// the others here is still held back by another primitive, which this table names.
-#[rstest]
-#[case::delver(
-    "Delver of Secrets // Insectile Aberration",
-    &["Effect.Transform"]
-)]
-fn the_cards_with_a_may_a_choice_or_modes_still_lack_other_primitives(
-    #[case] name: &str,
-    #[case] expected: &[&str],
-) {
-    assert_eq!(lacking(name), expected, "{name}");
-    let corpus = corpus().unwrap();
-    let record = corpus.support(name).unwrap();
-    let (state, _) = expected_state(name);
-    assert_eq!(record.support, state, "{name}");
-    assert_ne!(record.support, Verified, "{name}");
-    for runs in ["Effect.May", "Effect.Choose", "Effect.Modal"] {
-        assert!(
-            !lacking(name).iter().any(|gap| gap == runs),
-            "{name} is not held back by {runs}"
         );
     }
 }

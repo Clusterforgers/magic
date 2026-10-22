@@ -5540,5 +5540,231 @@
         "colors": []
       }
     ]
+  },
+  {
+    "id": "ebf5e16f-a8bd-419f-b5ca-8c7fce09c4f1",
+    "oracle_id": "53175678-1f5c-4889-9086-66381b3ddc3a",
+    "name": "Ludevic's Test Subject // Ludevic's Abomination",
+    "lang": "en",
+    "layout": "transform",
+    "set": "isd",
+    "collector_number": "64",
+    "rarity": "rare",
+    "released_at": "2011-09-30",
+    "digital": false,
+    "cmc": 2.0,
+    "type_line": "Creature — Lizard Egg // Creature — Lizard Horror",
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Transform",
+      "Trample",
+      "Defender"
+    ],
+    "card_faces": [
+      {
+        "name": "Ludevic's Test Subject",
+        "mana_cost": "{1}{U}",
+        "type_line": "Creature — Lizard Egg",
+        "oracle_text": "Defender\n{1}{U}: Put a hatchling counter on this creature. Then if there are five or more hatchling counters on it, remove all of them and transform it.",
+        "power": "0",
+        "toughness": "3",
+        "colors": [
+          "U"
+        ]
+      },
+      {
+        "name": "Ludevic's Abomination",
+        "mana_cost": "",
+        "type_line": "Creature — Lizard Horror",
+        "oracle_text": "Trample",
+        "power": "13",
+        "toughness": "13",
+        "colors": [
+          "U"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "71ccc444-54c8-4f7c-a425-82bc3eea1eb0",
+    "oracle_id": "58bd02ae-2676-4c9c-b24e-2bd51be8bde7",
+    "name": "Bird Admirer // Wing Shredder",
+    "lang": "en",
+    "layout": "transform",
+    "set": "mid",
+    "collector_number": "169",
+    "rarity": "common",
+    "released_at": "2021-09-24",
+    "digital": false,
+    "cmc": 3.0,
+    "type_line": "Creature — Human Archer Werewolf // Creature — Werewolf",
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Reach",
+      "Transform",
+      "Daybound",
+      "Nightbound"
+    ],
+    "card_faces": [
+      {
+        "name": "Bird Admirer",
+        "mana_cost": "{2}{G}",
+        "type_line": "Creature — Human Archer Werewolf",
+        "oracle_text": "Reach\nDaybound (If a player casts no spells during their own turn, it becomes night next turn.)",
+        "power": "1",
+        "toughness": "4",
+        "colors": [
+          "G"
+        ]
+      },
+      {
+        "name": "Wing Shredder",
+        "mana_cost": "",
+        "type_line": "Creature — Werewolf",
+        "oracle_text": "Reach\nNightbound (If a player casts at least two spells during their own turn, it becomes day next turn.)",
+        "power": "3",
+        "toughness": "5",
+        "colors": [
+          "G"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "1d7b2d05-ce5c-4b73-8fa6-d9b69619d58c",
+    "oracle_id": "73a3b9a1-37a0-469a-9557-8c118a1ee78f",
+    "name": "Tavern Ruffian // Tavern Smasher",
+    "lang": "en",
+    "layout": "transform",
+    "set": "mid",
+    "collector_number": "163",
+    "rarity": "common",
+    "released_at": "2021-09-24",
+    "digital": false,
+    "cmc": 4.0,
+    "type_line": "Creature — Human Warrior Werewolf // Creature — Werewolf",
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Transform",
+      "Daybound",
+      "Nightbound"
+    ],
+    "card_faces": [
+      {
+        "name": "Tavern Ruffian",
+        "mana_cost": "{3}{R}",
+        "type_line": "Creature — Human Warrior Werewolf",
+        "oracle_text": "Daybound (If a player casts no spells during their own turn, it becomes night next turn.)",
+        "power": "2",
+        "toughness": "5",
+        "colors": [
+          "R"
+        ]
+      },
+      {
+        "name": "Tavern Smasher",
+        "mana_cost": "",
+        "type_line": "Creature — Werewolf",
+        "oracle_text": "Nightbound (If a player casts at least two spells during their own turn, it becomes day next turn.)",
+        "power": "6",
+        "toughness": "5",
+        "colors": [
+          "R"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "e01cc65a-0e38-4f41-b9ed-796ef0355d0b",
+    "oracle_id": "9842734c-1eac-4509-a731-4c22017ae586",
+    "name": "Wear // Tear",
+    "lang": "en",
+    "layout": "split",
+    "set": "moc",
+    "collector_number": "343",
+    "rarity": "uncommon",
+    "released_at": "2023-04-21",
+    "digital": false,
+    "mana_cost": "{1}{R} // {W}",
+    "cmc": 3.0,
+    "type_line": "Instant // Instant",
+    "colors": [
+      "R",
+      "W"
+    ],
+    "color_identity": [
+      "R",
+      "W"
+    ],
+    "keywords": [
+      "Fuse"
+    ],
+    "card_faces": [
+      {
+        "name": "Wear",
+        "mana_cost": "{1}{R}",
+        "type_line": "Instant",
+        "oracle_text": "Destroy target artifact.\nFuse (You may cast one or both halves of this card from your hand.)"
+      },
+      {
+        "name": "Tear",
+        "mana_cost": "{W}",
+        "type_line": "Instant",
+        "oracle_text": "Destroy target enchantment.\nFuse (You may cast one or both halves of this card from your hand.)"
+      }
+    ]
+  },
+  {
+    "id": "3e96f9a6-c215-42b1-aa02-8e6143fe5bd7",
+    "oracle_id": "c31e9db3-5d9d-470a-871a-b4b5b0536db5",
+    "name": "Tireless Hauler // Dire-Strain Brawler",
+    "lang": "en",
+    "layout": "transform",
+    "set": "mid",
+    "collector_number": "203",
+    "rarity": "common",
+    "released_at": "2021-09-24",
+    "digital": false,
+    "cmc": 5.0,
+    "type_line": "Creature — Human Werewolf // Creature — Werewolf",
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Vigilance",
+      "Transform",
+      "Daybound",
+      "Nightbound"
+    ],
+    "card_faces": [
+      {
+        "name": "Tireless Hauler",
+        "mana_cost": "{4}{G}",
+        "type_line": "Creature — Human Werewolf",
+        "oracle_text": "Vigilance\nDaybound (If a player casts no spells during their own turn, it becomes night next turn.)",
+        "power": "4",
+        "toughness": "5",
+        "colors": [
+          "G"
+        ]
+      },
+      {
+        "name": "Dire-Strain Brawler",
+        "mana_cost": "",
+        "type_line": "Creature — Werewolf",
+        "oracle_text": "Vigilance\nNightbound (If a player casts at least two spells during their own turn, it becomes day next turn.)",
+        "power": "6",
+        "toughness": "6",
+        "colors": [
+          "G"
+        ]
+      }
+    ]
   }
 ]

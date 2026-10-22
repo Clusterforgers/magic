@@ -59,4 +59,9 @@ x?: number,
  * The optional costs it was cast with, by index (kicker, buyback and the like), as the object remembers them: its
  * triggered abilities read them after it has left.
  */
-paid?: Array<number>, };
+paid?: Array<number>, 
+/**
+ * The face of a card with several faces it was in use as (the back face of a transformed permanent); left out for
+ * the card as a whole.
+ */
+face?: number, };

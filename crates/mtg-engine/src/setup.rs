@@ -264,6 +264,8 @@ fn starting_player(
 
 impl GameState {
     /// Builds the initial state; objects get sequential ids per seat: library, hand, battlefield, graveyard.
+    // One field for each part of the state, so the list is as long as the state.
+    #[allow(clippy::too_many_lines)]
     pub fn from_setup(setup: &GameSetup) -> Result<GameState, SetupError> {
         setup.validate()?;
         let seats = setup.players.len();
@@ -363,6 +365,7 @@ impl GameState {
             rules_cache: RulesCache::default(),
             possible: Possible::default(),
             result: None,
+            day_night: None,
         };
         game.note_what_cards_can_do();
         Ok(game)
@@ -459,6 +462,13 @@ impl GameState {
                 .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Protection(_)))
         });
         self.possible.protection = protection;
+        let day_night = self.objects().any(|object| {
+            object
+                .def
+                .each_face()
+                .any(crate::ability_reader::definition_has_day_night)
+        });
+        self.possible.day_night = day_night;
     }
 }
 
