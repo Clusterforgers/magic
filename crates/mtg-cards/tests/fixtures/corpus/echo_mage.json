@@ -1,0 +1,27 @@
+{
+  "id": "8b76ba96-9630-44fb-849e-3c3848c03876",
+  "oracle_id": "fb98f6b7-5986-4c5d-98fc-e5c4106f48bf",
+  "name": "Echo Mage",
+  "lang": "en",
+  "layout": "leveler",
+  "set": "c13",
+  "collector_number": "43",
+  "rarity": "rare",
+  "released_at": "2013-11-01",
+  "digital": false,
+  "mana_cost": "{1}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "Level up {1}{U} ({1}{U}: Put a level counter on this. Level up only as a sorcery.)\nLEVEL 2-3\n2/4\n{U}{U}, {T}: Copy target instant or sorcery spell. You may choose new targets for the copy.\nLEVEL 4+\n2/5\n{U}{U}, {T}: Copy target instant or sorcery spell twice. You may choose new targets for the copies.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Level Up"
+  ]
+}

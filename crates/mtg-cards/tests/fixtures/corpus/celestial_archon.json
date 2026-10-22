@@ -1,0 +1,29 @@
+{
+  "id": "c40cb58f-370f-487a-9a96-bdce173aa3c6",
+  "oracle_id": "d2b29bb0-9fb5-46cd-a546-fa6c4ff6113c",
+  "name": "Celestial Archon",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c18",
+  "collector_number": "64",
+  "rarity": "rare",
+  "released_at": "2018-08-10",
+  "digital": false,
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Enchantment Creature — Archon",
+  "oracle_text": "Bestow {5}{W}{W} (If you cast this card for its bestow cost, it's an Aura spell with enchant creature. It becomes a creature again if it's not attached.)\nFlying, first strike\nEnchanted creature gets +4/+4 and has flying and first strike.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "First strike",
+    "Bestow"
+  ]
+}

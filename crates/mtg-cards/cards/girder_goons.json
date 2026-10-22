@@ -1,0 +1,36 @@
+{
+  "oracle_id": "655961a3-94b5-4600-b9f1-f93163d03a49",
+  "name": "Girder Goons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Girder Goons",
+      "oracle_fingerprint": "e377f065788e82be5f7cf428ea3ba4a6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rogue",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rogue"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Blitz": "{3}{B}" } }
+      ]
+    }
+  ]
+}

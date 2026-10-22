@@ -1,0 +1,28 @@
+{
+  "id": "0e7ed627-6ce3-4629-bcd9-e449642b8d34",
+  "oracle_id": "aedc3e69-3163-4b8d-97b2-0ad92f28a6dc",
+  "name": "Greater Mossdog",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rvr",
+  "collector_number": "145",
+  "rarity": "common",
+  "released_at": "2024-01-12",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Plant Dog",
+  "oracle_text": "Dredge 3 (If you would draw a card, you may mill three cards instead. If you do, return this card from your graveyard to your hand.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Dredge",
+    "Mill"
+  ]
+}

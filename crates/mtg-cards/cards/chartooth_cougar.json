@@ -1,0 +1,28 @@
+{
+  "oracle_id": "717152c3-2082-49aa-9274-a1a6abe54b65",
+  "name": "Chartooth Cougar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chartooth Cougar",
+      "oracle_fingerprint": "2f2cd44da7978757d99bb049492ca647",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Typecycling": { "find": [{ "Subtype": "Mountain" }], "cost": "{2}" } } }
+      ]
+    }
+  ]
+}

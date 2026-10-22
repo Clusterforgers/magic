@@ -1,0 +1,15 @@
+{
+  "oracle_id": "d0a3b261-3daf-4082-8bc5-e66326a6c382",
+  "name": "Valley Rannet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valley Rannet",
+      "oracle_fingerprint": "0d0a88afdaf3a392833cc9c7e8ea4037",
+      "abilities": [
+        { "Keyword": { "Typecycling": { "find": [{ "Subtype": "Mountain" }], "cost": "{2}" } } },
+        { "Keyword": { "Typecycling": { "find": [{ "Subtype": "Forest" }], "cost": "{2}" } } }
+      ]
+    }
+  ]
+}

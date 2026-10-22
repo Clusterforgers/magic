@@ -1,0 +1,30 @@
+{
+  "id": "03a32ab2-cc55-43fb-82d8-c51a3849b344",
+  "oracle_id": "717152c3-2082-49aa-9274-a1a6abe54b65",
+  "name": "Chartooth Cougar",
+  "lang": "en",
+  "layout": "normal",
+  "set": "a25",
+  "collector_number": "125",
+  "rarity": "common",
+  "released_at": "2018-03-16",
+  "digital": false,
+  "mana_cost": "{5}{R}",
+  "cmc": 6.0,
+  "type_line": "Creature — Cat Beast",
+  "oracle_text": "{R}: This creature gets +1/+0 until end of turn.\nMountaincycling {2} ({2}, Discard this card: Search your library for a Mountain card, reveal it, put it into your hand, then shuffle.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Mountaincycling",
+    "Landcycling",
+    "Typecycling",
+    "Cycling"
+  ]
+}

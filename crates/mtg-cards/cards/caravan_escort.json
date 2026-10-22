@@ -1,0 +1,64 @@
+{
+  "oracle_id": "9a9c221d-9bb4-4ec4-b5db-cb26db6065df",
+  "name": "Caravan Escort",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caravan Escort",
+      "oracle_fingerprint": "d00d40db9c7e267becbb1b0f93434b13",
+      "abilities": [
+        { "Keyword": { "LevelUp": "{2}" } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                    "op": "Le",
+                    "right": 4
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetPT": { "power": 5, "toughness": 5 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                "op": "Ge",
+                "right": 5
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "FirstStrike" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                "op": "Ge",
+                "right": 5
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

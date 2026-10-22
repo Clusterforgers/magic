@@ -11,6 +11,7 @@ use std::sync::Arc;
 use mtg_cards::AbilityDef;
 use mtg_cards::ability::Ability;
 use mtg_cards::assemble::{ManaProduced, mana_shape};
+use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 
@@ -28,8 +29,9 @@ use crate::resolve::{Scope, run_inline};
 use crate::state::GameState;
 use crate::zones::Zone;
 
-/// The most ways one ability makes its mana: one for each type.
-const VARIANTS: usize = 6;
+/// The most ways one ability makes its mana: one for each type, and the lists of a choice among lists (the validator
+/// refuses more).
+const VARIANTS: usize = mtg_cards::assemble::MANA_WAYS;
 
 /// A mana ability from the rules of a permanent, with the option that stands for each way to use it.
 struct RuleMana {
@@ -72,19 +74,24 @@ fn takes_of(
         .filter_map(|item| match Part::read(item).ok().flatten()? {
             Part::Pick(pick) => {
                 let sacrifice = pick.kind == Kind::Sacrifice;
+                let exile = pick.kind == Kind::ExileHand;
                 let mut from = pick.candidates(&owner);
-                if sacrifice {
-                    // The cheapest goes first; the order of the battlefield settles a tie.
+                if sacrifice || exile {
+                    // The cheapest goes first, a land after the spells; the order of the zone settles a tie.
                     from.sort_by_key(|id| {
-                        state
-                            .object(*id)
-                            .map_or(0, |object| object.card().mana_value())
+                        state.object(*id).map_or((false, 0), |object| {
+                            (
+                                exile && object.card().types.contains(&CardType::Land),
+                                object.card().mana_value(),
+                            )
+                        })
                     });
                 } else {
                     from.sort_by_key(|id| !keywords::summoning_sick(state, *id));
                 }
                 Some(Take {
                     sacrifice,
+                    exile,
                     count: u32::try_from(pick.count).unwrap_or(u32::MAX),
                     from,
                 })
@@ -186,6 +193,16 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                     Some(Chosen::Color(color)) => vec![vec![mana_of(*color); count as usize]],
                     _ => Vec::new(),
                 }
+            }
+            ManaProduced::OrChosenColor(printed) => {
+                let mut types = vec![printed];
+                if let Some(Chosen::Color(color)) =
+                    object.permanent().and_then(PermanentState::chosen)
+                    && mana_of(*color) != printed
+                {
+                    types.push(mana_of(*color));
+                }
+                types.into_iter().map(|t| vec![t]).collect()
             }
             ManaProduced::CommanderIdentity(count) => identity_types(state, player)
                 .into_iter()
@@ -666,6 +683,91 @@ mod tests {
         };
         apply_event(&mut game, &entered).unwrap();
         assert_eq!(produced(&options(&game, ME)), [(ManaType::Blue, 2)]);
+    }
+
+    const BLOOM: &str = r#"{"Activated":{"cost":[{"ExileFromHand":{"filter":[]}}],"effects":[{"AddMana":{"mana":{"OneOfLists":[["Black","Black"],["Green","Green"]]}}}]}}"#;
+
+    fn land() -> Arc<CardDefinition> {
+        Arc::new(CardDefinition::new("Swamp").with_type(CardType::Land))
+    }
+
+    /// A game where the bloom is in play and `hand` is in seat 0's hand.
+    fn bloom_game(hand: Vec<Arc<CardDefinition>>) -> GameState {
+        state(
+            vec![hand, vec![]],
+            vec![vec![artifact("Bloom", BLOOM)], vec![]],
+        )
+    }
+
+    #[rstest]
+    #[case::no_card_to_exile(0, 0)]
+    #[case::one_card(1, 2)]
+    #[case::two_cards(2, 2)]
+    fn a_source_that_exiles_a_card_is_offered_for_each_list_only_with_a_card_in_the_hand(
+        #[case] cards: usize,
+        #[case] offered: usize,
+    ) {
+        let found = options(&bloom_game((0..cards).map(|_| spark()).collect()), ME);
+        assert_eq!(found.len(), offered);
+        for option in &found {
+            let [take] = option.takes.as_slice() else {
+                panic!("one part exiles a card: {:?}", option.takes);
+            };
+            assert!(take.exile && !take.sacrifice);
+            assert_eq!((take.count as usize, take.from.len()), (1, cards));
+            assert_eq!(option.count, 2, "one list of two mana for one activation");
+            assert!(option.extra && option.tapless);
+        }
+        assert_eq!(
+            found.iter().map(|o| o.produces).collect::<Vec<_>>(),
+            [ManaType::Black, ManaType::Green][..offered]
+        );
+    }
+
+    #[test]
+    fn the_cheapest_spell_is_offered_first_and_a_land_last() {
+        let costly = Arc::new(
+            CardDefinition::new("Costly")
+                .with_type(CardType::Sorcery)
+                .with_mana_cost(ManaCost::parse("{4}{R}").unwrap()),
+        );
+        let game = bloom_game(vec![land(), costly, spark()]);
+        let hand = game.zone(Zone::Hand(ME)).to_vec();
+        let found = options(&game, ME);
+        assert_eq!(found[0].takes[0].from, [hand[2], hand[1], hand[0]]);
+    }
+
+    #[rstest]
+    #[case::a_card_beside_the_spell(2, true)]
+    #[case::the_spell_alone(1, false)]
+    fn a_payment_for_a_spell_never_exiles_that_spell(
+        #[case] cards: usize,
+        #[case] affordable: bool,
+    ) {
+        let game = bloom_game((0..cards).map(|_| spark()).collect());
+        let spell = game.zone(Zone::Hand(ME))[0];
+        let all = options(&game, ME);
+        let sources = crate::mana_takes::for_card(&game, &all, spell);
+        assert!(sources.iter().all(|o| !o.takes[0].from.contains(&spell)));
+        let cost = ManaCost::parse("{B}{B}").unwrap();
+        let pool = crate::mana::ManaPool::default();
+        let seen = |sources: &[ManaOption]| {
+            crate::mana::can_afford(&cost, &pool, sources, 20, &crate::spend::Spend::other())
+        };
+        assert_eq!(seen(&sources), affordable);
+        // A payment that is not for a card in the hand may exile any card in it.
+        assert!(seen(&all));
+    }
+
+    #[test]
+    fn the_sources_of_a_card_that_is_not_in_a_hand_are_unchanged() {
+        let game = bloom_game(vec![spark()]);
+        let all = options(&game, ME);
+        let bloom = game.zone(Zone::Battlefield)[0];
+        assert!(matches!(
+            crate::mana_takes::for_card(&game, &all, bloom),
+            std::borrow::Cow::Borrowed(_)
+        ));
     }
 
     #[test]

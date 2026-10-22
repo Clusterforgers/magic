@@ -173,7 +173,12 @@ pub(crate) fn base(object: &GameObject) -> Characteristics {
     let card = object.card();
     Characteristics {
         types: object.base_types(),
-        subtypes: Vec::new(),
+        // A bestowed creature card is an Aura while it is bestowed (CR 702.103b).
+        subtypes: if object.bestowed() {
+            vec![Subtype("Aura".to_owned())]
+        } else {
+            Vec::new()
+        },
         creature_types_set: false,
         all_creature_types: false,
         colors: card.colors(),

@@ -46,6 +46,7 @@ mod modal;
 mod monstrosity;
 mod move_counters;
 mod move_to;
+mod myriad_copies;
 mod pay;
 mod proliferate;
 mod put_counters;
@@ -108,6 +109,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Attach { .. } => attach::run(cx, effect),
         Effect::Unattach { .. } => unattach::run(cx, effect),
         Effect::JoinAttack { .. } => join_attack::run(cx, effect),
+        Effect::MyriadCopies { .. } => myriad_copies::run(cx, effect),
         Effect::Transform { .. } => transform::run(cx, effect),
         Effect::Surveil { .. } => surveil::run(cx, effect),
         Effect::Proliferate { .. } => proliferate::run(cx, effect),
@@ -163,7 +165,7 @@ mod tests {
         {"LoseLife":{"amount":1}}, {"AddMana":{"mana":{"Fixed":["Green"]}}},
         {"PutCounters":{"on":"This","counter":"+1/+1"}}, {"RemoveCounters":{"from":"This","counter":"+1/+1"}},
         {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"Tap":{"what":"This"}},
-        {"Untap":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"Transform":{"what":"This"}}, {"WinGame":{}},
+        {"Untap":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"WinGame":{}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"BecomeMonarch":{}}, {"Amass":{"subtype":"Orc","count":1}}, {"Monstrosity":{"count":1}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
@@ -191,7 +193,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 56, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 57, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -249,11 +251,16 @@ mod tests {
                 "Effect.Untap",
                 "Effect.Attach",
                 "Effect.Unattach",
+                "Effect.MyriadCopies",
                 "Effect.Transform",
                 "Effect.WinGame",
                 "Effect.Surveil",
                 "Effect.Proliferate",
                 "Effect.BecomeMonarch",
+                "Effect.Amass",
+                "Effect.Monstrosity",
+                "Effect.Adapt",
+                "Effect.Bolster",
                 "Effect.Explore",
                 "Effect.Connive",
                 "Effect.ExileUntil",

@@ -320,6 +320,7 @@ impl RandomBot {
         let restricted_keep = keep(payment.restricted.len());
         let tap_keep = keep(payment.taps.len());
         let convoke_keep = keep(payment.convoke.len());
+        let improvise_keep = keep(payment.improvise.len());
         let delve_keep = keep(payment.delve.len());
         Payment {
             pool: payment
@@ -348,6 +349,12 @@ impl RandomBot {
                 .zip(convoke_keep)
                 .filter_map(|(c, k)| k.then_some(*c))
                 .collect(),
+            improvise: payment
+                .improvise
+                .iter()
+                .zip(improvise_keep)
+                .filter_map(|(c, k)| k.then_some(*c))
+                .collect(),
             delve: payment
                 .delve
                 .iter()
@@ -371,25 +378,21 @@ impl RandomBot {
             .collect();
         self.rng.shuffle(&mut ways);
         ways.into_iter().find_map(|way| {
-            let (convoke, delve) = self.random_help(&way.cost, options);
-            let used = Used::new(&convoke, &delve);
+            let used = self.random_help(&way.cost, options);
             let rest = reduce(&way.cost, &used).ok()?;
             let mut open = options.clone();
             open.sources = without_tapped(&options.sources, &used, &Used::default());
             let mut payment = self.random_payment(&rest, &open)?;
             payment.life = way.life;
-            payment.convoke = convoke;
-            payment.delve = delve;
+            payment.convoke = used.convoke;
+            payment.improvise = used.improvise;
+            payment.delve = used.delve;
             Some(payment)
         })
     }
 
     /// Some of the creatures and cards offered, each creature paying {1} or a colour the plain `cost` still needs.
-    fn random_help(
-        &mut self,
-        cost: &ManaCost,
-        options: &PayOptions,
-    ) -> (Vec<Convoked>, Vec<ObjectId>) {
+    fn random_help(&mut self, cost: &ManaCost, options: &PayOptions) -> Used {
         let mut needs = ManaType::ALL.map(|mana| cost.required(mana));
         let mut generic = cost.generic();
         let mut creatures = options.help.convoke.clone();
@@ -423,9 +426,23 @@ impl RandomBot {
                 pays,
             });
         }
+        let mut artifacts = options.help.improvise.clone();
+        self.rng.shuffle(&mut artifacts);
+        let mut improvise = Vec::new();
+        for artifact in artifacts {
+            let convoked = convoke.iter().any(|c: &Convoked| c.creature == artifact);
+            if generic > 0 && !convoked && self.rng.below(2) == 0 {
+                generic -= 1;
+                improvise.push(artifact);
+            }
+        }
         let most = options.help.delve.len().min(generic as usize);
         let cards = usize::try_from(self.rng.below(most as u64 + 1)).unwrap_or(0);
-        (convoke, options.help.delve[..cards].to_vec())
+        Used {
+            convoke,
+            improvise,
+            delve: options.help.delve[..cards].to_vec(),
+        }
     }
 
     /// A random part of the `paid` life, in steps of one symbol; all of it when taking the rest would be the engine's call to make alone.

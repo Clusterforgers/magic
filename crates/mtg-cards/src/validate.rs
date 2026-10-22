@@ -8,7 +8,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use serde::Serialize;
 
 use crate::ability::{Ability, LoyaltyCost, Timing};
-use crate::assemble::{PLAIN_MANA_ABILITY, mana_shape, plain_mana_ability};
+use crate::assemble::{MANA_WAYS, PLAIN_MANA_ABILITY, mana_shape, plain_mana_ability};
 use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
@@ -336,7 +336,9 @@ impl<'a> Walker<'a> {
 
     fn pred(&mut self, pred: &Pred) {
         match pred {
-            Pred::ControlledBy(r) | Pred::OwnedBy(r) => self.reference(r, Kind::Player),
+            Pred::ControlledBy(r) | Pred::OwnedBy(r) | Pred::AttackingPlayer(r) => {
+                self.reference(r, Kind::Player);
+            }
             Pred::Is(r) => self.reference(r, Kind::Object),
             Pred::HasKeyword(keyword) => self.keyword(keyword),
             Pred::Named(name) => self
@@ -344,6 +346,11 @@ impl<'a> Walker<'a> {
                 .push((self.face, self.current_path(), name.clone())),
             Pred::Compare { to, .. } => {
                 self.at("to", |w| w.amount(to));
+            }
+            Pred::CastFrom(zone) => {
+                if !matches!(zone, ZoneKind::Hand | ZoneKind::Graveyard) {
+                    self.problem("`CastFrom` names a hand or a graveyard");
+                }
             }
             Pred::Not(inner) => self.pred(inner),
             Pred::AnyOf(preds) => {
@@ -366,6 +373,7 @@ impl<'a> Walker<'a> {
             | Pred::Ability(_)
             | Pred::Tapped
             | Pred::Untapped
+            | Pred::Monstrous
             | Pred::Attacking
             | Pred::Blocking
             | Pred::Unblocked
@@ -707,18 +715,25 @@ impl<'a> Walker<'a> {
             | Keyword::Reconfigure(cost)
             | Keyword::Cycling(cost)
             | Keyword::Unearth(cost)
-            | Keyword::Ninjutsu(cost) => {
+            | Keyword::Embalm(cost)
+            | Keyword::Eternalize(cost)
+            | Keyword::Ninjutsu(cost)
+            | Keyword::LevelUp(cost)
+            | Keyword::Outlast(cost) => {
                 self.at("cost", |w| w.cost(cost));
             }
             // The cost of these is paid as the spell is announced: the mana, and the parts the engine pays there.
             Keyword::Kicker(cost)
+            | Keyword::Squad(cost)
             | Keyword::Flashback(cost)
             | Keyword::Madness(cost)
             | Keyword::Buyback(cost)
             | Keyword::Entwine(cost)
             | Keyword::Evoke(cost)
             | Keyword::Escape(cost)
-            | Keyword::Dash(cost) => {
+            | Keyword::Dash(cost)
+            | Keyword::Bestow(cost)
+            | Keyword::Blitz(cost) => {
                 self.at("cost", |w| w.cost(cost));
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost);
             }
@@ -728,7 +743,6 @@ impl<'a> Walker<'a> {
             | Keyword::Overload(cost)
             | Keyword::Mutate(cost)
             | Keyword::Encore(cost)
-            | Keyword::Squad(cost)
             | Keyword::Foretell(cost)
             | Keyword::Suspend { cost, .. } => {
                 self.at("cost", |w| w.cost(cost));
@@ -736,6 +750,7 @@ impl<'a> Walker<'a> {
                 self.parts_that_need_an_announcement("Keyword", "Cost", cost);
             }
             Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
+            Keyword::Saddle(0) => self.problem("saddle needs a power of at least 1"),
             Keyword::Enchant(selector) => {
                 self.selector(selector);
                 // An Aura is attached to a permanent; one that enchants a card in another zone waits for the cards that do.
@@ -747,8 +762,18 @@ impl<'a> Walker<'a> {
                     self.uses("Keyword", "Enchant.Elsewhere");
                 }
             }
-            Keyword::Protection(quality) | Keyword::Landwalk(quality) => self.selector(quality),
+            Keyword::Protection(quality)
+            | Keyword::Landwalk(quality)
+            | Keyword::Affinity(quality) => {
+                self.selector(quality);
+            }
+            // The cost is paid as the cost of the activated ability the keyword adds.
+            Keyword::Typecycling { find, cost } => {
+                self.at("cost", |w| w.cost(cost));
+                self.at("find", |w| w.selector(find));
+            }
             Keyword::Toxic(0) => self.problem("toxic needs a number of at least 1"),
+            Keyword::Dredge(0) => self.problem("dredge needs a number of at least 1"),
             Keyword::PartnerWith(name) => {
                 self.names
                     .push((self.face, self.current_path(), name.clone()));
@@ -880,6 +905,13 @@ impl<'a> Walker<'a> {
                 self.at("what", |w| w.selector(what));
                 self.at("at", |w| w.reference(at, Kind::Player));
             }
+            TriggerPattern::PlayerAttacked { who } => {
+                self.at("who", |w| w.reference(who, Kind::Player));
+            }
+            TriggerPattern::PlayerAttacks { by, at } => {
+                self.at("by", |w| w.reference(by, Kind::Player));
+                self.at("at", |w| w.reference(at, Kind::Player));
+            }
             TriggerPattern::BecomesTarget { what, by } => {
                 self.at("what", |w| w.selector(what));
                 self.at("by", |w| w.selector(by));
@@ -901,6 +933,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::LifeLost { who }
             | TriggerPattern::BecomesMonarch { who }
             | TriggerPattern::Proliferated { who }
+            | TriggerPattern::Amassed { who }
+            | TriggerPattern::Bolstered { who }
             | TriggerPattern::Drew { who } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
@@ -913,6 +947,8 @@ impl<'a> Walker<'a> {
             TriggerPattern::Tapped { what }
             | TriggerPattern::Explored { what }
             | TriggerPattern::Connived { what }
+            | TriggerPattern::BecomesMonstrous { what }
+            | TriggerPattern::Adapted { what }
             | TriggerPattern::Untapped { what }
             | TriggerPattern::Blocks { what }
             | TriggerPattern::BecomesBlocked { what }
@@ -962,8 +998,12 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::StepBegins { .. }
                 | TriggerPattern::BecomesMonarch { .. }
                 | TriggerPattern::Proliferated { .. }
+                | TriggerPattern::Amassed { .. }
                 | TriggerPattern::Explored { .. }
                 | TriggerPattern::Connived { .. }
+                | TriggerPattern::BecomesMonstrous { .. }
+                | TriggerPattern::Adapted { .. }
+                | TriggerPattern::Bolstered { .. }
                 | TriggerPattern::SpellCast { .. }
                 | TriggerPattern::BecomesTarget { .. }
                 | TriggerPattern::GroupAttacks { .. }
@@ -1065,7 +1105,7 @@ impl<'a> Walker<'a> {
                 }
             }
             TokenRef::Custom(spec) => self.at("Custom", |w| w.token_spec(spec)),
-            TokenRef::CopyOf { of, except } => {
+            TokenRef::CopyOf { of, except, .. } => {
                 self.at("of", |w| w.reference(of, Kind::Object));
                 self.copy_exceptions(except);
             }
@@ -1235,6 +1275,12 @@ impl<'a> Walker<'a> {
             Effect::Unattach { what } | Effect::JoinAttack { what } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
             }
+            Effect::MyriadCopies { of, bind } => {
+                w.at("of", |w| w.reference(of, Kind::Object));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
+            }
             Effect::Shuffle { who }
             | Effect::WinGame { who }
             | Effect::Proliferate { who }
@@ -1290,6 +1336,9 @@ impl<'a> Walker<'a> {
                     Produce::OneOfLists(lists) if lists.len() < 2 => {
                         w.problem("a choice of mana needs at least two lists");
                     }
+                    Produce::OneOfLists(lists) if lists.len() > MANA_WAYS => {
+                        w.problem("a choice of mana has at most six lists");
+                    }
                     Produce::OneOfLists(lists) if lists.iter().any(Vec::is_empty) => {
                         w.problem("a list of mana adds no mana");
                     }
@@ -1301,6 +1350,7 @@ impl<'a> Walker<'a> {
                     | Produce::OneOf(_)
                     | Produce::OneOfLists(_)
                     | Produce::ChosenColor(_)
+                    | Produce::OrChosenColor(_)
                     | Produce::CommanderIdentity(_) => {}
                 }
                 // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.
@@ -1766,6 +1816,10 @@ impl<'a> Walker<'a> {
             GameRule::MustAttack(who)
             | GameRule::MustBlock(who)
             | GameRule::CantBeCountered(who) => self.at(tag, |w| w.reference(who, Kind::Object)),
+            GameRule::MustAttackPlayers { who, players } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Object));
+                w.at("players", |w| w.reference(players, Kind::Player));
+            }),
             GameRule::CantGainLife(who)
             | GameRule::CantDraw(who)
             | GameRule::CantSearch(who)
@@ -1899,6 +1953,14 @@ impl<'a> Walker<'a> {
                     self.problem("needs at least one effect");
                 }
                 self.effect_list("Instead", effects, false);
+            }
+            ReplaceBy::Dredge(cards) => {
+                if !matches!(when, ReplaceWhen::Draw { .. }) {
+                    self.problem("`Dredge` replaces a `Draw`");
+                }
+                if *cards == 0 {
+                    self.problem("dredging no cards is drawing");
+                }
             }
             ReplaceBy::MoveTo(_)
                 if !matches!(
@@ -2191,12 +2253,26 @@ fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str) -> bool {
                 // Scryfall lists `Enchant` for an Aura that enchants a player as it does for any other.
                 || (matches!(k, Keyword::EnchantPlayer { .. })
                     && "Enchant".eq_ignore_ascii_case(keyword))
+                // Scryfall lists `Cycling` as well for a typecycling card (CR 702.29).
+                || (matches!(k, Keyword::Typecycling { .. })
+                    && Keyword::Cycling(Cost::default()).name().eq_ignore_ascii_case(keyword))
         }
+        // A keyword the card gives itself, as a level up creature does under a level.
+        Ability::Static {
+            affected: Ref::This,
+            mods,
+            ..
+        } => mods.iter().any(|modification| {
+            matches!(modification, Modification::AddKeyword(k) if k.name().eq_ignore_ascii_case(keyword))
+        }),
         Ability::Manual { span, .. } => printed
             .faces
             .get(face)
             .and_then(|shown| span.slice(&shown.oracle_text))
-            .is_some_and(|clause| names_keyword(clause, keyword)),
+            .is_some_and(|clause| {
+                names_keyword(clause, keyword)
+                    || (keyword.eq_ignore_ascii_case("Typecycling") && names_typecycling(clause))
+            }),
         _ => false,
     })
 }
@@ -2211,6 +2287,14 @@ fn names_keyword(clause: &str, keyword: &str) -> bool {
             .get(at + found.len()..)
             .and_then(|rest| rest.chars().next());
         !after.is_some_and(char::is_alphanumeric)
+    })
+}
+
+/// Whether the clause has a word that is a typecycling: some letters before `cycling` (`Plainscycling`).
+fn names_typecycling(clause: &str) -> bool {
+    clause.split(|c: char| !c.is_alphabetic()).any(|word| {
+        let word = word.to_ascii_lowercase();
+        word.len() > "cycling".len() && word.ends_with("cycling")
     })
 }
 
@@ -2959,8 +3043,8 @@ mod tests {
         "abilities[0].Spell.effects[0].Attach.to: expected an object but this is a player"
     )]
     #[case::unknown_token(
-        r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Named":"gold"}}}]}}"#,
-        "unknown token `gold`"
+        r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Named":"blood"}}}]}}"#,
+        "unknown token `blood`"
     )]
     #[case::divided_without_division(
         r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"Divided"}}]}}"#,
@@ -3166,6 +3250,24 @@ mod printed_keywords {
         &[(BIRD, "Plainscycling {2}", r#"{"Manual":{"reason":"x","span":{"start":0,"end":17}}}"#)],
         &["Plainscycling", "Cycling"],
         &[]
+    )]
+    #[case::plainscycling_is_typecycling(
+        "Partial",
+        &[(BIRD, "Plainscycling {2}", r#"{"Manual":{"reason":"x","span":{"start":0,"end":17}}}"#)],
+        &["Plainscycling", "Typecycling"],
+        &[]
+    )]
+    #[case::a_typecycling_ability_is_cycling_and_typecycling(
+        "Full",
+        &[(BIRD, "Plainscycling {2}", r#"{"Keyword":{"Typecycling":{"find":[{"Subtype":"Plains"}],"cost":[{"Mana":"{2}"}]}}}"#)],
+        &["Plainscycling", "Landcycling", "Typecycling", "Cycling"],
+        &[]
+    )]
+    #[case::cycling_is_not_typecycling(
+        "Partial",
+        &[(BIRD, "Cycling {2}", r#"{"Manual":{"reason":"x","span":{"start":0,"end":11}}}"#)],
+        &["Typecycling"],
+        &["Typecycling"]
     )]
     #[case::an_aura_grants_a_keyword(
         "Partial",

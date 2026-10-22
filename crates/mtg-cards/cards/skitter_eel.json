@@ -1,0 +1,12 @@
+{
+  "oracle_id": "75132177-0881-4158-9d65-73f5ba9d4402",
+  "name": "Skitter Eel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skitter Eel",
+      "oracle_fingerprint": "190cc6bf7307768433b7f3256f2919d6",
+      "abilities": [{ "Activated": { "cost": "{2}{U}", "effects": [{ "Adapt": { "count": 2 } }] } }]
+    }
+  ]
+}

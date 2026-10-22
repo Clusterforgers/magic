@@ -1,0 +1,22 @@
+{
+  "oracle_id": "56a8554c-d427-44ca-a01d-9e12c89acd1e",
+  "name": "Mer-Ek Nightblade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mer-Ek Nightblade",
+      "oracle_fingerprint": "b5e0d5e0219bac9ca3b367f91c1c843b",
+      "abilities": [
+        { "Keyword": { "Outlast": "{B}" } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "HasCounter": "+1/+1" }]
+            },
+            "mods": [{ "AddKeyword": "Deathtouch" }]
+          }
+        }
+      ]
+    }
+  ]
+}

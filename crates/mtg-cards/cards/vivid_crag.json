@@ -1,0 +1,31 @@
+{
+  "oracle_id": "d8e2efe0-33a4-4303-9e83-ac42ea5df8cb",
+  "name": "Vivid Crag",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vivid Crag",
+      "oracle_fingerprint": "3b80c6d24a34c7ad44f97976bbeec097",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "charge", "count": 2, "tapped": true } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": "charge" } }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

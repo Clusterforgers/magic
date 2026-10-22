@@ -1,0 +1,27 @@
+{
+  "id": "e583f6be-3d78-4085-9059-c3c989a4977f",
+  "oracle_id": "35101c6c-0bcc-4b1f-9cb5-a82e4d2f8220",
+  "name": "Gluttonous Cyclops",
+  "lang": "en",
+  "layout": "normal",
+  "set": "jou",
+  "collector_number": "99",
+  "rarity": "common",
+  "released_at": "2014-05-02",
+  "digital": false,
+  "mana_cost": "{5}{R}",
+  "cmc": 6.0,
+  "type_line": "Creature — Cyclops",
+  "oracle_text": "{5}{R}{R}: Monstrosity 3. (If this creature isn't monstrous, put three +1/+1 counters on it and it becomes monstrous.)",
+  "power": "5",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Monstrosity"
+  ]
+}

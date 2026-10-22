@@ -1,0 +1,27 @@
+{
+  "id": "1717da7b-9e87-4694-873b-abd4e3bcd5e2",
+  "oracle_id": "f7fa6ac0-70db-4586-b881-5a19db644dfb",
+  "name": "Anafenza, Kin-Tree Spirit",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "11",
+  "rarity": "uncommon",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{W}{W}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Spirit Soldier",
+  "oracle_text": "Whenever another nontoken creature you control enters, bolster 1. (Choose a creature with the least toughness among creatures you control and put a +1/+1 counter on it.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Bolster"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a8052556-8962-4130-86a8-6fb7b6a324f7",
+  "name": "Thriving Grove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thriving Grove",
+      "oracle_fingerprint": "86088d96280d0c527abd59d73cbaeaae",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "ColorOtherThan": "Green" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OrChosenColor": "Green" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

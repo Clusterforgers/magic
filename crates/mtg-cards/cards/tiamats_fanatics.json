@@ -1,0 +1,12 @@
+{
+  "oracle_id": "6eef7583-0716-49b5-b70e-8feb0e7c99fb",
+  "name": "Tiamat's Fanatics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tiamat's Fanatics",
+      "oracle_fingerprint": "89ad6ce8e5f3f792e3f230304c29f481",
+      "abilities": [{ "Keyword": "Haste" }, { "Keyword": "Myriad" }]
+    }
+  ]
+}

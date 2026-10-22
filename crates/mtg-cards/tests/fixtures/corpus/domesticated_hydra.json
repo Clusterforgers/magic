@@ -1,0 +1,27 @@
+{
+  "id": "23be85ac-2d9c-4261-aa55-4421e4a35d8b",
+  "oracle_id": "b6d65fa3-26a9-44b2-a93d-a295bd080729",
+  "name": "Domesticated Hydra",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cn2",
+  "collector_number": "63",
+  "rarity": "uncommon",
+  "released_at": "2016-08-26",
+  "digital": false,
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Hydra",
+  "oracle_text": "{X}{G}{G}{G}: Monstrosity X. (If this creature isn't monstrous, put X +1/+1 counters on it and it becomes monstrous.)\nAs long as this creature is monstrous, it has trample.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Monstrosity"
+  ]
+}

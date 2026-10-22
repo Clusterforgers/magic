@@ -5,9 +5,11 @@
 //! `of` lists them for a card and a player; the options of a player offer a card when one of its ways can be used now
 //! (`castable_now`), and the announcement of the cast asks which one when there is more than one (`announce/alternative.rs`).
 
+use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::definition::Layout;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::value::CastWay;
+use mtg_cards::refs::{Pred, Selector};
+use mtg_cards::value::{Amount, CastWay};
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
@@ -19,6 +21,7 @@ use crate::faces;
 use crate::help;
 use crate::keywords::{self, aftermath, foretell, keywords_of};
 use crate::mana::{ManaOption, ManaPool, can_afford, can_afford_with};
+use crate::mana_takes::for_card;
 use crate::object::{FaceDown, GameObject, ObjectKind};
 use crate::parts::Part;
 use crate::price::Price;
@@ -191,11 +194,29 @@ fn keyword_way(
     let (way, name, cost, from_here) = match keyword {
         Keyword::Flashback(cost) => (CastWay::Flashback, "Flashback", cost, in_graveyard),
         Keyword::Escape(cost) => (CastWay::Escape, "Escape", cost, in_graveyard),
+        Keyword::JumpStart if in_graveyard => {
+            return discard_way(state, id, CastWay::JumpStart, instant);
+        }
+        Keyword::Retrace if in_graveyard => {
+            return discard_way(state, id, CastWay::Retrace, instant);
+        }
         Keyword::Evoke(cost) => (CastWay::Evoke, "Evoke", cost, in_hand),
         Keyword::Overload(cost) => (CastWay::Overload, "Overload", cost, in_hand),
         Keyword::Dash(cost) => (
             CastWay::Dash,
             "Dash",
+            cost,
+            in_hand && is_creature(state, id),
+        ),
+        Keyword::Bestow(cost) => (
+            CastWay::Bestow,
+            "Bestow",
+            cost,
+            in_hand && is_creature(state, id),
+        ),
+        Keyword::Blitz(cost) => (
+            CastWay::Blitz,
+            "Blitz",
             cost,
             in_hand && is_creature(state, id),
         ),
@@ -213,7 +234,12 @@ fn keyword_way(
     // Overload and foretell are paid with mana alone.
     let (mana, parts) = if matches!(
         way,
-        CastWay::Flashback | CastWay::Evoke | CastWay::Escape | CastWay::Dash
+        CastWay::Flashback
+            | CastWay::Evoke
+            | CastWay::Escape
+            | CastWay::Dash
+            | CastWay::Bestow
+            | CastWay::Blitz
     ) {
         cast_cost(cost)?
     } else {
@@ -225,6 +251,33 @@ fn keyword_way(
         mana: Some(mana),
         instant,
         parts,
+    })
+}
+
+/// Jump-start (CR 702.133) and retrace (CR 702.81): the card is cast from a graveyard for its mana cost and the discard of a
+/// card, a land card for retrace. Nothing replaces the mana cost, so its X is announced as for a card cast from a hand.
+fn discard_way(state: &GameState, id: ObjectId, way: CastWay, instant: bool) -> Option<Way> {
+    let printed = state.object(id)?.card().mana_cost.as_ref()?;
+    let (name, filter, words) = if way == CastWay::Retrace {
+        (
+            "Retrace",
+            Some(Selector(vec![Pred::Type(CardType::Land)])),
+            "discard a land card",
+        )
+    } else {
+        ("Jump-start", None, "discard a card")
+    };
+    let price = Price::announced(&Cost(vec![CostItem::Discard {
+        count: Amount::one(),
+        filter,
+    }]))
+    .ok()?;
+    Some(Way {
+        alternative: Some(way),
+        label: format!("{name} {printed}, {words}"),
+        mana: None,
+        instant,
+        parts: price.parts,
     })
 }
 
@@ -338,7 +391,13 @@ pub(crate) fn can_suspend(
             .iter()
             .any(|permission| permission.flash && permission.covers(state, player, card));
     (instant || sorcery_timing(state, player))
-        && can_afford(&cost, pool, sources, life, &Spend::other())
+        && can_afford(
+            &cost,
+            pool,
+            &for_card(state, sources, id),
+            life,
+            &Spend::other(),
+        )
 }
 
 /// The mana the special action of foretell costs for the card `id` (CR 702.143a), when it has the keyword.
@@ -369,7 +428,13 @@ pub(crate) fn can_foretell(
     card.kind() == ObjectKind::Card
         && card.zone() == Zone::Hand(player)
         && state.turn().active() == player
-        && can_afford(&cost, pool, sources, life, &Spend::other())
+        && can_afford(
+            &cost,
+            pool,
+            &for_card(state, sources, id),
+            life,
+            &Spend::other(),
+        )
 }
 
 /// The mana of the madness cost of the card `id` (CR 702.35), when it has one the engine pays.
@@ -416,7 +481,8 @@ pub(crate) fn grantable_as_is(
     let Some(seat) = state.player(player) else {
         return false;
     };
-    let sources = mana_options(state, player);
+    let all = mana_options(state, player);
+    let sources = for_card(state, &all, id);
     let spend = Spend::for_spell(state, id, card.card().x_in_cost > 0);
     let help = help::offered(state, player, id);
     granted(state, id, free, way).iter().any(|way| {
@@ -429,7 +495,7 @@ pub(crate) fn grantable_as_is(
                         state,
                         player,
                         id,
-                        way.alternative.is_some(),
+                        way.alternative.is_some_and(CastWay::replaces_cost),
                         &cost,
                         |total| {
                             can_afford_with(
@@ -453,6 +519,10 @@ pub(crate) fn announceable_in(
     id: ObjectId,
     way: Option<CastWay>,
 ) -> bool {
+    if way == Some(CastWay::Bestow) {
+        // The creature card is an Aura spell with the one target of its enchant ability and no other (CR 702.103b).
+        return attach::bestow_announceable(state, player, id);
+    }
     way == Some(CastWay::Overload)
         || (spell_ability(state, id)
             .is_none_or(|(_, rules)| announceable(state, player, id, &rules))
@@ -487,9 +557,16 @@ pub(crate) fn castable_as_is(
     let Some(card) = state.object(id) else {
         return false;
     };
-    let spend = Spend::for_spell(state, id, card.card().x_in_cost > 0);
+    let printed_spend = Spend::for_spell(state, id, card.card().x_in_cost > 0);
+    let sources = &for_card(state, sources, id);
     let help = help::offered(state, player, id);
     of(state, player, id).iter().any(|way| {
+        // A bestowed spell is an Aura spell, whose mana restrictions read it so.
+        let spend = if way.alternative == Some(CastWay::Bestow) {
+            printed_spend.clone().bestowed()
+        } else {
+            printed_spend.clone()
+        };
         (way.instant || sorcery_timing(state, player))
             && announceable_in(state, player, id, way.alternative)
             && parts_payable(state, player, id, &way.parts)
@@ -500,7 +577,7 @@ pub(crate) fn castable_as_is(
                         state,
                         player,
                         id,
-                        way.alternative.is_some(),
+                        way.alternative.is_some_and(CastWay::replaces_cost),
                         &cost,
                         |total| can_afford_with(total, pool, sources, help.help(), life, &spend),
                     )

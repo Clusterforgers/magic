@@ -242,17 +242,22 @@ pub struct ManaOption {
     pub takes: Vec<Take>,
 }
 
-/// Permanents a mana ability's cost takes besides its source: "Tap an untapped creature you control", "Sacrifice a Goblin".
+/// Permanents or cards a mana ability's cost takes besides its source: "Tap an untapped creature you control", "Sacrifice
+/// a Goblin", "Exile a card from your hand".
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct Take {
-    /// The permanents are sacrificed; left out means they are tapped.
+    /// The permanents are sacrificed; left out means they are tapped or, with `exile`, exiled.
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub sacrifice: bool,
-    /// How many permanents it takes.
+    /// The objects are cards in the payer's hand that are exiled (Cadaverous Bloom); left out means permanents.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub exile: bool,
+    /// How many it takes.
     pub count: u32,
-    /// The permanents it may take, as the cost allows them when it is offered.
+    /// What it may take, as the cost allows it when it is offered.
     pub from: Vec<ObjectId>,
 }
 
@@ -343,6 +348,10 @@ pub struct Payment {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Convoked>>", optional))]
     pub convoke: Vec<Convoked>,
+    /// Artifacts tapped for improvise, each paying {1} (CR 702.126). Left out means none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
+    pub improvise: Vec<ObjectId>,
     /// Cards exiled from the graveyard for delve, each paying {1} (CR 702.66). Left out means none.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
@@ -445,6 +454,7 @@ fn flat(payment: &Payment) -> Payment {
         taps: payment.taps.clone(),
         life: payment.life,
         convoke: payment.convoke.clone(),
+        improvise: payment.improvise.clone(),
         delve: payment.delve.clone(),
     }
 }
@@ -479,6 +489,7 @@ fn separate(types: &[ManaType], pool: &ManaPool, spend: &Spend, kept: &Payment) 
         taps: kept.taps.clone(),
         life: kept.life,
         convoke: kept.convoke.clone(),
+        improvise: kept.improvise.clone(),
         delve: kept.delve.clone(),
     };
     for mana in left {
@@ -923,7 +934,7 @@ fn preference(
     let extras = used.iter().filter(|o| o.extra).count();
     (
         payment.life,
-        payment.convoke.len() + payment.delve.len(),
+        payment.convoke.len() + payment.improvise.len() + payment.delve.len(),
         sacrificed,
         extras,
         payment.taps.len(),
@@ -998,6 +1009,7 @@ pub fn auto_payment_with(
                     planned.map(|whole| Payment {
                         life: resolution.life,
                         convoke: variant.used.convoke.clone(),
+                        improvise: variant.used.improvise.clone(),
                         delve: variant.used.delve.clone(),
                         ..whole
                     })
@@ -1007,6 +1019,7 @@ pub fn auto_payment_with(
                             taps: plain.taps,
                             life: resolution.life,
                             convoke: variant.used.convoke.clone(),
+                            improvise: variant.used.improvise.clone(),
                             delve: variant.used.delve.clone(),
                             ..Payment::default()
                         };
@@ -1126,7 +1139,7 @@ pub fn check_payment_with(
 ) -> Result<Spent, PaymentError> {
     let floating = check_pool(pool, sources, spend, payment)?;
     let sources = usable(sources, spend, life);
-    let used = Used::new(&payment.convoke, &payment.delve);
+    let used = Used::new(&payment.convoke, &payment.improvise, &payment.delve);
     let tapped_for_mana: Vec<ObjectId> = payment.taps.iter().map(|tap| tap.object).collect();
     help::check(&used, help, tapped, &tapped_for_mana)?;
     let parts = parts_of(&floating, &sources, tapped, &flat(payment))?;
@@ -1135,12 +1148,7 @@ pub fn check_payment_with(
         .into_iter()
         .cloned()
         .collect();
-    let takers = without_taken(&used_sources, &|id| {
-        payment
-            .convoke
-            .iter()
-            .any(|convoked| convoked.creature == id)
-    });
+    let takers = without_taken(&used_sources, &|id| used.taps(id));
     if assignment(&takers.iter().collect::<Vec<_>>()).is_none() {
         return Err(PaymentError::CannotTake);
     }
@@ -1262,7 +1270,7 @@ pub fn complete_payment_with(
     let floating = check_pool(pool, sources, spend, partial)?;
     let usable_sources = usable(sources, spend, life);
     let flat_partial = flat(partial);
-    let kept = Used::new(&partial.convoke, &partial.delve);
+    let kept = Used::new(&partial.convoke, &partial.improvise, &partial.delve);
     let occupied: Vec<ObjectId> = partial.taps.iter().map(|tap| tap.object).collect();
     help::check(&kept, help, tapped, &occupied)?;
     let parts = parts_of(&floating, &usable_sources, tapped, &flat_partial)?;
@@ -1318,6 +1326,7 @@ pub fn complete_payment_with(
                     let all = help::together(&kept, &variant.used);
                     whole_split.life = resolution.life;
                     whole_split.convoke = all.convoke;
+                    whole_split.improvise = all.improvise;
                     whole_split.delve = all.delve;
                     keep_better(&mut best, whole_split, &usable_sources);
                 }
@@ -2572,6 +2581,7 @@ mod tests {
                         if takes {
                             source.takes.push(Take {
                                 sacrifice,
+                                exile: false,
                                 count,
                                 from: from.into_iter().map(ObjectId).collect(),
                             });

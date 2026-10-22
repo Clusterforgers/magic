@@ -1,0 +1,12 @@
+{
+  "oracle_id": "0e564f52-94fb-4c44-926f-0eebedc7d4c0",
+  "name": "Cached Defenses",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cached Defenses",
+      "oracle_fingerprint": "4d255d64ccb473b07fb8f9d00c360cf0",
+      "abilities": [{ "Spell": { "effects": [{ "Bolster": { "count": 3 } }] } }]
+    }
+  ]
+}

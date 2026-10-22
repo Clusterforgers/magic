@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c6906032-e08b-478f-bc71-cb1184f60bad",
+  "name": "Orchard Strider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orchard Strider",
+      "oracle_fingerprint": "96765d80c96b24830e180960de4c2a45",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" }, "count": 2 } }]
+          }
+        },
+        {
+          "Keyword": {
+            "Typecycling": {
+              "find": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+              "cost": "{1}{G}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

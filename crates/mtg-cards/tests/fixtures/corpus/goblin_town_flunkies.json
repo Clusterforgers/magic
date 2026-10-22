@@ -1,0 +1,28 @@
+{
+  "id": "ccff7382-8609-494c-aeee-cd1436456dd0",
+  "oracle_id": "85ceb4ac-7a1c-4c7e-95a3-515a5b5d6116",
+  "name": "Goblin-town Flunkies",
+  "lang": "en",
+  "layout": "normal",
+  "set": "hob",
+  "collector_number": "100",
+  "rarity": "common",
+  "released_at": "2026-08-14",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Creature — Goblin Soldier",
+  "oracle_text": "Haste\nWhen this creature enters, amass Goblins 1. (Put a +1/+1 counter on an Army you control. It's also a Goblin. If you don't control an Army, create a 0/0 black Goblin Army creature token first.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Amass",
+    "Haste"
+  ]
+}

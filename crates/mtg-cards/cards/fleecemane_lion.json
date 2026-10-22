@@ -1,0 +1,21 @@
+{
+  "oracle_id": "e3c8cdf7-a26a-45eb-9498-99b618cfba99",
+  "name": "Fleecemane Lion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fleecemane Lion",
+      "oracle_fingerprint": "1a1ae76b707bd4c6a48e0c9f7e388a3a",
+      "abilities": [
+        { "Activated": { "cost": "{3}{W}{G}", "effects": [{ "Monstrosity": { "count": 1 } }] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }, { "AddKeyword": "Indestructible" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["Monstrous"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

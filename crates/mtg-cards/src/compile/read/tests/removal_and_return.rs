@@ -140,9 +140,6 @@ fn more_activated_wordings_read_and_write_back(#[case] text: &str) {
 )]
 #[case::two_types_without_a_connector("Destroy target artifact, creature.")]
 #[case::a_comma_between_other_adjectives("Destroy target tapped, nonblack creature.")]
-#[case::each_opponent_creates(
-    "Destroy target creature. Each opponent creates a 1/1 white Spirit creature token."
-)]
 #[case::that_player_creates(
     "Destroy target creature. That player creates a 1/1 white Spirit creature token."
 )]

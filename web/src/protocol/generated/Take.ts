@@ -2,18 +2,23 @@
 import type { ObjectId } from "./ObjectId";
 
 /**
- * Permanents a mana ability's cost takes besides its source: "Tap an untapped creature you control", "Sacrifice a Goblin".
+ * Permanents or cards a mana ability's cost takes besides its source: "Tap an untapped creature you control", "Sacrifice
+ * a Goblin", "Exile a card from your hand".
  */
 export type Take = { 
 /**
- * The permanents are sacrificed; left out means they are tapped.
+ * The permanents are sacrificed; left out means they are tapped or, with `exile`, exiled.
  */
 sacrifice?: boolean, 
 /**
- * How many permanents it takes.
+ * The objects are cards in the payer's hand that are exiled (Cadaverous Bloom); left out means permanents.
+ */
+exile?: boolean, 
+/**
+ * How many it takes.
  */
 count: number, 
 /**
- * The permanents it may take, as the cost allows them when it is offered.
+ * What it may take, as the cost allows it when it is offered.
  */
 from: Array<ObjectId>, };
