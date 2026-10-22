@@ -333,9 +333,6 @@ fn a_bonus_or_a_keyword_reads_as_the_hand_written_files_say(
 )]
 #[case::an_x_without_an_x_in_the_cost("This creature enters with X +1/+1 counters on it.")]
 #[case::an_amount_of_digits("This creature enters with 2 +1/+1 counters on it.")]
-#[case::unless_plural_subtypes(
-    "This land enters tapped unless you control three or more other Swamps."
-)]
 #[case::unless_a_turn("This creature enters tapped unless it's your turn.")]
 #[case::unless_one_or_more("This land enters tapped unless you control one or more basic lands.")]
 #[case::unless_an_opponent("This land enters tapped unless your opponents control a land.")]
@@ -376,7 +373,6 @@ fn a_bonus_or_a_keyword_reads_as_the_hand_written_files_say(
 #[case::a_bonus_for_a_land("Enchanted land gets +1/+1.")]
 #[case::a_bonus_with_x("Equipped creature gets +X/+X.")]
 #[case::a_bonus_for_each("Equipped creature gets +1/+1 for each creature you control.")]
-#[case::a_bonus_as_long_as("Equipped creature gets +1/+1 as long as you control a Plains.")]
 #[case::a_subtype_group("Other Goblin creatures you control get +1/+1 and have haste.")]
 #[case::three_keywords("Creatures you control have flying, vigilance, and haste.")]
 #[case::a_keyword_and_an_ability("Equipped creature has flying and can't be blocked.")]

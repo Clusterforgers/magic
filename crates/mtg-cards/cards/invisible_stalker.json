@@ -1,0 +1,15 @@
+{
+  "oracle_id": "1a137a67-4156-45c8-aae9-838f688e12bd",
+  "name": "Invisible Stalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invisible Stalker",
+      "oracle_fingerprint": "c98d94e327cb48cf7aae40e6bbd6d1f7",
+      "abilities": [
+        { "Keyword": "Hexproof" },
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } }
+      ]
+    }
+  ]
+}

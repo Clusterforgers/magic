@@ -18,7 +18,7 @@ use common::{cards_dir, printed};
 /// The corpus cards whose compiled abilities are the hand-written file's, face by face. A card joins
 /// the list when the templates reach it and never leaves; a card that matches but is not listed fails
 /// the test too, so the list is the ratchet.
-const REPRODUCED: [&str; 104] = [
+const REPRODUCED: [&str; 108] = [
     "Skullclamp",
     "Lat-Nam Adept",
     "Fear of Failed Tests",
@@ -115,9 +115,13 @@ const REPRODUCED: [&str; 104] = [
     "Treasure Cruise",
     "Murderous Cut",
     "Siege Wurm",
+    "The Thing, Ben Grimm",
+    "Bloodghast",
+    "Sword of Body and Mind",
     "Gadwick, the Wizened",
     "Disembowel",
     "Forced March",
+    "Invisible Stalker",
     "Walking Ballista",
     "Behold the Multiverse",
     "Saw It Coming",

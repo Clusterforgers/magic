@@ -63,7 +63,7 @@ fn caps_of(names: &[&str]) -> Caps {
 #[case::everything(Caps::everything())]
 fn the_printed_side_of_every_corpus_card_equals_its_record(#[case] caps: Caps) {
     let records = records();
-    assert_eq!(records.len(), 176);
+    assert_eq!(records.len(), 179);
     for record in records {
         let name = &record.name;
         let front = &record.front;
@@ -250,19 +250,19 @@ fn rules_are_attached_only_when_the_support_record_says_the_engine_runs_them() {
 #[test]
 fn an_engine_that_runs_some_of_a_card_makes_it_partial() {
     let library = library();
-    let keywords = caps_of(&["Keyword.Vigilance", "Keyword.Deathtouch", "Keyword.Haste"]);
+    let keywords = caps_of(&["Keyword.Flash", "Keyword.Flying"]);
     assert_eq!(
-        state_of(&library, "Questing Beast", &keywords),
+        state_of(&library, "Aven Mindcensor", &keywords),
         Support::Partial
     );
     assert_eq!(
-        state_of(&library, "Questing Beast", &Caps::none()),
+        state_of(&library, "Aven Mindcensor", &Caps::none()),
         Support::Manual
     );
     assert_eq!(
-        state_of(&library, "Questing Beast", &Caps::everything()),
+        state_of(&library, "Aven Mindcensor", &Caps::everything()),
         Support::Partial,
-        "its three clauses stay left to the table"
+        "its clause stays left to the table"
     );
 }
 

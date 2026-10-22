@@ -43,7 +43,19 @@ use tokens::{Reader, tokenize};
 /// its sentences in order; a modal's lines are its bullets. An ability word before a dash
 /// ("Landfall — ") is flavor and left out.
 /// `x_free` says the card's mana cost has an `{X}`, which an amount may use.
+#[cfg(test)]
 pub fn clause(text: &str, kind: ClauseKind, x_free: bool) -> Option<Ability> {
+    clause_with(text, kind, x_free, &[])
+}
+
+/// Reads a clause like `clause`, with `subtypes` the subtypes on the card's own type line: a word among them is a
+/// subtype (in the singular or the plural) even where the rules' list does not have it.
+pub fn clause_with(
+    text: &str,
+    kind: ClauseKind,
+    x_free: bool,
+    subtypes: &[String],
+) -> Option<Ability> {
     let text = match kind {
         ClauseKind::Triggered => {
             let head = text.lines().next().unwrap_or_default();
@@ -53,6 +65,7 @@ pub fn clause(text: &str, kind: ClauseKind, x_free: bool) -> Option<Ability> {
     };
     let tokens = tokenize(text);
     let mut reader = Reader::new(&tokens, x_free);
+    reader.subtypes = subtypes.to_vec();
     let ability = match kind {
         ClauseKind::Spell => abilities::spell(&mut reader)?,
         ClauseKind::Modal => abilities::modal_spell(&mut reader)?,

@@ -103,7 +103,7 @@ fn quest() -> PreconDeck {
         "Starter Deck",
         "2023-03-01",
         &[],
-        &[("Forest", 56), ("Questing Beast", 4)],
+        &[("Forest", 56), ("Aven Mindcensor", 4)],
     )
 }
 
@@ -114,7 +114,7 @@ fn commander() -> PreconDeck {
         "Commander Deck",
         "2022-02-02",
         &[("Questing Beast", 1)],
-        &[("Forest", 99)],
+        &[("Forest", 98), ("Courser of Kruphix", 1)],
     )
 }
 
@@ -364,21 +364,25 @@ async fn one_precon_lists_its_cards_by_board_with_each_cards_support(pool: PgPoo
     assert_eq!(lead["count"], 1);
     assert_eq!(lead["card"]["oracle_id"], oracle("Questing Beast"));
     assert_eq!(lead["card"]["type_line"], "Legendary Creature — Beast");
-    assert_ne!(lead["support"], "verified", "the rules model it in part");
-    assert!(
-        !lead["reasons"].as_array().unwrap().is_empty(),
-        "an unsupported clause comes with its reason"
-    );
-    let land = &view["boards"][1]["cards"][0];
+    assert_eq!(lead["support"], "verified", "the rules model it in full");
+    let main_board = view["boards"][1]["cards"].as_array().unwrap();
+    let find = |name: &str| main_board.iter().find(|card| card["name"] == name).unwrap();
+    let land = find("Forest");
     assert_eq!(
         (
             land["name"].clone(),
             land["count"].clone(),
             land["support"].clone()
         ),
-        (json!("Forest"), json!(99), json!("verified"))
+        (json!("Forest"), json!(98), json!("verified"))
     );
     assert_eq!(land["reasons"], json!([]));
+    let partial = find("Courser of Kruphix");
+    assert_ne!(partial["support"], "verified", "the rules model it in part");
+    assert!(
+        !partial["reasons"].as_array().unwrap().is_empty(),
+        "an unsupported clause comes with its reason"
+    );
 
     // Why a game does not take it.
     let issues = view["issues"].as_array().unwrap();
@@ -777,7 +781,7 @@ async fn one_request_makes_a_lobby_with_the_precon_as_the_hosts_deck_and_the_gam
         .collect();
     let mut expected = [
         vec![oracle("Forest"); 56],
-        vec![oracle("Questing Beast"); 4],
+        vec![oracle("Aven Mindcensor"); 4],
     ]
     .concat();
     let mut sorted = ids.clone();

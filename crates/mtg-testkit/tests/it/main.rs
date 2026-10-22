@@ -37,6 +37,7 @@ mod divided_resolution;
 mod elimination;
 mod enters;
 mod equipment;
+mod evasion;
 mod event_triggers;
 mod forecast_hidden;
 mod forecast_matches_games;

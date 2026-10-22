@@ -1,4 +1,4 @@
-//! Goal: the 176 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 179 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -34,12 +34,12 @@ use Support::{Manual, Partial, Verified};
 /// (power and toughness from a count, colours) and the keywords of combat and
 /// flash, hexproof and the keywords that are triggers (battle cry, prowess, ward), so the fifty cards that need no more are Verified (the
 /// Forest's ability comes from its land type) and a card whose other abilities are still missing carries what runs as
-/// Partial (Questing Beast). Cascade is played, so Bloodbraid Elf is Verified, and so are the madness and suspend cards.
+/// Partial (Aven Mindcensor). Cascade is played, so Bloodbraid Elf is Verified, and so are the madness and suspend cards.
 /// Counters on permanents and players are played, so Tireless Tracker is Verified, and so are the planeswalkers whose
 /// loyalty abilities and effects run (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk).
 /// Divided damage and counters are played, so Forked Bolt and Armament Corps are Verified; cost increases and reductions are
 /// played too, so Fireball, Thalia, Guardian of Thraben and Foundry Inspector are Verified.
-const CARDS: [(&str, Support, usize); 176] = [
+const CARDS: [(&str, Support, usize); 179] = [
     ("Act of Treason", Verified, 1),
     ("Solstice Zealot", Verified, 2),
     ("Copper-Leaf Angel", Verified, 2),
@@ -141,7 +141,7 @@ const CARDS: [(&str, Support, usize); 176] = [
     ("Panharmonicon", Verified, 1),
     ("Parallel Lives", Verified, 1),
     ("Pillar of the Paruns", Verified, 1),
-    ("Questing Beast", Partial, 3),
+    ("Questing Beast", Verified, 6),
     ("Rally the Ranks", Verified, 2),
     ("Rampaging Ferocidon", Verified, 3),
     ("Rampant Growth", Verified, 1),
@@ -212,6 +212,9 @@ const CARDS: [(&str, Support, usize); 176] = [
     ("Gadwick, the Wizened", Verified, 2),
     ("Disembowel", Verified, 1),
     ("Forced March", Verified, 1),
+    ("Invisible Stalker", Verified, 2),
+    ("Aven Mindcensor", Partial, 2),
+    ("Courser of Kruphix", Partial, 2),
     ("Behold the Multiverse", Verified, 2),
     ("Saw It Coming", Verified, 2),
     ("Demon Bolt", Verified, 2),
@@ -222,7 +225,7 @@ const CARDS: [(&str, Support, usize); 176] = [
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 176);
+    assert_eq!(in_table.len(), 179);
     assert_eq!(in_table, in_corpus);
 }
 
