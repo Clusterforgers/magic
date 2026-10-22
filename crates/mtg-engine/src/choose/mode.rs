@@ -165,6 +165,16 @@ fn label_of(mode: &Mode, card: Option<&str>) -> Option<String> {
     })
 }
 
+/// Whether `available` legal modes are enough to choose the fewest the ability asks for.
+pub(crate) fn enough_modes(modal: &Modal<'_>, available: u32) -> bool {
+    // A mode that may repeat can be chosen as often as is wanted, so one legal mode is enough.
+    if modal.repeat {
+        available > 0 || modal.choose.min == 0
+    } else {
+        available >= modal.choose.min
+    }
+}
+
 /// The decision for the modes of `modal`, or `None` when too few can be chosen: fewer legal modes than the fewest to
 /// choose, or none at all for a mode that must be chosen.
 pub(crate) fn mode_options(
@@ -190,13 +200,7 @@ pub(crate) fn mode_options(
         .collect();
     let available = u32::try_from(modes.len()).unwrap_or(u32::MAX);
     let min = modal.choose.min;
-    // A mode that may repeat can be chosen as often as is wanted, so one legal mode is enough.
-    let enough = if modal.repeat {
-        available > 0 || min == 0
-    } else {
-        available >= min
-    };
-    if !enough {
+    if !enough_modes(modal, available) {
         return None;
     }
     let wanted = match &modal.choose.max {

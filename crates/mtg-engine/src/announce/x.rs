@@ -11,7 +11,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaSymbol};
 
 use super::{Ctx, Next, What, Work, cheapest, parts, targets, total};
-use crate::choose::{Choices, NumberOptions, modal_of, reads_x, targets_met};
+use crate::choose::{Choices, NumberOptions, enough_modes, modal_of, reads_x, targets_met};
 use crate::decision::DecisionKind;
 use crate::price::Price;
 use crate::resolve::spell_ability;
@@ -103,8 +103,8 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
 
 /// Whether `pays` accepts the total cost of casting the spell `id` for `cost` (the cost modifiers applied), choosing
 /// the least X that leaves each target specification with a legal target (CR 601.2b, 601.2c): more X only costs more.
-/// `fixed` is a cast that pays an alternative cost, where X is 0. A spell whose targets do not read X, and a modal
-/// spell, whose modes are chosen first, are paid for as they are.
+/// `fixed` is a cast that pays an alternative cost, where X is 0. A spell whose targets do not read X is paid for as it
+/// is; for a modal one the X must leave enough modes with their targets (CR 700.2a).
 pub(crate) fn payable(
     state: &GameState,
     player: PlayerId,
@@ -113,11 +113,10 @@ pub(crate) fn payable(
     cost: &ManaCost,
     pays: impl Fn(&ManaCost) -> bool,
 ) -> bool {
-    let specs = spell_ability(state, id)
-        .filter(|(_, rules)| modal_of(rules).is_none())
-        .map(|(_, rules)| rules.targets().to_vec())
-        .filter(|specs| specs.iter().any(reads_x));
-    let Some(specs) = specs else {
+    let rules = spell_ability(state, id)
+        .map(|(_, rules)| rules)
+        .filter(|rules| targets_read_x(rules));
+    let Some(rules) = rules else {
         return pays(&cheapest(state, player, id, cost));
     };
     let symbols = state
@@ -131,7 +130,7 @@ pub(crate) fn payable(
         if !pays(&cheapest(state, player, id, &total)) {
             return false;
         }
-        if targets_met(state, id, player, &specs, None, Some(x)) {
+        if targets_met_at(state, id, player, &rules, x) {
             return true;
         }
     }
@@ -139,8 +138,8 @@ pub(crate) fn payable(
 }
 
 /// Whether the ability `rules` of `source` can be announced with some X that `affords`: when what it may target reads X
-/// (CR 601.2c), that X must leave every target specification a legal target. Abilities whose targets do not read X, and
-/// modal ones, whose modes are chosen first, pass without asking `affords`.
+/// (CR 601.2c), that X must leave every target specification a legal target, and a modal ability enough modes with
+/// theirs. Abilities whose targets do not read X pass without asking `affords`.
 pub(crate) fn some_x_has_targets(
     state: &GameState,
     player: PlayerId,
@@ -148,13 +147,43 @@ pub(crate) fn some_x_has_targets(
     rules: &Ability,
     affords: impl Fn(u32) -> bool,
 ) -> bool {
-    let specs = rules.targets();
-    if modal_of(rules).is_some() || !specs.iter().any(reads_x) {
+    if !targets_read_x(rules) {
         return true;
     }
     (0..=MOST_X)
         .take_while(|x| affords(*x))
-        .any(|x| targets_met(state, source, player, specs, None, Some(x)))
+        .any(|x| targets_met_at(state, source, player, rules, x))
+}
+
+/// Whether what `rules` may target reads X, in its own specifications or in those of any of its modes.
+fn targets_read_x(rules: &Ability) -> bool {
+    match modal_of(rules) {
+        Some(modal) => modal
+            .modes
+            .iter()
+            .any(|mode| mode.targets.iter().any(reads_x)),
+        None => rules.targets().iter().any(reads_x),
+    }
+}
+
+/// Whether `rules` has the targets it needs when X is `x`: every specification a legal target, and for a modal ability
+/// enough modes for which that holds.
+fn targets_met_at(
+    state: &GameState,
+    source: ObjectId,
+    player: PlayerId,
+    rules: &Ability,
+    x: u32,
+) -> bool {
+    let Some(modal) = modal_of(rules) else {
+        return targets_met(state, source, player, rules.targets(), None, Some(x));
+    };
+    let available = modal
+        .modes
+        .iter()
+        .filter(|mode| targets_met(state, source, player, &mode.targets, None, Some(x)))
+        .count();
+    enough_modes(&modal, u32::try_from(available).unwrap_or(u32::MAX))
 }
 
 /// The values of X a player may announce: from `min` to `max`, less the `except` between them.
