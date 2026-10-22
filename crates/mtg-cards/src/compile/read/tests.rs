@@ -191,6 +191,7 @@ mod pay;
 mod payments;
 mod prevention;
 mod put_back;
+mod removal_and_return;
 mod returns;
 mod reveal;
 mod search_lists;

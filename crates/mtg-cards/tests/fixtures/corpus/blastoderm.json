@@ -1,0 +1,28 @@
+{
+  "id": "1aeb6b3a-1e84-4181-9e7f-d5a88ebf08b1",
+  "oracle_id": "d6ee8bd6-0207-46ee-9892-c1d1b23b934e",
+  "name": "Blastoderm",
+  "lang": "en",
+  "layout": "normal",
+  "set": "gvl",
+  "collector_number": "7",
+  "rarity": "common",
+  "released_at": "2014-12-05",
+  "digital": false,
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "Shroud (This creature can't be the target of spells or abilities.)\nFading 3 (This creature enters with three fade counters on it. At the beginning of your upkeep, remove a fade counter from it. If you can't, sacrifice it.)",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Shroud",
+    "Fading"
+  ]
+}

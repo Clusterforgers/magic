@@ -1,0 +1,27 @@
+{
+  "id": "b20b0048-f93a-4349-b5d1-201ab0a38d1b",
+  "oracle_id": "4921a314-fce7-4f3c-8546-6cf520a2c104",
+  "name": "Waning Wurm",
+  "lang": "en",
+  "layout": "normal",
+  "set": "plc",
+  "collector_number": "83",
+  "rarity": "uncommon",
+  "released_at": "2007-02-02",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Zombie Wurm",
+  "oracle_text": "Vanishing 2 (This creature enters with two time counters on it. At the beginning of your upkeep, remove a time counter from it. When the last is removed, sacrifice it.)",
+  "power": "7",
+  "toughness": "6",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Vanishing"
+  ]
+}

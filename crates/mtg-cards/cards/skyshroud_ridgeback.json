@@ -1,0 +1,12 @@
+{
+  "oracle_id": "34a160bc-5d7e-483c-b24c-ab30b7d313b0",
+  "name": "Skyshroud Ridgeback",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyshroud Ridgeback",
+      "oracle_fingerprint": "aae78af399ef77f93178668035c73b2f",
+      "abilities": [{ "Keyword": { "Fading": 2 } }]
+    }
+  ]
+}

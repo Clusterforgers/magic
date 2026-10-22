@@ -1,0 +1,28 @@
+{
+  "id": "e7f97e50-3aeb-4c79-81b1-505a2f32d8ac",
+  "oracle_id": "648e4072-b991-46fd-b057-1e807091dcdf",
+  "name": "Cloudskate",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nem",
+  "collector_number": "29",
+  "rarity": "common",
+  "released_at": "2000-02-14",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Illusion",
+  "oracle_text": "Flying\nFading 3 (This creature enters with three fade counters on it. At the beginning of your upkeep, remove a fade counter from it. If you can't, sacrifice it.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Fading"
+  ]
+}

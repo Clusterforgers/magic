@@ -1,0 +1,36 @@
+{
+  "oracle_id": "05849bd6-8f38-4031-be2b-e2aa03beb8cc",
+  "name": "Pongify",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pongify",
+      "oracle_fingerprint": "a876460742318bc7d84de8481f481f49",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "regenerate": false } },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": {
+                    "Custom": {
+                      "name": "Ape",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ape"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

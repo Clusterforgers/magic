@@ -1,0 +1,25 @@
+{
+  "oracle_id": "30d9e200-b944-43ff-89b8-a550a788ae03",
+  "name": "Breath of Life",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Breath of Life",
+      "oracle_fingerprint": "4266896af29a04ba976d96bedc6e4819",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

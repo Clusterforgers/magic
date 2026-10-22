@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8652d88f-edca-4235-b942-6e7467608de8",
+  "name": "Boon-Bringer Valkyrie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boon-Bringer Valkyrie",
+      "oracle_fingerprint": "0d3ea5a6fa40054a4100fdc9331f1e95",
+      "abilities": [
+        {
+          "Keyword": {
+            "Backup": {
+              "count": 1,
+              "abilities": [
+                { "Keyword": "Flying" },
+                { "Keyword": "FirstStrike" },
+                { "Keyword": "Lifelink" }
+              ]
+            }
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Lifelink" }
+      ]
+    }
+  ]
+}

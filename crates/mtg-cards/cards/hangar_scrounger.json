@@ -1,0 +1,36 @@
+{
+  "oracle_id": "d1b74fb9-8ef3-40be-bc79-45ffb4c597eb",
+  "name": "Hangar Scrounger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hangar Scrounger",
+      "oracle_fingerprint": "912b889357fe883a8096a4330efbb17c",
+      "abilities": [
+        {
+          "Keyword": {
+            "Backup": {
+              "count": 1,
+              "abilities": [
+                {
+                  "Triggered": {
+                    "when": { "Tapped": { "what": ["This"] } },
+                    "effects": [
+                      { "Pay": { "cost": [{ "Discard": {} }], "paid": [{ "Draw": {} }] } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [{ "Pay": { "cost": [{ "Discard": {} }], "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

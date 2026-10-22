@@ -353,6 +353,24 @@ pub fn read(item: &str) -> Option<Keyword> {
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
         "echo" => spell_cost(rest).map(Keyword::Echo),
         "cumulative upkeep" => spell_cost(rest).map(Keyword::CumulativeUpkeep),
+        "vanishing" => rest
+            .parse()
+            .ok()
+            .filter(|time| *time > 0)
+            .map(Keyword::Vanishing),
+        "fading" => rest
+            .parse()
+            .ok()
+            .filter(|fade| *fade > 0)
+            .map(Keyword::Fading),
+        "backup" => rest
+            .parse()
+            .ok()
+            .filter(|count| *count > 0)
+            .map(|count| Keyword::Backup {
+                count,
+                abilities: Vec::new(),
+            }),
         "crew" => rest
             .parse()
             .ok()
@@ -805,6 +823,9 @@ mod tests {
         ]))
     )]
     #[case::crew("Crew 3", Keyword::Crew(3))]
+    #[case::vanishing("Vanishing 3", Keyword::Vanishing(3))]
+    #[case::fading("Fading 5", Keyword::Fading(5))]
+    #[case::backup("Backup 2", Keyword::Backup { count: 2, abilities: vec![] })]
     #[case::saddle("Saddle 2", Keyword::Saddle(2))]
     #[case::level_up("Level up {1}{U}", Keyword::LevelUp(mana("{1}{U}")))]
     #[case::level_up_for_one("level up {1}", Keyword::LevelUp(mana("{1}")))]
@@ -1060,6 +1081,9 @@ mod tests {
             "Cumulative upkeep {1}",
             "Undying",
             "Persist",
+            "Vanishing 3",
+            "Fading 5",
+            "Backup 1",
             "Ravenous",
             "Foretell {1}",
             "Fabricate 1",

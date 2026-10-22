@@ -1,0 +1,28 @@
+{
+  "id": "7311ade8-eb75-40f8-b018-668762aa3b77",
+  "oracle_id": "4d472308-5bc7-4a3c-81b5-0a757f00d9e2",
+  "name": "Consuming Aetherborn",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mom",
+  "collector_number": "97",
+  "rarity": "common",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Aetherborn Vampire",
+  "oracle_text": "Backup 1 (When this creature enters, put a +1/+1 counter on target creature. If that's another creature, it gains the following ability until end of turn.)\nLifelink",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Lifelink",
+    "Backup"
+  ]
+}

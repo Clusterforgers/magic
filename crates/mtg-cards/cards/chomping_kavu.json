@@ -1,0 +1,48 @@
+{
+  "oracle_id": "20a362c3-d278-437f-881c-e7d9fe78fc2d",
+  "name": "Chomping Kavu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chomping Kavu",
+      "oracle_fingerprint": "4125eac43d53d97f7f740afaf26ea73d",
+      "abilities": [
+        {
+          "Keyword": {
+            "Backup": {
+              "count": 1,
+              "abilities": [
+                {
+                  "Static": {
+                    "affected": "This",
+                    "mods": [
+                      {
+                        "CantBeBlockedBy": [
+                          { "Type": "Creature" },
+                          { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

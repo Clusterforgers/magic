@@ -1,0 +1,28 @@
+{
+  "id": "4e317d1d-3f20-4f0d-8b1e-31df351e8f83",
+  "oracle_id": "f055a941-8b83-464e-a57f-8f188dc69aaa",
+  "name": "Fearless Skald",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mom",
+  "collector_number": "138",
+  "rarity": "uncommon",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{4}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Dwarf Berserker",
+  "oracle_text": "Backup 1 (When this creature enters, put a +1/+1 counter on target creature. If that's another creature, it gains the following ability until end of turn.)\nDouble strike",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Backup",
+    "Double strike"
+  ]
+}

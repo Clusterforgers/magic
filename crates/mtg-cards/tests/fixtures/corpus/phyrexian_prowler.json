@@ -1,0 +1,27 @@
+{
+  "id": "e26f79b5-780a-4cbb-b49d-01673a411d1f",
+  "oracle_id": "128ec451-97f6-4f01-8929-689fd4c45f40",
+  "name": "Phyrexian Prowler",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nem",
+  "collector_number": "65",
+  "rarity": "uncommon",
+  "released_at": "2000-02-14",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Phyrexian Zombie Mercenary",
+  "oracle_text": "Fading 3 (This creature enters with three fade counters on it. At the beginning of your upkeep, remove a fade counter from it. If you can't, sacrifice it.)\nRemove a fade counter from this creature: This creature gets +1/+1 until end of turn.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Fading"
+  ]
+}
