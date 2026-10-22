@@ -21,6 +21,13 @@ struct Seen {
     proliferates: u64,
     explores: u64,
     connives: u64,
+    amasses: u64,
+    monstrosities: u64,
+    adaptations: u64,
+    bolsterings: u64,
+    servos: u64,
+    learns: u64,
+    blessings: u64,
 }
 
 impl Seen {
@@ -36,6 +43,13 @@ impl Seen {
                 Event::Proliferated { .. } => self.proliferates += 1,
                 Event::Explored { .. } => self.explores += 1,
                 Event::Connived { .. } => self.connives += 1,
+                Event::Amassed { .. } => self.amasses += 1,
+                Event::Monstrous { .. } => self.monstrosities += 1,
+                Event::Adapted { .. } => self.adaptations += 1,
+                Event::Bolstered { .. } => self.bolsterings += 1,
+                Event::TokenCreated(token) if token.name == "Servo" => self.servos += 1,
+                Event::Learned { .. } => self.learns += 1,
+                Event::CitysBlessingGained { .. } => self.blessings += 1,
                 Event::MonarchChanged { player } => {
                     self.monarchs += 1;
                     self.taken_from_another += u64::from(monarch.is_some_and(|was| was != *player));
@@ -63,6 +77,19 @@ fn seeded_action_games_finish_and_keep_every_invariant(#[case] players: usize) {
     assert!(seen.proliferates > 0, "nobody proliferated in {campaign}");
     assert!(seen.explores > 0, "no creature explored in {campaign}");
     assert!(seen.connives > 0, "no creature connived in {campaign}");
+    assert!(seen.amasses > 0, "nobody amassed in {campaign}");
+    assert!(
+        seen.monstrosities > 0,
+        "no creature became monstrous in {campaign}"
+    );
+    assert!(seen.adaptations > 0, "no creature adapted in {campaign}");
+    assert!(seen.bolsterings > 0, "nobody bolstered in {campaign}");
+    assert!(seen.servos > 0, "nobody made a Servo in {campaign}");
+    assert!(seen.learns > 0, "nobody learned in {campaign}");
+    assert!(
+        seen.blessings > 0,
+        "nobody got the city's blessing in {campaign}"
+    );
     assert!(
         seen.kept_on_top > 0 && seen.sent_to_the_graveyard > 0,
         "surveils kept cards on top and put cards into the graveyard in {campaign}"

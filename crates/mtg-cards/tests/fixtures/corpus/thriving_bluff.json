@@ -1,0 +1,21 @@
+{
+  "id": "82c96473-d7b9-48dc-9569-cdb649c78463",
+  "oracle_id": "91fceb34-0f2d-4392-be27-00dcd765637f",
+  "name": "Thriving Bluff",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "578",
+  "rarity": "common",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land enters tapped. As it enters, choose a color other than red.\n{T}: Add {R} or one mana of the chosen color.",
+  "colors": [],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

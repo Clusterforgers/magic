@@ -1,0 +1,15 @@
+{
+  "oracle_id": "4d472308-5bc7-4a3c-81b5-0a757f00d9e2",
+  "name": "Consuming Aetherborn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consuming Aetherborn",
+      "oracle_fingerprint": "3c47f2f18cef1f3ec01ef49612438082",
+      "abilities": [
+        { "Keyword": { "Backup": { "count": 1, "abilities": [{ "Keyword": "Lifelink" }] } } },
+        { "Keyword": "Lifelink" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "oracle_id": "d2134b68-d73f-4090-aaec-b2ee5c9f9f04",
+  "name": "Redcap Heelslasher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Redcap Heelslasher",
+      "oracle_fingerprint": "74e7f7acbcfa795d04f794670233d29b",
+      "abilities": [
+        { "Keyword": { "Backup": { "count": 1, "abilities": [{ "Keyword": "FirstStrike" }] } } },
+        { "Keyword": "FirstStrike" }
+      ]
+    }
+  ]
+}

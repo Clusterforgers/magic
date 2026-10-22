@@ -1,0 +1,27 @@
+{
+  "id": "7093bd0e-3b98-4f46-9717-202ddd277bf5",
+  "oracle_id": "6640bcfc-4bdc-4380-8b51-61b906f9aee6",
+  "name": "Storm Fleet Swashbuckler",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rix",
+  "collector_number": "117",
+  "rarity": "uncommon",
+  "released_at": "2018-01-19",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Pirate",
+  "oracle_text": "Ascend (If you control ten or more permanents, you get the city's blessing for the rest of the game.)\nThis creature has double strike as long as you have the city's blessing.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Ascend"
+  ]
+}

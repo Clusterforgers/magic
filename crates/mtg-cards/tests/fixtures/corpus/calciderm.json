@@ -1,0 +1,28 @@
+{
+  "id": "5ae9641c-5792-4f72-b40c-f029af28dab9",
+  "oracle_id": "329d53eb-d443-4376-ae5a-4be7dfb1fc91",
+  "name": "Calciderm",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tsr",
+  "collector_number": "11",
+  "rarity": "uncommon",
+  "released_at": "2021-03-19",
+  "digital": false,
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "Shroud (This creature can't be the target of spells or abilities.)\nVanishing 4 (This creature enters with four time counters on it. At the beginning of your upkeep, remove a time counter from it. When the last is removed, sacrifice it.)",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Shroud",
+    "Vanishing"
+  ]
+}

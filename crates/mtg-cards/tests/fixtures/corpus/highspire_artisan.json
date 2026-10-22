@@ -1,0 +1,28 @@
+{
+  "id": "72a26cb0-655f-4bf8-899a-952d5bfe2b42",
+  "oracle_id": "fc8c54c4-a436-43cc-888b-f4ba3e751c16",
+  "name": "Highspire Artisan",
+  "lang": "en",
+  "layout": "normal",
+  "set": "kld",
+  "collector_number": "157",
+  "rarity": "common",
+  "released_at": "2016-09-30",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Elf Artificer",
+  "oracle_text": "Reach (This creature can block creatures with flying.)\nFabricate 1 (When this creature enters, put a +1/+1 counter on it or create a 1/1 colorless Servo artifact creature token.)",
+  "power": "0",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach",
+    "Fabricate"
+  ]
+}

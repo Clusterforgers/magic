@@ -1,0 +1,21 @@
+{
+  "oracle_id": "6640bcfc-4bdc-4380-8b51-61b906f9aee6",
+  "name": "Storm Fleet Swashbuckler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm Fleet Swashbuckler",
+      "oracle_fingerprint": "83f91a259002b5cddff55ab7eca775cd",
+      "abilities": [
+        { "Keyword": "Ascend" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "DoubleStrike" }],
+            "condition": { "CitysBlessing": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

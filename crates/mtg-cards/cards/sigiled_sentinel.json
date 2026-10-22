@@ -1,0 +1,15 @@
+{
+  "oracle_id": "79c90a68-1c31-4e16-be53-1304132da80f",
+  "name": "Sigiled Sentinel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sigiled Sentinel",
+      "oracle_fingerprint": "1f95295aa317717d742b11b585d83db1",
+      "abilities": [
+        { "Keyword": { "Backup": { "count": 1, "abilities": [{ "Keyword": "Vigilance" }] } } },
+        { "Keyword": "Vigilance" }
+      ]
+    }
+  ]
+}

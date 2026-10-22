@@ -1,0 +1,25 @@
+{
+  "id": "77e9ef36-bc1b-4919-9bb5-8fd6b2d431cc",
+  "oracle_id": "c5a5c17d-d1e4-4d23-9d2b-1c2febdcb0e7",
+  "name": "Universal Surveillance",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoc",
+  "collector_number": "81",
+  "rarity": "rare",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "{X}{U}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Improvise (Your artifacts can help cast this spell. Each artifact you tap after you're done activating mana abilities pays for {1}.)\nDraw X cards.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Improvise"
+  ]
+}

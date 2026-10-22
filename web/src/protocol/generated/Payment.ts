@@ -30,6 +30,10 @@ life: number,
  */
 convoke?: Array<Convoked>, 
 /**
+ * Artifacts tapped for improvise, each paying {1} (CR 702.126). Left out means none.
+ */
+improvise?: Array<ObjectId>, 
+/**
  * Cards exiled from the graveyard for delve, each paying {1} (CR 702.66). Left out means none.
  */
 delve?: Array<ObjectId>, };

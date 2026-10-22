@@ -1,0 +1,28 @@
+{
+  "id": "5e4cd13a-66b6-4c65-a5a0-82f93145d16a",
+  "oracle_id": "2a8ec988-b513-4e66-b7f5-b2196b4bbff2",
+  "name": "Maulfist Squad",
+  "lang": "en",
+  "layout": "normal",
+  "set": "kld",
+  "collector_number": "91",
+  "rarity": "common",
+  "released_at": "2016-09-30",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Artificer",
+  "oracle_text": "Menace\nFabricate 1 (When this creature enters, put a +1/+1 counter on it or create a 1/1 colorless Servo artifact creature token.)",
+  "power": "3",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Menace",
+    "Fabricate"
+  ]
+}

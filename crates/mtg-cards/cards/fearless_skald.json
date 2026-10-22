@@ -1,0 +1,15 @@
+{
+  "oracle_id": "f055a941-8b83-464e-a57f-8f188dc69aaa",
+  "name": "Fearless Skald",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fearless Skald",
+      "oracle_fingerprint": "e9726084dbbbb242735642615658e219",
+      "abilities": [
+        { "Keyword": { "Backup": { "count": 1, "abilities": [{ "Keyword": "DoubleStrike" }] } } },
+        { "Keyword": "DoubleStrike" }
+      ]
+    }
+  ]
+}

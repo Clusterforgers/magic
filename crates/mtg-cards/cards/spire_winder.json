@@ -1,0 +1,22 @@
+{
+  "oracle_id": "e8cfb24a-7e52-4e39-a9e1-969b4a65b62e",
+  "name": "Spire Winder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spire Winder",
+      "oracle_fingerprint": "64f95a07db22e506a7f5fab4c965f120",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Ascend" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": { "CitysBlessing": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "31c249d9-37c0-451d-866b-e834c4c57214",
+  "oracle_id": "20a362c3-d278-437f-881c-e7d9fe78fc2d",
+  "name": "Chomping Kavu",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mom",
+  "collector_number": "179",
+  "rarity": "common",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Kavu",
+  "oracle_text": "Backup 1 (When this creature enters, put a +1/+1 counter on target creature. If that's another creature, it gains the following ability until end of turn.)\nThis creature can't be blocked by creatures with power 2 or less.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Backup"
+  ]
+}

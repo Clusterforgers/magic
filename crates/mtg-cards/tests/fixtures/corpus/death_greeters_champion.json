@@ -1,0 +1,29 @@
+{
+  "id": "7cb2b582-1c45-4bb2-8aef-59a71a5a9e94",
+  "oracle_id": "81abb451-5ee0-4f90-bacc-a8ff69726a27",
+  "name": "Death-Greeter's Champion",
+  "lang": "en",
+  "layout": "normal",
+  "set": "moc",
+  "collector_number": "30",
+  "rarity": "rare",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "Dash {3}{R} (You may cast this spell for its dash cost. If you do, it gains haste, and it's returned from the battlefield to its owner's hand at the beginning of the next end step.)\nBackup 1 (When this creature enters, put a +1/+1 counter on target creature. If that's another creature, it gains the following ability until end of turn.)\nDouble strike",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Backup",
+    "Double strike",
+    "Dash"
+  ]
+}

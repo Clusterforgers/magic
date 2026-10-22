@@ -1,0 +1,25 @@
+{
+  "id": "543c64ff-2c51-4a63-a940-dc8645717c85",
+  "oracle_id": "4233334d-bb19-41e4-a203-2b7bb0c48f52",
+  "name": "Enthusiastic Study",
+  "lang": "en",
+  "layout": "normal",
+  "set": "stx",
+  "collector_number": "99",
+  "rarity": "common",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Target creature gets +3/+1 and gains trample until end of turn.\nLearn. (You may reveal a Lesson card you own from outside the game and put it into your hand, or discard a card to draw a card.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Learn"
+  ]
+}

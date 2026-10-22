@@ -1,0 +1,26 @@
+{
+  "id": "e7006f43-0b10-4693-b06f-e7cf86ab4129",
+  "oracle_id": "f474d421-5fd0-4d76-95cb-4824a2381a29",
+  "name": "Poet's Quill",
+  "lang": "en",
+  "layout": "normal",
+  "set": "stx",
+  "collector_number": "82",
+  "rarity": "rare",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "When this Equipment enters, learn. (You may reveal a Lesson card you own from outside the game and put it into your hand, or discard a card to draw a card.)\nEquipped creature gets +1/+1 and has lifelink.\nEquip {1}{B}",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Equip",
+    "Learn"
+  ]
+}

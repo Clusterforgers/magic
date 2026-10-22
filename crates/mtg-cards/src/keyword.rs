@@ -2,6 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
+use crate::ability::Ability;
 use crate::cost::Cost;
 use crate::refs::Selector;
 
@@ -93,6 +94,10 @@ pub enum Keyword {
     Flashback(Cost),
     /// Madness with its cost.
     Madness(Cost),
+    /// Miracle with its cost: the card may be cast for it when it is the first card its owner drew this turn (CR 702.94).
+    Miracle(Cost),
+    /// Dredge N (CR 702.52): in a graveyard, a player who would draw a card may instead mill N cards and return this card to their hand.
+    Dredge(u32),
     /// Morph with its cost.
     Morph(Cost),
     /// Disguise with its cost.
@@ -167,6 +172,10 @@ pub enum Keyword {
     Aftermath,
     /// Dash with its cost: an alternative cost for a creature spell, which gains haste and returns to its owner's hand at the next end step (CR 702.109).
     Dash(Cost),
+    /// Bestow with its cost: the creature card may be cast as an Aura spell with enchant creature for it, and becomes a creature again when it is not attached (CR 702.103).
+    Bestow(Cost),
+    /// Blitz with its cost: an alternative cost for a creature spell, which gains haste and "When this creature dies, draw a card" and is sacrificed at the next end step (CR 702.152).
+    Blitz(Cost),
     /// Ninjutsu with its cost: from the hand during combat after blockers are declared, an unblocked attacker returns to its owner's hand and the card enters tapped and attacking (CR 702.49).
     Ninjutsu(Cost),
     /// Echo with its cost (CR 702.30): at the beginning of its controller's upkeep, if it came under their control since their last turn began, it is sacrificed unless they pay the cost.
@@ -177,6 +186,51 @@ pub enum Keyword {
     Undying,
     /// Persist (CR 702.79): when it dies, if it had no -1/-1 counter on it, it returns with a -1/-1 counter.
     Persist,
+    /// Level up with its cost (CR 702.87): "{cost}: Put a level counter on this permanent. Level up only as a sorcery."
+    LevelUp(Cost),
+    /// Outlast with its cost (CR 702.107): "{cost}, {T}: Put a +1/+1 counter on this permanent. Outlast only as a sorcery."
+    Outlast(Cost),
+    /// Saddle with its power (CR 702.171): tapping other creatures with that total power makes the Mount saddled until end of turn, at sorcery speed.
+    Saddle(u32),
+    /// Saddled (CR 702.171b): the designation of a Mount whose saddle ability resolved this turn, granted until end of turn.
+    Saddled,
+    /// Ravenous (CR 702.156): it enters with X +1/+1 counters, and its controller draws a card when it enters if X is 5 or more.
+    Ravenous,
+    /// Jump-start (CR 702.133): the card may be cast from a graveyard by discarding a card in addition to its other costs, and is then exiled.
+    JumpStart,
+    /// Retrace (CR 702.81): the card may be cast from a graveyard by discarding a land card in addition to its other costs.
+    Retrace,
+    /// Embalm with its cost (CR 702.128): from a graveyard at sorcery speed the card is exiled for a token copy that is a white Zombie with no mana cost.
+    Embalm(Cost),
+    /// Eternalize with its cost (CR 702.129): from a graveyard at sorcery speed the card is exiled for a token copy that is a 4/4 black Zombie with no mana cost.
+    Eternalize(Cost),
+    /// Improvise (CR 702.126): each artifact tapped while the spell is cast pays for {1} of its cost.
+    Improvise,
+    /// Affinity (CR 702.41): this spell costs {1} less to cast for each permanent its controller controls that the selector names (Affinity for artifacts).
+    Affinity(Selector),
+    /// Typecycling (CR 702.29): "[Cost], Discard this card: Search your library for a card the selector names, reveal it, put it into your hand, then shuffle" (Plainscycling, basic landcycling); it is a kind of cycling.
+    Typecycling {
+        /// What the card searched for must be.
+        find: Selector,
+        /// The cost, paid beside the discard.
+        cost: Cost,
+    },
+    /// Fabricate with its number (CR 702.123): "When this permanent enters, you may put N +1/+1 counters on it. If you don't, create N 1/1 colorless Servo artifact creature tokens."
+    Fabricate(u32),
+    /// Ascend (CR 702.131): a permanent with it gives its controller the city's blessing as soon as they control ten or more permanents; the designation lasts for the rest of the game.
+    Ascend,
+    /// Vanishing N (CR 702.63): it enters with N time counters, at the beginning of its controller's upkeep one is removed, and it is sacrificed when the last is removed.
+    Vanishing(u32),
+    /// Fading N (CR 702.32): it enters with N fade counters, at the beginning of its controller's upkeep one is removed, and it is sacrificed if none can be.
+    Fading(u32),
+    /// Backup N (CR 702.165): when it enters, N +1/+1 counters go on target creature; if that is another creature it gains `abilities`, those listed after the keyword on the card, until end of turn.
+    Backup {
+        /// How many +1/+1 counters.
+        count: u32,
+        /// The abilities that follow the keyword on the card, set by the compiler.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        abilities: Vec<Ability>,
+    },
 }
 
 impl Keyword {
@@ -220,6 +274,8 @@ impl Keyword {
         "Entwine",
         "Flashback",
         "Madness",
+        "Miracle",
+        "Dredge",
         "Morph",
         "Disguise",
         "Suspend",
@@ -254,11 +310,30 @@ impl Keyword {
         "Rebound",
         "Aftermath",
         "Dash",
+        "Bestow",
+        "Blitz",
         "Ninjutsu",
         "Echo",
         "Cumulative upkeep",
         "Undying",
         "Persist",
+        "Level up",
+        "Outlast",
+        "Saddle",
+        "Saddled",
+        "Ravenous",
+        "Jump-start",
+        "Retrace",
+        "Embalm",
+        "Eternalize",
+        "Improvise",
+        "Affinity",
+        "Typecycling",
+        "Fabricate",
+        "Ascend",
+        "Vanishing",
+        "Fading",
+        "Backup",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -302,6 +377,8 @@ impl Keyword {
             Keyword::Entwine(_) => "Entwine",
             Keyword::Flashback(_) => "Flashback",
             Keyword::Madness(_) => "Madness",
+            Keyword::Miracle(_) => "Miracle",
+            Keyword::Dredge(_) => "Dredge",
             Keyword::Morph(_) => "Morph",
             Keyword::Disguise(_) => "Disguise",
             Keyword::Suspend { .. } => "Suspend",
@@ -336,11 +413,30 @@ impl Keyword {
             Keyword::Rebound => "Rebound",
             Keyword::Aftermath => "Aftermath",
             Keyword::Dash(_) => "Dash",
+            Keyword::Bestow(_) => "Bestow",
+            Keyword::Blitz(_) => "Blitz",
             Keyword::Ninjutsu(_) => "Ninjutsu",
             Keyword::Echo(_) => "Echo",
             Keyword::CumulativeUpkeep(_) => "Cumulative upkeep",
             Keyword::Undying => "Undying",
             Keyword::Persist => "Persist",
+            Keyword::LevelUp(_) => "Level up",
+            Keyword::Outlast(_) => "Outlast",
+            Keyword::Saddle(_) => "Saddle",
+            Keyword::Saddled => "Saddled",
+            Keyword::Ravenous => "Ravenous",
+            Keyword::JumpStart => "Jump-start",
+            Keyword::Retrace => "Retrace",
+            Keyword::Embalm(_) => "Embalm",
+            Keyword::Eternalize(_) => "Eternalize",
+            Keyword::Improvise => "Improvise",
+            Keyword::Affinity(_) => "Affinity",
+            Keyword::Typecycling { .. } => "Typecycling",
+            Keyword::Fabricate(_) => "Fabricate",
+            Keyword::Ascend => "Ascend",
+            Keyword::Vanishing(_) => "Vanishing",
+            Keyword::Fading(_) => "Fading",
+            Keyword::Backup { .. } => "Backup",
         }
     }
 
@@ -351,9 +447,12 @@ impl Keyword {
             .any(|name| name.eq_ignore_ascii_case(printed))
     }
 
-    /// Whether this is a kicker or multikicker keyword.
+    /// Whether paying the cost of this keyword counts as a kick (`Amount::Kicks`): kicker, multikicker and squad.
     pub const fn is_kicker(&self) -> bool {
-        matches!(self, Keyword::Kicker(_) | Keyword::Multikicker(_))
+        matches!(
+            self,
+            Keyword::Kicker(_) | Keyword::Multikicker(_) | Keyword::Squad(_)
+        )
     }
 }
 
@@ -363,6 +462,7 @@ mod tests {
     use super::*;
     use rstest::rstest;
 
+    #[allow(clippy::too_many_lines)]
     fn samples() -> Vec<Keyword> {
         let cost = Cost::default();
         vec![
@@ -404,6 +504,8 @@ mod tests {
             Keyword::Entwine(cost.clone()),
             Keyword::Flashback(cost.clone()),
             Keyword::Madness(cost.clone()),
+            Keyword::Miracle(cost.clone()),
+            Keyword::Dredge(3),
             Keyword::Morph(cost.clone()),
             Keyword::Disguise(cost.clone()),
             Keyword::Suspend {
@@ -441,11 +543,36 @@ mod tests {
             Keyword::Rebound,
             Keyword::Aftermath,
             Keyword::Dash(cost.clone()),
+            Keyword::Bestow(cost.clone()),
+            Keyword::Blitz(cost.clone()),
             Keyword::Ninjutsu(cost),
             Keyword::Echo(Cost::default()),
             Keyword::CumulativeUpkeep(Cost::default()),
             Keyword::Undying,
             Keyword::Persist,
+            Keyword::LevelUp(Cost::default()),
+            Keyword::Outlast(Cost::default()),
+            Keyword::Saddle(2),
+            Keyword::Saddled,
+            Keyword::Ravenous,
+            Keyword::JumpStart,
+            Keyword::Retrace,
+            Keyword::Embalm(Cost::default()),
+            Keyword::Eternalize(Cost::default()),
+            Keyword::Improvise,
+            Keyword::Affinity(Selector::default()),
+            Keyword::Typecycling {
+                find: Selector::default(),
+                cost: Cost::default(),
+            },
+            Keyword::Fabricate(1),
+            Keyword::Ascend,
+            Keyword::Vanishing(3),
+            Keyword::Fading(3),
+            Keyword::Backup {
+                count: 1,
+                abilities: vec![Ability::Keyword(Keyword::Flying)],
+            },
         ]
     }
 

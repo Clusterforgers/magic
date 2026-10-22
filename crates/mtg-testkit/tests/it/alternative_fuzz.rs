@@ -34,10 +34,15 @@ fn bot_games_with_alternative_costs_keep_every_invariant_and_use_each_way() {
                             CastWay::Evoke => "evoke",
                             CastWay::Overload => "overload",
                             CastWay::Madness => "madness",
+                            CastWay::Miracle => "miracle",
                             CastWay::Suspend => "suspend",
                             CastWay::Foretold => "foretold",
                             CastWay::Escape => "escape",
                             CastWay::Dash => "dash",
+                            CastWay::Bestow => "bestow",
+                            CastWay::Blitz => "blitz",
+                            CastWay::JumpStart => "jump-start",
+                            CastWay::Retrace => "retrace",
                             CastWay::Free => "free",
                         });
                         *seen.entry(way.to_owned()).or_default() += 1;

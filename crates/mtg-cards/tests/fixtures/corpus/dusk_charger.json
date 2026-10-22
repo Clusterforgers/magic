@@ -1,0 +1,27 @@
+{
+  "id": "c2ce54a3-f3eb-48a0-bfa2-5f4b90e413f0",
+  "oracle_id": "e0190e13-89f6-4b51-a277-bf3eb842963e",
+  "name": "Dusk Charger",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rix",
+  "collector_number": "69",
+  "rarity": "common",
+  "released_at": "2018-01-19",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Horse",
+  "oracle_text": "Ascend (If you control ten or more permanents, you get the city's blessing for the rest of the game.)\nThis creature gets +2/+2 as long as you have the city's blessing.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Ascend"
+  ]
+}

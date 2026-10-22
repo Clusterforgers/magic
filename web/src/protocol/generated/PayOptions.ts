@@ -51,6 +51,10 @@ max_life: number,
  */
 convoke?: Array<ConvokeOption>, 
 /**
+ * Artifacts the payer controls that may be tapped, each paying {1} of the generic part of the cost (improvise); left out means none.
+ */
+improvise?: Array<ObjectId>, 
+/**
  * Cards in the payer's graveyard that may be exiled, each paying {1} of the generic part of the cost (delve); left out means none.
  */
 delve?: Array<ObjectId>, };

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "1a8ae444-6237-4591-97ab-f43e181b2f4f",
+  "name": "Professor of Symbology",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Professor of Symbology",
+      "oracle_fingerprint": "8f8bd0eeb7ea011ffd8be7a138be7657",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Learn": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

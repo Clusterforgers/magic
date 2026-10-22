@@ -12,12 +12,11 @@ use super::amounts::{count_word, number_word, stat_name};
 use super::counters;
 use super::subtypes::{plural_subtype as plural_subtype_word, singular_subtype};
 use super::tokens::Reader;
-use super::triggers::article;
 use crate::compile::keywords;
 use crate::keyword::Keyword;
 use crate::modify::Modification;
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
-use crate::value::{Amount, Cmp, StatKind};
+use crate::value::{Amount, Cmp, CounterKind, StatKind};
 
 const COLORS: [(&str, Color); 5] = [
     ("white", Color::White),
@@ -293,7 +292,11 @@ pub fn granted_text(mods: &[Modification]) -> Option<String> {
             protecting = false;
         }
     }
-    Some(parts.join(" and "))
+    // Cards write three or more as a list: "flying, vigilance, and haste".
+    Some(match parts.as_slice() {
+        [rest @ .., last] if rest.len() >= 2 => format!("{}, and {last}", rest.join(", ")),
+        _ => parts.join(" and "),
+    })
 }
 
 pub(super) fn stat_word(r: &mut Reader<'_>) -> Option<StatKind> {
@@ -329,13 +332,16 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.that_player && r.words("that player controls") {
         return Some(Pred::ControlledBy(Ref::Triggering));
     }
+    if let Some(keyword) = r.attempt(|r| {
+        r.need("without")?;
+        keyword(r)
+    }) {
+        return Some(not(Pred::HasKeyword(keyword)));
+    }
     r.attempt(|r| {
         r.need("with")?;
-        // "with a +1/+1 counter on it": one object, so the singular only.
-        if r.word("a") || r.word("an") {
-            let counter = counters::kind(r)?;
-            r.words("counter on it").then_some(())?;
-            return Some(Pred::HasCounter(counter));
+        if let Some(kind) = r.attempt(counter_on_it) {
+            return Some(Pred::HasCounter(kind));
         }
         if let Some(keyword) = keyword(r) {
             return Some(Pred::HasKeyword(keyword));
@@ -369,10 +375,15 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             "you don't control".to_owned()
         }
         Pred::HasKeyword(keyword) => format!("with {}", keyword_text(keyword)?),
-        Pred::HasCounter(counter) => {
-            let kind = counters::kind_text(counter)?;
-            format!("with {} {kind} counter on it", article(kind))
+        // Only a lone creature is "each ... with a counter on it"; the plural and the other forms stay unwritten.
+        Pred::HasCounter(kind) if matches!(form, Form::Each) => {
+            let words = counters::trigger_kind_text(Some(kind))?;
+            format!("with {words} on it")
         }
+        Pred::Not(inner) => match &**inner {
+            Pred::HasKeyword(keyword) => format!("without {}", keyword_text(keyword)?),
+            _ => return None,
+        },
         Pred::Compare { stat, op, to } => {
             let number = match to {
                 Amount::Fixed(number) => number.to_string(),
@@ -391,6 +402,13 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
     })
 }
 
+/// "a +1/+1 counter on it", "a level counter on it": the counter an object holds, after "with".
+fn counter_on_it(r: &mut Reader<'_>) -> Option<CounterKind> {
+    (r.word("a") || r.word("an")).then_some(())?;
+    let kind = counters::trigger_kind(r)?;
+    r.words("on it").then_some(kind)
+}
+
 /// A subtype as it is written ("Clue", "Soldier"), of the rules' list or of the card's own type line; any other
 /// capitalized word is not read.
 pub fn subtype(r: &mut Reader<'_>) -> Option<String> {
@@ -401,7 +419,7 @@ pub fn subtype(r: &mut Reader<'_>) -> Option<String> {
 }
 
 /// A group of one subtype as it is written in the plural ("Heroes", "Elves", "Spies"): the subtype in the singular.
-fn plural_subtype(r: &mut Reader<'_>) -> Option<String> {
+pub(super) fn plural_subtype(r: &mut Reader<'_>) -> Option<String> {
     r.attempt(|r| {
         let name = group_name(r)?;
         singular_subtype(&name, |one| r.is_subtype(one))
@@ -448,12 +466,9 @@ fn head(r: &mut Reader<'_>, form: Form) -> Option<(Vec<CardType>, Noun)> {
         r.skip();
         types.push(card_type);
         forms.push(is_plural);
-        let more =
-            r.word_at(0) == Some(form.connector()) && r.word_at(1).and_then(type_noun).is_some();
-        if !more {
+        if !type_separator(r, form) {
             break;
         }
-        r.skip();
     }
     let singular_types = forms.iter().all(|is_plural| !is_plural);
     match r.peek_word() {
@@ -480,6 +495,20 @@ fn head(r: &mut Reader<'_>, form: Form) -> Option<(Vec<CardType>, Noun)> {
         }
         _ => None,
     }
+}
+
+/// The words between two card types of a phrase: the form's connector ("artifact or creature"), or a comma with the
+/// connector after it ("artifact, creature, or planeswalker"); reads them when a card type follows.
+fn type_separator(r: &mut Reader<'_>, form: Form) -> bool {
+    r.attempt(|r| {
+        if r.punct(',') {
+            r.word(form.connector());
+        } else {
+            r.word(form.connector()).then_some(())?;
+        }
+        r.peek_word().and_then(type_noun).map(|_| ())
+    })
+    .is_some()
 }
 
 /// "from your graveyard", "from your hand": the zone and its owner.
@@ -529,6 +558,17 @@ pub(super) fn phrase_in(r: &mut Reader<'_>, form: Form, unplaced: bool) -> Optio
         while let Some(pred) = r.peek_word().and_then(|word| adjective(word, form)) {
             r.skip();
             adjectives.push(pred);
+            // "nonartifact, nonblack creature": a comma joins two negations.
+            let negation = |word: Option<&str>| {
+                word.and_then(|word| adjective(word, form))
+                    .is_some_and(|pred| matches!(pred, Pred::Not(_)))
+            };
+            if matches!(adjectives.last(), Some(Pred::Not(_)))
+                && r.at_punct(',')
+                && negation(r.word_at(1))
+            {
+                r.skip();
+            }
         }
         // The files put "other" after the adjectives it is printed before ("other legendary creatures").
         adjectives.sort_by_key(|pred| *pred == Pred::Other);
@@ -584,9 +624,38 @@ pub(super) fn phrase_in(r: &mut Reader<'_>, form: Form, unplaced: bool) -> Optio
                 break;
             }
         }
+        // "artifact, enchantment, or creature with flying": the qualifier belongs to the last type only.
+        let qualified = preds
+            .iter()
+            .any(|pred| matches!(pred, Pred::HasKeyword(_) | Pred::Compare { .. }));
+        if types.len() > 2 && qualified {
+            return None;
+        }
         let placed = preds.iter().any(|pred| matches!(pred, Pred::In(_)));
         (noun != Noun::Card || placed || unplaced).then_some(Selector(preds))
     })
+}
+
+/// Card types joined by the connector: "artifact or creature", "artifact, creature, or planeswalker".
+fn list_text(names: &[String], connector: &str) -> String {
+    match names {
+        [rest @ .., last] if rest.len() > 1 => format!("{}, {connector} {last}", rest.join(", ")),
+        _ => names.join(&format!(" {connector} ")),
+    }
+}
+
+/// The adjectives of a phrase, with a comma after each negation that another follows: "nonartifact, nonblack".
+fn comma_negations(adjectives: Vec<String>) -> Vec<String> {
+    let mut words: Vec<String> = Vec::with_capacity(adjectives.len());
+    for word in adjectives {
+        if word.starts_with("non")
+            && let Some(last) = words.last_mut().filter(|last| last.starts_with("non"))
+        {
+            last.push(',');
+        }
+        words.push(word);
+    }
+    words
 }
 
 /// A selector as a phrase, the way `phrase` reads it.
@@ -662,7 +731,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
             }
         })
         .collect();
-    let mut words = adjectives;
+    let mut words = comma_negations(adjectives);
     words.extend(subtype.map(|name| {
         if plural && !qualified {
             plural_subtype_word(name)
@@ -676,7 +745,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
             .map(|card_type| type_name(*card_type).to_owned()),
     );
     if !names.is_empty() {
-        words.push(names.join(&format!(" {} ", form.connector())));
+        words.push(list_text(&names, form.connector()));
     }
     if token {
         words.push("tokens".to_owned());
@@ -709,6 +778,29 @@ fn player_kind(r: &mut Reader<'_>, player: Targetable) -> Targetable {
     }
 }
 
+/// "another target artifact card from your graveyard": the phrase with "other" after its adjectives, before the zone and
+/// who controls it, where the files put it.
+fn another(mut selector: Selector) -> Selector {
+    let zoned = |pred: &Pred| match pred {
+        Pred::Not(inner) => matches!(**inner, Pred::ControlledBy(_)),
+        other => matches!(
+            other,
+            Pred::In(_)
+                | Pred::OwnedBy(_)
+                | Pred::ControlledBy(_)
+                | Pred::HasKeyword(_)
+                | Pred::Compare { .. }
+        ),
+    };
+    let at = selector
+        .0
+        .iter()
+        .position(zoned)
+        .unwrap_or(selector.0.len());
+    selector.0.insert(at, Pred::Other);
+    selector
+}
+
 fn spec(r: &mut Reader<'_>) -> Option<TargetSpec> {
     if r.words("any target") {
         return Some(plain(Targetable::AnyTarget));
@@ -738,8 +830,11 @@ fn spec(r: &mut Reader<'_>) -> Option<TargetSpec> {
             divide: None,
         });
     }
+    let other = r.word("another");
     r.need("target")?;
-    let what = if r.word("player") {
+    let what = if other {
+        Targetable::Object(another(phrase(r, Form::Target)?))
+    } else if r.word("player") {
         player_kind(r, Targetable::Player)
     } else if r.word("opponent") {
         player_kind(r, Targetable::Opponent)

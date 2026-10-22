@@ -1,0 +1,28 @@
+{
+  "oracle_id": "0a7d0d1f-a5ac-4db9-860c-9fcbe3fd9e71",
+  "name": "Alpha Deathclaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alpha Deathclaw",
+      "oracle_fingerprint": "25b5e20005e200b0df15b20fffb2c5cf",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "BecomesMonstrous": { "what": ["This"] } }
+              ]
+            },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Activated": { "cost": "{5}{B}{G}", "effects": [{ "Monstrosity": { "count": 4 } }] } }
+      ]
+    }
+  ]
+}

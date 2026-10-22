@@ -1,0 +1,12 @@
+{
+  "oracle_id": "6e5b8bb2-9dd8-4986-9d0a-659114be5a2a",
+  "name": "Cram Session",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cram Session",
+      "oracle_fingerprint": "98061db1a3848ad3e5f1f605f1402c24",
+      "abilities": [{ "Spell": { "effects": [{ "GainLife": { "amount": 4 } }, { "Learn": {} }] } }]
+    }
+  ]
+}

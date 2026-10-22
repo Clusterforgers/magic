@@ -1,0 +1,28 @@
+{
+  "id": "31a69ebe-4229-4067-8414-381b123fe63c",
+  "oracle_id": "97b559fe-b09d-4883-9509-c45ace2d8487",
+  "name": "Herald of Anguish",
+  "lang": "en",
+  "layout": "normal",
+  "set": "aer",
+  "collector_number": "64",
+  "rarity": "mythic",
+  "released_at": "2017-01-20",
+  "digital": false,
+  "mana_cost": "{5}{B}{B}",
+  "cmc": 7.0,
+  "type_line": "Creature — Demon",
+  "oracle_text": "Improvise (Your artifacts can help cast this spell. Each artifact you tap after you're done activating mana abilities pays for {1}.)\nFlying\nAt the beginning of your end step, each opponent discards a card.\n{1}{B}, Sacrifice an artifact: Target creature gets -2/-2 until end of turn.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Improvise"
+  ]
+}

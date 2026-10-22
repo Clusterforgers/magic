@@ -1,0 +1,20 @@
+{
+  "oracle_id": "e66083f0-62a9-4ff7-8bb0-3eafc6d2e95d",
+  "name": "Gnarled Professor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gnarled Professor",
+      "oracle_fingerprint": "80dc1ee4291b1ebaf1e462dd89cf50d0",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Learn": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

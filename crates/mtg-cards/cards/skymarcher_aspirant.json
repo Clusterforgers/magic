@@ -1,0 +1,21 @@
+{
+  "oracle_id": "0b6db929-1b6a-4372-8146-aa047258b552",
+  "name": "Skymarcher Aspirant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skymarcher Aspirant",
+      "oracle_fingerprint": "c7f769584f8f528e12b89f8625659324",
+      "abilities": [
+        { "Keyword": "Ascend" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": { "CitysBlessing": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

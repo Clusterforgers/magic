@@ -1,0 +1,27 @@
+{
+  "id": "fe99535a-cc81-4e79-9d30-d514c86b849c",
+  "oracle_id": "7c27136a-bf9d-4f42-9c37-abe347fad1bb",
+  "name": "Weaponcraft Enthusiast",
+  "lang": "en",
+  "layout": "normal",
+  "set": "kld",
+  "collector_number": "105",
+  "rarity": "uncommon",
+  "released_at": "2016-09-30",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Aetherborn Artificer",
+  "oracle_text": "Fabricate 2 (When this creature enters, put two +1/+1 counters on it or create two 1/1 colorless Servo artifact creature tokens.)",
+  "power": "0",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Fabricate"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "261691c8-371d-49b6-9c9b-50ece5984aa2",
+  "oracle_id": "a4d22abe-87c5-4f6b-ad14-4a7935883169",
+  "name": "Aven Riftwatcher",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tsr",
+  "collector_number": "6",
+  "rarity": "common",
+  "released_at": "2021-03-19",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Bird Rebel Soldier",
+  "oracle_text": "Flying\nVanishing 3 (This creature enters with three time counters on it. At the beginning of your upkeep, remove a time counter from it. When the last is removed, sacrifice it.)\nWhen this creature enters or leaves the battlefield, you gain 2 life.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Vanishing"
+  ]
+}

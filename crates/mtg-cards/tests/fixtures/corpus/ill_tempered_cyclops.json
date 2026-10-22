@@ -1,0 +1,28 @@
+{
+  "id": "7590def9-1b7d-4dae-845b-d544752360eb",
+  "oracle_id": "07f62413-92cc-4f44-a827-a7c3a7318602",
+  "name": "Ill-Tempered Cyclops",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cn2",
+  "collector_number": "166",
+  "rarity": "common",
+  "released_at": "2016-08-26",
+  "digital": false,
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Cyclops",
+  "oracle_text": "Trample\n{5}{R}: Monstrosity 3. (If this creature isn't monstrous, put three +1/+1 counters on it and it becomes monstrous.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Trample",
+    "Monstrosity"
+  ]
+}

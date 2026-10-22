@@ -1,0 +1,25 @@
+{
+  "id": "daaa7b7e-76fc-47a0-a58d-1169be1aa335",
+  "oracle_id": "d9e24d7c-0907-45c1-b5d3-9fb16a929868",
+  "name": "Organic Extinction",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoc",
+  "collector_number": "66",
+  "rarity": "rare",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "{8}{W}{W}",
+  "cmc": 10.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Improvise (Your artifacts can help cast this spell. Each artifact you tap after you're done activating mana abilities pays for {1}.)\nDestroy all nonartifact creatures.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Improvise"
+  ]
+}

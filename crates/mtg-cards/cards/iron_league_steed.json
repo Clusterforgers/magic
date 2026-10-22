@@ -1,0 +1,12 @@
+{
+  "oracle_id": "bafeab74-918b-4fcd-8057-55922dbc1784",
+  "name": "Iron League Steed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iron League Steed",
+      "oracle_fingerprint": "44baf5f628c6143f765ad7053701b843",
+      "abilities": [{ "Keyword": "Haste" }, { "Keyword": { "Fabricate": 1 } }]
+    }
+  ]
+}

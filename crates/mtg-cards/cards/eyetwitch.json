@@ -1,0 +1,20 @@
+{
+  "oracle_id": "6a7a5e93-fea8-4aa0-a2b1-73d466220cfb",
+  "name": "Eyetwitch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eyetwitch",
+      "oracle_fingerprint": "a92ccbc19c6176f56ebd495a5bd72237",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Learn": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "28c7f2b6-ba67-4ccf-9e1b-99c89a9d1f72",
+  "name": "Angel of Invention",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angel of Invention",
+      "oracle_fingerprint": "b66ade6c019994ba4f0f86a08e67c7d8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Lifelink" },
+        { "Keyword": { "Fabricate": 2 } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

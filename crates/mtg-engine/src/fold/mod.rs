@@ -166,11 +166,14 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     }
 }
 
-/// The designations of the game: day or night (CR 726) and the monarch (CR 724).
+/// The designations of the game: day or night (CR 726), the monarch (CR 724) and the city's blessing (CR 702.131).
 fn designate(state: &mut GameState, event: &Event) {
     match event {
         Event::DayNightChanged { to } => state.day_night = Some(*to),
         Event::MonarchChanged { player } => state.monarch = Some(*player),
+        Event::CitysBlessingGained { player } => {
+            state.citys_blessing.insert(*player);
+        }
         _ => {}
     }
 }
@@ -226,6 +229,10 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Cycled { .. }
         | Event::Explored { .. }
         | Event::Connived { .. }
+        | Event::Amassed { .. }
+        | Event::Adapted { .. }
+        | Event::Bolstered { .. }
+        | Event::Learned { .. }
         | Event::Proliferated { .. } => {}
         Event::PriorityGranted { player } => {
             state.priority = Some(PriorityState {
@@ -235,10 +242,13 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         }
         Event::PriorityPassed { player } => pass_priority(state, *player)?,
         Event::Transformed { object, face } => set_face(state, *object, *face)?,
-        Event::DayNightChanged { .. } | Event::MonarchChanged { .. } => designate(state, event),
+        Event::DayNightChanged { .. }
+        | Event::MonarchChanged { .. }
+        | Event::CitysBlessingGained { .. } => designate(state, event),
 
         Event::PermanentTapped { object } => set_tapped(state, *object, true)?,
         Event::PermanentUntapped { object } => set_tapped(state, *object, false)?,
+        Event::Monstrous { object, .. } => set_monstrous(state, *object)?,
         Event::ManaAdded {
             player, mana, only, ..
         } => {
@@ -406,6 +416,20 @@ fn set_tapped(state: &mut GameState, id: ObjectId, tapped: bool) -> Result<(), E
         return Err(invalid(format!("{id:?} is already in that tapped state")));
     }
     perm.tapped = tapped;
+    Ok(())
+}
+
+/// A permanent becomes monstrous (CR 701.37): it was not, and it is a permanent.
+fn set_monstrous(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
+    let perm = state
+        .objects
+        .get_mut(&id)
+        .and_then(|o| o.permanent.as_mut())
+        .ok_or_else(|| invalid(format!("{id:?} is not a permanent")))?;
+    if perm.designations.monstrous {
+        return Err(invalid(format!("{id:?} is already monstrous")));
+    }
+    perm.designations.monstrous = true;
     Ok(())
 }
 

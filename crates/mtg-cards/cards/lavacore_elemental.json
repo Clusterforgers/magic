@@ -1,0 +1,26 @@
+{
+  "oracle_id": "70b6fde2-f759-4478-926c-b5601b7d903b",
+  "name": "Lavacore Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lavacore Elemental",
+      "oracle_fingerprint": "7f7e603bfa323484ace53f58859d5ee7",
+      "abilities": [
+        { "Keyword": { "Vanishing": 1 } },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "time" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

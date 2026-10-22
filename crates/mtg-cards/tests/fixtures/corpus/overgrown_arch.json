@@ -1,0 +1,28 @@
+{
+  "id": "a71dddf5-8f72-4018-9cc8-5f63a17f1ee5",
+  "oracle_id": "802f8bcd-9219-48cd-a4c5-d9ea9ef60c9e",
+  "name": "Overgrown Arch",
+  "lang": "en",
+  "layout": "normal",
+  "set": "stx",
+  "collector_number": "139",
+  "rarity": "uncommon",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Plant Wall",
+  "oracle_text": "Defender\n{T}: You gain 1 life.\n{2}, Sacrifice this creature: Learn. (You may reveal a Lesson card you own from outside the game and put it into your hand, or discard a card to draw a card.)",
+  "power": "0",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Learn",
+    "Defender"
+  ]
+}

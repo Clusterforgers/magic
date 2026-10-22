@@ -110,7 +110,6 @@ fn more_oracle_wordings_of_one_subject_in_a_trigger_read_and_write_back(#[case] 
 
 #[rstest]
 #[case::a_second_subject("Target player draws two cards and each opponent loses 2 life.")]
-#[case::a_repeated_subject("You draw a card and you gain 3 life.")]
 #[case::a_repeated_target("Target player draws a card and target player loses 1 life.")]
 #[case::then("Target player draws a card, then discards a card.")]
 #[case::then_for_each(
@@ -187,7 +186,8 @@ fn a_compound_has_more_than_one_wording_and_a_second_target_cannot_be_named_twic
         wordings,
         [
             "Draw a card. You gain 2 life.",
-            "You draw a card and gain 2 life."
+            "You draw a card and gain 2 life.",
+            "You draw a card and you gain 2 life."
         ]
     );
     let targeted = ability(

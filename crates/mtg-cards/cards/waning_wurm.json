@@ -1,0 +1,12 @@
+{
+  "oracle_id": "4921a314-fce7-4f3c-8546-6cf520a2c104",
+  "name": "Waning Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Waning Wurm",
+      "oracle_fingerprint": "cfcfdf8eb41a63d29d4f5ba732fbbf95",
+      "abilities": [{ "Keyword": { "Vanishing": 2 } }]
+    }
+  ]
+}

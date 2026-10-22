@@ -1,0 +1,24 @@
+{
+  "id": "333f6334-f027-4bec-95d7-7af80508c4ca",
+  "oracle_id": "5f981cca-5cd9-49e4-ab1a-bbbf6fc7e737",
+  "name": "Ancient Stone Idol",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "222",
+  "rarity": "rare",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{10}",
+  "cmc": 10,
+  "type_line": "Artifact Creature — Golem",
+  "oracle_text": "Flash\nThis spell costs {1} less to cast for each attacking creature.\nTrample\nWhen this creature dies, create a 6/12 colorless Construct artifact creature token with trample.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Trample",
+    "Flash"
+  ],
+  "power": "12",
+  "toughness": "12"
+}

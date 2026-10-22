@@ -1,0 +1,25 @@
+{
+  "id": "f235060a-eb49-4a73-bb5f-01228c3c4070",
+  "oracle_id": "29423b70-7cb7-4617-898c-78a38eb233ad",
+  "name": "Field Trip",
+  "lang": "en",
+  "layout": "normal",
+  "set": "stx",
+  "collector_number": "131",
+  "rarity": "common",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Search your library for a basic Forest card, put that card onto the battlefield tapped, then shuffle.\nLearn. (You may reveal a Lesson card you own from outside the game and put it into your hand, or discard a card to draw a card.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Learn"
+  ]
+}

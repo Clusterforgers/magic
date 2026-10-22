@@ -1,0 +1,45 @@
+{
+  "oracle_id": "b6689782-08d8-48e1-a05d-cd040dfe85bc",
+  "name": "Curse of Bounty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Bounty",
+      "oracle_fingerprint": "09bda04bc90261bc26e9639e0b634813",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "PlayerAttacked": { "who": "AttachedPlayer" } },
+            "effects": [
+              {
+                "Untap": {
+                  "what": { "Each": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "Untap": {
+                  "what": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      {
+                        "ControlledBy": {
+                          "ControllerOf": {
+                            "Each": [
+                              { "AttackingPlayer": "AttachedPlayer" },
+                              { "ControlledBy": "Opponents" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

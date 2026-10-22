@@ -1,0 +1,21 @@
+{
+  "oracle_id": "fc8d3933-f7fe-4849-aae7-737ce6f067de",
+  "name": "Snubhorn Sentry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snubhorn Sentry",
+      "oracle_fingerprint": "35ed9e0791f6211b4ed8ddfa5fc7b271",
+      "abilities": [
+        { "Keyword": "Ascend" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+            "condition": { "CitysBlessing": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

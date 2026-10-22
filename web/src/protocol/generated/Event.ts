@@ -525,6 +525,14 @@ object: ObjectId, } } | { "MonarchChanged": {
 /**
  * The new monarch.
  */
+player: PlayerId, } } | { "CitysBlessingGained": { 
+/**
+ * Who got it.
+ */
+player: PlayerId, } } | { "Learned": { 
+/**
+ * Who learned.
+ */
 player: PlayerId, } } | { "Proliferated": { 
 /**
  * Who proliferated.
@@ -536,6 +544,38 @@ player: PlayerId, } } | { "Explored": {
 object: ObjectId, 
 /**
  * Its controller, who revealed the card.
+ */
+player: PlayerId, } } | { "Amassed": { 
+/**
+ * The Army that got the counters.
+ */
+object: ObjectId, 
+/**
+ * Its controller, who amassed.
+ */
+player: PlayerId, } } | { "Monstrous": { 
+/**
+ * The creature that became monstrous.
+ */
+object: ObjectId, 
+/**
+ * Its controller.
+ */
+player: PlayerId, } } | { "Adapted": { 
+/**
+ * The creature that adapted.
+ */
+object: ObjectId, 
+/**
+ * Its controller.
+ */
+player: PlayerId, } } | { "Bolstered": { 
+/**
+ * The creature that got the counters.
+ */
+object: ObjectId, 
+/**
+ * Its controller, who bolstered.
  */
 player: PlayerId, } } | { "Connived": { 
 /**

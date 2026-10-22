@@ -1,0 +1,15 @@
+{
+  "oracle_id": "bfdc6bbc-7402-40ae-91be-658afca2f145",
+  "name": "Spire Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spire Golem",
+      "oracle_fingerprint": "4d5cc25c5dbd32f0abb6de2163aa135a",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Subtype": "Island" }] } },
+        { "Keyword": "Flying" }
+      ]
+    }
+  ]
+}

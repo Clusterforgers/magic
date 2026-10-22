@@ -1,0 +1,25 @@
+{
+  "id": "804458a2-5376-462d-a2cd-fa596750c0aa",
+  "oracle_id": "78260893-c443-44c8-ab45-ce86ef347d98",
+  "name": "Thunderous Wrath",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mm3",
+  "collector_number": "113",
+  "rarity": "common",
+  "released_at": "2017-03-17",
+  "digital": false,
+  "mana_cost": "{4}{R}{R}",
+  "cmc": 6.0,
+  "type_line": "Instant",
+  "oracle_text": "Thunderous Wrath deals 5 damage to any target.\nMiracle {R} (You may cast this card for its miracle cost when you draw it if it's the first card you drew this turn.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Miracle"
+  ]
+}

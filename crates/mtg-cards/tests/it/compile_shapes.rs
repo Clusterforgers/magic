@@ -77,7 +77,14 @@ fn check(printed: &PrintedCard) -> Compiled {
     if card.impl_status != ImplStatus::Manual {
         // The spell clauses of a face read into one ability, the others one each.
         assert_eq!(manual, unread, "{compiled:?}");
-        assert!(read_abilities <= read, "{compiled:?}");
+        // A level block reads into an ability for each of its lines.
+        let level_lines: usize = compiled
+            .clauses
+            .iter()
+            .filter(|clause| clause.read && clause.text.starts_with("LEVEL "))
+            .map(|clause| clause.text.lines().count())
+            .sum();
+        assert!(read_abilities <= read + level_lines, "{compiled:?}");
     }
     let source = Source {
         path: format!("cards/{}.json", slug(&card.name)),
@@ -224,6 +231,12 @@ mod generated {
         "LEVEL 2-3\n2/4\n{U}{U}, {T}: Draw a card.",
         "Equipped creature gets +2/+0.",
         "Destroy target creature.",
+        "Whenever you cast an instant or sorcery spell, copy it. You may choose new targets for the copy.",
+        "Whenever you cast a spell, you may copy that spell twice, except the copy is a 1/1 Spirit in addition to its other types. You may choose new targets for the copies.",
+        "Whenever you cast an instant or sorcery spell, you may pay {3}. If you do, copy that spell.",
+        "Copy target instant or sorcery spell three times, except the copy has flying.",
+        "Whenever Tess attacks, it becomes a copy of another target creature until end of turn.",
+        "Create a token that's a copy of target creature you control, except it's a Golem artifact creature in addition to its other types.",
         "Tess, Test Card deals 2 damage to any target.",
         "This spell costs {1} less to cast.",
         "I \u{2014} Draw a card.",

@@ -1,0 +1,27 @@
+{
+  "id": "674e408b-f052-451c-9bf9-ac6f98753a9d",
+  "oracle_id": "6e4bf4ee-317e-4c31-b121-6efbc6ae4fcf",
+  "name": "Invading Manticore",
+  "lang": "en",
+  "layout": "normal",
+  "set": "war",
+  "collector_number": "134",
+  "rarity": "common",
+  "released_at": "2019-05-03",
+  "digital": false,
+  "mana_cost": "{5}{R}",
+  "cmc": 6.0,
+  "type_line": "Creature — Zombie Manticore",
+  "oracle_text": "When this creature enters, amass Zombies 2. (Put two +1/+1 counters on an Army you control. It's also a Zombie. If you don't control an Army, create a 0/0 black Zombie Army creature token first.)",
+  "power": "4",
+  "toughness": "5",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Amass"
+  ]
+}

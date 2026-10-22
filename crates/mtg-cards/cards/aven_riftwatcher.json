@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a4d22abe-87c5-4f6b-ad14-4a7935883169",
+  "name": "Aven Riftwatcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aven Riftwatcher",
+      "oracle_fingerprint": "86a8da7268ad9b76e36427281b779976",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Vanishing": 3 } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield" } }
+              ]
+            },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

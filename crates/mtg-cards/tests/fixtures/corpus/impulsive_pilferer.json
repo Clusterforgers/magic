@@ -1,0 +1,28 @@
+{
+  "id": "0f020359-5ad1-43c4-8588-172be635cccc",
+  "oracle_id": "7d9fc9e7-d80b-49c3-871c-ed25b3059ae8",
+  "name": "Impulsive Pilferer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "otc",
+  "collector_number": "171",
+  "rarity": "common",
+  "released_at": "2024-04-19",
+  "digital": false,
+  "mana_cost": "{R}",
+  "cmc": 1.0,
+  "type_line": "Creature — Goblin Pirate",
+  "oracle_text": "When this creature dies, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")\nEncore {3}{R} ({3}{R}, Exile this card from your graveyard: For each opponent, create a token copy that attacks that opponent this turn if able. They gain haste. Sacrifice them at the beginning of the next end step. Activate only as a sorcery.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Treasure",
+    "Encore"
+  ]
+}

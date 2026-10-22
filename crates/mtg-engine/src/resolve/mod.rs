@@ -133,6 +133,8 @@ pub enum Next {
     Sibling,
     /// Into the effects of this branch of the effect (`then`, `paid`, a mode), or past it when it is empty.
     Enter(usize),
+    /// The same effect again once the events are folded, for an effect that needs the objects it creates.
+    Again,
 }
 
 /// What running one effect came to.
@@ -294,6 +296,12 @@ fn step_with(
             object: object.id(),
             outcome: ResolutionOutcome::Lapsed,
         }]));
+    }
+    // CR 702.131a: an instant or sorcery spell with ascend gives the blessing before any of its effects.
+    if resolving.position == START
+        && let Some(blessing) = crate::citys_blessing::on_resolving(state, object)
+    {
+        return Ok(Progress::Done(vec![blessing]));
     }
     // CR 608.2b: a spell or ability whose targets have all become illegal does nothing at all.
     if resolving.position == START && scope.all_targets_illegal() {

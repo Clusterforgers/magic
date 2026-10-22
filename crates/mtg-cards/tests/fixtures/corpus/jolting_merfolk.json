@@ -1,0 +1,27 @@
+{
+  "id": "8b4d1c74-8b73-445c-b226-349c57a972f6",
+  "oracle_id": "3b71aeee-a4a8-46d3-9973-06db14d8bf6c",
+  "name": "Jolting Merfolk",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nem",
+  "collector_number": "34",
+  "rarity": "uncommon",
+  "released_at": "2000-02-14",
+  "digital": false,
+  "mana_cost": "{2}{U}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Merfolk",
+  "oracle_text": "Fading 4 (This creature enters with four fade counters on it. At the beginning of your upkeep, remove a fade counter from it. If you can't, sacrifice it.)\nRemove a fade counter from this creature: Tap target creature.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Fading"
+  ]
+}

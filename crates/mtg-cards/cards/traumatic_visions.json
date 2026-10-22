@@ -1,0 +1,27 @@
+{
+  "oracle_id": "a30724f0-d174-408e-8baf-4bba3cbc45b5",
+  "name": "Traumatic Visions",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Traumatic Visions",
+      "oracle_fingerprint": "1c0ddf0afcfdc761b104c51df5e1978a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Keyword": {
+            "Typecycling": {
+              "find": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+              "cost": "{1}{U}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

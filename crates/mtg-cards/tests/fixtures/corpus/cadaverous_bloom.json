@@ -1,0 +1,25 @@
+{
+  "id": "c9bef70b-61c7-4df5-b4df-09cd6ab2015c",
+  "oracle_id": "fbb0f73b-5e30-4632-99c1-e49582e41f8d",
+  "name": "Cadaverous Bloom",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mir",
+  "collector_number": "258",
+  "rarity": "rare",
+  "released_at": "1996-10-08",
+  "digital": false,
+  "mana_cost": "{3}{B}{G}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Exile a card from your hand: Add {B}{B} or {G}{G}.",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": []
+}

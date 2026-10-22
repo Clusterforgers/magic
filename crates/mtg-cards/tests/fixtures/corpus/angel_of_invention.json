@@ -1,0 +1,30 @@
+{
+  "id": "98c42f02-6eda-4ef7-929f-b3a2ece9f650",
+  "oracle_id": "28c7f2b6-ba67-4ccf-9e1b-99c89a9d1f72",
+  "name": "Angel of Invention",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "109",
+  "rarity": "mythic",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Angel",
+  "oracle_text": "Flying, vigilance, lifelink\nFabricate 2 (When this creature enters, put two +1/+1 counters on it or create two 1/1 colorless Servo artifact creature tokens.)\nOther creatures you control get +1/+1.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Lifelink",
+    "Vigilance",
+    "Fabricate"
+  ]
+}

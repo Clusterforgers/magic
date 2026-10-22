@@ -14,6 +14,7 @@ use crate::help::{self, Offered};
 use crate::mana::{ManaOption, can_afford_with, reserve_energy};
 use crate::price::Price;
 use crate::priority::mana_options;
+use crate::spend::Spend;
 
 /// What a spell or ability costs to put on the stack.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -26,6 +27,8 @@ pub(crate) struct Total {
     pub(crate) life: u32,
     /// The creatures and graveyard cards that may pay part of the mana (convoke, delve), fixed after the total is.
     pub(crate) help: Offered,
+    /// What the mana is spent on, which a restriction of the mana reads.
+    pub(crate) spend: Spend,
 }
 
 pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
@@ -55,6 +58,7 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
         sources,
         life,
         help,
+        spend: spend(ctx, choices.way),
     })
 }
 
@@ -65,7 +69,8 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<(Option<ManaCost>, Vec<Ma
     match ctx.what {
         What::Spell(spell) => {
             let cost = ctx.state.object(*spell)?.card().mana_cost.clone();
-            let mut sources = mana_options(ctx.state, ctx.player);
+            let all = mana_options(ctx.state, ctx.player);
+            let mut sources = crate::mana_takes::for_card(ctx.state, &all, *spell).into_owned();
             // The parts of the way it is cast and of its optional costs: the life they pay is not there for Phyrexian
             // mana, and what they sacrifice, tap or return is not there to tap for mana. Before the picks are made the
             // player is assumed to give what leaves the most mana.
@@ -115,7 +120,7 @@ pub(super) fn affordable(ctx: &Ctx<'_>, total: &Total) -> bool {
             &total.sources,
             total.help.help(),
             life,
-            &spend(ctx),
+            &total.spend,
         )
     })
 }

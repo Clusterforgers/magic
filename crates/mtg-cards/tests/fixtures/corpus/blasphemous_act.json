@@ -1,0 +1,23 @@
+{
+  "id": "7d4b1d44-126e-4987-9a9f-f0f9627a09cb",
+  "oracle_id": "7a2484a9-04fd-41a0-8224-610c1c07ed10",
+  "name": "Blasphemous Act",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "163",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{8}{R}",
+  "cmc": 9,
+  "type_line": "Sorcery",
+  "oracle_text": "This spell costs {1} less to cast for each creature on the battlefield.\nBlasphemous Act deals 13 damage to each creature.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

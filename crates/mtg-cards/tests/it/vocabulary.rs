@@ -247,6 +247,10 @@ fn a_node_validates_round_trips_and_names_its_primitive(
     r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOfLists":[["White","Blue"]]}}}]}}"#,
     "a choice of mana needs at least two lists"
 )]
+#[case::a_choice_of_seven_lists(
+    r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOfLists":[["White"],["Blue"],["Black"],["Red"],["Green"],["Colorless"],["White","Blue"]]}}}]}}"#,
+    "a choice of mana has at most six lists"
+)]
 #[case::a_choice_with_an_empty_list(
     r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOfLists":[["White","Blue"],[]]}}}]}}"#,
     "a list of mana adds no mana"

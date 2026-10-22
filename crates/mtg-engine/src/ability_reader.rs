@@ -117,12 +117,16 @@ pub(crate) fn definition_has_rule(definition: &CardDefinition) -> bool {
         .any(|rules| matches!(**rules, Ability::Rule { .. }))
 }
 
-/// Whether a card with this definition prints a cost modifier (`GameState::possible`).
+/// Whether a card with this definition prints a cost modifier or a keyword that adds one (`GameState::possible`).
 pub(crate) fn definition_has_cost_modifier(definition: &CardDefinition) -> bool {
-    definition
-        .rules
-        .iter()
-        .any(|rules| matches!(**rules, Ability::CostModifier { .. }))
+    let modifier = |rules: &Ability| matches!(rules, Ability::CostModifier { .. });
+    definition.rules.iter().any(|rules| match &**rules {
+        Ability::Keyword(keyword) => keywords::rules(keyword)
+            .adds_abilities(keyword)
+            .iter()
+            .any(modifier),
+        other => modifier(other),
+    })
 }
 
 /// Whether a card with this definition prints a replacement effect, grants one or has a keyword that adds one
@@ -161,6 +165,16 @@ pub(crate) fn definition_has_day_night(definition: &CardDefinition) -> bool {
             Ability::Keyword(
                 mtg_cards::keyword::Keyword::Daybound | mtg_cards::keyword::Keyword::Nightbound
             )
+        )
+    })
+}
+
+/// Whether a card with this definition has ascend, so the game watches for the city's blessing (`GameState::possible`).
+pub(crate) fn definition_has_ascend(definition: &CardDefinition) -> bool {
+    definition.rules.iter().any(|rules| {
+        matches!(
+            **rules,
+            Ability::Keyword(mtg_cards::keyword::Keyword::Ascend)
         )
     })
 }

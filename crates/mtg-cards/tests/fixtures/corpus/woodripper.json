@@ -1,0 +1,27 @@
+{
+  "id": "5126b782-d74c-40ca-a9b2-a6c78f94d138",
+  "oracle_id": "d0653734-9eb7-48c6-9042-65ffdd50fd2a",
+  "name": "Woodripper",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nem",
+  "collector_number": "125",
+  "rarity": "uncommon",
+  "released_at": "2000-02-14",
+  "digital": false,
+  "mana_cost": "{3}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "Fading 3 (This creature enters with three fade counters on it. At the beginning of your upkeep, remove a fade counter from it. If you can't, sacrifice it.)\n{1}, Remove a fade counter from this creature: Destroy target artifact.",
+  "power": "4",
+  "toughness": "6",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Fading"
+  ]
+}

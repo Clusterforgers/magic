@@ -1,0 +1,40 @@
+{
+  "oracle_id": "f6a74582-62b6-48d1-89d6-e26059229840",
+  "name": "Migratory Route",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Migratory Route",
+      "oracle_fingerprint": "25ef03995da2ad2faed7be76f3036549",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": 4
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Typecycling": { "find": [{ "Type": "Land" }, { "Supertype": "Basic" }], "cost": "{2}" }
+          }
+        }
+      ]
+    }
+  ]
+}

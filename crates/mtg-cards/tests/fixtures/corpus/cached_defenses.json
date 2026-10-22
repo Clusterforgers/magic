@@ -1,0 +1,25 @@
+{
+  "id": "41ad36cf-5f29-41c4-b2a3-6b8e8c0c493f",
+  "oracle_id": "0e564f52-94fb-4c44-926f-0eebedc7d4c0",
+  "name": "Cached Defenses",
+  "lang": "en",
+  "layout": "normal",
+  "set": "frf",
+  "collector_number": "126",
+  "rarity": "uncommon",
+  "released_at": "2015-01-23",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Bolster 3. (Choose a creature with the least toughness among creatures you control and put three +1/+1 counters on it.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Bolster"
+  ]
+}

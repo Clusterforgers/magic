@@ -25,8 +25,12 @@ pub(crate) fn resolve_top(state: &GameState) -> Option<Vec<Event>> {
     let id = object.id();
     Some(if resolve::runs_effects(state, object) {
         vec![Event::ResolutionBegan { object: id }]
-    } else if attach::is_aura_spell(state, id) && attach::spell_host(state, id).is_none() {
-        // Its target is no longer legal, so the Aura does not resolve and goes to its owner's graveyard (CR 608.2b).
+    } else if attach::is_aura_spell(state, id)
+        && !object.bestowed()
+        && attach::spell_host(state, id).is_none()
+    {
+        // Its target is no longer legal, so the Aura does not resolve and goes to its owner's graveyard (CR 608.2b); a
+        // bestowed Aura spell resolves as a creature spell instead and enters unattached (CR 702.103e).
         vec![
             Event::ResolutionBegan { object: id },
             Event::ResolutionEnded {

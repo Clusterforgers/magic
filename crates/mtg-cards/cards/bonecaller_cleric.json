@@ -1,0 +1,27 @@
+{
+  "oracle_id": "fe8d2874-c626-4d4e-a7f5-11c175a2b3bb",
+  "name": "Bonecaller Cleric",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bonecaller Cleric",
+      "oracle_fingerprint": "ec764b60f37fbf177867accfc1cb5fc2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{B}" }, "SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

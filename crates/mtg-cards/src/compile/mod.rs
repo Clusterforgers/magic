@@ -18,6 +18,7 @@ use std::collections::BTreeSet;
 use crate::ability::Ability;
 use crate::card::{Card, Face, ImplStatus, Span};
 use crate::keyword::Keyword;
+use crate::modify::Modification;
 use crate::support::{PrintedCard, PrintedFace, has_rules_text, oracle_fingerprint};
 
 pub use classify::ClauseKind;
@@ -78,6 +79,8 @@ struct Pending {
     /// that belongs to the spell ability of an earlier line.
     ability: Option<Ability>,
     read: bool,
+    /// The abilities after the first that the clause reads into (a level block reads into several).
+    more: Vec<Ability>,
     /// Its reminder text explains a counter, so the reading would lose what the counter does.
     reminds_counter: bool,
 }
@@ -105,24 +108,15 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
             && span
                 .slice(&shown.oracle_text)
                 .is_some_and(normalize::reminder_mentions_counter);
-        let ability = match kind {
-            ClauseKind::Keyword => keywords::read(&clause_text)
-                // `check_printed` accepts Enchant on an Aura only.
-                .filter(|keyword| aura || !matches!(keyword, Keyword::Enchant(_)))
-                .map(Ability::Keyword),
-            ClauseKind::Triggered | ClauseKind::Activated | ClauseKind::Static
-                if !reminds_counter =>
-            {
-                read::clause_with(&clause_text, kind, x_free, &own)
-            }
-            _ => None,
-        };
+        let (ability, more) =
+            read_clause(&clause_text, kind, (aura, reminds_counter), x_free, &own);
         pending.push(Pending {
             span,
             text: clause_text,
             kind,
             read: ability.is_some(),
             ability,
+            more,
             reminds_counter,
         });
     }
@@ -145,12 +139,7 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
         .as_ref()
         .is_some_and(|ability| !ability.targets().is_empty());
     if !has_targets {
-        for clause in &mut pending {
-            if matches!(&clause.ability, Some(Ability::CostModifier { per, .. }) if !per.is_one()) {
-                clause.ability = None;
-                clause.read = false;
-            }
-        }
+        unread_target_counts(&mut pending);
     }
     if let Some(ability) = spell_ability {
         let mut ability = Some(ability);
@@ -174,10 +163,14 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
             only.read = only.ability.is_some();
         }
     }
+    give_backup(&mut pending);
     let mut abilities = Vec::new();
     for clause in pending {
         match clause.ability {
-            Some(ability) => abilities.push(ability),
+            Some(ability) => {
+                abilities.push(ability);
+                abilities.extend(clause.more);
+            }
             None if !clause.read => abilities.push(manual::manual(clause.kind, clause.span)),
             None => {}
         }
@@ -190,6 +183,95 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
         });
     }
     abilities
+}
+
+/// The ability a clause reads into, and the abilities after it that the same clause reads into (a level block reads into
+/// one ability for each of its lines). `aura` says whether the face is an Aura and `reminds_counter` whether the
+/// reminder text of the clause explains a counter, which the reading would lose.
+fn read_clause(
+    text: &str,
+    kind: ClauseKind,
+    (aura, reminds_counter): (bool, bool),
+    x_free: bool,
+    own: &read::Own,
+) -> (Option<Ability>, Vec<Ability>) {
+    match kind {
+        ClauseKind::Keyword => (
+            keywords::read(text)
+                // `check_printed` accepts Enchant on an Aura only.
+                .filter(|keyword| aura || !matches!(keyword, Keyword::Enchant(_)))
+                .map(Ability::Keyword),
+            Vec::new(),
+        ),
+        ClauseKind::Static if text.starts_with("LEVEL ") => {
+            let mut block = read::level_block(text, x_free, own)
+                .unwrap_or_default()
+                .into_iter();
+            (block.next(), block.collect())
+        }
+        ClauseKind::Triggered | ClauseKind::Activated | ClauseKind::Static if !reminds_counter => {
+            (read::clause_with(text, kind, x_free, own), Vec::new())
+        }
+        _ => (None, Vec::new()),
+    }
+}
+
+/// Leaves the cost modifiers that count targets ("for each target beyond the first") to the table.
+fn unread_target_counts(pending: &mut [Pending]) {
+    for clause in pending {
+        if matches!(&clause.ability, Some(Ability::CostModifier { per, .. }) if read::counts_targets(per))
+        {
+            clause.ability = None;
+            clause.read = false;
+        }
+    }
+}
+
+/// Backup lists the abilities that follow it on the face (the other backups aside), which its target gains: a backup
+/// followed by a clause left to the table, or by an ability that cannot be granted, is left to the table too.
+fn give_backup(pending: &mut [Pending]) {
+    for at in 0..pending.len() {
+        if !matches!(
+            pending[at].ability,
+            Some(Ability::Keyword(Keyword::Backup { .. }))
+        ) {
+            continue;
+        }
+        let mut listed = Vec::new();
+        let mut all_read = true;
+        for clause in &pending[at + 1..] {
+            match &clause.ability {
+                Some(Ability::Keyword(Keyword::Backup { .. })) => {}
+                Some(ability) if can_be_granted(ability) => listed.push(ability.clone()),
+                _ => all_read = false,
+            }
+        }
+        if all_read {
+            if let Some(Ability::Keyword(Keyword::Backup { abilities, .. })) =
+                &mut pending[at].ability
+            {
+                *abilities = listed;
+            }
+        } else {
+            pending[at].ability = None;
+            pending[at].read = false;
+        }
+    }
+}
+
+/// Whether an ability of a face can be given to another creature: a keyword, or an activated, triggered or static ability
+/// that does not define characteristics or give abilities in turn.
+fn can_be_granted(ability: &Ability) -> bool {
+    match ability {
+        Ability::Keyword(_) | Ability::Activated { .. } | Ability::Triggered { .. } => true,
+        Ability::Static { mods, defining, .. } => {
+            !defining
+                && !mods
+                    .iter()
+                    .any(|modification| matches!(modification, Modification::GrantAbility(_)))
+        }
+        _ => false,
+    }
 }
 
 /// Whether a spell or static clause is a keyword line the keyword reader does not know

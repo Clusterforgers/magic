@@ -43,6 +43,7 @@ pub mod ability_reader;
 pub mod caps;
 pub mod characteristics;
 pub mod choose;
+mod citys_blessing;
 pub mod combat;
 pub mod copies;
 pub mod counters;

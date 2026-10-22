@@ -1,0 +1,21 @@
+{
+  "id": "b97f86ce-4758-4ae3-af29-b08a4d771652",
+  "oracle_id": "c1ebe189-db71-47cd-a763-8cb8c305383a",
+  "name": "Rejuvenation Chamber",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nem",
+  "collector_number": "137",
+  "rarity": "uncommon",
+  "released_at": "2000-02-14",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact",
+  "oracle_text": "Fading 2 (This artifact enters with two fade counters on it. At the beginning of your upkeep, remove a fade counter from it. If you can't, sacrifice it.)\n{T}: You gain 2 life.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Fading"
+  ]
+}

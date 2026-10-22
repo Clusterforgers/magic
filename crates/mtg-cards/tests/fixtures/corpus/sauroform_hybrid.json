@@ -1,0 +1,27 @@
+{
+  "id": "ff22e36c-079e-4cd4-bf74-ff053b24db71",
+  "oracle_id": "559c9949-faaf-41bc-9349-b6738b4763a2",
+  "name": "Sauroform Hybrid",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clu",
+  "collector_number": "173",
+  "rarity": "common",
+  "released_at": "2024-02-23",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Lizard Warrior",
+  "oracle_text": "{4}{G}{G}: Adapt 4. (If this creature has no +1/+1 counters on it, put four +1/+1 counters on it.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Adapt"
+  ]
+}

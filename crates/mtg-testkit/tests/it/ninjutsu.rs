@@ -271,3 +271,55 @@ fn a_copy_of_the_ninja_is_no_attacker_and_stays_out_of_combat() -> Result<(), Sc
     assert_replays(&driver);
     Ok(())
 }
+
+#[rstest]
+fn a_ninja_that_left_the_hand_in_response_does_nothing_and_the_attacker_stays_returned(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let ninja = "Ninja of the Deep Hours";
+    let lands = vec![ready(island()), ready(island()), ready(island())];
+    let mut driver = Driver::from_scenario(scenario(seats, ninja, lands))?;
+    to_blockers(&mut driver, seats - 1, &[])?;
+    driver.begin_activation(ninja)?;
+    driver.answer(Answer::PayMana(PayChoice::Auto))?;
+    assert_eq!(driver.state().stack().len(), 1, "the ability waits");
+    let ninja_id = *driver
+        .state()
+        .zone(Zone::Hand(pid(0)))
+        .iter()
+        .find(|id| name_of(driver.state(), **id) == ninja)
+        .unwrap();
+    // In response Brainstorm draws three cards and puts the ninja and a forest back on the library.
+    driver.cast("Brainstorm")?;
+    for _ in 0..seats {
+        if matches!(driver.decision()?.kind, DecisionKind::ChooseCards(_)) {
+            break;
+        }
+        driver.pass()?;
+    }
+    let DecisionKind::ChooseCards(options) = &driver.decision()?.kind else {
+        panic!("the cards to put back are asked");
+    };
+    let forest_id = *options.from.iter().find(|id| **id != ninja_id).unwrap();
+    driver.answer(Answer::ChooseCards(mtg_engine::choose::CardsChoice(vec![
+        ninja_id, forest_id,
+    ])))?;
+    // The two cards go back in an order, then the ability resolves.
+    while !matches!(driver.decision()?.kind, DecisionKind::Priority(_))
+        || !driver.state().stack().is_empty()
+    {
+        driver.answer_passively()?;
+    }
+    assert_eq!(count(driver.state(), Zone::Battlefield, ninja), 0);
+    assert_eq!(count(driver.state(), Zone::Library(pid(0)), ninja), 1);
+    assert_eq!(count(driver.state(), Zone::Hand(pid(0)), ninja), 0);
+    assert_eq!(
+        count(driver.state(), Zone::Hand(pid(0)), "Grizzly Bears"),
+        1,
+        "the attacker returned as a cost"
+    );
+    assert_eq!(driver.state().combat().attackers().len(), 0);
+    assert_eq!(driver.state().stack(), []);
+    assert_replays(&driver);
+    Ok(())
+}
