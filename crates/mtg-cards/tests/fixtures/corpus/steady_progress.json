@@ -1,0 +1,25 @@
+{
+  "id": "71106361-b5b9-403c-b3b1-afe3337e9e3d",
+  "oracle_id": "d2145ad3-fe7e-459b-b155-1b3ed089e936",
+  "name": "Steady Progress",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mm2",
+  "collector_number": "58",
+  "rarity": "common",
+  "released_at": "2015-05-22",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3,
+  "type_line": "Instant",
+  "oracle_text": "Proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)\nDraw a card.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Proliferate"
+  ]
+}

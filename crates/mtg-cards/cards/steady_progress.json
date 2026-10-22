@@ -1,0 +1,12 @@
+{
+  "oracle_id": "d2145ad3-fe7e-459b-b155-1b3ed089e936",
+  "name": "Steady Progress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steady Progress",
+      "oracle_fingerprint": "221d579f3a64c3a063c048d62a4840c4",
+      "abilities": [{ "Spell": { "effects": [{ "Proliferate": {} }, { "Draw": {} }] } }]
+    }
+  ]
+}

@@ -317,6 +317,13 @@ mod tests {
             energy: 0,
             energy_held: 0,
             cost: ManaCost::ZERO,
+            ..ManaOption::new(
+                ManaSource {
+                    object: ObjectId(object),
+                    ability: 0,
+                },
+                produces,
+            )
         }
     }
 

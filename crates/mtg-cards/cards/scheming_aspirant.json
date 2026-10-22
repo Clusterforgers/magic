@@ -1,0 +1,22 @@
+{
+  "oracle_id": "cf4a3b1a-4b87-473e-be1f-3aa3da45c28e",
+  "name": "Scheming Aspirant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scheming Aspirant",
+      "oracle_fingerprint": "a270e7b8099d223a4123ca489e294e02",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Proliferated": { "who": "You" } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

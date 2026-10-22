@@ -14,15 +14,16 @@ use mtg_cards::assemble::{ManaProduced, mana_shape};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 
+use crate::abilities::AbilityRef;
 use crate::ability_reader::abilities_of;
 use crate::characteristics::{characteristics, controller_of_object};
 use crate::error::EngineError;
 use crate::events::{Event, ZoneCause};
 use crate::keywords;
-use crate::mana::{ManaOption, ManaSource};
+use crate::mana::{ManaOption, ManaSource, Take};
 use crate::mana_kinds::{COLORS, identity_types, mana_of, producible_types};
 use crate::object::{Chosen, PermanentState};
-use crate::parts::{Part, Payer, energy};
+use crate::parts::{Kind, Part, Payer, energy};
 use crate::resolve::{Scope, run_inline};
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -36,6 +37,10 @@ struct RuleMana {
     body: Arc<Ability>,
     /// Using it taps the source.
     tap: bool,
+    /// Its address among the abilities of the object, which records a use once each turn.
+    address: AbilityRef,
+    /// It can be used once each turn.
+    once: bool,
     /// One option for each type of mana it can make: one for a fixed type, one for each colour for "any color".
     options: Vec<ManaOption>,
 }
@@ -44,6 +49,48 @@ struct RuleMana {
 fn parts_of(pays: &[&mtg_cards::cost::CostItem]) -> Vec<Part> {
     pays.iter()
         .filter_map(|item| Part::read(item).ok().flatten())
+        .collect()
+}
+
+/// The parts of a cost that take other permanents of the payer, each with the permanents it may take now: the ones that
+/// cannot attack come first when tapping, the order of the battlefield otherwise.
+fn takes_of(
+    state: &GameState,
+    player: PlayerId,
+    source: ObjectId,
+    barred: &[ObjectId],
+    picks: &[&mtg_cards::cost::CostItem],
+) -> Vec<Take> {
+    let owner = Payer {
+        state,
+        player,
+        source,
+        barred,
+    };
+    picks
+        .iter()
+        .filter_map(|item| match Part::read(item).ok().flatten()? {
+            Part::Pick(pick) => {
+                let sacrifice = pick.kind == Kind::Sacrifice;
+                let mut from = pick.candidates(&owner);
+                if sacrifice {
+                    // The cheapest goes first; the order of the battlefield settles a tie.
+                    from.sort_by_key(|id| {
+                        state
+                            .object(*id)
+                            .map_or(0, |object| object.card().mana_value())
+                    });
+                } else {
+                    from.sort_by_key(|id| !keywords::summoning_sick(state, *id));
+                }
+                Some(Take {
+                    sacrifice,
+                    count: u32::try_from(pick.count).unwrap_or(u32::MAX),
+                    from,
+                })
+            }
+            _ => None,
+        })
         .collect()
 }
 
@@ -76,19 +123,24 @@ fn split(made: &[ManaType]) -> Option<(ManaType, u32, Vec<ManaType>)> {
 /// The source of the `variant`th option of the ability at position `place` among those the reader lists is numbered
 /// `printed + place * 6 + variant`: the printed abilities come first and each ability has a slot for every type, so
 /// every type is a distinct source of one permanent and a client taps for the type it wants.
+// One pass over the shape of each ability: its condition, limit, cost, the mana it adds and what it does besides.
+#[allow(clippy::too_many_lines)]
 fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) -> Vec<RuleMana> {
     let Some(object) = state.object(id) else {
         return Vec::new();
     };
     let scope = Scope::announcing(state, player, object.reference());
     let mut found = Vec::new();
-    for (place, (_, rules)) in abilities_of(state, id).into_iter().enumerate() {
+    for (place, (address, rules)) in abilities_of(state, id).into_iter().enumerate() {
         let Some(shape) = mana_shape(&rules) else {
             continue;
         };
         if let Some(condition) = shape.condition
             && !scope.holds(condition).unwrap_or(false)
         {
+            continue;
+        }
+        if shape.once && state.limit_spent(object.reference(), address.source, address.ability) {
             continue;
         }
         let pays = parts_of(&shape.pays);
@@ -99,6 +151,19 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
             barred: &[],
         };
         if pays.iter().any(|part| part.payable(&owner, &[]).is_none()) {
+            continue;
+        }
+        // What the cost takes: the source is not offered to itself when the cost taps or loses it.
+        let barred = if shape.tap || shape.sacrifice {
+            vec![id]
+        } else {
+            Vec::new()
+        };
+        let takes = takes_of(state, player, id, &barred, &shape.picks);
+        if takes
+            .iter()
+            .any(|take| take.from.len() < take.count as usize)
+        {
             continue;
         }
         let (life, energy) = paid_by(&pays);
@@ -137,9 +202,9 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
         let (tap, sacrifice, extra) = (
             shape.tap,
             shape.sacrifice,
-            !shape.then.is_empty() || !pays.is_empty(),
+            !shape.then.is_empty() || !pays.is_empty() || shape.once || !takes.is_empty(),
         );
-        let only = shape.only.to_vec();
+        let (only, once) = (shape.only.to_vec(), shape.once);
         let options = additions
             .into_iter()
             .take(VARIANTS)
@@ -156,6 +221,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                     count,
                     sacrifice,
                     extra,
+                    tapless: !tap,
                     only: only.clone(),
                     also,
                     life,
@@ -166,12 +232,15 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                         0
                     },
                     cost: shape.mana.clone(),
+                    takes: takes.clone(),
                 })
             })
             .collect();
         found.push(RuleMana {
             body: rules,
             tap,
+            address,
+            once,
             options,
         });
     }
@@ -225,6 +294,7 @@ pub(crate) fn activation(
     state: &GameState,
     player: PlayerId,
     option: &ManaOption,
+    taken: &[Vec<ObjectId>],
 ) -> Result<Vec<Event>, EngineError> {
     let id = option.source.object;
     let object = state
@@ -236,9 +306,25 @@ pub(crate) fn activation(
         .find(|mana| mana.options.iter().any(|o| o.source == option.source));
     let shape = rule.as_ref().and_then(|mana| mana_shape(&mana.body));
     let mut events = Vec::new();
+    if let Some(rule) = rule.as_ref().filter(|rule| rule.once) {
+        // A use is logged for the limit; no ability goes on the stack.
+        events.push(Event::AbilityActivated {
+            player,
+            source: object.reference(),
+            ability: rule.address.ability,
+            origin: rule.address.source,
+        });
+    }
     if let Some(shape) = &shape {
         for part in parts_of(&shape.pays) {
             events.extend(part.events(state, player, id, &[]));
+        }
+        let picks = shape
+            .picks
+            .iter()
+            .filter_map(|item| Part::read(item).ok().flatten());
+        for (part, objects) in picks.zip(taken) {
+            events.extend(part.events(state, player, id, objects));
         }
     }
     if shape.as_ref().is_none_or(|shape| shape.tap) {

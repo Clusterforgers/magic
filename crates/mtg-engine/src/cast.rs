@@ -25,6 +25,7 @@ use crate::mana::{
     max_life_payment,
 };
 use crate::mana_ability;
+use crate::mana_takes::{assignment, without_taken};
 use crate::object::PermanentState;
 use crate::parts::{self, Part};
 use crate::price::Price;
@@ -172,6 +173,9 @@ pub(crate) fn payment_decision(
     })
 }
 
+/// How a mana source is used when the game is not at hand: the source and the permanents its cost takes.
+type Activate<'a> = &'a dyn Fn(&ManaOption, &[Vec<ObjectId>]) -> Result<Vec<Event>, EngineError>;
+
 /// The offered permanents that are tapped (or gone) and the offered cards that left the graveyard in `state`; no payment may use them.
 fn unusable(state: &GameState, player: PlayerId, options: &PayOptions) -> Vec<ObjectId> {
     let tapped = |id: &ObjectId| {
@@ -183,6 +187,7 @@ fn unusable(state: &GameState, player: PlayerId, options: &PayOptions) -> Vec<Ob
     let mut gone: Vec<ObjectId> = options
         .sources
         .iter()
+        .filter(|o| !o.tapless)
         .map(|o| o.source.object)
         .chain(options.help.convoke.iter().map(|o| o.creature))
         .filter(tapped)
@@ -222,7 +227,7 @@ fn payment_events(
     tapped: &[ObjectId],
     payment: &Payment,
     announced: Vec<Event>,
-    activate: &dyn Fn(&ManaOption) -> Result<Vec<Event>, EngineError>,
+    activate: Activate<'_>,
 ) -> Result<Vec<Event>, EngineError> {
     let spent = check_payment_with(
         &options.cost,
@@ -235,6 +240,22 @@ fn payment_events(
         payment,
     )
     .map_err(IllegalAnswer::from)?;
+    // The permanents the sources take are the engine's to pick (`mana_takes.rs`).
+    let paying: Vec<ManaOption> = payment
+        .taps
+        .iter()
+        .filter_map(|tap| options.sources.iter().find(|o| o.source == *tap))
+        .cloned()
+        .collect();
+    // The creatures tapped for convoke are tapped first and are not there to take.
+    let paying = without_taken(&paying, &|id| {
+        payment
+            .convoke
+            .iter()
+            .any(|convoked| convoked.creature == id)
+    });
+    let mut taken = assignment(&paying.iter().collect::<Vec<_>>())
+        .ok_or(IllegalAnswer::NotOffered("permanents to take"))?;
     let mut events = Vec::new();
     // Life is part of the cost, paid in the same step as the mana, so it comes before the spell goes on the stack.
     if payment.life > 0 {
@@ -272,7 +293,11 @@ fn payment_events(
                 restricted: Vec::new(),
             });
         }
-        events.extend(activate(option)?);
+        let at = paying.iter().position(|o| o.source == option.source);
+        let picked = at
+            .map(|at| std::mem::take(&mut taken[at]))
+            .unwrap_or_default();
+        events.extend(activate(option, &picked)?);
     }
     if !spent.mana.is_empty() {
         events.push(Event::ManaSpent {
@@ -305,7 +330,7 @@ pub(crate) fn pay_answer(
         &unusable(state, player, options),
         choice,
         announced,
-        &|option| mana_ability::activation(state, player, option),
+        &|option, taken| mana_ability::activation(state, player, option, taken),
     )
 }
 
@@ -407,7 +432,7 @@ pub(crate) fn pay_choice(
     choice: PayChoice,
     announced: Vec<Event>,
 ) -> Result<Outcome, EngineError> {
-    pay_with(player, options, tapped, choice, announced, &|option| {
+    pay_with(player, options, tapped, choice, announced, &|option, _| {
         Ok(tap_events(player, option))
     })
 }
@@ -419,7 +444,7 @@ fn pay_with(
     tapped: &[ObjectId],
     choice: PayChoice,
     announced: Vec<Event>,
-    activate: &dyn Fn(&ManaOption) -> Result<Vec<Event>, EngineError>,
+    activate: Activate<'_>,
 ) -> Result<Outcome, EngineError> {
     let payment = match choice {
         PayChoice::Cancel if options.can_cancel => return Ok(Outcome::CancelCast),

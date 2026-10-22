@@ -7,7 +7,7 @@
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::order::{self, OrderOptions};
-use super::{CardsOptions, Choice, cards};
+use super::{CardsOptions, Choice, YesNoOptions, cards};
 use crate::decision::{Decision, DecisionKind};
 use crate::resolve::{Cx, ResolveError, Run};
 
@@ -112,6 +112,18 @@ impl<'a> Questions<'a> {
                 Ok(chosen.clone())
             }
             Some(other) => Err(Self::unfit(other, player, "order of cards")),
+        }
+    }
+
+    /// Whether `player` says yes to the question.
+    pub(crate) fn yes_no(&mut self, player: PlayerId, text: String) -> Result<bool, Stop> {
+        match self.answers.next() {
+            None => Err(Stop::Ask(Box::new(Decision {
+                player,
+                kind: DecisionKind::YesNo(YesNoOptions::new(self.source, text)),
+            }))),
+            Some((who, Choice::YesNo(yes))) if *who == player => Ok(*yes),
+            Some(other) => Err(Self::unfit(other, player, "yes-or-no question")),
         }
     }
 

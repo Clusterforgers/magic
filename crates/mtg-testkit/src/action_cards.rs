@@ -21,11 +21,22 @@ pub const ACTION_CARDS: &[&str] = &[
     "Doom Whisperer",
 ];
 
-/// A legal Normal deck in blue and black of the cards that act, three of each, with creatures to fill it, derived
-/// entirely from `rng`.
+/// The corpus cards that put counters or give more of them (proliferate, and what the other actions of the rules'
+/// section 701 put on creatures), two of each.
+pub const COUNTER_CARDS: &[&str] = &[
+    "Contentious Plan",
+    "Steady Progress",
+    "Bloom Hulk",
+    "Scheming Aspirant",
+    "Karn's Bastion",
+    "Tireless Tracker",
+];
+
+/// A legal Normal deck in blue, black and green of the cards that act, three of each, with creatures to fill it,
+/// derived entirely from `rng`.
 pub fn actions_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
-    let colors = [Color::Blue, Color::Black];
-    let mut deck: Vec<Arc<CardDefinition>> = (0..25).map(|i| land(colors[i % 2])).collect();
+    let colors = [Color::Blue, Color::Black, Color::Green];
+    let mut deck: Vec<Arc<CardDefinition>> = (0..27).map(|i| land(colors[i % 3])).collect();
     for card in ACTION_CARDS
         .iter()
         .filter_map(|name| corpus::card(name).ok())
@@ -33,13 +44,19 @@ pub fn actions_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
         deck.extend(std::iter::repeat_n(card, 3));
     }
     deck.extend(std::iter::repeat_n(monarcher("Action Crown"), 3));
+    for card in COUNTER_CARDS
+        .iter()
+        .filter_map(|name| corpus::card(name).ok())
+    {
+        deck.extend(std::iter::repeat_n(card, 2));
+    }
     // Creatures make the 60 cards.
-    for slot in 0..9 {
+    for slot in 0..5 {
         let generic = u32::try_from(rng.index(3)).unwrap_or(0);
         let power = i32::try_from(1 + rng.index(4)).unwrap_or(1);
         let toughness = i32::try_from(1 + rng.index(4)).unwrap_or(1);
         let name = format!("Action Fodder {slot} {generic} {power}/{toughness}");
-        let card = creature(&name, generic, &[colors[rng.index(2)]], power, toughness);
+        let card = creature(&name, generic, &[colors[rng.index(3)]], power, toughness);
         deck.extend(std::iter::repeat_n(card, 2));
     }
     rng.shuffle(&mut deck);

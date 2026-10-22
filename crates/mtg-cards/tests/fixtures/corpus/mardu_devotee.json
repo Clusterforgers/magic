@@ -1,0 +1,34 @@
+{
+  "id": "da45e9b0-a4f6-413b-9e62-666c511eb5b0",
+  "oracle_id": "24ee57b5-a505-4264-97ca-8b8dfb12298e",
+  "name": "Mardu Devotee",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdm",
+  "collector_number": "16",
+  "rarity": "common",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Creature — Human Scout",
+  "oracle_text": "When this creature enters, scry 2. (Look at the top two cards of your library, then put any number of them on the bottom and the rest on top in any order.)\n{1}: Add {R}, {W}, or {B}. Activate only once each turn.",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Scry"
+  ],
+  "produced_mana": [
+    "B",
+    "R",
+    "W"
+  ]
+}
