@@ -796,6 +796,7 @@ impl<'a> Walker<'a> {
             }
             Keyword::Toxic(0) => self.problem("toxic needs a number of at least 1"),
             Keyword::Casualty(0) => self.problem("casualty needs a power of at least 1"),
+            Keyword::Hideaway(0) => self.problem("hideaway needs a number of at least 1"),
             Keyword::Devour { counters, of } => {
                 if *counters == 0 {
                     self.problem("devour needs a number of at least 1");

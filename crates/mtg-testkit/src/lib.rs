@@ -26,6 +26,7 @@ pub mod counting_cards;
 pub mod curse_cards;
 pub mod decks;
 pub mod defining_cards;
+pub mod demonstrate_cards;
 pub mod devour_cards;
 pub mod discard_cast_cards;
 pub mod dredge_cards;
@@ -103,6 +104,7 @@ pub use decks::{
     removal_fuzz_setup, spell_fuzz_setup, symbol_fuzz_setup, trigger_fuzz_setup,
 };
 pub use defining_cards::defining_fuzz_setup;
+pub use demonstrate_cards::demonstrate_fuzz_setup;
 pub use devour_cards::devour_fuzz_setup;
 pub use discard_cast_cards::discard_cast_fuzz_setup;
 pub use dredge_cards::dredge_fuzz_setup;

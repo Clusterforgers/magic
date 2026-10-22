@@ -16,13 +16,14 @@ use crate::zones::Zone;
 /// Each spell the effect names that is still on the stack is copied `count` times, one copy after the other, so the last
 /// copy is on top. A copy is not cast: no cast trigger sees it, nothing is paid and no `SpellCast` is logged. It is a
 /// token spell with the copiable values of the face the spell is in use as (CR 707.10, 707.8) and the exceptions of the
-/// effect, and the modes, X, optional costs and targets of the original. The controller of the effect controls it and,
+/// effect, and the modes, X, optional costs and targets of the original. The player `who` names (the controller of the effect by default) controls it and,
 /// when the effect lets them, may choose new targets for it (`retarget`). A spell that has left the stack or is an
 /// ability is passed over.
 ///
 /// A step with k questions runs k + 1 times; every copy's questions are read from the journal in the order of the copies.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::CopySpell {
+        who,
         what,
         count,
         new_targets,
@@ -32,6 +33,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Err(wrong_effect("CopySpell"));
     };
     let state = cx.state();
+    let Some(player) = cx
+        .scope
+        .players(who)?
+        .into_iter()
+        .find(|player| state.is_alive(*player))
+    else {
+        return Ok(Run::events(Vec::new()));
+    };
     let copies = u32::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
     let spells: Vec<_> = cx
         .scope
@@ -57,7 +66,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     origin: spell.reference(),
                     cause: None,
                 };
-                match retarget(cx, &mut answers, original, *new_targets)? {
+                match retarget(cx, player, &mut answers, original, *new_targets)? {
                     Retargeted::Ask(decision) => return Ok(Run::Ask(decision)),
                     Retargeted::Done(choices) => choices,
                 }
@@ -87,7 +96,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         events.push(Event::SpellCopied(Box::new(SpellCopy {
             object: ObjectId(id),
             of: spell.reference(),
-            controller: cx.controller(),
+            controller: player,
             definition: Arc::new(definition),
             choices,
         })));

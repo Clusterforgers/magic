@@ -198,6 +198,7 @@ Epic Proportions
 Eternal Witness
 Ethereal Armor
 Ethersworn Sphinx
+Excavation Technique
 Exotic Orchard
 Exploration
 Explore
@@ -448,6 +449,7 @@ Reflecting Pool
 Reiterate
 Rejuvenation Chamber
 Relentless Advance
+Replication Technique
 Rescue Skiff
 Revel Ruiner
 Reverberate

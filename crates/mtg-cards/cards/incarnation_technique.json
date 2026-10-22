@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0ab9539d-3461-4936-95cd-4c229308c4a4",
+  "name": "Incarnation Technique",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Incarnation Technique",
+      "oracle_fingerprint": "41aa7f641f206a2bd66840d9272fbfce",
+      "abilities": [
+        { "Keyword": "Demonstrate" },
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "count": 5 } },
+              {
+                "Search": {
+                  "zone": "Graveyard",
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "creature"
+                }
+              },
+              { "Move": { "what": { "Bound": "creature" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

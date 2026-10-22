@@ -259,6 +259,10 @@ fn keyword() -> impl Strategy<Value = Keyword> {
         cost().prop_map(Keyword::Bestow),
         cost().prop_map(Keyword::Blitz),
         cost().prop_map(Keyword::Prowl),
+        Just(Keyword::Demonstrate),
+        (1u32..9).prop_map(Keyword::Hideaway),
+        Just(Keyword::Demonstrate),
+        (1u32..9).prop_map(Keyword::Hideaway),
         cost().prop_map(Keyword::Ninjutsu),
         cost().prop_map(Keyword::Foretell),
         cost().prop_map(Keyword::Echo),
@@ -748,16 +752,20 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
             who().prop_map(|who| Effect::Proliferate { who }),
             reference().prop_map(|what| Effect::Goad { what }),
             (
+                who(),
                 reference(),
                 amount(),
                 any::<bool>(),
                 vec(modification(), 0..2)
             )
-                .prop_map(|(what, count, new_targets, except)| Effect::CopySpell {
-                    what,
-                    count,
-                    new_targets,
-                    except
+                .prop_map(|(who, what, count, new_targets, except)| {
+                    Effect::CopySpell {
+                        who,
+                        what,
+                        count,
+                        new_targets,
+                        except,
+                    }
                 }),
             (reference(), amount(), any::<bool>()).prop_map(|(what, count, new_targets)| {
                 Effect::CopyAbility {
