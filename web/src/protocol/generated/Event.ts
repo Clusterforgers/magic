@@ -500,4 +500,8 @@ player: PlayerId,
 /**
  * What they did.
  */
-action: ManualAction, } };
+action: ManualAction, } } | { "CommanderStayed": { 
+/**
+ * The commander.
+ */
+object: ObjectId, } };

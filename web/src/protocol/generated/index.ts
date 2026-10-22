@@ -42,6 +42,8 @@ export type { Color } from "./Color";
 export type { ColorSet } from "./ColorSet";
 export type { CombatForecast } from "./CombatForecast";
 export type { CombatView } from "./CombatView";
+export type { CommanderDamageView } from "./CommanderDamageView";
+export type { CommanderView } from "./CommanderView";
 export type { CommonToken } from "./CommonToken";
 export type { ContinuousEffect } from "./ContinuousEffect";
 export type { ConvokeOption } from "./ConvokeOption";

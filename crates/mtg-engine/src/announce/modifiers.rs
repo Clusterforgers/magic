@@ -174,7 +174,10 @@ pub(crate) fn modified(
     // The commander tax is an increase of the cost like any other (CR 903.8).
     let tax = crate::commanders::tax_for(state, spell);
     if tax > 0 {
-        more = joined(more, &ManaCost::from_symbols(vec![ManaSymbol::Generic(tax)]));
+        more = joined(
+            more,
+            &ManaCost::from_symbols(vec![ManaSymbol::Generic(tax)]),
+        );
     }
     let mana = if more.symbols().is_empty() {
         mana

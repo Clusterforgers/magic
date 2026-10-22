@@ -14,8 +14,8 @@ use mtg_engine::state::GameState;
 use mtg_engine::zones::Zone;
 
 use crate::view::{
-    AttackerView, CombatView, CopyView, LoyaltyAbilityView, ObjectView, PermanentView, PlayerView,
-    PriorityView, StateView, TableView, TurnView, ZoneView,
+    AttackerView, CombatView, CommanderDamageView, CommanderView, CopyView, LoyaltyAbilityView,
+    ObjectView, PermanentView, PlayerView, PriorityView, StateView, TableView, TurnView, ZoneView,
 };
 
 /// Every card type, for expanding a [`CardTypes`] set into a list.
@@ -308,6 +308,25 @@ impl PlayerView {
             revealed_top: state.revealed_top(seat),
             graveyard: zone_view(state, viewer, Zone::Graveyard(seat)),
             command: zone_view(state, viewer, Zone::Command(seat)),
+            commanders: state
+                .commanders()
+                .filter(|id| state.object(*id).is_some_and(|card| card.owner() == seat))
+                .map(|id| CommanderView {
+                    object: id,
+                    casts: state.commander_casts(id),
+                    tax: state.commander_tax(id),
+                })
+                .collect(),
+            commander_damage: state
+                .commanders()
+                .filter_map(|id| {
+                    let damage = state.commander_damage(id, seat);
+                    (damage > 0).then_some(CommanderDamageView {
+                        commander: id,
+                        damage,
+                    })
+                })
+                .collect(),
             bank: 0,
         }
     }

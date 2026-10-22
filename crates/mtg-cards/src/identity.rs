@@ -202,3 +202,112 @@ fn without_reminders(text: &str) -> String {
         })
         .collect()
 }
+
+#[cfg(test)]
+mod tests {
+    //! Goal: the color identity of a definition counts every color its cost, indicator, rules text and basic land types name (hybrid, Phyrexian and activated-ability symbols included, reminder text and generic mana not), over all its faces; a card can be a commander when it is a legendary creature (or a Vehicle with a power) or says so; partners pair by Partner or by name; and the copies a deck may hold follow the card's own text.
+    use rstest::rstest;
+
+    use super::*;
+    use crate::definition::{Layout, ManaAbility};
+    use mtg_core::mana::ManaCost;
+
+    fn rules(json: &str) -> Ability {
+        serde_json::from_str(json).unwrap()
+    }
+
+    fn colors(letters: &str) -> ColorSet {
+        letters
+            .chars()
+            .filter_map(Color::from_symbol)
+            .fold(ColorSet::EMPTY, ColorSet::with)
+    }
+
+    fn costing(cost: &str) -> CardDefinition {
+        CardDefinition::new("Card").with_mana_cost(ManaCost::parse(cost).unwrap())
+    }
+
+    fn mana(produces: ManaType) -> AbilityDef {
+        AbilityDef::Mana(ManaAbility { produces })
+    }
+
+    #[rstest]
+    #[case::two_colors(costing("{1}{R}{G}"), "RG")]
+    #[case::generic_only(costing("{5}"), "")]
+    #[case::colorless_symbol(costing("{C}{C}"), "")]
+    #[case::hybrid(costing("{W/U}"), "WU")]
+    #[case::mono_hybrid(costing("{2/B}"), "B")]
+    #[case::phyrexian(costing("{G/P}"), "G")]
+    #[case::hybrid_phyrexian(costing("{R/G/P}"), "RG")]
+    #[case::colorless_hybrid(costing("{C/W}"), "W")]
+    #[case::indicator(CardDefinition::new("Dryad").with_color_indicator(colors("G")), "G")]
+    #[case::indicator_and_cost(costing("{U}").with_color_indicator(colors("R")), "UR")]
+    #[case::land_type(CardDefinition::basic_land(Some(Color::Green)), "G")]
+    #[case::wastes(CardDefinition::basic_land(None), "")]
+    #[case::mana_ability(CardDefinition::new("Land").with_ability(mana(ManaType::Red)), "R")]
+    #[case::colorless_mana_ability(CardDefinition::new("Land").with_ability(mana(ManaType::Colorless)), "")]
+    #[case::activated_cost(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":"{2}{U}","effects":[{"Draw":{}}]}}"#)), "U")]
+    #[case::activated_hybrid_cost(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":"{B/G}","effects":[{"Draw":{}}]}}"#)), "BG")]
+    #[case::added_mana(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green","Colorless"]}}}]}}"#)), "G")]
+    #[case::any_color_adds_none(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#)), "")]
+    #[case::rules_text_clause(costing("{1}").with_manual("{W}, {T}: Draw a card.", "not run"), "W")]
+    #[case::reminder_text_is_no_rules_text(costing("{1}").with_manual("Flash (You may cast this for {W}.)", "not run"), "")]
+    fn a_definition_names_its_color_identity(#[case] card: CardDefinition, #[case] expected: &str) {
+        assert_eq!(card.color_identity(), colors(expected));
+    }
+
+    #[test]
+    fn a_card_with_two_faces_has_the_identity_of_both() {
+        let front = costing("{1}{G}");
+        let back = CardDefinition::new("Back").with_color_indicator(colors("B"));
+        let card = CardDefinition::new("Both").with_faces(Layout::Transform, vec![front, back]);
+        assert_eq!(card.color_identity(), colors("GB"));
+    }
+
+    fn legendary(types: &[CardType]) -> CardDefinition {
+        types
+            .iter()
+            .fold(CardDefinition::new("Legend"), |card, ty| card.with_type(*ty))
+            .with_supertype(Supertype::Legendary)
+    }
+
+    #[rstest]
+    #[case::legendary_creature(legendary(&[CardType::Creature]), true)]
+    #[case::legendary_artifact_creature(legendary(&[CardType::Artifact, CardType::Creature]), true)]
+    #[case::plain_creature(CardDefinition::new("Bear").with_type(CardType::Creature), false)]
+    #[case::legendary_artifact(legendary(&[CardType::Artifact]), false)]
+    #[case::legendary_planeswalker(legendary(&[CardType::Planeswalker]), false)]
+    #[case::legendary_vehicle_with_power(legendary(&[CardType::Artifact]).with_subtype("Vehicle").with_power_toughness(3, 3), true)]
+    #[case::legendary_vehicle_without_power(legendary(&[CardType::Artifact]).with_subtype("Vehicle"), false)]
+    #[case::says_it_can(CardDefinition::new("Walker").with_type(CardType::Planeswalker).with_rules(rules(r#"{"Rule":{"rule":"CanBeCommander"}}"#)), true)]
+    fn a_card_can_be_a_commander(#[case] card: CardDefinition, #[case] can: bool) {
+        assert_eq!(card.can_be_commander(), can);
+    }
+
+    fn with(name: &str, ability: &str) -> CardDefinition {
+        CardDefinition::new(name).with_rules(rules(ability))
+    }
+
+    #[rstest]
+    #[case::both_have_partner(with("A", r#"{"Keyword":"Partner"}"#), with("B", r#"{"Keyword":"Partner"}"#), true)]
+    #[case::only_one(with("A", r#"{"Keyword":"Partner"}"#), CardDefinition::new("B"), false)]
+    #[case::neither(CardDefinition::new("A"), CardDefinition::new("B"), false)]
+    #[case::each_names_the_other(with("A", r#"{"Keyword":{"PartnerWith":"B"}}"#), with("B", r#"{"Keyword":{"PartnerWith":"A"}}"#), true)]
+    #[case::one_names_the_other(with("A", r#"{"Keyword":{"PartnerWith":"B"}}"#), with("B", r#"{"Keyword":"Partner"}"#), false)]
+    #[case::names_someone_else(with("A", r#"{"Keyword":{"PartnerWith":"C"}}"#), with("B", r#"{"Keyword":{"PartnerWith":"A"}}"#), false)]
+    fn partners_pair(#[case] a: CardDefinition, #[case] b: CardDefinition, #[case] pair: bool) {
+        assert_eq!(a.partners_with(&b), pair);
+    }
+
+    #[rstest]
+    #[case::ordinary(CardDefinition::new("Bear"), Some(1))]
+    #[case::basic(CardDefinition::basic_land(Some(Color::Red)), None)]
+    #[case::any_number(CardDefinition::new("Rats").with_manual("A deck can have any number of cards named Rats.", ""), None)]
+    #[case::up_to_seven(CardDefinition::new("Dwarves").with_manual("A deck can have up to seven cards named Dwarves.", ""), Some(7))]
+    fn a_singleton_deck_holds_the_copies_a_card_allows(
+        #[case] card: CardDefinition,
+        #[case] limit: Option<u32>,
+    ) {
+        assert_eq!(card.singleton_limit(), limit);
+    }
+}

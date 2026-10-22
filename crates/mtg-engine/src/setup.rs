@@ -11,8 +11,8 @@ use mtg_core::house::HouseRules;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::combat::CombatState;
-use crate::error::SetupError;
 use crate::commanders::Commanders;
+use crate::error::SetupError;
 use crate::format::{ExtraZone, FormatRules, RuleSet};
 use crate::layers::LayersCache;
 use crate::object::{GameObject, ObjectRef, PermanentState};

@@ -5,8 +5,8 @@ use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
-use mtg_cards::trigger::ReplaceBy;
 use mtg_cards::support::Support;
+use mtg_cards::trigger::ReplaceBy;
 use mtg_core::card::{CardType, Supertype};
 use mtg_core::color::{Color, ColorSet};
 use mtg_engine::GameSetup;
