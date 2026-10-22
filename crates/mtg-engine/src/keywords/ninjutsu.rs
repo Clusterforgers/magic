@@ -67,6 +67,7 @@ fn activation(cost: &Cost) -> Ability {
                 to: Destination::Battlefield {
                     tapped: true,
                     under: None,
+                    counters: Vec::new(),
                 },
             },
             // Only the permanent that arrived is in play: a card that was moved away in response stays where it is.
