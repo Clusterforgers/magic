@@ -6,13 +6,14 @@
 use mtg_core::card::Subtype;
 use mtg_core::color::Color;
 
-use super::amounts::{count_word, counted, counted_parts, number_word};
+use super::amounts::{count_word, counted, counted_parts, number_word, stat_name};
 use super::selectors::{
     Form, card_type, color, color_name, keyword, keyword_text, phrase, phrase_text, subtype,
     type_name,
 };
 use super::tokens::Reader;
 use super::triggers::article;
+use super::where_x;
 use crate::ability::Ability;
 use crate::card::TokenSpec;
 use crate::effect::{Effect, TokenRef};
@@ -109,6 +110,7 @@ enum Quantity {
     Number(u32),
     X,
     ThatMany,
+    NumberOf,
 }
 
 /// "Create a Treasure token.", "Create two 1/1 white Soldier creature tokens that are tapped and
@@ -148,6 +150,8 @@ pub fn made_by(r: &mut Reader<'_>, who: Ref) -> Option<Vec<Effect>> {
     r.need(if who == Ref::You { "create" } else { "creates" })?;
     let quantity = if r.words("that many") {
         Quantity::ThatMany
+    } else if r.words("a number of") {
+        Quantity::NumberOf
     } else if r.word("x") {
         Quantity::X
     } else {
@@ -181,6 +185,9 @@ pub fn made_by(r: &mut Reader<'_>, who: Ref) -> Option<Vec<Effect>> {
         // "... token for each Elf you control": the count of the Elves, times the number when it is not one.
         Quantity::Number(number) => counted(r, Amount::Fixed(i32::try_from(number).ok()?))?,
         Quantity::ThatMany => Amount::Triggering,
+        Quantity::NumberOf => where_x::equal_to(r)?,
+        // The where clause of the sentence gives X its amount.
+        Quantity::X if r.where_x => Amount::X,
         Quantity::X if r.punct(',') => {
             r.need("where x is the number of")?;
             Amount::Count(phrase(r, Form::All)?)
@@ -311,6 +318,19 @@ fn quantity_text(count: &Amount, what: &str, per: bool) -> Option<(String, bool,
         ),
         Amount::X => ("X".to_owned(), false, String::new()),
         Amount::Triggering => ("that many".to_owned(), false, String::new()),
+        // "a number of 1/1 Rabbit creature tokens equal to ~'s power"
+        Amount::Stat { of, stat } if matches!(of, Ref::This | Ref::Triggering) => {
+            let owner = if *of == Ref::This {
+                "~'s"
+            } else {
+                "that creature's"
+            };
+            (
+                "a number of".to_owned(),
+                false,
+                format!(" equal to {owner} {}", stat_name(*stat)?),
+            )
+        }
         // The same count in the other wording: "a Goblin token for each Goblin you control".
         counted if per => {
             let (each, tail) = counted_parts(counted)?;
