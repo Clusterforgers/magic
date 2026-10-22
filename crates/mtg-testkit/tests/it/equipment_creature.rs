@@ -1,4 +1,4 @@
-//! Goal: an Equipment that is also a creature is attached to nothing (CR 301.5c, 704.5n), at tables of two, three and four seats: one that becomes a creature while attached comes off in the pass of state-based actions that follows the change (whatever animates it and for as long as it lasts), keeps its place on the battlefield and is attached again by an equip ability once it is no creature; one that is a creature already stays unattached when an equip ability resolves, while a creature Equipment is still a creature another Equipment may equip; an Equipment with reconfigure is no creature while it is attached and stays there, and comes off when an effect makes it a creature while attached; an Aura that is a creature, or on what is no longer a creature it may enchant, is the existing rule and goes to the graveyard; and the log of such games replays to the live state.
+//! Goal: an Equipment that is also a creature is attached to nothing unless it has reconfigure (CR 301.5c, 704.5n), at tables of two, three and four seats: one that becomes a creature while attached comes off in the pass of state-based actions that follows the change (whatever animates it and for as long as it lasts), keeps its place on the battlefield and is attached again by an equip ability once it is no creature; one that is a creature already stays unattached when an equip ability resolves, while a creature Equipment is still a creature another Equipment may equip; an Equipment with reconfigure is no creature while it is attached and stays there, stays attached and keeps its bonus when an effect makes it a creature again, and comes off a host that stops being a creature; an Aura that is a creature, or on what is no longer a creature it may enchant, is the existing rule and goes to the graveyard; and the log of such games replays to the live state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -10,6 +10,7 @@ use mtg_core::card::CardType;
 use mtg_core::ids::ObjectId;
 use mtg_engine::decision::{Answer, PayChoice};
 use mtg_engine::effects::{Duration, Modification};
+use mtg_engine::keywords::keywords_of;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, characteristics, replay};
 use mtg_testkit::attach_cards::{iron_blade, mighty_aura};
@@ -41,6 +42,18 @@ fn host_name(driver: &Driver, name: &str) -> Option<String> {
 fn is_creature(driver: &Driver, name: &str) -> bool {
     let id = driver.id_of(name).unwrap();
     characteristics(driver.state(), id).is_some_and(|chars| chars.is_creature())
+}
+
+fn stats(driver: &Driver, name: &str) -> (i32, i32) {
+    let chars = characteristics(driver.state(), driver.id_of(name).unwrap()).unwrap();
+    (chars.power.unwrap(), chars.toughness.unwrap())
+}
+
+fn has_keyword(driver: &Driver, name: &str, keyword: &str) -> bool {
+    let id = driver.id_of(name).unwrap();
+    keywords_of(driver.state(), id)
+        .iter()
+        .any(|held| held.name() == keyword)
 }
 
 fn on_battlefield(driver: &Driver, name: &str) -> bool {
@@ -299,16 +312,54 @@ fn an_equipment_with_reconfigure_is_no_creature_while_attached_and_stays_there(
     Ok(())
 }
 
+/// What each reconfigure card gives the creature it equips: power and toughness, and a keyword.
+const GIVES: [(&str, (i32, i32), &str); 3] = [
+    ("Lizard Blades", (0, 0), "Double strike"),
+    ("Bronzeplate Boar", (3, 2), "Trample"),
+    ("Armguard Familiar", (2, 1), "Ward"),
+];
+
 #[rstest]
-fn an_equipment_with_reconfigure_that_is_a_creature_again_while_attached_comes_off(
+fn an_equipment_with_reconfigure_that_is_a_creature_again_while_attached_stays_and_keeps_its_bonus(
     #[values(2, 3, 4)] seats: usize,
+    #[values(GIVES[0], GIVES[1], GIVES[2])] gives: (&str, (i32, i32), &str),
 ) -> Result<(), ScriptError> {
-    let mut driver =
-        Driver::from_scenario(table(seats, &[card("Lizard Blades").unwrap()], true, 3))?;
-    assert_eq!(host_name(&driver, "Lizard Blades").as_deref(), Some("Wolf"));
-    animate(&mut driver, "Lizard Blades", Duration::Forever)?;
-    assert!(is_creature(&driver, "Lizard Blades"));
-    assert_eq!(host_name(&driver, "Lizard Blades"), None);
+    let (name, (power, toughness), keyword) = gives;
+    let scenario = table(seats, &[card(name).unwrap()], true, 3);
+    let mut driver = Driver::from_scenario(scenario.clone())?;
+    assert!(!is_creature(&driver, name));
+    // An effect with a later timestamp than the layer 4 effect of the static ability makes it a creature while it is
+    // attached, which reconfigure allows (CR 301.5c).
+    animate(&mut driver, name, Duration::Forever)?;
+    for _ in 0..2 {
+        assert!(is_creature(&driver, name));
+        assert_eq!(host_name(&driver, name).as_deref(), Some("Wolf"));
+        assert_eq!(stats(&driver, "Wolf"), (3 + power, 3 + toughness));
+        assert!(has_keyword(&driver, "Wolf", keyword));
+        driver.pass()?;
+    }
+    assert_eq!(unattachments(&driver), 0);
+    replays(&driver, &scenario.setup()?);
+    Ok(())
+}
+
+#[rstest]
+fn an_equipment_with_reconfigure_that_is_a_creature_comes_off_a_host_that_stops_being_one(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(GIVES[0], GIVES[1], GIVES[2])] gives: (&str, (i32, i32), &str),
+) -> Result<(), ScriptError> {
+    let (name, _, keyword) = gives;
+    let mut driver = Driver::from_scenario(table(seats, &[card(name).unwrap()], true, 3))?;
+    animate(&mut driver, name, Duration::Forever)?;
+    let wolf = driver.id_of("Wolf")?;
+    driver.add_effect(
+        driver.on(wolf),
+        Modification::RemoveType(CardType::Creature),
+        Duration::Forever,
+    )?;
+    assert_eq!(host_name(&driver, name), None);
+    assert!(is_creature(&driver, name));
+    assert!(!has_keyword(&driver, "Wolf", keyword));
     assert_eq!(unattachments(&driver), 1);
     Ok(())
 }

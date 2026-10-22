@@ -108,15 +108,6 @@ pub(crate) fn legal_host(state: &GameState, attachment: ObjectId, host: ObjectId
     allowed && !protects_host(state, attachment, host)
 }
 
-/// Whether `attachment` stays attached to `host`: it may become attached there and an Equipment is no creature. Reconfigure
-/// lets a creature Equipment become attached only because it stops being one then (CR 702.151b), so one that is a creature
-/// while attached, as an effect made it, comes off (CR 301.5c, 704.5n).
-fn may_stay_attached(state: &GameState, attachment: ObjectId, host: ObjectId) -> bool {
-    legal_host(state, attachment, host)
-        && (kind_of(state, attachment) != Some(Kind::Equipment)
-            || characteristics(state, attachment).is_some_and(|chars| !chars.is_creature()))
-}
-
 /// Whether the enchant ability of `id` is "enchant opponent" (`true`) or "enchant player" (`false`); `None` for an object
 /// that enchants no player.
 fn player_restriction(state: &GameState, id: ObjectId) -> Option<bool> {
@@ -399,7 +390,7 @@ pub(crate) fn state_based(state: &GameState, leaving: &[ObjectId]) -> Vec<Event>
             permanent.attached_to().is_some() || permanent.attached_player().is_some()
         });
         let legal = || match (state.host_of(id), state.player_host_of(id)) {
-            (Some(host), _) => may_stay_attached(state, id, host),
+            (Some(host), _) => legal_host(state, id, host),
             (None, Some(player)) => legal_player_host(state, id, player),
             (None, None) => false,
         };
