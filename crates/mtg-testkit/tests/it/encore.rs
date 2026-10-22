@@ -253,7 +253,7 @@ fn the_copies_have_the_abilities_of_the_card(
             );
         }
         "Exquisite Huntmaster" => {
-            assert_eq!(tokens(driver.state(), "Elf Warrior").len(), seats - 1)
+            assert_eq!(tokens(driver.state(), "Elf Warrior").len(), seats - 1);
         }
         _ => {}
     }
@@ -264,7 +264,10 @@ fn the_copies_have_the_abilities_of_the_card(
 #[test]
 fn encore_is_offered_only_with_the_mana_to_pay_it() -> Result<(), ScriptError> {
     let driver = game(2, "Impulsive Pilferer", mountain, 3)?;
-    assert!(driver.offered_abilities("Impulsive Pilferer")?.is_empty());
+    assert_eq!(
+        driver.offered_abilities("Impulsive Pilferer")?,
+        Vec::<usize>::new()
+    );
     let driver = game(2, "Impulsive Pilferer", mountain, 4)?;
     assert_eq!(driver.offered_abilities("Impulsive Pilferer")?.len(), 1);
     Ok(())
