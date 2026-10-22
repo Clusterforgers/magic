@@ -274,7 +274,7 @@ impl RandomBot {
                 .iter()
                 .map(|o| PriorityAction::Foretell(*o)),
         );
-        actions[self.rng.index(actions.len())]
+        actions.swap_remove(self.rng.index(actions.len()))
     }
 
     fn pay(&mut self, options: &PayOptions) -> PayChoice {

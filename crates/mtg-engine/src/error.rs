@@ -226,4 +226,7 @@ pub enum IllegalAnswer {
         /// What the shares add up to.
         got: u32,
     },
+    /// A manual action the state does not allow.
+    #[error("manual action refused: {0}")]
+    Manual(#[from] crate::manual::ManualRefusal),
 }

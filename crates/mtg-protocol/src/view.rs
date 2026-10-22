@@ -3,8 +3,8 @@
 //! These are the only game-state types that cross the wire. They hold no seed, RNG position or
 //! library order, and an object appears only when its viewer may see which card it is.
 
-use mtg_cards::AbilityDef;
 use mtg_cards::ability::LoyaltyCost;
+use mtg_cards::{AbilityDef, ManualClause};
 use mtg_cards::value::CounterKind;
 use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
@@ -130,6 +130,11 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub face: Option<u8>,
+    /// The clauses of its rules text the engine does not run, as the card prints them, for every seat to follow; left out
+    /// while there are none. The card's controller does them by hand.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<ManualClause>>", optional)]
+    pub manual: Vec<ManualClause>,
 }
 
 /// Whether a flag is off, so serialization can leave it out (serde hands over a reference).

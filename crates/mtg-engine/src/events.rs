@@ -11,6 +11,7 @@ use crate::combat::{AttackTarget, DamageTarget};
 use crate::counters::CountersChanged;
 use crate::effects::ContinuousEffect;
 use crate::library::{CardsFound, LibraryLooked, Revealed, Scried};
+use crate::manual::ManualAction;
 use crate::object::{Chosen, FaceDown, ObjectRef};
 use crate::player::LossReason;
 use crate::rules::RuleEffect;
@@ -491,6 +492,13 @@ pub enum Event {
         /// The permanent.
         object: ObjectId,
     },
+    /// A player took a manual action (`manual.rs`); the events of the change follow it in the same batch.
+    ManualAction {
+        /// Who took it.
+        player: PlayerId,
+        /// What they did.
+        action: Box<ManualAction>,
+    },
 }
 
 /// How the resolution of a spell or ability ended.
@@ -591,6 +599,7 @@ impl Event {
             | Event::ResolutionEnded { .. }
             | Event::LifeGained { .. }
             | Event::LifeLost { .. }
+            | Event::ManualAction { .. }
             | Event::LibraryLooked(_)
             | Event::CardsFound(_)
             | Event::Revealed(_) => Vec::new(),

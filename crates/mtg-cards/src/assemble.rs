@@ -14,7 +14,7 @@ use mtg_core::mana::{ManaCost, ManaType, ParseManaCostError};
 use crate::ability::{Ability, Timing};
 use crate::card::{Card, TokenSpec};
 use crate::cost::CostItem;
-use crate::definition::{AbilityDef, CardDefinition, Layout, ManaAbility};
+use crate::definition::{AbilityDef, CardDefinition, Layout, ManaAbility, ManualClause};
 use crate::effect::{Effect, Produce};
 use crate::mana::ManaCostX;
 use crate::refs::{Ref, ZoneKind};
@@ -77,6 +77,7 @@ pub fn assemble(printed: &PrintedCard, rules: Option<&Card>, caps: &Caps) -> Ass
                 }
             }
         }
+        definition.manual = manual_clauses(&record, attach, index, printed);
         definition
     };
     let definition = match (played_layout(printed, caps), printed.faces.len()) {
@@ -88,6 +89,46 @@ pub fn assemble(printed: &PrintedCard, rules: Option<&Card>, caps: &Caps) -> Ass
         definition,
         support: record,
     }
+}
+
+/// The clauses of face `index` the table follows by hand. A face the engine attaches rules to has the clauses the
+/// support record names, read out of its oracle text; a face it attaches none to (a `Manual` card) is one clause of its
+/// whole rules text.
+fn manual_clauses(
+    record: &SupportRecord,
+    attach: bool,
+    index: usize,
+    printed: &PrintedCard,
+) -> Vec<ManualClause> {
+    let text = printed
+        .faces
+        .get(index)
+        .map_or("", |face| face.oracle_text.as_str());
+    let named = || record.clauses.iter().filter(|clause| clause.face == index);
+    if record.support == Support::Verified {
+        return Vec::new();
+    }
+    if !attach {
+        let reason = named().next().map_or_else(
+            || "the engine runs none of this card's rules".to_owned(),
+            |clause| clause.reason.clone(),
+        );
+        return crate::support::has_rules_text(text)
+            .then(|| ManualClause {
+                text: text.to_owned(),
+                reason,
+            })
+            .into_iter()
+            .collect();
+    }
+    named()
+        .filter_map(|clause| {
+            clause.span.slice(text).map(|clause_text| ManualClause {
+                text: clause_text.to_owned(),
+                reason: clause.reason.clone(),
+            })
+        })
+        .collect()
 }
 
 /// The layout of a card with several faces when the engine plays it: two faces of a shape it knows.
@@ -121,6 +162,7 @@ fn whole_card(printed: &PrintedCard, layout: Layout, faces: Vec<CardDefinition>)
                 .map(ManaCost::colors)
                 .unwrap_or_default();
             whole.color_indicator = (union != from_cost).then_some(union);
+            whole.manual = faces.iter().flat_map(|face| face.manual.clone()).collect();
             whole
         }
         _ => faces[0].clone(),
@@ -623,6 +665,7 @@ fn printed_side(face: &PrintedFace) -> CardDefinition {
         abilities: Vec::new(),
         rules: Vec::new(),
         layout: Layout::Normal,
+        manual: Vec::new(),
         faces: Vec::new(),
     }
 }
