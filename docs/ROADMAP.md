@@ -221,7 +221,7 @@ The server is settled first, then the web is built once against the final types.
 - [x] (c10a) Tokens with keywords: "create a 1/1 white Spirit creature token with flying" (one keyword or a list, "that's attacking") reads and writes back; 64 precon cards became Verified (1160 to 1224 cards, 46.3% to 47.2% of copies)
 - [x] (c10b) The trigger events "~ or another X you control enters / dies / leaves the battlefield / attacks / deals combat damage / is dealt damage" and "~ or equipped creature attacks" read and write back as `AnyOf` events; 23 precon cards became Verified (1228 to 1251 cards, 47.2% to 47.5% of copies)
 - [ ] (c10e) The wordings (c10b) leaves: subtype plus type nouns ("artifact creature", "Human creature"), legendary names without a comma shortened to `~`, and the events "enters from your graveyard", "is turned face up", "is put into a graveyard from the battlefield" and "modified creature"
-- [ ] (c10c) Counted amounts "for each ...": `Amount` forms for a count of a selector or a quantity ("draw a card for each creature you control", "add {R} for each Goblin", "gain 1 life for each ..."; about 63 cards)
+- [~] (c10c) (branch c10c-counted-amounts) Counted amounts "for each ...": `Amount` forms for a count of a selector or a quantity ("draw a card for each creature you control", "add {R} for each Goblin", "gain 1 life for each ..."; about 63 cards)
 - [ ] (c10d) The wordings of "the top card(s) of your library" (about 43 cards)
 - [ ] (c11) Sagas, classes, rooms, battles and the other layouts, extra turns and extra combats, the initiative and dungeons, and the remaining long-tail mechanics found by the report, one task each
 
