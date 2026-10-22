@@ -81,13 +81,13 @@ async fn the_default_run_compiles_the_cards_of_the_precons_and_no_others(pool: P
 
     let report = run(&db, false, None).await;
 
-    // The precon holds Arcane Signet, Atraxa, Fire // Ice, Forest and Sol Ring.
+    // The precon holds Arcane Signet, Atraxa, Fire // Ice, Forest and Sol Ring; the compiler reads all but Forest and Fire // Ice.
     assert_eq!(
         named_rows(&pool).await,
-        ["Atraxa, Praetors' Voice", "Sol Ring"]
+        ["Arcane Signet", "Atraxa, Praetors' Voice", "Sol Ring"]
     );
-    assert_eq!((report.looked_at, report.written, report.full), (5, 2, 2));
-    assert_eq!((report.nothing, report.invalid.len()), (2, 1));
+    assert_eq!((report.looked_at, report.written, report.full), (5, 3, 3));
+    assert_eq!((report.nothing, report.invalid.len()), (1, 1));
     assert_eq!(report.invalid[0].card, "Fire // Ice");
     assert!(report.invalid[0].problems[0].contains("Fuse"), "{report:?}");
     assert!(report.scope.contains("precons"), "{report:?}");
@@ -105,6 +105,7 @@ async fn every_card_is_compiled_with_all_and_a_hand_written_card_is_left_to_its_
         named,
         [
             "Æther Vial",
+            "Arcane Signet",
             "Atraxa, Praetors' Voice",
             "Bonecrusher Giant // Stomp",
             "Delver of Secrets // Insectile Aberration",
@@ -118,9 +119,9 @@ async fn every_card_is_compiled_with_all_and_a_hand_written_card_is_left_to_its_
     assert_eq!(report.hand_written, 1, "Lightning Bolt has its file");
     assert_eq!(
         (report.written, report.replaced, report.unchanged),
-        (8, 0, 0)
+        (9, 0, 0)
     );
-    assert_eq!((report.full, report.partial), (5, 3));
+    assert_eq!((report.full, report.partial), (6, 3));
     assert_eq!(status_of(&pool, "Shock").await, "full");
     assert_eq!(status_of(&pool, "Æther Vial").await, "partial");
     // What is stored is what the loader reads back as the card's rules.
@@ -163,11 +164,11 @@ async fn a_second_run_changes_nothing(pool: PgPool) {
 
     assert_eq!(
         (report.written, report.replaced, report.unchanged),
-        (0, 0, 8)
+        (0, 0, 9)
     );
     assert_eq!(
         (report.full, report.partial),
-        (5, 3),
+        (6, 3),
         "the unchanged count too"
     );
     assert_eq!(db.card_rules().version().await.unwrap(), before);
@@ -198,7 +199,7 @@ async fn a_row_of_another_compiler_or_another_text_is_written_again(pool: PgPool
 
     assert_eq!(
         (report.replaced, report.unchanged, report.written),
-        (3, 5, 0)
+        (3, 6, 0)
     );
     let shock = rules_of(&pool, "Shock").await;
     assert_eq!(
@@ -222,7 +223,7 @@ async fn a_selection_leaves_the_rows_of_the_other_cards_alone(pool: PgPool) {
     let report = run(&db, false, Some("Shock")).await;
 
     assert_eq!((report.looked_at, report.unchanged), (1, 1));
-    assert_eq!(named_rows(&pool).await.len(), 8);
+    assert_eq!(named_rows(&pool).await.len(), 9);
 }
 
 #[sqlx::test]
@@ -269,7 +270,7 @@ async fn a_row_is_removed_when_its_card_is_no_longer_a_deck_card(pool: PgPool) {
 
     assert_eq!(report.removed_gone, 1);
     assert!(!named_rows(&pool).await.contains(&"Shock".to_owned()));
-    assert_eq!(named_rows(&pool).await.len(), 7);
+    assert_eq!(named_rows(&pool).await.len(), 8);
 }
 
 #[sqlx::test]
@@ -286,7 +287,7 @@ async fn a_row_is_removed_when_the_compiler_no_longer_reads_the_card(pool: PgPoo
 
     assert_eq!(report.removed_unread, 1);
     assert_eq!(
-        report.nothing, 11,
+        report.nothing, 10,
         "Shock joined the cards with nothing to read"
     );
     assert!(!named_rows(&pool).await.contains(&"Shock".to_owned()));
@@ -336,7 +337,7 @@ async fn the_report_says_what_was_done(pool: PgPool) {
 
     assert!(
         text.starts_with(
-            "compile: every stored card, 20 cards\n  rows: 8 written, 0 replaced, 0 unchanged, 0 removed\n  by state: 5 full, 3 partial\n  not compiled: 1 hand-written, 10 nothing to read, 1 invalid\n"
+            "compile: every stored card, 20 cards\n  rows: 9 written, 0 replaced, 0 unchanged, 0 removed\n  by state: 6 full, 3 partial\n  not compiled: 1 hand-written, 9 nothing to read, 1 invalid\n"
         ),
         "{text}"
     );
