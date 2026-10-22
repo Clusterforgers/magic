@@ -57,6 +57,7 @@ mod enchant_player;
 mod energy_payments;
 mod enters;
 mod equipment;
+mod equipment_creature;
 mod escape;
 mod evasion;
 mod evasion_keywords;

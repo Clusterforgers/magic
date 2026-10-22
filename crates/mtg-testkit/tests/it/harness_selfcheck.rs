@@ -1,14 +1,18 @@
 //! Goal: the invariant checkers and the game harness catch the corruption they exist to catch and report failures with the seed and event log.
 
+use std::sync::Arc;
+
+use mtg_cards::CardDefinition;
 use mtg_cards::keyword::Keyword;
+use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 use mtg_engine::combat::DamageTarget;
 use mtg_engine::{Engine, Event, GameState};
 use mtg_testkit::cards::{forest, free_creature, keyworded};
 use mtg_testkit::{
-    FailureKind, InvariantChecker, PlayOptions, RandomBot, Scenario, Violation, check_settled,
-    check_state, damaged, fuzz_setup, play_game, play_game_with, ready,
+    FailureKind, InvariantChecker, PlayOptions, RandomBot, Scenario, Violation, attached_to,
+    check_settled, check_state, damaged, fuzz_setup, play_game, play_game_with, ready,
 };
 use rstest::rstest;
 
@@ -171,6 +175,40 @@ fn a_state_with_a_creature_that_should_have_died_is_not_settled(
             "{result:?}"
         );
     }
+    Ok(())
+}
+
+#[rstest]
+#[case::an_equipment_on_a_creature(false, 1, true)]
+#[case::a_creature_equipment_on_a_creature(true, 1, false)]
+#[case::an_equipment_on_a_land(false, 2, false)]
+fn a_state_with_an_equipment_where_it_may_not_be_is_not_settled(
+    #[case] creature: bool,
+    #[case] host: usize,
+    #[case] settled: bool,
+) -> Result<(), String> {
+    let mut blade = CardDefinition::new("Blade")
+        .with_type(CardType::Artifact)
+        .with_subtype("Equipment");
+    if creature {
+        blade = blade
+            .with_type(CardType::Creature)
+            .with_power_toughness(1, 1);
+    }
+    let setup = Scenario::new(2)
+        .battlefield(
+            0,
+            [
+                attached_to(ready(Arc::new(blade)), 0, host),
+                ready(free_creature("Wolf", 2, 2)),
+                ready(forest()),
+            ],
+        )
+        .setup()
+        .map_err(|e| e.to_string())?;
+    let state = GameState::from_setup(&setup).map_err(|e| e.to_string())?;
+    let result = check_settled(&state);
+    assert_eq!(result.is_ok(), settled, "{result:?}");
     Ok(())
 }
 
