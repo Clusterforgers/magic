@@ -285,8 +285,12 @@ impl Run {
     /// Plays the state-based actions the real game runs between steps; `false` once the game is over.
     fn settle(&mut self) -> bool {
         for _ in 0..MAX_SETTLE_ROUNDS {
-            let mut events = sba::check(&self.after);
-            let state_based = !events.is_empty();
+            let mut events = sba::departures_first(&self.after);
+            let mut state_based = false;
+            if events.is_empty() {
+                events = sba::check(&self.after);
+                state_based = !events.is_empty();
+            }
             if events.is_empty() {
                 if let Some(result) = self.after.ruleset().game_result(&self.after) {
                     events = vec![Event::GameEnded { result }];

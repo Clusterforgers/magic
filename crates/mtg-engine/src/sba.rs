@@ -207,13 +207,30 @@ pub(crate) fn death_cause(
     })
 }
 
-/// Housekeeping that follows stable passes: remove eliminated players' objects, drop ended effects and delayed triggers.
-pub(crate) fn housekeeping(state: &GameState) -> Vec<Event> {
-    let departing: Vec<Event> = state
+/// The objects of players who left the game leave with them (CR 800.4a).
+fn departures(state: &GameState) -> Vec<Event> {
+    state
         .objects()
         .filter(|o| !state.is_alive(o.owner()))
         .map(|o| Event::ObjectLeftGame { object: o.id() })
-        .collect();
+        .collect()
+}
+
+/// The departures the control loop runs before everything else, a resolution in progress and every state-based action
+/// included, so nothing is asked while an object of a seat that left remains. A game that is decided keeps its final
+/// board: its objects stay once nothing resolves, because the game-end check is next.
+pub(crate) fn departures_first(state: &GameState) -> Vec<Event> {
+    if state.players().iter().all(Player::is_in_game)
+        || (state.resolving().is_none() && state.ruleset().game_result(state).is_some())
+    {
+        return Vec::new();
+    }
+    departures(state)
+}
+
+/// Housekeeping that follows stable passes: remove eliminated players' objects, drop ended effects and delayed triggers.
+pub(crate) fn housekeeping(state: &GameState) -> Vec<Event> {
+    let departing = departures(state);
     if !departing.is_empty() {
         return departing;
     }
@@ -256,7 +273,7 @@ pub(crate) fn housekeeping(state: &GameState) -> Vec<Event> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a creature dies to state-based actions for zero toughness always, and for lethal damage or a deathtouch mark unless it is indestructible, and the cause named is the one that applies; a permanent with both +1/+1 and -1/-1 counters loses a pair of each until it has only one kind; a player with ten or more poison counters loses, and life is named first.
+    //! Goal: a creature dies to state-based actions for zero toughness always, and for lethal damage or a deathtouch mark unless it is indestructible, and the cause named is the one that applies; a permanent with both +1/+1 and -1/-1 counters loses a pair of each until it has only one kind; a player with ten or more poison counters loses, and life is named first; the objects of a seat that left depart at once (their own first, then what they controlled is exiled) and none depart while every seat is in the game.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -514,6 +531,57 @@ mod tests {
                 reason: LossReason::ZeroLife
             }]
         );
+    }
+
+    #[rstest]
+    #[case::two_seats_end_the_game_with_the_final_board(2, false)]
+    #[case::three_seats(3, true)]
+    #[case::four_seats(4, true)]
+    fn the_objects_of_a_seat_that_left_depart_at_once_unless_that_decides_the_game_and_none_depart_while_all_are_in_it(
+        #[case] seats: usize,
+        #[case] departs: bool,
+    ) {
+        use crate::fold::apply_event;
+        let mut game = GameState::from_setup(&setup(
+            vec![vec![creature("Card", 1, 1)]; seats],
+            vec![vec![creature("Wolf", 2, 2)]; seats],
+        ))
+        .unwrap();
+        assert_eq!(departures_first(&game), [], "every seat is in the game");
+        let leaver = PlayerId::from_index(seats - 1);
+        let lost = Event::PlayerLost {
+            player: leaver,
+            reason: LossReason::Conceded,
+        };
+        apply_event(&mut game, &lost).unwrap();
+        let owned: Vec<_> = game
+            .objects()
+            .filter(|o| o.owner() == leaver)
+            .map(crate::object::GameObject::id)
+            .collect();
+        assert!(
+            owned.len() >= 2,
+            "a card in the hand and one in play at least"
+        );
+        let left = departures_first(&game);
+        if !departs {
+            assert_eq!(left, [], "a decided game keeps its final board");
+            return;
+        }
+        let mut named: Vec<_> = left
+            .iter()
+            .map(|event| match event {
+                Event::ObjectLeftGame { object } => *object,
+                other => panic!("{other:?}"),
+            })
+            .collect();
+        named.sort();
+        assert_eq!(named, owned);
+        for event in &left {
+            apply_event(&mut game, event).unwrap();
+        }
+        assert_eq!(departures_first(&game), []);
+        assert!(game.objects().all(|o| o.owner() != leaver));
     }
 
     #[test]
