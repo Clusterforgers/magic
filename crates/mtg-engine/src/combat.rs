@@ -118,6 +118,8 @@ pub struct CombatState {
     pub(crate) attackers: Vec<Attacker>,
     pub(crate) attackers_declared: bool,
     pub(crate) blockers_declared: Vec<PlayerId>,
+    /// The creatures that left combat this turn and what each was attacking, for an ability that takes the place of one.
+    pub(crate) left: Vec<(ObjectId, AttackTarget)>,
 }
 
 impl CombatState {
@@ -136,8 +138,33 @@ impl CombatState {
         &self.blockers_declared
     }
 
+    /// What the creature `id` was attacking when it left combat this turn.
+    pub(crate) fn left_attacking(&self, id: ObjectId) -> Option<AttackTarget> {
+        self.left
+            .iter()
+            .rev()
+            .find_map(|(object, target)| (*object == id).then_some(*target))
+    }
+
+    /// Whether `id` is an attacking creature no creature was declared to block, once its defending player has declared
+    /// blockers (CR 509.1h).
+    pub(crate) fn is_unblocked(&self, state: &GameState, id: ObjectId) -> bool {
+        self.attackers.iter().any(|a| {
+            a.object == id
+                && !a.blocked
+                && a.defender(state)
+                    .map_or(!self.blockers_declared.is_empty(), |defender| {
+                        self.blockers_declared.contains(&defender)
+                    })
+        })
+    }
+
     /// Removes a creature that left the battlefield from combat (CR 506.4).
     pub(crate) fn remove_object(&mut self, id: ObjectId) {
+        if let Some(attacker) = self.attackers.iter().find(|a| a.object == id) {
+            let target = attacker.target;
+            self.left.push((id, target));
+        }
         self.attackers.retain(|a| a.object != id);
         for attacker in &mut self.attackers {
             attacker.blockers.retain(|b| *b != id);
