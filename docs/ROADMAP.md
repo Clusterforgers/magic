@@ -166,10 +166,12 @@ The server is settled first, then the web is built once against the final types.
 ## M6 Coverage
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
 - [ ] Coverage dashboard in the web over `Library::support`: states, reasons and clause spans per card, ranked by saved-deck demand; target: 100% of the chosen precons (`docs/deck-check.md`)
-- [ ] Target: every stored card Verified, or as near as the rules allow; `mtg-cli coverage` (compile first) ranks the blockers, each piece below states the cards it frees, and after each round `compile` and `coverage` are re-run and the numbers recorded here (15.9% of the 6,429 stored precon cards, 40.8% of copies, on 2026-10-22)
+- [ ] Target: every stored card Verified, or as near as the rules allow; `mtg-cli coverage` (compile first) ranks the blockers, each piece below states the cards it frees, and after each round `compile` and `coverage` are re-run and the numbers recorded here (16.3% of the 6,429 stored precon cards, 41.1% of copies, on 2026-10-22)
 - [ ] (c1) Mana abilities beyond a plain tap for mana (`Ability.ManaAbility.Other`: filter lands, storage lands, "any color that a land an opponent controls could produce", activation conditions such as "only if you control a Swamp", mana of a count or a choice with costs); the blocker holding back the most cards (90)
 - [ ] (c2) Characteristic and combat keywords: Changeling, Devoid, Infect, Wither, Toxic, Fear, Intimidate, the landwalks, Skulk, Shadow, Split second, Ascend, Undaunted, Exalted, Melee, Mentor, Dethrone, Annihilator, Extort, Evolve
-- [ ] (c3) Keyword actions and designations: Surveil, the Monarch, Proliferate, Time travel, Amass, Adapt, Monstrosity, Explore, Bolster, Fabricate, Investigate, Connive, Learn and the city's blessing
+- [x] (c3) Surveil (the `Surveilled` event; 14 cards) and the Monarch (`MonarchChanged`, the end-step draw, the combat-damage steal, `Condition::Monarch` in an intervening "if"; 2 cards, 21 held back by other wordings)
+- [ ] (c3b) Keyword actions and designations, remaining: Proliferate, Time travel, Amass, Adapt, Monstrosity, Explore, Bolster, Fabricate, Connive, Learn and the city's blessing
+- [ ] (c3c) Monarch wordings: a trigger on becoming the monarch, "if there is no monarch", "as long as you're the monarch" and "the monarch controls"
 - [ ] (c4) Vehicles and level-ups: Crew, Station, Saddle, Level up, Outlast, Reconfigure
 - [ ] (c5) Recursion and alternative cast ways: Escape, Aftermath, Jump-start, Retrace, Unearth, Embalm, Eternalize, Encore, Rebound, Dredge, Dash, Blitz, Ninjutsu, Miracle, Prowl, Demonstrate, Cipher, Hideaway
 - [ ] (c6) Triggered keywords and upkeep keywords: Undying, Persist, Backup, Devour, Echo, Vanishing, Cumulative upkeep, Fading, Myriad, Squad, Casualty, Offspring, Gift, Ravenous (the copy keywords after (o2))
