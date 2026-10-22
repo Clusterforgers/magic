@@ -201,7 +201,7 @@ The server is settled first, then the web is built once against the final types.
 - [x] (c2) Characteristic and combat keywords: Changeling, Devoid, Infect, Wither, Toxic, Fear, Intimidate, the landwalks, Skulk, Shadow (`docs/engine.md`, Combat and keywords)
 - [ ] (c2b) Split second (no spell or ability that is not a mana ability while the spell is on the stack), Undaunted (a cost modifier), Ascend, Exalted, Melee, Mentor, Dethrone, Annihilator, Extort, Evolve
 - [x] (c3) Surveil (the `Surveilled` event; 14 cards) and the Monarch (`MonarchChanged`, the end-step draw, the combat-damage steal, `Condition::Monarch` in an intervening "if"; 2 cards, 21 held back by other wordings)
-- [ ] (c3b) Keyword actions and designations, remaining: Proliferate, Time travel, Amass, Adapt, Monstrosity, Explore, Bolster, Fabricate, Connive, Learn and the city's blessing
+- [~] (c3b) (branch c3b-keyword-actions-1) Keyword actions and designations, remaining: Proliferate, Time travel, Amass, Adapt, Monstrosity, Explore, Bolster, Fabricate, Connive, Learn and the city's blessing
 - [x] (c3c) Monarch wordings: `BecomesMonarch`, `Ref::Monarch` ("the monarch controls", "the monarch's end step", "attacks the monarch"), "if there is no monarch" and "as long as you're the monarch" before or after a static (Custodi Lich, Dawnglade Regent, The Spear of Bashenga and Azure Fleet Admiral Verified)
 - [ ] (c3d) The monarch cards still held back: "can't attack you" (Fealty to the Realm, Queen Mother Ramonda, with (c8)), damage that does not cause life loss (Archon of Coronation), "your commander" as a source (Archivist of Gondor, Paliano), the attacked player as "that player" (M'Baku), "as the turn began" (Knights of the Black Rose), "until an opponent becomes the monarch" (Palace Jailer) and "while you're the monarch" after an event (Regal Behemoth, Tamiyo)
 - [x] (c4) Crew: the cost part `TapPower` (a counted pick of untapped creatures by total power, asked with `ChooseCards`), `Keyword.Crew`, `Condition.Performed` after a "may" (read and written by the compiler), Smuggler's Copter, Skysovereign, Goliath Truck and Thopter Fabricator Verified, a Vehicle fuzz deck
@@ -224,7 +224,7 @@ The server is settled first, then the web is built once against the final types.
 - [x] (c10b) The trigger events "~ or another X you control enters / dies / leaves the battlefield / attacks / deals combat damage / is dealt damage" and "~ or equipped creature attacks" read and write back as `AnyOf` events; 23 precon cards became Verified (1228 to 1251 cards, 47.2% to 47.5% of copies)
 - [ ] (c10e) The wordings (c10b) leaves: subtype plus type nouns ("artifact creature", "Human creature"), legendary names without a comma shortened to `~`, and the events "enters from your graveyard", "is turned face up", "is put into a graveyard from the battlefield" and "modified creature"
 - [~] (c10c) (branch c10c-counted-amounts) Counted amounts "for each ...": `Amount` forms for a count of a selector or a quantity ("draw a card for each creature you control", "add {R} for each Goblin", "gain 1 life for each ..."; about 63 cards)
-- [ ] (c10d) The wordings of "the top card(s) of your library" (about 43 cards)
+- [~] (c10d) (branch c10d-top-card) The wordings of "the top card(s) of your library" (about 43 cards)
 - [ ] (c11) Sagas, classes, rooms, battles and the other layouts, extra turns and extra combats, the initiative and dungeons, and the remaining long-tail mechanics found by the report, one task each
 
 ## M7 Product
