@@ -1,0 +1,27 @@
+{
+  "id": "3678a224-d314-4108-8a39-de0c1b635b5c",
+  "oracle_id": "2fd9a37f-151a-4501-9d8e-bc67cc902592",
+  "name": "Uktabi Efreet",
+  "lang": "en",
+  "layout": "normal",
+  "set": "wth",
+  "collector_number": "143",
+  "rarity": "common",
+  "released_at": "1997-06-09",
+  "digital": false,
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4,
+  "type_line": "Creature — Efreet",
+  "oracle_text": "Cumulative upkeep {G} (At the beginning of your upkeep, put an age counter on this permanent, then sacrifice it unless you pay its upkeep cost for each age counter on it.)",
+  "power": "5",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Cumulative upkeep"
+  ]
+}

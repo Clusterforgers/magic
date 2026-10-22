@@ -6,6 +6,7 @@ use mtg_cards::effect::Effect;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{Pred, Ref, Selector, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
+use mtg_cards::value::Amount;
 
 use super::KeywordRules;
 
@@ -32,6 +33,7 @@ impl KeywordRules for Ward {
             effects: vec![Effect::Pay {
                 who: Ref::Triggering,
                 cost: cost.clone(),
+                times: Amount::one(),
                 paid: Vec::new(),
                 unpaid: vec![Effect::Counter {
                     what: Ref::Triggering,

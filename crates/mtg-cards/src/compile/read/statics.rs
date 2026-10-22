@@ -9,13 +9,13 @@ use std::sync::Arc;
 use mtg_core::card::Subtype;
 
 use super::abilities;
-use super::amounts::{count_word, number_word};
+use super::amounts::{count_word, counted_stats, number_word};
 use super::copies;
 use super::counters;
 use super::effects::{granted, power_toughness};
 use super::lands;
 use super::prevention;
-use super::render::{self, capitalize, is_a_type, signed_text};
+use super::render::{self, capitalize, counts_stats, is_a_type, stats_text};
 use super::selectors::{Form, all, granted_text, phrase, phrase_text, subtype};
 use super::tokens::Reader;
 use super::triggers::{self, article};
@@ -29,12 +29,13 @@ use crate::value::{Amount, CastWay, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 10] = [
+const TEMPLATES: [Template; 11] = [
     entering,
     copies::enters_as_copy,
     as_entering,
     rule,
     lands::from_a_zone,
+    lands::cast_from_the_top,
     cannot,
     cost_modifier,
     modifies,
@@ -387,7 +388,8 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
             ("gets", "has")
         };
         if r.word(gets) {
-            let mut mods = vec![power_toughness(r)?];
+            let stats = power_toughness(r)?;
+            let mut mods = vec![counted_stats(r, stats)?];
             if r.word("and") {
                 r.word(has).then_some(())?;
                 mods.extend(gives(r)?);
@@ -401,7 +403,7 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
     r.x_free = x_free;
     let mods = mods?;
     let condition = leading.or_else(|| r.attempt(as_long_as));
-    if affected == Ref::This && condition.is_none() {
+    if affected == Ref::This && condition.is_none() && !counts_stats(&mods) {
         return None;
     }
     Some(statics(affected, mods, condition))
@@ -785,7 +787,10 @@ fn rule_texts(rule: &GameRule, from: ZoneKind) -> Vec<String> {
             lands::additional_texts(who, count)
         }
         (GameRule::MayCast(permission), ZoneKind::Battlefield) => {
-            lands::from_a_zone_text(permission).into_iter().collect()
+            lands::from_a_zone_text(permission)
+                .into_iter()
+                .chain(lands::cast_from_the_top_text(permission))
+                .collect()
         }
         (GameRule::CanBeCommander, ZoneKind::Battlefield) => {
             vec!["~ can be your commander".to_owned()]
@@ -943,8 +948,8 @@ fn predicate(
                     phrase_text(blockers, Form::All)?
                 ));
             }
-            // A card does not give itself a bonus.
-            _ if itself => return None,
+            // A card does not give itself a bonus, but it may grow by a count: "This creature gets +1/+1 for each Elf."
+            _ if itself && !counts_stats(mods) => return None,
             _ => {}
         }
     }
@@ -954,14 +959,10 @@ fn predicate(
         ("gets", "has")
     };
     let (stats, rest) = match mods.split_first() {
-        Some((Modification::ModifyPT { power, toughness }, rest)) => (
-            Some(format!(
-                "{gets} {}/{}",
-                signed_text(power)?,
-                signed_text(toughness)?
-            )),
-            rest,
-        ),
+        Some((Modification::ModifyPT { power, toughness }, rest)) => {
+            let (stats, tail) = stats_text(power, toughness)?;
+            (Some(format!("{gets} {stats}{tail}")), rest)
+        }
         _ => (None, mods),
     };
     let mut parts: Vec<String> = stats.into_iter().collect();

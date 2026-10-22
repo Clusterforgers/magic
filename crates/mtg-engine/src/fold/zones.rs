@@ -51,6 +51,7 @@ pub(super) fn move_object(
     object.face_down = None;
     object.adventure = None;
     object.cast_from_hand = false;
+    object.cast_from_graveyard = false;
     // What the spell paid for stays with the permanent it becomes, for its abilities to read.
     let paid = if from == Zone::Stack && to == Zone::Battlefield {
         std::mem::take(&mut object.choices.optional_costs)
@@ -88,6 +89,7 @@ pub(super) fn move_object(
             damage: 0,
             deathtouched: false,
             summoning_sick: true,
+            new_to: None,
             counters: BTreeMap::new(),
             attached_to: None,
             attached_player: None,
@@ -163,6 +165,14 @@ fn note_rebound(state: &mut GameState, spell: ObjectId, from: Zone) {
     }
 }
 
+/// A spell with aftermath that is cast from a graveyard is exiled by a replacement effect when it leaves the stack
+/// (CR 702.127a), so the game has replacement effects to look for.
+fn note_aftermath(state: &mut GameState, spell: ObjectId, from: Zone) {
+    if matches!(from, Zone::Graveyard(_)) && crate::keywords::aftermath::has(state, spell) {
+        state.possible.replacements = true;
+    }
+}
+
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::LandPlayed {
@@ -199,8 +209,10 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             if let Some(spell) = state.objects.get_mut(object) {
                 spell.choices.clone_from(choices);
                 spell.cast_from_hand = matches!(from, Zone::Hand(_));
+                spell.cast_from_graveyard = matches!(from, Zone::Graveyard(_));
             }
             note_rebound(state, *object, from);
+            note_aftermath(state, *object, from);
             // A spell cast for its flashback cost, or with its buyback cost paid, is moved by a replacement effect.
             let bought_back = state.objects.get(object).is_some_and(|spell| {
                 payments(spell.card(), &choices.optional_costs, OptionalKind::Buyback) > 0

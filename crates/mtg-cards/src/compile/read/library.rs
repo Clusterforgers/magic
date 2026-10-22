@@ -134,7 +134,7 @@ pub(super) fn filter(r: &mut Reader<'_>, plural: bool) -> Option<Selector> {
 }
 
 /// "a basic land card", "up to two Forest cards", "any number of Dragon creature cards".
-fn what(r: &mut Reader<'_>) -> Option<(Selector, Bounds)> {
+pub(super) fn what(r: &mut Reader<'_>) -> Option<(Selector, Bounds)> {
     let (bounds, plural) = if r.words("up to") {
         let number = number_word(r.take_word()?).filter(|number| *number > 1)?;
         let max = Some(Amount::Fixed(i32::try_from(number).ok()?));
@@ -166,6 +166,7 @@ fn found_destination(r: &mut Reader<'_>) -> Option<Destination> {
         return Some(Destination::Battlefield {
             tapped,
             under: None,
+            counters: Vec::new(),
         });
     }
     r.words("into your hand").then_some(Destination::Hand)
@@ -234,6 +235,41 @@ pub(super) fn top_cards(r: &mut Reader<'_>) -> Option<Amount> {
     Some(Amount::Fixed(i32::try_from(number).ok()?))
 }
 
+/// Where the cards of the top that are not kept go: "into your graveyard", "on the bottom of your library in any order",
+/// "on the bottom of your library in a random order".
+pub(super) fn rest_destination(r: &mut Reader<'_>) -> Option<Destination> {
+    if r.words("into your graveyard") {
+        return Some(Destination::Graveyard);
+    }
+    r.need("on the bottom of your library in")?;
+    let order = if r.words("any order") {
+        Order::Chosen
+    } else {
+        r.need("a random order")?;
+        Order::Random
+    };
+    Some(Destination::Library {
+        place: Place::Bottom,
+        order: Some(order),
+    })
+}
+
+/// The wording of the destination `rest_destination` reads.
+pub(super) fn rest_text(to: &Destination) -> Option<&'static str> {
+    match to {
+        Destination::Graveyard => Some("into your graveyard"),
+        Destination::Library {
+            place: Place::Bottom,
+            order: Some(Order::Chosen),
+        } => Some("on the bottom of your library in any order"),
+        Destination::Library {
+            place: Place::Bottom,
+            order: Some(Order::Random),
+        } => Some("on the bottom of your library in a random order"),
+        _ => None,
+    }
+}
+
 /// "Look at the top three cards of your library.", and after it "Put one of them into your hand and
 /// the rest on the bottom of your library in any order." or "... into your graveyard."
 pub fn look(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
@@ -248,20 +284,7 @@ pub fn look(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let rest = r.attempt(|r| {
         r.punct('.').then_some(())?;
         r.need("put one of them into your hand and the rest")?;
-        if r.words("into your graveyard") {
-            return Some(Destination::Graveyard);
-        }
-        r.need("on the bottom of your library in")?;
-        let order = if r.words("any order") {
-            Order::Chosen
-        } else {
-            r.need("a random order")?;
-            Order::Random
-        };
-        Some(Destination::Library {
-            place: Place::Bottom,
-            order: Some(order),
-        })
+        rest_destination(r)
     });
     let Some(rest) = rest else {
         return Some(vec![looked]);
@@ -373,7 +396,7 @@ pub(super) fn filter_text(filter: &Selector, plural: bool) -> Option<String> {
 }
 
 /// "a basic land card", "up to two Forest cards", "any number of Dragon creature cards".
-fn what_text(filter: &Selector, count: &Bounds) -> Option<String> {
+pub(super) fn what_text(filter: &Selector, count: &Bounds) -> Option<String> {
     if count.is_one() {
         let text = filter_text(filter, false)?;
         return Some(format!("{} {text}", article(&text)));
@@ -407,7 +430,8 @@ fn destination_text(to: &Destination) -> Option<String> {
         Destination::Battlefield {
             tapped,
             under: None,
-        } => Some(format!(
+            counters,
+        } if counters.is_empty() => Some(format!(
             "onto the battlefield{}",
             if *tapped { " tapped" } else { "" }
         )),
@@ -433,7 +457,9 @@ pub fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
                 .then(|| (format!("you may {text}"), 1))
         }
         [Effect::Search { .. }, ..] => search_sequence(effects),
-        [Effect::LookAtTop { .. }, ..] => look_sequence(effects),
+        [Effect::LookAtTop { .. }, ..] => {
+            look_sequence(effects).or_else(|| super::among::sequence(effects))
+        }
         _ => None,
     }
 }
@@ -528,18 +554,7 @@ fn look_sequence(effects: &[Effect]) -> Option<(String, usize)> {
             && left == REST
             && chosen.is_one() =>
         {
-            let tail = match left_to {
-                Destination::Graveyard => "into your graveyard",
-                Destination::Library {
-                    place: Place::Bottom,
-                    order: Some(Order::Chosen),
-                } => "on the bottom of your library in any order",
-                Destination::Library {
-                    place: Place::Bottom,
-                    order: Some(Order::Random),
-                } => "on the bottom of your library in a random order",
-                _ => return None,
-            };
+            let tail = rest_text(left_to)?;
             Some((
                 format!(
                     "look at {} of your library. Put one of them into your hand and the rest {tail}",

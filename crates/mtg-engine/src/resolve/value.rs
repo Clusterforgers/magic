@@ -18,7 +18,7 @@ use thiserror::Error;
 use super::share::{OUTSIDE_A_DIVISION, Share};
 use crate::abilities::Cause;
 use crate::announce::payments;
-use crate::characteristics::{Characteristics, characteristics, seen_as};
+use crate::characteristics::{Characteristics, characteristics, controller_of, seen_as};
 use crate::choose::legal_from;
 use crate::choose::{Choices, Target};
 use crate::keywords::{self, OptionalKind};
@@ -608,6 +608,7 @@ impl<'a> Scope<'a> {
                 .attackers()
                 .iter()
                 .any(|a| a.blockers().contains(&reference.id)),
+            Pred::Unblocked => state.combat().is_unblocked(state, reference.id),
             Pred::ControlledBy(who) => self.players(who)?.contains(&seen.controller),
             Pred::OwnedBy(who) => self.players(who)?.contains(&seen.owner),
             Pred::In(kind) => zone_kind(seen.zone) == *kind,
@@ -727,6 +728,7 @@ impl<'a> Scope<'a> {
                 }
                 sum
             }
+            Amount::Times { by, of } => i64::from(*by) * self.amount_of(of, share)?,
             Amount::Divided => {
                 let share = share.ok_or(ResolveError::Unsupported(OUTSIDE_A_DIVISION))?;
                 self.divided_share(share.recipient)
@@ -872,6 +874,18 @@ impl<'a> Scope<'a> {
                 return Err(ResolveError::Unsupported("the city's blessing"));
             }
             Condition::YourTurn => self.state.turn().active() == self.controller,
+            Condition::NewlyControlled(what) => {
+                let named = self.objects(what)?;
+                !named.is_empty()
+                    && named.iter().all(|named| {
+                        self.state
+                            .object(named.id)
+                            .filter(|object| object.counter() == named.counter)
+                            .and_then(GameObject::permanent)
+                            .is_some_and(|permanent| permanent.is_new_to(self.controller))
+                            && controller_of(self.state, named.id) == Some(self.controller)
+                    })
+            }
         })
     }
 
@@ -1116,10 +1130,83 @@ mod tests {
     #[case::highest_life_of_no_one(r#"{"HighestLife":{"Each":[{"Named":"Nobody"}]}}"#, -2_147_483_648)]
     #[case::sum(r#"{"Sum":[2,{"Count":[{"Type":"Artifact"}]},-1]}"#, 2)]
     #[case::no_targets_chosen(r#"{"TargetCount":0}"#, 0)]
+    #[case::twice_the_creatures(r#"{"Times":{"by":2,"of":{"Count":[{"Type":"Creature"}]}}}"#, 6)]
+    #[case::minus_the_creatures_you_control(
+        r#"{"Times":{"by":-1,"of":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}"#,
+        -1
+    )]
+    #[case::times_zero_things(r#"{"Times":{"by":3,"of":{"Count":[{"Type":"Land"}]}}}"#, 0)]
+    #[case::times_the_opponents(r#"{"Times":{"by":2,"of":{"Players":"Opponents"}}}"#, 2)]
+    #[case::cards_in_your_hand(r#"{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}"#, 1)]
+    #[case::cards_in_your_graveyard(r#"{"Count":[{"In":"Graveyard"},{"OwnedBy":"You"}]}"#, 0)]
+    #[case::each_opponents_creatures(
+        r#"{"Count":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}"#,
+        2
+    )]
     fn an_amount_is_the_number_it_stands_for(#[case] json: &str, #[case] expected: i64) {
         let game = game();
         let amount: Amount = serde_json::from_str(json).unwrap();
         assert_eq!(scope(&game).amount(&amount), Ok(expected));
+    }
+
+    #[test]
+    fn a_count_is_read_from_the_state_the_earlier_steps_left() {
+        let mut game = game();
+        let creatures: Amount = serde_json::from_str(r#"{"Count":[{"Type":"Creature"}]}"#).unwrap();
+        let twice: Amount =
+            serde_json::from_str(r#"{"Times":{"by":2,"of":{"Count":[{"Type":"Creature"}]}}}"#)
+                .unwrap();
+        assert_eq!(scope(&game).amount(&creatures), Ok(3));
+        let ogre = named(&game, "Ogre", 1);
+        apply_event(
+            &mut game,
+            &Event::ZoneChanged {
+                object: ogre.id,
+                from: Zone::Battlefield,
+                to: Zone::Graveyard(PlayerId(1)),
+                cause: ZoneCause::Destroyed,
+            },
+        )
+        .unwrap();
+        assert_eq!(scope(&game).amount(&creatures), Ok(2), "the Ogre died");
+        assert_eq!(scope(&game).amount(&twice), Ok(4));
+        let yours = |json: &str| scope(&game).amount(&serde_json::from_str(json).unwrap());
+        assert_eq!(
+            yours(r#"{"Count":[{"In":"Graveyard"},{"OwnedBy":"Opponents"}]}"#),
+            Ok(1),
+            "the Ogre is in its owner's graveyard"
+        );
+    }
+
+    #[rstest]
+    #[case::two_seats(2, 1)]
+    #[case::three_seats(3, 2)]
+    #[case::four_seats(4, 3)]
+    fn for_each_opponent_counts_the_seats_other_than_the_controller(
+        #[case] seats: usize,
+        #[case] opponents: i64,
+    ) {
+        let game = state(
+            vec![vec![]; seats],
+            (0..seats).map(|_| vec![bear()]).collect(),
+        );
+        let scope = Scope::announcing(&game, PlayerId(0), named(&game, "Bear", 0));
+        let count = |json: &str| scope.amount(&serde_json::from_str(json).unwrap());
+        assert_eq!(count(r#"{"Players":"Opponents"}"#), Ok(opponents));
+        assert_eq!(
+            count(r#"{"Times":{"by":-3,"of":{"Players":"Opponents"}}}"#),
+            Ok(-3 * opponents)
+        );
+        let seats = i64::try_from(seats).unwrap();
+        assert_eq!(count(r#"{"Count":[{"Type":"Creature"}]}"#), Ok(seats));
+        assert_eq!(
+            count(r#"{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}"#),
+            Ok(1)
+        );
+        assert_eq!(
+            count(r#"{"Count":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}"#),
+            Ok(opponents)
+        );
     }
 
     #[rstest]
@@ -1580,6 +1667,61 @@ mod tests {
         }
         let condition: Condition = serde_json::from_str(json).unwrap();
         assert_eq!(scope(&game).holds(&condition), Ok(holds));
+    }
+
+    #[rstest]
+    #[case::new_to_its_controller(r#"{"NewlyControlled":"This"}"#, true, 0, true)]
+    #[case::held_since_the_turn_began(r#"{"NewlyControlled":"This"}"#, false, 0, false)]
+    #[case::the_object_is_not_the_controllers(r#"{"NewlyControlled":"This"}"#, true, 1, false)]
+    #[case::not(r#"{"Not":{"NewlyControlled":"This"}}"#, true, 0, false)]
+    #[case::nothing_named(
+        r#"{"NewlyControlled":{"Each":[{"Named":"Nothing"}]}}"#,
+        true,
+        0,
+        false
+    )]
+    fn a_permanent_new_to_its_controller_is_read_from_what_the_turn_recorded(
+        #[case] json: &str,
+        #[case] fresh: bool,
+        #[case] controller: usize,
+        #[case] holds: bool,
+    ) {
+        let mut game = game();
+        let relic = named(&game, "Relic", 0);
+        let permanent = game
+            .objects
+            .get_mut(&relic.id)
+            .and_then(|object| object.permanent.as_mut())
+            .unwrap();
+        permanent.new_to = fresh.then_some(PlayerId(0));
+        let condition: Condition = serde_json::from_str(json).unwrap();
+        let scope = Scope::announcing(&game, PlayerId::from_index(controller), relic);
+        assert_eq!(scope.holds(&condition), Ok(holds));
+    }
+
+    #[test]
+    fn a_permanent_that_changed_zones_is_not_the_one_a_condition_named() {
+        let mut game = game();
+        let relic = named(&game, "Relic", 0);
+        let permanent = game
+            .objects
+            .get_mut(&relic.id)
+            .and_then(|object| object.permanent.as_mut())
+            .unwrap();
+        permanent.new_to = Some(PlayerId(0));
+        let condition: Condition = serde_json::from_str(r#"{"NewlyControlled":"This"}"#).unwrap();
+        crate::fold::apply_event(
+            &mut game,
+            &Event::ZoneChanged {
+                object: relic.id,
+                from: Zone::Battlefield,
+                to: Zone::Hand(PlayerId(0)),
+                cause: crate::events::ZoneCause::Moved,
+            },
+        )
+        .unwrap();
+        let scope = Scope::announcing(&game, PlayerId(0), relic);
+        assert_eq!(scope.holds(&condition), Ok(false));
     }
 
     #[rstest]

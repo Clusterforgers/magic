@@ -224,6 +224,14 @@ pub struct ManaOption {
     #[serde(default, skip_serializing_if = "is_zero")]
     #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
     pub life: u32,
+    /// Energy the activation pays; left out means none.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
+    pub energy: u32,
+    /// The energy the payer holds that a payment may spend, which every source that pays energy draws on together; left out means none.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
+    pub energy_held: u32,
     /// Mana the activation costs (a Signet's `{1}`), paid from the pool when it is used and so only inside a payment; left out means none.
     #[serde(default, skip_serializing_if = "no_symbols")]
     #[cfg_attr(feature = "ts", ts(as = "Option<ManaCost>", optional))]
@@ -284,6 +292,8 @@ impl ManaOption {
             only: Vec::new(),
             also: Vec::new(),
             life: 0,
+            energy: 0,
+            energy_held: 0,
             cost: ManaCost::ZERO,
             takes: Vec::new(),
         }
@@ -297,6 +307,7 @@ impl ManaOption {
             && self.also.is_empty()
             && self.life == 0
             && self.takes.is_empty()
+            && self.energy == 0
             && !self.is_costly()
     }
 
@@ -353,6 +364,72 @@ fn usable(sources: &[ManaOption], spend: &Spend, life: i32) -> Vec<ManaOption> {
         .filter(|o| spend.allows(&o.only) && (o.life == 0 || affordable))
         .cloned()
         .collect()
+}
+
+/// Takes `paid` energy out of what the payer holds for the sources: another part of the cost pays it.
+pub(crate) fn reserve_energy(sources: &mut [ManaOption], paid: u32) {
+    for option in sources {
+        option.energy_held = option.energy_held.saturating_sub(paid);
+    }
+}
+
+/// The most permanents that pay energy whose sets are told apart; the others are not tapped for energy.
+const ENERGY_PERMANENTS: usize = 10;
+
+/// The lists of sources a payment may draw on so that the energy they pay is there, `taps` being the abilities the
+/// payment has used already (their energy is spent). It is one list while every source that pays energy can be tapped
+/// together, else one for each largest set of permanents the energy covers; a permanent outside the set keeps only the
+/// abilities that pay none.
+fn within_energy(sources: &[ManaOption], taps: &[ManaSource]) -> Vec<Vec<ManaOption>> {
+    let used = |option: &ManaOption| taps.iter().any(|tap| tap.object == option.source.object);
+    let spent: u32 = taps
+        .iter()
+        .filter_map(|tap| sources.iter().find(|o| o.source == *tap))
+        .map(|o| o.energy)
+        .sum();
+    let mut cost: BTreeMap<ObjectId, u32> = BTreeMap::new();
+    let mut held = u32::MAX;
+    for option in sources.iter().filter(|o| o.energy > 0) {
+        held = held.min(option.energy_held);
+        if !used(option) {
+            let slot = cost.entry(option.source.object).or_default();
+            *slot = (*slot).max(option.energy);
+        }
+    }
+    let held = held.saturating_sub(spent);
+    if cost.values().sum::<u32>() <= held {
+        return vec![sources.to_vec()];
+    }
+    let permanents: Vec<(ObjectId, u32)> = cost.into_iter().take(ENERGY_PERMANENTS).collect();
+    let mut lists = Vec::new();
+    for set in 0u32..1 << permanents.len() {
+        let chosen = |at: usize| set >> at & 1 == 1;
+        let paid: u32 = (0..permanents.len())
+            .filter(|at| chosen(*at))
+            .map(|at| permanents[at].1)
+            .sum();
+        let room = held.saturating_sub(paid);
+        let fits = paid <= held;
+        let grows = (0..permanents.len()).any(|at| !chosen(at) && permanents[at].1 <= room);
+        if !fits || grows {
+            continue;
+        }
+        lists.push(
+            sources
+                .iter()
+                .filter(|o| {
+                    o.energy == 0
+                        || used(o)
+                        || permanents
+                            .iter()
+                            .enumerate()
+                            .any(|(at, (object, _))| chosen(at) && *object == o.source.object)
+                })
+                .cloned()
+                .collect(),
+        );
+    }
+    lists
 }
 
 /// `payment` as the plain-cost code reads it: restricted mana is floating mana of its type.
@@ -805,14 +882,16 @@ pub fn can_afford_with(
 ) -> bool {
     let floating = pool.floating(spend);
     let sources = usable(sources, spend, life);
-    cost.resolutions().iter().any(|r| {
-        can_pay_life(life, r.life)
-            && help::variants(&r.cost, help, &Used::default(), &[], &sources)
-                .iter()
-                .any(|v| {
-                    let sources = help::without_tapped(&sources, &v.used, &Used::default());
-                    plain_can_afford(&v.cost, &floating, &sources)
-                })
+    within_energy(&sources, &[]).iter().any(|sources| {
+        cost.resolutions().iter().any(|r| {
+            can_pay_life(life, r.life)
+                && help::variants(&r.cost, help, &Used::default(), &[], sources)
+                    .iter()
+                    .any(|v| {
+                        let sources = help::without_tapped(sources, &v.used, &Used::default());
+                        plain_can_afford(&v.cost, &floating, &sources)
+                    })
+        })
     })
 }
 
@@ -892,49 +971,51 @@ pub fn auto_payment_with(
     spend: &Spend,
 ) -> Option<Payment> {
     let floating = pool.floating(spend);
-    let sources = usable(sources, spend, life);
+    let usable_sources = usable(sources, spend, life);
     let mut best = None;
-    for resolution in cost.resolutions() {
-        if resolution.life > 0 && i64::from(life) <= i64::from(resolution.life) {
-            continue;
-        }
-        for variant in help::variants(&resolution.cost, help, &Used::default(), &[], &sources) {
-            let left = help::without_tapped(&sources, &variant.used, &Used::default());
-            let payment = if left.iter().any(ManaOption::is_costly) {
-                // Mana with a restriction is told apart from the rest while the sources are chosen.
-                let planned = solving(
-                    &[],
-                    &left,
-                    &|chosen| {
-                        mana_cost::auto(
-                            &variant.cost,
-                            &floating,
-                            &by_permanent(chosen),
-                            &Forced::default(),
-                        )
-                    },
-                    &|a, b| preference(a, &left) < preference(b, &left),
-                );
-                planned.map(|whole| Payment {
-                    life: resolution.life,
-                    convoke: variant.used.convoke.clone(),
-                    delve: variant.used.delve.clone(),
-                    ..whole
-                })
-            } else {
-                plain_auto(&variant.cost, &floating, &left).map(|plain| {
-                    let kept = Payment {
-                        taps: plain.taps,
+    for sources in within_energy(&usable_sources, &[]) {
+        for resolution in cost.resolutions() {
+            if resolution.life > 0 && i64::from(life) <= i64::from(resolution.life) {
+                continue;
+            }
+            for variant in help::variants(&resolution.cost, help, &Used::default(), &[], &sources) {
+                let left = help::without_tapped(&sources, &variant.used, &Used::default());
+                let payment = if left.iter().any(ManaOption::is_costly) {
+                    // Mana with a restriction is told apart from the rest while the sources are chosen.
+                    let planned = solving(
+                        &[],
+                        &left,
+                        &|chosen| {
+                            mana_cost::auto(
+                                &variant.cost,
+                                &floating,
+                                &by_permanent(chosen),
+                                &Forced::default(),
+                            )
+                        },
+                        &|a, b| preference(a, &left) < preference(b, &left),
+                    );
+                    planned.map(|whole| Payment {
                         life: resolution.life,
                         convoke: variant.used.convoke.clone(),
                         delve: variant.used.delve.clone(),
-                        ..Payment::default()
-                    };
-                    separate(&plain.pool, pool, spend, &kept)
-                })
-            };
-            if let Some(payment) = payment {
-                keep_better(&mut best, payment, &sources);
+                        ..whole
+                    })
+                } else {
+                    plain_auto(&variant.cost, &floating, &left).map(|plain| {
+                        let kept = Payment {
+                            taps: plain.taps,
+                            life: resolution.life,
+                            convoke: variant.used.convoke.clone(),
+                            delve: variant.used.delve.clone(),
+                            ..Payment::default()
+                        };
+                        separate(&plain.pool, pool, spend, &kept)
+                    })
+                };
+                if let Some(payment) = payment {
+                    keep_better(&mut best, payment, &usable_sources);
+                }
             }
         }
     }
@@ -1075,6 +1156,17 @@ pub fn check_payment_with(
             have: life,
         });
     }
+    let tapped_options = payment
+        .taps
+        .iter()
+        .filter_map(|tap| sources.iter().find(|o| o.source == *tap))
+        .filter(|o| o.energy > 0);
+    let (paid, have) = tapped_options.fold((0u32, 0u32), |(paid, have), o| {
+        (paid.saturating_add(o.energy), have.max(o.energy_held))
+    });
+    if paid > have {
+        return Err(PaymentError::NotEnoughEnergy { paid, have });
+    }
     let mut refusal = None;
     for resolution in cost.resolutions() {
         if resolution.life != payment.life {
@@ -1175,6 +1267,7 @@ pub fn complete_payment_with(
     help::check(&kept, help, tapped, &occupied)?;
     let parts = parts_of(&floating, &usable_sources, tapped, &flat_partial)?;
     check_life(cost, life, partial.life)?;
+    let lists = within_energy(&usable_sources, &partial.taps);
     let mut best = None;
     let mut refusal: Option<PaymentError> = None;
     for resolution in cost.resolutions() {
@@ -1188,8 +1281,13 @@ pub fn complete_payment_with(
                 continue;
             }
         };
-        for variant in help::variants(&left, help, &kept, &occupied, &usable_sources) {
-            let sources = help::without_tapped(&usable_sources, &variant.used, &kept);
+        let helped = lists.iter().flat_map(|listed| {
+            help::variants(&left, help, &kept, &occupied, listed)
+                .into_iter()
+                .map(move |variant| (listed, variant))
+        });
+        for (listed, variant) in helped {
+            let sources = help::without_tapped(listed, &variant.used, &kept);
             let finished = if sources.iter().any(ManaOption::is_costly) {
                 let forced = Forced {
                     pool: &partial.pool,
@@ -2158,8 +2256,23 @@ mod tests {
         go(&slots, &mut Vec::new())
     }
 
+    /// Whether the energy the sources of `payment` pay is within what the payer holds.
+    fn energy_holds(payment: &Payment, sources: &[ManaOption]) -> bool {
+        let used: Vec<&ManaOption> = payment
+            .taps
+            .iter()
+            .filter_map(|t| sources.iter().find(|o| o.source == *t))
+            .filter(|o| o.energy > 0)
+            .collect();
+        let paid: u32 = used.iter().map(|o| o.energy).sum();
+        paid <= used.iter().map(|o| o.energy_held).max().unwrap_or(0)
+    }
+
     fn valid(cost: &ManaCost, payment: &Payment, sources: &[ManaOption], life: i32) -> bool {
         if !takes_hold(payment, sources) {
+            return false;
+        }
+        if !energy_holds(payment, sources) {
             return false;
         }
         if payment
@@ -2425,6 +2538,8 @@ mod tests {
                             only: Vec::new(),
                             also,
                             life: 0,
+                            energy: 0,
+                            energy_held: 0,
                             cost: ManaCost::ZERO,
                             ..ManaOption::new(tap(object, ability), produces)
                         });
@@ -2448,20 +2563,32 @@ mod tests {
                 ),
                 0..4,
             ),
+            // Whether each source pays one energy, and the energy the payer holds.
+            (prop::collection::vec(any::<bool>(), 0..4), 0u32..3),
         )
-            .prop_map(|((cost, floating, mut sources, life), takes)| {
-                for (source, (takes, sacrifice, count, from)) in sources.iter_mut().zip(takes) {
-                    if takes {
-                        source.takes.push(Take {
-                            sacrifice,
-                            count,
-                            from: from.into_iter().map(ObjectId).collect(),
-                        });
-                        source.extra = true;
+            .prop_map(
+                |((cost, floating, mut sources, life), takes, (energy, held))| {
+                    for (source, (takes, sacrifice, count, from)) in sources.iter_mut().zip(takes) {
+                        if takes {
+                            source.takes.push(Take {
+                                sacrifice,
+                                count,
+                                from: from.into_iter().map(ObjectId).collect(),
+                            });
+                            source.extra = true;
+                        }
                     }
-                }
-                (cost, floating, sources, life)
-            })
+                    // A source that takes nothing may pay one energy, which every such source draws on together.
+                    for (source, pays) in sources.iter_mut().zip(energy) {
+                        if pays && source.takes.is_empty() {
+                            source.energy = 1;
+                            source.energy_held = held;
+                            source.extra = true;
+                        }
+                    }
+                    (cost, floating, sources, life)
+                },
+            )
     }
 
     /// What a source's own activation may cost: generic, one colour, a hybrid pair or a colour with generic mana.
@@ -2518,6 +2645,8 @@ mod tests {
                             only: Vec::new(),
                             also,
                             life: 0,
+                            energy: 0,
+                            energy_held: 0,
                             cost: paid.unwrap_or(ManaCost::ZERO),
                             ..ManaOption::new(tap(object, ability), produces)
                         });

@@ -46,6 +46,14 @@ also?: Array<ManaType>,
  */
 life?: number, 
 /**
+ * Energy the activation pays; left out means none.
+ */
+energy?: number, 
+/**
+ * The energy the payer holds that a payment may spend, which every source that pays energy draws on together; left out means none.
+ */
+energy_held?: number, 
+/**
  * Mana the activation costs (a Signet's `{1}`), paid from the pool when it is used and so only inside a payment; left out means none.
  */
 cost?: ManaCost, 

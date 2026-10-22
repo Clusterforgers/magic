@@ -1,0 +1,12 @@
+{
+  "oracle_id": "af12758f-4a7b-4156-8942-de4716aa0623",
+  "name": "Strangleroot Geist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strangleroot Geist",
+      "oracle_fingerprint": "ed4b0dc23bfac74fd6bd3518ba079a84",
+      "abilities": [{ "Keyword": "Haste" }, { "Keyword": "Undying" }]
+    }
+  ]
+}

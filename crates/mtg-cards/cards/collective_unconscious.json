@@ -1,0 +1,24 @@
+{
+  "oracle_id": "38abf769-e4ef-4b47-9c79-c8cda0b90f6c",
+  "name": "Collective Unconscious",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Collective Unconscious",
+      "oracle_fingerprint": "418a936d9d2d3ca718e7a242d8ea5a10",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

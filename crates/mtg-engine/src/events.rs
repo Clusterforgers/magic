@@ -513,6 +513,13 @@ pub enum Event {
         /// The player it enchants.
         player: PlayerId,
     },
+    /// A creature that was not declared as an attacker joined the attack, attacking this player or planeswalker (CR 508.4).
+    JoinedAttack {
+        /// The creature.
+        object: ObjectId,
+        /// What it attacks.
+        target: AttackTarget,
+    },
     /// A permanent stopped being attached to what it was attached to.
     Unattached {
         /// The permanent.
@@ -696,6 +703,7 @@ impl Event {
             | Event::SpellResolved { object }
             | Event::Entered { object, .. }
             | Event::Unattached { object }
+            | Event::JoinedAttack { object, .. }
             | Event::AttachedToPlayer { object, .. }
             | Event::Transformed { object, .. }
             | Event::PermanentTapped { object }

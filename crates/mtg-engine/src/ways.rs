@@ -17,7 +17,7 @@ use crate::attach;
 use crate::choose::announceable;
 use crate::faces;
 use crate::help;
-use crate::keywords::{self, foretell, keywords_of};
+use crate::keywords::{self, aftermath, foretell, keywords_of};
 use crate::mana::{ManaOption, ManaPool, can_afford, can_afford_with};
 use crate::object::{FaceDown, GameObject, ObjectKind};
 use crate::parts::Part;
@@ -118,6 +118,11 @@ pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> 
     if !allowed {
         return Vec::new();
     }
+    // The half with aftermath is cast from a graveyard and from no other zone (CR 702.127a).
+    let by_aftermath = aftermath::has(state, id);
+    if by_aftermath && !matches!(zone, Zone::Graveyard(_)) {
+        return Vec::new();
+    }
     // A split card is cast as one of its halves, never as both (CR 709.3a): its halves are tried one at a time.
     if both_halves(card) {
         return Vec::new();
@@ -142,7 +147,7 @@ pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> 
     let by_permission = permissions
         .iter()
         .any(|permission| !permission.free && permission.from == Some(zone_kind(zone)));
-    if (in_hand || from_command || by_permission || on_adventure)
+    if (in_hand || from_command || by_permission || on_adventure || by_aftermath)
         && let Some(cost) = printed
     {
         ways.push(Way {
@@ -163,50 +168,71 @@ pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> 
         });
     }
     for keyword in keywords_of(state, id) {
-        let (way, name, cost, from_here) = match keyword {
-            Keyword::Flashback(cost) => (
-                CastWay::Flashback,
-                "Flashback",
-                cost,
-                matches!(zone, Zone::Graveyard(_)),
-            ),
-            Keyword::Escape(cost) => (
-                CastWay::Escape,
-                "Escape",
-                cost,
-                matches!(zone, Zone::Graveyard(_)),
-            ),
-            Keyword::Evoke(cost) => (CastWay::Evoke, "Evoke", cost, in_hand),
-            Keyword::Overload(cost) => (CastWay::Overload, "Overload", cost, in_hand),
-            Keyword::Foretell(cost) => (
-                CastWay::Foretold,
-                "Foretell",
-                cost,
-                foretold_before_now(state, player, id),
-            ),
-            _ => continue,
-        };
-        if !from_here || ways.iter().any(|w| w.alternative == Some(way)) {
-            continue;
+        if let Some(way) = keyword_way(state, player, id, keyword, instant)
+            && !ways.iter().any(|w| w.alternative == way.alternative)
+        {
+            ways.push(way);
         }
-        // Overload and foretell are paid with mana alone.
-        let cost = if matches!(way, CastWay::Flashback | CastWay::Evoke | CastWay::Escape) {
-            cast_cost(cost)
-        } else {
-            mana_only(cost).map(|mana| (mana, Vec::new()))
-        };
-        let Some((mana, parts)) = cost else {
-            continue;
-        };
-        ways.push(Way {
-            alternative: Some(way),
-            label: format!("{name} {}", cost_words(&mana, &parts)),
-            mana: Some(mana),
-            instant,
-            parts,
-        });
     }
     ways
+}
+
+/// The alternative cost the keyword gives the card `id` for casting it where it is, when it gives one.
+fn keyword_way(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    keyword: &Keyword,
+    instant: bool,
+) -> Option<Way> {
+    let zone = state.object(id)?.zone();
+    let in_hand = matches!(zone, Zone::Hand(_));
+    let in_graveyard = matches!(zone, Zone::Graveyard(_));
+    let (way, name, cost, from_here) = match keyword {
+        Keyword::Flashback(cost) => (CastWay::Flashback, "Flashback", cost, in_graveyard),
+        Keyword::Escape(cost) => (CastWay::Escape, "Escape", cost, in_graveyard),
+        Keyword::Evoke(cost) => (CastWay::Evoke, "Evoke", cost, in_hand),
+        Keyword::Overload(cost) => (CastWay::Overload, "Overload", cost, in_hand),
+        Keyword::Dash(cost) => (
+            CastWay::Dash,
+            "Dash",
+            cost,
+            in_hand && is_creature(state, id),
+        ),
+        Keyword::Foretell(cost) => (
+            CastWay::Foretold,
+            "Foretell",
+            cost,
+            foretold_before_now(state, player, id),
+        ),
+        _ => return None,
+    };
+    if !from_here {
+        return None;
+    }
+    // Overload and foretell are paid with mana alone.
+    let (mana, parts) = if matches!(
+        way,
+        CastWay::Flashback | CastWay::Evoke | CastWay::Escape | CastWay::Dash
+    ) {
+        cast_cost(cost)?
+    } else {
+        (mana_only(cost)?, Vec::new())
+    };
+    Some(Way {
+        alternative: Some(way),
+        label: format!("{name} {}", cost_words(&mana, &parts)),
+        mana: Some(mana),
+        instant,
+        parts,
+    })
+}
+
+/// Whether the card `id` is a creature card: dash is an alternative cost for a creature spell only (CR 702.109a).
+fn is_creature(state: &GameState, id: ObjectId) -> bool {
+    state
+        .object(id)
+        .is_some_and(|card| card.base_types().contains(CardType::Creature))
 }
 
 /// Whether `player` foretold the card `id` on an earlier turn and it still lies face down in exile (CR 702.143a): the cast
@@ -233,7 +259,10 @@ pub(crate) fn granted(
     let castable = card.kind() == ObjectKind::Card
         && !card.base_types().contains(CardType::Land)
         && !matches!(card.zone(), Zone::Battlefield | Zone::Stack);
-    if !castable || both_halves(card) {
+    if !castable
+        || both_halves(card)
+        || (aftermath::has(state, id) && !matches!(card.zone(), Zone::Graveyard(_)))
+    {
         return Vec::new();
     }
     if way == Some(CastWay::Madness) {

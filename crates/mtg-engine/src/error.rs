@@ -158,6 +158,14 @@ pub enum PaymentError {
         /// The payer's life total.
         have: i32,
     },
+    /// The payer holds less energy than the sources the payment taps pay.
+    #[error("cannot pay {paid} energy with {have} held")]
+    NotEnoughEnergy {
+        /// Energy the payment pays.
+        paid: u32,
+        /// The energy the payer holds for it.
+        have: u32,
+    },
     /// A creature or card was named as help (convoke, delve) that is not among the ones offered.
     #[error("{0:?} is not offered to help pay")]
     NotOffered(ObjectId),

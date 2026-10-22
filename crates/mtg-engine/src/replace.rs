@@ -106,7 +106,7 @@ pub fn process(
             .any(|event| entering(state, event).is_some())
         && !proposed.iter().any(|event| {
             let item = Item::One(event.clone());
-            leaves_stack_by_flashback(state, &item)
+            leaves_stack_exiled(state, &item)
                 || returns_by_buyback(state, &item)
                 || exiles_by_adventure(state, &item)
                 || exiles_by_rebound(state, &item)
@@ -247,7 +247,8 @@ enum Origin {
     Shield(EffectId),
     /// The protection of the permanent or player the damage is dealt to (CR 702.16e).
     Protection,
-    /// The spell cast for its flashback cost, which is exiled instead of going anywhere else from the stack (CR 702.34a).
+    /// The spell cast for its flashback cost, or the half with aftermath cast from a graveyard, which is exiled instead of
+    /// going anywhere else from the stack (CR 702.34a, 702.127a).
     Flashback,
     /// The spell that resolved with its buyback cost paid, which returns to its owner's hand instead of going to the
     /// graveyard (CR 702.27a).
@@ -337,8 +338,9 @@ fn exiles_by_rebound(state: &GameState, item: &Item) -> bool {
         })
 }
 
-/// Whether the item moves a spell cast for its flashback cost from the stack to any zone but exile.
-fn leaves_stack_by_flashback(state: &GameState, item: &Item) -> bool {
+/// Whether the item moves a spell cast for its flashback cost, or the half of a split card with aftermath that was cast
+/// from a graveyard, from the stack to any zone but exile.
+fn leaves_stack_exiled(state: &GameState, item: &Item) -> bool {
     let Item::One(event) = item else {
         return false;
     };
@@ -346,7 +348,9 @@ fn leaves_stack_by_flashback(state: &GameState, item: &Item) -> bool {
         from == Zone::Stack
             && to != Zone::Exile
             && state.object(object).is_some_and(|spell| {
-                spell.kind() == ObjectKind::Card && spell.choices().way == Some(CastWay::Flashback)
+                spell.kind() == ObjectKind::Card
+                    && (spell.choices().way == Some(CastWay::Flashback)
+                        || (spell.cast_from_graveyard() && keywords::aftermath::has(state, object)))
             })
     })
 }
@@ -921,7 +925,7 @@ impl Pass<'_> {
             found.extend(self.shield_candidates(slot, &unit)?);
         }
         if matches!(&unit, Unit::Move { .. }) {
-            found.extend(self.flashback_candidate(slot));
+            found.extend(self.exile_from_stack_candidate(slot));
             found.extend(self.buyback_candidate(slot));
             found.extend(self.adventure_candidate(slot));
             found.extend(self.rebound_candidate(slot));
@@ -959,10 +963,9 @@ impl Pass<'_> {
             .copied()
     }
 
-    /// The exile of a spell cast for its flashback cost that leaves the stack, when it has not been applied.
-    fn flashback_candidate(&self, slot: &Slot) -> Option<Candidate> {
-        if slot.applied.contains(&Origin::Flashback)
-            || !leaves_stack_by_flashback(self.state, &slot.item)
+    /// The exile of a spell cast for its flashback cost or by aftermath that leaves the stack, when it has not been applied.
+    fn exile_from_stack_candidate(&self, slot: &Slot) -> Option<Candidate> {
+        if slot.applied.contains(&Origin::Flashback) || !leaves_stack_exiled(self.state, &slot.item)
         {
             return None;
         }

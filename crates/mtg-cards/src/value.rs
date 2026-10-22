@@ -71,6 +71,8 @@ pub enum CastWay {
     Foretold,
     /// Escape (CR 702.138): from a graveyard for its escape cost, which exiles other cards of the graveyard; the permanent remembers that it escaped.
     Escape,
+    /// Dash (CR 702.109): the creature has haste and returns to its owner's hand at the next end step.
+    Dash,
     /// Without paying its mana cost, by a permission or an effect (CR 118.9).
     Free,
 }
@@ -141,6 +143,14 @@ pub enum Amount {
     },
     /// The sum of the amounts (negative numbers subtract).
     Sum(Vec<Amount>),
+    /// The amount times a fixed factor, which may be negative: "gain 2 life for each creature you control" is the
+    /// factor 2 of a `Count`.
+    Times {
+        /// The factor.
+        by: i32,
+        /// The amount multiplied.
+        of: Box<Amount>,
+    },
     /// This target's share of the amount divided as the controller chose.
     Divided,
     /// The amount divided evenly, rounded down, among the targets the effect names.
@@ -206,6 +216,7 @@ enum Tagged {
     Life(Ref),
     Counters { on: Ref, counter: CounterKind },
     Sum(Vec<Amount>),
+    Times { by: i32, of: Box<Amount> },
     Divided,
     EvenShare(Box<Amount>),
     TargetCount(u8),
@@ -235,6 +246,10 @@ enum TaggedRef<'a> {
         counter: &'a CounterKind,
     },
     Sum(&'a [Amount]),
+    Times {
+        by: i32,
+        of: &'a Amount,
+    },
     Divided,
     EvenShare(&'a Amount),
     TargetCount(u8),
@@ -264,6 +279,7 @@ impl From<Tagged> for Amount {
             Tagged::Life(who) => Amount::Life(who),
             Tagged::Counters { on, counter } => Amount::Counters { on, counter },
             Tagged::Sum(parts) => Amount::Sum(parts),
+            Tagged::Times { by, of } => Amount::Times { by, of },
             Tagged::Divided => Amount::Divided,
             Tagged::EvenShare(total) => Amount::EvenShare(total),
             Tagged::TargetCount(index) => Amount::TargetCount(index),
@@ -292,6 +308,7 @@ impl Serialize for Amount {
                 TaggedRef::Counters { on, counter }.serialize(serializer)
             }
             Amount::Sum(parts) => TaggedRef::Sum(parts).serialize(serializer),
+            Amount::Times { by, of } => TaggedRef::Times { by: *by, of }.serialize(serializer),
             Amount::Divided => TaggedRef::Divided.serialize(serializer),
             Amount::EvenShare(total) => TaggedRef::EvenShare(total).serialize(serializer),
             Amount::TargetCount(index) => TaggedRef::TargetCount(*index).serialize(serializer),
@@ -391,6 +408,8 @@ pub enum Condition {
     Monarch(Ref),
     /// The player has the city's blessing (CR 702.131).
     CitysBlessing(Ref),
+    /// The referenced permanents are controlled by the controller and came under their control since their last turn began (echo, CR 702.30a): read in the upkeep, once that turn has begun.
+    NewlyControlled(Ref),
 }
 
 #[cfg(test)]
@@ -418,6 +437,10 @@ mod tests {
     #[case::sum(
         Amount::Sum(vec![Amount::TargetCount(0), Amount::Fixed(-1)]),
         r#"{"Sum":[{"TargetCount":0},-1]}"#
+    )]
+    #[case::times(
+        Amount::Times { by: -1, of: Box::new(Amount::Players(Ref::Opponents)) },
+        r#"{"Times":{"by":-1,"of":{"Players":"Opponents"}}}"#
     )]
     #[case::even(Amount::EvenShare(Box::new(Amount::X)), r#"{"EvenShare":"X"}"#)]
     #[case::opponents(Amount::Players(Ref::Opponents), r#"{"Players":"Opponents"}"#)]

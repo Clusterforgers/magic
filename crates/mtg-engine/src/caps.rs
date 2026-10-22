@@ -11,7 +11,7 @@
 //! control, attack and block restrictions, characteristic-defining abilities and the power and toughness they define), the
 //! rules of the game as effects and as static abilities (attack and block requirements, spells that can't be countered,
 //! players who can't gain life, draw or search, a revealed library top, triggers that trigger again), the keywords of
-//! combat, flash, hexproof, enchant, equip, reconfigure, kicker and multikicker, flashback, evoke and overload, cycling, permissions to cast (from another zone, without paying, as though with flash), cost modifiers, attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
+//! combat, flash, hexproof, enchant, equip, reconfigure, kicker and multikicker, flashback, evoke and overload, cycling, permissions to cast (from another zone, without paying, as though with flash), cost modifiers, attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry, echo, cumulative upkeep, undying, persist), and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::{FACES, PLAIN_MANA_ABILITY, VARIABLE_STATS, X_COST};
@@ -113,6 +113,7 @@ const RUNS: &[&str] = &[
     "Effect.Untap",
     "Effect.Attach",
     "Effect.Unattach",
+    "Effect.JoinAttack",
     "Effect.Transform",
     "Effect.WinGame",
     "Effect.Surveil",
@@ -255,6 +256,14 @@ const RUNS: &[&str] = &[
     "Keyword.Unearth",
     "Keyword.Escape",
     "Keyword.Rebound",
+    "Keyword.Aftermath",
+    "Keyword.Dash",
+    "Keyword.Ninjutsu",
+    "Keyword.Echo",
+    "Keyword.CumulativeUpkeep",
+    "Keyword.Undying",
+    "Keyword.Persist",
+    "Condition.NewlyControlled",
     "Rule.CanBeCommander",
 ];
 
@@ -551,6 +560,15 @@ mod tests {
     #[case::unearth("Keyword.Unearth", true)]
     #[case::escape("Keyword.Escape", true)]
     #[case::rebound("Keyword.Rebound", true)]
+    #[case::aftermath("Keyword.Aftermath", true)]
+    #[case::dash("Keyword.Dash", true)]
+    #[case::ninjutsu("Keyword.Ninjutsu", true)]
+    #[case::joining_an_attack("Effect.JoinAttack", true)]
+    #[case::echo("Keyword.Echo", true)]
+    #[case::cumulative_upkeep("Keyword.CumulativeUpkeep", true)]
+    #[case::undying("Keyword.Undying", true)]
+    #[case::persist("Keyword.Persist", true)]
+    #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]
     #[case::the_highest_life_total("Amount.HighestLife", true)]

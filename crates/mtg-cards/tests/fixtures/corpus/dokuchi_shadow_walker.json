@@ -1,0 +1,27 @@
+{
+  "id": "81496a81-c986-4749-a28c-45341764e28f",
+  "oracle_id": "1e79b7bf-8a2d-4585-81d0-755dce78a4ea",
+  "name": "Dokuchi Shadow-Walker",
+  "lang": "en",
+  "layout": "normal",
+  "set": "neo",
+  "collector_number": "94",
+  "rarity": "common",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "mana_cost": "{4}{B}{B}",
+  "cmc": 6.0,
+  "type_line": "Creature — Ogre Ninja",
+  "oracle_text": "Ninjutsu {3}{B} ({3}{B}, Return an unblocked attacker you control to hand: Put this card onto the battlefield from your hand tapped and attacking.)",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Ninjutsu"
+  ]
+}

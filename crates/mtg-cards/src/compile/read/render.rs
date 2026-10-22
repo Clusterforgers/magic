@@ -3,7 +3,7 @@
 //! player in a row are one compound sentence; the readers take ", then" between two steps as the
 //! same sequence.
 
-use super::amounts::{cards_text, count_word, points_text, stat_name};
+use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
 use super::cast;
 use super::conditional;
 use super::copies;
@@ -92,6 +92,20 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(pronouns);
     }
+    // The counters counted by "for each" may be those "on it" for the card.
+    let pronouns: Vec<String> = texts
+        .iter()
+        .filter_map(|text| {
+            let (head, tail) = text.split_at(text.find("for each ")?);
+            tail.contains(" counter on ~").then(|| {
+                format!(
+                    "{head}{}",
+                    tail.replacen(" counter on ~", " counter on it", 1)
+                )
+            })
+        })
+        .collect();
+    texts.extend(pronouns);
     // An activated ability that opens with damage may say "It deals" for the source (Walking Ballista).
     if matches!(ability, Ability::Activated { .. }) {
         let pronouns: Vec<String> = texts
@@ -280,18 +294,39 @@ fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Vec<String>> 
     } else {
         vec![0, u32::MAX >> 1]
     };
+    let counts_tokens = effects.iter().any(|effect| {
+        matches!(
+            effect,
+            Effect::CreateToken {
+                count: Amount::Count(_) | Amount::Times { .. },
+                ..
+            }
+        )
+    });
+    let wordings: &[bool] = if counts_tokens {
+        &[false, true]
+    } else {
+        &[false]
+    };
     masks
         .into_iter()
-        .filter_map(|mask| written(targets, effects, mask))
+        .flat_map(|mask| wordings.iter().map(move |per| (mask, *per)))
+        .filter_map(|(mask, per)| written(targets, effects, mask, per))
         .flat_map(|sentences| conditional::wordings(&sentences))
         .collect()
 }
 
 /// The sentences of the effects with the joints of the mask closed into compound sentences.
-fn written(targets: &[TargetSpec], effects: &[Effect], mask: u32) -> Option<Vec<String>> {
+fn written(
+    targets: &[TargetSpec],
+    effects: &[Effect],
+    mask: u32,
+    per: bool,
+) -> Option<Vec<String>> {
     let mut writer = Writer {
         targets,
         named: false,
+        per,
     };
     let mut sentences: Vec<String> = Vec::new();
     let mut start = 0;
@@ -601,11 +636,12 @@ fn is_imperative(effect: &Effect) -> bool {
 /// "add {C}{C}" and, when the mana is restricted, the sentence that says what it may be spent on.
 fn add_text(mana: &Produce, times: &Amount, only: &[SpendOn]) -> Option<String> {
     let mut added = format!("add {}", mana_text(mana)?);
+    // "Add {R} for each Goblin you control.": once for each thing counted, never a number of times.
     if !times.is_one() {
-        let Amount::Count(selector) = times else {
+        let (Amount::Fixed(1), tail) = counted_parts(times)? else {
             return None;
         };
-        added = format!("{added} for each {}", phrase_text(selector, Form::Each)?);
+        added = format!("{added} {tail}");
     }
     if only.is_empty() {
         Some(added)
@@ -682,6 +718,33 @@ fn restriction_texts(timing: Timing, limit: Option<Limit>) -> Vec<String> {
     }
 }
 
+/// "+1/+1" and the words that count it, " for each creature you control" (empty for a fixed change): a change of power
+/// and toughness. One side may be counted when the other is zero.
+pub(super) fn stats_text(power: &Amount, toughness: &Amount) -> Option<(String, String)> {
+    let part = |amount: &Amount| match counted_parts(amount) {
+        Some((each, tail)) => Some((signed_text(&each)?, Some(tail))),
+        None => Some((signed_text(amount)?, None)),
+    };
+    let ((power, power_tail), (toughness, toughness_tail)) = (part(power)?, part(toughness)?);
+    let tail = match (power_tail, toughness_tail) {
+        (None, None) => String::new(),
+        (Some(tail), None) if toughness == "+0" => format!(" {tail}"),
+        (None, Some(tail)) if power == "+0" => format!(" {tail}"),
+        (Some(tail), Some(other)) if tail == other => format!(" {tail}"),
+        _ => return None,
+    };
+    Some((format!("{power}/{toughness}"), tail))
+}
+
+/// Whether the change of power and toughness leading the modifications is counted "for each ...".
+pub(super) fn counts_stats(mods: &[Modification]) -> bool {
+    matches!(
+        mods.first(),
+        Some(Modification::ModifyPT { power, toughness })
+            if counted_parts(power).is_some() || counted_parts(toughness).is_some()
+    )
+}
+
 /// "+2", "-3", "+X": a change of power or toughness.
 pub(super) fn signed_text(amount: &Amount) -> Option<String> {
     match amount {
@@ -709,6 +772,8 @@ fn at_random(random: bool) -> &'static str {
 struct Writer<'a> {
     targets: &'a [TargetSpec],
     named: bool,
+    /// Tokens counted by things are worded "a token for each ..." and not "X tokens, where X is the number of ...".
+    per: bool,
 }
 
 impl Writer<'_> {
@@ -779,8 +844,13 @@ impl Writer<'_> {
     fn counters(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
             Effect::PutCounters { on, counter, count } => {
-                let counters = counters::text(counter, count)?;
-                format!("put {counters} on {}", self.counter_place(on, true)?)
+                // "put a +1/+1 counter on target creature for each Elf you control"
+                let (each, tail) = match counted_parts(count) {
+                    Some((each, tail)) => (each, format!(" {tail}")),
+                    None => (count.clone(), String::new()),
+                };
+                let counters = counters::text(counter, &each)?;
+                format!("put {counters} on {}{tail}", self.counter_place(on, true)?)
             }
             Effect::RemoveCounters {
                 from,
@@ -976,7 +1046,7 @@ impl Writer<'_> {
             | Effect::RemoveCounters { .. }
             | Effect::MoveCounters { .. } => self.counters(effect)?,
             Effect::CreateToken { .. } => {
-                create::text(effect).or_else(|| self.copy_token(effect, false))?
+                create::text(effect, self.per).or_else(|| self.copy_token(effect, false))?
             }
             Effect::DealDamage {
                 source: None,
@@ -1008,9 +1078,10 @@ impl Writer<'_> {
             Effect::Pay {
                 who,
                 cost,
+                times,
                 paid,
                 unpaid,
-            } => self.payment(who, cost, paid, unpaid)?,
+            } if times.is_one() => self.payment(who, cost, paid, unpaid)?,
             _ => return cast::text(effect).or_else(|| self.keyword_action(effect)),
         })
     }
@@ -1043,8 +1114,11 @@ impl Writer<'_> {
                     Destination::Battlefield {
                         tapped: false,
                         under: None,
+                        counters,
                     },
-            } => "return ~ from your graveyard to the battlefield".to_owned(),
+            } if counters.is_empty() => {
+                "return ~ from your graveyard to the battlefield".to_owned()
+            }
             Effect::Surveil {
                 who: Ref::You,
                 count,
@@ -1135,7 +1209,10 @@ impl Writer<'_> {
             Amount::Stat { of, stat } if *of == Ref::Target(0) && self.named => {
                 format!("life equal to its {}", stat_name(*stat)?)
             }
-            _ => format!("{} life", points_text(amount)?),
+            _ => match counted_parts(amount) {
+                Some((each, tail)) => format!("{} life {tail}", points_text(&each)?),
+                None => format!("{} life", points_text(amount)?),
+            },
         })
     }
 
@@ -1154,7 +1231,7 @@ impl Writer<'_> {
             Effect::Sacrifice { filter, count, .. } if count.is_one() => {
                 format!("sacrifice{s} {}", sacrifice_text(filter)?)
             }
-            Effect::CreateToken { .. } => create::text(effect)?,
+            Effect::CreateToken { .. } => create::text(effect, self.per)?,
             Effect::Shuffle { who } => {
                 format!(
                     "shuffle{s} {} library",
@@ -1238,16 +1315,12 @@ impl Writer<'_> {
         } else {
             ("gets", "gains")
         };
-        let (stats, rest) = match mods.split_first() {
-            Some((Modification::ModifyPT { power, toughness }, rest)) => (
-                Some(format!(
-                    "{gets} {}/{}",
-                    signed_text(power)?,
-                    signed_text(toughness)?
-                )),
-                rest,
-            ),
-            _ => (None, mods),
+        let (stats, tail, rest) = match mods.split_first() {
+            Some((Modification::ModifyPT { power, toughness }, rest)) => {
+                let (stats, tail) = stats_text(power, toughness)?;
+                (Some(format!("{gets} {stats}")), tail, rest)
+            }
+            _ => (None, String::new(), mods),
         };
         let mut parts: Vec<String> = stats.into_iter().collect();
         if !rest.is_empty() {
@@ -1257,7 +1330,7 @@ impl Writer<'_> {
             return None;
         }
         Some(format!(
-            "{subject} {} until end of turn",
+            "{subject} {} until end of turn{tail}",
             parts.join(" and ")
         ))
     }

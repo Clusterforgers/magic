@@ -18,6 +18,7 @@ mod connive;
 mod continuous;
 mod copy_ability;
 mod copy_spell;
+mod join_attack;
 mod retarget;
 mod unattach;
 pub(crate) use continuous::lower;
@@ -106,6 +107,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Untap { .. } => untap::run(cx, effect),
         Effect::Attach { .. } => attach::run(cx, effect),
         Effect::Unattach { .. } => unattach::run(cx, effect),
+        Effect::JoinAttack { .. } => join_attack::run(cx, effect),
         Effect::Transform { .. } => transform::run(cx, effect),
         Effect::Surveil { .. } => surveil::run(cx, effect),
         Effect::Proliferate { .. } => proliferate::run(cx, effect),

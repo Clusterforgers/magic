@@ -1,0 +1,12 @@
+{
+  "oracle_id": "1fcf95d7-fd70-474b-be0a-e43502633556",
+  "name": "Vengeful Vampire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vengeful Vampire",
+      "oracle_fingerprint": "46d088852b0e1b92ea40b7beaa1f057f",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Undying" }]
+    }
+  ]
+}

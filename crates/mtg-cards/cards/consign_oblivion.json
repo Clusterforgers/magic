@@ -1,0 +1,32 @@
+{
+  "oracle_id": "8fe7436b-2467-486e-8a2d-7cbf21a65da9",
+  "name": "Consign // Oblivion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consign",
+      "oracle_fingerprint": "b04c6dc57919c570543209fe41e65641",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Oblivion",
+      "oracle_fingerprint": "1ee118dc5aff638019455a079950f031",
+      "abilities": [
+        { "Keyword": "Aftermath" },
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 }, "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

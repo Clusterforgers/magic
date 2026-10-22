@@ -56,6 +56,7 @@ pub fn may_pay(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     Some(vec![Effect::Pay {
         who: Ref::You,
         cost,
+        times: Amount::one(),
         paid,
         unpaid: Vec::new(),
     }])

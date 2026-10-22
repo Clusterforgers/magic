@@ -107,6 +107,41 @@ fn a_source_that_takes_another_permanent_pays_when_the_payment_can_take_it(
     Ok(())
 }
 
+#[rstest]
+#[case::energy_and_a_creature(1, &["Aether Hub", "Springleaf Drum", "Grizzly Bears"], true)]
+#[case::more_energy_than_needed(3, &["Aether Hub", "Springleaf Drum", "Grizzly Bears"], true)]
+#[case::no_energy_no_second_colour(0, &["Aether Hub", "Springleaf Drum", "Grizzly Bears"], false)]
+#[case::no_creature_to_tap(1, &["Aether Hub", "Springleaf Drum"], false)]
+#[case::a_tapped_creature_is_not_there_to_tap(1, &["Aether Hub", "Springleaf Drum", "tapped:Grizzly Bears"], false)]
+fn a_payment_may_pay_energy_and_take_a_permanent(
+    #[case] energy: u32,
+    #[case] mine: &[&str],
+    #[case] castable_now: bool,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let counter = mtg_cards::value::CounterKind::Other("energy".into());
+    let mut scenario = Scenario::new(seats)
+        .hand(0, [spell("{W}{U}")])
+        .counters(0, counter.clone(), energy)
+        .battlefield(0, mine.iter().map(|spec| permanent(spec)));
+    for seat in 0..seats {
+        scenario = scenario.library(seat, (0..12).map(|_| plains()));
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    assert_eq!(castable(&driver), castable_now);
+    if castable_now {
+        let events = driver.cast("Spell")?;
+        assert_eq!(
+            names(&driver, &events, false).len(),
+            3,
+            "the hub, the drum and the creature"
+        );
+        let left = driver.state().player(pid(0)).unwrap().counters_of(&counter);
+        assert_eq!(left, energy - 1, "one energy for the hub");
+    }
+    Ok(())
+}
+
 fn names(driver: &Driver, events: &[Event], sacrificed: bool) -> Vec<String> {
     events
         .iter()
