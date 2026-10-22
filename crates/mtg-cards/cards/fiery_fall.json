@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f014b1a1-20ef-475c-bf83-f1a82e68ab97",
+  "name": "Fiery Fall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fiery Fall",
+      "oracle_fingerprint": "6cfd63a788ece990a42b4c6ccf6feea5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+          }
+        },
+        {
+          "Keyword": {
+            "Typecycling": {
+              "find": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+              "cost": "{1}{R}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

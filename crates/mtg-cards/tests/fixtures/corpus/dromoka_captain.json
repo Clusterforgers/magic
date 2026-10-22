@@ -1,0 +1,28 @@
+{
+  "id": "2d11837c-613f-4e36-b5dd-99baf8b38532",
+  "oracle_id": "74333718-2a05-4643-9a37-013df39b32e0",
+  "name": "Dromoka Captain",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dtk",
+  "collector_number": "12",
+  "rarity": "uncommon",
+  "released_at": "2015-03-27",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Soldier",
+  "oracle_text": "First strike\nWhenever this creature attacks, bolster 1. (Choose a creature with the least toughness among creatures you control and put a +1/+1 counter on it.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "First strike",
+    "Bolster"
+  ]
+}

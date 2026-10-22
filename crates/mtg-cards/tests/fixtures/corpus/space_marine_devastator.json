@@ -1,0 +1,28 @@
+{
+  "id": "4a821438-2b60-421e-9fd2-3ce3ec958eb7",
+  "oracle_id": "fa25d142-e6ba-4fc9-81e2-114c32afc030",
+  "name": "Space Marine Devastator",
+  "lang": "en",
+  "layout": "normal",
+  "set": "40k",
+  "collector_number": "14",
+  "rarity": "rare",
+  "released_at": "2022-10-07",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Astartes Warrior",
+  "oracle_text": "Squad {2} (As an additional cost to cast this spell, you may pay {2} any number of times. When this creature enters, create that many tokens that are copies of it.)\nGrav-cannon — When this creature enters, destroy up to one target artifact or enchantment.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Grav-cannon",
+    "Squad"
+  ]
+}

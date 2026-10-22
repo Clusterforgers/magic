@@ -1,0 +1,44 @@
+{
+  "oracle_id": "5f981cca-5cd9-49e4-ab1a-bbbf6fc7e737",
+  "name": "Ancient Stone Idol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancient Stone Idol",
+      "oracle_fingerprint": "bcbf7edf831571e59a5dc4d88f157ae2",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Count": [{ "Type": "Creature" }, "Attacking"] }
+          }
+        },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Construct",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Construct"],
+                      "power": 6,
+                      "toughness": 12,
+                      "abilities": [{ "Keyword": "Trample" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

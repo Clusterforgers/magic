@@ -1,0 +1,28 @@
+{
+  "id": "76573f9d-f0f2-47b8-88e7-17d58d0d20d3",
+  "oracle_id": "18ae6be7-cfb6-42e3-a04e-99e9c1471ecd",
+  "name": "Dalek Squadron",
+  "lang": "en",
+  "layout": "normal",
+  "set": "who",
+  "collector_number": "65",
+  "rarity": "uncommon",
+  "released_at": "2023-10-13",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Artifact Creature — Dalek",
+  "oracle_text": "Menace\nMyriad (Whenever this creature attacks, for each opponent other than defending player, you may create a token copy that's tapped and attacking that player or a planeswalker they control. Exile the tokens at end of combat.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Menace",
+    "Myriad"
+  ]
+}

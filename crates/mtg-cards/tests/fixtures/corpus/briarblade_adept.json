@@ -1,0 +1,27 @@
+{
+  "id": "9d3fb5f1-baf5-4934-aac7-ffbaa85b2428",
+  "oracle_id": "6680a5f7-3ac1-4550-a29a-9553ad7ae465",
+  "name": "Briarblade Adept",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmr",
+  "collector_number": "111",
+  "rarity": "common",
+  "released_at": "2020-11-20",
+  "digital": false,
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Elf Assassin",
+  "oracle_text": "Whenever this creature attacks, target creature an opponent controls gets -1/-1 until end of turn.\nEncore {3}{B} ({3}{B}, Exile this card from your graveyard: For each opponent, create a token copy that attacks that opponent this turn if able. They gain haste. Sacrifice them at the beginning of the next end step. Activate only as a sorcery.)",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Encore"
+  ]
+}

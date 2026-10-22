@@ -1,0 +1,33 @@
+{
+  "id": "cf92a04d-279a-4843-949f-6a191fff559e",
+  "oracle_id": "d0a3b261-3daf-4082-8bc5-e66326a6c382",
+  "name": "Valley Rannet",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c13",
+  "collector_number": "224",
+  "rarity": "common",
+  "released_at": "2013-11-01",
+  "digital": false,
+  "mana_cost": "{4}{R}{G}",
+  "cmc": 6.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "Mountaincycling {2}, forestcycling {2} ({2}, Discard this card: Search your library for a Mountain or Forest card, reveal it, put it into your hand, then shuffle.)",
+  "power": "6",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Mountaincycling",
+    "Landcycling",
+    "Forestcycling",
+    "Typecycling",
+    "Cycling"
+  ]
+}

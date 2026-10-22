@@ -1,0 +1,28 @@
+{
+  "id": "08620dc9-3a83-4d09-a6d4-b25a7d0ac644",
+  "oracle_id": "3b6cbd2a-02ba-4afb-a081-0f25d830a8ee",
+  "name": "Caller of the Pack",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cma",
+  "collector_number": "94",
+  "rarity": "uncommon",
+  "released_at": "2017-06-09",
+  "digital": false,
+  "mana_cost": "{5}{G}{G}",
+  "cmc": 7.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "Trample\nMyriad (Whenever this creature attacks, for each opponent other than defending player, you may create a token copy that's tapped and attacking that player or a planeswalker they control. Exile the tokens at end of combat.)",
+  "power": "8",
+  "toughness": "6",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Trample",
+    "Myriad"
+  ]
+}

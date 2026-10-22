@@ -1,0 +1,12 @@
+{
+  "oracle_id": "d85ea576-a794-44bf-b405-1f1c49477409",
+  "name": "Sacred Cat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sacred Cat",
+      "oracle_fingerprint": "53973dd1cc6b368af1405bd2a16051d0",
+      "abilities": [{ "Keyword": "Lifelink" }, { "Keyword": { "Embalm": "{W}" } }]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "dee99df5-628f-4a4e-a203-4dfddc927373",
+  "name": "Vivid Meadow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vivid Meadow",
+      "oracle_fingerprint": "086f41710d8a82b6b8f5f88e8dde6708",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "charge", "count": 2, "tapped": true } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": "charge" } }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

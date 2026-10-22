@@ -1,0 +1,25 @@
+{
+  "oracle_id": "d9e24d7c-0907-45c1-b5d3-9fb16a929868",
+  "name": "Organic Extinction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Organic Extinction",
+      "oracle_fingerprint": "0ceed6ee5d46d96cbd15ea04eb0d42c5",
+      "abilities": [
+        { "Keyword": "Improvise" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "4371d5bc-1760-477b-822e-6d4999fb0a6b",
+  "name": "Herald of the Host",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Herald of the Host",
+      "oracle_fingerprint": "354f76962c5eb40190e1e166799a29d7",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Vigilance" }, { "Keyword": "Myriad" }]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "386da156-59cd-4b96-9276-a7cb2ddd0421",
+  "oracle_id": "c6906032-e08b-478f-bc71-cb1184f60bad",
+  "name": "Orchard Strider",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mh2",
+  "collector_number": "169",
+  "rarity": "common",
+  "released_at": "2021-06-18",
+  "digital": false,
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Creature — Treefolk",
+  "oracle_text": "When this creature enters, create two Food tokens. (They're artifacts with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nBasic landcycling {1}{G} ({1}{G}, Discard this card: Search your library for a basic land card, reveal it, put it into your hand, then shuffle.)",
+  "power": "6",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Landcycling",
+    "Food",
+    "Basic landcycling",
+    "Typecycling",
+    "Cycling"
+  ]
+}

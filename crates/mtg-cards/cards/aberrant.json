@@ -1,0 +1,31 @@
+{
+  "oracle_id": "46b5f12e-9fe5-44f6-b895-ee8c33205521",
+  "name": "Aberrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aberrant",
+      "oracle_fingerprint": "ddaf620587777b156cbcb0dc1a2d0756",
+      "abilities": [
+        { "Keyword": "Ravenous" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "ControlledBy": "Triggering" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

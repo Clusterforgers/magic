@@ -1,0 +1,31 @@
+{
+  "id": "ca4c8b04-66af-4cb3-8003-9088d8344b20",
+  "oracle_id": "0a7d0d1f-a5ac-4db9-860c-9fcbe3fd9e71",
+  "name": "Alpha Deathclaw",
+  "lang": "en",
+  "layout": "normal",
+  "set": "pip",
+  "collector_number": "91",
+  "rarity": "rare",
+  "released_at": "2024-03-08",
+  "digital": false,
+  "mana_cost": "{4}{B}{G}",
+  "cmc": 6.0,
+  "type_line": "Creature — Lizard Mutant",
+  "oracle_text": "Menace, trample\nWhen this creature enters or becomes monstrous, destroy target permanent.\n{5}{B}{G}: Monstrosity 4. (If this creature isn't monstrous, put four +1/+1 counters on it and it becomes monstrous.)",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Trample",
+    "Menace",
+    "Monstrosity"
+  ]
+}

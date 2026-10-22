@@ -1,0 +1,34 @@
+{
+  "oracle_id": "c6f76fa7-095e-4bfe-a38c-5c4531880880",
+  "name": "Curse of Verbosity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Verbosity",
+      "oracle_fingerprint": "0cb5624859d5314cf904c1b035f9a4f5",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "PlayerAttacked": { "who": "AttachedPlayer" } },
+            "effects": [
+              { "Draw": {} },
+              {
+                "Draw": {
+                  "who": {
+                    "ControllerOf": {
+                      "Each": [
+                        { "AttackingPlayer": "AttachedPlayer" },
+                        { "ControlledBy": "Opponents" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

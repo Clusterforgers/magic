@@ -1,0 +1,20 @@
+{
+  "oracle_id": "05eccdee-84f8-42d5-b79c-36d081656915",
+  "name": "Flame Jab",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flame Jab",
+      "oracle_fingerprint": "ffe3dc41ee094f138c48edd2419c4e56",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        { "Keyword": "Retrace" }
+      ]
+    }
+  ]
+}

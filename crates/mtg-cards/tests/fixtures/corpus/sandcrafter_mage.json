@@ -1,0 +1,27 @@
+{
+  "id": "8998b4a5-d94b-45b3-b619-bd850e240ce0",
+  "oracle_id": "6bf9c91f-f278-4b97-8517-d062118c4e56",
+  "name": "Sandcrafter Mage",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dtk",
+  "collector_number": "33",
+  "rarity": "common",
+  "released_at": "2015-03-27",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "When this creature enters, bolster 1. (Choose a creature with the least toughness among creatures you control and put a +1/+1 counter on it.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Bolster"
+  ]
+}

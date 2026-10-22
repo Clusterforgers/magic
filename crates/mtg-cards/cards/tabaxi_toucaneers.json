@@ -1,0 +1,12 @@
+{
+  "oracle_id": "36dd999e-53da-45c7-ae98-90f7aad78680",
+  "name": "Tabaxi Toucaneers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tabaxi Toucaneers",
+      "oracle_fingerprint": "9d9b26f3834f4773abf0ee9128f177f8",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Myriad" }]
+    }
+  ]
+}

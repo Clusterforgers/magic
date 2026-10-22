@@ -4,8 +4,10 @@
 //! engine asks about: blocking, attacking, damage, targeting, timing and destruction. The engine reads the
 //! keywords an object has through [`keywords_of`] and the helpers below it, never from the rules of the card.
 
+mod affinity;
 pub(crate) mod aftermath;
 mod battle_cry;
+mod blitz;
 mod buyback;
 mod cascade;
 mod changeling;
@@ -25,11 +27,13 @@ mod disguise;
 mod doctors_companion;
 mod double_strike;
 mod echo;
+mod embalm;
 mod enchant;
 mod encore;
 mod entwine;
 mod equip;
 mod escape;
+mod eternalize;
 mod evoke;
 mod fear;
 mod first_strike;
@@ -40,9 +44,11 @@ pub(crate) mod foretell;
 mod fuse;
 mod haste;
 mod hexproof;
+mod improvise;
 mod indestructible;
 mod infect;
 mod intimidate;
+mod jump_start;
 mod kicker;
 mod landwalk;
 mod lifelink;
@@ -64,9 +70,11 @@ mod protection;
 #[cfg(test)]
 mod provided;
 mod prowess;
+mod ravenous;
 mod reach;
 mod rebound;
 mod reconfigure;
+mod retrace;
 mod shadow;
 mod shroud;
 mod skulk;
@@ -76,6 +84,7 @@ mod storm;
 pub(crate) mod suspend;
 mod toxic;
 mod trample;
+mod typecycling;
 mod undaunted;
 mod undying;
 mod unearth;
@@ -398,11 +407,20 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Rebound => &rebound::Rebound,
         Keyword::Aftermath => &aftermath::Aftermath,
         Keyword::Dash(_) => &dash::Dash,
+        Keyword::Blitz(_) => &blitz::Blitz,
         Keyword::Ninjutsu(_) => &ninjutsu::Ninjutsu,
         Keyword::Echo(_) => &echo::Echo,
         Keyword::CumulativeUpkeep(_) => &cumulative_upkeep::CumulativeUpkeep,
         Keyword::Undying => &undying::Undying,
         Keyword::Persist => &persist::Persist,
+        Keyword::Ravenous => &ravenous::Ravenous,
+        Keyword::JumpStart => &jump_start::JumpStart,
+        Keyword::Retrace => &retrace::Retrace,
+        Keyword::Embalm(_) => &embalm::Embalm,
+        Keyword::Eternalize(_) => &eternalize::Eternalize,
+        Keyword::Improvise => &improvise::Improvise,
+        Keyword::Affinity(_) => &affinity::Affinity,
+        Keyword::Typecycling { .. } => &typecycling::Typecycling,
     }
 }
 
@@ -652,11 +670,23 @@ mod tests {
             Keyword::Rebound,
             Keyword::Aftermath,
             Keyword::Dash(cost()),
+            Keyword::Blitz(cost()),
             Keyword::Ninjutsu(cost()),
             Keyword::Echo(cost()),
             Keyword::CumulativeUpkeep(cost()),
             Keyword::Undying,
             Keyword::Persist,
+            Keyword::Ravenous,
+            Keyword::JumpStart,
+            Keyword::Retrace,
+            Keyword::Embalm(cost()),
+            Keyword::Eternalize(cost()),
+            Keyword::Improvise,
+            Keyword::Affinity(Selector::default()),
+            Keyword::Typecycling {
+                find: Selector::default(),
+                cost: cost(),
+            },
         ]
     }
 
@@ -725,11 +755,23 @@ mod tests {
         "Keyword.Rebound",
         "Keyword.Aftermath",
         "Keyword.Dash",
+        "Keyword.Blitz",
         "Keyword.Ninjutsu",
         "Keyword.Echo",
         "Keyword.CumulativeUpkeep",
         "Keyword.Undying",
         "Keyword.Persist",
+        "Keyword.Myriad",
+        "Keyword.Squad",
+        "Keyword.Ravenous",
+        "Keyword.JumpStart",
+        "Keyword.Retrace",
+        "Keyword.Embalm",
+        "Keyword.Eternalize",
+        "Keyword.Improvise",
+        "Keyword.Affinity",
+        "Keyword.Typecycling",
+        "Keyword.Encore",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -839,18 +881,23 @@ mod tests {
     #[case::rebound(Keyword::Rebound, Hooks::none())]
     #[case::aftermath(Keyword::Aftermath, Hooks::none())]
     #[case::dash(Keyword::Dash(Cost::mana("{1}{R}".parse().unwrap())), Hooks { abilities: 2, ..Hooks::none() })]
+    #[case::blitz(Keyword::Blitz(Cost::mana("{1}{R}".parse().unwrap())), Hooks { abilities: 3, ..Hooks::none() })]
+    #[case::encore(Keyword::Encore(Cost::mana("{2}{W}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ninjutsu(Keyword::Ninjutsu(Cost::mana("{1}{U}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::echo(Keyword::Echo(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::cumulative_upkeep(Keyword::CumulativeUpkeep(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::undying(Keyword::Undying, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::persist(Keyword::Persist, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::myriad(Keyword::Myriad, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::squad(Keyword::Squad(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::ravenous(Keyword::Ravenous, Hooks { abilities: 2, ..Hooks::none() })]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);
     }
 
     #[test]
-    fn only_kicker_multikicker_buyback_and_entwine_add_a_cost_and_only_multikicker_repeats() {
+    fn only_four_keywords_and_squad_add_a_cost_and_only_multikicker_and_squad_repeat() {
         let given: Vec<(&str, bool, OptionalKind)> = every_keyword()
             .iter()
             .filter_map(|keyword| {
@@ -865,6 +912,7 @@ mod tests {
                 ("Multikicker", true, OptionalKind::Kicker),
                 ("Buyback", false, OptionalKind::Buyback),
                 ("Entwine", false, OptionalKind::Entwine),
+                ("Squad", true, OptionalKind::Kicker),
             ]
         );
     }

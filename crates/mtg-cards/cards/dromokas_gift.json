@@ -1,0 +1,12 @@
+{
+  "oracle_id": "1264da2f-4767-4bec-b4ed-1c625ac3cf95",
+  "name": "Dromoka's Gift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dromoka's Gift",
+      "oracle_fingerprint": "9a32db4c143dbbaafe528fa3955c7d78",
+      "abilities": [{ "Spell": { "effects": [{ "Bolster": { "count": 4 } }] } }]
+    }
+  ]
+}

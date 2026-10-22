@@ -1,0 +1,15 @@
+{
+  "oracle_id": "cce9bbff-82dc-4b2f-addd-d6715588de20",
+  "name": "Thoughtcast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thoughtcast",
+      "oracle_fingerprint": "763dcb31253472b3175949c3d338e960",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Type": "Artifact" }] } },
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }] } }
+      ]
+    }
+  ]
+}

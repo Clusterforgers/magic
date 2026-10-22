@@ -1,8 +1,9 @@
 //! Patterns over game events: what triggers an ability and what a replacement effect replaces.
 
+use mtg_core::color::Color;
 use serde::{Deserialize, Serialize};
 
-use crate::effect::Effect;
+use crate::effect::{Effect, is_false};
 use crate::modify::Modification;
 use crate::refs::{Ref, Selector, ZoneKind};
 use crate::value::{Amount, Condition, CounterKind};
@@ -75,6 +76,25 @@ pub enum TriggerPattern {
     AttacksPlayer {
         /// The attacker.
         what: Selector,
+        /// The player attacked.
+        at: Ref,
+    },
+    /// A player is attacked ("whenever enchanted player is attacked"): creatures are declared as attackers of that
+    /// player (an attack on only their planeswalkers is not one). It triggers once for the declaration, however many
+    /// creatures attack; `Triggering` is the attacked player.
+    PlayerAttacked {
+        /// The player attacked.
+        who: Ref,
+    },
+    /// A player attacks a player with one or more creatures ("whenever a player attacks enchanted player with one or
+    /// more creatures"). It triggers once for each attacking player; `Triggering` is the attacking player.
+    PlayerAttacks {
+        /// The attacking player.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        by: Ref,
         /// The player attacked.
         at: Ref,
     },
@@ -255,6 +275,15 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// A player amasses ("whenever you amass"); `Triggering` is that player.
+    Amassed {
+        /// Who amasses.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
     /// A creature matching the selector explores ("whenever a creature you control explores"); `Triggering` is its
     /// controller.
     Explored {
@@ -266,6 +295,27 @@ pub enum TriggerPattern {
     Connived {
         /// The creature that connives.
         what: Selector,
+    },
+    /// A creature matching the selector becomes monstrous ("when this creature becomes monstrous"); `Triggering` is its
+    /// controller.
+    BecomesMonstrous {
+        /// The creature that becomes monstrous.
+        what: Selector,
+    },
+    /// A creature matching the selector adapts ("whenever a creature you control adapts"); `Triggering` is its
+    /// controller.
+    Adapted {
+        /// The creature that adapts.
+        what: Selector,
+    },
+    /// A player bolsters ("whenever you bolster"); `Triggering` is that player.
+    Bolstered {
+        /// Who bolsters.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
     },
     /// A step begins ("at the beginning of ...").
     StepBegins {
@@ -378,6 +428,8 @@ pub enum ReplaceWhen {
 pub enum EntersChoice {
     /// A colour.
     Color,
+    /// A colour other than this one ("choose a color other than red").
+    ColorOtherThan(Color),
     /// A creature type.
     CreatureType,
     /// A player.
@@ -413,6 +465,9 @@ pub enum ReplaceBy {
         counter: CounterKind,
         /// How many.
         count: Amount,
+        /// It enters tapped as well ("enters tapped with two charge counters on it").
+        #[serde(default, skip_serializing_if = "is_false")]
+        tapped: bool,
     },
     /// As the permanent enters, its controller makes this choice, which the permanent remembers for its abilities.
     Choose(EntersChoice),

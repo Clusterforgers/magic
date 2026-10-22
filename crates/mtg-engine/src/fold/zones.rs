@@ -15,7 +15,7 @@ use crate::error::EngineError;
 use crate::events::{Event, ZoneCause};
 use crate::keywords::OptionalKind;
 use crate::library::{Scried, Surveilled};
-use crate::object::{GameObject, ObjectKind, PermanentState};
+use crate::object::{Designations, GameObject, ObjectKind, PermanentState};
 use crate::state::{GameState, Tally};
 use crate::zones::{Placement, Zone};
 
@@ -86,6 +86,7 @@ pub(super) fn move_object(
     if to == Zone::Battlefield {
         object.permanent = Some(PermanentState {
             tapped: false,
+            designations: Designations::default(),
             damage: 0,
             deathtouched: false,
             summoning_sick: true,
@@ -221,7 +222,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             let adventure = state.objects.get(object).is_some_and(|spell| {
                 spell.whole_card().layout == Layout::Adventure && spell.face() == Some(1)
             });
-            if choices.way == Some(CastWay::Flashback) || bought_back || adventure {
+            if choices.way.is_some_and(CastWay::exiles_the_spell) || bought_back || adventure {
                 state.possible.replacements = true;
             }
             reset_passes(state);

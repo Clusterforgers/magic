@@ -1,0 +1,32 @@
+{
+  "oracle_id": "bec585af-0c59-46a7-838f-d747c80a9e97",
+  "name": "Arbor Colossus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arbor Colossus",
+      "oracle_fingerprint": "7b01c76ab2a219460ad502a4825776c7",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Activated": { "cost": "{3}{G}{G}{G}", "effects": [{ "Monstrosity": { "count": 3 } }] } },
+        {
+          "Triggered": {
+            "when": { "BecomesMonstrous": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "HasKeyword": "Flying" },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

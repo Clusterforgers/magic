@@ -11,7 +11,7 @@ use crate::decision::{AttackOptions, AttackerOption, BlockOptions, BlockerOption
 use crate::error::IllegalAnswer;
 use crate::events::Event;
 use crate::keywords;
-use crate::rules::{must_attack, must_block};
+use crate::rules::{must_attack, must_attack_players, must_block};
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -237,6 +237,20 @@ pub(crate) fn defenders_for(state: &GameState, player: PlayerId) -> Vec<AttackTa
     targets
 }
 
+/// The player a rule pairs the creature `object` with (Encore, CR 702.141) when that player is among the `defenders`: the
+/// creature attacks that player if able, so it may attack no one else. A rule that pairs it with a player who cannot be
+/// attacked asks nothing of it.
+fn paired_defender(
+    state: &GameState,
+    object: ObjectId,
+    defenders: &[AttackTarget],
+) -> Option<AttackTarget> {
+    must_attack_players(state, object)
+        .into_iter()
+        .map(AttackTarget::Player)
+        .find(|target| defenders.contains(target))
+}
+
 /// Every creature `player` may attack with and what each may attack.
 pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptions {
     let defenders = defenders_for(state, player);
@@ -247,13 +261,18 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
         .filter(|id| can_attack(state, *id, player))
         .map(|object| AttackerOption {
             object,
-            defenders: defenders.clone(),
+            defenders: paired_defender(state, object, &defenders)
+                .map_or_else(|| defenders.clone(), |only| vec![only]),
         })
         .collect::<Vec<_>>();
     // A creature that can't attack any defender is not required to (it is "able" only with one to attack).
     let required = attackers
         .iter()
-        .filter(|option| !option.defenders.is_empty() && must_attack(state, option.object))
+        .filter(|option| {
+            !option.defenders.is_empty()
+                && (must_attack(state, option.object)
+                    || paired_defender(state, option.object, &defenders).is_some())
+        })
         .map(|option| option.object)
         .collect();
     AttackOptions {
@@ -439,7 +458,7 @@ pub(crate) fn attack_events(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a creature a rule requires to attack or block is named by the options only while it is able to, a declaration that leaves it out is refused by name and one that names it is accepted, a creature that cannot attack or block is not required, a blocker is required only while it could still be added to the declaration (menace included), and a game with no such rule offers no requirement.
+    //! Goal: a creature a rule requires to attack or block is named by the options only while it is able to, a creature a rule pairs with a player attacks that player only and must while one paired with a player who cannot be attacked is free, a declaration that leaves it out is refused by name and one that names it is accepted, a creature that cannot attack or block is not required, a blocker is required only while it could still be added to the declaration (menace included), and a game with no such rule offers no requirement.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -560,6 +579,117 @@ mod tests {
             check_attackers(&options, &attacks(&game, &["Fox"])),
             Err(IllegalAnswer::NotOffered("attacker"))
         );
+    }
+
+    /// `seats` players: seat 0 controls a Wolf and a Fox, every other seat a Bear; it is seat 0's declare attackers step.
+    fn table(seats: usize) -> GameState {
+        let mut fields = vec![vec![creature("Wolf", 2, 2), creature("Fox", 1, 1)]];
+        fields.extend((1..seats).map(|seat| vec![creature(&format!("Bear {seat}"), 2, 2)]));
+        let mut game = state(vec![vec![]; seats], fields);
+        game.turn.step = Step::DeclareAttackers;
+        game
+    }
+
+    /// A rule that pairs each creature with the seat after it (Encore, CR 702.141).
+    fn pair(game: &mut GameState, pairs: &[(&str, usize)]) {
+        let named = pairs
+            .iter()
+            .map(|(name, seat)| {
+                let object = game.object(id(game, name)).unwrap().reference();
+                (object, PlayerId::from_index(*seat))
+            })
+            .collect();
+        let effect = RuleEffect {
+            id: EffectId(game.next_effect),
+            rule: Rule::MustAttackPlayers(named),
+            duration: Duration::UntilEndOfTurn,
+            source: None,
+            controller: ME,
+            turn: 1,
+        };
+        apply_event(game, &Event::RuleCreated { effect }).unwrap();
+    }
+
+    fn defenders_of(options: &AttackOptions, game: &GameState, name: &str) -> Vec<AttackTarget> {
+        let wanted = id(game, name);
+        options
+            .attackers
+            .iter()
+            .find(|a| a.object == wanted)
+            .map(|a| a.defenders.clone())
+            .unwrap()
+    }
+
+    #[rstest]
+    #[case::two_seats(2)]
+    #[case::three_seats(3)]
+    #[case::four_seats(4)]
+    fn a_creature_paired_with_a_player_attacks_that_player_only_and_must(#[case] seats: usize) {
+        let mut game = table(seats);
+        let last = seats - 1;
+        pair(&mut game, &[("Wolf", 1), ("Fox", last)]);
+        let options = attack_options(&game, ME);
+        let player = |seat: usize| vec![AttackTarget::Player(PlayerId::from_index(seat))];
+        assert_eq!(defenders_of(&options, &game, "Wolf"), player(1));
+        assert_eq!(defenders_of(&options, &game, "Fox"), player(last));
+        let mut named = options.required.clone();
+        named.sort();
+        let mut expected = vec![id(&game, "Wolf"), id(&game, "Fox")];
+        expected.sort();
+        assert_eq!(named, expected);
+        let attack = |wolf: usize, fox: usize| {
+            vec![
+                (
+                    id(&game, "Wolf"),
+                    AttackTarget::Player(PlayerId::from_index(wolf)),
+                ),
+                (
+                    id(&game, "Fox"),
+                    AttackTarget::Player(PlayerId::from_index(fox)),
+                ),
+            ]
+        };
+        assert_eq!(check_attackers(&options, &attack(1, last)), Ok(()));
+        assert_eq!(
+            check_attackers(&options, &attack(1, last)[..1]),
+            Err(IllegalAnswer::Required("attacker"))
+        );
+        if seats > 2 {
+            assert_eq!(
+                check_attackers(&options, &attack(last, last)),
+                Err(IllegalAnswer::NotOffered("defender"))
+            );
+        }
+        assert_eq!(options.required_attack(), attack(1, last));
+    }
+
+    #[rstest]
+    #[case::one_that_left(3, &[2], &[1])]
+    #[case::the_only_one(2, &[1], &[])]
+    #[case::one_of_three_left(4, &[3], &[1, 2])]
+    fn a_creature_paired_with_a_player_who_cannot_be_attacked_is_free(
+        #[case] seats: usize,
+        #[case] gone: &[usize],
+        #[case] left: &[usize],
+    ) {
+        let mut game = table(seats);
+        pair(&mut game, &[("Wolf", seats - 1)]);
+        for seat in gone {
+            let event = Event::PlayerLost {
+                player: PlayerId::from_index(*seat),
+                reason: crate::player::LossReason::Conceded,
+            };
+            apply_event(&mut game, &event).unwrap();
+        }
+        let options = attack_options(&game, ME);
+        assert_eq!(options.required, []);
+        let defenders = defenders_of(&options, &game, "Wolf");
+        assert_eq!(defenders_of(&options, &game, "Fox"), defenders);
+        let seats_left: Vec<AttackTarget> = left
+            .iter()
+            .map(|seat| AttackTarget::Player(PlayerId::from_index(*seat)))
+            .collect();
+        assert_eq!(defenders, seats_left);
     }
 
     #[test]

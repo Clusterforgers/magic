@@ -1,0 +1,27 @@
+{
+  "id": "c6596998-8602-4477-b097-45e6d3dcef82",
+  "oracle_id": "75132177-0881-4158-9d65-73f5ba9d4402",
+  "name": "Skitter Eel",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clu",
+  "collector_number": "98",
+  "rarity": "common",
+  "released_at": "2024-02-23",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Fish Crab",
+  "oracle_text": "{2}{U}: Adapt 2. (If this creature has no +1/+1 counters on it, put two +1/+1 counters on it.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Adapt"
+  ]
+}
