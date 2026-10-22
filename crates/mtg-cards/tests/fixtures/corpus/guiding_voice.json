@@ -1,0 +1,25 @@
+{
+  "id": "d6fb3163-12ca-4a7f-a0c7-b8ddfc9408a0",
+  "oracle_id": "5c7e7c9e-00d1-497e-bee7-278bbd82e234",
+  "name": "Guiding Voice",
+  "lang": "en",
+  "layout": "normal",
+  "set": "stx",
+  "collector_number": "19",
+  "rarity": "common",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Put a +1/+1 counter on target creature.\nLearn. (You may reveal a Lesson card you own from outside the game and put it into your hand, or discard a card to draw a card.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Learn"
+  ]
+}

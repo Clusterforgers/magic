@@ -734,6 +734,7 @@ impl<'a> Walker<'a> {
             | Keyword::Squad(cost)
             | Keyword::Flashback(cost)
             | Keyword::Madness(cost)
+            | Keyword::Miracle(cost)
             | Keyword::Buyback(cost)
             | Keyword::Entwine(cost)
             | Keyword::Evoke(cost)
@@ -757,6 +758,18 @@ impl<'a> Walker<'a> {
                 self.parts_that_need_an_announcement("Keyword", "Cost", cost);
             }
             Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
+            Keyword::Backup { count, abilities } => {
+                if *count == 0 {
+                    self.problem("backup needs a number of at least 1");
+                }
+                // The abilities that follow the keyword are what the target gains.
+                for ability in abilities {
+                    match ability {
+                        Ability::Keyword(granted) => self.keyword(granted),
+                        other => self.granted(other),
+                    }
+                }
+            }
             Keyword::Saddle(0) => self.problem("saddle needs a power of at least 1"),
             Keyword::Enchant(selector) => {
                 self.selector(selector);
@@ -782,6 +795,7 @@ impl<'a> Walker<'a> {
             Keyword::Toxic(0) => self.problem("toxic needs a number of at least 1"),
             Keyword::Annihilator(0) => self.problem("annihilator needs a number of at least 1"),
             Keyword::Dredge(0) => self.problem("dredge needs a number of at least 1"),
+            Keyword::Fabricate(0) => self.problem("fabricate needs a number of at least 1"),
             Keyword::PartnerWith(name) => {
                 self.names
                     .push((self.face, self.current_path(), name.clone()));
@@ -944,9 +958,12 @@ impl<'a> Walker<'a> {
             | TriggerPattern::BecomesMonarch { who }
             | TriggerPattern::Proliferated { who }
             | TriggerPattern::Amassed { who }
-            | TriggerPattern::Bolstered { who }
-            | TriggerPattern::Drew { who } => {
+            | TriggerPattern::Bolstered { who } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
+            }
+            TriggerPattern::Drew { who, what } => {
+                self.at("who", |w| w.reference(who, Kind::Player));
+                self.at("what", |w| w.selector(what));
             }
             TriggerPattern::Discarded { what, by }
             | TriggerPattern::TappedForMana { what, by }
@@ -1223,6 +1240,7 @@ impl<'a> Walker<'a> {
             Effect::Amass { count, .. }
             | Effect::Monstrosity { count }
             | Effect::Adapt { count }
+            | Effect::Fabricate { count }
             | Effect::Bolster { count } => w.at("count", |w| w.amount(count)),
             Effect::Search {
                 who,
@@ -1257,9 +1275,12 @@ impl<'a> Walker<'a> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("what", |w| w.reference(what, Kind::Object));
                 if let Some(way) = way
-                    && !matches!(way, CastWay::Madness | CastWay::Suspend)
+                    && !matches!(
+                        way,
+                        CastWay::Madness | CastWay::Miracle | CastWay::Suspend
+                    )
                 {
-                    w.problem("only madness and suspend are cast for a way of their own");
+                    w.problem("only madness, miracle and suspend are cast for a way of their own");
                 }
                 w.effect_list("otherwise", otherwise, false);
             }
@@ -1296,6 +1317,7 @@ impl<'a> Walker<'a> {
             | Effect::Proliferate { who }
             | Effect::BecomeMonarch { who }
             | Effect::TimeTravel { who }
+            | Effect::Learn { who }
             | Effect::ExtraTurn { who } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
             }

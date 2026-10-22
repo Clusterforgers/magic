@@ -330,11 +330,8 @@ pub fn read(item: &str) -> Option<Keyword> {
         "entwine" => spell_cost(rest).map(Keyword::Entwine),
         "flashback" => spell_cost(rest).map(Keyword::Flashback),
         "madness" => spell_cost(rest).map(Keyword::Madness),
-        "dredge" => rest
-            .parse()
-            .ok()
-            .filter(|cards| *cards > 0)
-            .map(Keyword::Dredge),
+        "miracle" => spell_cost(rest).map(Keyword::Miracle),
+        "dredge" => positive(rest).map(Keyword::Dredge),
         "morph" => cost(rest).map(Keyword::Morph),
         "disguise" => cost(rest).map(Keyword::Disguise),
         "evoke" => spell_cost(rest).map(Keyword::Evoke),
@@ -353,16 +350,15 @@ pub fn read(item: &str) -> Option<Keyword> {
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
         "echo" => spell_cost(rest).map(Keyword::Echo),
         "cumulative upkeep" => spell_cost(rest).map(Keyword::CumulativeUpkeep),
-        "crew" => rest
-            .parse()
-            .ok()
-            .filter(|power| *power > 0)
-            .map(Keyword::Crew),
-        "saddle" => rest
-            .parse()
-            .ok()
-            .filter(|power| *power > 0)
-            .map(Keyword::Saddle),
+        "vanishing" => positive(rest).map(Keyword::Vanishing),
+        "fading" => positive(rest).map(Keyword::Fading),
+        "backup" => positive(rest).map(|count| Keyword::Backup {
+            count,
+            abilities: Vec::new(),
+        }),
+        "crew" => positive(rest).map(Keyword::Crew),
+        "saddle" => positive(rest).map(Keyword::Saddle),
+        "fabricate" => positive(rest).map(Keyword::Fabricate),
         "level up" => cost(rest).map(Keyword::LevelUp),
         "outlast" => cost(rest).map(Keyword::Outlast),
         "suspend" => suspend(rest),
@@ -373,16 +369,8 @@ pub fn read(item: &str) -> Option<Keyword> {
         "partner" if rest.starts_with('\u{2014}') => partner_group(rest),
         "protection" => protection(rest).map(Keyword::Protection),
         "companion" => Some(Keyword::Companion),
-        "toxic" => rest
-            .parse()
-            .ok()
-            .filter(|poison| *poison > 0)
-            .map(Keyword::Toxic),
-        "annihilator" => rest
-            .parse()
-            .ok()
-            .filter(|sacrificed| *sacrificed > 0)
-            .map(Keyword::Annihilator),
+        "toxic" => positive(rest).map(Keyword::Toxic),
+        "annihilator" => positive(rest).map(Keyword::Annihilator),
         "landwalk" => landwalk(item),
         "affinity for" => super::read::affinity_filter(rest).map(Keyword::Affinity),
         "typecycling" => typecycling(item, rest),
@@ -396,6 +384,11 @@ pub fn read(item: &str) -> Option<Keyword> {
         name if rest.is_empty() => plain(name),
         _ => None,
     }
+}
+
+/// A whole number above zero, as the counted keywords print it ("Crew 2", "Dredge 3").
+fn positive(rest: &str) -> Option<u32> {
+    rest.parse().ok().filter(|number| *number > 0)
 }
 
 /// The text of a `Partner—<text>` item (`Friends forever`, `Character select`), the group of commanders that pair.
@@ -497,6 +490,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "evolve" => Keyword::Evolve,
         "saddled" => Keyword::Saddled,
         "ravenous" => Keyword::Ravenous,
+        "ascend" => Keyword::Ascend,
         "jump-start" => Keyword::JumpStart,
         "retrace" => Keyword::Retrace,
         _ => return None,
@@ -731,6 +725,7 @@ mod tests {
     #[case::affinity_for_a_subtype("Affinity for Islands", Keyword::Affinity(Selector(vec![Pred::Subtype(Subtype("Island".into()))])))]
     #[case::affinity_for_tokens("Affinity for tokens", Keyword::Affinity(Selector(vec![Pred::Token])))]
     #[case::madness("Madness {R}", Keyword::Madness(mana("{R}")))]
+    #[case::miracle("Miracle {W}", Keyword::Miracle(mana("{W}")))]
     #[case::dredge("Dredge 3", Keyword::Dredge(3))]
     #[case::dredge_six("Dredge 6", Keyword::Dredge(6))]
     #[case::morph("Morph {3}{B}", Keyword::Morph(mana("{3}{B}")))]
@@ -784,6 +779,9 @@ mod tests {
     #[case::annihilator("Annihilator 2", Keyword::Annihilator(2))]
     #[case::annihilator_six("Annihilator 6", Keyword::Annihilator(6))]
     #[case::ravenous("Ravenous", Keyword::Ravenous)]
+    #[case::ascend("Ascend", Keyword::Ascend)]
+    #[case::fabricate("Fabricate 2", Keyword::Fabricate(2))]
+    #[case::fabricate_lowercase("fabricate 1", Keyword::Fabricate(1))]
     #[case::foretell("Foretell {1}{U}", Keyword::Foretell(mana("{1}{U}")))]
     #[case::foretell_for_nothing("Foretell {0}", Keyword::Foretell(mana("{0}")))]
     #[case::unearth("Unearth {1}{B}", Keyword::Unearth(mana("{1}{B}")))]
@@ -815,6 +813,9 @@ mod tests {
         ]))
     )]
     #[case::crew("Crew 3", Keyword::Crew(3))]
+    #[case::vanishing("Vanishing 3", Keyword::Vanishing(3))]
+    #[case::fading("Fading 5", Keyword::Fading(5))]
+    #[case::backup("Backup 2", Keyword::Backup { count: 2, abilities: vec![] })]
     #[case::saddle("Saddle 2", Keyword::Saddle(2))]
     #[case::level_up("Level up {1}{U}", Keyword::LevelUp(mana("{1}{U}")))]
     #[case::level_up_for_one("level up {1}", Keyword::LevelUp(mana("{1}")))]
@@ -922,6 +923,9 @@ mod tests {
     #[case::crew_x("Crew X")]
     #[case::dredge_x("Dredge X")]
     #[case::dredge_nothing("Dredge 0")]
+    #[case::fabricate_x("Fabricate X")]
+    #[case::fabricate_nothing("Fabricate 0")]
+    #[case::ascend_with_a_number("Ascend 1")]
     #[case::crew_nothing("Crew 0")]
     #[case::saddle_nothing("Saddle 0")]
     #[case::saddle_x("Saddle X")]
@@ -1074,8 +1078,13 @@ mod tests {
             "Annihilator 2",
             "Extort",
             "Evolve",
+            "Vanishing 3",
+            "Fading 5",
+            "Backup 1",
             "Ravenous",
             "Foretell {1}",
+            "Fabricate 1",
+            "Ascend",
             "Daybound",
             "Nightbound",
             "Wither",
@@ -1100,6 +1109,7 @@ mod tests {
             "Embalm {1}",
             "Eternalize {1}",
             "Dash {1}",
+            "Miracle {1}{W}",
             "Bestow {1}",
             "Blitz {1}",
             "Ninjutsu {1}{U}",

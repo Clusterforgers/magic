@@ -1,0 +1,21 @@
+{
+  "oracle_id": "7aae7c7b-0b31-4b48-a8d3-81c913f604cf",
+  "name": "Study Break",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Study Break",
+      "oracle_fingerprint": "a5ee475dddba98a5bb2e1dc967c0f178",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }, { "Learn": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

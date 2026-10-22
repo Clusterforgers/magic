@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f474d421-5fd0-4d76-95cb-4824a2381a29",
+  "name": "Poet's Quill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Poet's Quill",
+      "oracle_fingerprint": "17f3d0eec2d263bf6a3cebc7d8fe2a2b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Learn": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Lifelink" }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}{B}" } }
+      ]
+    }
+  ]
+}

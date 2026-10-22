@@ -69,6 +69,8 @@ pub(crate) struct Possible {
     pub(crate) costs: bool,
     /// Some card has daybound or nightbound, so the day and night are watched.
     pub(crate) day_night: bool,
+    /// Some card has ascend, so the city's blessing is watched.
+    pub(crate) ascend: bool,
     /// Some card, token or player has protection or an effect that gives it, so damage is checked against it.
     pub(crate) protection: bool,
 }
@@ -152,6 +154,8 @@ pub struct GameState {
     pub(crate) day_night: Option<crate::day_night::DayNight>,
     /// The monarch (CR 724): at most one player, from the first card that makes one.
     pub(crate) monarch: Option<PlayerId>,
+    /// The players who have the city's blessing (CR 702.131), for the rest of the game.
+    pub(crate) citys_blessing: std::collections::BTreeSet<PlayerId>,
     /// The commanders of the game and what is counted for them (CR 903); empty outside Commander.
     pub(crate) commanders: crate::commanders::Commanders,
 }
@@ -506,6 +510,10 @@ impl Hash for GameState {
         // Likewise a game without a monarch.
         if let Some(monarch) = self.monarch {
             monarch.hash(state);
+        }
+        // Likewise a game where nobody has the city's blessing.
+        if !self.citys_blessing.is_empty() {
+            self.citys_blessing.hash(state);
         }
         // Likewise a game without commanders.
         self.commanders.hash(state);

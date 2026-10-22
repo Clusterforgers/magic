@@ -1,0 +1,22 @@
+{
+  "oracle_id": "a2ae1a1b-5c4f-46ed-90da-bd50ca914e7c",
+  "name": "Vanishment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vanishment",
+      "oracle_fingerprint": "f8e2a7543d1311f9843afb720fca6a90",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        },
+        { "Keyword": { "Miracle": "{U}" } }
+      ]
+    }
+  ]
+}

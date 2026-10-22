@@ -1,0 +1,15 @@
+{
+  "oracle_id": "c1ebe189-db71-47cd-a763-8cb8c305383a",
+  "name": "Rejuvenation Chamber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rejuvenation Chamber",
+      "oracle_fingerprint": "0acf0140dc9bcbec75fb900d28f63634",
+      "abilities": [
+        { "Keyword": { "Fading": 2 } },
+        { "Activated": { "cost": ["Tap"], "effects": [{ "GainLife": { "amount": 2 } }] } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "oracle_id": "66a131ae-dbb2-4e7b-b6ce-7695f47c8f87",
+  "name": "Serpent-Blade Assailant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serpent-Blade Assailant",
+      "oracle_fingerprint": "8ecb1641e26a643ebd1708f14852f055",
+      "abilities": [
+        { "Keyword": { "Backup": { "count": 1, "abilities": [{ "Keyword": "Deathtouch" }] } } },
+        { "Keyword": "Deathtouch" }
+      ]
+    }
+  ]
+}

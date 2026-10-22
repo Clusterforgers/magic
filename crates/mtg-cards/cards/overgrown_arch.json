@@ -1,0 +1,21 @@
+{
+  "oracle_id": "802f8bcd-9219-48cd-a4c5-d9ea9ef60c9e",
+  "name": "Overgrown Arch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overgrown Arch",
+      "oracle_fingerprint": "6de657ce92fb460268f691ef879af8bb",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Activated": { "cost": ["Tap"], "effects": [{ "GainLife": { "amount": 1 } }] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "SacrificeSelf"],
+            "effects": [{ "Learn": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

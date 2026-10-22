@@ -1,0 +1,12 @@
+{
+  "oracle_id": "1782bfd7-7d8f-4ed2-9d45-ba9adb41e996",
+  "name": "Visionary Augmenter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Visionary Augmenter",
+      "oracle_fingerprint": "c5bc6f69154cee4cd89c7cccba755967",
+      "abilities": [{ "Keyword": { "Fabricate": 2 } }]
+    }
+  ]
+}

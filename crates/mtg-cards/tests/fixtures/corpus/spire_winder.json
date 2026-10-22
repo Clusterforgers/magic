@@ -1,0 +1,28 @@
+{
+  "id": "aca438d7-1134-4fee-9fad-85c3b1abe8ed",
+  "oracle_id": "e8cfb24a-7e52-4e39-a9e1-969b4a65b62e",
+  "name": "Spire Winder",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rix",
+  "collector_number": "57",
+  "rarity": "common",
+  "released_at": "2018-01-19",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Snake",
+  "oracle_text": "Flying\nAscend (If you control ten or more permanents, you get the city's blessing for the rest of the game.)\nThis creature gets +1/+1 as long as you have the city's blessing.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Ascend"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "a32338e8-1f6a-49b9-bd93-26578adab6b3",
+  "oracle_id": "e66083f0-62a9-4ff7-8bb0-3eafc6d2e95d",
+  "name": "Gnarled Professor",
+  "lang": "en",
+  "layout": "normal",
+  "set": "stx",
+  "collector_number": "133",
+  "rarity": "rare",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Treefolk Druid",
+  "oracle_text": "Trample\nWhen this creature enters, learn. (You may reveal a Lesson card you own from outside the game and put it into your hand, or discard a card to draw a card.)",
+  "power": "5",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Trample",
+    "Learn"
+  ]
+}

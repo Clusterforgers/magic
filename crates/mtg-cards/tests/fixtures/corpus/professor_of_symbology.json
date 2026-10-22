@@ -1,0 +1,27 @@
+{
+  "id": "f427cf73-9f5e-4ef5-bc4f-29ffbfda9d57",
+  "oracle_id": "1a8ae444-6237-4591-97ab-f43e181b2f4f",
+  "name": "Professor of Symbology",
+  "lang": "en",
+  "layout": "normal",
+  "set": "stx",
+  "collector_number": "24",
+  "rarity": "uncommon",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Kor Cleric",
+  "oracle_text": "When this creature enters, learn. (You may reveal a Lesson card you own from outside the game and put it into your hand, or discard a card to draw a card.)",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Learn"
+  ]
+}

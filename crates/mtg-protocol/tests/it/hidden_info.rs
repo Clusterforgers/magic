@@ -2267,3 +2267,113 @@ fn a_bolster_is_public_and_leaks_no_card_of_a_hand_or_a_library(
         }
     }
 }
+
+/// The cards seat 0 holds in its hand and library when `after` is reached.
+fn held_by_seat_zero(after: &GameState) -> BTreeMap<ObjectId, String> {
+    after
+        .zone(Zone::Hand(PlayerId(0)))
+        .iter()
+        .chain(after.zone(Zone::Library(PlayerId(0))).iter())
+        .map(|id| (*id, after.object(*id).unwrap().card().name.clone()))
+        .collect()
+}
+
+#[rstest]
+fn a_learn_is_public_and_leaks_neither_the_card_drawn_nor_the_rest_of_the_hand(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    let mut scenario = mtg_testkit::Scenario::new(seats)
+        .hand(
+            0,
+            [
+                mtg_testkit::corpus::card("Pop Quiz").unwrap(),
+                mtg_testkit::corpus::card("Consider").unwrap(),
+                mtg_testkit::corpus::card("Opt").unwrap(),
+            ],
+        )
+        .battlefield(0, vec![mtg_testkit::ready(mtg_testkit::cards::island()); 3]);
+    for seat in 0..seats {
+        scenario = scenario.library_named(seat, LIBRARY);
+    }
+    let answer = |decision: &Decision| match &decision.kind {
+        DecisionKind::ChooseCards(options) => {
+            mtg_engine::decision::Answer::ChooseCards(mtg_engine::choose::CardsChoice(vec![
+                options.from[0],
+            ]))
+        }
+        other => panic!("unexpected {}", other.name()),
+    };
+    let (after, _, batches) = play_spell(scenario, seats, "Pop Quiz", answer);
+    let held = held_by_seat_zero(&after);
+    for (seat, batch) in batches.iter().enumerate() {
+        assert!(
+            batch.events.iter().any(|event| matches!(
+                event,
+                mtg_protocol::EventView::Public(mtg_engine::Event::Learned {
+                    player: PlayerId(0)
+                })
+            )),
+            "seat {seat} is told who learned"
+        );
+        if seat != 0 {
+            assert_clean(batch, &held);
+        }
+    }
+}
+
+#[rstest]
+fn a_fabricate_is_public_and_the_blessing_it_brings_is_told_to_every_seat(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    // The Aspirant, seven Swamps and the Squad are nine permanents; the Servo makes ten.
+    let mut board = vec![mtg_testkit::ready(mtg_testkit::cards::swamp()); 7];
+    board.push(mtg_testkit::ready(
+        mtg_testkit::corpus::card("Skymarcher Aspirant").unwrap(),
+    ));
+    let mut scenario = mtg_testkit::Scenario::new(seats)
+        .hand(
+            0,
+            [
+                mtg_testkit::corpus::card("Maulfist Squad").unwrap(),
+                mtg_testkit::corpus::card("Consider").unwrap(),
+            ],
+        )
+        .battlefield(0, board);
+    for seat in 0..seats {
+        scenario = scenario.library_named(seat, LIBRARY);
+    }
+    let answer = |decision: &Decision| match &decision.kind {
+        DecisionKind::YesNo(_) => {
+            mtg_engine::decision::Answer::YesNo(mtg_engine::choose::YesNoChoice(false))
+        }
+        other => panic!("unexpected {}", other.name()),
+    };
+    let (after, events, batches) = play_spell(scenario, seats, "Maulfist Squad", answer);
+    let servos = events
+        .iter()
+        .filter(
+            |event| matches!(event, mtg_engine::Event::TokenCreated(token) if token.name == "Servo"),
+        )
+        .count();
+    assert_eq!(servos, 1);
+    assert!(after.has_citys_blessing(PlayerId(0)));
+    // The number in the Fabricate ability is no card: an id that equals it is not looked for.
+    let held: BTreeMap<_, _> = held_by_seat_zero(&after)
+        .into_iter()
+        .filter(|(id, _)| id.get() > 1)
+        .collect();
+    for (seat, batch) in batches.iter().enumerate() {
+        assert!(
+            batch.events.iter().any(|event| matches!(
+                event,
+                mtg_protocol::EventView::Public(mtg_engine::Event::CitysBlessingGained {
+                    player: PlayerId(0)
+                })
+            )),
+            "seat {seat} is told who got the city's blessing"
+        );
+        if seat != 0 {
+            assert_clean(batch, &held);
+        }
+    }
+}

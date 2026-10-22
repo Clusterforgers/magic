@@ -1,0 +1,54 @@
+{
+  "oracle_id": "6ff995f9-080d-4316-8fbe-39bf195db91b",
+  "name": "Bola Slinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bola Slinger",
+      "oracle_fingerprint": "a20f73a7a543248c3c14b0d0af4e3c4f",
+      "abilities": [
+        {
+          "Keyword": {
+            "Backup": {
+              "count": 1,
+              "abilities": [
+                {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [
+                            { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                            { "ControlledBy": "Opponents" }
+                          ]
+                        }
+                      }
+                    ],
+                    "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

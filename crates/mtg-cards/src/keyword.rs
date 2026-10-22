@@ -2,6 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
+use crate::ability::Ability;
 use crate::cost::Cost;
 use crate::refs::Selector;
 
@@ -93,6 +94,8 @@ pub enum Keyword {
     Flashback(Cost),
     /// Madness with its cost.
     Madness(Cost),
+    /// Miracle with its cost: the card may be cast for it when it is the first card its owner drew this turn (CR 702.94).
+    Miracle(Cost),
     /// Dredge N (CR 702.52): in a graveyard, a player who would draw a card may instead mill N cards and return this card to their hand.
     Dredge(u32),
     /// Morph with its cost.
@@ -226,6 +229,22 @@ pub enum Keyword {
         /// The cost, paid beside the discard.
         cost: Cost,
     },
+    /// Fabricate with its number (CR 702.123): "When this permanent enters, you may put N +1/+1 counters on it. If you don't, create N 1/1 colorless Servo artifact creature tokens."
+    Fabricate(u32),
+    /// Ascend (CR 702.131): a permanent with it gives its controller the city's blessing as soon as they control ten or more permanents; the designation lasts for the rest of the game.
+    Ascend,
+    /// Vanishing N (CR 702.63): it enters with N time counters, at the beginning of its controller's upkeep one is removed, and it is sacrificed when the last is removed.
+    Vanishing(u32),
+    /// Fading N (CR 702.32): it enters with N fade counters, at the beginning of its controller's upkeep one is removed, and it is sacrificed if none can be.
+    Fading(u32),
+    /// Backup N (CR 702.165): when it enters, N +1/+1 counters go on target creature; if that is another creature it gains `abilities`, those listed after the keyword on the card, until end of turn.
+    Backup {
+        /// How many +1/+1 counters.
+        count: u32,
+        /// The abilities that follow the keyword on the card, set by the compiler.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        abilities: Vec<Ability>,
+    },
 }
 
 impl Keyword {
@@ -269,6 +288,7 @@ impl Keyword {
         "Entwine",
         "Flashback",
         "Madness",
+        "Miracle",
         "Dredge",
         "Morph",
         "Disguise",
@@ -330,6 +350,11 @@ impl Keyword {
         "Improvise",
         "Affinity",
         "Typecycling",
+        "Fabricate",
+        "Ascend",
+        "Vanishing",
+        "Fading",
+        "Backup",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -373,6 +398,7 @@ impl Keyword {
             Keyword::Entwine(_) => "Entwine",
             Keyword::Flashback(_) => "Flashback",
             Keyword::Madness(_) => "Madness",
+            Keyword::Miracle(_) => "Miracle",
             Keyword::Dredge(_) => "Dredge",
             Keyword::Morph(_) => "Morph",
             Keyword::Disguise(_) => "Disguise",
@@ -441,6 +467,11 @@ impl Keyword {
             Keyword::Improvise => "Improvise",
             Keyword::Affinity(_) => "Affinity",
             Keyword::Typecycling { .. } => "Typecycling",
+            Keyword::Fabricate(_) => "Fabricate",
+            Keyword::Ascend => "Ascend",
+            Keyword::Vanishing(_) => "Vanishing",
+            Keyword::Fading(_) => "Fading",
+            Keyword::Backup { .. } => "Backup",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
         }
@@ -510,6 +541,7 @@ mod tests {
             Keyword::Entwine(cost.clone()),
             Keyword::Flashback(cost.clone()),
             Keyword::Madness(cost.clone()),
+            Keyword::Miracle(cost.clone()),
             Keyword::Dredge(3),
             Keyword::Morph(cost.clone()),
             Keyword::Disguise(cost.clone()),
@@ -576,6 +608,14 @@ mod tests {
             Keyword::Typecycling {
                 find: Selector::default(),
                 cost: Cost::default(),
+            },
+            Keyword::Fabricate(1),
+            Keyword::Ascend,
+            Keyword::Vanishing(3),
+            Keyword::Fading(3),
+            Keyword::Backup {
+                count: 1,
+                abilities: vec![Ability::Keyword(Keyword::Flying)],
             },
         ]
     }

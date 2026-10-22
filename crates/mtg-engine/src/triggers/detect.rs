@@ -87,8 +87,12 @@ enum Happened {
     },
     /// A player lost life: by an effect, by paying it or from damage (CR 120.3a).
     LifeLost { player: PlayerId, amount: u32 },
-    /// A player drew a card, the `nth` of their turn.
-    Drew { player: PlayerId, nth: u32 },
+    /// A player drew `card`, the `nth` of their turn.
+    Drew {
+        player: PlayerId,
+        card: ObjectId,
+        nth: u32,
+    },
     /// A permanent became tapped.
     Tapped { object: ObjectId },
     /// A permanent became untapped.
@@ -528,8 +532,9 @@ fn about_players_and_permanents(
                 amount: *amount,
             });
         }
-        Event::CardDrawn { player, .. } => found.push(Happened::Drew {
+        Event::CardDrawn { player, object } => found.push(Happened::Drew {
             player: *player,
+            card: *object,
             nth: ordinal(look.post, look.later, *player, Tally::Drawn),
         }),
         Event::PermanentTapped { object } => {
@@ -808,12 +813,17 @@ fn matching_event(
         }
         (TriggerPattern::LifeGained { who }, Happened::LifeGained { player, .. })
         | (TriggerPattern::LifeLost { who }, Happened::LifeLost { player, .. })
-        | (TriggerPattern::Drew { who }, Happened::Drew { player, .. })
         | (TriggerPattern::BecomesMonarch { who }, Happened::BecameMonarch { player })
         | (TriggerPattern::Proliferated { who }, Happened::Proliferated { player })
         | (TriggerPattern::Amassed { who }, Happened::Amassed { player })
         | (TriggerPattern::Bolstered { who }, Happened::Bolstered { player }) => by(who, player)
             .then(|| counted(state, vec![Target::Player(*player)], happened.amount())),
+        (TriggerPattern::Drew { who, what }, Happened::Drew { player, card, .. }) => {
+            // The card is read where the batch left it: in the hand it was drawn into, or wherever an effect sent it since.
+            let drawn = object(*card)?;
+            (by(who, player) && picks(what, drawn)?)
+                .then(|| counted(state, vec![Target::Player(*player)], happened.amount()))
+        }
         (
             TriggerPattern::Discarded { what, by: who },
             Happened::Moved {

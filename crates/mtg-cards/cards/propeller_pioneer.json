@@ -1,0 +1,12 @@
+{
+  "oracle_id": "d17a9750-a89f-4ad1-9c15-7ccffc554ee5",
+  "name": "Propeller Pioneer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Propeller Pioneer",
+      "oracle_fingerprint": "1cea072438239932140b04214ab6bf9b",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": { "Fabricate": 1 } }]
+    }
+  ]
+}

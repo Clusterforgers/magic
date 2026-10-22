@@ -1,0 +1,30 @@
+{
+  "id": "acb1ab66-f2ce-4094-b2dd-1fc63d78eea2",
+  "oracle_id": "a7c36b66-4f58-41af-b1c5-704ff0d9eac8",
+  "name": "Deadeye Brawler",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rix",
+  "collector_number": "155",
+  "rarity": "uncommon",
+  "released_at": "2018-01-19",
+  "digital": false,
+  "mana_cost": "{2}{U}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Pirate",
+  "oracle_text": "Deathtouch\nAscend (If you control ten or more permanents, you get the city's blessing for the rest of the game.)\nWhenever this creature deals combat damage to a player, if you have the city's blessing, draw a card.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Ascend",
+    "Deathtouch"
+  ]
+}

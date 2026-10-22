@@ -54,6 +54,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
         .collect();
     texts.extend(singulars);
     texts = texts.into_iter().flat_map(cast::impulse_wordings).collect();
+    let controller = create::other_wordings(&texts);
+    texts.extend(controller);
     // A card that becomes a target may call itself "it" in the counters it puts on itself (Seedglaive Mentor).
     if matches!(ability, Ability::Triggered { when, .. } if targeted_itself(when)) {
         let pronouns: Vec<String> = texts
@@ -1197,8 +1199,36 @@ impl Writer<'_> {
                 paid,
                 unpaid,
             } if times.is_one() => self.payment(who, cost, paid, unpaid)?,
-            _ => return cast::text(effect).or_else(|| self.keyword_action(effect)),
+            _ => return self.other_effect(effect),
         })
+    }
+
+    /// The effects with a wording of their own: a card returned to the battlefield, the casting and the keyword actions.
+    fn other_effect(&mut self, effect: &Effect) -> Option<String> {
+        self.reanimated(effect)
+            .or_else(|| cast::text(effect))
+            .or_else(|| self.keyword_action(effect))
+    }
+
+    /// A card of your graveyard that returns to the battlefield: "return target creature card from your graveyard to the
+    /// battlefield".
+    fn reanimated(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::Move {
+            what,
+            to:
+                Destination::Battlefield {
+                    tapped: false,
+                    under: None,
+                    counters,
+                },
+        } = effect
+        else {
+            return None;
+        };
+        (counters.is_empty() && self.in_your_graveyard(what)).then(|| {
+            self.object(what)
+                .map(|card| format!("return {card} to the battlefield"))
+        })?
     }
 
     /// The effects after a condition, as steps joined by "and": "remove all of them and transform ~".
@@ -1239,6 +1269,7 @@ impl Writer<'_> {
                 count,
             } => format!("surveil {}", points_text(count)?),
             Effect::Proliferate { who: Ref::You } => "proliferate".to_owned(),
+            Effect::Learn { who: Ref::You } => "learn".to_owned(),
             Effect::Monstrosity { count } => format!("monstrosity {}", points_text(count)?),
             Effect::Adapt { count } => format!("adapt {}", points_text(count)?),
             Effect::Bolster { count } => format!("bolster {}", points_text(count)?),

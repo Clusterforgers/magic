@@ -1,0 +1,25 @@
+{
+  "oracle_id": "0544de10-b409-469b-ae96-b88e9452f26f",
+  "name": "Soultether Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soultether Golem",
+      "oracle_fingerprint": "bf85026bd78b8a2579945544ce4487f5",
+      "abilities": [
+        { "Keyword": { "Vanishing": 1 } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "time" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

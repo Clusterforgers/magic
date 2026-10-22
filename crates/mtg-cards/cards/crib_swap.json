@@ -1,0 +1,37 @@
+{
+  "oracle_id": "2987c385-011a-4032-a516-a46d1e9dc9e8",
+  "name": "Crib Swap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crib Swap",
+      "oracle_fingerprint": "ca57347cf256d28e8748f2cd99f4f780",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": {
+                    "Custom": {
+                      "name": "Shapeshifter",
+                      "types": ["Creature"],
+                      "subtypes": ["Shapeshifter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Changeling" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

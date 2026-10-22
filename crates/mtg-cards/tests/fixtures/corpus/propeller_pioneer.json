@@ -1,0 +1,28 @@
+{
+  "id": "cee60224-960a-4f92-996a-7b0b878109e4",
+  "oracle_id": "d17a9750-a89f-4ad1-9c15-7ccffc554ee5",
+  "name": "Propeller Pioneer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "kld",
+  "collector_number": "24",
+  "rarity": "common",
+  "released_at": "2016-09-30",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Artificer",
+  "oracle_text": "Flying\nFabricate 1 (When this creature enters, put a +1/+1 counter on it or create a 1/1 colorless Servo artifact creature token.)",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Fabricate"
+  ]
+}

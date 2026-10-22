@@ -138,6 +138,8 @@ const RUNS: &[&str] = &[
     "Effect.Monstrosity",
     "Effect.Adapt",
     "Effect.Bolster",
+    "Effect.Fabricate",
+    "Effect.Learn",
     "Effect.BecomeMonarch",
     "Condition.Monarch",
     "Effect.CreateToken",
@@ -230,6 +232,7 @@ const RUNS: &[&str] = &[
     "Keyword.Convoke",
     "Keyword.Delve",
     "Keyword.Madness",
+    "Keyword.Miracle",
     "Keyword.Dredge",
     "ReplaceBy.Dredge",
     "Keyword.Suspend",
@@ -297,6 +300,9 @@ const RUNS: &[&str] = &[
     "Keyword.Extort",
     "Keyword.Evolve",
     "Trigger.AttacksAlone",
+    "Keyword.Vanishing",
+    "Keyword.Fading",
+    "Keyword.Backup",
     "Keyword.LevelUp",
     "Keyword.Outlast",
     "Keyword.Saddle",
@@ -304,6 +310,9 @@ const RUNS: &[&str] = &[
     "Keyword.Myriad",
     "Keyword.Squad",
     "Keyword.Ravenous",
+    "Keyword.Fabricate",
+    "Keyword.Ascend",
+    "Condition.CitysBlessing",
     "Effect.MyriadCopies",
     "Keyword.JumpStart",
     "Keyword.Retrace",
@@ -549,6 +558,8 @@ mod tests {
     #[case::monstrosity("Effect.Monstrosity", true)]
     #[case::adapting("Effect.Adapt", true)]
     #[case::bolstering("Effect.Bolster", true)]
+    #[case::fabricating("Effect.Fabricate", true)]
+    #[case::learning("Effect.Learn", true)]
     #[case::exploring("Effect.Explore", true)]
     #[case::conniving("Effect.Connive", true)]
     #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]
@@ -605,7 +616,7 @@ mod tests {
     #[case::if_you_do("Condition.Performed", true)]
     #[case::if_you_do_after_another_effect("Condition.Performed.Other", false)]
     #[case::the_monarch("Condition.Monarch", true)]
-    #[case::the_citys_blessing("Condition.CitysBlessing", false)]
+    #[case::the_citys_blessing("Condition.CitysBlessing", true)]
     #[case::unblockable_creatures("Mod.CantBeBlocked", true)]
     #[case::creatures_that_cant_be_blocked_by_some("Mod.CantBeBlockedBy", true)]
     #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", true)]
@@ -639,6 +650,9 @@ mod tests {
     #[case::extort("Keyword.Extort", true)]
     #[case::evolve("Keyword.Evolve", true)]
     #[case::attacks_alone("Trigger.AttacksAlone", true)]
+    #[case::vanishing("Keyword.Vanishing", true)]
+    #[case::fading("Keyword.Fading", true)]
+    #[case::backup("Keyword.Backup", true)]
     #[case::level_up("Keyword.LevelUp", true)]
     #[case::outlast("Keyword.Outlast", true)]
     #[case::saddle("Keyword.Saddle", true)]

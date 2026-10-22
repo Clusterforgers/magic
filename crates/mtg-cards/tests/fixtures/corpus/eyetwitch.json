@@ -1,0 +1,28 @@
+{
+  "id": "1f4d1bb6-cb8f-4d01-9879-0b3a0585cbf4",
+  "oracle_id": "6a7a5e93-fea8-4aa0-a2b1-73d466220cfb",
+  "name": "Eyetwitch",
+  "lang": "en",
+  "layout": "normal",
+  "set": "stx",
+  "collector_number": "70",
+  "rarity": "uncommon",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{B}",
+  "cmc": 1.0,
+  "type_line": "Creature — Eye Bat",
+  "oracle_text": "Flying\nWhen this creature dies, learn. (You may reveal a Lesson card you own from outside the game and put it into your hand, or discard a card to draw a card.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Learn"
+  ]
+}

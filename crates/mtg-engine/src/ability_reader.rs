@@ -169,6 +169,16 @@ pub(crate) fn definition_has_day_night(definition: &CardDefinition) -> bool {
     })
 }
 
+/// Whether a card with this definition has ascend, so the game watches for the city's blessing (`GameState::possible`).
+pub(crate) fn definition_has_ascend(definition: &CardDefinition) -> bool {
+    definition.rules.iter().any(|rules| {
+        matches!(
+            **rules,
+            Ability::Keyword(mtg_cards::keyword::Keyword::Ascend)
+        )
+    })
+}
+
 /// Whether the split card with this definition may be cast as both halves: the card as a whole holds the spell of its
 /// fused halves (CR 702.102) when it has fuse and a spell on each half.
 pub(crate) fn definition_fuses(definition: &CardDefinition) -> bool {

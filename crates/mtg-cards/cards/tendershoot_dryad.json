@@ -1,0 +1,42 @@
+{
+  "oracle_id": "a336c10a-b5bd-47ff-ba2d-31e27af1e15a",
+  "name": "Tendershoot Dryad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tendershoot Dryad",
+      "oracle_fingerprint": "b478c904d600819faeb1d26def221cc0",
+      "abilities": [
+        { "Keyword": "Ascend" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Saproling" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": { "CitysBlessing": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "87f411d0-c796-443f-b957-c632aa23deb0",
+  "oracle_id": "fe8d2874-c626-4d4e-a7f5-11c175a2b3bb",
+  "name": "Bonecaller Cleric",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "117",
+  "rarity": "uncommon",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Cleric",
+  "oracle_text": "{3}{B}, Sacrifice this creature: Return target creature card from your graveyard to the battlefield. Activate only as a sorcery.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

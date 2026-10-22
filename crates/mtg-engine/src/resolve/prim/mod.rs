@@ -34,10 +34,12 @@ mod exile_top;
 mod exile_until;
 mod explore;
 mod extra_turn;
+mod fabricate;
 mod fight;
 mod gain_life;
 mod goad;
 mod if_then;
+mod learn;
 mod look_at_top;
 mod lose_life;
 mod may;
@@ -120,6 +122,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Monstrosity { .. } => monstrosity::run(cx, effect),
         Effect::Adapt { .. } => adapt::run(cx, effect),
         Effect::Bolster { .. } => bolster::run(cx, effect),
+        Effect::Fabricate { .. } => fabricate::run(cx, effect),
+        Effect::Learn { .. } => learn::run(cx, effect),
         Effect::Explore { .. } => explore::run(cx, effect),
         Effect::Connive { .. } => connive::run(cx, effect),
         Effect::ExileUntil { .. } => exile_until::run(cx, effect),
@@ -168,7 +172,7 @@ mod tests {
         {"Untap":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"WinGame":{}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"BecomeMonarch":{}}, {"Amass":{"subtype":"Orc","count":1}}, {"Monstrosity":{"count":1}},
-        {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
+        {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
         {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"ExileTop":{"as":"top"}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}},
         {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}},
         {"BecomeCopy":{"what":"This","of":"This","duration":"UntilEndOfTurn"}},
@@ -193,7 +197,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 57, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 59, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -261,6 +265,8 @@ mod tests {
                 "Effect.Monstrosity",
                 "Effect.Adapt",
                 "Effect.Bolster",
+                "Effect.Fabricate",
+                "Effect.Learn",
                 "Effect.Explore",
                 "Effect.Connive",
                 "Effect.ExileUntil",

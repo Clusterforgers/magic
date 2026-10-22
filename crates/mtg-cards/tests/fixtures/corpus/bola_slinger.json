@@ -1,0 +1,27 @@
+{
+  "id": "896043a7-c7a2-4542-8739-7b4f09c6e1f1",
+  "oracle_id": "6ff995f9-080d-4316-8fbe-39bf195db91b",
+  "name": "Bola Slinger",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mom",
+  "collector_number": "8",
+  "rarity": "common",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Cat Soldier",
+  "oracle_text": "Backup 1 (When this creature enters, put a +1/+1 counter on target creature. If that's another creature, it gains the following ability until end of turn.)\nWhenever this creature attacks, tap target artifact or creature an opponent controls.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Backup"
+  ]
+}

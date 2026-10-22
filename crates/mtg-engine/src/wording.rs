@@ -7,7 +7,7 @@
 use mtg_cards::effect::Effect;
 use mtg_cards::refs::{AbilityKind, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::trigger::{Step, TriggerPattern};
-use mtg_cards::value::{Amount, Cmp, Condition, StatKind};
+use mtg_cards::value::{Amount, CastWay, Cmp, Condition, StatKind};
 use mtg_core::ids::PlayerId;
 
 /// "a" or "an" ahead of `word`.
@@ -427,9 +427,14 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 false,
             )
         }
-        TriggerPattern::Drew { who: by } => {
+        TriggerPattern::Drew { who: by, what } => {
             let (name, s) = who(by);
-            (format!("{name} draw{s} a card"), false)
+            let card = if what.is_empty() {
+                "a card".to_owned()
+            } else {
+                subject(what)
+            };
+            (format!("{name} draw{s} {card}"), false)
         }
         TriggerPattern::Discarded { what, by } => {
             let (name, s) = who(by);
@@ -828,9 +833,18 @@ pub(crate) fn pay(parts: &[String]) -> String {
 }
 
 /// The question of a cast an effect allows: "Cast Lightning Bolt without paying its mana cost?"
-pub(crate) fn cast(name: &str, free: bool, madness: Option<&mtg_core::mana::ManaCost>) -> String {
-    if let Some(cost) = madness {
-        format!("Cast {name} for its madness cost {cost}?")
+/// `alternative` is the way and the mana of a cost the card names (madness, miracle).
+pub(crate) fn cast(
+    name: &str,
+    free: bool,
+    alternative: Option<(CastWay, &mtg_core::mana::ManaCost)>,
+) -> String {
+    if let Some((way, cost)) = alternative {
+        let way = match way {
+            CastWay::Miracle => "miracle",
+            _ => "madness",
+        };
+        format!("Cast {name} for its {way} cost {cost}?")
     } else if free {
         format!("Cast {name} without paying its mana cost?")
     } else {

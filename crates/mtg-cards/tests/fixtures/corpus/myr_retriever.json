@@ -1,0 +1,21 @@
+{
+  "id": "7f0149d4-0731-474a-a1c3-28c25e486c14",
+  "oracle_id": "d07d3be3-f69d-4484-8467-cffd43871788",
+  "name": "Myr Retriever",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2xm",
+  "collector_number": "277",
+  "rarity": "common",
+  "released_at": "2020-08-07",
+  "digital": false,
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact Creature — Myr",
+  "oracle_text": "When this creature dies, return another target artifact card from your graveyard to your hand.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

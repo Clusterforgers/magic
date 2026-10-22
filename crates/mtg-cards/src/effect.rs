@@ -457,6 +457,11 @@ pub enum Effect {
         /// How many +1/+1 counters.
         count: Amount,
     },
+    /// The source creature's controller fabricates (CR 702.123): they may put the counters on it, and otherwise create that many Servo tokens; a source that has left the battlefield only makes the tokens.
+    Fabricate {
+        /// How many +1/+1 counters, or Servo tokens.
+        count: Amount,
+    },
     /// Creatures explore (CR 701.44): a land on top goes to the hand, any other card gives a counter and may go to the graveyard.
     Explore {
         /// The creatures that explore.
@@ -510,6 +515,12 @@ pub enum Effect {
         /// Done when the card is not cast: the player declines, or nothing lets it be cast.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         otherwise: Vec<Effect>,
+    },
+    /// The player learns (CR 701.48): they may discard a card, and draw a card if they do; a Lesson from outside the game is not available.
+    Learn {
+        /// Who learns.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
     },
     /// The player time travels (CR 701.56): each suspended card and permanent with a time counter gains or loses one.
     TimeTravel {

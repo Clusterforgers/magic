@@ -525,6 +525,14 @@ object: ObjectId, } } | { "MonarchChanged": {
 /**
  * The new monarch.
  */
+player: PlayerId, } } | { "CitysBlessingGained": { 
+/**
+ * Who got it.
+ */
+player: PlayerId, } } | { "Learned": { 
+/**
+ * Who learned.
+ */
 player: PlayerId, } } | { "Proliferated": { 
 /**
  * Who proliferated.

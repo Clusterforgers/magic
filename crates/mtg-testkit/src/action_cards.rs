@@ -49,6 +49,14 @@ pub const COUNTER_CARDS: &[&str] = &[
     "Domesticated Hydra",
     "Cached Defenses",
     "Sandsteppe Mastodon",
+    "Weaponcraft Enthusiast",
+    "Peema Outrider",
+    "Pop Quiz",
+    "Gnarled Professor",
+    "Eyetwitch",
+    "Dusk Charger",
+    "Spire Winder",
+    "Tendershoot Dryad",
 ];
 
 /// A legal Normal deck in blue, black and green of the cards that act, three of each, with creatures to fill it,

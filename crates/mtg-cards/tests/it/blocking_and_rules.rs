@@ -140,6 +140,10 @@ const ENTERS: &str = r#""when":{"Enters":{"what":["This"]}}"#;
     r#"{"Keyword":{"Flashback":[{"Mana":"{1}{U}"},{"PayLife":3}]}}"#,
     &["Cost.Mana", "Cost.PayLife", "Keyword.Flashback"]
 )]
+#[case::a_miracle_in_mana(
+    r#"{"Keyword":{"Miracle":"{1}{W}"}}"#,
+    &["Cost.Mana", "Keyword.Miracle"]
+)]
 #[case::a_madness_in_mana_and_life(
     r#"{"Keyword":{"Madness":[{"Mana":"{2}{B}"},{"PayLife":8}]}}"#,
     &["Cost.Mana", "Cost.PayLife", "Keyword.Madness"]

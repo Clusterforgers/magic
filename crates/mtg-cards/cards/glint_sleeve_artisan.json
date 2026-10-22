@@ -1,0 +1,12 @@
+{
+  "oracle_id": "b5f35577-3d94-4835-bfca-3090cb0c63ff",
+  "name": "Glint-Sleeve Artisan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glint-Sleeve Artisan",
+      "oracle_fingerprint": "00e19e307cb6c21b5b6b6a1f3f1478de",
+      "abilities": [{ "Keyword": { "Fabricate": 1 } }]
+    }
+  ]
+}

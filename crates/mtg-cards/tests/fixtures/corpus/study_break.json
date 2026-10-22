@@ -1,0 +1,25 @@
+{
+  "id": "ef7cd813-0781-4fd7-8748-2716e1eeb4b9",
+  "oracle_id": "7aae7c7b-0b31-4b48-a8d3-81c913f604cf",
+  "name": "Study Break",
+  "lang": "en",
+  "layout": "normal",
+  "set": "stx",
+  "collector_number": "34",
+  "rarity": "common",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Tap up to two target creatures.\nLearn. (You may reveal a Lesson card you own from outside the game and put it into your hand, or discard a card to draw a card.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Learn"
+  ]
+}

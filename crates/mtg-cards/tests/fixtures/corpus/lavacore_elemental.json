@@ -1,0 +1,27 @@
+{
+  "id": "d6b2f4de-fc41-4e68-8655-577616b10c7e",
+  "oracle_id": "70b6fde2-f759-4478-926c-b5601b7d903b",
+  "name": "Lavacore Elemental",
+  "lang": "en",
+  "layout": "normal",
+  "set": "plc",
+  "collector_number": "103",
+  "rarity": "uncommon",
+  "released_at": "2007-02-02",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Elemental",
+  "oracle_text": "Vanishing 1 (This creature enters with a time counter on it. At the beginning of your upkeep, remove a time counter from it. When the last is removed, sacrifice it.)\nWhenever a creature you control deals combat damage to a player, put a time counter on this creature.",
+  "power": "5",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Vanishing"
+  ]
+}

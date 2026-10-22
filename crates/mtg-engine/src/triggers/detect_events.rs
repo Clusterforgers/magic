@@ -291,6 +291,9 @@ fn life_gained_and_lost_trigger_for_the_players_the_pattern_names(
 #[case::their_draw_is_not_mine(r#"{"Drew":{"who":"You"}}"#, FOE, 0)]
 #[case::an_opponents_draw(r#"{"Drew":{"who":"Opponents"}}"#, FOE, 1)]
 #[case::any_draw(r#"{"Drew":{}}"#, ME, 1)]
+#[case::the_card_is_named(r#"{"Drew":{"who":"You","what":[{"Named":"Library 0"}]}}"#, ME, 1)]
+#[case::another_card(r#"{"Drew":{"who":"You","what":[{"Named":"Spell"}]}}"#, ME, 0)]
+#[case::the_card_of_an_opponent(r#"{"Drew":{"what":[{"Not":{"Type":"Land"}}]}}"#, FOE, 1)]
 fn a_draw_triggers_for_the_player_who_draws(
     #[case] when: &str,
     #[case] player: PlayerId,

@@ -1,0 +1,28 @@
+{
+  "id": "2ab38bd5-64bb-41aa-851b-c6bc6b44bcf0",
+  "oracle_id": "7747e94c-35a7-4e3b-956b-339a16634502",
+  "name": "Peema Outrider",
+  "lang": "en",
+  "layout": "normal",
+  "set": "kld",
+  "collector_number": "166",
+  "rarity": "common",
+  "released_at": "2016-09-30",
+  "digital": false,
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Elf Artificer",
+  "oracle_text": "Trample\nFabricate 1 (When this creature enters, put a +1/+1 counter on it or create a 1/1 colorless Servo artifact creature token.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Trample",
+    "Fabricate"
+  ]
+}

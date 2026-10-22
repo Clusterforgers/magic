@@ -1,0 +1,27 @@
+{
+  "id": "1c2fd5ac-963b-49ea-bd72-d0958ef8eb3e",
+  "oracle_id": "b5f35577-3d94-4835-bfca-3090cb0c63ff",
+  "name": "Glint-Sleeve Artisan",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2xm",
+  "collector_number": "18",
+  "rarity": "common",
+  "released_at": "2020-08-07",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Dwarf Artificer",
+  "oracle_text": "Fabricate 1 (When this creature enters, put a +1/+1 counter on it or create a 1/1 colorless Servo artifact creature token.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Fabricate"
+  ]
+}

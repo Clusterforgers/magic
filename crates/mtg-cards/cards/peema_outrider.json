@@ -1,0 +1,12 @@
+{
+  "oracle_id": "7747e94c-35a7-4e3b-956b-339a16634502",
+  "name": "Peema Outrider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peema Outrider",
+      "oracle_fingerprint": "05dbd513bf97b5328edba36ded84f918",
+      "abilities": [{ "Keyword": "Trample" }, { "Keyword": { "Fabricate": 1 } }]
+    }
+  ]
+}
