@@ -3,6 +3,7 @@ import type { ManaCost } from "./ManaCost";
 import type { ManaSource } from "./ManaSource";
 import type { ManaType } from "./ManaType";
 import type { SpendOn } from "./SpendOn";
+import type { Take } from "./Take";
 
 /**
  * A legal mana ability and what it produces.
@@ -25,6 +26,10 @@ count?: number,
  */
 extra?: boolean, 
 /**
+ * Activating it does not tap its source, so a tapped permanent can still use it (a Devotee, a Lotus Petal); left out means it taps.
+ */
+tapless?: boolean, 
+/**
  * Activating it sacrifices its source (a Treasure); left out means it does not.
  */
 sacrifice?: boolean, 
@@ -43,4 +48,8 @@ life?: number,
 /**
  * Mana the activation costs (a Signet's `{1}`), paid from the pool when it is used and so only inside a payment; left out means none.
  */
-cost?: ManaCost, };
+cost?: ManaCost, 
+/**
+ * Permanents the activation taps or sacrifices besides its source, and the ones it may take (Springleaf Drum, Skirk Prospector); paid inside a payment only, the engine picks (`mana_takes.rs`); left out means none.
+ */
+takes?: Array<Take>, };

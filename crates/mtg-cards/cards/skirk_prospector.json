@@ -1,0 +1,19 @@
+{
+  "oracle_id": "c18013e4-0b99-44e3-a2b2-027ace68723a",
+  "name": "Skirk Prospector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skirk Prospector",
+      "oracle_fingerprint": "5cb6c100ec891780c48081630f2c01d8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Goblin" }] } }],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

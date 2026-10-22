@@ -1,0 +1,27 @@
+{
+  "id": "cf08c317-6f2d-47e3-ab5b-8af73fd3e404",
+  "oracle_id": "e6b77545-de5c-4f4a-b7ea-83498fb33ba8",
+  "name": "Holdout Settlement",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ogw",
+  "collector_number": "172",
+  "rarity": "common",
+  "released_at": "2016-01-22",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}. ({C} represents colorless mana.)\n{T}, Tap an untapped creature you control: Add one mana of any color.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "C",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

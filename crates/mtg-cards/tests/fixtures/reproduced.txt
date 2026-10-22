@@ -88,6 +88,7 @@ Foundry Inspector
 Fruit of Tizerus
 Furtive Homunculus
 Gadwick, the Wizened
+Gaea's Cradle
 Game-Trail Changeling
 Giant Growth
 Gilded Lotus
@@ -102,6 +103,7 @@ Gurmag Angler
 Hall of Triumph
 Hengegate Pathway // Mistgate Pathway
 Hero of Bladehold
+Holdout Settlement
 Horizon Canopy
 Hulking Raptor
 Idyllic Beachfront
@@ -109,10 +111,12 @@ Impostor of the Sixth Pride
 Inkwell Leviathan
 Invisible Stalker
 Izzet Charm
+Jaspera Sentinel
 Jungle Lion
 Kathari Screecher
 Kessig Wolf Run
 Kongming, "Sleeping Dragon"
+Kozilek's Translator
 Krenko's Enforcer
 Lat-Nam Adept
 Levitation
@@ -126,6 +130,7 @@ Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
 Lurching Rotbeast
 Manabarbs
+Mardu Devotee
 Megrim
 Mesmeric Orb
 Midnight Banshee
@@ -176,6 +181,7 @@ Siege Wurm
 Sinister Sabotage
 Sinister Starfish
 Skeletal Changeling
+Skirk Prospector
 Skullclamp
 Skycloud Expanse
 Skysovereign, Consul Flagship
@@ -188,12 +194,14 @@ Soltari Foot Soldier
 Soul Shepherd
 Souldrinker
 Spectral Rider
+Springleaf Drum
 Squirrel Nest
 Staggershock
 Steam Vents
 Stoke the Flames
 Strionic Resonator
 Stroke of Genius
+Sultai Devotee
 Sundering Growth
 Supreme Verdict
 Swiftfoot Boots
@@ -202,6 +210,7 @@ Swords to Plowshares
 Tainted Isle
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
+Temur Devotee
 Tendo Ice Bridge
 Tendrils of Agony
 Thalia, Guardian of Thraben

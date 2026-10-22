@@ -111,6 +111,9 @@ pub enum PaymentError {
     /// A tap named a permanent that is already tapped.
     #[error("{0:?} is already tapped")]
     AlreadyTapped(ObjectId),
+    /// The sources of the payment cannot all take what their costs take (a creature to tap, a Goblin to sacrifice).
+    #[error("the sources of the payment cannot take what their costs take")]
+    CannotTake,
     /// More floating mana was spent than is in the pool.
     #[error("not enough {0:?} mana in the pool")]
     PoolShortfall(ManaType),

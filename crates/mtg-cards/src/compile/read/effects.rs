@@ -840,11 +840,18 @@ fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         }
         Produce::Fixed(list)
     };
+    // "for each creature you control": the mana is added once for each object that matches.
+    let times = r
+        .attempt(|r| {
+            r.words("for each").then_some(())?;
+            phrase(r, Form::Each).map(Amount::Count)
+        })
+        .unwrap_or_else(Amount::one);
     let only = spend::only(r).unwrap_or_default();
     Some(vec![Effect::AddMana {
         who: Ref::You,
         mana,
-        times: Amount::one(),
+        times,
         only,
     }])
 }

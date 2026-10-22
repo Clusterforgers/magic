@@ -348,11 +348,12 @@ pub(crate) fn without_tapped(sources: &[ManaOption], used: &Used, kept: &Used) -
     if used.convoke.is_empty() && kept.convoke.is_empty() {
         return sources.to_vec();
     }
-    sources
+    let left: Vec<ManaOption> = sources
         .iter()
         .filter(|o| !used.taps(o.source.object) && !kept.taps(o.source.object))
         .cloned()
-        .collect()
+        .collect();
+    crate::mana_takes::without_taken(&left, &|id| used.taps(id) || kept.taps(id))
 }
 
 /// The two lists `kept` and `more` as one.

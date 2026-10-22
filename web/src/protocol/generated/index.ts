@@ -215,6 +215,7 @@ export type { Support } from "./Support";
 export type { Surveilled } from "./Surveilled";
 export type { TableRules } from "./TableRules";
 export type { TableView } from "./TableView";
+export type { Take } from "./Take";
 export type { Target } from "./Target";
 export type { TargetChoice } from "./TargetChoice";
 export type { TargetOptions } from "./TargetOptions";

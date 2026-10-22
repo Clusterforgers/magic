@@ -1,0 +1,28 @@
+{
+  "id": "d80665ae-fcb2-48fd-95be-8768293bcef7",
+  "oracle_id": "6766c5e4-baa7-4db4-a900-c08fbcd98f5d",
+  "name": "Kozilek's Translator",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ogw",
+  "collector_number": "74",
+  "rarity": "common",
+  "released_at": "2016-01-22",
+  "digital": false,
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Eldrazi Drone",
+  "oracle_text": "Devoid (This card has no color.)\nPay 1 life: Add {C}. Activate only once each turn. ({C} represents colorless mana.)",
+  "power": "3",
+  "toughness": "5",
+  "colors": [],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Devoid"
+  ],
+  "produced_mana": [
+    "C"
+  ]
+}

@@ -598,8 +598,14 @@ fn is_imperative(effect: &Effect) -> bool {
 
 /// "{G}{G}", "one mana of any color": the mana an effect adds.
 /// "add {C}{C}" and, when the mana is restricted, the sentence that says what it may be spent on.
-fn add_text(mana: &Produce, only: &[SpendOn]) -> Option<String> {
-    let added = format!("add {}", mana_text(mana)?);
+fn add_text(mana: &Produce, times: &Amount, only: &[SpendOn]) -> Option<String> {
+    let mut added = format!("add {}", mana_text(mana)?);
+    if !times.is_one() {
+        let Amount::Count(selector) = times else {
+            return None;
+        };
+        added = format!("{added} for each {}", phrase_text(selector, Form::Each)?);
+    }
     if only.is_empty() {
         Some(added)
     } else {
@@ -960,7 +966,7 @@ impl Writer<'_> {
                 mana,
                 times,
                 only,
-            } if times.is_one() => add_text(mana, only)?,
+            } => add_text(mana, times, only)?,
             // "you get {E}{E}": energy is a counter on the player, written with its symbol.
             Effect::PutCounters { count, .. } if gets_energy(effect) => {
                 format!("you get {}", costs::energy_text(count)?)
