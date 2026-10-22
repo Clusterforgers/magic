@@ -199,6 +199,12 @@ fn keyword_way(
             cost,
             in_hand && is_creature(state, id),
         ),
+        Keyword::Bestow(cost) => (
+            CastWay::Bestow,
+            "Bestow",
+            cost,
+            in_hand && is_creature(state, id),
+        ),
         Keyword::Foretell(cost) => (
             CastWay::Foretold,
             "Foretell",
@@ -213,7 +219,7 @@ fn keyword_way(
     // Overload and foretell are paid with mana alone.
     let (mana, parts) = if matches!(
         way,
-        CastWay::Flashback | CastWay::Evoke | CastWay::Escape | CastWay::Dash
+        CastWay::Flashback | CastWay::Evoke | CastWay::Escape | CastWay::Dash | CastWay::Bestow
     ) {
         cast_cost(cost)?
     } else {
@@ -453,6 +459,10 @@ pub(crate) fn announceable_in(
     id: ObjectId,
     way: Option<CastWay>,
 ) -> bool {
+    if way == Some(CastWay::Bestow) {
+        // The creature card is an Aura spell with the one target of its enchant ability and no other (CR 702.103b).
+        return attach::bestow_announceable(state, player, id);
+    }
     way == Some(CastWay::Overload)
         || (spell_ability(state, id)
             .is_none_or(|(_, rules)| announceable(state, player, id, &rules))

@@ -339,6 +339,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "unearth" => spell_cost(rest).map(Keyword::Unearth),
         "escape" => spell_cost(rest).map(Keyword::Escape),
         "dash" => spell_cost(rest).map(Keyword::Dash),
+        "bestow" => spell_cost(rest).map(Keyword::Bestow),
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
         "echo" => spell_cost(rest).map(Keyword::Echo),
         "cumulative upkeep" => spell_cost(rest).map(Keyword::CumulativeUpkeep),
@@ -696,6 +697,8 @@ mod tests {
     #[case::rebound("Rebound", Keyword::Rebound)]
     #[case::aftermath("Aftermath", Keyword::Aftermath)]
     #[case::dash("Dash {2}{R}", Keyword::Dash(mana("{2}{R}")))]
+    #[case::bestow("Bestow {3}{G}{G}", Keyword::Bestow(mana("{3}{G}{G}")))]
+    #[case::bestow_five_colors("Bestow {2}{W}{U}{B}{R}{G}", Keyword::Bestow(mana("{2}{W}{U}{B}{R}{G}")))]
     #[case::ninjutsu("Ninjutsu {1}{U}", Keyword::Ninjutsu(mana("{1}{U}")))]
     #[case::ninjutsu_for_one_mana("ninjutsu {B}", Keyword::Ninjutsu(mana("{B}")))]
     #[case::escape_exiling_cards(
@@ -961,6 +964,7 @@ mod tests {
             "Rebound",
             "Aftermath",
             "Dash {1}",
+            "Bestow {1}",
             "Ninjutsu {1}{U}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];

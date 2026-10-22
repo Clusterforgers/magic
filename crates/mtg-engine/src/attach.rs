@@ -4,7 +4,7 @@
 
 use mtg_cards::CardDefinition;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::refs::{Bounds, Selector, TargetSpec, Targetable};
+use mtg_cards::refs::{Bounds, Pred, Selector, TargetSpec, Targetable};
 use mtg_core::card::{CardType, Subtype};
 use mtg_core::ids::{ObjectId, PlayerId};
 
@@ -47,6 +47,10 @@ pub(crate) fn definition_attaches(definition: &CardDefinition) -> bool {
 /// What `id` is as an attachment, by the subtypes it prints and those effects gave it.
 pub(crate) fn kind_of(state: &GameState, id: ObjectId) -> Option<Kind> {
     let object = state.object(id)?;
+    // A bestowed creature card is an Aura though it prints no such subtype (CR 702.103b).
+    if object.bestowed() {
+        return Some(Kind::Aura);
+    }
     // The subtypes effects gave a permanent are held by the layers, which a pass over the battlefield reads in place.
     let given = (object.zone() == Zone::Battlefield)
         .then(|| state.layers().get(id))
@@ -66,6 +70,11 @@ pub(crate) fn kind_of(state: &GameState, id: ObjectId) -> Option<Kind> {
 pub(crate) fn enchant_restriction(state: &GameState, id: ObjectId) -> Option<Selector> {
     let mut found = false;
     let mut preds = Vec::new();
+    // A bestowed Aura has enchant creature (CR 702.103b), whatever else it says.
+    if state.object(id).is_some_and(GameObject::bestowed) {
+        found = true;
+        preds.push(Pred::Type(CardType::Creature));
+    }
     for keyword in keywords_of(state, id) {
         if let Keyword::Enchant(selector) = keyword {
             found = true;
@@ -171,7 +180,7 @@ fn may_enchant(state: &GameState, aura: &GameObject, host: &GameObject) -> bool 
 pub(crate) fn spell_target(state: &GameState, id: ObjectId) -> Option<TargetSpec> {
     let object = state.object(id)?;
     if object.kind() == ObjectKind::Ability
-        || !object.card().subtypes.iter().any(|s| s.0 == "Aura")
+        || !(object.bestowed() || object.card().subtypes.iter().any(|s| s.0 == "Aura"))
         || object.base_types().contains(CardType::Instant)
         || object.base_types().contains(CardType::Sorcery)
     {
@@ -186,11 +195,29 @@ pub(crate) fn spell_target(state: &GameState, id: ObjectId) -> Option<TargetSpec
         (None, Some(false)) => Targetable::Player,
         (None, None) => return None,
     };
-    Some(TargetSpec {
+    Some(aura_target(what))
+}
+
+/// The one target of an Aura spell (CR 303.4a).
+fn aura_target(what: Targetable) -> TargetSpec {
+    TargetSpec {
         what,
         bounds: Bounds::default(),
         divide: None,
-    })
+    }
+}
+
+/// The target specification of a creature card cast for its bestow cost: one creature (CR 702.103b, 303.4a). The card
+/// is not on the stack yet while its targets are announced, so it is not yet bestowed.
+pub(crate) fn bestow_target() -> TargetSpec {
+    aura_target(Targetable::Object(Selector(vec![Pred::Type(
+        CardType::Creature,
+    )])))
+}
+
+/// Whether `player` can announce a creature for the card `id` cast for its bestow cost (CR 601.2c).
+pub(crate) fn bestow_announceable(state: &GameState, player: PlayerId, id: ObjectId) -> bool {
+    options_for(state, id, player, 0, &bestow_target(), true, None, None).is_some()
 }
 
 /// What an Aura is attached to: a permanent or a player.
@@ -398,6 +425,10 @@ pub(crate) fn state_based(state: &GameState, leaving: &[ObjectId]) -> Vec<Event>
         // by hand (`manual.rs`), so it waits unattached.
         let by_hand = !attached && !object.card().manual.is_empty();
         match kind_of(state, id) {
+            // A bestowed Aura that may not stay attached becomes a creature instead (CR 702.103e).
+            Some(Kind::Aura) if object.bestowed() && !legal() => {
+                events.push(Event::Unattached { object: id });
+            }
             Some(Kind::Aura) if !legal() && !by_hand => events.push(Event::ZoneChanged {
                 object: id,
                 from: Zone::Battlefield,

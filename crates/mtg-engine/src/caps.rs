@@ -268,6 +268,7 @@ const RUNS: &[&str] = &[
     "Keyword.Rebound",
     "Keyword.Aftermath",
     "Keyword.Dash",
+    "Keyword.Bestow",
     "Keyword.Ninjutsu",
     "Keyword.Echo",
     "Keyword.CumulativeUpkeep",
@@ -576,6 +577,7 @@ mod tests {
     #[case::rebound("Keyword.Rebound", true)]
     #[case::aftermath("Keyword.Aftermath", true)]
     #[case::dash("Keyword.Dash", true)]
+    #[case::bestow("Keyword.Bestow", true)]
     #[case::ninjutsu("Keyword.Ninjutsu", true)]
     #[case::joining_an_attack("Effect.JoinAttack", true)]
     #[case::echo("Keyword.Echo", true)]

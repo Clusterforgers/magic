@@ -6,7 +6,7 @@ use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
 use mtg_cards::value::{CastWay, CounterKind};
-use mtg_core::card::CardTypes;
+use mtg_core::card::{CardType, CardTypes};
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
@@ -409,14 +409,36 @@ impl GameObject {
         self.adventure
     }
 
-    /// The printed card types of the face in use (no effects applied).
+    /// The printed card types of the face in use (no effects applied); a bestowed Aura is no creature (CR 702.103b).
     pub fn base_types(&self) -> CardTypes {
-        if let Some(copy) = self.copy_effect() {
-            return copy.definition().type_set();
+        let printed = if let Some(copy) = self.copy_effect() {
+            copy.definition().type_set()
+        } else {
+            match self.face() {
+                Some(face) if self.kind != ObjectKind::Ability => self.def.face(face).type_set(),
+                _ => self.base_types,
+            }
+        };
+        if self.bestowed() {
+            crate::effects::without(printed, CardType::Creature)
+        } else {
+            printed
         }
-        match self.face() {
-            Some(face) if self.kind != ObjectKind::Ability => self.def.face(face).type_set(),
-            _ => self.base_types,
+    }
+
+    /// Whether the object is bestowed: a spell cast for its bestow cost, or a permanent that was and is still attached to
+    /// a permanent. It is an Aura with enchant creature then and no creature; a permanent that became unattached is a
+    /// creature again (CR 702.103b, 702.103e).
+    pub fn bestowed(&self) -> bool {
+        match &self.permanent {
+            Some(permanent) => {
+                permanent.way == Some(CastWay::Bestow) && permanent.attached_to.is_some()
+            }
+            None => {
+                self.kind != ObjectKind::Ability
+                    && self.zone == Zone::Stack
+                    && self.choices.way == Some(CastWay::Bestow)
+            }
         }
     }
 

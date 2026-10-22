@@ -728,14 +728,18 @@ pub(super) fn power_toughness(r: &mut Reader<'_>) -> Option<Modification> {
     Some(Modification::ModifyPT { power, toughness })
 }
 
-/// "flying", "flying and haste", "protection from white and from black": keywords given.
+/// "flying", "flying and haste", "flying, vigilance, and haste", "protection from white and from black": keywords given.
 pub(super) fn granted(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
     let mut mods: Vec<Modification> = granted_keywords(r)?
         .into_iter()
         .map(Modification::AddKeyword)
         .collect();
     while let Some(next) = r.attempt(|r| {
-        r.need("and")?;
+        if r.punct(',') {
+            r.word("and");
+        } else {
+            r.need("and")?;
+        }
         granted_keywords(r)
     }) {
         mods.extend(next.into_iter().map(Modification::AddKeyword));

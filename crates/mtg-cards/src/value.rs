@@ -73,6 +73,8 @@ pub enum CastWay {
     Escape,
     /// Dash (CR 702.109): the creature has haste and returns to its owner's hand at the next end step.
     Dash,
+    /// Bestow (CR 702.103): cast as an Aura spell with enchant creature; the permanent is an Aura while it is attached.
+    Bestow,
     /// Without paying its mana cost, by a permission or an effect (CR 118.9).
     Free,
 }

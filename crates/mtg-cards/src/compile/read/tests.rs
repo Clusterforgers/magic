@@ -754,6 +754,7 @@ mod pump {
     #[case("Target creature gains lifelink until end of turn.")]
     #[case("Target creature gains indestructible until end of turn.")]
     #[case("Target creature gains flying and haste until end of turn.")]
+    #[case("Target creature gains flying, trample, and haste until end of turn.")]
     #[case("Target creature you control gets +2/+2 until end of turn.")]
     #[case("Target attacking creature gets +1/+1 until end of turn.")]
     #[case("Target creature gets +2/+2 and gains flying until end of turn.")]
@@ -787,7 +788,6 @@ mod pump {
         "Target creature gets +2/+2 until end of turn. Target creature gets -2/-2 until end of turn."
     )]
     #[case::conditional("If you control a Goblin, target creature gets +2/+2 until end of turn.")]
-    #[case::a_keyword_list("Target creature gains flying, trample, and haste until end of turn.")]
     #[case::a_cost_keyword("Target creature gains ward {2} until end of turn.")]
     #[case::x_without_an_x_cost("Target creature gets +X/+X until end of turn.")]
     #[case::negative_x("Target creature gets -X/-X until end of turn.")]

@@ -286,7 +286,11 @@ pub fn granted_text(mods: &[Modification]) -> Option<String> {
             protecting = false;
         }
     }
-    Some(parts.join(" and "))
+    // Cards write three or more as a list: "flying, vigilance, and haste".
+    Some(match parts.as_slice() {
+        [rest @ .., last] if rest.len() >= 2 => format!("{}, and {last}", rest.join(", ")),
+        _ => parts.join(" and "),
+    })
 }
 
 pub(super) fn stat_word(r: &mut Reader<'_>) -> Option<StatKind> {

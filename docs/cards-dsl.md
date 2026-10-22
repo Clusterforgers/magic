@@ -178,7 +178,7 @@ TargetSpec{ what: AnyTarget | Player | Opponent | Object(Selector) | Either([..]
 Amount    = n | X | Kicks | Count(Selector) | Stat{of,stat} | Life(Ref) | Counters{on,counter} | Sum([Amount]) | Times{by,of}
           | Divided | EvenShare(Amount) | TargetCount(i) | Devotion([Color]) | Greatest{of,stat} | Total{of,stat}
           | CardTypes(Selector) | Players(Ref) | LowestLife(Ref) | HighestLife(Ref) | Triggering
-Condition = Not | All | Any | Compare{left,op,right} | Matches{subject,selector} | Kicked | AdditionalCostPaid | CastWith(Flashback|Evoke|Overload|Madness|Suspend|Foretold|Escape|Free) | YourTurn | Performed
+Condition = Not | All | Any | Compare{left,op,right} | Matches{subject,selector} | Kicked | AdditionalCostPaid | CastWith(Flashback|Evoke|Overload|Madness|Suspend|Foretold|Escape|Dash|Bestow|Free) | YourTurn | Performed
           | Monarch(Ref) | CitysBlessing(Ref) | NewlyControlled(Ref)
 ```
 

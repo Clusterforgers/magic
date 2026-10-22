@@ -32,6 +32,7 @@ Bog Wraith
 Boggart Ram-Gang
 Bonesplitter
 Boon Reflection
+Boon Satyr
 Borderland Behemoth
 Brain Freeze
 Brainstorm
@@ -43,7 +44,9 @@ Capsize
 Carnage Tyrant
 Cascade Bluffs
 Cathars' Crusade
+Celestial Archon
 Changeling Outcast
+Chromanticore
 Circle of Dreams Druid
 Clone
 Cold-Eyed Selkie
@@ -124,6 +127,7 @@ Gadwick, the Wizened
 Gaea's Cradle
 Game-Trail Changeling
 Gerrard's Wisdom
+Ghostblade Eidolon
 Giant Cindermaw
 Giant Growth
 Gilded Lotus
