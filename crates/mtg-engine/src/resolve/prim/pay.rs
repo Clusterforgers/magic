@@ -14,7 +14,7 @@ use crate::choose::{CardsOptions, Choice, YesNoOptions};
 use crate::decision::{Decision, DecisionKind};
 use crate::events::Event;
 use crate::help::Offered;
-use crate::mana::can_afford;
+use crate::mana::{can_afford, reserve_energy};
 use crate::parts::{Part, Payer};
 use crate::price::{Leaves, Price};
 use crate::priority::mana_options;
@@ -122,6 +122,7 @@ fn can_pay(cx: &Cx<'_>, player: PlayerId, price: &Price) -> bool {
         price.mana.as_ref().is_none_or(|mana| {
             let mut sources = mana_options(state, player);
             sources.retain(|option| !claimed.contains(&option.source.object));
+            reserve_energy(&mut sources, price.energy());
             let life = seat
                 .life()
                 .saturating_sub(i32::try_from(price.life()).unwrap_or(i32::MAX));
@@ -244,6 +245,7 @@ fn payment(
     let mana = price.mana.clone().unwrap_or(ManaCost::ZERO);
     let mut sources = mana_options(state, player);
     sources.retain(|option| !picked.contains(&option.source.object));
+    reserve_energy(&mut sources, price.energy());
     payment_decision(
         state,
         player,

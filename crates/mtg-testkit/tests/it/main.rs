@@ -53,6 +53,7 @@ mod determinism_replay;
 mod divided_resolution;
 mod elimination;
 mod enchant_player;
+mod energy_payments;
 mod enters;
 mod equipment;
 mod escape;

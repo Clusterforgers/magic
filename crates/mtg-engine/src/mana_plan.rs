@@ -314,6 +314,8 @@ mod tests {
             only: Vec::new(),
             also: Vec::new(),
             life: 0,
+            energy: 0,
+            energy_held: 0,
             cost: ManaCost::ZERO,
         }
     }
