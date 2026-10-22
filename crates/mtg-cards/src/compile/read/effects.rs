@@ -81,7 +81,10 @@ pub(super) const IMPERATIVES: [Template; 11] = [
 /// Every sentence shape, in the order they are tried: the shapes of `conditional` first, which read a sentence
 /// that another shape would read in part.
 fn templates() -> impl Iterator<Item = Template> {
-    conditional::TEMPLATES.into_iter().chain(TEMPLATES)
+    conditional::TEMPLATES
+        .into_iter()
+        .chain(TEMPLATES)
+        .chain(super::lands::TEMPLATES)
 }
 
 /// Reads the next sentence and its period into `effects`; false when it is not a shape the

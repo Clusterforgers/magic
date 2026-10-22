@@ -138,6 +138,8 @@ const RUNS: &[&str] = &[
     "Rule.CantSearch",
     "Rule.RevealTop",
     "Rule.NoMaxHandSize",
+    "Rule.LookAtTopAnyTime",
+    "Rule.AdditionalLandPlays",
     "Rule.TriggerAgain",
     "Rule.DamageCantBePrevented",
     VARIABLE_STATS,
@@ -538,8 +540,8 @@ mod tests {
     #[case::the_citys_blessing("Condition.CitysBlessing", false)]
     #[case::unblockable_creatures("Mod.CantBeBlocked", true)]
     #[case::creatures_that_cant_be_blocked_by_some("Mod.CantBeBlockedBy", true)]
-    #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", false)]
-    #[case::additional_land_plays("Rule.AdditionalLandPlays", false)]
+    #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", true)]
+    #[case::additional_land_plays("Rule.AdditionalLandPlays", true)]
     #[case::commander_eligibility("Rule.CanBeCommander", true)]
     #[case::partner("Keyword.Partner", true)]
     #[case::partner_with("Keyword.PartnerWith", true)]

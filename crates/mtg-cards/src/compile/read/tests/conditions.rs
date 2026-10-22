@@ -269,7 +269,6 @@ fn the_plurals_of_subtypes_read_and_write_back(#[case] text: &str) {
 #[case::a_misspelling("Destroy all Heroees.")]
 #[case::not_a_subtype("Destroy all Zorks.")]
 #[case::a_card_type_in_capitals("Destroy all Creatures.")]
-#[case::a_subtype_and_a_type("Destroy all Goblin creatures.")]
 #[case::lowercase("Destroy all goblins.")]
 fn a_plural_that_is_not_a_subtype_stays_with_the_table(#[case] text: &str) {
     assert_eq!(spell(text), None, "{text}");

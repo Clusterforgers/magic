@@ -358,7 +358,6 @@ fn a_bonus_or_a_keyword_reads_as_the_hand_written_files_say(
 )]
 #[case::unblockable_by_more_than_one("This creature can't be blocked by more than one creature.")]
 #[case::unblockable_this_turn("Creatures you control can't be blocked this turn.")]
-#[case::two_additional_lands("You may play two additional lands on each of your turns.")]
 #[case::an_additional_land_this_turn("You may play an additional land this turn.")]
 #[case::hand_size_for_a_turn("You have no maximum hand size this turn.")]
 #[case::look_at_the_top_of_a_library_that_is_not_yours(
@@ -373,10 +372,8 @@ fn a_bonus_or_a_keyword_reads_as_the_hand_written_files_say(
 #[case::a_bonus_for_a_land("Enchanted land gets +1/+1.")]
 #[case::a_bonus_with_x("Equipped creature gets +X/+X.")]
 #[case::a_bonus_for_each("Equipped creature gets +1/+1 for each creature you control.")]
-#[case::a_subtype_group("Other Goblin creatures you control get +1/+1 and have haste.")]
 #[case::three_keywords("Creatures you control have flying, vigilance, and haste.")]
 #[case::a_keyword_and_an_ability("Equipped creature has flying and can't be blocked.")]
-#[case::a_pair_of_types("Artifact creatures you control get +1/+1.")]
 #[case::a_keyword_adjective("Flying creatures you control get +1/+1.")]
 #[case::a_gain("Creatures you control gain haste.")]
 #[case::a_goad("Enchanted creature gets +1/+1 and is goaded.")]

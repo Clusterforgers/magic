@@ -167,8 +167,10 @@ mod events;
 mod exile_bounce_shrink;
 mod if_sentence;
 mod impulse;
+mod lands;
 mod library;
 mod life;
+mod lords;
 mod may;
 mod modes;
 mod monarch;
@@ -782,7 +784,6 @@ mod pump {
     #[case::one_number("Target creature gets +2 until end of turn.")]
     #[case::a_player("Target player gets +2/+2 until end of turn.")]
     #[case::nothing("Target creature gets until end of turn.")]
-    #[case::a_subtype("Goblins you control get +1/+1 until end of turn.")]
     #[case::with_an_ability("Target creature gains \"{T}: Add {G}.\" until end of turn.")]
     fn near_misses_stay_unread(#[case] text: &str) {
         assert_eq!(spell(text), None, "{text}");

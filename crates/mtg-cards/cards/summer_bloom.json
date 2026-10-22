@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e5df4597-1647-4ac2-bdb3-a517598d1431",
+  "name": "Summer Bloom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summer Bloom",
+      "oracle_fingerprint": "b2c18f90aa34b6685d0d89068c128de0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "AdditionalLandPlays": { "count": 3 } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

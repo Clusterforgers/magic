@@ -355,6 +355,23 @@ impl<'a> Reader<'a> {
         Some(name.as_str())
     }
 
+    /// Reads the capitalized word that opens a sentence ("Sliver creatures you control get +1/+1"), where the capital is
+    /// grammar and the tokenizer wrote a plain word; the caller judges whether it is a name.
+    pub fn opening_name(&mut self) -> Option<String> {
+        let opens = self.at == 0
+            || matches!(
+                self.tokens.get(self.at - 1),
+                Some(Token::Punct('.' | ':' | '\u{2014}' | '\u{2022}'))
+            );
+        let Some(Token::Word(word)) = self.tokens.get(self.at).filter(|_| opens) else {
+            return None;
+        };
+        let mut letters = word.chars();
+        let first = letters.next()?;
+        self.at += 1;
+        Some(first.to_uppercase().chain(letters).collect())
+    }
+
     /// Reads any word.
     pub fn take_word(&mut self) -> Option<&'a str> {
         let word = self.peek_word()?;
