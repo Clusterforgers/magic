@@ -18,7 +18,7 @@ One item is one piece of about 15 minutes; tick it in the commit that finishes i
 
 Ready pieces, grouped by the code they touch. A group runs one piece at a time, groups run side by side (about six agents at once); a piece is claimed with `[~]` and pushed before it starts, and `git merge main` plus the full `scripts/check.sh` end it.
 
-- Costs and announcement: (g2d), (g6d), (g5c), (c1b), (c1c), Undaunted of (c2b).
+- Costs and announcement: (g6d), (g5c), (c1b), (c1c), Undaunted of (c2b).
 - Cast ways and zones: (c5) recursion and alternative cast ways, (n2) face-down objects, (n1d3) meld.
 - Triggers and keywords: (c6) triggered and upkeep keywords, the triggered keywords of (c2b), (c4b) level-ups and stations, (c3b) and (c3c) keyword actions and Monarch wordings, (n1d5) day and night effects, (o2c).
 - Statics and layers: (c8), (c7b), (o1c).
@@ -90,7 +90,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (g2) `{X}` in spell and ability costs and the `-X` of a loyalty ability; the support walker names `Cost.Mana.X` and `Cost.Loyalty.X`; Blaze, Stroke of Genius, Kessig Wolf Run and Tezzeret the Seeker are Verified
 - [x] (g2b) X read after the spell or ability has resolved: a permanent enters with X counters, its enters trigger and a delayed trigger read the X of the spell, a target filter reads the X announced and the mana value of a spell on the stack counts X; Walking Ballista, Hangarback Walker, Gadwick, Disembowel and Forced March are Verified
 - [x] (g2c) X in the places (g2b) left: the intervening "if" of an enters trigger and the cast triggers of a spell read X, a spell with X in a target filter is offered only with the X values that have a target, and a library search reads X in a mana value; Wargate is Verified
-- [~] (g2d) (branch g2d-modal-x) A modal spell or ability with X in the target filter of a mode is offered at priority only when some X has a target, as a spell without modes is
+- [x] (g2d) A modal spell or ability with X in the target filter of a mode is offered at priority only when some X leaves enough modes with a target, as a spell without modes is
 - [x] (g3) Optional costs: kicker and multikicker are asked with `ChooseCosts` and `ChooseNumber`, added to the total cost, remembered by the spell, the permanent and its triggers, and read as `Condition::Kicked` and `Amount::Kicks`; Burst Lightning, Gatekeeper of Malakir and Wolfbriar Elemental are Verified
 - [x] (g3b) Buyback (the spell returns to its owner's hand as it resolves, not when countered or fizzled), entwine (asked before the modes, chooses all), "as an additional cost, you may ..." (`Ability::AdditionalCost`, `Condition::AdditionalCostPaid`), kicker, buyback, entwine, flashback, evoke and madness costs with life and picked objects, and the kicks of a permanent that left before its trigger went on the stack; Capsize, Dream's Grip, Voltage Surge, Vicious Offering, Deep Analysis and Endurance are Verified
 - [x] (g4) Alternative costs chosen with the cast (`ChooseOption`, `Choices.way`) and cast permissions (`GameRule::MayCast`: from a graveyard, exile or a library, without paying, as though with flash): flashback, evoke and overload; Mulldrifter, Faithless Looting, Cyclonic Rift, Mizzium Mortars, Omniscience and Vedalken Orrery are Verified
