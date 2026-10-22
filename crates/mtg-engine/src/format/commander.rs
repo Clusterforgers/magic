@@ -226,10 +226,10 @@ mod tests {
 
     #[test]
     fn basic_lands_and_cards_that_allow_it_are_exempt_from_the_singleton_rule() {
-        let rats = Arc::new(CardDefinition::new("Rats").with_manual(
-            "A deck can have any number of cards named Rats.",
-            "",
-        ));
+        let rats = Arc::new(
+            CardDefinition::new("Rats")
+                .with_manual("A deck can have any number of cards named Rats.", ""),
+        );
         let mut deck = spells(40);
         deck.extend(mountains(50));
         deck.extend(vec![rats; 9]);
@@ -293,10 +293,9 @@ mod tests {
 
     #[test]
     fn mana_in_an_activated_ability_is_part_of_the_identity() {
-        let ability: Ability = serde_json::from_str(
-            r#"{"Activated":{"cost":"{2}{U}","effects":[{"Draw":{}}]}}"#,
-        )
-        .unwrap();
+        let ability: Ability =
+            serde_json::from_str(r#"{"Activated":{"cost":"{2}{U}","effects":[{"Draw":{}}]}}"#)
+                .unwrap();
         let mut deck = spells(98);
         deck.push(Arc::new(
             (*card("Drawer", "{R}")).clone().with_rules(ability),
@@ -309,7 +308,10 @@ mod tests {
 
     #[test]
     fn the_identity_of_a_pair_is_the_two_together() {
-        let pair = vec![partner("Red Partner", "{R}"), partner("Blue Partner", "{U}")];
+        let pair = vec![
+            partner("Red Partner", "{R}"),
+            partner("Blue Partner", "{U}"),
+        ];
         let mut deck = spells(96);
         deck.push(card("Blue", "{U}"));
         deck.push(card("Both", "{R}{U}"));

@@ -21,6 +21,7 @@ mod combat_damage;
 mod combat_declarations;
 mod combat_forecast;
 mod combat_preview;
+mod commander;
 mod commander_fuzz;
 mod common;
 mod concede;

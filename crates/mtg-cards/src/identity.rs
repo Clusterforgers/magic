@@ -267,7 +267,9 @@ mod tests {
     fn legendary(types: &[CardType]) -> CardDefinition {
         types
             .iter()
-            .fold(CardDefinition::new("Legend"), |card, ty| card.with_type(*ty))
+            .fold(CardDefinition::new("Legend"), |card, ty| {
+                card.with_type(*ty)
+            })
             .with_supertype(Supertype::Legendary)
     }
 
@@ -289,12 +291,28 @@ mod tests {
     }
 
     #[rstest]
-    #[case::both_have_partner(with("A", r#"{"Keyword":"Partner"}"#), with("B", r#"{"Keyword":"Partner"}"#), true)]
+    #[case::both_have_partner(
+        with("A", r#"{"Keyword":"Partner"}"#),
+        with("B", r#"{"Keyword":"Partner"}"#),
+        true
+    )]
     #[case::only_one(with("A", r#"{"Keyword":"Partner"}"#), CardDefinition::new("B"), false)]
     #[case::neither(CardDefinition::new("A"), CardDefinition::new("B"), false)]
-    #[case::each_names_the_other(with("A", r#"{"Keyword":{"PartnerWith":"B"}}"#), with("B", r#"{"Keyword":{"PartnerWith":"A"}}"#), true)]
-    #[case::one_names_the_other(with("A", r#"{"Keyword":{"PartnerWith":"B"}}"#), with("B", r#"{"Keyword":"Partner"}"#), false)]
-    #[case::names_someone_else(with("A", r#"{"Keyword":{"PartnerWith":"C"}}"#), with("B", r#"{"Keyword":{"PartnerWith":"A"}}"#), false)]
+    #[case::each_names_the_other(
+        with("A", r#"{"Keyword":{"PartnerWith":"B"}}"#),
+        with("B", r#"{"Keyword":{"PartnerWith":"A"}}"#),
+        true
+    )]
+    #[case::one_names_the_other(
+        with("A", r#"{"Keyword":{"PartnerWith":"B"}}"#),
+        with("B", r#"{"Keyword":"Partner"}"#),
+        false
+    )]
+    #[case::names_someone_else(
+        with("A", r#"{"Keyword":{"PartnerWith":"C"}}"#),
+        with("B", r#"{"Keyword":{"PartnerWith":"A"}}"#),
+        false
+    )]
     fn partners_pair(#[case] a: CardDefinition, #[case] b: CardDefinition, #[case] pair: bool) {
         assert_eq!(a.partners_with(&b), pair);
     }

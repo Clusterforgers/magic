@@ -364,10 +364,16 @@ mod tests {
             object: commander,
             choices: crate::choose::Choices::default(),
         };
-        assert_eq!((game.commander_tax(commander), tax_for(&game, commander)), (0, 0));
+        assert_eq!(
+            (game.commander_tax(commander), tax_for(&game, commander)),
+            (0, 0)
+        );
         apply_event(&mut game, &cast).unwrap();
         // On the stack the commander owes nothing more, and it is counted once.
-        assert_eq!((game.commander_casts(commander), tax_for(&game, commander)), (1, 0));
+        assert_eq!(
+            (game.commander_casts(commander), tax_for(&game, commander)),
+            (1, 0)
+        );
         assert_eq!(game.commander_tax(commander), 2);
         for (from, to) in [
             (Zone::Stack, Zone::Hand(PlayerId(0))),
@@ -381,7 +387,11 @@ mod tests {
             };
             apply_event(&mut game, &moved).unwrap();
         }
-        assert_eq!(game.commander_casts(commander), 1, "a cast from a hand is not counted");
+        assert_eq!(
+            game.commander_casts(commander),
+            1,
+            "a cast from a hand is not counted"
+        );
         let back = Event::ZoneChanged {
             object: commander,
             from: Zone::Stack,
@@ -411,7 +421,10 @@ mod tests {
     fn the_owner_of_a_commander_in_a_graveyard_or_exile_is_asked(#[case] zone: Zone) {
         let mut game = game(2, &[&[], &["A"]]);
         let commander = ids(&game)[0];
-        assert!(decision(&game).is_none(), "in the command zone it is not asked");
+        assert!(
+            decision(&game).is_none(),
+            "in the command zone it is not asked"
+        );
         put_in(&mut game, commander, zone);
         let asked = decision(&game).unwrap();
         assert_eq!(asked.player, PlayerId(1));
@@ -439,7 +452,10 @@ mod tests {
         apply_event(&mut game, &Event::CommanderStayed { object: commander }).unwrap();
         assert!(decision(&game).is_none(), "not asked again where it lies");
         put_in(&mut game, commander, Zone::Exile);
-        assert!(decision(&game).is_some(), "asked again once it is in another zone");
+        assert!(
+            decision(&game).is_some(),
+            "asked again once it is in another zone"
+        );
     }
 
     #[test]
@@ -469,7 +485,11 @@ mod tests {
         assert_eq!(game.clone().state_hash(), fresh);
         let mut without = game.clone();
         without.commanders = Commanders::default();
-        assert_ne!(without.state_hash(), fresh, "the commanders are part of the state");
+        assert_ne!(
+            without.state_hash(),
+            fresh,
+            "the commanders are part of the state"
+        );
         hit(&mut game, commander, 1, 1);
         assert_ne!(game.state_hash(), fresh);
         // The life lost with the damage is the same in both, so the count alone tells them apart.
