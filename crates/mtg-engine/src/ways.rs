@@ -501,8 +501,9 @@ pub(crate) fn elsewhere(state: &GameState, player: PlayerId) -> Vec<ObjectId> {
     found
 }
 
-/// The lands in exile `player` may play (CR 305.1) under a cast permission that lets them play the cards it covers. The
-/// timing and the land plays left are those of any land, judged by the caller.
+/// The lands in exile, in the graveyard and on top of the library of `player` that they may play (CR 305.1) under a cast
+/// permission that lets them play the cards it covers. The timing and the land plays left are those of any land, judged
+/// by the caller.
 pub(crate) fn lands_elsewhere(state: &GameState, player: PlayerId) -> Vec<ObjectId> {
     let permissions: Vec<_> = cast_permissions(state)
         .iter()
@@ -511,10 +512,8 @@ pub(crate) fn lands_elsewhere(state: &GameState, player: PlayerId) -> Vec<Object
     if permissions.is_empty() {
         return Vec::new();
     }
-    state
-        .zone(Zone::Exile)
-        .iter()
-        .copied()
+    elsewhere(state, player)
+        .into_iter()
         .filter(|id| {
             state.object(*id).is_some_and(|card| {
                 card.kind() == ObjectKind::Card

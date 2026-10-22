@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d513e5df-31b0-4756-bf47-403460d0068e",
+  "name": "Battle Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battle Sliver",
+      "oracle_fingerprint": "af83753c8d89bbd22793120e9d36f89b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Subtype": "Sliver" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

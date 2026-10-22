@@ -80,7 +80,36 @@ pub fn pattern(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         return Some(found);
     }
     let what = subject(r)?;
+    if let Some(found) = r.attempt(|r| with_another(r, &what)) {
+        return Some(found);
+    }
     verbs(r, &what)
+}
+
+/// The card itself and a second subject doing the same: "~ or another Elf you control enters", "this creature or
+/// another creature dies or deals combat damage to a player", "this creature or equipped creature attacks". The events
+/// are the verbs of the card and then of the second subject, one verb at a time.
+fn with_another(r: &mut Reader<'_>, first: &Selector) -> Option<TriggerPattern> {
+    (*first == Selector::this()).then_some(())?;
+    r.word("or").then_some(())?;
+    let second = subject(r)?;
+    (second.0.contains(&Pred::Other) || second.0 == [Pred::Is(Ref::Attached)]).then_some(())?;
+    // The verbs are read twice, once for each subject.
+    let firsts = r.lookahead(|r| verb_list(r, first))?;
+    let seconds = verb_list(r, &second)?;
+    // A count of one event is not part of a list of events.
+    let counted = |found: &[TriggerPattern]| {
+        found
+            .iter()
+            .any(|found| matches!(found, TriggerPattern::Nth { .. }))
+    };
+    (firsts.len() == seconds.len() && !counted(&firsts) && !counted(&seconds)).then_some(())?;
+    let events: Vec<TriggerPattern> = firsts
+        .into_iter()
+        .zip(seconds)
+        .flat_map(|(itself, other)| [itself, other])
+        .collect();
+    Some(TriggerPattern::AnyOf(events))
 }
 
 /// The events that happen together: "one or more creatures you control deal combat damage to a player", "one or more
@@ -295,14 +324,7 @@ fn subject(r: &mut Reader<'_>) -> Option<Selector> {
 /// What the subject does: "enters", "dies", "leaves the battlefield", "attacks", and several of them
 /// joined by "or".
 fn verbs(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
-    let mut found = vec![verb(r, what)?];
-    while r.word("or") {
-        let next = verb(r, what)?;
-        if found.contains(&next) {
-            return None;
-        }
-        found.push(next);
-    }
+    let mut found = verb_list(r, what)?;
     if found.len() == 1 {
         found.pop()
     } else if found
@@ -314,6 +336,19 @@ fn verbs(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     } else {
         Some(TriggerPattern::AnyOf(found))
     }
+}
+
+/// The events of the verbs the subject does, in the order they are written.
+fn verb_list(r: &mut Reader<'_>, what: &Selector) -> Option<Vec<TriggerPattern>> {
+    let mut found = vec![verb(r, what)?];
+    while r.word("or") {
+        let next = verb(r, what)?;
+        if found.contains(&next) {
+            return None;
+        }
+        found.push(next);
+    }
+    Some(found)
 }
 
 fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
@@ -714,24 +749,41 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
                 phrase_text(what, Form::All)?
             ))
         }
-        TriggerPattern::AnyOf(patterns) => {
-            let (first, rest) = patterns.split_first()?;
-            let (what, verb) = happening(first)?;
-            let mut verbs = vec![verb];
-            for pattern in rest {
-                let (other, verb) = happening(pattern)?;
-                if other != what {
-                    return None;
-                }
-                verbs.push(verb);
-            }
-            about(&what, &verbs)
-        }
+        TriggerPattern::AnyOf(patterns) => any_of_text(patterns),
         _ => {
             let (what, verb) = happening(pattern)?;
             about(&what, &[verb])
         }
     }
+}
+
+/// Several events of one subject ("~ enters or attacks"), or of the card and a second subject in turn: "Whenever ~ or
+/// another Elf you control enters or dies".
+fn any_of_text(patterns: &[TriggerPattern]) -> Option<String> {
+    let happenings: Vec<(Selector, String)> =
+        patterns.iter().map(happening).collect::<Option<Vec<_>>>()?;
+    let (what, _) = happenings.first()?;
+    if happenings.iter().all(|(other, _)| other == what) {
+        let verbs: Vec<String> = happenings.iter().map(|(_, verb)| verb.clone()).collect();
+        return about(what, &verbs);
+    }
+    let second = &happenings.get(1)?.0;
+    let mut verbs = Vec::new();
+    for pair in happenings.chunks(2) {
+        let [(itself, verb), (other, same)] = pair else {
+            return None;
+        };
+        if *itself != Selector::this() || other != second || verb != same {
+            return None;
+        }
+        verbs.push(verb.as_str());
+    }
+    (second.0.contains(&Pred::Other) || second.0 == [Pred::Is(Ref::Attached)]).then_some(())?;
+    Some(format!(
+        "Whenever ~ or {} {}",
+        subject_text(second)?,
+        verbs.join(" or ")
+    ))
 }
 
 /// What is dealt damage, as the subject of "is dealt damage": the card itself, what an Equipment or Aura is attached to
