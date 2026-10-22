@@ -70,7 +70,6 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
     "Return target creature card from an opponent's graveyard to your hand."
 )]
 #[case::your_library("Return target card from your library to your hand.")]
-#[case::the_battlefield("Return target creature card from your graveyard to the battlefield.")]
 #[case::the_top_of_the_library(
     "Return target card from your graveyard to the top of your library."
 )]

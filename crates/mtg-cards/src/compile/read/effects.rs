@@ -265,7 +265,10 @@ fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         "proliferate" => Effect::Proliferate { who },
         // The card sacrifices itself: "sacrifice ~", and "sacrifice it" once the ability has spoken of the card.
         "sacrifice" => {
-            (r.source() || (r.it == Some(Ref::This) && r.word("it"))).then_some(())?;
+            // "When ~ enters, sacrifice it unless you pay {1}": the card, since nothing else has entered.
+            let itself =
+                r.it == Some(Ref::This) || (r.acts_itself && r.word_at(1) == Some("unless"));
+            (r.source() || (itself && r.word("it"))).then_some(())?;
             Effect::Sacrifice {
                 who,
                 filter: Selector::this(),
@@ -304,7 +307,7 @@ fn player(r: &mut Reader<'_>) -> Option<Ref> {
     if r.words("each player") {
         return Some(Ref::EachPlayer);
     }
-    if r.words("its controller") {
+    if r.words("its controller") || (r.it.is_some() && r.words("that creature's controller")) {
         return r.it.clone().map(|it| Ref::ControllerOf(Box::new(it)));
     }
     if r.that_player && r.words("that player") {
@@ -389,6 +392,12 @@ fn phrases(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
 fn verb_phrase(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
     if *who == Ref::You && r.peek_word() == Some("create") {
         return create::tokens(r);
+    }
+    // The controller of a permanent the sentence before named: "Its controller creates a 3/3 green Beast creature token."
+    if matches!(who, Ref::ControllerOf(_))
+        && let Some(created) = r.attempt(|r| create::tokens_by(r, who))
+    {
+        return Some(created);
     }
     predicate(r, who).map(|effect| vec![effect])
 }
@@ -497,6 +506,17 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         .iter()
         .any(|pred| matches!(pred, Pred::In(_) | Pred::Spell));
     if yours {
+        // A card of your graveyard reaches the battlefield under your control, which is its owner's.
+        if r.words("to the battlefield") {
+            return Some(vec![Effect::Move {
+                what,
+                to: Destination::Battlefield {
+                    tapped: false,
+                    under: None,
+                    counters: Vec::new(),
+                },
+            }]);
+        }
         r.need("to your hand")?;
     } else if permanent {
         r.need("to its owner's hand")?;

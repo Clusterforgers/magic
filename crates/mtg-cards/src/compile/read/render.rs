@@ -52,6 +52,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
         .collect();
     texts.extend(singulars);
     texts = texts.into_iter().flat_map(cast::impulse_wordings).collect();
+    let controller = create::other_wordings(&texts);
+    texts.extend(controller);
     // A card that becomes a target may call itself "it" in the counters it puts on itself (Seedglaive Mentor).
     if matches!(ability, Ability::Triggered { when, .. } if targeted_itself(when)) {
         let pronouns: Vec<String> = texts
@@ -1071,9 +1073,9 @@ impl Writer<'_> {
             Effect::PutCounters { .. }
             | Effect::RemoveCounters { .. }
             | Effect::MoveCounters { .. } => self.counters(effect)?,
-            Effect::CreateToken { .. } => {
-                create::text(effect, self.per).or_else(|| self.copy_token(effect, false))?
-            }
+            Effect::CreateToken { .. } => create::text(effect, self.per)
+                .or_else(|| self.copy_token(effect, false))
+                .or_else(|| self.controller_token(effect))?,
             Effect::DealDamage {
                 source: None,
                 to,
@@ -1108,8 +1110,46 @@ impl Writer<'_> {
                 paid,
                 unpaid,
             } if times.is_one() => self.payment(who, cost, paid, unpaid)?,
-            _ => return cast::text(effect).or_else(|| self.keyword_action(effect)),
+            _ => return self.other_effect(effect),
         })
+    }
+
+    /// The effects with a wording of their own: a card returned to the battlefield, the casting and the keyword actions.
+    fn other_effect(&mut self, effect: &Effect) -> Option<String> {
+        self.reanimated(effect)
+            .or_else(|| cast::text(effect))
+            .or_else(|| self.keyword_action(effect))
+    }
+
+    /// A card of your graveyard that returns to the battlefield: "return target creature card from your graveyard to the
+    /// battlefield".
+    fn reanimated(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::Move {
+            what,
+            to:
+                Destination::Battlefield {
+                    tapped: false,
+                    under: None,
+                    counters,
+                },
+        } = effect
+        else {
+            return None;
+        };
+        (counters.is_empty() && self.in_your_graveyard(what)).then(|| {
+            self.object(what)
+                .map(|card| format!("return {card} to the battlefield"))
+        })?
+    }
+
+    /// The tokens the controller of the permanent a sentence named creates: "its controller creates a 3/3 green Beast
+    /// creature token".
+    fn controller_token(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::CreateToken { who, .. } = effect else {
+            return None;
+        };
+        let subject = self.player(who)?;
+        Some(format!("{subject} {}", self.predicate(effect, true)?))
     }
 
     /// The effects after a condition, as steps joined by "and": "remove all of them and transform ~".
@@ -1280,7 +1320,7 @@ impl Writer<'_> {
             Effect::Sacrifice { filter, count, .. } if count.is_one() => {
                 format!("sacrifice{s} {}", sacrifice_text(filter)?)
             }
-            Effect::CreateToken { .. } => create::text(effect, self.per)?,
+            Effect::CreateToken { .. } => create::text_by(effect, self.per)?,
             Effect::Shuffle { who } => {
                 format!(
                     "shuffle{s} {} library",

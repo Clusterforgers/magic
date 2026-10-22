@@ -103,7 +103,24 @@ fn keyword_abilities(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
 /// attacking.", "Create X Treasure tokens, where X is the number of artifacts you control.",
 /// "Create a 1/1 white Spirit creature token with flying.", "Investigate."
 pub fn tokens(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    if r.word("investigate") {
+    tokens_of(r, false)
+}
+
+/// The tokens another player creates, as the controller of a permanent the sentence before named: "Its controller creates
+/// a 3/3 green Beast creature token.", "Its controller investigates."
+pub fn tokens_by(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
+    let mut effects = tokens_of(r, true)?;
+    for created in &mut effects {
+        if let Effect::CreateToken { who: owner, .. } = created {
+            owner.clone_from(who);
+        }
+    }
+    Some(effects)
+}
+
+/// The sentence of `tokens`, in the person of its subject: "create" for you, "creates" for another player.
+fn tokens_of(r: &mut Reader<'_>, third: bool) -> Option<Vec<Effect>> {
+    if r.word(if third { "investigates" } else { "investigate" }) {
         return Some(vec![effect(
             TokenRef::Named("clue".to_owned()),
             Amount::one(),
@@ -111,7 +128,7 @@ pub fn tokens(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             false,
         )]);
     }
-    r.need("create")?;
+    r.need(if third { "creates" } else { "create" })?;
     let variable = r.word("x");
     let number = if variable {
         None
@@ -218,13 +235,43 @@ fn keywords_text(token: &TokenRef) -> Option<String> {
 /// An effect that creates tokens, as a sentence without its first capital and period. A count of things is worded
 /// "X tokens, where X is the number of ..." or, with `per`, "a token for each ...".
 pub fn text(effect: &Effect, per: bool) -> Option<String> {
+    let Effect::CreateToken { who: Ref::You, .. } = effect else {
+        return None;
+    };
+    created_text(effect, per)
+}
+
+/// The sentence of `text` for another player: "creates a 3/3 green Beast creature token".
+pub fn text_by(effect: &Effect, per: bool) -> Option<String> {
+    let Effect::CreateToken { who, .. } = effect else {
+        return None;
+    };
+    let text = created_text(effect, per)?;
+    if *who == Ref::You {
+        return Some(text);
+    }
+    text.strip_prefix("create")
+        .map(|rest| format!("creates{rest}"))
+}
+
+/// The other wording of the tokens the controller of an object creates: "That creature's controller" for "Its controller".
+pub fn other_wordings(texts: &[String]) -> Vec<String> {
+    texts
+        .iter()
+        .filter(|text| text.contains("Its controller creates "))
+        .map(|text| text.replacen("Its controller", "That creature's controller", 1))
+        .collect()
+}
+
+/// The wording of the tokens an effect creates, whoever creates them, in the person of "create".
+fn created_text(effect: &Effect, per: bool) -> Option<String> {
     let Effect::CreateToken {
-        who: Ref::You,
         token,
         count,
         tapped,
         attacking,
         bind: None,
+        ..
     } = effect
     else {
         return None;

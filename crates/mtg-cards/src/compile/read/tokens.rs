@@ -106,12 +106,15 @@ pub fn canonical(text: &str) -> String {
         } else if let Some((text, used)) = pronoun(&words, at, &out) {
             out.push(text);
             at += used;
-        } else if investigate.eq_ignore_ascii_case("investigate") {
+        } else if investigate.eq_ignore_ascii_case("investigate")
+            || investigate.eq_ignore_ascii_case("investigates")
+        {
             // The keyword action is the same as its reminder text.
-            let create = if investigate.starts_with('I') {
-                "Create"
-            } else {
-                "create"
+            let create = match (investigate.starts_with('I'), investigate.ends_with('s')) {
+                (true, false) => "Create",
+                (false, false) => "create",
+                (true, true) => "Creates",
+                (false, true) => "creates",
             };
             let tail = word.get(investigate.len()..).unwrap_or_default();
             out.push(format!("{create} a Clue token{tail}"));

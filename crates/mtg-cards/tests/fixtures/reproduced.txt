@@ -132,6 +132,7 @@ Glorious Anthem
 Goblin Chieftain
 Goblin Spy
 Goblin War Buggy
+Goliath Truck
 Grapeshot
 Graven Cairns
 Graveshifter
