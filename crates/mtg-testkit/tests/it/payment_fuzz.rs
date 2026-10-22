@@ -1,6 +1,7 @@
 //! Goal: in whole bot games, a cancelled cast changes nothing and leaves nothing in the log, and a completed partial payment taps what was chosen plus the rest.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::{Decision, Engine, Event};
 use mtg_testkit::{RandomBot, fuzz_setup};
@@ -8,10 +9,7 @@ use rstest::rstest;
 
 /// Games per table size; the full campaign is `fuzz_games.rs`, this one only needs enough casts to cover each choice.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .map_or(120, |n: u64| n.min(120))
+    fuzz_games(120).min(120)
 }
 
 #[derive(Debug, Default)]

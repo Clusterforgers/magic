@@ -6,7 +6,7 @@
 )]
 
 use crate::common::pid;
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{for_each_seed, fuzz_games_scaled};
 
 use std::sync::Arc;
 
@@ -627,10 +627,7 @@ fn the_fuzz_decks_use_the_relaxations_they_are_built_for(#[values(2, 3, 6)] play
 }
 
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse::<u64>().ok())
-        .map_or(4, |n| (n / 30).max(1))
+    fuzz_games_scaled(4, 30)
 }
 
 #[rstest]

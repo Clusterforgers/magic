@@ -1,6 +1,7 @@
 //! Goal: whole bot games with decks of Auras (Pacifism, Epic Proportions, Control Magic, Squirrel Nest, Shielded by Faith and four of ours for creatures, lands and opponents' creatures), Equipment (Bonesplitter, Swiftfoot Boots and two of ours), a spell that returns an Aura, legendary creatures and artifacts that repeat, and the burn that takes a host away finish and keep every invariant (zones, life, the journal, the replay of the log equal to the live state, conservation of cards, what every permanent is attached to equal to what the attach and unattach events say, no Aura attached to nothing or to what it may not enchant, no Equipment, Fortification or other permanent attached wrongly, and no player with two legendary permanents of one name at a decision unless the engine is asking which to keep) for many seeds at tables of two, three and four seats, and the games really use them: Auras are cast at a target and enter attached to it, an Aura whose target left is not put onto the battlefield, an Aura whose host left goes to its owner's graveyard, an Aura put onto the battlefield without being cast chooses its host, an Equipment is equipped to a creature at sorcery speed and comes off a creature that left, the legend rule puts the rest of a name into the graveyard, an engine rebuilt from the log at each decision asks what the original asks, and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use std::collections::BTreeMap;
 
 use mtg_core::card::Supertype;
@@ -13,10 +14,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40)
+    fuzz_games(40)
 }
 
 fn is_aura(game: &GameState, id: ObjectId) -> bool {

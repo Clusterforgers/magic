@@ -1,6 +1,7 @@
 //! Goal: whole bot games with decks of "may" spells, choices among opponents and charms with one, two and repeated modes finish and keep every invariant (zones, life, the journal, no trigger waiting while a player has priority, the replay of the log equal to the live state) for many seeds at tables of two, three and four seats, and the games really use the decisions: modes are chosen, a mode is chosen twice, "may" questions are answered both ways and opponents are chosen; an engine rebuilt from the log at each decision asks the same question, and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use mtg_engine::choose::Choice;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::{Engine, EngineError, Event};
@@ -9,10 +10,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40)
+    fuzz_games(40)
 }
 
 #[derive(Default)]

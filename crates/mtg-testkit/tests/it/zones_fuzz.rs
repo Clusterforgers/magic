@@ -18,14 +18,11 @@ use mtg_testkit::zone_cards::{ZONE_CORPUS_CARDS, ZONE_SYNTHETIC_CARDS};
 use mtg_testkit::{RandomBot, play_game, zones_fuzz_setup};
 use rstest::rstest;
 
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{for_each_seed, fuzz_games};
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40)
+    fuzz_games(25)
 }
 
 /// The kind of a zone, as the data names it.

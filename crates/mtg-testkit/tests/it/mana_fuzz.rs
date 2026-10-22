@@ -1,7 +1,7 @@
 //! Goal: whole bot games with decks of Sol Ring, Gaea's Cradle, a painland and Lotus Petal beside lands, creatures and spells finish and keep every invariant at tables of two, three and four seats, whether the bots pay automatically, exactly or in part, and the games really use these abilities: several mana added at once, damage after a painland's mana and a Lotus Petal sacrificed for its mana.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{for_each_seed, fuzz_games};
 
 use std::sync::{Arc, Mutex};
 
@@ -15,10 +15,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40)
+    fuzz_games(40)
 }
 
 /// Sixty cards of the corpus: lands and mana sources of every shape with creatures and spells to pay for.
