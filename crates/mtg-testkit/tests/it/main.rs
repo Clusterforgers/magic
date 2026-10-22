@@ -60,6 +60,7 @@ mod fuzz_games;
 mod harness_selfcheck;
 mod help_fuzz;
 mod help_payment;
+mod house_commander;
 mod house_rules;
 mod house_table;
 mod house_turn;
