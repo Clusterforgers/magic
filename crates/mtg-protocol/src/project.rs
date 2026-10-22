@@ -235,6 +235,12 @@ impl ObjectView {
             },
             face_down: object.face_down().is_some(),
             face: object.face().filter(|_| printed),
+            // The clauses the engine leaves to the table are printed on the card every seat can read.
+            manual: if printed {
+                card.manual.clone()
+            } else {
+                Vec::new()
+            },
         })
     }
 
@@ -265,6 +271,7 @@ impl ObjectView {
             attachments: Vec::new(),
             face_down: true,
             face: None,
+            manual: Vec::new(),
         }
     }
 }

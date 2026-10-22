@@ -69,6 +69,15 @@ pub struct SeatDeck {
     pub manual_cards: u32,
 }
 
+/// Whether the table plays with manual cards: some seat's deck holds cards the game does not run whole, which their
+/// controllers do by hand with manual actions (`docs/engine.md`, Manual actions). A seat without a deck says nothing.
+pub fn manual_play(seats: &[LobbySeat]) -> bool {
+    seats
+        .iter()
+        .filter_map(|seat| seat.deck.as_ref())
+        .any(|deck| deck.manual_cards > 0)
+}
+
 /// How long a seat asks the server to pass priority for it (see [`ClientMessage::Yield`]).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
 pub enum YieldUntil {

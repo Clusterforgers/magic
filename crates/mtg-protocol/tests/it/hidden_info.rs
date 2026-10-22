@@ -104,7 +104,7 @@ pub(crate) fn hidden_in(state: &GameState, viewer: PlayerId) -> BTreeMap<ObjectI
 }
 
 /// Objects hidden from `viewer` before a batch that are not visible to them afterwards.
-fn hidden_across(
+pub(crate) fn hidden_across(
     before: &GameState,
     after: &GameState,
     viewer: PlayerId,

@@ -23,6 +23,7 @@ use crate::keywords;
 use crate::loyalty;
 use crate::mana::{ManaOption, ManaPool, can_afford};
 use crate::mana_ability;
+use crate::manual;
 use crate::object::GameObject;
 use crate::player::Player;
 use crate::price::{Leaves, Price};
@@ -438,6 +439,9 @@ pub(crate) fn answer(
             }
             Ok(Outcome::BeginForetell(object))
         }
+        PriorityAction::Manual(action) => manual::events(state, player, &action)
+            .map(Outcome::Events)
+            .map_err(|refusal| IllegalAnswer::Manual(refusal).into()),
         PriorityAction::ActivateMana(source) => {
             let option = options
                 .mana_abilities

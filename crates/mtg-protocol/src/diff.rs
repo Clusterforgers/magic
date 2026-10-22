@@ -79,6 +79,7 @@ mod tests {
             loyalty_abilities: Vec::new(),
             attached_to: None,
             attachments: Vec::new(),
+            manual: Vec::new(),
         }
     }
 

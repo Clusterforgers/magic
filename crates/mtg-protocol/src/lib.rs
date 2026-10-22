@@ -22,7 +22,7 @@ pub use error::ProtocolError;
 pub use events::{EventBatch, EventView, HiddenEvent, project_events};
 pub use message::{
     ClientMessage, DecisionId, ErrorCode, FullControlMode, LobbySeat, PROTOCOL_VERSION, SeatDeck,
-    ServerMessage, Stop, StopSide, YieldUntil,
+    ServerMessage, Stop, StopSide, YieldUntil, manual_play,
 };
 pub use project::{zone_is_visible, zone_is_visible_in};
 pub use rest::{

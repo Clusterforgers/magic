@@ -14,7 +14,7 @@ use mtg_core::mana::{ManaCost, ManaType, ParseManaCostError};
 use crate::ability::{Ability, Timing};
 use crate::card::{Card, TokenSpec};
 use crate::cost::CostItem;
-use crate::definition::{AbilityDef, CardDefinition, Layout, ManaAbility};
+use crate::definition::{AbilityDef, CardDefinition, Layout, ManaAbility, ManualClause};
 use crate::effect::{Effect, Produce};
 use crate::keyword::Keyword;
 use crate::mana::ManaCostX;
@@ -78,6 +78,7 @@ pub fn assemble(printed: &PrintedCard, rules: Option<&Card>, caps: &Caps) -> Ass
                 }
             }
         }
+        definition.manual = manual_clauses(&record, attach, index, printed);
         definition
     };
     let definition = match (played_layout(printed, caps), printed.faces.len()) {
@@ -89,6 +90,46 @@ pub fn assemble(printed: &PrintedCard, rules: Option<&Card>, caps: &Caps) -> Ass
         definition,
         support: record,
     }
+}
+
+/// The clauses of face `index` the table follows by hand. A face the engine attaches rules to has the clauses the
+/// support record names, read out of its oracle text; a face it attaches none to (a `Manual` card) is one clause of its
+/// whole rules text.
+fn manual_clauses(
+    record: &SupportRecord,
+    attach: bool,
+    index: usize,
+    printed: &PrintedCard,
+) -> Vec<ManualClause> {
+    let text = printed
+        .faces
+        .get(index)
+        .map_or("", |face| face.oracle_text.as_str());
+    let named = || record.clauses.iter().filter(|clause| clause.face == index);
+    if record.support == Support::Verified {
+        return Vec::new();
+    }
+    if !attach {
+        let reason = named().next().map_or_else(
+            || "the engine runs none of this card's rules".to_owned(),
+            |clause| clause.reason.clone(),
+        );
+        return crate::support::has_rules_text(text)
+            .then(|| ManualClause {
+                text: text.to_owned(),
+                reason,
+            })
+            .into_iter()
+            .collect();
+    }
+    named()
+        .filter_map(|clause| {
+            clause.span.slice(text).map(|clause_text| ManualClause {
+                text: clause_text.to_owned(),
+                reason: clause.reason.clone(),
+            })
+        })
+        .collect()
 }
 
 /// The layout of a card with several faces when the engine plays it: two faces of a shape it knows.
@@ -122,6 +163,7 @@ fn whole_card(printed: &PrintedCard, layout: Layout, faces: Vec<CardDefinition>)
                 .map(ManaCost::colors)
                 .unwrap_or_default();
             whole.color_indicator = (union != from_cost).then_some(union);
+            whole.manual = faces.iter().flat_map(|face| face.manual.clone()).collect();
             // The card as a whole is what a fused split spell is (CR 702.102c), so it carries that spell's rules.
             whole.rules.extend(fused_spell(&faces).map(Arc::new));
             whole
@@ -698,6 +740,7 @@ fn printed_side(face: &PrintedFace) -> CardDefinition {
         abilities: Vec::new(),
         rules: Vec::new(),
         layout: Layout::Normal,
+        manual: Vec::new(),
         faces: Vec::new(),
     }
 }
@@ -1422,5 +1465,86 @@ mod tests {
                 prop_assert!(matches!(read_stat(Some(&text)), Stat::Number(m) if m == n));
             }
         }
+    }
+
+    /// The elf with a second line the rules leave to the table, and the rules file that says so.
+    fn elf_with_a_clause(status: ImplStatus) -> (PrintedCard, Card) {
+        let text = format!("{MANA_TEXT} Draw a card.");
+        let mut printed = elf();
+        printed.faces[0].oracle_text = text.clone();
+        let mut rules = elf_rules(
+            status,
+            vec![
+                ability(MANA_ABILITY),
+                Ability::Manual {
+                    reason: "draws are not modelled".into(),
+                    span: crate::card::Span { start: 14, end: 26 },
+                },
+            ],
+        );
+        rules.faces[0].oracle_fingerprint = oracle_fingerprint(&text);
+        (printed, rules)
+    }
+
+    #[rstest]
+    #[case::a_clause_the_rules_name(ImplStatus::Partial, "Draw a card.", "draws are not modelled")]
+    #[case::the_whole_text_of_a_card_with_no_rules(
+        ImplStatus::Manual,
+        "{T}: Add {G}. Draw a card.",
+        "the engine runs none of this card's rules"
+    )]
+    fn the_clauses_the_engine_does_not_run_stay_on_the_definition_as_the_card_prints_them(
+        #[case] status: ImplStatus,
+        #[case] text: &str,
+        #[case] reason: &str,
+    ) {
+        let (printed, rules) = elf_with_a_clause(status);
+        let assembled = assemble(
+            &printed,
+            Some(&rules),
+            &Caps::from_names([PLAIN_MANA_ABILITY]),
+        );
+        assert_eq!(
+            assembled.definition.manual,
+            [ManualClause {
+                text: text.into(),
+                reason: reason.into()
+            }]
+        );
+        let ran = usize::from(status == ImplStatus::Partial);
+        assert_eq!(assembled.definition.abilities.len(), ran);
+    }
+
+    #[rstest]
+    #[case::a_card_the_engine_plays_whole(false)]
+    #[case::a_card_with_nothing_but_reminder_text(true)]
+    fn a_card_with_no_clause_left_to_the_table_shows_none(#[case] reminder_only: bool) {
+        let mut printed = elf();
+        let mut rules = elf_rules(ImplStatus::Full, vec![ability(MANA_ABILITY)]);
+        if reminder_only {
+            let text = "(This is a reminder.)";
+            printed.faces[0].oracle_text = text.into();
+            rules.faces[0].oracle_fingerprint = oracle_fingerprint(text);
+        }
+        let assembled = assemble(&printed, None, &Caps::everything());
+        let filed = assemble(&printed, Some(&rules), &Caps::everything());
+        assert_eq!(filed.definition.manual, Vec::<ManualClause>::new());
+        assert_eq!(
+            assembled.definition.manual.is_empty(),
+            reminder_only,
+            "a card with no file and rules text is left to the table whole"
+        );
+    }
+
+    #[test]
+    fn a_definition_with_no_clause_serializes_as_it_always_did() {
+        let json = serde_json::to_string(&CardDefinition::new("Elf")).unwrap();
+        assert!(!json.contains("manual"), "{json}");
+        let clause = CardDefinition::new("Elf").with_manual("Draw a card.", "not modelled");
+        assert!(
+            serde_json::to_string(&clause)
+                .unwrap()
+                .contains("Draw a card.")
+        );
     }
 }
