@@ -497,7 +497,15 @@ object: ObjectId,
 /**
  * The player it enchants.
  */
-player: PlayerId, } } | { "Unattached": { 
+player: PlayerId, } } | { "JoinedAttack": { 
+/**
+ * The creature.
+ */
+object: ObjectId, 
+/**
+ * What it attacks.
+ */
+target: AttackTarget, } } | { "Unattached": { 
 /**
  * The permanent.
  */

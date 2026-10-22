@@ -67,6 +67,7 @@ Delver of Secrets // Insectile Aberration
 Demon Bolt
 Disembowel
 Dockside Extortionist
+Dokuchi Shadow-Walker
 Doom Blade
 Doom Whisperer
 Dragonspeaker Shaman
@@ -129,6 +130,7 @@ Karn's Bastion
 Kathari Screecher
 Kessig Wolf Run
 Kitchen Finks
+Kolaghan Skirmisher
 Kongming, "Sleeping Dragon"
 Krenko's Enforcer
 Lat-Nam Adept
@@ -143,6 +145,9 @@ Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
 Lurching Rotbeast
 Manabarbs
+Mardu Scout
+Mardu Shadowspear
+Mardu Strike Leader
 Megrim
 Mesmeric Orb
 Midnight Banshee
@@ -152,11 +157,14 @@ Mizzium Mortars
 Monastery Swiftspear
 Morinfen
 Mothdust Changeling
+Mukotai Ambusher
 Mulldrifter
 Murderous Cut
 Muscle Sliver
 Nantuko Husk
 Nightveil Sprite
+Ninja of the Deep Hours
+Ninja of the New Moon
 Notion Rain
 Opt
 Otherworldly Gaze

@@ -114,6 +114,7 @@ const RUNS: &[&str] = &[
     "Effect.Untap",
     "Effect.Attach",
     "Effect.Unattach",
+    "Effect.JoinAttack",
     "Effect.Transform",
     "Effect.WinGame",
     "Effect.Surveil",
@@ -258,6 +259,8 @@ const RUNS: &[&str] = &[
     "Keyword.Escape",
     "Keyword.Rebound",
     "Keyword.Aftermath",
+    "Keyword.Dash",
+    "Keyword.Ninjutsu",
     "Keyword.Echo",
     "Keyword.CumulativeUpkeep",
     "Keyword.Undying",
@@ -561,6 +564,9 @@ mod tests {
     #[case::escape("Keyword.Escape", true)]
     #[case::rebound("Keyword.Rebound", true)]
     #[case::aftermath("Keyword.Aftermath", true)]
+    #[case::dash("Keyword.Dash", true)]
+    #[case::ninjutsu("Keyword.Ninjutsu", true)]
+    #[case::joining_an_attack("Effect.JoinAttack", true)]
     #[case::echo("Keyword.Echo", true)]
     #[case::cumulative_upkeep("Keyword.CumulativeUpkeep", true)]
     #[case::undying("Keyword.Undying", true)]

@@ -1,0 +1,27 @@
+{
+  "id": "c1f55b50-b3b1-4336-914c-1cc2669b8fac",
+  "oracle_id": "b6e972ae-cc2d-4c7e-9f49-c0616dc82064",
+  "name": "Mardu Shadowspear",
+  "lang": "en",
+  "layout": "normal",
+  "set": "frf",
+  "collector_number": "74",
+  "rarity": "uncommon",
+  "released_at": "2015-01-23",
+  "digital": false,
+  "mana_cost": "{B}",
+  "cmc": 1.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "Whenever this creature attacks, each opponent loses 1 life.\nDash {1}{B} (You may cast this spell for its dash cost. If you do, it gains haste, and it's returned from the battlefield to its owner's hand at the beginning of the next end step.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Dash"
+  ]
+}

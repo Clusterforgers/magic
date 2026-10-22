@@ -79,6 +79,7 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::Untapped => adjectives.push("untapped".to_owned()),
             Pred::Attacking => adjectives.push("attacking".to_owned()),
             Pred::Blocking => adjectives.push("blocking".to_owned()),
+            Pred::Unblocked => adjectives.push("unblocked".to_owned()),
             Pred::ControlledBy(Ref::You) => tail.push("you control".to_owned()),
             Pred::ControlledBy(Ref::Opponents) => tail.push("an opponent controls".to_owned()),
             Pred::OwnedBy(Ref::You) => yours = true,
