@@ -319,13 +319,15 @@ pub fn read(item: &str) -> Option<Keyword> {
         "equip" => cost(rest).map(Keyword::Equip),
         "reconfigure" => cost(rest).map(Keyword::Reconfigure),
         "cycling" => cost(rest).map(Keyword::Cycling),
-        "kicker" => cost(rest).map(Keyword::Kicker),
+        "kicker" => spell_cost(rest).map(Keyword::Kicker),
         "multikicker" => cost(rest).map(Keyword::Multikicker),
-        "flashback" => cost(rest).map(Keyword::Flashback),
-        "madness" => cost(rest).map(Keyword::Madness),
+        "buyback" => spell_cost(rest).map(Keyword::Buyback),
+        "entwine" => spell_cost(rest).map(Keyword::Entwine),
+        "flashback" => spell_cost(rest).map(Keyword::Flashback),
+        "madness" => spell_cost(rest).map(Keyword::Madness),
         "morph" => cost(rest).map(Keyword::Morph),
         "disguise" => cost(rest).map(Keyword::Disguise),
-        "evoke" => cost(rest).map(Keyword::Evoke),
+        "evoke" => spell_cost(rest).map(Keyword::Evoke),
         "overload" => cost(rest).map(Keyword::Overload),
         "mutate" => cost(rest).map(Keyword::Mutate),
         "encore" => cost(rest).map(Keyword::Encore),
@@ -450,6 +452,15 @@ fn cost(rest: &str) -> Option<Cost> {
     ManaCostX::from_str(rest).ok().map(Cost::mana)
 }
 
+/// The cost of a keyword paid as a spell is cast (kicker, buyback, entwine, flashback, evoke, madness): as `cost`, else
+/// after a dash any cost an ability pays, in words ("Sacrifice a creature", "{1}{U}, Pay 3 life").
+fn spell_cost(rest: &str) -> Option<Cost> {
+    cost(rest).or_else(|| {
+        let words = rest.strip_prefix('\u{2014}')?.trim().trim_end_matches('.');
+        super::read::cost_in_words(words)
+    })
+}
+
 /// `4—{U}`: the time counters and the mana cost.
 fn suspend(rest: &str) -> Option<Keyword> {
     let (time, price) = rest.split_once('\u{2014}')?;
@@ -547,6 +558,32 @@ mod tests {
     #[case::multikicker("Multikicker {1}{G}", Keyword::Multikicker(mana("{1}{G}")))]
     #[case::flashback("Flashback {2}{R}", Keyword::Flashback(mana("{2}{R}")))]
     #[case::evoke("Evoke {2}{U}", Keyword::Evoke(mana("{2}{U}")))]
+    #[case::buyback("Buyback {3}", Keyword::Buyback(mana("{3}")))]
+    #[case::entwine("Entwine {2}", Keyword::Entwine(mana("{2}")))]
+    #[case::kicker_sacrificing(
+        "Kicker\u{2014}Sacrifice a creature.",
+        Keyword::Kicker(Cost(vec![CostItem::Sacrifice {
+            filter: Selector(vec![Pred::Type(CardType::Creature)]),
+            count: Amount::one(),
+        }]))
+    )]
+    #[case::kicker_in_life("Kicker\u{2014}Pay 3 life.", Keyword::Kicker(Cost(vec![CostItem::PayLife(Amount::Fixed(3))])))]
+    #[case::buyback_in_life("Buyback\u{2014}Pay 4 life.", Keyword::Buyback(Cost(vec![CostItem::PayLife(Amount::Fixed(4))])))]
+    #[case::evoke_exiling_a_card_from_the_hand(
+        "Evoke\u{2014}Exile a red card from your hand.",
+        Keyword::Evoke(Cost(vec![CostItem::ExileFromHand {
+            filter: Selector(vec![Pred::Color(Color::Red)]),
+            count: Amount::one(),
+        }]))
+    )]
+    #[case::flashback_with_mana_and_life(
+        "Flashback\u{2014}{1}{U}, Pay 3 life.",
+        Keyword::Flashback(Cost(vec![CostItem::Mana("{1}{U}".parse().unwrap()), CostItem::PayLife(Amount::Fixed(3))]))
+    )]
+    #[case::madness_with_mana_and_life(
+        "Madness\u{2014}{2}{B}, Pay 8 life.",
+        Keyword::Madness(Cost(vec![CostItem::Mana("{2}{B}".parse().unwrap()), CostItem::PayLife(Amount::Fixed(8))]))
+    )]
     #[case::cycling("Cycling {2}", Keyword::Cycling(mana("{2}")))]
     #[case::madness("Madness {R}", Keyword::Madness(mana("{R}")))]
     #[case::morph("Morph {3}{B}", Keyword::Morph(mana("{3}{B}")))]
@@ -707,6 +744,8 @@ mod tests {
             "Cycling {1}",
             "Kicker {1}",
             "Multikicker {1}",
+            "Buyback {1}",
+            "Entwine {1}",
             "Flashback {1}",
             "Madness {1}",
             "Morph {1}",

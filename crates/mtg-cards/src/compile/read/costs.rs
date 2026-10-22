@@ -7,6 +7,7 @@ use super::effects::describes_a_kind;
 use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
 use super::triggers::article;
+use crate::ability::Ability;
 use crate::cost::{Cost, CostItem};
 use crate::mana::ManaCostX;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
@@ -139,11 +140,16 @@ fn tap(r: &mut Reader<'_>) -> Option<CostItem> {
 fn exile(r: &mut Reader<'_>) -> Option<CostItem> {
     let (form, count) = how_many(r)?;
     let mut filter = phrase(r, form)?;
-    without(&mut filter, &Pred::In(ZoneKind::Graveyard))?;
+    let from_hand = without(&mut filter, &Pred::In(ZoneKind::Hand)).is_some();
+    if !from_hand {
+        without(&mut filter, &Pred::In(ZoneKind::Graveyard))?;
+    }
     without(&mut filter, &Pred::OwnedBy(Ref::You))?;
-    Some(CostItem::ExileFromGraveyard {
-        filter: kinds_only(filter)?,
-        count,
+    let filter = kinds_only(filter)?;
+    Some(if from_hand {
+        CostItem::ExileFromHand { filter, count }
+    } else {
+        CostItem::ExileFromGraveyard { filter, count }
     })
 }
 
@@ -246,6 +252,12 @@ fn item_text(item: &CostItem) -> Option<String> {
                 .extend([Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)]);
             format!("Exile {}", taken_text(&said, count)?)
         }
+        CostItem::ExileFromHand { filter, count } => {
+            let mut said = filter.clone();
+            said.0
+                .extend([Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]);
+            format!("Exile {}", taken_text(&said, count)?)
+        }
         CostItem::ReturnToHand { filter, count } if *count == Amount::one() => {
             let mut said = filter.clone();
             said.0.push(Pred::ControlledBy(Ref::You));
@@ -303,5 +315,38 @@ fn sacrifice_text(filter: &Selector, count: &Amount) -> Option<String> {
     Some(format!(
         "Sacrifice {} {text}",
         count_word(u32::try_from(*number).ok().filter(|n| *n > 1)?)?
+    ))
+}
+
+/// "As an additional cost to cast this spell, you may sacrifice an artifact.": a cost the caster may pay as the spell is
+/// announced. A cost the caster must pay is not read.
+pub(super) fn additional(r: &mut Reader<'_>) -> Option<Ability> {
+    r.words("as an additional cost to cast").then_some(())?;
+    r.source().then_some(())?;
+    r.punct(',').then_some(())?;
+    r.words("you may").then_some(())?;
+    let paid_in_mana = r.attempt(|r| {
+        r.word("pay").then_some(())?;
+        mana(r).map(Cost::mana)
+    });
+    let cost = match paid_in_mana {
+        Some(cost) => cost,
+        None => cost(r)?,
+    };
+    Some(Ability::AdditionalCost { cost })
+}
+
+/// The sentence an optional additional cost is written as; `None` for a cost the readers do not write.
+pub(super) fn additional_text(cost: &Cost) -> Option<String> {
+    let body = if let [CostItem::Mana(mana)] = cost.0.as_slice() {
+        format!("pay {mana}")
+    } else {
+        let text = text(cost)?;
+        let mut chars = text.chars();
+        let first = chars.next()?;
+        first.to_lowercase().chain(chars).collect()
+    };
+    Some(format!(
+        "As an additional cost to cast ~, you may {body}."
     ))
 }
