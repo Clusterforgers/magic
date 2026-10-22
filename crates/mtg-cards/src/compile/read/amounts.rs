@@ -4,6 +4,7 @@
 use super::counters;
 use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
+use crate::modify::Modification;
 use crate::refs::{Pred, Ref};
 use crate::value::{Amount, StatKind};
 
@@ -150,14 +151,46 @@ pub fn counted(r: &mut Reader<'_>, base: Amount) -> Option<Amount> {
     let Some(each) = r.attempt(for_each) else {
         return Some(base);
     };
+    scale(&base, each)
+}
+
+/// The count `each` times a fixed, non-zero amount: one is the count itself.
+pub fn scale(base: &Amount, each: Amount) -> Option<Amount> {
     match base {
         Amount::Fixed(1) => Some(each),
-        Amount::Fixed(by) if by != 0 => Some(Amount::Times {
-            by,
+        Amount::Fixed(by) if *by != 0 => Some(Amount::Times {
+            by: *by,
             of: Box::new(each),
         }),
         _ => None,
     }
+}
+
+/// A change of power and toughness counted "for each ...": every change that is not zero is that many for each thing
+/// counted. A change that is not a fixed number (X) is not counted.
+pub fn counted_stats(r: &mut Reader<'_>, stats: Modification) -> Option<Modification> {
+    let Modification::ModifyPT { power, toughness } = stats else {
+        return Some(stats);
+    };
+    let Some(each) = r.attempt(for_each) else {
+        return Some(Modification::ModifyPT { power, toughness });
+    };
+    let per = |change: Amount| match change {
+        Amount::Fixed(0) => Some(change),
+        other => scale(&other, each.clone()),
+    };
+    // Both stats change by the same number for each thing, or one does not change.
+    match (&power, &toughness) {
+        (Amount::Fixed(0), Amount::Fixed(0)) => return None,
+        (Amount::Fixed(by), Amount::Fixed(other)) if *by != 0 && by != other && *other != 0 => {
+            return None;
+        }
+        _ => {}
+    }
+    Some(Modification::ModifyPT {
+        power: per(power)?,
+        toughness: per(toughness)?,
+    })
 }
 
 /// What "for each" counts, as the card words it after "for each ".

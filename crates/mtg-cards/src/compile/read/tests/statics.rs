@@ -371,7 +371,6 @@ fn a_bonus_or_a_keyword_reads_as_the_hand_written_files_say(
 #[case::a_bonus_for_itself("This creature gets +1/+1.")]
 #[case::a_bonus_for_a_land("Enchanted land gets +1/+1.")]
 #[case::a_bonus_with_x("Equipped creature gets +X/+X.")]
-#[case::a_bonus_for_each("Equipped creature gets +1/+1 for each creature you control.")]
 #[case::three_keywords("Creatures you control have flying, vigilance, and haste.")]
 #[case::a_keyword_and_an_ability("Equipped creature has flying and can't be blocked.")]
 #[case::a_keyword_adjective("Flying creatures you control get +1/+1.")]

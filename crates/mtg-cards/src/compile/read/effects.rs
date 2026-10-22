@@ -4,7 +4,8 @@
 use mtg_core::mana::ManaType;
 
 use super::amounts::{
-    cards, cards_counted, counted, counted_parts, for_each, its_stat, number_word, points,
+    cards, cards_counted, counted, counted_parts, counted_stats, for_each, its_stat, number_word,
+    points,
 };
 use super::cast;
 use super::conditional;
@@ -757,6 +758,10 @@ fn pump(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         mods = granted(r)?;
     }
     r.need("until end of turn")?;
+    // "Target creature gets -1/-1 until end of turn for each Swamp you control."
+    if let Some(stats) = mods.first_mut() {
+        *stats = counted_stats(r, stats.clone())?;
+    }
     Some(vec![Effect::Continuous {
         affected,
         mods,

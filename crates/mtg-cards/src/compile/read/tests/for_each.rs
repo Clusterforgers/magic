@@ -149,3 +149,66 @@ fn a_count_by_for_each_reads_as_the_count_of_a_selector(
 fn a_count_the_templates_do_not_model_stays_unread(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Spell, false), None, "{text}");
 }
+
+#[rstest]
+#[case::equipment(
+    "Equipped creature gets +1/+1 for each artifact you control.",
+    r#"{"Static":{"affected":"Attached","mods":[{"ModifyPT":{"power":{"Count":[{"Type":"Artifact"},{"ControlledBy":"You"}]},"toughness":{"Count":[{"Type":"Artifact"},{"ControlledBy":"You"}]}}}]}}"#
+)]
+#[case::power_only(
+    "Equipped creature gets +1/+0 for each card in your hand.",
+    r#"{"Static":{"affected":"Attached","mods":[{"ModifyPT":{"power":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]},"toughness":0}}]}}"#
+)]
+#[case::times(
+    "Enchanted creature gets +2/+2 for each enchantment you control.",
+    r#"{"Static":{"affected":"Attached","mods":[{"ModifyPT":{"power":{"Times":{"by":2,"of":{"Count":[{"Type":"Enchantment"},{"ControlledBy":"You"}]}}},"toughness":{"Times":{"by":2,"of":{"Count":[{"Type":"Enchantment"},{"ControlledBy":"You"}]}}}}}]}}"#
+)]
+#[case::and_a_keyword(
+    "Enchanted creature gets +1/+1 for each enchantment you control and has first strike.",
+    r#"{"Static":{"affected":"Attached","mods":[{"ModifyPT":{"power":{"Count":[{"Type":"Enchantment"},{"ControlledBy":"You"}]},"toughness":{"Count":[{"Type":"Enchantment"},{"ControlledBy":"You"}]}}},{"AddKeyword":"FirstStrike"}]}}"#
+)]
+#[case::the_card_itself(
+    "~ gets +1/+1 for each other Giant you control.",
+    r#"{"Static":{"affected":"This","mods":[{"ModifyPT":{"power":{"Count":[{"Subtype":"Giant"},"Other",{"ControlledBy":"You"}]},"toughness":{"Count":[{"Subtype":"Giant"},"Other",{"ControlledBy":"You"}]}}}]}}"#
+)]
+#[case::a_group(
+    "Creatures you control get +1/+0 for each charge counter on ~.",
+    r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":{"Counters":{"on":"This","counter":"charge"}},"toughness":0}}]}}"#
+)]
+fn a_bonus_counted_by_for_each_is_a_static_over_a_count(#[case] text: &str, #[case] json: &str) {
+    reads_as(text, ClauseKind::Static, false, json);
+}
+
+#[rstest]
+#[case::minus(
+    "Target creature gets -1/-1 until end of turn for each Swamp you control.",
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"ModifyPT":{"power":{"Times":{"by":-1,"of":{"Count":[{"Subtype":"Swamp"},{"ControlledBy":"You"}]}}},"toughness":{"Times":{"by":-1,"of":{"Count":[{"Subtype":"Swamp"},{"ControlledBy":"You"}]}}}}}],"duration":"UntilEndOfTurn"}}]}}"#
+)]
+#[case::all(
+    "All creatures get -1/-1 until end of turn for each Swamp you control.",
+    r#"{"Spell":{"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"}]},"mods":[{"ModifyPT":{"power":{"Times":{"by":-1,"of":{"Count":[{"Subtype":"Swamp"},{"ControlledBy":"You"}]}}},"toughness":{"Times":{"by":-1,"of":{"Count":[{"Subtype":"Swamp"},{"ControlledBy":"You"}]}}}}}],"duration":"UntilEndOfTurn"}}]}}"#
+)]
+#[case::power(
+    "Target creature gets +1/+0 until end of turn for each creature you control.",
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"ModifyPT":{"power":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]},"toughness":0}}],"duration":"UntilEndOfTurn"}}]}}"#
+)]
+fn a_pump_counted_by_for_each_is_an_effect_over_a_count(#[case] text: &str, #[case] json: &str) {
+    reads_as(text, ClauseKind::Spell, false, json);
+}
+
+#[rstest]
+#[case::static_zero("Equipped creature gets +0/+0 for each artifact you control.", ClauseKind::Static)]
+#[case::static_x("Equipped creature gets +X/+X for each artifact you control.", ClauseKind::Static)]
+#[case::static_mixed("Equipped creature gets +1/+2 for each artifact you control.", ClauseKind::Static)]
+#[case::static_keyword("Equipped creature has flying for each artifact you control.", ClauseKind::Static)]
+#[case::pump_keyword(
+    "Target creature gains flying until end of turn for each creature you control.",
+    ClauseKind::Spell
+)]
+#[case::pump_before(
+    "Target creature gets +1/+1 for each creature you control until end of turn.",
+    ClauseKind::Spell
+)]
+fn a_bonus_the_templates_do_not_model_stays_unread(#[case] text: &str, #[case] kind: ClauseKind) {
+    assert_eq!(clause(text, kind, false), None, "{text}");
+}

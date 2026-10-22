@@ -718,6 +718,33 @@ fn restriction_texts(timing: Timing, limit: Option<Limit>) -> Vec<String> {
     }
 }
 
+/// "+1/+1" and the words that count it, " for each creature you control" (empty for a fixed change): a change of power
+/// and toughness. One side may be counted when the other is zero.
+pub(super) fn stats_text(power: &Amount, toughness: &Amount) -> Option<(String, String)> {
+    let part = |amount: &Amount| match counted_parts(amount) {
+        Some((each, tail)) => Some((signed_text(&each)?, Some(tail))),
+        None => Some((signed_text(amount)?, None)),
+    };
+    let ((power, power_tail), (toughness, toughness_tail)) = (part(power)?, part(toughness)?);
+    let tail = match (power_tail, toughness_tail) {
+        (None, None) => String::new(),
+        (Some(tail), None) if toughness == "+0" => format!(" {tail}"),
+        (None, Some(tail)) if power == "+0" => format!(" {tail}"),
+        (Some(tail), Some(other)) if tail == other => format!(" {tail}"),
+        _ => return None,
+    };
+    Some((format!("{power}/{toughness}"), tail))
+}
+
+/// Whether the change of power and toughness leading the modifications is counted "for each ...".
+pub(super) fn counts_stats(mods: &[Modification]) -> bool {
+    matches!(
+        mods.first(),
+        Some(Modification::ModifyPT { power, toughness })
+            if counted_parts(power).is_some() || counted_parts(toughness).is_some()
+    )
+}
+
 /// "+2", "-3", "+X": a change of power or toughness.
 pub(super) fn signed_text(amount: &Amount) -> Option<String> {
     match amount {
@@ -1288,16 +1315,12 @@ impl Writer<'_> {
         } else {
             ("gets", "gains")
         };
-        let (stats, rest) = match mods.split_first() {
-            Some((Modification::ModifyPT { power, toughness }, rest)) => (
-                Some(format!(
-                    "{gets} {}/{}",
-                    signed_text(power)?,
-                    signed_text(toughness)?
-                )),
-                rest,
-            ),
-            _ => (None, mods),
+        let (stats, tail, rest) = match mods.split_first() {
+            Some((Modification::ModifyPT { power, toughness }, rest)) => {
+                let (stats, tail) = stats_text(power, toughness)?;
+                (Some(format!("{gets} {stats}")), tail, rest)
+            }
+            _ => (None, String::new(), mods),
         };
         let mut parts: Vec<String> = stats.into_iter().collect();
         if !rest.is_empty() {
@@ -1307,7 +1330,7 @@ impl Writer<'_> {
             return None;
         }
         Some(format!(
-            "{subject} {} until end of turn",
+            "{subject} {} until end of turn{tail}",
             parts.join(" and ")
         ))
     }
