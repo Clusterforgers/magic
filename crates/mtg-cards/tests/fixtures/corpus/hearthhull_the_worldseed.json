@@ -1,0 +1,31 @@
+{
+  "id": "6b913e79-a9f6-44d4-bb37-c4f6f66b8151",
+  "oracle_id": "8d6f82d9-5c5b-4c41-8857-c0936f2d894c",
+  "name": "Hearthhull, the Worldseed",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoc",
+  "collector_number": "1",
+  "rarity": "mythic",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "{1}{B}{R}{G}",
+  "cmc": 4.0,
+  "type_line": "Legendary Artifact — Spacecraft",
+  "oracle_text": "Station (Tap another creature you control: Put charge counters equal to its power on this Spacecraft. Station only as a sorcery. It's an artifact creature at 8+.)\n2+ | {1}, {T}, Sacrifice a land: Draw two cards. You may play an additional land this turn.\n8+ | Flying, vigilance, haste\nWhenever you sacrifice a land, each opponent loses 2 life.",
+  "power": "6",
+  "toughness": "7",
+  "colors": [
+    "B",
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Station"
+  ]
+}

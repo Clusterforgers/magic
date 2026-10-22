@@ -32,6 +32,7 @@ Artful Maneuver
 Arvad the Cursed
 Ash Barrens
 Atlantean Skirmisher
+Atmospheric Greenhouse
 Augury Raven
 Authority of the Consuls
 Aven Eternal
@@ -144,6 +145,7 @@ Dawnglade Regent
 Deadeye Brawler
 Death Ward
 Death-Greeter's Champion
+Debris Field Crusher
 Deep Analysis
 Deep Forest Hermit
 Deepfathom Skulker
@@ -226,6 +228,7 @@ Furtive Homunculus
 Gadwick, the Wizened
 Gaea's Cradle
 Galadhrim Brigade
+Galvanizing Sawship
 Game-Trail Changeling
 Generous Ent
 Gerrard's Wisdom
@@ -265,6 +268,7 @@ Hall of Triumph
 Hammer Dropper
 Hangar Scrounger
 Haughty Djinn
+Hearthhull, the Worldseed
 Hengegate Pathway // Mistgate Pathway
 Herald of Anguish
 Herald of the Dreadhorde
@@ -322,6 +326,7 @@ Looter il-Kor
 Lord of Extinction
 Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
+Lumen-Class Frigate
 Lurching Rotbeast
 Mana Bloom
 Manabarbs
@@ -417,6 +422,7 @@ Reflecting Pool
 Reiterate
 Rejuvenation Chamber
 Relentless Advance
+Rescue Skiff
 Revel Ruiner
 Reverberate
 Reverse Engineer
@@ -511,6 +517,7 @@ Sundering Growth
 Sunhome Stalwart
 Sunken Ruins
 Supreme Verdict
+Susurian Dirgecraft
 Swarm Intelligence
 Swiftfoot Boots
 Sword of Body and Mind
@@ -527,6 +534,7 @@ Tendershoot Dryad
 Tendo Ice Bridge
 Tendrils of Agony
 Thalia, Guardian of Thraben
+The Seriema
 The Spear of Bashenga
 The Thing, Ben Grimm
 Thieving Magpie
@@ -563,6 +571,8 @@ Underworld Rage-Hound
 Universal Automaton
 Universal Surveillance
 Urabrask the Hidden
+Uthros Research Craft
+Uthros Scanship
 Valley Rannet
 Vampire Cutthroat
 Vanguard Suppressor
@@ -586,12 +596,14 @@ Warmonger Hellkite
 Wasteland Raider
 Weaponcraft Enthusiast
 Wear // Tear
+Wedgelight Rammer
 Whir of Invention
 Wilderness Elemental
 Wings of the Guard
 Wooded Bastion
 Woodripper
 Wrath of God
+Wurmwall Sweeper
 Wyrm's Crossing Patrol
 Young Wolf
 Zendikar Farguide

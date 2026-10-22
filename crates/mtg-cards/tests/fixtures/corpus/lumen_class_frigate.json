@@ -1,0 +1,27 @@
+{
+  "id": "0cc59b5a-65fa-47cc-8ac7-b7c3f533a782",
+  "oracle_id": "3aa0cda4-fb2d-4fd4-84f6-482089a85547",
+  "name": "Lumen-Class Frigate",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoe",
+  "collector_number": "25",
+  "rarity": "rare",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Spacecraft",
+  "oracle_text": "Station (Tap another creature you control: Put charge counters equal to its power on this Spacecraft. Station only as a sorcery. It's an artifact creature at 12+.)\n2+ | Other creatures you control get +1/+1.\n12+ | Flying, lifelink",
+  "power": "3",
+  "toughness": "5",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Station"
+  ]
+}

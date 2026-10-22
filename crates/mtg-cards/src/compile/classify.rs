@@ -54,9 +54,9 @@ const CHAPTERS: [&str; 10] = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", 
 
 /// The kind of a clause's normalized text; `spell` is true on an instant or sorcery face.
 ///
-/// A clause may run over several lines (modes, a level block); its first line decides.
+/// A clause may run over several lines (modes, a level block, a station block); its first line decides.
 pub fn classify(text: &str, spell: bool) -> ClauseKind {
-    if text.starts_with("LEVEL ") {
+    if text.starts_with("LEVEL ") || super::clauses::is_station_block(text) {
         return ClauseKind::Static;
     }
     let head = text.lines().next().unwrap_or_default();

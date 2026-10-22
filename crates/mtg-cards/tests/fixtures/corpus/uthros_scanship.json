@@ -1,0 +1,27 @@
+{
+  "id": "1f93887f-35c5-472f-83d0-54227b3bd1d2",
+  "oracle_id": "7b4c37dc-8cb0-4870-929e-11c2a45952a2",
+  "name": "Uthros Scanship",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoe",
+  "collector_number": "85",
+  "rarity": "uncommon",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Artifact — Spacecraft",
+  "oracle_text": "When this Spacecraft enters, draw two cards, then discard a card.\nStation (Tap another creature you control: Put charge counters equal to its power on this Spacecraft. Station only as a sorcery. It's an artifact creature at 8+.)\n8+ | Flying",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Station"
+  ]
+}

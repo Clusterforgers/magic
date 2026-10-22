@@ -1,0 +1,53 @@
+{
+  "oracle_id": "f1d826d1-d2da-46ce-b1db-81393c88d865",
+  "name": "Susurian Dirgecraft",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Susurian Dirgecraft",
+      "oracle_fingerprint": "afa96240e3f2ac2023cc758be8ddc097",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [{ "Type": "Creature" }, { "Not": "Token" }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

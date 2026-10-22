@@ -1,0 +1,27 @@
+{
+  "id": "5bbce9fb-401f-4e78-acd5-9d3b506687fd",
+  "oracle_id": "dfe8f77a-cc26-438b-92ae-2ca7a91f813b",
+  "name": "Galvanizing Sawship",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoe",
+  "collector_number": "136",
+  "rarity": "uncommon",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "{5}{R}",
+  "cmc": 6.0,
+  "type_line": "Artifact — Spacecraft",
+  "oracle_text": "Station (Tap another creature you control: Put charge counters equal to its power on this Spacecraft. Station only as a sorcery. It's an artifact creature at 3+.)\n3+ | Flying, haste",
+  "power": "6",
+  "toughness": "5",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Station"
+  ]
+}

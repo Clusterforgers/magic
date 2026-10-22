@@ -208,6 +208,8 @@ pub enum Keyword {
     Saddle(u32),
     /// Saddled (CR 702.171b): the designation of a Mount whose saddle ability resolved this turn, granted until end of turn.
     Saddled,
+    /// Station (CR 702.184): tapping another creature puts charge counters equal to its power on the Spacecraft, at sorcery speed.
+    Station,
     /// Ravenous (CR 702.156): it enters with X +1/+1 counters, and its controller draws a card when it enters if X is 5 or more.
     Ravenous,
     /// Jump-start (CR 702.133): the card may be cast from a graveyard by discarding a card in addition to its other costs, and is then exiled.
@@ -342,6 +344,7 @@ impl Keyword {
         "Outlast",
         "Saddle",
         "Saddled",
+        "Station",
         "Ravenous",
         "Jump-start",
         "Retrace",
@@ -459,6 +462,7 @@ impl Keyword {
             Keyword::Outlast(_) => "Outlast",
             Keyword::Saddle(_) => "Saddle",
             Keyword::Saddled => "Saddled",
+            Keyword::Station => "Station",
             Keyword::Ravenous => "Ravenous",
             Keyword::JumpStart => "Jump-start",
             Keyword::Retrace => "Retrace",
@@ -598,6 +602,7 @@ mod tests {
             Keyword::Outlast(Cost::default()),
             Keyword::Saddle(2),
             Keyword::Saddled,
+            Keyword::Station,
             Keyword::Ravenous,
             Keyword::JumpStart,
             Keyword::Retrace,

@@ -76,6 +76,9 @@ pub enum Ref {
     MostLife,
     /// The result an earlier step bound with `as`.
     Bound(String),
+    /// The objects picked for the cost of the ability ("the creature tapped to pay it"): their characteristics are those they
+    /// have as the ability resolves, and none is named when the cost picks nothing.
+    Paid,
     /// The controller of the referenced object.
     ControllerOf(Box<Ref>),
     /// The owner of the referenced object.

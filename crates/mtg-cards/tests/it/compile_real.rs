@@ -13,7 +13,7 @@ use mtg_cards::support::PrintedCard;
 
 /// "this creature", "this Aura" and the like, which a card calls itself, as `~`.
 fn with_the_name_as_a_tilde(text: &str) -> String {
-    const NOUNS: [&str; 12] = [
+    const NOUNS: [&str; 13] = [
         "creature",
         "spell",
         "artifact",
@@ -22,6 +22,7 @@ fn with_the_name_as_a_tilde(text: &str) -> String {
         "permanent",
         "planeswalker",
         "vehicle",
+        "spacecraft",
         "battle",
         "equipment",
         "aura",

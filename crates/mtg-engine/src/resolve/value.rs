@@ -448,6 +448,14 @@ impl<'a> Scope<'a> {
                 .get(name)
                 .cloned()
                 .ok_or_else(|| ResolveError::Invalid(format!("`{name}` is not bound")))?,
+            Ref::Paid => self
+                .choices
+                .cost_picks()
+                .iter()
+                .flatten()
+                .filter_map(|picked| state.object(*picked))
+                .map(|picked| Target::Object(picked.reference()))
+                .collect(),
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
             Ref::Each(selector) => self

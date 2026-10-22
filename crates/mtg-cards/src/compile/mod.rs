@@ -203,10 +203,13 @@ fn read_clause(
                 .map(Ability::Keyword),
             Vec::new(),
         ),
-        ClauseKind::Static if text.starts_with("LEVEL ") => {
-            let mut block = read::level_block(text, x_free, own)
-                .unwrap_or_default()
-                .into_iter();
+        ClauseKind::Static if text.starts_with("LEVEL ") || clauses::is_station_block(text) => {
+            let block = if text.starts_with("LEVEL ") {
+                read::level_block(text, x_free, own)
+            } else {
+                read::station_block(text, x_free, own)
+            };
+            let mut block = block.unwrap_or_default().into_iter();
             (block.next(), block.collect())
         }
         ClauseKind::Triggered | ClauseKind::Activated | ClauseKind::Static if !reminds_counter => {
@@ -279,6 +282,7 @@ fn can_be_granted(ability: &Ability) -> bool {
 /// keyword clause so that it does not stand in the way of the effect lines around it.
 fn is_unread_keyword_line(text: &str, kind: ClauseKind, x_free: bool, own: &read::Own) -> bool {
     matches!(kind, ClauseKind::Spell | ClauseKind::Static)
+        && !clauses::is_station_block(text)
         && !text.contains('\n')
         && !text.trim_end().ends_with(['.', '"', '\u{201d}'])
         && read::clause_with(text, kind, x_free, own).is_none()
@@ -309,6 +313,12 @@ fn own_face(face: &PrintedFace) -> read::Own {
             .unwrap_or_default(),
         power: number(&face.power),
         toughness: number(&face.toughness),
+        creature_at: number(&face.power).and_then(|_: i32| {
+            face.oracle_text
+                .lines()
+                .filter_map(|line| clauses::station_header(line).map(|(threshold, _)| threshold))
+                .max()
+        }),
     }
 }
 

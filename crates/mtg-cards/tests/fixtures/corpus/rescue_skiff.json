@@ -1,0 +1,27 @@
+{
+  "id": "6fe86bfb-c67d-4df9-88c9-f083091f4cda",
+  "oracle_id": "112aaaf0-3301-4f79-9640-d36c75a0fb30",
+  "name": "Rescue Skiff",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoe",
+  "collector_number": "32",
+  "rarity": "uncommon",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "{5}{W}",
+  "cmc": 6.0,
+  "type_line": "Artifact — Spacecraft",
+  "oracle_text": "When this Spacecraft enters, return target creature or enchantment card from your graveyard to the battlefield.\nStation (Tap another creature you control: Put charge counters equal to its power on this Spacecraft. Station only as a sorcery. It's an artifact creature at 10+.)\n10+ | Flying",
+  "power": "5",
+  "toughness": "6",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Station"
+  ]
+}

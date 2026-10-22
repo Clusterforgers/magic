@@ -1,0 +1,73 @@
+{
+  "oracle_id": "8d6f82d9-5c5b-4c41-8857-c0936f2d894c",
+  "name": "Hearthhull, the Worldseed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hearthhull, the Worldseed",
+      "oracle_fingerprint": "6c3415f4d52c6599eddd8b1ffeebfe1f",
+      "abilities": [
+        { "Keyword": "Station" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", { "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [
+              { "Draw": { "count": 2 } },
+              { "Rule": { "rule": { "AdditionalLandPlays": {} }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "AddKeyword": "Flying" },
+              { "AddKeyword": "Vigilance" },
+              { "AddKeyword": "Haste" }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Land" }], "by": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

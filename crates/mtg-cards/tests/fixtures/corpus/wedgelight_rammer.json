@@ -1,0 +1,27 @@
+{
+  "id": "2cb0984f-dc8b-4bb3-a4fd-8d6d4ae20198",
+  "oracle_id": "03259ab0-caa8-4620-b070-127e2c712252",
+  "name": "Wedgelight Rammer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoe",
+  "collector_number": "43",
+  "rarity": "uncommon",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Artifact — Spacecraft",
+  "oracle_text": "When this Spacecraft enters, create a 2/2 colorless Robot artifact creature token.\nStation (Tap another creature you control: Put charge counters equal to its power on this Spacecraft. Station only as a sorcery. It's an artifact creature at 9+.)\n9+ | Flying, first strike",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Station"
+  ]
+}

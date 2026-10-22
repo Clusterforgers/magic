@@ -97,6 +97,7 @@ mod shroud;
 mod skulk;
 mod split_second;
 mod squad;
+mod station;
 mod storm;
 pub(crate) mod suspend;
 mod toxic;
@@ -461,6 +462,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Outlast(_) => &outlast::Outlast,
         Keyword::Saddle(_) => &saddle::Saddle,
         Keyword::Saddled => &saddle::Saddled,
+        Keyword::Station => &station::Station,
         Keyword::Ravenous => &ravenous::Ravenous,
         Keyword::JumpStart => &jump_start::JumpStart,
         Keyword::Retrace => &retrace::Retrace,
@@ -743,6 +745,7 @@ mod tests {
             Keyword::Outlast(cost()),
             Keyword::Saddle(2),
             Keyword::Saddled,
+            Keyword::Station,
             Keyword::Ravenous,
             Keyword::JumpStart,
             Keyword::Retrace,
@@ -853,6 +856,7 @@ mod tests {
         "Keyword.Outlast",
         "Keyword.Saddle",
         "Keyword.Saddled",
+        "Keyword.Station",
         "Keyword.Myriad",
         "Keyword.Squad",
         "Keyword.Ravenous",
@@ -959,6 +963,7 @@ mod tests {
     #[case::crew(Keyword::Crew(3), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::saddle(Keyword::Saddle(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::saddled(Keyword::Saddled, Hooks::none())]
+    #[case::station(Keyword::Station, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::level_up(Keyword::LevelUp(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::outlast(Keyword::Outlast(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::evoke(Keyword::Evoke(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]

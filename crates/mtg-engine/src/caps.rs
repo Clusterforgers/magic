@@ -307,6 +307,7 @@ const RUNS: &[&str] = &[
     "Keyword.Outlast",
     "Keyword.Saddle",
     "Keyword.Saddled",
+    "Keyword.Station",
     "Keyword.Myriad",
     "Keyword.Squad",
     "Keyword.Ravenous",
@@ -657,6 +658,7 @@ mod tests {
     #[case::outlast("Keyword.Outlast", true)]
     #[case::saddle("Keyword.Saddle", true)]
     #[case::saddled("Keyword.Saddled", true)]
+    #[case::station("Keyword.Station", true)]
     #[case::ravenous("Keyword.Ravenous", true)]
     #[case::copies_for_the_other_defenders("Effect.MyriadCopies", true)]
     #[case::jump_start("Keyword.JumpStart", true)]

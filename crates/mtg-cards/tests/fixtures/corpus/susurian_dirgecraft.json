@@ -1,0 +1,27 @@
+{
+  "id": "b67cdb6e-9a3b-4887-924d-318faa3c443d",
+  "oracle_id": "f1d826d1-d2da-46ce-b1db-81393c88d865",
+  "name": "Susurian Dirgecraft",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoe",
+  "collector_number": "117",
+  "rarity": "uncommon",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Artifact — Spacecraft",
+  "oracle_text": "When this Spacecraft enters, each opponent sacrifices a nontoken creature of their choice.\nStation (Tap another creature you control: Put charge counters equal to its power on this Spacecraft. Station only as a sorcery. It's an artifact creature at 7+.)\n7+ | Flying",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Station"
+  ]
+}

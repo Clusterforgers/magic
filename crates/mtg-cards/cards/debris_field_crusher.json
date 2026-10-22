@@ -1,0 +1,68 @@
+{
+  "oracle_id": "db0894e1-2644-48d4-8de4-8cc43e940bc1",
+  "name": "Debris Field Crusher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Debris Field Crusher",
+      "oracle_fingerprint": "dd97e1af88b765d5f11e48ad40b093d3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

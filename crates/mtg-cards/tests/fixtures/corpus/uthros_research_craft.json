@@ -1,0 +1,27 @@
+{
+  "id": "6ade097b-349f-4876-bdc8-7bcd051e9952",
+  "oracle_id": "e1c9783a-1d1b-40d7-872e-0ca11b229ce6",
+  "name": "Uthros Research Craft",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoc",
+  "collector_number": "7",
+  "rarity": "rare",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Spacecraft",
+  "oracle_text": "Station (Tap another creature you control: Put charge counters equal to its power on this Spacecraft. Station only as a sorcery. It's an artifact creature at 12+.)\n3+ | Whenever you cast an artifact spell, draw a card. Put a charge counter on this Spacecraft.\n12+ | Flying\nThis Spacecraft gets +1/+0 for each artifact you control.",
+  "power": "0",
+  "toughness": "8",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Station"
+  ]
+}

@@ -299,7 +299,7 @@ impl<'a> Walker<'a> {
             | Ref::Defending => {
                 self.expect(Kind::Player, want);
             }
-            Ref::This | Ref::Attached => self.expect(Kind::Object, want),
+            Ref::This | Ref::Attached | Ref::Paid => self.expect(Kind::Object, want),
             Ref::Target(index) => {
                 let index = usize::from(*index);
                 match self.scope.targets.get(index).map(|t| t.0) {

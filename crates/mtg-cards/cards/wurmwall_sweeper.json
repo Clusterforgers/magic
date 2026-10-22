@@ -1,0 +1,46 @@
+{
+  "oracle_id": "320ed2ec-ef06-41fb-ac8a-72579f11544c",
+  "name": "Wurmwall Sweeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wurmwall Sweeper",
+      "oracle_fingerprint": "c114fe8decbc58cdd3f2f58d34179608",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Surveil": { "count": 2 } }]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

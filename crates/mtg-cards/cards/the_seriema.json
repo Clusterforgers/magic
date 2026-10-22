@@ -1,0 +1,77 @@
+{
+  "oracle_id": "a6bcec1f-f515-4e63-9e84-8eb04cc582ff",
+  "name": "The Seriema",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Seriema",
+      "oracle_fingerprint": "93d255e50f92ccac2f974eeda79783d6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Legendary" }, { "Type": "Creature" }],
+                  "reveal": true,
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                "Tapped",
+                { "Supertype": "Legendary" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

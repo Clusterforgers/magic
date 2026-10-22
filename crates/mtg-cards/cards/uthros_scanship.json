@@ -1,0 +1,46 @@
+{
+  "oracle_id": "7b4c37dc-8cb0-4870-929e-11c2a45952a2",
+  "name": "Uthros Scanship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uthros Scanship",
+      "oracle_fingerprint": "90f5c08a3d44a4aeb08118a522a3ccba",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 2 } }, { "Discard": {} }]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

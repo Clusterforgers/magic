@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3aa0cda4-fb2d-4fd4-84f6-482089a85547",
+  "name": "Lumen-Class Frigate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lumen-Class Frigate",
+      "oracle_fingerprint": "7da76f53643f2f6bb04e8954f3342dc1",
+      "abilities": [
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 12
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 12
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

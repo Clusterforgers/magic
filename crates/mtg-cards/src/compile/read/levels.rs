@@ -62,7 +62,12 @@ fn size(line: &str) -> Option<(i32, i32)> {
 
 /// One line under a header as an ability that works only while the header's condition holds. A line of keywords gives
 /// them to the creature; any other line is read as it would be anywhere else.
-fn under_the_header(line: &str, level: &Condition, x_free: bool, own: &Own) -> Option<Ability> {
+pub(super) fn under_the_header(
+    line: &str,
+    level: &Condition,
+    x_free: bool,
+    own: &Own,
+) -> Option<Ability> {
     let kind = classify::classify(line, false);
     let mut ability = match kind {
         ClauseKind::Keyword => given(line)?,

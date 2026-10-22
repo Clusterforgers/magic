@@ -12,7 +12,7 @@
 //! of a choice), `triggers` (the event of a triggered ability), `costs` (what is paid before the
 //! colon), `abilities` (a spell ability, a triggered ability, an activated ability), `conditional`
 //! (an effect that depends on a condition), `reveal` (looking at the top card and revealing it),
-//! `damage` (what deals damage to whom and the life gained with it), `copies` (a token that is a copy, populate, entering as a copy), `levels` (the blocks of a level up creature), `copy_spells` (a copy of a spell or an ability, a
+//! `damage` (what deals damage to whom and the life gained with it), `copies` (a token that is a copy, populate, entering as a copy), `levels` (the blocks of a level up creature), `stations` (the blocks of a Spacecraft), `copy_spells` (a copy of a spell or an ability, a
 //! permanent that becomes a copy), `defining` (the power and toughness a card defines for itself), `life_gain` (replacements and rules about gaining life), `transform`, `draws` (draw and discard wordings), `actions` (the keyword actions of creatures) and
 //! `render`.
 
@@ -44,6 +44,7 @@ mod reveal;
 mod selectors;
 mod spend;
 mod statics;
+mod stations;
 mod subtypes;
 #[cfg(test)]
 mod tests;
@@ -53,6 +54,7 @@ mod triggers;
 
 pub use levels::block as level_block;
 pub use render::{ability as render_ability, mode as render_mode, variants as render_variants};
+pub use stations::block as station_block;
 pub use tokens::same_text;
 
 use super::{ClauseKind, classify};
@@ -118,6 +120,8 @@ pub struct Own {
     pub power: Option<i32>,
     /// The printed toughness when it is a number.
     pub toughness: Option<i32>,
+    /// The charge counters at which a Spacecraft with a printed power becomes a creature: its highest station threshold.
+    pub creature_at: Option<i32>,
 }
 
 /// Reads a clause like `clause`, with what the face itself says (`Own`).

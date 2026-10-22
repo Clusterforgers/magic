@@ -1,0 +1,40 @@
+{
+  "oracle_id": "dfe8f77a-cc26-438b-92ae-2ca7a91f813b",
+  "name": "Galvanizing Sawship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Galvanizing Sawship",
+      "oracle_fingerprint": "84998c4d5ac3ee66bedc0eb9bd2f6859",
+      "abilities": [
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Haste" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

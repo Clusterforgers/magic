@@ -202,6 +202,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("mobilize", Params::Number),
     ("saddle", Params::Number),
     ("saddled", Params::None),
+    ("station", Params::None),
 ];
 
 /// A keyword found at the start of an item.
@@ -489,6 +490,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "extort" => Keyword::Extort,
         "evolve" => Keyword::Evolve,
         "saddled" => Keyword::Saddled,
+        "station" => Keyword::Station,
         "ravenous" => Keyword::Ravenous,
         "ascend" => Keyword::Ascend,
         "jump-start" => Keyword::JumpStart,
@@ -817,6 +819,7 @@ mod tests {
     #[case::fading("Fading 5", Keyword::Fading(5))]
     #[case::backup("Backup 2", Keyword::Backup { count: 2, abilities: vec![] })]
     #[case::saddle("Saddle 2", Keyword::Saddle(2))]
+    #[case::station("Station", Keyword::Station)]
     #[case::level_up("Level up {1}{U}", Keyword::LevelUp(mana("{1}{U}")))]
     #[case::level_up_for_one("level up {1}", Keyword::LevelUp(mana("{1}")))]
     #[case::outlast("Outlast {W}", Keyword::Outlast(mana("{W}")))]
@@ -1064,6 +1067,7 @@ mod tests {
             "Level up {1}{U}",
             "Outlast {W}",
             "Saddled",
+            "Station",
             "Mutate {1}",
             "Encore {1}",
             "Squad {1}",

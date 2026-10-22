@@ -77,10 +77,28 @@ fn is_bullet(line: &str) -> bool {
     line.starts_with('\u{2022}') || line.starts_with("+ {")
 }
 
-/// `LEVEL 2-3`, the line that opens a level block.
+/// `LEVEL 2-3` and `9+ | Flying`, the lines that open a level block and a station block.
 fn is_level_header(line: &str) -> bool {
     line.strip_prefix("LEVEL ")
         .is_some_and(|rest| rest.starts_with(|c: char| c.is_ascii_digit()))
+        || station_header(line).is_some()
+}
+
+/// Whether the clause is a station block: its first line opens one.
+pub fn is_station_block(text: &str) -> bool {
+    text.lines()
+        .next()
+        .is_some_and(|head| station_header(head).is_some())
+}
+
+/// `9+ | Flying`, the line that opens a station block: its threshold (the charge counters the block needs) and the text
+/// after the bar, which is the first line of the block.
+pub fn station_header(line: &str) -> Option<(i32, &str)> {
+    let (threshold, rest) = line.split_once("+ | ")?;
+    if threshold.is_empty() || !threshold.chars().all(|c| c.is_ascii_digit()) {
+        return None;
+    }
+    Some((threshold.parse().ok()?, rest))
 }
 
 #[cfg(test)]

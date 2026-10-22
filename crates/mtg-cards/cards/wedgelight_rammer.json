@@ -1,0 +1,60 @@
+{
+  "oracle_id": "03259ab0-caa8-4620-b070-127e2c712252",
+  "name": "Wedgelight Rammer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wedgelight Rammer",
+      "oracle_fingerprint": "4a07b7e27e96e8ede50eabaea1800055",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Robot",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Robot"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 9
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "FirstStrike" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 9
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

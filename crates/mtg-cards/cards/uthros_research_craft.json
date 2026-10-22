@@ -1,0 +1,73 @@
+{
+  "oracle_id": "e1c9783a-1d1b-40d7-872e-0ca11b229ce6",
+  "name": "Uthros Research Craft",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uthros Research Craft",
+      "oracle_fingerprint": "470e415f148c84fdcf1f286f27a797f3",
+      "abilities": [
+        { "Keyword": "Station" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Artifact" }], "by": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "Draw": {} }, { "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 12
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 12
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                  "toughness": 0
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 12
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -23,7 +23,7 @@ pub enum Token {
 }
 
 /// The nouns a card calls itself by after "this".
-const SOURCE_NOUNS: [&str; 12] = [
+const SOURCE_NOUNS: [&str; 13] = [
     "creature",
     "spell",
     "artifact",
@@ -32,6 +32,7 @@ const SOURCE_NOUNS: [&str; 12] = [
     "permanent",
     "planeswalker",
     "vehicle",
+    "spacecraft",
     "battle",
     "equipment",
     "aura",

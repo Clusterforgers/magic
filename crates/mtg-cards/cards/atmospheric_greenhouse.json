@@ -1,0 +1,53 @@
+{
+  "oracle_id": "52c6afc6-aff1-46a8-b1ea-b183facec1ae",
+  "name": "Atmospheric Greenhouse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Atmospheric Greenhouse",
+      "oracle_fingerprint": "cc2d7ef13c7b29c069496352b79fb75b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Trample" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
