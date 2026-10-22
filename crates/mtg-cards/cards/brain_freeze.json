@@ -1,0 +1,20 @@
+{
+  "oracle_id": "464c0150-3dbc-403b-9ada-fef25ab1f29d",
+  "name": "Brain Freeze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brain Freeze",
+      "oracle_fingerprint": "de82967539baaabef127cdec851ab8a8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 3 } }]
+          }
+        },
+        { "Keyword": "Storm" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "cf751552-156f-4f81-ac94-9814dce099f9",
+  "name": "Strionic Resonator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strionic Resonator",
+      "oracle_fingerprint": "e6b70e068fb8bd2f4288d45e5aef2a31",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Ability": "Triggered" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "CopyAbility": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

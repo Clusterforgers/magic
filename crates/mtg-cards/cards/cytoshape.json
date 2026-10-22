@@ -1,0 +1,35 @@
+{
+  "oracle_id": "14221c18-7801-49c9-a2c8-53b8c5181d63",
+  "name": "Cytoshape",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cytoshape",
+      "oracle_fingerprint": "862f333c201a9a26655774ec25037caa",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "Supertype": "Legendary" } }]
+                  },
+                  "as": "copied"
+                }
+              },
+              {
+                "BecomeCopy": {
+                  "what": { "Target": 0 },
+                  "of": { "Bound": "copied" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

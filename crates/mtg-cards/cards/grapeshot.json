@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ebd2d760-5ad8-4027-b124-171822f3edfe",
+  "name": "Grapeshot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grapeshot",
+      "oracle_fingerprint": "9b69ef67e2725503270ec8735b240939",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        { "Keyword": "Storm" }
+      ]
+    }
+  ]
+}

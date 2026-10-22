@@ -1,0 +1,23 @@
+{
+  "oracle_id": "78db3190-59bc-4033-95bc-32d8ed872b6a",
+  "name": "Tendrils of Agony",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tendrils of Agony",
+      "oracle_fingerprint": "e5f20b4e33b3ed0c587911b86a5fb8e6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        },
+        { "Keyword": "Storm" }
+      ]
+    }
+  ]
+}
