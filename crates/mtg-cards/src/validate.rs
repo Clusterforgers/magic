@@ -289,7 +289,14 @@ impl<'a> Walker<'a> {
 
     fn reference(&mut self, r: &Ref, want: Kind) {
         match r {
-            Ref::You | Ref::Opponents | Ref::EachPlayer | Ref::AttachedPlayer | Ref::Monarch => {
+            Ref::You
+            | Ref::Opponents
+            | Ref::EachPlayer
+            | Ref::AttachedPlayer
+            | Ref::Monarch
+            | Ref::Attacked
+            | Ref::MostLife
+            | Ref::Defending => {
                 self.expect(Kind::Player, want);
             }
             Ref::This | Ref::Attached => self.expect(Kind::Object, want),
@@ -786,6 +793,7 @@ impl<'a> Walker<'a> {
                 self.at("find", |w| w.selector(find));
             }
             Keyword::Toxic(0) => self.problem("toxic needs a number of at least 1"),
+            Keyword::Annihilator(0) => self.problem("annihilator needs a number of at least 1"),
             Keyword::Dredge(0) => self.problem("dredge needs a number of at least 1"),
             Keyword::Fabricate(0) => self.problem("fabricate needs a number of at least 1"),
             Keyword::PartnerWith(name) => {
@@ -912,7 +920,9 @@ impl<'a> Walker<'a> {
     fn trigger_pattern(&mut self, pattern: &TriggerPattern) {
         self.uses("Trigger", &tag_of(pattern));
         match pattern {
-            TriggerPattern::ZoneChange { what, .. } | TriggerPattern::Attacks { what } => {
+            TriggerPattern::ZoneChange { what, .. }
+            | TriggerPattern::Attacks { what }
+            | TriggerPattern::AttacksAlone { what } => {
                 self.at("what", |w| w.selector(what));
             }
             TriggerPattern::AttacksPlayer { what, at } => {

@@ -436,6 +436,13 @@ impl<'a> Scope<'a> {
                 .into_iter()
                 .collect(),
             Ref::Monarch => state.monarch().map(Target::Player).into_iter().collect(),
+            Ref::Defending => self.defending().map(Target::Player).into_iter().collect(),
+            Ref::Attacked => self
+                .attacked_opponents()
+                .into_iter()
+                .map(Target::Player)
+                .collect(),
+            Ref::MostLife => self.most_life().into_iter().map(Target::Player).collect(),
             Ref::Bound(name) => self
                 .bindings
                 .get(name)
@@ -449,6 +456,50 @@ impl<'a> Scope<'a> {
                 .map(Target::Object)
                 .collect(),
         })
+    }
+
+    /// The player the attacking creature of the event, else the source, attacks or attacked when it left combat.
+    fn defending(&self) -> Option<PlayerId> {
+        let attacker = self
+            .cause
+            .and_then(|cause| cause.subjects.iter().find_map(|subject| subject.object()))
+            .map_or(self.source.id, |object| object.id);
+        let combat = self.state.combat();
+        let target = combat
+            .attackers()
+            .iter()
+            .find(|attacking| attacking.object() == attacker)
+            .map(crate::combat::Attacker::target)
+            .or_else(|| combat.left_attacking(attacker))?;
+        crate::combat::defending_player(self.state, target)
+    }
+
+    /// The opponents of the controller their creatures attacked this combat, in turn order.
+    fn attacked_opponents(&self) -> Vec<PlayerId> {
+        let combat = self.state.combat();
+        let attacked: Vec<PlayerId> = combat
+            .attackers()
+            .iter()
+            .map(crate::combat::Attacker::target)
+            .chain(combat.left.iter().map(|(_, target)| *target))
+            .filter_map(|target| crate::combat::defending_player(self.state, target))
+            .collect();
+        self.state
+            .turn_order_from(self.state.turn().active())
+            .into_iter()
+            .filter(|player| *player != self.controller && attacked.contains(player))
+            .collect()
+    }
+
+    /// The players with the most life among those still in the game.
+    fn most_life(&self) -> Vec<PlayerId> {
+        let life = |player: PlayerId| self.state.player(player).map(crate::player::Player::life);
+        let alive: Vec<PlayerId> = self.state.alive_players().collect();
+        let most = alive.iter().filter_map(|player| life(*player)).max();
+        alive
+            .into_iter()
+            .filter(|player| life(*player) == most)
+            .collect()
     }
 
     fn seats_of(

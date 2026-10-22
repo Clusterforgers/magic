@@ -1,0 +1,12 @@
+{
+  "oracle_id": "01518a87-6b16-4b7b-805d-b652404c6356",
+  "name": "Aven Squire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aven Squire",
+      "oracle_fingerprint": "6da031eedee9310a6b3c52d334f91fe3",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Exalted" }]
+    }
+  ]
+}

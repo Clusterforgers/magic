@@ -1,0 +1,28 @@
+{
+  "id": "3eb6a3ab-29eb-4c9a-995b-04de1c0dd4c9",
+  "oracle_id": "340d6218-d351-4b2e-80da-7d4afa77190a",
+  "name": "Sunhome Stalwart",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clu",
+  "collector_number": "73",
+  "rarity": "uncommon",
+  "released_at": "2024-02-23",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Soldier",
+  "oracle_text": "First strike (This creature deals combat damage before creatures without first strike.)\nMentor (Whenever this creature attacks, put a +1/+1 counter on target attacking creature with lesser power.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Mentor",
+    "First strike"
+  ]
+}

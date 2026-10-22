@@ -66,6 +66,7 @@ pub mod script_error;
 pub mod small_cards;
 pub mod static_cards;
 pub mod trigger_cards;
+pub mod triggered_cards;
 pub mod upkeep_cards;
 pub mod vehicle_cards;
 pub mod windows;
@@ -137,6 +138,7 @@ pub use scenario::{
 pub use script_error::ScriptError;
 pub use small_cards::small_fuzz_setup;
 pub use static_cards::statics_fuzz_setup;
+pub use triggered_cards::triggered_fuzz_setup;
 pub use upkeep_cards::upkeep_fuzz_setup;
 pub use vehicle_cards::vehicle_fuzz_setup;
 pub use windows::{SeatWindows, Windows};

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "2071f278-77ba-46f8-85a0-ccd761199f29",
+  "name": "Crocanura",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crocanura",
+      "oracle_fingerprint": "d0980816119b8afd1043098ed8c6a132",
+      "abilities": [{ "Keyword": "Reach" }, { "Keyword": "Evolve" }]
+    }
+  ]
+}

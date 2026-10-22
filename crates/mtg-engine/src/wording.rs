@@ -296,8 +296,13 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         TriggerPattern::Attacks { what } => {
             (format!("{} attacks", subject(what)), what.0 == [Pred::This])
         }
+        TriggerPattern::AttacksAlone { what } => (
+            format!("{} attacks alone", subject(what)),
+            what.0 == [Pred::This],
+        ),
         TriggerPattern::AttacksPlayer { what, at } => {
             let whom = match at {
+                Ref::MostLife => "the player with the most life",
                 Ref::AttachedPlayer => "enchanted player",
                 Ref::You => "you",
                 Ref::Monarch => "the monarch",
@@ -1300,6 +1305,14 @@ mod tests {
     #[case::attacking_the_monarch(
         r#"{"AttacksPlayer":{"what":[{"Type":"Creature"}],"at":"Monarch"}}"#,
         "Whenever a creature attacks the monarch"
+    )]
+    #[case::attacking_the_player_with_the_most_life(
+        r#"{"AttacksPlayer":{"what":["This"],"at":"MostLife"}}"#,
+        "Whenever it attacks the player with the most life"
+    )]
+    #[case::attacking_alone(
+        r#"{"AttacksAlone":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#,
+        "Whenever a creature you control attacks alone"
     )]
     #[case::the_monarchs_end_step(
         r#"{"StepBegins":{"step":"End","whose":"Monarch"}}"#,

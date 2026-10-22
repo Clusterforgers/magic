@@ -215,6 +215,8 @@ mod token_fuzz;
 mod transform;
 mod trigger_any_of;
 mod trigger_families;
+mod triggered_keywords;
+mod triggered_keywords_fuzz;
 mod triggers_chain;
 mod triggers_delayed;
 mod triggers_fuzz;

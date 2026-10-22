@@ -1,0 +1,12 @@
+{
+  "oracle_id": "73c0a809-fb0e-4773-a385-a6e32feb03cd",
+  "name": "Wings of the Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wings of the Guard",
+      "oracle_fingerprint": "78122744c889d5edf593ce9474a9cb73",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Melee" }]
+    }
+  ]
+}

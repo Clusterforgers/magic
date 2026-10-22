@@ -1,0 +1,12 @@
+{
+  "oracle_id": "9a133991-8a7a-4bfd-b0ae-d76433450c03",
+  "name": "Grenzo's Cutthroat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grenzo's Cutthroat",
+      "oracle_fingerprint": "2e8c2d8d109a9e15d3c11be02743afc5",
+      "abilities": [{ "Keyword": "FirstStrike" }, { "Keyword": "Dethrone" }]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "ea01ecdf-f201-4304-9d6a-d96d313ed7b0",
+  "oracle_id": "09947592-1730-4c1c-bfa5-be53a68d6919",
+  "name": "Deputized Protester",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clu",
+  "collector_number": "131",
+  "rarity": "common",
+  "released_at": "2024-02-23",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nMelee (Whenever this creature attacks, it gets +1/+1 until end of turn for each opponent you attacked this combat.)",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Melee",
+    "Menace"
+  ]
+}
