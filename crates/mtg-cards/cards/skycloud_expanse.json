@@ -1,0 +1,19 @@
+{
+  "oracle_id": "76f335d0-7f71-4b1a-b60d-73de954cbe2c",
+  "name": "Skycloud Expanse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skycloud Expanse",
+      "oracle_fingerprint": "162e9c2434f64310ce1c8ac328430c53",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White", "Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

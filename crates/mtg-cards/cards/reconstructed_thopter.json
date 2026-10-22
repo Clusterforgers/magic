@@ -1,0 +1,12 @@
+{
+  "oracle_id": "c87ff8e8-a3da-4848-9881-fbc896acf7c5",
+  "name": "Reconstructed Thopter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reconstructed Thopter",
+      "oracle_fingerprint": "6bc06758f61d600aca93e8604a72de1f",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": { "Unearth": "{2}" } }]
+    }
+  ]
+}

@@ -9,6 +9,7 @@ use mtg_core::mana::ManaType;
 use serde::{Deserialize, Serialize};
 
 use crate::characteristics::characteristics;
+use crate::mana::ManaSource;
 use crate::state::GameState;
 
 /// One mana that may be spent only on what `only` lists.
@@ -122,6 +123,15 @@ fn traits_of(state: &GameState, id: ObjectId) -> SpendTraits {
     }
 }
 
+/// One mana source of a payment as it is activated: the mana its own cost takes from the pool just before.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Step {
+    /// The ability.
+    pub source: ManaSource,
+    /// The mana its cost takes from the pool; empty for a source that costs no mana.
+    pub paid: Vec<ManaType>,
+}
+
 /// The mana a payment spent, as the events name it.
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct Spent {
@@ -129,4 +139,6 @@ pub struct Spent {
     pub mana: Vec<ManaType>,
     /// The part of it that was restricted (each is also in `mana`).
     pub restricted: Vec<Restricted>,
+    /// The sources the payment taps, in the order they are activated.
+    pub steps: Vec<Step>,
 }

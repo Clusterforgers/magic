@@ -1,0 +1,19 @@
+{
+  "oracle_id": "e018773f-95b3-49a3-9674-6f04ddef2092",
+  "name": "Azorius Signet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Azorius Signet",
+      "oracle_fingerprint": "162e9c2434f64310ce1c8ac328430c53",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White", "Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "03f8c846-d80c-49a4-a562-e817cd0c6096",
+  "oracle_id": "76f335d0-7f71-4b1a-b60d-73de954cbe2c",
+  "name": "Skycloud Expanse",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoc",
+  "collector_number": "181",
+  "rarity": "rare",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{1}, {T}: Add {W}{U}.",
+  "colors": [],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "U",
+    "W"
+  ]
+}

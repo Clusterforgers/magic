@@ -1,0 +1,28 @@
+{
+  "oracle_id": "7b58920e-3e90-44ed-a0e9-4cb1b7359a5b",
+  "name": "Artful Maneuver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Artful Maneuver",
+      "oracle_fingerprint": "ac0a1f93c7edbad6375ed25d1e57b981",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Rebound" }
+      ]
+    }
+  ]
+}

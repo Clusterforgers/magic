@@ -362,7 +362,11 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         &all_mana,
         life,
     );
-    let mana_abilities = all_mana;
+    // A mana ability that costs mana is used inside a payment, from the mana the payment's other sources make.
+    let mana_abilities = all_mana
+        .into_iter()
+        .filter(|option| !option.is_costly())
+        .collect();
     PriorityOptions {
         can_act: can_act(
             &playable_lands,
