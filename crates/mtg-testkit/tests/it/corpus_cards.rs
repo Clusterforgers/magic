@@ -27,12 +27,10 @@ use Support::{Manual, Partial, Verified};
 /// The corpus cards the engine does not play whole, each with the state its capabilities give it and the number of
 /// abilities its definition carries (mana abilities and rules together). Every other corpus card is Verified and carries
 /// the abilities of its file, and a basic land type adds the mana ability of that land type. A Manual card carries none
-/// (a second face, a split card or an adventure is left to the table); a Partial card carries what the engine runs. A
+/// (a transforming card is left to the table); a Partial card carries what the engine runs. A
 /// card joins this list when the engine cannot yet play it whole and leaves it when it can.
 const NOT_VERIFIED: &[(&str, Support, usize)] = &[
-    ("Bonecrusher Giant // Stomp", Manual, 0),
     ("Delver of Secrets // Insectile Aberration", Manual, 0),
-    ("Fire // Ice", Manual, 0),
     ("Aven Mindcensor", Partial, 2),
     ("Courser of Kruphix", Partial, 2),
 ];
@@ -93,7 +91,16 @@ fn each_corpus_card_arrives_as_its_support_record_says() {
     for name in corpus.names() {
         let record = corpus.support(name).unwrap();
         let definition = corpus.card(name).unwrap();
-        let carried = definition.abilities.len() + definition.rules.len();
+        // A card with several faces carries the abilities of each face; its whole is the front face or both halves.
+        let carried: usize = if definition.is_multi_face() {
+            definition
+                .faces
+                .iter()
+                .map(|face| face.abilities.len() + face.rules.len())
+                .sum()
+        } else {
+            definition.abilities.len() + definition.rules.len()
+        };
         let (state, abilities) = expected_state(name);
         if (record.support, carried) != (state, abilities) {
             wrong.push(format!(

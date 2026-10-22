@@ -105,7 +105,8 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (i4g) The compiler reads a static ability with a condition ("has haste as long as an opponent has 10 or less life"), "equipped creature gets +2/+2 and has protection from white and from black", the trigger "you create a token and that player mills ten cards" and a plural subtype outside the known list ("Heroes you control"); The Thing, Ben Grimm, Bloodghast and Sword of Body and Mind are then reproduced from their text
 
 ### Faces and copies
-- [ ] (n1) Multi-face cards: split, adventure, modal double-faced, transform and meld; the face is chosen at announcement, `Card.Faces` is lifted, `Effect::Transform`; Delver of Secrets, Bonecrusher Giant and Fire // Ice (fuse) are Verified
+- [x] (n1a) Multi-face cards: the face model (`CardDefinition.layout` and `faces`, the face an object is in use as), split, adventure and modal double-faced cards chosen at the announcement and listed in `PriorityOptions.faces`, the Adventure exiled on an adventure and cast as the creature, `Card.Faces` lifted for those layouts; Bonecrusher Giant, Fire // Ice, Hengegate Pathway // Mistgate Pathway and Selfless Glyphweaver // Deadly Vanity are Verified
+- [ ] (n1b) Transform, meld, fuse (Turn // Burn, Wear // Tear cast as both halves) and daybound/nightbound: `Effect::Transform`, the face turned over on the battlefield, a copy of a face (o); Delver of Secrets is Verified
 - [ ] (n2) Face-down objects (morph, disguise, manifest, cloak): a `FaceDown` kind each with its characteristics, who may look at it and turning it face up, on the face-down rule of (g4d)
 - [ ] (o) Copies: a token that copies an object, spell copies, enters as a copy, populate, storm; copiable values as the first layer
 

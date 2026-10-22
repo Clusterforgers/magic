@@ -89,7 +89,9 @@ pub fn process(
             .any(|event| entering(state, event).is_some())
         && !proposed.iter().any(|event| {
             let item = Item::One(event.clone());
-            leaves_stack_by_flashback(state, &item) || returns_by_buyback(state, &item)
+            leaves_stack_by_flashback(state, &item)
+                || returns_by_buyback(state, &item)
+                || exiles_by_adventure(state, &item)
         })
     {
         return Ok(Processed::Events(proposed));
@@ -241,6 +243,17 @@ fn returns_by_buyback(state: &GameState, item: &Item) -> bool {
     entering(state, event).is_none()
         && state.object(*object).is_some_and(|spell| {
             payments(spell.card(), spell.paid_costs(), OptionalKind::Buyback) > 0
+        })
+}
+
+/// Whether the item is the resolution of an Adventure, which is exiled instead of going to the graveyard (CR 715.4).
+fn exiles_by_adventure(state: &GameState, item: &Item) -> bool {
+    let Item::One(event @ Event::SpellResolved { object }) = item else {
+        return false;
+    };
+    entering(state, event).is_none()
+        && state.object(*object).is_some_and(|spell| {
+            spell.whole_card().layout == Layout::Adventure && spell.face() == Some(1)
         })
 }
 
@@ -816,25 +829,33 @@ impl Pass<'_> {
         if !unpreventable {
             found.extend(self.shield_candidates(slot, &unit)?);
         }
-        if let Unit::Move { object, .. } = &unit
-            && !slot.applied.contains(&Origin::Flashback)
-            && leaves_stack_by_flashback(self.state, &slot.item)
-            && let Some(spell) = self.state.object(*object)
-        {
-            found.push(Candidate {
-                origin: Origin::Flashback,
-                object: spell.reference(),
-                controller: spell.controller(),
-                action: Action::Replace(ReplaceBy::MoveTo(ZoneKind::Exile)),
-                is_self: true,
-            });
-        }
         if matches!(&unit, Unit::Move { .. }) {
+            found.extend(self.flashback_candidate(slot));
             found.extend(self.buyback_candidate(slot));
             found.extend(self.adventure_candidate(slot));
         }
         found.sort_by_key(|candidate| candidate.origin);
         Ok(found)
+    }
+
+    /// The exile of a spell cast for its flashback cost that leaves the stack, when it has not been applied.
+    fn flashback_candidate(&self, slot: &Slot) -> Option<Candidate> {
+        if slot.applied.contains(&Origin::Flashback)
+            || !leaves_stack_by_flashback(self.state, &slot.item)
+        {
+            return None;
+        }
+        let Unit::Move { object, .. } = self.unit(&slot.item) else {
+            return None;
+        };
+        let spell = self.state.object(object)?;
+        Some(Candidate {
+            origin: Origin::Flashback,
+            object: spell.reference(),
+            controller: spell.controller(),
+            action: Action::Replace(ReplaceBy::MoveTo(ZoneKind::Exile)),
+            is_self: true,
+        })
     }
 
     /// The exile of a spell that resolved as an Adventure, when it has not been applied.

@@ -82,6 +82,7 @@ export type { Event } from "./Event";
 export type { EventBatch } from "./EventBatch";
 export type { EventView } from "./EventView";
 export type { FaceDown } from "./FaceDown";
+export type { FaceOption } from "./FaceOption";
 export type { ForecastDamage } from "./ForecastDamage";
 export type { FullControlMode } from "./FullControlMode";
 export type { GameInfo } from "./GameInfo";

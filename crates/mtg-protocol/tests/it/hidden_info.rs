@@ -83,6 +83,7 @@ const SCALAR_KEYS: &[&str] = &[
     "Command",
     "AnyColor",
     "color_indicator",
+    "face",
     "who",
 ];
 

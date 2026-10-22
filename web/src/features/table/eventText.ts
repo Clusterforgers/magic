@@ -197,6 +197,7 @@ const BECAUSE: Record<ZoneCause, string> = {
   StateBased: 'is put into the graveyard',
   Discarded: 'is discarded',
   Foretold: 'is foretold',
+  Adventure: 'is exiled on an adventure',
 }
 
 /** The events of spells and abilities: abilities on the stack, the steps of a resolution, life, zones and what players learn. */

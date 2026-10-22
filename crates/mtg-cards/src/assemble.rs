@@ -1268,7 +1268,11 @@ mod tests {
         let lifted = Caps::from_names([PLAIN_MANA_ABILITY, FACES]);
         shown.layout = "modal_dfc".into();
         let three = assemble(&shown, Some(&rules), &lifted);
-        assert_eq!(three.support.support, Support::Manual, "three faces are no shape the engine plays");
+        assert_eq!(
+            three.support.support,
+            Support::Manual,
+            "three faces are no shape the engine plays"
+        );
         shown.faces.truncate(2);
         rules.faces.truncate(2);
         let state = assemble(&shown, Some(&rules), &lifted);

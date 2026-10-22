@@ -3,4 +3,4 @@
 /**
  * Why an object moved from one zone to another.
  */
-export type ZoneCause = "Moved" | "Destroyed" | "Buried" | "Sacrificed" | "Exiled" | "Foretold" | "Countered" | "Milled" | "StateBased" | "Discarded";
+export type ZoneCause = "Moved" | "Destroyed" | "Buried" | "Sacrificed" | "Exiled" | "Foretold" | "Adventure" | "Countered" | "Milled" | "StateBased" | "Discarded";

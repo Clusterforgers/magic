@@ -119,7 +119,11 @@ player: PlayerId,
 /**
  * The land.
  */
-object: ObjectId, } } | { "SpellCast": { 
+object: ObjectId, 
+/**
+ * The face of a card with several faces it was played as (the back face of a modal double-faced card).
+ */
+face?: number, } } | { "SpellCast": { 
 /**
  * The caster.
  */

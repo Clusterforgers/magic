@@ -2,6 +2,7 @@
 
 use std::collections::BTreeMap;
 
+use mtg_cards::definition::Layout;
 use mtg_cards::value::CastWay;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -119,32 +120,40 @@ fn set_controller(state: &mut GameState, id: ObjectId, player: PlayerId) {
     }
 }
 
+/// A land played from a hand, or from exile when a permission lets its player (CR 305.1), as the face given.
+fn land_played(
+    state: &mut GameState,
+    player: PlayerId,
+    object: ObjectId,
+    face: Option<u8>,
+) -> Result<(), EngineError> {
+    let from = if state.zones.get(Zone::Exile).contains(&object) {
+        Zone::Exile
+    } else {
+        Zone::Hand(player)
+    };
+    expect_in(state, object, from)?;
+    move_object(state, object, Zone::Battlefield, Placement::Top)?;
+    set_controller(state, object, player);
+    if let Some(permanent) = state
+        .objects
+        .get_mut(&object)
+        .and_then(|land| land.permanent.as_mut())
+    {
+        permanent.face = face;
+    }
+    state.turn.lands_played += 1;
+    reset_passes(state);
+    Ok(())
+}
+
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::LandPlayed {
             player,
             object,
             face,
-        } => {
-            // A land is played from a hand, or from exile when a permission lets its player (CR 305.1).
-            let from = if state.zones.get(Zone::Exile).contains(object) {
-                Zone::Exile
-            } else {
-                Zone::Hand(*player)
-            };
-            expect_in(state, *object, from)?;
-            move_object(state, *object, Zone::Battlefield, Placement::Top)?;
-            set_controller(state, *object, *player);
-            if let Some(permanent) = state
-                .objects
-                .get_mut(object)
-                .and_then(|land| land.permanent.as_mut())
-            {
-                permanent.face = *face;
-            }
-            state.turn.lands_played += 1;
-            reset_passes(state);
-        }
+        } => land_played(state, *player, *object, *face)?,
         Event::SpellCast {
             player,
             object,
@@ -176,7 +185,11 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             let bought_back = state.objects.get(object).is_some_and(|spell| {
                 payments(spell.card(), &choices.optional_costs, OptionalKind::Buyback) > 0
             });
-            if choices.way == Some(CastWay::Flashback) || bought_back {
+            // An Adventure that resolves is exiled by a replacement as well (CR 715.4).
+            let adventure = state.objects.get(object).is_some_and(|spell| {
+                spell.whole_card().layout == Layout::Adventure && spell.face() == Some(1)
+            });
+            if choices.way == Some(CastWay::Flashback) || bought_back || adventure {
                 state.possible.replacements = true;
             }
             reset_passes(state);

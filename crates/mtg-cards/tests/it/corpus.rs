@@ -164,7 +164,7 @@ fn declared_status_decides_the_support_when_the_engine_runs_everything(#[case] c
         let expected = match shown.name.as_str() {
             "Aven Mindcensor" | "Courser of Kruphix" => Support::Partial,
             // A transforming card is a layout the engine does not play yet.
-            "Delver of Secrets // Insectile Aberration" => Support::Manual,| "Courser of Kruphix" => Support::Partial,
+            "Delver of Secrets // Insectile Aberration" => Support::Manual,
             _ => Support::Verified,
         };
         assert_eq!(

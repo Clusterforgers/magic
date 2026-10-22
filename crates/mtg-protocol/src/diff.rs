@@ -71,6 +71,7 @@ mod tests {
                 summoning_sick: false,
             }),
             face_down: false,
+            face: None,
             kind: ObjectKind::Card,
             source: None,
             targets: Vec::new(),

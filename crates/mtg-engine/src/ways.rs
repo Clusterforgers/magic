@@ -19,7 +19,7 @@ use crate::faces;
 use crate::help;
 use crate::keywords::{self, foretell, keywords_of};
 use crate::mana::{ManaOption, ManaPool, can_afford, can_afford_with};
-use crate::object::{FaceDown, ObjectKind};
+use crate::object::{FaceDown, GameObject, ObjectKind};
 use crate::parts::Part;
 use crate::price::Price;
 use crate::priority::{mana_options, sorcery_timing};
@@ -94,6 +94,11 @@ fn parts_payable(state: &GameState, player: PlayerId, id: ObjectId, parts: &[Par
             .is_some()
 }
 
+/// Whether the card is a split card as a whole, which is never cast: one of its halves is (CR 709.3a).
+fn both_halves(card: &GameObject) -> bool {
+    card.whole_card().layout == Layout::Split && card.face().is_none()
+}
+
 /// Every way `player` may cast the card `id` from where it is, whatever the timing and the mana in hand.
 pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     let Some(card) = state.object(id) else {
@@ -114,7 +119,7 @@ pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> 
         return Vec::new();
     }
     // A split card is cast as one of its halves, never as both (CR 709.3a): its halves are tried one at a time.
-    if card.whole_card().layout == Layout::Split && card.face().is_none() {
+    if both_halves(card) {
         return Vec::new();
     }
     let in_hand = matches!(zone, Zone::Hand(_));
@@ -218,10 +223,9 @@ pub(crate) fn granted(
         return Vec::new();
     };
     let castable = card.kind() == ObjectKind::Card
-        && !(card.whole_card().layout == Layout::Split && card.face().is_none())
         && !card.base_types().contains(CardType::Land)
         && !matches!(card.zone(), Zone::Battlefield | Zone::Stack);
-    if !castable {
+    if !castable || both_halves(card) {
         return Vec::new();
     }
     if way == Some(CastWay::Madness) {

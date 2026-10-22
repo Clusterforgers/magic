@@ -124,6 +124,12 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "is_false")]
     #[ts(as = "Option<bool>", optional)]
     pub face_down: bool,
+    /// The face of a card with several faces the object is in use as: the half cast, the Adventure, the back face of a
+    /// modal double-faced card on the stack or the battlefield. Left out for the card as a whole, which is its front face
+    /// or both halves of a split card.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub face: Option<u8>,
 }
 
 /// Whether a flag is off, so serialization can leave it out (serde hands over a reference).

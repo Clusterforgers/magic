@@ -727,7 +727,7 @@ mod tests {
 
     #[rstest]
     #[case::the_rules_of_an_object("let r = object.card().rules.get(0);", "rules", &["card()"])]
-    #[case::a_definition("let r = object.card().rules.iter();", "rules", &["def"])]
+    #[case::a_definition("let r = object.def.rules.iter();", "rules", &["def"])]
     #[case::a_bound_card("for r in card.rules.iter() {}", "rules", &["card"])]
     #[case::a_chain_over_several_lines(
         "object\n    .card()\n    .rules\n    .iter()",

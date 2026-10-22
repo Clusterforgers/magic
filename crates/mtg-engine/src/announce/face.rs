@@ -27,20 +27,19 @@ pub(super) fn run(
     if done.face {
         return None;
     }
-    let usable = match granted {
-        Some(granted) => faces::grantable_faces(state, player, card, granted),
-        None => {
-            let seat = state.player(player)?;
-            let pool: ManaPool = seat.mana().clone();
-            faces::castable_faces(
-                state,
-                player,
-                card,
-                &pool,
-                &mana_options(state, player),
-                seat.life(),
-            )
-        }
+    let usable = if let Some(granted) = granted {
+        faces::grantable_faces(state, player, card, granted)
+    } else {
+        let seat = state.player(player)?;
+        let pool: ManaPool = seat.mana().clone();
+        faces::castable_faces(
+            state,
+            player,
+            card,
+            &pool,
+            &mana_options(state, player),
+            seat.life(),
+        )
     };
     let picked = match usable.as_slice() {
         [] => return Some(Next::Drop),

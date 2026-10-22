@@ -79,7 +79,7 @@ A printed gap makes the card `Manual` and attaches no rules. `support` computes 
 |---|---|---|
 | `*`, `1+*` or `X` as power, toughness, loyalty or defense | `None` | `Card.VariableStats` |
 | `{X}` in the cost | `x_in_cost`; the engine asks X as the spell is cast and the spell, its permanent, its enters trigger and the delayed triggers it sets up remember it; its cast triggers read it | `Card.XCost` |
-| A second face | Only the front face is the card | `Card.Faces` |
+| A second face | A split card, an Adventure and a modal double-faced card (`PrintedCard.layout`: `split`, `adventure`, `modal_dfc`, two faces) are played with their faces, each face assembled like a card of its own (`CardDefinition.layout` and `faces`; a split card's definition is both halves, the others their front face); any other card with a second face (transform, meld) is only its front face and names the face | `Card.Faces` |
 | A mana symbol the engine does not know, an unreadable cost, a type word that is no card type | No cost, or the word dropped | Nothing |
 
 ## The type tree

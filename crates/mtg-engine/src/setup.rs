@@ -374,8 +374,7 @@ impl GameState {
             object
                 .def
                 .each_face()
-                .flat_map(|face| face.rules.iter())
-                .any(|rules| crate::triggers::triggers_something(rules))
+                .any(crate::ability_reader::definition_triggers)
         });
         let statics = self.objects().any(|object| {
             object

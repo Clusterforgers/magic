@@ -201,6 +201,7 @@ fn answers() -> Vec<Answer> {
     ]
 }
 
+#[allow(clippy::too_many_lines)]
 fn decision_kinds() -> Vec<DecisionKind> {
     let (a, b) = (ObjectId(3), ObjectId(4));
     let option = ManaOption::new(

@@ -33,6 +33,12 @@ optional_costs?: Array<number>,
  */
 way?: CastWay, 
 /**
+ * The face of a card with several faces the spell is cast as (CR 601.2a): the half of a split card, the Adventure or the
+ * back face of a modal double-faced card; none for a card with one face, the front face of an adventure card or a
+ * modal double-faced card. An ability on the stack keeps the face of its source here.
+ */
+face?: number, 
+/**
  * The permanents and cards picked for the parts of an ability's cost that take them (a sacrifice, a discard, an
  * exile from a graveyard, a tap, a return to hand), one list for each such part in the order the cost prints them.
  */

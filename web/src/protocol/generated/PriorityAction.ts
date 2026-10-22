@@ -6,4 +6,4 @@ import type { ObjectId } from "./ObjectId";
 /**
  * What a player does with priority.
  */
-export type PriorityAction = "Pass" | { "PlayLand": ObjectId } | { "CastSpell": ObjectId } | { "ActivateMana": ManaSource } | { "Activate": AbilityRef } | { "Suspend": ObjectId } | { "Foretell": ObjectId };
+export type PriorityAction = "Pass" | { "PlayLand": ObjectId } | { "PlayLandFace": [ObjectId, number] } | { "CastSpell": ObjectId } | { "ActivateMana": ManaSource } | { "Activate": AbilityRef } | { "Suspend": ObjectId } | { "Foretell": ObjectId };

@@ -234,6 +234,7 @@ impl ObjectView {
                 Vec::new()
             },
             face_down: object.face_down().is_some(),
+            face: object.face().filter(|_| printed),
         })
     }
 
@@ -263,6 +264,7 @@ impl ObjectView {
             attached_to: None,
             attachments: Vec::new(),
             face_down: true,
+            face: None,
         }
     }
 }
