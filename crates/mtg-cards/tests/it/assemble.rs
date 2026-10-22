@@ -67,7 +67,9 @@ fn the_printed_side_of_every_corpus_card_equals_its_record(#[case] caps: Caps) {
     for record in records {
         let name = &record.name;
         let front = &record.front;
-        let shown = assemble(&printed_of(&record), None, &caps).definition;
+        let whole = assemble(&printed_of(&record), None, &caps).definition;
+        // A split card is both halves outside the stack; its first half is the printed side compared here.
+        let shown = whole.faces.first().cloned().unwrap_or(whole);
 
         assert_eq!(shown.name, front.name, "{name}");
         let cost: Option<ManaCostX> =

@@ -601,6 +601,12 @@ mod tests {
         let lifted = Caps::from_names([crate::assemble::FACES]);
         assert_eq!(
             support(None, &two_faced, &lifted).support,
+            Support::Manual,
+            "a card with no layout the engine plays stays out"
+        );
+        two_faced.layout = "modal_dfc".into();
+        assert_eq!(
+            support(None, &two_faced, &lifted).support,
             Support::Verified
         );
     }

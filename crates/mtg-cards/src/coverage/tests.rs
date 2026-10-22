@@ -137,6 +137,7 @@ fn two_faces(n: u32) -> PrintedCard {
         ..PrintedFace::default()
     });
     card.name = "Test Front // Test Back".into();
+    card.layout = "modal_dfc".into();
     card
 }
 

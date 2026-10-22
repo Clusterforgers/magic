@@ -1,0 +1,31 @@
+{
+  "oracle_id": "461b3f2f-fcee-4160-abfa-061f8b6a784f",
+  "name": "Hengegate Pathway // Mistgate Pathway",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hengegate Pathway",
+      "oracle_fingerprint": "6e43960c60e63aa3a62c5e058729cd33",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mistgate Pathway",
+      "oracle_fingerprint": "8ae83cb569a9767af532f8e24af5b92d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

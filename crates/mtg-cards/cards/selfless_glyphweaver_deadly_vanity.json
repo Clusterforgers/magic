@@ -1,0 +1,49 @@
+{
+  "oracle_id": "4507d35a-f7f3-4abe-b06b-90c5331b533a",
+  "name": "Selfless Glyphweaver // Deadly Vanity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Selfless Glyphweaver",
+      "oracle_fingerprint": "66edcfe5ab52bdc75a988f210174e1b4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["ExileSelf"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Deadly Vanity",
+      "oracle_fingerprint": "bd2e1910b4b2126c59d1304737d66538",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                  },
+                  "as": "kept",
+                  "rest_as": "others"
+                }
+              },
+              { "Destroy": { "what": { "Bound": "others" }, "regenerate": false } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
