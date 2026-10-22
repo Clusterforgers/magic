@@ -1,0 +1,23 @@
+{
+  "id": "2dee6dca-9c7e-4347-bea7-7fecc69e5827",
+  "oracle_id": "2516949d-75bb-4aea-a41d-0298bb129471",
+  "name": "Slip Through Space",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ogw",
+  "collector_number": "47",
+  "rarity": "common",
+  "released_at": "2016-01-22",
+  "digital": false,
+  "mana_cost": "{U}",
+  "cmc": 1,
+  "type_line": "Sorcery",
+  "oracle_text": "Devoid (This card has no color.)\nTarget creature can't be blocked this turn.\nDraw a card.",
+  "colors": [],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Devoid"
+  ]
+}

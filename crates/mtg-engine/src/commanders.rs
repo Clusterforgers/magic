@@ -269,6 +269,8 @@ mod tests {
             target: DamageTarget::Player(PlayerId::from_index(seat)),
             amount,
             deathtouch: false,
+            form: crate::combat::DamageForm::Normal,
+            toxic: 0,
         };
         apply_event(game, &event).unwrap();
     }

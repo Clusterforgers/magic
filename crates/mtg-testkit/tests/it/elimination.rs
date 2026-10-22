@@ -234,6 +234,8 @@ fn a_losing_players_spells_leave_the_stack_with_them() -> Result<(), ScriptError
             target: DamageTarget::Player(pid(1)),
             amount: 3,
             deathtouch: false,
+            form: Default::default(),
+            toxic: 0,
         },
     ];
     let mut log: Vec<Event> = probe.events().to_vec();

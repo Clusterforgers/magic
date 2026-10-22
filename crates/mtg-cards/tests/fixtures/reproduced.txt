@@ -55,12 +55,14 @@ Glorious Anthem
 Goblin Spy
 Grapeshot
 Growing Ranks
+Guardian Gladewalker
 Gurmag Angler
 Hall of Triumph
 Hengegate Pathway // Mistgate Pathway
 Hero of Bladehold
 Hulking Raptor
 Idyllic Beachfront
+Impostor of the Sixth Pride
 Invisible Stalker
 Izzet Charm
 Jungle Lion
@@ -105,6 +107,7 @@ Seedglaive Mentor
 Serra Angel
 Siege Wurm
 Skullclamp
+Slip Through Space
 Sodden Verdure
 Sol Ring
 Solstice Zealot
@@ -127,6 +130,7 @@ Tireless Tracker
 Treasure Cruise
 Tumble Magnet
 Underworld Dreams
+Universal Automaton
 Walking Ballista
 Wanderbrine Preacher
 Wargate

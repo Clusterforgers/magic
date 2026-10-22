@@ -24,6 +24,7 @@ mod encore;
 mod entwine;
 mod equip;
 mod evoke;
+mod fear;
 mod first_strike;
 mod flash;
 mod flashback;
@@ -34,7 +35,9 @@ mod haste;
 mod hexproof;
 mod indestructible;
 mod infect;
+mod intimidate;
 mod kicker;
+mod landwalk;
 mod lifelink;
 mod living_weapon;
 mod madness;
@@ -53,13 +56,19 @@ mod provided;
 mod prowess;
 mod reach;
 mod reconfigure;
+mod shadow;
 mod shroud;
+mod skulk;
+mod split_second;
 mod squad;
 mod storm;
 pub(crate) mod suspend;
+mod toxic;
 mod trample;
+mod undaunted;
 mod vigilance;
 mod ward;
+mod wither;
 
 use std::fmt::Debug;
 
@@ -70,6 +79,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::ability_reader::keyword_abilities;
 use crate::characteristics::controller_of_object;
+use crate::combat::DamageForm;
 use crate::object::{ObjectKind, ObjectRef};
 use crate::snapshot::Snapshot;
 use crate::state::GameState;
@@ -90,6 +100,12 @@ pub struct DamageRules {
     pub trample: bool,
     /// Its controller gains that much life.
     pub lifelink: bool,
+    /// Damage it deals to a creature is dealt as -1/-1 counters (wither, CR 702.80).
+    pub wither: bool,
+    /// Damage it deals to a creature is dealt as -1/-1 counters and to a player as poison counters (infect, CR 702.90).
+    pub infect: bool,
+    /// The poison counters a player dealt combat damage by it also gets (toxic, cumulative, CR 702.164).
+    pub toxic: u32,
 }
 
 impl DamageRules {
@@ -102,6 +118,20 @@ impl DamageRules {
             deathtouch: self.deathtouch || other.deathtouch,
             trample: self.trample || other.trample,
             lifelink: self.lifelink || other.lifelink,
+            wither: self.wither || other.wither,
+            infect: self.infect || other.infect,
+            toxic: self.toxic.saturating_add(other.toxic),
+        }
+    }
+
+    /// What the damage it deals does to what it hurts: infect before wither.
+    pub const fn form(self) -> DamageForm {
+        if self.infect {
+            DamageForm::Infect
+        } else if self.wither {
+            DamageForm::Wither
+        } else {
+            DamageForm::Normal
         }
     }
 
@@ -175,6 +205,17 @@ pub struct AdditionalCost {
 pub trait KeywordRules: Debug + Sync {
     /// Whether `blocker` may not block `attacker`, which has the keyword.
     fn restricts_blocking(
+        &self,
+        _state: &GameState,
+        _keyword: &Keyword,
+        _attacker: ObjectId,
+        _blocker: ObjectId,
+    ) -> bool {
+        false
+    }
+
+    /// Whether `blocker`, which has the keyword, may not block `attacker` (shadow: only creatures with shadow).
+    fn restricts_blocked(
         &self,
         _state: &GameState,
         _keyword: &Keyword,
@@ -326,6 +367,15 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Foretell(_) => &foretell::Foretell,
         Keyword::Daybound => &daybound::Daybound,
         Keyword::Nightbound => &nightbound::Nightbound,
+        Keyword::Wither => &wither::Wither,
+        Keyword::Toxic(_) => &toxic::Toxic,
+        Keyword::Fear => &fear::Fear,
+        Keyword::Intimidate => &intimidate::Intimidate,
+        Keyword::Landwalk(_) => &landwalk::Landwalk,
+        Keyword::Skulk => &skulk::Skulk,
+        Keyword::Shadow => &shadow::Shadow,
+        Keyword::SplitSecond => &split_second::SplitSecond,
+        Keyword::Undaunted => &undaunted::Undaunted,
     }
 }
 
@@ -465,6 +515,9 @@ pub(crate) fn stops_block(state: &GameState, attacker: ObjectId, blocker: Object
     keywords_of(state, attacker)
         .into_iter()
         .any(|keyword| rules(keyword).restricts_blocking(state, keyword, attacker, blocker))
+        || keywords_of(state, blocker)
+            .into_iter()
+            .any(|keyword| rules(keyword).restricts_blocked(state, keyword, attacker, blocker))
         || Source::live(state, blocker)
             .is_some_and(|source| protected_from(state, Holder::Object(attacker), source))
 }
@@ -554,11 +607,20 @@ mod tests {
             Keyword::Foretell(cost()),
             Keyword::Daybound,
             Keyword::Nightbound,
+            Keyword::Wither,
+            Keyword::Toxic(1),
+            Keyword::Fear,
+            Keyword::Intimidate,
+            Keyword::Landwalk(Selector::default()),
+            Keyword::Skulk,
+            Keyword::Shadow,
+            Keyword::SplitSecond,
+            Keyword::Undaunted,
         ]
     }
 
     /// The keywords whose rules the engine runs, named as the capabilities name them.
-    const RUN: [&str; 41] = [
+    const RUN: [&str; 51] = [
         "Keyword.Flash",
         "Keyword.Flying",
         "Keyword.Reach",
@@ -600,6 +662,16 @@ mod tests {
         "Keyword.Daybound",
         "Keyword.Nightbound",
         "Keyword.Fuse",
+        "Keyword.Changeling",
+        "Keyword.Devoid",
+        "Keyword.Infect",
+        "Keyword.Wither",
+        "Keyword.Toxic",
+        "Keyword.Fear",
+        "Keyword.Intimidate",
+        "Keyword.Landwalk",
+        "Keyword.Skulk",
+        "Keyword.Shadow",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -695,6 +767,8 @@ mod tests {
     #[case::cascade(Keyword::Cascade, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::storm(Keyword::Storm, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::madness(Keyword::Madness(Cost::mana("{R}".parse().unwrap())), Hooks { abilities: 2, ..Hooks::none() })]
+    #[case::changeling(Keyword::Changeling, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::devoid(Keyword::Devoid, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);

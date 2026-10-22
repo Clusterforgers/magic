@@ -46,7 +46,7 @@ fn chameleon(defining: bool) -> Arc<CardDefinition> {
 }
 
 #[derive(Clone, Copy, Debug)]
-enum Where {
+pub(super) enum Where {
     Battlefield,
     Hand,
     Library,
@@ -56,7 +56,7 @@ enum Where {
 }
 
 /// Seat 0 has a Bear and a Wolf on the battlefield and `card` in the zone `at`.
-fn game_with(card: Arc<CardDefinition>, at: Where) -> GameState {
+pub(super) fn game_with(card: Arc<CardDefinition>, at: Where) -> GameState {
     let mut game_setup = setup(
         vec![vec![], vec![]],
         vec![vec![creature("Bear", 2, 2), creature("Wolf", 3, 3)], vec![]],

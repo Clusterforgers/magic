@@ -1,0 +1,12 @@
+{
+  "oracle_id": "a2b8185a-9ff2-4d65-9bdd-b060b7ce69bb",
+  "name": "Impostor of the Sixth Pride",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Impostor of the Sixth Pride",
+      "oracle_fingerprint": "70c30518730ca6fd1274af12f70f8334",
+      "abilities": [{ "Keyword": "Changeling" }]
+    }
+  ]
+}

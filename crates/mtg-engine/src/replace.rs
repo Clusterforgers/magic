@@ -1455,6 +1455,8 @@ impl Pass<'_> {
             target,
             amount,
             deathtouch,
+            form,
+            toxic,
         }) = self.slots[at].item.clone()
         else {
             self.slots[at].applied = applied;
@@ -1484,6 +1486,8 @@ impl Pass<'_> {
                     target,
                     amount: now,
                     deathtouch,
+                    form,
+                    toxic,
                 }),
                 applied,
                 frozen: false,
@@ -1566,6 +1570,8 @@ impl Pass<'_> {
                 target,
                 amount,
                 deathtouch,
+                form,
+                toxic,
             }) => {
                 let now = more(amount);
                 self.follow_lifelink(at, source, amount, now);
@@ -1574,6 +1580,8 @@ impl Pass<'_> {
                     target,
                     amount: now,
                     deathtouch,
+                    form,
+                    toxic,
                 })]
             }
             Item::One(Event::CountersChanged(CountersChanged { on, counter, delta })) => {

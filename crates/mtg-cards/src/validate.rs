@@ -719,7 +719,8 @@ impl<'a> Walker<'a> {
                     self.uses("Keyword", "Enchant.Elsewhere");
                 }
             }
-            Keyword::Protection(quality) => self.selector(quality),
+            Keyword::Protection(quality) | Keyword::Landwalk(quality) => self.selector(quality),
+            Keyword::Toxic(0) => self.problem("toxic needs a number of at least 1"),
             Keyword::PartnerWith(name) => {
                 self.names
                     .push((self.face, self.current_path(), name.clone()));
@@ -747,6 +748,7 @@ impl<'a> Walker<'a> {
             | Modification::RemoveType(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
+            | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
             | Modification::AddProtectionFromChosenColor
             | Modification::LoseAbilities

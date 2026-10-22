@@ -41,6 +41,8 @@ pub enum Modification {
     AddSubtype(Subtype),
     /// Replaces the creature types with these (layer 4): "becomes a red Weird" (CR 205.1b).
     SetCreatureTypes(Vec<Subtype>),
+    /// Makes it every creature type (layer 4): changeling (CR 702.73).
+    AddAllCreatureTypes,
     /// Replaces the colors (layer 5).
     SetColors(Vec<Color>),
     /// Adds a keyword ability (layer 6).
@@ -74,7 +76,8 @@ impl Modification {
             Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::AddSubtype(_)
-            | Modification::SetCreatureTypes(_) => Some("4"),
+            | Modification::SetCreatureTypes(_)
+            | Modification::AddAllCreatureTypes => Some("4"),
             Modification::SetColors(_) => Some("5"),
             Modification::AddKeyword(_)
             | Modification::AddProtectionFromChosenColor
