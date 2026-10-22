@@ -177,6 +177,7 @@ const RUNS: &[&str] = &[
     "Keyword.BattleCry",
     "Keyword.Ward",
     "Keyword.Enchant",
+    "Keyword.EnchantPlayer",
     "Keyword.Equip",
     "Keyword.Reconfigure",
     "Keyword.LivingWeapon",

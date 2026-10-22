@@ -228,6 +228,7 @@ impl ObjectView {
                 .map(|(ability, cost)| LoyaltyAbilityView { ability, cost })
                 .collect(),
             attached_to: state.host_of(id),
+            attached_player: state.player_host_of(id),
             attachments: if object.permanent().is_some() {
                 attachments()
             } else {
@@ -281,6 +282,7 @@ impl ObjectView {
             counters: Vec::new(),
             loyalty_abilities: Vec::new(),
             attached_to: None,
+            attached_player: None,
             attachments: Vec::new(),
             face_down: true,
             face: None,
@@ -305,6 +307,7 @@ impl PlayerView {
                 .counters()
                 .map(|(kind, count)| (kind.clone(), count))
                 .collect(),
+            enchanted_by: state.attachments_of_player(seat),
             mulligans: player.mulligans(),
             mulligan: player.mulligan_status(),
             hand: zone_view(state, viewer, Zone::Hand(seat)),

@@ -108,6 +108,41 @@ pub(crate) fn legal_host(state: &GameState, attachment: ObjectId, host: ObjectId
     allowed && !protects_host(state, attachment, host)
 }
 
+/// Whether the enchant ability of `id` is "enchant opponent" (`true`) or "enchant player" (`false`); `None` for an object
+/// that enchants no player.
+fn player_restriction(state: &GameState, id: ObjectId) -> Option<bool> {
+    keywords_of(state, id).into_iter().find_map(|keyword| {
+        if let Keyword::EnchantPlayer { opponent } = keyword {
+            Some(*opponent)
+        } else {
+            None
+        }
+    })
+}
+
+/// Whether the Aura `attachment` may be attached to the player `player` as things stand: it enchants players, is not a
+/// creature, the player is still in the game, an opponent of its controller when it enchants only opponents, and has no
+/// protection from it (CR 303.4, 702.16c).
+pub(crate) fn legal_player_host(state: &GameState, attachment: ObjectId, player: PlayerId) -> bool {
+    let Some(object) = state.object(attachment) else {
+        return false;
+    };
+    if object.zone() != Zone::Battlefield
+        || object.kind() == ObjectKind::Ability
+        || !state.is_alive(player)
+        || kind_of(state, attachment) != Some(Kind::Aura)
+    {
+        return false;
+    }
+    let Some(opponent) = player_restriction(state, attachment) else {
+        return false;
+    };
+    characteristics(state, attachment).is_some_and(|chars| !chars.is_creature())
+        && (!opponent || player != controller_of_object(state, object))
+        && !keywords::Source::live(state, attachment)
+            .is_some_and(|source| keywords::protected_from(state, Holder::Player(player), source))
+}
+
 /// Whether a keyword of `host` (protection) keeps `attachment` from being attached to it (CR 702.16c).
 fn protects_host(state: &GameState, attachment: ObjectId, host: ObjectId) -> bool {
     keywords::Source::live(state, attachment)
@@ -142,12 +177,36 @@ pub(crate) fn spell_target(state: &GameState, id: ObjectId) -> Option<TargetSpec
     {
         return None;
     }
-    let selector = enchant_restriction(state, id)?;
+    let what = match (enchant_restriction(state, id), player_restriction(state, id)) {
+        (Some(selector), _) => Targetable::Object(selector),
+        (None, Some(true)) => Targetable::Opponent,
+        (None, Some(false)) => Targetable::Player,
+        (None, None) => return None,
+    };
     Some(TargetSpec {
-        what: Targetable::Object(selector),
+        what,
         bounds: Bounds::default(),
         divide: None,
     })
+}
+
+/// What an Aura is attached to: a permanent or a player.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum Host {
+    /// A permanent on the battlefield.
+    Object(ObjectId),
+    /// A player in the game.
+    Player(PlayerId),
+}
+
+impl Host {
+    /// The event that attaches `object` to this host.
+    pub(crate) fn attach(self, object: ObjectId) -> Event {
+        match self {
+            Host::Object(to) => Event::Attached { object, to },
+            Host::Player(player) => Event::AttachedToPlayer { object, player },
+        }
+    }
 }
 
 /// Whether `player` can cast the spell `id` as far as its target goes: an Aura spell needs something to enchant that it
@@ -165,15 +224,18 @@ pub(crate) fn is_aura_spell(state: &GameState, id: ObjectId) -> bool {
         && spell_target(state, id).is_some()
 }
 
-/// The permanent the Aura spell `id` is going to enchant: the target it announced, if that is still legal as it
-/// resolves (CR 608.2b).
-pub(crate) fn spell_host(state: &GameState, id: ObjectId) -> Option<ObjectId> {
+/// What the Aura spell `id` is going to enchant: the target it announced, if that is still legal as it resolves
+/// (CR 608.2b).
+pub(crate) fn spell_host(state: &GameState, id: ObjectId) -> Option<Host> {
     let spec = spell_target(state, id)?;
     let spell = state.object(id)?;
-    let target = spell.choices().targets.first()?.first()?.object()?;
+    let target = *spell.choices().targets.first()?.first()?;
     legal_targets(state, &spec, id, spell.controller())
-        .contains(&Target::Object(target))
-        .then_some(target.id)
+        .contains(&target)
+        .then_some(match target {
+            Target::Object(object) => Host::Object(object.id),
+            Target::Player(player) => Host::Player(player),
+        })
 }
 
 /// The attachment of an Aura spell that resolves: it enters attached to what it targeted (CR 303.4f).
@@ -181,10 +243,7 @@ pub(crate) fn entering(state: &GameState, id: ObjectId) -> Option<Event> {
     if !is_aura_spell(state, id) {
         return None;
     }
-    Some(Event::Attached {
-        object: id,
-        to: spell_host(state, id)?,
-    })
+    Some(spell_host(state, id)?.attach(id))
 }
 
 /// The permanents an Aura card that enters the battlefield without being cast under `controller` may enchant, in id
@@ -196,7 +255,9 @@ pub(crate) fn hosts_when_entering(
 ) -> Option<Vec<ObjectId>> {
     let spec = spell_target(state, aura.id())?;
     let Targetable::Object(selector) = spec.what else {
-        return None;
+        // An Aura that enchants a player does not enter without being cast: the question of which player is not asked,
+        // so the card stays where it was.
+        return Some(Vec::new());
     };
     let scope = Scope::announcing(state, controller, aura.reference());
     let found = scope.matching(&selector).unwrap_or_default();
@@ -247,6 +308,39 @@ pub(crate) fn fold_attached(
         return Err(invalid(format!("{object:?} is attached to {to:?} already")));
     }
     permanent.attached_to = Some(host);
+    permanent.attached_player = None;
+    permanent.timestamp = stamp;
+    state.next_timestamp += 1;
+    state.possible.attachments = true;
+    Ok(())
+}
+
+/// Attaches `object` to the player `player` (CR 303.4): it takes the time it became attached as its timestamp.
+pub(crate) fn fold_attached_to_player(
+    state: &mut GameState,
+    object: ObjectId,
+    player: PlayerId,
+) -> Result<(), EngineError> {
+    if !state.is_alive(player) {
+        return Err(invalid(format!("{player:?} is not in the game to be enchanted")));
+    }
+    let stamp = state.next_timestamp;
+    let permanent = state
+        .objects
+        .get_mut(&object)
+        .and_then(|o| o.permanent.as_mut())
+        .ok_or_else(|| {
+            invalid(format!(
+                "{object:?} is not on the battlefield to be attached"
+            ))
+        })?;
+    if permanent.attached_player == Some(player) {
+        return Err(invalid(format!(
+            "{object:?} is attached to {player:?} already"
+        )));
+    }
+    permanent.attached_to = None;
+    permanent.attached_player = Some(player);
     permanent.timestamp = stamp;
     state.next_timestamp += 1;
     state.possible.attachments = true;
@@ -264,7 +358,9 @@ pub(crate) fn fold_unattached(state: &mut GameState, object: ObjectId) -> Result
                 "{object:?} is not on the battlefield to be unattached"
             ))
         })?;
-    if permanent.attached_to.take().is_none() {
+    let object_host = permanent.attached_to.take();
+    let player_host = permanent.attached_player.take();
+    if object_host.is_none() && player_host.is_none() {
         return Err(invalid(format!("{object:?} is not attached to anything")));
     }
     Ok(())
@@ -285,13 +381,13 @@ pub(crate) fn state_based(state: &GameState, leaving: &[ObjectId]) -> Vec<Event>
         else {
             continue;
         };
-        let attached = object
-            .permanent()
-            .is_some_and(|permanent| permanent.attached_to().is_some());
-        let legal = || {
-            state
-                .host_of(id)
-                .is_some_and(|host| legal_host(state, id, host))
+        let attached = object.permanent().is_some_and(|permanent| {
+            permanent.attached_to().is_some() || permanent.attached_player().is_some()
+        });
+        let legal = || match (state.host_of(id), state.player_host_of(id)) {
+            (Some(host), _) => legal_host(state, id, host),
+            (None, Some(player)) => legal_player_host(state, id, player),
+            (None, None) => false,
         };
         // The enchant ability of an Aura the engine does not run is a clause the table follows: its controller attaches it
         // by hand (`manual.rs`), so it waits unattached.
