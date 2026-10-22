@@ -12,6 +12,8 @@ mod announce_division;
 mod archon_fuzz;
 mod attach_fuzz;
 mod attachments;
+mod bestow;
+mod bestow_fuzz;
 mod card_lists;
 mod cascade;
 mod cascade_fuzz;

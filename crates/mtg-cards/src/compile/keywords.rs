@@ -698,7 +698,10 @@ mod tests {
     #[case::aftermath("Aftermath", Keyword::Aftermath)]
     #[case::dash("Dash {2}{R}", Keyword::Dash(mana("{2}{R}")))]
     #[case::bestow("Bestow {3}{G}{G}", Keyword::Bestow(mana("{3}{G}{G}")))]
-    #[case::bestow_five_colors("Bestow {2}{W}{U}{B}{R}{G}", Keyword::Bestow(mana("{2}{W}{U}{B}{R}{G}")))]
+    #[case::bestow_five_colors(
+        "Bestow {2}{W}{U}{B}{R}{G}",
+        Keyword::Bestow(mana("{2}{W}{U}{B}{R}{G}"))
+    )]
     #[case::ninjutsu("Ninjutsu {1}{U}", Keyword::Ninjutsu(mana("{1}{U}")))]
     #[case::ninjutsu_for_one_mana("ninjutsu {B}", Keyword::Ninjutsu(mana("{B}")))]
     #[case::escape_exiling_cards(

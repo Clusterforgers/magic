@@ -394,7 +394,9 @@ fn near_misses_stay_with_the_table(#[case] text: &str) {
 #[case("Equipped creature gets +3/+3.")]
 #[case("Enchanted creature gets +1/+2 and has flying and first strike.")]
 #[case("Creatures you control have flying, vigilance, and haste.")]
-#[case("Enchanted creature gets +4/+4 and has flying, first strike, vigilance, trample, and lifelink.")]
+#[case(
+    "Enchanted creature gets +4/+4 and has flying, first strike, vigilance, trample, and lifelink."
+)]
 #[case("Equipped creature has double strike.")]
 #[case("Creatures you control have lifelink.")]
 #[case("Other creatures you control have trample.")]

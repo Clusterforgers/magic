@@ -38,6 +38,7 @@ fn bot_games_with_alternative_costs_keep_every_invariant_and_use_each_way() {
                             CastWay::Foretold => "foretold",
                             CastWay::Escape => "escape",
                             CastWay::Dash => "dash",
+                            CastWay::Bestow => "bestow",
                             CastWay::Free => "free",
                         });
                         *seen.entry(way.to_owned()).or_default() += 1;
