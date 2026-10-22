@@ -17,6 +17,7 @@ import type { GameResult } from "./GameResult";
 import type { LibraryLooked } from "./LibraryLooked";
 import type { LossReason } from "./LossReason";
 import type { ManaType } from "./ManaType";
+import type { ManualAction } from "./ManualAction";
 import type { NothingToDo } from "./NothingToDo";
 import type { ObjectId } from "./ObjectId";
 import type { ObjectRef } from "./ObjectRef";
@@ -477,4 +478,12 @@ to: ObjectId, } } | { "Unattached": {
 /**
  * The permanent.
  */
-object: ObjectId, } };
+object: ObjectId, } } | { "ManualAction": { 
+/**
+ * Who took it.
+ */
+player: PlayerId, 
+/**
+ * What they did.
+ */
+action: ManualAction, } };
