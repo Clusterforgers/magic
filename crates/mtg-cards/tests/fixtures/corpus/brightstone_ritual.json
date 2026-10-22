@@ -1,0 +1,23 @@
+{
+  "id": "5b08b0a6-c94e-4407-8a24-c8202497b5f2",
+  "oracle_id": "08e90e85-4103-4acb-a8a7-e1329b460aa7",
+  "name": "Brightstone Ritual",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ons",
+  "collector_number": "191",
+  "rarity": "common",
+  "released_at": "2002-10-07",
+  "digital": false,
+  "mana_cost": "{R}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Add {R} for each Goblin on the battlefield.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

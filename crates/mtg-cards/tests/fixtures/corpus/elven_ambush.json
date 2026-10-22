@@ -1,0 +1,23 @@
+{
+  "id": "70479c44-da7c-48c7-8c6a-47210dc03277",
+  "oracle_id": "a2373025-20c1-4416-91f7-e51f68dbd146",
+  "name": "Elven Ambush",
+  "lang": "en",
+  "layout": "normal",
+  "set": "khm",
+  "collector_number": "391",
+  "rarity": "uncommon",
+  "released_at": "2021-02-05",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Create a 1/1 green Elf Warrior creature token for each Elf you control.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

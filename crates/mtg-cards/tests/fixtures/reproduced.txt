@@ -31,6 +31,7 @@ Bonesplitter
 Brain Freeze
 Brainstorm
 Branchblight Stalker
+Brightstone Ritual
 Bronzeplate Boar
 Cackling Counterpart
 Capsize
@@ -39,6 +40,7 @@ Cathars' Crusade
 Changeling Outcast
 Clone
 Cold-Eyed Selkie
+Collective Unconscious
 Command Tower
 Consider
 Consign // Oblivion
@@ -74,6 +76,7 @@ Drudge Skeletons
 Dual Casting
 Dualcaster Mage
 Durkwood Baloth
+Elven Ambush
 Epic Proportions
 Eternal Witness
 Exotic Orchard
@@ -97,6 +100,7 @@ Foundry Inspector
 Fruit of Tizerus
 Furtive Homunculus
 Gadwick, the Wizened
+Gaea's Cradle
 Game-Trail Changeling
 Giant Growth
 Gilded Lotus
@@ -121,6 +125,7 @@ Invisible Stalker
 Izzet Charm
 Jungle Lion
 Kathari Screecher
+Keep Watch
 Kessig Wolf Run
 Kongming, "Sleeping Dragon"
 Krenko's Enforcer
