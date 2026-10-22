@@ -1,0 +1,26 @@
+{
+  "id": "28e619e6-ecc1-49c3-8fa9-ce42becdb9ba",
+  "oracle_id": "9a02a9a7-39d9-4763-85d3-747a0540b60b",
+  "name": "Gilded Lotus",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "199",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{5}",
+  "cmc": 5.0,
+  "type_line": "Artifact",
+  "oracle_text": "{T}: Add three mana of any one color.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}
