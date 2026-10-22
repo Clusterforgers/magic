@@ -729,13 +729,25 @@ fn plain_complete(
         .into_iter()
         .flat_map(|mana| std::iter::repeat_n(mana, rest_pool.get(mana) as usize))
         .collect();
-    let (more_pool, more_taps) =
-        complete_with(cost, parts, &floating, &by_permanent(&rest_sources))
-            .ok_or(PaymentError::CannotComplete)?;
+    let more = solving(
+        &chosen_taps,
+        &rest_sources,
+        &|chosen| {
+            complete_with(cost, parts, &floating, &by_permanent(chosen)).map(|(pool, taps)| {
+                Payment {
+                    pool,
+                    taps,
+                    ..Payment::default()
+                }
+            })
+        },
+        &|a, b| preference(a, sources) < preference(b, sources),
+    )
+    .ok_or(PaymentError::CannotComplete)?;
     Ok(Payment {
-        pool: [partial.pool.as_slice(), more_pool.as_slice()].concat(),
+        pool: [partial.pool.as_slice(), more.pool.as_slice()].concat(),
         restricted: Vec::new(),
-        taps: [partial.taps.as_slice(), more_taps.as_slice()].concat(),
+        taps: [partial.taps.as_slice(), more.taps.as_slice()].concat(),
         life: 0,
         ..Payment::default()
     })
