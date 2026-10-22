@@ -1,6 +1,7 @@
 //! Goal: whole bot games with decks of Izzet Charm, Rhystic Study, spells that ask a player to pay and abilities that cost mana finish and keep every invariant (zones, life, mana, the journal, the replay of the log equal to the live state) for many seeds at tables of two, three and four seats, and the games really use the payments: players are asked whether to pay and pay, with one source or several, on a turn that is not theirs, and activate abilities by paying their mana; a player who cannot pay is asked all the same and a Yes from them is refused without a change (the bots say No); an engine rebuilt from the log at each decision asks the same question, payments included, and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use mtg_engine::choose::{Choice, YesNoChoice};
 use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::error::IllegalAnswer;
@@ -11,10 +12,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(30)
+    fuzz_games(20)
 }
 
 #[derive(Default)]

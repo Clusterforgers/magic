@@ -1,6 +1,7 @@
 //! Goal: a power and toughness bonus counted "for each" (Borderland Behemoth: +4/+4 for each other Giant you control) is as big as the Giants its controller has, whichever seat has them and at tables of two, three and four seats, and whole bot games at two, three and four seats with decks of the corpus cards that count (cards, life, mana and tokens "for each", a pump "for each Swamp") finish, keep every invariant and cast every one of those cards.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use std::collections::BTreeSet;
 use std::sync::Arc;
 
@@ -77,10 +78,7 @@ fn cast_cards(setup: &mtg_engine::GameSetup, events: &[Event]) -> BTreeSet<Strin
 #[case(3)]
 #[case(4)]
 fn seeded_counting_games_finish_keep_every_invariant_and_cast_every_card(#[case] players: usize) {
-    let games: u64 = std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(30);
+    let games: u64 = fuzz_games(30);
     let mut seen = BTreeSet::new();
     for seed in 0..games {
         let setup = count_fuzz_setup(players, seed).unwrap();

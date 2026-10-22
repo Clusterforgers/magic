@@ -1,6 +1,7 @@
 //! Goal: whole bot games with decks of the cards the engine does not run whole and manual actions taken at random times finish and keep every invariant (zones, life, counters, the replay of the log equal to the live state) at tables of two, three and four seats; the games use every kind of action, the bots never take one themselves, an engine rebuilt from the log at each decision is in the same state and asks the same question, and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use std::collections::BTreeSet;
 
 use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
@@ -11,10 +12,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(30)
+    fuzz_games(30)
 }
 
 /// One game in how many priorities takes a scripted action.

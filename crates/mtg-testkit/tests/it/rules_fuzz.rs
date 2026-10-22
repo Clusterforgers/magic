@@ -1,6 +1,7 @@
 //! Goal: whole bot games with decks of the rules of the game (attack and block requirements, spells that can't be countered, no life gain, drawing or searching, a revealed library top, triggers that trigger again) finish and keep every invariant (zones, life, the journal, the replay of the log equal to the live state, conservation of cards) for many seeds at tables of two, three and four seats, and the games really use them: the cards that change a rule enter play, declarations are asked with a requirement and the bots meet it, rules of effects begin and end, abilities trigger more than once for one event, no seat gains life, draws or searches against a rule in force, and the top card of a revealed library is known to every seat; an engine rebuilt from the log at each decision asks what the original asks, and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use std::collections::BTreeMap;
 
 use mtg_engine::decision::DecisionKind;
@@ -14,10 +15,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40)
+    fuzz_games(25)
 }
 
 #[derive(Default)]

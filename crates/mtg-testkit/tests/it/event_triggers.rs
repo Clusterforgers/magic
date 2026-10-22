@@ -2,6 +2,7 @@
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
+use crate::common::seeds::fuzz_games;
 
 use std::collections::BTreeSet;
 use std::sync::Arc;
@@ -289,10 +290,7 @@ fn triggered_cards(setup: &GameSetup, outcome: &mtg_testkit::GameOutcome) -> BTr
 #[case(3)]
 #[case(4)]
 fn seeded_event_games_finish_keep_every_invariant_and_trigger_every_card(#[case] players: usize) {
-    let games: u64 = std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(30);
+    let games: u64 = fuzz_games(30);
     let mut seen = BTreeSet::new();
     for seed in 0..games {
         let setup = events_fuzz_setup(players, seed).unwrap();

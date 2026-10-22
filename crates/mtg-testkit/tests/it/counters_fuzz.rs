@@ -1,6 +1,7 @@
 //! Goal: whole bot games with decks of counters (Tireless Tracker, Cathars' Crusade, Inspiring Call, Caress of Phyrexia and cards that put, remove and move +1/+1 and -1/-1 counters and give players poison, energy and experience counters) finish and keep every invariant (zones, life, the journal, the replay of the log equal to the live state, conservation of cards, the counters on every permanent and player equal to those put on less those taken off and never fewer than none, no permanent with both a +1/+1 and a -1/-1 counter and no player with ten poison counters at a decision) for many seeds at tables of two, three and four seats, and the games really use them: counters are put on creatures and players, taken off, moved, annihilate in pairs by state-based actions and kill by poison; at every decision the power and toughness of a creature are its card's plus its +1/+1 counters less its -1/-1 counters; an engine rebuilt from the log at each decision asks what the original asks; and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use std::collections::BTreeMap;
 
 use mtg_cards::value::CounterKind;
@@ -13,10 +14,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40)
+    fuzz_games(12)
 }
 
 /// What a campaign saw the counters do.

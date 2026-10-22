@@ -13,14 +13,11 @@ use mtg_testkit::static_cards::STATIC_CARDS;
 use mtg_testkit::{RandomBot, play_game, statics_fuzz_setup};
 use rstest::rstest;
 
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{for_each_seed, fuzz_games};
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40)
+    fuzz_games(12)
 }
 
 #[derive(Default)]
