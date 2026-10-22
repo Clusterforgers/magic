@@ -97,6 +97,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
         texts.extend(pronouns);
     }
     texts.extend(attackers::named_draws(ability, &texts));
+    texts.extend(counters::pronouns_after_none(ability, &texts));
     // The counters counted by "for each" may be those "on it" for the card.
     let pronouns: Vec<String> = texts
         .iter()
@@ -1032,7 +1033,9 @@ impl Writer<'_> {
 
     /// "return target card from your graveyard to your hand", "return target creature to its owner's hand".
     fn returned_to_hand(&mut self, what: &Ref) -> Option<String> {
-        if self.in_your_graveyard(what) {
+        if *what == Ref::This {
+            Some("return ~ to its owner's hand".to_owned())
+        } else if self.in_your_graveyard(what) {
             Some(format!("return {} to your hand", self.object(what)?))
         } else if self.is_a_permanent(what) {
             Some(format!("return {} to its owner's hand", self.object(what)?))

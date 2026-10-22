@@ -230,6 +230,8 @@ const RUNS: &[&str] = &[
     "Keyword.Convoke",
     "Keyword.Delve",
     "Keyword.Madness",
+    "Keyword.Dredge",
+    "ReplaceBy.Dredge",
     "Keyword.Suspend",
     "Keyword.Foretell",
     "Keyword.Daybound",
@@ -610,6 +612,8 @@ mod tests {
     #[case::rebound("Keyword.Rebound", true)]
     #[case::aftermath("Keyword.Aftermath", true)]
     #[case::dash("Keyword.Dash", true)]
+    #[case::dredge("Keyword.Dredge", true)]
+    #[case::dredging("ReplaceBy.Dredge", true)]
     #[case::blitz("Keyword.Blitz", true)]
     #[case::ninjutsu("Keyword.Ninjutsu", true)]
     #[case::joining_an_attack("Effect.JoinAttack", true)]

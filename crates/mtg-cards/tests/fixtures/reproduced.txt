@@ -64,6 +64,7 @@ Broodbirth Viper
 Broodstar
 Cached Defenses
 Cackling Counterpart
+Cadaverous Bloom
 Caldaia Strongarm
 Caller of the Pack
 Capsize
@@ -104,6 +105,7 @@ Cut // Ribbons
 Cyclonic Rift
 Cytoshape
 Dalek Squadron
+Darkblast
 Darksteel Juggernaut
 Dauthi Horror
 Dauthi Marauder
@@ -200,6 +202,7 @@ Goldlust Triad
 Grapeshot
 Graven Cairns
 Graveshifter
+Greater Mossdog
 Grim Initiate
 Grisly Salvage
 Growing Ranks
@@ -260,6 +263,7 @@ Lord of Extinction
 Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
 Lurching Rotbeast
+Mana Bloom
 Manabarbs
 Manor Gate
 Map the Wastes
@@ -329,6 +333,7 @@ Radical Idea
 Raffine's Informant
 Rakdos Headliner
 Rally the Ranks
+Ramos, Dragon Engine
 Rampant Growth
 Ravenous Leucrocota
 Reckless Impulse
@@ -371,6 +376,8 @@ Seekers' Squire
 Serra Angel
 Servant of the Conduit
 Shadowmage Infiltrator
+Shambling Shell
+Shenanigans
 Siege Wurm
 Sinister Sabotage
 Sinister Starfish

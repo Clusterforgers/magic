@@ -8,7 +8,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use serde::Serialize;
 
 use crate::ability::{Ability, LoyaltyCost, Timing};
-use crate::assemble::{PLAIN_MANA_ABILITY, mana_shape, plain_mana_ability};
+use crate::assemble::{MANA_WAYS, PLAIN_MANA_ABILITY, mana_shape, plain_mana_ability};
 use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
@@ -772,6 +772,7 @@ impl<'a> Walker<'a> {
                 self.at("find", |w| w.selector(find));
             }
             Keyword::Toxic(0) => self.problem("toxic needs a number of at least 1"),
+            Keyword::Dredge(0) => self.problem("dredge needs a number of at least 1"),
             Keyword::PartnerWith(name) => {
                 self.names
                     .push((self.face, self.current_path(), name.clone()));
@@ -1333,6 +1334,9 @@ impl<'a> Walker<'a> {
                     }
                     Produce::OneOfLists(lists) if lists.len() < 2 => {
                         w.problem("a choice of mana needs at least two lists");
+                    }
+                    Produce::OneOfLists(lists) if lists.len() > MANA_WAYS => {
+                        w.problem("a choice of mana has at most six lists");
                     }
                     Produce::OneOfLists(lists) if lists.iter().any(Vec::is_empty) => {
                         w.problem("a list of mana adds no mana");
@@ -1948,6 +1952,14 @@ impl<'a> Walker<'a> {
                     self.problem("needs at least one effect");
                 }
                 self.effect_list("Instead", effects, false);
+            }
+            ReplaceBy::Dredge(cards) => {
+                if !matches!(when, ReplaceWhen::Draw { .. }) {
+                    self.problem("`Dredge` replaces a `Draw`");
+                }
+                if *cards == 0 {
+                    self.problem("dredging no cards is drawing");
+                }
             }
             ReplaceBy::MoveTo(_)
                 if !matches!(

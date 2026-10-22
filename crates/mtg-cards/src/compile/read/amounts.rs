@@ -107,7 +107,7 @@ pub const fn stat_name(stat: StatKind) -> Option<&'static str> {
         StatKind::Power => Some("power"),
         StatKind::Toughness => Some("toughness"),
         StatKind::ManaValue => Some("mana value"),
-        StatKind::Loyalty => None,
+        StatKind::Loyalty | StatKind::Colors => None,
     }
 }
 
@@ -121,6 +121,13 @@ pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
         }
         if r.word("opponent") {
             return Some(Amount::Players(Ref::Opponents));
+        }
+        // The colors of the spell that was cast: "put a +1/+1 counter on ~ for each of that spell's colors".
+        if r.words("of that spell's colors") {
+            return Some(Amount::Stat {
+                of: Ref::Triggering,
+                stat: StatKind::Colors,
+            });
         }
         let selector = phrase(r, Form::Count)?;
         // A group that no one holds stands on the battlefield.
@@ -205,6 +212,10 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
             }
         }
         Amount::Players(Ref::Opponents) => "opponent".to_owned(),
+        Amount::Stat {
+            of: Ref::Triggering,
+            stat: StatKind::Colors,
+        } => "of that spell's colors".to_owned(),
         Amount::Counters {
             on: Ref::This,
             counter,

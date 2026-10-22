@@ -26,6 +26,10 @@ use crate::support::{
 use crate::validate::used_primitives;
 use crate::value::{Amount, Condition};
 
+/// The most ways one mana ability may make its mana (a list of `OneOfLists`, a type of `OneOf`): the engine keeps a
+/// source for each way, and the validator refuses a choice of more.
+pub const MANA_WAYS: usize = 6;
+
 /// The one primitive a plain `{T}: Add {X}` stands for: the engine runs that exact shape, one fixed
 /// mana for a tap, not the general `Ability.Activated`, `Cost.Tap` and `Effect.AddMana`.
 pub const PLAIN_MANA_ABILITY: &str = "Ability.ManaAbility";
@@ -451,11 +455,14 @@ fn pays_with_activation(item: &CostItem) -> bool {
     }
 }
 
-/// Whether `item` is a part of a mana ability's cost that takes other permanents of the payer, which the payment picks:
-/// tapping some number of untapped permanents or sacrificing some number of permanents.
+/// Whether `item` is a part of a mana ability's cost that takes other permanents or cards of the payer, which the payment
+/// picks: tapping some number of untapped permanents, sacrificing some number of permanents or exiling some number of
+/// cards from the hand.
 fn picked_by_the_planner(item: &CostItem) -> bool {
     match item {
-        CostItem::TapPermanents { count, .. } | CostItem::Sacrifice { count, .. } => {
+        CostItem::TapPermanents { count, .. }
+        | CostItem::Sacrifice { count, .. }
+        | CostItem::ExileFromHand { count, .. } => {
             matches!(count, Amount::Fixed(number) if *number > 0)
         }
         _ => false,
@@ -1325,6 +1332,14 @@ mod tests {
     #[case::tapping_another_permanent(
         r#"{"Activated":{"cost":["Tap",{"TapPermanents":{"filter":[{"Type":"Creature"}]}}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
         Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::exiling_a_card_from_the_hand(
+        r#"{"Activated":{"cost":[{"ExileFromHand":{"filter":[]}}],"effects":[{"AddMana":{"mana":{"OneOfLists":[["Black","Black"],["Green","Green"]]}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::exiling_an_uncounted_number_of_cards_from_the_hand(
+        r#"{"Activated":{"cost":[{"ExileFromHand":{"filter":[],"count":{"Count":[]}}}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        Some("Ability.ManaAbility.Other")
     )]
     #[case::not_a_mana_ability(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#, None)]
     #[case::a_spell_that_adds_mana(

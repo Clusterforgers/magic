@@ -1,0 +1,26 @@
+{
+  "id": "580c6fe2-ab43-491e-a1b2-d076a5c2a74e",
+  "oracle_id": "1d9b94af-3bfa-4257-8347-675468f0b0e5",
+  "name": "Shenanigans",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mh1",
+  "collector_number": "146",
+  "rarity": "common",
+  "released_at": "2019-06-14",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Destroy target artifact.\nDredge 1 (If you would draw a card, you may mill a card instead. If you do, return this card from your graveyard to your hand.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Dredge",
+    "Mill"
+  ]
+}

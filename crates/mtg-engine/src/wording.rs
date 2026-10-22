@@ -29,6 +29,7 @@ fn stat_word(stat: StatKind) -> &'static str {
         StatKind::Toughness => "toughness",
         StatKind::ManaValue => "mana value",
         StatKind::Loyalty => "loyalty",
+        StatKind::Colors => "colors",
     }
 }
 

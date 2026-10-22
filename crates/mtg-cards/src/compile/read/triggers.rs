@@ -544,6 +544,9 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
     if let Some(monarch) = monarch_condition(r) {
         return Some(monarch);
     }
+    if let Some(bare) = r.attempt(no_counters) {
+        return Some(bare);
+    }
     r.need("you have")?;
     let number = i32::try_from(r.number()?).ok()?;
     let op = if r.words("or more") {
@@ -567,6 +570,24 @@ pub fn saddled() -> Condition {
         subject: Ref::This,
         selector: Selector(vec![Pred::HasKeyword(Keyword::Saddled)]),
     }
+}
+
+/// "~ has no charge counters on it": the card holds none of that counter, and "it" is the card in the effects that follow.
+fn no_counters(r: &mut Reader<'_>) -> Option<Condition> {
+    r.source().then_some(())?;
+    r.need("has no")?;
+    let counter = counters::kind(r)?;
+    r.need("counters on")?;
+    r.word("it").then_some(())?;
+    r.it = Some(Ref::This);
+    Some(Condition::Compare {
+        left: Amount::Counters {
+            on: Ref::This,
+            counter,
+        },
+        op: Cmp::Eq,
+        right: Amount::Fixed(0),
+    })
 }
 
 /// Who is the monarch: "you're the monarch", "an opponent is the monarch", "there is no monarch".
@@ -601,6 +622,20 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
 pub fn condition_text(condition: &Condition) -> Option<String> {
     if let Some(monarch) = monarch_text(condition) {
         return Some(monarch);
+    }
+    if let Condition::Compare {
+        left: Amount::Counters {
+            on: Ref::This,
+            counter,
+        },
+        op: Cmp::Eq,
+        right: Amount::Fixed(0),
+    } = condition
+    {
+        return Some(format!(
+            "~ has no {} counters on it",
+            counters::kind_text(counter)?
+        ));
     }
     let Condition::Compare {
         left: Amount::Life(Ref::You),
