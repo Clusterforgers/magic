@@ -1,0 +1,23 @@
+{
+  "id": "ca1024d6-c5f1-48f5-9081-fb90d0c46fdb",
+  "oracle_id": "4297ab35-9f16-4d9e-af77-010469ec4f59",
+  "name": "Wild Wasteland",
+  "lang": "en",
+  "layout": "normal",
+  "set": "pip",
+  "collector_number": "71",
+  "rarity": "rare",
+  "released_at": "2024-03-08",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Skip your draw step.\nAt the beginning of your upkeep, exile the top two cards of your library. You may play those cards this turn.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

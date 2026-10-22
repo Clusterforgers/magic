@@ -28,6 +28,7 @@ Arbor Colossus
 Arcane Signet
 Archon of Cruelty
 Archway Commons
+Armguard Familiar
 Arrogant Wurm
 Artful Maneuver
 Arvad the Cursed
@@ -177,6 +178,7 @@ Dualcaster Mage
 Dunland Crebain
 Durkwood Baloth
 Dusk Charger
+Duskshell Crawler
 Eagles of the North
 Easterling Vanguard
 Echo Inspector
@@ -323,6 +325,7 @@ Kongming, "Sleeping Dragon"
 Kozilek's Translator
 Krenko's Enforcer
 Lat-Nam Adept
+Latchkey Faerie
 Lavacore Elemental
 Lazotep Reaver
 Levitation
@@ -367,8 +370,10 @@ Mishra's Workshop
 Mizzium Mortars
 Monastery Swiftspear
 Morinfen
+Morsel Theft
 Mortivore
 Mothdust Changeling
+Mother of Runes
 Mukotai Ambusher
 Mulldrifter
 Murderous Cut
@@ -409,6 +414,7 @@ Pop Quiz
 Pouncing Jaguar
 Powder Ganger
 Predator Dragon
+Pridemalkin
 Primeval Protector
 Prismatic Lens
 Professional Face-Breaker
@@ -516,6 +522,7 @@ Spring // Mind
 Springleaf Drum
 Squirrel Nest
 Staggershock
+Star Whale
 Starscape Cleric
 Steady Progress
 Steam Vents
@@ -613,6 +620,7 @@ Wasteland Raider
 Weaponcraft Enthusiast
 Wear // Tear
 Whir of Invention
+Wild Wasteland
 Wilderness Elemental
 Wings of the Guard
 Wooded Bastion

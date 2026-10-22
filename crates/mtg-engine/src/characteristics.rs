@@ -98,6 +98,26 @@ pub(crate) fn seen_as(state: &GameState, id: ObjectId) -> Option<(Characteristic
     Some((outside(state, object, None), object.controller()))
 }
 
+/// The creature types of `id` as the game sees it now (printed ones no effect replaced and those effects gave), and whether it
+/// has every one (changeling, CR 702.73).
+pub(crate) fn creature_types(state: &GameState, id: ObjectId) -> (Vec<Subtype>, bool) {
+    let (Some(object), Some(chars)) = (state.object(id), characteristics(state, id)) else {
+        return (Vec::new(), false);
+    };
+    let printed = &object.card().subtypes;
+    let mut types: Vec<Subtype> = printed
+        .iter()
+        .filter(|subtype| subtype.is_creature_type() && chars.has_subtype(printed, subtype))
+        .cloned()
+        .collect();
+    for subtype in &chars.subtypes {
+        if subtype.is_creature_type() && !types.contains(subtype) {
+            types.push(subtype.clone());
+        }
+    }
+    (types, chars.all_creature_types)
+}
+
 /// Who controls `id` now: for a permanent the controller after the control-changing effects of layer 2 (CR 613.1b), for
 /// anything else the one the object has. `None` for an object that is not in the game.
 pub fn controller_of(state: &GameState, id: ObjectId) -> Option<PlayerId> {

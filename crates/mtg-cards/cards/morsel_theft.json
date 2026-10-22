@@ -1,0 +1,24 @@
+{
+  "oracle_id": "b58878ce-dd5a-4c43-882c-639de4f4a111",
+  "name": "Morsel Theft",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Morsel Theft",
+      "oracle_fingerprint": "be516aa977a7220cec7d5fb8aee3e0eb",
+      "abilities": [
+        { "Keyword": { "Prowl": "{1}{B}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 3 } },
+              { "GainLife": { "amount": 3 } },
+              { "If": { "condition": { "CastWith": "Prowl" }, "then": [{ "Draw": {} }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

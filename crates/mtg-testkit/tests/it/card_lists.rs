@@ -17,6 +17,7 @@ use mtg_testkit::extra_cost_cards::EXTRA_COST_CARDS;
 use mtg_testkit::face_cards::FACE_CARDS;
 use mtg_testkit::family_cards::FAMILY_CARDS;
 use mtg_testkit::foretell_cards::FORETELL_CARDS;
+use mtg_testkit::group_static_cards::GROUP_STATIC_CARDS;
 use mtg_testkit::impulse_cards::IMPULSE_CARDS;
 use mtg_testkit::kicker_cards::KICKED_CARDS;
 use mtg_testkit::layer_cards::LAYER_CARDS;
@@ -66,6 +67,7 @@ fn assert_in_the_corpus(list: &[&str]) {
 #[case::counter(COUNTER_CORPUS_CARDS)]
 #[case::counting(COUNTING_CARDS)]
 #[case::defining(DEFINING_CARDS)]
+#[case::group_statics(GROUP_STATIC_CARDS)]
 #[case::extra_cost(EXTRA_COST_CARDS)]
 #[case::face(FACE_CARDS)]
 #[case::foretell(FORETELL_CARDS)]

@@ -1,0 +1,25 @@
+{
+  "id": "c56cf35b-ca17-4691-9a1d-3a1a8f569c27",
+  "oracle_id": "f9672b63-415a-448b-a3da-140df63a0f0c",
+  "name": "Pridemalkin",
+  "lang": "en",
+  "layout": "normal",
+  "set": "moc",
+  "collector_number": "308",
+  "rarity": "common",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Cat",
+  "oracle_text": "When this creature enters, put a +1/+1 counter on target creature you control.\nEach creature you control with a +1/+1 counter on it has trample. (It can deal excess combat damage to the player or planeswalker it's attacking.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "power": "2",
+  "toughness": "1"
+}

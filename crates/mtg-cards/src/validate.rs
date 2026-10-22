@@ -742,7 +742,8 @@ impl<'a> Walker<'a> {
             | Keyword::Escape(cost)
             | Keyword::Dash(cost)
             | Keyword::Bestow(cost)
-            | Keyword::Blitz(cost) => {
+            | Keyword::Blitz(cost)
+            | Keyword::Prowl(cost) => {
                 self.at("cost", |w| w.cost(cost));
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost);
             }
@@ -1865,6 +1866,7 @@ impl<'a> Walker<'a> {
             | GameRule::CantSearch(who)
             | GameRule::RevealTop(who)
             | GameRule::LookAtTopAnyTime(who)
+            | GameRule::SkipDrawStep(who)
             | GameRule::NoMaxHandSize(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
             GameRule::MayCast(permission) => self.at(tag, |w| {
                 w.at("who", |w| w.reference(&permission.who, Kind::Player));

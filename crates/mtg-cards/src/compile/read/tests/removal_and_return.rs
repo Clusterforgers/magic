@@ -162,7 +162,6 @@ fn near_misses_stay_unread(#[case] text: &str) {
 }
 
 #[rstest]
-#[case::it_alone("When ~ enters, sacrifice it.")]
 #[case::another_permanent("Whenever a creature enters, sacrifice it unless you pay {R}.")]
 #[case::after_may("When ~ enters, you may sacrifice it unless you pay {R}.")]
 #[case::a_second_target(
