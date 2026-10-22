@@ -131,7 +131,6 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 #[case::no_subtype("Create a 1/1 white creature token.")]
 #[case::no_type("Create a 1/1 white Soldier token.")]
 #[case::a_legendary_token("Create a legendary 1/1 white Soldier creature token.")]
-#[case::a_copy("Create a token that's a copy of target creature.")]
 #[case::for_each("Create a Treasure token for each artifact you control.")]
 #[case::x_without_a_definition("Create X Treasure tokens.")]
 #[case::a_count_and_a_definition(

@@ -156,6 +156,7 @@ mod audit;
 mod cast;
 mod compound;
 mod conditions;
+mod copies;
 mod counted;
 mod counters;
 mod create;

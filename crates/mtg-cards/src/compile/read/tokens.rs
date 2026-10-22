@@ -102,6 +102,9 @@ pub fn canonical(text: &str) -> String {
                 if word == "that" { "it" } else { "them" }
             ));
             at += 2;
+        } else if let Some((text, used)) = pronoun(&words, at, &out) {
+            out.push(text);
+            at += used;
         } else if investigate.eq_ignore_ascii_case("investigate") {
             // The keyword action is the same as its reminder text.
             let create = if investigate.starts_with('I') {
@@ -118,6 +121,33 @@ pub fn canonical(text: &str) -> String {
         }
     }
     then_as_sentence(&out.join(" "))
+}
+
+/// A pronoun for the object a verb or a copy is about, and how many words it takes: "a token that's a copy of that
+/// creature" says what "a copy of it" says, and "sacrifice it" says what "sacrifice ~" says (the readers accept "it"
+/// for the card only where the ability spoke of it).
+fn pronoun(words: &[&str], at: usize, out: &[String]) -> Option<(String, usize)> {
+    let word = *words.get(at)?;
+    let bare = |text: &str| {
+        text.trim_end_matches(|c: char| !c.is_alphanumeric())
+            .to_owned()
+    };
+    let tail = |text: &str| text.get(bare(text).len()..).unwrap_or_default().to_owned();
+    let last = out.last()?;
+    if word == "that"
+        && let Some(noun) = words.get(at + 1)
+        && matches!(bare(noun).as_str(), "creature" | "permanent")
+        && last == "of"
+        && out
+            .get(out.len().checked_sub(2)?)
+            .is_some_and(|copy| matches!(copy.as_str(), "copy" | "copies"))
+    {
+        return Some((format!("it{}", tail(noun)), 2));
+    }
+    (bare(word) == "it"
+        && last.eq_ignore_ascii_case("sacrifice")
+        && matches!(tail(word).as_str(), "" | "." | "," | ".\""))
+    .then(|| (format!("~{}", tail(word)), 1))
 }
 
 /// ", then" between steps is the same sequence as a new sentence, so it is written as one.
@@ -209,7 +239,14 @@ pub fn tokenize(text: &str) -> Vec<Token> {
             opens = false;
         } else {
             tokens.push(Token::Punct(c));
-            opens = matches!(c, '.' | ':' | '\u{2014}' | '\u{2022}');
+            // A quote that opens an ability starts a sentence of its own.
+            let opening =
+                c == '"' && (at == 0 || chars.get(at - 1).is_some_and(|c| c.is_whitespace()));
+            opens = if c == '"' {
+                opening || opens
+            } else {
+                matches!(c, '.' | ':' | '\u{2014}' | '\u{2022}')
+            };
             at += 1;
         }
     }
@@ -389,6 +426,23 @@ impl<'a> Reader<'a> {
     /// Reads the end of a sentence: its period, or the end of the text.
     pub fn sentence_end(&mut self) -> bool {
         self.punct('.') || self.end()
+    }
+
+    /// Reads what is between a pair of quotes with a reader of its own over those tokens, which `read` must read
+    /// whole: the ability a copy or a permanent is given ("it has \"When ~ dies, draw a card.\"").
+    pub fn quoted<T>(&mut self, read: impl FnOnce(&mut Reader<'a>) -> Option<T>) -> Option<T> {
+        self.attempt(|r| {
+            r.punct('"').then_some(())?;
+            let tokens = r.tokens;
+            let rest = tokens.get(r.at..)?;
+            let close = r.at + rest.iter().position(|token| *token == Token::Punct('"'))?;
+            let mut inner = Reader::new(tokens.get(r.at..close)?, r.x_free);
+            inner.subtypes.clone_from(&r.subtypes);
+            let found = read(&mut inner)?;
+            inner.end().then_some(())?;
+            r.at = close + 1;
+            Some(found)
+        })
     }
 
     /// Reads with `read`; when it fails the reader is where it was, with the same targets.

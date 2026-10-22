@@ -18,9 +18,11 @@ Bonesplitter
 Brain Freeze
 Brainstorm
 Bronzeplate Boar
+Cackling Counterpart
 Capsize
 Carnage Tyrant
 Cathars' Crusade
+Clone
 Copper-Leaf Angel
 Counterspell
 Cyclonic Rift
@@ -44,6 +46,7 @@ Felidar Sovereign
 Fiery Temper
 Flooded Strand
 Fog
+Followed Footsteps
 Forced March
 Foundry Inspector
 Gadwick, the Wizened
@@ -51,6 +54,7 @@ Giant Growth
 Glorious Anthem
 Goblin Spy
 Grapeshot
+Growing Ranks
 Gurmag Angler
 Hall of Triumph
 Hengegate Pathway // Mistgate Pathway
@@ -74,6 +78,7 @@ Lurching Rotbeast
 Manabarbs
 Megrim
 Mesmeric Orb
+Mirror Image
 Mishra's Workshop
 Mizzium Mortars
 Monastery Swiftspear
@@ -82,6 +87,7 @@ Murderous Cut
 Nantuko Husk
 Opt
 Pacifism
+Phantasmal Image
 Pillar of the Paruns
 Professional Face-Breaker
 Questing Beast
@@ -90,6 +96,7 @@ Rampant Growth
 Reckless Impulse
 Rhystic Study
 Rift Bolt
+Rootborn Defenses
 Rosheen Meanderer
 Rummaging Goblin
 Sanguine Bond
@@ -106,6 +113,7 @@ Souldrinker
 Steam Vents
 Stoke the Flames
 Stroke of Genius
+Sundering Growth
 Supreme Verdict
 Swiftfoot Boots
 Sword of Body and Mind

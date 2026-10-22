@@ -121,7 +121,7 @@ pub fn tokens(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 }
 
 /// The colors of a token as a card words them: "white and blue", "colorless".
-fn colors_text(colors: &[Color]) -> String {
+pub(super) fn colors_text(colors: &[Color]) -> String {
     if colors.is_empty() {
         return "colorless".to_owned();
     }

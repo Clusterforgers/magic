@@ -12,12 +12,13 @@
 //! of a choice), `triggers` (the event of a triggered ability), `costs` (what is paid before the
 //! colon), `abilities` (a spell ability, a triggered ability, an activated ability), `conditional`
 //! (an effect that depends on a condition), `reveal` (looking at the top card and revealing it),
-//! `transform` and `render`.
+//! `copies` (a token that is a copy, populate, entering as a copy), `transform` and `render`.
 
 mod abilities;
 mod amounts;
 mod cast;
 mod conditional;
+mod copies;
 mod costs;
 mod counters;
 mod create;
