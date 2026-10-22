@@ -36,6 +36,7 @@ Fear of Failed Tests
 Felidar Sovereign
 Fiery Temper
 Flooded Strand
+Fog
 Forced March
 Foundry Inspector
 Gadwick, the Wizened
@@ -72,6 +73,7 @@ Nantuko Husk
 Opt
 Pacifism
 Pillar of the Paruns
+Questing Beast
 Rally the Ranks
 Rampant Growth
 Rhystic Study

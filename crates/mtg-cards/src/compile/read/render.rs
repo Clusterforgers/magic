@@ -11,6 +11,7 @@ use super::create;
 use super::effects::{BACK, RETURNED, returns_itself};
 use super::library;
 use super::modal::{BULLET, DASH};
+use super::prevention;
 use super::selectors::{Form, granted_text, phrase_text, spec_text};
 use super::spend;
 use super::statics;
@@ -46,6 +47,21 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .iter()
             .filter(|text| text.contains(": ~ deals "))
             .map(|text| text.replacen(": ~ deals ", ": It deals ", 1))
+            .collect();
+        texts.extend(pronouns);
+    }
+    // A trigger about damage the source deals may say "it deals" for the source (Questing Beast).
+    if matches!(
+        ability,
+        Ability::Triggered {
+            when: TriggerPattern::DealsDamage { .. },
+            ..
+        }
+    ) {
+        let pronouns: Vec<String> = texts
+            .iter()
+            .filter(|text| text.contains(", ~ deals "))
+            .map(|text| text.replacen(", ~ deals ", ", it deals ", 1))
             .collect();
         texts.extend(pronouns);
     }
@@ -795,7 +811,7 @@ impl Writer<'_> {
                     "becomes"
                 }
             ),
-            _ => return None,
+            _ => return prevention::effect_text(effect),
         })
     }
 

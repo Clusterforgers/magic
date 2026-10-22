@@ -1,4 +1,4 @@
-//! Goal: a creature that can't be blocked, or can't be blocked by some creatures, is offered no blocker it can't be blocked by, as a static ability and as the effect of a spell until the cleanup step, against blockers of every power and keyword, tapped and summoning-sick ones, with the power of a blocker judged as the layers leave it when blockers are declared, with menace, and with blockers already declared staying; combat damage that creatures you control deal can't be prevented by a shield, protection or Fog (Questing Beast) and damage of other creatures can; Questing Beast hurts a planeswalker the damaged player controls for that much and only for combat damage to a player; and whole bot games at two, three and four seats with these cards keep every invariant and replay.
+//! Goal: a creature that can't be blocked, or can't be blocked by some creatures, is offered no blocker it can't be blocked by, as a static ability and as the effect of a spell until the cleanup step, against blockers of every power and keyword, tapped and summoning-sick ones, with the power of a blocker judged as the layers leave it when blockers are declared, with menace, and with blockers already declared staying; combat damage that creatures you control deal can't be prevented by a shield, protection or Fog (Questing Beast) and damage of other creatures can; Questing Beast hurts a planeswalker the damaged player controls for that much and only for combat damage to a player, and its trigger is removed on resolution, with nothing else hurt, when the planeswalker it targets leaves first; and whole bot games at two, three and four seats with these cards keep every invariant and replay.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -18,6 +18,7 @@ use mtg_core::color::Color;
 use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::effects::{Duration, Modification};
 use mtg_engine::error::IllegalAnswer;
+use mtg_engine::events::ResolutionOutcome;
 use mtg_engine::turn::Step;
 use mtg_engine::{EngineError, Event, GameSetup, PresetPermanent, replay};
 use mtg_testkit::cards::{cost, free_creature, keyworded, mountain};
@@ -512,6 +513,96 @@ fn combat_damage_to_a_creature_or_a_planeswalker_does_not_trigger_the_beast()
     );
     assert_eq!(loyalty_of(&driver, "Jace Beleren"), Some(6));
     assert_eq!(loyalty_of(&driver, "Garruk Wildspeaker"), Some(6));
+    Ok(())
+}
+
+/// Plays combat on with no blockers until a trigger waits on the stack with a player to act.
+fn until_the_trigger_waits(driver: &mut Driver) -> Result<(), ScriptError> {
+    for _ in 0..120 {
+        match &driver.decision()?.kind {
+            DecisionKind::Priority(_) if !driver.state().stack().is_empty() => return Ok(()),
+            DecisionKind::DeclareBlockers(_) => {
+                driver.block(&[])?;
+            }
+            _ => {
+                driver.answer_passively()?;
+            }
+        }
+    }
+    Err(ScriptError::Stuck("the trigger".into()))
+}
+
+#[rstest]
+#[case::two_seats(2)]
+#[case::three_seats(3)]
+#[case::four_seats(4)]
+fn the_trigger_of_questing_beast_is_removed_when_its_planeswalker_leaves_first(
+    #[case] seats: usize,
+) -> Result<(), ScriptError> {
+    let filler = || (0..10).map(|_| free_creature("Filler", 1, 1));
+    let mut scenario = Scenario::new(seats)
+        .at(2, 0, Step::DeclareAttackers)
+        .battlefield(0, [ready(card("Questing Beast").unwrap())])
+        .battlefield(
+            1,
+            [
+                walker("Jace Beleren", 3),
+                ready(free_creature("Guard", 2, 5)),
+                ready(mountain()),
+            ],
+        )
+        .hand(1, [mtg_testkit::cards::burn("Bolt", 3)]);
+    for seat in 0..seats {
+        scenario = scenario.library(seat, filler());
+    }
+    for seat in 2..seats {
+        scenario = scenario.battlefield(seat, [walker("Garruk Wildspeaker", 3)]);
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.attack(&[("Questing Beast", 1)])?;
+    to_blockers(&mut driver, 1)?;
+    until_the_trigger_waits(&mut driver)?;
+    assert_eq!(life(&driver, 1), 16, "the player took the combat damage");
+    assert_eq!(loyalty_of(&driver, "Jace Beleren"), Some(3));
+    // The trigger is on the stack with the only walker the damaged player controls as its target. The damaged player
+    // answers by burning that walker away.
+    while driver.state().player(common::pid(1)).is_some()
+        && driver.decision()?.player != common::pid(1)
+    {
+        driver.pass()?;
+    }
+    let jace = driver.target_named("Jace Beleren")?;
+    driver.cast_at("Bolt", &[jace])?;
+    let begun = driver.engine().events().len();
+    settle(&mut driver)?;
+    let events = &driver.engine().events()[begun..];
+    let ended: Vec<ResolutionOutcome> = events
+        .iter()
+        .filter_map(|event| match event {
+            Event::ResolutionEnded { outcome, .. } => Some(*outcome),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(
+        ended,
+        vec![ResolutionOutcome::Resolved, ResolutionOutcome::Fizzled],
+        "the Bolt resolves, then the trigger of the Beast is removed: {events:?}"
+    );
+    assert_eq!(loyalty_of(&driver, "Jace Beleren"), None, "the walker died");
+    assert_eq!(life(&driver, 1), 16, "nothing else was hurt");
+    for seat in 2..seats {
+        assert_eq!(loyalty_of(&driver, "Garruk Wildspeaker"), Some(3));
+        assert_eq!(life(&driver, seat), 20);
+    }
+    let guard = driver.id_of("Guard")?;
+    let marked = driver
+        .state()
+        .object(guard)
+        .and_then(|o| o.permanent())
+        .map(mtg_engine::object::PermanentState::damage);
+    assert_eq!(marked, Some(0));
+    let beast = driver.id_of("Questing Beast")?;
+    assert!(driver.state().object(beast).is_some());
     Ok(())
 }
 

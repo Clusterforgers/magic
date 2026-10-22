@@ -10,6 +10,7 @@ use super::counters;
 use super::create;
 use super::library;
 use super::modal;
+use super::prevention;
 use super::selectors::{Form, all, each, granted_keywords, phrase, target};
 use super::spend;
 use super::tokens::Reader;
@@ -24,7 +25,7 @@ use crate::value::{Amount, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 22] = [
+const TEMPLATES: [Template; 24] = [
     modal::modal,
     cast::discover_sentence,
     cast::exile_until,
@@ -47,6 +48,8 @@ const TEMPLATES: [Template; 22] = [
     library::look,
     library::put_on_library,
     return_itself,
+    prevention::rule_effect,
+    prevention::shield,
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
