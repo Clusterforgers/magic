@@ -27,6 +27,8 @@ pub(crate) enum Outcome {
     BeginSuspend(ObjectId),
     /// Start foretelling this card from the hand: the payment of {2} is decided next.
     BeginForetell(ObjectId),
+    /// Start turning this face-down permanent face up: the payment of its cost is decided next.
+    BeginTurnUp(ObjectId),
     /// These are the modes, in the order they are printed, of the cast or activation in progress.
     Modes(Vec<usize>),
     /// This is the way, by position among those offered, the spell in progress is cast.

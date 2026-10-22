@@ -1,5 +1,7 @@
 //! Building a viewer's [`StateView`] from the full game state, and the visibility rule it rests on.
 
+use mtg_cards::CardDefinition;
+use mtg_cards::ability::Ability;
 use mtg_core::card::{CardType, CardTypes};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::characteristics::{characteristics, controller_of};
@@ -7,7 +9,7 @@ use mtg_engine::combat::Attacker;
 use mtg_engine::forecast::pending_combat_forecast;
 use mtg_engine::keywords::{keywords_of, summoning_sick};
 use mtg_engine::loyalty::loyalty_abilities;
-use mtg_engine::object::{GameObject, ObjectKind};
+use mtg_engine::object::{FaceDown, GameObject, ObjectKind};
 use mtg_engine::player::{Player, PlayerStatus};
 use mtg_engine::sight::offered_cards;
 use mtg_engine::state::GameState;
@@ -141,6 +143,20 @@ fn keyword_names(state: &GameState, id: ObjectId) -> Vec<String> {
     names
 }
 
+/// The names of the keywords a card prints, each once: what the controller of a face-down permanent reads on its card.
+fn printed_keyword_names(card: &CardDefinition) -> Vec<String> {
+    let mut names: Vec<String> = Vec::new();
+    for rules in &card.rules {
+        if let Ability::Keyword(keyword) = &**rules {
+            let name = keyword.name();
+            if !names.iter().any(|seen| seen == name) {
+                names.push(name.to_owned());
+            }
+        }
+    }
+    names
+}
+
 fn type_list(types: CardTypes) -> Vec<CardType> {
     ALL_TYPES
         .into_iter()
@@ -164,13 +180,24 @@ impl ObjectView {
         attachments: impl FnOnce() -> Vec<ObjectId>,
     ) -> Option<ObjectView> {
         let object = state.object(id)?;
-        match sight.look(object) {
+        let look = sight.look(object);
+        // A face-down creature shows every seat the characteristics of a 2/2 (CR 708.2a); the card behind it is the
+        // controller's alone.
+        let shows = object
+            .face_down()
+            .is_some_and(FaceDown::shows_characteristics);
+        match look {
             Look::Hidden => return None,
-            Look::FaceDown => return Some(Self::face_down(state, object)),
-            Look::Whole => {}
+            Look::FaceDown if !shows => return Some(Self::face_down(state, object)),
+            Look::FaceDown | Look::Whole => {}
         }
         let chars = characteristics(state, id)?;
-        let card = object.card();
+        let behind = shows && look == Look::Whole;
+        let card = if behind {
+            object.whole_card()
+        } else {
+            object.card()
+        };
         // An ability on the stack is named after its source and has nothing else of the source's printed side.
         let printed = object.kind() != ObjectKind::Ability;
         Some(ObjectView {
@@ -201,8 +228,16 @@ impl ObjectView {
             colors: chars.colors.iter().collect(),
             power: chars.power,
             toughness: chars.toughness,
-            abilities: chars.abilities,
-            keywords: keyword_names(state, id),
+            abilities: if behind {
+                card.abilities.clone()
+            } else {
+                chars.abilities
+            },
+            keywords: if behind {
+                printed_keyword_names(card)
+            } else {
+                keyword_names(state, id)
+            },
             permanent: object.permanent().map(|p| PermanentView {
                 tapped: p.tapped(),
                 damage: p.damage(),

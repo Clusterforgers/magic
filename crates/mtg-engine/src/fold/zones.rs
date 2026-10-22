@@ -15,7 +15,7 @@ use crate::error::EngineError;
 use crate::events::{Event, ZoneCause};
 use crate::keywords::OptionalKind;
 use crate::library::{Scried, Surveilled};
-use crate::object::{Designations, GameObject, ObjectKind, PermanentState};
+use crate::object::{Designations, FaceDown, GameObject, ObjectKind, PermanentState};
 use crate::state::{GameState, Tally};
 use crate::zones::{Placement, Zone};
 
@@ -48,7 +48,15 @@ pub(super) fn move_object(
     // A new zone makes it a new object (CR 400.7); what was announced for it on the stack goes with the stack.
     object.counter += 1;
     object.card_counters.clear();
-    object.face_down = None;
+    // A spell cast face down becomes a permanent that lies face down (CR 708.4); any other move shows the card (CR 708.9).
+    if !(from == Zone::Stack
+        && to == Zone::Battlefield
+        && object
+            .face_down
+            .is_some_and(FaceDown::shows_characteristics))
+    {
+        object.face_down = None;
+    }
     object.adventure = None;
     object.cast_from_hand = false;
     object.cast_from_graveyard = false;
@@ -211,6 +219,9 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 spell.choices.clone_from(choices);
                 spell.cast_from_hand = matches!(from, Zone::Hand(_));
                 spell.cast_from_graveyard = matches!(from, Zone::Graveyard(_));
+                if choices.way == Some(CastWay::FaceDown) {
+                    spell.face_down = Some(FaceDown::cast_as(&spell.def));
+                }
             }
             note_rebound(state, *object, from);
             note_aftermath(state, *object, from);

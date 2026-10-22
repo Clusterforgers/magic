@@ -1,0 +1,28 @@
+{
+  "id": "82fb8b0c-b86e-4915-b72d-9a6b5c1368c7",
+  "oracle_id": "5b6a821c-51e4-44dc-8353-f4d10eab7fcb",
+  "name": "Stratus Dancer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c19",
+  "collector_number": "96",
+  "rarity": "rare",
+  "released_at": "2019-08-23",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Djinn Monk",
+  "oracle_text": "Flying\nMegamorph {1}{U} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its megamorph cost and put a +1/+1 counter on it.)\nWhen this creature is turned face up, counter target instant or sorcery spell.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Megamorph"
+  ]
+}

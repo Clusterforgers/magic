@@ -1,0 +1,21 @@
+{
+  "oracle_id": "2f6e9ab8-6951-4c5f-bcde-0e96e0fe87f2",
+  "name": "Exalted Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exalted Angel",
+      "oracle_fingerprint": "7909edaf054258553a7938b68edc9a29",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"] } },
+            "effects": [{ "GainLife": { "amount": "Triggering" } }]
+          }
+        },
+        { "Keyword": { "Morph": "{2}{W}{W}" } }
+      ]
+    }
+  ]
+}

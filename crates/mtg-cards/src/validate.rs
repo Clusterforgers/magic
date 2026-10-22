@@ -749,6 +749,7 @@ impl<'a> Walker<'a> {
             }
             Keyword::Multikicker(cost)
             | Keyword::Morph(cost)
+            | Keyword::Megamorph(cost)
             | Keyword::Disguise(cost)
             | Keyword::Overload(cost)
             | Keyword::Mutate(cost)
@@ -984,6 +985,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Explored { what }
             | TriggerPattern::Connived { what }
             | TriggerPattern::BecomesMonstrous { what }
+            | TriggerPattern::TurnedFaceUp { what }
             | TriggerPattern::Adapted { what }
             | TriggerPattern::Untapped { what }
             | TriggerPattern::Blocks { what }
@@ -1038,6 +1040,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::Explored { .. }
                 | TriggerPattern::Connived { .. }
                 | TriggerPattern::BecomesMonstrous { .. }
+                | TriggerPattern::TurnedFaceUp { .. }
                 | TriggerPattern::Adapted { .. }
                 | TriggerPattern::Bolstered { .. }
                 | TriggerPattern::SpellCast { .. }

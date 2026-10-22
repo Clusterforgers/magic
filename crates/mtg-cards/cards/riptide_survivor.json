@@ -1,0 +1,20 @@
+{
+  "oracle_id": "10a64ae9-919f-4c04-8c8a-cce12554502c",
+  "name": "Riptide Survivor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riptide Survivor",
+      "oracle_fingerprint": "b2359e31278b568116d8a0cbf6dfa305",
+      "abilities": [
+        { "Keyword": { "Morph": "{1}{U}{U}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [{ "Discard": { "count": 2 } }, { "Draw": { "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

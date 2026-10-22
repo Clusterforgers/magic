@@ -1,0 +1,24 @@
+{
+  "oracle_id": "9fb901db-1ff7-4a8d-8233-fe7e3dee7fd1",
+  "name": "Icefeather Aven",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Icefeather Aven",
+      "oracle_fingerprint": "34d176d21f2aa42d6b59fcfee5d313a9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Morph": "{1}{U}{G}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

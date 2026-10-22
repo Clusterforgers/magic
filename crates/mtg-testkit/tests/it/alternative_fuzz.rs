@@ -44,6 +44,7 @@ fn bot_games_with_alternative_costs_keep_every_invariant_and_use_each_way() {
                             CastWay::Prowl => "prowl",
                             CastWay::JumpStart => "jump-start",
                             CastWay::Retrace => "retrace",
+                            CastWay::FaceDown => "face-down",
                             CastWay::Free => "free",
                         });
                         *seen.entry(way.to_owned()).or_default() += 1;

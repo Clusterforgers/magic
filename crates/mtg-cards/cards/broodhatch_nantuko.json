@@ -1,0 +1,42 @@
+{
+  "oracle_id": "b0a54050-3493-4ff6-8eca-e43b92c1f3d3",
+  "name": "Broodhatch Nantuko",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Broodhatch Nantuko",
+      "oracle_fingerprint": "c5b7ea710e24090ac52340f95de40c94",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "This" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Insect",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Insect"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": "Triggering"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Morph": "{2}{G}" } }
+      ]
+    }
+  ]
+}
