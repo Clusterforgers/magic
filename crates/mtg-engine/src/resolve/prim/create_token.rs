@@ -40,6 +40,7 @@ fn copies_of(
     cx: &Cx<'_>,
     of: &Ref,
     except: &[Modification],
+    no_mana_cost: bool,
 ) -> Result<Vec<MadeFrom>, ResolveError> {
     let mut found = Vec::new();
     for named in cx.scope.objects(of)? {
@@ -54,6 +55,9 @@ fn copies_of(
             if !values.except(modification) {
                 return Err(ResolveError::Unsupported("Effect.CreateToken.Copy.Except"));
             }
+        }
+        if no_mana_cost {
+            values.mana_cost = None;
         }
         found.push((Arc::new(values), Some(named)));
     }
@@ -104,7 +108,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let made_from: Vec<MadeFrom> = match token {
         TokenRef::Named(id) => vec![(Arc::new(token_definition(predefined(id)?, &caps())), None)],
         TokenRef::Custom(spec) => vec![(Arc::new(token_definition(spec, &caps())), None)],
-        TokenRef::CopyOf { of, except } => copies_of(cx, of, except)?,
+        TokenRef::CopyOf {
+            of,
+            except,
+            no_mana_cost,
+        } => copies_of(cx, of, except, *no_mana_cost)?,
     };
     let state = cx.state();
     let number = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(0);
@@ -371,7 +379,8 @@ mod tests {
 
     #[test]
     fn an_unknown_token_is_refused() {
-        let error = run_with(&game(2), Vec::new(), &effect(r#"{"Named":"gold"}"#, "")).unwrap_err();
+        let error =
+            run_with(&game(2), Vec::new(), &effect(r#"{"Named":"blood"}"#, "")).unwrap_err();
         assert!(matches!(error, ResolveError::Invalid(_)), "{error:?}");
     }
 
@@ -427,6 +436,37 @@ mod tests {
             crate::ability_reader::printed_rules(&token.definition).count(),
             1
         );
+    }
+
+    #[rstest]
+    #[case::kept(r#"{"CopyOf":{"of":"This"}}"#, true)]
+    #[case::kept_with_exceptions(
+        r#"{"CopyOf":{"of":"This","except":[{"AddKeyword":"Haste"}]}}"#,
+        true
+    )]
+    #[case::dropped(r#"{"CopyOf":{"of":"This","no_mana_cost":true}}"#, false)]
+    #[case::dropped_with_exceptions(
+        r#"{"CopyOf":{"of":"This","except":[{"SetColors":["White"]}],"no_mana_cost":true}}"#,
+        false
+    )]
+    fn a_copy_keeps_the_mana_cost_unless_the_effect_says_it_has_none(
+        #[case] token: &str,
+        #[case] has_cost: bool,
+    ) {
+        let cost = mtg_core::mana::ManaCost::parse("{1}{W}").unwrap();
+        let card = Arc::new(
+            mtg_cards::CardDefinition::new("Costed")
+                .with_type(mtg_core::card::CardType::Creature)
+                .with_power_toughness(1, 1)
+                .with_mana_cost(cost.clone()),
+        );
+        let game = state(vec![Vec::new(); 2], vec![vec![card], Vec::new()]);
+        let made = tokens(run_with(&game, Vec::new(), &effect(token, "")).unwrap());
+        let [copy] = made.as_slice() else {
+            panic!("one token");
+        };
+        assert_eq!(copy.definition.mana_cost, has_cost.then_some(cost));
+        assert_eq!(copy.definition.mana_value(), if has_cost { 2 } else { 0 });
     }
 
     #[test]

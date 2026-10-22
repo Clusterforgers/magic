@@ -1,4 +1,5 @@
 Abbot of Keral Keep
+Adorned Pouncer
 Aether Hub
 Ajani's Pridemate
 Ancestral Vision
@@ -12,6 +13,7 @@ Arvad the Cursed
 Atlantean Skirmisher
 Augury Raven
 Aven Eternal
+Aven Initiate
 Azorius Chancery
 Azorius Signet
 Azure Fleet Admiral
@@ -45,6 +47,7 @@ Carnage Tyrant
 Cascade Bluffs
 Cathars' Crusade
 Changeling Outcast
+Chemister's Insight
 Circle of Dreams Druid
 Clone
 Cold-Eyed Selkie
@@ -59,7 +62,12 @@ Courser of Kruphix
 Crucible of Worlds
 Crystal Quarry
 Curate
+Curse of Bounty
+Curse of Disturbance
+Curse of Opulence
 Curse of Predation
+Curse of Verbosity
+Curse of Vitality
 Curse of the Forsaken
 Curse of the Nightly Hunt
 Custodi Lich
@@ -77,6 +85,7 @@ Defile
 Delver of Secrets // Insectile Aberration
 Demon Bolt
 Dire Fleet Interloper
+Direct Current
 Disembowel
 Dockside Extortionist
 Dokuchi Shadow-Walker
@@ -114,6 +123,7 @@ Fetid Heath
 Fiery Temper
 Fire-Lit Thicket
 Firestorm Hellkite
+Flame Jab
 Flooded Grove
 Flooded Strand
 Fog
@@ -231,10 +241,12 @@ Plague Stinger
 Pouncing Jaguar
 Prismatic Lens
 Professional Face-Breaker
+Proven Combatant
 Psychosis Crawler
 Putrid Goblin
 Pygmy Kavu
 Questing Beast
+Radical Idea
 Raffine's Informant
 Rakdos Headliner
 Rally the Ranks
@@ -257,6 +269,7 @@ Rosheen Meanderer
 Rugged Prairie
 Rummaging Goblin
 Rustrazor Butcher
+Sacred Cat
 Safehold Elite
 Sanguine Bond
 Satyr Wayfinder
@@ -307,6 +320,8 @@ Supreme Verdict
 Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
+Syphon Life
+Tah-Crop Skirmisher
 Tainted Isle
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher

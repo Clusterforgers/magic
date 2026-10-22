@@ -75,6 +75,12 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
             ..
         }
     );
+    r.attacked = matches!(
+        when,
+        TriggerPattern::PlayerAttacked {
+            who: Ref::AttachedPlayer
+        }
+    );
     // The creature that attacks is "it" and "its controller" is the player attacking.
     if matches!(when, TriggerPattern::AttacksPlayer { .. }) {
         r.it = Some(Ref::Triggering);
@@ -126,6 +132,7 @@ fn about_a_player(when: &TriggerPattern) -> bool {
             | TriggerPattern::Amassed { .. }
             | TriggerPattern::Cycled { .. }
             | TriggerPattern::TappedForMana { .. }
+            | TriggerPattern::PlayerAttacks { .. }
             | TriggerPattern::DealsDamage {
                 to: Some(Ref::EachPlayer | Ref::Opponents),
                 ..
