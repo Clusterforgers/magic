@@ -165,6 +165,8 @@ mod triggers_delayed;
 mod triggers_fuzz;
 mod triggers_order;
 mod triggers_resume;
+mod upkeep_keywords;
+mod upkeep_keywords_fuzz;
 mod triggers_stack;
 mod triggers_targets;
 mod turn_burn;
