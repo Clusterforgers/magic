@@ -6,6 +6,7 @@ use mtg_core::mana::ManaType;
 use super::amounts::{cards, its_stat, number_word, points};
 use super::cast;
 use super::conditional;
+use super::copies;
 use super::costs;
 use super::counters;
 use super::create;
@@ -27,7 +28,7 @@ use crate::value::{Amount, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 26] = [
+const TEMPLATES: [Template; 28] = [
     modal::modal,
     cast::discover_sentence,
     cast::exile_until,
@@ -43,6 +44,8 @@ const TEMPLATES: [Template; 26] = [
     evasion,
     return_card,
     return_chosen,
+    copies::token_copy,
+    copies::populate,
     create::tokens,
     counters::put,
     counters::remove,
@@ -57,11 +60,12 @@ const TEMPLATES: [Template; 26] = [
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
-pub(super) const IMPERATIVES: [Template; 10] = [
+pub(super) const IMPERATIVES: [Template; 11] = [
     chain,
     removal,
     return_card,
     return_chosen,
+    copies::token_copy,
     create::tokens,
     counters::put,
     counters::remove,
@@ -87,7 +91,9 @@ pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
     }
     for template in templates().chain([unless_pays as Template]) {
         let read = r.attempt(|r| {
-            let found = template(r)?;
+            let mut found = template(r)?;
+            // ", then populate" follows any sentence.
+            found.extend(r.attempt(copies::then_populate).unwrap_or_default());
             r.sentence_end().then_some(found)
         });
         if let Some(found) = read {
@@ -239,6 +245,15 @@ fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
             count: points(r)?,
         },
         "proliferate" => Effect::Proliferate { who },
+        // The card sacrifices itself: "sacrifice ~", and "sacrifice it" once the ability has spoken of the card.
+        "sacrifice" => {
+            (r.source() || (r.it == Some(Ref::This) && r.word("it"))).then_some(())?;
+            Effect::Sacrifice {
+                who,
+                filter: Selector::this(),
+                count: Amount::one(),
+            }
+        }
         "draw" => Effect::Draw {
             who,
             count: cards(r)?,

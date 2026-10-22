@@ -6,6 +6,7 @@
 use super::amounts::{cards_text, count_word, points_text, stat_name};
 use super::cast;
 use super::conditional;
+use super::copies;
 use super::costs;
 use super::counters;
 use super::create;
@@ -21,7 +22,7 @@ use super::statics;
 use super::triggers::{article, condition_text, cycled_itself, pattern_text, targeted_itself};
 use crate::ability::{Ability, Limit, Timing};
 use crate::cost::Cost;
-use crate::effect::{Destination, Effect, Mode, Order, Place, Produce};
+use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
 use crate::modify::{Duration, Modification};
 use crate::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::spend::SpendOn;
@@ -113,6 +114,14 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
                         .collect(),
                 );
             }
+            // A card that is targeted once says "When" ("When this creature becomes the target of a spell or ability").
+            if head[0].starts_with("Whenever ~ becomes the target of a spell or ability")
+                && !head[0].contains(" each turn")
+            {
+                let mut when = head.clone();
+                when[0] = when[0].replacen("Whenever", "When", 1);
+                heads.insert(0, when);
+            }
             alternatives(targets, effects)
                 .iter()
                 .flat_map(|sentences| {
@@ -121,6 +130,13 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
                         .iter()
                         .map(move |head| [head.clone(), tail.clone()].concat().join(" "))
                         .collect::<Vec<_>>()
+                })
+                .flat_map(|text| {
+                    // An Equipment copies "equipped creature", an Aura "enchanted creature".
+                    let equipped =
+                        text.replace("copy of enchanted creature", "copy of equipped creature");
+                    let others = (equipped != text).then_some(equipped);
+                    std::iter::once(text).chain(others)
                 })
                 .collect()
         }
@@ -245,6 +261,27 @@ fn written(targets: &[TargetSpec], effects: &[Effect], mask: u32) -> Option<Vec<
             let tail = writer.consequence(condition, then)?;
             sentences.push(reveal::text(condition, &tail)?);
             start += used;
+            continue;
+        }
+        // Populate is two steps and one word; a copy that is exiled or sacrificed at the end step is two sentences.
+        // No joint splits either.
+        if copies::is_populate(&effects[start..]) {
+            if (mask >> start) & 0b11 != 0 {
+                return None;
+            }
+            sentences.push("populate".to_owned());
+            start += 2;
+            continue;
+        }
+        if let [created @ Effect::CreateToken { .. }, delayed, ..] = &effects[start..]
+            && let Some(delay) = copies::delay_text(created, delayed)
+        {
+            if (mask >> start) & 0b11 != 0 {
+                return None;
+            }
+            sentences.push(writer.copy_token(created, true)?);
+            sentences.push(delay);
+            start += 2;
             continue;
         }
         // A choice of cards and the move of what was chosen are one sentence, which no joint splits.
@@ -700,6 +737,42 @@ impl Writer<'_> {
         })
     }
 
+    /// "return target card from your graveyard to your hand", "return target creature to its owner's hand".
+    fn returned_to_hand(&mut self, what: &Ref) -> Option<String> {
+        if self.in_your_graveyard(what) {
+            Some(format!("return {} to your hand", self.object(what)?))
+        } else if self.is_a_permanent(what) {
+            Some(format!("return {} to its owner's hand", self.object(what)?))
+        } else {
+            None
+        }
+    }
+
+    /// A token that is a copy: "create a token that's a copy of target creature you control", of "it" once the target
+    /// has been named; `delayed` says a later sentence acts on the copy.
+    fn copy_token(&mut self, effect: &Effect, delayed: bool) -> Option<String> {
+        let Effect::CreateToken {
+            token: TokenRef::CopyOf { of, .. },
+            ..
+        } = effect
+        else {
+            return None;
+        };
+        let copied = match of {
+            Ref::This => "~".to_owned(),
+            Ref::Attached => "enchanted creature".to_owned(),
+            Ref::Target(0) if self.is_a_permanent(of) => {
+                if self.named {
+                    "it".to_owned()
+                } else {
+                    self.name_target()?
+                }
+            }
+            _ => return None,
+        };
+        copies::token_text(effect, &copied, delayed)
+    }
+
     /// An effect as a sentence without its first capital and its period.
     fn effect(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
@@ -726,6 +799,11 @@ impl Writer<'_> {
                 to: Destination::Library { .. },
                 ..
             } => self.library(effect).or_else(|| cast::text(effect))?,
+            Effect::Sacrifice {
+                who: Ref::You,
+                filter,
+                count,
+            } if filter.0 == [Pred::This] && count.is_one() => "sacrifice ~".to_owned(),
             Effect::Draw { who, .. }
             | Effect::Mill { who, .. }
             | Effect::Discard { who, .. }
@@ -736,23 +814,13 @@ impl Writer<'_> {
                 let subject = self.player(who)?;
                 format!("{subject} {}", self.predicate(effect, *who != Ref::You)?)
             }
-            Effect::WinGame { who } => format!(
-                "{} {} the game",
-                self.player(who)?,
-                if *who == Ref::You { "win" } else { "wins" }
-            ),
             Effect::Move {
                 what,
                 to: Destination::Hand,
-            } if self.in_your_graveyard(what) => {
-                format!("return {} to your hand", self.object(what)?)
-            }
-            Effect::Move {
-                what,
-                to: Destination::Hand,
-            } if self.is_a_permanent(what) => {
-                format!("return {} to its owner's hand", self.object(what)?)
-            }
+            } => self
+                .returned_to_hand(what)
+                .or_else(|| cast::text(effect))
+                .or_else(|| self.keyword_action(effect))?,
             Effect::AddMana {
                 who: Ref::You,
                 mana,
@@ -766,7 +834,9 @@ impl Writer<'_> {
             Effect::PutCounters { .. }
             | Effect::RemoveCounters { .. }
             | Effect::MoveCounters { .. } => self.counters(effect)?,
-            Effect::CreateToken { .. } => create::text(effect)?,
+            Effect::CreateToken { .. } => {
+                create::text(effect).or_else(|| self.copy_token(effect, false))?
+            }
             Effect::DealDamage {
                 source: None,
                 to,
@@ -821,6 +891,11 @@ impl Writer<'_> {
     /// the card returning itself or an effect on a condition.
     fn keyword_action(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
+            Effect::WinGame { who } => format!(
+                "{} {} the game",
+                self.player(who)?,
+                if *who == Ref::You { "win" } else { "wins" }
+            ),
             Effect::Move {
                 what: Ref::This,
                 to:
