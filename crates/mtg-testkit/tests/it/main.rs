@@ -98,6 +98,7 @@ mod legend_rule;
 mod library_effects;
 mod library_fuzz;
 mod living_weapon;
+mod lords;
 mod loyalty_fuzz;
 mod madness;
 mod madness_fuzz;

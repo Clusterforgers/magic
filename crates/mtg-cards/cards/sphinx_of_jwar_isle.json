@@ -1,0 +1,16 @@
+{
+  "oracle_id": "3951f13e-f6dd-4d67-a088-23925baaf99b",
+  "name": "Sphinx of Jwar Isle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphinx of Jwar Isle",
+      "oracle_fingerprint": "5b745fe8632e10cc7cb0657272d7df68",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Shroud" },
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } }
+      ]
+    }
+  ]
+}
