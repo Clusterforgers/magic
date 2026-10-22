@@ -1,0 +1,33 @@
+{
+  "oracle_id": "42bf259d-4bb9-49c3-b4ec-223dca62f4d6",
+  "name": "Fetid Heath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fetid Heath",
+      "oracle_fingerprint": "3a1f60fbed386caf8f706bad3588b168",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W/B}" }, "Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "OneOfLists": [["White", "White"], ["White", "Black"], ["Black", "Black"]]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

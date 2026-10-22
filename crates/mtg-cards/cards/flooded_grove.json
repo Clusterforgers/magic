@@ -1,0 +1,33 @@
+{
+  "oracle_id": "dc974eb4-72b9-4213-887b-8ee684b93420",
+  "name": "Flooded Grove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flooded Grove",
+      "oracle_fingerprint": "0ff8e45e0c491f53c919bd0c3ee9fca8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G/U}" }, "Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "OneOfLists": [["Green", "Green"], ["Green", "Blue"], ["Blue", "Blue"]]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

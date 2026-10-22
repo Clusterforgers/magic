@@ -1,0 +1,33 @@
+{
+  "oracle_id": "e9f5feb2-2c1a-46ce-885a-4f378d7d10af",
+  "name": "Mystic Gate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mystic Gate",
+      "oracle_fingerprint": "5dc5394c04a19772dc59b209210df326",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W/U}" }, "Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "OneOfLists": [["White", "White"], ["White", "Blue"], ["Blue", "Blue"]]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

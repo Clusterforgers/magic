@@ -1,0 +1,31 @@
+{
+  "oracle_id": "d99a1d9a-7721-4331-bf22-1c6ee0bd825a",
+  "name": "Fire-Lit Thicket",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire-Lit Thicket",
+      "oracle_fingerprint": "a41b07ecd0fb71c8a7bb235001b20b81",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R/G}" }, "Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "OneOfLists": [["Red", "Red"], ["Red", "Green"], ["Green", "Green"]] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

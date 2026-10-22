@@ -116,6 +116,10 @@ enum Happened {
     BecameMonarch { player: PlayerId },
     /// A player proliferated.
     Proliferated { player: PlayerId },
+    /// A creature explored.
+    Explored { object: ObjectId, player: PlayerId },
+    /// A creature connived.
+    Connived { object: ObjectId, player: PlayerId },
     /// Everything of one kind of state (before or after) that happened in the batch, for the patterns of events that
     /// happen together.
     Batch(Vec<Happened>),
@@ -445,6 +449,7 @@ fn targeted(
 
 /// What `event` is, when it is about blocks, damage, life, cards drawn or cycled, taps, counters or attachments.
 /// `tapped` holds the permanents of the batch tapped so far whose mana has not been added.
+#[allow(clippy::too_many_lines)]
 fn about_players_and_permanents(
     event: &Event,
     look: Look<'_>,
@@ -549,6 +554,14 @@ fn about_players_and_permanents(
         }),
         Event::MonarchChanged { player } => found.push(Happened::BecameMonarch { player: *player }),
         Event::Proliferated { player } => found.push(Happened::Proliferated { player: *player }),
+        Event::Explored { object, player } => found.push(Happened::Explored {
+            object: *object,
+            player: *player,
+        }),
+        Event::Connived { object, player } => found.push(Happened::Connived {
+            object: *object,
+            player: *player,
+        }),
         _ => {}
     }
 }
@@ -788,6 +801,7 @@ fn matching_event(
 }
 
 /// What `pattern` finds in the events about permanents: taps, counters, blocks, attackers and attachments.
+#[allow(clippy::too_many_lines)]
 fn matching_permanents(
     pattern: &TriggerPattern,
     happened: &Happened,
@@ -801,6 +815,24 @@ fn matching_permanents(
         wanted.as_ref().is_none_or(|wanted| wanted == kind)
     };
     match (pattern, happened) {
+        (
+            TriggerPattern::Explored { what },
+            Happened::Explored {
+                object: actor,
+                player,
+            },
+        )
+        | (
+            TriggerPattern::Connived { what },
+            Happened::Connived {
+                object: actor,
+                player,
+            },
+        ) => {
+            let actor = object(*actor)?;
+            picks(what, actor)?
+                .then(|| cause(state, vec![Target::Player(*player), Target::Object(actor)]))
+        }
         (TriggerPattern::Tapped { what }, Happened::Tapped { object: tapped })
         | (TriggerPattern::Untapped { what }, Happened::Untapped { object: tapped }) => {
             let tapped = object(*tapped)?;
@@ -1315,6 +1347,8 @@ mod tests {
     #[case::discarding(r#"{"Discarded":{}}"#)]
     #[case::becoming_tapped(r#"{"Tapped":{"what":[]}}"#)]
     #[case::becoming_untapped(r#"{"Untapped":{"what":[]}}"#)]
+    #[case::exploring(r#"{"Explored":{"what":[]}}"#)]
+    #[case::conniving(r#"{"Connived":{"what":[]}}"#)]
     #[case::tapping_for_mana(r#"{"TappedForMana":{"what":[]}}"#)]
     #[case::blocking(r#"{"Blocks":{"what":[]}}"#)]
     #[case::becoming_blocked(r#"{"BecomesBlocked":{"what":[]}}"#)]

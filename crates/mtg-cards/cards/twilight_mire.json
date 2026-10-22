@@ -1,0 +1,33 @@
+{
+  "oracle_id": "db623754-e078-4030-ba07-818803c348a8",
+  "name": "Twilight Mire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twilight Mire",
+      "oracle_fingerprint": "fd5336edbabec02c61e28998abefc85c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B/G}" }, "Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "OneOfLists": [["Black", "Black"], ["Black", "Green"], ["Green", "Green"]]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "fd51dce2-8e8a-4686-910e-1bbc2825d190",
+  "name": "Radical Idea",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radical Idea",
+      "oracle_fingerprint": "20d8b348bd7123083956d84887f2d9cf",
+      "abilities": [{ "Spell": { "effects": [{ "Draw": {} }] } }, { "Keyword": "JumpStart" }]
+    }
+  ]
+}

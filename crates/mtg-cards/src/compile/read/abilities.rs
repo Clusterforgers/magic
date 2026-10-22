@@ -60,6 +60,7 @@ pub fn modal_spell(r: &mut Reader<'_>) -> Option<Ability> {
 pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     let when = triggers::pattern(r)?;
     r.that_player = about_a_player(&when);
+    r.acts_itself = triggers::itself_acts(&when);
     r.that_permanent = matches!(
         when,
         TriggerPattern::Tapped { .. } | TriggerPattern::Untapped { .. }

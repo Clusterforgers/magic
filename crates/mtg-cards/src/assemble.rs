@@ -298,6 +298,8 @@ pub enum ManaProduced<'a> {
     AnyColor(u32),
     /// One mana of a type its controller picks from these when the ability is activated.
     OneOf(&'a [ManaType]),
+    /// All the mana of one list its controller picks from these when the ability is activated.
+    OneOfLists(&'a [Vec<ManaType>]),
     /// This many mana of the colour the source chose as it entered.
     ChosenColor(u32),
     /// This many mana of one colour of its controller's commander's colour identity, picked when activated.
@@ -313,6 +315,39 @@ pub enum ManaProduced<'a> {
     },
 }
 
+impl<'a> ManaProduced<'a> {
+    /// What an effect that adds `mana` adds each time; none for a list of nothing or more mana than fit in a count.
+    fn of(mana: &'a Produce) -> Option<Self> {
+        Some(match mana {
+            Produce::Fixed(list) => {
+                let (&first, rest) = list.split_first()?;
+                if rest.iter().all(|other| *other == first) {
+                    ManaProduced::Fixed {
+                        mana: first,
+                        count: u32::try_from(list.len()).ok()?,
+                    }
+                } else {
+                    ManaProduced::Mixed(list)
+                }
+            }
+            Produce::AnyColor(count) => ManaProduced::AnyColor(*count),
+            Produce::OneOf(types) => ManaProduced::OneOf(types),
+            Produce::OneOfLists(lists) => ManaProduced::OneOfLists(lists),
+            Produce::ChosenColor(count) => ManaProduced::ChosenColor(*count),
+            Produce::CommanderIdentity(count) => ManaProduced::CommanderIdentity(*count),
+            Produce::ProducedBy {
+                among,
+                count,
+                colorless,
+            } => ManaProduced::ProducedBy {
+                among,
+                count: *count,
+                colorless: *colorless,
+            },
+        })
+    }
+}
+
 impl ManaProduced<'_> {
     /// How many mana one addition makes.
     pub fn each(&self) -> u32 {
@@ -323,6 +358,11 @@ impl ManaProduced<'_> {
             | ManaProduced::CommanderIdentity(count)
             | ManaProduced::ProducedBy { count, .. } => *count,
             ManaProduced::OneOf(_) => 1,
+            ManaProduced::OneOfLists(lists) => lists
+                .iter()
+                .map(|list| u32::try_from(list.len()).unwrap_or(u32::MAX))
+                .min()
+                .unwrap_or(0),
             ManaProduced::Mixed(list) => u32::try_from(list.len()).unwrap_or(u32::MAX),
         }
     }
@@ -476,32 +516,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
     else {
         return None;
     };
-    let produces = match mana {
-        Produce::Fixed(list) => {
-            let (&first, rest) = list.split_first()?;
-            if rest.iter().all(|other| *other == first) {
-                ManaProduced::Fixed {
-                    mana: first,
-                    count: u32::try_from(list.len()).ok()?,
-                }
-            } else {
-                ManaProduced::Mixed(list)
-            }
-        }
-        Produce::AnyColor(count) => ManaProduced::AnyColor(*count),
-        Produce::OneOf(types) => ManaProduced::OneOf(types),
-        Produce::ChosenColor(count) => ManaProduced::ChosenColor(*count),
-        Produce::CommanderIdentity(count) => ManaProduced::CommanderIdentity(*count),
-        Produce::ProducedBy {
-            among,
-            count,
-            colorless,
-        } => ManaProduced::ProducedBy {
-            among,
-            count: *count,
-            colorless: *colorless,
-        },
-    };
+    let produces = ManaProduced::of(mana)?;
     let distinct = then
         .iter()
         .enumerate()
@@ -1225,6 +1240,24 @@ mod tests {
         assert_eq!(shape_of(json), expected);
     }
 
+    #[test]
+    fn a_choice_of_lists_is_one_shape_that_keeps_every_list_and_adds_the_shortest_each_time() {
+        let json = r#"{"Activated":{"cost":[{"Mana":"{W/U}"},"Tap"],"effects":[{"AddMana":{"mana":{"OneOfLists":[["White","White"],["White","Blue"],["Blue"]]}}}]}}"#;
+        let (produces, tap, sacrifice, then) = shape_of(json).unwrap();
+        let ManaProduced::OneOfLists(lists) = produces else {
+            panic!("a choice of lists, got {produces:?}");
+        };
+        assert_eq!(
+            lists,
+            [
+                vec![ManaType::White, ManaType::White],
+                vec![ManaType::White, ManaType::Blue],
+                vec![ManaType::Blue]
+            ]
+        );
+        assert_eq!((produces.each(), tap, sacrifice, then), (1, true, false, 0));
+    }
+
     #[rstest]
     #[case::treasure(
         r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
@@ -1244,6 +1277,10 @@ mod tests {
     )]
     #[case::a_painland(
         r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOf":["White","Blue"]}}},{"DealDamage":{"to":"You","amount":1}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::a_filter_land(
+        r#"{"Activated":{"cost":[{"Mana":"{W/U}"},"Tap"],"effects":[{"AddMana":{"mana":{"OneOfLists":[["White","White"],["White","Blue"],["Blue","Blue"]]}}}]}}"#,
         Some("Ability.ManaAbility.Complex")
     )]
     #[case::a_mana_cost(

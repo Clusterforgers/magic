@@ -709,6 +709,8 @@ impl<'a> Walker<'a> {
             | Keyword::Reconfigure(cost)
             | Keyword::Cycling(cost)
             | Keyword::Unearth(cost)
+            | Keyword::Embalm(cost)
+            | Keyword::Eternalize(cost)
             | Keyword::Ninjutsu(cost) => {
                 self.at("cost", |w| w.cost(cost));
             }
@@ -920,6 +922,8 @@ impl<'a> Walker<'a> {
                 self.at("by", |w| w.reference(by, Kind::Player));
             }
             TriggerPattern::Tapped { what }
+            | TriggerPattern::Explored { what }
+            | TriggerPattern::Connived { what }
             | TriggerPattern::Untapped { what }
             | TriggerPattern::Blocks { what }
             | TriggerPattern::BecomesBlocked { what }
@@ -969,6 +973,8 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::StepBegins { .. }
                 | TriggerPattern::BecomesMonarch { .. }
                 | TriggerPattern::Proliferated { .. }
+                | TriggerPattern::Explored { .. }
+                | TriggerPattern::Connived { .. }
                 | TriggerPattern::SpellCast { .. }
                 | TriggerPattern::BecomesTarget { .. }
                 | TriggerPattern::GroupAttacks { .. }
@@ -1070,7 +1076,7 @@ impl<'a> Walker<'a> {
                 }
             }
             TokenRef::Custom(spec) => self.at("Custom", |w| w.token_spec(spec)),
-            TokenRef::CopyOf { of, except } => {
+            TokenRef::CopyOf { of, except, .. } => {
                 self.at("of", |w| w.reference(of, Kind::Object));
                 self.copy_exceptions(except);
             }
@@ -1292,12 +1298,19 @@ impl<'a> Walker<'a> {
                     Produce::OneOf(list) if list.len() < 2 => {
                         w.problem("a choice of mana needs at least two types");
                     }
+                    Produce::OneOfLists(lists) if lists.len() < 2 => {
+                        w.problem("a choice of mana needs at least two lists");
+                    }
+                    Produce::OneOfLists(lists) if lists.iter().any(Vec::is_empty) => {
+                        w.problem("a list of mana adds no mana");
+                    }
                     Produce::ProducedBy { among, .. } => w.at("mana", |w| {
                         w.at("ProducedBy", |w| w.at("among", |w| w.selector(among)));
                     }),
                     Produce::Fixed(_)
                     | Produce::AnyColor(_)
                     | Produce::OneOf(_)
+                    | Produce::OneOfLists(_)
                     | Produce::ChosenColor(_)
                     | Produce::CommanderIdentity(_) => {}
                 }

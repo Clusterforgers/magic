@@ -150,6 +150,7 @@ fn a_card_calling_itself_this_creature_reads_as_the_source() {
     assert_eq!(read, tilde);
 }
 
+mod actions;
 mod activated;
 mod additional;
 mod among;

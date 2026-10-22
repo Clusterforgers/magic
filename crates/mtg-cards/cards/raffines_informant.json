@@ -1,0 +1,19 @@
+{
+  "oracle_id": "838c4831-7d5c-4025-92b3-46eee59d6b34",
+  "name": "Raffine's Informant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raffine's Informant",
+      "oracle_fingerprint": "15e1a90af83f0cc78215b8cb778864ed",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Connive": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

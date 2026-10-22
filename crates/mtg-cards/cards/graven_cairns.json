@@ -1,0 +1,31 @@
+{
+  "oracle_id": "5004b84a-33b7-4f6f-b2c2-7086b9087535",
+  "name": "Graven Cairns",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Graven Cairns",
+      "oracle_fingerprint": "459007cab9de103d9aa609e5d82f1563",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B/R}" }, "Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "OneOfLists": [["Black", "Black"], ["Black", "Red"], ["Red", "Red"]] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

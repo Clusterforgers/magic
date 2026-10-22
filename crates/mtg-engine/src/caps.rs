@@ -57,6 +57,8 @@ const RUNS: &[&str] = &[
     "Trigger.Cycled",
     "Trigger.BecomesMonarch",
     "Trigger.Proliferated",
+    "Trigger.Explored",
+    "Trigger.Connived",
     "Trigger.Batch",
     "Trigger.Nth",
     "Amount.Triggering",
@@ -107,6 +109,7 @@ const RUNS: &[&str] = &[
     "Effect.LoseLife",
     "Effect.AddMana",
     "Effect.AddMana.OneOf",
+    "Effect.AddMana.OneOfLists",
     "Effect.AddMana.ChosenColor",
     "Effect.AddMana.Restricted",
     "Effect.AddMana.CommanderIdentity",
@@ -124,6 +127,8 @@ const RUNS: &[&str] = &[
     "Effect.WinGame",
     "Effect.Surveil",
     "Effect.Proliferate",
+    "Effect.Explore",
+    "Effect.Connive",
     "Effect.BecomeMonarch",
     "Condition.Monarch",
     "Effect.CreateToken",
@@ -270,6 +275,10 @@ const RUNS: &[&str] = &[
     "Keyword.CumulativeUpkeep",
     "Keyword.Undying",
     "Keyword.Persist",
+    "Keyword.JumpStart",
+    "Keyword.Retrace",
+    "Keyword.Embalm",
+    "Keyword.Eternalize",
     "Condition.NewlyControlled",
     "Rule.CanBeCommander",
 ];
@@ -506,8 +515,8 @@ mod tests {
     #[case::monstrosity("Effect.Monstrosity", false)]
     #[case::adapting("Effect.Adapt", false)]
     #[case::bolstering("Effect.Bolster", false)]
-    #[case::exploring("Effect.Explore", false)]
-    #[case::conniving("Effect.Connive", false)]
+    #[case::exploring("Effect.Explore", true)]
+    #[case::conniving("Effect.Connive", true)]
     #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]
     #[case::exiling_the_top_cards("Effect.ExileTop", true)]
     #[case::casting_during_a_resolution("Effect.CastFromZone", true)]
@@ -517,6 +526,7 @@ mod tests {
     #[case::time_travelling("Effect.TimeTravel", false)]
     #[case::extra_turns("Effect.ExtraTurn", false)]
     #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]
+    #[case::a_choice_of_lists_of_mana("Effect.AddMana.OneOfLists", true)]
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]
     #[case::mana_restricted_to_what_it_may_be_spent_on("Effect.AddMana.Restricted", true)]
     #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", true)]
@@ -548,6 +558,8 @@ mod tests {
     #[case::cycle_triggers("Trigger.Cycled", true)]
     #[case::becoming_the_monarch_triggers("Trigger.BecomesMonarch", true)]
     #[case::proliferating_triggers("Trigger.Proliferated", true)]
+    #[case::exploring_triggers("Trigger.Explored", true)]
+    #[case::conniving_triggers("Trigger.Connived", true)]
     #[case::batch_triggers("Trigger.Batch", true)]
     #[case::nth_triggers("Trigger.Nth", true)]
     #[case::event_amounts("Amount.Triggering", true)]
@@ -576,6 +588,10 @@ mod tests {
     #[case::cumulative_upkeep("Keyword.CumulativeUpkeep", true)]
     #[case::undying("Keyword.Undying", true)]
     #[case::persist("Keyword.Persist", true)]
+    #[case::jump_start("Keyword.JumpStart", true)]
+    #[case::retrace("Keyword.Retrace", true)]
+    #[case::embalm("Keyword.Embalm", true)]
+    #[case::eternalize("Keyword.Eternalize", true)]
     #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]

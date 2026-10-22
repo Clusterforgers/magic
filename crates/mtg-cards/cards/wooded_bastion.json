@@ -1,0 +1,33 @@
+{
+  "oracle_id": "61b85077-64aa-4bcc-890d-2d88da9543c0",
+  "name": "Wooded Bastion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wooded Bastion",
+      "oracle_fingerprint": "e4eeb2ec249e6be83091374c93b866bd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G/W}" }, "Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "OneOfLists": [["Green", "Green"], ["Green", "White"], ["White", "White"]]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

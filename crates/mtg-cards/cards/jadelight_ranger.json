@@ -1,0 +1,19 @@
+{
+  "oracle_id": "0b5d174c-7d4d-4c31-a582-8169d3bc932a",
+  "name": "Jadelight Ranger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jadelight Ranger",
+      "oracle_fingerprint": "040b41f68f7c7c4c2daf8a0267cb77bf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Explore": { "what": "This" } }, { "Explore": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

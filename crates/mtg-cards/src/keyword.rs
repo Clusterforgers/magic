@@ -177,6 +177,14 @@ pub enum Keyword {
     Undying,
     /// Persist (CR 702.79): when it dies, if it had no -1/-1 counter on it, it returns with a -1/-1 counter.
     Persist,
+    /// Jump-start (CR 702.133): the card may be cast from a graveyard by discarding a card in addition to its other costs, and is then exiled.
+    JumpStart,
+    /// Retrace (CR 702.81): the card may be cast from a graveyard by discarding a land card in addition to its other costs.
+    Retrace,
+    /// Embalm with its cost (CR 702.128): from a graveyard at sorcery speed the card is exiled for a token copy that is a white Zombie with no mana cost.
+    Embalm(Cost),
+    /// Eternalize with its cost (CR 702.129): from a graveyard at sorcery speed the card is exiled for a token copy that is a 4/4 black Zombie with no mana cost.
+    Eternalize(Cost),
 }
 
 impl Keyword {
@@ -259,6 +267,10 @@ impl Keyword {
         "Cumulative upkeep",
         "Undying",
         "Persist",
+        "Jump-start",
+        "Retrace",
+        "Embalm",
+        "Eternalize",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -341,6 +353,10 @@ impl Keyword {
             Keyword::CumulativeUpkeep(_) => "Cumulative upkeep",
             Keyword::Undying => "Undying",
             Keyword::Persist => "Persist",
+            Keyword::JumpStart => "Jump-start",
+            Keyword::Retrace => "Retrace",
+            Keyword::Embalm(_) => "Embalm",
+            Keyword::Eternalize(_) => "Eternalize",
         }
     }
 
@@ -446,6 +462,10 @@ mod tests {
             Keyword::CumulativeUpkeep(Cost::default()),
             Keyword::Undying,
             Keyword::Persist,
+            Keyword::JumpStart,
+            Keyword::Retrace,
+            Keyword::Embalm(Cost::default()),
+            Keyword::Eternalize(Cost::default()),
         ]
     }
 
