@@ -162,6 +162,7 @@ mod enters;
 mod event_batches;
 mod events;
 mod exile_bounce_shrink;
+mod impulse;
 mod library;
 mod life;
 mod may;

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "584cf0fd-112a-4ca6-9c0e-1f3228a7d325",
+  "name": "Reckless Impulse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reckless Impulse",
+      "oracle_fingerprint": "d0401eb08b4bb5ec4f4acb840207bf89",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": 2, "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

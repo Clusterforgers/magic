@@ -40,6 +40,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
         .filter_map(|text| spend::singular(text))
         .collect();
     texts.extend(singulars);
+    texts = texts.into_iter().flat_map(cast::impulse_wordings).collect();
     // An activated ability that opens with damage may say "It deals" for the source (Walking Ballista).
     if matches!(ability, Ability::Activated { .. }) {
         let pronouns: Vec<String> = texts
@@ -195,8 +196,9 @@ fn written(targets: &[TargetSpec], effects: &[Effect], mask: u32) -> Option<Vec<
     while start < effects.len() {
         // A search and what follows it, or a look at the top cards and the choice from them, are
         // one sentence, which no joint splits.
-        if let Some((text, used)) =
-            cast::discover_text(&effects[start..]).or_else(|| library::sequence(&effects[start..]))
+        if let Some((text, used)) = cast::discover_text(&effects[start..])
+            .or_else(|| cast::impulse_text(&effects[start..]))
+            .or_else(|| library::sequence(&effects[start..]))
         {
             if (mask >> start) & ((1 << used) - 1) != 0 {
                 return None;

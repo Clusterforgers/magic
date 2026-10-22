@@ -25,6 +25,7 @@ mod destroy;
 mod discard;
 mod draw;
 mod exile;
+mod exile_top;
 mod exile_until;
 mod explore;
 mod extra_turn;
@@ -114,6 +115,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Explore { .. } => explore::run(cx, effect),
         Effect::Connive { .. } => connive::run(cx, effect),
         Effect::ExileUntil { .. } => exile_until::run(cx, effect),
+        Effect::ExileTop { .. } => exile_top::run(cx, effect),
         Effect::CastFromZone { .. } => cast_from_zone::run(cx, effect),
         Effect::TimeTravel { .. } => time_travel::run(cx, effect),
         Effect::ExtraTurn { .. } => extra_turn::run(cx, effect),
@@ -156,7 +158,7 @@ mod tests {
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"BecomeMonarch":{}}, {"Amass":{"subtype":"Orc","count":1}}, {"Monstrosity":{"count":1}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
-        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}},
+        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"ExileTop":{"as":"top"}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}},
         {"CreateToken":{"token":{"Named":"treasure"}}},
         {"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
@@ -238,6 +240,7 @@ mod tests {
                 "Effect.Unattach",
                 "Effect.WinGame",
                 "Effect.ExileUntil",
+                "Effect.ExileTop",
                 "Effect.CastFromZone",
                 "Effect.CreateToken",
                 "Effect.Continuous",

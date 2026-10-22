@@ -112,7 +112,13 @@ fn set_controller(state: &mut GameState, id: ObjectId, player: PlayerId) {
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::LandPlayed { player, object } => {
-            expect_in(state, *object, Zone::Hand(*player))?;
+            // A land is played from a hand, or from exile when a permission lets its player (CR 305.1).
+            let from = if state.zones.get(Zone::Exile).contains(object) {
+                Zone::Exile
+            } else {
+                Zone::Hand(*player)
+            };
+            expect_in(state, *object, from)?;
             move_object(state, *object, Zone::Battlefield, Placement::Top)?;
             set_controller(state, *object, *player);
             state.turn.lands_played += 1;

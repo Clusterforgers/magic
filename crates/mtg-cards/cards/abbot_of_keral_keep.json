@@ -1,0 +1,30 @@
+{
+  "oracle_id": "09be0f69-9c7f-491f-964d-bfbbc2d4251f",
+  "name": "Abbot of Keral Keep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abbot of Keral Keep",
+      "oracle_fingerprint": "97d47423a9a9f4db12a2537b22f7541c",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "ExileTop": { "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

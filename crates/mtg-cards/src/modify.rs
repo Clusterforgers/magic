@@ -98,6 +98,8 @@ pub enum Duration {
     UntilEndOfCombat,
     /// Until the controller's next turn begins.
     UntilYourNextTurn,
+    /// Until the end of the controller's next turn.
+    UntilEndOfYourNextTurn,
     /// For as long as the source stays on the battlefield.
     WhileSourceOnBattlefield,
     /// Without end (until the object or the game is gone).
@@ -123,6 +125,13 @@ pub struct CastPermission {
     /// They are cast as though they had flash.
     #[serde(default, skip_serializing_if = "crate::effect::is_false")]
     pub flash: bool,
+    /// Only the objects the reference names when the rule begins, as the objects they are then (CR 400.7: a card that
+    /// leaves its zone is a new object and is no longer covered); every card `what` selects when absent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub only: Option<Ref>,
+    /// A land among the cards may be played too (CR 305.1), with a land play and at the timing of any land.
+    #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+    pub play: bool,
 }
 
 /// A change to the rules of the game rather than to an object. `Effect::Rule` makes it for a duration and

@@ -282,6 +282,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         hand.iter()
             .copied()
             .filter(|id| hand_land(state, *id))
+            .chain(ways::lands_elsewhere(state, player))
             .collect()
     } else {
         Vec::new()

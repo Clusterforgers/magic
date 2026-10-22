@@ -1011,7 +1011,7 @@ impl<'a> Walker<'a> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
             }
-            Effect::LookAtTop { who, count, bind } => {
+            Effect::LookAtTop { who, count, bind } | Effect::ExileTop { who, count, bind } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
                 w.at("as", |w| w.bind(bind, Kind::Object));
@@ -1592,6 +1592,9 @@ impl<'a> Walker<'a> {
             GameRule::MayCast(permission) => self.at(tag, |w| {
                 w.at("who", |w| w.reference(&permission.who, Kind::Player));
                 w.at("what", |w| w.selector(&permission.what));
+                if let Some(only) = &permission.only {
+                    w.at("only", |w| w.reference(only, Kind::Object));
+                }
                 if matches!(
                     permission.from,
                     Some(ZoneKind::Battlefield | ZoneKind::Stack)

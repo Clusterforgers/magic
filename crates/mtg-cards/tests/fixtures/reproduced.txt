@@ -1,3 +1,4 @@
+Abbot of Keral Keep
 Ajani's Pridemate
 Ancestral Vision
 Ancient Ziggurat
@@ -72,8 +73,10 @@ Nantuko Husk
 Opt
 Pacifism
 Pillar of the Paruns
+Professional Face-Breaker
 Rally the Ranks
 Rampant Growth
+Reckless Impulse
 Rhystic Study
 Rift Bolt
 Rosheen Meanderer

@@ -130,7 +130,7 @@ pub enum Event {
         /// Who passed.
         player: PlayerId,
     },
-    /// A land was played from hand.
+    /// A land was played from a hand, or from exile where a permission lets its player.
     LandPlayed {
         /// Who played it.
         player: PlayerId,

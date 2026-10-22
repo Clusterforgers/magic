@@ -4553,5 +4553,83 @@
       "W"
     ],
     "keywords": []
+  },
+  {
+    "id": "42acbf52-b137-44f0-a815-2817fe8d2da2",
+    "oracle_id": "04152e7a-969c-4858-841b-0a569a9fc1bf",
+    "name": "Professional Face-Breaker",
+    "lang": "en",
+    "layout": "normal",
+    "set": "snc",
+    "collector_number": "116",
+    "rarity": "rare",
+    "released_at": "2022-04-29",
+    "digital": false,
+    "mana_cost": "{2}{R}",
+    "cmc": 3,
+    "type_line": "Creature — Human Warrior",
+    "oracle_text": "Menace\nWhenever one or more creatures you control deal combat damage to a player, create a Treasure token.\nSacrifice a Treasure: Exile the top card of your library. You may play that card this turn.",
+    "power": "2",
+    "toughness": "3",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Treasure",
+      "Menace"
+    ]
+  },
+  {
+    "id": "cd94f624-9b35-4468-829f-106366f61c1a",
+    "oracle_id": "09be0f69-9c7f-491f-964d-bfbbc2d4251f",
+    "name": "Abbot of Keral Keep",
+    "lang": "en",
+    "layout": "normal",
+    "set": "2x2",
+    "collector_number": "100",
+    "rarity": "rare",
+    "released_at": "2022-07-08",
+    "digital": false,
+    "mana_cost": "{1}{R}",
+    "cmc": 2,
+    "type_line": "Creature — Human Monk",
+    "oracle_text": "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)\nWhen this creature enters, exile the top card of your library. Until end of turn, you may play that card.",
+    "power": "2",
+    "toughness": "1",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Prowess"
+    ]
+  },
+  {
+    "id": "5bca43d8-7c69-47f4-8f82-48dd2b6a7cba",
+    "oracle_id": "584cf0fd-112a-4ca6-9c0e-1f3228a7d325",
+    "name": "Reckless Impulse",
+    "lang": "en",
+    "layout": "normal",
+    "set": "trk",
+    "collector_number": "168",
+    "rarity": "common",
+    "released_at": "2026-11-13",
+    "digital": false,
+    "mana_cost": "{1}{R}",
+    "cmc": 2,
+    "type_line": "Sorcery",
+    "oracle_text": "Exile the top two cards of your library. Until the end of your next turn, you may play those cards.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": []
   }
 ]

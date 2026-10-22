@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::card::TokenSpec;
 use crate::cost::Cost;
-use crate::modify::{Duration, GameRule, Modification};
+use crate::modify::{CastPermission, Duration, GameRule, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, ZoneKind};
 use crate::spend::SpendOn;
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
@@ -455,6 +455,18 @@ pub enum Effect {
         /// The name every card exiled, the one found included, is bound to.
         exiled_as: String,
     },
+    /// The player exiles cards from the top of their library, face up (CR 406.3) and binds them.
+    ExileTop {
+        /// Whose library.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// How many cards.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+        /// The name the cards exiled are bound to, each as the object it becomes in exile.
+        #[serde(rename = "as")]
+        bind: String,
+    },
     /// The player may cast a card during the resolution, without waiting for priority (CR 608.2g); `otherwise` is
     /// done when they do not.
     CastFromZone {
@@ -662,6 +674,34 @@ pub fn cascade() -> Vec<Effect> {
         ]),
         Vec::new(),
     )
+}
+
+/// The name the cards an impulse draw exiles are bound to.
+pub const IMPULSE: &str = "impulse";
+
+/// The steps of an impulse draw: the controller exiles the top `count` cards of their library face up and may play them
+/// (cast them, or play a land among them) until `duration` ends (CR 601.3, 305.1). A card that leaves exile is a new object
+/// the permission no longer covers.
+pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
+    vec![
+        Effect::ExileTop {
+            who: Ref::You,
+            count,
+            bind: IMPULSE.to_owned(),
+        },
+        Effect::Rule {
+            rule: GameRule::MayCast(CastPermission {
+                who: Ref::You,
+                what: Selector::default(),
+                from: Some(ZoneKind::Exile),
+                free: false,
+                flash: false,
+                only: Some(Ref::Bound(IMPULSE.to_owned())),
+                play: true,
+            }),
+            duration,
+        },
+    ]
 }
 
 #[cfg(test)]

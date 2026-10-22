@@ -224,7 +224,7 @@ pub fn search(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 }
 
 /// "the top card", "the top three cards": how many cards of the top of a library.
-fn top_cards(r: &mut Reader<'_>) -> Option<Amount> {
+pub(super) fn top_cards(r: &mut Reader<'_>) -> Option<Amount> {
     r.need("the top")?;
     if r.word("card") {
         return Some(Amount::one());
@@ -390,7 +390,7 @@ fn what_text(filter: &Selector, count: &Bounds) -> Option<String> {
 }
 
 /// How many cards of the top: "the top card", "the top three cards".
-fn top_text(count: &Amount) -> Option<String> {
+pub(super) fn top_text(count: &Amount) -> Option<String> {
     match count {
         Amount::Fixed(1) => Some("the top card".to_owned()),
         Amount::Fixed(number) if *number > 1 => Some(format!(

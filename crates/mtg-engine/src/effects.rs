@@ -233,8 +233,9 @@ pub(crate) fn lasts(
 ) -> bool {
     let turn = state.turn();
     match duration {
-        // `UntilEndOfTurn` ends with the cleanup step, which logs the expiry (CR 514.2).
-        Duration::UntilEndOfTurn | Duration::Forever => true,
+        // `UntilEndOfTurn` ends with the cleanup step, which logs the expiry (CR 514.2); `UntilEndOfYourNextTurn` ends
+        // the same way, in the cleanup step of the next turn its controller has.
+        Duration::UntilEndOfTurn | Duration::UntilEndOfYourNextTurn | Duration::Forever => true,
         Duration::UntilEndOfCombat => turn.number() == began && turn.step() <= Step::EndCombat,
         Duration::UntilYourNextTurn => {
             state.is_alive(controller) && !(turn.number() != began && turn.active() == controller)
@@ -244,6 +245,22 @@ pub(crate) fn lasts(
                 .object(source.id)
                 .is_some_and(|o| o.counter() == source.counter && o.zone() == Zone::Battlefield)
         }),
+    }
+}
+
+/// Whether an effect of the given duration ends with the cleanup step of the turn that is ending (CR 514.2): "until end
+/// of turn", or "until the end of your next turn" when this is the controller's first turn after the one it began in.
+pub(crate) fn ends_with_turn(
+    state: &GameState,
+    duration: Duration,
+    began: u32,
+    controller: PlayerId,
+) -> bool {
+    let turn = state.turn();
+    match duration {
+        Duration::UntilEndOfTurn => true,
+        Duration::UntilEndOfYourNextTurn => turn.number() > began && turn.active() == controller,
+        _ => false,
     }
 }
 
@@ -268,7 +285,7 @@ pub struct ContinuousEffect {
     #[cfg_attr(
         feature = "ts",
         ts(
-            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"Forever\""
+            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"UntilEndOfYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"Forever\""
         )
     )]
     pub duration: Duration,

@@ -65,6 +65,10 @@ pub enum Rule {
         free: bool,
         /// They are cast as though they had flash.
         flash: bool,
+        /// Only these objects, as they were named when the rule began; every card `what` selects when absent.
+        only: Option<Vec<ObjectRef>>,
+        /// A land among the cards may be played too.
+        play: bool,
     },
     /// A triggered ability of a permanent the rule's controller controls triggers an additional time when the event
     /// the pattern describes causes it.
@@ -126,7 +130,7 @@ pub struct RuleEffect {
     #[cfg_attr(
         feature = "ts",
         ts(
-            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"Forever\""
+            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"UntilEndOfYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"Forever\""
         )
     )]
     pub duration: Duration,
@@ -160,6 +164,9 @@ impl RuleEffect {
                 named.iter().all(gone)
             }
             Rule::Regenerate(named) => gone(named),
+            Rule::MayCast {
+                only: Some(named), ..
+            } => named.iter().all(gone),
             Rule::PreventDamage(shield) => shield.spent(state),
             _ => false,
         }
@@ -209,6 +216,10 @@ pub(crate) struct Cast {
     pub(crate) free: bool,
     /// Cast as though they had flash.
     pub(crate) flash: bool,
+    /// Only these objects; every card `what` selects when absent.
+    pub(crate) only: Option<Vec<ObjectRef>>,
+    /// A land among the cards may be played too.
+    pub(crate) play: bool,
 }
 
 impl Cast {
@@ -216,12 +227,21 @@ impl Cast {
     pub(crate) fn covers(&self, state: &GameState, player: PlayerId, card: &GameObject) -> bool {
         self.who.contains(&player)
             && self
+                .only
+                .as_ref()
+                .is_none_or(|only| only.contains(&card.reference()))
+            && self
                 .from
                 .is_none_or(|zone| crate::resolve::zone_kind(card.zone()) == zone)
             && (self.what.is_empty()
                 || Scope::announcing(state, self.controller, self.source)
                     .selects(&self.what, card.reference())
                     .unwrap_or(false))
+    }
+
+    /// Whether the permission lets `player` play the land `card` from the zone it is in.
+    pub(crate) fn plays(&self, state: &GameState, player: PlayerId, card: &GameObject) -> bool {
+        self.play && self.covers(state, player, card)
     }
 }
 
@@ -275,6 +295,8 @@ impl RulesInForce {
                 from,
                 free,
                 flash,
+                only,
+                play,
             } => {
                 if let Some(source) = source {
                     self.casts.push(Cast {
@@ -285,6 +307,8 @@ impl RulesInForce {
                         from: *from,
                         free: *free,
                         flash: *flash,
+                        only: only.clone(),
+                        play: *play,
                     });
                 }
             }
@@ -338,6 +362,12 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             from: permission.from,
             free: permission.free,
             flash: permission.flash,
+            only: permission
+                .only
+                .as_ref()
+                .map(|named| scope.objects(named))
+                .transpose()?,
+            play: permission.play,
         },
         GameRule::TriggerAgain { cause } => Rule::TriggerAgain(Box::new(cause.clone())),
         GameRule::LookAtTopAnyTime(_) => {
@@ -361,8 +391,10 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::CantDraw(players)
         | Rule::CantSearch(players)
         | Rule::RevealTop(players)
-        | Rule::NoMaxHandSize(players)
-        | Rule::MayCast { who: players, .. } => players.is_empty(),
+        | Rule::NoMaxHandSize(players) => players.is_empty(),
+        Rule::MayCast { who, only, .. } => {
+            who.is_empty() || only.as_ref().is_some_and(Vec::is_empty)
+        }
         Rule::TriggerAgain(_) | Rule::DamageCantBePrevented { .. } | Rule::Regenerate(_) => false,
         Rule::PreventDamage(shield) => shield.to.as_ref().is_some_and(Vec::is_empty),
     }

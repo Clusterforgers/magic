@@ -1,12 +1,14 @@
 //! Casting during a resolution: "Discover 4.", and the sentences of an exile from the top of a library until a card is
 //! found, the free cast of it and the move of the cards exiled to the bottom, each read from its wording and written
-//! back the same way.
+//! back the same way; and the impulse draw, "Exile the top card of your library. You may play that card this turn."
 
 use mtg_core::card::CardType;
 
 use super::amounts::{points, points_text};
+use super::library::{top_cards, top_text};
 use super::tokens::Reader;
-use crate::effect::{Destination, EXILED, Effect, FOUND, Order, Place, discover};
+use crate::effect::{Destination, EXILED, Effect, FOUND, IMPULSE, Order, Place, discover, impulse};
+use crate::modify::Duration;
 use crate::refs::{Pred, Ref, Selector};
 use crate::value::{Amount, Cmp, StatKind};
 
@@ -32,6 +34,43 @@ pub fn exile_until(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     }])
 }
 
+/// "Exile the top card of your library.", "Exile the top two cards of your library.": the cards are exiled face up and
+/// named for the sentence that lets the player play them.
+pub fn exile_top(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("exile")?;
+    let count = top_cards(r)?;
+    r.need("of your library")?;
+    Some(vec![Effect::ExileTop {
+        who: Ref::You,
+        count,
+        bind: IMPULSE.to_owned(),
+    }])
+}
+
+/// "You may play that card this turn.", "Until end of turn, you may play that card.", "Until the end of your next turn,
+/// you may play those cards.": the permission to play the cards an exile from the top of a library named.
+fn may_play(r: &mut Reader<'_>, count: &Amount) -> Option<Duration> {
+    let leading = r.attempt(|r| {
+        let duration = if r.words("until end of turn") {
+            Duration::UntilEndOfTurn
+        } else {
+            r.need("until the end of your next turn")?;
+            Duration::UntilEndOfYourNextTurn
+        };
+        r.punct(',').then_some(duration)
+    });
+    r.need("you may play")?;
+    if count.is_one() {
+        r.need("that card")?;
+    } else if !(r.words("those cards") || r.word("them")) {
+        return None;
+    }
+    match leading {
+        Some(duration) => Some(duration),
+        None => r.need("this turn").map(|()| Duration::UntilEndOfTurn),
+    }
+}
+
 /// The sentences that follow an exiling until a card is found and refer to what it exiled: "You may cast it without paying
 /// its mana cost." and "Put all cards exiled this way that weren't cast on the bottom of your library in a random order."
 pub fn after_exiling(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> Option<()> {
@@ -48,6 +87,10 @@ pub fn after_exiling(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> Option<()
                 way: None,
                 otherwise: Vec::new(),
             }
+        }
+        Effect::ExileTop { count, bind, .. } if bind == IMPULSE => {
+            let duration = may_play(r, count)?;
+            impulse(count.clone(), duration).remove(1)
         }
         Effect::CastFromZone { .. } => {
             r.need("put all cards exiled this way that weren't cast on the bottom of your library in a random order")?;
@@ -108,9 +151,71 @@ pub fn discover_text(effects: &[Effect]) -> Option<(String, usize)> {
     (effects.get(..3)? == discover(count.clone())).then_some((text, 3))
 }
 
+/// The two sentences the effects at the front of the list are when they are an impulse draw, and how many effects they take.
+pub fn impulse_text(effects: &[Effect]) -> Option<(String, usize)> {
+    let [
+        Effect::ExileTop { count, .. },
+        Effect::Rule { duration, .. },
+        ..,
+    ] = effects
+    else {
+        return None;
+    };
+    if effects.get(..2)? != impulse(count.clone(), *duration) {
+        return None;
+    }
+    let cards = if count.is_one() {
+        "that card"
+    } else {
+        "those cards"
+    };
+    let may = match duration {
+        Duration::UntilEndOfTurn => format!("You may play {cards} this turn"),
+        Duration::UntilEndOfYourNextTurn => {
+            format!("Until the end of your next turn, you may play {cards}")
+        }
+        _ => return None,
+    };
+    Some((
+        format!("exile {} of your library. {may}", top_text(count)?),
+        2,
+    ))
+}
+
+/// The other wordings of an impulse draw in the text of an ability: the duration may come first and the cards may be
+/// "them".
+pub fn impulse_wordings(text: String) -> Vec<String> {
+    let mut found = vec![text];
+    for (from, to) in [
+        (
+            "You may play that card this turn",
+            "Until end of turn, you may play that card",
+        ),
+        (
+            "You may play those cards this turn",
+            "Until end of turn, you may play those cards",
+        ),
+        ("You may play those cards", "You may play them"),
+        ("you may play those cards", "you may play them"),
+    ] {
+        let more: Vec<String> = found
+            .iter()
+            .filter(|text| text.contains(from))
+            .map(|text| text.replace(from, to))
+            .collect();
+        found.extend(more);
+    }
+    found
+}
+
 /// The wording of the effects of the sentences above, one effect each.
 pub fn text(effect: &Effect) -> Option<String> {
     Some(match effect {
+        Effect::ExileTop {
+            who: Ref::You,
+            count,
+            bind,
+        } if bind == IMPULSE => format!("exile {} of your library", top_text(count)?),
         Effect::ExileUntil {
             who: Ref::You,
             filter: Selector(preds),

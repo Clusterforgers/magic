@@ -6,7 +6,7 @@ use crate::characteristics::controller_of;
 use crate::combat::{attack_options, block_options, defending_players};
 use crate::damage::{DamagePass, damage_events, first_strike_step_needed, pending_assignment};
 use crate::decision::{Decision, DecisionKind, DiscardOptions};
-use crate::effects::Duration;
+use crate::effects::ends_with_turn;
 use crate::events::{Event, NothingToDo};
 use crate::flow::Progress;
 use crate::object::{GameObject, PermanentState};
@@ -264,14 +264,14 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
         state
             .effects()
             .iter()
-            .filter(|e| e.duration == Duration::UntilEndOfTurn)
+            .filter(|e| ends_with_turn(state, e.duration, e.turn, e.controller))
             .map(|e| Event::EffectExpired { id: e.id }),
     );
     events.extend(
         state
             .rule_effects()
             .iter()
-            .filter(|e| e.duration == Duration::UntilEndOfTurn)
+            .filter(|e| ends_with_turn(state, e.duration, e.turn, e.controller))
             .map(|e| Event::RuleExpired { id: e.id }),
     );
     events.extend(pool_emptying(state));

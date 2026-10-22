@@ -143,7 +143,10 @@ fn moved(pre: &GameState, event: &Event, post: &GameState) -> Option<Happened> {
     let owner = |object: &ObjectId| pre.object(*object).map(GameObject::owner);
     let (object, from, to, cause) = match event {
         Event::LandPlayed { player, object } => {
-            (*object, Zone::Hand(*player), Zone::Battlefield, None)
+            let from = pre
+                .object(*object)
+                .map_or(Zone::Hand(*player), GameObject::zone);
+            (*object, from, Zone::Battlefield, None)
         }
         Event::SpellResolved { object } => {
             let landed = post.object(*object)?;
