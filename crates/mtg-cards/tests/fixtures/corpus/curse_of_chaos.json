@@ -1,0 +1,25 @@
+{
+  "id": "fd95b9aa-1abb-4a10-a622-51a2bb578d17",
+  "oracle_id": "a242af4b-5de6-4961-b684-f4bd809977c6",
+  "name": "Curse of Chaos",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c13",
+  "collector_number": "105",
+  "rarity": "uncommon",
+  "released_at": "2013-11-01",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura Curse",
+  "oracle_text": "Enchant player\nWhenever a player attacks enchanted player with one or more creatures, that attacking player may discard a card. If the player does, they draw a card.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

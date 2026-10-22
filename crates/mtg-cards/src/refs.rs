@@ -139,6 +139,8 @@ pub enum Pred {
     Untapped,
     /// Is attacking.
     Attacking,
+    /// Is attacking the player, not a planeswalker of theirs ("attacking that player").
+    AttackingPlayer(Ref),
     /// Is blocking.
     Blocking,
     /// Is an attacking creature that no creature was declared to block, once its defending player has declared blockers (CR 509.1h).
@@ -149,6 +151,8 @@ pub enum Pred {
     OwnedBy(Ref),
     /// Is in the zone (without it, the battlefield).
     In(ZoneKind),
+    /// Is a spell cast from the zone, a hand or a graveyard (the spell being cast included).
+    CastFrom(ZoneKind),
     /// Has the keyword.
     HasKeyword(Keyword),
     /// Has at least one counter of the kind on it.

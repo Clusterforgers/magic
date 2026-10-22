@@ -1,0 +1,28 @@
+{
+  "id": "31079fcb-49bf-41a2-a9b4-07c96f93399d",
+  "oracle_id": "e7d8b8ea-07d7-4b6c-aa49-6a2ad185a304",
+  "name": "Termagant Swarm",
+  "lang": "en",
+  "layout": "normal",
+  "set": "40k",
+  "collector_number": "99",
+  "rarity": "rare",
+  "released_at": "2022-10-07",
+  "digital": false,
+  "mana_cost": "{X}{G}",
+  "cmc": 1.0,
+  "type_line": "Creature — Tyranid",
+  "oracle_text": "Ravenous (This creature enters with X +1/+1 counters on it. If X is 5 or more, draw a card when it enters.)\nDeath Frenzy — When this creature dies, create a number of 1/1 green Tyranid creature tokens equal to this creature's power.",
+  "power": "0",
+  "toughness": "0",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Death Frenzy",
+    "Ravenous"
+  ]
+}

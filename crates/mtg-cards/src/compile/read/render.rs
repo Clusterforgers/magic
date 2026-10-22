@@ -4,6 +4,7 @@
 //! same sequence.
 
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
+use super::attackers;
 use super::cast;
 use super::conditional;
 use super::copies;
@@ -11,6 +12,7 @@ use super::copy_spells;
 use super::costs;
 use super::counters;
 use super::create;
+use super::draws;
 use super::effects::{BACK, RETURNED, returns_itself};
 use super::lands;
 use super::library;
@@ -21,6 +23,7 @@ use super::reveal;
 use super::selectors::{Form, granted_text, phrase_text, spec_text};
 use super::spend;
 use super::statics;
+use super::subtypes::plural_subtype;
 use super::triggers::{
     article, condition_text, cycled_itself, dies_itself, itself_acts, pattern_text, targeted_itself,
 };
@@ -93,6 +96,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(pronouns);
     }
+    texts.extend(attackers::named_draws(ability, &texts));
     // The counters counted by "for each" may be those "on it" for the card.
     let pronouns: Vec<String> = texts
         .iter()
@@ -153,6 +157,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(pronouns);
     }
+    let more = draws::wordings(ability, &texts);
+    texts.extend(more);
     texts
 }
 
@@ -308,6 +314,30 @@ fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Vec<String>> 
     } else {
         vec![0, u32::MAX >> 1]
     };
+    let wordings = wording_choices(effects);
+    let mut found: Vec<Vec<String>> = masks
+        .into_iter()
+        .flat_map(|mask| wordings.iter().map(move |wording| (mask, *wording)))
+        .filter_map(|(mask, wording)| written(targets, effects, mask, wording))
+        .flat_map(|sentences| conditional::wordings(&sentences))
+        .collect();
+    // A joint that is not closed words the effects the same way with or without a repeated subject.
+    found.dedup();
+    found
+}
+
+/// A way the data can be worded when the same effects read in more than one way.
+#[derive(Clone, Copy)]
+struct Wording {
+    /// Tokens counted by things are worded "a token for each ...".
+    per: bool,
+    /// Each verb of "you" has its own subject: "you draw a card and you lose 1 life".
+    again: bool,
+}
+
+/// The wordings to try for the effects: tokens counted by things say "for each" or "where X is", and two verbs of
+/// "you" in a row share the subject or say it again.
+fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
     let counts_tokens = effects.iter().any(|effect| {
         matches!(
             effect,
@@ -317,30 +347,45 @@ fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Vec<String>> 
             }
         )
     });
-    // "you draw a card and you lose 1 life" names its subject again.
-    let repeats_you = effects.iter().any(|effect| {
-        matches!(
-            effect,
-            Effect::GainLife { who: Ref::You, .. } | Effect::LoseLife { who: Ref::You, .. }
-        )
+    let repeats = effects.windows(2).any(|pair| {
+        pair.iter()
+            .all(|effect| player_of(effect) == Some(&Ref::You))
     });
-    let mut wordings = vec![(false, false)];
-    if counts_tokens {
-        wordings.push((true, false));
+    let pers: &[bool] = if counts_tokens {
+        &[false, true]
+    } else {
+        &[false]
+    };
+    let agains: &[bool] = if repeats { &[false, true] } else { &[false] };
+    pers.iter()
+        .flat_map(|per| {
+            agains.iter().map(|again| Wording {
+                per: *per,
+                again: *again,
+            })
+        })
+        .collect()
+}
+
+/// The effects of an attack at the enchanted player and the same again for the opponents who attack: one sentence
+/// more, which no joint splits.
+fn repeating(
+    targets: &[TargetSpec],
+    head: &[Effect],
+    mask: u32,
+    wording: Wording,
+) -> Option<Vec<String>> {
+    if mask >> (head.len() - 1) != 0 {
+        return None;
     }
-    if repeats_you {
-        wordings.push((false, true));
-    }
-    let mut found: Vec<Vec<String>> = masks
-        .into_iter()
-        .flat_map(|mask| wordings.iter().map(move |wording| (mask, *wording)))
-        .filter_map(|(mask, (per, again))| written(targets, effects, mask, per, again))
-        .flat_map(|sentences| conditional::wordings(&sentences))
-        .collect();
-    // The wording of a joint that no run repeats is the same one in each dimension.
-    let mut seen = std::collections::HashSet::new();
-    found.retain(|sentences| seen.insert(sentences.clone()));
-    found
+    let mut sentences = written(targets, head, mask, wording)?;
+    sentences.push(attackers::sentence(head).to_owned());
+    Some(sentences)
+}
+
+/// Whether no joint of the mask falls inside the `used` effects from `start`, which are one sentence.
+fn unsplit(mask: u32, start: usize, used: usize) -> Option<()> {
+    ((mask >> start) & ((1 << used) - 1) == 0).then_some(())
 }
 
 /// The sentences of the effects with the joints of the mask closed into compound sentences.
@@ -348,14 +393,16 @@ fn written(
     targets: &[TargetSpec],
     effects: &[Effect],
     mask: u32,
-    per: bool,
-    again: bool,
+    wording: Wording,
 ) -> Option<Vec<String>> {
+    if let Some(head) = attackers::repeated(effects) {
+        return repeating(targets, head, mask, wording);
+    }
     let mut writer = Writer {
         targets,
         named: false,
-        per,
-        again,
+        per: wording.per,
+        again: wording.again,
     };
     let mut sentences: Vec<String> = Vec::new();
     let mut start = 0;
@@ -367,18 +414,14 @@ fn written(
             .or_else(|| library::sequence(&effects[start..]))
             .or_else(|| writer.explore_twice(&effects[start..]))
         {
-            if (mask >> start) & ((1 << used) - 1) != 0 {
-                return None;
-            }
+            unsplit(mask, start, used)?;
             sentences.push(text);
             start += used;
             continue;
         }
         // A look at the top card, the reveal and what follows it are three sentences, which no joint splits.
         if let Some((condition, then, used)) = reveal::shape(&effects[start..]) {
-            if (mask >> start) & ((1 << used) - 1) != 0 {
-                return None;
-            }
+            unsplit(mask, start, used)?;
             let tail = writer.consequence(condition, then)?;
             sentences.push(reveal::text(condition, &tail)?);
             start += used;
@@ -387,9 +430,7 @@ fn written(
         // Populate is two steps and one word; a copy that is exiled or sacrificed at the end step is two sentences.
         // No joint splits either.
         if copies::is_populate(&effects[start..]) {
-            if (mask >> start) & 0b11 != 0 {
-                return None;
-            }
+            unsplit(mask, start, 2)?;
             sentences.push("populate".to_owned());
             start += 2;
             continue;
@@ -397,9 +438,7 @@ fn written(
         if let [created @ Effect::CreateToken { .. }, delayed, ..] = &effects[start..]
             && let Some(delay) = copies::delay_text(created, delayed)
         {
-            if (mask >> start) & 0b11 != 0 {
-                return None;
-            }
+            unsplit(mask, start, 2)?;
             sentences.push(writer.copy_token(created, true)?);
             sentences.push(delay);
             start += 2;
@@ -413,9 +452,7 @@ fn written(
         ] = &effects[start..]
             && let Some(texts) = writer.become_copy(choose, copy)
         {
-            if (mask >> start) & 0b11 != 0 {
-                return None;
-            }
+            unsplit(mask, start, 2)?;
             sentences.extend(texts);
             start += 2;
             continue;
@@ -429,9 +466,7 @@ fn written(
             && let Some(text) =
                 put_back_text(choose, moved).or_else(|| returned_text(choose, moved))
         {
-            if (mask >> start) & 0b11 != 0 {
-                return None;
-            }
+            unsplit(mask, start, 2)?;
             sentences.push(text);
             start += 2;
             continue;
@@ -611,6 +646,34 @@ fn player_of(effect: &Effect) -> Option<&Ref> {
     }
 }
 
+/// A scry, draw, mill or discard of "you" as a verb with "you" understood: "draw a card", "discard your hand".
+fn your_cards(effect: &Effect) -> Option<String> {
+    Some(match effect {
+        Effect::Scry {
+            who: Ref::You,
+            count,
+        } => format!("scry {}", points_text(count)?),
+        Effect::Draw {
+            who: Ref::You,
+            count,
+        } => format!("draw {}", cards_text(count)?),
+        Effect::Mill {
+            who: Ref::You,
+            count,
+        } => format!("mill {}", cards_text(count)?),
+        Effect::Discard {
+            who: Ref::You,
+            count,
+            random,
+        } => format!(
+            "discard {}{}",
+            draws::discarded_text(&Ref::You, count)?,
+            at_random(*random)
+        ),
+        _ => return None,
+    })
+}
+
 /// "a", "a and b", "a, b, and c".
 fn join_list(items: &[String]) -> String {
     match items {
@@ -663,6 +726,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::RemoveCounters { .. }
                 | Effect::MoveCounters { .. }
                 | Effect::Transform { .. }
+                | Effect::CopySpell { .. }
         )
 }
 
@@ -703,6 +767,9 @@ fn mana_text(mana: &Produce) -> Option<String> {
             format!("{} mana of any one color", count_word(*count)?)
         }
         Produce::ChosenColor(1) => "one mana of the chosen color".to_owned(),
+        Produce::OrChosenColor(mana) => {
+            format!("{{{}}} or one mana of the chosen color", mana.symbol())
+        }
         Produce::CommanderIdentity(1) => {
             "one mana of any color in your commander's color identity".to_owned()
         }
@@ -819,7 +886,7 @@ struct Writer<'a> {
     named: bool,
     /// Tokens counted by things are worded "a token for each ..." and not "X tokens, where X is the number of ...".
     per: bool,
-    /// A player who does two things names themselves again: "you draw a card and you lose 1 life".
+    /// The verbs of "you" in one compound sentence each say "you": "you draw a card and you lose 1 life".
     again: bool,
 }
 
@@ -1004,6 +1071,14 @@ impl Writer<'_> {
             let target = self.name_target()?;
             return copy_spells::becomes_text(effect, &target);
         }
+        // The spell a trigger is about has no target to name.
+        if let Effect::CopySpell {
+            what: Ref::Triggering,
+            ..
+        } = effect
+        {
+            return copy_spells::cast_text(effect);
+        }
         if self.named {
             return None;
         }
@@ -1034,23 +1109,10 @@ impl Writer<'_> {
             Effect::CopySpell { .. } | Effect::CopyAbility { .. } | Effect::BecomeCopy { .. } => {
                 self.copy_effect(effect)?
             }
-            Effect::Scry {
-                who: Ref::You,
-                count,
-            } => format!("scry {}", points_text(count)?),
-            Effect::Draw {
-                who: Ref::You,
-                count,
-            } => format!("draw {}", cards_text(count)?),
-            Effect::Mill {
-                who: Ref::You,
-                count,
-            } => format!("mill {}", cards_text(count)?),
-            Effect::Discard {
-                who: Ref::You,
-                count,
-                random,
-            } => format!("discard {}{}", cards_text(count)?, at_random(*random)),
+            Effect::Scry { who: Ref::You, .. }
+            | Effect::Draw { who: Ref::You, .. }
+            | Effect::Mill { who: Ref::You, .. }
+            | Effect::Discard { who: Ref::You, .. } => your_cards(effect)?,
             Effect::Shuffle { who: Ref::You }
             | Effect::LookAtTop { .. }
             | Effect::Move {
@@ -1171,6 +1233,11 @@ impl Writer<'_> {
                 count,
             } => format!("surveil {}", points_text(count)?),
             Effect::Proliferate { who: Ref::You } => "proliferate".to_owned(),
+            Effect::Amass { subtype, count } => format!(
+                "amass {} {}",
+                plural_subtype(&subtype.0),
+                points_text(count)?
+            ),
             Effect::Explore {
                 what: what @ (Ref::This | Ref::Target(0)),
             } => format!("{} explores", self.object(what)?),
@@ -1293,8 +1360,9 @@ impl Writer<'_> {
         Some(match effect {
             Effect::Draw { count, .. } => format!("draw{s} {}", cards_text(count)?),
             Effect::Mill { count, .. } => format!("mill{s} {}", cards_text(count)?),
-            Effect::Discard { count, random, .. } => {
-                format!("discard{s} {}{}", cards_text(count)?, at_random(*random))
+            Effect::Discard { who, count, random } => {
+                let cards = draws::discarded_text(who, count)?;
+                format!("discard{s} {cards}{}", at_random(*random))
             }
             Effect::GainLife { amount, .. } => format!("gain{s} {}", self.life(amount)?),
             Effect::LoseLife { amount, .. } => format!("lose{s} {}", self.life(amount)?),
@@ -1328,12 +1396,11 @@ impl Writer<'_> {
             for effect in &rest[..run] {
                 phrases.push(self.predicate(effect, *who != Ref::You)?);
             }
-            clauses.push(match phrases.as_slice() {
-                [first, second] if self.again && *who == Ref::You => {
-                    format!("{subject} {first} and {subject} {second}")
-                }
-                _ => format!("{subject} {}", join_list(&phrases)),
-            });
+            if self.again && *who == Ref::You {
+                clauses.extend(phrases.iter().map(|phrase| format!("{subject} {phrase}")));
+            } else {
+                clauses.push(format!("{subject} {}", join_list(&phrases)));
+            }
             rest = &rest[run..];
         }
         Some(clauses.join(" and "))

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "18ae6be7-cfb6-42e3-a04e-99e9c1471ecd",
+  "name": "Dalek Squadron",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dalek Squadron",
+      "oracle_fingerprint": "bc73b8ba78eaed2c77668d0cea8932f3",
+      "abilities": [{ "Keyword": "Menace" }, { "Keyword": "Myriad" }]
+    }
+  ]
+}

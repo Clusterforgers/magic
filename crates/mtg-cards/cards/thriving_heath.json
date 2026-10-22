@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d1946630-e224-40db-8f0d-388b09622288",
+  "name": "Thriving Heath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thriving Heath",
+      "oracle_fingerprint": "9699288f5f8beab9250607fc03be91ed",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "ColorOtherThan": "White" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OrChosenColor": "White" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

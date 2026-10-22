@@ -136,7 +136,7 @@ fn the_near_misses_stay_with_the_table(#[case] text: &str) {
 
 #[rstest]
 #[case::another_player_draws("You draw a card and target opponent loses 1 life.")]
-#[case::a_third_verb("You draw a card and you lose 1 life and you gain 1 life.")]
+#[case::each_opponent("You draw a card and each opponent loses 1 life.")]
 #[case::the_subject_alone("You draw a card and you.")]
 #[case::a_stranger("You draw a card and they lose 1 life.")]
 fn the_near_misses_of_the_repeated_subject_stay_with_the_table(#[case] text: &str) {

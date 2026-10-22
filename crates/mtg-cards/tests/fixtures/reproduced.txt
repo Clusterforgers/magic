@@ -1,7 +1,10 @@
 Abbot of Keral Keep
+Aberrant
+Adorned Pouncer
 Aether Hub
 Ajani's Pridemate
 Ancestral Vision
+Ancient Stone Idol
 Ancient Ziggurat
 Angel of Vitality
 Arcane Signet
@@ -11,17 +14,23 @@ Artful Maneuver
 Arvad the Cursed
 Atlantean Skirmisher
 Augury Raven
+Authority of the Consuls
+Aven Eternal
+Aven Initiate
 Azorius Chancery
 Azorius Signet
 Azure Fleet Admiral
 Azusa, Lost but Seeking
+Banshee of the Dread Choir
 Basking Rootwalla
 Battle Sliver
 Battlefield Forge
 Behold the Multiverse
 Bilious Skulldweller
 Bird Admirer // Wing Shredder
+Black Dragon Gate
 Black Knight
+Blasphemous Act
 Blaze
 Blight Mamba
 Blightwidow
@@ -36,15 +45,22 @@ Borderland Behemoth
 Brain Freeze
 Brainstorm
 Branchblight Stalker
+Briarblade Adept
 Brightstone Ritual
 Bronzeplate Boar
+Broodbirth Viper
 Cackling Counterpart
+Caldaia Strongarm
+Caller of the Pack
 Capsize
 Carnage Tyrant
 Cascade Bluffs
 Cathars' Crusade
 Changeling Outcast
+Chemister's Insight
 Circle of Dreams Druid
+Citadel Gate
+Cliffgate
 Clone
 Cold-Eyed Selkie
 Collective Unconscious
@@ -58,13 +74,19 @@ Courser of Kruphix
 Crucible of Worlds
 Crystal Quarry
 Curate
+Curse of Bounty
+Curse of Disturbance
+Curse of Opulence
 Curse of Predation
+Curse of Verbosity
+Curse of Vitality
 Curse of the Forsaken
 Curse of the Nightly Hunt
 Custodi Lich
 Cut // Ribbons
 Cyclonic Rift
 Cytoshape
+Dalek Squadron
 Darksteel Juggernaut
 Dauthi Horror
 Dauthi Marauder
@@ -76,6 +98,7 @@ Defile
 Delver of Secrets // Insectile Aberration
 Demon Bolt
 Dire Fleet Interloper
+Direct Current
 Disembowel
 Dockside Extortionist
 Dokuchi Shadow-Walker
@@ -88,7 +111,9 @@ Drove of Elves
 Drudge Skeletons
 Dual Casting
 Dualcaster Mage
+Dunland Crebain
 Durkwood Baloth
+Easterling Vanguard
 Echo Inspector
 Elven Ambush
 Elvish Rejuvenator
@@ -99,18 +124,21 @@ Ethereal Armor
 Exotic Orchard
 Exploration
 Explore
+Exquisite Huntmaster
 Faithful Watchdog
 Faithless Looting
 Famine
 Faramir, Steward of Gondor
 Favorable Winds
 Fear of Failed Tests
+Fearsome Goblin Pair
 Felidar Sovereign
 Fellwar Stone
 Fetid Heath
 Fiery Temper
 Fire-Lit Thicket
 Firestorm Hellkite
+Flame Jab
 Flooded Grove
 Flooded Strand
 Fog
@@ -123,19 +151,25 @@ Fruit of Tizerus
 Furtive Homunculus
 Gadwick, the Wizened
 Gaea's Cradle
+Galadhrim Brigade
 Game-Trail Changeling
 Gerrard's Wisdom
+Ghalta, Primal Hunger
 Giant Cindermaw
 Giant Growth
+Gilded Goose
 Gilded Lotus
 Glimpse of Freedom
 Glorious Anthem
 Goblin Chieftain
 Goblin Spy
 Goblin War Buggy
+Goblin-town Flunkies
+Goldlust Triad
 Grapeshot
 Graven Cairns
 Graveshifter
+Grim Initiate
 Grisly Salvage
 Growing Ranks
 Gruul Cluestone
@@ -144,6 +178,8 @@ Gurmag Angler
 Hall of Triumph
 Haughty Djinn
 Hengegate Pathway // Mistgate Pathway
+Herald of the Dreadhorde
+Herald of the Host
 Hero of Bladehold
 Holdout Settlement
 Honor Troll
@@ -152,7 +188,9 @@ Hound of Griselbrand
 Hulking Raptor
 Idyllic Beachfront
 Impostor of the Sixth Pride
+Impulsive Pilferer
 Inkwell Leviathan
+Invading Manticore
 Invisible Stalker
 Izzet Charm
 Jadelight Ranger
@@ -163,6 +201,8 @@ Karn's Bastion
 Kathari Screecher
 Keep Watch
 Kessig Wolf Run
+Kinjalli's Sunwing
+Kinsbaile Courier
 Kitchen Finks
 Knight of Dusk's Shadow
 Kolaghan Skirmisher
@@ -170,6 +210,7 @@ Kongming, "Sleeping Dragon"
 Kozilek's Translator
 Krenko's Enforcer
 Lat-Nam Adept
+Lazotep Reaver
 Levitation
 Lhurgoyf
 Lightning Bolt
@@ -183,16 +224,19 @@ Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
 Lurching Rotbeast
 Manabarbs
+Manor Gate
 Mardu Devotee
 Mardu Scout
 Mardu Shadowspear
 Mardu Strike Leader
 Maro
 Master of Etherium
+Mayhem Patrol
 Megrim
 Merfolk Branchwalker
 Mesmeric Orb
 Midnight Banshee
+Mirari
 Mirror Image
 Mishra's Workshop
 Mizzium Mortars
@@ -206,12 +250,14 @@ Murderous Cut
 Muscle Sliver
 Mystic Gate
 Nantuko Husk
+Night Clubber
 Nighthawk Scavenger
 Nightmare
 Nightveil Sprite
 Ninja of the Deep Hours
 Ninja of the New Moon
 Notion Rain
+Nyxborn Behemoth
 Opt
 Otherworldly Gaze
 Pacifism
@@ -223,12 +269,16 @@ Pillar of the Paruns
 Plague Myr
 Plague Stinger
 Pouncing Jaguar
+Powder Ganger
+Primeval Protector
 Prismatic Lens
 Professional Face-Breaker
+Proven Combatant
 Psychosis Crawler
 Putrid Goblin
 Pygmy Kavu
 Questing Beast
+Radical Idea
 Raffine's Informant
 Rakdos Headliner
 Rally the Ranks
@@ -238,24 +288,31 @@ Reconstructed Thopter
 Red Room Recruit
 Reflecting Pool
 Reiterate
+Relentless Advance
 Revel Ruiner
 Reverberate
 Rhox Faithmender
 Rhystic Study
 Rift Bolt
 Righteous Avengers
+Riveteers Requisitioner
 Rocksteady, Mutant Marauder
 Rootborn Defenses
 Rosheen Meanderer
 Rugged Prairie
+Rumbleweed
 Rummaging Goblin
 Rustrazor Butcher
+Ruthless Radrat
+Sacred Cat
 Safehold Elite
+Sage of the Beyond
 Sanguine Bond
 Satyr Wayfinder
 Saw It Coming
 Scheming Aspirant
 Scuzzback Marauders
+Sea Gate
 Seedglaive Mentor
 Seekers' Squire
 Serra Angel
@@ -280,6 +337,7 @@ Soltari Foot Soldier
 Songs of the Damned
 Soul Shepherd
 Souldrinker
+Space Marine Devastator
 Spectral Rider
 Sphinx of Jwar Isle
 Spring // Mind
@@ -297,9 +355,13 @@ Summer Bloom
 Sundering Growth
 Sunken Ruins
 Supreme Verdict
+Swarm Intelligence
 Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
+Syphon Life
+Tabaxi Toucaneers
+Tah-Crop Skirmisher
 Tainted Isle
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
@@ -311,32 +373,52 @@ The Spear of Bashenga
 The Thing, Ben Grimm
 Thieving Magpie
 Thopter Fabricator
+Thriving Bluff
+Thriving Grove
+Thriving Heath
+Thriving Isle
+Thriving Moor
 Throne of the High City
+Tiamat's Fanatics
+Tilonalli's Skinshifter
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Tithebearer Giant
 Treasure Cruise
+Trove Tracker
 Tumble Magnet
 Twilight Mire
 Twincast
 Uktabi Efreet
+Ultramarines Honour Guard
 Umbral Collar Zealot
 Underworld Dreams
 Underworld Rage-Hound
 Universal Automaton
+Urabrask the Hidden
 Vampire Cutthroat
+Vanguard Suppressor
+Vanquish the Horde
 Vengeful Vampire
 Vestige of Emrakul
 Viridian Corrupter
+Vivid Crag
+Vivid Creek
+Vivid Grove
+Vivid Marsh
+Vivid Meadow
 Walking Ballista
 Wanderbrine Preacher
+Warchief Giant
 Wargate
 Warmonger Hellkite
+Wasteland Raider
 Wear // Tear
 Wilderness Elemental
 Wooded Bastion
 Wrath of God
+Wyrm's Crossing Patrol
 Young Wolf
 Zendikar Farguide
 Zodiac Goat

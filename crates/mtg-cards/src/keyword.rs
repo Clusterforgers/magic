@@ -167,6 +167,8 @@ pub enum Keyword {
     Aftermath,
     /// Dash with its cost: an alternative cost for a creature spell, which gains haste and returns to its owner's hand at the next end step (CR 702.109).
     Dash(Cost),
+    /// Blitz with its cost: an alternative cost for a creature spell, which gains haste and "When this creature dies, draw a card" and is sacrificed at the next end step (CR 702.152).
+    Blitz(Cost),
     /// Ninjutsu with its cost: from the hand during combat after blockers are declared, an unblocked attacker returns to its owner's hand and the card enters tapped and attacking (CR 702.49).
     Ninjutsu(Cost),
     /// Echo with its cost (CR 702.30): at the beginning of its controller's upkeep, if it came under their control since their last turn began, it is sacrificed unless they pay the cost.
@@ -177,6 +179,16 @@ pub enum Keyword {
     Undying,
     /// Persist (CR 702.79): when it dies, if it had no -1/-1 counter on it, it returns with a -1/-1 counter.
     Persist,
+    /// Ravenous (CR 702.156): it enters with X +1/+1 counters, and its controller draws a card when it enters if X is 5 or more.
+    Ravenous,
+    /// Jump-start (CR 702.133): the card may be cast from a graveyard by discarding a card in addition to its other costs, and is then exiled.
+    JumpStart,
+    /// Retrace (CR 702.81): the card may be cast from a graveyard by discarding a land card in addition to its other costs.
+    Retrace,
+    /// Embalm with its cost (CR 702.128): from a graveyard at sorcery speed the card is exiled for a token copy that is a white Zombie with no mana cost.
+    Embalm(Cost),
+    /// Eternalize with its cost (CR 702.129): from a graveyard at sorcery speed the card is exiled for a token copy that is a 4/4 black Zombie with no mana cost.
+    Eternalize(Cost),
 }
 
 impl Keyword {
@@ -254,11 +266,17 @@ impl Keyword {
         "Rebound",
         "Aftermath",
         "Dash",
+        "Blitz",
         "Ninjutsu",
         "Echo",
         "Cumulative upkeep",
         "Undying",
         "Persist",
+        "Ravenous",
+        "Jump-start",
+        "Retrace",
+        "Embalm",
+        "Eternalize",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -336,11 +354,17 @@ impl Keyword {
             Keyword::Rebound => "Rebound",
             Keyword::Aftermath => "Aftermath",
             Keyword::Dash(_) => "Dash",
+            Keyword::Blitz(_) => "Blitz",
             Keyword::Ninjutsu(_) => "Ninjutsu",
             Keyword::Echo(_) => "Echo",
             Keyword::CumulativeUpkeep(_) => "Cumulative upkeep",
             Keyword::Undying => "Undying",
             Keyword::Persist => "Persist",
+            Keyword::Ravenous => "Ravenous",
+            Keyword::JumpStart => "Jump-start",
+            Keyword::Retrace => "Retrace",
+            Keyword::Embalm(_) => "Embalm",
+            Keyword::Eternalize(_) => "Eternalize",
         }
     }
 
@@ -351,9 +375,12 @@ impl Keyword {
             .any(|name| name.eq_ignore_ascii_case(printed))
     }
 
-    /// Whether this is a kicker or multikicker keyword.
+    /// Whether paying the cost of this keyword counts as a kick (`Amount::Kicks`): kicker, multikicker and squad.
     pub const fn is_kicker(&self) -> bool {
-        matches!(self, Keyword::Kicker(_) | Keyword::Multikicker(_))
+        matches!(
+            self,
+            Keyword::Kicker(_) | Keyword::Multikicker(_) | Keyword::Squad(_)
+        )
     }
 }
 
@@ -441,11 +468,17 @@ mod tests {
             Keyword::Rebound,
             Keyword::Aftermath,
             Keyword::Dash(cost.clone()),
+            Keyword::Blitz(cost.clone()),
             Keyword::Ninjutsu(cost),
             Keyword::Echo(Cost::default()),
             Keyword::CumulativeUpkeep(Cost::default()),
             Keyword::Undying,
             Keyword::Persist,
+            Keyword::Ravenous,
+            Keyword::JumpStart,
+            Keyword::Retrace,
+            Keyword::Embalm(Cost::default()),
+            Keyword::Eternalize(Cost::default()),
         ]
     }
 

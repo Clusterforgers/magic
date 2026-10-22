@@ -1,0 +1,32 @@
+{
+  "oracle_id": "55f3c721-e13a-406e-bc8e-d6cdc91ac477",
+  "name": "Authority of the Consuls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Authority of the Consuls",
+      "oracle_fingerprint": "ec9a68d77e8ec3e9757e94fcefb321a4",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Enters": { "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+            },
+            "by": "Tapped"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

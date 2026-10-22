@@ -41,7 +41,7 @@ fn the_corpus_loads_every_card_file_and_every_token_file() {
     let on_disk: Vec<String> = corpus.token_files().iter().map(stem).collect();
     let loaded: Vec<String> = library.tokens().map(|t| t.id.clone()).collect();
     assert_eq!(loaded, on_disk);
-    for predefined in ["clue", "food", "treasure"] {
+    for predefined in ["clue", "food", "gold", "treasure"] {
         assert!(loaded.iter().any(|id| id == predefined), "{predefined}");
     }
 }

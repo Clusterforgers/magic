@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f27972da-ad2f-4df5-82d3-c909cce8cc91",
+  "name": "Trove Tracker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trove Tracker",
+      "oracle_fingerprint": "6370a49f1da013e71b9e07bd246d6145",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Keyword": { "Encore": "{5}{U}{U}" } }
+      ]
+    }
+  ]
+}

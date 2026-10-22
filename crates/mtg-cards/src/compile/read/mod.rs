@@ -13,13 +13,14 @@
 //! colon), `abilities` (a spell ability, a triggered ability, an activated ability), `conditional`
 //! (an effect that depends on a condition), `reveal` (looking at the top card and revealing it),
 //! `damage` (what deals damage to whom and the life gained with it), `copies` (a token that is a copy, populate, entering as a copy), `copy_spells` (a copy of a spell or an ability, a
-//! permanent that becomes a copy), `defining` (the power and toughness a card defines for itself), `life_gain` (replacements and rules about gaining life), `transform`, `actions` (the keyword actions of creatures) and
+//! permanent that becomes a copy), `defining` (the power and toughness a card defines for itself), `life_gain` (replacements and rules about gaining life), `transform`, `draws` (draw and discard wordings), `actions` (the keyword actions of creatures) and
 //! `render`.
 
 mod abilities;
 mod actions;
 mod among;
 mod amounts;
+mod attackers;
 mod cast;
 mod conditional;
 mod copies;
@@ -29,6 +30,7 @@ mod counters;
 mod create;
 mod damage;
 mod defining;
+mod draws;
 mod effects;
 mod lands;
 mod library;
@@ -56,6 +58,12 @@ use crate::ability::Ability;
 use crate::cost::Cost;
 use crate::refs::Selector;
 use tokens::{Reader, tokenize};
+
+/// Whether a cost modifier counts the targets of its spell ("for each target beyond the first"), so that it needs the
+/// spell ability beside it.
+pub fn counts_targets(per: &crate::value::Amount) -> bool {
+    statics::counts_targets(per)
+}
 
 /// The cost a keyword of a spell prints in words ("Sacrifice a creature", "{1}{U}, Pay 3 life"), when all of the text
 /// reads as the parts of one cost.

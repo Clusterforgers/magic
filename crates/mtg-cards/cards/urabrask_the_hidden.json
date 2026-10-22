@@ -1,0 +1,27 @@
+{
+  "oracle_id": "5b2ffb53-86b7-4665-a5c7-b85b035b6c81",
+  "name": "Urabrask the Hidden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urabrask the Hidden",
+      "oracle_fingerprint": "b80babb2eeebb3fa385b57b578f1b86e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": { "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+            },
+            "by": "Tapped"
+          }
+        }
+      ]
+    }
+  ]
+}

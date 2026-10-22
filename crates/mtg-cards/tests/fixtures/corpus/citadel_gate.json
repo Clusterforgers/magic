@@ -1,0 +1,21 @@
+{
+  "id": "c0e6f002-9a10-49a1-8604-2b8ff57732dd",
+  "oracle_id": "15f1fe23-5af4-4fc4-8cde-2e0bf9f9be0c",
+  "name": "Citadel Gate",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "349",
+  "rarity": "common",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Gate",
+  "oracle_text": "This land enters tapped.\nAs this land enters, choose a color other than white.\n{T}: Add {W} or one mana of the chosen color.",
+  "colors": [],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

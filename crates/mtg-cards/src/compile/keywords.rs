@@ -334,11 +334,14 @@ pub fn read(item: &str) -> Option<Keyword> {
         "overload" => cost(rest).map(Keyword::Overload),
         "mutate" => cost(rest).map(Keyword::Mutate),
         "encore" => cost(rest).map(Keyword::Encore),
-        "squad" => cost(rest).map(Keyword::Squad),
+        "squad" => spell_cost(rest).map(Keyword::Squad),
         "foretell" => cost(rest).map(Keyword::Foretell),
         "unearth" => spell_cost(rest).map(Keyword::Unearth),
+        "embalm" => spell_cost(rest).map(Keyword::Embalm),
+        "eternalize" => spell_cost(rest).map(Keyword::Eternalize),
         "escape" => spell_cost(rest).map(Keyword::Escape),
         "dash" => spell_cost(rest).map(Keyword::Dash),
+        "blitz" => spell_cost(rest).map(Keyword::Blitz),
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
         "echo" => spell_cost(rest).map(Keyword::Echo),
         "cumulative upkeep" => spell_cost(rest).map(Keyword::CumulativeUpkeep),
@@ -437,6 +440,9 @@ fn plain(name: &str) -> Option<Keyword> {
         "aftermath" => Keyword::Aftermath,
         "undying" => Keyword::Undying,
         "persist" => Keyword::Persist,
+        "ravenous" => Keyword::Ravenous,
+        "jump-start" => Keyword::JumpStart,
+        "retrace" => Keyword::Retrace,
         _ => return None,
     })
 }
@@ -658,6 +664,10 @@ mod tests {
     #[case::mutate("Mutate {1}{G}{G}", Keyword::Mutate(mana("{1}{G}{G}")))]
     #[case::encore("Encore {5}{R}", Keyword::Encore(mana("{5}{R}")))]
     #[case::squad("Squad {2}", Keyword::Squad(mana("{2}")))]
+    #[case::squad_discarding(
+        "Squad\u{2014}{1}, Discard a card.",
+        Keyword::Squad(Cost(vec![CostItem::Mana("{1}".parse().unwrap()), CostItem::Discard { count: Amount::one(), filter: None }]))
+    )]
     #[case::echo("Echo {2}{R}", Keyword::Echo(mana("{2}{R}")))]
     #[case::echo_lowercase("echo {G}", Keyword::Echo(mana("{G}")))]
     #[case::echo_discarding(
@@ -689,13 +699,23 @@ mod tests {
     )]
     #[case::undying("Undying", Keyword::Undying)]
     #[case::persist("persist", Keyword::Persist)]
+    #[case::ravenous("Ravenous", Keyword::Ravenous)]
     #[case::foretell("Foretell {1}{U}", Keyword::Foretell(mana("{1}{U}")))]
     #[case::foretell_for_nothing("Foretell {0}", Keyword::Foretell(mana("{0}")))]
     #[case::unearth("Unearth {1}{B}", Keyword::Unearth(mana("{1}{B}")))]
     #[case::unearth_in_mana_only_with_reminder("unearth {B}", Keyword::Unearth(mana("{B}")))]
     #[case::rebound("Rebound", Keyword::Rebound)]
+    #[case::jump_start("Jump-start", Keyword::JumpStart)]
+    #[case::retrace("retrace", Keyword::Retrace)]
+    #[case::embalm("Embalm {3}{W}", Keyword::Embalm(mana("{3}{W}")))]
+    #[case::eternalize("Eternalize {4}{U}{U}", Keyword::Eternalize(mana("{4}{U}{U}")))]
+    #[case::eternalize_with_a_life_cost(
+        "Eternalize—Pay 3 life.",
+        Keyword::Eternalize(Cost(vec![CostItem::PayLife(Amount::Fixed(3))]))
+    )]
     #[case::aftermath("Aftermath", Keyword::Aftermath)]
     #[case::dash("Dash {2}{R}", Keyword::Dash(mana("{2}{R}")))]
+    #[case::blitz("Blitz {2}{R}", Keyword::Blitz(mana("{2}{R}")))]
     #[case::ninjutsu("Ninjutsu {1}{U}", Keyword::Ninjutsu(mana("{1}{U}")))]
     #[case::ninjutsu_for_one_mana("ninjutsu {B}", Keyword::Ninjutsu(mana("{B}")))]
     #[case::escape_exiling_cards(
@@ -883,6 +903,8 @@ mod tests {
         }
     }
 
+    // One sample line for each keyword of the DSL.
+    #[allow(clippy::too_many_lines)]
     #[test]
     fn a_keyword_read_carries_the_name_it_was_printed_with() {
         let samples = [
@@ -940,6 +962,7 @@ mod tests {
             "Cumulative upkeep {1}",
             "Undying",
             "Persist",
+            "Ravenous",
             "Foretell {1}",
             "Daybound",
             "Nightbound",
@@ -960,7 +983,12 @@ mod tests {
             "Escape {1}",
             "Rebound",
             "Aftermath",
+            "Jump-start",
+            "Retrace",
+            "Embalm {1}",
+            "Eternalize {1}",
             "Dash {1}",
+            "Blitz {1}",
             "Ninjutsu {1}{U}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];

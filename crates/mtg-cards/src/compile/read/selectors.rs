@@ -394,7 +394,7 @@ pub fn subtype(r: &mut Reader<'_>) -> Option<String> {
 }
 
 /// A group of one subtype as it is written in the plural ("Heroes", "Elves", "Spies"): the subtype in the singular.
-fn plural_subtype(r: &mut Reader<'_>) -> Option<String> {
+pub(super) fn plural_subtype(r: &mut Reader<'_>) -> Option<String> {
     r.attempt(|r| {
         let name = group_name(r)?;
         singular_subtype(&name, |one| r.is_subtype(one))

@@ -28,6 +28,7 @@ mod mana_cost_hidden;
 mod manual_view;
 mod messages;
 mod monarch_view;
+mod ninjutsu_hidden;
 mod player_aura_view;
 mod preview_fixture;
 mod projection;

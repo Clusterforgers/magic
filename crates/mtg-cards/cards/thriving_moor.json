@@ -1,0 +1,26 @@
+{
+  "oracle_id": "bff416bb-d193-4c45-b2c1-7c297dbfad08",
+  "name": "Thriving Moor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thriving Moor",
+      "oracle_fingerprint": "46c2fd2d961a57d8b2bc0aa0ce8622bf",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "ColorOtherThan": "Black" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OrChosenColor": "Black" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
