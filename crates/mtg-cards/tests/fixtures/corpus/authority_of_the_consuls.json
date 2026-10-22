@@ -1,0 +1,23 @@
+{
+  "id": "42ce2d7f-5924-47c0-b5ed-dacf9f9617a0",
+  "oracle_id": "55f3c721-e13a-406e-bc8e-d6cdc91ac477",
+  "name": "Authority of the Consuls",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fdn",
+  "collector_number": "137",
+  "rarity": "rare",
+  "released_at": "2024-11-15",
+  "digital": false,
+  "mana_cost": "{W}",
+  "cmc": 1,
+  "type_line": "Enchantment",
+  "oracle_text": "Creatures your opponents control enter tapped.\nWhenever a creature an opponent controls enters, you gain 1 life.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

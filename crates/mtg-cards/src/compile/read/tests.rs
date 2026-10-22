@@ -166,6 +166,7 @@ mod create;
 mod defining;
 mod enchanted_player;
 mod enters;
+mod enters_tapped;
 mod event_batches;
 mod events;
 mod exile_bounce_shrink;

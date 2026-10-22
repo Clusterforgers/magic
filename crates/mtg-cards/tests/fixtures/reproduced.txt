@@ -2,6 +2,7 @@ Abbot of Keral Keep
 Aether Hub
 Ajani's Pridemate
 Ancestral Vision
+Ancient Stone Idol
 Ancient Ziggurat
 Angel of Vitality
 Arcane Signet
@@ -11,6 +12,7 @@ Artful Maneuver
 Arvad the Cursed
 Atlantean Skirmisher
 Augury Raven
+Authority of the Consuls
 Azorius Chancery
 Azorius Signet
 Azure Fleet Admiral
@@ -22,6 +24,7 @@ Behold the Multiverse
 Bilious Skulldweller
 Bird Admirer // Wing Shredder
 Black Knight
+Blasphemous Act
 Blaze
 Blight Mamba
 Blightwidow
@@ -124,6 +127,7 @@ Gadwick, the Wizened
 Gaea's Cradle
 Game-Trail Changeling
 Gerrard's Wisdom
+Ghalta, Primal Hunger
 Giant Cindermaw
 Giant Growth
 Gilded Lotus
@@ -160,6 +164,7 @@ Karn's Bastion
 Kathari Screecher
 Keep Watch
 Kessig Wolf Run
+Kinjalli's Sunwing
 Kitchen Finks
 Knight of Dusk's Shadow
 Kolaghan Skirmisher
@@ -209,6 +214,7 @@ Nightveil Sprite
 Ninja of the Deep Hours
 Ninja of the New Moon
 Notion Rain
+Nyxborn Behemoth
 Opt
 Otherworldly Gaze
 Pacifism
@@ -220,6 +226,7 @@ Pillar of the Paruns
 Plague Myr
 Plague Stinger
 Pouncing Jaguar
+Primeval Protector
 Prismatic Lens
 Professional Face-Breaker
 Psychosis Crawler
@@ -245,9 +252,11 @@ Rocksteady, Mutant Marauder
 Rootborn Defenses
 Rosheen Meanderer
 Rugged Prairie
+Rumbleweed
 Rummaging Goblin
 Rustrazor Butcher
 Safehold Elite
+Sage of the Beyond
 Sanguine Bond
 Satyr Wayfinder
 Saw It Coming
@@ -321,7 +330,9 @@ Umbral Collar Zealot
 Underworld Dreams
 Underworld Rage-Hound
 Universal Automaton
+Urabrask the Hidden
 Vampire Cutthroat
+Vanquish the Horde
 Vengeful Vampire
 Vestige of Emrakul
 Viridian Corrupter

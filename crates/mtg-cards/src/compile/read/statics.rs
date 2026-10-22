@@ -31,8 +31,9 @@ use crate::value::{Amount, CastWay, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 13] = [
+const TEMPLATES: [Template; 14] = [
     entering,
+    group_enters_tapped,
     life_gain::replacement,
     copies::enters_as_copy,
     as_entering,
@@ -92,6 +93,25 @@ fn entering(r: &mut Reader<'_>) -> Option<Ability> {
         ReplaceBy::WithCounters { counter, count },
         escaped.then_some(Condition::CastWith(CastWay::Escape)),
     ))
+}
+
+/// "Creatures your opponents control enter tapped.", "Artifacts and creatures your opponents control enter tapped.": a
+/// replacement of the entering of every permanent the group names.
+fn group_enters_tapped(r: &mut Reader<'_>) -> Option<Ability> {
+    let what = phrase(r, Form::All)?;
+    let permanents = !what.0.is_empty()
+        && !what
+            .0
+            .iter()
+            .any(|pred| matches!(pred, Pred::Spell | Pred::This | Pred::In(_)));
+    permanents.then_some(())?;
+    r.words("enter tapped").then_some(())?;
+    Some(Ability::Replacement {
+        when: ReplaceWhen::Enters { what },
+        by: ReplaceBy::Tapped,
+        condition: None,
+        from: ZoneKind::Battlefield,
+    })
 }
 
 /// "As ~ enters, choose a color.", "As ~ enters, you may pay 2 life. If you don't, it enters tapped."
@@ -462,6 +482,11 @@ fn beyond_the_first() -> Amount {
     Amount::Sum(vec![Amount::TargetCount(0), Amount::Fixed(-1)])
 }
 
+/// Whether the count is the targets beyond the first.
+pub(super) fn counts_targets(per: &Amount) -> bool {
+    *per == beyond_the_first()
+}
+
 /// The spells a cost modifier names: "This spell", "Noncreature spells", "Artifact spells you cast", "Spells your opponents
 /// cast", "Spells you cast from anywhere other than your hand". The flag says the spell is the card itself.
 fn cost_subject(r: &mut Reader<'_>) -> Option<(Selector, bool)> {
@@ -624,6 +649,15 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             condition,
             from: ZoneKind::Battlefield,
         } if *what == Selector::this() => entering_texts(by, condition.as_ref()),
+        Ability::Replacement {
+            when: ReplaceWhen::Enters { what },
+            by: ReplaceBy::Tapped,
+            condition: None,
+            from: ZoneKind::Battlefield,
+        } => phrase_text(what, Form::All)
+            .map(|group| format!("{group} enter tapped"))
+            .into_iter()
+            .collect(),
         Ability::Rule {
             rule,
             condition: None,

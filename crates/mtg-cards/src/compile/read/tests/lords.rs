@@ -108,9 +108,6 @@ fn spells_of_a_subtype_cost_less_or_more(#[case] text: &str, #[case] json: &str)
 #[rstest]
 #[case::a_subtype_and_a_card("Dragon cards you cast cost {1} less to cast.")]
 #[case::a_subtype_in_the_singular("Dragon spell you cast costs {1} less to cast.")]
-#[case::a_cost_that_counts(
-    "Dragon spells you cast cost {1} less to cast for each Dragon you control."
-)]
 fn near_misses_of_cost_modifiers_stay_with_the_table(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Static, false), None, "{text}");
 }

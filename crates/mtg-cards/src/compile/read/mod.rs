@@ -56,6 +56,12 @@ use crate::cost::Cost;
 use crate::refs::Selector;
 use tokens::{Reader, tokenize};
 
+/// Whether a cost modifier counts the targets of its spell ("for each target beyond the first"), so that it needs the
+/// spell ability beside it.
+pub fn counts_targets(per: &crate::value::Amount) -> bool {
+    statics::counts_targets(per)
+}
+
 /// The cost a keyword of a spell prints in words ("Sacrifice a creature", "{1}{U}, Pay 3 life"), when all of the text
 /// reads as the parts of one cost.
 pub fn cost_in_words(text: &str) -> Option<Cost> {

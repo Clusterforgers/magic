@@ -68,6 +68,10 @@ fn a_reduction_for_each_thing_counted(#[case] text: &str, #[case] per: &str) {
     "Creature spells you cast cost {1} less to cast for each creature you control.",
     r#"{"CostModifier":{"applies_to":["Spell",{"Type":"Creature"},{"ControlledBy":"You"}],"change":"Reduce","mana":"{1}","per":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}"#
 )]
+#[case::a_subtype_of_spell_and_creature(
+    "Dragon spells you cast cost {1} less to cast for each Dragon you control.",
+    r#"{"CostModifier":{"applies_to":["Spell",{"Subtype":"Dragon"},{"ControlledBy":"You"}],"change":"Reduce","mana":"{1}","per":{"Count":[{"Subtype":"Dragon"},{"ControlledBy":"You"}]}}}"#
+)]
 #[case::counters_on_the_card(
     "Creature spells you cast cost {1} less to cast for each +1/+1 counter on ~.",
     r#"{"CostModifier":{"applies_to":["Spell",{"Type":"Creature"},{"ControlledBy":"You"}],"change":"Reduce","mana":"{1}","per":{"Counters":{"on":"This","counter":"+1/+1"}}}}"#
