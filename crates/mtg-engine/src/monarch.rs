@@ -110,6 +110,8 @@ mod tests {
                 target: DamageTarget::Player(PlayerId::from_index(*player)),
                 amount: 1,
                 deathtouch: false,
+                form: crate::combat::DamageForm::Normal,
+                toxic: 0,
             })
             .collect()
     }
