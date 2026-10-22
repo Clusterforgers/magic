@@ -148,6 +148,10 @@ pub fn reminder_mentions_counter(text: &str) -> bool {
     reminder_ranges(&chars).iter().any(|range| {
         let reminder: String = chars[range.clone()].iter().collect();
         let reminder = reminder.to_lowercase();
+        // "({E}{E}) (two energy counters)" only says what the symbols are.
+        if reminder.contains("energy counter") {
+            return false;
+        }
         reminder.contains(" counter") || reminder.contains("counters")
     })
 }

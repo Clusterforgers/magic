@@ -4347,5 +4347,53 @@
     "colors": [],
     "color_identity": [],
     "keywords": []
+  },
+  {
+    "id": "f10539e3-d4bc-4f71-a00f-8e94bb97509d",
+    "oracle_id": "1ec63280-ae5b-4892-8854-de2d8127ea83",
+    "name": "Solstice Zealot",
+    "lang": "en",
+    "layout": "normal",
+    "set": "mh3",
+    "collector_number": "43",
+    "rarity": "common",
+    "released_at": "2024-06-14",
+    "digital": false,
+    "mana_cost": "{2}{W}",
+    "cmc": 3,
+    "type_line": "Creature — Rhino Cleric",
+    "oracle_text": "When this creature enters, you get {E}{E} (two energy counters).\n{T}, Pay {E}: Tap target creature.",
+    "power": "2",
+    "toughness": "3",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "7be413dd-d6e0-4bd3-8c14-4dbe44e8ee41",
+    "oracle_id": "efab5a30-74ee-4959-b7cd-2a5d25d18327",
+    "name": "Copper-Leaf Angel",
+    "lang": "en",
+    "layout": "normal",
+    "set": "pcy",
+    "collector_number": "137",
+    "rarity": "rare",
+    "released_at": "2000-06-05",
+    "digital": false,
+    "mana_cost": "{5}",
+    "cmc": 5,
+    "type_line": "Artifact Creature — Angel",
+    "oracle_text": "Flying\n{T}, Sacrifice X lands: Put X +1/+1 counters on this creature.",
+    "power": "2",
+    "toughness": "2",
+    "colors": [],
+    "color_identity": [],
+    "keywords": [
+      "Flying"
+    ]
   }
 ]

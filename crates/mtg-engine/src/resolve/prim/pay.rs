@@ -1,60 +1,67 @@
-//! `Effect::Pay`: a player may pay mana, and what follows depends on whether they do ("unless that player pays {1}").
+//! `Effect::Pay`: a player may pay a cost, and what follows depends on whether they do ("unless that player pays {1}",
+//! "you may pay 2 life. If you do").
+
+use std::iter::Peekable;
 
 use mtg_cards::cost::Cost;
 use mtg_cards::effect::Effect;
-use mtg_core::ids::PlayerId;
+use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
 use super::wrong_effect;
 use crate::cast::payment_decision;
-use crate::choose::{Choice, YesNoOptions};
+use crate::choose::{CardsOptions, Choice, YesNoOptions};
 use crate::decision::{Decision, DecisionKind};
+use crate::events::Event;
 use crate::help::Offered;
 use crate::mana::can_afford;
+use crate::parts::{Part, Payer};
 use crate::price::{Leaves, Price};
 use crate::priority::mana_options;
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::spend::Spend;
-use crate::state::GameState;
 use crate::wording;
 
-/// The players the effect names who are in the game are asked in turn order whether they will pay ("Pay {2}?"), until
-/// one does. A player who cannot pay, with the floating mana and the permanents they may tap, is asked the same
-/// question at the same time and can only say no (`YesNoOptions::only_no`), so neither the table nor the clock shows
-/// whether they could pay. A yes leads to the payment decision (`PayMana`, which cannot be backed out of), and the
-/// `paid` effects follow once it is made; when nobody pays, the `unpaid` effects follow.
+/// The players the effect names who are in the game are asked in turn order whether they will pay ("Pay {2}?", "Pay 2
+/// life?", "Discard a card?"), until one does. A player who cannot pay, with the floating mana and the permanents they
+/// may tap, the life, the counters, the energy and the objects the cost takes, is asked the same question at the same
+/// time and can only say no (`YesNoOptions::only_no`), so neither the table nor the clock shows whether they could pay.
+/// A yes leads to a `ChooseCards` for each part that picks among more objects than it takes, in the order the cost
+/// prints them, and then the payment decision (`PayMana`, which cannot be backed out of) when the cost has mana; the
+/// `paid` effects follow once everything is paid, with the events of the parts, and when nobody pays, the `unpaid`
+/// effects follow.
 ///
-/// A step with k questions runs k + 1 times. The journal holds, for each player asked, a no or a yes and then, for a
-/// player who paid, a second yes that the payment's answer logs along with its events (`cast::pay_answer`). The
-/// entries of a player who has left the game since are not read, and a player who left before paying has not paid.
+/// A step with k questions runs k + 1 times. The journal holds, for each player asked, a no or a yes, then the picks
+/// of a player who said yes and, for a cost with mana, a second yes that the payment's answer logs along with its
+/// events (`cast::pay_answer`). The entries of a player who has left the game since are not read, and a player who left
+/// before paying has not paid.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Pay { who, cost, .. } = effect else {
         return Err(wrong_effect("Pay"));
     };
-    let cost = mana_of(cost)?;
+    let price = price_of(cost)?;
     let state = cx.state();
     let mut journal = cx
         .journal()
         .iter()
         .filter(|entry| state.is_alive(entry.0))
         .peekable();
-    let mut paid = false;
+    let mut paid = None;
     for player in cx.scope.players(who)? {
         let Some((_, asked)) = journal.next_if(|entry| entry.0 == player) else {
             if state.is_alive(player) {
-                return Ok(Run::Ask(question(cx, player, &cost)));
+                return Ok(Run::Ask(question(cx, player, &price)));
             }
             continue;
         };
         match asked {
             Choice::YesNo(false) => {}
-            Choice::YesNo(true) => match journal.next_if(|entry| entry.0 == player) {
-                Some((_, Choice::YesNo(true))) => {
-                    paid = true;
+            Choice::YesNo(true) => match settle(cx, player, &price, &mut journal)? {
+                Settled::Ask(decision) => return Ok(Run::Ask(decision)),
+                Settled::Paid(events) => {
+                    paid = Some(events);
                     break;
                 }
-                None => return Ok(Run::Ask(payment(cx, player, cost)?)),
-                Some(other) => return Err(unexpected(&other.1, player)),
             },
             other => return Err(unexpected(other, player)),
         }
@@ -65,10 +72,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         ));
     }
     Ok(Run::Done {
-        events: Vec::new(),
+        next: Next::Enter(usize::from(paid.is_none())),
+        events: paid.unwrap_or_default(),
         bound: Vec::new(),
         snapshots: Vec::new(),
-        next: Next::Enter(usize::from(!paid)),
     })
 }
 
@@ -78,71 +85,175 @@ fn unexpected(answer: &Choice, player: PlayerId) -> ResolveError {
     ))
 }
 
-/// The mana of a cost that is only mana: the one cost an effect can ask for today.
-fn mana_of(cost: &Cost) -> Result<ManaCost, ResolveError> {
-    match Price::of(cost) {
+/// The price of a cost an effect asks for: mana, and the parts the engine pays (life, counters removed from the source,
+/// energy, objects picked). A cost that loses the source, taps it, has an `{X}` or counts X is refused by name: no
+/// announcement chooses an X in the middle of a resolution.
+fn price_of(cost: &Cost) -> Result<Price, ResolveError> {
+    let price = Price::announced(cost).map_err(ResolveError::Unsupported)?;
+    match price.leaves {
         // Losing the source is a cost of an ability; no effect asks a player to pay it yet.
-        Ok(Price {
-            leaves: Leaves::Sacrificed,
-            ..
-        }) => Err(ResolveError::Unsupported("Effect.Pay.SacrificeSelf")),
-        Ok(Price {
-            leaves: Leaves::Exiled,
-            ..
-        }) => Err(ResolveError::Unsupported("Effect.Pay.ExileSelf")),
-        Ok(Price {
-            leaves: Leaves::Discarded,
-            ..
-        }) => Err(ResolveError::Unsupported("Effect.Pay.DiscardSelf")),
-        Ok(Price {
-            tap: false,
-            mana: Some(mana),
-            ..
-        }) => Ok(mana),
-        Ok(_) => Err(ResolveError::Invalid(
-            "a payment is mana and nothing else".into(),
-        )),
-        Err(name) => Err(ResolveError::Unsupported(name)),
+        Leaves::Sacrificed => return Err(ResolveError::Unsupported("Effect.Pay.SacrificeSelf")),
+        Leaves::Exiled => return Err(ResolveError::Unsupported("Effect.Pay.ExileSelf")),
+        Leaves::Discarded => return Err(ResolveError::Unsupported("Effect.Pay.DiscardSelf")),
+        Leaves::Stays => {}
     }
+    if price.x > 0 {
+        return Err(ResolveError::Unsupported("Cost.Mana.X"));
+    }
+    if price.counted() {
+        return Err(ResolveError::Unsupported("Effect.Pay.X"));
+    }
+    if price.tap || (price.mana.is_none() && price.parts.is_empty()) {
+        return Err(ResolveError::Invalid(
+            "a payment is mana, life, counters, energy or objects picked".into(),
+        ));
+    }
+    Ok(price)
 }
 
-/// Whether the player has the mana and the life for `cost`: floating or from the permanents they may tap.
-fn can_pay(state: &GameState, player: PlayerId, cost: &ManaCost) -> bool {
+/// Whether the player has the mana, the life, the counters, the energy and the objects for `price`: the mana floating or
+/// from the permanents they may tap, other than the ones the other parts take.
+fn can_pay(cx: &Cx<'_>, player: PlayerId, price: &Price) -> bool {
+    let state = cx.state();
+    let Some(claimed) = price.claimed(state, player, cx.scope.source.id) else {
+        return false;
+    };
     state.player(player).is_some_and(|seat| {
-        can_afford(
-            cost,
-            seat.mana(),
-            &mana_options(state, player),
-            seat.life(),
-            &Spend::other(),
-        )
+        price.mana.as_ref().is_none_or(|mana| {
+            let mut sources = mana_options(state, player);
+            sources.retain(|option| !claimed.contains(&option.source.object));
+            let life = seat
+                .life()
+                .saturating_sub(i32::try_from(price.life()).unwrap_or(i32::MAX));
+            can_afford(mana, seat.mana(), &sources, life, &Spend::other())
+        })
     })
 }
 
-/// "Pay {2}?" for the player, with No the only answer when they cannot pay.
-fn question(cx: &Cx<'_>, player: PlayerId, cost: &ManaCost) -> Decision {
+/// "Pay {2}?", "Pay 2 life?", "Discard a card?": the parts of the cost as a card says them, with No the only answer when
+/// the player cannot pay.
+fn question(cx: &Cx<'_>, player: PlayerId, price: &Price) -> Decision {
     Decision {
         player,
         kind: DecisionKind::YesNo(YesNoOptions {
-            only_no: !can_pay(cx.state(), player, cost),
-            ..YesNoOptions::new(cx.scope.source.id, wording::pay(cost))
+            only_no: !can_pay(cx, player, price),
+            ..YesNoOptions::new(cx.scope.source.id, wording::pay(&said(price)))
         }),
     }
 }
 
-/// The payment decision of a player who said yes: no way back, since saying no was the way out.
-fn payment(cx: &Cx<'_>, player: PlayerId, cost: ManaCost) -> Result<Decision, ResolveError> {
+/// What the cost asks, part by part: "Pay {1}", "Pay 2 life", "Discard a card".
+fn said(price: &Price) -> Vec<String> {
+    price
+        .mana
+        .iter()
+        .map(|mana| format!("Pay {mana}"))
+        .chain(price.parts.iter().map(Part::text))
+        .collect()
+}
+
+/// Where a player who said yes stands.
+enum Settled {
+    /// The next question: which objects to take, or the payment of the mana.
+    Ask(Decision),
+    /// Everything is paid, with these events.
+    Paid(Vec<Event>),
+}
+
+/// The picks of the parts and the payment of the mana of a player who said yes, read from the journal in the order
+/// they were asked.
+fn settle<'a>(
+    cx: &Cx<'_>,
+    player: PlayerId,
+    price: &Price,
+    journal: &mut Peekable<impl Iterator<Item = &'a (PlayerId, Choice)>>,
+) -> Result<Settled, ResolveError> {
     let state = cx.state();
+    let source = cx.scope.source.id;
+    let mut taken: Vec<Vec<ObjectId>> = Vec::new();
+    for part in &price.parts {
+        let Part::Pick(pick) = part else { continue };
+        let barred = price.barred(part, source, &taken);
+        let candidates = pick.candidates(&Payer {
+            state,
+            player,
+            source,
+            barred: &barred,
+        });
+        if candidates.len() < pick.count {
+            return Err(ResolveError::Invalid(format!(
+                "{player:?} said yes to a cost they cannot pay"
+            )));
+        }
+        // Nothing to choose between: the part takes what there is.
+        if candidates.len() == pick.count {
+            taken.push(candidates);
+            continue;
+        }
+        match journal.next_if(|entry| entry.0 == player) {
+            Some((_, Choice::Cards(cards))) => taken.push(cards.clone()),
+            None => {
+                let count = u32::try_from(pick.count).unwrap_or(u32::MAX);
+                return Ok(Settled::Ask(Decision {
+                    player,
+                    kind: DecisionKind::ChooseCards(CardsOptions {
+                        source,
+                        from: candidates,
+                        min: count,
+                        max: count,
+                        text: pick.text(),
+                        can_cancel: false,
+                    }),
+                }));
+            }
+            Some((_, other)) => return Err(unexpected(other, player)),
+        }
+    }
+    if price.mana.is_some() {
+        match journal.next_if(|entry| entry.0 == player) {
+            Some((_, Choice::YesNo(true))) => {}
+            None => {
+                let picked: Vec<ObjectId> = taken.iter().flatten().copied().collect();
+                return payment(cx, player, price, &picked).map(Settled::Ask);
+            }
+            Some((_, other)) => return Err(unexpected(other, player)),
+        }
+    }
+    let mut picks = taken.iter();
+    let mut events = Vec::new();
+    for part in &price.parts {
+        let picked = if matches!(part, Part::Pick(_)) {
+            picks.next().map_or(&[][..], Vec::as_slice)
+        } else {
+            &[]
+        };
+        events.extend(part.events(state, player, source, picked));
+    }
+    Ok(Settled::Paid(events))
+}
+
+/// The payment decision of a player who said yes: no way back, since saying no was the way out. The permanents the other
+/// parts take are not offered to tap, and the life they pay is not there to spend.
+fn payment(
+    cx: &Cx<'_>,
+    player: PlayerId,
+    price: &Price,
+    picked: &[ObjectId],
+) -> Result<Decision, ResolveError> {
+    let state = cx.state();
+    let mana = price.mana.clone().unwrap_or(ManaCost::ZERO);
+    let mut sources = mana_options(state, player);
+    sources.retain(|option| !picked.contains(&option.source.object));
     payment_decision(
         state,
         player,
         cx.scope.source.id,
-        cost,
-        mana_options(state, player),
+        mana,
+        sources,
         Offered::default(),
         Spend::other(),
         false,
-        0,
+        price.life(),
     )
     .map(|options| Decision {
         player,
@@ -153,7 +264,7 @@ fn payment(cx: &Cx<'_>, player: PlayerId, cost: ManaCost) -> Result<Decision, Re
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a payment asks the players it names in turn order "Pay {2}?" until one says yes and then for the payment itself (no way back), asks a player who cannot pay in the same words with No as the only answer (for every kind of mana cost: generic, coloured, hybrid, Phyrexian, floating, tapped and wrong-coloured sources), skips a player who left the game, enters the paid effects once a payment is logged and the unpaid ones when nobody paid, reads a player's answers back from the journal (paying spends what could pay), refuses answers it did not ask for, and refuses by name a cost that is not plain mana.
+    //! Goal: a payment asks the players it names in turn order "Pay {2}?" until one says yes and then for the payment itself (no way back), asks a player who cannot pay in the same words with No as the only answer (for every kind of mana cost: generic, coloured, hybrid, Phyrexian, floating, tapped and wrong-coloured sources), skips a player who left the game, enters the paid effects once a payment is logged and the unpaid ones when nobody paid, reads a player's answers back from the journal (paying spends what could pay), refuses answers it did not ask for, and refuses by name a cost the effect cannot ask (losing the source, tapping it, an X, a counted amount).
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -168,6 +279,7 @@ mod tests {
     use crate::fold::apply_event;
     use crate::player::LossReason;
     use crate::resolve::{Resolving, Scope};
+    use crate::state::GameState;
     use crate::zones::Zone;
 
     const ME: PlayerId = PlayerId(0);
@@ -537,9 +649,14 @@ mod tests {
     }
 
     #[rstest]
-    #[case::life(
-        r#"[{"Mana":"{1}"},{"PayLife":2}]"#,
-        ResolveError::Unsupported("Cost.PayLife")
+    #[case::counted_life(r#"[{"PayLife":"X"}]"#, ResolveError::Unsupported("Effect.Pay.X"))]
+    #[case::counted_mana_and_energy(
+        r#"[{"Mana":"{1}"},{"PayEnergy":"X"}]"#,
+        ResolveError::Unsupported("Effect.Pay.X")
+    )]
+    #[case::an_amount_nothing_counts(
+        r#"[{"PayLife":{"Life":"You"}}]"#,
+        ResolveError::Unsupported("Cost.PayLife.Counted")
     )]
     #[case::sacrifice(
         r#"["SacrificeSelf"]"#,
@@ -549,17 +666,17 @@ mod tests {
         r#"[{"Mana":"{2}"},"SacrificeSelf"]"#,
         ResolveError::Unsupported("Effect.Pay.SacrificeSelf")
     )]
-    #[case::sacrificing_another(
-        r#"[{"Sacrifice":{"filter":[]}}]"#,
-        ResolveError::Unsupported("Cost.Sacrifice")
-    )]
     #[case::x(r#""{X}""#, ResolveError::Unsupported("Cost.Mana.X"))]
     #[case::tapping(
         r#"[{"Mana":"{1}"},"Tap"]"#,
-        ResolveError::Invalid("a payment is mana and nothing else".into())
+        ResolveError::Invalid(
+            "a payment is mana, life, counters, energy or objects picked".into()
+        )
     )]
-    #[case::nothing("[]", ResolveError::Invalid("a payment is mana and nothing else".into()))]
-    fn a_cost_that_is_not_plain_mana_is_refused_by_name(
+    #[case::nothing("[]", ResolveError::Invalid(
+            "a payment is mana, life, counters, energy or objects picked".into()
+        ))]
+    fn a_cost_the_effect_cannot_ask_is_refused_by_name(
         #[case] cost: &str,
         #[case] expected: ResolveError,
     ) {

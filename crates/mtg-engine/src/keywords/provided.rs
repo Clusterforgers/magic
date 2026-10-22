@@ -337,9 +337,19 @@ fn the_abilities_of_an_attachment_keyword_are_valid_rules_and_the_engine_runs_th
     }
 }
 
-#[test]
-fn a_ward_cost_the_engine_cannot_pay_keeps_the_card_from_being_verified() {
-    let life = Keyword::Ward(serde_json::from_str(r#"[{"PayLife":2}]"#).unwrap());
-    let missing = caps().missing(&used_primitives(&Ability::Keyword(life)));
-    assert_eq!(missing, ["Effect.Pay.PayLife"]);
+#[rstest]
+#[case::life(r#"[{"PayLife":2}]"#, &[])]
+#[case::mana_and_life(r#"[{"Mana":"{1}"},{"PayLife":2}]"#, &[])]
+#[case::discarding_a_card(r#"[{"Discard":{}}]"#, &[])]
+#[case::sacrificing_a_permanent(r#"[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}]"#, &[])]
+#[case::energy(r#"[{"PayEnergy":2}]"#, &[])]
+#[case::losing_the_source(r#"["SacrificeSelf"]"#, &["Effect.Pay.SacrificeSelf"])]
+#[case::an_x(r#"[{"PayLife":"X"}]"#, &["Amount.X.Elsewhere", "Effect.Pay.X"])]
+fn a_ward_cost_the_engine_cannot_pay_keeps_the_card_from_being_verified(
+    #[case] cost: &str,
+    #[case] named: &[&str],
+) {
+    let ward = Keyword::Ward(serde_json::from_str(cost).unwrap());
+    let missing = caps().missing(&used_primitives(&Ability::Keyword(ward)));
+    assert_eq!(missing, named);
 }

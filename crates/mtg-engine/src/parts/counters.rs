@@ -9,13 +9,18 @@ use crate::counters::CountersChanged;
 use crate::events::Event;
 use crate::state::GameState;
 
-/// Whether the source is on the battlefield with at least that many counters of the kind.
-pub(super) fn payable(payer: &Payer<'_>, counter: &CounterKind, count: u32) -> bool {
+/// The counters of the kind on the source, which is on the battlefield.
+pub(super) fn most(payer: &Payer<'_>, counter: &CounterKind) -> u32 {
     payer
         .state
         .object(payer.source)
         .and_then(|object| object.permanent())
-        .is_some_and(|permanent| permanent.counters_of(counter) >= count)
+        .map_or(0, |permanent| permanent.counters_of(counter))
+}
+
+/// Whether the source is on the battlefield with at least that many counters of the kind.
+pub(super) fn payable(payer: &Payer<'_>, counter: &CounterKind, count: u32) -> bool {
+    count == 0 || most(payer, counter) >= count
 }
 
 /// What a snapshot of the source lists once the counters are removed, so the ability remembers its source as it stands

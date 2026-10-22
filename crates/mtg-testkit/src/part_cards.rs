@@ -155,11 +155,20 @@ pub fn life_cycler(name: &str) -> Arc<CardDefinition> {
     )
 }
 
+/// `{1}{B}` creature: "{1}, <part of a cost that counts X>: You gain X life." The mana keeps a bot from activating it
+/// without end.
+pub fn counter_of_x(name: &str, part: &str) -> Arc<CardDefinition> {
+    let ability = format!(
+        r#"{{"Activated":{{"cost":[{{"Mana":"{{1}}"}},{part}],"effects":[{{"GainLife":{{"amount":"X"}}}}]}}}}"#
+    );
+    creature_with(name, (1, &[Color::Black]), &[&ability])
+}
+
 /// The deck of a seat: lands in three colours and every card with a cost of this kind, with creatures and burn for the
 /// costs to bear on.
 pub fn parts_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
-    let colors = [Color::Black, Color::Red, Color::Blue];
-    let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS).map(|i| land(colors[i % 3])).collect();
+    let colors = [Color::Black, Color::Red, Color::Blue, Color::White];
+    let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS).map(|i| land(colors[i % 4])).collect();
     for (card, copies) in [
         (sacrificer("Sacrificer"), 3),
         (rummager("Rummager"), 2),
@@ -175,6 +184,26 @@ pub fn parts_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusE
         (bear(), 4),
         (creature("Ogre", 2, &[Color::Red], 3, 3), 2),
         (burn("Burn", 3), 3),
+        (counter_of_x("X Bleeder", r#"{"PayLife":"X"}"#), 1),
+        (
+            counter_of_x(
+                "X Sacrificer",
+                r#"{"Sacrifice":{"filter":[{"Type":"Creature"}],"count":"X"}}"#,
+            ),
+            2,
+        ),
+        (
+            counter_of_x("X Rummager", r#"{"Discard":{"count":"X"}}"#),
+            2,
+        ),
+        (
+            counter_of_x(
+                "X Gravedigger",
+                r#"{"ExileFromGraveyard":{"filter":[],"count":"X"}}"#,
+            ),
+            2,
+        ),
+        (counter_of_x("X Battery", r#"{"PayEnergy":"X"}"#), 3),
     ] {
         deck.extend(std::iter::repeat_n(card, copies));
     }
@@ -187,6 +216,8 @@ pub fn parts_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusE
         ("Tumble Magnet", 2),
         ("Lurching Rotbeast", 2),
         ("Souldrinker", 2),
+        ("Solstice Zealot", 4),
+        ("Copper-Leaf Angel", 2),
     ] {
         deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
     }

@@ -8,10 +8,10 @@ use super::cast;
 use super::costs;
 use super::counters;
 use super::create;
-use super::effects::{BACK, RETURNED};
+use super::effects::{BACK, RETURNED, returns_itself};
 use super::library;
 use super::modal::{BULLET, DASH};
-use super::selectors::{Form, keyword_text, phrase_text, spec_text};
+use super::selectors::{Form, granted_text, phrase_text, spec_text};
 use super::spend;
 use super::statics;
 use super::triggers::{article, condition_text, cycled_itself, pattern_text};
@@ -22,7 +22,7 @@ use crate::modify::{Duration, Modification};
 use crate::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::spend::SpendOn;
 use crate::trigger::TriggerPattern;
-use crate::value::{Amount, Condition};
+use crate::value::{Amount, Condition, CounterKind};
 
 /// The oracle wording of an ability the readers produce, in the first way its effects can be
 /// written (see [`variants`]); `None` for any other ability.
@@ -66,7 +66,7 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             targets,
             effects,
         } if *from
-            == if cycled_itself(when) {
+            == if cycled_itself(when) || returns_itself(effects) {
                 ZoneKind::Graveyard
             } else {
                 ZoneKind::Battlefield
@@ -408,32 +408,42 @@ fn sacrifice_text(filter: &Selector) -> Option<String> {
     Some(format!("{} {text}", article(&text)))
 }
 
-/// Whether the effect is written as a verb with "you" understood ("draw a card"), which "you may" can precede.
-fn is_imperative(effect: &Effect) -> bool {
+/// Whether the effect puts energy counters on you, which a card writes "you get {E}{E}".
+fn gets_energy(effect: &Effect) -> bool {
     matches!(
         effect,
-        Effect::Scry { who: Ref::You, .. }
-            | Effect::Surveil { who: Ref::You, .. }
-            | Effect::Proliferate { who: Ref::You }
-            | Effect::Draw { who: Ref::You, .. }
-            | Effect::Mill { who: Ref::You, .. }
-            | Effect::Discard { who: Ref::You, .. }
-            | Effect::Shuffle { who: Ref::You }
-            | Effect::Destroy {
-                regenerate: true,
-                ..
-            }
-            | Effect::Exile { .. }
-            | Effect::Tap { .. }
-            | Effect::Untap { .. }
-            | Effect::Regenerate { .. }
-            | Effect::Counter { .. }
-            | Effect::Move { .. }
-            | Effect::CreateToken { who: Ref::You, .. }
-            | Effect::PutCounters { .. }
-            | Effect::RemoveCounters { .. }
-            | Effect::MoveCounters { .. }
+        Effect::PutCounters { on: Ref::You, counter, .. }
+            if *counter == CounterKind::Other("energy".to_owned())
     )
+}
+
+/// Whether the effect is written as a verb with "you" understood ("draw a card"), which "you may" can precede.
+fn is_imperative(effect: &Effect) -> bool {
+    !gets_energy(effect)
+        && matches!(
+            effect,
+            Effect::Scry { who: Ref::You, .. }
+                | Effect::Surveil { who: Ref::You, .. }
+                | Effect::Proliferate { who: Ref::You }
+                | Effect::Draw { who: Ref::You, .. }
+                | Effect::Mill { who: Ref::You, .. }
+                | Effect::Discard { who: Ref::You, .. }
+                | Effect::Shuffle { who: Ref::You }
+                | Effect::Destroy {
+                    regenerate: true,
+                    ..
+                }
+                | Effect::Exile { .. }
+                | Effect::Tap { .. }
+                | Effect::Untap { .. }
+                | Effect::Regenerate { .. }
+                | Effect::Counter { .. }
+                | Effect::Move { .. }
+                | Effect::CreateToken { who: Ref::You, .. }
+                | Effect::PutCounters { .. }
+                | Effect::RemoveCounters { .. }
+                | Effect::MoveCounters { .. }
+        )
 }
 
 /// "{G}{G}", "one mana of any color": the mana an effect adds.
@@ -714,6 +724,10 @@ impl Writer<'_> {
                 times,
                 only,
             } if times.is_one() => add_text(mana, only)?,
+            // "you get {E}{E}": energy is a counter on the player, written with its symbol.
+            Effect::PutCounters { count, .. } if gets_energy(effect) => {
+                format!("you get {}", costs::energy_text(count)?)
+            }
             Effect::PutCounters { .. }
             | Effect::RemoveCounters { .. }
             | Effect::MoveCounters { .. } => self.counters(effect)?,
@@ -755,9 +769,18 @@ impl Writer<'_> {
         })
     }
 
-    /// "surveil 2", "proliferate", "you become the monarch": a keyword action or a designation.
+    /// "surveil 2", "proliferate", "you become the monarch", "return ~ from your graveyard to the battlefield": a
+    /// keyword action, a designation or the card returning itself.
     fn keyword_action(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
+            Effect::Move {
+                what: Ref::This,
+                to:
+                    Destination::Battlefield {
+                        tapped: false,
+                        under: None,
+                    },
+            } => "return ~ from your graveyard to the battlefield".to_owned(),
             Effect::Surveil {
                 who: Ref::You,
                 count,
@@ -937,16 +960,9 @@ impl Writer<'_> {
             ),
             _ => (None, mods),
         };
-        let keywords = rest
-            .iter()
-            .map(|modification| match modification {
-                Modification::AddKeyword(keyword) => keyword_text(keyword),
-                _ => None,
-            })
-            .collect::<Option<Vec<String>>>()?;
         let mut parts: Vec<String> = stats.into_iter().collect();
-        if !keywords.is_empty() {
-            parts.push(format!("{gains} {}", keywords.join(" and ")));
+        if !rest.is_empty() {
+            parts.push(format!("{gains} {}", granted_text(rest)?));
         }
         if parts.is_empty() {
             return None;

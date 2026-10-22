@@ -119,6 +119,19 @@ impl Price {
         })
     }
 
+    /// The price with every counted part taking the X announced; X is 0 for an ability that announces none.
+    pub(crate) fn at(&self, x: u32) -> Price {
+        Price {
+            parts: self.parts.iter().map(|part| part.at(x)).collect(),
+            ..self.clone()
+        }
+    }
+
+    /// Whether some part takes the X announced with the ability.
+    pub(crate) fn counted(&self) -> bool {
+        self.parts.iter().any(Part::is_counted)
+    }
+
     /// Whether paying moves the source out of the zone it is in.
     pub(crate) fn moves_source(&self) -> bool {
         self.leaves != Leaves::Stays
@@ -164,6 +177,11 @@ impl Price {
             taken.push(part.payable(&owner, &spare)?);
         }
         Some(taken.into_iter().flatten().collect())
+    }
+
+    /// The life the parts of the price pay when X is `x`.
+    pub(crate) fn life_at(&self, x: u32) -> u32 {
+        self.at(x).life()
     }
 
     /// The life the parts of the price pay.
