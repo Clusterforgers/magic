@@ -324,7 +324,7 @@ pub(crate) async fn game(
     }))
 }
 
-/// `POST /api/games`: creates a Normal game and returns each seat's token (the only time it is shown).
+/// `POST /api/games`: creates a Normal or Commander game and returns each seat's token (the only time it is shown).
 ///
 /// A signed-in creator owns seat 0 from the start (the web opens "my seat" there); the rest of the
 /// seats are guests' until somebody signed in opens their link.

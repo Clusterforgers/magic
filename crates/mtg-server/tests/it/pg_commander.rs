@@ -313,7 +313,7 @@ fn assert_commanders(view: &StateView, seats: usize) {
         assert_eq!(player.life, 40, "seat {seat}");
         assert_eq!(player.commanders[0].casts, 0);
         assert_eq!(player.commanders[0].tax, 0);
-        assert!(player.commander_damage.is_empty());
+        assert_eq!(player.commander_damage, []);
         assert_eq!(player.hand.count, 7, "seat {seat}: a hand of seven");
     }
 }

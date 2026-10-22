@@ -136,7 +136,9 @@ fn encode(
     let mut text = format!("mtg-deck/v{FINGERPRINT_VERSION}\n{}\n", cards.len());
     write_cards(cards, &mut text)?;
     if !commanders.is_empty() {
-        text.push_str(&format!("commanders\n{}\n", commanders.len()));
+        text.push_str("commanders\n");
+        text.push_str(&commanders.len().to_string());
+        text.push('\n');
         write_cards(commanders, &mut text)?;
     }
     Ok(text)

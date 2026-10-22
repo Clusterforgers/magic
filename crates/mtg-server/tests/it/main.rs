@@ -24,6 +24,7 @@ mod pg_card_decks;
 mod pg_card_rules;
 mod pg_cards_api;
 mod pg_commander;
+mod pg_commander_real;
 mod pg_deck_import_printings;
 mod pg_decks;
 mod pg_failed_games;

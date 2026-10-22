@@ -2,11 +2,12 @@
 //! signed-in caller, or a precon (`precon:<code>`), checked when it is chosen.
 //!
 //! A stored deck is read as it is at that moment and kept as a snapshot ([`ChosenDeck`]): the
-//! oracle id of every card of its main deck, their definitions as assembled now, and the three facts
-//! the table is told. The check is the one the deck list shows (`deck_report` in the deck's own
-//! format), plus the rules of the game's format: a Normal game has no command zone, and the engine
-//! wants 60 cards with at most four copies of a card. A precon is judged by the same rules
-//! (`precons.rs`) and needs no account.
+//! oracle id of every card of its main deck and of its command zone, their definitions as assembled
+//! now, and the three facts the table is told. The check is the one the deck list shows
+//! (`deck_report` in the deck's own format); the rules of the game's format come after it, once the
+//! game is known ([`format_issues`]): a Normal game has no command zone and wants 60 cards with at
+//! most four copies of a card, a Commander game the commanders, 100 cards, one copy of each and the
+//! colour identity. A precon is judged by the same rules (`precons.rs`) and needs no account.
 
 use axum::http::{HeaderMap, StatusCode};
 use mtg_cards::CardDefinition;
@@ -337,9 +338,17 @@ pub(crate) fn engine_issue(error: DeckError, format: FormatKind) -> Issue {
                     (IssueCode::DeckSize, DeckZone::Main, None)
                 }
             };
+            // The engine reads a commander's rules from the card's definition, which a card without
+            // its rules lacks; the deck check, which reads the printed text, may accept the same deck.
+            let note = match other {
+                DeckError::NotACommander { .. } | DeckError::NotPartners { .. } => {
+                    "; the game does not run this card's commander rule yet"
+                }
+                _ => "",
+            };
             Issue {
                 code,
-                message: other.to_string(),
+                message: format!("{other}{note}"),
                 zone: Some(zone),
                 oracle_id: None,
                 name,

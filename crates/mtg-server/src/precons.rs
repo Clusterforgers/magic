@@ -141,10 +141,11 @@ impl<'a> Judge<'a> {
         }
     }
 
-    /// The deck check of a precon in its own format and the rules of a Normal game on top.
+    /// The deck check of a precon in its own format and the engine's rules for the game it is for
+    /// on top.
     ///
-    /// A deck with a commander is judged as `commander`, any other as `freeform`: a precon is a
-    /// product, not an entry in a tournament format.
+    /// A deck with a commander is judged as `commander` and is for a Commander game, any other as
+    /// `freeform` for a Normal game: a precon is a product, not an entry in a tournament format.
     pub(crate) fn judge(&mut self, deck: &PreconDeckDetail) -> Judged {
         let mut lines = Vec::new();
         let mut unresolved = Vec::new();
