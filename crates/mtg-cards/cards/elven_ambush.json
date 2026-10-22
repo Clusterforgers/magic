@@ -1,0 +1,34 @@
+{
+  "oracle_id": "a2373025-20c1-4416-91f7-e51f68dbd146",
+  "name": "Elven Ambush",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elven Ambush",
+      "oracle_fingerprint": "1351afc89a232a1fa56dead9a51e1ac4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elf Warrior",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elf", "Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Count": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

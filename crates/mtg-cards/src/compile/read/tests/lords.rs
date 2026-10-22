@@ -121,7 +121,6 @@ fn near_misses_of_cost_modifiers_stay_with_the_table(#[case] text: &str) {
 #[case::a_qualifier_after_the_noun("Creatures Sliver get +1/+1.")]
 #[case::an_unknown_subtype("Flumph creatures get +1/+1.")]
 #[case::singular_tokens("Creature token you control gets +1/+1.")]
-#[case::the_card_itself_gets_a_bonus("Sliver creatures get +1/+1 for each Sliver you control.")]
 fn near_misses_stay_with_the_table(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Static, false), None, "{text}");
 }

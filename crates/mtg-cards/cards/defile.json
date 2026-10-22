@@ -1,0 +1,44 @@
+{
+  "oracle_id": "49dddec0-d958-4810-8c6e-225fc8118c8f",
+  "name": "Defile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Defile",
+      "oracle_fingerprint": "deb186ed62649dd0de7af672436662f9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

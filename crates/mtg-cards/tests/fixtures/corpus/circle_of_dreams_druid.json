@@ -1,0 +1,25 @@
+{
+  "id": "be6fdec0-a2c4-4da2-ae14-961185eaee66",
+  "oracle_id": "1c857fa4-e823-494d-9ea4-7eb9e719c9b6",
+  "name": "Circle of Dreams Druid",
+  "lang": "en",
+  "layout": "normal",
+  "set": "afr",
+  "collector_number": "176",
+  "rarity": "rare",
+  "released_at": "2021-07-23",
+  "digital": false,
+  "mana_cost": "{G}{G}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Elf Druid",
+  "oracle_text": "{T}: Add {G} for each creature you control.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

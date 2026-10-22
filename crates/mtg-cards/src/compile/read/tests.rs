@@ -166,6 +166,7 @@ mod enters;
 mod event_batches;
 mod events;
 mod exile_bounce_shrink;
+mod for_each;
 mod if_sentence;
 mod impulse;
 mod lands;
@@ -351,7 +352,6 @@ mod mana {
 
     #[rstest]
     #[case::a_choice_and_a_cost("{T}: Add {R} or {G}. {T}: Add {B}.")]
-    #[case::for_each("{T}: Add {G} for each creature you control.")]
     #[case::x("{T}: Add {X}.")]
     #[case::generic("{T}: Add {2}.")]
     #[case::snow("{T}: Add {S}.")]
@@ -454,10 +454,8 @@ mod cards_and_life {
     }
 
     #[rstest]
-    #[case::for_each("Draw a card for each creature you control.")]
     #[case::equal_to("Draw cards equal to the number of creatures you control.")]
     #[case::you_and_you("You draw two cards and you lose 2 life.")]
-    #[case::life_for_each("You gain 2 life for each creature you control.")]
     #[case::unless("Target player draws a card unless they discard a card.")]
     #[case::if_you_do("Draw a card. If you do, gain 1 life.")]
     #[case::if_first("If you control a creature, draw a card.")]
@@ -698,7 +696,6 @@ mod scry {
     #[case::another_player("Target player scries 2.")]
     #[case::each_player("Each player scries 1.")]
     #[case::then_a_choice("Scry 2, then you may sacrifice a creature.")]
-    #[case::then_for_each("Scry 1, then draw a card for each creature you control.")]
     #[case::a_second_sentence(
         "Scry 2. You may put a card from your hand on the bottom of your library."
     )]

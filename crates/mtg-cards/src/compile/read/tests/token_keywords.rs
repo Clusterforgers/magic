@@ -197,9 +197,6 @@ fn the_keywords_of_the_vocabulary_also_read_in_a_pump_and_a_selector(#[case] tex
 #[case::attacking_after_an_open_count(
     "Create X 1/1 white Spirit creature tokens with flying that are attacking."
 )]
-#[case::for_each(
-    "Create a 1/1 white Spirit creature token with flying for each creature you control."
-)]
 #[case::an_open_count_named_otherwise(
     "Create X 1/1 white Pegasus creature tokens with flying, where X is your life total."
 )]

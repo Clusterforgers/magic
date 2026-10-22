@@ -71,6 +71,8 @@ pub enum Form {
     All,
     /// After "a", "an" or "another" as the subject of a trigger: "creature an opponent controls".
     Subject,
+    /// After "for each": "creature you control", "creature card in your graveyard".
+    Count,
 }
 
 impl Form {
@@ -464,11 +466,16 @@ fn head(r: &mut Reader<'_>, form: Form) -> Option<(Vec<CardType>, Noun)> {
 }
 
 /// "from your graveyard", "from your hand": the zone and its owner.
-fn zone_suffix(r: &mut Reader<'_>) -> Option<[Pred; 2]> {
-    if r.words("from your hand") {
+fn zone_suffix(r: &mut Reader<'_>, form: Form) -> Option<[Pred; 2]> {
+    let (hand, graveyard) = if form == Form::Count {
+        ("in your hand", "in your graveyard")
+    } else {
+        ("from your hand", "from your graveyard")
+    };
+    if r.words(hand) {
         return Some([Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]);
     }
-    r.words("from your graveyard")
+    r.words(graveyard)
         .then_some([Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)])
 }
 
@@ -546,7 +553,7 @@ pub fn phrase(r: &mut Reader<'_>, form: Form) -> Option<Selector> {
             }
         }
         loop {
-            if let Some(zone) = zone_suffix(r) {
+            if let Some(zone) = zone_suffix(r, form) {
                 preds.extend(zone);
             } else if let Some(pred) = suffix(r, form) {
                 preds.push(pred);
@@ -576,11 +583,13 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
                 .is_some()
         {
             card = true;
-            suffixes.push(if *zone == ZoneKind::Hand {
-                "from your hand".to_owned()
+            let preposition = if form == Form::Count { "in" } else { "from" };
+            let place = if *zone == ZoneKind::Hand {
+                "hand"
             } else {
-                "from your graveyard".to_owned()
-            });
+                "graveyard"
+            };
+            suffixes.push(format!("{preposition} your {place}"));
         } else if let Pred::Subtype(Subtype(name)) = pred {
             if subtype.replace(name.as_str()).is_some() {
                 return None;

@@ -43,6 +43,7 @@ mod corpus_cards;
 mod cost_fuzz;
 mod cost_modifiers;
 mod cost_parts;
+mod counted_amounts;
 mod counted_costs;
 mod counter_effects;
 mod counters_fuzz;
