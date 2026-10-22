@@ -1,0 +1,25 @@
+{
+  "id": "ff2665f7-6cf8-4f9b-810e-17e264753225",
+  "oracle_id": "849a7ae8-2b4e-4fa5-9607-2bfc961fee40",
+  "name": "Join the Maestros",
+  "lang": "en",
+  "layout": "normal",
+  "set": "snc",
+  "collector_number": "85",
+  "rarity": "common",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Casualty 2 (As you cast this spell, you may sacrifice a creature with power 2 or greater. When you do, copy this spell.)\nCreate a 4/3 black Ogre Warrior creature token.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Casualty"
+  ]
+}

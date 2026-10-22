@@ -9,7 +9,7 @@ use super::tokens::Reader;
 use crate::keyword::Keyword;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::{Step, TriggerPattern};
-use crate::value::{Amount, Cmp, Condition, CounterKind};
+use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 use mtg_core::card::CardType;
 
 /// Whether the pattern is "when you cycle this card", the one trigger that works from the graveyard.
@@ -33,6 +33,28 @@ pub fn itself_acts(pattern: &TriggerPattern) -> bool {
         TriggerPattern::DealsDamage { source, .. } => source.0 == [Pred::This],
         TriggerPattern::AnyOf(patterns) => patterns.iter().all(itself_acts),
         _ => false,
+    }
+}
+
+/// What "it" means in the effects of a trigger about one creature: the card itself when it attacks, blocks, becomes
+/// blocked or enters, and the creature that attacks, becomes blocked or enters otherwise. A creature that blocks
+/// shares the cause with the creature it blocks, so another blocker has no "it".
+pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
+    let (what, named_by_the_cause) = match pattern {
+        TriggerPattern::Attacks { what }
+        | TriggerPattern::BecomesBlocked { what }
+        | TriggerPattern::ZoneChange {
+            what,
+            to: Some(ZoneKind::Battlefield),
+            ..
+        } => (what, true),
+        TriggerPattern::Blocks { what } => (what, false),
+        _ => return None,
+    };
+    if what.0 == [Pred::This] {
+        Some(Ref::This)
+    } else {
+        named_by_the_cause.then_some(Ref::Triggering)
     }
 }
 
@@ -134,6 +156,11 @@ fn together(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         r.need("or more")?;
         number
     };
+    if at_least == 1
+        && let Some(found) = r.attempt(counters_batch)
+    {
+        return Some(found);
+    }
     if at_least == 1 && r.words("cards are put into your graveyard from your library") {
         let what = Selector(vec![Pred::OwnedBy(Ref::You)]);
         return Some(TriggerPattern::Batch(Box::new(
@@ -153,6 +180,22 @@ fn together(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     }
     let damage = damage_dealt(r, &what)?;
     Some(TriggerPattern::Batch(Box::new(damage)))
+}
+
+/// "+1/+1 counters are put on this creature", "counters are put on a creature you control", after "one or more": the
+/// counters of one batch.
+fn counters_batch(r: &mut Reader<'_>) -> Option<TriggerPattern> {
+    let counter = if r.words("counters are put on") {
+        None
+    } else {
+        let counter = counters::kind(r)?;
+        r.words("counters are put on").then_some(())?;
+        Some(counter)
+    };
+    let what = subject(r)?;
+    Some(TriggerPattern::Batch(Box::new(
+        TriggerPattern::CountersPut { what, counter },
+    )))
 }
 
 /// "a +1/+1 counter is put on ~", "a counter is removed from a creature you control".
@@ -547,6 +590,9 @@ fn damage_dealt(r: &mut Reader<'_>, source: &Selector) -> Option<TriggerPattern>
 
 /// The condition of an intervening "if": "you have 40 or more life", "you're the monarch", "there is no monarch".
 pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
+    if let Some(paid) = r.attempt(|r| cost_paid(r, false)) {
+        return Some(paid);
+    }
     if let Some(monarch) = monarch_condition(r) {
         return Some(monarch);
     }
@@ -568,6 +614,34 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
         op,
         right: Amount::Fixed(number),
     })
+}
+
+/// The alternative costs a permanent or spell can be asked about: "its prowl cost was paid".
+const PAID_WAYS: [(&str, CastWay); 1] = [("prowl", CastWay::Prowl)];
+
+/// "its prowl cost was paid", or "this spell's prowl cost was paid" with `spell`: it was cast for that alternative cost.
+pub fn cost_paid(r: &mut Reader<'_>, spell: bool) -> Option<Condition> {
+    if spell {
+        r.source().then_some(())?;
+        r.punct('\'').then_some(())?;
+        r.need("s")?;
+    } else {
+        r.need("its")?;
+    }
+    let word = r.take_word()?;
+    let way = PAID_WAYS.iter().find(|(name, _)| *name == word)?.1;
+    r.need("cost was paid")?;
+    Some(Condition::CastWith(way))
+}
+
+/// The condition `cost_paid` reads, written back for the same `spell`.
+pub fn cost_paid_text(condition: &Condition, spell: bool) -> Option<String> {
+    let Condition::CastWith(way) = condition else {
+        return None;
+    };
+    let name = PAID_WAYS.iter().find(|(_, paid)| paid == way)?.0;
+    let owner = if spell { "this spell's" } else { "its" };
+    Some(format!("{owner} {name} cost was paid"))
 }
 
 /// "while saddled" after an attack: the creature is saddled (CR 702.171b).
@@ -629,6 +703,9 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
 
 /// The condition as the card words it, after "if".
 pub fn condition_text(condition: &Condition) -> Option<String> {
+    if let Some(paid) = cost_paid_text(condition, false) {
+        return Some(paid);
+    }
     if let Some(monarch) = monarch_text(condition) {
         return Some(monarch);
     }
@@ -980,6 +1057,16 @@ fn batch_text(inner: &TriggerPattern) -> Option<String> {
         } if what.0 == [Pred::OwnedBy(Ref::You)] => Some(
             "Whenever one or more cards are put into your graveyard from your library".to_owned(),
         ),
+        TriggerPattern::CountersPut { what, counter } => {
+            let kind = match counter {
+                Some(counter) => format!("{} ", counters::kind_text(counter)?),
+                None => String::new(),
+            };
+            Some(format!(
+                "Whenever one or more {kind}counters are put on {}",
+                subject_text(what)?
+            ))
+        }
         _ => None,
     }
 }

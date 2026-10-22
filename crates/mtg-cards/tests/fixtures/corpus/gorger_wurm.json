@@ -1,0 +1,29 @@
+{
+  "id": "00e5a9be-bfb2-466b-b0fe-3b24694e9f84",
+  "oracle_id": "f2126eb9-892c-4788-95cc-6f3e59f0375d",
+  "name": "Gorger Wurm",
+  "lang": "en",
+  "layout": "normal",
+  "set": "arb",
+  "collector_number": "56",
+  "rarity": "common",
+  "released_at": "2009-04-30",
+  "digital": false,
+  "mana_cost": "{3}{R}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Wurm",
+  "oracle_text": "Devour 1 (As this creature enters, you may sacrifice any number of creatures. It enters with that many +1/+1 counters on it.)",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Devour"
+  ]
+}

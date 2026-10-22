@@ -566,6 +566,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::WithCounters { .. }
         | ReplaceBy::Choose(_)
         | ReplaceBy::PayLifeOrTapped(_)
+        | ReplaceBy::Devour { .. }
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         // Not run yet: a card that uses it is not Verified.
         ReplaceBy::Instead(_) => false,
@@ -1265,6 +1266,7 @@ impl Pass<'_> {
                             ReplaceBy::Tapped
                                 | ReplaceBy::Choose(_)
                                 | ReplaceBy::WithCounters { .. }
+                                | ReplaceBy::Devour { .. }
                         )
                     )
                 });
@@ -1527,6 +1529,9 @@ impl Pass<'_> {
             (ReplaceBy::MoveTo(ZoneKind::Command), Unit::Draw { player }) => {
                 self.slots[at].applied.clone_from(&applied);
                 self.pull_drawn_commander(at, *player, &applied);
+            }
+            (ReplaceBy::Devour { .. }, Unit::Enter { object, controller }) => {
+                return self.devour(at, candidate, by, *object, *controller, applied);
             }
             (_, Unit::Enter { object, controller }) => {
                 return self.enter(at, candidate, by, *object, *controller, applied);
@@ -1993,6 +1998,114 @@ impl Pass<'_> {
             && matches!(&slot.item, Item::One(event) if entering(self.state, event).is_some())
         {
             slot.applied = applied;
+        }
+        Ok(Applied::Done)
+    }
+
+    /// Devours as the card enters (CR 702.82): `controller` picks any number of the permanents they control that the
+    /// keyword names, each is sacrificed before the card enters, and it enters with the counters for each. Nobody is
+    /// asked when there is nothing to sacrifice.
+    fn devour(
+        &mut self,
+        at: usize,
+        candidate: &Candidate,
+        by: &ReplaceBy,
+        object: ObjectId,
+        controller: PlayerId,
+        applied: Vec<Origin>,
+    ) -> Result<Applied, EngineError> {
+        let ReplaceBy::Devour { counters, of } = by else {
+            return Ok(Applied::Done);
+        };
+        let scope = Scope::announcing(self.state, candidate.controller, candidate.object);
+        let options: Vec<ObjectId> = scope
+            .matching(of)?
+            .into_iter()
+            .map(|named| named.id)
+            .filter(|id| {
+                *id != object
+                    && self
+                        .state
+                        .object(*id)
+                        .is_some_and(|permanent| permanent.zone() == Zone::Battlefield)
+                    && crate::characteristics::controller_of(self.state, *id) == Some(controller)
+            })
+            .collect();
+        let chosen: Vec<ObjectId> = if options.is_empty() {
+            Vec::new()
+        } else {
+            match self.answer() {
+                None => {
+                    return Ok(Applied::Ask(Decision {
+                        player: controller,
+                        kind: DecisionKind::ChooseCards(CardsOptions {
+                            source: candidate.object.id,
+                            max: u32::try_from(options.len()).unwrap_or(u32::MAX),
+                            from: options,
+                            min: 0,
+                            text: "Choose permanents to sacrifice.".into(),
+                            can_cancel: false,
+                        }),
+                    }));
+                }
+                Some((who, Choice::Cards(cards)))
+                    if *who == controller
+                        && cards.iter().all(|card| options.contains(card))
+                        && cards.iter().collect::<BTreeSet<_>>().len() == cards.len() =>
+                {
+                    cards.clone()
+                }
+                Some(other) => {
+                    return Err(Self::invalid(format!(
+                        "{other:?} is no answer to the choice of what {controller:?} devours"
+                    )));
+                }
+            }
+        };
+        let sacrifices: Vec<Slot> = chosen
+            .iter()
+            .filter_map(|id| {
+                let owner = self.state.object(*id)?.owner();
+                Some(Slot::new(Item::One(Event::ZoneChanged {
+                    object: *id,
+                    from: Zone::Battlefield,
+                    to: Zone::Graveyard(owner),
+                    cause: ZoneCause::Sacrificed,
+                })))
+            })
+            .collect();
+        let made = sacrifices.len();
+        self.slots.splice(at..at, sacrifices);
+        // The enter event moved to make room for the sacrifices.
+        let entering = at + made;
+        if let Some(slot) = self.slots.get_mut(entering) {
+            slot.applied.clone_from(&applied);
+        }
+        let gained = u32::try_from(made)
+            .ok()
+            .and_then(|made| made.checked_mul(*counters))
+            .and_then(|total| i32::try_from(total).ok())
+            .filter(|total| *total > 0);
+        if let (Some(card), Some(delta)) = (self.state.object(object), gained) {
+            let mut inherited = applied;
+            inherited.dedup();
+            // The counters go on the permanent the card becomes (CR 400.7).
+            let on = Target::Object(ObjectRef {
+                id: object,
+                counter: card.counter() + 1,
+            });
+            self.slots.insert(
+                entering + 1,
+                Slot {
+                    item: Item::One(Event::CountersChanged(CountersChanged {
+                        on,
+                        counter: CounterKind::PlusOnePlusOne,
+                        delta,
+                    })),
+                    applied: inherited,
+                    frozen: false,
+                },
+            );
         }
         Ok(Applied::Done)
     }

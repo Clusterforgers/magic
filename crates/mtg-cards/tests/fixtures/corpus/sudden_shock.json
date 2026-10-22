@@ -1,0 +1,25 @@
+{
+  "id": "5b659a3b-0f66-40f2-8e2e-f13b694e270e",
+  "oracle_id": "7b139231-dcd2-4b03-bcf2-fcb040617b69",
+  "name": "Sudden Shock",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tsr",
+  "collector_number": "194",
+  "rarity": "uncommon",
+  "released_at": "2021-03-19",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Split second (As long as this spell is on the stack, players can't cast spells or activate abilities that aren't mana abilities.)\nSudden Shock deals 2 damage to any target.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Split second"
+  ]
+}

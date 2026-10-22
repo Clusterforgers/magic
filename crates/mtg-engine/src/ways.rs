@@ -220,6 +220,12 @@ fn keyword_way(
             cost,
             in_hand && is_creature(state, id),
         ),
+        Keyword::Prowl(cost) => (
+            CastWay::Prowl,
+            "Prowl",
+            cost,
+            in_hand && prowl_open(state, player, id),
+        ),
         Keyword::Foretell(cost) => (
             CastWay::Foretold,
             "Foretell",
@@ -240,6 +246,7 @@ fn keyword_way(
             | CastWay::Dash
             | CastWay::Bestow
             | CastWay::Blitz
+            | CastWay::Prowl
     ) {
         cast_cost(cost)?
     } else {
@@ -286,6 +293,13 @@ fn is_creature(state: &GameState, id: ObjectId) -> bool {
     state
         .object(id)
         .is_some_and(|card| card.base_types().contains(CardType::Creature))
+}
+
+/// Whether a creature `player` controlled dealt combat damage to a player this turn and shared a creature type with the card
+/// `id` (CR 702.76a).
+fn prowl_open(state: &GameState, player: PlayerId, id: ObjectId) -> bool {
+    let (types, every_type) = crate::characteristics::creature_types(state, id);
+    state.dealt_combat_damage_with(player, &types, every_type)
 }
 
 /// Whether `player` foretold the card `id` on an earlier turn and it still lies face down in exile (CR 702.143a): the cast
@@ -480,6 +494,10 @@ pub(crate) fn grantable(
     free: bool,
     way: Option<CastWay>,
 ) -> bool {
+    // Players cannot cast spells while a spell with split second is on the stack, whatever lets them (CR 702.61a, 101.2).
+    if crate::keywords::split_second_on_stack(state) {
+        return false;
+    }
     if faces::is_multi_face(state, id) {
         return !faces::grantable_faces(state, player, id, Granted { free, way }).is_empty();
     }

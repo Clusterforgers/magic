@@ -1,0 +1,25 @@
+{
+  "id": "80e86078-1629-40dc-88a9-102c543255b8",
+  "oracle_id": "8ce63f60-0211-46c7-8fb6-c5484ebfa029",
+  "name": "Cut of the Profits",
+  "lang": "en",
+  "layout": "normal",
+  "set": "snc",
+  "collector_number": "72",
+  "rarity": "rare",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{X}{B}{B}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Casualty 3 (As you cast this spell, you may sacrifice a creature with power 3 or greater. When you do, copy this spell.)\nYou draw X cards and you lose X life.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Casualty"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "cfb1b64b-bf78-4015-ac29-cdcdf2adaa02",
+  "name": "Curtains' Call",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curtains' Call",
+      "oracle_fingerprint": "e3020aba9b3d9ef5e6b5a26893841334",
+      "abilities": [
+        { "Keyword": "Undaunted" },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 2, "max": 2 } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

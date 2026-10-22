@@ -1,0 +1,25 @@
+{
+  "id": "a3ec95f6-88c8-4daf-882f-8b4bc73452c3",
+  "oracle_id": "df45a344-5937-4a3f-a80f-581ea456ea05",
+  "name": "Rob the Archives",
+  "lang": "en",
+  "layout": "normal",
+  "set": "snc",
+  "collector_number": "122",
+  "rarity": "uncommon",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Casualty 1 (As you cast this spell, you may sacrifice a creature with power 1 or greater. When you do, copy this spell.)\nExile the top two cards of your library. You may play those cards this turn.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Casualty"
+  ]
+}

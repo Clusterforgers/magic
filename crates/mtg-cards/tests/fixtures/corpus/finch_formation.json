@@ -1,0 +1,28 @@
+{
+  "id": "1c671eab-d1ef-4d79-94eb-8b85f0d18699",
+  "oracle_id": "76c2e0b4-d4fa-4e98-b363-0a76eb481304",
+  "name": "Finch Formation",
+  "lang": "en",
+  "layout": "normal",
+  "set": "blb",
+  "collector_number": "50",
+  "rarity": "common",
+  "released_at": "2024-08-02",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Bird Scout",
+  "oracle_text": "Offspring {3} (You may pay an additional {3} as you cast this spell. If you do, when this creature enters, create a 1/1 token copy of it.)\nFlying\nWhen this creature enters, target creature you control gains flying until end of turn.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Offspring"
+  ]
+}

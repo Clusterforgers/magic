@@ -1,0 +1,28 @@
+{
+  "oracle_id": "48d63b86-8ddd-4306-960f-98490d1d80b9",
+  "name": "Seeds of Renewal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seeds of Renewal",
+      "oracle_fingerprint": "9f7d0cfb5508204b0a119f17b2e69479",
+      "abilities": [
+        { "Keyword": "Undaunted" },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

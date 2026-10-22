@@ -1,0 +1,29 @@
+{
+  "oracle_id": "2a14670b-2ab6-4e1d-9b33-610a87bdb7ce",
+  "name": "Prosperous Bandit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prosperous Bandit",
+      "oracle_fingerprint": "11773019e29d09058b6b6f26cb977979",
+      "abilities": [
+        { "Keyword": { "Offspring": "{1}" } },
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": "Triggering",
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "76c2e0b4-d4fa-4e98-b363-0a76eb481304",
+  "name": "Finch Formation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Finch Formation",
+      "oracle_fingerprint": "d55a4acabc114b13794c193be015598f",
+      "abilities": [
+        { "Keyword": { "Offspring": "{3}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

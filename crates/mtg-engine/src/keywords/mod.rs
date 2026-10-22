@@ -14,6 +14,7 @@ mod bestow;
 mod blitz;
 mod buyback;
 mod cascade;
+mod casualty;
 mod changeling;
 mod choose_a_background;
 mod companion;
@@ -28,6 +29,7 @@ mod defender;
 mod delve;
 mod dethrone;
 mod devoid;
+mod devour;
 mod disguise;
 mod doctors_companion;
 mod double_strike;
@@ -76,6 +78,7 @@ mod mutate;
 mod myriad;
 mod nightbound;
 mod ninjutsu;
+mod offspring;
 mod outlast;
 mod overload;
 mod partner;
@@ -86,6 +89,7 @@ mod protection;
 #[cfg(test)]
 mod provided;
 mod prowess;
+mod prowl;
 mod ravenous;
 mod reach;
 mod rebound;
@@ -340,6 +344,12 @@ pub trait KeywordRules: Debug + Sync {
         false
     }
 
+    /// Whether a spell with the keyword on the stack stops players from casting spells and activating abilities that are
+    /// not mana abilities (split second, CR 702.61).
+    fn silences_players(&self, _keyword: &Keyword) -> bool {
+        false
+    }
+
     /// The abilities the keyword stands for, written in the DSL like any card.
     fn adds_abilities(&self, _keyword: &Keyword) -> Vec<Ability> {
         Vec::new()
@@ -427,9 +437,8 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Escape(_) => &escape::Escape,
         Keyword::Rebound => &rebound::Rebound,
         Keyword::Aftermath => &aftermath::Aftermath,
-        Keyword::Dash(_) => &dash::Dash,
         Keyword::Bestow(_) => &bestow::Bestow,
-        Keyword::Blitz(_) => &blitz::Blitz,
+        Keyword::Dash(_) | Keyword::Blitz(_) | Keyword::Prowl(_) => cost_rules(keyword),
         Keyword::Ninjutsu(_) => &ninjutsu::Ninjutsu,
         Keyword::Echo(_) => &echo::Echo,
         Keyword::CumulativeUpkeep(_) => &cumulative_upkeep::CumulativeUpkeep,
@@ -458,12 +467,16 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Vanishing(_) => &vanishing::Vanishing,
         Keyword::Fading(_) => &fading::Fading,
         Keyword::Backup { .. } => &backup::Backup,
+        Keyword::Devour { .. } => &devour::Devour,
+        Keyword::Casualty(_) => &casualty::Casualty,
+        Keyword::Offspring(_) => &offspring::Offspring,
+        Keyword::Ravenous => &ravenous::Ravenous,
+        Keyword::Fabricate(_) => &fabricate::Fabricate,
         Keyword::LevelUp(_) => &level_up::LevelUp,
         Keyword::Outlast(_) => &outlast::Outlast,
         Keyword::Saddle(_) => &saddle::Saddle,
         Keyword::Saddled => &saddle::Saddled,
         Keyword::Station => &station::Station,
-        Keyword::Ravenous => &ravenous::Ravenous,
         Keyword::JumpStart => &jump_start::JumpStart,
         Keyword::Retrace => &retrace::Retrace,
         Keyword::Embalm(_) => &embalm::Embalm,
@@ -471,10 +484,19 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Improvise => &improvise::Improvise,
         Keyword::Affinity(_) => &affinity::Affinity,
         Keyword::Typecycling { .. } => &typecycling::Typecycling,
-        Keyword::Fabricate(_) => &fabricate::Fabricate,
         Keyword::Ascend => &ascend::Ascend,
         // The keywords before them are matched by `rules`.
         _ => &Unruled,
+    }
+}
+
+/// The rules of the keywords that are an alternative cost to cast a creature or spell for: blitz and prowl, and dash for the
+/// rest.
+fn cost_rules(keyword: &Keyword) -> &'static dyn KeywordRules {
+    match keyword {
+        Keyword::Blitz(_) => &blitz::Blitz,
+        Keyword::Prowl(_) => &prowl::Prowl,
+        _ => &dash::Dash,
     }
 }
 
@@ -628,6 +650,16 @@ pub(crate) fn grants_instant_timing(state: &GameState, id: ObjectId) -> bool {
         .any(|keyword| rules(keyword).grants_timing(keyword))
 }
 
+/// Whether a spell on the stack silences the players: none may cast spells or activate abilities that are not mana
+/// abilities until it leaves (split second, CR 702.61). Mana abilities, special actions and triggers go on as usual.
+pub(crate) fn split_second_on_stack(state: &GameState) -> bool {
+    state.stack().iter().any(|&id| {
+        keywords_of(state, id)
+            .into_iter()
+            .any(|keyword| rules(keyword).silences_players(keyword))
+    })
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: every keyword the vocabulary declares has rules, the capabilities name exactly the keywords whose rules the engine runs, each keyword answers the hooks its row says and no others, and one function reads what an object has and one what a player has.
@@ -729,6 +761,7 @@ mod tests {
             Keyword::Dash(cost()),
             Keyword::Bestow(cost()),
             Keyword::Blitz(cost()),
+            Keyword::Prowl(cost()),
             Keyword::Ninjutsu(cost()),
             Keyword::Echo(cost()),
             Keyword::CumulativeUpkeep(cost()),
@@ -765,6 +798,12 @@ mod tests {
                 count: 1,
                 abilities: vec![],
             },
+            Keyword::Devour {
+                counters: 2,
+                of: Selector::default(),
+            },
+            Keyword::Casualty(2),
+            Keyword::Offspring(cost()),
         ]
     }
 
@@ -837,6 +876,7 @@ mod tests {
         "Keyword.Dash",
         "Keyword.Bestow",
         "Keyword.Blitz",
+        "Keyword.Prowl",
         "Keyword.Ninjutsu",
         "Keyword.Echo",
         "Keyword.CumulativeUpkeep",
@@ -852,6 +892,9 @@ mod tests {
         "Keyword.Vanishing",
         "Keyword.Fading",
         "Keyword.Backup",
+        "Keyword.Devour",
+        "Keyword.Casualty",
+        "Keyword.Offspring",
         "Keyword.LevelUp",
         "Keyword.Outlast",
         "Keyword.Saddle",
@@ -870,6 +913,8 @@ mod tests {
         "Keyword.Fabricate",
         "Keyword.Ascend",
         "Keyword.Encore",
+        "Keyword.SplitSecond",
+        "Keyword.Undaunted",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -886,6 +931,7 @@ mod tests {
         shields_player: bool,
         damage: DamageRules,
         timing: bool,
+        silences: bool,
         abilities: usize,
     }
 
@@ -902,6 +948,7 @@ mod tests {
                 shields_player: false,
                 damage: DamageRules::default(),
                 timing: false,
+                silences: false,
                 abilities: 0,
             }
         }
@@ -918,6 +965,7 @@ mod tests {
                 shields_player: rules.restricts_player_targeting(keyword, PlayerId(0), PlayerId(1)),
                 damage: rules.modifies_damage(keyword),
                 timing: rules.grants_timing(keyword),
+                silences: rules.silences_players(keyword),
                 abilities: rules.adds_abilities(keyword).len(),
             }
         }
@@ -937,6 +985,8 @@ mod tests {
 
     #[rstest]
     #[case::flash(Keyword::Flash, Hooks { timing: true, ..Hooks::none() })]
+    #[case::split_second(Keyword::SplitSecond, Hooks { silences: true, ..Hooks::none() })]
+    #[case::undaunted(Keyword::Undaunted, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::flying(Keyword::Flying, Hooks { answers_flying: true, ..Hooks::none() })]
     #[case::reach(Keyword::Reach, Hooks { answers_flying: true, ..Hooks::none() })]
     #[case::menace(Keyword::Menace, Hooks { min_blockers: 2, ..Hooks::none() })]
@@ -988,6 +1038,7 @@ mod tests {
     #[case::bestow(Keyword::Bestow(Cost::mana("{3}{G}".parse().unwrap())), Hooks::none())]
     #[case::dash(Keyword::Dash(Cost::mana("{1}{R}".parse().unwrap())), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::blitz(Keyword::Blitz(Cost::mana("{1}{R}".parse().unwrap())), Hooks { abilities: 3, ..Hooks::none() })]
+    #[case::prowl(Keyword::Prowl(Cost::mana("{1}{B}".parse().unwrap())), Hooks::none())]
     #[case::encore(Keyword::Encore(Cost::mana("{2}{W}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ninjutsu(Keyword::Ninjutsu(Cost::mana("{1}{U}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::echo(Keyword::Echo(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
@@ -1004,6 +1055,9 @@ mod tests {
     #[case::vanishing(Keyword::Vanishing(3), Hooks { abilities: 3, ..Hooks::none() })]
     #[case::fading(Keyword::Fading(3), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::backup(Keyword::Backup { count: 1, abilities: vec![] }, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::devour(Keyword::Devour { counters: 2, of: Selector::default() }, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::casualty(Keyword::Casualty(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::offspring(Keyword::Offspring(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::myriad(Keyword::Myriad, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::squad(Keyword::Squad(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ravenous(Keyword::Ravenous, Hooks { abilities: 2, ..Hooks::none() })]
@@ -1015,7 +1069,7 @@ mod tests {
     }
 
     #[test]
-    fn only_four_keywords_and_squad_add_a_cost_and_only_multikicker_and_squad_repeat() {
+    fn only_six_keywords_and_squad_add_a_cost_and_only_multikicker_and_squad_repeat() {
         let given: Vec<(&str, bool, OptionalKind)> = every_keyword()
             .iter()
             .filter_map(|keyword| {
@@ -1031,6 +1085,8 @@ mod tests {
                 ("Buyback", false, OptionalKind::Buyback),
                 ("Entwine", false, OptionalKind::Entwine),
                 ("Squad", true, OptionalKind::Kicker),
+                ("Casualty", false, OptionalKind::Additional),
+                ("Offspring", false, OptionalKind::Additional),
             ]
         );
     }

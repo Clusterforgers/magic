@@ -1,0 +1,22 @@
+{
+  "oracle_id": "86a7dba7-aff9-4086-b149-03eee812249f",
+  "name": "Caldera Hellion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caldera Hellion",
+      "oracle_fingerprint": "338a3e0ec5317b94efa9f9526c7722e1",
+      "abilities": [
+        { "Keyword": { "Devour": { "counters": 1, "of": [{ "Type": "Creature" }] } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

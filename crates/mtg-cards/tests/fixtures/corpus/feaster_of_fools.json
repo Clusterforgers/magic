@@ -1,0 +1,29 @@
+{
+  "id": "4472ad84-b548-4ed8-a315-ecf9ba9d49ff",
+  "oracle_id": "3e3d4f28-93a0-4313-a9a0-48fd06540cf8",
+  "name": "Feaster of Fools",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mh1",
+  "collector_number": "90",
+  "rarity": "uncommon",
+  "released_at": "2019-06-14",
+  "digital": false,
+  "mana_cost": "{4}{B}{B}",
+  "cmc": 6.0,
+  "type_line": "Creature — Demon",
+  "oracle_text": "Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)\nFlying\nDevour 2 (As this creature enters, you may sacrifice any number of creatures. It enters with twice that many +1/+1 counters on it.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Devour",
+    "Convoke"
+  ]
+}

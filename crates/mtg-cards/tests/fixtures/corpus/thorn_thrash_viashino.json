@@ -1,0 +1,28 @@
+{
+  "id": "ade3218d-f429-47dc-b282-6413f1ffb4c9",
+  "oracle_id": "83d9a5a2-09b0-44bf-b0b8-82a5fc53b00a",
+  "name": "Thorn-Thrash Viashino",
+  "lang": "en",
+  "layout": "normal",
+  "set": "pca",
+  "collector_number": "52",
+  "rarity": "common",
+  "released_at": "2016-11-25",
+  "digital": false,
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Lizard Warrior",
+  "oracle_text": "Devour 2 (As this creature enters, you may sacrifice any number of creatures. It enters with twice that many +1/+1 counters on it.)\n{G}: This creature gains trample until end of turn.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Devour"
+  ]
+}

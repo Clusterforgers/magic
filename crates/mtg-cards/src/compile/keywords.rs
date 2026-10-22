@@ -25,6 +25,8 @@ enum Params {
     Number,
     /// Words (`creature`, `from red`).
     Text,
+    /// Words that name a kind, then a number or `X` (`3`, `artifact 1`, `Food 3`).
+    Counted,
 }
 
 /// Every keyword ability the compiler recognises as a keyword line, in lowercase. The ones the
@@ -197,7 +199,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("toxic", Params::Number),
     ("tribute", Params::Number),
     ("vanishing", Params::Number),
-    ("devour", Params::Number),
+    ("devour", Params::Counted),
     ("frenzy", Params::Number),
     ("mobilize", Params::Number),
     ("saddle", Params::Number),
@@ -259,6 +261,11 @@ fn plausible(params: Params, rest: &str) -> bool {
             rest == "X" || (!rest.is_empty() && rest.chars().all(|c| c.is_ascii_digit()))
         }
         Params::Text => rest.chars().next().is_some_and(char::is_alphabetic),
+        Params::Counted => {
+            let (words, number) = rest.rsplit_once(' ').unwrap_or(("", rest));
+            (number == "X" || (!number.is_empty() && number.chars().all(|c| c.is_ascii_digit())))
+                && words.chars().all(|c| c.is_ascii_alphabetic() || c == ' ')
+        }
     }
 }
 
@@ -340,6 +347,9 @@ pub fn read(item: &str) -> Option<Keyword> {
         "mutate" => cost(rest).map(Keyword::Mutate),
         "encore" => cost(rest).map(Keyword::Encore),
         "squad" => spell_cost(rest).map(Keyword::Squad),
+        "offspring" => spell_cost(rest).map(Keyword::Offspring),
+        "casualty" => positive(rest).map(Keyword::Casualty),
+        "devour" => devour(rest),
         "foretell" => cost(rest).map(Keyword::Foretell),
         "unearth" => spell_cost(rest).map(Keyword::Unearth),
         "embalm" => spell_cost(rest).map(Keyword::Embalm),
@@ -348,6 +358,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "dash" => spell_cost(rest).map(Keyword::Dash),
         "bestow" => spell_cost(rest).map(Keyword::Bestow),
         "blitz" => spell_cost(rest).map(Keyword::Blitz),
+        "prowl" => spell_cost(rest).map(Keyword::Prowl),
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
         "echo" => spell_cost(rest).map(Keyword::Echo),
         "cumulative upkeep" => spell_cost(rest).map(Keyword::CumulativeUpkeep),
@@ -385,6 +396,22 @@ pub fn read(item: &str) -> Option<Keyword> {
         name if rest.is_empty() => plain(name),
         _ => None,
     }
+}
+
+/// `Devour 2`, `Devour artifact 1`, `Devour Food 3`: the counters for each permanent and what may be sacrificed.
+fn devour(rest: &str) -> Option<Keyword> {
+    let (words, number) = rest.rsplit_once(' ').unwrap_or(("", rest));
+    let of = match words.to_ascii_lowercase().as_str() {
+        "" => Pred::Type(CardType::Creature),
+        "artifact" => Pred::Type(CardType::Artifact),
+        "land" => Pred::Type(CardType::Land),
+        "food" => Pred::Subtype(Subtype("Food".to_owned())),
+        _ => return None,
+    };
+    Some(Keyword::Devour {
+        counters: positive(number)?,
+        of: Selector(vec![of]),
+    })
 }
 
 /// A whole number above zero, as the counted keywords print it ("Crew 2", "Dredge 3").
@@ -737,6 +764,12 @@ mod tests {
     #[case::mutate("Mutate {1}{G}{G}", Keyword::Mutate(mana("{1}{G}{G}")))]
     #[case::encore("Encore {5}{R}", Keyword::Encore(mana("{5}{R}")))]
     #[case::squad("Squad {2}", Keyword::Squad(mana("{2}")))]
+    #[case::offspring("Offspring {2}", Keyword::Offspring(mana("{2}")))]
+    #[case::casualty("Casualty 2", Keyword::Casualty(2))]
+    #[case::devour("Devour 2", Keyword::Devour { counters: 2, of: creature() })]
+    #[case::devour_artifact("Devour artifact 1", Keyword::Devour { counters: 1, of: Selector(vec![Pred::Type(CardType::Artifact)]) })]
+    #[case::devour_land_in_lowercase("devour land 3", Keyword::Devour { counters: 3, of: Selector(vec![Pred::Type(CardType::Land)]) })]
+    #[case::devour_food("Devour Food 3", Keyword::Devour { counters: 3, of: Selector(vec![Pred::Subtype(Subtype("Food".to_owned()))]) })]
     #[case::squad_discarding(
         "Squad\u{2014}{1}, Discard a card.",
         Keyword::Squad(Cost(vec![CostItem::Mana("{1}".parse().unwrap()), CostItem::Discard { count: Amount::one(), filter: None }]))
@@ -805,6 +838,7 @@ mod tests {
         Keyword::Bestow(mana("{2}{W}{U}{B}{R}{G}"))
     )]
     #[case::blitz("Blitz {2}{R}", Keyword::Blitz(mana("{2}{R}")))]
+    #[case::prowl("Prowl {1}{B}", Keyword::Prowl(mana("{1}{B}")))]
     #[case::ninjutsu("Ninjutsu {1}{U}", Keyword::Ninjutsu(mana("{1}{U}")))]
     #[case::ninjutsu_for_one_mana("ninjutsu {B}", Keyword::Ninjutsu(mana("{B}")))]
     #[case::escape_exiling_cards(
@@ -1085,6 +1119,9 @@ mod tests {
             "Vanishing 3",
             "Fading 5",
             "Backup 1",
+            "Devour 2",
+            "Casualty 2",
+            "Offspring {2}",
             "Ravenous",
             "Foretell {1}",
             "Fabricate 1",
@@ -1116,6 +1153,7 @@ mod tests {
             "Miracle {1}{W}",
             "Bestow {1}",
             "Blitz {1}",
+            "Prowl {1}",
             "Ninjutsu {1}{U}",
             "Improvise",
             "Affinity for artifacts",

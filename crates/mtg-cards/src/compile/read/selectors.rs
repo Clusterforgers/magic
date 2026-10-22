@@ -13,6 +13,7 @@ use super::counters;
 use super::subtypes::{plural_subtype as plural_subtype_word, singular_subtype};
 use super::tokens::Reader;
 use crate::compile::keywords;
+use crate::cost::{Cost, CostItem};
 use crate::keyword::Keyword;
 use crate::modify::Modification;
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
@@ -56,6 +57,7 @@ const KEYWORDS: &[&str] = &[
     "prowess",
     "changeling",
     "infect",
+    "skulk",
 ];
 
 /// How a phrase is introduced, which decides its number, how it joins card types and how it names
@@ -244,6 +246,9 @@ pub fn keyword_text(keyword: &Keyword) -> Option<String> {
 /// What one phrase of a list of keywords gives: a keyword by its words, or "protection from white and from black", one
 /// protection for each quality.
 pub fn granted_keywords(r: &mut Reader<'_>) -> Option<Vec<Keyword>> {
+    if r.word("ward") {
+        return ward_cost(r).map(|cost| vec![Keyword::Ward(cost)]);
+    }
     if !r.words("protection from") {
         return keyword(r).map(|keyword| vec![keyword]);
     }
@@ -255,6 +260,18 @@ pub fn granted_keywords(r: &mut Reader<'_>) -> Option<Vec<Keyword>> {
         found.push(next);
     }
     Some(found)
+}
+
+/// The mana after "ward": "{1}", "{2}{U}".
+fn ward_cost(r: &mut Reader<'_>) -> Option<Cost> {
+    let mut text = String::new();
+    while let Some(symbol) = r.attempt(|r| {
+        r.symbol()
+            .filter(|symbol| !matches!(*symbol, "T" | "Q" | "X"))
+    }) {
+        text = format!("{text}{{{symbol}}}");
+    }
+    text.parse().ok().map(Cost::mana)
 }
 
 fn protection_from(r: &mut Reader<'_>) -> Option<Keyword> {
@@ -269,6 +286,11 @@ pub fn granted_text(mods: &[Modification]) -> Option<String> {
     let mut parts: Vec<String> = Vec::new();
     let mut protecting = false;
     for modification in mods {
+        if *modification == Modification::AddProtectionFromChosenColor {
+            parts.push("protection from the color of your choice".to_owned());
+            protecting = false;
+            continue;
+        }
         let Modification::AddKeyword(keyword) = modification else {
             return None;
         };
@@ -282,6 +304,12 @@ pub fn granted_text(mods: &[Modification]) -> Option<String> {
                 _ => parts.push(format!("protection from {word}")),
             }
             protecting = true;
+        } else if let Keyword::Ward(Cost(items)) = keyword {
+            let [CostItem::Mana(mana)] = items.as_slice() else {
+                return None;
+            };
+            parts.push(format!("ward {mana}"));
+            protecting = false;
         } else {
             parts.push(keyword_text(keyword)?);
             protecting = false;

@@ -1,0 +1,29 @@
+{
+  "id": "e8c71a1f-191b-45f6-bb34-fba3e981a711",
+  "oracle_id": "27831489-b444-4b7b-91db-feb54281bca9",
+  "name": "Caprichrome",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mh2",
+  "collector_number": "9",
+  "rarity": "uncommon",
+  "released_at": "2021-06-18",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Artifact Creature — Goat",
+  "oracle_text": "Flash\nVigilance\nDevour artifact 1 (As this creature enters, you may sacrifice any number of artifacts. It enters with that many +1/+1 counters on it.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Vigilance",
+    "Flash",
+    "Devour"
+  ]
+}

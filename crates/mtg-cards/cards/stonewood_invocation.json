@@ -1,0 +1,31 @@
+{
+  "oracle_id": "35f09a11-1d9b-4dfd-9695-b809c871f10d",
+  "name": "Stonewood Invocation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stonewood Invocation",
+      "oracle_fingerprint": "b80f3ea79cbc348d313f599da44e7d1a",
+      "abilities": [
+        { "Keyword": "SplitSecond" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 5, "toughness": 5 } },
+                    { "AddKeyword": "Shroud" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+//! The pronoun wordings of the card in its own effects: a card that attacks, blocks, becomes blocked or enters calls
+//! itself "it" in what it does ("Whenever ~ attacks, it gets +1/+1 until end of turn", "put a +1/+1 counter on it"),
+//! and a sentence after one that acted on the card opens with "It". The renderer writes `~`, so it also writes the
+//! wording with the pronoun.
+
+use super::selectors::{Form, phrase_text};
+use super::triggers::event_creature;
+use crate::ability::Ability;
+use crate::effect::Effect;
+use crate::refs::{Pred, Ref};
+
+/// The ways every ability names the card at the start of a sentence: `(written with ~, written with the pronoun)`.
+const SENTENCE: [(&str, &str); 2] = [(". ~ gets ", ". It gets "), (". ~ gains ", ". It gains ")];
+
+/// The ways a trigger about the card itself names the card: `(written with ~, written with the pronoun)`.
+const OF_THE_EVENT: [(&str, &str); 4] = [
+    (", ~ gets ", ", it gets "),
+    (", ~ gains ", ", it gains "),
+    (" counter on ~", " counter on it"),
+    (" counters on ~", " counters on it"),
+];
+
+/// Adds to `texts` the wording "Those creatures" for a group a sentence before counted ("Draw a card for each creature
+/// you control with a +1/+1 counter on it. Those creatures gain indestructible until end of turn.").
+pub(super) fn of_the_group(ability: &Ability, texts: &mut Vec<String>) {
+    let Ability::Spell { effects, .. } = ability else {
+        return;
+    };
+    let mut pronouns = Vec::new();
+    for effect in effects {
+        let Effect::Continuous {
+            affected: Ref::Each(group),
+            ..
+        } = effect
+        else {
+            continue;
+        };
+        let Some(Pred::Type(_)) = group.0.first() else {
+            continue;
+        };
+        let (Some(plural), Some(single)) = (
+            phrase_text(group, Form::All),
+            phrase_text(group, Form::Each),
+        ) else {
+            continue;
+        };
+        let Some(noun) = plural.split(' ').next() else {
+            continue;
+        };
+        let mut letters = plural.chars();
+        let capital: String = letters
+            .next()
+            .map(|first| first.to_uppercase().chain(letters).collect())
+            .unwrap_or_default();
+        let (named, those) = (format!(". {capital} "), format!(". Those {noun} "));
+        for text in texts.iter() {
+            if text.contains(&format!("each {single}")) && text.contains(&named) {
+                pronouns.push(text.replacen(&named, &those, 1));
+            }
+        }
+    }
+    texts.extend(pronouns);
+}
+
+/// Adds to `texts` the wording that calls the card "it", for each text that has one.
+pub(super) fn of_the_card(ability: &Ability, texts: &mut Vec<String>) {
+    let itself = matches!(
+        ability,
+        Ability::Triggered { when, .. } if event_creature(when) == Some(Ref::This)
+    );
+    let pronouns: Vec<String> = texts
+        .iter()
+        .filter_map(|text| {
+            let mut found = text.clone();
+            let own = if itself { &OF_THE_EVENT[..] } else { &[] };
+            for (named, pronoun) in SENTENCE.iter().chain(own) {
+                found = found.replace(named, pronoun);
+            }
+            (found != *text).then_some(found)
+        })
+        .collect();
+    texts.extend(pronouns);
+}

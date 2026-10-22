@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7b139231-dcd2-4b03-bcf2-fcb040617b69",
+  "name": "Sudden Shock",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sudden Shock",
+      "oracle_fingerprint": "2f8424def626da74f871ea78b195efa0",
+      "abilities": [
+        { "Keyword": "SplitSecond" },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

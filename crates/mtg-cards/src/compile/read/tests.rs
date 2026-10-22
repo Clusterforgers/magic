@@ -155,6 +155,7 @@ mod among;
 mod attacked_player;
 mod audit;
 mod cast;
+mod cast_cost_paid;
 mod chosen_color;
 mod compound;
 mod conditions;
@@ -175,6 +176,7 @@ mod event_batches;
 mod events;
 mod exile_bounce_shrink;
 mod for_each;
+mod group_statics;
 mod if_sentence;
 mod impulse;
 mod lands;
@@ -190,6 +192,7 @@ mod monarch;
 mod pay;
 mod payments;
 mod prevention;
+mod pump_wordings;
 mod put_back;
 mod removal_and_return;
 mod returns;
@@ -798,7 +801,6 @@ mod pump {
         "Target creature gets +2/+2 until end of turn. Target creature gets -2/-2 until end of turn."
     )]
     #[case::conditional("If you control a Goblin, target creature gets +2/+2 until end of turn.")]
-    #[case::a_cost_keyword("Target creature gains ward {2} until end of turn.")]
     #[case::x_without_an_x_cost("Target creature gets +X/+X until end of turn.")]
     #[case::negative_x("Target creature gets -X/-X until end of turn.")]
     #[case::not_a_number("Target creature gets +a/+b until end of turn.")]

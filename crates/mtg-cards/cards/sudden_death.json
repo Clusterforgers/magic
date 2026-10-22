@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a3475ca6-d88e-4855-a554-1338624d1635",
+  "name": "Sudden Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sudden Death",
+      "oracle_fingerprint": "ed54bfa14304d4c098d70611f72adfa6",
+      "abilities": [
+        { "Keyword": "SplitSecond" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -4, "toughness": -4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

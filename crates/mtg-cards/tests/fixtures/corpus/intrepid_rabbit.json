@@ -1,0 +1,27 @@
+{
+  "id": "4d70b99d-c8bf-4a56-8957-cf587fe60b81",
+  "oracle_id": "7ed4afc9-959a-4868-8f4a-2221bea1ba32",
+  "name": "Intrepid Rabbit",
+  "lang": "en",
+  "layout": "normal",
+  "set": "blb",
+  "collector_number": "17",
+  "rarity": "common",
+  "released_at": "2024-08-02",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Rabbit Soldier",
+  "oracle_text": "Offspring {1} (You may pay an additional {1} as you cast this spell. If you do, when this creature enters, create a 1/1 token copy of it.)\nWhen this creature enters, target creature you control gets +1/+1 until end of turn.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Offspring"
+  ]
+}

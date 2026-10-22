@@ -1,0 +1,27 @@
+{
+  "id": "03bf1296-e347-4070-8c6f-5c362c2f9364",
+  "oracle_id": "75237b2c-232b-479a-ab3a-e1566c8a9fe7",
+  "name": "Steampath Charger",
+  "lang": "en",
+  "layout": "normal",
+  "set": "blb",
+  "collector_number": "153",
+  "rarity": "common",
+  "released_at": "2024-08-02",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Creature — Lizard Warlock",
+  "oracle_text": "Offspring {2} (You may pay an additional {2} as you cast this spell. If you do, when this creature enters, create a 1/1 token copy of it.)\nWhen this creature dies, it deals 1 damage to target player.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Offspring"
+  ]
+}

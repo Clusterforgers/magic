@@ -52,6 +52,8 @@ pub enum Rule {
     RevealTop(Vec<PlayerId>),
     /// The players have no maximum hand size (CR 402.2).
     NoMaxHandSize(Vec<PlayerId>),
+    /// The players skip their draw steps (CR 614.10).
+    SkipDrawStep(Vec<PlayerId>),
     /// The players may look at the top card of their library any time.
     LookAtTop(Vec<PlayerId>),
     /// Each player may play this many lands more on each of their turns (CR 305.2).
@@ -202,6 +204,7 @@ pub(crate) struct RulesInForce {
     no_search: BTreeSet<PlayerId>,
     reveal_top: BTreeSet<PlayerId>,
     no_hand_limit: BTreeSet<PlayerId>,
+    skip_draw: BTreeSet<PlayerId>,
     look_top: BTreeSet<PlayerId>,
     extra_lands: BTreeMap<PlayerId, u32>,
     again: Vec<Again>,
@@ -280,6 +283,7 @@ impl RulesInForce {
             Rule::CantSearch(players) => self.no_search.extend(players),
             Rule::RevealTop(players) => self.reveal_top.extend(players),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
+            Rule::SkipDrawStep(players) => self.skip_draw.extend(players),
             Rule::LookAtTop(players) => self.look_top.extend(players),
             Rule::AdditionalLandPlays(plays) => {
                 for (player, count) in plays {
@@ -398,6 +402,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::TriggerAgain { cause } => Rule::TriggerAgain(Box::new(cause.clone())),
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
         GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
+        GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
         GameRule::AdditionalLandPlays { who, count } => {
             let count = u32::try_from(scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
             Rule::AdditionalLandPlays(
@@ -426,6 +431,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::CantSearch(players)
         | Rule::RevealTop(players)
         | Rule::LookAtTop(players)
+        | Rule::SkipDrawStep(players)
         | Rule::NoMaxHandSize(players) => players.is_empty(),
         Rule::AdditionalLandPlays(plays) => plays.iter().all(|(_, count)| *count == 0),
         Rule::MayCast { who, only, .. } => {
@@ -525,6 +531,7 @@ static NONE: RulesInForce = RulesInForce {
     no_search: BTreeSet::new(),
     reveal_top: BTreeSet::new(),
     no_hand_limit: BTreeSet::new(),
+    skip_draw: BTreeSet::new(),
     look_top: BTreeSet::new(),
     extra_lands: BTreeMap::new(),
     again: Vec::new(),
@@ -668,6 +675,11 @@ pub fn cant_gain_life(state: &GameState, player: PlayerId) -> bool {
 /// Whether `player` can't draw cards: the one place a draw reads this rule.
 pub fn cant_draw(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_draw.contains(&player)
+}
+
+/// Whether `player` skips their draw step: the one place the turn's steps read this rule.
+pub(crate) fn skips_draw_step(state: &GameState, player: PlayerId) -> bool {
+    state.rules().skip_draw.contains(&player)
 }
 
 /// Whether `player` has no maximum hand size: the one place cleanup reads this rule, beside the house rule's limit.

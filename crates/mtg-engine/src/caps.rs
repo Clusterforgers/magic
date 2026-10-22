@@ -163,6 +163,7 @@ const RUNS: &[&str] = &[
     "Rule.CantSearch",
     "Rule.RevealTop",
     "Rule.NoMaxHandSize",
+    "Rule.SkipDrawStep",
     "Rule.LookAtTopAnyTime",
     "Rule.AdditionalLandPlays",
     "Rule.TriggerAgain",
@@ -287,6 +288,7 @@ const RUNS: &[&str] = &[
     "Keyword.Dash",
     "Keyword.Bestow",
     "Keyword.Blitz",
+    "Keyword.Prowl",
     "Keyword.Ninjutsu",
     "Keyword.Echo",
     "Keyword.CumulativeUpkeep",
@@ -303,6 +305,10 @@ const RUNS: &[&str] = &[
     "Keyword.Vanishing",
     "Keyword.Fading",
     "Keyword.Backup",
+    "Keyword.Devour",
+    "Keyword.Casualty",
+    "Keyword.Offspring",
+    "ReplaceBy.Devour",
     "Keyword.LevelUp",
     "Keyword.Outlast",
     "Keyword.Saddle",
@@ -322,6 +328,8 @@ const RUNS: &[&str] = &[
     "Keyword.Improvise",
     "Keyword.Affinity",
     "Keyword.Typecycling",
+    "Keyword.SplitSecond",
+    "Keyword.Undaunted",
     "Keyword.Encore",
     "Condition.NewlyControlled",
     "Rule.CanBeCommander",
@@ -481,6 +489,7 @@ mod tests {
     #[case::no_searching("Rule.CantSearch", true)]
     #[case::a_revealed_top("Rule.RevealTop", true)]
     #[case::no_maximum_hand_size("Rule.NoMaxHandSize", true)]
+    #[case::no_draw_step("Rule.SkipDrawStep", true)]
     #[case::triggers_again("Rule.TriggerAgain", true)]
     #[case::damage_that_cant_be_prevented("Rule.DamageCantBePrevented", true)]
     #[case::regenerating("Effect.Regenerate", true)]
@@ -637,6 +646,7 @@ mod tests {
     #[case::dredge("Keyword.Dredge", true)]
     #[case::dredging("ReplaceBy.Dredge", true)]
     #[case::blitz("Keyword.Blitz", true)]
+    #[case::prowl("Keyword.Prowl", true)]
     #[case::ninjutsu("Keyword.Ninjutsu", true)]
     #[case::joining_an_attack("Effect.JoinAttack", true)]
     #[case::echo("Keyword.Echo", true)]
@@ -654,6 +664,10 @@ mod tests {
     #[case::vanishing("Keyword.Vanishing", true)]
     #[case::fading("Keyword.Fading", true)]
     #[case::backup("Keyword.Backup", true)]
+    #[case::devour("Keyword.Devour", true)]
+    #[case::casualty("Keyword.Casualty", true)]
+    #[case::offspring("Keyword.Offspring", true)]
+    #[case::sacrificing_as_it_enters("ReplaceBy.Devour", true)]
     #[case::level_up("Keyword.LevelUp", true)]
     #[case::outlast("Keyword.Outlast", true)]
     #[case::saddle("Keyword.Saddle", true)]
@@ -668,6 +682,8 @@ mod tests {
     #[case::improvise("Keyword.Improvise", true)]
     #[case::affinity("Keyword.Affinity", true)]
     #[case::typecycling("Keyword.Typecycling", true)]
+    #[case::split_second("Keyword.SplitSecond", true)]
+    #[case::undaunted("Keyword.Undaunted", true)]
     #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]

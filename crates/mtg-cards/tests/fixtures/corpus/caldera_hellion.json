@@ -1,0 +1,27 @@
+{
+  "id": "88866ce7-0b81-4b6c-a17e-ce5e51a0f2da",
+  "oracle_id": "86a7dba7-aff9-4086-b149-03eee812249f",
+  "name": "Caldera Hellion",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ala",
+  "collector_number": "95",
+  "rarity": "rare",
+  "released_at": "2008-10-03",
+  "digital": false,
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Hellion",
+  "oracle_text": "Devour 1 (As this creature enters, you may sacrifice any number of creatures. It enters with that many +1/+1 counters on it.)\nWhen this creature enters, it deals 3 damage to each creature.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Devour"
+  ]
+}

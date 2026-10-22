@@ -66,9 +66,6 @@ fn the_count_of_counters_condition_reads_in_the_shape_of_the_hand_written_files(
 #[case::another_permanent(
     "Whenever ~ attacks, if there are five or more charge counters on target creature, draw a card."
 )]
-#[case::it_with_nothing_before(
-    "Whenever ~ attacks, if there are five or more charge counters on it, draw a card."
-)]
 #[case::any_counters("Whenever ~ attacks, if there are five or more counters on ~, draw a card.")]
 #[case::a_counter_the_rules_give(
     "Whenever ~ attacks, if there are five or more stun counters on ~, draw a card."

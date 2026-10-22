@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e54ad5a1-e79d-42db-a3e9-5caecae62c9f",
+  "name": "Duskshell Crawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Duskshell Crawler",
+      "oracle_fingerprint": "a9c435a1c6b0b52b640aa4206ac161c1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "HasCounter": "+1/+1" }]
+            },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        }
+      ]
+    }
+  ]
+}

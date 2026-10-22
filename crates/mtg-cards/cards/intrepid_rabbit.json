@@ -1,0 +1,31 @@
+{
+  "oracle_id": "7ed4afc9-959a-4868-8f4a-2221bea1ba32",
+  "name": "Intrepid Rabbit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intrepid Rabbit",
+      "oracle_fingerprint": "7bf71124b7e2baa15c545e9c161e683c",
+      "abilities": [
+        { "Keyword": { "Offspring": "{1}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

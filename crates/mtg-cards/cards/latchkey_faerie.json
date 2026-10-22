@@ -1,0 +1,22 @@
+{
+  "oracle_id": "7bc4a0a0-f06e-4074-95a8-67a5d8fdfef9",
+  "name": "Latchkey Faerie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Latchkey Faerie",
+      "oracle_fingerprint": "703cc7671e36e5b90c369bd55332d66c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Prowl": "{2}{U}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Prowl" },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

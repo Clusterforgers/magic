@@ -1,0 +1,12 @@
+{
+  "oracle_id": "f2126eb9-892c-4788-95cc-6f3e59f0375d",
+  "name": "Gorger Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gorger Wurm",
+      "oracle_fingerprint": "ba60d737ddc8dbf861fe2c264a4768ed",
+      "abilities": [{ "Keyword": { "Devour": { "counters": 1, "of": [{ "Type": "Creature" }] } } }]
+    }
+  ]
+}

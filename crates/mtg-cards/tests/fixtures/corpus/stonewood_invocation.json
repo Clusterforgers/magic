@@ -1,0 +1,25 @@
+{
+  "id": "1b300e67-04d2-4c69-b516-c5cc0a6ff2e7",
+  "oracle_id": "35f09a11-1d9b-4dfd-9695-b809c871f10d",
+  "name": "Stonewood Invocation",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tsp",
+  "collector_number": "223",
+  "rarity": "rare",
+  "released_at": "2006-10-06",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Split second (As long as this spell is on the stack, players can't cast spells or activate abilities that aren't mana abilities.)\nTarget creature gets +5/+5 and gains shroud until end of turn. (It can't be the target of spells or abilities.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Split second"
+  ]
+}

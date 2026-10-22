@@ -13,8 +13,8 @@
 //! colon), `abilities` (a spell ability, a triggered ability, an activated ability), `conditional`
 //! (an effect that depends on a condition), `reveal` (looking at the top card and revealing it),
 //! `damage` (what deals damage to whom and the life gained with it), `copies` (a token that is a copy, populate, entering as a copy), `levels` (the blocks of a level up creature), `stations` (the blocks of a Spacecraft), `copy_spells` (a copy of a spell or an ability, a
-//! permanent that becomes a copy), `defining` (the power and toughness a card defines for itself), `life_gain` (replacements and rules about gaining life), `transform`, `draws` (draw and discard wordings), `actions` (the keyword actions of creatures) and
-//! `render`.
+//! permanent that becomes a copy), `defining` (the power and toughness a card defines for itself), `life_gain` (replacements and rules about gaining life), `transform`, `draws` (draw and discard wordings), `actions` (the keyword actions of creatures),
+//! `pronouns` (the wordings that call the card "it") and `render`.
 
 mod abilities;
 mod actions;
@@ -39,6 +39,7 @@ mod life_gain;
 mod modal;
 mod payments;
 mod prevention;
+mod pronouns;
 mod render;
 mod reveal;
 mod selectors;

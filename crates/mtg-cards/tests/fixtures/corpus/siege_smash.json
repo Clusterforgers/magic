@@ -1,0 +1,25 @@
+{
+  "id": "f33e3b25-76f5-4263-a309-9ea97f2d8248",
+  "oracle_id": "4e07d30a-d29a-49bc-ab49-41ea4116a18c",
+  "name": "Siege Smash",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mh3",
+  "collector_number": "136",
+  "rarity": "common",
+  "released_at": "2024-06-14",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Split second (As long as this spell is on the stack, players can't cast spells or activate abilities that aren't mana abilities.)\nChoose one —\n• Destroy target artifact.\n• Target creature gets +3/+2 and gains trample until end of turn.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Split second"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ad9b6737-22c4-45cc-976b-32743ed48462",
+  "name": "Wipe Away",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wipe Away",
+      "oracle_fingerprint": "2000c55585a607f5b5ff7ef244d55d28",
+      "abilities": [
+        { "Keyword": "SplitSecond" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

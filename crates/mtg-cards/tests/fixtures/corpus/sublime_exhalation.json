@@ -1,0 +1,25 @@
+{
+  "id": "4a8f810f-844b-4ebd-b28c-46432cf0203d",
+  "oracle_id": "9e0c66e9-7d2b-46bd-890e-886d0c029d1d",
+  "name": "Sublime Exhalation",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "60",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{6}{W}",
+  "cmc": 7.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Undaunted (This spell costs {1} less to cast for each opponent.)\nDestroy all creatures.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Undaunted"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "60e6a140-c7fb-4fbe-bd74-6bbb925080e7",
+  "name": "Sulfur Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sulfur Elemental",
+      "oracle_fingerprint": "cec776d3d5a59eb8508ad2e101a0b2d7",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "SplitSecond" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Color": "White" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": -1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

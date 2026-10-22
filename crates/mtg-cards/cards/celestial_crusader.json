@@ -1,0 +1,22 @@
+{
+  "oracle_id": "af06a811-7a57-4f68-9d87-7903e043f36d",
+  "name": "Celestial Crusader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Celestial Crusader",
+      "oracle_fingerprint": "07a386e891373c9ba82cb779ae4d5093",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "SplitSecond" },
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Color": "White" }, "Other"] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}
