@@ -30,6 +30,9 @@ const CLOCKS: Pace = Pace {
     response: Some(Duration::from_secs(10)),
     blocks: Some(Duration::from_secs(45)),
     think: Some(Duration::from_secs(60)),
+    active: None,
+    extension: None,
+    grace: std::time::Duration::ZERO,
     dwell: Dwell::OFF,
 };
 
@@ -297,6 +300,7 @@ fn order(messages: &[ServerMessage]) -> Vec<&'static str> {
             ServerMessage::Chat { .. } => "chat",
             ServerMessage::Forecast { .. } => "forecast",
             ServerMessage::Lobby { .. } => "lobby",
+            ServerMessage::Bank { .. } => "bank",
         };
         if now != "events" || out.last().is_none_or(|last| *last != "events") {
             out.push(now);
@@ -1058,6 +1062,9 @@ async fn bots_play_the_reference_game(players: usize, seed: u64, auto_pass: bool
         response: None,
         blocks: None,
         think: None,
+        active: None,
+        extension: None,
+        grace: std::time::Duration::ZERO,
         dwell: Dwell::OFF,
     };
     let setup = table_setup(players, seed);

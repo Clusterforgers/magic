@@ -215,6 +215,7 @@ export function buildFixture(options: FixtureOptions): Fixture {
     library: hidden(48 - seat),
     graveyard: zoneView(mine.graveyard),
     command: zoneView(mine.command),
+    bank: 0,
   }))
 
   const view: StateView = {

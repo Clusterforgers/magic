@@ -21,13 +21,19 @@ use tokio::time::Instant;
 
 use crate::actor::{Fatal, GameActor, Phase, not_started};
 use crate::dwell::Dwell;
-use crate::running::{Halt, Rejection};
+use crate::running::{Extended, Halt, Rejection};
 use crate::store::EventStore;
 use crate::windows::Verdict;
 use crate::yields::Yields;
 
 /// Longest clock the settings accept, in seconds (a day), so a deadline can never overflow.
 pub const MAX_CLOCK_SECS: u64 = 86_400;
+
+/// Own turns in a row, none of them with a clock running out, that earn a seat one extension.
+pub const BANK_TURNS: u8 = 3;
+
+/// Most extensions a seat holds; one earned past it is lost.
+pub const BANK_MAX: u8 = 3;
 
 /// How long after a failed save the server tries again to answer for a seat whose clock ran out.
 const RETRY_AFTER: Duration = Duration::from_secs(1);
@@ -46,13 +52,60 @@ pub struct Pace {
     /// Time a defending seat has to declare blockers (`MTG_BLOCK_SECS`); `None` is no clock.
     pub blocks: Option<Duration>,
     /// Time to decide what takes thought and is no quick response (`MTG_THINK_SECS`): to keep or mulligan and to bottom
-    /// cards (every seat: the opening has no active player), to pay for a spell or divide combat damage (a seat that
-    /// is not the active player) and to declare attackers or discard (asked of the active player alone, so these two
-    /// wait until the active seat has a clock); `None` is no clock.
+    /// cards (every seat: the opening has no active player), and to pay for a spell, divide combat damage, declare
+    /// attackers or discard (a seat that is not the active player); `None` is no clock.
     pub think: Option<Duration>,
+    /// Time the active player has for every decision of its own turn after the opening (`MTG_ACTIVE_SECS`); `None` is
+    /// no clock.
+    pub active: Option<Duration>,
+    /// Time an extension adds to a clock that runs out (`MTG_EXTENSION_SECS`); `None` turns the bank off.
+    pub extension: Option<Duration>,
+    /// How long a clock runs before its countdown shows (`MTG_CLOCK_GRACE_SECS`); a clock no longer than this shows at
+    /// once, as does zero.
+    pub grace: Duration,
     /// How long the table waits before it passes for an idle seat at a window of the default table, its own main phase
     /// with an empty stack aside (`MTG_DWELL_MS`).
     pub dwell: Dwell,
+}
+
+/// What kind of clock a decision runs on, before the seat is known.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum Class {
+    /// Asked before any turn exists: every seat is hurried the same.
+    Opening,
+    /// What a seat answers at the table.
+    Response,
+    /// Declaring blockers.
+    Blocks,
+    /// What takes thought.
+    Think,
+}
+
+impl Class {
+    /// The class of `kind`. Every decision kind is named here, so a new one cannot be added without choosing its clock.
+    pub(crate) fn of(kind: &DecisionKind) -> Class {
+        match kind {
+            DecisionKind::Mulligan(_) | DecisionKind::BottomCards(_) => Class::Opening,
+            // A target, an order or a question is asked of a seat the table waits for just as a priority window is.
+            DecisionKind::Priority(_)
+            | DecisionKind::ChooseTargets(_)
+            | DecisionKind::OrderTriggers(_)
+            | DecisionKind::ChooseReplacement(_)
+            | DecisionKind::YesNo(_)
+            | DecisionKind::ChooseOption(_)
+            | DecisionKind::ChooseMode(_)
+            | DecisionKind::ChooseNumber(_)
+            | DecisionKind::DivideAmount(_)
+            | DecisionKind::ChooseCosts(_)
+            | DecisionKind::ChooseCards(_)
+            | DecisionKind::OrderCards(_) => Class::Response,
+            DecisionKind::DeclareBlockers(_) => Class::Blocks,
+            DecisionKind::PayMana(_)
+            | DecisionKind::AssignDamage(_)
+            | DecisionKind::DeclareAttackers(_)
+            | DecisionKind::Discard(_) => Class::Think,
+        }
+    }
 }
 
 impl Pace {
@@ -62,6 +115,9 @@ impl Pace {
         response: None,
         blocks: None,
         think: None,
+        active: None,
+        extension: None,
+        grace: Duration::ZERO,
         dwell: Dwell::OFF,
     };
 
@@ -82,38 +138,32 @@ impl Pace {
 
     /// The clock `decision` runs on, if any.
     ///
-    /// Every decision kind is named here, so a new one cannot be added without choosing its clock. The opening
-    /// decisions (keep or mulligan, bottoming) are asked before any turn exists and run on `think` for every seat.
-    /// After that only a seat that is not the active player is hurried: a priority decision, the targets of a spell or
-    /// ability, the order of its triggers or of the replacement effects that apply to an event and the questions of
-    /// effects (yes or no, an option, modes, a number, optional costs, a division, cards, an order of cards) run on
-    /// `response`, blockers on `blocks`, and paying for a spell, dividing combat damage, declaring attackers and
-    /// discarding on `think`. The active player's own decisions wait for as long as it takes. A priority window the
-    /// seat has nothing to do in is hurried too (it is only delivered at a stop or in Full Control): it would hold the
-    /// table for no reason. The rule reads the kind alone, never the options, the seat or the hand, so it shows nothing
-    /// about them.
+    /// The opening decisions (keep or mulligan, bottoming) are asked before any turn exists and run on `think` for
+    /// every seat. After that the active player's decisions run on `active`, whatever their kind, and every other seat
+    /// is hurried by the class of the kind ([`Class::of`]): a priority decision, the targets of a spell or ability, the
+    /// order of its triggers or of the replacement effects that apply to an event and the questions of effects (yes or
+    /// no, an option, modes, a number, optional costs, a division, cards, an order of cards) run on `response`,
+    /// blockers on `blocks`, and paying for a spell, dividing combat damage, declaring attackers and discarding on
+    /// `think`. A priority window the seat has nothing to do in is hurried too (it is only delivered at a stop or in
+    /// Full Control): it would hold the table for no reason. The rule reads the kind and the seat alone, never the
+    /// options or the hand, so it shows nothing about them.
     pub(crate) fn clock_for(&self, decision: &Decision, active: PlayerId) -> Option<Duration> {
-        match &decision.kind {
-            DecisionKind::Mulligan(_) | DecisionKind::BottomCards(_) => self.think,
-            _ if decision.player == active => None,
-            // A target, an order or a question is asked of a seat the table waits for just as a priority window is.
-            DecisionKind::Priority(_)
-            | DecisionKind::ChooseTargets(_)
-            | DecisionKind::OrderTriggers(_)
-            | DecisionKind::ChooseReplacement(_)
-            | DecisionKind::YesNo(_)
-            | DecisionKind::ChooseOption(_)
-            | DecisionKind::ChooseMode(_)
-            | DecisionKind::ChooseNumber(_)
-            | DecisionKind::DivideAmount(_)
-            | DecisionKind::ChooseCosts(_)
-            | DecisionKind::ChooseCards(_)
-            | DecisionKind::OrderCards(_) => self.response,
-            DecisionKind::DeclareBlockers(_) => self.blocks,
-            DecisionKind::PayMana(_)
-            | DecisionKind::AssignDamage(_)
-            | DecisionKind::DeclareAttackers(_)
-            | DecisionKind::Discard(_) => self.think,
+        match Class::of(&decision.kind) {
+            Class::Opening => self.think,
+            _ if decision.player == active => self.active,
+            Class::Response => self.response,
+            Class::Blocks => self.blocks,
+            Class::Think => self.think,
+        }
+    }
+
+    /// How long after it is issued a clock of `length` shows its countdown: the grace, or at once when the clock is no
+    /// longer than that. It reads the length alone, so it follows the same rule as the clock.
+    pub(crate) fn shown_after(&self, length: Duration) -> Duration {
+        if self.grace < length {
+            self.grace
+        } else {
+            Duration::ZERO
         }
     }
 }
@@ -125,6 +175,9 @@ impl Default for Pace {
             response: Some(Duration::from_secs(10)),
             blocks: Some(Duration::from_secs(45)),
             think: Some(Duration::from_secs(60)),
+            active: None,
+            extension: Some(Duration::from_secs(20)),
+            grace: Duration::from_secs(3),
             dwell: Dwell::DEFAULT,
         }
     }
@@ -320,14 +373,25 @@ impl<S: EventStore> GameActor<S> {
         }
     }
 
-    /// Answers for the seat whose clock ran out, with a pass or no blocks, as if the seat had. The same step passes for a
-    /// seat that cannot act once its dwell is over: the decision was never sent, and the pass is saved, projected and
+    /// Answers for the seat whose clock ran out, with a pass or no blocks, as if the seat had, unless the seat holds an
+    /// extension: that is spent instead, the deadline moves and the table is told the new bank. The same step passes for
+    /// a seat that cannot act once its dwell is over: the decision was never sent, and the pass is saved, projected and
     /// sent like the seat's own, as a batch of its own.
     pub(crate) async fn expire(&mut self) -> Result<(), Fatal> {
         let Phase::Running(running) = &mut self.phase else {
             return Ok(());
         };
         let sent = running.sent_decision();
+        if let Some(extended) = running.extend() {
+            if let Some((seat, kind)) = sent {
+                tracing::info!(game = %self.id, seat = seat.index(), kind, bank = extended.bank, "clock ran out; an extension was spent");
+            }
+            self.announce_extension(extended);
+            return Ok(());
+        }
+        if sent.is_some() {
+            running.clock_ran_out();
+        }
         if let Ok(step) = running.fall_back() {
             if let Some((seat, kind)) = sent {
                 tracing::info!(game = %self.id, seat = seat.index(), kind, "clock ran out; the table answered for the seat");
@@ -339,6 +403,28 @@ impl<S: EventStore> GameActor<S> {
             running.stop_clock();
             Ok(())
         }
+    }
+
+    /// Tells the table that `extended`'s seat spent an extension (its bank, to every seat) and the seat its decision
+    /// again with the time it now has, as a reconnect is told what is left.
+    fn announce_extension(&mut self, extended: Extended) {
+        let Extended {
+            id,
+            decision,
+            deadline_ms,
+            bank,
+        } = extended;
+        let seat = decision.player;
+        self.seats.broadcast(&ServerMessage::Bank { seat, bank });
+        self.seats.send(
+            seat,
+            ServerMessage::Decision {
+                id,
+                decision,
+                deadline_ms: Some(deadline_ms),
+                show_after_ms: None,
+            },
+        );
     }
 
     /// Starts `seat`'s yield; if the seat faces a priority decision it is passed at once.
@@ -742,6 +828,9 @@ mod tests {
             response: Some(Duration::from_secs(10)),
             blocks: Some(Duration::from_secs(45)),
             think: Some(Duration::from_secs(60)),
+            active: None,
+            extension: Some(Duration::from_secs(20)),
+            grace: Duration::from_secs(3),
             dwell: Dwell::OFF,
         }
     }
@@ -908,6 +997,9 @@ mod tests {
         assert_eq!(pace.response, Some(Duration::from_secs(10)));
         assert_eq!(pace.blocks, Some(Duration::from_secs(45)));
         assert_eq!(pace.think, Some(Duration::from_secs(60)));
+        assert_eq!(pace.active, None, "the active seat is not hurried");
+        assert_eq!(pace.extension, Some(Duration::from_secs(20)));
+        assert_eq!(pace.grace, Duration::from_secs(3));
         assert_eq!(
             pace.dwell.range(),
             (Duration::from_millis(250), Duration::from_millis(700))
@@ -1231,6 +1323,151 @@ mod tests {
             }
             .mode(),
             mode
+        );
+    }
+
+    /// One decision of every kind with the class its clock belongs to: the table a new kind has to be added to.
+    fn every_kind() -> Vec<(DecisionKind, Class)> {
+        vec![
+            (mulligan(), Class::Opening),
+            (bottoming(7, 1), Class::Opening),
+            (priority(true), Class::Response),
+            (priority(false), Class::Response),
+            (targets(true), Class::Response),
+            (order(2), Class::Response),
+            (replacements(2), Class::Response),
+            (question(), Class::Response),
+            (options(3), Class::Response),
+            (modes(3, 1, 1, false, true), Class::Response),
+            (number(0, Some(3), true), Class::Response),
+            (division(3, 2, true), Class::Response),
+            (costs(2, true), Class::Response),
+            (cards(3, 1, 1), Class::Response),
+            (ordering(3), Class::Response),
+            (blockers(), Class::Blocks),
+            (payment(true, true), Class::Think),
+            (damage(3, &[2, 2], false), Class::Think),
+            (attackers(&[]), Class::Think),
+            (discard(8, 1), Class::Think),
+        ]
+    }
+
+    #[test]
+    fn every_kind_has_a_class_and_the_table_names_each_kind() {
+        let names: std::collections::BTreeSet<_> =
+            every_kind().iter().map(|(kind, _)| kind.name()).collect();
+        assert_eq!(names.len(), 19, "one row for each decision kind: {names:?}");
+        for (kind, class) in every_kind() {
+            assert_eq!(Class::of(&kind), class, "{}", kind.name());
+        }
+    }
+
+    #[rstest]
+    #[case::no_active_clock(None)]
+    #[case::thirty_seconds(Some(30))]
+    fn the_active_seat_runs_on_the_active_length_for_every_kind_but_the_opening(
+        #[case] active: Option<u64>,
+    ) {
+        let settings = Pace {
+            active: active.map(Duration::from_secs),
+            ..pace()
+        };
+        for (kind, class) in every_kind() {
+            let got = settings.clock_for(&decision(ACTIVE, kind.clone()), ACTIVE);
+            let expected = match class {
+                Class::Opening => settings.think,
+                _ => settings.active,
+            };
+            assert_eq!(got, expected, "{}", kind.name());
+        }
+    }
+
+    #[test]
+    fn a_seat_that_is_not_the_active_player_never_runs_on_the_active_length() {
+        let settings = Pace {
+            active: Some(Duration::from_secs(30)),
+            ..pace()
+        };
+        for (kind, class) in every_kind() {
+            let expected = match class {
+                Class::Opening | Class::Think => settings.think,
+                Class::Response => settings.response,
+                Class::Blocks => settings.blocks,
+            };
+            for player in [OTHER, PlayerId(2), PlayerId(3)] {
+                let got = settings.clock_for(&decision(player, kind.clone()), ACTIVE);
+                assert_eq!(got, expected, "{}", kind.name());
+            }
+        }
+    }
+
+    #[test]
+    fn the_answer_at_the_deadline_is_the_same_for_the_active_seat_and_every_other() {
+        for (kind, _) in every_kind() {
+            let (active, other) = (
+                fallback(&decision(ACTIVE, kind.clone())),
+                fallback(&decision(OTHER, kind.clone())),
+            );
+            assert_eq!(active, other, "{}", kind.name());
+        }
+    }
+
+    #[rstest]
+    #[case::no_grace_shows_at_once(0, 10, 0)]
+    #[case::three_seconds_of_ten(3, 10, 3)]
+    #[case::three_seconds_of_forty_five(3, 45, 3)]
+    #[case::three_seconds_of_sixty(3, 60, 3)]
+    #[case::a_clock_just_longer_than_the_grace(3, 4, 3)]
+    #[case::a_clock_as_long_as_the_grace_shows_at_once(3, 3, 0)]
+    #[case::a_clock_shorter_than_the_grace_shows_at_once(30, 10, 0)]
+    fn the_countdown_is_delayed_by_the_grace_when_the_clock_is_longer(
+        #[case] grace: u64,
+        #[case] length: u64,
+        #[case] shown_after: u64,
+    ) {
+        let settings = Pace {
+            grace: Duration::from_secs(grace),
+            ..pace()
+        };
+        assert_eq!(
+            settings.shown_after(Duration::from_secs(length)),
+            Duration::from_secs(shown_after)
+        );
+    }
+
+    #[test]
+    fn the_delay_follows_the_clock_of_every_kind_and_seat_and_nothing_else() {
+        let settings = Pace {
+            active: Some(Duration::from_secs(30)),
+            ..pace()
+        };
+        for (kind, _) in every_kind() {
+            for player in [ACTIVE, OTHER, PlayerId(2), PlayerId(3)] {
+                let d = decision(player, kind.clone());
+                let length = settings.clock_for(&d, ACTIVE).expect("a clock");
+                assert_eq!(
+                    settings.shown_after(length),
+                    Duration::from_secs(3),
+                    "{}",
+                    kind.name()
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn the_priority_clock_and_its_delay_ignore_whether_the_seat_can_act() {
+        let settings = pace();
+        let shown = |can_act| {
+            let d = decision(OTHER, priority(can_act));
+            settings
+                .clock_for(&d, ACTIVE)
+                .map(|length| (length, settings.shown_after(length)))
+        };
+        assert_eq!(shown(true), shown(false));
+        assert_eq!(
+            shown(true),
+            Some((Duration::from_secs(10), Duration::from_secs(3)))
         );
     }
 

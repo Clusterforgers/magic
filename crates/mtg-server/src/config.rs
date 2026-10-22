@@ -45,6 +45,21 @@ pub enum ConfigError {
         "MTG_THINK_SECS must be a whole number of seconds, 0 for no clock, at most 86400, got {0:?}"
     )]
     BadThinkSecs(String),
+    /// `MTG_ACTIVE_SECS` is not a number of seconds.
+    #[error(
+        "MTG_ACTIVE_SECS must be a whole number of seconds, 0 for no clock, at most 86400, got {0:?}"
+    )]
+    BadActiveSecs(String),
+    /// `MTG_EXTENSION_SECS` is not a number of seconds.
+    #[error(
+        "MTG_EXTENSION_SECS must be a whole number of seconds, 0 for no bank, at most 86400, got {0:?}"
+    )]
+    BadExtensionSecs(String),
+    /// `MTG_CLOCK_GRACE_SECS` is not a number of seconds.
+    #[error(
+        "MTG_CLOCK_GRACE_SECS must be a whole number of seconds, 0 to show the countdown at once, at most 86400, got {0:?}"
+    )]
+    BadClockGraceSecs(String),
     /// `MTG_DWELL_MS` is not a range or a number of milliseconds.
     #[error(
         "MTG_DWELL_MS must be a range such as 250-700, or one whole number of milliseconds, 0 for no wait, at most 5000, got {0:?}"
@@ -255,8 +270,9 @@ impl Default for ServerConfig {
 
 impl ServerConfig {
     /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS`, `MTG_MAX_GAMES`, `MTG_AUTO_PASS`, `MTG_RESPONSE_SECS`,
-    /// `MTG_BLOCK_SECS`, `MTG_THINK_SECS`, `MTG_DWELL_MS`, `MTG_REGISTRATION`, `MTG_COOKIE_SECURE` and
-    /// `MTG_TRUSTED_PROXIES` from the process environment.
+    /// `MTG_BLOCK_SECS`, `MTG_THINK_SECS`, `MTG_ACTIVE_SECS`, `MTG_EXTENSION_SECS`, `MTG_CLOCK_GRACE_SECS`,
+    /// `MTG_DWELL_MS`, `MTG_REGISTRATION`, `MTG_COOKIE_SECURE` and `MTG_TRUSTED_PROXIES` from the process
+    /// environment.
     pub fn from_env() -> Result<ServerConfig, ConfigError> {
         ServerConfig::from_lookup(|key| {
             std::env::var_os(key).map(|value| value.to_string_lossy().into_owned())
@@ -305,6 +321,18 @@ impl ServerConfig {
         if let Some(text) = get("MTG_THINK_SECS") {
             let seconds = parse_seconds(&text).ok_or(ConfigError::BadThinkSecs(text))?;
             config.game.pace.think = clock_of(seconds);
+        }
+        if let Some(text) = get("MTG_ACTIVE_SECS") {
+            let seconds = parse_seconds(&text).ok_or(ConfigError::BadActiveSecs(text))?;
+            config.game.pace.active = clock_of(seconds);
+        }
+        if let Some(text) = get("MTG_EXTENSION_SECS") {
+            let seconds = parse_seconds(&text).ok_or(ConfigError::BadExtensionSecs(text))?;
+            config.game.pace.extension = clock_of(seconds);
+        }
+        if let Some(text) = get("MTG_CLOCK_GRACE_SECS") {
+            let seconds = parse_seconds(&text).ok_or(ConfigError::BadClockGraceSecs(text))?;
+            config.game.pace.grace = Duration::from_secs(seconds);
         }
         if let Some(text) = get("MTG_DWELL_MS") {
             config.game.pace.dwell = Dwell::parse(&text).ok_or(ConfigError::BadDwellMs(text))?;
@@ -673,6 +701,54 @@ mod tests {
             (pace.response, pace.blocks),
             (Some(Duration::from_secs(10)), Some(Duration::from_secs(45))),
             "the other clocks are untouched"
+        );
+    }
+
+    #[rstest]
+    #[case("30", Some(30))]
+    #[case("0", None)]
+    #[case("", None)]
+    fn active_clock(#[case] text: &str, #[case] seconds: Option<u64>) {
+        let pace = load(&[("MTG_ACTIVE_SECS", text)]).unwrap().game.pace;
+        assert_eq!(pace.active, seconds.map(Duration::from_secs));
+        assert_eq!(pace.think, Some(Duration::from_secs(60)));
+    }
+
+    #[rstest]
+    #[case("5", Some(5))]
+    #[case("0", None)]
+    #[case("", Some(20))]
+    fn extension_length(#[case] text: &str, #[case] seconds: Option<u64>) {
+        let pace = load(&[("MTG_EXTENSION_SECS", text)]).unwrap().game.pace;
+        assert_eq!(pace.extension, seconds.map(Duration::from_secs));
+    }
+
+    #[rstest]
+    #[case("5", 5)]
+    #[case("0", 0)]
+    #[case("", 3)]
+    fn clock_grace(#[case] text: &str, #[case] seconds: u64) {
+        let pace = load(&[("MTG_CLOCK_GRACE_SECS", text)]).unwrap().game.pace;
+        assert_eq!(pace.grace, Duration::from_secs(seconds));
+    }
+
+    #[rstest]
+    #[case("-1")]
+    #[case("ten")]
+    #[case("1.5")]
+    #[case("86401")]
+    fn bad_bank_settings(#[case] text: &str) {
+        assert_eq!(
+            load(&[("MTG_ACTIVE_SECS", text)]),
+            Err(ConfigError::BadActiveSecs(text.to_owned()))
+        );
+        assert_eq!(
+            load(&[("MTG_EXTENSION_SECS", text)]),
+            Err(ConfigError::BadExtensionSecs(text.to_owned()))
+        );
+        assert_eq!(
+            load(&[("MTG_CLOCK_GRACE_SECS", text)]),
+            Err(ConfigError::BadClockGraceSecs(text.to_owned()))
         );
     }
 

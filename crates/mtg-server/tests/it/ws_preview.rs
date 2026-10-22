@@ -322,6 +322,7 @@ async fn at_the_default_pace_the_preview_is_still_the_damage_that_then_happens()
             id,
             decision,
             deadline_ms,
+            ..
         } = duel.b.message().await
         {
             break (id, deadline_ms, decision);

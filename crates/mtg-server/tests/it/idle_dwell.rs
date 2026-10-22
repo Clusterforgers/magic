@@ -75,6 +75,9 @@ fn config(dwell: Dwell) -> GameConfig {
             response: None,
             blocks: None,
             think: None,
+            active: None,
+            extension: None,
+            grace: std::time::Duration::ZERO,
             dwell,
         },
         ..roomy()

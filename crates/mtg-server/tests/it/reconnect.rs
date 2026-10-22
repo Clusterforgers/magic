@@ -164,6 +164,7 @@ async fn a_joining_seat_gets_welcome_then_snapshot_then_its_pending_decision() {
                     id,
                     decision: decision.clone(),
                     deadline_ms: None,
+                    show_after_ms: None,
                 }
             );
         }
@@ -200,6 +201,7 @@ async fn resync_repeats_the_snapshot_and_the_pending_decision() {
                     id,
                     decision: decision.clone(),
                     deadline_ms: None,
+                    show_after_ms: None,
                 }],
                 "the pending decision keeps its id"
             );

@@ -59,6 +59,7 @@ const MESSAGE_TYPES: Record<ServerMessage['type'], true> = {
   Yielding: true,
   Stops: true,
   FullControl: true,
+  Bank: true,
 }
 
 const ERROR_CODES: Record<ErrorCode, true> = {
@@ -176,7 +177,8 @@ function isPlayerView(value: unknown): value is PlayerView {
     isZone(value.hand) &&
     isZone(value.library) &&
     isZone(value.graveyard) &&
-    isZone(value.command)
+    isZone(value.command) &&
+    isCount(value.bank)
   )
 }
 
@@ -403,9 +405,16 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       if (v.deadline_ms !== undefined && !isCount(v.deadline_ms)) {
         return '"deadline_ms" must be a whole number of milliseconds'
       }
-      return v.deadline_ms === undefined
-        ? { type, id: v.id, decision: v.decision }
-        : { type, id: v.id, decision: v.decision, deadline_ms: v.deadline_ms }
+      if (v.show_after_ms !== undefined && !isCount(v.show_after_ms)) {
+        return '"show_after_ms" must be a whole number of milliseconds'
+      }
+      return {
+        type,
+        id: v.id,
+        decision: v.decision,
+        ...(v.deadline_ms === undefined ? {} : { deadline_ms: v.deadline_ms }),
+        ...(v.show_after_ms === undefined ? {} : { show_after_ms: v.show_after_ms }),
+      }
     case 'Forecast':
       if (!isCount(v.decision)) return '"decision" must be a whole number'
       if (v.forecast !== null && !isCombatForecast(v.forecast)) {
@@ -451,6 +460,10 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
     case 'FullControl':
       if (!isFullControl(v.mode)) return '"mode" must be Off, NextWindow or Held'
       return { type, mode: v.mode }
+    case 'Bank':
+      if (!isCount(v.seat)) return '"seat" must be a whole number'
+      if (!isCount(v.bank)) return '"bank" must be a whole number'
+      return { type, seat: v.seat, bank: v.bank }
     default: {
       // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.
       const unhandled: never = type

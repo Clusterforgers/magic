@@ -25,6 +25,9 @@ const ON: Pace = Pace {
     response: None,
     blocks: None,
     think: None,
+    active: None,
+    extension: None,
+    grace: std::time::Duration::ZERO,
     dwell: Dwell::OFF,
 };
 
