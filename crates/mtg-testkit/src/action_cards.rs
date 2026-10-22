@@ -44,6 +44,11 @@ pub const COUNTER_CARDS: &[&str] = &[
     "Lazotep Reaver",
     "Herald of the Dreadhorde",
     "Relentless Advance",
+    "Skitter Eel",
+    "Sinuous Vermin",
+    "Domesticated Hydra",
+    "Cached Defenses",
+    "Sandsteppe Mastodon",
 ];
 
 /// A legal Normal deck in blue, black and green of the cards that act, three of each, with creatures to fill it,

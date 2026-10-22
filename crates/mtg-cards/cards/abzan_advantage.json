@@ -1,0 +1,22 @@
+{
+  "oracle_id": "e7b2f844-2ba2-4465-bb80-358a4d915f36",
+  "name": "Abzan Advantage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abzan Advantage",
+      "oracle_fingerprint": "f3de2d20c2bdc4d43094e52162974dc5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Sacrifice": { "who": { "Target": 0 }, "filter": [{ "Type": "Enchantment" }] } },
+              { "Bolster": { "count": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

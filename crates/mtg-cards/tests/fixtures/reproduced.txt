@@ -1,11 +1,17 @@
 Abbot of Keral Keep
+Abzan Advantage
+Abzan Skycaptain
 Adorned Pouncer
+Aeromunculus
 Aether Hub
 Ajani's Pridemate
+Alpha Deathclaw
+Anafenza, Kin-Tree Spirit
 Ancestral Vision
 Ancient Stone Idol
 Ancient Ziggurat
 Angel of Vitality
+Arbor Colossus
 Arcane Signet
 Archon of Cruelty
 Arrogant Wurm
@@ -16,6 +22,7 @@ Augury Raven
 Authority of the Consuls
 Aven Eternal
 Aven Initiate
+Aven Tactician
 Azorius Chancery
 Azorius Signet
 Azure Fleet Admiral
@@ -45,6 +52,7 @@ Brainstorm
 Branchblight Stalker
 Brightstone Ritual
 Bronzeplate Boar
+Cached Defenses
 Cackling Counterpart
 Caldaia Strongarm
 Capsize
@@ -96,11 +104,15 @@ Direct Current
 Disembowel
 Dockside Extortionist
 Dokuchi Shadow-Walker
+Domesticated Hydra
 Doom Blade
 Doom Whisperer
 Dragonspeaker Shaman
 Dream's Grip
 Dregscape Zombie
+Dromoka Captain
+Dromoka's Gift
+Dromoka, the Eternal
 Drove of Elves
 Drudge Skeletons
 Dual Casting
@@ -109,6 +121,7 @@ Dunland Crebain
 Durkwood Baloth
 Easterling Vanguard
 Echo Inspector
+Echoes of the Kin Tree
 Elven Ambush
 Elvish Rejuvenator
 Empyrial Plate
@@ -131,6 +144,8 @@ Fiery Temper
 Fire-Lit Thicket
 Firestorm Hellkite
 Flame Jab
+Fleecemane Lion
+Fleetfeather Cockatrice
 Flooded Grove
 Flooded Strand
 Fog
@@ -152,6 +167,7 @@ Gilded Goose
 Gilded Lotus
 Glimpse of Freedom
 Glorious Anthem
+Gluttonous Cyclops
 Goblin Chieftain
 Goblin Spy
 Goblin War Buggy
@@ -171,10 +187,12 @@ Herald of the Dreadhorde
 Hero of Bladehold
 Holdout Settlement
 Honor Troll
+Honor's Reward
 Horizon Canopy
 Hound of Griselbrand
 Hulking Raptor
 Idyllic Beachfront
+Ill-Tempered Cyclops
 Impostor of the Sixth Pride
 Inkwell Leviathan
 Invading Manticore
@@ -183,6 +201,7 @@ Izzet Charm
 Jadelight Ranger
 Jaspera Sentinel
 Jungle Lion
+Kalemne's Captain
 Karn's Bastion
 Kathari Screecher
 Keep Watch
@@ -210,6 +229,7 @@ Ludevic's Test Subject // Ludevic's Abomination
 Lurching Rotbeast
 Manabarbs
 Manor Gate
+Map the Wastes
 Mardu Devotee
 Mardu Scout
 Mardu Shadowspear
@@ -235,6 +255,7 @@ Murderous Cut
 Muscle Sliver
 Mystic Gate
 Nantuko Husk
+Nessian Asp
 Night Clubber
 Nighthawk Scavenger
 Nightmare
@@ -251,6 +272,7 @@ Pestilent Syphoner
 Phantasmal Image
 Phyrexian Soulgorger
 Pillar of the Paruns
+Pinion Feast
 Plague Myr
 Plague Stinger
 Pouncing Jaguar
@@ -267,6 +289,7 @@ Raffine's Informant
 Rakdos Headliner
 Rally the Ranks
 Rampant Growth
+Ravenous Leucrocota
 Reckless Impulse
 Reconstructed Thopter
 Red Room Recruit
@@ -290,8 +313,12 @@ Rustrazor Butcher
 Sacred Cat
 Safehold Elite
 Sage of the Beyond
+Sandcrafter Mage
+Sandsteppe Mastodon
+Sandsteppe Scavenger
 Sanguine Bond
 Satyr Wayfinder
+Sauroform Hybrid
 Saw It Coming
 Scheming Aspirant
 Scuzzback Marauders
@@ -304,9 +331,12 @@ Shadowmage Infiltrator
 Siege Wurm
 Sinister Sabotage
 Sinister Starfish
+Sinuous Vermin
 Siren Lookout
 Skeletal Changeling
 Skirk Prospector
+Skitter Eel
+Skittering Crustacean
 Skizzik Surger
 Skullclamp
 Skycloud Expanse

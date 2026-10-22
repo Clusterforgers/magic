@@ -50,6 +50,7 @@ mod cost_modifiers;
 mod cost_parts;
 mod counted_amounts;
 mod counted_costs;
+mod counter_actions;
 mod counter_effects;
 mod counters_fuzz;
 mod counting_costs;

@@ -1,0 +1,28 @@
+{
+  "id": "b9dfc3ec-ca06-40a6-b77c-c2432af9802f",
+  "oracle_id": "f2d5949b-3cdc-4efd-9841-7d450e12dbbe",
+  "name": "Aven Tactician",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dtk",
+  "collector_number": "6",
+  "rarity": "common",
+  "released_at": "2015-03-27",
+  "digital": false,
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Bird Soldier",
+  "oracle_text": "Flying\nWhen this creature enters, bolster 1. (Choose a creature with the least toughness among creatures you control and put a +1/+1 counter on it.)",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Bolster",
+    "Flying"
+  ]
+}
