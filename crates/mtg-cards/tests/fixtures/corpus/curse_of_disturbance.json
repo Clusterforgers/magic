@@ -1,0 +1,25 @@
+{
+  "id": "80d42b98-62d2-4ca6-8478-36222d709048",
+  "oracle_id": "6cbd36d9-de47-41b0-9ef4-a72ca01adccd",
+  "name": "Curse of Disturbance",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c21",
+  "collector_number": "138",
+  "rarity": "uncommon",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura Curse",
+  "oracle_text": "Enchant player\nWhenever enchanted player is attacked, create a 2/2 black Zombie creature token. Each opponent attacking that player does the same.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

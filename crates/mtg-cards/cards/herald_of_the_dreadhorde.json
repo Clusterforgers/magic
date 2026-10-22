@@ -1,0 +1,19 @@
+{
+  "oracle_id": "9cdbe247-9dd3-4894-8e65-43d879c19321",
+  "name": "Herald of the Dreadhorde",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Herald of the Dreadhorde",
+      "oracle_fingerprint": "04e09ad3759da26c004fff21a17f3ff4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Amass": { "subtype": "Zombie", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

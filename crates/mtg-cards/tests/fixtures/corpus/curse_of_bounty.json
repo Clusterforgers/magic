@@ -1,0 +1,25 @@
+{
+  "id": "2f497641-b73a-4399-bc89-5274c42e17cc",
+  "oracle_id": "b6689782-08d8-48e1-a05d-cd040dfe85bc",
+  "name": "Curse of Bounty",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c17",
+  "collector_number": "30",
+  "rarity": "uncommon",
+  "released_at": "2017-08-25",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Aura Curse",
+  "oracle_text": "Enchant player\nWhenever enchanted player is attacked, untap all nonland permanents you control. Each opponent attacking that player untaps all nonland permanents they control.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

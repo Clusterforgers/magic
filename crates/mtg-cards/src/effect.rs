@@ -119,6 +119,9 @@ pub enum TokenRef {
         /// Changes the copy has ("except it's a Zombie in addition").
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         except: Vec<Modification>,
+        /// The copy has no mana cost ("except it's a white Zombie with no mana cost", CR 702.128).
+        #[serde(default, skip_serializing_if = "is_false")]
+        no_mana_cost: bool,
     },
 }
 

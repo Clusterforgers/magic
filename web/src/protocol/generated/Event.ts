@@ -537,6 +537,14 @@ object: ObjectId,
 /**
  * Its controller, who revealed the card.
  */
+player: PlayerId, } } | { "Amassed": { 
+/**
+ * The Army that got the counters.
+ */
+object: ObjectId, 
+/**
+ * Its controller, who amassed.
+ */
 player: PlayerId, } } | { "Connived": { 
 /**
  * The creature that connived.

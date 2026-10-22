@@ -139,6 +139,8 @@ pub enum Pred {
     Untapped,
     /// Is attacking.
     Attacking,
+    /// Is attacking the player, not a planeswalker of theirs ("attacking that player").
+    AttackingPlayer(Ref),
     /// Is blocking.
     Blocking,
     /// Is an attacking creature that no creature was declared to block, once its defending player has declared blockers (CR 509.1h).

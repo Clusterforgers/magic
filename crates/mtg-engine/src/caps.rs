@@ -33,6 +33,8 @@ const RUNS: &[&str] = &[
     "Trigger.State",
     "Trigger.Attacks",
     "Trigger.AttacksPlayer",
+    "Trigger.PlayerAttacked",
+    "Trigger.PlayerAttacks",
     "Trigger.SpellCast",
     "Trigger.Sacrificed",
     "Trigger.StepBegins",
@@ -57,6 +59,7 @@ const RUNS: &[&str] = &[
     "Trigger.Proliferated",
     "Trigger.Explored",
     "Trigger.Connived",
+    "Trigger.Amassed",
     "Trigger.Batch",
     "Trigger.Nth",
     "Amount.Triggering",
@@ -127,6 +130,7 @@ const RUNS: &[&str] = &[
     "Effect.Proliferate",
     "Effect.Explore",
     "Effect.Connive",
+    "Effect.Amass",
     "Effect.BecomeMonarch",
     "Condition.Monarch",
     "Effect.CreateToken",
@@ -273,6 +277,10 @@ const RUNS: &[&str] = &[
     "Keyword.CumulativeUpkeep",
     "Keyword.Undying",
     "Keyword.Persist",
+    "Keyword.JumpStart",
+    "Keyword.Retrace",
+    "Keyword.Embalm",
+    "Keyword.Eternalize",
     "Condition.NewlyControlled",
     "Rule.CanBeCommander",
 ];
@@ -505,7 +513,7 @@ mod tests {
     #[case::goading("Effect.Goad", false)]
     #[case::fighting("Effect.Fight", false)]
     #[case::becoming_the_monarch("Effect.BecomeMonarch", true)]
-    #[case::amassing("Effect.Amass", false)]
+    #[case::amassing("Effect.Amass", true)]
     #[case::monstrosity("Effect.Monstrosity", false)]
     #[case::adapting("Effect.Adapt", false)]
     #[case::bolstering("Effect.Bolster", false)]
@@ -554,6 +562,7 @@ mod tests {
     #[case::proliferating_triggers("Trigger.Proliferated", true)]
     #[case::exploring_triggers("Trigger.Explored", true)]
     #[case::conniving_triggers("Trigger.Connived", true)]
+    #[case::amassing_triggers("Trigger.Amassed", true)]
     #[case::batch_triggers("Trigger.Batch", true)]
     #[case::nth_triggers("Trigger.Nth", true)]
     #[case::event_amounts("Amount.Triggering", true)]
@@ -582,6 +591,10 @@ mod tests {
     #[case::cumulative_upkeep("Keyword.CumulativeUpkeep", true)]
     #[case::undying("Keyword.Undying", true)]
     #[case::persist("Keyword.Persist", true)]
+    #[case::jump_start("Keyword.JumpStart", true)]
+    #[case::retrace("Keyword.Retrace", true)]
+    #[case::embalm("Keyword.Embalm", true)]
+    #[case::eternalize("Keyword.Eternalize", true)]
     #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]

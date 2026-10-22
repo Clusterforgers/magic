@@ -25,11 +25,13 @@ mod disguise;
 mod doctors_companion;
 mod double_strike;
 mod echo;
+mod embalm;
 mod enchant;
 mod encore;
 mod entwine;
 mod equip;
 mod escape;
+mod eternalize;
 mod evoke;
 mod fear;
 mod first_strike;
@@ -43,6 +45,7 @@ mod hexproof;
 mod indestructible;
 mod infect;
 mod intimidate;
+mod jump_start;
 mod kicker;
 mod landwalk;
 mod lifelink;
@@ -67,6 +70,7 @@ mod prowess;
 mod reach;
 mod rebound;
 mod reconfigure;
+mod retrace;
 mod shadow;
 mod shroud;
 mod skulk;
@@ -403,6 +407,10 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::CumulativeUpkeep(_) => &cumulative_upkeep::CumulativeUpkeep,
         Keyword::Undying => &undying::Undying,
         Keyword::Persist => &persist::Persist,
+        Keyword::JumpStart => &jump_start::JumpStart,
+        Keyword::Retrace => &retrace::Retrace,
+        Keyword::Embalm(_) => &embalm::Embalm,
+        Keyword::Eternalize(_) => &eternalize::Eternalize,
     }
 }
 
@@ -657,6 +665,10 @@ mod tests {
             Keyword::CumulativeUpkeep(cost()),
             Keyword::Undying,
             Keyword::Persist,
+            Keyword::JumpStart,
+            Keyword::Retrace,
+            Keyword::Embalm(cost()),
+            Keyword::Eternalize(cost()),
         ]
     }
 
@@ -730,6 +742,10 @@ mod tests {
         "Keyword.CumulativeUpkeep",
         "Keyword.Undying",
         "Keyword.Persist",
+        "Keyword.JumpStart",
+        "Keyword.Retrace",
+        "Keyword.Embalm",
+        "Keyword.Eternalize",
     ];
 
     /// What a keyword answers to each hook that does not need a game.

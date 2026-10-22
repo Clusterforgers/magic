@@ -1,4 +1,5 @@
 Abbot of Keral Keep
+Adorned Pouncer
 Aether Hub
 Ajani's Pridemate
 Ancestral Vision
@@ -13,6 +14,8 @@ Arvad the Cursed
 Atlantean Skirmisher
 Augury Raven
 Authority of the Consuls
+Aven Eternal
+Aven Initiate
 Azorius Chancery
 Azorius Signet
 Azure Fleet Admiral
@@ -47,6 +50,7 @@ Carnage Tyrant
 Cascade Bluffs
 Cathars' Crusade
 Changeling Outcast
+Chemister's Insight
 Circle of Dreams Druid
 Clone
 Cold-Eyed Selkie
@@ -61,7 +65,12 @@ Courser of Kruphix
 Crucible of Worlds
 Crystal Quarry
 Curate
+Curse of Bounty
+Curse of Disturbance
+Curse of Opulence
 Curse of Predation
+Curse of Verbosity
+Curse of Vitality
 Curse of the Forsaken
 Curse of the Nightly Hunt
 Custodi Lich
@@ -79,6 +88,7 @@ Defile
 Delver of Secrets // Insectile Aberration
 Demon Bolt
 Dire Fleet Interloper
+Direct Current
 Disembowel
 Dockside Extortionist
 Dokuchi Shadow-Walker
@@ -91,7 +101,9 @@ Drove of Elves
 Drudge Skeletons
 Dual Casting
 Dualcaster Mage
+Dunland Crebain
 Durkwood Baloth
+Easterling Vanguard
 Echo Inspector
 Elven Ambush
 Elvish Rejuvenator
@@ -107,12 +119,14 @@ Faithless Looting
 Faramir, Steward of Gondor
 Favorable Winds
 Fear of Failed Tests
+Fearsome Goblin Pair
 Felidar Sovereign
 Fellwar Stone
 Fetid Heath
 Fiery Temper
 Fire-Lit Thicket
 Firestorm Hellkite
+Flame Jab
 Flooded Grove
 Flooded Strand
 Fog
@@ -136,9 +150,11 @@ Glorious Anthem
 Goblin Chieftain
 Goblin Spy
 Goblin War Buggy
+Goblin-town Flunkies
 Grapeshot
 Graven Cairns
 Graveshifter
+Grim Initiate
 Grisly Salvage
 Growing Ranks
 Guardian Gladewalker
@@ -146,6 +162,7 @@ Gurmag Angler
 Hall of Triumph
 Haughty Djinn
 Hengegate Pathway // Mistgate Pathway
+Herald of the Dreadhorde
 Hero of Bladehold
 Holdout Settlement
 Honor Troll
@@ -155,6 +172,7 @@ Hulking Raptor
 Idyllic Beachfront
 Impostor of the Sixth Pride
 Inkwell Leviathan
+Invading Manticore
 Invisible Stalker
 Izzet Charm
 Jadelight Ranger
@@ -172,6 +190,7 @@ Kongming, "Sleeping Dragon"
 Kozilek's Translator
 Krenko's Enforcer
 Lat-Nam Adept
+Lazotep Reaver
 Levitation
 Lhurgoyf
 Lightning Bolt
@@ -229,10 +248,12 @@ Pouncing Jaguar
 Primeval Protector
 Prismatic Lens
 Professional Face-Breaker
+Proven Combatant
 Psychosis Crawler
 Putrid Goblin
 Pygmy Kavu
 Questing Beast
+Radical Idea
 Raffine's Informant
 Rakdos Headliner
 Rally the Ranks
@@ -242,6 +263,7 @@ Reconstructed Thopter
 Red Room Recruit
 Reflecting Pool
 Reiterate
+Relentless Advance
 Revel Ruiner
 Reverberate
 Rhox Faithmender
@@ -255,6 +277,7 @@ Rugged Prairie
 Rumbleweed
 Rummaging Goblin
 Rustrazor Butcher
+Sacred Cat
 Safehold Elite
 Sage of the Beyond
 Sanguine Bond
@@ -306,6 +329,8 @@ Supreme Verdict
 Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
+Syphon Life
+Tah-Crop Skirmisher
 Tainted Isle
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher

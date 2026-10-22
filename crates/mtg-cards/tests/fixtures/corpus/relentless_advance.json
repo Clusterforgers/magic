@@ -1,0 +1,25 @@
+{
+  "id": "4258e242-91c6-4b30-86ec-7759705aa97c",
+  "oracle_id": "f54573d1-9950-46c3-b8f1-cd6f081d62ad",
+  "name": "Relentless Advance",
+  "lang": "en",
+  "layout": "normal",
+  "set": "war",
+  "collector_number": "64",
+  "rarity": "common",
+  "released_at": "2019-05-03",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Amass Zombies 3. (Put three +1/+1 counters on an Army you control. It's also a Zombie. If you don't control an Army, create a 0/0 black Zombie Army creature token first.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Amass"
+  ]
+}

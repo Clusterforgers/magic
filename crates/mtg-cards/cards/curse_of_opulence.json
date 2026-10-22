@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ba0d3df2-3acf-46d7-8d64-8d67d1579adc",
+  "name": "Curse of Opulence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Opulence",
+      "oracle_fingerprint": "e1996d77c48e7fdf5ddc757b0e038a18",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "PlayerAttacked": { "who": "AttachedPlayer" } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "gold" } } },
+              {
+                "CreateToken": {
+                  "who": {
+                    "ControllerOf": {
+                      "Each": [
+                        { "AttackingPlayer": "AttachedPlayer" },
+                        { "ControlledBy": "Opponents" }
+                      ]
+                    }
+                  },
+                  "token": { "Named": "gold" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

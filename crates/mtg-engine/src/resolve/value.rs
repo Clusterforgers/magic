@@ -21,6 +21,7 @@ use crate::announce::payments;
 use crate::characteristics::{Characteristics, characteristics, controller_of, seen_as};
 use crate::choose::legal_from;
 use crate::choose::{Choices, Target};
+use crate::combat::AttackTarget;
 use crate::keywords::{self, OptionalKind};
 use crate::layers::{Held, View, outside};
 use crate::object::{Chosen, GameObject, ObjectKind, ObjectRef, PermanentState};
@@ -603,6 +604,13 @@ impl<'a> Scope<'a> {
                 .attackers()
                 .iter()
                 .any(|a| a.object() == reference.id),
+            Pred::AttackingPlayer(who) => {
+                let attacked = self.players(who)?;
+                state.combat().attackers().iter().any(|a| {
+                    a.object() == reference.id
+                        && matches!(a.target(), AttackTarget::Player(player) if attacked.contains(&player))
+                })
+            }
             Pred::Blocking => state
                 .combat()
                 .attackers()

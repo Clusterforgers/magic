@@ -1,0 +1,35 @@
+{
+  "oracle_id": "6d2eb412-e09b-4ab3-8653-b458e9f38eff",
+  "name": "Curse of Vitality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Vitality",
+      "oracle_fingerprint": "f0c3851103da3d0a2640a5f135b4ca8b",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "PlayerAttacked": { "who": "AttachedPlayer" } },
+            "effects": [
+              { "GainLife": { "amount": 2 } },
+              {
+                "GainLife": {
+                  "who": {
+                    "ControllerOf": {
+                      "Each": [
+                        { "AttackingPlayer": "AttachedPlayer" },
+                        { "ControlledBy": "Opponents" }
+                      ]
+                    }
+                  },
+                  "amount": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
