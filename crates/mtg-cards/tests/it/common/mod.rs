@@ -10,7 +10,7 @@ use mtg_import::scryfall::CardRecord;
 
 pub mod checks;
 
-pub use checks::{ADDING, Corpus, UPDATE};
+pub use checks::{ADDING, Corpus, UPDATE, update_repo_once};
 
 /// Scryfall objects (trimmed) of every card in the corpus, from the 2026-10-18 Oracle Cards bulk file.
 const FIXTURE: &str = include_str!("../../fixtures/corpus_scryfall.json");

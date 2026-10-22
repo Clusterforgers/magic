@@ -3,7 +3,7 @@
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 
-use mtg_cards::card::{Card, ImplStatus};
+use mtg_cards::card::{Card, ImplStatus, TokenFile};
 use mtg_cards::compile::compile;
 use mtg_cards::load::{Library, Source, canonical, parse_json, slug};
 use mtg_cards::support::{PrintedCard, has_rules_text, oracle_fingerprint};
@@ -33,6 +33,41 @@ fn json_in(dir: &Path) -> Vec<PathBuf> {
         .collect();
     files.sort();
     files
+}
+
+/// Every `.json` file below `dir`, in path order.
+fn json_below(dir: &Path) -> Vec<PathBuf> {
+    let mut found = Vec::new();
+    for entry in std::fs::read_dir(dir)
+        .expect("a readable directory")
+        .flatten()
+    {
+        let path = entry.path();
+        if path.is_dir() {
+            found.extend(json_below(&path));
+        } else if path.extension().is_some_and(|e| e == "json") {
+            found.push(path);
+        }
+    }
+    found.sort();
+    found
+}
+
+/// With `MTG_UPDATE_CARDS` set, rewrites every file of the repository's directory in canonical form with the
+/// fingerprints of the fixture, once per run. Whoever loads the library first does it and the others wait, so the
+/// run does not fail on a file it is about to mend.
+pub fn update_repo_once() {
+    static ONCE: std::sync::Once = std::sync::Once::new();
+    ONCE.call_once(|| {
+        if std::env::var_os("MTG_UPDATE_CARDS").is_none() {
+            return;
+        }
+        for (path, text, wanted) in Corpus::repo().rewrites(true) {
+            if text != wanted {
+                std::fs::write(path, wanted).expect("a writable rules file");
+            }
+        }
+    });
 }
 
 /// The compiled card as the file the loader would read.
@@ -88,8 +123,56 @@ impl Corpus {
         self.records().iter().map(super::printed_of).collect()
     }
 
+    /// Every file of the directory (the tokens too) with its text and the canonical text it should have; with
+    /// `fingerprints`, a `Full` or `Partial` card also carries the fingerprints of the fixture's text.
+    fn rewrites(&self, fingerprints: bool) -> Vec<(PathBuf, String, String)> {
+        let printed = self.printed();
+        let mut rewrites = Vec::new();
+        for path in json_below(&self.dir) {
+            let name = path.file_name().expect("a file name").to_string_lossy();
+            let text = std::fs::read_to_string(&path).expect("a rules file");
+            let wanted = if path.parent().is_some_and(|dir| dir.ends_with("tokens")) {
+                let token: TokenFile =
+                    parse_json(&name, &text).unwrap_or_else(|e| panic!("{name}: {e:?}"));
+                canonical(&token)
+            } else {
+                let mut card: Card =
+                    parse_json(&name, &text).unwrap_or_else(|e| panic!("{name}: {e:?}"));
+                let shown = printed.iter().find(|p| p.oracle_id == card.oracle_id);
+                if let Some(shown) = shown.filter(|_| {
+                    fingerprints
+                        && matches!(card.impl_status, ImplStatus::Full | ImplStatus::Partial)
+                }) {
+                    for (face, shown) in card.faces.iter_mut().zip(&shown.faces) {
+                        face.oracle_fingerprint = oracle_fingerprint(&shown.oracle_text);
+                    }
+                }
+                canonical(&card)
+            };
+            rewrites.push((path, text, wanted));
+        }
+        rewrites
+    }
+
+    /// The files that are not in canonical form.
+    pub fn non_canonical(&self) -> Vec<String> {
+        self.rewrites(false)
+            .into_iter()
+            .filter(|(_, text, wanted)| text != wanted)
+            .map(|(path, ..)| {
+                path.file_name()
+                    .expect("a file name")
+                    .to_string_lossy()
+                    .into_owned()
+            })
+            .collect()
+    }
+
     /// The library of the directory, validated; a file the loader refuses stops the test with the commands that mend it.
     pub fn library(&self) -> Library {
+        if self.dir == super::cards_dir() {
+            update_repo_once();
+        }
         Library::load_dir(&self.dir).unwrap_or_else(|errors| {
             panic!("{errors}\n(a missing or stale fingerprint: run `{UPDATE}`; see {ADDING})")
         })
@@ -144,6 +227,9 @@ impl Corpus {
 
     /// Every `Full` or `Partial` face whose fingerprint is not that of the imported text, with the card.
     pub fn fingerprint_problems(&self) -> Vec<String> {
+        if self.dir == super::cards_dir() {
+            update_repo_once();
+        }
         let printed = self.printed();
         let mut problems = Vec::new();
         // The files are read as data: the loader refuses a missing fingerprint without saying which command writes it.

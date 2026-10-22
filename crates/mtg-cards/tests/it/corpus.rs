@@ -7,68 +7,25 @@ use std::collections::BTreeSet;
 use std::path::Path;
 
 use mtg_cards::ability::Ability;
-use mtg_cards::card::{Card, ImplStatus, TokenFile};
+use mtg_cards::card::{Card, TokenFile};
 use mtg_cards::keyword::Keyword;
 use mtg_cards::load::{Library, canonical, parse_json};
-use mtg_cards::support::{Caps, Support, oracle_fingerprint};
+use mtg_cards::support::{Caps, Support};
 use mtg_cards::validate::used_primitives;
 use rstest::rstest;
 
-use common::{ADDING, Corpus, UPDATE, cards_dir, printed};
-
-fn json_files(dir: &Path) -> Vec<std::path::PathBuf> {
-    let mut found = Vec::new();
-    for entry in std::fs::read_dir(dir).unwrap().flatten() {
-        let path = entry.path();
-        if path.is_dir() {
-            found.extend(json_files(&path));
-        } else if path.extension().is_some_and(|e| e == "json") {
-            found.push(path);
-        }
-    }
-    found.sort();
-    found
-}
+use common::{ADDING, Corpus, UPDATE, cards_dir, printed, update_repo_once};
 
 fn library() -> Library {
     Corpus::repo().library()
 }
 
-/// Rewrites every file in canonical form with the fingerprints of the imported text when
-/// `MTG_UPDATE_CARDS=1`; otherwise a file that is not canonical fails the test.
+/// Every file is in canonical form. With `MTG_UPDATE_CARDS=1` the run first rewrites them, with the fingerprints of
+/// the imported text.
 #[test]
 fn files_are_canonical_and_carry_current_fingerprints() {
-    let update = std::env::var_os("MTG_UPDATE_CARDS").is_some();
-    let printed = printed();
-    let mut stale = Vec::new();
-    for path in json_files(&cards_dir()) {
-        let name = path.file_name().unwrap().to_string_lossy().into_owned();
-        let text = std::fs::read_to_string(&path).unwrap();
-        let wanted = if path.parent().unwrap().ends_with("tokens") {
-            canonical(&parse_json::<TokenFile>(&name, &text).unwrap())
-        } else {
-            let mut card: Card = parse_json(&name, &text).unwrap();
-            if update && matches!(card.impl_status, ImplStatus::Full | ImplStatus::Partial) {
-                let shown = printed
-                    .iter()
-                    .find(|p| p.oracle_id == card.oracle_id)
-                    .unwrap_or_else(|| {
-                        panic!("{name}: the fixture has no card with this oracle id ({ADDING})")
-                    });
-                for (face, shown) in card.faces.iter_mut().zip(&shown.faces) {
-                    face.oracle_fingerprint = oracle_fingerprint(&shown.oracle_text);
-                }
-            }
-            canonical(&card)
-        };
-        if wanted != text {
-            if update {
-                std::fs::write(&path, wanted).unwrap();
-            } else {
-                stale.push(name);
-            }
-        }
-    }
+    update_repo_once();
+    let stale = Corpus::repo().non_canonical();
     assert!(
         stale.is_empty(),
         "not in canonical form: {stale:?}; run `{UPDATE}` ({ADDING})"
