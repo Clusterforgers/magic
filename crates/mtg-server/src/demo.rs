@@ -7,8 +7,9 @@ use std::sync::{Arc, OnceLock};
 
 use mtg_cards::vanilla::{basic_land, creature};
 use mtg_cards::{CardDefinition, PrintedCard, PrintedFace, builtin};
+use mtg_core::card::{CardType, Supertype};
 use mtg_core::color::Color;
-use mtg_core::mana::ManaType;
+use mtg_core::mana::{ManaCost, ManaSymbol, ManaType};
 use mtg_import::scryfall::{CardRecord, cards};
 
 /// Scryfall objects (trimmed) of the corpus cards the demo decks play.
@@ -157,6 +158,25 @@ pub fn find(id: &str) -> Option<&'static DemoDeck> {
 /// cannot press Ready before that, so the deck is never played.
 pub fn stand_in() -> &'static DemoDeck {
     &DECKS[0]
+}
+
+/// The id a Commander recipe gives a seat that has not chosen a deck; it is no entry of [`all`].
+pub const COMMANDER_STAND_IN: &str = "commander-stand-in";
+
+/// The deck a Commander seat made without one holds in its game's recipe until its holder chooses:
+/// a legendary creature and 99 Forests, which the format accepts. The seat cannot press Ready
+/// before that, so the cards are never played. Returns the commander and the library.
+pub fn commander_stand_in() -> (Arc<CardDefinition>, Vec<Arc<CardDefinition>>) {
+    let commander = CardDefinition::new("Empty Seat")
+        .with_type(CardType::Creature)
+        .with_supertype(Supertype::Legendary)
+        .with_mana_cost(ManaCost::from_symbols([
+            ManaSymbol::Generic(2),
+            ManaSymbol::Colored(Color::Green),
+        ]))
+        .with_power_toughness(2, 2);
+    let library = std::iter::repeat_n(basic_land(Color::Green), 99).collect();
+    (Arc::new(commander), library)
 }
 
 /// The imported record as the strings assembly reads.

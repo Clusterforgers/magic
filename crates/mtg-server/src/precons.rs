@@ -16,17 +16,18 @@ use mtg_cards::deck::{
 };
 use mtg_cards::load::Library;
 use mtg_cards::{Caps, CardDefinition};
+use mtg_core::house::HouseRules;
 use mtg_db::{
     DbError, DeckBoard, IndexVersion, PreconDeckDetail, PreconDeckId, PreconVersion, RulesVersion,
 };
-use mtg_engine::format::{FormatRules, Normal};
 use mtg_protocol::rest::PreconListItem;
 use thiserror::Error;
 use tokio::sync::Mutex;
 
 use crate::cards::{CardSource, CatalogError, Rules, card_facts, printed_card};
 use crate::deck_cards::Line;
-use crate::deck_choice::{engine_issue, library_ids, no_command_zone};
+use crate::deck_choice::{commander_ids, format_issues, library_ids};
+use crate::recipe::FormatKind;
 
 /// Longest code, in characters; a longer name is cut.
 const MAX_CODE_CHARS: usize = 80;
@@ -76,6 +77,10 @@ pub(crate) struct Judged {
     pub(crate) library: Vec<String>,
     /// Their definitions, in the same order.
     pub(crate) cards: Vec<Arc<CardDefinition>>,
+    /// The oracle id of every card of the commander board: the commanders a game starts with.
+    pub(crate) commanders: Vec<String>,
+    /// Their definitions, in the same order.
+    pub(crate) leaders: Vec<Arc<CardDefinition>>,
 }
 
 impl Judged {
@@ -137,10 +142,11 @@ impl<'a> Judge<'a> {
         }
     }
 
-    /// The deck check of a precon in its own format and the rules of a Normal game on top.
+    /// The deck check of a precon in its own format and the engine's rules for the game it is for
+    /// on top.
     ///
-    /// A deck with a commander is judged as `commander`, any other as `freeform`: a precon is a
-    /// product, not an entry in a tournament format.
+    /// A deck with a commander is judged as `commander` and is for a Commander game, any other as
+    /// `freeform` for a Normal game: a precon is a product, not an entry in a tournament format.
     pub(crate) fn judge(&mut self, deck: &PreconDeckDetail) -> Judged {
         let mut lines = Vec::new();
         let mut unresolved = Vec::new();
@@ -189,12 +195,20 @@ impl<'a> Judge<'a> {
             .iter()
             .filter_map(|id| self.definitions.get(id).cloned())
             .collect();
+        let commanders = commander_ids(&lines);
+        let leaders: Vec<Arc<CardDefinition>> = commanders
+            .iter()
+            .filter_map(|id| self.definitions.get(id).cloned())
+            .collect();
+        let kind = if commanded {
+            FormatKind::Commander
+        } else {
+            FormatKind::Normal
+        };
+        // The engine's check is the second line: a deck the report already blocks needs no repeat.
         let mut issues = report.legality.clone();
-        if lines.iter().any(|line| line.zone == DeckZone::Commander) {
-            issues.push(no_command_zone());
-        }
-        if let Err(error) = Normal.validate_deck(&cards) {
-            issues.push(engine_issue(error));
+        if issues.is_empty() {
+            issues = format_issues(kind, &cards, &leaders, &HouseRules::default());
         }
         let playable = issues.is_empty() && report.summary.state != DeckState::Blocked;
         Judged {
@@ -205,6 +219,8 @@ impl<'a> Judge<'a> {
             lines,
             library,
             cards,
+            commanders,
+            leaders,
         }
     }
 }

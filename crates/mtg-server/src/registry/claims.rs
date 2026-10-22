@@ -10,6 +10,8 @@
 
 use std::sync::Arc;
 
+use mtg_cards::deck::Issue;
+use mtg_core::house::HouseRules;
 use mtg_core::ids::PlayerId;
 use mtg_protocol::SeatDeck;
 use thiserror::Error;
@@ -18,6 +20,7 @@ use super::{Entry, Registry, Removal, SeatSlot};
 use crate::api::MAX_NAME_CHARS;
 use crate::game_id::GameId;
 use crate::handle::{DeckRefusal, GameHandle};
+use crate::recipe::FormatKind;
 use crate::records::{Claimed, GameRecords, RecordError, SeatState, Visibility};
 use crate::seat_deck::ChosenDeck;
 use crate::secret::{RandomError, SeatToken};
@@ -75,6 +78,9 @@ pub enum ClaimError {
     /// The name is empty or longer than [`MAX_NAME_CHARS`] characters.
     #[error("the name must be 1 to {MAX_NAME_CHARS} characters")]
     BadName,
+    /// The deck the visitor brings breaks a rule of the game's format.
+    #[error("that deck cannot be played in this game")]
+    DeckBlocked(Vec<Issue>),
     /// The claim could not be saved.
     #[error(transparent)]
     Record(#[from] RecordError),
@@ -101,6 +107,9 @@ pub enum TableError {
     /// The seat pressed Ready; it takes that back before it changes its deck.
     #[error("the seat is ready")]
     Ready,
+    /// The deck breaks a rule of the game's format.
+    #[error("that deck cannot be played in this game")]
+    DeckBlocked(Vec<Issue>),
     /// The change could not be saved.
     #[error(transparent)]
     Record(#[from] RecordError),
@@ -111,6 +120,10 @@ pub enum TableError {
 struct Table {
     handle: GameHandle,
     turn: Arc<tokio::sync::Mutex<()>>,
+    /// The format the game is played under, which judges the decks its seats choose.
+    format: FormatKind,
+    /// What the creator set in place of the format's values, which the decks are judged under.
+    house_rules: HouseRules,
     /// The records to write to: present when the game is in the database.
     records: Option<GameRecords>,
 }
@@ -156,6 +169,13 @@ impl Registry {
         let status = table.handle.status().await;
         if status.map_err(|_| ClaimError::NotFound)?.started {
             return Err(ClaimError::Started);
+        }
+        // After the game is found, so a refusal tells only a visitor who may see the game its format.
+        if let Some(deck) = &deck {
+            let issues = deck.issues_in(table.format, &table.house_rules);
+            if !issues.is_empty() {
+                return Err(ClaimError::DeckBlocked(issues));
+            }
         }
 
         let seat = {
@@ -286,6 +306,10 @@ impl Registry {
         if by != seat {
             return Err(TableError::NotAllowed);
         }
+        let issues = deck.issues_in(table.format, &table.house_rules);
+        if !issues.is_empty() {
+            return Err(TableError::DeckBlocked(issues));
+        }
         match table.handle.choose_deck(seat, deck).await {
             Ok(Ok(note)) => Ok(note),
             Ok(Err(DeckRefusal::Started)) => Err(TableError::Started),
@@ -368,6 +392,8 @@ impl Registry {
         Some(Table {
             handle: entry.handle.clone(),
             turn: Arc::clone(&entry.turn),
+            format: entry.format,
+            house_rules: entry.house_rules.clone(),
             records,
         })
     }

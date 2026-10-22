@@ -109,7 +109,7 @@ fn quest() -> PreconDeck {
     )
 }
 
-/// A Commander deck: legal and playable by hand, but a Normal game has no command zone.
+/// A Commander deck: legal and playable by hand in a Commander game; a Normal game has no command zone for it.
 fn commander() -> PreconDeck {
     deck(
         "Commander Pack",
@@ -293,13 +293,13 @@ async fn the_list_names_every_precon_with_its_deck_check_and_whether_a_game_take
         + quest["summary"]["counts"]["manual"].as_u64().unwrap();
     assert_eq!(flagged, 4);
 
-    // A Commander deck is judged as one, and a Normal game has no command zone for it.
+    // A Commander deck is judged as one and is playable in the Commander format.
     let boss = item(&list, COMMANDER);
     assert_eq!(boss["format"], "commander");
     assert_eq!(boss["commanders"], json!(["Questing Beast"]));
     assert_eq!(boss["card_count"], 100);
     assert_eq!(boss["state"], "manual_play");
-    assert_eq!(boss["playable"], false);
+    assert_eq!(boss["playable"], true);
 
     // A card nobody stored blocks the deck.
     let lost = item(&list, GHOST);
@@ -386,10 +386,9 @@ async fn one_precon_lists_its_cards_by_board_with_each_cards_support(pool: PgPoo
         "an unsupported clause comes with its reason"
     );
 
-    // Why a game does not take it.
-    let issues = view["issues"].as_array().unwrap();
-    assert_eq!(issues.len(), 1, "{issues:?}");
-    assert_eq!(issues[0]["code"], "no_commander_zone");
+    // A Commander game takes it: nothing is held against it.
+    assert_eq!(view["issues"], json!([]));
+    assert_eq!(view["precon"]["playable"], true);
 
     // A playable deck lists nothing against it, and its one board.
     let green = precon(&server, EVERGREEN).await.json();

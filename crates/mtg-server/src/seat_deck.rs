@@ -9,9 +9,11 @@
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_cards::deck::Issue;
 use mtg_core::house::HouseRules;
 use mtg_protocol::SeatDeck;
 
+use crate::deck_choice::format_issues;
 use crate::demo::{self, DemoDeck};
 use crate::recipe::{DeckFingerprint, DeckRef, FingerprintError, FormatKind, GameRecipe};
 
@@ -22,6 +24,7 @@ const DEMO_FORMAT: &str = "normal";
 #[derive(Debug, Clone)]
 pub struct ChosenDeck {
     cards: Arc<[Arc<CardDefinition>]>,
+    commanders: Arc<[Arc<CardDefinition>]>,
     deck: DeckRef,
     fingerprint: DeckFingerprint,
     note: SeatDeck,
@@ -34,12 +37,31 @@ impl ChosenDeck {
         Ok(ChosenDeck {
             fingerprint: DeckFingerprint::of(&cards)?,
             cards: cards.into(),
+            commanders: Arc::from([]),
             deck: DeckRef::Demo {
                 id: deck.id.to_owned(),
             },
             note: SeatDeck {
                 name: deck.name.to_owned(),
                 format: DEMO_FORMAT.to_owned(),
+                manual_cards: 0,
+            },
+        })
+    }
+
+    /// What a Commander seat holds until its holder chooses a deck; the seat cannot be ready with it.
+    pub fn commander_stand_in() -> Result<ChosenDeck, FingerprintError> {
+        let (commander, library) = demo::commander_stand_in();
+        Ok(ChosenDeck {
+            fingerprint: DeckFingerprint::of_seat(&library, std::slice::from_ref(&commander))?,
+            cards: library.into(),
+            commanders: Arc::from([commander]),
+            deck: DeckRef::Demo {
+                id: demo::COMMANDER_STAND_IN.to_owned(),
+            },
+            note: SeatDeck {
+                name: "No deck".to_owned(),
+                format: "commander".to_owned(),
                 manual_cards: 0,
             },
         })
@@ -52,10 +74,27 @@ impl ChosenDeck {
         cards: Vec<Arc<CardDefinition>>,
         note: SeatDeck,
     ) -> Result<ChosenDeck, FingerprintError> {
+        ChosenDeck::led(oracle_ids, cards, Vec::new(), Vec::new(), note)
+    }
+
+    /// Like [`ChosenDeck::stored`], for a deck led by commanders: `commander_ids` names them and
+    /// `commanders` holds their definitions in the same order. The seat starts with them in its
+    /// command zone, and they are part of the deck's fingerprint.
+    pub fn led(
+        oracle_ids: Vec<String>,
+        cards: Vec<Arc<CardDefinition>>,
+        commander_ids: Vec<String>,
+        commanders: Vec<Arc<CardDefinition>>,
+        note: SeatDeck,
+    ) -> Result<ChosenDeck, FingerprintError> {
         Ok(ChosenDeck {
-            fingerprint: DeckFingerprint::of(&cards)?,
+            fingerprint: DeckFingerprint::of_seat(&cards, &commanders)?,
             cards: cards.into(),
-            deck: DeckRef::Oracle { cards: oracle_ids },
+            commanders: commanders.into(),
+            deck: DeckRef::Oracle {
+                cards: oracle_ids,
+                commanders: commander_ids,
+            },
             note,
         })
     }
@@ -78,6 +117,17 @@ impl ChosenDeck {
     /// The library, in deck order.
     pub fn cards(&self) -> &[Arc<CardDefinition>] {
         &self.cards
+    }
+
+    /// The commanders the seat starts with in its command zone; none outside Commander.
+    pub fn commanders(&self) -> &[Arc<CardDefinition>] {
+        &self.commanders
+    }
+
+    /// The rules of `format`, under the `house` rules of the game, that the cards break, in the words
+    /// of the deck check; none when the format accepts the deck.
+    pub fn issues_in(&self, format: FormatKind, house: &HouseRules) -> Vec<Issue> {
+        format_issues(format, &self.cards, &self.commanders, house)
     }
 }
 
@@ -268,9 +318,7 @@ mod tests {
                 DeckRef::Demo {
                     id: "mono-green".into()
                 },
-                DeckRef::Oracle {
-                    cards: vec!["forest".into(); 60]
-                }
+                DeckRef::oracle(vec!["forest".into(); 60])
             ]
         );
         assert_eq!(recipe.fingerprints.len(), 2);
@@ -299,9 +347,7 @@ mod tests {
                 DeckRef::Demo {
                     id: "mono-white".into(),
                 },
-                DeckRef::Oracle {
-                    cards: vec!["forest".into(); 60],
-                },
+                DeckRef::oracle(vec!["forest".into(); 60]),
                 DeckRef::Demo {
                     id: "no-such-deck".into(),
                 },
