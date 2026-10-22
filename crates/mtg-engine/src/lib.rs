@@ -20,6 +20,7 @@ mod help_tests;
 mod layers;
 mod legend;
 mod mana_ability;
+mod mana_kinds;
 mod mana_plan;
 mod mulligan;
 mod parts;

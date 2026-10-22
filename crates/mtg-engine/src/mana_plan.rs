@@ -53,9 +53,13 @@ pub(crate) fn plan(
         for (state, (weight, picks)) in &best {
             for option in group {
                 let mut left = state.0;
-                let slot = &mut left[option.produces.index()];
-                *slot = slot.saturating_sub(option.count);
-                let after: State = (left, state.1.saturating_sub(option.count));
+                let made = option.made();
+                for mana in &made {
+                    let slot = &mut left[mana.index()];
+                    *slot = slot.saturating_sub(1);
+                }
+                let amount = u32::try_from(made.len()).unwrap_or(u32::MAX);
+                let after: State = (left, state.1.saturating_sub(amount));
                 let used = Weight {
                     sacrifices: weight.sacrifices + u32::from(option.sacrifice),
                     extras: weight.extras + u32::from(option.extra),
@@ -254,8 +258,7 @@ pub(crate) fn complete_with(
                     Candidate::Permanent(options) => {
                         let options = options.to_vec();
                         for option in options {
-                            self.parts
-                                .push(vec![option.produces; option.count as usize]);
+                            self.parts.push(option.made());
                             self.taps.push(option);
                             self.visit(at + 1);
                             self.taps.pop();
@@ -302,6 +305,8 @@ mod tests {
             sacrifice,
             extra: false,
             only: Vec::new(),
+            also: Vec::new(),
+            life: 0,
         }
     }
 

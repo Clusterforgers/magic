@@ -100,6 +100,8 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.OneOf",
     "Effect.AddMana.ChosenColor",
     "Effect.AddMana.Restricted",
+    "Effect.AddMana.CommanderIdentity",
+    "Effect.AddMana.ProducedBy",
     "Ability.ManaAbility.Complex",
     "Effect.PutCounters",
     "Effect.RemoveCounters",
@@ -450,8 +452,8 @@ mod tests {
     #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]
     #[case::mana_restricted_to_what_it_may_be_spent_on("Effect.AddMana.Restricted", true)]
-    #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", false)]
-    #[case::mana_a_land_could_produce("Effect.AddMana.ProducedBy", false)]
+    #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", true)]
+    #[case::mana_a_land_could_produce("Effect.AddMana.ProducedBy", true)]
     #[case::devotion("Amount.Devotion", false)]
     #[case::the_greatest_value("Amount.Greatest", false)]
     #[case::totals("Amount.Total", false)]

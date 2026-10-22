@@ -8,6 +8,7 @@ use mtg_core::mana::ManaType;
 use super::{unsupported, wrong_effect};
 use crate::choose::{ChoiceOption, OptionChooser, Optioned, pick_options};
 use crate::events::Event;
+use crate::mana_kinds::{identity_types, producible_types};
 use crate::object::{Chosen, GameObject, PermanentState};
 use crate::resolve::{Cx, ResolveError, Run};
 
@@ -48,12 +49,6 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         return Err(wrong_effect("AddMana"));
     };
-    // The identity of a commander and what a land could produce wait for the task that plays them; `Caps` names each by `Effect.AddMana.<kind>`.
-    match mana {
-        Produce::CommanderIdentity(_) => return unsupported("Effect.AddMana.CommanderIdentity"),
-        Produce::ProducedBy { .. } => return unsupported("Effect.AddMana.ProducedBy"),
-        Produce::Fixed(_) | Produce::AnyColor(_) | Produce::OneOf(_) | Produce::ChosenColor(_) => {}
-    }
     let state = cx.state();
     let times = usize::try_from(cx.scope.amount(times)?.max(0)).unwrap_or(0);
     let players: Vec<PlayerId> = cx
@@ -104,14 +99,47 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         Produce::AnyColor(each) => (COLORS.iter().copied().map(mana_of).collect(), *each),
         Produce::OneOf(types) => (types.clone(), 1),
-        Produce::CommanderIdentity(_) | Produce::ProducedBy { .. } => {
-            return Err(wrong_effect("AddMana"));
-        }
+        // What depends on the game is read for the one player who adds it; none is added when the list is empty.
+        Produce::CommanderIdentity(each) => match players.as_slice() {
+            [player] => (identity_types(state, *player), *each),
+            _ => return unsupported("Effect.AddMana.CommanderIdentity.Players"),
+        },
+        Produce::ProducedBy {
+            among,
+            count,
+            colorless,
+        } => match players.as_slice() {
+            [player] => (
+                producible_types(
+                    state,
+                    *player,
+                    (cx.scope.source.id, None),
+                    among,
+                    *colorless,
+                ),
+                *count,
+            ),
+            _ => return unsupported("Effect.AddMana.ProducedBy.Players"),
+        },
     };
+    if kinds.is_empty() {
+        return Ok(Run::events(events));
+    }
     let options: Vec<ChoiceOption> = match mana {
         Produce::OneOf(_) => kinds
             .iter()
             .map(|kind| ChoiceOption::Label(format!("{{{}}}", kind.symbol())))
+            .collect(),
+        Produce::ProducedBy { .. } => kinds
+            .iter()
+            .map(|kind| match kind.color() {
+                Some(color) => ChoiceOption::Color(color),
+                None => ChoiceOption::Label(format!("{{{}}}", kind.symbol())),
+            })
+            .collect(),
+        Produce::CommanderIdentity(_) => kinds
+            .iter()
+            .filter_map(|kind| kind.color().map(ChoiceOption::Color))
             .collect(),
         _ => COLORS.iter().copied().map(ChoiceOption::Color).collect(),
     };
@@ -228,21 +256,17 @@ mod tests {
     }
 
     #[rstest]
-    #[case::the_commanders_identity(
-        r#"{"AddMana":{"mana":{"CommanderIdentity":1}}}"#,
-        "Effect.AddMana.CommanderIdentity"
-    )]
+    #[case::the_commanders_identity(r#"{"AddMana":{"mana":{"CommanderIdentity":1}}}"#)]
     #[case::what_a_land_could_produce(
-        r#"{"AddMana":{"mana":{"ProducedBy":{"among":[{"Type":"Land"}],"count":1}}}}"#,
-        "Effect.AddMana.ProducedBy"
+        r#"{"AddMana":{"mana":{"ProducedBy":{"among":[{"Type":"Land"}],"count":1}}}}"#
     )]
-    fn mana_that_needs_a_commander_or_a_land_refuses_by_its_own_name(
-        #[case] json: &str,
-        #[case] name: &'static str,
-    ) {
+    #[case::any_type_a_land_could_produce(
+        r#"{"AddMana":{"mana":{"ProducedBy":{"among":[{"Type":"Land"}],"count":1,"colorless":true}}}}"#
+    )]
+    fn mana_that_needs_a_commander_or_a_land_adds_none_without_one(#[case] json: &str) {
         assert_eq!(
-            run_with(&game(), Vec::new(), &effect(json)).unwrap_err(),
-            ResolveError::Unsupported(name)
+            added(run_with(&game(), Vec::new(), &effect(json)).unwrap()),
+            []
         );
     }
 

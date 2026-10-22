@@ -1,0 +1,154 @@
+//! The types of mana an ability picks from when they depend on the game: the colours of a commander's identity
+//! (CR 903.4) and the types of mana permanents could produce (CR 106.7).
+
+use mtg_cards::AbilityDef;
+use mtg_cards::assemble::{ManaProduced, mana_shape};
+use mtg_cards::refs::Selector;
+use mtg_core::color::Color;
+use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::mana::ManaType;
+
+use crate::ability_reader::abilities_of;
+use crate::characteristics::{characteristics, controller_of_object};
+use crate::object::{Chosen, PermanentState};
+use crate::resolve::Scope;
+use crate::state::GameState;
+use crate::zones::Zone;
+
+/// The five colours, in the order of the wheel.
+pub(crate) const COLORS: [ManaType; 5] = [
+    ManaType::White,
+    ManaType::Blue,
+    ManaType::Black,
+    ManaType::Red,
+    ManaType::Green,
+];
+
+/// The mana of a colour.
+pub(crate) const fn mana_of(color: Color) -> ManaType {
+    match color {
+        Color::White => ManaType::White,
+        Color::Blue => ManaType::Blue,
+        Color::Black => ManaType::Black,
+        Color::Red => ManaType::Red,
+        Color::Green => ManaType::Green,
+    }
+}
+
+/// The colours in the identity of `player`'s commanders, in the order of the wheel; none outside a Commander game.
+pub(crate) fn identity_types(state: &GameState, player: PlayerId) -> Vec<ManaType> {
+    let mut colors = Vec::new();
+    for id in state.commanders() {
+        let Some(object) = state.object(id).filter(|o| o.owner() == player) else {
+            continue;
+        };
+        colors.extend(object.card().color_identity().iter());
+    }
+    COLORS
+        .into_iter()
+        .filter(|mana| colors.iter().any(|color| mana_of(*color) == *mana))
+        .collect()
+}
+
+/// The types of mana the permanents that match `among` could produce, for the ability `place` of `source` that `player`
+/// controls (no `place` means any of its abilities), in the order of the wheel and colourless last: colourless counts
+/// only with `colorless`.
+///
+/// Costs and restrictions are ignored (CR 106.7); an ability that looks at what permanents could produce and depends
+/// on itself adds nothing.
+pub(crate) fn producible_types(
+    state: &GameState,
+    player: PlayerId,
+    (source, place): (ObjectId, Option<usize>),
+    among: &Selector,
+    colorless: bool,
+) -> Vec<ManaType> {
+    let mut visiting = vec![(source, place.unwrap_or(usize::MAX))];
+    let mut found = Vec::new();
+    collect(state, player, source, among, &mut visiting, &mut found);
+    let all = COLORS
+        .into_iter()
+        .chain(colorless.then_some(ManaType::Colorless));
+    all.filter(|mana| found.contains(mana)).collect()
+}
+
+fn collect(
+    state: &GameState,
+    player: PlayerId,
+    source: ObjectId,
+    among: &Selector,
+    visiting: &mut Vec<(ObjectId, usize)>,
+    found: &mut Vec<ManaType>,
+) {
+    let Some(origin) = state.object(source) else {
+        return;
+    };
+    let scope = Scope::announcing(state, player, origin.reference());
+    let candidates: Vec<ObjectId> = state
+        .zone(Zone::Battlefield)
+        .iter()
+        .copied()
+        .filter(|id| {
+            state
+                .object(*id)
+                .is_some_and(|o| scope.selects(among, o.reference()).unwrap_or(false))
+        })
+        .collect();
+    for id in candidates {
+        types_of(state, id, visiting, found);
+    }
+}
+
+/// Adds to `found` the types the permanent `id` could produce.
+fn types_of(
+    state: &GameState,
+    id: ObjectId,
+    visiting: &mut Vec<(ObjectId, usize)>,
+    found: &mut Vec<ManaType>,
+) {
+    let (Some(object), Some(chars)) = (state.object(id), characteristics(state, id)) else {
+        return;
+    };
+    for def in &chars.abilities {
+        let AbilityDef::Mana(mana) = def;
+        found.push(mana.produces);
+    }
+    let controller = controller_of_object(state, object);
+    for (place, (_, rules)) in abilities_of(state, id).into_iter().enumerate() {
+        let Some(shape) = mana_shape(&rules) else {
+            continue;
+        };
+        match shape.produces {
+            ManaProduced::Fixed { mana, .. } => found.push(mana),
+            ManaProduced::Mixed(list) | ManaProduced::OneOf(list) => found.extend_from_slice(list),
+            ManaProduced::AnyColor(_) => found.extend(COLORS),
+            ManaProduced::ChosenColor(_) => {
+                if let Some(Chosen::Color(color)) =
+                    object.permanent().and_then(PermanentState::chosen)
+                {
+                    found.push(mana_of(*color));
+                }
+            }
+            ManaProduced::CommanderIdentity(_) => found.extend(identity_types(state, controller)),
+            ManaProduced::ProducedBy {
+                among, colorless, ..
+            } => {
+                if visiting
+                    .iter()
+                    .any(|(v, p)| *v == id && (*p == place || *p == usize::MAX))
+                {
+                    continue;
+                }
+                visiting.push((id, place));
+                let mut inner = Vec::new();
+                collect(state, controller, id, among, visiting, &mut inner);
+                visiting.pop();
+                found.extend(
+                    inner
+                        .into_iter()
+                        .filter(|mana| colorless || *mana != ManaType::Colorless),
+                );
+            }
+        }
+    }
+}
