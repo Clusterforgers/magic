@@ -610,8 +610,12 @@ impl<'a> Walker<'a> {
         }
     }
 
-    /// An optional additional cost is paid by the caster as the spell is announced, never by the spell itself.
-    fn additional_cost(&mut self, cost: &Cost) {
+    /// An additional cost is paid by the caster as the spell is announced, never by the spell itself. The announcement
+    /// pays the parts of a required one (life, picked objects) and no mana.
+    fn additional_cost(&mut self, cost: &Cost, required: bool) {
+        if required && cost.0.iter().any(|item| matches!(item, CostItem::Mana(_))) {
+            self.uses("Ability", "AdditionalCost.Required.Mana");
+        }
         self.at("cost", |w| w.cost(cost));
         let by_the_source = cost.0.iter().any(|item| {
             matches!(
@@ -749,6 +753,7 @@ impl<'a> Walker<'a> {
             }
             Keyword::Multikicker(cost)
             | Keyword::Morph(cost)
+            | Keyword::Megamorph(cost)
             | Keyword::Disguise(cost)
             | Keyword::Overload(cost)
             | Keyword::Mutate(cost)
@@ -796,6 +801,7 @@ impl<'a> Walker<'a> {
             }
             Keyword::Toxic(0) => self.problem("toxic needs a number of at least 1"),
             Keyword::Casualty(0) => self.problem("casualty needs a power of at least 1"),
+            Keyword::Hideaway(0) => self.problem("hideaway needs a number of at least 1"),
             Keyword::Devour { counters, of } => {
                 if *counters == 0 {
                     self.problem("devour needs a number of at least 1");
@@ -984,6 +990,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Explored { what }
             | TriggerPattern::Connived { what }
             | TriggerPattern::BecomesMonstrous { what }
+            | TriggerPattern::TurnedFaceUp { what }
             | TriggerPattern::Adapted { what }
             | TriggerPattern::Untapped { what }
             | TriggerPattern::Blocks { what }
@@ -1038,6 +1045,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::Explored { .. }
                 | TriggerPattern::Connived { .. }
                 | TriggerPattern::BecomesMonstrous { .. }
+                | TriggerPattern::TurnedFaceUp { .. }
                 | TriggerPattern::Adapted { .. }
                 | TriggerPattern::Bolstered { .. }
                 | TriggerPattern::SpellCast { .. }
@@ -1830,7 +1838,7 @@ impl<'a> Walker<'a> {
                 condition,
                 ..
             } => w.cost_modifier(applies_to, mana, per, condition.as_ref()),
-            Ability::AdditionalCost { cost } => w.additional_cost(cost),
+            Ability::AdditionalCost { cost, required } => w.additional_cost(cost, *required),
             Ability::Keyword(keyword) => w.keyword(keyword),
             Ability::Manual { reason, span } => {
                 if reason.trim().is_empty() {
@@ -2165,7 +2173,7 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
         .abilities()
         .any(|(_, a)| matches!(a, Ability::Keyword(k) if k.is_kicker()));
     walker.has_additional_cost = card.abilities().any(|(_, a)| match a {
-        Ability::AdditionalCost { .. } => true,
+        Ability::AdditionalCost { required, .. } => !required,
         Ability::Keyword(keyword) => keyword.has_additional_cost(),
         _ => false,
     });

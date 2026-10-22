@@ -66,6 +66,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("flashback", Params::Cost),
     ("madness", Params::Cost),
     ("morph", Params::Cost),
+    ("megamorph", Params::Cost),
     ("disguise", Params::Cost),
     ("suspend", Params::Cost),
     ("evoke", Params::Cost),
@@ -133,7 +134,6 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("friends forever", Params::None),
     ("choose a background", Params::None),
     ("doctor's companion", Params::None),
-    ("megamorph", Params::Cost),
     ("bestow", Params::Cost),
     ("buyback", Params::Cost),
     ("dash", Params::Cost),
@@ -341,6 +341,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "miracle" => spell_cost(rest).map(Keyword::Miracle),
         "dredge" => positive(rest).map(Keyword::Dredge),
         "morph" => cost(rest).map(Keyword::Morph),
+        "megamorph" => cost(rest).map(Keyword::Megamorph),
         "disguise" => cost(rest).map(Keyword::Disguise),
         "evoke" => spell_cost(rest).map(Keyword::Evoke),
         "overload" => cost(rest).map(Keyword::Overload),
@@ -349,6 +350,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "squad" => spell_cost(rest).map(Keyword::Squad),
         "offspring" => spell_cost(rest).map(Keyword::Offspring),
         "casualty" => positive(rest).map(Keyword::Casualty),
+        "hideaway" => positive(rest).map(Keyword::Hideaway),
         "devour" => devour(rest),
         "foretell" => cost(rest).map(Keyword::Foretell),
         "unearth" => spell_cost(rest).map(Keyword::Unearth),
@@ -487,6 +489,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "delve" => Keyword::Delve,
         "cascade" => Keyword::Cascade,
         "storm" => Keyword::Storm,
+        "demonstrate" => Keyword::Demonstrate,
         "partner" => Keyword::Partner,
         "battle cry" => Keyword::BattleCry,
         "living weapon" => Keyword::LivingWeapon,
@@ -758,6 +761,7 @@ mod tests {
     #[case::dredge("Dredge 3", Keyword::Dredge(3))]
     #[case::dredge_six("Dredge 6", Keyword::Dredge(6))]
     #[case::morph("Morph {3}{B}", Keyword::Morph(mana("{3}{B}")))]
+    #[case::megamorph("Megamorph {1}{G}", Keyword::Megamorph(mana("{1}{G}")))]
     #[case::disguise("Disguise {1}{W}", Keyword::Disguise(mana("{1}{W}")))]
     #[case::overload("Overload {3}{U}{U}", Keyword::Overload(mana("{3}{U}{U}")))]
     #[case::reconfigure("Reconfigure {2}", Keyword::Reconfigure(mana("{2}")))]
@@ -766,6 +770,9 @@ mod tests {
     #[case::squad("Squad {2}", Keyword::Squad(mana("{2}")))]
     #[case::offspring("Offspring {2}", Keyword::Offspring(mana("{2}")))]
     #[case::casualty("Casualty 2", Keyword::Casualty(2))]
+    #[case::hideaway("Hideaway 4", Keyword::Hideaway(4))]
+    #[case::hideaway_five("hideaway 5", Keyword::Hideaway(5))]
+    #[case::demonstrate("Demonstrate", Keyword::Demonstrate)]
     #[case::devour("Devour 2", Keyword::Devour { counters: 2, of: creature() })]
     #[case::devour_artifact("Devour artifact 1", Keyword::Devour { counters: 1, of: Selector(vec![Pred::Type(CardType::Artifact)]) })]
     #[case::devour_land_in_lowercase("devour land 3", Keyword::Devour { counters: 3, of: Selector(vec![Pred::Type(CardType::Land)]) })]
@@ -1086,6 +1093,7 @@ mod tests {
             "Madness {1}",
             "Dredge 2",
             "Morph {1}",
+            "Megamorph {1}",
             "Disguise {1}",
             "Suspend 2\u{2014}{1}",
             "Evoke {1}",
@@ -1154,6 +1162,8 @@ mod tests {
             "Bestow {1}",
             "Blitz {1}",
             "Prowl {1}",
+            "Demonstrate",
+            "Hideaway 4",
             "Ninjutsu {1}{U}",
             "Improvise",
             "Affinity for artifacts",

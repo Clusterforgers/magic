@@ -1,0 +1,12 @@
+{
+  "oracle_id": "703ab192-7e0a-4f02-8381-568ad2d999ca",
+  "name": "Krosan Colossus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krosan Colossus",
+      "oracle_fingerprint": "1f8e6e7cf92192d063410765f9b774e8",
+      "abilities": [{ "Keyword": { "Morph": "{6}{G}{G}" } }]
+    }
+  ]
+}

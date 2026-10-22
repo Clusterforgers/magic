@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7a5dae5f-29ab-4996-b236-c754de8769bc",
+  "name": "Ainok Survivalist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ainok Survivalist",
+      "oracle_fingerprint": "45322957e10b6da436d5331b50e73cd8",
+      "abilities": [
+        { "Keyword": { "Megamorph": "{1}{G}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

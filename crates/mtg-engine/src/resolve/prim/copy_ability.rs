@@ -54,7 +54,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 origin: ability.source(),
                 cause: ability.cause(),
             };
-            match retarget(cx, &mut answers, original, *new_targets)? {
+            match retarget(cx, cx.controller(), &mut answers, original, *new_targets)? {
                 Retargeted::Ask(decision) => return Ok(Run::Ask(decision)),
                 Retargeted::Done(choices) => planned.push((*object, choices)),
             }

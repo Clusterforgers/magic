@@ -1,0 +1,32 @@
+{
+  "oracle_id": "862af5c4-cb34-4bfa-a7ff-209e103defd6",
+  "name": "Hidden Dragonslayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hidden Dragonslayer",
+      "oracle_fingerprint": "5c310fe33ac792e7dd476035018e4d95",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        { "Keyword": { "Megamorph": "{2}{W}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

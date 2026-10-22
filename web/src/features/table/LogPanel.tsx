@@ -20,7 +20,7 @@ export function LogPanel() {
     () =>
       log.map(({ seq, event }) => ({
         seq,
-        ...describeEvent(event, { seat, card: (id) => objects[id]?.name ?? 'a card' }),
+        ...describeEvent(event, { seat, card: (id) => objects[id]?.name || 'a card' }),
       })),
     [log, objects, seat],
   )

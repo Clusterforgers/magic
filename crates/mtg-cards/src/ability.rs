@@ -199,10 +199,13 @@ pub enum Ability {
         condition: Option<Condition>,
     },
     /// "As an additional cost to cast this spell, you may ..." (CR 118.8): a cost the caster may pay as the spell is announced,
-    /// read by `Condition::AdditionalCostPaid`.
+    /// read by `Condition::AdditionalCostPaid`; without "you may" (`required`) the spell is cast only by paying it (CR 601.2b).
     AdditionalCost {
         /// The cost, paid in addition to the others.
         cost: Cost,
+        /// The caster must pay the cost: a spell whose caster cannot is not cast.
+        #[serde(default, skip_serializing_if = "is_false")]
+        required: bool,
     },
     /// A keyword ability; the engine knows what it does.
     Keyword(Keyword),

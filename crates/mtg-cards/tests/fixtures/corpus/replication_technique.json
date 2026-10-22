@@ -1,0 +1,25 @@
+{
+  "id": "b3149976-2811-4bbd-af1e-d59016bb0754",
+  "oracle_id": "163baf58-b35d-4f2b-aa53-8384b8b5800a",
+  "name": "Replication Technique",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "200",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Demonstrate (When you cast this spell, you may copy it. If you do, choose an opponent to also copy it. Players may choose new targets for their copies.)\nCreate a token that's a copy of target permanent you control.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Demonstrate"
+  ]
+}

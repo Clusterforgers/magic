@@ -588,6 +588,14 @@ pub enum Event {
         /// Its controller.
         player: PlayerId,
     },
+    /// A face-down permanent was turned face up (CR 702.37e), a special action: it shows its card and has its characteristics and
+    /// abilities from now on. The counter of a megamorph is the event before it.
+    TurnedFaceUp {
+        /// The permanent that was turned face up.
+        object: ObjectId,
+        /// Its controller, who turned it.
+        player: PlayerId,
+    },
     /// A creature adapted (CR 701.46): the counters are the event before it.
     Adapted {
         /// The creature that adapted.
@@ -778,6 +786,7 @@ impl Event {
             | Event::Connived { object, .. }
             | Event::Amassed { object, .. }
             | Event::Monstrous { object, .. }
+            | Event::TurnedFaceUp { object, .. }
             | Event::Adapted { object, .. }
             | Event::Bolstered { object, .. }
             | Event::Cycled { object, .. }

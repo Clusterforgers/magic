@@ -16,7 +16,9 @@ use mtg_core::mana::ManaCost;
 
 use crate::announce::{self, Granted};
 use crate::attach;
+use crate::characteristics::controller_of;
 use crate::choose::announceable;
+use crate::face_down;
 use crate::faces;
 use crate::help;
 use crate::keywords::{self, aftermath, foretell, keywords_of};
@@ -66,7 +68,7 @@ fn mana_only(cost: &mtg_cards::cost::Cost) -> Option<ManaCost> {
 /// The mana and the parts of the cost of a keyword that is paid as a spell is cast (flashback, evoke, overload, madness):
 /// the mana, and life and the objects the player picks. A cost that taps or loses its source, counts X or removes counters
 /// is not paid; nor is one with nothing to pay.
-fn cast_cost(cost: &mtg_cards::cost::Cost) -> Option<(ManaCost, Vec<Part>)> {
+pub(crate) fn cast_cost(cost: &mtg_cards::cost::Cost) -> Option<(ManaCost, Vec<Part>)> {
     let price = Price::announced(cost).ok()?;
     let unpaid = price.tap
         || price.moves_source()
@@ -102,15 +104,32 @@ fn both_halves(card: &GameObject) -> bool {
     card.whole_card().layout == Layout::Split && card.face().is_none()
 }
 
-/// Every way `player` may cast the card `id` from where it is, whatever the timing and the mana in hand.
+/// Every way `player` may cast the card `id` from where it is, whatever the timing and the mana in hand. Each way takes
+/// the required additional costs of the card (`announce/required.rs`).
 pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
+    with_required(state, id, listed(state, player, id))
+}
+
+/// `ways` with the required additional costs of the card `id` added to each.
+fn with_required(state: &GameState, id: ObjectId, ways: Vec<Way>) -> Vec<Way> {
+    state.object(id).map_or_else(Vec::new, |card| {
+        announce::required::add_to(ways, card.card())
+    })
+}
+
+/// The ways of [`of`] before the required additional costs.
+fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     let Some(card) = state.object(id) else {
         return Vec::new();
     };
-    if card.kind() != ObjectKind::Card || card.base_types().contains(CardType::Land) {
+    if card.kind() != ObjectKind::Card {
         return Vec::new();
     }
     let zone = card.zone();
+    // A land is played, never cast, except face down: a land card with morph is a 2/2 creature spell then (CR 702.37c).
+    if card.base_types().contains(CardType::Land) {
+        return face_down_only(state, player, id);
+    }
     let allowed = match zone {
         Zone::Hand(owner) | Zone::Graveyard(owner) | Zone::Command(owner) => owner == player,
         // Only the top card of a library may be cast, by a permission.
@@ -226,6 +245,9 @@ fn keyword_way(
             cost,
             in_hand && prowl_open(state, player, id),
         ),
+        Keyword::Morph(_) | Keyword::Megamorph(_) | Keyword::Disguise(_) if in_hand => {
+            return Some(face_down_way(instant));
+        }
         Keyword::Foretell(cost) => (
             CastWay::Foretold,
             "Foretell",
@@ -259,6 +281,36 @@ fn keyword_way(
         instant,
         parts,
     })
+}
+
+/// The one way a land card in its owner's hand is cast: face down, when it has morph, megamorph or disguise.
+fn face_down_only(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
+    let in_hand = state
+        .object(id)
+        .is_some_and(|card| card.zone() == Zone::Hand(player));
+    let has = keywords_of(state, id).into_iter().any(|keyword| {
+        matches!(
+            keyword,
+            Keyword::Morph(_) | Keyword::Megamorph(_) | Keyword::Disguise(_)
+        )
+    });
+    if in_hand && has {
+        vec![face_down_way(false)]
+    } else {
+        Vec::new()
+    }
+}
+
+/// The way of casting a card with morph, megamorph or disguise face down as a 2/2 creature spell for {3} (CR 702.37c, 702.168a).
+fn face_down_way(instant: bool) -> Way {
+    let cost = face_down::cast_cost();
+    Way {
+        alternative: Some(CastWay::FaceDown),
+        label: format!("Cast face down for {cost}"),
+        mana: Some(cost),
+        instant,
+        parts: Vec::new(),
+    }
 }
 
 /// Jump-start (CR 702.133) and retrace (CR 702.81): the card is cast from a graveyard for its mana cost and the discard of a
@@ -313,8 +365,19 @@ fn foretold_before_now(state: &GameState, player: PlayerId, id: ObjectId) -> boo
 }
 
 /// The way `player` casts the card `id` when a resolution lets them (CR 608.2g): for its mana cost, or without paying it.
-/// A land cannot be cast, nor can a card that is on the battlefield or the stack.
+/// A land cannot be cast, nor can a card that is on the battlefield or the stack. The way takes the required additional
+/// costs of the card.
 pub(crate) fn granted(
+    state: &GameState,
+    id: ObjectId,
+    free: bool,
+    way: Option<CastWay>,
+) -> Vec<Way> {
+    with_required(state, id, granted_before_required(state, id, free, way))
+}
+
+/// The ways of [`granted`] before the required additional costs.
+fn granted_before_required(
     state: &GameState,
     id: ObjectId,
     free: bool,
@@ -446,6 +509,29 @@ pub(crate) fn can_foretell(
     card.kind() == ObjectKind::Card
         && card.zone() == Zone::Hand(player)
         && state.turn().active() == player
+        && can_afford(
+            &cost,
+            pool,
+            &for_card(state, sources, id),
+            life,
+            &Spend::other(),
+        )
+}
+
+/// Whether `player` can turn the face-down permanent `id` face up now: they control it and can pay its morph, megamorph or
+/// disguise cost (CR 702.37e). It is a special action, so the timing is any time they have priority.
+pub(crate) fn can_turn_up(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    life: i32,
+) -> bool {
+    let Some((cost, _)) = face_down::turn_up_cost(state, id) else {
+        return false;
+    };
+    controller_of(state, id) == Some(player)
         && can_afford(
             &cost,
             pool,

@@ -1,0 +1,28 @@
+{
+  "id": "b29a3e7c-4d19-4737-9b58-deb56de26118",
+  "oracle_id": "862af5c4-cb34-4bfa-a7ff-209e103defd6",
+  "name": "Hidden Dragonslayer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "69",
+  "rarity": "rare",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "Lifelink\nMegamorph {2}{W} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its megamorph cost and put a +1/+1 counter on it.)\nWhen this creature is turned face up, destroy target creature with power 4 or greater an opponent controls.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Lifelink",
+    "Megamorph"
+  ]
+}

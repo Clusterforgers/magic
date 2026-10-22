@@ -53,7 +53,7 @@ pub fn cards(r: &mut Reader<'_>) -> Option<Amount> {
         if r.words("that many") {
             return (r.word("card") || r.word("cards")).then_some(Amount::Triggering);
         }
-        let count = if r.x_free && r.word("x") {
+        let count = if r.x() {
             Amount::X
         } else {
             let number = number_word(r.peek_word()?)?;
@@ -77,7 +77,7 @@ pub fn points(r: &mut Reader<'_>) -> Option<Amount> {
     if r.words("that much") {
         return Some(Amount::Triggering);
     }
-    if r.x_free && r.word("x") {
+    if r.x() {
         return Some(Amount::X);
     }
     Some(Amount::Fixed(i32::try_from(r.number()?).ok()?))

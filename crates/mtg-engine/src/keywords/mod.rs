@@ -27,6 +27,7 @@ mod daybound;
 mod deathtouch;
 mod defender;
 mod delve;
+mod demonstrate;
 mod dethrone;
 mod devoid;
 mod devour;
@@ -404,7 +405,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Madness(_) => &madness::Madness,
         Keyword::Miracle(_) => &miracle::Miracle,
         Keyword::Dredge(_) => &dredge::Dredge,
-        Keyword::Morph(_) => &morph::Morph,
+        Keyword::Morph(_) | Keyword::Megamorph(_) => &morph::Morph,
         Keyword::Disguise(_) => &disguise::Disguise,
         Keyword::Suspend { .. } => &suspend::Suspend,
         Keyword::Evoke(_) => &evoke::Evoke,
@@ -469,6 +470,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Backup { .. } => &backup::Backup,
         Keyword::Devour { .. } => &devour::Devour,
         Keyword::Casualty(_) => &casualty::Casualty,
+        Keyword::Demonstrate => &demonstrate::Demonstrate,
         Keyword::Offspring(_) => &offspring::Offspring,
         Keyword::Ravenous => &ravenous::Ravenous,
         Keyword::Fabricate(_) => &fabricate::Fabricate,
@@ -723,6 +725,7 @@ mod tests {
             Keyword::Miracle(cost()),
             Keyword::Dredge(3),
             Keyword::Morph(cost()),
+            Keyword::Megamorph(cost()),
             Keyword::Disguise(cost()),
             Keyword::Suspend {
                 time: 3,
@@ -804,6 +807,8 @@ mod tests {
             },
             Keyword::Casualty(2),
             Keyword::Offspring(cost()),
+            Keyword::Demonstrate,
+            Keyword::Hideaway(4),
         ]
     }
 
@@ -850,6 +855,9 @@ mod tests {
         "Keyword.Dredge",
         "Keyword.Suspend",
         "Keyword.Foretell",
+        "Keyword.Morph",
+        "Keyword.Megamorph",
+        "Keyword.Disguise",
         "Keyword.Daybound",
         "Keyword.Nightbound",
         "Keyword.Fuse",
@@ -895,6 +903,7 @@ mod tests {
         "Keyword.Devour",
         "Keyword.Casualty",
         "Keyword.Offspring",
+        "Keyword.Demonstrate",
         "Keyword.LevelUp",
         "Keyword.Outlast",
         "Keyword.Saddle",
@@ -1057,6 +1066,7 @@ mod tests {
     #[case::backup(Keyword::Backup { count: 1, abilities: vec![] }, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::devour(Keyword::Devour { counters: 2, of: Selector::default() }, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::casualty(Keyword::Casualty(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::demonstrate(Keyword::Demonstrate, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::offspring(Keyword::Offspring(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::myriad(Keyword::Myriad, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::squad(Keyword::Squad(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]

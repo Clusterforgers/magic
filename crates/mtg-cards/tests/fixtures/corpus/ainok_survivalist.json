@@ -1,0 +1,27 @@
+{
+  "id": "0f4b5b18-569f-4f61-ad2f-966ba4fbabdc",
+  "oracle_id": "7a5dae5f-29ab-4996-b236-c754de8769bc",
+  "name": "Ainok Survivalist",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "165",
+  "rarity": "uncommon",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Dog Shaman",
+  "oracle_text": "Megamorph {1}{G} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its megamorph cost and put a +1/+1 counter on it.)\nWhen this creature is turned face up, destroy target artifact or enchantment an opponent controls.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Megamorph"
+  ]
+}

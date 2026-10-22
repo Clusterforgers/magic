@@ -1,0 +1,19 @@
+{
+  "oracle_id": "03025ec0-75fe-439d-b0c1-9bdb0f0ff336",
+  "name": "Makeshift Mauler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Makeshift Mauler",
+      "oracle_fingerprint": "4ea5e43cc6f7da7465e709ec31217018",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        }
+      ]
+    }
+  ]
+}

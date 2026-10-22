@@ -1,0 +1,28 @@
+{
+  "id": "7a6b087b-a3ac-4c4d-a519-ec5584b4b42d",
+  "oracle_id": "2f6e9ab8-6951-4c5f-bcde-0e96e0fe87f2",
+  "name": "Exalted Angel",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "63",
+  "rarity": "rare",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{4}{W}{W}",
+  "cmc": 6.0,
+  "type_line": "Creature — Angel",
+  "oracle_text": "Flying\nWhenever this creature deals damage, you gain that much life.\nMorph {2}{W}{W} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its morph cost.)",
+  "power": "4",
+  "toughness": "5",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Morph"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "32ffc8eb-9518-455c-ada5-8b7596896dcf",
+  "oracle_id": "bcd3e6a1-7b76-408d-9236-3791c3e1064a",
+  "name": "Excavation Technique",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c21",
+  "collector_number": "16",
+  "rarity": "rare",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Demonstrate (When you cast this spell, you may copy it. If you do, choose an opponent to also copy it. Players may choose new targets for their copies.)\nDestroy target nonland permanent. Its controller creates two Treasure tokens.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Treasure",
+    "Demonstrate"
+  ]
+}

@@ -14,7 +14,7 @@
 //! (an effect that depends on a condition), `reveal` (looking at the top card and revealing it),
 //! `damage` (what deals damage to whom and the life gained with it), `copies` (a token that is a copy, populate, entering as a copy), `levels` (the blocks of a level up creature), `stations` (the blocks of a Spacecraft), `copy_spells` (a copy of a spell or an ability, a
 //! permanent that becomes a copy), `defining` (the power and toughness a card defines for itself), `life_gain` (replacements and rules about gaining life), `transform`, `draws` (draw and discard wordings), `actions` (the keyword actions of creatures),
-//! `pronouns` (the wordings that call the card "it") and `render`.
+//! `pronouns` (the wordings that call the card "it"), `where_x` (an amount named after the sentence: "where X is its power") and `render`.
 
 mod abilities;
 mod actions;
@@ -54,6 +54,7 @@ mod tests;
 mod tokens;
 mod transform;
 mod triggers;
+mod where_x;
 
 pub use levels::block as level_block;
 pub use render::{ability as render_ability, mode as render_mode, variants as render_variants};

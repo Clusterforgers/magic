@@ -1,0 +1,31 @@
+{
+  "oracle_id": "e69279f6-50a1-4db5-83be-30a2ea7fc6a9",
+  "name": "Trash for Treasure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trash for Treasure",
+      "oracle_fingerprint": "1bf50298c9f7251c209c63eb76b8c754",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Artifact" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

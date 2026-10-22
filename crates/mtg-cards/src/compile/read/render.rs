@@ -28,8 +28,10 @@ use super::spend;
 use super::statics;
 use super::subtypes::plural_subtype;
 use super::triggers::{
-    article, condition_text, cycled_itself, dies_itself, itself_acts, pattern_text, targeted_itself,
+    article, condition_text, cycled_itself, itself_acts, leaves_itself, pattern_text,
+    targeted_itself,
 };
+use super::where_x;
 use crate::ability::{Ability, Limit, Timing};
 use crate::cost::Cost;
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
@@ -127,7 +129,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
         texts.extend(pronouns);
     }
     // A trigger about the card itself entering, attacking or dying may say "it deals" for the card (Skysovereign).
-    if matches!(ability, Ability::Triggered { when, .. } if itself_acts(when) || dies_itself(when))
+    if matches!(ability, Ability::Triggered { when, .. } if itself_acts(when) || leaves_itself(when))
     {
         let pronouns: Vec<String> = texts
             .iter()
@@ -171,6 +173,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(more);
     let more = group_pump::wordings(ability, &texts);
     texts.extend(more);
+    texts.extend(where_x::wordings(ability));
     texts
 }
 
@@ -269,7 +272,9 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
                 })
                 .collect()
         }
-        Ability::AdditionalCost { cost } => costs::additional_text(cost).into_iter().collect(),
+        Ability::AdditionalCost { cost, required } => costs::additional_text(cost, *required)
+            .into_iter()
+            .collect(),
         _ => statics::texts(ability),
     }
 }

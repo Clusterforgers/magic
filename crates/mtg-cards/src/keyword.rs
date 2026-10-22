@@ -98,9 +98,11 @@ pub enum Keyword {
     Miracle(Cost),
     /// Dredge N (CR 702.52): in a graveyard, a player who would draw a card may instead mill N cards and return this card to their hand.
     Dredge(u32),
-    /// Morph with its cost.
+    /// Morph with its cost: the card may be cast face down for {3}, and turned face up for this cost (CR 702.37).
     Morph(Cost),
-    /// Disguise with its cost.
+    /// Megamorph with its cost: morph, and the permanent gets a +1/+1 counter as it is turned face up (CR 702.37b).
+    Megamorph(Cost),
+    /// Disguise with its cost: morph, and the permanent has ward {2} while it is face down (CR 702.168).
     Disguise(Cost),
     /// Suspend: the number of time counters and the cost.
     Suspend {
@@ -260,6 +262,10 @@ pub enum Keyword {
     Casualty(u32),
     /// Offspring with its cost (CR 702.175): the caster may pay it in addition as they cast the spell; when the creature enters, if they did, they create a 1/1 token copy of it.
     Offspring(Cost),
+    /// Demonstrate (CR 702.144): when the spell is cast, its caster may copy it and, if they do, choose an opponent who also copies it.
+    Demonstrate,
+    /// Hideaway N (CR 702.75): when the permanent enters, its controller looks at the top N cards of their library, exiles one face down and puts the rest on the bottom in a random order.
+    Hideaway(u32),
 }
 
 impl Keyword {
@@ -306,6 +312,7 @@ impl Keyword {
         "Miracle",
         "Dredge",
         "Morph",
+        "Megamorph",
         "Disguise",
         "Suspend",
         "Evoke",
@@ -375,6 +382,8 @@ impl Keyword {
         "Devour",
         "Casualty",
         "Offspring",
+        "Demonstrate",
+        "Hideaway",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -421,6 +430,7 @@ impl Keyword {
             Keyword::Miracle(_) => "Miracle",
             Keyword::Dredge(_) => "Dredge",
             Keyword::Morph(_) => "Morph",
+            Keyword::Megamorph(_) => "Megamorph",
             Keyword::Disguise(_) => "Disguise",
             Keyword::Suspend { .. } => "Suspend",
             Keyword::Evoke(_) => "Evoke",
@@ -501,6 +511,8 @@ impl Keyword {
             Keyword::Devour { .. } => "Devour",
             Keyword::Casualty(_) => "Casualty",
             Keyword::Offspring(_) => "Offspring",
+            Keyword::Demonstrate => "Demonstrate",
+            Keyword::Hideaway(_) => "Hideaway",
             Keyword::Dash(_) => "Dash",
             Keyword::Blitz(_) => "Blitz",
             Keyword::Prowl(_) => "Prowl",
@@ -581,6 +593,7 @@ mod tests {
             Keyword::Miracle(cost.clone()),
             Keyword::Dredge(3),
             Keyword::Morph(cost.clone()),
+            Keyword::Megamorph(cost.clone()),
             Keyword::Disguise(cost.clone()),
             Keyword::Suspend {
                 time: 3,
@@ -662,6 +675,8 @@ mod tests {
             },
             Keyword::Casualty(2),
             Keyword::Offspring(Cost::default()),
+            Keyword::Demonstrate,
+            Keyword::Hideaway(4),
         ]
     }
 

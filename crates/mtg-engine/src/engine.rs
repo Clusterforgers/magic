@@ -350,6 +350,10 @@ impl Engine {
                 self.pending = Some(Pending::special(player, card, Special::Foretell));
                 Ok(())
             }
+            Outcome::BeginTurnUp(card) => {
+                self.pending = Some(Pending::special(player, card, Special::TurnFaceUp));
+                Ok(())
+            }
             Outcome::Modes(modes) => self.announced(Answered::Modes(modes)),
             Outcome::Way(pick) => self.announced(Answered::Way(pick)),
             Outcome::Targets(targets) => self.announced(Answered::Targets(targets)),

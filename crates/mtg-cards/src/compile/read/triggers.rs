@@ -58,6 +58,23 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
     }
 }
 
+/// The object a trigger's event is about, which a where clause calls "its" or "that creature": the card for an event of
+/// its own, the creature of the event otherwise.
+pub fn event_subject(pattern: &TriggerPattern) -> Option<Ref> {
+    let (TriggerPattern::Attacks { what }
+    | TriggerPattern::BecomesBlocked { what }
+    | TriggerPattern::Blocks { what }
+    | TriggerPattern::ZoneChange { what, .. }) = pattern
+    else {
+        return None;
+    };
+    Some(if what.0 == [Pred::This] {
+        Ref::This
+    } else {
+        Ref::Triggering
+    })
+}
+
 /// Whether the pattern is the card itself becoming a target (counted or not), so the card's effects may call it "it".
 pub fn targeted_itself(pattern: &TriggerPattern) -> bool {
     match pattern {
@@ -67,14 +84,14 @@ pub fn targeted_itself(pattern: &TriggerPattern) -> bool {
     }
 }
 
-/// Whether the pattern is the card itself dying, so the card's damage may say "it deals".
-pub fn dies_itself(pattern: &TriggerPattern) -> bool {
+/// Whether the pattern is the card itself dying or leaving the battlefield, so the card's damage may say "it deals".
+pub fn leaves_itself(pattern: &TriggerPattern) -> bool {
     matches!(
         pattern,
         TriggerPattern::ZoneChange {
             what,
             from: Some(ZoneKind::Battlefield),
-            to: Some(ZoneKind::Graveyard),
+            to: Some(ZoneKind::Graveyard) | None,
         } if what.0 == [Pred::This]
     )
 }
@@ -503,6 +520,8 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         return Some(TriggerPattern::Explored { what: what.clone() });
     } else if r.words("becomes monstrous") {
         return Some(TriggerPattern::BecomesMonstrous { what: what.clone() });
+    } else if r.words("is turned face up") {
+        return Some(TriggerPattern::TurnedFaceUp { what: what.clone() });
     } else if r.word("adapts") {
         return Some(TriggerPattern::Adapted { what: what.clone() });
     } else if r.word("connives") {
@@ -809,6 +828,7 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::Explored { what } => said(what, "explores"),
         TriggerPattern::Connived { what } => said(what, "connives"),
         TriggerPattern::BecomesMonstrous { what } => said(what, "becomes monstrous"),
+        TriggerPattern::TurnedFaceUp { what } => said(what, "is turned face up"),
         TriggerPattern::Adapted { what } => said(what, "adapts"),
         TriggerPattern::Attached { what, to } if !what.is_empty() && !to.is_empty() => {
             said(what, &format!("becomes attached to {}", subject_text(to)?))
@@ -1085,13 +1105,17 @@ fn counter_text(what: &Selector, counter: Option<&CounterKind>, moved: &str) -> 
 }
 
 /// "When ~ enters", "Whenever a land you control enters", "Whenever ~ enters or attacks": "when" is
-/// for the card itself entering, dying, leaving or becoming monstrous, "whenever" for the rest.
+/// for the card itself entering, dying, leaving, becoming monstrous or being turned face up, "whenever" for the rest.
 fn about(what: &Selector, verbs: &[String]) -> Option<String> {
     let once = what.0 == [Pred::This]
         && verbs.iter().all(|verb| {
             matches!(
                 verb.as_str(),
-                "enters" | "dies" | "leaves the battlefield" | "becomes monstrous"
+                "enters"
+                    | "dies"
+                    | "leaves the battlefield"
+                    | "becomes monstrous"
+                    | "is turned face up"
             )
         });
     Some(format!(

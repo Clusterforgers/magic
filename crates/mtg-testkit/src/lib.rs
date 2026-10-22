@@ -26,6 +26,7 @@ pub mod counting_cards;
 pub mod curse_cards;
 pub mod decks;
 pub mod defining_cards;
+pub mod demonstrate_cards;
 pub mod devour_cards;
 pub mod discard_cast_cards;
 pub mod dredge_cards;
@@ -55,6 +56,7 @@ pub mod madness_cards;
 pub mod manual_cards;
 pub mod manual_script;
 pub mod miracle_cards;
+pub mod morph_cards;
 pub mod nth_cards;
 pub mod part_cards;
 pub mod pay_cards;
@@ -63,6 +65,7 @@ pub mod protect_cards;
 pub mod prowl_cards;
 pub mod pump_cards;
 pub mod replace_cards;
+pub mod required_cost_cards;
 pub mod rule_cards;
 pub mod scenario;
 pub mod script_error;
@@ -103,6 +106,7 @@ pub use decks::{
     removal_fuzz_setup, spell_fuzz_setup, symbol_fuzz_setup, trigger_fuzz_setup,
 };
 pub use defining_cards::defining_fuzz_setup;
+pub use demonstrate_cards::demonstrate_fuzz_setup;
 pub use devour_cards::devour_fuzz_setup;
 pub use discard_cast_cards::discard_cast_fuzz_setup;
 pub use dredge_cards::dredge_fuzz_setup;
@@ -131,6 +135,7 @@ pub use madness_cards::madness_fuzz_setup;
 pub use manual_cards::manual_fuzz_setup;
 pub use manual_script::ManualScript;
 pub use miracle_cards::miracle_fuzz_setup;
+pub use morph_cards::morph_fuzz_setup;
 pub use nth_cards::nth_fuzz_setup;
 pub use part_cards::parts_fuzz_setup;
 pub use pay_cards::pay_fuzz_setup;
@@ -139,6 +144,9 @@ pub use protect_cards::protect_fuzz_setup;
 pub use prowl_cards::prowl_fuzz_setup;
 pub use pump_cards::pump_fuzz_setup;
 pub use replace_cards::replace_fuzz_setup;
+pub use required_cost_cards::{
+    REQUIRED_COST_CARDS, Takes, required_cost_fuzz_setup, required_cost_of,
+};
 pub use rule_cards::rules_fuzz_setup;
 pub use scenario::{
     Scenario, ScenarioError, attached_to, damaged, enchanting, ready, sick, tapped, with_counters,

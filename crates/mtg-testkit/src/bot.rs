@@ -276,6 +276,12 @@ impl RandomBot {
                 .iter()
                 .map(|o| PriorityAction::Foretell(*o)),
         );
+        actions.extend(
+            options
+                .turnable
+                .iter()
+                .map(|o| PriorityAction::TurnFaceUp(*o)),
+        );
         actions.swap_remove(self.rng.index(actions.len()))
     }
 

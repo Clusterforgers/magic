@@ -87,6 +87,8 @@ pub enum CastWay {
     JumpStart,
     /// Retrace (CR 702.81): from a graveyard for its mana cost and the discard of a land card.
     Retrace,
+    /// Morph, megamorph and disguise (CR 702.37c, 702.168): from a hand face down as a 2/2 creature spell for {3}; the permanent lies face down until it is turned face up.
+    FaceDown,
     /// Without paying its mana cost, by a permission or an effect (CR 118.9).
     Free,
 }
@@ -458,6 +460,7 @@ mod tests {
     #[case::dash(CastWay::Dash, true)]
     #[case::blitz(CastWay::Blitz, true)]
     #[case::prowl(CastWay::Prowl, true)]
+    #[case::face_down(CastWay::FaceDown, true)]
     #[case::free(CastWay::Free, true)]
     #[case::jump_start(CastWay::JumpStart, false)]
     #[case::retrace(CastWay::Retrace, false)]

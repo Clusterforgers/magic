@@ -24,6 +24,7 @@ use super::prevention;
 use super::selectors::{Form, all, each, granted_keywords, phrase, target};
 use super::spend;
 use super::tokens::Reader;
+use super::where_x;
 use crate::cost::Cost;
 use crate::effect::{Destination, Effect, Order, Place, Produce};
 use crate::mana::ManaCostX;
@@ -101,6 +102,16 @@ fn templates() -> impl Iterator<Item = Template> {
 /// Reads the next sentence and its period into `effects`; false when it is not a shape the
 /// templates read.
 pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
+    // A where clause at the end of the sentence gives the X inside it its amount.
+    let named = where_x::ahead(r);
+    let outer = std::mem::replace(&mut r.where_x, named);
+    let read = sentence_shapes(r, effects);
+    r.where_x = outer;
+    read
+}
+
+/// The sentence shapes of `sentence`, tried in order.
+fn sentence_shapes(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
     if r.attempt(|r| cast::after_exiling(r, effects)).is_some() {
         return true;
     }
@@ -120,6 +131,9 @@ pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
             let mut found = template(r)?;
             // ", then populate" follows any sentence.
             found.extend(r.attempt(copies::then_populate).unwrap_or_default());
+            if r.where_x {
+                found = where_x::bind(r, &found)?;
+            }
             r.sentence_end().then_some(found)
         });
         if let Some(found) = read {
@@ -745,7 +759,7 @@ fn pump_grants(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
 fn signed(r: &mut Reader<'_>) -> Option<Amount> {
     r.attempt(|r| {
         if r.punct('+') {
-            if r.x_free && r.word("x") {
+            if r.x() {
                 return Some(Amount::X);
             }
             return Some(Amount::Fixed(i32::try_from(r.number()?).ok()?));

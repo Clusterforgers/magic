@@ -1,0 +1,20 @@
+{
+  "oracle_id": "203365d4-4793-47af-840e-418bd5569d50",
+  "name": "Headless Skaab",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Headless Skaab",
+      "oracle_fingerprint": "6438fc31234f276c038e7cb2b2611c42",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } }
+      ]
+    }
+  ]
+}
