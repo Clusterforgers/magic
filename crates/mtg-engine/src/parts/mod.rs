@@ -9,6 +9,7 @@ mod counters;
 mod discard;
 mod energy;
 mod exile;
+mod exile_hand;
 mod life;
 mod sacrifice;
 mod tap;
@@ -33,6 +34,8 @@ pub(crate) enum Kind {
     Discard,
     /// A card in the payer's graveyard is exiled.
     Exile,
+    /// A card in the payer's hand is exiled.
+    ExileHand,
     /// An untapped permanent the payer controls is tapped.
     Tap,
     /// A permanent the payer controls returns to its owner's hand.
@@ -79,6 +82,7 @@ const fn counted(item: &CostItem) -> &'static str {
         CostItem::Sacrifice { .. } => "Cost.Sacrifice.Counted",
         CostItem::Discard { .. } => "Cost.Discard.Counted",
         CostItem::ExileFromGraveyard { .. } => "Cost.ExileFromGraveyard.Counted",
+        CostItem::ExileFromHand { .. } => "Cost.ExileFromHand.Counted",
         CostItem::TapPermanents { .. } => "Cost.TapPermanents.Counted",
         CostItem::ReturnToHand { .. } => "Cost.ReturnToHand.Counted",
         _ => "Cost",
@@ -148,6 +152,9 @@ impl Part {
             CostItem::ExileFromGraveyard { filter, count } => {
                 pick(Kind::Exile, filter, count, item)?
             }
+            CostItem::ExileFromHand { filter, count } => {
+                pick(Kind::ExileHand, filter, count, item)?
+            }
             CostItem::TapPermanents { filter, count } => pick(Kind::Tap, filter, count, item)?,
             CostItem::ReturnToHand { filter, count } => pick(Kind::Return, filter, count, item)?,
             _ => return Ok(None),
@@ -205,6 +212,7 @@ impl Part {
                 Kind::Sacrifice => "Cost.Sacrifice",
                 Kind::Discard => "Cost.Discard",
                 Kind::Exile => "Cost.ExileFromGraveyard",
+                Kind::ExileHand => "Cost.ExileFromHand",
                 Kind::Tap => "Cost.TapPermanents",
                 Kind::Return => "Cost.ReturnToHand",
             },
@@ -279,6 +287,28 @@ impl Part {
     }
 }
 
+/// The events that pay `parts` for `source` in the order of the cost, with the objects picked for the parts that take
+/// some (`picks`, one list for each such part); `None` when a pick is missing.
+pub(crate) fn pay(
+    state: &GameState,
+    player: PlayerId,
+    source: ObjectId,
+    parts: &[Part],
+    picks: &[Vec<ObjectId>],
+) -> Option<Vec<Event>> {
+    let mut picks = picks.iter();
+    let mut events = Vec::new();
+    for part in parts {
+        let picked = if matches!(part, Part::Pick(_)) {
+            picks.next()?.as_slice()
+        } else {
+            &[]
+        };
+        events.extend(part.events(state, player, source, picked));
+    }
+    Some(events)
+}
+
 /// Who pays and for what: the player, the object whose ability it is, and the objects that cannot be picked because
 /// the cost already takes them (the source, which the price taps or loses, and what earlier parts picked).
 pub(crate) struct Payer<'a> {
@@ -321,6 +351,7 @@ impl Pick {
             Kind::Sacrifice => sacrifice::candidates(payer, &self.filter),
             Kind::Discard => discard::candidates(payer, &self.filter),
             Kind::Exile => exile::candidates(payer, &self.filter),
+            Kind::ExileHand => exile_hand::candidates(payer, &self.filter),
             Kind::Tap => tap::candidates(payer, &self.filter),
             Kind::Return => bounce::candidates(payer, &self.filter),
         }
@@ -332,6 +363,7 @@ impl Pick {
             Kind::Sacrifice => crate::wording::sacrifice(&self.filter, self.count),
             Kind::Discard => crate::wording::discard(self.count),
             Kind::Exile => exile::text(&self.filter, self.count),
+            Kind::ExileHand => exile_hand::text(&self.filter, self.count),
             Kind::Tap => tap::text(&self.filter, self.count),
             Kind::Return => bounce::text(&self.filter, self.count),
         }
@@ -343,6 +375,7 @@ impl Pick {
             Kind::Sacrifice => sacrifice::event(state, object),
             Kind::Discard => Some(discard::event(player, object)),
             Kind::Exile => exile::event(state, object),
+            Kind::ExileHand => exile_hand::event(state, object),
             Kind::Tap => Some(tap::event(object)),
             Kind::Return => bounce::event(state, object),
         }

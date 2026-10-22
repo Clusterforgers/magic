@@ -39,11 +39,7 @@ fn begun() -> Engine {
     let card = engine.state().zone(Zone::Hand(SEAT))[0];
     let needs = Needs {
         ways: Vec::new(),
-        optional: vec![Optional {
-            label: "Kicker {1}".to_owned(),
-            mana: ManaCost::parse("{1}").unwrap(),
-            repeatable: false,
-        }],
+        optional: vec![Optional::mana_only("Kicker {1}", "{1}", false)],
         x: Some(XCost::Mana { symbols: 1 }),
         price: None,
     };

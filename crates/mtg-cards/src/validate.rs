@@ -57,8 +57,24 @@ fn is_fixed(item: &CostItem) -> bool {
         | CostItem::Discard { count, .. }
         | CostItem::TapPermanents { count, .. }
         | CostItem::ExileFromGraveyard { count, .. }
+        | CostItem::ExileFromHand { count, .. }
         | CostItem::ReturnToHand { count, .. } => fixed(count),
         _ => true,
+    }
+}
+
+/// Whether the amount of a part of a cost is the X announced.
+fn amount_is_x(item: &CostItem) -> bool {
+    match item {
+        CostItem::PayLife(amount) | CostItem::PayEnergy(amount) => *amount == Amount::X,
+        CostItem::RemoveCounters { count, .. }
+        | CostItem::Sacrifice { count, .. }
+        | CostItem::Discard { count, .. }
+        | CostItem::TapPermanents { count, .. }
+        | CostItem::ExileFromGraveyard { count, .. }
+        | CostItem::ExileFromHand { count, .. }
+        | CostItem::ReturnToHand { count, .. } => *count == Amount::X,
+        _ => false,
     }
 }
 
@@ -177,6 +193,8 @@ struct Walker<'a> {
     path: Vec<String>,
     scope: Scope,
     has_kicker: bool,
+    /// Whether the card prints an optional additional cost ("As an additional cost to cast this spell, you may ...").
+    has_additional_cost: bool,
     x_free: bool,
     /// Whether an `X` read here is the one announced for the ability being walked, which its effects read as it resolves.
     x_now: bool,
@@ -201,6 +219,7 @@ impl<'a> Walker<'a> {
             path: Vec::new(),
             scope: Scope::default(),
             has_kicker: false,
+            has_additional_cost: false,
             x_free: false,
             x_now: false,
             amounting: Amounting::Other,
@@ -488,6 +507,12 @@ impl<'a> Walker<'a> {
                     self.problem("`Kicked` needs a Kicker or Multikicker keyword on the card");
                 }
             }
+            Condition::AdditionalCostPaid => {
+                self.uses("Condition", "AdditionalCostPaid");
+                if !self.has_additional_cost {
+                    self.problem("`AdditionalCostPaid` needs an `AdditionalCost` ability on the card");
+                }
+            }
             Condition::CastWith(_) => self.uses("Condition", "CastWith"),
             Condition::YourTurn => {}
             Condition::Performed => {
@@ -522,6 +547,7 @@ impl<'a> Walker<'a> {
                     CostItem::Sacrifice { filter, count }
                     | CostItem::TapPermanents { filter, count }
                     | CostItem::ExileFromGraveyard { filter, count }
+                    | CostItem::ExileFromHand { filter, count }
                     | CostItem::ReturnToHand { filter, count } => {
                         w.at("filter", |w| w.selector(filter));
                         w.at("count", |w| w.amount(count));
@@ -543,6 +569,20 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// The parts of the cost of a keyword of a spell (kicker, buyback, entwine, flashback, evoke, madness) that the
+    /// announcement of the spell does not pay: counters removed from the source, which a card in a hand or a graveyard
+    /// has none of, and an amount that is the X announced, which the cost of a spell does not count. They are named
+    /// `<kind>.<prefix>.<part>`.
+    fn parts_a_spell_cost_does_not_pay(&mut self, kind: &str, prefix: &str, cost: &Cost) {
+        for item in &cost.0 {
+            if matches!(item, CostItem::RemoveCounters { .. }) {
+                self.uses(kind, &format!("{prefix}.{}", tag_of(item)));
+            } else if amount_is_x(item) {
+                self.uses(kind, &format!("{prefix}.{}.X", tag_of(item)));
+            }
+        }
+    }
+
     /// The parts of a cost that an ability pays as it is announced (life, counters, a pick of permanents or cards) are not
     /// paid in a payment an effect asks for or in the cost of a keyword that is not an ability: they are named
     /// `<kind>.<prefix>.<part>` so the card waits for an engine that pays them there.
@@ -555,6 +595,7 @@ impl<'a> Walker<'a> {
                     | CostItem::Sacrifice { .. }
                     | CostItem::Discard { .. }
                     | CostItem::ExileFromGraveyard { .. }
+                    | CostItem::ExileFromHand { .. }
                     | CostItem::TapPermanents { .. }
                     | CostItem::ReturnToHand { .. }
             ) {
@@ -618,13 +659,19 @@ impl<'a> Walker<'a> {
             Keyword::Equip(cost) | Keyword::Reconfigure(cost) | Keyword::Cycling(cost) => {
                 self.at("cost", |w| w.cost(cost));
             }
+            // The cost of these is paid as the spell is announced: the mana, and the parts the engine pays there.
             Keyword::Kicker(cost)
-            | Keyword::Multikicker(cost)
             | Keyword::Flashback(cost)
             | Keyword::Madness(cost)
+            | Keyword::Buyback(cost)
+            | Keyword::Entwine(cost)
+            | Keyword::Evoke(cost) => {
+                self.at("cost", |w| w.cost(cost));
+                self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost);
+            }
+            Keyword::Multikicker(cost)
             | Keyword::Morph(cost)
             | Keyword::Disguise(cost)
-            | Keyword::Evoke(cost)
             | Keyword::Overload(cost)
             | Keyword::Mutate(cost)
             | Keyword::Encore(cost)
@@ -1557,6 +1604,23 @@ impl<'a> Walker<'a> {
                 condition,
                 ..
             } => w.cost_modifier(applies_to, mana, per, condition.as_ref()),
+            Ability::AdditionalCost { cost } => {
+                w.at("cost", |w| w.cost(cost));
+                if cost.0.iter().any(|item| {
+                    matches!(
+                        item,
+                        CostItem::Tap
+                            | CostItem::Untap
+                            | CostItem::SacrificeSelf
+                            | CostItem::ExileSelf
+                            | CostItem::DiscardSelf
+                            | CostItem::RemoveCounters { .. }
+                    )
+                }) {
+                    w.problem("an additional cost is paid by the caster, not by the spell itself");
+                }
+                w.parts_a_spell_cost_does_not_pay("Ability", "AdditionalCost", cost);
+            }
             Ability::Keyword(keyword) => w.keyword(keyword),
             Ability::Manual { reason, span } => {
                 if reason.trim().is_empty() {
@@ -1858,6 +1922,9 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
     walker.has_kicker = card
         .abilities()
         .any(|(_, a)| matches!(a, Ability::Keyword(k) if k.is_kicker()));
+    walker.has_additional_cost = card
+        .abilities()
+        .any(|(_, a)| matches!(a, Ability::AdditionalCost { .. }));
     if !is_uuid(&card.oracle_id) {
         walker.at("oracle_id", |w| w.problem("not a lowercase UUID"));
     }

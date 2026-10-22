@@ -5,7 +5,7 @@
 
 use mtg_cards::keyword::Keyword;
 
-use super::{AdditionalCost, KeywordRules};
+use super::{AdditionalCost, KeywordRules, OptionalKind};
 
 /// The rules of kicker.
 #[derive(Debug)]
@@ -20,6 +20,7 @@ impl KeywordRules for Kicker {
             name: "Kicker",
             cost: cost.clone(),
             repeatable: false,
+            kind: OptionalKind::Kicker,
         })
     }
 }

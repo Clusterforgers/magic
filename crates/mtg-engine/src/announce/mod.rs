@@ -32,6 +32,7 @@ use crate::choose::{Choices, Target};
 use crate::decision::{Decision, DecisionKind};
 use crate::error::EngineError;
 use crate::events::Event;
+use crate::parts::Part;
 use crate::price::Price;
 use crate::resolve::spell_ability;
 use crate::state::GameState;
@@ -39,7 +40,7 @@ use crate::triggers::PendingTrigger;
 use crate::ways::Way;
 
 pub(crate) use modifiers::cheapest;
-pub(crate) use optional::Optional;
+pub(crate) use optional::{Optional, payments};
 pub(crate) use x::{XCost, payable, some_x_has_targets};
 
 /// What is being put on the stack.
@@ -173,8 +174,21 @@ impl Needs {
         self.optional
             .iter()
             .enumerate()
-            .filter(|(_, cost)| cost.repeatable)
+            .filter(|(_, cost)| cost.offerable && cost.repeatable)
             .map(|(index, _)| index)
+    }
+
+    /// The parts a spell pays besides its mana for what `choices` announced: those of the way it is cast and of the
+    /// optional costs paid, in that order.
+    pub(crate) fn cost_parts(&self, choices: &Choices) -> Vec<Part> {
+        let mut parts = self
+            .ways
+            .iter()
+            .find(|way| way.alternative == choices.way)
+            .map(|way| way.parts.clone())
+            .unwrap_or_default();
+        parts.extend(optional::parts_paid(&self.optional, choices));
+        parts
     }
 }
 
@@ -274,6 +288,14 @@ impl Pending {
             needs: Some(needs),
             ..Pending::new(player, what)
         }
+    }
+
+    /// The parts a spell pays besides its mana for what has been announced (`Needs::cost_parts`).
+    pub(crate) fn cost_parts(&self) -> Vec<Part> {
+        self.needs
+            .as_ref()
+            .map(|needs| needs.cost_parts(&self.choices))
+            .unwrap_or_default()
     }
 
     /// Takes the answer to the decision the announcement waits for.
@@ -493,7 +515,16 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
             None => {}
             Some(Next::Drop) => return ctx.rewind(),
             Some(Next::Ask(decision)) => {
-                work.done.asked = Some(phase);
+                // Entwine is paid before the modes are chosen: the costs it asks are answered as the optional costs.
+                let asks_costs = matches!(
+                    decision.kind,
+                    DecisionKind::ChooseCosts(_) | DecisionKind::ChooseNumber(_)
+                );
+                work.done.asked = Some(if phase == Phase::Modes && asks_costs {
+                    Phase::Optional
+                } else {
+                    phase
+                });
                 return Next::Ask(decision);
             }
             Some(commit) => return commit,

@@ -198,6 +198,12 @@ pub enum Ability {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         condition: Option<Condition>,
     },
+    /// "As an additional cost to cast this spell, you may ..." (CR 118.8): a cost the caster may pay as the spell is announced,
+    /// read by `Condition::AdditionalCostPaid`.
+    AdditionalCost {
+        /// The cost, paid in addition to the others.
+        cost: Cost,
+    },
     /// A keyword ability; the engine knows what it does.
     Keyword(Keyword),
     /// A clause of the oracle text the data does not model; the table resolves it by hand.

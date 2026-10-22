@@ -44,6 +44,11 @@ pub struct Snapshot {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub x: Option<u32>,
+    /// The optional costs it was cast with, by index (kicker, buyback and the like), as the object remembers them: its
+    /// triggered abilities read them after it has left.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<usize>>", optional))]
+    pub paid: Vec<usize>,
 }
 
 impl Snapshot {
@@ -86,6 +91,7 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
         attachments: state.attachments_of(id),
         face_down: object.face_down(),
         x: object.announced_x(),
+        paid: object.paid_costs().to_vec(),
     })
 }
 

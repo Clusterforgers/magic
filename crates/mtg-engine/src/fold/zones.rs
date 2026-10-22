@@ -8,9 +8,11 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::opening::same_cards;
 use super::{invalid, player_mut, priority_to_active, reset_passes};
+use crate::announce::payments;
 use crate::choose::Choices;
 use crate::error::EngineError;
 use crate::events::Event;
+use crate::keywords::OptionalKind;
 use crate::library::Scried;
 use crate::object::{GameObject, ObjectKind, PermanentState};
 use crate::state::{GameState, Tally};
@@ -138,7 +140,11 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             expect_in(state, *object, from)?;
             move_object(state, *object, Zone::Stack, Placement::Top)?;
             set_controller(state, *object, *player);
-            if choices.way == Some(CastWay::Flashback) {
+            // A spell cast for its flashback cost, or with its buyback cost paid, is moved by a replacement effect.
+            let bought_back = state.objects.get(object).is_some_and(|spell| {
+                payments(spell.card(), &choices.optional_costs, OptionalKind::Buyback) > 0
+            });
+            if choices.way == Some(CastWay::Flashback) || bought_back {
                 state.possible.replacements = true;
             }
             if let Some(spell) = state.objects.get_mut(object) {

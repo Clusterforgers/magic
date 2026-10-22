@@ -5,7 +5,6 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::keyword::Keyword;
-use mtg_cards::refs::Selector;
 use mtg_cards::value::{Amount, Condition};
 use mtg_core::card::CardType;
 use mtg_core::ids::PlayerId;
@@ -217,16 +216,16 @@ fn a_hybrid_symbol_stays_in_the_total_beside_the_kicker(
 }
 
 #[test]
-fn a_cost_with_a_part_other_than_mana_is_not_offered() {
-    let sacrifice = Cost(vec![CostItem::Sacrifice {
-        filter: Selector::default(),
-        count: Amount::one(),
-    }]);
-    let card = instant("{1}", vec![Keyword::Kicker(sacrifice), MULTIKICKER()]);
+fn a_cost_the_announcement_cannot_pay_is_listed_and_never_offered() {
+    let tapping = Cost(vec![CostItem::Tap]);
+    let card = instant("{1}", vec![Keyword::Kicker(tapping), MULTIKICKER()]);
     let game = table(card, 4);
     let read = optional::read(&game, &What::Spell(game.zone(Zone::Hand(SEAT))[0]));
-    let labels: Vec<&str> = read.iter().map(|cost| cost.label.as_str()).collect();
-    assert_eq!(labels, ["Multikicker {1}"]);
+    let offerable: Vec<bool> = read.iter().map(|cost| cost.offerable).collect();
+    assert_eq!(offerable, [false, true]);
+    let walk = walk(&game, &[], 0);
+    assert_eq!(walk.offered, Vec::<usize>::new());
+    assert_eq!(walk.number, Some((0, Some(3))));
 }
 
 #[rstest]

@@ -79,6 +79,14 @@ pub enum CostItem {
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
     },
+    /// Exile cards from the payer's hand that match ("Exile a red card from your hand").
+    ExileFromHand {
+        /// Which cards may be chosen.
+        filter: Selector,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
 }
 
 /// The parts of a cost, paid together; a cost of one mana part is written as its mana text.
@@ -101,6 +109,7 @@ impl Cost {
             | CostItem::Discard { count, .. }
             | CostItem::TapPermanents { count, .. }
             | CostItem::ExileFromGraveyard { count, .. }
+            | CostItem::ExileFromHand { count, .. }
             | CostItem::ReturnToHand { count, .. } => *count == Amount::X,
             _ => false,
         })

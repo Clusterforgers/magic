@@ -515,6 +515,16 @@ fn counted(filter: &Selector, count: usize, extra: &str) -> String {
 
 /// What a cost that exiles cards from the payer's graveyard asks: "Exile a creature card from your graveyard."
 pub(crate) fn exile_from_graveyard(filter: &Selector, count: usize) -> String {
+    exile_cards(filter, count, "graveyard")
+}
+
+/// What a cost that exiles cards from the payer's hand asks: "Exile a red card from your hand."
+pub(crate) fn exile_from_hand(filter: &Selector, count: usize) -> String {
+    exile_cards(filter, count, "hand")
+}
+
+/// "Exile a creature card from your graveyard.": `count` cards that match `filter` from `place`, a zone of the payer.
+fn exile_cards(filter: &Selector, count: usize, place: &str) -> String {
     let (head, _) = phrase(filter);
     let kind = if head == "permanent" {
         "card".to_owned()
@@ -526,7 +536,7 @@ pub(crate) fn exile_from_graveyard(filter: &Selector, count: usize) -> String {
     } else {
         format!("{count} {kind}s")
     };
-    format!("Exile {what} from your graveyard.")
+    format!("Exile {what} from your {place}.")
 }
 
 /// What a cost that taps permanents the payer controls asks: "Tap an untapped creature you control."

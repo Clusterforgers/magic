@@ -92,11 +92,7 @@ fn bare_table(shape: Shape, lands: usize) -> GameState {
 
 /// A kicker of `{1}`.
 fn kicker() -> Optional {
-    Optional {
-        label: "Kicker {1}".to_owned(),
-        mana: ManaCost::parse("{1}").unwrap(),
-        repeatable: false,
-    }
+    Optional::mana_only("Kicker {1}", "{1}", false)
 }
 
 fn needs(kicked: bool, x: u32) -> Needs {
@@ -266,6 +262,7 @@ fn way(alternative: Option<CastWay>, cost: Option<&str>) -> Way {
         }),
         mana: cost.map(|cost| ManaCost::parse(cost).unwrap()),
         instant: true,
+        parts: Vec::new(),
     }
 }
 

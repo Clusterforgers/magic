@@ -374,6 +374,9 @@ pub enum Condition {
     },
     /// The spell was kicked (any kicker cost was paid); a permanent and its abilities read the spell it came from.
     Kicked,
+    /// The optional additional cost of the spell ("As an additional cost to cast this spell, you may ...") was paid; a
+    /// permanent and its abilities read the spell it came from.
+    AdditionalCostPaid,
     /// The spell was cast for this alternative cost; a permanent and its abilities read the spell it came from.
     CastWith(CastWay),
     /// It is the controller's turn.
