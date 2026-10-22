@@ -62,8 +62,10 @@ function modificationWords(modification: Modification, group: boolean): string {
       SwitchPowerToughness: `${group ? 'have' : 'has'} power and toughness switched`,
       CantAttack: "can't attack",
       CantBlock: "can't block",
+      CantBeBlocked: "can't be blocked",
     }[modification]
   }
+  if ('CantBeBlockedBy' in modification) return "can't be blocked by some creatures"
   if ('AddType' in modification) return `${becomes} ${modification.AddType.toLowerCase()} too`
   if ('RemoveType' in modification) return `${loses} ${modification.RemoveType.toLowerCase()} as a type`
   if ('AddSubtype' in modification) return `${becomes} ${modification.AddSubtype} too`

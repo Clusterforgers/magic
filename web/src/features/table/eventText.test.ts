@@ -557,6 +557,15 @@ describe('events with more than one shape', () => {
       'Hill Giant has power and toughness switched until end of turn',
     ],
     [effect(objects(2), 'CantBlock', 'UntilEndOfTurn'), "Hill Giant can't block until end of turn"],
+    [effect(objects(2), 'CantBeBlocked', 'UntilEndOfTurn'), "Hill Giant can't be blocked until end of turn"],
+    [
+      effect(
+        objects(2),
+        { CantBeBlockedBy: { by: [], controller: 0, source: { id: 1, counter: 0 } } },
+        'UntilEndOfTurn',
+      ),
+      "Hill Giant can't be blocked by some creatures until end of turn",
+    ],
     [
       effect(objects(2), { AddSubtype: 'Elf' }, 'UntilEndOfTurn'),
       'Hill Giant becomes Elf too until end of turn',
