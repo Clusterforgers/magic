@@ -1,0 +1,40 @@
+{
+  "oracle_id": "181e6b3e-c33e-49e7-acb8-67473289a856",
+  "name": "Master of Etherium",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Master of Etherium",
+      "oracle_fingerprint": "3cb03857670c60e4131bf3e9b4c2fc21",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Artifact" },
+                { "Type": "Creature" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "5bcb4398-edd1-41a7-a496-b12bce22ceb6",
+  "oracle_id": "49dddec0-d958-4810-8c6e-225fc8118c8f",
+  "name": "Defile",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mh1",
+  "collector_number": "86",
+  "rarity": "common",
+  "released_at": "2019-06-14",
+  "digital": false,
+  "mana_cost": "{B}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Target creature gets -1/-1 until end of turn for each Swamp you control.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

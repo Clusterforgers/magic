@@ -1,0 +1,27 @@
+{
+  "id": "a9c6a6b9-f00c-46a5-8dab-796483e3a262",
+  "oracle_id": "98c059ed-d749-4f66-bda1-6352976198f0",
+  "name": "Honor Troll",
+  "lang": "en",
+  "layout": "normal",
+  "set": "stx",
+  "collector_number": "134",
+  "rarity": "uncommon",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Troll Druid",
+  "oracle_text": "Vigilance\nIf you would gain life, you gain that much life plus 1 instead.\nThis creature gets +2/+1 as long as you have 25 or more life.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Vigilance"
+  ],
+  "power": "2",
+  "toughness": "3"
+}

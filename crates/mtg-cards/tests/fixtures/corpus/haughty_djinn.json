@@ -1,0 +1,27 @@
+{
+  "id": "8cabaf8a-5e19-4f26-be2b-7627b9c8e324",
+  "oracle_id": "44036bb5-f300-40bd-9180-6b246315d886",
+  "name": "Haughty Djinn",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "154",
+  "rarity": "rare",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{1}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Djinn",
+  "oracle_text": "Flying\nHaughty Djinn's power is equal to the number of instant and sorcery cards in your graveyard.\nInstant and sorcery spells you cast cost {1} less to cast.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "power": "*",
+  "toughness": "4"
+}

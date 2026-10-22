@@ -71,7 +71,6 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 #[case::up_to("Put a +1/+1 counter on up to one target creature.")]
 #[case::another_size("Put a +2/+2 counter on ~.")]
 #[case::a_mixed_size("Put a +1/-1 counter on ~.")]
-#[case::for_each("Put a +1/+1 counter on ~ for each creature you control.")]
 #[case::no_count("Put +1/+1 counters on ~.")]
 #[case::a_plural_for_one("Put a +1/+1 counters on ~.")]
 #[case::a_singular_for_many("Put two +1/+1 counter on ~.")]

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "635fe908-6f58-4c9e-ac55-0775a7c6f278",
+  "name": "Angel of Vitality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angel of Vitality",
+      "oracle_fingerprint": "5a523d8462f3fabb45ec4a89c826f703",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Replacement": { "when": { "LifeGain": {} }, "by": { "Add": 1 } } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": { "Compare": { "left": { "Life": "You" }, "op": "Ge", "right": 25 } }
+          }
+        }
+      ]
+    }
+  ]
+}

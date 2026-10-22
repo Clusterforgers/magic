@@ -62,6 +62,9 @@ thread_local! {
     static COMPUTING: Cell<bool> = const { Cell::new(false) };
     /// The objects outside the battlefield whose characteristic-defining abilities are being worked out.
     static DEFINING: RefCell<Vec<ObjectId>> = const { RefCell::new(Vec::new()) };
+    /// What the count under way reads of the objects it looks at, innermost last: an object seen from inside it is
+    /// worked out only as far as that.
+    static NEEDED: RefCell<Vec<Traits>> = const { RefCell::new(Vec::new()) };
 }
 
 /// Ends the pass of this thread, whether it returned or unwound.
@@ -86,6 +89,24 @@ struct Defined;
 impl Drop for Defined {
     fn drop(&mut self) {
         DEFINING.with(|open| {
+            open.borrow_mut().pop();
+        });
+    }
+}
+
+/// Takes what a count reads off the list, whether the work returned or unwound.
+struct Needing;
+
+impl Needing {
+    fn enter(reads: Traits) -> Needing {
+        NEEDED.with(|open| open.borrow_mut().push(reads));
+        Needing
+    }
+}
+
+impl Drop for Needing {
+    fn drop(&mut self) {
+        NEEDED.with(|open| {
             open.borrow_mut().pop();
         });
     }
@@ -806,7 +827,11 @@ impl<'a> Pass<'a> {
                 _ => BTreeSet::new(),
             }
         };
-        let modification = lower(&scope, mods.get(cand.index)?).ok()?;
+        let wanted = mods.get(cand.index)?;
+        let modification = {
+            let _reading = Needing::enter(reads_of_modification(wanted));
+            lower(&scope, wanted).ok()?
+        };
         Some(Foot { modification, set })
     }
 
@@ -990,6 +1015,10 @@ pub(crate) fn outside(
     let mut chars = base(object);
     let abilities = printed_and_provided(object);
     let mut changes: Vec<(Layer, usize, usize, &Wanted)> = Vec::new();
+    // Seen from inside the count of another ability, an object is worked out only as far as that count reads it: the
+    // number of creature cards in graveyards reads their types, not the power another such card defines for itself,
+    // and working that out for every order the cards can be counted in takes the work beyond reach.
+    let needed = NEEDED.with(|open| open.borrow().last().copied());
     for (address, rules) in &abilities {
         let rule = address.ability;
         if let Ability::Static {
@@ -999,7 +1028,9 @@ pub(crate) fn outside(
         } = &**rules
         {
             for (index, wanted) in mods.iter().enumerate() {
-                if let Some(layer) = layer_of(wanted, true) {
+                if let Some(layer) = layer_of(wanted, true)
+                    && needed.is_none_or(|needed| writes_of_wanted(wanted).meets(needed))
+                {
                     changes.push((layer, rule, index, wanted));
                 }
             }
@@ -1015,7 +1046,11 @@ pub(crate) fn outside(
     let scope =
         Scope::announcing(state, object.controller(), object.reference()).with_layered(view);
     for (_, _, _, wanted) in changes {
-        if let Ok(modification) = lower(&scope, wanted) {
+        let lowered = {
+            let _reading = Needing::enter(reads_of_modification(wanted));
+            lower(&scope, wanted)
+        };
+        if let Ok(modification) = lowered {
             modification.apply(&mut chars);
         }
     }

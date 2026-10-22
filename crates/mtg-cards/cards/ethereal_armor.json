@@ -1,0 +1,28 @@
+{
+  "oracle_id": "dbba75f5-2404-4bd5-982b-f6c4effa5316",
+  "name": "Ethereal Armor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ethereal Armor",
+      "oracle_fingerprint": "873bc4ed8c9367ebe9910a3988e5268e",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }] }
+                }
+              },
+              { "AddKeyword": "FirstStrike" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

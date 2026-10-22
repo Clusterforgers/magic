@@ -214,7 +214,6 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 #[case::no_number("Mill cards.")]
 #[case::a_number_without_cards("Mill three.")]
 #[case::a_creature("Target creature mills three cards.")]
-#[case::for_each_card("Each opponent mills a card for each creature you control.")]
 #[case::half("Target player mills half their library.")]
 #[case::until("Target player mills cards until a land card is milled.")]
 #[case::all_players_but_you("Each other player mills three cards.")]

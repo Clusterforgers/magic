@@ -565,6 +565,50 @@ fn life_gained_is_doubled_once_by_each_effect(
     Ok(())
 }
 
+#[rstest]
+#[case::one_more(&["Angel of Vitality"], 4)]
+#[case::one_more_from_two_cards(&["Angel of Vitality", "Honor Troll"], 5)]
+#[case::doubled(&["Boon Reflection"], 6)]
+#[case::nobody_gains(&["Giant Cindermaw"], 0)]
+#[case::only_opponents_cannot_gain(&["Knight of Dusk's Shadow"], 3)]
+fn life_gained_with_the_corpus_cards_that_change_it(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] effects: &[&str],
+    #[case] gained: i32,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .hand(0, [mend().unwrap()])
+            .battlefield(0, permanents(effects).into_iter().chain([ready(plains())])),
+    )?;
+    driver.cast("Mend")?;
+    settle(&mut driver, &first)?;
+    assert_eq!(life(&driver, 0), 20 + gained);
+    Ok(())
+}
+
+#[rstest]
+#[case::opponents_cannot_gain("Knight of Dusk's Shadow", 0)]
+#[case::nobody_gains("Giant Cindermaw", 0)]
+#[case::one_more_is_theirs("Angel of Vitality", 3)]
+#[case::doubling_is_theirs("Boon Reflection", 3)]
+fn the_cards_of_another_seat_stop_my_life_gain_only_when_they_name_me(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] other: &str,
+    #[case] gained: i32,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .hand(0, [mend().unwrap()])
+            .battlefield(0, [ready(plains())])
+            .battlefield(1, permanents(&[other])),
+    )?;
+    driver.cast("Mend")?;
+    settle(&mut driver, &first)?;
+    assert_eq!(life(&driver, 0), 20 + gained);
+    Ok(())
+}
+
 // Draws
 
 #[rstest]

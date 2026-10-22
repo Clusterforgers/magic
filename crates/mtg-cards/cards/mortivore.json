@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2f554218-2072-4d9b-b4d4-34f161f1f2a9",
+  "name": "Mortivore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mortivore",
+      "oracle_fingerprint": "383244a87068674159aa723685e14626",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                  "toughness": { "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        { "Activated": { "cost": "{B}", "effects": [{ "Regenerate": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

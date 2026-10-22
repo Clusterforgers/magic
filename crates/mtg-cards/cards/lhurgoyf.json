@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0fe76004-b2f4-4b11-abce-75fd76f68b4d",
+  "name": "Lhurgoyf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lhurgoyf",
+      "oracle_fingerprint": "7ae599adaee192c0c201419e07f0c0bc",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                  "toughness": {
+                    "Sum": [{ "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }] }, 1]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

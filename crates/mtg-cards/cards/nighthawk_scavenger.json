@@ -1,0 +1,32 @@
+{
+  "oracle_id": "379ed4ec-8f2e-448b-9ed2-a3181e2f877e",
+  "name": "Nighthawk Scavenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nighthawk Scavenger",
+      "oracle_fingerprint": "53c49f17005f97a62964c55f159a014d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Lifelink" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Sum": [1, { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "Opponents" }] }]
+                  },
+                  "toughness": 3
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -97,8 +97,8 @@ fn the_printed_side_of_every_corpus_card_equals_its_record(#[case] caps: Caps) {
         assert_eq!(subtypes, tail, "{name}: subtypes");
 
         let text = |value: Option<u32>| value.map(|n| n.to_string());
-        // A `*` is no number: a characteristic-defining ability gives it its value.
-        let number = |stat: &Option<String>| stat.clone().filter(|stat| stat != "*");
+        // A `*` or `1+*` is no number: a characteristic-defining ability gives it its value.
+        let number = |stat: &Option<String>| stat.clone().filter(|stat| !stat.contains('*'));
         assert_eq!(
             shown.power.map(|n| n.to_string()),
             number(&front.power),

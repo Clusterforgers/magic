@@ -1,0 +1,28 @@
+{
+  "id": "beeaaef1-5cd9-402a-982e-2cb4e69cfaca",
+  "oracle_id": "2f554218-2072-4d9b-b4d4-34f161f1f2a9",
+  "name": "Mortivore",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cm2",
+  "collector_number": "69",
+  "rarity": "rare",
+  "released_at": "2018-06-08",
+  "digital": false,
+  "mana_cost": "{2}{B}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Lhurgoyf",
+  "oracle_text": "Mortivore's power and toughness are each equal to the number of creature cards in all graveyards.\n{B}: Regenerate this creature. (The next time this creature would be destroyed this turn, instead tap it, remove it from combat, and heal all damage on it.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Heal",
+    "Regenerate"
+  ],
+  "power": "*",
+  "toughness": "*"
+}
