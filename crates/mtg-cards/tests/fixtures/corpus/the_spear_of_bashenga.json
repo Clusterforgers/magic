@@ -1,0 +1,25 @@
+{
+  "id": "b8cc0703-f626-4d42-90bb-1a26e331a9de",
+  "oracle_id": "e7a0b370-913d-4e96-8fb4-5df168405073",
+  "name": "The Spear of Bashenga",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "25",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{4}{W}",
+  "cmc": 5,
+  "type_line": "Legendary Artifact — Equipment",
+  "oracle_text": "When The Spear of Bashenga enters, if there is no monarch, you become the monarch.\nEquipped creature gets +2/+2 and has vigilance.\nWhenever equipped creature attacks the monarch, destroy target tapped nonland permanent that player controls.\nEquip {2}",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Equip"
+  ]
+}

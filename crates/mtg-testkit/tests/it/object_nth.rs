@@ -185,7 +185,7 @@ fn seeded_nth_games_finish_keep_every_invariant_and_trigger_every_card(#[case] p
         let outcome = play_game(setup.clone(), seed).unwrap_or_else(|failure| panic!("{failure}"));
         seen.extend(triggered_cards(&setup, &outcome.events));
     }
-    for name in NTH_CARDS.into_iter().chain([MENTOR]) {
+    for name in NTH_CARDS.iter().copied().chain([MENTOR]) {
         assert!(
             seen.contains(name),
             "{name} never triggered in {games} games of {players} seats: {seen:?}"

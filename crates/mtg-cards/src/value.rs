@@ -384,7 +384,8 @@ pub enum Condition {
     /// The effect just before this one in its list was carried out in full ("if you do"): a "may" that was
     /// accepted, a cost that was paid, cards that were moved.
     Performed,
-    /// The player is the monarch (CR 724).
+    /// A player the reference names is the monarch (CR 724): any of them when it names several, so `EachPlayer` is "there is a
+    /// monarch" and its `Not` "there is no monarch".
     Monarch(Ref),
     /// The player has the city's blessing (CR 702.131).
     CitysBlessing(Ref),

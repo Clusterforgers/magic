@@ -68,7 +68,7 @@ fn a_seeded_combat_keyword_game_is_the_same_game_every_time_and_replays_to_its_s
 
 #[test]
 fn the_cards_of_a_combat_keyword_deck_are_all_in_the_corpus() {
-    for (name, _) in COMBAT_KEYWORD_CARDS {
+    for &(name, _) in COMBAT_KEYWORD_CARDS {
         assert!(card(name).is_ok(), "{name}");
     }
 }

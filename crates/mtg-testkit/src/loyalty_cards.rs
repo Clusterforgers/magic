@@ -86,7 +86,7 @@ pub fn skyhawk() -> Arc<CardDefinition> {
 }
 
 /// The corpus planeswalkers.
-pub const LOYALTY_CORPUS_CARDS: [&str; 4] = [
+pub const LOYALTY_CORPUS_CARDS: &[&str] = &[
     "Jace, the Mind Sculptor",
     "Jace Beleren",
     "Ajani, Caller of the Pride",
@@ -94,7 +94,7 @@ pub const LOYALTY_CORPUS_CARDS: [&str; 4] = [
 ];
 
 /// The cards of this module and the plain ones the deck is made of.
-pub const LOYALTY_SYNTHETIC_CARDS: [&str; 6] = [
+pub const LOYALTY_SYNTHETIC_CARDS: &[&str] = &[
     "Pyre Walker",
     "Dawn Walker",
     "Charging Rhino",
@@ -176,7 +176,7 @@ mod tests {
     fn a_loyalty_deck_is_sixty_cards_with_every_planeswalker_and_what_attacks_and_kills_them() {
         let deck = loyalty_deck(&mut GameRng::substream(1, 17_000)).unwrap();
         assert_eq!(deck.len(), 60);
-        for name in LOYALTY_CORPUS_CARDS.iter().chain(&LOYALTY_SYNTHETIC_CARDS) {
+        for name in LOYALTY_CORPUS_CARDS.iter().chain(LOYALTY_SYNTHETIC_CARDS) {
             assert!(deck.iter().any(|card| card.name == *name), "{name}");
         }
         let setup = loyalty_fuzz_setup(3, 5).unwrap();

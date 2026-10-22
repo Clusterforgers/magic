@@ -19,7 +19,7 @@ use crate::cards::{cost, creature, instant, land};
 use crate::corpus;
 
 /// The corpus cards the impulse deck is made of besides lands and the cards found: what exiles.
-pub const IMPULSE_CARDS: [&str; 5] = [
+pub const IMPULSE_CARDS: &[&str] = &[
     "Abbot of Keral Keep",
     "Professional Face-Breaker",
     "Reckless Impulse",

@@ -135,6 +135,7 @@ pub fn process(
         next_id: state.next_object().get(),
         slots: slots_of(proposed),
         draws_changed: false,
+        pulled: Vec::new(),
         activated: Vec::new(),
     };
     step.activated = step
@@ -257,12 +258,16 @@ enum Origin {
     Commander,
 }
 
-/// Whether the event puts a commander into a hand or a library, where its owner may send it to the command zone.
+/// Whether the event puts a commander into a hand or a library (a draw included), where its owner may send it to the
+/// command zone.
 fn commander_leaves(state: &GameState, event: &Event) -> bool {
     state.commanders.any()
-        && moving(state, event).is_some_and(|(object, _, to)| {
-            matches!(to, Zone::Hand(_) | Zone::Library(_)) && state.is_commander(object)
-        })
+        && match event {
+            Event::CardDrawn { object, .. } => state.is_commander(*object),
+            _ => moving(state, event).is_some_and(|(object, _, to)| {
+                matches!(to, Zone::Hand(_) | Zone::Library(_)) && state.is_commander(object)
+            }),
+        }
 }
 
 /// Whether the item is the resolution of an instant or sorcery whose buyback cost was paid: a spell that was countered
@@ -582,6 +587,8 @@ struct Pass<'a> {
     next_id: u64,
     slots: Vec<Slot>,
     draws_changed: bool,
+    /// The commanders put into the command zone in place of being drawn: the draws after them take the cards below.
+    pulled: Vec<ObjectId>,
     /// The objects that activated an ability in this batch: what they pay is a cost, not an effect.
     activated: Vec<ObjectId>,
 }
@@ -877,10 +884,38 @@ impl Pass<'_> {
             found.extend(self.flashback_candidate(slot));
             found.extend(self.buyback_candidate(slot));
             found.extend(self.adventure_candidate(slot));
-            found.extend(self.commander_candidate(slot, &unit));
         }
+        found.extend(self.commander_candidate(at, &unit));
         found.sort_by_key(|candidate| candidate.origin);
         Ok(found)
+    }
+
+    /// The card the draw at `at` takes: the one the event names, or once a draw of the batch was changed, the top card
+    /// that the draws before it and the commanders pulled into the command zone leave.
+    fn drawn_at(&self, at: usize) -> Option<ObjectId> {
+        let Item::One(Event::CardDrawn { player, object }) = &self.slots[at].item else {
+            return None;
+        };
+        if !self.draws_changed {
+            return Some(*object);
+        }
+        let before = self.slots[..at]
+            .iter()
+            .filter(|slot| {
+                matches!(
+                    &slot.item,
+                    Item::One(Event::CardDrawn { player: who, .. } | Event::DrewFromEmptyLibrary { player: who })
+                        if who == player
+                )
+            })
+            .count();
+        self.state
+            .zone(Zone::Library(*player))
+            .iter()
+            .rev()
+            .filter(|card| !self.pulled.contains(card))
+            .nth(before)
+            .copied()
     }
 
     /// The exile of a spell cast for its flashback cost that leaves the stack, when it has not been applied.
@@ -928,18 +963,21 @@ impl Pass<'_> {
         })
     }
 
-    /// The command zone in place of a hand or a library for a commander, when its owner has not been asked yet (CR 903.9b).
-    fn commander_candidate(&self, slot: &Slot, unit: &Unit) -> Option<Candidate> {
-        let Unit::Move { object, to, .. } = unit else {
-            return None;
+    /// The command zone in place of a hand or a library for a commander, when its owner has not been asked yet
+    /// (CR 903.9b). A draw puts the card into a hand, so a commander that would be drawn is offered it too.
+    fn commander_candidate(&self, at: usize, unit: &Unit) -> Option<Candidate> {
+        let (object, to) = match unit {
+            Unit::Move { object, to, .. } => (*object, *to),
+            Unit::Draw { player } => (self.drawn_at(at)?, Zone::Hand(*player)),
+            _ => return None,
         };
-        if slot.applied.contains(&Origin::Commander)
+        if self.slots[at].applied.contains(&Origin::Commander)
             || !matches!(to, Zone::Hand(_) | Zone::Library(_))
-            || !self.state.is_commander(*object)
+            || !self.state.is_commander(object)
         {
             return None;
         }
-        let card = self.state.object(*object)?;
+        let card = self.state.object(object)?;
         self.state.is_alive(card.owner()).then(|| Candidate {
             origin: Origin::Commander,
             object: card.reference(),
@@ -1374,6 +1412,7 @@ impl Pass<'_> {
                     .zone(Zone::Library(drawn))
                     .iter()
                     .rev()
+                    .filter(|card| !self.pulled.contains(card))
                     .nth(*nth)
                     .copied();
                 *nth += 1;
@@ -1439,12 +1478,34 @@ impl Pass<'_> {
                     self.redirect(at, *object, *from, destination, &applied);
                 }
             }
+            (ReplaceBy::MoveTo(ZoneKind::Command), Unit::Draw { player }) => {
+                self.slots[at].applied.clone_from(&applied);
+                self.pull_drawn_commander(at, *player, &applied);
+            }
             (_, Unit::Enter { object, controller }) => {
                 return self.enter(at, candidate, by, *object, *controller, applied);
             }
             _ => self.slots[at].applied = applied,
         }
         Ok(Applied::Done)
+    }
+
+    /// Puts the commander the draw at `at` would take into its owner's command zone instead: no card is drawn.
+    fn pull_drawn_commander(&mut self, at: usize, player: PlayerId, applied: &[Origin]) {
+        let Some(object) = self.drawn_at(at) else {
+            return;
+        };
+        let Some(owner) = self.state.object(object).map(GameObject::owner) else {
+            return;
+        };
+        self.pulled.push(object);
+        self.redirect(
+            at,
+            object,
+            Zone::Library(player),
+            Zone::Command(owner),
+            applied,
+        );
     }
 
     /// Takes from the damage of the event what the effect prevents: all of it, or as much as the effect has left (the
@@ -1605,10 +1666,18 @@ impl Pass<'_> {
         };
         let slots: Vec<Slot> = rebuilt
             .into_iter()
-            .map(|item| Slot {
-                item,
-                applied: applied.to_vec(),
-                frozen: false,
+            .enumerate()
+            .map(|(index, item)| {
+                let mut applied = applied.to_vec();
+                // The question of the commander was about the first card drawn: another draw takes another card.
+                if index > 0 && matches!(item, Item::One(Event::CardDrawn { .. })) {
+                    applied.retain(|origin| *origin != Origin::Commander);
+                }
+                Slot {
+                    item,
+                    applied,
+                    frozen: false,
+                }
             })
             .collect();
         self.slots.splice(at..=at, slots);
@@ -1656,6 +1725,7 @@ impl Pass<'_> {
             Event::ZoneChanged { cause, .. } => vec![moved(cause)],
             Event::CreatureDied { .. } => vec![moved(ZoneCause::StateBased)],
             Event::CardDiscarded { .. } => vec![moved(ZoneCause::Discarded)],
+            Event::CardDrawn { .. } => vec![moved(ZoneCause::Moved)],
             Event::SpellResolved { .. } => {
                 // An Adventure that the Adventure rule exiles is on an adventure; one that another effect exiled is
                 // not (CR 715.4).
@@ -1939,6 +2009,7 @@ impl Pass<'_> {
             None => {
                 let to = match self.unit(&self.slots[at].item) {
                     Unit::Move { to, .. } => zone_word(to),
+                    Unit::Draw { .. } => "drawing it",
                     _ => "another zone",
                 };
                 let name = self
