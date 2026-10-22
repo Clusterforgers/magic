@@ -1,0 +1,27 @@
+{
+  "id": "92ecd6d2-f052-4dc6-823b-a1997a911cf9",
+  "oracle_id": "aef6c5b3-824f-4b7d-9671-1ed61d547717",
+  "name": "Thunder-Thrash Elder",
+  "lang": "en",
+  "layout": "normal",
+  "set": "pca",
+  "collector_number": "53",
+  "rarity": "uncommon",
+  "released_at": "2016-11-25",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Lizard Warrior",
+  "oracle_text": "Devour 3 (As this creature enters, you may sacrifice any number of creatures. It enters with three times that many +1/+1 counters on it.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Devour"
+  ]
+}

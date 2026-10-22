@@ -1,0 +1,28 @@
+{
+  "id": "b2bc854c-4e72-48e0-a098-e3451d6e511d",
+  "oracle_id": "4f8c4927-46c2-4c18-b5af-c6288dbaff6d",
+  "name": "Iridescent Vinelasher",
+  "lang": "en",
+  "layout": "normal",
+  "set": "blb",
+  "collector_number": "99",
+  "rarity": "rare",
+  "released_at": "2024-08-02",
+  "digital": false,
+  "mana_cost": "{B}",
+  "cmc": 1.0,
+  "type_line": "Creature — Lizard Assassin",
+  "oracle_text": "Offspring {2} (You may pay an additional {2} as you cast this spell. If you do, when this creature enters, create a 1/1 token copy of it.)\nLandfall — Whenever a land you control enters, this creature deals 1 damage to target opponent.",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Offspring",
+    "Landfall"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "oracle_id": "8ce63f60-0211-46c7-8fb6-c5484ebfa029",
+  "name": "Cut of the Profits",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cut of the Profits",
+      "oracle_fingerprint": "bd3b1db592ffb456d87cf1cc3da76114",
+      "abilities": [
+        { "Keyword": { "Casualty": 3 } },
+        {
+          "Spell": { "effects": [{ "Draw": { "count": "X" } }, { "LoseLife": { "amount": "X" } }] }
+        }
+      ]
+    }
+  ]
+}

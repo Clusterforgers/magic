@@ -1,0 +1,23 @@
+{
+  "oracle_id": "81d62f0a-b2ba-4e87-9003-e5472bd1101f",
+  "name": "Illicit Shipment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illicit Shipment",
+      "oracle_fingerprint": "5886d35a284ea07f2136146bdf4f8473",
+      "abilities": [
+        { "Keyword": { "Casualty": 3 } },
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [], "as": "card" } },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

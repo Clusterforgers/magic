@@ -1,0 +1,26 @@
+{
+  "oracle_id": "4f8c4927-46c2-4c18-b5af-c6288dbaff6d",
+  "name": "Iridescent Vinelasher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iridescent Vinelasher",
+      "oracle_fingerprint": "79da0b348b05ce9a42a3aaa017d8db7d",
+      "abilities": [
+        { "Keyword": { "Offspring": "{2}" } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

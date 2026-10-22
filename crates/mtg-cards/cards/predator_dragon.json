@@ -1,0 +1,16 @@
+{
+  "oracle_id": "ef048ecc-581d-4a17-91fd-edf7d7733ef9",
+  "name": "Predator Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Predator Dragon",
+      "oracle_fingerprint": "b0c075b38704980ddad48a4c63c5eb94",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        { "Keyword": { "Devour": { "counters": 2, "of": [{ "Type": "Creature" }] } } }
+      ]
+    }
+  ]
+}

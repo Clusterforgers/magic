@@ -1,0 +1,29 @@
+{
+  "id": "352c3c86-1662-4055-b814-026826632cff",
+  "oracle_id": "ef048ecc-581d-4a17-91fd-edf7d7733ef9",
+  "name": "Predator Dragon",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ala",
+  "collector_number": "109",
+  "rarity": "rare",
+  "released_at": "2008-10-03",
+  "digital": false,
+  "mana_cost": "{3}{R}{R}{R}",
+  "cmc": 6.0,
+  "type_line": "Creature — Dragon",
+  "oracle_text": "Flying, haste\nDevour 2 (As this creature enters, you may sacrifice any number of creatures. It enters with twice that many +1/+1 counters on it.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flying",
+    "Haste",
+    "Devour"
+  ]
+}

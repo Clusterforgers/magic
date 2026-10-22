@@ -725,6 +725,7 @@ impl<'a> Walker<'a> {
             // The cost of these is paid as the spell is announced: the mana, and the parts the engine pays there.
             Keyword::Kicker(cost)
             | Keyword::Squad(cost)
+            | Keyword::Offspring(cost)
             | Keyword::Flashback(cost)
             | Keyword::Madness(cost)
             | Keyword::Miracle(cost)
@@ -786,6 +787,13 @@ impl<'a> Walker<'a> {
                 self.at("find", |w| w.selector(find));
             }
             Keyword::Toxic(0) => self.problem("toxic needs a number of at least 1"),
+            Keyword::Casualty(0) => self.problem("casualty needs a power of at least 1"),
+            Keyword::Devour { counters, of } => {
+                if *counters == 0 {
+                    self.problem("devour needs a number of at least 1");
+                }
+                self.at("of", |w| w.selector(of));
+            }
             Keyword::Dredge(0) => self.problem("dredge needs a number of at least 1"),
             Keyword::Fabricate(0) => self.problem("fabricate needs a number of at least 1"),
             Keyword::PartnerWith(name) => {
@@ -2001,6 +2009,15 @@ impl<'a> Walker<'a> {
             ReplaceBy::Tapped | ReplaceBy::Choose(_) | ReplaceBy::PayLifeOrTapped(_) if !enters => {
                 self.problem("only an `Enters` event is entered tapped, chosen on or paid for");
             }
+            ReplaceBy::Devour { counters, of } => {
+                if !enters {
+                    self.problem("only an `Enters` event devours");
+                }
+                if *counters == 0 {
+                    self.problem("devouring for no counters does nothing");
+                }
+                self.at("of", |w| w.selector(of));
+            }
             ReplaceBy::PayLifeOrTapped(0) => self.problem("paying no life is entering untapped"),
             ReplaceBy::AsCopy { of, except } => {
                 if !enters {
@@ -2135,9 +2152,11 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
     walker.has_kicker = card
         .abilities()
         .any(|(_, a)| matches!(a, Ability::Keyword(k) if k.is_kicker()));
-    walker.has_additional_cost = card
-        .abilities()
-        .any(|(_, a)| matches!(a, Ability::AdditionalCost { .. }));
+    walker.has_additional_cost = card.abilities().any(|(_, a)| match a {
+        Ability::AdditionalCost { .. } => true,
+        Ability::Keyword(keyword) => keyword.has_additional_cost(),
+        _ => false,
+    });
     if !is_uuid(&card.oracle_id) {
         walker.at("oracle_id", |w| w.problem("not a lowercase UUID"));
     }

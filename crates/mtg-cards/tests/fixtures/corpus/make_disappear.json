@@ -1,0 +1,25 @@
+{
+  "id": "3f2d6a21-ea77-484b-9e3a-1bd49806f907",
+  "oracle_id": "5f12f665-f083-48ae-b61a-541051c996ec",
+  "name": "Make Disappear",
+  "lang": "en",
+  "layout": "normal",
+  "set": "snc",
+  "collector_number": "49",
+  "rarity": "common",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Casualty 1 (As you cast this spell, you may sacrifice a creature with power 1 or greater. When you do, copy this spell and you may choose a new target for the copy.)\nCounter target spell unless its controller pays {2}.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Casualty"
+  ]
+}

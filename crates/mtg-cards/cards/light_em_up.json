@@ -1,0 +1,26 @@
+{
+  "oracle_id": "c6932bcf-d66b-42c1-8ca4-6a4573e0f6bf",
+  "name": "Light 'Em Up",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Light 'Em Up",
+      "oracle_fingerprint": "dcbf93fad6b4d3c7f5ade680b2d31759",
+      "abilities": [
+        { "Keyword": { "Casualty": 2 } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

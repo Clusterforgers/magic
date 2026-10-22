@@ -295,6 +295,10 @@ const RUNS: &[&str] = &[
     "Keyword.Vanishing",
     "Keyword.Fading",
     "Keyword.Backup",
+    "Keyword.Devour",
+    "Keyword.Casualty",
+    "Keyword.Offspring",
+    "ReplaceBy.Devour",
     "Keyword.LevelUp",
     "Keyword.Outlast",
     "Keyword.Saddle",
@@ -637,6 +641,10 @@ mod tests {
     #[case::vanishing("Keyword.Vanishing", true)]
     #[case::fading("Keyword.Fading", true)]
     #[case::backup("Keyword.Backup", true)]
+    #[case::devour("Keyword.Devour", true)]
+    #[case::casualty("Keyword.Casualty", true)]
+    #[case::offspring("Keyword.Offspring", true)]
+    #[case::sacrificing_as_it_enters("ReplaceBy.Devour", true)]
     #[case::level_up("Keyword.LevelUp", true)]
     #[case::outlast("Keyword.Outlast", true)]
     #[case::saddle("Keyword.Saddle", true)]

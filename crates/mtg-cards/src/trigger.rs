@@ -489,6 +489,13 @@ pub enum ReplaceBy {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         except: Vec<Modification>,
     },
+    /// Devour (CR 702.82): as the permanent enters, its controller may sacrifice any number of other permanents they control that match the selector, and it enters with this many +1/+1 counters for each.
+    Devour {
+        /// The +1/+1 counters for each permanent sacrificed.
+        counters: u32,
+        /// The permanents that may be sacrificed.
+        of: Selector,
+    },
 }
 
 #[cfg(test)]

@@ -1,0 +1,16 @@
+{
+  "oracle_id": "27831489-b444-4b7b-91db-feb54281bca9",
+  "name": "Caprichrome",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caprichrome",
+      "oracle_fingerprint": "4aaf46903392ae138c99b60b8c81f5c6",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": { "Devour": { "counters": 1, "of": [{ "Type": "Artifact" }] } } }
+      ]
+    }
+  ]
+}

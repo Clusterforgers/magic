@@ -13,6 +13,7 @@ mod bestow;
 mod blitz;
 mod buyback;
 mod cascade;
+mod casualty;
 mod changeling;
 mod choose_a_background;
 mod companion;
@@ -26,6 +27,7 @@ mod deathtouch;
 mod defender;
 mod delve;
 mod devoid;
+mod devour;
 mod disguise;
 mod doctors_companion;
 mod double_strike;
@@ -69,6 +71,7 @@ mod mutate;
 mod myriad;
 mod nightbound;
 mod ninjutsu;
+mod offspring;
 mod outlast;
 mod overload;
 mod partner;
@@ -427,14 +430,10 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::CumulativeUpkeep(_) => &cumulative_upkeep::CumulativeUpkeep,
         Keyword::Undying => &undying::Undying,
         Keyword::Persist => &persist::Persist,
-        Keyword::Vanishing(_) => &vanishing::Vanishing,
-        Keyword::Fading(_) => &fading::Fading,
-        Keyword::Backup { .. } => &backup::Backup,
         Keyword::LevelUp(_) => &level_up::LevelUp,
         Keyword::Outlast(_) => &outlast::Outlast,
         Keyword::Saddle(_) => &saddle::Saddle,
         Keyword::Saddled => &saddle::Saddled,
-        Keyword::Ravenous => &ravenous::Ravenous,
         Keyword::JumpStart => &jump_start::JumpStart,
         Keyword::Retrace => &retrace::Retrace,
         Keyword::Embalm(_) => &embalm::Embalm,
@@ -442,10 +441,31 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Improvise => &improvise::Improvise,
         Keyword::Affinity(_) => &affinity::Affinity,
         Keyword::Typecycling { .. } => &typecycling::Typecycling,
-        Keyword::Fabricate(_) => &fabricate::Fabricate,
         Keyword::Ascend => &ascend::Ascend,
+        other => counting_rules(other),
     }
 }
+
+/// The rules of the keywords that count, copy or devour; `rules` is split at them to stay short, and the other keywords never reach here.
+fn counting_rules(keyword: &Keyword) -> &'static dyn KeywordRules {
+    match keyword {
+        Keyword::Vanishing(_) => &vanishing::Vanishing,
+        Keyword::Fading(_) => &fading::Fading,
+        Keyword::Backup { .. } => &backup::Backup,
+        Keyword::Devour { .. } => &devour::Devour,
+        Keyword::Casualty(_) => &casualty::Casualty,
+        Keyword::Offspring(_) => &offspring::Offspring,
+        Keyword::Ravenous => &ravenous::Ravenous,
+        Keyword::Fabricate(_) => &fabricate::Fabricate,
+        _ => &NoRules,
+    }
+}
+
+/// The rules of a keyword that changes nothing.
+#[derive(Debug)]
+struct NoRules;
+
+impl KeywordRules for NoRules {}
 
 /// The keywords object `id` has now, in the order they are listed: the one reader of an object's keywords.
 ///
@@ -726,6 +746,12 @@ mod tests {
                 count: 1,
                 abilities: vec![],
             },
+            Keyword::Devour {
+                counters: 2,
+                of: Selector::default(),
+            },
+            Keyword::Casualty(2),
+            Keyword::Offspring(cost()),
         ]
     }
 
@@ -806,6 +832,9 @@ mod tests {
         "Keyword.Vanishing",
         "Keyword.Fading",
         "Keyword.Backup",
+        "Keyword.Devour",
+        "Keyword.Casualty",
+        "Keyword.Offspring",
         "Keyword.LevelUp",
         "Keyword.Outlast",
         "Keyword.Saddle",
@@ -949,6 +978,9 @@ mod tests {
     #[case::vanishing(Keyword::Vanishing(3), Hooks { abilities: 3, ..Hooks::none() })]
     #[case::fading(Keyword::Fading(3), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::backup(Keyword::Backup { count: 1, abilities: vec![] }, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::devour(Keyword::Devour { counters: 2, of: Selector::default() }, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::casualty(Keyword::Casualty(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::offspring(Keyword::Offspring(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::myriad(Keyword::Myriad, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::squad(Keyword::Squad(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ravenous(Keyword::Ravenous, Hooks { abilities: 2, ..Hooks::none() })]
@@ -960,7 +992,7 @@ mod tests {
     }
 
     #[test]
-    fn only_four_keywords_and_squad_add_a_cost_and_only_multikicker_and_squad_repeat() {
+    fn only_six_keywords_and_squad_add_a_cost_and_only_multikicker_and_squad_repeat() {
         let given: Vec<(&str, bool, OptionalKind)> = every_keyword()
             .iter()
             .filter_map(|keyword| {
@@ -976,6 +1008,8 @@ mod tests {
                 ("Buyback", false, OptionalKind::Buyback),
                 ("Entwine", false, OptionalKind::Entwine),
                 ("Squad", true, OptionalKind::Kicker),
+                ("Casualty", false, OptionalKind::Additional),
+                ("Offspring", false, OptionalKind::Additional),
             ]
         );
     }

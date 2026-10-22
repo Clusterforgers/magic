@@ -1,0 +1,28 @@
+{
+  "oracle_id": "83d9a5a2-09b0-44bf-b0b8-82a5fc53b00a",
+  "name": "Thorn-Thrash Viashino",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thorn-Thrash Viashino",
+      "oracle_fingerprint": "e4029dab9f3db2bb290be27473f3159e",
+      "abilities": [
+        { "Keyword": { "Devour": { "counters": 2, "of": [{ "Type": "Creature" }] } } },
+        {
+          "Activated": {
+            "cost": "{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

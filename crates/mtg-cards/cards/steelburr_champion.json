@@ -1,0 +1,23 @@
+{
+  "oracle_id": "d1f3d5ca-cb17-400f-8ed9-3b9a4f151b62",
+  "name": "Steelburr Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steelburr Champion",
+      "oracle_fingerprint": "1521b60b3c41add5e0dad14c17df9c4b",
+      "abilities": [
+        { "Keyword": { "Offspring": "{1}{W}" } },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "Opponents" }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

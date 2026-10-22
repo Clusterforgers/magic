@@ -1,0 +1,29 @@
+{
+  "oracle_id": "df45a344-5937-4a3f-a80f-581ea456ea05",
+  "name": "Rob the Archives",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rob the Archives",
+      "oracle_fingerprint": "b3fe6f68ce57af5a424900be325a2fc2",
+      "abilities": [
+        { "Keyword": { "Casualty": 1 } },
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": 2, "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

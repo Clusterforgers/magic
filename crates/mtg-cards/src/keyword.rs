@@ -231,6 +231,17 @@ pub enum Keyword {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         abilities: Vec<Ability>,
     },
+    /// Devour (CR 702.82): as it enters, its controller may sacrifice any number of other permanents `of` matches, and it enters with `counters` +1/+1 counters for each.
+    Devour {
+        /// The +1/+1 counters for each permanent sacrificed.
+        counters: u32,
+        /// What may be sacrificed: creatures, artifacts, lands or Foods.
+        of: Selector,
+    },
+    /// Casualty N (CR 702.153): as an additional cost to cast the spell, its caster may sacrifice a creature with power N or greater; when they cast it, if they did, they copy it.
+    Casualty(u32),
+    /// Offspring with its cost (CR 702.175): the caster may pay it in addition as they cast the spell; when the creature enters, if they did, they create a 1/1 token copy of it.
+    Offspring(Cost),
 }
 
 impl Keyword {
@@ -334,6 +345,9 @@ impl Keyword {
         "Vanishing",
         "Fading",
         "Backup",
+        "Devour",
+        "Casualty",
+        "Offspring",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -434,9 +448,20 @@ impl Keyword {
             Keyword::Typecycling { .. } => "Typecycling",
             Keyword::Fabricate(_) => "Fabricate",
             Keyword::Ascend => "Ascend",
+            other => other.counter_name(),
+        }
+    }
+
+    /// The names of the keywords that count, copy or devour (`name` is split to stay short; a test holds every keyword to its entry in `NAMES`).
+    const fn counter_name(&self) -> &'static str {
+        match self {
             Keyword::Vanishing(_) => "Vanishing",
             Keyword::Fading(_) => "Fading",
             Keyword::Backup { .. } => "Backup",
+            Keyword::Devour { .. } => "Devour",
+            Keyword::Casualty(_) => "Casualty",
+            Keyword::Offspring(_) => "Offspring",
+            _ => "",
         }
     }
 
@@ -445,6 +470,11 @@ impl Keyword {
         Keyword::NAMES
             .iter()
             .any(|name| name.eq_ignore_ascii_case(printed))
+    }
+
+    /// Whether the keyword gives the caster an optional additional cost that `Condition::AdditionalCostPaid` reads: casualty and offspring.
+    pub const fn has_additional_cost(&self) -> bool {
+        matches!(self, Keyword::Casualty(_) | Keyword::Offspring(_))
     }
 
     /// Whether paying the cost of this keyword counts as a kick (`Amount::Kicks`): kicker, multikicker and squad.
@@ -573,6 +603,12 @@ mod tests {
                 count: 1,
                 abilities: vec![Ability::Keyword(Keyword::Flying)],
             },
+            Keyword::Devour {
+                counters: 2,
+                of: Selector::default(),
+            },
+            Keyword::Casualty(2),
+            Keyword::Offspring(Cost::default()),
         ]
     }
 

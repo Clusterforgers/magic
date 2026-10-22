@@ -1,0 +1,35 @@
+{
+  "oracle_id": "523d075d-b577-4f24-8c14-9a76761a2eaf",
+  "name": "Flowerfoot Swordmaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flowerfoot Swordmaster",
+      "oracle_fingerprint": "2d6b7f291bfc7bec7905cbaa0176e516",
+      "abilities": [
+        { "Keyword": { "Offspring": "{2}" } },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "BecomesTarget": { "what": ["This"], "by": [{ "ControlledBy": "You" }] }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Mouse" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
