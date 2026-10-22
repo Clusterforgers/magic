@@ -18,7 +18,7 @@ use crate::abilities::{AbilityRef, AbilitySource, Cause};
 use crate::ability_reader::{abilities_of, provided_here, working_here};
 use crate::characteristics::{controller_of, controller_of_object};
 use crate::choose::{Choices, Target};
-use crate::combat::DamageTarget;
+use crate::combat::{AttackTarget, DamageTarget};
 use crate::events::{Event, ResolutionOutcome, ZoneCause};
 use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::replace::in_combat_damage;
@@ -43,6 +43,8 @@ enum Happened {
     Created { object: ObjectId },
     /// A creature was declared as an attacker, the `nth` time this turn for it.
     Attacked { attacker: ObjectId, nth: u32 },
+    /// A creature was declared as an attacker of a player.
+    AttackedPlayer { attacker: ObjectId, player: PlayerId },
     /// A player cast a spell, the `nth` of their turn, after `before` spells that every player cast this turn.
     Cast {
         player: PlayerId,
@@ -244,6 +246,13 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                     nth: before(look, *attacker).map_or(0, |object| {
                         object_ordinal(look, object, None, Tally::Attacked)
                     }),
+                }));
+                found.extend(attackers.iter().filter_map(|(attacker, at)| match at {
+                    AttackTarget::Player(player) => Some(Happened::AttackedPlayer {
+                        attacker: *attacker,
+                        player: *player,
+                    }),
+                    AttackTarget::Planeswalker(_) => None,
                 }));
                 if !attackers.is_empty() {
                     found.push(Happened::AttackedTogether {
@@ -580,6 +589,14 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
             scope
                 .selects(what, reference)
                 .ok()?
+                .then(|| cause(state, vec![Target::Object(reference)]))
+        }
+        (
+            TriggerPattern::AttacksPlayer { what, at },
+            Happened::AttackedPlayer { attacker, player },
+        ) => {
+            let reference = object(*attacker)?;
+            (scope.players(at).ok()?.contains(player) && scope.selects(what, reference).ok()?)
                 .then(|| cause(state, vec![Target::Object(reference)]))
         }
         (TriggerPattern::SpellCast { what, by }, Happened::Cast { player, spell, .. }) => {

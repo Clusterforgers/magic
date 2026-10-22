@@ -301,6 +301,12 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     } else if r.words("leaves the battlefield") {
         (Some(ZoneKind::Battlefield), None)
     } else if r.word("attacks") {
+        if r.words("enchanted player") {
+            return Some(TriggerPattern::AttacksPlayer {
+                what: what.clone(),
+                at: Ref::AttachedPlayer,
+            });
+        }
         let attacks = TriggerPattern::Attacks { what: what.clone() };
         return Some(first_time(r, attacks));
     } else if r.words("becomes the target of a spell or ability") {
@@ -497,6 +503,10 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
             said(what, verb)
         }
         TriggerPattern::Attacks { what } => said(what, "attacks"),
+        TriggerPattern::AttacksPlayer {
+            what,
+            at: Ref::AttachedPlayer,
+        } => said(what, "attacks enchanted player"),
         TriggerPattern::Blocks { what } => said(what, "blocks"),
         TriggerPattern::BecomesBlocked { what } => said(what, "becomes blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),

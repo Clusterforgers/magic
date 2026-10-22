@@ -32,6 +32,7 @@ const RUNS: &[&str] = &[
     "Trigger.ZoneChange",
     "Trigger.State",
     "Trigger.Attacks",
+    "Trigger.AttacksPlayer",
     "Trigger.SpellCast",
     "Trigger.Sacrificed",
     "Trigger.StepBegins",

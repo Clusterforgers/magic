@@ -848,6 +848,10 @@ impl<'a> Walker<'a> {
             TriggerPattern::ZoneChange { what, .. } | TriggerPattern::Attacks { what } => {
                 self.at("what", |w| w.selector(what));
             }
+            TriggerPattern::AttacksPlayer { what, at } => {
+                self.at("what", |w| w.selector(what));
+                self.at("at", |w| w.reference(at, Kind::Player));
+            }
             TriggerPattern::BecomesTarget { what, by } => {
                 self.at("what", |w| w.selector(what));
                 self.at("by", |w| w.selector(by));

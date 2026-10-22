@@ -1,0 +1,23 @@
+{
+  "oracle_id": "cc6f2b79-8fcd-4542-904b-943c7493b8ad",
+  "name": "Curse of the Nightly Hunt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of the Nightly Hunt",
+      "oracle_fingerprint": "a4913076da74bce966e84223af95f1dd",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Rule": {
+            "rule": {
+              "MustAttack": {
+                "Each": [{ "Type": "Creature" }, { "ControlledBy": "AttachedPlayer" }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
