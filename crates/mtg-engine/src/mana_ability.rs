@@ -11,6 +11,7 @@ use std::sync::Arc;
 use mtg_cards::AbilityDef;
 use mtg_cards::ability::Ability;
 use mtg_cards::assemble::{ManaProduced, mana_shape};
+use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 
@@ -28,8 +29,9 @@ use crate::resolve::{Scope, run_inline};
 use crate::state::GameState;
 use crate::zones::Zone;
 
-/// The most ways one ability makes its mana: one for each type.
-const VARIANTS: usize = 6;
+/// The most ways one ability makes its mana: one for each type, and the lists of a choice among lists (the validator
+/// refuses more).
+const VARIANTS: usize = mtg_cards::assemble::MANA_WAYS;
 
 /// A mana ability from the rules of a permanent, with the option that stands for each way to use it.
 struct RuleMana {
@@ -72,19 +74,24 @@ fn takes_of(
         .filter_map(|item| match Part::read(item).ok().flatten()? {
             Part::Pick(pick) => {
                 let sacrifice = pick.kind == Kind::Sacrifice;
+                let exile = pick.kind == Kind::ExileHand;
                 let mut from = pick.candidates(&owner);
-                if sacrifice {
-                    // The cheapest goes first; the order of the battlefield settles a tie.
+                if sacrifice || exile {
+                    // The cheapest goes first, a land after the spells; the order of the zone settles a tie.
                     from.sort_by_key(|id| {
-                        state
-                            .object(*id)
-                            .map_or(0, |object| object.card().mana_value())
+                        state.object(*id).map_or((false, 0), |object| {
+                            (
+                                exile && object.card().types.contains(&CardType::Land),
+                                object.card().mana_value(),
+                            )
+                        })
                     });
                 } else {
                     from.sort_by_key(|id| !keywords::summoning_sick(state, *id));
                 }
                 Some(Take {
                     sacrifice,
+                    exile,
                     count: u32::try_from(pick.count).unwrap_or(u32::MAX),
                     from,
                 })

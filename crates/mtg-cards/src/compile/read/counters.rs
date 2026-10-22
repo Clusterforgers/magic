@@ -7,9 +7,10 @@ use super::effects::target_object;
 use super::selectors::each;
 use super::tokens::Reader;
 use super::triggers::article;
+use crate::ability::Ability;
 use crate::effect::Effect;
 use crate::refs::Ref;
-use crate::value::{Amount, CounterKind};
+use crate::value::{Amount, Cmp, Condition, CounterKind};
 
 /// The counters whose effect the rules of the game give and not the card (CR 122.1: keyword
 /// counters, stun, shield, finality; the lore counters of Sagas and the defense counters of Battles); the data holds a counter as a name only, so a clause that puts,
@@ -79,6 +80,32 @@ pub(super) fn counted(r: &mut Reader<'_>) -> Option<Amount> {
         on: Ref::This,
         counter,
     })
+}
+
+/// The wordings of a trigger whose intervening "if" says the card has no counters of a kind, with the card called "it"
+/// in what follows ("..., return it to its owner's hand").
+pub(super) fn pronouns_after_none(ability: &Ability, texts: &[String]) -> Vec<String> {
+    let Ability::Triggered {
+        intervening_if:
+            Some(Condition::Compare {
+                left:
+                    Amount::Counters {
+                        on: Ref::This,
+                        ..
+                    },
+                op: Cmp::Eq,
+                right: Amount::Fixed(0),
+            }),
+        ..
+    } = ability
+    else {
+        return Vec::new();
+    };
+    texts
+        .iter()
+        .filter(|text| text.contains(", return ~ to its owner's hand"))
+        .map(|text| text.replacen(", return ~ to", ", return it to", 1))
+        .collect()
 }
 
 /// How many counters of what kind: "a +1/+1 counter", "two charge counters".

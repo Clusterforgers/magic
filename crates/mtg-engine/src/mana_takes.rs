@@ -225,6 +225,7 @@ mod tests {
                 .iter()
                 .map(|(count, from)| Take {
                     sacrifice: false,
+                    exile: false,
                     count: *count,
                     from: from.iter().map(|id| ObjectId(*id)).collect(),
                 })

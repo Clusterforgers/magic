@@ -8,7 +8,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use serde::Serialize;
 
 use crate::ability::{Ability, LoyaltyCost, Timing};
-use crate::assemble::{PLAIN_MANA_ABILITY, mana_shape, plain_mana_ability};
+use crate::assemble::{MANA_WAYS, PLAIN_MANA_ABILITY, mana_shape, plain_mana_ability};
 use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
@@ -1330,6 +1330,9 @@ impl<'a> Walker<'a> {
                     }
                     Produce::OneOfLists(lists) if lists.len() < 2 => {
                         w.problem("a choice of mana needs at least two lists");
+                    }
+                    Produce::OneOfLists(lists) if lists.len() > MANA_WAYS => {
+                        w.problem("a choice of mana has at most six lists");
                     }
                     Produce::OneOfLists(lists) if lists.iter().any(Vec::is_empty) => {
                         w.problem("a list of mana adds no mana");
