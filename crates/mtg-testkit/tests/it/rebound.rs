@@ -3,10 +3,10 @@
 
 use crate::common;
 
-use common::{name_of, pid};
+use common::{copying, name_of, pid};
 use mtg_core::ids::ObjectId;
-use mtg_engine::choose::{Target, YesNoChoice};
-use mtg_engine::decision::{Answer, PayChoice};
+use mtg_engine::choose::{ReplacementChoice, Target, YesNoChoice};
+use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, GameState, replay};
@@ -142,5 +142,119 @@ fn a_spell_that_is_countered_goes_to_the_graveyard_and_does_not_rebound() -> Res
     assert!(find(driver.state(), Zone::Exile, "Staggershock").is_none());
     driver.idle_until(3, Step::Upkeep)?;
     assert_eq!(life(&driver, 1), 20);
+    Ok(())
+}
+
+/// How many delayed triggers a rebound has set up (each is made for a card in exile).
+fn rebound_triggers(driver: &Driver) -> usize {
+    driver
+        .engine()
+        .events()
+        .iter()
+        .filter(|event| {
+            matches!(
+                event,
+                Event::DelayedTriggerCreated(created) if created.snapshot.zone == Zone::Exile
+            )
+        })
+        .count()
+}
+
+#[rstest]
+fn a_copy_of_the_spell_does_not_rebound_and_the_original_does(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let scenario = || copying::game(seats, &["Staggershock", "Twincast"], 2, 3);
+    let setup = scenario().setup().unwrap();
+    let mut driver = Driver::from_scenario(scenario())?;
+    let foe = driver.target_player(1);
+    driver.begin_cast("Staggershock")?;
+    driver.choose_targets(&[foe])?;
+    driver.pay_tapping(&["Mountain", "Mountain", "Mountain"], 0)?;
+    copying::twincast(&mut driver, "Staggershock")?;
+    copying::keep_targets_until_done(&mut driver, seats)?;
+    assert_eq!(life(&driver, 1), 16, "the copy and the original hit for 2");
+    assert!(find(driver.state(), Zone::Exile, "Staggershock").is_some());
+    assert!(find(driver.state(), Zone::Graveyard(pid(0)), "Staggershock").is_none());
+    assert_eq!(rebound_triggers(&driver), 1, "the copy sets nothing up");
+    let upkeep = u32::try_from(seats).unwrap() + 1;
+    driver.idle_until(upkeep, Step::Upkeep)?;
+    settle(&mut driver, true, 1)?;
+    assert_eq!(life(&driver, 1), 14, "the original is cast once more");
+    assert!(find(driver.state(), Zone::Graveyard(pid(0)), "Staggershock").is_some());
+    assert_eq!(rebound_triggers(&driver), 1);
+    copying::replays(&driver, &setup);
+    Ok(())
+}
+
+/// Resolves the spell on the stack; Rest in Peace and rebound both exile it, and `first` names the source of the effect
+/// its controller applies first.
+fn resolve_choosing(driver: &mut Driver, first: &str) -> Result<usize, ScriptError> {
+    let mut asked = 0;
+    for _ in 0..60 {
+        match driver.decision()?.kind.clone() {
+            DecisionKind::ChooseReplacement(options) => {
+                asked += 1;
+                let at = options
+                    .candidates
+                    .iter()
+                    .position(|c| name_of(driver.state(), c.source) == first)
+                    .unwrap_or(0);
+                driver.answer(Answer::ChooseReplacement(ReplacementChoice(at)))?;
+            }
+            DecisionKind::Priority(_) if driver.state().zone(Zone::Stack).is_empty() => {
+                return Ok(asked);
+            }
+            DecisionKind::Priority(_) => {
+                driver.pass()?;
+            }
+            _ => {
+                driver.answer_passively()?;
+            }
+        }
+    }
+    Err(ScriptError::Stuck("the replacement choice".to_owned()))
+}
+
+#[rstest]
+#[case::rebound_first("Staggershock", true)]
+#[case::rest_in_peace_first("Rest in Peace", false)]
+fn rest_in_peace_leaves_the_controller_to_pick_which_exile_applies(
+    #[case] first: &str,
+    #[case] rebounds: bool,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let scenario = || {
+        Scenario::new(seats)
+            .hand_named(0, ["Staggershock"])
+            .battlefield(0, [ready(mountain()), ready(mountain()), ready(mountain())])
+            .battlefield_named(1, ["Rest in Peace"])
+    };
+    let setup = scenario().setup().unwrap();
+    let mut driver = Driver::from_scenario(scenario())?;
+    let target = driver.target_player(1);
+    driver.cast_at("Staggershock", &[target])?;
+    let asked = resolve_choosing(&mut driver, first)?;
+    assert_eq!(
+        asked, 1,
+        "both exile the spell, so the controller orders them"
+    );
+    assert_eq!(life(&driver, 1), 18);
+    assert!(find(driver.state(), Zone::Exile, "Staggershock").is_some());
+    assert!(find(driver.state(), Zone::Graveyard(pid(0)), "Staggershock").is_none());
+    assert_eq!(rebound_triggers(&driver), usize::from(rebounds));
+    let upkeep = u32::try_from(seats).unwrap() + 1;
+    driver.idle_until(upkeep, Step::Upkeep)?;
+    settle(&mut driver, true, 1)?;
+    assert_eq!(
+        life(&driver, 1),
+        if rebounds { 16 } else { 18 },
+        "the card is cast again only when rebound exiled it"
+    );
+    assert!(
+        find(driver.state(), Zone::Exile, "Staggershock").is_some(),
+        "under Rest in Peace it never reaches the graveyard"
+    );
+    copying::replays(&driver, &setup);
     Ok(())
 }

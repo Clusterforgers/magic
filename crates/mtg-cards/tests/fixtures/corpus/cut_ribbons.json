@@ -1,0 +1,40 @@
+{
+  "id": "c6f61e2b-e93b-4dda-95cf-9d0ff198c0a6",
+  "oracle_id": "98a5bf1a-1088-4339-9a9b-6ee5e4956cf1",
+  "name": "Cut // Ribbons",
+  "lang": "en",
+  "layout": "split",
+  "set": "akh",
+  "collector_number": "223",
+  "rarity": "rare",
+  "released_at": "2017-04-28",
+  "digital": false,
+  "mana_cost": "{1}{R} // {X}{B}{B}",
+  "cmc": 4.0,
+  "type_line": "Sorcery // Sorcery",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [
+    "Aftermath"
+  ],
+  "card_faces": [
+    {
+      "name": "Cut",
+      "mana_cost": "{1}{R}",
+      "type_line": "Sorcery",
+      "oracle_text": "Cut deals 4 damage to target creature."
+    },
+    {
+      "name": "Ribbons",
+      "mana_cost": "{X}{B}{B}",
+      "type_line": "Sorcery",
+      "oracle_text": "Aftermath (Cast this spell only from your graveyard. Then exile it.)\nEach opponent loses X life."
+    }
+  ]
+}

@@ -234,6 +234,7 @@ fn keyword() -> impl Strategy<Value = Keyword> {
             Keyword::DoctorsCompanion,
             Keyword::ChooseABackground,
             Keyword::Rebound,
+            Keyword::Aftermath,
         ]),
         (1u32..10).prop_map(Keyword::Crew),
         cost().prop_map(Keyword::Mutate),
