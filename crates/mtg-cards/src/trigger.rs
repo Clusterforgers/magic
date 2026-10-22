@@ -246,6 +246,15 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// A player proliferates ("whenever you proliferate"); `Triggering` is that player.
+    Proliferated {
+        /// Who proliferates.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
     /// A step begins ("at the beginning of ...").
     StepBegins {
         /// The step.

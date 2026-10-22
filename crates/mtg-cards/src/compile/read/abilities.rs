@@ -121,6 +121,7 @@ fn about_a_player(when: &TriggerPattern) -> bool {
             | TriggerPattern::LifeGained { .. }
             | TriggerPattern::LifeLost { .. }
             | TriggerPattern::BecomesMonarch { .. }
+            | TriggerPattern::Proliferated { .. }
             | TriggerPattern::Cycled { .. }
             | TriggerPattern::TappedForMana { .. }
             | TriggerPattern::DealsDamage {

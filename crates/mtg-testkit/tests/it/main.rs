@@ -138,6 +138,7 @@ mod prevention_fuzz;
 mod preview_matches_games;
 mod priority_can_act;
 mod priority_stack;
+mod proliferate;
 mod protection;
 mod protection_fuzz;
 mod pump_fuzz;

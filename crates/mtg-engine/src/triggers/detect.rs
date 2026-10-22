@@ -110,6 +110,8 @@ enum Happened {
     Cycled { player: PlayerId, card: ObjectId },
     /// A player became the monarch.
     BecameMonarch { player: PlayerId },
+    /// A player proliferated.
+    Proliferated { player: PlayerId },
     /// Everything of one kind of state (before or after) that happened in the batch, for the patterns of events that
     /// happen together.
     Batch(Vec<Happened>),
@@ -522,6 +524,7 @@ fn about_players_and_permanents(
             card: *object,
         }),
         Event::MonarchChanged { player } => found.push(Happened::BecameMonarch { player: *player }),
+        Event::Proliferated { player } => found.push(Happened::Proliferated { player: *player }),
         _ => {}
     }
 }
@@ -723,7 +726,8 @@ fn matching_event(
         (TriggerPattern::LifeGained { who }, Happened::LifeGained { player, .. })
         | (TriggerPattern::LifeLost { who }, Happened::LifeLost { player, .. })
         | (TriggerPattern::Drew { who }, Happened::Drew { player, .. })
-        | (TriggerPattern::BecomesMonarch { who }, Happened::BecameMonarch { player }) => {
+        | (TriggerPattern::BecomesMonarch { who }, Happened::BecameMonarch { player })
+        | (TriggerPattern::Proliferated { who }, Happened::Proliferated { player }) => {
             by(who, player)
                 .then(|| counted(state, vec![Target::Player(*player)], happened.amount()))
         }
@@ -1282,6 +1286,7 @@ mod tests {
     #[case::attaching(r#"{"Attached":{}}"#)]
     #[case::cycling(r#"{"Cycled":{}}"#)]
     #[case::becoming_the_monarch(r#"{"BecomesMonarch":{}}"#)]
+    #[case::proliferating(r#"{"Proliferated":{}}"#)]
     fn the_patterns_of_events_about_players_and_permanents_trigger_on_no_other_event(
         #[case] when: &str,
     ) {

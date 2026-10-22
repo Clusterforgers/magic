@@ -1,0 +1,12 @@
+{
+  "oracle_id": "2fc6de19-9d04-422b-90bc-eee2f9f8c84c",
+  "name": "Contentious Plan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Contentious Plan",
+      "oracle_fingerprint": "221d579f3a64c3a063c048d62a4840c4",
+      "abilities": [{ "Spell": { "effects": [{ "Proliferate": {} }, { "Draw": {} }] } }]
+    }
+  ]
+}

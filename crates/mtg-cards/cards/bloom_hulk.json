@@ -1,0 +1,19 @@
+{
+  "oracle_id": "c99896a8-8b58-4946-8f2d-b4e2562f278a",
+  "name": "Bloom Hulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloom Hulk",
+      "oracle_fingerprint": "cb5ca7ba3fc3d5a97ebec1f74038553b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Proliferate": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

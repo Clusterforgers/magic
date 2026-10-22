@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9fb8cd81-403a-4988-8f1c-b8eccf8abd9c",
+  "name": "Karn's Bastion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karn's Bastion",
+      "oracle_fingerprint": "5aca233e924e17f04d55d40e9dc67625",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        { "Activated": { "cost": [{ "Mana": "{4}" }, "Tap"], "effects": [{ "Proliferate": {} }] } }
+      ]
+    }
+  ]
+}

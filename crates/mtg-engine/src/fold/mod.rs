@@ -221,7 +221,10 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.combat.clear_assignments();
         }
         // `ManaBurned` is information in the log: the life it cost is its own `LifeLost`.
-        Event::NothingToDo { .. } | Event::ManaBurned { .. } | Event::Cycled { .. } => {}
+        Event::NothingToDo { .. }
+        | Event::ManaBurned { .. }
+        | Event::Cycled { .. }
+        | Event::Proliferated { .. } => {}
         Event::PriorityGranted { player } => {
             state.priority = Some(PriorityState {
                 holder: *player,

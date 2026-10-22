@@ -377,6 +377,24 @@ fn becoming_the_monarch_triggers_for_the_players_the_pattern_names_and_names_the
     }
 }
 
+#[rstest]
+#[case::i_proliferate(r#"{"Proliferated":{"who":"You"}}"#, ME, 1)]
+#[case::they_proliferate_not_me(r#"{"Proliferated":{"who":"You"}}"#, FOE, 0)]
+#[case::an_opponent_proliferates(r#"{"Proliferated":{"who":"Opponents"}}"#, FOE, 1)]
+#[case::anyone_proliferates(r#"{"Proliferated":{}}"#, FOE, 1)]
+fn proliferating_triggers_for_the_players_the_pattern_names_and_names_the_player(
+    #[case] when: &str,
+    #[case] player: PlayerId,
+    #[case] expected: usize,
+) {
+    let pre = board(when);
+    let found = fires(&pre, &[Event::Proliferated { player }]);
+    assert_eq!(found.len(), expected);
+    if expected == 1 {
+        assert_eq!(found[0].cause.subjects, vec![Target::Player(player)]);
+    }
+}
+
 #[test]
 fn a_discard_that_is_not_cycling_does_not_trigger_a_cycling_pattern_and_the_cycling_of_a_card_also_discards_it()
  {
