@@ -1218,15 +1218,11 @@ impl Pass<'_> {
                 Asked::Ask(decision) => return Ok(Run::Ask(decision)),
                 Asked::Got(pick) => pick,
             };
-            // The replacement of a commander is a choice of its owner: no leaves it where it was going.
             if chosen.origin == Origin::Commander {
                 match self.may_go_to_command_zone(slot, &chosen)? {
                     Asked::Ask(decision) => return Ok(Run::Ask(decision)),
+                    Asked::Got(false) => continue,
                     Asked::Got(true) => {}
-                    Asked::Got(false) => {
-                        self.slots[slot].applied.push(Origin::Commander);
-                        continue;
-                    }
                 }
             }
             match self.apply(slot, &chosen)? {
@@ -1917,7 +1913,7 @@ impl Pass<'_> {
     }
 
     /// Whether the owner of a commander puts it into the command zone in place of the hand or library it would go to
-    /// (CR 903.9b): asked yes or no.
+    /// (CR 903.9b): asked yes or no. A no is remembered for the item, which then goes where it was going.
     fn may_go_to_command_zone(
         &mut self,
         at: usize,
@@ -1942,7 +1938,13 @@ impl Pass<'_> {
                     )),
                 }))
             }
-            Some((who, Choice::YesNo(yes))) if *who == owner => Ok(Asked::Got(*yes)),
+            Some((who, Choice::YesNo(yes))) if *who == owner => {
+                let yes = *yes;
+                if !yes {
+                    self.slots[at].applied.push(Origin::Commander);
+                }
+                Ok(Asked::Got(yes))
+            }
             Some(other) => Err(Self::invalid(format!(
                 "{other:?} is no answer to the commander question of {owner:?}"
             ))),

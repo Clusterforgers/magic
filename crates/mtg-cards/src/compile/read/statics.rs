@@ -7,6 +7,7 @@
 use mtg_core::card::Subtype;
 
 use super::amounts::{count_word, number_word};
+use super::copies;
 use super::counters;
 use super::effects::{granted, power_toughness};
 use super::prevention;
@@ -24,8 +25,9 @@ use crate::value::{Amount, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 8] = [
+const TEMPLATES: [Template; 9] = [
     entering,
+    copies::enters_as_copy,
     as_entering,
     rule,
     cannot,
@@ -578,6 +580,9 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
         (ReplaceBy::PayLifeOrTapped(life), None) => vec![format!(
             "As ~ enters, you may pay {life} life. If you don't, it enters tapped"
         )],
+        (ReplaceBy::AsCopy { of, except }, None) => {
+            copies::enters_text(of, except).into_iter().collect()
+        }
         _ => Vec::new(),
     }
 }

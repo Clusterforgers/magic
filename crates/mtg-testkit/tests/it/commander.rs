@@ -272,7 +272,7 @@ fn twenty_one_combat_damage_from_one_commander_eliminates_a_player(
     let id = commander(&driver);
     assert_eq!(
         driver.state().commander_damage(id, PlayerId(1)),
-        power as u32
+        power.cast_unsigned()
     );
     Ok(())
 }

@@ -16,6 +16,11 @@ use crate::definition::{AbilityDef, CardDefinition};
 use crate::keyword::Keyword;
 use crate::modify::GameRule;
 
+/// The numbers a card says its deck can hold up to, in words.
+const NUMBER_WORDS: [&str; 10] = [
+    "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+];
+
 /// Basic land types and the color of the mana each one gives.
 const BASIC_TYPES: [(&str, Color); 5] = [
     ("Plains", Color::White),
@@ -30,16 +35,14 @@ impl CardDefinition {
     /// text, and those of its basic land types, over all its faces.
     pub fn color_identity(&self) -> ColorSet {
         self.each_face().fold(ColorSet::EMPTY, |all, face| {
-            face.face_identity()
-                .iter()
-                .fold(all, |all, color| all.with(color))
+            face.face_identity().iter().fold(all, ColorSet::with)
         })
     }
 
     fn face_identity(&self) -> ColorSet {
         let mut set = self.color_indicator.unwrap_or(ColorSet::EMPTY);
         if let Some(cost) = &self.mana_cost {
-            set = cost.colors().iter().fold(set, |set, color| set.with(color));
+            set = cost.colors().iter().fold(set, ColorSet::with);
         }
         for subtype in &self.subtypes {
             if let Some((_, color)) = BASIC_TYPES.iter().find(|(name, _)| *name == subtype.0) {
@@ -95,10 +98,7 @@ impl CardDefinition {
         let marker = "a deck can have up to ";
         let up_to = text.find(marker).and_then(|at| {
             let word = text[at + marker.len()..].split_whitespace().next()?;
-            const WORDS: [&str; 10] = [
-                "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
-            ];
-            let at = WORDS.iter().position(|w| word.starts_with(w))?;
+            let at = NUMBER_WORDS.iter().position(|w| word.starts_with(w))?;
             u32::try_from(at + 1).ok()
         });
         Some(up_to.unwrap_or(1))

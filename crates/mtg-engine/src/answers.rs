@@ -133,7 +133,7 @@ pub(crate) fn handle(
                 && !replacing
                 && crate::commanders::asks(state, options) =>
         {
-            crate::commanders::answer(state, options, choice)
+            Ok(crate::commanders::answer(state, options, choice))
         }
         (DecisionKind::YesNo(options), Answer::YesNo(choice)) => {
             choose::yes_no_answer(player, options, choice)

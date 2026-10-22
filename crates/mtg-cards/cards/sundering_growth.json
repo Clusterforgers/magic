@@ -12,10 +12,7 @@
             "targets": [
               {
                 "what": {
-                  "Either": [
-                    { "Object": [{ "Type": "Artifact" }] },
-                    { "Object": [{ "Type": "Enchantment" }] }
-                  ]
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
                 }
               }
             ],

@@ -15,7 +15,6 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use crate::answers::Outcome;
 use crate::choose::{YesNoChoice, YesNoOptions};
 use crate::decision::{Decision, DecisionKind};
-use crate::error::EngineError;
 use crate::events::{Event, ZoneCause};
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -206,13 +205,9 @@ pub(crate) fn asks(state: &GameState, options: &YesNoOptions) -> bool {
 }
 
 /// The answer: yes puts the commander into the command zone, no leaves it where it is until it moves again.
-pub(crate) fn answer(
-    state: &GameState,
-    options: &YesNoOptions,
-    choice: YesNoChoice,
-) -> Result<Outcome, EngineError> {
+pub(crate) fn answer(state: &GameState, options: &YesNoOptions, choice: YesNoChoice) -> Outcome {
     let Some(card) = state.object(options.source) else {
-        return Ok(Outcome::Events(Vec::new()));
+        return Outcome::Events(Vec::new());
     };
     let event = if choice.0 {
         Event::ZoneChanged {
@@ -224,7 +219,7 @@ pub(crate) fn answer(
     } else {
         Event::CommanderStayed { object: card.id() }
     };
-    Ok(Outcome::Events(vec![event]))
+    Outcome::Events(vec![event])
 }
 
 #[cfg(test)]
@@ -432,12 +427,12 @@ mod tests {
             panic!("a yes or no question");
         };
         assert!(asks(&game, options));
-        let yes = answer(&game, options, YesNoChoice(true)).unwrap();
+        let yes = answer(&game, options, YesNoChoice(true));
         assert!(matches!(
             yes,
             Outcome::Events(ref events) if matches!(events.as_slice(), [Event::ZoneChanged { to: Zone::Command(PlayerId(1)), .. }])
         ));
-        let no = answer(&game, options, YesNoChoice(false)).unwrap();
+        let no = answer(&game, options, YesNoChoice(false));
         assert!(matches!(
             no,
             Outcome::Events(ref events) if matches!(events.as_slice(), [Event::CommanderStayed { .. }])

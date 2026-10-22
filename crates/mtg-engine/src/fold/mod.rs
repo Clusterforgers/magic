@@ -95,6 +95,10 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::StepDone { .. }
         | Event::ResolutionEnded { .. } => resolution::apply(state, event),
         Event::AbilityTriggered(triggered) => crate::triggers::fold_triggered(state, triggered),
+        Event::CommanderStayed { object } => {
+            state.commanders.stay(*object);
+            Ok(())
+        }
         Event::TriggersOrdered { player, order } => {
             crate::triggers::fold_ordered(state, *player, order)
         }
@@ -204,7 +208,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::PriorityPassed { player } => pass_priority(state, *player)?,
         Event::Transformed { object, face } => set_face(state, *object, *face)?,
         Event::DayNightChanged { to } => state.day_night = Some(*to),
-        Event::CommanderStayed { object } => state.commanders.stay(*object),
+
         Event::PermanentTapped { object } => set_tapped(state, *object, true)?,
         Event::PermanentUntapped { object } => set_tapped(state, *object, false)?,
         Event::ManaAdded {

@@ -102,7 +102,7 @@ fn commander_damage_is_in_the_view_of_the_player_it_was_dealt_to() {
     assert_eq!(hit.commander_damage.len(), 1);
     let damage = &hit.commander_damage[0];
     assert_eq!((damage.commander, damage.damage), (id, 7));
-    assert!(view.table.players[1].commander_damage.is_empty());
+    assert_eq!(view.table.players[1].commander_damage, []);
     assert_eq!(hit.life, 33);
 }
 
