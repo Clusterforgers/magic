@@ -1,0 +1,21 @@
+{
+  "id": "d9086f9e-2c29-48ee-b0af-889351e86152",
+  "oracle_id": "e95e100e-4886-4bde-825c-017e878ac825",
+  "name": "Empyrial Plate",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c16",
+  "collector_number": "251",
+  "rarity": "rare",
+  "released_at": "2016-11-11",
+  "digital": false,
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +1/+1 for each card in your hand.\nEquip {2}",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip"
+  ]
+}

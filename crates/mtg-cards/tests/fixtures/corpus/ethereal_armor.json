@@ -1,0 +1,25 @@
+{
+  "id": "fd0e8a82-0201-483e-a976-5f29764b35a4",
+  "oracle_id": "dbba75f5-2404-4bd5-982b-f6c4effa5316",
+  "name": "Ethereal Armor",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsk",
+  "collector_number": "7",
+  "rarity": "uncommon",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature gets +1/+1 for each enchantment you control and has first strike.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "b31c69ec-feb5-430a-a3e9-3a6f3fb8ee1c",
+  "oracle_id": "17407b73-0dbe-4a71-84ec-3aaca9651f5b",
+  "name": "Pygmy Kavu",
+  "lang": "en",
+  "layout": "normal",
+  "set": "pls",
+  "collector_number": "88",
+  "rarity": "common",
+  "released_at": "2001-02-05",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Kavu",
+  "oracle_text": "When this creature enters, draw a card for each black creature your opponents control.",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}
