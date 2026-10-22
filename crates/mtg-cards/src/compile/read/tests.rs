@@ -171,6 +171,7 @@ mod library;
 mod life;
 mod may;
 mod modes;
+mod monarch;
 mod pay;
 mod payments;
 mod prevention;

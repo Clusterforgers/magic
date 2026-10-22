@@ -67,7 +67,7 @@ pub fn raise_dead(name: &str, tapped: bool) -> Result<Arc<CardDefinition>, Corpu
 }
 
 /// Cards of the corpus the replacement deck holds, with how many of each.
-const CORPUS_CARDS: [(&str, usize); 25] = [
+pub const CORPUS_CARDS: &[(&str, usize)] = &[
     ("Anointed Procession", 2),
     ("Parallel Lives", 1),
     ("Doubling Season", 2),
@@ -105,7 +105,7 @@ pub fn replace_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, Corpu
         Color::Black,
     ];
     let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS).map(|i| land(colors[i % 5])).collect();
-    for (name, copies) in CORPUS_CARDS {
+    for &(name, copies) in CORPUS_CARDS {
         deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
     }
     for (card, copies) in [
@@ -156,7 +156,7 @@ mod tests {
     fn a_replacement_deck_holds_every_replacement_card_and_is_fixed_by_its_seed() {
         let deck = replace_deck(&mut GameRng::substream(7, 1)).unwrap();
         assert!(deck.len() >= 60, "{}", deck.len());
-        for (name, _) in CORPUS_CARDS {
+        for &(name, _) in CORPUS_CARDS {
             assert!(deck.iter().any(|card| card.name == name), "{name}");
         }
         let again = replace_deck(&mut GameRng::substream(7, 1)).unwrap();

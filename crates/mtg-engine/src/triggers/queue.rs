@@ -80,7 +80,7 @@ impl PendingTrigger {
             ability: self.trigger.ability,
             source: self.trigger.origin,
         };
-        match ability_reader::keyword_adding(state, address) {
+        match ability_reader::keyword_adding_as_it_was(state, address, &self.trigger.snapshot) {
             Some(keyword) => wording::keyword_trigger(keyword.name(), &said),
             None => said,
         }
@@ -99,7 +99,7 @@ pub(crate) fn fold_triggered(state: &mut GameState, t: &Triggered) -> Result<(),
                 ability: t.ability,
                 source: t.origin,
             };
-            let rules = ability_reader::ability(state, address)
+            let rules = ability_reader::ability_as_it_was(state, address, &t.snapshot)
                 .ok_or_else(|| invalid(format!("{:?} has no ability {}", t.source, t.ability)))?;
             (rules, Bindings::new())
         }

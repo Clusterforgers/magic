@@ -470,7 +470,7 @@ fn seeded_family_games_finish_keep_every_invariant_and_trigger_every_card(#[case
         let outcome = play_game(setup.clone(), seed).unwrap_or_else(|failure| panic!("{failure}"));
         seen.extend(triggered_cards(&setup, &outcome.events));
     }
-    for (name, _) in FAMILY_CARDS {
+    for &(name, _) in FAMILY_CARDS {
         assert!(
             seen.contains(name),
             "{name} never triggered in {games} games of {players} seats: {seen:?}"

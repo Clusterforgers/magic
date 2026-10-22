@@ -20,7 +20,7 @@ use crate::cards::{cost, creature, land};
 use crate::corpus;
 
 /// The corpus cards the cascade deck is made of besides lands and creatures: what is cast and what is found.
-pub const CASCADE_CARDS: [&str; 5] = [
+pub const CASCADE_CARDS: &[&str] = &[
     "Bloodbraid Elf",
     "Lightning Bolt",
     "Izzet Charm",

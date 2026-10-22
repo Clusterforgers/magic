@@ -18,7 +18,7 @@ use crate::corpus::{self, CorpusError};
 const LANDS: usize = 20;
 
 /// Cards of the corpus the prevention deck holds, with how many of each.
-pub const PREVENT_CARDS: [(&str, usize); 5] = [
+pub const PREVENT_CARDS: &[(&str, usize)] = &[
     ("Fog", 3),
     ("Mending Hands", 3),
     ("Samite Healer", 3),
@@ -27,7 +27,7 @@ pub const PREVENT_CARDS: [(&str, usize); 5] = [
 ];
 
 /// Cards of the corpus that deal damage, destroy and fight over the shields.
-const CORPUS_CARDS: [(&str, usize); 14] = [
+pub const CORPUS_CARDS: &[(&str, usize)] = &[
     ("Wrath of God", 2),
     ("Supreme Verdict", 1),
     ("Doom Blade", 2),
@@ -87,7 +87,7 @@ pub fn prevent_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, Corpu
         Color::Black,
     ];
     let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS).map(|i| land(colors[i % 5])).collect();
-    for (name, copies) in PREVENT_CARDS.into_iter().chain(CORPUS_CARDS) {
+    for &(name, copies) in PREVENT_CARDS.iter().chain(CORPUS_CARDS) {
         deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
     }
     for (card, copies) in [
@@ -141,7 +141,7 @@ mod tests {
         let deck = prevent_deck(&mut GameRng::substream(7, 1)).unwrap();
         assert!(deck.len() >= 60, "{}", deck.len());
         assert!(deck.iter().any(|card| card.name == "Stomp"));
-        for (name, _) in PREVENT_CARDS.into_iter().chain(CORPUS_CARDS) {
+        for &(name, _) in PREVENT_CARDS.iter().chain(CORPUS_CARDS) {
             assert!(deck.iter().any(|card| card.name == name), "{name}");
         }
         let again = prevent_deck(&mut GameRng::substream(7, 1)).unwrap();

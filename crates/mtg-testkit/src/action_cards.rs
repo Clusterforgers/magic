@@ -13,7 +13,7 @@ use crate::cards::{creature, land, monarcher};
 use crate::corpus;
 
 /// The corpus cards the keyword-action deck is made of besides lands and creatures.
-pub const ACTION_CARDS: [&str; 5] = [
+pub const ACTION_CARDS: &[&str] = &[
     "Consider",
     "Curate",
     "Notion Rain",

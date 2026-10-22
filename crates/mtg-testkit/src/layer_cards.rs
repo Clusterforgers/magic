@@ -166,7 +166,7 @@ pub fn goblin_scrap() -> Arc<CardDefinition> {
 
 /// The names of the cards a game of a layers deck is expected to bring into play: every card that changes the layers
 /// but Nightmare, which costs six and may never be cast.
-pub const LAYER_CARDS: [&str; 17] = [
+pub const LAYER_CARDS: &[&str] = &[
     "Veil of Leaves",
     "Elven Forge",
     "Rust Hex",
@@ -288,7 +288,7 @@ mod tests {
     fn a_layers_deck_is_sixty_cards_with_every_card_a_game_brings_into_play() {
         let deck = layers_deck(&mut GameRng::substream(1, 14_000)).unwrap();
         assert_eq!(deck.len(), 60);
-        for name in LAYER_CARDS.into_iter().chain(["Nightmare"]) {
+        for name in LAYER_CARDS.iter().copied().chain(["Nightmare"]) {
             assert!(deck.iter().any(|card| card.name == name), "{name}");
         }
         let setup = layers_fuzz_setup(3, 5).unwrap();
