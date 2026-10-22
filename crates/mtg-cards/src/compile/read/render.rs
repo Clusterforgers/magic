@@ -344,6 +344,11 @@ fn repeating(targets: &[TargetSpec], head: &[Effect], mask: u32, per: bool) -> O
     Some(sentences)
 }
 
+/// Whether no joint of the mask falls inside the `used` effects from `start`, which are one sentence.
+fn unsplit(mask: u32, start: usize, used: usize) -> Option<()> {
+    ((mask >> start) & ((1 << used) - 1) == 0).then_some(())
+}
+
 fn written(
     targets: &[TargetSpec],
     effects: &[Effect],
@@ -368,18 +373,14 @@ fn written(
             .or_else(|| library::sequence(&effects[start..]))
             .or_else(|| writer.explore_twice(&effects[start..]))
         {
-            if (mask >> start) & ((1 << used) - 1) != 0 {
-                return None;
-            }
+            unsplit(mask, start, used)?;
             sentences.push(text);
             start += used;
             continue;
         }
         // A look at the top card, the reveal and what follows it are three sentences, which no joint splits.
         if let Some((condition, then, used)) = reveal::shape(&effects[start..]) {
-            if (mask >> start) & ((1 << used) - 1) != 0 {
-                return None;
-            }
+            unsplit(mask, start, used)?;
             let tail = writer.consequence(condition, then)?;
             sentences.push(reveal::text(condition, &tail)?);
             start += used;
@@ -388,9 +389,7 @@ fn written(
         // Populate is two steps and one word; a copy that is exiled or sacrificed at the end step is two sentences.
         // No joint splits either.
         if copies::is_populate(&effects[start..]) {
-            if (mask >> start) & 0b11 != 0 {
-                return None;
-            }
+            unsplit(mask, start, 2)?;
             sentences.push("populate".to_owned());
             start += 2;
             continue;
@@ -398,9 +397,7 @@ fn written(
         if let [created @ Effect::CreateToken { .. }, delayed, ..] = &effects[start..]
             && let Some(delay) = copies::delay_text(created, delayed)
         {
-            if (mask >> start) & 0b11 != 0 {
-                return None;
-            }
+            unsplit(mask, start, 2)?;
             sentences.push(writer.copy_token(created, true)?);
             sentences.push(delay);
             start += 2;
@@ -414,9 +411,7 @@ fn written(
         ] = &effects[start..]
             && let Some(texts) = writer.become_copy(choose, copy)
         {
-            if (mask >> start) & 0b11 != 0 {
-                return None;
-            }
+            unsplit(mask, start, 2)?;
             sentences.extend(texts);
             start += 2;
             continue;
@@ -430,9 +425,7 @@ fn written(
             && let Some(text) =
                 put_back_text(choose, moved).or_else(|| returned_text(choose, moved))
         {
-            if (mask >> start) & 0b11 != 0 {
-                return None;
-            }
+            unsplit(mask, start, 2)?;
             sentences.push(text);
             start += 2;
             continue;
