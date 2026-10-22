@@ -1,0 +1,12 @@
+{
+  "oracle_id": "fad2d14f-8825-4b08-8804-010d9659f6dc",
+  "name": "Wyrm's Crossing Patrol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wyrm's Crossing Patrol",
+      "oracle_fingerprint": "3b7b7447174275a7ad02efbecf0a6e17",
+      "abilities": [{ "Keyword": "Myriad" }]
+    }
+  ]
+}

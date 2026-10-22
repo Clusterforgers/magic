@@ -1,0 +1,25 @@
+{
+  "id": "ff611add-0b1b-4008-a78b-e793ccb38260",
+  "oracle_id": "c6f76fa7-095e-4bfe-a38c-5c4531880880",
+  "name": "Curse of Verbosity",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "717",
+  "rarity": "uncommon",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura Curse",
+  "oracle_text": "Enchant player\nWhenever enchanted player is attacked, you draw a card. Each opponent attacking that player does the same.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

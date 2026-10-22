@@ -1,0 +1,28 @@
+{
+  "oracle_id": "64446130-46d0-4129-a718-ed6a04218100",
+  "name": "Darkblast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Darkblast",
+      "oracle_fingerprint": "ac96bb5d38be428e99a935db2b0bd3b1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Dredge": 3 } }
+      ]
+    }
+  ]
+}

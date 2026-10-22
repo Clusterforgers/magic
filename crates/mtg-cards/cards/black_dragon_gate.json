@@ -1,0 +1,26 @@
+{
+  "oracle_id": "dde6bce5-8bbe-4866-b5aa-2c05c7d37241",
+  "name": "Black Dragon Gate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Black Dragon Gate",
+      "oracle_fingerprint": "dc93951f4d385d31a354430674ebb16a",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "ColorOtherThan": "Black" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OrChosenColor": "Black" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

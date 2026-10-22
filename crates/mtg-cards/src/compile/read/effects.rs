@@ -1,13 +1,14 @@
 //! Effects: a sentence is read into the effects of one template. A template reads the whole
 //! sentence or nothing; to add a wording, write a template and list it in [`TEMPLATES`].
 
+use mtg_core::card::Subtype;
 use mtg_core::mana::ManaType;
 
 use super::among;
 use super::amounts::{
-    cards, cards_counted, counted, counted_parts, counted_stats, for_each, its_stat, number_word,
-    points,
+    cards_counted, counted, counted_parts, counted_stats, for_each, its_stat, number_word, points,
 };
+use super::attackers;
 use super::cast;
 use super::conditional;
 use super::copies;
@@ -15,11 +16,12 @@ use super::copy_spells;
 use super::costs;
 use super::counters;
 use super::create;
+use super::draws;
 use super::library;
 use super::modal;
 use super::payments;
 use super::prevention;
-use super::selectors::{Form, all, each, granted_keywords, phrase, target};
+use super::selectors::{Form, all, granted_keywords, phrase, target};
 use super::spend;
 use super::tokens::Reader;
 use crate::cost::Cost;
@@ -45,7 +47,7 @@ const TEMPLATES: [Template; 34] = [
     super::actions::explore,
     super::actions::connive,
     player_effect,
-    damage,
+    super::damage::damage,
     removal,
     pump,
     evasion,
@@ -71,12 +73,13 @@ const TEMPLATES: [Template; 34] = [
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
-pub(super) const IMPERATIVES: [Template; 11] = [
+pub(super) const IMPERATIVES: [Template; 12] = [
     chain,
     removal,
     return_card,
     return_chosen,
     copies::token_copy,
+    copy_spells::copy,
     create::tokens,
     counters::put,
     counters::remove,
@@ -104,6 +107,11 @@ pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
         return true;
     }
     if r.attempt(|r| payments::after_may(r, effects)).is_some() {
+        return true;
+    }
+    if r.attempt(|r| attackers::does_the_same(r, effects))
+        .is_some()
+    {
         return true;
     }
     for template in templates().chain([unless_pays as Template]) {
@@ -263,6 +271,13 @@ fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
             count: points(r)?,
         },
         "proliferate" => Effect::Proliferate { who },
+        "monstrosity" => Effect::Monstrosity { count: points(r)? },
+        "adapt" => Effect::Adapt { count: points(r)? },
+        "bolster" => Effect::Bolster { count: points(r)? },
+        "amass" => Effect::Amass {
+            subtype: Subtype(super::selectors::plural_subtype(r)?),
+            count: points(r)?,
+        },
         // The card sacrifices itself: "sacrifice ~", and "sacrifice it" once the ability has spoken of the card.
         "sacrifice" => {
             (r.source() || (r.it == Some(Ref::This) && r.word("it"))).then_some(())?;
@@ -274,7 +289,7 @@ fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         }
         "draw" => Effect::Draw {
             who,
-            count: cards_counted(r)?,
+            count: draws::drawn(r)?,
         },
         "mill" => Effect::Mill {
             who,
@@ -285,7 +300,7 @@ fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
             Effect::Shuffle { who }
         }
         "discard" => {
-            let count = cards(r)?;
+            let count = draws::discarded(r, &who)?;
             let random = r.words("at random");
             Effect::Discard { who, count, random }
         }
@@ -322,7 +337,7 @@ fn player(r: &mut Reader<'_>) -> Option<Ref> {
 }
 
 /// "gain 3 life", "lose X life", "gain life equal to its power": what follows the verb.
-fn life(r: &mut Reader<'_>) -> Option<Amount> {
+pub(super) fn life(r: &mut Reader<'_>) -> Option<Amount> {
     if r.word("life") {
         r.need("equal to")?;
         return its_stat(r);
@@ -335,8 +350,8 @@ fn life(r: &mut Reader<'_>) -> Option<Amount> {
 /// A player draws, discards, mills, gains, loses or sacrifices; one subject may have several verb
 /// phrases, joined by "and" or in a list: "target opponent sacrifices a creature, discards a card,
 /// and loses 3 life". The player the event is about may act after "and" ("you create a Wolf token and that player mills
-/// ten cards"), and so may you after another player ("target player loses 2 life and you gain 2 life"). The effects
-/// are those of the sentence, in order.
+/// ten cards"), and so may you after another player ("target player loses 2 life and you gain 2 life") or after
+/// yourself ("you draw a card and you lose 1 life"). The effects are those of the sentence, in order.
 fn player_effect(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let who = player(r)?;
     let mut effects = phrases(r, &who)?;
@@ -345,7 +360,7 @@ fn player_effect(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         r.need("and")?;
         let next = if r.that_player && r.words("that player") {
             Ref::Triggering
-        } else if who != Ref::You && r.word("you") {
+        } else if r.word("you") {
             Ref::You
         } else {
             return None;
@@ -387,8 +402,8 @@ fn phrases(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
 
 /// One verb phrase: what a player does, or "create a token" for you.
 fn verb_phrase(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
-    if *who == Ref::You && r.peek_word() == Some("create") {
-        return create::tokens(r);
+    if matches!(r.peek_word(), Some("create" | "creates")) {
+        return create::made_by(r, who.clone());
     }
     predicate(r, who).map(|effect| vec![effect])
 }
@@ -399,14 +414,14 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
     Some(match r.take_word()? {
         "draw" | "draws" => Effect::Draw {
             who,
-            count: cards_counted(r)?,
+            count: draws::drawn(r)?,
         },
         "mill" | "mills" => Effect::Mill {
             who,
             count: cards_counted(r)?,
         },
         "discard" | "discards" => {
-            let count = cards(r)?;
+            let count = draws::discarded(r, &who)?;
             let random = r.words("at random");
             Effect::Discard { who, count, random }
         }
@@ -484,6 +499,15 @@ pub(super) fn describes_a_kind(pred: &Pred) -> bool {
 /// hand.": a move to the owner's hand.
 fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("return")?;
+    // The permanent itself once the ability has spoken of the card: "return it to its owner's hand" (a card that
+    // returns from the graveyard says its name, and is the table's).
+    if r.it == Some(Ref::This) && r.word("it") {
+        r.need("to its owner's hand")?;
+        return Some(vec![Effect::Move {
+            what: Ref::This,
+            to: Destination::Hand,
+        }]);
+    }
     let what = target_object(r)?;
     let Some(Targetable::Object(selector)) = r.targets.first().map(|spec| &spec.what) else {
         return None;
@@ -576,45 +600,6 @@ pub fn returns_itself(effects: &[Effect]) -> bool {
 
 /// The name the permanent returned to its owner's hand is bound to.
 pub const RETURNED: &str = "returned";
-
-/// Who or what takes damage: a single target, "each opponent", "each creature".
-fn recipient(r: &mut Reader<'_>) -> Option<Ref> {
-    if r.words("each opponent") {
-        return Some(Ref::Opponents);
-    }
-    if r.words("each player") {
-        return Some(Ref::EachPlayer);
-    }
-    if r.word("you") {
-        return Some(Ref::You);
-    }
-    if r.that_player && r.words("that player") {
-        return Some(Ref::Triggering);
-    }
-    if let Some(objects) = each(r) {
-        return Some(objects);
-    }
-    r.attempt(|r| {
-        let to = target(r)?;
-        let spec = r.targets.first()?;
-        (spec.bounds.is_one() && spec.divide.is_none()).then_some(to)
-    })
-}
-
-/// "~ deals 3 damage to any target.", and "It deals 1 damage to any target." as the first thing an ability does, where "it" is
-/// the source.
-fn damage(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    (r.source() || (r.targets.is_empty() && r.word("it"))).then_some(())?;
-    r.need("deals")?;
-    let amount = points(r)?;
-    r.need("damage to")?;
-    let to = recipient(r)?;
-    Some(vec![Effect::DealDamage {
-        source: None,
-        to,
-        amount,
-    }])
-}
 
 /// A target object chosen one at a time.
 pub(super) fn target_object(r: &mut Reader<'_>) -> Option<Ref> {
@@ -728,14 +713,18 @@ pub(super) fn power_toughness(r: &mut Reader<'_>) -> Option<Modification> {
     Some(Modification::ModifyPT { power, toughness })
 }
 
-/// "flying", "flying and haste", "protection from white and from black": keywords given.
+/// "flying", "flying and haste", "flying, vigilance, and haste", "protection from white and from black": keywords given.
 pub(super) fn granted(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
     let mut mods: Vec<Modification> = granted_keywords(r)?
         .into_iter()
         .map(Modification::AddKeyword)
         .collect();
     while let Some(next) = r.attempt(|r| {
-        r.need("and")?;
+        if r.punct(',') {
+            r.word("and");
+        } else {
+            r.need("and")?;
+        }
         granted_keywords(r)
     }) {
         mods.extend(next.into_iter().map(Modification::AddKeyword));
@@ -882,6 +871,12 @@ fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         Produce::AnyColor(count)
     } else if r.words("one mana of the chosen color") {
         Produce::ChosenColor(1)
+    } else if let Some(mana) = r.attempt(|r| {
+        let mana = mana_type(r.symbol()?)?;
+        r.need("or one mana of the chosen color")?;
+        Some(mana)
+    }) {
+        Produce::OrChosenColor(mana)
     } else if let Some(lists) = r.attempt(choice_of_lists) {
         Produce::OneOfLists(lists)
     } else if let Some(list) = r.attempt(choice) {

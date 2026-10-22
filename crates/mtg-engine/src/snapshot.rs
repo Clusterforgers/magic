@@ -4,7 +4,7 @@ use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::value::CounterKind;
+use mtg_cards::value::{CastWay, CounterKind};
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
@@ -52,6 +52,10 @@ pub struct Snapshot {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<usize>>", optional))]
     pub paid: Vec<usize>,
+    /// The alternative cost it was cast for, as the object remembers it: its triggered abilities read it after it has left.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub way: Option<CastWay>,
     /// The face of a card with several faces it was in use as (the back face of a transformed permanent); left out for
     /// the card as a whole.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -105,6 +109,7 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
         face_down: object.face_down(),
         x: object.announced_x(),
         paid: object.paid_costs().to_vec(),
+        way: object.cast_way(),
         face: object.face(),
         copy: object.copy_effect().map(crate::copies::CopyEffect::shared),
     })

@@ -1,0 +1,28 @@
+{
+  "id": "46246d37-dfce-4977-854e-ee79d47cea05",
+  "oracle_id": "0ca0a186-026d-4cec-9c23-15d94e6acca9",
+  "name": "Coralhelm Commander",
+  "lang": "en",
+  "layout": "leveler",
+  "set": "lcc",
+  "collector_number": "148",
+  "rarity": "rare",
+  "released_at": "2023-11-17",
+  "digital": false,
+  "mana_cost": "{U}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Merfolk Soldier",
+  "oracle_text": "Level up {1} ({1}: Put a level counter on this. Level up only as a sorcery.)\nLEVEL 2-3\n3/3\nFlying\nLEVEL 4+\n4/4\nFlying\nOther Merfolk creatures you control get +1/+1.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Level Up"
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "oracle_id": "0bc2875b-3a5a-4885-86b9-16ab7330ac10",
+  "name": "Student of Warfare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Student of Warfare",
+      "oracle_fingerprint": "47ed89dee82cd8c96802eef2bbabad01",
+      "abilities": [
+        { "Keyword": { "LevelUp": "{W}" } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetPT": { "power": 3, "toughness": 3 } }],
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                    "op": "Ge",
+                    "right": 2
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                    "op": "Le",
+                    "right": 6
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "FirstStrike" }],
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                    "op": "Ge",
+                    "right": 2
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                    "op": "Le",
+                    "right": 6
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetPT": { "power": 4, "toughness": 4 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "DoubleStrike" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

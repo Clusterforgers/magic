@@ -1,0 +1,27 @@
+{
+  "id": "e50f5505-fcbb-4a84-bcf6-950362d83201",
+  "oracle_id": "658f5cfb-326d-4da9-a39b-2ecd393a1f54",
+  "name": "Sinuous Vermin",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cn2",
+  "collector_number": "46",
+  "rarity": "common",
+  "released_at": "2016-08-26",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Rat Horror",
+  "oracle_text": "{3}{B}{B}: Monstrosity 3. (If this creature isn't monstrous, put three +1/+1 counters on it and it becomes monstrous.)\nAs long as this creature is monstrous, it has menace. (It can't be blocked except by two or more creatures.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Monstrosity"
+  ]
+}

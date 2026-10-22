@@ -1,0 +1,21 @@
+{
+  "id": "5d5eea5f-b9e8-4a10-8e7f-c42493a728cd",
+  "oracle_id": "bff416bb-d193-4c45-b2c1-7c297dbfad08",
+  "name": "Thriving Moor",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "582",
+  "rarity": "common",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land enters tapped. As it enters, choose a color other than black.\n{T}: Add {B} or one mana of the chosen color.",
+  "colors": [],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

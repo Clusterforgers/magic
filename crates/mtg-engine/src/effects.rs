@@ -232,7 +232,7 @@ const CARD_TYPES: [CardType; 9] = [
 ];
 
 /// `types` without `ty`.
-fn without(types: CardTypes, ty: CardType) -> CardTypes {
+pub(crate) fn without(types: CardTypes, ty: CardType) -> CardTypes {
     CARD_TYPES
         .into_iter()
         .filter(|kept| *kept != ty && types.contains(*kept))

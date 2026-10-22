@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7d9fc9e7-d80b-49c3-871c-ed25b3059ae8",
+  "name": "Impulsive Pilferer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Impulsive Pilferer",
+      "oracle_fingerprint": "25098ca46c39f7bf27609e30b9f8e8a8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        { "Keyword": { "Encore": "{3}{R}" } }
+      ]
+    }
+  ]
+}

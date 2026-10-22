@@ -1,0 +1,27 @@
+{
+  "id": "b019f6b5-ce8f-4b95-8fcb-72dc4931b3aa",
+  "oracle_id": "282b4dbf-ec00-48ba-8010-73bee489fa7a",
+  "name": "Banshee of the Dread Choir",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cma",
+  "collector_number": "47",
+  "rarity": "uncommon",
+  "released_at": "2017-06-09",
+  "digital": false,
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Spirit",
+  "oracle_text": "Myriad (Whenever this creature attacks, for each opponent other than defending player, you may create a token copy that's tapped and attacking that player or a planeswalker they control. Exile the tokens at end of combat.)\nWhenever this creature deals combat damage to a player, that player discards a card.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Myriad"
+  ]
+}

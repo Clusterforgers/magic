@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1d25b831-c1de-4f79-bbb3-1582eda96452",
+  "name": "Elvish Aberration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elvish Aberration",
+      "oracle_fingerprint": "f981d6ee8ee19573c41d43f635730565",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green", "Green", "Green"] } } }]
+          }
+        },
+        { "Keyword": { "Typecycling": { "find": [{ "Subtype": "Forest" }], "cost": "{2}" } } }
+      ]
+    }
+  ]
+}

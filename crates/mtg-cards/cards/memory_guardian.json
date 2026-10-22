@@ -1,0 +1,15 @@
+{
+  "oracle_id": "dac33359-0317-4b11-9078-fccfd2321e53",
+  "name": "Memory Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Memory Guardian",
+      "oracle_fingerprint": "0b00e43faf1b4fd3ee00cf24fd0c87ce",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Type": "Artifact" }] } },
+        { "Keyword": "Flying" }
+      ]
+    }
+  ]
+}

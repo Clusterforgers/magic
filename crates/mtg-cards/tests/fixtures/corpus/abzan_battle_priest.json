@@ -1,0 +1,27 @@
+{
+  "id": "c0fb53e6-441f-4faa-bf0e-0847cf83279d",
+  "oracle_id": "1b44fe0a-4a99-4166-b0b3-102b36b54ffa",
+  "name": "Abzan Battle Priest",
+  "lang": "en",
+  "layout": "normal",
+  "set": "moc",
+  "collector_number": "164",
+  "rarity": "uncommon",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Cleric",
+  "oracle_text": "Outlast {W} ({W}, {T}: Put a +1/+1 counter on this creature. Outlast only as a sorcery.)\nEach creature you control with a +1/+1 counter on it has lifelink.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Outlast"
+  ]
+}

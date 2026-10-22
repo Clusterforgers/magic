@@ -1,0 +1,25 @@
+{
+  "id": "c1a80504-d991-4eef-8407-2acf444401f0",
+  "oracle_id": "6d2eb412-e09b-4ab3-8653-b458e9f38eff",
+  "name": "Curse of Vitality",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c17",
+  "collector_number": "3",
+  "rarity": "uncommon",
+  "released_at": "2017-08-25",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura Curse",
+  "oracle_text": "Enchant player\nWhenever enchanted player is attacked, you gain 2 life. Each opponent attacking that player does the same.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "fa25d142-e6ba-4fc9-81e2-114c32afc030",
+  "name": "Space Marine Devastator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Space Marine Devastator",
+      "oracle_fingerprint": "1f8e4ce09b2c7dd371d30bb34b44df53",
+      "abilities": [
+        { "Keyword": { "Squad": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

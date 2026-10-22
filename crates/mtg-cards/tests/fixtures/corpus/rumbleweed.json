@@ -1,0 +1,29 @@
+{
+  "id": "fe1ecd63-075b-4eda-a9f7-d7f282c81d3b",
+  "oracle_id": "9cfc01a7-e291-4388-bd09-94846d72e291",
+  "name": "Rumbleweed",
+  "lang": "en",
+  "layout": "normal",
+  "set": "otc",
+  "collector_number": "32",
+  "rarity": "rare",
+  "released_at": "2024-04-19",
+  "digital": false,
+  "mana_cost": "{10}{G}",
+  "cmc": 11,
+  "type_line": "Creature — Plant Elemental",
+  "oracle_text": "This spell costs {1} less to cast for each land card in your graveyard.\nReach, vigilance, trample\nWhen this creature enters, other creatures you control get +3/+3 and gain trample until end of turn.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach",
+    "Vigilance",
+    "Trample"
+  ],
+  "power": "8",
+  "toughness": "8"
+}

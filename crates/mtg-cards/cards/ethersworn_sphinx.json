@@ -1,0 +1,16 @@
+{
+  "oracle_id": "71366469-04ea-4526-bf24-7abc02fdc5ab",
+  "name": "Ethersworn Sphinx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ethersworn Sphinx",
+      "oracle_fingerprint": "be7d92ba1422877cef3bab249199cee2",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Type": "Artifact" }] } },
+        { "Keyword": "Flying" },
+        { "Keyword": "Cascade" }
+      ]
+    }
+  ]
+}

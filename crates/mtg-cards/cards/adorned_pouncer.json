@@ -1,0 +1,12 @@
+{
+  "oracle_id": "80b8ee3d-4174-4f47-a533-a3db1e703382",
+  "name": "Adorned Pouncer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Adorned Pouncer",
+      "oracle_fingerprint": "8e7e68ab196bc8d5dbed26ff92e869a6",
+      "abilities": [{ "Keyword": "DoubleStrike" }, { "Keyword": { "Eternalize": "{3}{W}{W}" } }]
+    }
+  ]
+}

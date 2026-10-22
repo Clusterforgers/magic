@@ -6,7 +6,7 @@
 //! the same question, from 0 to the loyalty counters of the planeswalker, and removes that many.
 
 use mtg_cards::ability::{Ability, LoyaltyCost};
-use mtg_cards::value::CounterKind;
+use mtg_cards::value::{CastWay, CounterKind};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaSymbol};
 
@@ -72,7 +72,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         return None;
     }
     // An alternative cost has no `{X}`: the one of the mana cost is 0 (CR 107.3b).
-    if work.choices.way.is_some() {
+    if work.choices.way.is_some_and(CastWay::replaces_cost) {
         work.choices.x = Some(0);
         work.done.x = true;
         return None;

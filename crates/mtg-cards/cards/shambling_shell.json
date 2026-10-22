@@ -1,0 +1,21 @@
+{
+  "oracle_id": "9c50f6b1-8850-4b08-a994-3ccc17f25b83",
+  "name": "Shambling Shell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shambling Shell",
+      "oracle_fingerprint": "5da7beb9cd369404c35e99fcc87378b3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        { "Keyword": { "Dredge": 3 } }
+      ]
+    }
+  ]
+}

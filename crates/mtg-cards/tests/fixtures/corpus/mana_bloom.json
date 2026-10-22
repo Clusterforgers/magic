@@ -1,0 +1,23 @@
+{
+  "id": "03a40bf7-5eb9-4b36-9388-48b482a6fcf2",
+  "oracle_id": "7c699180-d18e-4599-acd1-27b951d82136",
+  "name": "Mana Bloom",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "275",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{X}{G}",
+  "cmc": 1.0,
+  "type_line": "Enchantment",
+  "oracle_text": "This enchantment enters with X charge counters on it.\nRemove a charge counter from this enchantment: Add one mana of any color. Activate only once each turn.\nAt the beginning of your upkeep, if this enchantment has no charge counters on it, return it to its owner's hand.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

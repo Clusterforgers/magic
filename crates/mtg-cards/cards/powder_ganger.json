@@ -1,0 +1,23 @@
+{
+  "oracle_id": "b34507d3-55ba-4629-9581-7983d0025e89",
+  "name": "Powder Ganger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Powder Ganger",
+      "oracle_fingerprint": "99e02f0e0a8398724b474a13296e3446",
+      "abilities": [
+        { "Keyword": { "Squad": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

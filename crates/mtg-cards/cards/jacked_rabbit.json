@@ -1,0 +1,36 @@
+{
+  "oracle_id": "5a343a5f-3f9b-43c3-8532-8391de7a5443",
+  "name": "Jacked Rabbit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jacked Rabbit",
+      "oracle_fingerprint": "9831660b1022ffc4e04a631c19df407e",
+      "abilities": [
+        { "Keyword": "Ravenous" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rabbit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rabbit"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

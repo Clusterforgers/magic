@@ -1,0 +1,39 @@
+{
+  "oracle_id": "7c699180-d18e-4599-acd1-27b951d82136",
+  "name": "Mana Bloom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Bloom",
+      "oracle_fingerprint": "bf05c2969554efba8d3259346ecff44d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "charge", "count": "X" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": "charge" } }],
+            "limit": "OncePerTurn",
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

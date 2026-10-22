@@ -1,0 +1,28 @@
+{
+  "id": "76ae01fb-12fa-444d-9d49-bfe195c2a5a6",
+  "oracle_id": "99fa202b-052c-4627-b78c-f0b323f7bdf3",
+  "name": "Sandsteppe Mastodon",
+  "lang": "en",
+  "layout": "normal",
+  "set": "frf",
+  "collector_number": "137",
+  "rarity": "rare",
+  "released_at": "2015-01-23",
+  "digital": false,
+  "mana_cost": "{5}{G}{G}",
+  "cmc": 7.0,
+  "type_line": "Creature — Elephant",
+  "oracle_text": "Reach\nWhen this creature enters, bolster 5. (Choose a creature with the least toughness among creatures you control and put five +1/+1 counters on it.)",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach",
+    "Bolster"
+  ]
+}

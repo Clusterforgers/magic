@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a242af4b-5de6-4961-b684-f4bd809977c6",
+  "name": "Curse of Chaos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Chaos",
+      "oracle_fingerprint": "8d59c77366088572bc9e1d1d8a605c23",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "at": "AttachedPlayer" } },
+            "effects": [
+              {
+                "May": { "who": "Triggering", "effects": [{ "Discard": { "who": "Triggering" } }] }
+              },
+              { "If": { "condition": "Performed", "then": [{ "Draw": { "who": "Triggering" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

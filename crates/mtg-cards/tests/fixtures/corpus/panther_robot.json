@@ -1,0 +1,25 @@
+{
+  "id": "8bb7185d-fc07-4f2f-9762-aa7e7c287cba",
+  "oracle_id": "89115ed5-95bf-4b81-b352-5481c3addbed",
+  "name": "Panther Robot",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "113",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{10}",
+  "cmc": 10.0,
+  "type_line": "Artifact Creature — Cat Robot",
+  "oracle_text": "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)\nReach, trample",
+  "power": "8",
+  "toughness": "8",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Reach",
+    "Affinity",
+    "Trample"
+  ]
+}

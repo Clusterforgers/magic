@@ -1,0 +1,30 @@
+{
+  "id": "671c94c1-df52-4985-ad78-3e1c9c78df18",
+  "oracle_id": "a0cd19c1-9125-4627-83ba-d42c489b4e7d",
+  "name": "Aeromunculus",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rna",
+  "collector_number": "152",
+  "rarity": "common",
+  "released_at": "2019-01-25",
+  "digital": false,
+  "mana_cost": "{1}{G}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Homunculus Mutant",
+  "oracle_text": "Flying\n{2}{G}{U}: Adapt 1. (If this creature has no +1/+1 counters on it, put a +1/+1 counter on it.)",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Adapt"
+  ]
+}

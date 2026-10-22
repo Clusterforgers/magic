@@ -1,0 +1,28 @@
+{
+  "oracle_id": "7a2484a9-04fd-41a0-8224-610c1c07ed10",
+  "name": "Blasphemous Act",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blasphemous Act",
+      "oracle_fingerprint": "6d7ffcca54c318cdf80588b46f423565",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Count": [{ "Type": "Creature" }] }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 13 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
