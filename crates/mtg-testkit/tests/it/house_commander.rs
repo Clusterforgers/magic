@@ -51,6 +51,7 @@ fn relaxed_singleton(most: Option<u32>) -> HouseRules {
     })
 }
 
+#[allow(clippy::unnecessary_wraps)]
 fn lethal(amount: u32) -> Option<CommanderDamageLimit> {
     Some(CommanderDamageLimit::Lethal(amount))
 }
@@ -272,8 +273,8 @@ fn refused(setup: &GameSetup) -> Option<(PlayerId, DeckError)> {
 }
 
 /// The setup passes the deck check and a game starts from it.
-fn starts(setup: GameSetup) {
-    assert_eq!(refused(&setup), None);
+fn starts(setup: &GameSetup) {
+    assert_eq!(refused(setup), None);
     Engine::new(setup.clone()).unwrap();
 }
 
@@ -285,7 +286,7 @@ fn a_deck_of_the_size_the_table_sets_is_accepted_and_the_formats_size_is_refused
     let house = deck_rules(|d| d.deck_size = Some(size));
     let others = size as usize - 1;
     // The commander is part of the size.
-    starts(table_of(
+    starts(&table_of(
         seats,
         others,
         vec![mountain(); others],
@@ -342,7 +343,7 @@ fn a_card_may_be_played_in_the_copies_the_table_allows(
     deck.extend(vec![spell("Twin"); copies]);
     let setup = table_of(seats, 99, deck, vec![cmd("Cmd")], house);
     match refused_at {
-        None => starts(setup),
+        None => starts(&setup),
         Some(max) => assert_eq!(
             refused(&setup),
             Some((
@@ -371,7 +372,7 @@ fn a_card_outside_the_colour_identity_is_accepted_only_where_the_table_lifts_the
     deck.extend(vec![forest(); 3]);
     let setup = table_of(seats, 99, deck, vec![cmd("Cmd")], house);
     if accepted {
-        starts(setup);
+        starts(&setup);
     } else {
         let (player, error) = refused(&setup).unwrap();
         assert_eq!(player, pid(seats - 1));
@@ -401,7 +402,7 @@ fn a_seat_starts_with_the_commanders_the_table_allows(
     let setup = table_of(seats, 99, deck, commanders, house);
     match error {
         None => {
-            starts(setup.clone());
+            starts(&setup);
             let engine = Engine::new(setup).unwrap();
             assert_eq!(engine.state().commanders().count(), seats - 1 + named);
         }
