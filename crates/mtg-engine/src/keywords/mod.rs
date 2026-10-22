@@ -13,6 +13,7 @@ mod choose_a_background;
 mod companion;
 mod convoke;
 mod crew;
+mod cumulative_upkeep;
 mod cycling;
 mod dash;
 mod daybound;
@@ -23,6 +24,7 @@ mod devoid;
 mod disguise;
 mod doctors_companion;
 mod double_strike;
+mod echo;
 mod enchant;
 mod encore;
 mod entwine;
@@ -57,6 +59,7 @@ mod overload;
 mod partner;
 mod partner_group;
 mod partner_with;
+mod persist;
 mod protection;
 #[cfg(test)]
 mod provided;
@@ -74,6 +77,7 @@ pub(crate) mod suspend;
 mod toxic;
 mod trample;
 mod undaunted;
+mod undying;
 mod unearth;
 mod vigilance;
 mod ward;
@@ -395,6 +399,10 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Aftermath => &aftermath::Aftermath,
         Keyword::Dash(_) => &dash::Dash,
         Keyword::Ninjutsu(_) => &ninjutsu::Ninjutsu,
+        Keyword::Echo(_) => &echo::Echo,
+        Keyword::CumulativeUpkeep(_) => &cumulative_upkeep::CumulativeUpkeep,
+        Keyword::Undying => &undying::Undying,
+        Keyword::Persist => &persist::Persist,
     }
 }
 
@@ -645,6 +653,10 @@ mod tests {
             Keyword::Aftermath,
             Keyword::Dash(cost()),
             Keyword::Ninjutsu(cost()),
+            Keyword::Echo(cost()),
+            Keyword::CumulativeUpkeep(cost()),
+            Keyword::Undying,
+            Keyword::Persist,
         ]
     }
 
@@ -714,6 +726,10 @@ mod tests {
         "Keyword.Aftermath",
         "Keyword.Dash",
         "Keyword.Ninjutsu",
+        "Keyword.Echo",
+        "Keyword.CumulativeUpkeep",
+        "Keyword.Undying",
+        "Keyword.Persist",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -824,6 +840,10 @@ mod tests {
     #[case::aftermath(Keyword::Aftermath, Hooks::none())]
     #[case::dash(Keyword::Dash(Cost::mana("{1}{R}".parse().unwrap())), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::ninjutsu(Keyword::Ninjutsu(Cost::mana("{1}{U}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::echo(Keyword::Echo(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::cumulative_upkeep(Keyword::CumulativeUpkeep(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::undying(Keyword::Undying, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::persist(Keyword::Persist, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);

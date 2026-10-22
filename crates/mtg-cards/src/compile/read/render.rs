@@ -1002,9 +1002,10 @@ impl Writer<'_> {
             Effect::Pay {
                 who,
                 cost,
+                times,
                 paid,
                 unpaid,
-            } => self.payment(who, cost, paid, unpaid)?,
+            } if times.is_one() => self.payment(who, cost, paid, unpaid)?,
             _ => return cast::text(effect).or_else(|| self.keyword_action(effect)),
         })
     }
@@ -1037,8 +1038,11 @@ impl Writer<'_> {
                     Destination::Battlefield {
                         tapped: false,
                         under: None,
+                        counters,
                     },
-            } => "return ~ from your graveyard to the battlefield".to_owned(),
+            } if counters.is_empty() => {
+                "return ~ from your graveyard to the battlefield".to_owned()
+            }
             Effect::Surveil {
                 who: Ref::You,
                 count,

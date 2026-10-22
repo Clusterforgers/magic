@@ -181,6 +181,8 @@ mod triggers_targets;
 mod turn_burn;
 mod turn_structure;
 mod unearth;
+mod upkeep_keywords;
+mod upkeep_keywords_fuzz;
 mod vehicles;
 mod win_effects;
 mod windows_games;

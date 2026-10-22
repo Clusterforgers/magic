@@ -393,6 +393,8 @@ pub enum Condition {
     Monarch(Ref),
     /// The player has the city's blessing (CR 702.131).
     CitysBlessing(Ref),
+    /// The referenced permanents are controlled by the controller and came under their control since their last turn began (echo, CR 702.30a): read in the upkeep, once that turn has begun.
+    NewlyControlled(Ref),
 }
 
 #[cfg(test)]

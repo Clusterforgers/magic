@@ -125,6 +125,7 @@ fn unless_pays(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             Some(vec![Effect::Pay {
                 who,
                 cost,
+                times: Amount::one(),
                 paid: Vec::new(),
                 unpaid,
             }])
@@ -532,6 +533,7 @@ fn rising() -> Effect {
         to: Destination::Battlefield {
             tapped: false,
             under: None,
+            counters: Vec::new(),
         },
     }
 }

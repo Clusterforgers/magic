@@ -1,0 +1,12 @@
+{
+  "oracle_id": "8b492764-10b6-4506-be11-22daa9220a91",
+  "name": "Young Wolf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Young Wolf",
+      "oracle_fingerprint": "40d95499c0b7d38dd91a40d02b12f917",
+      "abilities": [{ "Keyword": "Undying" }]
+    }
+  ]
+}

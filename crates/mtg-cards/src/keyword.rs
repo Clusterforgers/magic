@@ -169,6 +169,14 @@ pub enum Keyword {
     Dash(Cost),
     /// Ninjutsu with its cost: from the hand during combat after blockers are declared, an unblocked attacker returns to its owner's hand and the card enters tapped and attacking (CR 702.49).
     Ninjutsu(Cost),
+    /// Echo with its cost (CR 702.30): at the beginning of its controller's upkeep, if it came under their control since their last turn began, it is sacrificed unless they pay the cost.
+    Echo(Cost),
+    /// Cumulative upkeep with its cost (CR 702.24): at the beginning of its controller's upkeep an age counter is put on it, then it is sacrificed unless they pay the cost once for each age counter.
+    CumulativeUpkeep(Cost),
+    /// Undying (CR 702.93): when it dies, if it had no +1/+1 counter on it, it returns with a +1/+1 counter.
+    Undying,
+    /// Persist (CR 702.79): when it dies, if it had no -1/-1 counter on it, it returns with a -1/-1 counter.
+    Persist,
 }
 
 impl Keyword {
@@ -247,6 +255,10 @@ impl Keyword {
         "Aftermath",
         "Dash",
         "Ninjutsu",
+        "Echo",
+        "Cumulative upkeep",
+        "Undying",
+        "Persist",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -325,6 +337,10 @@ impl Keyword {
             Keyword::Aftermath => "Aftermath",
             Keyword::Dash(_) => "Dash",
             Keyword::Ninjutsu(_) => "Ninjutsu",
+            Keyword::Echo(_) => "Echo",
+            Keyword::CumulativeUpkeep(_) => "Cumulative upkeep",
+            Keyword::Undying => "Undying",
+            Keyword::Persist => "Persist",
         }
     }
 
@@ -426,6 +442,10 @@ mod tests {
             Keyword::Aftermath,
             Keyword::Dash(cost.clone()),
             Keyword::Ninjutsu(cost),
+            Keyword::Echo(Cost::default()),
+            Keyword::CumulativeUpkeep(Cost::default()),
+            Keyword::Undying,
+            Keyword::Persist,
         ]
     }
 

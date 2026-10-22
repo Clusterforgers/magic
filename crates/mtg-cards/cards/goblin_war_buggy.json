@@ -1,0 +1,12 @@
+{
+  "oracle_id": "59fb1640-d8ed-476a-a78d-91d60b6faac5",
+  "name": "Goblin War Buggy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin War Buggy",
+      "oracle_fingerprint": "b94729ee84e3adfe375e2b68707a2916",
+      "abilities": [{ "Keyword": "Haste" }, { "Keyword": { "Echo": "{1}{R}" } }]
+    }
+  ]
+}

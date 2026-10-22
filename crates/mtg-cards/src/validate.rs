@@ -544,6 +544,10 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "CitysBlessing");
                 self.at("CitysBlessing", |w| w.reference(who, Kind::Player));
             }
+            Condition::NewlyControlled(what) => {
+                self.uses("Condition", "NewlyControlled");
+                self.at("NewlyControlled", |w| w.reference(what, Kind::Object));
+            }
         }
     }
 
@@ -689,9 +693,9 @@ impl<'a> Walker<'a> {
     fn keyword(&mut self, keyword: &Keyword) {
         self.uses("Keyword", &tag_of(keyword));
         match keyword {
-            Keyword::Ward(cost) => {
+            Keyword::Ward(cost) | Keyword::Echo(cost) | Keyword::CumulativeUpkeep(cost) => {
                 self.at("cost", |w| w.cost(cost));
-                // Ward asks the player for its cost through a payment.
+                // Ward, echo and cumulative upkeep ask the player for their cost through a payment.
                 self.payment_of_the_source(cost);
             }
             // The cost of these is paid as the cost of an activated ability the keyword adds.
@@ -1403,11 +1407,13 @@ impl<'a> Walker<'a> {
             Effect::Pay {
                 who,
                 cost,
+                times,
                 paid,
                 unpaid,
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("cost", |w| w.cost(cost));
+                w.at("times", |w| w.amount(times));
                 w.payment_of_the_source(cost);
                 w.effect_list("paid", paid, false);
                 w.effect_list("unpaid", unpaid, false);

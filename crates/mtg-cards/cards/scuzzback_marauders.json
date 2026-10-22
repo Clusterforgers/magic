@@ -1,0 +1,12 @@
+{
+  "oracle_id": "423a1fc2-f623-4b5f-9a3e-7f63b2f3cf5d",
+  "name": "Scuzzback Marauders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scuzzback Marauders",
+      "oracle_fingerprint": "f9312f5c6a4a5d5a45e88de331cf8c0b",
+      "abilities": [{ "Keyword": "Trample" }, { "Keyword": "Persist" }]
+    }
+  ]
+}

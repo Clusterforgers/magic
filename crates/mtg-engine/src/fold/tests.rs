@@ -1178,3 +1178,42 @@ fn a_planeswalker_that_changes_zones_is_a_new_object_that_may_activate_again() {
     assert!(game.loyalty_spent(old));
     assert!(!game.loyalty_spent(now));
 }
+
+#[rstest]
+#[case::entered_since_the_turn_began(true, None, 0, true, false)]
+#[case::held_since_the_turn_began(false, Some(0), 0, false, false)]
+#[case::taken_from_another_player(false, Some(1), 0, true, false)]
+#[case::taken_and_entered(true, Some(1), 0, true, false)]
+#[case::a_turn_of_another_player_leaves_it_as_it_was(true, None, 1, false, true)]
+fn a_turn_begins_by_recording_whether_each_permanent_of_its_player_came_under_their_control_since_the_last_one(
+    #[case] entered: bool,
+    #[case] seen_by: Option<usize>,
+    #[case] active: usize,
+    #[case] fresh: bool,
+    #[case] still_sick: bool,
+) {
+    let mut game = state(
+        vec![vec![], vec![]],
+        vec![vec![creature("Holder", 1, 1)], vec![]],
+    );
+    let holder = game.zone(Zone::Battlefield)[0];
+    let permanent = game
+        .objects
+        .get_mut(&holder)
+        .and_then(|object| object.permanent.as_mut())
+        .unwrap();
+    permanent.summoning_sick = entered;
+    permanent.observed = seen_by.map(PlayerId::from_index);
+    permanent.new_to = None;
+    fold(
+        &mut game,
+        &[Event::TurnBegan {
+            number: 2,
+            active: PlayerId::from_index(active),
+        }],
+    );
+    let permanent = game.object(holder).unwrap().permanent().unwrap();
+    assert_eq!(permanent.is_new_to(PlayerId::from_index(active)), fresh);
+    assert!(!permanent.is_new_to(PlayerId::from_index(1 - active)));
+    assert_eq!(permanent.summoning_sick(), still_sick);
+}

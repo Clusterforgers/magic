@@ -1,0 +1,12 @@
+{
+  "oracle_id": "27faa94b-c7a7-45e7-8630-80126fab74ba",
+  "name": "Putrid Goblin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Putrid Goblin",
+      "oracle_fingerprint": "74d0487704ae66325466d4e8ac8503e7",
+      "abilities": [{ "Keyword": "Persist" }]
+    }
+  ]
+}

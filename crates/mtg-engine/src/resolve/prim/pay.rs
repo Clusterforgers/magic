@@ -3,8 +3,9 @@
 
 use std::iter::Peekable;
 
-use mtg_cards::cost::Cost;
+use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::effect::Effect;
+use mtg_cards::value::Amount;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
@@ -36,10 +37,23 @@ use crate::wording;
 /// events (`cast::pay_answer`). The entries of a player who has left the game since are not read, and a player who left
 /// before paying has not paid.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Pay { who, cost, .. } = effect else {
+    let Effect::Pay {
+        who, cost, times, ..
+    } = effect
+    else {
         return Err(wrong_effect("Pay"));
     };
-    let price = price_of(cost)?;
+    let times = usize::try_from(cx.scope.amount(times)?.max(0)).unwrap_or(usize::MAX);
+    // A cost paid no times is paid, and nobody is asked.
+    if times == 0 {
+        return Ok(Run::Done {
+            next: Next::Enter(0),
+            events: Vec::new(),
+            bound: Vec::new(),
+            snapshots: Vec::new(),
+        });
+    }
+    let price = price_of(&repeated(cost, times))?;
     let state = cx.state();
     let mut journal = cx
         .journal()
@@ -77,6 +91,59 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         bound: Vec::new(),
         snapshots: Vec::new(),
     })
+}
+
+/// The cost paid `times` times at once: the mana repeated so that it adds up, and the number of life, energy, counters
+/// and objects every other part takes multiplied, so that the whole of it is asked, checked and paid as one part (two
+/// parts of 1 life would each look payable with 1 life).
+fn repeated(cost: &Cost, times: usize) -> Cost {
+    let factor = i32::try_from(times).unwrap_or(i32::MAX);
+    let times_over = |amount: &Amount| match amount {
+        Amount::Fixed(number) => Amount::Fixed(number.saturating_mul(factor)),
+        other => other.clone(),
+    };
+    Cost(
+        cost.0
+            .iter()
+            .flat_map(|item| match item {
+                CostItem::Mana(_) => vec![item.clone(); times],
+                CostItem::PayLife(amount) => vec![CostItem::PayLife(times_over(amount))],
+                CostItem::PayEnergy(amount) => vec![CostItem::PayEnergy(times_over(amount))],
+                CostItem::RemoveCounters { counter, count } => vec![CostItem::RemoveCounters {
+                    counter: counter.clone(),
+                    count: times_over(count),
+                }],
+                CostItem::Sacrifice { filter, count } => vec![CostItem::Sacrifice {
+                    filter: filter.clone(),
+                    count: times_over(count),
+                }],
+                CostItem::Discard { count, filter } => vec![CostItem::Discard {
+                    count: times_over(count),
+                    filter: filter.clone(),
+                }],
+                CostItem::ExileFromGraveyard { filter, count } => {
+                    vec![CostItem::ExileFromGraveyard {
+                        filter: filter.clone(),
+                        count: times_over(count),
+                    }]
+                }
+                CostItem::ExileFromHand { filter, count } => vec![CostItem::ExileFromHand {
+                    filter: filter.clone(),
+                    count: times_over(count),
+                }],
+                CostItem::ReturnToHand { filter, count } => vec![CostItem::ReturnToHand {
+                    filter: filter.clone(),
+                    count: times_over(count),
+                }],
+                CostItem::TapPermanents { filter, count } => vec![CostItem::TapPermanents {
+                    filter: filter.clone(),
+                    count: times_over(count),
+                }],
+                // These are refused by `price_of` however often they are repeated.
+                other => vec![other.clone(); times],
+            })
+            .collect(),
+    )
 }
 
 fn unexpected(answer: &Choice, player: PlayerId) -> ResolveError {
@@ -565,6 +632,56 @@ mod tests {
         let effect = pay(r#""You""#, r#""{2}""#);
         assert_eq!(said(run_with(&game, &[], &effect)), cannot(0));
         assert_eq!(said(run_with(&game, &[(0, false)], &effect)), UNPAID);
+    }
+
+    #[rstest]
+    #[case::none_asks_nothing_and_has_paid("{1}", "0", 0, &[], PAID)]
+    #[case::none_of_a_cost_nobody_can_pay("{9}", "0", 0, &[], PAID)]
+    #[case::once("{1}", "1", 2, &[], Said::Asks(0, "Pay {1}?".into()))]
+    #[case::twice("{1}", "2", 2, &[], Said::Asks(0, "Pay {2}?".into()))]
+    #[case::three_times_with_two_lands("{1}", "3", 2, &[], Said::Declines(0, "Pay {3}?".into()))]
+    #[case::two_colours_twice("{G}{1}", "2", 4, &[], Said::Asks(0, "Pay {2}{G}{G}?".into()))]
+    #[case::life_twice("[{\"PayLife\":1}]", "2", 0, &[], Said::Asks(0, "Pay 2 life?".into()))]
+    #[case::yes_to_twice("{1}", "2", 2, &[(0, true)], Said::Pays(0, "{2}".into(), false))]
+    #[case::paid_twice("{1}", "2", 2, &[(0, true), (0, true)], PAID)]
+    #[case::declined("{1}", "2", 2, &[(0, false)], UNPAID)]
+    fn a_cost_paid_several_times_is_asked_as_all_of_them_together_and_none_is_paid_without_a_question(
+        #[case] cost: &str,
+        #[case] times: &str,
+        #[case] lands: usize,
+        #[case] given: &[(usize, bool)],
+        #[case] said_: Said,
+    ) {
+        let cost = if cost.starts_with('[') {
+            cost.to_owned()
+        } else {
+            format!("\"{cost}\"")
+        };
+        let effect = effect(&format!(
+            r#"{{"Pay":{{"cost":{cost},"times":{times},"paid":[{{"Draw":{{}}}}],"unpaid":[{{"Draw":{{}}}}]}}}}"#
+        ));
+        let game = game(&[lands, 0]);
+        assert_eq!(said(run_with(&game, given, &effect)), said_);
+    }
+
+    #[rstest]
+    #[case::one_life_once_with_one("1", 19, Said::Asks(0, "Pay 1 life?".into()))]
+    #[case::one_life_twice_with_one("2", 19, Said::Declines(0, "Pay 2 life?".into()))]
+    #[case::one_life_twice_with_two("2", 18, Said::Asks(0, "Pay 2 life?".into()))]
+    #[case::one_life_three_times_with_two("3", 18, Said::Declines(0, "Pay 3 life?".into()))]
+    fn a_cost_in_life_paid_several_times_is_payable_only_with_the_life_for_all_of_it(
+        #[case] times: &str,
+        #[case] life_lost: u32,
+        #[case] said_: Said,
+    ) {
+        let effect = effect(&format!(
+            r#"{{"Pay":{{"cost":[{{"PayLife":1}}],"times":{times},"paid":[{{"Draw":{{}}}}],"unpaid":[{{"Draw":{{}}}}]}}}}"#
+        ));
+        let game = means(Means {
+            life_lost,
+            ..NOTHING
+        });
+        assert_eq!(said(run_with(&game, &[], &effect)), said_);
     }
 
     #[rstest]
