@@ -31,7 +31,7 @@ use crate::abilities::{AbilityRef, Cause};
 use crate::ability_reader;
 use crate::choose::{Choices, Target};
 use crate::decision::{Decision, DecisionKind};
-use crate::error::EngineError;
+use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::faces;
 use crate::parts::Part;
@@ -311,6 +311,23 @@ impl Pending {
             .as_ref()
             .map(|needs| needs.cost_parts(&self.choices))
             .unwrap_or_default()
+    }
+
+    /// Whether the cards picked for the next part of the cost are too weak for it: the part taps creatures for their
+    /// total power and `cards` have less, so the answer is refused (CR 702.122a).
+    pub(crate) fn check_picked(
+        &self,
+        state: &GameState,
+        cards: &[ObjectId],
+    ) -> Result<(), IllegalAnswer> {
+        let weak = self
+            .needs
+            .as_ref()
+            .and_then(|needs| parts::weak(&self.what, needs, &self.choices, state, cards));
+        match weak {
+            Some((needed, got)) => Err(IllegalAnswer::TooLittlePower { needed, got }),
+            None => Ok(()),
+        }
     }
 
     /// Takes the answer to the decision the announcement waits for.

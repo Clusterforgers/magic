@@ -563,6 +563,9 @@ impl<'a> Walker<'a> {
                             w.at("filter", |w| w.selector(filter));
                         }
                     }
+                    CostItem::TapPower { filter, .. } => {
+                        w.at("filter", |w| w.selector(filter));
+                    }
                     CostItem::Mana(_)
                     | CostItem::Tap
                     | CostItem::Untap
@@ -622,6 +625,7 @@ impl<'a> Walker<'a> {
                     | CostItem::ExileFromGraveyard { .. }
                     | CostItem::ExileFromHand { .. }
                     | CostItem::TapPermanents { .. }
+                    | CostItem::TapPower { .. }
                     | CostItem::ReturnToHand { .. }
             ) {
                 self.uses(kind, &format!("{prefix}.{}", tag_of(item)));

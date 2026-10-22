@@ -558,7 +558,7 @@ mod tests {
     }
 
     /// The keywords whose rules the engine runs, named as the capabilities name them.
-    const RUN: [&str; 41] = [
+    const RUN: [&str; 42] = [
         "Keyword.Flash",
         "Keyword.Flying",
         "Keyword.Reach",
@@ -600,6 +600,7 @@ mod tests {
         "Keyword.Daybound",
         "Keyword.Nightbound",
         "Keyword.Fuse",
+        "Keyword.Crew",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -689,6 +690,7 @@ mod tests {
     #[case::equip(Keyword::Equip(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::reconfigure(Keyword::Reconfigure(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 3, ..Hooks::none() })]
     #[case::living_weapon(Keyword::LivingWeapon, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::crew(Keyword::Crew(3), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::evoke(Keyword::Evoke(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::flashback(Keyword::Flashback(Cost::mana("{2}".parse().unwrap())), Hooks::none())]
     #[case::overload(Keyword::Overload(Cost::mana("{2}".parse().unwrap())), Hooks::none())]

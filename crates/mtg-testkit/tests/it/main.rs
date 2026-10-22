@@ -155,6 +155,7 @@ mod triggers_stack;
 mod triggers_targets;
 mod turn_burn;
 mod turn_structure;
+mod vehicles;
 mod win_effects;
 mod windows_games;
 mod x_after;

@@ -112,6 +112,10 @@ fn names(list: &[&str]) -> BTreeSet<String> {
     r#"{"Activated":{"cost":[{"TapPermanents":{"filter":[{"Type":"Creature"},{"ControlledBy":"You"},"Untapped"],"count":2}}],"effects":[{"Draw":{}}]}}"#,
     &["Ability.Activated", "Cost.TapPermanents", "Effect.Draw"]
 )]
+#[case::tapping_creatures_for_their_power(
+    r#"{"Activated":{"cost":[{"TapPower":{"filter":[{"Type":"Creature"}],"power":3}}],"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Activated", "Cost.TapPower", "Effect.Draw"]
+)]
 #[case::exiling_from_the_graveyard(
     r#"{"Activated":{"cost":[{"ExileFromGraveyard":{"filter":[{"Type":"Creature"}]}}],"effects":[{"Draw":{}}]}}"#,
     &["Ability.Activated", "Cost.ExileFromGraveyard", "Effect.Draw"]

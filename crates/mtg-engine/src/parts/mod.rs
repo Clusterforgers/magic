@@ -38,6 +38,8 @@ pub(crate) enum Kind {
     ExileHand,
     /// An untapped permanent the payer controls is tapped.
     Tap,
+    /// Any number of untapped permanents the payer controls are tapped, with total power at least `Pick.count`.
+    TapPower,
     /// A permanent the payer controls returns to its owner's hand.
     Return,
 }
@@ -49,7 +51,7 @@ pub(crate) struct Pick {
     pub(crate) kind: Kind,
     /// Which objects may be picked.
     pub(crate) filter: Selector,
-    /// How many.
+    /// How many; the least total power for a pick of [`Kind::TapPower`].
     pub(crate) count: usize,
 }
 
@@ -156,6 +158,14 @@ impl Part {
                 pick(Kind::ExileHand, filter, count, item)?
             }
             CostItem::TapPermanents { filter, count } => pick(Kind::Tap, filter, count, item)?,
+            CostItem::TapPower { filter, power } => (
+                Part::Pick(Pick {
+                    kind: Kind::TapPower,
+                    filter: filter.clone(),
+                    count: usize::try_from(*power).unwrap_or(usize::MAX),
+                }),
+                false,
+            ),
             CostItem::ReturnToHand { filter, count } => pick(Kind::Return, filter, count, item)?,
             _ => return Ok(None),
         };
@@ -214,6 +224,7 @@ impl Part {
                 Kind::Exile => "Cost.ExileFromGraveyard",
                 Kind::ExileHand => "Cost.ExileFromHand",
                 Kind::Tap => "Cost.TapPermanents",
+                Kind::TapPower => "Cost.TapPower",
                 Kind::Return => "Cost.ReturnToHand",
             },
         }
@@ -241,7 +252,7 @@ impl Part {
     /// Whether the part taps permanents.
     pub(crate) const fn taps(&self) -> bool {
         match self {
-            Part::Pick(pick) => matches!(pick.kind, Kind::Tap),
+            Part::Pick(pick) => matches!(pick.kind, Kind::Tap | Kind::TapPower),
             Part::X(inner) => inner.taps(),
             _ => false,
         }
@@ -256,6 +267,10 @@ impl Part {
             Part::Energy(amount) => energy::payable(payer, *amount).then(Vec::new),
             Part::Counters { counter, count } => {
                 counters::payable(payer, counter, *count).then(Vec::new)
+            }
+            Part::Pick(pick) if pick.kind == Kind::TapPower => {
+                let power = u32::try_from(pick.count).unwrap_or(u32::MAX);
+                tap::enough(payer.state, pick.candidates(payer), power, spare)
             }
             Part::Pick(pick) => {
                 let mut found = pick.candidates(payer);
@@ -352,9 +367,55 @@ impl Pick {
             Kind::Discard => discard::candidates(payer, &self.filter),
             Kind::Exile => exile::candidates(payer, &self.filter),
             Kind::ExileHand => exile_hand::candidates(payer, &self.filter),
-            Kind::Tap => tap::candidates(payer, &self.filter),
+            Kind::Tap | Kind::TapPower => tap::candidates(payer, &self.filter),
             Kind::Return => bounce::candidates(payer, &self.filter),
         }
+    }
+
+    /// Whether `candidates` cannot pay the part: too few of them, or too little power among them.
+    pub(crate) fn short(&self, state: &GameState, candidates: &[ObjectId]) -> bool {
+        match self.kind {
+            Kind::TapPower => usize::try_from(tap::total_power(state, candidates))
+                .is_ok_and(|total| total < self.count),
+            _ => candidates.len() < self.count,
+        }
+    }
+
+    /// What the part takes without a question when the player has nothing to choose between: all of `candidates`
+    /// when they are exactly as many as it takes, the one candidate for a pick by power, and nothing for 0.
+    pub(crate) fn unasked(&self, candidates: &[ObjectId]) -> Option<Vec<ObjectId>> {
+        let alone = match self.kind {
+            Kind::TapPower => candidates.len() == 1,
+            _ => candidates.len() == self.count,
+        };
+        if alone {
+            Some(candidates.to_vec())
+        } else if self.count == 0 {
+            Some(Vec::new())
+        } else {
+            None
+        }
+    }
+
+    /// The fewest and the most objects the question takes from `offered` candidates.
+    pub(crate) fn bounds(&self, offered: usize) -> (u32, u32) {
+        match self.kind {
+            Kind::TapPower => (1, u32::try_from(offered).unwrap_or(u32::MAX)),
+            _ => {
+                let count = u32::try_from(self.count).unwrap_or(u32::MAX);
+                (count, count)
+            }
+        }
+    }
+
+    /// Whether `picked` are too weak for the part, and the power they and the part have: a pick by power only.
+    pub(crate) fn weak(&self, state: &GameState, picked: &[ObjectId]) -> Option<(u32, u32)> {
+        if self.kind != Kind::TapPower {
+            return None;
+        }
+        let got = tap::total_power(state, picked);
+        let needed = u32::try_from(self.count).unwrap_or(u32::MAX);
+        (got < needed).then_some((needed, got))
     }
 
     /// What the question asks of the player, in the words of a card.
@@ -365,6 +426,7 @@ impl Pick {
             Kind::Exile => exile::text(&self.filter, self.count),
             Kind::ExileHand => exile_hand::text(&self.filter, self.count),
             Kind::Tap => tap::text(&self.filter, self.count),
+            Kind::TapPower => tap::power_text(&self.filter, self.count),
             Kind::Return => bounce::text(&self.filter, self.count),
         }
     }
@@ -376,7 +438,7 @@ impl Pick {
             Kind::Discard => Some(discard::event(player, object)),
             Kind::Exile => exile::event(state, object),
             Kind::ExileHand => exile_hand::event(state, object),
-            Kind::Tap => Some(tap::event(object)),
+            Kind::Tap | Kind::TapPower => Some(tap::event(object)),
             Kind::Return => bounce::event(state, object),
         }
     }

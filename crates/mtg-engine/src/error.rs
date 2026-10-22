@@ -202,6 +202,14 @@ pub enum IllegalAnswer {
         /// Supplied number.
         got: usize,
     },
+    /// The creatures tapped for a cost have less total power than it asks (crew).
+    #[error("the creatures tapped have total power {got} but the cost asks {needed}")]
+    TooLittlePower {
+        /// The total power the cost asks.
+        needed: u32,
+        /// The total power of the creatures chosen.
+        got: u32,
+    },
     /// An attacker that needs several blockers (menace) was blocked by fewer.
     #[error("the attacker needs {needed} blockers together but got {got}")]
     TooFewBlockers {

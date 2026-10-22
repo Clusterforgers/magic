@@ -10,12 +10,14 @@
 use std::borrow::Cow;
 
 use mtg_cards::ability::Ability;
+use mtg_core::ids::ObjectId;
 
-use super::{Ctx, Next, What, Work, x};
+use super::{Ctx, Needs, Next, What, Work, x};
 use crate::choose::{CardsOptions, Choices};
 use crate::decision::DecisionKind;
 use crate::parts::{Part, Payer};
 use crate::price::Price;
+use crate::state::GameState;
 
 /// The price of the cost of an activated ability, when it has parts beyond `{T}`, mana and the loss of the source.
 pub(super) fn read(what: &What, rules: Option<&Ability>) -> Option<Box<Price>> {
@@ -68,22 +70,21 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             source: ctx.source,
             barred: &barred,
         });
-        if candidates.len() < pick.count {
+        if pick.short(ctx.state, &candidates) {
             return Some(Next::Drop);
         }
         // Nothing to choose between: the part takes what there is, or nothing for X = 0.
-        if candidates.len() == pick.count || pick.count == 0 {
-            work.choices
-                .pick_for_cost(candidates.into_iter().take(pick.count).collect());
+        if let Some(taken) = pick.unasked(&candidates) {
+            work.choices.pick_for_cost(taken);
             settled += 1;
             continue;
         }
-        let count = u32::try_from(pick.count).unwrap_or(u32::MAX);
+        let (min, max) = pick.bounds(candidates.len());
         return Some(ctx.ask(DecisionKind::ChooseCards(CardsOptions {
             source: ctx.source,
             from: candidates,
-            min: count,
-            max: count,
+            min,
+            max,
             text: pick.text(),
             can_cancel: ctx.can_cancel(),
         })));
@@ -109,4 +110,28 @@ pub(super) fn most(ctx: &Ctx<'_>, choices: &Choices) -> Option<u32> {
             })
         })
         .min()
+}
+
+/// The power the next pick of the cost needs and the power of `cards`, when the part takes tapped creatures for their
+/// total power and `cards` fall short of it.
+pub(super) fn weak(
+    what: &What,
+    needs: &Needs,
+    choices: &Choices,
+    state: &GameState,
+    cards: &[ObjectId],
+) -> Option<(u32, u32)> {
+    let parts = match what {
+        What::Spell(_) => needs.cost_parts(choices),
+        _ => needs.price.as_deref()?.parts.clone(),
+    };
+    parts
+        .iter()
+        .map(|part| part.at(choices.x.unwrap_or(0)))
+        .filter_map(|part| match part {
+            Part::Pick(pick) => Some(pick),
+            _ => None,
+        })
+        .nth(choices.cost_picks().len())?
+        .weak(state, cards)
 }

@@ -76,6 +76,7 @@ const RUNS: &[&str] = &[
     "Cost.TapPermanents",
     "Cost.ReturnToHand",
     "Cost.ExileFromHand",
+    "Cost.TapPower",
     "Effect.Draw",
     "Effect.Discard",
     "Effect.Mill",
@@ -200,6 +201,7 @@ const RUNS: &[&str] = &[
     "Keyword.Daybound",
     "Keyword.Nightbound",
     "Keyword.Fuse",
+    "Keyword.Crew",
     "Condition.CastWith",
     "Rule.MayCast",
     "Condition.Kicked",
@@ -497,7 +499,8 @@ mod tests {
     #[case::devoid("Keyword.Devoid", false)]
     #[case::infect("Keyword.Infect", false)]
     #[case::myriad("Keyword.Myriad", false)]
-    #[case::crew("Keyword.Crew", false)]
+    #[case::crew("Keyword.Crew", true)]
+    #[case::tapping_creatures_for_their_power_as_a_cost("Cost.TapPower", true)]
     #[case::mutate("Keyword.Mutate", false)]
     #[case::encore("Keyword.Encore", false)]
     #[case::squad("Keyword.Squad", false)]

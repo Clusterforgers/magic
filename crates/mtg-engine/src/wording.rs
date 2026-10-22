@@ -563,6 +563,14 @@ pub(crate) fn tap_untapped(filter: &Selector, count: usize) -> String {
     format!("Tap {what} you control.")
 }
 
+/// What a cost that taps permanents for their power asks: "Tap any number of untapped creatures you control with total
+/// power 3 or more."
+pub(crate) fn tap_power(filter: &Selector, power: usize) -> String {
+    let (head, tail) = phrase(filter);
+    let untapped = join(&plural(&format!("untapped {head}")), &tail);
+    format!("Tap any number of {untapped} you control with total power {power} or more.")
+}
+
 /// What a cost that returns permanents the payer controls to hand asks: "Return a land you control to its owner's hand."
 pub(crate) fn return_to_hand(filter: &Selector, count: usize) -> String {
     let what = counted(filter, count, "you control");
