@@ -115,7 +115,10 @@ fn names_in(text: &str) -> Vec<String> {
 
 /// The list file of these names: sorted, one per line, no duplicates.
 pub fn list_text(names: &BTreeSet<String>) -> String {
-    names.iter().map(|name| format!("{name}\n")).collect()
+    names
+        .iter()
+        .flat_map(|name| [name.as_str(), "\n"])
+        .collect()
 }
 
 /// The corpus cards whose compiled abilities are the hand-written file's.

@@ -1,4 +1,4 @@
-//! Goal: the 180 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
+//! Goal: every corpus card reaches the engine as its support record says (Verified with its abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -24,223 +24,81 @@ use rstest::rstest;
 
 use Support::{Manual, Partial, Verified};
 
-/// Every corpus card with the state the engine's capabilities give it and the number of abilities
-/// its definition carries (mana abilities and rules together). The engine runs the plain mana ability, spells,
-/// `{T}` abilities and triggered abilities made of drawing, discarding, sacrificing, destroying, exiling,
-/// countering, scrying, looking at, revealing and searching for cards, choosing and moving them (onto the battlefield
-/// included), shuffling, life and damage, paying mana as an effect, creating tokens, adding mana, conditions, tapping
-/// and untapping, winning the game, continuous effects and static abilities of every modification (types, subtypes, colours,
-/// power and toughness, keywords, abilities, control and attack and block restrictions), characteristic-defining abilities
-/// (power and toughness from a count, colours) and the keywords of combat and
-/// flash, hexproof and the keywords that are triggers (battle cry, prowess, ward), so the fifty cards that need no more are Verified (the
-/// Forest's ability comes from its land type) and a card whose other abilities are still missing carries what runs as
-/// Partial (Aven Mindcensor). Cascade is played, so Bloodbraid Elf is Verified, and so are the madness and suspend cards.
-/// Counters on permanents and players are played, so Tireless Tracker is Verified, and so are the planeswalkers whose
-/// loyalty abilities and effects run (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk).
-/// Divided damage and counters are played, so Forked Bolt and Armament Corps are Verified; cost increases and reductions are
-/// played too, so Fireball, Thalia, Guardian of Thraben and Foundry Inspector are Verified.
-const CARDS: [(&str, Support, usize); 180] = [
-    ("Act of Treason", Verified, 1),
-    ("Solstice Zealot", Verified, 2),
-    ("Copper-Leaf Angel", Verified, 2),
-    ("Llanowar Behemoth", Verified, 1),
-    ("Lurching Rotbeast", Verified, 1),
-    ("Nantuko Husk", Verified, 1),
-    ("Rummaging Goblin", Verified, 1),
-    ("Soul Shepherd", Verified, 1),
-    ("Souldrinker", Verified, 1),
-    ("Tumble Magnet", Verified, 2),
-    ("Ajani, Caller of the Pride", Verified, 3),
-    ("Ancient Ziggurat", Verified, 1),
-    ("Anger", Verified, 2),
-    ("Anointed Procession", Verified, 1),
-    ("Archon of Cruelty", Verified, 2),
-    ("Batterskull", Verified, 4),
-    ("Battlefield Forge", Verified, 2),
-    ("Black Knight", Verified, 2),
-    ("Bloodbraid Elf", Verified, 2),
-    ("Fiery Temper", Verified, 2),
-    ("Basking Rootwalla", Verified, 2),
-    ("Arrogant Wurm", Verified, 2),
-    ("Rift Bolt", Verified, 2),
-    ("Ancestral Vision", Verified, 2),
-    ("Durkwood Baloth", Verified, 1),
+/// The corpus cards the engine does not play whole, each with the state its capabilities give it and the number of
+/// abilities its definition carries (mana abilities and rules together). Every other corpus card is Verified and carries
+/// the abilities of its file, and a basic land type adds the mana ability of that land type. A Manual card carries none
+/// (a second face, a split card or an adventure is left to the table); a Partial card carries what the engine runs. A
+/// card joins this list when the engine cannot yet play it whole and leaves it when it can.
+const NOT_VERIFIED: &[(&str, Support, usize)] = &[
     ("Bonecrusher Giant // Stomp", Manual, 0),
-    ("Boneyard Scourge", Verified, 2),
-    ("Armguard Familiar", Verified, 3),
-    ("Bonesplitter", Verified, 2),
-    ("Bronzeplate Boar", Verified, 3),
-    ("Corpsejack Menace", Verified, 1),
-    ("Doubling Season", Verified, 2),
-    ("Faithful Watchdog", Verified, 2),
-    ("Furnace of Rath", Verified, 1),
-    ("Hall of Triumph", Verified, 2),
-    ("Hardened Scales", Verified, 1),
-    ("Idyllic Beachfront", Verified, 3),
-    ("Lizard Blades", Verified, 3),
-    ("Brainstorm", Verified, 1),
-    ("Burst Lightning", Verified, 2),
-    ("Caress of Phyrexia", Verified, 1),
-    ("Carnage Tyrant", Verified, 3),
-    ("Cathars' Crusade", Verified, 1),
-    ("Counterspell", Verified, 1),
-    ("Courtly Provocateur", Verified, 2),
-    ("Covetous Dragon", Verified, 2),
-    ("Cultivate", Verified, 1),
-    ("Darksteel Juggernaut", Verified, 3),
-    ("Death Ward", Verified, 1),
     ("Delver of Secrets // Insectile Aberration", Manual, 0),
-    ("Dockside Extortionist", Verified, 1),
-    ("Doom Blade", Verified, 1),
-    ("Drudge Skeletons", Verified, 1),
-    ("Elemental Masterpiece", Verified, 2),
-    ("Eternal Witness", Verified, 1),
-    ("Faithless Looting", Verified, 2),
-    ("Favorable Winds", Verified, 1),
-    ("Felidar Sovereign", Verified, 3),
     ("Fire // Ice", Manual, 0),
-    ("Fireball", Verified, 2),
-    ("Flooded Strand", Verified, 1),
-    ("Foundry Inspector", Verified, 1),
-    ("Fog", Verified, 1),
-    ("Forest", Verified, 1),
-    ("Gaea's Cradle", Verified, 1),
-    ("Garruk Wildspeaker", Verified, 3),
-    ("Gatekeeper of Malakir", Verified, 2),
-    ("Giant Growth", Verified, 1),
-    ("Glorious Anthem", Verified, 1),
-    ("Goblin Chieftain", Verified, 2),
-    ("Goblin Spy", Verified, 1),
-    ("Grizzly Bears", Verified, 0),
-    ("Hero of Bladehold", Verified, 2),
-    ("Hulking Raptor", Verified, 2),
-    ("Humility", Verified, 1),
-    ("Inspiring Call", Verified, 1),
-    ("Izzet Charm", Verified, 1),
-    ("Jace Beleren", Verified, 3),
-    ("Jace, the Mind Sculptor", Verified, 4),
-    ("Jungle Lion", Verified, 1),
-    ("Kormus Bell", Verified, 1),
-    ("Levitation", Verified, 1),
-    ("Lightning Bolt", Verified, 1),
-    ("Llanowar Elves", Verified, 1),
-    ("Lotus Petal", Verified, 1),
-    ("Maralen of the Mornsong", Verified, 2),
-    ("Maro", Verified, 1),
-    ("Mishra's Workshop", Verified, 1),
-    ("Mending Hands", Verified, 1),
-    ("Kor Firewalker", Verified, 2),
-    ("Mindlock Orb", Verified, 1),
-    ("Mother of Runes", Verified, 1),
-    ("Monastery Swiftspear", Verified, 2),
-    ("Mulldrifter", Verified, 3),
-    ("Naban, Dean of Iteration", Verified, 1),
-    ("Nightmare", Verified, 2),
-    ("Opt", Verified, 1),
-    ("Pacifism", Verified, 2),
-    ("Panharmonicon", Verified, 1),
-    ("Parallel Lives", Verified, 1),
-    ("Pillar of the Paruns", Verified, 1),
-    ("Questing Beast", Verified, 6),
-    ("Rally the Ranks", Verified, 2),
-    ("Rampaging Ferocidon", Verified, 3),
-    ("Rampant Growth", Verified, 1),
-    ("Reassembling Skeleton", Verified, 1),
-    ("Rest in Peace", Verified, 2),
-    ("Rosheen Meanderer", Verified, 1),
-    ("Rhox Faithmender", Verified, 2),
-    ("Rhystic Study", Verified, 1),
-    ("Samite Healer", Verified, 1),
-    ("Serra Angel", Verified, 2),
-    ("Sneak Attack", Verified, 1),
-    ("Sodden Verdure", Verified, 3),
-    ("Sol Ring", Verified, 1),
-    ("Soul of Zendikar", Verified, 3),
-    ("Spellbreaker Behemoth", Verified, 2),
-    ("Squee, Goblin Nabob", Verified, 1),
-    ("Steam Vents", Verified, 3),
-    ("Supreme Verdict", Verified, 2),
-    ("Swiftfoot Boots", Verified, 2),
-    ("Swords to Plowshares", Verified, 1),
-    ("Thalia, Guardian of Thraben", Verified, 2),
-    ("Teysa Karlov", Verified, 2),
-    ("Thought Reflection", Verified, 1),
-    ("Tireless Tracker", Verified, 2),
-    ("Transguild Courier", Verified, 1),
-    ("Warmonger Hellkite", Verified, 3),
-    ("Wolfbriar Elemental", Verified, 2),
-    ("Wrath of God", Verified, 1),
-    ("Arvad the Cursed", Verified, 3),
-    ("Control Magic", Verified, 2),
-    ("Epic Proportions", Verified, 3),
-    ("Kongming, \"Sleeping Dragon\"", Verified, 1),
-    ("Shielded by Faith", Verified, 3),
-    ("Squirrel Nest", Verified, 2),
-    ("Sram, Senior Edificer", Verified, 1),
-    ("Blaze", Verified, 1),
-    ("Stroke of Genius", Verified, 1),
-    ("Kessig Wolf Run", Verified, 2),
-    ("Tezzeret the Seeker", Verified, 3),
-    ("Forked Bolt", Verified, 1),
-    ("Armament Corps", Verified, 1),
-    ("Cyclonic Rift", Verified, 2),
-    ("Mizzium Mortars", Verified, 2),
-    ("Omniscience", Verified, 1),
-    ("Vedalken Orrery", Verified, 1),
-    ("Ajani's Pridemate", Verified, 1),
-    ("Thieving Magpie", Verified, 2),
-    ("Underworld Dreams", Verified, 1),
-    ("Megrim", Verified, 1),
-    ("Manabarbs", Verified, 1),
-    ("Mesmeric Orb", Verified, 1),
-    ("Wanderbrine Preacher", Verified, 1),
-    ("Renewed Faith", Verified, 3),
-    ("Skullclamp", Verified, 3),
-    ("Lat-Nam Adept", Verified, 1),
-    ("Fear of Failed Tests", Verified, 1),
-    ("Sanguine Bond", Verified, 1),
-    ("Sword of Body and Mind", Verified, 3),
-    ("The Thing, Ben Grimm", Verified, 2),
-    ("Bloodghast", Verified, 3),
-    ("Stoke the Flames", Verified, 2),
-    ("Gurmag Angler", Verified, 1),
-    ("Treasure Cruise", Verified, 2),
-    ("Murderous Cut", Verified, 2),
-    ("Siege Wurm", Verified, 2),
-    ("Walking Ballista", Verified, 3),
-    ("Hangarback Walker", Verified, 3),
-    ("Gadwick, the Wizened", Verified, 2),
-    ("Disembowel", Verified, 1),
-    ("Forced March", Verified, 1),
-    ("Invisible Stalker", Verified, 2),
     ("Aven Mindcensor", Partial, 2),
     ("Courser of Kruphix", Partial, 2),
-    ("Behold the Multiverse", Verified, 2),
-    ("Saw It Coming", Verified, 2),
-    ("Demon Bolt", Verified, 2),
-    ("Augury Raven", Verified, 2),
-    ("Wargate", Verified, 1),
 ];
 
+/// The abilities a Verified card carries: those of its file the engine runs, and the mana ability each basic land type gives.
+fn abilities_of_a_verified_card(name: &str) -> usize {
+    let library = mtg_cards::builtin::library().unwrap();
+    let file = library
+        .card_by_name(name)
+        .unwrap()
+        .abilities()
+        .filter(|(_, ability)| !ability.is_manual())
+        .count();
+    let definition = card(name).unwrap();
+    let land_types = if definition.types.contains(&CardType::Land) {
+        definition
+            .subtypes
+            .iter()
+            .filter(|subtype| {
+                matches!(
+                    subtype.0.as_str(),
+                    "Plains" | "Island" | "Swamp" | "Mountain" | "Forest"
+                )
+            })
+            .count()
+    } else {
+        0
+    };
+    file + land_types
+}
+
+/// The state and the number of abilities a corpus card is expected to arrive with.
+fn expected_state(name: &str) -> (Support, usize) {
+    NOT_VERIFIED.iter().find(|row| row.0 == name).map_or_else(
+        || (Verified, abilities_of_a_verified_card(name)),
+        |row| (row.1, row.2),
+    )
+}
+
 #[test]
-fn the_table_names_every_corpus_card_once() {
-    let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
-    let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 180);
-    assert_eq!(in_table, in_corpus);
+fn the_cards_that_are_not_verified_are_corpus_cards_listed_once_and_none_of_them_is_verified() {
+    let corpus = corpus().unwrap();
+    let names: BTreeSet<&str> = NOT_VERIFIED.iter().map(|row| row.0).collect();
+    assert_eq!(names.len(), NOT_VERIFIED.len(), "a card twice");
+    for (name, state, _) in NOT_VERIFIED {
+        assert!(corpus.support(name).is_ok(), "{name} is not a corpus card");
+        assert_ne!(
+            *state, Verified,
+            "{name}: Verified is the default and needs no row"
+        );
+    }
 }
 
 #[test]
 fn each_corpus_card_arrives_as_its_support_record_says() {
     let corpus = corpus().unwrap();
     let mut wrong = Vec::new();
-    for (name, state, abilities) in CARDS {
+    for name in corpus.names() {
         let record = corpus.support(name).unwrap();
         let definition = corpus.card(name).unwrap();
         let carried = definition.abilities.len() + definition.rules.len();
+        let (state, abilities) = expected_state(name);
         if (record.support, carried) != (state, abilities) {
             wrong.push(format!(
-                "{name}: {:?} with {carried} abilities, wanted {state:?} with {abilities} ({:?})",
+                "{name}: {:?} with {carried} abilities, wanted {state:?} with {abilities} ({:?}); a card \
+                 the engine cannot play whole gets a row in NOT_VERIFIED (docs/cards-dsl.md, \"Adding a corpus card\")",
                 record.support, record.clauses
             ));
         }
@@ -261,8 +119,9 @@ fn the_gaps_a_record_names_are_the_primitives_the_engine_lacks_and_a_verified_ca
     let caps = mtg_engine::caps();
     let library = mtg_cards::builtin::library().unwrap();
     let corpus = corpus().unwrap();
-    for (name, state, _) in CARDS {
+    for name in corpus.names() {
         let record = corpus.support(name).unwrap();
+        let state = record.support;
         // Worked out here from the engine's capabilities and the file alone.
         let lacking: BTreeSet<String> = library
             .card_by_name(name)
@@ -468,10 +327,7 @@ fn the_cards_with_a_may_a_choice_or_modes_still_lack_other_primitives(
     assert_eq!(lacking(name), expected, "{name}");
     let corpus = corpus().unwrap();
     let record = corpus.support(name).unwrap();
-    let (state, _) = CARDS
-        .iter()
-        .find_map(|(card, state, abilities)| (*card == name).then_some((*state, *abilities)))
-        .unwrap();
+    let (state, _) = expected_state(name);
     assert_eq!(record.support, state, "{name}");
     assert_ne!(record.support, Verified, "{name}");
     for runs in ["Effect.May", "Effect.Choose", "Effect.Modal"] {

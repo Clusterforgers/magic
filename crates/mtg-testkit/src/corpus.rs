@@ -1,4 +1,4 @@
-//! Real card data for engine tests: the 180 cards of the `mtg-cards` corpus, by name.
+//! Real card data for engine tests: the cards of the `mtg-cards` corpus, by name.
 //!
 //! Each card is the imported Scryfall record of `crates/mtg-cards/tests/fixtures/corpus_scryfall.json`
 //! put through the assembly the server uses, with the rules files of this repository and the
@@ -133,19 +133,27 @@ pub fn card(name: &str) -> Result<Arc<CardDefinition>, CorpusError> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: the corpus holds all 180 cards, finds them by full name or face name in any case, and refuses a name it does not have.
+    //! Goal: the corpus holds every card of the rules directory and of the fixture once, finds them by full name or face name in any case, and refuses a name it does not have.
     use super::*;
     use rstest::rstest;
 
     #[test]
-    fn all_fifty_one_cards_are_there_once() {
+    fn every_card_file_and_fixture_record_is_there_once() {
         let corpus = corpus().unwrap();
         let names: Vec<&str> = corpus.names().collect();
-        assert_eq!(names.len(), 180);
         let mut sorted = names.clone();
         sorted.sort_unstable();
         sorted.dedup();
-        assert_eq!(sorted.len(), 180);
+        assert_eq!(sorted.len(), names.len(), "a name twice");
+        let files = builtin::library().unwrap().cards().count();
+        assert_eq!(names.len(), files, "one entry for each card file");
+        assert_eq!(names.len(), cards(SCRYFALL.as_bytes()).count());
+        for name in &names {
+            assert!(
+                builtin::library().unwrap().card_by_name(name).is_some(),
+                "{name}"
+            );
+        }
     }
 
     #[rstest]
