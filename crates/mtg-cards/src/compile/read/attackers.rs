@@ -4,8 +4,10 @@
 //! back.
 
 use super::tokens::Reader;
+use crate::ability::Ability;
 use crate::effect::Effect;
 use crate::refs::{Pred, Ref, Selector};
+use crate::trigger::TriggerPattern;
 use mtg_core::card::CardType;
 
 /// The sentence, without its period.
@@ -24,15 +26,24 @@ fn attacking_opponents() -> Ref {
 fn again(effect: &Effect) -> Option<Effect> {
     let theirs = attacking_opponents();
     Some(match effect {
-        Effect::Draw { who: Ref::You, count } => Effect::Draw {
+        Effect::Draw {
+            who: Ref::You,
+            count,
+        } => Effect::Draw {
             who: theirs,
             count: count.clone(),
         },
-        Effect::GainLife { who: Ref::You, amount } => Effect::GainLife {
+        Effect::GainLife {
+            who: Ref::You,
+            amount,
+        } => Effect::GainLife {
             who: theirs,
             amount: amount.clone(),
         },
-        Effect::LoseLife { who: Ref::You, amount } => Effect::LoseLife {
+        Effect::LoseLife {
+            who: Ref::You,
+            amount,
+        } => Effect::LoseLife {
             who: theirs,
             amount: amount.clone(),
         },
@@ -85,11 +96,27 @@ pub(super) fn does_the_same(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> Op
     r.sentence_end().then(|| effects.extend(repeated))
 }
 
+/// The wordings of a trigger on an attack at a player that name the one who draws ("you draw a card").
+pub(super) fn named_draws(ability: &Ability, texts: &[String]) -> Vec<String> {
+    let attack = matches!(
+        ability,
+        Ability::Triggered {
+            when: TriggerPattern::PlayerAttacked { .. } | TriggerPattern::PlayerAttacks { .. },
+            ..
+        }
+    );
+    texts
+        .iter()
+        .filter(|text| attack && text.contains(", draw "))
+        .map(|text| text.replacen(", draw ", ", you draw ", 1))
+        .collect()
+}
+
 /// The effects that come first when the rest repeats them for the attacking opponents.
 pub(super) fn repeated(effects: &[Effect]) -> Option<&[Effect]> {
     let (head, tail) = effects.split_at(effects.len() / 2);
     (!head.is_empty()
-        && effects.len() % 2 == 0
+        && effects.len().is_multiple_of(2)
         && head
             .iter()
             .zip(tail)

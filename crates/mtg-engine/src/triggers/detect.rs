@@ -645,12 +645,12 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
         (
             TriggerPattern::PlayerAttacks { by, at },
             Happened::PlayerAttacks {
-                by: attacker,
-                at: attacked,
+                by: attacking,
+                at: defending,
             },
-        ) => (scope.players(by).ok()?.contains(attacker)
-            && scope.players(at).ok()?.contains(attacked))
-        .then(|| cause(state, vec![Target::Player(*attacker)])),
+        ) => (scope.players(by).ok()?.contains(attacking)
+            && scope.players(at).ok()?.contains(defending))
+        .then(|| cause(state, vec![Target::Player(*attacking)])),
         (TriggerPattern::SpellCast { what, by }, Happened::Cast { player, spell, .. }) => {
             let reference = object(*spell)?;
             let subjects = vec![Target::Player(*player), Target::Object(reference)];
@@ -1498,6 +1498,50 @@ mod tests {
             Zone::Hand(FOE),
             "the card is in a hand when the ability is photographed"
         );
+    }
+
+    /// A defender of the table below: a player, or a planeswalker (the Watcher stands in for one).
+    type Defender = Option<PlayerId>;
+
+    #[rstest]
+    #[case::a_player_is_attacked(r#"{"PlayerAttacked":{"who":"EachPlayer"}}"#, &[("Bear", Some(FOE))], &[Target::Player(FOE)])]
+    #[case::two_attackers_trigger_it_once(r#"{"PlayerAttacked":{"who":"EachPlayer"}}"#, &[("Bear", Some(FOE)), ("Watcher", Some(FOE))], &[Target::Player(FOE)])]
+    #[case::another_player_is_attacked(r#"{"PlayerAttacked":{"who":"You"}}"#, &[("Bear", Some(FOE))], &[])]
+    #[case::the_controller_is_attacked(r#"{"PlayerAttacked":{"who":"You"}}"#, &[("Ogre", Some(ME))], &[Target::Player(ME)])]
+    #[case::only_a_planeswalker_is_attacked(r#"{"PlayerAttacked":{"who":"EachPlayer"}}"#, &[("Bear", None)], &[])]
+    #[case::a_player_and_a_planeswalker(r#"{"PlayerAttacked":{"who":"EachPlayer"}}"#, &[("Bear", Some(FOE)), ("Watcher", None)], &[Target::Player(FOE)])]
+    #[case::a_player_attacks_an_opponent_once(r#"{"PlayerAttacks":{"at":"Opponents"}}"#, &[("Bear", Some(FOE)), ("Watcher", Some(FOE))], &[Target::Player(ME)])]
+    #[case::a_player_attacks_another(r#"{"PlayerAttacks":{"at":"You"}}"#, &[("Bear", Some(FOE))], &[])]
+    #[case::an_opponent_attacks_the_controller(r#"{"PlayerAttacks":{"by":"Opponents","at":"You"}}"#, &[("Ogre", Some(ME))], &[Target::Player(FOE)])]
+    #[case::the_controller_attacks_a_planeswalker(r#"{"PlayerAttacks":{"at":"Opponents"}}"#, &[("Bear", None)], &[])]
+    fn an_attack_at_a_player_triggers_once_for_the_player_or_for_the_attacker(
+        #[case] when: &str,
+        #[case] attacks: &[(&str, Defender)],
+        #[case] subjects: &[Target],
+    ) {
+        let pre = board(with("Watcher", vec![triggered(when)]));
+        let by = if attacks[0].0 == "Ogre" { FOE } else { ME };
+        let event = Event::AttackersDeclared {
+            player: by,
+            attackers: attacks
+                .iter()
+                .map(|(name, defender)| {
+                    let at = match defender {
+                        Some(player) => AttackTarget::Player(*player),
+                        None => AttackTarget::Planeswalker(id(&pre, "Ogre")),
+                    };
+                    (id(&pre, name), at)
+                })
+                .collect(),
+        };
+        let (_, found) = fire(&pre, &[event]);
+        let seen: Vec<Vec<Target>> = found.iter().map(|t| t.cause.subjects.clone()).collect();
+        let expected: Vec<Vec<Target>> = if subjects.is_empty() {
+            Vec::new()
+        } else {
+            vec![subjects.to_vec()]
+        };
+        assert_eq!(seen, expected);
     }
 
     #[test]

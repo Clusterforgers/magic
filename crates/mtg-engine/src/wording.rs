@@ -78,7 +78,9 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::Tapped => adjectives.push("tapped".to_owned()),
             Pred::Untapped => adjectives.push("untapped".to_owned()),
             Pred::Attacking => adjectives.push("attacking".to_owned()),
-            Pred::AttackingPlayer(Ref::AttachedPlayer) => tail.push("attacking enchanted player".to_owned()),
+            Pred::AttackingPlayer(Ref::AttachedPlayer) => {
+                tail.push("attacking enchanted player".to_owned());
+            }
             Pred::AttackingPlayer(Ref::You) => tail.push("attacking you".to_owned()),
             Pred::Blocking => adjectives.push("blocking".to_owned()),
             Pred::Unblocked => adjectives.push("unblocked".to_owned()),

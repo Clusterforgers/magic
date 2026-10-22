@@ -153,6 +153,7 @@ fn a_card_calling_itself_this_creature_reads_as_the_source() {
 mod activated;
 mod additional;
 mod among;
+mod attacked_player;
 mod audit;
 mod cast;
 mod compound;
@@ -162,7 +163,6 @@ mod counted;
 mod counters;
 mod create;
 mod defining;
-mod attacked_player;
 mod enchanted_player;
 mod enters;
 mod event_batches;

@@ -93,21 +93,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(pronouns);
     }
-    // A trigger on an attack at a player may name the one who draws ("you draw a card").
-    if matches!(
-        ability,
-        Ability::Triggered {
-            when: TriggerPattern::PlayerAttacked { .. } | TriggerPattern::PlayerAttacks { .. },
-            ..
-        }
-    ) {
-        let named: Vec<String> = texts
-            .iter()
-            .filter(|text| text.contains(", draw "))
-            .map(|text| text.replacen(", draw ", ", you draw ", 1))
-            .collect();
-        texts.extend(named);
-    }
+    texts.extend(attackers::named_draws(ability, &texts));
     // The counters counted by "for each" may be those "on it" for the card.
     let pronouns: Vec<String> = texts
         .iter()
@@ -333,21 +319,25 @@ fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Vec<String>> 
 }
 
 /// The sentences of the effects with the joints of the mask closed into compound sentences.
+/// The effects of an attack at the enchanted player and the same again for the opponents who attack: one sentence
+/// more, which no joint splits.
+fn repeating(targets: &[TargetSpec], head: &[Effect], mask: u32, per: bool) -> Option<Vec<String>> {
+    if mask >> (head.len() - 1) != 0 {
+        return None;
+    }
+    let mut sentences = written(targets, head, mask, per)?;
+    sentences.push(attackers::sentence(head).to_owned());
+    Some(sentences)
+}
+
 fn written(
     targets: &[TargetSpec],
     effects: &[Effect],
     mask: u32,
     per: bool,
 ) -> Option<Vec<String>> {
-    // The effects of an attack at the enchanted player and the same again for the opponents who attack: one sentence
-    // more, which no joint splits.
     if let Some(head) = attackers::repeated(effects) {
-        if mask >> (head.len() - 1) != 0 {
-            return None;
-        }
-        let mut sentences = written(targets, head, mask, per)?;
-        sentences.push(attackers::sentence(head).to_owned());
-        return Some(sentences);
+        return repeating(targets, head, mask, per);
     }
     let mut writer = Writer {
         targets,
