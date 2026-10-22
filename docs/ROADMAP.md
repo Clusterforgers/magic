@@ -204,7 +204,7 @@ The server is settled first, then the web is built once against the final types.
 - [x] (c1g) A mana ability whose cost exiles a card from hand (`Take.exile`, Cadaverous Bloom, a Verified corpus card) is a source of every payment and never exiles the card the payment is for, and a list choice with more than six lists is refused by the validator
 - [ ] (c1h) A mana ability with no tap is used more than once in one payment (Cadaverous Bloom exiling two cards for {B}{B}{G}{G}); a payment uses each source once
 - [x] (c2) Characteristic and combat keywords: Changeling, Devoid, Infect, Wither, Toxic, Fear, Intimidate, the landwalks, Skulk, Shadow (`docs/engine.md`, Combat and keywords)
-- [ ] (c2b) Split second (no spell or ability that is not a mana ability while the spell is on the stack), Undaunted (a cost modifier), Ascend
+- [ ] (c2b) Split second (no spell or ability that is not a mana ability while the spell is on the stack), Undaunted (a cost modifier)
 - [ ] (c2c) Improvise granted by a static ability (Inspiring Statuary) and affinity for historic permanents and for Equipment (Banish to Another Universe, Goldwardens' Gambit)
 - [x] (c3) Surveil (the `Surveilled` event; 14 cards) and the Monarch (`MonarchChanged`, the end-step draw, the combat-damage steal, `Condition::Monarch` in an intervening "if"; 2 cards, 21 held back by other wordings)
 - [~] (c3b) (branch c3b-fabricate-learn) Keyword actions and designations, remaining: Time travel, Fabricate, Learn and the city's blessing
