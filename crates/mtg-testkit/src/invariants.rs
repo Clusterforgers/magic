@@ -12,11 +12,11 @@ use mtg_engine::abilities::AbilityRef;
 use mtg_engine::ability_reader;
 use mtg_engine::characteristics::controller_of;
 use mtg_engine::choose::Target;
-use mtg_engine::combat::{AttackTarget, DamageTarget};
+use mtg_engine::combat::{AttackTarget, DamageForm, DamageTarget};
 use mtg_engine::counters::CountersChanged;
 use mtg_engine::effects::Duration;
 use mtg_engine::keywords::{is_indestructible, keywords_of};
-use mtg_engine::object::{ObjectKind, ObjectRef, PermanentState};
+use mtg_engine::object::{GameObject, ObjectKind, ObjectRef, PermanentState};
 use mtg_engine::player::Player;
 use mtg_engine::resolve::Scope;
 use mtg_engine::spend::{Restricted, Spend};
@@ -832,13 +832,16 @@ impl InvariantChecker {
                 self.held_restricted(*player)?.clear();
                 self.check_pool(*player)
             }
-            Event::DamageDealt { target, amount, .. } => {
-                match target {
-                    DamageTarget::Player(p) => self.lose_life(*p, *amount, "damage")?,
-                    DamageTarget::Object(o) => self.damage_object(*o, *amount),
-                }
-                Ok(())
-            }
+            Event::DamageDealt {
+                target,
+                amount,
+                form,
+                toxic,
+                ..
+            } => match target {
+                DamageTarget::Player(p) => self.damage_player(*p, *amount, *form, *toxic),
+                DamageTarget::Object(o) => self.damage_object(*o, *amount, *form),
+            },
             Event::AbilityActivated {
                 player,
                 source,
@@ -907,16 +910,54 @@ impl InvariantChecker {
         Ok(())
     }
 
+    /// Damage to a player is life lost, or with infect poison counters instead; toxic gives poison counters on top.
+    fn damage_player(
+        &mut self,
+        player: PlayerId,
+        amount: u32,
+        form: DamageForm,
+        toxic: u32,
+    ) -> Result<(), Violation> {
+        let poison = if form == DamageForm::Infect {
+            amount.saturating_add(toxic)
+        } else {
+            self.lose_life(player, amount, "damage")?;
+            toxic
+        };
+        if poison == 0 {
+            return Ok(());
+        }
+        self.adjust_counters(&CountersChanged {
+            on: Target::Player(player),
+            counter: CounterKind::Poison,
+            delta: i32::try_from(poison).unwrap_or(i32::MAX),
+        })
+    }
+
     /// Damage to a permanent is marked on a creature (CR 120.3e) and removes that many loyalty counters from a
     /// planeswalker, no more than it holds (CR 120.3c); one that is both takes both.
-    fn damage_object(&mut self, object: ObjectId, amount: u32) {
+    fn damage_object(
+        &mut self,
+        object: ObjectId,
+        amount: u32,
+        form: DamageForm,
+    ) -> Result<(), Violation> {
         let printed = self
             .shadow
             .object(object)
             .map(mtg_engine::object::GameObject::base_types);
         let walker = printed.is_some_and(|types| types.contains(CardType::Planeswalker));
         let creature = printed.is_some_and(|types| types.contains(CardType::Creature));
-        if !walker || creature {
+        if (!walker || creature) && form.makes_counters() {
+            // Wither and infect: -1/-1 counters instead of damage marked (CR 120.3d).
+            if let Some(on) = self.shadow.object(object).map(GameObject::reference) {
+                self.adjust_counters(&CountersChanged {
+                    on: Target::Object(on),
+                    counter: CounterKind::MinusOneMinusOne,
+                    delta: i32::try_from(amount).unwrap_or(i32::MAX),
+                })?;
+            }
+        } else if !walker || creature {
             *self.expected_damage.entry(object).or_default() += amount;
         }
         if walker && let Some(held) = self.expected_object_counters.get_mut(&object) {
@@ -930,6 +971,7 @@ impl InvariantChecker {
                 self.expected_object_counters.remove(&object);
             }
         }
+        Ok(())
     }
 
     /// A loyalty ability and an ability that may be activated only as a sorcery (Equip, Reconfigure) are activated by the

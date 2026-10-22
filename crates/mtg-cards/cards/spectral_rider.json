@@ -1,0 +1,12 @@
+{
+  "oracle_id": "713641c4-544e-4c25-ab11-10894be2cb53",
+  "name": "Spectral Rider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spectral Rider",
+      "oracle_fingerprint": "005a567532085bb2a868a460f23ad57b",
+      "abilities": [{ "Keyword": "Intimidate" }]
+    }
+  ]
+}

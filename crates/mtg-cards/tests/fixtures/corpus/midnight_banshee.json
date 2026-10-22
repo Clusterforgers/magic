@@ -1,0 +1,27 @@
+{
+  "id": "f0a38737-22e6-469f-94d8-12b9a62f4495",
+  "oracle_id": "dd8b6067-a97f-402f-bba1-70ebc6ee1599",
+  "name": "Midnight Banshee",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ecc",
+  "collector_number": "80",
+  "rarity": "rare",
+  "released_at": "2026-01-23",
+  "digital": false,
+  "mana_cost": "{3}{B}{B}{B}",
+  "cmc": 6,
+  "type_line": "Creature — Spirit",
+  "oracle_text": "Wither (This deals damage to creatures in the form of -1/-1 counters.)\nAt the beginning of your upkeep, put a -1/-1 counter on each nonblack creature.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Wither"
+  ]
+}

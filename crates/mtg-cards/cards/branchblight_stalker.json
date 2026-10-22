@@ -1,0 +1,12 @@
+{
+  "oracle_id": "ae685a9b-4cb8-4a8a-935d-378102431c51",
+  "name": "Branchblight Stalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Branchblight Stalker",
+      "oracle_fingerprint": "ac3f65fca893fab24e4c693283690062",
+      "abilities": [{ "Keyword": { "Toxic": 2 } }]
+    }
+  ]
+}

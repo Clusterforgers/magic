@@ -132,6 +132,24 @@ pub enum Keyword {
     Daybound,
     /// Nightbound (CR 702.145): the permanent is turned to its day face when it becomes day.
     Nightbound,
+    /// Wither (CR 702.80): damage this deals to a creature is dealt in the form of -1/-1 counters.
+    Wither,
+    /// Toxic N (CR 702.164): players dealt combat damage by this creature also get N poison counters.
+    Toxic(u32),
+    /// Fear (CR 702.36): can't be blocked except by artifact creatures and/or black creatures.
+    Fear,
+    /// Intimidate (CR 702.13): can't be blocked except by artifact creatures and/or creatures that share a color with it.
+    Intimidate,
+    /// Landwalk (CR 702.14): can't be blocked as long as defending player controls a land the selector names (Islandwalk: an Island).
+    Landwalk(Selector),
+    /// Skulk (CR 702.118): can't be blocked by creatures with greater power.
+    Skulk,
+    /// Shadow (CR 702.28): can block or be blocked by only creatures with shadow.
+    Shadow,
+    /// Split second (CR 702.61): while this spell is on the stack, players can't cast spells or activate abilities that aren't mana abilities.
+    SplitSecond,
+    /// Undaunted (CR 702.125): this spell costs {1} less to cast for each opponent.
+    Undaunted,
     /// Partner with a text (`Partner—Friends forever`, `Partner—Character select`): two commanders that both have the
     /// same text pair (CR 702.124).
     PartnerGroup(String),
@@ -143,7 +161,7 @@ pub enum Keyword {
 
 impl Keyword {
     /// Scryfall's spelling of every keyword in this enum, for matching a record's `keywords`.
-    pub const NAMES: [&'static str; 58] = [
+    pub const NAMES: [&'static str; 67] = [
         "Flash",
         "Flying",
         "Reach",
@@ -199,6 +217,15 @@ impl Keyword {
         "Foretell",
         "Daybound",
         "Nightbound",
+        "Wither",
+        "Toxic",
+        "Fear",
+        "Intimidate",
+        "Landwalk",
+        "Skulk",
+        "Shadow",
+        "Split second",
+        "Undaunted",
         "Partner group",
         "Doctor's companion",
         "Choose a Background",
@@ -262,6 +289,15 @@ impl Keyword {
             Keyword::Foretell(_) => "Foretell",
             Keyword::Daybound => "Daybound",
             Keyword::Nightbound => "Nightbound",
+            Keyword::Wither => "Wither",
+            Keyword::Toxic(_) => "Toxic",
+            Keyword::Fear => "Fear",
+            Keyword::Intimidate => "Intimidate",
+            Keyword::Landwalk(_) => "Landwalk",
+            Keyword::Skulk => "Skulk",
+            Keyword::Shadow => "Shadow",
+            Keyword::SplitSecond => "Split second",
+            Keyword::Undaunted => "Undaunted",
             Keyword::PartnerGroup(_) => "Partner group",
             Keyword::DoctorsCompanion => "Doctor's companion",
             Keyword::ChooseABackground => "Choose a Background",
@@ -348,6 +384,15 @@ mod tests {
             Keyword::Foretell(cost),
             Keyword::Daybound,
             Keyword::Nightbound,
+            Keyword::Wither,
+            Keyword::Toxic(1),
+            Keyword::Fear,
+            Keyword::Intimidate,
+            Keyword::Landwalk(Selector::default()),
+            Keyword::Skulk,
+            Keyword::Shadow,
+            Keyword::SplitSecond,
+            Keyword::Undaunted,
             Keyword::PartnerGroup("Friends forever".into()),
             Keyword::DoctorsCompanion,
             Keyword::ChooseABackground,

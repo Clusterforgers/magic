@@ -59,6 +59,7 @@ export type { Counts } from "./Counts";
 export type { CreatureForecast } from "./CreatureForecast";
 export type { Credentials } from "./Credentials";
 export type { CustomToken } from "./CustomToken";
+export type { DamageForm } from "./DamageForm";
 export type { DamageOptions } from "./DamageOptions";
 export type { DamageShield } from "./DamageShield";
 export type { DamageTarget } from "./DamageTarget";

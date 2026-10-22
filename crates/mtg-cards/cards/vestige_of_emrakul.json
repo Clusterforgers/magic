@@ -1,0 +1,12 @@
+{
+  "oracle_id": "55187899-c445-48e9-80b9-235eaf42f803",
+  "name": "Vestige of Emrakul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vestige of Emrakul",
+      "oracle_fingerprint": "b44e9a4339a0cc6d31b707c797e26567",
+      "abilities": [{ "Keyword": "Devoid" }, { "Keyword": "Trample" }]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "d3178acf-9c5a-418c-bbf7-8e430534396d",
+  "oracle_id": "8ba5e97b-3eac-4291-8674-4b402a5554bc",
+  "name": "Viridian Corrupter",
+  "lang": "en",
+  "layout": "normal",
+  "set": "td2",
+  "collector_number": "56",
+  "rarity": "uncommon",
+  "released_at": "2011-05-14",
+  "digital": true,
+  "mana_cost": "{1}{G}{G}",
+  "cmc": 3,
+  "type_line": "Creature — Phyrexian Elf Shaman",
+  "oracle_text": "Infect (This creature deals damage to creatures in the form of -1/-1 counters and to players in the form of poison counters.)\nWhen this creature enters, destroy target artifact.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Infect"
+  ]
+}

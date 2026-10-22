@@ -1,0 +1,30 @@
+{
+  "id": "8c39dc54-611e-48a8-adba-9cc31afa87d0",
+  "oracle_id": "f33cd975-ab70-4209-a6d8-e0d727772bf2",
+  "name": "Cold-Eyed Selkie",
+  "lang": "en",
+  "layout": "normal",
+  "set": "otc",
+  "collector_number": "218",
+  "rarity": "rare",
+  "released_at": "2024-04-19",
+  "digital": false,
+  "mana_cost": "{1}{G/U}{G/U}",
+  "cmc": 3,
+  "type_line": "Creature — Merfolk Rogue",
+  "oracle_text": "Islandwalk (This creature can't be blocked as long as defending player controls an Island.)\nWhenever this creature deals combat damage to a player, you may draw that many cards.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Landwalk",
+    "Islandwalk"
+  ]
+}

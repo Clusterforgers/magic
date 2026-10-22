@@ -1,0 +1,28 @@
+{
+  "id": "3d5e7afd-57b9-4052-a1b9-45d324955d72",
+  "oracle_id": "e7c07e41-3654-47da-afe3-88aae4c034b6",
+  "name": "Righteous Avengers",
+  "lang": "en",
+  "layout": "normal",
+  "set": "me1",
+  "collector_number": "25",
+  "rarity": "common",
+  "released_at": "2007-09-10",
+  "digital": true,
+  "mana_cost": "{4}{W}",
+  "cmc": 5,
+  "type_line": "Creature — Human Soldier",
+  "oracle_text": "Plainswalk (This creature can't be blocked as long as defending player controls a Plains.)",
+  "power": "3",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Landwalk",
+    "Plainswalk"
+  ]
+}

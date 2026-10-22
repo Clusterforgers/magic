@@ -1,0 +1,12 @@
+{
+  "oracle_id": "58fd5a3c-83ca-4f6a-99db-21d5e03f2345",
+  "name": "Rustrazor Butcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rustrazor Butcher",
+      "oracle_fingerprint": "0537c3df9d823ff0e7271f17aaf2c0f3",
+      "abilities": [{ "Keyword": "FirstStrike" }, { "Keyword": "Wither" }]
+    }
+  ]
+}

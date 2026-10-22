@@ -265,7 +265,14 @@ fn keywords_in_the_data_appear_in_the_oracle_text() {
         for (index, face) in card.faces.iter().enumerate() {
             let text = shown.faces[index].oracle_text.to_lowercase();
             for ability in &face.abilities {
-                if let Ability::Keyword(keyword) = ability
+                // A landwalk is printed by its land type (`Swampwalk`).
+                if let Ability::Keyword(Keyword::Landwalk(_)) = ability {
+                    assert!(
+                        text.contains("walk"),
+                        "{}: the text has no landwalk",
+                        card.name
+                    );
+                } else if let Ability::Keyword(keyword) = ability
                     && !matches!(keyword, Keyword::Fuse)
                 {
                     assert!(

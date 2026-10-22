@@ -5,8 +5,9 @@ use mtg_core::card::CardType;
 
 use super::{invalid, player_mut};
 use crate::characteristics::characteristics;
-use crate::combat::{Attacker, CombatState, DamageTarget};
-use crate::counters::change;
+use crate::choose::Target;
+use crate::combat::{Attacker, CombatState, DamageForm, DamageTarget};
+use crate::counters::{CountersChanged, change};
 use crate::error::EngineError;
 use crate::events::Event;
 use crate::object::GameObject;
@@ -27,6 +28,7 @@ fn damage_object(
     id: mtg_core::ids::ObjectId,
     amount: u32,
     deathtouch: bool,
+    form: DamageForm,
 ) -> Result<(), EngineError> {
     let walker = state
         .object(id)
@@ -40,8 +42,12 @@ fn damage_object(
         .get_mut(&id)
         .and_then(|o| o.permanent.as_mut())
         .ok_or_else(|| invalid(format!("{id:?} cannot be dealt damage")))?;
+    // Wither and infect: the damage to a creature is -1/-1 counters, not damage marked (CR 120.3d).
+    let counters = creature && form.makes_counters();
     if creature {
-        perm.damage = perm.damage.saturating_add(amount);
+        if !counters {
+            perm.damage = perm.damage.saturating_add(amount);
+        }
         perm.deathtouched |= deathtouched;
     }
     if walker {
@@ -53,8 +59,58 @@ fn damage_object(
             change(&mut perm.counters, &CounterKind::Loyalty, delta)?;
         }
     }
+    if counters && amount > 0 {
+        let on = state
+            .object(id)
+            .map(GameObject::reference)
+            .ok_or_else(|| invalid(format!("{id:?} cannot be dealt damage")))?;
+        crate::counters::fold(
+            state,
+            &CountersChanged {
+                on: Target::Object(on),
+                counter: CounterKind::MinusOneMinusOne,
+                delta: i32::try_from(amount)
+                    .map_err(|_| invalid("too much damage dealt as counters"))?,
+            },
+        )?;
+    }
     if amount > 0 {
         tally(state, id, Tally::Damaged);
+    }
+    Ok(())
+}
+
+/// Damage to a player: life lost, or with infect poison counters instead (CR 120.3a, 120.3b), and the poison counters of toxic
+/// (CR 702.164) on top; combat damage a commander deals counts toward commander damage (CR 903.10a).
+fn damage_player(
+    state: &mut GameState,
+    source: mtg_core::ids::ObjectId,
+    id: mtg_core::ids::PlayerId,
+    (amount, form, toxic): (u32, DamageForm, u32),
+) -> Result<(), EngineError> {
+    let combat = state.commanders.any() && crate::replace::in_combat_damage(state);
+    let player = player_mut(state, id)?;
+    if form != DamageForm::Infect {
+        player.life = player
+            .life
+            .saturating_sub(i32::try_from(amount).unwrap_or(i32::MAX));
+    }
+    let poison = match form {
+        DamageForm::Infect => amount.saturating_add(toxic),
+        _ => toxic,
+    };
+    if combat {
+        state.commanders.dealt(source, id, amount);
+    }
+    if poison > 0 {
+        crate::counters::fold(
+            state,
+            &CountersChanged {
+                on: Target::Player(id),
+                counter: CounterKind::Poison,
+                delta: i32::try_from(poison).map_err(|_| invalid("too many poison counters"))?,
+            },
+        )?;
     }
     Ok(())
 }
@@ -131,19 +187,13 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             target,
             amount,
             deathtouch,
+            form,
+            toxic,
         } => match target {
             DamageTarget::Player(id) => {
-                let combat = state.commanders.any() && crate::replace::in_combat_damage(state);
-                let player = player_mut(state, *id)?;
-                player.life = player
-                    .life
-                    .saturating_sub(i32::try_from(*amount).unwrap_or(i32::MAX));
-                // Combat damage a commander deals counts toward commander damage (CR 903.10a).
-                if combat {
-                    state.commanders.dealt(*source, *id, *amount);
-                }
+                damage_player(state, *source, *id, (*amount, *form, *toxic))?;
             }
-            DamageTarget::Object(id) => damage_object(state, *id, *amount, *deathtouch)?,
+            DamageTarget::Object(id) => damage_object(state, *id, *amount, *deathtouch, *form)?,
         },
         Event::CombatEnded => state.combat = CombatState::default(),
         Event::Regenerated { object } => {

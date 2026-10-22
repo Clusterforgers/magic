@@ -1,0 +1,16 @@
+{
+  "oracle_id": "dbdd0963-b395-4cb8-ad9a-ed85a3e9f2e5",
+  "name": "Inkwell Leviathan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inkwell Leviathan",
+      "oracle_fingerprint": "2c232b09d1d35ad3b558e90a58a4c2f9",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": { "Landwalk": [{ "Subtype": "Island" }] } },
+        { "Keyword": "Shroud" }
+      ]
+    }
+  ]
+}
