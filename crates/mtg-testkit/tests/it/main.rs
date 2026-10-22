@@ -188,6 +188,7 @@ mod triggers_fuzz;
 mod triggers_order;
 mod triggers_resume;
 mod triggers_stack;
+mod triggered_keywords;
 mod triggers_targets;
 mod turn_burn;
 mod turn_structure;
