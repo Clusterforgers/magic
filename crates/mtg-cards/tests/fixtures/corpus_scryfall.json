@@ -5766,5 +5766,45 @@
         ]
       }
     ]
+  },
+  {
+    "id": "8d7fdd59-6d76-4a0c-ac75-816345ef4a39",
+    "oracle_id": "41841bbf-1c51-494b-b299-c997cce88e44",
+    "name": "Turn // Burn",
+    "lang": "en",
+    "layout": "split",
+    "set": "dgm",
+    "collector_number": "134",
+    "rarity": "uncommon",
+    "released_at": "2013-05-03",
+    "digital": false,
+    "mana_cost": "{2}{U} // {1}{R}",
+    "cmc": 5.0,
+    "type_line": "Instant // Instant",
+    "colors": [
+      "R",
+      "U"
+    ],
+    "color_identity": [
+      "R",
+      "U"
+    ],
+    "keywords": [
+      "Fuse"
+    ],
+    "card_faces": [
+      {
+        "name": "Turn",
+        "mana_cost": "{2}{U}",
+        "type_line": "Instant",
+        "oracle_text": "Until end of turn, target creature loses all abilities and becomes a red Weird with base power and toughness 0/1.\nFuse (You may cast one or both halves of this card from your hand.)"
+      },
+      {
+        "name": "Burn",
+        "mana_cost": "{1}{R}",
+        "type_line": "Instant",
+        "oracle_text": "Burn deals 2 damage to any target.\nFuse (You may cast one or both halves of this card from your hand.)"
+      }
+    ]
   }
 ]

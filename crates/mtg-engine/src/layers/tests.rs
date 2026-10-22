@@ -160,13 +160,14 @@ fn leaves(game: &mut GameState, name: &str) {
 }
 
 /// The modifications the engine runs.
-const MODIFICATIONS: [&str; 16] = [
+const MODIFICATIONS: [&str; 17] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
     r#"{"AddType":"Artifact"}"#,
     r#"{"RemoveType":"Creature"}"#,
     r#"{"AddSubtype":"Elf"}"#,
+    r#"{"SetCreatureTypes":["Weird"]}"#,
     r#"{"SetColors":["Blue"]}"#,
     r#"{"AddKeyword":"Haste"}"#,
     r#"{"RemoveKeyword":"Flying"}"#,
@@ -202,6 +203,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::AddType(_)
             | mtg_cards::modify::Modification::RemoveType(_)
             | mtg_cards::modify::Modification::AddSubtype(_)
+            | mtg_cards::modify::Modification::SetCreatureTypes(_)
             | mtg_cards::modify::Modification::SetColors(_)
             | mtg_cards::modify::Modification::AddKeyword(_)
             // Only an effect has it, and it works out its keyword with an answer, so it is not a row of the table.

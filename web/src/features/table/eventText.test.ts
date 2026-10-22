@@ -587,6 +587,10 @@ describe('events with more than one shape', () => {
       'Hill Giant becomes Elf too until end of turn',
     ],
     [
+      effect(objects(2), { SetCreatureTypes: ['Weird'] }, 'UntilEndOfTurn'),
+      'Hill Giant becomes Weird until end of turn',
+    ],
+    [
       effect(objects(2), { SetController: 1 }, 'UntilEndOfTurn'),
       'Hill Giant changes controller until end of turn',
     ],

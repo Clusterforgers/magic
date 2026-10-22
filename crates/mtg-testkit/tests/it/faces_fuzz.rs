@@ -1,4 +1,4 @@
-//! Goal: whole bot games at two, three and four seats with a split card, a fuse card, an Adventure, two modal double-faced cards and transforming cards (an upkeep trigger, an activated ability, daybound) keep every invariant, and across the seeds the faces are cast (a half, the Adventure, a back face), Adventures are exiled on an adventure and cast again as the creature, permanents are turned over, the day or night begins, and a log replays to the same state.
+//! Goal: whole bot games at two, three and four seats with a split card, a fuse card, an Adventure, two modal double-faced cards and transforming cards (an upkeep trigger, an activated ability, daybound) keep every invariant, and across the seeds the faces are cast (a half, the Adventure, a back face), back face lands are played, Adventures are exiled on an adventure and cast again as the creature, permanents are turned over, the day or night begins, and a log replays to the same state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeMap;
@@ -34,6 +34,9 @@ fn bot_games_with_cards_of_several_faces_keep_every_invariant() {
                         cause: ZoneCause::Adventure,
                         ..
                     } => *seen.entry("exiled on an adventure").or_default() += 1,
+                    Event::LandPlayed { face: Some(_), .. } => {
+                        *seen.entry("played as a back face land").or_default() += 1;
+                    }
                     Event::Transformed { .. } => *seen.entry("turned over").or_default() += 1,
                     Event::DayNightChanged { .. } => {
                         *seen.entry("day or night began").or_default() += 1;
@@ -48,6 +51,7 @@ fn bot_games_with_cards_of_several_faces_keep_every_invariant() {
         "cast as a face",
         "exiled on an adventure",
         "turned over",
+        "played as a back face land",
         "day or night began",
     ] {
         assert!(

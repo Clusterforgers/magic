@@ -21,6 +21,7 @@
 //! proposed events, adds the answer to the journal and runs the step again, which asks the same questions in the same
 //! order. A game with no replacement effect pays one flag.
 
+use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet};
 use std::sync::Arc;
 
@@ -79,6 +80,20 @@ pub fn process(
     if !(state.possible.replacements || state.possible.protection) || proposed.is_empty() {
         return Ok(Processed::Events(proposed));
     }
+    // A land played as one of its faces enters as that face, so the effects that apply to its entering are the
+    // face's (CR 614.12): the replacement step reads the card as it will be, not as it lies in the hand.
+    let view = proposed
+        .iter()
+        .find_map(|event| match event {
+            Event::LandPlayed {
+                object,
+                face: Some(face),
+                ..
+            } => Some(state.with_face(*object, Some(*face))),
+            _ => None,
+        })
+        .unwrap_or(Cow::Borrowed(state));
+    let state = &*view;
     let sources = gather(state);
     let shields = shields_of(state);
     if sources.is_empty()
@@ -876,7 +891,8 @@ impl Pass<'_> {
             object: spell.reference(),
             controller: spell.controller(),
             action: Action::Replace(ReplaceBy::MoveTo(ZoneKind::Exile)),
-            is_self: true,
+            // The rule is no effect of the spell, so a replacement of the graveyard move (Rest in Peace) is ordered with it (CR 616.1).
+            is_self: false,
         })
     }
 
@@ -1567,10 +1583,9 @@ impl Pass<'_> {
             Event::CreatureDied { .. } => vec![moved(ZoneCause::StateBased)],
             Event::CardDiscarded { .. } => vec![moved(ZoneCause::Discarded)],
             Event::SpellResolved { .. } => {
-                // An Adventure that resolves is exiled on an adventure (CR 715.4).
-                let cause = if self.state.object(object).is_some_and(|spell| {
-                    spell.face() == Some(1) && spell.whole_card().layout == Layout::Adventure
-                }) {
+                // An Adventure that the Adventure rule exiles is on an adventure; one that another effect exiled is
+                // not (CR 715.4).
+                let cause = if applied.contains(&Origin::Adventure) {
                     ZoneCause::Adventure
                 } else {
                     ZoneCause::Moved
