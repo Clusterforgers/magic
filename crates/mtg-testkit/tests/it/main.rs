@@ -13,6 +13,7 @@ mod archon_fuzz;
 mod attach_fuzz;
 mod attachments;
 mod blitz;
+mod blitz_fuzz;
 mod card_lists;
 mod cascade;
 mod cascade_fuzz;

@@ -94,13 +94,12 @@ fn opponent_casts_at(driver: &mut Driver, spell: &str, name: &str) -> Result<(),
 }
 
 #[rstest]
-#[case::treasure_maker("Riveteers Requisitioner", vec![mountain(), mountain(), mountain()], "Treasure")]
-#[case::opponents_shrink("Night Clubber", vec![swamp(), swamp(), swamp()], "Night Clubber")]
-#[case::menace_attacker("Mayhem Patrol", vec![mountain(), mountain()], "Mayhem Patrol")]
+#[case::treasure_maker("Riveteers Requisitioner", vec![mountain(), mountain(), mountain()])]
+#[case::opponents_shrink("Night Clubber", vec![swamp(), swamp(), swamp()])]
+#[case::menace_attacker("Mayhem Patrol", vec![mountain(), mountain()])]
 fn a_blitzed_creature_has_haste_draws_when_it_dies_and_is_sacrificed_at_the_end_step(
     #[case] card: &str,
     #[case] lands: Vec<std::sync::Arc<mtg_cards::CardDefinition>>,
-    #[case] _leaves: &str,
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
     let mut driver =
