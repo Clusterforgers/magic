@@ -315,9 +315,16 @@ pub struct Reader<'a> {
     pub toughness: Option<i32>,
     /// Whether the trigger is about an attack at the monarch, so "that player controls" is the monarch's.
     pub at_monarch: bool,
+    /// Whether the trigger is about the enchanted player being attacked, so "each opponent attacking that player"
+    /// names the opponents with a creature attacking them.
+    pub attacked: bool,
     /// Whether the ability works from the graveyard (its event is not about the card itself), so "return this card
     /// from your graveyard to the battlefield" has a card to return.
     pub from_graveyard: bool,
+    /// Whether the event of the trigger is a spell being cast, so "it" and "that spell" in a copy are that spell.
+    pub cast_spell: bool,
+    /// Whether the event of the trigger is the card itself attacking, so "it" is the card.
+    pub attacker: bool,
 }
 
 impl<'a> Reader<'a> {
@@ -336,7 +343,10 @@ impl<'a> Reader<'a> {
             power: None,
             toughness: None,
             at_monarch: false,
+            attacked: false,
             from_graveyard: false,
+            cast_spell: false,
+            attacker: false,
         }
     }
 

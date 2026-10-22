@@ -33,6 +33,7 @@ impl KeywordRules for Ravenous {
                 by: ReplaceBy::WithCounters {
                     counter: CounterKind::PlusOnePlusOne,
                     count: Amount::X,
+                    tapped: false,
                 },
                 condition: None,
                 from: ZoneKind::Battlefield,
@@ -86,7 +87,8 @@ mod tests {
             *by,
             ReplaceBy::WithCounters {
                 counter: CounterKind::PlusOnePlusOne,
-                count: Amount::X
+                count: Amount::X,
+                tapped: false
             }
         );
         assert_eq!(

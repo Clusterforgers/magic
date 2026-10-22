@@ -1,0 +1,22 @@
+{
+  "oracle_id": "fc74f6a6-9064-4e1b-8dc1-446192bbc448",
+  "name": "Sage of the Beyond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sage of the Beyond",
+      "oracle_fingerprint": "c7ca7dd319e9b1ce81951073dc315ac5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "You" }, { "Not": { "CastFrom": "Hand" } }],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        },
+        { "Keyword": { "Foretell": "{4}{U}" } }
+      ]
+    }
+  ]
+}

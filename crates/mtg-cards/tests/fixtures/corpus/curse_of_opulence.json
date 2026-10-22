@@ -1,0 +1,25 @@
+{
+  "id": "494a6f50-9cd3-4bfc-9382-dce4f7047a81",
+  "oracle_id": "ba0d3df2-3acf-46d7-8d64-8d67d1579adc",
+  "name": "Curse of Opulence",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "209",
+  "rarity": "uncommon",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{R}",
+  "cmc": 1.0,
+  "type_line": "Enchantment — Aura Curse",
+  "oracle_text": "Enchant player\nWhenever enchanted player is attacked, create a Gold token. Each opponent attacking that player does the same. (A Gold token is an artifact with \"Sacrifice this token: Add one mana of any color.\")",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

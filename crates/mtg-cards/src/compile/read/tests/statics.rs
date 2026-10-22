@@ -322,7 +322,6 @@ fn a_bonus_or_a_keyword_reads_as_the_hand_written_files_say(
 
 #[rstest]
 #[case::two_sentences("This land enters tapped. As it enters, choose a color.")]
-#[case::tapped_and_counters("This land enters tapped with two charge counters on it.")]
 #[case::counters_for_each(
     "This creature enters with a +1/+1 counter on it for each creature you control."
 )]
@@ -364,7 +363,6 @@ fn a_bonus_or_a_keyword_reads_as_the_hand_written_files_say(
     "You may look at the top card of target player's library any time."
 )]
 #[case::commanders_of_others("Your commander can be your commander.")]
-#[case::another_permanent("Creatures your opponents control enter tapped.")]
 #[case::cant_be_countered_by_a_group("Spells you cast can't be countered.")]
 #[case::cant_block_unless("This creature can't block creatures with flying.")]
 #[case::attacks_if_able("This creature attacks if able.")]
@@ -446,9 +444,6 @@ fn a_cost_modifier_reads_as_the_hand_written_files_say(#[case] text: &str, #[cas
 }
 
 #[rstest]
-#[case::for_each_of_something(
-    "Spells you cast cost {1} less to cast for each creature you control."
-)]
 #[case::where_x("Spells cost {X} less to cast, where X is the number of artifacts you control.")]
 #[case::as_long_as("Spells cost {1} less to cast as long as it's your turn.")]
 #[case::no_amount("Spells cost less to cast.")]

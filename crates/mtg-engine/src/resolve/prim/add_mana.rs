@@ -100,6 +100,19 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             return Ok(Run::events(events));
         }
         Produce::AnyColor(each) => (COLORS.iter().copied().map(mana_of).collect(), *each),
+        Produce::OrChosenColor(printed) => {
+            let chosen = source
+                .and_then(|id| state.object(id))
+                .and_then(GameObject::permanent)
+                .and_then(PermanentState::chosen);
+            let mut types = vec![*printed];
+            if let Some(Chosen::Color(color)) = chosen
+                && mana_of(*color) != *printed
+            {
+                types.push(mana_of(*color));
+            }
+            (types, 1)
+        }
         Produce::OneOf(types) => (types.clone(), 1),
         Produce::OneOfLists(lists) => {
             let added = Added {
@@ -141,7 +154,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             .iter()
             .map(|kind| ChoiceOption::Label(format!("{{{}}}", kind.symbol())))
             .collect(),
-        Produce::ProducedBy { .. } => kinds
+        Produce::ProducedBy { .. } | Produce::OrChosenColor(_) => kinds
             .iter()
             .map(|kind| match kind.color() {
                 Some(color) => ChoiceOption::Color(color),
@@ -160,7 +173,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .map(|player| OptionChooser {
             player,
             options: options.clone(),
-            text: if matches!(mana, Produce::OneOf(_)) {
+            text: if matches!(mana, Produce::OneOf(_) | Produce::OrChosenColor(_)) {
                 "Choose a type of mana.".into()
             } else {
                 "Choose a color of mana.".into()

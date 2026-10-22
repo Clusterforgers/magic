@@ -1,0 +1,21 @@
+{
+  "id": "b71b3df3-e188-45bb-8dc8-53fd4d527735",
+  "oracle_id": "20b32052-f66f-4eb8-b56e-00d531907f19",
+  "name": "Vivid Marsh",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c17",
+  "collector_number": "292",
+  "rarity": "uncommon",
+  "released_at": "2017-08-25",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land enters tapped with two charge counters on it.\n{T}: Add {B}.\n{T}, Remove a charge counter from this land: Add one mana of any color.",
+  "colors": [],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

@@ -10,18 +10,18 @@ use mtg_core::card::{CardType, Subtype};
 
 use super::abilities;
 use super::amounts::{count_word, number_word};
+use super::copy_spells;
 use super::create::colors_text;
 use super::render;
 use super::selectors::{
-    Form, card_type, color, granted_keywords, granted_text, phrase, phrase_text, subtype, target,
-    type_name,
+    Form, card_type, color, granted_keywords, granted_text, phrase, phrase_text, subtype, type_name,
 };
 use super::tokens::Reader;
 use super::triggers::article;
 use crate::ability::Ability;
 use crate::effect::{Effect, TokenRef};
 use crate::modify::Modification;
-use crate::refs::{Bounds, Pred, Ref, Selector, Targetable};
+use crate::refs::{Bounds, Pred, Ref, Selector};
 use crate::trigger::{ReplaceBy, ReplaceWhen, Step, TriggerPattern};
 use crate::value::Amount;
 
@@ -51,7 +51,7 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let except = r
         .attempt(|r| {
             r.punct(',').then_some(())?;
-            exceptions(r, plural)
+            exceptions(r, if plural { Subject::They } else { Subject::It })
         })
         .unwrap_or_default();
     let delay = r.attempt(|r| {
@@ -65,7 +65,11 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     });
     let create = Effect::CreateToken {
         who: Ref::You,
-        token: TokenRef::CopyOf { of, except },
+        token: TokenRef::CopyOf {
+            of,
+            except,
+            no_mana_cost: false,
+        },
         count,
         tapped: false,
         attacking: false,
@@ -112,14 +116,7 @@ fn copied(r: &mut Reader<'_>) -> Option<Ref> {
     {
         return Some(Ref::Attached);
     }
-    r.attempt(|r| {
-        let of = target(r)?;
-        let spec = r.targets.first()?;
-        let permanent = spec.bounds.is_one()
-            && matches!(&spec.what, Targetable::Object(selector)
-                if !selector.0.iter().any(|pred| matches!(pred, Pred::In(_) | Pred::Spell)));
-        permanent.then_some(of)
-    })
+    copy_spells::permanent_target(r)
 }
 
 /// "populate": a creature token you control is chosen and a token that is a copy of it is created.
@@ -149,6 +146,7 @@ fn populate_steps() -> Vec<Effect> {
             token: TokenRef::CopyOf {
                 of: Ref::Bound(CHOSEN.to_owned()),
                 except: Vec::new(),
+                no_mana_cost: false,
             },
             count: Amount::one(),
             tapped: false,
@@ -184,7 +182,7 @@ pub fn enters_as_copy(r: &mut Reader<'_>) -> Option<Ability> {
     let except = r
         .attempt(|r| {
             r.punct(',').then_some(())?;
-            exceptions(r, false)
+            exceptions(r, Subject::It)
         })
         .unwrap_or_default();
     Some(Ability::Replacement {
@@ -197,20 +195,51 @@ pub fn enters_as_copy(r: &mut Reader<'_>) -> Option<Ability> {
     })
 }
 
-/// "except it's an Illusion in addition to its other types and it has flying", "except they have haste": the parts
-/// joined by "and", each one change to the copiable values. The words about what the copies are ("they're") are not
-/// read.
-fn exceptions(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Modification>> {
+/// Who the exceptions of a copy are about, which sets the words that name it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(super) enum Subject {
+    /// A permanent that enters as a copy or one token: "it's", "it has".
+    It,
+    /// Several tokens: "they have".
+    They,
+    /// A copy of a spell: "the copy is", "the copy has".
+    Copy,
+}
+
+impl Subject {
+    /// The words before what the subject is.
+    const fn is(self) -> &'static str {
+        match self {
+            Subject::Copy => "the copy is",
+            Subject::It | Subject::They => "it's",
+        }
+    }
+
+    /// The words before what the subject has.
+    const fn has(self) -> &'static str {
+        match self {
+            Subject::It => "it has",
+            Subject::They => "they have",
+            Subject::Copy => "the copy has",
+        }
+    }
+}
+
+/// "except it's an Illusion in addition to its other types and it has flying", "except they have haste", "except the
+/// copy is a 1/1 Spirit in addition to its other types": the parts joined by "and", each one change to the copiable
+/// values. The words about what several tokens are ("they're") are not read.
+pub(super) fn exceptions(r: &mut Reader<'_>, subject: Subject) -> Option<Vec<Modification>> {
     r.need("except")?;
+    // The copy of a spell is worded with or without "that".
+    if subject == Subject::Copy {
+        r.word("that");
+    }
     let mut mods = Vec::new();
     loop {
-        if plural {
-            r.need("they have")?;
-            has(r, &mut mods)?;
-        } else if r.word("it's") {
-            mods.push(is(r)?);
+        if subject != Subject::They && r.words(subject.is()) {
+            is(r, &mut mods)?;
         } else {
-            r.need("it has")?;
+            r.need(subject.has())?;
             has(r, &mut mods)?;
         }
         if !r.word("and") {
@@ -239,18 +268,29 @@ fn has(r: &mut Reader<'_>, mods: &mut Vec<Modification>) -> Option<()> {
     Some(())
 }
 
-/// What follows "it's": a type or subtype in addition to the others, colors, or a power and toughness.
-pub(super) fn is(r: &mut Reader<'_>) -> Option<Modification> {
-    if let Some(number) = r.number() {
+/// "7/7": a fixed power and toughness.
+fn power_toughness(r: &mut Reader<'_>) -> Option<Modification> {
+    r.attempt(|r| {
+        let power = r.number()?;
         r.punct('/').then_some(())?;
         let toughness = r.number()?;
-        return Some(Modification::SetPT {
-            power: Amount::Fixed(i32::try_from(number).ok()?),
+        Some(Modification::SetPT {
+            power: Amount::Fixed(i32::try_from(power).ok()?),
             toughness: Amount::Fixed(i32::try_from(toughness).ok()?),
-        });
+        })
+    })
+}
+
+/// What follows "it's": colors, a power and toughness, or types and subtypes in addition to the others ("an Illusion",
+/// "a 1/1 Spirit", "a Golem artifact creature"), which are added in the order they are named.
+fn is(r: &mut Reader<'_>, mods: &mut Vec<Modification>) -> Option<()> {
+    if let Some(size) = power_toughness(r) {
+        mods.push(size);
+        return Some(());
     }
     if r.word("colorless") {
-        return Some(Modification::SetColors(Vec::new()));
+        mods.push(Modification::SetColors(Vec::new()));
+        return Some(());
     }
     if let Some(first) = r.peek_word().and_then(color) {
         r.skip();
@@ -263,63 +303,107 @@ pub(super) fn is(r: &mut Reader<'_>) -> Option<Modification> {
         }) {
             colors.push(more);
         }
-        return Some(Modification::SetColors(colors));
+        mods.push(Modification::SetColors(colors));
+        return Some(());
     }
     (r.word("a") || r.word("an")).then_some(())?;
-    let modification = if let Some(name) = subtype(r) {
-        Modification::AddSubtype(Subtype(name))
-    } else {
-        let found = r.peek_word().and_then(card_type)?;
-        r.skip();
-        Modification::AddType(found)
-    };
+    let size = power_toughness(r);
+    let mut kinds = Vec::new();
+    loop {
+        if let Some(name) = subtype(r) {
+            kinds.push(Modification::AddSubtype(Subtype(name)));
+        } else if let Some(found) = r.peek_word().and_then(card_type) {
+            r.skip();
+            kinds.push(Modification::AddType(found));
+        } else {
+            break;
+        }
+    }
+    (!kinds.is_empty()).then_some(())?;
     r.need("in addition to its other types")?;
-    Some(modification)
+    mods.extend(size);
+    mods.extend(kinds);
+    Some(())
 }
 
-/// The exceptions as a card words them, with "except" and without a comma before it; `None` for a change the
-/// readers do not write.
-pub(super) fn exceptions_text(mods: &[Modification], plural: bool) -> Option<String> {
-    let has = if plural { "they have" } else { "it has" };
-    let mut parts: Vec<String> = Vec::new();
-    let mut rest = mods;
-    while let Some(first) = rest.first() {
-        // Keywords in a row are one phrase.
-        let run = rest
-            .iter()
-            .take_while(|found| matches!(found, Modification::AddKeyword(_)))
-            .count()
-            .max(1);
-        let (these, after) = rest.split_at_checked(run)?;
-        rest = after;
-        parts.push(match first {
-            Modification::AddKeyword(_) => format!("{has} {}", granted_text(these)?),
-            Modification::GrantAbility(ability) => {
-                format!("{has} \"{}\"", render::ability(ability)?)
-            }
-            _ if plural => return None,
-            Modification::AddType(found) => {
-                let name = type_name(*found);
-                format!(
-                    "it's {} {name} in addition to its other types",
-                    article(name)
-                )
-            }
-            Modification::AddSubtype(Subtype(name)) => {
-                format!(
-                    "it's {} {name} in addition to its other types",
-                    article(name)
-                )
-            }
-            Modification::SetColors(colors) => format!("it's {}", colors_text(colors)),
+/// The words of a run of kinds: "an Illusion", "a 1/1 Spirit", "a Golem artifact creature", then "in addition to its
+/// other types"; a size alone is "7/7". `these` begins with the size, if any.
+fn kinds_text(subject: Subject, these: &[Modification]) -> Option<String> {
+    let (size, kinds) = match these {
+        [
             Modification::SetPT {
                 power: Amount::Fixed(power),
                 toughness: Amount::Fixed(toughness),
-            } if *power >= 0 && *toughness >= 0 => format!("it's {power}/{toughness}"),
+            },
+            kinds @ ..,
+        ] if *power >= 0 && *toughness >= 0 => (Some(format!("{power}/{toughness}")), kinds),
+        kinds => (None, kinds),
+    };
+    if kinds.is_empty() {
+        return Some(format!("{} {}", subject.is(), size?));
+    }
+    let words = kinds
+        .iter()
+        .map(|kind| match kind {
+            Modification::AddType(found) => Some(type_name(*found)),
+            Modification::AddSubtype(Subtype(name)) => Some(name.as_str()),
+            _ => None,
+        })
+        .collect::<Option<Vec<_>>>()?;
+    let names = words.join(" ");
+    let article = article(size.as_deref().unwrap_or(&names));
+    let size = size.map(|size| format!("{size} ")).unwrap_or_default();
+    Some(format!(
+        "{} {article} {size}{names} in addition to its other types",
+        subject.is(),
+    ))
+}
+
+/// The exceptions as a card words them, with "except" and without a comma before it; `None` for a change the
+/// readers do not write. A copy of a spell is "except that the copy ...".
+pub(super) fn exceptions_text(mods: &[Modification], subject: Subject) -> Option<String> {
+    let is_kind = |found: &Modification| {
+        matches!(
+            found,
+            Modification::AddType(_) | Modification::AddSubtype(_)
+        )
+    };
+    let mut parts: Vec<String> = Vec::new();
+    let mut rest = mods;
+    while let Some(first) = rest.first() {
+        // Keywords in a row are one phrase, and so are types and subtypes with the size before them.
+        let run = match first {
+            Modification::AddKeyword(_) => rest
+                .iter()
+                .take_while(|found| matches!(found, Modification::AddKeyword(_)))
+                .count(),
+            Modification::SetPT { .. } => 1 + rest[1..].iter().take_while(|m| is_kind(m)).count(),
+            kind if is_kind(kind) => rest.iter().take_while(|m| is_kind(m)).count(),
+            _ => 1,
+        };
+        let (these, after) = rest.split_at_checked(run)?;
+        rest = after;
+        parts.push(match first {
+            Modification::AddKeyword(_) => format!("{} {}", subject.has(), granted_text(these)?),
+            Modification::GrantAbility(ability) => {
+                format!("{} \"{}\"", subject.has(), render::ability(ability)?)
+            }
+            _ if subject == Subject::They => return None,
+            Modification::SetColors(colors) => {
+                format!("{} {}", subject.is(), colors_text(colors))
+            }
+            Modification::SetPT { .. } | Modification::AddType(_) | Modification::AddSubtype(_) => {
+                kinds_text(subject, these)?
+            }
             _ => return None,
         });
     }
-    (!parts.is_empty()).then(|| format!("except {}", parts.join(" and ")))
+    let that = if subject == Subject::Copy {
+        "that "
+    } else {
+        ""
+    };
+    (!parts.is_empty()).then(|| format!("except {that}{}", parts.join(" and ")))
 }
 
 /// A token copy as a sentence without its first capital and period; `of` says what is copied, and `delayed` that
@@ -327,7 +411,12 @@ pub(super) fn exceptions_text(mods: &[Modification], plural: bool) -> Option<Str
 pub(super) fn token_text(effect: &Effect, of: &str, delayed: bool) -> Option<String> {
     let Effect::CreateToken {
         who: Ref::You,
-        token: TokenRef::CopyOf { except, .. },
+        token:
+            TokenRef::CopyOf {
+                except,
+                no_mana_cost: false,
+                ..
+            },
         count,
         tapped: false,
         attacking: false,
@@ -354,7 +443,10 @@ pub(super) fn token_text(effect: &Effect, of: &str, delayed: bool) -> Option<Str
     let tail = if except.is_empty() {
         String::new()
     } else {
-        format!(", {}", exceptions_text(except, plural)?)
+        format!(
+            ", {}",
+            exceptions_text(except, if plural { Subject::They } else { Subject::It })?
+        )
     };
     Some(format!("create {head} {of}{tail}"))
 }
@@ -413,7 +505,7 @@ pub(super) fn enters_text(of: &Selector, except: &[Modification]) -> Option<Stri
     let tail = if except.is_empty() {
         String::new()
     } else {
-        format!(", {}", exceptions_text(except, false)?)
+        format!(", {}", exceptions_text(except, Subject::It)?)
     };
     Some(format!(
         "you may have ~ enter as a copy of {}{tail}",

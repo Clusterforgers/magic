@@ -42,7 +42,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         else {
             continue;
         };
-        let Some(copy) = copy_of_object(cx, object.reference(), &[])? else {
+        let Some(copy) = copy_of_object(cx, object.reference(), &[], false)? else {
             continue;
         };
         for opponent in others(cx, attacker.defender(state)) {

@@ -49,6 +49,7 @@ impl KeywordRules for Squad {
                 token: TokenRef::CopyOf {
                     of: Ref::This,
                     except: Vec::new(),
+                    no_mana_cost: false,
                 },
                 count: Amount::Kicks,
                 tapped: false,
