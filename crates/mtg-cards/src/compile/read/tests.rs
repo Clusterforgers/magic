@@ -23,9 +23,7 @@ fn golden(text: &str, kind: ClauseKind, x_free: bool) -> Ability {
     assert!(!wordings.is_empty(), "not written: {text}");
     assert_eq!(render_ability(&read).as_ref(), wordings.first(), "{text}");
     assert!(
-        wordings.iter().any(|written| {
-            without_period(&canonical(written)) == without_period(&canonical(text))
-        }),
+        wordings.iter().any(|written| same_text(written, text)),
         "{text}: {wordings:?}"
     );
     read
@@ -162,6 +160,7 @@ mod copies;
 mod counted;
 mod counters;
 mod create;
+mod damage_wordings;
 mod defining;
 mod enchanted_player;
 mod enters;
@@ -466,7 +465,6 @@ mod cards_and_life {
 
     #[rstest]
     #[case::equal_to("Draw cards equal to the number of creatures you control.")]
-    #[case::you_and_you("You draw two cards and you lose 2 life.")]
     #[case::unless("Target player draws a card unless they discard a card.")]
     #[case::if_you_do("Draw a card. If you do, gain 1 life.")]
     #[case::if_first("If you control a creature, draw a card.")]
@@ -539,7 +537,6 @@ mod damage {
     #[rstest]
     #[case::divided("~ deals 2 damage divided as you choose among one or two targets.")]
     #[case::two_targets("~ deals 2 damage to target creature and 1 damage to target player.")]
-    #[case::and_each_player("~ deals 3 damage to each creature and each player.")]
     #[case::for_each("~ deals 1 damage to any target for each creature you control.")]
     #[case::equal_to("~ deals damage equal to its power to target creature.")]
     #[case::equal_to_the_number(

@@ -22,8 +22,7 @@ use super::selectors::{Form, granted_text, phrase_text, spec_text};
 use super::spend;
 use super::statics;
 use super::triggers::{
-    article, condition_text, cycled_itself, entered_or_attacked, itself_acts, pattern_text,
-    targeted_itself,
+    article, condition_text, cycled_itself, dies_itself, itself_acts, pattern_text, targeted_itself,
 };
 use crate::ability::{Ability, Limit, Timing};
 use crate::cost::Cost;
@@ -117,8 +116,9 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(pronouns);
     }
-    // A trigger about the card itself entering or attacking may say "it deals" for the card (Skysovereign).
-    if matches!(ability, Ability::Triggered { when, .. } if entered_or_attacked(when)) {
+    // A trigger about the card itself entering, attacking or dying may say "it deals" for the card (Skysovereign).
+    if matches!(ability, Ability::Triggered { when, .. } if itself_acts(when) || dies_itself(when))
+    {
         let pronouns: Vec<String> = texts
             .iter()
             .filter(|text| text.contains(", ~ deals "))
@@ -317,17 +317,30 @@ fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Vec<String>> 
             }
         )
     });
-    let wordings: &[bool] = if counts_tokens {
-        &[false, true]
-    } else {
-        &[false]
-    };
-    masks
+    // "you draw a card and you lose 1 life" names its subject again.
+    let repeats_you = effects.iter().any(|effect| {
+        matches!(
+            effect,
+            Effect::GainLife { who: Ref::You, .. } | Effect::LoseLife { who: Ref::You, .. }
+        )
+    });
+    let mut wordings = vec![(false, false)];
+    if counts_tokens {
+        wordings.push((true, false));
+    }
+    if repeats_you {
+        wordings.push((false, true));
+    }
+    let mut found: Vec<Vec<String>> = masks
         .into_iter()
-        .flat_map(|mask| wordings.iter().map(move |per| (mask, *per)))
-        .filter_map(|(mask, per)| written(targets, effects, mask, per))
+        .flat_map(|mask| wordings.iter().map(move |wording| (mask, *wording)))
+        .filter_map(|(mask, (per, again))| written(targets, effects, mask, per, again))
         .flat_map(|sentences| conditional::wordings(&sentences))
-        .collect()
+        .collect();
+    // The wording of a joint that no run repeats is the same one in each dimension.
+    let mut seen = std::collections::HashSet::new();
+    found.retain(|sentences| seen.insert(sentences.clone()));
+    found
 }
 
 /// The sentences of the effects with the joints of the mask closed into compound sentences.
@@ -336,11 +349,13 @@ fn written(
     effects: &[Effect],
     mask: u32,
     per: bool,
+    again: bool,
 ) -> Option<Vec<String>> {
     let mut writer = Writer {
         targets,
         named: false,
         per,
+        again,
     };
     let mut sentences: Vec<String> = Vec::new();
     let mut start = 0;
@@ -437,7 +452,11 @@ fn written(
                     sentences.push(format!("{pronoun} can't be regenerated"));
                 }
             }
-            group => sentences.push(writer.compound(group)?),
+            group => sentences.push(
+                writer
+                    .damage_group(group)
+                    .or_else(|| writer.compound(group))?,
+            ),
         }
         start = end;
     }
@@ -800,6 +819,8 @@ struct Writer<'a> {
     named: bool,
     /// Tokens counted by things are worded "a token for each ..." and not "X tokens, where X is the number of ...".
     per: bool,
+    /// A player who does two things names themselves again: "you draw a card and you lose 1 life".
+    again: bool,
 }
 
 impl Writer<'_> {
@@ -1307,10 +1328,67 @@ impl Writer<'_> {
             for effect in &rest[..run] {
                 phrases.push(self.predicate(effect, *who != Ref::You)?);
             }
-            clauses.push(format!("{subject} {}", join_list(&phrases)));
+            clauses.push(match phrases.as_slice() {
+                [first, second] if self.again && *who == Ref::You => {
+                    format!("{subject} {first} and {subject} {second}")
+                }
+                _ => format!("{subject} {}", join_list(&phrases)),
+            });
             rest = &rest[run..];
         }
         Some(clauses.join(" and "))
+    }
+
+    /// Damage to two recipients that are no targets and the life gained with it as one sentence: "~ deals 2 damage to each
+    /// creature and each player", "~ deals 3 damage to any target and you gain 3 life".
+    fn damage_group(&mut self, group: &[Effect]) -> Option<String> {
+        let (damage, life) = match group.split_last() {
+            Some((
+                Effect::GainLife {
+                    who: Ref::You,
+                    amount,
+                },
+                rest,
+            )) => (rest, Some(amount)),
+            _ => (group, None),
+        };
+        let mut dealt = None;
+        let mut recipients = Vec::with_capacity(damage.len());
+        for effect in damage {
+            let Effect::DealDamage {
+                source: None,
+                to,
+                amount,
+            } = effect
+            else {
+                return None;
+            };
+            if *dealt.get_or_insert(amount) != amount {
+                return None;
+            }
+            recipients.push(to);
+        }
+        // One group of objects and one of players, as the reader has them.
+        let objects = recipients
+            .iter()
+            .filter(|to| matches!(to, Ref::Each(_)))
+            .count();
+        if recipients.len() > 2 || (recipients.len() == 2 && objects != 1) {
+            return None;
+        }
+        let mut to = Vec::with_capacity(2);
+        for recipient in recipients {
+            to.push(self.recipient(recipient)?);
+        }
+        let mut text = format!(
+            "~ deals {} damage to {}",
+            points_text(dealt?)?,
+            to.join(" and ")
+        );
+        if let Some(life) = life {
+            text.push_str(&format!(" and you gain {}", self.life(life)?));
+        }
+        Some(text)
     }
 
     /// The objects a verb acts on: the target in full, or "all creatures".

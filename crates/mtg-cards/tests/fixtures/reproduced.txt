@@ -101,6 +101,7 @@ Exploration
 Explore
 Faithful Watchdog
 Faithless Looting
+Famine
 Faramir, Steward of Gondor
 Favorable Winds
 Fear of Failed Tests
@@ -137,6 +138,7 @@ Graven Cairns
 Graveshifter
 Grisly Salvage
 Growing Ranks
+Gruul Cluestone
 Guardian Gladewalker
 Gurmag Angler
 Hall of Triumph
@@ -154,6 +156,7 @@ Inkwell Leviathan
 Invisible Stalker
 Izzet Charm
 Jadelight Ranger
+Jagged Barrens
 Jaspera Sentinel
 Jungle Lion
 Karn's Bastion
@@ -312,6 +315,7 @@ Throne of the High City
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
+Tithebearer Giant
 Treasure Cruise
 Tumble Magnet
 Twilight Mire

@@ -257,7 +257,7 @@ fn an_ability_word_is_flavor_and_the_rest_is_read(#[case] text: &str, #[case] re
     "Whenever ~ attacks, choose two \u{2014}\n\u{2022} Draw a card.\n\u{2022} You gain 2 life.\n\u{2022} Scry 1."
 )]
 #[case::its_power("When ~ dies, you gain life equal to its power.")]
-#[case::it_deals("When ~ enters, it deals 2 damage to any target.")]
+#[case::it_is_another_object("Whenever a creature enters, it deals 2 damage to any target.")]
 #[case::an_unread_effect("When ~ enters, goad target creature.")]
 #[case::a_later_unread_sentence("When ~ enters, draw a card. Goad target creature.")]
 #[case::an_if_you_do("When ~ enters, draw a card. If you do, scry 1.")]

@@ -19,7 +19,7 @@ use super::library;
 use super::modal;
 use super::payments;
 use super::prevention;
-use super::selectors::{Form, all, each, granted_keywords, phrase, target};
+use super::selectors::{Form, all, granted_keywords, phrase, target};
 use super::spend;
 use super::tokens::Reader;
 use crate::cost::Cost;
@@ -45,7 +45,7 @@ const TEMPLATES: [Template; 34] = [
     super::actions::explore,
     super::actions::connive,
     player_effect,
-    damage,
+    super::damage::damage,
     removal,
     pump,
     evasion,
@@ -322,7 +322,7 @@ fn player(r: &mut Reader<'_>) -> Option<Ref> {
 }
 
 /// "gain 3 life", "lose X life", "gain life equal to its power": what follows the verb.
-fn life(r: &mut Reader<'_>) -> Option<Amount> {
+pub(super) fn life(r: &mut Reader<'_>) -> Option<Amount> {
     if r.word("life") {
         r.need("equal to")?;
         return its_stat(r);
@@ -335,8 +335,8 @@ fn life(r: &mut Reader<'_>) -> Option<Amount> {
 /// A player draws, discards, mills, gains, loses or sacrifices; one subject may have several verb
 /// phrases, joined by "and" or in a list: "target opponent sacrifices a creature, discards a card,
 /// and loses 3 life". The player the event is about may act after "and" ("you create a Wolf token and that player mills
-/// ten cards"), and so may you after another player ("target player loses 2 life and you gain 2 life"). The effects
-/// are those of the sentence, in order.
+/// ten cards"), and so may you after another player ("target player loses 2 life and you gain 2 life") or after
+/// yourself ("you draw a card and you lose 1 life"). The effects are those of the sentence, in order.
 fn player_effect(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let who = player(r)?;
     let mut effects = phrases(r, &who)?;
@@ -345,7 +345,7 @@ fn player_effect(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         r.need("and")?;
         let next = if r.that_player && r.words("that player") {
             Ref::Triggering
-        } else if who != Ref::You && r.word("you") {
+        } else if r.word("you") {
             Ref::You
         } else {
             return None;
@@ -576,45 +576,6 @@ pub fn returns_itself(effects: &[Effect]) -> bool {
 
 /// The name the permanent returned to its owner's hand is bound to.
 pub const RETURNED: &str = "returned";
-
-/// Who or what takes damage: a single target, "each opponent", "each creature".
-fn recipient(r: &mut Reader<'_>) -> Option<Ref> {
-    if r.words("each opponent") {
-        return Some(Ref::Opponents);
-    }
-    if r.words("each player") {
-        return Some(Ref::EachPlayer);
-    }
-    if r.word("you") {
-        return Some(Ref::You);
-    }
-    if r.that_player && r.words("that player") {
-        return Some(Ref::Triggering);
-    }
-    if let Some(objects) = each(r) {
-        return Some(objects);
-    }
-    r.attempt(|r| {
-        let to = target(r)?;
-        let spec = r.targets.first()?;
-        (spec.bounds.is_one() && spec.divide.is_none()).then_some(to)
-    })
-}
-
-/// "~ deals 3 damage to any target.", and "It deals 1 damage to any target." as the first thing an ability does, where "it" is
-/// the source.
-fn damage(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    (r.source() || (r.targets.is_empty() && r.word("it"))).then_some(())?;
-    r.need("deals")?;
-    let amount = points(r)?;
-    r.need("damage to")?;
-    let to = recipient(r)?;
-    Some(vec![Effect::DealDamage {
-        source: None,
-        to,
-        amount,
-    }])
-}
 
 /// A target object chosen one at a time.
 pub(super) fn target_object(r: &mut Reader<'_>) -> Option<Ref> {
