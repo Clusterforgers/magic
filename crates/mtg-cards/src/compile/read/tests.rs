@@ -160,6 +160,7 @@ mod copies;
 mod counted;
 mod counters;
 mod create;
+mod enchanted_player;
 mod enters;
 mod event_batches;
 mod events;

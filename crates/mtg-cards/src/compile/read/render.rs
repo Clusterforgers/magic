@@ -55,6 +55,21 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(pronouns);
     }
+    // A creature that attacks enchanted player is "it", and the player who controls it "its controller".
+    if matches!(
+        ability,
+        Ability::Triggered {
+            when: TriggerPattern::AttacksPlayer { .. },
+            ..
+        }
+    ) {
+        let pronouns: Vec<String> = texts
+            .iter()
+            .filter(|text| text.contains("that permanent's controller"))
+            .map(|text| text.replace("that permanent's controller", "its controller"))
+            .collect();
+        texts.extend(pronouns);
+    }
     // An activated ability that opens with damage may say "It deals" for the source (Walking Ballista).
     if matches!(ability, Ability::Activated { .. }) {
         let pronouns: Vec<String> = texts
@@ -657,6 +672,8 @@ impl Writer<'_> {
     fn counter_place(&mut self, place: &Ref, several: bool) -> Option<String> {
         match place {
             Ref::This => Some("~".to_owned()),
+            // The creature that attacks enchanted player.
+            Ref::Triggering => Some("it".to_owned()),
             Ref::Target(0)
                 if self.single(place)
                     && self.target_is(|what| matches!(what, Targetable::Object(_))) =>

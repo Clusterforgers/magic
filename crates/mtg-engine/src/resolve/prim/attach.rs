@@ -3,7 +3,7 @@
 use mtg_cards::effect::Effect;
 
 use super::wrong_effect;
-use crate::attach::legal_host;
+use crate::attach::{legal_host, legal_player_host};
 use crate::events::Event;
 use crate::resolve::{Cx, ResolveError, Run};
 use crate::zones::Zone;
@@ -23,7 +23,24 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .into_iter()
         .find(|object| object.zone() == Zone::Battlefield)
     else {
-        return Ok(Run::events(Vec::new()));
+        // A player named instead of a permanent: only an Aura that enchants players may go there.
+        let Some(player) = cx.scope.players(to)?.first().copied() else {
+            return Ok(Run::events(Vec::new()));
+        };
+        let events = cx
+            .scope
+            .live_objects(what)?
+            .into_iter()
+            .filter(|object| {
+                state.player_host_of(object.id()) != Some(player)
+                    && legal_player_host(state, object.id(), player)
+            })
+            .map(|object| Event::AttachedToPlayer {
+                object: object.id(),
+                player,
+            })
+            .collect();
+        return Ok(Run::events(events));
     };
     let events = cx
         .scope

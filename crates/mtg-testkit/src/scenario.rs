@@ -78,6 +78,12 @@ pub fn attached_to(mut permanent: PresetPermanent, seat: usize, place: usize) ->
     permanent
 }
 
+/// `permanent` attached to the player `seat` (an Aura that enchants a player).
+pub fn enchanting(mut permanent: PresetPermanent, seat: usize) -> PresetPermanent {
+    permanent.attached_player = Some(seat);
+    permanent
+}
+
 /// Builds a game state directly instead of playing to it.
 #[derive(Debug, Clone)]
 pub struct Scenario {

@@ -1,0 +1,25 @@
+{
+  "id": "daf631ad-762f-4bec-9588-aca88507cad5",
+  "oracle_id": "69ea4ce2-f749-4d5b-a392-efcfdce14a30",
+  "name": "Curse of Predation",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ima",
+  "collector_number": "159",
+  "rarity": "rare",
+  "released_at": "2017-11-17",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura Curse",
+  "oracle_text": "Enchant player\nWhenever a creature attacks enchanted player, put a +1/+1 counter on it.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

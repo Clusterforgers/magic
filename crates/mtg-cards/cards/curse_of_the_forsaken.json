@@ -1,0 +1,22 @@
+{
+  "oracle_id": "e00f8d6b-5bb1-4625-9fa4-114cdc381bd4",
+  "name": "Curse of the Forsaken",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of the Forsaken",
+      "oracle_fingerprint": "c89913aaa40d2e642e2a3250ac03a87e",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayer": { "what": [{ "Type": "Creature" }], "at": "AttachedPlayer" }
+            },
+            "effects": [{ "GainLife": { "who": { "ControllerOf": "Triggering" }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -35,6 +35,10 @@ mana: ManaPool,
  */
 counters?: Array<[CounterKind, number]>, 
 /**
+ * The Auras that enchant the player, in id order; public, and left out while there are none.
+ */
+enchanted_by?: Array<ObjectId>, 
+/**
  * Mulligans taken.
  */
 mulligans: number, 

@@ -230,6 +230,21 @@ impl GameState {
             .then_some(attached.id)
     }
 
+    /// The player `id` is attached to (an Aura that enchants a player), while that player is still in the game: a
+    /// player who left takes the Auras on them away (CR 800.4a, 704.5m).
+    pub fn player_host_of(&self, id: ObjectId) -> Option<PlayerId> {
+        let player = self.object(id)?.permanent()?.attached_player()?;
+        self.is_alive(player).then_some(player)
+    }
+
+    /// The permanents attached to the player `player`, in id order.
+    pub fn attachments_of_player(&self, player: PlayerId) -> Vec<ObjectId> {
+        self.objects()
+            .map(GameObject::id)
+            .filter(|attached| self.player_host_of(*attached) == Some(player))
+            .collect()
+    }
+
     /// The permanents attached to `id`, in id order.
     pub fn attachments_of(&self, id: ObjectId) -> Vec<ObjectId> {
         self.objects()

@@ -62,6 +62,8 @@ pub enum Ref {
     Triggering,
     /// What the source is attached to ("enchanted creature", "equipped creature").
     Attached,
+    /// The player the source is attached to ("enchanted player").
+    AttachedPlayer,
     /// The result an earlier step bound with `as`.
     Bound(String),
     /// The controller of the referenced object.

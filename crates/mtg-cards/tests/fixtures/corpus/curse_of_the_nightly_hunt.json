@@ -1,0 +1,25 @@
+{
+  "id": "2983c017-1697-4d45-ac58-3f3ccbaaefff",
+  "oracle_id": "cc6f2b79-8fcd-4542-904b-943c7493b8ad",
+  "name": "Curse of the Nightly Hunt",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cm2",
+  "collector_number": "90",
+  "rarity": "uncommon",
+  "released_at": "2018-06-08",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura Curse",
+  "oracle_text": "Enchant player\nCreatures enchanted player controls attack each combat if able.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}
