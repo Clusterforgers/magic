@@ -18,7 +18,7 @@ use thiserror::Error;
 use super::share::{OUTSIDE_A_DIVISION, Share};
 use crate::abilities::Cause;
 use crate::announce::payments;
-use crate::characteristics::{Characteristics, characteristics, seen_as};
+use crate::characteristics::{Characteristics, characteristics, controller_of, seen_as};
 use crate::choose::legal_from;
 use crate::choose::{Choices, Target};
 use crate::keywords::{self, OptionalKind};
@@ -872,6 +872,18 @@ impl<'a> Scope<'a> {
                 return Err(ResolveError::Unsupported("the city's blessing"));
             }
             Condition::YourTurn => self.state.turn().active() == self.controller,
+            Condition::NewlyControlled(what) => {
+                let named = self.objects(what)?;
+                !named.is_empty()
+                    && named.iter().all(|named| {
+                        self.state
+                            .object(named.id)
+                            .filter(|object| object.counter() == named.counter)
+                            .and_then(GameObject::permanent)
+                            .is_some_and(PermanentState::fresh)
+                            && controller_of(self.state, named.id) == Some(self.controller)
+                    })
+            }
         })
     }
 

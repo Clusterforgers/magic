@@ -2,12 +2,14 @@
 
 use mtg_cards::effect::{Destination, Effect, Order, Place};
 use mtg_cards::refs::Ref;
+use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{unsupported, wrong_effect};
 use crate::attach;
 use crate::choose::{Questions, Stop, Target};
+use crate::counters::CountersChanged;
 use crate::events::{Event, ZoneCause};
 use crate::loyalty;
 use crate::mulligan::shuffled;
@@ -119,9 +121,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             let random = *order == Some(Order::Random);
             return Stop::settle(into_libraries(cx, *place, random, &owners));
         }
-        Destination::Battlefield { tapped, under } => {
+        Destination::Battlefield {
+            tapped,
+            under,
+            counters,
+        } => {
             let under = entering_under(cx, under.as_ref())?;
-            return Stop::settle(onto_battlefield(cx, what, &objects, *tapped, under));
+            return Stop::settle(onto_battlefield(
+                cx, what, &objects, *tapped, under, counters,
+            ));
         }
     }
     Ok(Run::Done {
@@ -142,6 +150,7 @@ fn onto_battlefield(
     objects: &[&GameObject],
     tapped: bool,
     under: Option<PlayerId>,
+    counters: &[(CounterKind, u32)],
 ) -> Result<Run, Stop> {
     let state = cx.state();
     let mut questions = Questions::new(cx);
@@ -177,6 +186,21 @@ fn onto_battlefield(
                 controller,
                 chosen: None,
             });
+        }
+        // The counters it enters with are proposed with the move too, for the new object the card becomes (CR 400.7).
+        for (kind, count) in counters {
+            if let Ok(delta) = i32::try_from(*count)
+                && delta > 0
+            {
+                events.push(Event::CountersChanged(CountersChanged {
+                    on: Target::Object(ObjectRef {
+                        id: object.id(),
+                        counter: object.counter() + 1,
+                    }),
+                    counter: kind.clone(),
+                    delta,
+                }));
+            }
         }
         // A planeswalker comes in with its loyalty, proposed with the move so a rule that changes what enters with
         // counters can reach it (CR 306.5b).

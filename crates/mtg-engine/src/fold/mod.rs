@@ -202,6 +202,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
                     .get_mut(&id)
                     .and_then(|o| o.permanent.as_mut())
                 {
+                    perm.fresh = perm.sick_for(*active);
                     perm.summoning_sick = false;
                     perm.observed = Some(*active);
                 }

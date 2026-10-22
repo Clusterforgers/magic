@@ -1,0 +1,15 @@
+{
+  "oracle_id": "ded349de-0599-4744-ad3e-aec95caf9f99",
+  "name": "Skizzik Surger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skizzik Surger",
+      "oracle_fingerprint": "889a51b8196ab27de137ea47449b5648",
+      "abilities": [
+        { "Keyword": "Haste" },
+        { "Keyword": { "Echo": [{ "Sacrifice": { "filter": [{ "Type": "Land" }], "count": 2 } }] } }
+      ]
+    }
+  ]
+}

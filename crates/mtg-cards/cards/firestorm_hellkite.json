@@ -1,0 +1,16 @@
+{
+  "oracle_id": "533e41cc-7cae-47f2-886b-8a3ffb82bf81",
+  "name": "Firestorm Hellkite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Firestorm Hellkite",
+      "oracle_fingerprint": "7b295dca0979ed65abebe0c37da96f6d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        { "Keyword": { "CumulativeUpkeep": "{U}{R}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "a844d537-df73-422d-a154-f1c6b92d0469",
+  "oracle_id": "5470dcfa-4eff-43da-abf7-19922841f719",
+  "name": "Kitchen Finks",
+  "lang": "en",
+  "layout": "normal",
+  "set": "uma",
+  "collector_number": "216",
+  "rarity": "uncommon",
+  "released_at": "2018-12-07",
+  "digital": false,
+  "mana_cost": "{1}{G/W}{G/W}",
+  "cmc": 3,
+  "type_line": "Creature — Ouphe",
+  "oracle_text": "When this creature enters, you gain 2 life.\nPersist (When this creature dies, if it had no -1/-1 counters on it, return it to the battlefield under its owner's control with a -1/-1 counter on it.)",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Persist"
+  ]
+}

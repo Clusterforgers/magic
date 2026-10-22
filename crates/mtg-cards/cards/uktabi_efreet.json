@@ -1,0 +1,12 @@
+{
+  "oracle_id": "2fd9a37f-151a-4501-9d8e-bc67cc902592",
+  "name": "Uktabi Efreet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uktabi Efreet",
+      "oracle_fingerprint": "c69fcf060a68d207ec17b1135d8c3fec",
+      "abilities": [{ "Keyword": { "CumulativeUpkeep": "{G}" } }]
+    }
+  ]
+}

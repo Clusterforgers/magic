@@ -1,0 +1,15 @@
+{
+  "oracle_id": "d69f3aaf-8462-432d-afaf-4176ac04962b",
+  "name": "Morinfen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Morinfen",
+      "oracle_fingerprint": "ba0d5e4f0e1912ec4c8e82f4ae913f09",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "CumulativeUpkeep": [{ "PayLife": 1 }] } }
+      ]
+    }
+  ]
+}

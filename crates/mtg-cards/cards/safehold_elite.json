@@ -1,0 +1,12 @@
+{
+  "oracle_id": "68ca91ba-31fb-47e0-9b32-e4f3504cbbca",
+  "name": "Safehold Elite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Safehold Elite",
+      "oracle_fingerprint": "74d0487704ae66325466d4e8ac8503e7",
+      "abilities": [{ "Keyword": "Persist" }]
+    }
+  ]
+}

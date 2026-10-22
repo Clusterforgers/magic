@@ -250,6 +250,11 @@ const RUNS: &[&str] = &[
     "Keyword.PartnerGroup",
     "Keyword.DoctorsCompanion",
     "Keyword.ChooseABackground",
+    "Keyword.Echo",
+    "Keyword.CumulativeUpkeep",
+    "Keyword.Undying",
+    "Keyword.Persist",
+    "Condition.NewlyControlled",
     "Rule.CanBeCommander",
 ];
 
@@ -543,6 +548,11 @@ mod tests {
     #[case::partner_group("Keyword.PartnerGroup", true)]
     #[case::doctors_companion("Keyword.DoctorsCompanion", true)]
     #[case::choose_a_background("Keyword.ChooseABackground", true)]
+    #[case::echo("Keyword.Echo", true)]
+    #[case::cumulative_upkeep("Keyword.CumulativeUpkeep", true)]
+    #[case::undying("Keyword.Undying", true)]
+    #[case::persist("Keyword.Persist", true)]
+    #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]
     #[case::the_highest_life_total("Amount.HighestLife", true)]

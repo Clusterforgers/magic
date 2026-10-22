@@ -233,12 +233,16 @@ fn keyword() -> impl Strategy<Value = Keyword> {
             Keyword::Myriad,
             Keyword::DoctorsCompanion,
             Keyword::ChooseABackground,
+            Keyword::Undying,
+            Keyword::Persist,
         ]),
         (1u32..10).prop_map(Keyword::Crew),
         cost().prop_map(Keyword::Mutate),
         cost().prop_map(Keyword::Encore),
         cost().prop_map(Keyword::Squad),
         cost().prop_map(Keyword::Foretell),
+        cost().prop_map(Keyword::Echo),
+        cost().prop_map(Keyword::CumulativeUpkeep),
         cost().prop_map(Keyword::Ward),
         cost().prop_map(Keyword::Equip),
         cost().prop_map(Keyword::Reconfigure),
@@ -345,6 +349,7 @@ fn condition() -> impl Strategy<Value = Condition> {
         Just(Condition::Performed),
         leaf_ref().prop_map(Condition::Monarch),
         leaf_ref().prop_map(Condition::CitysBlessing),
+        leaf_ref().prop_map(Condition::NewlyControlled),
     ]
     .prop_recursive(2, 8, 2, |inner| {
         prop_oneof![
@@ -551,8 +556,16 @@ fn destination() -> impl Strategy<Value = Destination> {
     prop_oneof![
         Just(Destination::Hand),
         Just(Destination::Graveyard),
-        (any::<bool>(), proptest::option::of(reference()))
-            .prop_map(|(tapped, under)| Destination::Battlefield { tapped, under }),
+        (
+            any::<bool>(),
+            proptest::option::of(reference()),
+            proptest::collection::vec((counter(), 1u32..4), 0..3),
+        )
+            .prop_map(|(tapped, under, counters)| Destination::Battlefield {
+                tapped,
+                under,
+                counters,
+            }),
         (
             select(vec![Place::Top, Place::Bottom, Place::Shuffled]),
             proptest::option::of(select(vec![Order::Chosen, Order::Random])),
@@ -811,10 +824,11 @@ fn effect() -> impl Strategy<Value = Effect> {
                     way,
                     otherwise,
                 }),
-            (reference(), cost(), list(), list()).prop_map(|(who, cost, paid, unpaid)| {
+            (reference(), cost(), amount(), list(), list()).prop_map(|(who, cost, times, paid, unpaid)| {
                 Effect::Pay {
                     who,
                     cost,
+                    times,
                     paid,
                     unpaid,
                 }

@@ -259,6 +259,7 @@ fn preset_state(
         damage: preset.damage,
         deathtouched: false,
         summoning_sick: preset.summoning_sick,
+        fresh: false,
         counters,
         // Every object of a fresh game is on its first incarnation (counter 0).
         attached_to: host.map(|id| ObjectRef { id, counter: 0 }),

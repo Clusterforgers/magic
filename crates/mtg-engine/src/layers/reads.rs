@@ -215,6 +215,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
             reads_of_ref(subject).or(reads_of_selector(selector))
         }
         Condition::YourTurn => Traits::CONTROL,
+        Condition::NewlyControlled(what) => reads_of_ref(what).or(Traits::CONTROL),
         Condition::Kicked
         | Condition::AdditionalCostPaid
         | Condition::CastWith(_)

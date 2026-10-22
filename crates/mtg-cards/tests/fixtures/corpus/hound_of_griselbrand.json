@@ -1,0 +1,28 @@
+{
+  "id": "0fe68bce-6207-4fd1-9e82-a18fd2d6ddca",
+  "oracle_id": "17425a60-7554-4740-9455-976edd63c106",
+  "name": "Hound of Griselbrand",
+  "lang": "en",
+  "layout": "normal",
+  "set": "avr",
+  "collector_number": "141",
+  "rarity": "rare",
+  "released_at": "2012-05-04",
+  "digital": false,
+  "mana_cost": "{2}{R}{R}",
+  "cmc": 4,
+  "type_line": "Creature — Elemental Dog",
+  "oracle_text": "Double strike\nUndying (When this creature dies, if it had no +1/+1 counters on it, return it to the battlefield under its owner's control with a +1/+1 counter on it.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Undying",
+    "Double strike"
+  ]
+}

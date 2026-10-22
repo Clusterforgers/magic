@@ -1,0 +1,28 @@
+{
+  "id": "d2d0fc9e-fb6b-4a00-b422-32565f7ce454",
+  "oracle_id": "59fb1640-d8ed-476a-a78d-91d60b6faac5",
+  "name": "Goblin War Buggy",
+  "lang": "en",
+  "layout": "normal",
+  "set": "usg",
+  "collector_number": "196",
+  "rarity": "common",
+  "released_at": "1998-10-12",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2,
+  "type_line": "Creature — Goblin",
+  "oracle_text": "Haste\nEcho {1}{R} (At the beginning of your upkeep, if this came under your control since the beginning of your last upkeep, sacrifice it unless you pay its echo cost.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Haste",
+    "Echo"
+  ]
+}

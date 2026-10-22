@@ -36,10 +36,23 @@ use crate::wording;
 /// events (`cast::pay_answer`). The entries of a player who has left the game since are not read, and a player who left
 /// before paying has not paid.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Pay { who, cost, .. } = effect else {
+    let Effect::Pay {
+        who, cost, times, ..
+    } = effect
+    else {
         return Err(wrong_effect("Pay"));
     };
-    let price = price_of(cost)?;
+    let times = usize::try_from(cx.scope.amount(times)?.max(0)).unwrap_or(usize::MAX);
+    // A cost paid no times is paid, and nobody is asked.
+    if times == 0 {
+        return Ok(Run::Done {
+            next: Next::Enter(0),
+            events: Vec::new(),
+            bound: Vec::new(),
+            snapshots: Vec::new(),
+        });
+    }
+    let price = price_of(&repeated(cost, times))?;
     let state = cx.state();
     let mut journal = cx
         .journal()
@@ -77,6 +90,16 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         bound: Vec::new(),
         snapshots: Vec::new(),
     })
+}
+
+/// The cost paid `times` times at once: its parts repeated, so the mana adds up and every pick is made in turn.
+fn repeated(cost: &Cost, times: usize) -> Cost {
+    Cost(
+        std::iter::repeat_n(&cost.0, times)
+            .flatten()
+            .cloned()
+            .collect(),
+    )
 }
 
 fn unexpected(answer: &Choice, player: PlayerId) -> ResolveError {
