@@ -31,13 +31,14 @@ use crate::value::{Amount, CastWay, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 12] = [
+const TEMPLATES: [Template; 13] = [
     entering,
     life_gain::replacement,
     copies::enters_as_copy,
     as_entering,
     rule,
     lands::from_a_zone,
+    lands::cast_from_the_top,
     cannot,
     cost_modifier,
     modifies,
@@ -800,7 +801,10 @@ fn rule_texts(rule: &GameRule, from: ZoneKind) -> Vec<String> {
             lands::additional_texts(who, count)
         }
         (GameRule::MayCast(permission), ZoneKind::Battlefield) => {
-            lands::from_a_zone_text(permission).into_iter().collect()
+            lands::from_a_zone_text(permission)
+                .into_iter()
+                .chain(lands::cast_from_the_top_text(permission))
+                .collect()
         }
         (GameRule::CantGainLife(who), ZoneKind::Battlefield) => life_gain::rule_sentences(who),
         (GameRule::CanBeCommander, ZoneKind::Battlefield) => {
