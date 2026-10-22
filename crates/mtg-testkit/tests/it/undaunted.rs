@@ -6,8 +6,8 @@ use crate::common;
 use common::pid;
 use mtg_core::color::Color;
 use mtg_core::ids::ObjectId;
-use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::choose::Target;
+use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::object::PermanentState;
 use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{creature, island, plains, swamp};
@@ -32,14 +32,16 @@ fn table(
         _ => ready(plains()),
     };
     let bear = || ready(creature("Bear", 1, &[Color::Green], 2, 2));
-    let mut scenario = Scenario::new(seats).hand(0, [card(spell).unwrap()]).battlefield(
-        0,
-        (0..lands)
-            .map(|_| land())
-            .chain(mine.iter().map(|name| ready(modifier(name).unwrap())))
-            .chain([bear(), bear()])
-            .collect::<Vec<_>>(),
-    );
+    let mut scenario = Scenario::new(seats)
+        .hand(0, [card(spell).unwrap()])
+        .battlefield(
+            0,
+            (0..lands)
+                .map(|_| land())
+                .chain(mine.iter().map(|name| ready(modifier(name).unwrap())))
+                .chain([bear(), bear()])
+                .collect::<Vec<_>>(),
+        );
     for seat in 1..seats {
         let own: &[&str] = if seat == 1 { theirs } else { &[] };
         scenario = scenario.battlefield(
@@ -168,5 +170,9 @@ fn a_spell_with_targets_pays_the_reduced_cost_and_resolves(#[values(2, 3, 4)] se
     for _ in 0..seats {
         driver.pass().unwrap();
     }
-    assert_eq!(bears(&driver).len(), seats - 1, "two creatures were destroyed");
+    assert_eq!(
+        bears(&driver).len(),
+        seats - 1,
+        "two creatures were destroyed"
+    );
 }

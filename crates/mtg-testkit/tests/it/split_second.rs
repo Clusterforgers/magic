@@ -102,7 +102,12 @@ fn the_engine_refuses_what_the_options_leave_out(#[values(2, 3, 4)] seats: usize
     let bolt = options(&driver)
         .castable
         .into_iter()
-        .find(|id| driver.state().object(*id).is_some_and(|o| o.card().name == "Lightning Bolt"))
+        .find(|id| {
+            driver
+                .state()
+                .object(*id)
+                .is_some_and(|o| o.card().name == "Lightning Bolt")
+        })
         .unwrap();
     cast(&mut driver, "Sudden Shock", 2);
     assert!(
@@ -133,7 +138,9 @@ fn a_mana_ability_can_still_be_used_but_nothing_is_cast_with_the_mana(
 }
 
 #[rstest]
-fn a_triggered_ability_still_triggers_and_resolves_above_the_spell(#[values(2, 3, 4)] seats: usize) {
+fn a_triggered_ability_still_triggers_and_resolves_above_the_spell(
+    #[values(2, 3, 4)] seats: usize,
+) {
     let mut driver = table(seats, "Sudden Shock", true);
     let swiftspear = driver.id_of("Monastery Swiftspear").unwrap();
     let power = |driver: &Driver| {
