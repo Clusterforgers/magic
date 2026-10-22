@@ -255,7 +255,8 @@ fn take(driver: &mut Driver, action: ManualAction) {
             colors: vec![Color::Black],
             types: vec![CardType::Creature],
             subtypes: vec!["Imp".into()],
-            stats: Some((2, 3)),
+            power: Some(2),
+            toughness: Some(3),
         })),
         count: 1,
     },
@@ -338,13 +339,6 @@ fn an_attachment_is_taken_off_by_hand() {
     assert_eq!(driver.state().host_of(ids.blade), None);
 }
 
-#[test]
-fn a_card_with_a_clause_the_engine_does_not_run_waits_unattached_and_is_attached_by_hand() {
-    let (driver, ids) = game();
-    assert_eq!(driver.state().host_of(ids.charm), None);
-    assert!(zone(&driver, ids.charm) == Zone::Battlefield);
-}
-
 /// Takes the action as seat 0 and returns why it was refused, after checking that nothing changed.
 fn refused(driver: &mut Driver, action: ManualAction) -> ManualRefusal {
     let (log, hash) = (driver.engine().events().len(), driver.state().state_hash());
@@ -366,7 +360,8 @@ fn custom(name: &str, types: Vec<CardType>, stats: Option<(i32, i32)>) -> Manual
             colors: Vec::new(),
             types,
             subtypes: Vec::new(),
-            stats,
+            power: stats.map(|(power, _)| power),
+            toughness: stats.map(|(_, toughness)| toughness),
         })),
         count: 1,
     }

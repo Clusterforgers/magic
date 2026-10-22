@@ -179,7 +179,8 @@ impl ManualScript {
                 colors: vec![Color::Black],
                 types: vec![CardType::Creature],
                 subtypes: vec!["Imp".to_owned()],
-                stats: Some((power, power + 1)),
+                power: Some(power),
+                toughness: Some(power + 1),
             }));
         }
         let all = CommonToken::ALL;

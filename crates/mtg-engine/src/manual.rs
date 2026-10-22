@@ -210,10 +210,14 @@ pub struct CustomToken {
     pub types: Vec<CardType>,
     /// Its subtypes.
     pub subtypes: Vec<String>,
-    /// Its power and toughness, which a creature has and nothing else may.
+    /// Its power, which a creature has and nothing else may.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
-    pub stats: Option<(i32, i32)>,
+    pub power: Option<i32>,
+    /// Its toughness, which a creature has and nothing else may.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub toughness: Option<i32>,
 }
 
 impl CustomToken {
@@ -247,13 +251,13 @@ impl CustomToken {
             return Err(bad("up to 6 subtypes of letters"));
         }
         let creature = self.types.contains(&CardType::Creature);
-        let stats = match (creature, self.stats) {
+        let stats = match (creature, self.power.zip(self.toughness)) {
             (true, Some((power, toughness)))
                 if (0..=MAX_STAT).contains(&power) && (0..=MAX_STAT).contains(&toughness) =>
             {
                 Some((power, toughness))
             }
-            (false, None) => None,
+            (false, None) if self.power.is_none() && self.toughness.is_none() => None,
             _ => return Err(bad("power and toughness from 0 to 99 on a creature only")),
         };
         let mut colors = self.colors.clone();
