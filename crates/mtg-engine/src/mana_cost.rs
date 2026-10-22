@@ -166,8 +166,8 @@ impl Search<'_> {
                     continue;
                 }
                 let mut after = free;
-                for kind in 0..6 {
-                    after[kind] -= ask.typed[kind];
+                for (slot, typed) in after.iter_mut().zip(ask.typed) {
+                    *slot -= typed;
                 }
                 let mut ways = Vec::new();
                 spread(ask.any, &order, 0, &after, &mut [0; 6], &mut ways);
@@ -358,8 +358,8 @@ pub(crate) struct Forced<'a> {
     pub taps: &'a [ManaSource],
 }
 
-/// What is still needed of the plain cost and of the mana costs added to it: each type's requirement and the mana of any
-/// kind in all, and which sources that cost mana or add restricted mana are used (bit `n` is the `n`th of them).
+/// What is still needed of the plain cost and of the mana costs added to it: each type's requirement and more mana of any
+/// kind, and which sources that cost mana or add restricted mana are used (bit `n` is the `n`th of them).
 type Key = (u64, Needs, u32);
 
 /// A plan's weight, the sources it taps and the floating mana it spends.
@@ -447,66 +447,197 @@ fn units_of(types: &Counts) -> Vec<ManaType> {
     units
 }
 
-/// The plan with the fewest sacrifices, then the fewest sources that do more than add mana, then the fewest taps, that
-/// covers the plain `cost` and keeps the parts in `forced`; it may have a part to spare. `None` when the sources and
-/// the floating mana cannot cover the cost.
-///
-/// The sources are searched backwards: floating mana with a restriction is applied to the cost first, then up to
-/// [`CHAIN`] sources that cost mana (each covers some of what is needed and adds its own cost to it), then the floating
-/// mana without a restriction, then the sources that cost nothing.
-fn plan(
-    cost: &ManaCost,
-    pool: &Floating,
-    groups: &[Vec<ManaOption>],
-    forced: &Forced<'_>,
-) -> Option<Payment> {
-    let all = u32::try_from(groups.iter().map(Vec::len).sum::<usize>()).unwrap_or(u32::MAX);
-    let plenty = |mana: ManaType| {
-        u32::try_from(
-            groups
-                .iter()
-                .flatten()
-                .filter(|o| o.produces == mana)
-                .count(),
-        )
-        .unwrap_or(u32::MAX)
-    };
-    let mut needs: Needs = [0; 6];
-    for mana in ManaType::ALL {
-        needs[mana.index()] = cost.required(mana);
-    }
-    let start = (needs, cost.generic());
+/// The plans found so far, the best for each state.
+type Plans = BTreeMap<Key, Plan>;
 
-    // The groups that matter to more than one stage: sources that cost mana or add restricted mana.
-    let special: Vec<usize> = groups
-        .iter()
-        .enumerate()
-        .filter(|(_, group)| group.iter().any(|o| o.is_costly() || !o.only.is_empty()))
-        .map(|(at, _)| at)
-        .take(64)
-        .collect();
-    let bit_of = |group: usize| special.iter().position(|g| *g == group).map(|n| 1u64 << n);
-    let forced_group = |source: &ManaSource| {
-        groups
+/// What a source does for a plan, which decides the stage that uses it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Class {
+    /// Adds mana with a restriction, which pays the cost of the payment only.
+    Restricted,
+    /// Costs mana.
+    Costly,
+    /// Adds mana without a restriction and costs none.
+    Plain,
+}
+
+fn class_of(option: &ManaOption) -> Class {
+    if option.is_costly() {
+        Class::Costly
+    } else if option.only.is_empty() {
+        Class::Plain
+    } else {
+        Class::Restricted
+    }
+}
+
+/// The sources a plan chooses from, and the parts it must keep.
+struct Planner<'a> {
+    groups: &'a [Vec<ManaOption>],
+    forced: &'a Forced<'a>,
+    /// The groups that matter to more than one stage: sources that cost mana or add restricted mana.
+    special: Vec<usize>,
+    /// How many options there are, for the weight of a plan.
+    all: u32,
+}
+
+impl Planner<'_> {
+    /// The bit of `group` in the mask of the groups used, for a special group.
+    fn bit_of(&self, group: usize) -> Option<u64> {
+        self.special
+            .iter()
+            .position(|g| *g == group)
+            .map(|n| 1u64 << n)
+    }
+
+    /// The group that has `source`.
+    fn group_of(&self, source: &ManaSource) -> Option<usize> {
+        self.groups
             .iter()
             .position(|group| group.iter().any(|o| o.source == *source))
-    };
-    // A source that was given is the only way its permanent is used.
-    let pinned = |group: usize| {
-        forced
+    }
+
+    /// The source that was given for `group`, which is then the only way its permanent is used.
+    fn pinned(&self, group: usize) -> Option<&ManaSource> {
+        self.forced
             .taps
             .iter()
-            .find(|tap| groups[group].iter().any(|o| o.source == **tap))
-    };
+            .find(|tap| self.groups[group].iter().any(|o| o.source == **tap))
+    }
 
-    // Floating mana with a restriction pays the cost of the payment only.
+    /// How many options make `mana`.
+    fn plenty(&self, mana: ManaType) -> u32 {
+        let found = self.groups.iter().flatten().filter(|o| o.produces == mana);
+        u32::try_from(found.count()).unwrap_or(u32::MAX)
+    }
+
+    /// Adds the plan of `plan` with `option` used to `next` under `key`, if it is the best so far.
+    fn insert(&self, next: &mut Plans, key: Key, plan: &Plan, option: &ManaOption) {
+        let weight = plan
+            .weight
+            .with(option, self.all, self.plenty(option.produces));
+        if next.get(&key).is_none_or(|held| weight < held.weight) {
+            let mut taps = plan.taps.clone();
+            taps.push(option.source);
+            next.insert(
+                key,
+                Plan {
+                    weight,
+                    taps,
+                    pool: plan.pool,
+                },
+            );
+        }
+    }
+
+    /// Each group's options of `class` used or not, at most one option of a group; a source that was given is used.
+    fn free_stage(&self, mut best: Plans, class: Class) -> Plans {
+        for (at, group) in self.groups.iter().enumerate() {
+            let bit = self.bit_of(at);
+            if class == Class::Restricted && bit.is_none() {
+                continue;
+            }
+            let must = self.pinned(at).filter(|tap| {
+                group
+                    .iter()
+                    .any(|o| o.source == **tap && class_of(o) == class)
+            });
+            let mut next = if must.is_some() {
+                Plans::new()
+            } else {
+                best.clone()
+            };
+            for ((mask, needs, left), plan) in &best {
+                if class == Class::Plain && bit.is_some_and(|bit| mask & bit != 0) {
+                    continue;
+                }
+                for option in group {
+                    if class_of(option) != class
+                        || self.pinned(at).is_some_and(|tap| option.source != *tap)
+                    {
+                        continue;
+                    }
+                    let after = apply((*needs, *left), &option.made());
+                    let used = if class == Class::Restricted {
+                        mask | bit.unwrap_or(0)
+                    } else {
+                        *mask
+                    };
+                    self.insert(&mut next, (used, after.0, after.1), plan, option);
+                }
+            }
+            best = next;
+        }
+        best
+    }
+
+    /// Up to `depth` sources that cost mana, the last one activated first: each covers some of what is needed and adds its
+    /// own cost to it. A plan that asks for more than the floating mana (`held`) and every source could make is dropped.
+    fn costly_stage(&self, mut best: Plans, depth: usize, held: u32) -> Plans {
+        let can_make: u32 = self
+            .groups
+            .iter()
+            .map(|group| {
+                let sizes = group.iter().map(|o| o.made().len());
+                u32::try_from(sizes.max().unwrap_or(0)).unwrap_or(u32::MAX)
+            })
+            .sum();
+        let mut layer = best.clone();
+        for _ in 0..depth {
+            let mut next = Plans::new();
+            for ((mask, needs, left), plan) in &layer {
+                for &group in &self.special {
+                    let Some(bit) = self.bit_of(group) else {
+                        continue;
+                    };
+                    if mask & bit != 0 {
+                        continue;
+                    }
+                    for option in &self.groups[group] {
+                        if class_of(option) != Class::Costly
+                            || !option.only.is_empty()
+                            || self.pinned(group).is_some_and(|tap| option.source != *tap)
+                        {
+                            continue;
+                        }
+                        for ask in asks(&option.cost) {
+                            let (mut after, more) = apply((*needs, *left), &option.made());
+                            for (slot, typed) in after.iter_mut().zip(ask.typed) {
+                                *slot += typed;
+                            }
+                            let more = more + ask.any;
+                            if total(&after) + more > held + can_make {
+                                continue;
+                            }
+                            self.insert(&mut next, (mask | bit, after, more), plan, option);
+                        }
+                    }
+                }
+            }
+            for (key, plan) in &next {
+                if best.get(key).is_none_or(|kept| plan.weight < kept.weight) {
+                    best.insert(*key, plan.clone());
+                }
+            }
+            layer = next;
+        }
+        best
+    }
+}
+
+/// The restricted floating mana that pays the cost of the payment, `need` after it, and the units used: the units in
+/// `forced` first, then every other unit that meets a need, types first.
+fn apply_restricted(
+    mut need: (Needs, u32),
+    pool: &Floating,
+    forced: &Forced<'_>,
+) -> Option<((Needs, u32), Vec<Restricted>)> {
     let mut units: Vec<Restricted> = pool.units().to_vec();
-    let mut restricted: Vec<Restricted> = Vec::new();
-    let mut need = start;
+    let mut used: Vec<Restricted> = Vec::new();
     for unit in forced.restricted {
         let at = units.iter().position(|held| held == unit)?;
         need = apply_one(need, unit.mana)?;
-        restricted.push(units.remove(at));
+        used.push(units.remove(at));
     }
     for pass in 0..2 {
         let mut rest = Vec::new();
@@ -515,15 +646,49 @@ fn plan(
             match apply_one(need, unit.mana) {
                 Some(after) if (pass == 0) == typed => {
                     need = after;
-                    restricted.push(unit);
+                    used.push(unit);
                 }
                 _ => rest.push(unit),
             }
         }
         units = rest;
     }
+    Some((need, used))
+}
 
-    let mut best: BTreeMap<Key, Plan> = BTreeMap::new();
+/// The plan with the fewest sacrifices, then the fewest sources that do more than add mana, then the fewest taps, that
+/// covers the plain `cost` and keeps the parts in `forced`; it may have a part to spare. `None` when the sources and
+/// the floating mana cannot cover the cost.
+///
+/// The sources are searched backwards: floating mana with a restriction is applied to the cost first, then the sources
+/// that add restricted mana, up to [`CHAIN`] sources that cost mana, the floating mana without a restriction and the
+/// sources that cost nothing.
+fn plan(
+    cost: &ManaCost,
+    pool: &Floating,
+    groups: &[Vec<ManaOption>],
+    forced: &Forced<'_>,
+) -> Option<Payment> {
+    let mut needs: Needs = [0; 6];
+    for mana in ManaType::ALL {
+        needs[mana.index()] = cost.required(mana);
+    }
+    let special: Vec<usize> = groups
+        .iter()
+        .enumerate()
+        .filter(|(_, group)| group.iter().any(|o| o.is_costly() || !o.only.is_empty()))
+        .map(|(at, _)| at)
+        .take(64)
+        .collect();
+    let planner = Planner {
+        groups,
+        forced,
+        special,
+        all: u32::try_from(groups.iter().map(Vec::len).sum::<usize>()).unwrap_or(u32::MAX),
+    };
+
+    let (need, restricted) = apply_restricted((needs, cost.generic()), pool, forced)?;
+    let mut best = Plans::new();
     best.insert(
         (0, need.0, need.1),
         Plan {
@@ -532,136 +697,26 @@ fn plan(
             pool: [0; 6],
         },
     );
+    best = planner.free_stage(best, Class::Restricted);
 
-    // Sources that add restricted mana, with the cost of the payment still all there is to pay.
-    for &group in &special {
-        let Some(bit) = bit_of(group) else { continue };
-        let must = forced
-            .taps
-            .iter()
-            .find(|tap| forced_group(tap) == Some(group))
-            .filter(|tap| {
-                groups[group]
-                    .iter()
-                    .any(|o| o.source == **tap && !o.only.is_empty() && !o.is_costly())
-            });
-        let mut next = if must.is_some() {
-            BTreeMap::new()
-        } else {
-            best.clone()
-        };
-        for ((mask, needs, left), plan) in &best {
-            for option in &groups[group] {
-                if option.is_costly() || option.only.is_empty() {
-                    continue;
-                }
-                if pinned(group).is_some_and(|tap| option.source != *tap) {
-                    continue;
-                }
-                let after = apply((*needs, *left), &option.made());
-                let key = (mask | bit, after.0, after.1);
-                let weight = plan.weight.with(option, all, plenty(option.produces));
-                if next.get(&key).is_none_or(|held| weight < held.weight) {
-                    let mut taps = plan.taps.clone();
-                    taps.push(option.source);
-                    next.insert(
-                        key,
-                        Plan {
-                            weight,
-                            taps,
-                            pool: plan.pool,
-                        },
-                    );
-                }
-            }
-        }
-        best = next;
-    }
-
-    // Sources that cost mana, the last one activated first.
-    let mut layer = best.clone();
-    let costly_forced: Vec<ManaSource> = forced
-        .taps
-        .iter()
-        .copied()
-        .filter(|tap| {
-            groups
-                .iter()
-                .flatten()
-                .any(|o| o.source == *tap && o.is_costly())
-        })
-        .collect();
     let mut must_mask = 0u64;
-    for tap in &costly_forced {
-        must_mask |= forced_group(tap).and_then(bit_of)?;
-    }
-    let depth = CHAIN.max(costly_forced.len());
-    let can_make: u32 = groups
-        .iter()
-        .map(|group| {
-            group
-                .iter()
-                .map(|o| u32::try_from(o.made().len()).unwrap_or(u32::MAX))
-                .max()
-                .unwrap_or(0)
-        })
-        .sum();
-    let held = total(&pool.free_counts());
-    for _ in 0..depth {
-        let mut next: BTreeMap<Key, Plan> = BTreeMap::new();
-        for ((mask, needs, left), plan) in &layer {
-            for &group in &special {
-                let Some(bit) = bit_of(group) else { continue };
-                if mask & bit != 0 {
-                    continue;
-                }
-                for option in &groups[group] {
-                    if !option.is_costly() || !option.only.is_empty() {
-                        continue;
-                    }
-                    if pinned(group).is_some_and(|tap| option.source != *tap) {
-                        continue;
-                    }
-                    for ask in asks(&option.cost) {
-                        let (mut after, mut more) = apply((*needs, *left), &option.made());
-                        for kind in 0..6 {
-                            after[kind] += ask.typed[kind];
-                        }
-                        more += ask.any;
-                        // More is asked than all the sources and the floating mana could ever make.
-                        if total(&after) + more > held + can_make {
-                            continue;
-                        }
-                        let key = (mask | bit, after, more);
-                        let weight = plan.weight.with(option, all, plenty(option.produces));
-                        if next.get(&key).is_none_or(|kept| weight < kept.weight) {
-                            let mut taps = plan.taps.clone();
-                            taps.push(option.source);
-                            next.insert(
-                                key,
-                                Plan {
-                                    weight,
-                                    taps,
-                                    pool: plan.pool,
-                                },
-                            );
-                        }
-                    }
-                }
-            }
+    let mut forced_costly = 0;
+    for tap in forced.taps {
+        let costly = groups
+            .iter()
+            .flatten()
+            .any(|o| o.source == *tap && o.is_costly());
+        if costly {
+            forced_costly += 1;
+            must_mask |= planner.group_of(tap).and_then(|g| planner.bit_of(g))?;
         }
-        for (key, plan) in &next {
-            if best.get(key).is_none_or(|kept| plan.weight < kept.weight) {
-                best.insert(*key, plan.clone());
-            }
-        }
-        layer = next;
     }
+    best = planner.costly_stage(best, CHAIN.max(forced_costly), total(&pool.free_counts()));
     best.retain(|(mask, ..), _| mask & must_mask == must_mask);
 
     // Floating mana without a restriction, then the sources that cost nothing.
     let forced_pool = counts(forced.pool);
-    let mut stage: BTreeMap<Key, Plan> = BTreeMap::new();
+    let mut stage = Plans::new();
     for ((mask, needs, left), plan) in best {
         let Some(((needs, left), used)) =
             apply_pool((needs, left), &pool.free_counts(), &forced_pool)
@@ -673,67 +728,47 @@ fn plan(
             stage.insert(key, Plan { pool: used, ..plan });
         }
     }
-    let mut best = stage;
-    for (at, group) in groups.iter().enumerate() {
-        let bit = bit_of(at);
-        let must = forced
-            .taps
-            .iter()
-            .find(|tap| forced_group(tap) == Some(at))
-            .filter(|tap| {
-                group
-                    .iter()
-                    .any(|o| o.source == **tap && o.only.is_empty() && !o.is_costly())
-            });
-        let mut next = if must.is_some() {
-            BTreeMap::new()
-        } else {
-            best.clone()
-        };
-        for ((mask, needs, left), plan) in &best {
-            if bit.is_some_and(|bit| mask & bit != 0) {
-                continue;
-            }
-            for option in group {
-                if option.is_costly() || !option.only.is_empty() {
-                    continue;
-                }
-                if pinned(at).is_some_and(|tap| option.source != *tap) {
-                    continue;
-                }
-                let after = apply((*needs, *left), &option.made());
-                let key = (*mask, after.0, after.1);
-                let weight = plan.weight.with(option, all, plenty(option.produces));
-                if next.get(&key).is_none_or(|kept| weight < kept.weight) {
-                    let mut taps = plan.taps.clone();
-                    taps.push(option.source);
-                    next.insert(
-                        key,
-                        Plan {
-                            weight,
-                            taps,
-                            pool: plan.pool,
-                        },
-                    );
-                }
-            }
-        }
-        best = next;
-    }
-    let chosen = best
+    let chosen = planner
+        .free_stage(stage, Class::Plain)
         .into_iter()
         .filter(|((_, needs, left), _)| *needs == [0; 6] && *left == 0)
         .map(|(_, plan)| plan)
         .min_by_key(|plan| plan.weight)?;
 
     let sources: Vec<ManaOption> = groups.iter().flatten().cloned().collect();
-    let mut payment = Payment {
-        pool: units_of(&chosen.pool),
-        restricted,
-        taps: chosen.taps,
-        ..Payment::default()
-    };
-    // A source of several mana may cover what floating mana was spent on: a payment has nothing to spare.
+    let payment = trimmed(
+        cost,
+        Payment {
+            pool: units_of(&chosen.pool),
+            restricted,
+            taps: chosen.taps,
+            ..Payment::default()
+        },
+        forced,
+        &sources,
+    );
+    // Every part that was given stays.
+    let count = |units: &[ManaType], mana: ManaType| units.iter().filter(|m| **m == mana).count();
+    let pool_kept = ManaType::ALL
+        .into_iter()
+        .all(|mana| count(&payment.pool, mana) >= count(forced.pool, mana));
+    (pool_kept
+        && forced.taps.iter().all(|tap| payment.taps.contains(tap))
+        && forced
+            .restricted
+            .iter()
+            .all(|unit| payment.restricted.contains(unit)))
+    .then_some(payment)
+}
+
+/// `payment` without the floating mana that other parts cover, apart from what `forced` names: a source of several mana
+/// may cover what floating mana was spent on, and a payment has nothing to spare.
+fn trimmed(
+    cost: &ManaCost,
+    mut payment: Payment,
+    forced: &Forced<'_>,
+    sources: &[ManaOption],
+) -> Payment {
     let mut at = payment.pool.len();
     while at > 0 {
         at -= 1;
@@ -744,7 +779,7 @@ fn plan(
         }
         let mut without = payment.clone();
         without.pool.remove(at);
-        if is_covered(cost, &without, &sources) {
+        if is_covered(cost, &without, sources) {
             payment = without;
         }
     }
@@ -756,27 +791,11 @@ fn plan(
         }
         let mut without = payment.clone();
         without.restricted.remove(at);
-        if is_covered(cost, &without, &sources) {
+        if is_covered(cost, &without, sources) {
             payment = without;
         }
     }
-    // Every part that was given stays, and the whole is a payment.
-    let kept = |held: &[ManaType], given: &[ManaType]| {
-        ManaType::ALL.into_iter().all(|mana| {
-            held.iter().filter(|m| **m == mana).count()
-                >= given.iter().filter(|m| **m == mana).count()
-        })
-    };
-    if !forced.taps.iter().all(|tap| payment.taps.contains(tap))
-        || !kept(&payment.pool, forced.pool)
-        || !forced
-            .restricted
-            .iter()
-            .all(|unit| payment.restricted.contains(unit))
-    {
-        return None;
-    }
-    Some(payment)
+    payment
 }
 
 /// Chooses floating mana and sources that pay the plain `cost` with nothing to spare, keeping the parts in `forced`.

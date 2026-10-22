@@ -443,3 +443,77 @@ proptest! {
         }
     }
 }
+
+/// A Signet (`{1}, {T}: Add {W}{U}`) and, if `land`, a Forest.
+fn signet_table(land: bool) -> Vec<ManaOption> {
+    let mut signet = ManaOption::new(tap(1), ManaType::White);
+    signet.also = vec![ManaType::Blue];
+    signet.cost = cost("{1}");
+    let mut sources = vec![signet];
+    if land {
+        sources.push(ManaOption::new(tap(2), ManaType::Green));
+    }
+    sources
+}
+
+/// The restricted mana pays for a spell it is allowed on, never for the cost of a mana ability.
+#[rstest]
+#[case::the_land_pays_the_signet_and_the_spell_keeps_the_mana("{W}{U}", true, &[1, 2], 0)]
+#[case::restricted_mana_pays_the_generic_part_of_the_spell("{1}{W}{U}", true, &[1, 2], 1)]
+#[case::restricted_mana_alone_cannot_pay_the_signet("{W}{U}", false, &[], 0)]
+fn restricted_mana_pays_for_the_spell_and_never_for_a_mana_ability(
+    #[case] spell: &str,
+    #[case] land: bool,
+    #[case] tapped: &[u64],
+    #[case] restricted_used: usize,
+) {
+    let cost = cost(spell);
+    let spend = spell_of(&[CardType::Creature], false);
+    let pool = pool(&[], &[(ManaType::Green, only_for(CardType::Creature))]);
+    let sources = signet_table(land);
+    let auto = auto_payment(&cost, &pool, &sources, LIFE, &spend);
+    assert_eq!(auto.is_some(), land, "{auto:?}");
+    assert_eq!(can_afford(&cost, &pool, &sources, LIFE, &spend), land);
+    let Some(payment) = auto else {
+        return;
+    };
+    let mut objects: Vec<u64> = payment.taps.iter().map(|t| t.object.0).collect();
+    objects.sort_unstable();
+    assert_eq!(objects, tapped);
+    assert_eq!(payment.restricted.len(), restricted_used);
+    let spent = check_payment(&cost, &pool, &sources, &[], LIFE, &spend, &payment).unwrap();
+    assert_eq!(spent.steps.len(), payment.taps.len());
+    let signet = spent.steps.iter().find(|s| s.source == tap(1)).unwrap();
+    assert_eq!(
+        signet.paid,
+        [ManaType::Green],
+        "from the land, not the restricted mana"
+    );
+}
+
+#[test]
+fn a_payment_that_spends_restricted_mana_on_a_signets_cost_is_refused() {
+    let spend = spell_of(&[CardType::Creature], false);
+    let pool = pool(&[], &[(ManaType::Green, only_for(CardType::Creature))]);
+    let sources = signet_table(false);
+    let payment = Payment {
+        restricted: vec![Restricted {
+            mana: ManaType::Green,
+            only: only_for(CardType::Creature),
+        }],
+        taps: vec![tap(1)],
+        ..Payment::default()
+    };
+    assert!(
+        check_payment(
+            &cost("{W}{U}"),
+            &pool,
+            &sources,
+            &[],
+            LIFE,
+            &spend,
+            &payment
+        )
+        .is_err()
+    );
+}

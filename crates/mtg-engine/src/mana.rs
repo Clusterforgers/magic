@@ -1030,9 +1030,9 @@ pub fn check_payment_with(
         };
         match outcome {
             Ok((made, steps)) => {
-                let mut spent = split_spent(made, payment, &sources);
-                spent.steps = steps;
-                return Ok(spent);
+                let mut paid = split_spent(made, payment, &sources);
+                paid.steps = steps;
+                return Ok(paid);
             }
             Err(error) => {
                 refusal.get_or_insert(error);
