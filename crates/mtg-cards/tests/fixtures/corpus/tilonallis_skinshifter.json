@@ -1,0 +1,27 @@
+{
+  "cmc": 3,
+  "collector_number": "170",
+  "color_identity": [
+    "R"
+  ],
+  "colors": [
+    "R"
+  ],
+  "digital": false,
+  "id": "aab2765d-cfc4-4381-8cce-adce5aaf05ad",
+  "keywords": [
+    "Haste"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{R}",
+  "name": "Tilonalli's Skinshifter",
+  "oracle_id": "23df9146-9fce-4769-b017-87aa36c79300",
+  "oracle_text": "Haste\nWhenever this creature attacks, it becomes a copy of another target nonlegendary attacking creature until end of turn.",
+  "power": "0",
+  "rarity": "rare",
+  "released_at": "2017-09-29",
+  "set": "xln",
+  "toughness": "1",
+  "type_line": "Creature — Human Shaman"
+}

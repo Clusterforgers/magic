@@ -189,14 +189,17 @@ fn color_of(mana: ManaType) -> Option<Color> {
 }
 
 /// Adds the colors of the mana symbols in the strings of an ability's serialized form, and of the mana an effect
-/// names by type (`Fixed`, `OneOf`, `OneOfLists`).
+/// names by type (`Fixed`, `OneOf`, `OneOfLists`, `OrChosenColor`).
 fn scan(value: &Value, set: &mut ColorSet) {
     match value {
         Value::String(text) => symbols(text, set),
         Value::Array(items) => items.iter().for_each(|item| scan(item, set)),
         Value::Object(fields) => {
             for (key, inner) in fields {
-                if matches!(key.as_str(), "Fixed" | "OneOf" | "OneOfLists") {
+                if matches!(
+                    key.as_str(),
+                    "Fixed" | "OneOf" | "OneOfLists" | "OrChosenColor"
+                ) {
                     named(inner, set);
                 }
                 scan(inner, set);
@@ -302,6 +305,7 @@ mod tests {
     #[case::activated_cost(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":"{2}{U}","effects":[{"Draw":{}}]}}"#)), "U")]
     #[case::activated_hybrid_cost(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":"{B/G}","effects":[{"Draw":{}}]}}"#)), "BG")]
     #[case::added_mana(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green","Colorless"]}}}]}}"#)), "G")]
+    #[case::added_a_type_or_the_chosen_color(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OrChosenColor":"Red"}}}]}}"#)), "R")]
     #[case::added_lists_of_mana(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOfLists":[["Red","Red"],["Red","Black"],["Black","Colorless"]]}}}]}}"#)), "BR")]
     #[case::any_color_adds_none(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#)), "")]
     #[case::rules_text_clause(costing("{1}").with_manual("{W}, {T}: Draw a card.", "not run"), "W")]

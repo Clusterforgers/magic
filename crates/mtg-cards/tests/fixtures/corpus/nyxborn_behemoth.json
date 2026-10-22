@@ -1,0 +1,27 @@
+{
+  "id": "b9f1dbdc-e590-48a4-bc52-e9e4e907fb82",
+  "oracle_id": "58e20ca7-5fe3-49ff-bee0-0388722e3cab",
+  "name": "Nyxborn Behemoth",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "742",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{10}{G}{G}",
+  "cmc": 12,
+  "type_line": "Enchantment Creature — Beast",
+  "oracle_text": "This spell costs {X} less to cast, where X is the total mana value of noncreature enchantments you control.\nTrample\n{1}{G}, Sacrifice another enchantment: This creature gains indestructible until end of turn.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Trample"
+  ],
+  "power": "10",
+  "toughness": "10"
+}

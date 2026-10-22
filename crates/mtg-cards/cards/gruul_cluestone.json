@@ -1,0 +1,25 @@
+{
+  "oracle_id": "80911151-1e72-4d10-b00a-9fcff2dd131a",
+  "name": "Gruul Cluestone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gruul Cluestone",
+      "oracle_fingerprint": "d67c7f9333fd94b1cd3aba046519f317",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}{G}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

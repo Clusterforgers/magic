@@ -1,0 +1,15 @@
+{
+  "oracle_id": "a0cd19c1-9125-4627-83ba-d42c489b4e7d",
+  "name": "Aeromunculus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aeromunculus",
+      "oracle_fingerprint": "958c9475081ce5e4d281f1b42debec50",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Activated": { "cost": "{2}{U}{G}", "effects": [{ "Adapt": { "count": 1 } }] } }
+      ]
+    }
+  ]
+}

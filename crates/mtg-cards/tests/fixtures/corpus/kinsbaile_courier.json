@@ -1,0 +1,27 @@
+{
+  "id": "56b2b413-e00f-440d-9d27-92eb069b8c71",
+  "oracle_id": "92c0346d-c375-4851-9806-5d3b9b83425f",
+  "name": "Kinsbaile Courier",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmr",
+  "collector_number": "29",
+  "rarity": "common",
+  "released_at": "2020-11-20",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Kithkin Soldier",
+  "oracle_text": "When this creature enters, put a +1/+1 counter on target creature.\nEncore {2}{W} ({2}{W}, Exile this card from your graveyard: For each opponent, create a token copy that attacks that opponent this turn if able. They gain haste. Sacrifice them at the beginning of the next end step. Activate only as a sorcery.)",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Encore"
+  ]
+}

@@ -323,6 +323,12 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.that_player && r.words("that player controls") {
         return Some(Pred::ControlledBy(Ref::Triggering));
     }
+    if let Some(keyword) = r.attempt(|r| {
+        r.need("without")?;
+        keyword(r)
+    }) {
+        return Some(not(Pred::HasKeyword(keyword)));
+    }
     r.attempt(|r| {
         r.need("with")?;
         if let Some(kind) = r.attempt(counter_on_it) {
@@ -365,6 +371,10 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             let words = counters::trigger_kind_text(Some(kind))?;
             format!("with {words} on it")
         }
+        Pred::Not(inner) => match &**inner {
+            Pred::HasKeyword(keyword) => format!("without {}", keyword_text(keyword)?),
+            _ => return None,
+        },
         Pred::Compare { stat, op, to } => {
             let number = match to {
                 Amount::Fixed(number) => number.to_string(),
@@ -400,7 +410,7 @@ pub fn subtype(r: &mut Reader<'_>) -> Option<String> {
 }
 
 /// A group of one subtype as it is written in the plural ("Heroes", "Elves", "Spies"): the subtype in the singular.
-fn plural_subtype(r: &mut Reader<'_>) -> Option<String> {
+pub(super) fn plural_subtype(r: &mut Reader<'_>) -> Option<String> {
     r.attempt(|r| {
         let name = group_name(r)?;
         singular_subtype(&name, |one| r.is_subtype(one))

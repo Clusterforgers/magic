@@ -1,0 +1,25 @@
+{
+  "id": "15ab4c3b-323a-47c6-b675-447d16def3d5",
+  "oracle_id": "a9581345-87dc-4fbd-acc1-bb629f2cf40f",
+  "name": "Primeval Protector",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nec",
+  "collector_number": "124",
+  "rarity": "rare",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "mana_cost": "{10}{G}",
+  "cmc": 11,
+  "type_line": "Creature — Avatar",
+  "oracle_text": "This spell costs {1} less to cast for each creature your opponents control.\nWhen this creature enters, put a +1/+1 counter on each other creature you control.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "power": "10",
+  "toughness": "10"
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "1f82fe6b-1ec7-400b-a80d-40921b359723",
+  "name": "Famine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Famine",
+      "oracle_fingerprint": "04596410c5a97d420161b3cf6cc538ba",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 3 } },
+              { "DealDamage": { "to": "EachPlayer", "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

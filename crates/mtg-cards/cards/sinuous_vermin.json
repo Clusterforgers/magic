@@ -1,0 +1,21 @@
+{
+  "oracle_id": "658f5cfb-326d-4da9-a39b-2ecd393a1f54",
+  "name": "Sinuous Vermin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sinuous Vermin",
+      "oracle_fingerprint": "767d318b561cbe3f8b881f7daea9075e",
+      "abilities": [
+        { "Activated": { "cost": "{3}{B}{B}", "effects": [{ "Monstrosity": { "count": 3 } }] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Menace" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["Monstrous"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

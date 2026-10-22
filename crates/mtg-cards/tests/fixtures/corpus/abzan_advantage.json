@@ -1,0 +1,25 @@
+{
+  "id": "3ffd46f5-afd1-4130-b019-d8822e61fdfa",
+  "oracle_id": "e7b2f844-2ba2-4465-bb80-358a4d915f36",
+  "name": "Abzan Advantage",
+  "lang": "en",
+  "layout": "normal",
+  "set": "frf",
+  "collector_number": "2",
+  "rarity": "common",
+  "released_at": "2015-01-23",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Target player sacrifices an enchantment of their choice. Bolster 1. (Choose a creature with the least toughness among creatures you control and put a +1/+1 counter on it.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Bolster"
+  ]
+}

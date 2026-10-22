@@ -1,0 +1,36 @@
+{
+  "oracle_id": "97b559fe-b09d-4883-9509-c45ace2d8487",
+  "name": "Herald of Anguish",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Herald of Anguish",
+      "oracle_fingerprint": "26d4c660f6db8ca4793fe071fe162459",
+      "abilities": [
+        { "Keyword": "Improvise" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [{ "Discard": { "who": "Opponents" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

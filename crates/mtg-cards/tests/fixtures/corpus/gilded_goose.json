@@ -1,0 +1,28 @@
+{
+  "id": "5ea59511-24b1-4925-9948-9d4c0d27d1c5",
+  "oracle_id": "f2f09757-1931-47c0-a5f0-39280445489d",
+  "name": "Gilded Goose",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "269",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Creature — Bird",
+  "oracle_text": "Flying\nWhen this creature enters, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\n{1}{G}, {T}: Create a Food token.\n{T}, Sacrifice a Food: Add one mana of any color.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Flying",
+    "Food"
+  ],
+  "power": "0",
+  "toughness": "2"
+}

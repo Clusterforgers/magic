@@ -6,8 +6,8 @@
 
 use mtg_core::card::CardType;
 
-use super::copies;
-use super::create::colors_text;
+use super::amounts::{count_word, number_word};
+use super::copies::{self, Subject};
 use super::selectors::{Form, card_type, phrase, phrase_text, spec_text, target, type_name};
 use super::tokens::Reader;
 use super::triggers::article;
@@ -20,35 +20,33 @@ use crate::value::Amount;
 pub(super) const COPIED: &str = "copied";
 
 /// "Copy target instant or sorcery spell. You may choose new targets for the copy.", "Copy target triggered ability
-/// you control.", "Copy target permanent spell you control.": the object copied is the clause's one target.
+/// you control.", "Copy target permanent spell you control.": the object copied is the clause's one target. After a
+/// spell is cast, "copy it" and "copy that spell" are the spell cast ("copy it twice, except the copy isn't red. You may
+/// choose new targets for the copies.").
 pub fn copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("copy")?;
-    let (what, ability) = if let Some(what) = permanent_spell(r) {
+    let (what, ability) = if let Some(what) = cast_spell(r) {
+        (what, false)
+    } else if let Some(what) = permanent_spell(r) {
         (what, false)
     } else if let Some(what) = ability_target(r) {
         (what, true)
     } else {
         (spell_target(r)?, false)
     };
-    let twice = r.word("twice");
-    let count = if twice {
-        Amount::Fixed(2)
+    let (count, except) = if ability {
+        (Amount::one(), Vec::new())
     } else {
-        Amount::one()
+        (
+            r.attempt(times).unwrap_or_else(Amount::one),
+            r.attempt(spell_exceptions).unwrap_or_default(),
+        )
     };
-    let except = if ability {
-        Vec::new()
-    } else {
-        r.attempt(spell_exception).unwrap_or_default()
-    };
+    let copies = if count.is_one() { "copy" } else { "copies" };
     let new_targets = r
         .attempt(|r| {
             r.punct('.').then_some(())?;
-            r.need(if twice {
-                "you may choose new targets for the copies"
-            } else {
-                "you may choose new targets for the copy"
-            })
+            r.need(&format!("you may choose new targets for the {copies}"))
         })
         .is_some();
     Some(vec![if ability {
@@ -67,14 +65,31 @@ pub fn copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     }])
 }
 
-/// ", except that the copy is red": the colors a copy of a spell has.
-fn spell_exception(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
-    r.punct(',').then_some(())?;
-    r.need("except that the copy is")?;
-    match copies::is(r)? {
-        colors @ Modification::SetColors(_) => Some(vec![colors]),
-        _ => None,
+/// "it" or "that spell" after a spell is cast: the spell the trigger is about.
+fn cast_spell(r: &mut Reader<'_>) -> Option<Ref> {
+    r.cast_spell.then_some(())?;
+    (r.word("it") || r.words("that spell")).then_some(Ref::Triggering)
+}
+
+/// "twice", "three times", "X times": how many copies there are.
+fn times(r: &mut Reader<'_>) -> Option<Amount> {
+    if r.word("twice") {
+        return Some(Amount::Fixed(2));
     }
+    let count = if r.x_free && r.word("x") {
+        Amount::X
+    } else {
+        let number = number_word(r.take_word()?).filter(|number| *number > 2)?;
+        Amount::Fixed(i32::try_from(number).ok()?)
+    };
+    r.word("times").then_some(count)
+}
+
+/// ", except that the copy is red", ", except the copy is an artifact in addition to its other types": what a copy of
+/// a spell is besides the spell.
+fn spell_exceptions(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
+    r.punct(',').then_some(())?;
+    copies::exceptions(r, Subject::Copy)
 }
 
 /// The one target the clause asks for, when it is a single object.
@@ -194,7 +209,7 @@ pub(super) fn copy_text(effect: &Effect, spec: &TargetSpec) -> Option<String> {
             what,
             count,
             new_targets,
-        } => (what, count, *new_targets, [].as_slice(), false),
+        } if count.is_one() => (what, count, *new_targets, [].as_slice(), false),
         _ => return None,
     };
     let copied = target_text(spec)?;
@@ -204,33 +219,59 @@ pub(super) fn copy_text(effect: &Effect, spec: &TargetSpec) -> Option<String> {
     if *what != Ref::Target(0) || target_is_spell != is_spell {
         return None;
     }
-    let colors = match except {
-        [] => String::new(),
-        [Modification::SetColors(colors)] => {
-            format!(", except that the copy is {}", colors_text(colors))
-        }
-        _ => return None,
-    };
-    let twice = match count {
-        Amount::Fixed(1) => "",
-        Amount::Fixed(2) => " twice",
-        _ => return None,
-    };
-    let again = if new_targets {
-        if twice.is_empty() {
-            ". You may choose new targets for the copy"
-        } else {
-            ". You may choose new targets for the copies"
-        }
-    } else {
-        ""
-    };
-    Some(format!("copy {copied}{twice}{colors}{again}"))
+    Some(format!(
+        "copy {copied}{}",
+        tail_text(count, new_targets, except)?
+    ))
 }
 
-/// "~ becomes a copy of target creature until end of turn": the card is a copy of one target permanent.
+/// A copy of the spell a trigger is about as a sentence without its first capital and period: "copy it", "copy it
+/// twice, except that the copy is red. You may choose new targets for the copies".
+pub(super) fn cast_text(effect: &Effect) -> Option<String> {
+    let Effect::CopySpell {
+        what: Ref::Triggering,
+        count,
+        new_targets,
+        except,
+    } = effect
+    else {
+        return None;
+    };
+    Some(format!(
+        "copy it{}",
+        tail_text(count, *new_targets, except)?
+    ))
+}
+
+/// How many copies there are, what they are besides the spell and the sentence about new targets, after the words
+/// that name what is copied.
+fn tail_text(count: &Amount, new_targets: bool, except: &[Modification]) -> Option<String> {
+    let times = match count {
+        Amount::Fixed(1) => String::new(),
+        Amount::Fixed(2) => " twice".to_owned(),
+        Amount::Fixed(number) if *number > 2 => {
+            format!(" {} times", count_word(u32::try_from(*number).ok()?)?)
+        }
+        Amount::X => " X times".to_owned(),
+        _ => return None,
+    };
+    let except = if except.is_empty() {
+        String::new()
+    } else {
+        format!(", {}", copies::exceptions_text(except, Subject::Copy)?)
+    };
+    let again = match (new_targets, *count == Amount::one()) {
+        (false, _) => "",
+        (true, true) => ". You may choose new targets for the copy",
+        (true, false) => ". You may choose new targets for the copies",
+    };
+    Some(format!("{times}{except}{again}"))
+}
+
+/// "~ becomes a copy of target creature until end of turn", "it becomes a copy of another target creature until end
+/// of turn" after an attack: the card is a copy of one target permanent.
 pub fn becomes_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    r.source().then_some(())?;
+    (r.source() || (r.attacker && r.word("it"))).then_some(())?;
     r.need("becomes a copy of")?;
     let of = permanent_target(r)?;
     r.need("until end of turn")?;
@@ -242,10 +283,19 @@ pub fn becomes_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     }])
 }
 
-/// One target permanent: not a spell, not a card in a zone.
-fn permanent_target(r: &mut Reader<'_>) -> Option<Ref> {
+/// One target permanent, "another target creature" also: not a spell, not a card in a zone.
+pub(super) fn permanent_target(r: &mut Reader<'_>) -> Option<Ref> {
     r.attempt(|r| {
+        let another = r.word("another");
         let of = target(r)?;
+        if another
+            && let Some(TargetSpec {
+                what: Targetable::Object(selector),
+                ..
+            }) = r.targets.first_mut()
+        {
+            selector.0.push(Pred::Other);
+        }
         let spec = r.targets.first()?;
         let permanent = spec.bounds.is_one()
             && matches!(&spec.what, Targetable::Object(selector)

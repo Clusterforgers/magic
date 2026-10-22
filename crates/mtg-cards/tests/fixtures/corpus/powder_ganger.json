@@ -1,0 +1,27 @@
+{
+  "id": "7bb57c73-a454-450d-9db9-67501bf4559d",
+  "oracle_id": "b34507d3-55ba-4629-9581-7983d0025e89",
+  "name": "Powder Ganger",
+  "lang": "en",
+  "layout": "normal",
+  "set": "pip",
+  "collector_number": "65",
+  "rarity": "rare",
+  "released_at": "2024-03-08",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Rogue",
+  "oracle_text": "Squad {2} (As an additional cost to cast this spell, you may pay {2} any number of times. When this creature enters, create that many tokens that are copies of it.)\nWhen this creature enters, destroy up to one target artifact.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Squad"
+  ]
+}

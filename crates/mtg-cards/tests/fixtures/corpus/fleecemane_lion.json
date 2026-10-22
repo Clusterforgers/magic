@@ -1,0 +1,29 @@
+{
+  "id": "ef4e1c37-d520-4025-bd56-15ec452f6842",
+  "oracle_id": "e3c8cdf7-a26a-45eb-9498-99b618cfba99",
+  "name": "Fleecemane Lion",
+  "lang": "en",
+  "layout": "normal",
+  "set": "afc",
+  "collector_number": "185",
+  "rarity": "rare",
+  "released_at": "2021-07-23",
+  "digital": false,
+  "mana_cost": "{G}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Cat",
+  "oracle_text": "{3}{G}{W}: Monstrosity 1. (If this creature isn't monstrous, put a +1/+1 counter on it and it becomes monstrous.)\nAs long as this creature is monstrous, it has hexproof and indestructible.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Monstrosity"
+  ]
+}

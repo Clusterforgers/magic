@@ -563,6 +563,35 @@ pub enum Event {
         /// Its controller, who revealed the card.
         player: PlayerId,
     },
+    /// A player amassed (CR 701.47): the counters and the Army token are the events around it.
+    Amassed {
+        /// The Army that got the counters.
+        object: ObjectId,
+        /// Its controller, who amassed.
+        player: PlayerId,
+    },
+    /// A creature became monstrous (CR 701.37): the permanent keeps the designation while it stays on the battlefield;
+    /// the counters are the event before it.
+    Monstrous {
+        /// The creature that became monstrous.
+        object: ObjectId,
+        /// Its controller.
+        player: PlayerId,
+    },
+    /// A creature adapted (CR 701.46): the counters are the event before it.
+    Adapted {
+        /// The creature that adapted.
+        object: ObjectId,
+        /// Its controller.
+        player: PlayerId,
+    },
+    /// A player bolstered (CR 701.39): the counters are the event before it.
+    Bolstered {
+        /// The creature that got the counters.
+        object: ObjectId,
+        /// Its controller, who bolstered.
+        player: PlayerId,
+    },
     /// A creature connived (CR 701.50): the draw, the discard and the counter are the events that follow it.
     Connived {
         /// The creature that connived.
@@ -735,6 +764,10 @@ impl Event {
             | Event::CardDiscarded { object, .. }
             | Event::Explored { object, .. }
             | Event::Connived { object, .. }
+            | Event::Amassed { object, .. }
+            | Event::Monstrous { object, .. }
+            | Event::Adapted { object, .. }
+            | Event::Bolstered { object, .. }
             | Event::Cycled { object, .. }
             | Event::CreatureDied { object, .. }
             | Event::CopyEnded { object }

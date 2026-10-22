@@ -1,0 +1,21 @@
+{
+  "id": "d97f31e1-bcaf-4316-a2de-49e2cf7566ec",
+  "oracle_id": "b574c540-9f8a-4fd4-8809-d02c9b099ddc",
+  "name": "Sea Gate",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "359",
+  "rarity": "common",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Gate",
+  "oracle_text": "This land enters tapped.\nAs this land enters, choose a color other than blue.\n{T}: Add {U} or one mana of the chosen color.",
+  "colors": [],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

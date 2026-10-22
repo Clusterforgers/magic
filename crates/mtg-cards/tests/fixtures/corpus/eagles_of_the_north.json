@@ -1,0 +1,31 @@
+{
+  "id": "068a5bf7-6faf-41d5-924d-cdf387c1a193",
+  "oracle_id": "e519cebf-0f09-4da9-abef-82928738514d",
+  "name": "Eagles of the North",
+  "lang": "en",
+  "layout": "normal",
+  "set": "hoc",
+  "collector_number": "164",
+  "rarity": "common",
+  "released_at": "2026-08-14",
+  "digital": false,
+  "mana_cost": "{5}{W}",
+  "cmc": 6.0,
+  "type_line": "Creature — Bird Soldier",
+  "oracle_text": "Flying\nWhen this creature enters, creatures you control get +1/+0 and gain first strike until end of turn.\nPlainscycling {1} ({1}, Discard this card: Search your library for a Plains card, reveal it, put it into your hand, then shuffle.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Plainscycling",
+    "Landcycling",
+    "Typecycling",
+    "Cycling"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "1ed3229f-40ab-420d-a41a-57f1ff8ab7ad",
+  "oracle_id": "f014b1a1-20ef-475c-bf83-f1a82e68ab97",
+  "name": "Fiery Fall",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2x2",
+  "collector_number": "109",
+  "rarity": "common",
+  "released_at": "2022-07-08",
+  "digital": false,
+  "mana_cost": "{5}{R}",
+  "cmc": 6.0,
+  "type_line": "Instant",
+  "oracle_text": "Fiery Fall deals 5 damage to target creature.\nBasic landcycling {1}{R} ({1}{R}, Discard this card: Search your library for a basic land card, reveal it, put it into your hand, then shuffle.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Landcycling",
+    "Basic landcycling",
+    "Typecycling",
+    "Cycling"
+  ]
+}

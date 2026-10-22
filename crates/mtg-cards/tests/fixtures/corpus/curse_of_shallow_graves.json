@@ -1,0 +1,25 @@
+{
+  "id": "849996e2-fb62-428f-88f1-4ac419617395",
+  "oracle_id": "dc66dbed-f979-4ad1-b5f9-08538886167f",
+  "name": "Curse of Shallow Graves",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c13",
+  "collector_number": "71",
+  "rarity": "uncommon",
+  "released_at": "2013-11-01",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura Curse",
+  "oracle_text": "Enchant player\nWhenever a player attacks enchanted player with one or more creatures, that attacking player may create a tapped 2/2 black Zombie creature token.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

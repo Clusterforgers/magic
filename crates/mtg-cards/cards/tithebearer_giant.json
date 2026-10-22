@@ -1,0 +1,19 @@
+{
+  "oracle_id": "475aaf7c-b0f8-40f3-ad91-3e7d414de933",
+  "name": "Tithebearer Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tithebearer Giant",
+      "oracle_fingerprint": "bdf839b555c64392c0552feb2cb1c922",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

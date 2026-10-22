@@ -1,0 +1,48 @@
+{
+  "oracle_id": "58e20ca7-5fe3-49ff-bee0-0388722e3cab",
+  "name": "Nyxborn Behemoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nyxborn Behemoth",
+      "oracle_fingerprint": "39c481f29c8af598b1dbcb3bf80d38b0",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Total": {
+                "of": [
+                  { "Type": "Enchantment" },
+                  { "Not": { "Type": "Creature" } },
+                  { "ControlledBy": "You" }
+                ],
+                "stat": "ManaValue"
+              }
+            }
+          }
+        },
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{G}" },
+              { "Sacrifice": { "filter": [{ "Type": "Enchantment" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

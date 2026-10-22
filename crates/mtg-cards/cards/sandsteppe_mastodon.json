@@ -1,0 +1,20 @@
+{
+  "oracle_id": "99fa202b-052c-4627-b78c-f0b323f7bdf3",
+  "name": "Sandsteppe Mastodon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sandsteppe Mastodon",
+      "oracle_fingerprint": "5a95623c73dfee1f8095bb40f4db34b8",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Bolster": { "count": 5 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

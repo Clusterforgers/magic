@@ -1,0 +1,27 @@
+{
+  "id": "58b431d2-33c1-49d8-b45d-690c174bb456",
+  "oracle_id": "e0e6938b-7abf-4f69-a3d6-82a58912bff4",
+  "name": "Caldaia Strongarm",
+  "lang": "en",
+  "layout": "normal",
+  "set": "snc",
+  "collector_number": "138",
+  "rarity": "common",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "When this creature enters, put two +1/+1 counters on target creature.\nBlitz {3}{G} (If you cast this spell for its blitz cost, it gains haste and \"When this creature dies, draw a card.\" Sacrifice it at the beginning of the next end step.)",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Blitz"
+  ]
+}

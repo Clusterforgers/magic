@@ -1,0 +1,29 @@
+{
+  "id": "49dfee68-c242-4579-94b1-c23238f8c87d",
+  "oracle_id": "46b5f12e-9fe5-44f6-b895-ee8c33205521",
+  "name": "Aberrant",
+  "lang": "en",
+  "layout": "normal",
+  "set": "40k",
+  "collector_number": "86",
+  "rarity": "uncommon",
+  "released_at": "2022-10-07",
+  "digital": false,
+  "mana_cost": "{X}{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Tyranid Mutant",
+  "oracle_text": "Ravenous (This creature enters with X +1/+1 counters on it. If X is 5 or more, draw a card when it enters.)\nTrample\nHeavy Power Hammer — Whenever this creature deals combat damage to a player, destroy target artifact or enchantment that player controls.",
+  "power": "0",
+  "toughness": "0",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Ravenous",
+    "Trample",
+    "Heavy Power Hammer"
+  ]
+}

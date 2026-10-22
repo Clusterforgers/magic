@@ -138,12 +138,7 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
         .as_ref()
         .is_some_and(|ability| !ability.targets().is_empty());
     if !has_targets {
-        for clause in &mut pending {
-            if matches!(&clause.ability, Some(Ability::CostModifier { per, .. }) if !per.is_one()) {
-                clause.ability = None;
-                clause.read = false;
-            }
-        }
+        unread_target_counts(&mut pending);
     }
     if let Some(ability) = spell_ability {
         let mut ability = Some(ability);
@@ -216,6 +211,17 @@ fn read_clause(
             (read::clause_with(text, kind, x_free, own), Vec::new())
         }
         _ => (None, Vec::new()),
+    }
+}
+
+/// Leaves the cost modifiers that count targets ("for each target beyond the first") to the table.
+fn unread_target_counts(pending: &mut [Pending]) {
+    for clause in pending {
+        if matches!(&clause.ability, Some(Ability::CostModifier { per, .. }) if read::counts_targets(per))
+        {
+            clause.ability = None;
+            clause.read = false;
+        }
     }
 }
 
