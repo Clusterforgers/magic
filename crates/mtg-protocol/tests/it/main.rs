@@ -12,6 +12,7 @@ mod common;
 mod counter_view;
 mod effect_view;
 mod exile_open;
+mod faces_view;
 mod foretell_view;
 mod hidden_info;
 mod house_rules_view;

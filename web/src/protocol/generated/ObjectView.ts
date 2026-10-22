@@ -113,4 +113,10 @@ attachments?: Array<ObjectId>,
  * Whether the object lies face down (a foretold card in exile). The seat that may look at it sees its characteristics
  * besides; every other seat sees an object with no name, types, colours, abilities or counters.
  */
-face_down?: boolean, };
+face_down?: boolean, 
+/**
+ * The face of a card with several faces the object is in use as: the half cast, the Adventure, the back face of a
+ * modal double-faced card on the stack or the battlefield. Left out for the card as a whole, which is its front face
+ * or both halves of a split card.
+ */
+face?: number, };

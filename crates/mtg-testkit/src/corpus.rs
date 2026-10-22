@@ -160,9 +160,9 @@ mod tests {
     #[rstest]
     #[case::full_name("Lightning Bolt", "Lightning Bolt")]
     #[case::any_case("lIgHtNiNg bOlT", "Lightning Bolt")]
-    #[case::front_face("Fire", "Fire")]
-    #[case::back_face_of_a_split_card("Ice", "Fire")]
-    #[case::whole_name_of_a_split_card("Fire // Ice", "Fire")]
+    #[case::front_face("Fire", "Fire // Ice")]
+    #[case::back_face_of_a_split_card("Ice", "Fire // Ice")]
+    #[case::whole_name_of_a_split_card("Fire // Ice", "Fire // Ice")]
     #[case::adventure("Stomp", "Bonecrusher Giant")]
     #[case::punctuation("Gaea's Cradle", "Gaea's Cradle")]
     fn a_card_is_found_by_any_of_its_names(#[case] asked: &str, #[case] front: &str) {

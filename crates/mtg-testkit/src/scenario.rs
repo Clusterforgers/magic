@@ -390,7 +390,7 @@ mod tests {
             ["Lightning Bolt", "Grizzly Bears"]
         );
         assert_eq!(names(Zone::Battlefield), ["Forest", "Llanowar Elves"]);
-        assert_eq!(names(Zone::Graveyard(PlayerId(1))), ["Fire"]);
+        assert_eq!(names(Zone::Graveyard(PlayerId(1))), ["Fire // Ice"]);
         assert_eq!(
             names(Zone::Library(PlayerId(1))),
             ["Brainstorm", "Opt"],
