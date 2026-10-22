@@ -1,7 +1,8 @@
 //! The rules a game plays by: the format's values with the house rules laid over them.
 
 use mtg_core::house::{
-    AttackRange, EmptyLibrary, HandLimit, HouseRules, MulliganStyle, SkipFirstDraw,
+    AttackRange, CommanderDamageLimit, EmptyLibrary, HandLimit, HouseRules, MulliganStyle,
+    SkipFirstDraw,
 };
 use mtg_core::ids::{ObjectId, PlayerId};
 
@@ -215,12 +216,52 @@ impl<'a> RuleSet<'a> {
 
     /// The generic mana a commander costs more for each cast from the command zone (CR 903.8).
     pub fn commander_tax(&self) -> u32 {
-        self.format.commander_tax()
+        self.house
+            .commander_tax
+            .unwrap_or_else(|| self.format.commander_tax())
     }
 
     /// The combat damage from one commander that makes a player lose, if the game has the rule (CR 903.10a).
     pub fn commander_damage(&self) -> Option<u32> {
-        self.format.commander_damage()
+        match self.house.commander_damage {
+            Some(CommanderDamageLimit::Lethal(amount)) => Some(amount),
+            Some(CommanderDamageLimit::Off) => None,
+            None => self.format.commander_damage(),
+        }
+    }
+
+    /// The cards a deck has, commanders included: the table's size, else `standard`, the format's.
+    pub fn deck_size(&self, standard: usize) -> usize {
+        self.house.deck.deck_size.map_or(standard, count)
+    }
+
+    /// The copies of one card a deck may hold, given the `limit` the format and the card put on it (`None` for no
+    /// limit): a table without a singleton rule lifts a limit to its `max_copies`, or entirely without one.
+    pub fn copies_limit(&self, limit: Option<u32>) -> Option<u32> {
+        let deck = &self.house.deck;
+        match (deck.singleton, deck.max_copies) {
+            (Some(false), Some(most)) => limit.map(|own| own.max(most)),
+            (Some(false), None) => None,
+            _ => limit,
+        }
+    }
+
+    /// Whether every card of a deck must lie within the colour identity of its commanders.
+    pub fn checks_colour_identity(&self) -> bool {
+        self.house.deck.colour_identity.unwrap_or(true)
+    }
+
+    /// The most commanders a seat may start with: one, or a pair.
+    pub fn most_commanders(&self) -> usize {
+        match self.house.commanders_per_seat {
+            Some(1) => 1,
+            _ => 2,
+        }
+    }
+
+    /// Whether a pair of commanders must be partners of each other (CR 702.124).
+    pub fn pair_needs_partner(&self) -> bool {
+        self.house.commanders_per_seat != Some(2)
     }
 
     /// The game result once decided: the format's, else a draw when every player left is at the winning life total
@@ -520,7 +561,7 @@ mod table_tests {
     use crate::events::Event;
     use crate::fixtures::state;
     use crate::fold::apply_event;
-    use crate::format::Normal;
+    use crate::format::{Commander, Normal};
     use crate::player::LossReason;
 
     fn rules(set: impl FnOnce(&mut HouseRules)) -> HouseRules {
@@ -666,5 +707,106 @@ mod table_tests {
             hand_and_bottoms
         );
         assert_eq!((got.scry_if_keep, got.scry_if_mulligan), scries);
+    }
+}
+
+#[cfg(test)]
+mod commander_tests {
+    //! Goal: the rules of Commander are the format's when unset: the tax, the commander damage, the deck size, the copies a card may have, the colour identity and the commanders a seat starts with each follow the house rule, a value equal to the format's as given and `off` and 0 meaning none.
+    use mtg_core::house::{CommanderDamageLimit, HouseRules};
+    use rstest::rstest;
+
+    use super::*;
+    use crate::format::Commander;
+
+    fn rules(set: impl FnOnce(&mut HouseRules)) -> HouseRules {
+        let mut house = HouseRules::default();
+        set(&mut house);
+        house
+    }
+
+    #[rstest]
+    #[case::the_formats(None, 2)]
+    #[case::none(Some(0), 0)]
+    #[case::one(Some(1), 1)]
+    #[case::the_formats_value_as_given(Some(2), 2)]
+    #[case::ten(Some(10), 10)]
+    fn the_tax_is_the_rules_or_the_formats(#[case] tax: Option<u32>, #[case] expected: u32) {
+        let house = rules(|r| r.commander_tax = tax);
+        assert_eq!(RuleSet::new(&Commander, &house).commander_tax(), expected);
+    }
+
+    #[rstest]
+    #[case::the_formats(None, Some(21))]
+    #[case::one(Some(CommanderDamageLimit::Lethal(1)), Some(1))]
+    #[case::the_formats_value_as_given(Some(CommanderDamageLimit::Lethal(21)), Some(21))]
+    #[case::a_hundred(Some(CommanderDamageLimit::Lethal(100)), Some(100))]
+    #[case::off(Some(CommanderDamageLimit::Off), None)]
+    fn the_commander_damage_is_the_rules_or_the_formats(
+        #[case] limit: Option<CommanderDamageLimit>,
+        #[case] expected: Option<u32>,
+    ) {
+        let house = rules(|r| r.commander_damage = limit);
+        assert_eq!(
+            RuleSet::new(&Commander, &house).commander_damage(),
+            expected
+        );
+    }
+
+    #[rstest]
+    #[case::the_formats_singleton(None, None, Some(1), Some(1))]
+    #[case::singleton_on(Some(true), None, Some(1), Some(1))]
+    #[case::singleton_off(Some(false), None, Some(1), None)]
+    #[case::singleton_off_basics(Some(false), None, None, None)]
+    #[case::a_cap_lifts_a_singleton(Some(false), Some(4), Some(1), Some(4))]
+    #[case::a_cap_keeps_a_larger_limit(Some(false), Some(4), Some(7), Some(7))]
+    #[case::a_cap_leaves_basics_free(Some(false), Some(4), None, None)]
+    fn the_copies_limit_is_the_cards_unless_the_table_relaxes_it(
+        #[case] singleton: Option<bool>,
+        #[case] most: Option<u32>,
+        #[case] own: Option<u32>,
+        #[case] expected: Option<u32>,
+    ) {
+        let house = rules(|r| {
+            r.deck.singleton = singleton;
+            r.deck.max_copies = most;
+        });
+        assert_eq!(RuleSet::new(&Commander, &house).copies_limit(own), expected);
+    }
+
+    #[rstest]
+    #[case::the_formats(None, None, 100, true)]
+    #[case::sixty(None, Some(60), 60, true)]
+    #[case::identity_off(Some(false), Some(40), 40, false)]
+    fn the_deck_checks_are_the_rules_or_the_formats(
+        #[case] identity: Option<bool>,
+        #[case] size: Option<u32>,
+        #[case] expected_size: usize,
+        #[case] checks_identity: bool,
+    ) {
+        let house = rules(|r| {
+            r.deck.colour_identity = identity;
+            r.deck.deck_size = size;
+        });
+        let set = RuleSet::new(&Commander, &house);
+        assert_eq!(set.deck_size(100), expected_size);
+        assert_eq!(set.checks_colour_identity(), checks_identity);
+    }
+
+    #[rstest]
+    #[case::the_formats(None, 2, true)]
+    #[case::one(Some(1), 1, true)]
+    #[case::two(Some(2), 2, false)]
+    fn the_commanders_a_seat_may_start_with(
+        #[case] per_seat: Option<u32>,
+        #[case] most: usize,
+        #[case] needs_partner: bool,
+    ) {
+        let house = rules(|r| r.commanders_per_seat = per_seat);
+        let set = RuleSet::new(&Commander, &house);
+        assert_eq!(
+            (set.most_commanders(), set.pair_needs_partner()),
+            (most, needs_partner)
+        );
     }
 }
