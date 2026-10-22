@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f50bbe5e-a839-40e1-ba79-1e96f91bd218",
+  "name": "Seedglaive Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seedglaive Mentor",
+      "oracle_fingerprint": "817ea59f325417fb33bbaaadf6a80683",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "BecomesTarget": { "what": ["This"], "by": [{ "ControlledBy": "You" }] }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

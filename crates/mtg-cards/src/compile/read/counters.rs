@@ -101,7 +101,7 @@ pub fn entering(r: &mut Reader<'_>) -> Option<(CounterKind, Amount)> {
 
 /// The object counters are on, leave or go onto: "~" or one target.
 fn place(r: &mut Reader<'_>) -> Option<Ref> {
-    if r.source() {
+    if r.source() || (r.it == Some(Ref::This) && r.word("it")) {
         Some(Ref::This)
     } else {
         target_object(r)

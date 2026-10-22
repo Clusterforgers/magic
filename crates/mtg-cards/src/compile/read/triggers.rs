@@ -18,6 +18,15 @@ pub fn cycled_itself(pattern: &TriggerPattern) -> bool {
     )
 }
 
+/// Whether the pattern is the card itself becoming a target (counted or not), so the card's effects may call it "it".
+pub fn targeted_itself(pattern: &TriggerPattern) -> bool {
+    match pattern {
+        TriggerPattern::Nth { event, .. } => targeted_itself(event),
+        TriggerPattern::BecomesTarget { what, .. } => what.0 == [Pred::This],
+        _ => false,
+    }
+}
+
 /// The steps a trigger names and the words for each.
 const STEPS: [(Step, &str); 5] = [
     (Step::Upkeep, "upkeep"),
