@@ -6,6 +6,7 @@
 
 mod affinity;
 pub(crate) mod aftermath;
+mod annihilator;
 mod ascend;
 mod backup;
 mod battle_cry;
@@ -25,6 +26,7 @@ mod daybound;
 mod deathtouch;
 mod defender;
 mod delve;
+mod dethrone;
 mod devoid;
 mod disguise;
 mod doctors_companion;
@@ -39,6 +41,9 @@ mod equip;
 mod escape;
 mod eternalize;
 mod evoke;
+mod evolve;
+mod exalted;
+mod extort;
 mod fabricate;
 mod fading;
 mod fear;
@@ -61,7 +66,9 @@ mod level_up;
 mod lifelink;
 mod living_weapon;
 mod madness;
+mod melee;
 mod menace;
+mod mentor;
 mod miracle;
 mod morph;
 mod multikicker;
@@ -427,6 +434,26 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::CumulativeUpkeep(_) => &cumulative_upkeep::CumulativeUpkeep,
         Keyword::Undying => &undying::Undying,
         Keyword::Persist => &persist::Persist,
+        other => rules_of_later(other),
+    }
+}
+
+/// A keyword that changes nothing.
+#[derive(Debug)]
+struct Unruled;
+
+impl KeywordRules for Unruled {}
+
+/// The rules of the keywords declared after persist, apart from `rules` so that neither outgrows a function's size.
+fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
+    match keyword {
+        Keyword::Exalted => &exalted::Exalted,
+        Keyword::Melee => &melee::Melee,
+        Keyword::Mentor => &mentor::Mentor,
+        Keyword::Dethrone => &dethrone::Dethrone,
+        Keyword::Annihilator(_) => &annihilator::Annihilator,
+        Keyword::Extort => &extort::Extort,
+        Keyword::Evolve => &evolve::Evolve,
         Keyword::Vanishing(_) => &vanishing::Vanishing,
         Keyword::Fading(_) => &fading::Fading,
         Keyword::Backup { .. } => &backup::Backup,
@@ -444,6 +471,8 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Typecycling { .. } => &typecycling::Typecycling,
         Keyword::Fabricate(_) => &fabricate::Fabricate,
         Keyword::Ascend => &ascend::Ascend,
+        // The keywords before them are matched by `rules`.
+        _ => &Unruled,
     }
 }
 
@@ -714,6 +743,13 @@ mod tests {
             Keyword::CumulativeUpkeep(cost()),
             Keyword::Undying,
             Keyword::Persist,
+            Keyword::Exalted,
+            Keyword::Melee,
+            Keyword::Mentor,
+            Keyword::Dethrone,
+            Keyword::Annihilator(2),
+            Keyword::Extort,
+            Keyword::Evolve,
             Keyword::LevelUp(cost()),
             Keyword::Outlast(cost()),
             Keyword::Saddle(2),
@@ -815,6 +851,13 @@ mod tests {
         "Keyword.CumulativeUpkeep",
         "Keyword.Undying",
         "Keyword.Persist",
+        "Keyword.Exalted",
+        "Keyword.Melee",
+        "Keyword.Mentor",
+        "Keyword.Dethrone",
+        "Keyword.Annihilator",
+        "Keyword.Extort",
+        "Keyword.Evolve",
         "Keyword.Vanishing",
         "Keyword.Fading",
         "Keyword.Backup",
@@ -959,6 +1002,13 @@ mod tests {
     #[case::cumulative_upkeep(Keyword::CumulativeUpkeep(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::undying(Keyword::Undying, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::persist(Keyword::Persist, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::exalted(Keyword::Exalted, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::melee(Keyword::Melee, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::mentor(Keyword::Mentor, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::dethrone(Keyword::Dethrone, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::annihilator(Keyword::Annihilator(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::extort(Keyword::Extort, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::evolve(Keyword::Evolve, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::vanishing(Keyword::Vanishing(3), Hooks { abilities: 3, ..Hooks::none() })]
     #[case::fading(Keyword::Fading(3), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::backup(Keyword::Backup { count: 1, abilities: vec![] }, Hooks { abilities: 1, ..Hooks::none() })]

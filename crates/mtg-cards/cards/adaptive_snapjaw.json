@@ -1,0 +1,12 @@
+{
+  "oracle_id": "0a56e2ad-684d-45a7-9145-479d1505bba2",
+  "name": "Adaptive Snapjaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Adaptive Snapjaw",
+      "oracle_fingerprint": "55c3c62f298c5324624ce52ab3952c2e",
+      "abilities": [{ "Keyword": "Evolve" }]
+    }
+  ]
+}

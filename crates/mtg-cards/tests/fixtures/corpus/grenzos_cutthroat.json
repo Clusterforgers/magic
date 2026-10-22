@@ -1,0 +1,28 @@
+{
+  "id": "9bb46638-eeb2-4bb3-bef2-bedd343722ef",
+  "oracle_id": "9a133991-8a7a-4bfd-b0ae-d76433450c03",
+  "name": "Grenzo's Cutthroat",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cns",
+  "collector_number": "32",
+  "rarity": "common",
+  "released_at": "2014-06-06",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Creature — Goblin Rogue",
+  "oracle_text": "First strike\nDethrone (Whenever this creature attacks the player with the most life or tied for most life, put a +1/+1 counter on it.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Dethrone",
+    "First strike"
+  ]
+}

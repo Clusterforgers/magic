@@ -5,11 +5,13 @@ Abzan Battle Priest
 Abzan Falconer
 Abzan Skycaptain
 Accomplished Automaton
+Adaptive Snapjaw
 Adorned Pouncer
 Aeromunculus
 Aether Hub
 Ainok Bond-Kin
 Ajani's Pridemate
+Akrasan Squire
 Akroma's Vengeance
 Alpha Deathclaw
 Ambitious Aetherborn
@@ -35,13 +37,16 @@ Authority of the Consuls
 Aven Eternal
 Aven Initiate
 Aven Riftwatcher
+Aven Squire
 Aven Tactician
 Azorius Chancery
 Azorius Signet
 Azure Fleet Admiral
 Azusa, Lost but Seeking
 Banshee of the Dread Choir
+Basilica Screecher
 Basking Rootwalla
+Battering Krasis
 Battle Sliver
 Battlefield Forge
 Beast Within
@@ -99,6 +104,7 @@ Circle of Dreams Druid
 Citadel Gate
 Cliffgate
 Clone
+Cloudfin Raptor
 Cloudskate
 Cold-Eyed Selkie
 Collective Unconscious
@@ -113,6 +119,7 @@ Counterspell
 Courser of Kruphix
 Cram Session
 Crib Swap
+Crocanura
 Crucible of Worlds
 Crystal Quarry
 Curate
@@ -143,6 +150,7 @@ Deepfathom Skulker
 Defile
 Delver of Secrets // Insectile Aberration
 Demon Bolt
+Deputized Protester
 Dire Fleet Interloper
 Direct Current
 Disembowel
@@ -174,6 +182,7 @@ Elven Ambush
 Elvish Aberration
 Elvish Rejuvenator
 Empyrial Plate
+Enraged Revolutionary
 Enthusiastic Study
 Epic Proportions
 Eternal Witness
@@ -243,6 +252,7 @@ Grapeshot
 Graven Cairns
 Graveshifter
 Greater Mossdog
+Grenzo's Cutthroat
 Grim Initiate
 Grisly Salvage
 Growing Ranks
@@ -252,6 +262,7 @@ Guiding Voice
 Gurmag Angler
 Hada Spy Patrol
 Hall of Triumph
+Hammer Dropper
 Hangar Scrounger
 Haughty Djinn
 Hengegate Pathway // Mistgate Pathway
@@ -288,6 +299,7 @@ Kathari Screecher
 Kazandu Tuskcaller
 Keep Watch
 Kessig Wolf Run
+Kingpin's Pet
 Kinjalli's Sunwing
 Kinsbaile Courier
 Kitchen Finks
@@ -316,6 +328,7 @@ Mana Bloom
 Manabarbs
 Manor Gate
 Map the Wastes
+Marchesa's Emissary
 Mardu Devotee
 Mardu Scout
 Mardu Shadowspear
@@ -366,6 +379,7 @@ Overgrown Arch
 Pacifism
 Pale Bears
 Panther Robot
+Parhelion Patrol
 Peema Outrider
 Pestilent Syphoner
 Phantasmal Image
@@ -408,6 +422,7 @@ Relentless Advance
 Revel Ruiner
 Reverberate
 Reverse Engineer
+Rhox Charger
 Rhox Faithmender
 Rhystic Study
 Rift Bolt
@@ -445,6 +460,7 @@ Shadowmage Infiltrator
 Shambling Shell
 Shenanigans
 Siege Wurm
+Sigiled Paladin
 Sigiled Sentinel
 Sinister Sabotage
 Sinister Starfish
@@ -494,12 +510,14 @@ Study Break
 Sultai Devotee
 Summer Bloom
 Sundering Growth
+Sunhome Stalwart
 Sunken Ruins
 Supreme Verdict
 Swarm Intelligence
 Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
+Syndic of Tithes
 Syphon Life
 Tabaxi Toucaneers
 Tah-Crop Skirmisher
@@ -529,6 +547,7 @@ Tilonalli's Skinshifter
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
+Tithe Drinker
 Tithebearer Giant
 Traumatic Visions
 Treasure Cruise
@@ -538,6 +557,7 @@ Tuskguard Captain
 Twilight Mire
 Twincast
 Uktabi Efreet
+Ulamog's Crusher
 Ultramarines Honour Guard
 Umbral Collar Zealot
 Underworld Dreams
@@ -570,6 +590,7 @@ Weaponcraft Enthusiast
 Wear // Tear
 Whir of Invention
 Wilderness Elemental
+Wings of the Guard
 Wooded Bastion
 Woodripper
 Wrath of God

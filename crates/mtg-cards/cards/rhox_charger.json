@@ -1,0 +1,12 @@
+{
+  "oracle_id": "e1b7db10-58a1-46fc-ac6c-287393ed96c2",
+  "name": "Rhox Charger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhox Charger",
+      "oracle_fingerprint": "b1a362ac46059a259ab504c140976169",
+      "abilities": [{ "Keyword": "Trample" }, { "Keyword": "Exalted" }]
+    }
+  ]
+}

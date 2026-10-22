@@ -1,0 +1,23 @@
+{
+  "id": "699c0f6f-b26b-4741-8140-8a6030cad127",
+  "oracle_id": "597bce51-af89-4d13-9a97-667b4f4f4694",
+  "name": "Ulamog's Crusher",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "6",
+  "rarity": "common",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{8}",
+  "cmc": 8.0,
+  "type_line": "Creature — Eldrazi",
+  "oracle_text": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice.)\nThis creature attacks each combat if able.",
+  "power": "8",
+  "toughness": "8",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Annihilator"
+  ]
+}
