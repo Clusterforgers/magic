@@ -353,6 +353,34 @@ fn a_vehicle_that_came_under_control_this_turn_can_be_crewed_but_cannot_attack(
     Ok(())
 }
 
+// Rebuilding the engine from the log
+
+#[rstest]
+fn a_rebuilt_engine_asks_the_crew_pick_again_and_keeps_the_pick_once_it_is_paid(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let members = vec![member("ready", "Bear", 2), member("ready", "Wolf", 3)];
+    let scenario = || table(seats, 2, members.clone());
+    let setup = scenario().setup().unwrap();
+    let mut driver = Driver::from_scenario(scenario())?;
+    driver.begin_activation("Skiff")?;
+    // Mid-announcement nothing is logged: the rebuilt engine is back at the priority that activated the ability.
+    let resumed =
+        mtg_engine::Engine::resume(setup.clone(), driver.engine().events().to_vec()).unwrap();
+    assert!(matches!(
+        resumed.decision().map(|d| &d.kind),
+        Some(DecisionKind::Priority(_))
+    ));
+    assert!(!is_tapped(&driver, "Bear") && !is_tapped(&driver, "Wolf"));
+    // Once the pick is paid the activation is in the log with its picks: the rebuilt engine agrees on everything.
+    pick(&mut driver, &["Bear", "Wolf"])?;
+    let resumed = mtg_engine::Engine::resume(setup, driver.engine().events().to_vec()).unwrap();
+    assert_eq!(resumed.state_hash(), driver.state().state_hash());
+    assert_eq!(resumed.decision(), driver.engine().decision());
+    assert_eq!(resumed.state().stack().len(), 1);
+    Ok(())
+}
+
 // Replay
 
 #[rstest]

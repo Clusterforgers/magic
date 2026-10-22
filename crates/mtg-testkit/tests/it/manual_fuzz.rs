@@ -118,14 +118,16 @@ fn a_rebuilt_engine_is_in_the_state_of_the_original_and_asks_what_it_asks(
                 engine.state_hash(),
                 "seed {seed} step {step}"
             );
-            // A cast or activation that is not paid for yet lives outside the state.
+            // A cast or activation that is not paid for yet lives outside the state: its payment, targets, modes
+            // and the picks of its cost (the only choice of cards that may still be backed out of).
             let outside = engine.replacing()
                 || matches!(
                     &decision.kind,
                     DecisionKind::PayMana(_)
                         | DecisionKind::ChooseTargets(_)
                         | DecisionKind::ChooseMode(_)
-                );
+                )
+                || matches!(&decision.kind, DecisionKind::ChooseCards(options) if options.can_cancel);
             if !outside {
                 assert_eq!(
                     resumed.decision(),
