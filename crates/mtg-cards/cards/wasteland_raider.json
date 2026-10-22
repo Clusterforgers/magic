@@ -1,0 +1,22 @@
+{
+  "oracle_id": "29439669-c9be-46f3-a62f-16de51fefe88",
+  "name": "Wasteland Raider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wasteland Raider",
+      "oracle_fingerprint": "b3b15cef27a65faef49418d417c869de",
+      "abilities": [
+        { "Keyword": { "Squad": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Creature" }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

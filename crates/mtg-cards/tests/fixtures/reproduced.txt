@@ -1,4 +1,5 @@
 Abbot of Keral Keep
+Aberrant
 Aether Hub
 Ajani's Pridemate
 Ancestral Vision
@@ -15,6 +16,7 @@ Azorius Chancery
 Azorius Signet
 Azure Fleet Admiral
 Azusa, Lost but Seeking
+Banshee of the Dread Choir
 Basking Rootwalla
 Battle Sliver
 Battlefield Forge
@@ -38,7 +40,9 @@ Brainstorm
 Branchblight Stalker
 Brightstone Ritual
 Bronzeplate Boar
+Broodbirth Viper
 Cackling Counterpart
+Caller of the Pack
 Capsize
 Carnage Tyrant
 Cascade Bluffs
@@ -65,6 +69,7 @@ Custodi Lich
 Cut // Ribbons
 Cyclonic Rift
 Cytoshape
+Dalek Squadron
 Darksteel Juggernaut
 Dauthi Horror
 Dauthi Marauder
@@ -122,6 +127,7 @@ Fruit of Tizerus
 Furtive Homunculus
 Gadwick, the Wizened
 Gaea's Cradle
+Galadhrim Brigade
 Game-Trail Changeling
 Gerrard's Wisdom
 Giant Cindermaw
@@ -132,6 +138,7 @@ Glorious Anthem
 Goblin Chieftain
 Goblin Spy
 Goblin War Buggy
+Goldlust Triad
 Grapeshot
 Graven Cairns
 Graveshifter
@@ -142,6 +149,7 @@ Gurmag Angler
 Hall of Triumph
 Haughty Djinn
 Hengegate Pathway // Mistgate Pathway
+Herald of the Host
 Hero of Bladehold
 Holdout Settlement
 Honor Troll
@@ -220,6 +228,7 @@ Pillar of the Paruns
 Plague Myr
 Plague Stinger
 Pouncing Jaguar
+Powder Ganger
 Prismatic Lens
 Professional Face-Breaker
 Psychosis Crawler
@@ -247,6 +256,7 @@ Rosheen Meanderer
 Rugged Prairie
 Rummaging Goblin
 Rustrazor Butcher
+Ruthless Radrat
 Safehold Elite
 Sanguine Bond
 Satyr Wayfinder
@@ -277,6 +287,7 @@ Soltari Foot Soldier
 Songs of the Damned
 Soul Shepherd
 Souldrinker
+Space Marine Devastator
 Spectral Rider
 Sphinx of Jwar Isle
 Spring // Mind
@@ -297,6 +308,7 @@ Supreme Verdict
 Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
+Tabaxi Toucaneers
 Tainted Isle
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
@@ -309,6 +321,7 @@ The Thing, Ben Grimm
 Thieving Magpie
 Thopter Fabricator
 Throne of the High City
+Tiamat's Fanatics
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
@@ -317,22 +330,27 @@ Tumble Magnet
 Twilight Mire
 Twincast
 Uktabi Efreet
+Ultramarines Honour Guard
 Umbral Collar Zealot
 Underworld Dreams
 Underworld Rage-Hound
 Universal Automaton
 Vampire Cutthroat
+Vanguard Suppressor
 Vengeful Vampire
 Vestige of Emrakul
 Viridian Corrupter
 Walking Ballista
 Wanderbrine Preacher
+Warchief Giant
 Wargate
 Warmonger Hellkite
+Wasteland Raider
 Wear // Tear
 Wilderness Elemental
 Wooded Bastion
 Wrath of God
+Wyrm's Crossing Patrol
 Young Wolf
 Zendikar Farguide
 Zodiac Goat

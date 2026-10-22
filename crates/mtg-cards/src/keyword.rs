@@ -177,6 +177,8 @@ pub enum Keyword {
     Undying,
     /// Persist (CR 702.79): when it dies, if it had no -1/-1 counter on it, it returns with a -1/-1 counter.
     Persist,
+    /// Ravenous (CR 702.156): it enters with X +1/+1 counters, and its controller draws a card when it enters if X is 5 or more.
+    Ravenous,
 }
 
 impl Keyword {
@@ -259,6 +261,7 @@ impl Keyword {
         "Cumulative upkeep",
         "Undying",
         "Persist",
+        "Ravenous",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -341,6 +344,7 @@ impl Keyword {
             Keyword::CumulativeUpkeep(_) => "Cumulative upkeep",
             Keyword::Undying => "Undying",
             Keyword::Persist => "Persist",
+            Keyword::Ravenous => "Ravenous",
         }
     }
 
@@ -351,9 +355,12 @@ impl Keyword {
             .any(|name| name.eq_ignore_ascii_case(printed))
     }
 
-    /// Whether this is a kicker or multikicker keyword.
+    /// Whether paying the cost of this keyword counts as a kick (`Amount::Kicks`): kicker, multikicker and squad.
     pub const fn is_kicker(&self) -> bool {
-        matches!(self, Keyword::Kicker(_) | Keyword::Multikicker(_))
+        matches!(
+            self,
+            Keyword::Kicker(_) | Keyword::Multikicker(_) | Keyword::Squad(_)
+        )
     }
 }
 
@@ -446,6 +453,7 @@ mod tests {
             Keyword::CumulativeUpkeep(Cost::default()),
             Keyword::Undying,
             Keyword::Persist,
+            Keyword::Ravenous,
         ]
     }
 

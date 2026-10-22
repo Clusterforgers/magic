@@ -379,6 +379,14 @@ pub enum Effect {
         /// The creature that joins the attack.
         what: Ref,
     },
+    /// For each attacking creature `of` names (CR 702.116a), creates for every opponent of its controller other than the player it attacks a token copy of it, tapped and attacking that opponent; the tokens are never declared as attackers (CR 508.4).
+    MyriadCopies {
+        /// The attacking creatures that are copied.
+        of: Ref,
+        /// Names the tokens for the effects that follow ("exile the tokens at end of combat").
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
+    },
     /// Unattaches Auras, Equipment or Fortifications from what they are attached to (CR 701.3d).
     Unattach {
         /// The permanents unattached; one attached to nothing stays as it is.
