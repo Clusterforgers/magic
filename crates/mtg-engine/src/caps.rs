@@ -112,6 +112,9 @@ const RUNS: &[&str] = &[
     "Effect.WinGame",
     "Effect.CreateToken",
     "Effect.CreateToken.Copy",
+    "Effect.CopySpell",
+    "Effect.CopyAbility",
+    "Effect.BecomeCopy",
     "Effect.Continuous",
     "Effect.Rule",
     "Effect.Regenerate",
@@ -188,6 +191,7 @@ const RUNS: &[&str] = &[
     "Keyword.Overload",
     "Keyword.Cycling",
     "Keyword.Cascade",
+    "Keyword.Storm",
     "Keyword.Convoke",
     "Keyword.Delve",
     "Keyword.Madness",
@@ -386,6 +390,11 @@ mod tests {
     #[case::creating_copies("Effect.CreateToken.Copy", true)]
     #[case::entering_as_a_copy("ReplaceBy.AsCopy", true)]
     #[case::an_exception_the_copy_cannot_hold("Copy.Except.SwitchPT", false)]
+    #[case::copying_spells("Effect.CopySpell", true)]
+    #[case::copying_abilities("Effect.CopyAbility", true)]
+    #[case::becoming_a_copy("Effect.BecomeCopy", true)]
+    #[case::a_copy_that_ends_with_another_duration("Copy.Duration.UntilYourNextTurn", false)]
+    #[case::storming("Keyword.Storm", true)]
     #[case::sacrificing_the_source("Cost.SacrificeSelf", true)]
     #[case::sacrificing_a_permanent("Cost.Sacrifice", true)]
     #[case::paying_by_sacrificing_the_source("Effect.Pay.SacrificeSelf", false)]

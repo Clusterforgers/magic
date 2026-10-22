@@ -1,0 +1,23 @@
+{
+  "id": "5996feb4-02ac-45e8-a7f2-966cf74391dc",
+  "oracle_id": "a1f55890-31c5-4ed4-a2cd-7a4a9f05f8ca",
+  "name": "Reverberate",
+  "lang": "en",
+  "layout": "normal",
+  "set": "m13",
+  "collector_number": "145",
+  "rarity": "rare",
+  "released_at": "2012-07-13",
+  "digital": false,
+  "mana_cost": "{R}{R}",
+  "cmc": 2,
+  "type_line": "Instant",
+  "oracle_text": "Copy target instant or sorcery spell. You may choose new targets for the copy.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

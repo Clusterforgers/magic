@@ -6,10 +6,11 @@ use mtg_cards::value::Amount;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
-use super::{Choices, Target};
+use super::{Choice, Choices, Target};
 use crate::abilities::Cause;
 use crate::answers::Outcome;
 use crate::error::{EngineError, IllegalAnswer};
+use crate::events::Event;
 use crate::keywords;
 use crate::object::{GameObject, ObjectRef};
 use crate::resolve::{ResolveError, Scope};
@@ -295,11 +296,13 @@ pub(crate) fn asks(options: &TargetOptions) -> bool {
     options.max > 0 && !options.legal.is_empty()
 }
 
-/// Checks the answer against the options it answers.
+/// Checks the answer against the options it answers. While a cast or activation is being announced the targets are
+/// kept for it; otherwise they are the new targets of a copy and are logged as the chooser's answer.
 pub(crate) fn answer(
-    _player: PlayerId,
+    player: PlayerId,
     options: &TargetOptions,
     choice: TargetChoice,
+    announcing: bool,
 ) -> Result<Outcome, EngineError> {
     let targets = match choice {
         TargetChoice::Cancel if options.can_cancel => return Ok(Outcome::CancelCast),
@@ -331,7 +334,13 @@ pub(crate) fn answer(
         }
         .into());
     }
-    Ok(Outcome::Targets(targets))
+    if announcing {
+        return Ok(Outcome::Targets(targets));
+    }
+    Ok(Outcome::Events(vec![Event::ChoiceMade {
+        player,
+        choice: Choice::Targets(targets),
+    }]))
 }
 
 #[cfg(test)]
@@ -523,7 +532,7 @@ mod tests {
     }
 
     fn answered(options: &TargetOptions, choice: TargetChoice) -> Result<Outcome, IllegalAnswer> {
-        match answer(PlayerId(0), options, choice) {
+        match answer(PlayerId(0), options, choice, true) {
             Err(EngineError::Illegal(illegal)) => Err(illegal),
             Err(other) => panic!("{other}"),
             Ok(outcome) => Ok(outcome),

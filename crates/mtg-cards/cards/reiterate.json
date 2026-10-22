@@ -1,0 +1,26 @@
+{
+  "oracle_id": "38394ee3-6726-4f91-bc25-36bce0c6aab9",
+  "name": "Reiterate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reiterate",
+      "oracle_fingerprint": "d3770caf39a9493ba336c30a906cd13a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        },
+        { "Keyword": { "Buyback": "{3}" } }
+      ]
+    }
+  ]
+}

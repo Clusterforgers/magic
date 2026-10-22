@@ -9,6 +9,7 @@ mod announce;
 mod answers;
 mod attach;
 mod cast;
+mod commanders;
 mod damage;
 mod faces;
 #[cfg(test)]

@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use crate::abilities::{AbilitySource, Cause, PutOnStack};
 use crate::choose::{Choice, Choices, Target};
 use crate::combat::{AttackTarget, DamageTarget};
-use crate::copies::BecameCopy;
+use crate::copies::{AbilityCopy, BecameCopy, SpellCopy};
 use crate::counters::CountersChanged;
 use crate::day_night::DayNight;
 use crate::effects::ContinuousEffect;
@@ -505,6 +505,15 @@ pub enum Event {
     },
     /// A permanent became a copy of another object (CR 707.2), with the copiable values of the copy effect.
     BecameCopy(BecameCopy),
+    /// A spell was copied (CR 707.10): the copy is put on the stack above it, not cast.
+    SpellCopied(Box<SpellCopy>),
+    /// An activated or triggered ability was copied (CR 707.10): the copy is put on the stack above it, not activated or triggered.
+    AbilityCopied(Box<AbilityCopy>),
+    /// A permanent's copy effect that lasted until end of turn ended.
+    CopyEnded {
+        /// The permanent.
+        object: ObjectId,
+    },
     /// The game became day or night (CR 726).
     DayNightChanged {
         /// What it became.
@@ -516,6 +525,12 @@ pub enum Event {
         player: PlayerId,
         /// What they did.
         action: Box<ManualAction>,
+    },
+    /// The owner of a commander in a graveyard or exile chose to leave it there (CR 903.9a); they are asked again if
+    /// it moves and lies in a graveyard or exile once more.
+    CommanderStayed {
+        /// The commander.
+        object: ObjectId,
     },
 }
 
@@ -619,6 +634,7 @@ impl Event {
             | Event::LifeGained { .. }
             | Event::LifeLost { .. }
             | Event::ManualAction { .. }
+            | Event::CommanderStayed { .. }
             | Event::LibraryLooked(_)
             | Event::CardsFound(_)
             | Event::Revealed(_) => Vec::new(),
@@ -635,6 +651,8 @@ impl Event {
             Event::Scried(scried) => scried.top.iter().chain(&scried.bottom).copied().collect(),
             Event::TokenCreated(token) => vec![token.object],
             Event::BecameCopy(copy) => vec![copy.object],
+            Event::SpellCopied(copy) => vec![copy.object],
+            Event::AbilityCopied(copy) => vec![copy.object],
             Event::AbilityPutOnStack(put) => vec![put.object],
             Event::LandPlayed { object, .. }
             | Event::SpellCast { object, .. }
@@ -650,6 +668,7 @@ impl Event {
             | Event::CardDiscarded { object, .. }
             | Event::Cycled { object, .. }
             | Event::CreatureDied { object, .. }
+            | Event::CopyEnded { object }
             | Event::ObjectLeftGame { object } => vec![*object],
             Event::Attached { object, to } => vec![*object, *to],
             Event::AttackersDeclared { attackers, .. } => {

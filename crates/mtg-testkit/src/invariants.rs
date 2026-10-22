@@ -432,10 +432,19 @@ fn check_bookkeeping(state: &GameState) -> Result<(), Violation> {
     }
     if let Some(resolving) = state.resolving() {
         let id = resolving.object();
-        if state.stack().last() != Some(&id) {
-            return Err(book(format!(
-                "{id:?} is resolving but is not the top of the stack"
-            )));
+        let Some(at) = state.stack().iter().position(|object| *object == id) else {
+            return Err(book(format!("{id:?} is resolving but is not on the stack")));
+        };
+        // What its resolution put on the stack (a copy, a spell cast during it) lies above it until it ends.
+        for above in &state.stack()[at + 1..] {
+            let put_by_it = state
+                .object(*above)
+                .is_some_and(|o| o.kind() == ObjectKind::Card || o.copied_from().is_some());
+            if !put_by_it {
+                return Err(book(format!(
+                    "{id:?} is resolving but {above:?} above it was not put there by it"
+                )));
+            }
         }
     }
     for object in state.objects() {
@@ -648,6 +657,15 @@ impl InvariantChecker {
             Event::CreatureDied { object, .. } => is_token(object),
             _ => false,
         };
+        // A copy of a spell ceases to exist as it resolves or ends, unless it becomes a permanent (CR 707.10).
+        let copy_on_its_way = match event {
+            Event::SpellResolved { object } | Event::ResolutionEnded { object, .. } => self
+                .shadow
+                .object(*object)
+                .filter(|o| o.is_spell_copy())
+                .map(mtg_engine::object::GameObject::id),
+            _ => None,
+        };
         // The next turn goes to the next player in turn order after the last active player, who may have left (CR 800.4).
         if let Event::TurnBegan { number, active } = event
             && self.shadow.turn().number() > 0
@@ -669,8 +687,14 @@ impl InvariantChecker {
         if matches!(event, Event::TokenCreated(_)) {
             self.expected_objects += 1;
         }
-        if matches!(event, Event::AbilityPutOnStack(_)) {
+        if matches!(
+            event,
+            Event::AbilityPutOnStack(_) | Event::SpellCopied(_) | Event::AbilityCopied(_)
+        ) {
             self.expected_objects += 1;
+        }
+        if copy_on_its_way.is_some_and(|id| self.shadow.has_ceased(id)) {
+            self.expected_objects -= 1;
         }
         if !touched.is_empty() {
             self.check_conservation()?;

@@ -1,0 +1,25 @@
+{
+  "id": "e3e2d90a-3557-49d5-9986-cb50fd31f396",
+  "oracle_id": "ebd2d760-5ad8-4027-b124-171822f3edfe",
+  "name": "Grapeshot",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "803",
+  "rarity": "common",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2,
+  "type_line": "Sorcery",
+  "oracle_text": "Grapeshot deals 1 damage to any target.\nStorm (When you cast this spell, copy it for each spell cast before it this turn. You may choose new targets for the copies.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Storm"
+  ]
+}

@@ -11,8 +11,9 @@ use mtg_core::house::HouseRules;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::combat::CombatState;
+use crate::commanders::Commanders;
 use crate::error::SetupError;
-use crate::format::{FormatRules, RuleSet};
+use crate::format::{ExtraZone, FormatRules, RuleSet};
 use crate::layers::LayersCache;
 use crate::object::{GameObject, ObjectRef, PermanentState};
 use crate::player::{MulliganStatus, Player};
@@ -75,6 +76,9 @@ pub struct PlayerSetup {
     pub keywords: Vec<Keyword>,
     /// Counters on the player from the start, by kind; a kind listed twice adds up.
     pub counters: Vec<(CounterKind, u32)>,
+    /// The commanders the seat starts with in the command zone (CR 903.6), one or a pair of partners; the cards
+    /// of the deck are the other ones.
+    pub commanders: Vec<Arc<CardDefinition>>,
 }
 
 /// Where the game starts.
@@ -133,6 +137,15 @@ impl GameSetup {
         }
     }
 
+    /// The setup with these commanders, one list for each seat in table order, starting in the command zone.
+    #[must_use]
+    pub fn with_commanders(mut self, commanders: Vec<Vec<Arc<CardDefinition>>>) -> Self {
+        for (player, cards) in self.players.iter_mut().zip(commanders) {
+            player.commanders = cards;
+        }
+        self
+    }
+
     /// The setup with `house_rules` laid over the format's values.
     #[must_use]
     pub fn with_house_rules(mut self, house_rules: HouseRules) -> Self {
@@ -151,6 +164,15 @@ impl GameSetup {
         if self.players.len() < 2 {
             return Err(SetupError::TooFewPlayers(self.players.len()));
         }
+        let has_command_zone = self.format.extra_zones().contains(&ExtraZone::Command);
+        if let Some(seat) = self
+            .players
+            .iter()
+            .position(|player| !player.commanders.is_empty())
+            .filter(|_| !has_command_zone)
+        {
+            return Err(SetupError::NoCommandZone { seat });
+        }
         if self.validate_decks {
             for (seat, player) in self.players.iter().enumerate() {
                 let deck: Vec<_> = player
@@ -162,7 +184,7 @@ impl GameSetup {
                     .cloned()
                     .collect();
                 self.format
-                    .validate_deck(&deck)
+                    .validate_seat(&deck, &player.commanders)
                     .map_err(|source| SetupError::InvalidDeck {
                         player: PlayerId::from_index(seat),
                         source,
@@ -282,6 +304,7 @@ impl GameState {
             id
         };
         let mut presets = Vec::new();
+        let mut commander_ids = Vec::new();
         let mut placed: BTreeMap<(usize, usize), ObjectId> = BTreeMap::new();
         for (seat, setup_player) in setup.players.iter().enumerate() {
             let owner = PlayerId::from_index(seat);
@@ -298,6 +321,9 @@ impl GameState {
             }
             for card in &setup_player.graveyard {
                 create(owner, card, Zone::Graveyard(owner));
+            }
+            for card in &setup_player.commanders {
+                commander_ids.push(create(owner, card, Zone::Command(owner)));
             }
             let status = match setup.start {
                 Start::Mulligan => MulliganStatus::NeedsHand,
@@ -367,8 +393,14 @@ impl GameState {
             possible: Possible::default(),
             result: None,
             day_night: None,
+            commanders: Commanders::of(commander_ids),
         };
         game.note_what_cards_can_do();
+        // A commander is moved by a replacement effect and costs a tax, so both are looked for in its game.
+        if game.commanders.any() {
+            game.possible.replacements = true;
+            game.possible.costs = true;
+        }
         Ok(game)
     }
 

@@ -95,6 +95,10 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::StepDone { .. }
         | Event::ResolutionEnded { .. } => resolution::apply(state, event),
         Event::AbilityTriggered(triggered) => crate::triggers::fold_triggered(state, triggered),
+        Event::CommanderStayed { object } => {
+            state.commanders.stay(*object);
+            Ok(())
+        }
         Event::TriggersOrdered { player, order } => {
             crate::triggers::fold_ordered(state, *player, order)
         }
@@ -115,6 +119,9 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::Unattached { object } => crate::attach::fold_unattached(state, *object),
         Event::TokenCreated(token) => crate::tokens::fold(state, token),
         Event::BecameCopy(copy) => crate::copies::fold(state, copy),
+        Event::SpellCopied(copy) => crate::copies::fold_spell(state, copy),
+        Event::AbilityCopied(copy) => crate::copies::fold_ability(state, copy),
+        Event::CopyEnded { object } => crate::copies::fold_ended(state, *object),
         // The change follows as events of its own; the action only restarts the round, so the other seats see it.
         Event::ManualAction { .. } => {
             reset_passes(state);
@@ -204,6 +211,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::PriorityPassed { player } => pass_priority(state, *player)?,
         Event::Transformed { object, face } => set_face(state, *object, *face)?,
         Event::DayNightChanged { to } => state.day_night = Some(*to),
+
         Event::PermanentTapped { object } => set_tapped(state, *object, true)?,
         Event::PermanentUntapped { object } => set_tapped(state, *object, false)?,
         Event::ManaAdded {

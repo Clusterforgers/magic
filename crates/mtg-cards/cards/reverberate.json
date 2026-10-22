@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a1f55890-31c5-4ed4-a2cd-7a4a9f05f8ca",
+  "name": "Reverberate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reverberate",
+      "oracle_fingerprint": "ca9a1d032a97c6511cab7dbf3a570b0b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -44,6 +44,7 @@ pub(super) fn move_object(
     }
     state.zones.insert(to, id, placement);
     object.zone = to;
+    state.commanders.moved(id);
     // A new zone makes it a new object (CR 400.7); what was announced for it on the stack goes with the stack.
     object.counter += 1;
     object.card_counters.clear();
@@ -176,6 +177,8 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 )));
             }
             expect_in(state, *object, from)?;
+            // The tax counts casts from the command zone (CR 903.8).
+            state.commanders.cast(*object, from);
             move_object(state, *object, Zone::Stack, Placement::Top)?;
             set_controller(state, *object, *player);
             // The face cast is the card a spell is from now on: its buyback and flashback below are those of the face.
@@ -338,8 +341,9 @@ fn owner_of(state: &GameState, id: ObjectId) -> Result<PlayerId, EngineError> {
 }
 
 fn resolve_spell(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
-    if state.zones.get(Zone::Stack).last() != Some(&id) {
-        return Err(invalid(format!("{id:?} is not the top of the stack")));
+    // What a resolution put on the stack (a copy, a spell cast during it) is above the spell, which leaves from beneath it.
+    if !state.zones.get(Zone::Stack).contains(&id) {
+        return Err(invalid(format!("{id:?} is not on the stack")));
     }
     let types = state
         .object(id)

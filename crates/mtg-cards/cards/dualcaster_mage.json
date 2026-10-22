@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8eb7c0a5-6190-40de-b473-2d1daa3bbe28",
+  "name": "Dualcaster Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dualcaster Mage",
+      "oracle_fingerprint": "a7e193cb6b04235f593bb0ee263a888e",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

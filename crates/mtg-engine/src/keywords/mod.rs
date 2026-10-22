@@ -558,7 +558,7 @@ mod tests {
     }
 
     /// The keywords whose rules the engine runs, named as the capabilities name them.
-    const RUN: [&str; 40] = [
+    const RUN: [&str; 41] = [
         "Keyword.Flash",
         "Keyword.Flying",
         "Keyword.Reach",
@@ -591,6 +591,7 @@ mod tests {
         "Keyword.Overload",
         "Keyword.Cycling",
         "Keyword.Cascade",
+        "Keyword.Storm",
         "Keyword.Convoke",
         "Keyword.Delve",
         "Keyword.Madness",
@@ -692,6 +693,7 @@ mod tests {
     #[case::flashback(Keyword::Flashback(Cost::mana("{2}".parse().unwrap())), Hooks::none())]
     #[case::overload(Keyword::Overload(Cost::mana("{2}".parse().unwrap())), Hooks::none())]
     #[case::cascade(Keyword::Cascade, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::storm(Keyword::Storm, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::madness(Keyword::Madness(Cost::mana("{R}".parse().unwrap())), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {

@@ -213,6 +213,16 @@ impl<'a> RuleSet<'a> {
             .unwrap_or_else(|| self.format.poison_threshold())
     }
 
+    /// The generic mana a commander costs more for each cast from the command zone (CR 903.8).
+    pub fn commander_tax(&self) -> u32 {
+        self.format.commander_tax()
+    }
+
+    /// The combat damage from one commander that makes a player lose, if the game has the rule (CR 903.10a).
+    pub fn commander_damage(&self) -> Option<u32> {
+        self.format.commander_damage()
+    }
+
     /// The game result once decided: the format's, else a draw when every player left is at the winning life total
     /// (state-based actions have already removed the others, so one player left is the format's win).
     pub fn game_result(&self, state: &GameState) -> Option<GameResult> {

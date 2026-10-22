@@ -13,7 +13,7 @@ use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
 use crate::keyword::Keyword;
-use crate::modify::{GameRule, Modification};
+use crate::modify::{Duration, GameRule, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::spend::SpendOn;
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
@@ -358,6 +358,7 @@ impl<'a> Walker<'a> {
             | Pred::Colorless
             | Pred::Token
             | Pred::Spell
+            | Pred::Ability(_)
             | Pred::Tapped
             | Pred::Untapped
             | Pred::Attacking
@@ -1291,6 +1292,34 @@ impl<'a> Walker<'a> {
                 // A token that copies an object waits for the copy effects.
                 if matches!(token, TokenRef::CopyOf { .. }) {
                     w.uses("Effect", "CreateToken.Copy");
+                }
+            }
+            Effect::CopySpell {
+                what,
+                count,
+                except,
+                ..
+            } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("count", |w| w.amount(count));
+                w.copy_exceptions(except);
+            }
+            Effect::CopyAbility { what, count, .. } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("count", |w| w.amount(count));
+            }
+            Effect::BecomeCopy {
+                what,
+                of,
+                except,
+                duration,
+            } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("of", |w| w.reference(of, Kind::Object));
+                w.copy_exceptions(except);
+                // The engine ends a copy with the turn or never.
+                if !matches!(duration, Duration::UntilEndOfTurn | Duration::Forever) {
+                    w.uses("Copy", &format!("Duration.{}", tag_of(duration)));
                 }
             }
             Effect::Continuous { affected, mods, .. } => {
@@ -2251,6 +2280,14 @@ mod tests {
     #[case::a_named_token_brings_its_own_abilities(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Named":"treasure"}}}]}}"#, &["Ability.Activated", "Ability.Spell", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana", "Effect.CreateToken"])]
     #[case::an_inline_token_with_an_ability(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Gem","types":["Artifact"],"abilities":[{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}]}},"count":2,"tapped":true}}]}}"#, &["Ability.Activated", "Ability.Spell", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana", "Effect.CreateToken"])]
     #[case::a_copy_of_an_object(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This"}}}}]}}"#, &["Ability.Spell", "Effect.CreateToken", "Effect.CreateToken.Copy"])]
+    #[case::a_copy_of_a_spell(r#"{"Spell":{"targets":[{"what":{"Object":["Spell"]}}],"effects":[{"CopySpell":{"what":{"Target":0},"new_targets":true}}]}}"#, &["Ability.Spell", "Effect.CopySpell"])]
+    #[case::a_copy_of_a_spell_with_an_exception_that_runs(r#"{"Spell":{"targets":[{"what":{"Object":["Spell"]}}],"effects":[{"CopySpell":{"what":{"Target":0},"except":[{"SetColors":["Red"]}]}}]}}"#, &["Ability.Spell", "Effect.CopySpell", "Mod.SetColors"])]
+    #[case::a_copy_of_a_spell_with_an_exception_that_waits(r#"{"Spell":{"targets":[{"what":{"Object":["Spell"]}}],"effects":[{"CopySpell":{"what":{"Target":0},"except":["SwitchPT"]}}]}}"#, &["Ability.Spell", "Copy.Except.SwitchPT", "Effect.CopySpell", "Mod.SwitchPT"])]
+    #[case::a_copy_of_an_ability(r#"{"Spell":{"targets":[{"what":{"Object":[{"Ability":"Triggered"}]}}],"effects":[{"CopyAbility":{"what":{"Target":0}}}]}}"#, &["Ability.Spell", "Effect.CopyAbility"])]
+    #[case::a_copy_until_end_of_turn(r#"{"Spell":{"effects":[{"BecomeCopy":{"what":"This","of":"This","duration":"UntilEndOfTurn"}}]}}"#, &["Ability.Spell", "Effect.BecomeCopy"])]
+    #[case::a_copy_without_end(r#"{"Spell":{"effects":[{"BecomeCopy":{"what":"This","of":"This","duration":"Forever"}}]}}"#, &["Ability.Spell", "Effect.BecomeCopy"])]
+    #[case::a_copy_that_ends_with_another_duration(r#"{"Spell":{"effects":[{"BecomeCopy":{"what":"This","of":"This","duration":"UntilYourNextTurn"}}]}}"#, &["Ability.Spell", "Copy.Duration.UntilYourNextTurn", "Effect.BecomeCopy"])]
+    #[case::storm_is_a_keyword(r#"{"Keyword":"Storm"}"#, &["Keyword.Storm"])]
     #[case::a_copy_with_the_exceptions_the_values_keep(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This","except":[{"AddKeyword":"Haste"},{"AddSubtype":"Zombie"},{"SetColors":["Blue"]},{"SetPT":{"power":1,"toughness":1}}]}}}}]}}"#, &["Ability.Spell", "Effect.CreateToken", "Effect.CreateToken.Copy", "Keyword.Haste", "Mod.AddKeyword", "Mod.AddSubtype", "Mod.SetColors", "Mod.SetPT"])]
     #[case::a_copy_with_an_exception_that_waits(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This","except":["SwitchPT"]}}}}]}}"#, &["Ability.Spell", "Copy.Except.SwitchPT", "Effect.CreateToken", "Effect.CreateToken.Copy", "Mod.SwitchPT"])]
     #[case::populate(r#"{"Spell":{"effects":[{"Choose":{"from":{"Each":[{"Type":"Creature"},"Token",{"ControlledBy":"You"}]},"as":"token"}},{"CreateToken":{"token":{"CopyOf":{"of":{"Bound":"token"}}}}}]}}"#, &["Ability.Spell", "Effect.Choose", "Effect.CreateToken", "Effect.CreateToken.Copy"])]

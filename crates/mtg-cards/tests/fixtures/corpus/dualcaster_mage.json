@@ -1,0 +1,27 @@
+{
+  "id": "defcc4a3-40e0-4f5d-b23c-6cd6a614abc1",
+  "oracle_id": "8eb7c0a5-6190-40de-b473-2d1daa3bbe28",
+  "name": "Dualcaster Mage",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c21",
+  "collector_number": "165",
+  "rarity": "rare",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{1}{R}{R}",
+  "cmc": 3,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "Flash\nWhen this creature enters, copy target instant or sorcery spell. You may choose new targets for the copy.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flash"
+  ]
+}

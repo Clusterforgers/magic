@@ -150,6 +150,8 @@ pub struct GameState {
     pub(crate) result: Option<GameResult>,
     /// Day or night (CR 726); neither until a permanent with daybound or nightbound appears.
     pub(crate) day_night: Option<crate::day_night::DayNight>,
+    /// The commanders of the game and what is counted for them (CR 903); empty outside Commander.
+    pub(crate) commanders: crate::commanders::Commanders,
 }
 
 impl GameState {
@@ -484,6 +486,8 @@ impl Hash for GameState {
         if let Some(day_night) = self.day_night {
             day_night.hash(state);
         }
+        // Likewise a game without commanders.
+        self.commanders.hash(state);
     }
 }
 

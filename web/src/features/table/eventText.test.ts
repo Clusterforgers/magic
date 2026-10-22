@@ -59,7 +59,17 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { BecameCopy: { object: 3, of: { id: 5, counter: 0 } } },
     'Forest becomes a copy of Serra Angel',
   ],
+  SpellCopied: [
+    { SpellCopied: { object: 9, of: { id: 5, counter: 0 }, controller: 0 } },
+    'Ana copies Serra Angel',
+  ],
+  AbilityCopied: [
+    { AbilityCopied: { object: 9, of: { id: 5, counter: 0 }, controller: 0 } },
+    'Ana copies the ability of Serra Angel',
+  ],
+  CopyEnded: [{ CopyEnded: { object: 3 } }, 'Forest stops being a copy'],
   DayNightChanged: [{ DayNightChanged: { to: 'Night' } }, 'It becomes night'],
+  CommanderStayed: [{ CommanderStayed: { object: 3 } }, 'Forest stays where it is'],
   MulliganPhaseEnded: ['MulliganPhaseEnded', 'The mulligan phase ends'],
   TurnBegan: [{ TurnBegan: { number: 3, active: 1 } }, "Turn 3 begins: Bo's turn"],
   StepBegan: [{ StepBegan: { step: 'DeclareAttackers' } }, 'Declare attackers begins'],
@@ -520,6 +530,7 @@ describe('events with more than one shape', () => {
     ['Poison', 'Bo had too many poison counters'],
     ['Conceded', 'Bo conceded'],
     ['OpponentReachedLife', 'Bo lost to a player at the winning life total'],
+    ['CommanderDamage', 'Bo was dealt 21 or more combat damage by one commander'],
   ] as const)('says why a player lost: %s', (reason, text) => {
     expect(say({ PlayerLost: { player: 1, reason } })).toBe(text)
   })

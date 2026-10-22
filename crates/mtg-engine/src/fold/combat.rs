@@ -127,16 +127,21 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             target.assignment = Some(assignment.clone());
         }
         Event::DamageDealt {
+            source,
             target,
             amount,
             deathtouch,
-            ..
         } => match target {
             DamageTarget::Player(id) => {
+                let combat = state.commanders.any() && crate::replace::in_combat_damage(state);
                 let player = player_mut(state, *id)?;
                 player.life = player
                     .life
                     .saturating_sub(i32::try_from(*amount).unwrap_or(i32::MAX));
+                // Combat damage a commander deals counts toward commander damage (CR 903.10a).
+                if combat {
+                    state.commanders.dealt(*source, *id, *amount);
+                }
             }
             DamageTarget::Object(id) => damage_object(state, *id, *amount, *deathtouch)?,
         },

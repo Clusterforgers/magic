@@ -1,0 +1,23 @@
+{
+  "id": "e4ff994a-bddd-486d-9a7b-a8959b4cf1dd",
+  "oracle_id": "50c53ae0-51ba-4046-ac74-87c65e688032",
+  "name": "Fork",
+  "lang": "en",
+  "layout": "normal",
+  "set": "me4",
+  "collector_number": "116",
+  "rarity": "rare",
+  "released_at": "2011-01-10",
+  "digital": true,
+  "mana_cost": "{R}{R}",
+  "cmc": 2,
+  "type_line": "Instant",
+  "oracle_text": "Copy target instant or sorcery spell, except that the copy is red. You may choose new targets for the copy.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

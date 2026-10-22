@@ -1,0 +1,25 @@
+{
+  "id": "6f26faca-f338-4ce5-a218-6a61d40fc50a",
+  "oracle_id": "78db3190-59bc-4033-95bc-32d8ed872b6a",
+  "name": "Tendrils of Agony",
+  "lang": "en",
+  "layout": "normal",
+  "set": "vma",
+  "collector_number": "142",
+  "rarity": "uncommon",
+  "released_at": "2014-06-16",
+  "digital": true,
+  "mana_cost": "{2}{B}{B}",
+  "cmc": 4,
+  "type_line": "Sorcery",
+  "oracle_text": "Target player loses 2 life and you gain 2 life.\nStorm (When you cast this spell, copy it for each spell cast before it this turn. You may choose new targets for the copies.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Storm"
+  ]
+}

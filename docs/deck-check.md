@@ -40,6 +40,10 @@ The per-card support lookup (`Library::support` in `mtg-cards`), the report (`mt
   - A card the database lacks is an `unknown_card` issue and counts as `unplayable`; a format without rules is an `unknown_format` issue.
 - Cards are grouped by zone (main, sideboard, commander, companion), each by name, so the owner sees where an issue sits; the sideboard and the companion count toward the state like any zone.
 
+## The engine's check
+
+A game also checks each seat's deck against its format when it begins (`FormatRules::validate_seat`, `engine.md`, Commander), with the card definitions the engine is given. Commander there asks for the commanders in the command zone (one, or a Partner pair), 100 cards with them, one copy of each card but basic lands and cards that allow more, and every card inside the commanders' colour identity. The identity (`CardDefinition::color_identity`) is derived from the definition: the colour indicator, the cost, the rules text and the basic land types over all faces; for the cards of the corpus it equals Scryfall's `color_identity`, which the report above uses.
+
 ## Highlighting
 
 - Deck list and builder: every card that is not `Verified` gets an icon, a word (Manual, Partial, Stale, Unplayable) and a coloured edge, never colour alone. The header counts them ("96 of 100 verified, 3 manual, 1 partial") with an "issues only" filter and a sort that puts them first.

@@ -1,0 +1,25 @@
+{
+  "id": "758023cb-548a-4a98-a355-f5c6e9eab5ff",
+  "oracle_id": "14221c18-7801-49c9-a2c8-53b8c5181d63",
+  "name": "Cytoshape",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dis",
+  "collector_number": "108",
+  "rarity": "rare",
+  "released_at": "2006-05-05",
+  "digital": false,
+  "mana_cost": "{1}{G}{U}",
+  "cmc": 3,
+  "type_line": "Instant",
+  "oracle_text": "Choose a nonlegendary creature on the battlefield. Target creature becomes a copy of that creature until end of turn.",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": []
+}

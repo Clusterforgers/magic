@@ -1,0 +1,25 @@
+{
+  "id": "99302c41-434f-41ff-a61a-2c3681a0c135",
+  "oracle_id": "38394ee3-6726-4f91-bc25-36bce0c6aab9",
+  "name": "Reiterate",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tsr",
+  "collector_number": "182",
+  "rarity": "rare",
+  "released_at": "2021-03-19",
+  "digital": false,
+  "mana_cost": "{1}{R}{R}",
+  "cmc": 3,
+  "type_line": "Instant",
+  "oracle_text": "Buyback {3} (You may pay an additional {3} as you cast this spell. If you do, put this card into your hand as it resolves.)\nCopy target instant or sorcery spell. You may choose new targets for the copy.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Buyback"
+  ]
+}

@@ -141,7 +141,8 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub face: Option<u8>,
-    /// Set while the permanent is a copy of another object; the values above are those of the copy effect.
+    /// Set while the permanent is a copy of another object, or the object is a copy of a spell or ability on the stack; the
+    /// values above are those of the copy effect or of the original.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub copy: Option<CopyView>,
@@ -156,6 +157,26 @@ pub struct ObjectView {
 #[allow(clippy::trivially_copy_pass_by_ref)]
 const fn is_false(flag: &bool) -> bool {
     !*flag
+}
+
+/// A commander a seat owns and what casting it from the command zone costs more now (public).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct CommanderView {
+    /// The commander card.
+    pub object: ObjectId,
+    /// Times it was cast from the command zone this game.
+    pub casts: u32,
+    /// The generic mana it costs more to cast from the command zone (the tax).
+    pub tax: u32,
+}
+
+/// The combat damage one commander has dealt to a seat this game (public).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct CommanderDamageView {
+    /// The commander that dealt it.
+    pub commander: ObjectId,
+    /// The damage, summed over the game.
+    pub damage: u32,
 }
 
 /// One seat as a viewer sees it.
@@ -190,6 +211,16 @@ pub struct PlayerView {
     pub graveyard: ZoneView,
     /// Command zone (public).
     pub command: ZoneView,
+    /// The commanders the seat owns, wherever they are, with the times each was cast from the command zone and the tax
+    /// it carries; public, and left out outside Commander.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<CommanderView>>", optional)]
+    pub commanders: Vec<CommanderView>,
+    /// The combat damage commanders have dealt to the seat, one entry for each commander that dealt any; public, and
+    /// left out while there is none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<CommanderDamageView>>", optional)]
+    pub commander_damage: Vec<CommanderDamageView>,
     /// Clock extensions the seat holds (public). The engine does not know them: the server fills them in, and a view
     /// made from the engine state alone says 0.
     pub bank: u8,

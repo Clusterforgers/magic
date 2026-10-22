@@ -31,6 +31,6 @@ pub use rest::{
     UserView,
 };
 pub use view::{
-    AttackerView, CombatView, CopyView, ObjectView, PermanentView, PlayerView, PriorityView,
-    StateView, TableView, TurnView, ZoneView,
+    AttackerView, CombatView, CommanderDamageView, CommanderView, CopyView, ObjectView,
+    PermanentView, PlayerView, PriorityView, StateView, TableView, TurnView, ZoneView,
 };
