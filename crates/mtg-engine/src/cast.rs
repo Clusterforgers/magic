@@ -258,12 +258,20 @@ fn payment_events(
             cause: ZoneCause::Exiled,
         });
     }
-    for tap in &payment.taps {
+    // A source that costs mana pays it from the pool just before it adds its own mana.
+    for step in &spent.steps {
         let option = options
             .sources
             .iter()
-            .find(|o| o.source == *tap)
+            .find(|o| o.source == step.source)
             .ok_or(IllegalAnswer::NotOffered("mana source"))?;
+        if !step.paid.is_empty() {
+            events.push(Event::ManaSpent {
+                player,
+                mana: step.paid.clone(),
+                restricted: Vec::new(),
+            });
+        }
         events.extend(activate(option)?);
     }
     if !spent.mana.is_empty() {
