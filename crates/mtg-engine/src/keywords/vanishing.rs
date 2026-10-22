@@ -26,6 +26,7 @@ pub(super) fn enters_with(kind: CounterKind, count: u32) -> Option<Ability> {
         by: ReplaceBy::WithCounters {
             counter: kind,
             count: Amount::Fixed(count),
+            tapped: false,
         },
         condition: None,
         from: ZoneKind::Battlefield,

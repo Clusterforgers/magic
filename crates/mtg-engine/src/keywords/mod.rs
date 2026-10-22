@@ -696,12 +696,6 @@ mod tests {
             Keyword::CumulativeUpkeep(cost()),
             Keyword::Undying,
             Keyword::Persist,
-            Keyword::Vanishing(3),
-            Keyword::Fading(3),
-            Keyword::Backup {
-                count: 1,
-                abilities: vec![],
-            },
             Keyword::LevelUp(cost()),
             Keyword::Outlast(cost()),
             Keyword::Saddle(2),
@@ -716,6 +710,12 @@ mod tests {
             Keyword::Typecycling {
                 find: Selector::default(),
                 cost: cost(),
+            },
+            Keyword::Vanishing(3),
+            Keyword::Fading(3),
+            Keyword::Backup {
+                count: 1,
+                abilities: vec![],
             },
         ]
     }
