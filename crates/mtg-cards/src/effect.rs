@@ -369,6 +369,11 @@ pub enum Effect {
         /// The object they are attached to.
         to: Ref,
     },
+    /// Puts a creature that just entered the battlefield into combat, tapped and attacking the player or planeswalker the creature that the cost of the ability returned to its owner's hand was attacking (CR 702.49a, 508.4); it was never declared as an attacker.
+    JoinAttack {
+        /// The creature that joins the attack.
+        what: Ref,
+    },
     /// Unattaches Auras, Equipment or Fortifications from what they are attached to (CR 701.3d).
     Unattach {
         /// The permanents unattached; one attached to nothing stays as it is.

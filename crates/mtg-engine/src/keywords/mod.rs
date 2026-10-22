@@ -52,6 +52,7 @@ mod multikicker;
 mod mutate;
 mod myriad;
 mod nightbound;
+mod ninjutsu;
 mod overload;
 mod partner;
 mod partner_group;
@@ -393,6 +394,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Rebound => &rebound::Rebound,
         Keyword::Aftermath => &aftermath::Aftermath,
         Keyword::Dash(_) => &dash::Dash,
+        Keyword::Ninjutsu(_) => &ninjutsu::Ninjutsu,
     }
 }
 
@@ -642,6 +644,7 @@ mod tests {
             Keyword::Rebound,
             Keyword::Aftermath,
             Keyword::Dash(cost()),
+            Keyword::Ninjutsu(cost()),
         ]
     }
 
@@ -710,6 +713,7 @@ mod tests {
         "Keyword.Rebound",
         "Keyword.Aftermath",
         "Keyword.Dash",
+        "Keyword.Ninjutsu",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -819,6 +823,7 @@ mod tests {
     #[case::rebound(Keyword::Rebound, Hooks::none())]
     #[case::aftermath(Keyword::Aftermath, Hooks::none())]
     #[case::dash(Keyword::Dash(Cost::mana("{1}{R}".parse().unwrap())), Hooks { abilities: 2, ..Hooks::none() })]
+    #[case::ninjutsu(Keyword::Ninjutsu(Cost::mana("{1}{U}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);

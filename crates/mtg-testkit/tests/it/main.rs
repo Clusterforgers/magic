@@ -118,6 +118,7 @@ mod mill_effects;
 mod monarch;
 mod monarch_wordings;
 mod mulligan;
+mod ninjutsu;
 mod object_nth;
 mod part_fuzz;
 mod partner_with;

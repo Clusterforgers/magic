@@ -113,6 +113,7 @@ const RUNS: &[&str] = &[
     "Effect.Untap",
     "Effect.Attach",
     "Effect.Unattach",
+    "Effect.JoinAttack",
     "Effect.Transform",
     "Effect.WinGame",
     "Effect.Surveil",
@@ -257,6 +258,7 @@ const RUNS: &[&str] = &[
     "Keyword.Rebound",
     "Keyword.Aftermath",
     "Keyword.Dash",
+    "Keyword.Ninjutsu",
     "Rule.CanBeCommander",
 ];
 
@@ -555,6 +557,8 @@ mod tests {
     #[case::rebound("Keyword.Rebound", true)]
     #[case::aftermath("Keyword.Aftermath", true)]
     #[case::dash("Keyword.Dash", true)]
+    #[case::ninjutsu("Keyword.Ninjutsu", true)]
+    #[case::joining_an_attack("Effect.JoinAttack", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]
     #[case::the_highest_life_total("Amount.HighestLife", true)]

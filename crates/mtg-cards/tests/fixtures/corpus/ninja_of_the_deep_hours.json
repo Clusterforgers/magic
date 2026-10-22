@@ -1,0 +1,27 @@
+{
+  "id": "5fea7980-55e1-47c1-ab18-a89c976b55fc",
+  "oracle_id": "1f3c2b00-0000-4ae1-9650-9553accac52e",
+  "name": "Ninja of the Deep Hours",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c18",
+  "collector_number": "95",
+  "rarity": "common",
+  "released_at": "2018-08-10",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Ninja",
+  "oracle_text": "Ninjutsu {1}{U} ({1}{U}, Return an unblocked attacker you control to hand: Put this card onto the battlefield from your hand tapped and attacking.)\nWhenever this creature deals combat damage to a player, you may draw a card.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Ninjutsu"
+  ]
+}

@@ -20,6 +20,28 @@ fn on_battlefield(state: &GameState, id: mtg_core::ids::ObjectId) -> bool {
         .is_some_and(|o| o.zone() == Zone::Battlefield)
 }
 
+/// A creature that was not declared as an attacker joins the attack, unblocked (CR 508.4).
+fn join_attack(
+    state: &mut GameState,
+    object: mtg_core::ids::ObjectId,
+    target: crate::combat::AttackTarget,
+) -> Result<(), EngineError> {
+    if !on_battlefield(state, object) || !state.combat.attackers_declared {
+        return Err(invalid(
+            "a creature joined an attack that was not under way",
+        ));
+    }
+    state.combat.attackers.push(Attacker {
+        object,
+        target,
+        blocked: false,
+        blockers: Vec::new(),
+        assignment: None,
+        target_left: false,
+    });
+    Ok(())
+}
+
 /// Damage to a permanent: marked on a creature (CR 120.3e), taken off a planeswalker as that many loyalty counters
 /// (CR 120.3c), both for a planeswalker that is a creature too. A planeswalker is told by the card it prints, so a creature
 /// that takes damage never asks the layers.
@@ -196,6 +218,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             DamageTarget::Object(id) => damage_object(state, *id, *amount, *deathtouch, *form)?,
         },
         Event::CombatEnded => state.combat = CombatState::default(),
+        Event::JoinedAttack { object, target } => join_attack(state, *object, *target)?,
         Event::Regenerated { object } => {
             let perm = state
                 .objects

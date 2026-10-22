@@ -65,6 +65,7 @@ Delver of Secrets // Insectile Aberration
 Demon Bolt
 Disembowel
 Dockside Extortionist
+Dokuchi Shadow-Walker
 Doom Blade
 Doom Whisperer
 Dragonspeaker Shaman
@@ -148,11 +149,14 @@ Mishra's Workshop
 Mizzium Mortars
 Monastery Swiftspear
 Mothdust Changeling
+Mukotai Ambusher
 Mulldrifter
 Murderous Cut
 Muscle Sliver
 Nantuko Husk
 Nightveil Sprite
+Ninja of the Deep Hours
+Ninja of the New Moon
 Notion Rain
 Opt
 Otherworldly Gaze

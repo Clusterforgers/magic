@@ -339,6 +339,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "unearth" => spell_cost(rest).map(Keyword::Unearth),
         "escape" => spell_cost(rest).map(Keyword::Escape),
         "dash" => spell_cost(rest).map(Keyword::Dash),
+        "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
         "crew" => rest
             .parse()
             .ok()
@@ -660,6 +661,8 @@ mod tests {
     #[case::rebound("Rebound", Keyword::Rebound)]
     #[case::aftermath("Aftermath", Keyword::Aftermath)]
     #[case::dash("Dash {2}{R}", Keyword::Dash(mana("{2}{R}")))]
+    #[case::ninjutsu("Ninjutsu {1}{U}", Keyword::Ninjutsu(mana("{1}{U}")))]
+    #[case::ninjutsu_for_one_mana("ninjutsu {B}", Keyword::Ninjutsu(mana("{B}")))]
     #[case::escape_exiling_cards(
         "Escape\u{2014}{2}{R}, Exile three other cards from your graveyard.",
         Keyword::Escape(Cost(vec![
@@ -919,6 +922,7 @@ mod tests {
             "Rebound",
             "Aftermath",
             "Dash {1}",
+            "Ninjutsu {1}{U}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];
         let mut seen = Vec::new();

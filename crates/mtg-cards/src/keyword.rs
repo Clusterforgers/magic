@@ -167,6 +167,8 @@ pub enum Keyword {
     Aftermath,
     /// Dash with its cost: an alternative cost for a creature spell, which gains haste and returns to its owner's hand at the next end step (CR 702.109).
     Dash(Cost),
+    /// Ninjutsu with its cost: from the hand during combat after blockers are declared, an unblocked attacker returns to its owner's hand and the card enters tapped and attacking (CR 702.49).
+    Ninjutsu(Cost),
 }
 
 impl Keyword {
@@ -244,6 +246,7 @@ impl Keyword {
         "Rebound",
         "Aftermath",
         "Dash",
+        "Ninjutsu",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -321,6 +324,7 @@ impl Keyword {
             Keyword::Rebound => "Rebound",
             Keyword::Aftermath => "Aftermath",
             Keyword::Dash(_) => "Dash",
+            Keyword::Ninjutsu(_) => "Ninjutsu",
         }
     }
 
@@ -420,7 +424,8 @@ mod tests {
             Keyword::Escape(cost.clone()),
             Keyword::Rebound,
             Keyword::Aftermath,
-            Keyword::Dash(cost),
+            Keyword::Dash(cost.clone()),
+            Keyword::Ninjutsu(cost),
         ]
     }
 

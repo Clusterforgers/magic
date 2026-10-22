@@ -608,6 +608,7 @@ impl<'a> Scope<'a> {
                 .attackers()
                 .iter()
                 .any(|a| a.blockers().contains(&reference.id)),
+            Pred::Unblocked => state.combat().is_unblocked(state, reference.id),
             Pred::ControlledBy(who) => self.players(who)?.contains(&seen.controller),
             Pred::OwnedBy(who) => self.players(who)?.contains(&seen.owner),
             Pred::In(kind) => zone_kind(seen.zone) == *kind,
