@@ -936,9 +936,10 @@ impl<'a> Scope<'a> {
                     .iter()
                     .any(|player| self.state.monarch() == Some(*player))
             }
-            Condition::CitysBlessing(_) => {
-                return Err(ResolveError::Unsupported("the city's blessing"));
-            }
+            Condition::CitysBlessing(who) => self
+                .players(who)?
+                .iter()
+                .any(|player| self.state.has_citys_blessing(*player)),
             Condition::YourTurn => self.state.turn().active() == self.controller,
             Condition::NewlyControlled(what) => {
                 let named = self.objects(what)?;
@@ -1814,7 +1815,6 @@ mod tests {
 
     #[rstest]
     #[case::if_you_do(r#""Performed""#, "\"if you do\"")]
-    #[case::the_citys_blessing(r#"{"CitysBlessing":"You"}"#, "the city's blessing")]
     fn a_condition_the_evaluator_cannot_read_yet_says_what_it_lacks(
         #[case] json: &str,
         #[case] lacks: &'static str,

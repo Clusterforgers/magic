@@ -239,7 +239,6 @@ mod tests {
     }
 
     #[rstest]
-    #[case::the_citys_blessing(r#"{"CitysBlessing":"You"}"#, "the city's blessing")]
     #[case::devotion(
         r#"{"Compare":{"left":{"Devotion":["Red"]},"op":"Ge","right":1}}"#,
         "devotion"
@@ -248,14 +247,17 @@ mod tests {
         r#"{"Compare":{"left":"Divided","op":"Ge","right":1}}"#,
         "a divided amount outside the damage or counters it divides"
     )]
-    #[case::wrapped_in_not(r#"{"Not":{"CitysBlessing":"You"}}"#, "the city's blessing")]
+    #[case::wrapped_in_not(
+        r#"{"Not":{"Compare":{"left":{"Devotion":["Red"]},"op":"Ge","right":1}}}"#,
+        "devotion"
+    )]
     #[case::wrapped_in_all(
-        r#"{"All":["YourTurn",{"CitysBlessing":"You"}]}"#,
-        "the city's blessing"
+        r#"{"All":["YourTurn",{"Compare":{"left":{"Devotion":["Red"]},"op":"Ge","right":1}}]}"#,
+        "devotion"
     )]
     #[case::wrapped_in_any(
-        r#"{"Any":[{"Not":"YourTurn"},{"CitysBlessing":"You"}]}"#,
-        "the city's blessing"
+        r#"{"Any":[{"Not":"YourTurn"},{"Compare":{"left":{"Devotion":["Red"]},"op":"Ge","right":1}}]}"#,
+        "devotion"
     )]
     fn a_condition_the_evaluator_cannot_read_is_refused_by_name(
         #[case] condition: &str,

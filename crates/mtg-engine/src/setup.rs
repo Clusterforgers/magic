@@ -408,6 +408,7 @@ impl GameState {
             result: None,
             day_night: None,
             monarch: None,
+            citys_blessing: std::collections::BTreeSet::new(),
             commanders: Commanders::of(commander_ids),
         };
         game.note_what_cards_can_do();
@@ -517,6 +518,13 @@ impl GameState {
                 .any(crate::ability_reader::definition_has_day_night)
         });
         self.possible.day_night = day_night;
+        let ascend = self.objects().any(|object| {
+            object
+                .def
+                .each_face()
+                .any(crate::ability_reader::definition_has_ascend)
+        });
+        self.possible.ascend = ascend;
     }
 }
 

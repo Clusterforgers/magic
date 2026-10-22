@@ -363,6 +363,11 @@ pub fn read(item: &str) -> Option<Keyword> {
             .ok()
             .filter(|power| *power > 0)
             .map(Keyword::Saddle),
+        "fabricate" => rest
+            .parse()
+            .ok()
+            .filter(|number| *number > 0)
+            .map(Keyword::Fabricate),
         "level up" => cost(rest).map(Keyword::LevelUp),
         "outlast" => cost(rest).map(Keyword::Outlast),
         "suspend" => suspend(rest),
@@ -486,6 +491,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "persist" => Keyword::Persist,
         "saddled" => Keyword::Saddled,
         "ravenous" => Keyword::Ravenous,
+        "ascend" => Keyword::Ascend,
         "jump-start" => Keyword::JumpStart,
         "retrace" => Keyword::Retrace,
         _ => return None,
@@ -765,6 +771,9 @@ mod tests {
     #[case::undying("Undying", Keyword::Undying)]
     #[case::persist("persist", Keyword::Persist)]
     #[case::ravenous("Ravenous", Keyword::Ravenous)]
+    #[case::ascend("Ascend", Keyword::Ascend)]
+    #[case::fabricate("Fabricate 2", Keyword::Fabricate(2))]
+    #[case::fabricate_lowercase("fabricate 1", Keyword::Fabricate(1))]
     #[case::foretell("Foretell {1}{U}", Keyword::Foretell(mana("{1}{U}")))]
     #[case::foretell_for_nothing("Foretell {0}", Keyword::Foretell(mana("{0}")))]
     #[case::unearth("Unearth {1}{B}", Keyword::Unearth(mana("{1}{B}")))]
@@ -903,6 +912,9 @@ mod tests {
     #[case::crew_x("Crew X")]
     #[case::dredge_x("Dredge X")]
     #[case::dredge_nothing("Dredge 0")]
+    #[case::fabricate_x("Fabricate X")]
+    #[case::fabricate_nothing("Fabricate 0")]
+    #[case::ascend_with_a_number("Ascend 1")]
     #[case::crew_nothing("Crew 0")]
     #[case::saddle_nothing("Saddle 0")]
     #[case::saddle_x("Saddle X")]
@@ -1050,6 +1062,8 @@ mod tests {
             "Persist",
             "Ravenous",
             "Foretell {1}",
+            "Fabricate 1",
+            "Ascend",
             "Daybound",
             "Nightbound",
             "Wither",

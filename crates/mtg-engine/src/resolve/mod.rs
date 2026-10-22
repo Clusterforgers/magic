@@ -297,6 +297,12 @@ fn step_with(
             outcome: ResolutionOutcome::Lapsed,
         }]));
     }
+    // CR 702.131a: an instant or sorcery spell with ascend gives the blessing before any of its effects.
+    if resolving.position == START
+        && let Some(blessing) = crate::citys_blessing::on_resolving(state, object)
+    {
+        return Ok(Progress::Done(vec![blessing]));
+    }
     // CR 608.2b: a spell or ability whose targets have all become illegal does nothing at all.
     if resolving.position == START && scope.all_targets_illegal() {
         return Ok(Progress::Done(vec![Event::ResolutionEnded {

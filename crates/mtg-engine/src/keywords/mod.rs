@@ -6,6 +6,7 @@
 
 mod affinity;
 pub(crate) mod aftermath;
+mod ascend;
 mod battle_cry;
 mod bestow;
 mod blitz;
@@ -37,6 +38,7 @@ mod equip;
 mod escape;
 mod eternalize;
 mod evoke;
+mod fabricate;
 mod fear;
 mod first_strike;
 mod flash;
@@ -432,6 +434,8 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Improvise => &improvise::Improvise,
         Keyword::Affinity(_) => &affinity::Affinity,
         Keyword::Typecycling { .. } => &typecycling::Typecycling,
+        Keyword::Fabricate(_) => &fabricate::Fabricate,
+        Keyword::Ascend => &ascend::Ascend,
     }
 }
 
@@ -705,6 +709,8 @@ mod tests {
                 find: Selector::default(),
                 cost: cost(),
             },
+            Keyword::Fabricate(1),
+            Keyword::Ascend,
         ]
     }
 
@@ -795,6 +801,8 @@ mod tests {
         "Keyword.Improvise",
         "Keyword.Affinity",
         "Keyword.Typecycling",
+        "Keyword.Fabricate",
+        "Keyword.Ascend",
         "Keyword.Encore",
     ];
 
@@ -921,6 +929,8 @@ mod tests {
     #[case::myriad(Keyword::Myriad, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::squad(Keyword::Squad(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ravenous(Keyword::Ravenous, Hooks { abilities: 2, ..Hooks::none() })]
+    #[case::fabricate(Keyword::Fabricate(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::ascend(Keyword::Ascend, Hooks::none())]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);

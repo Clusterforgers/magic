@@ -138,6 +138,7 @@ const RUNS: &[&str] = &[
     "Effect.Monstrosity",
     "Effect.Adapt",
     "Effect.Bolster",
+    "Effect.Fabricate",
     "Effect.BecomeMonarch",
     "Condition.Monarch",
     "Effect.CreateToken",
@@ -296,6 +297,9 @@ const RUNS: &[&str] = &[
     "Keyword.Myriad",
     "Keyword.Squad",
     "Keyword.Ravenous",
+    "Keyword.Fabricate",
+    "Keyword.Ascend",
+    "Condition.CitysBlessing",
     "Effect.MyriadCopies",
     "Keyword.JumpStart",
     "Keyword.Retrace",
@@ -541,6 +545,7 @@ mod tests {
     #[case::monstrosity("Effect.Monstrosity", true)]
     #[case::adapting("Effect.Adapt", true)]
     #[case::bolstering("Effect.Bolster", true)]
+    #[case::fabricating("Effect.Fabricate", true)]
     #[case::exploring("Effect.Explore", true)]
     #[case::conniving("Effect.Connive", true)]
     #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]
@@ -597,7 +602,7 @@ mod tests {
     #[case::if_you_do("Condition.Performed", true)]
     #[case::if_you_do_after_another_effect("Condition.Performed.Other", false)]
     #[case::the_monarch("Condition.Monarch", true)]
-    #[case::the_citys_blessing("Condition.CitysBlessing", false)]
+    #[case::the_citys_blessing("Condition.CitysBlessing", true)]
     #[case::unblockable_creatures("Mod.CantBeBlocked", true)]
     #[case::creatures_that_cant_be_blocked_by_some("Mod.CantBeBlockedBy", true)]
     #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", true)]

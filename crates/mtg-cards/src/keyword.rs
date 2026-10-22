@@ -212,6 +212,10 @@ pub enum Keyword {
         /// The cost, paid beside the discard.
         cost: Cost,
     },
+    /// Fabricate with its number (CR 702.123): "When this permanent enters, you may put N +1/+1 counters on it. If you don't, create N 1/1 colorless Servo artifact creature tokens."
+    Fabricate(u32),
+    /// Ascend (CR 702.131): a permanent with it gives its controller the city's blessing as soon as they control ten or more permanents; the designation lasts for the rest of the game.
+    Ascend,
 }
 
 impl Keyword {
@@ -309,6 +313,8 @@ impl Keyword {
         "Improvise",
         "Affinity",
         "Typecycling",
+        "Fabricate",
+        "Ascend",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -406,6 +412,8 @@ impl Keyword {
             Keyword::Improvise => "Improvise",
             Keyword::Affinity(_) => "Affinity",
             Keyword::Typecycling { .. } => "Typecycling",
+            Keyword::Fabricate(_) => "Fabricate",
+            Keyword::Ascend => "Ascend",
         }
     }
 
@@ -533,6 +541,8 @@ mod tests {
                 find: Selector::default(),
                 cost: Cost::default(),
             },
+            Keyword::Fabricate(1),
+            Keyword::Ascend,
         ]
     }
 

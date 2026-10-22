@@ -774,6 +774,7 @@ impl<'a> Walker<'a> {
             }
             Keyword::Toxic(0) => self.problem("toxic needs a number of at least 1"),
             Keyword::Dredge(0) => self.problem("dredge needs a number of at least 1"),
+            Keyword::Fabricate(0) => self.problem("fabricate needs a number of at least 1"),
             Keyword::PartnerWith(name) => {
                 self.names
                     .push((self.face, self.current_path(), name.clone()));
@@ -1213,6 +1214,7 @@ impl<'a> Walker<'a> {
             Effect::Amass { count, .. }
             | Effect::Monstrosity { count }
             | Effect::Adapt { count }
+            | Effect::Fabricate { count }
             | Effect::Bolster { count } => w.at("count", |w| w.amount(count)),
             Effect::Search {
                 who,

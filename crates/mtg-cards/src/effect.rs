@@ -457,6 +457,11 @@ pub enum Effect {
         /// How many +1/+1 counters.
         count: Amount,
     },
+    /// The source creature's controller fabricates (CR 702.123): they may put the counters on it, and otherwise create that many Servo tokens; a source that has left the battlefield only makes the tokens.
+    Fabricate {
+        /// How many +1/+1 counters, or Servo tokens.
+        count: Amount,
+    },
     /// Creatures explore (CR 701.44): a land on top goes to the hand, any other card gives a counter and may go to the graveyard.
     Explore {
         /// The creatures that explore.
