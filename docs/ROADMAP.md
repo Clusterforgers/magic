@@ -12,6 +12,7 @@ One item is one piece of about 15 minutes; tick it in the commit that finishes i
 - Rules data leads the engine: support is computed, so a compiled card is Partial until the engine runs its primitives and then Verified without an edit. The coverage report ranks what holds cards back, and clusters that do not need each other (`docs/cards-dsl.md`, Tasks) run in that order.
 - A cluster ends with its corpus cards Verified, the compiler templates and goldens for its wordings, a fuzz deck under every invariant, hidden-information tests for its events and current generated bindings.
 - Items that depend on nothing (import checks, account settings, deploy) wait in their milestone and can be taken at any time without rework.
+- A piece is claimed before it starts: its `[ ]` becomes `[~]` with the branch name, the commit is pushed to origin, and agents on other machines then see it taken; the tick in the commit that finishes it is pushed too. Local `main` is pushed after every merge, so `origin/main` is what worktrees and other machines start from.
 
 ## Done
 
