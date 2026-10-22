@@ -29,7 +29,9 @@ fn table(seats: usize, library: &[&str]) -> Scenario {
         .battlefield(0, vec![ready(island()), ready(mountain())]);
     scenario = scenario.hand(0, {
         let mut hand = vec![study("Study")];
-        hand.extend(["Counterspell", "Wrath of God"].map(|n| mtg_testkit::corpus::card(n).unwrap()));
+        hand.extend(
+            ["Counterspell", "Wrath of God"].map(|n| mtg_testkit::corpus::card(n).unwrap()),
+        );
         hand
     });
     let others = [

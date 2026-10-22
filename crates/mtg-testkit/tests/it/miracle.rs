@@ -71,11 +71,19 @@ fn question(driver: &Driver) -> String {
 }
 
 /// The way of the first spell cast in `events`.
-fn cast_way(events: &[Event]) -> Option<Option<CastWay>> {
-    events.iter().find_map(|event| match event {
-        Event::SpellCast { choices, .. } => Some(choices.way),
-        _ => None,
-    })
+fn cast_way(events: &[Event]) -> Option<CastWay> {
+    events
+        .iter()
+        .find_map(|event| match event {
+            Event::SpellCast { choices, .. } => Some(choices.way),
+            _ => None,
+        })
+        .flatten()
+}
+
+/// A stack with nothing on it.
+fn none() -> Vec<String> {
+    Vec::new()
 }
 
 #[rstest]
@@ -93,7 +101,7 @@ fn the_first_card_drawn_by_an_effect_is_cast_for_its_miracle_cost(
     let target = driver.target_player(1);
     driver.choose_targets(&[target])?;
     let events = driver.answer(Answer::PayMana(mtg_engine::decision::PayChoice::Auto))?;
-    assert_eq!(cast_way(&events), Some(Some(CastWay::Miracle)));
+    assert_eq!(cast_way(&events), Some(CastWay::Miracle));
     assert_eq!(stack(&driver), ["Thunderous Wrath"]);
     assert_eq!(names(driver.state(), Zone::Hand(pid(0))), ["Forest"]);
     resolve(&mut driver, seats)?;
@@ -108,7 +116,7 @@ fn the_first_card_drawn_by_an_effect_is_cast_for_its_miracle_cost(
 #[rstest]
 fn a_card_drawn_second_has_no_miracle(#[values(2, 3, 4)] seats: usize) -> Result<(), ScriptError> {
     let driver = study_resolved(seats, &["Forest", "Thunderous Wrath"], 1)?;
-    assert!(stack(&driver).is_empty());
+    assert_eq!(stack(&driver), none());
     assert_eq!(
         names(driver.state(), Zone::Hand(pid(0))),
         ["Forest", "Thunderous Wrath"]
@@ -123,7 +131,7 @@ fn a_miracle_that_is_declined_stays_in_the_hand(
     let mut driver = study_resolved(seats, &["Thunderous Wrath"], 1)?;
     resolve(&mut driver, seats)?;
     yes(&mut driver, false)?;
-    assert!(stack(&driver).is_empty());
+    assert_eq!(stack(&driver), none());
     assert_eq!(
         names(driver.state(), Zone::Hand(pid(0))),
         ["Thunderous Wrath", "Forest"]
@@ -139,7 +147,7 @@ fn a_miracle_cost_that_cannot_be_paid_is_not_asked(
     let mut driver = study_resolved(seats, &["Thunderous Wrath"], 0)?;
     assert_eq!(stack(&driver), ["Thunderous Wrath"]);
     resolve(&mut driver, seats)?;
-    assert!(stack(&driver).is_empty());
+    assert_eq!(stack(&driver), none());
     assert!(names(driver.state(), Zone::Hand(pid(0))).contains(&"Thunderous Wrath".to_owned()));
     Ok(())
 }
@@ -165,7 +173,7 @@ fn a_card_that_left_the_hand_in_response_is_not_cast(
     driver.answer(Answer::ChooseCards(CardsChoice(vec![wrath])))?;
     resolve(&mut driver, seats)?;
     resolve(&mut driver, seats)?;
-    assert!(stack(&driver).is_empty(), "no cast was offered");
+    assert_eq!(stack(&driver), none(), "no cast was offered");
     assert!(
         names(driver.state(), Zone::Graveyard(pid(0))).contains(&"Thunderous Wrath".to_owned())
     );
@@ -201,7 +209,7 @@ fn the_card_of_the_draw_step_has_miracle_and_the_card_after_it_has_not(
     driver.cast("Study")?;
     resolve(&mut driver, seats)?;
     // The card Study draws is the second of the turn at the earliest: never a miracle.
-    assert!(stack(&driver).is_empty());
+    assert_eq!(stack(&driver), none());
     Ok(())
 }
 
