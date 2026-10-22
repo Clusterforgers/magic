@@ -1,0 +1,34 @@
+{
+  "oracle_id": "8b239262-c392-4ec6-9ae1-8b4a076e4bf0",
+  "name": "Dream's Grip",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream's Grip",
+      "oracle_fingerprint": "de4d9b27ffb7928e8c885ed35955a95d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [] } }],
+                      "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [] } }],
+                      "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Entwine": "{1}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "579cbd92-797f-4cdf-91ed-fca7a523eae5",
+  "name": "Deep Analysis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deep Analysis",
+      "oracle_fingerprint": "cfad821fe688e0132971db82effec15a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Draw": { "who": { "Target": 0 }, "count": 2 } }]
+          }
+        },
+        { "Keyword": { "Flashback": [{ "Mana": "{1}{U}" }, { "PayLife": 3 }] } }
+      ]
+    }
+  ]
+}

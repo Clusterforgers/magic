@@ -1,0 +1,44 @@
+{
+  "oracle_id": "c6adfaa7-d9cf-4501-8e7d-e035369390d2",
+  "name": "Vicious Offering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vicious Offering",
+      "oracle_fingerprint": "06d72b65f2ef7014ae734571aed63bb4",
+      "abilities": [
+        { "Keyword": { "Kicker": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }] } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": -5, "toughness": -5 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

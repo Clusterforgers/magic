@@ -1,0 +1,20 @@
+{
+  "oracle_id": "77637eff-2963-4402-88f3-ca346f762fc8",
+  "name": "Capsize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Capsize",
+      "oracle_fingerprint": "47554abdf2e507f5b686f54bef84e46e",
+      "abilities": [
+        { "Keyword": { "Buyback": "{3}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

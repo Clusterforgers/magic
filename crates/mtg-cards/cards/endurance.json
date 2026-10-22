@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c85d824b-c190-4d04-ab99-918ad0e6516c",
+  "name": "Endurance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Endurance",
+      "oracle_fingerprint": "d984d44d84f5a77044e5c399235ef3e0",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player", "bounds": { "min": 0, "max": 1 } }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Evoke": [{ "ExileFromHand": { "filter": [{ "Color": "Green" }] } }] } }
+      ]
+    }
+  ]
+}
