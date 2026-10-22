@@ -181,6 +181,7 @@ mod proliferate;
 mod protection;
 mod protection_fuzz;
 mod prowl;
+mod prowl_fuzz;
 mod pump_fuzz;
 mod pump_spells;
 mod rebound;
