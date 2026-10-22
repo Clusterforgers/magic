@@ -14,6 +14,7 @@ use mtg_core::card::CardType;
 use mtg_core::ids::ObjectId;
 use mtg_core::mana::{ManaCost, ManaSymbol};
 
+use crate::ability_reader::printed_rules;
 use crate::object::FaceDown;
 use crate::price::Price;
 use crate::state::GameState;
@@ -25,19 +26,22 @@ pub(crate) fn cast_cost() -> ManaCost {
 }
 
 /// A 2/2 creature with no name, mana cost, colour or subtype and no abilities (CR 708.2a); `ward` gives it ward {2}.
-fn creature(ward: bool) -> CardDefinition {
-    let mut shown = CardDefinition::new("");
+fn creature(ward_wanted: bool) -> CardDefinition {
+    let two = ManaCost::from_symbols([ManaSymbol::Generic(2)]);
+    let ward = Ability::Keyword(Keyword::Ward(Cost::mana(mtg_cards::mana::ManaCostX::new(
+        0, two,
+    ))));
+    let mut shown = CardDefinition {
+        rules: if ward_wanted {
+            vec![Arc::new(ward)]
+        } else {
+            Vec::new()
+        },
+        ..CardDefinition::new("")
+    };
     shown.types.insert(CardType::Creature);
     shown.power = Some(2);
     shown.toughness = Some(2);
-    if ward {
-        let two = ManaCost::from_symbols([ManaSymbol::Generic(2)]);
-        shown
-            .rules
-            .push(Arc::new(Ability::Keyword(Keyword::Ward(Cost::mana(
-                mtg_cards::mana::ManaCostX::new(0, two),
-            )))));
-    }
     shown
 }
 
@@ -63,9 +67,7 @@ impl FaceDown {
 
     /// How the card with this definition lies when it is cast face down: with ward {2} for a card with disguise.
     pub(crate) fn cast_as(card: &CardDefinition) -> FaceDown {
-        let disguise = card
-            .rules
-            .iter()
+        let disguise = printed_rules(card)
             .any(|rules| matches!(&**rules, Ability::Keyword(Keyword::Disguise(_))));
         if disguise {
             FaceDown::Disguise
@@ -83,7 +85,7 @@ pub(crate) fn turn_up_cost(state: &GameState, id: ObjectId) -> Option<(ManaCost,
     if object.zone() != Zone::Battlefield || !object.face_down()?.shows_characteristics() {
         return None;
     }
-    object.whole_card().rules.iter().find_map(|rules| {
+    printed_rules(object.whole_card()).find_map(|rules| {
         let (cost, megamorph) = match &**rules {
             Ability::Keyword(Keyword::Morph(cost) | Keyword::Disguise(cost)) => (cost, false),
             Ability::Keyword(Keyword::Megamorph(cost)) => (cost, true),
@@ -122,10 +124,13 @@ mod tests {
             .with_type(CardType::Artifact)
             .with_power_toughness(4, 4);
         def.mana_cost = Some(ManaCost::parse("{3}{R}{R}").unwrap());
-        def.rules = vec![
-            Arc::new(Ability::Keyword(Keyword::Flying)),
-            Arc::new(Ability::Keyword(keyword)),
-        ];
+        let def = CardDefinition {
+            rules: vec![
+                Arc::new(Ability::Keyword(Keyword::Flying)),
+                Arc::new(Ability::Keyword(keyword)),
+            ],
+            ..def
+        };
         let mut game = state(vec![vec![], vec![]], vec![vec![Arc::new(def)], vec![]]);
         let id = game
             .objects()
@@ -173,7 +178,7 @@ mod tests {
         let values = copiable_values(&game, reference, None).unwrap();
         assert_eq!(values.name, "");
         assert_eq!((values.power, values.toughness), (Some(2), Some(2)));
-        assert_eq!(values.rules.len(), 0);
+        assert_eq!(printed_rules(&values).count(), 0);
     }
 
     #[test]
