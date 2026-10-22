@@ -379,6 +379,13 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} proliferate{s}"), false)
         }
+        TriggerPattern::Amassed { who: by } => {
+            let (name, s) = who(by);
+            (
+                format!("{name} amass{}", if s.is_empty() { "" } else { "es" }),
+                false,
+            )
+        }
         TriggerPattern::Drew { who: by } => {
             let (name, s) = who(by);
             (format!("{name} draw{s} a card"), false)
@@ -1211,6 +1218,11 @@ mod tests {
         "Whenever an opponent becomes the monarch"
     )]
     #[case::you_proliferate(r#"{"Proliferated":{"who":"You"}}"#, "Whenever you proliferate")]
+    #[case::you_amass(r#"{"Amassed":{"who":"You"}}"#, "Whenever you amass")]
+    #[case::an_opponent_amasses(
+        r#"{"Amassed":{"who":"Opponents"}}"#,
+        "Whenever an opponent amasses"
+    )]
     #[case::a_player_becomes_the_monarch(
         r#"{"BecomesMonarch":{}}"#,
         "Whenever a player becomes the monarch"

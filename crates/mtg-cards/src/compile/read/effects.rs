@@ -1,6 +1,7 @@
 //! Effects: a sentence is read into the effects of one template. A template reads the whole
 //! sentence or nothing; to add a wording, write a template and list it in [`TEMPLATES`].
 
+use mtg_core::card::Subtype;
 use mtg_core::mana::ManaType;
 
 use super::among;
@@ -263,6 +264,10 @@ fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
             count: points(r)?,
         },
         "proliferate" => Effect::Proliferate { who },
+        "amass" => Effect::Amass {
+            subtype: Subtype(super::selectors::plural_subtype(r)?),
+            count: points(r)?,
+        },
         // The card sacrifices itself: "sacrifice ~", and "sacrifice it" once the ability has spoken of the card.
         "sacrifice" => {
             (r.source() || (r.it == Some(Ref::This) && r.word("it"))).then_some(())?;

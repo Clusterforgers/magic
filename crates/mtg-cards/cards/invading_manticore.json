@@ -1,0 +1,19 @@
+{
+  "oracle_id": "6e4bf4ee-317e-4c31-b121-6efbc6ae4fcf",
+  "name": "Invading Manticore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invading Manticore",
+      "oracle_fingerprint": "81c3bfab59e217193419ec64e6ddb800",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Amass": { "subtype": "Zombie", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

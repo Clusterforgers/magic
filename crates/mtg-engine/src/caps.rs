@@ -57,6 +57,7 @@ const RUNS: &[&str] = &[
     "Trigger.Proliferated",
     "Trigger.Explored",
     "Trigger.Connived",
+    "Trigger.Amassed",
     "Trigger.Batch",
     "Trigger.Nth",
     "Amount.Triggering",
@@ -127,6 +128,7 @@ const RUNS: &[&str] = &[
     "Effect.Proliferate",
     "Effect.Explore",
     "Effect.Connive",
+    "Effect.Amass",
     "Effect.BecomeMonarch",
     "Condition.Monarch",
     "Effect.CreateToken",
@@ -505,7 +507,7 @@ mod tests {
     #[case::goading("Effect.Goad", false)]
     #[case::fighting("Effect.Fight", false)]
     #[case::becoming_the_monarch("Effect.BecomeMonarch", true)]
-    #[case::amassing("Effect.Amass", false)]
+    #[case::amassing("Effect.Amass", true)]
     #[case::monstrosity("Effect.Monstrosity", false)]
     #[case::adapting("Effect.Adapt", false)]
     #[case::bolstering("Effect.Bolster", false)]
@@ -554,6 +556,7 @@ mod tests {
     #[case::proliferating_triggers("Trigger.Proliferated", true)]
     #[case::exploring_triggers("Trigger.Explored", true)]
     #[case::conniving_triggers("Trigger.Connived", true)]
+    #[case::amassing_triggers("Trigger.Amassed", true)]
     #[case::batch_triggers("Trigger.Batch", true)]
     #[case::nth_triggers("Trigger.Nth", true)]
     #[case::event_amounts("Amount.Triggering", true)]

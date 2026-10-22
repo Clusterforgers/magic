@@ -295,6 +295,8 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         Some(TriggerPattern::BecomesMonarch { who: by })
     } else if verb == if third { "proliferates" } else { "proliferate" } {
         Some(TriggerPattern::Proliferated { who: by })
+    } else if verb == if third { "amasses" } else { "amass" } {
+        Some(TriggerPattern::Amassed { who: by })
     } else if verb == if third { "taps" } else { "tap" } {
         let what = subject(r)?;
         r.need("for mana")?;
@@ -731,6 +733,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::Proliferated { who } => {
             Some(format!("Whenever {}", player_verb(who, "proliferate")?))
         }
+        TriggerPattern::Amassed { who } => Some(format!("Whenever {}", player_verb(who, "amass")?)),
         TriggerPattern::LifeGained { who } => {
             Some(format!("Whenever {} life", player_verb(who, "gain")?))
         }
