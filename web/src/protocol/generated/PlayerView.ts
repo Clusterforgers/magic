@@ -59,4 +59,9 @@ graveyard: ZoneView,
 /**
  * Command zone (public).
  */
-command: ZoneView, };
+command: ZoneView, 
+/**
+ * Clock extensions the seat holds (public). The engine does not know them: the server fills them in, and a view
+ * made from the engine state alone says 0.
+ */
+bank: number, };

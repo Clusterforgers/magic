@@ -171,6 +171,9 @@ pub struct PlayerView {
     pub graveyard: ZoneView,
     /// Command zone (public).
     pub command: ZoneView,
+    /// Clock extensions the seat holds (public). The engine does not know them: the server fills them in, and a view
+    /// made from the engine state alone says 0.
+    pub bank: u8,
 }
 
 /// Where the turn is.

@@ -60,6 +60,7 @@ const seat = (id: PlayerId, hand: ObjectId[] | null): PlayerView => ({
   library: { count: 30, cards: null },
   graveyard: zone([]),
   command: zone([]),
+  bank: 0,
 })
 
 const creature = (

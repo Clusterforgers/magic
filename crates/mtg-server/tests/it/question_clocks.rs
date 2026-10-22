@@ -29,6 +29,9 @@ const DEFAULT: Pace = Pace {
     response: Some(Duration::from_secs(10)),
     blocks: Some(Duration::from_secs(45)),
     think: Some(Duration::from_secs(60)),
+    active: None,
+    extension: None,
+    grace: std::time::Duration::ZERO,
     dwell: Dwell::OFF,
 };
 
@@ -328,6 +331,7 @@ impl Table {
                 id,
                 decision,
                 deadline_ms,
+                ..
             } = message
             {
                 return (id, decision, deadline_ms);
@@ -606,6 +610,7 @@ async fn a_reconnect_is_told_the_time_that_is_left_and_the_deadline_stays(#[case
                 id,
                 decision,
                 deadline_ms,
+                ..
             } => Some((*id, decision.clone(), *deadline_ms)),
             _ => None,
         })

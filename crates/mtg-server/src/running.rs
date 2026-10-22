@@ -6,9 +6,10 @@ use mtg_core::ids::PlayerId;
 use mtg_engine::forecast::CombatForecast;
 use mtg_engine::state::Stage;
 use mtg_engine::{Answer, Checkpoint, Decision, Engine, EngineError, Event, GameState};
-use mtg_protocol::{DecisionId, ErrorCode, ServerMessage, StateView};
+use mtg_protocol::{DecisionId, ErrorCode, ServerMessage, StateView, TableView};
 use tokio::time::Instant;
 
+use crate::bank::Banks;
 use crate::dwell::Waits;
 use crate::pace::{self, Pace};
 use crate::stops::{self, Stops};
@@ -75,6 +76,8 @@ pub(crate) struct Step {
     pub(crate) keep_unchanged: bool,
     /// Whether the step is the origin seat's pass of priority (its own, or the table's at its clock or dwell).
     pub(crate) passed: bool,
+    /// The banks before the step, which come back if it cannot be persisted.
+    pub(crate) banks: Banks,
 }
 
 /// The decision awaiting an answer, the id the client must echo and when its clock runs out.
@@ -84,6 +87,10 @@ struct Pending {
     decision: Decision,
     /// When the server answers for the seat; `None` for a decision without a clock.
     due: Option<Instant>,
+    /// When the countdown shows; `None` for a decision without a clock or one that shows at once.
+    shown_at: Option<Instant>,
+    /// Whether the clock has run out and the table is answering for the seat, so no extension is spent for it again.
+    expired: bool,
     /// Whether the decision is held back for the seat's dwell: never sent, and the table passes for the seat at `due`.
     hidden: bool,
 }
@@ -95,6 +102,19 @@ pub(crate) struct Issued {
     pub(crate) decision: Decision,
     /// Milliseconds on its clock, if it has one.
     pub(crate) deadline_ms: Option<u64>,
+    /// Milliseconds before the countdown shows, if it does not show at once.
+    pub(crate) show_after_ms: Option<u64>,
+}
+
+/// A clock extended by an extension of its seat's bank.
+#[derive(Debug)]
+pub(crate) struct Extended {
+    pub(crate) id: DecisionId,
+    pub(crate) decision: Decision,
+    /// Milliseconds the seat now has.
+    pub(crate) deadline_ms: u64,
+    /// Extensions the seat has left.
+    pub(crate) bank: u8,
 }
 
 /// Where a run of passes stopped.
@@ -115,6 +135,8 @@ pub(crate) struct Running {
     pace: Pace,
     /// The dwells of the idle windows, drawn apart from the game.
     waits: Waits,
+    /// The extensions each seat holds; empty again when a game is resumed.
+    banks: Banks,
 }
 
 pub(crate) fn count(len: usize) -> u64 {
@@ -129,13 +151,63 @@ fn millis(span: Duration) -> u64 {
 impl Running {
     /// Wraps `engine`; call [`settle`](Running::settle) to issue the first decision id.
     pub(crate) fn new(engine: Engine, pace: Pace) -> Running {
+        let mut banks = Banks::new(engine.state().players().len(), pace.extension.is_some());
+        banks.watch(engine.state());
         Running {
             engine,
             pending: None,
             last_id: 0,
             pace,
             waits: Waits::fresh(pace.dwell),
+            banks,
         }
+    }
+
+    /// Writes the extensions every seat holds into `table`.
+    pub(crate) fn stamp(&self, table: &mut TableView) {
+        self.banks.stamp(table);
+    }
+
+    /// Takes back the banks a step changed, once the step is undone.
+    pub(crate) fn restore_banks(&mut self, banks: Banks) {
+        self.banks = banks;
+    }
+
+    /// The pending decision's clock has run out and the table answers for its seat: the seat used a clock.
+    pub(crate) fn clock_ran_out(&mut self) {
+        let seat = self.pending.as_ref().map(|p| p.decision.player);
+        if let Some(seat) = seat {
+            self.banks
+                .ran_out(seat, self.engine.state().active_player());
+        }
+    }
+
+    /// Gives the pending decision's clock one more extension if its seat holds one.
+    ///
+    /// Only a decision that was sent and whose clock has just run out for the first time is extended: the deadline
+    /// moves by the extension's length and the countdown shows at once. `None` when there is nothing to extend, so the
+    /// table answers for the seat.
+    pub(crate) fn extend(&mut self) -> Option<Extended> {
+        let length = self.pace.extension?;
+        let pending = self.pending.as_mut()?;
+        let due = pending.due?;
+        let seat = pending.decision.player;
+        if pending.hidden || pending.expired || !self.banks.spend(seat) {
+            return None;
+        }
+        self.banks
+            .ran_out(seat, self.engine.state().active_player());
+        let now = Instant::now();
+        let from = due.max(now);
+        let new_due = from.checked_add(length).unwrap_or(from);
+        pending.due = Some(new_due);
+        pending.shown_at = None;
+        Some(Extended {
+            id: pending.id,
+            decision: pending.decision.clone(),
+            deadline_ms: millis(new_due.saturating_duration_since(now)),
+            bank: self.banks.held(seat),
+        })
     }
 
     /// The seat that must answer, if any.
@@ -154,10 +226,12 @@ impl Running {
         Some((pending.decision.player, pending.decision.kind.name()))
     }
 
-    /// Moves the clock of the pending decision to `due` (nothing happens for a decision without one).
+    /// Moves the clock of the pending decision, which has run out, to `due` to try again (nothing happens for a
+    /// decision without one); no extension is spent for it any more.
     pub(crate) fn postpone(&mut self, due: Instant) {
         if let Some(pending) = self.pending.as_mut().filter(|p| p.due.is_some()) {
             pending.due = Some(due);
+            pending.expired = true;
         }
     }
 
@@ -238,6 +312,8 @@ impl Running {
                 id,
                 decision,
                 due: Some(now.checked_add(wait).unwrap_or(now)),
+                shown_at: None,
+                expired: false,
                 hidden: true,
             });
             return None;
@@ -248,17 +324,24 @@ impl Running {
         } else {
             self.pace.clock_for(&decision, state.turn().active())
         };
-        let due = clock.and_then(|span| Instant::now().checked_add(span));
+        let now = Instant::now();
+        let due = clock.and_then(|span| now.checked_add(span));
+        let delay = clock
+            .map(|span| self.pace.shown_after(span))
+            .filter(|delay| !delay.is_zero());
         self.pending = Some(Pending {
             id,
             decision: decision.clone(),
             due,
+            shown_at: delay.and_then(|delay| now.checked_add(delay)),
+            expired: false,
             hidden: false,
         });
         Some(Issued {
             id,
             decision,
             deadline_ms: clock.map(millis),
+            show_after_ms: delay.map(millis),
         })
     }
 
@@ -267,9 +350,11 @@ impl Running {
     /// The decision carries the time its clock has left, not the time it started with. One that is held back for its
     /// dwell is not sent: the seat is passed for, and a snapshot taken meanwhile must not tell it so.
     pub(crate) fn sync_messages(&self, seat: PlayerId) -> Vec<ServerMessage> {
+        let mut view = StateView::for_player(self.engine.state(), seat);
+        self.banks.stamp(&mut view.table);
         let mut messages = vec![ServerMessage::Snapshot {
             seq: count(self.engine.events().len()),
-            state: Box::new(StateView::for_player(self.engine.state(), seat)),
+            state: Box::new(view),
         }];
         let visible = self
             .pending
@@ -283,6 +368,10 @@ impl Running {
                 deadline_ms: pending
                     .due
                     .map(|due| millis(due.saturating_duration_since(now))),
+                show_after_ms: pending
+                    .shown_at
+                    .map(|at| millis(at.saturating_duration_since(now)))
+                    .filter(|ms| *ms > 0),
             });
         }
         if let Some(result) = self.engine.result() {
@@ -419,6 +508,7 @@ impl Running {
             }
             let at = stops::place(self.engine.state());
             let passed = self.engine.apply(pace::pass())?;
+            self.banks.watch(self.engine.state());
             stops.left(at, &passed);
             events.extend(passed);
         }
@@ -466,7 +556,9 @@ impl Running {
     ) -> Result<Step, EngineError> {
         let before = self.engine.state().clone();
         let checkpoint = self.engine.checkpoint();
+        let banks = self.banks.clone();
         let events = run(&mut self.engine)?;
+        self.banks.watch(self.engine.state());
         let from_seq = count(self.engine.events().len() - events.len());
         Ok(Step {
             before,
@@ -476,6 +568,7 @@ impl Running {
             origin,
             keep_unchanged,
             passed: false,
+            banks,
         })
     }
 }

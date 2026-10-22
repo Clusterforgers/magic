@@ -77,6 +77,7 @@ mod accounts;
 mod actor;
 mod api;
 mod auth;
+mod bank;
 mod card_api;
 mod cards;
 pub mod config;

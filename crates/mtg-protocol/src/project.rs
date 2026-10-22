@@ -291,6 +291,7 @@ impl PlayerView {
             revealed_top: state.revealed_top(seat),
             graveyard: zone_view(state, viewer, Zone::Graveyard(seat)),
             command: zone_view(state, viewer, Zone::Command(seat)),
+            bank: 0,
         }
     }
 }

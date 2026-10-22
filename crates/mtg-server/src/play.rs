@@ -106,6 +106,7 @@ impl<S: EventStore> GameActor<S> {
             origin,
             keep_unchanged,
             passed,
+            banks,
         } = step;
         let Phase::Running(running) = &mut self.phase else {
             return Ok(());
@@ -125,7 +126,10 @@ impl<S: EventStore> GameActor<S> {
             return Ok(());
         };
         match committed {
-            Ok(batches) => {
+            Ok(mut batches) => {
+                for (_, batch) in &mut batches {
+                    running.stamp(&mut batch.table);
+                }
                 yields.drop_finished(running.engine.state());
                 stops.drop_finished(running.engine.state());
                 let mut notices: Vec<(PlayerId, ServerMessage)> = self
@@ -147,6 +151,7 @@ impl<S: EventStore> GameActor<S> {
             Err(error) => {
                 // Without the undo the game would run ahead of its record, so stop instead.
                 running.engine.restore(checkpoint).map_err(|_| Fatal)?;
+                running.restore_banks(banks);
                 self.refuse(origin, error.into_rejection());
                 Ok(())
             }
@@ -194,6 +199,7 @@ impl<S: EventStore> GameActor<S> {
             id,
             decision,
             deadline_ms,
+            show_after_ms,
         }) = next
         {
             let seat = decision.player;
@@ -203,6 +209,7 @@ impl<S: EventStore> GameActor<S> {
                     id,
                     decision,
                     deadline_ms,
+                    show_after_ms,
                 },
             );
         }

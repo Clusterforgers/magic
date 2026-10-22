@@ -69,7 +69,12 @@ decision: Decision,
  * At the end the server answers for the seat (a pass, or no blocks) and this decision goes stale.
  * A decision sent again after a reconnect carries the time that is left, not the time it started with.
  */
-deadline_ms?: number, } | { "type": "Forecast", 
+deadline_ms?: number, 
+/**
+ * Milliseconds after this message arrives at which the countdown shows; absent when there is no clock or the
+ * countdown shows at once. The clock runs from the moment the decision is issued all the same.
+ */
+show_after_ms?: number, } | { "type": "Forecast", 
 /**
  * The decision the preview named, echoed.
  */
@@ -118,4 +123,12 @@ stops: Array<Stop>, } | { "type": "FullControl",
 /**
  * The mode now in force.
  */
-mode: FullControlMode, };
+mode: FullControlMode, } | { "type": "Bank", 
+/**
+ * The seat whose bank changed.
+ */
+seat: PlayerId, 
+/**
+ * Extensions the seat now holds.
+ */
+bank: number, };

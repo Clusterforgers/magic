@@ -60,6 +60,9 @@ pub fn windowed() -> GameConfig {
             response: None,
             blocks: None,
             think: None,
+            active: None,
+            extension: None,
+            grace: std::time::Duration::ZERO,
             dwell: Dwell::OFF,
         },
         ..roomy()

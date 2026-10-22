@@ -18,7 +18,7 @@ import { previewKey } from './preview'
 import { canHoldStop } from './stops'
 import { appendChat, appendLog, createPlayStore, dropLogFrom } from './store'
 import type { PlayState, PlayStore } from './store'
-import { applyBatch, fromFirstBatch, fromSnapshot, indexById } from './view'
+import { applyBatch, fromFirstBatch, fromSnapshot, indexById, withBank } from './view'
 
 /** The longest chat line the server accepts, in characters (`MAX_CHAT_CHARS` in `crates/mtg-server/src/actor.rs`). */
 export const MAX_CHAT_CHARS = 500
@@ -221,6 +221,12 @@ export function createSession(deps: SessionDeps): Session {
         socket.retire()
         setState({ result: message.result, phase: 'over', pending: null, preview: null, yielding: null })
         return
+      case 'Bank':
+        // A spent extension has no event to carry it; an earned one arrives in the table of the batch.
+        setState((state) =>
+          state.view === null ? {} : { view: withBank(state.view, message.seat, message.bank) },
+        )
+        return
       default: {
         // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.
         const unhandled: never = message
@@ -280,10 +286,12 @@ export function createSession(deps: SessionDeps): Session {
     // After a gap the server repeats the pending decision behind the snapshot it sends; before that the ids may be unknown.
     if (awaitingSnapshot || message.id === lastAnswered) return
     setState({
-      pending:
-        message.deadline_ms === undefined
-          ? { id: message.id, decision: message.decision }
-          : { id: message.id, decision: message.decision, deadlineMs: message.deadline_ms },
+      pending: {
+        id: message.id,
+        decision: message.decision,
+        ...(message.deadline_ms === undefined ? {} : { deadlineMs: message.deadline_ms }),
+        ...(message.show_after_ms === undefined ? {} : { showAfterMs: message.show_after_ms }),
+      },
       preview: null,
     })
   }

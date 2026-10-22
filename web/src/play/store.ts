@@ -32,6 +32,8 @@ export interface PendingDecision {
   decision: Decision
   /** Milliseconds the seat had when the server sent it, if the decision runs on a clock; see `PlayState.clock`. */
   deadlineMs?: number
+  /** Milliseconds after the message arrived at which the countdown shows; absent when it shows at once. */
+  showAfterMs?: number
 }
 
 /**
