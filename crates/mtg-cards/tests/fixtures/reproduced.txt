@@ -45,6 +45,7 @@ Borderland Behemoth
 Brain Freeze
 Brainstorm
 Branchblight Stalker
+Briarblade Adept
 Brightstone Ritual
 Bronzeplate Boar
 Broodbirth Viper
@@ -123,6 +124,7 @@ Ethereal Armor
 Exotic Orchard
 Exploration
 Explore
+Exquisite Huntmaster
 Faithful Watchdog
 Faithless Looting
 Faramir, Steward of Gondor
@@ -184,6 +186,7 @@ Hound of Griselbrand
 Hulking Raptor
 Idyllic Beachfront
 Impostor of the Sixth Pride
+Impulsive Pilferer
 Inkwell Leviathan
 Invading Manticore
 Invisible Stalker
@@ -196,6 +199,7 @@ Kathari Screecher
 Keep Watch
 Kessig Wolf Run
 Kinjalli's Sunwing
+Kinsbaile Courier
 Kitchen Finks
 Knight of Dusk's Shadow
 Kolaghan Skirmisher
@@ -378,6 +382,7 @@ Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Treasure Cruise
+Trove Tracker
 Tumble Magnet
 Twilight Mire
 Twincast

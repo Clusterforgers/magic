@@ -27,6 +27,7 @@ pub mod decks;
 pub mod defining_cards;
 pub mod discard_cast_cards;
 pub mod driver;
+pub mod encore_cards;
 pub mod evasion_cards;
 pub mod event_cards;
 pub mod expect;
@@ -91,6 +92,7 @@ pub use decks::{
 pub use defining_cards::defining_fuzz_setup;
 pub use discard_cast_cards::discard_cast_fuzz_setup;
 pub use driver::Driver;
+pub use encore_cards::encore_fuzz_setup;
 pub use evasion_cards::evasion_fuzz_setup;
 pub use event_cards::events_fuzz_setup;
 pub use extra_cost_cards::extra_cost_fuzz_setup;

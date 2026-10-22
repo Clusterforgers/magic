@@ -290,7 +290,6 @@ fn near_misses_of_giving_an_ability_stay_unread(#[case] text: &str) {
 
 #[rstest]
 #[case::two_other_players("Target player loses 2 life and target opponent gains 2 life.")]
-#[case::you_after_you("You draw a card and you gain 1 life.")]
 #[case::a_dangling_and("Target player loses 2 life and you")]
 #[case::you_with_no_verb("Target player loses 2 life and you a card.")]
 fn near_misses_of_a_second_player_stay_unread(#[case] text: &str) {

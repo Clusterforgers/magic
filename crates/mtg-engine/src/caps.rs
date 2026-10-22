@@ -147,6 +147,7 @@ const RUNS: &[&str] = &[
     "Ability.Static.Defining",
     "Ability.Rule",
     "Rule.MustAttack",
+    "Rule.MustAttackPlayers",
     "Rule.MustBlock",
     "Rule.CantBeCountered",
     "Rule.CantGainLife",
@@ -287,6 +288,7 @@ const RUNS: &[&str] = &[
     "Keyword.Retrace",
     "Keyword.Embalm",
     "Keyword.Eternalize",
+    "Keyword.Encore",
     "Condition.NewlyControlled",
     "Rule.CanBeCommander",
 ];
@@ -615,7 +617,8 @@ mod tests {
     #[case::crew("Keyword.Crew", true)]
     #[case::tapping_creatures_for_their_power_as_a_cost("Cost.TapPower", true)]
     #[case::mutate("Keyword.Mutate", false)]
-    #[case::encore("Keyword.Encore", false)]
+    #[case::encore("Keyword.Encore", true)]
+    #[case::pairing_attackers_with_players("Rule.MustAttackPlayers", true)]
     #[case::squad("Keyword.Squad", true)]
     #[case::x_costs(X_COST, true)]
     #[case::x_read_after_resolving("Amount.X.Elsewhere", false)]

@@ -756,6 +756,7 @@ mod tests {
         "Keyword.Retrace",
         "Keyword.Embalm",
         "Keyword.Eternalize",
+        "Keyword.Encore",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -866,6 +867,7 @@ mod tests {
     #[case::aftermath(Keyword::Aftermath, Hooks::none())]
     #[case::dash(Keyword::Dash(Cost::mana("{1}{R}".parse().unwrap())), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::blitz(Keyword::Blitz(Cost::mana("{1}{R}".parse().unwrap())), Hooks { abilities: 3, ..Hooks::none() })]
+    #[case::encore(Keyword::Encore(Cost::mana("{2}{W}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ninjutsu(Keyword::Ninjutsu(Cost::mana("{1}{U}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::echo(Keyword::Echo(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::cumulative_upkeep(Keyword::CumulativeUpkeep(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]

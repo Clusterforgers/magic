@@ -69,6 +69,8 @@ mod divided_resolution;
 mod elimination;
 mod embalm;
 mod enchant_player;
+mod encore;
+mod encore_fuzz;
 mod energy_payments;
 mod enters;
 mod equipment;
