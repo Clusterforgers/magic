@@ -1,0 +1,37 @@
+{
+  "oracle_id": "a2a380d8-4df7-4357-862c-ed3fb795db6c",
+  "name": "Sundering Growth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sundering Growth",
+      "oracle_fingerprint": "96323f5c104ed46ebba677ef1d0168d0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": [{ "Type": "Artifact" }] },
+                    { "Object": [{ "Type": "Enchantment" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+                  "as": "token"
+                }
+              },
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "token" } } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

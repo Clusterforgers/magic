@@ -12,6 +12,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::abilities::AbilityObject;
 use crate::choose::Choices;
+use crate::copies::CopyEffect;
 use crate::hash::stable_hash;
 use crate::zones::Zone;
 
@@ -98,9 +99,16 @@ pub struct PermanentState {
     pub(crate) x: Option<u32>,
     /// The face of a card with several faces the permanent is (a modal double-faced card played as its back face).
     pub(crate) face: Option<u8>,
+    /// The copy effect that makes the permanent a copy of another object (CR 707): its copiable values replace the card's.
+    pub(crate) copy: Option<CopyEffect>,
 }
 
 impl PermanentState {
+    /// The copy effect the permanent is under, if it is a copy of another object (CR 707).
+    pub const fn copy(&self) -> Option<&CopyEffect> {
+        self.copy.as_ref()
+    }
+
     /// The X the spell that became the permanent was cast with; its enters triggers and replacements read it (CR 107.3m).
     pub const fn x(&self) -> Option<u32> {
         self.x
@@ -314,6 +322,9 @@ impl GameObject {
 
     /// The printed definition of the object: the face it is in use as (`face`), else the card as a whole.
     pub fn card(&self) -> &CardDefinition {
+        if let Some(copy) = self.copy_effect() {
+            return copy.definition();
+        }
         match self.face() {
             Some(face) => self.def.face(face),
             None => &self.def,
@@ -322,7 +333,15 @@ impl GameObject {
 
     /// The whole card, with every face it has, whichever one is in use.
     pub fn whole_card(&self) -> &CardDefinition {
-        &self.def
+        match self.copy_effect() {
+            Some(copy) => copy.definition(),
+            None => &self.def,
+        }
+    }
+
+    /// The copy effect the object is under, if it is a permanent that is a copy of another object (CR 707).
+    pub fn copy_effect(&self) -> Option<&CopyEffect> {
+        self.permanent.as_ref().and_then(PermanentState::copy)
     }
 
     /// The face of a card with several faces the object is in use as: the one chosen while it is a spell on the stack
@@ -342,6 +361,9 @@ impl GameObject {
 
     /// The printed card types of the face in use (no effects applied).
     pub fn base_types(&self) -> CardTypes {
+        if let Some(copy) = self.copy_effect() {
+            return copy.definition().type_set();
+        }
         match self.face() {
             Some(face) if self.kind != ObjectKind::Ability => self.def.face(face).type_set(),
             _ => self.base_types,

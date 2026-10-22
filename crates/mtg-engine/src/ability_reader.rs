@@ -524,6 +524,7 @@ mod tests {
         let object = game.next_object();
         let created = TokenCreated {
             object,
+            copy_of: None,
             controller: ME,
             name: "Gem".into(),
             tapped: false,

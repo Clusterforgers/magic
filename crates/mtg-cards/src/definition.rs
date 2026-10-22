@@ -12,6 +12,8 @@ use mtg_core::mana::{ManaCost, ManaType};
 use serde::{Deserialize, Serialize};
 
 use crate::ability::Ability;
+use crate::modify::Modification;
+use crate::value::Amount;
 
 /// `{T}: Add one mana of a fixed type`; shaped so costs and choices can extend it.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -312,6 +314,52 @@ impl CardDefinition {
     pub fn mana_value(&self) -> u32 {
         self.mana_cost.as_ref().map_or(0, ManaCost::mana_value)
     }
+
+    /// The copiable values of this face (CR 707.2): what it prints, as a card of one face. A copy of a face of a card
+    /// with several faces has the values of that face alone (CR 707.8).
+    #[must_use]
+    pub fn copiable(&self) -> CardDefinition {
+        let mut values = self.clone();
+        values.layout = Layout::Normal;
+        values.faces.clear();
+        values
+    }
+
+    /// Applies one exception of a copy effect to these copiable values (CR 707.9b): an extra type or subtype, a
+    /// keyword or an ability, colours, a fixed power and toughness. False, with nothing changed, for any other
+    /// modification.
+    pub fn except(&mut self, modification: &Modification) -> bool {
+        match modification {
+            Modification::AddType(ty) => {
+                self.types.insert(*ty);
+            }
+            Modification::AddSubtype(subtype) => {
+                if !self.subtypes.contains(subtype) {
+                    self.subtypes.push(subtype.clone());
+                }
+            }
+            Modification::AddKeyword(keyword) => {
+                self.rules.push(Arc::new(Ability::Keyword(keyword.clone())));
+            }
+            Modification::GrantAbility(ability) => self.rules.push(Arc::clone(ability)),
+            Modification::SetColors(colors) => {
+                self.color_indicator = Some(
+                    colors
+                        .iter()
+                        .fold(ColorSet::EMPTY, |set, color| set.with(*color)),
+                );
+            }
+            Modification::SetPT {
+                power: Amount::Fixed(power),
+                toughness: Amount::Fixed(toughness),
+            } => {
+                self.power = Some(*power);
+                self.toughness = Some(*toughness);
+            }
+            _ => return false,
+        }
+        true
+    }
 }
 
 #[cfg(test)]
@@ -322,7 +370,6 @@ mod tests {
 
     use crate::effect::Effect;
     use crate::refs::Ref;
-    use crate::value::Amount;
 
     #[rstest]
     #[case(Some(Color::White), "Plains", ManaType::White)]

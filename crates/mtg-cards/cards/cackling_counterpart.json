@@ -1,0 +1,22 @@
+{
+  "oracle_id": "9e2adca5-f39c-4a09-bcce-8238ebac2c4a",
+  "name": "Cackling Counterpart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cackling Counterpart",
+      "oracle_fingerprint": "49f17b32243618a909d1488143578b42",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }]
+          }
+        },
+        { "Keyword": { "Flashback": "{5}{U}{U}" } }
+      ]
+    }
+  ]
+}

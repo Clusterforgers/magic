@@ -929,6 +929,8 @@ fn ability() -> impl Strategy<Value = Ability> {
                 ])
                 .prop_map(ReplaceBy::Choose),
                 (1u32..5).prop_map(ReplaceBy::PayLifeOrTapped),
+                (selector(), proptest::collection::vec(modification(), 0..3))
+                    .prop_map(|(of, except)| ReplaceBy::AsCopy { of, except }),
             ],
             tail()
         )

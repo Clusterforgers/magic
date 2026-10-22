@@ -1,0 +1,19 @@
+{
+  "oracle_id": "42226b87-0746-4ebf-9fd0-108d508462af",
+  "name": "Clone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clone",
+      "oracle_fingerprint": "89054bc9b2839ac82d27a4357336a00d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "AsCopy": { "of": [{ "Type": "Creature" }] } }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 use crate::combat::{AttackTarget, Attacker};
 use crate::error::EngineError;
 use crate::fold::{invalid, reset_passes};
-use crate::object::{GameObject, ObjectKind, PermanentState};
+use crate::object::{GameObject, ObjectKind, ObjectRef, PermanentState};
 use crate::state::GameState;
 use crate::zones::{Placement, Zone};
 
@@ -42,6 +42,10 @@ pub struct TokenCreated {
     /// Its characteristics and abilities, so a log folds to the same game with no card data at hand.
     #[cfg_attr(feature = "ts", ts(skip))]
     pub definition: Arc<CardDefinition>,
+    /// The object it is a copy of, when the definition is the copiable values of that object (CR 111.10, 707.2).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub copy_of: Option<ObjectRef>,
 }
 
 /// Folds the event: the token is a new object on the battlefield, tapped and attacking as the event says.
@@ -82,40 +86,13 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
         way: None,
         x: None,
         face: None,
+        copy: event.copy_of.map(|of| {
+            crate::copies::CopyEffect::new(of, Arc::clone(&event.definition), state.next_timestamp)
+        }),
     });
     state.next_timestamp += 1;
     // A token can bring what no card of the game had: a triggered ability, a static ability, a legend.
-    if event
-        .definition
-        .supertypes
-        .contains(&mtg_core::card::Supertype::Legendary)
-    {
-        state.possible.legends = true;
-    }
-    if crate::attach::definition_attaches(&event.definition) {
-        state.possible.attachments = true;
-    }
-    if crate::ability_reader::definition_triggers(&event.definition) {
-        state.triggers_possible = true;
-    }
-    if crate::ability_reader::definition_has_static(&event.definition) {
-        state.statics_possible = true;
-    }
-    if crate::ability_reader::definition_has_rule(&event.definition) {
-        state.rules_possible = true;
-    }
-    if crate::ability_reader::definition_has_state_trigger(&event.definition) {
-        state.possible.states = true;
-    }
-    if crate::ability_reader::definition_has_replacement(&event.definition) {
-        state.possible.replacements = true;
-    }
-    if crate::ability_reader::definition_has_cost_modifier(&event.definition) {
-        state.possible.costs = true;
-    }
-    if crate::ability_reader::definition_has_protection(&event.definition) {
-        state.possible.protection = true;
-    }
+    crate::copies::note_definition(state, &event.definition);
     state.objects.insert(id, token);
     state.zones.insert(Zone::Battlefield, id, Placement::Top);
     state.next_object = state.next_object.max(id.get() + 1);
@@ -174,6 +151,7 @@ mod tests {
     fn created(game: &GameState, tapped: bool, attacking: Option<AttackTarget>) -> TokenCreated {
         TokenCreated {
             object: game.next_object(),
+            copy_of: None,
             controller: ME,
             name: "Soldier".into(),
             tapped,

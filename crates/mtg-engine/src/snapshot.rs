@@ -1,5 +1,8 @@
 //! Last known information: an object as it was, kept after it has changed or gone (CR 113.7a, 608.2h).
 
+use std::sync::Arc;
+
+use mtg_cards::CardDefinition;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::value::CounterKind;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -54,6 +57,11 @@ pub struct Snapshot {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub face: Option<u8>,
+    /// The copiable values it had when it was a copy of another object (CR 707.2), which a token or a copy made from it
+    /// after it left reads; absent for an object that was not a copy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub copy: Option<Arc<CardDefinition>>,
 }
 
 impl Snapshot {
@@ -98,6 +106,7 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
         x: object.announced_x(),
         paid: object.paid_costs().to_vec(),
         face: object.face(),
+        copy: object.copy_effect().map(crate::copies::CopyEffect::shared),
     })
 }
 

@@ -111,6 +111,7 @@ const RUNS: &[&str] = &[
     "Effect.Transform",
     "Effect.WinGame",
     "Effect.CreateToken",
+    "Effect.CreateToken.Copy",
     "Effect.Continuous",
     "Effect.Rule",
     "Effect.Regenerate",
@@ -217,6 +218,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.WithCounters",
     "ReplaceBy.Choose",
     "ReplaceBy.PayLifeOrTapped",
+    "ReplaceBy.AsCopy",
 ];
 
 /// The capabilities of this engine.
@@ -381,7 +383,9 @@ mod tests {
     #[case::enchanting_cards_elsewhere("Keyword.Enchant.Elsewhere", false)]
     #[case::winning_the_game("Effect.WinGame", true)]
     #[case::creating_tokens("Effect.CreateToken", true)]
-    #[case::creating_copies("Effect.CreateToken.Copy", false)]
+    #[case::creating_copies("Effect.CreateToken.Copy", true)]
+    #[case::entering_as_a_copy("ReplaceBy.AsCopy", true)]
+    #[case::an_exception_the_copy_cannot_hold("Copy.Except.SwitchPT", false)]
     #[case::sacrificing_the_source("Cost.SacrificeSelf", true)]
     #[case::sacrificing_a_permanent("Cost.Sacrifice", true)]
     #[case::paying_by_sacrificing_the_source("Effect.Pay.SacrificeSelf", false)]

@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 use crate::abilities::{AbilitySource, Cause, PutOnStack};
 use crate::choose::{Choice, Choices, Target};
 use crate::combat::{AttackTarget, DamageTarget};
+use crate::copies::BecameCopy;
 use crate::counters::CountersChanged;
 use crate::day_night::DayNight;
 use crate::effects::ContinuousEffect;
@@ -502,6 +503,8 @@ pub enum Event {
         #[cfg_attr(feature = "ts", ts(optional))]
         face: Option<u8>,
     },
+    /// A permanent became a copy of another object (CR 707.2), with the copiable values of the copy effect.
+    BecameCopy(BecameCopy),
     /// The game became day or night (CR 726).
     DayNightChanged {
         /// What it became.
@@ -631,6 +634,7 @@ impl Event {
             | Event::LibraryBottomed { cards, .. } => cards.clone(),
             Event::Scried(scried) => scried.top.iter().chain(&scried.bottom).copied().collect(),
             Event::TokenCreated(token) => vec![token.object],
+            Event::BecameCopy(copy) => vec![copy.object],
             Event::AbilityPutOnStack(put) => vec![put.object],
             Event::LandPlayed { object, .. }
             | Event::SpellCast { object, .. }

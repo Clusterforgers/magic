@@ -311,6 +311,7 @@ fn the_journal_collects_answers_and_every_step_clears_it_and_binds_names() {
 fn token(id: u64, controller: PlayerId, attacking: Option<AttackTarget>) -> TokenCreated {
     TokenCreated {
         object: ObjectId(id),
+        copy_of: None,
         controller,
         name: "Treasure".into(),
         tapped: false,

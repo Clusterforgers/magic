@@ -5806,5 +5806,209 @@
         "oracle_text": "Burn deals 2 damage to any target.\nFuse (You may cast one or both halves of this card from your hand.)"
       }
     ]
+  },
+  {
+    "id": "50f1b7ba-7888-4f0d-a515-23dcf96bf87e",
+    "oracle_id": "04046ae4-5c51-434b-930c-f3b1d348bf4b",
+    "name": "Rootborn Defenses",
+    "lang": "en",
+    "layout": "normal",
+    "set": "plst",
+    "collector_number": "RVR-26",
+    "rarity": "common",
+    "released_at": "2026-08-10",
+    "digital": false,
+    "mana_cost": "{2}{W}",
+    "cmc": 3.0,
+    "type_line": "Instant",
+    "oracle_text": "Populate. Creatures you control gain indestructible until end of turn. (To populate, create a token that's a copy of a creature token you control.)",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [
+      "Populate"
+    ]
+  },
+  {
+    "id": "5e648262-3b9b-4c58-8e29-48356e3cb064",
+    "oracle_id": "42226b87-0746-4ebf-9fd0-108d508462af",
+    "name": "Clone",
+    "lang": "en",
+    "layout": "normal",
+    "set": "m14",
+    "collector_number": "47",
+    "rarity": "rare",
+    "released_at": "2013-07-19",
+    "digital": false,
+    "mana_cost": "{3}{U}",
+    "cmc": 4.0,
+    "type_line": "Creature — Shapeshifter",
+    "oracle_text": "You may have this creature enter as a copy of any creature on the battlefield.",
+    "power": "0",
+    "toughness": "0",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "5b3ffc69-f21b-410e-8993-8c1b4669fc19",
+    "oracle_id": "7275fb8c-571a-4c4c-889a-829419332e51",
+    "name": "Mirror Image",
+    "lang": "en",
+    "layout": "normal",
+    "set": "m19",
+    "collector_number": "61",
+    "rarity": "uncommon",
+    "released_at": "2018-07-13",
+    "digital": false,
+    "mana_cost": "{2}{U}",
+    "cmc": 3.0,
+    "type_line": "Creature — Shapeshifter",
+    "oracle_text": "You may have this creature enter as a copy of a creature you control.",
+    "power": "0",
+    "toughness": "0",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "fe153c49-da2d-42b0-a6d1-77508b0fe8a9",
+    "oracle_id": "732b1314-68bb-4d3d-9f3f-7e66e763caf5",
+    "name": "Followed Footsteps",
+    "lang": "en",
+    "layout": "normal",
+    "set": "cn2",
+    "collector_number": "111",
+    "rarity": "rare",
+    "released_at": "2016-08-26",
+    "digital": false,
+    "mana_cost": "{3}{U}{U}",
+    "cmc": 5.0,
+    "type_line": "Enchantment — Aura",
+    "oracle_text": "Enchant creature\nAt the beginning of your upkeep, create a token that's a copy of enchanted creature.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Enchant"
+    ]
+  },
+  {
+    "id": "a865fdc5-955a-4c4a-90c0-342c15fd7bbc",
+    "oracle_id": "9e2adca5-f39c-4a09-bcce-8238ebac2c4a",
+    "name": "Cackling Counterpart",
+    "lang": "en",
+    "layout": "normal",
+    "set": "inr",
+    "collector_number": "55",
+    "rarity": "uncommon",
+    "released_at": "2025-01-24",
+    "digital": false,
+    "mana_cost": "{1}{U}{U}",
+    "cmc": 3.0,
+    "type_line": "Instant",
+    "oracle_text": "Create a token that's a copy of target creature you control.\nFlashback {5}{U}{U} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Flashback"
+    ]
+  },
+  {
+    "id": "96feebe2-0a6b-4df8-8e7d-ee0bb82ac0c1",
+    "oracle_id": "a2a380d8-4df7-4357-862c-ed3fb795db6c",
+    "name": "Sundering Growth",
+    "lang": "en",
+    "layout": "normal",
+    "set": "c19",
+    "collector_number": "203",
+    "rarity": "common",
+    "released_at": "2019-08-23",
+    "digital": false,
+    "mana_cost": "{G/W}{G/W}",
+    "cmc": 2.0,
+    "type_line": "Instant",
+    "oracle_text": "Destroy target artifact or enchantment, then populate. (Create a token that's a copy of a creature token you control.)",
+    "colors": [
+      "G",
+      "W"
+    ],
+    "color_identity": [
+      "G",
+      "W"
+    ],
+    "keywords": [
+      "Populate"
+    ]
+  },
+  {
+    "id": "c1c080cf-a5e8-4d9d-af49-f78588971e87",
+    "oracle_id": "bde94af8-faea-41ff-8eed-ba642eac9968",
+    "name": "Phantasmal Image",
+    "lang": "en",
+    "layout": "normal",
+    "set": "afc",
+    "collector_number": "89",
+    "rarity": "rare",
+    "released_at": "2021-07-23",
+    "digital": false,
+    "mana_cost": "{1}{U}",
+    "cmc": 2.0,
+    "type_line": "Creature — Illusion",
+    "oracle_text": "You may have this creature enter as a copy of any creature on the battlefield, except it's an Illusion in addition to its other types and it has \"When this creature becomes the target of a spell or ability, sacrifice it.\"",
+    "power": "0",
+    "toughness": "0",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "6ea45414-4047-4921-b77d-dfcba2fe7694",
+    "oracle_id": "bec6fb31-60a3-432f-ba36-aebf172f8b27",
+    "name": "Growing Ranks",
+    "lang": "en",
+    "layout": "normal",
+    "set": "c19",
+    "collector_number": "193",
+    "rarity": "rare",
+    "released_at": "2019-08-23",
+    "digital": false,
+    "mana_cost": "{2}{G/W}{G/W}",
+    "cmc": 4.0,
+    "type_line": "Enchantment",
+    "oracle_text": "At the beginning of your upkeep, populate. (Create a token that's a copy of a creature token you control.)",
+    "colors": [
+      "G",
+      "W"
+    ],
+    "color_identity": [
+      "G",
+      "W"
+    ],
+    "keywords": [
+      "Populate"
+    ]
   }
 ]

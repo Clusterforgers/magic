@@ -40,6 +40,7 @@ pub mod caps;
 pub mod characteristics;
 pub mod choose;
 pub mod combat;
+pub mod copies;
 pub mod counters;
 pub mod day_night;
 pub mod decision;

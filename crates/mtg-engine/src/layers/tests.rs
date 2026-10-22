@@ -827,6 +827,7 @@ fn token(game: &mut GameState, json: Option<&str>) {
     }
     let created = crate::tokens::TokenCreated {
         object,
+        copy_of: None,
         controller: ME,
         name: "Gem".into(),
         tapped: false,

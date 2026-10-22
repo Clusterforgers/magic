@@ -1,0 +1,34 @@
+{
+  "oracle_id": "bde94af8-faea-41ff-8eed-ba642eac9968",
+  "name": "Phantasmal Image",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phantasmal Image",
+      "oracle_fingerprint": "7f3e1c01bfc7a77a092eb633a0d6f36c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }],
+                "except": [
+                  { "AddSubtype": "Illusion" },
+                  {
+                    "GrantAbility": {
+                      "Triggered": {
+                        "when": { "BecomesTarget": { "what": ["This"] } },
+                        "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

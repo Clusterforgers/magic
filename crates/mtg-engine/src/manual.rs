@@ -732,6 +732,7 @@ fn create_tokens(
         .map(|made| {
             Event::TokenCreated(TokenCreated {
                 object: ObjectId(first + made),
+                copy_of: None,
                 controller: player,
                 name: definition.name.clone(),
                 tapped: false,

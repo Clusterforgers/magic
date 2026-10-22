@@ -95,6 +95,7 @@ pub(super) fn move_object(
             way,
             x,
             face,
+            copy: None,
         });
     } else if to != Zone::Stack {
         object.controller = object.owner;

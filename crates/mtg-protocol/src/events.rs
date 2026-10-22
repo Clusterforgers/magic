@@ -278,6 +278,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::LifeLost { .. }
         | Event::CountersChanged(_)
         | Event::TokenCreated(_)
+        | Event::BecameCopy(_)
         | Event::Entered { .. }
         | Event::Attached { .. }
         | Event::Unattached { .. }
@@ -784,6 +785,7 @@ mod tests {
             }),
             Event::TokenCreated(TokenCreated {
                 object: ObjectId(901),
+                copy_of: None,
                 controller: OWNER,
                 name: "Treasure".into(),
                 tapped: false,

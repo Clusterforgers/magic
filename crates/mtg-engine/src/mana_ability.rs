@@ -316,6 +316,7 @@ mod tests {
         );
         let entered = crate::tokens::TokenCreated {
             object: game.next_object(),
+            copy_of: None,
             controller: ME,
             name: "Gem Elf".into(),
             tapped: false,

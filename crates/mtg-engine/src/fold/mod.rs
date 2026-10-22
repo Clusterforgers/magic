@@ -114,6 +114,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::Attached { object, to } => crate::attach::fold_attached(state, *object, *to),
         Event::Unattached { object } => crate::attach::fold_unattached(state, *object),
         Event::TokenCreated(token) => crate::tokens::fold(state, token),
+        Event::BecameCopy(copy) => crate::copies::fold(state, copy),
         // The change follows as events of its own; the action only restarts the round, so the other seats see it.
         Event::ManualAction { .. } => {
             reset_passes(state);

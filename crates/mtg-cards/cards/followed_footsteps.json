@@ -1,0 +1,20 @@
+{
+  "oracle_id": "732b1314-68bb-4d3d-9f3f-7e66e763caf5",
+  "name": "Followed Footsteps",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Followed Footsteps",
+      "oracle_fingerprint": "84404bb7a41cee2e30e2ccdcc339ce6a",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": "Attached" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -3,6 +3,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::effect::Effect;
+use crate::modify::Modification;
 use crate::refs::{Ref, Selector, ZoneKind};
 use crate::value::{Amount, Condition, CounterKind};
 
@@ -379,6 +380,16 @@ pub enum ReplaceBy {
     Choose(EntersChoice),
     /// As the permanent enters, its controller may pay this much life; if they don't (or can't) it enters tapped.
     PayLifeOrTapped(u32),
+    /// As the permanent enters, its controller may have it enter as a copy of a permanent on the battlefield that
+    /// matches the selector (CR 707.9, 614.1c), with these exceptions in its copiable values ("except it's an
+    /// Illusion in addition to its other types").
+    AsCopy {
+        /// The permanents that may be copied.
+        of: Selector,
+        /// Changes the copy has: part of the copy effect, so part of its copiable values (CR 707.9b).
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        except: Vec<Modification>,
+    },
 }
 
 #[cfg(test)]

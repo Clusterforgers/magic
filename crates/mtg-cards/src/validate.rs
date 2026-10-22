@@ -1024,10 +1024,20 @@ impl<'a> Walker<'a> {
             TokenRef::Custom(spec) => self.at("Custom", |w| w.token_spec(spec)),
             TokenRef::CopyOf { of, except } => {
                 self.at("of", |w| w.reference(of, Kind::Object));
-                for (i, modification) in except.iter().enumerate() {
-                    self.at(format!("except[{i}]"), |w| w.modification(modification));
-                }
+                self.copy_exceptions(except);
             }
+        }
+    }
+
+    /// The exceptions of a copy effect are changes to its copiable values; a modification that is not one waits.
+    fn copy_exceptions(&mut self, except: &[Modification]) {
+        for (i, modification) in except.iter().enumerate() {
+            self.at(format!("except[{i}]"), |w| {
+                w.modification(modification);
+                if !crate::CardDefinition::new("").except(modification) {
+                    w.uses("Copy", &format!("Except.{}", tag_of(modification)));
+                }
+            });
         }
     }
 
@@ -1822,6 +1832,13 @@ impl<'a> Walker<'a> {
                 self.problem("only an `Enters` event is entered tapped, chosen on or paid for");
             }
             ReplaceBy::PayLifeOrTapped(0) => self.problem("paying no life is entering untapped"),
+            ReplaceBy::AsCopy { of, except } => {
+                if !enters {
+                    self.problem("only an `Enters` event is entered as a copy");
+                }
+                self.at("of", |w| w.selector(of));
+                self.copy_exceptions(except);
+            }
             _ => {}
         }
     }

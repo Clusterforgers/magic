@@ -238,6 +238,7 @@ fn preset_state(
         way: None,
         x: None,
         face: None,
+        copy: None,
     }
 }
 

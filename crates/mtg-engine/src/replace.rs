@@ -27,7 +27,8 @@ use std::sync::Arc;
 
 use mtg_cards::ability::Ability;
 use mtg_cards::definition::Layout;
-use mtg_cards::refs::{Ref, ZoneKind};
+use mtg_cards::modify::Modification;
+use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::{EntersChoice, ReplaceBy, ReplaceWhen};
 use mtg_cards::value::{CastWay, CounterKind};
 use mtg_core::card::{CardType, Subtype};
@@ -39,10 +40,12 @@ use crate::ability_reader::{abilities_of, provided_here, working_here};
 use crate::announce::payments;
 use crate::characteristics::controller_of_object;
 use crate::choose::{
+    CardsOptions,
     Choice, ChoiceOption, OptionOptions, ReplacementCandidate, ReplacementOptions, Target,
     YesNoOptions,
 };
 use crate::combat::DamageTarget;
+use crate::copies::{BecameCopy, copiable_values, may_be_copied};
 use crate::counters::CountersChanged;
 use crate::decision::{Decision, DecisionKind};
 use crate::error::EngineError;
@@ -237,6 +240,8 @@ fn slots_of(events: Vec<Event>) -> Vec<Slot> {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 enum Origin {
     Ability(AbilityRef),
+    /// The rule at this index among the copiable values of a card that enters as a copy.
+    Copied(usize),
     Shield(EffectId),
     /// The protection of the permanent or player the damage is dealt to (CR 702.16e).
     Protection,
@@ -327,6 +332,8 @@ struct Source {
     ability: Arc<Ability>,
     controller: PlayerId,
     object: ObjectRef,
+    /// Read from the copiable values of a card that enters as a copy, whose address is an index into those values.
+    copied: bool,
 }
 
 /// The replacement effects that work now: those of the permanents (printed, granted, added by a keyword) and of
@@ -355,6 +362,7 @@ fn gather(state: &GameState) -> Vec<Source> {
                     ability: rules,
                     controller: controller_of_object(state, object),
                     object: object.reference(),
+                    copied: false,
                 });
             }
         }
@@ -490,7 +498,8 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         ReplaceBy::Tapped
         | ReplaceBy::WithCounters { .. }
         | ReplaceBy::Choose(_)
-        | ReplaceBy::PayLifeOrTapped(_) => matches!(unit, Unit::Enter { .. }),
+        | ReplaceBy::PayLifeOrTapped(_)
+        | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         // Not run yet: a card that uses it is not Verified.
         ReplaceBy::Instead(_) => false,
     }
@@ -790,7 +799,11 @@ impl Pass<'_> {
             else {
                 return Ok(());
             };
-            let origin = Origin::Ability(source.address);
+            let origin = if source.copied {
+                Origin::Copied(source.address.ability)
+            } else {
+                Origin::Ability(source.address)
+            };
             if slot.applied.contains(&origin)
                 || found.iter().any(|c| c.origin == origin)
                 || !applies_to(by, &unit)
@@ -823,12 +836,31 @@ impl Pass<'_> {
             && card.zone() != Zone::Battlefield
         {
             let controller = controller_of_object(self.state, card);
-            for (address, rules) in abilities_of(self.state, *object) {
+            // A card that enters as a copy has the copied values from the start (CR 614.12a): the effects they print
+            // about entering apply in place of its own.
+            let own_abilities: Vec<(AbilityRef, Arc<Ability>, bool)> =
+                match self.entering_copy(*object) {
+                    Some(copy) => copy
+                        .definition
+                        .rules
+                        .iter()
+                        .enumerate()
+                        .map(|(index, rules)| {
+                            (AbilityRef::printed(*object, index), Arc::clone(rules), true)
+                        })
+                        .collect(),
+                    None => abilities_of(self.state, *object)
+                        .into_iter()
+                        .map(|(address, rules)| (address, rules, false))
+                        .collect(),
+                };
+            for (address, rules, copied) in own_abilities {
                 let own = Source {
                     address,
                     ability: rules,
                     controller,
                     object: card.reference(),
+                    copied,
                 };
                 if matches!(
                     &*own.ability,
@@ -1129,6 +1161,7 @@ impl Pass<'_> {
                                             source: c.object.id,
                                             ability: match c.origin {
                                                 Origin::Ability(address) => address.ability,
+                                                Origin::Copied(index) => index,
                                                 Origin::Shield(_)
                                                 | Origin::Protection
                                                 | Origin::Flashback
@@ -1138,6 +1171,7 @@ impl Pass<'_> {
                                             shield: match c.origin {
                                                 Origin::Shield(id) => Some(id),
                                                 Origin::Ability(_)
+                                                | Origin::Copied(_)
                                                 | Origin::Protection
                                                 | Origin::Flashback
                                                 | Origin::Buyback
@@ -1720,6 +1754,25 @@ impl Pass<'_> {
                     *slot = chosen;
                 }
             }
+            ReplaceBy::AsCopy { of, except } => {
+                let copy = match self.copies(candidate.object, controller, object, of, except)? {
+                    Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
+                    Asked::Got(copy) => copy,
+                };
+                if let Some(copy) = copy {
+                    let mut inherited = applied.clone();
+                    inherited.dedup();
+                    // The copy begins as the permanent enters, so the effects of the copied values apply to its entering.
+                    self.slots.insert(
+                        at + 1,
+                        Slot {
+                            item: Item::One(Event::BecameCopy(copy)),
+                            applied: inherited,
+                            frozen: false,
+                        },
+                    );
+                }
+            }
             _ => {}
         }
         // The enter event itself stays, with the effect marked as applied to it.
@@ -1729,6 +1782,84 @@ impl Pass<'_> {
             slot.applied = applied;
         }
         Ok(Applied::Done)
+    }
+
+    /// The copy the batch makes `object` as it enters, once the replacement that chose it has applied.
+    fn entering_copy(&self, object: ObjectId) -> Option<&BecameCopy> {
+        self.slots.iter().find_map(|slot| match &slot.item {
+            Item::One(Event::BecameCopy(copy)) if copy.object == object => Some(copy),
+            _ => None,
+        })
+    }
+
+    /// What `controller` has the card `entering` copy as it enters (CR 614.1c, 707.9): any permanent `of` selects, none
+    /// or one by their choice, with the exceptions in the copiable values. Nobody is asked when nothing can be copied,
+    /// since the battlefield is public.
+    fn copies(
+        &mut self,
+        source: ObjectRef,
+        controller: PlayerId,
+        entering: ObjectId,
+        of: &Selector,
+        except: &[Modification],
+    ) -> Result<Asked<Option<BecameCopy>>, EngineError> {
+        let scope = Scope::announcing(self.state, controller, source);
+        let options: Vec<ObjectId> = scope
+            .matching(of)?
+            .into_iter()
+            .filter(|named| {
+                named.id != entering && self.state.object(named.id).is_some_and(may_be_copied)
+            })
+            .map(|named| named.id)
+            .collect();
+        if options.is_empty() {
+            return Ok(Asked::Got(None));
+        }
+        let chosen = match self.answer() {
+            None => {
+                return Ok(Asked::Ask(Decision {
+                    player: controller,
+                    kind: DecisionKind::ChooseCards(CardsOptions {
+                        source: source.id,
+                        from: options,
+                        min: 0,
+                        max: 1,
+                        text: "Choose a permanent to copy.".into(),
+                        can_cancel: false,
+                    }),
+                }));
+            }
+            Some((who, Choice::Cards(cards)))
+                if *who == controller
+                    && cards.len() <= 1
+                    && cards.iter().all(|card| options.contains(card)) =>
+            {
+                cards.first().copied()
+            }
+            Some(other) => {
+                return Err(Self::invalid(format!(
+                    "{other:?} is no answer to the choice of what {controller:?} copies"
+                )));
+            }
+        };
+        let Some(original) = chosen.and_then(|id| self.state.object(id)) else {
+            return Ok(Asked::Got(None));
+        };
+        let of = original.reference();
+        let mut values = copiable_values(self.state, of, None)
+            .ok_or_else(|| Self::invalid(format!("{of:?} cannot be copied")))?;
+        for modification in except {
+            if !values.except(modification) {
+                return Err(Self::invalid(format!(
+                    "{modification:?} is no exception of a copy effect"
+                )));
+            }
+        }
+        Ok(Asked::Got(Some(BecameCopy {
+            object: entering,
+            of,
+            definition: Arc::new(values),
+        })))
     }
 
     /// Whether `controller` pays `life` as the card enters: asked yes or no, with No the only answer when they cannot

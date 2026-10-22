@@ -1,0 +1,33 @@
+{
+  "oracle_id": "04046ae4-5c51-434b-930c-f3b1d348bf4b",
+  "name": "Rootborn Defenses",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rootborn Defenses",
+      "oracle_fingerprint": "88dc9a450d6f97a06282c8459dce4c43",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+                  "as": "token"
+                }
+              },
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "token" } } } } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

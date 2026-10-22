@@ -1370,6 +1370,7 @@ fn primitive_events() -> Vec<Event> {
         }),
         Event::TokenCreated(TokenCreated {
             object: ObjectId(91),
+            copy_of: None,
             controller: player,
             name: "Treasure".into(),
             tapped: true,

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "7275fb8c-571a-4c4c-889a-829419332e51",
+  "name": "Mirror Image",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirror Image",
+      "oracle_fingerprint": "e8eb51ed1678d3897db6f8125a30d77a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "AsCopy": { "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+          }
+        }
+      ]
+    }
+  ]
+}

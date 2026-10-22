@@ -2,8 +2,11 @@
 
 use std::sync::Arc;
 
+use mtg_cards::CardDefinition;
 use mtg_cards::assemble::token_definition;
 use mtg_cards::card::TokenSpec;
+use mtg_cards::modify::Modification;
+use mtg_cards::refs::Ref;
 use mtg_cards::effect::{Effect, TokenRef};
 use mtg_core::ids::{ObjectId, PlayerId};
 
@@ -11,6 +14,7 @@ use super::wrong_effect;
 use crate::caps::caps;
 use crate::choose::{ChoiceOption, OptionChooser, Optioned, Target, pick_options};
 use crate::combat::{AttackTarget, defenders_for};
+use crate::copies::copiable_values;
 use crate::events::Event;
 use crate::object::ObjectRef;
 use crate::resolve::{Cx, Next, ResolveError, Run};
@@ -24,6 +28,34 @@ fn predefined(id: &str) -> Result<&'static TokenSpec, ResolveError> {
         .and_then(|library| library.token(id))
         .map(|file| &file.token)
         .ok_or_else(|| ResolveError::Invalid(format!("there is no predefined token `{id}`")))
+}
+
+/// The copiable values of each object `of` names (CR 707.2), with the exceptions of the copy effect (CR 707.9b): what a
+/// token that is a copy of them is (CR 111.10). An object that has left is read by last known information; one that
+/// cannot be copied (a transformed permanent) makes no token.
+fn copies_of(
+    cx: &Cx<'_>,
+    of: &Ref,
+    except: &[Modification],
+) -> Result<Vec<(Arc<CardDefinition>, Option<ObjectRef>)>, ResolveError> {
+    let mut found = Vec::new();
+    for named in cx.scope.objects(of)? {
+        if found.iter().any(|(_, seen)| *seen == Some(named)) {
+            continue;
+        }
+        let Some(mut values) =
+            copiable_values(cx.state(), named, cx.scope.snapshot_of(named))
+        else {
+            continue;
+        };
+        for modification in except {
+            if !values.except(modification) {
+                return Err(ResolveError::Unsupported("Effect.CreateToken.Copy.Except"));
+            }
+        }
+        found.push((Arc::new(values), Some(named)));
+    }
+    Ok(found)
 }
 
 /// What a player who puts tokens onto the battlefield attacking may have them attack: the other players and the
@@ -67,12 +99,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         return Err(wrong_effect("CreateToken"));
     };
-    let spec = match token {
-        TokenRef::Named(id) => predefined(id)?,
-        TokenRef::Custom(spec) => &**spec,
-        TokenRef::CopyOf { .. } => {
-            return Err(ResolveError::Unsupported("Effect.CreateToken.Copy"));
-        }
+    let made_from: Vec<(Arc<CardDefinition>, Option<ObjectRef>)> = match token {
+        TokenRef::Named(id) => vec![(Arc::new(token_definition(predefined(id)?, &caps())), None)],
+        TokenRef::Custom(spec) => vec![(Arc::new(token_definition(spec, &caps())), None)],
+        TokenRef::CopyOf { of, except } => copies_of(cx, of, except)?,
     };
     let state = cx.state();
     let number = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(0);
@@ -118,21 +148,23 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             }
         }
     }
-    let definition = Arc::new(token_definition(spec, &caps()));
     let first = state.next_object().get();
     let mut made = 0;
-    let mut events = Vec::with_capacity(players.len() * number);
+    let mut events = Vec::with_capacity(players.len() * number * made_from.len());
     for (controller, aim) in aims {
-        for _ in 0..number {
-            events.push(Event::TokenCreated(TokenCreated {
-                object: ObjectId(first + made),
-                controller,
-                name: definition.name.clone(),
-                tapped: *tapped,
-                attacking: aim,
-                definition: Arc::clone(&definition),
-            }));
-            made += 1;
+        for (definition, copy_of) in &made_from {
+            for _ in 0..number {
+                events.push(Event::TokenCreated(TokenCreated {
+                    object: ObjectId(first + made),
+                    copy_of: *copy_of,
+                    controller,
+                    name: definition.name.clone(),
+                    tapped: *tapped,
+                    attacking: aim,
+                    definition: Arc::clone(definition),
+                }));
+                made += 1;
+            }
         }
     }
     // A token is a new object: its zone-change counter starts at 0.
