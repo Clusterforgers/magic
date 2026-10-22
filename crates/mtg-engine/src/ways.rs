@@ -68,7 +68,7 @@ fn mana_only(cost: &mtg_cards::cost::Cost) -> Option<ManaCost> {
 /// The mana and the parts of the cost of a keyword that is paid as a spell is cast (flashback, evoke, overload, madness):
 /// the mana, and life and the objects the player picks. A cost that taps or loses its source, counts X or removes counters
 /// is not paid; nor is one with nothing to pay.
-fn cast_cost(cost: &mtg_cards::cost::Cost) -> Option<(ManaCost, Vec<Part>)> {
+pub(crate) fn cast_cost(cost: &mtg_cards::cost::Cost) -> Option<(ManaCost, Vec<Part>)> {
     let price = Price::announced(cost).ok()?;
     let unpaid = price.tap
         || price.moves_source()
@@ -104,8 +104,21 @@ fn both_halves(card: &GameObject) -> bool {
     card.whole_card().layout == Layout::Split && card.face().is_none()
 }
 
-/// Every way `player` may cast the card `id` from where it is, whatever the timing and the mana in hand.
+/// Every way `player` may cast the card `id` from where it is, whatever the timing and the mana in hand. Each way takes
+/// the required additional costs of the card (`announce/required.rs`).
 pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
+    with_required(state, id, listed(state, player, id))
+}
+
+/// `ways` with the required additional costs of the card `id` added to each.
+fn with_required(state: &GameState, id: ObjectId, ways: Vec<Way>) -> Vec<Way> {
+    state.object(id).map_or_else(Vec::new, |card| {
+        announce::required::add_to(ways, card.card())
+    })
+}
+
+/// The ways of [`of`] before the required additional costs.
+fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     let Some(card) = state.object(id) else {
         return Vec::new();
     };
@@ -352,8 +365,19 @@ fn foretold_before_now(state: &GameState, player: PlayerId, id: ObjectId) -> boo
 }
 
 /// The way `player` casts the card `id` when a resolution lets them (CR 608.2g): for its mana cost, or without paying it.
-/// A land cannot be cast, nor can a card that is on the battlefield or the stack.
+/// A land cannot be cast, nor can a card that is on the battlefield or the stack. The way takes the required additional
+/// costs of the card.
 pub(crate) fn granted(
+    state: &GameState,
+    id: ObjectId,
+    free: bool,
+    way: Option<CastWay>,
+) -> Vec<Way> {
+    with_required(state, id, granted_before_required(state, id, free, way))
+}
+
+/// The ways of [`granted`] before the required additional costs.
+fn granted_before_required(
     state: &GameState,
     id: ObjectId,
     free: bool,

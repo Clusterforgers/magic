@@ -350,6 +350,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "squad" => spell_cost(rest).map(Keyword::Squad),
         "offspring" => spell_cost(rest).map(Keyword::Offspring),
         "casualty" => positive(rest).map(Keyword::Casualty),
+        "hideaway" => positive(rest).map(Keyword::Hideaway),
         "devour" => devour(rest),
         "foretell" => cost(rest).map(Keyword::Foretell),
         "unearth" => spell_cost(rest).map(Keyword::Unearth),
@@ -488,6 +489,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "delve" => Keyword::Delve,
         "cascade" => Keyword::Cascade,
         "storm" => Keyword::Storm,
+        "demonstrate" => Keyword::Demonstrate,
         "partner" => Keyword::Partner,
         "battle cry" => Keyword::BattleCry,
         "living weapon" => Keyword::LivingWeapon,
@@ -768,6 +770,9 @@ mod tests {
     #[case::squad("Squad {2}", Keyword::Squad(mana("{2}")))]
     #[case::offspring("Offspring {2}", Keyword::Offspring(mana("{2}")))]
     #[case::casualty("Casualty 2", Keyword::Casualty(2))]
+    #[case::hideaway("Hideaway 4", Keyword::Hideaway(4))]
+    #[case::hideaway_five("hideaway 5", Keyword::Hideaway(5))]
+    #[case::demonstrate("Demonstrate", Keyword::Demonstrate)]
     #[case::devour("Devour 2", Keyword::Devour { counters: 2, of: creature() })]
     #[case::devour_artifact("Devour artifact 1", Keyword::Devour { counters: 1, of: Selector(vec![Pred::Type(CardType::Artifact)]) })]
     #[case::devour_land_in_lowercase("devour land 3", Keyword::Devour { counters: 3, of: Selector(vec![Pred::Type(CardType::Land)]) })]
@@ -1157,6 +1162,8 @@ mod tests {
             "Bestow {1}",
             "Blitz {1}",
             "Prowl {1}",
+            "Demonstrate",
+            "Hideaway 4",
             "Ninjutsu {1}{U}",
             "Improvise",
             "Affinity for artifacts",

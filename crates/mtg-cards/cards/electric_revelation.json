@@ -1,0 +1,16 @@
+{
+  "oracle_id": "c92af0f4-e5f1-4731-a781-b2ca360867a7",
+  "name": "Electric Revelation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Electric Revelation",
+      "oracle_fingerprint": "83b4806d7d0eac67def4ee5486bcbb52",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Discard": {} }], "required": true } },
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }] } },
+        { "Keyword": { "Flashback": "{3}{R}" } }
+      ]
+    }
+  ]
+}

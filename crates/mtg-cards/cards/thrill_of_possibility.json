@@ -1,0 +1,15 @@
+{
+  "oracle_id": "1cb0610b-a731-42c2-b93f-0a29f63cebf4",
+  "name": "Thrill of Possibility",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thrill of Possibility",
+      "oracle_fingerprint": "be6c82d2ad1424ca059be6c864de6565",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Discard": {} }], "required": true } },
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }] } }
+      ]
+    }
+  ]
+}

@@ -565,6 +565,9 @@ pub enum Effect {
     CopySpell {
         /// The spells copied.
         what: Ref,
+        /// Who controls the copies and chooses their new targets: the controller of the effect unless it names a player.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
         /// How many copies of each.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,

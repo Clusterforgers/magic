@@ -83,7 +83,10 @@ fn printed(card: &CardDefinition) -> impl Iterator<Item = Printed> + '_ {
                 repeatable: extra.repeatable,
             })
         }
-        Ability::AdditionalCost { cost } => Some(Printed {
+        Ability::AdditionalCost {
+            cost,
+            required: false,
+        } => Some(Printed {
             kind: OptionalKind::Additional,
             name: "",
             cost: cost.clone(),

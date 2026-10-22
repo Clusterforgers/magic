@@ -1,0 +1,16 @@
+{
+  "oracle_id": "4f65e6a9-0d90-44b9-9b76-00814db2dbd8",
+  "name": "Laughing Mad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Laughing Mad",
+      "oracle_fingerprint": "83b4806d7d0eac67def4ee5486bcbb52",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Discard": {} }], "required": true } },
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }] } },
+        { "Keyword": { "Flashback": "{3}{R}" } }
+      ]
+    }
+  ]
+}

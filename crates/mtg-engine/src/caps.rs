@@ -312,6 +312,7 @@ const RUNS: &[&str] = &[
     "Keyword.Devour",
     "Keyword.Casualty",
     "Keyword.Offspring",
+    "Keyword.Demonstrate",
     "ReplaceBy.Devour",
     "Keyword.LevelUp",
     "Keyword.Outlast",
@@ -671,6 +672,7 @@ mod tests {
     #[case::backup("Keyword.Backup", true)]
     #[case::devour("Keyword.Devour", true)]
     #[case::casualty("Keyword.Casualty", true)]
+    #[case::demonstrate("Keyword.Demonstrate", true)]
     #[case::offspring("Keyword.Offspring", true)]
     #[case::sacrificing_as_it_enters("ReplaceBy.Devour", true)]
     #[case::level_up("Keyword.LevelUp", true)]

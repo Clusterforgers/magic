@@ -16,6 +16,7 @@ mod modifiers;
 mod optional;
 mod parts;
 mod payment;
+pub(crate) mod required;
 pub(crate) mod suspend;
 mod targets;
 mod total;

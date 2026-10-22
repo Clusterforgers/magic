@@ -266,7 +266,9 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
                 })
                 .collect()
         }
-        Ability::AdditionalCost { cost } => costs::additional_text(cost).into_iter().collect(),
+        Ability::AdditionalCost { cost, required } => costs::additional_text(cost, *required)
+            .into_iter()
+            .collect(),
         _ => statics::texts(ability),
     }
 }

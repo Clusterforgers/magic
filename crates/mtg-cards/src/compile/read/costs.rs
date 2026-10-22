@@ -319,32 +319,42 @@ fn sacrifice_text(filter: &Selector, count: &Amount) -> Option<String> {
 }
 
 /// "As an additional cost to cast this spell, you may sacrifice an artifact.": a cost the caster may pay as the spell is
-/// announced. A cost the caster must pay is not read.
+/// announced; without "you may" ("..., discard a card.") the caster must pay it.
 pub(super) fn additional(r: &mut Reader<'_>) -> Option<Ability> {
     r.words("as an additional cost to cast").then_some(())?;
     r.source().then_some(())?;
     r.punct(',').then_some(())?;
-    r.words("you may").then_some(())?;
-    let paid_in_mana = r.attempt(|r| {
-        r.word("pay").then_some(())?;
-        mana(r).map(Cost::mana)
-    });
+    let required = !r.words("you may");
+    let paid_in_mana = if required {
+        None
+    } else {
+        r.attempt(|r| {
+            r.word("pay").then_some(())?;
+            mana(r).map(Cost::mana)
+        })
+    };
     let cost = match paid_in_mana {
         Some(cost) => cost,
         None => cost(r)?,
     };
-    Some(Ability::AdditionalCost { cost })
+    // The announcement of a spell asks for an X in its mana cost only ("Pay X life", "sacrifice X creatures" are left).
+    if cost.has_x() {
+        return None;
+    }
+    Some(Ability::AdditionalCost { cost, required })
 }
 
-/// The sentence an optional additional cost is written as; `None` for a cost the readers do not write.
-pub(super) fn additional_text(cost: &Cost) -> Option<String> {
+/// The sentence an additional cost is written as; `None` for a cost the readers do not write.
+pub(super) fn additional_text(cost: &Cost, required: bool) -> Option<String> {
     let body = if let [CostItem::Mana(mana)] = cost.0.as_slice() {
-        format!("pay {mana}")
+        // The reader takes a cost of mana alone only after "you may".
+        (!required).then(|| format!("pay {mana}"))?
     } else {
         let text = text(cost)?;
         let mut chars = text.chars();
         let first = chars.next()?;
         first.to_lowercase().chain(chars).collect()
     };
-    Some(format!("As an additional cost to cast ~, you may {body}."))
+    let may = if required { "" } else { "you may " };
+    Some(format!("As an additional cost to cast ~, {may}{body}."))
 }

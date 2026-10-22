@@ -1,0 +1,15 @@
+{
+  "oracle_id": "0f3c3e5f-6af3-4af2-8703-4ccc8ed8f675",
+  "name": "Cathartic Reunion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cathartic Reunion",
+      "oracle_fingerprint": "93a3c5f4b07e84064e0ab4635361de68",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Discard": { "count": 2 } }], "required": true } },
+        { "Spell": { "effects": [{ "Draw": { "count": 3 } }] } }
+      ]
+    }
+  ]
+}

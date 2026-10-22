@@ -152,6 +152,14 @@ const ENTERS: &str = r#""when":{"Enters":{"what":["This"]}}"#;
     r#"{"AdditionalCost":{"cost":[{"Sacrifice":{"filter":[{"Type":"Artifact"}]}}]}}"#,
     &["Ability.AdditionalCost", "Cost.Sacrifice"]
 )]
+#[case::a_required_additional_cost(
+    r#"{"AdditionalCost":{"cost":[{"Discard":{}}],"required":true}}"#,
+    &["Ability.AdditionalCost", "Cost.Discard"]
+)]
+#[case::a_required_additional_cost_of_mana_is_named(
+    r#"{"AdditionalCost":{"cost":"{2}","required":true}}"#,
+    &["Ability.AdditionalCost", "Ability.AdditionalCost.Required.Mana", "Cost.Mana"]
+)]
 #[case::a_multikicker_with_a_part_is_still_named(
     r#"{"Keyword":{"Multikicker":[{"Sacrifice":{"filter":[{"Type":"Land"}]}}]}}"#,
     &["Cost.Sacrifice", "Keyword.Cost.Sacrifice", "Keyword.Multikicker"]
@@ -227,6 +235,14 @@ fn a_node_validates_round_trips_and_names_its_primitive(
 #[case::a_cost_is_checked(
     r#"{"Keyword":{"Squad":[{"PayEnergy":{"Life":"This"}}]}}"#,
     "expected a player"
+)]
+#[case::a_required_additional_cost_is_not_a_payment_to_read(
+    r#"{"AdditionalCost":{"cost":[{"Discard":{}}],"required":true}},{"Spell":{"effects":[{"If":{"condition":"AdditionalCostPaid","then":[{"Draw":{}}]}}]}}"#,
+    "`AdditionalCostPaid` needs an `AdditionalCost` ability"
+)]
+#[case::a_required_additional_cost_is_paid_by_the_caster(
+    r#"{"AdditionalCost":{"cost":["SacrificeSelf"],"required":true}}"#,
+    "an additional cost is paid by the caster"
 )]
 fn a_node_used_wrongly_is_refused_where_it_stands(#[case] json: &str, #[case] message: &str) {
     let error = load(json).unwrap_err();

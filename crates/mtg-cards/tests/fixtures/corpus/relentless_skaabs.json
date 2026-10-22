@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "7cf48c1a-5709-4e24-8a85-8292a4457150",
+  "oracle_id": "5089cd0f-1338-4ecd-bb1b-664d7e72f8fc",
+  "multiverse_ids": [
+    409622
+  ],
+  "tcgplayer_id": 113310,
+  "cardmarket_id": 288582,
+  "name": "Relentless Skaabs",
+  "lang": "en",
+  "released_at": "2016-02-26",
+  "uri": "https://api.scryfall.com/cards/7cf48c1a-5709-4e24-8a85-8292a4457150",
+  "scryfall_uri": "https://scryfall.com/card/ddq/46/relentless-skaabs?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:17:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/c/7cf48c1a-5709-4e24-8a85-8292a4457150.jpg?1783937843",
+    "normal": "https://cards.scryfall.io/normal/front/7/c/7cf48c1a-5709-4e24-8a85-8292a4457150.jpg?1783937843",
+    "large": "https://cards.scryfall.io/large/front/7/c/7cf48c1a-5709-4e24-8a85-8292a4457150.jpg?1783937843",
+    "png": "https://cards.scryfall.io/png/front/7/c/7cf48c1a-5709-4e24-8a85-8292a4457150.png?1783937843",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/c/7cf48c1a-5709-4e24-8a85-8292a4457150.jpg?1783937843",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/c/7cf48c1a-5709-4e24-8a85-8292a4457150.jpg?1783937843",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/c/7cf48c1a-5709-4e24-8a85-8292a4457150.webp?1783937843",
+    "grid": "https://cards.scryfall.io/grid/front/7/c/7cf48c1a-5709-4e24-8a85-8292a4457150.webp?1783937843",
+    "display": "https://cards.scryfall.io/display/front/7/c/7cf48c1a-5709-4e24-8a85-8292a4457150.webp?1783937843",
+    "art": "https://cards.scryfall.io/art/front/7/c/7cf48c1a-5709-4e24-8a85-8292a4457150.webp?1783937843",
+    "crop": "https://cards.scryfall.io/crop/front/7/c/7cf48c1a-5709-4e24-8a85-8292a4457150.webp?1783937843",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/c/7cf48c1a-5709-4e24-8a85-8292a4457150.jpg?1783937843"
+  },
+  "mana_cost": "{3}{U}{U}",
+  "cmc": 5.0,
+  "type_line": "Creature — Zombie",
+  "oracle_text": "As an additional cost to cast this spell, exile a creature card from your graveyard.\nUndying (When this creature dies, if it had no +1/+1 counters on it, return it to the battlefield under its owner's control with a +1/+1 counter on it.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Undying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "9f6e1af2-3913-47d6-aa6a-81f34ec7224c",
+  "set": "ddq",
+  "set_name": "Duel Decks: Blessed vs. Cursed",
+  "set_type": "duel_deck",
+  "set_uri": "https://api.scryfall.com/sets/9f6e1af2-3913-47d6-aa6a-81f34ec7224c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Addq&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ddq?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7cf48c1a-5709-4e24-8a85-8292a4457150/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5089cd0f-1338-4ecd-bb1b-664d7e72f8fc&unique=prints",
+  "collector_number": "46",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Karl Kopinski",
+  "artist_ids": [
+    "0fad2c48-a56e-4a0b-b512-224f6f238f20"
+  ],
+  "illustration_id": "ac7df132-42bd-408a-a0c4-fcb02cbfb4ae",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 28549,
+  "prices": {
+    "usd": "0.04",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.03",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=409622&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRelentless%2BSkaabs",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRelentless%2BSkaabs",
+    "edhrec": "https://edhrec.com/route/?cc=Relentless+Skaabs"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F113310%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=288582&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Relentless+Skaabs&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

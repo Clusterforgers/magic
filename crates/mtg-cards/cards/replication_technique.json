@@ -1,0 +1,20 @@
+{
+  "oracle_id": "163baf58-b35d-4f2b-aa53-8384b8b5800a",
+  "name": "Replication Technique",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Replication Technique",
+      "oracle_fingerprint": "922260aad6fcd05323af110114667ebb",
+      "abilities": [
+        { "Keyword": "Demonstrate" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }] } }],
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

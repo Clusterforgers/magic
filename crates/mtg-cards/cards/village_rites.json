@@ -1,0 +1,20 @@
+{
+  "oracle_id": "365548fb-5acc-4a8a-b20b-26d28b7d029f",
+  "name": "Village Rites",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Village Rites",
+      "oracle_fingerprint": "c35fcea4edc49b0a5e42bbaec5073eb2",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }] } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5089cd0f-1338-4ecd-bb1b-664d7e72f8fc",
+  "name": "Relentless Skaabs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Relentless Skaabs",
+      "oracle_fingerprint": "238bde51b11e8e18080f915df9b6ad6e",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        { "Keyword": "Undying" }
+      ]
+    }
+  ]
+}
