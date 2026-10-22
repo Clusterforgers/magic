@@ -136,6 +136,7 @@ Hall of Triumph
 Haughty Djinn
 Hengegate Pathway // Mistgate Pathway
 Hero of Bladehold
+Holdout Settlement
 Honor Troll
 Horizon Canopy
 Hound of Griselbrand
@@ -146,6 +147,7 @@ Inkwell Leviathan
 Invisible Stalker
 Izzet Charm
 Jadelight Ranger
+Jaspera Sentinel
 Jungle Lion
 Karn's Bastion
 Kathari Screecher
@@ -155,6 +157,7 @@ Kitchen Finks
 Knight of Dusk's Shadow
 Kolaghan Skirmisher
 Kongming, "Sleeping Dragon"
+Kozilek's Translator
 Krenko's Enforcer
 Lat-Nam Adept
 Levitation
@@ -170,6 +173,7 @@ Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
 Lurching Rotbeast
 Manabarbs
+Mardu Devotee
 Mardu Scout
 Mardu Shadowspear
 Mardu Strike Leader
@@ -249,6 +253,7 @@ Sinister Sabotage
 Sinister Starfish
 Siren Lookout
 Skeletal Changeling
+Skirk Prospector
 Skizzik Surger
 Skullclamp
 Skycloud Expanse
@@ -265,6 +270,7 @@ Souldrinker
 Spectral Rider
 Sphinx of Jwar Isle
 Spring // Mind
+Springleaf Drum
 Squirrel Nest
 Staggershock
 Steady Progress
@@ -273,6 +279,7 @@ Stoke the Flames
 Strangleroot Geist
 Strionic Resonator
 Stroke of Genius
+Sultai Devotee
 Summer Bloom
 Sundering Growth
 Supreme Verdict
@@ -282,6 +289,7 @@ Swords to Plowshares
 Tainted Isle
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
+Temur Devotee
 Tendo Ice Bridge
 Tendrils of Agony
 Thalia, Guardian of Thraben

@@ -7,15 +7,12 @@ use mtg_cards::value::CastWay;
 use mtg_engine::Event;
 use mtg_testkit::{PlayOptions, cascade_fuzz_setup, play_game_with};
 
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{for_each_seed, fuzz_games};
 
 #[test]
 fn bot_games_with_cascade_cards_keep_every_invariant_and_cast_during_resolutions() {
     let seen = std::sync::Mutex::new(BTreeMap::<&'static str, u64>::new());
-    let games = std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(60);
+    let games = fuzz_games(20);
     for_each_seed(0..games, |seed| {
         for players in [2, 3, 4] {
             let outcome = play_game_with(

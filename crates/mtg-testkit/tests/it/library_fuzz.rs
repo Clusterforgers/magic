@@ -1,6 +1,7 @@
 //! Goal: whole bot games with decks of Opt, Brainstorm and spells that scry, look at the top of libraries, put cards on the bottom of them, shuffle and reveal finish and keep every invariant (zones, life, the journal, the replay of the log equal to the live state) for many seeds at tables of two, three and four seats, and the games really use the library effects: players scry and choose which cards go down and in what order, cards are put back on top and on the bottom, libraries are shuffled by spells, hands are revealed; an engine rebuilt from the log at each decision asks the same question, and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use mtg_engine::choose::Choice;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::zones::Zone;
@@ -10,10 +11,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`. These are short, since the decks have few threats.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40)
+    fuzz_games(40)
 }
 
 #[derive(Default)]

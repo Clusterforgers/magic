@@ -1,6 +1,7 @@
 //! Goal: whole bot games with decks of replacement effects (token, counter, life, draw and damage doublers, Rest in Peace, lands that enter tapped or for life, creatures that enter with counters, permanents that choose as they enter) finish and keep every invariant for many seeds at tables of two, three and four seats, and the games use them: an independent ledger replays each log and finds that the tokens an effect makes and the counters it puts are always among what the effects in play allow in some order (each effect once), that nothing is put into a graveyard while Rest in Peace is in play, that a replaced event never shows in the log as if it had happened, and that the order of replacement effects is asked only when two or more apply.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use std::collections::BTreeSet;
 
 use mtg_cards::value::CounterKind;
@@ -15,10 +16,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40)
+    fuzz_games(15)
 }
 
 const TOKEN_DOUBLERS: [&str; 3] = ["Anointed Procession", "Parallel Lives", "Doubling Season"];

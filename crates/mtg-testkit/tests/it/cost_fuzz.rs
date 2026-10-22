@@ -7,7 +7,7 @@ use mtg_engine::{Event, replay};
 use mtg_testkit::cost_cards::MODIFIER_CARDS;
 use mtg_testkit::{PlayOptions, cost_fuzz_setup, play_game_with};
 
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{for_each_seed, fuzz_games};
 
 /// What the games showed: modifier permanents cast, Thalia and Foundry Inspector cast, Fireballs aimed at several
 /// targets, and the spells cast in all.
@@ -22,10 +22,7 @@ struct Seen {
 #[test]
 fn bot_games_with_cost_modifiers_keep_every_invariant_and_replay() {
     let seen = Mutex::new(Seen::default());
-    let games = std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40);
+    let games = fuzz_games(40);
     for_each_seed(0..games, |seed| {
         for (players, options) in [
             (2, PlayOptions::default()),

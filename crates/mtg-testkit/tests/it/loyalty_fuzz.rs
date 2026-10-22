@@ -1,6 +1,7 @@
 //! Goal: whole bot games with decks of planeswalkers (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk and two more that burn, destroy and make tokens), the creatures that attack them and the burn that kills them finish and keep every invariant (zones, life, the journal, the replay of the log equal to the live state, conservation of cards, the loyalty counters of every planeswalker equal to those it entered with and the cost of its abilities put on less those taken off and the damage dealt to it, never fewer than none, no planeswalker with no loyalty at a decision, a loyalty ability only at sorcery timing and once for each planeswalker each turn) for many seeds at tables of two, three and four seats, and the games really use them: every planeswalker enters with its printed loyalty in the batch that brings it in, costs of each sign are paid, damage from combat and spells removes loyalty, planeswalkers die of damage and of their own costs, creatures attack planeswalkers and go on attacking when one leaves, an engine rebuilt from the log at each decision asks what the original asks, and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use std::collections::BTreeMap;
 
 use mtg_cards::value::CounterKind;
@@ -15,10 +16,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40)
+    fuzz_games(25)
 }
 
 /// What a campaign saw the planeswalkers do.

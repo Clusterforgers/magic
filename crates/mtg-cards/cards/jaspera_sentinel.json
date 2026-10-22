@@ -1,0 +1,20 @@
+{
+  "oracle_id": "e2f98813-4f39-4135-b05b-407e9eb797f6",
+  "name": "Jaspera Sentinel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jaspera Sentinel",
+      "oracle_fingerprint": "ccc03fc8d74fc212248f22fba57b3e6c",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": ["Tap", { "TapPermanents": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

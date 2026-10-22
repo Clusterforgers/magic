@@ -2,6 +2,7 @@
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
+use crate::common::seeds::fuzz_games;
 
 use std::collections::BTreeSet;
 use std::sync::Arc;
@@ -609,10 +610,7 @@ fn the_trigger_of_questing_beast_is_removed_when_its_planeswalker_leaves_first(
 // Whole games
 
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(30)
+    fuzz_games(30)
 }
 
 fn triggered_cards(setup: &GameSetup, events: &[Event]) -> BTreeSet<String> {

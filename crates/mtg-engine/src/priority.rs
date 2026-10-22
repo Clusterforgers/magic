@@ -369,7 +369,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
     // A mana ability that costs mana is used inside a payment, from the mana the payment's other sources make.
     let mana_abilities = all_mana
         .into_iter()
-        .filter(|option| !option.is_costly())
+        .filter(|option| !option.is_costly() && option.takes.is_empty())
         .collect();
     PriorityOptions {
         can_act: can_act(
@@ -457,7 +457,10 @@ pub(crate) fn answer(
                 .find(|o| o.source == source)
                 .ok_or(IllegalAnswer::NotOffered("mana ability"))?;
             Ok(Outcome::Events(mana_ability::activation(
-                state, player, option,
+                state,
+                player,
+                option,
+                &[],
             )?))
         }
     }

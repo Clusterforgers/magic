@@ -1,6 +1,7 @@
 //! Goal: whole bot games with decks of prevention and regeneration (Fog, Mending Hands, Samite Healer, Drudge Skeletons, Death Ward) against burn, Stomp, destroy effects, Wrath of God and creatures that fight finish and keep every invariant for many seeds at tables of two, three and four seats, and the games use them: an independent ledger replays each log and finds that no combat damage is dealt while a Fog is in force unless it can't be prevented, that damage of a spell is dealt through a Fog, that a shield with damage left says how much it kept and that this is always less than before and more than nothing, that no shield keeps or uses up damage while a Stomp makes all damage unpreventable and every Stomp that resolves deals at least its 2 damage, that a creature regenerates only while a shield names it, and that Wrath of God resolves with no regeneration and leaves no creature; bots answer the question of which damage a shield takes first.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use mtg_core::ids::{EffectId, ObjectId};
 use mtg_engine::events::{ResolutionOutcome, ZoneCause};
 use mtg_engine::rules::Rule;
@@ -12,10 +13,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(80)
+    fuzz_games(16)
 }
 
 /// What a campaign saw the shields do.

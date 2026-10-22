@@ -320,6 +320,14 @@ mod mana {
         "{T}: Add {G}. Spend this mana only to cast spells.",
         r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]},"only":[{"Spell":{}}]}}]}}"#
     )]
+    #[case::for_each(
+        "{T}: Add {G} for each creature you control.",
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]},"times":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}]}}"#
+    )]
+    #[case::for_each_and_a_restriction(
+        "{T}: Add {R} for each Goblin you control. Spend this mana only to cast creature spells.",
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]},"times":{"Count":[{"Subtype":"Goblin"},{"ControlledBy":"You"}]},"only":[{"Spell":{"types":["Creature"]}}]}}]}}"#
+    )]
     #[case::abilities(
         "{T}: Add {C}{C}. Spend this mana only to activate abilities.",
         r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]},"only":[{"Ability":{}}]}}]}}"#

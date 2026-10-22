@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ee7b3fc0-6128-4bf6-b3e7-7371e6f93c4b",
+  "name": "Sultai Devotee",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sultai Devotee",
+      "oracle_fingerprint": "604afe144cd57e1cd85847f88afbdcbe",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "limit": "OncePerTurn",
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Black", "Green", "Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

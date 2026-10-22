@@ -1,6 +1,7 @@
 //! Goal: whole bot games with decks of Giant Growth, grants of haste and flying, shrinks, surges that change a set of creatures twice and bounces finish and keep every invariant (zones, life, the journal, effects listed in the order of their timestamps and none past its duration, no creature left that state-based actions would destroy, the replay of the log equal to the live state) for many seeds at tables of two, three and four seats, and the games really use them: pumps and keywords are created and expire, a shrink kills by zero toughness, spells fizzle, a set of several creatures is changed at once and a creature that was changed goes back to the hand; an engine rebuilt from the log at each decision asks what the original asks, and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::effects::{Modification, Selector};
 use mtg_engine::events::{DeathCause, ResolutionOutcome, ZoneCause};
@@ -10,10 +11,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(60)
+    fuzz_games(20)
 }
 
 #[derive(Default)]

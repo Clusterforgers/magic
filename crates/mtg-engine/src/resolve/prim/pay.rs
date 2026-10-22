@@ -188,7 +188,7 @@ fn can_pay(cx: &Cx<'_>, player: PlayerId, price: &Price) -> bool {
     state.player(player).is_some_and(|seat| {
         price.mana.as_ref().is_none_or(|mana| {
             let mut sources = mana_options(state, player);
-            sources.retain(|option| !claimed.contains(&option.source.object));
+            crate::mana_takes::leave(&mut sources, &claimed);
             reserve_energy(&mut sources, price.energy());
             let life = seat
                 .life()
@@ -311,7 +311,7 @@ fn payment(
     let state = cx.state();
     let mana = price.mana.clone().unwrap_or(ManaCost::ZERO);
     let mut sources = mana_options(state, player);
-    sources.retain(|option| !picked.contains(&option.source.object));
+    crate::mana_takes::leave(&mut sources, picked);
     reserve_energy(&mut sources, price.energy());
     payment_decision(
         state,

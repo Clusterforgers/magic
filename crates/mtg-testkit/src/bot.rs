@@ -13,7 +13,7 @@ use mtg_engine::decision::{
     Answer, DamageOptions, DecisionKind, MulliganChoice, PayChoice, PayOptions, PriorityAction,
     PriorityOptions,
 };
-use mtg_engine::help::{Convoked, Used, reduce};
+use mtg_engine::help::{Convoked, Used, reduce, without_tapped};
 use mtg_engine::mana::{ManaOption, ManaSource, Payment, check_payment};
 use mtg_engine::rng::GameRng;
 use mtg_engine::spend::Restricted;
@@ -375,7 +375,7 @@ impl RandomBot {
             let used = Used::new(&convoke, &delve);
             let rest = reduce(&way.cost, &used).ok()?;
             let mut open = options.clone();
-            open.sources.retain(|o| !used.taps(o.source.object));
+            open.sources = without_tapped(&options.sources, &used, &Used::default());
             let mut payment = self.random_payment(&rest, &open)?;
             payment.life = way.life;
             payment.convoke = convoke;

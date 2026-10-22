@@ -1,0 +1,21 @@
+{
+  "oracle_id": "e444f072-ce24-4fd1-99eb-d20d12bc119a",
+  "name": "Temur Devotee",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temur Devotee",
+      "oracle_fingerprint": "6f63272490ed80f879e06f71e5c82993",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "limit": "OncePerTurn",
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "Blue", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

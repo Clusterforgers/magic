@@ -226,7 +226,7 @@ impl Price {
     ) -> Vec<ManaOption> {
         let mut sources = mana_options(state, player);
         if self.tap || self.moves_source() {
-            sources.retain(|option| option.source.object != source);
+            crate::mana_takes::leave(&mut sources, &[source]);
         }
         // The energy the other parts of the price pay is not there for the mana abilities.
         reserve_energy(&mut sources, self.energy());

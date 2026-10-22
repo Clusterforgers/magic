@@ -78,7 +78,7 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<(Option<ManaCost>, Vec<Ma
             } else {
                 choices.cost_picks().iter().flatten().copied().collect()
             };
-            sources.retain(|option| !taken.contains(&option.source.object));
+            crate::mana_takes::leave(&mut sources, &taken);
             reserve_energy(&mut sources, price.energy());
             Some((cost, sources, price.life()))
         }
@@ -88,13 +88,9 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<(Option<ManaCost>, Vec<Ma
                 let price = Price::announced(cost).ok()?.at(x);
                 let mut sources = price.sources(ctx.state, ctx.player, ability.object);
                 // What the cost sacrifices, taps or returns is not there to tap for mana.
-                sources.retain(|option| {
-                    !choices
-                        .cost_picks()
-                        .iter()
-                        .flatten()
-                        .any(|picked| *picked == option.source.object)
-                });
+                let picked: Vec<ObjectId> =
+                    choices.cost_picks().iter().flatten().copied().collect();
+                crate::mana_takes::leave(&mut sources, &picked);
                 let life = price.life();
                 Some((price.mana, sources, life))
             }

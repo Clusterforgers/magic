@@ -1,0 +1,34 @@
+{
+  "id": "1a68615d-9808-479d-aa80-50651246954e",
+  "oracle_id": "e2f98813-4f39-4135-b05b-407e9eb797f6",
+  "name": "Jaspera Sentinel",
+  "lang": "en",
+  "layout": "normal",
+  "set": "khm",
+  "collector_number": "178",
+  "rarity": "common",
+  "released_at": "2021-02-05",
+  "digital": false,
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Creature — Elf Rogue",
+  "oracle_text": "Reach\n{T}, Tap an untapped creature you control: Add one mana of any color.",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}
