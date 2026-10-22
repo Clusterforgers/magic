@@ -355,6 +355,7 @@ impl GameState {
             limits_spent: BTreeSet::new(),
             loyalty_used: BTreeSet::new(),
             tallies: BTreeMap::new(),
+            object_tallies: BTreeMap::new(),
             triggers_possible: false,
             statics_possible: false,
             layers: LayersCache::default(),

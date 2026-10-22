@@ -41,16 +41,22 @@ enum Happened {
     },
     /// A token was created: it enters the battlefield from no zone.
     Created { object: ObjectId },
-    /// A creature was declared as an attacker.
-    Attacked { attacker: ObjectId },
+    /// A creature was declared as an attacker, the `nth` time this turn for it.
+    Attacked { attacker: ObjectId, nth: u32 },
     /// A player cast a spell, the `nth` of their turn.
     Cast {
         player: PlayerId,
         spell: ObjectId,
         nth: u32,
     },
-    /// Something was chosen as a target of a spell or ability.
-    Targeted { target: Target, by: ObjectId },
+    /// Something was chosen as a  of a spell or ability: the `nth` time this turn for it by what the same player
+    /// controls, the `nth_any` time by what anyone controls.
+    Targeted {
+        target: Target,
+        by: ObjectId,
+        nth: u32,
+        nth_any: u32,
+    },
     /// A step began.
     Step { step: Step, active: PlayerId },
     /// A source dealt damage; `combat` is whether it was combat damage.
@@ -59,6 +65,7 @@ enum Happened {
         to: DamageTarget,
         combat: bool,
         amount: u32,
+        nth: u32,
     },
     /// A player gained life, the `nth` time of their turn.
     LifeGained {
@@ -123,13 +130,28 @@ impl Happened {
         }
     }
 
-    /// Which time of its turn this was, for the events a turn counts.
+    /// Which time of its turn this was, for the events a turn counts; for a target, by what the same player controls.
     const fn nth(&self) -> Option<u32> {
         match self {
             Happened::Drew { nth, .. }
             | Happened::Cast { nth, .. }
+            | Happened::Attacked { nth, .. }
+            | Happened::Targeted { nth, .. }
+            | Happened::Damaged { nth, .. }
             | Happened::LifeGained { nth, .. } => Some(*nth),
             _ => None,
+        }
+    }
+
+    /// The same for the event a pattern counts: a target counted by what anyone controls when the pattern names no one.
+    fn nth_for(&self, event: &TriggerPattern) -> Option<u32> {
+        match (self, event) {
+            (Happened::Targeted { nth_any, .. }, TriggerPattern::BecomesTarget { by, .. })
+                if by.is_empty() =>
+            {
+                Some(*nth_any)
+            }
+            _ => self.nth(),
         }
     }
 }
@@ -198,20 +220,12 @@ fn moved(pre: &GameState, event: &Event, post: &GameState) -> Option<Happened> {
 
 /// What happened in `events`, in order. `pre` is the state before them and `post` the state after.
 fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happened> {
-    let targeted = |choices: &Choices, by: ObjectId| {
-        let targets = choices.targets.iter().flatten();
-        targets
-            .map(|target| Happened::Targeted {
-                target: *target,
-                by,
-            })
-            .collect::<Vec<_>>()
-    };
     let mut found = Vec::new();
     // Permanents tapped in this batch whose mana has not been added yet: tapping for mana is the tap that adds it.
     let mut tapped = Vec::new();
     for (at, event) in events.iter().enumerate() {
         let later = &events[at + 1..];
+        let look = Look { pre, post, later };
         if let Some(moved) = moved(pre, event, post) {
             found.push(moved);
         }
@@ -222,6 +236,9 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
             Event::AttackersDeclared { attackers, .. } => {
                 found.extend(attackers.iter().map(|(attacker, _)| Happened::Attacked {
                     attacker: *attacker,
+                    nth: before(look, *attacker).map_or(0, |object| {
+                        object_ordinal(look, object, None, Tally::Attacked)
+                    }),
                 }));
                 if !attackers.is_empty() {
                     found.push(Happened::AttackedTogether {
@@ -240,14 +257,16 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                     spell: *object,
                     nth,
                 });
-                found.extend(targeted(choices, *object));
+                found.extend(targeted(look, choices, (*object, *player)));
             }
-            Event::AbilityPutOnStack(put) => found.extend(targeted(&put.choices, put.object)),
+            Event::AbilityPutOnStack(put) => {
+                found.extend(targeted(look, &put.choices, (put.object, put.controller)))
+            }
             Event::StepBegan { step } => found.push(Happened::Step {
                 step: *step,
                 active: post.turn().active(),
             }),
-            other => about_players_and_permanents(other, (post, later), &mut tapped, &mut found),
+            other => about_players_and_permanents(other, look, &mut tapped, &mut found),
         }
     }
     found
@@ -267,11 +286,87 @@ fn ordinal(post: &GameState, later: &[Event], player: PlayerId, kind: Tally) -> 
         .saturating_sub(u32::try_from(later.iter().filter(|e| same(e)).count()).unwrap_or(u32::MAX))
 }
 
+/// Where an event stands in its batch: the state before the batch, the state after it and the events that follow the event.
+#[derive(Clone, Copy)]
+struct Look<'a> {
+    pre: &'a GameState,
+    post: &'a GameState,
+    later: &'a [Event],
+}
+
+/// The object `id` as it was before the batch, which is how the turn's tallies name it.
+fn before(look: Look<'_>, id: ObjectId) -> Option<ObjectRef> {
+    let object = look.pre.object(id).or_else(|| look.post.object(id));
+    object.map(GameObject::reference)
+}
+
+/// Which time of the turn the event of `kind` is for `object` (caused by what `by` controls, when it is given): the count
+/// after the batch less the events of that kind for the object that follow it in the batch.
+fn object_ordinal(look: Look<'_>, object: ObjectRef, by: Option<PlayerId>, kind: Tally) -> u32 {
+    let by_them = |player: PlayerId| by.is_none_or(|by| by == player);
+    let same = |event: &Event| match (kind, event) {
+        (Tally::Attacked, Event::AttackersDeclared { attackers, .. }) => {
+            attackers.iter().any(|(attacker, _)| *attacker == object.id)
+        }
+        (
+            Tally::Damaged,
+            Event::DamageDealt {
+                target: DamageTarget::Object(hit),
+                amount,
+                ..
+            },
+        ) => *hit == object.id && *amount > 0,
+        (
+            Tally::Targeted,
+            Event::SpellCast {
+                player, choices, ..
+            },
+        ) => by_them(*player) && choices.targeted_objects().contains(&object),
+        (Tally::Targeted, Event::AbilityPutOnStack(put)) => {
+            by_them(put.controller) && put.choices.targeted_objects().contains(&object)
+        }
+        _ => false,
+    };
+    let later = look.later.iter().filter(|event| same(event)).count();
+    let after = look.post.object_tallied(object, by, kind);
+    after.saturating_sub(u32::try_from(later).unwrap_or(u32::MAX))
+}
+
+/// The targets chosen for the spell or ability `by`, which `controller` controls, each once.
+fn targeted(
+    look: Look<'_>,
+    choices: &Choices,
+    (by, controller): (ObjectId, PlayerId),
+) -> Vec<Happened> {
+    let mut chosen: Vec<Target> = Vec::new();
+    for target in choices.targets.iter().flatten() {
+        if !chosen.contains(target) {
+            chosen.push(*target);
+        }
+    }
+    let ordinals = |object: ObjectRef| {
+        let of = |by| object_ordinal(look, object, by, Tally::Targeted);
+        (of(Some(controller)), of(None))
+    };
+    chosen
+        .into_iter()
+        .map(|target| {
+            let (nth, nth_any) = target.object().map_or((0, 0), ordinals);
+            Happened::Targeted {
+                target,
+                by,
+                nth,
+                nth_any,
+            }
+        })
+        .collect()
+}
+
 /// What `event` is, when it is about blocks, damage, life, cards drawn or cycled, taps, counters or attachments.
 /// `tapped` holds the permanents of the batch tapped so far whose mana has not been added.
 fn about_players_and_permanents(
     event: &Event,
-    (post, later): (&GameState, &[Event]),
+    look: Look<'_>,
     tapped: &mut Vec<ObjectId>,
     found: &mut Vec<Happened>,
 ) {
@@ -300,7 +395,14 @@ fn about_players_and_permanents(
             found.push(Happened::Damaged {
                 source: *source,
                 to: *target,
-                combat: in_combat_damage(post),
+                combat: in_combat_damage(look.post),
+                nth: match target {
+                    DamageTarget::Object(hit) if *amount > 0 => before(look, *hit)
+                        .map_or(0, |object| {
+                            object_ordinal(look, object, None, Tally::Damaged)
+                        }),
+                    _ => 0,
+                },
                 amount: *amount,
             });
             // Damage to a player makes them lose that much life (CR 120.3a).
@@ -314,7 +416,7 @@ fn about_players_and_permanents(
         Event::LifeGained { player, amount } => found.push(Happened::LifeGained {
             player: *player,
             amount: *amount,
-            nth: ordinal(post, later, *player, Tally::Gained),
+            nth: ordinal(look.post, look.later, *player, Tally::Gained),
         }),
         Event::LifeLost { player, amount } | Event::LifePaid { player, amount } => {
             found.push(Happened::LifeLost {
@@ -324,7 +426,7 @@ fn about_players_and_permanents(
         }
         Event::CardDrawn { player, .. } => found.push(Happened::Drew {
             player: *player,
-            nth: ordinal(post, later, *player, Tally::Drawn),
+            nth: ordinal(look.post, look.later, *player, Tally::Drawn),
         }),
         Event::PermanentTapped { object } => {
             tapped.push(*object);
@@ -432,7 +534,7 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
                 && scope.selects(what, reference).ok()?)
             .then(|| cause(state, vec![Target::Object(reference)]))
         }
-        (TriggerPattern::Attacks { what }, Happened::Attacked { attacker }) => {
+        (TriggerPattern::Attacks { what }, Happened::Attacked { attacker, .. }) => {
             let reference = object(*attacker)?;
             scope
                 .selects(what, reference)
@@ -479,7 +581,12 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
                 None
             }
         }
-        (TriggerPattern::BecomesTarget { what, by }, Happened::Targeted { target, by: caster }) => {
+        (
+            TriggerPattern::BecomesTarget { what, by },
+            Happened::Targeted {
+                target, by: caster, ..
+            },
+        ) => {
             let Target::Object(targeted) = target else {
                 return None;
             };
@@ -511,7 +618,7 @@ fn matching_event(
     let by = |who: &Ref, player: &PlayerId| scope.players(who).is_ok_and(|p| p.contains(player));
     let picks = |what: &Selector, reference: ObjectRef| scope.selects(what, reference).ok();
     match (pattern, happened) {
-        (TriggerPattern::Nth { event, nth }, happened) => (happened.nth() == Some(*nth))
+        (TriggerPattern::Nth { event, nth }, happened) => (happened.nth_for(event) == Some(*nth))
             .then(|| matching(event, happened, scope))
             .flatten(),
         (
@@ -521,6 +628,7 @@ fn matching_event(
                 to: hit,
                 combat: was,
                 amount,
+                ..
             },
         ) => {
             let dealer = object(*dealer)?;

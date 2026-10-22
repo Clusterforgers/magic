@@ -287,16 +287,15 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             (format!("{} attacks", subject(what)), what.0 == [Pred::This])
         }
         TriggerPattern::BecomesTarget { what, by } => {
-            let by_opponents = by.0 == [Pred::ControlledBy(Ref::Opponents)];
+            let whose = match by.0.as_slice() {
+                [Pred::ControlledBy(Ref::Opponents)] => " an opponent controls",
+                [Pred::ControlledBy(Ref::You)] => " you control",
+                _ => "",
+            };
             (
                 format!(
-                    "{} becomes the target of a spell or ability{}",
-                    subject(what),
-                    if by_opponents {
-                        " an opponent controls"
-                    } else {
-                        ""
-                    }
+                    "{} becomes the target of a spell or ability{whose}",
+                    subject(what)
                 ),
                 what.0 == [Pred::This],
             )
@@ -327,6 +326,17 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 format!("the beginning of {owner} {}", step_words(*step))
             };
             (when, false)
+        }
+        TriggerPattern::DealsDamage {
+            source,
+            to: Some(hit @ (Ref::This | Ref::Each(_))),
+            combat: None,
+        } if source.is_empty() => {
+            let recipient = match hit {
+                Ref::Each(what) => subject(what),
+                _ => "it".to_owned(),
+            };
+            (format!("{recipient} is dealt damage"), *hit == Ref::This)
         }
         TriggerPattern::DealsDamage { source, combat, .. } => {
             let kind = match combat {
@@ -999,6 +1009,10 @@ mod tests {
         r#"{"BecomesTarget":{"what":["This"]}}"#,
         "When it becomes the target of a spell or ability"
     )]
+    #[case::target_of_you(
+        r#"{"BecomesTarget":{"what":["This"],"by":[{"ControlledBy":"You"}]}}"#,
+        "When it becomes the target of a spell or ability you control"
+    )]
     #[case::target_of_an_opponent(
         r#"{"BecomesTarget":{"what":["This"],"by":[{"ControlledBy":"Opponents"}]}}"#,
         "When it becomes the target of a spell or ability an opponent controls"
@@ -1038,6 +1052,26 @@ mod tests {
     #[case::damage_by_a_creature(
         r#"{"DealsDamage":{"source":[{"Type":"Creature"}]}}"#,
         "Whenever a creature deals damage"
+    )]
+    #[case::dealt_damage(
+        r#"{"DealsDamage":{"source":[],"to":"This"}}"#,
+        "When it is dealt damage"
+    )]
+    #[case::a_creature_dealt_damage(
+        r#"{"DealsDamage":{"source":[],"to":{"Each":[{"Type":"Creature"}]}}}"#,
+        "Whenever a creature is dealt damage"
+    )]
+    #[case::nth_target(
+        r#"{"Nth":{"event":{"BecomesTarget":{"what":["This"],"by":[{"ControlledBy":"You"}]}},"nth":1}}"#,
+        "Whenever it becomes the target of a spell or ability you control (time 1 this turn)"
+    )]
+    #[case::nth_attack(
+        r#"{"Nth":{"event":{"Attacks":{"what":["This"]}},"nth":2}}"#,
+        "Whenever it attacks (time 2 this turn)"
+    )]
+    #[case::nth_damage(
+        r#"{"Nth":{"event":{"DealsDamage":{"source":[],"to":"This"}},"nth":1}}"#,
+        "Whenever it is dealt damage (time 1 this turn)"
     )]
     #[case::noncombat_damage(
         r#"{"DealsDamage":{"source":[{"Type":"Creature"}],"combat":false}}"#,

@@ -271,6 +271,12 @@ fn verbs(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     }
     if found.len() == 1 {
         found.pop()
+    } else if found
+        .iter()
+        .any(|found| matches!(found, TriggerPattern::Nth { .. }))
+    {
+        // A count of one event is not part of a list of events.
+        None
     } else {
         Some(TriggerPattern::AnyOf(found))
     }
@@ -286,7 +292,22 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     } else if r.words("leaves the battlefield") {
         (Some(ZoneKind::Battlefield), None)
     } else if r.word("attacks") {
-        return Some(TriggerPattern::Attacks { what: what.clone() });
+        let attacks = TriggerPattern::Attacks { what: what.clone() };
+        return Some(first_time(r, attacks));
+    } else if r.words("becomes the target of a spell or ability") {
+        return becomes_target(r, what);
+    } else if r.words("is dealt damage") {
+        let to = match what.0.as_slice() {
+            [Pred::This] => Ref::This,
+            [Pred::Is(Ref::Attached)] => Ref::Attached,
+            _ => Ref::Each(what.clone()),
+        };
+        let damaged = TriggerPattern::DealsDamage {
+            source: Selector::default(),
+            to: Some(to),
+            combat: None,
+        };
+        return Some(first_time(r, damaged));
     } else if r.word("blocks") {
         return Some(TriggerPattern::Blocks { what: what.clone() });
     } else if r.words("becomes blocked") {
@@ -310,6 +331,44 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         from,
         to,
     })
+}
+
+/// What follows "becomes the target of a spell or ability": "you control", "an opponent controls" or nothing, and
+/// "for the first time each turn" (a count of the controller's own spells and abilities, so not for an opponent's).
+fn becomes_target(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
+    let controller = if r.words("you control") {
+        Some(Ref::You)
+    } else if r.words("an opponent controls") {
+        Some(Ref::Opponents)
+    } else {
+        None
+    };
+    let by = Selector(controller.iter().cloned().map(Pred::ControlledBy).collect());
+    let target = TriggerPattern::BecomesTarget {
+        what: what.clone(),
+        by,
+    };
+    let counted = first_time(r, target);
+    let opponents = controller == Some(Ref::Opponents);
+    (!(opponents && matches!(counted, TriggerPattern::Nth { .. }))).then_some(counted)
+}
+
+/// The event as it stands, or its nth time of the turn when "for the first time each turn" follows: "for the second time
+/// each turn".
+fn first_time(r: &mut Reader<'_>, event: TriggerPattern) -> TriggerPattern {
+    let nth = r.attempt(|r| {
+        r.need("for the")?;
+        let at = ORDINALS.iter().position(|word| r.word(word))?;
+        r.need("time each turn")?;
+        u32::try_from(at + 1).ok()
+    });
+    match nth {
+        Some(nth) => TriggerPattern::Nth {
+            event: Box::new(event),
+            nth,
+        },
+        None => event,
+    }
 }
 
 /// What follows "deals": "combat damage to a player", "damage to an opponent", "noncombat damage".
@@ -416,8 +475,8 @@ fn player_verb(by: &Ref, verb: &str) -> Option<String> {
 }
 
 /// The subject of a pattern that is about one thing happening to it, and what happens.
-fn happening(pattern: &TriggerPattern) -> Option<(&Selector, String)> {
-    let said = |what, verb: &str| Some((what, verb.to_owned()));
+fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
+    let said = |what: &Selector, verb: &str| Some((what.clone(), verb.to_owned()));
     match pattern {
         TriggerPattern::ZoneChange { what, from, to } => {
             let verb = match (from, to) {
@@ -435,6 +494,25 @@ fn happening(pattern: &TriggerPattern) -> Option<(&Selector, String)> {
         TriggerPattern::Untapped { what } => said(what, "becomes untapped"),
         TriggerPattern::Attached { what, to } if !what.is_empty() && !to.is_empty() => {
             said(what, &format!("becomes attached to {}", subject_text(to)?))
+        }
+        TriggerPattern::BecomesTarget { what, by } => {
+            let whose = match by.0.as_slice() {
+                [] => "",
+                [Pred::ControlledBy(Ref::You)] => " you control",
+                [Pred::ControlledBy(Ref::Opponents)] => " an opponent controls",
+                _ => return None,
+            };
+            said(
+                what,
+                &format!("becomes the target of a spell or ability{whose}"),
+            )
+        }
+        TriggerPattern::DealsDamage {
+            source,
+            to: Some(to),
+            combat: None,
+        } if source.is_empty() && !matches!(to, Ref::You | Ref::Opponents | Ref::EachPlayer) => {
+            said(&damaged_subject(to)?, "is dealt damage")
         }
         TriggerPattern::DealsDamage { source, to, combat } => said(
             source,
@@ -553,21 +631,39 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
                 }
                 verbs.push(verb);
             }
-            about(what, &verbs)
+            about(&what, &verbs)
         }
         _ => {
             let (what, verb) = happening(pattern)?;
-            about(what, &[verb])
+            about(&what, &[verb])
         }
     }
 }
 
-/// "Whenever you draw your second card each turn", "Whenever you cast your first spell each turn".
+/// What is dealt damage, as the subject of "is dealt damage": the card itself, what an Equipment or Aura is attached to
+/// or the objects a selector names.
+fn damaged_subject(to: &Ref) -> Option<Selector> {
+    match to {
+        Ref::This => Some(Selector::this()),
+        Ref::Attached => Some(Selector(vec![Pred::Is(Ref::Attached)])),
+        Ref::Each(what) => Some(what.clone()),
+        _ => None,
+    }
+}
+
+/// "Whenever you draw your second card each turn", "Whenever you cast your first spell each turn", "Whenever ~ attacks
+/// for the first time each turn".
 fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
     let ordinal = ORDINALS.get(usize::try_from(nth.checked_sub(1)?).ok()?)?;
     let (verb, noun) = match event {
         TriggerPattern::Drew { who: Ref::You } => ("draw", "card"),
         TriggerPattern::SpellCast { what, by: Ref::You } if what.is_empty() => ("cast", "spell"),
+        TriggerPattern::Attacks { .. }
+        | TriggerPattern::BecomesTarget { .. }
+        | TriggerPattern::DealsDamage { .. } => {
+            let counted = pattern_text(event)?;
+            return Some(format!("{counted} for the {ordinal} time each turn"));
+        }
         _ => return None,
     };
     Some(format!(

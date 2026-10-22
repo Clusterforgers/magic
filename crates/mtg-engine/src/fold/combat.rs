@@ -9,7 +9,8 @@ use crate::combat::{Attacker, CombatState, DamageTarget};
 use crate::counters::change;
 use crate::error::EngineError;
 use crate::events::Event;
-use crate::state::GameState;
+use crate::object::GameObject;
+use crate::state::{GameState, Tally};
 use crate::zones::Zone;
 
 fn on_battlefield(state: &GameState, id: mtg_core::ids::ObjectId) -> bool {
@@ -77,6 +78,11 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     target_left: false,
                 })
                 .collect();
+            for (attacker, _) in attackers {
+                if let Some(reference) = state.object(*attacker).map(GameObject::reference) {
+                    state.tally_object(reference, None, Tally::Attacked);
+                }
+            }
             state.combat.attackers_declared = true;
         }
         Event::BlockersDeclared { player, blocks } => {
@@ -124,7 +130,14 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     .life
                     .saturating_sub(i32::try_from(*amount).unwrap_or(i32::MAX));
             }
-            DamageTarget::Object(id) => damage_object(state, *id, *amount, *deathtouch)?,
+            DamageTarget::Object(id) => {
+                damage_object(state, *id, *amount, *deathtouch)?;
+                if *amount > 0
+                    && let Some(reference) = state.object(*id).map(GameObject::reference)
+                {
+                    state.tally_object(reference, None, Tally::Damaged);
+                }
+            }
         },
         Event::CombatEnded => state.combat = CombatState::default(),
         Event::Regenerated { object } => {

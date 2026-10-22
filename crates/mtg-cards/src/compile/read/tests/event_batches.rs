@@ -26,6 +26,38 @@ use super::*;
     "Whenever you draw your second card each turn, put a +1/+1 counter on ~.",
     r#"{"Triggered":{"when":{"Nth":{"event":{"Drew":{"who":"You"}},"nth":2}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}}"#
 )]
+#[case::the_first_attack(
+    "Whenever ~ attacks for the first time each turn, draw a card.",
+    r#"{"Triggered":{"when":{"Nth":{"event":{"Attacks":{"what":["This"]}},"nth":1}},"effects":[{"Draw":{}}]}}"#
+)]
+#[case::the_first_time_a_target_of_yours(
+    "Whenever ~ becomes the target of a spell or ability you control for the first time each turn, put a +1/+1 counter on ~.",
+    r#"{"Triggered":{"when":{"Nth":{"event":{"BecomesTarget":{"what":["This"],"by":[{"ControlledBy":"You"}]}},"nth":1}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}}"#
+)]
+#[case::the_second_time_a_target_of_anyone(
+    "Whenever a creature you control becomes the target of a spell or ability for the second time each turn, draw a card.",
+    r#"{"Triggered":{"when":{"Nth":{"event":{"BecomesTarget":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}},"nth":2}},"effects":[{"Draw":{}}]}}"#
+)]
+#[case::a_target_of_yours(
+    "Whenever ~ becomes the target of a spell or ability you control, draw a card.",
+    r#"{"Triggered":{"when":{"BecomesTarget":{"what":["This"],"by":[{"ControlledBy":"You"}]}},"effects":[{"Draw":{}}]}}"#
+)]
+#[case::a_target_of_an_opponent(
+    "Whenever ~ becomes the target of a spell or ability an opponent controls, draw a card.",
+    r#"{"Triggered":{"when":{"BecomesTarget":{"what":["This"],"by":[{"ControlledBy":"Opponents"}]}},"effects":[{"Draw":{}}]}}"#
+)]
+#[case::dealt_damage(
+    "Whenever ~ is dealt damage, draw a card.",
+    r#"{"Triggered":{"when":{"DealsDamage":{"source":[],"to":"This"}},"effects":[{"Draw":{}}]}}"#
+)]
+#[case::first_dealt_damage(
+    "Whenever ~ is dealt damage for the first time each turn, draw a card.",
+    r#"{"Triggered":{"when":{"Nth":{"event":{"DealsDamage":{"source":[],"to":"This"}},"nth":1}},"effects":[{"Draw":{}}]}}"#
+)]
+#[case::a_creature_dealt_damage(
+    "Whenever a creature you control is dealt damage, draw a card.",
+    r#"{"Triggered":{"when":{"DealsDamage":{"source":[],"to":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}}},"effects":[{"Draw":{}}]}}"#
+)]
 #[case::that_much_life(
     "Whenever you gain life, target opponent loses that much life.",
     r#"{"Triggered":{"when":{"LifeGained":{"who":"You"}},"targets":[{"what":"Opponent"}],"effects":[{"LoseLife":{"who":{"Target":0},"amount":"Triggering"}}]}}"#
@@ -59,6 +91,16 @@ fn more_of_the_new_events_read_and_write_back(#[case] text: &str) {
 #[case::an_equipped_permanent("Whenever equipped permanent dies, draw a card.")]
 #[case::one_of_two_in_a_batch(
     "Whenever two or more creatures you control deal combat damage to a player, draw a card."
+)]
+#[case::a_count_of_a_target_of_an_opponent(
+    "Whenever ~ becomes the target of a spell or ability an opponent controls for the first time each turn, draw a card."
+)]
+#[case::a_count_in_a_list_of_events(
+    "Whenever ~ attacks for the first time each turn or dies, draw a card."
+)]
+#[case::a_sixth_attack("Whenever ~ attacks for the sixth time each turn, draw a card.")]
+#[case::a_count_of_a_spell_target(
+    "Whenever ~ becomes the target of a spell for the first time each turn, draw a card."
 )]
 #[case::a_batch_of_a_cast("Whenever one or more spells are cast, draw a card.")]
 #[case::the_nth_of_something_else("Whenever you gain your second life each turn, draw a card.")]
