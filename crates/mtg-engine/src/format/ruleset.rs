@@ -561,7 +561,7 @@ mod table_tests {
     use crate::events::Event;
     use crate::fixtures::state;
     use crate::fold::apply_event;
-    use crate::format::{Commander, Normal};
+    use crate::format::Normal;
     use crate::player::LossReason;
 
     fn rules(set: impl FnOnce(&mut HouseRules)) -> HouseRules {
