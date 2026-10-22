@@ -72,6 +72,8 @@ mod day_night;
 mod defining;
 mod defining_fuzz;
 mod determinism_replay;
+mod devour_casualty_offspring;
+mod devour_fuzz;
 mod discard_casts;
 mod divided_resolution;
 mod dredge;
