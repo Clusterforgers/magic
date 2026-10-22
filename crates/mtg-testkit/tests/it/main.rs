@@ -106,6 +106,7 @@ mod lands_and_sickness;
 mod layers;
 mod layers_fuzz;
 mod legend_rule;
+mod level_up;
 mod library_effects;
 mod library_fuzz;
 mod living_weapon;
