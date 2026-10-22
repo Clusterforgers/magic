@@ -728,6 +728,7 @@ impl<'a> Scope<'a> {
                 }
                 sum
             }
+            Amount::Times { by, of } => i64::from(*by) * self.amount_of(of, share)?,
             Amount::Divided => {
                 let share = share.ok_or(ResolveError::Unsupported(OUTSIDE_A_DIVISION))?;
                 self.divided_share(share.recipient)
@@ -1129,10 +1130,83 @@ mod tests {
     #[case::highest_life_of_no_one(r#"{"HighestLife":{"Each":[{"Named":"Nobody"}]}}"#, -2_147_483_648)]
     #[case::sum(r#"{"Sum":[2,{"Count":[{"Type":"Artifact"}]},-1]}"#, 2)]
     #[case::no_targets_chosen(r#"{"TargetCount":0}"#, 0)]
+    #[case::twice_the_creatures(r#"{"Times":{"by":2,"of":{"Count":[{"Type":"Creature"}]}}}"#, 6)]
+    #[case::minus_the_creatures_you_control(
+        r#"{"Times":{"by":-1,"of":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}"#,
+        -1
+    )]
+    #[case::times_zero_things(r#"{"Times":{"by":3,"of":{"Count":[{"Type":"Land"}]}}}"#, 0)]
+    #[case::times_the_opponents(r#"{"Times":{"by":2,"of":{"Players":"Opponents"}}}"#, 2)]
+    #[case::cards_in_your_hand(r#"{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}"#, 1)]
+    #[case::cards_in_your_graveyard(r#"{"Count":[{"In":"Graveyard"},{"OwnedBy":"You"}]}"#, 0)]
+    #[case::each_opponents_creatures(
+        r#"{"Count":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}"#,
+        2
+    )]
     fn an_amount_is_the_number_it_stands_for(#[case] json: &str, #[case] expected: i64) {
         let game = game();
         let amount: Amount = serde_json::from_str(json).unwrap();
         assert_eq!(scope(&game).amount(&amount), Ok(expected));
+    }
+
+    #[test]
+    fn a_count_is_read_from_the_state_the_earlier_steps_left() {
+        let mut game = game();
+        let creatures: Amount = serde_json::from_str(r#"{"Count":[{"Type":"Creature"}]}"#).unwrap();
+        let twice: Amount =
+            serde_json::from_str(r#"{"Times":{"by":2,"of":{"Count":[{"Type":"Creature"}]}}}"#)
+                .unwrap();
+        assert_eq!(scope(&game).amount(&creatures), Ok(3));
+        let ogre = named(&game, "Ogre", 1);
+        apply_event(
+            &mut game,
+            &Event::ZoneChanged {
+                object: ogre.id,
+                from: Zone::Battlefield,
+                to: Zone::Graveyard(PlayerId(1)),
+                cause: ZoneCause::Destroyed,
+            },
+        )
+        .unwrap();
+        assert_eq!(scope(&game).amount(&creatures), Ok(2), "the Ogre died");
+        assert_eq!(scope(&game).amount(&twice), Ok(4));
+        let yours = |json: &str| scope(&game).amount(&serde_json::from_str(json).unwrap());
+        assert_eq!(
+            yours(r#"{"Count":[{"In":"Graveyard"},{"OwnedBy":"Opponents"}]}"#),
+            Ok(1),
+            "the Ogre is in its owner's graveyard"
+        );
+    }
+
+    #[rstest]
+    #[case::two_seats(2, 1)]
+    #[case::three_seats(3, 2)]
+    #[case::four_seats(4, 3)]
+    fn for_each_opponent_counts_the_seats_other_than_the_controller(
+        #[case] seats: usize,
+        #[case] opponents: i64,
+    ) {
+        let game = state(
+            vec![vec![]; seats],
+            (0..seats).map(|_| vec![bear()]).collect(),
+        );
+        let scope = Scope::announcing(&game, PlayerId(0), named(&game, "Bear", 0));
+        let count = |json: &str| scope.amount(&serde_json::from_str(json).unwrap());
+        assert_eq!(count(r#"{"Players":"Opponents"}"#), Ok(opponents));
+        assert_eq!(
+            count(r#"{"Times":{"by":-3,"of":{"Players":"Opponents"}}}"#),
+            Ok(-3 * opponents)
+        );
+        let seats = i64::try_from(seats).unwrap();
+        assert_eq!(count(r#"{"Count":[{"Type":"Creature"}]}"#), Ok(seats));
+        assert_eq!(
+            count(r#"{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}"#),
+            Ok(1)
+        );
+        assert_eq!(
+            count(r#"{"Count":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}"#),
+            Ok(opponents)
+        );
     }
 
     #[rstest]

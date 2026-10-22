@@ -28,17 +28,21 @@ Bloodghast
 Bog Wraith
 Boggart Ram-Gang
 Bonesplitter
+Borderland Behemoth
 Brain Freeze
 Brainstorm
 Branchblight Stalker
+Brightstone Ritual
 Bronzeplate Boar
 Cackling Counterpart
 Capsize
 Carnage Tyrant
 Cathars' Crusade
 Changeling Outcast
+Circle of Dreams Druid
 Clone
 Cold-Eyed Selkie
+Collective Unconscious
 Command Tower
 Consider
 Consign // Oblivion
@@ -61,6 +65,7 @@ Dawnglade Regent
 Death Ward
 Deep Analysis
 Deepfathom Skulker
+Defile
 Delver of Secrets // Insectile Aberration
 Demon Bolt
 Disembowel
@@ -75,8 +80,11 @@ Drudge Skeletons
 Dual Casting
 Dualcaster Mage
 Durkwood Baloth
+Elven Ambush
+Empyrial Plate
 Epic Proportions
 Eternal Witness
+Ethereal Armor
 Exotic Orchard
 Exploration
 Explore
@@ -99,7 +107,9 @@ Foundry Inspector
 Fruit of Tizerus
 Furtive Homunculus
 Gadwick, the Wizened
+Gaea's Cradle
 Game-Trail Changeling
+Gerrard's Wisdom
 Giant Growth
 Gilded Lotus
 Glimpse of Freedom
@@ -125,6 +135,7 @@ Invisible Stalker
 Izzet Charm
 Jungle Lion
 Kathari Screecher
+Keep Watch
 Kessig Wolf Run
 Kitchen Finks
 Kolaghan Skirmisher
@@ -177,6 +188,7 @@ Pouncing Jaguar
 Prismatic Lens
 Professional Face-Breaker
 Putrid Goblin
+Pygmy Kavu
 Questing Beast
 Rakdos Headliner
 Rally the Ranks
@@ -216,6 +228,7 @@ Sodden Verdure
 Sol Ring
 Solstice Zealot
 Soltari Foot Soldier
+Songs of the Damned
 Soul Shepherd
 Souldrinker
 Spectral Rider

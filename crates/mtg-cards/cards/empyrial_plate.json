@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e95e100e-4886-4bde-825c-017e878ac825",
+  "name": "Empyrial Plate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Empyrial Plate",
+      "oracle_fingerprint": "6f54d8d37b0cdf2c27d9aed0de309fb1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "toughness": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

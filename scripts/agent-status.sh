@@ -12,9 +12,9 @@ while read -r pid cpu; do before[$pid]=$cpu; done < <(ps -eo pid=,cputimes=)
 sleep 6
 echo "== CPU by worktree over 6 s (percent of one core, 24 cores = 2400)"
 while read -r pid cpu; do
-  [[ -n ${before[$pid]:-} ]] || continue
+  [[ -n ${before[$pid]:-} ]] && ((cpu >= before[$pid])) || continue
   delta=$(((cpu - before[$pid]) * 100 / 6))
-  ((delta >= 15)) && echo "$(name_of "$pid") $delta $pid"
+  n=$(name_of "$pid"); ((delta >= 15)) && [[ -n $n ]] && echo "$n $delta $pid"
 done < <(ps -eo pid=,cputimes=) | awk '{c[$1]+=$2} END {for (k in c) printf "  %-13s %5d%%\n", k, c[k]}' | sort -k2 -nr | head -10
 
 echo "== test binaries running over 15 minutes (threads with over 300 s of CPU are likely stuck)"

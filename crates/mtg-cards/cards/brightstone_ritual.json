@@ -1,0 +1,25 @@
+{
+  "oracle_id": "08e90e85-4103-4acb-a8a7-e1329b460aa7",
+  "name": "Brightstone Ritual",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brightstone Ritual",
+      "oracle_fingerprint": "a34b1b767a487e06f7fcb69f15f698ca",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "times": { "Count": [{ "Subtype": "Goblin" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

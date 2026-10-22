@@ -1,0 +1,31 @@
+{
+  "oracle_id": "17407b73-0dbe-4a71-84ec-3aaca9651f5b",
+  "name": "Pygmy Kavu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pygmy Kavu",
+      "oracle_fingerprint": "1d03e4471814a72a6574738ed3706370",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Color": "Black" },
+                      { "ControlledBy": "Opponents" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
