@@ -18,7 +18,7 @@ use super::lands;
 use super::life_gain;
 use super::prevention;
 use super::render::{self, capitalize, counts_stats, is_a_type, stats_text};
-use super::selectors::{Form, all, granted_text, phrase, phrase_text, subtype};
+use super::selectors::{Form, all, each, granted_text, phrase, phrase_text, subtype};
 use super::tokens::Reader;
 use super::triggers::{self, article};
 use crate::ability::{Ability, CostChange};
@@ -338,6 +338,9 @@ fn subject(r: &mut Reader<'_>, itself: bool) -> Option<(Ref, bool)> {
     });
     if attached.is_some() {
         return Some((Ref::Attached, false));
+    }
+    if let Some(group) = each(r) {
+        return Some((group, false));
     }
     plural(r).map(|group| (group, true))
 }
@@ -855,8 +858,11 @@ fn subjects(affected: &Ref, itself: bool) -> Vec<(String, bool)> {
             if chosen_inside {
                 return Vec::new();
             }
+            // One at a time: "Each creature you control with a +1/+1 counter on it has flying."
+            let each = phrase_text(&Selector(preds.to_vec()), Form::Each)
+                .map(|one| (format!("Each {one}{chosen}"), false));
             let Some(group) = phrase_text(&Selector(preds.to_vec()), Form::All) else {
-                return Vec::new();
+                return each.into_iter().collect();
             };
             // "All creatures", but "Creatures you control" and "Attacking creatures".
             let prefix = if !preds.is_empty() && preds.iter().all(is_a_type) {
@@ -873,11 +879,13 @@ fn subjects(affected: &Ref, itself: bool) -> Vec<(String, bool)> {
                 && !preds
                     .iter()
                     .any(|pred| matches!(pred, Pred::ControlledBy(_) | Pred::Other));
-            if everyones {
+            let mut written = if everyones {
                 vec![(format!("all {plain}"), true), (plain, true)]
             } else {
                 vec![(plain, true)]
-            }
+            };
+            written.extend(each);
+            written
         }
         _ => Vec::new(),
     }

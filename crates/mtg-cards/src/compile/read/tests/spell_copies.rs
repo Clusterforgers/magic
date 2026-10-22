@@ -20,6 +20,14 @@ const SPELLS: &str = r#""targets":[{"what":{"Object":["Spell",{"AnyOf":[{"Type":
     "Copy target instant or sorcery spell. You may choose new targets for the copy.",
     r#"{"Spell":{TARGETS,"effects":[{"CopySpell":{"what":{"Target":0},"new_targets":true}}]}}"#
 )]
+#[case::twice(
+    "Copy target instant or sorcery spell twice. You may choose new targets for the copies.",
+    r#"{"Spell":{TARGETS,"effects":[{"CopySpell":{"what":{"Target":0},"count":2,"new_targets":true}}]}}"#
+)]
+#[case::twice_without_new_targets(
+    "Copy target instant or sorcery spell twice.",
+    r#"{"Spell":{TARGETS,"effects":[{"CopySpell":{"what":{"Target":0},"count":2}}]}}"#
+)]
 #[case::without_new_targets(
     "Copy target instant or sorcery spell.",
     r#"{"Spell":{TARGETS,"effects":[{"CopySpell":{"what":{"Target":0}}}]}}"#
@@ -208,7 +216,13 @@ fn another_player_acts_and_you_follow(#[case] text: &str, #[case] json: &str) {
 #[case::the_wrong_sentence(
     "Copy target instant or sorcery spell. You may choose new targets for it."
 )]
-#[case::twice("Copy target instant or sorcery spell twice.")]
+#[case::three_times("Copy target instant or sorcery spell three times.")]
+#[case::twice_with_the_sentence_of_one_copy(
+    "Copy target instant or sorcery spell twice. You may choose new targets for the copy."
+)]
+#[case::once_with_the_sentence_of_two_copies(
+    "Copy target instant or sorcery spell. You may choose new targets for the copies."
+)]
 #[case::it("Copy it.")]
 #[case::that_spell("Copy that spell. You may choose new targets for the copy.")]
 #[case::a_creature("Copy target creature.")]

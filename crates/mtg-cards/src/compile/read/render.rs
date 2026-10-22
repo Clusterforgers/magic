@@ -570,6 +570,11 @@ fn spell(sentences: &[String]) -> String {
 
 /// The event and an intervening "if" of a triggered ability, each ending in a comma.
 fn trigger_head(when: &TriggerPattern, condition: Option<&Condition>) -> Option<Vec<String>> {
+    if condition == Some(&super::triggers::saddled())
+        && matches!(when, TriggerPattern::Attacks { .. })
+    {
+        return Some(vec![format!("{} while saddled,", pattern_text(when)?)]);
+    }
     let mut parts = vec![format!("{},", pattern_text(when)?)];
     if let Some(condition) = condition {
         parts.push(format!("if {},", condition_text(condition)?));

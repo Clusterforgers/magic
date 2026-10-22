@@ -78,6 +78,8 @@ struct Pending {
     /// that belongs to the spell ability of an earlier line.
     ability: Option<Ability>,
     read: bool,
+    /// The abilities after the first that the clause reads into (a level block reads into several).
+    more: Vec<Ability>,
     /// Its reminder text explains a counter, so the reading would lose what the counter does.
     reminds_counter: bool,
 }
@@ -105,11 +107,20 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
             && span
                 .slice(&shown.oracle_text)
                 .is_some_and(normalize::reminder_mentions_counter);
+        let mut more = Vec::new();
         let ability = match kind {
             ClauseKind::Keyword => keywords::read(&clause_text)
                 // `check_printed` accepts Enchant on an Aura only.
                 .filter(|keyword| aura || !matches!(keyword, Keyword::Enchant(_)))
                 .map(Ability::Keyword),
+            ClauseKind::Static if clause_text.starts_with("LEVEL ") => {
+                let mut block = read::level_block(&clause_text, x_free, &own)
+                    .unwrap_or_default()
+                    .into_iter();
+                let first = block.next();
+                more = block.collect();
+                first
+            }
             ClauseKind::Triggered | ClauseKind::Activated | ClauseKind::Static
                 if !reminds_counter =>
             {
@@ -123,6 +134,7 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
             kind,
             read: ability.is_some(),
             ability,
+            more,
             reminds_counter,
         });
     }
@@ -177,7 +189,10 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
     let mut abilities = Vec::new();
     for clause in pending {
         match clause.ability {
-            Some(ability) => abilities.push(ability),
+            Some(ability) => {
+                abilities.push(ability);
+                abilities.extend(clause.more);
+            }
             None if !clause.read => abilities.push(manual::manual(clause.kind, clause.span)),
             None => {}
         }

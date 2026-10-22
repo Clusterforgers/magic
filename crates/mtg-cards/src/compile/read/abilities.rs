@@ -59,6 +59,10 @@ pub fn modal_spell(r: &mut Reader<'_>) -> Option<Ability> {
 /// one of which must be read.
 pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     let when = triggers::pattern(r)?;
+    let saddled = r.words("while saddled");
+    if saddled && !matches!(when, TriggerPattern::Attacks { .. }) {
+        return None;
+    }
     r.that_player = about_a_player(&when);
     r.acts_itself = triggers::itself_acts(&when);
     r.that_permanent = matches!(
@@ -90,6 +94,11 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         let condition = triggers::condition(r)?;
         r.punct(',').then_some(condition)
     });
+    let intervening_if = match (saddled, intervening_if) {
+        (false, other) => other,
+        (true, None) => Some(triggers::saddled()),
+        (true, Some(_)) => return None,
+    };
     let effects = sentences(r, false)?;
     // A card cycled is in its owner's graveyard when its own ability triggers, and a card that returns itself from the
     // graveyard has its ability there.

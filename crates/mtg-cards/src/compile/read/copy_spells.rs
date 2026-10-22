@@ -30,6 +30,12 @@ pub fn copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     } else {
         (spell_target(r)?, false)
     };
+    let twice = r.word("twice");
+    let count = if twice {
+        Amount::Fixed(2)
+    } else {
+        Amount::one()
+    };
     let except = if ability {
         Vec::new()
     } else {
@@ -38,19 +44,23 @@ pub fn copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let new_targets = r
         .attempt(|r| {
             r.punct('.').then_some(())?;
-            r.need("you may choose new targets for the copy")
+            r.need(if twice {
+                "you may choose new targets for the copies"
+            } else {
+                "you may choose new targets for the copy"
+            })
         })
         .is_some();
     Some(vec![if ability {
         Effect::CopyAbility {
             what,
-            count: Amount::one(),
+            count,
             new_targets,
         }
     } else {
         Effect::CopySpell {
             what,
-            count: Amount::one(),
+            count,
             new_targets,
             except,
         }
@@ -173,18 +183,18 @@ fn target_text(spec: &TargetSpec) -> Option<String> {
 /// A copy of a spell or an ability as a sentence without its first capital and period, with the sentence about the
 /// new targets after it; `spec` is the clause's target.
 pub(super) fn copy_text(effect: &Effect, spec: &TargetSpec) -> Option<String> {
-    let (what, new_targets, except, is_spell) = match effect {
+    let (what, count, new_targets, except, is_spell) = match effect {
         Effect::CopySpell {
             what,
             count,
             new_targets,
             except,
-        } if count.is_one() => (what, *new_targets, except.as_slice(), true),
+        } => (what, count, *new_targets, except.as_slice(), true),
         Effect::CopyAbility {
             what,
             count,
             new_targets,
-        } if count.is_one() => (what, *new_targets, [].as_slice(), false),
+        } => (what, count, *new_targets, [].as_slice(), false),
         _ => return None,
     };
     let copied = target_text(spec)?;
@@ -201,12 +211,21 @@ pub(super) fn copy_text(effect: &Effect, spec: &TargetSpec) -> Option<String> {
         }
         _ => return None,
     };
+    let twice = match count {
+        Amount::Fixed(1) => "",
+        Amount::Fixed(2) => " twice",
+        _ => return None,
+    };
     let again = if new_targets {
-        ". You may choose new targets for the copy"
+        if twice.is_empty() {
+            ". You may choose new targets for the copy"
+        } else {
+            ". You may choose new targets for the copies"
+        }
     } else {
         ""
     };
-    Some(format!("copy {copied}{colors}{again}"))
+    Some(format!("copy {copied}{twice}{colors}{again}"))
 }
 
 /// "~ becomes a copy of target creature until end of turn": the card is a copy of one target permanent.

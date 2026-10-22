@@ -6,6 +6,7 @@ use super::amounts::{count_word, number_word};
 use super::counters;
 use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
+use crate::keyword::Keyword;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::{Step, TriggerPattern};
 use crate::value::{Amount, Cmp, Condition, CounterKind};
@@ -520,6 +521,14 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
         op,
         right: Amount::Fixed(number),
     })
+}
+
+/// "while saddled" after an attack: the creature is saddled (CR 702.171b).
+pub fn saddled() -> Condition {
+    Condition::Matches {
+        subject: Ref::This,
+        selector: Selector(vec![Pred::HasKeyword(Keyword::Saddled)]),
+    }
 }
 
 /// Who is the monarch: "you're the monarch", "an opponent is the monarch", "there is no monarch".

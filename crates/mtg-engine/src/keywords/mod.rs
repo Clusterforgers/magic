@@ -45,6 +45,7 @@ mod infect;
 mod intimidate;
 mod kicker;
 mod landwalk;
+mod level_up;
 mod lifelink;
 mod living_weapon;
 mod madness;
@@ -55,6 +56,7 @@ mod mutate;
 mod myriad;
 mod nightbound;
 mod ninjutsu;
+mod outlast;
 mod overload;
 mod partner;
 mod partner_group;
@@ -67,6 +69,7 @@ mod prowess;
 mod reach;
 mod rebound;
 mod reconfigure;
+mod saddle;
 mod shadow;
 mod shroud;
 mod skulk;
@@ -403,6 +406,10 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::CumulativeUpkeep(_) => &cumulative_upkeep::CumulativeUpkeep,
         Keyword::Undying => &undying::Undying,
         Keyword::Persist => &persist::Persist,
+        Keyword::LevelUp(_) => &level_up::LevelUp,
+        Keyword::Outlast(_) => &outlast::Outlast,
+        Keyword::Saddle(_) => &saddle::Saddle,
+        Keyword::Saddled => &saddle::Saddled,
     }
 }
 
@@ -657,6 +664,10 @@ mod tests {
             Keyword::CumulativeUpkeep(cost()),
             Keyword::Undying,
             Keyword::Persist,
+            Keyword::LevelUp(cost()),
+            Keyword::Outlast(cost()),
+            Keyword::Saddle(2),
+            Keyword::Saddled,
         ]
     }
 
@@ -730,6 +741,10 @@ mod tests {
         "Keyword.CumulativeUpkeep",
         "Keyword.Undying",
         "Keyword.Persist",
+        "Keyword.LevelUp",
+        "Keyword.Outlast",
+        "Keyword.Saddle",
+        "Keyword.Saddled",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -821,6 +836,10 @@ mod tests {
     #[case::reconfigure(Keyword::Reconfigure(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 3, ..Hooks::none() })]
     #[case::living_weapon(Keyword::LivingWeapon, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::crew(Keyword::Crew(3), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::saddle(Keyword::Saddle(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::saddled(Keyword::Saddled, Hooks::none())]
+    #[case::level_up(Keyword::LevelUp(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::outlast(Keyword::Outlast(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::evoke(Keyword::Evoke(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::flashback(Keyword::Flashback(Cost::mana("{2}".parse().unwrap())), Hooks::none())]
     #[case::overload(Keyword::Overload(Cost::mana("{2}".parse().unwrap())), Hooks::none())]

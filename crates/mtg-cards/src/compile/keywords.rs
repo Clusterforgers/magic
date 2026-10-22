@@ -200,6 +200,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("frenzy", Params::Number),
     ("mobilize", Params::Number),
     ("saddle", Params::Number),
+    ("saddled", Params::None),
 ];
 
 /// A keyword found at the start of an item.
@@ -347,6 +348,13 @@ pub fn read(item: &str) -> Option<Keyword> {
             .ok()
             .filter(|power| *power > 0)
             .map(Keyword::Crew),
+        "saddle" => rest
+            .parse()
+            .ok()
+            .filter(|power| *power > 0)
+            .map(Keyword::Saddle),
+        "level up" => cost(rest).map(Keyword::LevelUp),
+        "outlast" => cost(rest).map(Keyword::Outlast),
         "suspend" => suspend(rest),
         "enchant" => super::read::enchant_filter(rest).map(Keyword::Enchant),
         "enchant player" => Some(Keyword::EnchantPlayer { opponent: false }),
@@ -437,6 +445,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "aftermath" => Keyword::Aftermath,
         "undying" => Keyword::Undying,
         "persist" => Keyword::Persist,
+        "saddled" => Keyword::Saddled,
         _ => return None,
     })
 }
@@ -706,6 +715,11 @@ mod tests {
         ]))
     )]
     #[case::crew("Crew 3", Keyword::Crew(3))]
+    #[case::saddle("Saddle 2", Keyword::Saddle(2))]
+    #[case::level_up("Level up {1}{U}", Keyword::LevelUp(mana("{1}{U}")))]
+    #[case::level_up_for_one("level up {1}", Keyword::LevelUp(mana("{1}")))]
+    #[case::outlast("Outlast {W}", Keyword::Outlast(mana("{W}")))]
+    #[case::outlast_two_symbols("Outlast {1}{W}", Keyword::Outlast(mana("{1}{W}")))]
     #[case::changeling("Changeling", Keyword::Changeling)]
     #[case::devoid("Devoid", Keyword::Devoid)]
     #[case::infect("Infect", Keyword::Infect)]
@@ -807,9 +821,11 @@ mod tests {
     #[case::undeclared("Horsemanship")]
     #[case::crew_x("Crew X")]
     #[case::crew_nothing("Crew 0")]
+    #[case::saddle_nothing("Saddle 0")]
+    #[case::saddle_x("Saddle X")]
+    #[case::outlast_without_a_cost("Outlast")]
     #[case::mutate_without_a_cost("Mutate")]
     #[case::a_parameter_on_changeling("Changeling {1}")]
-    #[case::level_up("Level up {1}{U}")]
     #[case::typecycling("Plainscycling {2}")]
     #[case::landwalk_of_a_type_that_is_not_a_land_type("Cowwalk")]
     #[case::parameter_on_a_plain_keyword("Flying {2}")]
@@ -933,6 +949,10 @@ mod tests {
             "Infect",
             "Myriad",
             "Crew 2",
+            "Saddle 2",
+            "Level up {1}{U}",
+            "Outlast {W}",
+            "Saddled",
             "Mutate {1}",
             "Encore {1}",
             "Squad {1}",

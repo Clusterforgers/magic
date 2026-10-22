@@ -1,5 +1,8 @@
 Abbot of Keral Keep
+Abzan Battle Priest
+Abzan Falconer
 Aether Hub
+Ainok Bond-Kin
 Ajani's Pridemate
 Ancestral Vision
 Ancient Ziggurat
@@ -36,10 +39,12 @@ Borderland Behemoth
 Brain Freeze
 Brainstorm
 Branchblight Stalker
+Bridled Bighorn
 Brightstone Ritual
 Bronzeplate Boar
 Cackling Counterpart
 Capsize
+Caravan Escort
 Carnage Tyrant
 Cascade Bluffs
 Cathars' Crusade
@@ -53,6 +58,7 @@ Consider
 Consign // Oblivion
 Contentious Plan
 Copper-Leaf Angel
+Coralhelm Commander
 Counterspell
 Courser of Kruphix
 Crucible of Worlds
@@ -90,6 +96,7 @@ Dual Casting
 Dualcaster Mage
 Durkwood Baloth
 Echo Inspector
+Echo Mage
 Elven Ambush
 Elvish Rejuvenator
 Empyrial Plate
@@ -139,6 +146,7 @@ Grisly Salvage
 Growing Ranks
 Guardian Gladewalker
 Gurmag Angler
+Hada Spy Patrol
 Hall of Triumph
 Haughty Djinn
 Hengegate Pathway // Mistgate Pathway
@@ -158,6 +166,7 @@ Jaspera Sentinel
 Jungle Lion
 Karn's Bastion
 Kathari Screecher
+Kazandu Tuskcaller
 Keep Watch
 Kessig Wolf Run
 Kitchen Finks
@@ -187,6 +196,7 @@ Mardu Strike Leader
 Maro
 Master of Etherium
 Megrim
+Mer-Ek Nightblade
 Merfolk Branchwalker
 Mesmeric Orb
 Midnight Banshee
@@ -289,6 +299,7 @@ Stoke the Flames
 Strangleroot Geist
 Strionic Resonator
 Stroke of Genius
+Student of Warfare
 Sultai Devotee
 Summer Bloom
 Sundering Growth
@@ -314,6 +325,7 @@ Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Treasure Cruise
 Tumble Magnet
+Tuskguard Captain
 Twilight Mire
 Twincast
 Uktabi Efreet

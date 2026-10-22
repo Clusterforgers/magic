@@ -1,0 +1,22 @@
+{
+  "oracle_id": "aa149597-087a-4e1f-953c-2cd04e90a93b",
+  "name": "Tuskguard Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tuskguard Captain",
+      "oracle_fingerprint": "609e3ab2563fdb9f62cbca0a44c1222b",
+      "abilities": [
+        { "Keyword": { "Outlast": "{G}" } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "HasCounter": "+1/+1" }]
+            },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        }
+      ]
+    }
+  ]
+}

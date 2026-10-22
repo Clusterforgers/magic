@@ -1,0 +1,22 @@
+{
+  "oracle_id": "8b972819-507a-40a9-ab1f-1a674ea56083",
+  "name": "Abzan Falconer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abzan Falconer",
+      "oracle_fingerprint": "b0c50ab871147c012fec89c0740c5995",
+      "abilities": [
+        { "Keyword": { "Outlast": "{W}" } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "HasCounter": "+1/+1" }]
+            },
+            "mods": [{ "AddKeyword": "Flying" }]
+          }
+        }
+      ]
+    }
+  ]
+}

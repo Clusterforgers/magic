@@ -177,6 +177,14 @@ pub enum Keyword {
     Undying,
     /// Persist (CR 702.79): when it dies, if it had no -1/-1 counter on it, it returns with a -1/-1 counter.
     Persist,
+    /// Level up with its cost (CR 702.87): "{cost}: Put a level counter on this permanent. Level up only as a sorcery."
+    LevelUp(Cost),
+    /// Outlast with its cost (CR 702.107): "{cost}, {T}: Put a +1/+1 counter on this permanent. Outlast only as a sorcery."
+    Outlast(Cost),
+    /// Saddle with its power (CR 702.171): tapping other creatures with that total power makes the Mount saddled until end of turn, at sorcery speed.
+    Saddle(u32),
+    /// Saddled (CR 702.171b): the designation of a Mount whose saddle ability resolved this turn, granted until end of turn.
+    Saddled,
 }
 
 impl Keyword {
@@ -259,6 +267,10 @@ impl Keyword {
         "Cumulative upkeep",
         "Undying",
         "Persist",
+        "Level up",
+        "Outlast",
+        "Saddle",
+        "Saddled",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -341,6 +353,10 @@ impl Keyword {
             Keyword::CumulativeUpkeep(_) => "Cumulative upkeep",
             Keyword::Undying => "Undying",
             Keyword::Persist => "Persist",
+            Keyword::LevelUp(_) => "Level up",
+            Keyword::Outlast(_) => "Outlast",
+            Keyword::Saddle(_) => "Saddle",
+            Keyword::Saddled => "Saddled",
         }
     }
 
@@ -446,6 +462,10 @@ mod tests {
             Keyword::CumulativeUpkeep(Cost::default()),
             Keyword::Undying,
             Keyword::Persist,
+            Keyword::LevelUp(Cost::default()),
+            Keyword::Outlast(Cost::default()),
+            Keyword::Saddle(2),
+            Keyword::Saddled,
         ]
     }
 

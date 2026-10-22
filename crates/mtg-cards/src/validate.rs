@@ -707,7 +707,9 @@ impl<'a> Walker<'a> {
             | Keyword::Reconfigure(cost)
             | Keyword::Cycling(cost)
             | Keyword::Unearth(cost)
-            | Keyword::Ninjutsu(cost) => {
+            | Keyword::Ninjutsu(cost)
+            | Keyword::LevelUp(cost)
+            | Keyword::Outlast(cost) => {
                 self.at("cost", |w| w.cost(cost));
             }
             // The cost of these is paid as the spell is announced: the mana, and the parts the engine pays there.
@@ -736,6 +738,7 @@ impl<'a> Walker<'a> {
                 self.parts_that_need_an_announcement("Keyword", "Cost", cost);
             }
             Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
+            Keyword::Saddle(0) => self.problem("saddle needs a power of at least 1"),
             Keyword::Enchant(selector) => {
                 self.selector(selector);
                 // An Aura is attached to a permanent; one that enchants a card in another zone waits for the cards that do.
@@ -2192,6 +2195,14 @@ fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str) -> bool {
                 || (matches!(k, Keyword::EnchantPlayer { .. })
                     && "Enchant".eq_ignore_ascii_case(keyword))
         }
+        // A keyword the card gives itself, as a level up creature does under a level.
+        Ability::Static {
+            affected: Ref::This,
+            mods,
+            ..
+        } => mods.iter().any(|modification| {
+            matches!(modification, Modification::AddKeyword(k) if k.name().eq_ignore_ascii_case(keyword))
+        }),
         Ability::Manual { span, .. } => printed
             .faces
             .get(face)
