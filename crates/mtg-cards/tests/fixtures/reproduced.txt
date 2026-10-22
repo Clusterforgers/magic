@@ -11,6 +11,7 @@ Archon of Cruelty
 Arrogant Wurm
 Artful Maneuver
 Arvad the Cursed
+Ash Barrens
 Atlantean Skirmisher
 Augury Raven
 Authority of the Consuls
@@ -45,6 +46,7 @@ Brainstorm
 Branchblight Stalker
 Brightstone Ritual
 Bronzeplate Boar
+Broodstar
 Cackling Counterpart
 Caldaia Strongarm
 Capsize
@@ -52,6 +54,7 @@ Carnage Tyrant
 Cascade Bluffs
 Cathars' Crusade
 Changeling Outcast
+Chartooth Cougar
 Chemister's Insight
 Circle of Dreams Druid
 Citadel Gate
@@ -107,14 +110,17 @@ Dual Casting
 Dualcaster Mage
 Dunland Crebain
 Durkwood Baloth
+Eagles of the North
 Easterling Vanguard
 Echo Inspector
 Elven Ambush
+Elvish Aberration
 Elvish Rejuvenator
 Empyrial Plate
 Epic Proportions
 Eternal Witness
 Ethereal Armor
+Ethersworn Sphinx
 Exotic Orchard
 Exploration
 Explore
@@ -127,6 +133,7 @@ Fearsome Goblin Pair
 Felidar Sovereign
 Fellwar Stone
 Fetid Heath
+Fiery Fall
 Fiery Temper
 Fire-Lit Thicket
 Firestorm Hellkite
@@ -144,6 +151,7 @@ Furtive Homunculus
 Gadwick, the Wizened
 Gaea's Cradle
 Game-Trail Changeling
+Generous Ent
 Gerrard's Wisdom
 Ghalta, Primal Hunger
 Giant Cindermaw
@@ -167,6 +175,7 @@ Gurmag Angler
 Hall of Triumph
 Haughty Djinn
 Hengegate Pathway // Mistgate Pathway
+Herald of Anguish
 Herald of the Dreadhorde
 Hero of Bladehold
 Holdout Settlement
@@ -216,11 +225,14 @@ Mardu Shadowspear
 Mardu Strike Leader
 Maro
 Master of Etherium
+Maverick Thopterist
 Mayhem Patrol
 Megrim
+Memory Guardian
 Merfolk Branchwalker
 Mesmeric Orb
 Midnight Banshee
+Migratory Route
 Mirari
 Mirror Image
 Mishra's Workshop
@@ -244,9 +256,12 @@ Ninja of the New Moon
 Notion Rain
 Nyxborn Behemoth
 Opt
+Orchard Strider
+Organic Extinction
 Otherworldly Gaze
 Pacifism
 Pale Bears
+Panther Robot
 Pestilent Syphoner
 Phantasmal Image
 Phyrexian Soulgorger
@@ -275,6 +290,7 @@ Reiterate
 Relentless Advance
 Revel Ruiner
 Reverberate
+Reverse Engineer
 Rhox Faithmender
 Rhystic Study
 Rift Bolt
@@ -322,6 +338,7 @@ Soul Shepherd
 Souldrinker
 Spectral Rider
 Sphinx of Jwar Isle
+Spire Golem
 Spring // Mind
 Springleaf Drum
 Squirrel Nest
@@ -354,6 +371,8 @@ The Spear of Bashenga
 The Thing, Ben Grimm
 Thieving Magpie
 Thopter Fabricator
+Thought Monitor
+Thoughtcast
 Thriving Bluff
 Thriving Grove
 Thriving Heath
@@ -364,6 +383,7 @@ Tilonalli's Skinshifter
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
+Traumatic Visions
 Treasure Cruise
 Tumble Magnet
 Twilight Mire
@@ -373,7 +393,9 @@ Umbral Collar Zealot
 Underworld Dreams
 Underworld Rage-Hound
 Universal Automaton
+Universal Surveillance
 Urabrask the Hidden
+Valley Rannet
 Vampire Cutthroat
 Vanquish the Horde
 Vengeful Vampire
@@ -389,6 +411,7 @@ Wanderbrine Preacher
 Wargate
 Warmonger Hellkite
 Wear // Tear
+Whir of Invention
 Wilderness Elemental
 Wooded Bastion
 Wrath of God

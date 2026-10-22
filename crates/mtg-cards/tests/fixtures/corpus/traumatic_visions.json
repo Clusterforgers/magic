@@ -1,0 +1,28 @@
+{
+  "id": "0b062fbb-9eb2-4773-83aa-b2daca4fe80d",
+  "oracle_id": "a30724f0-d174-408e-8baf-4bba3cbc45b5",
+  "name": "Traumatic Visions",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c21",
+  "collector_number": "132",
+  "rarity": "common",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{3}{U}{U}",
+  "cmc": 5.0,
+  "type_line": "Instant",
+  "oracle_text": "Counter target spell.\nBasic landcycling {1}{U} ({1}{U}, Discard this card: Search your library for a basic land card, reveal it, put it into your hand, then shuffle.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Landcycling",
+    "Basic landcycling",
+    "Typecycling",
+    "Cycling"
+  ]
+}

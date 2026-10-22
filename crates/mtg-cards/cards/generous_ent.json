@@ -1,0 +1,21 @@
+{
+  "oracle_id": "b6859c7a-4c4d-4652-938f-ecedce29d506",
+  "name": "Generous Ent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Generous Ent",
+      "oracle_fingerprint": "1df0b3c393112209cc2b3d8dc3748e11",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        { "Keyword": { "Typecycling": { "find": [{ "Subtype": "Forest" }], "cost": "{1}" } } }
+      ]
+    }
+  ]
+}

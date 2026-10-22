@@ -270,6 +270,16 @@ fn keywords_in_the_data_appear_in_the_oracle_text() {
                         "{}: the text has no landwalk",
                         card.name
                     );
+                } else if let Ability::Keyword(Keyword::Typecycling { .. }) = ability {
+                    // A typecycling is printed by its type (`Plainscycling`, `Basic landcycling`).
+                    assert!(
+                        text.contains("landcycling")
+                            || ["plains", "island", "swamp", "mountain", "forest"]
+                                .iter()
+                                .any(|land| text.contains(&format!("{land}cycling"))),
+                        "{}: the text has no typecycling",
+                        card.name
+                    );
                 } else if let Ability::Keyword(keyword) = ability
                     && !matches!(keyword, Keyword::Fuse)
                 {
