@@ -1,4 +1,4 @@
-//! Goal: a copy of a spell (CR 707.10) is put on the stack above the spell by Twincast, Reverberate, Fork, Reiterate, Dualcaster Mage and Dual Casting, at tables of two, three and four seats: it is not cast (no `SpellCast`, no cast trigger, nothing paid), it has the characteristics and the announced choices of the original (targets, modes, X, optional costs, the half of a split card or an Adventure), its controller may choose new targets for it with the ordinary target decision, a copy that resolves or is countered ceases to exist and is never in a graveyard, a copy can be copied, an exception of the effect (Fork's red) is a characteristic of the copy only, the buyback of the original is not the copy's, and the log of such games replays to the live state.
+//! Goal: a copy of a spell (CR 707.10) is put on the stack above the spell by Twincast, Reverberate, Fork, Reiterate, Dualcaster Mage and Dual Casting, at tables of two, three and four seats: it is not cast (no `SpellCast`, no cast trigger, nothing paid), it has the characteristics and the announced choices of the original (targets, modes, X, optional costs, the half of a split card or an Adventure), its controller may choose new targets for it with the ordinary target decision, a copy that resolves or is countered ceases to exist and is never in a graveyard (under Rest in Peace it is exiled as a token and ceases to exist all the same), a copy can be copied, an exception of the effect (Fork's red) is a characteristic of the copy only, the buyback of the original is not the copy's, and the log of such games replays to the live state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -470,6 +470,66 @@ fn a_countered_copy_ceases_to_exist_and_the_original_resolves(
         ["Twincast", "Lightning Bolt"],
         "Twincast and the Bolt, and nothing for the copy"
     );
+    replays(&driver, &setup);
+    Ok(())
+}
+
+/// A copy of a spell that is countered or resolves where a replacement effect (Rest in Peace) exiles instead of putting
+/// into a graveyard is exiled as a token: it ceases to exist and the end of its resolution still follows (the game that
+/// found it was commander fuzz seed 29 at six seats).
+#[rstest]
+fn a_copy_under_rest_in_peace_is_exiled_instead_and_ceases_to_exist(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] countered: bool,
+) -> Result<(), ScriptError> {
+    let scenario = || {
+        let mut foe = lands(2, 0);
+        foe.push(ready(card("Rest in Peace").unwrap()));
+        game(seats, &["Lightning Bolt", "Twincast"], 2, 1)
+            .battlefield(1, foe)
+            .hand(1, [card("Counterspell").unwrap()])
+    };
+    let setup = scenario().setup().unwrap();
+    let mut driver = Driver::from_scenario(scenario())?;
+    let foe = driver.target_player(1);
+    cast_and_copy(&mut driver, "Lightning Bolt", &[foe], "Twincast")?;
+    run(&mut driver, seats)?;
+    say(&mut driver, false)?;
+    let copy = spell_copies(&driver)[0];
+    if countered {
+        let reference = driver.state().object(copy).unwrap().reference();
+        driver.pass()?;
+        for _ in 1..seats {
+            if driver.decision()?.player == pid(1) {
+                break;
+            }
+            driver.pass()?;
+        }
+        assert_eq!(driver.decision()?.player, pid(1));
+        driver.cast_at("Counterspell", &[Target::Object(reference)])?;
+    }
+    run(&mut driver, seats)?;
+    assert!(driver.state().has_ceased(copy), "the copy is gone");
+    assert_eq!(driver.state().stack(), []);
+    assert_eq!(
+        life(&driver, 1),
+        if countered { 17 } else { 14 },
+        "the original and, unless it was countered, the copy each dealt 3"
+    );
+    for seat in 0..seats {
+        assert_eq!(
+            names(driver.state(), Zone::Graveyard(pid(seat))),
+            [] as [&str; 0]
+        );
+    }
+    let mut exiled = names(driver.state(), Zone::Exile);
+    exiled.sort();
+    let wanted: &[&str] = if countered {
+        &["Counterspell", "Lightning Bolt", "Twincast"]
+    } else {
+        &["Lightning Bolt", "Twincast"]
+    };
+    assert_eq!(exiled, wanted, "the cards are exiled and the copy is not");
     replays(&driver, &setup);
     Ok(())
 }

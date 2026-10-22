@@ -180,9 +180,12 @@ fn begin(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
 /// Takes the object off the stack. An ability ceases to exist (CR 113.7a); a spell that resolved is moved by
 /// `SpellResolved`, which follows, and a spell that did not goes to its owner's graveyard.
 fn end(state: &mut GameState, id: ObjectId, outcome: ResolutionOutcome) -> Result<(), EngineError> {
+    // A copy of a spell that a replacement effect sent elsewhere (Rest in Peace) ceased to exist with that move, so its
+    // end finds it apart from the game (CR 111.7, 707.10a).
     let (kind, owner, zone) = state
         .objects
         .get(&id)
+        .or_else(|| state.ceased.get(&id))
         .map(|o| (o.kind, o.owner, o.zone))
         .ok_or_else(|| invalid(format!("unknown object {id:?}")))?;
     // A spell that a replacement effect sent elsewhere (exile instead of the graveyard) is off the stack already.

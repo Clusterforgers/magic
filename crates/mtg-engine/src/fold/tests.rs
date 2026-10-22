@@ -15,6 +15,7 @@ use super::apply_event;
 use crate::abilities::{Cause, PutOnStack};
 use crate::choose::{Choice, Choices, Target};
 use crate::combat::AttackTarget;
+use crate::copies::SpellCopy;
 use crate::counters::CountersChanged;
 use crate::events::{Event, ResolutionOutcome, ZoneCause};
 use crate::fixtures::{creature, state};
@@ -228,6 +229,54 @@ fn a_spell_that_did_not_resolve_goes_to_its_owners_graveyard(#[case] outcome: Re
     assert_eq!(object.zone(), Zone::Graveyard(PlayerId(0)));
     assert_eq!(object.counter(), 2, "cast, then left the stack");
     assert!(game.resolving().is_none() && game.priority().is_some());
+}
+
+#[rstest]
+#[case::fizzled_while_resolving(ResolutionOutcome::Fizzled, true)]
+#[case::countered_from_below(ResolutionOutcome::Countered, false)]
+fn the_end_of_a_spell_copy_that_a_replacement_effect_sent_to_exile_finds_it_ceased_to_exist(
+    #[case] outcome: ResolutionOutcome,
+    #[case] resolving: bool,
+) {
+    let mut game = game();
+    let at = Target::Player(PlayerId(1));
+    let cast = cast_zap(&game, at);
+    fold(&mut game, &[cast]);
+    let original = *game.stack().last().unwrap();
+    let copy = game.next_object();
+    let copied = Event::SpellCopied(Box::new(SpellCopy {
+        object: copy,
+        of: game.object(original).unwrap().reference(),
+        controller: PlayerId(0),
+        definition: zap(),
+        choices: Choices {
+            targets: vec![vec![at]],
+            ..Choices::default()
+        },
+    }));
+    fold(&mut game, &[copied]);
+    if resolving {
+        fold(&mut game, &[Event::ResolutionBegan { object: copy }]);
+    }
+    // Rest in Peace: the move to the graveyard is made to exile, where a token cannot be (CR 111.7).
+    let moved = Event::ZoneChanged {
+        object: copy,
+        from: Zone::Stack,
+        to: Zone::Exile,
+        cause: ZoneCause::Countered,
+    };
+    fold(&mut game, &[moved]);
+    assert!(game.has_ceased(copy) && game.object(copy).is_none());
+    fold(
+        &mut game,
+        &[Event::ResolutionEnded {
+            object: copy,
+            outcome,
+        }],
+    );
+    assert_eq!(game.stack(), [original], "the original is left alone");
+    assert!(game.resolving().is_none());
+    assert!(game.priority().is_some());
 }
 
 #[test]

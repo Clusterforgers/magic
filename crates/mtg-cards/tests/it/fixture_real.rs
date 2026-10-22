@@ -77,7 +77,18 @@ fn differences(fixture: &Value, real: &Value) -> Vec<String> {
 }
 
 fn unequal(path: &str, ours: &Value, theirs: &Value) -> Option<String> {
-    (ours != theirs).then(|| format!("{path}: fixture {ours}, real {theirs}"))
+    (!same(ours, theirs)).then(|| format!("{path}: fixture {ours}, real {theirs}"))
+}
+
+/// Whether two values are equal, numbers by value (`2` is `2.0`) and anything else exactly.
+fn same(ours: &Value, theirs: &Value) -> bool {
+    match (ours, theirs) {
+        (Value::Number(ours), Value::Number(theirs)) => ours.as_f64() == theirs.as_f64(),
+        (Value::Array(ours), Value::Array(theirs)) => {
+            ours.len() == theirs.len() && ours.iter().zip(theirs).all(|(o, t)| same(o, t))
+        }
+        _ => ours == theirs,
+    }
 }
 
 fn face_list(record: &Value) -> Vec<Value> {
@@ -186,6 +197,9 @@ fn card() -> Value {
 #[case::a_set_the_real_card_lacks(json!({"set": "tmp"}), &["set"])]
 #[case::colors_in_another_order(json!({"colors": ["U", "R"]}), &["colors"])]
 #[case::a_cost_the_fixture_leaves_out(json!({"mana_cost": null}), &["mana_cost"])]
+#[case::a_whole_number_for_the_same_float(json!({"cmc": 4}), &[])]
+#[case::another_number(json!({"cmc": 5}), &["cmc"])]
+#[case::a_number_for_text(json!({"cmc": "4.0"}), &["cmc"])]
 #[case::a_face_text(
     json!({"card_faces": [
         {"name": "Fire", "mana_cost": "{1}{R}", "oracle_text": "Fire!"},
