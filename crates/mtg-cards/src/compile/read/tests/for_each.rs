@@ -197,10 +197,22 @@ fn a_pump_counted_by_for_each_is_an_effect_over_a_count(#[case] text: &str, #[ca
 }
 
 #[rstest]
-#[case::static_zero("Equipped creature gets +0/+0 for each artifact you control.", ClauseKind::Static)]
-#[case::static_x("Equipped creature gets +X/+X for each artifact you control.", ClauseKind::Static)]
-#[case::static_mixed("Equipped creature gets +1/+2 for each artifact you control.", ClauseKind::Static)]
-#[case::static_keyword("Equipped creature has flying for each artifact you control.", ClauseKind::Static)]
+#[case::static_zero(
+    "Equipped creature gets +0/+0 for each artifact you control.",
+    ClauseKind::Static
+)]
+#[case::static_x(
+    "Equipped creature gets +X/+X for each artifact you control.",
+    ClauseKind::Static
+)]
+#[case::static_mixed(
+    "Equipped creature gets +1/+2 for each artifact you control.",
+    ClauseKind::Static
+)]
+#[case::static_keyword(
+    "Equipped creature has flying for each artifact you control.",
+    ClauseKind::Static
+)]
 #[case::pump_keyword(
     "Target creature gains flying until end of turn for each creature you control.",
     ClauseKind::Spell

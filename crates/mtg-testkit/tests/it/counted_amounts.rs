@@ -24,7 +24,9 @@ fn giant() -> Arc<CardDefinition> {
 /// A table of `seats` where seat 0 has the Behemoth and `own` Giants, and each other seat has `others` Giants.
 fn table(seats: usize, own: usize, others: usize) -> GameState {
     let mut scenario = Scenario::new(seats);
-    let mut mine = vec![ready(mtg_testkit::corpus::card("Borderland Behemoth").unwrap())];
+    let mut mine = vec![ready(
+        mtg_testkit::corpus::card("Borderland Behemoth").unwrap(),
+    )];
     mine.extend((0..own).map(|_| ready(giant())));
     scenario = scenario.battlefield(0, mine);
     for seat in 1..seats {
@@ -62,9 +64,9 @@ fn cast_cards(setup: &mtg_engine::GameSetup, events: &[Event]) -> BTreeSet<Strin
     events
         .iter()
         .filter_map(|event| match event {
-            Event::SpellCast { object, .. } => {
-                state.object(*object).map(|object| object.card().name.clone())
-            }
+            Event::SpellCast { object, .. } => state
+                .object(*object)
+                .map(|object| object.card().name.clone()),
             _ => None,
         })
         .collect()
