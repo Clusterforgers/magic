@@ -152,6 +152,8 @@ fn step(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     }
     let whose = if r.word("your") {
         Ref::You
+    } else if r.words("the monarch's") {
+        Ref::Monarch
     } else if r.words("each opponent's") {
         Ref::Opponents
     } else if r.word("each") {
@@ -243,6 +245,9 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
             Selector::default()
         };
         Some(TriggerPattern::Cycled { what, by })
+    } else if verb == if third { "becomes" } else { "become" } {
+        r.need("the monarch")?;
+        Some(TriggerPattern::BecomesMonarch { who: by })
     } else if verb == if third { "taps" } else { "tap" } {
         let what = subject(r)?;
         r.need("for mana")?;
@@ -325,6 +330,12 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
             return Some(TriggerPattern::AttacksPlayer {
                 what: what.clone(),
                 at: Ref::AttachedPlayer,
+            });
+        }
+        if r.words("the monarch") {
+            return Some(TriggerPattern::AttacksPlayer {
+                what: what.clone(),
+                at: Ref::Monarch,
             });
         }
         let attacks = TriggerPattern::Attacks { what: what.clone() };
@@ -432,13 +443,10 @@ fn damage_dealt(r: &mut Reader<'_>, source: &Selector) -> Option<TriggerPattern>
     })
 }
 
-/// The condition of an intervening "if": "you have 40 or more life", "you're the monarch".
+/// The condition of an intervening "if": "you have 40 or more life", "you're the monarch", "there is no monarch".
 pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
-    if r.words("you're the monarch") {
-        return Some(Condition::Monarch(Ref::You));
-    }
-    if r.words("an opponent is the monarch") {
-        return Some(Condition::Monarch(Ref::Opponents));
+    if let Some(monarch) = monarch_condition(r) {
+        return Some(monarch);
     }
     r.need("you have")?;
     let number = i32::try_from(r.number()?).ok()?;
@@ -457,12 +465,38 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
     })
 }
 
+/// Who is the monarch: "you're the monarch", "an opponent is the monarch", "there is no monarch".
+pub fn monarch_condition(r: &mut Reader<'_>) -> Option<Condition> {
+    if r.words("you're the monarch") {
+        Some(Condition::Monarch(Ref::You))
+    } else if r.words("an opponent is the monarch") {
+        Some(Condition::Monarch(Ref::Opponents))
+    } else if r.words("there is no monarch") {
+        Some(no_monarch())
+    } else {
+        None
+    }
+}
+
+/// "There is no monarch": no player is the monarch.
+fn no_monarch() -> Condition {
+    Condition::Not(Box::new(Condition::Monarch(Ref::EachPlayer)))
+}
+
+/// The condition `monarch_condition` reads, written back.
+pub fn monarch_text(condition: &Condition) -> Option<String> {
+    Some(match condition {
+        Condition::Monarch(Ref::You) => "you're the monarch".to_owned(),
+        Condition::Monarch(Ref::Opponents) => "an opponent is the monarch".to_owned(),
+        condition if *condition == no_monarch() => "there is no monarch".to_owned(),
+        _ => return None,
+    })
+}
+
 /// The condition as the card words it, after "if".
 pub fn condition_text(condition: &Condition) -> Option<String> {
-    match condition {
-        Condition::Monarch(Ref::You) => return Some("you're the monarch".to_owned()),
-        Condition::Monarch(Ref::Opponents) => return Some("an opponent is the monarch".to_owned()),
-        _ => {}
+    if let Some(monarch) = monarch_text(condition) {
+        return Some(monarch);
     }
     let Condition::Compare {
         left: Amount::Life(Ref::You),
@@ -539,6 +573,10 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
             what,
             at: Ref::AttachedPlayer,
         } => said(what, "attacks enchanted player"),
+        TriggerPattern::AttacksPlayer {
+            what,
+            at: Ref::Monarch,
+        } => said(what, "attacks the monarch"),
         TriggerPattern::Blocks { what } => said(what, "blocks"),
         TriggerPattern::BecomesBlocked { what } => said(what, "becomes blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),
@@ -604,6 +642,7 @@ fn step_text(step: Step, whose: &Ref) -> Option<String> {
         Ref::You => "your",
         Ref::Opponents => "each opponent's",
         Ref::EachPlayer => "each",
+        Ref::Monarch => "the monarch's",
         _ => return None,
     };
     Some(format!("{owner} {words}"))
@@ -625,6 +664,10 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             "Whenever {} {}",
             player_verb(by, "sacrifice")?,
             subject_text(what)?
+        )),
+        TriggerPattern::BecomesMonarch { who } => Some(format!(
+            "Whenever {} the monarch",
+            player_verb(who, "become")?
         )),
         TriggerPattern::LifeGained { who } => {
             Some(format!("Whenever {} life", player_verb(who, "gain")?))

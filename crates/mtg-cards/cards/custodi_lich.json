@@ -1,0 +1,28 @@
+{
+  "oracle_id": "0d95ee14-9ff0-4d7f-be56-361a500ce36f",
+  "name": "Custodi Lich",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Custodi Lich",
+      "oracle_fingerprint": "8aa73fdb58fbbc32c385dea17ea67405",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesMonarch": { "who": "You" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Sacrifice": { "who": { "Target": 0 }, "filter": [{ "Type": "Creature" }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -357,6 +357,26 @@ fn cycling_triggers_for_the_player_and_the_card_the_pattern_names(
     assert_eq!(fired(&pre, &cycled), expected);
 }
 
+#[rstest]
+#[case::i_become_it(r#"{"BecomesMonarch":{"who":"You"}}"#, ME, 1)]
+#[case::they_become_it_not_me(r#"{"BecomesMonarch":{"who":"You"}}"#, FOE, 0)]
+#[case::an_opponent_becomes_it(r#"{"BecomesMonarch":{"who":"Opponents"}}"#, FOE, 1)]
+#[case::i_am_not_an_opponent(r#"{"BecomesMonarch":{"who":"Opponents"}}"#, ME, 0)]
+#[case::anyone_becomes_it_me(r#"{"BecomesMonarch":{}}"#, ME, 1)]
+#[case::anyone_becomes_it_them(r#"{"BecomesMonarch":{}}"#, FOE, 1)]
+fn becoming_the_monarch_triggers_for_the_players_the_pattern_names_and_names_the_player(
+    #[case] when: &str,
+    #[case] player: PlayerId,
+    #[case] expected: usize,
+) {
+    let pre = board(when);
+    let found = fires(&pre, &[Event::MonarchChanged { player }]);
+    assert_eq!(found.len(), expected);
+    if expected == 1 {
+        assert_eq!(found[0].cause.subjects, vec![Target::Player(player)]);
+    }
+}
+
 #[test]
 fn a_discard_that_is_not_cycling_does_not_trigger_a_cycling_pattern_and_the_cycling_of_a_card_also_discards_it()
  {

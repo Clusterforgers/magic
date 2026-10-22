@@ -237,6 +237,15 @@ pub enum TriggerPattern {
         )]
         by: Ref,
     },
+    /// A player becomes the monarch ("whenever you become the monarch"); `Triggering` is that player.
+    BecomesMonarch {
+        /// Who becomes it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
     /// A step begins ("at the beginning of ...").
     StepBegins {
         /// The step.

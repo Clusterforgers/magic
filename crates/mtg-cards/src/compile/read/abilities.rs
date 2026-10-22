@@ -66,6 +66,7 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
             | TriggerPattern::Discarded { .. }
             | TriggerPattern::LifeGained { .. }
             | TriggerPattern::LifeLost { .. }
+            | TriggerPattern::BecomesMonarch { .. }
             | TriggerPattern::Cycled { .. }
             | TriggerPattern::TappedForMana { .. }
             | TriggerPattern::DealsDamage {
@@ -80,6 +81,13 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     if triggers::targeted_itself(&when) {
         r.it = Some(Ref::This);
     }
+    r.at_monarch = matches!(
+        when,
+        TriggerPattern::AttacksPlayer {
+            at: Ref::Monarch,
+            ..
+        }
+    );
     // The creature that attacks is "it" and "its controller" is the player attacking.
     if matches!(when, TriggerPattern::AttacksPlayer { .. }) {
         r.it = Some(Ref::Triggering);
