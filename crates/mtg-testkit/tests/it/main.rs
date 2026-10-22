@@ -46,6 +46,8 @@ mod counter_effects;
 mod counters_fuzz;
 mod damage_forms;
 mod day_night;
+mod defining;
+mod defining_fuzz;
 mod determinism_replay;
 mod divided_resolution;
 mod elimination;
