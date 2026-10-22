@@ -50,6 +50,7 @@ mod counter_effects;
 mod counters_fuzz;
 mod damage_forms;
 mod dash;
+mod dredge;
 mod day_night;
 mod defining;
 mod defining_fuzz;

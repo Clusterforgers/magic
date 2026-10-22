@@ -401,6 +401,9 @@ pub enum ReplaceBy {
     PreventUpTo(u32),
     /// These effects happen instead.
     Instead(Vec<Effect>),
+    /// A draw is skipped: the player mills this many cards and returns the card with the ability from its graveyard to
+    /// their hand (dredge, CR 702.52a).
+    Dredge(u32),
     /// The object goes to this zone instead ("exile it instead"); a card in a graveyard, a hand, the stack or exile
     /// goes to its owner's zone.
     MoveTo(ZoneKind),

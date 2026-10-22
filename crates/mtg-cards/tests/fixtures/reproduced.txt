@@ -65,6 +65,7 @@ Custodi Lich
 Cut // Ribbons
 Cyclonic Rift
 Cytoshape
+Darkblast
 Darksteel Juggernaut
 Dauthi Horror
 Dauthi Marauder
@@ -135,6 +136,7 @@ Goblin War Buggy
 Grapeshot
 Graven Cairns
 Graveshifter
+Greater Mossdog
 Grisly Salvage
 Growing Ranks
 Guardian Gladewalker
@@ -258,6 +260,8 @@ Seekers' Squire
 Serra Angel
 Servant of the Conduit
 Shadowmage Infiltrator
+Shambling Shell
+Shenanigans
 Siege Wurm
 Sinister Sabotage
 Sinister Starfish

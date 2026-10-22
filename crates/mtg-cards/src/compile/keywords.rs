@@ -328,6 +328,12 @@ pub fn read(item: &str) -> Option<Keyword> {
         "entwine" => spell_cost(rest).map(Keyword::Entwine),
         "flashback" => spell_cost(rest).map(Keyword::Flashback),
         "madness" => spell_cost(rest).map(Keyword::Madness),
+        "miracle" => spell_cost(rest).map(Keyword::Miracle),
+        "dredge" => rest
+            .parse()
+            .ok()
+            .filter(|cards| *cards > 0)
+            .map(Keyword::Dredge),
         "morph" => cost(rest).map(Keyword::Morph),
         "disguise" => cost(rest).map(Keyword::Disguise),
         "evoke" => spell_cost(rest).map(Keyword::Evoke),
@@ -651,6 +657,9 @@ mod tests {
     )]
     #[case::cycling("Cycling {2}", Keyword::Cycling(mana("{2}")))]
     #[case::madness("Madness {R}", Keyword::Madness(mana("{R}")))]
+    #[case::miracle("Miracle {1}{W}", Keyword::Miracle(mana("{1}{W}")))]
+    #[case::dredge("Dredge 3", Keyword::Dredge(3))]
+    #[case::dredge_six("Dredge 6", Keyword::Dredge(6))]
     #[case::morph("Morph {3}{B}", Keyword::Morph(mana("{3}{B}")))]
     #[case::disguise("Disguise {1}{W}", Keyword::Disguise(mana("{1}{W}")))]
     #[case::overload("Overload {3}{U}{U}", Keyword::Overload(mana("{3}{U}{U}")))]
@@ -806,6 +815,8 @@ mod tests {
     #[case::doctors_companion_with_a_cost("Doctor's companion {1}")]
     #[case::undeclared("Horsemanship")]
     #[case::crew_x("Crew X")]
+    #[case::dredge_x("Dredge X")]
+    #[case::dredge_nothing("Dredge 0")]
     #[case::crew_nothing("Crew 0")]
     #[case::mutate_without_a_cost("Mutate")]
     #[case::a_parameter_on_changeling("Changeling {1}")]
@@ -921,6 +932,8 @@ mod tests {
             "Entwine {1}",
             "Flashback {1}",
             "Madness {1}",
+            "Miracle {W}",
+            "Dredge 2",
             "Morph {1}",
             "Disguise {1}",
             "Suspend 2\u{2014}{1}",
