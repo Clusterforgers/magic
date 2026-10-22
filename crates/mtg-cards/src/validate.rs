@@ -1786,6 +1786,10 @@ impl<'a> Walker<'a> {
             GameRule::MustAttack(who)
             | GameRule::MustBlock(who)
             | GameRule::CantBeCountered(who) => self.at(tag, |w| w.reference(who, Kind::Object)),
+            GameRule::MustAttackPlayers { who, players } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Object));
+                w.at("players", |w| w.reference(players, Kind::Player));
+            }),
             GameRule::CantGainLife(who)
             | GameRule::CantDraw(who)
             | GameRule::CantSearch(who)

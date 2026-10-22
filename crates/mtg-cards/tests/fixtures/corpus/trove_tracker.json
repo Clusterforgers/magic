@@ -1,0 +1,27 @@
+{
+  "id": "c3b74135-b8db-4485-a4b1-7aaa3ef28072",
+  "oracle_id": "f27972da-ad2f-4df5-82d3-c909cce8cc91",
+  "name": "Trove Tracker",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmr",
+  "collector_number": "104",
+  "rarity": "common",
+  "released_at": "2020-11-20",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Pirate",
+  "oracle_text": "When this creature dies, draw a card.\nEncore {5}{U}{U} ({5}{U}{U}, Exile this card from your graveyard: For each opponent, create a token copy that attacks that opponent this turn if able. They gain haste. Sacrifice them at the beginning of the next end step. Activate only as a sorcery.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Encore"
+  ]
+}
