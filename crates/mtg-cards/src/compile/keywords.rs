@@ -91,7 +91,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("changeling", Params::None),
     ("devoid", Params::None),
     ("rebound", Params::None),
-    ("retrace", Params::None),
+        ("retrace", Params::None),
     ("split second", Params::None),
     ("haunt", Params::None),
     ("improvise", Params::None),
@@ -336,6 +336,8 @@ pub fn read(item: &str) -> Option<Keyword> {
         "encore" => cost(rest).map(Keyword::Encore),
         "squad" => cost(rest).map(Keyword::Squad),
         "foretell" => cost(rest).map(Keyword::Foretell),
+        "unearth" => spell_cost(rest).map(Keyword::Unearth),
+        "escape" => spell_cost(rest).map(Keyword::Escape),
         "crew" => rest
             .parse()
             .ok()
@@ -427,6 +429,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "shadow" => Keyword::Shadow,
         "split second" => Keyword::SplitSecond,
         "undaunted" => Keyword::Undaunted,
+        "rebound" => Keyword::Rebound,
         _ => return None,
     })
 }
@@ -650,6 +653,16 @@ mod tests {
     #[case::squad("Squad {2}", Keyword::Squad(mana("{2}")))]
     #[case::foretell("Foretell {1}{U}", Keyword::Foretell(mana("{1}{U}")))]
     #[case::foretell_for_nothing("Foretell {0}", Keyword::Foretell(mana("{0}")))]
+    #[case::unearth("Unearth {1}{B}", Keyword::Unearth(mana("{1}{B}")))]
+    #[case::unearth_in_mana_only_with_reminder("unearth {B}", Keyword::Unearth(mana("{B}")))]
+    #[case::rebound("Rebound", Keyword::Rebound)]
+    #[case::escape_exiling_cards(
+        "Escape\u{2014}{2}{R}, Exile three other cards from your graveyard.",
+        Keyword::Escape(Cost(vec![
+            CostItem::Mana("{2}{R}".parse().unwrap()),
+            CostItem::ExileFromGraveyard { filter: Selector(vec![Pred::Other]), count: Amount::Fixed(3) },
+        ]))
+    )]
     #[case::crew("Crew 3", Keyword::Crew(3))]
     #[case::changeling("Changeling", Keyword::Changeling)]
     #[case::devoid("Devoid", Keyword::Devoid)]
@@ -897,6 +910,9 @@ mod tests {
             "Partner\u{2014}Friends forever",
             "Doctor's companion",
             "Choose a Background",
+            "Unearth {1}",
+            "Escape {1}",
+            "Rebound",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];
         let mut seen = Vec::new();

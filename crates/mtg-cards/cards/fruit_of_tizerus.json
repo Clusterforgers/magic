@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8d6ad0a0-3b71-4fab-8874-470285c39299",
+  "name": "Fruit of Tizerus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fruit of Tizerus",
+      "oracle_fingerprint": "df01dbeca9e21a1e69ae97b74c631464",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        {
+          "Keyword": {
+            "Escape": [
+              { "Mana": "{3}{B}" },
+              { "ExileFromGraveyard": { "filter": ["Other"], "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

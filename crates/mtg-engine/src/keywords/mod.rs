@@ -25,6 +25,7 @@ mod enchant;
 mod encore;
 mod entwine;
 mod equip;
+mod escape;
 mod evoke;
 mod fear;
 mod first_strike;
@@ -58,6 +59,7 @@ mod protection;
 mod provided;
 mod prowess;
 mod reach;
+mod rebound;
 mod reconfigure;
 mod shadow;
 mod shroud;
@@ -69,6 +71,7 @@ pub(crate) mod suspend;
 mod toxic;
 mod trample;
 mod undaunted;
+mod unearth;
 mod vigilance;
 mod ward;
 mod wither;
@@ -383,6 +386,9 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::PartnerGroup(_) => &partner_group::PartnerGroup,
         Keyword::DoctorsCompanion => &doctors_companion::DoctorsCompanion,
         Keyword::ChooseABackground => &choose_a_background::ChooseABackground,
+        Keyword::Unearth(_) => &unearth::Unearth,
+        Keyword::Escape(_) => &escape::Escape,
+        Keyword::Rebound => &rebound::Rebound,
     }
 }
 
@@ -627,6 +633,9 @@ mod tests {
             Keyword::PartnerGroup("Friends forever".into()),
             Keyword::DoctorsCompanion,
             Keyword::ChooseABackground,
+            Keyword::Unearth(cost()),
+            Keyword::Escape(cost()),
+            Keyword::Rebound,
         ]
     }
 
@@ -690,6 +699,9 @@ mod tests {
         "Keyword.PartnerGroup",
         "Keyword.DoctorsCompanion",
         "Keyword.ChooseABackground",
+        "Keyword.Unearth",
+        "Keyword.Escape",
+        "Keyword.Rebound",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -794,6 +806,9 @@ mod tests {
     #[case::partner_group(Keyword::PartnerGroup("Friends forever".into()), Hooks::none())]
     #[case::doctors_companion(Keyword::DoctorsCompanion, Hooks::none())]
     #[case::choose_a_background(Keyword::ChooseABackground, Hooks::none())]
+    #[case::unearth(Keyword::Unearth(Cost::mana("{B}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::escape(Keyword::Escape(Cost::mana("{B}".parse().unwrap())), Hooks::none())]
+    #[case::rebound(Keyword::Rebound, Hooks::none())]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);
