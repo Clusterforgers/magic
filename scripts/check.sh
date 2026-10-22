@@ -12,6 +12,8 @@ if [[ "$mode" != web ]]; then
 fi
 
 if [[ "$mode" == rust || "$mode" == all ]]; then
+  # Compile first: the lock below only has to cover the run, not the slow optimised test builds.
+  cargo test --workspace --quiet --no-run
   # Reuse a Postgres that is already listening (e.g. another worktree started one).
   if command -v docker >/dev/null && [[ -f docker-compose.yml ]] && ! (exec 3<>/dev/tcp/127.0.0.1/5432) 2>/dev/null; then
     docker compose up -d --wait db >/dev/null
