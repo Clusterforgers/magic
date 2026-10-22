@@ -69,6 +69,8 @@ pub enum CastWay {
     Suspend,
     /// Foretell (CR 702.143): from exile, face down, on a later turn than it was foretold, for its foretell cost.
     Foretold,
+    /// Escape (CR 702.138): from a graveyard for its escape cost, which exiles other cards of the graveyard; the permanent remembers that it escaped.
+    Escape,
     /// Without paying its mana cost, by a permission or an effect (CR 118.9).
     Free,
 }

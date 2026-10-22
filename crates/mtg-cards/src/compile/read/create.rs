@@ -1,16 +1,19 @@
 //! Tokens: "create two 1/1 white Soldier creature tokens that are tapped and attacking", "create a
-//! Treasure token" and "create X Treasure tokens, where X is the number of artifacts you control",
-//! read into `Effect::CreateToken` and written back the same way. "Investigate" is "create a Clue token".
+//! Treasure token", "create a 1/1 white Spirit creature token with flying" and "create X Treasure tokens, where X
+//! is the number of artifacts you control", read into `Effect::CreateToken` and written back the same way.
+//! "Investigate" is "create a Clue token".
 
 use mtg_core::card::Subtype;
 use mtg_core::color::Color;
 
 use super::amounts::{count_word, number_word};
 use super::selectors::{
-    Form, card_type, color, color_name, phrase, phrase_text, subtype, type_name,
+    Form, card_type, color, color_name, keyword, keyword_text, phrase, phrase_text, subtype,
+    type_name,
 };
 use super::tokens::Reader;
 use super::triggers::article;
+use crate::ability::Ability;
 use crate::card::TokenSpec;
 use crate::effect::{Effect, TokenRef};
 use crate::refs::Ref;
@@ -81,9 +84,24 @@ fn token(r: &mut Reader<'_>) -> Option<TokenRef> {
     })))
 }
 
+/// "with flying", "with flying and vigilance", "with flying, vigilance, and haste": the keywords a described token has.
+fn keyword_abilities(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
+    r.word("with").then_some(())?;
+    let mut found = vec![Ability::Keyword(keyword(r)?)];
+    while let Some(next) = r.attempt(|r| {
+        let listed = r.punct(',');
+        let joined = r.word("and");
+        (listed || joined).then_some(())?;
+        keyword(r)
+    }) {
+        found.push(Ability::Keyword(next));
+    }
+    Some(found)
+}
+
 /// "Create a Treasure token.", "Create two 1/1 white Soldier creature tokens that are tapped and
 /// attacking.", "Create X Treasure tokens, where X is the number of artifacts you control.",
-/// "Investigate."
+/// "Create a 1/1 white Spirit creature token with flying.", "Investigate."
 pub fn tokens(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if r.word("investigate") {
         return Some(vec![effect(
@@ -100,16 +118,26 @@ pub fn tokens(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     } else {
         Some(number_word(r.take_word()?)?)
     };
-    let token = token(r)?;
+    let mut token = token(r)?;
     let single = number == Some(1);
     r.word(if single { "token" } else { "tokens" })
         .then_some(())?;
-    let on_the_battlefield = if single {
-        "that's tapped and attacking"
+    if let Some(abilities) = r.attempt(keyword_abilities) {
+        let TokenRef::Custom(spec) = &mut token else {
+            return None;
+        };
+        spec.abilities = abilities;
+    }
+    let (tapped_and_attacking, attacking_only) = if single {
+        ("that's tapped and attacking", "that's attacking")
     } else {
-        "that are tapped and attacking"
+        ("that are tapped and attacking", "that are attacking")
     };
-    let entering = r.words(on_the_battlefield);
+    let (tapped, attacking) = if r.words(tapped_and_attacking) {
+        (true, true)
+    } else {
+        (false, r.words(attacking_only))
+    };
     let count = if let Some(number) = number {
         Amount::Fixed(i32::try_from(number).ok()?)
     } else {
@@ -117,7 +145,7 @@ pub fn tokens(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         r.need("where x is the number of")?;
         Amount::Count(phrase(r, Form::All)?)
     };
-    Some(vec![effect(token, count, entering, entering)])
+    Some(vec![effect(token, count, tapped, attacking)])
 }
 
 /// The colors of a token as a card words them: "white and blue", "colorless".
@@ -146,7 +174,6 @@ fn token_text(token: &TokenRef) -> Option<String> {
             let subtypes: Vec<&str> = spec.subtypes.iter().map(|found| found.0.as_str()).collect();
             let types: Vec<&str> = spec.types.iter().map(|found| type_name(*found)).collect();
             let plain = spec.supertypes.is_empty()
-                && spec.abilities.is_empty()
                 && !subtypes.is_empty()
                 && !types.is_empty()
                 && spec.name == subtypes.join(" ")
@@ -165,6 +192,28 @@ fn token_text(token: &TokenRef) -> Option<String> {
     }
 }
 
+/// The keywords of a described token as a card words them, with the space before: " with flying", " with flying and
+/// vigilance", " with flying, vigilance, and haste". `None` for an ability that is not a plain keyword.
+fn keywords_text(token: &TokenRef) -> Option<String> {
+    let TokenRef::Custom(spec) = token else {
+        return Some(String::new());
+    };
+    let names: Vec<String> = spec
+        .abilities
+        .iter()
+        .map(|ability| match ability {
+            Ability::Keyword(found) => keyword_text(found),
+            _ => None,
+        })
+        .collect::<Option<_>>()?;
+    Some(match names.as_slice() {
+        [] => String::new(),
+        [only] => format!(" with {only}"),
+        [first, last] => format!(" with {first} and {last}"),
+        [rest @ .., last] => format!(" with {}, and {last}", rest.join(", ")),
+    })
+}
+
 /// An effect that creates tokens, as a sentence without its first capital and period.
 pub fn text(effect: &Effect) -> Option<String> {
     let Effect::CreateToken {
@@ -178,10 +227,12 @@ pub fn text(effect: &Effect) -> Option<String> {
     else {
         return None;
     };
-    if tapped != attacking {
+    // A token that enters tapped and not attacking has no wording of its own here.
+    if *tapped && !*attacking {
         return None;
     }
     let what = token_text(token)?;
+    let with = keywords_text(token)?;
     let (number, single, tail) = match count {
         Amount::Fixed(1) => (article(&what).to_owned(), true, String::new()),
         Amount::Fixed(number) => (
@@ -200,10 +251,14 @@ pub fn text(effect: &Effect) -> Option<String> {
         _ => return None,
     };
     let noun = if single { "token" } else { "tokens" };
-    let entering = match (*tapped, single) {
-        (false, _) => "",
-        (true, true) => " that's tapped and attacking",
-        (true, false) => " that are tapped and attacking",
+    let entering = match (*tapped, *attacking, single) {
+        (false, false, _) => "",
+        (true, _, true) => " that's tapped and attacking",
+        (true, _, false) => " that are tapped and attacking",
+        (false, true, true) => " that's attacking",
+        (false, true, false) => " that are attacking",
     };
-    Some(format!("create {number} {what} {noun}{entering}{tail}"))
+    Some(format!(
+        "create {number} {what} {noun}{with}{entering}{tail}"
+    ))
 }

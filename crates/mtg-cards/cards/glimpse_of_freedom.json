@@ -1,0 +1,22 @@
+{
+  "oracle_id": "02d78e76-8151-4851-bb4e-e0a1fa98756f",
+  "name": "Glimpse of Freedom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glimpse of Freedom",
+      "oracle_fingerprint": "3815fc9d27f9d1921ed20cf8c34f834f",
+      "abilities": [
+        { "Spell": { "effects": [{ "Draw": {} }] } },
+        {
+          "Keyword": {
+            "Escape": [
+              { "Mana": "{2}{U}" },
+              { "ExileFromGraveyard": { "filter": ["Other"], "count": 5 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
