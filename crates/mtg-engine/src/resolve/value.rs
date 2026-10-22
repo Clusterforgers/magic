@@ -579,13 +579,15 @@ impl<'a> Scope<'a> {
                     && seen
                         .card
                         .and_then(GameObject::ability)
-                        .is_some_and(|ability| match (kind, ability.rules()) {
-                            (AbilityKind::Triggered, Ability::Triggered { .. }) => true,
-                            (
-                                AbilityKind::Activated,
-                                Ability::Activated { .. } | Ability::Loyalty { .. },
-                            ) => true,
-                            _ => false,
+                        .is_some_and(|ability| {
+                            matches!(
+                                (kind, ability.rules()),
+                                (AbilityKind::Triggered, Ability::Triggered { .. })
+                                    | (
+                                        AbilityKind::Activated,
+                                        Ability::Activated { .. } | Ability::Loyalty { .. }
+                                    )
+                            )
                         })
             }
             Pred::Tapped => seen.tapped == Some(true),

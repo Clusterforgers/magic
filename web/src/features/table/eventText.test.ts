@@ -59,6 +59,15 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { BecameCopy: { object: 3, of: { id: 5, counter: 0 } } },
     'Forest becomes a copy of Serra Angel',
   ],
+  SpellCopied: [
+    { SpellCopied: { object: 9, of: { id: 5, counter: 0 }, controller: 0 } },
+    'Ana copies Serra Angel',
+  ],
+  AbilityCopied: [
+    { AbilityCopied: { object: 9, of: { id: 5, counter: 0 }, controller: 0 } },
+    'Ana copies the ability of Serra Angel',
+  ],
+  CopyEnded: [{ CopyEnded: { object: 3 } }, 'Forest stops being a copy'],
   DayNightChanged: [{ DayNightChanged: { to: 'Night' } }, 'It becomes night'],
   MulliganPhaseEnded: ['MulliganPhaseEnded', 'The mulligan phase ends'],
   TurnBegan: [{ TurnBegan: { number: 3, active: 1 } }, "Turn 3 begins: Bo's turn"],

@@ -46,27 +46,25 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     for spell in &spells {
         let ability = rules(spell);
         for _ in 0..copies {
-            let choices = match &ability {
-                Some((_, ability)) => {
-                    let original = Original {
-                        id: spell.id(),
-                        name: spell.card().name.as_str(),
-                        choices: spell.choices(),
-                        ability,
-                        origin: spell.reference(),
-                        cause: None,
-                    };
-                    match retarget(cx, &mut answers, original, *new_targets)? {
-                        Retargeted::Ask(decision) => return Ok(Run::Ask(decision)),
-                        Retargeted::Done(choices) => choices,
-                    }
+            // A permanent spell has no rules of a spell (an Aura asks for its host through its keyword): its copy
+            // announces what it did.
+            let choices = if let Some((_, ability)) = &ability {
+                let original = Original {
+                    id: spell.id(),
+                    name: spell.card().name.as_str(),
+                    choices: spell.choices(),
+                    ability,
+                    origin: spell.reference(),
+                    cause: None,
+                };
+                match retarget(cx, &mut answers, original, *new_targets)? {
+                    Retargeted::Ask(decision) => return Ok(Run::Ask(decision)),
+                    Retargeted::Done(choices) => choices,
                 }
-                // A permanent spell has no rules of a spell; an Aura asks for its host through its keyword.
-                None => {
-                    let mut choices = spell.choices().clone();
-                    choices.cost_picks = None;
-                    choices
-                }
+            } else {
+                let mut choices = spell.choices().clone();
+                choices.cost_picks = None;
+                choices
             };
             planned.push((*spell, choices));
         }
@@ -77,8 +75,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         ));
     }
     let mut events = Vec::with_capacity(planned.len());
-    let mut next = state.next_object().get();
-    for (spell, mut choices) in planned {
+    for (id, (spell, mut choices)) in (state.next_object().get()..).zip(planned) {
         let mut definition = spell.card().copiable();
         for modification in except {
             if !definition.except(modification) {
@@ -88,13 +85,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         // The definition is the face the spell is in use as, so the copy is not in use as a face of anything.
         choices.face = None;
         events.push(Event::SpellCopied(Box::new(SpellCopy {
-            object: ObjectId(next),
+            object: ObjectId(id),
             of: spell.reference(),
             controller: cx.controller(),
             definition: Arc::new(definition),
             choices,
         })));
-        next += 1;
     }
     Ok(Run::Done {
         events,

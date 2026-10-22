@@ -93,7 +93,7 @@ fn a_copy_with_the_targets_of_the_original_hits_the_same_player_and_ceases_to_ex
         14,
         "the original and the copy each dealt 3"
     );
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack(), []);
     assert!(
         driver.state().has_ceased(copies[0]),
         "the copy ceased to exist"
@@ -211,7 +211,7 @@ fn a_copy_without_targets_asks_nothing_and_does_what_the_spell_does_for_its_cont
         4,
         "Study and its copy each drew two cards"
     );
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack(), []);
     replays(&driver, &setup);
     Ok(())
 }
@@ -465,14 +465,9 @@ fn a_countered_copy_ceases_to_exist_and_the_original_resolves(
     run(&mut driver, seats)?;
     assert!(driver.state().has_ceased(copy), "the copy is gone");
     assert_eq!(life(&driver, 1), 17, "the original resolved alone");
-    assert!(
-        names(driver.state(), Zone::Graveyard(pid(0)))
-            .iter()
-            .all(|name| name != "Lightning Bolt" || true)
-    );
     assert_eq!(
-        names(driver.state(), Zone::Graveyard(pid(0))).len(),
-        2,
+        names(driver.state(), Zone::Graveyard(pid(0))),
+        ["Twincast", "Lightning Bolt"],
         "Twincast and the Bolt, and nothing for the copy"
     );
     replays(&driver, &setup);

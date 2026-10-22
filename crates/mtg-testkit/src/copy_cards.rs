@@ -53,3 +53,53 @@ pub fn copy_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusErr
     }
     Ok(GameSetup::new(Arc::new(Normal), seed, decks))
 }
+
+/// A deck of lands in four colours, the cards that copy spells and abilities (Twincast, Reverberate, Fork, Reiterate,
+/// Dualcaster Mage, Strionic Resonator, Lithoform Engine, Cytoshape), the storm spells (Grapeshot, Brain Freeze, Tendrils of
+/// Agony), spells to copy (Lightning Bolt, Burst Lightning) and creatures with triggers to copy, derived entirely from `rng`.
+pub fn spell_copy_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
+    let colors = [Color::Red, Color::Blue, Color::Black, Color::Green];
+    let mut deck: Vec<Arc<CardDefinition>> = (0..22).map(|i| land(colors[i % 4])).collect();
+    for (name, copies) in [
+        ("Twincast", 3),
+        ("Reverberate", 2),
+        ("Fork", 2),
+        ("Reiterate", 2),
+        ("Grapeshot", 3),
+        ("Brain Freeze", 2),
+        ("Tendrils of Agony", 2),
+        ("Strionic Resonator", 2),
+        ("Lithoform Engine", 1),
+        ("Dualcaster Mage", 2),
+        ("Cytoshape", 2),
+        ("Lightning Bolt", 4),
+        ("Burst Lightning", 3),
+        ("Armament Corps", 1),
+        ("Hero of Bladehold", 2),
+    ] {
+        deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
+    }
+    let mut slot = 0;
+    while deck.len() < 60 {
+        let power = i32::try_from(1 + rng.index(3)).unwrap_or(1);
+        let name = format!("Copy Fodder {slot} {power}/{power}");
+        let card = creature(&name, 1, &[colors[rng.index(4)]], power, power);
+        let copies = (60 - deck.len()).min(2);
+        deck.extend(std::iter::repeat_n(card, copies));
+        slot += 1;
+    }
+    rng.shuffle(&mut deck);
+    Ok(deck)
+}
+
+/// A normal game of `players` seats whose decks are [`spell_copy_deck`]s, fully determined by `seed`.
+pub fn spell_copy_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusError> {
+    let mut decks = Vec::with_capacity(players);
+    for seat in 0u64..players as u64 {
+        decks.push(spell_copy_deck(&mut GameRng::substream(
+            seed,
+            13_000 + seat,
+        ))?);
+    }
+    Ok(GameSetup::new(Arc::new(Normal), seed, decks))
+}

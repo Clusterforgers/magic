@@ -129,6 +129,7 @@ Effect (one variant per engine primitive)
   Monstrosity{count} Adapt{count} Bolster{count} Explore{what} Connive{what} TimeTravel{who}
   ExtraTurn{who} ExileUntil{who,filter,as,exiled_as} ExileTop{who,count,as} CastFromZone{who,what,free,way?,otherwise}
   CreateToken{who,token: Named(id) | Custom(TokenSpec) | CopyOf{of,except},count,tapped,attacking,as?}
+  CopySpell{what,count,new_targets,except} CopyAbility{what,count,new_targets} BecomeCopy{what,of,except,duration}
   Continuous{affected,mods,duration} Rule{rule: GameRule,duration} Shield{when: ReplaceWhen,by: ReplaceBy,duration}
   DelayedTrigger{when,once,effects}
   If{condition,then,otherwise} May{who,effects} Pay{who,cost,paid,unpaid}
@@ -167,7 +168,7 @@ Keyword     = Flying | Reach | FirstStrike | ... | Shroud | Protection(Selector)
 Ref       = You | Opponents | EachPlayer | This | Target(i) | Triggering | Attached | Bound(name)
           | ControllerOf(Ref) | OwnerOf(Ref) | Each(Selector)
 Selector  = [Pred]                       all must hold; the zone is Battlefield unless In(zone) says otherwise (Spell means the stack); [] matches everything there
-Pred      = This | Other | Is(Ref) | Type | Supertype | Subtype | Color | Colorless | Token | Spell | Tapped | Untapped
+Pred      = This | Other | Is(Ref) | Type | Supertype | Subtype | Color | Colorless | Token | Spell | Ability(Activated|Triggered) | Tapped | Untapped
           | Attacking | Blocking | ControlledBy(Ref) | OwnedBy(Ref) | In(zone) | HasKeyword | HasCounter(kind) | Named
           | Compare{stat,op,to} | Not(Pred) | AnyOf([Pred])
 TargetSpec{ what: AnyTarget | Player | Opponent | Object(Selector) | Either([..]), bounds = 1..1, divide?: Amount }
@@ -317,11 +318,15 @@ State is the fold of events; the engine is a pure function from state to `Progre
 
 | Part | Rule |
 |---|---|
-| Token copy | `CreateToken{ token: CopyOf{ of: Ref, except: [Modification] } }` ("create a token that's a copy of target creature you control", "... of it", "... of enchanted creature"): one token for each object `of` names, with the copiable values of that object (CR 707.2) and the exceptions applied to them; an object that has left is read by last known information, and a transformed permanent makes no token yet (`n1d4`). It is `Effect.CreateToken.Copy` in `Caps`. |
+| Token copy | `CreateToken{ token: CopyOf{ of: Ref, except: [Modification] } }` ("create a token that's a copy of target creature you control", "... of it", "... of enchanted creature"): one token for each object `of` names, with the copiable values of that object (CR 707.2) and the exceptions applied to them; an object that has left is read by last known information, and a transformed double-faced permanent is copied as the face it shows, with no back face. It is `Effect.CreateToken.Copy` in `Caps`. |
 | Enters as a copy | `Replacement{ when: Enters{what: This}, by: AsCopy{ of: Selector, except: [Modification] } }`: "You may have this enter as a copy of any creature on the battlefield" is `of: [Type(Creature)]`, "a creature you control" adds `ControlledBy(You)`, and Phantasmal Image's exceptions are `AddSubtype(Illusion)` and a `GrantAbility` of its trigger. It is `ReplaceBy.AsCopy` in `Caps`. |
 | Exceptions | `AddType`, `AddSubtype`, `AddKeyword`, `GrantAbility`, `SetColors` and `SetPT` with fixed amounts are part of the copiable values. Any other modification in an `except` list is named `Copy.Except.<Mod>`, so the card is not Verified. |
 | Populate | "Populate" is a `Choose{ from: Each([Type(Creature), Token, ControlledBy(You)]), as }` followed by a `CreateToken` of `CopyOf{ of: Bound(as) }`. |
-| Still waiting for (o2) | Spell copies and storm, copies of abilities, a copy that lasts for a duration ("becomes a copy until end of turn"), the payment of a copy of a spell (g5c) and the copy of a transformed permanent (n1d4). |
+| Copy of a spell | `CopySpell{ what: Ref, count = 1, new_targets, except: [Modification] }` ("Copy target instant or sorcery spell. You may choose new targets for the copy"; Fork's "except that the copy is red" is `except: [SetColors([Red])]`): each spell `what` names that is still on the stack is copied `count` times (CR 707.10). A copy is put on the stack above the spell and is not cast: no cast trigger, no payment, no storm count. It has the modes, X, optional costs and targets of the original, the values of the face the original is in use as, and the exceptions; `new_targets` lets its controller choose new targets with the ordinary target decision. A copy that resolves or is countered ceases to exist, and a copy of a permanent spell becomes a token. It is `Effect.CopySpell` in `Caps`. |
+| Copy of an ability | `CopyAbility{ what: Ref, count = 1, new_targets }` (Strionic Resonator, Lithoform Engine) copies an activated or triggered ability on the stack; `Pred::Ability(Triggered)` and `Pred::Ability(Activated)` select them as targets ("target triggered ability you control"). The copy has the source, rules, cause and choices of the original, is not activated or triggered, and may take new targets. It is `Effect.CopyAbility` in `Caps`. |
+| Becoming a copy | `BecomeCopy{ what, of, except, duration }` ("Target creature becomes a copy of that creature until end of turn", Cytoshape: a `Choose` followed by this with `of: Bound(chosen)`): the permanents `what` names take the copiable values of `of` as the first layer. `UntilEndOfTurn` ends in the cleanup step and the permanent is what it was before; `Forever` stays while the permanent does. Any other duration is named `Copy.Duration.<name>` and the card is not Verified. It is `Effect.BecomeCopy` in `Caps`. |
+| Storm | `Keyword(Storm)` adds the trigger "when you cast this spell, copy it for each spell cast before it this turn": `CopySpell{ what: This, count: Triggering, new_targets }` working from the stack. It is `Keyword.Storm` in `Caps`. |
+| Still waiting for (o2b, o2c) | The compiler reads none of the copy wordings of spells and abilities (o2b); a storm trigger that resolves after its spell has left the stack copies it from last known information (o2c). |
 
 ## Keywords
 

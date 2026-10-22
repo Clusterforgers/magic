@@ -141,7 +141,8 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub face: Option<u8>,
-    /// Set while the permanent is a copy of another object; the values above are those of the copy effect.
+    /// Set while the permanent is a copy of another object, or the object is a copy of a spell or ability on the stack; the
+    /// values above are those of the copy effect or of the original.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub copy: Option<CopyView>,

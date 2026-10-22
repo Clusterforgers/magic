@@ -646,7 +646,6 @@ impl Event {
             Event::BecameCopy(copy) => vec![copy.object],
             Event::SpellCopied(copy) => vec![copy.object],
             Event::AbilityCopied(copy) => vec![copy.object],
-            Event::CopyEnded { object } => vec![*object],
             Event::AbilityPutOnStack(put) => vec![put.object],
             Event::LandPlayed { object, .. }
             | Event::SpellCast { object, .. }
@@ -662,6 +661,7 @@ impl Event {
             | Event::CardDiscarded { object, .. }
             | Event::Cycled { object, .. }
             | Event::CreatureDied { object, .. }
+            | Event::CopyEnded { object }
             | Event::ObjectLeftGame { object } => vec![*object],
             Event::Attached { object, to } => vec![*object, *to],
             Event::AttackersDeclared { attackers, .. } => {

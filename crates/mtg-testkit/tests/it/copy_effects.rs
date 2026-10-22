@@ -52,7 +52,7 @@ fn grapeshot_copies_itself_for_each_spell_cast_before_it(
     assert_eq!(casts(&driver), prior + 1);
     // The trigger is on the stack above the spell; the copies come when it resolves.
     assert_eq!(driver.state().stack().len(), 2);
-    assert!(spell_copies(&driver).is_empty());
+    assert_eq!(spell_copies(&driver), Vec::<mtg_core::ids::ObjectId>::new());
     keep_targets_until_done(&mut driver, seats)?;
     assert_eq!(casts(&driver), prior + 1, "a copy is not cast");
     assert_eq!(
@@ -436,7 +436,11 @@ fn cytoshape_makes_a_creature_a_copy_until_the_end_of_the_turn(
     run(&mut driver, seats)?;
     let object = driver.state().object(bears).unwrap();
     assert_eq!(object.card().name, "Hero of Bladehold");
-    assert!(object.copy_effect().is_some_and(|copy| copy.is_temporary()));
+    assert!(
+        object
+            .copy_effect()
+            .is_some_and(mtg_engine::copies::CopyEffect::is_temporary)
+    );
     let chars = characteristics(driver.state(), bears).unwrap();
     assert_eq!(
         (chars.power, chars.toughness),

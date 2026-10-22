@@ -414,6 +414,15 @@ function describePublic(event: Event, n: EventNames): LogLine {
     const { object, of } = event.BecameCopy
     return line(`${n.card(object)} becomes a copy of ${n.card(of.id)}`)
   }
+  if ('SpellCopied' in event) {
+    const { controller, of } = event.SpellCopied
+    return line(`${n.seat(controller)} copies ${n.card(of.id)}`)
+  }
+  if ('AbilityCopied' in event) {
+    const { controller, of } = event.AbilityCopied
+    return line(`${n.seat(controller)} copies the ability of ${n.card(of.id)}`)
+  }
+  if ('CopyEnded' in event) return line(`${n.card(event.CopyEnded.object)} stops being a copy`)
   if ('DayNightChanged' in event)
     return line(`It becomes ${event.DayNightChanged.to === 'Day' ? 'day' : 'night'}`)
   if ('Unattached' in event) {

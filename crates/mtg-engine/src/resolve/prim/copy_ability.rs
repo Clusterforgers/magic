@@ -65,17 +65,18 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             "an answer was given to a copy of an ability that was not asked".into(),
         ));
     }
-    let mut next = cx.state().next_object().get();
-    let mut events = Vec::with_capacity(planned.len());
-    for (object, choices) in planned {
-        events.push(Event::AbilityCopied(Box::new(AbilityCopy {
-            object: ObjectId(next),
-            of: object.reference(),
-            controller: cx.controller(),
-            choices,
-        })));
-        next += 1;
-    }
+    let first = cx.state().next_object().get();
+    let events = (first..)
+        .zip(planned)
+        .map(|(id, (object, choices))| {
+            Event::AbilityCopied(Box::new(AbilityCopy {
+                object: ObjectId(id),
+                of: object.reference(),
+                controller: cx.controller(),
+                choices,
+            }))
+        })
+        .collect();
     Ok(Run::Done {
         events,
         bound: Vec::new(),

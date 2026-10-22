@@ -179,6 +179,7 @@ fn count(len: usize) -> u32 {
 /// The hidden form of `event` for `viewer`, or `None` when they may see it as logged.
 ///
 /// Every variant is listed so a new event forces a decision about what it reveals.
+#[allow(clippy::too_many_lines)]
 fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenEvent> {
     // Every seat sees every hand, so what is dealt, bottomed or drawn is told whole.
     let own = |player: &PlayerId| *player == viewer || before.ruleset().open_hands();

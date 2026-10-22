@@ -9,7 +9,7 @@ use mtg_cards::keyword::Keyword;
 use mtg_cards::load::{canonical, parse_json};
 use mtg_cards::mana::ManaCostX;
 use mtg_cards::modify::{CastPermission, Duration, GameRule, Modification};
-use mtg_cards::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use mtg_cards::refs::{AbilityKind, Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::spend::{SpendFilter, SpendOn};
 use mtg_cards::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, Step, TriggerPattern};
 use mtg_cards::value::{Amount, CastWay, Cmp, Condition, CounterKind, StatKind};
@@ -122,6 +122,8 @@ fn leaf_pred() -> impl Strategy<Value = Pred> {
         Just(Pred::Colorless),
         Just(Pred::Token),
         Just(Pred::Spell),
+        Just(Pred::Ability(AbilityKind::Activated)),
+        Just(Pred::Ability(AbilityKind::Triggered)),
         Just(Pred::Tapped),
         Just(Pred::Untapped),
         Just(Pred::Attacking),
@@ -683,6 +685,37 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
             (who(), amount()).prop_map(|(who, count)| Effect::Surveil { who, count }),
             who().prop_map(|who| Effect::Proliferate { who }),
             reference().prop_map(|what| Effect::Goad { what }),
+            (
+                reference(),
+                amount(),
+                any::<bool>(),
+                vec(modification(), 0..2)
+            )
+                .prop_map(|(what, count, new_targets, except)| Effect::CopySpell {
+                    what,
+                    count,
+                    new_targets,
+                    except
+                }),
+            (reference(), amount(), any::<bool>()).prop_map(|(what, count, new_targets)| {
+                Effect::CopyAbility {
+                    what,
+                    count,
+                    new_targets,
+                }
+            }),
+            (
+                reference(),
+                reference(),
+                vec(modification(), 0..2),
+                duration()
+            )
+                .prop_map(|(what, of, except, duration)| Effect::BecomeCopy {
+                    what,
+                    of,
+                    except,
+                    duration
+                }),
             (reference(), reference()).prop_map(|(what, with)| Effect::Fight { what, with }),
             who().prop_map(|who| Effect::BecomeMonarch { who }),
             (text(), amount()).prop_map(|(subtype, count)| Effect::Amass {
