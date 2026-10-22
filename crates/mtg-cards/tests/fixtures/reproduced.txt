@@ -3,6 +3,7 @@ Aether Hub
 Ajani's Pridemate
 Ancestral Vision
 Ancient Ziggurat
+Angel of Vitality
 Arcane Signet
 Archon of Cruelty
 Arrogant Wurm
@@ -28,6 +29,7 @@ Bloodghast
 Bog Wraith
 Boggart Ram-Gang
 Bonesplitter
+Boon Reflection
 Brain Freeze
 Brainstorm
 Branchblight Stalker
@@ -53,6 +55,7 @@ Curse of the Nightly Hunt
 Custodi Lich
 Cyclonic Rift
 Cytoshape
+Darksteel Juggernaut
 Dauthi Horror
 Dauthi Marauder
 Dawnglade Regent
@@ -68,6 +71,7 @@ Doom Whisperer
 Dragonspeaker Shaman
 Dream's Grip
 Dregscape Zombie
+Drove of Elves
 Drudge Skeletons
 Dual Casting
 Dualcaster Mage
@@ -96,6 +100,7 @@ Fruit of Tizerus
 Furtive Homunculus
 Gadwick, the Wizened
 Game-Trail Changeling
+Giant Cindermaw
 Giant Growth
 Gilded Lotus
 Glimpse of Freedom
@@ -108,8 +113,10 @@ Growing Ranks
 Guardian Gladewalker
 Gurmag Angler
 Hall of Triumph
+Haughty Djinn
 Hengegate Pathway // Mistgate Pathway
 Hero of Bladehold
+Honor Troll
 Horizon Canopy
 Hulking Raptor
 Idyllic Beachfront
@@ -120,20 +127,25 @@ Izzet Charm
 Jungle Lion
 Kathari Screecher
 Kessig Wolf Run
+Knight of Dusk's Shadow
 Kongming, "Sleeping Dragon"
 Krenko's Enforcer
 Lat-Nam Adept
 Levitation
+Lhurgoyf
 Lightning Bolt
 Lithoform Engine
 Lizard Blades
 Llanowar Behemoth
 Llanowar Elves
 Looter il-Kor
+Lord of Extinction
 Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
 Lurching Rotbeast
 Manabarbs
+Maro
+Master of Etherium
 Megrim
 Mesmeric Orb
 Midnight Banshee
@@ -141,11 +153,14 @@ Mirror Image
 Mishra's Workshop
 Mizzium Mortars
 Monastery Swiftspear
+Mortivore
 Mothdust Changeling
 Mulldrifter
 Murderous Cut
 Muscle Sliver
 Nantuko Husk
+Nighthawk Scavenger
+Nightmare
 Nightveil Sprite
 Notion Rain
 Opt
@@ -159,6 +174,7 @@ Plague Myr
 Plague Stinger
 Prismatic Lens
 Professional Face-Breaker
+Psychosis Crawler
 Questing Beast
 Rally the Ranks
 Rampant Growth
@@ -167,6 +183,7 @@ Reconstructed Thopter
 Reflecting Pool
 Reiterate
 Reverberate
+Rhox Faithmender
 Rhystic Study
 Rift Bolt
 Righteous Avengers
@@ -239,6 +256,7 @@ Wanderbrine Preacher
 Wargate
 Warmonger Hellkite
 Wear // Tear
+Wilderness Elemental
 Wrath of God
 Zendikar Farguide
 Zodiac Goat

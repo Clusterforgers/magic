@@ -1,6 +1,6 @@
 //! The values of the DSL read from the game: references, selectors, amounts and conditions.
 //!
-//! Nothing here changes state. What the engine cannot evaluate yet (devotion, totals) is a
+//! Nothing here changes state. What the engine cannot evaluate yet (devotion) is a
 //! `ResolveError::Unsupported` with the name of what is missing; `Caps` keeps the cards that need
 //! them from being offered, so the error is not met in a game.
 
@@ -744,11 +744,9 @@ impl<'a> Scope<'a> {
             Amount::TargetCount(index) => i64::try_from(self.chosen(usize::from(*index)).len())
                 .map_err(|_| ResolveError::Invalid("too many targets".into()))?,
             Amount::Devotion(_) => return Err(ResolveError::Unsupported("devotion")),
-            Amount::Greatest { .. } => return Err(ResolveError::Unsupported("greatest values")),
-            Amount::Total { .. } => return Err(ResolveError::Unsupported("totals")),
-            Amount::CardTypes(_) => {
-                return Err(ResolveError::Unsupported("card types among cards"));
-            }
+            Amount::Greatest { of, stat } => self.stats(of, *stat)?.into_iter().max().unwrap_or(0),
+            Amount::Total { of, stat } => self.stats(of, *stat)?.into_iter().sum(),
+            Amount::CardTypes(of) => self.card_types_among(of)?,
             Amount::Players(who) => i64::try_from(self.players(who)?.len())
                 .map_err(|_| ResolveError::Invalid("too many players".into()))?,
             Amount::LowestLife(who) => self.lives(who)?.min().unwrap_or(i64::from(i32::MAX)),
@@ -778,6 +776,40 @@ impl<'a> Scope<'a> {
                 })
                 .and_then(GameObject::announced_x)
         })
+    }
+
+    /// A characteristic of each object the selector matches that has one.
+    fn stats(&self, of: &Selector, stat: StatKind) -> Result<Vec<i64>, ResolveError> {
+        Ok(self
+            .matching(of)?
+            .into_iter()
+            .filter_map(|object| self.seen(object).and_then(|seen| Self::stat(&seen, stat)))
+            .collect())
+    }
+
+    /// How many of the card types there are among the objects the selector matches, each counted once.
+    fn card_types_among(&self, of: &Selector) -> Result<i64, ResolveError> {
+        const TYPES: [CardType; 9] = [
+            CardType::Artifact,
+            CardType::Battle,
+            CardType::Creature,
+            CardType::Enchantment,
+            CardType::Instant,
+            CardType::Kindred,
+            CardType::Land,
+            CardType::Planeswalker,
+            CardType::Sorcery,
+        ];
+        let seen: Vec<Seen<'a>> = self
+            .matching(of)?
+            .into_iter()
+            .filter_map(|object| self.seen(object))
+            .collect();
+        let among = TYPES
+            .iter()
+            .filter(|card_type| seen.iter().any(|one| one.chars.types.contains(**card_type)))
+            .count();
+        i64::try_from(among).map_err(|_| ResolveError::Invalid("too many card types".into()))
     }
 
     /// The life totals of the players a reference names.
@@ -1115,6 +1147,31 @@ mod tests {
     #[case::lowest_life_of_no_one(r#"{"LowestLife":{"Each":[{"Named":"Nobody"}]}}"#, 2_147_483_647)]
     #[case::highest_life_of_no_one(r#"{"HighestLife":{"Each":[{"Named":"Nobody"}]}}"#, -2_147_483_648)]
     #[case::sum(r#"{"Sum":[2,{"Count":[{"Type":"Artifact"}]},-1]}"#, 2)]
+    #[case::greatest_power(r#"{"Greatest":{"of":[{"Type":"Creature"}],"stat":"Power"}}"#, 3)]
+    #[case::greatest_of_yours(
+        r#"{"Greatest":{"of":[{"Type":"Creature"},{"ControlledBy":"You"}],"stat":"ManaValue"}}"#,
+        2
+    )]
+    #[case::greatest_toughness_of_everything(r#"{"Greatest":{"of":[],"stat":"Toughness"}}"#, 4)]
+    #[case::greatest_of_the_hand(r#"{"Greatest":{"of":[{"In":"Hand"}],"stat":"ManaValue"}}"#, 2)]
+    #[case::greatest_of_nothing(r#"{"Greatest":{"of":[{"Named":"Nobody"}],"stat":"Power"}}"#, 0)]
+    #[case::greatest_of_what_has_no_power(
+        r#"{"Greatest":{"of":[{"Type":"Artifact"}],"stat":"Power"}}"#,
+        0
+    )]
+    #[case::total_power(r#"{"Total":{"of":[{"Type":"Creature"}],"stat":"Power"}}"#, 7)]
+    #[case::total_toughness_of_yours(
+        r#"{"Total":{"of":[{"Type":"Creature"},{"ControlledBy":"You"}],"stat":"Toughness"}}"#,
+        2
+    )]
+    #[case::total_mana_value_of_everything(r#"{"Total":{"of":[],"stat":"ManaValue"}}"#, 10)]
+    #[case::total_of_nothing(r#"{"Total":{"of":[{"Named":"Nobody"}],"stat":"Power"}}"#, 0)]
+    #[case::card_types_of_everything(r#"{"CardTypes":[]}"#, 2)]
+    #[case::card_types_of_creatures(r#"{"CardTypes":[{"Type":"Creature"}]}"#, 1)]
+    #[case::card_types_of_yours(r#"{"CardTypes":[{"ControlledBy":"You"}]}"#, 2)]
+    #[case::card_types_of_theirs(r#"{"CardTypes":[{"ControlledBy":"Opponents"}]}"#, 1)]
+    #[case::card_types_of_the_hand(r#"{"CardTypes":[{"In":"Hand"}]}"#, 1)]
+    #[case::card_types_of_nothing(r#"{"CardTypes":[{"Named":"Nobody"}]}"#, 0)]
     #[case::no_targets_chosen(r#"{"TargetCount":0}"#, 0)]
     fn an_amount_is_the_number_it_stands_for(#[case] json: &str, #[case] expected: i64) {
         let game = game();
@@ -1546,9 +1603,6 @@ mod tests {
 
     #[rstest]
     #[case::devotion(r#"{"Devotion":["Black"]}"#, "devotion")]
-    #[case::the_greatest_value(r#"{"Greatest":{"of":[],"stat":"Power"}}"#, "greatest values")]
-    #[case::a_total(r#"{"Total":{"of":[],"stat":"Power"}}"#, "totals")]
-    #[case::card_types(r#"{"CardTypes":[]}"#, "card types among cards")]
     fn an_amount_the_evaluator_cannot_read_yet_says_what_it_lacks(
         #[case] json: &str,
         #[case] lacks: &'static str,

@@ -58,6 +58,9 @@ const RUNS: &[&str] = &[
     "Trigger.Nth",
     "Amount.Triggering",
     "Amount.Players",
+    "Amount.Greatest",
+    "Amount.Total",
+    "Amount.CardTypes",
     "Amount.LowestLife",
     "Amount.HighestLife",
     "Cost.Tap",
@@ -506,9 +509,9 @@ mod tests {
     #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", true)]
     #[case::mana_a_land_could_produce("Effect.AddMana.ProducedBy", true)]
     #[case::devotion("Amount.Devotion", false)]
-    #[case::the_greatest_value("Amount.Greatest", false)]
-    #[case::totals("Amount.Total", false)]
-    #[case::card_types_among_cards("Amount.CardTypes", false)]
+    #[case::the_greatest_value("Amount.Greatest", true)]
+    #[case::totals("Amount.Total", true)]
+    #[case::card_types_among_cards("Amount.CardTypes", true)]
     #[case::paying_energy("Cost.PayEnergy", true)]
     #[case::paying_a_counted_amount_of_energy("Cost.PayEnergy.Counted", false)]
     #[case::removing_counters_as_a_cost("Cost.RemoveCounters", true)]

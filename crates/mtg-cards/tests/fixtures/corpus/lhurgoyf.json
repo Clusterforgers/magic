@@ -1,0 +1,25 @@
+{
+  "id": "ea5d550a-bd8b-4f9e-ac7d-c35ebbe313e6",
+  "oracle_id": "0fe76004-b2f4-4b11-abce-75fd76f68b4d",
+  "name": "Lhurgoyf",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cm2",
+  "collector_number": "141",
+  "rarity": "rare",
+  "released_at": "2018-06-08",
+  "digital": false,
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Lhurgoyf",
+  "oracle_text": "Lhurgoyf's power is equal to the number of creature cards in all graveyards and its toughness is equal to that number plus 1.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "power": "*",
+  "toughness": "1+*"
+}

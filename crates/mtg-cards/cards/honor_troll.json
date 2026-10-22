@@ -1,0 +1,22 @@
+{
+  "oracle_id": "98c059ed-d749-4f66-bda1-6352976198f0",
+  "name": "Honor Troll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Honor Troll",
+      "oracle_fingerprint": "4c49c43eebc0f07426c230c5dd77c4f5",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Replacement": { "when": { "LifeGain": {} }, "by": { "Add": 1 } } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+            "condition": { "Compare": { "left": { "Life": "You" }, "op": "Ge", "right": 25 } }
+          }
+        }
+      ]
+    }
+  ]
+}

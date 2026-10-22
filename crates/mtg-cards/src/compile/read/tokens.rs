@@ -50,9 +50,10 @@ pub fn canonical(text: &str) -> String {
         if word.eq_ignore_ascii_case("this")
             && let Some(noun) = noun
             && let Some(next) = words.get(at + 1)
-            && SOURCE_NOUNS.contains(&noun.to_ascii_lowercase().as_str())
+            && let stem = noun.strip_suffix("'s").unwrap_or(noun)
+            && SOURCE_NOUNS.contains(&stem.to_ascii_lowercase().as_str())
         {
-            out.push(format!("~{}", next.get(noun.len()..).unwrap_or_default()));
+            out.push(format!("~{}", next.get(stem.len()..).unwrap_or_default()));
             at += 2;
         } else if word == "enters"
             && words.get(at + 1) == Some(&"the")
@@ -259,15 +260,25 @@ fn merge_source(tokens: Vec<Token>) -> Vec<Token> {
     let mut iter = tokens.into_iter().peekable();
     while let Some(token) = iter.next() {
         let this = matches!(&token, Token::Word(word) if word == "this");
-        let noun = match iter.peek() {
+        // "This creature's power": the possessive stays after the source.
+        let (noun, possessive) = match iter.peek() {
             Some(Token::Word(word) | Token::Name(word)) => {
-                SOURCE_NOUNS.contains(&word.to_lowercase().as_str())
+                let word = word.to_lowercase();
+                let stem = word.strip_suffix("'s");
+                (
+                    SOURCE_NOUNS.contains(&stem.unwrap_or(word.as_str())),
+                    stem.is_some(),
+                )
             }
-            _ => false,
+            _ => (false, false),
         };
         if this && noun {
             iter.next();
             merged.push(Token::Source);
+            if possessive {
+                merged.push(Token::Punct('\''));
+                merged.push(Token::Word("s".to_owned()));
+            }
         } else {
             merged.push(token);
         }
@@ -294,6 +305,11 @@ pub struct Reader<'a> {
     pub that_permanent: bool,
     /// The subtypes on the card's own type line, which are subtypes whether or not the rules' list has them.
     pub subtypes: Vec<String>,
+    /// The power printed on the card when it is a number, which a characteristic-defining ability of the toughness
+    /// alone leaves as it is.
+    pub power: Option<i32>,
+    /// The toughness printed on the card when it is a number, which an ability that defines the power alone leaves.
+    pub toughness: Option<i32>,
     /// Whether the trigger is about an attack at the monarch, so "that player controls" is the monarch's.
     pub at_monarch: bool,
     /// Whether the ability works from the graveyard (its event is not about the card itself), so "return this card
@@ -313,6 +329,8 @@ impl<'a> Reader<'a> {
             that_player: false,
             that_permanent: false,
             subtypes: Vec::new(),
+            power: None,
+            toughness: None,
             at_monarch: false,
             from_graveyard: false,
         }

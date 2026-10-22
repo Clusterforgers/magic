@@ -1,0 +1,25 @@
+{
+  "id": "3efa70d4-d58c-4a43-bc4e-ffa9a91b0e5e",
+  "oracle_id": "181e6b3e-c33e-49e7-acb8-67473289a856",
+  "name": "Master of Etherium",
+  "lang": "en",
+  "layout": "normal",
+  "set": "moc",
+  "collector_number": "226",
+  "rarity": "rare",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Artifact Creature — Vedalken Wizard",
+  "oracle_text": "Master of Etherium's power and toughness are each equal to the number of artifacts you control.\nOther artifact creatures you control get +1/+1.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "power": "*",
+  "toughness": "*"
+}

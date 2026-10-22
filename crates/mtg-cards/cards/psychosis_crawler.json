@@ -1,0 +1,33 @@
+{
+  "oracle_id": "2876e74f-a242-4995-9702-0b737a1ab67a",
+  "name": "Psychosis Crawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychosis Crawler",
+      "oracle_fingerprint": "72d90d8b03123c3273f2177711c9537f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "toughness": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}
