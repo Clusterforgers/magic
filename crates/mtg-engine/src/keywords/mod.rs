@@ -15,6 +15,7 @@ mod convoke;
 mod crew;
 mod cumulative_upkeep;
 mod cycling;
+mod dash;
 mod daybound;
 mod deathtouch;
 mod defender;
@@ -53,6 +54,7 @@ mod multikicker;
 mod mutate;
 mod myriad;
 mod nightbound;
+mod ninjutsu;
 mod overload;
 mod partner;
 mod partner_group;
@@ -395,6 +397,8 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Escape(_) => &escape::Escape,
         Keyword::Rebound => &rebound::Rebound,
         Keyword::Aftermath => &aftermath::Aftermath,
+        Keyword::Dash(_) => &dash::Dash,
+        Keyword::Ninjutsu(_) => &ninjutsu::Ninjutsu,
         Keyword::Echo(_) => &echo::Echo,
         Keyword::CumulativeUpkeep(_) => &cumulative_upkeep::CumulativeUpkeep,
         Keyword::Undying => &undying::Undying,
@@ -647,6 +651,8 @@ mod tests {
             Keyword::Escape(cost()),
             Keyword::Rebound,
             Keyword::Aftermath,
+            Keyword::Dash(cost()),
+            Keyword::Ninjutsu(cost()),
             Keyword::Echo(cost()),
             Keyword::CumulativeUpkeep(cost()),
             Keyword::Undying,
@@ -718,6 +724,8 @@ mod tests {
         "Keyword.Escape",
         "Keyword.Rebound",
         "Keyword.Aftermath",
+        "Keyword.Dash",
+        "Keyword.Ninjutsu",
         "Keyword.Echo",
         "Keyword.CumulativeUpkeep",
         "Keyword.Undying",
@@ -830,6 +838,8 @@ mod tests {
     #[case::escape(Keyword::Escape(Cost::mana("{B}".parse().unwrap())), Hooks::none())]
     #[case::rebound(Keyword::Rebound, Hooks::none())]
     #[case::aftermath(Keyword::Aftermath, Hooks::none())]
+    #[case::dash(Keyword::Dash(Cost::mana("{1}{R}".parse().unwrap())), Hooks { abilities: 2, ..Hooks::none() })]
+    #[case::ninjutsu(Keyword::Ninjutsu(Cost::mana("{1}{U}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::echo(Keyword::Echo(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::cumulative_upkeep(Keyword::CumulativeUpkeep(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::undying(Keyword::Undying, Hooks { abilities: 1, ..Hooks::none() })]

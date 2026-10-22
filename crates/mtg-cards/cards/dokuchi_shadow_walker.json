@@ -1,0 +1,12 @@
+{
+  "oracle_id": "1e79b7bf-8a2d-4585-81d0-755dce78a4ea",
+  "name": "Dokuchi Shadow-Walker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dokuchi Shadow-Walker",
+      "oracle_fingerprint": "7997d6f26be0c2349e8a7c27e57176c2",
+      "abilities": [{ "Keyword": { "Ninjutsu": "{3}{B}" } }]
+    }
+  ]
+}

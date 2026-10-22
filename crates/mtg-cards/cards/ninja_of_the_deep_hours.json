@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1f3c2b00-0000-4ae1-9650-9553accac52e",
+  "name": "Ninja of the Deep Hours",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ninja of the Deep Hours",
+      "oracle_fingerprint": "519364a9d54032b9f382aa9688a9a145",
+      "abilities": [
+        { "Keyword": { "Ninjutsu": "{1}{U}" } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

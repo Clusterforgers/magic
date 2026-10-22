@@ -193,6 +193,12 @@ fn keyword_way(
         Keyword::Escape(cost) => (CastWay::Escape, "Escape", cost, in_graveyard),
         Keyword::Evoke(cost) => (CastWay::Evoke, "Evoke", cost, in_hand),
         Keyword::Overload(cost) => (CastWay::Overload, "Overload", cost, in_hand),
+        Keyword::Dash(cost) => (
+            CastWay::Dash,
+            "Dash",
+            cost,
+            in_hand && is_creature(state, id),
+        ),
         Keyword::Foretell(cost) => (
             CastWay::Foretold,
             "Foretell",
@@ -205,7 +211,10 @@ fn keyword_way(
         return None;
     }
     // Overload and foretell are paid with mana alone.
-    let (mana, parts) = if matches!(way, CastWay::Flashback | CastWay::Evoke | CastWay::Escape) {
+    let (mana, parts) = if matches!(
+        way,
+        CastWay::Flashback | CastWay::Evoke | CastWay::Escape | CastWay::Dash
+    ) {
         cast_cost(cost)?
     } else {
         (mana_only(cost)?, Vec::new())
@@ -217,6 +226,13 @@ fn keyword_way(
         instant,
         parts,
     })
+}
+
+/// Whether the card `id` is a creature card: dash is an alternative cost for a creature spell only (CR 702.109a).
+fn is_creature(state: &GameState, id: ObjectId) -> bool {
+    state
+        .object(id)
+        .is_some_and(|card| card.base_types().contains(CardType::Creature))
 }
 
 /// Whether `player` foretold the card `id` on an earlier turn and it still lies face down in exile (CR 702.143a): the cast

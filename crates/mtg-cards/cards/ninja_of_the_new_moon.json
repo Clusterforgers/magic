@@ -1,0 +1,12 @@
+{
+  "oracle_id": "bf44b9b7-180c-4d8c-a410-9561e4c8fb9b",
+  "name": "Ninja of the New Moon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ninja of the New Moon",
+      "oracle_fingerprint": "7997d6f26be0c2349e8a7c27e57176c2",
+      "abilities": [{ "Keyword": { "Ninjutsu": "{3}{B}" } }]
+    }
+  ]
+}
