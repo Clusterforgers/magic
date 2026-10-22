@@ -206,9 +206,34 @@ fn sentence_wordings(sentence: &str, later: bool) -> Vec<String> {
         out.push(format!("{counted}, {}", it(rest)));
         out.push(format!("{}, {}", it(counted), it(rest)));
     }
+    for (from, to) in COPY_WORDINGS {
+        let others: Vec<String> = out
+            .iter()
+            .filter_map(|text| replace_phrase(text, from, to))
+            .collect();
+        out.extend(others);
+    }
     if later && sentence.starts_with("if ") {
         let then: Vec<String> = out.iter().map(|text| format!("then {text}")).collect();
         out.extend(then);
     }
     out
+}
+
+/// The words of a copy that a card words two ways: the spell that was cast is "it" or "that spell", the exception of a
+/// copy of a spell has "that" or not, and a creature that attacked becomes a copy as "it" or by its name.
+const COPY_WORDINGS: [(&str, &str); 3] = [
+    ("copy it", "copy that spell"),
+    (", except that the copy", ", except the copy"),
+    ("~ becomes a copy of", "it becomes a copy of"),
+];
+
+/// The text with the first `from` that stands alone as `to`.
+fn replace_phrase(text: &str, from: &str, to: &str) -> Option<String> {
+    let at = text.find(from)?;
+    let (before, after) = (&text[..at], &text[at + from.len()..]);
+    let word = |c: char| c.is_alphanumeric();
+    let alone = !(from.starts_with(word) && before.ends_with(word))
+        && !(from.ends_with(word) && after.starts_with(word));
+    alone.then(|| format!("{before}{to}{after}"))
 }

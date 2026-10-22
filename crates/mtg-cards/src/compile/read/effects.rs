@@ -69,12 +69,13 @@ const TEMPLATES: [Template; 32] = [
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
-pub(super) const IMPERATIVES: [Template; 11] = [
+pub(super) const IMPERATIVES: [Template; 12] = [
     chain,
     removal,
     return_card,
     return_chosen,
     copies::token_copy,
+    copy_spells::copy,
     create::tokens,
     counters::put,
     counters::remove,

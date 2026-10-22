@@ -629,6 +629,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::RemoveCounters { .. }
                 | Effect::MoveCounters { .. }
                 | Effect::Transform { .. }
+                | Effect::CopySpell { .. }
         )
 }
 
@@ -956,6 +957,14 @@ impl Writer<'_> {
             }
             let target = self.name_target()?;
             return copy_spells::becomes_text(effect, &target);
+        }
+        // The spell a trigger is about has no target to name.
+        if let Effect::CopySpell {
+            what: Ref::Triggering,
+            ..
+        } = effect
+        {
+            return copy_spells::cast_text(effect);
         }
         if self.named {
             return None;
