@@ -1,0 +1,30 @@
+{
+  "id": "b8db6ab8-cd12-431a-bf18-28464cf03509",
+  "oracle_id": "73520b5a-3d55-40c9-af60-90fdd811934f",
+  "name": "Dromoka, the Eternal",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c17",
+  "collector_number": "170",
+  "rarity": "rare",
+  "released_at": "2017-08-25",
+  "digital": false,
+  "mana_cost": "{3}{G}{W}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Dragon",
+  "oracle_text": "Flying\nWhenever a Dragon you control attacks, bolster 2. (Choose a creature with the least toughness among creatures you control and put two +1/+1 counters on it.)",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Bolster",
+    "Flying"
+  ]
+}

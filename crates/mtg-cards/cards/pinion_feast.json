@@ -1,0 +1,21 @@
+{
+  "oracle_id": "9812bdf9-98b6-4b4d-8381-a7bbb25069d8",
+  "name": "Pinion Feast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pinion Feast",
+      "oracle_fingerprint": "a4c1c468d310aebb09499e0e35dd6ef4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }, { "Bolster": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

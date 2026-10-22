@@ -1,0 +1,28 @@
+{
+  "id": "8c6fd0bf-25de-422b-b042-121460b01b17",
+  "oracle_id": "663e6ab0-ed99-4cec-86f7-843207c31e17",
+  "name": "Kalemne's Captain",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c20",
+  "collector_number": "92",
+  "rarity": "rare",
+  "released_at": "2020-04-17",
+  "digital": false,
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Giant Soldier",
+  "oracle_text": "Vigilance\n{5}{W}{W}: Monstrosity 3. (If this creature isn't monstrous, put three +1/+1 counters on it and it becomes monstrous.)\nWhen this creature becomes monstrous, exile all artifacts and enchantments.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Vigilance",
+    "Monstrosity"
+  ]
+}

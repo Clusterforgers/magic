@@ -31,35 +31,44 @@ fn predefined(id: &str) -> Result<&'static TokenSpec, ResolveError> {
 }
 
 /// What a token is made from: its definition, and the object it copies when it is a copy.
-type MadeFrom = (Arc<CardDefinition>, Option<ObjectRef>);
+pub(super) type MadeFrom = (Arc<CardDefinition>, Option<ObjectRef>);
 
-/// The copiable values of each object `of` names (CR 707.2), with the exceptions of the copy effect (CR 707.9b): what a
-/// token that is a copy of them is (CR 111.10). An object that has left is read by last known information; one that
-/// cannot be copied (a transformed permanent) makes no token.
+/// What a token that is a copy of `named` is: its copiable values (CR 707.2) with the exceptions of the copy effect
+/// (CR 707.9b). An object that has left is read by last known information; one that cannot be copied (a transformed
+/// permanent) makes no token.
+pub(super) fn copy_of_object(
+    cx: &Cx<'_>,
+    named: ObjectRef,
+    except: &[Modification],
+    no_mana_cost: bool,
+) -> Result<Option<MadeFrom>, ResolveError> {
+    let Some(mut values) = copiable_values(cx.state(), named, cx.scope.snapshot_of(named)) else {
+        return Ok(None);
+    };
+    for modification in except {
+        if !values.except(modification) {
+            return Err(ResolveError::Unsupported("Effect.CreateToken.Copy.Except"));
+        }
+    }
+    if no_mana_cost {
+        values.mana_cost = None;
+    }
+    Ok(Some((Arc::new(values), Some(named))))
+}
+
+/// The tokens that are copies of each object `of` names (CR 111.10), each object once.
 fn copies_of(
     cx: &Cx<'_>,
     of: &Ref,
     except: &[Modification],
     no_mana_cost: bool,
 ) -> Result<Vec<MadeFrom>, ResolveError> {
-    let mut found = Vec::new();
+    let mut found: Vec<MadeFrom> = Vec::new();
     for named in cx.scope.objects(of)? {
         if found.iter().any(|(_, seen)| *seen == Some(named)) {
             continue;
         }
-        let Some(mut values) = copiable_values(cx.state(), named, cx.scope.snapshot_of(named))
-        else {
-            continue;
-        };
-        for modification in except {
-            if !values.except(modification) {
-                return Err(ResolveError::Unsupported("Effect.CreateToken.Copy.Except"));
-            }
-        }
-        if no_mana_cost {
-            values.mana_cost = None;
-        }
-        found.push((Arc::new(values), Some(named)));
+        found.extend(copy_of_object(cx, named, except, no_mana_cost)?);
     }
     Ok(found)
 }

@@ -2213,3 +2213,56 @@ fn an_amass_is_public_and_leaks_no_card_of_a_hand_or_a_library(#[values(2, 3, 4)
         }
     }
 }
+
+#[rstest]
+fn a_bolster_is_public_and_leaks_no_card_of_a_hand_or_a_library(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(0, 1)] pick: usize,
+) {
+    let creature = |name: &str| mtg_testkit::ready(mtg_testkit::cards::free_creature(name, 1, 2));
+    let mut board = vec![mtg_testkit::ready(mtg_testkit::cards::forest()); 3];
+    board.extend([creature("First Twin"), creature("Second Twin")]);
+    let mut scenario = mtg_testkit::Scenario::new(seats)
+        .hand(
+            0,
+            [
+                mtg_testkit::corpus::card("Cached Defenses").unwrap(),
+                mtg_testkit::corpus::card("Giant Growth").unwrap(),
+            ],
+        )
+        .battlefield(0, board);
+    for seat in 0..seats {
+        scenario = scenario.library_named(seat, LIBRARY);
+    }
+    // The two creatures tie for the least toughness: the player is asked to choose one of them.
+    let answer = |decision: &Decision| match &decision.kind {
+        DecisionKind::ChooseCards(options) => {
+            mtg_engine::decision::Answer::ChooseCards(mtg_engine::choose::CardsChoice(vec![
+                options.from[pick],
+            ]))
+        }
+        other => panic!("unexpected {}", other.name()),
+    };
+    let (after, _, batches) = play_spell(scenario, seats, "Cached Defenses", answer);
+    let held: BTreeMap<ObjectId, String> = after
+        .zone(Zone::Hand(PlayerId(0)))
+        .iter()
+        .chain(after.zone(Zone::Library(PlayerId(0))).iter())
+        .map(|id| (*id, after.object(*id).unwrap().card().name.clone()))
+        .collect();
+    for (seat, batch) in batches.iter().enumerate() {
+        assert!(
+            batch.events.iter().any(|event| matches!(
+                event,
+                mtg_protocol::EventView::Public(mtg_engine::Event::Bolstered {
+                    player: PlayerId(0),
+                    ..
+                })
+            )),
+            "seat {seat} is told who bolstered"
+        );
+        if seat != 0 {
+            assert_clean(batch, &held);
+        }
+    }
+}

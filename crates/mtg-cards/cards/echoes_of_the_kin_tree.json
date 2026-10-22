@@ -1,0 +1,14 @@
+{
+  "oracle_id": "9863a7da-6f51-4d3e-9ace-e8ff201faf13",
+  "name": "Echoes of the Kin Tree",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Echoes of the Kin Tree",
+      "oracle_fingerprint": "1f78c7beabe09a2c8357f1e3db3ffaf9",
+      "abilities": [
+        { "Activated": { "cost": "{2}{W}", "effects": [{ "Bolster": { "count": 1 } }] } }
+      ]
+    }
+  ]
+}

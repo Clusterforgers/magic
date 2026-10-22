@@ -311,6 +311,8 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         Some(TriggerPattern::PlayerAttacks { by, at })
     } else if verb == if third { "proliferates" } else { "proliferate" } {
         Some(TriggerPattern::Proliferated { who: by })
+    } else if verb == if third { "bolsters" } else { "bolster" } {
+        Some(TriggerPattern::Bolstered { who: by })
     } else if verb == if third { "amasses" } else { "amass" } {
         Some(TriggerPattern::Amassed { who: by })
     } else if verb == if third { "taps" } else { "tap" } {
@@ -455,6 +457,10 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         return Some(TriggerPattern::Untapped { what: what.clone() });
     } else if r.word("explores") {
         return Some(TriggerPattern::Explored { what: what.clone() });
+    } else if r.words("becomes monstrous") {
+        return Some(TriggerPattern::BecomesMonstrous { what: what.clone() });
+    } else if r.word("adapts") {
+        return Some(TriggerPattern::Adapted { what: what.clone() });
     } else if r.word("connives") {
         return Some(TriggerPattern::Connived { what: what.clone() });
     } else if r.words("becomes attached to") {
@@ -678,6 +684,8 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::Untapped { what } => said(what, "becomes untapped"),
         TriggerPattern::Explored { what } => said(what, "explores"),
         TriggerPattern::Connived { what } => said(what, "connives"),
+        TriggerPattern::BecomesMonstrous { what } => said(what, "becomes monstrous"),
+        TriggerPattern::Adapted { what } => said(what, "adapts"),
         TriggerPattern::Attached { what, to } if !what.is_empty() && !to.is_empty() => {
             said(what, &format!("becomes attached to {}", subject_text(to)?))
         }
@@ -770,6 +778,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             Some(format!("Whenever {}", player_verb(who, "proliferate")?))
         }
         TriggerPattern::Amassed { who } => Some(format!("Whenever {}", player_verb(who, "amass")?)),
+        TriggerPattern::Bolstered { who } => {
+            Some(format!("Whenever {}", player_verb(who, "bolster")?))
+        }
         TriggerPattern::LifeGained { who } => {
             Some(format!("Whenever {} life", player_verb(who, "gain")?))
         }
@@ -940,12 +951,15 @@ fn counter_text(what: &Selector, counter: Option<&CounterKind>, moved: &str) -> 
 }
 
 /// "When ~ enters", "Whenever a land you control enters", "Whenever ~ enters or attacks": "when" is
-/// for the card itself entering, dying or leaving, "whenever" for the rest.
+/// for the card itself entering, dying, leaving or becoming monstrous, "whenever" for the rest.
 fn about(what: &Selector, verbs: &[String]) -> Option<String> {
     let once = what.0 == [Pred::This]
-        && verbs
-            .iter()
-            .all(|verb| matches!(verb.as_str(), "enters" | "dies" | "leaves the battlefield"));
+        && verbs.iter().all(|verb| {
+            matches!(
+                verb.as_str(),
+                "enters" | "dies" | "leaves the battlefield" | "becomes monstrous"
+            )
+        });
     Some(format!(
         "{} {} {}",
         if once { "When" } else { "Whenever" },

@@ -1,0 +1,28 @@
+{
+  "id": "bf6eae62-5a42-42e9-ba65-84500cdff95a",
+  "oracle_id": "8b46e077-f667-432f-ab5b-8256a7378311",
+  "name": "Nessian Asp",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cn2",
+  "collector_number": "187",
+  "rarity": "uncommon",
+  "released_at": "2016-08-26",
+  "digital": false,
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Snake",
+  "oracle_text": "Reach\n{6}{G}: Monstrosity 4. (If this creature isn't monstrous, put four +1/+1 counters on it and it becomes monstrous.)",
+  "power": "4",
+  "toughness": "5",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach",
+    "Monstrosity"
+  ]
+}

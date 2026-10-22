@@ -77,6 +77,7 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::Ability(AbilityKind::Triggered) => nouns.push("triggered ability".to_owned()),
             Pred::Tapped => adjectives.push("tapped".to_owned()),
             Pred::Untapped => adjectives.push("untapped".to_owned()),
+            Pred::Monstrous => adjectives.push("monstrous".to_owned()),
             Pred::Attacking => adjectives.push("attacking".to_owned()),
             Pred::AttackingPlayer(Ref::AttachedPlayer) => {
                 tail.push("attacking enchanted player".to_owned());
@@ -413,6 +414,13 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 false,
             )
         }
+        TriggerPattern::Bolstered { who: by } => {
+            let (name, s) = who(by);
+            (
+                format!("{name} bolster{}", if s.is_empty() { "" } else { "s" }),
+                false,
+            )
+        }
         TriggerPattern::Drew { who: by } => {
             let (name, s) = who(by);
             (format!("{name} draw{s} a card"), false)
@@ -438,6 +446,13 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             format!("{} explores", subject(what)),
             what.0 == [Pred::This],
         ),
+        TriggerPattern::BecomesMonstrous { what } => (
+            format!("{} becomes monstrous", subject(what)),
+            what.0 == [Pred::This],
+        ),
+        TriggerPattern::Adapted { what } => {
+            (format!("{} adapts", subject(what)), what.0 == [Pred::This])
+        }
         TriggerPattern::Connived { what } => (
             format!("{} connives", subject(what)),
             what.0 == [Pred::This],
@@ -1246,6 +1261,19 @@ mod tests {
     )]
     #[case::you_proliferate(r#"{"Proliferated":{"who":"You"}}"#, "Whenever you proliferate")]
     #[case::you_amass(r#"{"Amassed":{"who":"You"}}"#, "Whenever you amass")]
+    #[case::you_bolster(r#"{"Bolstered":{"who":"You"}}"#, "Whenever you bolster")]
+    #[case::an_opponent_bolsters(
+        r#"{"Bolstered":{"who":"Opponents"}}"#,
+        "Whenever an opponent bolsters"
+    )]
+    #[case::this_becomes_monstrous(
+        r#"{"BecomesMonstrous":{"what":["This"]}}"#,
+        "When it becomes monstrous"
+    )]
+    #[case::a_creature_adapts(
+        r#"{"Adapted":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#,
+        "Whenever a creature you control adapts"
+    )]
     #[case::an_opponent_amasses(
         r#"{"Amassed":{"who":"Opponents"}}"#,
         "Whenever an opponent amasses"

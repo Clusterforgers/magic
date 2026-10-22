@@ -1,0 +1,21 @@
+{
+  "oracle_id": "9a6d8d37-fcf9-4974-89f5-3500e9da3518",
+  "name": "Skittering Crustacean",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skittering Crustacean",
+      "oracle_fingerprint": "f473328dc663e9a504a1fa4b49088c9c",
+      "abilities": [
+        { "Activated": { "cost": "{6}{U}", "effects": [{ "Monstrosity": { "count": 4 } }] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["Monstrous"] } }
+          }
+        }
+      ]
+    }
+  ]
+}
