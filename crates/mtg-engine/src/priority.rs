@@ -3,12 +3,15 @@
 use std::collections::BTreeSet;
 use std::sync::Arc;
 
-use mtg_cards::ability::{Ability, Limit, Timing};
+use mtg_cards::ability::{Ability, Limit, LoyaltyCost, Timing};
+use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::mana::{ManaCost, ManaSymbol};
 
 use crate::abilities::AbilityRef;
 use crate::ability_reader::{abilities_of, provided_here, working_here};
+use crate::announce::some_x_has_targets;
 use crate::answers::Outcome;
 use crate::characteristics::{characteristics, controller_of_object};
 use crate::choose::announceable;
@@ -85,8 +88,15 @@ fn can_activate(
 ) -> bool {
     // A loyalty ability costs counters, not a cost the price below knows (CR 606).
     if let Ability::Loyalty { cost, .. } = rules {
+        // A `-X` removes X counters, at most those the planeswalker holds (CR 606.6).
+        let counters = object
+            .permanent()
+            .map_or(0, |permanent| permanent.counters_of(&CounterKind::Loyalty));
         return loyalty::can_activate(state, player, object, *cost)
-            && announceable(state, player, object.id(), rules);
+            && announceable(state, player, object.id(), rules)
+            && some_x_has_targets(state, player, object.id(), rules, |x| {
+                x == 0 || (*cost == LoyaltyCost::MinusX && x <= counters)
+            });
     }
     let Ability::Activated {
         cost,
@@ -164,6 +174,36 @@ fn can_activate(
         }
     }
     announceable(state, player, object.id(), rules)
+        && some_x_has_targets(state, player, object.id(), rules, |x| {
+            x == 0 || (price.x > 0 && can_pay_x(state, player, object, &price, &claimed, x))
+        })
+}
+
+/// Whether `player` can pay the mana of `price` with `x` more generic mana for each `{X}`, as `can_activate` judges the
+/// mana: from what floats and the permanents they can tap other than those the other parts of the cost take.
+fn can_pay_x(
+    state: &GameState,
+    player: PlayerId,
+    object: &GameObject,
+    price: &Price,
+    claimed: &[ObjectId],
+    x: u32,
+) -> bool {
+    let Some(seat) = state.player(player) else {
+        return false;
+    };
+    let mana = price
+        .mana
+        .clone()
+        .unwrap_or(ManaCost::ZERO)
+        .with(ManaSymbol::Generic(x.saturating_mul(price.x)));
+    let mut sources = price.sources(state, player, object.id());
+    sources.retain(|option| !claimed.contains(&option.source.object));
+    let life = seat
+        .life()
+        .saturating_sub(i32::try_from(price.life()).unwrap_or(i32::MAX));
+    let spend = Spend::for_ability(state, object.id(), price.x > 0);
+    can_afford(&mana, seat.mana(), &sources, life, &spend)
 }
 
 /// The cards outside the battlefield whose abilities `player` may use: the owner of a card in a hand, a graveyard or the

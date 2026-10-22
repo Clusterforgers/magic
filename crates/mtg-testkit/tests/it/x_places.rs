@@ -567,6 +567,89 @@ fn a_countered_wargate_searches_for_nothing() -> Result<(), ScriptError> {
     Ok(())
 }
 
+const DESTROY_X: &str = r#""targets":[{"what":{"Object":[{"Type":"Creature"},{"Compare":{"stat":"ManaValue","op":"Eq","to":"X"}}]}}],"effects":[{"Destroy":{"what":{"Target":0},"regenerate":false}}]"#;
+
+/// An artifact whose `{X}` ability destroys a creature with mana value X.
+fn culler() -> Arc<CardDefinition> {
+    made(
+        "Culler",
+        CardType::Artifact,
+        ("", 0),
+        &[&format!(
+            r#"{{"Activated":{{"cost":"{{X}}",{DESTROY_X}}}}}"#
+        )],
+    )
+}
+
+/// A planeswalker with 3 loyalty whose `-X` destroys a creature with mana value X.
+fn culling_walker() -> PresetPermanent {
+    let walker = CardDefinition::new("Culling Walker")
+        .with_type(CardType::Planeswalker)
+        .with_loyalty(3)
+        .with_rules(
+            serde_json::from_str(&format!(r#"{{"Loyalty":{{"cost":"MinusX",{DESTROY_X}}}}}"#))
+                .unwrap(),
+        );
+    ready(Arc::new(walker))
+}
+
+#[rstest]
+#[case::a_value_with_a_target(&["{1}", "{3}"], true)]
+#[case::the_most_that_can_be_paid(&["{4}"], true)]
+#[case::nothing_is_a_value(&[""], true)]
+#[case::no_value_that_can_be_paid_has_a_target(&["{5}", "{6}"], false)]
+#[case::no_creature(&[], false)]
+fn an_ability_with_x_in_what_it_targets_is_offered_when_some_x_has_a_target(
+    #[case] costs: &[&str],
+    #[case] offered: bool,
+) -> Result<(), ScriptError> {
+    let creatures: Vec<PresetPermanent> = costs
+        .iter()
+        .enumerate()
+        .map(|(at, cost)| ready(creature_costing(&format!("Target {at}"), cost)))
+        .collect();
+    let mut mine = vec![ready(culler())];
+    mine.extend(lands(4, mountain));
+    let scenario = Scenario::new(2)
+        .battlefield(0, mine)
+        .battlefield(1, creatures);
+    let mut driver = Driver::from_scenario(scenario)?;
+    assert_eq!(!driver.offered_abilities("Culler")?.is_empty(), offered);
+    if offered {
+        driver.begin_ability("Culler", 0)?;
+        // X is asked only when more than one value has a target; every answer offered has one.
+        if let DecisionKind::ChooseNumber(options) = &driver.decision()?.kind {
+            assert!(options.max.unwrap() <= 4);
+        }
+    }
+    Ok(())
+}
+
+#[rstest]
+#[case::a_value_within_the_loyalty(&["{2}"], true)]
+#[case::the_most_the_loyalty_allows(&["{3}"], true)]
+#[case::more_than_the_loyalty(&["{4}"], false)]
+#[case::no_creature(&[], false)]
+fn a_minus_x_ability_is_offered_when_some_x_within_the_loyalty_has_a_target(
+    #[case] costs: &[&str],
+    #[case] offered: bool,
+) -> Result<(), ScriptError> {
+    let creatures: Vec<PresetPermanent> = costs
+        .iter()
+        .enumerate()
+        .map(|(at, cost)| ready(creature_costing(&format!("Target {at}"), cost)))
+        .collect();
+    let scenario = Scenario::new(2)
+        .battlefield(0, [culling_walker()])
+        .battlefield(1, creatures);
+    let driver = Driver::from_scenario(scenario)?;
+    assert_eq!(
+        !driver.offered_abilities("Culling Walker")?.is_empty(),
+        offered
+    );
+    Ok(())
+}
+
 #[test]
 fn a_countered_disembowel_destroys_nothing() -> Result<(), ScriptError> {
     let scenario = || {

@@ -138,6 +138,25 @@ pub(crate) fn payable(
     false
 }
 
+/// Whether the ability `rules` of `source` can be announced with some X that `affords`: when what it may target reads X
+/// (CR 601.2c), that X must leave every target specification a legal target. Abilities whose targets do not read X, and
+/// modal ones, whose modes are chosen first, pass without asking `affords`.
+pub(crate) fn some_x_has_targets(
+    state: &GameState,
+    player: PlayerId,
+    source: ObjectId,
+    rules: &Ability,
+    affords: impl Fn(u32) -> bool,
+) -> bool {
+    let specs = rules.targets();
+    if modal_of(rules).is_some() || !specs.iter().any(reads_x) {
+        return true;
+    }
+    (0..=MOST_X)
+        .take_while(|x| affords(*x))
+        .any(|x| targets_met(state, source, player, specs, None, Some(x)))
+}
+
 /// The values of X a player may announce: from `min` to `max`, less the `except` between them.
 struct Offer {
     min: u32,
