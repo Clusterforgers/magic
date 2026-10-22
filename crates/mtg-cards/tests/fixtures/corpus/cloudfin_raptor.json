@@ -1,0 +1,28 @@
+{
+  "id": "54bb0672-adb4-4aad-a4c0-77a0e7373bac",
+  "oracle_id": "cb0e1afa-fd9e-4bf9-bcb1-6e8110d6e2ff",
+  "name": "Cloudfin Raptor",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rvr",
+  "collector_number": "37",
+  "rarity": "common",
+  "released_at": "2024-01-12",
+  "digital": false,
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Creature — Bird Mutant",
+  "oracle_text": "Flying\nEvolve (Whenever a creature you control enters, if that creature has greater power or toughness than this creature, put a +1/+1 counter on this creature.)",
+  "power": "0",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Evolve"
+  ]
+}

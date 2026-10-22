@@ -1,0 +1,28 @@
+{
+  "id": "8b2f3c52-8d6a-411a-aa62-cbb08a144351",
+  "oracle_id": "d388080d-5ad4-4e27-b361-340f410423a7",
+  "name": "Golden-Scale Aeronaut",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mom",
+  "collector_number": "15",
+  "rarity": "common",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Dwarf Pilot",
+  "oracle_text": "Backup 1 (When this creature enters, put a +1/+1 counter on target creature. If that's another creature, it gains the following ability until end of turn.)\nFlying",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Backup"
+  ]
+}

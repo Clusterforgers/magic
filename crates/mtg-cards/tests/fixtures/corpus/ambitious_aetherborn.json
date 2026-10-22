@@ -1,0 +1,27 @@
+{
+  "id": "80cb628e-fa83-4d7e-92cb-8779ea02193f",
+  "oracle_id": "31f54f88-85a6-43f4-a6de-fb6ef5f0c38d",
+  "name": "Ambitious Aetherborn",
+  "lang": "en",
+  "layout": "normal",
+  "set": "kld",
+  "collector_number": "72",
+  "rarity": "common",
+  "released_at": "2016-09-30",
+  "digital": false,
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Aetherborn Artificer",
+  "oracle_text": "Fabricate 1 (When this creature enters, put a +1/+1 counter on it or create a 1/1 colorless Servo artifact creature token.)",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Fabricate"
+  ]
+}

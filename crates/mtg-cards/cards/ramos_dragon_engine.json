@@ -1,0 +1,54 @@
+{
+  "oracle_id": "3ed41d2d-211b-4013-8562-8c64d54cc43a",
+  "name": "Ramos, Dragon Engine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ramos, Dragon Engine",
+      "oracle_fingerprint": "b1493068601c9633c93eec00c66f5f87",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": { "Stat": { "of": "Triggering", "stat": "Colors" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": "+1/+1", "count": 5 } }],
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "Fixed": [
+                      "White",
+                      "White",
+                      "Blue",
+                      "Blue",
+                      "Black",
+                      "Black",
+                      "Red",
+                      "Red",
+                      "Green",
+                      "Green"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

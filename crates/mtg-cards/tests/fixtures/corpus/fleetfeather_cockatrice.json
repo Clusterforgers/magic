@@ -1,0 +1,32 @@
+{
+  "id": "1139236e-5d71-4fc1-937d-ba1efadee031",
+  "oracle_id": "d5006683-f1c4-4a18-bf64-2d075372534c",
+  "name": "Fleetfeather Cockatrice",
+  "lang": "en",
+  "layout": "normal",
+  "set": "jou",
+  "collector_number": "149",
+  "rarity": "uncommon",
+  "released_at": "2014-05-02",
+  "digital": false,
+  "mana_cost": "{3}{G}{U}",
+  "cmc": 5.0,
+  "type_line": "Creature — Cockatrice",
+  "oracle_text": "Flash (You may cast this spell any time you could cast an instant.)\nFlying, deathtouch\n{5}{G}{U}: Monstrosity 3. (If this creature isn't monstrous, put three +1/+1 counters on it and it becomes monstrous.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Deathtouch",
+    "Flying",
+    "Monstrosity",
+    "Flash"
+  ]
+}

@@ -166,10 +166,10 @@ pub enum PaymentError {
         /// The energy the payer holds for it.
         have: u32,
     },
-    /// A creature or card was named as help (convoke, delve) that is not among the ones offered.
+    /// A creature, artifact or card was named as help (convoke, improvise, delve) that is not among the ones offered.
     #[error("{0:?} is not offered to help pay")]
     NotOffered(ObjectId),
-    /// A creature or card was named twice as help.
+    /// A creature, artifact or card was named twice as help.
     #[error("{0:?} helps pay twice")]
     HelpedTwice(ObjectId),
     /// A creature was named to pay for mana of a colour it is not.
@@ -183,7 +183,7 @@ pub enum PaymentError {
     /// A card named to delve is not in the payer's graveyard.
     #[error("{0:?} is not in the graveyard")]
     NotInGraveyard(ObjectId),
-    /// The creatures and cards named pay for more than the cost asks.
+    /// The creatures, artifacts and cards named pay for more than the cost asks.
     #[error("the creatures and cards named pay for more than the cost asks")]
     HelpedTooMuch,
 }

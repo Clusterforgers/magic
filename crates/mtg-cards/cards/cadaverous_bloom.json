@@ -1,0 +1,21 @@
+{
+  "oracle_id": "fbb0f73b-5e30-4632-99c1-e49582e41f8d",
+  "name": "Cadaverous Bloom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cadaverous Bloom",
+      "oracle_fingerprint": "884004a962f7a37fe4df5947c2c850e9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "ExileFromHand": { "filter": [] } }],
+            "effects": [
+              { "AddMana": { "mana": { "OneOfLists": [["Black", "Black"], ["Green", "Green"]] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

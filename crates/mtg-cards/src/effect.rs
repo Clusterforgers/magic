@@ -90,6 +90,8 @@ pub enum Produce {
     OneOfLists(Vec<Vec<ManaType>>),
     /// This many mana of the color chosen as the source entered the battlefield.
     ChosenColor(u32),
+    /// One mana of this type or of the color chosen as the source entered the battlefield ("Add {R} or one mana of the chosen color").
+    OrChosenColor(ManaType),
     /// This many mana of any one color in the identity of the controller's commander.
     CommanderIdentity(u32),
     /// This many mana of any one color that an object matching the selector could produce ("any type" adds colorless).
@@ -119,6 +121,9 @@ pub enum TokenRef {
         /// Changes the copy has ("except it's a Zombie in addition").
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         except: Vec<Modification>,
+        /// The copy has no mana cost ("except it's a white Zombie with no mana cost", CR 702.128).
+        #[serde(default, skip_serializing_if = "is_false")]
+        no_mana_cost: bool,
     },
 }
 
@@ -379,6 +384,14 @@ pub enum Effect {
         /// The creature that joins the attack.
         what: Ref,
     },
+    /// For each attacking creature `of` names (CR 702.116a), creates for every opponent of its controller other than the player it attacks a token copy of it, tapped and attacking that opponent; the tokens are never declared as attackers (CR 508.4).
+    MyriadCopies {
+        /// The attacking creatures that are copied.
+        of: Ref,
+        /// Names the tokens for the effects that follow ("exile the tokens at end of combat").
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
+    },
     /// Unattaches Auras, Equipment or Fortifications from what they are attached to (CR 701.3d).
     Unattach {
         /// The permanents unattached; one attached to nothing stays as it is.
@@ -444,6 +457,11 @@ pub enum Effect {
         /// How many +1/+1 counters.
         count: Amount,
     },
+    /// The source creature's controller fabricates (CR 702.123): they may put the counters on it, and otherwise create that many Servo tokens; a source that has left the battlefield only makes the tokens.
+    Fabricate {
+        /// How many +1/+1 counters, or Servo tokens.
+        count: Amount,
+    },
     /// Creatures explore (CR 701.44): a land on top goes to the hand, any other card gives a counter and may go to the graveyard.
     Explore {
         /// The creatures that explore.
@@ -497,6 +515,12 @@ pub enum Effect {
         /// Done when the card is not cast: the player declines, or nothing lets it be cast.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         otherwise: Vec<Effect>,
+    },
+    /// The player learns (CR 701.48): they may discard a card, and draw a card if they do; a Lesson from outside the game is not available.
+    Learn {
+        /// Who learns.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
     },
     /// The player time travels (CR 701.56): each suspended card and permanent with a time counter gains or loses one.
     TimeTravel {

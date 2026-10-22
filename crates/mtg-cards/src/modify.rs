@@ -155,6 +155,15 @@ pub enum GameRule {
     },
     /// The creatures attack each combat if able: a requirement on the declaration (CR 508.1d), not a restriction.
     MustAttack(Ref),
+    /// Each creature attacks its own player this turn if able (Encore, CR 702.141): the creatures and the players are
+    /// paired in order, a creature with no player to pair with is not bound, and a pair whose player cannot be attacked
+    /// binds nothing.
+    MustAttackPlayers {
+        /// The creatures, in the order they are paired.
+        who: Ref,
+        /// The players, in the order they are paired.
+        players: Ref,
+    },
     /// The creatures block each combat if able: a requirement on the declaration (CR 509.1c).
     MustBlock(Ref),
     /// The spells can't be countered.
@@ -252,6 +261,10 @@ mod tests {
         r#"{"DamageCantBePrevented":{"source":["This"],"combat":true}}"#
     )]
     #[case(GameRule::MustAttack(Ref::This), r#"{"MustAttack":"This"}"#)]
+    #[case(
+        GameRule::MustAttackPlayers { who: Ref::Bound("tokens".to_owned()), players: Ref::Opponents },
+        r#"{"MustAttackPlayers":{"who":{"Bound":"tokens"},"players":"Opponents"}}"#
+    )]
     #[case(GameRule::MustBlock(Ref::This), r#"{"MustBlock":"This"}"#)]
     #[case(GameRule::CantBeCountered(Ref::This), r#"{"CantBeCountered":"This"}"#)]
     #[case(

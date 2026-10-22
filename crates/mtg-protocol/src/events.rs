@@ -303,9 +303,15 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Transformed { .. }
         | Event::DayNightChanged { .. }
         | Event::MonarchChanged { .. }
+        | Event::CitysBlessingGained { .. }
+        | Event::Learned { .. }
         | Event::Proliferated { .. }
         | Event::Explored { .. }
         | Event::Connived { .. }
+        | Event::Amassed { .. }
+        | Event::Monstrous { .. }
+        | Event::Adapted { .. }
+        | Event::Bolstered { .. }
         | Event::CommanderStayed { .. }
         | Event::Revealed(_) => None,
     }

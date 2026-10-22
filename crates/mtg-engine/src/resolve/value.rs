@@ -21,6 +21,7 @@ use crate::announce::payments;
 use crate::characteristics::{Characteristics, characteristics, controller_of, seen_as};
 use crate::choose::legal_from;
 use crate::choose::{Choices, Target};
+use crate::combat::AttackTarget;
 use crate::keywords::{self, OptionalKind};
 use crate::layers::{Held, View, outside};
 use crate::object::{Chosen, GameObject, ObjectKind, ObjectRef, PermanentState};
@@ -435,6 +436,13 @@ impl<'a> Scope<'a> {
                 .into_iter()
                 .collect(),
             Ref::Monarch => state.monarch().map(Target::Player).into_iter().collect(),
+            Ref::Defending => self.defending().map(Target::Player).into_iter().collect(),
+            Ref::Attacked => self
+                .attacked_opponents()
+                .into_iter()
+                .map(Target::Player)
+                .collect(),
+            Ref::MostLife => self.most_life().into_iter().map(Target::Player).collect(),
             Ref::Bound(name) => self
                 .bindings
                 .get(name)
@@ -448,6 +456,50 @@ impl<'a> Scope<'a> {
                 .map(Target::Object)
                 .collect(),
         })
+    }
+
+    /// The player the attacking creature of the event, else the source, attacks or attacked when it left combat.
+    fn defending(&self) -> Option<PlayerId> {
+        let attacker = self
+            .cause
+            .and_then(|cause| cause.subjects.iter().find_map(|subject| subject.object()))
+            .map_or(self.source.id, |object| object.id);
+        let combat = self.state.combat();
+        let target = combat
+            .attackers()
+            .iter()
+            .find(|attacking| attacking.object() == attacker)
+            .map(crate::combat::Attacker::target)
+            .or_else(|| combat.left_attacking(attacker))?;
+        crate::combat::defending_player(self.state, target)
+    }
+
+    /// The opponents of the controller their creatures attacked this combat, in turn order.
+    fn attacked_opponents(&self) -> Vec<PlayerId> {
+        let combat = self.state.combat();
+        let attacked: Vec<PlayerId> = combat
+            .attackers()
+            .iter()
+            .map(crate::combat::Attacker::target)
+            .chain(combat.left.iter().map(|(_, target)| *target))
+            .filter_map(|target| crate::combat::defending_player(self.state, target))
+            .collect();
+        self.state
+            .turn_order_from(self.state.turn().active())
+            .into_iter()
+            .filter(|player| *player != self.controller && attacked.contains(player))
+            .collect()
+    }
+
+    /// The players with the most life among those still in the game.
+    fn most_life(&self) -> Vec<PlayerId> {
+        let life = |player: PlayerId| self.state.player(player).map(crate::player::Player::life);
+        let alive: Vec<PlayerId> = self.state.alive_players().collect();
+        let most = alive.iter().filter_map(|player| life(*player)).max();
+        alive
+            .into_iter()
+            .filter(|player| life(*player) == most)
+            .collect()
     }
 
     fn seats_of(
@@ -598,11 +650,19 @@ impl<'a> Scope<'a> {
             }
             Pred::Tapped => seen.tapped == Some(true),
             Pred::Untapped => seen.tapped == Some(false),
+            Pred::Monstrous => matches!(seen.counters, Counted::Live(held) if held.monstrous()),
             Pred::Attacking => state
                 .combat()
                 .attackers()
                 .iter()
                 .any(|a| a.object() == reference.id),
+            Pred::AttackingPlayer(who) => {
+                let attacked = self.players(who)?;
+                state.combat().attackers().iter().any(|a| {
+                    a.object() == reference.id
+                        && matches!(a.target(), AttackTarget::Player(player) if attacked.contains(&player))
+                })
+            }
             Pred::Blocking => state
                 .combat()
                 .attackers()
@@ -612,6 +672,7 @@ impl<'a> Scope<'a> {
             Pred::ControlledBy(who) => self.players(who)?.contains(&seen.controller),
             Pred::OwnedBy(who) => self.players(who)?.contains(&seen.owner),
             Pred::In(kind) => zone_kind(seen.zone) == *kind,
+            Pred::CastFrom(kind) => self.cast_from(seen, *kind),
             // An object that has changed zones since it was named has the keywords its snapshot holds (CR 608.2h).
             Pred::HasKeyword(keyword) => match seen.keywords {
                 Some(held) => held.contains(keyword),
@@ -659,6 +720,7 @@ impl<'a> Scope<'a> {
         match stat {
             StatKind::Power => seen.chars.power.map(i64::from),
             StatKind::Toughness => seen.chars.toughness.map(i64::from),
+            StatKind::Colors => i64::try_from(seen.chars.colors.iter().count()).ok(),
             // A spell on the stack counts the X it was cast with for each {X} of its cost (CR 202.3e).
             StatKind::ManaValue => seen.card.map(|c| {
                 let card = c.card();
@@ -851,7 +913,30 @@ impl<'a> Scope<'a> {
                 .object(self.source.id)
                 .filter(|object| object.counter() == self.source.counter)
                 .and_then(GameObject::cast_way)
+                .or_else(|| {
+                    self.snapshot_of(self.source)
+                        .and_then(|snapshot| snapshot.way)
+                })
         })
+    }
+
+    /// Whether `seen` is a spell cast from a zone of this kind: a spell being announced still lies there, one on the
+    /// stack remembers a hand or a graveyard.
+    fn cast_from(&self, seen: &Seen<'_>, kind: ZoneKind) -> bool {
+        let Some(spell) = seen
+            .card
+            .filter(|_| seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability)
+        else {
+            return false;
+        };
+        if self.casting.is_some_and(|(cast, _)| cast == spell.id()) {
+            return zone_kind(spell.zone()) == kind;
+        }
+        match kind {
+            ZoneKind::Hand => spell.cast_from_hand(),
+            ZoneKind::Graveyard => spell.cast_from_graveyard(),
+            _ => false,
+        }
     }
 
     /// Whether a condition is true now.
@@ -902,9 +987,10 @@ impl<'a> Scope<'a> {
                     .iter()
                     .any(|player| self.state.monarch() == Some(*player))
             }
-            Condition::CitysBlessing(_) => {
-                return Err(ResolveError::Unsupported("the city's blessing"));
-            }
+            Condition::CitysBlessing(who) => self
+                .players(who)?
+                .iter()
+                .any(|player| self.state.has_citys_blessing(*player)),
             Condition::YourTurn => self.state.turn().active() == self.controller,
             Condition::NewlyControlled(what) => {
                 let named = self.objects(what)?;
@@ -1780,7 +1866,6 @@ mod tests {
 
     #[rstest]
     #[case::if_you_do(r#""Performed""#, "\"if you do\"")]
-    #[case::the_citys_blessing(r#"{"CitysBlessing":"You"}"#, "the city's blessing")]
     fn a_condition_the_evaluator_cannot_read_yet_says_what_it_lacks(
         #[case] json: &str,
         #[case] lacks: &'static str,

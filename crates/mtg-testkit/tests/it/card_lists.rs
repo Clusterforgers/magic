@@ -9,6 +9,7 @@ use mtg_testkit::combat_keyword_cards::COMBAT_KEYWORD_CARDS;
 use mtg_testkit::corpus;
 use mtg_testkit::cost_cards::MODIFIER_CARDS;
 use mtg_testkit::counter_cards::{COUNTER_CORPUS_CARDS, COUNTER_SYNTHETIC_CARDS};
+use mtg_testkit::counting_cards::COUNTING_CARDS;
 use mtg_testkit::defining_cards::DEFINING_CARDS;
 use mtg_testkit::evasion_cards::EVASION_CARDS;
 use mtg_testkit::event_cards::EVENT_CARDS;
@@ -64,6 +65,7 @@ fn assert_in_the_corpus(list: &[&str]) {
 #[case::attach(ATTACH_CORPUS_CARDS)]
 #[case::cascade(CASCADE_CARDS)]
 #[case::counter(COUNTER_CORPUS_CARDS)]
+#[case::counting(COUNTING_CARDS)]
 #[case::defining(DEFINING_CARDS)]
 #[case::group_statics(GROUP_STATIC_CARDS)]
 #[case::extra_cost(EXTRA_COST_CARDS)]

@@ -35,10 +35,6 @@ fn a_group_enters_tapped(#[case] text: &str, #[case] json: &str) {
     "Each other creature you control with a +1/+1 counter on it has deathtouch.",
     r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},"Other",{"ControlledBy":"You"},{"HasCounter":"+1/+1"}]},"mods":[{"AddKeyword":"Deathtouch"}]}}"#
 )]
-#[case::plural_wording(
-    "Creatures you control with a +1/+1 counter on it have flying.",
-    r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},{"HasCounter":"+1/+1"}]},"mods":[{"AddKeyword":"Flying"}]}}"#
-)]
 #[case::a_named_counter(
     "Each creature you control with a quest counter on it gets +1/+1.",
     r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},{"HasCounter":{"Other":"quest"}}]},"mods":[{"ModifyPT":{"power":1,"toughness":1}}]}}"#

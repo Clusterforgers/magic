@@ -43,11 +43,17 @@ enum Happened {
     Created { object: ObjectId },
     /// A creature was declared as an attacker, the `nth` time this turn for it.
     Attacked { attacker: ObjectId, nth: u32 },
+    /// A creature was declared as the only attacker.
+    AttackedAlone { attacker: ObjectId },
     /// A creature was declared as an attacker of a player.
     AttackedPlayer {
         attacker: ObjectId,
         player: PlayerId,
     },
+    /// Creatures were declared as attackers of a player, once for the declaration (not for a planeswalker).
+    PlayerAttacked { at: PlayerId },
+    /// A player declared creatures as attackers of a player, once for each pair of players in the declaration.
+    PlayerAttacks { by: PlayerId, at: PlayerId },
     /// A player cast a spell, the `nth` of their turn, after `before` spells that every player cast this turn.
     Cast {
         player: PlayerId,
@@ -81,8 +87,12 @@ enum Happened {
     },
     /// A player lost life: by an effect, by paying it or from damage (CR 120.3a).
     LifeLost { player: PlayerId, amount: u32 },
-    /// A player drew a card, the `nth` of their turn.
-    Drew { player: PlayerId, nth: u32 },
+    /// A player drew `card`, the `nth` of their turn.
+    Drew {
+        player: PlayerId,
+        card: ObjectId,
+        nth: u32,
+    },
     /// A permanent became tapped.
     Tapped { object: ObjectId },
     /// A permanent became untapped.
@@ -116,6 +126,14 @@ enum Happened {
     Explored { object: ObjectId, player: PlayerId },
     /// A creature connived.
     Connived { object: ObjectId, player: PlayerId },
+    /// A player amassed.
+    Amassed { player: PlayerId },
+    /// A creature became monstrous.
+    Monstrous { object: ObjectId, player: PlayerId },
+    /// A creature adapted.
+    Adapted { object: ObjectId, player: PlayerId },
+    /// A player bolstered.
+    Bolstered { player: PlayerId },
     /// Everything of one kind of state (before or after) that happened in the batch, for the patterns of events that
     /// happen together.
     Batch(Vec<Happened>),
@@ -258,6 +276,11 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                         object_ordinal(look, object, None, Tally::Attacked)
                     }),
                 }));
+                if let [(attacker, _)] = attackers.as_slice() {
+                    found.push(Happened::AttackedAlone {
+                        attacker: *attacker,
+                    });
+                }
                 found.extend(attackers.iter().filter_map(|(attacker, at)| match at {
                     AttackTarget::Player(player) => Some(Happened::AttackedPlayer {
                         attacker: *attacker,
@@ -265,6 +288,26 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                     }),
                     AttackTarget::Planeswalker(_) => None,
                 }));
+                let mut pairs: Vec<(PlayerId, PlayerId)> = Vec::new();
+                for (attacker, at) in attackers {
+                    if let AttackTarget::Player(at) = at
+                        && let Some(by) =
+                            controller_of(post, *attacker).or_else(|| controller_of(pre, *attacker))
+                        && !pairs.contains(&(by, *at))
+                    {
+                        pairs.push((by, *at));
+                    }
+                }
+                for (_, at) in &pairs {
+                    if !found.contains(&Happened::PlayerAttacked { at: *at }) {
+                        found.push(Happened::PlayerAttacked { at: *at });
+                    }
+                }
+                found.extend(
+                    pairs
+                        .into_iter()
+                        .map(|(by, at)| Happened::PlayerAttacks { by, at }),
+                );
                 if !attackers.is_empty() {
                     found.push(Happened::AttackedTogether {
                         attackers: attackers.iter().map(|(attacker, _)| *attacker).collect(),
@@ -489,8 +532,9 @@ fn about_players_and_permanents(
                 amount: *amount,
             });
         }
-        Event::CardDrawn { player, .. } => found.push(Happened::Drew {
+        Event::CardDrawn { player, object } => found.push(Happened::Drew {
             player: *player,
+            card: *object,
             nth: ordinal(look.post, look.later, *player, Tally::Drawn),
         }),
         Event::PermanentTapped { object } => {
@@ -530,6 +574,16 @@ fn about_players_and_permanents(
         }),
         Event::MonarchChanged { player } => found.push(Happened::BecameMonarch { player: *player }),
         Event::Proliferated { player } => found.push(Happened::Proliferated { player: *player }),
+        Event::Amassed { player, .. } => found.push(Happened::Amassed { player: *player }),
+        Event::Bolstered { player, .. } => found.push(Happened::Bolstered { player: *player }),
+        Event::Monstrous { object, player } => found.push(Happened::Monstrous {
+            object: *object,
+            player: *player,
+        }),
+        Event::Adapted { object, player } => found.push(Happened::Adapted {
+            object: *object,
+            player: *player,
+        }),
         Event::Explored { object, player } => found.push(Happened::Explored {
             object: *object,
             player: *player,
@@ -618,6 +672,13 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
                 .ok()?
                 .then(|| cause(state, vec![Target::Object(reference)]))
         }
+        (TriggerPattern::AttacksAlone { what }, Happened::AttackedAlone { attacker }) => {
+            let reference = object(*attacker)?;
+            scope
+                .selects(what, reference)
+                .ok()?
+                .then(|| cause(state, vec![Target::Object(reference)]))
+        }
         (
             TriggerPattern::AttacksPlayer { what, at },
             Happened::AttackedPlayer { attacker, player },
@@ -626,6 +687,20 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
             (scope.players(at).ok()?.contains(player) && scope.selects(what, reference).ok()?)
                 .then(|| cause(state, vec![Target::Object(reference)]))
         }
+        (TriggerPattern::PlayerAttacked { who }, Happened::PlayerAttacked { at }) => scope
+            .players(who)
+            .ok()?
+            .contains(at)
+            .then(|| cause(state, vec![Target::Player(*at)])),
+        (
+            TriggerPattern::PlayerAttacks { by, at },
+            Happened::PlayerAttacks {
+                by: attacking,
+                at: defending,
+            },
+        ) => (scope.players(by).ok()?.contains(attacking)
+            && scope.players(at).ok()?.contains(defending))
+        .then(|| cause(state, vec![Target::Player(*attacking)])),
         (TriggerPattern::SpellCast { what, by }, Happened::Cast { player, spell, .. }) => {
             let reference = object(*spell)?;
             let subjects = vec![Target::Player(*player), Target::Object(reference)];
@@ -738,10 +813,15 @@ fn matching_event(
         }
         (TriggerPattern::LifeGained { who }, Happened::LifeGained { player, .. })
         | (TriggerPattern::LifeLost { who }, Happened::LifeLost { player, .. })
-        | (TriggerPattern::Drew { who }, Happened::Drew { player, .. })
         | (TriggerPattern::BecomesMonarch { who }, Happened::BecameMonarch { player })
-        | (TriggerPattern::Proliferated { who }, Happened::Proliferated { player }) => {
-            by(who, player)
+        | (TriggerPattern::Proliferated { who }, Happened::Proliferated { player })
+        | (TriggerPattern::Amassed { who }, Happened::Amassed { player })
+        | (TriggerPattern::Bolstered { who }, Happened::Bolstered { player }) => by(who, player)
+            .then(|| counted(state, vec![Target::Player(*player)], happened.amount())),
+        (TriggerPattern::Drew { who, what }, Happened::Drew { player, card, .. }) => {
+            // The card is read where the batch left it: in the hand it was drawn into, or wherever an effect sent it since.
+            let drawn = object(*card)?;
+            (by(who, player) && picks(what, drawn)?)
                 .then(|| counted(state, vec![Target::Player(*player)], happened.amount()))
         }
         (
@@ -787,6 +867,20 @@ fn matching_permanents(
         | (
             TriggerPattern::Connived { what },
             Happened::Connived {
+                object: actor,
+                player,
+            },
+        )
+        | (
+            TriggerPattern::BecomesMonstrous { what },
+            Happened::Monstrous {
+                object: actor,
+                player,
+            },
+        )
+        | (
+            TriggerPattern::Adapted { what },
+            Happened::Adapted {
                 object: actor,
                 player,
             },
@@ -1321,6 +1415,10 @@ mod tests {
     #[case::cycling(r#"{"Cycled":{}}"#)]
     #[case::becoming_the_monarch(r#"{"BecomesMonarch":{}}"#)]
     #[case::proliferating(r#"{"Proliferated":{}}"#)]
+    #[case::amassing(r#"{"Amassed":{}}"#)]
+    #[case::bolstering(r#"{"Bolstered":{}}"#)]
+    #[case::becoming_monstrous(r#"{"BecomesMonstrous":{"what":[]}}"#)]
+    #[case::adapting(r#"{"Adapted":{"what":[]}}"#)]
     fn the_patterns_of_events_about_players_and_permanents_trigger_on_no_other_event(
         #[case] when: &str,
     ) {
@@ -1494,6 +1592,50 @@ mod tests {
             Zone::Hand(FOE),
             "the card is in a hand when the ability is photographed"
         );
+    }
+
+    /// A defender of the table below: a player, or a planeswalker (the Watcher stands in for one).
+    type Defender = Option<PlayerId>;
+
+    #[rstest]
+    #[case::a_player_is_attacked(r#"{"PlayerAttacked":{"who":"EachPlayer"}}"#, &[("Bear", Some(FOE))], &[Target::Player(FOE)])]
+    #[case::two_attackers_trigger_it_once(r#"{"PlayerAttacked":{"who":"EachPlayer"}}"#, &[("Bear", Some(FOE)), ("Watcher", Some(FOE))], &[Target::Player(FOE)])]
+    #[case::another_player_is_attacked(r#"{"PlayerAttacked":{"who":"You"}}"#, &[("Bear", Some(FOE))], &[])]
+    #[case::the_controller_is_attacked(r#"{"PlayerAttacked":{"who":"You"}}"#, &[("Ogre", Some(ME))], &[Target::Player(ME)])]
+    #[case::only_a_planeswalker_is_attacked(r#"{"PlayerAttacked":{"who":"EachPlayer"}}"#, &[("Bear", None)], &[])]
+    #[case::a_player_and_a_planeswalker(r#"{"PlayerAttacked":{"who":"EachPlayer"}}"#, &[("Bear", Some(FOE)), ("Watcher", None)], &[Target::Player(FOE)])]
+    #[case::a_player_attacks_an_opponent_once(r#"{"PlayerAttacks":{"at":"Opponents"}}"#, &[("Bear", Some(FOE)), ("Watcher", Some(FOE))], &[Target::Player(ME)])]
+    #[case::a_player_attacks_another(r#"{"PlayerAttacks":{"at":"You"}}"#, &[("Bear", Some(FOE))], &[])]
+    #[case::an_opponent_attacks_the_controller(r#"{"PlayerAttacks":{"by":"Opponents","at":"You"}}"#, &[("Ogre", Some(ME))], &[Target::Player(FOE)])]
+    #[case::the_controller_attacks_a_planeswalker(r#"{"PlayerAttacks":{"at":"Opponents"}}"#, &[("Bear", None)], &[])]
+    fn an_attack_at_a_player_triggers_once_for_the_player_or_for_the_attacker(
+        #[case] when: &str,
+        #[case] attacks: &[(&str, Defender)],
+        #[case] subjects: &[Target],
+    ) {
+        let pre = board(with("Watcher", vec![triggered(when)]));
+        let by = if attacks[0].0 == "Ogre" { FOE } else { ME };
+        let event = Event::AttackersDeclared {
+            player: by,
+            attackers: attacks
+                .iter()
+                .map(|(name, defender)| {
+                    let at = match defender {
+                        Some(player) => AttackTarget::Player(*player),
+                        None => AttackTarget::Planeswalker(id(&pre, "Ogre")),
+                    };
+                    (id(&pre, name), at)
+                })
+                .collect(),
+        };
+        let (_, found) = fire(&pre, &[event]);
+        let seen: Vec<Vec<Target>> = found.iter().map(|t| t.cause.subjects.clone()).collect();
+        let expected: Vec<Vec<Target>> = if subjects.is_empty() {
+            Vec::new()
+        } else {
+            vec![subjects.to_vec()]
+        };
+        assert_eq!(seen, expected);
     }
 
     #[test]

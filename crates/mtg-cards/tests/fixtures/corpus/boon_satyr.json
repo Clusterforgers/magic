@@ -1,0 +1,28 @@
+{
+  "id": "477a30f3-3cbe-42a5-9fae-fe5885a8cf25",
+  "oracle_id": "aedcd2fb-813a-4915-b7b9-ac7479863462",
+  "name": "Boon Satyr",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c18",
+  "collector_number": "132",
+  "rarity": "rare",
+  "released_at": "2018-08-10",
+  "digital": false,
+  "mana_cost": "{1}{G}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment Creature — Satyr",
+  "oracle_text": "Flash\nBestow {3}{G}{G} (If you cast this card for its bestow cost, it's an Aura spell with enchant creature. It becomes a creature again if it's not attached.)\nEnchanted creature gets +4/+2.",
+  "power": "4",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Bestow",
+    "Flash"
+  ]
+}

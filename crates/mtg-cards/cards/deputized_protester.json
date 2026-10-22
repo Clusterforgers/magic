@@ -1,0 +1,12 @@
+{
+  "oracle_id": "09947592-1730-4c1c-bfa5-be53a68d6919",
+  "name": "Deputized Protester",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deputized Protester",
+      "oracle_fingerprint": "203ba19490857cd4c7645d1b4bf1872d",
+      "abilities": [{ "Keyword": "Menace" }, { "Keyword": "Melee" }]
+    }
+  ]
+}

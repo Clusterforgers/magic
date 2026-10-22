@@ -1,0 +1,28 @@
+{
+  "id": "5d9aa740-9adf-412a-b6ec-0b9bb1b4618b",
+  "oracle_id": "3d0c1301-4fa7-4245-a13f-f613188eb638",
+  "name": "Battering Krasis",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dgm",
+  "collector_number": "41",
+  "rarity": "common",
+  "released_at": "2013-05-03",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Shark Beast",
+  "oracle_text": "Trample\nEvolve (Whenever a creature you control enters, if that creature has greater power or toughness than this creature, put a +1/+1 counter on this creature.)",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Evolve",
+    "Trample"
+  ]
+}

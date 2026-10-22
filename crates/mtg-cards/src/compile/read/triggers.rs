@@ -6,9 +6,11 @@ use super::amounts::{count_word, number_word};
 use super::counters;
 use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
+use crate::keyword::Keyword;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::{Step, TriggerPattern};
 use crate::value::{Amount, Cmp, Condition, CounterKind};
+use mtg_core::card::CardType;
 
 /// Whether the pattern is "when you cycle this card", the one trigger that works from the graveyard.
 pub fn cycled_itself(pattern: &TriggerPattern) -> bool {
@@ -43,22 +45,16 @@ pub fn targeted_itself(pattern: &TriggerPattern) -> bool {
     }
 }
 
-/// Whether the pattern is the card itself entering the battlefield or attacking ("enters or attacks"), so the card's
-/// effects may call it "it".
-pub fn entered_or_attacked(pattern: &TriggerPattern) -> bool {
-    let TriggerPattern::AnyOf(patterns) = pattern else {
-        return false;
-    };
-    let itself = |pattern: &TriggerPattern| match pattern {
-        TriggerPattern::Attacks { what }
-        | TriggerPattern::ZoneChange {
+/// Whether the pattern is the card itself dying, so the card's damage may say "it deals".
+pub fn dies_itself(pattern: &TriggerPattern) -> bool {
+    matches!(
+        pattern,
+        TriggerPattern::ZoneChange {
             what,
-            to: Some(ZoneKind::Battlefield),
-            ..
-        } => what.0 == [Pred::This],
-        _ => false,
-    };
-    patterns.len() > 1 && patterns.iter().all(itself)
+            from: Some(ZoneKind::Battlefield),
+            to: Some(ZoneKind::Graveyard),
+        } if what.0 == [Pred::This]
+    )
 }
 
 /// The steps a trigger names and the words for each.
@@ -201,7 +197,7 @@ fn step(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         Ref::Monarch
     } else if r.words("each opponent's") {
         Ref::Opponents
-    } else if r.word("each") {
+    } else if r.words("each player's") || r.word("each") {
         Ref::EachPlayer
     } else {
         return None;
@@ -232,8 +228,9 @@ fn player(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
 fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     let (by, third) = player(r)?;
     let verb = r.take_word()?;
+    let whose = if third { "their" } else { "your" };
     if verb == if third { "casts" } else { "cast" } {
-        if let Some(nth) = each_turn(r, "spell") {
+        if let Some(nth) = each_turn(r, "spell", whose) {
             let event = TriggerPattern::SpellCast {
                 what: Selector::default(),
                 by,
@@ -265,15 +262,21 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         r.need("life")?;
         Some(TriggerPattern::LifeLost { who: by })
     } else if verb == if third { "draws" } else { "draw" } {
-        if let Some(nth) = each_turn(r, "card") {
-            let event = TriggerPattern::Drew { who: by };
+        if let Some(nth) = each_turn(r, "card", whose) {
+            let event = TriggerPattern::Drew {
+                who: by,
+                what: Selector::default(),
+            };
             return Some(TriggerPattern::Nth {
                 event: Box::new(event),
                 nth,
             });
         }
         r.need("a card")?;
-        Some(TriggerPattern::Drew { who: by })
+        Some(TriggerPattern::Drew {
+            who: by,
+            what: Selector::default(),
+        })
     } else if verb == if third { "discards" } else { "discard" } {
         r.need("a card")?;
         Some(TriggerPattern::Discarded {
@@ -293,8 +296,26 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     } else if verb == if third { "becomes" } else { "become" } {
         r.need("the monarch")?;
         Some(TriggerPattern::BecomesMonarch { who: by })
+    } else if verb == if third { "is" } else { "are" } {
+        r.need("attacked")?;
+        Some(TriggerPattern::PlayerAttacked { who: by })
+    } else if verb == if third { "attacks" } else { "attack" } {
+        if by == Ref::You && r.peek_word() == Some("with") {
+            return attack_with(r);
+        }
+        let at = if r.words("enchanted player") {
+            Ref::AttachedPlayer
+        } else {
+            r.word("you").then_some(Ref::You)?
+        };
+        r.need("with one or more creatures")?;
+        Some(TriggerPattern::PlayerAttacks { by, at })
     } else if verb == if third { "proliferates" } else { "proliferate" } {
         Some(TriggerPattern::Proliferated { who: by })
+    } else if verb == if third { "bolsters" } else { "bolster" } {
+        Some(TriggerPattern::Bolstered { who: by })
+    } else if verb == if third { "amasses" } else { "amass" } {
+        Some(TriggerPattern::Amassed { who: by })
     } else if verb == if third { "taps" } else { "tap" } {
         let what = subject(r)?;
         r.need("for mana")?;
@@ -304,10 +325,30 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     }
 }
 
-/// "your second card each turn", "your first spell each turn": which one of the turn, for a noun.
-fn each_turn(r: &mut Reader<'_>, noun: &str) -> Option<u32> {
+/// "you attack with two or more creatures": that many of the creatures you control attack together.
+fn attack_with(r: &mut Reader<'_>) -> Option<TriggerPattern> {
+    r.need("with")?;
+    let at_least = if r.words("one or more") {
+        1
+    } else {
+        let number = number_word(r.take_word()?)?;
+        r.need("or more")?;
+        number
+    };
+    r.need("creatures")?;
+    Some(TriggerPattern::GroupAttacks {
+        what: Selector(vec![
+            Pred::Type(CardType::Creature),
+            Pred::ControlledBy(Ref::You),
+        ]),
+        at_least,
+    })
+}
+
+/// "your second card each turn", "their first spell each turn": which one of the turn, for a noun.
+fn each_turn(r: &mut Reader<'_>, noun: &str, whose: &str) -> Option<u32> {
     r.attempt(|r| {
-        r.need("your")?;
+        r.need(whose)?;
         let at = ORDINALS.iter().position(|word| r.word(word))?;
         r.need(noun)?;
         r.need("each turn")?;
@@ -417,6 +458,10 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         return Some(TriggerPattern::Untapped { what: what.clone() });
     } else if r.word("explores") {
         return Some(TriggerPattern::Explored { what: what.clone() });
+    } else if r.words("becomes monstrous") {
+        return Some(TriggerPattern::BecomesMonstrous { what: what.clone() });
+    } else if r.word("adapts") {
+        return Some(TriggerPattern::Adapted { what: what.clone() });
     } else if r.word("connives") {
         return Some(TriggerPattern::Connived { what: what.clone() });
     } else if r.words("becomes attached to") {
@@ -505,6 +550,9 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
     if let Some(monarch) = monarch_condition(r) {
         return Some(monarch);
     }
+    if let Some(bare) = r.attempt(no_counters) {
+        return Some(bare);
+    }
     r.need("you have")?;
     let number = i32::try_from(r.number()?).ok()?;
     let op = if r.words("or more") {
@@ -522,6 +570,32 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
     })
 }
 
+/// "while saddled" after an attack: the creature is saddled (CR 702.171b).
+pub fn saddled() -> Condition {
+    Condition::Matches {
+        subject: Ref::This,
+        selector: Selector(vec![Pred::HasKeyword(Keyword::Saddled)]),
+    }
+}
+
+/// "~ has no charge counters on it": the card holds none of that counter, and "it" is the card in the effects that follow.
+fn no_counters(r: &mut Reader<'_>) -> Option<Condition> {
+    r.source().then_some(())?;
+    r.need("has no")?;
+    let counter = counters::kind(r)?;
+    r.need("counters on")?;
+    r.word("it").then_some(())?;
+    r.it = Some(Ref::This);
+    Some(Condition::Compare {
+        left: Amount::Counters {
+            on: Ref::This,
+            counter,
+        },
+        op: Cmp::Eq,
+        right: Amount::Fixed(0),
+    })
+}
+
 /// Who is the monarch: "you're the monarch", "an opponent is the monarch", "there is no monarch".
 pub fn monarch_condition(r: &mut Reader<'_>) -> Option<Condition> {
     if r.words("you're the monarch") {
@@ -530,6 +604,8 @@ pub fn monarch_condition(r: &mut Reader<'_>) -> Option<Condition> {
         Some(Condition::Monarch(Ref::Opponents))
     } else if r.words("there is no monarch") {
         Some(no_monarch())
+    } else if r.words("you have the city's blessing") {
+        Some(Condition::CitysBlessing(Ref::You))
     } else {
         None
     }
@@ -545,6 +621,7 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
     Some(match condition {
         Condition::Monarch(Ref::You) => "you're the monarch".to_owned(),
         Condition::Monarch(Ref::Opponents) => "an opponent is the monarch".to_owned(),
+        Condition::CitysBlessing(Ref::You) => "you have the city's blessing".to_owned(),
         condition if *condition == no_monarch() => "there is no monarch".to_owned(),
         _ => return None,
     })
@@ -554,6 +631,20 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
 pub fn condition_text(condition: &Condition) -> Option<String> {
     if let Some(monarch) = monarch_text(condition) {
         return Some(monarch);
+    }
+    if let Condition::Compare {
+        left: Amount::Counters {
+            on: Ref::This,
+            counter,
+        },
+        op: Cmp::Eq,
+        right: Amount::Fixed(0),
+    } = condition
+    {
+        return Some(format!(
+            "~ has no {} counters on it",
+            counters::kind_text(counter)?
+        ));
     }
     let Condition::Compare {
         left: Amount::Life(Ref::You),
@@ -640,6 +731,8 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::Untapped { what } => said(what, "becomes untapped"),
         TriggerPattern::Explored { what } => said(what, "explores"),
         TriggerPattern::Connived { what } => said(what, "connives"),
+        TriggerPattern::BecomesMonstrous { what } => said(what, "becomes monstrous"),
+        TriggerPattern::Adapted { what } => said(what, "adapts"),
         TriggerPattern::Attached { what, to } if !what.is_empty() && !to.is_empty() => {
             said(what, &format!("becomes attached to {}", subject_text(to)?))
         }
@@ -731,13 +824,17 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::Proliferated { who } => {
             Some(format!("Whenever {}", player_verb(who, "proliferate")?))
         }
+        TriggerPattern::Amassed { who } => Some(format!("Whenever {}", player_verb(who, "amass")?)),
+        TriggerPattern::Bolstered { who } => {
+            Some(format!("Whenever {}", player_verb(who, "bolster")?))
+        }
         TriggerPattern::LifeGained { who } => {
             Some(format!("Whenever {} life", player_verb(who, "gain")?))
         }
         TriggerPattern::LifeLost { who } => {
             Some(format!("Whenever {} life", player_verb(who, "lose")?))
         }
-        TriggerPattern::Drew { who } => {
+        TriggerPattern::Drew { who, what } if what.is_empty() => {
             Some(format!("Whenever {} a card", player_verb(who, "draw")?))
         }
         TriggerPattern::Discarded { what, by } if what.is_empty() => {
@@ -751,6 +848,27 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
                 _ => return None,
             };
             Some(format!("Whenever {} {card}", player_verb(by, "cycle")?))
+        }
+        TriggerPattern::PlayerAttacked { who } => {
+            let (subject, be) = match who {
+                Ref::You => ("you", "are"),
+                Ref::Opponents => ("an opponent", "is"),
+                Ref::EachPlayer => ("a player", "is"),
+                Ref::AttachedPlayer => ("enchanted player", "is"),
+                _ => return None,
+            };
+            Some(format!("Whenever {subject} {be} attacked"))
+        }
+        TriggerPattern::PlayerAttacks { by, at } => {
+            let at = match at {
+                Ref::You => "you",
+                Ref::AttachedPlayer => "enchanted player",
+                _ => return None,
+            };
+            Some(format!(
+                "Whenever {} {at} with one or more creatures",
+                player_verb(by, "attack")?
+            ))
         }
         TriggerPattern::TappedForMana { what, by } => Some(format!(
             "Whenever {} {} for mana",
@@ -828,9 +946,9 @@ fn damaged_subject(to: &Ref) -> Option<Selector> {
 /// for the first time each turn".
 fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
     let ordinal = ORDINALS.get(usize::try_from(nth.checked_sub(1)?).ok()?)?;
-    let (verb, noun) = match event {
-        TriggerPattern::Drew { who: Ref::You } => ("draw", "card"),
-        TriggerPattern::SpellCast { what, by: Ref::You } if what.is_empty() => ("cast", "spell"),
+    let (by, verb, noun) = match event {
+        TriggerPattern::Drew { who, what } if what.is_empty() => (who, "draw", "card"),
+        TriggerPattern::SpellCast { what, by } if what.is_empty() => (by, "cast", "spell"),
         TriggerPattern::Attacks { .. }
         | TriggerPattern::BecomesTarget { .. }
         | TriggerPattern::DealsDamage { .. } => {
@@ -839,8 +957,10 @@ fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
         }
         _ => return None,
     };
+    let whose = if *by == Ref::You { "your" } else { "their" };
     Some(format!(
-        "Whenever you {verb} your {ordinal} {noun} each turn"
+        "Whenever {} {whose} {ordinal} {noun} each turn",
+        player_verb(by, verb)?
     ))
 }
 
@@ -878,12 +998,15 @@ fn counter_text(what: &Selector, counter: Option<&CounterKind>, moved: &str) -> 
 }
 
 /// "When ~ enters", "Whenever a land you control enters", "Whenever ~ enters or attacks": "when" is
-/// for the card itself entering, dying or leaving, "whenever" for the rest.
+/// for the card itself entering, dying, leaving or becoming monstrous, "whenever" for the rest.
 fn about(what: &Selector, verbs: &[String]) -> Option<String> {
     let once = what.0 == [Pred::This]
-        && verbs
-            .iter()
-            .all(|verb| matches!(verb.as_str(), "enters" | "dies" | "leaves the battlefield"));
+        && verbs.iter().all(|verb| {
+            matches!(
+                verb.as_str(),
+                "enters" | "dies" | "leaves the battlefield" | "becomes monstrous"
+            )
+        });
     Some(format!(
         "{} {} {}",
         if once { "When" } else { "Whenever" },

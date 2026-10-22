@@ -1,0 +1,101 @@
+{
+  "oracle_id": "8db3152a-11b1-4c59-a745-1c40a9b235b7",
+  "name": "Hada Spy Patrol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hada Spy Patrol",
+      "oracle_fingerprint": "40fc18c0933b03ee4ce186c475557ed9",
+      "abilities": [
+        { "Keyword": { "LevelUp": "{2}{U}" } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                    "op": "Le",
+                    "right": 2
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                    "op": "Le",
+                    "right": 2
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetPT": { "power": 3, "toughness": 3 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Shroud" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

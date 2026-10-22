@@ -3,7 +3,7 @@
 use std::ops::Range;
 use std::str::FromStr;
 
-use mtg_core::card::{CardType, Subtype};
+use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 
 use crate::cost::{Cost, CostItem};
@@ -58,6 +58,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("equip", Params::Cost),
     ("reconfigure", Params::Cost),
     ("cycling", Params::Cost),
+    ("basic landcycling", Params::Cost),
     ("kicker", Params::Cost),
     ("multikicker", Params::Cost),
     ("flashback", Params::Cost),
@@ -200,6 +201,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("frenzy", Params::Number),
     ("mobilize", Params::Number),
     ("saddle", Params::Number),
+    ("saddled", Params::None),
 ];
 
 /// A keyword found at the start of an item.
@@ -328,25 +330,37 @@ pub fn read(item: &str) -> Option<Keyword> {
         "entwine" => spell_cost(rest).map(Keyword::Entwine),
         "flashback" => spell_cost(rest).map(Keyword::Flashback),
         "madness" => spell_cost(rest).map(Keyword::Madness),
+        "miracle" => spell_cost(rest).map(Keyword::Miracle),
+        "dredge" => positive(rest).map(Keyword::Dredge),
         "morph" => cost(rest).map(Keyword::Morph),
         "disguise" => cost(rest).map(Keyword::Disguise),
         "evoke" => spell_cost(rest).map(Keyword::Evoke),
         "overload" => cost(rest).map(Keyword::Overload),
         "mutate" => cost(rest).map(Keyword::Mutate),
         "encore" => cost(rest).map(Keyword::Encore),
-        "squad" => cost(rest).map(Keyword::Squad),
+        "squad" => spell_cost(rest).map(Keyword::Squad),
         "foretell" => cost(rest).map(Keyword::Foretell),
         "unearth" => spell_cost(rest).map(Keyword::Unearth),
+        "embalm" => spell_cost(rest).map(Keyword::Embalm),
+        "eternalize" => spell_cost(rest).map(Keyword::Eternalize),
         "escape" => spell_cost(rest).map(Keyword::Escape),
         "dash" => spell_cost(rest).map(Keyword::Dash),
+        "bestow" => spell_cost(rest).map(Keyword::Bestow),
+        "blitz" => spell_cost(rest).map(Keyword::Blitz),
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
         "echo" => spell_cost(rest).map(Keyword::Echo),
         "cumulative upkeep" => spell_cost(rest).map(Keyword::CumulativeUpkeep),
-        "crew" => rest
-            .parse()
-            .ok()
-            .filter(|power| *power > 0)
-            .map(Keyword::Crew),
+        "vanishing" => positive(rest).map(Keyword::Vanishing),
+        "fading" => positive(rest).map(Keyword::Fading),
+        "backup" => positive(rest).map(|count| Keyword::Backup {
+            count,
+            abilities: Vec::new(),
+        }),
+        "crew" => positive(rest).map(Keyword::Crew),
+        "saddle" => positive(rest).map(Keyword::Saddle),
+        "fabricate" => positive(rest).map(Keyword::Fabricate),
+        "level up" => cost(rest).map(Keyword::LevelUp),
+        "outlast" => cost(rest).map(Keyword::Outlast),
         "suspend" => suspend(rest),
         "enchant" => super::read::enchant_filter(rest).map(Keyword::Enchant),
         "enchant player" => Some(Keyword::EnchantPlayer { opponent: false }),
@@ -355,15 +369,26 @@ pub fn read(item: &str) -> Option<Keyword> {
         "partner" if rest.starts_with('\u{2014}') => partner_group(rest),
         "protection" => protection(rest).map(Keyword::Protection),
         "companion" => Some(Keyword::Companion),
-        "toxic" => rest
-            .parse()
-            .ok()
-            .filter(|poison| *poison > 0)
-            .map(Keyword::Toxic),
+        "toxic" => positive(rest).map(Keyword::Toxic),
+        "annihilator" => positive(rest).map(Keyword::Annihilator),
         "landwalk" => landwalk(item),
+        "affinity for" => super::read::affinity_filter(rest).map(Keyword::Affinity),
+        "typecycling" => typecycling(item, rest),
+        "basic landcycling" => cost(rest).map(|cost| Keyword::Typecycling {
+            find: Selector(vec![
+                Pred::Type(CardType::Land),
+                Pred::Supertype(Supertype::Basic),
+            ]),
+            cost,
+        }),
         name if rest.is_empty() => plain(name),
         _ => None,
     }
+}
+
+/// A whole number above zero, as the counted keywords print it ("Crew 2", "Dredge 3").
+fn positive(rest: &str) -> Option<u32> {
+    rest.parse().ok().filter(|number| *number > 0)
 }
 
 /// The text of a `Partner—<text>` item (`Friends forever`, `Character select`), the group of commanders that pair.
@@ -391,6 +416,25 @@ fn landwalk(item: &str) -> Option<Keyword> {
     ))])))
 }
 
+/// A typecycling keyword (`Plainscycling {2}`, `Landcycling {1}`): the cards it searches for are those of the land
+/// type or the land cards it names, and `rest` is its cost.
+fn typecycling(item: &str, rest: &str) -> Option<Keyword> {
+    let word = item.split([' ', '\u{2014}']).next()?;
+    let kind = word.get(..word.len().checked_sub("cycling".len())?)?;
+    let find = if kind.eq_ignore_ascii_case("land") {
+        Pred::Type(CardType::Land)
+    } else {
+        let land = LAND_TYPES
+            .iter()
+            .find(|land| land.eq_ignore_ascii_case(kind))?;
+        Pred::Subtype(Subtype((*land).to_owned()))
+    };
+    Some(Keyword::Typecycling {
+        find: Selector(vec![find]),
+        cost: cost(rest)?,
+    })
+}
+
 /// A keyword without parameters.
 fn plain(name: &str) -> Option<Keyword> {
     Some(match name {
@@ -411,6 +455,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "shroud" => Keyword::Shroud,
         "prowess" => Keyword::Prowess,
         "convoke" => Keyword::Convoke,
+        "improvise" => Keyword::Improvise,
         "delve" => Keyword::Delve,
         "cascade" => Keyword::Cascade,
         "storm" => Keyword::Storm,
@@ -437,6 +482,17 @@ fn plain(name: &str) -> Option<Keyword> {
         "aftermath" => Keyword::Aftermath,
         "undying" => Keyword::Undying,
         "persist" => Keyword::Persist,
+        "exalted" => Keyword::Exalted,
+        "melee" => Keyword::Melee,
+        "mentor" => Keyword::Mentor,
+        "dethrone" => Keyword::Dethrone,
+        "extort" => Keyword::Extort,
+        "evolve" => Keyword::Evolve,
+        "saddled" => Keyword::Saddled,
+        "ravenous" => Keyword::Ravenous,
+        "ascend" => Keyword::Ascend,
+        "jump-start" => Keyword::JumpStart,
+        "retrace" => Keyword::Retrace,
         _ => return None,
     })
 }
@@ -542,6 +598,13 @@ mod tests {
 
     fn mana(text: &str) -> Cost {
         Cost::mana(text.parse().unwrap())
+    }
+
+    fn finds(preds: Vec<Pred>, cost: &str) -> Keyword {
+        Keyword::Typecycling {
+            find: Selector(preds),
+            cost: mana(cost),
+        }
     }
 
     fn creature() -> Selector {
@@ -650,7 +713,21 @@ mod tests {
         Keyword::Madness(Cost(vec![CostItem::Mana("{2}{B}".parse().unwrap()), CostItem::PayLife(Amount::Fixed(8))]))
     )]
     #[case::cycling("Cycling {2}", Keyword::Cycling(mana("{2}")))]
+    #[case::plainscycling("Plainscycling {2}", finds(vec![Pred::Subtype(Subtype("Plains".into()))], "{2}"))]
+    #[case::lowercase_forestcycling("forestcycling {1}", finds(vec![Pred::Subtype(Subtype("Forest".into()))], "{1}"))]
+    #[case::landcycling("Landcycling {1}", finds(vec![Pred::Type(CardType::Land)], "{1}"))]
+    #[case::basic_landcycling(
+        "Basic landcycling {1}{G}",
+        finds(vec![Pred::Type(CardType::Land), Pred::Supertype(Supertype::Basic)], "{1}{G}")
+    )]
+    #[case::improvise("Improvise", Keyword::Improvise)]
+    #[case::affinity_for_artifacts("Affinity for artifacts", Keyword::Affinity(Selector(vec![Pred::Type(CardType::Artifact)])))]
+    #[case::affinity_for_a_subtype("Affinity for Islands", Keyword::Affinity(Selector(vec![Pred::Subtype(Subtype("Island".into()))])))]
+    #[case::affinity_for_tokens("Affinity for tokens", Keyword::Affinity(Selector(vec![Pred::Token])))]
     #[case::madness("Madness {R}", Keyword::Madness(mana("{R}")))]
+    #[case::miracle("Miracle {W}", Keyword::Miracle(mana("{W}")))]
+    #[case::dredge("Dredge 3", Keyword::Dredge(3))]
+    #[case::dredge_six("Dredge 6", Keyword::Dredge(6))]
     #[case::morph("Morph {3}{B}", Keyword::Morph(mana("{3}{B}")))]
     #[case::disguise("Disguise {1}{W}", Keyword::Disguise(mana("{1}{W}")))]
     #[case::overload("Overload {3}{U}{U}", Keyword::Overload(mana("{3}{U}{U}")))]
@@ -658,6 +735,10 @@ mod tests {
     #[case::mutate("Mutate {1}{G}{G}", Keyword::Mutate(mana("{1}{G}{G}")))]
     #[case::encore("Encore {5}{R}", Keyword::Encore(mana("{5}{R}")))]
     #[case::squad("Squad {2}", Keyword::Squad(mana("{2}")))]
+    #[case::squad_discarding(
+        "Squad\u{2014}{1}, Discard a card.",
+        Keyword::Squad(Cost(vec![CostItem::Mana("{1}".parse().unwrap()), CostItem::Discard { count: Amount::one(), filter: None }]))
+    )]
     #[case::echo("Echo {2}{R}", Keyword::Echo(mana("{2}{R}")))]
     #[case::echo_lowercase("echo {G}", Keyword::Echo(mana("{G}")))]
     #[case::echo_discarding(
@@ -689,13 +770,39 @@ mod tests {
     )]
     #[case::undying("Undying", Keyword::Undying)]
     #[case::persist("persist", Keyword::Persist)]
+    #[case::exalted("Exalted", Keyword::Exalted)]
+    #[case::melee("Melee", Keyword::Melee)]
+    #[case::mentor("Mentor", Keyword::Mentor)]
+    #[case::dethrone("dethrone", Keyword::Dethrone)]
+    #[case::extort("Extort", Keyword::Extort)]
+    #[case::evolve("Evolve", Keyword::Evolve)]
+    #[case::annihilator("Annihilator 2", Keyword::Annihilator(2))]
+    #[case::annihilator_six("Annihilator 6", Keyword::Annihilator(6))]
+    #[case::ravenous("Ravenous", Keyword::Ravenous)]
+    #[case::ascend("Ascend", Keyword::Ascend)]
+    #[case::fabricate("Fabricate 2", Keyword::Fabricate(2))]
+    #[case::fabricate_lowercase("fabricate 1", Keyword::Fabricate(1))]
     #[case::foretell("Foretell {1}{U}", Keyword::Foretell(mana("{1}{U}")))]
     #[case::foretell_for_nothing("Foretell {0}", Keyword::Foretell(mana("{0}")))]
     #[case::unearth("Unearth {1}{B}", Keyword::Unearth(mana("{1}{B}")))]
     #[case::unearth_in_mana_only_with_reminder("unearth {B}", Keyword::Unearth(mana("{B}")))]
     #[case::rebound("Rebound", Keyword::Rebound)]
+    #[case::jump_start("Jump-start", Keyword::JumpStart)]
+    #[case::retrace("retrace", Keyword::Retrace)]
+    #[case::embalm("Embalm {3}{W}", Keyword::Embalm(mana("{3}{W}")))]
+    #[case::eternalize("Eternalize {4}{U}{U}", Keyword::Eternalize(mana("{4}{U}{U}")))]
+    #[case::eternalize_with_a_life_cost(
+        "Eternalize—Pay 3 life.",
+        Keyword::Eternalize(Cost(vec![CostItem::PayLife(Amount::Fixed(3))]))
+    )]
     #[case::aftermath("Aftermath", Keyword::Aftermath)]
     #[case::dash("Dash {2}{R}", Keyword::Dash(mana("{2}{R}")))]
+    #[case::bestow("Bestow {3}{G}{G}", Keyword::Bestow(mana("{3}{G}{G}")))]
+    #[case::bestow_five_colors(
+        "Bestow {2}{W}{U}{B}{R}{G}",
+        Keyword::Bestow(mana("{2}{W}{U}{B}{R}{G}"))
+    )]
+    #[case::blitz("Blitz {2}{R}", Keyword::Blitz(mana("{2}{R}")))]
     #[case::ninjutsu("Ninjutsu {1}{U}", Keyword::Ninjutsu(mana("{1}{U}")))]
     #[case::ninjutsu_for_one_mana("ninjutsu {B}", Keyword::Ninjutsu(mana("{B}")))]
     #[case::escape_exiling_cards(
@@ -706,6 +813,14 @@ mod tests {
         ]))
     )]
     #[case::crew("Crew 3", Keyword::Crew(3))]
+    #[case::vanishing("Vanishing 3", Keyword::Vanishing(3))]
+    #[case::fading("Fading 5", Keyword::Fading(5))]
+    #[case::backup("Backup 2", Keyword::Backup { count: 2, abilities: vec![] })]
+    #[case::saddle("Saddle 2", Keyword::Saddle(2))]
+    #[case::level_up("Level up {1}{U}", Keyword::LevelUp(mana("{1}{U}")))]
+    #[case::level_up_for_one("level up {1}", Keyword::LevelUp(mana("{1}")))]
+    #[case::outlast("Outlast {W}", Keyword::Outlast(mana("{W}")))]
+    #[case::outlast_two_symbols("Outlast {1}{W}", Keyword::Outlast(mana("{1}{W}")))]
     #[case::changeling("Changeling", Keyword::Changeling)]
     #[case::devoid("Devoid", Keyword::Devoid)]
     #[case::infect("Infect", Keyword::Infect)]
@@ -806,11 +921,18 @@ mod tests {
     #[case::doctors_companion_with_a_cost("Doctor's companion {1}")]
     #[case::undeclared("Horsemanship")]
     #[case::crew_x("Crew X")]
+    #[case::dredge_x("Dredge X")]
+    #[case::dredge_nothing("Dredge 0")]
+    #[case::fabricate_x("Fabricate X")]
+    #[case::fabricate_nothing("Fabricate 0")]
+    #[case::ascend_with_a_number("Ascend 1")]
     #[case::crew_nothing("Crew 0")]
+    #[case::saddle_nothing("Saddle 0")]
+    #[case::saddle_x("Saddle X")]
+    #[case::outlast_without_a_cost("Outlast")]
     #[case::mutate_without_a_cost("Mutate")]
     #[case::a_parameter_on_changeling("Changeling {1}")]
-    #[case::level_up("Level up {1}{U}")]
-    #[case::typecycling("Plainscycling {2}")]
+    #[case::a_type_that_is_not_a_land_type("Wizardcycling {2}")]
     #[case::landwalk_of_a_type_that_is_not_a_land_type("Cowwalk")]
     #[case::parameter_on_a_plain_keyword("Flying {2}")]
     #[case::suspend_without_time("Suspend {U}")]
@@ -863,10 +985,12 @@ mod tests {
 
     /// The name a keyword is printed with when it is not the DSL's: every "Partner—text" is a `Partner` line.
     fn printed(name: &str) -> &str {
-        if name == "Partner group" {
-            "Partner"
-        } else {
-            name
+        match name {
+            "Partner group" => "Partner",
+            "Affinity" => "Affinity for",
+            // Every typecycling is read from the word before `cycling`; `Basic landcycling` is the one with a table entry.
+            "Typecycling" => "Basic landcycling",
+            other => other,
         }
     }
 
@@ -883,6 +1007,8 @@ mod tests {
         }
     }
 
+    // One sample line for each keyword of the DSL.
+    #[allow(clippy::too_many_lines)]
     #[test]
     fn a_keyword_read_carries_the_name_it_was_printed_with() {
         let samples = [
@@ -921,6 +1047,7 @@ mod tests {
             "Entwine {1}",
             "Flashback {1}",
             "Madness {1}",
+            "Dredge 2",
             "Morph {1}",
             "Disguise {1}",
             "Suspend 2\u{2014}{1}",
@@ -933,6 +1060,10 @@ mod tests {
             "Infect",
             "Myriad",
             "Crew 2",
+            "Saddle 2",
+            "Level up {1}{U}",
+            "Outlast {W}",
+            "Saddled",
             "Mutate {1}",
             "Encore {1}",
             "Squad {1}",
@@ -940,7 +1071,20 @@ mod tests {
             "Cumulative upkeep {1}",
             "Undying",
             "Persist",
+            "Exalted",
+            "Melee",
+            "Mentor",
+            "Dethrone",
+            "Annihilator 2",
+            "Extort",
+            "Evolve",
+            "Vanishing 3",
+            "Fading 5",
+            "Backup 1",
+            "Ravenous",
             "Foretell {1}",
+            "Fabricate 1",
+            "Ascend",
             "Daybound",
             "Nightbound",
             "Wither",
@@ -960,15 +1104,25 @@ mod tests {
             "Escape {1}",
             "Rebound",
             "Aftermath",
+            "Jump-start",
+            "Retrace",
+            "Embalm {1}",
+            "Eternalize {1}",
             "Dash {1}",
+            "Miracle {1}{W}",
+            "Bestow {1}",
+            "Blitz {1}",
             "Ninjutsu {1}{U}",
+            "Improvise",
+            "Affinity for artifacts",
+            "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];
         let mut seen = Vec::new();
         for sample in samples {
             let keyword = read(sample).unwrap_or_else(|| panic!("{sample} is not read"));
             assert!(
-                keyword.name() == "Landwalk"
+                matches!(keyword.name(), "Landwalk" | "Typecycling")
                     || sample
                         .to_ascii_lowercase()
                         .starts_with(&printed(keyword.name()).to_ascii_lowercase()),

@@ -1,0 +1,15 @@
+{
+  "oracle_id": "344671d1-8abf-4be1-93c9-ef917e88e6c9",
+  "name": "Ruthless Radrat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruthless Radrat",
+      "oracle_fingerprint": "fe95a444d026b125a775358ae3dee79f",
+      "abilities": [
+        { "Keyword": { "Squad": [{ "ExileFromGraveyard": { "filter": [], "count": 4 } }] } },
+        { "Keyword": "Menace" }
+      ]
+    }
+  ]
+}

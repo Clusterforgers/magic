@@ -1,0 +1,28 @@
+{
+  "id": "28309edb-f255-4b29-b7b6-e36e23ba0690",
+  "oracle_id": "428cc1cb-a491-4cc4-9436-28ee8acc37d6",
+  "name": "Broodstar",
+  "lang": "en",
+  "layout": "normal",
+  "set": "hop",
+  "collector_number": "8",
+  "rarity": "rare",
+  "released_at": "2009-09-04",
+  "digital": false,
+  "mana_cost": "{8}{U}{U}",
+  "cmc": 10.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)\nFlying\nBroodstar's power and toughness are each equal to the number of artifacts you control.",
+  "power": "*",
+  "toughness": "*",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Affinity"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "5de57c84-38b9-4606-b934-0ab270496582",
+  "oracle_id": "8e1d3722-9bd1-4ab7-b4a5-9265fca3aba9",
+  "name": "Ancient Hydra",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nem",
+  "collector_number": "76",
+  "rarity": "uncommon",
+  "released_at": "2000-02-14",
+  "digital": false,
+  "mana_cost": "{4}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Hydra",
+  "oracle_text": "Fading 5 (This creature enters with five fade counters on it. At the beginning of your upkeep, remove a fade counter from it. If you can't, sacrifice it.)\n{1}, Remove a fade counter from this creature: It deals 1 damage to any target.",
+  "power": "5",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Fading"
+  ]
+}

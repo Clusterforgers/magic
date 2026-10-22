@@ -1,0 +1,20 @@
+{
+  "oracle_id": "73520b5a-3d55-40c9-af60-90fdd811934f",
+  "name": "Dromoka, the Eternal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dromoka, the Eternal",
+      "oracle_fingerprint": "6595d6163292b76039920ae823d36803",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] } },
+            "effects": [{ "Bolster": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

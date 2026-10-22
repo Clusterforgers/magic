@@ -1,0 +1,34 @@
+{
+  "oracle_id": "a9581345-87dc-4fbd-acc1-bb629f2cf40f",
+  "name": "Primeval Protector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primeval Protector",
+      "oracle_fingerprint": "2afde868e742801252f8e623fb4c0f1b",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

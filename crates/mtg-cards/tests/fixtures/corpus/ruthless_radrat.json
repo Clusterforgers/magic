@@ -1,0 +1,28 @@
+{
+  "id": "a4542e34-2905-41ce-9182-a432c8f2c451",
+  "oracle_id": "344671d1-8abf-4be1-93c9-ef917e88e6c9",
+  "name": "Ruthless Radrat",
+  "lang": "en",
+  "layout": "normal",
+  "set": "pip",
+  "collector_number": "48",
+  "rarity": "uncommon",
+  "released_at": "2024-03-08",
+  "digital": false,
+  "mana_cost": "{1}{B}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Rat Mutant",
+  "oracle_text": "Squad—Exile four cards from your graveyard. (As an additional cost to cast this spell, you may pay its squad cost any number of times. When this creature enters, create that many tokens that are copies of it.)\nMenace (This creature can't be blocked except by two or more creatures.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Menace",
+    "Squad"
+  ]
+}

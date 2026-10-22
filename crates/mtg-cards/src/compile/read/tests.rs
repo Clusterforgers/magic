@@ -23,9 +23,7 @@ fn golden(text: &str, kind: ClauseKind, x_free: bool) -> Ability {
     assert!(!wordings.is_empty(), "not written: {text}");
     assert_eq!(render_ability(&read).as_ref(), wordings.first(), "{text}");
     assert!(
-        wordings.iter().any(|written| {
-            without_period(&canonical(written)) == without_period(&canonical(text))
-        }),
+        wordings.iter().any(|written| same_text(written, text)),
         "{text}: {wordings:?}"
     );
     read
@@ -154,17 +152,25 @@ mod actions;
 mod activated;
 mod additional;
 mod among;
+mod attacked_player;
 mod audit;
 mod cast;
+mod chosen_color;
 mod compound;
 mod conditions;
 mod copies;
+mod copy_wordings;
+mod cost_counts;
 mod counted;
+mod counter_actions;
 mod counters;
 mod create;
+mod damage_wordings;
 mod defining;
+mod draws;
 mod enchanted_player;
 mod enters;
+mod enters_tapped;
 mod event_batches;
 mod events;
 mod exile_bounce_shrink;
@@ -173,10 +179,12 @@ mod group_statics;
 mod if_sentence;
 mod impulse;
 mod lands;
+mod levels;
 mod library;
 mod life;
 mod life_gain;
 mod lords;
+mod mana_triggers;
 mod may;
 mod modes;
 mod monarch;
@@ -184,13 +192,16 @@ mod pay;
 mod payments;
 mod prevention;
 mod put_back;
+mod removal_and_return;
 mod returns;
 mod reveal;
+mod search_lists;
 mod spell_copies;
 mod statics;
 mod tap_and_mill;
 mod this_or_another;
 mod token_keywords;
+mod token_wordings;
 mod top_cast;
 mod transform;
 mod triggers;
@@ -467,7 +478,6 @@ mod cards_and_life {
 
     #[rstest]
     #[case::equal_to("Draw cards equal to the number of creatures you control.")]
-    #[case::you_and_you("You draw two cards and you lose 2 life.")]
     #[case::unless("Target player draws a card unless they discard a card.")]
     #[case::if_you_do("Draw a card. If you do, gain 1 life.")]
     #[case::if_first("If you control a creature, draw a card.")]
@@ -540,7 +550,6 @@ mod damage {
     #[rstest]
     #[case::divided("~ deals 2 damage divided as you choose among one or two targets.")]
     #[case::two_targets("~ deals 2 damage to target creature and 1 damage to target player.")]
-    #[case::and_each_player("~ deals 3 damage to each creature and each player.")]
     #[case::for_each("~ deals 1 damage to any target for each creature you control.")]
     #[case::equal_to("~ deals damage equal to its power to target creature.")]
     #[case::equal_to_the_number(
@@ -755,6 +764,7 @@ mod pump {
     #[case("Target creature gains lifelink until end of turn.")]
     #[case("Target creature gains indestructible until end of turn.")]
     #[case("Target creature gains flying and haste until end of turn.")]
+    #[case("Target creature gains flying, trample, and haste until end of turn.")]
     #[case("Target creature you control gets +2/+2 until end of turn.")]
     #[case("Target attacking creature gets +1/+1 until end of turn.")]
     #[case("Target creature gets +2/+2 and gains flying until end of turn.")]
@@ -788,7 +798,6 @@ mod pump {
         "Target creature gets +2/+2 until end of turn. Target creature gets -2/-2 until end of turn."
     )]
     #[case::conditional("If you control a Goblin, target creature gets +2/+2 until end of turn.")]
-    #[case::a_keyword_list("Target creature gains flying, trample, and haste until end of turn.")]
     #[case::x_without_an_x_cost("Target creature gets +X/+X until end of turn.")]
     #[case::negative_x("Target creature gets -X/-X until end of turn.")]
     #[case::not_a_number("Target creature gets +a/+b until end of turn.")]

@@ -1,0 +1,25 @@
+{
+  "id": "084c8b16-7aae-4d1f-87c2-6a150f11bb15",
+  "oracle_id": "87e6aabb-41f5-41d2-b662-cd09ad61a1c8",
+  "name": "Honor's Reward",
+  "lang": "en",
+  "layout": "normal",
+  "set": "frf",
+  "collector_number": "14",
+  "rarity": "uncommon",
+  "released_at": "2015-01-23",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "You gain 4 life. Bolster 2. (Choose a creature with the least toughness among creatures you control and put two +1/+1 counters on it.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Bolster"
+  ]
+}

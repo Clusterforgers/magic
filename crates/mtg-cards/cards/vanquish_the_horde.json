@@ -1,0 +1,24 @@
+{
+  "oracle_id": "a332e80a-dc51-4dc6-bc85-e114a1c6fdb8",
+  "name": "Vanquish the Horde",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vanquish the Horde",
+      "oracle_fingerprint": "02b22e9de17ec5052c3ee294be97a782",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Count": [{ "Type": "Creature" }] }
+          }
+        },
+        {
+          "Spell": { "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }] }
+        }
+      ]
+    }
+  ]
+}

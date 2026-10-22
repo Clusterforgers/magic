@@ -1,0 +1,27 @@
+{
+  "id": "59fdc045-b938-4321-aec3-51685cbbaa52",
+  "oracle_id": "2b8ef83b-1a1d-4299-ab69-e9e296bb224d",
+  "name": "Akrasan Squire",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ala",
+  "collector_number": "1",
+  "rarity": "common",
+  "released_at": "2008-10-03",
+  "digital": false,
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Creature — Human Soldier",
+  "oracle_text": "Exalted (Whenever a creature you control attacks alone, that creature gets +1/+1 until end of turn.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Exalted"
+  ]
+}

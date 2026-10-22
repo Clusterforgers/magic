@@ -1,0 +1,31 @@
+{
+  "oracle_id": "6680a5f7-3ac1-4550-a29a-9553ad7ae465",
+  "name": "Briarblade Adept",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Briarblade Adept",
+      "oracle_fingerprint": "e4d1986c1e77d4431dad50a1122379b0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Encore": "{3}{B}" } }
+      ]
+    }
+  ]
+}

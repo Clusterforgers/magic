@@ -1,0 +1,12 @@
+{
+  "oracle_id": "7c27136a-bf9d-4f42-9c37-abe347fad1bb",
+  "name": "Weaponcraft Enthusiast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Weaponcraft Enthusiast",
+      "oracle_fingerprint": "c5bc6f69154cee4cd89c7cccba755967",
+      "abilities": [{ "Keyword": { "Fabricate": 2 } }]
+    }
+  ]
+}

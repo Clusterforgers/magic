@@ -1,0 +1,12 @@
+{
+  "oracle_id": "2a8ec988-b513-4e66-b7f5-b2196b4bbff2",
+  "name": "Maulfist Squad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maulfist Squad",
+      "oracle_fingerprint": "56da47f65bf7eff1c26681c3605d3293",
+      "abilities": [{ "Keyword": "Menace" }, { "Keyword": { "Fabricate": 1 } }]
+    }
+  ]
+}

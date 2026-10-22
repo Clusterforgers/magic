@@ -4,8 +4,14 @@
 //! engine asks about: blocking, attacking, damage, targeting, timing and destruction. The engine reads the
 //! keywords an object has through [`keywords_of`] and the helpers below it, never from the rules of the card.
 
+mod affinity;
 pub(crate) mod aftermath;
+mod annihilator;
+mod ascend;
+mod backup;
 mod battle_cry;
+mod bestow;
+mod blitz;
 mod buyback;
 mod cascade;
 mod changeling;
@@ -20,17 +26,26 @@ mod daybound;
 mod deathtouch;
 mod defender;
 mod delve;
+mod dethrone;
 mod devoid;
 mod disguise;
 mod doctors_companion;
 mod double_strike;
+mod dredge;
 mod echo;
+mod embalm;
 mod enchant;
 mod encore;
 mod entwine;
 mod equip;
 mod escape;
+mod eternalize;
 mod evoke;
+mod evolve;
+mod exalted;
+mod extort;
+mod fabricate;
+mod fading;
 mod fear;
 mod first_strike;
 mod flash;
@@ -40,21 +55,28 @@ pub(crate) mod foretell;
 mod fuse;
 mod haste;
 mod hexproof;
+mod improvise;
 mod indestructible;
 mod infect;
 mod intimidate;
+mod jump_start;
 mod kicker;
 mod landwalk;
+mod level_up;
 mod lifelink;
 mod living_weapon;
 mod madness;
+mod melee;
 mod menace;
+mod mentor;
+mod miracle;
 mod morph;
 mod multikicker;
 mod mutate;
 mod myriad;
 mod nightbound;
 mod ninjutsu;
+mod outlast;
 mod overload;
 mod partner;
 mod partner_group;
@@ -64,9 +86,12 @@ mod protection;
 #[cfg(test)]
 mod provided;
 mod prowess;
+mod ravenous;
 mod reach;
 mod rebound;
 mod reconfigure;
+mod retrace;
+mod saddle;
 mod shadow;
 mod shroud;
 mod skulk;
@@ -76,9 +101,11 @@ mod storm;
 pub(crate) mod suspend;
 mod toxic;
 mod trample;
+mod typecycling;
 mod undaunted;
 mod undying;
 mod unearth;
+mod vanishing;
 mod vigilance;
 mod ward;
 mod wither;
@@ -364,6 +391,8 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Multikicker(_) => &multikicker::Multikicker,
         Keyword::Flashback(_) => &flashback::Flashback,
         Keyword::Madness(_) => &madness::Madness,
+        Keyword::Miracle(_) => &miracle::Miracle,
+        Keyword::Dredge(_) => &dredge::Dredge,
         Keyword::Morph(_) => &morph::Morph,
         Keyword::Disguise(_) => &disguise::Disguise,
         Keyword::Suspend { .. } => &suspend::Suspend,
@@ -398,11 +427,52 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Rebound => &rebound::Rebound,
         Keyword::Aftermath => &aftermath::Aftermath,
         Keyword::Dash(_) => &dash::Dash,
+        Keyword::Bestow(_) => &bestow::Bestow,
+        Keyword::Blitz(_) => &blitz::Blitz,
         Keyword::Ninjutsu(_) => &ninjutsu::Ninjutsu,
         Keyword::Echo(_) => &echo::Echo,
         Keyword::CumulativeUpkeep(_) => &cumulative_upkeep::CumulativeUpkeep,
         Keyword::Undying => &undying::Undying,
         Keyword::Persist => &persist::Persist,
+        other => rules_of_later(other),
+    }
+}
+
+/// A keyword that changes nothing.
+#[derive(Debug)]
+struct Unruled;
+
+impl KeywordRules for Unruled {}
+
+/// The rules of the keywords declared after persist, apart from `rules` so that neither outgrows a function's size.
+fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
+    match keyword {
+        Keyword::Exalted => &exalted::Exalted,
+        Keyword::Melee => &melee::Melee,
+        Keyword::Mentor => &mentor::Mentor,
+        Keyword::Dethrone => &dethrone::Dethrone,
+        Keyword::Annihilator(_) => &annihilator::Annihilator,
+        Keyword::Extort => &extort::Extort,
+        Keyword::Evolve => &evolve::Evolve,
+        Keyword::Vanishing(_) => &vanishing::Vanishing,
+        Keyword::Fading(_) => &fading::Fading,
+        Keyword::Backup { .. } => &backup::Backup,
+        Keyword::LevelUp(_) => &level_up::LevelUp,
+        Keyword::Outlast(_) => &outlast::Outlast,
+        Keyword::Saddle(_) => &saddle::Saddle,
+        Keyword::Saddled => &saddle::Saddled,
+        Keyword::Ravenous => &ravenous::Ravenous,
+        Keyword::JumpStart => &jump_start::JumpStart,
+        Keyword::Retrace => &retrace::Retrace,
+        Keyword::Embalm(_) => &embalm::Embalm,
+        Keyword::Eternalize(_) => &eternalize::Eternalize,
+        Keyword::Improvise => &improvise::Improvise,
+        Keyword::Affinity(_) => &affinity::Affinity,
+        Keyword::Typecycling { .. } => &typecycling::Typecycling,
+        Keyword::Fabricate(_) => &fabricate::Fabricate,
+        Keyword::Ascend => &ascend::Ascend,
+        // The keywords before them are matched by `rules`.
+        _ => &Unruled,
     }
 }
 
@@ -574,6 +644,7 @@ mod tests {
     use rstest::rstest;
 
     /// One value of every keyword, parameters included.
+    #[allow(clippy::too_many_lines)]
     fn every_keyword() -> Vec<Keyword> {
         let cost = || Cost::mana("{1}".parse().unwrap());
         vec![
@@ -615,6 +686,8 @@ mod tests {
             Keyword::Entwine(cost()),
             Keyword::Flashback(cost()),
             Keyword::Madness(cost()),
+            Keyword::Miracle(cost()),
+            Keyword::Dredge(3),
             Keyword::Morph(cost()),
             Keyword::Disguise(cost()),
             Keyword::Suspend {
@@ -652,11 +725,43 @@ mod tests {
             Keyword::Rebound,
             Keyword::Aftermath,
             Keyword::Dash(cost()),
+            Keyword::Bestow(cost()),
+            Keyword::Blitz(cost()),
             Keyword::Ninjutsu(cost()),
             Keyword::Echo(cost()),
             Keyword::CumulativeUpkeep(cost()),
             Keyword::Undying,
             Keyword::Persist,
+            Keyword::Exalted,
+            Keyword::Melee,
+            Keyword::Mentor,
+            Keyword::Dethrone,
+            Keyword::Annihilator(2),
+            Keyword::Extort,
+            Keyword::Evolve,
+            Keyword::LevelUp(cost()),
+            Keyword::Outlast(cost()),
+            Keyword::Saddle(2),
+            Keyword::Saddled,
+            Keyword::Ravenous,
+            Keyword::JumpStart,
+            Keyword::Retrace,
+            Keyword::Embalm(cost()),
+            Keyword::Eternalize(cost()),
+            Keyword::Improvise,
+            Keyword::Affinity(Selector::default()),
+            Keyword::Typecycling {
+                find: Selector::default(),
+                cost: cost(),
+            },
+            Keyword::Fabricate(1),
+            Keyword::Ascend,
+            Keyword::Vanishing(3),
+            Keyword::Fading(3),
+            Keyword::Backup {
+                count: 1,
+                abilities: vec![],
+            },
         ]
     }
 
@@ -699,6 +804,8 @@ mod tests {
         "Keyword.Convoke",
         "Keyword.Delve",
         "Keyword.Madness",
+        "Keyword.Miracle",
+        "Keyword.Dredge",
         "Keyword.Suspend",
         "Keyword.Foretell",
         "Keyword.Daybound",
@@ -725,11 +832,40 @@ mod tests {
         "Keyword.Rebound",
         "Keyword.Aftermath",
         "Keyword.Dash",
+        "Keyword.Bestow",
+        "Keyword.Blitz",
         "Keyword.Ninjutsu",
         "Keyword.Echo",
         "Keyword.CumulativeUpkeep",
         "Keyword.Undying",
         "Keyword.Persist",
+        "Keyword.Exalted",
+        "Keyword.Melee",
+        "Keyword.Mentor",
+        "Keyword.Dethrone",
+        "Keyword.Annihilator",
+        "Keyword.Extort",
+        "Keyword.Evolve",
+        "Keyword.Vanishing",
+        "Keyword.Fading",
+        "Keyword.Backup",
+        "Keyword.LevelUp",
+        "Keyword.Outlast",
+        "Keyword.Saddle",
+        "Keyword.Saddled",
+        "Keyword.Myriad",
+        "Keyword.Squad",
+        "Keyword.Ravenous",
+        "Keyword.JumpStart",
+        "Keyword.Retrace",
+        "Keyword.Embalm",
+        "Keyword.Eternalize",
+        "Keyword.Improvise",
+        "Keyword.Affinity",
+        "Keyword.Typecycling",
+        "Keyword.Fabricate",
+        "Keyword.Ascend",
+        "Keyword.Encore",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -821,12 +957,18 @@ mod tests {
     #[case::reconfigure(Keyword::Reconfigure(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 3, ..Hooks::none() })]
     #[case::living_weapon(Keyword::LivingWeapon, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::crew(Keyword::Crew(3), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::saddle(Keyword::Saddle(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::saddled(Keyword::Saddled, Hooks::none())]
+    #[case::level_up(Keyword::LevelUp(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::outlast(Keyword::Outlast(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::evoke(Keyword::Evoke(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::flashback(Keyword::Flashback(Cost::mana("{2}".parse().unwrap())), Hooks::none())]
     #[case::overload(Keyword::Overload(Cost::mana("{2}".parse().unwrap())), Hooks::none())]
     #[case::cascade(Keyword::Cascade, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::storm(Keyword::Storm, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::madness(Keyword::Madness(Cost::mana("{R}".parse().unwrap())), Hooks { abilities: 2, ..Hooks::none() })]
+    #[case::miracle(Keyword::Miracle(Cost::mana("{W}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::dredge(Keyword::Dredge(3), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::changeling(Keyword::Changeling, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::devoid(Keyword::Devoid, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::partner(Keyword::Partner, Hooks::none())]
@@ -838,19 +980,37 @@ mod tests {
     #[case::escape(Keyword::Escape(Cost::mana("{B}".parse().unwrap())), Hooks::none())]
     #[case::rebound(Keyword::Rebound, Hooks::none())]
     #[case::aftermath(Keyword::Aftermath, Hooks::none())]
+    #[case::bestow(Keyword::Bestow(Cost::mana("{3}{G}".parse().unwrap())), Hooks::none())]
     #[case::dash(Keyword::Dash(Cost::mana("{1}{R}".parse().unwrap())), Hooks { abilities: 2, ..Hooks::none() })]
+    #[case::blitz(Keyword::Blitz(Cost::mana("{1}{R}".parse().unwrap())), Hooks { abilities: 3, ..Hooks::none() })]
+    #[case::encore(Keyword::Encore(Cost::mana("{2}{W}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ninjutsu(Keyword::Ninjutsu(Cost::mana("{1}{U}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::echo(Keyword::Echo(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::cumulative_upkeep(Keyword::CumulativeUpkeep(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::undying(Keyword::Undying, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::persist(Keyword::Persist, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::exalted(Keyword::Exalted, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::melee(Keyword::Melee, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::mentor(Keyword::Mentor, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::dethrone(Keyword::Dethrone, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::annihilator(Keyword::Annihilator(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::extort(Keyword::Extort, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::evolve(Keyword::Evolve, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::vanishing(Keyword::Vanishing(3), Hooks { abilities: 3, ..Hooks::none() })]
+    #[case::fading(Keyword::Fading(3), Hooks { abilities: 2, ..Hooks::none() })]
+    #[case::backup(Keyword::Backup { count: 1, abilities: vec![] }, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::myriad(Keyword::Myriad, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::squad(Keyword::Squad(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::ravenous(Keyword::Ravenous, Hooks { abilities: 2, ..Hooks::none() })]
+    #[case::fabricate(Keyword::Fabricate(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::ascend(Keyword::Ascend, Hooks::none())]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);
     }
 
     #[test]
-    fn only_kicker_multikicker_buyback_and_entwine_add_a_cost_and_only_multikicker_repeats() {
+    fn only_four_keywords_and_squad_add_a_cost_and_only_multikicker_and_squad_repeat() {
         let given: Vec<(&str, bool, OptionalKind)> = every_keyword()
             .iter()
             .filter_map(|keyword| {
@@ -865,6 +1025,7 @@ mod tests {
                 ("Multikicker", true, OptionalKind::Kicker),
                 ("Buyback", false, OptionalKind::Buyback),
                 ("Entwine", false, OptionalKind::Entwine),
+                ("Squad", true, OptionalKind::Kicker),
             ]
         );
     }

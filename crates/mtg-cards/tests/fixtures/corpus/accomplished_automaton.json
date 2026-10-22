@@ -1,0 +1,23 @@
+{
+  "id": "aa453daf-6ceb-4e45-bfb3-f6f45835ac11",
+  "oracle_id": "f5af0d1b-531e-4053-848a-5e0fa1022f9a",
+  "name": "Accomplished Automaton",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2xm",
+  "collector_number": "230",
+  "rarity": "common",
+  "released_at": "2020-08-07",
+  "digital": false,
+  "mana_cost": "{7}",
+  "cmc": 7.0,
+  "type_line": "Artifact Creature — Construct",
+  "oracle_text": "Fabricate 1 (When this creature enters, put a +1/+1 counter on it or create a 1/1 colorless Servo artifact creature token.)",
+  "power": "5",
+  "toughness": "7",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Fabricate"
+  ]
+}

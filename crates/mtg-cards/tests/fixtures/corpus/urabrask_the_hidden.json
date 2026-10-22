@@ -10,7 +10,7 @@
   "released_at": "2022-06-10",
   "digital": false,
   "mana_cost": "{3}{R}{R}",
-  "cmc": 5.0,
+  "cmc": 5,
   "type_line": "Legendary Creature — Phyrexian Praetor",
   "oracle_text": "Creatures you control have haste.\nCreatures your opponents control enter tapped.",
   "colors": [

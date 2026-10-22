@@ -1,0 +1,16 @@
+{
+  "oracle_id": "15f89b06-5025-4c9f-bf51-e25bc5c2dd6b",
+  "name": "Saiba Cryptomancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saiba Cryptomancer",
+      "oracle_fingerprint": "776eeaa87a9f1f30c7726019a1c659a5",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Backup": { "count": 1, "abilities": [{ "Keyword": "Hexproof" }] } } },
+        { "Keyword": "Hexproof" }
+      ]
+    }
+  ]
+}

@@ -1,29 +1,63 @@
 Abbot of Keral Keep
+Aberrant
+Abzan Advantage
+Abzan Battle Priest
+Abzan Falconer
+Abzan Skycaptain
+Accomplished Automaton
+Adaptive Snapjaw
+Adorned Pouncer
+Aeromunculus
 Aether Hub
+Ainok Bond-Kin
 Ajani's Pridemate
+Akrasan Squire
+Akroma's Vengeance
+Alpha Deathclaw
+Ambitious Aetherborn
+Anafenza, Kin-Tree Spirit
 Ancestral Vision
+Ancient Hydra
+Ancient Stone Idol
 Ancient Ziggurat
+Angel of Invention
 Angel of Vitality
+Angelic Ascension
+Arbor Colossus
 Arcane Signet
 Archon of Cruelty
+Archway Commons
 Armguard Familiar
 Arrogant Wurm
 Artful Maneuver
 Arvad the Cursed
+Ash Barrens
 Atlantean Skirmisher
 Augury Raven
 Authority of the Consuls
+Aven Eternal
+Aven Initiate
+Aven Riftwatcher
+Aven Squire
+Aven Tactician
 Azorius Chancery
 Azorius Signet
 Azure Fleet Admiral
 Azusa, Lost but Seeking
+Banshee of the Dread Choir
+Basilica Screecher
 Basking Rootwalla
+Battering Krasis
 Battle Sliver
 Battlefield Forge
+Beast Within
 Behold the Multiverse
 Bilious Skulldweller
 Bird Admirer // Wing Shredder
+Black Dragon Gate
 Black Knight
+Blasphemous Act
+Blastoderm
 Blaze
 Blight Mamba
 Blightwidow
@@ -32,87 +66,154 @@ Bloodghast
 Bloom Hulk
 Bog Wraith
 Boggart Ram-Gang
+Bola Slinger
+Bone Shredder
+Bonecaller Cleric
 Bonesplitter
 Boon Reflection
+Boon Satyr
+Boon-Bringer Valkyrie
 Borderland Behemoth
 Brain Freeze
 Brainstorm
 Branchblight Stalker
+Breath of Life
+Briarblade Adept
+Bridled Bighorn
 Brightstone Ritual
 Bronzeplate Boar
+Broodbirth Viper
+Broodstar
+Cached Defenses
 Cackling Counterpart
+Cadaverous Bloom
+Calciderm
+Caldaia Strongarm
+Caller of the Pack
 Capsize
+Caravan Escort
 Carnage Tyrant
 Cascade Bluffs
 Cathars' Crusade
+Celestial Archon
 Changeling Outcast
+Chartooth Cougar
+Chemister's Insight
+Chomping Kavu
+Chromanticore
 Circle of Dreams Druid
+Citadel Gate
+Cliffgate
 Clone
+Cloudfin Raptor
+Cloudskate
 Cold-Eyed Selkie
 Collective Unconscious
 Command Tower
 Consider
 Consign // Oblivion
+Consuming Aetherborn
 Contentious Plan
 Copper-Leaf Angel
+Coralhelm Commander
 Counterspell
 Courser of Kruphix
+Cram Session
+Crib Swap
+Crocanura
 Crucible of Worlds
 Crystal Quarry
 Curate
+Curse of Bounty
+Curse of Disturbance
+Curse of Opulence
 Curse of Predation
+Curse of Verbosity
+Curse of Vitality
 Curse of the Forsaken
 Curse of the Nightly Hunt
 Custodi Lich
 Cut // Ribbons
 Cyclonic Rift
 Cytoshape
+Dalek Squadron
+Darkblast
 Darksteel Juggernaut
 Dauthi Horror
 Dauthi Marauder
 Dawnglade Regent
+Deadeye Brawler
 Death Ward
+Death-Greeter's Champion
 Deep Analysis
+Deep Forest Hermit
 Deepfathom Skulker
 Defile
 Delver of Secrets // Insectile Aberration
 Demon Bolt
+Deputized Protester
 Dire Fleet Interloper
+Direct Current
 Disembowel
 Dockside Extortionist
 Dokuchi Shadow-Walker
+Domesticated Hydra
 Doom Blade
 Doom Whisperer
 Dragonspeaker Shaman
 Dream's Grip
 Dregscape Zombie
+Dromoka Captain
+Dromoka's Gift
+Dromoka, the Eternal
 Drove of Elves
 Drudge Skeletons
 Dual Casting
 Dualcaster Mage
+Dunland Crebain
 Durkwood Baloth
+Dusk Charger
 Duskshell Crawler
+Eagles of the North
+Easterling Vanguard
 Echo Inspector
+Echo Mage
+Echoes of the Kin Tree
+Elegant Edgecrafters
 Elven Ambush
+Elvish Aberration
 Elvish Rejuvenator
 Empyrial Plate
+Enraged Revolutionary
+Enthusiastic Study
 Epic Proportions
 Eternal Witness
 Ethereal Armor
+Ethersworn Sphinx
 Exotic Orchard
 Exploration
 Explore
+Exquisite Huntmaster
+Eyetwitch
 Faithful Watchdog
 Faithless Looting
+Famine
 Faramir, Steward of Gondor
 Favorable Winds
 Fear of Failed Tests
+Fearless Skald
+Fearsome Goblin Pair
 Felidar Sovereign
 Fellwar Stone
 Fetid Heath
+Field Trip
+Fiery Fall
 Fiery Temper
 Fire-Lit Thicket
 Firestorm Hellkite
+Flame Jab
+Fleecemane Lion
+Fleetfeather Cockatrice
 Flooded Grove
 Flooded Strand
 Fog
@@ -121,49 +222,88 @@ Forced March
 Fork
 Forum of Amity
 Foundry Inspector
+Four Knocks
 Fruit of Tizerus
 Furtive Homunculus
 Gadwick, the Wizened
 Gaea's Cradle
+Galadhrim Brigade
 Game-Trail Changeling
+Generous Ent
 Gerrard's Wisdom
+Ghalta, Primal Hunger
+Ghostblade Eidolon
 Giant Cindermaw
 Giant Growth
+Gilded Goose
 Gilded Lotus
+Girder Goons
 Glimpse of Freedom
+Glint-Sleeve Artisan
 Glorious Anthem
+Gluttonous Cyclops
+Gnarled Professor
 Goblin Chieftain
 Goblin Spy
 Goblin War Buggy
+Goblin-town Flunkies
+Golden-Scale Aeronaut
+Goldlust Triad
+Goliath Truck
 Grapeshot
 Graven Cairns
 Graveshifter
+Greater Mossdog
+Grenzo's Cutthroat
+Grim Initiate
 Grisly Salvage
 Growing Ranks
+Gruul Cluestone
 Guardian Gladewalker
+Guiding Voice
 Gurmag Angler
+Hada Spy Patrol
 Hall of Triumph
+Hammer Dropper
+Hangar Scrounger
 Haughty Djinn
 Hengegate Pathway // Mistgate Pathway
+Herald of Anguish
+Herald of the Dreadhorde
+Herald of the Host
 Hero of Bladehold
+Highspire Artisan
 Holdout Settlement
 Honor Troll
+Honor's Reward
 Horizon Canopy
 Hound of Griselbrand
 Hulking Raptor
 Idyllic Beachfront
+Igneous Inspiration
+Ill-Tempered Cyclops
+Illustrious Wanderglyph
 Impostor of the Sixth Pride
+Impulsive Pilferer
 Inkwell Leviathan
+Invading Manticore
 Invisible Stalker
+Iron League Steed
 Izzet Charm
 Jadelight Ranger
+Jagged Barrens
 Jaspera Sentinel
+Jolting Merfolk
 Jungle Lion
+Kalemne's Captain
 Karn's Bastion
 Kathari Screecher
+Kazandu Tuskcaller
 Keep Watch
 Kessig Wolf Run
+Kingpin's Pet
 Kinjalli's Sunwing
+Kinsbaile Courier
 Kitchen Finks
 Knight of Dusk's Shadow
 Kolaghan Skirmisher
@@ -171,6 +311,8 @@ Kongming, "Sleeping Dragon"
 Kozilek's Translator
 Krenko's Enforcer
 Lat-Nam Adept
+Lavacore Elemental
+Lazotep Reaver
 Levitation
 Lhurgoyf
 Lightning Bolt
@@ -183,17 +325,29 @@ Lord of Extinction
 Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
 Lurching Rotbeast
+Mana Bloom
 Manabarbs
+Manor Gate
+Map the Wastes
+Marchesa's Emissary
 Mardu Devotee
 Mardu Scout
 Mardu Shadowspear
 Mardu Strike Leader
 Maro
 Master of Etherium
+Maulfist Squad
+Mausoleum Harpy
+Maverick Thopterist
+Mayhem Patrol
 Megrim
+Memory Guardian
+Mer-Ek Nightblade
 Merfolk Branchwalker
 Mesmeric Orb
 Midnight Banshee
+Migratory Route
+Mirari
 Mirror Image
 Mishra's Workshop
 Mizzium Mortars
@@ -205,76 +359,129 @@ Mukotai Ambusher
 Mulldrifter
 Murderous Cut
 Muscle Sliver
+Myr Retriever
 Mystic Gate
 Nantuko Husk
+Nessian Asp
+Night Clubber
 Nighthawk Scavenger
 Nightmare
 Nightveil Sprite
 Ninja of the Deep Hours
 Ninja of the New Moon
 Notion Rain
+Nyxborn Behemoth
 Opt
+Orchard Strider
+Organic Extinction
 Otherworldly Gaze
+Overgrown Arch
 Pacifism
 Pale Bears
+Panther Robot
+Parhelion Patrol
+Peema Outrider
 Pestilent Syphoner
 Phantasmal Image
+Phyrexian Prowler
 Phyrexian Soulgorger
 Pillar of the Paruns
+Pinion Feast
 Plague Myr
 Plague Stinger
+Poet's Quill
+Pongify
+Pop Quiz
 Pouncing Jaguar
+Powder Ganger
 Pridemalkin
+Primeval Protector
 Prismatic Lens
 Professional Face-Breaker
+Professor of Symbology
+Propeller Pioneer
+Proven Combatant
 Psychosis Crawler
 Putrid Goblin
 Pygmy Kavu
 Questing Beast
+Radical Idea
 Raffine's Informant
 Rakdos Headliner
 Rally the Ranks
+Ramos, Dragon Engine
 Rampant Growth
+Ravenous Leucrocota
 Reckless Impulse
 Reconstructed Thopter
 Red Room Recruit
+Redcap Heelslasher
 Reflecting Pool
 Reiterate
+Rejuvenation Chamber
+Relentless Advance
 Revel Ruiner
 Reverberate
+Reverse Engineer
+Rhox Charger
 Rhox Faithmender
 Rhystic Study
 Rift Bolt
 Righteous Avengers
+Riveteers Requisitioner
 Rocksteady, Mutant Marauder
 Rootborn Defenses
 Rosheen Meanderer
 Rugged Prairie
+Rumbleweed
 Rummaging Goblin
 Rustrazor Butcher
+Ruthless Radrat
+Sacred Cat
 Safehold Elite
+Sage of the Beyond
+Saiba Cryptomancer
+Sandcrafter Mage
+Sandsteppe Mastodon
+Sandsteppe Scavenger
 Sanguine Bond
 Satyr Wayfinder
+Sauroform Hybrid
 Saw It Coming
 Scheming Aspirant
+Scorn-Blade Berserker
 Scuzzback Marauders
+Sea Gate
 Seedglaive Mentor
 Seekers' Squire
+Serpent-Blade Assailant
 Serra Angel
 Servant of the Conduit
 Shadowmage Infiltrator
+Shambling Shell
+Shenanigans
 Siege Wurm
+Sigiled Paladin
+Sigiled Sentinel
 Sinister Sabotage
 Sinister Starfish
+Sinuous Vermin
 Siren Lookout
+Sister Repentia
 Skeletal Changeling
 Skirk Prospector
+Skitter Eel
+Skittering Crustacean
 Skizzik Surger
 Skullclamp
 Skycloud Expanse
+Skymarcher Aspirant
+Skyshroud Behemoth
+Skyshroud Ridgeback
 Skysovereign, Consul Flagship
 Slip Through Space
 Smuggler's Copter
+Snubhorn Sentry
 Sodden Verdure
 Sol Ring
 Solstice Zealot
@@ -282,8 +489,12 @@ Soltari Foot Soldier
 Songs of the Damned
 Soul Shepherd
 Souldrinker
+Soultether Golem
+Space Marine Devastator
 Spectral Rider
 Sphinx of Jwar Isle
+Spire Golem
+Spire Winder
 Spring // Mind
 Springleaf Drum
 Squirrel Nest
@@ -292,21 +503,31 @@ Star Whale
 Steady Progress
 Steam Vents
 Stoke the Flames
+Storm Fleet Swashbuckler
 Strangleroot Geist
 Strionic Resonator
 Stroke of Genius
+Student of Warfare
+Study Break
 Sultai Devotee
 Summer Bloom
 Sundering Growth
+Sunhome Stalwart
 Sunken Ruins
 Supreme Verdict
+Swarm Intelligence
 Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
+Syndic of Tithes
+Syphon Life
+Tabaxi Toucaneers
+Tah-Crop Skirmisher
 Tainted Isle
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
 Temur Devotee
+Tendershoot Dryad
 Tendo Ice Bridge
 Tendrils of Agony
 Thalia, Guardian of Thraben
@@ -314,33 +535,69 @@ The Spear of Bashenga
 The Thing, Ben Grimm
 Thieving Magpie
 Thopter Fabricator
+Thought Monitor
+Thoughtcast
+Thriving Bluff
+Thriving Grove
+Thriving Heath
+Thriving Isle
+Thriving Moor
 Throne of the High City
+Thunderous Wrath
+Tiamat's Fanatics
+Tilonalli's Skinshifter
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
+Tithe Drinker
+Tithebearer Giant
+Traumatic Visions
 Treasure Cruise
+Trove Tracker
 Tumble Magnet
+Tuskguard Captain
 Twilight Mire
 Twincast
 Uktabi Efreet
+Ulamog's Crusher
+Ultramarines Honour Guard
 Umbral Collar Zealot
 Underworld Dreams
 Underworld Rage-Hound
 Universal Automaton
+Universal Surveillance
 Urabrask the Hidden
+Valley Rannet
 Vampire Cutthroat
+Vanguard Suppressor
+Vanishment
+Vanquish the Horde
 Vengeful Vampire
 Vestige of Emrakul
 Viridian Corrupter
+Visionary Augmenter
+Vivid Crag
+Vivid Creek
+Vivid Grove
+Vivid Marsh
+Vivid Meadow
 Walking Ballista
 Wanderbrine Preacher
+Waning Wurm
+Warchief Giant
 Wargate
 Warmonger Hellkite
+Wasteland Raider
+Weaponcraft Enthusiast
 Wear // Tear
+Whir of Invention
 Wild Wasteland
 Wilderness Elemental
+Wings of the Guard
 Wooded Bastion
+Woodripper
 Wrath of God
+Wyrm's Crossing Patrol
 Young Wolf
 Zendikar Farguide
 Zodiac Goat

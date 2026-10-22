@@ -1,0 +1,17 @@
+{
+  "oracle_id": "d5006683-f1c4-4a18-bf64-2d075372534c",
+  "name": "Fleetfeather Cockatrice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fleetfeather Cockatrice",
+      "oracle_fingerprint": "faf5fbc015ce5a4d6b91581b7c01299e",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        { "Activated": { "cost": "{5}{U}{G}", "effects": [{ "Monstrosity": { "count": 3 } }] } }
+      ]
+    }
+  ]
+}

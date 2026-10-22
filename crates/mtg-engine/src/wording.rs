@@ -7,7 +7,7 @@
 use mtg_cards::effect::Effect;
 use mtg_cards::refs::{AbilityKind, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::trigger::{Step, TriggerPattern};
-use mtg_cards::value::{Amount, Cmp, Condition, StatKind};
+use mtg_cards::value::{Amount, CastWay, Cmp, Condition, StatKind};
 use mtg_core::ids::PlayerId;
 
 /// "a" or "an" ahead of `word`.
@@ -29,6 +29,7 @@ fn stat_word(stat: StatKind) -> &'static str {
         StatKind::Toughness => "toughness",
         StatKind::ManaValue => "mana value",
         StatKind::Loyalty => "loyalty",
+        StatKind::Colors => "colors",
     }
 }
 
@@ -77,7 +78,12 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::Ability(AbilityKind::Triggered) => nouns.push("triggered ability".to_owned()),
             Pred::Tapped => adjectives.push("tapped".to_owned()),
             Pred::Untapped => adjectives.push("untapped".to_owned()),
+            Pred::Monstrous => adjectives.push("monstrous".to_owned()),
             Pred::Attacking => adjectives.push("attacking".to_owned()),
+            Pred::AttackingPlayer(Ref::AttachedPlayer) => {
+                tail.push("attacking enchanted player".to_owned());
+            }
+            Pred::AttackingPlayer(Ref::You) => tail.push("attacking you".to_owned()),
             Pred::Blocking => adjectives.push("blocking".to_owned()),
             Pred::Unblocked => adjectives.push("unblocked".to_owned()),
             Pred::ControlledBy(Ref::You) => tail.push("you control".to_owned()),
@@ -290,14 +296,42 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         TriggerPattern::Attacks { what } => {
             (format!("{} attacks", subject(what)), what.0 == [Pred::This])
         }
+        TriggerPattern::AttacksAlone { what } => (
+            format!("{} attacks alone", subject(what)),
+            what.0 == [Pred::This],
+        ),
         TriggerPattern::AttacksPlayer { what, at } => {
             let whom = match at {
+                Ref::MostLife => "the player with the most life",
                 Ref::AttachedPlayer => "enchanted player",
                 Ref::You => "you",
                 Ref::Monarch => "the monarch",
                 _ => "a player",
             };
             (format!("{} attacks {whom}", subject(what)), false)
+        }
+        TriggerPattern::PlayerAttacked { who: attacked } => {
+            let text = match attacked {
+                Ref::You => "you are attacked".to_owned(),
+                Ref::AttachedPlayer => "enchanted player is attacked".to_owned(),
+                other => format!("{} is attacked", who(other).0),
+            };
+            (text, false)
+        }
+        TriggerPattern::PlayerAttacks { by, at } => {
+            let (name, s) = match by {
+                Ref::AttachedPlayer => ("enchanted player", "s"),
+                other => who(other),
+            };
+            let whom = match at {
+                Ref::AttachedPlayer => "enchanted player",
+                Ref::You => "you",
+                _ => "a player",
+            };
+            (
+                format!("{name} attack{s} {whom} with one or more creatures"),
+                false,
+            )
         }
         TriggerPattern::BecomesTarget { what, by } => {
             let whose = match by.0.as_slice() {
@@ -379,9 +413,28 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} proliferate{s}"), false)
         }
-        TriggerPattern::Drew { who: by } => {
+        TriggerPattern::Amassed { who: by } => {
             let (name, s) = who(by);
-            (format!("{name} draw{s} a card"), false)
+            (
+                format!("{name} amass{}", if s.is_empty() { "" } else { "es" }),
+                false,
+            )
+        }
+        TriggerPattern::Bolstered { who: by } => {
+            let (name, s) = who(by);
+            (
+                format!("{name} bolster{}", if s.is_empty() { "" } else { "s" }),
+                false,
+            )
+        }
+        TriggerPattern::Drew { who: by, what } => {
+            let (name, s) = who(by);
+            let card = if what.is_empty() {
+                "a card".to_owned()
+            } else {
+                subject(what)
+            };
+            (format!("{name} draw{s} {card}"), false)
         }
         TriggerPattern::Discarded { what, by } => {
             let (name, s) = who(by);
@@ -404,6 +457,13 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             format!("{} explores", subject(what)),
             what.0 == [Pred::This],
         ),
+        TriggerPattern::BecomesMonstrous { what } => (
+            format!("{} becomes monstrous", subject(what)),
+            what.0 == [Pred::This],
+        ),
+        TriggerPattern::Adapted { what } => {
+            (format!("{} adapts", subject(what)), what.0 == [Pred::This])
+        }
         TriggerPattern::Connived { what } => (
             format!("{} connives", subject(what)),
             what.0 == [Pred::This],
@@ -773,9 +833,18 @@ pub(crate) fn pay(parts: &[String]) -> String {
 }
 
 /// The question of a cast an effect allows: "Cast Lightning Bolt without paying its mana cost?"
-pub(crate) fn cast(name: &str, free: bool, madness: Option<&mtg_core::mana::ManaCost>) -> String {
-    if let Some(cost) = madness {
-        format!("Cast {name} for its madness cost {cost}?")
+/// `alternative` is the way and the mana of a cost the card names (madness, miracle).
+pub(crate) fn cast(
+    name: &str,
+    free: bool,
+    alternative: Option<(CastWay, &mtg_core::mana::ManaCost)>,
+) -> String {
+    if let Some((way, cost)) = alternative {
+        let way = match way {
+            CastWay::Miracle => "miracle",
+            _ => "madness",
+        };
+        format!("Cast {name} for its {way} cost {cost}?")
     } else if free {
         format!("Cast {name} without paying its mana cost?")
     } else {
@@ -1211,6 +1280,24 @@ mod tests {
         "Whenever an opponent becomes the monarch"
     )]
     #[case::you_proliferate(r#"{"Proliferated":{"who":"You"}}"#, "Whenever you proliferate")]
+    #[case::you_amass(r#"{"Amassed":{"who":"You"}}"#, "Whenever you amass")]
+    #[case::you_bolster(r#"{"Bolstered":{"who":"You"}}"#, "Whenever you bolster")]
+    #[case::an_opponent_bolsters(
+        r#"{"Bolstered":{"who":"Opponents"}}"#,
+        "Whenever an opponent bolsters"
+    )]
+    #[case::this_becomes_monstrous(
+        r#"{"BecomesMonstrous":{"what":["This"]}}"#,
+        "When it becomes monstrous"
+    )]
+    #[case::a_creature_adapts(
+        r#"{"Adapted":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#,
+        "Whenever a creature you control adapts"
+    )]
+    #[case::an_opponent_amasses(
+        r#"{"Amassed":{"who":"Opponents"}}"#,
+        "Whenever an opponent amasses"
+    )]
     #[case::a_player_becomes_the_monarch(
         r#"{"BecomesMonarch":{}}"#,
         "Whenever a player becomes the monarch"
@@ -1218,6 +1305,14 @@ mod tests {
     #[case::attacking_the_monarch(
         r#"{"AttacksPlayer":{"what":[{"Type":"Creature"}],"at":"Monarch"}}"#,
         "Whenever a creature attacks the monarch"
+    )]
+    #[case::attacking_the_player_with_the_most_life(
+        r#"{"AttacksPlayer":{"what":["This"],"at":"MostLife"}}"#,
+        "Whenever it attacks the player with the most life"
+    )]
+    #[case::attacking_alone(
+        r#"{"AttacksAlone":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#,
+        "Whenever a creature you control attacks alone"
     )]
     #[case::the_monarchs_end_step(
         r#"{"StepBegins":{"step":"End","whose":"Monarch"}}"#,

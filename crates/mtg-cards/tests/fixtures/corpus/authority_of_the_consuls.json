@@ -10,7 +10,7 @@
   "released_at": "2024-11-15",
   "digital": false,
   "mana_cost": "{W}",
-  "cmc": 1.0,
+  "cmc": 1,
   "type_line": "Enchantment",
   "oracle_text": "Creatures your opponents control enter tapped.\nWhenever a creature an opponent controls enters, you gain 1 life.",
   "colors": [

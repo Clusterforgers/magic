@@ -1,0 +1,27 @@
+{
+  "id": "410896ab-d3dc-478c-bfd1-c0cad5b1180a",
+  "oracle_id": "34a160bc-5d7e-483c-b24c-ab30b7d313b0",
+  "name": "Skyshroud Ridgeback",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nem",
+  "collector_number": "120",
+  "rarity": "common",
+  "released_at": "2000-02-14",
+  "digital": false,
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "Fading 2 (This creature enters with two fade counters on it. At the beginning of your upkeep, remove a fade counter from it. If you can't, sacrifice it.)",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Fading"
+  ]
+}

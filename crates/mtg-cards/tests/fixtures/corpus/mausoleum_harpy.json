@@ -1,0 +1,28 @@
+{
+  "id": "54b40f3c-d75e-483f-b978-8b3bf30cc7ce",
+  "oracle_id": "ba682da8-50f5-478f-99cc-60a57d229a04",
+  "name": "Mausoleum Harpy",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rix",
+  "collector_number": "78",
+  "rarity": "uncommon",
+  "released_at": "2018-01-19",
+  "digital": false,
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Harpy",
+  "oracle_text": "Flying\nAscend (If you control ten or more permanents, you get the city's blessing for the rest of the game.)\nWhenever another creature you control dies, if you have the city's blessing, put a +1/+1 counter on this creature.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Ascend"
+  ]
+}

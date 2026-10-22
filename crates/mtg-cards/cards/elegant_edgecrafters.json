@@ -1,0 +1,27 @@
+{
+  "oracle_id": "eeb3d282-97df-4df2-8bea-9432e21b6d62",
+  "name": "Elegant Edgecrafters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elegant Edgecrafters",
+      "oracle_fingerprint": "fb6d44f91b9b376d5f5e53d7a3d80661",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                ]
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Fabricate": 2 } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ba682da8-50f5-478f-99cc-60a57d229a04",
+  "name": "Mausoleum Harpy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mausoleum Harpy",
+      "oracle_fingerprint": "aba954a68ad75dda4e2920341bce551f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Ascend" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "if": { "CitysBlessing": "You" },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

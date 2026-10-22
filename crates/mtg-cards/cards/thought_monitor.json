@@ -1,0 +1,21 @@
+{
+  "oracle_id": "9deded8b-cec4-4ede-a50b-131404d456d4",
+  "name": "Thought Monitor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thought Monitor",
+      "oracle_fingerprint": "17df5c34cf08e0895c88175992bb65c7",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Type": "Artifact" }] } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

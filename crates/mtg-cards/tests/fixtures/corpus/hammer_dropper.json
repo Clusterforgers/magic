@@ -1,0 +1,29 @@
+{
+  "id": "9efac789-587b-45c1-b16e-616e9486b59b",
+  "oracle_id": "088c9fa7-65ec-48c6-90cc-9087bc9df43e",
+  "name": "Hammer Dropper",
+  "lang": "en",
+  "layout": "normal",
+  "set": "grn",
+  "collector_number": "176",
+  "rarity": "common",
+  "released_at": "2018-10-05",
+  "digital": false,
+  "mana_cost": "{2}{R}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Giant Soldier",
+  "oracle_text": "Mentor (Whenever this creature attacks, put a +1/+1 counter on target attacking creature with lesser power.)",
+  "power": "5",
+  "toughness": "2",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Mentor"
+  ]
+}

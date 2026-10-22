@@ -1,0 +1,20 @@
+{
+  "oracle_id": "866fc4b9-f661-444b-b7fd-929814dbc69d",
+  "name": "Abzan Skycaptain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abzan Skycaptain",
+      "oracle_fingerprint": "94089c6b69b0f577962d93d74e3bc53b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Bolster": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

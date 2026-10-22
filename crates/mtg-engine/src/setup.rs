@@ -15,7 +15,7 @@ use crate::commanders::Commanders;
 use crate::error::SetupError;
 use crate::format::{ExtraZone, FormatRules, RuleSet};
 use crate::layers::LayersCache;
-use crate::object::{GameObject, ObjectRef, PermanentState};
+use crate::object::{Designations, GameObject, ObjectRef, PermanentState};
 use crate::player::{MulliganStatus, Player};
 use crate::rules::RulesCache;
 use crate::state::{GameState, Possible, Stage, Tallies};
@@ -256,6 +256,7 @@ fn preset_state(
     }
     PermanentState {
         tapped: preset.tapped,
+        designations: Designations::default(),
         damage: preset.damage,
         deathtouched: false,
         summoning_sick: preset.summoning_sick,
@@ -407,6 +408,7 @@ impl GameState {
             result: None,
             day_night: None,
             monarch: None,
+            citys_blessing: std::collections::BTreeSet::new(),
             commanders: Commanders::of(commander_ids),
         };
         game.note_what_cards_can_do();
@@ -509,13 +511,14 @@ impl GameState {
                 .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Protection(_)))
         });
         self.possible.protection = protection;
-        let day_night = self.objects().any(|object| {
-            object
-                .def
-                .each_face()
-                .any(crate::ability_reader::definition_has_day_night)
-        });
-        self.possible.day_night = day_night;
+        self.possible.day_night = self.any_face(crate::ability_reader::definition_has_day_night);
+        self.possible.ascend = self.any_face(crate::ability_reader::definition_has_ascend);
+    }
+
+    /// Whether some face of a card of the game satisfies `test`.
+    fn any_face(&self, test: fn(&mtg_cards::CardDefinition) -> bool) -> bool {
+        self.objects()
+            .any(|object| object.def.each_face().any(test))
     }
 }
 

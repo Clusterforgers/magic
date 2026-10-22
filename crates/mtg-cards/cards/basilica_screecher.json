@@ -1,0 +1,12 @@
+{
+  "oracle_id": "752ebcba-97fb-43a3-8811-d244164b3e16",
+  "name": "Basilica Screecher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Basilica Screecher",
+      "oracle_fingerprint": "7005b084e40054e6df4aba3c21e56e9e",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Extort" }]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "oracle_id": "597bce51-af89-4d13-9a97-667b4f4f4694",
+  "name": "Ulamog's Crusher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ulamog's Crusher",
+      "oracle_fingerprint": "95ec01112da29471280cb0ab4e367aac",
+      "abilities": [
+        { "Keyword": { "Annihilator": 2 } },
+        { "Rule": { "rule": { "MustAttack": "This" } } }
+      ]
+    }
+  ]
+}

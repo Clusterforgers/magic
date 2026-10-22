@@ -1,0 +1,27 @@
+{
+  "id": "3287775f-7bec-4e8f-bb8d-daf5ce92e4a8",
+  "oracle_id": "80e9a42e-f4f4-4bfc-91a2-ad124737dca2",
+  "name": "Deep Forest Hermit",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mh1",
+  "collector_number": "161",
+  "rarity": "rare",
+  "released_at": "2019-06-14",
+  "digital": false,
+  "mana_cost": "{3}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Elf Druid",
+  "oracle_text": "Vanishing 3 (This creature enters with three time counters on it. At the beginning of your upkeep, remove a time counter from it. When the last is removed, sacrifice it.)\nWhen this creature enters, create four 1/1 green Squirrel creature tokens.\nSquirrels you control get +1/+1.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Vanishing"
+  ]
+}

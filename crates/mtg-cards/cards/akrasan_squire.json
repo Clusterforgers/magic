@@ -1,0 +1,12 @@
+{
+  "oracle_id": "2b8ef83b-1a1d-4299-ab69-e9e296bb224d",
+  "name": "Akrasan Squire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Akrasan Squire",
+      "oracle_fingerprint": "8a0c9a532aaaa54e3b39ab3f24a4fe07",
+      "abilities": [{ "Keyword": "Exalted" }]
+    }
+  ]
+}

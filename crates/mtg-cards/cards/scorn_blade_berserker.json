@@ -1,0 +1,31 @@
+{
+  "oracle_id": "93107139-b743-4d62-b0ac-9997202e0562",
+  "name": "Scorn-Blade Berserker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scorn-Blade Berserker",
+      "oracle_fingerprint": "443392320ef5c21ab3899e2aaf55b464",
+      "abilities": [
+        {
+          "Keyword": {
+            "Backup": {
+              "count": 1,
+              "abilities": [
+                {
+                  "Activated": {
+                    "cost": [{ "Mana": "{1}" }, "SacrificeSelf"],
+                    "effects": [{ "Draw": {} }]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": { "cost": [{ "Mana": "{1}" }, "SacrificeSelf"], "effects": [{ "Draw": {} }] }
+        }
+      ]
+    }
+  ]
+}

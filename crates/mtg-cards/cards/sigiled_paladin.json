@@ -1,0 +1,12 @@
+{
+  "oracle_id": "b68e99df-7899-493e-9453-59da14ff7de4",
+  "name": "Sigiled Paladin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sigiled Paladin",
+      "oracle_fingerprint": "c1dd5607bc391a4d050c4155f673eafa",
+      "abilities": [{ "Keyword": "FirstStrike" }, { "Keyword": "Exalted" }]
+    }
+  ]
+}

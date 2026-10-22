@@ -1,0 +1,27 @@
+{
+  "id": "30e02cc7-8ea9-468b-ba61-a1e00fefea22",
+  "oracle_id": "72adf091-4491-4afe-b893-b8d20ad38a86",
+  "name": "Illustrious Wanderglyph",
+  "lang": "en",
+  "layout": "normal",
+  "set": "lcc",
+  "collector_number": "9",
+  "rarity": "rare",
+  "released_at": "2023-11-17",
+  "digital": false,
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Artifact Creature — Golem",
+  "oracle_text": "Ascend (If you control ten or more permanents, you get the city's blessing for the rest of the game.)\nOther artifact creatures you control get +2/+2 as long as you have the city's blessing.\nAt the beginning of each upkeep, create a 1/1 colorless Gnome artifact creature token.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Ascend"
+  ]
+}

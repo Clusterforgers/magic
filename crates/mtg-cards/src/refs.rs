@@ -66,6 +66,14 @@ pub enum Ref {
     AttachedPlayer,
     /// The monarch ("the monarch"); nobody while no player is the monarch.
     Monarch,
+    /// The defending player of the attacking creature that triggered the ability, else of the source: whoever it
+    /// attacks, or controls the planeswalker it attacks (CR 506.3); still named once the creature has left combat.
+    Defending,
+    /// The opponents of the controller that their creatures attacked this combat, directly or through a planeswalker
+    /// ("each opponent you attacked this combat"); a creature that left combat still counts.
+    Attacked,
+    /// The player with the most life, or each of the players tied for it.
+    MostLife,
     /// The result an earlier step bound with `as`.
     Bound(String),
     /// The controller of the referenced object.
@@ -137,8 +145,12 @@ pub enum Pred {
     Tapped,
     /// Is untapped.
     Untapped,
+    /// Is monstrous (CR 701.37): a permanent on the battlefield that has become monstrous since it entered.
+    Monstrous,
     /// Is attacking.
     Attacking,
+    /// Is attacking the player, not a planeswalker of theirs ("attacking that player").
+    AttackingPlayer(Ref),
     /// Is blocking.
     Blocking,
     /// Is an attacking creature that no creature was declared to block, once its defending player has declared blockers (CR 509.1h).
@@ -149,6 +161,8 @@ pub enum Pred {
     OwnedBy(Ref),
     /// Is in the zone (without it, the battlefield).
     In(ZoneKind),
+    /// Is a spell cast from the zone, a hand or a graveyard (the spell being cast included).
+    CastFrom(ZoneKind),
     /// Has the keyword.
     HasKeyword(Keyword),
     /// Has at least one counter of the kind on it.

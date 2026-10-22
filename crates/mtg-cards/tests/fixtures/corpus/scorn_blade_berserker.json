@@ -1,0 +1,27 @@
+{
+  "id": "792e7386-4c2d-4fa9-b499-fa3681f2a50e",
+  "oracle_id": "93107139-b743-4d62-b0ac-9997202e0562",
+  "name": "Scorn-Blade Berserker",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mom",
+  "collector_number": "124",
+  "rarity": "uncommon",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{B}",
+  "cmc": 1.0,
+  "type_line": "Creature — Human Berserker",
+  "oracle_text": "Backup 1 (When this creature enters, put a +1/+1 counter on target creature. If that's another creature, it gains the following ability until end of turn.)\n{1}, Sacrifice this creature: Draw a card.",
+  "power": "0",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Backup"
+  ]
+}

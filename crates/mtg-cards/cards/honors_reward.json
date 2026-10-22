@@ -1,0 +1,14 @@
+{
+  "oracle_id": "87e6aabb-41f5-41d2-b662-cd09ad61a1c8",
+  "name": "Honor's Reward",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Honor's Reward",
+      "oracle_fingerprint": "1cb171c246c2bba8c714973f9832f843",
+      "abilities": [
+        { "Spell": { "effects": [{ "GainLife": { "amount": 4 } }, { "Bolster": { "count": 2 } }] } }
+      ]
+    }
+  ]
+}

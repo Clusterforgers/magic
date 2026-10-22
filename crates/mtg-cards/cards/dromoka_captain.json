@@ -1,0 +1,20 @@
+{
+  "oracle_id": "74333718-2a05-4643-9a37-013df39b32e0",
+  "name": "Dromoka Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dromoka Captain",
+      "oracle_fingerprint": "eea799dd56f907fa4a9544cd24d48b5f",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "Bolster": { "count": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

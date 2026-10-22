@@ -1,0 +1,27 @@
+{
+  "id": "0d3c0c43-2d6d-49b8-a112-07611a23ae69",
+  "oracle_id": "0a56e2ad-684d-45a7-9145-479d1505bba2",
+  "name": "Adaptive Snapjaw",
+  "lang": "en",
+  "layout": "normal",
+  "set": "gtc",
+  "collector_number": "113",
+  "rarity": "common",
+  "released_at": "2013-02-01",
+  "digital": false,
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Lizard Beast",
+  "oracle_text": "Evolve (Whenever a creature you control enters, if that creature has greater power or toughness than this creature, put a +1/+1 counter on this creature.)",
+  "power": "6",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Evolve"
+  ]
+}

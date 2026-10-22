@@ -1,0 +1,19 @@
+{
+  "oracle_id": "747ee321-f2dc-4d27-90cd-c4e610086958",
+  "name": "Sandsteppe Scavenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sandsteppe Scavenger",
+      "oracle_fingerprint": "66307df0b831e23a993735b53e68cb41",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Bolster": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

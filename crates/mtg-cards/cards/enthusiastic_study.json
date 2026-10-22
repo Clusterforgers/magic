@@ -1,0 +1,31 @@
+{
+  "oracle_id": "4233334d-bb19-41e4-a203-2b7bb0c48f52",
+  "name": "Enthusiastic Study",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enthusiastic Study",
+      "oracle_fingerprint": "39c329eae20955da0db63e337db1dc91",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 1 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Learn": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

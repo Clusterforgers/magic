@@ -1,0 +1,32 @@
+{
+  "oracle_id": "f2f09757-1931-47c0-a5f0-39280445489d",
+  "name": "Gilded Goose",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gilded Goose",
+      "oracle_fingerprint": "331c3a8b6ac04ed5ca1e802f507d6338",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "Tap"],
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Subtype": "Food" }] } }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

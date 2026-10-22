@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f7fa6ac0-70db-4586-b881-5a19db644dfb",
+  "name": "Anafenza, Kin-Tree Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anafenza, Kin-Tree Spirit",
+      "oracle_fingerprint": "8f75926b5618dca68292cd3b44ed7cee",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Bolster": { "count": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

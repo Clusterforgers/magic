@@ -235,16 +235,29 @@ fn keyword() -> impl Strategy<Value = Keyword> {
             Keyword::ChooseABackground,
             Keyword::Rebound,
             Keyword::Aftermath,
+            Keyword::JumpStart,
+            Keyword::Retrace,
             Keyword::Undying,
             Keyword::Persist,
+            Keyword::Exalted,
+            Keyword::Melee,
+            Keyword::Mentor,
+            Keyword::Dethrone,
+            Keyword::Extort,
+            Keyword::Evolve,
         ]),
         (1u32..10).prop_map(Keyword::Crew),
+        (1u32..10).prop_map(Keyword::Annihilator),
         cost().prop_map(Keyword::Mutate),
         cost().prop_map(Keyword::Encore),
         cost().prop_map(Keyword::Squad),
         cost().prop_map(Keyword::Unearth),
         cost().prop_map(Keyword::Escape),
+        cost().prop_map(Keyword::Embalm),
+        cost().prop_map(Keyword::Eternalize),
         cost().prop_map(Keyword::Dash),
+        cost().prop_map(Keyword::Bestow),
+        cost().prop_map(Keyword::Blitz),
         cost().prop_map(Keyword::Ninjutsu),
         cost().prop_map(Keyword::Foretell),
         cost().prop_map(Keyword::Echo),
@@ -258,6 +271,7 @@ fn keyword() -> impl Strategy<Value = Keyword> {
         cost().prop_map(Keyword::Multikicker),
         cost().prop_map(Keyword::Flashback),
         cost().prop_map(Keyword::Madness),
+        cost().prop_map(Keyword::Miracle),
         cost().prop_map(Keyword::Morph),
         cost().prop_map(Keyword::Disguise),
         (1u32..6, cost()).prop_map(|(time, cost)| Keyword::Suspend { time, cost }),
@@ -516,7 +530,7 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
             }),
         reference().prop_map(|who| TriggerPattern::LifeGained { who }),
         reference().prop_map(|who| TriggerPattern::LifeLost { who }),
-        reference().prop_map(|who| TriggerPattern::Drew { who }),
+        (reference(), selector()).prop_map(|(who, what)| TriggerPattern::Drew { who, what }),
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::Discarded { what, by }),
         selector().prop_map(|what| TriggerPattern::Tapped { what }),
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::TappedForMana { what, by }),
@@ -601,8 +615,16 @@ fn token_ref() -> impl Strategy<Value = TokenRef> {
                     abilities: keywords.into_iter().map(Ability::Keyword).collect(),
                 }))
             }),
-        (reference(), vec(modification(), 0..2))
-            .prop_map(|(of, except)| TokenRef::CopyOf { of, except }),
+        (reference(), vec(modification(), 0..2)).prop_map(|(of, except)| TokenRef::CopyOf {
+            of,
+            except,
+            no_mana_cost: false,
+        }),
+        (reference(), any::<bool>()).prop_map(|(of, no_mana_cost)| TokenRef::CopyOf {
+            of,
+            except: vec![],
+            no_mana_cost,
+        }),
     ]
 }
 
@@ -694,6 +716,8 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                     )
                     .prop_map(Produce::OneOfLists),
                     (1u32..3).prop_map(Produce::ChosenColor),
+                    select(vec![ManaType::Red, ManaType::Colorless])
+                        .prop_map(Produce::OrChosenColor),
                     (1u32..3).prop_map(Produce::CommanderIdentity),
                     (selector(), 1u32..3, any::<bool>()).prop_map(|(among, count, colorless)| {
                         Produce::ProducedBy {
@@ -829,7 +853,11 @@ fn effect() -> impl Strategy<Value = Effect> {
                 reference(),
                 any::<bool>(),
                 list(),
-                proptest::option::of(select(vec![CastWay::Madness, CastWay::Suspend])),
+                proptest::option::of(select(vec![
+                    CastWay::Madness,
+                    CastWay::Miracle,
+                    CastWay::Suspend
+                ])),
             )
                 .prop_map(|(who, what, free, otherwise, way)| Effect::CastFromZone {
                     who,
@@ -992,8 +1020,13 @@ fn ability() -> impl Strategy<Value = Ability> {
                 effects().prop_map(ReplaceBy::Instead),
                 zone().prop_map(ReplaceBy::MoveTo),
                 Just(ReplaceBy::Tapped),
-                (counter(), amount())
-                    .prop_map(|(counter, count)| ReplaceBy::WithCounters { counter, count }),
+                (counter(), amount(), any::<bool>()).prop_map(|(counter, count, tapped)| {
+                    ReplaceBy::WithCounters {
+                        counter,
+                        count,
+                        tapped,
+                    }
+                }),
                 select(vec![
                     EntersChoice::Color,
                     EntersChoice::CreatureType,
@@ -1001,6 +1034,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                     EntersChoice::Opponent
                 ])
                 .prop_map(ReplaceBy::Choose),
+                color().prop_map(|other| ReplaceBy::Choose(EntersChoice::ColorOtherThan(other))),
                 (1u32..5).prop_map(ReplaceBy::PayLifeOrTapped),
                 (selector(), proptest::collection::vec(modification(), 0..3))
                     .prop_map(|(of, except)| ReplaceBy::AsCopy { of, except }),

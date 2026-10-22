@@ -1,0 +1,40 @@
+{
+  "id": "f1182463-348b-45b3-a662-68f06ac53699",
+  "oracle_id": "695ee4fe-356d-47fb-9442-d171b618151c",
+  "name": "Chromanticore",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dmc",
+  "collector_number": "146",
+  "rarity": "mythic",
+  "released_at": "2022-09-09",
+  "digital": false,
+  "mana_cost": "{W}{U}{B}{R}{G}",
+  "cmc": 5.0,
+  "type_line": "Enchantment Creature — Manticore",
+  "oracle_text": "Bestow {2}{W}{U}{B}{R}{G} (If you cast this card for its bestow cost, it's an Aura spell with enchant creature. It becomes a creature again if it's not attached.)\nFlying, first strike, vigilance, trample, lifelink\nEnchanted creature gets +4/+4 and has flying, first strike, vigilance, trample, and lifelink.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Lifelink",
+    "Vigilance",
+    "First strike",
+    "Trample",
+    "Bestow"
+  ]
+}

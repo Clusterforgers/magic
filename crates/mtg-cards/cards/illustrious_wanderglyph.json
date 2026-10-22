@@ -1,0 +1,48 @@
+{
+  "oracle_id": "72adf091-4491-4afe-b893-b8d20ad38a86",
+  "name": "Illustrious Wanderglyph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illustrious Wanderglyph",
+      "oracle_fingerprint": "a39f52bec1dc6c4da2e23c6cd5312267",
+      "abilities": [
+        { "Keyword": "Ascend" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Artifact" },
+                { "Type": "Creature" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": { "CitysBlessing": "You" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Gnome",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Gnome"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

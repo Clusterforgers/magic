@@ -36,6 +36,8 @@ use crate::zones::Zone;
 pub enum Rule {
     /// The creatures attack each combat if able (CR 508.1d).
     MustAttack(Vec<ObjectRef>),
+    /// Each creature attacks the player paired with it each combat of its duration if able (Encore, CR 702.141).
+    MustAttackPlayers(Vec<(ObjectRef, PlayerId)>),
     /// The creatures block each combat if able (CR 509.1c).
     MustBlock(Vec<ObjectRef>),
     /// The spells can't be countered.
@@ -169,6 +171,7 @@ impl RuleEffect {
             Rule::MustAttack(named) | Rule::MustBlock(named) | Rule::CantBeCountered(named) => {
                 named.iter().all(gone)
             }
+            Rule::MustAttackPlayers(pairs) => pairs.iter().all(|(named, _)| gone(named)),
             Rule::Regenerate(named) => gone(named),
             Rule::MayCast {
                 only: Some(named), ..
@@ -193,6 +196,7 @@ pub(crate) struct Again {
 #[derive(Debug, Default)]
 pub(crate) struct RulesInForce {
     must_attack: BTreeSet<ObjectId>,
+    attack_players: Vec<(ObjectId, PlayerId)>,
     must_block: BTreeSet<ObjectId>,
     uncounterable: BTreeSet<ObjectId>,
     no_life_gain: BTreeSet<PlayerId>,
@@ -269,6 +273,9 @@ impl RulesInForce {
         let ids = |named: &[ObjectRef]| named.iter().map(|r| r.id).collect::<Vec<_>>();
         match rule {
             Rule::MustAttack(named) => self.must_attack.extend(ids(named)),
+            Rule::MustAttackPlayers(pairs) => self
+                .attack_players
+                .extend(pairs.iter().map(|(named, player)| (named.id, *player))),
             Rule::MustBlock(named) => self.must_block.extend(ids(named)),
             Rule::CantBeCountered(named) => self.uncounterable.extend(ids(named)),
             Rule::CantGainLife(players) => self.no_life_gain.extend(players),
@@ -367,6 +374,12 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             combat: *combat,
         },
         GameRule::MustAttack(who) => Rule::MustAttack(objects(who, Zone::Battlefield)?),
+        GameRule::MustAttackPlayers { who, players } => Rule::MustAttackPlayers(
+            objects(who, Zone::Battlefield)?
+                .into_iter()
+                .zip(scope.players(players)?)
+                .collect(),
+        ),
         GameRule::MustBlock(who) => Rule::MustBlock(objects(who, Zone::Battlefield)?),
         GameRule::CantBeCountered(who) => Rule::CantBeCountered(objects(who, Zone::Stack)?),
         GameRule::CantGainLife(who) => Rule::CantGainLife(scope.players(who)?),
@@ -412,6 +425,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::MustAttack(named) | Rule::MustBlock(named) | Rule::CantBeCountered(named) => {
             named.is_empty()
         }
+        Rule::MustAttackPlayers(pairs) => pairs.is_empty(),
         Rule::CantGainLife(players)
         | Rule::CantDraw(players)
         | Rule::CantSearch(players)
@@ -509,6 +523,7 @@ fn gather(state: &GameState) -> RulesInForce {
 /// objects, never the rules).
 static NONE: RulesInForce = RulesInForce {
     must_attack: BTreeSet::new(),
+    attack_players: Vec::new(),
     must_block: BTreeSet::new(),
     uncounterable: BTreeSet::new(),
     no_life_gain: BTreeSet::new(),
@@ -628,6 +643,18 @@ pub(crate) fn fold_expired(state: &mut GameState, id: EffectId) -> Result<(), En
 /// Whether the creature `id` attacks each combat if able: the one place the attack declaration reads this requirement.
 pub fn must_attack(state: &GameState, id: ObjectId) -> bool {
     state.rules().must_attack.contains(&id)
+}
+
+/// The players the creature `id` attacks this combat if able, in the order the rules named them: the one place the attack
+/// declaration reads this requirement.
+pub fn must_attack_players(state: &GameState, id: ObjectId) -> Vec<PlayerId> {
+    state
+        .rules()
+        .attack_players
+        .iter()
+        .filter(|(object, _)| *object == id)
+        .map(|(_, player)| *player)
+        .collect()
 }
 
 /// Whether the creature `id` blocks each combat if able: the one place the block declaration reads this requirement.

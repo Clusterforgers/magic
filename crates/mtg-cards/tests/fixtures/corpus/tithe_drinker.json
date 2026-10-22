@@ -1,0 +1,30 @@
+{
+  "id": "35e22f03-55f1-449a-b8c1-6ad9f92c55ed",
+  "oracle_id": "06b1fd96-a3ad-4ebd-9ea4-b3cfb4c9c43d",
+  "name": "Tithe Drinker",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c17",
+  "collector_number": "200",
+  "rarity": "common",
+  "released_at": "2017-08-25",
+  "digital": false,
+  "mana_cost": "{W}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Vampire",
+  "oracle_text": "Lifelink (Damage dealt by this creature also causes you to gain that much life.)\nExtort (Whenever you cast a spell, you may pay {W/B}. If you do, each opponent loses 1 life and you gain that much life.)",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Lifelink",
+    "Extort"
+  ]
+}

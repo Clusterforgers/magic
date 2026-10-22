@@ -4,6 +4,7 @@
 //! the payment (`cast.rs`). A cost the player cannot pay rewinds the announcement. An ability with no mana to pay, and
 //! a triggered ability, go on the stack at once.
 
+use mtg_cards::value::CastWay;
 use mtg_core::ids::ObjectId;
 use mtg_core::mana::ManaCost;
 
@@ -37,9 +38,15 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Next {
         {
             Next::Commit(spell_cast(ctx.player, *spell, work.choices, true))
         }
-        (What::Spell(spell), Some(cost)) => {
-            pay(ctx, *spell, cost, total.sources, total.help, total.life)
-        }
+        (What::Spell(spell), Some(cost)) => pay(
+            ctx,
+            *spell,
+            cost,
+            total.sources,
+            total.help,
+            total.life,
+            total.spend,
+        ),
         (What::Spell(_), None) => Next::Drop,
         (What::Ability(ability), Some(cost)) => pay(
             ctx,
@@ -48,6 +55,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Next {
             total.sources,
             total.help,
             total.life,
+            total.spend,
         ),
         (What::Ability(ability), None) => {
             activation_events(ctx.state, ctx.player, *ability, work.choices)
@@ -57,10 +65,17 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Next {
 }
 
 /// What the payment of the cost being announced is for: the spell or the ability, with whether the cost has {X}.
-pub(super) fn spend(ctx: &Ctx<'_>) -> Spend {
+pub(super) fn spend(ctx: &Ctx<'_>, way: Option<CastWay>) -> Spend {
     let has_x = XCost::of(ctx.state, ctx.what, ctx.ability).is_some();
     match ctx.what {
-        What::Spell(spell) => Spend::for_spell(ctx.state, *spell, has_x),
+        What::Spell(spell) => {
+            let spend = Spend::for_spell(ctx.state, *spell, has_x);
+            if way == Some(CastWay::Bestow) {
+                spend.bestowed()
+            } else {
+                spend
+            }
+        }
         What::Ability(ability) => Spend::for_ability(ctx.state, ability.object, has_x),
         What::Trigger(_) => Spend::other(),
     }
@@ -75,6 +90,7 @@ fn pay(
     sources: Vec<ManaOption>,
     help: Offered,
     reserved_life: u32,
+    paying: Spend,
 ) -> Next {
     match payment_decision(
         ctx.state,
@@ -83,7 +99,7 @@ fn pay(
         cost,
         sources,
         help,
-        spend(ctx),
+        paying,
         ctx.can_cancel(),
         reserved_life,
     ) {

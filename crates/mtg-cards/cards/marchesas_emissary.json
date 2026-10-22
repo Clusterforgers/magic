@@ -1,0 +1,12 @@
+{
+  "oracle_id": "7a67cb39-6b53-4f2b-a52c-3861119eba12",
+  "name": "Marchesa's Emissary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marchesa's Emissary",
+      "oracle_fingerprint": "a07ea284eca4c0f0d947f6015816a7d6",
+      "abilities": [{ "Keyword": "Hexproof" }, { "Keyword": "Dethrone" }]
+    }
+  ]
+}

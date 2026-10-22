@@ -1,0 +1,12 @@
+{
+  "oracle_id": "340d6218-d351-4b2e-80da-7d4afa77190a",
+  "name": "Sunhome Stalwart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunhome Stalwart",
+      "oracle_fingerprint": "0028132963f9524518aa6a9b8235d8e3",
+      "abilities": [{ "Keyword": "FirstStrike" }, { "Keyword": "Mentor" }]
+    }
+  ]
+}
