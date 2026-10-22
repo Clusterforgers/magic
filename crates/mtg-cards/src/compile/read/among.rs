@@ -23,9 +23,11 @@ fn among_top(filter: Selector) -> Selector {
 /// The filter of a selector made by `among_top`.
 fn filter_of(selector: &Selector) -> Option<Selector> {
     match selector.0.as_slice() {
-        [Pred::In(ZoneKind::Library), Pred::Is(Ref::Bound(name)), rest @ ..] if name == TOP => {
-            Some(Selector(rest.to_vec()))
-        }
+        [
+            Pred::In(ZoneKind::Library),
+            Pred::Is(Ref::Bound(name)),
+            rest @ ..,
+        ] if name == TOP => Some(Selector(rest.to_vec())),
         _ => None,
     }
 }
@@ -156,6 +158,15 @@ fn taken_text(to: &Destination) -> Option<String> {
     }
 }
 
+/// What follows "Put all land cards": the cards revealed, or those looked at.
+fn put_all_words(revealed: bool) -> &'static str {
+    if revealed {
+        "revealed this way"
+    } else {
+        "from among them"
+    }
+}
+
 /// The sentences the effects at the front of the list are when they are one of the shapes of the module, and how many
 /// effects they take.
 pub fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
@@ -189,20 +200,13 @@ pub fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
             ..,
         ] if left == TOP => {
             let kind = filter_text(&filter_of(selector)?, true)?;
-            used += 2;
-            let among = if verb == "reveal" {
-                "revealed this way"
-            } else {
-                "from among them"
-            };
-            Some((
-                format!(
-                    "{intro}. Put all {kind} {among} {} and the rest {}",
-                    taken_text(to)?,
-                    rest_text(rest)?
-                ),
-                used,
-            ))
+            let among = put_all_words(verb == "reveal");
+            let text = format!(
+                "{intro}. Put all {kind} {among} {} and the rest {}",
+                taken_text(to)?,
+                rest_text(rest)?
+            );
+            Some((text, used + 2))
         }
         [
             Effect::Choose {
