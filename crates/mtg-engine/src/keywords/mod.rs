@@ -560,7 +560,7 @@ mod tests {
     }
 
     /// The keywords whose rules the engine runs, named as the capabilities name them.
-    const RUN: [&str; 42] = [
+    const RUN: [&str; 43] = [
         "Keyword.Flash",
         "Keyword.Flying",
         "Keyword.Reach",
