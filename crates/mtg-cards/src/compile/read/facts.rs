@@ -65,6 +65,15 @@ fn at_least(left: Amount, number: u32) -> Option<Condition> {
 
 /// "you attacked with three or more creatures this turn", "an opponent was dealt 7 or more damage this turn".
 fn this_turn(r: &mut Reader<'_>) -> Option<Condition> {
+    if r.words("you gained life this turn") {
+        return at_least(
+            Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::LifeGained,
+            },
+            1,
+        );
+    }
     if r.words("you attacked with") {
         let number = quantity(r).filter(|number| *number > 1)?;
         r.need("or more creatures this turn")?;
@@ -146,6 +155,13 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
         ) if number > 1 => {
             counted(&|n| format!("you attacked with {n} or more creatures this turn"))
         }
+        (
+            Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::LifeGained,
+            },
+            Cmp::Ge,
+        ) if number == 1 => vec!["you gained life this turn".to_owned()],
         (
             Amount::Tallied {
                 who: Ref::Opponents,

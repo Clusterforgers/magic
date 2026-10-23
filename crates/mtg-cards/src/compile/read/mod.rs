@@ -30,6 +30,7 @@ mod class;
 mod conditional;
 mod copies;
 mod copy_spells;
+mod cost_conditions;
 mod costs;
 mod counters;
 mod create;

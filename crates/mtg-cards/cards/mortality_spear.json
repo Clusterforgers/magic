@@ -1,0 +1,33 @@
+{
+  "oracle_id": "544acde0-850d-4c4f-8389-e22930d87345",
+  "name": "Mortality Spear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mortality Spear",
+      "oracle_fingerprint": "f45f88a8b751b087bd89550cad4c2865",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGained" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

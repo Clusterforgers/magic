@@ -163,6 +163,8 @@ pub enum TurnTally {
     Attackers,
     /// The damage dealt to the player after prevention, by any source.
     DamageTaken,
+    /// The times the player gained life, once for each gain of any amount.
+    LifeGained,
 }
 
 /// A number, fixed or worked out when the effect runs.

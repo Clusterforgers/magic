@@ -1,0 +1,35 @@
+{
+  "oracle_id": "2da5aa33-3794-4f83-936c-9d8640833d86",
+  "name": "Avatar of Woe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avatar of Woe",
+      "oracle_fingerprint": "484234483127a74a162f7fe65360ab0b",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{6}",
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                "op": "Ge",
+                "right": 10
+              }
+            }
+          }
+        },
+        { "Keyword": "Fear" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

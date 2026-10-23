@@ -174,6 +174,7 @@ mod conditions;
 mod copies;
 mod copy_supertypes;
 mod copy_wordings;
+mod cost_conditions;
 mod cost_counts;
 mod cost_wordings;
 mod counted;

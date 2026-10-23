@@ -12,6 +12,7 @@ use super::abilities;
 use super::amounts::{count_word, counted_stats, for_each, for_each_text, number_word};
 use super::as_long_as;
 use super::copies;
+use super::cost_conditions;
 use super::counters;
 use super::defining;
 use super::effects::{granted, power_toughness};
@@ -709,7 +710,8 @@ pub(super) fn cost_subject(r: &mut Reader<'_>) -> Option<(Selector, bool)> {
     if r.source() {
         return Some((Selector::this(), true));
     }
-    let mut applies_to = phrase(r, Form::All)?;
+    let first = phrase(r, Form::All)?;
+    let mut applies_to = cost_conditions::more_spells(r, first)?;
     (applies_to.0.first() == Some(&Pred::Spell)).then_some(())?;
     if r.words("you cast") {
         applies_to.0.push(Pred::ControlledBy(Ref::You));
@@ -760,6 +762,7 @@ fn cost_times(r: &mut Reader<'_>, itself: bool, x: bool) -> Option<Amount> {
 /// "This spell costs {1} less to cast for each creature card in your graveyard.", "This spell costs {X} less to cast,
 /// where X is the total power of creatures you control."
 fn cost_modifier(r: &mut Reader<'_>) -> Option<Ability> {
+    let leading = r.attempt(cost_conditions::leading);
     let (applies_to, itself) = cost_subject(r)?;
     r.need(if itself { "costs" } else { "cost" })?;
     let (mana, x) = cost_mana(r)?;
@@ -772,12 +775,16 @@ fn cost_modifier(r: &mut Reader<'_>) -> Option<Ability> {
     };
     r.need("to cast")?;
     let per = cost_times(r, itself, x)?;
+    let condition = match leading {
+        Some(held) => Some(held),
+        None => r.attempt(cost_conditions::trailing),
+    };
     Some(Ability::CostModifier {
         applies_to,
         change,
         mana,
         per,
-        condition: None,
+        condition,
     })
 }
 
@@ -802,6 +809,17 @@ pub(super) fn cost_subject_text(applies_to: &Selector) -> Option<String> {
     let selector = Selector(spells);
     (selector.0.first() == Some(&Pred::Spell)).then_some(())?;
     let cast = who.unwrap_or("");
+    let group = match selector.0.as_slice() {
+        [Pred::Spell, Pred::AnyOf(kinds)]
+            if kinds.len() > 1
+                && kinds
+                    .iter()
+                    .all(|kind| matches!(kind, Pred::Subtype(_) | Pred::Color(_))) =>
+        {
+            cost_conditions::spells_text(kinds)?
+        }
+        _ => phrase_text(&selector, Form::All)?,
+    };
     let from = if other && who.is_some() {
         " from anywhere other than your hand"
     } else if other {
@@ -809,10 +827,7 @@ pub(super) fn cost_subject_text(applies_to: &Selector) -> Option<String> {
     } else {
         ""
     };
-    Some(format!(
-        "{}{cast}{from}",
-        phrase_text(&selector, Form::All)?
-    ))
+    Some(format!("{group}{cast}{from}"))
 }
 
 /// The wording of a cost modifier the template reads.
@@ -821,6 +836,7 @@ fn cost_modifier_texts(
     change: CostChange,
     mana: &ManaCostX,
     per: &Amount,
+    condition: Option<&Condition>,
 ) -> Vec<String> {
     let itself = *applies_to == Selector::this();
     let Some(subject) = cost_subject_text(applies_to) else {
@@ -850,7 +866,19 @@ fn cost_modifier_texts(
     } else {
         return Vec::new();
     };
-    vec![format!("{subject} {verb} {mana} {more} to cast{tail}")]
+    let sentence = format!("{subject} {verb} {mana} {more} to cast{tail}");
+    let Some(held) = condition else {
+        return vec![sentence];
+    };
+    cost_conditions::texts(held)
+        .into_iter()
+        .flat_map(|fact| {
+            [
+                format!("{sentence} if {fact}"),
+                format!("if {fact}, {sentence}"),
+            ]
+        })
+        .collect()
 }
 
 pub(super) fn statics(
@@ -919,8 +947,8 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             change,
             mana,
             per,
-            condition: None,
-        } => cost_modifier_texts(applies_to, *change, mana, per),
+            condition,
+        } => cost_modifier_texts(applies_to, *change, mana, per, condition.as_ref()),
         Ability::FreeCast {
             condition: Some(held),
         } => control_texts(held)

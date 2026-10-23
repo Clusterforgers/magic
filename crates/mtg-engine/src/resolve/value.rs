@@ -955,6 +955,7 @@ impl<'a> Scope<'a> {
                 let kind = match what {
                     TurnTally::Attackers => Tally::Attackers,
                     TurnTally::DamageTaken => Tally::Hurt,
+                    TurnTally::LifeGained => Tally::Gained,
                 };
                 self.players(who)?
                     .into_iter()
