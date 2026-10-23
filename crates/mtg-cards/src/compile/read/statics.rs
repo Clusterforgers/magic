@@ -36,7 +36,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 20] = [
+const TEMPLATES: [Template; 21] = [
     entering,
     entering_tapped_if,
     group_enters_tapped,
@@ -45,6 +45,7 @@ const TEMPLATES: [Template; 20] = [
     copies::enters_as_copy,
     as_entering,
     rule,
+    super::player_keywords::ability,
     lands::from_a_zone,
     lands::cast_from_the_top,
     cannot,
@@ -516,7 +517,7 @@ fn cannot(r: &mut Reader<'_>) -> Option<Ability> {
 }
 
 /// The condition a sentence opens with: "As long as it's your turn, ...".
-fn leading_condition(r: &mut Reader<'_>) -> Option<Condition> {
+pub(super) fn leading_condition(r: &mut Reader<'_>) -> Option<Condition> {
     r.attempt(|r| {
         let condition = as_long_as::read(r, None)?;
         r.punct(',').then_some(condition)
@@ -1155,6 +1156,7 @@ fn each_combat(who: &Ref, verb: &str) -> Vec<String> {
 /// (an Equipment says "equipped", an Aura "enchanted") or a group.
 pub(super) fn subjects(affected: &Ref, itself: bool) -> Vec<(String, bool)> {
     match affected {
+        Ref::You => vec![("You".to_owned(), true)],
         Ref::This if itself => vec![("~".to_owned(), false)],
         Ref::Attached => vec![
             ("Equipped creature".to_owned(), false),

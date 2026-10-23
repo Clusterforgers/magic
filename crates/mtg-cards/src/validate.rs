@@ -1758,7 +1758,13 @@ impl<'a> Walker<'a> {
         from: ZoneKind,
     ) {
         self.scope = Scope::new(&[], false);
-        self.at("affected", |w| w.reference(affected, Kind::Object));
+        // A keyword a player has is given to the player: "You have hexproof."
+        let kind = if gives_player_keywords(affected, mods) {
+            Kind::Player
+        } else {
+            Kind::Object
+        };
+        self.at("affected", |w| w.reference(affected, kind));
         // The layers change permanents, and the source of this one is not on the battlefield.
         if !from.is_battlefield() && !matches!(affected, Ref::Each(_)) {
             self.at("affected", |w| {
@@ -2212,6 +2218,15 @@ const fn casts_a_spell(when: &TriggerPattern) -> bool {
 /// Whether the trigger is on a spell other than the card itself being cast, whose X the card does not print.
 fn casts_another_spell(when: &TriggerPattern) -> bool {
     matches!(when, TriggerPattern::SpellCast { what, .. } if !what.0.contains(&Pred::This))
+}
+
+/// Whether a static ability gives keywords a player can have (hexproof, shroud, protection) to players, and nothing else.
+fn gives_player_keywords(affected: &Ref, mods: &[Modification]) -> bool {
+    matches!(
+        affected,
+        Ref::You | Ref::Opponents | Ref::EachPlayer | Ref::AttachedPlayer
+    ) && !mods.is_empty()
+        && mods.iter().all(Modification::is_player_keyword)
 }
 
 /// Whether a cost has an `{X}` in its mana.
@@ -2704,6 +2719,10 @@ mod tests {
     #[case::a_keyword_taken_away(ALL_MINE, r#"{"RemoveKeyword":"Flying"}"#, &["Keyword.Flying", "Mod.RemoveKeyword"])]
     #[case::protection(ALL_MINE, r#"{"AddKeyword":{"Protection":[{"Color":"Red"}]}}"#, &["Keyword.Protection", "Mod.AddKeyword"])]
     #[case::shroud(ALL_MINE, r#"{"AddKeyword":"Shroud"}"#, &["Keyword.Shroud", "Mod.AddKeyword"])]
+    #[case::hexproof_for_you(r#""You""#, r#"{"AddKeyword":"Hexproof"}"#, &["Keyword.Hexproof", "Mod.AddKeyword"])]
+    #[case::shroud_for_each_player(r#""EachPlayer""#, r#"{"AddKeyword":"Shroud"}"#, &["Keyword.Shroud", "Mod.AddKeyword"])]
+    #[case::protection_for_opponents(r#""Opponents""#, r#"{"AddKeyword":{"Protection":[{"Color":"Red"}]}}"#, &["Keyword.Protection", "Mod.AddKeyword"])]
+    #[case::hexproof_taken_from_the_enchanted_player(r#""AttachedPlayer""#, r#"{"RemoveKeyword":"Hexproof"}"#, &["Keyword.Hexproof", "Mod.RemoveKeyword"])]
     #[case::every_ability_lost(ALL_MINE, r#""LoseAbilities""#, &["Mod.LoseAbilities"])]
     #[case::control_of_the_enchanted_creature(r#""Attached""#, r#"{"SetController":"You"}"#, &["Mod.SetController"])]
     #[case::not_attacking(ALL_MINE, r#""CantAttack""#, &["Mod.CantAttack"])]
@@ -2763,6 +2782,14 @@ mod tests {
     #[case::a_colour_is_chosen_as_an_effect_begins(
         r#"{"Static":{"affected":"This","mods":["AddProtectionFromChosenColor"]}}"#,
         "a colour is chosen as an effect begins, so only a `Continuous` effect adds protection from it"
+    )]
+    #[case::a_player_takes_only_the_keywords_players_have(
+        r#"{"Static":{"affected":"You","mods":[{"AddKeyword":"Flying"}]}}"#,
+        "abilities[0].Static.affected: expected an object but this is a player"
+    )]
+    #[case::a_player_takes_keywords_alone(
+        r#"{"Static":{"affected":"You","mods":[{"AddKeyword":"Hexproof"},{"AddType":"Artifact"}]}}"#,
+        "abilities[0].Static.affected: expected an object but this is a player"
     )]
     #[case::a_player_is_not_an_affected_object(
         r#"{"Static":{"affected":"You","mods":[{"AddType":"Artifact"}]}}"#,

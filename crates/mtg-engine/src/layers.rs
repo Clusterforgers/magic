@@ -256,10 +256,12 @@ impl Held {
     }
 }
 
-/// What the layers make of every permanent of a state.
+/// What the layers make of every permanent of a state, and the keywords they give to players.
 #[derive(Debug)]
 pub(crate) struct Layers {
     held: BTreeMap<ObjectId, Held>,
+    /// The keywords static abilities give to players ("You have hexproof."), in the order they were gained.
+    players: BTreeMap<PlayerId, Vec<Keyword>>,
 }
 
 impl Layers {
@@ -267,11 +269,17 @@ impl Layers {
     pub(crate) fn get(&self, id: ObjectId) -> Option<&Held> {
         self.held.get(&id)
     }
+
+    /// The keywords the layers gave to the player `id`.
+    pub(crate) fn player_keywords(&self, id: PlayerId) -> &[Keyword] {
+        self.players.get(&id).map_or(&[], Vec::as_slice)
+    }
 }
 
 /// The reading of a game that has no effect and no static ability, and of one whose pass is under way.
 static EMPTY: Layers = Layers {
     held: BTreeMap::new(),
+    players: BTreeMap::new(),
 };
 
 /// The layers of a state, built when first asked for and dropped when the state changes.
@@ -430,6 +438,8 @@ impl Cand<'_> {
 struct Foot {
     modification: Modification,
     set: BTreeSet<ObjectId>,
+    /// The players it gives a keyword to or takes one from.
+    players: BTreeSet<PlayerId>,
 }
 
 /// The effects of a static ability that began to apply in an earlier layer: they go on applying to the permanents they
@@ -440,6 +450,15 @@ struct Started {
     /// The timestamp its effects had (CR 613.7a).
     stamp: u64,
     set: BTreeSet<ObjectId>,
+    players: BTreeSet<PlayerId>,
+}
+
+/// Whether a static ability's `affected` names players: the keywords it changes are the players'.
+fn is_player_ref(affected: &Ref) -> bool {
+    matches!(
+        affected,
+        Ref::You | Ref::Opponents | Ref::EachPlayer | Ref::AttachedPlayer
+    )
 }
 
 /// The layer a modification of the data belongs to, or none for a restriction.
@@ -476,6 +495,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
 struct Pass<'a> {
     state: &'a GameState,
     held: BTreeMap<ObjectId, Held>,
+    players: BTreeMap<PlayerId, Vec<Keyword>>,
     /// The continuous effects of resolved spells and abilities that still apply.
     registered: Vec<&'a ContinuousEffect>,
     started: BTreeMap<AbilityRef, Started>,
@@ -511,6 +531,7 @@ fn compute(state: &GameState) -> Layers {
     if registered.is_empty() && !statics_in_play && !counters_in_play {
         return Layers {
             held: BTreeMap::new(),
+            players: BTreeMap::new(),
         };
     }
     let mut held = BTreeMap::new();
@@ -524,6 +545,7 @@ fn compute(state: &GameState) -> Layers {
     let mut pass = Pass {
         state,
         held,
+        players: BTreeMap::new(),
         registered,
         started: BTreeMap::new(),
         done: BTreeSet::new(),
@@ -532,7 +554,10 @@ fn compute(state: &GameState) -> Layers {
         pass.run(Some(layer));
     }
     pass.run(None);
-    Layers { held: pass.held }
+    Layers {
+        held: pass.held,
+        players: pass.players,
+    }
 }
 
 impl<'a> Pass<'a> {
@@ -770,6 +795,7 @@ impl<'a> Pass<'a> {
                 Some(Foot {
                     modification: effect.modification.clone(),
                     set,
+                    players: BTreeSet::new(),
                 })
             }
             Source::Static(cand) => self.static_footprint(view, cand),
@@ -807,6 +833,15 @@ impl<'a> Pass<'a> {
                 .controller()
         };
         let scope = Scope::announcing(self.state, controller, cand.holder).with_layered(view);
+        let players = if let Some(started) = started {
+            started.players.clone()
+        } else if is_player_ref(affected) {
+            scope
+                .players(affected)
+                .map_or_else(|_| BTreeSet::new(), |named| named.into_iter().collect())
+        } else {
+            BTreeSet::new()
+        };
         let set = if let Some(started) = started {
             started.set.clone()
         } else {
@@ -840,7 +875,11 @@ impl<'a> Pass<'a> {
             let _reading = Needing::enter(reads_of_modification(wanted));
             lower(&scope, wanted).ok()?
         };
-        Some(Foot { modification, set })
+        Some(Foot {
+            modification,
+            set,
+            players,
+        })
     }
 
     /// Applies the effect to every permanent it applies to, and notes that a static ability has begun to apply. Whether
@@ -860,7 +899,11 @@ impl<'a> Pass<'a> {
                 body: Arc::clone(&this.body),
                 stamp: cand.timestamp,
                 set: foot.set.clone(),
+                players: foot.players.clone(),
             });
+        }
+        for player in &foot.players {
+            self.give_player(*player, &foot.modification);
         }
         for id in &foot.set {
             if let Some(held) = self.held.get_mut(id) {
@@ -876,6 +919,24 @@ impl<'a> Pass<'a> {
         matches!(&foot.modification, Modification::GrantAbility(granted)
             if matches!(&**granted, Ability::Static { .. }))
             && !foot.set.is_empty()
+    }
+
+    /// A keyword a static ability gives to a player or takes from them (layer 6).
+    fn give_player(&mut self, player: PlayerId, modification: &Modification) {
+        match modification {
+            Modification::AddKeyword(keyword) => {
+                let held = self.players.entry(player).or_default();
+                if !held.contains(keyword) {
+                    held.push(keyword.clone());
+                }
+            }
+            Modification::RemoveKeyword(keyword) => {
+                if let Some(held) = self.players.get_mut(&player) {
+                    held.retain(|kept| kept != keyword);
+                }
+            }
+            _ => {}
+        }
     }
 
     /// Which of the waiting effects applies next: the first, by timestamp, that depends on no other effect that does

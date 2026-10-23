@@ -619,12 +619,19 @@ pub fn is_indestructible(state: &GameState, id: ObjectId) -> bool {
 
 /// The keywords player `id` has now: the one reader of a player's keywords.
 ///
-/// Today these are the ones their setup gives them; the continuous effects of layer 6 that name a player join
-/// here, as they join [`keywords_of`].
+/// These are the ones their setup gives them, then the ones the static abilities of layer 6 give them ("You have
+/// hexproof."), each once.
 pub fn player_keywords(state: &GameState, id: PlayerId) -> Vec<&Keyword> {
-    state
-        .player(id)
-        .map_or_else(Vec::new, |player| player.keywords().iter().collect())
+    let Some(player) = state.player(id) else {
+        return Vec::new();
+    };
+    let mut held: Vec<&Keyword> = player.keywords().iter().collect();
+    for keyword in state.layers().player_keywords(id) {
+        if !held.contains(&keyword) {
+            held.push(keyword);
+        }
+    }
+    held
 }
 
 /// Whether a keyword of `holder` stops `controller`'s `source` from targeting it.

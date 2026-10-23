@@ -48,6 +48,7 @@ mod mana_trigger;
 mod modal;
 mod pairs;
 mod payments;
+mod player_keywords;
 mod prevention;
 mod pronouns;
 mod render;

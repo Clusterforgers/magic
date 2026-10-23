@@ -1,0 +1,28 @@
+{
+  "id": "a61a3ba1-af6c-4ddc-aa82-34bfc30867d0",
+  "oracle_id": "baec04a1-3bc9-4618-afab-e42013e36648",
+  "name": "Metropolis Reformer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mat",
+  "collector_number": "4",
+  "rarity": "rare",
+  "released_at": "2023-05-12",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Angel Cleric",
+  "oracle_text": "Flying, vigilance\nYou have hexproof.\nWhenever this creature is dealt damage, you gain that much life.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Vigilance"
+  ]
+}

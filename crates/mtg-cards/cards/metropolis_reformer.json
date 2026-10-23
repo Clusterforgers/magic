@@ -1,0 +1,22 @@
+{
+  "oracle_id": "baec04a1-3bc9-4618-afab-e42013e36648",
+  "name": "Metropolis Reformer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Metropolis Reformer",
+      "oracle_fingerprint": "b53ddde1756b61ca3643f77748e910d9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Static": { "affected": "You", "mods": [{ "AddKeyword": "Hexproof" }] } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "This" } },
+            "effects": [{ "GainLife": { "amount": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

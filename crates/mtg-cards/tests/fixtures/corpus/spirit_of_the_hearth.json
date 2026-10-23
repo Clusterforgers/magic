@@ -1,0 +1,27 @@
+{
+  "id": "93fb7e08-ff15-49b9-bed8-0faadfa8338f",
+  "oracle_id": "30cd69a8-7893-4075-94ca-04450ff821d3",
+  "name": "Spirit of the Hearth",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c17",
+  "collector_number": "73",
+  "rarity": "rare",
+  "released_at": "2017-08-25",
+  "digital": false,
+  "mana_cost": "{4}{W}{W}",
+  "cmc": 6.0,
+  "type_line": "Creature — Cat Spirit",
+  "oracle_text": "Flying\nYou have hexproof. (You can't be the target of spells or abilities your opponents control.)",
+  "power": "4",
+  "toughness": "5",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

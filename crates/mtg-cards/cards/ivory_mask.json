@@ -1,0 +1,12 @@
+{
+  "oracle_id": "028bc726-0e86-4c53-9648-625153ae4b01",
+  "name": "Ivory Mask",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ivory Mask",
+      "oracle_fingerprint": "7add26e9e06a80300ec701d50ba54c5b",
+      "abilities": [{ "Static": { "affected": "You", "mods": [{ "AddKeyword": "Shroud" }] } }]
+    }
+  ]
+}

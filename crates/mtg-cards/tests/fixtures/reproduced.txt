@@ -431,6 +431,7 @@ Invading Manticore
 Invisible Stalker
 Iridescent Vinelasher
 Iron League Steed
+Ivory Mask
 Izzet Charm
 Jacked Rabbit
 Jadelight Ranger
@@ -510,6 +511,7 @@ Memory Guardian
 Mer-Ek Nightblade
 Merfolk Branchwalker
 Mesmeric Orb
+Metropolis Reformer
 Midnight Banshee
 Migratory Greathorn
 Migratory Route
@@ -743,6 +745,7 @@ Sphinx of Jwar Isle
 Spider-Islanders
 Spire Golem
 Spire Winder
+Spirit of the Hearth
 Spring // Mind
 Springleaf Drum
 Squirrel Nest
