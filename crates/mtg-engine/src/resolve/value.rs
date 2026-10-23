@@ -227,6 +227,30 @@ impl<'a> Scope<'a> {
             .find(|shot| shot.id == reference.id && shot.counter == reference.counter)
     }
 
+    /// The largest count of the turn among the players `who` names, or among the objects it names for the times counters
+    /// were put on them.
+    fn tallied(&self, who: &Ref, what: TurnTally) -> Result<i64, ResolveError> {
+        let kind = match what {
+            TurnTally::Attackers => Tally::Attackers,
+            TurnTally::DamageTaken => Tally::Hurt,
+            TurnTally::CountersPut => {
+                let counts = self.refs(who)?.into_iter().filter_map(|named| match named {
+                    Target::Object(object) => {
+                        Some(self.state.object_tallied(object, None, Tally::Countered))
+                    }
+                    Target::Player(_) => None,
+                });
+                return Ok(counts.map(i64::from).max().unwrap_or(0));
+            }
+        };
+        Ok(self
+            .players(who)?
+            .into_iter()
+            .map(|player| i64::from(self.state.tallied(player, kind)))
+            .max()
+            .unwrap_or(0))
+    }
+
     /// How many times the permanents `of` names have mutated (CR 702.140): as they are, or as they were when they left.
     fn mutations(&self, of: &Ref) -> Result<i64, ResolveError> {
         let mut total = 0i64;
@@ -952,17 +976,7 @@ impl<'a> Scope<'a> {
             Amount::CastWith(way) => i64::from(self.cast_way() == Some(*way)),
             Amount::ColorsSpent => i64::try_from(colors_among(&self.mana_spent())).unwrap_or(0),
             Amount::PermanentsGraved => i64::from(self.state.graved_this_turn()),
-            Amount::Tallied { who, what } => {
-                let kind = match what {
-                    TurnTally::Attackers => Tally::Attackers,
-                    TurnTally::DamageTaken => Tally::Hurt,
-                };
-                self.players(who)?
-                    .into_iter()
-                    .map(|player| i64::from(self.state.tallied(player, kind)))
-                    .max()
-                    .unwrap_or(0)
-            }
+            Amount::Tallied { who, what } => self.tallied(who, *what)?,
             Amount::Mutations(of) => self.mutations(of)?,
             Amount::Kicks => i64::try_from(self.payments(OptionalKind::Kicker))
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,

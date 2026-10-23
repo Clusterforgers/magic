@@ -69,6 +69,8 @@ const RUNS: &[&str] = &[
     "Trigger.Mutates",
     "Trigger.Adapted",
     "Trigger.Bolstered",
+    "Trigger.Surveilled",
+    "Trigger.ZoneChangeExcept",
     "Trigger.Batch",
     "Trigger.Nth",
     "Amount.Triggering",
@@ -711,6 +713,8 @@ mod tests {
     #[case::turning_face_up_triggers("Trigger.TurnedFaceUp", true)]
     #[case::adapting_triggers("Trigger.Adapted", true)]
     #[case::bolstering_triggers("Trigger.Bolstered", true)]
+    #[case::surveil_triggers("Trigger.Surveilled", true)]
+    #[case::zone_changes_from_elsewhere("Trigger.ZoneChangeExcept", true)]
     #[case::batch_triggers("Trigger.Batch", true)]
     #[case::nth_triggers("Trigger.Nth", true)]
     #[case::event_amounts("Amount.Triggering", true)]

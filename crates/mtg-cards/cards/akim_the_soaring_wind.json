@@ -1,0 +1,62 @@
+{
+  "oracle_id": "2a20530b-d1d6-4dac-8d08-f583bea55e6e",
+  "name": "Akim, the Soaring Wind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Akim, the Soaring Wind",
+      "oracle_fingerprint": "63778c2674b8d04565bcf4972db4dbfc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "ZoneChange": {
+                    "what": ["Token", { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{W}{U}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }]
+                  },
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

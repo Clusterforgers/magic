@@ -261,6 +261,7 @@ mod transform;
 mod trigger_limits;
 mod triggered_mana;
 mod triggers;
+mod turn_events;
 mod turned_face_up;
 mod vocabulary;
 mod where_x;

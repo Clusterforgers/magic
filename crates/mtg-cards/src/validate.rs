@@ -19,7 +19,7 @@ use crate::spend::SpendOn;
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
 use crate::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::CastWay;
-use crate::value::{Amount, Condition};
+use crate::value::{Amount, Condition, TurnTally};
 
 /// One problem found in a file: where, and what.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -433,6 +433,16 @@ impl<'a> Walker<'a> {
         self.at(name, |w| w.reference(who, Kind::Player));
     }
 
+    /// A count of the turn: of players for the tallies of players, of one object for the times counters were put on it.
+    fn tallied(&mut self, who: &Ref, what: TurnTally) {
+        if what == TurnTally::CountersPut {
+            self.uses("Amount", "Tallied");
+            self.at("Tallied", |w| w.reference(who, Kind::Object));
+        } else {
+            self.player_amount("Tallied", who);
+        }
+    }
+
     fn amount(&mut self, amount: &Amount) {
         // Only the amount of damage or counters, or a sum or even share made of it, can be a recipient's share.
         let sharing = std::mem::take(&mut self.amounting) == Amounting::Shared;
@@ -523,7 +533,7 @@ impl<'a> Walker<'a> {
             Amount::CastWith(_) => self.uses("Amount", "CastWith"),
             Amount::ColorsSpent => self.uses("Amount", "ColorsSpent"),
             Amount::PermanentsGraved => self.uses("Amount", "PermanentsGraved"),
-            Amount::Tallied { who, .. } => self.player_amount("Tallied", who),
+            Amount::Tallied { who, what } => self.tallied(who, *what),
             Amount::Triggering => {
                 self.uses("Amount", "Triggering");
                 if !self.scope.in_trigger {
@@ -1028,6 +1038,7 @@ impl<'a> Walker<'a> {
         self.uses("Trigger", &tag_of(pattern));
         match pattern {
             TriggerPattern::ZoneChange { what, .. }
+            | TriggerPattern::ZoneChangeExcept { what, .. }
             | TriggerPattern::Attacks { what }
             | TriggerPattern::AttacksAlone { what } => {
                 self.at("what", |w| w.selector(what));
@@ -1065,6 +1076,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::BecomesMonarch { who }
             | TriggerPattern::Proliferated { who }
             | TriggerPattern::Amassed { who }
+            | TriggerPattern::Surveilled { who }
             | TriggerPattern::Bolstered { who } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
@@ -1156,6 +1168,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::Mutates { .. }
                 | TriggerPattern::Adapted { .. }
                 | TriggerPattern::Bolstered { .. }
+                | TriggerPattern::Surveilled { .. }
                 | TriggerPattern::SpellCast { .. }
                 | TriggerPattern::BecomesTarget { .. }
                 | TriggerPattern::GroupAttacks { .. }
@@ -1176,9 +1189,24 @@ impl<'a> Walker<'a> {
             TriggerPattern::Drew { .. }
             | TriggerPattern::SpellCast { .. }
             | TriggerPattern::LifeGained { .. }
+            | TriggerPattern::LifeLost { .. }
+            | TriggerPattern::Surveilled { .. }
             | TriggerPattern::Attacks { .. }
             | TriggerPattern::BecomesCrewed { .. }
-            | TriggerPattern::BecomesSaddled { .. } => true,
+            | TriggerPattern::BecomesSaddled { .. }
+            // The counters put on an object, of any kind.
+            | TriggerPattern::CountersPut { counter: None, .. } => true,
+            // Every cycling of the player, whatever the card.
+            TriggerPattern::Cycled { what, .. } => what.0.iter().all(|p| *p == Pred::Other),
+            // Tokens under the player's control, from no zone.
+            TriggerPattern::ZoneChange {
+                what,
+                from: None,
+                to,
+            } => {
+                what.0 == [Pred::Token, Pred::ControlledBy(Ref::You)]
+                    && matches!(to, None | Some(ZoneKind::Battlefield))
+            }
             TriggerPattern::BecomesTarget { by, .. } => {
                 by.is_empty() || by.0 == [Pred::ControlledBy(Ref::You)]
             }
@@ -1192,7 +1220,7 @@ impl<'a> Walker<'a> {
         };
         if !counted {
             self.problem(
-                "only cards drawn, spells cast, life gained, attacks, becoming crewed or saddled, becoming a target of what anyone or you control and damage dealt to an object from any source are counted in a turn",
+                "only cards drawn, spells cast, life gained or lost, cards cycled, surveils, tokens you create, attacks, counters put on an object, becoming crewed or saddled, becoming a target of what anyone or you control and damage dealt to an object from any source are counted in a turn",
             );
         }
         self.at("event", |w| w.trigger_pattern(event));
