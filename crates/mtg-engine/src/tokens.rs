@@ -12,7 +12,7 @@ use crate::combat::{AttackTarget, Attacker};
 use crate::error::EngineError;
 use crate::fold::{invalid, reset_passes};
 use crate::object::{Designations, GameObject, ObjectKind, ObjectRef, PermanentState};
-use crate::state::GameState;
+use crate::state::{GameState, Tally};
 use crate::zones::{Placement, Zone};
 
 /// Whether a flag is off, so serialization can leave it out (serde hands over a reference).
@@ -111,6 +111,7 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
             target_left: false,
         });
     }
+    state.tally(event.controller, Tally::Tokens);
     reset_passes(state);
     Ok(())
 }

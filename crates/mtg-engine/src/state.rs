@@ -108,6 +108,16 @@ pub(crate) enum Tally {
     Hurt,
     /// Life lost, by damage that causes it, by a loss and by a payment (counted for the player, by the amount).
     Lost,
+    /// A time life was lost, once for each loss, payment or damage that causes one (counted for the player).
+    Losses,
+    /// A card cycled (counted for the player).
+    Cycled,
+    /// A surveil (counted for the player).
+    Surveilled,
+    /// A token created (counted for the player who controls it).
+    Tokens,
+    /// A kind of counter put on a permanent or a card in exile, once for each event (counted for the object).
+    Countered,
 }
 
 /// The events counted in the turn so far.
@@ -395,6 +405,12 @@ impl GameState {
     pub(crate) fn tally_by(&mut self, player: PlayerId, kind: Tally, by: u32) {
         let count = self.tallies.players.entry((player, kind)).or_insert(0);
         *count = count.saturating_add(by);
+    }
+
+    /// Counts a loss of `amount` life for the player this turn: the life lost, and one more time life was lost.
+    pub(crate) fn tally_loss(&mut self, player: PlayerId, amount: u32) {
+        self.tally_by(player, Tally::Lost, amount);
+        self.tally(player, Tally::Losses);
     }
 
     /// How many permanents were put into a graveyard from the battlefield this turn, whoever owned them.

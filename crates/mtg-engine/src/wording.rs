@@ -428,6 +428,31 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 false,
             )
         }
+        TriggerPattern::Surveilled { who: by } => {
+            let (name, s) = who(by);
+            (
+                format!("{name} surveil{}", if s.is_empty() { "" } else { "s" }),
+                false,
+            )
+        }
+        TriggerPattern::ZoneChangeExcept { what, except, to } => {
+            let moves = match to {
+                Some(to) => format!(
+                    "moves to {} from anywhere but {}",
+                    zone_phrase(*to, false).trim_start_matches("in "),
+                    zone_phrase(*except, false)
+                        .trim_start_matches("in ")
+                        .trim_start_matches("on ")
+                ),
+                None => format!(
+                    "leaves a zone other than {}",
+                    zone_phrase(*except, false)
+                        .trim_start_matches("in ")
+                        .trim_start_matches("on ")
+                ),
+            };
+            (format!("{} {moves}", subject(what)), false)
+        }
         TriggerPattern::Drew { who: by, what } => {
             let (name, s) = who(by);
             let card = if what.is_empty() {
