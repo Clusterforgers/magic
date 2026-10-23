@@ -223,6 +223,7 @@ mod prevention;
 mod pump_wordings;
 mod put_back;
 mod removal_and_return;
+mod replacement_writers;
 mod returns;
 mod reveal;
 mod search_by_controller;

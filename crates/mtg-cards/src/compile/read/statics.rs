@@ -20,6 +20,7 @@ use super::lands;
 use super::life_gain;
 use super::prevention;
 use super::render::{self, capitalize, counts_stats, is_a_type, stats_text};
+use super::replacements;
 use super::selectors::{
     Form, all, color, color_name, each, granted_text, phrase, phrase_text, subtype,
 };
@@ -901,6 +902,12 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             when: ReplaceWhen::LifeGain { .. },
             ..
         } => life_gain::replacement_sentences(ability),
+        Ability::Replacement {
+            when,
+            by,
+            condition: None,
+            from: ZoneKind::Battlefield,
+        } if replacements::handles(when) => replacements::sentences(when, by),
         Ability::Static { defining: true, .. } => defining::sentences(ability),
         _ => Vec::new(),
     };

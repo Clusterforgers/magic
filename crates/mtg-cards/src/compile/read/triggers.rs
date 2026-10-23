@@ -883,7 +883,7 @@ pub fn article(words: &str) -> &'static str {
 }
 
 /// A subject with its article: "~", "a creature you control", "another Elf".
-fn subject_text(what: &Selector) -> Option<String> {
+pub(super) fn subject_text(what: &Selector) -> Option<String> {
     if what.0 == [Pred::This] {
         return Some("~".to_owned());
     }
