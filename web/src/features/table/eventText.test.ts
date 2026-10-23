@@ -656,6 +656,14 @@ describe('events with more than one shape', () => {
       effect(objects(1, 2), { ModifyPowerToughness: { power: 3, toughness: 3 } }, 'UntilYourNextTurn'),
       "Grizzly Bears and Hill Giant get +3/+3 until their controller's next turn",
     ],
+    [
+      effect(objects(2), { Goaded: { by: 1 } }, 'UntilYourNextTurn'),
+      "Hill Giant is goaded until their controller's next turn",
+    ],
+    [
+      effect(objects(1, 2), { Goaded: { by: 1 } }, 'UntilEndOfTurn'),
+      'Grizzly Bears and Hill Giant are goaded until end of turn',
+    ],
   ])('says what an effect does (%#)', (created, text) => {
     expect(say({ EffectCreated: { effect: created } })).toBe(text)
   })

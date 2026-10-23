@@ -87,6 +87,7 @@ function modificationWords(modification: Modification, group: boolean): string {
     const { power, toughness } = modification.SetPowerToughness
     return `${becomes} ${power}/${toughness}`
   }
+  if ('Goaded' in modification) return `${group ? 'are' : 'is'} goaded`
   const { power, toughness } = modification.ModifyPowerToughness
   return `${group ? 'get' : 'gets'} ${power >= 0 ? '+' : ''}${power}/${toughness >= 0 ? '+' : ''}${toughness}`
 }
