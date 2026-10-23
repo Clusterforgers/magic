@@ -1,0 +1,23 @@
+{
+  "id": "f5f935cb-4ec2-4131-878b-f8e557d848b9",
+  "oracle_id": "5bc66b2d-a93c-449d-a090-b61e1613aa15",
+  "name": "Polymorphist's Jest",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c17",
+  "collector_number": "90",
+  "rarity": "rare",
+  "released_at": "2017-08-25",
+  "digital": false,
+  "mana_cost": "{1}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Until end of turn, each creature target player controls loses all abilities and becomes a blue Frog with base power and toughness 1/1.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

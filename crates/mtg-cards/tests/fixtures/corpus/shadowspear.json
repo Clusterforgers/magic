@@ -1,0 +1,21 @@
+{
+  "id": "939c6e19-4b27-4023-bb9c-ae440f91e21c",
+  "oracle_id": "8b27326f-e7b8-4a4d-b589-df459246d19a",
+  "name": "Shadowspear",
+  "lang": "en",
+  "layout": "normal",
+  "set": "thb",
+  "collector_number": "236",
+  "rarity": "rare",
+  "released_at": "2020-01-24",
+  "digital": false,
+  "mana_cost": "{1}",
+  "cmc": 1.0,
+  "type_line": "Legendary Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +1/+1 and has trample and lifelink.\n{1}: Permanents your opponents control lose hexproof and indestructible until end of turn.\nEquip {2}",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip"
+  ]
+}

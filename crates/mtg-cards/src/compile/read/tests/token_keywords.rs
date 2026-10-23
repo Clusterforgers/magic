@@ -201,8 +201,8 @@ fn the_keywords_of_the_vocabulary_also_read_in_a_pump_and_a_selector(#[case] tex
 #[case::an_open_count_named_otherwise(
     "Create X 1/1 white Pegasus creature tokens with flying, where X is your life total."
 )]
-#[case::a_second_token(
-    "Create a 1/1 white Spirit creature token with flying and a 2/2 white Knight creature token."
+#[case::a_second_token_that_is_not_a_kind(
+    "Create a 1/1 white Spirit creature token with flying and a 2/2 white Knight."
 )]
 #[case::a_following_sentence_that_is_not_read(
     "Create a 4/4 white Angel creature token with flying. Exile that token at end of combat."

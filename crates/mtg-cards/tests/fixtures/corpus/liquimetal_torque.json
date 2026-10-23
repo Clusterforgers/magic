@@ -1,0 +1,22 @@
+{
+  "id": "13c6101a-da40-4785-8ccb-4e779bbbdb55",
+  "oracle_id": "b7d4b7dd-fbb1-4ca3-875f-ef13a95e66ad",
+  "name": "Liquimetal Torque",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mh2",
+  "collector_number": "228",
+  "rarity": "uncommon",
+  "released_at": "2021-06-18",
+  "digital": false,
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact",
+  "oracle_text": "{T}: Add {C}.\n{T}: Target nonland permanent becomes an artifact in addition to its other types until end of turn.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "C"
+  ]
+}

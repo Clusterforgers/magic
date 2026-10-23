@@ -936,7 +936,9 @@ pub fn article(words: &str) -> &'static str {
             .strip_prefix(number)
             .is_some_and(|rest| !rest.starts_with(|c: char| c.is_ascii_digit()))
     });
-    if vowel || eight { "an" } else { "a" }
+    // "an X/X creature".
+    let sized = words.starts_with("X/");
+    if vowel || eight || sized { "an" } else { "a" }
 }
 
 /// A subject with its article: "~", "a creature you control", "another Elf".

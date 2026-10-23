@@ -27,6 +27,7 @@ mod attackers;
 mod batches;
 mod becomes;
 mod cast;
+mod changes;
 mod chapters;
 mod choices;
 mod class;

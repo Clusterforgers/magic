@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7ad6be4e-5c3c-4633-a641-beb06e4129b9",
+  "name": "Shields of Velis Vel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shields of Velis Vel",
+      "oracle_fingerprint": "fab0e06a6cf535e9356bad1974e2b25e",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 1 } }, "AddAllCreatureTypes"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

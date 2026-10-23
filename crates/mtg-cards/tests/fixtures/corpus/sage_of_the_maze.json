@@ -1,0 +1,32 @@
+{
+  "id": "d420385a-3f20-411c-b686-fecdbae29717",
+  "oracle_id": "d82618e7-494a-46d0-a19e-9cc647f96cfe",
+  "name": "Sage of the Maze",
+  "lang": "en",
+  "layout": "normal",
+  "set": "m3c",
+  "collector_number": "67",
+  "rarity": "rare",
+  "released_at": "2024-06-14",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Elf Wizard",
+  "oracle_text": "{T}: Add two mana in any combination of colors.\n{T}: Until end of turn, target land you control becomes an X/X Citizen creature with haste in addition to its other types, where X is twice the number of Gates you control. Activate only as a sorcery.\nTap an untapped Gate you control: Untap this creature.",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "map",
+  "token": {
+    "name": "Map",
+    "types": ["Artifact"],
+    "subtypes": ["Map"],
+    "abilities": [
+      {
+        "Activated": {
+          "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+          "timing": "Sorcery",
+          "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }],
+          "effects": [{ "Explore": { "what": { "Target": 0 } } }]
+        }
+      }
+    ]
+  }
+}

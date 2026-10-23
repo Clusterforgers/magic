@@ -1,0 +1,45 @@
+{
+  "oracle_id": "9aebd891-c8c5-4309-a07b-6cab1b204172",
+  "name": "Olivia's Wrath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Olivia's Wrath",
+      "oracle_fingerprint": "d58427344a2df26252b2505a3439df25",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "Subtype": "Vampire" } }]
+                  },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Count": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }] }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Count": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }] }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

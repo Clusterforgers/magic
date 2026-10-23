@@ -1,0 +1,25 @@
+{
+  "id": "7a4944ac-839e-4aa1-8200-78cff36bb2ed",
+  "oracle_id": "d6911456-42cb-4b23-a560-dc98784530f5",
+  "name": "Nameless Inversion",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ecl",
+  "collector_number": "113",
+  "rarity": "uncommon",
+  "released_at": "2026-01-23",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Kindred Instant — Shapeshifter",
+  "oracle_text": "Changeling (This card is every creature type.)\nTarget creature gets +3/-3 and loses all creature types until end of turn.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Changeling"
+  ]
+}

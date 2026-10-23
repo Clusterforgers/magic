@@ -69,6 +69,7 @@ const KEYWORDS: &[&str] = &[
     "defender",
     "prowess",
     "changeling",
+    "intimidate",
     "infect",
     "skulk",
     "horsemanship",
@@ -243,16 +244,8 @@ fn next_adjective(r: &Reader<'_>, form: Form) -> Option<Pred> {
     if word == "commander" && r.word_at(1).and_then(type_noun).is_some() {
         return Some(Pred::Commander);
     }
-    if let Some(rest) = word.strip_prefix("non-") {
-        let name = rest.chars().next().map(|first| {
-            first
-                .to_uppercase()
-                .chain(rest.chars().skip(1))
-                .collect::<String>()
-        })?;
-        return r
-            .is_subtype(&name)
-            .then(|| not(Pred::Subtype(Subtype(name))));
+    if word.starts_with("non-") {
+        return non_subtype(r, word);
     }
     adjective(word, form)
 }
@@ -278,8 +271,8 @@ pub(super) fn adjective_text(pred: &Pred, form: Form) -> Option<String> {
             Pred::Type(card_type) => format!("non{}", type_name(*card_type)),
             Pred::Supertype(Supertype::Legendary) => "nonlegendary".to_owned(),
             Pred::Supertype(Supertype::Basic) => "nonbasic".to_owned(),
+            Pred::Subtype(subtype) => format!("non-{}", subtype.0),
             Pred::Token => "nontoken".to_owned(),
-            Pred::Subtype(Subtype(name)) => format!("non-{name}"),
             _ => return None,
         },
         _ => return None,
@@ -385,6 +378,9 @@ fn ward_cost(r: &mut Reader<'_>) -> Option<Cost> {
 }
 
 fn protection_from(r: &mut Reader<'_>) -> Option<Keyword> {
+    if r.words("each color") {
+        return Some(Keyword::Protection(keywords::each_color()));
+    }
     let quality = keywords::quality(r.peek_word()?)?;
     r.skip();
     Some(Keyword::Protection(quality))
@@ -569,6 +565,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::ControlledBy(Ref::AttachedPlayer) => "enchanted player controls".to_owned(),
         Pred::ControlledBy(Ref::Defending) => "defending player controls".to_owned(),
         Pred::ControlledBy(Ref::Monarch) => "the monarch controls".to_owned(),
+        Pred::ControlledBy(Ref::Target(0)) => "target player controls".to_owned(),
         Pred::Not(inner) if **inner == Pred::ControlledBy(Ref::You) => {
             "you don't control".to_owned()
         }
@@ -871,6 +868,15 @@ pub fn phrase(r: &mut Reader<'_>, form: Form) -> Option<Selector> {
     phrase_in(r, form, false)
 }
 
+/// "non-Elf", "non-Vampire": anything but a creature type (the word is lowercase in the tokens).
+fn non_subtype(r: &Reader<'_>, word: &str) -> Option<Pred> {
+    let name = word.strip_prefix("non-")?;
+    let mut chars = name.chars();
+    let name = format!("{}{}", chars.next()?.to_uppercase(), chars.as_str());
+    r.is_subtype(&name)
+        .then(|| not(Pred::Subtype(Subtype(name))))
+}
+
 /// A phrase like `phrase`, except that "cards" may stand without the zone they are in, which the caller reads next
 /// ("creature cards" before "in your graveyard").
 pub(super) fn phrase_in(r: &mut Reader<'_>, form: Form, unplaced: bool) -> Option<Selector> {
@@ -888,7 +894,7 @@ pub(super) fn phrase_in(r: &mut Reader<'_>, form: Form, unplaced: bool) -> Optio
             adjectives.push(pred);
             // "nonartifact, nonblack creature": a comma joins two negations.
             let negation = |word: Option<&str>| {
-                word.and_then(|word| adjective(word, form))
+                word.and_then(|word| adjective(word, form).or_else(|| non_subtype(r, word)))
                     .is_some_and(|pred| matches!(pred, Pred::Not(_)))
             };
             if matches!(adjectives.last(), Some(Pred::Not(_)))

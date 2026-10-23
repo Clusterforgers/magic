@@ -1,0 +1,44 @@
+{
+  "oracle_id": "e1e96802-fd0c-41f1-aa21-3287d75a0e88",
+  "name": "Overwhelming Stampede",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overwhelming Stampede",
+      "oracle_fingerprint": "0e9cb14b8959f5b43a058af96333a5ed",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "AddKeyword": "Trample" },
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Greatest": {
+                            "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                            "stat": "Power"
+                          }
+                        },
+                        "toughness": {
+                          "Greatest": {
+                            "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                            "stat": "Power"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

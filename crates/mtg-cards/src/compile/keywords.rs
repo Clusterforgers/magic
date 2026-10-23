@@ -756,8 +756,16 @@ pub fn quality(word: &str) -> Option<Selector> {
         .map(|(_, pred)| Selector(vec![pred.clone()]))
 }
 
+/// The sources "each color" names: every source that has a color.
+pub fn each_color() -> Selector {
+    Selector(vec![Pred::Not(Box::new(Pred::Colorless))])
+}
+
 /// The word of a protection quality, the inverse of `quality`.
 pub fn quality_word(quality: &Selector) -> Option<&'static str> {
+    if *quality == each_color() {
+        return Some("each color");
+    }
     match quality.0.as_slice() {
         [] => Some("everything"),
         [only] => QUALITIES

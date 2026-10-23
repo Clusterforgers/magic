@@ -155,12 +155,6 @@ fn it_cant_be_blocked_is_a_second_effect_of_the_card() {
     "{1}: Until end of turn, this land becomes a 2/2 creature until end of turn. It's still a land."
 )]
 #[case::no_size("{1}: This land becomes a creature until end of turn. It's still a land.")]
-#[case::a_size_of_x(
-    "{X}{G}: Until end of turn, this land becomes an X/X green Hydra creature. It's still a land."
-)]
-#[case::another_permanent(
-    "{T}: Target land you control becomes a 3/3 Elemental creature with haste until end of turn."
-)]
 #[case::still_another_kind_of_land(
     "{2}: This land becomes a 3/3 Elemental creature until end of turn. It's still a Cave land."
 )]

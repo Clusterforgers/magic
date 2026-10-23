@@ -1,0 +1,23 @@
+{
+  "id": "3eb5cc8d-a198-43cd-a2bd-9c9414d815b2",
+  "oracle_id": "9aebd891-c8c5-4309-a07b-6cab1b204172",
+  "name": "Olivia's Wrath",
+  "lang": "en",
+  "layout": "normal",
+  "set": "lcc",
+  "collector_number": "205",
+  "rarity": "rare",
+  "released_at": "2023-11-17",
+  "digital": false,
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Each non-Vampire creature gets -X/-X until end of turn, where X is the number of Vampires you control.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

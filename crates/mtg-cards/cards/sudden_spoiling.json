@@ -1,0 +1,30 @@
+{
+  "oracle_id": "dce202c7-fe8e-462a-858e-7a5a69bd5b6b",
+  "name": "Sudden Spoiling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sudden Spoiling",
+      "oracle_fingerprint": "ee467ae8ef071541b0fd3251f611e968",
+      "abilities": [
+        { "Keyword": "SplitSecond" },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  },
+                  "mods": ["LoseAbilities", { "SetPT": { "power": 0, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

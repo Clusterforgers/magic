@@ -1,0 +1,23 @@
+{
+  "id": "6996b9c4-e78c-4970-91c7-9025a0a4f670",
+  "oracle_id": "e1e96802-fd0c-41f1-aa21-3287d75a0e88",
+  "name": "Overwhelming Stampede",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "178",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{3}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Until end of turn, creatures you control gain trample and get +X/+X, where X is the greatest power among creatures you control.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

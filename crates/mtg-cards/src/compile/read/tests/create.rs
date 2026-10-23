@@ -138,7 +138,9 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 #[case::agreement_of_a_single_noun("Create a Treasure tokens.")]
 #[case::a_wrong_article("Create an Treasure token.")]
 #[case::lowercase_names("Create a treasure token.")]
-#[case::a_chain("Create a Treasure token, then draw a card.")]
+#[case::a_chain_with_an_effect_that_is_no_step(
+    "Create a Treasure token, then destroy target creature."
+)]
 #[case::a_pronoun("Create a Treasure token. It enters tapped.")]
 #[case::a_number_that_is_not_a_size("Create a 1 white Soldier creature token.")]
 #[case::investigate_twice("Investigate twice.")]

@@ -1,0 +1,27 @@
+{
+  "id": "42e19e30-3853-49e5-a3a3-5616e25df4ea",
+  "oracle_id": "b209b4ae-ceba-4a98-b307-222d3c78f8a1",
+  "name": "Korozda Guildmage",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cma",
+  "collector_number": "181",
+  "rarity": "uncommon",
+  "released_at": "2017-06-09",
+  "digital": false,
+  "mana_cost": "{B}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Elf Shaman",
+  "oracle_text": "{1}{B}{G}: Target creature gets +1/+1 and gains intimidate until end of turn. (It can't be blocked except by artifact creatures and/or creatures that share a color with it.)\n{2}{B}{G}, Sacrifice a nontoken creature: Create X 1/1 green Saproling creature tokens, where X is the sacrificed creature's toughness.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": []
+}

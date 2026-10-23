@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7dce1e8c-5cfd-4626-9f23-7bb3f1b10c1e",
+  "name": "Eldritch Immunity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eldritch Immunity",
+      "oracle_fingerprint": "38de4763410f4dcc50183daa6179c0b4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Protection": [{ "Not": "Colorless" }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Overload": "{4}{C}" } }
+      ]
+    }
+  ]
+}

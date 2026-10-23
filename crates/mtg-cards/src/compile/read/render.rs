@@ -3,6 +3,7 @@
 //! player in a row are one compound sentence; the readers take ", then" between two steps as the
 //! same sequence.
 
+mod created;
 mod damage_by;
 mod divided;
 mod graveyards;
@@ -15,6 +16,7 @@ use super::as_long_as;
 use super::attackers;
 use super::becomes;
 use super::cast;
+use super::changes;
 use super::choices;
 use super::conditional;
 use super::copies;
@@ -36,7 +38,7 @@ use super::payments;
 use super::prevention;
 use super::pronouns;
 use super::reveal;
-use super::selectors::{Form, granted_text, phrase_text, spec_text};
+use super::selectors::{Form, phrase_text, spec_text};
 use super::spend;
 use super::spent;
 use super::statics;
@@ -290,6 +292,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     let more = becomes::wordings(ability, &texts);
     texts.extend(more);
     let more = group_pump::wordings(ability, &texts);
+    texts.extend(more);
+    let more = changes::wordings(&texts);
     texts.extend(more);
     texts.extend(where_x::wordings(ability));
     graveyard_wordings(ability, &mut texts);
@@ -719,6 +723,12 @@ fn written(
             start += used;
             continue;
         }
+        // A list of tokens, or a draw and a token, closed into one sentence by the mask.
+        if let Some((text, used)) = writer.token_steps(&effects[start..], mask >> start) {
+            sentences.push(text);
+            start += used;
+            continue;
+        }
         // A look at the top card, the reveal and what follows it are three sentences, which no joint splits.
         if let Some((condition, then, used)) = reveal::shape(&effects[start..]) {
             unsplit(mask, start, used)?;
@@ -734,14 +744,7 @@ fn written(
             start += used;
             continue;
         }
-        // Populate is two steps and one word; a copy that is exiled or sacrificed at the end step is two sentences.
-        // No joint splits either.
-        if copies::is_populate(&effects[start..]) {
-            unsplit(mask, start, 2)?;
-            sentences.push("populate".to_owned());
-            start += 2;
-            continue;
-        }
+        // A copy that is exiled or sacrificed at the end step is two sentences, which no joint splits.
         if let [created @ Effect::CreateToken { .. }, delayed, ..] = &effects[start..]
             && let Some(delay) = copies::delay_text(created, delayed)
         {
@@ -1599,8 +1602,8 @@ impl Writer<'_> {
             Effect::Continuous {
                 affected,
                 mods,
-                duration: Duration::UntilEndOfTurn,
-            } => self.pump(affected, mods)?,
+                duration: duration @ (Duration::UntilEndOfTurn | Duration::UntilYourNextTurn),
+            } => self.pump(affected, mods, *duration)?,
             Effect::May {
                 who: Ref::You,
                 effects,
@@ -1856,6 +1859,8 @@ impl Writer<'_> {
         self.explore_twice(effects)
             .or_else(|| self.mill_then_change(effects))
             .or_else(|| wheel_text(effects))
+            // Populate is two steps and one word.
+            .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))
     }
 
     /// "~ explores, then it explores again": one creature that explores twice is one sentence, which no joint splits.
@@ -2078,8 +2083,15 @@ impl Writer<'_> {
     }
 
     /// "target creature gets +2/+2 and gains flying until end of turn".
-    fn pump(&mut self, affected: &Ref, mods: &[Modification]) -> Option<String> {
-        if let Some(sentence) = becomes::text(affected, mods) {
+    fn pump(
+        &mut self,
+        affected: &Ref,
+        mods: &[Modification],
+        duration: Duration,
+    ) -> Option<String> {
+        if duration == Duration::UntilEndOfTurn
+            && let Some(sentence) = becomes::text(affected, mods)
+        {
             return Some(sentence);
         }
         let (subject, plural) = match affected {
@@ -2091,8 +2103,15 @@ impl Writer<'_> {
             {
                 (self.name_target()?, false)
             }
+            Ref::Target(0) if self.target_is(|what| matches!(what, Targetable::Object(_))) => {
+                (self.name_target()?, true)
+            }
             Ref::Each(selector) => {
                 let phrase = phrase_text(selector, Form::All)?;
+                // The player of "creatures target player controls" is the target, named by the group.
+                if selector.0.contains(&Pred::ControlledBy(Ref::Target(0))) {
+                    self.named = true;
+                }
                 // "All creatures get", but "Creatures you control get" and "Attacking creatures get".
                 let all = selector.0.iter().all(is_a_type);
                 (if all { format!("all {phrase}") } else { phrase }, true)
@@ -2105,29 +2124,14 @@ impl Writer<'_> {
         if !plural && let Some(sentence) = becomes::animate_text(&subject, mods) {
             return Some(sentence);
         }
-        let (gets, gains) = if plural {
-            ("get", "gain")
-        } else {
-            ("gets", "gains")
-        };
-        let (stats, tail, rest) = match mods.split_first() {
-            Some((Modification::ModifyPT { power, toughness }, rest)) => {
-                let (stats, tail) = stats_text(power, toughness)?;
-                (Some(format!("{gets} {stats}")), tail, rest)
-            }
-            _ => (None, String::new(), mods),
-        };
-        let mut parts: Vec<String> = stats.into_iter().collect();
-        if !rest.is_empty() {
-            parts.push(format!("{gains} {}", granted_text(rest)?));
+        if !plural
+            && duration == Duration::UntilEndOfTurn
+            && *affected != Ref::This
+            && let Some(sentence) = becomes::text_for(&subject, mods)
+        {
+            return Some(sentence);
         }
-        if parts.is_empty() {
-            return None;
-        }
-        Some(format!(
-            "{subject} {} until end of turn{tail}",
-            parts.join(" and ")
-        ))
+        changes::text(&subject, plural, mods, duration)
     }
 }
 

@@ -1,0 +1,23 @@
+{
+  "id": "00652c09-c50c-40da-8f0f-86b5cc3f6c26",
+  "oracle_id": "3b90dd70-798e-4dc4-99e7-b36d6823af2b",
+  "name": "Eyeblight Massacre",
+  "lang": "en",
+  "layout": "normal",
+  "set": "khc",
+  "collector_number": "49",
+  "rarity": "uncommon",
+  "released_at": "2021-02-05",
+  "digital": false,
+  "mana_cost": "{2}{B}{B}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Non-Elf creatures get -2/-2 until end of turn.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}
