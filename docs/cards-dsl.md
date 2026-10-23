@@ -49,7 +49,8 @@ Scope: the data model, loader, validation, support records, the corpus and card 
 - `mtg_cards::builtin::library()` is the library of these files, embedded at build time (`build.rs`), so a server needs no directory and a deploy carries the rules it was tested with.
 - Canonical text: compact JSON in serde's field order, laid out by `mtg_cards::pretty` (a value stays on one line up to 100 columns, otherwise one entry per line).
 - `MTG_UPDATE_CARDS=1 cargo test -p mtg-cards corpus::` rewrites the files and their fingerprints; the test fails on a file that is not canonical.
-- `MTG_REAL_DATA_DIR=<dir> cargo test -p mtg-cards corpus:: -- --ignored` compares the corpus with an `oracle-cards-*.jsonl.gz` download.
+- `cargo test -p mtg-cards hand_written::` checks every rules file as a file of its own (`Library::check_generated`) against its fixture record and against the newest `oracle-cards-*.jsonl.gz` of `MTG_REAL_DATA_DIR` or the `mtg-cli` cache; without a download it checks the fixture only and says so. An erratum fails the card it changed: fix the rules, or refresh the fingerprint when they still fit.
+- `cargo test -p mtg-cards fixture_real:: -- --ignored` compares the fixture records with the same download.
 
 ## Adding a corpus card
 

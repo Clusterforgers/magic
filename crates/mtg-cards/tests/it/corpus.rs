@@ -400,51 +400,6 @@ fn the_worked_example_in_the_design_doc_is_the_file() {
     assert_eq!(in_doc, in_file);
 }
 
-/// Ignored by default (needs a download). Set `MTG_REAL_DATA_DIR` to a directory holding `oracle-cards-*.jsonl.gz`
-/// (as for `mtg-import`'s real-data tests) and run `cargo test -p mtg-cards corpus:: -- --ignored`.
-#[test]
-#[ignore = "needs MTG_REAL_DATA_DIR"]
-fn the_corpus_still_matches_a_fresh_oracle_cards_download() {
-    use std::io::BufReader;
-
-    let dir = std::path::PathBuf::from(
-        std::env::var("MTG_REAL_DATA_DIR").expect("set MTG_REAL_DATA_DIR"),
-    );
-    let mut files: Vec<_> = std::fs::read_dir(dir)
-        .unwrap()
-        .map(|entry| entry.unwrap().path())
-        .filter(|path| {
-            let name = path.file_name().unwrap().to_string_lossy();
-            name.starts_with("oracle-cards-") && name.ends_with(".jsonl.gz")
-        })
-        .collect();
-    files.sort();
-    let file = std::fs::File::open(files.pop().expect("an oracle-cards-*.jsonl.gz file")).unwrap();
-    let library = library();
-    let ours: BTreeSet<_> = library.cards().map(|card| card.oracle_id.clone()).collect();
-    let fresh: Vec<_> =
-        mtg_import::scryfall::cards_jsonl(flate2::read::GzDecoder::new(BufReader::new(file)))
-            .filter_map(Result::ok)
-            .filter(|record| ours.contains(record.oracle_id.as_str()))
-            .map(|record| common::printed_of(&record))
-            .collect();
-    assert_eq!(
-        fresh.len(),
-        ours.len(),
-        "every corpus card is in the download"
-    );
-    let errors = library.check_printed(&fresh);
-    assert!(
-        errors.is_empty(),
-        "errata since the rules were written:\n{}",
-        errors
-            .iter()
-            .map(ToString::to_string)
-            .collect::<Vec<_>>()
-            .join("\n")
-    );
-}
-
 #[test]
 fn clause_spans_cut_out_the_sentences_they_name() {
     let library = library();

@@ -15,6 +15,7 @@ mod deck_report;
 mod deck_table;
 mod fixture_real;
 mod generated;
+mod hand_written;
 mod printed;
 mod proposal;
 mod roundtrip;
