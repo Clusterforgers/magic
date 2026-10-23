@@ -51,7 +51,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         None => usize::MAX,
         Some(amount) => usize::try_from(cx.scope.amount(amount)?.max(0)).unwrap_or(usize::MAX),
     };
-    let required = usize::try_from(count.min).unwrap_or(usize::MAX);
+    let required = usize::try_from(cx.scope.amount(&count.min)?.max(0)).unwrap_or(usize::MAX);
     let fewest = if matches!(zone, ZoneKind::Library | ZoneKind::Hand) {
         0
     } else {

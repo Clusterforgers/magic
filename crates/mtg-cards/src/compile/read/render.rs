@@ -37,6 +37,7 @@ use super::mass_moves;
 use super::payments;
 use super::prevention;
 use super::pronouns;
+use super::random_moves;
 use super::reveal;
 use super::selectors::{Form, phrase_text, spec_text};
 use super::spend;
@@ -773,7 +774,7 @@ fn written(
         }
         // A choice of cards and the move of what was chosen are one sentence, which no joint splits.
         if let [
-            choose @ Effect::Choose { .. },
+            choose @ (Effect::Choose { .. } | Effect::ChooseAtRandom { .. }),
             moved @ Effect::Move { .. },
             ..,
         ] = &effects[start..]
@@ -813,7 +814,8 @@ fn written(
 
 /// A choice of cards and the move of what was chosen as one sentence.
 fn chosen_move_text(choose: &Effect, moved: &Effect) -> Option<String> {
-    put_back_text(choose, moved)
+    random_moves::text(choose, moved)
+        .or_else(|| put_back_text(choose, moved))
         .or_else(|| returned_text(choose, moved))
         .or_else(|| put_onto::put_onto_text(choose, moved))
 }
@@ -850,7 +852,7 @@ fn put_back_text(choose: &Effect, moved: &Effect) -> Option<String> {
     };
     let number = u32::try_from(*most)
         .ok()
-        .filter(|most| *most == count.min)?;
+        .filter(|most| Some(*most) == count.fixed_min())?;
     let tail = match (number, order) {
         (1, None) => String::new(),
         (2.., Some(Order::Chosen)) => " in any order".to_owned(),
@@ -888,7 +890,7 @@ fn returned_text(choose: &Effect, moved: &Effect) -> Option<String> {
     if bind != RETURNED || name != RETURNED {
         return None;
     }
-    if *count == (Bounds { min: 0, max: None }) {
+    if *count == (Bounds::up_to(None)) {
         let phrase = phrase_text(from, Form::All)?;
         return Some(format!(
             "you may return any number of {phrase} to their owner's hand"
@@ -1320,10 +1322,7 @@ impl Writer<'_> {
 
     /// Whether the reference is the one target or "up to one" target.
     fn at_most_one(&self, what: &Ref) -> bool {
-        let up_to_one = Bounds {
-            min: 0,
-            max: Some(Amount::Fixed(1)),
-        };
+        let up_to_one = Bounds::up_to(Some(Amount::Fixed(1)));
         self.single(what)
             || (matches!(what, Ref::Target(_))
                 && self

@@ -34,7 +34,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .filter(|player| cx.state().is_alive(*player))
         .collect();
     let total = candidates.len();
-    let min = usize::try_from(count.min).unwrap_or(usize::MAX).min(total);
+    let min = usize::try_from(cx.scope.amount(&count.min)?.max(0))
+        .unwrap_or(usize::MAX)
+        .min(total);
     let most = match &count.max {
         None => total,
         Some(amount) => usize::try_from(cx.scope.amount(amount)?.max(0))
