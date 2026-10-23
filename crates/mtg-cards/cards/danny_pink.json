@@ -1,0 +1,31 @@
+{
+  "oracle_id": "92cda790-7907-47d1-8e5a-d3364c1e881f",
+  "name": "Danny Pink",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Danny Pink",
+      "oracle_fingerprint": "d041e7dc5430979a1354c07d34b71101",
+      "abilities": [
+        { "Keyword": "Mentor" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "Nth": { "event": { "CountersPut": { "what": ["This"] } }, "nth": 1 }
+                    },
+                    "effects": [{ "Draw": {} }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

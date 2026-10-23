@@ -1,0 +1,37 @@
+{
+  "oracle_id": "c9de9f0b-bf07-4171-b54d-69033424a212",
+  "name": "Valiant Rescuer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valiant Rescuer",
+      "oracle_fingerprint": "420c720125c8e97850b862e10bead01e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": { "event": { "Cycled": { "what": ["Other"], "by": "You" } }, "nth": 1 }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

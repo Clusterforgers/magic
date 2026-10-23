@@ -1,0 +1,31 @@
+{
+  "id": "23736c5f-bd1c-4505-8639-5fb92cd74b21",
+  "oracle_id": "2a20530b-d1d6-4dac-8d08-f583bea55e6e",
+  "name": "Akim, the Soaring Wind",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c20",
+  "collector_number": "6",
+  "rarity": "mythic",
+  "released_at": "2020-04-17",
+  "digital": false,
+  "mana_cost": "{2}{U}{R}{W}",
+  "cmc": 5,
+  "type_line": "Legendary Creature — Bird Dinosaur",
+  "oracle_text": "Flying\nWhenever you create one or more tokens for the first time each turn, create a 1/1 white Bird creature token with flying.\n{3}{U}{R}{W}: Creature tokens you control gain double strike until end of turn.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "R",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

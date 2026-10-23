@@ -1,0 +1,27 @@
+{
+  "id": "a2b13ff6-67e9-4760-aef4-a8548ea44344",
+  "oracle_id": "c9de9f0b-bf07-4171-b54d-69033424a212",
+  "name": "Valiant Rescuer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "iko",
+  "collector_number": "36",
+  "rarity": "uncommon",
+  "released_at": "2020-04-24",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2,
+  "type_line": "Creature — Human Soldier",
+  "oracle_text": "Whenever you cycle another card for the first time each turn, create a 1/1 white Human Soldier creature token.\nCycling {2} ({2}, Discard this card: Draw a card.)",
+  "power": "3",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Cycling"
+  ]
+}
