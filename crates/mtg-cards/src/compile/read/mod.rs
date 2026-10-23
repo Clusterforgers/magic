@@ -22,6 +22,7 @@ mod activations;
 mod among;
 mod amounts;
 mod as_long_as;
+mod aura_forms;
 mod attack_tax;
 mod attackers;
 mod batches;

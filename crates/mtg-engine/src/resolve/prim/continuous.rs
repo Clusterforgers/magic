@@ -14,7 +14,7 @@ use super::wrong_effect;
 use crate::choose::{ChoiceOption, OptionChooser, Optioned, pick_options};
 use crate::effects::{ContinuousEffect, Modification, Selector};
 use crate::events::Event;
-use crate::object::{GameObject, ObjectRef};
+use crate::object::{Chosen, GameObject, ObjectRef};
 use crate::resolve::{Cx, ResolveError, Run, Scope};
 use crate::zones::Zone;
 
@@ -94,6 +94,24 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     Ok(Run::events(events))
 }
 
+/// The keyword with the colour or creature type the source chose as it entered written into a protection quality: the
+/// holder of a granted protection (an Aura's host, a creature of a lord) made no choice, so "the chosen color" is
+/// fixed by the source that grants it.
+fn chosen_in(scope: &Scope<'_>, keyword: &Keyword) -> Keyword {
+    let Keyword::Protection(quality) = keyword else {
+        return keyword.clone();
+    };
+    let Some(chosen) = scope.entered_choice() else {
+        return keyword.clone();
+    };
+    let fixed = |pred: &Pred| match (pred, chosen) {
+        (Pred::ChosenColor, Chosen::Color(color)) => Pred::Color(*color),
+        (Pred::ChosenSubtype, Chosen::CreatureType(subtype)) => Pred::Subtype(subtype.clone()),
+        _ => pred.clone(),
+    };
+    Keyword::Protection(PickSelector(quality.0.iter().map(fixed).collect()))
+}
+
 /// What the engine applies for a modification of the card: its amounts worked out and the player it names found in
 /// `scope`. An effect of a spell or ability does this as it begins and a static ability whenever the state changes, so
 /// both run the same modification.
@@ -125,7 +143,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::SetCreatureTypes(types) => Modification::SetCreatureTypes(types.clone()),
         Wanted::AddAllCreatureTypes => Modification::AddAllCreatureTypes,
         Wanted::SetColors(colors) => Modification::SetColors(colors.iter().copied().collect()),
-        Wanted::AddKeyword(keyword) => Modification::AddKeyword(keyword.clone()),
+        Wanted::AddKeyword(keyword) => Modification::AddKeyword(chosen_in(scope, keyword)),
         Wanted::RemoveKeyword(keyword) => Modification::RemoveKeyword(keyword.clone()),
         Wanted::GrantAbility(granted) => Modification::GrantAbility(Arc::clone(granted)),
         Wanted::LoseAbilities => Modification::LoseAbilities,

@@ -382,6 +382,9 @@ pub struct Reader<'a> {
     pub cast_itself: bool,
     /// Whether the event of the trigger is the card itself attacking, so "it" is the card.
     pub attacker: bool,
+    /// Whether a static ability is being read, which may give protection from what the permanent chose as it entered
+    /// ("the chosen color"): an effect of a spell has no such choice to read.
+    pub static_grant: bool,
     /// Whether the sentence ends with ", where X is its power" (a characteristic of an object), so `X` in it stands
     /// for that amount, which `where_x::bind` puts in once the effects are read.
     pub where_x: bool,
@@ -420,6 +423,7 @@ impl<'a> Reader<'a> {
             cast_spell: false,
             cast_itself: false,
             attacker: false,
+            static_grant: false,
             where_x: false,
             died: false,
             subject: None,

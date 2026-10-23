@@ -128,6 +128,8 @@ pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
             return Some(counted);
         }
         if r.word("opponent") {
+            // "Equipped creature gets +1/+0 for each opponent you have."
+            r.words("you have");
             return Some(Amount::Players(Ref::Opponents));
         }
         if r.words("time you've cast") {
