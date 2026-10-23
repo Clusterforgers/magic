@@ -153,7 +153,10 @@ fn nothing_to_return_means_a_spell_that_asks_only_for_zero() -> Result<(), Scrip
     driver.begin_cast("Distorting Wake")?;
     pay(&mut driver)?;
     settle(&mut driver)?;
-    assert_eq!(names(driver.state(), Zone::Graveyard(pid(0))), ["Distorting Wake"]);
+    assert_eq!(
+        names(driver.state(), Zone::Graveyard(pid(0))),
+        ["Distorting Wake"]
+    );
     replays(&driver, scenario());
     Ok(())
 }
@@ -163,10 +166,7 @@ fn entreat(seats: usize, lands_count: usize, graveyard: &[&str]) -> Scenario {
     let mut scenario = Scenario::new(seats)
         .hand(0, [card("Entreat the Dead").unwrap()])
         .battlefield(0, lands(lands_count, swamp));
-    scenario = scenario.graveyard(
-        0,
-        graveyard.iter().map(|name| free_creature(name, 1, 1)),
-    );
+    scenario = scenario.graveyard(0, graveyard.iter().map(|name| free_creature(name, 1, 1)));
     scenario
 }
 
@@ -207,7 +207,8 @@ fn entreat_the_dead_returns_x_creature_cards_from_your_graveyard(
 }
 
 #[test]
-fn entreat_the_dead_cannot_ask_for_more_cards_than_the_graveyard_holds() -> Result<(), ScriptError> {
+fn entreat_the_dead_cannot_ask_for_more_cards_than_the_graveyard_holds() -> Result<(), ScriptError>
+{
     // One creature card and mana for X up to three: only 0 and 1 are offered.
     let mut driver = Driver::from_scenario(entreat(2, 9, &["Dead A"]))?;
     driver.begin_cast("Entreat the Dead")?;

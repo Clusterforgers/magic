@@ -105,7 +105,9 @@ fn the_same_seed_gives_the_same_card_at_every_table_size(
 #[rstest]
 #[case::one_option(&["Lightning Bolt"])]
 #[case::two_options(&["Lightning Bolt", "Counterspell"])]
-fn the_card_is_the_only_one_that_can_be_picked(#[case] graveyard: &[&str]) -> Result<(), ScriptError> {
+fn the_card_is_the_only_one_that_can_be_picked(
+    #[case] graveyard: &[&str],
+) -> Result<(), ScriptError> {
     for seed in 0..12 {
         let driver = played(2, seed, graveyard)?;
         let card = returned(&driver).expect("an instant came back");
