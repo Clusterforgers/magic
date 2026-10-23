@@ -63,6 +63,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Mana ability wordings: the storage-counter lands (an X of counters removed from the source for X mana in any combination of types), a combination counted by a where clause and restrictions by a subtype of spells and abilities (Crucible of the Spirit Dragon)
 - Tooling: `scripts/check.sh` with test slots, `scripts/agent-status.sh`, the quick test-time suite, derived corpus counts, current Cargo dependencies
 - Reference engines: Forge, XMage and Magarena surveyed for licence, card format, scale and fit to the compiler's readings (`docs/reference-engines.md`)
+- Model-assisted reading: `mtg-cli check-rules` accepts a model's rules only when they are valid, read back as the printed text and have a support state; the pilot over 40 unread precon cards (`docs/cards-dsl.md`, Model-assisted reading)
 
 ## M3 Card system
 
@@ -147,9 +148,9 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c9c) Verified corpus cards for Doctor's companion, Partner—text, Choose a Background (with a Background) and a planeswalker that can be a commander, each once its other text is a card the engine runs
 
 ### Model-assisted reading
-- [x] (r2) The model-assisted reader pilot: `mtg-cli check-rules` accepts a model's rules only when they are valid, read back as the printed text and have a support state (`docs/cards-dsl.md`, Model-assisted reading); of 40 unread precon cards 1 is accepted `Verified`, 15 are valid with a construct no writer reads back, 5 read back as other wording and 19 need a DSL construct
-- [ ] (r2a) Writers for the constructs of the pilot's valid proposals: `CreateToken` with a chosen player, a count or a bound result, `Move`, `Pay` with life, `May` over effects, divided damage, `Exile` of a graveyard, labelled modes of a trigger, batch triggers, a static over `Each`, `Goaded`, damage and zone-change replacements, restricted mana and an activated ability with a condition
-- [ ] (r2b) The renderer's wordings that the pilot's correct rules lack: "you draw" after an opponent's event, "each of those creatures", "Whenever you attack with one or more X" with "on each of them", "deals damage equal to its power", "nonland permanent card" and "this creature's power"
+- [~] (r2a) (branch r2a-effect-writers) Writers for the effect constructs of the pilot's valid proposals: `CreateToken` with a chosen player, a count or a bound result, `Move`, `Pay` with life, `May` over effects, divided damage and `Exile` of a graveyard
+- [~] (r2f) (branch r2f-ability-writers) Writers for the ability constructs of the pilot's valid proposals: labelled modes of a trigger, batch triggers, a static over `Each`, `Goaded`, damage and zone-change replacements, restricted mana and an activated ability with a condition
+- [~] (r2b) (branch r2a-effect-writers) The renderer's wordings that the pilot's correct rules lack: "you draw" after an opponent's event, "each of those creatures", "Whenever you attack with one or more X" with "on each of them", "deals damage equal to its power", "nonland permanent card" and "this creature's power"
 - [ ] (r2c) The DSL constructs the pilot found missing: conditions on the turn so far ("the first time each turn" for any event, "a counter was put on it this turn", "dealt damage to you this turn"), reveal until a card, exactly X targets, a named option chosen as it enters, a total mana value limit, mana restricted to the chosen color, "must be blocked if able" and phasing
 - [ ] (r2d) `Cost.PayLife.Counted` in the engine (G'raha Tia, Scion Reborn and Lorcan, Warlock Collector are accepted as `Partial` until then)
 - [ ] (r2e) `mtg-cli propose`: sends a card, the DSL reference and the nearest hand-written files to a model and keeps the proposals the checker accepts; built after (r2a) and (r2b)
