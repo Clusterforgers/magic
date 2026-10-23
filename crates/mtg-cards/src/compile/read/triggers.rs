@@ -762,7 +762,9 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
         Condition::Monarch(Ref::You) => "you're the monarch".to_owned(),
         Condition::Monarch(Ref::Opponents) => "an opponent is the monarch".to_owned(),
         Condition::Monarch(Ref::Defending) => "that player is the monarch".to_owned(),
-        Condition::MonarchAtTurnStart(Ref::You) => "you were the monarch as the turn began".to_owned(),
+        Condition::MonarchAtTurnStart(Ref::You) => {
+            "you were the monarch as the turn began".to_owned()
+        }
         Condition::MonarchAtTurnStart(Ref::Opponents) => {
             "an opponent was the monarch as the turn began".to_owned()
         }

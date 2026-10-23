@@ -2766,6 +2766,7 @@ mod tests {
         "CantBeCountered"
     )]
     #[case::no_life_gain(r#"{"CantGainLife":"EachPlayer"}"#, "CantGainLife")]
+    #[case::no_life_loss_from_damage(r#"{"NoLifeLossFromDamage":"You"}"#, "NoLifeLossFromDamage")]
     #[case::no_draw(r#"{"CantDraw":"Opponents"}"#, "CantDraw")]
     #[case::no_search(r#"{"CantSearch":"You"}"#, "CantSearch")]
     #[case::a_revealed_top(r#"{"RevealTop":"You"}"#, "RevealTop")]

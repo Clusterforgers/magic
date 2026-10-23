@@ -73,7 +73,8 @@ fn no_life_loss(r: &mut Reader<'_>) -> Option<Ability> {
         let held = as_long_as(r)?;
         r.punct(',').then_some(held)
     });
-    r.words("damage doesn't cause you to lose life").then_some(())?;
+    r.words("damage doesn't cause you to lose life")
+        .then_some(())?;
     let condition = condition.or_else(|| r.attempt(as_long_as));
     Some(Ability::Rule {
         rule: GameRule::NoLifeLossFromDamage(Ref::You),

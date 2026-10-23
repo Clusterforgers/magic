@@ -201,7 +201,10 @@ mod tests {
         let mut battlefields = vec![vec![creature("Jailer", 1, 1)], vec![creature("Bear", 2, 2)]];
         battlefields.resize(seats, Vec::new());
         let mut game = state(vec![Vec::new(); seats], battlefields);
-        let bear = game.object(game.zone(Zone::Battlefield)[1]).unwrap().reference();
+        let bear = game
+            .object(game.zone(Zone::Battlefield)[1])
+            .unwrap()
+            .reference();
         apply_event(&mut game, &Event::MonarchChanged { player: ME }).unwrap();
         apply_event(
             &mut game,
@@ -229,9 +232,19 @@ mod tests {
         #[case] returns_now: bool,
     ) {
         let (mut game, bear) = jailed(seats);
-        assert_eq!(returns(&game).len(), 0, "it waits while the exiler holds it");
+        assert_eq!(
+            returns(&game).len(),
+            0,
+            "it waits while the exiler holds it"
+        );
         assert_eq!(game.object(bear.id).unwrap().zone(), Zone::Exile);
-        apply_event(&mut game, &Event::MonarchChanged { player: PlayerId::from_index(becomes) }).unwrap();
+        apply_event(
+            &mut game,
+            &Event::MonarchChanged {
+                player: PlayerId::from_index(becomes),
+            },
+        )
+        .unwrap();
         let events = returns(&game);
         assert_eq!(events.len(), usize::from(returns_now), "{events:?}");
         for event in &events {

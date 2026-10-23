@@ -184,20 +184,41 @@ fn the_monarch_wordings_of_the_commander_the_attack_the_turn_the_exile_and_the_h
     "Damage doesn't cause you to lose life.",
     r#"{"Rule":{"rule":{"NoLifeLossFromDamage":"You"}}}"#
 )]
-fn damage_that_causes_no_loss_of_life_is_a_rule_of_the_game(#[case] text: &str, #[case] json: &str) {
+fn damage_that_causes_no_loss_of_life_is_a_rule_of_the_game(
+    #[case] text: &str,
+    #[case] json: &str,
+) {
     reads_as(text, ClauseKind::Static, false, json);
 }
 
 #[rstest]
-#[case::another_players_commander("Whenever target player's commander deals combat damage to a player, you become the monarch.")]
-#[case::an_opponents_commander("Whenever an opponent's commander deals combat damage to a player, you become the monarch.")]
-#[case::your_commanders_with_an_article("Whenever a your commander deals combat damage to a player, you become the monarch.")]
-#[case::damage_to_you_while_the_monarch("Whenever a creature deals combat damage to you while you're the monarch, draw a card.")]
-#[case::a_group_of_creatures_while_the_monarch("Whenever one or more creatures deal combat damage to you while you're the monarch, draw a card.")]
-#[case::that_player_is_the_monarch_of_no_attack("Whenever you draw a card, if that player is the monarch, draw a card.")]
-#[case::until_the_controller_becomes_it("When ~ enters, exile target creature an opponent controls until you become the monarch.")]
-#[case::until_a_player_becomes_it("When ~ enters, exile target creature an opponent controls until a player becomes the monarch.")]
-#[case::both_a_condition_and_a_tail("Whenever you cast a spell while you're the monarch, if an opponent is the monarch, draw a card.")]
+#[case::another_players_commander(
+    "Whenever target player's commander deals combat damage to a player, you become the monarch."
+)]
+#[case::an_opponents_commander(
+    "Whenever an opponent's commander deals combat damage to a player, you become the monarch."
+)]
+#[case::your_commanders_with_an_article(
+    "Whenever a your commander deals combat damage to a player, you become the monarch."
+)]
+#[case::damage_to_you_while_the_monarch(
+    "Whenever a creature deals combat damage to you while you're the monarch, draw a card."
+)]
+#[case::a_group_of_creatures_while_the_monarch(
+    "Whenever one or more creatures deal combat damage to you while you're the monarch, draw a card."
+)]
+#[case::that_player_is_the_monarch_of_no_attack(
+    "Whenever you draw a card, if that player is the monarch, draw a card."
+)]
+#[case::until_the_controller_becomes_it(
+    "When ~ enters, exile target creature an opponent controls until you become the monarch."
+)]
+#[case::until_a_player_becomes_it(
+    "When ~ enters, exile target creature an opponent controls until a player becomes the monarch."
+)]
+#[case::both_a_condition_and_a_tail(
+    "Whenever you cast a spell while you're the monarch, if an opponent is the monarch, draw a card."
+)]
 fn near_misses_of_the_commander_the_attack_the_exile_and_the_tail_stay_with_the_table(
     #[case] text: &str,
 ) {

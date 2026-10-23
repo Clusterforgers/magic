@@ -829,9 +829,8 @@ mod tests {
         const FOE: PlayerId = PlayerId(1);
 
         fn protector(condition: &str) -> Arc<CardDefinition> {
-            let json = format!(
-                r#"{{"Rule":{{"rule":{{"NoLifeLossFromDamage":"You"}}{condition}}}}}"#
-            );
+            let json =
+                format!(r#"{{"Rule":{{"rule":{{"NoLifeLossFromDamage":"You"}}{condition}}}}}"#);
             Arc::new(
                 CardDefinition::new("Protector")
                     .with_type(CardType::Creature)
@@ -872,8 +871,16 @@ mod tests {
 
         #[rstest]
         #[case::the_protected_player_loses_none(FOE, None, Some(DamageForm::NoLifeLoss))]
-        #[case::wither_is_plain_damage_to_a_player(FOE, Some(Keyword::Wither), Some(DamageForm::NoLifeLoss))]
-        #[case::infect_gives_poison_all_the_same(FOE, Some(Keyword::Infect), Some(DamageForm::Infect))]
+        #[case::wither_is_plain_damage_to_a_player(
+            FOE,
+            Some(Keyword::Wither),
+            Some(DamageForm::NoLifeLoss)
+        )]
+        #[case::infect_gives_poison_all_the_same(
+            FOE,
+            Some(Keyword::Infect),
+            Some(DamageForm::Infect)
+        )]
         #[case::another_player_loses_life(ME, None, Some(DamageForm::Normal))]
         fn damage_to_a_player_is_dealt_in_the_form_the_rule_and_the_source_make_of_it(
             #[case] hurt: PlayerId,
@@ -881,7 +888,12 @@ mod tests {
             #[case] form: Option<DamageForm>,
         ) {
             let (game, id) = game("", keyword);
-            let events = dealt_by(&game, &Dealer::live(&game, id), DamageTarget::Player(hurt), 3);
+            let events = dealt_by(
+                &game,
+                &Dealer::live(&game, id),
+                DamageTarget::Player(hurt),
+                3,
+            );
             assert_eq!(form_of(&events), form);
         }
 
@@ -889,7 +901,12 @@ mod tests {
         fn damage_to_a_permanent_is_plain_damage() {
             let (game, id) = game("", None);
             let bear = game.zone(Zone::Battlefield)[1];
-            let events = dealt_by(&game, &Dealer::live(&game, id), DamageTarget::Object(bear), 3);
+            let events = dealt_by(
+                &game,
+                &Dealer::live(&game, id),
+                DamageTarget::Object(bear),
+                3,
+            );
             assert_eq!(form_of(&events), Some(DamageForm::Normal));
         }
 
@@ -905,7 +922,12 @@ mod tests {
             if let Some(player) = holder {
                 apply_event(&mut game, &Event::MonarchChanged { player }).unwrap();
             }
-            let events = dealt_by(&game, &Dealer::live(&game, id), DamageTarget::Player(FOE), 3);
+            let events = dealt_by(
+                &game,
+                &Dealer::live(&game, id),
+                DamageTarget::Player(FOE),
+                3,
+            );
             assert_eq!(form_of(&events), Some(form));
         }
 

@@ -329,6 +329,10 @@ mod tests {
         GameRule::CantGainLife(Ref::EachPlayer),
         r#"{"CantGainLife":"EachPlayer"}"#
     )]
+    #[case(
+        GameRule::NoLifeLossFromDamage(Ref::You),
+        r#"{"NoLifeLossFromDamage":"You"}"#
+    )]
     #[case(GameRule::CantDraw(Ref::Opponents), r#"{"CantDraw":"Opponents"}"#)]
     #[case(GameRule::CantSearch(Ref::You), r#"{"CantSearch":"You"}"#)]
     #[case(GameRule::SkipDrawStep(Ref::You), r#"{"SkipDrawStep":"You"}"#)]

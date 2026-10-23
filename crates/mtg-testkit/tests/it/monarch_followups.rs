@@ -137,8 +137,8 @@ fn the_archon_stops_the_loss_of_life_from_damage_only_while_its_controller_is_th
     #[case] expected: i32,
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let mut scenario = table(seats, vec![ready(mountain())])
-        .hand(0, [monarcher("Crown 0"), burn("Bolt", 3)]);
+    let mut scenario =
+        table(seats, vec![ready(mountain())]).hand(0, [monarcher("Crown 0"), burn("Bolt", 3)]);
     scenario = scenario.battlefield(
         1,
         vec![
@@ -181,7 +181,11 @@ fn combat_damage_to_the_monarch_with_the_archon_loses_no_life_and_still_passes_t
     driver.attack(&[("Raider", 1)])?;
     through_damage(&mut driver)?;
     assert_eq!(life(&driver, 1), expected);
-    assert_eq!(monarch(&driver), Some(0), "the attacker's controller took it");
+    assert_eq!(
+        monarch(&driver),
+        Some(0),
+        "the attacker's controller took it"
+    );
     Ok(())
 }
 
@@ -217,7 +221,11 @@ fn the_creature_returns_when_an_opponent_of_the_jailer_becomes_the_monarch(
     assert!(driver.id_of("Wall 1").is_err(), "the Wall is in exile");
     crown_in(&mut driver, 1, taker)?;
     let back = driver.id_of("Wall 1").is_ok_and(|id| {
-        driver.state().object(id).map(mtg_engine::object::GameObject::zone) == Some(Zone::Battlefield)
+        driver
+            .state()
+            .object(id)
+            .map(mtg_engine::object::GameObject::zone)
+            == Some(Zone::Battlefield)
     });
     assert_eq!(back, returns);
     assert_eq!(monarch(&driver), Some(if returns { taker } else { 0 }));
@@ -225,7 +233,10 @@ fn the_creature_returns_when_an_opponent_of_the_jailer_becomes_the_monarch(
 }
 
 fn knights_table(seats: usize) -> Scenario {
-    table(seats, vec![ready(card("Knights of the Black Rose").unwrap())])
+    table(
+        seats,
+        vec![ready(card("Knights of the Black Rose").unwrap())],
+    )
 }
 
 #[rstest]

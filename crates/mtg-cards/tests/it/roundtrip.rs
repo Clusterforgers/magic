@@ -377,6 +377,7 @@ fn condition() -> impl Strategy<Value = Condition> {
         Just(Condition::YourTurn),
         Just(Condition::Performed),
         leaf_ref().prop_map(Condition::Monarch),
+        leaf_ref().prop_map(Condition::MonarchAtTurnStart),
         leaf_ref().prop_map(Condition::CitysBlessing),
         leaf_ref().prop_map(Condition::NewlyControlled),
         (leaf_ref(), 1u32..=3).prop_map(|(of, level)| Condition::Level {
@@ -464,6 +465,7 @@ fn duration() -> impl Strategy<Value = Duration> {
         Duration::UntilYourNextTurn,
         Duration::UntilEndOfYourNextTurn,
         Duration::WhileSourceOnBattlefield,
+        Duration::UntilOpponentBecomesMonarch,
         Duration::Forever,
     ])
 }
@@ -476,6 +478,7 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
         reference().prop_map(GameRule::MustBlock),
         reference().prop_map(GameRule::CantBeCountered),
         reference().prop_map(GameRule::CantGainLife),
+        reference().prop_map(GameRule::NoLifeLossFromDamage),
         reference().prop_map(GameRule::CantDraw),
         reference().prop_map(GameRule::CantSearch),
         reference().prop_map(GameRule::RevealTop),
