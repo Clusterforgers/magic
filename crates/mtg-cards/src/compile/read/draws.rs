@@ -70,6 +70,7 @@ pub(super) fn wordings(ability: &Ability, texts: &[String]) -> Vec<String> {
             }
         }
         TriggerPattern::GroupAttacks { at_least, .. } => {
+            found.extend(super::batches::attack_wordings(ability, texts));
             let Some(count) = count_word(*at_least) else {
                 return found;
             };

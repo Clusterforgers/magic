@@ -157,6 +157,7 @@ mod attached_kinds;
 mod attack_tax;
 mod attacked_player;
 mod audit;
+mod batch_writers;
 mod becomes;
 mod block_limits;
 mod cast;
