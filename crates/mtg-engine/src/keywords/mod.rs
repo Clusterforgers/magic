@@ -71,6 +71,7 @@ mod level_up;
 mod lifelink;
 mod living_weapon;
 mod madness;
+mod mayhem;
 mod melee;
 mod menace;
 mod mentor;
@@ -443,7 +444,9 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Rebound => &rebound::Rebound,
         Keyword::Aftermath => &aftermath::Aftermath,
         Keyword::Bestow(_) => &bestow::Bestow,
-        Keyword::Dash(_) | Keyword::Blitz(_) | Keyword::Prowl(_) => cost_rules(keyword),
+        Keyword::Dash(_) | Keyword::Blitz(_) | Keyword::Prowl(_) | Keyword::Mayhem(_) => {
+            cost_rules(keyword)
+        }
         Keyword::Ninjutsu(_) => &ninjutsu::Ninjutsu,
         Keyword::Echo(_) => &echo::Echo,
         Keyword::CumulativeUpkeep(_) => &cumulative_upkeep::CumulativeUpkeep,
@@ -498,12 +501,13 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
     }
 }
 
-/// The rules of the keywords that are an alternative cost to cast a creature or spell for: blitz and prowl, and dash for the
+/// The rules of the keywords that are an alternative cost to cast a creature or spell for: blitz, prowl and mayhem, and dash for the
 /// rest.
 fn cost_rules(keyword: &Keyword) -> &'static dyn KeywordRules {
     match keyword {
         Keyword::Blitz(_) => &blitz::Blitz,
         Keyword::Prowl(_) => &prowl::Prowl,
+        Keyword::Mayhem(_) => &mayhem::Mayhem,
         _ => &dash::Dash,
     }
 }
@@ -772,6 +776,7 @@ mod tests {
             Keyword::Bestow(cost()),
             Keyword::Blitz(cost()),
             Keyword::Prowl(cost()),
+            Keyword::Mayhem(cost()),
             Keyword::Ninjutsu(cost()),
             Keyword::Echo(cost()),
             Keyword::CumulativeUpkeep(cost()),
@@ -894,6 +899,7 @@ mod tests {
         "Keyword.Mutate",
         "Keyword.Blitz",
         "Keyword.Prowl",
+        "Keyword.Mayhem",
         "Keyword.Ninjutsu",
         "Keyword.Echo",
         "Keyword.CumulativeUpkeep",
@@ -1059,6 +1065,7 @@ mod tests {
     #[case::dash(Keyword::Dash(Cost::mana("{1}{R}".parse().unwrap())), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::blitz(Keyword::Blitz(Cost::mana("{1}{R}".parse().unwrap())), Hooks { abilities: 3, ..Hooks::none() })]
     #[case::prowl(Keyword::Prowl(Cost::mana("{1}{B}".parse().unwrap())), Hooks::none())]
+    #[case::mayhem(Keyword::Mayhem(Cost::mana("{1}{B}".parse().unwrap())), Hooks::none())]
     #[case::encore(Keyword::Encore(Cost::mana("{2}{W}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ninjutsu(Keyword::Ninjutsu(Cost::mana("{1}{U}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::echo(Keyword::Echo(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]

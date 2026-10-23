@@ -94,6 +94,8 @@ pub(crate) enum Tally {
     Targeted,
     /// An object dealt damage, once for each event (counted for the object).
     Damaged,
+    /// A card put into a graveyard by a discard (counted for the card as it lies there, and for the player who discarded it).
+    Discarded,
 }
 
 /// The events counted in the turn so far.
@@ -394,6 +396,14 @@ impl GameState {
     ) -> u32 {
         let key = (object, by, kind);
         self.tallies.objects.get(&key).copied().unwrap_or(0)
+    }
+
+    /// Whether `player` discarded the card `id` this turn and it still lies in the graveyard it went to: the condition of
+    /// mayhem (CR 702.190a). A card that left the graveyard and came back is a new object and was not discarded.
+    pub(crate) fn discarded_this_turn(&self, player: PlayerId, id: ObjectId) -> bool {
+        self.object(id).is_some_and(|card| {
+            self.object_tallied(card.reference(), Some(player), Tally::Discarded) > 0
+        })
     }
 
     /// Whether a creature `player` controlled dealt combat damage to a player this turn and shared a creature type with

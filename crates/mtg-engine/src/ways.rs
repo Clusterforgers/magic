@@ -274,6 +274,13 @@ fn keyword_way(
             cost,
             in_hand && prowl_open(state, player, id),
         ),
+        // Cast from the graveyard in the turn its owner discarded the card; the timing of the card still applies (CR 702.190a).
+        Keyword::Mayhem(cost) => (
+            CastWay::Mayhem,
+            "Mayhem",
+            cost,
+            in_graveyard && state.discarded_this_turn(player, id),
+        ),
         Keyword::Morph(_) | Keyword::Megamorph(_) | Keyword::Disguise(_) if in_hand => {
             return Some(face_down_way(instant));
         }
@@ -298,6 +305,7 @@ fn keyword_way(
             | CastWay::Bestow
             | CastWay::Blitz
             | CastWay::Prowl
+            | CastWay::Mayhem
             | CastWay::Mutate
     ) {
         cast_cost(cost)?

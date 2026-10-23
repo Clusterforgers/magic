@@ -1,0 +1,28 @@
+{
+  "oracle_id": "0e471b6d-4ba4-46aa-a802-81e401cbfa56",
+  "name": "Sadistic Slash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sadistic Slash",
+      "oracle_fingerprint": "71aa9f69f12d63d52d5a3ac38f05d1fc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -5, "toughness": -5 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Mayhem": "{1}{B}" } }
+      ]
+    }
+  ]
+}

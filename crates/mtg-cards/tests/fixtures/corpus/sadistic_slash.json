@@ -1,0 +1,25 @@
+{
+  "id": "c4bb1185-2ba1-42e8-908d-a249b70dcef9",
+  "oracle_id": "0e471b6d-4ba4-46aa-a802-81e401cbfa56",
+  "name": "Sadistic Slash",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "666",
+  "rarity": "uncommon",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Target creature gets -5/-5 until end of turn.\nMayhem {1}{B} (You may cast this card from your graveyard for {1}{B} if you discarded it this turn.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Mayhem"
+  ]
+}

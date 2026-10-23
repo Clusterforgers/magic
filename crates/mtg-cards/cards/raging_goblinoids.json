@@ -1,0 +1,12 @@
+{
+  "oracle_id": "c807b53f-2917-41a0-812c-57240b623365",
+  "name": "Raging Goblinoids",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raging Goblinoids",
+      "oracle_fingerprint": "7738301bd6bb01c5a1732383502466f9",
+      "abilities": [{ "Keyword": "Haste" }, { "Keyword": { "Mayhem": "{2}{R}" } }]
+    }
+  ]
+}

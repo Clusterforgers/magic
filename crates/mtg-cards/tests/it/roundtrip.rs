@@ -259,6 +259,7 @@ fn keyword() -> impl Strategy<Value = Keyword> {
         cost().prop_map(Keyword::Bestow),
         cost().prop_map(Keyword::Blitz),
         cost().prop_map(Keyword::Prowl),
+        cost().prop_map(Keyword::Mayhem),
         Just(Keyword::Demonstrate),
         (1u32..9).prop_map(Keyword::Hideaway),
         Just(Keyword::Demonstrate),

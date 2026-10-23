@@ -156,6 +156,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("foretell", Params::Cost),
     ("plot", Params::Cost),
     ("prowl", Params::Cost),
+    ("mayhem", Params::Cost),
     ("transmute", Params::Cost),
     ("level up", Params::Cost),
     ("embalm", Params::Cost),
@@ -363,6 +364,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "bestow" => spell_cost(rest).map(Keyword::Bestow),
         "blitz" => spell_cost(rest).map(Keyword::Blitz),
         "prowl" => spell_cost(rest).map(Keyword::Prowl),
+        "mayhem" => spell_cost(rest).map(Keyword::Mayhem),
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
         "echo" => spell_cost(rest).map(Keyword::Echo),
         "cumulative upkeep" => spell_cost(rest).map(Keyword::CumulativeUpkeep),
@@ -866,6 +868,8 @@ mod tests {
     )]
     #[case::blitz("Blitz {2}{R}", Keyword::Blitz(mana("{2}{R}")))]
     #[case::prowl("Prowl {1}{B}", Keyword::Prowl(mana("{1}{B}")))]
+    #[case::mayhem("Mayhem {1}{B}", Keyword::Mayhem(mana("{1}{B}")))]
+    #[case::mayhem_hybrid("Mayhem {B/R}", Keyword::Mayhem(mana("{B/R}")))]
     #[case::ninjutsu("Ninjutsu {1}{U}", Keyword::Ninjutsu(mana("{1}{U}")))]
     #[case::ninjutsu_for_one_mana("ninjutsu {B}", Keyword::Ninjutsu(mana("{B}")))]
     #[case::escape_exiling_cards(
@@ -1182,6 +1186,7 @@ mod tests {
             "Bestow {1}",
             "Blitz {1}",
             "Prowl {1}",
+            "Mayhem {1}",
             "Demonstrate",
             "Hideaway 4",
             "Gift a card",
