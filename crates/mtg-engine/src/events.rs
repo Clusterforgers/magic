@@ -804,9 +804,10 @@ impl Event {
             | Event::Cycled { object, .. }
             | Event::CreatureDied { object, .. }
             | Event::CopyEnded { object }
+            // The spell of a merge is part of the permanent and no object of its own after the event.
+            | Event::Mutated { object, .. }
             | Event::ObjectLeftGame { object } => vec![*object],
             Event::Attached { object, to } => vec![*object, *to],
-            Event::Mutated { object, spell, .. } => vec![*object, *spell],
             Event::AttackersDeclared { attackers, .. } => {
                 attackers.iter().map(|(o, _)| *o).collect()
             }

@@ -80,6 +80,8 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::CreatureDied { .. }
         | Event::ZoneChanged { .. }
         | Event::Entered { .. }
+        | Event::Mutated { .. }
+        | Event::CommanderStayed { .. }
         | Event::ObjectLeftGame { .. } => zones::apply(state, event),
         Event::AttackersDeclared { .. }
         | Event::BlockersDeclared { .. }
@@ -96,10 +98,6 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::StepDone { .. }
         | Event::ResolutionEnded { .. } => resolution::apply(state, event),
         Event::AbilityTriggered(triggered) => crate::triggers::fold_triggered(state, triggered),
-        Event::CommanderStayed { object } => {
-            state.commanders.stay(*object);
-            Ok(())
-        }
         Event::TriggersOrdered { player, order } => {
             crate::triggers::fold_ordered(state, *player, order)
         }
@@ -250,12 +248,6 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::PermanentUntapped { object } => set_tapped(state, *object, false)?,
         Event::Monstrous { object, .. } => set_monstrous(state, *object)?,
         Event::TurnedFaceUp { object, .. } => turn_face_up(state, *object)?,
-        Event::Mutated {
-            object,
-            spell,
-            over,
-            ..
-        } => crate::merged::fold(state, *object, *spell, *over)?,
         Event::ManaAdded {
             player, mana, only, ..
         } => {

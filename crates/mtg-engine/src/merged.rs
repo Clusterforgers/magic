@@ -160,17 +160,10 @@ fn top_of(components: &[Component]) -> &Component {
 
 /// What the permanent is: the topmost card's characteristics and every card's abilities (CR 729.2a, 702.140d).
 fn derive(components: &[Component]) -> CardDefinition {
-    let mut merged = top_of(components).card().copiable();
-    merged.rules.clear();
-    merged.abilities.clear();
-    merged.manual.clear();
-    for card in components {
-        let printed = card.card();
-        merged.rules.extend(printed.rules.iter().cloned());
-        merged.abilities.extend(printed.abilities.iter().cloned());
-        merged.manual.extend(printed.manual.iter().cloned());
-    }
-    merged
+    top_of(components)
+        .card()
+        .copiable()
+        .with_abilities_of(components.iter().map(Component::card))
 }
 
 /// The target of a creature spell cast for its mutate cost: a non-Human creature with the same owner (CR 702.140a).

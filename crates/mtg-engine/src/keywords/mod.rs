@@ -883,6 +883,7 @@ mod tests {
         "Keyword.Aftermath",
         "Keyword.Dash",
         "Keyword.Bestow",
+        "Keyword.Mutate",
         "Keyword.Blitz",
         "Keyword.Prowl",
         "Keyword.Ninjutsu",

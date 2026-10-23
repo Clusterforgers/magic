@@ -240,12 +240,14 @@ fn keyword_way(
             cost,
             in_hand && is_creature(state, id),
         ),
-        // Offered only with a creature to merge with (CR 702.140a).
+        // Offered only with a creature to merge with (CR 702.140a); a commander in the command zone may mutate too.
         Keyword::Mutate(cost) => (
             CastWay::Mutate,
             "Mutate",
             cost,
-            in_hand && is_creature(state, id) && merged::announceable(state, player, id),
+            (in_hand || (matches!(zone, Zone::Command(_)) && state.is_commander(id)))
+                && is_creature(state, id)
+                && merged::announceable(state, player, id),
         ),
         Keyword::Prowl(cost) => (
             CastWay::Prowl,

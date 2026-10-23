@@ -233,6 +233,13 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             choices,
         } => spell_cast(state, *player, *object, choices)?,
         Event::SpellResolved { object } => resolve_spell(state, *object)?,
+        Event::CommanderStayed { object } => state.commanders.stay(*object),
+        Event::Mutated {
+            object,
+            spell,
+            over,
+            ..
+        } => crate::merged::fold(state, *object, *spell, *over)?,
         Event::ZoneChanged {
             object,
             from,
