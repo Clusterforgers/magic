@@ -12,7 +12,7 @@
 //! of a choice), `triggers` (the event of a triggered ability), `costs` (what is paid before the
 //! colon), `abilities` (a spell ability, a triggered ability, an activated ability), `conditional`
 //! (an effect that depends on a condition), `reveal` (looking at the top card and revealing it),
-//! `damage` (what deals damage to whom and the life gained with it), `copies` (a token that is a copy, populate, entering as a copy), `levels` (the blocks of a level up creature), `chapters` (the lines of a Saga), `stations` (the blocks of a Spacecraft), `copy_spells` (a copy of a spell or an ability, a
+//! `damage` (what deals damage to whom and the life gained with it), `copies` (a token that is a copy, populate, entering as a copy), `levels` (the blocks of a level up creature), `chapters` (the lines of a Saga), `class` (the levels of a Class), `stations` (the blocks of a Spacecraft), `copy_spells` (a copy of a spell or an ability, a
 //! permanent that becomes a copy), `defining` (the power and toughness a card defines for itself), `life_gain` (replacements and rules about gaining life), `transform`, `draws` (draw and discard wordings), `actions` (the keyword actions of creatures),
 //! `pronouns` (the wordings that call the card "it"), `where_x` (an amount named after the sentence: "where X is its power") and `render`.
 
@@ -25,6 +25,7 @@ mod attackers;
 mod becomes;
 mod cast;
 mod chapters;
+mod class;
 mod conditional;
 mod copies;
 mod copy_spells;
@@ -36,6 +37,7 @@ mod defining;
 mod draws;
 mod effects;
 mod evasion;
+mod flicker;
 mod group_pump;
 mod lands;
 mod levels;
@@ -61,6 +63,7 @@ mod triggers;
 mod where_x;
 
 pub use chapters::block as chapter_block;
+pub use class::block as class_block;
 pub use levels::block as level_block;
 pub use render::{ability as render_ability, mode as render_mode, variants as render_variants};
 pub use stations::block as station_block;
@@ -136,7 +139,8 @@ pub struct Own {
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
     let text = match kind {
-        ClauseKind::Triggered => {
+        // An ability word is flavor: "Landfall — ", "Strive — ".
+        ClauseKind::Triggered | ClauseKind::Static => {
             let head = text.lines().next().unwrap_or_default();
             text.get(classify::ability_word_len(head).unwrap_or(0)..)?
         }

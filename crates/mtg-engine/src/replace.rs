@@ -21,7 +21,6 @@
 //! proposed events, adds the answer to the journal and runs the step again, which asks the same questions in the same
 //! order. A game with no replacement effect pays one flag.
 
-use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet};
 use std::sync::Arc;
 
@@ -82,19 +81,10 @@ pub fn process(
     if !(state.possible.replacements || state.possible.protection) || proposed.is_empty() {
         return Ok(Processed::Events(proposed));
     }
-    // A land played as one of its faces enters as that face, so the effects that apply to its entering are the
-    // face's (CR 614.12): the replacement step reads the card as it will be, not as it lies in the hand.
-    let view = proposed
-        .iter()
-        .find_map(|event| match event {
-            Event::LandPlayed {
-                object,
-                face: Some(face),
-                ..
-            } => Some(state.with_face(*object, Some(*face))),
-            _ => None,
-        })
-        .unwrap_or(Cow::Borrowed(state));
+    // A card that enters as one of its faces (a land played as one, a card put onto the battlefield transformed)
+    // enters as that face, so the effects that apply to its entering are the face's (CR 614.12, 712.14a): the
+    // replacement step reads the card as it will be, not as it lies in the hand.
+    let view = crate::faces::entering_as(state, &proposed);
     let state = &*view;
     let sources = gather(state);
     let shields = shields_of(state);
@@ -1781,6 +1771,7 @@ impl Pass<'_> {
                     who: Ref::You,
                     what: Ref::This,
                     free: true,
+                    play: false,
                     way: None,
                     otherwise: Vec::new(),
                 }],

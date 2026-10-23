@@ -69,6 +69,29 @@ pub(crate) fn sorcery_timing(state: &GameState, player: PlayerId) -> bool {
     state.turn().active() == player && state.turn().step().is_main() && state.stack().is_empty()
 }
 
+/// Whether `player` has a land play left this turn (CR 305.2): the turn's plays so far are fewer than the ruleset and
+/// the rules in play allow.
+pub(crate) fn land_play_left(state: &GameState, player: PlayerId) -> bool {
+    state.turn().lands_played()
+        < state
+            .ruleset()
+            .land_plays_per_turn()
+            .saturating_add(crate::rules::extra_land_plays(state, player))
+}
+
+/// Whether `player` could play a land card now while the ability `resolving` resolves (CR 305.1, 702.75a): it is their
+/// turn and a main phase, nothing else is on the stack and they have a land play left.
+pub(crate) fn may_play_land_while_resolving(
+    state: &GameState,
+    player: PlayerId,
+    resolving: ObjectId,
+) -> bool {
+    state.turn().active() == player
+        && state.turn().step().is_main()
+        && state.stack().iter().all(|id| *id == resolving)
+        && land_play_left(state, player)
+}
+
 fn hand_land(state: &GameState, id: ObjectId) -> bool {
     state
         .object(id)
@@ -322,12 +345,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .map(|p| p.mana().clone())
         .unwrap_or_default();
     let life = state.player(player).map_or(0, Player::life);
-    let may_play_land = sorcery_timing(state, player)
-        && state.turn().lands_played()
-            < state
-                .ruleset()
-                .land_plays_per_turn()
-                .saturating_add(crate::rules::extra_land_plays(state, player));
+    let may_play_land = sorcery_timing(state, player) && land_play_left(state, player);
     let playable_lands: Vec<ObjectId> = if may_play_land {
         hand.iter()
             .copied()

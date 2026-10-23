@@ -77,11 +77,34 @@ fn is_bullet(line: &str) -> bool {
     line.starts_with('\u{2022}') || line.starts_with("+ {")
 }
 
-/// `LEVEL 2-3` and `9+ | Flying`, the lines that open a level block and a station block.
+/// `LEVEL 2-3`, `9+ | Flying` and `{3}{U}: Level 2`, the lines that open a level block, a station block and a level of a Class.
 fn is_level_header(line: &str) -> bool {
     line.strip_prefix("LEVEL ")
         .is_some_and(|rest| rest.starts_with(|c: char| c.is_ascii_digit()))
         || station_header(line).is_some()
+        || class_header(line).is_some()
+}
+
+/// Whether the clause is a level of a Class: its first line opens one.
+pub fn is_class_block(text: &str) -> bool {
+    text.lines()
+        .next()
+        .is_some_and(|head| class_header(head).is_some())
+}
+
+/// `{3}{U}: Level 2`, the line that opens a level of a Class (CR 716.2): the level it gives and the mana cost of the
+/// level up ability. The lines under it are the abilities of the Class from that level.
+pub fn class_header(line: &str) -> Option<(u32, &str)> {
+    let (cost, level) = line.split_once(": Level ")?;
+    let symbols = cost.starts_with('{')
+        && cost.ends_with('}')
+        && cost
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '{' | '}' | '/'));
+    if !symbols || level.is_empty() || !level.chars().all(|c| c.is_ascii_digit()) {
+        return None;
+    }
+    Some((level.parse().ok()?, cost))
 }
 
 /// Whether the clause is a station block: its first line opens one.
@@ -161,6 +184,10 @@ mod tests {
         "When ~ enters, draw a card.\nStation\n2+ | Flying\n8+ | Haste\nWhenever ~ attacks, draw a card.",
         &["When ~ enters, draw a card.", "Station", "2+ | Flying", "8+ | Haste\nWhenever ~ attacks, draw a card."]
     )]
+    #[case::class(
+        "Whenever you attack, draw a card.\n{1}{W}: Level 2\nCreatures you control get +1/+1.\n{3}{W}: Level 3\nWhen ~ becomes level 3, draw a card.\nFlying",
+        &["Whenever you attack, draw a card.", "{1}{W}: Level 2\nCreatures you control get +1/+1.", "{3}{W}: Level 3\nWhen ~ becomes level 3, draw a card.\nFlying"]
+    )]
     #[case::only_reminder("({T}: Add {G}.)", &[])]
     #[case::reminder_after_keywords("Flying (It can fly.)\nHaste (It is fast.)", &["Flying", "Haste"])]
     #[case::empty("", &[])]
@@ -198,6 +225,7 @@ mod tests {
     #[case::modes("Choose one \u{2014}\n\u{2022} A (x).\n\u{2022} B.\nFlying (y)")]
     #[case::levels("Level up {1}\nLEVEL 1-2\n1/1\nFlying\nLEVEL 3+\n2/2\nHaste")]
     #[case::stations("Station\n3+ | Flying\n8+ | Haste\nDraw a card.")]
+    #[case::classes("Draw.\n{1}{W}: Level 2\nFlying\n{2}{W}: Level 3\nHaste")]
     #[case::unicode("\u{2212}1: Draw \u{2022} a card (z).\n+2: Look.")]
     fn clause_spans_are_in_bounds_and_disjoint(#[case] original: &str) {
         let text = normalize(original, &[]);

@@ -39,6 +39,7 @@ impl KeywordRules for Miracle {
                 who: Ref::You,
                 what: Ref::This,
                 free: false,
+                play: false,
                 way: Some(CastWay::Miracle),
                 otherwise: Vec::new(),
             }],

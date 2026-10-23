@@ -41,10 +41,12 @@ pub mod extra_cost_cards;
 pub mod face_cards;
 pub mod family_cards;
 pub mod foretell_cards;
+pub mod free_cast_cards;
 pub mod graveyard_cards;
 pub mod group_static_cards;
 pub mod harness;
 pub mod help_cards;
+pub mod hideaway_cards;
 pub mod improvise_cards;
 pub mod impulse_cards;
 pub mod invariants;
@@ -124,10 +126,12 @@ pub use extra_cost_cards::extra_cost_fuzz_setup;
 pub use face_cards::face_fuzz_setup;
 pub use family_cards::families_fuzz_setup;
 pub use foretell_cards::foretell_fuzz_setup;
+pub use free_cast_cards::{FREE_CAST_CARDS, STRIVE_CARDS, free_cast_fuzz_setup};
 pub use graveyard_cards::graveyard_fuzz_setup;
 pub use group_static_cards::group_static_fuzz_setup;
 pub use harness::{FailureKind, GameFailure, GameOutcome, PlayOptions, play_game, play_game_with};
 pub use help_cards::help_fuzz_setup;
+pub use hideaway_cards::hideaway_fuzz_setup;
 pub use improvise_cards::{improvise_card, improvise_fuzz_setup};
 pub use impulse_cards::{impulse_fuzz_setup, impulse_spell};
 pub use invariants::{InvariantChecker, Violation, check_settled, check_state};
@@ -155,7 +159,9 @@ pub use required_cost_cards::{
     REQUIRED_COST_CARDS, Takes, required_cost_fuzz_setup, required_cost_of,
 };
 pub use rule_cards::rules_fuzz_setup;
-pub use saga_cards::saga_fuzz_setup;
+pub use saga_cards::{
+    TRANSFORMING_SAGA_CARDS, saga_fuzz_setup, transforming_saga, transforming_saga_fuzz_setup,
+};
 pub use scenario::{
     Scenario, ScenarioError, attached_to, damaged, enchanting, ready, sick, tapped, with_counters,
 };

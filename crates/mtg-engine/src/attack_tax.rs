@@ -8,6 +8,8 @@
 //! mana payment (`PayMana`, mana abilities included): the declaration is made with the payment, and backing out of the
 //! payment returns to the declaration, with nothing paid.
 
+use std::collections::BTreeMap;
+
 use mtg_cards::modify::Attacked;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
@@ -80,28 +82,27 @@ pub(crate) fn total(state: &GameState, attackers: &[(ObjectId, AttackTarget)]) -
         })
 }
 
-/// The mana the attacking player can surely spend on an attack, whichever creatures attack: the mana floating and the
-/// mana abilities of the untapped permanents that cost nothing and are not creatures that may attack, which would be
-/// tapped by the declaration. A bot that stays within it declares an attack it can pay for.
+/// The mana the attacking player can surely spend on an attack, whichever creatures attack: the mana floating and, for
+/// each untapped permanent that is not a creature that may attack (the declaration would tap it), the most its mana
+/// abilities that cost nothing add, since a payment taps a permanent once. A bot that stays within it
+/// declares an attack it can pay for, as long as the cost is generic.
 pub(crate) fn budget(state: &GameState, player: PlayerId, may_attack: &[ObjectId]) -> u32 {
     let floating = state.player(player).map_or(0, |seat| seat.mana().total());
-    let sources: u32 = mana_options(state, player)
-        .iter()
-        .filter(|option| {
-            option.cost.symbols().is_empty()
-                && option.takes.is_empty()
-                && option.life == 0
-                && option.energy == 0
-                && option.only.is_empty()
-                && !may_attack.contains(&option.source.object)
-        })
-        .map(|option| {
-            option
-                .count
-                .saturating_add(u32::try_from(option.also.len()).unwrap_or(0))
-        })
-        .sum();
-    floating.saturating_add(sources)
+    let mut best: BTreeMap<ObjectId, u32> = BTreeMap::new();
+    for option in mana_options(state, player).iter().filter(|option| {
+        option.cost.symbols().is_empty()
+            && option.takes.is_empty()
+            && option.life == 0
+            && option.energy == 0
+            && option.only.is_empty()
+            && !may_attack.contains(&option.source.object)
+    }) {
+        let made = u32::try_from(option.made().len()).unwrap_or(u32::MAX);
+        let slot = best.entry(option.source.object).or_default();
+        *slot = (*slot).max(made);
+    }
+    best.values()
+        .fold(floating, |sum, made| sum.saturating_add(*made))
 }
 
 /// The state once the attack taps its attackers that tap to attack (CR 508.1f), in which the mana abilities of the

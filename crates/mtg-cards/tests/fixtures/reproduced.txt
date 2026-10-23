@@ -61,6 +61,7 @@ Battering Krasis
 Battle Sliver
 Battlefield Forge
 Beast Within
+Befriending the Moths // Imperial Moth
 Behold the Multiverse
 Bilious Skulldweller
 Binding the Old Gods
@@ -135,6 +136,7 @@ Collective Unconscious
 Command Tower
 Consider
 Consign // Oblivion
+Consign to Dust
 Consuming Aetherborn
 Contentious Plan
 Copper-Leaf Angel
@@ -170,6 +172,7 @@ Dauthi Horror
 Dauthi Marauder
 Dawnglade Regent
 Deadeye Brawler
+Deadly Rollick
 Death Ward
 Death-Greeter's Champion
 Debris Field Crusher
@@ -184,6 +187,7 @@ Deputized Protester
 Dire Fleet Interloper
 Direct Current
 Disembowel
+Disrupt Decorum
 Dockside Extortionist
 Dokuchi Shadow-Walker
 Domesticated Hydra
@@ -218,6 +222,7 @@ Empyrial Plate
 Enraged Revolutionary
 Enthusiastic Study
 Epic Proportions
+Era of Enlightenment // Hand of Enlightenment
 Eternal Witness
 Ethereal Armor
 Ethersworn Sphinx
@@ -241,12 +246,14 @@ Felidar Sovereign
 Fellwar Stone
 Fetid Heath
 Field Trip
+Fierce Guardianship
 Fiery Fall
 Fiery Temper
 Finch Formation
 Fire-Lit Thicket
 Firestorm Hellkite
 Flame Jab
+Flawless Maneuver
 Fleecemane Lion
 Fleetfeather Cockatrice
 Flooded Grove
@@ -381,6 +388,7 @@ Lavacore Elemental
 Lazotep Reaver
 Levitation
 Lhurgoyf
+Life of Toshiro Umezawa // Memory of Toshiro
 Light 'Em Up
 Lightning Bolt
 Lithoform Engine
@@ -451,6 +459,8 @@ Ninja of the New Moon
 Norn's Annex
 Notion Rain
 Nyxborn Behemoth
+Obscuring Haze
+Okiba Reckoner Raid // Nezumi Road Captain
 Opt
 Orchard Strider
 Organic Extinction
@@ -487,6 +497,7 @@ Propaganda
 Propeller Pioneer
 Prosperous Bandit
 Proven Combatant
+Psychic Impetus
 Psychosis Crawler
 Putrid Goblin
 Pygmy Kavu
@@ -556,6 +567,7 @@ Shadowmage Infiltrator
 Shambling Shell
 Shenanigans
 Shifting Sliver
+Shiny Impetus
 Siege Smash
 Siege Wurm
 Sigiled Paladin
@@ -610,6 +622,7 @@ Stitched Drake
 Stoke the Flames
 Stonewood Invocation
 Storm Fleet Swashbuckler
+Stormchaser's Talent
 Strangleroot Geist
 Stratus Dancer
 Strionic Resonator
@@ -648,6 +661,7 @@ Tendrils of Agony
 Termagant Swarm
 Thalia, Guardian of Thraben
 The Birth of Meletis
+The Modern Age // Vector Glider
 The Seriema
 The Spear of Bashenga
 The Thing, Ben Grimm
@@ -727,6 +741,7 @@ Windborn Muse
 Wings of the Guard
 Wipe Away
 Withering Boon
+Wizard Class
 Wooded Bastion
 Woodripper
 Wrath of God

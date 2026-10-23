@@ -160,6 +160,7 @@ mod cast;
 mod cast_cost_paid;
 mod chapters;
 mod chosen_color;
+mod class;
 mod compound;
 mod conditions;
 mod copies;
@@ -180,7 +181,9 @@ mod evasion;
 mod event_batches;
 mod events;
 mod exile_bounce_shrink;
+mod flicker;
 mod for_each;
+mod goad;
 mod granted_mana;
 mod group_statics;
 mod if_sentence;
@@ -210,6 +213,7 @@ mod search_pairs;
 mod spell_copies;
 mod statics;
 mod stations;
+mod strive;
 mod tap_and_mill;
 mod this_or_another;
 mod token_keywords;
@@ -839,8 +843,8 @@ mod sentences {
 
     #[rstest]
     #[case::a_second_target("Exile target creature. Target player draws a card.")]
-    #[case::unread_second("Destroy target creature. Goad target land.")]
-    #[case::unread_first("Goad target creature. Draw a card.")]
+    #[case::unread_second("Destroy target creature. Flip two coins.")]
+    #[case::unread_first("Flip a coin. Draw a card.")]
     #[case::garbled("Destroy target creature. Draw")]
     #[case::empty("")]
     #[case::only_a_period(".")]

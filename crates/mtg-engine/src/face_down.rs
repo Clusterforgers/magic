@@ -50,10 +50,10 @@ static DISGUISE: LazyLock<CardDefinition> = LazyLock::new(|| creature(true));
 
 impl FaceDown {
     /// The characteristics a spell or permanent that lies face down this way has (CR 708.2a), or `None` for a card that
-    /// keeps its own, like a foretold card in exile.
+    /// keeps its own, like a foretold or hidden card in exile.
     pub(crate) fn characteristics(self) -> Option<&'static CardDefinition> {
         match self {
-            FaceDown::Foretold { .. } => None,
+            FaceDown::Foretold { .. } | FaceDown::Hideaway { .. } => None,
             FaceDown::Morph => Some(&MORPH),
             FaceDown::Disguise => Some(&DISGUISE),
         }

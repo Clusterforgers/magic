@@ -1,0 +1,25 @@
+{
+  "id": "c5323fe7-d9df-4287-ae13-d9db35f7973b",
+  "oracle_id": "9b084cd4-cc21-4f3a-9ac5-1e1160a31aa6",
+  "name": "Disrupt Decorum",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "151",
+  "rarity": "rare",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{2}{R}{R}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Goad all creatures you don't control. (Until your next turn, those creatures attack each combat if able and attack a player other than you if able.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Goad"
+  ]
+}

@@ -328,6 +328,14 @@ pub enum TriggerPattern {
         /// The creature that mutates.
         what: Selector,
     },
+    /// A Class matching the selector becomes this level ("When this Class becomes level 2", CR 716.2); `Triggering` is
+    /// its controller.
+    BecomesLevel {
+        /// The Class that gains the level.
+        what: Selector,
+        /// The level it becomes.
+        level: u32,
+    },
     /// A creature matching the selector adapts ("whenever a creature you control adapts"); `Triggering` is its
     /// controller.
     Adapted {

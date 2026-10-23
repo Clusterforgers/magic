@@ -58,6 +58,7 @@ pub(crate) mod foretell;
 mod fuse;
 mod haste;
 mod hexproof;
+mod hideaway;
 mod improvise;
 mod indestructible;
 mod infect;
@@ -471,6 +472,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Devour { .. } => &devour::Devour,
         Keyword::Casualty(_) => &casualty::Casualty,
         Keyword::Demonstrate => &demonstrate::Demonstrate,
+        Keyword::Hideaway(_) => &hideaway::Hideaway,
         Keyword::Offspring(_) => &offspring::Offspring,
         Keyword::Ravenous => &ravenous::Ravenous,
         Keyword::Fabricate(_) => &fabricate::Fabricate,
@@ -905,6 +907,7 @@ mod tests {
         "Keyword.Casualty",
         "Keyword.Offspring",
         "Keyword.Demonstrate",
+        "Keyword.Hideaway",
         "Keyword.LevelUp",
         "Keyword.Outlast",
         "Keyword.Saddle",
@@ -1068,6 +1071,7 @@ mod tests {
     #[case::devour(Keyword::Devour { counters: 2, of: Selector::default() }, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::casualty(Keyword::Casualty(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::demonstrate(Keyword::Demonstrate, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::hideaway(Keyword::Hideaway(4), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::offspring(Keyword::Offspring(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::myriad(Keyword::Myriad, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::squad(Keyword::Squad(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]

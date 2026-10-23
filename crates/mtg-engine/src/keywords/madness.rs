@@ -46,6 +46,7 @@ impl KeywordRules for Madness {
                     who: Ref::You,
                     what: Ref::This,
                     free: false,
+                    play: false,
                     way: Some(CastWay::Madness),
                     otherwise: vec![Effect::Move {
                         what: Ref::This,

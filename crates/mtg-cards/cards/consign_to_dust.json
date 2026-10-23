@@ -1,0 +1,34 @@
+{
+  "oracle_id": "8ac493f2-9519-44d7-b6ac-8c020ad2cede",
+  "name": "Consign to Dust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consign to Dust",
+      "oracle_fingerprint": "b79b41b341fcafd5ae572a08aaacb45c",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Increase",
+            "mana": "{2}{G}",
+            "per": { "Sum": [{ "TargetCount": 0 }, -1] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

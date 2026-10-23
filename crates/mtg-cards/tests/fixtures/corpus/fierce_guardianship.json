@@ -1,0 +1,23 @@
+{
+  "id": "f7f3dd95-bd14-4e0f-a388-444f9cf1b0dc",
+  "oracle_id": "d09c9cba-fdd2-479b-ad5d-d05181c3e3f9",
+  "name": "Fierce Guardianship",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "94",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "If you control a commander, you may cast this spell without paying its mana cost.\nCounter target noncreature spell.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

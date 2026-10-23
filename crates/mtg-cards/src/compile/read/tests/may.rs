@@ -104,7 +104,7 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 #[case::nothing("You may.")]
 #[case::no_step("You may")]
 #[case::regeneration("You may destroy target creature. It can't be regenerated.")]
-#[case::an_unread_step("You may goad target creature.")]
+#[case::an_unread_step("You may flip a coin.")]
 #[case::lowercase("you may draw a card.")]
 #[case::x_without_an_x_cost("You may draw X cards.")]
 fn near_misses_stay_unread(#[case] text: &str) {

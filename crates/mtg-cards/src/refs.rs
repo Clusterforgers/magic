@@ -130,6 +130,8 @@ pub enum Pred {
     Is(Ref),
     /// Shares a subtype with one of the objects the reference names (`{"SharesSubtype": {"Bound": "land"}}`).
     SharesSubtype(Ref),
+    /// Is a card exiled face down by one of the permanents the reference names, which has not left since (hideaway, CR 702.75a).
+    ExiledWith(Ref),
     /// Has the card type.
     Type(CardType),
     /// Has the supertype.
@@ -142,6 +144,8 @@ pub enum Pred {
     Colorless,
     /// Is a token.
     Token,
+    /// Is a player's commander (CR 903.3): a card designated as one when the game began, whoever controls it now.
+    Commander,
     /// Is a spell on the stack.
     Spell,
     /// Is an activated or a triggered ability on the stack (a mana ability never is one).

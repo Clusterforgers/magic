@@ -346,7 +346,9 @@ impl<'a> Walker<'a> {
             Pred::ControlledBy(r) | Pred::OwnedBy(r) | Pred::AttackingPlayer(r) => {
                 self.reference(r, Kind::Player);
             }
-            Pred::Is(r) | Pred::SharesSubtype(r) => self.reference(r, Kind::Object),
+            Pred::Is(r) | Pred::SharesSubtype(r) | Pred::ExiledWith(r) => {
+                self.reference(r, Kind::Object);
+            }
             Pred::HasKeyword(keyword) => self.keyword(keyword),
             Pred::Named(name) => self
                 .names
@@ -376,6 +378,7 @@ impl<'a> Walker<'a> {
             | Pred::Color(_)
             | Pred::Colorless
             | Pred::Token
+            | Pred::Commander
             | Pred::Spell
             | Pred::Ability(_)
             | Pred::Tapped
@@ -547,7 +550,7 @@ impl<'a> Walker<'a> {
             Condition::YourTurn => {}
             Condition::Performed => {
                 self.uses("Condition", "Performed");
-                // The engine knows only whether a `May` was accepted; any other effect before it waits.
+                // The engine knows whether a `May` was accepted and whether a `CastFromZone` cast or played the card; any other effect before it waits.
                 if !self.after_may {
                     self.uses("Condition", "Performed.Other");
                 }
@@ -566,6 +569,10 @@ impl<'a> Walker<'a> {
             Condition::NewlyControlled(what) => {
                 self.uses("Condition", "NewlyControlled");
                 self.at("NewlyControlled", |w| w.reference(what, Kind::Object));
+            }
+            Condition::Level { of, .. } => {
+                self.uses("Condition", "Level");
+                self.at("Level", |w| w.reference(of, Kind::Object));
             }
         }
     }
@@ -844,7 +851,8 @@ impl<'a> Walker<'a> {
             | Modification::LoseAbilities
             | Modification::CantAttack
             | Modification::CantBlock
-            | Modification::CantBeBlocked => {}
+            | Modification::CantBeBlocked
+            | Modification::Goaded => {}
         }
     }
 
@@ -990,6 +998,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Explored { what }
             | TriggerPattern::Connived { what }
             | TriggerPattern::BecomesMonstrous { what }
+            | TriggerPattern::BecomesLevel { what, .. }
             | TriggerPattern::TurnedFaceUp { what }
             | TriggerPattern::Mutates { what }
             | TriggerPattern::Adapted { what }
@@ -1054,6 +1063,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::Explored { .. }
                 | TriggerPattern::Connived { .. }
                 | TriggerPattern::BecomesMonstrous { .. }
+                | TriggerPattern::BecomesLevel { .. }
                 | TriggerPattern::TurnedFaceUp { .. }
                 | TriggerPattern::Mutates { .. }
                 | TriggerPattern::Adapted { .. }
@@ -1205,7 +1215,11 @@ impl<'a> Walker<'a> {
         for (i, effect) in list.iter().enumerate() {
             let only = top && list.len() == 1;
             self.after = if i > 0 { After::Effect } else { After::Nothing };
-            self.after_may = i > 0 && matches!(list.get(i - 1), Some(Effect::May { .. }));
+            self.after_may = i > 0
+                && matches!(
+                    list.get(i - 1),
+                    Some(Effect::May { .. } | Effect::CastFromZone { .. })
+                );
             self.at(format!("{field}[{i}]"), |w| w.effect(effect, only));
         }
         (self.after, self.after_may) = saved;
@@ -1222,6 +1236,18 @@ impl<'a> Walker<'a> {
         }
         // A move onto the battlefield needs entering permanents and a random order needs the engine's randomness;
         // a move to a hand, a graveyard or a library in the owner's order needs neither.
+        if matches!(
+            effect,
+            Effect::Move {
+                to: Destination::Battlefield {
+                    transformed: true,
+                    ..
+                },
+                ..
+            }
+        ) {
+            self.uses("Effect", "Move.Transformed");
+        }
         match effect {
             Effect::Move {
                 to: Destination::Battlefield { .. },
@@ -1251,8 +1277,14 @@ impl<'a> Walker<'a> {
                 w.at("count", |w| w.amount(count));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
+            Effect::Exile { what, bind } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
+            }
             Effect::Reveal { what }
-            | Effect::Exile { what }
+            | Effect::ExileHidden { what }
             | Effect::Counter { what }
             | Effect::Tap { what }
             | Effect::Untap { what }
@@ -1492,6 +1524,11 @@ impl<'a> Walker<'a> {
                     w.problem("a card can be a commander by a static ability, not by an effect");
                 }
             }),
+            Effect::BecomeLevel { level } => {
+                if *level < 2 {
+                    w.problem("a Class starts at level 1 and gains level 2 or more");
+                }
+            }
             Effect::Regenerate { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::Shield { when, by, .. } => {
                 w.at("when", |w| w.replace_when(when));
@@ -1850,6 +1887,12 @@ impl<'a> Walker<'a> {
                 ..
             } => w.cost_modifier(applies_to, mana, per, condition.as_ref()),
             Ability::AdditionalCost { cost, required } => w.additional_cost(cost, *required),
+            Ability::FreeCast { condition } => {
+                w.scope = Scope::new(&[], false);
+                if let Some(condition) = condition {
+                    w.at("condition", |w| w.condition(condition));
+                }
+            }
             Ability::Keyword(keyword) => w.keyword(keyword),
             Ability::Manual { reason, span } => {
                 if reason.trim().is_empty() {
@@ -2509,6 +2552,7 @@ mod tests {
     #[case::a_move_to_the_top_of_a_library(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Top","order":"Chosen"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_shuffled_in(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Shuffled","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_to_the_battlefield(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield"])]
+    #[case::a_move_to_the_battlefield_transformed(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{"transformed":true}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield", "Effect.Move.Transformed"])]
     #[case::a_move_to_the_top_in_a_random_order(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Top","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Random.Top"])]
     #[case::a_move_to_the_bottom_in_a_random_order(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Bottom","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_named_token_brings_its_own_abilities(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Named":"treasure"}}}]}}"#, &["Ability.Activated", "Ability.Spell", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana", "Effect.CreateToken"])]

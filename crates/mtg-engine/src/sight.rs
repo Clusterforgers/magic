@@ -8,7 +8,7 @@
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::decision::{Decision, DecisionKind};
-use crate::object::GameObject;
+use crate::object::{FaceDown, GameObject};
 use crate::resolve::{Progress, Shown, step};
 use crate::state::{GameState, Stage};
 use crate::zones::Zone;
@@ -22,11 +22,35 @@ impl GameState {
             return false;
         };
         object.face_down().is_none_or(|how| {
-            how.may_look(
+            self.may_look_as(
+                how,
                 object.owner(),
                 crate::characteristics::controller_of_object(self, object),
                 viewer,
             )
+        })
+    }
+
+    /// Whether `viewer` may look at a card of `owner` that lies face down as `how` under the control of `controller`. A
+    /// hidden card (hideaway, CR 702.75a) is also looked at by the controller of the permanent that hid it while that
+    /// permanent is still the one that did; the players who controlled it before are not tracked.
+    pub fn may_look_as(
+        &self,
+        how: FaceDown,
+        owner: PlayerId,
+        controller: PlayerId,
+        viewer: PlayerId,
+    ) -> bool {
+        if how.may_look(owner, controller, viewer) {
+            return true;
+        }
+        let FaceDown::Hideaway { by } = how else {
+            return false;
+        };
+        self.object(by.id).is_some_and(|hider| {
+            hider.counter() == by.counter
+                && hider.zone() == Zone::Battlefield
+                && crate::characteristics::controller_of_object(self, hider) == viewer
         })
     }
 
@@ -279,6 +303,56 @@ mod tests {
         apply_event(&mut game, &leave).unwrap();
         assert_eq!(game.object(card).unwrap().face_down(), None);
         assert!(game.may_look_at(viewer, card));
+    }
+
+    /// Seat 0 owns the hidden card; the Hider on the battlefield of seat 0 hid it. `controller` then controls the Hider.
+    #[rstest]
+    #[case::the_owner_who_controls_it(0, 0, true)]
+    #[case::the_owner_after_it_changed_hands(0, 1, true)]
+    #[case::the_new_controller(1, 1, true)]
+    #[case::a_seat_that_never_controlled_it(2, 1, false)]
+    #[case::the_old_controller_is_not_tracked_unless_it_owns_the_card(2, 0, false)]
+    fn a_hidden_card_is_looked_at_by_its_owner_and_the_controller_of_the_permanent(
+        #[case] viewer: usize,
+        #[case] controller: usize,
+        #[case] looks: bool,
+    ) {
+        let mut game = state(
+            vec![vec![creature("Card", 1, 1)], vec![], vec![]],
+            vec![vec![creature("Hider", 1, 1)], vec![], vec![]],
+        );
+        let find = |game: &GameState, name: &str| {
+            game.objects()
+                .find(|o| o.card().name == name)
+                .map(GameObject::id)
+                .unwrap()
+        };
+        let (card, hider) = (find(&game, "Card"), find(&game, "Hider"));
+        let by = game.object(hider).unwrap().reference();
+        let from = game.object(card).unwrap().zone();
+        let hide = Event::ZoneChanged {
+            object: card,
+            from,
+            to: Zone::Exile,
+            cause: ZoneCause::Hideaway { by },
+        };
+        apply_event(&mut game, &hide).unwrap();
+        game.objects.get_mut(&hider).unwrap().controller = PlayerId::from_index(controller);
+        let viewer = PlayerId::from_index(viewer);
+        assert_eq!(
+            game.object(card).unwrap().face_down(),
+            Some(FaceDown::Hideaway { by })
+        );
+        assert_eq!(game.may_look_at(viewer, card), looks);
+        // The permanent leaving ends the link: the card stays hidden and only its owner looks at it.
+        let leave = Event::ZoneChanged {
+            object: hider,
+            from: Zone::Battlefield,
+            to: Zone::Graveyard(ME),
+            cause: ZoneCause::Destroyed,
+        };
+        apply_event(&mut game, &leave).unwrap();
+        assert_eq!(game.may_look_at(viewer, card), viewer == ME);
     }
 
     #[test]

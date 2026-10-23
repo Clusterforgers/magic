@@ -87,6 +87,7 @@ function modificationWords(modification: Modification, group: boolean): string {
     const { power, toughness } = modification.SetPowerToughness
     return `${becomes} ${power}/${toughness}`
   }
+  if ('Goaded' in modification) return `${group ? 'are' : 'is'} goaded`
   const { power, toughness } = modification.ModifyPowerToughness
   return `${group ? 'get' : 'gets'} ${power >= 0 ? '+' : ''}${power}/${toughness >= 0 ? '+' : ''}${toughness}`
 }
@@ -240,7 +241,8 @@ function describeChoice(choice: Choice, n: EventNames): string {
   return 'chooses which effect applies first'
 }
 
-const BECAUSE: Record<ZoneCause, string> = {
+/** The words for a cause that is a plain name; a card hidden with hideaway carries the permanent that hides it. */
+const BECAUSE: Record<Exclude<ZoneCause, { Hideaway: unknown }>, string> = {
   Moved: 'moves',
   Destroyed: 'is destroyed',
   Buried: "is destroyed and can't be regenerated",
@@ -328,7 +330,7 @@ function describePipeline(event: PipelineEvent, n: EventNames): LogLine {
     return line(
       cause === 'Moved'
         ? `${n.card(object)} moves to ${zoneWord(to, n)}`
-        : `${n.card(object)} ${BECAUSE[cause]}`,
+        : `${n.card(object)} ${typeof cause === 'object' ? 'is exiled face down' : BECAUSE[cause]}`,
     )
   }
   if ('LifeGained' in event)
@@ -449,6 +451,8 @@ function describePublic(event: Event, n: EventNames): LogLine {
       `${n.seat(event.Mutated.player)} mutates a creature ${event.Mutated.over ? 'over' : 'under'} ${n.card(event.Mutated.object)}`,
     )
   if ('Adapted' in event) return line(`${n.card(event.Adapted.object)} adapts`)
+  if ('ClassLevelGained' in event)
+    return line(`${n.card(event.ClassLevelGained.object)} becomes level ${event.ClassLevelGained.level}`)
   if ('Bolstered' in event) return line(`${n.seat(event.Bolstered.player)} bolsters`)
   if ('AttachedToPlayer' in event) {
     return line(`${n.card(event.AttachedToPlayer.object)} enchants ${n.seat(event.AttachedToPlayer.player)}`)
@@ -585,6 +589,9 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   if ('ZoneChanged' in event) {
     const { from, to, cause } = event.ZoneChanged
     // A foretold card lies face down: the others learn who foretold and nothing about the card.
+    if (typeof cause === 'object' && typeof from === 'object' && 'Library' in from) {
+      return line(`${n.seat(from.Library)} hides a card face down`)
+    }
     if (cause === 'Foretold' && typeof from === 'object' && 'Hand' in from) {
       return line(`${n.seat(from.Hand)} foretells a card`)
     }

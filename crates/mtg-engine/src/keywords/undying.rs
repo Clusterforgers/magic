@@ -41,6 +41,7 @@ pub(super) fn returns_with(kind: CounterKind) -> Vec<Ability> {
             to: Destination::Battlefield {
                 tapped: false,
                 under: None,
+                transformed: false,
                 counters: vec![(kind, 1)],
             },
         }],

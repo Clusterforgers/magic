@@ -655,6 +655,7 @@ fn exiler() -> Arc<CardDefinition> {
                 )])))],
                 effects: vec![Effect::Exile {
                     what: Ref::Target(0),
+                    bind: None,
                 }],
             }),
     )

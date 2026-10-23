@@ -296,6 +296,7 @@ fn pred() -> impl Strategy<Value = Pred> {
             leaf_ref().prop_map(Pred::ControlledBy),
             leaf_ref().prop_map(Pred::OwnedBy),
             leaf_ref().prop_map(Pred::Is),
+            leaf_ref().prop_map(Pred::ExiledWith),
             keyword().prop_map(Pred::HasKeyword),
             (stat(), cmp(), simple_amount()).prop_map(|(stat, op, to)| Pred::Compare {
                 stat,
@@ -376,6 +377,11 @@ fn condition() -> impl Strategy<Value = Condition> {
         leaf_ref().prop_map(Condition::Monarch),
         leaf_ref().prop_map(Condition::CitysBlessing),
         leaf_ref().prop_map(Condition::NewlyControlled),
+        (leaf_ref(), 1u32..=3).prop_map(|(of, level)| Condition::Level {
+            of,
+            op: Cmp::Ge,
+            level
+        }),
     ]
     .prop_recursive(2, 8, 2, |inner| {
         prop_oneof![
@@ -550,6 +556,8 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
         (selector(), proptest::option::of(counter()))
             .prop_map(|(what, counter)| TriggerPattern::CountersRemoved { what, counter }),
         (1u32..=10).prop_map(|number| TriggerPattern::Chapter { number }),
+        (selector(), 2u32..=3)
+            .prop_map(|(what, level)| TriggerPattern::BecomesLevel { what, level }),
         (selector(), selector()).prop_map(|(what, to)| TriggerPattern::Attached { what, to }),
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::Cycled { what, by }),
     ];
@@ -586,13 +594,17 @@ fn destination() -> impl Strategy<Value = Destination> {
         (
             any::<bool>(),
             proptest::option::of(reference()),
+            any::<bool>(),
             proptest::collection::vec((counter(), 1u32..4), 0..3),
         )
-            .prop_map(|(tapped, under, counters)| Destination::Battlefield {
-                tapped,
-                under,
-                counters,
-            }),
+            .prop_map(
+                |(tapped, under, transformed, counters)| Destination::Battlefield {
+                    tapped,
+                    under,
+                    transformed,
+                    counters,
+                },
+            ),
         (
             select(vec![Place::Top, Place::Bottom, Place::Shuffled]),
             proptest::option::of(select(vec![Order::Chosen, Order::Random])),
@@ -686,7 +698,9 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         (reference(), destination()).prop_map(|(what, to)| Effect::Move { what, to }),
         (reference(), any::<bool>())
             .prop_map(|(what, regenerate)| Effect::Destroy { what, regenerate }),
-        reference().prop_map(|what| Effect::Exile { what }),
+        (reference(), proptest::option::of("[a-z]{1,6}"))
+            .prop_map(|(what, bind)| Effect::Exile { what, bind }),
+        reference().prop_map(|what| Effect::ExileHidden { what }),
         (who(), selector(), amount()).prop_map(|(who, filter, count)| Effect::Sacrifice {
             who,
             filter,
@@ -795,6 +809,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 count
             }),
             amount().prop_map(|count| Effect::Monstrosity { count }),
+            (2u32..=3).prop_map(|level| Effect::BecomeLevel { level }),
             amount().prop_map(|count| Effect::Adapt { count }),
             amount().prop_map(|count| Effect::Bolster { count }),
             reference().prop_map(|what| Effect::Explore { what }),
@@ -863,6 +878,7 @@ fn effect() -> impl Strategy<Value = Effect> {
                 reference(),
                 reference(),
                 any::<bool>(),
+                any::<bool>(),
                 list(),
                 proptest::option::of(select(vec![
                     CastWay::Madness,
@@ -870,12 +886,15 @@ fn effect() -> impl Strategy<Value = Effect> {
                     CastWay::Suspend
                 ])),
             )
-                .prop_map(|(who, what, free, otherwise, way)| Effect::CastFromZone {
-                    who,
-                    what,
-                    free,
-                    way,
-                    otherwise,
+                .prop_map(|(who, what, free, play, otherwise, way)| {
+                    Effect::CastFromZone {
+                        who,
+                        what,
+                        free,
+                        play,
+                        way,
+                        otherwise,
+                    }
                 }),
             (reference(), cost(), amount(), list(), list()).prop_map(
                 |(who, cost, times, paid, unpaid)| {

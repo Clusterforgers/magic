@@ -5,6 +5,7 @@ use std::hash::{Hash, Hasher};
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_cards::definition::Layout;
 use mtg_cards::value::{CastWay, CounterKind};
 use mtg_core::card::{CardType, CardTypes};
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -73,14 +74,21 @@ pub enum FaceDown {
     Morph,
     /// A spell or permanent cast face down for its disguise (CR 702.168): as a morph, with ward {2}.
     Disguise,
+    /// A card a permanent exiled face down with hideaway (CR 702.75a): it stays in exile with its own characteristics, and
+    /// only its owner and the player who controls the permanent may look at it. The link is lost when the permanent leaves.
+    Hideaway {
+        /// The permanent that hid it.
+        by: ObjectRef,
+    },
 }
 
 impl FaceDown {
     /// Whether `viewer` may look at an object of `owner` under the control of `controller` that lies face down this way: the
-    /// owner of a foretold card, the controller of a face-down spell or permanent (CR 708.3).
+    /// owner of a foretold or hidden card, the controller of a face-down spell or permanent (CR 708.3). The player who
+    /// controls the permanent that hid a card also looks at it: `GameState::may_look_as` adds that.
     pub fn may_look(self, owner: PlayerId, controller: PlayerId, viewer: PlayerId) -> bool {
         match self {
-            FaceDown::Foretold { .. } => owner == viewer,
+            FaceDown::Foretold { .. } | FaceDown::Hideaway { .. } => owner == viewer,
             FaceDown::Morph | FaceDown::Disguise => controller == viewer,
         }
     }
@@ -91,6 +99,8 @@ impl FaceDown {
 pub struct Designations {
     /// It has become monstrous (CR 701.37).
     pub(crate) monstrous: bool,
+    /// The level a Class has reached (CR 716.2); 0 until a level ability resolves, which reads as level 1.
+    pub(crate) level: u32,
 }
 
 /// State that only exists while an object is on the battlefield.
@@ -193,6 +203,16 @@ impl PermanentState {
     /// object and is not.
     pub const fn monstrous(&self) -> bool {
         self.designations.monstrous
+    }
+
+    /// The level of a Class (CR 716.2): 1 as it enters, higher once its level abilities resolve; a permanent that
+    /// leaves the battlefield is a new object and starts again at 1. Only a Class has abilities that read it.
+    pub const fn level(&self) -> u32 {
+        if self.designations.level == 0 {
+            1
+        } else {
+            self.designations.level
+        }
     }
 
     /// Damage marked on the permanent this turn (tracked apart from toughness).
@@ -434,6 +454,18 @@ impl GameObject {
         match self.face() {
             Some(face) => self.def.face(face),
             None => &self.def,
+        }
+    }
+
+    /// The printed mana value of the face in use, without the X of a spell on the stack. A transforming double-faced
+    /// permanent with its back face up has the mana value of its front face (CR 712.8e); a copy of that face has the
+    /// back face's own, which is 0 (CR 707.8).
+    pub fn mana_value(&self) -> u32 {
+        let whole = self.whole_card();
+        if whole.layout == Layout::Transform && self.face().is_some() {
+            whole.mana_value()
+        } else {
+            self.card().mana_value()
         }
     }
 

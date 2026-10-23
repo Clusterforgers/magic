@@ -250,6 +250,7 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
                 | Ability::Rule { .. }
                 | Ability::Static { .. }
                 | Ability::AdditionalCost { .. }
+                | Ability::FreeCast { .. }
                 | Ability::CostModifier { .. } => &[ClauseKind::Static],
                 _ => &[ClauseKind::Activated],
             };

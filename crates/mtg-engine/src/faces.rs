@@ -15,6 +15,7 @@ use mtg_core::mana::ManaCost;
 
 use crate::ability_reader::definition_fuses;
 use crate::announce::Granted;
+use crate::events::Event;
 use crate::mana::{ManaOption, ManaPool};
 use crate::state::GameState;
 use crate::ways;
@@ -34,6 +35,43 @@ impl GameState {
         }
         Cow::Owned(view)
     }
+}
+
+/// The state the replacement step reads a batch against: the cards that enter as one of their faces (a land played as
+/// its back face, a card put onto the battlefield transformed) are already that face (CR 614.12, 712.14a).
+pub(crate) fn entering_as<'a>(state: &'a GameState, proposed: &[Event]) -> Cow<'a, GameState> {
+    let faces: Vec<(ObjectId, u8)> = proposed
+        .iter()
+        .filter_map(|event| match event {
+            Event::LandPlayed {
+                object,
+                face: Some(face),
+                ..
+            } => Some((*object, *face)),
+            // A permanent turned over is the same object with its face set; only a card that is not on the battlefield
+            // is entering.
+            Event::Transformed {
+                object,
+                face: Some(face),
+            } if state
+                .object(*object)
+                .is_some_and(|card| card.permanent().is_none()) =>
+            {
+                Some((*object, *face))
+            }
+            _ => None,
+        })
+        .collect();
+    if faces.is_empty() {
+        return Cow::Borrowed(state);
+    }
+    let mut view = state.clone();
+    for (id, face) in faces {
+        if let Some(object) = view.objects.get_mut(&id) {
+            object.choices.face = Some(face);
+        }
+    }
+    Cow::Owned(view)
 }
 
 /// The faces of the card `id` that can be cast or played, front first: `None` is the card itself, and a split card has

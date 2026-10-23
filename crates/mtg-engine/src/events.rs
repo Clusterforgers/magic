@@ -588,6 +588,15 @@ pub enum Event {
         /// Its controller.
         player: PlayerId,
     },
+    /// A Class became a higher level (CR 716.2): the permanent keeps the level while it stays on the battlefield.
+    ClassLevelGained {
+        /// The Class that gained the level.
+        object: ObjectId,
+        /// Its controller.
+        player: PlayerId,
+        /// The level it is now.
+        level: u32,
+    },
     /// A face-down permanent was turned face up (CR 702.37e), a special action: it shows its card and has its characteristics and
     /// abilities from now on. The counter of a megamorph is the event before it.
     TurnedFaceUp {
@@ -679,6 +688,12 @@ pub enum ZoneCause {
     Exiled,
     /// It was exiled face down by foretelling (CR 702.143a): it lies face down, and only its owner may look at it.
     Foretold,
+    /// It was exiled face down by the permanent `by` with hideaway (CR 702.75a): it lies face down, and its owner and the
+    /// controller of the permanent may look at it.
+    Hideaway {
+        /// The permanent that hides it.
+        by: ObjectRef,
+    },
     /// It resolved as an Adventure (CR 715.4) and was exiled instead of going to its owner's graveyard: its controller may cast the card from exile.
     Adventure,
     /// It was countered (CR 701.6).
@@ -697,6 +712,7 @@ impl ZoneCause {
     pub const fn face_down(self, turn: u32) -> Option<FaceDown> {
         match self {
             ZoneCause::Foretold => Some(FaceDown::Foretold { turn }),
+            ZoneCause::Hideaway { by } => Some(FaceDown::Hideaway { by }),
             _ => None,
         }
     }
@@ -798,6 +814,7 @@ impl Event {
             | Event::Connived { object, .. }
             | Event::Amassed { object, .. }
             | Event::Monstrous { object, .. }
+            | Event::ClassLevelGained { object, .. }
             | Event::TurnedFaceUp { object, .. }
             | Event::Adapted { object, .. }
             | Event::Bolstered { object, .. }

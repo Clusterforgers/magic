@@ -81,3 +81,43 @@ pub(super) fn of_the_card(ability: &Ability, texts: &mut Vec<String>) {
         .collect();
     texts.extend(pronouns);
 }
+
+/// The verbs an effect of the controller opens with.
+const CONTROLLER_VERBS: [&str; 12] = [
+    "scry ",
+    "surveil ",
+    "create ",
+    "draw ",
+    "gain ",
+    "lose ",
+    "mill ",
+    "put ",
+    "add ",
+    "discard ",
+    "investigate",
+    "proliferate",
+];
+
+/// Adds to `texts` the wording "you scry 2" for a trigger on the creature an Aura or an Equipment is attached to: the
+/// controller of the attachment is not the controller of the creature, so the card says whom the effect is for
+/// ("Whenever enchanted creature attacks, you scry 2.").
+pub(super) fn you_after_the_attached(ability: &Ability, texts: &mut Vec<String>) {
+    if !matches!(ability, Ability::Triggered { .. }) {
+        return;
+    }
+    let spelled: Vec<String> = texts
+        .iter()
+        .filter(|text| {
+            text.starts_with("Whenever equipped creature ")
+                || text.starts_with("Whenever enchanted creature ")
+        })
+        .filter_map(|text| {
+            let (head, tail) = text.split_once(", ")?;
+            CONTROLLER_VERBS
+                .iter()
+                .any(|verb| tail.starts_with(verb))
+                .then(|| format!("{head}, you {tail}"))
+        })
+        .collect();
+    texts.extend(spelled);
+}

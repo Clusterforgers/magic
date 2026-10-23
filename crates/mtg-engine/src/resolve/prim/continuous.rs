@@ -137,6 +137,9 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::CantAttack => Modification::CantAttack,
         Wanted::CantBlock => Modification::CantBlock,
         Wanted::CantBeBlocked => Modification::CantBeBlocked,
+        Wanted::Goaded => Modification::Goaded {
+            by: scope.controller,
+        },
         Wanted::CantBeBlockedBy(blockers) => Modification::CantBeBlockedBy {
             by: blockers.clone(),
             controller: scope.controller,

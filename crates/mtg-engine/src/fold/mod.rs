@@ -247,6 +247,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::PermanentTapped { object } => set_tapped(state, *object, true)?,
         Event::PermanentUntapped { object } => set_tapped(state, *object, false)?,
         Event::Monstrous { object, .. } => set_monstrous(state, *object)?,
+        Event::ClassLevelGained { object, level, .. } => set_level(state, *object, *level)?,
         Event::TurnedFaceUp { object, .. } => turn_face_up(state, *object)?,
         Event::ManaAdded {
             player, mana, only, ..
@@ -429,6 +430,20 @@ fn set_monstrous(state: &mut GameState, id: ObjectId) -> Result<(), EngineError>
         return Err(invalid(format!("{id:?} is already monstrous")));
     }
     perm.designations.monstrous = true;
+    Ok(())
+}
+
+/// A Class gains a level (CR 716.2): the level is higher than the one it has, and it is a permanent.
+fn set_level(state: &mut GameState, id: ObjectId, level: u32) -> Result<(), EngineError> {
+    let perm = state
+        .objects
+        .get_mut(&id)
+        .and_then(|o| o.permanent.as_mut())
+        .ok_or_else(|| invalid(format!("{id:?} is not a permanent")))?;
+    if level <= perm.level() {
+        return Err(invalid(format!("{id:?} is level {} already", perm.level())));
+    }
+    perm.designations.level = level;
     Ok(())
 }
 

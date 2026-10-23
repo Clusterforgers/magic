@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d09c9cba-fdd2-479b-ad5d-d05181c3e3f9",
+  "name": "Fierce Guardianship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fierce Guardianship",
+      "oracle_fingerprint": "06dde65f05465186c6e3e780bb6180e1",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["Commander", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Not": { "Type": "Creature" } }] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

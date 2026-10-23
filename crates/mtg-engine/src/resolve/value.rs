@@ -24,7 +24,7 @@ use crate::choose::{Choices, Target};
 use crate::combat::AttackTarget;
 use crate::keywords::{self, OptionalKind};
 use crate::layers::{Held, View, outside};
-use crate::object::{Chosen, GameObject, ObjectKind, ObjectRef, PermanentState};
+use crate::object::{Chosen, FaceDown, GameObject, ObjectKind, ObjectRef, PermanentState};
 use crate::snapshot::Snapshot;
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -615,6 +615,19 @@ impl<'a> Scope<'a> {
         Ok(true)
     }
 
+    /// Whether the object is a card in exile that one of the permanents the reference names hid face down (hideaway).
+    fn exiled_with(&self, named: &Ref, reference: ObjectRef) -> Result<bool, ResolveError> {
+        let hidden = self
+            .state
+            .object(reference.id)
+            .filter(|card| card.counter() == reference.counter && card.zone() == Zone::Exile)
+            .and_then(GameObject::face_down);
+        match hidden {
+            Some(FaceDown::Hideaway { by }) => Ok(self.objects(named)?.contains(&by)),
+            _ => Ok(false),
+        }
+    }
+
     /// Whether the object shares a subtype (its printed ones included) with one of the objects the reference names.
     fn shares_subtype(&self, named: &Ref, seen: &Seen<'_>) -> Result<bool, ResolveError> {
         for other in self.objects(named)? {
@@ -652,6 +665,7 @@ impl<'a> Scope<'a> {
             Pred::Other => reference.id != self.source.id,
             Pred::Is(named) => self.objects(named)?.contains(&reference),
             Pred::SharesSubtype(named) => self.shares_subtype(named, seen)?,
+            Pred::ExiledWith(named) => self.exiled_with(named, reference)?,
             Pred::Type(card_type) => seen.chars.types.contains(*card_type),
             Pred::Supertype(supertype) => seen
                 .card
@@ -665,6 +679,7 @@ impl<'a> Scope<'a> {
             Pred::Color(color) => seen.chars.colors.contains(*color),
             Pred::Colorless => seen.chars.colors.is_empty(),
             Pred::Token => seen.kind == ObjectKind::Token,
+            Pred::Commander => state.is_commander(reference.id),
             Pred::Spell => seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability,
             Pred::Ability(kind) => {
                 seen.zone == Zone::Stack
@@ -756,10 +771,9 @@ impl<'a> Scope<'a> {
             StatKind::Toughness => seen.chars.toughness.map(i64::from),
             StatKind::Colors => i64::try_from(seen.chars.colors.iter().count()).ok(),
             // A spell on the stack counts the X it was cast with for each {X} of its cost (CR 202.3e).
-            StatKind::ManaValue => seen.card.map(|c| {
-                let card = c.card();
-                i64::from(card.mana_value() + u32::from(card.x_in_cost) * seen.x)
-            }),
+            StatKind::ManaValue => seen
+                .card
+                .map(|c| i64::from(c.mana_value() + u32::from(c.card().x_in_cost) * seen.x)),
             // The loyalty of a planeswalker on the battlefield is its loyalty counters, as they were if it has left;
             // in any other zone it is the number printed on the card (CR 306.5a, 306.5c). Nothing else has loyalty.
             StatKind::Loyalty => seen.chars.types.contains(CardType::Planeswalker).then(|| {
@@ -1026,6 +1040,19 @@ impl<'a> Scope<'a> {
                 .iter()
                 .any(|player| self.state.has_citys_blessing(*player)),
             Condition::YourTurn => self.state.turn().active() == self.controller,
+            Condition::Level { of, op, level } => {
+                let named = self.objects(of)?;
+                !named.is_empty()
+                    && named.iter().all(|named| {
+                        self.state
+                            .object(named.id)
+                            .filter(|object| object.counter() == named.counter)
+                            .and_then(GameObject::permanent)
+                            .is_some_and(|permanent| {
+                                op.holds(i64::from(permanent.level()), i64::from(*level))
+                            })
+                    })
+            }
             Condition::NewlyControlled(what) => {
                 let named = self.objects(what)?;
                 !named.is_empty()

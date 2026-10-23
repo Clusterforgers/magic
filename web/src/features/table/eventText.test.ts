@@ -82,6 +82,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   TurnedFaceUp: [{ TurnedFaceUp: { object: 3, player: 1 } }, 'Bo turns Forest face up'],
   Mutated: [{ Mutated: { object: 3, spell: 9, over: true, player: 1 } }, 'Bo mutates a creature over Forest'],
   Adapted: [{ Adapted: { object: 3, player: 1 } }, 'Forest adapts'],
+  ClassLevelGained: [{ ClassLevelGained: { object: 3, player: 1, level: 2 } }, 'Forest becomes level 2'],
   Bolstered: [{ Bolstered: { object: 3, player: 1 } }, 'Bo bolsters'],
   CommanderStayed: [{ CommanderStayed: { object: 3 } }, 'Forest stays where it is'],
   MulliganPhaseEnded: ['MulliganPhaseEnded', 'The mulligan phase ends'],
@@ -277,6 +278,17 @@ const MORE: [Event, string][] = [
   [{ ZoneChanged: { object: 3, from: 'Battlefield', to: 'Exile', cause: 'Moved' } }, 'Forest moves to exile'],
   [{ ZoneChanged: { object: 3, from: { Hand: 0 }, to: 'Exile', cause: 'Foretold' } }, 'Forest is foretold'],
   [
+    {
+      ZoneChanged: {
+        object: 3,
+        from: { Library: 0 },
+        to: 'Exile',
+        cause: { Hideaway: { by: { id: 9, counter: 1 } } },
+      },
+    },
+    'Forest is exiled face down',
+  ],
+  [
     { ZoneChanged: { object: 3, from: 'Stack', to: 'Battlefield', cause: 'Moved' } },
     'Forest moves to the battlefield',
   ],
@@ -414,6 +426,16 @@ describe('describeEvent', () => {
 
   it.each(Object.entries(HIDDEN))('says the hidden event %s in one sentence', (_name, [event, text]) => {
     expect(describeEvent({ Hidden: event }, names).text).toBe(text)
+  })
+
+  it('tells the others who hid a card and nothing about it', () => {
+    const hidden: HiddenEvent = {
+      ZoneChanged: { from: { Library: 1 }, to: 'Exile', cause: { Hideaway: { by: { id: 9, counter: 1 } } } },
+    }
+    expect(describeEvent({ Hidden: hidden }, names)).toEqual({
+      text: 'Bo hides a card face down',
+      minor: false,
+    })
   })
 
   it('tells the others who foretold and nothing about the card', () => {
@@ -633,6 +655,14 @@ describe('events with more than one shape', () => {
     [
       effect(objects(1, 2), { ModifyPowerToughness: { power: 3, toughness: 3 } }, 'UntilYourNextTurn'),
       "Grizzly Bears and Hill Giant get +3/+3 until their controller's next turn",
+    ],
+    [
+      effect(objects(2), { Goaded: { by: 1 } }, 'UntilYourNextTurn'),
+      "Hill Giant is goaded until their controller's next turn",
+    ],
+    [
+      effect(objects(1, 2), { Goaded: { by: 1 } }, 'UntilEndOfTurn'),
+      'Grizzly Bears and Hill Giant are goaded until end of turn',
     ],
   ])('says what an effect does (%#)', (created, text) => {
     expect(say({ EffectCreated: { effect: created } })).toBe(text)

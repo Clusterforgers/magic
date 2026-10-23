@@ -72,6 +72,7 @@ const SCALAR_KEYS: &[&str] = &[
     "Winner",
     "Generic",
     "Crew",
+    "Hideaway",
     "Saddle",
     "timestamp",
     "turn",

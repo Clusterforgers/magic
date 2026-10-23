@@ -1,0 +1,25 @@
+{
+  "id": "86fd3454-efe7-4feb-a6ad-069ae2fdbd18",
+  "oracle_id": "117d89b2-b4c0-4421-a631-37810c0e0969",
+  "name": "Fight Rigging",
+  "lang": "en",
+  "layout": "normal",
+  "set": "snc",
+  "collector_number": "145",
+  "rarity": "rare",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Hideaway 5 (When this enchantment enters, look at the top five cards of your library, exile one face down, then put the rest on the bottom in a random order.)\nAt the beginning of combat on your turn, put a +1/+1 counter on target creature you control. Then if you control a creature with power 7 or greater, you may play the exiled card without paying its mana cost.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Hideaway"
+  ]
+}

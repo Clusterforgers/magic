@@ -62,6 +62,7 @@ const RUNS: &[&str] = &[
     "Trigger.Connived",
     "Trigger.Amassed",
     "Trigger.BecomesMonstrous",
+    "Trigger.BecomesLevel",
     "Trigger.TurnedFaceUp",
     "Trigger.Mutates",
     "Trigger.Adapted",
@@ -104,8 +105,10 @@ const RUNS: &[&str] = &[
     "Effect.Shuffle",
     "Effect.Move",
     "Effect.Move.Battlefield",
+    "Effect.Move.Transformed",
     "Effect.ExileUntil",
     "Effect.ExileTop",
+    "Effect.ExileHidden",
     "Effect.CastFromZone",
     "Effect.Destroy",
     "Effect.Exile",
@@ -135,10 +138,12 @@ const RUNS: &[&str] = &[
     "Effect.WinGame",
     "Effect.Surveil",
     "Effect.Proliferate",
+    "Effect.Goad",
     "Effect.Explore",
     "Effect.Connive",
     "Effect.Amass",
     "Effect.Monstrosity",
+    "Effect.BecomeLevel",
     "Effect.Adapt",
     "Effect.Bolster",
     "Effect.Fabricate",
@@ -192,6 +197,7 @@ const RUNS: &[&str] = &[
     "Mod.CantBlock",
     "Mod.CantBeBlocked",
     "Mod.CantBeBlockedBy",
+    "Mod.Goaded",
     "Effect.DelayedTrigger",
     "Effect.If",
     "Effect.May",
@@ -227,6 +233,7 @@ const RUNS: &[&str] = &[
     "Keyword.Buyback",
     "Keyword.Entwine",
     "Ability.AdditionalCost",
+    "Ability.FreeCast",
     "Condition.AdditionalCostPaid",
     "Keyword.Flashback",
     "Keyword.Evoke",
@@ -317,6 +324,7 @@ const RUNS: &[&str] = &[
     "Keyword.Casualty",
     "Keyword.Offspring",
     "Keyword.Demonstrate",
+    "Keyword.Hideaway",
     "ReplaceBy.Devour",
     "Keyword.LevelUp",
     "Keyword.Outlast",
@@ -341,6 +349,7 @@ const RUNS: &[&str] = &[
     "Keyword.Undaunted",
     "Keyword.Encore",
     "Condition.NewlyControlled",
+    "Condition.Level",
     "Rule.CanBeCommander",
 ];
 
@@ -404,6 +413,7 @@ mod tests {
     #[case::shuffling("Effect.Shuffle", true)]
     #[case::moving("Effect.Move", true)]
     #[case::moving_to_the_battlefield("Effect.Move.Battlefield", true)]
+    #[case::moving_to_the_battlefield_transformed("Effect.Move.Transformed", true)]
     #[case::moving_in_a_random_order_to_the_top("Effect.Move.Random.Top", false)]
     #[case::searching("Effect.Search", true)]
     #[case::sacrificing("Effect.Sacrifice", true)]
@@ -570,11 +580,12 @@ mod tests {
     #[case::multikicker("Keyword.Multikicker", true)]
     #[case::surveilling("Effect.Surveil", true)]
     #[case::proliferating("Effect.Proliferate", true)]
-    #[case::goading("Effect.Goad", false)]
+    #[case::goading("Effect.Goad", true)]
     #[case::fighting("Effect.Fight", false)]
     #[case::becoming_the_monarch("Effect.BecomeMonarch", true)]
     #[case::amassing("Effect.Amass", true)]
     #[case::monstrosity("Effect.Monstrosity", true)]
+    #[case::becoming_a_level("Effect.BecomeLevel", true)]
     #[case::adapting("Effect.Adapt", true)]
     #[case::bolstering("Effect.Bolster", true)]
     #[case::fabricating("Effect.Fabricate", true)]
@@ -583,6 +594,7 @@ mod tests {
     #[case::conniving("Effect.Connive", true)]
     #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]
     #[case::exiling_the_top_cards("Effect.ExileTop", true)]
+    #[case::exiling_face_down("Effect.ExileHidden", true)]
     #[case::casting_during_a_resolution("Effect.CastFromZone", true)]
     #[case::cascading("Keyword.Cascade", true)]
     #[case::convoking("Keyword.Convoke", true)]
@@ -628,6 +640,7 @@ mod tests {
     #[case::conniving_triggers("Trigger.Connived", true)]
     #[case::amassing_triggers("Trigger.Amassed", true)]
     #[case::becoming_monstrous_triggers("Trigger.BecomesMonstrous", true)]
+    #[case::becoming_a_level_triggers("Trigger.BecomesLevel", true)]
     #[case::turning_face_up_triggers("Trigger.TurnedFaceUp", true)]
     #[case::adapting_triggers("Trigger.Adapted", true)]
     #[case::bolstering_triggers("Trigger.Bolstered", true)]
@@ -640,6 +653,7 @@ mod tests {
     #[case::the_citys_blessing("Condition.CitysBlessing", true)]
     #[case::unblockable_creatures("Mod.CantBeBlocked", true)]
     #[case::creatures_that_cant_be_blocked_by_some("Mod.CantBeBlockedBy", true)]
+    #[case::goaded_creatures("Mod.Goaded", true)]
     #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", true)]
     #[case::additional_land_plays("Rule.AdditionalLandPlays", true)]
     #[case::commander_eligibility("Rule.CanBeCommander", true)]
@@ -658,6 +672,7 @@ mod tests {
     #[case::dredging("ReplaceBy.Dredge", true)]
     #[case::blitz("Keyword.Blitz", true)]
     #[case::prowl("Keyword.Prowl", true)]
+    #[case::a_conditional_free_cast("Ability.FreeCast", true)]
     #[case::ninjutsu("Keyword.Ninjutsu", true)]
     #[case::joining_an_attack("Effect.JoinAttack", true)]
     #[case::echo("Keyword.Echo", true)]
@@ -678,6 +693,7 @@ mod tests {
     #[case::devour("Keyword.Devour", true)]
     #[case::casualty("Keyword.Casualty", true)]
     #[case::demonstrate("Keyword.Demonstrate", true)]
+    #[case::hideaway("Keyword.Hideaway", true)]
     #[case::offspring("Keyword.Offspring", true)]
     #[case::sacrificing_as_it_enters("ReplaceBy.Devour", true)]
     #[case::level_up("Keyword.LevelUp", true)]
@@ -697,6 +713,7 @@ mod tests {
     #[case::split_second("Keyword.SplitSecond", true)]
     #[case::undaunted("Keyword.Undaunted", true)]
     #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]
+    #[case::a_class_level("Condition.Level", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]
     #[case::the_highest_life_total("Amount.HighestLife", true)]

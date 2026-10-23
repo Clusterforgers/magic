@@ -63,6 +63,10 @@ pub enum Destination {
         /// Enters under this player's control; its owner's when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         under: Option<Ref>,
+        /// Enters with its back face up (CR 712.14a); a card that is not a transforming double-faced card stays where it
+        /// is.
+        #[serde(default, skip_serializing_if = "is_false")]
+        transformed: bool,
         /// Counters it enters with, each kind with its number (undying: one +1/+1 counter).
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         counters: Vec<(CounterKind, u32)>,
@@ -273,6 +277,15 @@ pub enum Effect {
     Exile {
         /// What is exiled.
         what: Ref,
+        /// The name the exiled objects are bound to, as the objects they become in exile (CR 400.7), for the steps that
+        /// return them ("exile this Saga, then return it").
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
+    },
+    /// Exiles objects face down, linked to the source of the effect: the permanent hides them (hideaway, CR 702.75a).
+    ExileHidden {
+        /// What is exiled face down.
+        what: Ref,
     },
     /// The player sacrifices permanents they control that match, of their choice.
     Sacrifice {
@@ -417,7 +430,8 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
-    /// Goads creatures (CR 701.38): they must attack, and a player other than the goader, until the goader's next turn.
+    /// Goads creatures (CR 701.15): until the goader's next turn they attack each combat if able and attack a player
+    /// other than the goader if able.
     Goad {
         /// The creatures goaded.
         what: Ref,
@@ -446,6 +460,12 @@ pub enum Effect {
     Monstrosity {
         /// How many +1/+1 counters.
         count: Amount,
+    },
+    /// The source Class becomes this level (CR 716.2): its level rises to it; a Class already at that level or above does
+    /// nothing.
+    BecomeLevel {
+        /// The level the Class becomes.
+        level: u32,
     },
     /// The source creature adapts (CR 701.46): it gets +1/+1 counters if it has none.
     Adapt {
@@ -509,6 +529,9 @@ pub enum Effect {
         /// It is cast without paying its mana cost (CR 118.9).
         #[serde(default, skip_serializing_if = "is_false")]
         free: bool,
+        /// The card is played, not cast: a land is put onto the battlefield as a land play when its player could play one now, other cards are cast (CR 305.1, 702.75a).
+        #[serde(default, skip_serializing_if = "is_false")]
+        play: bool,
         /// The alternative cost it is cast for (CR 118.9): `Madness` pays the madness cost of the card, `Suspend` pays nothing; the spell remembers it.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         way: Option<CastWay>,
@@ -708,6 +731,7 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
             who: Ref::You,
             what: Ref::Bound(FOUND.to_owned()),
             free: true,
+            play: false,
             way: None,
             otherwise,
         },
@@ -787,6 +811,44 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
     ]
 }
 
+/// The name the cards a hideaway permanent looks at are bound to.
+pub const LOOKED: &str = "looked";
+
+/// The name the card a hideaway permanent exiles face down is bound to.
+pub const HIDDEN: &str = "hidden";
+
+/// The name the cards a hideaway permanent puts on the bottom are bound to.
+pub const UNHIDDEN: &str = "unhidden";
+
+/// The steps of hideaway N (CR 702.75a): the controller looks at the top `count` cards of their library, exiles one face
+/// down, linked to the source, and puts the rest on the bottom in a random order.
+pub fn hideaway(count: Amount) -> Vec<Effect> {
+    vec![
+        Effect::LookAtTop {
+            who: Ref::You,
+            count,
+            bind: LOOKED.to_owned(),
+        },
+        Effect::Choose {
+            who: Ref::You,
+            from: Ref::Bound(LOOKED.to_owned()),
+            count: Bounds::default(),
+            bind: HIDDEN.to_owned(),
+            rest_as: Some(UNHIDDEN.to_owned()),
+        },
+        Effect::ExileHidden {
+            what: Ref::Bound(HIDDEN.to_owned()),
+        },
+        Effect::Move {
+            what: Ref::Bound(UNHIDDEN.to_owned()),
+            to: Destination::Library {
+                place: Place::Bottom,
+                order: Some(Order::Random),
+            },
+        },
+    ]
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: effects read and write the compact forms card files use, with defaults left out, and refuse what is not a field.
@@ -812,7 +874,7 @@ mod tests {
         r#"{"Destroy":{"what":{"Target":0}}}"#
     )]
     #[case::move_to_battlefield_tapped(
-        Effect::Move { what: Ref::Bound("land".into()), to: Destination::Battlefield { tapped: true, under: None, counters: vec![] } },
+        Effect::Move { what: Ref::Bound("land".into()), to: Destination::Battlefield { tapped: true, under: None, transformed: false, counters: vec![] } },
         r#"{"Move":{"what":{"Bound":"land"},"to":{"Battlefield":{"tapped":true}}}}"#
     )]
     #[case::search(

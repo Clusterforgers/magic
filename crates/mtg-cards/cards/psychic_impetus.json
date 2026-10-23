@@ -1,0 +1,26 @@
+{
+  "oracle_id": "47214acc-08c4-4dcb-9a8b-09196ce41045",
+  "name": "Psychic Impetus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychic Impetus",
+      "oracle_fingerprint": "c47bea89d8f09782448ace41e2ef7362",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, "Goaded"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

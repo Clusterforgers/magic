@@ -36,4 +36,8 @@ controller: PlayerId,
 /**
  * What "this" is for the selector.
  */
-source: ObjectRef, } };
+source: ObjectRef, } } | { "Goaded": { 
+/**
+ * The goader.
+ */
+by: PlayerId, } };
