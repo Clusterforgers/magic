@@ -1,0 +1,44 @@
+{
+  "oracle_id": "d9a10971-f32b-4978-952d-fed0a5bc9e36",
+  "name": "Krosan Verge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krosan Verge",
+      "oracle_fingerprint": "e8c1a54ba6c552a3a43fb4d2d875dfa6",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Forest" }], "as": "land" } },
+              {
+                "Search": {
+                  "filter": [{ "Subtype": "Plains" }, { "Not": { "Is": { "Bound": "land" } } }],
+                  "as": "land2"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "land2" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

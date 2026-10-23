@@ -1,0 +1,22 @@
+{
+  "id": "a0e2098f-1d94-491a-a7e9-a45a9f69e3a8",
+  "oracle_id": "2549bc57-9ffb-4053-9f10-f2a5f792b845",
+  "name": "Myriad Landscape",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoc",
+  "collector_number": "169",
+  "rarity": "uncommon",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land enters tapped.\n{T}: Add {C}.\n{2}, {T}, Sacrifice this land: Search your library for up to two basic land cards that share a land type, put them onto the battlefield tapped, then shuffle.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "C"
+  ]
+}

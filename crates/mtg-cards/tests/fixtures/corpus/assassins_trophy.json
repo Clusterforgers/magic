@@ -1,0 +1,25 @@
+{
+  "id": "aaf258fc-3ba4-4b83-bdbf-10a07e0b6c03",
+  "oracle_id": "ac10d218-f9a6-4058-9cda-a15ca1b0b7b5",
+  "name": "Assassin's Trophy",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "294",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{B}{G}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Destroy target permanent an opponent controls. Its controller may search their library for a basic land card, put it onto the battlefield, then shuffle.",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": []
+}

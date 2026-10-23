@@ -12,11 +12,11 @@ fn trigger(text: &str) -> Option<Ability> {
 #[rstest]
 #[case::path_to_exile(
     "Exile target creature. Its controller may search their library for a basic land card, put that card onto the battlefield tapped, then shuffle.",
-    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Exile":{"what":{"Target":0}}},{"May":{"who":{"ControllerOf":{"Target":0}},"effects":[{"Search":{"who":{"ControllerOf":{"Target":0}},"filter":[{"Supertype":"Basic"},{"Type":"Land"}],"as":"land"}},{"Move":{"what":{"Bound":"land"},"to":{"Battlefield":{"tapped":true}}}},{"Shuffle":{"who":{"ControllerOf":{"Target":0}}}}]}}]}}"#
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Exile":{"what":{"Target":0}}},{"May":{"who":{"ControllerOf":{"Target":0}},"effects":[{"Search":{"who":{"ControllerOf":{"Target":0}},"filter":[{"Supertype":"Basic"},{"Type":"Land"}],"as":"their_land"}},{"Move":{"what":{"Bound":"their_land"},"to":{"Battlefield":{"tapped":true}}}},{"Shuffle":{"who":{"ControllerOf":{"Target":0}}}}]}}]}}"#
 )]
 #[case::ghost_quarter(
     "Destroy target land. Its controller may search their library for a basic land card, put it onto the battlefield, then shuffle.",
-    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Land"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}},{"May":{"who":{"ControllerOf":{"Target":0}},"effects":[{"Search":{"who":{"ControllerOf":{"Target":0}},"filter":[{"Supertype":"Basic"},{"Type":"Land"}],"as":"land"}},{"Move":{"what":{"Bound":"land"},"to":{"Battlefield":{}}}},{"Shuffle":{"who":{"ControllerOf":{"Target":0}}}}]}}]}}"#
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Land"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}},{"May":{"who":{"ControllerOf":{"Target":0}},"effects":[{"Search":{"who":{"ControllerOf":{"Target":0}},"filter":[{"Supertype":"Basic"},{"Type":"Land"}],"as":"their_land"}},{"Move":{"what":{"Bound":"their_land"},"to":{"Battlefield":{}}}},{"Shuffle":{"who":{"ControllerOf":{"Target":0}}}}]}}]}}"#
 )]
 fn the_controller_of_a_removed_permanent_may_search(#[case] text: &str, #[case] json: &str) {
     reads_as(text, ClauseKind::Spell, false, json);
@@ -51,6 +51,9 @@ fn a_search_by_a_controller_writes_back_as_the_text(#[case] text: &str) {
 )]
 #[case(
     "{2}, {T}, Sacrifice this land: Destroy target nonbasic land an opponent controls. That land's controller may search their library for a basic land card, put it onto the battlefield, then shuffle."
+)]
+#[case::and_then_you_search_too(
+    "{2}, {T}, Sacrifice this land: Destroy target nonbasic land an opponent controls. That land's controller may search their library for a basic land card, put it onto the battlefield, then shuffle. You may search your library for a basic land card, put it onto the battlefield, then shuffle."
 )]
 fn an_activation_that_destroys_a_land_lets_its_controller_search(#[case] text: &str) {
     assert!(activated(text).is_some(), "{text}");

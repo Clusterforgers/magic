@@ -1,0 +1,44 @@
+{
+  "oracle_id": "2ec4288e-34c6-4831-a2c0-ba1ca1d9d1dc",
+  "name": "Ghost Quarter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghost Quarter",
+      "oracle_fingerprint": "888ee97ca201f2bd870a8aae10831de9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "May": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "effects": [
+                    {
+                      "Search": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                        "as": "their_land"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "their_land" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

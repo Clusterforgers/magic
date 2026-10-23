@@ -210,9 +210,6 @@ fn capitalize(text: &str) -> String {
     "Search your library and graveyard for a card, put it into your hand, then shuffle."
 )]
 #[case::a_name("Search your library for a card named Island, put it into your hand, then shuffle.")]
-#[case::two_kinds(
-    "Search your library for a basic land card and a creature card, put them into your hand, then shuffle."
-)]
 #[case::different_kinds_in_two_places(
     "Search your library for a basic land card, put it onto the battlefield, put a creature card into your hand, then shuffle."
 )]

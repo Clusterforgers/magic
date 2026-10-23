@@ -73,9 +73,6 @@ fn a_list_of_basic_land_types_in_an_activation_reads_and_writes_back(#[case] tex
 #[case::a_dangling_comma(
     "Search your library for a Plains, Island, card, put it onto the battlefield, then shuffle."
 )]
-#[case::two_separate_cards(
-    "Search your library for a Forest card and a Plains card, put them onto the battlefield tapped, then shuffle."
-)]
 fn a_list_that_is_not_worded_that_way_stays_unread(#[case] text: &str) {
     assert!(spell(text).is_none(), "{text}");
 }

@@ -1,0 +1,68 @@
+{
+  "oracle_id": "93953926-a644-49bb-9b5a-4c8f19114c7e",
+  "name": "Demolition Field",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demolition Field",
+      "oracle_fingerprint": "84a8771139d9080caa0f97f3dc725c81",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Land" },
+                    { "Not": { "Supertype": "Basic" } },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "May": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "effects": [
+                    {
+                      "Search": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                        "as": "their_land"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "their_land" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+                  ]
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                        "as": "land"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

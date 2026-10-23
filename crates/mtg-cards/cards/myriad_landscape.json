@@ -1,0 +1,56 @@
+{
+  "oracle_id": "2549bc57-9ffb-4053-9f10-f2a5f792b845",
+  "name": "Myriad Landscape",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myriad Landscape",
+      "oracle_fingerprint": "44f681e59525f03b2c6e172631e35a7f",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": { "min": 0, "max": 1 },
+                  "as": "land"
+                }
+              },
+              {
+                "Search": {
+                  "filter": [
+                    { "Supertype": "Basic" },
+                    { "Type": "Land" },
+                    { "SharesSubtype": { "Bound": "land" } },
+                    { "Not": { "Is": { "Bound": "land" } } }
+                  ],
+                  "count": { "min": 0, "max": 1 },
+                  "as": "land2"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "land2" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

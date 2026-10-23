@@ -1,0 +1,23 @@
+{
+  "id": "22e08a78-55b7-46b0-bd1a-a51548fc1861",
+  "oracle_id": "d683d985-9888-4d21-8b5f-69e69ce4a03b",
+  "name": "Path to Exile",
+  "lang": "en",
+  "layout": "normal",
+  "set": "frc",
+  "collector_number": "30",
+  "rarity": "uncommon",
+  "released_at": "2026-10-02",
+  "digital": false,
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Exile target creature. Its controller may search their library for a basic land card, put that card onto the battlefield tapped, then shuffle.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

@@ -626,6 +626,26 @@ impl<'a> Scope<'a> {
             Pred::This => reference.id == self.source.id,
             Pred::Other => reference.id != self.source.id,
             Pred::Is(named) => self.objects(named)?.contains(&reference),
+            Pred::SharesSubtype(named) => {
+                let mut shares = false;
+                for other in self.objects(named)? {
+                    shares |= self.seen(other).is_some_and(|theirs| {
+                        let printed = theirs.card.map(|c| c.card().subtypes.as_slice());
+                        theirs
+                            .chars
+                            .subtypes
+                            .iter()
+                            .chain(printed.unwrap_or_default())
+                            .any(|subtype| {
+                                seen.chars.has_subtype(&[], subtype)
+                                    || seen.card.is_some_and(|c| {
+                                        seen.chars.has_subtype(&c.card().subtypes, subtype)
+                                    })
+                            })
+                    });
+                }
+                shares
+            }
             Pred::Type(card_type) => seen.chars.types.contains(*card_type),
             Pred::Supertype(supertype) => seen
                 .card

@@ -10,7 +10,7 @@
           "cost": ["Tap", "SacrificeSelf"],
           "timing": "Sorcery",
           "effects": [
-            { "ExileTop": { "count": 1, "as": "impulse" } },
+            { "ExileTop": { "as": "impulse" } },
             {
               "Rule": {
                 "rule": {

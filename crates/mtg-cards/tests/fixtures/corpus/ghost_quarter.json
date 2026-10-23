@@ -1,0 +1,22 @@
+{
+  "id": "12f8071c-8955-4aa2-889c-6043df047223",
+  "oracle_id": "2ec4288e-34c6-4831-a2c0-ba1ca1d9d1dc",
+  "name": "Ghost Quarter",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cm2",
+  "collector_number": "253",
+  "rarity": "uncommon",
+  "released_at": "2018-06-08",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{T}, Sacrifice this land: Destroy target land. Its controller may search their library for a basic land card, put it onto the battlefield, then shuffle.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "C"
+  ]
+}

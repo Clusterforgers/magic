@@ -39,6 +39,7 @@ mod levels;
 mod library;
 mod life_gain;
 mod modal;
+mod pairs;
 mod payments;
 mod prevention;
 mod pronouns;

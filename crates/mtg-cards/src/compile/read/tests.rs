@@ -202,6 +202,7 @@ mod returns;
 mod reveal;
 mod search_by_controller;
 mod search_lists;
+mod search_pairs;
 mod spell_copies;
 mod statics;
 mod stations;

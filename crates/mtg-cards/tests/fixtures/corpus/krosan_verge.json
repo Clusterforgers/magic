@@ -1,0 +1,22 @@
+{
+  "id": "19fc5bec-f877-430c-8e83-e6c5fe97f3c4",
+  "oracle_id": "d9a10971-f32b-4978-952d-fed0a5bc9e36",
+  "name": "Krosan Verge",
+  "lang": "en",
+  "layout": "normal",
+  "set": "otc",
+  "collector_number": "304",
+  "rarity": "uncommon",
+  "released_at": "2024-04-19",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land enters tapped.\n{T}: Add {C}.\n{2}, {T}, Sacrifice this land: Search your library for a Forest card and a Plains card, put them onto the battlefield tapped, then shuffle.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "C"
+  ]
+}
