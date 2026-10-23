@@ -1479,11 +1479,7 @@ impl Writer<'_> {
             | Effect::Move {
                 to: Destination::Library { .. },
                 ..
-            } => self
-                .library(effect)
-                .or_else(|| mass_moves::text(effect))
-                .or_else(|| cast::text(effect))
-                .or_else(|| self.keyword_action(effect))?,
+            } => self.library(effect).or_else(|| self.moved(effect))?,
             Effect::Sacrifice {
                 who: Ref::You,
                 filter,
@@ -1502,11 +1498,7 @@ impl Writer<'_> {
             Effect::Move {
                 what,
                 to: Destination::Hand,
-            } => self
-                .returned_to_hand(what)
-                .or_else(|| mass_moves::text(effect))
-                .or_else(|| cast::text(effect))
-                .or_else(|| self.keyword_action(effect))?,
+            } => self.returned_to_hand(what).or_else(|| self.moved(effect))?,
             Effect::AddMana {
                 who: Ref::You,
                 mana,
@@ -1596,6 +1588,13 @@ impl Writer<'_> {
             )),
             _ => None,
         }
+    }
+
+    /// A move that is a mass move, a cast or a keyword action.
+    fn moved(&mut self, effect: &Effect) -> Option<String> {
+        mass_moves::text(effect)
+            .or_else(|| cast::text(effect))
+            .or_else(|| self.keyword_action(effect))
     }
 
     /// The effects with a wording of their own: a card returned to the battlefield, the casting and the keyword actions.

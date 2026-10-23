@@ -4,6 +4,7 @@
 use mtg_cards::value::CastWay;
 use mtg_engine::choose::{NumberChoice, YesNoChoice};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
+use mtg_engine::object::PermanentState;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, PresetPermanent};
 use mtg_testkit::cards::{forest, free_creature, island, mountain, plains, study};
@@ -23,12 +24,12 @@ fn settle(driver: &mut Driver, seats: usize) -> Result<(), ScriptError> {
 
 /// A table where every seat holds a creature called `Bear <seat>` and three Forests in the library, and seat 0 holds
 /// the card `spell` with `lands` on the table.
-fn table(seats: usize, spell: &str, mana: Vec<PresetPermanent>) -> Scenario {
+fn table(seats: usize, spell: &str, mana: &[PresetPermanent]) -> Scenario {
     let mut scenario = Scenario::new(seats).hand_named(0, [spell]);
     for seat in 0..seats {
         let mut permanents = vec![ready(free_creature(&format!("Bear {seat}"), 2, 2))];
         if seat == 0 {
-            permanents.extend(mana.clone());
+            permanents.extend(mana.to_vec());
         }
         scenario = scenario
             .battlefield(seat, permanents)
@@ -50,7 +51,7 @@ fn terminus_puts_every_creature_on_the_bottom_of_its_owners_library(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
     let driver = cast_and_resolve(
-        table(seats, "Terminus", lands(6, plains)),
+        table(seats, "Terminus", &lands(6, plains)),
         "Terminus",
         seats,
     )?;
@@ -78,7 +79,7 @@ fn devastation_tide_returns_every_nonland_permanent_and_keeps_the_lands(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
     let driver = cast_and_resolve(
-        table(seats, "Devastation Tide", lands(5, island)),
+        table(seats, "Devastation Tide", &lands(5, island)),
         "Devastation Tide",
         seats,
     )?;
@@ -97,7 +98,7 @@ fn devastation_tide_returns_every_nonland_permanent_and_keeps_the_lands(
 fn redress_fate_returns_the_artifacts_and_enchantments_of_your_graveyard_only(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let scenario = table(seats, "Redress Fate", lands(8, plains))
+    let scenario = table(seats, "Redress Fate", &lands(8, plains))
         .graveyard_named(0, ["Sol Ring", "Greater Good", "Terminus"])
         .graveyard_named(1, ["Sol Ring"]);
     let driver = cast_and_resolve(scenario, "Redress Fate", seats)?;
@@ -119,7 +120,7 @@ fn reforge_the_soul_gives_every_seat_a_new_hand_of_seven(
     #[values(2, 3, 4)] seats: usize,
     #[values(0, 2, 5)] held: usize,
 ) -> Result<(), ScriptError> {
-    let mut scenario = table(seats, "Reforge the Soul", lands(5, mountain));
+    let mut scenario = table(seats, "Reforge the Soul", &lands(5, mountain));
     for seat in 0..seats {
         scenario = scenario.library(seat, vec![forest(); 9]);
     }
@@ -217,7 +218,7 @@ fn a_miracle_cost_with_x_announces_x_and_pays_one_mana_for_each(
             driver
                 .state()
                 .object(**id)
-                .is_some_and(|o| o.permanent().is_some_and(|p| p.tapped()))
+                .is_some_and(|o| o.permanent().is_some_and(PermanentState::tapped))
         })
         .count();
     assert_eq!(tapped, usize::try_from(x).unwrap() + 2);
@@ -248,7 +249,7 @@ fn a_miracle_with_x_that_cannot_pay_its_colored_mana_is_not_asked(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
     let driver = asked(seats, 1)?;
-    assert!(driver.state().zone(Zone::Stack).is_empty());
+    assert_eq!(driver.state().zone(Zone::Stack), []);
     assert!(names(driver.state(), Zone::Hand(pid(0))).contains(&"Entreat the Angels".to_owned()));
     Ok(())
 }
@@ -281,11 +282,36 @@ fn the_printed_cost_pays_x_for_each_of_its_two_symbols(
             driver
                 .state()
                 .object(**id)
-                .is_some_and(|o| o.permanent().is_some_and(|p| p.tapped()))
+                .is_some_and(|o| o.permanent().is_some_and(PermanentState::tapped))
         })
         .count();
     assert_eq!(tapped, 3 + 2 * usize::try_from(x).unwrap());
     settle(&mut driver, seats)?;
     assert_eq!(angels(&driver), usize::try_from(x).unwrap());
+    Ok(())
+}
+
+#[rstest]
+fn terminus_ends_a_token_and_orders_only_the_cards(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let scenario = table(seats, "Terminus", &lands(11, plains))
+        .hand_named(0, ["Entreat the Angels", "Terminus"]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.begin_cast("Entreat the Angels")?;
+    driver.answer(Answer::ChooseNumber(NumberChoice::Number(1)))?;
+    pay(&mut driver)?;
+    settle(&mut driver, seats)?;
+    assert_eq!(angels(&driver), 1);
+    driver.begin_cast("Terminus")?;
+    pay(&mut driver)?;
+    settle(&mut driver, seats)?;
+    assert_eq!(angels(&driver), 0);
+    let library = names(driver.state(), Zone::Library(pid(0)));
+    assert_eq!(
+        library.len(),
+        4,
+        "the token is not in the library: {library:?}"
+    );
     Ok(())
 }

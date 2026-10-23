@@ -99,7 +99,7 @@ pub(crate) fn alternative_x(state: &GameState, id: ObjectId, way: CastWay) -> u3
     keywords_of(state, id)
         .into_iter()
         .find_map(|keyword| match keyword {
-            Keyword::Miracle(cost) => cast_cost_x(&cost).map(|(_, _, x)| x),
+            Keyword::Miracle(cost) => cast_cost_x(cost).map(|(_, _, x)| x),
             _ => None,
         })
         .unwrap_or(0)

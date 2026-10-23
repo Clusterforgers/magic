@@ -1,4 +1,4 @@
-//! Goal: whole bot games at two, three and four seats with miracle cards (Sister Repentia, Thunderous Wrath, Vanishment) and cards that draw and discard keep every invariant, and across the seeds miracle triggers wait on the stack, cards are cast for their miracle cost and some miracle triggers end with the card still in the hand.
+//! Goal: whole bot games at two, three and four seats with miracle cards (Sister Repentia, Thunderous Wrath, Vanishment, Terminus, Devastation Tide, Banishing Stroke, Redress Fate, Reforge the Soul, Entreat the Angels) and cards that draw and discard keep every invariant, and across the seeds miracle triggers wait on the stack, cards are cast for their miracle cost and some miracle triggers end with the card still in the hand.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeMap;
@@ -31,6 +31,13 @@ fn bot_games_with_miracle_cards_keep_every_invariant() {
                     {
                         *seen.entry("miracle triggered").or_default() += 1;
                     }
+                    Event::SpellCast { choices, .. }
+                        if choices.way == Some(CastWay::Miracle)
+                            && choices.x.is_some_and(|x| x > 0) =>
+                    {
+                        *seen.entry("cast for miracle with X").or_default() += 1;
+                        *seen.entry("cast for miracle").or_default() += 1;
+                    }
                     Event::SpellCast { choices, .. } if choices.way == Some(CastWay::Miracle) => {
                         *seen.entry("cast for miracle").or_default() += 1;
                     }
@@ -40,7 +47,11 @@ fn bot_games_with_miracle_cards_keep_every_invariant() {
         }
     });
     let seen = seen.into_inner().unwrap();
-    for what in ["miracle triggered", "cast for miracle"] {
+    for what in [
+        "miracle triggered",
+        "cast for miracle",
+        "cast for miracle with X",
+    ] {
         assert!(
             seen.get(what).copied().unwrap_or(0) > 0,
             "never seen: {what}: {seen:?}"
