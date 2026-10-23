@@ -166,6 +166,7 @@ mod cast_cost_paid;
 mod cast_self;
 mod cast_spell_kinds;
 mod chapters;
+mod choice_writers;
 mod chosen_color;
 mod class;
 mod combination_mana;

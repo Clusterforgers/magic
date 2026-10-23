@@ -61,6 +61,10 @@ fn writes(json: &str, text: &str) -> bool {
     r#"{"Static":{"affected":"Attached","mods":["Goaded"]}}"#,
     "Enchanted creature is goaded."
 )]
+#[case::baeloth_barrityl_goads_weaker_creatures(
+    r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"Opponents"},{"Compare":{"stat":"Power","op":"Lt","to":{"Stat":{"of":"This","stat":"Power"}}}}]},"mods":["Goaded"]}}"#,
+    "Creatures your opponents control with power less than ~'s power are goaded."
+)]
 #[case::an_equipped_creature_loses_abilities(
     r#"{"Static":{"affected":"Attached","mods":["LoseAbilities",{"SetPT":{"power":0,"toughness":1}}]}}"#,
     "Equipped creature loses all abilities and has base power and toughness 0/1."

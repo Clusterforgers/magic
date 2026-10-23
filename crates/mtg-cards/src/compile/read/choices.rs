@@ -16,6 +16,10 @@ fn header(choose: &Bounds, modes: usize) -> Option<String> {
         Some(_) => return None,
         None => None,
     };
+    // A card never asks for more modes than it has.
+    if most.is_some_and(|most| usize::try_from(most).map_or(true, |most| most > modes)) {
+        return None;
+    }
     let word = |number: u32| count_word(number);
     let words = match (choose.min, most) {
         (1, Some(1)) => "one".to_owned(),
