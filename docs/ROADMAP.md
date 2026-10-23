@@ -60,6 +60,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Manual cards: the `manual_play` flag of a table, stored with the game when it starts and listed by the game browser and the game lookup
 - Mana ability wordings: the storage-counter lands (an X of counters removed from the source for X mana in any combination of types), a combination counted by a where clause and restrictions by a subtype of spells and abilities (Crucible of the Spirit Dragon)
 - Tooling: `scripts/check.sh` with test slots, `scripts/agent-status.sh`, the quick test-time suite, derived corpus counts, current Cargo dependencies
+- Reference engines: Forge, XMage and Magarena surveyed for licence, card format, scale and fit to the compiler's readings (`docs/reference-engines.md`)
 
 ## M3 Card system
 
@@ -144,8 +145,10 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c9c) Verified corpus cards for Doctor's companion, Partner—text, Choose a Background (with a Background) and a planeswalker that can be a commander, each once its other text is a card the engine runs
 
 ### Model-assisted reading
-- [~] (r1) (branch r1-reference-engines) Forge, XMage and Magarena surveyed in `docs/reference-engines.md`: licence, card format, scale and what can cross-check or feed our readings
 - [~] (r2) (branch r2-model-reader) A model-assisted reader pilot: a rules checker (valid, reads back as the printed text, support state with its blockers) and a seeded sample of unread cards written as rules by a model, with the yield per outcome; the result decides an automated proposer
+- [ ] (r1a) A cross-check report of the compiler against Forge's scripts: a reader of the script lines, a map from the 60 most used APIs and the trigger and static modes to DSL verbs, the verbs Forge names that a compiled card lacks, and the unread tail grouped by Forge API and key (`docs/reference-engines.md`)
+- [ ] (r1b) The reader pilot's (r2) prompt takes its examples from Forge's pairs of a clause and its script parts by nearest wording, fetched at run time and never committed; examples kept in the repository come from XMage with its MIT notice
+- [ ] (r1c) Rules proposals converted from Forge scripts for the API families the (r1a) report shows unread, each passing the structure checks and the oracle fingerprint; the GPLv3 conditions for rules that reach browsers are decided first
 
 ### Layouts
 - [ ] (c11) Rooms, Battles, Read ahead, the `prepare` layout (a "prepared" designation set by "enters prepared" and "becomes prepared", and a cast of a copy of the spell face from the battlefield that unprepares it, `docs/engine.md`), extra turns and extra combats (`Effect::ExtraTurn` is a stub), the initiative and dungeons, and the remaining long-tail mechanics found by the report, one task each
