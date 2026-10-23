@@ -419,6 +419,11 @@ pub enum Effect {
         /// What transforms.
         what: Ref,
     },
+    /// Flips flip cards (CR 710): a flip card on the battlefield becomes its bottom half and stays so until it leaves.
+    Flip {
+        /// What flips.
+        what: Ref,
+    },
     /// The player surveils (CR 701.25): looks at the top cards of their library and puts any into the graveyard.
     Surveil {
         /// Who surveils.

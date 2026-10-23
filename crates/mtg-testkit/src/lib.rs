@@ -41,6 +41,7 @@ pub mod expect;
 pub mod extra_cost_cards;
 pub mod face_cards;
 pub mod family_cards;
+pub mod flip_cards;
 pub mod foretell_cards;
 pub mod free_cast_cards;
 pub mod gift_cards;
@@ -129,6 +130,7 @@ pub use exile_until_cards::{EXILE_UNTIL_CARDS, SPENT_CARDS, exile_until_fuzz_set
 pub use extra_cost_cards::extra_cost_fuzz_setup;
 pub use face_cards::face_fuzz_setup;
 pub use family_cards::families_fuzz_setup;
+pub use flip_cards::{FLIP_CARDS, flip_fuzz_setup};
 pub use foretell_cards::foretell_fuzz_setup;
 pub use free_cast_cards::{FREE_CAST_CARDS, STRIVE_CARDS, free_cast_fuzz_setup};
 pub use gift_cards::gift_fuzz_setup;
