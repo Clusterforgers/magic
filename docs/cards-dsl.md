@@ -684,6 +684,8 @@ Vocabulary of other engines against this DSL. Sources: P = phase.rs (MIT or Apac
 | Implicit memory (`RememberCard`, `TrackedSet`, `LastCreated`, `ParentTarget`, `Imprint`) | P, F | not used: `as` and `Bound` name results and are validated |
 | Conditions split by context (ability, trigger, static, replacement) | P | not used: one `Condition`, validated per position |
 
+`mtg-cli forge-check --forge <Forge checkout>` sets the stored precon cards against Forge's scripts, which are read at run time and never stored: the verbs Forge names that the rules lack, and the unread tail grouped by Forge API and key (`reference-engines.md`, Cross-check report). Its map from Forge names to the verbs of this DSL is `crates/mtg-cli/src/forge/map.txt`.
+
 ## Tasks
 
 The order of the M3 work; `ROADMAP.md` lists the pieces. A structural task changes how abilities, characteristics, events, costs or views are shaped, so it runs alone and before the tasks that fill one stub. The rows after (c) are in build order.

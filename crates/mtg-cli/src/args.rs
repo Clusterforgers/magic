@@ -48,6 +48,8 @@ pub enum Command {
     Compile(CompileArgs),
     /// Check proposed rules files (written by hand or by a model) against stored cards: valid, read back as the printed text, and their support state.
     CheckRules(CheckRulesArgs),
+    /// Cross-check the rules of the stored precon cards against Forge's card scripts, read from a local checkout: the verbs Forge names that the rules lack, and the unread tail grouped by Forge API and key.
+    ForgeCheck(ForgeCheckArgs),
 }
 
 /// What `fetch` downloads.
@@ -101,6 +103,31 @@ pub struct CoverageArgs {
     /// How many blockers each of the two rankings shows.
     #[arg(long, value_name = "N", default_value_t = mtg_cards::coverage::DEFAULT_TOP)]
     pub top: usize,
+}
+
+/// Options of `forge-check`.
+#[derive(Debug, Args)]
+pub struct ForgeCheckArgs {
+    /// A local checkout of Forge, or its `forge-gui/res/cardsfolder` directory: the scripts are read from it at run time
+    /// and nothing of them is stored.
+    #[arg(long, value_name = "DIR")]
+    pub forge: PathBuf,
+
+    /// Only the precons whose code is this (any case) or whose name contains it (any case).
+    #[arg(long, value_name = "CODE_OR_NAME", value_parser = clap::builder::NonEmptyStringValueParser::new())]
+    pub deck: Option<String>,
+
+    /// How many rows each ranking shows.
+    #[arg(long, value_name = "N", default_value_t = 20)]
+    pub top: usize,
+
+    /// How many keys a row of the unread tail names.
+    #[arg(long, value_name = "N", default_value_t = 6)]
+    pub keys: usize,
+
+    /// Write the whole report, with a line for every card, to this file; the summary is printed.
+    #[arg(long, value_name = "FILE")]
+    pub out: Option<PathBuf>,
 }
 
 /// Options of `compile`.
@@ -333,6 +360,36 @@ mod tests {
             ])
             .is_err()
         );
+    }
+
+    #[rstest]
+    #[case(&["mtg-cli", "forge-check", "--forge", "f"], "f", None, (20, 6), None)]
+    #[case(&["mtg-cli", "forge-check", "--forge", "f", "--deck", "C21", "--top", "5", "--keys", "9", "--out", "r.txt"], "f", Some("C21"), (5, 9), Some("r.txt"))]
+    fn forge_check_options_land_in_their_fields(
+        #[case] args: &[&str],
+        #[case] forge: &str,
+        #[case] deck: Option<&str>,
+        #[case] rows: (usize, usize),
+        #[case] out: Option<&str>,
+    ) {
+        let cli = Cli::try_parse_from(args).unwrap();
+        let Command::ForgeCheck(args) = cli.command else {
+            panic!("expected forge-check");
+        };
+        assert_eq!(
+            (
+                args.forge,
+                args.deck.as_deref(),
+                (args.top, args.keys),
+                args.out
+            ),
+            (PathBuf::from(forge), deck, rows, out.map(PathBuf::from))
+        );
+    }
+
+    #[test]
+    fn forge_check_needs_the_checkout() {
+        assert!(Cli::try_parse_from(["mtg-cli", "forge-check"]).is_err());
     }
 
     #[rstest]
