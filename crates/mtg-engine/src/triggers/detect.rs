@@ -134,6 +134,18 @@ enum Happened {
     Amassed { player: PlayerId },
     /// A creature became monstrous.
     Monstrous { object: ObjectId, player: PlayerId },
+    /// A Vehicle became crewed, the `nth` time of the turn.
+    Crewed {
+        object: ObjectId,
+        player: PlayerId,
+        nth: u32,
+    },
+    /// A Mount became saddled, the `nth` time of the turn.
+    Saddled {
+        object: ObjectId,
+        player: PlayerId,
+        nth: u32,
+    },
     /// A Class became a higher level.
     ClassLevel {
         object: ObjectId,
@@ -183,6 +195,8 @@ impl Happened {
             Happened::Drew { nth, .. }
             | Happened::Cast { nth, .. }
             | Happened::Attacked { nth, .. }
+            | Happened::Crewed { nth, .. }
+            | Happened::Saddled { nth, .. }
             | Happened::Targeted { nth, .. }
             | Happened::Damaged { nth, .. }
             | Happened::LifeGained { nth, .. } => Some(*nth),
@@ -437,6 +451,15 @@ fn before(look: Look<'_>, id: ObjectId) -> Option<ObjectRef> {
     object.map(GameObject::reference)
 }
 
+/// What a crew ability counts for its Vehicle, and a saddle ability for its Mount.
+const fn crewed_tally(saddle: bool) -> Tally {
+    if saddle {
+        Tally::Saddled
+    } else {
+        Tally::Crewed
+    }
+}
+
 /// Which time of the turn the event of `kind` is for `object` (caused by what `by` controls, when it is given): the count
 /// after the batch less the events of that kind for the object that follow it in the batch.
 fn object_ordinal(look: Look<'_>, object: ObjectRef, by: Option<PlayerId>, kind: Tally) -> u32 {
@@ -462,6 +485,12 @@ fn object_ordinal(look: Look<'_>, object: ObjectRef, by: Option<PlayerId>, kind:
         (Tally::Targeted, Event::AbilityPutOnStack(put)) => {
             by_them(put.controller) && put.choices.targeted_objects().contains(&object)
         }
+        (
+            Tally::Crewed | Tally::Saddled,
+            Event::Crewed {
+                object: of, saddle, ..
+            },
+        ) => *of == object.id && crewed_tally(*saddle) == kind,
         (Tally::Targeted, Event::SpellCopied(copy)) => {
             by_them(copy.controller) && copy.choices.targeted_objects().contains(&object)
         }
@@ -621,6 +650,30 @@ fn about_players_and_permanents(
             object: *object,
             player: *player,
         }),
+        Event::Crewed {
+            object,
+            player,
+            saddle,
+            ..
+        } => {
+            let nth = before(look, *object).map_or(0, |named| {
+                object_ordinal(look, named, None, crewed_tally(*saddle))
+            });
+            let (object, player) = (*object, *player);
+            found.push(if *saddle {
+                Happened::Saddled {
+                    object,
+                    player,
+                    nth,
+                }
+            } else {
+                Happened::Crewed {
+                    object,
+                    player,
+                    nth,
+                }
+            });
+        }
         Event::ClassLevelGained {
             object,
             player,
@@ -934,6 +987,22 @@ fn matching_permanents(
             Happened::Monstrous {
                 object: actor,
                 player,
+            },
+        )
+        | (
+            TriggerPattern::BecomesCrewed { what },
+            Happened::Crewed {
+                object: actor,
+                player,
+                ..
+            },
+        )
+        | (
+            TriggerPattern::BecomesSaddled { what },
+            Happened::Saddled {
+                object: actor,
+                player,
+                ..
             },
         )
         | (
@@ -1534,6 +1603,8 @@ mod tests {
     #[case::amassing(r#"{"Amassed":{}}"#)]
     #[case::bolstering(r#"{"Bolstered":{}}"#)]
     #[case::becoming_monstrous(r#"{"BecomesMonstrous":{"what":[]}}"#)]
+    #[case::becoming_crewed(r#"{"BecomesCrewed":{"what":[]}}"#)]
+    #[case::becoming_saddled(r#"{"BecomesSaddled":{"what":[]}}"#)]
     #[case::being_turned_face_up(r#"{"TurnedFaceUp":{"what":[]}}"#)]
     #[case::adapting(r#"{"Adapted":{"what":[]}}"#)]
     #[case::mutating(r#"{"Mutates":{"what":[]}}"#)]

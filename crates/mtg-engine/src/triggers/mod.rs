@@ -9,6 +9,8 @@ mod detect;
 #[cfg(test)]
 mod detect_batches;
 #[cfg(test)]
+mod detect_crewed;
+#[cfg(test)]
 mod detect_events;
 #[cfg(test)]
 mod detect_nth;

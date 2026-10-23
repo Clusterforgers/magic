@@ -32,11 +32,14 @@ impl KeywordRules for Saddle {
             limit: None,
             from: ZoneKind::Battlefield,
             targets: Vec::new(),
-            effects: vec![Effect::Continuous {
-                affected: Ref::This,
-                mods: vec![Modification::AddKeyword(Keyword::Saddled)],
-                duration: Duration::UntilEndOfTurn,
-            }],
+            effects: vec![
+                Effect::Continuous {
+                    affected: Ref::This,
+                    mods: vec![Modification::AddKeyword(Keyword::Saddled)],
+                    duration: Duration::UntilEndOfTurn,
+                },
+                Effect::Crewed { saddle: true },
+            ],
         }]
     }
 }
@@ -49,7 +52,7 @@ impl KeywordRules for Saddled {}
 
 #[cfg(test)]
 mod tests {
-    //! Goal: Saddle N adds one sorcery-speed activated ability that taps other creatures with total power N or more and makes its source saddled until end of turn, for every N, and no other keyword adds it.
+    //! Goal: Saddle N adds one sorcery-speed activated ability that taps other creatures with total power N or more and makes its source saddled by them until end of turn, for every N, and no other keyword adds it.
     use mtg_cards::ability::Ability;
     use rstest::rstest;
 
@@ -57,7 +60,7 @@ mod tests {
 
     fn written(power: u32) -> Ability {
         serde_json::from_str(&format!(
-            r#"{{"Activated":{{"cost":[{{"TapPower":{{"filter":[{{"Type":"Creature"}},"Other"],"power":{power}}}}}],"timing":"Sorcery","effects":[{{"Continuous":{{"affected":"This","mods":[{{"AddKeyword":"Saddled"}}],"duration":"UntilEndOfTurn"}}}}]}}}}"#
+            r#"{{"Activated":{{"cost":[{{"TapPower":{{"filter":[{{"Type":"Creature"}},"Other"],"power":{power}}}}}],"timing":"Sorcery","effects":[{{"Continuous":{{"affected":"This","mods":[{{"AddKeyword":"Saddled"}}],"duration":"UntilEndOfTurn"}}}},{{"Crewed":{{"saddle":true}}}}]}}}}"#
         ))
         .unwrap()
     }
