@@ -90,6 +90,8 @@ pub enum Modification {
     AddType(CardType),
     /// Removes a card type (layer 4).
     RemoveType(CardType),
+    /// Makes these the card types (layer 4); the creature types go when it is no longer a creature.
+    SetTypes(CardTypes),
     /// Adds a subtype (layer 4).
     AddSubtype(Subtype),
     /// Replaces the creature types with these (layer 4); the other subtypes stay (CR 205.1b).
@@ -174,6 +176,7 @@ impl Modification {
             Modification::SetController(_) => Layer::Control,
             Modification::AddType(_)
             | Modification::RemoveType(_)
+            | Modification::SetTypes(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::AddAllCreatureTypes => Layer::Type,
@@ -200,6 +203,15 @@ impl Modification {
         match self {
             Modification::AddType(ty) => chars.types = chars.types.with(*ty),
             Modification::RemoveType(ty) => chars.types = without(chars.types, *ty),
+            Modification::SetTypes(types) => {
+                chars.types = *types;
+                // A creature type needs the type it is a type of (CR 205.3d): the printed ones stop counting too.
+                if !types.contains(CardType::Creature) && !types.contains(CardType::Kindred) {
+                    chars.subtypes.retain(|subtype| !subtype.is_creature_type());
+                    chars.all_creature_types = false;
+                    chars.creature_types_set = true;
+                }
+            }
             Modification::AddSubtype(subtype) => {
                 if !chars.subtypes.contains(subtype) {
                     chars.subtypes.push(subtype.clone());

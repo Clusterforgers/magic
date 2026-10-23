@@ -157,8 +157,9 @@ pub fn commander_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, Corp
 }
 
 /// The corpus cards that read a cast trigger on a subtype, "permanent", "multicolored" or "historic" spell, the limit
-/// "This ability triggers only once each turn." or the times a commander was cast.
-pub const CAST_KIND_CARDS: [&str; 9] = [
+/// "This ability triggers only once each turn.", the times a commander was cast, or the cast trigger of the card itself
+/// that copies it for each of them.
+pub const CAST_KIND_CARDS: [&str; 13] = [
     "Commander's Insignia",
     "Jyoti, Moag Ancient",
     "Deeproot Waters",
@@ -168,6 +169,10 @@ pub const CAST_KIND_CARDS: [&str; 9] = [
     "True Identity",
     "Teshar, Ancestor's Apostle",
     "Oyobi, Who Split the Heavens",
+    "Echo Storm",
+    "Empyrial Storm",
+    "Fury Storm",
+    "Hatut Zeraze Strike Force",
 ];
 
 /// The subtypes of spells the cards of [`CAST_KIND_CARDS`] watch for.

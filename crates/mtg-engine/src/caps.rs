@@ -194,6 +194,8 @@ const RUNS: &[&str] = &[
     "Mod.SwitchPT",
     "Mod.AddType",
     "Mod.RemoveType",
+    "Mod.SetTypes",
+    "Mod.RemoveSupertype",
     "Mod.AddSubtype",
     "Mod.SetCreatureTypes",
     "Mod.AddAllCreatureTypes",
@@ -519,6 +521,8 @@ mod tests {
     #[case::switching_power_and_toughness("Mod.SwitchPT", true)]
     #[case::types("Mod.AddType", true)]
     #[case::removed_types("Mod.RemoveType", true)]
+    #[case::set_types("Mod.SetTypes", true)]
+    #[case::removed_supertypes("Mod.RemoveSupertype", true)]
     #[case::subtypes("Mod.AddSubtype", true)]
     #[case::colours("Mod.SetColors", true)]
     #[case::granted_abilities("Mod.GrantAbility", true)]

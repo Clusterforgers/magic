@@ -1,0 +1,25 @@
+{
+  "cmc": 4.0,
+  "collector_number": "15",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "d96a9ecd-86a3-49ae-851c-ce93b0dca6af",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{3}{W}",
+  "name": "Hatut Zeraze Strike Force",
+  "oracle_id": "92ac307e-6531-4465-8870-07988458f5d4",
+  "oracle_text": "When you cast this spell, copy it for each time you've cast your commander from the command zone this game.\nWhen this creature enters, destroy up to one target artifact or enchantment.",
+  "power": "2",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "set": "msc",
+  "toughness": "2",
+  "type_line": "Creature — Human Spy Warrior"
+}

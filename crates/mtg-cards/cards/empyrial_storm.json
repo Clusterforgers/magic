@@ -1,0 +1,41 @@
+{
+  "oracle_id": "0af5f9f4-04d6-4701-be1f-65d4a0940737",
+  "name": "Empyrial Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Empyrial Storm",
+      "oracle_fingerprint": "cc75d95210ec93b6e38c2cc38bf63eb5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [{ "CopySpell": { "what": "This", "count": { "CommanderCasts": "You" } } }]
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Angel",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Angel"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
