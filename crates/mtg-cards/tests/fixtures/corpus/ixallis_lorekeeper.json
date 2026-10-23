@@ -1,0 +1,25 @@
+{
+  "id": "4bc94ded-458d-4458-9c0b-136d825b885d",
+  "oracle_id": "a3ce0fa9-8742-4e2c-a8a0-00fc009f998a",
+  "name": "Ixalli's Lorekeeper",
+  "lang": "en",
+  "layout": "normal",
+  "set": "lci",
+  "collector_number": "194",
+  "rarity": "uncommon",
+  "released_at": "2023-11-17",
+  "digital": false,
+  "mana_cost": "{G}",
+  "cmc": 1,
+  "type_line": "Creature — Human Druid",
+  "oracle_text": "{T}: Add one mana of any color. Spend this mana only to cast a Dinosaur spell or activate an ability of a Dinosaur source.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

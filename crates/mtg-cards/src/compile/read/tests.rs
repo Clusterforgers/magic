@@ -251,6 +251,7 @@ mod spell_copies;
 mod spell_keywords;
 mod spell_x_costs;
 mod spend_subtypes;
+mod spend_wordings;
 mod static_grants;
 mod static_group_writers;
 mod static_pairs;
@@ -424,7 +425,7 @@ mod mana {
 
     #[rstest]
     #[case::two_uses(
-        "{T}: Add {G}. Spend this mana only to cast artifact spells or activate abilities of artifacts."
+        "{T}: Add {G}. Spend this mana only to cast artifact spells or activate abilities of creatures."
     )]
     #[case::a_chosen_kind(
         "{T}: Add one mana of any color. Spend this mana only to cast a creature spell of the chosen kind."

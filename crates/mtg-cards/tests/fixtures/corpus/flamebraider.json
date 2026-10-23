@@ -1,0 +1,25 @@
+{
+  "id": "b8aa428c-5a77-444f-b75e-a113e46fe4e0",
+  "oracle_id": "c552bd73-ce75-40fd-9d80-9e90b6f45274",
+  "name": "Flamebraider",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ecl",
+  "collector_number": "139",
+  "rarity": "uncommon",
+  "released_at": "2026-01-23",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2,
+  "type_line": "Creature — Elemental Bard",
+  "oracle_text": "{T}: Add two mana in any combination of colors. Spend this mana only to cast Elemental spells or activate abilities of Elemental sources.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

@@ -1313,7 +1313,12 @@ impl InvariantChecker {
         let Some(spell) = top.filter(|o| o.kind() == ObjectKind::Card) else {
             return Ok(());
         };
-        let spend = Spend::for_spell(&self.shadow, spell.id(), spell.card().x_in_cost > 0);
+        let spend = Spend::for_spell(
+            &self.shadow,
+            spell.id(),
+            spell.controller(),
+            spell.card().x_in_cost > 0,
+        );
         match units.iter().find(|unit| !spend.allows(&unit.only)) {
             Some(unit) => Err(Violation::Mana(format!(
                 "{:?} mana restricted to {:?} was spent on {}",

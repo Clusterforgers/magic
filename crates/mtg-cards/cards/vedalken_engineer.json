@@ -1,0 +1,29 @@
+{
+  "oracle_id": "b36accb4-cde6-4b1d-b549-8c975cfa999d",
+  "name": "Vedalken Engineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vedalken Engineer",
+      "oracle_fingerprint": "54e9f1d7393ecffc33f8a38ef5d48535",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 2 },
+                  "only": [
+                    { "Spell": { "types": ["Artifact"] } },
+                    { "Ability": { "types": ["Artifact"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

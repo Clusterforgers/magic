@@ -1,0 +1,29 @@
+{
+  "id": "0f87514c-cb45-443c-8768-891e2213950e",
+  "oracle_id": "3a25d1e2-63d8-4a93-b0ce-f9307736b3f9",
+  "name": "Lord of the Forsaken",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "186",
+  "rarity": "mythic",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{4}{B}{B}",
+  "cmc": 6,
+  "type_line": "Creature — Demon",
+  "oracle_text": "Flying, trample\n{B}, Sacrifice another creature: Target player mills three cards.\nPay 1 life: Add {C}. Spend this mana only to cast a spell from your graveyard.",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Trample",
+    "Mill"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "2c3bbbe9-91a3-4da5-a1b4-6aed4bd684de",
+  "oracle_id": "b36accb4-cde6-4b1d-b549-8c975cfa999d",
+  "name": "Vedalken Engineer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nec",
+  "collector_number": "100",
+  "rarity": "common",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2,
+  "type_line": "Creature — Vedalken Artificer",
+  "oracle_text": "{T}: Add two mana of any one color. Spend this mana only to cast artifact spells or activate abilities of artifacts.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

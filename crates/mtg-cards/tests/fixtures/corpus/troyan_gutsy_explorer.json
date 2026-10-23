@@ -1,0 +1,27 @@
+{
+  "id": "72968bfe-0fa4-432f-9599-4c32cb143716",
+  "oracle_id": "1135ebc3-9537-4341-956b-6e22d8be5f20",
+  "name": "Troyan, Gutsy Explorer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "334",
+  "rarity": "uncommon",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{1}{G}{U}",
+  "cmc": 3,
+  "type_line": "Legendary Creature — Vedalken Scout",
+  "oracle_text": "{T}: Add {G}{U}. Spend this mana only to cast spells with mana value 5 or greater or spells with {X} in their mana costs.\n{U}, {T}: Draw a card, then discard a card.",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": []
+}

@@ -1,0 +1,25 @@
+{
+  "id": "6394a522-37bb-4cf3-b434-5121c8000ac6",
+  "oracle_id": "a65250f6-55e2-47ed-a355-d690047db6f2",
+  "name": "Master of Dark Rites",
+  "lang": "en",
+  "layout": "normal",
+  "set": "lcc",
+  "collector_number": "83",
+  "rarity": "rare",
+  "released_at": "2023-11-17",
+  "digital": false,
+  "mana_cost": "{B}",
+  "cmc": 1,
+  "type_line": "Creature — Vampire Cleric",
+  "oracle_text": "{T}, Sacrifice another creature: Add {B}{B}{B}. Spend this mana only to cast Vampire, Cleric, and/or Demon spells.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}
