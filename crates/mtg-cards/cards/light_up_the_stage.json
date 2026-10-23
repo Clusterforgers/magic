@@ -1,0 +1,29 @@
+{
+  "oracle_id": "8d286376-f386-43ab-a9bd-8478fb9e2497",
+  "name": "Light Up the Stage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Light Up the Stage",
+      "oracle_fingerprint": "17229187214be1ceb81cfe7d91f013a1",
+      "abilities": [
+        { "Keyword": { "Spectacle": "{R}" } },
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": 2, "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

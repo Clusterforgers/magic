@@ -1,0 +1,19 @@
+{
+  "oracle_id": "1c96772b-463c-4655-836b-cf6e9dc6319f",
+  "name": "Sphinx of the Steel Wind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphinx of the Steel Wind",
+      "oracle_fingerprint": "c9e410178aceaaf6cad1b2b87d8cec58",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Lifelink" },
+        { "Keyword": { "Protection": [{ "Color": "Red" }] } },
+        { "Keyword": { "Protection": [{ "Color": "Green" }] } }
+      ]
+    }
+  ]
+}

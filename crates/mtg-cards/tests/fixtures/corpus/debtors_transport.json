@@ -1,0 +1,27 @@
+{
+  "id": "d001eb1f-491b-4b1d-9f1d-e1cf158fd55a",
+  "oracle_id": "72f89173-2998-45e6-94da-5b5bb9738a6b",
+  "name": "Debtors' Transport",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rvr",
+  "collector_number": "72",
+  "rarity": "common",
+  "released_at": "2024-01-12",
+  "digital": false,
+  "mana_cost": "{5}{B}",
+  "cmc": 6.0,
+  "type_line": "Creature — Thrull",
+  "oracle_text": "Afterlife 2 (When this creature dies, create two 1/1 white and black Spirit creature tokens with flying.)",
+  "power": "5",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Afterlife"
+  ]
+}

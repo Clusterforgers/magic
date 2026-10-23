@@ -1,0 +1,30 @@
+{
+  "oracle_id": "6a290adf-7b75-451e-bb79-9c13e10b38aa",
+  "name": "Spawn of Mayhem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spawn of Mayhem",
+      "oracle_fingerprint": "5f008f17786fb63b11fc73ae6e009922",
+      "abilities": [
+        { "Keyword": { "Spectacle": "{1}{B}{B}" } },
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "DealDamage": { "to": "EachPlayer", "amount": 1 } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": { "Life": "You" }, "op": "Le", "right": 10 } },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

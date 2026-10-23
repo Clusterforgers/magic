@@ -1,0 +1,12 @@
+{
+  "oracle_id": "b0381c2a-40e2-4002-82e3-ae2d687daed3",
+  "name": "Imperious Oligarch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imperious Oligarch",
+      "oracle_fingerprint": "b35b3a01df04c23fdec55b1679a5b27a",
+      "abilities": [{ "Keyword": "Vigilance" }, { "Keyword": { "Afterlife": 1 } }]
+    }
+  ]
+}

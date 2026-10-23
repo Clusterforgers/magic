@@ -234,11 +234,11 @@ fn starts_with_word(item: &str, name: &str) -> bool {
 fn find(item: &str) -> Option<Found<'_>> {
     // "Murasame — Equip {5}": the name an Equipment gives an equip ability is flavor.
     if let Some(len) = super::classify::ability_word_len(item)
-        && let Some(equip) = item
+        && let Some(named) = item
             .get(len..)
-            .filter(|rest| starts_with_word(rest, "equip"))
+            .filter(|rest| starts_with_word(rest, "equip") || starts_with_word(rest, "protection"))
     {
-        return find(equip);
+        return find(named);
     }
     let best = KEYWORDS
         .iter()
@@ -333,6 +333,17 @@ pub fn is_keyword_line(line: &str) -> bool {
     split_items(line).is_some()
 }
 
+/// The keywords an item names: one, or a protection from several qualities ("protection from white and from blue") as one
+/// protection for each; `None` leaves the item to the table.
+pub fn read_all(item: &str) -> Option<Vec<Keyword>> {
+    let found = find(item)?;
+    if found.name == "protection" && plausible(found.params, found.rest) {
+        let qualities = protections(found.rest)?;
+        return Some(qualities.into_iter().map(Keyword::Protection).collect());
+    }
+    read(item).map(|keyword| vec![keyword])
+}
+
 /// The keyword an item names, when the DSL declares it and its parameter reads; `None` leaves the
 /// item to the table.
 pub fn read(item: &str) -> Option<Keyword> {
@@ -380,6 +391,8 @@ pub fn read(item: &str) -> Option<Keyword> {
         "blitz" => spell_cost(rest).map(Keyword::Blitz),
         "prowl" => spell_cost(rest).map(Keyword::Prowl),
         "mayhem" => spell_cost(rest).map(Keyword::Mayhem),
+        "spectacle" => spell_cost(rest).map(Keyword::Spectacle),
+        "afterlife" => positive(rest).map(Keyword::Afterlife),
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
         "echo" => spell_cost(rest).map(Keyword::Echo),
         "cumulative upkeep" => spell_cost(rest).map(Keyword::CumulativeUpkeep),
@@ -647,6 +660,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "intimidate" => Keyword::Intimidate,
         "skulk" => Keyword::Skulk,
         "shadow" => Keyword::Shadow,
+        "horsemanship" => Keyword::Horsemanship,
         "split second" => Keyword::SplitSecond,
         "undaunted" => Keyword::Undaunted,
         "rebound" => Keyword::Rebound,
@@ -670,18 +684,43 @@ fn plain(name: &str) -> Option<Keyword> {
     })
 }
 
-/// The quality a protection names, when it is one colour, colourless, one kind of permanent or everything:
-/// "from red", "from creatures", "from everything". The empty selector matches every source.
+/// The quality a protection names, when it is one colour, colourless, multicolored, one kind of permanent, a mana value
+/// bound or everything: "from red", "from creatures", "from mana value 3 or less", "from everything". The empty selector
+/// matches every source.
 fn protection(rest: &str) -> Option<Selector> {
     let word = rest
         .strip_prefix("from ")?
         .trim_end_matches('.')
         .to_ascii_lowercase();
-    quality(&word)
+    quality(&word).or_else(|| mana_value_bound(&word))
+}
+
+/// The qualities of a protection that names several: "from white and from blue" is one protection for each.
+fn protections(rest: &str) -> Option<Vec<Selector>> {
+    let words = rest.strip_prefix("from ")?.trim_end_matches('.');
+    words
+        .split(" and from ")
+        .map(|part| protection(&format!("from {part}")))
+        .collect()
+}
+
+/// "mana value 3 or greater" and "mana value 3 or less": the sources whose mana value is at least, or at most, the number.
+fn mana_value_bound(words: &str) -> Option<Selector> {
+    let bound = words.strip_prefix("mana value ")?;
+    let (number, op) = if let Some(number) = bound.strip_suffix(" or greater") {
+        (number, Cmp::Ge)
+    } else {
+        (bound.strip_suffix(" or less")?, Cmp::Le)
+    };
+    Some(Selector(vec![Pred::Compare {
+        stat: StatKind::ManaValue,
+        op,
+        to: Amount::Fixed(number.parse().ok()?),
+    }]))
 }
 
 /// The words of a protection quality, each with the sources it names.
-const QUALITIES: [(&str, Pred); 11] = [
+const QUALITIES: [(&str, Pred); 12] = [
     ("white", Pred::Color(Color::White)),
     ("blue", Pred::Color(Color::Blue)),
     ("black", Pred::Color(Color::Black)),
@@ -693,6 +732,14 @@ const QUALITIES: [(&str, Pred); 11] = [
     ("enchantments", Pred::Type(CardType::Enchantment)),
     ("planeswalkers", Pred::Type(CardType::Planeswalker)),
     ("lands", Pred::Type(CardType::Land)),
+    (
+        "multicolored",
+        Pred::Compare {
+            stat: StatKind::Colors,
+            op: Cmp::Ge,
+            to: Amount::Fixed(2),
+        },
+    ),
 ];
 
 /// The sources a protection quality names, from its word in lowercase ("red", "creatures", "everything"). The empty
@@ -800,6 +847,72 @@ mod tests {
         Selector(vec![Pred::Type(CardType::Creature)])
     }
 
+    fn multicolored() -> Pred {
+        Pred::Compare {
+            stat: StatKind::Colors,
+            op: Cmp::Ge,
+            to: Amount::Fixed(2),
+        }
+    }
+
+    fn mana_value(op: Cmp, number: i32) -> Pred {
+        Pred::Compare {
+            stat: StatKind::ManaValue,
+            op,
+            to: Amount::Fixed(number),
+        }
+    }
+
+    fn protects(pred: Pred) -> Keyword {
+        Keyword::Protection(Selector(vec![pred]))
+    }
+
+    #[rstest]
+    #[case::one_colour("Protection from white", &[protects(Pred::Color(Color::White))])]
+    #[case::two_colours(
+        "Protection from white and from blue",
+        &[protects(Pred::Color(Color::White)), protects(Pred::Color(Color::Blue))]
+    )]
+    #[case::lowercase_pair(
+        "protection from black and from red.",
+        &[protects(Pred::Color(Color::Black)), protects(Pred::Color(Color::Red))]
+    )]
+    #[case::a_colour_and_a_kind(
+        "Protection from red and from creatures",
+        &[protects(Pred::Color(Color::Red)), protects(Pred::Type(CardType::Creature))]
+    )]
+    #[case::three_qualities(
+        "Protection from white and from blue and from multicolored",
+        &[protects(Pred::Color(Color::White)), protects(Pred::Color(Color::Blue)), protects(multicolored())]
+    )]
+    #[case::a_bound_after_a_colour(
+        "Protection from red and from mana value 2 or less",
+        &[protects(Pred::Color(Color::Red)), protects(mana_value(Cmp::Le, 2))]
+    )]
+    #[case::after_an_ability_word(
+        "Void Shields \u{2014} Protection from green and from red",
+        &[protects(Pred::Color(Color::Green)), protects(Pred::Color(Color::Red))]
+    )]
+    #[case::another_keyword("Flying", &[Keyword::Flying])]
+    fn an_item_reads_into_a_keyword_for_each_quality(
+        #[case] item: &str,
+        #[case] expected: &[Keyword],
+    ) {
+        assert_eq!(read_all(item).as_deref(), Some(expected));
+    }
+
+    #[rstest]
+    #[case::a_subtype_beside_a_colour("Protection from white and from Vampires")]
+    #[case::without_the_second_from("Protection from white and blue")]
+    #[case::a_missing_quality("Protection from white and from")]
+    #[case::a_bound_without_a_side("Protection from mana value 3")]
+    #[case::a_bound_without_a_number("Protection from mana value many or less")]
+    #[case::not_a_keyword("Draw a card.")]
+    #[case::undeclared("Horsemanship and from white")]
+    fn an_item_with_a_quality_it_does_not_model_reads_as_no_keyword(#[case] item: &str) {
+        assert_eq!(read_all(item), None);
+    }
+
     #[rstest]
     #[case("white")]
     #[case("blue")]
@@ -812,6 +925,7 @@ mod tests {
     #[case("enchantments")]
     #[case("planeswalkers")]
     #[case("lands")]
+    #[case("multicolored")]
     #[case("everything")]
     fn a_protection_quality_is_written_as_it_is_read(#[case] word: &str) {
         let quality = quality(word).unwrap();
@@ -853,6 +967,15 @@ mod tests {
         "Protection from everything",
         Keyword::Protection(Selector::default())
     )]
+    #[case::protection_from_multicolored("Protection from multicolored", protects(multicolored()))]
+    #[case::protection_from_a_high_mana_value(
+        "protection from mana value 3 or greater",
+        protects(mana_value(Cmp::Ge, 3))
+    )]
+    #[case::protection_from_a_low_mana_value_after_an_ability_word(
+        "Void Shields \u{2014} Protection from mana value 3 or less",
+        protects(mana_value(Cmp::Le, 3))
+    )]
     #[case::partner("Partner", Keyword::Partner)]
     #[case::fuse("Fuse", Keyword::Fuse)]
     #[case::daybound("Daybound", Keyword::Daybound)]
@@ -864,6 +987,8 @@ mod tests {
     #[case::intimidate("Intimidate", Keyword::Intimidate)]
     #[case::skulk("Skulk", Keyword::Skulk)]
     #[case::shadow("Shadow", Keyword::Shadow)]
+    #[case::horsemanship("Horsemanship", Keyword::Horsemanship)]
+    #[case::lowercase_horsemanship("horsemanship", Keyword::Horsemanship)]
     #[case::split_second("Split second", Keyword::SplitSecond)]
     #[case::undaunted("Undaunted", Keyword::Undaunted)]
     #[case::islandwalk("Islandwalk", walks("Island"))]
@@ -1044,6 +1169,10 @@ mod tests {
     #[case::prowl("Prowl {1}{B}", Keyword::Prowl(mana("{1}{B}")))]
     #[case::mayhem("Mayhem {1}{B}", Keyword::Mayhem(mana("{1}{B}")))]
     #[case::mayhem_hybrid("Mayhem {B/R}", Keyword::Mayhem(mana("{B/R}")))]
+    #[case::spectacle("Spectacle {1}{B}", Keyword::Spectacle(mana("{1}{B}")))]
+    #[case::spectacle_hybrid("spectacle {B/R}{B/R}", Keyword::Spectacle(mana("{B/R}{B/R}")))]
+    #[case::afterlife("Afterlife 1", Keyword::Afterlife(1))]
+    #[case::afterlife_three("afterlife 3", Keyword::Afterlife(3))]
     #[case::ninjutsu("Ninjutsu {1}{U}", Keyword::Ninjutsu(mana("{1}{U}")))]
     #[case::ninjutsu_for_one_mana("ninjutsu {B}", Keyword::Ninjutsu(mana("{B}")))]
     #[case::escape_exiling_cards(
@@ -1216,12 +1345,16 @@ mod tests {
         "Companion \u{2014} Each permanent card in your starting deck has an activated ability."
     )]
     #[case::companion_without_a_condition("Companion")]
-    #[case::undeclared("Horsemanship")]
+    #[case::undeclared("Banding")]
     #[case::crew_x("Crew X")]
     #[case::dredge_x("Dredge X")]
     #[case::dredge_nothing("Dredge 0")]
     #[case::fabricate_x("Fabricate X")]
     #[case::fabricate_nothing("Fabricate 0")]
+    #[case::afterlife_x("Afterlife X")]
+    #[case::afterlife_nothing("Afterlife 0")]
+    #[case::horsemanship_with_a_cost("Horsemanship {1}")]
+    #[case::spectacle_without_a_cost("Spectacle")]
     #[case::ascend_with_a_number("Ascend 1")]
     #[case::crew_nothing("Crew 0")]
     #[case::saddle_nothing("Saddle 0")]
@@ -1423,6 +1556,9 @@ mod tests {
             "Blitz {1}",
             "Prowl {1}",
             "Mayhem {1}",
+            "Afterlife 2",
+            "Horsemanship",
+            "Spectacle {B}",
             "Demonstrate",
             "Hideaway 4",
             "Gift a card",

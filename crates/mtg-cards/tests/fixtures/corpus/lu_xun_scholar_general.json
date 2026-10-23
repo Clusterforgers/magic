@@ -1,0 +1,27 @@
+{
+  "id": "3e16e5b7-d130-4e52-b002-5f3d986e3e82",
+  "oracle_id": "ea658352-abef-4201-b20c-f5c5809d1d3e",
+  "name": "Lu Xun, Scholar General",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cma",
+  "collector_number": "41",
+  "rarity": "rare",
+  "released_at": "2017-06-09",
+  "digital": false,
+  "mana_cost": "{2}{U}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Soldier",
+  "oracle_text": "Horsemanship (This creature can't be blocked except by creatures with horsemanship.)\nWhenever Lu Xun deals damage to an opponent, you may draw a card.",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Horsemanship"
+  ]
+}

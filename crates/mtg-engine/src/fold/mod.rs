@@ -361,6 +361,7 @@ fn pay_life(state: &mut GameState, id: PlayerId, amount: u32) -> Result<(), Engi
     match i32::try_from(amount) {
         Ok(paid) if paid > 0 && paid <= player.life => {
             player.life -= paid;
+            state.tally_by(id, Tally::Lost, amount);
             Ok(())
         }
         _ => Err(invalid(format!(
@@ -392,6 +393,9 @@ fn change_life(
             } else {
                 player.life.saturating_sub(change)
             };
+            if !gain {
+                state.tally_by(id, Tally::Lost, amount);
+            }
             Ok(())
         }
         _ => Err(invalid(format!("{id:?} cannot change life by {amount}"))),
