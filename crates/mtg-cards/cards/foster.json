@@ -1,0 +1,42 @@
+{
+  "oracle_id": "fb431500-152c-4524-b76b-de62922ff57f",
+  "name": "Foster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foster",
+      "oracle_fingerprint": "7f394a93468de5bd2d156e76b92b0b9e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "RevealUntil": {
+                        "filter": [{ "Type": "Creature" }],
+                        "as": "found",
+                        "revealed_as": "revealed"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Move": { "what": { "Bound": "revealed" }, "to": "Graveyard" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

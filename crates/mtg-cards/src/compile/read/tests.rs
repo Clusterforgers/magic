@@ -230,6 +230,7 @@ mod put_back;
 mod removal_and_return;
 mod returns;
 mod reveal;
+mod reveal_until;
 mod search_by_controller;
 mod search_lists;
 mod search_pairs;
