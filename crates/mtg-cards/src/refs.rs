@@ -142,6 +142,8 @@ pub enum Pred {
     Colorless,
     /// Is a token.
     Token,
+    /// Is a player's commander (CR 903.3): a card designated as one when the game began, whoever controls it now.
+    Commander,
     /// Is a spell on the stack.
     Spell,
     /// Is an activated or a triggered ability on the stack (a mana ability never is one).

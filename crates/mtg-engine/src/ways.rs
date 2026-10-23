@@ -5,6 +5,7 @@
 //! `of` lists them for a card and a player; the options of a player offer a card when one of its ways can be used now
 //! (`castable_now`), and the announcement of the cast asks which one when there is more than one (`announce/alternative.rs`).
 
+use mtg_cards::ability::Ability;
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::definition::Layout;
 use mtg_cards::keyword::Keyword;
@@ -15,6 +16,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
 use crate::announce::{self, Granted};
+use crate::ability_reader;
 use crate::attach;
 use crate::characteristics::controller_of;
 use crate::choose::announceable;
@@ -29,7 +31,7 @@ use crate::object::{FaceDown, GameObject, ObjectKind};
 use crate::parts::Part;
 use crate::price::Price;
 use crate::priority::{mana_options, sorcery_timing};
-use crate::resolve::{spell_ability, zone_kind};
+use crate::resolve::{Scope, spell_ability, zone_kind};
 use crate::rules::cast_permissions;
 use crate::spend::Spend;
 use crate::state::GameState;
@@ -181,14 +183,9 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
             parts: Vec::new(),
         });
     }
-    if permissions.iter().any(|permission| permission.free) {
-        ways.push(Way {
-            alternative: Some(CastWay::Free),
-            label: "Cast without paying its mana cost".to_owned(),
-            mana: Some(ManaCost::default()),
-            instant,
-            parts: Vec::new(),
-        });
+    let permitted = permissions.iter().any(|permission| permission.free);
+    if permitted || (!ways.is_empty() && free_cast_open(state, player, card)) {
+        ways.push(free_way(instant));
     }
     for keyword in keywords_of(state, id) {
         if let Some(way) = keyword_way(state, player, id, keyword, instant)
@@ -198,6 +195,28 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
         }
     }
     ways
+}
+
+/// The way of casting a card without paying its mana cost (CR 118.9): no mana, and the other parts and the cost increases of
+/// the cast stay.
+fn free_way(instant: bool) -> Way {
+    Way {
+        alternative: Some(CastWay::Free),
+        label: "Cast without paying its mana cost".to_owned(),
+        mana: Some(ManaCost::default()),
+        instant,
+        parts: Vec::new(),
+    }
+}
+
+/// Whether the card has a printed "you may cast this spell without paying its mana cost" that is open to `player` now: its
+/// condition holds for them (CR 118.9). It replaces the mana cost, so it adds a way only where the card is cast for that cost.
+fn free_cast_open(state: &GameState, player: PlayerId, card: &GameObject) -> bool {
+    let scope = Scope::announcing(state, player, card.reference());
+    ability_reader::printed_rules(card.card()).any(|rule| {
+        matches!(&**rule, Ability::FreeCast { condition }
+            if condition.as_ref().is_none_or(|held| scope.holds(held).unwrap_or(false)))
+    })
 }
 
 /// The alternative cost the keyword gives the card `id` for casting it where it is, when it gives one.

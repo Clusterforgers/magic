@@ -227,6 +227,7 @@ const RUNS: &[&str] = &[
     "Keyword.Buyback",
     "Keyword.Entwine",
     "Ability.AdditionalCost",
+    "Ability.FreeCast",
     "Condition.AdditionalCostPaid",
     "Keyword.Flashback",
     "Keyword.Evoke",
@@ -658,6 +659,7 @@ mod tests {
     #[case::dredging("ReplaceBy.Dredge", true)]
     #[case::blitz("Keyword.Blitz", true)]
     #[case::prowl("Keyword.Prowl", true)]
+    #[case::a_conditional_free_cast("Ability.FreeCast", true)]
     #[case::ninjutsu("Keyword.Ninjutsu", true)]
     #[case::joining_an_attack("Effect.JoinAttack", true)]
     #[case::echo("Keyword.Echo", true)]

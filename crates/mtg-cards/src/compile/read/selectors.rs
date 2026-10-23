@@ -470,6 +470,8 @@ enum Noun {
     Subtype(String),
     /// "tokens", after the card types before it: "creature tokens".
     Token,
+    /// "commander": a player's commander, with no card type before it.
+    Commander,
 }
 
 /// The card types before the noun and the noun; "permanent" names no type.
@@ -482,6 +484,12 @@ fn head(r: &mut Reader<'_>, form: Form) -> Option<(Vec<CardType>, Noun)> {
     };
     if let Some(name) = group {
         return Some((Vec::new(), Noun::Subtype(name)));
+    }
+    if let Some(word @ ("commander" | "commanders")) = r.peek_word()
+        && (word == "commanders") == plural
+    {
+        r.skip();
+        return Some((Vec::new(), Noun::Commander));
     }
     let mut types = Vec::new();
     let mut forms = Vec::new();
@@ -637,6 +645,10 @@ pub(super) fn phrase_in(r: &mut Reader<'_>, form: Form, unplaced: bool) -> Optio
                 preds.push(Pred::Token);
                 preds.extend(adjectives);
             }
+            Noun::Commander => {
+                preds.push(Pred::Commander);
+                preds.extend(adjectives);
+            }
         }
         loop {
             if let Some(zone) = zone_suffix(r, form) {
@@ -689,6 +701,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     };
     let (mut adjectives, mut types, mut suffixes) = (Vec::new(), Vec::new(), Vec::new());
     let (mut subtype, mut card, mut token) = (None, false, false);
+    let mut commander = false;
     let mut kinds: Vec<CardType> = Vec::new();
     let mut rest = preds.iter().peekable();
     while let Some(pred) = rest.next() {
@@ -720,6 +733,11 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
                 return None;
             }
             token = true;
+        } else if *pred == Pred::Commander {
+            if commander {
+                return None;
+            }
+            commander = true;
         } else if let Some(found) = type_preds(pred) {
             // A second card type before the noun qualifies it: "artifact creatures".
             if !types.is_empty() {
@@ -739,6 +757,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     if (subtype.is_some() && (card || (spell && !plural) || (!types.is_empty() && !qualified)))
         || (spell && card)
         || (token && (spell || card))
+        || (commander && (spell || card || token || subtype.is_some() || !types.is_empty()))
         || (!kinds.is_empty() && !qualified)
     {
         return None;
@@ -776,6 +795,8 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         words.push(if plural { "spells" } else { "spell" }.to_owned());
     } else if card {
         words.push(if plural { "cards" } else { "card" }.to_owned());
+    } else if commander {
+        words.push(if plural { "commanders" } else { "commander" }.to_owned());
     } else if names.is_empty() && subtype.is_none() {
         words.push(if plural { "permanents" } else { "permanent" }.to_owned());
     }

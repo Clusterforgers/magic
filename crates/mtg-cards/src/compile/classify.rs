@@ -50,6 +50,13 @@ const SPELL_RULES: [&str; 4] = [
     "As an additional cost",
 ];
 
+/// Whether a line of a spell is a rule about the spell itself: one of `SPELL_RULES`, or the cast "If you control a commander, you
+/// may cast this spell without paying its mana cost."
+fn is_spell_rule(body: &str) -> bool {
+    SPELL_RULES.iter().any(|rule| body.starts_with(rule))
+        || (body.starts_with("If ") && body.contains(", you may cast this spell without paying its mana cost"))
+}
+
 const CHAPTERS: [&str; 10] = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
 
 /// The kind of a clause's normalized text; `spell` is true on an instant or sorcery face.
@@ -77,7 +84,7 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
         ClauseKind::Activated
     } else if (body.starts_with("Choose ") && body.contains('\u{2014}')) || body == "Spree" {
         ClauseKind::Modal
-    } else if spell && !SPELL_RULES.iter().any(|rule| body.starts_with(rule)) {
+    } else if spell && !is_spell_rule(body) {
         ClauseKind::Spell
     } else {
         ClauseKind::Static

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "0456ec64-2c81-4763-a352-8ff64a4c3d6b",
+  "name": "Deadly Rollick",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deadly Rollick",
+      "oracle_fingerprint": "5e306a2ee456f0c5926329cef90c12d3",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["Commander", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
