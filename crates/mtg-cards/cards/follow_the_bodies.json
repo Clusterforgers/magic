@@ -1,0 +1,15 @@
+{
+  "oracle_id": "2d6a0d89-7ebd-420e-9892-be1506ab3714",
+  "name": "Follow the Bodies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Follow the Bodies",
+      "oracle_fingerprint": "0d7c9b93461cf6fcce413b66c87762a3",
+      "abilities": [
+        { "Keyword": "Gravestorm" },
+        { "Spell": { "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }] } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1e7b18a3-43eb-4491-bb19-99f261a94719",
+  "name": "Mire's Malice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mire's Malice",
+      "oracle_fingerprint": "82c39a2efe4865da6bbedf586ca639fd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 }, "count": 2 } }]
+          }
+        },
+        { "Keyword": { "Awaken": { "count": 3, "cost": "{5}{B}" } } }
+      ]
+    }
+  ]
+}

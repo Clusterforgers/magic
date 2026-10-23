@@ -1,0 +1,28 @@
+{
+  "id": "adcbd7ee-8958-46fe-abb0-e899e7d2e654",
+  "oracle_id": "e29012bb-4a1d-409e-8db9-50920fdf68a2",
+  "name": "Zanikev Locust",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rtr",
+  "collector_number": "84",
+  "rarity": "uncommon",
+  "released_at": "2012-10-05",
+  "digital": false,
+  "mana_cost": "{5}{B}",
+  "cmc": 6.0,
+  "type_line": "Creature — Insect",
+  "oracle_text": "Flying\nScavenge {2}{B}{B} ({2}{B}{B}, Exile this card from your graveyard: Put a number of +1/+1 counters equal to this card's power on target creature. Scavenge only as a sorcery.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Scavenge"
+  ]
+}

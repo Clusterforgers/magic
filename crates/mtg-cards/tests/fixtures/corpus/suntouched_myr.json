@@ -1,0 +1,23 @@
+{
+  "id": "4c5d4ae3-bc7e-4e60-a5e6-c3ae349fe6fc",
+  "oracle_id": "75d4f61a-8276-43ad-99e6-0d756a597e4b",
+  "name": "Suntouched Myr",
+  "lang": "en",
+  "layout": "normal",
+  "set": "hop",
+  "collector_number": "128",
+  "rarity": "common",
+  "released_at": "2009-09-04",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact Creature — Myr",
+  "oracle_text": "Sunburst (This creature enters with a +1/+1 counter on it for each color of mana spent to cast it.)",
+  "power": "0",
+  "toughness": "0",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Sunburst"
+  ]
+}

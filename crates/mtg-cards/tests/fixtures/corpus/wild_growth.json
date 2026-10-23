@@ -1,0 +1,28 @@
+{
+  "id": "47260e7c-29bf-46f1-a029-9da7bbb418b5",
+  "oracle_id": "706ae742-1807-44b7-a4fa-f2e26f61519a",
+  "name": "Wild Growth",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "195",
+  "rarity": "common",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant land\nWhenever enchanted land is tapped for mana, its controller adds an additional {G}.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "produced_mana": [
+    "G"
+  ]
+}

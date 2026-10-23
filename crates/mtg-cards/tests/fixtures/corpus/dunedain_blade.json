@@ -1,0 +1,25 @@
+{
+  "id": "c168a37c-1e51-42c8-b04c-3f0ecae01666",
+  "oracle_id": "4b418846-6426-448a-b4cb-ce631e0a99a2",
+  "name": "Dúnedain Blade",
+  "lang": "en",
+  "layout": "normal",
+  "set": "hoc",
+  "collector_number": "163",
+  "rarity": "common",
+  "released_at": "2026-08-14",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +2/+1.\nEquip Human {1}\nEquip {3} ({3}: Attach to target creature you control. Equip only as a sorcery.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Equip"
+  ]
+}

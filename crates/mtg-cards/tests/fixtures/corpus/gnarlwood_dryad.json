@@ -1,0 +1,28 @@
+{
+  "id": "8eae5e38-49ee-49ef-87ca-7b570d9ca2b8",
+  "oracle_id": "e823639f-1308-47f6-9b51-8fd9a682489a",
+  "name": "Gnarlwood Dryad",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "180",
+  "rarity": "uncommon",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Creature — Dryad Horror",
+  "oracle_text": "Deathtouch\nDelirium — This creature gets +2/+2 as long as there are four or more card types among cards in your graveyard.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Deathtouch",
+    "Delirium"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "d73ad49f-fe15-4fe5-9731-fd71d31c1e7f",
+  "oracle_id": "13d600e6-86b4-4813-8f34-75f23717f433",
+  "name": "Scatter to the Winds",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bfz",
+  "collector_number": "85",
+  "rarity": "rare",
+  "released_at": "2015-10-02",
+  "digital": false,
+  "mana_cost": "{1}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Counter target spell.\nAwaken 3—{4}{U}{U} (If you cast this spell for {4}{U}{U}, also put three +1/+1 counters on target land you control and it becomes a 0/0 Elemental creature with haste. It's still a land.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Awaken"
+  ]
+}

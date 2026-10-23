@@ -139,6 +139,9 @@ pub fn pattern(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     if let Some(found) = r.attempt(player_event) {
         return Some(found);
     }
+    if let Some(found) = r.attempt(attached_tapped_for_mana) {
+        return Some(found);
+    }
     if let Some(found) = r.attempt(counter_event) {
         return Some(found);
     }
@@ -150,6 +153,19 @@ pub fn pattern(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         return Some(found);
     }
     verbs(r, &what)
+}
+
+/// "enchanted land is tapped for mana" (also "enchanted Forest"): the land an Aura is attached to, tapped by any player.
+fn attached_tapped_for_mana(r: &mut Reader<'_>) -> Option<TriggerPattern> {
+    r.word("enchanted").then_some(())?;
+    let land = phrase(r, Form::Subject)?;
+    r.need("is tapped for mana")?;
+    let mut what = vec![Pred::Is(Ref::Attached)];
+    what.extend(land.0);
+    Some(TriggerPattern::TappedForMana {
+        what: Selector(what),
+        by: Ref::EachPlayer,
+    })
 }
 
 /// The card itself and a second subject doing the same: "~ or another Elf you control enters", "this creature or
@@ -939,6 +955,22 @@ fn step_text(step: Step, whose: &Ref) -> Option<String> {
     Some(format!("{owner} {words}"))
 }
 
+/// A permanent tapped for mana: "Whenever you tap a land for mana", "Whenever enchanted land is tapped for mana".
+fn tapped_for_mana_text(what: &Selector, by: &Ref) -> Option<String> {
+    if *by == Ref::EachPlayer
+        && what.0.len() > 1
+        && what.0.first() == Some(&Pred::Is(Ref::Attached))
+    {
+        let land = phrase_text(&Selector(what.0[1..].to_vec()), Form::Subject)?;
+        return Some(format!("Whenever enchanted {land} is tapped for mana"));
+    }
+    Some(format!(
+        "Whenever {} {} for mana",
+        player_verb(by, "tap")?,
+        subject_text(what)?
+    ))
+}
+
 /// The event as the card words it, from "When" to the end of the event.
 pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
     match pattern {
@@ -1009,11 +1041,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
                 player_verb(by, "attack")?
             ))
         }
-        TriggerPattern::TappedForMana { what, by } => Some(format!(
-            "Whenever {} {} for mana",
-            player_verb(by, "tap")?,
-            subject_text(what)?
-        )),
+        TriggerPattern::TappedForMana { what, by } => tapped_for_mana_text(what, by),
         TriggerPattern::CountersPut { what, counter } => {
             counter_text(what, counter.as_ref(), "put on")
         }

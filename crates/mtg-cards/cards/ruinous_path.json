@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7b4aa101-3c8a-44b3-9d87-91a4fe4fbae4",
+  "name": "Ruinous Path",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruinous Path",
+      "oracle_fingerprint": "55782a2e5cc590e75716a0bbfb981bff",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Awaken": { "count": 4, "cost": "{5}{B}{B}" } } }
+      ]
+    }
+  ]
+}

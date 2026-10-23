@@ -1,4 +1,4 @@
-//! Goal: a transforming double-faced card is played with both faces when the engine plays faces and its transform when it runs `Effect.Transform` (else the support walker names the missing primitive, never the faces), daybound and nightbound are named as keywords, and a split card with fuse is assembled with the spell of both halves: their targets in order and the effects of the left half and then the right half with the right half's targets renumbered after the left half's.
+//! Goal: a transforming double-faced card is played with both faces when the engine plays faces and its transform when it runs `Effect.Transform` (else the support walker names the missing primitive, never the faces), daybound and nightbound are named as keywords, and a split card with fuse is assembled with the spell of both halves: their targets in order and the effects of the left half and then the right half with the right half's targets renumbered after the left half's. A flip card is assembled with the bottom half keeping the cost and colour of the top half, and "flip this creature" reads as `Effect.Flip` while "flip a coin" does not.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -198,4 +198,53 @@ fn the_compiled_rules_of_a_transforming_card_name_what_the_engine_must_run(
     for wanted in names {
         assert!(used.contains(*wanted), "{wanted} in {used:?}");
     }
+}
+
+#[rstest]
+#[case::apprentice("Jushi Apprentice // Tomoya the Revealer", 2, "{1}{U}")]
+#[case::eggwatcher("Orochi Eggwatcher // Shidako, Broodmistress", 3, "{2}{G}")]
+#[case::ki_card("Budoka Pupil // Ichiga, Who Topples Oaks", 3, "{1}{G}{G}")]
+fn the_bottom_half_of_a_flip_card_keeps_the_cost_and_colour_of_the_top_half(
+    #[case] name: &str,
+    #[case] mana_value: u32,
+    #[case] cost: &str,
+) {
+    let record = records().into_iter().find(|r| r.name == name).unwrap();
+    let assembled = library().assemble(&printed_of(&record), &Caps::everything());
+    let card = assembled.definition;
+    assert_eq!(card.layout, Layout::Flip);
+    assert_eq!(card.faces.len(), 2);
+    let (top, bottom) = (&card.faces[0], &card.faces[1]);
+    assert_eq!(
+        top.mana_cost.as_ref().map(ToString::to_string).as_deref(),
+        Some(cost)
+    );
+    assert_eq!(bottom.mana_cost, top.mana_cost);
+    assert_eq!(
+        (top.mana_value(), bottom.mana_value()),
+        (mana_value, mana_value)
+    );
+    assert_eq!(bottom.colors(), top.colors());
+    assert_ne!(bottom.name, top.name);
+}
+
+#[rstest]
+#[case::flip_itself("{1}: Flip this creature.", true)]
+#[case::flip_a_coin("{1}: Flip a coin.", false)]
+fn the_effect_sentence_flip_reads_only_for_the_permanent_itself(
+    #[case] text: &str,
+    #[case] reads: bool,
+) {
+    let record = records()
+        .into_iter()
+        .find(|r| r.name == "Jushi Apprentice // Tomoya the Revealer")
+        .unwrap();
+    let mut printed = printed_of(&record);
+    printed.faces[0].oracle_text = text.to_owned();
+    let compiled = mtg_cards::compile::compile(&printed);
+    let flips = compiled.card.is_some_and(|card| {
+        card.abilities()
+            .any(|(_, ability)| used_primitives(ability).contains("Effect.Flip"))
+    });
+    assert_eq!(flips, reads, "{text}");
 }

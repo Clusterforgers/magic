@@ -1,0 +1,23 @@
+{
+  "id": "e23adb09-d216-47f5-a7d4-cb6a2ce48ada",
+  "oracle_id": "2e19baba-2d66-4e3a-b2bf-cb27dce89f44",
+  "name": "Quest for the Goblin Lord",
+  "lang": "en",
+  "layout": "normal",
+  "set": "wwk",
+  "collector_number": "86",
+  "rarity": "uncommon",
+  "released_at": "2010-02-05",
+  "digital": false,
+  "mana_cost": "{R}",
+  "cmc": 1.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever a Goblin you control enters, you may put a quest counter on this enchantment.\nAs long as this enchantment has five or more quest counters on it, creatures you control get +2/+0.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

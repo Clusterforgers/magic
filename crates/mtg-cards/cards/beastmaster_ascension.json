@@ -1,0 +1,38 @@
+{
+  "oracle_id": "11b5308d-5bc0-4782-875f-a28be36e665d",
+  "name": "Beastmaster Ascension",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beastmaster Ascension",
+      "oracle_fingerprint": "69924eb0746558146c62447dc19fb6d0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "quest" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 5, "toughness": 5 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "quest" } } },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

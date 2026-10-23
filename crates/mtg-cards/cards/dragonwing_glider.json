@@ -1,0 +1,25 @@
+{
+  "oracle_id": "4cd4c6da-a84e-4cba-893b-799a7cb5c411",
+  "name": "Dragonwing Glider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragonwing Glider",
+      "oracle_fingerprint": "a59c0a95f11046f9db50cad5629f76f8",
+      "abilities": [
+        { "Keyword": "ForMirrodin" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Flying" },
+              { "AddKeyword": "Haste" }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}{R}{R}" } }
+      ]
+    }
+  ]
+}

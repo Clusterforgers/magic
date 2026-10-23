@@ -1,0 +1,30 @@
+{
+  "id": "7b6dbadf-a6f7-4876-9c3f-44e4a33b2bee",
+  "oracle_id": "bb5ea7c7-741a-4edd-9696-b9881b70afe0",
+  "name": "Sluiceway Scorpion",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rtr",
+  "collector_number": "198",
+  "rarity": "common",
+  "released_at": "2012-10-05",
+  "digital": false,
+  "mana_cost": "{2}{B}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Scorpion",
+  "oracle_text": "Deathtouch (Any amount of damage this deals to a creature is enough to destroy it.)\nScavenge {1}{B}{G} ({1}{B}{G}, Exile this card from your graveyard: Put a number of +1/+1 counters equal to this card's power on target creature. Scavenge only as a sorcery.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Scavenge",
+    "Deathtouch"
+  ]
+}

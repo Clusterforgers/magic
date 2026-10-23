@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f707dfb5-dfa9-471b-ac29-5435c30069cc",
+  "name": "Hero's Heirloom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hero's Heirloom",
+      "oracle_fingerprint": "fecd9c9ed2ceea0f5afa39690be75c16",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Trample" }, { "AddKeyword": "Haste" }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Supertype": "Legendary" }] }
+            }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

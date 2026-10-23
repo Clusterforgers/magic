@@ -1,0 +1,32 @@
+{
+  "id": "83778d03-6196-4994-8f78-4db6cec823fb",
+  "oracle_id": "cf14d4e5-5965-45ad-97f7-26facf2884b5",
+  "name": "Fertile Ground",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ecc",
+  "collector_number": "106",
+  "rarity": "common",
+  "released_at": "2026-01-23",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant land\nWhenever enchanted land is tapped for mana, its controller adds an additional one mana of any color.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

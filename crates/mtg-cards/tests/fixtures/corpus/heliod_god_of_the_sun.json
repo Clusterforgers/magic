@@ -1,0 +1,27 @@
+{
+  "id": "b83e9693-4996-498c-95f7-884d40341298",
+  "oracle_id": "4ea488b2-5ba0-4565-b928-570c8e03b926",
+  "name": "Heliod, God of the Sun",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "826",
+  "rarity": "mythic",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Enchantment Creature — God",
+  "oracle_text": "Indestructible\nAs long as your devotion to white is less than five, Heliod isn't a creature. (Each {W} in the mana costs of permanents you control counts toward your devotion to white.)\nOther creatures you control have vigilance.\n{2}{W}{W}: Create a 2/1 white Cleric enchantment creature token.",
+  "power": "5",
+  "toughness": "6",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Indestructible"
+  ]
+}

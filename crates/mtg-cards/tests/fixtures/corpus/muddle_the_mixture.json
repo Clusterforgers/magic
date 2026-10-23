@@ -1,0 +1,25 @@
+{
+  "id": "e69d760c-48fb-4e7f-8611-547b0c22928c",
+  "oracle_id": "0826cf7d-7ccc-459b-a92f-29dc169628f8",
+  "name": "Muddle the Mixture",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rvr",
+  "collector_number": "50",
+  "rarity": "uncommon",
+  "released_at": "2024-01-12",
+  "digital": false,
+  "mana_cost": "{U}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Counter target instant or sorcery spell.\nTransmute {1}{U}{U} ({1}{U}{U}, Discard this card: Search your library for a card with the same mana value as this card, reveal it, put it into your hand, then shuffle. Transmute only as a sorcery.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Transmute"
+  ]
+}

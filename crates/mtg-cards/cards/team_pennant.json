@@ -1,0 +1,25 @@
+{
+  "oracle_id": "0fa51915-7c0b-4018-802a-90fd431f0036",
+  "name": "Team Pennant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Team Pennant",
+      "oracle_fingerprint": "7583d2239fb57d9b5af6598f28d7126b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": "Vigilance" },
+              { "AddKeyword": "Trample" }
+            ]
+          }
+        },
+        { "Keyword": { "EquipTo": { "to": ["Token"], "cost": "{1}" } } },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "24437641-85a1-4fcd-93dc-bd19a7abf969",
+  "oracle_id": "316cae8b-31b0-4b76-8b72-8122005e1b4e",
+  "name": "Clutch of the Undercity",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rav",
+  "collector_number": "197",
+  "rarity": "uncommon",
+  "released_at": "2005-10-07",
+  "digital": false,
+  "mana_cost": "{1}{U}{U}{B}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Return target permanent to its owner's hand. Its controller loses 3 life.\nTransmute {1}{U}{B} ({1}{U}{B}, Discard this card: Search your library for a card with the same mana value as this card, reveal it, put it into your hand, then shuffle. Transmute only as a sorcery.)",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Transmute"
+  ]
+}

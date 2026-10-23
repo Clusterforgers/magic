@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a20bb8b3-b724-4fec-b179-ca9e6adc4718",
+  "name": "Baton of Courage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baton of Courage",
+      "oracle_fingerprint": "3445569604f4f18fd0340d86859e358c",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Sunburst" },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": "charge" } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

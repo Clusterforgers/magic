@@ -1,0 +1,21 @@
+{
+  "oracle_id": "a54fb3de-0581-461e-be33-dc4f4d16a33e",
+  "name": "Thinking Cap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thinking Cap",
+      "oracle_fingerprint": "06c1a0e8a96fd5c399bab62a34a5e5ea",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }]
+          }
+        },
+        { "Keyword": { "EquipTo": { "to": [{ "Subtype": "Detective" }], "cost": "{1}" } } },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

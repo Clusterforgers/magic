@@ -1,0 +1,26 @@
+{
+  "id": "cb98a7dd-542e-4448-b3bb-ff5d67a36535",
+  "oracle_id": "a339961e-3555-467f-a4f8-c5eaac7e7ed1",
+  "name": "Warrior's Sword",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fin",
+  "collector_number": "169",
+  "rarity": "common",
+  "released_at": "2025-06-13",
+  "digital": false,
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Job select (When this Equipment enters, create a 1/1 colorless Hero creature token, then attach this to it.)\nEquipped creature gets +3/+2 and is a Warrior in addition to its other types.\nEquip {5} ({5}: Attach to target creature you control. Equip only as a sorcery.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Job select",
+    "Equip"
+  ]
+}

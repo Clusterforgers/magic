@@ -19,31 +19,37 @@ pub(super) struct LivingWeapon;
 
 impl KeywordRules for LivingWeapon {
     fn adds_abilities(&self, _keyword: &Keyword) -> Vec<Ability> {
-        vec![Ability::Triggered {
-            when: TriggerPattern::ZoneChange {
-                what: Selector::this(),
-                from: None,
-                to: Some(ZoneKind::Battlefield),
+        vec![enters_attached_to(germ())]
+    }
+}
+
+/// "When this permanent enters, create `token`, then attach this permanent to it": living weapon, For Mirrodin! and job
+/// select differ only in the token.
+pub(super) fn enters_attached_to(token: TokenSpec) -> Ability {
+    Ability::Triggered {
+        when: TriggerPattern::ZoneChange {
+            what: Selector::this(),
+            from: None,
+            to: Some(ZoneKind::Battlefield),
+        },
+        intervening_if: None,
+        limit: None,
+        from: ZoneKind::Battlefield,
+        targets: Vec::new(),
+        effects: vec![
+            Effect::CreateToken {
+                who: Ref::You,
+                token: TokenRef::Custom(Box::new(token)),
+                count: Amount::Fixed(1),
+                tapped: false,
+                attacking: false,
+                bind: Some("germ".into()),
             },
-            intervening_if: None,
-            limit: None,
-            from: ZoneKind::Battlefield,
-            targets: Vec::new(),
-            effects: vec![
-                Effect::CreateToken {
-                    who: Ref::You,
-                    token: TokenRef::Custom(Box::new(germ())),
-                    count: Amount::Fixed(1),
-                    tapped: false,
-                    attacking: false,
-                    bind: Some("germ".into()),
-                },
-                Effect::Attach {
-                    what: Ref::This,
-                    to: Ref::Bound("germ".into()),
-                },
-            ],
-        }]
+            Effect::Attach {
+                what: Ref::This,
+                to: Ref::Bound("germ".into()),
+            },
+        ],
     }
 }
 

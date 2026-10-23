@@ -1,0 +1,21 @@
+{
+  "oracle_id": "bfe06fb5-83b5-4212-86f8-947dfba15b26",
+  "name": "Steelclaw Lance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steelclaw Lance",
+      "oracle_fingerprint": "ab4b3a29a5aaf407437c6dd3f67efead",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        { "Keyword": { "EquipTo": { "to": [{ "Subtype": "Knight" }], "cost": "{1}" } } },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

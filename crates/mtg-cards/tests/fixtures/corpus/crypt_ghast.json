@@ -1,0 +1,30 @@
+{
+  "id": "60bebd79-f88c-44ef-8920-e19031bad1d6",
+  "oracle_id": "a3c8d817-7949-4dae-b9f5-f9d952479270",
+  "name": "Crypt Ghast",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rvr",
+  "collector_number": "70",
+  "rarity": "rare",
+  "released_at": "2024-01-12",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Spirit",
+  "oracle_text": "Extort (Whenever you cast a spell, you may pay {W/B}. If you do, each opponent loses 1 life and you gain that much life.)\nWhenever you tap a Swamp for mana, add an additional {B}.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Extort"
+  ],
+  "produced_mana": [
+    "B"
+  ]
+}
