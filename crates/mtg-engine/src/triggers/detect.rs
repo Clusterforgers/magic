@@ -549,9 +549,10 @@ fn about_players_and_permanents(
                 },
                 amount: *amount,
             });
-            // Damage to a player makes them lose that much life (CR 120.3a), unless it is infect (poison counters, CR 120.3b).
+            // Damage to a player makes them lose that much life (CR 120.3a), unless it is infect (poison counters, CR 120.3b)
+            // or a rule says it causes none.
             if let DamageTarget::Player(player) = target
-                && !matches!(form, DamageForm::Infect)
+                && !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss)
             {
                 found.push(Happened::LifeLost {
                     player: *player,

@@ -126,6 +126,22 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(named);
     }
+    // The monarch held as the event happens may follow it: "Whenever you tap a land for mana while you're the monarch".
+    if let Ability::Triggered {
+        when,
+        intervening_if: Some(held),
+        ..
+    } = ability
+        && while_held(when)
+        && let Some(held) = super::triggers::monarch_text(held)
+    {
+        let after: Vec<String> = texts
+            .iter()
+            .map(|text| text.replacen(&format!(", if {held}, "), &format!(" while {held}, "), 1))
+            .filter(|text| !texts.contains(text))
+            .collect();
+        texts.extend(after);
+    }
     // A card may open with "When" for the damage its commander deals (Archivist of Gondor).
     if matches!(
         ability,
@@ -1783,4 +1799,13 @@ impl Writer<'_> {
             parts.join(" and ")
         ))
     }
+}
+
+/// Whether a trigger may say "while you're the monarch" after its event: not one about damage, which can itself pass the
+/// designation on, so that the state after it is not the one the event happened in.
+pub(super) fn while_held(when: &TriggerPattern) -> bool {
+    !matches!(
+        when,
+        TriggerPattern::DealsDamage { .. } | TriggerPattern::Batch(_) | TriggerPattern::AnyOf(_)
+    )
 }

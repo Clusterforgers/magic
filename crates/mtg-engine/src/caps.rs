@@ -169,6 +169,7 @@ const RUNS: &[&str] = &[
     "Rule.MustBlock",
     "Rule.CantBeCountered",
     "Rule.CantGainLife",
+    "Rule.NoLifeLossFromDamage",
     "Rule.CantDraw",
     "Rule.CantSearch",
     "Rule.RevealTop",
@@ -508,6 +509,7 @@ mod tests {
     #[case::block_requirements("Rule.MustBlock", true)]
     #[case::spells_that_cant_be_countered("Rule.CantBeCountered", true)]
     #[case::no_life_gain("Rule.CantGainLife", true)]
+    #[case::no_life_loss_from_damage("Rule.NoLifeLossFromDamage", true)]
     #[case::no_drawing("Rule.CantDraw", true)]
     #[case::no_searching("Rule.CantSearch", true)]
     #[case::a_revealed_top("Rule.RevealTop", true)]

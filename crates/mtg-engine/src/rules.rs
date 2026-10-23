@@ -48,6 +48,8 @@ pub enum Rule {
     CantBeCountered(Vec<ObjectRef>),
     /// The players can't gain life.
     CantGainLife(Vec<PlayerId>),
+    /// Damage dealt to the players causes no loss of life.
+    NoLifeLossFromDamage(Vec<PlayerId>),
     /// The players can't draw cards.
     CantDraw(Vec<PlayerId>),
     /// The players can't search libraries.
@@ -220,6 +222,7 @@ pub(crate) struct RulesInForce {
     must_block: BTreeSet<ObjectId>,
     uncounterable: BTreeSet<ObjectId>,
     no_life_gain: BTreeSet<PlayerId>,
+    no_damage_loss: BTreeSet<PlayerId>,
     no_draw: BTreeSet<PlayerId>,
     no_search: BTreeSet<PlayerId>,
     reveal_top: BTreeSet<PlayerId>,
@@ -316,6 +319,7 @@ impl RulesInForce {
             }),
             Rule::CantBeCountered(named) => self.uncounterable.extend(ids(named)),
             Rule::CantGainLife(players) => self.no_life_gain.extend(players),
+            Rule::NoLifeLossFromDamage(players) => self.no_damage_loss.extend(players),
             Rule::CantDraw(players) => self.no_draw.extend(players),
             Rule::CantSearch(players) => self.no_search.extend(players),
             Rule::RevealTop(players) => self.reveal_top.extend(players),
@@ -435,6 +439,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         }
         GameRule::CantBeCountered(who) => Rule::CantBeCountered(objects(who, Zone::Stack)?),
         GameRule::CantGainLife(who) => Rule::CantGainLife(scope.players(who)?),
+        GameRule::NoLifeLossFromDamage(who) => Rule::NoLifeLossFromDamage(scope.players(who)?),
         GameRule::CantDraw(who) => Rule::CantDraw(scope.players(who)?),
         GameRule::CantSearch(who) => Rule::CantSearch(scope.players(who)?),
         GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
@@ -491,6 +496,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         }
         Rule::MustAttackPlayers(pairs) => pairs.is_empty(),
         Rule::CantGainLife(players)
+        | Rule::NoLifeLossFromDamage(players)
         | Rule::CantDraw(players)
         | Rule::CantSearch(players)
         | Rule::RevealTop(players)
@@ -591,6 +597,7 @@ static NONE: RulesInForce = RulesInForce {
     must_block: BTreeSet::new(),
     uncounterable: BTreeSet::new(),
     no_life_gain: BTreeSet::new(),
+    no_damage_loss: BTreeSet::new(),
     no_draw: BTreeSet::new(),
     no_search: BTreeSet::new(),
     reveal_top: BTreeSet::new(),
@@ -735,6 +742,11 @@ pub fn cant_be_countered(state: &GameState, id: ObjectId) -> bool {
 /// Whether `player` can't gain life: the one place a gain of life reads this rule.
 pub fn cant_gain_life(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_life_gain.contains(&player)
+}
+
+/// Whether damage dealt to `player` causes no loss of life: the one place the damage events read this rule.
+pub fn damage_causes_no_life_loss(state: &GameState, player: PlayerId) -> bool {
+    state.rules().no_damage_loss.contains(&player)
 }
 
 /// Whether `player` can't draw cards: the one place a draw reads this rule.

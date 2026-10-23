@@ -1971,6 +1971,7 @@ impl<'a> Walker<'a> {
                 }
             }),
             GameRule::CantGainLife(who)
+            | GameRule::NoLifeLossFromDamage(who)
             | GameRule::CantDraw(who)
             | GameRule::CantSearch(who)
             | GameRule::RevealTop(who)

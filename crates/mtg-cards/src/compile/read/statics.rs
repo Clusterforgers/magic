@@ -34,11 +34,12 @@ use crate::value::{Amount, CastWay, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 18] = [
+const TEMPLATES: [Template; 19] = [
     entering,
     entering_tapped_if,
     group_enters_tapped,
     life_gain::replacement,
+    no_life_loss,
     copies::enters_as_copy,
     as_entering,
     rule,
@@ -63,6 +64,38 @@ pub fn ability(r: &mut Reader<'_>) -> Option<Ability> {
             r.sentence_end().then_some(found)
         })
     })
+}
+
+/// "Damage doesn't cause you to lose life.", also "As long as you're the monarch, damage doesn't cause you to lose life.": a
+/// rule of the game for its controller, under the condition when there is one.
+fn no_life_loss(r: &mut Reader<'_>) -> Option<Ability> {
+    let condition = r.attempt(|r| {
+        let held = as_long_as(r)?;
+        r.punct(',').then_some(held)
+    });
+    r.words("damage doesn't cause you to lose life").then_some(())?;
+    Some(Ability::Rule {
+        rule: GameRule::NoLifeLossFromDamage(Ref::You),
+        condition,
+        from: ZoneKind::Battlefield,
+    })
+}
+
+/// What `no_life_loss` reads, written back.
+fn no_life_loss_texts(condition: Option<&Condition>) -> Vec<String> {
+    let rule = "damage doesn't cause you to lose life";
+    match condition {
+        None => vec![rule.to_owned()],
+        Some(held) => as_long_as_texts(held)
+            .into_iter()
+            .flat_map(|held| {
+                [
+                    format!("as long as {held}, {rule}"),
+                    format!("{rule} as long as {held}"),
+                ]
+            })
+            .collect(),
+    }
 }
 
 /// The replacement of the card's own entering.
@@ -773,6 +806,11 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             .map(|group| format!("{group} enter tapped"))
             .into_iter()
             .collect(),
+        Ability::Rule {
+            rule: GameRule::NoLifeLossFromDamage(Ref::You),
+            condition,
+            from: ZoneKind::Battlefield,
+        } => no_life_loss_texts(condition.as_ref()),
         Ability::Rule {
             rule,
             condition: None,

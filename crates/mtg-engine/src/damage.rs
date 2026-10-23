@@ -5,13 +5,13 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::answers::Outcome;
 use crate::characteristics::{characteristics, controller_of};
-use crate::combat::{AttackTarget, Attacker, DamageTarget};
+use crate::combat::{AttackTarget, Attacker, DamageForm, DamageTarget};
 use crate::decision::DamageOptions;
 use crate::error::IllegalAnswer;
 use crate::events::Event;
 use crate::keywords::{self, DamageRules};
 use crate::object::GameObject;
-use crate::rules::cant_gain_life;
+use crate::rules::{cant_gain_life, damage_causes_no_life_loss};
 use crate::snapshot::Snapshot;
 use crate::state::GameState;
 use crate::turn::Step;
@@ -343,12 +343,19 @@ fn deal(
     if amount == 0 {
         return Vec::new();
     }
+    let mut form = dealer.keywords.form();
+    if let DamageTarget::Player(player) = target
+        && form != DamageForm::Infect
+        && damage_causes_no_life_loss(state, player)
+    {
+        form = DamageForm::NoLifeLoss;
+    }
     let mut events = vec![Event::DamageDealt {
         source: dealer.id,
         target,
         amount,
         deathtouch: dealer.keywords.deathtouch,
-        form: dealer.keywords.form(),
+        form: form,
         toxic: if combat && matches!(target, DamageTarget::Player(_)) {
             dealer.keywords.toxic
         } else {

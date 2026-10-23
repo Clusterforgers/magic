@@ -47,6 +47,8 @@ pub enum DamageForm {
     Wither,
     /// Infect (CR 702.90): -1/-1 counters on a creature, poison counters for a player.
     Infect,
+    /// Damage to a player who loses no life from damage (Archon of Coronation): dealt, but no life is lost.
+    NoLifeLoss,
 }
 
 impl DamageForm {
@@ -59,7 +61,7 @@ impl DamageForm {
     /// Whether a creature it hurts gets -1/-1 counters and no marked damage.
     #[must_use]
     pub const fn makes_counters(self) -> bool {
-        !self.is_normal()
+        matches!(self, DamageForm::Wither | DamageForm::Infect)
     }
 }
 

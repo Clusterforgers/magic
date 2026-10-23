@@ -205,6 +205,8 @@ pub enum GameRule {
     CantBeCountered(Ref),
     /// The players can't gain life.
     CantGainLife(Ref),
+    /// Damage dealt to the players causes no loss of life: it is still dealt, and every other effect of it happens.
+    NoLifeLossFromDamage(Ref),
     /// The players can't draw cards.
     CantDraw(Ref),
     /// The players can't search libraries.

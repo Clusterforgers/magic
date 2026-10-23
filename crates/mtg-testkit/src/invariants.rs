@@ -995,11 +995,13 @@ impl InvariantChecker {
         form: DamageForm,
         toxic: u32,
     ) -> Result<(), Violation> {
-        let poison = if form == DamageForm::Infect {
-            amount.saturating_add(toxic)
-        } else {
-            self.lose_life(player, amount, "damage")?;
-            toxic
+        let poison = match form {
+            DamageForm::Infect => amount.saturating_add(toxic),
+            DamageForm::NoLifeLoss => toxic,
+            _ => {
+                self.lose_life(player, amount, "damage")?;
+                toxic
+            }
         };
         if poison == 0 {
             return Ok(());
