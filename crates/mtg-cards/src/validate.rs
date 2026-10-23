@@ -2447,9 +2447,9 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
         Ability::Keyword(keyword) => keyword.has_additional_cost(),
         _ => false,
     });
-    walker.counts_x = card
-        .abilities()
-        .any(|(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true } if cost.has_x()));
+    walker.counts_x = card.abilities().any(
+        |(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true } if cost.has_x()),
+    );
     walker.pays_objects = card
         .abilities()
         .any(|(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true } if picks(cost)));

@@ -123,10 +123,48 @@ fn a_cost_the_readers_do_not_model_stays_with_the_table(#[case] text: &str) {
 }
 
 #[rstest]
-#[case::life("As an additional cost to cast this spell, pay X life.")]
-#[case::sacrifice("As an additional cost to cast this spell, sacrifice X creatures.")]
-#[case::discard("As an additional cost to cast this spell, discard X cards.")]
+#[case::life(
+    "As an additional cost to cast this spell, pay X life.",
+    must(vec![CostItem::PayLife(Amount::X)])
+)]
+#[case::sacrifice(
+    "As an additional cost to cast this spell, sacrifice X creatures.",
+    must(vec![CostItem::Sacrifice { filter: kind(CardType::Creature), count: Amount::X }])
+)]
+#[case::sacrifice_a_kind(
+    "As an additional cost to cast this spell, sacrifice X artifacts.",
+    must(vec![CostItem::Sacrifice { filter: kind(CardType::Artifact), count: Amount::X }])
+)]
+#[case::discard(
+    "As an additional cost to cast this spell, discard X cards.",
+    must(vec![CostItem::Discard { count: Amount::X, filter: None }])
+)]
+#[case::exile_from_the_graveyard(
+    "As an additional cost to cast this spell, exile X cards from your graveyard.",
+    must(vec![CostItem::ExileFromGraveyard { filter: Selector(Vec::new()), count: Amount::X }])
+)]
+#[case::exile_a_kind_from_the_graveyard(
+    "As an additional cost to cast this spell, exile X creature cards from your graveyard.",
+    must(vec![CostItem::ExileFromGraveyard { filter: kind(CardType::Creature), count: Amount::X }])
+)]
+fn a_required_additional_cost_that_counts_x_reads_and_writes_back(
+    #[case] text: &str,
+    #[case] expected: Ability,
+) {
+    assert_eq!(golden(text, ClauseKind::Static, false), expected);
+}
+
+#[rstest]
+#[case::optional_life("As an additional cost to cast this spell, you may pay X life.")]
 #[case::optional("As an additional cost to cast this spell, you may sacrifice X artifacts.")]
-fn an_x_in_the_additional_cost_stays_with_the_table(#[case] text: &str) {
+#[case::optional_discard("As an additional cost to cast this spell, you may discard X cards.")]
+#[case::mana("As an additional cost to cast this spell, you may pay {X}.")]
+#[case::mana_alone("As an additional cost to cast this spell, pay {X}.")]
+#[case::mana_and_life("As an additional cost to cast this spell, pay {X} and 2 life.")]
+#[case::x_with_a_number("As an additional cost to cast this spell, pay X plus 2 life.")]
+#[case::half_of_it("As an additional cost to cast this spell, pay half X life.")]
+fn an_x_in_the_additional_cost_that_the_caster_does_not_announce_stays_with_the_table(
+    #[case] text: &str,
+) {
     assert_eq!(clause(text, ClauseKind::Static, false), None);
 }

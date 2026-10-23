@@ -348,6 +348,59 @@ mod tests {
     }
 
     #[rstest]
+    #[case::life(r#"[{"PayLife":"X"}]"#, 0, Some(XCost::Parts))]
+    #[case::sacrifice(
+        r#"[{"Sacrifice":{"filter":[{"Type":"Creature"}],"count":"X"}}]"#,
+        0,
+        Some(XCost::Parts)
+    )]
+    #[case::discard(r#"[{"Discard":{"count":"X"}}]"#, 0, Some(XCost::Parts))]
+    #[case::exile(
+        r#"[{"ExileFromGraveyard":{"filter":[],"count":"X"}}]"#,
+        0,
+        Some(XCost::Parts)
+    )]
+    #[case::with_x_mana_it_is_the_mana_that_asks(
+        r#"[{"ExileFromGraveyard":{"filter":[],"count":"X"}}]"#,
+        1,
+        Some(XCost::Mana { symbols: 1 })
+    )]
+    #[case::a_fixed_part(r#"[{"PayLife":3}]"#, 0, None)]
+    fn a_spell_asks_for_the_x_of_a_required_additional_cost(
+        #[case] cost: &str,
+        #[case] symbols: u8,
+        #[case] expected: Option<XCost>,
+    ) {
+        let rule = rules(&format!(
+            r#"{{"AdditionalCost":{{"cost":{cost},"required":true}}}}"#
+        ));
+        let card = Arc::new(
+            CardDefinition::new("Spell")
+                .with_type(CardType::Instant)
+                .with_mana_cost(ManaCost::parse("{G}").unwrap())
+                .with_x_in_cost(symbols)
+                .with_rules(rule),
+        );
+        let game = state(vec![vec![card], vec![]], vec![vec![], vec![]]);
+        let spell = game.zone(Zone::Hand(SEAT))[0];
+        assert_eq!(XCost::of(&game, &What::Spell(spell), None), expected);
+    }
+
+    #[test]
+    fn an_optional_additional_cost_that_counts_x_asks_nothing() {
+        let rule = rules(r#"{"AdditionalCost":{"cost":[{"PayLife":"X"}],"required":false}}"#);
+        let card = Arc::new(
+            CardDefinition::new("Spell")
+                .with_type(CardType::Instant)
+                .with_mana_cost(ManaCost::parse("{G}").unwrap())
+                .with_rules(rule),
+        );
+        let game = state(vec![vec![card], vec![]], vec![vec![], vec![]]);
+        let spell = game.zone(Zone::Hand(SEAT))[0];
+        assert_eq!(XCost::of(&game, &What::Spell(spell), None), None);
+    }
+
+    #[rstest]
     #[case::mana_without_x(r#"{"Activated":{"cost":"{1}{G}","effects":[{"Draw":{}}]}}"#, None)]
     #[case::a_tap(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#, None)]
     #[case::x(

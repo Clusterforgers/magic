@@ -98,6 +98,7 @@ pub mod vehicle_cards;
 pub mod windows;
 pub mod x_after_cards;
 pub mod x_cards;
+pub mod x_cost_cards;
 pub mod zone_cards;
 
 pub use action_cards::actions_fuzz_setup;
@@ -202,4 +203,5 @@ pub use vehicle_cards::vehicle_fuzz_setup;
 pub use windows::{SeatWindows, Windows};
 pub use x_after_cards::x_after_fuzz_setup;
 pub use x_cards::x_fuzz_setup;
+pub use x_cost_cards::{X_COST_CARDS, x_cost_fuzz_setup};
 pub use zone_cards::zones_fuzz_setup;
