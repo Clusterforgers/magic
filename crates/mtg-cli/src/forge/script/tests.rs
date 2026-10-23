@@ -209,6 +209,7 @@ fn a_part_with_a_mode_is_a_trigger_or_a_static_ability_by_how_it_is_named(
 #[case::tap_and_mana("T 2 G", &["T", "Mana", "Mana"])]
 #[case::mixed_symbols_and_brackets("X R/G Sac<1/Creature.Other/another creature> PayLife<2>", &["Mana", "Mana", "Sac", "PayLife"])]
 #[case::the_source("SacMe Q", &["SacMe", "Q"])]
+#[case::the_source_by_name("Sac<1/CARDNAME> Discard<1/CARDNAME> Sac<1/NICKNAME> Exile<1/Card.Self>", &["SacMe", "DiscardMe", "SacMe", "ExileMe"])]
 #[case::snow_and_colorless("S C 0", &["Mana", "Mana", "Mana"])]
 #[case::a_counter_cost("SubCounter<2/P1P1> tapXType<1/Creature.Elf/untapped Elf>", &["SubCounter", "tapXType"])]
 #[case::nothing("", &[])]
@@ -217,6 +218,34 @@ fn a_cost_splits_outside_its_brackets_into_named_parts(
     #[case] expected: &[&str],
 ) {
     assert_eq!(cost_parts(cost), expected);
+}
+
+#[rstest]
+#[case::backup("K:Backup:1:BackupAb\nSVar:BackupAb:DB$ Pump | KW$ Double Strike | SubAbility$ DBMore\nSVar:DBMore:DB$ Draw", &["Backup"])]
+#[case::gift("K:Gift\nSVar:GiftAbility:DB$ Token | TokenScript$ x | SubAbility$ DBMore\nSVar:DBMore:DB$ Draw", &["Gift"])]
+#[case::a_keyword_with_a_part_of_its_own("K:Fabricate:1:FabAb\nSVar:FabAb:DB$ Pump", &["Fabricate", "Pump"])]
+fn the_ability_of_a_keyword_the_dsl_has_whole_gives_no_item(
+    #[case] lines: &str,
+    #[case] expected: &[&str],
+) {
+    let names: Vec<_> = face(lines)
+        .items()
+        .into_iter()
+        .map(|item| item.name)
+        .collect();
+    assert_eq!(names, expected);
+}
+
+#[test]
+fn the_effect_a_replacement_names_carries_the_event_it_replaces() {
+    let lines = "R:Event$ Draw | ReplaceWith$ Twice\nSVar:Twice:DB$ Draw | SubAbility$ DBMore\nSVar:DBMore:DB$ Draw\nA:SP$ Draw";
+    let items = face(lines).items();
+    let replacing: Vec<_> = items
+        .iter()
+        .map(|item| item.params.get("Replacing"))
+        .collect();
+    // The ability comes first, then the replacement, the part it names and the part that one names.
+    assert_eq!(replacing, [None, None, Some("Draw"), None]);
 }
 
 #[rstest]

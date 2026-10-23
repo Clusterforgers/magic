@@ -114,6 +114,28 @@ fn a_key_asks_for_a_verb_of_its_own() {
     );
 }
 
+#[rstest]
+#[case::the_general_rule("SP$ Zap | Extra$ 1", &["Mod.X"])]
+#[case::a_condition_that_holds("SP$ Zap | Extra$ 1 | Own$ Self", &["Mod.Y"])]
+#[case::a_condition_with_another_value("SP$ Zap | Extra$ 1 | Own$ Other", &["Mod.X"])]
+#[case::two_conditions_beat_one("SP$ Zap | Extra$ 1 | Own$ Self | Flag$ True", &["Mod.Z"])]
+#[case::a_second_key_keeps_its_own_rule("SP$ Zap | Extra$ 1 | Wide$ 2", &["Mod.X", "Mod.W"])]
+fn the_rule_of_a_key_with_the_most_conditions_that_hold_decides(
+    #[case] body: &str,
+    #[case] expected: &[&str],
+) {
+    let map = Map::parse(
+        "also effect Zap Extra => Mod.X\nalso effect Zap Extra Own=Self => Mod.Y\nalso effect Zap Extra Own=Self Flag => Mod.Z\nalso effect Zap Wide => Mod.W",
+    )
+    .unwrap_or_else(|error| panic!("{error}"));
+    let wanted: Vec<String> = map
+        .wanted(&item(Kind::Effect, "Zap", body))
+        .into_iter()
+        .map(|wanted| wanted.verbs.join(" "))
+        .collect();
+    assert_eq!(wanted, expected);
+}
+
 #[test]
 fn a_variant_key_is_named_with_its_value() {
     let map = Map::parse("variant effect Zap Mode\nvariant effect Zap Origin")

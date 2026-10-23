@@ -40,6 +40,7 @@ variant replacement Moved Origin
 
 # Cards, life, damage and mana.
 effect Draw => Effect.Draw Keyword.Gift
+effect Draw Replacing=Draw => Effect.Draw ReplaceBy.Multiply
 effect Discard => Effect.Discard
 effect GainLife => Effect.GainLife
 effect LoseLife => Effect.LoseLife
@@ -108,6 +109,7 @@ effect Protection => Effect.Continuous
 effect Debuff => Effect.Continuous
 effect AlterAttribute => -
 effect Effect => Effect.Continuous Effect.Rule Effect.Shield Effect.DelayedTrigger Effect.CreateToken
+effect Effect ForgetOnMoved => Effect.Continuous Effect.Rule Effect.Shield Effect.DelayedTrigger Effect.CreateToken Effect.Exile Effect.ExileUntil Effect.ExileTop
 effect PreventDamage => Effect.Shield
 effect Fog => Effect.Shield
 effect ReplaceEffect => ReplaceBy.Multiply ReplaceBy.Add ReplaceBy.Prevent ReplaceBy.PreventUpTo ReplaceBy.Instead ReplaceBy.MoveTo ReplaceBy.WithCounters ReplaceBy.Tapped ReplaceBy.Choose ReplaceBy.Dredge
@@ -150,7 +152,7 @@ effect Earthbend => -
 effect Planeswalk => -
 
 # Keys that ask for verbs of their own.
-also effect * UnlessCost => Effect.Pay
+also effect * UnlessCost => Effect.Pay Effect.May
 also effect CopyPermanent NonLegendary => Mod.RemoveSupertype
 also effect CopyPermanent PumpKeywords => Mod.AddKeyword Keyword.Haste
 also effect CopyPermanent AddTypes => Mod.AddType
@@ -184,7 +186,7 @@ also effect DealDamage Optional => Effect.May
 also effect Destroy Optional => Effect.May
 also effect PutCounter Optional => Effect.May
 also effect Untap Optional => Effect.May
-also trigger * OptionalDecider => Effect.May
+also trigger * OptionalDecider => Effect.May Effect.Pay Effect.CastFromZone
 
 # --- Triggers: Mode$ ---
 trigger ChangesZone => Trigger.ZoneChange
@@ -293,12 +295,17 @@ also static Continuous SetPower => Mod.SetPT
 also static Continuous SetToughness => Mod.SetPT
 also static Continuous AddKeyword => Mod.AddKeyword
 also static Continuous RemoveKeyword => Mod.RemoveKeyword
-also static Continuous AddType => Mod.AddType Mod.SetTypes
+also static Continuous AddType => Mod.AddType Mod.SetTypes Mod.AddSubtype
+also static Continuous AddType RemoveCreatureTypes => Mod.AddType Mod.SetTypes Mod.AddSubtype Mod.SetCreatureTypes
 also static Continuous RemoveType => Mod.RemoveType Mod.SetTypes
 also static Continuous RemoveCardTypes => Mod.RemoveType Mod.SetTypes
+# A static that grants an ability to its own card (a level or station bracket) is the ability with a condition.
 also static Continuous AddAbility => Mod.GrantAbility
+also static Continuous AddAbility AffectedDefined=Self => Ability.Activated
 also static Continuous AddTrigger => Mod.GrantAbility
+also static Continuous AddTrigger AffectedDefined=Self => Ability.Triggered
 also static Continuous AddStaticAbility => Mod.GrantAbility
+also static Continuous AddStaticAbility AffectedDefined=Self => Ability.Static
 also static Continuous GainControl => Mod.SetController
 also static Continuous RemoveAllAbilities => Mod.LoseAbilities
 also static Continuous SetColor => Mod.SetColors
@@ -336,6 +343,7 @@ keyword Chapter => Trigger.Chapter
 keyword TypeCycling => Keyword.Typecycling
 keyword AlternateAdditionalCost => Ability.AdditionalCost
 keyword Class => -
+keyword Strive => Ability.CostModifier
 keyword StickerSheet => -
 keyword MayEffectFromOpeningHand => -
 
