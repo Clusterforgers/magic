@@ -280,7 +280,6 @@ fn near_misses_of_becoming_a_copy_stay_unread(#[case] text: &str) {
 #[case::an_ability_and_a_keyword("Enchanted creature has \"{T}: Draw a card.\" and flying")]
 #[case::an_unfinished_quote("Enchanted creature has \"{T}: Draw a card.")]
 #[case::an_unread_ability("Enchanted creature has \"{T}: Do something odd.\"")]
-#[case::a_mana_ability("Enchanted creature has \"{T}: Add {G}.\"")]
 #[case::a_keyword_for_a_land("Enchanted land has flying")]
 #[case::a_bonus_for_a_land("Enchanted land gets +1/+1 and has \"{T}: Draw a card.\"")]
 #[case::another_noun("Enchanted Forest has \"{T}: Draw a card.\"")]

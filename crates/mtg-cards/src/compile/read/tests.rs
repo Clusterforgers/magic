@@ -379,8 +379,8 @@ mod mana {
     #[case::two_uses(
         "{T}: Add {G}. Spend this mana only to cast artifact spells or activate abilities of artifacts."
     )]
-    #[case::the_chosen_type(
-        "{T}: Add one mana of any color. Spend this mana only to cast a creature spell of the chosen type."
+    #[case::a_chosen_kind(
+        "{T}: Add one mana of any color. Spend this mana only to cast a creature spell of the chosen kind."
     )]
     #[case::without_the_period_after_the_mana(
         "{T}: Add {G} Spend this mana only to cast creature spells."
