@@ -75,7 +75,7 @@ fn seeded_grant_games_finish_and_keep_every_invariant(#[case] players: usize) {
 #[test]
 fn a_campaign_holds_the_granted_keywords() {
     let mut seen = Seen::default();
-    for seed in 0..96 {
+    for seed in 0..300 {
         let setup = grant_fuzz_setup(2, seed).unwrap();
         let outcome = play_game(setup.clone(), seed).unwrap_or_else(|failure| panic!("{failure}"));
         let end = replay(&setup, &outcome.events).unwrap();

@@ -14,7 +14,7 @@ use crate::cards::land;
 use crate::corpus::{self, CorpusError};
 
 /// Lands in a grant deck: five colours in turn.
-const LANDS: usize = 34;
+const LANDS: usize = 23;
 
 /// The names of the corpus cards whose static abilities give a group or a host a keyword, a bonus or a base size.
 pub const GRANT_CARDS: &[&str] = &[
