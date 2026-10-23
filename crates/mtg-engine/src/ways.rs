@@ -72,16 +72,37 @@ fn mana_only(cost: &mtg_cards::cost::Cost) -> Option<ManaCost> {
 /// the mana, and life and the objects the player picks. A cost that taps or loses its source, counts X or removes counters
 /// is not paid; nor is one with nothing to pay.
 pub(crate) fn cast_cost(cost: &mtg_cards::cost::Cost) -> Option<(ManaCost, Vec<Part>)> {
+    cast_cost_x(cost)
+        .filter(|(_, _, x)| *x == 0)
+        .map(|(mana, parts, _)| (mana, parts))
+}
+
+/// [`cast_cost`] that also allows `{X}` in the mana: the mana without the X, the parts, and how many `{X}` the cost holds.
+fn cast_cost_x(cost: &mtg_cards::cost::Cost) -> Option<(ManaCost, Vec<Part>, u32)> {
     let price = Price::announced(cost).ok()?;
     let unpaid = price.tap
         || price.moves_source()
-        || price.x > 0
         || (price.mana.is_none() && price.parts.is_empty())
         || price
             .parts
             .iter()
             .any(|part| part.is_counted() || matches!(part, Part::Counters { .. }));
-    (!unpaid).then(|| (price.mana.unwrap_or(ManaCost::ZERO), price.parts))
+    (!unpaid).then(|| (price.mana.unwrap_or(ManaCost::ZERO), price.parts, price.x))
+}
+
+/// How many `{X}` the cost of the alternative way `way` of the card `id` holds: the miracle cost may hold some
+/// ("Miracle {X}{W}{W}", CR 107.3), whose X is announced in place of the one of the printed cost; any other way holds none.
+pub(crate) fn alternative_x(state: &GameState, id: ObjectId, way: CastWay) -> u32 {
+    if way != CastWay::Miracle {
+        return 0;
+    }
+    keywords_of(state, id)
+        .into_iter()
+        .find_map(|keyword| match keyword {
+            Keyword::Miracle(cost) => cast_cost_x(&cost).map(|(_, _, x)| x),
+            _ => None,
+        })
+        .unwrap_or(0)
 }
 
 /// A cost in words: its mana, then its parts.
@@ -580,15 +601,18 @@ pub(crate) fn can_turn_up(
         )
 }
 
-/// The way and the mana of the madness or miracle cost of the card `id` (CR 702.35, 702.94) when a resolution casts it
-/// in that way and the card has a cost the engine pays.
+/// The way and the mana, in words, of the madness or miracle cost of the card `id` (CR 702.35, 702.94) when a resolution
+/// casts it in that way and the card has a cost the engine pays; a miracle cost with `{X}` names them first.
 pub(crate) fn alternative_cost(
     state: &GameState,
     id: ObjectId,
     way: Option<CastWay>,
-) -> Option<(CastWay, ManaCost)> {
+) -> Option<(CastWay, String)> {
     let way = way.filter(|way| matches!(way, CastWay::Madness | CastWay::Miracle))?;
-    keyword_cost(state, id, way).map(|(mana, _)| (way, mana))
+    keyword_cost(state, id, way).map(|(mana, _)| {
+        let x = "{X}".repeat(usize::try_from(alternative_x(state, id, way)).unwrap_or(0));
+        (way, format!("{x}{mana}"))
+    })
 }
 
 /// The name a cost-bearing way goes by in a label.
@@ -604,8 +628,10 @@ fn keyword_cost(state: &GameState, id: ObjectId, way: CastWay) -> Option<(ManaCo
     keywords_of(state, id)
         .into_iter()
         .find_map(|keyword| match (way, keyword) {
-            (CastWay::Madness, Keyword::Madness(cost))
-            | (CastWay::Miracle, Keyword::Miracle(cost)) => cast_cost(cost),
+            (CastWay::Madness, Keyword::Madness(cost)) => cast_cost(cost),
+            (CastWay::Miracle, Keyword::Miracle(cost)) => {
+                cast_cost_x(cost).map(|(mana, parts, _)| (mana, parts))
+            }
             _ => None,
         })
 }

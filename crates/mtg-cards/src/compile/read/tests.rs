@@ -214,6 +214,7 @@ mod mana_spent;
 mod mana_triggers;
 mod mana_wordings;
 mod manifest;
+mod mass_moves;
 mod may;
 mod modes;
 mod monarch;

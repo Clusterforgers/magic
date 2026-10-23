@@ -28,6 +28,7 @@ use super::group_pump;
 use super::lands;
 use super::library;
 use super::manifest;
+use super::mass_moves;
 use super::modal::{BULLET, DASH};
 use super::payments;
 use super::prevention;
@@ -570,6 +571,28 @@ struct Wording {
     again: bool,
     /// Which of the wordings of a condition is written ("three or more" or "3 or more").
     condition: usize,
+}
+
+/// "each player discards their hand, then draws seven cards": every hand emptied and the cards drawn, one sentence.
+fn wheel_text(effects: &[Effect]) -> Option<(String, usize)> {
+    let [
+        Effect::Discard {
+            who: Ref::EachPlayer,
+            count: hand,
+            random: false,
+        },
+        Effect::Draw {
+            who: Ref::EachPlayer,
+            count,
+        },
+        ..,
+    ] = effects
+    else {
+        return None;
+    };
+    (*hand == draws::hand_of(&Ref::EachPlayer)).then_some(())?;
+    let cards = cards_text(count)?;
+    Some((format!("each player discards their hand, then draws {cards}"), 2))
 }
 
 /// The wordings to try for the effects: tokens counted by things say "for each" or "where X is", and two verbs of
@@ -1448,6 +1471,10 @@ impl Writer<'_> {
             | Effect::Draw { who: Ref::You, .. }
             | Effect::Mill { who: Ref::You, .. }
             | Effect::Discard { who: Ref::You, .. } => your_cards(effect)?,
+            Effect::Move {
+                what: Ref::Each(_),
+                ..
+            } => mass_moves::text(effect)?,
             Effect::Shuffle { who: Ref::You }
             | Effect::LookAtTop { .. }
             | Effect::Move {
@@ -1745,6 +1772,7 @@ impl Writer<'_> {
     fn then_steps(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
         self.explore_twice(effects)
             .or_else(|| self.mill_then_change(effects))
+            .or_else(|| wheel_text(effects))
     }
 
     /// "~ explores, then it explores again": one creature that explores twice is one sentence, which no joint splits.

@@ -860,7 +860,7 @@ pub(crate) fn pay(parts: &[String]) -> String {
 pub(crate) fn cast(
     name: &str,
     free: bool,
-    alternative: Option<(CastWay, &mtg_core::mana::ManaCost)>,
+    alternative: Option<(CastWay, &str)>,
 ) -> String {
     if let Some((way, cost)) = alternative {
         let way = match way {

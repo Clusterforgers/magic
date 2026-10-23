@@ -17,6 +17,7 @@ use crate::price::Price;
 use crate::resolve::spell_ability;
 use crate::state::GameState;
 use crate::triggers::{PendingTrigger, x_read};
+use crate::ways;
 
 /// The most the search for the largest X goes on: a payment this large is more mana than any game has.
 const MOST_X: u32 = 1_000;
@@ -71,8 +72,10 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         work.done.x = true;
         return None;
     }
-    // An alternative cost has no `{X}`: the one of the mana cost is 0 (CR 107.3b).
-    if work.choices.way.is_some_and(CastWay::replaces_cost) {
+    // An alternative cost has no `{X}` unless it names one (a miracle cost): the one of the mana cost is 0 (CR 107.3b).
+    if work.choices.way.is_some_and(CastWay::replaces_cost)
+        && alternative_symbols(ctx, work.choices.way) == Some(0)
+    {
         work.choices.x = Some(0);
         work.done.x = true;
         return None;
@@ -240,12 +243,23 @@ fn remembered(waiting: &PendingTrigger) -> Option<u32> {
     )
 }
 
+/// How many `{X}` the alternative cost of the spell holds when it is cast that way: `None` for the printed cost, which
+/// has the `{X}` of the card.
+fn alternative_symbols(ctx: &Ctx<'_>, way: Option<CastWay>) -> Option<u32> {
+    let (What::Spell(spell), Some(way)) = (ctx.what, way) else {
+        return None;
+    };
+    way.replaces_cost()
+        .then(|| ways::alternative_x(ctx.state, *spell, way))
+}
+
 /// `mana` with X paid: X generic mana for each `{X}` of the cost.
 pub(super) fn add(ctx: &Ctx<'_>, choices: &Choices, mana: Option<ManaCost>) -> Option<ManaCost> {
     let Some(XCost::Mana { symbols }) = &ctx.needs.x else {
         return mana;
     };
-    let generic = choices.x.unwrap_or(0).saturating_mul(*symbols);
+    let symbols = alternative_symbols(ctx, choices.way).unwrap_or(*symbols);
+    let generic = choices.x.unwrap_or(0).saturating_mul(symbols);
     Some(
         mana.unwrap_or(ManaCost::ZERO)
             .with(ManaSymbol::Generic(generic)),
