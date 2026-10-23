@@ -857,11 +857,7 @@ pub(crate) fn pay(parts: &[String]) -> String {
 
 /// The question of a cast an effect allows: "Cast Lightning Bolt without paying its mana cost?"
 /// `alternative` is the way and the mana of a cost the card names (madness, miracle).
-pub(crate) fn cast(
-    name: &str,
-    free: bool,
-    alternative: Option<(CastWay, &str)>,
-) -> String {
+pub(crate) fn cast(name: &str, free: bool, alternative: Option<(CastWay, &str)>) -> String {
     if let Some((way, cost)) = alternative {
         let way = match way {
             CastWay::Miracle => "miracle",

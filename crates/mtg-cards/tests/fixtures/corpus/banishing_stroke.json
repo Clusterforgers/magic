@@ -1,0 +1,25 @@
+{
+  "id": "aad93570-b50a-405a-ad73-03f97594061f",
+  "oracle_id": "a6898364-c29e-4b97-a500-344efa3ec24a",
+  "name": "Banishing Stroke",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c18",
+  "collector_number": "63",
+  "rarity": "uncommon",
+  "released_at": "2018-08-10",
+  "digital": false,
+  "mana_cost": "{5}{W}",
+  "cmc": 6.0,
+  "type_line": "Instant",
+  "oracle_text": "Put target artifact, creature, or enchantment on the bottom of its owner's library.\nMiracle {W} (You may cast this card for its miracle cost when you draw it if it's the first card you drew this turn.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Miracle"
+  ]
+}

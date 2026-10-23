@@ -1,0 +1,25 @@
+{
+  "id": "19f56096-f692-4719-af38-6a4955f2b65c",
+  "oracle_id": "e8ff6780-5f22-42fa-a7c1-7406e8203063",
+  "name": "Redress Fate",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "9",
+  "rarity": "rare",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{6}{W}{W}",
+  "cmc": 8.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Return all artifact and enchantment cards from your graveyard to the battlefield.\nMiracle {3}{W} (You may cast this card for its miracle cost when you draw it if it's the first card you drew this turn.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Miracle"
+  ]
+}

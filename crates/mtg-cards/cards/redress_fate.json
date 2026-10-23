@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e8ff6780-5f22-42fa-a7c1-7406e8203063",
+  "name": "Redress Fate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Redress Fate",
+      "oracle_fingerprint": "50fb7f73f2108a045c66479221580838",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Miracle": "{3}{W}" } }
+      ]
+    }
+  ]
+}

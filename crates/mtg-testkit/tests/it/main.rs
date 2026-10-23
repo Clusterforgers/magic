@@ -209,6 +209,7 @@ mod mayhem_fuzz;
 mod mill_effects;
 mod miracle;
 mod miracle_fuzz;
+mod miracle_spells;
 mod monarch;
 mod monarch_followups;
 mod monarch_wordings;

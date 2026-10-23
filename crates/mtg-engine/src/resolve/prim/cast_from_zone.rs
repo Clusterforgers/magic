@@ -78,7 +78,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                         card.id(),
                         *free,
                         *play,
-                        alternative.as_ref().map(|(way, cost)| (*way, cost.as_str())),
+                        alternative
+                            .as_ref()
+                            .map(|(way, cost)| (*way, cost.as_str())),
                     ))
                 },
             ))

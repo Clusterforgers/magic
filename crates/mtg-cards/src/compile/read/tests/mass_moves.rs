@@ -57,9 +57,7 @@ fn a_hand_discarded_by_several_players_reads_as_the_cards_in_their_hands(
 #[case::their_owner("Put all creatures on the bottom of their owner's library.")]
 #[case::your_library("Put all creatures on the bottom of your library.")]
 #[case::any_order("Put all creatures on the bottom of their owners' libraries in any order.")]
-#[case::graveyard_to_hands(
-    "Return all creature cards from your graveyard to their owners' hands."
-)]
+#[case::graveyard_to_hands("Return all creature cards from your graveyard to their owners' hands.")]
 #[case::all_graveyards("Return all creature cards from all graveyards to the battlefield.")]
 #[case::tapped("Return all creature cards from your graveyard to the battlefield tapped.")]
 #[case::permanents_to_the_battlefield("Return all creatures to the battlefield.")]

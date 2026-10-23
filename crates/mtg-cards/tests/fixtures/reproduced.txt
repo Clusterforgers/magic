@@ -67,6 +67,7 @@ Baird, Steward of Argive
 Banish to Another Universe
 Banisher Priest
 Banishing Light
+Banishing Stroke
 Banshee of the Dread Choir
 Barbed Batterfist
 Bard's Bow
@@ -174,6 +175,7 @@ Cloudfin Raptor
 Cloudskate
 Clutch of Currents
 Clutch of the Undercity
+Coastal Breach
 Coastal Discovery
 Cold-Eyed Selkie
 Collective Unconscious
@@ -244,6 +246,7 @@ Demon Bolt
 Demon of Wailing Agonies
 Dense Canopy
 Deputized Protester
+Devastation Tide
 Dimir Infiltrator
 Dina, Soul Steeper
 Dire Fleet Interloper
@@ -297,6 +300,7 @@ Empyrial Plate
 Empyrial Storm
 Enraged Revolutionary
 Enthusiastic Study
+Entreat the Angels
 Epic Proportions
 Era of Enlightenment // Hand of Enlightenment
 Erebos, Bleak-Hearted
@@ -684,7 +688,9 @@ Reckless Impulse
 Reconstructed Thopter
 Red Room Recruit
 Redcap Heelslasher
+Redress Fate
 Reflecting Pool
+Reforge the Soul
 Regal Behemoth
 Reiterate
 Rejuvenation Chamber
@@ -874,6 +880,7 @@ Tendershoot Dryad
 Tendo Ice Bridge
 Tendrils of Agony
 Termagant Swarm
+Terminus
 Terrus Wurm
 Teshar, Ancestor's Apostle
 Thalia, Guardian of Thraben

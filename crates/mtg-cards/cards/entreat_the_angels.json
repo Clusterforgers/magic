@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b349f018-c20b-48b0-9e65-d5fd56b24b88",
+  "name": "Entreat the Angels",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Entreat the Angels",
+      "oracle_fingerprint": "075f01a2a4bcf9a4f234e9beae90e740",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Angel",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Angel"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": "X"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Miracle": "{X}{W}{W}" } }
+      ]
+    }
+  ]
+}

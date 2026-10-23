@@ -592,7 +592,10 @@ fn wheel_text(effects: &[Effect]) -> Option<(String, usize)> {
     };
     (*hand == draws::hand_of(&Ref::EachPlayer)).then_some(())?;
     let cards = cards_text(count)?;
-    Some((format!("each player discards their hand, then draws {cards}"), 2))
+    Some((
+        format!("each player discards their hand, then draws {cards}"),
+        2,
+    ))
 }
 
 /// The wordings to try for the effects: tokens counted by things say "for each" or "where X is", and two verbs of
@@ -1471,10 +1474,6 @@ impl Writer<'_> {
             | Effect::Draw { who: Ref::You, .. }
             | Effect::Mill { who: Ref::You, .. }
             | Effect::Discard { who: Ref::You, .. } => your_cards(effect)?,
-            Effect::Move {
-                what: Ref::Each(_),
-                ..
-            } => mass_moves::text(effect)?,
             Effect::Shuffle { who: Ref::You }
             | Effect::LookAtTop { .. }
             | Effect::Move {
@@ -1482,6 +1481,7 @@ impl Writer<'_> {
                 ..
             } => self
                 .library(effect)
+                .or_else(|| mass_moves::text(effect))
                 .or_else(|| cast::text(effect))
                 .or_else(|| self.keyword_action(effect))?,
             Effect::Sacrifice {
@@ -1504,6 +1504,7 @@ impl Writer<'_> {
                 to: Destination::Hand,
             } => self
                 .returned_to_hand(what)
+                .or_else(|| mass_moves::text(effect))
                 .or_else(|| cast::text(effect))
                 .or_else(|| self.keyword_action(effect))?,
             Effect::AddMana {
@@ -1602,6 +1603,7 @@ impl Writer<'_> {
         self.exiled(effect)
             .or_else(|| self.graveyard_exile(effect))
             .or_else(|| self.reanimated(effect))
+            .or_else(|| mass_moves::text(effect))
             .or_else(|| cast::text(effect))
             .or_else(|| self.keyword_action(effect))
             .or_else(|| self.controller_search(effect))

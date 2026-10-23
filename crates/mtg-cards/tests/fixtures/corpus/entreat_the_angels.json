@@ -1,0 +1,25 @@
+{
+  "id": "ff4411bc-ed4e-4d54-9e1b-21fc77b0e415",
+  "oracle_id": "b349f018-c20b-48b0-9e65-d5fd56b24b88",
+  "name": "Entreat the Angels",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "99",
+  "rarity": "mythic",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{X}{X}{W}{W}{W}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Create X 4/4 white Angel creature tokens with flying.\nMiracle {X}{W}{W} (You may cast this card for its miracle cost when you draw it if it's the first card you drew this turn.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Miracle"
+  ]
+}
