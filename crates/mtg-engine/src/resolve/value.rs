@@ -168,6 +168,24 @@ fn on_the_stack(pred: &Pred) -> bool {
     }
 }
 
+/// Whether `seen` is an ability on the stack of this kind.
+fn is_ability(seen: &Seen<'_>, kind: AbilityKind) -> bool {
+    seen.zone == Zone::Stack
+        && seen
+            .card
+            .and_then(GameObject::ability)
+            .is_some_and(|ability| {
+                matches!(
+                    (kind, ability.rules()),
+                    (AbilityKind::Triggered, Ability::Triggered { .. })
+                        | (
+                            AbilityKind::Activated,
+                            Ability::Activated { .. } | Ability::Loyalty { .. }
+                        )
+                )
+            })
+}
+
 /// The kind of zone a zone is.
 pub(crate) const fn zone_kind(zone: Zone) -> ZoneKind {
     match zone {
@@ -247,7 +265,9 @@ impl<'a> Scope<'a> {
             TurnTally::DamageTaken => Tally::Hurt,
             TurnTally::LifeGained => Tally::Gained,
             TurnTally::SpellsCast => Tally::Cast,
-            TurnTally::LifeGainedTotal | TurnTally::CreaturesAttacked | TurnTally::CreaturesDied => {
+            TurnTally::LifeGainedTotal
+            | TurnTally::CreaturesAttacked
+            | TurnTally::CreaturesDied => {
                 let kind = match what {
                     TurnTally::LifeGainedTotal => Tally::GainedTotal,
                     TurnTally::CreaturesAttacked => Tally::Attackers,
@@ -884,22 +904,7 @@ impl<'a> Scope<'a> {
             Pred::Token => seen.kind == ObjectKind::Token,
             Pred::Commander => state.is_commander(reference.id),
             Pred::Spell => seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability,
-            Pred::Ability(kind) => {
-                seen.zone == Zone::Stack
-                    && seen
-                        .card
-                        .and_then(GameObject::ability)
-                        .is_some_and(|ability| {
-                            matches!(
-                                (kind, ability.rules()),
-                                (AbilityKind::Triggered, Ability::Triggered { .. })
-                                    | (
-                                        AbilityKind::Activated,
-                                        Ability::Activated { .. } | Ability::Loyalty { .. }
-                                    )
-                            )
-                        })
-            }
+            Pred::Ability(kind) => is_ability(seen, *kind),
             Pred::Tapped => seen.tapped == Some(true),
             Pred::Untapped => seen.tapped == Some(false),
             Pred::Monstrous => matches!(seen.counters, Counted::Live(held) if held.monstrous()),

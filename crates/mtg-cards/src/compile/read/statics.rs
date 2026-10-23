@@ -892,13 +892,13 @@ fn cost_modifier_texts(
     subjects.push(subject);
     subjects
         .into_iter()
-        .flat_map(|subject| cost_sentences(subject, applies_to, change, mana, per, condition))
+        .flat_map(|subject| cost_sentences(&subject, applies_to, change, mana, per, condition))
         .collect()
 }
 
 /// The sentences of a cost modifier whose spells are worded as `subject`.
 fn cost_sentences(
-    subject: String,
+    subject: &str,
     applies_to: &Selector,
     change: CostChange,
     mana: &ManaCostX,

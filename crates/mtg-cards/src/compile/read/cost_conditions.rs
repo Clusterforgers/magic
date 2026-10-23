@@ -6,10 +6,10 @@
 use super::as_long_as;
 use super::facts::{quantity, quantity_texts};
 use super::selectors::{Form, phrase, phrase_in, phrase_text, subtype, type_name};
-use mtg_core::card::Subtype;
 use super::tokens::Reader;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::value::{Amount, Cmp, Condition};
+use mtg_core::card::Subtype;
 
 /// "If ..., " before the spell: "If there are ten or more creature cards total in all graveyards, ".
 pub(super) fn leading(r: &mut Reader<'_>) -> Option<Condition> {
