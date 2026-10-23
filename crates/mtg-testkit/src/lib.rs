@@ -82,6 +82,7 @@ pub mod pump_cards;
 pub mod recursion_cards;
 pub mod replace_cards;
 pub mod required_cost_cards;
+pub mod reveal_until_cards;
 pub mod rule_cards;
 pub mod saga_cards;
 pub mod scenario;
@@ -183,6 +184,7 @@ pub use replace_cards::replace_fuzz_setup;
 pub use required_cost_cards::{
     REQUIRED_COST_CARDS, Takes, required_cost_fuzz_setup, required_cost_of,
 };
+pub use reveal_until_cards::{REVEAL_UNTIL_CARDS, reveal_until_fuzz_setup};
 pub use rule_cards::rules_fuzz_setup;
 pub use saga_cards::{
     TRANSFORMING_SAGA_CARDS, saga_fuzz_setup, transforming_saga, transforming_saga_fuzz_setup,
