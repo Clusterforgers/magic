@@ -288,6 +288,7 @@ mod triggers_targets;
 mod turn_burn;
 mod turn_structure;
 mod typecycling;
+mod umbra_armor;
 mod undaunted;
 mod unearth;
 mod upkeep_keywords;

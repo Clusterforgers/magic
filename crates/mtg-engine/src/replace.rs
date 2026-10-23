@@ -361,6 +361,20 @@ fn shields_of(state: &GameState) -> Vec<RuleEffect> {
         .collect()
 }
 
+/// The permanent a destruction destroys whatever may be done about it: also one that can't be regenerated, which umbra
+/// armor replaces (CR 702.89a).
+fn destruction(item: &Item) -> Option<ObjectId> {
+    match item {
+        Item::One(Event::ZoneChanged {
+            object,
+            from: Zone::Battlefield,
+            cause: ZoneCause::Buried,
+            ..
+        }) => Some(*object),
+        _ => destroyed(item),
+    }
+}
+
 /// The permanent a destruction destroys: a destroy effect (not one that can't be regenerated) or lethal damage and
 /// deathtouch, but not zero toughness (CR 704.5f) or a sacrifice.
 fn destroyed(item: &Item) -> Option<ObjectId> {
@@ -658,7 +672,7 @@ impl Pass<'_> {
                 from,
                 to,
                 discard: discards(event),
-                destroyed: destroyed(item).is_some(),
+                destroyed: destruction(item).is_some(),
             };
         }
         match event {
@@ -2428,6 +2442,9 @@ mod dredge;
 
 #[cfg(test)]
 mod shields;
+
+#[cfg(test)]
+mod umbra;
 
 #[cfg(test)]
 mod tests {
