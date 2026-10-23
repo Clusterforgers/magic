@@ -157,6 +157,7 @@ mod attacked_player;
 mod audit;
 mod becomes;
 mod block_limits;
+mod commander_statics;
 mod cast;
 mod cast_cost_paid;
 mod chapters;

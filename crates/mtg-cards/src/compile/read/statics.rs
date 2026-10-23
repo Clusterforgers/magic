@@ -506,13 +506,22 @@ fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Modification>>
     } else {
         ("gets", "has", "is")
     };
-    let goaded = |r: &mut Reader<'_>| r.words(&format!("and {is} goaded"));
+    // The last part: "and is goaded", "and can't be blocked by more than one creature".
+    let tail = |r: &mut Reader<'_>| {
+        if r.words(&format!("and {is} goaded")) {
+            Some(Modification::Goaded)
+        } else if r.words("and can't be blocked by more than one creature") {
+            Some(Modification::MaxBlockers(1))
+        } else {
+            None
+        }
+    };
     let mut mods = Vec::new();
     if r.word(gets) {
         let stats = power_toughness(r)?;
         mods.push(counted_stats(r, stats)?);
-        if goaded(r) {
-            mods.push(Modification::Goaded);
+        if let Some(last) = tail(r) {
+            mods.push(last);
             return Some(mods);
         }
         let listed = r.punct(',');
@@ -522,16 +531,13 @@ fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Modification>>
         }
         if listed {
             r.punct(',').then_some(())?;
-            goaded(r).then_some(())?;
-            mods.push(Modification::Goaded);
+            mods.push(tail(r)?);
         }
         return Some(mods);
     }
     r.word(has).then_some(())?;
     mods.extend(gives(r)?);
-    if goaded(r) {
-        mods.push(Modification::Goaded);
-    }
+    mods.extend(tail(r));
     Some(mods)
 }
 
@@ -1243,10 +1249,16 @@ fn predicate(
     } else {
         ("gets", "has", "is")
     };
-    // "is goaded" is the last part of the sentence.
-    let (mods, goaded) = match mods.split_last() {
-        Some((Modification::Goaded, rest)) if !rest.is_empty() => (rest, true),
-        _ => (mods, false),
+    // "is goaded" and "can't be blocked by more than one creature" are the last part of the sentence.
+    let (mods, last) = match mods.split_last() {
+        Some((Modification::Goaded, rest)) if !rest.is_empty() => {
+            (rest, Some(format!("{is} goaded")))
+        }
+        Some((Modification::MaxBlockers(1), rest)) if !rest.is_empty() => (
+            rest,
+            Some("can't be blocked by more than one creature".to_owned()),
+        ),
+        _ => (mods, None),
     };
     let (stats, rest) = match mods.split_first() {
         Some((Modification::ModifyPT { power, toughness }, rest)) => {
@@ -1259,8 +1271,7 @@ fn predicate(
     if !rest.is_empty() {
         parts.push(format!("{has} {}", given_text(rest)?));
     }
-    if goaded {
-        let last = format!("{is} goaded");
+    if let Some(last) = last {
         return match parts.as_slice() {
             [one] => Some(format!("{one} and {last}")),
             [first, second] => Some(format!("{first}, {second}, and {last}")),

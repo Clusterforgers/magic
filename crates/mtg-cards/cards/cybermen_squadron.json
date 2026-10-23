@@ -1,0 +1,26 @@
+{
+  "oracle_id": "8d035688-089f-4d5c-bcad-9140a6c1681b",
+  "name": "Cybermen Squadron",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cybermen Squadron",
+      "oracle_fingerprint": "ab47af7a1066f856b6393e8467ce9654",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Artifact" },
+                { "Type": "Creature" },
+                { "Not": { "Supertype": "Legendary" } },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Myriad" }]
+          }
+        }
+      ]
+    }
+  ]
+}

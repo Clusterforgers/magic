@@ -1,0 +1,27 @@
+{
+  "id": "d69b40d5-25e7-4c59-b00a-aa7d7367504e",
+  "oracle_id": "7a1e4880-9abb-4018-84bd-91b5ec702c51",
+  "name": "Shacklegeist",
+  "lang": "en",
+  "layout": "normal",
+  "set": "voc",
+  "collector_number": "112",
+  "rarity": "rare",
+  "released_at": "2021-11-19",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Spirit",
+  "oracle_text": "Flying\nThis creature can block only creatures with flying.\nTap two untapped Spirits you control: Tap target creature you don't control.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

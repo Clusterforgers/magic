@@ -1,0 +1,27 @@
+{
+  "oracle_id": "eda37caa-d676-460a-804b-3ba9d8a8d044",
+  "name": "Stratus Walk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stratus Walk",
+      "oracle_fingerprint": "cb12e5ecf35b20d4b767b2ccd6735511",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Flying" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "CanBlockOnly": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }]
+          }
+        }
+      ]
+    }
+  ]
+}

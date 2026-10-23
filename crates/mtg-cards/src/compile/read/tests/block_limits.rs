@@ -108,3 +108,44 @@ fn a_limit_on_blocking_reads_into_one_modification(
 fn a_near_miss_is_left_to_the_table(#[case] text: &str) {
     assert_eq!(stat(text), None, "{text}");
 }
+
+fn stats(power: i32, toughness: i32) -> Modification {
+    Modification::ModifyPT {
+        power: Amount::Fixed(power),
+        toughness: Amount::Fixed(toughness),
+    }
+}
+
+#[rstest]
+#[case::a_keyword_and_the_limit(
+    "Equipped creature has trample and can't be blocked by more than one creature.",
+    vec![Modification::AddKeyword(Keyword::Trample), Modification::MaxBlockers(1)]
+)]
+#[case::a_bonus_and_the_limit(
+    "Equipped creature gets +1/+1 and can't be blocked by more than one creature.",
+    vec![stats(1, 1), Modification::MaxBlockers(1)]
+)]
+#[case::a_bonus_a_keyword_and_the_limit(
+    "Equipped creature gets +1/+2, has reach, and can't be blocked by more than one creature.",
+    vec![stats(1, 2), Modification::AddKeyword(Keyword::Reach), Modification::MaxBlockers(1)]
+)]
+#[case::an_aura_with_hexproof(
+    "Enchanted creature has hexproof and can't be blocked by more than one creature.",
+    vec![Modification::AddKeyword(Keyword::Hexproof), Modification::MaxBlockers(1)]
+)]
+fn a_limit_ends_a_list_of_what_a_creature_gets_and_has(
+    #[case] text: &str,
+    #[case] mods: Vec<Modification>,
+) {
+    let read = golden(text, ClauseKind::Static, false);
+    let Ability::Static {
+        affected,
+        mods: found,
+        ..
+    } = read
+    else {
+        panic!("not a static ability: {text}");
+    };
+    assert_eq!(affected, Ref::Attached, "{text}");
+    assert_eq!(found, mods, "{text}");
+}

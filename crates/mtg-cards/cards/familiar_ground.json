@@ -1,0 +1,19 @@
+{
+  "oracle_id": "3b92c4dc-2605-42f4-a374-c3be4de3279e",
+  "name": "Familiar Ground",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Familiar Ground",
+      "oracle_fingerprint": "bb16cabe0b37543fc86966cda81a80a5",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "MaxBlockers": 1 }]
+          }
+        }
+      ]
+    }
+  ]
+}

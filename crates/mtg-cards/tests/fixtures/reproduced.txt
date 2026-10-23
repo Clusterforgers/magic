@@ -8,11 +8,13 @@ Abzan Skycaptain
 Accomplished Automaton
 Adaptive Snapjaw
 Adorned Pouncer
+Adriana, Captain of the Guard
 Aeromunculus
 Aether Hub
 Agate Instigator
 Ainok Bond-Kin
 Ainok Survivalist
+Air Bladder
 Ajani's Pridemate
 Akrasan Squire
 Akroma's Vengeance
@@ -72,6 +74,7 @@ Binding the Old Gods
 Bird Admirer // Wing Shredder
 Black Dragon Gate
 Black Knight
+Blade of Selves
 Blasphemous Act
 Blastoderm
 Blaze
@@ -121,6 +124,7 @@ Cavern Whisperer
 Celestial Archon
 Celestial Colonnade
 Celestial Crusader
+Challenger Troll
 Champion of Lambholt
 Changeling Outcast
 Chartooth Cougar
@@ -134,6 +138,7 @@ Citadel Gate
 Citanul Hierophants
 Cliffgate
 Clone
+Cloud Sprite
 Cloudfin Raptor
 Cloudskate
 Cold-Eyed Selkie
@@ -170,6 +175,7 @@ Curse of the Nightly Hunt
 Custodi Lich
 Cut // Ribbons
 Cut of the Profits
+Cybermen Squadron
 Cyclonic Rift
 Cytoshape
 Dalek Squadron
@@ -190,6 +196,7 @@ Defile
 Delver of Secrets // Insectile Aberration
 Demolition Field
 Demon Bolt
+Dense Canopy
 Deputized Protester
 Dire Fleet Interloper
 Direct Current
@@ -244,6 +251,7 @@ Eyetwitch
 Faith Unbroken
 Faithful Watchdog
 Faithless Looting
+Familiar Ground
 Famine
 Fanatic of Rhonas
 Faramir, Steward of Gondor
@@ -397,6 +405,7 @@ Latchkey Faerie
 Laughing Mad
 Lavacore Elemental
 Lazotep Reaver
+Legion Loyalty
 Levitation
 Lhurgoyf
 Life of Toshiro Umezawa // Memory of Toshiro
@@ -469,6 +478,7 @@ Ninja Pizza
 Ninja of the Deep Hours
 Ninja of the New Moon
 Norn's Annex
+Norwood Riders
 Notion Rain
 Nyxborn Behemoth
 Obscuring Haze
@@ -552,6 +562,7 @@ Riveteers Requisitioner
 Rob the Archives
 Rocksteady, Mutant Marauder
 Rootborn Defenses
+Rope
 Rosheen Meanderer
 Rugged Prairie
 Rumbleweed
@@ -585,6 +596,7 @@ Serpent-Blade Assailant
 Serra Angel
 Serra Avatar
 Servant of the Conduit
+Shacklegeist
 Shadowmage Infiltrator
 Shambling Shell
 Sheltered by Ghosts
@@ -610,6 +622,7 @@ Skittering Crustacean
 Skizzik Surger
 Skullclamp
 Skycloud Expanse
+Skyhunter Strike Force
 Skymarcher Aspirant
 Skyshroud Behemoth
 Skyshroud Ridgeback
@@ -650,6 +663,7 @@ Storm Fleet Swashbuckler
 Stormchaser's Talent
 Strangleroot Geist
 Stratus Dancer
+Stratus Walk
 Strionic Resonator
 Stroke of Genius
 Student of Warfare
@@ -711,6 +725,7 @@ Tilonalli's Skinshifter
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
+Titania, Proud Pummeler
 Tithe Drinker
 Tithebearer Giant
 Trash for Treasure
@@ -750,6 +765,7 @@ Vivid Creek
 Vivid Grove
 Vivid Marsh
 Vivid Meadow
+Vorrac Battlehorns
 Walking Ballista
 Wanderbrine Preacher
 Waning Wurm

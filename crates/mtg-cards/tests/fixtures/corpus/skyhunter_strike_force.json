@@ -1,0 +1,29 @@
+{
+  "id": "d77b0ae2-e26a-4536-8f19-ed15328c039c",
+  "oracle_id": "8ade0824-9fd0-417d-94dd-ac399e35b582",
+  "name": "Skyhunter Strike Force",
+  "lang": "en",
+  "layout": "normal",
+  "set": "plst",
+  "collector_number": "ONC-21",
+  "rarity": "rare",
+  "released_at": "2024-01-25",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Cat Knight",
+  "oracle_text": "Flying\nMelee (Whenever this creature attacks, it gets +1/+1 until end of turn for each opponent you attacked this combat.)\nLieutenant — As long as you control your commander, other creatures you control have melee.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Melee",
+    "Lieutenant"
+  ]
+}
