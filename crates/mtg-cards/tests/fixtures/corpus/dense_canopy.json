@@ -1,0 +1,23 @@
+{
+  "id": "9d1480d4-51f8-4233-874c-94502726fe0d",
+  "oracle_id": "d182ab7d-77bd-49d1-9001-9b4016350181",
+  "name": "Dense Canopy",
+  "lang": "en",
+  "layout": "normal",
+  "set": "sok",
+  "collector_number": "125",
+  "rarity": "uncommon",
+  "released_at": "2005-06-03",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Creatures with flying can block only creatures with flying.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

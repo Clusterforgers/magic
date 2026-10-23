@@ -1,0 +1,43 @@
+{
+  "oracle_id": "bf9421d2-54e2-44d8-8b39-2e41192a6517",
+  "name": "Surgehacker Mech",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surgehacker Mech",
+      "oracle_fingerprint": "93ba40b419bd0401a4824c5c9289aba5",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Sum": [
+                      { "Count": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }] },
+                      { "Count": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }] }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 4 } }
+      ]
+    }
+  ]
+}

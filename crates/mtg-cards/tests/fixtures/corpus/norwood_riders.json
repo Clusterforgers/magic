@@ -1,0 +1,25 @@
+{
+  "id": "904ba8db-853e-4f51-acfe-83e472524380",
+  "oracle_id": "1816b87c-73ba-4bfc-a51e-c982381c067d",
+  "name": "Norwood Riders",
+  "lang": "en",
+  "layout": "normal",
+  "set": "p02",
+  "collector_number": "139",
+  "rarity": "common",
+  "released_at": "1998-06-24",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Elf",
+  "oracle_text": "This creature can't be blocked by more than one creature.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

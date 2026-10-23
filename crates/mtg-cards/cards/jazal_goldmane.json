@@ -1,0 +1,37 @@
+{
+  "oracle_id": "609d13dc-c850-4877-8ad3-e84171b58069",
+  "name": "Jazal Goldmane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jazal Goldmane",
+      "oracle_fingerprint": "8afa1b0ff75984328b29d258d8c7bab7",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Activated": {
+            "cost": "{3}{W}{W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }]
+                  },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Creature" }, "Attacking"] },
+                        "toughness": { "Count": [{ "Type": "Creature" }, "Attacking"] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

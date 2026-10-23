@@ -1,0 +1,27 @@
+{
+  "id": "74228c50-01d4-4712-9b1d-9c6e8552051d",
+  "oracle_id": "c54b375d-a456-4886-96f2-8dc7a0024a5b",
+  "name": "Carrion Grub",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "134",
+  "rarity": "uncommon",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Insect",
+  "oracle_text": "This creature gets +X/+0, where X is the greatest power among creature cards in your graveyard.\nWhen this creature enters, mill four cards. (Put the top four cards of your library into your graveyard.)",
+  "power": "0",
+  "toughness": "5",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Mill"
+  ]
+}

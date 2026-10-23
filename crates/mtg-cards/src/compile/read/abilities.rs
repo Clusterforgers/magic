@@ -3,7 +3,7 @@
 //! activated an activated ability.
 
 use super::tokens::Reader;
-use super::{costs, effects, mana_trigger, modal, statics, triggers};
+use super::{costs, effects, mana_trigger, modal, render, statics, triggers};
 use crate::ability::{Ability, Limit, Timing};
 use crate::effect::Effect;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
@@ -97,6 +97,13 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
             ..
         }
     );
+    r.attacked_player = matches!(
+        when,
+        TriggerPattern::AttacksPlayer {
+            at: Ref::Opponents,
+            ..
+        }
+    );
     r.cast_spell = casts_a_spell(&when);
     r.subject = triggers::event_subject(&when);
     r.attacker = matches!(&when, TriggerPattern::Attacks { what } if *what == Selector::this());
@@ -128,6 +135,14 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         &when,
         TriggerPattern::ZoneChange { what, to: Some(ZoneKind::Battlefield), .. } if what.0 != [Pred::This]
     );
+    let held = if render::while_held(&when) {
+        r.attempt(|r| {
+            r.need("while")?;
+            triggers::monarch_condition(r)
+        })
+    } else {
+        None
+    };
     r.punct(',').then_some(())?;
     let intervening_if = r.attempt(|r| {
         r.word("if").then_some(())?;
@@ -135,6 +150,8 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         r.punct(',').then_some(condition)
     });
     let intervening_if = match (saddled, intervening_if) {
+        (false, None) => held,
+        (false, Some(_)) if held.is_some() => return None,
         (false, other) => other,
         (true, None) => Some(triggers::saddled()),
         (true, Some(_)) => return None,
@@ -193,7 +210,7 @@ fn about_a_player(when: &TriggerPattern) -> bool {
             | TriggerPattern::Cycled { .. }
             | TriggerPattern::TappedForMana { .. }
             | TriggerPattern::StepBegins {
-                whose: Ref::EachPlayer | Ref::Opponents,
+                whose: Ref::EachPlayer | Ref::Opponents | Ref::Monarch,
                 ..
             }
             | TriggerPattern::PlayerAttacks { .. }

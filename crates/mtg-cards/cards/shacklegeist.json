@@ -1,0 +1,31 @@
+{
+  "oracle_id": "7a1e4880-9abb-4018-84bd-91b5ec702c51",
+  "name": "Shacklegeist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shacklegeist",
+      "oracle_fingerprint": "7a4ecc9440c50173a3e01beaa7e2cb48",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CanBlockOnly": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Spirit" }], "count": 2 } }],
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

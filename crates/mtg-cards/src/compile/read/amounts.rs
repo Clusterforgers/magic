@@ -2,6 +2,7 @@
 //! object, read from their words and written back the same way.
 
 use super::counters;
+use super::defining;
 use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
 use crate::modify::Modification;
@@ -67,6 +68,13 @@ pub fn cards(r: &mut Reader<'_>) -> Option<Amount> {
 /// How many cards, or a card for each thing counted: "a card", "two cards for each creature you control".
 pub fn cards_counted(r: &mut Reader<'_>) -> Option<Amount> {
     r.attempt(|r| {
+        // "cards equal to the number of opponents you have".
+        if let Some(count) = r.attempt(|r| {
+            r.need("cards")?;
+            defining::equal_to(r)
+        }) {
+            return Some(count);
+        }
         let base = cards(r)?;
         counted(r, base)
     })

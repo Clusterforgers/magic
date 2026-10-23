@@ -1,0 +1,12 @@
+{
+  "oracle_id": "1816b87c-73ba-4bfc-a51e-c982381c067d",
+  "name": "Norwood Riders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Norwood Riders",
+      "oracle_fingerprint": "797e7b62e7b7d6d2db5cd101489e8a6a",
+      "abilities": [{ "Static": { "affected": "This", "mods": [{ "MaxBlockers": 1 }] } }]
+    }
+  ]
+}

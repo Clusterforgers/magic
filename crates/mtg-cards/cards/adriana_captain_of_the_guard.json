@@ -1,0 +1,20 @@
+{
+  "oracle_id": "de23275e-e9c1-4151-aed8-f79ead03d5d4",
+  "name": "Adriana, Captain of the Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Adriana, Captain of the Guard",
+      "oracle_fingerprint": "80904c688b78b68bc55f5d2a1bd66e06",
+      "abilities": [
+        { "Keyword": "Melee" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Melee" }]
+          }
+        }
+      ]
+    }
+  ]
+}

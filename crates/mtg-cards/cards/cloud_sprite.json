@@ -1,0 +1,20 @@
+{
+  "oracle_id": "283433cb-9466-4b40-8af9-30934654d43b",
+  "name": "Cloud Sprite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloud Sprite",
+      "oracle_fingerprint": "c4c8f44d699ba3a1f51344f4a8cd0d25",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CanBlockOnly": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }]
+          }
+        }
+      ]
+    }
+  ]
+}

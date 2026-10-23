@@ -1,18 +1,22 @@
 Abbot of Keral Keep
 Aberrant
+Abomination, World Ravager
 Abundant Growth
 Abzan Advantage
 Abzan Battle Priest
 Abzan Falconer
 Abzan Skycaptain
+Academy Elite
 Accomplished Automaton
 Adaptive Snapjaw
 Adorned Pouncer
+Adriana, Captain of the Guard
 Aeromunculus
 Aether Hub
 Agate Instigator
 Ainok Bond-Kin
 Ainok Survivalist
+Air Bladder
 Ajani's Pridemate
 Akrasan Squire
 Akroma's Vengeance
@@ -31,8 +35,10 @@ Angelic Ascension
 Ant-Man, Elusive Avenger
 Arbor Colossus
 Arcane Signet
+Archivist of Gondor
 Archmage of Echoes
 Archon of Absolution
+Archon of Coronation
 Archon of Cruelty
 Archway Commons
 Armguard Familiar
@@ -63,6 +69,7 @@ Banshee of the Dread Choir
 Barbed Batterfist
 Bard's Bow
 Basilica Screecher
+Basilisk Gate
 Basking Rootwalla
 Baton of Courage
 Battering Krasis
@@ -79,10 +86,12 @@ Bird Admirer // Wing Shredder
 Black Dragon Gate
 Black Knight
 Blackblade Reforged
+Blade of Selves
 Blasphemous Act
 Blastoderm
 Blaze
 Blight Mamba
+Blight Pile
 Blightwidow
 Bloodbraid Elf
 Bloodghast
@@ -93,6 +102,7 @@ Boiling Earth
 Bola Slinger
 Bone Shredder
 Bonecaller Cleric
+Bonehoard
 Bonesplitter
 Book of Mazarbul
 Boon Reflection
@@ -121,6 +131,7 @@ Caprichrome
 Capsize
 Caravan Escort
 Carnage Tyrant
+Carrion Grub
 Cascade Bluffs
 Cascading Cataracts
 Cast Out
@@ -131,12 +142,14 @@ Celestial Archon
 Celestial Colonnade
 Celestial Crusader
 Ceremonial Groundbreaker
+Challenger Troll
 Champion of Lambholt
 Champion's Helm
 Changeling Outcast
 Chartooth Cougar
 Chemister's Insight
 Chittering Harvester
+Chittering Witch
 Chomping Kavu
 Chromanticore
 Chromatic Lantern
@@ -145,6 +158,7 @@ Citadel Gate
 Citanul Hierophants
 Cliffgate
 Clone
+Cloud Sprite
 Cloudfin Raptor
 Cloudskate
 Clutch of Currents
@@ -154,6 +168,7 @@ Cold-Eyed Selkie
 Collective Unconscious
 Command Tower
 Commander's Insignia
+Commence the Endgame
 Conclave Tribunal
 Consider
 Consign // Oblivion
@@ -185,13 +200,16 @@ Curse of Vitality
 Curse of the Forsaken
 Curse of the Nightly Hunt
 Custodi Lich
+Custodi Soulbinders
 Cut // Ribbons
 Cut of the Profits
+Cybermen Squadron
 Cyclonic Rift
 Cytoshape
 Dalek Squadron
 Darkblast
 Darksteel Juggernaut
+Darksteel Splicer
 Dauthi Horror
 Dauthi Marauder
 Dawn's Reflection
@@ -211,6 +229,7 @@ Defile
 Delver of Secrets // Insectile Aberration
 Demolition Field
 Demon Bolt
+Dense Canopy
 Deputized Protester
 Dimir Infiltrator
 Dire Fleet Interloper
@@ -251,6 +270,7 @@ Echo Inspector
 Echo Mage
 Echoes of the Kin Tree
 Electric Revelation
+Electro's Bolt
 Elegant Edgecrafters
 Elven Ambush
 Elvish Aberration
@@ -276,6 +296,7 @@ Eyetwitch
 Faith Unbroken
 Faithful Watchdog
 Faithless Looting
+Familiar Ground
 Famine
 Fanatic of Rhonas
 Faramir, Steward of Gondor
@@ -339,6 +360,7 @@ Glorious Anthem
 Glowstone Recluse
 Gluttonous Cyclops
 Gluttonous Slime
+Gluttonous Troll
 Gnarled Professor
 Gnarlwood Dryad
 Goblin Chieftain
@@ -351,9 +373,11 @@ Goldwarden's Helm
 Goliath Truck
 Gorger Wurm
 Grapeshot
+Graveblade Marauder
 Graven Cairns
 Graveshifter
 Greater Mossdog
+Green Goblin, Back for More
 Grenzo's Cutthroat
 Grim Flayer
 Grim Haruspex
@@ -366,14 +390,17 @@ Guiding Voice
 Gurmag Angler
 Hada Spy Patrol
 Hall of Triumph
+Hallowed Spiritkeeper
 Hammer Dropper
 Hangar Scrounger
+Hangarback Walker
 Harrow
 Haughty Djinn
 Headless Skaab
 Hearthhull, the Worldseed
 Heliod, God of the Sun
 Heliod, Sun-Crowned
+Hellkite Igniter
 Hengegate Pathway // Mistgate Pathway
 Herald of Anguish
 Herald of the Dreadhorde
@@ -399,7 +426,10 @@ Illustrious Wanderglyph
 Imperial Hellkite
 Impostor of the Sixth Pride
 Impulsive Pilferer
+Inferno Project
 Inkwell Leviathan
+Inspired Sphinx
+Intelligence Bobblehead
 Intrepid Rabbit
 Invading Manticore
 Invisible Stalker
@@ -410,6 +440,7 @@ Jacked Rabbit
 Jadelight Ranger
 Jagged Barrens
 Jaspera Sentinel
+Jazal Goldmane
 Join the Maestros
 Jolting Merfolk
 Jungle Lion
@@ -428,6 +459,7 @@ Kinjalli's Sunwing
 Kinsbaile Courier
 Kitchen Finks
 Knight of Dusk's Shadow
+Knights of the Black Rose
 Kolaghan Skirmisher
 Kongming, "Sleeping Dragon"
 Korozda Monitor
@@ -442,6 +474,7 @@ Latchkey Faerie
 Laughing Mad
 Lavacore Elemental
 Lazotep Reaver
+Legion Loyalty
 Levitation
 Lhurgoyf
 Life of Toshiro Umezawa // Memory of Toshiro
@@ -457,6 +490,7 @@ Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
 Lumen-Class Frigate
 Lurching Rotbeast
+M'Baku, Jabari Chieftain
 Make Disappear
 Makeshift Mauler
 Mana Bloom
@@ -504,6 +538,7 @@ Mulldrifter
 Murderous Cut
 Muscle Sliver
 Mutavault
+Mycoloth
 Myr Retriever
 Myriad Landscape
 Mystic Gate
@@ -520,8 +555,10 @@ Ninja of the Deep Hours
 Ninja of the New Moon
 Nirkana Revenant
 Norn's Annex
+Norwood Riders
 Notion Rain
 Nyxborn Behemoth
+Oath of Jace
 Obscuring Haze
 Okiba Reckoner Raid // Nezumi Road Captain
 Ominous Harvest
@@ -530,11 +567,13 @@ Opt
 Orchard Strider
 Organic Extinction
 Origin of the Hulk
+Orochi Hatchery
 Otherworldly Gaze
 Overgrown Arch
 Overgrowth
 Oyobi, Who Split the Heavens
 Pacifism
+Palace Jailer
 Paladin's Arms
 Pale Bears
 Panther Robot
@@ -579,18 +618,21 @@ Quest for the Goblin Lord
 Questing Beast
 Radical Idea
 Raffine's Informant
+Raging Goblinoids
 Rakdos Headliner
 Rally the Ranks
 Ramos, Dragon Engine
 Rampant Growth
 Rancor
 Ravenous Leucrocota
+Realm Seekers
 Reassembling Skeleton
 Reckless Impulse
 Reconstructed Thopter
 Red Room Recruit
 Redcap Heelslasher
 Reflecting Pool
+Regal Behemoth
 Reiterate
 Rejuvenation Chamber
 Relentless Advance
@@ -613,6 +655,7 @@ Riveteers Requisitioner
 Rob the Archives
 Rocksteady, Mutant Marauder
 Rootborn Defenses
+Rope
 Rosheen Meanderer
 Rugged Prairie
 Ruinous Path
@@ -622,6 +665,7 @@ Rust-Shield Rampager
 Rustrazor Butcher
 Ruthless Radrat
 Sacred Cat
+Sadistic Slash
 Safehold Elite
 Sage of the Beyond
 Sagu Mauler
@@ -650,6 +694,7 @@ Serpent-Blade Assailant
 Serra Angel
 Serra Avatar
 Servant of the Conduit
+Shacklegeist
 Shadowmage Infiltrator
 Shambling Shell
 Sheer Drop
@@ -662,6 +707,7 @@ Siege Wurm
 Sigiled Paladin
 Sigiled Sentinel
 Silhana Ledgewalker
+Silverwing Squadron
 Sinister Sabotage
 Sinister Starfish
 Sinuous Vermin
@@ -676,6 +722,7 @@ Skittering Crustacean
 Skizzik Surger
 Skullclamp
 Skycloud Expanse
+Skyhunter Strike Force
 Skymarcher Aspirant
 Skyreach Manta
 Skyshroud Behemoth
@@ -700,6 +747,7 @@ Space Marine Devastator
 Spectral Rider
 Sphere of Safety
 Sphinx of Jwar Isle
+Spider-Islanders
 Spire Golem
 Spire Winder
 Spring // Mind
@@ -721,6 +769,8 @@ Storm Fleet Swashbuckler
 Stormchaser's Talent
 Strangleroot Geist
 Stratus Dancer
+Stratus Walk
+Strength Bobblehead
 Strionic Resonator
 Stroke of Genius
 Student of Warfare
@@ -738,8 +788,10 @@ Sunhome Stalwart
 Sunken Ruins
 Suntouched Myr
 Supreme Verdict
+Surgehacker Mech
 Susurian Dirgecraft
 Swarm Intelligence
+Swarm, Being of Bees
 Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
@@ -767,6 +819,7 @@ The Birth of Meletis
 The Modern Age // Vector Glider
 The Seriema
 The Spear of Bashenga
+The Squadron Sinister
 The Thing, Ben Grimm
 Thelonite Hermit
 Thieving Magpie
@@ -790,8 +843,10 @@ Tilonalli's Skinshifter
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
+Titania, Proud Pummeler
 Tithe Drinker
 Tithebearer Giant
+Towering Titan
 Trash for Treasure
 Traumatic Visions
 Treasure Cruise
@@ -834,6 +889,7 @@ Vivid Grove
 Vivid Marsh
 Vivid Meadow
 Voice of the Blessed
+Vorrac Battlehorns
 Vulshok Splitter
 Walking Ballista
 Wanderbrine Preacher
@@ -851,6 +907,7 @@ Weirding Wood
 Whir of Invention
 Whisperer of the Wilds
 White Auracite
+Wickersmith's Tools
 Wild Growth
 Wild Wasteland
 Wilderness Elemental

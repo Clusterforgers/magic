@@ -1,0 +1,25 @@
+{
+  "id": "ec691418-1075-477f-b0df-f0d064588baf",
+  "oracle_id": "a086f7a5-1319-4c5d-b23f-41bec2f81027",
+  "name": "Archivist of Gondor",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ltc",
+  "collector_number": "18",
+  "rarity": "rare",
+  "released_at": "2023-06-23",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3,
+  "type_line": "Creature — Human Advisor",
+  "oracle_text": "When your commander deals combat damage to a player, if there is no monarch, you become the monarch.\nAt the beginning of the monarch's end step, that player draws a card.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

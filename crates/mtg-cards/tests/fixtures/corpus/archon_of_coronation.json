@@ -1,0 +1,27 @@
+{
+  "id": "2c306cf7-da52-4cc4-9272-bd7d78f1175d",
+  "oracle_id": "61f55e39-4028-4c91-910e-16b88c73beb5",
+  "name": "Archon of Coronation",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ncc",
+  "collector_number": "192",
+  "rarity": "mythic",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{4}{W}{W}",
+  "cmc": 6,
+  "type_line": "Creature — Archon",
+  "oracle_text": "Flying\nWhen this creature enters, you become the monarch.\nAs long as you're the monarch, damage doesn't cause you to lose life. (When a creature deals combat damage to you, its controller still becomes the monarch.)",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

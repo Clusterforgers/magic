@@ -22,6 +22,7 @@ use crate::error::PaymentError;
 use crate::help::{self, Convoked, Help, Used};
 use crate::mana_cost::{self, Forced};
 use crate::mana_plan::{Needs, complete_with, covers_cost, plan, rest_after, spent_of};
+use crate::mana_repeat;
 use crate::mana_takes::{assignment, solving, sources_of, without_taken};
 use crate::spend::{Restricted, Spend, Spent, Step};
 
@@ -191,6 +192,8 @@ pub struct ManaSource {
 /// A legal mana ability and what it produces.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+// Each flag is a separate fact of one ability, and each is left out of the wire form while false.
+#[allow(clippy::struct_excessive_bools)]
 pub struct ManaOption {
     /// The ability.
     pub source: ManaSource,
@@ -240,6 +243,10 @@ pub struct ManaOption {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Take>>", optional))]
     pub takes: Vec<Take>,
+    /// A payment may use it more than once: it neither taps nor sacrifices its source and costs only what it takes (Cadaverous Bloom, Skirk Prospector), so every use takes others; left out means a payment uses it once.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub repeat: bool,
 }
 
 /// Permanents or cards a mana ability's cost takes besides its source: "Tap an untapped creature you control", "Sacrifice
@@ -301,6 +308,7 @@ impl ManaOption {
             energy_held: 0,
             cost: ManaCost::ZERO,
             takes: Vec::new(),
+            repeat: false,
         }
     }
 
@@ -892,7 +900,7 @@ pub fn can_afford_with(
     spend: &Spend,
 ) -> bool {
     let floating = pool.floating(spend);
-    let sources = usable(sources, spend, life);
+    let sources = usable(&mana_repeat::expand(sources, cost), spend, life);
     within_energy(&sources, &[]).iter().any(|sources| {
         cost.resolutions().iter().any(|r| {
             can_pay_life(life, r.life)
@@ -982,7 +990,7 @@ pub fn auto_payment_with(
     spend: &Spend,
 ) -> Option<Payment> {
     let floating = pool.floating(spend);
-    let usable_sources = usable(sources, spend, life);
+    let usable_sources = usable(&mana_repeat::expand(sources, cost), spend, life);
     let mut best = None;
     for sources in within_energy(&usable_sources, &[]) {
         for resolution in cost.resolutions() {
@@ -1032,7 +1040,7 @@ pub fn auto_payment_with(
             }
         }
     }
-    best
+    best.map(mana_repeat::fold)
 }
 
 /// Checks the floating mana a payment names against the pool: mana without a restriction must be there, and restricted
@@ -1137,10 +1145,33 @@ pub fn check_payment_with(
     spend: &Spend,
     payment: &Payment,
 ) -> Result<Spent, PaymentError> {
+    mana_repeat::forged(payment)?;
+    let sources = mana_repeat::expand(sources, cost);
+    let payment = mana_repeat::unfold(payment, &sources);
+    check_expanded(cost, pool, &sources, help, tapped, life, spend, &payment)
+        .map(mana_repeat::fold_spent)
+}
+
+/// [`check_payment_with`] over the sources `mana_repeat::expand` made, for a payment that names the copies.
+#[allow(clippy::too_many_arguments)]
+fn check_expanded(
+    cost: &ManaCost,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    help: Help<'_>,
+    tapped: &[ObjectId],
+    life: i32,
+    spend: &Spend,
+    payment: &Payment,
+) -> Result<Spent, PaymentError> {
     let floating = check_pool(pool, sources, spend, payment)?;
     let sources = usable(sources, spend, life);
     let used = Used::new(&payment.convoke, &payment.improvise, &payment.delve);
-    let tapped_for_mana: Vec<ObjectId> = payment.taps.iter().map(|tap| tap.object).collect();
+    let tapped_for_mana: Vec<ObjectId> = payment
+        .taps
+        .iter()
+        .map(|tap| mana_repeat::real(tap.object))
+        .collect();
     help::check(&used, help, tapped, &tapped_for_mana)?;
     let parts = parts_of(&floating, &sources, tapped, &flat(payment))?;
     check_life(cost, life, payment.life)?;
@@ -1267,11 +1298,34 @@ pub fn complete_payment_with(
     spend: &Spend,
     partial: &Payment,
 ) -> Result<Payment, PaymentError> {
+    mana_repeat::forged(partial)?;
+    let sources = mana_repeat::expand(sources, cost);
+    let partial = mana_repeat::unfold(partial, &sources);
+    complete_expanded(cost, pool, &sources, help, tapped, life, spend, &partial)
+        .map(mana_repeat::fold)
+}
+
+/// [`complete_payment_with`] over the sources `mana_repeat::expand` made, for a payment that names the copies.
+#[allow(clippy::too_many_arguments)]
+fn complete_expanded(
+    cost: &ManaCost,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    help: Help<'_>,
+    tapped: &[ObjectId],
+    life: i32,
+    spend: &Spend,
+    partial: &Payment,
+) -> Result<Payment, PaymentError> {
     let floating = check_pool(pool, sources, spend, partial)?;
     let usable_sources = usable(sources, spend, life);
     let flat_partial = flat(partial);
     let kept = Used::new(&partial.convoke, &partial.improvise, &partial.delve);
-    let occupied: Vec<ObjectId> = partial.taps.iter().map(|tap| tap.object).collect();
+    let occupied: Vec<ObjectId> = partial
+        .taps
+        .iter()
+        .map(|tap| mana_repeat::real(tap.object))
+        .collect();
     help::check(&kept, help, tapped, &occupied)?;
     let parts = parts_of(&floating, &usable_sources, tapped, &flat_partial)?;
     check_life(cost, life, partial.life)?;
@@ -1340,7 +1394,7 @@ pub fn complete_payment_with(
         }
     }
     let whole = best.ok_or_else(|| refusal.unwrap_or(PaymentError::CannotComplete))?;
-    check_payment_with(cost, pool, sources, help, tapped, life, spend, &whole)?;
+    check_expanded(cost, pool, sources, help, tapped, life, spend, &whole)?;
     Ok(whole)
 }
 
@@ -2414,24 +2468,54 @@ mod tests {
         }) && (payment.life == 0 || i64::from(payment.life) <= i64::from(life))
     }
 
-    /// Every payment from some floating mana, each permanent tapped for one of its abilities or left alone, and every even amount of life up to `most_life`.
+    /// The most times a permanent is used in a payment of the independent check.
+    const MOST_USES: usize = 3;
+
+    /// Every way to use some of `abilities` up to `most` times in all: each use is one ability, and the order of the uses does not matter.
+    fn uses_of(abilities: &[ManaSource], most: usize) -> Vec<Vec<ManaSource>> {
+        let mut found: Vec<Vec<usize>> = (0..abilities.len()).map(|at| vec![at]).collect();
+        let mut from = 0;
+        for _ in 1..most {
+            let end = found.len();
+            for at in from..end {
+                let last = found[at].last().copied().unwrap_or(0);
+                for next in last..abilities.len() {
+                    let mut more = found[at].clone();
+                    more.push(next);
+                    found.push(more);
+                }
+            }
+            from = end;
+        }
+        found
+            .into_iter()
+            .map(|uses| uses.into_iter().map(|at| abilities[at]).collect())
+            .collect()
+    }
+
+    /// Every payment from some floating mana, each permanent tapped for one of its abilities or left alone (a permanent whose abilities may be used again, up to [`MOST_USES`] times in all), and every even amount of life up to `most_life`.
     fn all_payments(floating: &[ManaType], sources: &[ManaOption], most_life: u32) -> Vec<Payment> {
         let mut objects: Vec<ObjectId> = sources.iter().map(|o| o.source.object).collect();
         objects.sort_unstable();
         objects.dedup();
         let mut tap_sets: Vec<Vec<ManaSource>> = vec![Vec::new()];
         for object in objects {
-            let abilities: Vec<ManaSource> = sources
+            let options: Vec<&ManaOption> = sources
                 .iter()
                 .filter(|o| o.source.object == object)
-                .map(|o| o.source)
                 .collect();
+            let abilities: Vec<ManaSource> = options.iter().map(|o| o.source).collect();
+            let most = if options.iter().any(|o| o.repeat) {
+                MOST_USES
+            } else {
+                1
+            };
             let mut next = Vec::new();
             for taps in &tap_sets {
                 next.push(taps.clone());
-                for ability in &abilities {
+                for uses in uses_of(&abilities, most) {
                     let mut with = taps.clone();
-                    with.push(*ability);
+                    with.extend(uses);
                     next.push(with);
                 }
             }
@@ -2461,7 +2545,8 @@ mod tests {
     }
 
     fn contains(whole: &Payment, part: &Payment) -> bool {
-        part.taps.iter().all(|t| whole.taps.contains(t))
+        let uses = |p: &Payment, tap: &ManaSource| p.taps.iter().filter(|t| *t == tap).count();
+        part.taps.iter().all(|t| uses(part, t) <= uses(whole, t))
             && ManaType::ALL.into_iter().all(|m| {
                 let count = |p: &Payment| p.pool.iter().filter(|x| **x == m).count();
                 count(whole) >= count(part)
@@ -2631,6 +2716,48 @@ mod tests {
                 ManaCost::from_symbols([ManaSymbol::Generic(1), ManaSymbol::Colored(c)])
             }),
         ]
+    }
+
+    /// Sources of which some permanents may be used again (a Cadaverous Bloom): they neither tap nor sacrifice, each use
+    /// exiles one or two of the 0 to 3 cards of a hand, and the cards are among the permanents 0 to 6 (so a card may be a
+    /// source too).
+    fn repeating_scenario(
+        costs: impl Strategy<Value = ManaCost>,
+    ) -> impl Strategy<Value = Scenario> {
+        (
+            complex_scenario(costs),
+            prop::collection::vec(
+                (
+                    any::<bool>(),
+                    1u32..3,
+                    prop::collection::btree_set(0u64..7, 0..4),
+                ),
+                0..4,
+            ),
+        )
+            .prop_map(|((cost, floating, mut sources, life), hands)| {
+                for source in &mut sources {
+                    let Some((again, count, from)) = usize::try_from(source.source.object.0)
+                        .ok()
+                        .and_then(|at| hands.get(at))
+                    else {
+                        continue;
+                    };
+                    if *again {
+                        source.repeat = true;
+                        source.tapless = true;
+                        source.sacrifice = false;
+                        source.extra = true;
+                        source.takes = vec![Take {
+                            sacrifice: false,
+                            exile: true,
+                            count: *count,
+                            from: from.iter().copied().map(ObjectId).collect(),
+                        }];
+                    }
+                }
+                (cost, floating, sources, life)
+            })
     }
 
     /// A random scenario whose sources may cost mana (a Signet, a filter land, a Prism): up to three permanents of one
@@ -2924,6 +3051,34 @@ mod tests {
         #[test]
         fn completion_with_sources_that_take_permanents_exists_iff_some_valid_payment_contains_the_partial(
             s in taking_scenario(any_cost()), pick in any::<prop::sample::Index>()
+        ) {
+            completion_matches_the_independent_check(&s, pick)?;
+        }
+
+        #[test]
+        fn sources_used_more_than_once_follow_the_independent_check(
+            s in repeating_scenario(any_cost())
+        ) {
+            automatic_payment_matches_the_independent_check(&s)?;
+        }
+
+        #[test]
+        fn sources_used_more_than_once_pay_plain_costs_like_the_independent_check(
+            s in repeating_scenario(plain_cost())
+        ) {
+            automatic_payment_matches_the_independent_check(&s)?;
+        }
+
+        #[test]
+        fn payments_that_use_a_source_more_than_once_are_checked_like_the_independent_check(
+            s in repeating_scenario(any_cost()), pick in any::<prop::sample::Index>(), extra in 0u32..4
+        ) {
+            check_payment_matches_the_independent_check(&s, pick, extra)?;
+        }
+
+        #[test]
+        fn completion_with_sources_used_more_than_once_exists_iff_some_valid_payment_contains_the_partial(
+            s in repeating_scenario(any_cost()), pick in any::<prop::sample::Index>()
         ) {
             completion_matches_the_independent_check(&s, pick)?;
         }

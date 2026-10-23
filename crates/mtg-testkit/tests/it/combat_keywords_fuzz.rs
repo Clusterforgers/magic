@@ -32,7 +32,7 @@ fn seeded_combat_keyword_games_finish_keep_every_invariant_and_use_the_keywords(
                 match form {
                     DamageForm::Infect => seen.insert("infect"),
                     DamageForm::Wither => seen.insert("wither"),
-                    DamageForm::Normal => false,
+                    DamageForm::Normal | DamageForm::NoLifeLoss => false,
                 };
                 if *toxic > 0 {
                     seen.insert("toxic");

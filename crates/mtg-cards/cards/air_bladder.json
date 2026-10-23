@@ -1,0 +1,21 @@
+{
+  "oracle_id": "25c8a3b0-c393-4fc6-a373-808cd8e9850c",
+  "name": "Air Bladder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Air Bladder",
+      "oracle_fingerprint": "1e440940261bb8fd309d76f858367de6",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Flying" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "CanBlockOnly": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }]
+          }
+        }
+      ]
+    }
+  ]
+}

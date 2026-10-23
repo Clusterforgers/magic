@@ -180,6 +180,8 @@ pub enum Keyword {
     Blitz(Cost),
     /// Prowl with its cost: an alternative cost for a spell, cast when a player was dealt combat damage this turn by a source its caster controlled that shared a creature type with it (CR 702.76).
     Prowl(Cost),
+    /// Mayhem with its cost: an alternative cost to cast the card from its owner's graveyard in the turn they discarded it, with the timing the card has (CR 702.190).
+    Mayhem(Cost),
     /// Ninjutsu with its cost: from the hand during combat after blockers are declared, an unblocked attacker returns to its owner's hand and the card enters tapped and attacking (CR 702.49).
     Ninjutsu(Cost),
     /// Echo with its cost (CR 702.30): at the beginning of its controller's upkeep, if it came under their control since their last turn began, it is sacrificed unless they pay the cost.
@@ -394,6 +396,7 @@ impl Keyword {
         "Bestow",
         "Blitz",
         "Prowl",
+        "Mayhem",
         "Ninjutsu",
         "Echo",
         "Cumulative upkeep",
@@ -579,6 +582,7 @@ impl Keyword {
             Keyword::Dash(_) => "Dash",
             Keyword::Blitz(_) => "Blitz",
             Keyword::Prowl(_) => "Prowl",
+            Keyword::Mayhem(_) => "Mayhem",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
         }
@@ -699,6 +703,7 @@ mod tests {
             Keyword::Bestow(cost.clone()),
             Keyword::Blitz(cost.clone()),
             Keyword::Prowl(cost.clone()),
+            Keyword::Mayhem(cost.clone()),
             Keyword::Ninjutsu(cost),
             Keyword::Echo(Cost::default()),
             Keyword::CumulativeUpkeep(Cost::default()),

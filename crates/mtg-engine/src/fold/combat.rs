@@ -116,7 +116,7 @@ fn damage_player(
         record_hit(state, source);
     }
     let player = player_mut(state, id)?;
-    if form != DamageForm::Infect {
+    if !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss) {
         player.life = player
             .life
             .saturating_sub(i32::try_from(amount).unwrap_or(i32::MAX));

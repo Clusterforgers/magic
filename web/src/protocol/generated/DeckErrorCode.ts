@@ -5,4 +5,4 @@
  *
  * `message` is for people and may change, the code is for programs.
  */
-export type DeckErrorCode = "invalid_request" | "invalid_deck" | "unknown_cards" | "not_found" | "deck_limit" | "export_failed" | "unauthenticated" | "forbidden_origin" | "payload_too_large" | "unsupported_media_type" | "decks_unavailable" | "cards_unavailable" | "unavailable" | "internal";
+export type DeckErrorCode = "invalid_request" | "invalid_deck" | "unknown_cards" | "not_found" | "deck_limit" | "export_failed" | "unauthenticated" | "forbidden_origin" | "payload_too_large" | "unsupported_media_type" | "decks_unavailable" | "cards_unavailable" | "unavailable" | "internal" | "rate_limited";

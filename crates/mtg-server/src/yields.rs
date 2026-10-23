@@ -551,6 +551,7 @@ mod tests {
             kind: DecisionKind::DeclareBlockers(BlockOptions {
                 blockers: Vec::new(),
                 min_blockers: Vec::new(),
+                max_blockers: Vec::new(),
                 required: Vec::new(),
             }),
         };

@@ -1,0 +1,21 @@
+{
+  "id": "7ce660ef-0c6f-413d-8ddd-b755a19ab731",
+  "oracle_id": "8d035688-089f-4d5c-bcad-9140a6c1681b",
+  "name": "Cybermen Squadron",
+  "lang": "en",
+  "layout": "normal",
+  "set": "who",
+  "collector_number": "176",
+  "rarity": "rare",
+  "released_at": "2023-10-13",
+  "digital": false,
+  "mana_cost": "{7}",
+  "cmc": 7.0,
+  "type_line": "Artifact Creature — Cyberman",
+  "oracle_text": "Nonlegendary artifact creatures you control have myriad. (Whenever a creature with myriad attacks, for each opponent other than defending player, you may create a token copy that's tapped and attacking that player or a planeswalker they control. Exile the tokens at end of combat.)",
+  "power": "5",
+  "toughness": "5",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

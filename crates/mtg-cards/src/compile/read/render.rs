@@ -13,6 +13,7 @@ use super::copy_spells;
 use super::costs;
 use super::counters;
 use super::create;
+use super::defining;
 use super::draws;
 use super::effects::{BACK, RETURNED, dead_card, returns_itself};
 use super::flicker;
@@ -136,6 +137,55 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .map(|text| text.replace("the monarch controls", "that player controls"))
             .collect();
         texts.extend(pronouns);
+    }
+    // The creature that attacks a player is "it" or "that creature" (M'Baku).
+    if matches!(
+        ability,
+        Ability::Triggered {
+            when: TriggerPattern::AttacksPlayer { .. },
+            ..
+        }
+    ) {
+        let named: Vec<String> = texts
+            .iter()
+            .filter(|text| text.contains(", it gets ") || text.contains(", it gains "))
+            .map(|text| {
+                text.replace(", it gets ", ", that creature gets ")
+                    .replace(", it gains ", ", that creature gains ")
+            })
+            .collect();
+        texts.extend(named);
+    }
+    // The monarch held as the event happens may follow it: "Whenever you tap a land for mana while you're the monarch".
+    if let Ability::Triggered {
+        when,
+        intervening_if: Some(held),
+        ..
+    } = ability
+        && while_held(when)
+        && let Some(held) = super::triggers::monarch_text(held)
+    {
+        let after: Vec<String> = texts
+            .iter()
+            .map(|text| text.replacen(&format!(", if {held}, "), &format!(" while {held}, "), 1))
+            .filter(|text| !texts.contains(text))
+            .collect();
+        texts.extend(after);
+    }
+    // A card may open with "When" for the damage its commander deals (Archivist of Gondor).
+    if matches!(
+        ability,
+        Ability::Triggered {
+            when: TriggerPattern::DealsDamage { source, .. },
+            ..
+        } if source.0.contains(&Pred::Commander) && source.0.contains(&Pred::OwnedBy(Ref::You))
+    ) {
+        let once: Vec<String> = texts
+            .iter()
+            .filter_map(|text| text.strip_prefix("Whenever your commander "))
+            .map(|rest| format!("When your commander {rest}"))
+            .collect();
+        texts.extend(once);
     }
     texts.extend(attackers::named_draws(ability, &texts));
     texts.extend(counters::pronouns_after_none(ability, &texts));
@@ -492,7 +542,11 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
         matches!(
             effect,
             Effect::CreateToken {
-                count: Amount::Count(_) | Amount::Times { .. } | Amount::CommanderCasts(_),
+                count: Amount::Count(_)
+                    | Amount::Counters { .. }
+                    | Amount::Players(_)
+                    | Amount::Times { .. }
+                    | Amount::CommanderCasts(_),
                 ..
             }
         )
@@ -1041,12 +1095,17 @@ pub(super) fn stats_text(power: &Amount, toughness: &Amount) -> Option<(String, 
     Some((format!("{power}/{toughness}"), tail))
 }
 
-/// Whether the change of power and toughness leading the modifications is counted "for each ...".
+/// Whether the change of power and toughness leading the modifications is counted: "for each ...", X with the count
+/// named after it, or a count the card says as it is.
 pub(super) fn counts_stats(mods: &[Modification]) -> bool {
+    let counted = |amount: &Amount| {
+        counted_parts(amount).is_some()
+            || *amount == Amount::X
+            || defining::value_text(amount).is_some()
+    };
     matches!(
         mods.first(),
-        Some(Modification::ModifyPT { power, toughness })
-            if counted_parts(power).is_some() || counted_parts(toughness).is_some()
+        Some(Modification::ModifyPT { power, toughness }) if counted(power) || counted(toughness)
     )
 }
 
@@ -1406,6 +1465,14 @@ impl Writer<'_> {
                 duration: Some(Duration::WhileSourceOnBattlefield),
             } => Some(format!(
                 "exile {} until ~ leaves the battlefield",
+                self.object(what)?
+            )),
+            Effect::Exile {
+                what,
+                bind: None,
+                duration: Some(Duration::UntilOpponentBecomesMonarch),
+            } => Some(format!(
+                "exile {} until an opponent becomes the monarch",
                 self.object(what)?
             )),
             _ => None,
@@ -1827,4 +1894,13 @@ impl Writer<'_> {
             parts.join(" and ")
         ))
     }
+}
+
+/// Whether a trigger may say "while you're the monarch" after its event: not one about damage, which can itself pass the
+/// designation on, so that the state after it is not the one the event happened in.
+pub(super) fn while_held(when: &TriggerPattern) -> bool {
+    !matches!(
+        when,
+        TriggerPattern::DealsDamage { .. } | TriggerPattern::Batch(_) | TriggerPattern::AnyOf(_)
+    )
 }

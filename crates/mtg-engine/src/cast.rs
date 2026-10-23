@@ -291,7 +291,9 @@ fn payment_events(
             cause: ZoneCause::Exiled,
         });
     }
-    // A source that costs mana pays it from the pool just before it adds its own mana.
+    // A source that costs mana pays it from the pool just before it adds its own mana. A source used again takes
+    // the permanents of its next use, so each step claims one entry of `paying`.
+    let mut claimed = vec![false; paying.len()];
     for step in &spent.steps {
         let option = options
             .sources
@@ -305,9 +307,15 @@ fn payment_events(
                 restricted: Vec::new(),
             });
         }
-        let at = paying.iter().position(|o| o.source == option.source);
+        let at = paying
+            .iter()
+            .enumerate()
+            .position(|(at, o)| !claimed[at] && o.source == option.source);
         let picked = at
-            .map(|at| std::mem::take(&mut taken[at]))
+            .map(|at| {
+                claimed[at] = true;
+                std::mem::take(&mut taken[at])
+            })
             .unwrap_or_default();
         events.extend(activate(option, &picked)?);
     }

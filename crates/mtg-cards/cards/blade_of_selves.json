@@ -1,0 +1,15 @@
+{
+  "oracle_id": "9c329f3d-4d0a-4012-8aa6-92afdd120a52",
+  "name": "Blade of Selves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blade of Selves",
+      "oracle_fingerprint": "0e8f1139b4b73f795f46c07755e82b85",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Myriad" }] } },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

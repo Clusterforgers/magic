@@ -1,0 +1,19 @@
+{
+  "oracle_id": "24e39d26-6a2b-461e-b194-bda575bcf898",
+  "name": "Legion Loyalty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Legion Loyalty",
+      "oracle_fingerprint": "3bcb0cdfdeb041bbea46ed3f221f9e74",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Myriad" }]
+          }
+        }
+      ]
+    }
+  ]
+}

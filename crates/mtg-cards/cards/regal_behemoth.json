@@ -1,0 +1,27 @@
+{
+  "oracle_id": "797c2b1c-c373-4735-b397-f561559c7c61",
+  "name": "Regal Behemoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Regal Behemoth",
+      "oracle_fingerprint": "5d888a9a0002e0cb9e12826416583033",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Type": "Land" }], "by": "You" } },
+            "if": { "Monarch": "You" },
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

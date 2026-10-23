@@ -1,6 +1,7 @@
 //! The deck endpoints: the decks a signed-in account stores, the deck check and the marker derived
 //! from it, import of pasted lists and export as text, Arena or MTGO text. Everything here needs an
-//! account; a server without a database answers 503 `decks_unavailable`.
+//! account, except the check of a precon (`precon:<code>`); a server without a database answers 503
+//! `decks_unavailable`.
 //!
 //! Saving a deck runs the check and stores `{deck_hash, coverage_hash, checked_at, summary}` with it.
 //! Whether a deck is verified is never stored: it is derived each time the deck is read, from the
@@ -26,12 +27,14 @@ use serde_json::Value;
 use sqlx::types::uuid::Uuid;
 
 use crate::api::{ApiError, read_json_limited};
+use crate::auth::client_address;
 use crate::card_api::failed;
 use crate::cards::CardSource;
 use crate::deck_cards::{Line, Loaded, check_body, check_format, check_lines};
-use crate::deck_choice::judge_at_table;
+use crate::deck_choice::{judge_at_table, precon_code};
 use crate::deck_import;
 use crate::game_id::GameId;
+use crate::precon_api;
 use crate::recipe::FormatKind;
 use crate::server::AppState;
 
@@ -292,15 +295,26 @@ pub(crate) async fn remove(
     }
 }
 
-/// `POST /api/decks/check`: checks a stored deck (`{deck}`) or an unsaved list (`{format, cards}`)
-/// and answers the report; nothing is saved.
+/// `POST /api/decks/check`: checks a stored deck (`{deck}`), a precon (`{deck: "precon:<code>"}`,
+/// which needs no account) or an unsaved list (`{format, cards}`) and answers the report; nothing is
+/// saved.
 pub(crate) async fn check(
     State(app): State<AppState>,
     request: Request,
 ) -> Result<Json<DeckReport>, ApiError> {
     let headers = request.headers().clone();
-    let s = session(&app, &headers).await?;
-    let body: CheckRequest = read_json_limited(request, DECK_BODY_LIMIT).await?;
+    let address = client_address(&request, app.config().auth.trusted_proxies);
+    let signed_in = session(&app, &headers).await;
+    let body: CheckRequest = match read_json_limited(request, DECK_BODY_LIMIT).await {
+        Ok(body) => body,
+        // Without a session the refusal of the session comes first, as it does for any body.
+        Err(error) => return Err(signed_in.err().unwrap_or(error)),
+    };
+    if let Some(code) = body.deck.as_deref().and_then(precon_code) {
+        let code = code.to_owned();
+        return precon_api::check(&app, address, body, &code).await;
+    }
+    let s = signed_in?;
     let table = table_of(&app, body.game.as_deref(), body.table.as_ref())?;
     let (format, lines) = match body {
         CheckRequest {
@@ -343,7 +357,7 @@ pub(crate) async fn check(
 /// The format and house rules a check is for: those of the game it names, or the table it
 /// describes; none for a check of the deck alone. Naming both, an unknown game, a format the server
 /// does not play or a rule out of range is refused.
-fn table_of(
+pub(crate) fn table_of(
     app: &AppState,
     game: Option<&str>,
     table: Option<&TableRules>,
