@@ -1,0 +1,37 @@
+{
+  "oracle_id": "65c32889-3d70-449f-af76-05385c78c5a9",
+  "name": "Evercoat Ursine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evercoat Ursine",
+      "oracle_fingerprint": "60889b44cefecf943b43be2779bdcd9c",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": { "Hideaway": 3 } },
+        { "Keyword": { "Hideaway": 3 } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                  "as": "played"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "played" }, "free": true, "play": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

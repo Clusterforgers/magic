@@ -1,0 +1,28 @@
+{
+  "id": "b299d768-b171-47e5-b69d-82ce13917c43",
+  "oracle_id": "65c32889-3d70-449f-af76-05385c78c5a9",
+  "name": "Evercoat Ursine",
+  "lang": "en",
+  "layout": "normal",
+  "set": "blc",
+  "collector_number": "30",
+  "rarity": "rare",
+  "released_at": "2024-08-02",
+  "digital": false,
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Elemental Bear",
+  "oracle_text": "Trample\nHideaway 3, hideaway 3 (When this creature enters, look at the top three cards of your library, exile one face down, then put the rest on the bottom in a random order. Then do it again.)\nWhenever this creature deals combat damage to a player, if there are cards exiled with it, you may play one of them without paying its mana cost.",
+  "power": "6",
+  "toughness": "5",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Trample",
+    "Hideaway"
+  ]
+}

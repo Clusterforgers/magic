@@ -1,0 +1,23 @@
+{
+  "id": "1490c0dc-06d6-45ee-af3c-2935b0ab1233",
+  "oracle_id": "7cb9e29f-835f-4155-a2a5-4b778866c773",
+  "name": "Mosswort Bridge",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "379",
+  "rarity": "rare",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "Hideaway 4 (When this land enters, look at the top four cards of your library, exile one face down, then put the rest on the bottom in a random order.)\nThis land enters tapped.\n{T}: Add {G}.\n{G}, {T}: You may play the exiled card without paying its mana cost if creatures you control have total power 10 or greater.",
+  "colors": [],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Hideaway"
+  ]
+}

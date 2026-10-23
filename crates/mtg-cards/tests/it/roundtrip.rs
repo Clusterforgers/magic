@@ -873,13 +873,15 @@ fn effect() -> impl Strategy<Value = Effect> {
                     CastWay::Suspend
                 ])),
             )
-                .prop_map(|(who, what, free, play, otherwise, way)| Effect::CastFromZone {
-                    who,
-                    what,
-                    free,
-                    play,
-                    way,
-                    otherwise,
+                .prop_map(|(who, what, free, play, otherwise, way)| {
+                    Effect::CastFromZone {
+                        who,
+                        what,
+                        free,
+                        play,
+                        way,
+                        otherwise,
+                    }
                 }),
             (reference(), cost(), amount(), list(), list()).prop_map(
                 |(who, cost, times, paid, unpaid)| {

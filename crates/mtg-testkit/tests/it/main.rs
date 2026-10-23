@@ -117,6 +117,7 @@ mod group_statics_fuzz;
 mod harness_selfcheck;
 mod help_fuzz;
 mod help_payment;
+mod hideaway;
 mod house_commander;
 mod house_rules;
 mod house_table;

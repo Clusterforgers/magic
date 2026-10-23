@@ -1,0 +1,26 @@
+{
+  "id": "b6d4cf14-c43e-454b-ae76-3678617067f8",
+  "oracle_id": "9babcd0a-531f-417d-905e-b916a87112bb",
+  "name": "Cemetery Tampering",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "135",
+  "rarity": "rare",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Hideaway 5 (When this enchantment enters, look at the top five cards of your library, exile one face down, then put the rest on the bottom in a random order.)\nAt the beginning of your upkeep, you may mill three cards. Then if there are twenty or more cards in your graveyard, you may play the exiled card without paying its mana cost.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Mill",
+    "Hideaway"
+  ]
+}

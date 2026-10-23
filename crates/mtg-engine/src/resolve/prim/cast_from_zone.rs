@@ -6,8 +6,9 @@ use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
+use super::may::performed_name;
 use super::wrong_effect;
-use crate::choose::{Choice, YesNoOptions};
+use crate::choose::{Choice, Target, YesNoOptions};
 use crate::decision::{Decision, DecisionKind};
 use crate::events::Event;
 use crate::object::{GameObject, ObjectKind};
@@ -49,7 +50,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .into_iter()
         .find(|player| state.is_alive(*player))
     else {
-        return Ok(finished(false));
+        return Ok(finished(cx, false));
     };
     let mut answers = cx.journal().iter();
     let next = answers.next();
@@ -69,7 +70,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         (None, _) => {
             let card = cx.scope.live_objects(what)?.into_iter().find(offered);
             Ok(card.map_or_else(
-                || finished(false),
+                || finished(cx, false),
                 |card| {
                     let alternative = ways::alternative_cost(state, card.id(), *way);
                     Run::Ask(question(
@@ -83,7 +84,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 },
             ))
         }
-        (Some((who, Choice::YesNo(false))), None) if *who == player => Ok(finished(false)),
+        (Some((who, Choice::YesNo(false))), None) if *who == player => Ok(finished(cx, false)),
         (Some((who, Choice::YesNo(true))), None) if *who == player => {
             let card = cx
                 .scope
@@ -98,7 +99,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                         object: card.id(),
                         face: None,
                     }],
-                    bound: Vec::new(),
+                    bound: vec![performed(cx, true)],
                     snapshots: Vec::new(),
                     next: Next::Sibling,
                 });
@@ -113,7 +114,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         (Some((first, Choice::YesNo(true))), Some((second, Choice::YesNo(cast))))
             if *first == player && *second == player =>
         {
-            Ok(finished(*cast))
+            Ok(finished(cx, *cast))
         }
         _ => Err(unexpected("an answer that was not asked")),
     }
@@ -124,11 +125,22 @@ fn is_land(card: &GameObject) -> bool {
     card.kind() == ObjectKind::Card && card.base_types().contains(CardType::Land)
 }
 
+/// Whether the card was cast or played, bound under the name a following "if you do" reads (`may::performed_name`): the
+/// controller when it was, nothing when it was not.
+fn performed(cx: &Cx<'_>, did: bool) -> (String, Vec<Target>) {
+    let who = if did {
+        vec![Target::Player(cx.scope.controller)]
+    } else {
+        Vec::new()
+    };
+    (performed_name(cx.resolving.position()), who)
+}
+
 /// The step is done: on to the next effect when the spell was cast, into `otherwise` when it was not.
-fn finished(cast: bool) -> Run {
+fn finished(cx: &Cx<'_>, cast: bool) -> Run {
     Run::Done {
         events: Vec::new(),
-        bound: Vec::new(),
+        bound: vec![performed(cx, cast)],
         snapshots: Vec::new(),
         next: if cast { Next::Sibling } else { Next::Enter(0) },
     }

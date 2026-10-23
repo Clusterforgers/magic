@@ -1,0 +1,34 @@
+{
+  "oracle_id": "e19e1e83-75e5-4cfa-8d50-8ed0b027a202",
+  "name": "Smuggler's Buggy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smuggler's Buggy",
+      "oracle_fingerprint": "5e0e7dc7e16b22f4f21757d25a6eb03c",
+      "abilities": [
+        { "Keyword": { "Hideaway": 4 } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "CastFromZone": {
+                  "what": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                  "free": true
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

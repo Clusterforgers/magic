@@ -1,0 +1,42 @@
+{
+  "oracle_id": "9babcd0a-531f-417d-905e-b916a87112bb",
+  "name": "Cemetery Tampering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cemetery Tampering",
+      "oracle_fingerprint": "4387628f4aab107d4454d37d709e3b7a",
+      "abilities": [
+        { "Keyword": { "Hideaway": 5 } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "May": { "effects": [{ "Mill": { "count": 3 } }] } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 20
+                    }
+                  },
+                  "then": [
+                    {
+                      "CastFromZone": {
+                        "what": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                        "free": true,
+                        "play": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
