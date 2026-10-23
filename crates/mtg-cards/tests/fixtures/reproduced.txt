@@ -598,6 +598,7 @@ Stitched Drake
 Stoke the Flames
 Stonewood Invocation
 Storm Fleet Swashbuckler
+Stormchaser's Talent
 Strangleroot Geist
 Stratus Dancer
 Strionic Resonator
@@ -715,6 +716,7 @@ Windborn Muse
 Wings of the Guard
 Wipe Away
 Withering Boon
+Wizard Class
 Wooded Bastion
 Woodripper
 Wrath of God

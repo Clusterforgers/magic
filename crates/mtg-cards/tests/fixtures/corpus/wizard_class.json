@@ -1,0 +1,23 @@
+{
+  "id": "d1f629fb-b097-4240-8560-ef47f5678f48",
+  "oracle_id": "36f68aa3-9955-46f1-bc87-497f16ef5222",
+  "name": "Wizard Class",
+  "lang": "en",
+  "layout": "class",
+  "set": "afr",
+  "collector_number": "81",
+  "rarity": "uncommon",
+  "released_at": "2021-07-23",
+  "digital": false,
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Enchantment — Class",
+  "oracle_text": "(Gain the next level as a sorcery to add its ability.)\nYou have no maximum hand size.\n{2}{U}: Level 2\nWhen this Class becomes level 2, draw two cards.\n{4}{U}: Level 3\nWhenever you draw a card, put a +1/+1 counter on target creature you control.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}
