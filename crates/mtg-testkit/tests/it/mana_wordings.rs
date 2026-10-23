@@ -340,7 +340,7 @@ fn tally(events: &[Event], seen: &mut Seen) {
     // A tap adds all its mana in one batch: a source making two or four mana of one type is a ferocious or a
     // granted ability (the other sources of the deck add one mana).
     let mut batch: Vec<(mtg_core::ids::ObjectId, ManaType)> = Vec::new();
-    let mut flush = |batch: &mut Vec<(mtg_core::ids::ObjectId, ManaType)>, seen: &mut Seen| {
+    let flush = |batch: &mut Vec<(mtg_core::ids::ObjectId, ManaType)>, seen: &mut Seen| {
         if let Some((source, mana)) = batch.first().copied()
             && batch.iter().all(|entry| *entry == (source, mana))
         {

@@ -185,6 +185,49 @@ mod tests {
         );
     }
 
+    fn elf() -> Subtype {
+        Subtype("Elf".to_owned())
+    }
+
+    fn chosen_creature() -> SpendFilter {
+        SpendFilter {
+            types: vec![CardType::Creature],
+            chosen_type: true,
+            ..SpendFilter::default()
+        }
+    }
+
+    #[rstest]
+    #[case::the_type_chosen(Some(elf()), &["Elf"], true)]
+    #[case::another_type(Some(elf()), &["Goblin"], false)]
+    #[case::no_type_chosen(None, &["Elf"], false)]
+    fn a_filter_of_the_chosen_type_holds_for_that_type_once_resolved(
+        #[case] chosen: Option<Subtype>,
+        #[case] subtypes: &[&str],
+        #[case] holds: bool,
+    ) {
+        let filter = chosen_creature();
+        let creature = traits(&[CardType::Creature], &[], subtypes, 1);
+        assert!(!filter.holds(&creature), "unresolved, it holds for nothing");
+        let resolved = filter.resolved(chosen.as_ref());
+        assert_eq!(
+            resolved.is_some_and(|resolved| resolved.holds(&creature)),
+            holds
+        );
+    }
+
+    #[test]
+    fn uses_without_a_chosen_type_are_dropped_and_a_restriction_left_empty_is_refused() {
+        let uses = [SpendOn::Spell(chosen_creature()), SpendOn::abilities()];
+        assert_eq!(resolve_uses(&uses, None), Some(vec![SpendOn::abilities()]));
+        assert_eq!(resolve_uses(&uses[..1], None), None);
+        let chosen = elf();
+        let kept = resolve_uses(&uses[..1], Some(&chosen)).unwrap();
+        assert_eq!(kept.len(), 1);
+        assert!(matches!(&kept[0], SpendOn::Spell(f) if f.subtypes == [elf()] && !f.chosen_type));
+        assert_eq!(resolve_uses(&[], None), Some(Vec::new()));
+    }
+
     #[rstest]
     #[case::spells(
         SpendOn::spells(SpendFilter::of_type(CardType::Creature)),
