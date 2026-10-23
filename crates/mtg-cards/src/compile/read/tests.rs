@@ -180,6 +180,7 @@ mod event_batches;
 mod events;
 mod exile_bounce_shrink;
 mod for_each;
+mod goad;
 mod group_statics;
 mod if_sentence;
 mod impulse;
@@ -837,8 +838,8 @@ mod sentences {
 
     #[rstest]
     #[case::a_second_target("Exile target creature. Target player draws a card.")]
-    #[case::unread_second("Destroy target creature. Goad target land.")]
-    #[case::unread_first("Goad target creature. Draw a card.")]
+    #[case::unread_second("Destroy target creature. Flip two coins.")]
+    #[case::unread_first("Flip a coin. Draw a card.")]
     #[case::garbled("Destroy target creature. Draw")]
     #[case::empty("")]
     #[case::only_a_period(".")]

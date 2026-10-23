@@ -110,6 +110,7 @@ mod foretell_fuzz;
 mod format_hooks;
 mod fuse;
 mod fuzz_games;
+mod goad;
 mod graveyard_discard_fuzz;
 mod graveyard_fuzz;
 mod group_statics;

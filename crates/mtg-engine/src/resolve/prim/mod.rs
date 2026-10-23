@@ -260,6 +260,7 @@ mod tests {
                 "Effect.WinGame",
                 "Effect.Surveil",
                 "Effect.Proliferate",
+                "Effect.Goad",
                 "Effect.BecomeMonarch",
                 "Effect.Amass",
                 "Effect.Monstrosity",

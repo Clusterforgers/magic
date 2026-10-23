@@ -36,7 +36,7 @@ use crate::value::{Amount, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 37] = [
+const TEMPLATES: [Template; 38] = [
     modal::modal,
     cast::discover_sentence,
     cast::exile_until,
@@ -47,6 +47,7 @@ const TEMPLATES: [Template; 37] = [
     put_back,
     super::actions::explore,
     super::actions::connive,
+    super::actions::goad,
     player_effect,
     super::damage::damage,
     removal,
@@ -77,7 +78,8 @@ const TEMPLATES: [Template; 37] = [
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
-pub(super) const IMPERATIVES: [Template; 12] = [
+pub(super) const IMPERATIVES: [Template; 13] = [
+    super::actions::goad,
     chain,
     removal,
     return_card,
@@ -461,6 +463,14 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
             who,
             amount: life(r)?,
         },
+        "scry" if who == Ref::You => Effect::Scry {
+            who,
+            count: points(r)?,
+        },
+        "surveil" if who == Ref::You => Effect::Surveil {
+            who,
+            count: points(r)?,
+        },
         "win" | "wins" => {
             r.need("the game")?;
             Effect::WinGame { who }
@@ -650,7 +660,7 @@ pub(super) fn target_object(r: &mut Reader<'_>) -> Option<Ref> {
 }
 
 /// What a verb acts on: target objects, or "all creatures".
-fn object(r: &mut Reader<'_>) -> Option<Ref> {
+pub(super) fn object(r: &mut Reader<'_>) -> Option<Ref> {
     if let Some(objects) = all(r) {
         return Some(objects);
     }

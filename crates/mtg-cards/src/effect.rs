@@ -417,7 +417,8 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
-    /// Goads creatures (CR 701.38): they must attack, and a player other than the goader, until the goader's next turn.
+    /// Goads creatures (CR 701.15): until the goader's next turn they attack each combat if able and attack a player
+    /// other than the goader if able.
     Goad {
         /// The creatures goaded.
         what: Ref,

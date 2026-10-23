@@ -135,6 +135,7 @@ const RUNS: &[&str] = &[
     "Effect.WinGame",
     "Effect.Surveil",
     "Effect.Proliferate",
+    "Effect.Goad",
     "Effect.Explore",
     "Effect.Connive",
     "Effect.Amass",
@@ -192,6 +193,7 @@ const RUNS: &[&str] = &[
     "Mod.CantBlock",
     "Mod.CantBeBlocked",
     "Mod.CantBeBlockedBy",
+    "Mod.Goaded",
     "Effect.DelayedTrigger",
     "Effect.If",
     "Effect.May",
@@ -570,7 +572,7 @@ mod tests {
     #[case::multikicker("Keyword.Multikicker", true)]
     #[case::surveilling("Effect.Surveil", true)]
     #[case::proliferating("Effect.Proliferate", true)]
-    #[case::goading("Effect.Goad", false)]
+    #[case::goading("Effect.Goad", true)]
     #[case::fighting("Effect.Fight", false)]
     #[case::becoming_the_monarch("Effect.BecomeMonarch", true)]
     #[case::amassing("Effect.Amass", true)]
@@ -640,6 +642,7 @@ mod tests {
     #[case::the_citys_blessing("Condition.CitysBlessing", true)]
     #[case::unblockable_creatures("Mod.CantBeBlocked", true)]
     #[case::creatures_that_cant_be_blocked_by_some("Mod.CantBeBlockedBy", true)]
+    #[case::goaded_creatures("Mod.Goaded", true)]
     #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", true)]
     #[case::additional_land_plays("Rule.AdditionalLandPlays", true)]
     #[case::commander_eligibility("Rule.CanBeCommander", true)]

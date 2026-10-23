@@ -178,6 +178,7 @@ Deputized Protester
 Dire Fleet Interloper
 Direct Current
 Disembowel
+Disrupt Decorum
 Dockside Extortionist
 Dokuchi Shadow-Walker
 Domesticated Hydra
@@ -477,6 +478,7 @@ Propaganda
 Propeller Pioneer
 Prosperous Bandit
 Proven Combatant
+Psychic Impetus
 Psychosis Crawler
 Putrid Goblin
 Pygmy Kavu
@@ -545,6 +547,7 @@ Servant of the Conduit
 Shadowmage Infiltrator
 Shambling Shell
 Shenanigans
+Shiny Impetus
 Siege Smash
 Siege Wurm
 Sigiled Paladin

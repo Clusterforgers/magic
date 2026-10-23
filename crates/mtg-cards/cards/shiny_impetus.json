@@ -1,0 +1,26 @@
+{
+  "oracle_id": "aae76e5c-f5e0-4d18-b465-e6a829be908a",
+  "name": "Shiny Impetus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shiny Impetus",
+      "oracle_fingerprint": "a6f56abfd04743206af177e5d691b328",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, "Goaded"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "9b084cd4-cc21-4f3a-9ac5-1e1160a31aa6",
+  "name": "Disrupt Decorum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disrupt Decorum",
+      "oracle_fingerprint": "2feccc3e37c403589bebb83425ff7b99",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Goad": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

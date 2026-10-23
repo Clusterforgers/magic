@@ -453,25 +453,7 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
         subject(r, true).or_else(|| enchanted_other(r))?
     };
     let x_free = std::mem::replace(&mut r.x_free, false);
-    let mods = r.attempt(|r| {
-        let (gets, has) = if plural {
-            ("get", "have")
-        } else {
-            ("gets", "has")
-        };
-        if r.word(gets) {
-            let stats = power_toughness(r)?;
-            let mut mods = vec![counted_stats(r, stats)?];
-            if r.word("and") {
-                r.word(has).then_some(())?;
-                mods.extend(gives(r)?);
-            }
-            Some(mods)
-        } else {
-            r.word(has).then_some(())?;
-            gives(r)
-        }
-    });
+    let mods = r.attempt(|r| predicate_mods(r, plural));
     r.x_free = x_free;
     let mods = mods?;
     let condition = leading.or_else(|| r.attempt(as_long_as));
@@ -479,6 +461,43 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
         return None;
     }
     Some(statics(affected, mods, condition))
+}
+
+/// What a permanent gets and has: "gets +1/+1", "has flying", "gets +1/+1 and has flying", and as the last part "is
+/// goaded" ("gets +2/+2 and is goaded", "has indestructible and is goaded", "gets +1/+1, has deathtouch, and is goaded").
+fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Modification>> {
+    let (gets, has, is) = if plural {
+        ("get", "have", "are")
+    } else {
+        ("gets", "has", "is")
+    };
+    let goaded = |r: &mut Reader<'_>| r.words(&format!("and {is} goaded"));
+    let mut mods = Vec::new();
+    if r.word(gets) {
+        let stats = power_toughness(r)?;
+        mods.push(counted_stats(r, stats)?);
+        if goaded(r) {
+            mods.push(Modification::Goaded);
+            return Some(mods);
+        }
+        let listed = r.punct(',');
+        if listed || r.word("and") {
+            r.word(has).then_some(())?;
+            mods.extend(gives(r)?);
+        }
+        if listed {
+            r.punct(',').then_some(())?;
+            goaded(r).then_some(())?;
+            mods.push(Modification::Goaded);
+        }
+        return Some(mods);
+    }
+    r.word(has).then_some(())?;
+    mods.extend(gives(r)?);
+    if goaded(r) {
+        mods.push(Modification::Goaded);
+    }
+    Some(mods)
 }
 
 /// What a permanent is given: keywords, or one activated ability in quotes ("Enchanted creature has \"{R}, {T}: Copy
@@ -1161,10 +1180,15 @@ fn predicate(
             _ => {}
         }
     }
-    let (gets, has) = if plural {
-        ("get", "have")
+    let (gets, has, is) = if plural {
+        ("get", "have", "are")
     } else {
-        ("gets", "has")
+        ("gets", "has", "is")
+    };
+    // "is goaded" is the last part of the sentence.
+    let (mods, goaded) = match mods.split_last() {
+        Some((Modification::Goaded, rest)) if !rest.is_empty() => (rest, true),
+        _ => (mods, false),
     };
     let (stats, rest) = match mods.split_first() {
         Some((Modification::ModifyPT { power, toughness }, rest)) => {
@@ -1176,6 +1200,14 @@ fn predicate(
     let mut parts: Vec<String> = stats.into_iter().collect();
     if !rest.is_empty() {
         parts.push(format!("{has} {}", given_text(rest)?));
+    }
+    if goaded {
+        let last = format!("{is} goaded");
+        return match parts.as_slice() {
+            [one] => Some(format!("{one} and {last}")),
+            [first, second] => Some(format!("{first}, {second}, and {last}")),
+            _ => None,
+        };
     }
     (!parts.is_empty()).then(|| parts.join(" and "))
 }
