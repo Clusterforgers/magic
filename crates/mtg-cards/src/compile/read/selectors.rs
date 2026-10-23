@@ -980,7 +980,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     let qualified = (plural || spell) && !card && (spell || !types.is_empty() || token);
     // Several subtypes are only for a spell ("Faerie or Wizard permanent spell").
     if (!subtypes.is_empty() && (card || (!types.is_empty() && !qualified)))
-        || (subtypes.len() > 1 && !spell && !(plural && !qualified))
+        || (subtypes.len() > 1 && !spell && (qualified || !types.is_empty()))
         || (spell && card)
         || (token && (spell || card))
         || (commander && (spell || card || token || !subtypes.is_empty() || !types.is_empty()))

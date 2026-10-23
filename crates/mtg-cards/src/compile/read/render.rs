@@ -72,10 +72,7 @@ pub fn ability(ability: &Ability) -> Option<String> {
 #[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
     let mut texts = ability_texts(ability);
-    let singulars: Vec<String> = texts
-        .iter()
-        .filter_map(|text| spend::singular(text))
-        .collect();
+    let singulars: Vec<String> = texts.iter().flat_map(|text| spend::more(text)).collect();
     texts.extend(singulars);
     texts = texts.into_iter().flat_map(cast::impulse_wordings).collect();
     let controller = create::other_wordings(&texts);
