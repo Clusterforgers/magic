@@ -37,7 +37,7 @@ use crate::value::{Amount, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 43] = [
+const TEMPLATES: [Template; 44] = [
     modal::modal,
     super::spent::sacrifice_unless,
     cast::discover_sentence,
@@ -61,6 +61,7 @@ const TEMPLATES: [Template; 43] = [
     evasion,
     return_card,
     return_chosen,
+    return_any_number,
     copies::token_copy,
     copies::populate,
     copy_spells::copy,
@@ -568,7 +569,7 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             to: Destination::Hand,
         }]);
     }
-    let what = target_object(r)?;
+    let what = target_object(r).or_else(|| up_to_one_object(r))?;
     let Some(Targetable::Object(selector)) = r.targets.first().map(|spec| &spec.what) else {
         return None;
     };
@@ -624,6 +625,37 @@ fn return_chosen(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             who: Ref::You,
             from: Ref::Each(from),
             count: Bounds::default(),
+            bind: RETURNED.to_owned(),
+            rest_as: None,
+        },
+        Effect::Move {
+            what: Ref::Bound(RETURNED.to_owned()),
+            to: Destination::Hand,
+        },
+    ])
+}
+
+/// "Then you may return any number of creatures that saddled it this turn to their owner's hand.": the player
+/// chooses none or more of the permanents, bound as `returned`, and they go to their owners' hands.
+fn return_any_number(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.word("then");
+    r.need("you may return any number of")?;
+    let from = phrase(r, Form::All)?;
+    let theirs = from
+        .0
+        .iter()
+        .any(|pred| matches!(pred, Pred::Crewed(_) | Pred::Saddled(_)));
+    let on_the_battlefield = !from
+        .0
+        .iter()
+        .any(|pred| matches!(pred, Pred::In(_) | Pred::Spell));
+    (theirs && on_the_battlefield).then_some(())?;
+    r.need("to their owner's hand")?;
+    Some(vec![
+        Effect::Choose {
+            who: Ref::You,
+            from: Ref::Each(from),
+            count: Bounds { min: 0, max: None },
             bind: RETURNED.to_owned(),
             rest_as: None,
         },
@@ -723,6 +755,19 @@ pub(super) fn target_object(r: &mut Reader<'_>) -> Option<Ref> {
         let what = target(r)?;
         let spec = r.targets.first()?;
         (matches!(spec.what, Targetable::Object(_)) && spec.bounds.is_one()).then_some(what)
+    })
+}
+
+/// "up to one target creature": a target object that may also be left unchosen.
+fn up_to_one_object(r: &mut Reader<'_>) -> Option<Ref> {
+    r.attempt(|r| {
+        let what = target(r)?;
+        let spec = r.targets.first()?;
+        let bounds = Bounds {
+            min: 0,
+            max: Some(Amount::Fixed(1)),
+        };
+        (matches!(spec.what, Targetable::Object(_)) && spec.bounds == bounds).then_some(what)
     })
 }
 

@@ -347,7 +347,11 @@ impl<'a> Walker<'a> {
             Pred::ControlledBy(r) | Pred::OwnedBy(r) | Pred::AttackingPlayer(r) => {
                 self.reference(r, Kind::Player);
             }
-            Pred::Is(r) | Pred::SharesSubtype(r) | Pred::ExiledWith(r) => {
+            Pred::Is(r)
+            | Pred::SharesSubtype(r)
+            | Pred::ExiledWith(r)
+            | Pred::Crewed(r)
+            | Pred::Saddled(r) => {
                 self.reference(r, Kind::Object);
             }
             Pred::HasKeyword(keyword) => self.keyword(keyword),

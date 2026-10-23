@@ -1,0 +1,28 @@
+{
+  "cmc": 2.0,
+  "collector_number": "65",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "cf4bb9de-ba7c-4916-b8ed-e2e644c06b58",
+  "keywords": [
+    "Flying",
+    "Crew"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{U}",
+  "name": "Mobilizer Mech",
+  "oracle_id": "3c1a2a2d-656f-4021-b046-59e14383a8c8",
+  "oracle_text": "Flying\nWhenever this Vehicle becomes crewed, up to one other target Vehicle you control becomes an artifact creature until end of turn.\nCrew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)",
+  "power": "3",
+  "rarity": "uncommon",
+  "released_at": "2022-02-18",
+  "set": "neo",
+  "toughness": "4",
+  "type_line": "Artifact — Vehicle"
+}

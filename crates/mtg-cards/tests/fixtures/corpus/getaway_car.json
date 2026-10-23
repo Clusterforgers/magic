@@ -1,0 +1,24 @@
+{
+  "cmc": 3.0,
+  "collector_number": "237",
+  "color_identity": [],
+  "colors": [],
+  "digital": false,
+  "id": "8a6d2fa3-3f5a-4b6f-8b7e-6a8bf65c07ad",
+  "keywords": [
+    "Haste",
+    "Crew"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{3}",
+  "name": "Getaway Car",
+  "oracle_id": "954b30b2-b88c-4558-b06c-4518b49d7b20",
+  "oracle_text": "Haste\nWhenever this Vehicle attacks or blocks, return up to one target creature that crewed it this turn to its owner's hand.\nCrew 1",
+  "power": "4",
+  "rarity": "rare",
+  "released_at": "2022-04-29",
+  "set": "snc",
+  "toughness": "3",
+  "type_line": "Artifact — Vehicle"
+}

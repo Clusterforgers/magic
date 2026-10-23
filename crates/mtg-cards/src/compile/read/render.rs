@@ -40,7 +40,7 @@ use crate::compile::classify;
 use crate::cost::Cost;
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
 use crate::modify::{Duration, Modification};
-use crate::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::spend::SpendOn;
 use crate::trigger::TriggerPattern;
 use crate::value::{Amount, Condition, CounterKind};
@@ -815,7 +815,16 @@ fn returned_text(choose: &Effect, moved: &Effect) -> Option<String> {
     else {
         return None;
     };
-    if bind != RETURNED || name != RETURNED || !count.is_one() {
+    if bind != RETURNED || name != RETURNED {
+        return None;
+    }
+    if *count == (Bounds { min: 0, max: None }) {
+        let phrase = phrase_text(from, Form::All)?;
+        return Some(format!(
+            "you may return any number of {phrase} to their owner's hand"
+        ));
+    }
+    if !count.is_one() {
         return None;
     }
     let phrase = phrase_text(from, Form::Subject)?;
@@ -1193,9 +1202,18 @@ impl Writer<'_> {
             })
     }
 
-    /// Whether the reference is the one target and it is a permanent: not a spell, not a card in a zone.
+    /// Whether the reference is the one target (or "up to one") and it is a permanent: not a spell, not a card in a zone.
     fn is_a_permanent(&self, what: &Ref) -> bool {
-        self.single(what)
+        let up_to_one = Bounds {
+            min: 0,
+            max: Some(Amount::Fixed(1)),
+        };
+        (self.single(what)
+            || (matches!(what, Ref::Target(_))
+                && self
+                    .targets
+                    .first()
+                    .is_some_and(|spec| spec.bounds == up_to_one)))
             && self.target_is(|kind| {
                 matches!(kind, Targetable::Object(selector)
                     if !selector.0.iter().any(|pred| matches!(pred, Pred::In(_) | Pred::Spell)))

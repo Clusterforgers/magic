@@ -1,0 +1,37 @@
+{
+  "oracle_id": "4b100e6f-6c19-49d2-b9c4-613d63d42151",
+  "name": "Rambling Possum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rambling Possum",
+      "oracle_fingerprint": "f737cd51c709bb8da0fd6d23d454e250",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "HasKeyword": "Saddled" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "Saddled": "This" }] },
+                  "count": { "min": 0, "max": null },
+                  "as": "returned"
+                }
+              },
+              { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+            ]
+          }
+        },
+        { "Keyword": { "Saddle": 1 } }
+      ]
+    }
+  ]
+}

@@ -356,10 +356,12 @@ Gemhide Sliver
 Gemrazer
 Generous Ent
 Gerrard's Wisdom
+Getaway Car
 Ghalta, Primal Hunger
 Ghost Quarter
 Ghostblade Eidolon
 Ghostly Prison
+Giant Beaver
 Giant Cindermaw
 Giant Growth
 Gift of Paradise
@@ -641,6 +643,7 @@ Raffine's Informant
 Raging Goblinoids
 Rakdos Headliner
 Rally the Ranks
+Rambling Possum
 Ramos, Dragon Engine
 Rampant Growth
 Rancor
@@ -801,6 +804,7 @@ Stroke of Genius
 Student of Warfare
 Study Break
 Sublime Exhalation
+Subterranean Schooner
 Sudden Death
 Sudden Edict
 Sudden Shock
