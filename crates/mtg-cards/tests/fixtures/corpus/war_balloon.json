@@ -1,0 +1,28 @@
+{
+  "id": "6829b20d-c2fa-41a6-89ca-f21c522d8866",
+  "oracle_id": "021b495d-236f-4274-988d-2dfd7103c9ef",
+  "name": "War Balloon",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tla",
+  "collector_number": "159",
+  "rarity": "uncommon",
+  "released_at": "2025-11-21",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Vehicle",
+  "oracle_text": "Flying\n{1}: Put a fire counter on this Vehicle.\nAs long as this Vehicle has three or more fire counters on it, it's an artifact creature.\nCrew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flying",
+    "Crew"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "021b495d-236f-4274-988d-2dfd7103c9ef",
+  "name": "War Balloon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "War Balloon",
+      "oracle_fingerprint": "4cf5ef2aa5d965f657f57c6903e4b396",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "fire" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "fire" } } },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        },
+        { "Keyword": { "Crew": 3 } }
+      ]
+    }
+  ]
+}

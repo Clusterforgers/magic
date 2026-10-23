@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f89f7c7d-6eb3-4335-b9df-0ccaa9c50558",
+  "name": "Peacewalker Colossus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peacewalker Colossus",
+      "oracle_fingerprint": "d9d868c3bab5d351f444ed85f2722f00",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Vehicle" }, "Other", { "ControlledBy": "You" }] }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 4 } }
+      ]
+    }
+  ]
+}

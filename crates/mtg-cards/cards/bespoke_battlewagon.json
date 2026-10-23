@@ -1,0 +1,44 @@
+{
+  "oracle_id": "cdfcfd2b-966a-4e03-8ed5-4fa7fab423d0",
+  "name": "Bespoke Battlewagon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bespoke Battlewagon",
+      "oracle_fingerprint": "3cb30293196816a6df26b0d152320110",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayEnergy": 2 }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Activated": { "cost": ["Tap", { "PayEnergy": 3 }], "effects": [{ "Draw": {} }] } },
+        {
+          "Activated": {
+            "cost": [{ "PayEnergy": 4 }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 4 } }
+      ]
+    }
+  ]
+}

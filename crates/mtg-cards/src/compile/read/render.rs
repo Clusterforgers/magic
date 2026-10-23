@@ -1865,6 +1865,9 @@ impl Writer<'_> {
         if let [Modification::CantBeBlocked] = mods {
             return Some(format!("{subject} can't be blocked this turn"));
         }
+        if !plural && let Some(sentence) = becomes::animate_text(&subject, mods) {
+            return Some(sentence);
+        }
         let (gets, gains) = if plural {
             ("get", "gain")
         } else {
