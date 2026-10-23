@@ -175,6 +175,8 @@ mod tests {
     #[rstest]
     #[case::morph(FaceDown::Morph, false)]
     #[case::disguise(FaceDown::Disguise, true)]
+    #[case::manifest(FaceDown::Manifest, false)]
+    #[case::cloak(FaceDown::Cloak, true)]
     fn a_face_down_creature_is_a_nameless_colourless_2_2_with_no_abilities_but_a_disguises_ward(
         #[case] kind: FaceDown,
         #[case] ward: bool,
@@ -260,6 +262,47 @@ mod tests {
         let expected: Option<(ManaCost, bool)> =
             expected.map(|(cost, megamorph)| (ManaCost::parse(cost).unwrap(), megamorph));
         assert_eq!(cost, expected);
+    }
+
+    #[rstest]
+    #[case::its_mana_cost(FaceDown::Manifest, Keyword::Flying, Some(("{3}{R}{R}", false)))]
+    #[case::cloaked_for_its_mana_cost(FaceDown::Cloak, Keyword::Flying, Some(("{3}{R}{R}", false)))]
+    #[case::a_cheaper_morph_cost(FaceDown::Manifest, Keyword::Morph(mana("{2}{R}")), Some(("{2}{R}", false)))]
+    #[case::a_dearer_morph_cost(FaceDown::Manifest, Keyword::Morph(mana("{4}{R}{R}")), Some(("{3}{R}{R}", false)))]
+    #[case::a_megamorph_cost(FaceDown::Cloak, Keyword::Megamorph(mana("{1}{R}")), Some(("{1}{R}", true)))]
+    #[case::a_disguise_cost(FaceDown::Cloak, Keyword::Disguise(mana("{R}")), Some(("{R}", false)))]
+    #[case::a_morph_cost_with_an_x_leaves_the_mana_cost(FaceDown::Manifest, Keyword::Morph(mana("{X}{R}")), Some(("{3}{R}{R}", false)))]
+    #[case::a_spell_cast_face_down_has_no_mana_cost_to_pay(FaceDown::Morph, Keyword::Flying, None)]
+    #[case::a_disguise_cast_face_down_has_no_mana_cost_to_pay(
+        FaceDown::Disguise,
+        Keyword::Flying,
+        None
+    )]
+    fn a_manifested_or_cloaked_creature_card_is_turned_face_up_for_its_mana_cost_or_its_keyword_cost(
+        #[case] kind: FaceDown,
+        #[case] keyword: Keyword,
+        #[case] expected: Option<(&str, bool)>,
+    ) {
+        let (game, id) = lies(kind, keyword);
+        let expected: Option<(ManaCost, bool)> =
+            expected.map(|(cost, megamorph)| (ManaCost::parse(cost).unwrap(), megamorph));
+        assert_eq!(turn_up_cost(&game, id), expected);
+    }
+
+    #[rstest]
+    #[case::an_artifact_that_is_no_creature(CardType::Artifact)]
+    #[case::a_land(CardType::Land)]
+    #[case::a_sorcery(CardType::Sorcery)]
+    fn a_manifested_card_that_is_no_creature_card_is_never_turned_face_up(
+        #[case] kind: CardType,
+        #[values(FaceDown::Manifest, FaceDown::Cloak)] how: FaceDown,
+    ) {
+        let mut def = CardDefinition::new("Plain Thing").with_type(kind);
+        def.mana_cost = Some(ManaCost::parse("{2}").unwrap());
+        let mut game = state(vec![vec![], vec![]], vec![vec![Arc::new(def)], vec![]]);
+        let id = game.zone(Zone::Battlefield)[0];
+        game.objects.get_mut(&id).unwrap().face_down = Some(how);
+        assert_eq!(turn_up_cost(&game, id), None);
     }
 
     #[test]

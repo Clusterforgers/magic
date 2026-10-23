@@ -188,6 +188,8 @@ mod mana_payment;
 mod mana_spent;
 mod mana_takes;
 mod mana_wordings;
+mod manifest;
+mod manifest_fuzz;
 mod manlands;
 mod manual_actions;
 mod manual_cards;
