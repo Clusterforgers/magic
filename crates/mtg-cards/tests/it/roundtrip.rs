@@ -586,13 +586,17 @@ fn destination() -> impl Strategy<Value = Destination> {
         (
             any::<bool>(),
             proptest::option::of(reference()),
+            any::<bool>(),
             proptest::collection::vec((counter(), 1u32..4), 0..3),
         )
-            .prop_map(|(tapped, under, counters)| Destination::Battlefield {
-                tapped,
-                under,
-                counters,
-            }),
+            .prop_map(
+                |(tapped, under, transformed, counters)| Destination::Battlefield {
+                    tapped,
+                    under,
+                    transformed,
+                    counters,
+                },
+            ),
         (
             select(vec![Place::Top, Place::Bottom, Place::Shuffled]),
             proptest::option::of(select(vec![Order::Chosen, Order::Random])),
@@ -686,7 +690,8 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         (reference(), destination()).prop_map(|(what, to)| Effect::Move { what, to }),
         (reference(), any::<bool>())
             .prop_map(|(what, regenerate)| Effect::Destroy { what, regenerate }),
-        reference().prop_map(|what| Effect::Exile { what }),
+        (reference(), proptest::option::of("[a-z]{1,6}"))
+            .prop_map(|(what, bind)| Effect::Exile { what, bind }),
         (who(), selector(), amount()).prop_map(|(who, filter, count)| Effect::Sacrifice {
             who,
             filter,

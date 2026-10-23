@@ -67,6 +67,7 @@ fn activation(cost: &Cost) -> Ability {
                 to: Destination::Battlefield {
                     tapped: true,
                     under: None,
+                    transformed: false,
                     counters: Vec::new(),
                 },
             },

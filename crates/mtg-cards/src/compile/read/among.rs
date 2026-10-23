@@ -46,6 +46,7 @@ fn taken_destination(r: &mut Reader<'_>) -> Option<Destination> {
     Some(Destination::Battlefield {
         tapped: r.word("tapped"),
         under: None,
+        transformed: false,
         counters: Vec::new(),
     })
 }
@@ -149,6 +150,7 @@ fn taken_text(to: &Destination) -> Option<String> {
         Destination::Battlefield {
             tapped,
             under: None,
+            transformed: false,
             counters,
         } if counters.is_empty() => Some(format!(
             "onto the battlefield{}",

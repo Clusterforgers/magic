@@ -1,0 +1,43 @@
+{
+  "id": "ee60a8e9-3201-4a7e-8aa4-2c5e1042c8a5",
+  "oracle_id": "a8995df6-99a7-41a7-bd3e-f34643b27947",
+  "name": "The Modern Age // Vector Glider",
+  "lang": "en",
+  "layout": "transform",
+  "set": "neo",
+  "collector_number": "66",
+  "rarity": "common",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "cmc": 2.0,
+  "type_line": "Enchantment — Saga // Enchantment Creature — Spirit",
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Transform"
+  ],
+  "card_faces": [
+    {
+      "name": "The Modern Age",
+      "mana_cost": "{1}{U}",
+      "type_line": "Enchantment — Saga",
+      "oracle_text": "(As this Saga enters and after your draw step, add a lore counter.)\nI, II — Draw a card, then discard a card.\nIII — Exile this Saga, then return it to the battlefield transformed under your control.",
+      "colors": [
+        "U"
+      ]
+    },
+    {
+      "name": "Vector Glider",
+      "mana_cost": "",
+      "type_line": "Enchantment Creature — Spirit",
+      "oracle_text": "Flying",
+      "power": "2",
+      "toughness": "3",
+      "colors": [
+        "U"
+      ]
+    }
+  ]
+}

@@ -1,5 +1,8 @@
 //! `Effect::Move`: objects change zones, to a hand, a graveyard, a library or the battlefield.
 
+use std::borrow::Cow;
+
+use mtg_cards::definition::Layout;
 use mtg_cards::effect::{Destination, Effect, Order, Place};
 use mtg_cards::refs::Ref;
 use mtg_cards::value::CounterKind;
@@ -125,12 +128,16 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Destination::Battlefield {
             tapped,
             under,
+            transformed,
             counters,
         } => {
-            let under = entering_under(cx, under.as_ref())?;
-            return Stop::settle(onto_battlefield(
-                cx, what, &objects, *tapped, under, counters,
-            ));
+            let entry = Entry {
+                tapped: *tapped,
+                under: entering_under(cx, under.as_ref())?,
+                transformed: *transformed,
+                counters,
+            };
+            return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
         }
     }
     Ok(Run::Done {
@@ -141,24 +148,58 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     })
 }
 
+/// How the cards of a move onto the battlefield come in.
+struct Entry<'a> {
+    /// Tapped.
+    tapped: bool,
+    /// Under this player's control; their owner's when none.
+    under: Option<PlayerId>,
+    /// With the back face up.
+    transformed: bool,
+    /// With these counters.
+    counters: &'a [(CounterKind, u32)],
+}
+
+/// The state with the card `id` as it will be once it is on the battlefield: the back face when it enters transformed.
+/// What it enters with (the lore counter of a Saga, the loyalty of a planeswalker, the host of an Aura) is that
+/// face's (CR 712.14a).
+fn as_entering(state: &GameState, id: ObjectId, transformed: bool) -> Cow<'_, GameState> {
+    if transformed {
+        state.with_face(id, Some(1))
+    } else {
+        Cow::Borrowed(state)
+    }
+}
+
 /// The cards put onto the battlefield: one `ZoneChanged` each, so what triggers on entering sees it, and an `Entered`
 /// after it for a card that comes in tapped or under a player other than its owner. An Aura that is not cast enters
 /// attached to a permanent its controller chooses among those it may enchant (asked unless there is one), and one with
-/// nothing to enchant stays where it is (CR 303.4g).
+/// nothing to enchant stays where it is (CR 303.4g). A card put there transformed comes in with its back face up, as
+/// one `Transformed` after the move (CR 712.14a); a card that is not a transforming double-faced card stays where it is.
 fn onto_battlefield(
     cx: &Cx<'_>,
     what: &Ref,
     objects: &[&GameObject],
-    tapped: bool,
-    under: Option<PlayerId>,
-    counters: &[(CounterKind, u32)],
+    entry: &Entry<'_>,
 ) -> Result<Run, Stop> {
-    let state = cx.state();
+    let Entry {
+        tapped,
+        under,
+        transformed,
+        counters,
+    } = *entry;
     let mut questions = Questions::new(cx);
     let mut events = Vec::new();
     let mut snapshots = Vec::new();
     let mut entered = Vec::new();
     for object in objects {
+        if transformed && object.whole_card().layout != Layout::Transform {
+            continue;
+        }
+        let state = &*as_entering(cx.state(), object.id(), transformed);
+        let Some(object) = state.object(object.id()) else {
+            continue;
+        };
         let spell = object.base_types().contains(CardType::Instant)
             || object.base_types().contains(CardType::Sorcery);
         if object.zone() == Zone::Battlefield || spell {
@@ -180,6 +221,12 @@ fn onto_battlefield(
         events.push(event);
         snapshots.extend(shot);
         entered.push(object.id());
+        if transformed {
+            events.push(Event::Transformed {
+                object: object.id(),
+                face: Some(1),
+            });
+        }
         if tapped || controller != object.owner() {
             events.push(Event::Entered {
                 object: object.id(),
@@ -327,7 +374,7 @@ fn into_libraries(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a move sends each object named to its owner's hand or graveyard or into its owner's library on top, on the bottom or shuffled in; cards put into one library together are put in the order their owner chooses, asked only when there are two or more, and the log leaves the library in exactly that order; an object already in place stays, a stale one or a spell on the stack is passed over, a move from the battlefield carries what it was, a card put onto the battlefield enters untapped or tapped under its owner or the player named while an instant or sorcery card and a permanent already there stay, and an order the engine does not play is refused by name.
+    //! Goal: a move sends each object named to its owner's hand or graveyard or into its owner's library on top, on the bottom or shuffled in; cards put into one library together are put in the order their owner chooses, asked only when there are two or more, and the log leaves the library in exactly that order; an object already in place stays, a stale one or a spell on the stack is passed over, a move from the battlefield carries what it was, a card put onto the battlefield enters untapped or tapped under its owner or the player named while an instant or sorcery card and a permanent already there stay, and an order the engine does not play is refused by name; a transforming double-faced card put onto the battlefield transformed comes in back face up as one object with the mana value of its front face, and any other card stays where it is.
     use rstest::rstest;
 
     use std::sync::Arc;
@@ -1011,5 +1058,93 @@ mod tests {
         let draw = serde_json::from_str(r#"{"Draw":{}}"#).unwrap();
         let refused = run_with(&game, &[], Vec::new(), &draw);
         assert!(matches!(refused, Err(ResolveError::Invalid(_))));
+    }
+
+    /// A Saga costing {2}{W} on the front and a 3/3 creature on the back, of this layout.
+    fn saga_card(layout: Layout) -> Arc<CardDefinition> {
+        let front = CardDefinition::new("Tale")
+            .with_type(mtg_core::card::CardType::Enchantment)
+            .with_subtype("Saga")
+            .with_mana_cost(mtg_core::mana::ManaCost::parse("{2}{W}").unwrap());
+        let back = CardDefinition::new("Hero")
+            .with_type(mtg_core::card::CardType::Creature)
+            .with_power_toughness(3, 3);
+        Arc::new(front.clone().with_faces(layout, vec![front, back]))
+    }
+
+    /// Seat 0 holds the card in its hand; the Source is on its battlefield.
+    fn card_in_hand(layout: Layout) -> (GameState, ObjectId) {
+        let game = state(
+            vec![vec![saga_card(layout)], vec![]],
+            vec![vec![creature("Source", 1, 1)], vec![]],
+        );
+        let id = hand(&game, ME)[0];
+        (game, id)
+    }
+
+    const TRANSFORMED: &str = r#"{"Battlefield":{"transformed":true}}"#;
+
+    #[test]
+    fn a_transforming_card_put_onto_the_battlefield_transformed_comes_in_back_face_up() {
+        let (game, card) = card_in_hand(Layout::Transform);
+        let events = entering(&game, card, TRANSFORMED);
+        // Only the move and the turning over: the lore counter of the Saga on the front is not proposed.
+        assert_eq!(
+            events,
+            [
+                to_the_battlefield(card, Zone::Hand(ME)),
+                Event::Transformed {
+                    object: card,
+                    face: Some(1)
+                }
+            ]
+        );
+        let folded = after(&game, &events);
+        let object = folded.object(card).unwrap();
+        assert_eq!(object.face(), Some(1));
+        assert_eq!(object.card().name, "Hero");
+        assert_eq!(object.counter(), game.object(card).unwrap().counter() + 1);
+        assert_eq!(object.permanent().unwrap().counters().count(), 0);
+    }
+
+    #[test]
+    fn the_same_card_put_onto_the_battlefield_face_up_is_a_saga_with_a_lore_counter() {
+        let (game, card) = card_in_hand(Layout::Transform);
+        let events = entering(&game, card, r#"{"Battlefield":{}}"#);
+        assert_eq!(events.len(), 2, "{events:?}");
+        assert!(matches!(events[1], Event::CountersChanged(_)));
+        assert_eq!(after(&game, &events).object(card).unwrap().face(), None);
+    }
+
+    #[rstest]
+    #[case::normal(Layout::Normal)]
+    #[case::modal_double_faced(Layout::ModalDfc)]
+    #[case::adventure(Layout::Adventure)]
+    #[case::split(Layout::Split)]
+    fn a_card_that_is_not_a_transforming_double_faced_card_stays_where_it_is(#[case] layout: Layout) {
+        let (game, card) = card_in_hand(layout);
+        assert_eq!(entering(&game, card, TRANSFORMED), []);
+    }
+
+    #[test]
+    fn a_transformed_permanent_has_the_mana_value_of_its_front_face() {
+        let (game, card) = card_in_hand(Layout::Transform);
+        let events = entering(&game, card, TRANSFORMED);
+        let folded = after(&game, &events);
+        let object = folded.object(card).unwrap();
+        assert_eq!(object.card().mana_value(), 0);
+        assert_eq!(object.mana_value(), 3);
+        // The same card face up and in the hand is its front face either way.
+        assert_eq!(game.object(card).unwrap().mana_value(), 3);
+    }
+
+    #[test]
+    fn a_card_that_is_not_there_to_be_moved_is_passed_over() {
+        let (game, card) = card_in_hand(Layout::Transform);
+        let on_the_field = game.zone(Zone::Battlefield)[0];
+        let both = named(&game, &[card, on_the_field]);
+        let run = run_bound(&game, both, Vec::new(), &moving(TRANSFORMED)).unwrap();
+        let (events, _) = done(run);
+        assert_eq!(events.len(), 2, "the card enters, the permanent stays");
     }
 }
