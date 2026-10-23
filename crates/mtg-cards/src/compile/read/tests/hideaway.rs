@@ -190,7 +190,9 @@ fn a_wording_the_readers_do_not_model_is_left_to_the_table(#[case] text: &str) {
 }
 
 #[rstest]
-#[case::a_state_opens_a_trigger("Whenever ~ attacks, if you control a Wolf, draw a card.")]
+#[case::a_state_opens_a_trigger(
+    "Whenever ~ attacks, if an opponent controls more lands than you, draw a card."
+)]
 #[case::a_state_in_a_spell_is_the_tables_after_the_first_sentence(
     "Draw a card. If you control a creature, draw a card."
 )]

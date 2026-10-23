@@ -65,7 +65,9 @@ fn winning_reads_in_a_spell(#[case] text: &str) {
 #[case::cards(
     "At the beginning of your upkeep, if you have 7 or more cards in hand, you win the game."
 )]
-#[case::a_creature("At the beginning of your upkeep, if you control a creature, you win the game.")]
+#[case::a_creature(
+    "At the beginning of your upkeep, if an opponent controls more lands than you, you win the game."
+)]
 #[case::no_comma("At the beginning of your upkeep, if you have 40 or more life you win the game.")]
 #[case::unless(
     "At the beginning of your upkeep, you win the game unless you have 10 or less life."

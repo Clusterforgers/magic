@@ -239,7 +239,9 @@ fn an_ability_word_is_flavor_and_the_rest_is_read(#[case] text: &str, #[case] re
 #[case::a_wrong_article("Whenever an creature you control dies, draw a card.")]
 #[case::another_with_an_article("Whenever an another creature dies, draw a card.")]
 #[case::a_repeated_verb("When ~ enters or enters, draw a card.")]
-#[case::a_condition("At the beginning of your upkeep, if you control a creature, draw a card.")]
+#[case::a_condition(
+    "At the beginning of your upkeep, if an opponent controls more lands than you, draw a card."
+)]
 #[case::a_cast_condition("When ~ enters, if you cast it, draw a card.")]
 #[case::a_life_total_for_an_opponent(
     "At the beginning of your upkeep, if an opponent has 10 or less life, draw a card."

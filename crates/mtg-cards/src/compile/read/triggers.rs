@@ -755,6 +755,10 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
     if let Some(fact) = super::facts::read(r) {
         return Some(fact);
     }
+    // "if you control your commander", "if you control three or more artifacts"
+    if let Some(control) = r.attempt(super::statics::control) {
+        return Some(control);
+    }
     r.need("you have")?;
     let number = i32::try_from(r.number()?).ok()?;
     let op = if r.words("or more") {
@@ -894,6 +898,9 @@ pub fn condition_text(condition: &Condition) -> Option<String> {
     }
     if let Some(fact) = super::facts::texts(condition).into_iter().next() {
         return Some(fact);
+    }
+    if let Some(control) = super::statics::control_texts(condition).into_iter().next() {
+        return Some(control);
     }
     if let Condition::Compare {
         left: Amount::Counters {
