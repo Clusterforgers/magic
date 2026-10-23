@@ -9,12 +9,13 @@ use common::pid;
 use common::seeds::for_each_seed;
 use mtg_cards::CardDefinition;
 use mtg_core::card::CardType;
-use mtg_core::mana::ManaCost;
-use mtg_engine::decision::DecisionKind;
+use mtg_core::mana::{ManaCost, ManaType};
+use mtg_engine::decision::{DecisionKind, PayChoice};
 use mtg_engine::events::ZoneCause;
 use mtg_engine::format::Normal;
+use mtg_engine::mana::{ManaSource, Payment};
 use mtg_engine::zones::Zone;
-use mtg_engine::{Event, GameSetup};
+use mtg_engine::{Answer, Event, GameSetup};
 use mtg_testkit::cards::{forest, island, mountain, plains, swamp};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, PlayOptions, Scenario, ScriptError, play_game_with, ready};
@@ -95,7 +96,15 @@ const BLOOM: &str = "Cadaverous Bloom";
 #[case::a_second_spell_is_the_card("{B}{B}", 2, &[], &[BLOOM], 1)]
 #[case::green_from_the_other_list("{G}{G}", 1, &[FILLER], &[BLOOM], 1)]
 #[case::one_list_for_one_activation("{B}{G}", 1, &[FILLER], &[BLOOM], 0)]
-#[case::two_lists_need_two_sources("{B}{B}{G}{G}", 1, &[FILLER, FILLER], &[BLOOM], 0)]
+#[case::two_lists_from_one_bloom("{B}{B}{G}{G}", 1, &[FILLER, FILLER], &[BLOOM], 1)]
+#[case::two_lists_need_two_cards("{B}{B}{G}{G}", 1, &[FILLER], &[BLOOM], 0)]
+#[case::one_list_twice("{B}{B}{B}{B}", 1, &[FILLER, FILLER], &[BLOOM], 1)]
+#[case::three_uses("{B}{B}{B}{B}{B}{B}", 1, &[FILLER, FILLER, FILLER], &[BLOOM], 1)]
+#[case::the_third_use_has_no_card("{B}{B}{B}{B}{B}{B}", 1, &[FILLER, FILLER], &[BLOOM], 0)]
+#[case::a_land_beside_two_uses("{B}{B}{B}{G}{G}", 1, &[FILLER, FILLER], &[BLOOM, "Swamp"], 1)]
+#[case::a_land_is_tapped_once("{B}{B}{B}{B}{B}", 1, &[FILLER, FILLER], &[BLOOM, "Swamp"], 1)]
+#[case::a_land_is_one_mana("{B}{B}{B}{B}{B}{B}", 1, &[FILLER, FILLER], &[BLOOM, "Swamp"], 0)]
+#[case::two_blooms_share_two_cards("{B}{B}{G}{G}", 1, &[FILLER, FILLER], &[BLOOM, BLOOM], 1)]
 #[case::no_red("{R}{R}", 1, &[FILLER], &[BLOOM], 0)]
 #[case::three_black_with_a_swamp("{B}{B}{B}", 1, &[FILLER], &[BLOOM, "Swamp"], 1)]
 #[case::three_black_without_one("{B}{B}{B}", 1, &[FILLER], &[BLOOM], 0)]
@@ -175,6 +184,83 @@ fn two_blooms_exile_two_different_cards(
 }
 
 #[rstest]
+fn one_bloom_exiles_a_card_for_each_use(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = table(seats, "{B}{B}{G}{G}", 1, &[FILLER, "Doom Blade"], &[BLOOM])?;
+    let events = driver.cast("Spell")?;
+    let mut gone = exiled(&driver);
+    gone.sort();
+    assert_eq!(gone, ["Doom Blade", FILLER], "two different cards");
+    assert_eq!(hand(&driver), Vec::<String>::new());
+    let made: Vec<_> = events
+        .iter()
+        .filter_map(|event| match event {
+            Event::ManaAdded { source, .. } => Some(*source),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(made.len(), 4, "two lists of two mana");
+    assert!(made[0].is_some() && made.iter().all(|source| *source == made[0]));
+    Ok(())
+}
+
+/// The source of the Bloom that makes `mana`, as the payment decision lists it.
+fn bloom_for(driver: &Driver, mana: ManaType) -> ManaSource {
+    let sources = &driver.pay_options().unwrap().sources;
+    sources.iter().find(|o| o.produces == mana).unwrap().source
+}
+
+#[rstest]
+#[case::the_same_list_twice(&[ManaType::Black, ManaType::Black], "{B}{B}{B}{B}", true)]
+#[case::both_lists(&[ManaType::Black, ManaType::Green], "{B}{B}{G}{G}", true)]
+#[case::a_third_use_has_no_card(&[ManaType::Black, ManaType::Black, ManaType::Black], "{B}{B}{B}{B}", false)]
+#[case::more_than_the_cost(&[ManaType::Black, ManaType::Black], "{B}{B}", false)]
+fn a_payment_names_the_bloom_for_each_use(
+    #[case] uses: &[ManaType],
+    #[case] cost: &str,
+    #[case] paid: bool,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = table(seats, cost, 1, &[FILLER, FILLER], &[BLOOM])?;
+    driver.begin_cast("Spell")?;
+    let taps = uses.iter().map(|mana| bloom_for(&driver, *mana)).collect();
+    let payment = Payment {
+        taps,
+        ..Payment::default()
+    };
+    let answered = driver.answer(Answer::PayMana(PayChoice::Manual(payment)));
+    assert_eq!(answered.is_ok(), paid, "{answered:?}");
+    if paid {
+        assert_eq!(exiled(&driver).len(), uses.len(), "a card for each use");
+    } else {
+        assert!(exiled(&driver).is_empty(), "a refused payment exiles nothing");
+        driver.answer(Answer::PayMana(PayChoice::Cancel))?;
+    }
+    Ok(())
+}
+
+#[rstest]
+fn a_partial_payment_is_finished_with_the_next_use(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = table(seats, "{B}{B}{G}{G}", 1, &[FILLER, FILLER], &[BLOOM])?;
+    driver.begin_cast("Spell")?;
+    let partial = Payment {
+        taps: vec![bloom_for(&driver, ManaType::Green)],
+        ..Payment::default()
+    };
+    let events = driver.answer(Answer::PayMana(PayChoice::Complete(partial)))?;
+    assert_eq!(exiled(&driver), [FILLER, FILLER]);
+    let added = events
+        .iter()
+        .filter(|event| matches!(event, Event::ManaAdded { .. }))
+        .count();
+    assert_eq!(added, 4);
+    Ok(())
+}
+
+#[rstest]
 fn the_sources_name_the_cards_they_may_exile(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
@@ -187,6 +273,7 @@ fn the_sources_name_the_cards_they_may_exile(
             panic!("one part exiles a card: {:?}", source.takes);
         };
         assert!(take.exile && !take.sacrifice);
+        assert!(source.repeat, "a payment may use it again");
         assert_eq!(take.count, 1);
         assert_eq!(take.from.len(), 2, "the card and the land, not the spell");
         for id in &take.from {
