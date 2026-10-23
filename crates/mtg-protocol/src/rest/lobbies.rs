@@ -50,7 +50,7 @@ pub struct LobbyGame {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub house_rules: Option<HouseRules>,
-    /// Whether some seat plays a deck with cards the game does not run whole, which their controllers do by hand.
+    /// Whether some seat plays a deck with cards the game does not run whole.
     pub manual_play: bool,
     /// Seats somebody holds, the host's included.
     pub filled: u32,
@@ -96,8 +96,7 @@ pub struct GameInfo {
     pub result: Option<GameResult>,
     /// Who may find the game; the host changes it with `PATCH /api/games/{id}` before the start.
     pub visibility: Visibility,
-    /// Whether some seat plays a deck with cards the game does not run whole, which their controllers do by hand:
-    /// the roster says so while the game is in its lobby, and the flag stays as it was when the game began.
+    /// Whether some seat plays a deck with cards the game does not run whole; fixed when the game begins.
     pub manual_play: bool,
 }
 

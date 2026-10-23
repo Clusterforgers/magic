@@ -38,7 +38,6 @@ result: GameResult | null,
  */
 visibility: Visibility, 
 /**
- * Whether some seat plays a deck with cards the game does not run whole, which their controllers do by hand:
- * the roster says so while the game is in its lobby, and the flag stays as it was when the game began.
+ * Whether some seat plays a deck with cards the game does not run whole; fixed when the game begins.
  */
 manual_play: boolean, };

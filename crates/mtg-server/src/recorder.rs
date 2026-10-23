@@ -74,9 +74,7 @@ impl Recorder {
         recipe: Option<&GameRecipe>,
         manual_play: bool,
     ) -> Result<(), RecordError> {
-        self.records
-            .set_start(self.game, recipe, manual_play)
-            .await
+        self.records.set_start(self.game, recipe, manual_play).await
     }
 
     /// Notes that the lobby is over.

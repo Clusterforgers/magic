@@ -23,7 +23,7 @@ format: string,
  */
 house_rules?: HouseRules, 
 /**
- * Whether some seat plays a deck with cards the game does not run whole, which their controllers do by hand.
+ * Whether some seat plays a deck with cards the game does not run whole.
  */
 manual_play: boolean, 
 /**

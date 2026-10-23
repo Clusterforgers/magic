@@ -29,7 +29,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Triggers and keywords: (c6b), (c4b), (c3b), (c3d), (c2c), (c2d), (n1d5) day and night effects, (o2c).
 - Statics and layers: (c8), (c7b), (c7c), (o1d), (m4).
 - Compiler wordings, no engine change: (c10) one piece per wording family with (c10c) to (c10e) and (c10r), (o2d), (c11) and (c11c) layouts, (c9c), (c1i).
-- Commander and server: (hr5b), the `manual_play` flag stored with the game, the turn without an active player in the table view, Companion.
+- Commander and server: (hr5b), the turn without an active player in the table view, Companion.
 - Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test.
 - After the card system: "Views complete", the Gate, then the web (M5 prompts for the decision kinds the engine asks, the manual-action menu, table states) and M7.
 - After each round: `mtg-cli ingest` and `compile` refresh the real database, `coverage` is re-run and the numbers go on the M6 target line; `fetch scryfall --printings` fills the printings once.
@@ -53,6 +53,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Statics: Auras that enchant a player, lords by subtype, characteristic-defining abilities, conditions after "as long as", the tax on attacking, block restrictions and granted mana
 - Faces and copies: multi-face cards, transform, fuse, daybound and nightbound, Sagas, Classes, flip cards, copiable values, token and spell copies, copies of abilities
 - Commander: house rules (turn, life, table and Commander options) on the server and in the lobby, the Commander format rules in the engine, the deck check for a table, Partner, "can be your commander", commander replacement of a draw, the mid-turn departure of the active player
+- Manual cards: the `manual_play` flag of a table, stored with the game when it starts and listed by the game browser and the game lookup
 - Tooling: `scripts/check.sh` with test slots, `scripts/agent-status.sh`, the quick test-time suite, derived corpus counts, current Cargo dependencies
 
 ## M3 Card system
@@ -76,7 +77,6 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] (m4) A Fortification that is also a creature (CR 301.6): the attachment check and a test; the corpus has no Fortification
 
 ### Manual cards and views
-- [ ] The game's `manual_play` flag is stored with the game and listed by `GET /api/lobbies` and `GET /api/games/{id}` (`mtg_protocol::manual_play` derives it from the roster today)
 - [ ] Views complete: they carry every state of an object (counters, attachments, face, face-down, copies, support) and the abilities a player may activate with their cost and target wording (Equip, Reconfigure, loyalty and other activated abilities in one list), a spectator audience sees public information, and a card revealed and then moved to a hidden zone in one batch reaches the other seats' views (`docs/protocol.md`)
 - [ ] Gate: every corpus card is Verified except the two kept Partial and Manual by design, and fuzz games with a deck from each cluster pass every invariant
 
