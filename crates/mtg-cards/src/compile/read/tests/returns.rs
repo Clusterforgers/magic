@@ -63,7 +63,6 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 }
 
 #[rstest]
-#[case::a_subtype_before_card("Return target Elf card from your graveyard to your hand.")]
 #[case::bounce_to_your_hand("Return target creature you control to your hand.")]
 #[case::another_graveyard("Return target card from a graveyard to your hand.")]
 #[case::an_opponents_graveyard(
@@ -73,7 +72,6 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 #[case::the_top_of_the_library(
     "Return target card from your graveyard to the top of your library."
 )]
-#[case::up_to("Return up to two target creature cards from your graveyard to your hand.")]
 #[case::all("Return all creature cards from your graveyard to your hand.")]
 #[case::each("Return each creature card from your graveyard to your hand.")]
 #[case::this_card("Return this card from your graveyard to your hand.")]

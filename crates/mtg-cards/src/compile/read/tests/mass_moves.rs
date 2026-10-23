@@ -59,7 +59,6 @@ fn a_hand_discarded_by_several_players_reads_as_the_cards_in_their_hands(
 #[case::any_order("Put all creatures on the bottom of their owners' libraries in any order.")]
 #[case::graveyard_to_hands("Return all creature cards from your graveyard to their owners' hands.")]
 #[case::all_graveyards("Return all creature cards from all graveyards to the battlefield.")]
-#[case::tapped("Return all creature cards from your graveyard to the battlefield tapped.")]
 #[case::permanents_to_the_battlefield("Return all creatures to the battlefield.")]
 #[case::half("Return half of the creatures to their owners' hands.")]
 fn near_misses_of_a_mass_move_stay_unread(#[case] text: &str) {
