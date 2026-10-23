@@ -311,6 +311,7 @@ pub(crate) fn scatter(
                 None,
                 None,
                 None,
+                Vec::new(),
             ));
             state.next_timestamp += 1;
         }

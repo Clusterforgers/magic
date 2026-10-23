@@ -13,6 +13,7 @@ use mtg_cards::refs::{AbilityKind, Pred, Ref, Selector, TargetSpec, Targetable, 
 use mtg_cards::value::{Amount, CastWay, Condition, CounterKind, StatKind};
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::mana::ManaType;
 use thiserror::Error;
 
 use super::share::{OUTSIDE_A_DIVISION, Share};
@@ -57,6 +58,7 @@ static NO_CHOICES: Choices = Choices {
     optional_costs: Vec::new(),
     way: None,
     face: None,
+    spent: None,
     cost_picks: None,
 };
 static NO_BINDINGS: Bindings = BTreeMap::new();
@@ -968,6 +970,24 @@ impl<'a> Scope<'a> {
         })
     }
 
+    /// The mana spent to cast the spell: what the spell announced, else what the spell its source is or came from paid
+    /// while that is still the object named, else what its last-known information holds.
+    fn mana_spent(&self) -> Vec<ManaType> {
+        if !self.choices.spent().is_empty() {
+            return self.choices.spent().to_vec();
+        }
+        self.state
+            .object(self.source.id)
+            .filter(|object| object.counter() == self.source.counter)
+            .map(|object| object.mana_spent().to_vec())
+            .filter(|spent| !spent.is_empty())
+            .or_else(|| {
+                self.snapshot_of(self.source)
+                    .map(|snapshot| snapshot.spent.clone())
+            })
+            .unwrap_or_default()
+    }
+
     /// Whether `seen` is a spell cast from a zone of this kind: a spell being announced still lies there, one on the
     /// stack remembers a hand or a graveyard.
     fn cast_from(&self, seen: &Seen<'_>, kind: ZoneKind) -> bool {
@@ -1027,6 +1047,7 @@ impl<'a> Scope<'a> {
             Condition::Kicked => self.payments(OptionalKind::Kicker) > 0,
             Condition::AdditionalCostPaid => self.payments(OptionalKind::Additional) > 0,
             Condition::CastWith(way) => self.cast_way() == Some(*way),
+            Condition::ManaSpent(mana) => self.mana_spent().contains(mana),
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
             Condition::Monarch(who) => {
                 let players = self.players(who)?;

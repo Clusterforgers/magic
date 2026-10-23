@@ -56,6 +56,7 @@ pub(super) fn move_object(
         object.face_down = None;
     }
     object.adventure = None;
+    object.exiled_until = None;
     object.cast_from_hand = false;
     object.cast_from_graveyard = false;
     // What the spell paid for stays with the permanent it becomes, for its abilities to read.
@@ -80,6 +81,11 @@ pub(super) fn move_object(
     } else {
         None
     };
+    let spent = if from == Zone::Stack && to == Zone::Battlefield {
+        object.choices.spent().to_vec()
+    } else {
+        Vec::new()
+    };
     if from == Zone::Stack {
         object.choices = Choices::default();
     }
@@ -92,7 +98,9 @@ pub(super) fn move_object(
         state.combat.planeswalker_left(id);
     }
     if to == Zone::Battlefield {
-        object.permanent = Some(PermanentState::entering(timestamp, paid, way, x, face));
+        object.permanent = Some(PermanentState::entering(
+            timestamp, paid, way, x, face, spent,
+        ));
     } else if to != Zone::Stack {
         object.controller = object.owner;
     }
@@ -263,6 +271,12 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 && let Some(object) = state.objects.get_mut(object)
             {
                 object.face_down = Some(how);
+            }
+            if let ZoneCause::ExiledUntil { by } = cause {
+                state.possible.linked_exile = true;
+                if let Some(object) = state.objects.get_mut(object) {
+                    object.exiled_until = Some(*by);
+                }
             }
         }
         Event::Entered {

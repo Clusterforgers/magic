@@ -698,8 +698,16 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         (reference(), destination()).prop_map(|(what, to)| Effect::Move { what, to }),
         (reference(), any::<bool>())
             .prop_map(|(what, regenerate)| Effect::Destroy { what, regenerate }),
-        (reference(), proptest::option::of("[a-z]{1,6}"))
-            .prop_map(|(what, bind)| Effect::Exile { what, bind }),
+        (
+            reference(),
+            proptest::option::of("[a-z]{1,6}"),
+            proptest::option::of(duration())
+        )
+            .prop_map(|(what, bind, duration)| Effect::Exile {
+                what,
+                bind,
+                duration
+            }),
         reference().prop_map(|what| Effect::ExileHidden { what }),
         (who(), selector(), amount()).prop_map(|(who, filter, count)| Effect::Sacrifice {
             who,

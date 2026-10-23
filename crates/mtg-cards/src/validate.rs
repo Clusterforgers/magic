@@ -547,6 +547,7 @@ impl<'a> Walker<'a> {
                 }
             }
             Condition::CastWith(_) => self.uses("Condition", "CastWith"),
+            Condition::ManaSpent(_) => self.uses("Condition", "ManaSpent"),
             Condition::YourTurn => {}
             Condition::Performed => {
                 self.uses("Condition", "Performed");
@@ -1277,10 +1278,18 @@ impl<'a> Walker<'a> {
                 w.at("count", |w| w.amount(count));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
-            Effect::Exile { what, bind } => {
+            Effect::Exile {
+                what,
+                bind,
+                duration,
+            } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 if let Some(name) = bind {
                     w.at("as", |w| w.bind(name, Kind::Object));
+                }
+                // The engine returns the cards when the source leaves the battlefield and no other duration.
+                if let Some(duration) = duration.filter(|d| *d != Duration::WhileSourceOnBattlefield) {
+                    w.uses("Exile", &format!("Duration.{}", tag_of(&duration)));
                 }
             }
             Effect::Reveal { what }

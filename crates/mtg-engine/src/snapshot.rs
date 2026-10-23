@@ -6,6 +6,7 @@ use mtg_cards::CardDefinition;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::value::{CastWay, CounterKind};
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::mana::ManaType;
 use serde::{Deserialize, Serialize};
 
 use crate::characteristics::{Characteristics, seen_as};
@@ -56,6 +57,13 @@ pub struct Snapshot {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub way: Option<CastWay>,
+    /// The mana spent to cast it, as the object remembers it: its triggered abilities read it after it has left.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(
+        feature = "ts",
+        ts(as = "Option<Vec<mtg_core::mana::ManaType>>", optional)
+    )]
+    pub spent: Vec<ManaType>,
     /// The face of a card with several faces it was in use as (the back face of a transformed permanent); left out for
     /// the card as a whole.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -115,6 +123,7 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
         x: object.announced_x(),
         paid: object.paid_costs().to_vec(),
         way: object.cast_way(),
+        spent: object.mana_spent().to_vec(),
         face: object.face(),
         copy: object.copy_effect().map(crate::copies::CopyEffect::shared),
         merged: object.merged().map(crate::merged::Merged::shared),

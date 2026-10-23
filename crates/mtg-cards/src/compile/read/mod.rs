@@ -51,6 +51,7 @@ mod render;
 mod reveal;
 mod selectors;
 mod spend;
+mod spent;
 mod statics;
 mod stations;
 mod subtypes;

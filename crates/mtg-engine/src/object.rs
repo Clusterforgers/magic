@@ -9,6 +9,7 @@ use mtg_cards::definition::Layout;
 use mtg_cards::value::{CastWay, CounterKind};
 use mtg_core::card::{CardType, CardTypes};
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::mana::ManaType;
 use serde::{Deserialize, Serialize};
 
 use crate::abilities::AbilityObject;
@@ -131,6 +132,8 @@ pub struct PermanentState {
     pub(crate) x: Option<u32>,
     /// The face of a card with several faces the permanent is (a modal double-faced card played as its back face).
     pub(crate) face: Option<u8>,
+    /// The mana spent to cast the spell, which its enters triggers read (CR 601.2h).
+    pub(crate) spent: Vec<ManaType>,
     /// The copy effect that makes the permanent a copy of another object (CR 707): its copiable values replace the card's.
     pub(crate) copy: Option<CopyEffect>,
     /// The cards the permanent is made of once a mutating creature spell has merged with it (CR 729).
@@ -145,6 +148,7 @@ impl PermanentState {
         way: Option<CastWay>,
         x: Option<u32>,
         face: Option<u8>,
+        spent: Vec<ManaType>,
     ) -> Self {
         PermanentState {
             tapped: false,
@@ -163,6 +167,7 @@ impl PermanentState {
             way,
             x,
             face,
+            spent,
             copy: None,
             merged: None,
         }
@@ -286,6 +291,9 @@ pub struct GameObject {
     pub(crate) face_down: Option<FaceDown>,
     /// The player who may cast the card from exile as the permanent card of an Adventure it was exiled "on" (CR 715.4); a zone change clears it.
     pub(crate) adventure: Option<PlayerId>,
+    /// The permanent a card in exile waits for: it returns to the battlefield once that permanent has left it
+    /// (CR 610.3); a zone change clears it.
+    pub(crate) exiled_until: Option<ObjectRef>,
     /// The spell was cast from its owner's hand (rebound reads it); a zone change clears it.
     pub(crate) cast_from_hand: bool,
     /// The spell was cast from a graveyard (aftermath reads it); a zone change clears it.
@@ -312,6 +320,7 @@ impl GameObject {
             card_counters: BTreeMap::new(),
             face_down: None,
             adventure: None,
+            exiled_until: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
             kind: ObjectKind::Card,
@@ -344,6 +353,7 @@ impl GameObject {
             card_counters: BTreeMap::new(),
             face_down: None,
             adventure: None,
+            exiled_until: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
             kind: ObjectKind::Ability,
@@ -402,6 +412,18 @@ impl GameObject {
                 self.choices.way
             }
             None => None,
+        }
+    }
+
+    /// The mana spent to cast this card: what the spell paid while it is on the stack and what the permanent remembers
+    /// after; none elsewhere (CR 601.2h).
+    pub fn mana_spent(&self) -> &[ManaType] {
+        match &self.permanent {
+            Some(permanent) => &permanent.spent,
+            None if self.kind != ObjectKind::Ability && self.zone == Zone::Stack => {
+                self.choices.spent()
+            }
+            None => &[],
         }
     }
 
@@ -508,6 +530,11 @@ impl GameObject {
         self.cast_from_graveyard
     }
 
+    /// The permanent whose leaving the battlefield returns this card from exile (CR 610.3), while it waits in exile.
+    pub const fn exiled_until(&self) -> Option<ObjectRef> {
+        self.exiled_until
+    }
+
     /// The player who may cast the card from exile as the creature of the Adventure it was exiled on.
     pub const fn on_adventure(&self) -> Option<PlayerId> {
         self.adventure
@@ -582,6 +609,7 @@ impl PartialEq for GameObject {
             && self.card_counters == other.card_counters
             && self.face_down == other.face_down
             && self.adventure == other.adventure
+            && self.exiled_until == other.exiled_until
             && self.cast_from_hand == other.cast_from_hand
             && self.cast_from_graveyard == other.cast_from_graveyard
             && self.counter == other.counter
@@ -606,6 +634,9 @@ impl Hash for GameObject {
         self.card_counters.hash(state);
         self.face_down.hash(state);
         self.adventure.hash(state);
+        if let Some(until) = self.exiled_until {
+            until.hash(state);
+        }
         // Left out while it is off, so the hash of a game without rebound is the one it always had.
         if self.cast_from_hand {
             true.hash(state);

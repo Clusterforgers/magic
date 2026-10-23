@@ -74,6 +74,8 @@ pub(crate) struct Possible {
     pub(crate) ascend: bool,
     /// Some card, token or player has protection or an effect that gives it, so damage is checked against it.
     pub(crate) protection: bool,
+    /// A card has been exiled until a permanent leaves the battlefield, so the cards waiting in exile are watched.
+    pub(crate) linked_exile: bool,
 }
 
 /// A kind of event the game counts in a turn: for each player ("your second card each turn") or for each object

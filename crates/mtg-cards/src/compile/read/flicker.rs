@@ -28,6 +28,7 @@ pub fn exile_and_return(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         Effect::Exile {
             what: Ref::This,
             bind: Some(EXILED.to_owned()),
+            duration: None,
         },
         Effect::Move {
             what: Ref::Bound(EXILED.to_owned()),
@@ -47,6 +48,7 @@ pub fn text(effects: &[Effect]) -> Option<(String, usize)> {
         Effect::Exile {
             what: Ref::This,
             bind: Some(exiled),
+            duration: None,
         },
         Effect::Move {
             what: Ref::Bound(moved),

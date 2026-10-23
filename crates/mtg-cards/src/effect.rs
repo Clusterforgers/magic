@@ -281,6 +281,10 @@ pub enum Effect {
         /// return them ("exile this Saga, then return it").
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
+        /// How long they stay: `WhileSourceOnBattlefield` is "until ~ leaves the battlefield" (CR 610.3), when each returns
+        /// to the battlefield under its owner's control as a new object; none exiles them for good.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        duration: Option<Duration>,
     },
     /// Exiles objects face down, linked to the source of the effect: the permanent hides them (hideaway, CR 702.75a).
     ExileHidden {

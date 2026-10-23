@@ -694,6 +694,11 @@ pub enum ZoneCause {
         /// The permanent that hides it.
         by: ObjectRef,
     },
+    /// It was exiled until the permanent `by` leaves the battlefield (CR 610.3): it returns once that permanent is gone.
+    ExiledUntil {
+        /// The permanent whose leaving returns it.
+        by: ObjectRef,
+    },
     /// It resolved as an Adventure (CR 715.4) and was exiled instead of going to its owner's graveyard: its controller may cast the card from exile.
     Adventure,
     /// It was countered (CR 701.6).

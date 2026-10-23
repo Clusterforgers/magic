@@ -180,6 +180,7 @@ mod enters_tapped;
 mod event_batches;
 mod events;
 mod exile_bounce_shrink;
+mod exile_while;
 mod flicker;
 mod for_each;
 mod goad;
@@ -192,6 +193,7 @@ mod library;
 mod life;
 mod life_gain;
 mod lords;
+mod mana_spent;
 mod mana_triggers;
 mod may;
 mod modes;
@@ -662,7 +664,6 @@ mod removal {
     #[case::each("Destroy each creature.")]
     #[case::that("Destroy target creature that was dealt damage this turn.")]
     #[case::a_zone("Exile target card from a graveyard.")]
-    #[case::until("Exile target creature until ~ leaves the battlefield.")]
     #[case::an_ability("Counter target activated ability.")]
     #[case::a_player("Destroy target player.")]
     #[case::any_target("Destroy any target.")]

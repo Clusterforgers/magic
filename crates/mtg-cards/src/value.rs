@@ -6,6 +6,7 @@ use serde::de::{self, MapAccess, Visitor};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use mtg_core::color::Color;
+use mtg_core::mana::ManaType;
 
 use crate::refs::{Ref, Selector};
 
@@ -433,6 +434,9 @@ pub enum Condition {
     AdditionalCostPaid,
     /// The spell was cast for this alternative cost; a permanent and its abilities read the spell it came from.
     CastWith(CastWay),
+    /// At least one mana of this type was spent to cast the spell (CR 601.2h): "if {R} was spent to cast this spell"; a
+    /// permanent and its abilities read the spell it came from, as the mana it was cast with.
+    ManaSpent(ManaType),
     /// It is the controller's turn.
     YourTurn,
     /// The effect just before this one in its list was carried out in full ("if you do"): a "may" that was

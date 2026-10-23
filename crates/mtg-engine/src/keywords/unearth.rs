@@ -89,6 +89,7 @@ fn activation(cost: &Cost) -> Ability {
                         effects: vec![Effect::Exile {
                             what: unearthed(),
                             bind: None,
+                            duration: None,
                         }],
                     },
                 ],

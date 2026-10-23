@@ -26,6 +26,7 @@ use super::pronouns;
 use super::reveal;
 use super::selectors::{Form, granted_text, phrase_text, spec_text};
 use super::spend;
+use super::spent;
 use super::statics;
 use super::subtypes::plural_subtype;
 use super::triggers::{
@@ -1227,7 +1228,19 @@ impl Writer<'_> {
                 self.recipient(to)?
             ),
             Effect::Destroy { what, .. } => format!("destroy {}", self.object(what)?),
-            Effect::Exile { what, bind: None } => format!("exile {}", self.object(what)?),
+            Effect::Exile {
+                what,
+                bind: None,
+                duration: None,
+            } => format!("exile {}", self.object(what)?),
+            Effect::Exile {
+                what,
+                bind: None,
+                duration: Some(Duration::WhileSourceOnBattlefield),
+            } => format!(
+                "exile {} until ~ leaves the battlefield",
+                self.object(what)?
+            ),
             Effect::Tap { what } => format!("tap {}", self.object(what)?),
             Effect::Untap { what } => format!("untap {}", self.object(what)?),
             Effect::Goad { what } if self.named && self.single(what) => "goad it".to_owned(),
@@ -1352,6 +1365,10 @@ impl Writer<'_> {
                 what: what @ (Ref::This | Ref::Target(0)),
             } => format!("{} connives", self.object(what)?),
             Effect::Transform { what } => format!("transform {}", self.object(what)?),
+            Effect::If {
+                condition: Condition::Not(_),
+                ..
+            } if spent::unless_text(effect).is_some() => spent::unless_text(effect)?,
             Effect::If {
                 condition,
                 then,

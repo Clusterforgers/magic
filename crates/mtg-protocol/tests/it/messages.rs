@@ -1289,6 +1289,10 @@ fn pipeline_events() -> Vec<Event> {
         optional_costs: vec![0],
         way: Some(mtg_cards::value::CastWay::Evoke),
         face: Some(1),
+        spent: Some(Box::new(vec![
+            mtg_core::mana::ManaType::Red,
+            mtg_core::mana::ManaType::Green,
+        ])),
         cost_picks: Some(Box::new(vec![vec![a], vec![b, a]])),
     };
     vec![

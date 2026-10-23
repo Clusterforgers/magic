@@ -36,8 +36,9 @@ use crate::value::{Amount, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 39] = [
+const TEMPLATES: [Template; 40] = [
     modal::modal,
+    super::spent::sacrifice_unless,
     cast::discover_sentence,
     cast::exile_until,
     cast::exile_top,
@@ -299,18 +300,7 @@ fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
             subtype: Subtype(super::selectors::plural_subtype(r)?),
             count: points(r)?,
         },
-        // The card sacrifices itself: "sacrifice ~", and "sacrifice it" once the ability has spoken of the card.
-        "sacrifice" => {
-            // "When ~ enters, sacrifice it unless you pay {1}": the card, since nothing else has entered.
-            let itself =
-                r.it == Some(Ref::This) || (r.acts_itself && r.word_at(1) == Some("unless"));
-            (r.source() || (itself && r.word("it"))).then_some(())?;
-            Effect::Sacrifice {
-                who,
-                filter: Selector::this(),
-                count: Amount::one(),
-            }
-        }
+        "sacrifice" => itself_sacrificed(r, who)?,
         "draw" => Effect::Draw {
             who,
             count: draws::drawn(r)?,
@@ -330,6 +320,25 @@ fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         }
         _ => return None,
     })
+}
+
+/// What follows "sacrifice" when the card sacrifices itself: "sacrifice ~", and "sacrifice it" once the ability has
+/// spoken of the card.
+fn itself_sacrificed(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
+    // "When ~ enters, sacrifice it unless you pay {1}": the card, since nothing else has entered.
+    let itself = r.it == Some(Ref::This) || (r.acts_itself && r.word_at(1) == Some("unless"));
+    (r.source() || (itself && r.word("it"))).then_some(())?;
+    Some(Effect::Sacrifice {
+        who,
+        filter: Selector::this(),
+        count: Amount::one(),
+    })
+}
+
+/// "sacrifice ~" or "sacrifice it": the card sacrifices itself.
+pub(super) fn sacrifice_itself(r: &mut Reader<'_>) -> Option<Effect> {
+    r.need("sacrifice")?;
+    itself_sacrificed(r, Ref::You)
 }
 
 /// The player an effect is about: "you", "target player", "each opponent", "its controller".
@@ -708,17 +717,35 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if what == Ref::This && turns {
         r.it = Some(Ref::This);
     }
+    // "Exile target creature an opponent controls until this creature leaves the battlefield."
+    let duration = if verb == "exile" {
+        r.attempt(until_source_leaves)
+    } else {
+        None
+    };
     Some(vec![match verb {
         "destroy" => Effect::Destroy {
             what,
             regenerate: true,
         },
-        "exile" => Effect::Exile { what, bind: None },
+        "exile" => Effect::Exile {
+            what,
+            bind: None,
+            duration,
+        },
         "tap" => Effect::Tap { what },
         "untap" => Effect::Untap { what },
         "regenerate" => Effect::Regenerate { what },
         _ => Effect::Counter { what },
     }])
+}
+
+/// "until ~ leaves the battlefield": the exile lasts as long as the source stays (CR 610.3).
+fn until_source_leaves(r: &mut Reader<'_>) -> Option<Duration> {
+    r.need("until")?;
+    r.source().then_some(())?;
+    r.need("leaves the battlefield")?;
+    Some(Duration::WhileSourceOnBattlefield)
 }
 
 /// Whether what a verb acts on is named by a selector that looks only at the battlefield: no zone is named.

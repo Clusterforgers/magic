@@ -273,6 +273,7 @@ fn preset_state(
         way: None,
         x: None,
         face: None,
+        spent: Vec::new(),
         copy: None,
         merged: None,
     }

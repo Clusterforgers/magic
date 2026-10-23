@@ -266,6 +266,13 @@ fn payment_events(
             amount: payment.life,
         });
     }
+    // The spell keeps the mana its cast spends, for "if {R} was spent to cast it" (CR 601.2h).
+    let mut announced = announced;
+    for event in &mut announced {
+        if let Event::SpellCast { choices, .. } = event {
+            choices.spent = (!spent.mana.is_empty()).then(|| Box::new(spent.mana.clone()));
+        }
+    }
     events.extend(announced);
     // The creatures and artifacts tapped and the cards exiled to help pay (CR 702.51, CR 702.126, CR 702.66), before the mana.
     for object in payment

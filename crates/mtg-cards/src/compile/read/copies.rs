@@ -90,6 +90,7 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                     Effect::Exile {
                         what: copy,
                         bind: None,
+                        duration: None,
                     }
                 } else {
                     Effect::Sacrifice {
@@ -473,7 +474,13 @@ pub(super) fn delay_text(created: &Effect, delayed: &Effect) -> Option<String> {
     };
     let copy = Ref::Bound(COPY.to_owned());
     let verb = match effects.as_slice() {
-        [Effect::Exile { what, bind: None }] if *what == copy => "exile",
+        [
+            Effect::Exile {
+                what,
+                bind: None,
+                duration: None,
+            },
+        ] if *what == copy => "exile",
         [
             Effect::Sacrifice {
                 who: Ref::You,

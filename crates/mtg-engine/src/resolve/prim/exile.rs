@@ -1,6 +1,7 @@
 //! `Effect::Exile`: objects are exiled (CR 406, 701.13).
 
 use mtg_cards::effect::Effect;
+use mtg_cards::modify::Duration;
 
 use super::wrong_effect;
 use crate::choose::Target;
@@ -15,11 +16,37 @@ use crate::zones::Zone;
 /// matter. An ability, which is not an object that changes zones, the spell that is resolving, an object already in
 /// exile, one that has changed zones since it was named and a name that repeats are passed over. The effect's `as` name
 /// holds the objects exiled as the objects they become in exile (CR 400.7), so a later step can return them.
+///
+/// With the duration `WhileSourceOnBattlefield` ("until ~ leaves the battlefield") the move carries the source in its
+/// cause, and the cards return once it has left (`exile_return.rs`, CR 610.3). A source that left the battlefield before
+/// the effect resolves has ended the duration already, so nothing is exiled at all (CR 610.3c).
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Exile { what, bind } = effect else {
+    let Effect::Exile {
+        what,
+        bind,
+        duration,
+    } = effect
+    else {
         return Err(wrong_effect("Exile"));
     };
     let state = cx.state();
+    let cause = match duration {
+        None => ZoneCause::Exiled,
+        Some(Duration::WhileSourceOnBattlefield) => {
+            if !crate::exile_return::holds(state, cx.scope.source) {
+                return Ok(Run::Done {
+                    events: Vec::new(),
+                    bound: bind.iter().map(|name| (name.clone(), Vec::new())).collect(),
+                    snapshots: Vec::new(),
+                    next: Next::Sibling,
+                });
+            }
+            ZoneCause::ExiledUntil {
+                by: cx.scope.source,
+            }
+        }
+        Some(_) => return Err(ResolveError::Unsupported("Exile.Duration")),
+    };
     let mut events = Vec::new();
     let mut snapshots = Vec::new();
     let mut exiled = Vec::new();
@@ -33,7 +60,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             object: object.id(),
             from: object.zone(),
             to: Zone::Exile,
-            cause: ZoneCause::Exiled,
+            cause,
         });
         exiled.push(Target::Object(ObjectRef {
             id: object.id(),

@@ -121,6 +121,14 @@ pub struct Choices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub face: Option<u8>,
+    /// The mana spent to cast the spell, as it was paid (CR 601.2h): "if {R} was spent to cast it" reads it, from the
+    /// spell and from the permanent it becomes; empty for a spell cast without paying mana and for an ability.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(
+        feature = "ts",
+        ts(as = "Option<Vec<mtg_core::mana::ManaType>>", optional)
+    )]
+    pub spent: Option<Box<Vec<mtg_core::mana::ManaType>>>,
     /// The permanents and cards picked for the parts of an ability's cost that take them (a sacrifice, a discard, an
     /// exile from a graveyard, a tap, a return to hand), one list for each such part in the order the cost prints them.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -129,6 +137,11 @@ pub struct Choices {
 }
 
 impl Choices {
+    /// The mana spent to cast the spell, as it was paid (CR 601.2h).
+    pub fn spent(&self) -> &[mtg_core::mana::ManaType] {
+        self.spent.as_deref().map_or(&[], Vec::as_slice)
+    }
+
     /// The permanents and cards picked for the parts of the cost that take them, one list for each such part.
     pub fn cost_picks(&self) -> &[Vec<ObjectId>] {
         self.cost_picks.as_deref().map_or(&[], Vec::as_slice)

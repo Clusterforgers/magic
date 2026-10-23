@@ -5,6 +5,7 @@ use crate::commanders;
 use crate::decision::Decision;
 use crate::error::EngineError;
 use crate::events::Event;
+use crate::exile_return;
 use crate::legend;
 use crate::mulligan;
 use crate::resolve;
@@ -52,6 +53,11 @@ fn next_in_turns(state: &GameState) -> Progress {
     }
     if let Some(ended) = sba::game_over(state) {
         return Progress::Events(vec![ended]);
+    }
+    // A card exiled until a permanent leaves returns the moment it has left, before anything is checked (CR 610.3).
+    let returning = exile_return::returns(state);
+    if !returning.is_empty() {
+        return Progress::Events(returning);
     }
     let actions = sba::check(state);
     if !actions.is_empty() {
