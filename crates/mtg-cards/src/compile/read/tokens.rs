@@ -451,6 +451,14 @@ impl<'a> Reader<'a> {
         }
     }
 
+    /// The word just read, when the last token read is one.
+    pub fn last_word(&self) -> Option<&'a str> {
+        match self.tokens.get(self.at.checked_sub(1)?)? {
+            Token::Word(word) => Some(word.as_str()),
+            _ => None,
+        }
+    }
+
     /// The next word, when the next token is one.
     pub fn peek_word(&self) -> Option<&'a str> {
         self.word_at(0)

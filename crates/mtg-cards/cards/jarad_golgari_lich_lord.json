@@ -1,0 +1,56 @@
+{
+  "oracle_id": "87e65e36-9483-49fe-b644-2caca092107f",
+  "name": "Jarad, Golgari Lich Lord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jarad, Golgari Lich Lord",
+      "oracle_fingerprint": "7d2268265d499676b1c44362a8654338",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  },
+                  "toughness": {
+                    "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{B}{G}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Opponents",
+                  "amount": { "Stat": { "of": "Paid", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Sacrifice": { "filter": [{ "Subtype": "Swamp" }] } },
+              { "Sacrifice": { "filter": [{ "Subtype": "Forest" }] } }
+            ],
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -702,6 +702,18 @@ fn spell_subtypes(r: &mut Reader<'_>) -> Option<Pred> {
     })
 }
 
+/// A subtype in front of a card type in the singular: "Cleric creature", "Equipment artifact".
+fn singular_qualifier(r: &mut Reader<'_>) -> Option<Pred> {
+    r.attempt(|r| {
+        let name = group_name(r).filter(|name| r.is_subtype(name))?;
+        let typed = r
+            .peek_word()
+            .and_then(type_noun)
+            .is_some_and(|(_, plural)| !plural);
+        typed.then_some(Pred::Subtype(Subtype(name)))
+    })
+}
+
 /// A subtype or a card type in the singular that qualifies the plural noun after it: "Sliver creatures", "artifact
 /// creatures", "creature tokens" (the card types of a token are the noun).
 fn qualifier(r: &mut Reader<'_>) -> Option<Pred> {
@@ -762,7 +774,7 @@ pub(super) fn phrase_in(r: &mut Reader<'_>, form: Form, unplaced: bool) -> Optio
                 qualifiers.push(pred);
             }
         } else {
-            qualifiers.extend(spell_subtypes(r));
+            qualifiers.extend(spell_subtypes(r).or_else(|| singular_qualifier(r)));
         }
         // The files list the card types first, then the subtype ("Creature, Goblin").
         let (kinds, subtypes): (Vec<Pred>, Vec<Pred>) = qualifiers
@@ -1005,7 +1017,8 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     }
     let plural = form.plural();
     // A subtype is the noun by itself, or qualifies a plural noun ("Sliver creatures"); a spell is not a card in a zone.
-    let qualified = (plural || spell) && !card && (spell || !types.is_empty() || token);
+    let qualified = ((plural || spell) && !card && (spell || !types.is_empty() || token))
+        || (!plural && !spell && !card && !token && !types.is_empty());
     // Several subtypes are only for a spell ("Faerie or Wizard permanent spell").
     if (!subtypes.is_empty() && !types.is_empty() && !qualified)
         || (subtypes.len() > 1 && !spell)

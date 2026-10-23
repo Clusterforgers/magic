@@ -471,6 +471,7 @@ Izzet Charm
 Jacked Rabbit
 Jadelight Ranger
 Jagged Barrens
+Jarad, Golgari Lich Lord
 Jaspera Sentinel
 Jazal Goldmane
 Join the Maestros
@@ -514,16 +515,19 @@ Life's Legacy
 Light 'Em Up
 Lightning Bolt
 Lithoform Engine
+Living Twister
 Lizard Blades
 Llanowar Behemoth
 Llanowar Elves
 Looter il-Kor
 Lord of Extinction
+Lotleth Troll
 Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
 Lumen-Class Frigate
 Lurching Rotbeast
 M'Baku, Jabari Chieftain
+Magmatic Insight
 Make Disappear
 Makeshift Mauler
 Mana Bloom
@@ -807,6 +811,7 @@ Squirrel Nest
 Sram, Senior Edificer
 Staggershock
 Star Whale
+Starlit Sanctum
 Starscape Cleric
 Steady Progress
 Steam Vents

@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "cc138550-a797-4a57-91b3-626aac1b1edd",
+  "oracle_id": "61b1d7e5-6155-4204-b110-35a890551ec8",
+  "multiverse_ids": [
+    571578
+  ],
+  "mtgo_id": 101974,
+  "tcgplayer_id": 276718,
+  "cardmarket_id": 664891,
+  "name": "Lotleth Troll",
+  "lang": "en",
+  "released_at": "2022-07-08",
+  "uri": "https://api.scryfall.com/cards/cc138550-a797-4a57-91b3-626aac1b1edd",
+  "scryfall_uri": "https://scryfall.com/card/2x2/245/lotleth-troll?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:50:18Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/c/cc138550-a797-4a57-91b3-626aac1b1edd.jpg?1783921818",
+    "normal": "https://cards.scryfall.io/normal/front/c/c/cc138550-a797-4a57-91b3-626aac1b1edd.jpg?1783921818",
+    "large": "https://cards.scryfall.io/large/front/c/c/cc138550-a797-4a57-91b3-626aac1b1edd.jpg?1783921818",
+    "png": "https://cards.scryfall.io/png/front/c/c/cc138550-a797-4a57-91b3-626aac1b1edd.png?1783921818",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/c/cc138550-a797-4a57-91b3-626aac1b1edd.jpg?1783921818",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/c/cc138550-a797-4a57-91b3-626aac1b1edd.jpg?1783921818",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/c/cc138550-a797-4a57-91b3-626aac1b1edd.webp?1783921818",
+    "grid": "https://cards.scryfall.io/grid/front/c/c/cc138550-a797-4a57-91b3-626aac1b1edd.webp?1783921818",
+    "display": "https://cards.scryfall.io/display/front/c/c/cc138550-a797-4a57-91b3-626aac1b1edd.webp?1783921818",
+    "art": "https://cards.scryfall.io/art/front/c/c/cc138550-a797-4a57-91b3-626aac1b1edd.webp?1783921818",
+    "crop": "https://cards.scryfall.io/crop/front/c/c/cc138550-a797-4a57-91b3-626aac1b1edd.webp?1783921818",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/c/cc138550-a797-4a57-91b3-626aac1b1edd.jpg?1783921818"
+  },
+  "mana_cost": "{B}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Zombie Troll",
+  "oracle_text": "Trample\nDiscard a creature card: Put a +1/+1 counter on this creature.\n{B}: Regenerate this creature.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Regenerate",
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "5a645837-b050-449f-ac90-1e7ccbf45031",
+  "set": "2x2",
+  "set_name": "Double Masters 2022",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/5a645837-b050-449f-ac90-1e7ccbf45031",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A2x2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/2x2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cc138550-a797-4a57-91b3-626aac1b1edd/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A61b1d7e5-6155-4204-b110-35a890551ec8&unique=prints",
+  "collector_number": "245",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "He lurks in the undercity, eager for the corpse haulers to unload their rotting cargo.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Vincent Proce",
+  "artist_ids": [
+    "d82b1138-76d3-49f7-9d8c-bc2e2d3e0b0a"
+  ],
+  "illustration_id": "4598392d-e41f-46ff-99b6-81c8908bcc7a",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 14919,
+  "penny_rank": 1989,
+  "preview": {
+    "source": "Five Color Hub",
+    "source_uri": "https://twitter.com/FiveColorHub/status/1539389891464790022",
+    "previewed_at": "2022-06-21"
+  },
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "0.28",
+    "usd_etched": null,
+    "eur": "0.27",
+    "eur_foil": "0.24",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=571578&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLotleth%2BTroll",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLotleth%2BTroll",
+    "edhrec": "https://edhrec.com/route/?cc=Lotleth+Troll"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F276718%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=664891&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/101974?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

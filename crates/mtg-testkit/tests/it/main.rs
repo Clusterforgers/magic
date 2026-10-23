@@ -69,6 +69,7 @@ mod copy_keywords_fuzz;
 mod copy_not_legendary;
 mod corpus_cards;
 mod cost_fuzz;
+mod cost_kinds;
 mod cost_modifiers;
 mod cost_parts;
 mod countdown_keywords;

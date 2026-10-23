@@ -1,0 +1,20 @@
+{
+  "oracle_id": "6a9031b6-3f4d-4a36-90e1-ac77b8518cee",
+  "name": "Magmatic Insight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magmatic Insight",
+      "oracle_fingerprint": "d09a0e95459c564b53cfcb4dfbca5dba",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Discard": { "filter": [{ "Type": "Land" }] } }],
+            "required": true
+          }
+        },
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }] } }
+      ]
+    }
+  ]
+}
