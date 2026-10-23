@@ -1,0 +1,133 @@
+{
+  "artist": "Tyler Jacobson",
+  "artist_ids": [
+    "522af130-8db4-4b4b-950c-6e2b246339cf"
+  ],
+  "booster": false,
+  "border_color": "black",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "cardmarket_id": 514569,
+  "cmc": 2.0,
+  "collector_number": "364",
+  "color_identity": [
+    "R"
+  ],
+  "colors": [
+    "R"
+  ],
+  "digital": false,
+  "edhrec_rank": 6374,
+  "finishes": [
+    "nonfoil"
+  ],
+  "flavor_text": "Wyleth emerged from the crater unscathed with the sun's fury trapped in his hands.",
+  "foil": false,
+  "frame": "2015",
+  "full_art": false,
+  "game_changer": false,
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "highres_image": true,
+  "id": "69d276fe-5f2b-41aa-80fa-64d3b60fd54f",
+  "illustration_id": "6df06641-64c3-462c-8ded-19ed780c27dc",
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:45:37Z",
+  "image_uris": {
+    "art": "https://cards.scryfall.io/art/front/6/9/69d276fe-5f2b-41aa-80fa-64d3b60fd54f.webp?1783928737",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/9/69d276fe-5f2b-41aa-80fa-64d3b60fd54f.jpg?1783928737",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/9/69d276fe-5f2b-41aa-80fa-64d3b60fd54f.jpg?1783928737",
+    "crop": "https://cards.scryfall.io/crop/front/6/9/69d276fe-5f2b-41aa-80fa-64d3b60fd54f.webp?1783928737",
+    "display": "https://cards.scryfall.io/display/front/6/9/69d276fe-5f2b-41aa-80fa-64d3b60fd54f.webp?1783928737",
+    "grid": "https://cards.scryfall.io/grid/front/6/9/69d276fe-5f2b-41aa-80fa-64d3b60fd54f.webp?1783928737",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/9/69d276fe-5f2b-41aa-80fa-64d3b60fd54f.jpg?1783928737",
+    "large": "https://cards.scryfall.io/large/front/6/9/69d276fe-5f2b-41aa-80fa-64d3b60fd54f.jpg?1783928737",
+    "normal": "https://cards.scryfall.io/normal/front/6/9/69d276fe-5f2b-41aa-80fa-64d3b60fd54f.jpg?1783928737",
+    "png": "https://cards.scryfall.io/png/front/6/9/69d276fe-5f2b-41aa-80fa-64d3b60fd54f.png?1783928737",
+    "small": "https://cards.scryfall.io/small/front/6/9/69d276fe-5f2b-41aa-80fa-64d3b60fd54f.jpg?1783928737",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/9/69d276fe-5f2b-41aa-80fa-64d3b60fd54f.webp?1783928737"
+  },
+  "keywords": [
+    "Equip"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "legalities": {
+    "alchemy": "not_legal",
+    "brawl": "not_legal",
+    "commander": "legal",
+    "competitivebrawl": "not_legal",
+    "duel": "legal",
+    "future": "not_legal",
+    "gladiator": "not_legal",
+    "historic": "not_legal",
+    "legacy": "legal",
+    "modern": "not_legal",
+    "oathbreaker": "legal",
+    "oldschool": "not_legal",
+    "pauper": "not_legal",
+    "paupercommander": "not_legal",
+    "penny": "not_legal",
+    "pioneer": "not_legal",
+    "predh": "not_legal",
+    "premodern": "not_legal",
+    "standard": "not_legal",
+    "standardbrawl": "not_legal",
+    "timeless": "not_legal",
+    "tlr": "legal",
+    "vintage": "legal"
+  },
+  "mana_cost": "{1}{R}",
+  "mtgo_id": 85834,
+  "multiverse_ids": [
+    500790
+  ],
+  "name": "Blazing Sunsteel",
+  "nonfoil": true,
+  "object": "card",
+  "oracle_id": "46c77100-ab2e-43eb-b1cb-c22ed114213e",
+  "oracle_text": "Equipped creature gets +1/+0 for each opponent you have.\nWhenever equipped creature is dealt damage, it deals that much damage to any target.\nEquip {4}",
+  "oversized": false,
+  "prices": {
+    "eur": "5.28",
+    "eur_foil": null,
+    "tix": "9.33",
+    "usd": "9.47",
+    "usd_etched": null,
+    "usd_foil": null
+  },
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A46c77100-ab2e-43eb-b1cb-c22ed114213e&unique=prints",
+  "promo": false,
+  "purchase_uris": {
+    "cardhoarder": "https://www.cardhoarder.com/cards/85834?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=514569&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F227228%3Fpage%3D1"
+  },
+  "rarity": "rare",
+  "related_uris": {
+    "edhrec": "https://edhrec.com/route/?cc=Blazing+Sunsteel",
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=500790&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBlazing%2BSunsteel",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBlazing%2BSunsteel"
+  },
+  "released_at": "2020-11-20",
+  "reprint": false,
+  "reserved": false,
+  "rulings_uri": "https://api.scryfall.com/cards/69d276fe-5f2b-41aa-80fa-64d3b60fd54f/rulings",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmr?utm_source=api",
+  "scryfall_uri": "https://scryfall.com/card/cmr/364/blazing-sunsteel?utm_source=api",
+  "security_stamp": "oval",
+  "set": "cmr",
+  "set_id": "39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set_name": "Commander Legends",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmr&unique=prints",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "story_spotlight": false,
+  "tcgplayer_id": 227228,
+  "textless": false,
+  "type_line": "Artifact — Equipment",
+  "uri": "https://api.scryfall.com/cards/69d276fe-5f2b-41aa-80fa-64d3b60fd54f",
+  "variation": false
+}

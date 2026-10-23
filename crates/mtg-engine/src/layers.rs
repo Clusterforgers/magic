@@ -1132,6 +1132,8 @@ pub(crate) fn outside(
 #[cfg(test)]
 mod characteristic_keywords;
 #[cfg(test)]
+mod chosen;
+#[cfg(test)]
 mod counters;
 #[cfg(test)]
 mod defining;

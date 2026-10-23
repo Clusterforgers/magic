@@ -28,9 +28,15 @@ fn an_aura_that_remakes_its_creature_reads_and_writes_back(#[case] text: &str, #
 #[case::the_other_losses_without_a_card_type(
     "Enchanted creature is a Dragon with base power and toughness 4/2 and has flying, and it loses all other abilities, card types, and creature types."
 )]
-#[case::a_size_that_is_no_number("Enchanted creature is a Treefolk with base power and toughness X/4.")]
-#[case::a_group("Creatures you control are Treefolk with base power and toughness 0/4 and lose all abilities.")]
-#[case::the_card_itself("This creature is a Treefolk with base power and toughness 0/4 and loses all abilities.")]
+#[case::a_size_that_is_no_number(
+    "Enchanted creature is a Treefolk with base power and toughness X/4."
+)]
+#[case::a_group(
+    "Creatures you control are Treefolk with base power and toughness 0/4 and lose all abilities."
+)]
+#[case::the_card_itself(
+    "This creature is a Treefolk with base power and toughness 0/4 and loses all abilities."
+)]
 fn near_misses_are_left_to_the_table(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Static, false), None, "{text}");
 }

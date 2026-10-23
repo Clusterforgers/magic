@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a492a323-df8a-40fd-bff0-50091baa7700",
+  "name": "Kenrith's Transformation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kenrith's Transformation",
+      "oracle_fingerprint": "e036ee79e56974f4f40177083e069ec5",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetColors": ["Green"] },
+              { "SetTypes": ["Creature"] },
+              { "SetCreatureTypes": ["Elk"] },
+              { "SetPT": { "power": 3, "toughness": 3 } },
+              "LoseAbilities"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

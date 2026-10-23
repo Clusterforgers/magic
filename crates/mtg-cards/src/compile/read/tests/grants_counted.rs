@@ -35,7 +35,9 @@ fn a_counted_or_chosen_static_reads_and_writes_back(#[case] text: &str, #[case] 
 }
 
 #[rstest]
-#[case::the_chosen_color_with_a_bonus_on_the_card("This creature gets +1/+1 and has protection from the chosen color.")]
+#[case::the_chosen_color_with_a_bonus_on_the_card(
+    "This creature gets +1/+1 and has protection from the chosen color."
+)]
 #[case::protection_from_a_noun_that_is_no_subtype("Cats you control have protection from Gizmos.")]
 #[case::a_keyword_lost_that_is_no_keyword("Equipped creature gets +1/+1 and loses sparkles.")]
 #[case::the_opponents_with_another_tail("Equipped creature gets +1/+0 for each opponent you hate.")]

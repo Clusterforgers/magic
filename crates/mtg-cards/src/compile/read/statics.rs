@@ -9,9 +9,9 @@ use std::sync::Arc;
 use mtg_core::card::{CardType, Subtype};
 
 use super::abilities;
-use super::aura_forms;
 use super::amounts::{count_word, counted_stats, for_each, for_each_text, number_word};
 use super::as_long_as;
+use super::aura_forms;
 use super::copies;
 use super::cost_conditions;
 use super::counters;

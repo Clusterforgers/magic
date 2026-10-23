@@ -35,6 +35,17 @@ pub const GRANT_CARDS: &[&str] = &[
     "Pontiff of Blight",
     "Tyranid Prime",
     "Titania, Nature's Force",
+    "Nettlecyst",
+    "All That Glitters",
+    "Blazing Sunsteel",
+    "Colossus Hammer",
+    "Voice of All",
+    "Riders of Gavony",
+    "Hungry Lynx",
+    "Lignify",
+    "Kenrith's Transformation",
+    "Darksteel Mutation",
+    "Eye of Nidhogg",
 ];
 
 /// A legal Normal deck in five colours of the cards above, one of each, with Lightning Bolt, Giant Growth and Bears.

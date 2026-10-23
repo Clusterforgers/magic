@@ -143,7 +143,11 @@ pub(super) fn texts(mods: &[Modification]) -> Vec<String> {
         None
     } else {
         match granted_text(keywords) {
-            Some(text) if keywords.iter().all(|m| matches!(m, Modification::AddKeyword(_))) => {
+            Some(text)
+                if keywords
+                    .iter()
+                    .all(|m| matches!(m, Modification::AddKeyword(_))) =>
+            {
                 Some(text)
             }
             _ => return Vec::new(),

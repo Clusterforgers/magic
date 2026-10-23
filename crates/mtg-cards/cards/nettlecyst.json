@@ -1,0 +1,38 @@
+{
+  "oracle_id": "04c7f4fe-2098-4311-866d-6733c08d5178",
+  "name": "Nettlecyst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nettlecyst",
+      "oracle_fingerprint": "94b237e8aff1cf4eb7a3a0b1f1aff533",
+      "abilities": [
+        { "Keyword": "LivingWeapon" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

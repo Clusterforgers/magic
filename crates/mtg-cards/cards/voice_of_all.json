@@ -1,0 +1,23 @@
+{
+  "oracle_id": "b1631e9c-a993-4d44-b009-b2624d79560c",
+  "name": "Voice of All",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voice of All",
+      "oracle_fingerprint": "7e9e873ef7ddf56b53b7681c835156db",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": { "Protection": ["ChosenColor"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}
