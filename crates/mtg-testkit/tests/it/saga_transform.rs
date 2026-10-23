@@ -6,6 +6,10 @@ use crate::common;
 use std::sync::Arc;
 
 use common::pid;
+use mtg_cards::ability::Ability;
+use mtg_cards::definition::Layout;
+use mtg_cards::keyword::Keyword;
+use mtg_cards::support::Support;
 use mtg_cards::value::CounterKind;
 use mtg_core::ids::ObjectId;
 use mtg_engine::decision::DecisionKind;
@@ -346,4 +350,50 @@ fn bot_games_with_sagas_that_return_transformed_return_them_and_the_creatures_ac
         kept > 0,
         "some transformed Saga was still on the battlefield"
     );
+}
+
+/// The corpus Sagas: the name of the card, of its back face, the back face's size and its keyword if it is the
+/// first of its rules.
+#[rstest]
+#[case::flying_moth("Befriending the Moths", "Imperial Moth", (2, 4), Some(Keyword::Flying))]
+#[case::first_strike("Era of Enlightenment", "Hand of Enlightenment", (2, 2), Some(Keyword::FirstStrike))]
+#[case::flying_glider("The Modern Age", "Vector Glider", (2, 3), Some(Keyword::Flying))]
+#[case::menace("Okiba Reckoner Raid", "Nezumi Road Captain", (2, 2), Some(Keyword::Menace))]
+#[case::a_mana_ability("Life of Toshiro Umezawa", "Memory of Toshiro", (2, 3), None)]
+fn the_corpus_sagas_are_verified_and_return_as_the_creature_they_print(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] front: &str,
+    #[case] back: &str,
+    #[case] size: (i32, i32),
+    #[case] keyword: Option<Keyword>,
+) -> Result<(), ScriptError> {
+    let corpus = mtg_testkit::corpus::corpus().unwrap();
+    assert_eq!(corpus.support(front).unwrap().support, Support::Verified);
+    let card = mtg_testkit::corpus::card(front).unwrap();
+    assert_eq!(card.layout, Layout::Transform);
+    let scenario = Scenario::new(seats)
+        .battlefield(0, [with_counters(ready(card), CounterKind::lore(), 2)])
+        .at(1, 0, Step::Upkeep);
+    let mut driver = Driver::from_scenario(scenario)?;
+    let id = driver.id_of(front)?;
+    driver.pass_until(Step::Main1)?;
+    settle(&mut driver)?;
+    let object = driver.state().object(id).unwrap();
+    assert_eq!((object.zone(), object.face()), (Zone::Battlefield, Some(1)));
+    let shown = object.card();
+    assert_eq!(shown.name, back);
+    assert_eq!((shown.power, shown.toughness), (Some(size.0), Some(size.1)));
+    assert!(shown.is_type(mtg_core::card::CardType::Creature));
+    if let Some(keyword) = keyword {
+        assert!(
+            shown
+                .rules
+                .iter()
+                .any(|rules| **rules == Ability::Keyword(keyword.clone())),
+            "{back} has {keyword:?}"
+        );
+    }
+    assert_eq!(lore(driver.state(), id), 0);
+    assert!(object.permanent().unwrap().summoning_sick());
+    Ok(())
 }
