@@ -1,0 +1,37 @@
+{
+  "oracle_id": "ac10d218-f9a6-4058-9cda-a15ca1b0b7b5",
+  "name": "Assassin's Trophy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Assassin's Trophy",
+      "oracle_fingerprint": "b1860dd781b00616fdfd3d45cdc3778b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "Opponents" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "May": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "effects": [
+                    {
+                      "Search": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                        "as": "their_land"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "their_land" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

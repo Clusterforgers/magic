@@ -1,0 +1,22 @@
+{
+  "id": "0c7e51b6-4898-4632-b39c-3ce438caa882",
+  "oracle_id": "93953926-a644-49bb-9b5a-4c8f19114c7e",
+  "name": "Demolition Field",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fdn",
+  "collector_number": "687",
+  "rarity": "uncommon",
+  "released_at": "2024-11-15",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{2}, {T}, Sacrifice this land: Destroy target nonbasic land an opponent controls. That land's controller may search their library for a basic land card, put it onto the battlefield, then shuffle. You may search your library for a basic land card, put it onto the battlefield, then shuffle.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "C"
+  ]
+}

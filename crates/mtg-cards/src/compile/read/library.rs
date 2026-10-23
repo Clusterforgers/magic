@@ -8,6 +8,7 @@ use mtg_core::card::{CardType, Subtype};
 
 use super::amounts::{count_word, number_word};
 use super::effects::target_object;
+use super::pairs;
 use super::selectors::{
     Form, adjective, adjective_text, card_type, subtype, suffix, suffix_text, type_name,
 };
@@ -55,6 +56,16 @@ fn found_as(filter: &Selector) -> &'static str {
         "land"
     } else {
         "card"
+    }
+}
+
+/// The name the cards `who` finds are bound to: another player's search is bound apart from yours, as a name is bound
+/// once in a resolution ("That land's controller may search ... You may search ...").
+fn bound_as(who: &Ref, filter: &Selector) -> String {
+    if *who == Ref::You {
+        found_as(filter).to_owned()
+    } else {
+        format!("their_{}", found_as(filter))
     }
 }
 
@@ -144,10 +155,10 @@ pub(super) fn filter(r: &mut Reader<'_>, plural: bool) -> Option<Selector> {
     }
     r.word(if plural { "cards" } else { "card" })
         .then_some(())?;
-    if let Some(extra) = r
-        .attempt(|r| suffix(r, Form::Subject))
-        .filter(|pred| matches!(pred, Pred::Compare { .. } | Pred::HasKeyword(_)))
-    {
+    if let Some(extra) = r.attempt(|r| {
+        suffix(r, Form::Subject)
+            .filter(|pred| matches!(pred, Pred::Compare { .. } | Pred::HasKeyword(_)))
+    }) {
         preds.push(extra);
     }
     Some(Selector(preds))
@@ -198,25 +209,41 @@ fn found_destination(r: &mut Reader<'_>) -> Option<Destination> {
 /// and put that card on top.", each also after "you may".
 pub fn search(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let optional = r.words("you may");
-    r.need("search your library for")?;
+    searched_by(r, Ref::You, optional)
+}
+
+/// "Its controller may search their library for a basic land card, put it onto the battlefield tapped, then
+/// shuffle.": the same search for the controller of a permanent the sentence before named.
+pub fn search_by_controller(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    let who = super::effects::player(r).filter(|who| matches!(who, Ref::ControllerOf(_)))?;
+    r.need("may")?;
+    searched_by(r, who, true)
+}
+
+/// The search of `who` and the move of what they find: "search your library for ..." for you, "search their library
+/// for ..." for another player.
+fn searched_by(r: &mut Reader<'_>, who: Ref, optional: bool) -> Option<Vec<Effect>> {
+    r.need(if who == Ref::You {
+        "search your library for"
+    } else {
+        "search their library for"
+    })?;
     let (filter, count) = what(r)?;
-    let plural = !count.is_one();
+    let bind = bound_as(&who, &filter);
+    let pair = r.attempt(|r| pairs::read(r, &filter, &count, &bind));
+    let plural = !count.is_one() || pair.is_some();
     let reveal = r.attempt(|r| {
         r.punct(',').then_some(())?;
         r.need("reveal")?;
         pronoun(r, plural)
     });
-    let bind = found_as(&filter).to_owned();
-    let found = Ref::Bound(bind.clone());
-    let search = Effect::Search {
-        who: Ref::You,
-        zone: ZoneKind::Library,
-        filter,
-        count,
-        reveal: reveal.is_some(),
-        bind,
+    let (count, second) = match pair {
+        Some((first, second)) => (first, Some(second)),
+        None => (count, None),
     };
-    let shuffle = Effect::Shuffle { who: Ref::You };
+    let (mut searches, found) =
+        pairs::searches(&who, (filter, count, bind), second, reveal.is_some());
+    let shuffle = Effect::Shuffle { who: who.clone() };
     r.punct(',').then_some(())?;
     let effects = if r.need("then shuffle and put").is_some() {
         (!plural).then_some(())?;
@@ -226,20 +253,29 @@ pub fn search(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             place: Place::Top,
             order: None,
         };
-        vec![search, shuffle, Effect::Move { what: found, to }]
+        searches.extend([
+            shuffle,
+            Effect::Move {
+                what: found[0].clone(),
+                to,
+            },
+        ]);
+        searches
     } else {
         r.need("put")?;
         pronoun(r, plural)?;
         let to = found_destination(r)?;
         r.punct(',').then_some(())?;
         r.need("then shuffle")?;
-        vec![search, Effect::Move { what: found, to }, shuffle]
+        searches.extend(found.into_iter().map(|what| Effect::Move {
+            what,
+            to: to.clone(),
+        }));
+        searches.push(shuffle);
+        searches
     };
     Some(if optional {
-        vec![Effect::May {
-            who: Ref::You,
-            effects,
-        }]
+        vec![Effect::May { who, effects }]
     } else {
         effects
     })
@@ -487,7 +523,7 @@ pub fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
             (used == inner.len() && matches!(inner.first(), Some(Effect::Search { .. })))
                 .then(|| (format!("you may {text}"), 1))
         }
-        [Effect::Search { .. }, ..] => search_sequence(effects),
+        [Effect::Search { .. }, ..] => search_sequence(effects, &Ref::You),
         [Effect::LookAtTop { .. }, ..] => {
             look_sequence(effects).or_else(|| super::among::sequence(effects))
         }
@@ -495,11 +531,40 @@ pub fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
     }
 }
 
-/// A search, the move of what it finds and the shuffle, or the shuffle and then the move to the top.
-fn search_sequence(effects: &[Effect]) -> Option<(String, usize)> {
+/// The other wordings of a search: "put that card onto the battlefield" for "put it onto the battlefield", and
+/// "That land's controller" for "Its controller" when another player searches.
+pub fn other_wordings(texts: &[String]) -> Vec<String> {
+    let mut found = Vec::new();
+    for text in texts.iter().filter(|text| text.contains(" library for ")) {
+        let that = text.replacen(
+            ", put it onto the battlefield",
+            ", put that card onto the battlefield",
+            1,
+        );
+        if that != *text {
+            found.push(that.clone());
+        }
+        for owner in ["That creature's controller", "That land's controller"] {
+            if text.contains("Its controller may search") {
+                found.push(text.replacen("Its controller", owner, 1));
+                found.push(that.replacen("Its controller", owner, 1));
+            }
+        }
+    }
+    found
+}
+
+/// What another player may do with their library: "may search their library for ..." after `owner` ("its controller").
+pub fn may_search_text(owner: &str, who: &Ref, inner: &[Effect]) -> Option<String> {
+    let (text, used) = search_sequence(inner, who)?;
+    (who != &Ref::You && used == inner.len()).then(|| format!("{owner} may {text}"))
+}
+
+/// A search by `who`, the move of what it finds and the shuffle, or the shuffle and then the move to the top.
+fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
     let [
         Effect::Search {
-            who: Ref::You,
+            who: searcher,
             zone: ZoneKind::Library,
             filter,
             count,
@@ -511,11 +576,30 @@ fn search_sequence(effects: &[Effect]) -> Option<(String, usize)> {
     else {
         return None;
     };
-    if bind != found_as(filter) {
+    if *bind != bound_as(who, filter) || searcher != who {
         return None;
     }
-    let plural = !count.is_one();
-    let mut text = format!("search your library for {}", what_text(filter, count)?);
+    // A pair: a second search that leaves out the first card, and a move for each.
+    let (looks_for, count_of) = match rest {
+        [
+            Effect::Search {
+                who: second,
+                zone: ZoneKind::Library,
+                filter: other,
+                count: other_count,
+                reveal: other_reveal,
+                bind: other_bind,
+            },
+            ..,
+        ] if second == who && other_reveal == reveal => (
+            pairs::text((filter, count, bind), (other, other_count, other_bind))?,
+            2,
+        ),
+        _ => (what_text(filter, count)?, 1),
+    };
+    let plural = count_of == 2 || !count.is_one();
+    let library = if *who == Ref::You { "your" } else { "their" };
+    let mut text = format!("search {library} library for {looks_for}");
     if *reveal {
         text.push_str(if plural {
             ", reveal them"
@@ -524,17 +608,34 @@ fn search_sequence(effects: &[Effect]) -> Option<(String, usize)> {
         });
     }
     let found = Ref::Bound(bind.clone());
+    let rest = &effects[count_of..];
     match rest {
         [
             Effect::Move { what, to },
-            Effect::Shuffle { who: Ref::You },
+            Effect::Shuffle { who: shuffler },
             ..,
-        ] if *what == found => {
+        ] if count_of == 1 && *what == found && shuffler == who => {
             let pron = if plural { "them" } else { "it" };
             let _ = write!(text, ", put {pron} {}, then shuffle", destination_text(to)?);
         }
         [
-            Effect::Shuffle { who: Ref::You },
+            Effect::Move { what, to },
+            Effect::Move {
+                what: other,
+                to: other_to,
+            },
+            Effect::Shuffle { who: shuffler },
+            ..,
+        ] if count_of == 2
+            && *what == found
+            && *other == Ref::Bound(pairs::second_bind(bind))
+            && to == other_to
+            && shuffler == who =>
+        {
+            let _ = write!(text, ", put them {}, then shuffle", destination_text(to)?);
+        }
+        [
+            Effect::Shuffle { who: shuffler },
             Effect::Move {
                 what,
                 to:
@@ -544,12 +645,12 @@ fn search_sequence(effects: &[Effect]) -> Option<(String, usize)> {
                     },
             },
             ..,
-        ] if *what == found && !plural => {
+        ] if count_of == 1 && *what == found && !plural && shuffler == who => {
             text.push_str(", then shuffle and put that card on top");
         }
         _ => return None,
     }
-    Some((text, 3))
+    Some((text, count_of * 2 + 1))
 }
 
 /// A look at the top cards, the choice of one of them for the hand and where the rest go.

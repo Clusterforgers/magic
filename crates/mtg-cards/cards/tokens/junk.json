@@ -1,0 +1,27 @@
+{
+  "id": "junk",
+  "token": {
+    "name": "Junk",
+    "types": ["Artifact"],
+    "subtypes": ["Junk"],
+    "abilities": [
+      {
+        "Activated": {
+          "cost": ["Tap", "SacrificeSelf"],
+          "timing": "Sorcery",
+          "effects": [
+            { "ExileTop": { "as": "impulse" } },
+            {
+              "Rule": {
+                "rule": {
+                  "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                },
+                "duration": "UntilEndOfTurn"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

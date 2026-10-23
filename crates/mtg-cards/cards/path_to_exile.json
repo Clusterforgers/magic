@@ -1,0 +1,42 @@
+{
+  "oracle_id": "d683d985-9888-4d21-8b5f-69e69ce4a03b",
+  "name": "Path to Exile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Path to Exile",
+      "oracle_fingerprint": "6b1199153087c4c11214a1438b96ab47",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "May": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "effects": [
+                    {
+                      "Search": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                        "as": "their_land"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "their_land" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

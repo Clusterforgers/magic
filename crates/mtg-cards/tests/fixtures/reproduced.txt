@@ -36,6 +36,7 @@ Arrogant Wurm
 Artful Maneuver
 Arvad the Cursed
 Ash Barrens
+Assassin's Trophy
 Atlantean Skirmisher
 Atmospheric Greenhouse
 Augury Raven
@@ -172,6 +173,7 @@ Deep Forest Hermit
 Deepfathom Skulker
 Defile
 Delver of Secrets // Insectile Aberration
+Demolition Field
 Demon Bolt
 Deputized Protester
 Dire Fleet Interloper
@@ -266,6 +268,7 @@ Gemrazer
 Generous Ent
 Gerrard's Wisdom
 Ghalta, Primal Hunger
+Ghost Quarter
 Ghostblade Eidolon
 Ghostly Prison
 Giant Cindermaw
@@ -364,6 +367,7 @@ Krenko's Enforcer
 Krosan Cloudscraper
 Krosan Colossus
 Krosan Grip
+Krosan Verge
 Lat-Nam Adept
 Latchkey Faerie
 Laughing Mad
@@ -426,6 +430,7 @@ Murderous Cut
 Muscle Sliver
 Mutavault
 Myr Retriever
+Myriad Landscape
 Mystic Gate
 Nantuko Husk
 Nantuko Vigilante
@@ -450,6 +455,7 @@ Pacifism
 Pale Bears
 Panther Robot
 Parhelion Patrol
+Path to Exile
 Peema Outrider
 Pestilent Syphoner
 Phantasmal Image

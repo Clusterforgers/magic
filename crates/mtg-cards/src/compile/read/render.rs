@@ -63,6 +63,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts = texts.into_iter().flat_map(cast::impulse_wordings).collect();
     let controller = create::other_wordings(&texts);
     texts.extend(controller);
+    let searches = library::other_wordings(&texts);
+    texts.extend(searches);
     // A card that becomes a target may call itself "it" in the counters it puts on itself (Seedglaive Mentor).
     if matches!(ability, Ability::Triggered { when, .. } if targeted_itself(when)) {
         let pronouns: Vec<String> = texts
@@ -1256,6 +1258,17 @@ impl Writer<'_> {
         self.reanimated(effect)
             .or_else(|| cast::text(effect))
             .or_else(|| self.keyword_action(effect))
+            .or_else(|| self.controller_search(effect))
+    }
+
+    /// A search another player may make: "its controller may search their library for a basic land card, put it onto
+    /// the battlefield, then shuffle".
+    fn controller_search(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::May { who, effects } = effect else {
+            return None;
+        };
+        let owner = self.player(who)?;
+        library::may_search_text(&owner, who, effects)
     }
 
     /// A card of your graveyard that returns to the battlefield: "return target creature card from your graveyard to the

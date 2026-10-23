@@ -128,6 +128,8 @@ pub enum Pred {
     Other,
     /// Is one of the objects the reference names (`{"Is": {"Bound": "creature"}}`).
     Is(Ref),
+    /// Shares a subtype with one of the objects the reference names (`{"SharesSubtype": {"Bound": "land"}}`).
+    SharesSubtype(Ref),
     /// Has the card type.
     Type(CardType),
     /// Has the supertype.

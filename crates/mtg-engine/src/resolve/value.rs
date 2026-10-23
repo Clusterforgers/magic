@@ -615,6 +615,31 @@ impl<'a> Scope<'a> {
         Ok(true)
     }
 
+    /// Whether the object shares a subtype (its printed ones included) with one of the objects the reference names.
+    fn shares_subtype(&self, named: &Ref, seen: &Seen<'_>) -> Result<bool, ResolveError> {
+        for other in self.objects(named)? {
+            let Some(theirs) = self.seen(other) else {
+                continue;
+            };
+            let printed = theirs.card.map(|c| c.card().subtypes.as_slice());
+            let shares = theirs
+                .chars
+                .subtypes
+                .iter()
+                .chain(printed.unwrap_or_default())
+                .any(|subtype| {
+                    seen.chars.has_subtype(&[], subtype)
+                        || seen
+                            .card
+                            .is_some_and(|c| seen.chars.has_subtype(&c.card().subtypes, subtype))
+                });
+            if shares {
+                return Ok(true);
+            }
+        }
+        Ok(false)
+    }
+
     fn pred(
         &self,
         pred: &Pred,
@@ -626,6 +651,7 @@ impl<'a> Scope<'a> {
             Pred::This => reference.id == self.source.id,
             Pred::Other => reference.id != self.source.id,
             Pred::Is(named) => self.objects(named)?.contains(&reference),
+            Pred::SharesSubtype(named) => self.shares_subtype(named, seen)?,
             Pred::Type(card_type) => seen.chars.types.contains(*card_type),
             Pred::Supertype(supertype) => seen
                 .card
