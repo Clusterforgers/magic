@@ -735,6 +735,19 @@ impl<'a> Walker<'a> {
         }
     }
 
+    fn backup(&mut self, count: u32, abilities: &[Ability]) {
+        if count == 0 {
+            self.problem("backup needs a number of at least 1");
+        }
+        // The abilities that follow the keyword are what the target gains.
+        for ability in abilities {
+            match ability {
+                Ability::Keyword(granted) => self.keyword(granted),
+                other => self.granted(other),
+            }
+        }
+    }
+
     fn keyword(&mut self, keyword: &Keyword) {
         self.uses("Keyword", &tag_of(keyword));
         match keyword {
@@ -790,18 +803,7 @@ impl<'a> Walker<'a> {
                 self.parts_that_need_an_announcement("Keyword", "Cost", cost);
             }
             Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
-            Keyword::Backup { count, abilities } => {
-                if *count == 0 {
-                    self.problem("backup needs a number of at least 1");
-                }
-                // The abilities that follow the keyword are what the target gains.
-                for ability in abilities {
-                    match ability {
-                        Ability::Keyword(granted) => self.keyword(granted),
-                        other => self.granted(other),
-                    }
-                }
-            }
+            Keyword::Backup { count, abilities } => self.backup(*count, abilities),
             Keyword::Saddle(0) => self.problem("saddle needs a power of at least 1"),
             Keyword::Enchant(selector) => {
                 self.selector(selector);
