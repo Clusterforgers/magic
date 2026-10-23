@@ -266,6 +266,11 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             }
             let before = state.objects.get(object).map(|o| o.controller);
             move_object(state, *object, *to, Placement::Top)?;
+            if *cause == ZoneCause::Discarded
+                && let Zone::Hand(player) = *from
+            {
+                tally_discard(state, player, *object);
+            }
             if *cause == ZoneCause::Adventure
                 && let Some(card) = state.objects.get_mut(object)
             {
@@ -306,6 +311,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             expect_in(state, *object, Zone::Hand(*player))?;
             let owner = owner_of(state, *object)?;
             move_object(state, *object, Zone::Graveyard(owner), Placement::Top)?;
+            tally_discard(state, *player, *object);
         }
         Event::CreatureDied { object, .. } => {
             expect_in(state, *object, Zone::Battlefield)?;
@@ -316,6 +322,17 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
         other => return Err(invalid(format!("not a zone event: {other:?}"))),
     }
     Ok(())
+}
+
+/// Counts the card `id` among the discards of `player` this turn when it lies in a graveyard (mayhem, CR 702.190a).
+fn tally_discard(state: &mut GameState, player: PlayerId, id: ObjectId) {
+    let lies_there = state
+        .object(id)
+        .filter(|card| matches!(card.zone(), Zone::Graveyard(_)))
+        .map(GameObject::reference);
+    if let Some(reference) = lies_there {
+        state.tally_object(reference, Some(player), Tally::Discarded);
+    }
 }
 
 /// Sets how a permanent that an effect put onto the battlefield entered: tapped or not, under whose control.

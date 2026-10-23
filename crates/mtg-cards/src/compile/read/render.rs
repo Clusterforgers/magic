@@ -13,6 +13,7 @@ use super::copy_spells;
 use super::costs;
 use super::counters;
 use super::create;
+use super::defining;
 use super::draws;
 use super::effects::{BACK, RETURNED, dead_card, returns_itself};
 use super::flicker;
@@ -529,7 +530,10 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
         matches!(
             effect,
             Effect::CreateToken {
-                count: Amount::Count(_) | Amount::Times { .. },
+                count: Amount::Count(_)
+                    | Amount::Counters { .. }
+                    | Amount::Players(_)
+                    | Amount::Times { .. },
                 ..
             }
         )
@@ -1071,12 +1075,17 @@ pub(super) fn stats_text(power: &Amount, toughness: &Amount) -> Option<(String, 
     Some((format!("{power}/{toughness}"), tail))
 }
 
-/// Whether the change of power and toughness leading the modifications is counted "for each ...".
+/// Whether the change of power and toughness leading the modifications is counted: "for each ...", X with the count
+/// named after it, or a count the card says as it is.
 pub(super) fn counts_stats(mods: &[Modification]) -> bool {
+    let counted = |amount: &Amount| {
+        counted_parts(amount).is_some()
+            || *amount == Amount::X
+            || defining::value_text(amount).is_some()
+    };
     matches!(
         mods.first(),
-        Some(Modification::ModifyPT { power, toughness })
-            if counted_parts(power).is_some() || counted_parts(toughness).is_some()
+        Some(Modification::ModifyPT { power, toughness }) if counted(power) || counted(toughness)
     )
 }
 

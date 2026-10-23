@@ -58,6 +58,8 @@ const KEYWORDS: &[&str] = &[
     "changeling",
     "infect",
     "skulk",
+    "melee",
+    "myriad",
 ];
 
 /// How a phrase is introduced, which decides its number, how it joins card types and how it names

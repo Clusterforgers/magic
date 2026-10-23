@@ -203,6 +203,9 @@ const RUNS: &[&str] = &[
     "Mod.CantBlock",
     "Mod.CantBeBlocked",
     "Mod.CantBeBlockedBy",
+    "Mod.CanBlockOnly",
+    "Mod.MinBlockers",
+    "Mod.MaxBlockers",
     "Mod.Goaded",
     "Effect.DelayedTrigger",
     "Effect.If",
@@ -315,6 +318,7 @@ const RUNS: &[&str] = &[
     "Keyword.Mutate",
     "Keyword.Blitz",
     "Keyword.Prowl",
+    "Keyword.Mayhem",
     "Keyword.Ninjutsu",
     "Keyword.Echo",
     "Keyword.CumulativeUpkeep",
@@ -683,6 +687,9 @@ mod tests {
     #[case::the_citys_blessing("Condition.CitysBlessing", true)]
     #[case::unblockable_creatures("Mod.CantBeBlocked", true)]
     #[case::creatures_that_cant_be_blocked_by_some("Mod.CantBeBlockedBy", true)]
+    #[case::creatures_that_can_block_only_some("Mod.CanBlockOnly", true)]
+    #[case::creatures_that_need_several_blockers("Mod.MinBlockers", true)]
+    #[case::creatures_that_are_blocked_by_few("Mod.MaxBlockers", true)]
     #[case::goaded_creatures("Mod.Goaded", true)]
     #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", true)]
     #[case::additional_land_plays("Rule.AdditionalLandPlays", true)]
@@ -702,6 +709,7 @@ mod tests {
     #[case::dredging("ReplaceBy.Dredge", true)]
     #[case::blitz("Keyword.Blitz", true)]
     #[case::prowl("Keyword.Prowl", true)]
+    #[case::mayhem("Keyword.Mayhem", true)]
     #[case::a_conditional_free_cast("Ability.FreeCast", true)]
     #[case::ninjutsu("Keyword.Ninjutsu", true)]
     #[case::joining_an_attack("Effect.JoinAttack", true)]

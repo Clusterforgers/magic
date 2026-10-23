@@ -1,0 +1,27 @@
+{
+  "id": "dc8037d5-79fa-47e3-9d3b-eb29643ecae7",
+  "oracle_id": "5852ed2f-4332-4c30-b145-373deea471d9",
+  "name": "Hallowed Spiritkeeper",
+  "lang": "en",
+  "layout": "normal",
+  "set": "voc",
+  "collector_number": "88",
+  "rarity": "rare",
+  "released_at": "2021-11-19",
+  "digital": false,
+  "mana_cost": "{1}{W}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Avatar",
+  "oracle_text": "Vigilance\nWhen this creature dies, create X 1/1 white Spirit creature tokens with flying, where X is the number of creature cards in your graveyard.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Vigilance"
+  ]
+}

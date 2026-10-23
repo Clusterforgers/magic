@@ -95,8 +95,8 @@ fn the_amount_is_the_characteristic_of_the_object_the_clause_names(
     "Creatures you control get +X/+X until end of turn, where X is its power."
 )]
 #[case::its_in_a_spell_trigger("Whenever you cast a spell, you gain X life, where X is its power.")]
-#[case::a_count_stays_with_the_counted_amounts(
-    "Target creature gets +X/+X until end of turn, where X is the number of creatures you control."
+#[case::a_count_held_by_a_player(
+    "Target creature gets +X/+X until end of turn, where X is the number of cards in target player's hand."
 )]
 #[case::another_object(
     "Target creature gets +X/+X until end of turn, where X is target creature's power."

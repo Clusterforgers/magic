@@ -347,6 +347,11 @@ pub struct BlockOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<(ObjectId, usize)>>", optional))]
     pub min_blockers: Vec<(ObjectId, usize)>,
+    /// The most creatures that may block an attacker together, for each attacker that is limited ("can't be blocked
+    /// by more than one creature"). Left out while no attacker is.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<(ObjectId, usize)>>", optional))]
+    pub max_blockers: Vec<(ObjectId, usize)>,
     /// The creatures among `blockers` that a rule requires to block (CR 509.1c); the declaration names each of them,
     /// together with the creatures an attacker that needs several blockers must have. Left out while there are none.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -363,6 +368,14 @@ impl BlockOptions {
             .map_or(1, |(_, needed)| *needed)
     }
 
+    /// How many creatures may block `attacker` together at most.
+    pub fn limit_for(&self, attacker: ObjectId) -> usize {
+        self.max_blockers
+            .iter()
+            .find(|(limited, _)| *limited == attacker)
+            .map_or(usize::MAX, |(_, most)| *most)
+    }
+
     /// The declaration that does only what the rules require: each creature that must block, at an attacker that
     /// is blocked already or needs one blocker if there is one, and free creatures to join an attacker that needs
     /// several. It is legal unless the free creatures run out.
@@ -373,10 +386,17 @@ impl BlockOptions {
             .iter()
             .filter(|option| self.required.contains(&option.object))
         {
+            let room = |attacker: &ObjectId| {
+                blocks.iter().filter(|(_, held)| held == attacker).count()
+                    < self.limit_for(*attacker)
+            };
             let easy = option.can_block.iter().copied().find(|attacker| {
-                self.needed_for(*attacker) <= 1 || blocks.iter().any(|(_, held)| held == attacker)
+                room(attacker)
+                    && (self.needed_for(*attacker) <= 1
+                        || blocks.iter().any(|(_, held)| held == attacker))
             });
-            if let Some(attacker) = easy.or_else(|| option.can_block.first().copied()) {
+            let any = || option.can_block.iter().copied().find(room);
+            if let Some(attacker) = easy.or_else(any) {
                 blocks.push((option.object, attacker));
             }
         }
@@ -412,6 +432,9 @@ impl BlockOptions {
         };
         option.can_block.iter().any(|attacker| {
             let held = blocks.iter().filter(|(_, at)| at == attacker).count();
+            if held >= self.limit_for(*attacker) {
+                return false;
+            }
             let needed = self.needed_for(*attacker);
             if held > 0 || needed <= 1 {
                 return true;
@@ -615,6 +638,7 @@ mod tests {
                 })
                 .collect(),
             min_blockers: menace.iter().map(|(a, n)| (id(*a), *n)).collect(),
+            max_blockers: Vec::new(),
             required: required.iter().map(|object| id(*object)).collect(),
         }
     }
@@ -655,6 +679,53 @@ mod tests {
     ) {
         let options = blocking(blockers, menace, &[1]);
         assert_eq!(options.could_join(id(1), &pairs(blocks)), could);
+    }
+
+    /// `blocking` with attackers that may be blocked by so many creatures at most.
+    fn limited(blockers: &[(u64, &[u64])], max: &[(u64, usize)], required: &[u64]) -> BlockOptions {
+        BlockOptions {
+            max_blockers: max.iter().map(|(a, n)| (id(*a), *n)).collect(),
+            ..blocking(blockers, &[], required)
+        }
+    }
+
+    #[rstest]
+    #[case::an_attacker_with_no_limit(&[], 10, usize::MAX)]
+    #[case::one_at_most(&[(10, 1)], 10, 1)]
+    #[case::another_attacker_is_not_limited(&[(10, 1)], 11, usize::MAX)]
+    fn the_limit_of_an_attacker_is_its_entry_or_none(
+        #[case] max: &[(u64, usize)],
+        #[case] attacker: u64,
+        #[case] limit: usize,
+    ) {
+        let options = limited(&[(1, &[10, 11][..])], max, &[]);
+        assert_eq!(options.limit_for(id(attacker)), limit);
+    }
+
+    #[rstest]
+    #[case::the_attacker_is_blocked_already(&[(2, 10)], false)]
+    #[case::the_attacker_is_not_blocked(&[], true)]
+    #[case::the_other_attacker_is_blocked(&[(2, 11)], true)]
+    fn a_creature_cannot_join_an_attacker_that_has_its_blockers(
+        #[case] blocks: &[(u64, u64)],
+        #[case] could: bool,
+    ) {
+        let options = limited(&[(1, &[10][..]), (2, &[10, 11][..])], &[(10, 1)], &[]);
+        assert_eq!(options.could_join(id(1), &pairs(blocks)), could);
+    }
+
+    #[rstest]
+    #[case::the_second_creature_goes_elsewhere(&[(1, &[10][..]), (2, &[10, 11][..])], &[(10, 1)], &[1, 2], &[(1, 10), (2, 11)])]
+    #[case::the_second_creature_has_no_place(&[(1, &[10][..]), (2, &[10][..])], &[(10, 1)], &[1, 2], &[(1, 10)])]
+    #[case::an_attacker_with_room(&[(1, &[10][..]), (2, &[10][..])], &[(10, 2)], &[1, 2], &[(1, 10), (2, 10)])]
+    fn the_required_blocks_keep_to_the_limits(
+        #[case] blockers: &[(u64, &[u64])],
+        #[case] max: &[(u64, usize)],
+        #[case] required: &[u64],
+        #[case] expected: &[(u64, u64)],
+    ) {
+        let options = limited(blockers, max, required);
+        assert_eq!(options.required_blocks(), pairs(expected));
     }
 
     #[test]

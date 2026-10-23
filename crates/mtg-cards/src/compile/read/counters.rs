@@ -3,6 +3,7 @@
 //! permanent" and "move a +1/+1 counter from target creature onto ~" and written back the same way.
 
 use super::amounts::{self, count_word, number_word};
+use super::defining;
 use super::effects::target_object;
 use super::selectors::each;
 use super::tokens::Reader;
@@ -82,6 +83,16 @@ pub(super) fn counted(r: &mut Reader<'_>) -> Option<Amount> {
     })
 }
 
+/// "charge counters on ~", "+1/+1 counters on this creature": the counters on the card, as "the number of" counts them.
+pub(super) fn counted_plural(r: &mut Reader<'_>) -> Option<Amount> {
+    let counter = kind(r)?;
+    r.need("counters on")?;
+    r.source().then_some(Amount::Counters {
+        on: Ref::This,
+        counter,
+    })
+}
+
 /// The wordings of a trigger whose intervening "if" says the card has no counters of a kind, with the card called "it"
 /// in what follows ("..., return it to its owner's hand").
 pub(super) fn pronouns_after_none(ability: &Ability, texts: &[String]) -> Vec<String> {
@@ -147,10 +158,16 @@ fn place(r: &mut Reader<'_>) -> Option<Ref> {
 /// on each creature you control."
 pub fn put(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("put")?;
+    // "a number of +1/+1 counters on ~ equal to the number of creatures you control": the count follows the object.
+    let equal = r.words("a number of");
     let (counter, count) = if r.words("that many") {
         let counter = kind(r)?;
         r.need("counters")?;
         (counter, Amount::Triggering)
+    } else if equal {
+        let counter = kind(r)?;
+        r.need("counters")?;
+        (counter, Amount::X)
     } else {
         entering(r)?
     };
@@ -163,8 +180,12 @@ pub fn put(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if on == Ref::This {
         r.it = Some(Ref::This);
     }
-    // "Put a +1/+1 counter on target creature for each Elf you control."
-    let count = amounts::counted(r, count)?;
+    let count = if equal {
+        defining::equal_to(r)?
+    } else {
+        // "Put a +1/+1 counter on target creature for each Elf you control."
+        amounts::counted(r, count)?
+    };
     Some(vec![Effect::PutCounters { on, counter, count }])
 }
 

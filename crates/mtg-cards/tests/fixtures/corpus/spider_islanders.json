@@ -1,0 +1,27 @@
+{
+  "id": "c9132e45-4ddb-4565-ac45-86f1ecc6230d",
+  "oracle_id": "2d1a15dc-3123-4425-b036-a3b5a83fcdf8",
+  "name": "Spider-Islanders",
+  "lang": "en",
+  "layout": "normal",
+  "set": "spm",
+  "collector_number": "91",
+  "rarity": "common",
+  "released_at": "2025-09-26",
+  "digital": false,
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Spider Horror Citizen",
+  "oracle_text": "Mayhem {1}{R} (You may cast this card from your graveyard for {1}{R} if you discarded it this turn. Timing rules still apply.)",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Mayhem"
+  ]
+}

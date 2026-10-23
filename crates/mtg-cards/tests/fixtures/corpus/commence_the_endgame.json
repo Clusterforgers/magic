@@ -1,0 +1,25 @@
+{
+  "id": "209d70a2-c8c1-4072-ab1f-57804b55a09a",
+  "oracle_id": "fedb1947-9fa5-4655-8d02-b370fa63dd16",
+  "name": "Commence the Endgame",
+  "lang": "en",
+  "layout": "normal",
+  "set": "war",
+  "collector_number": "45",
+  "rarity": "rare",
+  "released_at": "2019-05-03",
+  "digital": false,
+  "mana_cost": "{4}{U}{U}",
+  "cmc": 6.0,
+  "type_line": "Instant",
+  "oracle_text": "This spell can't be countered.\nDraw two cards, then amass Zombies X, where X is the number of cards in your hand. (Put X +1/+1 counters on an Army you control. It's also a Zombie. If you don't control an Army, create a 0/0 black Zombie Army creature token first.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Amass"
+  ]
+}

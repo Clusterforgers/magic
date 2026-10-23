@@ -1,0 +1,31 @@
+{
+  "id": "96714d95-baef-45e3-a2b0-00a8bdb3a76d",
+  "oracle_id": "3b7352e6-6508-491c-9935-426a6eebb429",
+  "name": "The Squadron Sinister",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "96",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{5}{U}{R}",
+  "cmc": 7.0,
+  "type_line": "Legendary Creature — Human Villain",
+  "oracle_text": "Flying, haste\nOther Villains you control get +2/+2 and have flying and haste.\nMayhem {3}{U}{R} (You may cast this card from your graveyard for {3}{U}{R} if you discarded it this turn. Timing rules still apply.)",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Mayhem",
+    "Haste"
+  ]
+}

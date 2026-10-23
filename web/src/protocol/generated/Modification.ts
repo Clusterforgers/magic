@@ -36,7 +36,19 @@ controller: PlayerId,
 /**
  * What "this" is for the selector.
  */
-source: ObjectRef, } } | { "Goaded": { 
+source: ObjectRef, } } | { "CanBlockOnly": { 
+/**
+ * The attackers it may block.
+ */
+only: unknown, 
+/**
+ * Who "you" is for the selector.
+ */
+controller: PlayerId, 
+/**
+ * What "this" is for the selector.
+ */
+source: ObjectRef, } } | { "MinBlockers": number } | { "MaxBlockers": number } | { "Goaded": { 
 /**
  * The goader.
  */

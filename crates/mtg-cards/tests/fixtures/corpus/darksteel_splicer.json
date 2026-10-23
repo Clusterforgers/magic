@@ -1,0 +1,25 @@
+{
+  "id": "2a4f3d89-86dc-45df-9593-d8a7c336ebac",
+  "oracle_id": "63a0f0a2-bafc-4cd0-a4ed-42ce58cd3e9b",
+  "name": "Darksteel Splicer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "moc",
+  "collector_number": "13",
+  "rarity": "rare",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{6}{W}",
+  "cmc": 7.0,
+  "type_line": "Creature — Phyrexian Artificer",
+  "oracle_text": "Whenever this creature or another nontoken Phyrexian you control enters, create X 3/3 colorless Phyrexian Golem artifact creature tokens, where X is the number of opponents you have.\nGolems you control have indestructible.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

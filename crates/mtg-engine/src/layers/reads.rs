@@ -59,6 +59,9 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::CantBlock
         | Modification::CantBeBlocked
         | Modification::CantBeBlockedBy { .. }
+        | Modification::CanBlockOnly { .. }
+        | Modification::MinBlockers(_)
+        | Modification::MaxBlockers(_)
         | Modification::Goaded { .. } => Traits::NONE,
     }
 }
@@ -84,6 +87,9 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::CantBlock
         | Wanted::CantBeBlocked
         | Wanted::CantBeBlockedBy(_)
+        | Wanted::CanBlockOnly(_)
+        | Wanted::MinBlockers(_)
+        | Wanted::MaxBlockers(_)
         | Wanted::Goaded => Traits::NONE,
     }
 }
@@ -95,7 +101,9 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
             reads_of_amount(power).or(reads_of_amount(toughness))
         }
         Wanted::SetController(who) => reads_of_ref(who),
-        Wanted::CantBeBlockedBy(blockers) => reads_of_selector(blockers),
+        Wanted::CantBeBlockedBy(blockers) | Wanted::CanBlockOnly(blockers) => {
+            reads_of_selector(blockers)
+        }
         Wanted::SwitchPT
         | Wanted::AddType(_)
         | Wanted::RemoveType(_)
@@ -111,6 +119,8 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::CantAttack
         | Wanted::CantBlock
         | Wanted::CantBeBlocked
+        | Wanted::MinBlockers(_)
+        | Wanted::MaxBlockers(_)
         | Wanted::Goaded => Traits::NONE,
     }
 }

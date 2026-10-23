@@ -94,6 +94,11 @@ fn casts(driver: &mut Driver) -> usize {
 #[case::a_prospector_sacrifices_itself("{R}", &["Skirk Prospector"], 1)]
 #[case::a_goblin_for_two_prospectors("{R}{R}", &["Skirk Prospector", "Skirk Prospector"], 1)]
 #[case::each_prospector_adds_one("{R}{R}{R}", &["Skirk Prospector", "Skirk Prospector"], 0)]
+#[case::one_prospector_two_goblins("{R}{R}", &["Skirk Prospector", "Goblin Spy", "Putrid Goblin"], 1)]
+#[case::one_prospector_three_goblins("{R}{R}{R}", &["Skirk Prospector", "Goblin Spy", "Putrid Goblin", "Boggart Ram-Gang"], 1)]
+#[case::a_land_beside_the_uses("{R}{R}{R}", &["Skirk Prospector", "Goblin Spy", "Putrid Goblin", "Mountain"], 1)]
+#[case::a_creature_that_is_no_goblin_is_kept("{R}{R}", &["Skirk Prospector", "Grizzly Bears", "Goblin Spy", "Putrid Goblin"], 1)]
+#[case::each_use_needs_a_goblin("{R}{R}{R}{R}", &["Skirk Prospector", "Grizzly Bears", "Goblin Spy", "Putrid Goblin"], 0)]
 #[case::a_prospector_sacrifices_the_cheaper_goblin("{R}", &["Skirk Prospector", "Boggart Ram-Gang"], 1)]
 #[case::lands_pay_before_the_sources_that_take("{R}", &["Mountain", "Springleaf Drum", "Grizzly Bears"], 2)]
 fn a_source_that_takes_another_permanent_pays_when_the_payment_can_take_it(
@@ -192,6 +197,36 @@ fn the_prospector_sacrifices_the_goblin_it_must_and_adds_red() -> Result<(), Scr
         .iter()
         .any(|id| driver.state().object(*id).unwrap().card().name == "Skirk Prospector");
     assert!(goblin);
+    Ok(())
+}
+
+#[rstest]
+fn the_prospector_sacrifices_a_different_goblin_for_each_use(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = table(
+        seats,
+        "{R}{R}",
+        &[
+            "Skirk Prospector",
+            "Grizzly Bears",
+            "Goblin Spy",
+            "Putrid Goblin",
+        ],
+    )?;
+    let events = driver.cast("Spell")?;
+    let mut gone = names(&driver, &events, true);
+    gone.sort();
+    assert_eq!(
+        gone,
+        ["Goblin Spy", "Putrid Goblin"],
+        "never itself or the Bears"
+    );
+    let added = events
+        .iter()
+        .filter(|event| matches!(event, Event::ManaAdded { .. }))
+        .count();
+    assert_eq!(added, 2, "one red for each use");
     Ok(())
 }
 

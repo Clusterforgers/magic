@@ -788,7 +788,8 @@ impl<'a> Walker<'a> {
             | Keyword::Dash(cost)
             | Keyword::Bestow(cost)
             | Keyword::Blitz(cost)
-            | Keyword::Prowl(cost) => {
+            | Keyword::Prowl(cost)
+            | Keyword::Mayhem(cost) => {
                 self.at("cost", |w| w.cost(cost));
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost);
             }
@@ -867,7 +868,14 @@ impl<'a> Walker<'a> {
             }
             Modification::SetController(who) => self.reference(who, Kind::Player),
             Modification::GrantAbility(granted) => self.granted(granted),
-            Modification::CantBeBlockedBy(blockers) => self.selector(blockers),
+            Modification::CantBeBlockedBy(selector) | Modification::CanBlockOnly(selector) => {
+                self.selector(selector);
+            }
+            Modification::MinBlockers(count) | Modification::MaxBlockers(count) => {
+                if *count < 1 {
+                    self.problem("a limit on blockers needs a count of at least one");
+                }
+            }
             Modification::SwitchPT
             | Modification::AddType(_)
             | Modification::RemoveType(_)

@@ -25,6 +25,7 @@ use super::selectors::{
 };
 use super::tokens::Reader;
 use super::triggers::article;
+use super::where_x;
 use crate::ability::{Ability, CostChange};
 use crate::mana::ManaCostX;
 use crate::modify::{GameRule, Modification};
@@ -35,7 +36,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 19] = [
+const TEMPLATES: [Template; 20] = [
     entering,
     entering_tapped_if,
     group_enters_tapped,
@@ -54,6 +55,7 @@ const TEMPLATES: [Template; 19] = [
     super::costs::additional,
     super::attack_tax::static_rule,
     evasion::cannot_block,
+    evasion::block_only,
     free_cast,
 ];
 
@@ -134,8 +136,16 @@ fn entering(r: &mut Reader<'_>) -> Option<Ability> {
     if !tapped {
         r.need("with")?;
     }
-    let (counter, count) = counters::entering(r)?;
+    // "enters with X +1/+1 counters on it, where X is the number of ...": the where clause gives X its count.
+    let named = where_x::ahead(r);
+    let outer = std::mem::replace(&mut r.where_x, named);
+    let found = counters::entering(r);
+    r.where_x = outer;
+    let (counter, mut count) = found?;
     r.need("on it")?;
+    if named {
+        count = where_x::counted(r)?;
+    }
     Some(replacement(
         ReplaceBy::WithCounters {
             counter,
@@ -309,7 +319,9 @@ pub(super) fn control(r: &mut Reader<'_>) -> Option<Condition> {
     } else {
         return None;
     };
-    let (op, number, selector) = if r.word("a") || r.word("an") {
+    let (op, number, selector) = if r.words("your commander") {
+        (Cmp::Ge, 1, your_commander())
+    } else if r.word("a") || r.word("an") {
         (Cmp::Ge, 1, one_kind(r)?)
     } else {
         let number = number_word(r.take_word()?)?;
@@ -336,6 +348,11 @@ pub(super) fn control(r: &mut Reader<'_>) -> Option<Condition> {
         op,
         right: Amount::Fixed(i32::try_from(number).ok()?),
     })
+}
+
+/// "your commander": the card its owner designated, whoever controls it now (the controller is the verb's).
+fn your_commander() -> Selector {
+    Selector(vec![Pred::Commander, Pred::OwnedBy(Ref::You)])
 }
 
 /// One thing after "a": "planeswalker", "basic land", "Forest or a Plains", "Mount or Vehicle".
@@ -433,7 +450,7 @@ pub(super) fn plural(r: &mut Reader<'_>) -> Option<Ref> {
 }
 
 /// The permanent a static ability changes: the card, what it is attached to or a group.
-fn subject(r: &mut Reader<'_>, itself: bool) -> Option<(Ref, bool)> {
+pub(super) fn subject(r: &mut Reader<'_>, itself: bool) -> Option<(Ref, bool)> {
     if itself && r.source() {
         return Some((Ref::This, false));
     }
@@ -472,13 +489,19 @@ fn cannot(r: &mut Reader<'_>) -> Option<Ability> {
         vec![Modification::CantAttack, Modification::CantBlock]
     } else if r.words("block and can't be blocked") {
         vec![Modification::CantBlock, Modification::CantBeBlocked]
+    } else if r.words("be blocked by more than one creature") {
+        vec![Modification::MaxBlockers(1)]
     } else if r.words("be blocked by") {
         vec![Modification::CantBeBlockedBy(phrase(r, Form::All)?)]
     } else if r.words("be blocked except by") {
-        vec![Modification::CantBeBlockedBy(evasion::except(phrase(
-            r,
-            Form::All,
-        )?)?)]
+        if let Some(count) = evasion::or_more(r) {
+            vec![Modification::MinBlockers(count)]
+        } else {
+            vec![Modification::CantBeBlockedBy(evasion::except(phrase(
+                r,
+                Form::All,
+            )?)?)]
+        }
     } else if r.words("be blocked") {
         vec![Modification::CantBeBlocked]
     } else if r.word("attack") {
@@ -517,10 +540,18 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
     } else {
         subject(r, true).or_else(|| enchanted_other(r))?
     };
+    // "Equipped creature gets +X/+X, where X is the number of creature cards in all graveyards."
+    let named = where_x::ahead(r);
     let x_free = std::mem::replace(&mut r.x_free, false);
+    let outer = std::mem::replace(&mut r.where_x, named);
     let mods = r.attempt(|r| predicate_mods(r, plural));
     r.x_free = x_free;
-    let mods = mods?;
+    r.where_x = outer;
+    let mut mods = mods?;
+    if named {
+        let count = where_x::counted(r)?;
+        mods = where_x::put_in(&mods, &count)?;
+    }
     let condition = leading.or_else(|| r.attempt(|r| as_long_as::read(r, Some(&affected))));
     if affected == Ref::This && condition.is_none() && !counts_stats(&mods) {
         return None;
@@ -536,7 +567,16 @@ fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Modification>>
     } else {
         ("gets", "has", "is")
     };
-    let goaded = |r: &mut Reader<'_>| r.words(&format!("and {is} goaded"));
+    // The last part: "and is goaded", "and can't be blocked by more than one creature".
+    let tail = |r: &mut Reader<'_>| {
+        if r.words(&format!("and {is} goaded")) {
+            Some(Modification::Goaded)
+        } else if r.words("and can't be blocked by more than one creature") {
+            Some(Modification::MaxBlockers(1))
+        } else {
+            None
+        }
+    };
     if !plural && r.words("isn't a creature") {
         return Some(vec![Modification::RemoveType(CardType::Creature)]);
     }
@@ -544,8 +584,12 @@ fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Modification>>
     if r.word(gets) {
         let stats = power_toughness(r)?;
         mods.push(counted_stats(r, stats)?);
-        if goaded(r) {
-            mods.push(Modification::Goaded);
+        if let Some(last) = tail(r) {
+            mods.push(last);
+            return Some(mods);
+        }
+        // ", where X is ..." names the X of the change and ends the clause.
+        if r.at_punct(',') && r.word_at(1) == Some("where") {
             return Some(mods);
         }
         let listed = r.punct(',');
@@ -560,8 +604,8 @@ fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Modification>>
         }
         if listed {
             r.punct(',').then_some(())?;
-            if goaded(r) {
-                mods.push(Modification::Goaded);
+            if let Some(last) = tail(r) {
+                mods.push(last);
             } else {
                 mods.push(of_a_kind(r, is)?);
             }
@@ -570,9 +614,7 @@ fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Modification>>
     }
     r.word(has).then_some(())?;
     mods.extend(gives(r)?);
-    if goaded(r) {
-        mods.push(Modification::Goaded);
-    }
+    mods.extend(tail(r));
     Some(mods)
 }
 
@@ -863,13 +905,18 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
                 tapped,
             },
             None,
-        ) => counters::entering_text(counter, count)
-            .map(|counters| {
-                let tapped = if *tapped { " tapped" } else { "" };
-                format!("~ enters{tapped} with {counters} on it")
-            })
-            .into_iter()
-            .collect(),
+        ) => {
+            let tapped = if *tapped { " tapped" } else { "" };
+            // A counted number is X, named at the end of the sentence.
+            let (shown, tail) = match defining::value_text(count) {
+                Some(said) => (Amount::X, format!(", where X is {said}")),
+                None => (count.clone(), String::new()),
+            };
+            counters::entering_text(counter, &shown)
+                .map(|counters| format!("~ enters{tapped} with {counters} on it{tail}"))
+                .into_iter()
+                .collect()
+        }
         (
             ReplaceBy::WithCounters { counter, count, .. },
             Some(Condition::CastWith(CastWay::Escape)),
@@ -988,6 +1035,9 @@ pub(super) fn control_texts(condition: &Condition) -> Vec<String> {
         _ => return Vec::new(),
     };
     let selector = Selector(rest);
+    if one && *op == Cmp::Ge && number == 1 && selector == your_commander() {
+        return vec![format!("{verb} your commander")];
+    }
     match (op, number) {
         (Cmp::Ge, 1) if one => single_texts(&selector)
             .into_iter()
@@ -1233,7 +1283,21 @@ fn predicate(
         }
         [Modification::CantAttack] => return Some("can't attack".to_owned()),
         [Modification::CantBlock] => return Some("can't block".to_owned()),
-        [Modification::CantBeBlocked] => return Some("can't be blocked".to_owned()),
+        [Modification::CantBeBlocked] => {
+            return Some("can't be blocked".to_owned());
+        }
+        [Modification::MaxBlockers(1)] => {
+            return Some("can't be blocked by more than one creature".to_owned());
+        }
+        [Modification::MinBlockers(count @ 2..)] => {
+            return Some(format!(
+                "can't be blocked except by {} or more creatures",
+                count_word(*count)?
+            ));
+        }
+        [Modification::CanBlockOnly(only)] => {
+            return Some(format!("can block only {}", phrase_text(only, Form::All)?));
+        }
         [Modification::CantBlock, Modification::CantBeBlocked] => {
             return Some("can't block and can't be blocked".to_owned());
         }
@@ -1250,11 +1314,16 @@ fn predicate(
     } else {
         ("gets", "has", "is")
     };
-    // "is goaded" and "is a Monk in addition to its other types" are the last part of the sentence.
+    // "is goaded", "can't be blocked by more than one creature" and "is a Monk in addition to its other types" are the
+    // last part of the sentence.
     let (mods, last) = match mods.split_last() {
         Some((Modification::Goaded, rest)) if !rest.is_empty() => {
             (rest, Some(format!("{is} goaded")))
         }
+        Some((Modification::MaxBlockers(1), rest)) if !rest.is_empty() => (
+            rest,
+            Some("can't be blocked by more than one creature".to_owned()),
+        ),
         Some((Modification::AddSubtype(Subtype(kind)), rest)) if !rest.is_empty() && !plural => (
             rest,
             Some(format!(

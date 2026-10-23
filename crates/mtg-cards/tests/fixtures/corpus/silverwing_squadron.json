@@ -1,0 +1,28 @@
+{
+  "id": "4f674d39-e437-4efb-843b-30b18b567e98",
+  "oracle_id": "ba968a1e-c946-4cbe-9727-160c73cde3f4",
+  "name": "Silverwing Squadron",
+  "lang": "en",
+  "layout": "normal",
+  "set": "moc",
+  "collector_number": "207",
+  "rarity": "rare",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{5}{W}",
+  "cmc": 6.0,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "Flying, vigilance\nSilverwing Squadron's power and toughness are each equal to the number of creatures you control.\nWhenever this creature attacks, create a number of 2/2 white Knight creature tokens with vigilance equal to the number of opponents you have.",
+  "power": "*",
+  "toughness": "*",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Vigilance"
+  ]
+}

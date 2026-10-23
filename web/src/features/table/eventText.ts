@@ -69,6 +69,13 @@ function modificationWords(modification: Modification, group: boolean): string {
     }[modification]
   }
   if ('CantBeBlockedBy' in modification) return "can't be blocked by some creatures"
+  if ('CanBlockOnly' in modification) return 'can block only some creatures'
+  if ('MinBlockers' in modification) {
+    return `can't be blocked except by ${modification.MinBlockers} or more creatures`
+  }
+  if ('MaxBlockers' in modification) {
+    return `can't be blocked by more than ${modification.MaxBlockers} ${modification.MaxBlockers === 1 ? 'creature' : 'creatures'}`
+  }
   if ('AddType' in modification) return `${becomes} ${modification.AddType.toLowerCase()} too`
   if ('RemoveType' in modification) return `${loses} ${modification.RemoveType.toLowerCase()} as a type`
   if ('AddSubtype' in modification) return `${becomes} ${modification.AddSubtype} too`
