@@ -1,0 +1,30 @@
+{
+  "id": "fd27ba9e-5b9c-468f-9a44-bf2e89138e72",
+  "oracle_id": "b0381c2a-40e2-4002-82e3-ae2d687daed3",
+  "name": "Imperious Oligarch",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rna",
+  "collector_number": "184",
+  "rarity": "common",
+  "released_at": "2019-01-25",
+  "digital": false,
+  "mana_cost": "{W}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Cleric",
+  "oracle_text": "Vigilance\nAfterlife 1 (When this creature dies, create a 1/1 white and black Spirit creature token with flying.)",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Afterlife",
+    "Vigilance"
+  ]
+}

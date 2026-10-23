@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c43b616e-ef87-4c12-810b-a1a3260168fa",
+  "name": "Skewer the Critics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skewer the Critics",
+      "oracle_fingerprint": "119c2ff8feddc683163a0f716709d1c8",
+      "abilities": [
+        { "Keyword": { "Spectacle": "{R}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

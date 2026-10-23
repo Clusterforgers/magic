@@ -1,0 +1,28 @@
+{
+  "id": "672b88fa-250b-4f8f-878e-ce3446c92ea9",
+  "oracle_id": "f5f4d78b-ed2b-471b-9ece-237fb55adc13",
+  "name": "Syndicate Messenger",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clu",
+  "collector_number": "75",
+  "rarity": "common",
+  "released_at": "2024-02-23",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Bird",
+  "oracle_text": "Flying\nAfterlife 1 (When this creature dies, create a 1/1 white and black Spirit creature token with flying.)",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Afterlife"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "bf1ef8ec-d915-41f2-b087-3d6d82e3db85",
+  "oracle_id": "107f204c-9fd3-490d-8887-be63d14fc6a4",
+  "name": "Akroma, Angel of Wrath",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c20",
+  "collector_number": "73",
+  "rarity": "mythic",
+  "released_at": "2020-04-17",
+  "digital": false,
+  "mana_cost": "{5}{W}{W}{W}",
+  "cmc": 8.0,
+  "type_line": "Legendary Creature — Angel",
+  "oracle_text": "Flying, first strike, vigilance, trample, haste, protection from black and from red",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Vigilance",
+    "First strike",
+    "Protection",
+    "Haste",
+    "Trample"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "912b94c9-7200-452d-940f-df0a7cceb377",
+  "oracle_id": "8d286376-f386-43ab-a9bd-8478fb9e2497",
+  "name": "Light Up the Stage",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "166",
+  "rarity": "uncommon",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Spectacle {R} (You may cast this spell for its spectacle cost rather than its mana cost if an opponent lost life this turn.)\nExile the top two cards of your library. Until the end of your next turn, you may play those cards.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Spectacle"
+  ]
+}

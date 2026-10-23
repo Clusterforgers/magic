@@ -1,0 +1,27 @@
+{
+  "id": "acb7c9c9-fad0-4394-9b4f-7ef3db765fea",
+  "oracle_id": "4f6c9cee-5af7-4b00-a2a4-2770dab0a2dc",
+  "name": "Orzhov Racketeers",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clu",
+  "collector_number": "117",
+  "rarity": "uncommon",
+  "released_at": "2024-02-23",
+  "digital": false,
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Human Rogue",
+  "oracle_text": "Whenever this creature deals combat damage to a player, that player discards a card.\nAfterlife 2 (When this creature dies, create two 1/1 white and black Spirit creature tokens with flying.)",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Afterlife"
+  ]
+}

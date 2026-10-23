@@ -385,6 +385,9 @@ const RUNS: &[&str] = &[
     "Keyword.Awaken",
     "Keyword.Gravestorm",
     "Keyword.Sunburst",
+    "Keyword.Afterlife",
+    "Keyword.Horsemanship",
+    "Keyword.Spectacle",
     "Keyword.UmbraArmor",
     "ReplaceWhen.Destroyed",
     "ReplaceBy.UmbraArmor",
@@ -799,6 +802,9 @@ mod tests {
     #[case::awaken("Keyword.Awaken", true)]
     #[case::gravestorm("Keyword.Gravestorm", true)]
     #[case::sunburst("Keyword.Sunburst", true)]
+    #[case::afterlife("Keyword.Afterlife", true)]
+    #[case::horsemanship("Keyword.Horsemanship", true)]
+    #[case::spectacle("Keyword.Spectacle", true)]
     #[case::umbra_armor("Keyword.UmbraArmor", true)]
     #[case::replacing_destruction("ReplaceWhen.Destroyed", true)]
     #[case::saving_by_umbra_armor("ReplaceBy.UmbraArmor", true)]

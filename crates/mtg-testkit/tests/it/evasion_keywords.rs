@@ -1,4 +1,4 @@
-//! Goal: fear, intimidate, skulk, shadow and landwalk keep an attacker from being blocked as the rules say and are the one reading everyone shares: the options offered to the defender leave out the blockers that can't block, a block that was not offered is refused and changes nothing, fear needs an artifact or black blocker, intimidate an artifact or one that shares a color (a colorless attacker shares none), skulk a blocker whose power is not greater (judged as the layers leave it when blocks are declared), shadow works both ways and flying or reach do not answer it, landwalk looks at the lands the defending player controls (a land type an effect gave counts, another player's lands do not), keywords an effect gives or takes away count, and menace and several evasion keywords combine; at two, three and four seats.
+//! Goal: fear, intimidate, skulk, shadow, horsemanship and landwalk keep an attacker from being blocked as the rules say and are the one reading everyone shares: the options offered to the defender leave out the blockers that can't block, a block that was not offered is refused and changes nothing, fear needs an artifact or black blocker, intimidate an artifact or one that shares a color (a colorless attacker shares none), skulk a blocker whose power is not greater (judged as the layers leave it when blocks are declared), shadow works both ways and flying or reach do not answer it, horsemanship is answered by horsemanship alone, landwalk looks at the lands the defending player controls (a land type an effect gave counts, another player's lands do not), keywords an effect gives or takes away count, and menace and several evasion keywords combine; at two, three and four seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -208,6 +208,28 @@ fn skulk_reads_the_power_of_a_blocker_as_the_layers_leave_it(
     )?;
     to_blockers(&mut driver, 1)?;
     assert_eq!(offered(&driver), if may_block { vec!["B"] } else { vec![] });
+    Ok(())
+}
+
+#[rstest]
+#[case::a_plain_blocker(&[], &[])]
+#[case::a_flier_is_no_answer_for_horsemanship(&[Keyword::Flying, Keyword::Reach], &[])]
+#[case::shadow_is_no_answer_for_horsemanship(&[Keyword::Shadow], &[])]
+#[case::horsemanship_answers(&[Keyword::Horsemanship], &["B"])]
+#[case::horsemanship_and_more(&[Keyword::Horsemanship, Keyword::Flying], &["B"])]
+fn horsemanship_can_be_blocked_only_by_creatures_with_horsemanship(
+    #[case] keywords: &[Keyword],
+    #[case] expected: &[&str],
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let blocker = body("B", 2, NONE, false, keywords);
+    let mut driver = duel(
+        seats,
+        body("A", 2, NONE, false, &[Keyword::Horsemanship]),
+        vec![ready(blocker)],
+    )?;
+    ask(&mut driver)?;
+    assert_eq!(offered(&driver), expected);
     Ok(())
 }
 
