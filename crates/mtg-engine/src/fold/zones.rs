@@ -106,6 +106,9 @@ pub(super) fn move_object(
         object.controller = object.owner;
     }
     let (owner, token) = (object.owner, object.kind == ObjectKind::Token);
+    if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {
+        state.tally(owner, Tally::Graved);
+    }
     // A token is a token only on the battlefield (CR 111.7): anywhere else it ceases to exist.
     if token && to != Zone::Battlefield {
         crate::tokens::cease(state, id);

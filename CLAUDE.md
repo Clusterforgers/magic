@@ -1,6 +1,6 @@
 # Magic web platform
 
-Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/TypeScript client, Postgres. Design: `docs/PLAN.md`. Progress: `docs/ROADMAP.md` (continue with the next unchecked item). Agent briefs: `docs/agents.md`. Design notes: `docs/engine.md`, `docs/protocol.md`, `docs/server.md`, `docs/web.md`.
+Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/TypeScript client, Postgres. Design: `docs/PLAN.md`. Progress: `docs/ROADMAP.md` (continue with "Next up"). Agent briefs: `docs/agents.md`. Design notes: `docs/engine.md`, `docs/protocol.md`, `docs/server.md`, `docs/web.md`.
 
 ## Layout
 - `crates/mtg-core` shared value types · `mtg-engine` rules engine (no IO) · `mtg-cards` card DSL · `mtg-import` Scryfall/MTGJSON/deck parsing · `mtg-db` Postgres schema + repositories · `mtg-cli` fetch and ingest card data · `mtg-protocol` wire types · `mtg-server` axum + sqlx · `mtg-testkit` scenarios/invariants
@@ -30,7 +30,7 @@ Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/Ty
 - Keep context small: short tool output (`-q`, `tail`, `grep`), never re-read files already seen, delegate big work to agents with short briefs (`docs/agents.md`), suggest `/compact` between roadmap items.
 - Delegate in pieces of about 15 minutes; agents commit after every finished module (`wip:` prefix for unfinished checkpoints).
 - Build in roadmap order (`docs/ROADMAP.md`, Order of work): structure before additions, and web work only against final engine and protocol types.
-- Tick the roadmap item in the commit that finishes it. After a restart, run `git worktree list` and read each worktree's status before resuming work.
+- Finish a roadmap item in its own commit: delete its line, make a leftover a new lettered item and name a new area under Done. After a restart, run `git worktree list` and read each worktree's status before resuming work.
 - Review agent output against these rules and run `scripts/check.sh` on the merged result before accepting it.
 
 ## Git

@@ -1,0 +1,23 @@
+{
+  "id": "f404d133-fc1a-4751-ac72-554e6553e486",
+  "oracle_id": "11b5308d-5bc0-4782-875f-a28be36e665d",
+  "name": "Beastmaster Ascension",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ncc",
+  "collector_number": "283",
+  "rarity": "rare",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever a creature you control attacks, you may put a quest counter on this enchantment.\nAs long as this enchantment has seven or more quest counters on it, creatures you control get +5/+5.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

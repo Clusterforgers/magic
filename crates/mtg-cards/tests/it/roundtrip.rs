@@ -259,6 +259,11 @@ fn keyword() -> impl Strategy<Value = Keyword> {
         cost().prop_map(Keyword::Bestow),
         cost().prop_map(Keyword::Blitz),
         cost().prop_map(Keyword::Prowl),
+        cost().prop_map(Keyword::Scavenge),
+        cost().prop_map(Keyword::Transmute),
+        (1u32..10, cost()).prop_map(|(count, cost)| Keyword::Awaken { count, cost }),
+        Just(Keyword::Gravestorm),
+        Just(Keyword::Sunburst),
         Just(Keyword::Demonstrate),
         (1u32..9).prop_map(Keyword::Hideaway),
         Just(Keyword::Demonstrate),
@@ -269,6 +274,10 @@ fn keyword() -> impl Strategy<Value = Keyword> {
         cost().prop_map(Keyword::CumulativeUpkeep),
         cost().prop_map(Keyword::Ward),
         cost().prop_map(Keyword::Equip),
+        (leaf_selector(), cost()).prop_map(|(to, cost)| Keyword::EquipTo {
+            to: Box::new(to),
+            cost
+        }),
         cost().prop_map(Keyword::Reconfigure),
         leaf_selector().prop_map(Keyword::Enchant),
         cost().prop_map(Keyword::Cycling),

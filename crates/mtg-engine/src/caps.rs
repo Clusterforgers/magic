@@ -74,6 +74,7 @@ const RUNS: &[&str] = &[
     "Amount.Greatest",
     "Amount.Total",
     "Amount.CardTypes",
+    "Amount.Devotion",
     "Amount.LowestLife",
     "Amount.HighestLife",
     "Cost.Tap",
@@ -125,6 +126,8 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.Restricted",
     "Effect.AddMana.CommanderIdentity",
     "Effect.AddMana.ProducedBy",
+    "Effect.AddMana.OfTapped",
+    "Effect.AddMana.AnyCombination",
     "Ability.ManaAbility.Complex",
     "Effect.PutCounters",
     "Effect.RemoveCounters",
@@ -135,6 +138,7 @@ const RUNS: &[&str] = &[
     "Effect.Unattach",
     "Effect.JoinAttack",
     "Effect.Transform",
+    "Effect.Flip",
     "Effect.WinGame",
     "Effect.Surveil",
     "Effect.Proliferate",
@@ -275,6 +279,9 @@ const RUNS: &[&str] = &[
     "Condition.Performed",
     "Amount.Kicks",
     "Amount.Promised",
+    "Amount.CastWith",
+    "Amount.ColorsSpent",
+    "Amount.PermanentsGraved",
     "Ability.Replacement",
     "Ability.CostModifier",
     "ReplaceWhen.TokenCreation",
@@ -341,6 +348,9 @@ const RUNS: &[&str] = &[
     "Keyword.Ravenous",
     "Keyword.Fabricate",
     "Keyword.Ascend",
+    "Keyword.ForMirrodin",
+    "Keyword.JobSelect",
+    "Keyword.EquipTo",
     "Condition.CitysBlessing",
     "Effect.MyriadCopies",
     "Keyword.JumpStart",
@@ -353,6 +363,11 @@ const RUNS: &[&str] = &[
     "Keyword.SplitSecond",
     "Keyword.Undaunted",
     "Keyword.Encore",
+    "Keyword.Scavenge",
+    "Keyword.Transmute",
+    "Keyword.Awaken",
+    "Keyword.Gravestorm",
+    "Keyword.Sunburst",
     "Condition.NewlyControlled",
     "Condition.Level",
     "Rule.CanBeCommander",
@@ -438,6 +453,7 @@ mod tests {
     #[case::living_weapon("Keyword.LivingWeapon", true)]
     #[case::unattaching("Effect.Unattach", true)]
     #[case::transforming("Effect.Transform", true)]
+    #[case::flipping("Effect.Flip", true)]
     #[case::day_and_night("Keyword.Daybound", true)]
     #[case::the_night_face("Keyword.Nightbound", true)]
     #[case::fusing("Keyword.Fuse", true)]
@@ -534,6 +550,9 @@ mod tests {
     #[case::spending_mana_to_cast("Condition.ManaSpent", true)]
     #[case::exiling_for_another_duration("Exile.Duration.UntilYourNextTurn", false)]
     #[case::the_number_of_kicks("Amount.Kicks", true)]
+    #[case::cast_for_a_way("Amount.CastWith", true)]
+    #[case::colors_spent("Amount.ColorsSpent", true)]
+    #[case::permanents_graved("Amount.PermanentsGraved", true)]
     #[case::may("Effect.May", true)]
     #[case::choosing("Effect.Choose", true)]
     #[case::modes("Effect.Modal", true)]
@@ -616,7 +635,9 @@ mod tests {
     #[case::mana_restricted_to_what_it_may_be_spent_on("Effect.AddMana.Restricted", true)]
     #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", true)]
     #[case::mana_a_land_could_produce("Effect.AddMana.ProducedBy", true)]
-    #[case::devotion("Amount.Devotion", false)]
+    #[case::devotion("Amount.Devotion", true)]
+    #[case::mana_the_tapped_land_produced("Effect.AddMana.OfTapped", true)]
+    #[case::mana_in_any_combination("Effect.AddMana.AnyCombination", true)]
     #[case::the_greatest_value("Amount.Greatest", true)]
     #[case::totals("Amount.Total", true)]
     #[case::card_types_among_cards("Amount.CardTypes", true)]
@@ -720,6 +741,9 @@ mod tests {
     #[case::improvise("Keyword.Improvise", true)]
     #[case::affinity("Keyword.Affinity", true)]
     #[case::typecycling("Keyword.Typecycling", true)]
+    #[case::for_mirrodin("Keyword.ForMirrodin", true)]
+    #[case::job_select("Keyword.JobSelect", true)]
+    #[case::equip_to("Keyword.EquipTo", true)]
     #[case::split_second("Keyword.SplitSecond", true)]
     #[case::undaunted("Keyword.Undaunted", true)]
     #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]
@@ -735,6 +759,11 @@ mod tests {
     #[case::mutate("Keyword.Mutate", true)]
     #[case::mutating_triggers("Trigger.Mutates", true)]
     #[case::encore("Keyword.Encore", true)]
+    #[case::scavenge("Keyword.Scavenge", true)]
+    #[case::transmute("Keyword.Transmute", true)]
+    #[case::awaken("Keyword.Awaken", true)]
+    #[case::gravestorm("Keyword.Gravestorm", true)]
+    #[case::sunburst("Keyword.Sunburst", true)]
     #[case::pairing_attackers_with_players("Rule.MustAttackPlayers", true)]
     #[case::taxing_attackers("Rule.AttackTax", true)]
     #[case::squad("Keyword.Squad", true)]

@@ -30,6 +30,18 @@ use crate::value::{Amount, Condition};
 /// source for each way, and the validator refuses a choice of more.
 pub const MANA_WAYS: usize = 6;
 
+/// The most ways one mana ability may make its mana when it picks a combination: five mana of five types is 126. The
+/// engine keeps a source for each way (`mana_ability.rs`), so an ability with more is no mana ability it runs.
+pub const MANA_COMBINATIONS: usize = 128;
+
+/// How many ways there are to pick `count` mana among `types` types (a multiset: the order of the mana is no choice).
+pub fn combinations(types: usize, count: u32) -> usize {
+    let (n, k) = (count as usize + types.max(1) - 1, types.max(1) - 1);
+    (1..=k).fold(1_usize, |ways, step| {
+        ways.saturating_mul(n - k + step) / step
+    })
+}
+
 /// The one primitive a plain `{T}: Add {X}` stands for: the engine runs that exact shape, one fixed
 /// mana for a tap, not the general `Ability.Activated`, `Cost.Tap` and `Effect.AddMana`.
 pub const PLAIN_MANA_ABILITY: &str = "Ability.ManaAbility";
@@ -146,8 +158,15 @@ pub(crate) fn played_layout(printed: &PrintedCard, caps: &Caps) -> Option<Layout
 /// A card with several faces as the engine plays it: the card outside the stack and the battlefield, and its faces.
 ///
 /// A split card is both halves there (CR 709.4): two names, the combined colors and types and the mana symbols
-/// of both costs, so its mana value is their sum. The other two layouts are their front face.
-fn whole_card(printed: &PrintedCard, layout: Layout, faces: Vec<CardDefinition>) -> CardDefinition {
+/// of both costs, so its mana value is their sum. The other layouts are their front face.
+fn whole_card(
+    printed: &PrintedCard,
+    layout: Layout,
+    mut faces: Vec<CardDefinition>,
+) -> CardDefinition {
+    if layout == Layout::Flip {
+        flipped_keeps_cost(&mut faces);
+    }
     let mut whole = match layout {
         Layout::Split => {
             let mut whole = CardDefinition::new(printed.name.clone());
@@ -177,6 +196,16 @@ fn whole_card(printed: &PrintedCard, layout: Layout, faces: Vec<CardDefinition>)
     whole.layout = layout;
     whole.faces = faces;
     whole
+}
+
+/// The bottom half of a flip card has the mana cost and the colour of the top half (CR 710.2), so a flipped permanent
+/// keeps its mana value and colours.
+fn flipped_keeps_cost(faces: &mut [CardDefinition]) {
+    if let [top, bottom] = faces {
+        bottom.mana_cost.clone_from(&top.mana_cost);
+        bottom.x_in_cost = top.x_in_cost;
+        bottom.color_indicator = top.color_indicator;
+    }
 }
 
 /// The spell a split card with fuse is when both halves are cast (CR 702.102c): the targets of the left half and then
@@ -296,6 +325,14 @@ pub enum ManaProduced<'a> {
         /// How many.
         count: u32,
     },
+    /// This many mana, each of a type its controller picks from these (all five colors when none are listed) as the
+    /// ability is activated.
+    AnyCombination {
+        /// How many mana.
+        count: u32,
+        /// The types to pick from; none means the five colors.
+        among: &'a [ManaType],
+    },
     /// Mana of several types, one of each listed (`{W}{U}`, `{C}{G}`).
     Mixed(&'a [ManaType]),
     /// This many mana of one colour its controller picks when the ability is activated.
@@ -351,6 +388,11 @@ impl<'a> ManaProduced<'a> {
                 count: *count,
                 colorless: *colorless,
             },
+            Produce::AnyCombination { count, among } => ManaProduced::AnyCombination {
+                count: *count,
+                among,
+            },
+            Produce::OfTapped => return None,
         })
     }
 }
@@ -363,7 +405,8 @@ impl ManaProduced<'_> {
             | ManaProduced::AnyColor(count)
             | ManaProduced::ChosenColor(count)
             | ManaProduced::CommanderIdentity(count)
-            | ManaProduced::ProducedBy { count, .. } => *count,
+            | ManaProduced::ProducedBy { count, .. }
+            | ManaProduced::AnyCombination { count, .. } => *count,
             ManaProduced::OneOf(_) | ManaProduced::OrChosenColor(_) => 1,
             ManaProduced::OneOfLists(lists) => lists
                 .iter()
@@ -527,6 +570,13 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
         return None;
     };
     let produces = ManaProduced::of(mana)?;
+    // A combination keeps one source for each way to pick it, so it is added once and there are not too many ways.
+    if let ManaProduced::AnyCombination { count, among } = &produces {
+        let types = if among.is_empty() { 5 } else { among.len() };
+        if !times.is_one() || combinations(types, *count) > MANA_COMBINATIONS {
+            return None;
+        }
+    }
     let distinct = then
         .iter()
         .enumerate()

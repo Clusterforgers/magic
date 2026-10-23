@@ -1,0 +1,29 @@
+{
+  "id": "b94cc636-de31-41b2-9c35-0bdfcdd0c1c1",
+  "oracle_id": "d215127b-5f1d-4d3c-935b-c228c9c7f874",
+  "name": "Dimir Infiltrator",
+  "lang": "en",
+  "layout": "normal",
+  "set": "pca",
+  "collector_number": "86",
+  "rarity": "common",
+  "released_at": "2016-11-25",
+  "digital": false,
+  "mana_cost": "{U}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Spirit",
+  "oracle_text": "This creature can't be blocked.\nTransmute {1}{U}{B} ({1}{U}{B}, Discard this card: Search your library for a card with the same mana value as this card, reveal it, put it into your hand, then shuffle. Transmute only as a sorcery.)",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Transmute"
+  ]
+}

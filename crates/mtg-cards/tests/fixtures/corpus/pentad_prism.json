@@ -1,0 +1,21 @@
+{
+  "id": "e4beb84e-9eb9-48a2-932a-91fbbf218b5b",
+  "oracle_id": "72e8d67a-41e6-4074-bcbd-b54ead995237",
+  "name": "Pentad Prism",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoc",
+  "collector_number": "56",
+  "rarity": "uncommon",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact",
+  "oracle_text": "Sunburst (This artifact enters with a charge counter on it for each color of mana spent to cast it.)\nRemove a charge counter from this artifact: Add one mana of any color.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Sunburst"
+  ]
+}

@@ -3,7 +3,7 @@
 //! activated an activated ability.
 
 use super::tokens::Reader;
-use super::{costs, effects, modal, render, statics, triggers};
+use super::{costs, effects, mana_trigger, modal, render, statics, triggers};
 use crate::ability::{Ability, Limit, Timing};
 use crate::effect::Effect;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
@@ -138,7 +138,10 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         (true, None) => Some(triggers::saddled()),
         (true, Some(_)) => return None,
     };
-    let effects = sentences(r, false)?;
+    let effects = match r.attempt(|r| mana_trigger::effects(r, &when)) {
+        Some(mana) => mana,
+        None => sentences(r, false)?,
+    };
     // A card cycled is in its owner's graveyard when its own ability triggers, and a card that returns itself from the
     // graveyard has its ability there.
     let from = if triggers::cycled_itself(&when)

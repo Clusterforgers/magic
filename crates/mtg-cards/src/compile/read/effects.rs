@@ -931,7 +931,7 @@ fn evasion(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 }
 
 /// The mana of a symbol, when it is one a land or creature can produce.
-fn mana_type(symbol: &str) -> Option<ManaType> {
+pub(super) fn mana_type(symbol: &str) -> Option<ManaType> {
     ManaType::ALL
         .into_iter()
         .find(|mana| symbol.len() == 1 && symbol.starts_with(mana.symbol()))
@@ -980,6 +980,41 @@ fn several_of_one_color(r: &mut Reader<'_>) -> Option<u32> {
     Some(count)
 }
 
+/// The types before the last of a list that is joined by commas and a final "and/or".
+fn comma_types(r: &mut Reader<'_>) -> Option<Vec<ManaType>> {
+    let mut list = vec![mana_type(r.symbol()?)?];
+    while let Some(next) = r.attempt(|r| {
+        r.punct(',').then_some(())?;
+        mana_type(r.symbol()?)
+    }) {
+        list.push(next);
+    }
+    Some(list)
+}
+
+/// "two mana in any combination of colors", "three mana in any combination of {R} and/or {G}": several mana, each of a
+/// type picked when it is added.
+pub(super) fn combination(r: &mut Reader<'_>) -> Option<Produce> {
+    let count = number_word(r.take_word()?).filter(|count| *count >= 2)?;
+    r.need("mana in any combination of")?;
+    if r.word("colors") {
+        return Some(Produce::AnyCombination {
+            count,
+            among: Vec::new(),
+        });
+    }
+    let mut among = comma_types(r)?;
+    r.attempt(|r| {
+        r.punct(',');
+        r.word("and").then_some(())?;
+        r.punct('/').then_some(())?;
+        r.word("or").then_some(())?;
+        among.push(mana_type(r.symbol()?)?);
+        Some(())
+    })?;
+    Some(Produce::AnyCombination { count, among })
+}
+
 /// The lands a mana ability looks at, as "a land an opponent controls" and "a land you control" say.
 fn lands_of(who: Ref) -> Selector {
     Selector(vec![
@@ -1023,6 +1058,8 @@ fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         produced
     } else if r.words("one mana of any color") {
         Produce::AnyColor(1)
+    } else if let Some(combination) = r.attempt(combination) {
+        combination
     } else if let Some(count) = r.attempt(several_of_one_color) {
         Produce::AnyColor(count)
     } else if r.words("one mana of the chosen color") {

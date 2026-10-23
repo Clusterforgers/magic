@@ -84,6 +84,8 @@ pub enum CastWay {
     Blitz,
     /// Prowl (CR 702.76): a spell cast for its prowl cost, which its abilities read as "if its prowl cost was paid".
     Prowl,
+    /// Awaken (CR 702.113): a spell cast from a hand for its awaken cost, which also puts counters on a land and animates it.
+    Awaken,
     /// Jump-start (CR 702.133): from a graveyard for its mana cost and the discard of a card; exiled when it leaves the stack.
     JumpStart,
     /// Retrace (CR 702.81): from a graveyard for its mana cost and the discard of a land card.
@@ -226,6 +228,12 @@ pub enum Amount {
     Kicks,
     /// One if the caster promised a gift as they cast the spell the ability reads, else zero (CR 702.174).
     Promised,
+    /// One if the spell was cast for this alternative cost, else zero (a target specification that only awaken adds reads it in its most).
+    CastWith(CastWay),
+    /// How many colors there are among the mana spent to cast the spell the source is or came from (CR 702.44, sunburst).
+    ColorsSpent,
+    /// How many permanents were put into a graveyard from the battlefield this turn, tokens included (CR 702.69, gravestorm).
+    PermanentsGraved,
     /// The amount of the event that triggered the ability ("that much", "that many", "the damage dealt"): the damage
     /// dealt, the life gained or lost, the counters put or removed; for a batch ("one or more") how many of its events
     /// the pattern found.
@@ -267,6 +275,9 @@ enum Tagged {
     HighestLife(Ref),
     Kicks,
     Promised,
+    CastWith(CastWay),
+    ColorsSpent,
+    PermanentsGraved,
     Triggering,
 }
 
@@ -307,6 +318,9 @@ enum TaggedRef<'a> {
     HighestLife(&'a Ref),
     Kicks,
     Promised,
+    CastWith(CastWay),
+    ColorsSpent,
+    PermanentsGraved,
     Triggering,
 }
 
@@ -332,6 +346,9 @@ impl From<Tagged> for Amount {
             Tagged::HighestLife(who) => Amount::HighestLife(who),
             Tagged::Kicks => Amount::Kicks,
             Tagged::Promised => Amount::Promised,
+            Tagged::CastWith(way) => Amount::CastWith(way),
+            Tagged::ColorsSpent => Amount::ColorsSpent,
+            Tagged::PermanentsGraved => Amount::PermanentsGraved,
             Tagged::Triggering => Amount::Triggering,
         }
     }
@@ -366,6 +383,9 @@ impl Serialize for Amount {
             Amount::HighestLife(who) => TaggedRef::HighestLife(who).serialize(serializer),
             Amount::Kicks => TaggedRef::Kicks.serialize(serializer),
             Amount::Promised => TaggedRef::Promised.serialize(serializer),
+            Amount::CastWith(way) => TaggedRef::CastWith(*way).serialize(serializer),
+            Amount::ColorsSpent => TaggedRef::ColorsSpent.serialize(serializer),
+            Amount::PermanentsGraved => TaggedRef::PermanentsGraved.serialize(serializer),
             Amount::Triggering => TaggedRef::Triggering.serialize(serializer),
         }
     }

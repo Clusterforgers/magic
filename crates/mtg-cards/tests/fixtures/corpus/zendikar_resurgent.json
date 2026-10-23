@@ -1,0 +1,30 @@
+{
+  "id": "33f64032-1e87-4d22-a211-c37e11ffa247",
+  "oracle_id": "a0af158b-f42a-4022-a438-e0a2e1fd6d9e",
+  "name": "Zendikar Resurgent",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c17",
+  "collector_number": "160",
+  "rarity": "rare",
+  "released_at": "2017-08-25",
+  "digital": false,
+  "mana_cost": "{5}{G}{G}",
+  "cmc": 7.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever you tap a land for mana, add one mana of any type that land produced. (The types of mana are white, blue, black, red, green, and colorless.)\nWhenever you cast a creature spell, draw a card.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

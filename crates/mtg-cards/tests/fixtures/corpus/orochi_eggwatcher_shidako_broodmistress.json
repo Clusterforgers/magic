@@ -1,0 +1,42 @@
+{
+  "id": "a4f4aa3b-c64a-4430-b1a2-a7fca87d0a22",
+  "oracle_id": "e448e27c-f66d-4369-8215-7f7275e456e1",
+  "name": "Orochi Eggwatcher // Shidako, Broodmistress",
+  "lang": "en",
+  "layout": "flip",
+  "set": "chk",
+  "collector_number": "233",
+  "rarity": "uncommon",
+  "released_at": "2004-10-01",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Snake Shaman // Legendary Creature — Snake Shaman",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "card_faces": [
+    {
+      "name": "Orochi Eggwatcher",
+      "mana_cost": "{2}{G}",
+      "type_line": "Creature — Snake Shaman",
+      "oracle_text": "{2}{G}, {T}: Create a 1/1 green Snake creature token. If you control ten or more creatures, flip this creature.",
+      "power": "1",
+      "toughness": "1"
+    },
+    {
+      "name": "Shidako, Broodmistress",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Snake Shaman",
+      "oracle_text": "{G}, Sacrifice a creature: Target creature gets +3/+3 until end of turn.",
+      "power": "3",
+      "toughness": "3"
+    }
+  ]
+}

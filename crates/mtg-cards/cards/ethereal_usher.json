@@ -1,0 +1,29 @@
+{
+  "oracle_id": "3ad6e495-d0e6-4b07-8f91-fe057e173975",
+  "name": "Ethereal Usher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ethereal Usher",
+      "oracle_fingerprint": "eec629ef6033508dfc0fb128a5c86d0f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Transmute": "{1}{U}{U}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "cafcf909-d726-4bc2-adf6-c12ca242f0c1",
+  "oracle_id": "bfe06fb5-83b5-4212-86f8-947dfba15b26",
+  "name": "Steelclaw Lance",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eld",
+  "collector_number": "202",
+  "rarity": "uncommon",
+  "released_at": "2019-10-04",
+  "digital": false,
+  "mana_cost": "{B}{R}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +2/+2.\nEquip Knight {1}\nEquip {3}",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [
+    "Equip"
+  ]
+}

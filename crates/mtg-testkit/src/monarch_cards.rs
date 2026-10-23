@@ -21,6 +21,7 @@ pub const MONARCH_CARDS: &[(&str, usize)] = &[
     ("M'Baku, Jabari Chieftain", 3),
     ("Knights of the Black Rose", 3),
     ("Palace Jailer", 3),
+    ("Regal Behemoth", 2),
     ("Custodi Lich", 2),
     ("Dawnglade Regent", 2),
 ];

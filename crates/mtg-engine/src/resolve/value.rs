@@ -1,6 +1,6 @@
 //! The values of the DSL read from the game: references, selectors, amounts and conditions.
 //!
-//! Nothing here changes state. What the engine cannot evaluate yet (devotion) is a
+//! Nothing here changes state. What the engine cannot evaluate (a divided amount outside the damage or counters it divides) is a
 //! `ResolveError::Unsupported` with the name of what is missing; `Caps` keeps the cards that need
 //! them from being offered, so the error is not met in a game.
 
@@ -12,8 +12,9 @@ use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{AbilityKind, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::value::{Amount, CastWay, Condition, CounterKind, StatKind};
 use mtg_core::card::CardType;
+use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
-use mtg_core::mana::ManaType;
+use mtg_core::mana::{ManaCost, ManaType};
 use thiserror::Error;
 
 use super::share::{OUTSIDE_A_DIVISION, Share};
@@ -137,6 +138,14 @@ fn stacked_x(object: &GameObject) -> u32 {
     } else {
         0
     }
+}
+
+/// How many different colors there are among the mana (colorless is none).
+fn colors_among(mana: &[ManaType]) -> usize {
+    ManaType::ALL
+        .iter()
+        .filter(|kind| **kind != ManaType::Colorless && mana.contains(kind))
+        .count()
 }
 
 /// Whether the predicate holds only for objects on the stack (a spell, an ability, or one of several that are).
@@ -858,7 +867,7 @@ impl<'a> Scope<'a> {
             }
             Amount::TargetCount(index) => i64::try_from(self.chosen(usize::from(*index)).len())
                 .map_err(|_| ResolveError::Invalid("too many targets".into()))?,
-            Amount::Devotion(_) => return Err(ResolveError::Unsupported("devotion")),
+            Amount::Devotion(colors) => self.devotion(colors)?,
             Amount::Greatest { of, stat } => self.stats(of, *stat)?.into_iter().max().unwrap_or(0),
             Amount::Total { of, stat } => self.stats(of, *stat)?.into_iter().sum(),
             Amount::CardTypes(of) => self.card_types_among(of)?,
@@ -867,6 +876,9 @@ impl<'a> Scope<'a> {
             Amount::LowestLife(who) => self.lives(who)?.min().unwrap_or(i64::from(i32::MAX)),
             Amount::HighestLife(who) => self.lives(who)?.max().unwrap_or(i64::from(i32::MIN)),
             Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
+            Amount::CastWith(way) => i64::from(self.cast_way() == Some(*way)),
+            Amount::ColorsSpent => i64::try_from(colors_among(&self.mana_spent())).unwrap_or(0),
+            Amount::PermanentsGraved => i64::from(self.state.graved_this_turn()),
             Amount::Kicks => i64::try_from(self.payments(OptionalKind::Kicker))
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
             Amount::Triggering => self
@@ -901,6 +913,30 @@ impl<'a> Scope<'a> {
             .into_iter()
             .filter_map(|object| self.seen(object).and_then(|seen| Self::stat(&seen, stat)))
             .collect())
+    }
+
+    /// The controller's devotion to the colors (CR 700.5): the mana symbols of at least one of them among the mana costs of
+    /// the permanents they control, a symbol of two of the colors counted once. A permanent has the copiable mana cost
+    /// of its card, a copy's that of what it copies, and a face-down one has none (CR 707.2, 708.2).
+    fn devotion(&self, colors: &[Color]) -> Result<i64, ResolveError> {
+        let mine = Selector(vec![
+            Pred::In(ZoneKind::Battlefield),
+            Pred::ControlledBy(Ref::You),
+        ]);
+        let mut total = 0i64;
+        for object in self.matching(&mine)? {
+            let cost = self
+                .seen(object)
+                .and_then(|seen| seen.card)
+                .and_then(|card| card.card().mana_cost.as_ref());
+            let symbols = cost.map_or(&[][..], ManaCost::symbols);
+            let counted = symbols
+                .iter()
+                .filter(|symbol| colors.iter().any(|color| symbol.colors().contains(*color)))
+                .count();
+            total += i64::try_from(counted).unwrap_or(i64::MAX);
+        }
+        Ok(total)
     }
 
     /// How many of the card types there are among the objects the selector matches, each counted once.
@@ -1450,7 +1486,6 @@ mod tests {
     }
 
     #[rstest]
-    #[case::devotion(r#"{"Devotion":["Red"]}"#, "devotion")]
     #[case::divided(
         r#""Divided""#,
         "a divided amount outside the damage or counters it divides"
@@ -1872,7 +1907,10 @@ mod tests {
     }
 
     #[rstest]
-    #[case::devotion(r#"{"Devotion":["Black"]}"#, "devotion")]
+    #[case::divided(
+        r#""Divided""#,
+        "a divided amount outside the damage or counters it divides"
+    )]
     fn an_amount_the_evaluator_cannot_read_yet_says_what_it_lacks(
         #[case] json: &str,
         #[case] lacks: &'static str,

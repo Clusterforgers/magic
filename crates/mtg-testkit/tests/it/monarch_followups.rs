@@ -1,4 +1,4 @@
-//! Goal: the monarch cards that need more than the designation work at tables of two, three and four seats: damage causes no loss of life to the monarch who has the Archon and to nobody else, a creature exiled until an opponent becomes the monarch returns when any opponent of its exiler becomes it and not when its exiler does, an ability that asks whether a player was the monarch as the turn began counts the designation held when the turn began, a creature that attacks the monarch gets the bonus of the attack trigger and one that attacks anyone else does not, a player's own commander passes the designation on when nobody has it and no other creature does, and the monarch at the end step draws the extra card of the Archivist.
+//! Goal: the monarch cards that need more than the designation work at tables of two, three and four seats: a land tapped for mana adds the extra mana of the Behemoth only while its controller is the monarch, damage causes no loss of life to the monarch who has the Archon and to nobody else, a creature exiled until an opponent becomes the monarch returns when any opponent of its exiler becomes it and not when its exiler does, an ability that asks whether a player was the monarch as the turn began counts the designation held when the turn began, a creature that attacks the monarch gets the bonus of the attack trigger and one that attacks anyone else does not, a player's own commander passes the designation on when nobody has it and no other creature does, and the monarch at the end step draws the extra card of the Archivist.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -13,7 +13,7 @@ use mtg_engine::setup::PresetPermanent;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, replay};
-use mtg_testkit::cards::{burn, free_creature, island, monarcher, mountain, plains};
+use mtg_testkit::cards::{burn, forest, free_creature, island, monarcher, mountain, plains};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, monarch_fuzz_setup, play_game, ready};
 use rstest::rstest;
@@ -262,6 +262,38 @@ fn knights_of_the_black_rose_drain_when_their_controller_was_the_monarch_as_the_
     assert_eq!(monarch(&driver), Some(1));
     assert_eq!(life(&driver, 1), foe_life);
     assert_eq!(life(&driver, 0), my_life);
+    Ok(())
+}
+
+#[rstest]
+#[case::the_monarch(Some(0), 2)]
+#[case::nobody_is_the_monarch(None, 1)]
+#[case::another_seat_is_the_monarch(Some(1), 1)]
+fn regal_behemoth_adds_a_mana_to_a_land_its_controller_taps_only_while_they_are_the_monarch(
+    #[case] holder: Option<usize>,
+    #[case] added: usize,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(table(
+        seats,
+        &[ready(forest()), ready(card("Regal Behemoth").unwrap())],
+    ))?;
+    if let Some(seat) = holder {
+        crown_in(&mut driver, 1, seat)?;
+    }
+    driver.idle_until(1, Step::Main1)?;
+    let events = driver.tap_for_mana_of("Forest", mtg_core::mana::ManaType::Green)?;
+    let mana = events
+        .iter()
+        .filter(|event| matches!(event, Event::ManaAdded { .. }))
+        .count();
+    assert_eq!(mana, added, "{events:?}");
+    assert!(
+        !events
+            .iter()
+            .any(|event| matches!(event, Event::AbilityPutOnStack { .. })),
+        "a triggered mana ability does not use the stack"
+    );
     Ok(())
 }
 

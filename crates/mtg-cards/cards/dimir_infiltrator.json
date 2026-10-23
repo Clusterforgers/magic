@@ -1,0 +1,15 @@
+{
+  "oracle_id": "d215127b-5f1d-4d3c-935b-c228c9c7f874",
+  "name": "Dimir Infiltrator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dimir Infiltrator",
+      "oracle_fingerprint": "29f0c94d8cfdc4df7f3bee19d8f4e90b",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
+        { "Keyword": { "Transmute": "{1}{U}{B}" } }
+      ]
+    }
+  ]
+}

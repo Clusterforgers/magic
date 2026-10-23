@@ -1,0 +1,26 @@
+{
+  "id": "f4057210-ef07-4496-94c8-95c3b807c23c",
+  "oracle_id": "4c35f41a-55e4-49ca-b211-f57d7b1b90f6",
+  "name": "Goldwarden's Helm",
+  "lang": "en",
+  "layout": "normal",
+  "set": "one",
+  "collector_number": "13",
+  "rarity": "common",
+  "released_at": "2023-02-10",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "For Mirrodin! (When this Equipment enters, create a 2/2 red Rebel creature token, then attach this to it.)\nEquipped creature gets +0/+1.\nEquip {1}{W} ({1}{W}: Attach to target creature you control. Equip only as a sorcery.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "For Mirrodin!",
+    "Equip"
+  ]
+}

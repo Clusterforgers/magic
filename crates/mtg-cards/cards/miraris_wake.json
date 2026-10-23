@@ -1,0 +1,25 @@
+{
+  "oracle_id": "852657c0-18a4-4b28-b9ae-7728acdb5044",
+  "name": "Mirari's Wake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirari's Wake",
+      "oracle_fingerprint": "10451a40c4e1da5a0d4b49c69b321430",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Type": "Land" }], "by": "You" } },
+            "effects": [{ "AddMana": { "mana": "OfTapped" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

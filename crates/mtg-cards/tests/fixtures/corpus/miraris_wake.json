@@ -1,0 +1,32 @@
+{
+  "id": "ef4fa4e8-39e8-47a6-b975-ff5d46e59edd",
+  "oracle_id": "852657c0-18a4-4b28-b9ae-7728acdb5044",
+  "name": "Mirari's Wake",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "928",
+  "rarity": "mythic",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{3}{G}{W}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Creatures you control get +1/+1.\nWhenever you tap a land for mana, add one mana of any type that land produced.",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

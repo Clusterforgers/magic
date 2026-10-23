@@ -1,0 +1,12 @@
+{
+  "oracle_id": "bb5ea7c7-741a-4edd-9696-b9881b70afe0",
+  "name": "Sluiceway Scorpion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sluiceway Scorpion",
+      "oracle_fingerprint": "00b7a7db1bff8f3755b5b642c71a415b",
+      "abilities": [{ "Keyword": "Deathtouch" }, { "Keyword": { "Scavenge": "{1}{B}{G}" } }]
+    }
+  ]
+}

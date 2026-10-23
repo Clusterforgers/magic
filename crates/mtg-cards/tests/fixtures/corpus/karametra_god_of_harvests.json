@@ -1,0 +1,29 @@
+{
+  "id": "2bd9d26e-984c-4cf8-8c46-447f9776668f",
+  "oracle_id": "984e763c-5a83-4231-8ec4-1be76846479a",
+  "name": "Karametra, God of Harvests",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c20",
+  "collector_number": "218",
+  "rarity": "mythic",
+  "released_at": "2020-04-17",
+  "digital": false,
+  "mana_cost": "{3}{G}{W}",
+  "cmc": 5.0,
+  "type_line": "Legendary Enchantment Creature — God",
+  "oracle_text": "Indestructible\nAs long as your devotion to green and white is less than seven, Karametra isn't a creature.\nWhenever you cast a creature spell, you may search your library for a Forest or Plains card, put it onto the battlefield tapped, then shuffle.",
+  "power": "6",
+  "toughness": "7",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Indestructible"
+  ]
+}
