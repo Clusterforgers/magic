@@ -6,6 +6,7 @@ use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
 use mtg_engine::library::Revealed;
+use mtg_engine::object::PermanentState;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, replay};
 use mtg_testkit::cards::{creature, forest, island};
@@ -167,7 +168,7 @@ fn clifftop_lookout_puts_the_first_land_onto_the_battlefield_tapped_and_the_rest
         .iter()
         .filter_map(|id| state.object(*id))
         .filter(|object| {
-            object.card().name == "Forest" && object.permanent().is_some_and(|p| p.tapped())
+            object.card().name == "Forest" && object.permanent().is_some_and(PermanentState::tapped)
         })
         .count();
     assert_eq!(
