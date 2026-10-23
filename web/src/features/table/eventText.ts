@@ -272,7 +272,14 @@ function describeChoice(choice: Choice, n: EventNames): string {
 
 /** The words for a cause that is a plain name; a card hidden with hideaway or exiled until a permanent leaves carries that permanent. */
 const BECAUSE: Record<
-  Exclude<ZoneCause, { Hideaway: unknown } | { ExiledUntil: unknown } | { ExiledUntilMonarch: unknown }>,
+  Exclude<
+    ZoneCause,
+    | { Hideaway: unknown }
+    | { ExiledUntil: unknown }
+    | { ExiledUntilMonarch: unknown }
+    | { Manifested: unknown }
+    | { Cloaked: unknown }
+  >,
   string
 > = {
   Moved: 'moves',
@@ -286,6 +293,14 @@ const BECAUSE: Record<
   Discarded: 'is discarded',
   Foretold: 'is foretold',
   Adventure: 'is exiled on an adventure',
+}
+
+/** The words for a cause that carries a player or a permanent. */
+function objectCause(cause: Extract<ZoneCause, object>): string {
+  if ('Hideaway' in cause) return 'is exiled face down'
+  if ('Manifested' in cause) return 'is manifested'
+  if ('Cloaked' in cause) return 'is cloaked'
+  return 'is exiled for a while'
 }
 
 /** The events of spells and abilities: abilities on the stack, the steps of a resolution, life, zones and what players learn. */
@@ -362,7 +377,7 @@ function describePipeline(event: PipelineEvent, n: EventNames): LogLine {
     return line(
       cause === 'Moved'
         ? `${n.card(object)} moves to ${zoneWord(to, n)}`
-        : `${n.card(object)} ${typeof cause === 'object' ? ('Hideaway' in cause ? 'is exiled face down' : 'is exiled for a while') : BECAUSE[cause]}`,
+        : `${n.card(object)} ${typeof cause === 'object' ? objectCause(cause) : BECAUSE[cause]}`,
     )
   }
   if ('LifeGained' in event)

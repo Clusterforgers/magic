@@ -1,0 +1,22 @@
+{
+  "oracle_id": "70dc830e-d05b-4fc7-88dd-879e140b3fbf",
+  "name": "Reality Shift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reality Shift",
+      "oracle_fingerprint": "630e66467fcc63bc05dbf9925856a4b5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              { "Manifest": { "who": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

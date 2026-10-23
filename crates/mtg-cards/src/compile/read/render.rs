@@ -20,6 +20,7 @@ use super::flicker;
 use super::group_pump;
 use super::lands;
 use super::library;
+use super::manifest;
 use super::modal::{BULLET, DASH};
 use super::payments;
 use super::prevention;
@@ -1633,6 +1634,10 @@ impl Writer<'_> {
                 let texts = conditional::condition_texts(condition);
                 let text = texts.get(self.condition).or(texts.first())?;
                 format!("if {text}, {}", self.consequence(condition, then)?)
+            }
+            Effect::Manifest { .. } | Effect::Cloak { .. } => {
+                let subject = self.player(manifest::who(effect)?)?;
+                manifest::text(effect, &subject)?
             }
             Effect::BecomeMonarch { who } => format!(
                 "{} {} the monarch",

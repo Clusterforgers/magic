@@ -851,6 +851,28 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 count,
                 bind
             }),
+            (
+                who(),
+                amount(),
+                proptest::option::of(who()),
+                proptest::option::of(bound_name()),
+                any::<bool>()
+            )
+                .prop_map(|(who, count, from, bind, cloak)| if cloak {
+                    Effect::Cloak {
+                        who,
+                        count,
+                        from,
+                        bind,
+                    }
+                } else {
+                    Effect::Manifest {
+                        who,
+                        count,
+                        from,
+                        bind,
+                    }
+                }),
             who().prop_map(|who| Effect::TimeTravel { who }),
             who().prop_map(|who| Effect::ExtraTurn { who }),
             (who(), token_ref(), amount(), any::<bool>(), any::<bool>()).prop_map(
