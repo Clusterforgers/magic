@@ -168,9 +168,6 @@ fn the_amount_is_the_count_the_clause_names(#[case] text: &str, #[case] amount: 
 #[case::a_count_of_what_happened(
     "Draw X cards, where X is the number of creatures that died under your control this turn."
 )]
-#[case::a_negative_pump(
-    "Target creature gets -X/-X until end of turn, where X is the number of creatures you control."
-)]
 #[case::two_variables(
     "Target creature gets +X/+Y until end of turn, where X is the number of lands you control."
 )]

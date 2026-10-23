@@ -68,6 +68,7 @@ Baird, Steward of Argive
 Banish to Another Universe
 Banisher Priest
 Banishing Light
+Banishing Stroke
 Banshee of the Dread Choir
 Barbed Batterfist
 Bard's Bow
@@ -177,6 +178,7 @@ Cloudfin Raptor
 Cloudskate
 Clutch of Currents
 Clutch of the Undercity
+Coastal Breach
 Coastal Discovery
 Cold-Eyed Selkie
 Collective Unconscious
@@ -207,7 +209,9 @@ Crypt Ghast
 Crystal Quarry
 Curate
 Curse of Bounty
+Curse of Conformity
 Curse of Disturbance
+Curse of Fool's Wisdom
 Curse of Opulence
 Curse of Predation
 Curse of Verbosity
@@ -235,6 +239,7 @@ Deadly Rollick
 Death Ward
 Death-Greeter's Champion
 Deathcap Cultivator
+Deathleaper, Terror Weapon
 Debris Field Crusher
 Debtors' Transport
 Deep Analysis
@@ -248,6 +253,7 @@ Demon Bolt
 Demon of Wailing Agonies
 Dense Canopy
 Deputized Protester
+Devastation Tide
 Dimir Infiltrator
 Dina, Soul Steeper
 Dire Fleet Interloper
@@ -301,6 +307,7 @@ Empyrial Plate
 Empyrial Storm
 Enraged Revolutionary
 Enthusiastic Study
+Entreat the Angels
 Epic Proportions
 Era of Enlightenment // Hand of Enlightenment
 Erebos, Bleak-Hearted
@@ -321,6 +328,7 @@ Eyetwitch
 Faith Unbroken
 Faithful Watchdog
 Faithless Looting
+Fallen Ideal
 Familiar Ground
 Famine
 Fanatic of Rhonas
@@ -622,14 +630,17 @@ Nirkana Revenant
 Norn's Annex
 Norwood Riders
 Notion Rain
+Novijen, Heart of Progress
 Nyxborn Behemoth
 Oath of Jace
 Obscuring Haze
+Octomancer
 Octopus Umbra
 Okiba Reckoner Raid // Nezumi Road Captain
 Ominous Harvest
 Onakke Oathkeeper
 Opt
+Oran-Rief, the Vastwood
 Orchard Strider
 Organic Extinction
 Origin of the Hulk
@@ -708,7 +719,9 @@ Reckless Impulse
 Reconstructed Thopter
 Red Room Recruit
 Redcap Heelslasher
+Redress Fate
 Reflecting Pool
+Reforge the Soul
 Regal Behemoth
 Reiterate
 Rejuvenation Chamber
@@ -795,6 +808,7 @@ Siren Lookout
 Sister Repentia
 Skaab Goliath
 Skeletal Changeling
+Skeletal Scrying
 Skewer the Critics
 Skinthinner
 Skirk Prospector
@@ -842,6 +856,7 @@ Spring // Mind
 Springleaf Drum
 Squirrel Nest
 Sram, Senior Edificer
+Staggering Insight
 Staggershock
 Star Whale
 Starlit Sanctum
@@ -851,6 +866,7 @@ Steam Vents
 Steampath Charger
 Steelburr Champion
 Steelclaw Lance
+Sticky Fingers
 Stitched Drake
 Stoke the Flames
 Stonecoil Serpent
@@ -906,6 +922,7 @@ Tendershoot Dryad
 Tendo Ice Bridge
 Tendrils of Agony
 Termagant Swarm
+Terminus
 Terrus Wurm
 Teshar, Ancestor's Apostle
 Thalia, Guardian of Thraben
@@ -943,6 +960,7 @@ Titania, Proud Pummeler
 Tithe Drinker
 Tithebearer Giant
 Towering Titan
+Toxic Deluge
 Trash for Treasure
 Traumatic Visions
 Treasure Cruise

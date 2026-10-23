@@ -1,0 +1,34 @@
+{
+  "oracle_id": "afaef788-34d1-460b-b884-9d7ae6ddeb18",
+  "name": "Toxic Deluge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Toxic Deluge",
+      "oracle_fingerprint": "cd099260b7e7c5755a6bc1e829901385",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "PayLife": "X" }], "required": true } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Times": { "by": -1, "of": "X" } },
+                        "toughness": { "Times": { "by": -1, "of": "X" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

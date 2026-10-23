@@ -4,7 +4,6 @@ use mtg_cards::effect::Effect;
 use mtg_cards::value::CastWay;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
-use mtg_core::mana::ManaCost;
 
 use super::may::performed_name;
 use super::wrong_effect;
@@ -79,7 +78,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                         card.id(),
                         *free,
                         *play,
-                        alternative.as_ref().map(|(way, cost)| (*way, cost)),
+                        alternative
+                            .as_ref()
+                            .map(|(way, cost)| (*way, cost.as_str())),
                     ))
                 },
             ))
@@ -157,7 +158,7 @@ fn question(
     card: ObjectId,
     free: bool,
     play: bool,
-    alternative: Option<(CastWay, &ManaCost)>,
+    alternative: Option<(CastWay, &str)>,
 ) -> Decision {
     let text = if play {
         wording::play(name, free)

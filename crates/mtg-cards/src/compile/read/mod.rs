@@ -48,6 +48,7 @@ mod library;
 mod life_gain;
 mod mana_trigger;
 mod manifest;
+mod mass_moves;
 mod modal;
 mod pairs;
 mod payments;

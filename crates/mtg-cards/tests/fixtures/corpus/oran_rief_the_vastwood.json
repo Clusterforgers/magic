@@ -1,0 +1,21 @@
+{
+  "id": "d46d3ef7-b81f-42f4-9c1b-fa53f11eae65",
+  "oracle_id": "e88027a6-24cc-4a8b-86db-734f26149ea8",
+  "name": "Oran-Rief, the Vastwood",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "391",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land enters tapped.\n{T}: Add {G}.\n{T}: Put a +1/+1 counter on each green creature that entered this turn.",
+  "colors": [],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

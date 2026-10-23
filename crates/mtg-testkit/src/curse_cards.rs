@@ -1,5 +1,5 @@
 //! The Curses that trigger on an attack at the enchanted player, and the decks and games built from them: the Curses of
-//! Bounty, Chaos, Disturbance, Opulence, Shallow Graves, Verbosity and Vitality, the other two Curses of the corpus,
+//! Bounty, Chaos, Disturbance, Opulence, Shallow Graves, Verbosity and Vitality, the other four Curses of the corpus,
 //! creatures to attack with and the burn that takes them away.
 
 use std::sync::Arc;
@@ -16,7 +16,7 @@ use crate::corpus::{self, CorpusError};
 /// Lands in a Curse deck: five colours in turn.
 const LANDS: usize = 20;
 
-/// The corpus Curses the deck holds, two copies of each (one of the two older ones).
+/// The corpus Curses the deck holds, two copies of each (one of Predation and the Forsaken).
 pub const CURSE_CARDS: &[&str] = &[
     "Curse of Bounty",
     "Curse of Chaos",
@@ -27,6 +27,8 @@ pub const CURSE_CARDS: &[&str] = &[
     "Curse of Vitality",
     "Curse of Predation",
     "Curse of the Forsaken",
+    "Curse of Fool's Wisdom",
+    "Curse of Conformity",
 ];
 
 /// A legal Normal deck of Curses: the corpus Curses, creatures to attack with and burn to take them away.
@@ -42,7 +44,7 @@ pub fn curse_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusE
     ];
     let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS).map(|i| land(colors[i % 5])).collect();
     for (index, name) in CURSE_CARDS.iter().enumerate() {
-        let copies = if index < 7 { 2 } else { 1 };
+        let copies = if (7..9).contains(&index) { 1 } else { 2 };
         deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
     }
     deck.extend(std::iter::repeat_n(burn("Spark", 2), 2));

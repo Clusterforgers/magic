@@ -1,0 +1,26 @@
+{
+  "oracle_id": "3dd196b6-a85a-4e3e-bb57-ec34241f8117",
+  "name": "Terminus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Terminus",
+      "oracle_fingerprint": "3b1bd5cc797081877010e76c7ae723d8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "Type": "Creature" }] },
+                  "to": { "Library": { "place": "Bottom" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Miracle": "{W}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "2d493bd6-af71-45be-bd4c-1d8f94bca19e",
+  "oracle_id": "4245ee98-2d4c-49d1-8d07-80760cae2bf9",
+  "name": "Devastation Tide",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c18",
+  "collector_number": "85",
+  "rarity": "rare",
+  "released_at": "2018-08-10",
+  "digital": false,
+  "mana_cost": "{3}{U}{U}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Return all nonland permanents to their owners' hands.\nMiracle {1}{U} (You may cast this card for its miracle cost when you draw it if it's the first card you drew this turn.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Miracle"
+  ]
+}
