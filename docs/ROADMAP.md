@@ -171,8 +171,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r1d) Statics `Continuous` the compiler leaves: grants of keywords and abilities, power, toughness and type changes, and "you may play or cast from" permissions (`MayPlay`): 524 cards, 160 with nothing else open (`AddKeyword` 192, `MayPlay` 143, `AddPower` 101)
 - [ ] (r1e) `ChangeZone` clauses the compiler leaves: return from a graveyard (411), put onto the battlefield (386), exile (296), to the hand (223), with a type and a number: 867 cards, 107 with nothing else open
 - [ ] (r1f) `Token` creation with an owner (412), an amount (213), tapped or attacking, and set power and toughness: 590 cards, 39 with nothing else open
-- [ ] (r1g) Cost reductions `ReduceCost` by who casts (43), a condition (18) and the first spell each turn (3): 85 cards, 38 with nothing else open
-- [ ] (r1h) `Mana` abilities with an amount (74), a restriction on the spender (20) and persistent mana: 107 cards, 34 with nothing else open
+- [~] (r1g) (branch r1g-cost-reductions) Cost reductions `ReduceCost` by who casts (43), a condition (18) and the first spell each turn (3): 85 cards, 38 with nothing else open
+- [~] (r1h) (branch r1h-mana-abilities) `Mana` abilities with an amount (74), a restriction on the spender (20) and persistent mana: 107 cards, 34 with nothing else open
 - [ ] (r1i) `Pump`, `PumpAll` and `Animate` with keywords, power, toughness, types and colors: 329, 113 and 121 cards, 29, 15 and 13 with nothing else open
 - [ ] (r1j) `CopyPermanent` and `Clone` with the exceptions Forge keys name (end-of-turn exile 27, added types 20, keywords 20, set power and toughness 17, `NonLegendary` 7) and the `ETBReplacement` keyword lines: 113, 58 and 70 cards
 - [ ] (r1k) DSL verbs for the Forge APIs with no counterpart: `RepeatEach` (111 cards), `DigUntil` (66, with the reveal-until of (r2c)), `RollDice` (27), `AddPhase` (23), `FlipCoin` (23), `MultiplyCounter` (23) and `Vote` (22)
