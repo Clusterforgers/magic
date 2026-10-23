@@ -2114,6 +2114,7 @@ impl<'a> Walker<'a> {
                 self.at("source", |w| w.selector(source));
             }
             ReplaceWhen::ZoneChange { what, .. }
+            | ReplaceWhen::Destroyed { what }
             | ReplaceWhen::Discarded { what }
             | ReplaceWhen::Enters { what } => {
                 self.at("what", |w| w.selector(what));
@@ -2145,6 +2146,7 @@ impl<'a> Walker<'a> {
                 if matches!(
                     when,
                     ReplaceWhen::ZoneChange { .. }
+                        | ReplaceWhen::Destroyed { .. }
                         | ReplaceWhen::Discarded { .. }
                         | ReplaceWhen::Enters { .. }
                 ) =>
@@ -2156,6 +2158,7 @@ impl<'a> Walker<'a> {
                 if matches!(
                     when,
                     ReplaceWhen::ZoneChange { .. }
+                        | ReplaceWhen::Destroyed { .. }
                         | ReplaceWhen::Discarded { .. }
                         | ReplaceWhen::Enters { .. }
                 ) =>
@@ -2206,6 +2209,9 @@ impl<'a> Walker<'a> {
                 self.at("of", |w| w.selector(of));
             }
             ReplaceBy::PayLifeOrTapped(0) => self.problem("paying no life is entering untapped"),
+            ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
+                self.problem("`UmbraArmor` replaces a `Destroyed`");
+            }
             ReplaceBy::AsCopy { of, except } => {
                 if !enters {
                     self.problem("only an `Enters` event is entered as a copy");

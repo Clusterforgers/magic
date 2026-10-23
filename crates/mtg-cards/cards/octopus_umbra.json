@@ -1,0 +1,41 @@
+{
+  "oracle_id": "6d2ce0ba-f2ff-4c2b-ba85-f6c011ebda6c",
+  "name": "Octopus Umbra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Octopus Umbra",
+      "oracle_fingerprint": "6eb66c9b48913fc2afe86fe0c07cda18",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetPT": { "power": 8, "toughness": 8 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [
+                            { "Type": "Creature" },
+                            { "Compare": { "stat": "Power", "op": "Le", "to": 8 } }
+                          ]
+                        }
+                      }
+                    ],
+                    "effects": [{ "May": { "effects": [{ "Tap": { "what": { "Target": 0 } } }] } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "UmbraArmor" }
+      ]
+    }
+  ]
+}
