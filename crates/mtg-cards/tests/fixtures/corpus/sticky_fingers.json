@@ -1,0 +1,33 @@
+{
+  "id": "3678fa3d-d41f-4b7a-b25e-6fc5f78876c7",
+  "oracle_id": "fa8ddc13-5108-4fe9-b3aa-dc28df476f7b",
+  "name": "Sticky Fingers",
+  "lang": "en",
+  "layout": "normal",
+  "set": "snc",
+  "collector_number": "124",
+  "rarity": "common",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{R}",
+  "cmc": 1.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature has menace and \"Whenever this creature deals combat damage to a player, create a Treasure token.\" (It can't be blocked except by two or more creatures. The token is an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")\nWhen enchanted creature dies, draw a card.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Treasure",
+    "Enchant"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

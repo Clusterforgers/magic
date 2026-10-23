@@ -269,6 +269,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     }
     pronouns::of_the_card(ability, &mut texts);
     pronouns::you_after_the_attached(ability, &mut texts);
+    pronouns::they(ability, &mut texts);
     pronouns::of_the_group(ability, &mut texts);
     // A trigger about damage the source deals may say "it deals" for the source (Questing Beast).
     if matches!(
@@ -369,6 +370,17 @@ fn head_wordings(head: Vec<String>) -> Vec<Vec<String>> {
                 .collect(),
         );
     }
+    // An Aura says "When enchanted creature dies".
+    let whens: Vec<Vec<String>> = heads
+        .iter()
+        .filter(|found| found[0].starts_with("Whenever enchanted creature dies"))
+        .map(|found| {
+            let mut when = found.clone();
+            when[0] = when[0].replacen("Whenever", "When", 1);
+            when
+        })
+        .collect();
+    heads.extend(whens);
     // A card that is targeted once says "When" ("When this creature becomes the target of a spell or ability").
     if head[0].starts_with("Whenever ~ becomes the target of a spell or ability")
         && !head[0].contains(" each turn")
@@ -1309,6 +1321,7 @@ impl Writer<'_> {
     fn counter_place(&mut self, place: &Ref, several: bool) -> Option<String> {
         match place {
             Ref::This => Some("~".to_owned()),
+            Ref::Attached => Some("enchanted creature".to_owned()),
             // The creature that attacks enchanted player.
             Ref::Triggering => Some("it".to_owned()),
             Ref::Target(0)
@@ -1476,6 +1489,24 @@ impl Writer<'_> {
         copy_spells::become_texts(choose, copy, &target)
     }
 
+    /// A verb that acts on objects: "destroy target creature", "tap enchanted creature", "enchanted creature fights
+    /// target creature".
+    fn on_objects(&mut self, effect: &Effect) -> Option<String> {
+        Some(match effect {
+            Effect::Destroy { what, .. } => format!("destroy {}", self.object(what)?),
+            Effect::Tap { what } => format!("tap {}", self.object(what)?),
+            Effect::Untap { what } => format!("untap {}", self.object(what)?),
+            Effect::Goad { what } if self.named && self.single(what) => "goad it".to_owned(),
+            Effect::Goad { what } => format!("goad {}", self.object(what)?),
+            Effect::Fight { what, with } => {
+                format!("{} fights {}", self.object(what)?, self.object(with)?)
+            }
+            Effect::Regenerate { what } => format!("regenerate {}", self.object(what)?),
+            Effect::Counter { what } => format!("counter {}", self.object(what)?),
+            _ => return None,
+        })
+    }
+
     /// An effect as a sentence without its first capital and its period.
     fn effect(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
@@ -1541,13 +1572,13 @@ impl Writer<'_> {
                 points_text(amount)?,
                 self.recipient(to)?
             ),
-            Effect::Destroy { what, .. } => format!("destroy {}", self.object(what)?),
-            Effect::Tap { what } => format!("tap {}", self.object(what)?),
-            Effect::Untap { what } => format!("untap {}", self.object(what)?),
-            Effect::Goad { what } if self.named && self.single(what) => "goad it".to_owned(),
-            Effect::Goad { what } => format!("goad {}", self.object(what)?),
-            Effect::Regenerate { what } => format!("regenerate {}", self.object(what)?),
-            Effect::Counter { what } => format!("counter {}", self.object(what)?),
+            Effect::Destroy { .. }
+            | Effect::Tap { .. }
+            | Effect::Untap { .. }
+            | Effect::Goad { .. }
+            | Effect::Fight { .. }
+            | Effect::Regenerate { .. }
+            | Effect::Counter { .. } => self.on_objects(effect)?,
             Effect::Continuous {
                 affected,
                 mods,
@@ -1989,6 +2020,7 @@ impl Writer<'_> {
             }
             Ref::Each(selector) => Some(format!("all {}", phrase_text(selector, Form::All)?)),
             Ref::This => Some("~".to_owned()),
+            Ref::Attached => Some("enchanted creature".to_owned()),
             _ => None,
         }
     }

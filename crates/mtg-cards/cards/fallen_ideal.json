@@ -1,0 +1,46 @@
+{
+  "oracle_id": "4b8183e6-4ff2-4254-9ee0-0ebbf8cef4a3",
+  "name": "Fallen Ideal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fallen Ideal",
+      "oracle_fingerprint": "97ed7623b4a79e8c1f3c4ef35d55bd2d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "AddKeyword": "Flying" },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Move": { "what": { "Each": [{ "In": "Graveyard" }, "This"] }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

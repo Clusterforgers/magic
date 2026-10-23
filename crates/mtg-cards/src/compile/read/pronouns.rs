@@ -90,6 +90,33 @@ pub(super) fn of_the_card(ability: &Ability, texts: &mut Vec<String>) {
     texts.extend(pronouns);
 }
 
+/// The player of a trigger is "they" in what it does: `(that player and a verb, they and the verb)`.
+const THEY: [(&str, &str); 6] = [
+    ("that player loses ", "they lose "),
+    ("that player gains ", "they gain "),
+    ("that player draws ", "they draw "),
+    ("that player discards ", "they discard "),
+    ("that player mills ", "they mill "),
+    ("that player sacrifices ", "they sacrifice "),
+];
+
+/// Adds to `texts` the wording "they lose 2 life" for "that player loses 2 life" in a trigger.
+pub(super) fn they(ability: &Ability, texts: &mut Vec<String>) {
+    if !matches!(ability, Ability::Triggered { .. }) {
+        return;
+    }
+    let spelled: Vec<String> = texts
+        .iter()
+        .filter_map(|text| {
+            let found = THEY.iter().fold(text.clone(), |found, (named, they)| {
+                found.replace(named, they)
+            });
+            (found != *text).then_some(found)
+        })
+        .collect();
+    texts.extend(spelled);
+}
+
 /// The verbs an effect of the controller opens with.
 pub(super) const CONTROLLER_VERBS: [&str; 12] = [
     "scry ",

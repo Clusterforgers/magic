@@ -1,0 +1,26 @@
+{
+  "id": "0a88083d-726a-4239-b849-2a4431ef1cd7",
+  "oracle_id": "71de5f9a-73e4-4a93-b199-b280687f71eb",
+  "name": "Curse of Conformity",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mic",
+  "collector_number": "6",
+  "rarity": "rare",
+  "released_at": "2021-09-24",
+  "digital": false,
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Aura Curse",
+  "oracle_text": "Enchant player\nNonlegendary creatures enchanted player controls have base power and toughness 3/3 and lose all creature types.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "produced_mana": null
+}
