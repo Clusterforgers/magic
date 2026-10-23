@@ -16,6 +16,23 @@ fn tireless_tracker_reads_in_the_shape_of_its_file() {
 }
 
 #[rstest]
+#[case::combat_damage_to_a_player(
+    "Whenever this creature deals combat damage to a player, put that many +1/+1 counters on it."
+)]
+#[case::damage_to_a_player(
+    "Whenever this creature deals damage to a player, put that many +1/+1 counters on it."
+)]
+fn the_creature_that_dealt_damage_to_a_player_is_it_for_the_counters_it_gets(#[case] text: &str) {
+    let read = trigger(text).unwrap();
+    assert_eq!(golden(text, ClauseKind::Triggered, false), read, "{text}");
+    let json = serde_json::to_string(&read).unwrap();
+    assert!(
+        json.contains(r#""PutCounters":{"on":"This","counter":"+1/+1","count":"Triggering"}"#),
+        "{json}"
+    );
+}
+
+#[rstest]
 #[case::on_a_target(
     "Put a +1/+1 counter on target creature.",
     r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":"+1/+1"}}]}}"#

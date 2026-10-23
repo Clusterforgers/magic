@@ -20,6 +20,7 @@ mod attack_payment;
 mod attack_tax;
 mod attack_tax_fuzz;
 mod aura_grants;
+mod backup_damage;
 mod backup_keyword;
 mod bestow;
 mod bestow_fuzz;

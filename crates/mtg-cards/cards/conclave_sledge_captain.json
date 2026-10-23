@@ -1,0 +1,82 @@
+{
+  "oracle_id": "e09e7bb8-2665-4081-b75a-628a8bc0a3cd",
+  "name": "Conclave Sledge-Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conclave Sledge-Captain",
+      "oracle_fingerprint": "aabac062264ad60049fdb73f544e7916",
+      "abilities": [
+        {
+          "Keyword": {
+            "Backup": {
+              "count": 1,
+              "abilities": [
+                { "Keyword": "Trample" },
+                {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                    },
+                    "effects": [
+                      { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Keyword": {
+            "Backup": {
+              "count": 1,
+              "abilities": [
+                { "Keyword": "Trample" },
+                {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                    },
+                    "effects": [
+                      { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Keyword": {
+            "Backup": {
+              "count": 1,
+              "abilities": [
+                { "Keyword": "Trample" },
+                {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                    },
+                    "effects": [
+                      { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

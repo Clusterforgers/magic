@@ -1,4 +1,4 @@
-//! Goal: whole bot games at 2 to 4 seats with the cards that have graft and afflict keep every invariant, and across the seeds each part of the mechanics occurs: counters move from a creature with graft onto another creature, and a blocked creature with afflict makes its defending player lose life.
+//! Goal: whole bot games at 2 to 4 seats with the cards of the keyword lines (graft, afflict, kicker and/or, backup) keep every invariant, and across the seeds each part of the mechanics occurs: counters are put on a creature, counters move from a creature with graft onto another creature, and a blocked creature with afflict makes its defending player lose life.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeMap;
@@ -27,6 +27,9 @@ fn bot_games_with_graft_and_afflict_keep_every_invariant_and_use_each_part() {
                         *seen.entry("counter moved").or_default() += 1;
                         removed -= 1;
                     }
+                    Event::CountersChanged(changed) if changed.delta > 0 => {
+                        *seen.entry("counter put").or_default() += 1;
+                    }
                     Event::LifeLost { amount, .. } if *amount > 0 => {
                         *seen.entry("life lost").or_default() += 1;
                     }
@@ -36,7 +39,7 @@ fn bot_games_with_graft_and_afflict_keep_every_invariant_and_use_each_part() {
         }
     });
     let seen = seen.into_inner().unwrap();
-    for part in ["counter moved", "life lost"] {
+    for part in ["counter moved", "counter put", "life lost"] {
         assert!(
             seen.get(part).copied().unwrap_or(0) > 0,
             "no game went through {part}: {seen:?}"

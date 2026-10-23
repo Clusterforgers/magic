@@ -100,11 +100,17 @@ pub fn event_subject(pattern: &TriggerPattern) -> Option<Ref> {
     })
 }
 
-/// Whether the pattern is the card itself becoming a target (counted or not), so the card's effects may call it "it".
+/// Whether the pattern is the card itself becoming a target (counted or not) or dealing damage to a player, so the card's
+/// effects may call it "it".
 pub fn targeted_itself(pattern: &TriggerPattern) -> bool {
     match pattern {
         TriggerPattern::Nth { event, .. } => targeted_itself(event),
         TriggerPattern::BecomesTarget { what, .. } => what.0 == [Pred::This],
+        TriggerPattern::DealsDamage {
+            source,
+            to: Some(_),
+            ..
+        } => source.0 == [Pred::This],
         _ => false,
     }
 }
