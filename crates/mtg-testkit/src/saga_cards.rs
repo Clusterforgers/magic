@@ -1,5 +1,6 @@
 //! Sagas for the scenario and fuzz games: test Sagas whose chapters gain a different amount of life, the spells that put
-//! lore counters on a Saga or return one with extra counters, the corpus Sagas, and the decks and games built from them.
+//! lore counters on a Saga or return one with extra counters, a Saga that returns transformed, the corpus Sagas, and the
+//! decks and games built from them.
 
 use std::sync::Arc;
 
