@@ -825,7 +825,7 @@ mod tests {
             Keyword::ForMirrodin,
             Keyword::JobSelect,
             Keyword::EquipTo {
-                to: Selector::default(),
+                to: Box::default(),
                 cost: cost(),
             },
         ]
@@ -1102,7 +1102,7 @@ mod tests {
     #[case::ascend(Keyword::Ascend, Hooks::none())]
     #[case::for_mirrodin(Keyword::ForMirrodin, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::job_select(Keyword::JobSelect, Hooks { abilities: 1, ..Hooks::none() })]
-    #[case::equip_to(Keyword::EquipTo { to: Selector::default(), cost: Cost::mana("{1}".parse().unwrap()) }, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::equip_to(Keyword::EquipTo { to: Box::default(), cost: Cost::mana("{1}".parse().unwrap()) }, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);

@@ -324,7 +324,7 @@ fn the_abilities_a_keyword_adds_are_valid_rules_and_the_engine_runs_them(#[case]
 #[case::living_weapon(Keyword::LivingWeapon, 1)]
 #[case::for_mirrodin(Keyword::ForMirrodin, 1)]
 #[case::job_select(Keyword::JobSelect, 1)]
-#[case::equip_to(Keyword::EquipTo { to: mtg_cards::refs::Selector(vec![mtg_cards::refs::Pred::Supertype(mtg_core::card::Supertype::Legendary)]), cost: Cost::mana("{1}".parse().unwrap()) }, 1)]
+#[case::equip_to(Keyword::EquipTo { to: Box::new(mtg_cards::refs::Selector(vec![mtg_cards::refs::Pred::Supertype(mtg_core::card::Supertype::Legendary)])), cost: Cost::mana("{1}".parse().unwrap()) }, 1)]
 #[case::reconfigure_with_colored_mana(Keyword::Reconfigure(Cost::mana("{R}".parse().unwrap())), 3)]
 fn the_abilities_of_an_attachment_keyword_are_valid_rules_and_the_engine_runs_them(
     #[case] keyword: Keyword,

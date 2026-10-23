@@ -108,7 +108,7 @@ mod tests {
     fn equip_to_narrows_the_creatures_it_attaches_to(#[case] restriction: &str) {
         let to: Selector = serde_json::from_str(&format!("[{restriction}]")).unwrap();
         let keyword = Keyword::EquipTo {
-            to,
+            to: Box::new(to),
             cost: Cost::mana("{3}".parse().unwrap()),
         };
         assert_eq!(

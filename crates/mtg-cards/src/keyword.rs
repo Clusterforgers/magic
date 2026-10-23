@@ -275,7 +275,7 @@ pub enum Keyword {
     /// Equip with a restriction and its cost (CR 702.6): "[Cost]: Attach this permanent to target creature you control that `to` also names. Activate only as a sorcery" (Equip legendary creature, Equip commander, Equip Knight).
     EquipTo {
         /// What the creature must also be: legendary, a commander, a token, a creature type.
-        to: Selector,
+        to: Box<Selector>,
         /// The cost, paid as the cost of the activated ability the keyword adds.
         cost: Cost,
     },
@@ -722,7 +722,7 @@ mod tests {
             Keyword::ForMirrodin,
             Keyword::JobSelect,
             Keyword::EquipTo {
-                to: Selector::default(),
+                to: Box::default(),
                 cost: Cost::default(),
             },
         ]

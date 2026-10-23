@@ -506,7 +506,7 @@ fn equip(rest: &str) -> Option<Keyword> {
         _ => return None,
     };
     Some(Keyword::EquipTo {
-        to: Selector(vec![only]),
+        to: Box::new(Selector(vec![only])),
         cost: cost(price)?,
     })
 }
@@ -682,7 +682,7 @@ mod tests {
 
     fn equip_to(only: Pred, cost: &str) -> Keyword {
         Keyword::EquipTo {
-            to: Selector(vec![only]),
+            to: Box::new(Selector(vec![only])),
             cost: mana(cost),
         }
     }
