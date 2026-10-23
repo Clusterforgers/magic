@@ -811,7 +811,6 @@ mod tests {
             Keyword::Mentor,
             Keyword::Dethrone,
             Keyword::Annihilator(2),
-            Keyword::UmbraArmor,
             Keyword::Extort,
             Keyword::Evolve,
             Keyword::LevelUp(cost()),
@@ -861,6 +860,7 @@ mod tests {
             },
             Keyword::Gravestorm,
             Keyword::Sunburst,
+            Keyword::UmbraArmor,
         ]
     }
 
