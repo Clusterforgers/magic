@@ -240,7 +240,8 @@ function describeChoice(choice: Choice, n: EventNames): string {
   return 'chooses which effect applies first'
 }
 
-const BECAUSE: Record<ZoneCause, string> = {
+/** The words for a cause that is a plain name; a card hidden with hideaway carries the permanent that hides it. */
+const BECAUSE: Record<Exclude<ZoneCause, { Hideaway: unknown }>, string> = {
   Moved: 'moves',
   Destroyed: 'is destroyed',
   Buried: "is destroyed and can't be regenerated",
@@ -328,7 +329,7 @@ function describePipeline(event: PipelineEvent, n: EventNames): LogLine {
     return line(
       cause === 'Moved'
         ? `${n.card(object)} moves to ${zoneWord(to, n)}`
-        : `${n.card(object)} ${BECAUSE[cause]}`,
+        : `${n.card(object)} ${typeof cause === 'object' ? 'is exiled face down' : BECAUSE[cause]}`,
     )
   }
   if ('LifeGained' in event)
@@ -585,6 +586,9 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   if ('ZoneChanged' in event) {
     const { from, to, cause } = event.ZoneChanged
     // A foretold card lies face down: the others learn who foretold and nothing about the card.
+    if (typeof cause === 'object' && typeof from === 'object' && 'Library' in from) {
+      return line(`${n.seat(from.Library)} hides a card face down`)
+    }
     if (cause === 'Foretold' && typeof from === 'object' && 'Hand' in from) {
       return line(`${n.seat(from.Hand)} foretells a card`)
     }

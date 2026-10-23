@@ -277,6 +277,17 @@ const MORE: [Event, string][] = [
   [{ ZoneChanged: { object: 3, from: 'Battlefield', to: 'Exile', cause: 'Moved' } }, 'Forest moves to exile'],
   [{ ZoneChanged: { object: 3, from: { Hand: 0 }, to: 'Exile', cause: 'Foretold' } }, 'Forest is foretold'],
   [
+    {
+      ZoneChanged: {
+        object: 3,
+        from: { Library: 0 },
+        to: 'Exile',
+        cause: { Hideaway: { by: { id: 9, counter: 1 } } },
+      },
+    },
+    'Forest is exiled face down',
+  ],
+  [
     { ZoneChanged: { object: 3, from: 'Stack', to: 'Battlefield', cause: 'Moved' } },
     'Forest moves to the battlefield',
   ],
@@ -414,6 +425,16 @@ describe('describeEvent', () => {
 
   it.each(Object.entries(HIDDEN))('says the hidden event %s in one sentence', (_name, [event, text]) => {
     expect(describeEvent({ Hidden: event }, names).text).toBe(text)
+  })
+
+  it('tells the others who hid a card and nothing about it', () => {
+    const hidden: HiddenEvent = {
+      ZoneChanged: { from: { Library: 1 }, to: 'Exile', cause: { Hideaway: { by: { id: 9, counter: 1 } } } },
+    }
+    expect(describeEvent({ Hidden: hidden }, names)).toEqual({
+      text: 'Bo hides a card face down',
+      minor: false,
+    })
   })
 
   it('tells the others who foretold and nothing about the card', () => {

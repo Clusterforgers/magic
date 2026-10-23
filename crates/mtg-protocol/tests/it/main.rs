@@ -19,6 +19,7 @@ mod exile_open;
 mod faces_view;
 mod foretell_view;
 mod hidden_info;
+mod hideaway_view;
 mod house_rules_view;
 mod improvise_hidden;
 mod impulse_hidden;
