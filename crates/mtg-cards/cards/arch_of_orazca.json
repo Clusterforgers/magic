@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3bb518ff-399b-4ce7-b9ad-a1d563dd7792",
+  "name": "Arch of Orazca",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arch of Orazca",
+      "oracle_fingerprint": "c121af8c412b474e3103967e0b99be70",
+      "abilities": [
+        { "Keyword": "Ascend" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap"],
+            "condition": { "CitysBlessing": "You" },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

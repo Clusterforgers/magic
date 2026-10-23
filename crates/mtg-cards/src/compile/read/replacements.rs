@@ -94,7 +94,7 @@ fn damage(
     let passive =
         (source.is_empty() && to.is_some()).then(|| format!("if {kind} would be dealt to {whom}"));
     let mut found = Vec::new();
-    let mut deals = vec![format!("it deals")];
+    let mut deals = vec!["it deals".to_owned()];
     if sourced {
         deals.push("that source deals".to_owned());
     }

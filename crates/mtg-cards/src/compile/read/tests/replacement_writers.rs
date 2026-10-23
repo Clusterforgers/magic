@@ -176,5 +176,5 @@ fn the_wording_of_another_replacement_is_not_the_text(#[case] json: &str, #[case
     r#"{"Replacement":{"when":{"Damage":{}},"by":{"Multiply":2},"from":"Graveyard"}}"#
 )]
 fn a_replacement_the_writers_cannot_say_is_not_written(#[case] json: &str) {
-    assert!(render_variants(&ability(json)).is_empty());
+    assert_eq!(render_variants(&ability(json)), Vec::<String>::new());
 }

@@ -64,6 +64,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Tooling: `scripts/check.sh` with test slots, `scripts/agent-status.sh`, the quick test-time suite, derived corpus counts, current Cargo dependencies
 - Reference engines: Forge, XMage and Magarena surveyed for licence, card format, scale and fit to the compiler's readings (`docs/reference-engines.md`)
 - Model-assisted reading: `mtg-cli check-rules` accepts a model's rules only when they are valid, read back as the printed text and have a support state; the pilot over 40 unread precon cards (`docs/cards-dsl.md`, Model-assisted reading)
+- Ability writers for the model-assisted reader: replacements, batch events, the choice of modes, statics over a group, restricted mana and the limits of an activation; 21 corpus cards the checker accepts (`docs/cards-dsl.md`, Model-assisted reading)
 
 ## M3 Card system
 
@@ -149,7 +150,7 @@ The server is settled first, then the web is built once against the final types.
 
 ### Model-assisted reading
 - [~] (r2a) (branch r2a-effect-writers) Writers for the effect constructs of the pilot's valid proposals: `CreateToken` with a chosen player, a count or a bound result, `Move`, `Pay` with life, `May` over effects, divided damage and `Exile` of a graveyard
-- [~] (r2f) (branch r2f-ability-writers) Writers for the ability constructs of the pilot's valid proposals: labelled modes of a trigger, batch triggers, a static over `Each`, `Goaded`, damage and zone-change replacements, restricted mana and an activated ability with a condition
+- [ ] (r2f) Ability constructs the writers still lack: a damage replacement for "an opponent or a permanent an opponent controls", "prevent half" and "all but 1", the per-opponent wording ("an opponent controls four or more lands"), `SpendFilter` for colorless spells and devoid, goaded creatures as a group, counters of any kind on a group, "choose one at random" and "that hasn't been chosen this turn", loyalty abilities and level, Class and Station blocks
 - [~] (r2b) (branch r2a-effect-writers) The renderer's wordings that the pilot's correct rules lack: "you draw" after an opponent's event, "each of those creatures", "Whenever you attack with one or more X" with "on each of them", "deals damage equal to its power", "nonland permanent card" and "this creature's power"
 - [ ] (r2c) The DSL constructs the pilot found missing: conditions on the turn so far ("the first time each turn" for any event, "a counter was put on it this turn", "dealt damage to you this turn"), reveal until a card, exactly X targets, a named option chosen as it enters, a total mana value limit, mana restricted to the chosen color, "must be blocked if able" and phasing
 - [ ] (r2d) `Cost.PayLife.Counted` in the engine (G'raha Tia, Scion Reborn and Lorcan, Warlock Collector are accepted as `Partial` until then)

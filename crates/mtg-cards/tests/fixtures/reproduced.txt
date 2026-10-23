@@ -396,6 +396,7 @@ Grapeshot
 Graveblade Marauder
 Graven Cairns
 Graveshifter
+Gravitational Shift
 Greater Good
 Greater Mossdog
 Green Goblin, Back for More
