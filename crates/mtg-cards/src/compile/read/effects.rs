@@ -237,12 +237,27 @@ fn chain(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         r.need("then")?;
         match r.attempt(imperative) {
             Some(step) => Some(vec![step]),
-            None => put_back(r),
+            None => put_back(r).or_else(|| after_mill(r, &effects)),
         }
     }) {
         effects.extend(next);
     }
     Some(effects)
+}
+
+/// "Mill two cards, then ~ gets +X/+X until end of turn": the change of the card itself that follows a mill, which
+/// counts what the mill left in the graveyard.
+fn after_mill(r: &mut Reader<'_>, before: &[Effect]) -> Option<Vec<Effect>> {
+    matches!(before, [Effect::Mill { .. }]).then_some(())?;
+    let step = pump(r)?;
+    matches!(
+        step.as_slice(),
+        [Effect::Continuous {
+            affected: Ref::This,
+            ..
+        }]
+    )
+    .then_some(step)
 }
 
 /// "Put two cards from your hand on top of your library in any order.": the player chooses cards

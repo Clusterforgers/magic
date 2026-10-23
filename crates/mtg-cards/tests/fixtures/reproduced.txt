@@ -543,6 +543,7 @@ Mirran Bardiche
 Mirror Image
 Mishra's Workshop
 Mizzium Mortars
+Mobilizer Mech
 Molten Slagheap
 Monastery Swiftspear
 Monk's Fist
@@ -801,6 +802,7 @@ Stratus Walk
 Strength Bobblehead
 Strionic Resonator
 Stroke of Genius
+Stubborn Burrowfiend
 Student of Warfare
 Study Break
 Sublime Exhalation

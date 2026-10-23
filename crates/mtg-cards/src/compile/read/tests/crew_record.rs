@@ -61,6 +61,36 @@ fn other_wordings_about_who_crewed_stay_unread(#[case] text: &str) {
 }
 
 #[rstest]
+#[case::another_vehicle(
+    "Whenever ~ becomes crewed, up to one other target Vehicle you control becomes an artifact creature until end of turn.",
+    r#"{"Triggered":{"when":{"BecomesCrewed":{"what":["This"]}},"targets":[{"what":{"Object":[{"Subtype":"Vehicle"},"Other",{"ControlledBy":"You"}]},"bounds":{"min":0,"max":1}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"AddType":"Artifact"},{"AddType":"Creature"}],"duration":"UntilEndOfTurn"}}]}}"#
+)]
+#[case::mill_then_grow(
+    "Whenever ~ becomes saddled for the first time each turn, mill two cards, then ~ gets +X/+X until end of turn, where X is the number of creature cards in your graveyard.",
+    r#"{"Triggered":{"when":{"Nth":{"event":{"BecomesSaddled":{"what":["This"]}},"nth":1}},"effects":[{"Mill":{"count":2}},{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":{"Count":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]},"toughness":{"Count":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]}}}],"duration":"UntilEndOfTurn"}}]}}"#
+)]
+fn the_wordings_after_a_crew_or_a_saddle_read_and_write_back(
+    #[case] text: &str,
+    #[case] written: &str,
+) {
+    reads_as(text, ClauseKind::Triggered, false, written);
+}
+
+#[rstest]
+#[case::grow_first(
+    "Whenever ~ becomes saddled, ~ gets +X/+X until end of turn, then mill two cards, where X is the number of creature cards in your graveyard."
+)]
+#[case::another_step(
+    "Whenever ~ becomes saddled, draw a card, then ~ gets +1/+1 until end of turn."
+)]
+#[case::a_target_after_a_mill(
+    "Whenever ~ becomes saddled, mill two cards, then target creature gets +1/+1 until end of turn."
+)]
+fn a_change_reads_after_a_mill_only_as_a_step_of_the_card_itself(#[case] text: &str) {
+    assert_eq!(clause(text, ClauseKind::Triggered, false), None, "{text}");
+}
+
+#[rstest]
 #[case::up_to_one("Return up to one target creature to its owner's hand.")]
 #[case::one("Return target creature to its owner's hand.")]
 #[case::up_to_one_you_control("Return up to one target artifact you control to its owner's hand.")]

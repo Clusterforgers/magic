@@ -630,6 +630,7 @@ fn written(
         if let Some((text, used)) = cast::sentence_text(&effects[start..])
             .or_else(|| library::sequence(&effects[start..]))
             .or_else(|| writer.explore_twice(&effects[start..]))
+            .or_else(|| writer.mill_then_change(&effects[start..]))
         {
             unsplit(mask, start, used)?;
             sentences.push(text);
@@ -1202,18 +1203,23 @@ impl Writer<'_> {
             })
     }
 
-    /// Whether the reference is the one target (or "up to one") and it is a permanent: not a spell, not a card in a zone.
-    fn is_a_permanent(&self, what: &Ref) -> bool {
+    /// Whether the reference is the one target or "up to one" target.
+    fn at_most_one(&self, what: &Ref) -> bool {
         let up_to_one = Bounds {
             min: 0,
             max: Some(Amount::Fixed(1)),
         };
-        (self.single(what)
+        self.single(what)
             || (matches!(what, Ref::Target(_))
                 && self
                     .targets
                     .first()
-                    .is_some_and(|spec| spec.bounds == up_to_one)))
+                    .is_some_and(|spec| spec.bounds == up_to_one))
+    }
+
+    /// Whether the reference is the one target (or "up to one") and it is a permanent: not a spell, not a card in a zone.
+    fn is_a_permanent(&self, what: &Ref) -> bool {
+        self.at_most_one(what)
             && self.target_is(|kind| {
                 matches!(kind, Targetable::Object(selector)
                     if !selector.0.iter().any(|pred| matches!(pred, Pred::In(_) | Pred::Spell)))
@@ -1697,6 +1703,24 @@ impl Writer<'_> {
         Some((format!("{subject} explores, then it explores again"), 2))
     }
 
+    /// "mill two cards, then ~ gets +X/+X until end of turn": the change counts what the mill left, so it is one
+    /// sentence, which no joint splits.
+    fn mill_then_change(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
+        let [
+            mill @ Effect::Mill { who: Ref::You, .. },
+            change @ Effect::Continuous {
+                affected: Ref::This,
+                ..
+            },
+            ..,
+        ] = effects
+        else {
+            return None;
+        };
+        let (mill, change) = (self.effect(mill)?, self.effect(change)?);
+        Some((format!("{mill}, then {change}"), 2))
+    }
+
     /// Tokens created: "create a Treasure token" for you, "target opponent creates a Treasure token" for another player.
     fn created(&mut self, effect: &Effect) -> Option<String> {
         match effect {
@@ -1889,7 +1913,7 @@ impl Writer<'_> {
             Ref::This => ("~".to_owned(), false),
             Ref::Triggering => ("it".to_owned(), false),
             Ref::Target(0)
-                if self.single(affected)
+                if self.at_most_one(affected)
                     && self.target_is(|what| matches!(what, Targetable::Object(_))) =>
             {
                 (self.name_target()?, false)
