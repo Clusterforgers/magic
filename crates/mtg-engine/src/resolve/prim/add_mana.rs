@@ -80,7 +80,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Produce::OfTapped => return unsupported("Effect.AddMana.OfTapped.Stack"),
         // Each mana of the combination is picked as it is added: the pick is asked once for each of them.
         Produce::AnyCombination { count, among } => {
-            times = times.saturating_mul(*count as usize);
+            let count = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(0);
+            times = times.saturating_mul(count);
             let types = if among.is_empty() {
                 COLORS.iter().copied().map(mana_of).collect()
             } else {

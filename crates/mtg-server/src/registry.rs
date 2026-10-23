@@ -153,6 +153,8 @@ pub struct PublicGame {
     pub ready: Vec<PlayerId>,
     /// How the game ended, once it did.
     pub result: Option<GameResult>,
+    /// Whether the table plays with manual cards (the roster says so in the lobby, the start does once the game runs).
+    pub manual_play: bool,
 }
 
 /// Why a game left the registry, as the sockets of its seats learn it.
@@ -641,7 +643,7 @@ impl Registry {
             })
             .collect();
         records.insert(id, recipe, meta, &rows).await?;
-        let recorder = Recorder::new(records.clone(), id, vec![false; slots.len()]);
+        let recorder = Recorder::new(records.clone(), id, vec![false; slots.len()], false);
         let spawned = spawn_named(
             id,
             setup,
@@ -857,6 +859,7 @@ impl Registry {
             connected: status.connected,
             ready: status.ready,
             result: status.result,
+            manual_play: status.manual_play,
         })
     }
 

@@ -6,6 +6,7 @@ const row = {
   game: '6f1e0c1a-3b1f-4d9e-8a3e-0d3c2d1b7a55',
   host: 'Ann',
   format: 'normal',
+  manual_play: false,
   filled: 1,
   total: 4,
   created_at: '2026-10-19T12:30:00Z',
@@ -26,6 +27,10 @@ describe('readLobbyGame', () => {
     expect(readLobbyGame({ ...row, filled, total })).toEqual({ ...row, filled, total })
   })
 
+  it.each([true, false])('reads the flag of a table that plays by hand: %s', (manual_play) => {
+    expect(readLobbyGame({ ...row, manual_play })).toEqual({ ...row, manual_play })
+  })
+
   it.each(Object.keys(row))('is null without %s', (key) => {
     const { [key]: _gone, ...rest } = row as Record<string, unknown>
     expect(readLobbyGame(rest)).toBeNull()
@@ -43,6 +48,8 @@ describe('readLobbyGame', () => {
     ['age is negative', { age_secs: -3 }],
     ['age is a fraction', { age_secs: 1.25 }],
     ['age is text', { age_secs: '125' }],
+    ['manual_play is text', { manual_play: 'yes' }],
+    ['manual_play is null', { manual_play: null }],
     ['more seats are filled than there are', { filled: 5, total: 4 }],
     ['the stamp has no time', { created_at: '2026-10-19' }],
     ['the stamp has an offset', { created_at: '2026-10-19T12:30:00+02:00' }],

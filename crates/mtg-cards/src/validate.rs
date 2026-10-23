@@ -504,6 +504,10 @@ impl<'a> Walker<'a> {
             Amount::CastWith(_) => self.uses("Amount", "CastWith"),
             Amount::ColorsSpent => self.uses("Amount", "ColorsSpent"),
             Amount::PermanentsGraved => self.uses("Amount", "PermanentsGraved"),
+            Amount::Tallied { who, .. } => {
+                self.uses("Amount", "Tallied");
+                self.at("Tallied", |w| w.reference(who, Kind::Player));
+            }
             Amount::Triggering => {
                 self.uses("Amount", "Triggering");
                 if !self.scope.in_trigger {
@@ -1473,10 +1477,15 @@ impl<'a> Walker<'a> {
                     Produce::AnyColor(0)
                     | Produce::ChosenColor(0)
                     | Produce::CommanderIdentity(0)
-                    | Produce::ProducedBy { count: 0, .. }
-                    | Produce::AnyCombination { count: 0, .. } => w.problem("adds no mana"),
+                    | Produce::ProducedBy { count: 0, .. } => w.problem("adds no mana"),
+                    Produce::AnyCombination { count, .. } if count.fixed() == Some(0) => {
+                        w.problem("adds no mana");
+                    }
                     Produce::AnyCombination { among, .. } if among.len() == 1 => {
                         w.problem("a combination of one type is that mana");
+                    }
+                    Produce::AnyCombination { count, .. } => {
+                        w.at("mana", |w| w.at("AnyCombination", |w| w.at("count", |w| w.amount(count))));
                     }
                     Produce::OneOf(list) if list.len() < 2 => {
                         w.problem("a choice of mana needs at least two types");
@@ -1500,7 +1509,6 @@ impl<'a> Walker<'a> {
                     | Produce::ChosenColor(_)
                     | Produce::OrChosenColor(_)
                     | Produce::CommanderIdentity(_)
-                    | Produce::AnyCombination { .. }
                     | Produce::OfTapped => {}
                 }
                 // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.

@@ -1,0 +1,27 @@
+{
+  "id": "257a5ae9-f754-4c45-a47d-5196f1b625b7",
+  "oracle_id": "ecfbebc9-7fc7-474e-8c59-8ede800e082e",
+  "name": "Crucible of the Spirit Dragon",
+  "lang": "en",
+  "layout": "normal",
+  "set": "afc",
+  "collector_number": "231",
+  "rarity": "rare",
+  "released_at": "2021-07-23",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{1}, {T}: Put a storage counter on this land.\n{T}, Remove X storage counters from this land: Add X mana in any combination of colors. Spend this mana only to cast Dragon spells or activate abilities of Dragons.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "C",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

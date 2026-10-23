@@ -1,0 +1,40 @@
+{
+  "oracle_id": "6f18ea44-3efa-4a45-abc6-86a0627e40f2",
+  "name": "Fungal Reaches",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fungal Reaches",
+      "oracle_fingerprint": "aaa4051e183c14b039d6e9b5a57715c5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "storage" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "RemoveCounters": { "counter": { "Other": "storage" }, "count": "X" } }
+            ],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyCombination": { "count": "X", "among": ["Red", "Green"] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

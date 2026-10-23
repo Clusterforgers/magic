@@ -1,0 +1,21 @@
+{
+  "id": "5e43c36f-b8a2-4b2b-b2ea-57e6fa97521c",
+  "oracle_id": "283f743f-6e79-49de-b7ed-08e6ffb64cc6",
+  "name": "Clive's Hideaway",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fin",
+  "collector_number": "275",
+  "rarity": "rare",
+  "released_at": "2025-06-13",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Town",
+  "oracle_text": "Hideaway 4 (When this land enters, look at the top four cards of your library, exile one face down, then put the rest on the bottom in a random order.)\n{T}: Add {C}.\n{2}, {T}: You may play the exiled card without paying its mana cost if you control four or more legendary creatures.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Hideaway"
+  ]
+}

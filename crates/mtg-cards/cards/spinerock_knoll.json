@@ -1,0 +1,48 @@
+{
+  "oracle_id": "690c7f8e-fea2-4920-afa7-02ff120701a1",
+  "name": "Spinerock Knoll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spinerock Knoll",
+      "oracle_fingerprint": "3d5577ab9cf91dbde483c29586c41c79",
+      "abilities": [
+        { "Keyword": { "Hideaway": 4 } },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap"],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "Opponents", "what": "DamageTaken" } },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [
+                    {
+                      "CastFromZone": {
+                        "what": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                        "free": true,
+                        "play": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

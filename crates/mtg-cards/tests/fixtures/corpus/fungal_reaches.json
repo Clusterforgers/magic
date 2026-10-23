@@ -1,0 +1,27 @@
+{
+  "id": "1a3580d6-345a-46ba-a327-0e924989d6b1",
+  "oracle_id": "6f18ea44-3efa-4a45-abc6-86a0627e40f2",
+  "name": "Fungal Reaches",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tsr",
+  "collector_number": "279",
+  "rarity": "uncommon",
+  "released_at": "2021-03-19",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{1}, {T}: Put a storage counter on this land.\n{1}, Remove X storage counters from this land: Add X mana in any combination of {R} and/or {G}.",
+  "colors": [],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "C",
+    "G",
+    "R"
+  ]
+}

@@ -24,12 +24,12 @@ One item is one piece of about 15 minutes; the commit that finishes it deletes i
 
 Ready pieces, grouped by the code they touch. A group runs one piece at a time, groups run side by side (about six agents at once); a piece is claimed with `[~]` and pushed before it starts, and `git merge main` plus the full `scripts/check.sh` end it.
 
-- Costs and casting: (g2e), (g5c), (g6d), (c1j), (c12b), (c13b).
-- Cast ways and zones: (c5b), (c2f), (n2) face-down objects, (n1d3) meld.
+- Costs and casting: (g2e), (g5c), (g6d), (c1j), (c1k), (c12b), (c13b).
+- Cast ways and zones: (c5c), (c2f), (n2) face-down objects, (n1d3) meld.
 - Triggers and keywords: (c6b), (c4c), (c3b), (c3d), (c2c), (c2d), (n1d5) day and night effects, (o2c).
 - Statics and layers: (c8i), (c7b), (c7c), (o1d), (m4).
-- Compiler wordings, no engine change: (c10) one piece per wording family with (c10s), (c10d), (c10e) and (c10r), (o2d), (c11) and (c11c) layouts, (c9c), (c1i).
-- Commander and server: the `manual_play` flag stored with the game, the turn without an active player in the table view, Companion.
+- Compiler wordings, no engine change: (c10) one piece per wording family with (c10s), (c10d), (c10e) and (c10r), (o2d), (c11) and (c11c) layouts, (c9c), (c1l).
+- Commander and server: the turn without an active player in the table view, Companion.
 - Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test.
 - After the card system: "Views complete", the Gate, then the web (M5 prompts for the decision kinds the engine asks, the manual-action menu, table states) and M7.
 - After each round: `mtg-cli ingest` and `compile` refresh the real database, `coverage` is re-run and the numbers go on the M6 target line; `fetch scryfall --printings` fills the printings once.
@@ -52,9 +52,12 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Triggers: patterns for every logged event, batches, the nth card or spell, "first time each turn", evasion, impulse draw, the Monarch and the city's blessing
 - Vehicles and Mounts: a Vehicle that becomes an artifact creature by an ability (itself or another target Vehicle), by tapped tokens, by energy or while it holds counters, and a Mount that an ability saddles
 - Keywords: combat, characteristic and evasion keywords; Surveil, Proliferate, Explore, Connive, Amass, Monstrosity, Adapt, Bolster, Fabricate, Learn, Ascend; Crew, Saddle, Station, Level up, Outlast; Unearth, Escape, Rebound, Aftermath, Dash, Ninjutsu, Jump-start, Retrace, Embalm, Eternalize, Blitz, Encore, Dredge, Miracle, Prowl, Mayhem, Demonstrate, Hideaway; Echo, Cumulative upkeep, Undying, Persist, Myriad, Squad, Ravenous, Vanishing, Fading, Backup, Devour, Casualty, Offspring, Gift; Curses, Bestow, Mutate, Morph, Megamorph, Disguise; Split second, Undaunted, Improvise, Affinity, typecycling, Scavenge, Transmute, Awaken, Gravestorm, Sunburst, For Mirrodin!, Job select, restricted Equip; Partner and its forms; the Monarch with its followers (damage that causes no loss of life, your commander as a source, the attacked player as "that player", the monarch as the turn began, an exile until an opponent becomes the monarch, "while you're the monarch" after an event)
+- Hideaway in the compiler: the free play or cast of the exiled card with its conditions (counts of cards, a total power, what a player controls, the attackers and the damage of the turn), "play one of them" and "if you do, return ~"; ten hideaway cards are reproduced
 - Statics: Auras that enchant a player, lords by subtype, characteristic-defining abilities, conditions after "as long as", the tax on attacking, block restrictions and granted mana, limits on blockers (blocks only fliers, one blocker at most, two or more), melee and myriad given by a static ability and "as long as you control your commander" (Lieutenant), keywords of a player ("You have hexproof"), triggered abilities in quotes and two statics in one sentence
 - Faces and copies: multi-face cards, transform, fuse, daybound and nightbound, Sagas, Classes, flip cards, copiable values, token and spell copies, copies of abilities
 - Commander: house rules (turn, life, table and Commander options) on the server and in the lobby, the Commander format rules in the engine, the deck check for a table, Partner, "can be your commander", commander replacement of a draw, the mid-turn departure of the active player
+- Manual cards: the `manual_play` flag of a table, stored with the game when it starts and listed by the game browser and the game lookup
+- Mana ability wordings: the storage-counter lands (an X of counters removed from the source for X mana in any combination of types), a combination counted by a where clause and restrictions by a subtype of spells and abilities (Crucible of the Spirit Dragon)
 - Tooling: `scripts/check.sh` with test slots, `scripts/agent-status.sh`, the quick test-time suite, derived corpus counts, current Cargo dependencies
 
 ## M3 Card system
@@ -78,7 +81,6 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] (m4) A Fortification that is also a creature (CR 301.6): the attachment check and a test; the corpus has no Fortification
 
 ### Manual cards and views
-- [~] (branch manual-play-flag) The game's `manual_play` flag is stored with the game and listed by `GET /api/lobbies` and `GET /api/games/{id}` (`mtg_protocol::manual_play` derives it from the roster today)
 - [ ] Views complete: they carry every state of an object (counters, attachments, face, face-down, copies, support) and the abilities a player may activate with their cost and target wording (Equip, Reconfigure, loyalty and other activated abilities in one list), a spectator audience sees public information, and a card revealed and then moved to a hidden zone in one batch reaches the other seats' views (`docs/protocol.md`)
 - [ ] Gate: every corpus card is Verified except the two kept Partial and Manual by design, and fuzz games with a deck from each cluster pass every invariant
 
@@ -111,7 +113,8 @@ The server is settled first, then the web is built once against the final types.
 
 ### Mana and costs
 - [ ] (c1j) A mana ability that takes permanents and is used more than once in a payment may take its own source with its last use (Skirk Prospector sacrificing itself after another Goblin for {R}{R})
-- [~] (c1i) (branch c1i-mana-wordings) The mana ability wordings still unread: storage-counter lands ("Remove X storage counters from this land: Add X mana in any combination of {R} and/or {G}": an X cost in a mana ability), a combination counted by X ("Add X mana in any combination of colors, where X is ..."), restrictions by subtype or by a use of abilities ("Spend this mana only to cast Elemental spells or activate abilities of Elementals"), and the triggered mana abilities of a nonland permanent (Kinnan) or with a condition (the monarch)
+- [ ] (c1k) The triggered mana abilities of a nonland permanent (Kinnan Bonder Prodigy) and with a condition (the monarch)
+- [ ] (c1l) The mana ability wordings still unread: an amount counted as "the number of basic land types among lands you control" (Domain), X mana of any one color counted by a where clause or by "Remove X +1/+1 counters from this creature", and restrictions by a list of subtypes or "Elemental sources"
 - [ ] (c12b) The rest of the additional costs of a spell: a choice between costs ("discard a card or pay 3 life", "sacrifice a creature or pay {3}"), an X ("pay X life", "discard X cards"), mana in a required cost and the read of what the cost took ("the sacrificed creature's power")
 - [ ] (c13b) The rest of the commander free casts and strive spells: Deflecting Swat (choose new targets for a spell or ability on the stack) and the strive spells Launch the Fleet, Solidarity of Heroes, Call the Coppercoats and Twinflame (their effects are not read)
 
@@ -123,7 +126,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c3b) Keyword actions and designations, remaining: Time travel (time counters on suspended cards and permanents) and the blessing badge on the table
 - [x] (c3c) Monarch wordings: `BecomesMonarch`, `Ref::Monarch` ("the monarch controls", "the monarch's end step", "attacks the monarch"), "if there is no monarch" and "as long as you're the monarch" before or after a static (Custodi Lich, Dawnglade Regent, The Spear of Bashenga and Azure Fleet Admiral Verified)
 - [ ] (c4c) The events "becomes crewed" and "becomes saddled" (Mobilizer Mech, Ghost Ark, Stubborn Burrowfiend, also "for the first time each turn"), the creatures that crewed or saddled a permanent this turn (Getaway Car, Subterranean Schooner, Giant Beaver, Rambling Possum returning "any number of creatures that saddled it"), "you may have ~ become an artifact creature" and the Vehicle and Mount triggers (The Fantasticar, Kolodin, Alacrian Armory), and a Reconfigure corpus card (Lion Sash needs "if it was a permanent card", Tanuki Transplanter mana that lasts the turn, Razorfield Ripper a choice of costs)
-- [~] (c5b) (branch c5b-hideaway) The compiler's reading of the hideaway sentences ("you may play the exiled card without paying its mana cost" with its conditions, "play one of them", "if you do, return this Vehicle"), the conditions "you attacked with three or more creatures this turn" (Windbrisk Heights) and "an opponent was dealt 7 or more damage this turn" (Spinerock Knoll), Cipher, Miracle with X in its cost and the miracle spells the compiler does not read yet (Terminus, Banishing Stroke, Devastation Tide, Reforge the Soul, Redress Fate)
+- [ ] (c5c) Cipher, Miracle with X in its cost, the miracle spells the compiler does not read yet (Terminus, Banishing Stroke, Devastation Tide, Reforge the Soul, Redress Fate) and the hideaway cards still unread: Watcher for Tomorrow (the exiled card goes to its owner's hand as the permanent leaves), Shelldock Isle ("a library has twenty or fewer cards in it"), Collector's Cage ("creatures with different powers"), Wiretapping ("your first card during each of your draw steps") and Widespread Thieving ("Then you may pay ... If you do" after a Treasure)
 - [ ] (c6b) The count of permanents Devour sacrificed ("for each creature it devoured", Thromok), Octomancer (a copy of a token that entered this turn), Perch Protection (phasing out, a life total that can't change, protection from everything), the two targets of Wear Down and Peerless Recycling that may be the same object, and the compiler reading the gift spells that say "instead" or add a target when the gift was promised
 
 ### Statics, attachments and mutate

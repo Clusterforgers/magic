@@ -1,0 +1,23 @@
+{
+  "id": "5c678643-6640-49e1-a5b0-2954123bcabc",
+  "oracle_id": "463fc699-f4fc-4112-a6b3-6dcb642203e6",
+  "name": "Howltooth Hollow",
+  "lang": "en",
+  "layout": "normal",
+  "set": "lrw",
+  "collector_number": "269",
+  "rarity": "rare",
+  "released_at": "2007-10-12",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "Hideaway 4 (When this land enters, look at the top four cards of your library, exile one face down, then put the rest on the bottom in a random order.)\nThis land enters tapped.\n{T}: Add {B}.\n{B}, {T}: You may play the exiled card without paying its mana cost if each player has no cards in hand.",
+  "colors": [],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Hideaway"
+  ]
+}

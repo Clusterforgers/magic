@@ -668,6 +668,9 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
     if let Some(bare) = r.attempt(no_counters) {
         return Some(bare);
     }
+    if let Some(fact) = super::facts::read(r) {
+        return Some(fact);
+    }
     r.need("you have")?;
     let number = i32::try_from(r.number()?).ok()?;
     let op = if r.words("or more") {
@@ -800,6 +803,9 @@ pub fn condition_text(condition: &Condition) -> Option<String> {
     }
     if let Some(monarch) = monarch_text(condition) {
         return Some(monarch);
+    }
+    if let Some(fact) = super::facts::texts(condition).into_iter().next() {
+        return Some(fact);
     }
     if let Condition::Compare {
         left: Amount::Counters {

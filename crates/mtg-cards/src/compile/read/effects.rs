@@ -37,12 +37,13 @@ use crate::value::{Amount, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 42] = [
+const TEMPLATES: [Template; 43] = [
     modal::modal,
     super::spent::sacrifice_unless,
     cast::discover_sentence,
     cast::exile_until,
     cast::exile_top,
+    cast::exiled_card,
     payments::may_pay,
     may,
     chain,
@@ -559,6 +560,14 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             to: Destination::Hand,
         }]);
     }
+    // The card by its name: "return ~ to its owner's hand".
+    if r.ability && r.source() {
+        r.need("to its owner's hand")?;
+        return Some(vec![Effect::Move {
+            what: if r.died { dead_card() } else { Ref::This },
+            to: Destination::Hand,
+        }]);
+    }
     let what = target_object(r)?;
     let Some(Targetable::Object(selector)) = r.targets.first().map(|spec| &spec.what) else {
         return None;
@@ -997,7 +1006,12 @@ fn comma_types(r: &mut Reader<'_>) -> Option<Vec<ManaType>> {
 /// "two mana in any combination of colors", "three mana in any combination of {R} and/or {G}": several mana, each of a
 /// type picked when it is added.
 pub(super) fn combination(r: &mut Reader<'_>) -> Option<Produce> {
-    let count = number_word(r.take_word()?).filter(|count| *count >= 2)?;
+    let count = if r.x() {
+        Amount::X
+    } else {
+        let number = number_word(r.take_word()?).filter(|count| *count >= 2)?;
+        Amount::Fixed(i32::try_from(number).ok()?)
+    };
     r.need("mana in any combination of")?;
     if r.word("colors") {
         return Some(Produce::AnyCombination {

@@ -1,4 +1,4 @@
-//! Goal: on Postgres an account plays one of its stored decks: it chooses it at creation, when joining and later by token or session, the table is told the deck's name, format and a count of manual cards and never a card, another account's deck is the 404 of a deck nobody has, a blocked deck is refused with its issues to its owner alone, the recipe names the decks at the start with the fingerprint of their cards, a started game survives the deletion of its stored decks and resumes with the same decks and state, and a start whose recipe cannot be stored is refused and tried again.
+//! Goal: on Postgres an account plays one of its stored decks: it chooses it at creation, when joining and later by token or session, the table is told the deck's name, format and a count of manual cards and never a card, another account's deck is the 404 of a deck nobody has, a blocked deck is refused with its issues to its owner alone, the recipe names the decks at the start with the fingerprint of their cards, a started game survives the deletion of its stored decks and resumes with the same decks and state, a start whose recipe cannot be stored is refused and tried again, and a table with a deck played by hand lists as one, stores that when it starts and resumes as one after a restart.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net;
@@ -533,4 +533,107 @@ async fn a_start_whose_recipe_cannot_be_stored_is_refused_and_tried_again(pool: 
     let (stored, status) = recipe(&pool, &game).await;
     assert_eq!(status, RecordStatus::Running);
     assert_eq!(stored["decks"][0]["kind"], "oracle");
+}
+
+/// `GET /api/games/{id}` and `GET /api/lobbies`: whether each says the table plays by hand (`None` for a game not listed).
+async fn flags(server: &TestServer, game: &str) -> (bool, Option<bool>) {
+    let looked =
+        net::lobby::call(server.addr, "GET", &format!("/api/games/{game}"), None, &[]).await;
+    assert_eq!(looked.status, 200, "{}", looked.text());
+    let listing = net::lobby::lobbies(server.addr, &[]).await;
+    assert_eq!(listing.status, 200, "{}", listing.text());
+    let rows = listing.json()["games"].clone();
+    let listed = rows
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|row| row["game"] == game)
+        .map(|row| row["manual_play"].as_bool().unwrap());
+    (looked.json()["manual_play"].as_bool().unwrap(), listed)
+}
+
+async fn stored_flag(pool: &PgPool, game: &str) -> bool {
+    GameRecords::new(pool.clone())
+        .get(game.parse::<GameId>().unwrap())
+        .await
+        .unwrap()
+        .unwrap()
+        .manual_play
+}
+
+/// A game of a host who plays `host_deck` and a guest who plays `guest_deck`, both stored decks: the lobby says
+/// whether it is played by hand, the start stores that, and a restarted server resumes the game with it.
+async fn plays_by_hand_through_a_restart(
+    pool: PgPool,
+    host_deck: Value,
+    guest_deck: Value,
+    expected: bool,
+) {
+    let mut server = start(&pool).await;
+    let ann = register(server.addr, "ann", PASSWORD).await;
+    let bo = register(server.addr, "bob", PASSWORD).await;
+    let host_id = store(&server, &ann, &host_deck).await;
+    let guest_id = store(&server, &bo, &guest_deck).await;
+    let game = create(&server, &ann, "mono-green").await;
+    assert_eq!(
+        flags(&server, &game).await,
+        (false, Some(false)),
+        "built-in decks"
+    );
+    assert_eq!(choose(&server, &ann, &game, 0, &host_id).await.status, 200);
+    let joined = bo
+        .post(
+            server.addr,
+            &format!("/api/games/{game}/join"),
+            &json!({ "deck": guest_id }).to_string(),
+        )
+        .await;
+    assert_eq!(joined.status, 200, "{}", joined.text());
+    assert_eq!(flags(&server, &game).await, (expected, Some(expected)));
+    assert!(
+        !stored_flag(&pool, &game).await,
+        "a lobby stores nothing yet"
+    );
+
+    lobby::start(&server.registry, &game, 2).await;
+    assert_eq!(
+        stored_flag(&pool, &game).await,
+        expected,
+        "the start stores it"
+    );
+    assert_eq!(flags(&server, &game).await, (expected, None));
+
+    let handle = server.registry.handle(game.parse().unwrap()).unwrap();
+    let hash = handle.status().await.unwrap().state_hash;
+    server.shutdown();
+    server.finished().await.unwrap();
+    drop(handle);
+    drop(server);
+
+    let server = TestServer::start_with_cards(pool.clone(), bot_config(), source(&pool)).await;
+    let handle = server
+        .registry
+        .handle(game.parse().unwrap())
+        .expect("the game came back");
+    let status = handle.status().await.unwrap();
+    assert!(status.started);
+    assert_eq!(status.state_hash, hash);
+    assert_eq!(status.manual_play, expected, "the resumed game keeps it");
+    assert_eq!(flags(&server, &game).await, (expected, None));
+    assert_eq!(stored_flag(&pool, &game).await, expected);
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_table_with_a_deck_played_by_hand_starts_and_resumes_as_one(pool: PgPool) {
+    plays_by_hand_through_a_restart(pool, quest(), forests(), true).await;
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_table_where_the_guest_plays_by_hand_starts_and_resumes_as_one(pool: PgPool) {
+    plays_by_hand_through_a_restart(pool, forests(), quest(), true).await;
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_table_whose_decks_are_run_whole_starts_and_resumes_as_one(pool: PgPool) {
+    plays_by_hand_through_a_restart(pool, forests(), bears(), false).await;
 }

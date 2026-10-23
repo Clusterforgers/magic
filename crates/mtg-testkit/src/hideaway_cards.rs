@@ -21,6 +21,11 @@ pub const HIDEAWAY_CARDS: &[(&str, usize)] = &[
     ("Evercoat Ursine", 3),
     ("Smuggler's Buggy", 2),
     ("Cemetery Tampering", 1),
+    ("Windbrisk Heights", 2),
+    ("Spinerock Knoll", 2),
+    ("Howltooth Hollow", 1),
+    ("Clive's Hideaway", 1),
+    ("Rabble Rousing", 1),
 ];
 
 /// A legal Normal deck of sixty cards of the list, big creatures that meet their conditions, and burn, derived entirely from `rng`.

@@ -1,4 +1,4 @@
-//! Goal: "Add N mana in any combination of colors" (also of two or three listed types) reads whole in an activated mana ability, a triggered one and a spell, with its cost (mana, energy), and writes back as the same text; a count of one, one listed type and unknown words stay with the table.
+//! Goal: "Add N mana in any combination of colors" (also of two or three listed types, and X for the X of a cost that removes counters or the amount a where clause names) reads whole in an activated mana ability, a triggered one and a spell, with its cost (mana, energy, counters), and writes back as the same text; a count of one, one listed type and unknown words stay with the table.
 use super::*;
 use crate::mana_trigger::mana_trigger;
 
@@ -22,6 +22,26 @@ use crate::mana_trigger::mana_trigger;
 #[case::three_listed_types(
     "{T}: Add two mana in any combination of {U}, {B}, and/or {R}.",
     r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyCombination":{"count":2,"among":["Blue","Black","Red"]}}}}]}}"#
+)]
+#[case::x_for_storage_counters(
+    "{1}, Remove X storage counters from this land: Add X mana in any combination of {R} and/or {G}.",
+    r#"{"Activated":{"cost":[{"Mana":"{1}"},{"RemoveCounters":{"counter":{"Other":"storage"},"count":"X"}}],"effects":[{"AddMana":{"mana":{"AnyCombination":{"count":"X","among":["Red","Green"]}}}}]}}"#
+)]
+#[case::x_for_tapped_counters_of_any_color(
+    "{T}, Remove X storage counters from this land: Add X mana in any combination of colors.",
+    r#"{"Activated":{"cost":["Tap",{"RemoveCounters":{"counter":{"Other":"storage"},"count":"X"}}],"effects":[{"AddMana":{"mana":{"AnyCombination":{"count":"X"}}}}]}}"#
+)]
+#[case::counted_by_a_number_of_creatures(
+    "{T}: Add X mana in any combination of colors, where X is the number of creatures you control with defender.",
+    r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyCombination":{"count":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"},{"HasKeyword":"Defender"}]}}}}}]}}"#
+)]
+#[case::counted_by_the_greatest_power(
+    "{G}, {T}: Add X mana in any combination of colors, where X is the greatest power among creatures you control.",
+    r#"{"Activated":{"cost":[{"Mana":"{G}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyCombination":{"count":{"Greatest":{"of":[{"Type":"Creature"},{"ControlledBy":"You"}],"stat":"Power"}}}}}}]}}"#
+)]
+#[case::counted_by_its_power(
+    "{T}: Add X mana in any combination of colors, where X is its power.",
+    r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyCombination":{"count":{"Stat":{"of":"This","stat":"Power"}}}}}}]}}"#
 )]
 fn the_wordings_of_mana_in_any_combination_read_and_write_back(
     #[case] text: &str,
@@ -59,7 +79,13 @@ fn a_spell_adds_a_combination_with_what_else_it_does() {
 #[case::one_mana("{T}: Add one mana in any combination of colors.")]
 #[case::one_listed_type("{T}: Add two mana in any combination of {R}.")]
 #[case::a_type_that_is_not_mana("{T}: Add two mana in any combination of {W} and/or {T}.")]
-#[case::the_variable_count("{T}: Add X mana in any combination of colors, where X is its power.")]
+#[case::an_x_nothing_names("{T}: Add X mana in any combination of colors.")]
+#[case::an_x_counted_by_a_word_nothing_reads(
+    "{T}: Add X mana in any combination of colors, where X is the cheese."
+)]
+#[case::a_cost_of_x_for_one_listed_type(
+    "{1}, Remove X storage counters from this land: Add X mana in any combination of {R}."
+)]
 #[case::another_word("{T}: Add two mana in any combination of lands.")]
 fn near_misses_of_mana_in_any_combination_stay_with_the_table(#[case] text: &str) {
     let read = clause(text, ClauseKind::Activated, false);

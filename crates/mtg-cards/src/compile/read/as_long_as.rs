@@ -8,6 +8,7 @@ use mtg_core::color::Color;
 
 use super::amounts::{count_word, number_word};
 use super::counters;
+use super::facts;
 use super::selectors::{Form, color, color_name, phrase, phrase_text};
 use super::statics::{holds, holds_texts};
 use super::tokens::Reader;
@@ -33,6 +34,11 @@ pub(super) fn read(r: &mut Reader<'_>, it: Option<&Ref>) -> Option<Condition> {
     if r.words("it's your turn") {
         return Some(Condition::YourTurn);
     }
+    body(r, it)
+}
+
+/// The conditions of "as long as" and of "if" that state how the game stands, after the words that introduce them.
+pub(super) fn body(r: &mut Reader<'_>, it: Option<&Ref>) -> Option<Condition> {
     triggers::monarch_condition(r)
         .or_else(|| r.attempt(|r| state(r, it)))
         .or_else(|| r.attempt(|r| counters_held(r, it)))
@@ -234,6 +240,7 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
         devotion_texts(condition),
         counted_texts(condition),
         none_texts(condition),
+        facts::texts(condition),
     ]
     .concat();
     if !own.is_empty() {
@@ -337,18 +344,29 @@ fn devotion_texts(condition: &Condition) -> Vec<String> {
     )]
 }
 
-/// The counts of cards in a graveyard or a hand.
+/// The counts of cards in a graveyard or a hand, with the number as a word and as digits.
 fn counted_texts(condition: &Condition) -> Vec<String> {
-    let Condition::Compare { left, op, right } = condition else {
-        return Vec::new();
-    };
-    let Amount::Fixed(number) = right else {
+    let Condition::Compare {
+        right: Amount::Fixed(number),
+        ..
+    } = condition
+    else {
         return Vec::new();
     };
     let Ok(number) = u32::try_from(*number) else {
         return Vec::new();
     };
-    let words = quantity_text(number);
+    facts::quantity_texts(number)
+        .iter()
+        .flat_map(|words| counted_text(condition, number, words))
+        .collect()
+}
+
+/// The counts of cards in a graveyard or a hand, for one wording `words` of `number`.
+fn counted_text(condition: &Condition, number: u32, words: &str) -> Vec<String> {
+    let Condition::Compare { left, op, .. } = condition else {
+        return Vec::new();
+    };
     match (left, op) {
         (Amount::CardTypes(of), Cmp::Ge) if *of == graveyard_cards() => vec![format!(
             "there are {words} or more card types among cards in your graveyard"

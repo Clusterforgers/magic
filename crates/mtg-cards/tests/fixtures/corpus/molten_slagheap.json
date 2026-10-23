@@ -1,0 +1,27 @@
+{
+  "id": "4d952491-3a33-42af-9748-d2cb9c5a2f76",
+  "oracle_id": "33587cb2-0fd3-4e4c-bc5e-e7299cc9dab5",
+  "name": "Molten Slagheap",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tsr",
+  "collector_number": "282",
+  "rarity": "uncommon",
+  "released_at": "2021-03-19",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{1}, {T}: Put a storage counter on this land.\n{1}, Remove X storage counters from this land: Add X mana in any combination of {B} and/or {R}.",
+  "colors": [],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "C",
+    "R"
+  ]
+}
