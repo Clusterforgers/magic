@@ -28,15 +28,69 @@ fn moves(name: &str, from: Zone, to: Zone) -> (&'static str, Zone, Zone) {
 }
 
 #[rstest]
-#[case::from_the_hand_to_a_graveyard(r"[]", "Battlefield", "Graveyard", moves("Spell", Zone::Hand(ME), Zone::Graveyard(ME)), 1)]
-#[case::not_from_the_battlefield(r"[]", "Battlefield", "Graveyard", moves("Bear", Zone::Battlefield, Zone::Graveyard(ME)), 0)]
-#[case::not_to_another_zone(r"[]", "Battlefield", "Graveyard", moves("Spell", Zone::Hand(ME), Zone::Exile), 0)]
-#[case::from_the_battlefield_when_it_is_another_zone_excluded(r"[]", "Hand", "Graveyard", moves("Bear", Zone::Battlefield, Zone::Graveyard(ME)), 1)]
-#[case::not_from_the_hand_when_the_hand_is_excluded(r"[]", "Hand", "Graveyard", moves("Spell", Zone::Hand(ME), Zone::Graveyard(ME)), 0)]
-#[case::any_destination(r"[]", "Battlefield", "", moves("Spell", Zone::Hand(ME), Zone::Exile), 1)]
-#[case::any_destination_not_from_the_excluded_zone(r"[]", "Battlefield", "", moves("Bear", Zone::Battlefield, Zone::Hand(ME)), 0)]
-#[case::the_selector_picks(r#"[{"Type":"Creature"}]"#, "Battlefield", "Exile", moves("Spell", Zone::Hand(ME), Zone::Exile), 0)]
-#[case::the_selector_picks_a_creature(r#"[{"Type":"Creature"}]"#, "Hand", "Exile", moves("Bear", Zone::Battlefield, Zone::Exile), 1)]
+#[case::from_the_hand_to_a_graveyard(
+    r"[]",
+    "Battlefield",
+    "Graveyard",
+    moves("Spell", Zone::Hand(ME), Zone::Graveyard(ME)),
+    1
+)]
+#[case::not_from_the_battlefield(
+    r"[]",
+    "Battlefield",
+    "Graveyard",
+    moves("Bear", Zone::Battlefield, Zone::Graveyard(ME)),
+    0
+)]
+#[case::not_to_another_zone(
+    r"[]",
+    "Battlefield",
+    "Graveyard",
+    moves("Spell", Zone::Hand(ME), Zone::Exile),
+    0
+)]
+#[case::from_the_battlefield_when_it_is_another_zone_excluded(
+    r"[]",
+    "Hand",
+    "Graveyard",
+    moves("Bear", Zone::Battlefield, Zone::Graveyard(ME)),
+    1
+)]
+#[case::not_from_the_hand_when_the_hand_is_excluded(
+    r"[]",
+    "Hand",
+    "Graveyard",
+    moves("Spell", Zone::Hand(ME), Zone::Graveyard(ME)),
+    0
+)]
+#[case::any_destination(
+    r"[]",
+    "Battlefield",
+    "",
+    moves("Spell", Zone::Hand(ME), Zone::Exile),
+    1
+)]
+#[case::any_destination_not_from_the_excluded_zone(
+    r"[]",
+    "Battlefield",
+    "",
+    moves("Bear", Zone::Battlefield, Zone::Hand(ME)),
+    0
+)]
+#[case::the_selector_picks(
+    r#"[{"Type":"Creature"}]"#,
+    "Battlefield",
+    "Exile",
+    moves("Spell", Zone::Hand(ME), Zone::Exile),
+    0
+)]
+#[case::the_selector_picks_a_creature(
+    r#"[{"Type":"Creature"}]"#,
+    "Hand",
+    "Exile",
+    moves("Bear", Zone::Battlefield, Zone::Exile),
+    1
+)]
 fn an_object_moving_to_a_zone_from_anywhere_but_one_triggers(
     #[case] what: &str,
     #[case] except: &str,

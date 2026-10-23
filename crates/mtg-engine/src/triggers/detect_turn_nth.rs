@@ -1,4 +1,4 @@
-//! Goal: the first (or nth) time in a turn that a player loses life, cycles a card, surveils or has a token enter under their control, and that counters are put on an object, triggers once for that player or object alone, whoever else did it before; a loss from a payment, from damage and from an effect all count, the events of one batch are counted in order, the count starts again with each turn and the same events folded in one batch or one by one give the same tallies, at two, three and four seats.
+//! Goal: the first (or nth) time in a turn that a player loses life, cycles a card, surveils or has a token enter under their control, and that counters are put on an object, triggers once for that player or object alone, whoever else did it before; a loss from a payment, from damage and from an effect all count, the events of one batch are counted in order, the count starts again with each turn the same events folded in one batch or one by one give the same tallies, and a condition on the counters put on an object this turn holds exactly after one was put on it that turn, at two, three and four seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -7,7 +7,7 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;
 use mtg_cards::refs::{Ref, ZoneKind};
-use mtg_cards::value::{Amount, CounterKind};
+use mtg_cards::value::{Amount, Cmp, Condition, CounterKind, TurnTally};
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use rstest::rstest;
@@ -46,7 +46,7 @@ fn table(seats: usize, when: &str) -> GameState {
     let hands = (0..seats)
         .map(|seat| {
             vec![Arc::new(
-                CardDefinition::new(&format!("Card {seat}")).with_type(CardType::Instant),
+                CardDefinition::new(format!("Card {seat}")).with_type(CardType::Instant),
             )]
         })
         .collect();
@@ -287,4 +287,80 @@ fn damage_that_causes_no_life_loss_is_not_a_loss() {
     assert_eq!(fired(&pre, &[hit(DamageForm::Infect)]), 0);
     assert_eq!(fired(&pre, &[hit(DamageForm::NoLifeLoss)]), 0);
     assert_eq!(fired(&pre, &[hit(DamageForm::Normal)]), 1);
+}
+
+/// A creature that gains its controller 1 life at the beginning of each end step if a counter was put on it this turn.
+fn grower() -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new("Watcher")
+            .with_type(CardType::Creature)
+            .with_power_toughness(1, 1)
+            .with_rules(Ability::Triggered {
+                when: pattern(r#"{"StepBegins":{"step":"End"}}"#),
+                intervening_if: Some(Condition::Compare {
+                    left: Amount::Tallied {
+                        who: Ref::This,
+                        what: TurnTally::CountersPut,
+                    },
+                    op: Cmp::Ge,
+                    right: Amount::Fixed(1),
+                }),
+                limit: None,
+                from: ZoneKind::Battlefield,
+                targets: Vec::new(),
+                effects: vec![Effect::GainLife {
+                    who: Ref::You,
+                    amount: Amount::Fixed(1),
+                }],
+            }),
+    )
+}
+
+fn counting_table(seats: usize) -> GameState {
+    let hands = (0..seats).map(|_| Vec::new()).collect();
+    let fields = (0..seats)
+        .map(|seat| {
+            if seat == 0 {
+                vec![grower(), creature("Bear", 2, 2)]
+            } else {
+                vec![creature(&format!("Guest {seat}"), 2, 2)]
+            }
+        })
+        .collect();
+    state(hands, fields)
+}
+
+fn end_step() -> Event {
+    Event::StepBegan {
+        step: crate::turn::Step::End,
+    }
+}
+
+#[rstest]
+#[case::a_counter_on_it(&[Counter("Watcher")], 1)]
+#[case::two_counters_on_it(&[Counter("Watcher"), Counter("Watcher")], 1)]
+#[case::a_counter_on_another(&[Counter("Bear")], 0)]
+#[case::no_counter(&[], 0)]
+#[case::on_it_and_another(&[Counter("Bear"), Counter("Watcher")], 1)]
+fn a_counter_put_on_it_this_turn_is_read_by_the_condition_of_the_turn_so_far(
+    #[case] before: &[Act],
+    #[case] expected: usize,
+    #[values(2, 3, 4)] seats: usize,
+) {
+    let pre = counting_table(seats);
+    let mid = fold(&pre, &events(&pre, before));
+    assert_eq!(fired(&mid, &[end_step()]), expected);
+}
+
+#[test]
+fn the_condition_forgets_the_counters_of_an_earlier_turn() {
+    let pre = counting_table(2);
+    let put = fold(&pre, &events(&pre, &[Counter("Watcher")]));
+    assert_eq!(fired(&put, &[end_step()]), 1);
+    let turn = Event::TurnBegan {
+        number: 2,
+        active: FOE,
+    };
+    let next = fold(&put, &[turn]);
+    assert_eq!(fired(&next, &[end_step()]), 0, "the next turn");
 }

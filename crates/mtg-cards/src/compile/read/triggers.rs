@@ -256,9 +256,9 @@ fn counters_batch(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     };
     // The counters of any kind put on the object in a turn are counted.
     if counter.is_none() {
-        let counted = first_time(r, put.clone());
-        if matches!(counted, TriggerPattern::Nth { .. }) {
-            return Some(counted);
+        let timed = first_time(r, put.clone());
+        if matches!(timed, TriggerPattern::Nth { .. }) {
+            return Some(timed);
         }
     }
     Some(TriggerPattern::Batch(Box::new(put)))
@@ -413,7 +413,14 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
             r.need("a card")?;
             Selector::default()
         };
-        Some(first_time(r, TriggerPattern::Cycled { what, by }))
+        // The card itself is cycled once, so it has no count.
+        let itself = what == Selector::this();
+        let cycled = TriggerPattern::Cycled { what, by };
+        Some(if itself {
+            cycled
+        } else {
+            first_time(r, cycled)
+        })
     } else if verb == if third { "surveils" } else { "surveil" } {
         Some(first_time(r, TriggerPattern::Surveilled { who: by }))
     } else if verb == if third { "creates" } else { "create" } {
@@ -549,6 +556,23 @@ fn verb_list(r: &mut Reader<'_>, what: &Selector) -> Option<Vec<TriggerPattern>>
     Some(found)
 }
 
+/// "is put into a graveyard from anywhere other than the battlefield", also "into your graveyard" (the cards it owns).
+fn from_elsewhere(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
+    r.need("is put into")?;
+    let mut picked = what.clone();
+    if r.words("your graveyard") {
+        picked.0.push(Pred::OwnedBy(Ref::You));
+    } else {
+        r.need("a graveyard")?;
+    }
+    r.need("from anywhere other than the battlefield")?;
+    Some(TriggerPattern::ZoneChangeExcept {
+        what: picked,
+        except: ZoneKind::Battlefield,
+        to: Some(ZoneKind::Graveyard),
+    })
+}
+
 fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     let (from, to) = if r.word("enters") {
         // The older wording, "enters the battlefield", says the same.
@@ -556,20 +580,8 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         (None, Some(ZoneKind::Battlefield))
     } else if r.word("dies") || r.words("is put into a graveyard from the battlefield") {
         (Some(ZoneKind::Battlefield), Some(ZoneKind::Graveyard))
-    } else if r.words("is put into a graveyard from anywhere other than the battlefield") {
-        return Some(TriggerPattern::ZoneChangeExcept {
-            what: what.clone(),
-            except: ZoneKind::Battlefield,
-            to: Some(ZoneKind::Graveyard),
-        });
-    } else if r.words("is put into your graveyard from anywhere other than the battlefield") {
-        let mut yours = what.clone();
-        yours.0.push(Pred::OwnedBy(Ref::You));
-        return Some(TriggerPattern::ZoneChangeExcept {
-            what: yours,
-            except: ZoneKind::Battlefield,
-            to: Some(ZoneKind::Graveyard),
-        });
+    } else if let Some(elsewhere) = r.attempt(|r| from_elsewhere(r, what)) {
+        return Some(elsewhere);
     } else if r.words("is put into a graveyard from anywhere") {
         (None, Some(ZoneKind::Graveyard))
     } else if r.words("leaves the battlefield") {

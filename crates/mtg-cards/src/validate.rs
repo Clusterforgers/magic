@@ -1180,7 +1180,9 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Surveilled { .. }
             | TriggerPattern::Attacks { .. }
             | TriggerPattern::BecomesCrewed { .. }
-            | TriggerPattern::BecomesSaddled { .. } => true,
+            | TriggerPattern::BecomesSaddled { .. }
+            // The counters put on an object, of any kind.
+            | TriggerPattern::CountersPut { counter: None, .. } => true,
             // Every cycling of the player, whatever the card.
             TriggerPattern::Cycled { what, .. } => what.0.iter().all(|p| *p == Pred::Other),
             // Tokens under the player's control, from no zone.
@@ -1192,8 +1194,6 @@ impl<'a> Walker<'a> {
                 what.0 == [Pred::Token, Pred::ControlledBy(Ref::You)]
                     && matches!(to, None | Some(ZoneKind::Battlefield))
             }
-            // The counters put on an object, of any kind.
-            TriggerPattern::CountersPut { counter: None, .. } => true,
             TriggerPattern::BecomesTarget { by, .. } => {
                 by.is_empty() || by.0 == [Pred::ControlledBy(Ref::You)]
             }
