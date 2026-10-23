@@ -1,0 +1,31 @@
+{
+  "oracle_id": "8c1ea1a5-5966-4d14-8361-ffc6a8d1bd79",
+  "name": "Plaxcaster Frogling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plaxcaster Frogling",
+      "oracle_fingerprint": "befe56ca0ce861dc31577a7ce6ad10f6",
+      "abilities": [
+        { "Keyword": { "Graft": 3 } },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasCounter": "+1/+1" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Shroud" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

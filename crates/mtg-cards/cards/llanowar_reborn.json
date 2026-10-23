@@ -1,0 +1,21 @@
+{
+  "oracle_id": "92acb789-0e42-465c-ac16-40fefec48805",
+  "name": "Llanowar Reborn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Llanowar Reborn",
+      "oracle_fingerprint": "a409673884ee6236e1611bdda9a60a18",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        { "Keyword": { "Graft": 1 } }
+      ]
+    }
+  ]
+}

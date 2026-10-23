@@ -38,6 +38,7 @@ Angel of Vitality
 Angelic Ascension
 Angelic Field Marshal
 Ant-Man, Elusive Avenger
+Aquastrand Spider
 Arbor Colossus
 Arboreal Grazer
 Arcane Signet
@@ -554,6 +555,7 @@ Living Twister
 Lizard Blades
 Llanowar Behemoth
 Llanowar Elves
+Llanowar Reborn
 Looter il-Kor
 Lord of Extinction
 Lotleth Troll
@@ -685,6 +687,7 @@ Pinion Feast
 Plague Myr
 Plague Stinger
 Planar Outburst
+Plaxcaster Frogling
 Plaxmanta
 Poet's Quill
 Pongify

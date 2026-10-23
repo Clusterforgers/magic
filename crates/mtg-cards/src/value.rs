@@ -168,6 +168,9 @@ pub enum TurnTally {
     /// The times counters were put on the object (read through an object reference, not a player): one for each
     /// counter kind put, whatever the number ("a counter was put on it this turn").
     CountersPut,
+    /// The life the players lost, added up over the players read ("for each 1 life your opponents have lost this turn"):
+    /// a loss, a payment or damage that takes life; infect damage does not.
+    LifeLost,
 }
 
 /// A number, fixed or worked out when the effect runs.
