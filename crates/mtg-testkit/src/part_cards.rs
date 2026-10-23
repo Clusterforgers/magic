@@ -218,19 +218,49 @@ pub fn parts_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusE
         ("Souldrinker", 2),
         ("Solstice Zealot", 4),
         ("Copper-Leaf Angel", 2),
-        ("Bosh, Iron Golem", 1),
-        ("Brion Stoutarm", 1),
-        ("Dina, Soul Steeper", 1),
-        ("Disciple of Griselbrand", 1),
-        ("Ghoulcaller Gisa", 1),
-        ("Greater Good", 1),
-        ("Life's Legacy", 2),
-        ("Mercurial Chemister", 1),
     ] {
         deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
     }
     rng.shuffle(&mut deck);
     Ok(deck)
+}
+
+/// The deck of a seat whose cards read what their cost took ("the sacrificed creature's power"): lands in three colours,
+/// the corpus cards that do and creatures and burn for the costs to bear on.
+pub fn paid_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
+    let colors = [Color::Black, Color::Red, Color::Blue, Color::White];
+    let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS).map(|i| land(colors[i % 4])).collect();
+    for (card, copies) in [
+        (bear(), 4),
+        (creature("Wolf", 1, &[Color::Green], 2, 2), 4),
+        (creature("Ogre", 2, &[Color::Red], 3, 3), 4),
+        (burn("Burn", 3), 3),
+    ] {
+        deck.extend(std::iter::repeat_n(card, copies));
+    }
+    for (name, copies) in [
+        ("Bosh, Iron Golem", 2),
+        ("Brion Stoutarm", 2),
+        ("Dina, Soul Steeper", 2),
+        ("Disciple of Griselbrand", 2),
+        ("Ghoulcaller Gisa", 2),
+        ("Greater Good", 2),
+        ("Life's Legacy", 3),
+        ("Mercurial Chemister", 2),
+    ] {
+        deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
+    }
+    rng.shuffle(&mut deck);
+    Ok(deck)
+}
+
+/// A game of `players` seats with decks of cards that read what their cost took.
+pub fn paid_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusError> {
+    let mut decks = Vec::with_capacity(players);
+    for seat in 0u64..players as u64 {
+        decks.push(paid_deck(&mut GameRng::substream(seed, 18_000 + seat))?);
+    }
+    Ok(GameSetup::new(Arc::new(Normal), seed, decks))
 }
 
 /// A game of `players` seats with cost decks.

@@ -166,7 +166,7 @@ pub use monarch_cards::{MONARCH_CARDS, monarch_fuzz_setup};
 pub use morph_cards::morph_fuzz_setup;
 pub use mutate_cards::mutate_fuzz_setup;
 pub use nth_cards::nth_fuzz_setup;
-pub use part_cards::parts_fuzz_setup;
+pub use part_cards::{paid_fuzz_setup, parts_fuzz_setup};
 pub use pay_cards::pay_fuzz_setup;
 pub use player_keyword_cards::player_keyword_fuzz_setup;
 pub use prevent_cards::prevent_fuzz_setup;

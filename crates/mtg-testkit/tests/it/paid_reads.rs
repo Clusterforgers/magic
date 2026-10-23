@@ -212,3 +212,31 @@ fn a_spell_reads_the_creature_sacrificed_to_cast_it_as_it_was(
     replays(&driver, scenario);
     Ok(())
 }
+
+/// Whole bot games with decks of the cards that read what their cost took finish and keep every invariant (the replay of
+/// the log equals the live state among them), and the games really pay such costs: an ability or a spell goes on the stack
+/// with the object its cost took.
+#[rstest]
+fn seeded_games_of_cards_that_read_their_cost_finish_and_keep_every_invariant(
+    #[values(2, 3, 4)] players: usize,
+) {
+    let mut kept = 0;
+    for seed in 0..crate::common::seeds::fuzz_games(10) {
+        let setup = mtg_testkit::paid_fuzz_setup(players, seed).unwrap();
+        let outcome =
+            mtg_testkit::play_game(setup, seed).unwrap_or_else(|failure| panic!("{failure}"));
+        kept += outcome
+            .events
+            .iter()
+            .filter(|event| match event {
+                Event::AbilityPutOnStack(put) => !put.choices.cost_shots().is_empty(),
+                Event::SpellCast { choices, .. } => !choices.cost_shots().is_empty(),
+                _ => false,
+            })
+            .count();
+    }
+    assert!(
+        kept > 0,
+        "no cost took an object in games of {players} seats"
+    );
+}
