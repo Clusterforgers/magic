@@ -1,5 +1,6 @@
-//! Transforming: "Transform ~.", "transform it" and "transform target creature you control" turn a transforming
-//! double-faced permanent over (`Effect::Transform`). The writer's side (`transform ~`) is an arm of the renderer.
+//! Transforming and flipping: "Transform ~.", "transform it" and "transform target creature you control" turn a
+//! transforming double-faced permanent over (`Effect::Transform`); "Flip ~." and "flip it" flip a flip card
+//! (`Effect::Flip`). The writer's side (`transform ~`, `flip ~`) is an arm of the renderer.
 
 use super::effects::{is_on_the_battlefield, target_object};
 use super::tokens::Reader;
@@ -7,9 +8,12 @@ use crate::effect::Effect;
 use crate::refs::{Pred, Ref, Targetable};
 
 /// "Transform ~.", "transform it" (the card itself, named by the sentence before) and "transform target creature":
-/// one permanent turns over.
+/// one permanent turns over; "flip ~" and "flip it" flip a flip card.
 pub fn transform(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    r.need("transform")?;
+    let flips = r.word("flip");
+    if !flips {
+        r.need("transform")?;
+    }
     let what = if r.source() || (r.it == Some(Ref::This) && r.word("it")) {
         Ref::This
     } else {
@@ -22,5 +26,9 @@ pub fn transform(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         r.it = Some(what.clone());
         what
     };
-    Some(vec![Effect::Transform { what }])
+    Some(vec![if flips {
+        Effect::Flip { what }
+    } else {
+        Effect::Transform { what }
+    }])
 }

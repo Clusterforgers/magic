@@ -501,6 +501,9 @@ impl<'a> Walker<'a> {
                 self.at("LowestLife", |w| w.reference(who, Kind::Player));
             }
             Amount::Kicks | Amount::Promised => self.paid_amount(amount),
+            Amount::CastWith(_) => self.uses("Amount", "CastWith"),
+            Amount::ColorsSpent => self.uses("Amount", "ColorsSpent"),
+            Amount::PermanentsGraved => self.uses("Amount", "PermanentsGraved"),
             Amount::Triggering => {
                 self.uses("Amount", "Triggering");
                 if !self.scope.in_trigger {
@@ -747,6 +750,8 @@ impl<'a> Walker<'a> {
             | Keyword::Unearth(cost)
             | Keyword::Embalm(cost)
             | Keyword::Eternalize(cost)
+            | Keyword::Scavenge(cost)
+            | Keyword::Transmute(cost)
             | Keyword::Ninjutsu(cost)
             | Keyword::LevelUp(cost)
             | Keyword::Outlast(cost) => {
@@ -778,6 +783,7 @@ impl<'a> Walker<'a> {
             | Keyword::Mutate(cost)
             | Keyword::Encore(cost)
             | Keyword::Foretell(cost)
+            | Keyword::Awaken { cost, .. }
             | Keyword::Suspend { cost, .. } => {
                 self.at("cost", |w| w.cost(cost));
                 // Only mana is paid for these: a part that takes objects, life or counters is not.
@@ -1309,6 +1315,7 @@ impl<'a> Walker<'a> {
             | Effect::Tap { what }
             | Effect::Untap { what }
             | Effect::Transform { what }
+            | Effect::Flip { what }
             | Effect::Goad { what }
             | Effect::Explore { what }
             | Effect::Connive { what }

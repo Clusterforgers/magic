@@ -44,6 +44,21 @@ use crate::spend::SpendOn;
 use crate::trigger::TriggerPattern;
 use crate::value::{Amount, Condition, CounterKind};
 
+/// "draws a card for each card in your hand" is also "draws X cards, where X is the number of cards in your hand".
+fn where_x_draws(texts: &[String]) -> Vec<String> {
+    texts
+        .iter()
+        .filter(|text| text.contains(" a card for each card in "))
+        .map(|text| {
+            text.replacen(
+                " a card for each card in ",
+                " X cards, where X is the number of cards in ",
+                1,
+            )
+        })
+        .collect()
+}
+
 /// The oracle wording of an ability the readers produce, in the first way its effects can be
 /// written (see [`variants`]); `None` for any other ability.
 pub fn ability(ability: &Ability) -> Option<String> {
@@ -66,6 +81,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(controller);
     let searches = library::other_wordings(&texts);
     texts.extend(searches);
+    let counted = where_x_draws(&texts);
+    texts.extend(counted);
     // A card that becomes a target may call itself "it" in the counters it puts on itself (Seedglaive Mentor).
     if matches!(ability, Ability::Triggered { when, .. } if targeted_itself(when)) {
         let pronouns: Vec<String> = texts
@@ -860,6 +877,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::RemoveCounters { .. }
                 | Effect::MoveCounters { .. }
                 | Effect::Transform { .. }
+                | Effect::Flip { .. }
                 | Effect::CopySpell { .. }
         )
 }
@@ -1482,6 +1500,7 @@ impl Writer<'_> {
                 what: what @ (Ref::This | Ref::Target(0)),
             } => format!("{} connives", self.object(what)?),
             Effect::Transform { what } => format!("transform {}", self.object(what)?),
+            Effect::Flip { what } => format!("flip {}", self.object(what)?),
             Effect::If {
                 condition: Condition::Not(_),
                 ..

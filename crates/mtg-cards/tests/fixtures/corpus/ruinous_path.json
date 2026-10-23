@@ -1,0 +1,25 @@
+{
+  "id": "771305ca-f33d-4498-8e21-152ced7317ef",
+  "oracle_id": "7b4aa101-3c8a-44b3-9d87-91a4fe4fbae4",
+  "name": "Ruinous Path",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c18",
+  "collector_number": "117",
+  "rarity": "rare",
+  "released_at": "2018-08-10",
+  "digital": false,
+  "mana_cost": "{1}{B}{B}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Destroy target creature or planeswalker.\nAwaken 4—{5}{B}{B} (If you cast this spell for {5}{B}{B}, also put four +1/+1 counters on target land you control and it becomes a 0/0 Elemental creature with haste. It's still a land.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Awaken"
+  ]
+}

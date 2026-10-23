@@ -1,0 +1,12 @@
+{
+  "oracle_id": "e29012bb-4a1d-409e-8db9-50920fdf68a2",
+  "name": "Zanikev Locust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zanikev Locust",
+      "oracle_fingerprint": "be25febef68a6dbc9318067066adc7a5",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": { "Scavenge": "{2}{B}{B}" } }]
+    }
+  ]
+}

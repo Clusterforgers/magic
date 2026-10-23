@@ -1,0 +1,25 @@
+{
+  "id": "dadc77d8-ef1c-431d-8716-9583f4fad33f",
+  "oracle_id": "2146fa14-dc6a-4e13-bed0-dda235784ee6",
+  "name": "Earthen Arms",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bfz",
+  "collector_number": "172",
+  "rarity": "common",
+  "released_at": "2015-10-02",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Put two +1/+1 counters on target permanent.\nAwaken 4—{6}{G} (If you cast this spell for {6}{G}, also put four +1/+1 counters on target land you control and it becomes a 0/0 Elemental creature with haste. It's still a land.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Awaken"
+  ]
+}

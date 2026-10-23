@@ -240,6 +240,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         }
         Event::PriorityPassed { player } => pass_priority(state, *player)?,
         Event::Transformed { object, face } => set_face(state, *object, *face)?,
+        Event::Flipped { object } => flip(state, *object)?,
         Event::DayNightChanged { .. }
         | Event::MonarchChanged { .. }
         | Event::CitysBlessingGained { .. } => designate(state, event),
@@ -481,6 +482,24 @@ fn set_face(state: &mut GameState, id: ObjectId, face: Option<u8>) -> Result<(),
         .as_mut()
         .ok_or_else(|| invalid(format!("{id:?} is not a permanent")))?;
     permanent.face = face;
+    Ok(())
+}
+
+/// A flip card on the battlefield is flipped (CR 710.4): the same object with its bottom half up, which it stays until it
+/// leaves the battlefield.
+fn flip(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
+    let object = state
+        .objects
+        .get_mut(&id)
+        .ok_or_else(|| invalid(format!("{id:?} does not exist")))?;
+    if object.def.layout != mtg_cards::definition::Layout::Flip {
+        return Err(invalid(format!("{id:?} is not a flip card")));
+    }
+    let permanent = object
+        .permanent
+        .as_mut()
+        .ok_or_else(|| invalid(format!("{id:?} is not a permanent")))?;
+    permanent.face = Some(1);
     Ok(())
 }
 

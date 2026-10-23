@@ -41,6 +41,7 @@ pub mod expect;
 pub mod extra_cost_cards;
 pub mod face_cards;
 pub mod family_cards;
+pub mod flip_cards;
 pub mod foretell_cards;
 pub mod free_cast_cards;
 pub mod gift_cards;
@@ -71,6 +72,7 @@ pub mod prevent_cards;
 pub mod protect_cards;
 pub mod prowl_cards;
 pub mod pump_cards;
+pub mod recursion_cards;
 pub mod replace_cards;
 pub mod required_cost_cards;
 pub mod rule_cards;
@@ -128,6 +130,7 @@ pub use exile_until_cards::{EXILE_UNTIL_CARDS, SPENT_CARDS, exile_until_fuzz_set
 pub use extra_cost_cards::extra_cost_fuzz_setup;
 pub use face_cards::face_fuzz_setup;
 pub use family_cards::families_fuzz_setup;
+pub use flip_cards::{FLIP_CARDS, flip_fuzz_setup};
 pub use foretell_cards::foretell_fuzz_setup;
 pub use free_cast_cards::{FREE_CAST_CARDS, STRIVE_CARDS, free_cast_fuzz_setup};
 pub use gift_cards::gift_fuzz_setup;
@@ -158,6 +161,7 @@ pub use prevent_cards::prevent_fuzz_setup;
 pub use protect_cards::protect_fuzz_setup;
 pub use prowl_cards::prowl_fuzz_setup;
 pub use pump_cards::pump_fuzz_setup;
+pub use recursion_cards::recursion_fuzz_setup;
 pub use replace_cards::replace_fuzz_setup;
 pub use required_cost_cards::{
     REQUIRED_COST_CARDS, Takes, required_cost_fuzz_setup, required_cost_of,

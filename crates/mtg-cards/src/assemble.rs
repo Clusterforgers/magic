@@ -158,8 +158,15 @@ pub(crate) fn played_layout(printed: &PrintedCard, caps: &Caps) -> Option<Layout
 /// A card with several faces as the engine plays it: the card outside the stack and the battlefield, and its faces.
 ///
 /// A split card is both halves there (CR 709.4): two names, the combined colors and types and the mana symbols
-/// of both costs, so its mana value is their sum. The other two layouts are their front face.
-fn whole_card(printed: &PrintedCard, layout: Layout, faces: Vec<CardDefinition>) -> CardDefinition {
+/// of both costs, so its mana value is their sum. The other layouts are their front face.
+fn whole_card(
+    printed: &PrintedCard,
+    layout: Layout,
+    mut faces: Vec<CardDefinition>,
+) -> CardDefinition {
+    if layout == Layout::Flip {
+        flipped_keeps_cost(&mut faces);
+    }
     let mut whole = match layout {
         Layout::Split => {
             let mut whole = CardDefinition::new(printed.name.clone());
@@ -189,6 +196,16 @@ fn whole_card(printed: &PrintedCard, layout: Layout, faces: Vec<CardDefinition>)
     whole.layout = layout;
     whole.faces = faces;
     whole
+}
+
+/// The bottom half of a flip card has the mana cost and the colour of the top half (CR 710.2), so a flipped permanent
+/// keeps its mana value and colours.
+fn flipped_keeps_cost(faces: &mut [CardDefinition]) {
+    if let [top, bottom] = faces {
+        bottom.mana_cost.clone_from(&top.mana_cost);
+        bottom.x_in_cost = top.x_in_cost;
+        bottom.color_indicator = top.color_indicator;
+    }
 }
 
 /// The spell a split card with fuse is when both halves are cast (CR 702.102c): the targets of the left half and then
