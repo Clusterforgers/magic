@@ -67,7 +67,7 @@ pub(crate) fn variants(card: &CardDefinition) -> Option<Vec<Variant>> {
                     mana: mana
                         .symbols()
                         .iter()
-                        .cloned()
+                        .copied()
                         .fold(before.mana.clone(), ManaCost::with),
                     parts: before.parts.iter().cloned().chain(parts).collect(),
                     words,
@@ -76,7 +76,7 @@ pub(crate) fn variants(card: &CardDefinition) -> Option<Vec<Variant>> {
         }
         found = next;
     }
-    (found.len() <= usize::from(u8::MAX)).then_some(found)
+    u8::try_from(found.len()).is_ok().then_some(found)
 }
 
 /// A cost in words, lower case: its mana, then its parts.
@@ -125,7 +125,7 @@ pub(crate) fn add_to(ways: Vec<Way>, card: &CardDefinition) -> Vec<Way> {
                         .mana
                         .symbols()
                         .iter()
-                        .cloned()
+                        .copied()
                         .fold(base, ManaCost::with),
                 );
             }
@@ -316,7 +316,10 @@ mod tests {
         let made = add_to(vec![base], &with_printed);
         let total = ManaCost::parse(total).unwrap();
         // The printed cost {1}{G} plus {2} is {3}{G}; an alternative cost {R} plus {2} is {2}{R}.
-        assert_eq!(made[0].mana.as_ref().map(ManaCost::mana_value), Some(total.mana_value()));
+        assert_eq!(
+            made[0].mana.as_ref().map(ManaCost::mana_value),
+            Some(total.mana_value())
+        );
     }
 
     #[test]

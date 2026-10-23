@@ -99,7 +99,11 @@ fn the_cost_chosen_is_the_one_paid(
     for _ in 0..seats {
         driver.pass()?;
     }
-    assert_eq!(count(&driver, Zone::Battlefield, "Bear"), 0, "the spell resolved");
+    assert_eq!(
+        count(&driver, Zone::Battlefield, "Bear"),
+        0,
+        "the spell resolved"
+    );
     replays(&driver, scenario());
     Ok(())
 }
@@ -190,7 +194,10 @@ fn a_reveal_is_shown_to_every_seat_and_leaves_the_card_in_the_hand(
         .find(|id| name_of(driver.state(), **id) == "Raptor")
         .unwrap();
     driver.answer(Answer::ChooseCards(CardsChoice(vec![raptor])))?;
-    assert_eq!(driver.pay_options()?.cost, ManaCost::parse("{1}{G}").unwrap());
+    assert_eq!(
+        driver.pay_options()?.cost,
+        ManaCost::parse("{1}{G}").unwrap()
+    );
     let events = pay(&mut driver)?;
     let revealed: Vec<_> = events
         .iter()

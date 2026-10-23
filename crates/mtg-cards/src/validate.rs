@@ -675,11 +675,7 @@ impl<'a> Walker<'a> {
         };
         self.uses("Cost", tag);
         let plain = |cost: &Cost| {
-            !cost.0.is_empty()
-                && !cost
-                    .0
-                    .iter()
-                    .any(|item| matches!(item, CostItem::OneOf(_)))
+            !cost.0.is_empty() && !cost.0.iter().any(|item| matches!(item, CostItem::OneOf(_)))
         };
         if costs.len() < 2 || !costs.iter().all(plain) {
             self.problem(

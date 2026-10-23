@@ -91,12 +91,7 @@ pub(super) fn replace(
     choices: &Choices,
     mana: Option<ManaCost>,
 ) -> Option<ManaCost> {
-    match ctx
-        .needs
-        .ways
-        .iter()
-        .find(|way| way.is(choices))
-    {
+    match ctx.needs.ways.iter().find(|way| way.is(choices)) {
         Some(way) => way.cost(mana.as_ref()),
         None => mana,
     }

@@ -162,9 +162,7 @@ impl Part {
             CostItem::ExileFromHand { filter, count } => {
                 pick(Kind::ExileHand, filter, count, item)?
             }
-            CostItem::RevealFromHand { filter, count } => {
-                pick(Kind::Reveal, filter, count, item)?
-            }
+            CostItem::RevealFromHand { filter, count } => pick(Kind::Reveal, filter, count, item)?,
             CostItem::TapPermanents { filter, count } => pick(Kind::Tap, filter, count, item)?,
             CostItem::TapPower { filter, power } => (
                 Part::Pick(Pick {

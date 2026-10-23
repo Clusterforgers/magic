@@ -158,6 +158,7 @@ pub struct CostTaken {
 }
 
 /// Whether a count is 0, so serialization can leave it out.
+#[allow(clippy::trivially_copy_pass_by_ref)]
 const fn is_zero(count: &u8) -> bool {
     *count == 0
 }

@@ -106,9 +106,7 @@ fn a_required_additional_cost_reads_and_writes_back(#[case] text: &str, #[case] 
 #[case::any_number(
     "As an additional cost to cast this spell, you may sacrifice any number of Spirits."
 )]
-#[case::a_list_with_no_or(
-    "As an additional cost to cast this spell, discard a card, pay 3 life."
-)]
+#[case::a_list_with_no_or("As an additional cost to cast this spell, discard a card, pay 3 life.")]
 #[case::a_choice_with_a_choice_of_x(
     "As an additional cost to cast this spell, discard X cards or pay 3 life."
 )]
