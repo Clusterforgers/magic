@@ -306,6 +306,8 @@ mod token_costs;
 mod token_effects;
 mod token_equipment;
 mod token_fuzz;
+mod token_shapes;
+mod token_shapes_fuzz;
 mod transform;
 mod trigger_any_of;
 mod trigger_families;

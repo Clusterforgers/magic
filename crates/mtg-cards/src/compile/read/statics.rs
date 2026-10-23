@@ -697,7 +697,7 @@ pub(super) fn gives(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
 }
 
 /// One activated or triggered ability in quotes.
-fn quoted_ability(r: &mut Reader<'_>) -> Option<Ability> {
+pub(super) fn quoted_ability(r: &mut Reader<'_>) -> Option<Ability> {
     r.quoted(abilities::activated)
         .or_else(|| r.quoted(abilities::triggered))
 }

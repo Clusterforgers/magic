@@ -3,14 +3,16 @@
 //! is the number of artifacts you control", read into `Effect::CreateToken` and written back the same way.
 //! "Investigate" is "create a Clue token".
 
-use mtg_core::card::Subtype;
+use mtg_core::card::{Subtype, Supertype};
 use mtg_core::color::Color;
 
 use super::amounts::{count_word, counted, counted_parts, number_word, stat_name};
+use super::render;
 use super::selectors::{
     Form, card_type, color, color_name, granted_text, keyword, phrase, phrase_text, subtype,
     type_name,
 };
+use super::statics;
 use super::tokens::Reader;
 use super::triggers::article;
 use super::where_x;
@@ -22,7 +24,7 @@ use crate::refs::Ref;
 use crate::value::Amount;
 
 /// The predefined tokens, as a card names them and as their files are named.
-const NAMED: [(&str, &str); 7] = [
+const NAMED: [(&str, &str); 10] = [
     ("Treasure", "treasure"),
     ("Clue", "clue"),
     ("Food", "food"),
@@ -30,6 +32,9 @@ const NAMED: [(&str, &str); 7] = [
     ("Blood", "blood"),
     ("Junk", "junk"),
     ("Powerstone", "powerstone"),
+    ("Vibranium", "vibranium"),
+    ("Map", "map"),
+    ("Mutagen", "mutagen"),
 ];
 
 fn effect(who: Ref, token: TokenRef, count: Amount, tapped: bool, attacking: bool) -> Effect {
@@ -97,16 +102,24 @@ fn token(r: &mut Reader<'_>) -> Option<TokenRef> {
 /// "with flying", "with flying and vigilance", "with flying, vigilance, and haste": the keywords a described token has.
 fn keyword_abilities(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
     r.word("with").then_some(())?;
-    let mut found = vec![Ability::Keyword(keyword(r)?)];
+    let mut found = vec![ability(r)?];
     while let Some(next) = r.attempt(|r| {
         let listed = r.punct(',');
         let joined = r.word("and");
         (listed || joined).then_some(())?;
-        keyword(r)
+        ability(r)
     }) {
-        found.push(Ability::Keyword(next));
+        found.push(next);
     }
     Some(found)
+}
+
+/// A keyword, or an activated or triggered ability in quotes ("Sacrifice this token: Add {C}.").
+fn ability(r: &mut Reader<'_>) -> Option<Ability> {
+    if let Some(found) = r.attempt(keyword) {
+        return Some(Ability::Keyword(found));
+    }
+    statics::quoted_ability(r)
 }
 
 /// How many tokens a card says: a number, X, or "that many".
@@ -125,7 +138,7 @@ pub fn tokens(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if r.word("investigate") {
         return Some(vec![clue(Ref::You)]);
     }
-    made_by(r, Ref::You)
+    made_by(r, &Ref::You)
 }
 
 /// The Clue token a player creates when they investigate.
@@ -141,18 +154,91 @@ pub fn clue(who: Ref) -> Effect {
 
 /// The other wording of the tokens the controller of an object creates: "That creature's controller" for "Its controller".
 pub fn other_wordings(texts: &[String]) -> Vec<String> {
-    texts
+    let controllers = texts
         .iter()
         .filter(|text| text.contains("Its controller creates "))
-        .map(|text| text.replacen("Its controller", "That creature's controller", 1))
-        .collect()
+        .map(|text| text.replacen("Its controller", "That creature's controller", 1));
+    // A list of two kinds may say the verb again: "create two Fish tokens and create two tapped Treasure tokens".
+    let again = texts.iter().filter_map(|text| {
+        let at = text.find("create ")?;
+        let (head, tail) = text.split_at(at);
+        let joint = [" token and ", " tokens and "]
+            .into_iter()
+            .find_map(|joint| tail.find(joint).map(|found| (joint, found)))?;
+        let (joint, found) = joint;
+        let (before, after) = tail.split_at(found + joint.len());
+        // Only the first joint, and only the one that is followed by a kind of token.
+        (!after.contains(" and ")).then(|| format!("{head}{before}create {after}"))
+    });
+    controllers.chain(again).collect()
 }
 
 /// The tokens a player creates: "create ..." for you, "creates ..." after another player ("target opponent creates
 /// two 1/1 white Soldier creature tokens", "its controller creates a 3/3 green Beast creature token").
-pub fn made_by(r: &mut Reader<'_>, who: Ref) -> Option<Vec<Effect>> {
-    r.need(if who == Ref::You { "create" } else { "creates" })?;
-    let quantity = if r.ability && r.words("that many") {
+pub fn made_by(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
+    r.need(if *who == Ref::You {
+        "create"
+    } else {
+        "creates"
+    })?;
+    let mut effects = vec![group(r, who)?];
+    // "create a 1/1 Snake token, a 2/2 Wolf token, and a 3/3 Elephant token": one group after another.
+    while let Some(next) = r.attempt(|r| {
+        let listed = r.punct(',');
+        let joined = r.word("and");
+        (listed || joined).then_some(())?;
+        // "create two Fish tokens and create two tapped Treasure tokens": the verb may be said again.
+        if joined {
+            r.word(if *who == Ref::You {
+                "create"
+            } else {
+                "creates"
+            });
+        }
+        group(r, who)
+    }) {
+        effects.push(next);
+    }
+    Some(effects)
+}
+
+/// "Draw two cards and create a Treasure token.", "Create three 1/1 green Elf Warrior creature tokens, then mill three
+/// cards.": the steps of "you" joined by "and" or ", then", at least one of them a token created.
+pub fn chained(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    let mut effects = step(r)?;
+    let mut steps = 1;
+    while let Some(next) = r.attempt(|r| {
+        if r.punct(',') {
+            r.need("then")?;
+        } else {
+            r.need("and")?;
+        }
+        step(r)
+    }) {
+        effects.extend(next);
+        steps += 1;
+    }
+    let creates = effects
+        .iter()
+        .any(|effect| matches!(effect, Effect::CreateToken { .. }));
+    (steps > 1 && creates).then_some(effects)
+}
+
+/// One step of "you": a token created, or a draw, mill, scry and the like.
+fn step(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    if r.peek_word() == Some("create") {
+        return made_by(r, &Ref::You);
+    }
+    super::effects::imperative(r).map(|effect| vec![effect])
+}
+
+/// One kind of token and how many: "a Treasure token", "two tapped 2/2 black Zombie creature tokens", "X tokens".
+fn group(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
+    // "Tiny, a legendary 2/2 green Dog Detective creature token": one token, named.
+    let legend = r.attempt(legendary);
+    let quantity = if legend.is_some() {
+        Quantity::Number(1)
+    } else if r.ability && r.words("that many") {
         Quantity::ThatMany
     } else if r.words("a number of") {
         Quantity::NumberOf
@@ -163,7 +249,10 @@ pub fn made_by(r: &mut Reader<'_>, who: Ref) -> Option<Vec<Effect>> {
     };
     // "two tapped Powerstone tokens": tapped without attacking, before the token.
     let tapped_alone = r.word("tapped");
-    let mut token = token(r)?;
+    let mut token = match legend {
+        Some(found) => found,
+        None => token(r)?,
+    };
     let single = matches!(quantity, Quantity::Number(1));
     r.word(if single { "token" } else { "tokens" })
         .then_some(())?;
@@ -172,6 +261,12 @@ pub fn made_by(r: &mut Reader<'_>, who: Ref) -> Option<Vec<Effect>> {
             return None;
         };
         spec.abilities = abilities;
+    }
+    if let Some(name) = r.attempt(token_name) {
+        let TokenRef::Custom(spec) = &mut token else {
+            return None;
+        };
+        spec.name = name;
     }
     let (tapped_and_attacking, attacking_only) = if single {
         ("that's tapped and attacking", "that's attacking")
@@ -202,7 +297,41 @@ pub fn made_by(r: &mut Reader<'_>, who: Ref) -> Option<Vec<Effect>> {
             Amount::X
         }
     };
-    Some(vec![effect(who, token, count, tapped, attacking)])
+    Some(effect(who.clone(), token, count, tapped, attacking))
+}
+
+/// "named Kobolds of Kher Keep": the name a token has when it is not its subtypes.
+fn token_name(r: &mut Reader<'_>) -> Option<String> {
+    r.need("named")?;
+    proper_name(r)
+}
+
+/// A proper name: capitalized words, with "of" and "the" between them.
+fn proper_name(r: &mut Reader<'_>) -> Option<String> {
+    let mut words = vec![r.name()?.to_owned()];
+    while let Some(word) = r.attempt(|r| {
+        let joined = r.take_word().filter(|word| matches!(*word, "of" | "the"));
+        match joined {
+            Some(word) => Some(format!("{word} {}", r.name()?)),
+            None => r.name().map(str::to_owned),
+        }
+    }) {
+        words.push(word);
+    }
+    Some(words.join(" "))
+}
+
+/// "Tiny, a legendary 2/2 green Dog Detective creature": the name, then the description of a legendary token.
+fn legendary(r: &mut Reader<'_>) -> Option<TokenRef> {
+    let name = proper_name(r)?;
+    r.punct(',').then_some(())?;
+    r.need("a legendary")?;
+    let TokenRef::Custom(mut spec) = token(r)? else {
+        return None;
+    };
+    spec.name = name;
+    spec.supertypes = vec![Supertype::Legendary];
+    Some(TokenRef::Custom(spec))
 }
 
 /// The colors of a token as a card words them: "white and blue", "colorless".
@@ -217,56 +346,82 @@ pub(super) fn colors_text(colors: &[Color]) -> String {
         .join(" and ")
 }
 
-/// The token as a card words it, without its count and noun.
-fn token_text(token: &TokenRef) -> Option<String> {
+/// A token as a card words it, without its count and noun: the description, the name when it is not its subtypes, and
+/// whether it is legendary (the name then comes first: "Tiny, a legendary 2/2 green Dog Detective creature token").
+struct Described {
+    what: String,
+    name: Option<String>,
+    legendary: bool,
+}
+
+fn token_text(token: &TokenRef) -> Option<Described> {
     match token {
-        TokenRef::Named(id) => NAMED
-            .iter()
-            .find(|(_, file)| file == id)
-            .map(|(shown, _)| (*shown).to_owned()),
+        TokenRef::Named(id) => {
+            NAMED
+                .iter()
+                .find(|(_, file)| file == id)
+                .map(|(shown, _)| Described {
+                    what: (*shown).to_owned(),
+                    name: None,
+                    legendary: false,
+                })
+        }
         TokenRef::Custom(spec) => {
             let (Some(power), Some(toughness)) = (spec.power, spec.toughness) else {
                 return None;
             };
             let subtypes: Vec<&str> = spec.subtypes.iter().map(|found| found.0.as_str()).collect();
             let types: Vec<&str> = spec.types.iter().map(|found| type_name(*found)).collect();
-            let plain = spec.supertypes.is_empty()
+            let legendary = spec.supertypes == [Supertype::Legendary];
+            let named = spec.name != subtypes.join(" ");
+            let plain = (spec.supertypes.is_empty() || legendary)
+                && legendary <= named
                 && !subtypes.is_empty()
                 && !types.is_empty()
-                && spec.name == subtypes.join(" ")
                 && power >= 0
                 && toughness >= 0;
-            plain.then(|| {
-                format!(
+            plain.then(|| Described {
+                what: format!(
                     "{power}/{toughness} {} {} {}",
                     colors_text(&spec.colors),
                     subtypes.join(" "),
                     types.join(" ")
-                )
+                ),
+                name: named.then(|| spec.name.clone()),
+                legendary,
             })
         }
         TokenRef::CopyOf { .. } => None,
     }
 }
 
-/// The keywords of a described token as a card words them, with the space before: " with flying", " with flying and
-/// vigilance", " with flying, vigilance, and haste". `None` for an ability that is not a plain keyword.
+/// The abilities of a described token as a card words them, with the space before: " with flying", " with flying and
+/// vigilance", " with flying, vigilance, and haste", " with \"Sacrifice this token: Add {C}.\"". `None` for an ability
+/// that is neither a keyword nor an activated or triggered ability.
 fn keywords_text(token: &TokenRef) -> Option<String> {
     let TokenRef::Custom(spec) = token else {
         return Some(String::new());
     };
-    let granted: Vec<Modification> = spec
-        .abilities
-        .iter()
-        .map(|ability| match ability {
-            Ability::Keyword(found) => Some(Modification::AddKeyword(found.clone())),
-            _ => None,
-        })
-        .collect::<Option<_>>()?;
-    if granted.is_empty() {
+    let mut granted: Vec<Modification> = Vec::new();
+    let mut quoted: Vec<String> = Vec::new();
+    for ability in &spec.abilities {
+        match ability {
+            Ability::Keyword(found) => granted.push(Modification::AddKeyword(found.clone())),
+            Ability::Activated { .. } | Ability::Triggered { .. } => {
+                quoted.push(format!("\"{}\"", render::ability(ability)?));
+            }
+            _ => return None,
+        }
+    }
+    let mut parts = Vec::new();
+    if !granted.is_empty() {
+        parts.push(granted_text(&granted)?);
+    }
+    parts.extend(quoted);
+    if parts.is_empty() {
         return Some(String::new());
     }
-    Some(format!(" with {}", granted_text(&granted)?))
+    Some(format!(" with {}", parts.join(" and ")))
 }
 
 /// An effect that creates tokens, as a sentence without its first capital and period. A count of things is worded
@@ -283,28 +438,45 @@ pub fn text(effect: &Effect, per: bool) -> Option<String> {
     else {
         return None;
     };
-    let mut what = token_text(token)?;
-    // A token that enters tapped without attacking: "a tapped Treasure token".
-    if *tapped && !*attacking {
-        what = format!("tapped {what}");
-    }
+    let Described {
+        mut what,
+        name,
+        legendary,
+    } = token_text(token)?;
     let with = keywords_text(token)?;
-    let (number, single, tail) = quantity_text(count, &what, per)?;
     let verb = if *who == Ref::You {
         "create"
     } else {
         "creates"
     };
-    let noun = if single { "token" } else { "tokens" };
-    let entering = match (*tapped, *attacking, single) {
+    let entering = |single: bool| match (*tapped, *attacking, single) {
         (_, false, _) => "",
         (true, true, true) => " that's tapped and attacking",
         (true, true, false) => " that are tapped and attacking",
         (false, true, true) => " that's attacking",
         (false, true, false) => " that are attacking",
     };
+    if legendary {
+        let name = name?;
+        return (*count == Amount::one() && !*tapped).then(|| {
+            format!(
+                "{verb} {name}, a legendary {what} token{with}{}",
+                entering(true)
+            )
+        });
+    }
+    // A token that enters tapped without attacking: "a tapped Treasure token".
+    if *tapped && !*attacking {
+        what = format!("tapped {what}");
+    }
+    let (number, single, tail) = quantity_text(count, &what, per)?;
+    let noun = if single { "token" } else { "tokens" };
+    let named = name
+        .map(|name| format!(" named {name}"))
+        .unwrap_or_default();
     Some(format!(
-        "{verb} {number} {what} {noun}{with}{entering}{tail}"
+        "{verb} {number} {what} {noun}{with}{named}{}{tail}",
+        entering(single)
     ))
 }
 

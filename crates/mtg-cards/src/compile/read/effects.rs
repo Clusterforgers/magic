@@ -38,7 +38,7 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 53] = [
+const TEMPLATES: [Template; 54] = [
     modal::modal,
     super::spent::sacrifice_unless,
     super::actions::fight,
@@ -49,6 +49,7 @@ const TEMPLATES: [Template; 53] = [
     cast::exiled_card,
     payments::may_pay,
     may,
+    create::chained,
     chain,
     put_back,
     super::actions::explore,
@@ -312,7 +313,8 @@ fn put_back(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// The name the cards put back are bound to.
 pub const BACK: &str = "back";
 
-fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
+/// One step of "you" that begins with its verb: "scry 1", "draw a card", "mill three cards".
+pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
     let who = Ref::You;
     Some(match r.take_word()? {
         "scry" => Effect::Scry {
@@ -471,7 +473,7 @@ fn phrases(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
 /// One verb phrase: what a player does, or "create a token" for you.
 fn verb_phrase(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
     if matches!(r.peek_word(), Some("create" | "creates")) {
-        return create::made_by(r, who.clone());
+        return create::made_by(r, who);
     }
     // The controller of a permanent the sentence before named investigates: "Its controller investigates."
     if matches!(who, Ref::ControllerOf(_)) && r.word("investigates") {
