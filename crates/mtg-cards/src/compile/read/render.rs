@@ -1621,8 +1621,8 @@ impl Writer<'_> {
 
     /// The effects with a wording of their own: a card returned to the battlefield, the casting and the keyword actions.
     fn other_effect(&mut self, effect: &Effect) -> Option<String> {
-        self.exiled(effect)
-            .or_else(|| self.graveyard_exile(effect))
+        self.graveyard_exile(effect)
+            .or_else(|| self.exiled(effect))
             .or_else(|| self.reanimated(effect))
             .or_else(|| mass_moves::text(effect))
             .or_else(|| cast::text(effect))
@@ -1647,8 +1647,8 @@ impl Writer<'_> {
             what,
             to:
                 Destination::Battlefield {
-                    tapped: false,
-                    under: None,
+                    tapped,
+                    under,
                     transformed: false,
                     counters,
                 },
@@ -1656,10 +1656,32 @@ impl Writer<'_> {
         else {
             return None;
         };
-        (counters.is_empty() && self.in_your_graveyard(what)).then(|| {
-            self.object(what)
-                .map(|card| format!("return {card} to the battlefield"))
-        })?
+        if !counters.is_empty() {
+            return None;
+        }
+        let tapped = if *tapped { " tapped" } else { "" };
+        match under {
+            None if self.in_your_graveyard(what) => Some(format!(
+                "return {} to the battlefield{tapped}",
+                self.object(what)?
+            )),
+            // A card of another graveyard enters under the control of the player who takes it.
+            Some(Ref::You) if self.in_another_graveyard(what) => Some(format!(
+                "put {} onto the battlefield{tapped} under your control",
+                self.object(what)?
+            )),
+            _ => None,
+        }
+    }
+
+    /// Whether the reference is the one target and it is a card in a graveyard that is not the controller's.
+    fn in_another_graveyard(&self, what: &Ref) -> bool {
+        *what == Ref::Target(0)
+            && self.target_is(|kind| {
+                matches!(kind, Targetable::Object(selector)
+                    if selector.0.contains(&Pred::In(ZoneKind::Graveyard))
+                        && !selector.0.contains(&Pred::OwnedBy(Ref::You)))
+            })
     }
 
     /// The effects after a condition, as steps joined by "and": "remove all of them and transform ~".

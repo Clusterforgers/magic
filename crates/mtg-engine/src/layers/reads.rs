@@ -187,6 +187,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::OwnedBy(who)
         | Pred::AttackingPlayer(who)
         | Pred::ExiledWith(who)
+        | Pred::EncodedWith(who)
         | Pred::Crewed(who)
         | Pred::Saddled(who) => reads_of_ref(who),
         Pred::Type(_) => Traits::TYPES,

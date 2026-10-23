@@ -11,6 +11,7 @@ pub(crate) mod energy;
 mod exile;
 mod exile_hand;
 mod life;
+mod reveal;
 mod sacrifice;
 mod tap;
 
@@ -37,6 +38,8 @@ pub(crate) enum Kind {
     Exile,
     /// A card in the payer's hand is exiled.
     ExileHand,
+    /// A card in the payer's hand is shown to every player and stays there.
+    Reveal,
     /// An untapped permanent the payer controls is tapped.
     Tap,
     /// Any number of untapped permanents the payer controls are tapped, with total power at least `Pick.count`.
@@ -86,6 +89,7 @@ const fn counted(item: &CostItem) -> &'static str {
         CostItem::Discard { .. } => "Cost.Discard.Counted",
         CostItem::ExileFromGraveyard { .. } => "Cost.ExileFromGraveyard.Counted",
         CostItem::ExileFromHand { .. } => "Cost.ExileFromHand.Counted",
+        CostItem::RevealFromHand { .. } => "Cost.RevealFromHand.Counted",
         CostItem::TapPermanents { .. } => "Cost.TapPermanents.Counted",
         CostItem::ReturnToHand { .. } => "Cost.ReturnToHand.Counted",
         _ => "Cost",
@@ -158,6 +162,7 @@ impl Part {
             CostItem::ExileFromHand { filter, count } => {
                 pick(Kind::ExileHand, filter, count, item)?
             }
+            CostItem::RevealFromHand { filter, count } => pick(Kind::Reveal, filter, count, item)?,
             CostItem::TapPermanents { filter, count } => pick(Kind::Tap, filter, count, item)?,
             CostItem::TapPower { filter, power } => (
                 Part::Pick(Pick {
@@ -224,6 +229,7 @@ impl Part {
                 Kind::Discard => "Cost.Discard",
                 Kind::Exile => "Cost.ExileFromGraveyard",
                 Kind::ExileHand => "Cost.ExileFromHand",
+                Kind::Reveal => "Cost.RevealFromHand",
                 Kind::Tap => "Cost.TapPermanents",
                 Kind::TapPower => "Cost.TapPower",
                 Kind::Return => "Cost.ReturnToHand",
@@ -318,7 +324,7 @@ pub(crate) fn photographed(
         let Some(picked) = picks.next() else { break };
         if matches!(
             pick.kind,
-            Kind::Sacrifice | Kind::Discard | Kind::Exile | Kind::ExileHand
+            Kind::Sacrifice | Kind::Discard | Kind::Exile | Kind::ExileHand | Kind::Reveal
         ) {
             shots.extend(picked.iter().filter_map(|id| snapshot(state, *id)));
         }
@@ -391,6 +397,7 @@ impl Pick {
             Kind::Discard => discard::candidates(payer, &self.filter),
             Kind::Exile => exile::candidates(payer, &self.filter),
             Kind::ExileHand => exile_hand::candidates(payer, &self.filter),
+            Kind::Reveal => reveal::candidates(payer, &self.filter),
             Kind::Tap | Kind::TapPower => tap::candidates(payer, &self.filter),
             Kind::Return => bounce::candidates(payer, &self.filter),
         }
@@ -447,6 +454,7 @@ impl Pick {
             Kind::Discard => crate::wording::discard(self.count),
             Kind::Exile => exile::text(&self.filter, self.count),
             Kind::ExileHand => exile_hand::text(&self.filter, self.count),
+            Kind::Reveal => reveal::text(&self.filter, self.count),
             Kind::Tap => tap::text(&self.filter, self.count),
             Kind::TapPower => tap::power_text(&self.filter, self.count),
             Kind::Return => bounce::text(&self.filter, self.count),
@@ -460,6 +468,7 @@ impl Pick {
             Kind::Discard => Some(discard::event(player, object)),
             Kind::Exile => exile::event(state, object),
             Kind::ExileHand => exile_hand::event(state, object),
+            Kind::Reveal => Some(reveal::event(player, object)),
             Kind::Tap | Kind::TapPower => Some(tap::event(object)),
             Kind::Return => bounce::event(state, object),
         }

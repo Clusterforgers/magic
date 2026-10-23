@@ -95,6 +95,18 @@ pub enum CostItem {
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
     },
+    /// Reveal cards from the payer's hand that match ("Reveal a Giant card from your hand"): they stay in the hand, every
+    /// player sees them, and "the revealed card" names them.
+    RevealFromHand {
+        /// Which cards may be chosen.
+        filter: Selector,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
+    /// One of these costs, chosen by the caster as the spell is announced ("discard a card or pay 3 life"): the only item of
+    /// the required additional cost of a spell.
+    OneOf(Vec<Cost>),
 }
 
 /// The parts of a cost, paid together; a cost of one mana part is written as its mana text.
@@ -118,7 +130,9 @@ impl Cost {
             | CostItem::TapPermanents { count, .. }
             | CostItem::ExileFromGraveyard { count, .. }
             | CostItem::ExileFromHand { count, .. }
+            | CostItem::RevealFromHand { count, .. }
             | CostItem::ReturnToHand { count, .. } => *count == Amount::X,
+            CostItem::OneOf(costs) => costs.iter().any(Cost::has_x),
             _ => false,
         })
     }

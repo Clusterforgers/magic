@@ -257,6 +257,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::SpellResolved { .. }
         | Event::PermanentTapped { .. }
         | Event::PermanentUntapped { .. }
+        | Event::PermanentPhasedOut { .. }
+        | Event::PermanentPhasedIn { .. }
         | Event::ManaAdded { .. }
         | Event::ManaSpent { .. }
         | Event::ManaPoolEmptied { .. }
@@ -294,6 +296,9 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::BecameCopy(_)
         // A copy of a spell or ability on the stack shows what the stack shows of the original, and no more.
         | Event::SpellCopied(_)
+        // The copy of a card in exile (an encoded card, face up) and its end show what the exile zone shows.
+        | Event::CardCopied(_)
+        | Event::CopyCeased { .. }
         | Event::AbilityCopied(_)
         | Event::CopyEnded { .. }
         | Event::Entered { .. }

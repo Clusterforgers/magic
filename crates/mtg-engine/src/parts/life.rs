@@ -5,8 +5,12 @@ use mtg_core::ids::PlayerId;
 use super::Payer;
 use crate::events::Event;
 
-/// The most life the payer can pay: all of it while it is above 0, nothing otherwise.
+/// The most life the payer can pay: all of it while it is above 0, nothing otherwise, and nothing while their life total
+/// can't change (CR 119.8).
 pub(super) fn most(payer: &Payer<'_>) -> u32 {
+    if crate::rules::life_total_cant_change(payer.state, payer.player) {
+        return 0;
+    }
     payer
         .state
         .player(payer.player)

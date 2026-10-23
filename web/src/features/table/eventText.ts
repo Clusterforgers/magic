@@ -204,6 +204,7 @@ function zoneWord(zone: Zone, n: EventNames): string {
   if (zone === 'Battlefield') return 'the battlefield'
   if (zone === 'Stack') return 'the stack'
   if (zone === 'Exile') return 'exile'
+  if (zone === 'PhasedOut') return 'the battlefield, phased out'
   if ('Library' in zone) return `${n.seat(zone.Library)}'s library`
   if ('Hand' in zone) return `${n.seat(zone.Hand)}'s hand`
   if ('Graveyard' in zone) return `${n.seat(zone.Graveyard)}'s graveyard`
@@ -277,6 +278,7 @@ const BECAUSE: Record<
     | { Hideaway: unknown }
     | { ExiledUntil: unknown }
     | { ExiledUntilMonarch: unknown }
+    | { Encoded: unknown }
     | { Manifested: unknown }
     | { Cloaked: unknown }
   >,
@@ -298,6 +300,7 @@ const BECAUSE: Record<
 /** The words for a cause that carries a player or a permanent. */
 function objectCause(cause: Extract<ZoneCause, object>): string {
   if ('Hideaway' in cause) return 'is exiled face down'
+  if ('Encoded' in cause) return 'is exiled encoded on a creature'
   if ('Manifested' in cause) return 'is manifested'
   if ('Cloaked' in cause) return 'is cloaked'
   return 'is exiled for a while'
@@ -479,6 +482,11 @@ function describePublic(event: Event, n: EventNames): LogLine {
     return line(`${n.seat(controller)} copies the ability of ${n.card(of.id)}`)
   }
   if ('CopyEnded' in event) return line(`${n.card(event.CopyEnded.object)} stops being a copy`)
+  if ('CardCopied' in event) {
+    const { owner, of } = event.CardCopied
+    return line(`${n.seat(owner)} copies ${n.card(of.id)}`)
+  }
+  if ('CopyCeased' in event) return line(`${n.card(event.CopyCeased.object)} ceases to exist`)
   if ('CommanderStayed' in event) return line(`${n.card(event.CommanderStayed.object)} stays where it is`)
   if ('CompanionRevealed' in event)
     return line(`${n.seat(event.CompanionRevealed.player)} reveals a companion`)
@@ -540,6 +548,8 @@ function describePublic(event: Event, n: EventNames): LogLine {
   if ('SpellResolved' in event) return line(`${n.card(event.SpellResolved.object)} resolves`)
   if ('PermanentTapped' in event) return quiet(`${n.card(event.PermanentTapped.object)} becomes tapped`)
   if ('PermanentUntapped' in event) return quiet(`${n.card(event.PermanentUntapped.object)} becomes untapped`)
+  if ('PermanentPhasedOut' in event) return line(`${n.card(event.PermanentPhasedOut.object)} phases out`)
+  if ('PermanentPhasedIn' in event) return line(`${n.card(event.PermanentPhasedIn.object)} phases in`)
   if ('ManaAdded' in event) {
     const { player, mana, source } = event.ManaAdded
     const from = source === null ? '' : ` from ${n.card(source)}`

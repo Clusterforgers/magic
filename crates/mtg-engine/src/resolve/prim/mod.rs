@@ -18,6 +18,7 @@ mod choose;
 mod connive;
 mod continuous;
 mod copy_ability;
+mod copy_card;
 mod copy_spell;
 mod crewed;
 mod join_attack;
@@ -31,6 +32,7 @@ mod delayed_trigger;
 mod destroy;
 mod discard;
 mod draw;
+mod encode;
 mod exile;
 mod exile_hidden;
 mod exile_top;
@@ -55,6 +57,7 @@ mod move_counters;
 mod move_to;
 mod myriad_copies;
 mod pay;
+mod phase_out;
 mod proliferate;
 mod put_counters;
 mod regenerate;
@@ -104,6 +107,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Destroy { .. } => destroy::run(cx, effect),
         Effect::Exile { .. } => exile::run(cx, effect),
         Effect::ExileHidden { .. } => exile_hidden::run(cx, effect),
+        Effect::Encode { .. } => encode::run(cx, effect),
         Effect::Manifest { .. } | Effect::Cloak { .. } => manifest::run(cx, effect),
         Effect::Sacrifice { .. } => sacrifice::run(cx, effect),
         Effect::Counter { .. } => counter::run(cx, effect),
@@ -116,6 +120,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::MoveCounters { .. } => move_counters::run(cx, effect),
         Effect::Tap { .. } => tap::run(cx, effect),
         Effect::Untap { .. } => untap::run(cx, effect),
+        Effect::PhaseOut { .. } => phase_out::run(cx, effect),
         Effect::Attach { .. } => attach::run(cx, effect),
         Effect::Unattach { .. } => unattach::run(cx, effect),
         Effect::JoinAttack { .. } => join_attack::run(cx, effect),
@@ -146,6 +151,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::WinGame { .. } => win_game::run(cx, effect),
         Effect::CopySpell { .. } => copy_spell::run(cx, effect),
         Effect::CopyAbility { .. } => copy_ability::run(cx, effect),
+        Effect::CopyCard { .. } => copy_card::run(cx, effect),
         Effect::BecomeCopy { .. } => become_copy::run(cx, effect),
         Effect::CreateToken { .. } => create_token::run(cx, effect),
         Effect::Continuous { .. } => continuous::run(cx, effect),
@@ -181,12 +187,12 @@ mod tests {
         {"LoseLife":{"amount":1}}, {"AddMana":{"mana":{"Fixed":["Green"]}}},
         {"PutCounters":{"on":"This","counter":"+1/+1"}}, {"RemoveCounters":{"from":"This","counter":"+1/+1"}},
         {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"Tap":{"what":"This"}},
-        {"Untap":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"WinGame":{}},
+        {"Untap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"WinGame":{}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"BecomeMonarch":{}}, {"Amass":{"subtype":"Orc","count":1}}, {"Monstrosity":{"count":1}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
-        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Manifest":{}}, {"Cloak":{}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}},
-        {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}},
+        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Manifest":{}}, {"Cloak":{}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}},
+        {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}}, {"CopyCard":{"what":"This","as":"copy"}},
         {"BecomeCopy":{"what":"This","of":"This","duration":"UntilEndOfTurn"}},
         {"CreateToken":{"token":{"Named":"treasure"}}},
         {"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}},
@@ -209,7 +215,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 66, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 69, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -239,73 +245,76 @@ mod tests {
                 running.push(name);
             }
         }
-        assert_eq!(
-            running,
-            [
-                "Effect.Draw",
-                "Effect.Discard",
-                "Effect.Mill",
-                "Effect.Scry",
-                "Effect.LookAtTop",
-                "Effect.Reveal",
-                "Effect.Search",
-                "Effect.Choose",
-                "Effect.Shuffle",
-                "Effect.Move",
-                "Effect.Destroy",
-                "Effect.Exile",
-                "Effect.Sacrifice",
-                "Effect.Counter",
-                "Effect.DealDamage",
-                "Effect.GainLife",
-                "Effect.LoseLife",
-                "Effect.AddMana",
-                "Effect.PutCounters",
-                "Effect.RemoveCounters",
-                "Effect.MoveCounters",
-                "Effect.Tap",
-                "Effect.Untap",
-                "Effect.Attach",
-                "Effect.Unattach",
-                "Effect.MyriadCopies",
-                "Effect.Transform",
-                "Effect.Flip",
-                "Effect.WinGame",
-                "Effect.Surveil",
-                "Effect.Proliferate",
-                "Effect.Goad",
-                "Effect.BecomeMonarch",
-                "Effect.Amass",
-                "Effect.Monstrosity",
-                "Effect.BecomeLevel",
-                "Effect.Adapt",
-                "Effect.Bolster",
-                "Effect.Fabricate",
-                "Effect.Learn",
-                "Effect.Crewed",
-                "Effect.Explore",
-                "Effect.Connive",
-                "Effect.ExileUntil",
-                "Effect.RevealUntil",
-                "Effect.ExileTop",
-                "Effect.ExileHidden",
-                "Effect.Manifest",
-                "Effect.Cloak",
-                "Effect.CastFromZone",
-                "Effect.CopySpell",
-                "Effect.CopyAbility",
-                "Effect.BecomeCopy",
-                "Effect.CreateToken",
-                "Effect.Continuous",
-                "Effect.Rule",
-                "Effect.Regenerate",
-                "Effect.Shield",
-                "Effect.DelayedTrigger",
-                "Effect.If",
-                "Effect.May",
-                "Effect.Pay",
-                "Effect.Modal"
-            ]
-        );
+        assert_eq!(running, PLAYED);
     }
+
+    /// The effects the interpreter plays, in the order of the samples.
+    const PLAYED: &[&str] = &[
+        "Effect.Draw",
+        "Effect.Discard",
+        "Effect.Mill",
+        "Effect.Scry",
+        "Effect.LookAtTop",
+        "Effect.Reveal",
+        "Effect.Search",
+        "Effect.Choose",
+        "Effect.Shuffle",
+        "Effect.Move",
+        "Effect.Destroy",
+        "Effect.Exile",
+        "Effect.Sacrifice",
+        "Effect.Counter",
+        "Effect.DealDamage",
+        "Effect.GainLife",
+        "Effect.LoseLife",
+        "Effect.AddMana",
+        "Effect.PutCounters",
+        "Effect.RemoveCounters",
+        "Effect.MoveCounters",
+        "Effect.Tap",
+        "Effect.Untap",
+        "Effect.PhaseOut",
+        "Effect.Attach",
+        "Effect.Unattach",
+        "Effect.MyriadCopies",
+        "Effect.Transform",
+        "Effect.Flip",
+        "Effect.WinGame",
+        "Effect.Surveil",
+        "Effect.Proliferate",
+        "Effect.Goad",
+        "Effect.BecomeMonarch",
+        "Effect.Amass",
+        "Effect.Monstrosity",
+        "Effect.BecomeLevel",
+        "Effect.Adapt",
+        "Effect.Bolster",
+        "Effect.Fabricate",
+        "Effect.Learn",
+        "Effect.Crewed",
+        "Effect.Explore",
+        "Effect.Connive",
+        "Effect.ExileUntil",
+        "Effect.RevealUntil",
+        "Effect.ExileTop",
+        "Effect.ExileHidden",
+        "Effect.Encode",
+        "Effect.Manifest",
+        "Effect.Cloak",
+        "Effect.CastFromZone",
+        "Effect.CopySpell",
+        "Effect.CopyAbility",
+        "Effect.CopyCard",
+        "Effect.BecomeCopy",
+        "Effect.CreateToken",
+        "Effect.Continuous",
+        "Effect.Rule",
+        "Effect.Regenerate",
+        "Effect.Shield",
+        "Effect.DelayedTrigger",
+        "Effect.If",
+        "Effect.May",
+        "Effect.Pay",
+        "Effect.Modal",
+    ];
 }

@@ -269,8 +269,7 @@ fn keyword() -> impl Strategy<Value = Keyword> {
         Just(Keyword::Sunburst),
         Just(Keyword::Demonstrate),
         (1u32..9).prop_map(Keyword::Hideaway),
-        Just(Keyword::Demonstrate),
-        (1u32..9).prop_map(Keyword::Hideaway),
+        Just(Keyword::Cipher),
         cost().prop_map(Keyword::Ninjutsu),
         cost().prop_map(Keyword::Foretell),
         cost().prop_map(Keyword::Echo),
@@ -309,6 +308,7 @@ fn pred() -> impl Strategy<Value = Pred> {
             leaf_ref().prop_map(Pred::OwnedBy),
             leaf_ref().prop_map(Pred::Is),
             leaf_ref().prop_map(Pred::ExiledWith),
+            leaf_ref().prop_map(Pred::EncodedWith),
             leaf_ref().prop_map(Pred::Crewed),
             leaf_ref().prop_map(Pred::Saddled),
             keyword().prop_map(Pred::HasKeyword),
@@ -728,6 +728,12 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 duration
             }),
         reference().prop_map(|what| Effect::ExileHidden { what }),
+        (reference(), reference()).prop_map(|(what, on)| Effect::Encode { what, on }),
+        (who(), reference(), "[a-z]{1,6}").prop_map(|(who, what, bind)| Effect::CopyCard {
+            who,
+            what,
+            bind
+        }),
         (who(), selector(), amount()).prop_map(|(who, filter, count)| Effect::Sacrifice {
             who,
             filter,

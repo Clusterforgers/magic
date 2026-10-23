@@ -156,9 +156,25 @@ const ENTERS: &str = r#""when":{"Enters":{"what":["This"]}}"#;
     r#"{"AdditionalCost":{"cost":[{"Discard":{}}],"required":true}}"#,
     &["Ability.AdditionalCost", "Cost.Discard"]
 )]
-#[case::a_required_additional_cost_of_mana_is_named(
+#[case::a_required_additional_cost_of_mana_is_run(
     r#"{"AdditionalCost":{"cost":"{2}","required":true}}"#,
-    &["Ability.AdditionalCost", "Ability.AdditionalCost.Required.Mana", "Cost.Mana"]
+    &["Ability.AdditionalCost", "Cost.Mana"]
+)]
+#[case::a_required_additional_cost_of_x_mana_is_named(
+    r#"{"AdditionalCost":{"cost":"{X}","required":true}}"#,
+    &["Ability.AdditionalCost", "Ability.AdditionalCost.Required.Mana.X", "Cost.Mana"]
+)]
+#[case::a_required_choice_between_costs_is_run(
+    r#"{"AdditionalCost":{"cost":[{"OneOf":[[{"Discard":{}}],[{"PayLife":3}]]}],"required":true}}"#,
+    &["Ability.AdditionalCost", "Cost.Discard", "Cost.OneOf", "Cost.PayLife"]
+)]
+#[case::a_choice_between_costs_elsewhere_is_named(
+    r#"{"AdditionalCost":{"cost":[{"OneOf":[[{"Discard":{}}],[{"PayLife":3}]]}]}}"#,
+    &["Ability.AdditionalCost", "Cost.Discard", "Cost.OneOf.Elsewhere", "Cost.PayLife"]
+)]
+#[case::a_reveal_from_the_hand_is_run(
+    r#"{"AdditionalCost":{"cost":[{"RevealFromHand":{"filter":[{"Type":"Creature"}]}}],"required":true}}"#,
+    &["Ability.AdditionalCost", "Cost.RevealFromHand"]
 )]
 #[case::a_multikicker_with_a_part_is_still_named(
     r#"{"Keyword":{"Multikicker":[{"Sacrifice":{"filter":[{"Type":"Land"}]}}]}}"#,
