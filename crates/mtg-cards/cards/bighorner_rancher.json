@@ -1,0 +1,49 @@
+{
+  "oracle_id": "826e6a6f-3b66-4225-87ee-04e345e047b3",
+  "name": "Bighorner Rancher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bighorner Rancher",
+      "oracle_fingerprint": "ebb44aa272709159cb1fb4a4f87f922f",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green"] },
+                  "times": {
+                    "Greatest": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Greatest": {
+                      "of": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                      "stat": "Toughness"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

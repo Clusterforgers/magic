@@ -1,0 +1,32 @@
+{
+  "id": "3c9ac089-6962-48fd-bf67-f041ece27fa9",
+  "oracle_id": "acfe7ec0-0606-4d5e-b1fa-25f0c7aeec47",
+  "name": "Sanctum Weaver",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "910",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Enchantment Creature — Dryad",
+  "oracle_text": "{T}: Add X mana of any one color, where X is the number of enchantments you control.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "power": "0",
+  "toughness": "2",
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

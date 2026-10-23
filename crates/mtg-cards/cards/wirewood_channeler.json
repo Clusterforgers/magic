@@ -1,0 +1,21 @@
+{
+  "oracle_id": "8badfd34-9b63-4ada-8012-b8cddaf5b492",
+  "name": "Wirewood Channeler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wirewood Channeler",
+      "oracle_fingerprint": "405243b38f3d3d82ca0ff957572ee499",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "AnyColor": { "Count": [{ "Subtype": "Elf" }] } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

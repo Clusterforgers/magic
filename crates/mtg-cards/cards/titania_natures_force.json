@@ -1,0 +1,58 @@
+{
+  "oracle_id": "46c3a69a-4984-40b0-905f-4b0762c7ad72",
+  "name": "Titania, Nature's Force",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Titania, Nature's Force",
+      "oracle_fingerprint": "bcc64b89f782c11a3720d546d8d5b13a",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": [{ "Subtype": "Forest" }], "from": "Graveyard", "play": true }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 5,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Elemental" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Mill": { "count": 3 } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

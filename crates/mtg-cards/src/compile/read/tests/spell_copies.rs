@@ -279,7 +279,6 @@ fn near_misses_of_becoming_a_copy_stay_unread(#[case] text: &str) {
 #[case::an_unfinished_quote("Enchanted creature has \"{T}: Draw a card.")]
 #[case::an_unread_ability("Enchanted creature has \"{T}: Do something odd.\"")]
 #[case::an_unread_mana_ability("Enchanted creature has \"{T}: Add mana of the best color.\"")]
-#[case::a_keyword_for_a_land("Enchanted land has flying")]
 #[case::a_bonus_for_a_land("Enchanted land gets +1/+1 and has \"{T}: Draw a card.\"")]
 #[case::another_noun("Enchanted Forest has \"{T}: Draw a card.\"")]
 fn near_misses_of_giving_an_ability_stay_unread(#[case] text: &str) {

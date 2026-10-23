@@ -51,6 +51,16 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         return Err(wrong_effect("AddMana"));
     };
+    // "Add {G}. If you control four or more creatures, add {G}{G} instead.": the branch that holds as it resolves.
+    let mut mana = mana;
+    while let Produce::Instead {
+        base,
+        when,
+        instead,
+    } = mana
+    {
+        mana = if cx.scope.holds(when)? { instead } else { base };
+    }
     let state = cx.state();
     let mut times = usize::try_from(cx.scope.amount(times)?.max(0)).unwrap_or(0);
     let players: Vec<PlayerId> = cx
@@ -125,7 +135,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             }
             return Ok(Run::events(events));
         }
-        Produce::AnyColor(each) => (COLORS.iter().copied().map(mana_of).collect(), *each),
+        Produce::AnyColor(each) => {
+            let each = u32::try_from(cx.scope.amount(each)?.max(0)).unwrap_or(0);
+            (COLORS.iter().copied().map(mana_of).collect(), each)
+        }
+        Produce::Instead { .. } => return unsupported("Effect.AddMana.Instead.Nested"),
         Produce::OrChosenColor(printed) => {
             let chosen = source
                 .and_then(|id| state.object(id))

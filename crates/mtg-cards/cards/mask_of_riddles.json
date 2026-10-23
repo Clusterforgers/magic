@@ -1,0 +1,27 @@
+{
+  "oracle_id": "a50c55a7-4e7e-40f6-b76c-1e32598dc9b6",
+  "name": "Mask of Riddles",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mask of Riddles",
+      "oracle_fingerprint": "219257bc9a52775a87e4947a0da79374",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Fear" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

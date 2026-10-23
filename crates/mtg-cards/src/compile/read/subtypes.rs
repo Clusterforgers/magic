@@ -460,14 +460,22 @@ const IRREGULAR_PLURALS: [(&str, &str); 12] = [
 ];
 
 /// The subtypes written the same in the plural.
-const SAME_PLURAL: [&str; 9] = [
+const SAME_PLURAL: [&str; 17] = [
     "Aurochs",
     "Dauthi",
+    "Deer",
+    "Djinn",
     "Eldrazi",
     "Equipment",
     "Fish",
+    "Kavu",
+    "Kithkin",
+    "Kor",
+    "Merfolk",
+    "Moonfolk",
     "Plains",
     "Samurai",
+    "Sheep",
     "Soltari",
     "Thalakos",
 ];

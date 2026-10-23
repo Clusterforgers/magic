@@ -139,7 +139,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
     };
     let scope = Scope::announcing(state, player, object.reference());
     let mut found = Vec::new();
-    for (place, (address, rules)) in abilities_of(state, id).into_iter().enumerate() {
+    'abilities: for (place, (address, rules)) in abilities_of(state, id).into_iter().enumerate() {
         let Some(shape) = mana_shape(&rules) else {
             continue;
         };
@@ -182,13 +182,37 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
             .ok()
             .and_then(|times| u32::try_from(times).ok())
             .unwrap_or(0);
+        // "Add {G}. If you control four or more creatures, add {G}{G} instead.": the branch that holds now.
+        let mut produces = shape.produces;
+        while let ManaProduced::Instead {
+            base,
+            when,
+            instead,
+        } = produces
+        {
+            let branch = if scope.holds(when).unwrap_or(false) {
+                instead
+            } else {
+                base
+            };
+            let Some(next) = ManaProduced::of(branch) else {
+                continue 'abilities;
+            };
+            produces = next;
+        }
         // Each way to add the mana, as the types one addition makes.
-        let additions: Vec<Vec<ManaType>> = match shape.produces {
+        let additions: Vec<Vec<ManaType>> = match produces {
             ManaProduced::Fixed { mana, count } => vec![vec![mana; count as usize]],
             ManaProduced::Mixed(list) => vec![list.to_vec()],
             ManaProduced::AnyColor(count) => {
-                COLORS.iter().map(|c| vec![*c; count as usize]).collect()
+                let count = scope
+                    .amount(count)
+                    .ok()
+                    .and_then(|count| usize::try_from(count).ok())
+                    .unwrap_or(0);
+                COLORS.iter().map(|c| vec![*c; count]).collect()
             }
+            ManaProduced::Instead { .. } => Vec::new(),
             ManaProduced::OneOf(types) => types.iter().map(|t| vec![*t]).collect(),
             ManaProduced::AnyCombination { count, among } => {
                 let counts: Vec<u32> = match x_most {
@@ -421,6 +445,8 @@ pub(crate) fn activation(
 mod combos;
 #[cfg(test)]
 mod counted;
+#[cfg(test)]
+mod replaced;
 
 #[cfg(test)]
 mod tests {

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "4daa7b7d-e410-4bcf-b3e2-2751774bef47",
+  "name": "Prava of the Steel Legion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prava of the Steel Legion",
+      "oracle_fingerprint": "c0e2c143cd42da48878bc17aa401c845",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 4 } }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{W}",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

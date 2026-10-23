@@ -1,0 +1,31 @@
+{
+  "oracle_id": "5446c92f-ff22-4e9b-a2f6-e64c8560c1e0",
+  "name": "Zombie Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zombie Master",
+      "oracle_fingerprint": "7d423bb17541a28ea51cb122b43804ad",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Zombie" }, "Other"] },
+            "mods": [{ "AddKeyword": { "Landwalk": [{ "Subtype": "Swamp" }] } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Zombie" }, "Other"] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": { "cost": "{B}", "effects": [{ "Regenerate": { "what": "This" } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

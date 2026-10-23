@@ -755,7 +755,17 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                         1..3
                     )
                     .prop_map(Produce::Fixed),
-                    (1u32..3).prop_map(Produce::AnyColor),
+                    amount().prop_map(Produce::AnyColor),
+                    (
+                        select(vec![ManaType::Green, ManaType::Colorless]),
+                        condition(),
+                        select(vec![ManaType::Black, ManaType::Colorless])
+                    )
+                        .prop_map(|(base, when, instead)| Produce::Instead {
+                            base: Box::new(Produce::Fixed(vec![base])),
+                            when,
+                            instead: Box::new(Produce::Fixed(vec![instead, instead])),
+                        }),
                     vec(
                         select(vec![ManaType::White, ManaType::Blue, ManaType::Colorless]),
                         2..4
