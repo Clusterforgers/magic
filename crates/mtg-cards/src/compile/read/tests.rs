@@ -247,6 +247,7 @@ mod turned_face_up;
 mod vocabulary;
 mod where_x;
 mod x_after;
+mod zz_scratch;
 
 mod mana {
     //! Goal: a plain mana ability reads in the shapes of the cards, and a cost, a choice or a count it does not model stays with the table.

@@ -3,6 +3,9 @@
 //! player in a row are one compound sentence; the readers take ", then" between two steps as the
 //! same sequence.
 
+mod divided;
+mod graveyards;
+
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
 use super::attackers;
 use super::becomes;
@@ -1447,6 +1450,10 @@ impl Writer<'_> {
             | Effect::MoveCounters { .. } => self.counters(effect)?,
             Effect::CreateToken { .. } => self.created(effect)?,
             Effect::DealDamage {
+                amount: Amount::Divided,
+                ..
+            } => self.divided(effect)?,
+            Effect::DealDamage {
                 source: None,
                 to,
                 amount,
@@ -1516,6 +1523,7 @@ impl Writer<'_> {
     /// The effects with a wording of their own: a card returned to the battlefield, the casting and the keyword actions.
     fn other_effect(&mut self, effect: &Effect) -> Option<String> {
         self.exiled(effect)
+            .or_else(|| self.graveyard_exile(effect))
             .or_else(|| self.reanimated(effect))
             .or_else(|| cast::text(effect))
             .or_else(|| self.keyword_action(effect))
