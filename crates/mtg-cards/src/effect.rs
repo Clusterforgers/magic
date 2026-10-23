@@ -447,6 +447,12 @@ pub enum Effect {
         /// How many +1/+1 counters.
         count: Amount,
     },
+    /// The source Class becomes this level (CR 716.2): its level rises to it; a Class already at that level or above does
+    /// nothing.
+    BecomeLevel {
+        /// The level the Class becomes.
+        level: u32,
+    },
     /// The source creature adapts (CR 701.46): it gets +1/+1 counters if it has none.
     Adapt {
         /// How many +1/+1 counters.

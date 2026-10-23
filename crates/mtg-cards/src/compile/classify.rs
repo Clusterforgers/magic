@@ -56,7 +56,10 @@ const CHAPTERS: [&str; 10] = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", 
 ///
 /// A clause may run over several lines (modes, a level block, a station block); its first line decides.
 pub fn classify(text: &str, spell: bool) -> ClauseKind {
-    if text.starts_with("LEVEL ") || super::clauses::is_station_block(text) {
+    if text.starts_with("LEVEL ")
+        || super::clauses::is_station_block(text)
+        || super::clauses::is_class_block(text)
+    {
         return ClauseKind::Static;
     }
     let head = text.lines().next().unwrap_or_default();
@@ -324,6 +327,12 @@ mod tests {
     )]
     #[case::level_block("LEVEL 2-3\n2/4\n{U}{U}, {T}: Copy target spell.", false, Static)]
     #[case::station_block("8+ | Flying\nWhenever ~ attacks, draw a card.", false, Static)]
+    #[case::class_level_block("{2}{W}: Level 2\nCreatures you control get +1/+1.", false, Static)]
+    #[case::class_level_block_of_a_trigger(
+        "{3}{U}: Level 2\nWhen ~ becomes level 2, draw a card.",
+        false,
+        Static
+    )]
     #[case::station_block_of_one_line("3+ | Flying, haste", false, Static)]
     #[case::static_ability("Equipped creature gets +2/+0.", false, Static)]
     #[case::spell_text_with_a_trigger("When you cast this spell, draw a card.", true, Triggered)]

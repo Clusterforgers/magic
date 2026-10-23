@@ -160,6 +160,7 @@ mod cast;
 mod cast_cost_paid;
 mod chapters;
 mod chosen_color;
+mod class;
 mod compound;
 mod conditions;
 mod copies;

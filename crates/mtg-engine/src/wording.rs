@@ -461,6 +461,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             format!("{} becomes monstrous", subject(what)),
             what.0 == [Pred::This],
         ),
+        TriggerPattern::BecomesLevel { what, level } => (
+            format!("{} becomes level {level}", subject(what)),
+            what.0 == [Pred::This],
+        ),
         TriggerPattern::TurnedFaceUp { what } => (
             format!("{} is turned face up", subject(what)),
             what.0 == [Pred::This],
@@ -1303,6 +1307,10 @@ mod tests {
     #[case::this_becomes_monstrous(
         r#"{"BecomesMonstrous":{"what":["This"]}}"#,
         "When it becomes monstrous"
+    )]
+    #[case::this_class_becomes_level_two(
+        r#"{"BecomesLevel":{"what":["This"],"level":2}}"#,
+        "When it becomes level 2"
     )]
     #[case::a_creature_adapts(
         r#"{"Adapted":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#,

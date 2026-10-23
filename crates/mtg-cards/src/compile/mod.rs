@@ -203,9 +203,15 @@ fn read_clause(
                 .map(Ability::Keyword),
             Vec::new(),
         ),
-        ClauseKind::Static if text.starts_with("LEVEL ") || clauses::is_station_block(text) => {
+        ClauseKind::Static
+            if text.starts_with("LEVEL ")
+                || clauses::is_station_block(text)
+                || clauses::is_class_block(text) =>
+        {
             let block = if text.starts_with("LEVEL ") {
                 read::level_block(text, x_free, own)
+            } else if clauses::is_class_block(text) {
+                read::class_block(text, x_free, own)
             } else {
                 read::station_block(text, x_free, own)
             };

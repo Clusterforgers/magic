@@ -62,6 +62,7 @@ const RUNS: &[&str] = &[
     "Trigger.Connived",
     "Trigger.Amassed",
     "Trigger.BecomesMonstrous",
+    "Trigger.BecomesLevel",
     "Trigger.TurnedFaceUp",
     "Trigger.Mutates",
     "Trigger.Adapted",
@@ -139,6 +140,7 @@ const RUNS: &[&str] = &[
     "Effect.Connive",
     "Effect.Amass",
     "Effect.Monstrosity",
+    "Effect.BecomeLevel",
     "Effect.Adapt",
     "Effect.Bolster",
     "Effect.Fabricate",
@@ -341,6 +343,7 @@ const RUNS: &[&str] = &[
     "Keyword.Undaunted",
     "Keyword.Encore",
     "Condition.NewlyControlled",
+    "Condition.Level",
     "Rule.CanBeCommander",
 ];
 
@@ -575,6 +578,7 @@ mod tests {
     #[case::becoming_the_monarch("Effect.BecomeMonarch", true)]
     #[case::amassing("Effect.Amass", true)]
     #[case::monstrosity("Effect.Monstrosity", true)]
+    #[case::becoming_a_level("Effect.BecomeLevel", true)]
     #[case::adapting("Effect.Adapt", true)]
     #[case::bolstering("Effect.Bolster", true)]
     #[case::fabricating("Effect.Fabricate", true)]
@@ -628,6 +632,7 @@ mod tests {
     #[case::conniving_triggers("Trigger.Connived", true)]
     #[case::amassing_triggers("Trigger.Amassed", true)]
     #[case::becoming_monstrous_triggers("Trigger.BecomesMonstrous", true)]
+    #[case::becoming_a_level_triggers("Trigger.BecomesLevel", true)]
     #[case::turning_face_up_triggers("Trigger.TurnedFaceUp", true)]
     #[case::adapting_triggers("Trigger.Adapted", true)]
     #[case::bolstering_triggers("Trigger.Bolstered", true)]
@@ -697,6 +702,7 @@ mod tests {
     #[case::split_second("Keyword.SplitSecond", true)]
     #[case::undaunted("Keyword.Undaunted", true)]
     #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]
+    #[case::a_class_level("Condition.Level", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]
     #[case::the_highest_life_total("Amount.HighestLife", true)]

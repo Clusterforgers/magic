@@ -521,6 +521,11 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         return Some(TriggerPattern::Explored { what: what.clone() });
     } else if r.words("becomes monstrous") {
         return Some(TriggerPattern::BecomesMonstrous { what: what.clone() });
+    } else if r.words("becomes level") {
+        return Some(TriggerPattern::BecomesLevel {
+            what: what.clone(),
+            level: r.number()?,
+        });
     } else if r.words("is turned face up") {
         return Some(TriggerPattern::TurnedFaceUp { what: what.clone() });
     } else if r.word("mutates") {
@@ -831,6 +836,9 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::Explored { what } => said(what, "explores"),
         TriggerPattern::Connived { what } => said(what, "connives"),
         TriggerPattern::BecomesMonstrous { what } => said(what, "becomes monstrous"),
+        TriggerPattern::BecomesLevel { what, level } => {
+            said(what, &format!("becomes level {level}"))
+        }
         TriggerPattern::TurnedFaceUp { what } => said(what, "is turned face up"),
         TriggerPattern::Mutates { what } => said(what, "mutates"),
         TriggerPattern::Adapted { what } => said(what, "adapts"),
@@ -1113,14 +1121,15 @@ fn counter_text(what: &Selector, counter: Option<&CounterKind>, moved: &str) -> 
 fn about(what: &Selector, verbs: &[String]) -> Option<String> {
     let once = what.0 == [Pred::This]
         && verbs.iter().all(|verb| {
-            matches!(
-                verb.as_str(),
-                "enters"
-                    | "dies"
-                    | "leaves the battlefield"
-                    | "becomes monstrous"
-                    | "is turned face up"
-            )
+            verb.starts_with("becomes level ")
+                || matches!(
+                    verb.as_str(),
+                    "enters"
+                        | "dies"
+                        | "leaves the battlefield"
+                        | "becomes monstrous"
+                        | "is turned face up"
+                )
         });
     Some(format!(
         "{} {} {}",

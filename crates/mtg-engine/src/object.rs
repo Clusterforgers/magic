@@ -91,6 +91,8 @@ impl FaceDown {
 pub struct Designations {
     /// It has become monstrous (CR 701.37).
     pub(crate) monstrous: bool,
+    /// The level a Class has reached (CR 716.2); 0 until a level ability resolves, which reads as level 1.
+    pub(crate) level: u32,
 }
 
 /// State that only exists while an object is on the battlefield.
@@ -193,6 +195,16 @@ impl PermanentState {
     /// object and is not.
     pub const fn monstrous(&self) -> bool {
         self.designations.monstrous
+    }
+
+    /// The level of a Class (CR 716.2): 1 as it enters, higher once its level abilities resolve; a permanent that
+    /// leaves the battlefield is a new object and starts again at 1. Only a Class has abilities that read it.
+    pub const fn level(&self) -> u32 {
+        if self.designations.level == 0 {
+            1
+        } else {
+            self.designations.level
+        }
     }
 
     /// Damage marked on the permanent this turn (tracked apart from toughness).

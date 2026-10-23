@@ -231,5 +231,6 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::CastWith(_)
         | Condition::Performed => Traits::NONE,
         Condition::Monarch(who) | Condition::CitysBlessing(who) => reads_of_ref(who),
+        Condition::Level { of, .. } => reads_of_ref(of),
     }
 }

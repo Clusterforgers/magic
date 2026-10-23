@@ -1026,6 +1026,19 @@ impl<'a> Scope<'a> {
                 .iter()
                 .any(|player| self.state.has_citys_blessing(*player)),
             Condition::YourTurn => self.state.turn().active() == self.controller,
+            Condition::Level { of, op, level } => {
+                let named = self.objects(of)?;
+                !named.is_empty()
+                    && named.iter().all(|named| {
+                        self.state
+                            .object(named.id)
+                            .filter(|object| object.counter() == named.counter)
+                            .and_then(GameObject::permanent)
+                            .is_some_and(|permanent| {
+                                op.holds(i64::from(permanent.level()), i64::from(*level))
+                            })
+                    })
+            }
             Condition::NewlyControlled(what) => {
                 let named = self.objects(what)?;
                 !named.is_empty()

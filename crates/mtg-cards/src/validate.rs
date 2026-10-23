@@ -567,6 +567,10 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "NewlyControlled");
                 self.at("NewlyControlled", |w| w.reference(what, Kind::Object));
             }
+            Condition::Level { of, .. } => {
+                self.uses("Condition", "Level");
+                self.at("Level", |w| w.reference(of, Kind::Object));
+            }
         }
     }
 
@@ -990,6 +994,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Explored { what }
             | TriggerPattern::Connived { what }
             | TriggerPattern::BecomesMonstrous { what }
+            | TriggerPattern::BecomesLevel { what, .. }
             | TriggerPattern::TurnedFaceUp { what }
             | TriggerPattern::Mutates { what }
             | TriggerPattern::Adapted { what }
@@ -1054,6 +1059,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::Explored { .. }
                 | TriggerPattern::Connived { .. }
                 | TriggerPattern::BecomesMonstrous { .. }
+                | TriggerPattern::BecomesLevel { .. }
                 | TriggerPattern::TurnedFaceUp { .. }
                 | TriggerPattern::Mutates { .. }
                 | TriggerPattern::Adapted { .. }
@@ -1492,6 +1498,11 @@ impl<'a> Walker<'a> {
                     w.problem("a card can be a commander by a static ability, not by an effect");
                 }
             }),
+            Effect::BecomeLevel { level } => {
+                if *level < 2 {
+                    w.problem("a Class starts at level 1 and gains level 2 or more");
+                }
+            }
             Effect::Regenerate { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::Shield { when, by, .. } => {
                 w.at("when", |w| w.replace_when(when));
