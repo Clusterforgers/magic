@@ -36,6 +36,7 @@ mod create;
 mod damage;
 mod defining;
 mod draws;
+mod event_wordings;
 mod effects;
 mod evasion;
 mod facts;

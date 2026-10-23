@@ -91,7 +91,7 @@ pub(super) fn of_the_card(ability: &Ability, texts: &mut Vec<String>) {
 }
 
 /// The verbs an effect of the controller opens with.
-const CONTROLLER_VERBS: [&str; 12] = [
+pub(super) const CONTROLLER_VERBS: [&str; 12] = [
     "scry ",
     "surveil ",
     "create ",

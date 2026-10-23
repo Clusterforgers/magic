@@ -404,12 +404,11 @@ pub(super) fn wordings(ability: &Ability) -> Vec<String> {
                 .flat_map(|said| insert(text, &format!(", where X is {said}")))
         })
         .collect();
-    // What a cost took is also worded after "equal to" ("draw cards equal to the sacrificed creature's power").
-    if of == Ref::Paid {
-        for text in &texts {
-            for said in &said {
-                found.extend(equal_to_forms(text, said));
-            }
+    // The characteristic is also worded after "equal to" ("draw cards equal to the sacrificed creature's power",
+    // "~ deals damage equal to its power to target opponent").
+    for text in &texts {
+        for said in &said {
+            found.extend(equal_to_forms(text, said));
         }
     }
     found

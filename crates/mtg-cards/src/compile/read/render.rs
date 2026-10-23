@@ -3,8 +3,10 @@
 //! player in a row are one compound sentence; the readers take ", then" between two steps as the
 //! same sequence.
 
+mod damage_by;
 mod divided;
 mod graveyards;
+mod may_have;
 
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
 use super::attackers;
@@ -18,6 +20,7 @@ use super::counters;
 use super::create;
 use super::defining;
 use super::draws;
+use super::event_wordings;
 use super::effects::{BACK, RETURNED, dead_card, returns_itself};
 use super::flicker;
 use super::group_pump;
@@ -274,6 +277,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     let more = group_pump::wordings(ability, &texts);
     texts.extend(more);
     texts.extend(where_x::wordings(ability));
+    event_wordings::add(ability, &mut texts);
     graveyard_wordings(ability, &mut texts);
     texts
 }
@@ -1454,6 +1458,9 @@ impl Writer<'_> {
                 ..
             } => self.divided(effect)?,
             Effect::DealDamage {
+                source: Some(_), ..
+            } => self.damage_by(effect)?,
+            Effect::DealDamage {
                 source: None,
                 to,
                 amount,
@@ -1479,7 +1486,7 @@ impl Writer<'_> {
                 effects,
             } => match effects.as_slice() {
                 [inner] if is_imperative(inner) => format!("you may {}", self.effect(inner)?),
-                _ => return None,
+                _ => self.may_have(effects)?,
             },
             Effect::Pay {
                 who,
