@@ -1,0 +1,39 @@
+{
+  "oracle_id": "3469463e-ed4d-44bb-81f3-42bbe09d34ad",
+  "name": "Hunted Horror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hunted Horror",
+      "oracle_fingerprint": "f8d0f350bd4a5c873181de52b8df096f",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "Target": 0 },
+                  "token": {
+                    "Custom": {
+                      "name": "Centaur",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Centaur"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": { "Protection": [{ "Color": "Black" }] } }]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

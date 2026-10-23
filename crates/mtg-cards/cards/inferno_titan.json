@@ -1,0 +1,39 @@
+{
+  "oracle_id": "0ce47c8b-1e1f-463f-94f0-35ca00be89e6",
+  "name": "Inferno Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inferno Titan",
+      "oracle_fingerprint": "733ae25525fb7a1ca24b61e16447dd52",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 1, "max": 3 }, "divide": 3 }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

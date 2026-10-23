@@ -1,0 +1,27 @@
+{
+  "oracle_id": "48d14b5c-711a-4f8a-9de5-55415cb7a79a",
+  "name": "Angel of Finality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angel of Finality",
+      "oracle_fingerprint": "694c674f53f23754e224c8161223a74f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

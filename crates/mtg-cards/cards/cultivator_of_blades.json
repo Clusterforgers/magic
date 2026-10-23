@@ -1,0 +1,41 @@
+{
+  "oracle_id": "ca4c0945-7035-47dc-aba8-fbda351d9b7b",
+  "name": "Cultivator of Blades",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cultivator of Blades",
+      "oracle_fingerprint": "1ccc2b9846c238fb1210b62601b526de",
+      "abilities": [
+        { "Keyword": { "Fabricate": 2 } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": ["Other", "Attacking", { "Type": "Creature" }] },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": { "Stat": { "of": "This", "stat": "Power" } },
+                              "toughness": { "Stat": { "of": "This", "stat": "Power" } }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

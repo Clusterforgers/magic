@@ -1,0 +1,20 @@
+{
+  "oracle_id": "842578ca-0a86-4e96-bfd5-45931488f7c1",
+  "name": "Violent Eruption",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Violent Eruption",
+      "oracle_fingerprint": "e675840d7246ba0befcfbadb62d7d8ca",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 1, "max": null }, "divide": 4 }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        },
+        { "Keyword": { "Madness": "{1}{R}{R}" } }
+      ]
+    }
+  ]
+}
