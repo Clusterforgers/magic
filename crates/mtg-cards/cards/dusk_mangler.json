@@ -1,0 +1,37 @@
+{
+  "oracle_id": "74de3356-9779-40f9-9881-fe795a1d5bbd",
+  "name": "Dusk Mangler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dusk Mangler",
+      "oracle_fingerprint": "ebbfce4bcf93a212e830025b8b745332",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              {
+                "OneOf": [
+                  [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+                  [{ "Discard": {} }],
+                  [{ "PayLife": 4 }]
+                ]
+              }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] } },
+              { "Discard": { "who": "Opponents" } },
+              { "LoseLife": { "who": "Opponents", "amount": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
