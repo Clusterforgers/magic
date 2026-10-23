@@ -74,6 +74,7 @@ const RUNS: &[&str] = &[
     "Amount.Greatest",
     "Amount.Total",
     "Amount.CardTypes",
+    "Amount.Devotion",
     "Amount.LowestLife",
     "Amount.HighestLife",
     "Cost.Tap",
@@ -613,7 +614,7 @@ mod tests {
     #[case::mana_restricted_to_what_it_may_be_spent_on("Effect.AddMana.Restricted", true)]
     #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", true)]
     #[case::mana_a_land_could_produce("Effect.AddMana.ProducedBy", true)]
-    #[case::devotion("Amount.Devotion", false)]
+    #[case::devotion("Amount.Devotion", true)]
     #[case::the_greatest_value("Amount.Greatest", true)]
     #[case::totals("Amount.Total", true)]
     #[case::card_types_among_cards("Amount.CardTypes", true)]

@@ -166,10 +166,10 @@ mod tests {
         assert_eq!(
             run_on(
                 &game(2, &[], &[]),
-                r#"{"Mill":{"count":{"Devotion":["Red"]}}}"#
+                r#"{"Mill":{"count":"Divided"}}"#
             )
             .unwrap_err(),
-            ResolveError::Unsupported("devotion")
+            ResolveError::Unsupported("a divided amount outside the damage or counters it divides")
         );
     }
 
