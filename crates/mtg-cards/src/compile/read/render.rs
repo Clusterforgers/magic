@@ -104,6 +104,18 @@ pub fn variants(ability: &Ability) -> Vec<String> {
         })
         .collect();
     texts.extend(commanders);
+    // A card may say the permanent "entered the battlefield" this turn for "entered" (Octomancer).
+    let entered: Vec<String> = texts
+        .iter()
+        .filter(|text| text.contains(" that entered this turn"))
+        .map(|text| {
+            text.replace(
+                " that entered this turn",
+                " that entered the battlefield this turn",
+            )
+        })
+        .collect();
+    texts.extend(entered);
     // A card may call the token of a copy "the token" for "it" in its exceptions (Helm of the Host).
     let tokens: Vec<String> = texts
         .iter()

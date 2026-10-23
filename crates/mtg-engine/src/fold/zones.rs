@@ -106,6 +106,10 @@ pub(super) fn move_object(
         object.controller = object.owner;
     }
     let (owner, token) = (object.owner, object.kind == ObjectKind::Token);
+    let entered = object.reference();
+    if to == Zone::Battlefield {
+        state.tally_object(entered, None, Tally::Entered);
+    }
     if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {
         state.tally(owner, Tally::Graved);
     }

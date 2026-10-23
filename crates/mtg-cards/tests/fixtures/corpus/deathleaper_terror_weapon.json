@@ -1,0 +1,31 @@
+{
+  "id": "9819d50f-aae8-4e92-8dab-01eebace3c1e",
+  "oracle_id": "8e22495d-a921-4c91-ada3-79098851e5d4",
+  "name": "Deathleaper, Terror Weapon",
+  "lang": "en",
+  "layout": "normal",
+  "set": "40k",
+  "collector_number": "115",
+  "rarity": "rare",
+  "released_at": "2022-10-07",
+  "digital": false,
+  "mana_cost": "{2}{R}{G}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Tyranid",
+  "oracle_text": "Flash\nHaste\nFlesh Hooks — Creatures you control that entered this turn have double strike.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Flesh Hooks",
+    "Haste",
+    "Flash"
+  ]
+}

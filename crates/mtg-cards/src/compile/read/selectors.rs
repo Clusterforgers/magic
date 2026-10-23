@@ -382,6 +382,10 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.words("defending player controls") {
         return Some(Pred::ControlledBy(Ref::Defending));
     }
+    // What came onto the battlefield this turn: "creature token that entered the battlefield this turn".
+    if r.words("that entered the battlefield this turn") || r.words("that entered this turn") {
+        return Some(Pred::EnteredThisTurn);
+    }
     // The creatures that paid for the source: "creature that crewed it this turn".
     if r.words("that crewed it this turn") {
         return Some(Pred::Crewed(Ref::This));
@@ -480,6 +484,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::ControlledBy(Ref::You) => "you control".to_owned(),
         Pred::ControlledBy(Ref::Opponents) => form.opponents().to_owned(),
         Pred::ControlledBy(Ref::Triggering) => "that player controls".to_owned(),
+        Pred::EnteredThisTurn => "that entered this turn".to_owned(),
         Pred::Crewed(Ref::This) => "that crewed it this turn".to_owned(),
         Pred::Saddled(Ref::This) => "that saddled it this turn".to_owned(),
         Pred::ControlledBy(Ref::AttachedPlayer) => "enchanted player controls".to_owned(),
@@ -559,7 +564,7 @@ enum Noun {
     Card,
     /// A subtype alone ("Clue"), singular only.
     Subtype(String),
-    /// "tokens", after the card types before it: "creature tokens".
+    /// "token" or "tokens", after the card types before it: "creature tokens", "target creature token".
     Token,
     /// "commander": a player's commander, with no card type before it.
     Commander,
@@ -616,7 +621,9 @@ fn head(r: &mut Reader<'_>, form: Form) -> Option<(Vec<CardType>, Noun)> {
             r.skip();
             Some((types, Noun::Plain))
         }
-        Some("tokens") if plural && forms.iter().all(|is_plural| !is_plural) => {
+        Some(word @ ("token" | "tokens"))
+            if (word == "tokens") == plural && forms.iter().all(|is_plural| !is_plural) =>
+        {
             r.skip();
             Some((types, Noun::Token))
         }
@@ -883,8 +890,7 @@ fn noun_word(which: [bool; 5], plural: bool) -> Option<String> {
     let nouns = ["token", "spell", "card", "commander", "permanent"];
     let at = which.iter().position(|chosen| *chosen)?;
     let noun = nouns[at];
-    // A token is always named in the plural.
-    Some(if plural || at == 0 {
+    Some(if plural {
         format!("{noun}s")
     } else {
         noun.to_owned()
@@ -991,7 +997,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
                 adjectives.push(word);
             }
         } else if *pred == Pred::Token {
-            if token || !form.plural() {
+            if token {
                 return None;
             }
             token = true;

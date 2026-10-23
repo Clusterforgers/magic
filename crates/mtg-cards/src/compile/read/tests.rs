@@ -187,6 +187,7 @@ mod defining;
 mod draws;
 mod each_pump;
 mod enchanted_player;
+mod entered_this_turn;
 mod enters;
 mod enters_tapped;
 mod evasion;

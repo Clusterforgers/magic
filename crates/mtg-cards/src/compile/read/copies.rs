@@ -35,7 +35,11 @@ const CHOSEN: &str = "token";
 /// they have haste", also with the sentence that exiles or sacrifices the copy at the next end step.
 pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("create")?;
+    let mut tapped = false;
     let (count, plural) = if r.words("a token that's a copy of") {
+        (Amount::one(), false)
+    } else if r.words("a tapped token that's a copy of") {
+        tapped = true;
         (Amount::one(), false)
     } else {
         let count = if r.x_free && r.word("x") {
@@ -71,7 +75,7 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             no_mana_cost: false,
         },
         count,
-        tapped: false,
+        tapped,
         attacking: false,
         bind: delay.map(|_| COPY.to_owned()),
     };
@@ -471,7 +475,7 @@ pub(super) fn token_text(effect: &Effect, of: &str, delayed: bool) -> Option<Str
                 ..
             },
         count,
-        tapped: false,
+        tapped,
         attacking: false,
         bind,
     } = effect
@@ -482,7 +486,9 @@ pub(super) fn token_text(effect: &Effect, of: &str, delayed: bool) -> Option<Str
         return None;
     }
     let (head, plural) = match count {
+        Amount::Fixed(1) if *tapped => ("a tapped token that's a copy of".to_owned(), false),
         Amount::Fixed(1) => ("a token that's a copy of".to_owned(), false),
+        _ if *tapped => return None,
         Amount::Fixed(number) if *number > 1 => (
             format!(
                 "{} tokens that are copies of",

@@ -398,6 +398,7 @@ impl<'a> Walker<'a> {
             | Pred::Tapped
             | Pred::Untapped
             | Pred::Monstrous
+            | Pred::EnteredThisTurn
             | Pred::Attacking
             | Pred::Blocking
             | Pred::Unblocked
