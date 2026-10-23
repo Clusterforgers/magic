@@ -8,7 +8,9 @@
 //!   holds wins.
 //! - `-` as the target: the DSL has no verb for it. `~`: bookkeeping that needs no verb.
 //! - `also effect CopyPermanent NonLegendary => Mod.RemoveSupertype`: a key on a Forge line that asks for a further
-//!   verb (`*` for any name of the family).
+//!   verb (`*` for any name of the family). Conditions after the key (`also static Continuous AddAbility
+//!   AffectedDefined=Self => ...`) make the rule more specific: for one key the rules with the most conditions that
+//!   hold decide.
 //! - `variant effect ChangeZone Destination`: a key whose value tells apart the uses of the verb in the report.
 //!
 //! A keyword with no rule stands for the keyword of the same name.
@@ -89,6 +91,7 @@ struct Extra {
     kind: Kind,
     name: String,
     when: Cond,
+    and: Vec<Cond>,
     verbs: Vec<String>,
 }
 
@@ -179,11 +182,12 @@ impl Map {
                 key: (*key).to_owned(),
             });
         } else if extra {
-            let key = rest.first().ok_or("no key")?;
+            let (key, and) = rest.split_first().ok_or("no key")?;
             self.extras.push(Extra {
                 kind,
                 name,
                 when: Cond::parse(key),
+                and: and.iter().map(|cond| Cond::parse(cond)).collect(),
                 verbs: verbs(right)?,
             });
         } else {
@@ -235,15 +239,24 @@ impl Map {
         }
     }
 
-    /// The keys of an item that ask for verbs of their own.
+    /// The keys of an item that ask for verbs of their own; for one key the rules with the most conditions that hold decide.
     pub fn wanted(&self, item: &Item) -> Vec<Wanted> {
         let name = norm(&item.name);
-        self.extras
+        let held: Vec<&Extra> = self
+            .extras
             .iter()
             .filter(|extra| {
                 extra.kind == item.kind
                     && (extra.name == name || extra.name == "*")
                     && extra.when.holds(&item.params)
+                    && extra.and.iter().all(|cond| cond.holds(&item.params))
+            })
+            .collect();
+        held.iter()
+            .filter(|extra| {
+                held.iter()
+                    .filter(|other| other.when.key == extra.when.key)
+                    .all(|other| other.and.len() <= extra.and.len())
             })
             .map(|extra| Wanted {
                 key: extra.when.key.clone(),

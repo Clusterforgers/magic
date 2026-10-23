@@ -55,6 +55,8 @@ pub struct Finding {
 }
 
 #[cfg(test)]
+mod standard;
+#[cfg(test)]
 mod tests;
 
 /// Sets every item against the verbs of our rules; bookkeeping the map skips gives no finding. A mapped item that our
