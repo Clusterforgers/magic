@@ -18,8 +18,8 @@ use mtg_engine::{Event, GameState};
 use mtg_testkit::cards::plains;
 use mtg_testkit::saga_cards::{lore_spell, transforming_saga};
 use mtg_testkit::{
-    Driver, PlayOptions, Scenario, ScriptError, play_game_with, ready, transforming_saga_fuzz_setup,
-    with_counters,
+    Driver, PlayOptions, Scenario, ScriptError, play_game_with, ready,
+    transforming_saga_fuzz_setup, with_counters,
 };
 use rstest::rstest;
 
@@ -127,7 +127,15 @@ fn the_back_face_rules_apply_as_it_enters(
     let (driver, id, _, log) = returned(seats)?;
     // It enters tapped (a replacement of the back face) and gains 5 life when it enters (a trigger of the back face);
     // nothing of chapter III or the front face gains life.
-    assert!(driver.state().object(id).unwrap().permanent().unwrap().tapped());
+    assert!(
+        driver
+            .state()
+            .object(id)
+            .unwrap()
+            .permanent()
+            .unwrap()
+            .tapped()
+    );
     assert_eq!(life(&driver, 0), start + 5);
     let gains: Vec<_> = log
         .iter()
@@ -334,5 +342,8 @@ fn bot_games_with_sagas_that_return_transformed_return_them_and_the_creatures_ac
     assert!(played > 0);
     assert!(returned > 0, "some Saga returned transformed");
     assert!(attacked > 0, "some transformed Saga attacked as a creature");
-    assert!(kept > 0, "some transformed Saga was still on the battlefield");
+    assert!(
+        kept > 0,
+        "some transformed Saga was still on the battlefield"
+    );
 }

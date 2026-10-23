@@ -42,7 +42,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     }
     Ok(Run::Done {
         events,
-        bound: bind.iter().map(|name| (name.clone(), exiled.clone())).collect(),
+        bound: bind
+            .iter()
+            .map(|name| (name.clone(), exiled.clone()))
+            .collect(),
         snapshots,
         next: Next::Sibling,
     })

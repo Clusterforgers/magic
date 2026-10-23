@@ -1121,7 +1121,9 @@ mod tests {
     #[case::modal_double_faced(Layout::ModalDfc)]
     #[case::adventure(Layout::Adventure)]
     #[case::split(Layout::Split)]
-    fn a_card_that_is_not_a_transforming_double_faced_card_stays_where_it_is(#[case] layout: Layout) {
+    fn a_card_that_is_not_a_transforming_double_faced_card_stays_where_it_is(
+        #[case] layout: Layout,
+    ) {
         let (game, card) = card_in_hand(layout);
         assert_eq!(entering(&game, card, TRANSFORMED), []);
     }
