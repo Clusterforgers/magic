@@ -23,7 +23,7 @@ fn from_your_graveyard(selector: &Selector) -> bool {
 }
 
 /// "their owners'": the apostrophe of a plural stands alone in the tokens.
-fn their_owners(r: &mut Reader<'_>) -> Option<()> {
+pub(super) fn their_owners(r: &mut Reader<'_>) -> Option<()> {
     (r.words("their owners") && r.punct('\'')).then_some(())
 }
 

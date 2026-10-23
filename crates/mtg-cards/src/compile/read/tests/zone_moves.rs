@@ -49,6 +49,18 @@ fn activated(text: &str) -> Option<Ability> {
 #[case::exile_all_graveyards("Exile all graveyards.")]
 #[case::exile_your_graveyard("Exile your graveyard.")]
 #[case::exile_each_opponents_graveyard("Exile each opponent's graveyard.")]
+#[case::with_a_counter(
+    "Return target nonlegendary creature card from your graveyard to the battlefield with a -1/-1 counter on it."
+)]
+#[case::tapped_with_a_counter(
+    "Return target creature card from your graveyard to the battlefield tapped with a -1/-1 counter on it."
+)]
+#[case::six_targets("Return six target nonland permanents to their owners' hands.")]
+#[case::two_targets("Return two target creatures to their owners' hands.")]
+#[case::up_to_two_creatures("Return up to two target creatures to their owners' hands.")]
+#[case::exile_two_targets("Exile two target creatures.")]
+#[case::exile_monocolored("Exile target monocolored permanent.")]
+#[case::exile_attacking_or_blocking("Exile target attacking or blocking creature.")]
 fn spells_that_move_cards_between_zones_read_and_write_back(#[case] text: &str) {
     golden(text, ClauseKind::Spell, false);
 }
@@ -73,6 +85,9 @@ fn spells_that_move_cards_between_zones_read_and_write_back(#[case] text: &str) 
     "Whenever ~ enters or attacks, you may return target permanent card with mana value 3 or less from your graveyard to the battlefield."
 )]
 #[case::exiling_a_graveyard("When ~ enters, exile target player's graveyard.")]
+#[case::bouncing_up_to_two(
+    "When ~ enters, you may return up to two target creatures to their owners' hands."
+)]
 fn triggers_that_move_cards_between_zones_read_and_write_back(#[case] text: &str) {
     golden(text, ClauseKind::Triggered, false);
 }
@@ -117,6 +132,30 @@ fn abilities_that_move_cards_between_zones_read_and_write_back(#[case] text: &st
     "Exile target player's graveyard.",
     r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"Exile":{"what":{"Each":[{"In":"Graveyard"},{"OwnedBy":{"Target":0}}]}}}]}}"#
 )]
+#[case::with_a_counter(
+    "Return target nonlegendary creature card from your graveyard to the battlefield with a -1/-1 counter on it.",
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"Not":{"Supertype":"Legendary"}},{"In":"Graveyard"},{"OwnedBy":"You"}]}}],"effects":[{"Move":{"what":{"Target":0},"to":{"Battlefield":{"counters":[["-1/-1",1]]}}}}]}}"#
+)]
+#[case::six_targets(
+    "Return six target nonland permanents to their owners' hands.",
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Not":{"Type":"Land"}}]},"bounds":{"min":6,"max":6}}],"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}}]}}"#
+)]
+#[case::up_to_two_creatures(
+    "Return up to two target creatures to their owners' hands.",
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0,"max":2}}],"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}}]}}"#
+)]
+#[case::exile_monocolored(
+    "Exile target monocolored permanent.",
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Compare":{"stat":"Colors","op":"Eq","to":1}}]}}],"effects":[{"Exile":{"what":{"Target":0}}}]}}"#
+)]
+#[case::exile_attacking_or_blocking(
+    "Exile target attacking or blocking creature.",
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"AnyOf":["Attacking","Blocking"]}]}}],"effects":[{"Exile":{"what":{"Target":0}}}]}}"#
+)]
+#[case::exile_two_targets(
+    "Exile two target creatures.",
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":2,"max":2}}],"effects":[{"Exile":{"what":{"Target":0}}}]}}"#
+)]
 fn the_cards_moved_are_read_in_the_shape_of_the_files(#[case] text: &str, #[case] json: &str) {
     reads_as(text, ClauseKind::Spell, false, json);
 }
@@ -147,6 +186,17 @@ fn a_card_chosen_from_the_hand_is_bound_and_put_onto_the_battlefield() {
 #[case::to_its_owners_hand("Return target creature card from a graveyard to its owner's hand.")]
 #[case::a_single_graveyard("Exile up to two target cards from a single graveyard.")]
 #[case::a_hand("Exile target player's hand.")]
+#[case::a_keyword_counter(
+    "Return target creature card from your graveyard to the battlefield with a lifelink counter on it."
+)]
+#[case::two_counters_without_a_kind(
+    "Return target creature card from your graveyard to the battlefield with two counters on it."
+)]
+#[case::several_to_one_hand("Return two target creatures to its owner's hand.")]
+#[case::several_cards_to_their_owners(
+    "Return two target creature cards from a graveyard to their owners' hands."
+)]
+#[case::an_exact_count_of_x("Return X target creatures to their owners' hands.")]
 #[case::a_creatures_graveyard("Exile target creature's graveyard.")]
 #[case::a_player_of_two("Exile target player's graveyard and target opponent's graveyard.")]
 #[case::all_graveyards_to_the_battlefield(

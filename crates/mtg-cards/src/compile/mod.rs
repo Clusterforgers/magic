@@ -9,6 +9,7 @@
 mod classify;
 mod clauses;
 mod keywords;
+mod linked;
 mod manual;
 mod normalize;
 mod read;
@@ -168,6 +169,7 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
         }
     }
     give_backup(&mut pending);
+    linked::exile_pair(&mut pending);
     let mut abilities = Vec::new();
     for clause in pending {
         match clause.ability {
