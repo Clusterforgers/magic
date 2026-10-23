@@ -101,8 +101,14 @@ fn scavenge_exiles_the_card_and_puts_counters_equal_to_its_power(
     )?;
     activate(&mut driver, "Dreg Mangler", Some("Grizzly Bears"))?;
     let bears = driver.id_of("Grizzly Bears")?;
-    assert_eq!(counters(driver.state(), bears, &CounterKind::PlusOnePlusOne), 3);
-    assert_eq!(count(driver.state(), Zone::Graveyard(pid(0)), "Dreg Mangler"), 0);
+    assert_eq!(
+        counters(driver.state(), bears, &CounterKind::PlusOnePlusOne),
+        3
+    );
+    assert_eq!(
+        count(driver.state(), Zone::Graveyard(pid(0)), "Dreg Mangler"),
+        0
+    );
     assert_eq!(count(driver.state(), Zone::Exile, "Dreg Mangler"), 1);
     let stats = characteristics(driver.state(), bears).unwrap();
     assert_eq!((stats.power, stats.toughness), (Some(5), Some(5)));
@@ -125,7 +131,11 @@ fn scavenge_may_target_a_creature_of_another_player(
     activate(&mut driver, "Drudge Beetle", Some("Fodder"))?;
     let fodder = driver.id_of("Fodder")?;
     let power = characteristics(driver.state(), fodder).unwrap().power;
-    assert_eq!(power, Some(1 + 2), "a 1/1 and the two counters of a 2/2 Beetle");
+    assert_eq!(
+        power,
+        Some(1 + 2),
+        "a 1/1 and the two counters of a 2/2 Beetle"
+    );
     Ok(())
 }
 
@@ -199,9 +209,19 @@ fn transmute_finds_a_card_with_the_same_mana_value(
             driver.pass()?;
         }
     }
-    assert_eq!(seen, offered, "only cards of the same mana value are offered");
+    assert_eq!(
+        seen, offered,
+        "only cards of the same mana value are offered"
+    );
     let hand = names(driver.state(), Zone::Hand(pid(0)));
-    assert_eq!(hand, if pick.is_empty() { vec![] } else { vec![pick.to_owned()] });
+    assert_eq!(
+        hand,
+        if pick.is_empty() {
+            vec![]
+        } else {
+            vec![pick.to_owned()]
+        }
+    );
     assert_replays(&driver);
     Ok(())
 }
@@ -245,13 +265,19 @@ fn awaken_adds_a_land_that_becomes_an_elemental_with_counters_and_haste(
     driver.begin_cast("Clutch of Currents")?;
     assert_eq!(ways(&driver)?.len(), 2, "the mana cost and the awaken cost");
     choose_way(&mut driver, "Awaken")?;
-    let (bears, land) = (driver.target_named("Grizzly Bears")?, driver.target_named("Forest")?);
+    let (bears, land) = (
+        driver.target_named("Grizzly Bears")?,
+        driver.target_named("Forest")?,
+    );
     driver.choose_targets(&[bears])?;
     driver.choose_targets(&[land])?;
     pay(&mut driver)?;
     settle_all(&mut driver)?;
     let forest = driver.id_of("Forest")?;
-    assert_eq!(counters(driver.state(), forest, &CounterKind::PlusOnePlusOne), 3);
+    assert_eq!(
+        counters(driver.state(), forest, &CounterKind::PlusOnePlusOne),
+        3
+    );
     let chars = characteristics(driver.state(), forest).unwrap();
     assert!(chars.types.contains(CardType::Land) && chars.is_creature());
     assert_eq!((chars.power, chars.toughness), (Some(3), Some(3)));
@@ -276,8 +302,15 @@ fn a_spell_cast_for_its_mana_cost_asks_for_no_land_and_changes_none(
     pay(&mut driver)?;
     settle_all(&mut driver)?;
     let forest = driver.id_of("Forest")?;
-    assert_eq!(counters(driver.state(), forest, &CounterKind::PlusOnePlusOne), 0);
-    assert!(!characteristics(driver.state(), forest).unwrap().is_creature());
+    assert_eq!(
+        counters(driver.state(), forest, &CounterKind::PlusOnePlusOne),
+        0
+    );
+    assert!(
+        !characteristics(driver.state(), forest)
+            .unwrap()
+            .is_creature()
+    );
     assert_eq!(names(driver.state(), Zone::Hand(pid(1))), ["Grizzly Bears"]);
     Ok(())
 }
@@ -363,7 +396,10 @@ fn sunburst_counts_the_colors_of_mana_spent_on_a_creature(
         }
         _ => {
             assert_eq!(colors, 0, "a Myr without a counter is a 0/0 and dies");
-            assert_eq!(count(driver.state(), Zone::Graveyard(pid(0)), "Suntouched Myr"), 1);
+            assert_eq!(
+                count(driver.state(), Zone::Graveyard(pid(0)), "Suntouched Myr"),
+                1
+            );
         }
     }
     assert_replays(&driver);
@@ -385,7 +421,13 @@ fn sunburst_gives_charge_counters_to_a_permanent_that_is_no_creature(
     driver.cast("Pentad Prism")?;
     settle_all(&mut driver)?;
     let prism = driver.id_of("Pentad Prism")?;
-    assert_eq!(counters(driver.state(), prism, &CounterKind::Charge), colors);
-    assert_eq!(counters(driver.state(), prism, &CounterKind::PlusOnePlusOne), 0);
+    assert_eq!(
+        counters(driver.state(), prism, &CounterKind::Charge),
+        colors
+    );
+    assert_eq!(
+        counters(driver.state(), prism, &CounterKind::PlusOnePlusOne),
+        0
+    );
     Ok(())
 }

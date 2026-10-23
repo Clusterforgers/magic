@@ -789,7 +789,8 @@ impl<'a> Walker<'a> {
                 // Only mana is paid for these: a part that takes objects, life or counters is not.
                 self.parts_that_need_an_announcement("Keyword", "Cost", cost);
             }
-            Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),            Keyword::Backup { count, abilities } => {
+            Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
+            Keyword::Backup { count, abilities } => {
                 if *count == 0 {
                     self.problem("backup needs a number of at least 1");
                 }

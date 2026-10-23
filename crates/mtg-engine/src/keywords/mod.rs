@@ -58,8 +58,8 @@ mod flying;
 pub(crate) mod foretell;
 mod fuse;
 pub mod gift;
-mod haste;
 mod gravestorm;
+mod haste;
 mod hexproof;
 mod hideaway;
 mod improvise;
@@ -829,7 +829,10 @@ mod tests {
             Keyword::Gift(GiftKind::Card),
             Keyword::Scavenge(cost()),
             Keyword::Transmute(cost()),
-            Keyword::Awaken { count: 3, cost: cost() },
+            Keyword::Awaken {
+                count: 3,
+                cost: cost(),
+            },
             Keyword::Gravestorm,
             Keyword::Sunburst,
         ]

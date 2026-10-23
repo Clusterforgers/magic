@@ -62,7 +62,19 @@ pub(crate) fn targets_met(
     x: Option<u32>,
 ) -> bool {
     specs.iter().enumerate().all(|(index, spec)| {
-        options_for(state, source, controller, index, spec, false, cause, x, &[], None).is_some()
+        options_for(
+            state,
+            source,
+            controller,
+            index,
+            spec,
+            false,
+            cause,
+            x,
+            &[],
+            None,
+        )
+        .is_some()
     })
 }
 
