@@ -1,0 +1,28 @@
+{
+  "oracle_id": "440881ad-48cf-4b82-8bb5-f506d1a51755",
+  "name": "Draconic Lore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Draconic Lore",
+      "oracle_fingerprint": "78a9555cda349e21fb4ea849a445b4ab",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Spell": { "effects": [{ "Draw": { "count": 3 } }] } }
+      ]
+    }
+  ]
+}

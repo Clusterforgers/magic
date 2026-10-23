@@ -1,0 +1,32 @@
+{
+  "oracle_id": "1228bd6f-565d-4ad5-bd24-e5aa1ead5dee",
+  "name": "Herald of War",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Herald of War",
+      "oracle_fingerprint": "cc136861207cedc1f178f7a42c661541",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Subtype": "Angel" }, { "Subtype": "Human" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Counters": { "on": "This", "counter": "+1/+1" } }
+          }
+        }
+      ]
+    }
+  ]
+}

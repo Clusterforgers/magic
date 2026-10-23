@@ -1,0 +1,25 @@
+{
+  "oracle_id": "91ebedb5-cb5f-4c58-ad30-6c6b0a106aa0",
+  "name": "Frogtosser Banneret",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frogtosser Banneret",
+      "oracle_fingerprint": "83dc49474c77d3d87809d36eb6b2ebb4",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Subtype": "Goblin" }, { "Subtype": "Rogue" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        }
+      ]
+    }
+  ]
+}

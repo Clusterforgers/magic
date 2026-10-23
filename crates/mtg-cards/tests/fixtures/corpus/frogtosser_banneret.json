@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "bec81e20-b644-421a-9c93-5a3dc52eb88b",
+  "oracle_id": "91ebedb5-cb5f-4c58-ad30-6c6b0a106aa0",
+  "multiverse_ids": [
+    495981
+  ],
+  "tcgplayer_id": 222537,
+  "cardmarket_id": 503925,
+  "name": "Frogtosser Banneret",
+  "lang": "en",
+  "released_at": "2020-09-25",
+  "uri": "https://api.scryfall.com/cards/bec81e20-b644-421a-9c93-5a3dc52eb88b",
+  "scryfall_uri": "https://scryfall.com/card/znc/43/frogtosser-banneret?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:57:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/e/bec81e20-b644-421a-9c93-5a3dc52eb88b.jpg?1783929477",
+    "normal": "https://cards.scryfall.io/normal/front/b/e/bec81e20-b644-421a-9c93-5a3dc52eb88b.jpg?1783929477",
+    "large": "https://cards.scryfall.io/large/front/b/e/bec81e20-b644-421a-9c93-5a3dc52eb88b.jpg?1783929477",
+    "png": "https://cards.scryfall.io/png/front/b/e/bec81e20-b644-421a-9c93-5a3dc52eb88b.png?1783929477",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/e/bec81e20-b644-421a-9c93-5a3dc52eb88b.jpg?1783929477",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/e/bec81e20-b644-421a-9c93-5a3dc52eb88b.jpg?1783929477",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/e/bec81e20-b644-421a-9c93-5a3dc52eb88b.webp?1783929477",
+    "grid": "https://cards.scryfall.io/grid/front/b/e/bec81e20-b644-421a-9c93-5a3dc52eb88b.webp?1783929477",
+    "display": "https://cards.scryfall.io/display/front/b/e/bec81e20-b644-421a-9c93-5a3dc52eb88b.webp?1783929477",
+    "art": "https://cards.scryfall.io/art/front/b/e/bec81e20-b644-421a-9c93-5a3dc52eb88b.webp?1783929477",
+    "crop": "https://cards.scryfall.io/crop/front/b/e/bec81e20-b644-421a-9c93-5a3dc52eb88b.webp?1783929477",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/e/bec81e20-b644-421a-9c93-5a3dc52eb88b.jpg?1783929477"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Goblin Rogue",
+  "oracle_text": "Haste\nGoblin spells and Rogue spells you cast cost {1} less to cast.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Haste"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "25c6bd9b-4e10-40a4-b9b5-0f4d9b5852a1",
+  "set": "znc",
+  "set_name": "Zendikar Rising Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/25c6bd9b-4e10-40a4-b9b5-0f4d9b5852a1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aznc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/znc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/bec81e20-b644-421a-9c93-5a3dc52eb88b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A91ebedb5-cb5f-4c58-ad30-6c6b0a106aa0&unique=prints",
+  "collector_number": "43",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "The Frogtossers thread feathers, bones, and trophies from past raids into their standards, believing they fuel the warren with the anger of its victims.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ralph Horsley",
+  "artist_ids": [
+    "a51444a8-eb4b-4615-a663-d1d418591ccb"
+  ],
+  "illustration_id": "00e8b4e3-2afb-4b0a-bc17-434214471d99",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 6983,
+  "penny_rank": 4106,
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.29",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=495981&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFrogtosser%2BBanneret",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFrogtosser%2BBanneret",
+    "edhrec": "https://edhrec.com/route/?cc=Frogtosser+Banneret"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F222537%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=503925&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Frogtosser+Banneret&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

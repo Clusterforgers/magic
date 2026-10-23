@@ -2351,7 +2351,12 @@ impl<'a> Walker<'a> {
                 }
                 self.at("count", |w| w.amount(count));
             }
-            ReplaceBy::Tapped | ReplaceBy::Choose(_) | ReplaceBy::PayLifeOrTapped(_) if !enters => {
+            ReplaceBy::Tapped
+            | ReplaceBy::Choose(_)
+            | ReplaceBy::PayLifeOrTapped(_)
+            | ReplaceBy::Riot
+                if !enters =>
+            {
                 self.problem("only an `Enters` event is entered tapped, chosen on or paid for");
             }
             ReplaceBy::Devour { counters, of } => {

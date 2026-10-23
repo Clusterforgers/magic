@@ -1,0 +1,25 @@
+{
+  "oracle_id": "0d6202c7-b19c-429a-85c4-332024381dd7",
+  "name": "Stonybrook Banneret",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stonybrook Banneret",
+      "oracle_fingerprint": "94dfa50ce97eb16c36a5926146f87a8f",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Island" }] } },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Subtype": "Merfolk" }, { "Subtype": "Wizard" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "8b3da929-eb0a-4149-9a0d-8f2b916f0e47",
+  "oracle_id": "440881ad-48cf-4b82-8bb5-f506d1a51755",
+  "multiverse_ids": [
+    696307
+  ],
+  "mtgo_id": 138239,
+  "tcgplayer_id": 624917,
+  "cardmarket_id": 819286,
+  "name": "Draconic Lore",
+  "lang": "en",
+  "released_at": "2025-04-11",
+  "uri": "https://api.scryfall.com/cards/8b3da929-eb0a-4149-9a0d-8f2b916f0e47",
+  "scryfall_uri": "https://scryfall.com/card/tdc/151/draconic-lore?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T01:45:06Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/b/8b3da929-eb0a-4149-9a0d-8f2b916f0e47.jpg?1783907106",
+    "normal": "https://cards.scryfall.io/normal/front/8/b/8b3da929-eb0a-4149-9a0d-8f2b916f0e47.jpg?1783907106",
+    "large": "https://cards.scryfall.io/large/front/8/b/8b3da929-eb0a-4149-9a0d-8f2b916f0e47.jpg?1783907106",
+    "png": "https://cards.scryfall.io/png/front/8/b/8b3da929-eb0a-4149-9a0d-8f2b916f0e47.png?1783907106",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/b/8b3da929-eb0a-4149-9a0d-8f2b916f0e47.jpg?1783907106",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/b/8b3da929-eb0a-4149-9a0d-8f2b916f0e47.jpg?1783907106",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/b/8b3da929-eb0a-4149-9a0d-8f2b916f0e47.webp?1783907106",
+    "grid": "https://cards.scryfall.io/grid/front/8/b/8b3da929-eb0a-4149-9a0d-8f2b916f0e47.webp?1783907106",
+    "display": "https://cards.scryfall.io/display/front/8/b/8b3da929-eb0a-4149-9a0d-8f2b916f0e47.webp?1783907106",
+    "art": "https://cards.scryfall.io/art/front/8/b/8b3da929-eb0a-4149-9a0d-8f2b916f0e47.webp?1783907106",
+    "crop": "https://cards.scryfall.io/crop/front/8/b/8b3da929-eb0a-4149-9a0d-8f2b916f0e47.webp?1783907106",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/b/8b3da929-eb0a-4149-9a0d-8f2b916f0e47.jpg?1783907106"
+  },
+  "mana_cost": "{5}{U}",
+  "cmc": 6.0,
+  "type_line": "Instant",
+  "oracle_text": "This spell costs {2} less to cast if you control a Dragon.\nDraw three cards.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+  "set": "tdc",
+  "set_name": "Tarkir: Dragonstorm Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atdc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tdc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8b3da929-eb0a-4149-9a0d-8f2b916f0e47/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A440881ad-48cf-4b82-8bb5-f506d1a51755&unique=prints",
+  "collector_number": "151",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "The wyrmling studied the ancient carvings and dreamed of a day when her own exploits would be immortalized in stone.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tom Babbey",
+  "artist_ids": [
+    "622ba04b-9e3a-4039-8f12-354bf56bfb0f"
+  ],
+  "illustration_id": "65922d60-0d1c-4ef2-8afb-704c5327054e",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 7946,
+  "prices": {
+    "usd": "0.30",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.22",
+    "eur_foil": null,
+    "tix": "0.10"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=696307&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDraconic%2BLore",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDraconic%2BLore",
+    "edhrec": "https://edhrec.com/route/?cc=Draconic+Lore"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F624917%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=819286&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/138239?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
