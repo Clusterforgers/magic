@@ -10,7 +10,7 @@ use std::collections::BTreeMap;
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{AbilityKind, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
-use mtg_cards::value::{Amount, CastWay, Condition, CounterKind, StatKind};
+use mtg_cards::value::{Amount, CastWay, Condition, CounterKind, StatKind, TurnTally};
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -28,7 +28,7 @@ use crate::keywords::{self, OptionalKind, gift};
 use crate::layers::{Held, View, outside};
 use crate::object::{Chosen, FaceDown, GameObject, ObjectKind, ObjectRef, PermanentState};
 use crate::snapshot::Snapshot;
-use crate::state::GameState;
+use crate::state::{GameState, Tally};
 use crate::zones::Zone;
 
 /// What earlier steps of a resolution bound to a name.
@@ -879,6 +879,17 @@ impl<'a> Scope<'a> {
             Amount::CastWith(way) => i64::from(self.cast_way() == Some(*way)),
             Amount::ColorsSpent => i64::try_from(colors_among(&self.mana_spent())).unwrap_or(0),
             Amount::PermanentsGraved => i64::from(self.state.graved_this_turn()),
+            Amount::Tallied { who, what } => {
+                let kind = match what {
+                    TurnTally::Attackers => Tally::Attackers,
+                    TurnTally::DamageTaken => Tally::Hurt,
+                };
+                self.players(who)?
+                    .into_iter()
+                    .map(|player| i64::from(self.state.tallied(player, kind)))
+                    .max()
+                    .unwrap_or(0)
+            }
             Amount::Kicks => i64::try_from(self.payments(OptionalKind::Kicker))
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
             Amount::Triggering => self

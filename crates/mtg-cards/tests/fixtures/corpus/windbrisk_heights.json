@@ -1,0 +1,23 @@
+{
+  "id": "df441bae-3b9c-46a9-8287-870c00d58a64",
+  "oracle_id": "3589bcfc-42b0-414a-adce-bc690dc631c8",
+  "name": "Windbrisk Heights",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "411",
+  "rarity": "rare",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "Hideaway 4 (When this land enters, look at the top four cards of your library, exile one face down, then put the rest on the bottom in a random order.)\nThis land enters tapped.\n{T}: Add {W}.\n{W}, {T}: You may play the exiled card without paying its mana cost if you attacked with three or more creatures this turn.",
+  "colors": [],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Hideaway"
+  ]
+}

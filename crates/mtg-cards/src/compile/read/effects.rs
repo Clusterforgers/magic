@@ -36,12 +36,13 @@ use crate::value::{Amount, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 41] = [
+const TEMPLATES: [Template; 42] = [
     modal::modal,
     super::spent::sacrifice_unless,
     cast::discover_sentence,
     cast::exile_until,
     cast::exile_top,
+    cast::exiled_card,
     payments::may_pay,
     may,
     chain,
@@ -551,6 +552,14 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     // The permanent itself once the ability has spoken of the card: "return it to its owner's hand" (a card that
     // returns from the graveyard says its name, and is the table's).
     if r.it == Some(Ref::This) && r.word("it") {
+        r.need("to its owner's hand")?;
+        return Some(vec![Effect::Move {
+            what: if r.died { dead_card() } else { Ref::This },
+            to: Destination::Hand,
+        }]);
+    }
+    // The card by its name: "return ~ to its owner's hand".
+    if r.ability && r.source() {
         r.need("to its owner's hand")?;
         return Some(vec![Effect::Move {
             what: if r.died { dead_card() } else { Ref::This },

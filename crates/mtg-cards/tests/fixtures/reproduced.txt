@@ -65,6 +65,7 @@ Basilica Screecher
 Basking Rootwalla
 Baton of Courage
 Battering Krasis
+Batterskull
 Battle Sliver
 Battlefield Forge
 Baxter Building
@@ -129,6 +130,7 @@ Cavern Whisperer
 Celestial Archon
 Celestial Colonnade
 Celestial Crusader
+Cemetery Tampering
 Ceremonial Groundbreaker
 Champion of Lambholt
 Champion's Helm
@@ -143,6 +145,7 @@ Circle of Dreams Druid
 Citadel Gate
 Citanul Hierophants
 Cliffgate
+Clive's Hideaway
 Clone
 Cloudfin Raptor
 Cloudskate
@@ -263,6 +266,7 @@ Eternal Witness
 Ethereal Armor
 Ethereal Usher
 Ethersworn Sphinx
+Evercoat Ursine
 Exalted Angel
 Excavation Technique
 Exotic Orchard
@@ -289,6 +293,7 @@ Field Trip
 Fierce Guardianship
 Fiery Fall
 Fiery Temper
+Fight Rigging
 Finch Formation
 Fire-Lit Thicket
 Firestorm Hellkite
@@ -385,6 +390,7 @@ Honor Troll
 Honor's Reward
 Horizon Canopy
 Hound of Griselbrand
+Howltooth Hollow
 Hulking Raptor
 Icefeather Aven
 Idyllic Beachfront
@@ -491,6 +497,7 @@ Monk's Fist
 Morinfen
 Morsel Theft
 Mortivore
+Mosswort Bridge
 Mothdust Changeling
 Mother of Runes
 Muddle the Mixture
@@ -571,6 +578,7 @@ Putrid Goblin
 Pygmy Kavu
 Quest for the Goblin Lord
 Questing Beast
+Rabble Rousing
 Radical Idea
 Raffine's Informant
 Rakdos Headliner
@@ -677,6 +685,7 @@ Skysovereign, Consul Flagship
 Slip Through Space
 Slitherhead
 Sluiceway Scorpion
+Smuggler's Buggy
 Smuggler's Copter
 Snubhorn Sentry
 Sodden Verdure
@@ -693,6 +702,7 @@ Space Marine Devastator
 Spectral Rider
 Sphere of Safety
 Sphinx of Jwar Isle
+Spinerock Knoll
 Spire Golem
 Spire Winder
 Spring // Mind
@@ -845,6 +855,7 @@ Wild Growth
 Wild Wasteland
 Wilderness Elemental
 Windborn Muse
+Windbrisk Heights
 Wings of the Guard
 Wipe Away
 Withering Boon

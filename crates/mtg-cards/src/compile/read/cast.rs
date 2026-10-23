@@ -9,7 +9,7 @@ use super::library::{top_cards, top_text};
 use super::tokens::Reader;
 use crate::effect::{Destination, EXILED, Effect, FOUND, IMPULSE, Order, Place, discover, impulse};
 use crate::modify::Duration;
-use crate::refs::{Pred, Ref, Selector};
+use crate::refs::{Bounds, Pred, Ref, Selector, ZoneKind};
 use crate::value::{Amount, Cmp, StatKind};
 
 /// "Discover 4.": the exiling until a nonland card of that value or less, the cast for nothing or the move to the
@@ -209,8 +209,113 @@ pub fn impulse_wordings(text: String) -> Vec<String> {
     found
 }
 
+/// The name the card chosen from those exiled with the source is bound to.
+const PLAYED: &str = "played";
+
+/// The cards exiled with the source: "the exiled card" of hideaway.
+fn exiled_with_source() -> Ref {
+    Ref::Each(Selector(vec![
+        Pred::In(ZoneKind::Exile),
+        Pred::ExiledWith(Ref::This),
+    ]))
+}
+
+/// The player may play or cast the card at no cost, during the resolution.
+fn free_cast(what: Ref, play: bool) -> Effect {
+    Effect::CastFromZone {
+        who: Ref::You,
+        what,
+        free: true,
+        play,
+        way: None,
+        otherwise: Vec::new(),
+    }
+}
+
+/// "You may play the exiled card without paying its mana cost.", "You may cast the exiled card without paying its mana
+/// cost.", "You may play one of them without paying its mana cost.": the card exiled with the source, played (a land is
+/// put onto the battlefield) or cast for no mana; with several cards the player first chooses one.
+pub fn exiled_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("you may")?;
+    let play = r.word("play");
+    if !play {
+        r.need("cast")?;
+    }
+    let effects = if r.words("the exiled card") {
+        vec![free_cast(exiled_with_source(), play)]
+    } else {
+        r.need("one of them")?;
+        vec![
+            Effect::Choose {
+                who: Ref::You,
+                from: exiled_with_source(),
+                count: Bounds::default(),
+                bind: PLAYED.to_owned(),
+                rest_as: None,
+            },
+            free_cast(Ref::Bound(PLAYED.to_owned()), play),
+        ]
+    };
+    r.need("without paying its mana cost")?;
+    Some(effects)
+}
+
+/// The sentence the effects at the front of the list are when they play or cast the card exiled with the source, and how
+/// many effects it takes.
+pub fn exiled_text(effects: &[Effect]) -> Option<(String, usize)> {
+    if let [
+        Effect::Choose {
+            who: Ref::You,
+            from,
+            count,
+            bind,
+            rest_as: None,
+        },
+        Effect::CastFromZone {
+            what: Ref::Bound(played),
+            play,
+            ..
+        },
+        ..,
+    ] = effects
+        && *from == exiled_with_source()
+        && count.is_one()
+        && bind == PLAYED
+        && played == PLAYED
+        && effects.get(1) == Some(&free_cast(Ref::Bound(PLAYED.to_owned()), *play))
+    {
+        let verb = if *play { "play" } else { "cast" };
+        return Some((
+            format!("you may {verb} one of them without paying its mana cost"),
+            2,
+        ));
+    }
+    let [Effect::CastFromZone { play, .. }, ..] = effects else {
+        return None;
+    };
+    (effects.first() == Some(&free_cast(exiled_with_source(), *play))).then(|| {
+        let verb = if *play { "play" } else { "cast" };
+        (
+            format!("you may {verb} the exiled card without paying its mana cost"),
+            1,
+        )
+    })
+}
+
+/// Whether the text is the wording `exiled_card` reads, after "you may".
+pub fn is_exiled_card_text(text: &str) -> bool {
+    ["play", "cast"].iter().any(|verb| {
+        ["the exiled card", "one of them"]
+            .iter()
+            .any(|what| text == format!("{verb} {what} without paying its mana cost"))
+    })
+}
+
 /// The wording of the effects of the sentences above, one effect each.
 pub fn text(effect: &Effect) -> Option<String> {
+    if let Some((text, 1)) = exiled_text(std::slice::from_ref(effect)) {
+        return Some(text);
+    }
     Some(match effect {
         Effect::ExileTop {
             who: Ref::You,

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "463fc699-f4fc-4112-a6b3-6dcb642203e6",
+  "name": "Howltooth Hollow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Howltooth Hollow",
+      "oracle_fingerprint": "843cbbad9289669d452bca1478022be3",
+      "abilities": [
+        { "Keyword": { "Hideaway": 4 } },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "Tap"],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Count": [{ "In": "Hand" }] }, "op": "Eq", "right": 0 }
+                  },
+                  "then": [
+                    {
+                      "CastFromZone": {
+                        "what": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                        "free": true,
+                        "play": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

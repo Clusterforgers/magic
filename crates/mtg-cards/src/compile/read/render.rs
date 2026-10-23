@@ -471,6 +471,8 @@ struct Wording {
     per: bool,
     /// Each verb of "you" has its own subject: "you draw a card and you lose 1 life".
     again: bool,
+    /// Which of the wordings of a condition is written ("three or more" or "3 or more").
+    condition: usize,
 }
 
 /// The wordings to try for the effects: tokens counted by things say "for each" or "where X is", and two verbs of
@@ -495,11 +497,22 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
         &[false]
     };
     let agains: &[bool] = if repeats { &[false, true] } else { &[false] };
+    let conditions = effects
+        .iter()
+        .filter_map(|effect| match effect {
+            Effect::If { condition, .. } => Some(conditional::condition_texts(condition).len()),
+            _ => None,
+        })
+        .max()
+        .unwrap_or(1)
+        .max(1);
     pers.iter()
-        .flat_map(|per| {
-            agains.iter().map(|again| Wording {
-                per: *per,
-                again: *again,
+        .flat_map(|per| agains.iter().map(move |again| (*per, *again)))
+        .flat_map(|(per, again)| {
+            (0..conditions).map(move |condition| Wording {
+                per,
+                again,
+                condition,
             })
         })
         .collect()
@@ -541,6 +554,7 @@ fn written(
         named: false,
         per: wording.per,
         again: wording.again,
+        condition: wording.condition,
     };
     let mut sentences: Vec<String> = Vec::new();
     let mut start = 0;
@@ -549,6 +563,7 @@ fn written(
         // one sentence, which no joint splits.
         if let Some((text, used)) = cast::discover_text(&effects[start..])
             .or_else(|| cast::impulse_text(&effects[start..]))
+            .or_else(|| cast::exiled_text(&effects[start..]))
             .or_else(|| library::sequence(&effects[start..]))
             .or_else(|| writer.explore_twice(&effects[start..]))
         {
@@ -1062,6 +1077,8 @@ struct Writer<'a> {
     per: bool,
     /// The verbs of "you" in one compound sentence each say "you": "you draw a card and you lose 1 life".
     again: bool,
+    /// Which of the wordings of a condition is written.
+    condition: usize,
 }
 
 impl Writer<'_> {
@@ -1509,11 +1526,11 @@ impl Writer<'_> {
                 condition,
                 then,
                 otherwise,
-            } if otherwise.is_empty() => format!(
-                "if {}, {}",
-                conditional::condition_text(condition)?,
-                self.consequence(condition, then)?
-            ),
+            } if otherwise.is_empty() => {
+                let texts = conditional::condition_texts(condition);
+                let text = texts.get(self.condition).or(texts.first())?;
+                format!("if {text}, {}", self.consequence(condition, then)?)
+            }
             Effect::BecomeMonarch { who } => format!(
                 "{} {} the monarch",
                 self.player(who)?,

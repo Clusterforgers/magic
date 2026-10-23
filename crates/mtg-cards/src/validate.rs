@@ -504,6 +504,10 @@ impl<'a> Walker<'a> {
             Amount::CastWith(_) => self.uses("Amount", "CastWith"),
             Amount::ColorsSpent => self.uses("Amount", "ColorsSpent"),
             Amount::PermanentsGraved => self.uses("Amount", "PermanentsGraved"),
+            Amount::Tallied { who, .. } => {
+                self.uses("Amount", "Tallied");
+                self.at("Tallied", |w| w.reference(who, Kind::Player));
+            }
             Amount::Triggering => {
                 self.uses("Amount", "Triggering");
                 if !self.scope.in_trigger {

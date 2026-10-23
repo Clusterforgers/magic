@@ -37,6 +37,7 @@ mod damage;
 mod defining;
 mod draws;
 mod effects;
+mod facts;
 mod evasion;
 mod flicker;
 mod group_pump;
@@ -165,6 +166,7 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     let tokens = tokenize(text);
     let mut reader = Reader::new(&tokens, x_free);
     reader.subtypes.clone_from(&own.subtypes);
+    reader.ability = matches!(kind, ClauseKind::Triggered | ClauseKind::Activated);
     reader.power = own.power;
     reader.toughness = own.toughness;
     let ability = match kind {

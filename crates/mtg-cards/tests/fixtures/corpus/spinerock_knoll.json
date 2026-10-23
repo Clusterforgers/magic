@@ -1,0 +1,23 @@
+{
+  "id": "11e4ba4b-62d1-43ed-82e8-cd45d7a62c65",
+  "oracle_id": "690c7f8e-fea2-4920-afa7-02ff120701a1",
+  "name": "Spinerock Knoll",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "300",
+  "rarity": "rare",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "Hideaway 4 (When this land enters, look at the top four cards of your library, exile one face down, then put the rest on the bottom in a random order.)\nThis land enters tapped.\n{T}: Add {R}.\n{R}, {T}: You may play the exiled card without paying its mana cost if an opponent was dealt 7 or more damage this turn.",
+  "colors": [],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Hideaway"
+  ]
+}

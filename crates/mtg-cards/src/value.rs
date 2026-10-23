@@ -152,6 +152,15 @@ impl CounterKind {
     }
 }
 
+/// What the game counts for a player in a turn.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum TurnTally {
+    /// The creatures the player attacked with, each declared attacker once (CR 508.1).
+    Attackers,
+    /// The damage dealt to the player after prevention, by any source.
+    DamageTaken,
+}
+
 /// A number, fixed or worked out when the effect runs.
 ///
 /// A fixed amount is a bare JSON number; the other forms are serde's usual tagged shape.
@@ -234,6 +243,14 @@ pub enum Amount {
     ColorsSpent,
     /// How many permanents were put into a graveyard from the battlefield this turn, tokens included (CR 702.69, gravestorm).
     PermanentsGraved,
+    /// The largest count of the kind among the players the reference names this turn ("you attacked with three or more
+    /// creatures this turn": `You`; "an opponent was dealt 7 or more damage this turn": `Opponents`).
+    Tallied {
+        /// The players read.
+        who: Ref,
+        /// What is counted.
+        what: TurnTally,
+    },
     /// The amount of the event that triggered the ability ("that much", "that many", "the damage dealt"): the damage
     /// dealt, the life gained or lost, the counters put or removed; for a batch ("one or more") how many of its events
     /// the pattern found.
@@ -278,6 +295,7 @@ enum Tagged {
     CastWith(CastWay),
     ColorsSpent,
     PermanentsGraved,
+    Tallied { who: Ref, what: TurnTally },
     Triggering,
 }
 
@@ -321,6 +339,10 @@ enum TaggedRef<'a> {
     CastWith(CastWay),
     ColorsSpent,
     PermanentsGraved,
+    Tallied {
+        who: &'a Ref,
+        what: TurnTally,
+    },
     Triggering,
 }
 
@@ -349,6 +371,7 @@ impl From<Tagged> for Amount {
             Tagged::CastWith(way) => Amount::CastWith(way),
             Tagged::ColorsSpent => Amount::ColorsSpent,
             Tagged::PermanentsGraved => Amount::PermanentsGraved,
+            Tagged::Tallied { who, what } => Amount::Tallied { who, what },
             Tagged::Triggering => Amount::Triggering,
         }
     }
@@ -386,6 +409,9 @@ impl Serialize for Amount {
             Amount::CastWith(way) => TaggedRef::CastWith(*way).serialize(serializer),
             Amount::ColorsSpent => TaggedRef::ColorsSpent.serialize(serializer),
             Amount::PermanentsGraved => TaggedRef::PermanentsGraved.serialize(serializer),
+            Amount::Tallied { who, what } => {
+                TaggedRef::Tallied { who, what: *what }.serialize(serializer)
+            }
             Amount::Triggering => TaggedRef::Triggering.serialize(serializer),
         }
     }

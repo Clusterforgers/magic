@@ -1,0 +1,53 @@
+{
+  "oracle_id": "283f743f-6e79-49de-b7ed-08e6ffb64cc6",
+  "name": "Clive's Hideaway",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clive's Hideaway",
+      "oracle_fingerprint": "b1b70deef97356fa5e71328842a0c6a2",
+      "abilities": [
+        { "Keyword": { "Hideaway": 4 } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "Supertype": "Legendary" },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [
+                    {
+                      "CastFromZone": {
+                        "what": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                        "free": true,
+                        "play": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
