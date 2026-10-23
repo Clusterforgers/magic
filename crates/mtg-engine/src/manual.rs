@@ -27,7 +27,7 @@ use crate::events::{Event, ZoneCause};
 use crate::format::ExtraZone;
 use crate::loyalty;
 use crate::object::{GameObject, ObjectKind, PermanentState};
-use crate::rules::{cant_draw, cant_gain_life};
+use crate::rules::{cant_draw, cant_gain_life, life_total_cant_change};
 use crate::saga;
 use crate::state::GameState;
 use crate::steps::draw;
@@ -706,6 +706,9 @@ fn life(state: &GameState, who: PlayerId, delta: i32) -> Result<Vec<Event>, Manu
             amount,
         }])
     } else {
+        if life_total_cant_change(state, who) {
+            return Err(ManualRefusal::Forbidden("losing life"));
+        }
         Ok(vec![Event::LifeLost {
             player: who,
             amount,

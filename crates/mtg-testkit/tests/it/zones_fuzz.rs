@@ -30,7 +30,7 @@ const fn kind_of(zone: Zone) -> ZoneKind {
     match zone {
         Zone::Library(_) => ZoneKind::Library,
         Zone::Hand(_) => ZoneKind::Hand,
-        Zone::Battlefield => ZoneKind::Battlefield,
+        Zone::Battlefield | Zone::PhasedOut => ZoneKind::Battlefield,
         Zone::Graveyard(_) => ZoneKind::Graveyard,
         Zone::Stack => ZoneKind::Stack,
         Zone::Exile => ZoneKind::Exile,

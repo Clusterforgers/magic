@@ -1,0 +1,36 @@
+{
+  "oracle_id": "006bbd8b-2007-419d-8b84-9ff73f2f95b7",
+  "name": "Thunderherd Migration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thunderherd Migration",
+      "oracle_fingerprint": "723a735010741847cfca4e9be4849717",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              {
+                "OneOf": [[{ "RevealFromHand": { "filter": [{ "Subtype": "Dinosaur" }] } }], "{1}"]
+              }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

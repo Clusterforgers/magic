@@ -262,6 +262,7 @@ fn way(alternative: Option<CastWay>, cost: Option<&str>) -> Way {
         }),
         mana: cost.map(|cost| ManaCost::parse(cost).unwrap()),
         instant: true,
+        variant: 0,
         parts: Vec::new(),
     }
 }

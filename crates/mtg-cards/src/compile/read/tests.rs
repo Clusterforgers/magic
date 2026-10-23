@@ -269,6 +269,7 @@ mod vocabulary;
 mod where_x;
 mod written_effects;
 mod x_after;
+mod zone_moves;
 
 mod mana {
     //! Goal: a plain mana ability reads in the shapes of the cards, and a cost, a choice or a count it does not model stays with the table.
@@ -706,7 +707,6 @@ mod removal {
     #[case::a_second_target("Destroy target creature and target land.")]
     #[case::each("Destroy each creature.")]
     #[case::that("Destroy target creature that was dealt damage this turn.")]
-    #[case::a_zone("Exile target card from a graveyard.")]
     #[case::an_ability("Counter target activated ability.")]
     #[case::a_player("Destroy target player.")]
     #[case::any_target("Destroy any target.")]

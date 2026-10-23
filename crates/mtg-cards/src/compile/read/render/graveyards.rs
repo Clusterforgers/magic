@@ -15,6 +15,9 @@ impl Writer<'_> {
         else {
             return None;
         };
+        if selector.0 == [Pred::In(ZoneKind::Graveyard)] {
+            return Some("exile all graveyards".to_owned());
+        }
         let [Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(owner)] = selector.0.as_slice() else {
             return None;
         };

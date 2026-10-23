@@ -1,0 +1,25 @@
+{
+  "id": "d826b38e-a026-472b-afe7-d3a6bd806cf6",
+  "oracle_id": "47735ef2-fc4c-4634-83ab-715b1e86da0c",
+  "name": "Writ of Return",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ncc",
+  "collector_number": "42",
+  "rarity": "rare",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Return target creature card from your graveyard to the battlefield tapped.\nCipher (Then you may exile this spell card encoded on a creature you control. Whenever that creature deals combat damage to a player, its controller may cast a copy of the encoded card without paying its mana cost.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Cipher"
+  ]
+}

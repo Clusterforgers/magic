@@ -19,7 +19,6 @@ use crate::resolve::Bindings;
 use crate::snapshot::Snapshot;
 use crate::state::GameState;
 use crate::turn::Step;
-use crate::zones::Zone;
 
 /// Names a delayed triggered ability from the moment it is set up until it has triggered or run out.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
@@ -131,7 +130,7 @@ impl Delayed {
                 turn.number() != self.turn && turn.active() == self.controller
             }
             Duration::WhileSourceOnBattlefield => !state.object(self.source.id).is_some_and(|o| {
-                o.counter() == self.source.counter && o.zone() == Zone::Battlefield
+                o.counter() == self.source.counter && o.zone().is_permanent_zone()
             }),
             // Only an exile lasts until an opponent becomes the monarch; a delayed trigger never does.
             Duration::UntilOpponentBecomesMonarch => true,
@@ -204,6 +203,7 @@ mod tests {
     use crate::fold::apply_event;
     use crate::snapshot::snapshot;
     use crate::triggers::Triggered;
+    use crate::zones::Zone;
 
     const ME: PlayerId = PlayerId(0);
     const FOE: PlayerId = PlayerId(1);

@@ -297,6 +297,7 @@ fn preset_state(
         spent: Vec::new(),
         copy: None,
         merged: None,
+        phased: crate::object::PhasedState::default(),
     }
 }
 

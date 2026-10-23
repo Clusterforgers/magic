@@ -3,6 +3,7 @@ import type { AbilityCopy } from "./AbilityCopy";
 import type { AbilitySource } from "./AbilitySource";
 import type { AttackTarget } from "./AttackTarget";
 import type { BecameCopy } from "./BecameCopy";
+import type { CardCopy } from "./CardCopy";
 import type { CardsFound } from "./CardsFound";
 import type { Cause } from "./Cause";
 import type { Choice } from "./Choice";
@@ -151,6 +152,22 @@ object: ObjectId, } } | { "PermanentTapped": {
  * The permanent.
  */
 object: ObjectId, } } | { "PermanentUntapped": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, } } | { "PermanentPhasedOut": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, 
+/**
+ * The player who controlled it, who it phases in for during their untap step.
+ */
+controller: PlayerId, 
+/**
+ * It went with the permanent it is attached to, and phases in with that permanent.
+ */
+indirect?: boolean, } } | { "PermanentPhasedIn": { 
 /**
  * The permanent.
  */
@@ -525,7 +542,11 @@ face?: number, } } | { "Flipped": {
 /**
  * The permanent.
  */
-object: ObjectId, } } | { "BecameCopy": BecameCopy } | { "SpellCopied": SpellCopy } | { "AbilityCopied": AbilityCopy } | { "CopyEnded": { 
+object: ObjectId, } } | { "BecameCopy": BecameCopy } | { "SpellCopied": SpellCopy } | { "CardCopied": CardCopy } | { "CopyCeased": { 
+/**
+ * The copy.
+ */
+object: ObjectId, } } | { "AbilityCopied": AbilityCopy } | { "CopyEnded": { 
 /**
  * The permanent.
  */

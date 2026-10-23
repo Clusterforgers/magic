@@ -20,12 +20,12 @@
                         "from": {
                           "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Land" }]
                         },
-                        "as": "land"
+                        "as": "card"
                       }
                     },
                     {
                       "Move": {
-                        "what": { "Bound": "land" },
+                        "what": { "Bound": "card" },
                         "to": { "Battlefield": { "tapped": true } }
                       }
                     }

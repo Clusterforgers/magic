@@ -1300,6 +1300,7 @@ fn pipeline_events() -> Vec<Event> {
         cost_taken: Some(Box::new(mtg_engine::choose::CostTaken {
             picks: vec![vec![a], vec![b, a]],
             shots: vec![shot.clone()],
+            variant: 1,
         })),
     };
     vec![

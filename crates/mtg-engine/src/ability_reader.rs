@@ -78,6 +78,9 @@ pub(crate) fn definition_works_elsewhere(definition: &CardDefinition) -> bool {
 /// The abilities that the keywords printed on `object`, which is not on the battlefield, add and that work from the
 /// zone it is in (cycling works from a hand).
 pub(crate) fn provided_here(object: &GameObject) -> Vec<(AbilityRef, Arc<Ability>)> {
+    if object.zone() == Zone::PhasedOut {
+        return Vec::new();
+    }
     let zone = zone_kind(object.zone());
     printed_and_provided(object)
         .into_iter()
@@ -94,7 +97,9 @@ pub(crate) fn working_here(
     object: &GameObject,
 ) -> impl Iterator<Item = (AbilityRef, &Arc<Ability>)> {
     let zone = zone_kind(object.zone());
-    printed(object).filter(move |(_, rules)| works_from(rules) == Some(zone))
+    // A permanent that is phased out is treated as though it does not exist (CR 702.26b): none of its abilities work.
+    let phased_out = object.zone() == Zone::PhasedOut;
+    printed(object).filter(move |(_, rules)| !phased_out && works_from(rules) == Some(zone))
 }
 
 /// Whether a card with this definition prints a static ability or a keyword that adds one (`GameState::statics_possible`).

@@ -59,10 +59,11 @@ pub fn return_all(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     };
     if from_your_graveyard(selector) {
         r.need("to the battlefield")?;
+        let tapped = r.word("tapped");
         return Some(vec![Effect::Move {
             what,
             to: Destination::Battlefield {
-                tapped: false,
+                tapped,
                 under: None,
                 transformed: false,
                 counters: Vec::new(),
@@ -98,13 +99,14 @@ pub fn text(effect: &Effect) -> Option<String> {
             Some(format!("return all {phrase} to their owners' hands"))
         }
         Destination::Battlefield {
-            tapped: false,
+            tapped,
             under: None,
             transformed: false,
             counters,
-        } if counters.is_empty() && from_your_graveyard(selector) => {
-            Some(format!("return all {phrase} to the battlefield"))
-        }
+        } if counters.is_empty() && from_your_graveyard(selector) => Some(format!(
+            "return all {phrase} to the battlefield{}",
+            if *tapped { " tapped" } else { "" }
+        )),
         _ => None,
     }
 }
