@@ -1,0 +1,15 @@
+{
+  "oracle_id": "12a6cad9-eb42-43bd-9e68-aaf862cd83db",
+  "name": "Adrix and Nev, Twincasters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Adrix and Nev, Twincasters",
+      "oracle_fingerprint": "70fb2be3ed51a2e54c327d3d5d373655",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        { "Replacement": { "when": { "TokenCreation": {} }, "by": { "Multiply": 2 } } }
+      ]
+    }
+  ]
+}
