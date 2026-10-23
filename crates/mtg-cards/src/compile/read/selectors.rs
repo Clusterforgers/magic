@@ -382,6 +382,13 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.words("defending player controls") {
         return Some(Pred::ControlledBy(Ref::Defending));
     }
+    // The creatures that paid for the source: "creature that crewed it this turn".
+    if r.words("that crewed it this turn") {
+        return Some(Pred::Crewed(Ref::This));
+    }
+    if r.words("that saddled it this turn") {
+        return Some(Pred::Saddled(Ref::This));
+    }
     if r.words("enchanted player controls") {
         return Some(Pred::ControlledBy(Ref::AttachedPlayer));
     }
@@ -473,6 +480,8 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::ControlledBy(Ref::You) => "you control".to_owned(),
         Pred::ControlledBy(Ref::Opponents) => form.opponents().to_owned(),
         Pred::ControlledBy(Ref::Triggering) => "that player controls".to_owned(),
+        Pred::Crewed(Ref::This) => "that crewed it this turn".to_owned(),
+        Pred::Saddled(Ref::This) => "that saddled it this turn".to_owned(),
         Pred::ControlledBy(Ref::AttachedPlayer) => "enchanted player controls".to_owned(),
         Pred::ControlledBy(Ref::Defending) => "defending player controls".to_owned(),
         Pred::ControlledBy(Ref::Monarch) => "the monarch controls".to_owned(),
@@ -695,6 +704,18 @@ fn spell_subtypes(r: &mut Reader<'_>) -> Option<Pred> {
     })
 }
 
+/// A subtype in front of a card type in the singular: "Cleric creature", "Equipment artifact".
+fn singular_qualifier(r: &mut Reader<'_>) -> Option<Pred> {
+    r.attempt(|r| {
+        let name = group_name(r).filter(|name| r.is_subtype(name))?;
+        let typed = r
+            .peek_word()
+            .and_then(type_noun)
+            .is_some_and(|(_, plural)| !plural);
+        typed.then_some(Pred::Subtype(Subtype(name)))
+    })
+}
+
 /// A subtype or a card type in the singular that qualifies the plural noun after it: "Sliver creatures", "artifact
 /// creatures", "creature tokens" (the card types of a token are the noun).
 fn qualifier(r: &mut Reader<'_>) -> Option<Pred> {
@@ -755,7 +776,7 @@ pub(super) fn phrase_in(r: &mut Reader<'_>, form: Form, unplaced: bool) -> Optio
                 qualifiers.push(pred);
             }
         } else {
-            qualifiers.extend(spell_subtypes(r));
+            qualifiers.extend(spell_subtypes(r).or_else(|| singular_qualifier(r)));
         }
         // The files list the card types first, then the subtype ("Creature, Goblin").
         let (kinds, subtypes): (Vec<Pred>, Vec<Pred>) = qualifiers
@@ -887,6 +908,27 @@ fn subtype_list(pred: &Pred) -> Option<Vec<&str>> {
         .collect()
 }
 
+/// The words of a phrase that names the permanent types: "permanent" (a spell) or "nonland permanent" (a card in a zone).
+fn permanent_words(permanent: bool, nonland: bool) -> Vec<String> {
+    let mut words = Vec::new();
+    if nonland {
+        words.push("nonland".to_owned());
+    }
+    if permanent || nonland {
+        words.push("permanent".to_owned());
+    }
+    words
+}
+
+/// Whether the card types are exactly those of a permanent but a land.
+fn is_nonland_permanent(types: &[CardType]) -> bool {
+    types.len() == PERMANENT_TYPES.len() - 1
+        && PERMANENT_TYPES
+            .iter()
+            .filter(|found| **found != CardType::Land)
+            .all(|found| types.contains(found))
+}
+
 /// Whether the card types are exactly those of a permanent.
 fn is_permanent(types: &[CardType]) -> bool {
     types.len() == PERMANENT_TYPES.len()
@@ -977,9 +1019,10 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     }
     let plural = form.plural();
     // A subtype is the noun by itself, or qualifies a plural noun ("Sliver creatures"); a spell is not a card in a zone.
-    let qualified = (plural || spell) && !card && (spell || !types.is_empty() || token);
+    let qualified = ((plural || spell) && !card && (spell || !types.is_empty() || token))
+        || (!plural && !spell && !card && !token && !types.is_empty());
     // Several subtypes are only for a spell ("Faerie or Wizard permanent spell").
-    if (!subtypes.is_empty() && (card || (!types.is_empty() && !qualified)))
+    if (!subtypes.is_empty() && !types.is_empty() && !qualified)
         || (subtypes.len() > 1 && !spell && (qualified || !types.is_empty()))
         || (spell && card)
         || (token && (spell || card))
@@ -989,7 +1032,9 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         return None;
     }
     let permanent = spell && is_permanent(&types);
-    let names = if permanent {
+    // The card types of a permanent but land, for a card in a zone: "nonland permanent card".
+    let nonland_permanent = card && !spell && is_nonland_permanent(&types);
+    let names = if permanent || nonland_permanent {
         Vec::new()
     } else {
         type_words(&types, plural && !spell && !card && !token)
@@ -999,7 +1044,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         words.insert(0, "your".to_owned());
     }
     if !subtypes.is_empty() {
-        let nouns = plural && !qualified;
+        let nouns = plural && !qualified && !card;
         let joiner = if nouns { form.connector() } else { "or" };
         words.push(subtype_words(&subtypes, nouns, joiner));
     }
@@ -1008,9 +1053,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
             .iter()
             .map(|card_type| type_name(*card_type).to_owned()),
     );
-    if permanent {
-        words.push("permanent".to_owned());
-    }
+    words.extend(permanent_words(permanent, nonland_permanent));
     if !names.is_empty() {
         words.push(list_text(&names, form.connector()));
     }

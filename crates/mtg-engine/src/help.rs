@@ -19,6 +19,7 @@ use crate::characteristics::{Characteristics, characteristics, controller_of};
 use crate::error::PaymentError;
 use crate::keywords::has_keyword;
 use crate::mana::ManaOption;
+use crate::spell_keywords::given_to_spell;
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -169,10 +170,13 @@ fn untapped<T>(
 
 /// What `player` may use to help pay for casting `spell`: the untapped creatures they control when it has convoke, the
 /// untapped artifacts when it has improvise and the cards in their graveyard when it has delve (the spell itself is on
-/// its way to the stack, not a card to exile).
+/// its way to the stack, not a card to exile). A static ability of a permanent may give the spell the keyword
+/// (`spell_keywords`).
 pub(crate) fn offered(state: &GameState, player: PlayerId, spell: ObjectId) -> Offered {
     let mut offer = Offered::default();
-    if has_keyword(state, spell, &Keyword::Convoke) {
+    let given = given_to_spell(state, player, spell);
+    let has = |keyword: &Keyword| has_keyword(state, spell, keyword) || given.contains(keyword);
+    if has(&Keyword::Convoke) {
         offer.convoke = untapped(state, player, |creature, chars| {
             chars.is_creature().then(|| ConvokeOption {
                 creature,
@@ -180,12 +184,12 @@ pub(crate) fn offered(state: &GameState, player: PlayerId, spell: ObjectId) -> O
             })
         });
     }
-    if has_keyword(state, spell, &Keyword::Improvise) {
+    if has(&Keyword::Improvise) {
         offer.improvise = untapped(state, player, |artifact, chars| {
             chars.types.contains(CardType::Artifact).then_some(artifact)
         });
     }
-    if has_keyword(state, spell, &Keyword::Delve) {
+    if has(&Keyword::Delve) {
         offer.delve = state
             .zone(Zone::Graveyard(player))
             .iter()

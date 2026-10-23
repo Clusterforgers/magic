@@ -1,0 +1,21 @@
+{
+  "oracle_id": "61b1d7e5-6155-4204-b110-35a890551ec8",
+  "name": "Lotleth Troll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lotleth Troll",
+      "oracle_fingerprint": "a05784cabccf52b02ed9f4bc1dd5e6ed",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": [{ "Discard": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        { "Activated": { "cost": "{B}", "effects": [{ "Regenerate": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

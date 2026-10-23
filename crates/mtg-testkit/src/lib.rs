@@ -19,6 +19,7 @@ pub mod cast_way_cards;
 pub mod choice_cards;
 pub mod combat_keyword_cards;
 pub mod commander_cards;
+pub mod companion_cards;
 pub mod conditional_static_cards;
 pub mod copy_cards;
 pub mod copy_keyword_cards;
@@ -116,6 +117,7 @@ pub use combat_keyword_cards::combat_keywords_fuzz_setup;
 pub use commander_cards::{
     CAST_KIND_CARDS, cast_kind_fuzz_setup, commander_fuzz_setup, partner_fuzz_setup,
 };
+pub use companion_cards::companion_fuzz_setup;
 pub use conditional_static_cards::conditional_static_fuzz_setup;
 pub use copy_cards::{copy_fuzz_setup, spell_copy_fuzz_setup};
 pub use copy_keyword_cards::copy_keywords_fuzz_setup;
@@ -150,7 +152,7 @@ pub use group_static_cards::group_static_fuzz_setup;
 pub use harness::{FailureKind, GameFailure, GameOutcome, PlayOptions, play_game, play_game_with};
 pub use help_cards::help_fuzz_setup;
 pub use hideaway_cards::hideaway_fuzz_setup;
-pub use improvise_cards::{improvise_card, improvise_fuzz_setup};
+pub use improvise_cards::{granted_fuzz_setup, improvise_card, improvise_fuzz_setup};
 pub use impulse_cards::{impulse_fuzz_setup, impulse_spell};
 pub use invariants::{InvariantChecker, Violation, check_settled, check_state};
 pub use keyword_cards::keyword_triggers_fuzz_setup;

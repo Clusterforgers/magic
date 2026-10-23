@@ -141,6 +141,15 @@ fn held(r: &mut Reader<'_>) -> Option<Amount> {
     if r.words("opponents you have") {
         return Some(Amount::Players(Ref::Opponents));
     }
+    if r.attempt(|r| {
+        r.need("times")?;
+        r.source().then_some(())?;
+        r.need("has mutated")
+    })
+    .is_some()
+    {
+        return Some(Amount::Mutations(Ref::This));
+    }
     counters::counted_plural(r)
 }
 
@@ -277,6 +286,9 @@ pub(super) fn counting_text(amount: &Amount) -> Option<String> {
         }
         Amount::Count(of) => Some(format!("the number of {}", counted_text(of)?)),
         Amount::Players(Ref::Opponents) => Some("the number of opponents you have".to_owned()),
+        Amount::Mutations(Ref::This) => {
+            Some("the number of times this creature has mutated".to_owned())
+        }
         Amount::Counters {
             on: Ref::This,
             counter,

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "02dbb6f8-ef84-4156-87dc-34033e64fdb7",
+  "name": "Chief Engineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chief Engineer",
+      "oracle_fingerprint": "7ff492495a56a162c47eec6a0bb9aa24",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": ["Spell", { "Type": "Artifact" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Convoke" }]
+          }
+        }
+      ]
+    }
+  ]
+}

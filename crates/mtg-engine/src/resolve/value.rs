@@ -227,6 +227,29 @@ impl<'a> Scope<'a> {
             .find(|shot| shot.id == reference.id && shot.counter == reference.counter)
     }
 
+    /// How many times the permanents `of` names have mutated (CR 702.140): as they are, or as they were when they left.
+    fn mutations(&self, of: &Ref) -> Result<i64, ResolveError> {
+        let mut total = 0i64;
+        for named in self.refs(of)? {
+            let Target::Object(object) = named else {
+                continue;
+            };
+            let live = self
+                .state
+                .object(object.id)
+                .filter(|held| held.counter() == object.counter);
+            let count: u32 = match live {
+                Some(held) => held.merged().map_or(0, crate::merged::Merged::mutations),
+                None => self
+                    .snapshot_of(object)
+                    .and_then(|shot| shot.mutations)
+                    .unwrap_or(0),
+            };
+            total += i64::from(count);
+        }
+        Ok(total)
+    }
+
     fn seen(&self, reference: ObjectRef) -> Option<Seen<'a>> {
         let live = self.state.object(reference.id);
         if let Some(object) = live.filter(|o| o.counter() == reference.counter) {
@@ -669,6 +692,19 @@ impl<'a> Scope<'a> {
         }
     }
 
+    /// Whether the object was tapped this turn to crew (saddle) one of the permanents the reference names.
+    fn crewed_by(
+        &self,
+        named: &Ref,
+        saddle: bool,
+        reference: ObjectRef,
+    ) -> Result<bool, ResolveError> {
+        Ok(self
+            .objects(named)?
+            .into_iter()
+            .any(|permanent| self.state.crewed_by(permanent, saddle, reference)))
+    }
+
     /// Whether the object shares a subtype (its printed ones included) with one of the objects the reference names.
     fn shares_subtype(&self, named: &Ref, seen: &Seen<'_>) -> Result<bool, ResolveError> {
         for other in self.objects(named)? {
@@ -707,6 +743,8 @@ impl<'a> Scope<'a> {
             Pred::Is(named) => self.objects(named)?.contains(&reference),
             Pred::SharesSubtype(named) => self.shares_subtype(named, seen)?,
             Pred::ExiledWith(named) => self.exiled_with(named, reference)?,
+            Pred::Crewed(named) => self.crewed_by(named, false, reference)?,
+            Pred::Saddled(named) => self.crewed_by(named, true, reference)?,
             Pred::Type(card_type) => seen.chars.types.contains(*card_type),
             Pred::Supertype(supertype) => seen
                 .card
@@ -924,6 +962,7 @@ impl<'a> Scope<'a> {
                     .max()
                     .unwrap_or(0)
             }
+            Amount::Mutations(of) => self.mutations(of)?,
             Amount::Kicks => i64::try_from(self.payments(OptionalKind::Kicker))
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
             Amount::Triggering => self

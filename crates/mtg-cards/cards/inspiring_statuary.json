@@ -1,0 +1,21 @@
+{
+  "oracle_id": "78b2b68d-6e27-49f3-8373-6e19faf6f679",
+  "name": "Inspiring Statuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inspiring Statuary",
+      "oracle_fingerprint": "1d805c8843e48a8d776a425e70aa8ed1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": ["Spell", { "Not": { "Type": "Artifact" } }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": "Improvise" }]
+          }
+        }
+      ]
+    }
+  ]
+}

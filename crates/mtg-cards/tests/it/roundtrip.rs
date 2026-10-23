@@ -224,7 +224,7 @@ fn keyword() -> impl Strategy<Value = Keyword> {
             Keyword::Cascade,
             Keyword::Storm,
             Keyword::Partner,
-            Keyword::Companion,
+            Keyword::companion(mtg_cards::companion::DeckCondition::ExtraCards(20)),
             Keyword::BattleCry,
             Keyword::Fuse,
             Keyword::Changeling,
@@ -308,6 +308,8 @@ fn pred() -> impl Strategy<Value = Pred> {
             leaf_ref().prop_map(Pred::OwnedBy),
             leaf_ref().prop_map(Pred::Is),
             leaf_ref().prop_map(Pred::ExiledWith),
+            leaf_ref().prop_map(Pred::Crewed),
+            leaf_ref().prop_map(Pred::Saddled),
             keyword().prop_map(Pred::HasKeyword),
             (stat(), cmp(), simple_amount()).prop_map(|(stat, op, to)| Pred::Compare {
                 stat,

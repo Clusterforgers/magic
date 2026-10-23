@@ -1,0 +1,19 @@
+{
+  "id": "4f7e4c0a-683b-4b22-9ea5-ed6470b8b1d7",
+  "oracle_id": "78b2b68d-6e27-49f3-8373-6e19faf6f679",
+  "name": "Inspiring Statuary",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "230",
+  "rarity": "rare",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact",
+  "oracle_text": "Nonartifact spells you cast have improvise. (Your artifacts can help cast those spells. Each artifact you tap after you're done activating mana abilities pays for {1}.)",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

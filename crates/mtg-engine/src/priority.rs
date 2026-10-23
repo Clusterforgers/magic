@@ -377,6 +377,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .copied()
         .filter(|id| ways::can_foretell(state, player, *id, &pool, &all_mana, life))
         .collect();
+    let companion = crate::companions::can_bring(state, player, &pool, &all_mana, life);
     let turnable: Vec<ObjectId> = state
         .zone(Zone::Battlefield)
         .iter()
@@ -413,7 +414,8 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
                 turnable.as_slice(),
             ]
             .concat(),
-        ) || !faces.is_empty(),
+        ) || !faces.is_empty()
+            || companion,
         playable_lands,
         castable,
         mana_abilities,
@@ -421,6 +423,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         suspendable,
         foretellable,
         turnable,
+        companion,
         faces,
         can_pass: true,
     }
@@ -483,6 +486,12 @@ pub(crate) fn answer(
                 return Err(IllegalAnswer::NotOffered("foretell").into());
             }
             Ok(Outcome::BeginForetell(object))
+        }
+        PriorityAction::BringCompanion => {
+            let outside = crate::companions::outside(state, player)
+                .filter(|_| options.companion)
+                .ok_or(IllegalAnswer::NotOffered("companion"))?;
+            Ok(Outcome::BeginCompanion(outside))
         }
         PriorityAction::TurnFaceUp(object) => {
             if !options.turnable.contains(&object) {

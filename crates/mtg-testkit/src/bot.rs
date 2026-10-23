@@ -330,6 +330,9 @@ impl RandomBot {
                 .iter()
                 .map(|o| PriorityAction::TurnFaceUp(*o)),
         );
+        if options.companion {
+            actions.push(PriorityAction::BringCompanion);
+        }
         actions.swap_remove(self.rng.index(actions.len()))
     }
 

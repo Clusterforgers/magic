@@ -1,0 +1,41 @@
+{
+  "oracle_id": "ae6ef097-bd52-4bf8-81a8-2e6c643fc805",
+  "name": "Banish to Another Universe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Banish to Another Universe",
+      "oracle_fingerprint": "d44d6b6cf56d972eb9cbf3740ed9b2e1",
+      "abilities": [
+        {
+          "Keyword": {
+            "Affinity": [
+              {
+                "AnyOf": [
+                  { "Type": "Artifact" },
+                  { "Supertype": "Legendary" },
+                  { "Subtype": "Saga" }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

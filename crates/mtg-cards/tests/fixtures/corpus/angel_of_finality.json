@@ -1,0 +1,27 @@
+{
+  "id": "baaabd52-3aa9-4e2f-9369-d4db8b405ba8",
+  "oracle_id": "48d14b5c-711a-4f8a-9de5-55415cb7a79a",
+  "name": "Angel of Finality",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fdn",
+  "collector_number": "136",
+  "rarity": "uncommon",
+  "released_at": "2024-11-15",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Angel",
+  "oracle_text": "Flying\nWhen this creature enters, exile target player's graveyard.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

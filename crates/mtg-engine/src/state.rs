@@ -120,6 +120,8 @@ pub(crate) struct Tallies {
     pub(crate) hits: Vec<CombatHit>,
     /// The monarch as the turn began (CR 724): who held the designation before anything in the turn changed it.
     pub(crate) monarch_began: Option<PlayerId>,
+    /// The creatures tapped to crew or saddle a permanent, as (permanent, saddled, creature).
+    pub(crate) crews: BTreeSet<(ObjectRef, bool, ObjectRef)>,
 }
 
 /// A creature that dealt combat damage to a player this turn, as it was then (prowl, CR 702.76).
@@ -188,6 +190,8 @@ pub struct GameState {
     pub(crate) citys_blessing: std::collections::BTreeSet<PlayerId>,
     /// The commanders of the game and what is counted for them (CR 903); empty outside Commander.
     pub(crate) commanders: crate::commanders::Commanders,
+    /// The companions the seats named, outside the game until their owners bring them in (CR 702.139).
+    pub(crate) companions: crate::companions::Companions,
 }
 
 impl GameState {
@@ -425,6 +429,16 @@ impl GameState {
         self.tallies.objects.get(&key).copied().unwrap_or(0)
     }
 
+    /// Whether `creature` was tapped this turn to crew (`saddle` false) or saddle (true) `permanent`.
+    pub(crate) fn crewed_by(
+        &self,
+        permanent: ObjectRef,
+        saddle: bool,
+        creature: ObjectRef,
+    ) -> bool {
+        self.tallies.crews.contains(&(permanent, saddle, creature))
+    }
+
     /// Whether `player` discarded the card `id` this turn and it still lies in the graveyard it went to: the condition of
     /// mayhem (CR 702.190a). A card that left the graveyard and came back is a new object and was not discarded.
     pub(crate) fn discarded_this_turn(&self, player: PlayerId, id: ObjectId) -> bool {
@@ -577,6 +591,9 @@ impl Hash for GameState {
         if let Some(began) = self.tallies.monarch_began {
             began.hash(state);
         }
+        if !self.tallies.crews.is_empty() {
+            self.tallies.crews.hash(state);
+        }
         self.result.hash(state);
         // A game that has seen neither day nor night hashes as it did before they existed.
         if let Some(day_night) = self.day_night {
@@ -592,6 +609,8 @@ impl Hash for GameState {
         }
         // Likewise a game without commanders.
         self.commanders.hash(state);
+        // Likewise a game without companions.
+        self.companions.hash(state);
     }
 }
 

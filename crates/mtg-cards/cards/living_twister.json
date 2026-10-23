@@ -1,0 +1,34 @@
+{
+  "oracle_id": "206f7eaf-1e0b-48ea-9c40-38902e109e4f",
+  "name": "Living Twister",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Living Twister",
+      "oracle_fingerprint": "808c9e69a93d1c7d0d13f7f68ffd7f53",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, { "Discard": { "filter": [{ "Type": "Land" }] } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{G}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, "Tapped", { "ControlledBy": "You" }] },
+                  "as": "returned"
+                }
+              },
+              { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

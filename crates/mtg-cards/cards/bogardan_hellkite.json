@@ -1,0 +1,22 @@
+{
+  "oracle_id": "699bc130-2f1f-4bc8-a25f-9329e40efbb1",
+  "name": "Bogardan Hellkite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bogardan Hellkite",
+      "oracle_fingerprint": "3366b7af5e034b69081d01dbd75efe2d",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 1, "max": null }, "divide": 5 }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

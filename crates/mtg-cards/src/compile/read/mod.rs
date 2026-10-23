@@ -41,6 +41,7 @@ mod defining;
 mod draws;
 mod effects;
 mod evasion;
+mod event_wordings;
 mod facts;
 mod flicker;
 mod group_pump;
@@ -60,6 +61,7 @@ mod render;
 mod replacements;
 mod reveal;
 mod selectors;
+mod spell_keywords;
 mod spend;
 mod spent;
 mod static_pairs;
@@ -77,7 +79,9 @@ mod where_x;
 pub use chapters::block as chapter_block;
 pub use class::block as class_block;
 pub use levels::block as level_block;
-pub use render::{ability as render_ability, mode as render_mode, variants as render_variants};
+pub use render::{
+    ability as render_ability, mode as render_mode, variants as render_variants, written_variants,
+};
 pub use static_pairs::texts as static_pair_texts;
 pub use stations::block as station_block;
 pub use tokens::same_text;

@@ -1,0 +1,27 @@
+{
+  "id": "3ff8fbcd-5db9-4cde-9f56-243b1f4924f8",
+  "oracle_id": "9b6a74fb-c48f-4d85-b4b3-96eb80b9efc7",
+  "name": "Angel of Flight Alabaster",
+  "lang": "en",
+  "layout": "normal",
+  "set": "voc",
+  "collector_number": "77",
+  "rarity": "rare",
+  "released_at": "2021-11-19",
+  "digital": false,
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Angel",
+  "oracle_text": "Flying\nAt the beginning of your upkeep, return target Spirit card from your graveyard to your hand.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

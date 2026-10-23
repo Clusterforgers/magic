@@ -13,27 +13,36 @@ use crate::cards::{creature, land};
 use crate::corpus;
 
 /// The corpus creatures with mutate that the engine plays whole.
-pub const MUTATE_CARDS: [&str; 9] = [
+pub const MUTATE_CARDS: [&str; 12] = [
     "Cavern Whisperer",
     "Chittering Harvester",
     "Dreamtail Heron",
     "Gemrazer",
     "Glowstone Recluse",
+    "Huntmaster Liger",
+    "Insatiable Hemophage",
     "Migratory Greathorn",
+    "Porcuparrot",
     "Pouncing Shoreshark",
     "Sawtusk Demolisher",
     "Trumpeting Gnarr",
 ];
 
-/// A legal Normal deck of lands, four of each such card and cheap creatures to mutate onto, derived entirely from `rng`.
+/// A legal Normal deck of lands, two of each such card and cheap creatures to mutate onto, derived entirely from `rng`.
 pub fn mutate_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
-    let colors = [Color::Black, Color::Green, Color::Red, Color::Blue];
-    let mut deck: Vec<Arc<CardDefinition>> = (0..24).map(|i| land(colors[i % 4])).collect();
+    let colors = [
+        Color::Black,
+        Color::Green,
+        Color::Red,
+        Color::Blue,
+        Color::White,
+    ];
+    let mut deck: Vec<Arc<CardDefinition>> = (0..25).map(|i| land(colors[i % 5])).collect();
     for card in MUTATE_CARDS
         .iter()
         .filter_map(|name| corpus::card(name).ok())
     {
-        deck.extend(std::iter::repeat_n(card, 3));
+        deck.extend(std::iter::repeat_n(card, 2));
     }
     // Removal now and then takes the creature a mutating spell targets while the spell is on the stack.
     if let Ok(removal) = corpus::card("Doom Blade") {
@@ -44,7 +53,7 @@ pub fn mutate_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
     while deck.len() < 60 {
         let power = i32::try_from(1 + rng.index(3)).unwrap_or(1);
         let name = format!("Mutate Fodder {slot} {power}/{power}");
-        let card = creature(&name, 1, &[colors[rng.index(4)]], power, power);
+        let card = creature(&name, 1, &[colors[rng.index(5)]], power, power);
         deck.extend(std::iter::repeat_n(card, 4));
         slot += 1;
     }

@@ -14,6 +14,7 @@ use mtg_core::mana::ManaCost;
 use mtg_engine::abilities::AbilityRef;
 use mtg_engine::choose::Target;
 use mtg_engine::combat::AttackTarget;
+use mtg_engine::companions::CompanionStage;
 use mtg_engine::day_night::DayNight;
 use mtg_engine::forecast::CombatForecast;
 use mtg_engine::mana::ManaPool;
@@ -201,6 +202,22 @@ pub struct CommanderDamageView {
     pub damage: u32,
 }
 
+/// The companion a seat named and where it is (CR 702.139). Every seat sees that it exists; which card it is, only its
+/// owner sees until it is revealed.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct CompanionView {
+    /// Whether it is still hidden, revealed outside the game or brought into it.
+    pub stage: CompanionStage,
+    /// The card's name: the owner's from the start, every seat's once it is revealed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub name: Option<String>,
+    /// The object the card became once it is brought into the game.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub object: Option<ObjectId>,
+}
+
 /// One seat as a viewer sees it.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct PlayerView {
@@ -253,6 +270,10 @@ pub struct PlayerView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub commander_lethal: Option<u32>,
+    /// The companion the seat named; left out when it named none.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub companion: Option<CompanionView>,
     /// Clock extensions the seat holds (public). The engine does not know them: the server fills them in, and a view
     /// made from the engine state alone says 0.
     pub bank: u8,
@@ -263,8 +284,13 @@ pub struct PlayerView {
 pub struct TurnView {
     /// Turn number, from 1.
     pub number: u32,
-    /// The active player.
+    /// The active player; once they have left the game, the seat the turn belongs to (see `active_left`).
     pub active: PlayerId,
+    /// Whether the turn goes on without an active player, whose seat `active` names (CR 800.4); left out otherwise,
+    /// and in a game that has ended or has not begun its turns. The same for every seat, so a client never derives it.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub active_left: bool,
     /// The current step.
     pub step: Step,
     /// Lands the active player has played this turn.

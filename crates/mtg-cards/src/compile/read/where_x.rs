@@ -214,7 +214,7 @@ fn stats(value: &Value, found: &mut Vec<Value>) {
 }
 
 /// The amounts that count, as the data names them.
-const COUNTS: [&str; 7] = [
+const COUNTS: [&str; 8] = [
     "Count",
     "Greatest",
     "Total",
@@ -222,6 +222,7 @@ const COUNTS: [&str; 7] = [
     "Sum",
     "Counters",
     "Players",
+    "Mutations",
 ];
 
 /// The counts in the data, each once; what a count holds is not searched.
@@ -413,4 +414,32 @@ pub(super) fn wordings(ability: &Ability) -> Vec<String> {
         }
     }
     found
+}
+
+/// The wordings of an ability with one characteristic of an object as its amount that put it after "equal to"
+/// ("~ deals damage equal to its power to target opponent"). No template reads them: only the proposal checker writes
+/// them.
+pub(super) fn equal_to_wordings(ability: &Ability) -> Vec<String> {
+    let Ok(json) = serde_json::to_value(ability) else {
+        return Vec::new();
+    };
+    let mut found = Vec::new();
+    stats(&json, &mut found);
+    let [stat] = found.as_slice() else {
+        return Vec::new();
+    };
+    let Ok(Amount::Stat { of, stat: kind }) = serde_json::from_value(stat.clone()) else {
+        return Vec::new();
+    };
+    let Some(replaced) = with_x(json, stat) else {
+        return Vec::new();
+    };
+    let said = tails(&of, kind);
+    let mut wordings = Vec::new();
+    for text in render::variants(&replaced) {
+        for said in &said {
+            wordings.extend(equal_to_forms(&text, said));
+        }
+    }
+    wordings
 }

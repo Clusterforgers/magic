@@ -6,19 +6,20 @@ use mtg_core::card::{CardType, CardTypes};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::characteristics::{characteristics, controller_of};
 use mtg_engine::combat::Attacker;
+use mtg_engine::companions::CompanionStage;
 use mtg_engine::forecast::pending_combat_forecast;
 use mtg_engine::keywords::{keywords_of, summoning_sick};
 use mtg_engine::loyalty::loyalty_abilities;
 use mtg_engine::object::{FaceDown, GameObject, ObjectKind};
 use mtg_engine::player::{Player, PlayerStatus};
 use mtg_engine::sight::offered_cards;
-use mtg_engine::state::GameState;
+use mtg_engine::state::{GameState, Stage};
 use mtg_engine::zones::Zone;
 
 use crate::view::{
-    AttackerView, CombatView, CommanderDamageView, CommanderView, CopyView, LoyaltyAbilityView,
-    MergedCardView, ObjectView, PermanentView, PlayerView, PriorityView, StateView, TableView,
-    TurnView, ZoneView,
+    AttackerView, CombatView, CommanderDamageView, CommanderView, CompanionView, CopyView,
+    LoyaltyAbilityView, MergedCardView, ObjectView, PermanentView, PlayerView, PriorityView,
+    StateView, TableView, TurnView, ZoneView,
 };
 
 /// Every card type, for expanding a [`CardTypes`] set into a list.
@@ -417,9 +418,22 @@ impl PlayerView {
                 })
                 .collect(),
             commander_lethal: state.commander_lethal(),
+            companion: companion_view(state, viewer, seat),
             bank: 0,
         }
     }
+}
+
+/// The companion of `owner` as `viewer` sees it: that it exists to everyone, which card it is to its owner and, once
+/// revealed, to every seat, and the object it became once it is in the game.
+fn companion_view(state: &GameState, viewer: PlayerId, owner: PlayerId) -> Option<CompanionView> {
+    let info = state.companion(owner)?;
+    let known = viewer == owner || info.stage != CompanionStage::Hidden;
+    Some(CompanionView {
+        stage: info.stage,
+        name: known.then_some(info.name),
+        object: (info.stage == CompanionStage::Brought).then_some(info.card),
+    })
 }
 
 fn attacker_view(attacker: &Attacker) -> AttackerView {
@@ -445,6 +459,7 @@ impl TableView {
             turn: TurnView {
                 number: turn.number(),
                 active: turn.active(),
+                active_left: state.stage() == Stage::Turns && state.active_player().is_none(),
                 step: turn.step(),
                 lands_played: turn.lands_played(),
                 day_night: state.day_night(),

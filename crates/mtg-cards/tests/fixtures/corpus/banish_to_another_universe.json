@@ -1,0 +1,25 @@
+{
+  "id": "61f39d4c-af2d-486d-9408-b987474f8352",
+  "oracle_id": "ae6ef097-bd52-4bf8-81a8-2e6c643fc805",
+  "name": "Banish to Another Universe",
+  "lang": "en",
+  "layout": "normal",
+  "set": "who",
+  "collector_number": "13",
+  "rarity": "uncommon",
+  "released_at": "2023-10-13",
+  "digital": false,
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Affinity for historic permanents (This spell costs {1} less to cast for each artifact, legendary, and/or Saga permanent you control.)\nWhen this enchantment enters, exile target nonland permanent an opponent controls until this enchantment leaves the battlefield.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Affinity"
+  ]
+}

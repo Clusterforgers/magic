@@ -1,0 +1,28 @@
+{
+  "cmc": 2.0,
+  "collector_number": "184",
+  "color_identity": [
+    "G"
+  ],
+  "colors": [
+    "G"
+  ],
+  "digital": false,
+  "id": "6d963eb4-d20b-4d3f-bf5d-c75f7bcb9670",
+  "keywords": [
+    "Saddle",
+    "Mill"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{G}",
+  "name": "Stubborn Burrowfiend",
+  "oracle_id": "24bc7bd5-f262-45a2-8e94-377fef2ba5d5",
+  "oracle_text": "Whenever this creature becomes saddled for the first time each turn, mill two cards, then this creature gets +X/+X until end of turn, where X is the number of creature cards in your graveyard.\nSaddle 2 (Tap any number of other creatures you control with total power 2 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)",
+  "power": "2",
+  "rarity": "uncommon",
+  "released_at": "2024-04-19",
+  "set": "otj",
+  "toughness": "2",
+  "type_line": "Creature — Badger Beast Mount"
+}

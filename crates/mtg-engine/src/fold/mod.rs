@@ -1,6 +1,8 @@
 //! The single state transition: folding one [`Event`] into a [`GameState`].
 
 mod combat;
+#[cfg(test)]
+mod crew_record;
 mod opening;
 mod resolution;
 #[cfg(test)]
@@ -16,7 +18,7 @@ use crate::effects::Modification;
 use crate::error::EngineError;
 use crate::events::Event;
 use crate::mana::ManaPool;
-use crate::object::GameObject;
+use crate::object::{GameObject, ObjectRef};
 use crate::player::{LossReason, Player, PlayerStatus};
 use crate::priority::PriorityState;
 use crate::sight;
@@ -84,6 +86,9 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Mutated { .. }
         | Event::CommanderStayed { .. }
         | Event::ObjectLeftGame { .. } => zones::apply(state, event),
+        Event::CompanionRevealed { .. } | Event::CompanionBrought { .. } => {
+            crate::companions::fold(state, event)
+        }
         Event::AttackersDeclared { .. }
         | Event::BlockersDeclared { .. }
         | Event::DamageAssigned { .. }
@@ -126,7 +131,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::SpellCopied(copy) => crate::copies::fold_spell(state, copy),
         Event::AbilityCopied(copy) => crate::copies::fold_ability(state, copy),
         Event::CopyEnded { object } => crate::copies::fold_ended(state, *object),
-        Event::Crewed { object, saddle, .. } => tally_crewed(state, *object, *saddle),
+        Event::Crewed { .. } => tally_crewed(state, event),
         // The change follows as events of its own; the action only restarts the round, so the other seats see it.
         Event::ManualAction { .. } => {
             reset_passes(state);
@@ -150,20 +155,21 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.rng_index += u64::from(*random);
             Ok(())
         }
-        // What a player learned changes nothing in the game but who may identify the cards until the resolution ends.
-        Event::LibraryLooked(looked) => {
-            sight::show(state, Some(looked.player), &looked.cards);
-            Ok(())
-        }
-        Event::CardsFound(found) => {
-            sight::show(state, Some(found.player), &found.cards);
-            Ok(())
-        }
-        Event::Revealed(revealed) => {
-            sight::show(state, None, &revealed.cards);
+        Event::LibraryLooked(_) | Event::CardsFound(_) | Event::Revealed(_) => {
+            show_learned(state, event);
             Ok(())
         }
         _ => apply_misc(state, event),
+    }
+}
+
+/// What a player learned changes nothing in the game but who may identify the cards until the resolution ends.
+fn show_learned(state: &mut GameState, event: &Event) {
+    match event {
+        Event::LibraryLooked(looked) => sight::show(state, Some(looked.player), &looked.cards),
+        Event::CardsFound(found) => sight::show(state, Some(found.player), &found.cards),
+        Event::Revealed(revealed) => sight::show(state, None, &revealed.cards),
+        _ => {}
     }
 }
 
@@ -437,8 +443,19 @@ fn set_monstrous(state: &mut GameState, id: ObjectId) -> Result<(), EngineError>
     Ok(())
 }
 
-/// A Vehicle becomes crewed or a Mount saddled: counted for the object, which is a permanent.
-fn tally_crewed(state: &mut GameState, id: ObjectId, saddle: bool) -> Result<(), EngineError> {
+/// A Vehicle becomes crewed or a Mount saddled: counted for the object, which is a permanent, and the creatures still on
+/// the battlefield that were tapped to pay are recorded for it.
+fn tally_crewed(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
+    let Event::Crewed {
+        object: id,
+        creatures,
+        saddle,
+        ..
+    } = event
+    else {
+        return Err(invalid("not a crew".to_owned()));
+    };
+    let (id, saddle) = (*id, *saddle);
     let object = state
         .object(id)
         .map(GameObject::reference)
@@ -452,6 +469,16 @@ fn tally_crewed(state: &mut GameState, id: ObjectId, saddle: bool) -> Result<(),
             Tally::Crewed
         },
     );
+    let crew: Vec<ObjectRef> = creatures
+        .iter()
+        .filter_map(|creature| state.object(*creature))
+        .filter(|creature| creature.zone() == Zone::Battlefield)
+        .map(GameObject::reference)
+        .collect();
+    state
+        .tallies
+        .crews
+        .extend(crew.into_iter().map(|creature| (object, saddle, creature)));
     Ok(())
 }
 

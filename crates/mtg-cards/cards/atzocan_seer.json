@@ -1,0 +1,32 @@
+{
+  "oracle_id": "affced7f-797d-4e50-8a24-2da14de44e43",
+  "name": "Atzocan Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Atzocan Seer",
+      "oracle_fingerprint": "52af78cefed39f7d907be1bea28ee250",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, { "Subtype": "Dinosaur" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

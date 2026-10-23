@@ -1,0 +1,28 @@
+{
+  "cmc": 2.0,
+  "collector_number": "80",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "94b6881a-b00e-4e90-92e6-602ed8e0e090",
+  "keywords": [
+    "Crew",
+    "Explore"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{U}",
+  "name": "Subterranean Schooner",
+  "oracle_id": "7f82bae3-feaa-4967-a843-32a4f72806d5",
+  "oracle_text": "Whenever this Vehicle attacks, target creature that crewed it this turn explores. (Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on that creature, then put the card back or put it into your graveyard.)\nCrew 1",
+  "power": "3",
+  "rarity": "rare",
+  "released_at": "2023-11-17",
+  "set": "lci",
+  "toughness": "4",
+  "type_line": "Artifact — Vehicle"
+}

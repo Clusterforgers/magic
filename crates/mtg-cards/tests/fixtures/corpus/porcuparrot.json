@@ -1,0 +1,27 @@
+{
+  "id": "856892c8-ba47-46d0-aec2-0416b55b9e88",
+  "oracle_id": "e1efd99f-d918-4cd1-b85f-b90b106c3c88",
+  "name": "Porcuparrot",
+  "lang": "en",
+  "layout": "mutate",
+  "set": "iko",
+  "collector_number": "128",
+  "rarity": "uncommon",
+  "released_at": "2020-04-24",
+  "digital": false,
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Bird Beast",
+  "oracle_text": "Mutate {2}{R} (If you cast this spell for its mutate cost, put it over or under target non-Human creature you own. They mutate into the creature on top plus all abilities from under it.)\n{T}: This creature deals X damage to any target, where X is the number of times this creature has mutated.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Mutate"
+  ]
+}

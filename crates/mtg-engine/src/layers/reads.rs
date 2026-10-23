@@ -182,9 +182,12 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::CastFrom(_)
         | Pred::HasCounter(_)
         | Pred::Named(_) => Traits::NONE,
-        Pred::Is(who) | Pred::OwnedBy(who) | Pred::AttackingPlayer(who) | Pred::ExiledWith(who) => {
-            reads_of_ref(who)
-        }
+        Pred::Is(who)
+        | Pred::OwnedBy(who)
+        | Pred::AttackingPlayer(who)
+        | Pred::ExiledWith(who)
+        | Pred::Crewed(who)
+        | Pred::Saddled(who) => reads_of_ref(who),
         Pred::Type(_) => Traits::TYPES,
         Pred::Subtype(_) | Pred::ChosenSubtype => Traits::SUBTYPES,
         Pred::SharesSubtype(who) => Traits::SUBTYPES.or(reads_of_ref(who)),
@@ -226,6 +229,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Life(who)
         | Amount::CommanderCasts(who)
         | Amount::Counters { on: who, .. }
+        | Amount::Mutations(who)
         | Amount::Players(who)
         | Amount::Tallied { who, .. }
         | Amount::LowestLife(who)
