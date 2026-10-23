@@ -463,6 +463,39 @@ Errors name the file and the path inside it; all are collected.
 - A card the engine does not run whole is cast and resolved without effects for the clauses it leaves out, and its controller does them by hand with the generic logged actions (`engine.md`, Manual actions). `assemble` copies the left-out text into the definition: `CardDefinition.manual` holds a `ManualClause {text, reason}` for each clause the support record names on a face (the text its span covers, so a `Partial` card shows the clauses of its `Manual` abilities and, for an ability the engine lacks a primitive for, the whole face text), and a card with no rules attached (`Manual`, `Stale`) one clause of the whole rules text of each face that has any outside reminder text. A `Verified` card has none. Every seat reads the clauses on the card (`ObjectView.manual`, `protocol.md`) and sees the card's support (`deck-check.md`). The field is left out of the serialized form while empty, so the deck fingerprint of a card without clauses does not change.
 - Prior art for the templates: phase.rs's oracle parser (`crates/engine/src/parser` in its repository; MIT or Apache-2.0) and XMage (MIT). Forge and Magarena are GPL-3.0: study only, copy nothing.
 
+## Model-assisted reading
+
+A language model writes the rules of a card and a deterministic checker accepts them only when they are valid, read back as the printed text and have a support state. The text of the card is the only ground truth; the checker never trusts the rules.
+
+- `mtg_cards::proposal::check(json, &PrintedCard, &Library, &names, &Caps) -> Report`; `mtg-cli check-rules [--card NAME] [--bundle] [--verbose] [--write DIR] FILE...` (a file is named `<slug>.json` after its card unless `--card` names it; a bundle is one object from a card name to its rules).
+- A proposal may leave out the oracle id, the names, the status and the fingerprints: they come from the card, and the status is derived from what is modelled (a declared status counts for nothing). A clause no ability stands for becomes a `Manual` ability, so the state is `Partial`; abilities are put in printed order. `--write` stores the completed rules in canonical form.
+
+| Check | How | Result |
+|---|---|---|
+| Valid | `Library::check_generated`: levels 1 to 3 (`Validation`) | The problems, each with its path |
+| Reads back | The clauses of the printed text (`compile::compile`) are paired with the abilities by kind; a wording of `render_variants` equal to the clause by `same_text` reads, a keyword reads by the keyword reader, two statics under one condition, a line of Saga chapters and a Backup count as in the compiler | Each clause: reads, differs (the closest wording is shown), unwritten (an ability stands for it and no writer exists; the construct is named by writing each part alone), manual or open; an ability with no clause is a stray |
+| Support | `support` with `mtg_engine::caps()` | `Verified`, `Partial` or `Manual`, with the blockers |
+
+The verdict is `Invalid` (a problem of the first check), `Mismatch` (a clause differs or an ability has no clause), `Unchecked` (valid and nothing contradicts the text, but a construct has no writer) or `Accepted`. Only an accepted proposal is vouched for. The 1,036 hand-written files are the calibration: 946 are accepted `Verified`, 3 accepted `Partial`, 87 unchecked, none invalid or mismatching (`proposal::no_hand_written_file_is_invalid_or_mismatches_and_the_state_is_the_librarys`). The writers invert the readers, so a card is checked only as far as the compiler's templates reach.
+
+**Pilot.** Forty stored precon cards that no hand-written file covers, chosen by a seed over the oracle ids (20261023): 10 of which the compiler reads nothing, 15 partial with one unread clause and 15 partial with two or more. A model wrote each card's rules with no new template and no engine change and fixed a rejected file at most twice. The outcomes:
+
+| Pool | Cards | (a) accepted `Verified` | (b) accepted `Partial` | (c) no writer | (d) DSL gap | (e) invalid or mismatching |
+|---|---|---|---|---|---|---|
+| Nothing read | 10 | 0 | 0 | 5 | 5 | 0 |
+| One unread clause | 15 | 1 | 0 | 6 | 4 | 4 |
+| Two or more | 15 | 0 | 0 | 4 | 10 | 1 |
+| All | 40 | 1 (2.5%) | 0 | 15 (37.5%) | 19 (47.5%) | 5 (12.5%) |
+
+- Effort: 9 model turns for the 40 cards. 22 cards were written (the other 18 lack a construct, which the enum lists show); 21 of those 22 were valid, 2 after one fix (a cost part is `{"Mana": ...}` in a list) and 1 invalid for a missing construct. Of the 16 proposals in (a) and (c), 14 are `Verified` by the engine and 2, which need `Cost.PayLife.Counted`, `Partial`.
+- (a) Winged Boots, stored with its fixture; the mechanics it uses (an Equipment granting flying and ward, Equip) have scenario tests already. The 15 in (c) are valid and kept as notes.
+- Without a writer, by cards: `CreateToken` (3, with a chosen player, a counted number or a bound result); `Move`, `Pay` with life, `May` and `DealDamage` (2 each, the damage divided or beside a monarch); one each: `Exile` of a graveyard, `Continuous` on a count, `If` after tokens, a labelled mode of a trigger, restricted `AddMana`, a batch trigger, a static over `Each`, `Goaded`, a replacement of damage or of a zone change, an activated ability with a condition.
+- Wording the writers do not produce (5 in (e), the rules are right): "you draw" after an opponent's event, "each of those creatures", "Whenever you attack with one or more X" with "on each of them", "deals damage equal to its power" and "nonland permanent card" with "this creature's power".
+- DSL gaps, by cards: a condition on what happened this turn ("the first time each turn" for any event, "a counter was put on it this turn", "dealt damage to you this turn") (3); a reveal until a card (2); one each: exactly X targets, "from anywhere other than the battlefield", a token with characteristic-defining stats, a named option chosen as it enters, Rooms, a total mana value limit on chosen cards, a controller that differs for each affected object, a cost whose X is the discarded card's mana value, "must be blocked if able", an object that becomes foretold, a duration "until you exile another card", counting counters removed, phasing, granting suspend, a cost reduction for the first spell each turn, a choice of one of each type for each player, mana restricted to the chosen color.
+- Missing capability: `Cost.PayLife.Counted` (2 cards).
+
+An automated proposer (a command that sends the card, the DSL reference and examples to a model and keeps only what the checker accepts) is not worth building yet: the model's rules are valid in 21 of 22 attempts with 1.1 attempts for a card, but the checker accepts 1 of 40 unread cards (2.5%; 0.1% to 13% at 95%), because a card the compiler cannot read uses constructs without a writer. It becomes worth building when the writers cover the effects the unread cards use (writers for the 15 cards of (c) and the wordings of the 5 of (e) would lift the accepted share from 1 to 21 of 40), and it needs as context the card's text, the DSL reference with every enum's variants (the type tree lists a part), the ten nearest hand-written files by the effects they use, and the checker's report for the two fixes.
+
 ## Worked example: Archon of Cruelty
 
 ```json

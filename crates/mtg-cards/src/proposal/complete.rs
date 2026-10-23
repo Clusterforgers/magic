@@ -91,9 +91,10 @@ pub(super) fn finish(mut card: Card, paired: &Paired, printed: &PrintedCard) -> 
         .abilities()
         .any(|(_, ability)| matches!(ability, Ability::Manual { .. }));
     card.impl_status = match (modelled, manual) {
-        (false, _) => ImplStatus::Manual,
+        (false, true) => ImplStatus::Manual,
         (true, true) => ImplStatus::Partial,
-        (true, false) => ImplStatus::Full,
+        // Nothing left to the table: whole, or a card with no rules text, which has nothing to model.
+        (_, false) => ImplStatus::Full,
     };
     for (rules, shown) in card.faces.iter_mut().zip(&printed.faces) {
         if card.impl_status == ImplStatus::Manual {

@@ -55,25 +55,21 @@ fn card_of<'a>(
     wanted: Option<&str>,
     file: &Path,
 ) -> Result<&'a PrintedCard, CliError> {
-    let found = match wanted {
-        Some(name) => {
-            let lower = name.to_lowercase();
-            cards.iter().find(|card| {
-                card.name.to_lowercase() == lower
-                    || card
-                        .faces
-                        .iter()
-                        .any(|face| face.name.to_lowercase() == lower)
-            })
+    let stem = file
+        .file_stem()
+        .and_then(|stem| stem.to_str())
+        .unwrap_or("");
+    let lower = wanted.map(str::to_lowercase);
+    let found = cards.iter().find(|card| match &lower {
+        Some(lower) => {
+            card.name.to_lowercase() == *lower
+                || card
+                    .faces
+                    .iter()
+                    .any(|face| face.name.to_lowercase() == *lower)
         }
-        None => {
-            let stem = file
-                .file_stem()
-                .and_then(|stem| stem.to_str())
-                .unwrap_or("");
-            cards.iter().find(|card| slug(&card.name) == stem)
-        }
-    };
+        None => slug(&card.name) == stem,
+    });
     found.ok_or_else(|| {
         CliError::Config(match wanted {
             Some(name) => format!("no stored card is named `{name}`"),
@@ -83,6 +79,29 @@ fn card_of<'a>(
             ),
         })
     })
+}
+
+/// The stored card and the JSON text of each proposal of the arguments: one for each file, or one for each entry of a bundle.
+async fn proposals<'a>(
+    cards: &'a [PrintedCard],
+    args: &CheckRulesArgs,
+) -> Result<Vec<(&'a PrintedCard, String)>, CliError> {
+    let mut found = Vec::new();
+    for file in &args.files {
+        let text = tokio::fs::read_to_string(file)
+            .await
+            .map_err(|source| CliError::io(file, source))?;
+        if !args.bundle {
+            found.push((card_of(cards, args.card.as_deref(), file)?, text));
+            continue;
+        }
+        let entries: BTreeMap<String, serde_json::Value> = serde_json::from_str(&text)
+            .map_err(|error| CliError::Config(format!("{}: {error}", file.display())))?;
+        for (name, rules) in entries {
+            found.push((card_of(cards, Some(&name), file)?, rules.to_string()));
+        }
+    }
+    Ok(found)
 }
 
 /// Checks the files of the arguments against the stored cards.
@@ -102,11 +121,7 @@ pub async fn check_rules(db: &Database, args: &CheckRulesArgs) -> Result<Checked
         reports: Vec::new(),
         written: Vec::new(),
     };
-    for file in &args.files {
-        let printed = card_of(&cards, args.card.as_deref(), file)?;
-        let text = tokio::fs::read_to_string(file)
-            .await
-            .map_err(|source| CliError::io(file, source))?;
+    for (printed, text) in proposals(&cards, args).await? {
         let report = check(&text, printed, hand_written, &names, &caps);
         if let (Some(dir), Some(rules)) = (&args.write, &report.rules)
             && matches!(report.verdict(), Verdict::Accepted | Verdict::Unchecked)

@@ -145,7 +145,12 @@ The server is settled first, then the web is built once against the final types.
 
 ### Model-assisted reading
 - [~] (r1) (branch r1-reference-engines) Forge, XMage and Magarena surveyed in `docs/reference-engines.md`: licence, card format, scale and what can cross-check or feed our readings
-- [~] (r2) (branch r2-model-reader) A model-assisted reader pilot: a rules checker (valid, reads back as the printed text, support state with its blockers) and a seeded sample of unread cards written as rules by a model, with the yield per outcome; the result decides an automated proposer
+- [x] (r2) The model-assisted reader pilot: `mtg-cli check-rules` accepts a model's rules only when they are valid, read back as the printed text and have a support state (`docs/cards-dsl.md`, Model-assisted reading); of 40 unread precon cards 1 is accepted `Verified`, 15 are valid with a construct no writer reads back, 5 read back as other wording and 19 need a DSL construct
+- [ ] (r2a) Writers for the constructs of the pilot's valid proposals: `CreateToken` with a chosen player, a count or a bound result, `Move`, `Pay` with life, `May` over effects, divided damage, `Exile` of a graveyard, labelled modes of a trigger, batch triggers, a static over `Each`, `Goaded`, damage and zone-change replacements, restricted mana and an activated ability with a condition
+- [ ] (r2b) The renderer's wordings that the pilot's correct rules lack: "you draw" after an opponent's event, "each of those creatures", "Whenever you attack with one or more X" with "on each of them", "deals damage equal to its power", "nonland permanent card" and "this creature's power"
+- [ ] (r2c) The DSL constructs the pilot found missing: conditions on the turn so far ("the first time each turn" for any event, "a counter was put on it this turn", "dealt damage to you this turn"), reveal until a card, exactly X targets, a named option chosen as it enters, a total mana value limit, mana restricted to the chosen color, "must be blocked if able" and phasing
+- [ ] (r2d) `Cost.PayLife.Counted` in the engine (G'raha Tia, Scion Reborn and Lorcan, Warlock Collector are accepted as `Partial` until then)
+- [ ] (r2e) `mtg-cli propose`: sends a card, the DSL reference and the nearest hand-written files to a model and keeps the proposals the checker accepts; built after (r2a) and (r2b)
 
 ### Layouts
 - [ ] (c11) Rooms, Battles, Read ahead, the `prepare` layout (a "prepared" designation set by "enters prepared" and "becomes prepared", and a cast of a copy of the spell face from the battlefield that unprepares it, `docs/engine.md`), extra turns and extra combats (`Effect::ExtraTurn` is a stub), the initiative and dungeons, and the remaining long-tail mechanics found by the report, one task each

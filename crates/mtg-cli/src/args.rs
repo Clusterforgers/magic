@@ -127,6 +127,10 @@ pub struct CheckRulesArgs {
     #[arg(long)]
     pub verbose: bool,
 
+    /// Each file is one JSON object from a card's name to its rules, checking many cards at once.
+    #[arg(long, conflicts_with = "card")]
+    pub bundle: bool,
+
     /// Write the completed rules of each valid proposal into this directory as `<slug>.json`.
     #[arg(long, value_name = "DIR")]
     pub write: Option<PathBuf>,
@@ -285,6 +289,50 @@ mod tests {
             panic!("expected compile");
         };
         assert_eq!((args.all, args.card.as_deref()), (all, card));
+    }
+
+    #[rstest]
+    #[case(&["mtg-cli", "check-rules", "a.json"], None, false, false, None, 1)]
+    #[case(&["mtg-cli", "check-rules", "--card", "Fire // Ice", "--verbose", "a.json"], Some("Fire // Ice"), true, false, None, 1)]
+    #[case(&["mtg-cli", "check-rules", "--bundle", "--write", "out", "a.json", "b.json"], None, false, true, Some("out"), 2)]
+    fn check_rules_options_land_in_their_fields(
+        #[case] args: &[&str],
+        #[case] card: Option<&str>,
+        #[case] verbose: bool,
+        #[case] bundle: bool,
+        #[case] write: Option<&str>,
+        #[case] files: usize,
+    ) {
+        let cli = Cli::try_parse_from(args).unwrap();
+        let Command::CheckRules(args) = cli.command else {
+            panic!("expected check-rules");
+        };
+        assert_eq!(
+            (
+                args.card.as_deref(),
+                args.verbose,
+                args.bundle,
+                args.write,
+                args.files.len()
+            ),
+            (card, verbose, bundle, write.map(PathBuf::from), files)
+        );
+    }
+
+    #[test]
+    fn check_rules_needs_a_file_and_a_card_excludes_a_bundle() {
+        assert!(Cli::try_parse_from(["mtg-cli", "check-rules"]).is_err());
+        assert!(
+            Cli::try_parse_from([
+                "mtg-cli",
+                "check-rules",
+                "--bundle",
+                "--card",
+                "X",
+                "a.json"
+            ])
+            .is_err()
+        );
     }
 
     #[rstest]
