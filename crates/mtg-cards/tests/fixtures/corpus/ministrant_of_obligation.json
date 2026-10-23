@@ -1,0 +1,27 @@
+{
+  "id": "a37658ab-2dda-4412-9cc2-3b2df32c7581",
+  "oracle_id": "0cee5539-d10b-4de2-aee8-e02f0e24ac26",
+  "name": "Ministrant of Obligation",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rvr",
+  "collector_number": "23",
+  "rarity": "uncommon",
+  "released_at": "2024-01-12",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Cleric",
+  "oracle_text": "Afterlife 2 (When this creature dies, create two 1/1 white and black Spirit creature tokens with flying.)",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Afterlife"
+  ]
+}

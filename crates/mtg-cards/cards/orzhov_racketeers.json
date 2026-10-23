@@ -1,0 +1,20 @@
+{
+  "oracle_id": "4f6c9cee-5af7-4b00-a2a4-2770dab0a2dc",
+  "name": "Orzhov Racketeers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orzhov Racketeers",
+      "oracle_fingerprint": "322c6d81e6de441746396ce9fb6e3f29",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Discard": { "who": "Triggering" } }]
+          }
+        },
+        { "Keyword": { "Afterlife": 2 } }
+      ]
+    }
+  ]
+}

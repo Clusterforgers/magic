@@ -1,0 +1,28 @@
+{
+  "id": "aff4247a-c4b0-4a1a-a9b1-c948db21ec10",
+  "oracle_id": "f60b879e-82b4-442d-a544-2349429fe4c9",
+  "name": "Orzhov Enforcer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rvr",
+  "collector_number": "87",
+  "rarity": "uncommon",
+  "released_at": "2024-01-12",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Rogue",
+  "oracle_text": "Deathtouch\nAfterlife 1 (When this creature dies, create a 1/1 white and black Spirit creature token with flying.)",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Afterlife",
+    "Deathtouch"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "f5f4d78b-ed2b-471b-9ece-237fb55adc13",
+  "name": "Syndicate Messenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Syndicate Messenger",
+      "oracle_fingerprint": "7f3dd80e19a8cff6b3729cd84722725b",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": { "Afterlife": 1 } }]
+    }
+  ]
+}
