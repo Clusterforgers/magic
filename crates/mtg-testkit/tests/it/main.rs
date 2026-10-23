@@ -79,6 +79,7 @@ mod counters_fuzz;
 mod counting_costs;
 mod counting_fuzz;
 mod crew_events;
+mod crew_record;
 mod curse_fuzz;
 mod curses_attacked;
 mod damage_forms;
