@@ -193,7 +193,9 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
             ManaProduced::AnyCombination { count, among } => {
                 let counts: Vec<u32> = match x_most {
                     // Every X the cost can pay now, none for X = 0.
-                    Some(most) => (1..=most.min(VARIANTS as u32)).collect(),
+                    Some(most) => {
+                        (1..=most.min(u32::try_from(VARIANTS).unwrap_or(u32::MAX))).collect()
+                    }
                     None => vec![
                         scope
                             .amount(count)

@@ -79,7 +79,7 @@ fn the_ways_of_two_types_are_those_of_each_x_up_to_the_counters(
     numbers.sort_unstable();
     numbers.dedup();
     assert_eq!(numbers.len(), ways, "every way is a source of its own");
-    for x in 1..=counters as usize {
+    for x in 1..=usize::try_from(counters).unwrap() {
         let of_x = found.iter().filter(|o| o.made().len() == x).count();
         assert_eq!(of_x, x + 1, "x = {x}");
     }
@@ -233,15 +233,7 @@ fn a_payment_takes_the_ability_with_its_cost_paid_by_another_source(
             .collect();
         assert_eq!(used.len(), 1, "one of its ways: {payment:?}");
         // The sources a payment names are the ones that complete it.
-        let done = complete_payment(
-            &cost,
-            &pool,
-            &sources,
-            &[],
-            20,
-            &Spend::other(),
-            &payment,
-        );
+        let done = complete_payment(&cost, &pool, &sources, &[], 20, &Spend::other(), &payment);
         assert_eq!(done.as_ref(), Ok(&payment));
     }
 }

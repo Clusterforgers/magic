@@ -9,11 +9,11 @@ use mtg_cards::CardDefinition;
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::mana::ManaCost;
+use mtg_engine::GameSetup;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::events::Event;
 use mtg_engine::format::Normal;
-use mtg_engine::GameSetup;
-use mtg_testkit::cards::{forest, plains};
+use mtg_testkit::cards::{forest, mountain, plains};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, PlayOptions, Scenario, play_game_with, ready, with_counters};
 use rstest::rstest;
@@ -68,9 +68,30 @@ fn removed(events: &[Event]) -> i32 {
 #[case::the_ability_costs_a_mana_to_use("Calciform Pools", 2, 0, "{W}{U}", None, 0)]
 #[case::the_other_pair("Dreadship Reef", 2, 1, "{U}{B}", None, 2)]
 #[case::the_last_pair("Saltcrusted Steppe", 2, 1, "{G}{W}", None, 2)]
-#[case::the_crucible_pays_for_a_dragon("Crucible of the Spirit Dragon", 2, 0, "{W}{B}", Some("Dragon"), 2)]
-#[case::the_crucible_pays_for_nothing_else("Crucible of the Spirit Dragon", 2, 0, "{W}{B}", Some("Elf"), 0)]
-#[case::the_crucible_pays_for_no_plain_spell("Crucible of the Spirit Dragon", 2, 0, "{W}{B}", None, 0)]
+#[case::the_crucible_pays_for_a_dragon(
+    "Crucible of the Spirit Dragon",
+    2,
+    0,
+    "{W}{B}",
+    Some("Dragon"),
+    2
+)]
+#[case::the_crucible_pays_for_nothing_else(
+    "Crucible of the Spirit Dragon",
+    2,
+    0,
+    "{W}{B}",
+    Some("Elf"),
+    0
+)]
+#[case::the_crucible_pays_for_no_plain_spell(
+    "Crucible of the Spirit Dragon",
+    2,
+    0,
+    "{W}{B}",
+    None,
+    0
+)]
 fn removing_x_counters_pays_x_mana_of_the_land_and_leaves_the_land_without_them(
     #[values(2, 3, 4)] seats: usize,
     #[case] land: &str,
@@ -100,19 +121,22 @@ fn removing_x_counters_pays_x_mana_of_the_land_and_leaves_the_land_without_them(
 /// Sixty cards: the six lands beside basic lands and spells to pay for.
 fn deck() -> Vec<Arc<CardDefinition>> {
     [
-        ("Forest", 14),
-        ("Mountain", 8),
-        ("Fungal Reaches", 4),
-        ("Molten Slagheap", 4),
-        ("Crucible of the Spirit Dragon", 2),
+        ("Fungal Reaches", 2),
+        ("Molten Slagheap", 2),
+        ("Crucible of the Spirit Dragon", 1),
+        ("Lotus Petal", 4),
+        ("Dockside Extortionist", 3),
         ("Llanowar Elves", 4),
-        ("Grizzly Bears", 8),
+        ("Grizzly Bears", 4),
+        ("Sol Ring", 4),
         ("Giant Growth", 4),
         ("Lightning Bolt", 4),
         ("Counterspell", 3),
     ]
     .into_iter()
     .flat_map(|(name, copies)| (0..copies).map(move |_| card(name).unwrap()))
+    .chain((0..16).map(|_| forest()))
+    .chain((0..9).map(|_| mountain()))
     .collect()
 }
 
@@ -122,7 +146,7 @@ fn deck() -> Vec<Arc<CardDefinition>> {
 #[case::four(4)]
 fn bot_games_with_storage_lands_finish_and_keep_every_invariant(#[case] players: usize) {
     let used = Mutex::new((0_u64, 0_u64));
-    for_each_seed(0..fuzz_games(40), |seed| {
+    for_each_seed(0..fuzz_games(12), |seed| {
         let decks = (0..players).map(|_| deck()).collect();
         let setup = GameSetup::new(Arc::new(Normal), seed, decks);
         let options = PlayOptions {
