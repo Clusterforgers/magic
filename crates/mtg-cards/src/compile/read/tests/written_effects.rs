@@ -53,14 +53,15 @@ fn divided_damage_is_written_as_the_oracle_words_it(#[case] json: &str, #[case] 
 #[case::any_number_for_one_to_three(
     "Whenever this creature enters or attacks, it deals 3 damage divided as you choose among any number of targets."
 )]
-#[case::one_target_not_divided("Whenever this creature enters or attacks, it deals 3 damage to any target.")]
+#[case::one_target_not_divided(
+    "Whenever this creature enters or attacks, it deals 3 damage to any target."
+)]
 fn divided_damage_does_not_read_as_another_total_or_count(#[case] clause: &str) {
     let json = r#"{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"Attacks":{"what":["This"]}}]},"targets":[{"what":"AnyTarget","bounds":{"min":1,"max":3},"divide":3}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"Divided"}}]}}"#;
     assert!(!written(json, clause), "{clause}");
 }
 
-const PLAYER_GRAVEYARD: &str =
-    r#"{"Each":[{"In":"Graveyard"},{"OwnedBy":{"Target":0}}]}"#;
+const PLAYER_GRAVEYARD: &str = r#"{"Each":[{"In":"Graveyard"},{"OwnedBy":{"Target":0}}]}"#;
 
 #[rstest]
 #[case::angel_of_finality(

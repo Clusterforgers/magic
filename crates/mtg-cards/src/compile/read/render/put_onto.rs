@@ -32,7 +32,9 @@ pub(super) fn put_onto_text(choose: &Effect, moved: &Effect) -> Option<String> {
     if bind != name
         || !count.is_one()
         || !counters.is_empty()
-        || !from.0.starts_with(&[Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)])
+        || !from
+            .0
+            .starts_with(&[Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)])
     {
         return None;
     }

@@ -21,8 +21,8 @@ use super::counters;
 use super::create;
 use super::defining;
 use super::draws;
-use super::event_wordings;
 use super::effects::{BACK, RETURNED, dead_card, returns_itself};
+use super::event_wordings;
 use super::flicker;
 use super::group_pump;
 use super::lands;
@@ -721,8 +721,7 @@ fn written(
             moved @ Effect::Move { .. },
             ..,
         ] = &effects[start..]
-            && let Some(text) =
-                put_back_text(choose, moved).or_else(|| returned_text(choose, moved)).or_else(|| put_onto::put_onto_text(choose, moved))
+            && let Some(text) = chosen_move_text(choose, moved)
         {
             unsplit(mask, start, 2)?;
             sentences.push(text);
@@ -780,6 +779,13 @@ fn modal_texts(modes: &[Mode]) -> Vec<String> {
             .collect();
     }
     texts
+}
+
+/// A choice of cards and the move of what was chosen as one sentence.
+fn chosen_move_text(choose: &Effect, moved: &Effect) -> Option<String> {
+    put_back_text(choose, moved)
+        .or_else(|| returned_text(choose, moved))
+        .or_else(|| put_onto::put_onto_text(choose, moved))
 }
 
 /// "put two cards from your hand on top of your library in any order": the choice of cards of the

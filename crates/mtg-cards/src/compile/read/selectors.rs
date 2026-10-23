@@ -885,6 +885,18 @@ fn subtype_list(pred: &Pred) -> Option<Vec<&str>> {
         .collect()
 }
 
+/// The words of a phrase that names the permanent types: "permanent" (a spell) or "nonland permanent" (a card in a zone).
+fn permanent_words(permanent: bool, nonland: bool) -> Vec<String> {
+    let mut words = Vec::new();
+    if nonland {
+        words.push("nonland".to_owned());
+    }
+    if permanent || nonland {
+        words.push("permanent".to_owned());
+    }
+    words
+}
+
 /// Whether the card types are exactly those of a permanent but a land.
 fn is_nonland_permanent(types: &[CardType]) -> bool {
     types.len() == PERMANENT_TYPES.len() - 1
@@ -1015,12 +1027,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
             .iter()
             .map(|card_type| type_name(*card_type).to_owned()),
     );
-    if permanent {
-        words.push("permanent".to_owned());
-    }
-    if nonland_permanent {
-        words.extend(["nonland".to_owned(), "permanent".to_owned()]);
-    }
+    words.extend(permanent_words(permanent, nonland_permanent));
     if !names.is_empty() {
         words.push(list_text(&names, form.connector()));
     }
