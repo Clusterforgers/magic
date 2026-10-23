@@ -217,8 +217,20 @@ fn hand_written_text(file: &str) -> String {
     std::fs::read_to_string(cards_dir().join(file)).unwrap()
 }
 
+#[test]
+fn loyalty_abilities_whose_effects_have_writers_read_back() {
+    let report = run("Jace Beleren", &hand_written_text("jace_beleren.json"));
+
+    assert_eq!(
+        report.verdict(),
+        Verdict::Accepted,
+        "{}",
+        report.render(true)
+    );
+}
+
 #[rstest]
-#[case::a_loyalty_ability("Jace Beleren", "jace_beleren.json", "Loyalty")]
+#[case::a_loyalty_ability("Jace, the Mind Sculptor", "jace_the_mind_sculptor.json", "Loyalty")]
 #[case::a_modification("Control Magic", "control_magic.json", "SetController")]
 #[case::a_rule("Mindlock Orb", "mindlock_orb.json", "Rule")]
 fn a_construct_without_a_writer_cannot_be_read_back_and_is_named(

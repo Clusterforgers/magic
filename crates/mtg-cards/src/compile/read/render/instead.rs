@@ -19,9 +19,9 @@ fn may_move(effects: &[Effect], to: &Destination) -> bool {
 }
 
 impl Writer<'_> {
-    /// The two sentences of a move to the hand that a basic land type changes to a move to the battlefield, and the
+    /// The sentence of a move to the hand that a basic land type changes to a move to the battlefield, and the
     /// number of effects they cover.
-    pub(super) fn move_instead(&mut self, effects: &[Effect]) -> Option<(Vec<String>, usize)> {
+    pub(super) fn move_instead(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
         let [
             Effect::If {
                 condition:
@@ -59,13 +59,10 @@ impl Writer<'_> {
             .to_owned();
         let first = self.effect(otherwise.first()?)?;
         Some((
-            vec![
-                first,
-                format!(
-                    "if that land is a {}, you may return that {kind} to the battlefield instead",
-                    land.0
-                ),
-            ],
+            format!(
+                "{first}. If that land is a {}, you may return that {kind} to the battlefield instead",
+                land.0
+            ),
             1,
         ))
     }

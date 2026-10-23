@@ -34,12 +34,16 @@ fn counted_first(text: &str) -> Option<String> {
     counted.ends_with("exiled this way").then_some(())?;
     let mut letters = made.chars();
     let first = letters.next()?.to_ascii_lowercase();
-    Some(format!("{before}For each {counted}, {first}{}.", letters.as_str()))
+    Some(format!(
+        "{before}For each {counted}, {first}{}.",
+        letters.as_str()
+    ))
 }
 
 /// "put a +1/+1 counter on ~. Then you gain 1 life." is also "put a +1/+1 counter on ~ and you gain 1 life".
 fn joined_with_and(text: &str) -> Option<String> {
-    text.contains(". Then you ").then(|| text.replacen(". Then you ", " and you ", 1))
+    text.contains(". Then you ")
+        .then(|| text.replacen(". Then you ", " and you ", 1))
 }
 
 /// "Create a 1/1 Rat token for each opponent." is "... for each opponent you have." on a card.
@@ -57,7 +61,8 @@ fn each_of_them(ability: &Ability, text: &str) -> Option<String> {
             ..
         }
     );
-    (batch && text.ends_with(" counter on it.")).then(|| text.replacen(" on it.", " on each of them.", 1))
+    (batch && text.ends_with(" counter on it."))
+        .then(|| text.replacen(" on it.", " on each of them.", 1))
 }
 
 /// Adds to `texts` the wordings that say again who an earlier step named.

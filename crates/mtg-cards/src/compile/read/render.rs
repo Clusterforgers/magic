@@ -334,6 +334,12 @@ fn graveyard_wordings(ability: &Ability, texts: &mut Vec<String>) {
             }
         }
         Ability::Triggered {
+            when: TriggerPattern::StepBegins { .. },
+            from: ZoneKind::Graveyard,
+            effects,
+            ..
+        } if from_graveyard::pays_to_return(effects) => from_graveyard::say(texts),
+        Ability::Triggered {
             when:
                 TriggerPattern::ZoneChange {
                     what,
@@ -428,7 +434,11 @@ fn mana_trigger_texts(ability: &Ability) -> Vec<String> {
 fn written_from(when: &TriggerPattern, effects: &[Effect]) -> ZoneKind {
     if cast_itself(when) {
         ZoneKind::Stack
-    } else if cycled_itself(when) || graveyard_itself(when) || returns_itself(effects) {
+    } else if cycled_itself(when)
+        || graveyard_itself(when)
+        || returns_itself(effects)
+        || from_graveyard::pays_to_return(effects)
+    {
         ZoneKind::Graveyard
     } else {
         ZoneKind::Battlefield
@@ -530,16 +540,6 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             targets,
             effects,
         } => loyalty::texts(*cost, targets, effects),
-        Ability::Triggered {
-            when: when @ TriggerPattern::StepBegins { .. },
-            intervening_if: None,
-            limit: None,
-            from: ZoneKind::Graveyard,
-            targets,
-            effects,
-        } if from_graveyard::pays_to_return(effects) => {
-            from_graveyard::texts(when, targets, effects)
-        }
         Ability::AdditionalCost { cost, required } => costs::additional_text(cost, *required)
             .into_iter()
             .collect(),
@@ -765,13 +765,6 @@ fn written(
         if let Some((text, used)) = flicker::text(&effects[start..]) {
             unsplit(mask, start, used)?;
             sentences.push(text);
-            start += used;
-            continue;
-        }
-        // A move to the hand that a basic land type makes a move to the battlefield is two sentences.
-        if let Some((texts, used)) = writer.move_instead(&effects[start..]) {
-            unsplit(mask, start, used)?;
-            sentences.extend(texts);
             start += used;
             continue;
         }
@@ -1947,6 +1940,7 @@ impl Writer<'_> {
     fn then_steps(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
         self.explore_twice(effects)
             .or_else(|| self.mill_then_change(effects))
+            .or_else(|| self.move_instead(effects))
             .or_else(|| wheel_text(effects))
             // Populate is two steps and one word.
             .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))
