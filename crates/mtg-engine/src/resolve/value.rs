@@ -280,6 +280,14 @@ impl<'a> Scope<'a> {
                     .sum();
                 return Ok(i64::from(total));
             }
+            TurnTally::LifeLost => {
+                let lost: u32 = self
+                    .players(who)?
+                    .into_iter()
+                    .map(|player| self.state.tallied(player, Tally::Lost))
+                    .sum();
+                return Ok(i64::from(lost));
+            }
             TurnTally::CountersPut => {
                 let counts = self.refs(who)?.into_iter().filter_map(|named| match named {
                     Target::Object(object) => {

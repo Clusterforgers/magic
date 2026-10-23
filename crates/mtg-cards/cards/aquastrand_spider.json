@@ -1,0 +1,31 @@
+{
+  "oracle_id": "cea79fa0-2a76-41f3-846f-4d1a6ff5f629",
+  "name": "Aquastrand Spider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aquastrand Spider",
+      "oracle_fingerprint": "0d0ee97546d56a36e472731f75545532",
+      "abilities": [
+        { "Keyword": { "Graft": 2 } },
+        {
+          "Activated": {
+            "cost": "{G}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasCounter": "+1/+1" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Reach" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -178,6 +178,9 @@ pub enum TurnTally {
     /// The spells the player cast this turn: while a spell is being cast the one being cast is not counted, so "the
     /// second spell you cast each turn" is a count of one.
     SpellsCast,
+    /// The life the players lost, added up over the players read ("for each 1 life your opponents have lost this turn"):
+    /// a loss, a payment or damage that takes life; infect damage does not.
+    LifeLost,
 }
 
 /// A number, fixed or worked out when the effect runs.

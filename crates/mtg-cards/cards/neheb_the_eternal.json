@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b0d3fd57-1420-4dd1-8410-9d659655287f",
+  "name": "Neheb, the Eternal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Neheb, the Eternal",
+      "oracle_fingerprint": "3ddbcaf07dc40e34950ce989b4dd89ca",
+      "abilities": [
+        { "Keyword": { "Afflict": 3 } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "times": { "Tallied": { "who": "Opponents", "what": "LifeLost" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

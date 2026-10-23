@@ -345,7 +345,7 @@ pub fn choose_and_become(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 }
 
 /// The noun the second sentence calls the chosen permanent: its one card type, else "permanent".
-fn chosen_noun(from: &Selector) -> Option<&'static str> {
+pub(super) fn chosen_noun(from: &Selector) -> Option<&'static str> {
     let mut types = from.0.iter().filter_map(|pred| match pred {
         Pred::Type(found) => Some(*found),
         _ => None,

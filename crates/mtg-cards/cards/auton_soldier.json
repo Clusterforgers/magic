@@ -1,0 +1,28 @@
+{
+  "oracle_id": "94357494-4ccc-43d4-b2d4-351581cbf9b6",
+  "name": "Auton Soldier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Auton Soldier",
+      "oracle_fingerprint": "363102906fc9aafb813d0903339af5aa",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }],
+                "except": [
+                  { "RemoveSupertype": "Legendary" },
+                  { "AddType": "Artifact" },
+                  { "AddKeyword": "Myriad" }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

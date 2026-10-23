@@ -5,6 +5,7 @@
 //! keywords an object has through [`keywords_of`] and the helpers below it, never from the rules of the card.
 
 mod affinity;
+mod afflict;
 mod afterlife;
 pub(crate) mod aftermath;
 mod annihilator;
@@ -61,6 +62,7 @@ mod for_mirrodin;
 pub(crate) mod foretell;
 mod fuse;
 pub mod gift;
+mod graft;
 mod gravestorm;
 mod haste;
 mod hexproof;
@@ -519,6 +521,8 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Spectacle(_) => &spectacle::Spectacle,
         Keyword::UmbraArmor => &umbra_armor::UmbraArmor,
         Keyword::Cipher => &cipher::Cipher,
+        Keyword::Graft(_) => &graft::Graft,
+        Keyword::Afflict(_) => &afflict::Afflict,
         Keyword::Ascend => &ascend::Ascend,
         Keyword::ForMirrodin => &for_mirrodin::ForMirrodin,
         Keyword::JobSelect => &job_select::JobSelect,
@@ -881,6 +885,8 @@ mod tests {
             Keyword::Spectacle(cost()),
             Keyword::UmbraArmor,
             Keyword::Cipher,
+            Keyword::Graft(2),
+            Keyword::Afflict(2),
         ]
     }
 
@@ -1013,6 +1019,8 @@ mod tests {
         "Keyword.Spectacle",
         "Keyword.UmbraArmor",
         "Keyword.Cipher",
+        "Keyword.Graft",
+        "Keyword.Afflict",
         "Keyword.SplitSecond",
         "Keyword.Undaunted",
     ];
@@ -1152,6 +1160,8 @@ mod tests {
     #[case::dethrone(Keyword::Dethrone, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::umbra_armor(Keyword::UmbraArmor, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::cipher(Keyword::Cipher, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::graft(Keyword::Graft(2), Hooks { abilities: 2, ..Hooks::none() })]
+    #[case::afflict(Keyword::Afflict(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::annihilator(Keyword::Annihilator(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::extort(Keyword::Extort, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::evolve(Keyword::Evolve, Hooks { abilities: 1, ..Hooks::none() })]

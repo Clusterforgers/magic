@@ -405,6 +405,8 @@ const RUNS: &[&str] = &[
     "Keyword.Spectacle",
     "Keyword.UmbraArmor",
     "Keyword.Cipher",
+    "Keyword.Graft",
+    "Keyword.Afflict",
     "ReplaceWhen.Destroyed",
     "ReplaceBy.UmbraArmor",
     "Condition.NewlyControlled",
@@ -831,6 +833,8 @@ mod tests {
     #[case::spectacle("Keyword.Spectacle", true)]
     #[case::umbra_armor("Keyword.UmbraArmor", true)]
     #[case::cipher("Keyword.Cipher", true)]
+    #[case::graft("Keyword.Graft", true)]
+    #[case::afflict("Keyword.Afflict", true)]
     #[case::replacing_destruction("ReplaceWhen.Destroyed", true)]
     #[case::saving_by_umbra_armor("ReplaceBy.UmbraArmor", true)]
     #[case::pairing_attackers_with_players("Rule.MustAttackPlayers", true)]

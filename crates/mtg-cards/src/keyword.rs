@@ -310,6 +310,10 @@ pub enum Keyword {
     UmbraArmor,
     /// Cipher (CR 702.99): as the spell resolves, its controller may exile it encoded on a creature they control; whenever that creature deals combat damage to a player, its controller may cast a copy of the encoded card without paying its mana cost, until the card leaves exile or the creature leaves the battlefield.
     Cipher,
+    /// Graft N (CR 702.58): it enters with N +1/+1 counters; whenever another creature enters, its controller may move a +1/+1 counter from it onto that creature.
+    Graft(u32),
+    /// Afflict N (CR 702.130): whenever the creature becomes blocked, the defending player loses N life.
+    Afflict(u32),
 }
 
 /// What a promised gift is (CR 702.174).
@@ -466,6 +470,8 @@ impl Keyword {
         "Spectacle",
         "Umbra armor",
         "Cipher",
+        "Graft",
+        "Afflict",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -614,6 +620,8 @@ impl Keyword {
             Keyword::Horsemanship => "Horsemanship",
             Keyword::Spectacle(_) => "Spectacle",
             Keyword::Cipher => "Cipher",
+            Keyword::Graft(_) => "Graft",
+            Keyword::Afflict(_) => "Afflict",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
         }
@@ -800,6 +808,8 @@ mod tests {
             Keyword::Spectacle(Cost::default()),
             Keyword::UmbraArmor,
             Keyword::Cipher,
+            Keyword::Graft(2),
+            Keyword::Afflict(2),
         ]
     }
 

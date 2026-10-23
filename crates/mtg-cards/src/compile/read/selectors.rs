@@ -186,6 +186,20 @@ fn multicolored() -> Pred {
     }
 }
 
+/// Exactly one color (CR 105.4).
+fn monocolored() -> Pred {
+    Pred::Compare {
+        stat: StatKind::Colors,
+        op: Cmp::Eq,
+        to: Amount::Fixed(1),
+    }
+}
+
+/// An attacking creature or a blocking one.
+fn attacking_or_blocking() -> Pred {
+    Pred::AnyOf(vec![Pred::Attacking, Pred::Blocking])
+}
+
 /// An artifact, a legendary object or a Saga (CR 700.6).
 fn historic() -> Pred {
     Pred::AnyOf(vec![
@@ -224,6 +238,7 @@ pub(super) fn adjective(word: &str, form: Form) -> Option<Pred> {
     Some(match word {
         "colorless" => Pred::Colorless,
         "multicolored" => multicolored(),
+        "monocolored" => monocolored(),
         "historic" => historic(),
         "tapped" => Pred::Tapped,
         "untapped" => Pred::Untapped,
@@ -256,6 +271,8 @@ pub(super) fn adjective_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::Color(color) => color_name(*color).to_owned(),
         Pred::Colorless => "colorless".to_owned(),
         pred if *pred == multicolored() => "multicolored".to_owned(),
+        pred if *pred == monocolored() => "monocolored".to_owned(),
+        pred if *pred == attacking_or_blocking() => "attacking or blocking".to_owned(),
         pred if *pred == historic() => "historic".to_owned(),
         Pred::Tapped => "tapped".to_owned(),
         Pred::Untapped => "untapped".to_owned(),
@@ -327,6 +344,9 @@ pub fn granted_keywords(r: &mut Reader<'_>) -> Option<Vec<Keyword>> {
     }
     if let Some(found) = r.attempt(numbered_keyword) {
         return Some(vec![found]);
+    }
+    if r.word("crew") {
+        return Some(vec![Keyword::Crew(r.number()?)]);
     }
     if !r.words("protection from") {
         return keyword(r).map(|keyword| vec![keyword]);
@@ -418,6 +438,9 @@ pub fn granted_text(mods: &[Modification]) -> Option<String> {
             protecting = false;
         } else if let Some(numbered) = numbered_keyword_text(keyword) {
             parts.push(numbered);
+            protecting = false;
+        } else if let Keyword::Crew(power) = keyword {
+            parts.push(format!("crew {power}"));
             protecting = false;
         } else {
             parts.push(keyword_text(keyword)?);
@@ -892,6 +915,11 @@ pub(super) fn phrase_in(r: &mut Reader<'_>, form: Form, unplaced: bool) -> Optio
         while let Some(pred) = next_adjective(r, form) {
             r.skip();
             adjectives.push(pred);
+            // "attacking or blocking creature": either state.
+            if adjectives.last() == Some(&Pred::Attacking) && r.words("or blocking") {
+                adjectives.pop();
+                adjectives.push(attacking_or_blocking());
+            }
             // "nonartifact, nonblack creature": a comma joins two negations.
             let negation = |word: Option<&str>| {
                 word.and_then(|word| adjective(word, form).or_else(|| non_subtype(r, word)))
@@ -1329,6 +1357,20 @@ fn spec(r: &mut Reader<'_>) -> Option<TargetSpec> {
             divide: None,
         });
     }
+    // "two target creatures", "six target nonland permanents": exactly that many.
+    if let Some(count) = r.attempt(|r| {
+        let count = number_word(r.take_word()?).filter(|count| *count > 1)?;
+        r.need("target")?;
+        Some(count)
+    }) {
+        let what = Targetable::Object(phrase(r, Form::Targets)?);
+        let max = Some(Amount::Fixed(i32::try_from(count).ok()?));
+        return Some(TargetSpec {
+            what,
+            bounds: Bounds { min: count, max },
+            divide: None,
+        });
+    }
     let other = r.word("another");
     r.need("target")?;
     let what = if other {
@@ -1406,6 +1448,15 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
     let Targetable::Object(selector) = &spec.what else {
         return None;
     };
+    if let (count @ 2.., Some(Amount::Fixed(max))) = (spec.bounds.min, &spec.bounds.max)
+        && i64::from(count) == i64::from(*max)
+    {
+        return Some(format!(
+            "{} target {}",
+            count_word(count)?,
+            phrase_text(selector, Form::Targets)?
+        ));
+    }
     if spec.bounds.min != 0 {
         return None;
     }

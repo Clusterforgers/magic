@@ -1,0 +1,28 @@
+{
+  "cmc": 4,
+  "collector_number": "10",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "ad0fc934-f49d-4607-a52b-aea5c1d5d342",
+  "keywords": [
+    "Flying",
+    "Flash"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{3}{U}",
+  "name": "Malleable Impostor",
+  "oracle_id": "acd209d1-37e9-4713-b320-ee52854790bb",
+  "oracle_text": "Flash\nFlying\nYou may have this creature enter as a copy of a creature an opponent controls, except it's a Faerie Shapeshifter in addition to its other types and it has flying.",
+  "power": "0",
+  "rarity": "rare",
+  "released_at": "2023-09-08",
+  "set": "woc",
+  "toughness": "0",
+  "type_line": "Creature — Faerie Shapeshifter"
+}

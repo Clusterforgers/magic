@@ -3,10 +3,12 @@
 //! player's graveyard." and "Put a land card from your hand onto the battlefield tapped.", each read from its wording
 //! and written back the same way (`render.rs`).
 
+use super::counters::counters;
 use super::selectors::{Form, phrase, target};
 use super::tokens::Reader;
 use crate::effect::{Destination, Effect};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use crate::value::CounterKind;
 
 /// The name the card chosen from the hand is bound to.
 pub const CHOSEN: &str = "card";
@@ -43,7 +45,7 @@ pub fn from_graveyard(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         r.need("onto the battlefield")?;
         let tapped = r.word("tapped");
         r.need("under your control")?;
-        battlefield(tapped, Some(Ref::You))
+        battlefield(tapped, Some(Ref::You), Vec::new())
     } else {
         // A card goes to its owner's hand and under its owner's control: your own graveyard.
         yours.then_some(())?;
@@ -51,19 +53,28 @@ pub fn from_graveyard(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             Destination::Hand
         } else {
             r.need("to the battlefield")?;
-            battlefield(r.word("tapped"), None)
+            let tapped = r.word("tapped");
+            // "with a -1/-1 counter on it": what the card enters with.
+            let entering = if r.word("with") {
+                let found = counters(r)?;
+                r.need("on it")?;
+                vec![found]
+            } else {
+                Vec::new()
+            };
+            battlefield(tapped, None, entering)
         }
     };
     Some(vec![Effect::Move { what, to }])
 }
 
 /// A destination on the battlefield with nothing else said.
-fn battlefield(tapped: bool, under: Option<Ref>) -> Destination {
+fn battlefield(tapped: bool, under: Option<Ref>, counters: Vec<(CounterKind, u32)>) -> Destination {
     Destination::Battlefield {
         tapped,
         under,
         transformed: false,
-        counters: Vec::new(),
+        counters,
     }
 }
 
@@ -136,7 +147,7 @@ pub fn may_put_from_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             },
             Effect::Move {
                 what: Ref::Bound(CHOSEN.to_owned()),
-                to: battlefield(tapped, None),
+                to: battlefield(tapped, None, Vec::new()),
             },
         ],
     }])
