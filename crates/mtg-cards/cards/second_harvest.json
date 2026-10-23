@@ -1,0 +1,24 @@
+{
+  "oracle_id": "61a6341e-0d36-44b6-8026-9c87c8ef61cb",
+  "name": "Second Harvest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Second Harvest",
+      "oracle_fingerprint": "58694213de52372c129040e293c393d7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "CopyOf": { "of": { "Each": ["Token", { "ControlledBy": "You" }] } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

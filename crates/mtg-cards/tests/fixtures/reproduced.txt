@@ -61,6 +61,7 @@ Atzocan Seer
 Augury Raven
 Aura Gnarlid
 Authority of the Consuls
+Auton Soldier
 Avatar of Woe
 Aven Eternal
 Aven Initiate
@@ -502,6 +503,7 @@ Illustrious Wanderglyph
 Ilysian Caryatid
 Imperial Hellkite
 Imperious Oligarch
+Imposter Mech
 Impostor of the Sixth Pride
 Impulsive Pilferer
 Inferno Project
@@ -586,9 +588,11 @@ Ludevic's Test Subject // Ludevic's Abomination
 Lumen-Class Frigate
 Lurching Rotbeast
 M'Baku, Jabari Chieftain
+Machine God's Effigy
 Magmatic Insight
 Make Disappear
 Makeshift Mauler
+Malleable Impostor
 Mana Bloom
 Manabarbs
 Manaweft Sliver
@@ -785,6 +789,7 @@ Reverberate
 Reverse Engineer
 Rhox Charger
 Rhox Faithmender
+Rhys the Redeemed
 Rhystic Study
 Rift Bolt
 Righteous Avengers
@@ -831,6 +836,7 @@ Scuzzback Marauders
 Sea Gate
 Sea Gate Wreckage
 Secluded Courtyard
+Second Harvest
 Seedglaive Mentor
 Seeds of Renewal
 Seekers' Squire

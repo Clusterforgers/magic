@@ -2,9 +2,10 @@
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common::seeds::fuzz_games;
+use mtg_core::card::{CardType, Subtype};
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::{Engine, EngineError, Event};
-use mtg_testkit::{RandomBot, copy_fuzz_setup, play_game};
+use mtg_testkit::{RandomBot, copy_fuzz_setup, copy_shapes_fuzz_setup, play_game};
 use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
@@ -16,14 +17,35 @@ fn games() -> u64 {
 struct Seen {
     entered_as_copies: u64,
     token_copies: u64,
+    /// Copies that are artifacts (Auton Soldier, Imposter Mech, Machine God's Effigy) and copies that are no creature.
+    artifact_copies: u64,
+    not_creature_copies: u64,
+    /// Copies with the subtypes Malleable Impostor adds.
+    faerie_copies: u64,
+    /// Tokens made as copies of tokens (Second Harvest, Rhys the Redeemed, populate).
+    tokens_of_tokens: u64,
 }
 
 impl Seen {
     fn add(&mut self, events: &[Event]) {
+        let mut tokens = Vec::new();
         for event in events {
             match event {
-                Event::BecameCopy(_) => self.entered_as_copies += 1,
-                Event::TokenCreated(token) if token.copy_of.is_some() => self.token_copies += 1,
+                Event::BecameCopy(copy) => {
+                    self.entered_as_copies += 1;
+                    let types = &copy.definition.types;
+                    self.artifact_copies += u64::from(types.contains(&CardType::Artifact));
+                    self.not_creature_copies += u64::from(!types.contains(&CardType::Creature));
+                    let faerie = Subtype("Faerie".into());
+                    self.faerie_copies += u64::from(copy.definition.subtypes.contains(&faerie));
+                }
+                Event::TokenCreated(token) => {
+                    if let Some(of) = token.copy_of {
+                        self.token_copies += 1;
+                        self.tokens_of_tokens += u64::from(tokens.contains(&of.id));
+                    }
+                    tokens.push(token.object);
+                }
                 _ => {}
             }
         }
@@ -53,6 +75,28 @@ fn seeded_copy_games_finish_and_keep_every_invariant(#[case] players: usize) {
 }
 
 #[rstest]
+#[case(2)]
+#[case(3)]
+#[case(4)]
+fn seeded_games_of_the_copy_shapes_finish_and_keep_every_invariant(#[case] players: usize) {
+    let mut seen = Seen::default();
+    for seed in 0..games() {
+        let setup = copy_shapes_fuzz_setup(players, seed).unwrap();
+        let outcome = play_game(setup, seed).unwrap_or_else(|failure| panic!("{failure}"));
+        seen.add(&outcome.events);
+    }
+    let campaign = format!("{} games of {players} seats", games());
+    for (count, what) in [
+        (seen.artifact_copies, "an artifact"),
+        (seen.not_creature_copies, "something that is no creature"),
+        (seen.faerie_copies, "a Faerie"),
+        (seen.tokens_of_tokens, "a token made as a copy of a token"),
+    ] {
+        assert!(count > 0, "nothing was {what} in {campaign}");
+    }
+}
+
+#[rstest]
 fn a_rebuilt_engine_asks_what_the_original_asks_including_what_to_copy(
     #[values(2, 3, 4)] players: usize,
 ) -> Result<(), EngineError> {
@@ -73,8 +117,9 @@ fn a_rebuilt_engine_asks_what_the_original_asks_including_what_to_copy(
                 engine.state_hash(),
                 "seed {seed} step {step}"
             );
-            // A cast not yet paid for and the choice of what to copy, which the replacement step holds, live outside
-            // the state until they are answered; every other question is asked again by a rebuilt engine.
+            // A cast not yet paid for, the tapping of a crew cost and the choice of what to copy, which the replacement
+            // step holds, live outside the state until they are answered; every other question is asked again by a
+            // rebuilt engine.
             let resolving = engine.state().resolving().is_some();
             let outside = engine.replacing()
                 || !resolving
@@ -83,7 +128,10 @@ fn a_rebuilt_engine_asks_what_the_original_asks_including_what_to_copy(
                         DecisionKind::PayMana(_)
                             | DecisionKind::ChooseTargets(_)
                             | DecisionKind::ChooseMode(_)
-                    );
+                    )
+                || !resolving
+                    && matches!(&decision.kind, DecisionKind::ChooseCards(options)
+                        if options.text.starts_with("Tap any number of untapped creatures"));
             if !outside {
                 assert_eq!(
                     resumed.decision(),

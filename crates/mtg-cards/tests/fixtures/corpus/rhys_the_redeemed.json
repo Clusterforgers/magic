@@ -1,0 +1,27 @@
+{
+  "cmc": 1,
+  "collector_number": "213",
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "colors": [
+    "G",
+    "W"
+  ],
+  "digital": false,
+  "id": "b91dadcb-31e9-43b0-b425-c9311af3e9d7",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{G/W}",
+  "name": "Rhys the Redeemed",
+  "oracle_id": "f7252190-ad24-4ba3-a644-2790dd1d680d",
+  "oracle_text": "{2}{G/W}, {T}: Create a 1/1 green and white Elf Warrior creature token.\n{4}{G/W}{G/W}, {T}: For each creature token you control, create a token that's a copy of that creature.",
+  "power": "1",
+  "rarity": "rare",
+  "released_at": "2020-08-07",
+  "set": "2xm",
+  "toughness": "1",
+  "type_line": "Legendary Creature — Elf Warrior"
+}

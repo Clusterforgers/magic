@@ -1,0 +1,40 @@
+{
+  "oracle_id": "64ebdd6f-acde-4aab-a86b-2798bad5f70c",
+  "name": "Machine God's Effigy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Machine God's Effigy",
+      "oracle_fingerprint": "30486d37bbb6591328a6b289d71c2d10",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }],
+                "except": [
+                  { "SetTypes": ["Artifact"] },
+                  {
+                    "GrantAbility": {
+                      "Activated": {
+                        "cost": ["Tap"],
+                        "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

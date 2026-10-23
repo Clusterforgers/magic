@@ -1452,6 +1452,13 @@ impl Writer<'_> {
         else {
             return None;
         };
+        if let Ref::Each(selector) = of {
+            return if delayed {
+                None
+            } else {
+                copies::each_text(effect, selector)
+            };
+        }
         let copied = match of {
             Ref::This => "~".to_owned(),
             Ref::Attached => "enchanted creature".to_owned(),
