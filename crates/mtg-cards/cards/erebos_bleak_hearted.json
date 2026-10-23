@@ -1,0 +1,53 @@
+{
+  "oracle_id": "a5690dc9-f12e-4ecc-b528-f2f83c79c3c8",
+  "name": "Erebos, Bleak-Hearted",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Erebos, Bleak-Hearted",
+      "oracle_fingerprint": "cad9cd17d2b5ed7626b1803e7566d4dc",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": { "left": { "Devotion": ["Black"] }, "op": "Lt", "right": 5 }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Pay": { "cost": [{ "PayLife": 2 }], "paid": [{ "Draw": {} }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{B}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "52ecb9ef-37bc-4327-9ae6-bcef6e2fdb94",
+  "oracle_id": "2d6a0d89-7ebd-420e-9892-be1506ab3714",
+  "name": "Follow the Bodies",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "23",
+  "rarity": "rare",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Gravestorm (When you cast this spell, copy it for each permanent put into a graveyard from the battlefield this turn.)\nInvestigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Gravestorm",
+    "Investigate"
+  ]
+}

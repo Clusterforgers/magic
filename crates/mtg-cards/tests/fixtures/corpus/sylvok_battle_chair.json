@@ -1,0 +1,26 @@
+{
+  "id": "71c1a1d0-5616-42f8-a59c-42c1ccd48d26",
+  "oracle_id": "2f6c21a1-d618-497c-bfde-c0f2e1014d99",
+  "name": "Sylvok Battle-Chair",
+  "lang": "en",
+  "layout": "normal",
+  "set": "one",
+  "collector_number": "184",
+  "rarity": "uncommon",
+  "released_at": "2023-02-10",
+  "digital": false,
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "For Mirrodin! (When this Equipment enters, create a 2/2 red Rebel creature token, then attach this to it.)\nEquipped creature gets +4/+4 and has trample.\nEquip {5}{G}{G}",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "For Mirrodin!",
+    "Equip"
+  ]
+}

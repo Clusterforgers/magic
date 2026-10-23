@@ -1,0 +1,25 @@
+{
+  "id": "c1df2411-0b0d-4b93-bf30-a22487b3c6ef",
+  "oracle_id": "f7c84690-8c7c-41a6-b430-a9771030f903",
+  "name": "Coastal Discovery",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bfz",
+  "collector_number": "73",
+  "rarity": "uncommon",
+  "released_at": "2015-10-02",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Draw two cards.\nAwaken 4—{5}{U} (If you cast this spell for {5}{U}, also put four +1/+1 counters on target land you control and it becomes a 0/0 Elemental creature with haste. It's still a land.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Awaken"
+  ]
+}

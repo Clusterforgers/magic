@@ -1,0 +1,21 @@
+{
+  "oracle_id": "1b524149-340e-4f94-9520-6a5258fabb00",
+  "name": "Monk's Fist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Monk's Fist",
+      "oracle_fingerprint": "e4664d1493d5e6ef61b3f0fd3e7e32af",
+      "abilities": [
+        { "Keyword": "JobSelect" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddSubtype": "Monk" }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

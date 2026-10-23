@@ -103,6 +103,8 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("evolve", Params::None),
     ("extort", Params::None),
     ("living weapon", Params::None),
+    ("for mirrodin!", Params::None),
+    ("job select", Params::None),
     ("totem armor", Params::None),
     ("umbra armor", Params::None),
     ("undaunted", Params::None),
@@ -160,6 +162,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("transmute", Params::Cost),
     ("level up", Params::Cost),
     ("embalm", Params::Cost),
+    ("sunburst", Params::None),
     ("eternalize", Params::Cost),
     ("outlast", Params::Cost),
     ("cleave", Params::Cost),
@@ -228,6 +231,14 @@ fn starts_with_word(item: &str, name: &str) -> bool {
 
 /// The keyword an item starts with: the longest name that fits, then `...cycling` and `...walk`.
 fn find(item: &str) -> Option<Found<'_>> {
+    // "Murasame — Equip {5}": the name an Equipment gives an equip ability is flavor.
+    if let Some(len) = super::classify::ability_word_len(item)
+        && let Some(equip) = item
+            .get(len..)
+            .filter(|rest| starts_with_word(rest, "equip"))
+    {
+        return find(equip);
+    }
     let best = KEYWORDS
         .iter()
         .filter(|(name, _)| starts_with_word(item, name))
@@ -331,7 +342,7 @@ pub fn read(item: &str) -> Option<Keyword> {
     }
     match found.name {
         "ward" => cost(rest).map(Keyword::Ward),
-        "equip" => cost(rest).map(Keyword::Equip),
+        "equip" => equip(rest),
         "reconfigure" => cost(rest).map(Keyword::Reconfigure),
         "cycling" => cost(rest).map(Keyword::Cycling),
         "kicker" => spell_cost(rest).map(Keyword::Kicker),
@@ -359,6 +370,9 @@ pub fn read(item: &str) -> Option<Keyword> {
         "unearth" => spell_cost(rest).map(Keyword::Unearth),
         "embalm" => spell_cost(rest).map(Keyword::Embalm),
         "eternalize" => spell_cost(rest).map(Keyword::Eternalize),
+        "scavenge" => spell_cost(rest).map(Keyword::Scavenge),
+        "transmute" => spell_cost(rest).map(Keyword::Transmute),
+        "awaken" => awaken(rest),
         "escape" => spell_cost(rest).map(Keyword::Escape),
         "dash" => spell_cost(rest).map(Keyword::Dash),
         "bestow" => spell_cost(rest).map(Keyword::Bestow),
@@ -483,6 +497,26 @@ fn typecycling(item: &str, rest: &str) -> Option<Keyword> {
     })
 }
 
+/// Equip: its cost, or first the creatures it equips beyond the creatures its controller controls ("legendary creature {3}",
+/// "commander {2}", "creature token {1}", "Knight {2}"); any other quality stays with the table.
+fn equip(rest: &str) -> Option<Keyword> {
+    if let Some(cost) = cost(rest) {
+        return Some(Keyword::Equip(cost));
+    }
+    let (words, price) = rest.split_at(rest.find('{')?);
+    let only = match words.trim() {
+        "legendary creature" => Pred::Supertype(Supertype::Legendary),
+        "commander" => Pred::Commander,
+        "creature token" => Pred::Token,
+        kind if super::read::subtypes::is_subtype(kind) => Pred::Subtype(Subtype(kind.to_owned())),
+        _ => return None,
+    };
+    Some(Keyword::EquipTo {
+        to: Box::new(Selector(vec![only])),
+        cost: cost(price)?,
+    })
+}
+
 /// A keyword without parameters.
 fn plain(name: &str) -> Option<Keyword> {
     Some(match name {
@@ -507,10 +541,14 @@ fn plain(name: &str) -> Option<Keyword> {
         "delve" => Keyword::Delve,
         "cascade" => Keyword::Cascade,
         "storm" => Keyword::Storm,
+        "gravestorm" => Keyword::Gravestorm,
+        "sunburst" => Keyword::Sunburst,
         "demonstrate" => Keyword::Demonstrate,
         "partner" => Keyword::Partner,
         "battle cry" => Keyword::BattleCry,
         "living weapon" => Keyword::LivingWeapon,
+        "for mirrodin!" => Keyword::ForMirrodin,
+        "job select" => Keyword::JobSelect,
         "fuse" => Keyword::Fuse,
         "changeling" => Keyword::Changeling,
         "devoid" => Keyword::Devoid,
@@ -625,6 +663,15 @@ fn spell_cost(rest: &str) -> Option<Cost> {
     })
 }
 
+/// `3—{4}{U}`: the counters and the mana cost of awaken.
+fn awaken(rest: &str) -> Option<Keyword> {
+    let (count, price) = rest.split_once('\u{2014}')?;
+    Some(Keyword::Awaken {
+        count: count.trim().parse().ok().filter(|count| *count > 0)?,
+        cost: cost(price.trim())?,
+    })
+}
+
 /// `4—{U}`: the time counters and the mana cost.
 fn suspend(rest: &str) -> Option<Keyword> {
     let (time, price) = rest.split_once('\u{2014}')?;
@@ -648,6 +695,13 @@ mod tests {
 
     fn mana(text: &str) -> Cost {
         Cost::mana(text.parse().unwrap())
+    }
+
+    fn equip_to(only: Pred, cost: &str) -> Keyword {
+        Keyword::EquipTo {
+            to: Box::new(Selector(vec![only])),
+            cost: mana(cost),
+        }
     }
 
     fn finds(preds: Vec<Pred>, cost: &str) -> Keyword {
@@ -732,6 +786,17 @@ mod tests {
     #[case::desertwalk("Desertwalk", walks("Desert"))]
     #[case::equip("Equip {1}", Keyword::Equip(mana("{1}")))]
     #[case::equip_two("Equip {2}{G}", Keyword::Equip(mana("{2}{G}")))]
+    #[case::equip_legendary(
+        "Equip legendary creature {3}",
+        equip_to(Pred::Supertype(Supertype::Legendary), "{3}")
+    )]
+    #[case::equip_commander("Equip commander {2}", equip_to(Pred::Commander, "{2}"))]
+    #[case::equip_token("Equip creature token {1}", equip_to(Pred::Token, "{1}"))]
+    #[case::equip_a_type("Equip Knight {2}", equip_to(Pred::Subtype(Subtype("Knight".into())), "{2}"))]
+    #[case::equip_a_named_legendary(
+        "Gae Bolg \u{2014} Equip legendary creature {4}",
+        equip_to(Pred::Supertype(Supertype::Legendary), "{4}")
+    )]
     #[case::kicker("Kicker {4}", Keyword::Kicker(mana("{4}")))]
     #[case::multikicker("Multikicker {1}{G}", Keyword::Multikicker(mana("{1}{G}")))]
     #[case::flashback("Flashback {2}{R}", Keyword::Flashback(mana("{2}{R}")))]
@@ -855,6 +920,13 @@ mod tests {
     #[case::retrace("retrace", Keyword::Retrace)]
     #[case::embalm("Embalm {3}{W}", Keyword::Embalm(mana("{3}{W}")))]
     #[case::eternalize("Eternalize {4}{U}{U}", Keyword::Eternalize(mana("{4}{U}{U}")))]
+    #[case::scavenge("Scavenge {3}{G}", Keyword::Scavenge(mana("{3}{G}")))]
+    #[case::scavenge_free("Scavenge {0}", Keyword::Scavenge(mana("{0}")))]
+    #[case::transmute("Transmute {1}{U}{U}", Keyword::Transmute(mana("{1}{U}{U}")))]
+    #[case::awaken("Awaken 3\u{2014}{4}{U}", Keyword::Awaken { count: 3, cost: mana("{4}{U}") })]
+    #[case::awaken_big("Awaken 6\u{2014}{6}{U}{U}{U}", Keyword::Awaken { count: 6, cost: mana("{6}{U}{U}{U}") })]
+    #[case::gravestorm("Gravestorm", Keyword::Gravestorm)]
+    #[case::sunburst("Sunburst", Keyword::Sunburst)]
     #[case::eternalize_with_a_life_cost(
         "Eternalize—Pay 3 life.",
         Keyword::Eternalize(Cost(vec![CostItem::PayLife(Amount::Fixed(3))]))
@@ -885,6 +957,13 @@ mod tests {
     #[case::backup("Backup 2", Keyword::Backup { count: 2, abilities: vec![] })]
     #[case::saddle("Saddle 2", Keyword::Saddle(2))]
     #[case::station("Station", Keyword::Station)]
+    #[case::for_mirrodin("For Mirrodin!", Keyword::ForMirrodin)]
+    #[case::job_select("Job select", Keyword::JobSelect)]
+    #[case::a_named_equip("Murasame \u{2014} Equip {5}", Keyword::Equip(mana("{5}")))]
+    #[case::a_named_equip_of_two_words(
+        "Lightbringer and Hero's Shield \u{2014} Equip {4}",
+        Keyword::Equip(mana("{4}"))
+    )]
     #[case::level_up("Level up {1}{U}", Keyword::LevelUp(mana("{1}{U}")))]
     #[case::level_up_for_one("level up {1}", Keyword::LevelUp(mana("{1}")))]
     #[case::outlast("Outlast {W}", Keyword::Outlast(mana("{W}")))]
@@ -974,7 +1053,10 @@ mod tests {
 
     #[rstest]
     #[case::two_kicker_costs("Kicker {1}{R} and/or {2}{G}")]
-    #[case::qualified_equip("Equip legendary creature {3}")]
+    #[case::equip_for_a_quality_it_does_not_name("Equip worthy {2}")]
+    #[case::equip_for_a_made_up_type("Equip Banana {2}")]
+    #[case::equip_for_two_types("Equip Shaman, Warlock, or Wizard {2}")]
+    #[case::equip_without_a_cost("Equip legendary creature")]
     #[case::hexproof_from("Hexproof from white")]
     #[case::protection_from_a_pair("Protection from red and from blue")]
     #[case::protection_from_a_subtype("Protection from Vampires")]
@@ -1058,6 +1140,7 @@ mod tests {
             "Affinity" => "Affinity for",
             // Every typecycling is read from the word before `cycling`; `Basic landcycling` is the one with a table entry.
             "Typecycling" => "Basic landcycling",
+            "Equip to" => "Equip",
             other => other,
         }
     }
@@ -1181,6 +1264,11 @@ mod tests {
             "Retrace",
             "Embalm {1}",
             "Eternalize {1}",
+            "Scavenge {1}",
+            "Transmute {1}{U}{U}",
+            "Awaken 3\u{2014}{4}{U}",
+            "Gravestorm",
+            "Sunburst",
             "Dash {1}",
             "Miracle {1}{W}",
             "Bestow {1}",
@@ -1190,6 +1278,9 @@ mod tests {
             "Demonstrate",
             "Hideaway 4",
             "Gift a card",
+            "For Mirrodin!",
+            "Job select",
+            "Equip legendary creature {1}",
             "Ninjutsu {1}{U}",
             "Improvise",
             "Affinity for artifacts",
@@ -1200,7 +1291,7 @@ mod tests {
         for sample in samples {
             let keyword = read(sample).unwrap_or_else(|| panic!("{sample} is not read"));
             assert!(
-                matches!(keyword.name(), "Landwalk" | "Typecycling")
+                matches!(keyword.name(), "Landwalk" | "Typecycling" | "Equip to")
                     || sample
                         .to_ascii_lowercase()
                         .starts_with(&printed(keyword.name()).to_ascii_lowercase()),

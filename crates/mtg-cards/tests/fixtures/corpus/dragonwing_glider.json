@@ -1,0 +1,26 @@
+{
+  "id": "5456b036-231e-4a64-b060-0709f5254664",
+  "oracle_id": "4cd4c6da-a84e-4cba-893b-799a7cb5c411",
+  "name": "Dragonwing Glider",
+  "lang": "en",
+  "layout": "normal",
+  "set": "one",
+  "collector_number": "128",
+  "rarity": "rare",
+  "released_at": "2023-02-10",
+  "digital": false,
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "For Mirrodin! (When this Equipment enters, create a 2/2 red Rebel creature token, then attach this to it.)\nEquipped creature gets +2/+2 and has flying and haste.\nEquip {3}{R}{R}",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "For Mirrodin!",
+    "Equip"
+  ]
+}

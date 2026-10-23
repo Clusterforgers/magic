@@ -1,0 +1,21 @@
+{
+  "oracle_id": "5bb05573-7e8f-471f-908d-04bccead79e3",
+  "name": "Ceremonial Groundbreaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ceremonial Groundbreaker",
+      "oracle_fingerprint": "ed05cfeb1d485aeb51acc84649c45692",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }, { "AddKeyword": "Trample" }]
+          }
+        },
+        { "Keyword": { "EquipTo": { "to": [{ "Subtype": "Citizen" }], "cost": "{1}" } } },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e823639f-1308-47f6-9b51-8fd9a682489a",
+  "name": "Gnarlwood Dryad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gnarlwood Dryad",
+      "oracle_fingerprint": "c8d6d89331c095130434295386b4bde1",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

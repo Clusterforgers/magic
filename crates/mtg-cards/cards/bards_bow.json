@@ -1,0 +1,25 @@
+{
+  "oracle_id": "4aceb786-960d-4719-9de8-79dffd491a51",
+  "name": "Bard's Bow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bard's Bow",
+      "oracle_fingerprint": "e2851e3b04f110d8bdcc99c77bdac65c",
+      "abilities": [
+        { "Keyword": "JobSelect" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Reach" },
+              { "AddSubtype": "Bard" }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{6}" } }
+      ]
+    }
+  ]
+}

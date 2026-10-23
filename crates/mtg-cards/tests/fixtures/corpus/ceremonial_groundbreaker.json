@@ -1,0 +1,27 @@
+{
+  "id": "0a542616-aa4d-40d9-acad-47bc98bd6281",
+  "oracle_id": "5bb05573-7e8f-471f-908d-04bccead79e3",
+  "name": "Ceremonial Groundbreaker",
+  "lang": "en",
+  "layout": "normal",
+  "set": "snc",
+  "collector_number": "175",
+  "rarity": "uncommon",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{1}{G}{W}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +2/+1 and has trample.\nEquip Citizen {1}\nEquip {3} ({3}: Attach to target creature you control. Equip only as a sorcery.)",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Equip"
+  ]
+}

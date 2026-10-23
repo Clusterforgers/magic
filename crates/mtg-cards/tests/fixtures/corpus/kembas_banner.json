@@ -1,0 +1,26 @@
+{
+  "id": "5e50c148-9f30-4131-8ec1-85e9ba8cafbb",
+  "oracle_id": "bd31c248-8b3f-4fa5-a639-19b0e37b15c3",
+  "name": "Kemba's Banner",
+  "lang": "en",
+  "layout": "normal",
+  "set": "onc",
+  "collector_number": "7",
+  "rarity": "rare",
+  "released_at": "2023-02-10",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "For Mirrodin! (When this Equipment enters, create a 2/2 red Rebel creature token, then attach this to it.)\nEquipped creature gets +1/+1 for each creature you control.\nEquip {2}{W}",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "For Mirrodin!",
+    "Equip"
+  ]
+}

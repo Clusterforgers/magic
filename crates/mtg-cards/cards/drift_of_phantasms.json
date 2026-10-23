@@ -1,0 +1,16 @@
+{
+  "oracle_id": "6ee51134-c4ad-4101-8ce2-23dde9359cd4",
+  "name": "Drift of Phantasms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drift of Phantasms",
+      "oracle_fingerprint": "4f33e9f3f7e2e162b47b7b77fcc6d095",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Flying" },
+        { "Keyword": { "Transmute": "{1}{U}{U}" } }
+      ]
+    }
+  ]
+}

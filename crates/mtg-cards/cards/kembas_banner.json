@@ -1,0 +1,28 @@
+{
+  "oracle_id": "bd31c248-8b3f-4fa5-a639-19b0e37b15c3",
+  "name": "Kemba's Banner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kemba's Banner",
+      "oracle_fingerprint": "85b1b7a436590f2e77e8fe313c0b522a",
+      "abilities": [
+        { "Keyword": "ForMirrodin" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}{W}" } }
+      ]
+    }
+  ]
+}

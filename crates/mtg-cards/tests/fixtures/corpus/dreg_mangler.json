@@ -1,0 +1,30 @@
+{
+  "id": "162a865b-617d-40bf-900f-4aeca3602600",
+  "oracle_id": "71358110-4e28-4794-befa-ea6e27e720ef",
+  "name": "Dreg Mangler",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2x2",
+  "collector_number": "204",
+  "rarity": "common",
+  "released_at": "2022-07-08",
+  "digital": false,
+  "mana_cost": "{1}{B}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Plant Zombie",
+  "oracle_text": "Haste\nScavenge {3}{B}{G} ({3}{B}{G}, Exile this card from your graveyard: Put a number of +1/+1 counters equal to this card's power on target creature. Scavenge only as a sorcery.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Scavenge",
+    "Haste"
+  ]
+}

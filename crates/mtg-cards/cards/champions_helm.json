@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c01aafb8-3da5-4eb1-8731-2a223e747d63",
+  "name": "Champion's Helm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Champion's Helm",
+      "oracle_fingerprint": "ddf635a147b5fd30c916a2a047b21299",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Supertype": "Legendary" }] }
+            }
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

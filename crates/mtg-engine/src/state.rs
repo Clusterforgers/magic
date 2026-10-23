@@ -96,6 +96,8 @@ pub(crate) enum Tally {
     Damaged,
     /// A card put into a graveyard by a discard (counted for the card as it lies there, and for the player who discarded it).
     Discarded,
+    /// A permanent put into a graveyard from the battlefield (counted for its owner, gravestorm).
+    Graved,
 }
 
 /// The events counted in the turn so far.
@@ -370,6 +372,14 @@ impl GameState {
     pub(crate) fn tally(&mut self, player: PlayerId, kind: Tally) {
         let count = self.tallies.players.entry((player, kind)).or_insert(0);
         *count = count.saturating_add(1);
+    }
+
+    /// How many permanents were put into a graveyard from the battlefield this turn, whoever owned them.
+    pub(crate) fn graved_this_turn(&self) -> u32 {
+        self.players()
+            .iter()
+            .map(|player| self.tallied(player.id(), Tally::Graved))
+            .sum()
     }
 
     /// How many events of the kind the player has had this turn.

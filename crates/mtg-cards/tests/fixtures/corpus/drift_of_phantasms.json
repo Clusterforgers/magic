@@ -1,0 +1,29 @@
+{
+  "id": "d722c22d-3cab-48b5-96cd-0874060ac9a4",
+  "oracle_id": "6ee51134-c4ad-4101-8ce2-23dde9359cd4",
+  "name": "Drift of Phantasms",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rvr",
+  "collector_number": "42",
+  "rarity": "common",
+  "released_at": "2024-01-12",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Spirit",
+  "oracle_text": "Defender (This creature can't attack.)\nFlying\nTransmute {1}{U}{U} ({1}{U}{U}, Discard this card: Search your library for a card with the same mana value as this card, reveal it, put it into your hand, then shuffle. Transmute only as a sorcery.)",
+  "power": "0",
+  "toughness": "5",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Defender",
+    "Transmute"
+  ]
+}

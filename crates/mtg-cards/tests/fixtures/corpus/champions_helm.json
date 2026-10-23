@@ -1,0 +1,21 @@
+{
+  "id": "c6548a30-577a-47e7-aa6e-8f6db1f7b78e",
+  "oracle_id": "c01aafb8-3da5-4eb1-8731-2a223e747d63",
+  "name": "Champion's Helm",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "375",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +2/+2.\nAs long as equipped creature is legendary, it has hexproof. (It can't be the target of spells or abilities your opponents control.)\nEquip {1}",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip"
+  ]
+}

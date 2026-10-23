@@ -1,0 +1,20 @@
+{
+  "oracle_id": "13d600e6-86b4-4813-8f34-75f23717f433",
+  "name": "Scatter to the Winds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scatter to the Winds",
+      "oracle_fingerprint": "0cecc9a7f446bb5e0fb5458edd82926c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Awaken": { "count": 3, "cost": "{4}{U}{U}" } } }
+      ]
+    }
+  ]
+}

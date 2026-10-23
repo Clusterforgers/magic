@@ -1,0 +1,20 @@
+{
+  "oracle_id": "cf14d4e5-5965-45ad-97f7-26facf2884b5",
+  "name": "Fertile Ground",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fertile Ground",
+      "oracle_fingerprint": "a09466aa4ca6c6d31fa091d989533ca6",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Is": "Attached" }, { "Type": "Land" }] } },
+            "effects": [{ "AddMana": { "who": "Triggering", "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

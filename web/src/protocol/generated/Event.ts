@@ -517,7 +517,11 @@ object: ObjectId,
 /**
  * The face now up: none for the front face, the position of the back face otherwise.
  */
-face?: number, } } | { "BecameCopy": BecameCopy } | { "SpellCopied": SpellCopy } | { "AbilityCopied": AbilityCopy } | { "CopyEnded": { 
+face?: number, } } | { "Flipped": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, } } | { "BecameCopy": BecameCopy } | { "SpellCopied": SpellCopy } | { "AbilityCopied": AbilityCopy } | { "CopyEnded": { 
 /**
  * The permanent.
  */

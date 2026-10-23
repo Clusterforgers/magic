@@ -1,0 +1,25 @@
+{
+  "id": "3d45dfee-810e-4359-96ad-8d423ab86178",
+  "oracle_id": "ff0d05b9-0c9c-4217-abd2-7e7757a0c4c9",
+  "name": "Planar Outburst",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ncc",
+  "collector_number": "209",
+  "rarity": "rare",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Destroy all nonland creatures.\nAwaken 4—{5}{W}{W}{W} (If you cast this spell for {5}{W}{W}{W}, also put four +1/+1 counters on target land you control and it becomes a 0/0 Elemental creature with haste. It's still a land.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Awaken"
+  ]
+}

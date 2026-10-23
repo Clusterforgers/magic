@@ -1,0 +1,23 @@
+{
+  "id": "1b4e70c6-8f74-4b0b-9ad7-33fce05c401b",
+  "oracle_id": "7ecfa47e-1165-46a6-884c-290b1c14d020",
+  "name": "Etched Oracle",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoc",
+  "collector_number": "136",
+  "rarity": "uncommon",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "{4}",
+  "cmc": 4.0,
+  "type_line": "Artifact Creature — Wizard",
+  "oracle_text": "Sunburst (This creature enters with a +1/+1 counter on it for each color of mana spent to cast it.)\n{1}, Remove four +1/+1 counters from this creature: Target player draws three cards.",
+  "power": "0",
+  "toughness": "0",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Sunburst"
+  ]
+}
