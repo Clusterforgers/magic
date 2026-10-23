@@ -76,7 +76,7 @@ async fn the_scripts_are_matched_by_name_and_the_report_names_what_the_rules_lac
     for wanted in [
         "state of those cards:",
         "items their scripts name: ",
-        "unread tail:",
+        "unread tail, all cards with a clause left to the table:",
         "share of the grouped tail one reader per group covers:",
     ] {
         assert!(text.contains(wanted), "{wanted} missing from\n{text}");
