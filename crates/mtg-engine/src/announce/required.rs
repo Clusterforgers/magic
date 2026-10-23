@@ -13,7 +13,8 @@ use crate::parts::Part;
 use crate::ways::{self, Way};
 
 /// The parts the required additional costs of the card take, in the order it prints them; `None` when one has a part the
-/// announcement does not pay: mana, `{T}`, losing the source, an X or counters.
+/// announcement does not pay: mana, `{T}`, losing the source, an `{X}` of mana or counters. A part that counts X takes
+/// the X the caster announces.
 pub(crate) fn parts(card: &CardDefinition) -> Option<Vec<Part>> {
     let mut taken = Vec::new();
     for rule in ability_reader::printed_rules(card) {
@@ -24,13 +25,18 @@ pub(crate) fn parts(card: &CardDefinition) -> Option<Vec<Part>> {
         else {
             continue;
         };
-        let (mana, parts) = ways::cast_cost(cost)?;
+        let (mana, parts) = ways::cast_cost_counting(cost, true)?;
         if mana != ManaCost::ZERO {
             return None;
         }
         taken.extend(parts);
     }
     Some(taken)
+}
+
+/// Whether a required additional cost of the card counts the X the caster announces ("pay X life", "sacrifice X creatures").
+pub(crate) fn counts_x(card: &CardDefinition) -> bool {
+    parts(card).is_some_and(|parts| parts.iter().any(Part::is_counted))
 }
 
 /// `ways` with the required additional costs of the card added to each; none when the caster cannot be asked to pay them.
@@ -115,10 +121,7 @@ mod tests {
     #[case::mana(required(vec![CostItem::Mana("{2}".parse().unwrap())]))]
     #[case::tap(required(vec![CostItem::Tap]))]
     #[case::the_source(required(vec![CostItem::SacrificeSelf]))]
-    #[case::x_creatures(required(vec![CostItem::Sacrifice {
-        filter: Selector(vec![Pred::Type(CardType::Creature)]),
-        count: Amount::X,
-    }]))]
+    #[case::x_mana(required(vec![CostItem::Mana("{X}".parse().unwrap())]))]
     fn a_cost_the_announcement_does_not_pay_leaves_no_way_to_cast(#[case] rule: Ability) {
         let card = card(vec![rule]);
         assert_eq!(parts(&card), None);
@@ -126,6 +129,26 @@ mod tests {
             add_to(vec![way(Vec::new())], &card).is_empty(),
             "no way is left"
         );
+    }
+
+    #[rstest]
+    #[case::life(CostItem::PayLife(Amount::X), true)]
+    #[case::sacrifice(CostItem::Sacrifice {
+        filter: Selector(vec![Pred::Type(CardType::Creature)]),
+        count: Amount::X,
+    }, true)]
+    #[case::discard(CostItem::Discard { count: Amount::X, filter: None }, true)]
+    #[case::exile(CostItem::ExileFromGraveyard { filter: Selector(Vec::new()), count: Amount::X }, true)]
+    #[case::fixed(CostItem::PayLife(Amount::Fixed(3)), false)]
+    fn a_part_that_counts_x_is_paid_with_the_x_announced(
+        #[case] item: CostItem,
+        #[case] counts: bool,
+    ) {
+        let card = card(vec![required(vec![item])]);
+        let read = parts(&card).expect("the cost is paid by the announcement");
+        assert_eq!(read.len(), 1);
+        assert_eq!(counts_x(&card), counts);
+        assert_eq!(read[0].is_counted(), counts);
     }
 
     #[test]

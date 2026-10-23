@@ -935,7 +935,7 @@ fn pump_grants(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
     }
 }
 
-/// "+2/+2", "-3/-3", "+X/+X".
+/// "+2/+2", "-3/-3", "+X/+X", "-X/-X".
 fn signed(r: &mut Reader<'_>) -> Option<Amount> {
     r.attempt(|r| {
         if r.punct('+') {
@@ -945,6 +945,12 @@ fn signed(r: &mut Reader<'_>) -> Option<Amount> {
             return Some(Amount::Fixed(i32::try_from(r.number()?).ok()?));
         }
         r.punct('-').then_some(())?;
+        if r.x() {
+            return Some(Amount::Times {
+                by: -1,
+                of: Box::new(Amount::X),
+            });
+        }
         Some(Amount::Fixed(-i32::try_from(r.number()?).ok()?))
     })
 }

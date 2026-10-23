@@ -199,6 +199,8 @@ struct Walker<'a> {
     has_additional_cost: bool,
     /// Whether the cost being walked takes objects the effects can name (`Ref::Paid`): a part that picks, or a required additional cost that does.
     pays_objects: bool,
+    /// Whether a required additional cost of the card counts the X the caster announces, which the effects read.
+    counts_x: bool,
     x_free: bool,
     /// Whether an `X` read here is the one announced for the ability being walked, which its effects read as it resolves.
     x_now: bool,
@@ -227,6 +229,7 @@ impl<'a> Walker<'a> {
             has_kicker: false,
             has_additional_cost: false,
             pays_objects: false,
+            counts_x: false,
             x_free: false,
             x_now: false,
             amounting: Amounting::Other,
@@ -436,7 +439,7 @@ impl<'a> Walker<'a> {
         match amount {
             Amount::Fixed(_) => {}
             Amount::X => {
-                if !self.x_free {
+                if !self.x_free && !self.counts_x {
                     self.x_uses.push((self.face, self.current_path()));
                 }
                 // The effects and targets of the spell or ability that has the X read it, and so do the delayed triggers
@@ -659,7 +662,10 @@ impl<'a> Walker<'a> {
         if required && cost.0.iter().any(|item| matches!(item, CostItem::Mana(_))) {
             self.uses("Ability", "AdditionalCost.Required.Mana");
         }
+        // The X a required cost counts is the one the caster announces as the spell is cast.
+        let saved = std::mem::replace(&mut self.x_now, required && cost.has_x());
         self.at("cost", |w| w.cost(cost));
+        self.x_now = saved;
         let by_the_source = cost.0.iter().any(|item| {
             matches!(
                 item,
@@ -674,18 +680,24 @@ impl<'a> Walker<'a> {
         if by_the_source {
             self.problem("an additional cost is paid by the caster, not by the spell itself");
         }
-        self.parts_a_spell_cost_does_not_pay("Ability", "AdditionalCost", cost);
+        self.parts_a_spell_cost_does_not_pay("Ability", "AdditionalCost", cost, required);
     }
 
     /// The parts of the cost of a keyword of a spell (kicker, buyback, entwine, flashback, evoke, madness) that the
     /// announcement of the spell does not pay: counters removed from the source, which a card in a hand or a graveyard
     /// has none of, and an amount that is the X announced, which the cost of a spell does not count. They are named
-    /// `<kind>.<prefix>.<part>`.
-    fn parts_a_spell_cost_does_not_pay(&mut self, kind: &str, prefix: &str, cost: &Cost) {
+    /// `<kind>.<prefix>.<part>`. The announcement asks for the X of a required additional cost (`x_paid`).
+    fn parts_a_spell_cost_does_not_pay(
+        &mut self,
+        kind: &str,
+        prefix: &str,
+        cost: &Cost,
+        x_paid: bool,
+    ) {
         for item in &cost.0 {
             if matches!(item, CostItem::RemoveCounters { .. }) {
                 self.uses(kind, &format!("{prefix}.{}", tag_of(item)));
-            } else if amount_is_x(item) {
+            } else if amount_is_x(item) && !x_paid {
                 self.uses(kind, &format!("{prefix}.{}.X", tag_of(item)));
             }
         }
@@ -818,7 +830,7 @@ impl<'a> Walker<'a> {
             | Keyword::Mayhem(cost)
             | Keyword::Spectacle(cost) => {
                 self.at("cost", |w| w.cost(cost));
-                self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost);
+                self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost, false);
             }
             Keyword::Multikicker(cost)
             | Keyword::Morph(cost)
@@ -2451,6 +2463,9 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
         Ability::Keyword(keyword) => keyword.has_additional_cost(),
         _ => false,
     });
+    walker.counts_x = card.abilities().any(
+        |(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true } if cost.has_x()),
+    );
     walker.pays_objects = card
         .abilities()
         .any(|(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true } if picks(cost)));

@@ -800,6 +800,7 @@ Siren Lookout
 Sister Repentia
 Skaab Goliath
 Skeletal Changeling
+Skeletal Scrying
 Skewer the Critics
 Skinthinner
 Skirk Prospector
@@ -951,6 +952,7 @@ Titania, Proud Pummeler
 Tithe Drinker
 Tithebearer Giant
 Towering Titan
+Toxic Deluge
 Trash for Treasure
 Traumatic Visions
 Treasure Cruise

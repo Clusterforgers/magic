@@ -276,6 +276,7 @@ mod spell_copies;
 mod spell_copies_fuzz;
 mod spell_fuzz;
 mod spell_targets;
+mod spell_x_costs;
 mod split_second;
 mod split_second_fuzz;
 mod state_based_actions;

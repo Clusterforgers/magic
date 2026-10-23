@@ -10,7 +10,7 @@ use mtg_cards::value::{CastWay, CounterKind};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaSymbol};
 
-use super::{Ctx, Next, What, Work, cheapest, parts, targets, total};
+use super::{Ctx, Next, What, Work, cheapest, parts, required, targets, total};
 use crate::choose::{Choices, NumberOptions, enough_modes, modal_of, reads_x, targets_met};
 use crate::decision::DecisionKind;
 use crate::price::Price;
@@ -41,7 +41,14 @@ impl XCost {
     /// the ability being announced.
     pub(crate) fn of(state: &GameState, what: &What, rules: Option<&Ability>) -> Option<XCost> {
         let symbols = match what {
-            What::Spell(spell) => u32::from(state.object(*spell)?.card().x_in_cost),
+            What::Spell(spell) => {
+                let card = state.object(*spell)?.card();
+                // "As an additional cost to cast this spell, pay X life.": the cost counts the X it asks for.
+                if card.x_in_cost == 0 && required::counts_x(card) {
+                    return Some(XCost::Parts);
+                }
+                u32::from(card.x_in_cost)
+            }
             What::Ability(_) => match rules? {
                 Ability::Activated { cost, .. } => {
                     let price = Price::announced(cost).ok()?;
@@ -72,8 +79,10 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         work.done.x = true;
         return None;
     }
-    // An alternative cost has no `{X}` unless it names one (a miracle cost): the one of the mana cost is 0 (CR 107.3b).
+    // An alternative cost has no `{X}` unless it names one (a miracle cost): the one of the mana cost is 0 (CR 107.3b). The
+    // X of a cost that counts it is still announced.
     if work.choices.way.is_some_and(CastWay::replaces_cost)
+        && ctx.needs.x != Some(XCost::Parts)
         && alternative_symbols(ctx, work.choices.way) == Some(0)
     {
         work.choices.x = Some(0);
@@ -351,6 +360,59 @@ mod tests {
         let game = state(vec![vec![spell("{G}", x)], vec![]], vec![vec![], vec![]]);
         let card = game.zone(Zone::Hand(SEAT))[0];
         assert_eq!(XCost::of(&game, &What::Spell(card), None), expected);
+    }
+
+    #[rstest]
+    #[case::life(r#"[{"PayLife":"X"}]"#, 0, Some(XCost::Parts))]
+    #[case::sacrifice(
+        r#"[{"Sacrifice":{"filter":[{"Type":"Creature"}],"count":"X"}}]"#,
+        0,
+        Some(XCost::Parts)
+    )]
+    #[case::discard(r#"[{"Discard":{"count":"X"}}]"#, 0, Some(XCost::Parts))]
+    #[case::exile(
+        r#"[{"ExileFromGraveyard":{"filter":[],"count":"X"}}]"#,
+        0,
+        Some(XCost::Parts)
+    )]
+    #[case::with_x_mana_it_is_the_mana_that_asks(
+        r#"[{"ExileFromGraveyard":{"filter":[],"count":"X"}}]"#,
+        1,
+        Some(XCost::Mana { symbols: 1 })
+    )]
+    #[case::a_fixed_part(r#"[{"PayLife":3}]"#, 0, None)]
+    fn a_spell_asks_for_the_x_of_a_required_additional_cost(
+        #[case] cost: &str,
+        #[case] symbols: u8,
+        #[case] expected: Option<XCost>,
+    ) {
+        let rule = rules(&format!(
+            r#"{{"AdditionalCost":{{"cost":{cost},"required":true}}}}"#
+        ));
+        let card = Arc::new(
+            CardDefinition::new("Spell")
+                .with_type(CardType::Instant)
+                .with_mana_cost(ManaCost::parse("{G}").unwrap())
+                .with_x_in_cost(symbols)
+                .with_rules(rule),
+        );
+        let game = state(vec![vec![card], vec![]], vec![vec![], vec![]]);
+        let spell = game.zone(Zone::Hand(SEAT))[0];
+        assert_eq!(XCost::of(&game, &What::Spell(spell), None), expected);
+    }
+
+    #[test]
+    fn an_optional_additional_cost_that_counts_x_asks_nothing() {
+        let rule = rules(r#"{"AdditionalCost":{"cost":[{"PayLife":"X"}],"required":false}}"#);
+        let card = Arc::new(
+            CardDefinition::new("Spell")
+                .with_type(CardType::Instant)
+                .with_mana_cost(ManaCost::parse("{G}").unwrap())
+                .with_rules(rule),
+        );
+        let game = state(vec![vec![card], vec![]], vec![vec![], vec![]]);
+        let spell = game.zone(Zone::Hand(SEAT))[0];
+        assert_eq!(XCost::of(&game, &What::Spell(spell), None), None);
     }
 
     #[rstest]

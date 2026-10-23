@@ -74,7 +74,7 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<(Option<ManaCost>, Vec<Ma
             // The parts of the way it is cast and of its optional costs: the life they pay is not there for Phyrexian
             // mana, and what they sacrifice, tap or return is not there to tap for mana. Before the picks are made the
             // player is assumed to give what leaves the most mana.
-            let price = Price::casting(ctx.needs.cost_parts(choices));
+            let price = Price::casting(ctx.needs.cost_parts(choices)).at(choices.x.unwrap_or(0));
             if price.parts.is_empty() {
                 return Some((cost, sources, 0));
             }

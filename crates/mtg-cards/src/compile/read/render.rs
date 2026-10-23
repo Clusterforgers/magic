@@ -1230,6 +1230,7 @@ pub(super) fn signed_text(amount: &Amount) -> Option<String> {
         Amount::Fixed(number) if *number >= 0 => Some(format!("+{number}")),
         Amount::Fixed(number) => Some(number.to_string()),
         Amount::X => Some("+X".to_owned()),
+        Amount::Times { by: -1, of } if **of == Amount::X => Some("-X".to_owned()),
         _ => None,
     }
 }
