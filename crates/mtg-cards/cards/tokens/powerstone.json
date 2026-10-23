@@ -1,0 +1,23 @@
+{
+  "id": "powerstone",
+  "token": {
+    "name": "Powerstone",
+    "types": ["Artifact"],
+    "subtypes": ["Powerstone"],
+    "abilities": [
+      {
+        "Activated": {
+          "cost": ["Tap"],
+          "effects": [
+            {
+              "AddMana": {
+                "mana": { "Fixed": ["Colorless"] },
+                "only": [{ "Spell": { "types": ["Artifact"] } }, { "Ability": {} }]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "blood",
+  "token": {
+    "name": "Blood",
+    "types": ["Artifact"],
+    "subtypes": ["Blood"],
+    "abilities": [
+      {
+        "Activated": {
+          "cost": [{ "Mana": "{1}" }, "Tap", { "Discard": {} }, "SacrificeSelf"],
+          "effects": [{ "Draw": {} }]
+        }
+      }
+    ]
+  }
+}

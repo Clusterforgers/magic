@@ -36,7 +36,7 @@ use crate::value::{Amount, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 35] = [
+const TEMPLATES: [Template; 36] = [
     modal::modal,
     cast::discover_sentence,
     cast::exile_until,
@@ -66,6 +66,7 @@ const TEMPLATES: [Template; 35] = [
     counters::moving,
     add_mana,
     library::search,
+    library::search_by_controller,
     among::among,
     library::look,
     library::put_on_library,
@@ -328,7 +329,7 @@ fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
 }
 
 /// The player an effect is about: "you", "target player", "each opponent", "its controller".
-fn player(r: &mut Reader<'_>) -> Option<Ref> {
+pub(super) fn player(r: &mut Reader<'_>) -> Option<Ref> {
     if r.word("you") {
         return Some(Ref::You);
     }
@@ -338,7 +339,10 @@ fn player(r: &mut Reader<'_>) -> Option<Ref> {
     if r.words("each player") {
         return Some(Ref::EachPlayer);
     }
-    if r.words("its controller") || (r.it.is_some() && r.words("that creature's controller")) {
+    if r.words("its controller")
+        || (r.it.is_some()
+            && (r.words("that creature's controller") || r.words("that land's controller")))
+    {
         return r.it.clone().map(|it| Ref::ControllerOf(Box::new(it)));
     }
     if r.that_player && r.words("that player") {
