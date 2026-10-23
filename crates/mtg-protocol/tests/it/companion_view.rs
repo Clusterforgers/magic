@@ -113,7 +113,7 @@ fn the_card_in_the_hand_is_an_object_only_its_owner_identifies(#[values(2, 3, 4)
     }
     let mut driver = Driver::from_scenario(scenario).unwrap();
     let before = driver.state().clone();
-    let seq = driver.engine().events().len() as u64;
+    let seq = driver.engine().events().len();
     driver
         .answer(mtg_engine::decision::Answer::Priority(
             PriorityAction::BringCompanion,
@@ -122,7 +122,7 @@ fn the_card_in_the_hand_is_an_object_only_its_owner_identifies(#[values(2, 3, 4)
     driver
         .pay_tapping(&["Forest", "Forest", "Forest"], 0)
         .unwrap();
-    let events = driver.engine().events()[seq as usize..].to_vec();
+    let events = driver.engine().events()[seq..].to_vec();
     let brought = events
         .iter()
         .find_map(|event| match event {
@@ -131,7 +131,7 @@ fn the_card_in_the_hand_is_an_object_only_its_owner_identifies(#[values(2, 3, 4)
         })
         .unwrap();
     let viewers: Vec<PlayerId> = (0..seats).map(seat).collect();
-    let batches = project_events(&before, &events, &viewers, seq).unwrap();
+    let batches = project_events(&before, &events, &viewers, seq as u64).unwrap();
     for (viewer, batch) in viewers.iter().zip(&batches) {
         assert!(
             batch.events.iter().any(|told| matches!(
@@ -144,7 +144,7 @@ fn the_card_in_the_hand_is_an_object_only_its_owner_identifies(#[values(2, 3, 4)
         let hand = &batch.table.players[0].hand;
         assert_eq!(
             hand.count,
-            1 + before.zone(Zone::Hand(seat(0))).len() as u32
+            1 + u32::try_from(before.zone(Zone::Hand(seat(0))).len()).unwrap()
         );
         let companion = batch.table.players[0].companion.as_ref().unwrap();
         assert_eq!(companion.stage, CompanionStage::Brought);
@@ -175,7 +175,7 @@ fn the_option_is_on_the_wire_only_while_it_is_offered(
     assert_eq!(options.companion, step == Step::Main1);
     assert_eq!(
         json.get("companion"),
-        (step == Step::Main1).then(|| &serde_json::json!(true))
+        (step == Step::Main1).then_some(&serde_json::json!(true))
     );
     let back: mtg_engine::decision::PriorityOptions = serde_json::from_value(json).unwrap();
     assert_eq!(&back, &**options);

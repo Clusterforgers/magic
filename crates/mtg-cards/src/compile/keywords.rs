@@ -524,24 +524,27 @@ fn companion(rest: &str) -> Option<Keyword> {
         == "your starting deck contains at least twenty cards more than the minimum deck size"
     {
         DeckCondition::ExtraCards(20)
-    } else if let Some(list) = text
-        .strip_prefix("Each creature card in your starting deck is a ")
-        .and_then(|tail| tail.strip_suffix(" card"))
-    {
-        let kinds: Vec<Pred> = list
-            .replace(", or ", ", ")
-            .replace(" or ", ", ")
-            .split(", ")
-            .map(|kind| Pred::Subtype(Subtype(kind.trim().to_owned())))
-            .collect();
-        DeckCondition::Each {
-            of: Selector(vec![Pred::Type(CardType::Creature)]),
-            has: Selector(vec![Pred::AnyOf(kinds)]),
-        }
     } else {
-        return None;
+        creature_types(text)?
     };
     Some(Keyword::companion(condition))
+}
+
+/// `Each creature card in your starting deck is a Cat, Elemental, or Beast card`: every creature has one of the types.
+fn creature_types(text: &str) -> Option<DeckCondition> {
+    let list = text
+        .strip_prefix("Each creature card in your starting deck is a ")?
+        .strip_suffix(" card")?;
+    let kinds: Vec<Pred> = list
+        .replace(", or ", ", ")
+        .replace(" or ", ", ")
+        .split(", ")
+        .map(|kind| Pred::Subtype(Subtype(kind.trim().to_owned())))
+        .collect();
+    Some(DeckCondition::Each {
+        of: Selector(vec![Pred::Type(CardType::Creature)]),
+        has: Selector(vec![Pred::AnyOf(kinds)]),
+    })
 }
 
 /// The land types a landwalk can name.

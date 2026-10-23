@@ -10,6 +10,7 @@ use mtg_engine::companions::CompanionStage;
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice, PriorityAction, PriorityOptions};
 use mtg_engine::error::SetupError;
 use mtg_engine::format::{Commander, DeckError, Normal};
+use mtg_engine::object::PermanentState;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Engine, Event, GameSetup};
@@ -164,7 +165,7 @@ fn the_action_puts_the_card_in_the_hand_for_three_without_the_stack(
         .zone(Zone::Battlefield)
         .iter()
         .filter_map(|id| state.object(*id))
-        .filter(|o| o.permanent().is_some_and(|p| p.tapped()))
+        .filter(|o| o.permanent().is_some_and(PermanentState::tapped))
         .count();
     assert_eq!(tapped, 3, "{{3}} was paid");
     assert_eq!(
@@ -191,7 +192,7 @@ fn the_action_is_used_up_for_the_game(
         driver.cast_tapping("Small Companion", &["Forest", "Forest"])?;
         driver.pass()?;
         driver.pass()?;
-        while driver.decision()?.player != pid(0) || driver.state().zone(Zone::Stack).len() > 0 {
+        while driver.decision()?.player != pid(0) || !driver.state().zone(Zone::Stack).is_empty() {
             driver.pass()?;
         }
         assert!(!options(&driver).companion, "offered with the card in play");
@@ -255,7 +256,7 @@ fn a_seat_that_left_the_game_is_never_offered_its_companion(
         }
         driver.pass()?;
     }
-    assert!(driver.state().zone(Zone::Hand(pid(1))).is_empty());
+    assert_eq!(driver.state().zone(Zone::Hand(pid(1))), []);
     assert_eq!(
         driver.state().companion(pid(1)).unwrap().stage,
         CompanionStage::Revealed,
@@ -455,7 +456,7 @@ fn commander_game(leader_color: Color, companion: Arc<CardDefinition>) -> Result
 #[case::the_commander_counts_toward_the_condition(
     Color::Green,
     companion_with("Cheap Only", mtg_cards::companion::DeckCondition::Each {
-        of: Default::default(),
+        of: mtg_cards::refs::Selector::default(),
         has: mtg_cards::refs::Selector(vec![mtg_cards::refs::Pred::Colorless]),
     }),
     Some("Leader")

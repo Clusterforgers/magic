@@ -84,6 +84,9 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Mutated { .. }
         | Event::CommanderStayed { .. }
         | Event::ObjectLeftGame { .. } => zones::apply(state, event),
+        Event::CompanionRevealed { .. } | Event::CompanionBrought { .. } => {
+            crate::companions::fold(state, event)
+        }
         Event::AttackersDeclared { .. }
         | Event::BlockersDeclared { .. }
         | Event::DamageAssigned { .. }
@@ -149,20 +152,21 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.rng_index += u64::from(*random);
             Ok(())
         }
-        // What a player learned changes nothing in the game but who may identify the cards until the resolution ends.
-        Event::LibraryLooked(looked) => {
-            sight::show(state, Some(looked.player), &looked.cards);
-            Ok(())
-        }
-        Event::CardsFound(found) => {
-            sight::show(state, Some(found.player), &found.cards);
-            Ok(())
-        }
-        Event::Revealed(revealed) => {
-            sight::show(state, None, &revealed.cards);
+        Event::LibraryLooked(_) | Event::CardsFound(_) | Event::Revealed(_) => {
+            show_learned(state, event);
             Ok(())
         }
         _ => apply_misc(state, event),
+    }
+}
+
+/// What a player learned changes nothing in the game but who may identify the cards until the resolution ends.
+fn show_learned(state: &mut GameState, event: &Event) {
+    match event {
+        Event::LibraryLooked(looked) => sight::show(state, Some(looked.player), &looked.cards),
+        Event::CardsFound(found) => sight::show(state, Some(found.player), &found.cards),
+        Event::Revealed(revealed) => sight::show(state, None, &revealed.cards),
+        _ => {}
     }
 }
 
@@ -241,10 +245,6 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             });
         }
         Event::PriorityPassed { player } => pass_priority(state, *player)?,
-        Event::CompanionRevealed { player } => crate::companions::fold_revealed(state, *player)?,
-        Event::CompanionBrought { player, object } => {
-            crate::companions::fold_brought(state, *player, *object)?;
-        }
         Event::Transformed { object, face } => set_face(state, *object, *face)?,
         Event::Flipped { object } => flip(state, *object)?,
         Event::DayNightChanged { .. }

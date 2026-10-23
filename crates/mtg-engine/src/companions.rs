@@ -123,8 +123,17 @@ pub(crate) fn reveals(state: &GameState, first: PlayerId) -> Vec<Event> {
         .collect()
 }
 
+/// Folds the events of a companion: its reveal and its bringing into the hand.
+pub(crate) fn fold(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
+    match event {
+        Event::CompanionRevealed { player } => fold_revealed(state, *player),
+        Event::CompanionBrought { player, object } => fold_brought(state, *player, *object),
+        _ => Err(invalid("not an event of a companion")),
+    }
+}
+
 /// Folds the reveal of the companion of `player`.
-pub(crate) fn fold_revealed(state: &mut GameState, player: PlayerId) -> Result<(), EngineError> {
+fn fold_revealed(state: &mut GameState, player: PlayerId) -> Result<(), EngineError> {
     match state.companions.slots.get_mut(&player) {
         Some(slot) if slot.stage == CompanionStage::Hidden => {
             slot.stage = CompanionStage::Revealed;
@@ -137,7 +146,7 @@ pub(crate) fn fold_revealed(state: &mut GameState, player: PlayerId) -> Result<(
 }
 
 /// Folds the companion of `player` into their hand as the object `object`: the special action is used up for the game.
-pub(crate) fn fold_brought(
+fn fold_brought(
     state: &mut GameState,
     player: PlayerId,
     object: ObjectId,

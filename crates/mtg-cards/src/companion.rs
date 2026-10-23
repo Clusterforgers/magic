@@ -301,8 +301,8 @@ mod tests {
             has: Selector(vec![Pred::Token]),
         };
         assert_eq!(condition.unreadable().len(), 2);
-        assert!(lurrus().unreadable().is_empty());
-        assert!(lutri().unreadable().is_empty());
+        assert_eq!(lurrus().unreadable(), Vec::<String>::new());
+        assert_eq!(lutri().unreadable(), Vec::<String>::new());
     }
 
     #[test]
