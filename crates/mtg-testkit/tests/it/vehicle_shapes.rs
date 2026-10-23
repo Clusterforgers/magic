@@ -234,7 +234,10 @@ fn war_balloon_is_an_artifact_creature_exactly_while_it_holds_three_fire_counter
     let mut driver = Driver::from_scenario(scenario.clone())?;
     let animated = counters >= 3;
     assert_eq!(is_creature(&driver, "War Balloon"), animated);
-    assert_eq!(is_artifact(&driver, "War Balloon"), true);
+    assert!(
+        is_artifact(&driver, "War Balloon"),
+        "an artifact either way"
+    );
     if animated {
         assert_eq!(stats(&driver, "War Balloon"), (4, 3), "the printed size");
     }
