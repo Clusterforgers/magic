@@ -82,14 +82,10 @@ pub struct Snapshot {
     #[cfg_attr(feature = "ts", ts(skip))]
     pub merged: Option<Arc<CardDefinition>>,
     /// How many times it had mutated when it left (CR 702.140), which "the number of times this creature has mutated"
-    /// reads; zero for an object that never merged.
-    #[serde(default, skip_serializing_if = "is_zero")]
+    /// reads; absent for an object that never merged.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(skip))]
-    pub mutations: u32,
-}
-
-fn is_zero(count: &u32) -> bool {
-    *count == 0
+    pub mutations: Option<u32>,
 }
 
 impl Snapshot {
@@ -141,7 +137,7 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
             Some(copy) => Arc::new(copy.shown().clone()),
             None => cards.shared(),
         }),
-        mutations: object.merged().map_or(0, crate::merged::Merged::mutations),
+        mutations: object.merged().map(crate::merged::Merged::mutations),
     })
 }
 

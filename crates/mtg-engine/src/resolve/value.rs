@@ -242,7 +242,8 @@ impl<'a> Scope<'a> {
                 Some(held) => held.merged().map_or(0, crate::merged::Merged::mutations),
                 None => self
                     .snapshot_of(object)
-                    .map_or(0, |shot| shot.mutations),
+                    .and_then(|shot| shot.mutations)
+                    .unwrap_or(0),
             };
             total += i64::from(count);
         }

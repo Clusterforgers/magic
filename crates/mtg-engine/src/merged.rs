@@ -131,9 +131,14 @@ impl Merged {
     /// What the permanent is under a copy effect that gives the copiable values `copy`: they stand in the place of the
     /// topmost card's, and the abilities of the other cards stay (CR 729.2c).
     pub(crate) fn under_copy(&self, copy: &CardDefinition) -> CardDefinition {
-        let top = self.components.iter().rposition(|card| card.over).unwrap_or(0);
+        let top = self
+            .components
+            .iter()
+            .rposition(|card| card.over)
+            .unwrap_or(0);
         let cards = self.components.iter().enumerate();
-        copy.clone().with_abilities_of(cards.map(|(at, card)| if at == top { copy } else { card.card() }))
+        copy.clone()
+            .with_abilities_of(cards.map(|(at, card)| if at == top { copy } else { card.card() }))
     }
 
     /// The cards other than the one the permanent was, in the order they merged.

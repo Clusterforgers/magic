@@ -7,8 +7,8 @@ use crate::common::casting::{choose_way, lands, pay, resolve};
 use crate::common::pid;
 use mtg_cards::CardDefinition;
 use mtg_engine::choose::{CardsChoice, YesNoChoice};
-use mtg_engine::turn::Step;
 use mtg_engine::decision::{Answer, DecisionKind};
+use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{GameState, characteristics, replay, snapshot};
 use mtg_testkit::cards::{bear, forest, free_creature, island, mountain, plains, swamp};
@@ -92,7 +92,12 @@ fn settle(driver: &mut Driver, over: bool) -> Result<(), ScriptError> {
 }
 
 /// Seat 0 mutates `count` copies of the creature onto the Bear one after the other.
-fn mutate_times(driver: &mut Driver, mutator: &Mutator, count: usize, over: bool) -> Result<(), ScriptError> {
+fn mutate_times(
+    driver: &mut Driver,
+    mutator: &Mutator,
+    count: usize,
+    over: bool,
+) -> Result<(), ScriptError> {
     let host = driver.id_of(BEARS)?;
     for _ in 0..count {
         cast_mutating(driver, mutator.name, host)?;
@@ -171,7 +176,10 @@ fn the_damage_of_the_tap_ability_is_the_number_of_times_the_creature_has_mutated
     driver.choose_targets(&[foe])?;
     resolve(&mut driver)?;
     settle(&mut driver, true)?;
-    assert_eq!(life(driver.state(), 1), 20 - i32::try_from(mutations).unwrap());
+    assert_eq!(
+        life(driver.state(), 1),
+        20 - i32::try_from(mutations).unwrap()
+    );
     check_state(driver.state()).unwrap();
     Ok(())
 }
@@ -223,7 +231,7 @@ fn a_snapshot_of_a_merged_permanent_is_copied_by_its_top_card_alone_and_read_as_
     mutate_times(&mut driver, &HEMOPHAGE, mutations, over)?;
     let shot = snapshot(driver.state(), host).unwrap();
     let rules = card(HEMOPHAGE.name).unwrap().rules.len();
-    assert_eq!(shot.mutations, u32::try_from(mutations).unwrap());
+    assert_eq!(shot.mutations, Some(u32::try_from(mutations).unwrap()));
     // What a copy of it takes: the Bear's nothing, or the Hemophage's rules once, never those of the cards under it.
     let copy = shot.copy.as_deref().unwrap();
     assert_eq!(copy.name, if over { HEMOPHAGE.name } else { BEARS });
@@ -291,21 +299,29 @@ fn a_merged_permanent_under_a_copy_effect_keeps_the_abilities_of_its_other_cards
     assert_eq!(shown.name, "Hill Giant");
     assert_eq!(
         shown.rules,
-        if over { gnarr.rules.clone() } else { hemophage.rules.clone() }
+        if over {
+            gnarr.rules.clone()
+        } else {
+            hemophage.rules.clone()
+        }
     );
     let chars = characteristics(driver.state(), host).unwrap();
     assert_eq!((chars.power, chars.toughness), (Some(3), Some(4)));
     // A copy of the permanent is a copy of the copy, with none of the abilities of the cards.
     let shot = snapshot(driver.state(), host).unwrap();
     assert_eq!(shot.copy.as_deref().unwrap().name, "Hill Giant");
-    assert!(shot.copy.as_deref().unwrap().rules.is_empty());
+    assert_eq!(shot.copy.as_deref().unwrap().rules.len(), 0);
     check_state(driver.state()).unwrap();
     // The cleanup step ends the copy: the abilities of both cards, and the top card's characteristics.
     driver.idle_until(2, Step::Upkeep)?;
     let shown = driver.state().object(host).unwrap().card();
     assert_eq!(
         shown.name,
-        if over { HEMOPHAGE.name } else { "Trumpeting Gnarr" }
+        if over {
+            HEMOPHAGE.name
+        } else {
+            "Trumpeting Gnarr"
+        }
     );
     assert_eq!(shown.rules.len(), gnarr.rules.len() + hemophage.rules.len());
     replays(&driver, &scenario);
