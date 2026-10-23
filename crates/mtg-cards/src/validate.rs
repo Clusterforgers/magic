@@ -501,6 +501,9 @@ impl<'a> Walker<'a> {
                 self.at("LowestLife", |w| w.reference(who, Kind::Player));
             }
             Amount::Kicks | Amount::Promised => self.paid_amount(amount),
+            Amount::CastWith(_) => self.uses("Amount", "CastWith"),
+            Amount::ColorsSpent => self.uses("Amount", "ColorsSpent"),
+            Amount::PermanentsGraved => self.uses("Amount", "PermanentsGraved"),
             Amount::Triggering => {
                 self.uses("Amount", "Triggering");
                 if !self.scope.in_trigger {
@@ -747,6 +750,8 @@ impl<'a> Walker<'a> {
             | Keyword::Unearth(cost)
             | Keyword::Embalm(cost)
             | Keyword::Eternalize(cost)
+            | Keyword::Scavenge(cost)
+            | Keyword::Transmute(cost)
             | Keyword::Ninjutsu(cost)
             | Keyword::LevelUp(cost)
             | Keyword::Outlast(cost) => {
@@ -778,13 +783,13 @@ impl<'a> Walker<'a> {
             | Keyword::Mutate(cost)
             | Keyword::Encore(cost)
             | Keyword::Foretell(cost)
+            | Keyword::Awaken { cost, .. }
             | Keyword::Suspend { cost, .. } => {
                 self.at("cost", |w| w.cost(cost));
                 // Only mana is paid for these: a part that takes objects, life or counters is not.
                 self.parts_that_need_an_announcement("Keyword", "Cost", cost);
             }
-            Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
-            Keyword::Backup { count, abilities } => {
+            Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),            Keyword::Backup { count, abilities } => {
                 if *count == 0 {
                     self.problem("backup needs a number of at least 1");
                 }
