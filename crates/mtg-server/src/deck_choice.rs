@@ -191,24 +191,68 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
     }
     let ids = library_ids(&lines);
     let commander_ids = commander_ids(&lines);
-    let both: Vec<String> = ids.iter().chain(&commander_ids).cloned().collect();
-    let mut cards = source.deck(&both).await.map_err(ApiError::from)?;
-    let commanders = cards.split_off(ids.len());
+    let Assembled {
+        library,
+        commanders,
+        companion,
+    } = assemble(source, &lines).await?;
     let note = SeatDeck {
         name: deck.name.clone(),
         format: deck.format.clone(),
         manual_cards: manual_cards(&report),
     };
-    ChosenDeck::led(ids, cards, commander_ids, commanders, note)
-        .map(|chosen| chosen.with_own_issues(report.legality.clone()))
-        .map_err(|error| {
-            tracing::error!(%error, "a stored deck could not be fingerprinted");
-            Refused::Failed(ApiError::new(
-                StatusCode::INTERNAL_SERVER_ERROR,
-                "internal",
-                "the deck could not be read",
-            ))
-        })
+    let unreadable = |error| {
+        tracing::error!(%error, "a stored deck could not be fingerprinted");
+        Refused::Failed(ApiError::new(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "internal",
+            "the deck could not be read",
+        ))
+    };
+    let chosen =
+        ChosenDeck::led(ids, library, commander_ids, commanders, note).map_err(unreadable)?;
+    let chosen = match companion {
+        Some((id, card)) => chosen.with_companion(id, card).map_err(unreadable)?,
+        None => chosen,
+    };
+    Ok(chosen.with_own_issues(report.legality.clone()))
+}
+
+/// The cards of a deck as the game is given them.
+struct Assembled {
+    library: Vec<Arc<CardDefinition>>,
+    commanders: Vec<Arc<CardDefinition>>,
+    /// The companion's oracle id and card, when the deck names one the game runs.
+    companion: Option<(String, Arc<CardDefinition>)>,
+}
+
+/// The definitions of the main deck, the commanders and the companion of `lines`, read in one query.
+/// A companion whose card has no companion ability the rules library reads is left out: the game runs
+/// no companion for it (`docs/deck-check.md`).
+async fn assemble(source: &CardSource, lines: &[Line]) -> Result<Assembled, ApiError> {
+    let ids = library_ids(lines);
+    let leaders = commander_ids(lines);
+    let companion = companion_id(lines);
+    let all: Vec<String> = ids
+        .iter()
+        .chain(&leaders)
+        .chain(&companion)
+        .cloned()
+        .collect();
+    let mut library = source.deck(&all).await?;
+    let mut rest = library.split_off(ids.len());
+    let card = if companion.is_some() {
+        rest.pop()
+    } else {
+        None
+    };
+    Ok(Assembled {
+        library,
+        commanders: rest,
+        companion: companion
+            .zip(card)
+            .filter(|(_, card)| card.companion_condition().is_some()),
+    })
 }
 
 /// The report of a deck as the table with this `format` and these `house` rules reads it: the issues
@@ -225,19 +269,16 @@ pub(crate) async fn judge_at_table(
     let house = deck_rules(format, house);
     let mut legality = standing(report, &house);
     if engine_judges(&legality, report) {
-        let ids = library_ids(lines);
-        let leaders = commander_ids(lines);
-        let both: Vec<String> = ids.iter().chain(&leaders).cloned().collect();
-        let mut cards = source.deck(&both).await?;
-        let commanders = cards.split_off(ids.len());
-        legality = format_issues(format, &cards, &commanders, &house);
+        let cards = assemble(source, lines).await?;
+        let companion = cards.companion.as_ref().map(|(_, card)| card);
+        legality = format_issues(format, &cards.library, &cards.commanders, companion, &house);
     }
     report.set_legality(legality);
     Ok(())
 }
 
 /// [`judge_at_table`] for a deck whose card definitions are in hand, the main deck's `library` and the
-/// `commanders`.
+/// `commanders` (a stored precon has no companion).
 pub(crate) fn judge_cards_at_table(
     report: &mut DeckReport,
     format: FormatKind,
@@ -248,7 +289,7 @@ pub(crate) fn judge_cards_at_table(
     let house = deck_rules(format, house);
     let mut legality = standing(report, &house);
     if engine_judges(&legality, report) {
-        legality = format_issues(format, library, commanders, &house);
+        legality = format_issues(format, library, commanders, None, &house);
     }
     report.set_legality(legality);
 }
@@ -306,16 +347,24 @@ pub(crate) fn commander_ids(lines: &[Line]) -> Vec<String> {
     zone_ids(lines, DeckZone::Commander)
 }
 
-/// Copies of the cards a game plays (the main deck and the commanders) that it does not run whole;
-/// a card of the sideboard or the companion slot never reaches the game, so the table is told
-/// nothing of it.
+/// The oracle id of the companion: the one card of the companion zone. A deck with two there is
+/// refused by its check, so none is named for it.
+pub(crate) fn companion_id(lines: &[Line]) -> Option<String> {
+    let mut ids = zone_ids(lines, DeckZone::Companion);
+    if ids.len() == 1 { ids.pop() } else { None }
+}
+
+/// Copies of the cards a game plays (the main deck, the commanders and the companion) that it does
+/// not run whole; a card of the sideboard never reaches the game, so the table is told nothing of it.
 pub(crate) fn manual_cards(report: &DeckReport) -> u32 {
     report
         .cards
         .iter()
         .filter(|card| {
-            matches!(card.zone, DeckZone::Main | DeckZone::Commander)
-                && card.support != Support::Verified
+            matches!(
+                card.zone,
+                DeckZone::Main | DeckZone::Commander | DeckZone::Companion
+            ) && card.support != Support::Verified
         })
         .map(|card| card.count)
         .fold(0, u32::saturating_add)
@@ -335,31 +384,67 @@ pub(crate) fn no_command_zone() -> Issue {
 /// The rules of `format` that a seat's library and commanders break, in the words of the deck
 /// check: a Normal game has no command zone and wants 60 cards with at most four copies of a card,
 /// a Commander game the engine's `validate_seat` (the commander, the size, the singleton rule and
-/// the colour identity) under the deck relaxations of the game's `house` rules.
+/// the colour identity) under the deck relaxations of the game's `house` rules. A `companion` is judged
+/// once the seat's deck is: its condition over the starting deck, and in Commander its colour identity.
 pub(crate) fn format_issues(
     format: FormatKind,
     library: &[Arc<CardDefinition>],
     commanders: &[Arc<CardDefinition>],
+    companion: Option<&Arc<CardDefinition>>,
     house: &HouseRules,
 ) -> Vec<Issue> {
+    let mut issues = Vec::new();
     match format {
         FormatKind::Normal => {
-            let mut issues = Vec::new();
             if !commanders.is_empty() {
                 issues.push(no_command_zone());
             }
             if let Err(error) = Normal.validate_deck(library) {
                 issues.push(engine_issue(error, format));
             }
-            issues
         }
-        FormatKind::Commander => Commander
-            .validate_seat(library, commanders, &RuleSet::new(&Commander, house))
-            .err()
-            .map(|error| engine_issue(error, format))
-            .into_iter()
-            .collect(),
+        FormatKind::Commander => {
+            let seat =
+                Commander.validate_seat(library, commanders, &RuleSet::new(&Commander, house));
+            issues.extend(seat.err().map(|error| engine_issue(error, format)));
+        }
     }
+    if issues.is_empty() {
+        issues.extend(companion_issue(
+            format, library, commanders, companion, house,
+        ));
+    }
+    issues
+}
+
+/// The rule of the game's format that the `companion` breaks over the seat's starting deck, in the
+/// words of the deck check; the issue sits in the companion zone.
+fn companion_issue(
+    format: FormatKind,
+    library: &[Arc<CardDefinition>],
+    commanders: &[Arc<CardDefinition>],
+    companion: Option<&Arc<CardDefinition>>,
+    house: &HouseRules,
+) -> Option<Issue> {
+    let companion = companion?;
+    let checked = match format {
+        FormatKind::Normal => Normal.validate_companion(
+            companion,
+            library,
+            commanders,
+            &RuleSet::new(&Normal, house),
+        ),
+        FormatKind::Commander => Commander.validate_companion(
+            companion,
+            library,
+            commanders,
+            &RuleSet::new(&Commander, house),
+        ),
+    };
+    checked.err().map(|error| Issue {
+        zone: Some(DeckZone::Companion),
+        ..engine_issue(error, format)
+    })
 }
 
 /// A rule of the game's format the deck breaks, in the words of the deck check.
@@ -504,8 +589,16 @@ mod tests {
     #[case::the_sideboard_never_reaches_the_game(vec![
         card(DeckZone::Main, Support::Verified, 60),
         card(DeckZone::Sideboard, Support::Manual, 15),
-        card(DeckZone::Companion, Support::Partial, 1),
     ], 0)]
+    #[case::the_companion_does(vec![
+        card(DeckZone::Main, Support::Verified, 60),
+        card(DeckZone::Sideboard, Support::Manual, 15),
+        card(DeckZone::Companion, Support::Partial, 1),
+    ], 1)]
+    #[case::a_verified_companion_is_run_whole(vec![
+        card(DeckZone::Main, Support::Partial, 2),
+        card(DeckZone::Companion, Support::Verified, 1),
+    ], 2)]
     #[case::nothing(Vec::new(), 0)]
     fn the_table_is_told_the_copies_of_the_main_deck_that_are_not_verified(
         #[case] cards: Vec<ReportCard>,
@@ -577,3 +670,6 @@ mod tests {
         }
     }
 }
+
+#[cfg(test)]
+mod companion_tests;

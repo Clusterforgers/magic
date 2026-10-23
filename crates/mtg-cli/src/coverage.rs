@@ -13,6 +13,23 @@ use crate::status::missing_table;
 
 /// The report on the precons the arguments select (all by default), as the text to print.
 pub async fn coverage(db: &Database, args: &CoverageArgs) -> Result<String, CliError> {
+    let (cards, unmatched) = precon_cards(db, args.deck.as_deref()).await?;
+    let mut text = analyze(&cards, &mtg_engine::caps()).render(args.top);
+    if unmatched > 0 {
+        let _ = write!(
+            text,
+            "\n{unmatched} card lines match no stored card and are left out\n"
+        );
+    }
+    Ok(text.trim_end().to_owned())
+}
+
+/// The distinct cards of the main boards of the stored precons that `deck` selects (all when `None`), with their copies
+/// per deck, and the count of card lines that match no stored card.
+pub(crate) async fn precon_cards(
+    db: &Database,
+    deck: Option<&str>,
+) -> Result<(Vec<PreconCard>, u64), CliError> {
     let repo = db.precons();
     let listed = repo.list().await.map_err(|error| {
         if missing_table(&error) {
@@ -23,14 +40,10 @@ pub async fn coverage(db: &Database, args: &CoverageArgs) -> Result<String, CliE
     })?;
     let decks: Vec<PreconDeckSummary> = listed
         .into_iter()
-        .filter(|deck| {
-            args.deck
-                .as_deref()
-                .is_none_or(|wanted| selects(deck, wanted))
-        })
+        .filter(|candidate| deck.is_none_or(|wanted| selects(candidate, wanted)))
         .collect();
     if decks.is_empty() {
-        return Err(CliError::Config(match &args.deck {
+        return Err(CliError::Config(match deck {
             Some(wanted) => format!("no stored precon has the code or a name like `{wanted}`"),
             None => {
                 "no precons are stored; `mtg-cli fetch decks` and `mtg-cli ingest` load them".into()
@@ -62,15 +75,7 @@ pub async fn coverage(db: &Database, args: &CoverageArgs) -> Result<String, CliE
             *slot.copies.entry(label.clone()).or_default() += entry.count;
         }
     }
-    let cards: Vec<PreconCard> = cards.into_values().collect();
-    let mut text = analyze(&cards, &mtg_engine::caps()).render(args.top);
-    if unmatched > 0 {
-        let _ = write!(
-            text,
-            "\n{unmatched} card lines match no stored card and are left out\n"
-        );
-    }
-    Ok(text.trim_end().to_owned())
+    Ok((cards.into_values().collect(), unmatched))
 }
 
 /// Whether `wanted` is the deck's code (any case) or part of its name (any case).

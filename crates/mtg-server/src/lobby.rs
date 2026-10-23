@@ -116,12 +116,19 @@ impl<S: EventStore> GameActor<S> {
                 .decks
                 .as_mut()
                 .and_then(|decks| decks.reset(seat.index()))
-                .map(|deck| (deck.cards().to_vec(), deck.commanders().to_vec()));
-            if let (Some((cards, commanders)), Some(player)) =
+                .map(|deck| {
+                    (
+                        deck.cards().to_vec(),
+                        deck.commanders().to_vec(),
+                        deck.companion().cloned(),
+                    )
+                });
+            if let (Some((cards, commanders, companion)), Some(player)) =
                 (default, self.setup.players.get_mut(seat.index()))
             {
                 player.library = cards;
                 player.commanders = commanders;
+                player.companion = companion;
             }
         }
         self.push_roster();
@@ -138,6 +145,7 @@ impl<S: EventStore> GameActor<S> {
         };
         player.library = deck.cards().to_vec();
         player.commanders = deck.commanders().to_vec();
+        player.companion = deck.companion().cloned();
         decks.choose(seat.index(), deck);
     }
 

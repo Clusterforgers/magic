@@ -25,6 +25,7 @@ const DEMO_FORMAT: &str = "normal";
 pub struct ChosenDeck {
     cards: Arc<[Arc<CardDefinition>]>,
     commanders: Arc<[Arc<CardDefinition>]>,
+    companion: Option<Arc<CardDefinition>>,
     deck: DeckRef,
     fingerprint: DeckFingerprint,
     note: SeatDeck,
@@ -39,6 +40,7 @@ impl ChosenDeck {
             fingerprint: DeckFingerprint::of(&cards)?,
             cards: cards.into(),
             commanders: Arc::from([]),
+            companion: None,
             deck: DeckRef::Demo {
                 id: deck.id.to_owned(),
             },
@@ -64,6 +66,7 @@ impl ChosenDeck {
             fingerprint: DeckFingerprint::of_seat(&library, std::slice::from_ref(&commander))?,
             cards: library.into(),
             commanders: Arc::from([commander]),
+            companion: None,
             deck: DeckRef::Demo {
                 id: demo::commander_stand_in_id(size),
             },
@@ -100,13 +103,32 @@ impl ChosenDeck {
             fingerprint: DeckFingerprint::of_seat(&cards, &commanders)?,
             cards: cards.into(),
             commanders: commanders.into(),
+            companion: None,
             deck: DeckRef::Oracle {
                 cards: oracle_ids,
                 commanders: commander_ids,
+                companion: None,
             },
             note,
             own_issues: Arc::from([]),
         })
+    }
+
+    /// The deck with `card` (its oracle id is `oracle_id`) as the seat's companion (CR 702.139): the
+    /// game keeps it outside the game, and it is part of the deck's fingerprint. A built-in deck has
+    /// no oracle ids to name it by and stays as it is.
+    pub fn with_companion(
+        mut self,
+        oracle_id: String,
+        card: Arc<CardDefinition>,
+    ) -> Result<ChosenDeck, FingerprintError> {
+        if let DeckRef::Oracle { companion, .. } = &mut self.deck {
+            *companion = Some(oracle_id);
+            self.fingerprint =
+                DeckFingerprint::of_seat_with(&self.cards, &self.commanders, Some(&card))?;
+            self.companion = Some(card);
+        }
+        Ok(self)
     }
 
     /// What the table is told of the deck.
@@ -132,6 +154,11 @@ impl ChosenDeck {
     /// The commanders the seat starts with in its command zone; none outside Commander.
     pub fn commanders(&self) -> &[Arc<CardDefinition>] {
         &self.commanders
+    }
+
+    /// The companion the seat names, a card the game keeps outside it until the seat pays for it.
+    pub fn companion(&self) -> Option<&Arc<CardDefinition>> {
+        self.companion.as_ref()
     }
 
     /// The deck with the issues its own check found (`deck_report` in the deck's format), which a
@@ -164,7 +191,13 @@ impl ChosenDeck {
             .cloned()
             .collect();
         if own.is_empty() {
-            format_issues(format, &self.cards, &self.commanders, house)
+            format_issues(
+                format,
+                &self.cards,
+                &self.commanders,
+                self.companion.as_ref(),
+                house,
+            )
         } else {
             own
         }

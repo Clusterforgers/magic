@@ -10,7 +10,8 @@
 //! The encoding, version 1, is UTF-8 text: the line `mtg-deck/v1`, the number of cards, then one
 //! line per card in deck order holding the card's serde JSON with every object's keys sorted and no
 //! whitespace. A seat with commanders adds the line `commanders`, their number and one line each, so
-//! a deck without any hashes as it did before Commander. It follows the card's serde form, so a change to any field of [`CardDefinition`], or to
+//! a deck without any hashes as it did before Commander; a seat with a companion adds the line
+//! `companion` and the card's line, so a deck without one hashes as it did before the companion. It follows the card's serde form, so a change to any field of [`CardDefinition`], or to
 //! how one is written, changes the fingerprint; that includes a new field, which changes every
 //! fingerprint unless it is left out of the JSON while it holds its default (the pinned values in the
 //! tests notice). The stored text is `v1:` and the 64 lowercase hex digits of the digest. A different
@@ -66,7 +67,17 @@ impl DeckFingerprint {
         cards: &[Arc<CardDefinition>],
         commanders: &[Arc<CardDefinition>],
     ) -> Result<DeckFingerprint, FingerprintError> {
-        let text = encode(cards, commanders)?;
+        DeckFingerprint::of_seat_with(cards, commanders, None)
+    }
+
+    /// Like [`DeckFingerprint::of_seat`], with the seat's companion, the card the game keeps outside
+    /// it. Without one it equals [`DeckFingerprint::of_seat`].
+    pub fn of_seat_with(
+        cards: &[Arc<CardDefinition>],
+        commanders: &[Arc<CardDefinition>],
+        companion: Option<&Arc<CardDefinition>>,
+    ) -> Result<DeckFingerprint, FingerprintError> {
+        let text = encode(cards, commanders, companion)?;
         Ok(DeckFingerprint(Sha256::digest(text.as_bytes()).into()))
     }
 }
@@ -132,6 +143,7 @@ fn hex_value(digit: u8) -> Option<u8> {
 fn encode(
     cards: &[Arc<CardDefinition>],
     commanders: &[Arc<CardDefinition>],
+    companion: Option<&Arc<CardDefinition>>,
 ) -> Result<String, FingerprintError> {
     let mut text = format!("mtg-deck/v{FINGERPRINT_VERSION}\n{}\n", cards.len());
     write_cards(cards, &mut text)?;
@@ -140,6 +152,10 @@ fn encode(
         text.push_str(&commanders.len().to_string());
         text.push('\n');
         write_cards(commanders, &mut text)?;
+    }
+    if let Some(companion) = companion {
+        text.push_str("companion\n");
+        write_cards(std::slice::from_ref(companion), &mut text)?;
     }
     Ok(text)
 }
@@ -241,7 +257,7 @@ mod tests {
             .with_mana_cost(ManaCost::parse("{G}").unwrap())
             .with_x_in_cost(1)
             .with_loyalty(3);
-        let text = encode(&[Arc::new(hydra)], &[]).unwrap();
+        let text = encode(&[Arc::new(hydra)], &[], None).unwrap();
         assert_eq!(
             text,
             concat!(
@@ -250,7 +266,7 @@ mod tests {
                 "\n"
             )
         );
-        let forest = encode(&[basic_land(Color::Green)], &[]).unwrap();
+        let forest = encode(&[basic_land(Color::Green)], &[], None).unwrap();
         for later in ["x_in_cost", "loyalty", "defense", "color_indicator"] {
             assert!(
                 !forest.contains(later),
@@ -273,7 +289,7 @@ mod tests {
             r#"{"abilities":[],"mana_cost":[{"Generic":1},{"Colored":"Green"}],"name":"Grizzly Bears","power":2,"subtypes":[],"supertypes":[],"toughness":2,"types":["Creature"]}"#,
             "\n",
         );
-        assert_eq!(encode(&cards, &[]).unwrap(), expected);
+        assert_eq!(encode(&cards, &[], None).unwrap(), expected);
         // The digest of exactly that text, as `sha256sum` computes it.
         assert_eq!(
             fingerprint(&cards).to_string(),
@@ -470,9 +486,41 @@ mod tests {
             3
         );
         assert_eq!(
-            encode(&[], &[]).unwrap(),
+            encode(&[], &[], None).unwrap(),
             format!("mtg-deck/v{FINGERPRINT_VERSION}\n0\n")
         );
+    }
+
+    #[test]
+    fn a_companion_is_part_of_the_fingerprint_and_a_seat_without_one_hashes_as_before() {
+        let cards = deck("mono-green");
+        let leader = basic_land(Color::Green);
+        let giant = hill_giant();
+        let plain = DeckFingerprint::of_seat(&cards, &[]).unwrap();
+        assert_eq!(
+            DeckFingerprint::of_seat_with(&cards, &[], None).unwrap(),
+            plain
+        );
+        let with = |commanders: &[Arc<CardDefinition>], companion: &Arc<CardDefinition>| {
+            DeckFingerprint::of_seat_with(&cards, commanders, Some(companion)).unwrap()
+        };
+        let all = [
+            plain,
+            with(&[], &giant),
+            with(&[], &leader),
+            with(std::slice::from_ref(&leader), &giant),
+            with(std::slice::from_ref(&giant), &leader),
+            DeckFingerprint::of_seat(&cards, std::slice::from_ref(&giant)).unwrap(),
+        ];
+        assert_eq!(
+            BTreeSet::from(all.map(|f| f.to_string())).len(),
+            all.len(),
+            "the companion and its place in the seat change the digest"
+        );
+        let text = encode(&[], &[], Some(&giant)).unwrap();
+        assert!(text.starts_with(&format!(
+            "mtg-deck/v{FINGERPRINT_VERSION}\n0\ncompanion\n{{"
+        )));
     }
 
     const GOOD: &str = "v1:000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
