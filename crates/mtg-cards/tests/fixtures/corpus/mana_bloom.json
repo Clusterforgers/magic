@@ -19,5 +19,12 @@
   "color_identity": [
     "G"
   ],
-  "keywords": []
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
 }

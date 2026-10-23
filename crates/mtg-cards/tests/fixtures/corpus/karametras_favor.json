@@ -21,5 +21,12 @@
   ],
   "keywords": [
     "Enchant"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
   ]
 }
