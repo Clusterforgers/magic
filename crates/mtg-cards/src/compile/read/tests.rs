@@ -231,6 +231,7 @@ mod search_lists;
 mod search_pairs;
 mod spell_copies;
 mod spend_subtypes;
+mod static_group_writers;
 mod static_pairs;
 mod statics;
 mod stations;

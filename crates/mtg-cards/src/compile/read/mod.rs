@@ -59,6 +59,7 @@ mod selectors;
 mod spend;
 mod spent;
 mod static_pairs;
+mod static_parts;
 mod statics;
 mod stations;
 pub(super) mod subtypes;

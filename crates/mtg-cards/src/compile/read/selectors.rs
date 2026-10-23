@@ -480,8 +480,10 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             "you don't control".to_owned()
         }
         Pred::HasKeyword(keyword) => format!("with {}", keyword_text(keyword)?),
-        // Only a lone creature is "each ... with a counter on it"; the plural and the other forms stay unwritten.
-        Pred::HasCounter(kind) if matches!(form, Form::Each) => {
+        Pred::HasCounter(kind) if form.plural() => {
+            format!("with {} counters on them", counters::kind_text(kind)?)
+        }
+        Pred::HasCounter(kind) => {
             let words = counters::trigger_kind_text(Some(kind))?;
             format!("with {words} on it")
         }
