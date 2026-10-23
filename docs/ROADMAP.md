@@ -164,6 +164,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r2d) `Cost.PayLife.Counted` in the engine (G'raha Tia, Scion Reborn and Lorcan, Warlock Collector are accepted as `Partial` until then)
 - [ ] (r2e) `mtg-cli propose`: sends a card, the DSL reference and the nearest hand-written files to a model and keeps the proposals the checker accepts; built after (r2f)
 - [ ] (r1a) `mtg-cli forge-check` compares a Forge clause with the ability that stands for it, not the sets of a card, and reads the `Count$` amounts, the `Valid*` filters and the conditions Forge names (`docs/reference-engines.md`, Cross-check report)
+- [ ] (r1b) The proposer's (r2e) prompt takes its examples from Forge's pairs of a clause and its script parts by nearest wording, fetched at run time and never committed; examples kept in the repository come from XMage with its MIT notice
+- [ ] (r1c) Rules proposals converted from Forge scripts for the API families the `forge-check` report shows unread, each passing the structure checks and the oracle fingerprint; the GPLv3 conditions for rules that reach browsers are decided first
 - [ ] (r1d) Statics `Continuous` the compiler leaves: grants of keywords and abilities, power, toughness and type changes, and "you may play or cast from" permissions (`MayPlay`): 524 cards, 160 with nothing else open (`AddKeyword` 192, `MayPlay` 143, `AddPower` 101)
 - [ ] (r1e) `ChangeZone` clauses the compiler leaves: return from a graveyard (411), put onto the battlefield (386), exile (296), to the hand (223), with a type and a number: 867 cards, 107 with nothing else open
 - [ ] (r1f) `Token` creation with an owner (412), an amount (213), tapped or attacking, and set power and toughness: 590 cards, 39 with nothing else open
@@ -173,8 +175,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r1j) `CopyPermanent` and `Clone` with the exceptions Forge keys name (end-of-turn exile 27, added types 20, keywords 20, set power and toughness 17, `NonLegendary` 7) and the `ETBReplacement` keyword lines: 113, 58 and 70 cards
 - [ ] (r1k) DSL verbs for the Forge APIs with no counterpart: `RepeatEach` (111 cards), `DigUntil` (66, with the reveal-until of (r2c)), `RollDice` (27), `AddPhase` (23), `FlipCoin` (23), `MultiplyCounter` (23) and `Vote` (22)
 - [ ] (r1l) The 43 cards whose clauses are all read and whose Forge script names a verb their rules lack: optional triggers not read as a `May` (15 pairs of card and trigger mode) and abilities granted by a static (5 cards)
-- [ ] (r1b) The proposer's (r2e) prompt takes its examples from Forge's pairs of a clause and its script parts by nearest wording, fetched at run time and never committed; examples kept in the repository come from XMage with its MIT notice
-- [ ] (r1c) Rules proposals converted from Forge scripts for the API families the (r1a) report shows unread, each passing the structure checks and the oracle fingerprint; the GPLv3 conditions for rules that reach browsers are decided first
 
 ### Layouts
 - [ ] (c11) Rooms, Battles, Read ahead, the `prepare` layout (a "prepared" designation set by "enters prepared" and "becomes prepared", and a cast of a copy of the spell face from the battlefield that unprepares it, `docs/engine.md`), extra turns and extra combats (`Effect::ExtraTurn` is a stub), the initiative and dungeons, and the remaining long-tail mechanics found by the report, one task each
