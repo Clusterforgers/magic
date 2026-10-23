@@ -1,0 +1,24 @@
+{
+  "oracle_id": "b21d6482-1b3a-47e6-98a5-3067f5f3818b",
+  "name": "Aether Gale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aether Gale",
+      "oracle_fingerprint": "36f6a7529d7f3acd1782ed46f02a3b0f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": { "min": 6, "max": 6 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

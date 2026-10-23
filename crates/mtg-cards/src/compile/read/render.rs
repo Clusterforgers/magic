@@ -1340,6 +1340,16 @@ impl Writer<'_> {
             })
     }
 
+    /// Whether the reference is the one target specification that takes several objects, all permanents.
+    fn are_permanents(&self, what: &Ref) -> bool {
+        *what == Ref::Target(0)
+            && !self.at_most_one(what)
+            && self.target_is(|kind| {
+                matches!(kind, Targetable::Object(selector)
+                    if !selector.0.iter().any(|pred| matches!(pred, Pred::In(_) | Pred::Spell)))
+            })
+    }
+
     /// The object counters are put on, taken from or moved: "~", one target, or (with `several`) "each
     /// creature you control".
     fn counter_place(&mut self, place: &Ref, several: bool) -> Option<String> {
@@ -1439,8 +1449,13 @@ impl Writer<'_> {
             Some("return ~ to its owner's hand".to_owned())
         } else if self.in_your_graveyard(what) {
             Some(format!("return {} to your hand", self.object(what)?))
-        } else if self.is_a_permanent(what) {
-            Some(format!("return {} to its owner's hand", self.object(what)?))
+        } else if self.is_a_permanent(what) || self.are_permanents(what) {
+            let tail = if self.at_most_one(what) {
+                "its owner's hand"
+            } else {
+                "their owners' hands"
+            };
+            Some(format!("return {} to {tail}", self.object(what)?))
         } else {
             None
         }
@@ -1708,20 +1723,27 @@ impl Writer<'_> {
         else {
             return None;
         };
-        if !counters.is_empty() {
-            return None;
-        }
         let tapped = if *tapped { " tapped" } else { "" };
+        let entering = match counters.as_slice() {
+            [] => String::new(),
+            [(counter, number)] => format!(
+                " with {} on it",
+                counters::text(counter, &Amount::Fixed(i32::try_from(*number).ok()?))?
+            ),
+            _ => return None,
+        };
         match under {
             None if self.in_your_graveyard(what) => Some(format!(
-                "return {} to the battlefield{tapped}",
+                "return {} to the battlefield{tapped}{entering}",
                 self.object(what)?
             )),
             // A card of another graveyard enters under the control of the player who takes it.
-            Some(Ref::You) if self.in_another_graveyard(what) => Some(format!(
-                "put {} onto the battlefield{tapped} under your control",
-                self.object(what)?
-            )),
+            Some(Ref::You) if entering.is_empty() && self.in_another_graveyard(what) => {
+                Some(format!(
+                    "put {} onto the battlefield{tapped} under your control",
+                    self.object(what)?
+                ))
+            }
             _ => None,
         }
     }
