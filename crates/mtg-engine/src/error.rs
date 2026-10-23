@@ -72,6 +72,14 @@ pub enum SetupError {
         /// The validation failure.
         source: DeckError,
     },
+    /// A player's companion failed the format's validation.
+    #[error("player {player:?} has an invalid companion: {source}")]
+    InvalidCompanion {
+        /// Owner of the companion.
+        player: PlayerId,
+        /// The validation failure.
+        source: DeckError,
+    },
     /// A seat starts with commanders in a format that has no command zone.
     #[error("seat {seat} starts with commanders but the format has no command zone")]
     NoCommandZone {

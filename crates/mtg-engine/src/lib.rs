@@ -53,6 +53,7 @@ pub mod characteristics;
 pub mod choose;
 mod citys_blessing;
 pub mod combat;
+pub mod companions;
 pub mod copies;
 pub mod counters;
 pub mod day_night;

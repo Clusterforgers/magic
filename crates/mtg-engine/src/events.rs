@@ -674,6 +674,19 @@ pub enum Event {
         /// The commander.
         object: ObjectId,
     },
+    /// A player revealed the companion they named (CR 702.139): the card, public from now on, lies outside the game.
+    CompanionRevealed {
+        /// Whose companion.
+        player: PlayerId,
+    },
+    /// A player paid {3} and put their companion into their hand (CR 702.139, a special action): the card is the object
+    /// `object` from now on, and the payment is the events around this one.
+    CompanionBrought {
+        /// Whose companion.
+        player: PlayerId,
+        /// The object the card became, in the hand.
+        object: ObjectId,
+    },
 }
 
 /// How the resolution of a spell or ability ended.
@@ -799,6 +812,7 @@ impl Event {
             | Event::LifeLost { .. }
             | Event::ManualAction { .. }
             | Event::CommanderStayed { .. }
+            | Event::CompanionRevealed { .. }
             | Event::LibraryLooked(_)
             | Event::CardsFound(_)
             | Event::Revealed(_) => Vec::new(),
@@ -826,6 +840,7 @@ impl Event {
             Event::AbilityPutOnStack(put) => vec![put.object],
             Event::LandPlayed { object, .. }
             | Event::SpellCast { object, .. }
+            | Event::CompanionBrought { object, .. }
             | Event::ZoneChanged { object, .. }
             | Event::SpellResolved { object }
             | Event::Entered { object, .. }

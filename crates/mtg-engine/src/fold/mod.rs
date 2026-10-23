@@ -241,6 +241,10 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             });
         }
         Event::PriorityPassed { player } => pass_priority(state, *player)?,
+        Event::CompanionRevealed { player } => crate::companions::fold_revealed(state, *player)?,
+        Event::CompanionBrought { player, object } => {
+            crate::companions::fold_brought(state, *player, *object)?;
+        }
         Event::Transformed { object, face } => set_face(state, *object, *face)?,
         Event::Flipped { object } => flip(state, *object)?,
         Event::DayNightChanged { .. }

@@ -855,6 +855,13 @@ impl<'a> Walker<'a> {
             Keyword::Annihilator(0) => self.problem("annihilator needs a number of at least 1"),
             Keyword::Dredge(0) => self.problem("dredge needs a number of at least 1"),
             Keyword::Fabricate(0) => self.problem("fabricate needs a number of at least 1"),
+            Keyword::Companion(condition) => {
+                for pred in condition.unreadable() {
+                    self.problem(format!(
+                        "a companion condition reads the card alone, not `{pred}`"
+                    ));
+                }
+            }
             Keyword::PartnerWith(name) => {
                 self.names
                     .push((self.face, self.current_path(), name.clone()));

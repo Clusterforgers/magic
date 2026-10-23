@@ -188,6 +188,8 @@ pub struct GameState {
     pub(crate) citys_blessing: std::collections::BTreeSet<PlayerId>,
     /// The commanders of the game and what is counted for them (CR 903); empty outside Commander.
     pub(crate) commanders: crate::commanders::Commanders,
+    /// The companions the seats named, outside the game until their owners bring them in (CR 702.139).
+    pub(crate) companions: crate::companions::Companions,
 }
 
 impl GameState {
@@ -592,6 +594,8 @@ impl Hash for GameState {
         }
         // Likewise a game without commanders.
         self.commanders.hash(state);
+        // Likewise a game without companions.
+        self.companions.hash(state);
     }
 }
 

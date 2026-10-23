@@ -12,6 +12,7 @@ use mtg_core::mana::ManaType;
 use serde_json::Value;
 
 use crate::ability::Ability;
+use crate::companion::DeckCondition;
 use crate::definition::{AbilityDef, CardDefinition};
 use crate::keyword::Keyword;
 use crate::modify::GameRule;
@@ -151,6 +152,14 @@ impl CardDefinition {
             || (names(self, other) && names(other, self))
             || beside(self, other)
             || beside(other, self)
+    }
+
+    /// The condition of the card's companion ability (CR 702.139), when its rules have one.
+    pub fn companion_condition(&self) -> Option<&DeckCondition> {
+        self.keywords().find_map(|keyword| match keyword {
+            Keyword::Companion(condition) => Some(&**condition),
+            _ => None,
+        })
     }
 
     /// The keyword abilities among the card's rules.

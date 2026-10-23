@@ -314,6 +314,7 @@ const RUNS: &[&str] = &[
     "Keyword.Partner",
     "Keyword.PartnerWith",
     "Keyword.PartnerGroup",
+    "Keyword.Companion",
     "Keyword.DoctorsCompanion",
     "Keyword.ChooseABackground",
     "Keyword.Unearth",
