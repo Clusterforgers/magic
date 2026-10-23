@@ -1458,6 +1458,25 @@ mod tests {
         Payment { life, ..taps(of) }
     }
 
+    /// A permanent of six abilities is one tap, and each Phyrexian symbol it cannot pay with life needs its own white
+    /// source: the refusal of {5}{W/P}{W/P}{W/P} at 1 life is right exactly when fewer than three permanents make white.
+    #[rstest]
+    #[case::three_white_sources_and_five_more(&["WUBRGC", "W", "W", "G", "G", "B", "U", "R"], 1, true)]
+    #[case::the_many_ability_land_last(&["W", "W", "G", "G", "B", "U", "R", "WUBRGC"], 1, true)]
+    #[case::only_two_make_white(&["WUBRGC", "W", "G", "G", "B", "U", "R", "C"], 1, false)]
+    #[case::two_make_white(&["GUBRC", "W", "W", "G", "G", "B", "U", "R"], 1, false)]
+    #[case::seven_permanents(&["WUBRGC", "W", "W", "G", "G", "B", "U"], 1, false)]
+    #[case::life_pays_one_symbol(&["WUBRGC", "W", "G", "G", "B", "U", "R"], 2, true)]
+    fn a_permanent_of_many_abilities_is_one_tap_of_a_cost_with_phyrexian_symbols(
+        #[case] abilities: &[&str],
+        #[case] life: i32,
+        #[case] affordable: bool,
+    ) {
+        let cost = cost("{5}{W/P}{W/P}{W/P}");
+        let sources = permanents(abilities);
+        assert_eq!(can_afford(&cost, &pool_of(&[]), &sources, life), affordable);
+    }
+
     /// `can_afford` and `auto_payment` for a cost over single-ability lands; the life automatic payment pays, if it pays at all.
     fn afford(cost_text: &str, lands_str: &str, floating: &str, life: i32) -> (bool, Option<u32>) {
         let cost = cost(cost_text);

@@ -5,6 +5,7 @@ use std::hash::{Hash, Hasher};
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_cards::definition::Layout;
 use mtg_cards::value::{CastWay, CounterKind};
 use mtg_core::card::{CardType, CardTypes};
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -441,6 +442,18 @@ impl GameObject {
         match self.face() {
             Some(face) => self.def.face(face),
             None => &self.def,
+        }
+    }
+
+    /// The printed mana value of the face in use, without the X of a spell on the stack. A transforming double-faced
+    /// permanent with its back face up has the mana value of its front face (CR 712.8e); a copy of that face has the
+    /// back face's own, which is 0 (CR 707.8).
+    pub fn mana_value(&self) -> u32 {
+        let whole = self.whole_card();
+        if whole.layout == Layout::Transform && self.face().is_some() {
+            whole.mana_value()
+        } else {
+            self.card().mana_value()
         }
     }
 

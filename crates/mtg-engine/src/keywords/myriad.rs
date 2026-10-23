@@ -56,6 +56,7 @@ impl KeywordRules for Myriad {
                             once: true,
                             effects: vec![Effect::Exile {
                                 what: Ref::Bound(COPIES.to_owned()),
+                                bind: None,
                             }],
                         },
                     ],

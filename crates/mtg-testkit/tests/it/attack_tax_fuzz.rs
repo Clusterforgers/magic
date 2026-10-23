@@ -7,6 +7,7 @@ use mtg_engine::combat::{AttackTarget, attack_cost};
 use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::{Engine, Event};
 use mtg_testkit::attack_tax_cards::TAX_CARDS;
+use mtg_testkit::bot::apply_answer;
 use mtg_testkit::{RandomBot, tax_fuzz_setup};
 
 use crate::common::seeds::{for_each_seed, fuzz_games};
@@ -66,7 +67,7 @@ fn bot_games_with_attack_taxes_pay_for_each_attack_and_use_each_part_of_it() {
                 }
                 let before = engine.state().clone();
                 let answer = bots[decision.player.index()].choose(&decision);
-                let events = engine.apply(answer).unwrap_or_else(|error| {
+                let events = apply_answer(&mut engine, &decision, answer).unwrap_or_else(|error| {
                     panic!("seed {seed}, {players} seats, step {step}: {error}")
                 });
                 let Some(attackers) = events.iter().find_map(|event| match event {

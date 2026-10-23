@@ -770,10 +770,9 @@ impl<'a> Scope<'a> {
             StatKind::Toughness => seen.chars.toughness.map(i64::from),
             StatKind::Colors => i64::try_from(seen.chars.colors.iter().count()).ok(),
             // A spell on the stack counts the X it was cast with for each {X} of its cost (CR 202.3e).
-            StatKind::ManaValue => seen.card.map(|c| {
-                let card = c.card();
-                i64::from(card.mana_value() + u32::from(card.x_in_cost) * seen.x)
-            }),
+            StatKind::ManaValue => seen
+                .card
+                .map(|c| i64::from(c.mana_value() + u32::from(c.card().x_in_cost) * seen.x)),
             // The loyalty of a planeswalker on the battlefield is its loyalty counters, as they were if it has left;
             // in any other zone it is the number printed on the card (CR 306.5a, 306.5c). Nothing else has loyalty.
             StatKind::Loyalty => seen.chars.types.contains(CardType::Planeswalker).then(|| {

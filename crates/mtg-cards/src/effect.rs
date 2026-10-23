@@ -63,6 +63,10 @@ pub enum Destination {
         /// Enters under this player's control; its owner's when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         under: Option<Ref>,
+        /// Enters with its back face up (CR 712.14a); a card that is not a transforming double-faced card stays where it
+        /// is.
+        #[serde(default, skip_serializing_if = "is_false")]
+        transformed: bool,
         /// Counters it enters with, each kind with its number (undying: one +1/+1 counter).
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         counters: Vec<(CounterKind, u32)>,
@@ -273,6 +277,10 @@ pub enum Effect {
     Exile {
         /// What is exiled.
         what: Ref,
+        /// The name the exiled objects are bound to, as the objects they become in exile (CR 400.7), for the steps that
+        /// return them ("exile this Saga, then return it").
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// Exiles objects face down, linked to the source of the effect: the permanent hides them (hideaway, CR 702.75a).
     ExileHidden {
@@ -859,7 +867,7 @@ mod tests {
         r#"{"Destroy":{"what":{"Target":0}}}"#
     )]
     #[case::move_to_battlefield_tapped(
-        Effect::Move { what: Ref::Bound("land".into()), to: Destination::Battlefield { tapped: true, under: None, counters: vec![] } },
+        Effect::Move { what: Ref::Bound("land".into()), to: Destination::Battlefield { tapped: true, under: None, transformed: false, counters: vec![] } },
         r#"{"Move":{"what":{"Bound":"land"},"to":{"Battlefield":{"tapped":true}}}}"#
     )]
     #[case::search(
