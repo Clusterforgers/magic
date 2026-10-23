@@ -223,6 +223,7 @@ mod monarch_followups;
 mod monarch_wordings;
 mod morph;
 mod morph_fuzz;
+mod move_fuzz;
 mod mulligan;
 mod mutate;
 mod mutate_counts;

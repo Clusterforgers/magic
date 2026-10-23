@@ -33,13 +33,8 @@ pub const SPENT_CARDS: &[(&str, usize)] = &[
     ("Plaxmanta", 3),
 ];
 
-/// The corpus spells that return a card from a graveyard with a counter, return several targets to their owners' hands
-/// and exile a monocolored permanent, with their copies.
-pub const MOVE_CARDS: &[(&str, usize)] =
-    &[("Persist", 2), ("Aether Gale", 1), ("Vanishing Verse", 2)];
-
-/// A legal Normal deck of sixty cards of the three lists, burn that kills the exilers, and plain creatures, derived
-/// entirely from `rng`.
+/// A legal Normal deck of sixty cards of both lists, burn that kills the exilers, and plain creatures, derived entirely
+/// from `rng`.
 pub fn exile_until_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
     let colors = [
         Color::White,
@@ -50,11 +45,7 @@ pub fn exile_until_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, C
     ];
     let mut deck: Vec<Arc<CardDefinition>> =
         (0..LANDS).map(|i| land(colors[i % colors.len()])).collect();
-    for &(name, copies) in EXILE_UNTIL_CARDS
-        .iter()
-        .chain(SPENT_CARDS)
-        .chain(MOVE_CARDS)
-    {
+    for &(name, copies) in EXILE_UNTIL_CARDS.iter().chain(SPENT_CARDS) {
         deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
     }
     deck.extend(std::iter::repeat_n(burn("Burn", 3), 4));
@@ -95,11 +86,7 @@ mod tests {
         let again = exile_until_deck(&mut GameRng::substream(1, 0)).unwrap();
         assert_eq!(first.len(), 60);
         assert_eq!(names(&first), names(&again));
-        for &(name, copies) in EXILE_UNTIL_CARDS
-            .iter()
-            .chain(SPENT_CARDS)
-            .chain(MOVE_CARDS)
-        {
+        for &(name, copies) in EXILE_UNTIL_CARDS.iter().chain(SPENT_CARDS) {
             assert_eq!(
                 first.iter().filter(|card| card.name == name).count(),
                 copies
@@ -110,11 +97,7 @@ mod tests {
     #[test]
     fn the_corpus_cards_of_the_deck_are_verified() {
         let corpus = corpus::corpus().unwrap();
-        for &(name, _) in EXILE_UNTIL_CARDS
-            .iter()
-            .chain(SPENT_CARDS)
-            .chain(MOVE_CARDS)
-        {
+        for &(name, _) in EXILE_UNTIL_CARDS.iter().chain(SPENT_CARDS) {
             assert_eq!(
                 corpus.support(name).unwrap().support,
                 Support::Verified,

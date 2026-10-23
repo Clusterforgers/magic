@@ -31,7 +31,7 @@ fn exile_durations(abilities: &[Ability]) -> Vec<Option<Duration>> {
     fn walk(effects: &[Effect], found: &mut Vec<Option<Duration>>) {
         for effect in effects {
             match effect {
-                Effect::Exile { duration, .. } => found.push(duration.clone()),
+                Effect::Exile { duration, .. } => found.push(*duration),
                 Effect::May { effects, .. } => walk(effects, found),
                 _ => {}
             }

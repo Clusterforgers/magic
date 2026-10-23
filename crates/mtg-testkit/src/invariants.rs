@@ -111,7 +111,7 @@ fn check_companions(state: &GameState) -> Result<(), Violation> {
     Ok(())
 }
 
-/// A merged permanent (CR 729) is on the battlefield and made of at least two cards, one of them its own; the other
+/// A merged permanent (CR 729) is on the battlefield or phased out, and made of at least two cards, one of them its own; the other
 /// cards are no object of the game while they are part of it, and no card is part of two permanents.
 fn check_merged(state: &GameState) -> Result<(), Violation> {
     let mut claimed: BTreeSet<ObjectId> = BTreeSet::new();
@@ -120,7 +120,7 @@ fn check_merged(state: &GameState) -> Result<(), Violation> {
             continue;
         };
         let cards = merged.from_the_top();
-        if object.zone() != Zone::Battlefield || cards.len() < 2 {
+        if !matches!(object.zone(), Zone::Battlefield | Zone::PhasedOut) || cards.len() < 2 {
             return Err(zone_error(format!(
                 "{:?} is merged but is {:?} with {} cards",
                 object.id(),
