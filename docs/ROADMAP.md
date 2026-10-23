@@ -171,6 +171,7 @@ The server is settled first, then the web is built once against the final types.
 
 ### Tooling
 - [ ] (t1) The `mtg-cli` `fetch_scryfall` tests are stable under parallel load (two of them failed once in a full run and passed alone and on rerun)
+- [~] (t2) (branch t2-offered-helpers) Two engine faults the fuzz decks of the writer cards expose: improvise, convoke and delve are offered from objects the spell's additional cost already took (a sacrificed Inspiring Statuary is also tapped in the same payment and `set_tapped` fails), and a bot loops on declaring attackers and cancelling the payment of an attack tax with Phyrexian mana until the answer limit
 - [ ] The expected X symbols in `x_cards.rs` of `mtg-testkit` are derived from the card list, so a new X card edits no test
 - [ ] Coverage dashboard in the web over `Library::support`: states, reasons and clause spans per card, ranked by saved-deck demand; target: 100% of the chosen precons (`docs/deck-check.md`)
 
