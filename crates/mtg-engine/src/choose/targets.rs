@@ -2,7 +2,7 @@
 //! recheck on resolution that uses the same rule (CR 115, 608.2b).
 
 use mtg_cards::refs::{Pred, Selector, TargetSpec, Targetable};
-use mtg_cards::value::Amount;
+use mtg_cards::value::{Amount, CastWay};
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
@@ -43,6 +43,7 @@ pub(crate) fn options_before_x(
         cause,
         None,
         &[],
+        None,
     )
 }
 
@@ -61,7 +62,7 @@ pub(crate) fn targets_met(
     x: Option<u32>,
 ) -> bool {
     specs.iter().enumerate().all(|(index, spec)| {
-        options_for(state, source, controller, index, spec, false, cause, x, &[]).is_some()
+        options_for(state, source, controller, index, spec, false, cause, x, &[], None).is_some()
     })
 }
 
@@ -255,6 +256,7 @@ pub(crate) fn options_for(
     cause: Option<&Cause>,
     x: Option<u32>,
     paid: &[usize],
+    way: Option<CastWay>,
 ) -> Option<TargetOptions> {
     let legal = legal_for(state, spec, source, controller, cause, x);
     let available = u32::try_from(legal.len()).unwrap_or(u32::MAX);
@@ -272,6 +274,7 @@ pub(crate) fn options_for(
             let announced = Choices {
                 x,
                 optional_costs: paid.to_vec(),
+                way,
                 ..Choices::default()
             };
             let mut scope = Scope::announcing(state, controller, origin);
