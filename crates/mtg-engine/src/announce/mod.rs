@@ -315,12 +315,17 @@ impl Pending {
         }
     }
 
-    /// The parts a spell pays besides its mana for what has been announced (`Needs::cost_parts`).
+    /// The parts a spell pays besides its mana for what has been announced (`Needs::cost_parts`), a counted one for the
+    /// X announced.
     pub(crate) fn cost_parts(&self) -> Vec<Part> {
+        let x = self.choices.x.unwrap_or(0);
         self.needs
             .as_ref()
             .map(|needs| needs.cost_parts(&self.choices))
             .unwrap_or_default()
+            .iter()
+            .map(|part| part.at(x))
+            .collect()
     }
 
     /// Whether the cards picked for the next part of the cost are too weak for it: the part taps creatures for their

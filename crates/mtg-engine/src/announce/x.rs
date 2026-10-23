@@ -10,7 +10,7 @@ use mtg_cards::value::{CastWay, CounterKind};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaSymbol};
 
-use super::{Ctx, Next, What, Work, cheapest, parts, targets, total};
+use super::{Ctx, Next, What, Work, cheapest, parts, required, targets, total};
 use crate::choose::{Choices, NumberOptions, enough_modes, modal_of, reads_x, targets_met};
 use crate::decision::DecisionKind;
 use crate::price::Price;
@@ -40,7 +40,14 @@ impl XCost {
     /// the ability being announced.
     pub(crate) fn of(state: &GameState, what: &What, rules: Option<&Ability>) -> Option<XCost> {
         let symbols = match what {
-            What::Spell(spell) => u32::from(state.object(*spell)?.card().x_in_cost),
+            What::Spell(spell) => {
+                let card = state.object(*spell)?.card();
+                // "As an additional cost to cast this spell, pay X life.": the cost counts the X it asks for.
+                if card.x_in_cost == 0 && required::counts_x(card) {
+                    return Some(XCost::Parts);
+                }
+                u32::from(card.x_in_cost)
+            }
             What::Ability(_) => match rules? {
                 Ability::Activated { cost, .. } => {
                     let price = Price::announced(cost).ok()?;
@@ -71,8 +78,9 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         work.done.x = true;
         return None;
     }
-    // An alternative cost has no `{X}`: the one of the mana cost is 0 (CR 107.3b).
-    if work.choices.way.is_some_and(CastWay::replaces_cost) {
+    // An alternative cost has no `{X}`: the one of the mana cost is 0 (CR 107.3b). The X of a cost that counts it is
+    // still announced.
+    if work.choices.way.is_some_and(CastWay::replaces_cost) && ctx.needs.x != Some(XCost::Parts) {
         work.choices.x = Some(0);
         work.done.x = true;
         return None;

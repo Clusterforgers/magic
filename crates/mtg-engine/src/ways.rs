@@ -72,6 +72,15 @@ fn mana_only(cost: &mtg_cards::cost::Cost) -> Option<ManaCost> {
 /// the mana, and life and the objects the player picks. A cost that taps or loses its source, counts X or removes counters
 /// is not paid; nor is one with nothing to pay.
 pub(crate) fn cast_cost(cost: &mtg_cards::cost::Cost) -> Option<(ManaCost, Vec<Part>)> {
+    cast_cost_counting(cost, false)
+}
+
+/// [`cast_cost`], where a part that counts the X announced is paid too when `counted` (the required additional cost of a
+/// spell: "pay X life", "sacrifice X creatures").
+pub(crate) fn cast_cost_counting(
+    cost: &mtg_cards::cost::Cost,
+    counted: bool,
+) -> Option<(ManaCost, Vec<Part>)> {
     let price = Price::announced(cost).ok()?;
     let unpaid = price.tap
         || price.moves_source()
@@ -80,7 +89,7 @@ pub(crate) fn cast_cost(cost: &mtg_cards::cost::Cost) -> Option<(ManaCost, Vec<P
         || price
             .parts
             .iter()
-            .any(|part| part.is_counted() || matches!(part, Part::Counters { .. }));
+            .any(|part| (part.is_counted() && !counted) || matches!(part, Part::Counters { .. }));
     (!unpaid).then(|| (price.mana.unwrap_or(ManaCost::ZERO), price.parts))
 }
 

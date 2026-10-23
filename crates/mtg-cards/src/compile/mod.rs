@@ -95,7 +95,7 @@ struct Pending {
 fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec<Ability> {
     let text = normalize::normalize(&shown.oracle_text, &own_names(shown));
     let (spell, aura) = (is_spell(shown), is_aura(shown));
-    let x_free = shown.mana_cost.contains("{X}");
+    let x_free = shown.mana_cost.contains("{X}") || shown.oracle_text.lines().any(counts_x);
     let own = own_face(shown);
     let mut pending = Vec::new();
     for raw in clauses::split(&text) {
@@ -340,6 +340,17 @@ fn requires_a_pick(line: &str) -> bool {
             ["sacrifice", "discard", "exile"]
                 .iter()
                 .any(|verb| cost.starts_with(verb))
+        })
+}
+
+/// Whether a line of text is a required additional cost that counts the X the caster announces ("As an additional cost
+/// to cast this spell, pay X life."), which the effects of the spell read.
+fn counts_x(line: &str) -> bool {
+    let line = line.to_lowercase();
+    line.strip_prefix("as an additional cost to cast this spell, ")
+        .is_some_and(|cost| {
+            cost.split(|c: char| !c.is_alphanumeric())
+                .any(|word| word == "x")
         })
 }
 

@@ -13,7 +13,8 @@ use crate::parts::Part;
 use crate::ways::{self, Way};
 
 /// The parts the required additional costs of the card take, in the order it prints them; `None` when one has a part the
-/// announcement does not pay: mana, `{T}`, losing the source, an X or counters.
+/// announcement does not pay: mana, `{T}`, losing the source, an `{X}` of mana or counters. A part that counts X takes
+/// the X the caster announces.
 pub(crate) fn parts(card: &CardDefinition) -> Option<Vec<Part>> {
     let mut taken = Vec::new();
     for rule in ability_reader::printed_rules(card) {
@@ -24,13 +25,18 @@ pub(crate) fn parts(card: &CardDefinition) -> Option<Vec<Part>> {
         else {
             continue;
         };
-        let (mana, parts) = ways::cast_cost(cost)?;
+        let (mana, parts) = ways::cast_cost_counting(cost, true)?;
         if mana != ManaCost::ZERO {
             return None;
         }
         taken.extend(parts);
     }
     Some(taken)
+}
+
+/// Whether a required additional cost of the card counts the X the caster announces ("pay X life", "sacrifice X creatures").
+pub(crate) fn counts_x(card: &CardDefinition) -> bool {
+    parts(card).is_some_and(|parts| parts.iter().any(Part::is_counted))
 }
 
 /// `ways` with the required additional costs of the card added to each; none when the caster cannot be asked to pay them.
