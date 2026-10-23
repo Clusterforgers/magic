@@ -41,6 +41,7 @@ const info = (over: Partial<GameInfo> = {}): GameInfo => ({
   ready: [],
   result: null,
   visibility: 'invite',
+  manual_play: false,
   ...over,
 })
 

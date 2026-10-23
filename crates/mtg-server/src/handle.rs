@@ -39,6 +39,9 @@ pub struct GameClosed;
 /// A snapshot of the actor's own bookkeeping, for tests, health checks and admin views.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GameStatus {
+    /// Whether the table plays with manual cards: some seat's deck holds cards the game does not run
+    /// whole. The roster says so while the game is in its lobby; once it runs, it is as it began.
+    pub manual_play: bool,
     /// Whether the engine exists yet (the lobby is over).
     pub started: bool,
     /// Events in the game's log.

@@ -36,4 +36,9 @@ result: GameResult | null,
 /**
  * Who may find the game; the host changes it with `PATCH /api/games/{id}` before the start.
  */
-visibility: Visibility, };
+visibility: Visibility, 
+/**
+ * Whether some seat plays a deck with cards the game does not run whole, which their controllers do by hand:
+ * the roster says so while the game is in its lobby, and the flag stays as it was when the game began.
+ */
+manual_play: boolean, };

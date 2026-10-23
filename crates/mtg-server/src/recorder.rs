@@ -17,16 +17,30 @@ pub(crate) struct Recorder {
     game: GameId,
     /// Seats already noted as joined, so each is written once.
     joined: Vec<bool>,
+    /// Whether the records showed the table as playing with manual cards when the recorder was made.
+    manual_play: bool,
 }
 
 impl Recorder {
-    /// A recorder for `game`; `joined` says which seats the records already show as joined.
-    pub(crate) fn new(records: GameRecords, game: GameId, joined: Vec<bool>) -> Recorder {
+    /// A recorder for `game`; `joined` says which seats the records already show as joined and
+    /// `manual_play` whether they show the table as playing with manual cards.
+    pub(crate) fn new(
+        records: GameRecords,
+        game: GameId,
+        joined: Vec<bool>,
+        manual_play: bool,
+    ) -> Recorder {
         Recorder {
             records,
             game,
             joined,
+            manual_play,
         }
+    }
+
+    /// Whether the records showed the table as playing with manual cards when the recorder was made.
+    pub(crate) fn manual_play(&self) -> bool {
+        self.manual_play
     }
 
     /// Notes the first connection to `seat`.
@@ -51,11 +65,18 @@ impl Recorder {
         }
     }
 
-    /// Stores the recipe with the decks the seats chose. Unlike the notes below, the game must not
-    /// start without it: a stored log replays under the recipe, so the caller refuses the start
-    /// when this fails.
-    pub(crate) async fn decks(&self, recipe: &GameRecipe) -> Result<(), RecordError> {
-        self.records.set_recipe(self.game, recipe).await
+    /// Stores what the game starts with: the recipe when the seats chose other decks than it names,
+    /// and whether the table plays with manual cards. Unlike the notes below, the game must not
+    /// start without it: a stored log replays under the recipe and a resumed game keeps the flag, so
+    /// the caller refuses the start when this fails.
+    pub(crate) async fn start_with(
+        &self,
+        recipe: Option<&GameRecipe>,
+        manual_play: bool,
+    ) -> Result<(), RecordError> {
+        self.records
+            .set_start(self.game, recipe, manual_play)
+            .await
     }
 
     /// Notes that the lobby is over.

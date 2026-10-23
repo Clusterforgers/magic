@@ -322,6 +322,7 @@ pub(crate) async fn game(
         ready: game.ready,
         result: game.result,
         visibility: game.visibility,
+        manual_play: game.manual_play,
     }))
 }
 

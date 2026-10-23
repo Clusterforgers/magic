@@ -1,10 +1,10 @@
 //! Game and seat records in Postgres: what a restart needs to bring a game back.
 //!
-//! `games` holds the recipe, the game's status, who may find it ([`Visibility`]) and the SHA-256 of
-//! its join code. `seats` holds each seat's display name, how it is held ([`SeatState`]), the
-//! SHA-256 of its token (none while it is open), whether the seat ever joined and the account it
-//! belongs to, if any. The event log lives apart in `game_events`. Run [`migrate`](crate::migrate)
-//! before use.
+//! `games` holds the recipe, the game's status, whether its table plays with manual cards, who may
+//! find it ([`Visibility`]) and the SHA-256 of its join code. `seats` holds each seat's display name,
+//! how it is held ([`SeatState`]), the SHA-256 of its token (none while it is open), whether the seat
+//! ever joined and the account it belongs to, if any. The event log lives apart in `game_events`.
+//! Run [`migrate`](crate::migrate) before use.
 
 mod claims;
 mod users;
@@ -175,6 +175,9 @@ pub struct GameRecord {
     pub code_digest: Option<[u8; 32]>,
     /// The recipe as stored; decoding it is the caller's business, since it may be damaged.
     pub recipe: serde_json::Value,
+    /// Whether the table plays with manual cards, as it was when the game started; false while the
+    /// game is in its lobby and for a game stored before the flag existed.
+    pub manual_play: bool,
     /// How the game ended, once it did.
     pub result: Option<GameResult>,
     /// Why the game was marked failed, for the operator: errors and fingerprints, never shown to players.
@@ -201,6 +204,7 @@ struct GameRow {
     visibility: String,
     code_digest: Option<Vec<u8>>,
     recipe: serde_json::Value,
+    manual_play: bool,
     result: Option<serde_json::Value>,
     failure: Option<String>,
     failure_reason: Option<String>,
@@ -221,6 +225,7 @@ impl GameRow {
             visibility: parse_visibility(&self.visibility)?,
             code_digest,
             recipe: self.recipe,
+            manual_play: self.manual_play,
             // A result this server cannot read only matters for display, never for resuming.
             result: self.result.and_then(|v| serde_json::from_value(v).ok()),
             failure: self.failure,
@@ -307,8 +312,8 @@ impl GameRecords {
     pub async fn get(&self, id: GameId) -> Result<Option<GameRecord>, RecordError> {
         let row = sqlx::query_as!(
             GameRow,
-            r#"SELECT id, status, visibility, code_digest, recipe, result, failure, failure_reason,
-                      extract(epoch FROM now() - created_at)::float8 AS "age_secs!"
+            r#"SELECT id, status, visibility, code_digest, recipe, manual_play, result, failure,
+                      failure_reason, extract(epoch FROM now() - created_at)::float8 AS "age_secs!"
                FROM games WHERE id = $1"#,
             id.uuid(),
         )
@@ -326,8 +331,8 @@ impl GameRecords {
     pub async fn unfinished(&self) -> Result<Vec<GameRecord>, RecordError> {
         let rows = sqlx::query_as!(
             GameRow,
-            r#"SELECT id, status, visibility, code_digest, recipe, result, failure, failure_reason,
-                      extract(epoch FROM now() - created_at)::float8 AS "age_secs!"
+            r#"SELECT id, status, visibility, code_digest, recipe, manual_play, result, failure,
+                      failure_reason, extract(epoch FROM now() - created_at)::float8 AS "age_secs!"
                FROM games WHERE status IN ('lobby', 'running') ORDER BY created_at, id"#,
         )
         .fetch_all(&self.pool)
@@ -391,20 +396,26 @@ impl GameRecords {
         Ok(())
     }
 
-    /// Replaces the recipe of a game that is still in its lobby, which is how the decks its seats
-    /// chose are kept. An error if the game is not in its lobby, since a game that began runs under
-    /// the recipe it began with.
-    pub(crate) async fn set_recipe(
+    /// Stores what a game that is still in its lobby starts with: the recipe when the seats chose
+    /// other decks than it names (none leaves it as it is) and whether the table plays with manual
+    /// cards. An error if the game is not in its lobby, since a game that began runs under the
+    /// recipe it began with.
+    pub(crate) async fn set_start(
         &self,
         id: GameId,
-        recipe: &GameRecipe,
+        recipe: Option<&GameRecipe>,
+        manual_play: bool,
     ) -> Result<(), RecordError> {
-        let recipe =
-            serde_json::to_value(recipe).map_err(|e| RecordError::Encode(e.to_string()))?;
+        let recipe = recipe
+            .map(serde_json::to_value)
+            .transpose()
+            .map_err(|e| RecordError::Encode(e.to_string()))?;
         let updated = sqlx::query!(
-            "UPDATE games SET recipe = $2 WHERE id = $1 AND status = 'lobby'",
+            "UPDATE games SET recipe = COALESCE($2, recipe), manual_play = $3
+             WHERE id = $1 AND status = 'lobby'",
             id.uuid(),
             recipe,
+            manual_play,
         )
         .execute(&self.pool)
         .await?;

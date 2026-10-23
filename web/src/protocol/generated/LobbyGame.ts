@@ -23,6 +23,10 @@ format: string,
  */
 house_rules?: HouseRules, 
 /**
+ * Whether some seat plays a deck with cards the game does not run whole, which their controllers do by hand.
+ */
+manual_play: boolean, 
+/**
  * Seats somebody holds, the host's included.
  */
 filled: number, 
