@@ -38,6 +38,7 @@ Angelic Field Marshal
 Ant-Man, Elusive Avenger
 Arbor Colossus
 Arcane Signet
+Arch of Orazca
 Archivist of Gondor
 Archmage of Echoes
 Archon of Absolution
@@ -645,6 +646,7 @@ Ominous Harvest
 Onakke Oathkeeper
 Opt
 Oran-Rief, the Vastwood
+Orazca Relic
 Orchard Strider
 Organic Extinction
 Origin of the Hulk
@@ -782,6 +784,7 @@ Scorn-Blade Berserker
 Scrapshooter
 Scuzzback Marauders
 Sea Gate
+Sea Gate Wreckage
 Secluded Courtyard
 Seedglaive Mentor
 Seekers' Squire

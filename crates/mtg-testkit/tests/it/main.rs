@@ -265,6 +265,7 @@ mod restricted_fuzz;
 mod restricted_mana;
 mod reveal_until;
 mod reveal_until_fuzz;
+mod riot;
 mod rules_fuzz;
 mod rules_games;
 mod saga;
