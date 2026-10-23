@@ -60,9 +60,15 @@ fn token(r: &mut Reader<'_>) -> Option<TokenRef> {
     }) {
         return Some(TokenRef::Named(id));
     }
-    let power = i32::try_from(r.number()?).ok()?;
-    r.punct('/').then_some(())?;
-    let toughness = i32::try_from(r.number()?).ok()?;
+    // "an X/X token": its size is the amount the sentence gives X.
+    let sized = r.attempt(|r| (r.word("x") && r.punct('/') && r.word("x")).then_some(()));
+    let (power, toughness) = if sized.is_some() {
+        (None, None)
+    } else {
+        let power = i32::try_from(r.number()?).ok()?;
+        r.punct('/').then_some(())?;
+        (Some(power), Some(i32::try_from(r.number()?).ok()?))
+    };
     let mut colors = Vec::new();
     if !r.word("colorless") {
         colors.push(r.take_word().and_then(color)?);
@@ -87,16 +93,33 @@ fn token(r: &mut Reader<'_>) -> Option<TokenRef> {
         .map(|subtype| subtype.0.as_str())
         .collect::<Vec<_>>()
         .join(" ");
-    Some(TokenRef::Custom(Box::new(TokenSpec {
+    let spec = Box::new(TokenSpec {
         name,
         colors,
         supertypes: Vec::new(),
         types,
         subtypes,
-        power: Some(power),
-        toughness: Some(toughness),
+        power,
+        toughness,
         abilities: Vec::new(),
-    })))
+    });
+    Some(match sized {
+        // The announced X stands for the amount until the where clause or the cost names it.
+        Some(()) if r.where_x || r.x_free => TokenRef::Sized {
+            size: Amount::X,
+            token: spec,
+        },
+        Some(()) => return None,
+        None => TokenRef::Custom(spec),
+    })
+}
+
+/// The description of a token that has one: a custom or a sized token.
+fn spec_of(token: &mut TokenRef) -> Option<&mut TokenSpec> {
+    match token {
+        TokenRef::Custom(spec) | TokenRef::Sized { token: spec, .. } => Some(spec),
+        _ => None,
+    }
 }
 
 /// "with flying", "with flying and vigilance", "with flying, vigilance, and haste": the keywords a described token has.
@@ -119,7 +142,7 @@ fn ability(r: &mut Reader<'_>) -> Option<Ability> {
     if let Some(found) = r.attempt(keyword) {
         return Some(Ability::Keyword(found));
     }
-    statics::quoted_ability(r)
+    statics::quoted_ability(r).or_else(|| r.quoted(statics::ability))
 }
 
 /// How many tokens a card says: a number, X, or "that many".
@@ -170,7 +193,52 @@ pub fn other_wordings(texts: &[String]) -> Vec<String> {
         // Only the first joint, and only the one that is followed by a kind of token.
         (!after.contains(" and ")).then(|| format!("{head}{before}create {after}"))
     });
-    controllers.chain(again).collect()
+    let have = texts.iter().filter_map(|text| quoted_in_a_sentence(text));
+    controllers
+        .chain(again)
+        .chain(pronoun_wordings(texts))
+        .chain(have)
+        .collect()
+}
+
+/// The text with the one ability in quotes that a token has said in a sentence of its own: `create a 0/1 Spawn token
+/// with "Sacrifice this token: Add {C}."` is `create a 0/1 Spawn token. It has "Sacrifice this token: Add {C}."`.
+fn quoted_in_a_sentence(text: &str) -> Option<String> {
+    let at = text.find("create ").or_else(|| text.find("Create "))?;
+    let rest = &text[at..];
+    // "with \"...\"" alone, or the quote joined to keywords: "with flying and \"...\"".
+    let (cut, joint) = rest
+        .find(" with \"")
+        .map(|with| (with, " with "))
+        .or_else(|| rest.rfind(" and \"").map(|and| (and, " and ")))?;
+    let (head, quoted) = (&text[..at + cut], &text[at + cut + joint.len()..]);
+    // Only a quote that closes the text: nothing joined to it.
+    let closed = quoted.strip_suffix('.').unwrap_or(quoted);
+    (closed.matches('"').count() == 2 && closed.ends_with('"')).then_some(())?;
+    let nouns = head[at..].split(" with ").next()?;
+    let verb = if nouns.ends_with(" tokens") {
+        "They have"
+    } else if nouns.ends_with(" token") {
+        "It has"
+    } else {
+        return None;
+    };
+    Some(format!("{head}. {verb} {quoted}"))
+}
+
+/// A count of the card's own power or counters, which a card may word with "it": "tokens equal to its power", "where X
+/// is the number of +1/+1 counters on it".
+pub fn pronoun_wordings(texts: &[String]) -> Vec<String> {
+    texts
+        .iter()
+        .filter(|text| text.contains("create "))
+        .filter_map(|text| {
+            let said = text
+                .replacen(" tokens equal to ~'s ", " tokens equal to its ", 1)
+                .replacen(" counters on ~", " counters on it", 1);
+            (said != *text).then_some(said)
+        })
+        .collect()
 }
 
 /// The tokens a player creates: "create ..." for you, "creates ..." after another player ("target opponent creates
@@ -199,7 +267,39 @@ pub fn made_by(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
     }) {
         effects.push(next);
     }
+    if let Some(abilities) = r.attempt(|r| they_have(r, &effects)) {
+        spec_of(last_token(&mut effects)?)?
+            .abilities
+            .extend(abilities);
+    }
     Some(effects)
+}
+
+/// The description of the token of the last effect.
+fn last_token(effects: &mut [Effect]) -> Option<&mut TokenRef> {
+    match effects.last_mut()? {
+        Effect::CreateToken { token, .. } => Some(token),
+        _ => None,
+    }
+}
+
+/// ". They have \"Sacrifice this token: Add {C}.\"", ". It has \"...\"": the abilities the last kind of token has, said in a sentence of its own.
+fn they_have(r: &mut Reader<'_>, made: &[Effect]) -> Option<Vec<Ability>> {
+    r.punct('.').then_some(())?;
+    let one = matches!(
+        made.last()?,
+        Effect::CreateToken {
+            count: Amount::Fixed(1),
+            ..
+        }
+    );
+    r.words(if one { "it has" } else { "they have" })
+        .then_some(())?;
+    let mut found = vec![ability(r)?];
+    while r.word("and") {
+        found.push(ability(r)?);
+    }
+    Some(found)
 }
 
 /// "Draw two cards and create a Treasure token.", "Create three 1/1 green Elf Warrior creature tokens, then mill three
@@ -257,16 +357,10 @@ fn group(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
     r.word(if single { "token" } else { "tokens" })
         .then_some(())?;
     if let Some(abilities) = r.attempt(keyword_abilities) {
-        let TokenRef::Custom(spec) = &mut token else {
-            return None;
-        };
-        spec.abilities = abilities;
+        spec_of(&mut token)?.abilities = abilities;
     }
     if let Some(name) = r.attempt(token_name) {
-        let TokenRef::Custom(spec) = &mut token else {
-            return None;
-        };
-        spec.name = name;
+        spec_of(&mut token)?.name = name;
     }
     let (tapped_and_attacking, attacking_only) = if single {
         ("that's tapped and attacking", "that's attacking")
@@ -366,10 +460,13 @@ fn token_text(token: &TokenRef) -> Option<Described> {
                     legendary: false,
                 })
         }
-        TokenRef::Custom(spec) => {
-            let (Some(power), Some(toughness)) = (spec.power, spec.toughness) else {
-                return None;
+        TokenRef::Custom(spec) | TokenRef::Sized { token: spec, .. } => {
+            let size = match token {
+                TokenRef::Sized { size, .. } if *size == Amount::X => "X/X".to_owned(),
+                TokenRef::Sized { .. } => return None,
+                _ => format!("{}/{}", spec.power?, spec.toughness?),
             };
+            let (power, toughness) = (spec.power.unwrap_or(0), spec.toughness.unwrap_or(0));
             let subtypes: Vec<&str> = spec.subtypes.iter().map(|found| found.0.as_str()).collect();
             let types: Vec<&str> = spec.types.iter().map(|found| type_name(*found)).collect();
             let legendary = spec.supertypes == [Supertype::Legendary];
@@ -382,7 +479,7 @@ fn token_text(token: &TokenRef) -> Option<Described> {
                 && toughness >= 0;
             plain.then(|| Described {
                 what: format!(
-                    "{power}/{toughness} {} {} {}",
+                    "{size} {} {} {}",
                     colors_text(&spec.colors),
                     subtypes.join(" "),
                     types.join(" ")
@@ -399,7 +496,7 @@ fn token_text(token: &TokenRef) -> Option<Described> {
 /// vigilance", " with flying, vigilance, and haste", " with \"Sacrifice this token: Add {C}.\"". `None` for an ability
 /// that is neither a keyword nor an activated or triggered ability.
 fn keywords_text(token: &TokenRef) -> Option<String> {
-    let TokenRef::Custom(spec) = token else {
+    let (TokenRef::Custom(spec) | TokenRef::Sized { token: spec, .. }) = token else {
         return Some(String::new());
     };
     let mut granted: Vec<Modification> = Vec::new();
@@ -407,7 +504,7 @@ fn keywords_text(token: &TokenRef) -> Option<String> {
     for ability in &spec.abilities {
         match ability {
             Ability::Keyword(found) => granted.push(Modification::AddKeyword(found.clone())),
-            Ability::Activated { .. } | Ability::Triggered { .. } => {
+            Ability::Activated { .. } | Ability::Triggered { .. } | Ability::Static { .. } => {
                 quoted.push(format!("\"{}\"", render::ability(ability)?));
             }
             _ => return None,

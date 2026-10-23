@@ -108,14 +108,8 @@ fn the_amount_is_the_characteristic_of_the_object_the_clause_names(
 #[case::a_number_of_without_a_count(
     "Whenever this creature attacks, create a number of 1/1 white Rabbit creature tokens."
 )]
-#[case::a_number_of_equal_to_a_life_total(
-    "Whenever this creature attacks, create a number of 1/1 white Rabbit creature tokens equal to your life total."
-)]
 #[case::a_number_of_for_an_unclear_object(
     "Whenever you cast a spell, create a number of 1/1 white Rabbit creature tokens equal to its power."
-)]
-#[case::a_stat_of_a_player(
-    "Target creature gets +X/+X until end of turn, where X is your life total."
 )]
 fn near_misses_of_a_where_clause_stay_unread(#[case] text: &str) {
     assert_eq!(clause(text, kind_of(text), false), None, "{text}");

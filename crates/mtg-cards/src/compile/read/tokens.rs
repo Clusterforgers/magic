@@ -52,13 +52,18 @@ pub fn canonical(text: &str) -> String {
             .get(at + 1)
             .map(|next| next.trim_end_matches(|c: char| !c.is_alphanumeric()));
         let investigate = word.trim_end_matches(|c: char| !c.is_alphanumeric());
-        if word.eq_ignore_ascii_case("this")
+        // A quote may open the word: "This token can't block.".
+        let quote = &word[..word.len() - word.trim_start_matches('"').len()];
+        if word.trim_start_matches('"').eq_ignore_ascii_case("this")
             && let Some(noun) = noun
             && let Some(next) = words.get(at + 1)
             && let stem = noun.strip_suffix("'s").unwrap_or(noun)
             && SOURCE_NOUNS.contains(&stem.to_ascii_lowercase().as_str())
         {
-            out.push(format!("~{}", next.get(stem.len()..).unwrap_or_default()));
+            out.push(format!(
+                "{quote}~{}",
+                next.get(stem.len()..).unwrap_or_default()
+            ));
             at += 2;
         } else if word == "enters"
             && words.get(at + 1) == Some(&"the")

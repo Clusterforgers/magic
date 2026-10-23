@@ -13,7 +13,7 @@ use super::where_x;
 use crate::ability::Ability;
 use crate::modify::Modification;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
-use crate::value::{Amount, StatKind};
+use crate::value::{Amount, StatKind, TurnTally};
 
 /// "~'s power and toughness are each equal to ...", "~'s power is equal to ... [and its toughness is equal to ...]",
 /// "~'s toughness is equal to ...".
@@ -138,6 +138,9 @@ pub(super) fn counting(r: &mut Reader<'_>) -> Option<Amount> {
 
 /// What "the number of" counts besides objects: "opponents you have", "charge counters on ~".
 fn held(r: &mut Reader<'_>) -> Option<Amount> {
+    if let Some(died) = r.attempt(died) {
+        return Some(died);
+    }
     if r.words("opponents you have") {
         return Some(Amount::Players(Ref::Opponents));
     }
@@ -275,6 +278,9 @@ pub(super) fn value_text(amount: &Amount) -> Option<String> {
 
 pub(super) fn counting_text(amount: &Amount) -> Option<String> {
     match amount {
+        Amount::Tallied { .. } => {
+            died_text(amount, false).map(|text| format!("the number of {text}"))
+        }
         Amount::Life(Ref::You) => Some("your life total".to_owned()),
         Amount::CardTypes(of) => Some(format!(
             "the number of card types among {}",
@@ -358,4 +364,57 @@ fn counted_text(selector: &Selector) -> Option<String> {
         .strip_suffix(" from your hand")
         .or_else(|| text.strip_suffix(" from your graveyard"))?;
     Some(format!("{head}{words}"))
+}
+
+/// "creatures that died this turn" (every player), "nontoken creatures put into your graveyard from the battlefield
+/// this turn" (yours): the creatures the game counted as they left the battlefield, after "the number of".
+fn died(r: &mut Reader<'_>) -> Option<Amount> {
+    let what = if r.word("nontoken") {
+        TurnTally::NontokenCreaturesDied
+    } else {
+        TurnTally::CreaturesDied
+    };
+    r.word("creatures").then_some(())?;
+    let who = if r.words("that died this turn") {
+        Ref::EachPlayer
+    } else {
+        r.need("put into your graveyard from the battlefield this turn")?;
+        Ref::You
+    };
+    Some(Amount::Tallied { who, what })
+}
+
+/// "creature put into your graveyard from the battlefield this turn", after "for each".
+pub(super) fn died_each(r: &mut Reader<'_>) -> Option<Amount> {
+    let what = if r.word("nontoken") {
+        TurnTally::NontokenCreaturesDied
+    } else {
+        TurnTally::CreaturesDied
+    };
+    r.word("creature").then_some(())?;
+    r.need("put into your graveyard from the battlefield this turn")?;
+    Some(Amount::Tallied {
+        who: Ref::You,
+        what,
+    })
+}
+
+/// What `died` and `died_each` read, written back: the creatures after "the number of" or the one creature after "for each".
+pub(super) fn died_text(amount: &Amount, each: bool) -> Option<String> {
+    let Amount::Tallied { who, what } = amount else {
+        return None;
+    };
+    let kind = match what {
+        TurnTally::CreaturesDied => "",
+        TurnTally::NontokenCreaturesDied => "nontoken ",
+        _ => return None,
+    };
+    let noun = if each { "creature" } else { "creatures" };
+    match who {
+        Ref::You => Some(format!(
+            "{kind}{noun} put into your graveyard from the battlefield this turn"
+        )),
+        Ref::EachPlayer if !each => Some(format!("{kind}{noun} that died this turn")),
+        _ => None,
+    }
 }

@@ -2,7 +2,7 @@
 
 /// The words after the dash of the type lines of creatures, artifacts, enchantments, lands and
 /// spells in the Oracle data, sorted (a two-word type such as "Time Lord" is two entries).
-const SUBTYPES: [&str; 433] = [
+const SUBTYPES: [&str; 435] = [
     "Adventure",
     "Advisor",
     "Aetherborn",
@@ -329,6 +329,7 @@ const SUBTYPES: [&str; 433] = [
     "Satyr",
     "Scarecrow",
     "Scientist",
+    "Scion",
     "Scorpion",
     "Scout",
     "Seal",
@@ -396,6 +397,7 @@ const SUBTYPES: [&str; 433] = [
     "Tree",
     "Treefolk",
     "Trilobite",
+    "Triskelavite",
     "Troll",
     "Turtle",
     "Tyranid",

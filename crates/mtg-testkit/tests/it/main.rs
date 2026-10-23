@@ -321,6 +321,7 @@ mod token_equipment;
 mod token_fuzz;
 mod token_shapes;
 mod token_shapes_fuzz;
+mod token_sizes;
 mod transform;
 mod trigger_any_of;
 mod trigger_families;

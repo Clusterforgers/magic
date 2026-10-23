@@ -267,11 +267,13 @@ impl<'a> Scope<'a> {
             TurnTally::SpellsCast => Tally::Cast,
             TurnTally::LifeGainedTotal
             | TurnTally::CreaturesAttacked
-            | TurnTally::CreaturesDied => {
+            | TurnTally::CreaturesDied
+            | TurnTally::NontokenCreaturesDied => {
                 let kind = match what {
                     TurnTally::LifeGainedTotal => Tally::GainedTotal,
                     TurnTally::CreaturesAttacked => Tally::Attackers,
-                    _ => Tally::Died,
+                    TurnTally::CreaturesDied => Tally::Died,
+                    _ => Tally::DiedNontoken,
                 };
                 let total: u32 = self
                     .players(who)?
