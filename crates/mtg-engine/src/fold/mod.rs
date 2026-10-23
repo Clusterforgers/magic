@@ -16,6 +16,7 @@ use crate::effects::Modification;
 use crate::error::EngineError;
 use crate::events::Event;
 use crate::mana::ManaPool;
+use crate::object::GameObject;
 use crate::player::{LossReason, Player, PlayerStatus};
 use crate::priority::PriorityState;
 use crate::sight;
@@ -248,6 +249,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::PermanentTapped { object } => set_tapped(state, *object, true)?,
         Event::PermanentUntapped { object } => set_tapped(state, *object, false)?,
         Event::Monstrous { object, .. } => set_monstrous(state, *object)?,
+        Event::Crewed { object, saddle, .. } => tally_crewed(state, *object, *saddle)?,
         Event::ClassLevelGained { object, level, .. } => set_level(state, *object, *level)?,
         Event::TurnedFaceUp { object, .. } => turn_face_up(state, *object)?,
         Event::ManaAdded {
@@ -431,6 +433,24 @@ fn set_monstrous(state: &mut GameState, id: ObjectId) -> Result<(), EngineError>
         return Err(invalid(format!("{id:?} is already monstrous")));
     }
     perm.designations.monstrous = true;
+    Ok(())
+}
+
+/// A Vehicle becomes crewed or a Mount saddled: counted for the object, which is a permanent.
+fn tally_crewed(state: &mut GameState, id: ObjectId, saddle: bool) -> Result<(), EngineError> {
+    let object = state
+        .object(id)
+        .map(GameObject::reference)
+        .ok_or_else(|| invalid(format!("{id:?} is not an object")))?;
+    state.tally_object(
+        object,
+        None,
+        if saddle {
+            Tally::Saddled
+        } else {
+            Tally::Crewed
+        },
+    );
     Ok(())
 }
 

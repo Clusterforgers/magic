@@ -80,6 +80,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Connived: [{ Connived: { object: 3, player: 1 } }, 'Forest connives'],
   Amassed: [{ Amassed: { object: 3, player: 1 } }, 'Bo amasses'],
   Monstrous: [{ Monstrous: { object: 3, player: 1 } }, 'Forest becomes monstrous'],
+  Crewed: [
+    { Crewed: { object: 3, player: 1, creatures: [1, 2] } },
+    'Forest is crewed by Grizzly Bears and Hill Giant',
+  ],
   TurnedFaceUp: [{ TurnedFaceUp: { object: 3, player: 1 } }, 'Bo turns Forest face up'],
   Mutated: [{ Mutated: { object: 3, spell: 9, over: true, player: 1 } }, 'Bo mutates a creature over Forest'],
   Adapted: [{ Adapted: { object: 3, player: 1 } }, 'Forest adapts'],

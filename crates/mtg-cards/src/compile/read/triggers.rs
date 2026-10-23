@@ -558,6 +558,16 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         return Some(TriggerPattern::Untapped { what: what.clone() });
     } else if r.word("explores") {
         return Some(TriggerPattern::Explored { what: what.clone() });
+    } else if r.words("becomes crewed") {
+        return Some(first_time(
+            r,
+            TriggerPattern::BecomesCrewed { what: what.clone() },
+        ));
+    } else if r.words("becomes saddled") {
+        return Some(first_time(
+            r,
+            TriggerPattern::BecomesSaddled { what: what.clone() },
+        ));
     } else if r.words("becomes monstrous") {
         return Some(TriggerPattern::BecomesMonstrous { what: what.clone() });
     } else if r.words("becomes level") {
@@ -917,6 +927,8 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::Explored { what } => said(what, "explores"),
         TriggerPattern::Connived { what } => said(what, "connives"),
         TriggerPattern::BecomesMonstrous { what } => said(what, "becomes monstrous"),
+        TriggerPattern::BecomesCrewed { what } => said(what, "becomes crewed"),
+        TriggerPattern::BecomesSaddled { what } => said(what, "becomes saddled"),
         TriggerPattern::BecomesLevel { what, level } => {
             said(what, &format!("becomes level {level}"))
         }

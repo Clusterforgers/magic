@@ -31,21 +31,24 @@ impl KeywordRules for Crew {
             limit: None,
             from: ZoneKind::Battlefield,
             targets: Vec::new(),
-            effects: vec![Effect::Continuous {
-                affected: Ref::This,
-                mods: vec![
-                    Modification::AddType(CardType::Artifact),
-                    Modification::AddType(CardType::Creature),
-                ],
-                duration: Duration::UntilEndOfTurn,
-            }],
+            effects: vec![
+                Effect::Continuous {
+                    affected: Ref::This,
+                    mods: vec![
+                        Modification::AddType(CardType::Artifact),
+                        Modification::AddType(CardType::Creature),
+                    ],
+                    duration: Duration::UntilEndOfTurn,
+                },
+                Effect::Crewed { saddle: false },
+            ],
         }]
     }
 }
 
 #[cfg(test)]
 mod tests {
-    //! Goal: Crew N adds one activated ability that taps any number of untapped creatures with total power N or more and makes its source an artifact creature until end of turn, for every N, and no other keyword adds it.
+    //! Goal: Crew N adds one activated ability that taps any number of untapped creatures with total power N or more and makes its source an artifact creature crewed by them until end of turn, for every N, and no other keyword adds it.
     use mtg_cards::ability::Ability;
     use rstest::rstest;
 
@@ -53,7 +56,7 @@ mod tests {
 
     fn written(power: u32) -> Ability {
         serde_json::from_str(&format!(
-            r#"{{"Activated":{{"cost":[{{"TapPower":{{"filter":[{{"Type":"Creature"}}],"power":{power}}}}}],"effects":[{{"Continuous":{{"affected":"This","mods":[{{"AddType":"Artifact"}},{{"AddType":"Creature"}}],"duration":"UntilEndOfTurn"}}}}]}}}}"#
+            r#"{{"Activated":{{"cost":[{{"TapPower":{{"filter":[{{"Type":"Creature"}}],"power":{power}}}}}],"effects":[{{"Continuous":{{"affected":"This","mods":[{{"AddType":"Artifact"}},{{"AddType":"Creature"}}],"duration":"UntilEndOfTurn"}}}},{{"Crewed":{{}}}}]}}}}"#
         ))
         .unwrap()
     }
