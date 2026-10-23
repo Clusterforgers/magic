@@ -20,6 +20,7 @@ Air Bladder
 Ajani's Pridemate
 Akrasan Squire
 Akroma's Vengeance
+Akroma, Angel of Wrath
 Alpha Deathclaw
 Altar's Reap
 Ambitious Aetherborn
@@ -233,6 +234,7 @@ Death Ward
 Death-Greeter's Champion
 Deathcap Cultivator
 Debris Field Crusher
+Debtors' Transport
 Deep Analysis
 Deep Forest Hermit
 Deepfathom Skulker
@@ -416,6 +418,7 @@ Guardian Gladewalker
 Guidelight Matrix
 Guiding Voice
 Gurmag Angler
+Hackrobat
 Hada Spy Patrol
 Hall of Triumph
 Hallowed Spiritkeeper
@@ -432,6 +435,7 @@ Heliod, Sun-Crowned
 Hellkite Igniter
 Hengegate Pathway // Mistgate Pathway
 Herald of Anguish
+Herald of Hoofbeats
 Herald of the Dreadhorde
 Herald of the Host
 Hero of Bladehold
@@ -455,6 +459,7 @@ Ill-Tempered Cyclops
 Illicit Shipment
 Illustrious Wanderglyph
 Imperial Hellkite
+Imperious Oligarch
 Impostor of the Sixth Pride
 Impulsive Pilferer
 Inferno Project
@@ -494,6 +499,7 @@ Kinjalli's Sunwing
 Kinsbaile Courier
 Kitchen Finks
 Knight of Dusk's Shadow
+Knight of the Last Breath
 Knights of the Black Rose
 Kolaghan Skirmisher
 Kongming, "Sleeping Dragon"
@@ -515,6 +521,7 @@ Lhurgoyf
 Life of Toshiro Umezawa // Memory of Toshiro
 Life's Legacy
 Light 'Em Up
+Light Up the Stage
 Lightning Bolt
 Lithoform Engine
 Living Twister
@@ -525,6 +532,8 @@ Looter il-Kor
 Lord of Extinction
 Lotleth Troll
 Lotus Petal
+Lu Bu, Master-at-Arms
+Lu Xun, Scholar General
 Ludevic's Test Subject // Ludevic's Abomination
 Lumen-Class Frigate
 Lurching Rotbeast
@@ -560,12 +569,14 @@ Metropolis Reformer
 Midnight Banshee
 Migratory Greathorn
 Migratory Route
+Ministrant of Obligation
 Mirari
 Mirari's Wake
 Mire's Malice
 Mirran Bardiche
 Mirror Image
 Mishra's Workshop
+Mistmeadow Skulk
 Mizzium Mortars
 Mobilizer Mech
 Molten Slagheap
@@ -614,6 +625,8 @@ Orchard Strider
 Organic Extinction
 Origin of the Hulk
 Orochi Hatchery
+Orzhov Enforcer
+Orzhov Racketeers
 Otherworldly Gaze
 Overgrown Arch
 Overgrowth
@@ -668,6 +681,7 @@ Questing Beast
 Rabble Rousing
 Radical Idea
 Raffine's Informant
+Rafter Demon
 Raging Goblinoids
 Rakdos Headliner
 Rally the Ranks
@@ -680,6 +694,7 @@ Ravenous Leucrocota
 Reality Shift
 Realm Seekers
 Reassembling Skeleton
+Reaver Titan
 Reckless Impulse
 Reconstructed Thopter
 Red Room Recruit
@@ -756,6 +771,7 @@ Sheltered by Ghosts
 Shenanigans
 Shifting Sliver
 Shiny Impetus
+Shu Cavalry
 Siege Smash
 Siege Wurm
 Sigiled Paladin
@@ -769,6 +785,7 @@ Siren Lookout
 Sister Repentia
 Skaab Goliath
 Skeletal Changeling
+Skewer the Critics
 Skinthinner
 Skirk Prospector
 Skitter Eel
@@ -800,10 +817,13 @@ Soul of Zendikar
 Souldrinker
 Soultether Golem
 Space Marine Devastator
+Spawn of Mayhem
 Spectral Rider
 Sphere of Safety
 Sphinx of Jwar Isle
+Sphinx of the Steel Wind
 Spider-Islanders
+Spikewheel Acrobat
 Spinerock Knoll
 Spire Golem
 Spire Winder
@@ -823,6 +843,7 @@ Steelburr Champion
 Steelclaw Lance
 Stitched Drake
 Stoke the Flames
+Stonecoil Serpent
 Stonewood Invocation
 Storm Fleet Swashbuckler
 Stormchaser's Talent
@@ -859,6 +880,7 @@ Sword of Body and Mind
 Swords to Plowshares
 Sylvok Battle-Chair
 Syndic of Tithes
+Syndicate Messenger
 Syphon Life
 Tabaxi Toucaneers
 Tah-Crop Skirmisher
@@ -968,6 +990,7 @@ Wasteland Raider
 Weaponcraft Enthusiast
 Wear // Tear
 Wedgelight Rammer
+Wei Scout
 Weigh Down
 Weirding Wood
 Whir of Invention
@@ -993,5 +1016,6 @@ Young Wolf
 Zanikev Locust
 Zendikar Farguide
 Zendikar Resurgent
+Zhang Fei, Fierce Warrior
 Zodiac Goat
 Zoetic Cavern

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c9b40f24-c08e-4e05-a141-0a8a670d37c9",
+  "name": "Herald of Hoofbeats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Herald of Hoofbeats",
+      "oracle_fingerprint": "d73ff4ceec990b651bbc047d57b5c355",
+      "abilities": [
+        { "Keyword": "Horsemanship" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Knight" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Horsemanship" }]
+          }
+        }
+      ]
+    }
+  ]
+}

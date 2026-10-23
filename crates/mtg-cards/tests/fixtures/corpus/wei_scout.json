@@ -1,0 +1,27 @@
+{
+  "id": "a11d58fb-fb70-4e8f-8f64-232ad2c1f59b",
+  "oracle_id": "f7fa054f-39cb-47d3-a55d-3f70ae164063",
+  "name": "Wei Scout",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ptk",
+  "collector_number": "90",
+  "rarity": "common",
+  "released_at": "1999-05-01",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Soldier Scout",
+  "oracle_text": "Horsemanship (This creature can't be blocked except by creatures with horsemanship.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Horsemanship"
+  ]
+}

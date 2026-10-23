@@ -1,0 +1,12 @@
+{
+  "oracle_id": "f7fa054f-39cb-47d3-a55d-3f70ae164063",
+  "name": "Wei Scout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wei Scout",
+      "oracle_fingerprint": "cb837d1779991d3f803b439d15cb7f81",
+      "abilities": [{ "Keyword": "Horsemanship" }]
+    }
+  ]
+}

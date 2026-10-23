@@ -1,0 +1,12 @@
+{
+  "oracle_id": "d9180f63-c745-41a1-9f01-273e7ee13176",
+  "name": "Shu Cavalry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shu Cavalry",
+      "oracle_fingerprint": "cb837d1779991d3f803b439d15cb7f81",
+      "abilities": [{ "Keyword": "Horsemanship" }]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "b8761f17-6f6d-45c3-a626-003396093142",
+  "oracle_id": "d9180f63-c745-41a1-9f01-273e7ee13176",
+  "name": "Shu Cavalry",
+  "lang": "en",
+  "layout": "normal",
+  "set": "me3",
+  "collector_number": "23",
+  "rarity": "common",
+  "released_at": "2009-09-07",
+  "digital": true,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Soldier",
+  "oracle_text": "Horsemanship (This creature can't be blocked except by creatures with horsemanship.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Horsemanship"
+  ]
+}
