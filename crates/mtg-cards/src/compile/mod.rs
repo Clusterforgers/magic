@@ -297,7 +297,7 @@ fn can_be_granted(ability: &Ability) -> bool {
 }
 
 /// Whether a spell or static clause is a keyword line the keyword reader does not know
-/// (`Mayhem {1}{B}`): one line without a closing period that no template reads. It is kept as a
+/// (`Cleave {1}{B}`): one line without a closing period that no template reads. It is kept as a
 /// keyword clause so that it does not stand in the way of the effect lines around it.
 fn is_unread_keyword_line(text: &str, kind: ClauseKind, x_free: bool, own: &read::Own) -> bool {
     matches!(kind, ClauseKind::Spell | ClauseKind::Static)
@@ -647,7 +647,7 @@ mod tests {
     }
 
     #[rstest]
-    #[case::mayhem("Mayhem {1}{B}")]
+    #[case::with_a_cost("Cleave {1}{B}")]
     #[case::with_a_number("Squad 2")]
     #[case::with_a_word("Epic")]
     #[case::with_a_dash("Impending 4\u{2014}{2}{U}")]
@@ -699,7 +699,7 @@ mod tests {
     )]
     #[case::a_static_keyword_like_line(
         "Creature \u{2014} Elf",
-        "Mayhem {1}{B}",
+        "Cleave {1}{B}",
         ClauseKind::Keyword
     )]
     #[case::a_level_block(

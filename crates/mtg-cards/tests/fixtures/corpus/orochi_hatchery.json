@@ -1,0 +1,19 @@
+{
+  "id": "5d3804ed-192d-47a1-ae7e-60b6827e2a72",
+  "oracle_id": "65fb1945-ed7a-4f1b-bc6b-166cbec1d8ec",
+  "name": "Orochi Hatchery",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c15",
+  "collector_number": "260",
+  "rarity": "rare",
+  "released_at": "2015-11-13",
+  "digital": false,
+  "mana_cost": "{X}{X}",
+  "cmc": 0.0,
+  "type_line": "Artifact",
+  "oracle_text": "This artifact enters with X charge counters on it.\n{5}, {T}: Create a 1/1 green Snake creature token for each charge counter on this artifact.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

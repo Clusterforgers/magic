@@ -1,0 +1,28 @@
+{
+  "oracle_id": "83c69c05-173d-4c1b-9541-1dde474fef5f",
+  "name": "Bonehoard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bonehoard",
+      "oracle_fingerprint": "0a0fe3ac5b5580c68d2b597f7617ea8c",
+      "abilities": [
+        { "Keyword": "LivingWeapon" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                  "toughness": { "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

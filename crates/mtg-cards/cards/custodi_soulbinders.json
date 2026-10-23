@@ -1,0 +1,46 @@
+{
+  "oracle_id": "c7a8daff-9913-4970-8765-52ba9d9d01db",
+  "name": "Custodi Soulbinders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Custodi Soulbinders",
+      "oracle_fingerprint": "a86d200b84f20555285581d6b69ca545",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Count": [{ "Type": "Creature" }, "Other"] }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}" }, { "RemoveCounters": { "counter": "+1/+1" } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "63a0f0a2-bafc-4cd0-a4ed-42ce58cd3e9b",
+  "name": "Darksteel Splicer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Darksteel Splicer",
+      "oracle_fingerprint": "9fc8ce2a0ee3f68416337a93c3b1b364",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      { "Subtype": "Phyrexian" },
+                      { "Not": "Token" },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Golem",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Phyrexian", "Golem"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  },
+                  "count": { "Players": "Opponents" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Golem" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Indestructible" }]
+          }
+        }
+      ]
+    }
+  ]
+}

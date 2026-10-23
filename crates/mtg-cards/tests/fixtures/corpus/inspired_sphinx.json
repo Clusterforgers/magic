@@ -1,0 +1,27 @@
+{
+  "id": "7f58d798-9b99-45a9-9015-f689145018a8",
+  "oracle_id": "61cceb14-9568-4a5e-9b56-07afa6407df2",
+  "name": "Inspired Sphinx",
+  "lang": "en",
+  "layout": "normal",
+  "set": "khc",
+  "collector_number": "40",
+  "rarity": "mythic",
+  "released_at": "2021-02-05",
+  "digital": false,
+  "mana_cost": "{5}{U}{U}",
+  "cmc": 7.0,
+  "type_line": "Creature — Sphinx",
+  "oracle_text": "Flying\nWhen this creature enters, draw cards equal to the number of opponents you have.\n{3}{U}: Create a 1/1 colorless Thopter artifact creature token with flying.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

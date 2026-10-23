@@ -37,6 +37,7 @@ mod pg_lobby;
 mod pg_migrations;
 mod pg_open_seats;
 mod pg_pace;
+mod pg_precon_check;
 mod pg_precons;
 mod pg_records;
 mod pg_relaxed_decks;

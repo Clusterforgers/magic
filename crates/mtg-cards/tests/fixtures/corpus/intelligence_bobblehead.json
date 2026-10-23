@@ -1,0 +1,19 @@
+{
+  "id": "e6546c0d-6be2-4ced-9d7c-4269df8dea76",
+  "oracle_id": "16e6bd4b-fbf1-4bbe-9271-a74f59320e0d",
+  "name": "Intelligence Bobblehead",
+  "lang": "en",
+  "layout": "normal",
+  "set": "pip",
+  "collector_number": "134",
+  "rarity": "uncommon",
+  "released_at": "2024-03-08",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Bobblehead",
+  "oracle_text": "{T}: Add one mana of any color.\n{5}, {T}: Draw X cards, where X is the number of Bobbleheads you control.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "d7fd16ce-282d-49cd-b2b4-0d25935e7a72",
+  "name": "Mycoloth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mycoloth",
+      "oracle_fingerprint": "8e23759116dd742927ce0c5eb0850c7f",
+      "abilities": [
+        { "Keyword": { "Devour": { "counters": 2, "of": [{ "Type": "Creature" }] } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

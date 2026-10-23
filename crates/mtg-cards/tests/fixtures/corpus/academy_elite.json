@@ -1,0 +1,25 @@
+{
+  "id": "f3728fbb-3a99-443a-b514-40f9990669c5",
+  "oracle_id": "ba6c3c72-c014-45c6-a0b4-59eb9a65303e",
+  "name": "Academy Elite",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c16",
+  "collector_number": "81",
+  "rarity": "rare",
+  "released_at": "2016-11-11",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "This creature enters with X +1/+1 counters on it, where X is the number of instant and sorcery cards in all graveyards.\n{2}{U}, Remove a +1/+1 counter from this creature: Draw a card, then discard a card.",
+  "power": "0",
+  "toughness": "0",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

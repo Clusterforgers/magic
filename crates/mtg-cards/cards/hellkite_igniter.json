@@ -1,0 +1,36 @@
+{
+  "oracle_id": "12aba1d4-477f-4d36-96bb-c3c7bbd51b75",
+  "name": "Hellkite Igniter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellkite Igniter",
+      "oracle_fingerprint": "6a66dd6ed3215edb7efdc8e1c980ae96",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

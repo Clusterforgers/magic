@@ -1,0 +1,27 @@
+{
+  "oracle_id": "fedb1947-9fa5-4655-8d02-b370fa63dd16",
+  "name": "Commence the Endgame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Commence the Endgame",
+      "oracle_fingerprint": "d8248b13670e85178c7ebb3d0d12ac3e",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "Amass": {
+                  "subtype": "Zombie",
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

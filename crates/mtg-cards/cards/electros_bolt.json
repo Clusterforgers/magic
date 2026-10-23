@@ -1,0 +1,20 @@
+{
+  "oracle_id": "e9222f89-e495-4502-bb0c-f5e802686b01",
+  "name": "Electro's Bolt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Electro's Bolt",
+      "oracle_fingerprint": "46cd4612780c40037c7f044d689bc28c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        },
+        { "Keyword": { "Mayhem": "{1}{R}" } }
+      ]
+    }
+  ]
+}
