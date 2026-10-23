@@ -23,7 +23,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Triggers and keywords: (c6b) triggered and upkeep keywords, (c4b) crewed and saddled events, (c3b) and (c3d) keyword actions and the remaining Monarch cards, (n1d5) day and night effects, (o2c).
 - Statics and layers: (c8), (c7b), (c7c), (o1d).
 - Compiler wordings, no engine change: (c10) one piece per wording family, (o2d), (c11) layouts and long-tail mechanics, (c11c), (c9c).
-- Commander and server: (hr5b), the `manual_play` flag stored with the game, the turn without an active player in the table view, Companion.
+- Commander and server: the `manual_play` flag stored with the game, the turn without an active player in the table view, Companion.
 - Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test.
 - After the card system: "Views complete", the Gate, then the web (M5 prompts for the decision kinds the engine asks, the manual-action menu, table states) and M7.
 - After each round: `mtg-cli ingest` and `compile` refresh the real database, `coverage` is re-run and the numbers go on the M6 target line; `fetch scryfall --printings` fills the printings once.
@@ -37,6 +37,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Game flow: auto-pass, response clocks, yields, stops and Full Control, idle windows as short hidden clocks, leak tests (`docs/arena-flow.md`, P1 to P8)
 - Web: core client, game UI with prompts for all eight decision kinds, N-seat table with log and stack panel, table animations, concede, lobby, account pages, Playwright e2e; the UI rebuild U1 to U12 (tokens, fit engine, grid, controls dock, turn feedback, game browser, layout gate)
 - Decks: list, import, export, builder, and the deck check with the Verified marker
+- Precons on the server: the list and view with each deck's check, a precon as a seat's deck, and its deck check at a table without an account (`docs/server.md`, Precons)
 - Card system so far: the DSL, card assembly and effect pipeline (`docs/cards-dsl.md`); the keywords of combat, hexproof and flash; triggers with APNAP order, delayed triggers and intervening if; pumps and keyword grants through layers 6 and 7c; discard, sacrifice, mill, the library effects, destroy, exile, counter, tap, untap, conditions, winning the game, pay, search, tokens (Treasure, Clue, Food), counters on permanents and players (+1/+1 and -1/-1 in layer 7c, poison, energy, experience), planeswalkers (loyalty abilities, damage to loyalty), Auras and `Attach` with the state-based actions of attachments, the legend rule, modes, yes or no and options
 
 ## M3 Card system
@@ -164,7 +165,6 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (cmd2e) A commander that would be drawn offers the command zone instead (CR 903.9b): the draw replacement of `replace.rs` (`Unit::Draw`) names the commander on top of the library like a move to a hand does, with a table test at 2 to 6 seats
 - [x] (hr4b) The deck relaxations of a game's house rules reach the server's deck check: a stored deck or a precon that `deck_report` refuses for a rule the table relaxed (singleton, colour identity, size, copies, a pair of commanders) is judged by the engine's `validate_seat` under the table's rules instead
 - [x] (cmd2c) `GET /api/games/{id}` names the format of the game (`GameInfo.format`, with the web's `GameInfo` literals)
-- [ ] (hr5b) The deck check for a table takes `precon:<code>` as its deck without an account, and the web's lobby picker shows each deck's verdict at the table (`game`) before joining
 - [x] Fix: when the active player leaves mid-turn the turn continues without an active player (CR 800.4; `docs/engine.md`), with a scenario test
 - [ ] The table view says when a turn has no active player (`TurnView.active` names the seat that left; the turn indicator and the step bar show a turn without one), with a projection test
 - [ ] Companion (CR 702.139): the companion is a card from outside the game that costs {3} to put into the hand; no stored precon has a companion board
@@ -278,6 +278,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Precon browser with one-click play, remaining in the web: the page over `GET /api/precons` and a create with `deck: "precon:<code>"` (the server half is done; the Commander precons are `playable`, `docs/server.md`, Precons)
 - [ ] House rules in the web: the create-game form sets them with the format's values as defaults, and the lobby row and the table name the ones that differ from the format; the Mulligan prompt names the style's hand size and scry
 - [ ] Choose a deck in the lobby, remaining in the web: precons as a third kind of deck in the picker (the server takes `precon:<code>` as a seat's deck; `docs/server.md`, `docs/deck-check.md`)
+- [ ] (hr5c) The lobby picker shows each deck's verdict at the table before joining, remaining in the web: `POST /api/decks/check` with the deck (stored, or `precon:<code>` without an account) and the table's `game` (`docs/server.md`, Precons)
 - [ ] The importer fixtures hold real records: `scryfall_oracle_cards.json`, `scryfall_rulings.json` and `mtgjson_deck_commander.json` in `mtg-import` carry invented oracle ids and printings (the card fixtures of `mtg-cards` are checked by `fixture_real`); the tests of five crates that assert on their sets and counts follow, and the synthetic edge cases (a nameless record, art series, emblems) stay marked as synthetic
 - [ ] Verify Moxfield, Archidekt, MTGO and Arena export parsers against real exports: the 29-deck corpus passes; open: a real MTGO `.dek`, an Arena client export, companions, custom cards (`docs/data-sources.md`)
 - [x] Importer 2b, name resolution on the corpus: by printing (set + collector number) before name, plus flavor, digital and multi-face names (`docs/data-sources.md`); a real-data test resolves all 183 exports

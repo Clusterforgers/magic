@@ -154,6 +154,7 @@ describe('failures', () => {
     cards_unavailable: 503,
     unavailable: 503,
     internal: 500,
+    rate_limited: 429,
   }
 
   it.each(DECK_ERROR_CODES)('keeps the code, status and sentence of %s on every call', async (code) => {
