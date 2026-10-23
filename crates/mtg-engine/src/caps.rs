@@ -113,6 +113,8 @@ const RUNS: &[&str] = &[
     "Effect.RevealUntil",
     "Effect.ExileTop",
     "Effect.ExileHidden",
+    "Effect.Encode",
+    "Effect.CopyCard",
     "Effect.Manifest",
     "Effect.Cloak",
     "Effect.CastFromZone",
@@ -389,6 +391,7 @@ const RUNS: &[&str] = &[
     "Keyword.Horsemanship",
     "Keyword.Spectacle",
     "Keyword.UmbraArmor",
+    "Keyword.Cipher",
     "ReplaceWhen.Destroyed",
     "ReplaceBy.UmbraArmor",
     "Condition.NewlyControlled",
@@ -652,6 +655,8 @@ mod tests {
     #[case::revealing_until_a_card_matches("Effect.RevealUntil", true)]
     #[case::exiling_the_top_cards("Effect.ExileTop", true)]
     #[case::exiling_face_down("Effect.ExileHidden", true)]
+    #[case::encoding("Effect.Encode", true)]
+    #[case::copying_a_card("Effect.CopyCard", true)]
     #[case::manifesting("Effect.Manifest", true)]
     #[case::cloaking("Effect.Cloak", true)]
     #[case::casting_during_a_resolution("Effect.CastFromZone", true)]
@@ -806,6 +811,7 @@ mod tests {
     #[case::horsemanship("Keyword.Horsemanship", true)]
     #[case::spectacle("Keyword.Spectacle", true)]
     #[case::umbra_armor("Keyword.UmbraArmor", true)]
+    #[case::cipher("Keyword.Cipher", true)]
     #[case::replacing_destruction("ReplaceWhen.Destroyed", true)]
     #[case::saving_by_umbra_armor("ReplaceBy.UmbraArmor", true)]
     #[case::pairing_attackers_with_players("Rule.MustAttackPlayers", true)]

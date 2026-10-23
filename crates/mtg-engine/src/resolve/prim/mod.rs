@@ -18,6 +18,7 @@ mod choose;
 mod connive;
 mod continuous;
 mod copy_ability;
+mod copy_card;
 mod copy_spell;
 mod crewed;
 mod join_attack;
@@ -31,6 +32,7 @@ mod delayed_trigger;
 mod destroy;
 mod discard;
 mod draw;
+mod encode;
 mod exile;
 mod exile_hidden;
 mod exile_top;
@@ -104,6 +106,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Destroy { .. } => destroy::run(cx, effect),
         Effect::Exile { .. } => exile::run(cx, effect),
         Effect::ExileHidden { .. } => exile_hidden::run(cx, effect),
+        Effect::Encode { .. } => encode::run(cx, effect),
         Effect::Manifest { .. } | Effect::Cloak { .. } => manifest::run(cx, effect),
         Effect::Sacrifice { .. } => sacrifice::run(cx, effect),
         Effect::Counter { .. } => counter::run(cx, effect),
@@ -146,6 +149,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::WinGame { .. } => win_game::run(cx, effect),
         Effect::CopySpell { .. } => copy_spell::run(cx, effect),
         Effect::CopyAbility { .. } => copy_ability::run(cx, effect),
+        Effect::CopyCard { .. } => copy_card::run(cx, effect),
         Effect::BecomeCopy { .. } => become_copy::run(cx, effect),
         Effect::CreateToken { .. } => create_token::run(cx, effect),
         Effect::Continuous { .. } => continuous::run(cx, effect),
@@ -185,8 +189,8 @@ mod tests {
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"BecomeMonarch":{}}, {"Amass":{"subtype":"Orc","count":1}}, {"Monstrosity":{"count":1}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
-        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Manifest":{}}, {"Cloak":{}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}},
-        {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}},
+        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Manifest":{}}, {"Cloak":{}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}},
+        {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}}, {"CopyCard":{"what":"This","as":"copy"}},
         {"BecomeCopy":{"what":"This","of":"This","duration":"UntilEndOfTurn"}},
         {"CreateToken":{"token":{"Named":"treasure"}}},
         {"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}},
@@ -209,7 +213,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 66, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 68, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -289,11 +293,13 @@ mod tests {
                 "Effect.RevealUntil",
                 "Effect.ExileTop",
                 "Effect.ExileHidden",
+                "Effect.Encode",
                 "Effect.Manifest",
                 "Effect.Cloak",
                 "Effect.CastFromZone",
                 "Effect.CopySpell",
                 "Effect.CopyAbility",
+                "Effect.CopyCard",
                 "Effect.BecomeCopy",
                 "Effect.CreateToken",
                 "Effect.Continuous",

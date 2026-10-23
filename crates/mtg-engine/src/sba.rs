@@ -11,7 +11,7 @@ use crate::counters::CountersChanged;
 use crate::events::{DeathCause, Event, ZoneCause};
 use crate::keywords;
 use crate::mulligan::shuffled;
-use crate::object::PermanentState;
+use crate::object::{ObjectKind, PermanentState};
 use crate::player::{LossReason, Player};
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -146,7 +146,22 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
     events.extend(crate::saga::sacrifices(state, &died));
     events.extend(annihilation(state, &died));
     events.extend(crate::attach::state_based(state, &died));
+    events.extend(card_copies(state));
     events
+}
+
+/// A copy of a card that lies in exile (made to be cast, and not) ceases to exist (CR 704.5e).
+fn card_copies(state: &GameState) -> Vec<Event> {
+    state
+        .zone(Zone::Exile)
+        .iter()
+        .filter(|id| {
+            state
+                .object(**id)
+                .is_some_and(|copy| copy.kind() == ObjectKind::Token)
+        })
+        .map(|id| Event::CopyCeased { object: *id })
+        .collect()
 }
 
 /// A permanent with both a +1/+1 and a -1/-1 counter on it loses as many of each as it has of the kind it has fewer of

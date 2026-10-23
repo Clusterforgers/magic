@@ -304,6 +304,9 @@ pub struct GameObject {
     /// The player whose opponents' becoming the monarch returns a card in exile (Palace Jailer), and whether one has since
     /// it was exiled; a zone change clears it.
     pub(crate) monarch_wait: Option<(PlayerId, bool)>,
+    /// The creature a card in exile is encoded on (cipher, CR 702.99); a zone change of the card clears it, and a creature
+    /// that has left the battlefield is another object, so the link ends with it.
+    pub(crate) encoded_on: Option<ObjectRef>,
     /// The spell was cast from its owner's hand (rebound reads it); a zone change clears it.
     pub(crate) cast_from_hand: bool,
     /// The spell was cast from a graveyard (aftermath reads it); a zone change clears it.
@@ -331,6 +334,7 @@ impl GameObject {
             face_down: None,
             adventure: None,
             exiled_until: None,
+            encoded_on: None,
             monarch_wait: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
@@ -365,6 +369,7 @@ impl GameObject {
             face_down: None,
             adventure: None,
             exiled_until: None,
+            encoded_on: None,
             monarch_wait: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
@@ -547,6 +552,12 @@ impl GameObject {
         self.exiled_until
     }
 
+    /// The creature this card in exile is encoded on (cipher, CR 702.99a), as it was when the card was encoded; the link
+    /// holds only while that creature is still the object it was on the battlefield (`GameState::encoded_on`).
+    pub const fn encoded_on(&self) -> Option<ObjectRef> {
+        self.encoded_on
+    }
+
     /// Whether a card in exile waits for an opponent of its exiler to become the monarch and one has.
     pub(crate) const fn monarch_released(&self) -> bool {
         matches!(self.monarch_wait, Some((_, true)))
@@ -627,6 +638,7 @@ impl PartialEq for GameObject {
             && self.face_down == other.face_down
             && self.adventure == other.adventure
             && self.exiled_until == other.exiled_until
+            && self.encoded_on == other.encoded_on
             && self.monarch_wait == other.monarch_wait
             && self.cast_from_hand == other.cast_from_hand
             && self.cast_from_graveyard == other.cast_from_graveyard
@@ -654,6 +666,9 @@ impl Hash for GameObject {
         self.adventure.hash(state);
         if let Some(until) = self.exiled_until {
             until.hash(state);
+        }
+        if let Some(carrier) = self.encoded_on {
+            carrier.hash(state);
         }
         if let Some(wait) = self.monarch_wait {
             wait.hash(state);
