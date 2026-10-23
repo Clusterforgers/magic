@@ -61,12 +61,14 @@ async fn a_public_game_is_listed_with_what_the_browser_needs_and_nothing_else() 
             "format",
             "game",
             "host",
+            "manual_play",
             "total"
         ])
     );
     assert_eq!(game["game"], made.id.as_str());
     assert_eq!(game["host"], "Ann");
     assert_eq!(game["format"], "normal");
+    assert_eq!(game["manual_play"], false, "built-in decks run whole");
     assert_eq!(
         (game["filled"].as_u64(), game["total"].as_u64()),
         (Some(1), Some(4))
