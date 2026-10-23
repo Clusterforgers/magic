@@ -66,6 +66,17 @@ pub enum TriggerPattern {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         to: Option<ZoneKind>,
     },
+    /// An object matching the selector moves to a zone from any zone but one ("is put into a graveyard from anywhere
+    /// other than the battlefield"); a token that is created moves from no zone and so never matches.
+    ZoneChangeExcept {
+        /// The object that moves.
+        what: Selector,
+        /// The zone it does not leave.
+        except: ZoneKind,
+        /// The zone it enters, if the pattern names one.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        to: Option<ZoneKind>,
+    },
     /// A creature matching the selector attacks.
     Attacks {
         /// The attacker.
@@ -363,6 +374,15 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// A player surveils ("whenever you surveil"); `Triggering` is that player.
+    Surveilled {
+        /// Who surveils.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
     /// A step begins ("at the beginning of ...").
     StepBegins {
         /// The step.
@@ -391,7 +411,10 @@ pub enum TriggerPattern {
     Batch(Box<TriggerPattern>),
     /// The nth time in a turn that an event happens to a player ("whenever you draw your second card each turn",
     /// "when you cast your first spell each turn"): the turn's count of that kind of event by that player, which
-    /// starts again at zero when each turn begins. The event is `Drew`, `SpellCast` or `LifeGained`.
+    /// starts again at zero when each turn begins. The event is `Drew`, `SpellCast`, `LifeGained`, `LifeLost`, `Cycled`
+    /// or `Surveilled` of a player, a token created under your control (`ZoneChange` of `[Token, ControlledBy You]`
+    /// from no zone) and, of an object, `Attacks`, `BecomesCrewed`, `BecomesSaddled`, `BecomesTarget`, `DealsDamage`
+    /// into it and `CountersPut` on it.
     Nth {
         /// The event.
         event: Box<TriggerPattern>,

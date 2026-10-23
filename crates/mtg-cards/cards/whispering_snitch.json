@@ -1,0 +1,22 @@
+{
+  "oracle_id": "b6836023-4475-415e-9671-980d9eb6e762",
+  "name": "Whispering Snitch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whispering Snitch",
+      "oracle_fingerprint": "d749dc4ba1139eb020f0f83de3158c98",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Surveilled": { "who": "You" } }, "nth": 1 } },
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

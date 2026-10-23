@@ -18,6 +18,7 @@ Ainok Bond-Kin
 Ainok Survivalist
 Air Bladder
 Ajani's Pridemate
+Akim, the Soaring Wind
 Akrasan Squire
 Akroma's Vengeance
 Akroma, Angel of Wrath
@@ -228,6 +229,7 @@ Cybermen Squadron
 Cyclonic Rift
 Cytoshape
 Dalek Squadron
+Danny Pink
 Darkblast
 Darksteel Juggernaut
 Darksteel Splicer
@@ -985,8 +987,10 @@ Urabrask the Hidden
 Uthros Research Craft
 Uthros Scanship
 Utopia Sprawl
+Valiant Rescuer
 Valley Rannet
 Vampire Cutthroat
+Vanguard Seraph
 Vanguard Suppressor
 Vanishment
 Vanquish the Horde
@@ -1022,6 +1026,7 @@ Weigh Down
 Weirding Wood
 Whir of Invention
 Whisperer of the Wilds
+Whispering Snitch
 White Auracite
 Wickersmith's Tools
 Wild Growth
