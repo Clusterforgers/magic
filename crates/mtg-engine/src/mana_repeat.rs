@@ -33,7 +33,7 @@ fn copy(object: ObjectId, nth: usize) -> ObjectId {
 }
 
 /// How many times a payment of a cost worth `value` can use `option`: no more than what its cost takes allows, and
-/// no more than the mana needed (a payment has nothing to spare, so every use adds some of it).
+/// no more than `value`, since a payment has nothing to spare and so has no more parts than the cost has mana.
 fn uses(option: &ManaOption, value: u32) -> usize {
     let takes = option
         .takes
@@ -41,10 +41,9 @@ fn uses(option: &ManaOption, value: u32) -> usize {
         .map(|take| take.from.len() / take.count.max(1) as usize)
         .min()
         .unwrap_or(0);
-    let needed = usize::try_from(value)
-        .unwrap_or(usize::MAX)
-        .div_ceil(option.made().len().max(1));
-    takes.min(needed).min(MOST)
+    takes
+        .min(usize::try_from(value).unwrap_or(usize::MAX))
+        .min(MOST)
 }
 
 /// `sources` with a copy for each further use of the ones a payment of `cost` can use again.
@@ -151,10 +150,10 @@ mod tests {
     #[rstest]
     #[case::one_card_one_use("{B}{B}{B}{B}", &[10], 1)]
     #[case::two_cards_two_uses("{B}{B}{B}{B}", &[10, 11], 2)]
-    #[case::the_cost_needs_two("{B}{B}{B}{B}", &[10, 11, 12, 13], 2)]
-    #[case::an_odd_cost_rounds_up("{B}{B}{B}", &[10, 11, 12], 2)]
+    #[case::the_cost_has_four_mana("{B}{B}{B}{B}", &[10, 11, 12, 13, 14], 4)]
+    #[case::a_cost_of_three("{B}{B}{B}", &[10, 11, 12, 13], 3)]
     #[case::no_cards_no_use("{B}{B}", &[], 0)]
-    #[case::a_small_cost("{B}", &[10, 11], 1)]
+    #[case::a_cost_of_one("{B}", &[10, 11], 1)]
     #[case::at_most_eight("{20}", &[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 8)]
     fn a_source_has_a_copy_for_every_use_it_can_have(
         #[case] cost_text: &str,
