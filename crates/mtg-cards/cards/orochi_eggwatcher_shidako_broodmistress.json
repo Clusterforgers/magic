@@ -1,0 +1,67 @@
+{
+  "oracle_id": "e448e27c-f66d-4369-8215-7f7275e456e1",
+  "name": "Orochi Eggwatcher // Shidako, Broodmistress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orochi Eggwatcher",
+      "oracle_fingerprint": "6bee59cbf7efef6f777c67883868c1e3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Snake",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Snake"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 10
+                    }
+                  },
+                  "then": [{ "Flip": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Shidako, Broodmistress",
+      "oracle_fingerprint": "62338794af3ee6d8570626077442ba27",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

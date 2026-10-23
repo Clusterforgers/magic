@@ -1309,6 +1309,7 @@ impl<'a> Walker<'a> {
             | Effect::Tap { what }
             | Effect::Untap { what }
             | Effect::Transform { what }
+            | Effect::Flip { what }
             | Effect::Goad { what }
             | Effect::Explore { what }
             | Effect::Connive { what }

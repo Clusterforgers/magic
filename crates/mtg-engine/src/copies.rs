@@ -747,6 +747,54 @@ mod tests {
         assert!(!may_be_copied_wrongly(&game, copy));
     }
 
+    #[test]
+    fn a_copy_of_a_flipped_permanent_has_the_values_of_the_bottom_half_and_cannot_flip() {
+        let cost = mtg_core::mana::ManaCost::from_symbols([mtg_core::mana::ManaSymbol::Generic(2)]);
+        let top = mtg_cards::CardDefinition::new("Rat")
+            .with_type(CardType::Creature)
+            .with_mana_cost(cost.clone())
+            .with_power_toughness(2, 1);
+        let bottom = mtg_cards::CardDefinition::new("Nightrat")
+            .with_type(CardType::Creature)
+            .with_mana_cost(cost)
+            .with_power_toughness(4, 2);
+        let flip = Arc::new(
+            top.clone()
+                .with_faces(mtg_cards::definition::Layout::Flip, vec![top, bottom]),
+        );
+        let mut game = crate::fixtures::state(
+            vec![vec![], vec![]],
+            vec![vec![flip, creature("Copy A", 1, 1)], vec![]],
+        );
+        let rat = game
+            .objects()
+            .find(|o| o.card().name == "Rat")
+            .map(GameObject::reference)
+            .unwrap();
+        apply_event(&mut game, &Event::Flipped { object: rat.id }).unwrap();
+        let values = copiable_values(&game, rat, None).unwrap();
+        assert_eq!(
+            (values.name.as_str(), values.power, values.faces.len()),
+            ("Nightrat", Some(4), 0)
+        );
+        assert_eq!(values.mana_value(), 2, "the bottom half keeps the cost");
+        let copy = game
+            .objects()
+            .find(|o| o.card().name == "Copy A")
+            .map(GameObject::reference)
+            .unwrap();
+        let event = Event::BecameCopy(BecameCopy {
+            object: copy.id,
+            of: rat,
+            definition: Arc::new(values),
+            until_end_of_turn: false,
+        });
+        apply_event(&mut game, &event).unwrap();
+        assert_eq!(game.object(copy.id).unwrap().card().name, "Nightrat");
+        assert!(!may_be_copied_wrongly(&game, copy));
+        assert!(apply_event(&mut game, &Event::Flipped { object: copy.id }).is_err());
+    }
+
     /// Whether the copy is a transforming permanent: it never is.
     fn may_be_copied_wrongly(game: &GameState, copy: ObjectRef) -> bool {
         game.object(copy.id).unwrap().whole_card().is_multi_face()
