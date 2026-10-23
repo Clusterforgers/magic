@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "89b7e901-5ba4-4374-9eeb-96354279a123",
+  "oracle_id": "1a33a5c2-5aa1-48e5-95a8-d52cdce980de",
+  "multiverse_ids": [
+    632073
+  ],
+  "mtgo_id": 116090,
+  "arena_id": 86998,
+  "tcgplayer_id": 513384,
+  "cardmarket_id": 729934,
+  "name": "Rowdy Research",
+  "lang": "en",
+  "released_at": "2023-09-08",
+  "uri": "https://api.scryfall.com/cards/89b7e901-5ba4-4374-9eeb-96354279a123",
+  "scryfall_uri": "https://scryfall.com/card/woe/312/rowdy-research?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:57:20Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/9/89b7e901-5ba4-4374-9eeb-96354279a123.jpg?1783915040",
+    "normal": "https://cards.scryfall.io/normal/front/8/9/89b7e901-5ba4-4374-9eeb-96354279a123.jpg?1783915040",
+    "large": "https://cards.scryfall.io/large/front/8/9/89b7e901-5ba4-4374-9eeb-96354279a123.jpg?1783915040",
+    "png": "https://cards.scryfall.io/png/front/8/9/89b7e901-5ba4-4374-9eeb-96354279a123.png?1783915040",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/9/89b7e901-5ba4-4374-9eeb-96354279a123.jpg?1783915040",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/9/89b7e901-5ba4-4374-9eeb-96354279a123.jpg?1783915040",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/9/89b7e901-5ba4-4374-9eeb-96354279a123.webp?1783915040",
+    "grid": "https://cards.scryfall.io/grid/front/8/9/89b7e901-5ba4-4374-9eeb-96354279a123.webp?1783915040",
+    "display": "https://cards.scryfall.io/display/front/8/9/89b7e901-5ba4-4374-9eeb-96354279a123.webp?1783915040",
+    "art": "https://cards.scryfall.io/art/front/8/9/89b7e901-5ba4-4374-9eeb-96354279a123.webp?1783915040",
+    "crop": "https://cards.scryfall.io/crop/front/8/9/89b7e901-5ba4-4374-9eeb-96354279a123.webp?1783915040",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/9/89b7e901-5ba4-4374-9eeb-96354279a123.jpg?1783915040"
+  },
+  "mana_cost": "{6}{U}",
+  "cmc": 7.0,
+  "type_line": "Instant",
+  "oracle_text": "This spell costs {1} less to cast for each creature that attacked this turn.\nDraw three cards.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "79139661-13ee-43c4-8bad-a8c069f1a1df",
+  "set": "woe",
+  "set_name": "Wilds of Eldraine",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/79139661-13ee-43c4-8bad-a8c069f1a1df",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awoe&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/woe?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/89b7e901-5ba4-4374-9eeb-96354279a123/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1a33a5c2-5aa1-48e5-95a8-d52cdce980de&unique=prints",
+  "collector_number": "312",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Stolen treasures can be reclaimed, but stolen knowledge is yours forever.\"\n—Alela",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Bram Sels",
+  "artist_ids": [
+    "2e90d3c1-e8ac-45c7-9d5a-63385c1a384d"
+  ],
+  "illustration_id": "63c76f9c-7935-4c86-b38d-0e067a92955a",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9827,
+  "penny_rank": 14452,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1905659212",
+    "previewed_at": "2023-08-22"
+  },
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": "0.26",
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": "0.27",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=632073&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRowdy%2BResearch",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRowdy%2BResearch",
+    "edhrec": "https://edhrec.com/route/?cc=Rowdy+Research"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F513384%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=729934&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/116090?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

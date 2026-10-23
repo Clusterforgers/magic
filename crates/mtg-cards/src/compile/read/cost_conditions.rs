@@ -5,7 +5,8 @@
 
 use super::as_long_as;
 use super::facts::{quantity, quantity_texts};
-use super::selectors::{Form, phrase, phrase_in, phrase_text, type_name};
+use super::selectors::{Form, phrase, phrase_in, phrase_text, subtype, type_name};
+use mtg_core::card::Subtype;
 use super::tokens::Reader;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::value::{Amount, Cmp, Condition};
@@ -181,4 +182,51 @@ pub(super) fn spells_text(kinds: &[Pred]) -> Option<String> {
         .map(|kind| phrase_text(&Selector(vec![Pred::Spell, kind.clone()]), Form::All))
         .collect();
     Some(parts?.join(" and "))
+}
+
+/// "Aura and Equipment spells": spells of several subtypes named before the noun they share.
+pub(super) fn shared_spells(r: &mut Reader<'_>) -> Option<Selector> {
+    let mut kinds = vec![Pred::Subtype(Subtype(subtype(r)?))];
+    while r.word("and") {
+        kinds.push(Pred::Subtype(Subtype(subtype(r)?)));
+    }
+    r.need("spells")?;
+    (kinds.len() > 1).then(|| Selector(vec![Pred::Spell, Pred::AnyOf(kinds)]))
+}
+
+/// "Creature spells with power 4 or greater you cast" worded as "Creature spells you cast with power 4 or greater".
+pub(super) fn cast_before_number(subject: &str) -> Option<String> {
+    let (head, number) = subject.split_once(" with ")?;
+    let (number, cast) = number
+        .strip_suffix(" you cast")
+        .map(|number| (number, " you cast"))
+        .or_else(|| {
+            number
+                .strip_suffix(" your opponents cast")
+                .map(|number| (number, " your opponents cast"))
+        })?;
+    Some(format!("{head}{cast} with {number}"))
+}
+
+/// "Aura and Equipment spells you cast": the subtypes of an `AnyOf` of kinds share the noun after them.
+pub(super) fn shared_subject_text(applies_to: &Selector) -> Option<String> {
+    let [Pred::Spell, Pred::AnyOf(kinds), rest @ ..] = applies_to.0.as_slice() else {
+        return None;
+    };
+    if kinds.len() < 2 || !kinds.iter().all(|kind| matches!(kind, Pred::Subtype(_))) {
+        return None;
+    }
+    let who = match rest {
+        [] => "",
+        [Pred::ControlledBy(Ref::You)] => " you cast",
+        _ => return None,
+    };
+    let names: Option<Vec<String>> = kinds
+        .iter()
+        .map(|kind| {
+            let spells = phrase_text(&Selector(vec![Pred::Spell, kind.clone()]), Form::All)?;
+            spells.strip_suffix(" spells").map(str::to_owned)
+        })
+        .collect();
+    Some(format!("{} spells{who}", names?.join(" and ")))
 }

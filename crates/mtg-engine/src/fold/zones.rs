@@ -32,6 +32,17 @@ pub(super) fn move_object(
     if to == Zone::Battlefield {
         state.next_timestamp += 1;
     }
+    // A creature that goes from the battlefield to a graveyard died; it counts for the player who controlled it.
+    let died = if matches!(to, Zone::Graveyard(_)) && state.zone(Zone::Battlefield).contains(&id) {
+        crate::characteristics::characteristics(state, id)
+            .filter(crate::characteristics::Characteristics::is_creature)
+            .and_then(|_| crate::characteristics::controller_of(state, id))
+    } else {
+        None
+    };
+    if let Some(controller) = died {
+        state.tally(controller, Tally::Died);
+    }
     let object = state
         .objects
         .get_mut(&id)

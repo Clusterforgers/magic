@@ -168,6 +168,16 @@ pub enum TurnTally {
     /// The times counters were put on the object (read through an object reference, not a player): one for each
     /// counter kind put, whatever the number ("a counter was put on it this turn").
     CountersPut,
+    /// The life the player gained, by amount (`LifeGained` counts the gains). Summed over the players named.
+    LifeGainedTotal,
+    /// The creatures that attacked this turn, whoever controls them. Summed over the players named.
+    CreaturesAttacked,
+    /// The creatures that died this turn (put into a graveyard from the battlefield), counted for their controller.
+    /// Summed over the players named.
+    CreaturesDied,
+    /// The spells the player cast this turn: while a spell is being cast the one being cast is not counted, so "the
+    /// second spell you cast each turn" is a count of one.
+    SpellsCast,
 }
 
 /// A number, fixed or worked out when the effect runs.
@@ -266,6 +276,17 @@ pub enum Amount {
         /// What is counted.
         what: TurnTally,
     },
+    /// The largest count of the objects the selector names among the players the reference names, each player taken as
+    /// "you" (`[Land, ControlledBy You]` is the lands that player controls): "an opponent controls seven or more
+    /// lands" compares it with `Opponents`.
+    Largest {
+        /// The players compared.
+        who: Ref,
+        /// The objects counted for each, written for "you".
+        of: Selector,
+    },
+    /// The life total the players the reference names began the game with (the least of them).
+    StartingLife(Ref),
     /// The amount of the event that triggered the ability ("that much", "that many", "the damage dealt"): the damage
     /// dealt, the life gained or lost, the counters put or removed; for a batch ("one or more") how many of its events
     /// the pattern found.
@@ -321,6 +342,8 @@ enum Tagged {
     ColorsSpent,
     PermanentsGraved,
     Tallied { who: Ref, what: TurnTally },
+    Largest { who: Ref, of: Selector },
+    StartingLife(Ref),
     Triggering,
 }
 
@@ -370,6 +393,11 @@ enum TaggedRef<'a> {
         who: &'a Ref,
         what: TurnTally,
     },
+    Largest {
+        who: &'a Ref,
+        of: &'a Selector,
+    },
+    StartingLife(&'a Ref),
     Triggering,
 }
 
@@ -401,6 +429,8 @@ impl From<Tagged> for Amount {
             Tagged::ColorsSpent => Amount::ColorsSpent,
             Tagged::PermanentsGraved => Amount::PermanentsGraved,
             Tagged::Tallied { who, what } => Amount::Tallied { who, what },
+            Tagged::Largest { who, of } => Amount::Largest { who, of },
+            Tagged::StartingLife(who) => Amount::StartingLife(who),
             Tagged::Triggering => Amount::Triggering,
         }
     }
@@ -443,6 +473,8 @@ impl Serialize for Amount {
             Amount::Tallied { who, what } => {
                 TaggedRef::Tallied { who, what: *what }.serialize(serializer)
             }
+            Amount::Largest { who, of } => TaggedRef::Largest { who, of }.serialize(serializer),
+            Amount::StartingLife(who) => TaggedRef::StartingLife(who).serialize(serializer),
             Amount::Triggering => TaggedRef::Triggering.serialize(serializer),
         }
     }

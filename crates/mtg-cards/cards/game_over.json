@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e326b5a1-f8ce-471b-8663-ec1ba649b24f",
+  "name": "Game Over",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Game Over",
+      "oracle_fingerprint": "9f0cb9afa27771b6361b551659342fd3",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": { "Times": { "by": 2, "of": { "LowestLife": "EachPlayer" } } },
+                "op": "Le",
+                "right": { "StartingLife": "EachPlayer" }
+              }
+            }
+          }
+        },
+        {
+          "Spell": { "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }] }
+        }
+      ]
+    }
+  ]
+}

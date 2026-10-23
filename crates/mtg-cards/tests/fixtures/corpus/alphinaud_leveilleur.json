@@ -1,0 +1,162 @@
+{
+  "object": "card",
+  "id": "65331e86-1ff3-45e4-b789-7afec4ca9bd5",
+  "oracle_id": "d16783a4-9980-451b-9af0-33866980bc8d",
+  "multiverse_ids": [],
+  "resource_id": "8ED5BFC2E24578C275464C74C6D39D730857B6FAF8992BDB2DC1859B71F967C9",
+  "mtgo_id": 140057,
+  "tcgplayer_id": 631140,
+  "cardmarket_id": 824552,
+  "name": "Alphinaud Leveilleur",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/65331e86-1ff3-45e4-b789-7afec4ca9bd5",
+  "scryfall_uri": "https://scryfall.com/card/fic/33/alphinaud-leveilleur?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:32:43Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/5/65331e86-1ff3-45e4-b789-7afec4ca9bd5.jpg?1783906363",
+    "normal": "https://cards.scryfall.io/normal/front/6/5/65331e86-1ff3-45e4-b789-7afec4ca9bd5.jpg?1783906363",
+    "large": "https://cards.scryfall.io/large/front/6/5/65331e86-1ff3-45e4-b789-7afec4ca9bd5.jpg?1783906363",
+    "png": "https://cards.scryfall.io/png/front/6/5/65331e86-1ff3-45e4-b789-7afec4ca9bd5.png?1783906363",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/5/65331e86-1ff3-45e4-b789-7afec4ca9bd5.jpg?1783906363",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/5/65331e86-1ff3-45e4-b789-7afec4ca9bd5.jpg?1783906363",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/5/65331e86-1ff3-45e4-b789-7afec4ca9bd5.webp?1783906363",
+    "grid": "https://cards.scryfall.io/grid/front/6/5/65331e86-1ff3-45e4-b789-7afec4ca9bd5.webp?1783906363",
+    "display": "https://cards.scryfall.io/display/front/6/5/65331e86-1ff3-45e4-b789-7afec4ca9bd5.webp?1783906363",
+    "art": "https://cards.scryfall.io/art/front/6/5/65331e86-1ff3-45e4-b789-7afec4ca9bd5.webp?1783906363",
+    "crop": "https://cards.scryfall.io/crop/front/6/5/65331e86-1ff3-45e4-b789-7afec4ca9bd5.webp?1783906363",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/5/65331e86-1ff3-45e4-b789-7afec4ca9bd5.jpg?1783906363"
+  },
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Elf Wizard",
+  "oracle_text": "Partner with Alisaie Leveilleur (When this creature enters, target player may put Alisaie Leveilleur into their hand from their library, then shuffle.)\nVigilance\nEukrasia — Whenever you cast your second spell each turn, draw a card.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Partner with",
+    "Vigilance",
+    "Eukrasia",
+    "Partner"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "de9e594c-fe46-4c24-8e64-a5929472453d",
+      "component": "combo_piece",
+      "name": "Alisaie Leveilleur",
+      "type_line": "Legendary Creature — Elf Wizard",
+      "uri": "https://api.scryfall.com/cards/de9e594c-fe46-4c24-8e64-a5929472453d"
+    },
+    {
+      "object": "related_card",
+      "id": "37e4ab61-bf18-4f9f-ba78-3e08a21aaf4d",
+      "component": "combo_piece",
+      "name": "Alphinaud Leveilleur",
+      "type_line": "Legendary Creature — Elf Wizard",
+      "uri": "https://api.scryfall.com/cards/37e4ab61-bf18-4f9f-ba78-3e08a21aaf4d"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/65331e86-1ff3-45e4-b789-7afec4ca9bd5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad16783a4-9980-451b-9af0-33866980bc8d&unique=prints",
+  "collector_number": "33",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Justyna Dura",
+  "artist_ids": [
+    "d2340aef-8ca9-4e0d-864c-6a4e8d5e350a"
+  ],
+  "illustration_id": "75f4d091-1b2c-46a6-a305-370e1ba491d7",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "ffxiv",
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 4062,
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.39",
+    "eur_foil": null,
+    "tix": "1.16"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAlphinaud%2BLeveilleur",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAlphinaud%2BLeveilleur",
+    "edhrec": "https://edhrec.com/route/?cc=Alphinaud+Leveilleur"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F631140%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824552&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/140057?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -23,7 +23,7 @@ use super::prevention;
 use super::render::{self, capitalize, counts_stats, is_a_type, stats_text};
 use super::replacements;
 use super::selectors::{
-    Form, all, color, color_name, each, granted_text, phrase, phrase_text, subtype,
+    self, Form, all, color, color_name, each, granted_text, phrase, phrase_text, subtype,
 };
 use super::static_parts;
 use super::tokens::Reader;
@@ -745,13 +745,23 @@ pub(super) fn cost_subject(r: &mut Reader<'_>) -> Option<(Selector, bool)> {
     if r.source() {
         return Some((Selector::this(), true));
     }
-    let first = phrase(r, Form::All)?;
+    let first = match r.attempt(cost_conditions::shared_spells) {
+        Some(shared) => shared,
+        None => phrase(r, Form::All)?,
+    };
     let mut applies_to = cost_conditions::more_spells(r, first)?;
     (applies_to.0.first() == Some(&Pred::Spell)).then_some(())?;
     if r.words("you cast") {
         applies_to.0.push(Pred::ControlledBy(Ref::You));
     } else if r.words("your opponents cast") {
         applies_to.0.push(Pred::ControlledBy(Ref::Opponents));
+    }
+    // "Creature spells you cast with power 4 or greater": a number of the spell after who casts it.
+    if let Some(number) = r.attempt(|r| match selectors::suffix(r, Form::All)? {
+        number @ Pred::Compare { .. } => Some(number),
+        _ => None,
+    }) {
+        applies_to.0.push(number);
     }
     if r.words("from anywhere other than your hand") {
         applies_to.0.push(not_cast_from_hand());
@@ -873,10 +883,29 @@ fn cost_modifier_texts(
     per: &Amount,
     condition: Option<&Condition>,
 ) -> Vec<String> {
-    let itself = *applies_to == Selector::this();
     let Some(subject) = cost_subject_text(applies_to) else {
         return Vec::new();
     };
+    let mut subjects = Vec::new();
+    subjects.extend(cost_conditions::shared_subject_text(applies_to));
+    subjects.extend(cost_conditions::cast_before_number(&subject));
+    subjects.push(subject);
+    subjects
+        .into_iter()
+        .flat_map(|subject| cost_sentences(subject, applies_to, change, mana, per, condition))
+        .collect()
+}
+
+/// The sentences of a cost modifier whose spells are worded as `subject`.
+fn cost_sentences(
+    subject: String,
+    applies_to: &Selector,
+    change: CostChange,
+    mana: &ManaCostX,
+    per: &Amount,
+    condition: Option<&Condition>,
+) -> Vec<String> {
+    let itself = *applies_to == Selector::this();
     let verb = if itself { "costs" } else { "cost" };
     let more = match change {
         CostChange::Increase => "more",

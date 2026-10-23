@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d16783a4-9980-451b-9af0-33866980bc8d",
+  "name": "Alphinaud Leveilleur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alphinaud Leveilleur",
+      "oracle_fingerprint": "49b67229ac25a6f96f372d82b8e30292",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Alisaie Leveilleur" } },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 2 } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

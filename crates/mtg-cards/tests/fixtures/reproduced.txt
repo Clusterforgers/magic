@@ -23,6 +23,7 @@ Akrasan Squire
 Akroma's Vengeance
 Akroma, Angel of Wrath
 Alpha Deathclaw
+Alphinaud Leveilleur
 Altar's Reap
 Ambitious Aetherborn
 Anafenza, Kin-Tree Spirit
@@ -421,6 +422,7 @@ Golden-Scale Aeronaut
 Goldlust Triad
 Goldwarden's Helm
 Goliath Truck
+Goreclaw, Terror of Qal Sisma
 Gorger Wurm
 Grapeshot
 Graveblade Marauder

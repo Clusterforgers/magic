@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f290c2e4-ab52-44d4-bdeb-31aeb835b18d",
+  "name": "Into the Story",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Into the Story",
+      "oracle_fingerprint": "5eed848c1de7a7579cac803a1dfae649",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{3}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        },
+        { "Spell": { "effects": [{ "Draw": { "count": 4 } }] } }
+      ]
+    }
+  ]
+}
