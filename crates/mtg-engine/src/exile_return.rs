@@ -115,7 +115,7 @@ mod tests {
     #[test]
     fn a_card_waits_while_its_permanent_stays() {
         let (game, [_, _, bear, ogre]) = game(true);
-        assert!(returns(&game).is_empty());
+        assert_eq!(returns(&game).len(), 0);
         assert_eq!(game.object(bear.id).unwrap().zone(), Zone::Exile);
         assert!(game.object(ogre.id).unwrap().exiled_until().is_some());
     }
@@ -149,7 +149,7 @@ mod tests {
         assert_eq!(back.exiled_until(), None);
         assert!(back.counter() > refs[returns_at].counter + 1);
         assert_eq!(game.object(refs[stays_at].id).unwrap().zone(), Zone::Exile);
-        assert!(returns(&game).is_empty(), "nothing returns twice");
+        assert_eq!(returns(&game).len(), 0, "nothing returns twice");
     }
 
     #[test]
@@ -183,14 +183,14 @@ mod tests {
         )
         .unwrap();
         leave(&mut game, a);
-        assert!(returns(&game).is_empty());
+        assert_eq!(returns(&game).len(), 0);
     }
 
     #[test]
     fn nothing_is_watched_in_a_game_that_exiled_nothing_until() {
         let (mut game, [a, ..]) = game(false);
         leave(&mut game, a);
-        assert!(returns(&game).is_empty());
+        assert_eq!(returns(&game).len(), 0);
         assert!(!game.possible.linked_exile);
     }
 }

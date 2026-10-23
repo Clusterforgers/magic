@@ -1,0 +1,25 @@
+{
+  "id": "77026cf6-7e89-41a6-8279-de1068569a02",
+  "oracle_id": "fc3e48c9-e303-435c-bdb1-7dc7881a9858",
+  "name": "Karametra's Favor",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bbd",
+  "collector_number": "203",
+  "rarity": "uncommon",
+  "released_at": "2018-06-08",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nWhen this Aura enters, draw a card.\nEnchanted creature has \"{T}: Add one mana of any color.\"",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

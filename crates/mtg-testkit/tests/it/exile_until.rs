@@ -93,7 +93,7 @@ fn the_card_waits_in_exile_and_returns_as_a_new_object_when_the_source_leaves(
     assert_eq!(back.owner(), pid(1));
     assert_eq!(back.controller(), pid(1));
     assert_eq!(back.exiled_until(), None);
-    assert!(exiled(&driver).is_empty());
+    assert_eq!(exiled(&driver).len(), 0);
 }
 
 #[rstest]
@@ -111,7 +111,7 @@ fn a_source_that_left_before_the_trigger_resolved_exiles_nothing(#[case] seats: 
     let bear = driver.state().object(bear).unwrap();
     assert_eq!(bear.zone(), Zone::Battlefield);
     assert_eq!(bear.counter(), counter, "the Bear never left");
-    assert!(exiled(&driver).is_empty());
+    assert_eq!(exiled(&driver).len(), 0);
 }
 
 #[rstest]
@@ -125,7 +125,7 @@ fn an_exiled_token_ceases_to_exist_and_nothing_returns(#[case] seats: usize) {
     resolve(&mut driver, seats);
     cast_aimed(&mut driver, seats, "Banisher Priest", "Soldier");
     resolve(&mut driver, seats);
-    assert!(exiled(&driver).is_empty(), "the token ceased to exist");
+    assert_eq!(exiled(&driver).len(), 0, "the token ceased to exist");
     let soldiers = |driver: &Driver| {
         driver
             .state()
@@ -137,7 +137,7 @@ fn an_exiled_token_ceases_to_exist_and_nothing_returns(#[case] seats: usize) {
     assert_eq!(soldiers(&driver), 1);
     burn_it(&mut driver, seats, "Banisher Priest");
     assert_eq!(soldiers(&driver), 1, "no token came back");
-    assert!(exiled(&driver).is_empty());
+    assert_eq!(exiled(&driver).len(), 0);
 }
 
 #[rstest]

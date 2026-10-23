@@ -1,0 +1,34 @@
+{
+  "oracle_id": "539f5396-d99a-417d-a84c-dff7930b5900",
+  "name": "Chromatic Lantern",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chromatic Lantern",
+      "oracle_fingerprint": "e0fa0accecc4518e8db34fe4e1719591",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

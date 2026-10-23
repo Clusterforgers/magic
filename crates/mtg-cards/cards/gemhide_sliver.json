@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2c09ca09-8e62-4fe3-9b3d-61573dd2ffbc",
+  "name": "Gemhide Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gemhide Sliver",
+      "oracle_fingerprint": "79c38538d412976f9274b00e2dc8549a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Sliver" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

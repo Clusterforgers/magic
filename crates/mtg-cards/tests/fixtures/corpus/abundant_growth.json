@@ -1,0 +1,25 @@
+{
+  "id": "88b8b051-3f05-4cc1-9506-732faa25553a",
+  "oracle_id": "947a2665-2f4d-4193-8768-118f85334549",
+  "name": "Abundant Growth",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ecc",
+  "collector_number": "97",
+  "rarity": "common",
+  "released_at": "2026-01-23",
+  "digital": false,
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant land\nWhen this Aura enters, draw a card.\nEnchanted land has \"{T}: Add one mana of any color.\"",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "947a2665-2f4d-4193-8768-118f85334549",
+  "name": "Abundant Growth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abundant Growth",
+      "oracle_fingerprint": "597ad7d9f13cf4be503d73ade44f8a63",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

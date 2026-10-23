@@ -30,7 +30,7 @@ fn the_card_is_sacrificed_unless_that_mana_was_spent(#[case] symbol: char, #[cas
         Condition::Not(Box::new(Condition::ManaSpent(mana)))
     );
     assert!(matches!(then.as_slice(), [Effect::Sacrifice { .. }]));
-    assert!(otherwise.is_empty());
+    assert_eq!(otherwise.len(), 0);
 }
 
 #[rstest]

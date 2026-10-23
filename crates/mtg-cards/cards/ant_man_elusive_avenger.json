@@ -1,0 +1,40 @@
+{
+  "oracle_id": "f334087a-deda-4e9e-ab58-68f7e226d7ce",
+  "name": "Ant-Man, Elusive Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ant-Man, Elusive Avenger",
+      "oracle_fingerprint": "b2f3ce2278b61f1fe2315964f5f9053e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  {
+                    "Compare": {
+                      "stat": "Power",
+                      "op": "Gt",
+                      "to": { "Stat": { "of": "This", "stat": "Power" } }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "treasure" }, "count": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
