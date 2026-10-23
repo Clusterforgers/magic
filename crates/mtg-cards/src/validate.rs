@@ -1439,6 +1439,19 @@ impl<'a> Walker<'a> {
                 w.at("as", |w| w.bind(bind, Kind::Object));
                 w.at("exiled_as", |w| w.bind(exiled_as, Kind::Object));
             }
+            Effect::RevealUntil {
+                who,
+                filter,
+                count,
+                bind,
+                revealed_as,
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("filter", |w| w.selector(filter));
+                w.at("count", |w| w.amount(count));
+                w.at("as", |w| w.bind(bind, Kind::Object));
+                w.at("revealed_as", |w| w.bind(revealed_as, Kind::Object));
+            }
             Effect::CastFromZone {
                 who,
                 what,

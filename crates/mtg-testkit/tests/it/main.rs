@@ -257,6 +257,8 @@ mod replacement_fuzz;
 mod required_costs;
 mod restricted_fuzz;
 mod restricted_mana;
+mod reveal_until;
+mod reveal_until_fuzz;
 mod rules_fuzz;
 mod rules_games;
 mod saga;

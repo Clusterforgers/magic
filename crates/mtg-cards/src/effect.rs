@@ -565,6 +565,24 @@ pub enum Effect {
         /// The name every card exiled, the one found included, is bound to.
         exiled_as: String,
     },
+    /// The player reveals cards from the top of their library, one at a time, until `count` of them match the filter (CR
+    /// 701.20); a library that runs out ends it with the matches found so far. The revealed cards stay in the library
+    /// until a later step moves them.
+    RevealUntil {
+        /// Whose library.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// What each card that counts must be.
+        filter: Selector,
+        /// How many matching cards end the revealing.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+        /// The name the matching cards are bound to.
+        #[serde(rename = "as")]
+        bind: String,
+        /// The name every card revealed, the matching ones included, is bound to.
+        revealed_as: String,
+    },
     /// The player exiles cards from the top of their library, face up (CR 406.3) and binds them.
     ExileTop {
         /// Whose library.
@@ -775,6 +793,9 @@ pub const FOUND: &str = "found";
 
 /// The name every card exiled that way is bound to, the card found included.
 pub const EXILED: &str = "exiled";
+
+/// The name every card revealed until a card matches is bound to, the cards found included.
+pub const REVEALED: &str = "revealed";
 
 /// The steps that exile cards from the top of the library until one matches `filter`, let the player cast it free (and do
 /// `otherwise` when they do not) and put every card exiled that is still in exile on the bottom in a random order.

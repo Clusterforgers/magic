@@ -1,0 +1,40 @@
+{
+  "oracle_id": "446db5a4-21b0-44c1-b12b-d365313dd67a",
+  "name": "Clifftop Lookout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clifftop Lookout",
+      "oracle_fingerprint": "edadaf31c7c4af2dce7eff5df41bda39",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Land" }],
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

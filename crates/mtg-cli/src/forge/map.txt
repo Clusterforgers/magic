@@ -1,0 +1,421 @@
+# Forge names against the verbs of our DSL (names only; the format is described in map.rs).
+# A target of `-` means the DSL has no verb; `~` means bookkeeping that needs none.
+
+# --- Effects: the APIs after SP$, AB$ and DB$ ---
+
+# Moving cards between zones.
+effect ChangeZone => Effect.Move Effect.Exile Effect.ExileUntil Effect.ExileTop Effect.ExileHidden Effect.Search Effect.Destroy Effect.Sacrifice
+effect ChangeZone Destination=Exile => Effect.Exile Effect.ExileUntil Effect.ExileTop Effect.ExileHidden
+effect ChangeZone Destination=Battlefield => Effect.Move Effect.Search
+effect ChangeZone Destination=Hand => Effect.Move Effect.Search
+effect ChangeZone Destination=Library => Effect.Move
+effect ChangeZone Destination=Graveyard => Effect.Move Effect.Destroy Effect.Sacrifice
+effect ChangeZone Origin=Library Hidden => Effect.Search
+effect ChangeZone Origin=Hand|Library Hidden Destination=Exile => Effect.Exile Effect.ExileHidden Effect.Search
+effect ChangeZoneAll => Effect.Move Effect.Exile Effect.Sacrifice Effect.Destroy
+effect ChangeZoneAll Destination=Exile => Effect.Exile Effect.ExileUntil Effect.Move
+effect Dig => Effect.LookAtTop Effect.ExileTop Effect.Reveal
+effect DigUntil => -
+effect PeekAndReveal => Effect.LookAtTop Effect.Reveal
+effect RearrangeTopOfLibrary => Effect.LookAtTop Effect.Move
+effect Mill => Effect.Mill
+effect Shuffle => Effect.Shuffle
+effect Reveal => Effect.Reveal
+effect RevealHand => Effect.Reveal
+effect Play => Effect.CastFromZone Rule.MayCast
+effect Discover => Effect.CastFromZone
+effect Manifest => Effect.Manifest
+effect ManifestDread => Effect.Manifest
+effect Cloak => Effect.Cloak
+variant effect ChangeZone Destination
+variant effect ChangeZone Origin
+variant effect ChangeZoneAll Destination
+variant effect Discard Mode
+variant effect Sacrifice Mode
+variant trigger ChangesZone Origin
+variant trigger ChangesZone Destination
+variant trigger Phase Phase
+variant replacement Moved Destination
+variant replacement Moved Origin
+
+# Cards, life, damage and mana.
+effect Draw => Effect.Draw Keyword.Gift
+effect Discard => Effect.Discard
+effect GainLife => Effect.GainLife
+effect LoseLife => Effect.LoseLife
+effect SetLife => -
+effect Poison => Effect.PutCounters
+effect DealDamage => Effect.DealDamage
+effect DamageAll => Effect.DealDamage
+effect DamageResolve => ~
+effect Mana => Effect.AddMana
+effect ManaReflected => Effect.AddMana
+effect Scry => Effect.Scry
+effect Surveil => Effect.Surveil
+effect Learn => Effect.Learn
+
+# Permanents.
+effect Destroy => Effect.Destroy
+effect DestroyAll => Effect.Destroy
+effect Sacrifice => Effect.Sacrifice
+effect SacrificeAll => Effect.Sacrifice
+effect Regenerate => Effect.Regenerate
+effect Tap => Effect.Tap
+effect Tap ETB => ReplaceBy.Tapped ReplaceBy.WithCounters
+effect TapAll => Effect.Tap
+effect Untap => Effect.Untap
+effect UntapAll => Effect.Untap
+effect TapOrUntap => Effect.Tap Effect.Untap
+effect Attach => Effect.Attach
+effect GainControl => Effect.Continuous Mod.SetController
+effect ExchangeControl => -
+effect Fight => Effect.Fight
+effect Counter => Effect.Counter
+effect SetState => Effect.Transform Effect.Flip
+effect Phases => -
+effect Goad => Effect.Goad
+effect BecomeMonarch => Effect.BecomeMonarch
+effect Proliferate => Effect.Proliferate
+effect Amass => Effect.Amass
+effect Connive => Effect.Connive
+effect Explore => Effect.Explore
+effect AddTurn => Effect.ExtraTurn
+effect AddPhase => -
+effect WinsGame => Effect.WinGame
+effect LosesGame => -
+
+# Counters and tokens.
+effect PutCounter => Effect.PutCounters Effect.Monstrosity Effect.Adapt Effect.Bolster Effect.Amass
+effect PutCounter ETB => ReplaceBy.WithCounters Effect.PutCounters
+effect PutCounterAll => Effect.PutCounters
+effect RemoveCounter => Effect.RemoveCounters
+effect MoveCounter => Effect.MoveCounters
+effect MultiplyCounter => -
+effect Token => Effect.CreateToken
+effect Investigate => Effect.CreateToken
+effect CopyPermanent => Effect.CreateToken.Copy Effect.BecomeCopy
+effect Clone => Effect.BecomeCopy ReplaceBy.AsCopy
+effect CopySpellAbility => Effect.CopySpell Effect.CopyAbility
+effect MakeCard => -
+effect Seek => -
+
+# Continuous changes.
+effect Pump => Effect.Continuous
+effect PumpAll => Effect.Continuous
+effect Animate => Effect.Continuous Effect.BecomeCopy
+effect AnimateAll => Effect.Continuous
+effect Protection => Effect.Continuous
+effect Debuff => Effect.Continuous
+effect AlterAttribute => -
+effect Effect => Effect.Continuous Effect.Rule Effect.Shield Effect.DelayedTrigger Effect.CreateToken
+effect PreventDamage => Effect.Shield
+effect Fog => Effect.Shield
+effect ReplaceEffect => ReplaceBy.Multiply ReplaceBy.Add ReplaceBy.Prevent ReplaceBy.PreventUpTo ReplaceBy.Instead ReplaceBy.MoveTo ReplaceBy.WithCounters ReplaceBy.Tapped ReplaceBy.Choose ReplaceBy.Dredge
+effect ReplaceDamage => ReplaceBy.Multiply ReplaceBy.Add ReplaceBy.Prevent ReplaceBy.PreventUpTo ReplaceBy.Instead
+effect ReplaceToken => ReplaceBy.Multiply ReplaceBy.Add ReplaceBy.Instead
+effect ReplaceCounter => ReplaceBy.Multiply ReplaceBy.Add ReplaceBy.Instead
+effect ReplaceMana => -
+
+# Control flow and choices.
+effect Charm => Effect.Modal
+effect Branch => Effect.If
+effect Repeat => -
+effect RepeatEach => -
+effect GenericChoice => Effect.Modal Effect.May Effect.Choose
+effect ChooseCard => Effect.Choose
+effect ChooseType => Effect.Choose ReplaceBy.Choose
+effect ChooseColor => Effect.Choose ReplaceBy.Choose
+effect ChoosePlayer => Effect.Choose ReplaceBy.Choose
+effect ChooseSource => Effect.Choose
+effect ChooseNumber => Effect.Choose
+effect NameCard => Effect.Choose
+effect DelayedTrigger => Effect.DelayedTrigger
+effect ImmediateTrigger => Effect.Pay Effect.May Effect.If
+effect Cleanup => ~
+effect StoreSVar => ~
+effect Draft => ~
+
+# Chance and the rest of the game.
+effect RollDice => -
+effect FlipCoin => -
+effect Vote => -
+effect TwoPiles => -
+effect Venture => -
+effect RingTemptsYou => -
+effect ChangeTargets => -
+effect Incubate => -
+effect Empower => -
+effect PutSticker => -
+effect Earthbend => -
+effect Planeswalk => -
+
+# Keys that ask for verbs of their own.
+also effect * UnlessCost => Effect.Pay
+also effect CopyPermanent NonLegendary => Mod.RemoveSupertype
+also effect CopyPermanent PumpKeywords => Mod.AddKeyword Keyword.Haste
+also effect CopyPermanent AddTypes => Mod.AddType
+also effect CopyPermanent AddSubTypes => Mod.AddSubtype
+also effect CopyPermanent SetPower => Mod.SetPT
+also effect CopyPermanent SetColor => Mod.SetColors
+also effect Pump KW => Mod.AddKeyword
+also effect Pump NumAtt => Mod.ModifyPT
+also effect Pump NumDef => Mod.ModifyPT
+also effect PumpAll KW => Mod.AddKeyword
+also effect PumpAll NumAtt => Mod.ModifyPT
+also effect PumpAll NumDef => Mod.ModifyPT
+also effect Animate Keywords => Mod.AddKeyword
+also effect Animate Types => Mod.AddType Mod.SetTypes
+also effect Animate Power => Mod.SetPT
+also effect Animate Colors => Mod.SetColors
+also effect Animate RemoveAllAbilities => Mod.LoseAbilities
+also effect Animate RemoveCardTypes => Mod.RemoveType Mod.SetTypes
+also effect Animate RemoveCreatureTypes => Mod.SetCreatureTypes Mod.SetTypes
+also effect Protection Gains => Mod.AddKeyword Mod.AddProtectionFromChosenColor
+also effect ChangeZone Shuffle => Effect.Shuffle Effect.Move
+also effect ChangeZone GainControl => Mod.SetController
+also effect ChangeZoneAll Shuffle => Effect.Shuffle Effect.Move
+also effect Draw Optional => Effect.May
+also effect Discard Optional => Effect.May
+also effect Mill Optional => Effect.May
+also effect GainLife Optional => Effect.May
+also effect LoseLife Optional => Effect.May
+also effect Scry Optional => Effect.May
+also effect DealDamage Optional => Effect.May
+also effect Destroy Optional => Effect.May
+also effect PutCounter Optional => Effect.May
+also effect Untap Optional => Effect.May
+also trigger * OptionalDecider => Effect.May
+
+# --- Triggers: Mode$ ---
+trigger ChangesZone => Trigger.ZoneChange
+trigger ChangesZoneAll => Trigger.ZoneChange Trigger.Batch
+trigger Phase => Trigger.StepBegins
+trigger Attacks => Trigger.Attacks Trigger.AttacksAlone Trigger.AttacksPlayer Trigger.GroupAttacks Trigger.PlayerAttacks
+trigger AttackersDeclared => Trigger.PlayerAttacks Trigger.GroupAttacks Trigger.Attacks Trigger.PlayerAttacked
+trigger AttackersDeclaredOneTarget => Trigger.PlayerAttacked Trigger.GroupAttacks Trigger.PlayerAttacks
+trigger SpellCast => Trigger.SpellCast
+trigger SpellCastOrCopy => Trigger.SpellCast
+trigger DamageDone => Trigger.DealsDamage
+trigger DamageDoneOnce => Trigger.DealsDamage Trigger.Batch
+trigger DamageDealtOnce => Trigger.DealsDamage Trigger.Batch
+trigger DamageAll => Trigger.DealsDamage Trigger.Batch
+trigger Drawn => Trigger.Drew
+trigger Blocks => Trigger.Blocks
+trigger AttackerBlocked => Trigger.BecomesBlocked
+trigger AttackerBlockedByCreature => Trigger.BecomesBlocked Trigger.Blocks
+trigger AttackerUnblocked => -
+trigger TurnFaceUp => Trigger.TurnedFaceUp
+trigger BecomesTarget => Trigger.BecomesTarget
+trigger Sacrificed => Trigger.Sacrificed
+trigger Taps => Trigger.Tapped
+trigger Untaps => Trigger.Untapped
+trigger TapsForMana => Trigger.TappedForMana
+trigger LifeGained => Trigger.LifeGained
+trigger LifeLost => Trigger.LifeLost
+trigger Discarded => Trigger.Discarded
+trigger DiscardedAll => Trigger.Discarded Trigger.Batch
+trigger Cycled => Trigger.Cycled
+trigger Always => Trigger.State
+trigger LandPlayed => Trigger.ZoneChange
+trigger CounterAdded => Trigger.CountersPut
+trigger CounterAddedOnce => Trigger.CountersPut Trigger.Batch
+trigger CounterRemoved => Trigger.CountersRemoved
+trigger Mutates => Trigger.Mutates
+trigger BecomeMonstrous => Trigger.BecomesMonstrous
+trigger Attached => Trigger.Attached
+trigger Proliferate => Trigger.Proliferated
+trigger TurnBegin => Trigger.StepBegins
+trigger Transformed => -
+trigger AbilityCast => -
+trigger Exploited => -
+trigger Scry => -
+trigger Surveil => -
+trigger RolledDie => -
+trigger RolledDieOnce => -
+trigger FlippedCoin => -
+trigger CommitCrime => -
+trigger ManaExpend => -
+trigger DayTimeChanges => -
+trigger StickerPlaced => -
+trigger RingTemptsYou => -
+trigger Specializes => -
+trigger UnlockDoor => -
+trigger FullyUnlock => -
+trigger ChaosEnsues => -
+trigger SetInMotion => -
+trigger PlaneswalkedTo => -
+trigger PlaneswalkedFrom => -
+trigger CrankContraption => -
+
+# --- Static abilities: Mode$ ---
+static Continuous => Ability.Static Ability.Rule Effect.Rule Effect.Continuous
+static Continuous AddSVar => ~
+static ReduceCost => Ability.CostModifier
+static RaiseCost => Ability.CostModifier
+static CantAttack => Mod.CantAttack Rule.AttackTax
+static CantBlock => Mod.CantBlock
+static CantBlockBy => Mod.CantBeBlockedBy Mod.CantBeBlocked Mod.CanBlockOnly
+static CantAttackUnless => Rule.AttackTax Mod.CantAttack
+static MustAttack => Rule.MustAttack Rule.MustAttackPlayers
+static MustBlock => Rule.MustBlock
+static MinMaxBlocker => Mod.MinBlockers Mod.MaxBlockers
+static CantGainLife => Rule.CantGainLife
+static CantDraw => Rule.CantDraw
+static CantPreventDamage => Rule.DamageCantBePrevented
+static Panharmonicon => Rule.TriggerAgain
+static CastWithFlash => Rule.MayCast Keyword.Flash
+static OptionalCost => Ability.AdditionalCost
+static AlternativeCost => -
+static CantBeCast => -
+static CantBeActivated => -
+static CanAttackDefender => -
+static OptionalAttackCost => -
+static CantTarget => -
+static CombatDamageToughness => -
+static ChangesZone => -
+static UntapOtherPlayer => -
+static ManaConvert => -
+static AssignCombatDamageAsUnblocked => -
+static IgnoreLegendRule => -
+static IgnoreLandWalk => -
+static CantPlayLand => -
+static TapPowerValue => -
+static CantSacrifice => -
+static CantPutCounter => -
+static DisableTriggers => -
+static CantBlockUnless => -
+static AttackRestrict => -
+static CantAttach => -
+static UnspentMana => -
+also static Continuous AddPower => Mod.ModifyPT
+also static Continuous AddToughness => Mod.ModifyPT
+also static Continuous SetPower => Mod.SetPT
+also static Continuous SetToughness => Mod.SetPT
+also static Continuous AddKeyword => Mod.AddKeyword
+also static Continuous RemoveKeyword => Mod.RemoveKeyword
+also static Continuous AddType => Mod.AddType Mod.SetTypes
+also static Continuous RemoveType => Mod.RemoveType Mod.SetTypes
+also static Continuous RemoveCardTypes => Mod.RemoveType Mod.SetTypes
+also static Continuous AddAbility => Mod.GrantAbility
+also static Continuous AddTrigger => Mod.GrantAbility
+also static Continuous AddStaticAbility => Mod.GrantAbility
+also static Continuous GainControl => Mod.SetController
+also static Continuous RemoveAllAbilities => Mod.LoseAbilities
+also static Continuous SetColor => Mod.SetColors
+also static Continuous AddColor => Mod.SetColors
+also static Continuous CharacteristicDefining => Ability.Static.Defining
+also static Continuous AddHiddenKeyword => Mod.AddKeyword
+
+# --- Replacement effects: Event$ ---
+replacement Moved => ReplaceWhen.ZoneChange ReplaceWhen.Enters ReplaceWhen.Discarded ReplaceWhen.Destroyed
+replacement DamageDone => ReplaceWhen.Damage
+replacement Draw => ReplaceWhen.Draw
+replacement CreateToken => ReplaceWhen.TokenCreation
+replacement AddCounter => ReplaceWhen.CountersPut
+replacement GainLife => ReplaceWhen.LifeGain
+replacement Counter => Rule.CantBeCountered
+replacement Destroy => ReplaceWhen.Destroyed
+replacement Untap => -
+replacement BeginPhase => -
+replacement GameLoss => -
+replacement GameWin => -
+replacement ProduceMana => -
+replacement TurnFaceUp => -
+replacement LifeReduced => -
+replacement LoseMana => -
+replacement BeginTurn => -
+replacement Transform => -
+replacement RollDice => -
+
+# --- Keyword lines: the text before the first colon ---
+# A keyword with no line here stands for the keyword of the same name.
+keyword etbCounter => ReplaceBy.WithCounters
+keyword Enchant => Keyword.Enchant Keyword.EnchantPlayer
+keyword ETBReplacement => ReplaceWhen.Enters ReplaceBy.Choose ReplaceBy.WithCounters ReplaceBy.Tapped
+keyword Chapter => Trigger.Chapter
+keyword TypeCycling => Keyword.Typecycling
+keyword AlternateAdditionalCost => Ability.AdditionalCost
+keyword Class => -
+keyword StickerSheet => -
+keyword MayEffectFromOpeningHand => -
+
+# --- Parts of a Cost$ ---
+cost T => Cost.Tap
+cost Q => Cost.Untap
+cost Mana => Cost.Mana
+cost Sac => Cost.Sacrifice
+cost SacMe => Cost.SacrificeSelf
+cost ExileMe => Cost.ExileSelf
+cost ExileFromGraveMe => Cost.ExileSelf
+cost DiscardMe => Cost.DiscardSelf
+cost ReturnMe => Cost.ReturnToHand
+cost Loyalty => Ability.Loyalty
+cost PayLife => Cost.PayLife
+cost Discard => Cost.Discard Cost.DiscardSelf
+cost ExileFromGrave => Cost.ExileFromGraveyard Cost.ExileSelf
+cost ExileFromHand => Cost.ExileFromHand
+cost Exile => Cost.ExileSelf
+cost tapXType => Cost.TapPermanents Cost.TapPower
+cost SubCounter => Cost.RemoveCounters
+cost PayEnergy => Cost.PayEnergy
+cost Return => Cost.ReturnToHand
+cost AddCounter => -
+cost untapYouCtrl => -
+cost Mill => -
+cost Reveal => -
+cost GainLife => -
+cost Unattach => -
+cost Exert => -
+cost RemoveAnyCounter => -
+
+# --- Rarer names ---
+effect TimeTravel => Effect.TimeTravel
+effect EachDamage => Effect.DealDamage
+effect AddOrRemoveCounter => Effect.PutCounters Effect.RemoveCounters
+effect ProtectionAll => Effect.Continuous
+effect RemoveCounterAll => Effect.RemoveCounters
+effect DigMultiple => Effect.LookAtTop Effect.ExileTop
+effect Radiation => -
+effect VillainousChoice => -
+effect GainControlVariant => -
+effect ChaosEnsues => -
+effect Clash => -
+effect RemoveFromCombat => -
+effect BlankLine => ~
+effect ChangeCombatants => -
+effect ChooseDirection => -
+effect TakeInitiative => -
+effect SkipPhase => -
+effect ControlSpell => -
+effect ExchangeLifeVariant => -
+effect Balance => -
+effect Blight => -
+effect ChangeText => -
+effect ChangeX => -
+effect ChooseEvenOdd => -
+effect ChooseSector => -
+effect AssignGroup => -
+effect PermanentCreature => -
+trigger SpellAbilityCast => Trigger.SpellCast
+trigger BecomesTargetOnce => Trigger.BecomesTarget
+trigger Connives => Trigger.Connived
+trigger Explores => Trigger.Explored
+trigger Destroyed => Trigger.ZoneChange
+trigger ClassLevelGained => Trigger.BecomesLevel
+trigger CounterPlayerAddedAll => -
+trigger LosesGame => -
+trigger MilledAll => -
+trigger Milled => -
+trigger SpellCopy => -
+trigger ChangesController => -
+trigger DungeonCompleted => -
+trigger TokenCreated => -
+trigger TokenCreatedOnce => -
+trigger Vote => -
+static CantAttack,CantBlock => Mod.CantAttack Mod.CantBlock
+static CantAttack,CantBlock,CantBeActivated => Mod.CantAttack Mod.CantBlock
+static BlockRestrict => -
+static CountersRemain => -
+static NumLoyaltyAct => -
+static CantChangeLife => -
+replacement Attached => -

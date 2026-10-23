@@ -95,15 +95,21 @@ pub enum DeckRef {
         /// form for a deck without any, which is also how a recipe stored before Commander reads.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         commanders: Vec<String>,
+        /// The oracle id of the seat's companion (CR 702.139), a card the game keeps outside it; left out
+        /// of the stored form for a deck without one, which is also how a recipe stored before the
+        /// companion reads.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        companion: Option<String>,
     },
 }
 
 impl DeckRef {
-    /// A deck of oracle ids without commanders.
+    /// A deck of oracle ids without commanders or a companion.
     pub fn oracle(cards: Vec<String>) -> DeckRef {
         DeckRef::Oracle {
             cards,
             commanders: Vec::new(),
+            companion: None,
         }
     }
 }
@@ -112,15 +118,20 @@ impl fmt::Display for DeckRef {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             DeckRef::Demo { id } => write!(f, "demo deck {id:?}"),
-            DeckRef::Oracle { cards, commanders } if commanders.is_empty() => {
-                write!(f, "deck of {} cards by oracle id", cards.len())
+            DeckRef::Oracle {
+                cards,
+                commanders,
+                companion,
+            } => {
+                write!(f, "deck of {} cards", cards.len())?;
+                if !commanders.is_empty() {
+                    write!(f, " and {} commander(s)", commanders.len())?;
+                }
+                if companion.is_some() {
+                    write!(f, " and a companion")?;
+                }
+                write!(f, " by oracle id")
             }
-            DeckRef::Oracle { cards, commanders } => write!(
-                f,
-                "deck of {} cards and {} commander(s) by oracle id",
-                cards.len(),
-                commanders.len()
-            ),
         }
     }
 }
@@ -178,6 +189,14 @@ impl Catalog {
 struct SeatCards {
     library: Vec<Arc<CardDefinition>>,
     commanders: Vec<Arc<CardDefinition>>,
+    companion: Option<Arc<CardDefinition>>,
+}
+
+impl SeatCards {
+    /// What the recipe remembers of these cards.
+    fn fingerprint(&self) -> Result<DeckFingerprint, FingerprintError> {
+        DeckFingerprint::of_seat_with(&self.library, &self.commanders, self.companion.as_ref())
+    }
 }
 
 /// Everything needed to rebuild a game's [`GameSetup`].
@@ -295,12 +314,12 @@ impl GameRecipe {
         let seats = self.resolve(catalog)?;
         self.fingerprints = seats
             .iter()
-            .map(|seat| DeckFingerprint::of_seat(&seat.library, &seat.commanders))
+            .map(SeatCards::fingerprint)
             .collect::<Result<_, _>>()?;
         Ok(self)
     }
 
-    /// The oracle ids that the decks of the recipe name, commanders included, once each, in the
+    /// The oracle ids that the decks of the recipe name, commanders and companions included, once each, in the
     /// order they first appear; empty when no seat plays a deck of oracle ids, so no card database
     /// is needed.
     pub fn oracle_ids(&self) -> Vec<String> {
@@ -308,7 +327,11 @@ impl GameRecipe {
         self.decks
             .iter()
             .filter_map(|deck| match deck {
-                DeckRef::Oracle { cards, commanders } => Some(cards.iter().chain(commanders)),
+                DeckRef::Oracle {
+                    cards,
+                    commanders,
+                    companion,
+                } => Some(cards.iter().chain(commanders).chain(companion)),
                 DeckRef::Demo { .. } => None,
             })
             .flatten()
@@ -336,18 +359,23 @@ impl GameRecipe {
     pub fn build_with(&self, catalog: &Catalog) -> Result<GameSetup, RecipeError> {
         let seats = self.resolve(catalog)?;
         self.check(&seats)?;
-        let (libraries, commanders): (Vec<_>, Vec<_>) = seats
-            .into_iter()
-            .map(|seat| (seat.library, seat.commanders))
-            .unzip();
+        let mut libraries = Vec::with_capacity(seats.len());
+        let mut commanders = Vec::with_capacity(seats.len());
+        let mut companions = Vec::with_capacity(seats.len());
+        for seat in seats {
+            libraries.push(seat.library);
+            commanders.push(seat.commanders);
+            companions.push(seat.companion);
+        }
         let setup = GameSetup::new(self.format.rules(), self.seed, libraries)
             .with_commanders(commanders)
+            .with_companions(companions)
             .with_house_rules(self.house_rules.clone());
         setup.validate()?;
         Ok(setup)
     }
 
-    /// The library and the commanders of every seat, in deck order.
+    /// The library, the commanders and the companion of every seat, in deck order.
     fn resolve(&self, catalog: &Catalog) -> Result<Vec<SeatCards>, RecipeError> {
         let mut seats = Vec::with_capacity(self.decks.len());
         for (seat, deck) in self.decks.iter().enumerate() {
@@ -358,6 +386,7 @@ impl GameRecipe {
                     SeatCards {
                         library,
                         commanders: vec![commander],
+                        companion: None,
                     }
                 }
                 DeckRef::Demo { id } => SeatCards {
@@ -368,16 +397,32 @@ impl GameRecipe {
                         })?
                         .cards(),
                     commanders: Vec::new(),
+                    companion: None,
                 },
-                DeckRef::Oracle { cards, commanders } => {
-                    let ids: Vec<String> = cards.iter().chain(commanders).cloned().collect();
+                DeckRef::Oracle {
+                    cards,
+                    commanders,
+                    companion,
+                } => {
+                    let ids: Vec<String> = cards
+                        .iter()
+                        .chain(commanders)
+                        .chain(companion)
+                        .cloned()
+                        .collect();
                     let mut library = catalog
                         .deck(&ids)
                         .map_err(|ids| RecipeError::UnknownCards { seat, ids })?;
-                    let commanders = library.split_off(cards.len());
+                    let mut rest = library.split_off(cards.len());
+                    let companion = if companion.is_some() {
+                        rest.pop()
+                    } else {
+                        None
+                    };
                     SeatCards {
                         library,
-                        commanders,
+                        commanders: rest,
+                        companion,
                     }
                 }
             });
@@ -398,7 +443,7 @@ impl GameRecipe {
         }
         let checked = self.decks.iter().zip(seats).zip(&self.fingerprints);
         for (seat, ((deck, cards), stored)) in checked.enumerate() {
-            let current = DeckFingerprint::of_seat(&cards.library, &cards.commanders)?;
+            let current = cards.fingerprint()?;
             if current != *stored {
                 return Err(RecipeError::DeckChanged {
                     seat,
@@ -986,6 +1031,7 @@ mod tests {
         DeckRef::Oracle {
             cards: library_ids(),
             commanders: commanders.iter().map(|id| (*id).to_owned()).collect(),
+            companion: None,
         }
     }
 

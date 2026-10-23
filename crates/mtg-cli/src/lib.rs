@@ -15,6 +15,7 @@ pub mod coverage;
 pub mod error;
 pub mod fetch;
 pub mod files;
+pub mod forge;
 pub mod http;
 pub mod ingest;
 pub mod pacer;
@@ -114,6 +115,11 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             let db = Database::connect(&url).await?;
             let checked = check_rules::check_rules(&db, &args).await?;
             Ok(checked.render(args.verbose))
+        }
+        Command::ForgeCheck(args) => {
+            let url = cli.database_url.ok_or_else(missing_database_url)?;
+            let db = Database::connect(&url).await?;
+            forge::forge_check(&db, &args).await
         }
         Command::Coverage(args) => {
             let url = cli.database_url.ok_or_else(missing_database_url)?;
