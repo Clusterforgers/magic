@@ -97,4 +97,39 @@ Forge column: script under `forge-gui/res/cardsfolder`; XMage: class under `Mage
 | Blocker taxonomy | Magarena: the 155 status values and their counts as a second ranking of unsupported features | GPLv3, read only | Small, as part of the report; the pool ends in April 2023 |
 | Behaviour checks | XMage: 1,007 single-card test files (`Mage.Tests/src/test/java/org/mage/test/cards/single`) among 2,150 test files, as a list of mechanics to scenario-test | MIT | Out of scope for the readings |
 
-Order: the Forge reader and map first (it serves the cross-check, the grouping and the examples), the prompt examples second, a conversion only for API families where the reader's report shows the compiler has no reading.
+Order: the Forge reader and map serve the cross-check, the grouping and the examples; the prompt examples come second, and a conversion only for API families where the report shows the compiler has no reading.
+
+## Cross-check report
+
+`mtg-cli forge-check --forge <checkout> [--deck CODE_OR_NAME] [--top N] [--keys N] [--out FILE]` sets every stored precon card against the Forge script of its name (`crates/mtg-cli/src/forge`). The scripts are read at run time from the checkout; the repository holds card names, Forge's API, mode and key names, and counts.
+
+| Part | Rule |
+|---|---|
+| Reader (`script.rs`) | A line is `Tag:body`; `A:`, `T:`, `S:`, `R:`, `K:` and `SVar:` lines are read, faces split at `ALTERNATE`. A body splits at pipes into `Key$ Value` pairs. The verb is the value of `SP$`, `AB$` or `DB$` (effect), `Mode$` (trigger, static) or `Event$` (replacement), the text before the first colon of a keyword, and each part of a `Cost$` of an ability (a spell's mana is skipped). A name in a value (`SubAbility$`, `Execute$`, `Choices$`, `Triggers$`) is followed once to its `SVar`; an ability, trigger, static or replacement part that no line names is read too; `Count$` expressions and hints for the computer player are not items. Keys that only carry text, targeting, references or remembered objects are left out, and the many keys of a condition or an "unless" payment are one key each |
+| Map (`map.txt`, `map.rs`) | A Forge item, with optional conditions on keys, against the verbs of ours that stand for it (any one is enough), named as `used_primitives` names them (`Effect.Move`, `Trigger.StepBegins`). The most specific rule that holds wins. `-` is an item with no DSL verb, `~` bookkeeping. `also` lines name a key that asks for a verb of its own (`CopyPermanent` with `NonLegendary` asks for `Mod.RemoveSupertype`); `variant` lines name a key whose value tells uses apart (`Destination=Exile`). A keyword with no rule stands for the keyword of its name. The map has 149 effect, 75 trigger, 45 static, 20 replacement, 9 keyword and 27 cost rules, 53 key rules and 10 variants; it names the 60 most used APIs and all but 100 of the items of the run below, and a test checks that every verb of the map is a variant of the DSL |
+| Comparison (`compare.rs`) | The verbs of a card's rules are the primitives of its modelled abilities (the hand-written file, else the compiler's reading). An item is read when one of its verbs is among them, missing when none is, `no verb` or `unmapped`. The comparison is by sets for the whole card, not by clause |
+| Report (`report.rs`) | An unread card has a clause left to the table or unusable rules. The tail groups the unread cards by Forge API (a trigger, static, replacement, keyword by its family and name), with the cards that carry each key and the cards no other group holds; a key that 90% of a group's cards carry is a parameter of the verb and is left out; costs are read with their ability. The cover is the share of the grouped cards whose groups all lie among the top groups |
+
+Run on the 6,429 distinct cards of the 198 stored precons and 34,100 scripts (commit `b13b6c82`):
+
+| Measure | Value |
+|---|---|
+| Cards with a Forge script | 6,427 of 6,429 (no script: Arvinox, the Mind Flail; Baldin, Century Herdmaster) |
+| State of those cards | 2,234 verified, 2,425 partial, 1,768 manual; rules: 616 hand-written, 5,802 compiled, 9 none |
+| Items their scripts name | 26,834: 13,320 read (49.6%), 12,662 missing a mapped verb (47.2%), 752 with no DSL verb (2.8%), 100 not in the map (0.4%) |
+| Verbs Forge names that the rules lack | 327 verbs on 4,120 cards. Most cards: `Trigger.ZoneChange` for `ChangesZone` 848, `Effect.CreateToken` for `Token` 591, `Effect.Move` or `Search` for `ChangeZone` 584, `Effect.Draw` 558, a static for `Continuous` 502, `Effect.PutCounters` for `PutCounter` 443, `Trigger.StepBegins` for `Phase` 430, `Effect.Continuous` for `Pump` 330 |
+| The same in cards whose clauses are all read | 43 of the 2,236 (24 of the 613 hand-written): 18 verbs, among them an optional trigger (`OptionalDecider`) not read as `Effect.May` (15 pairs of card and trigger mode) and abilities granted by a static (`AddAbility`, `AddTrigger`, `AddStaticAbility`, 5 cards) |
+| Unread tail | 4,191 cards with a clause left to the table; 4,132 of them have Forge items we do not read, in 366 groups. 2,436 cards read some abilities (2,377 grouped, 291 groups); 1,755 read nothing (276 groups) |
+| Largest groups of the tail (cards; cards with no other group) | `ChangeZone` 867 (107), trigger `ChangesZone` 851 (7), `Token` 590 (39), `Draw` 552 (26), static `Continuous` 524 (160), `PutCounter` 473 (19), trigger `Phase` 430 (4), `Pump` 329 (29), `Effect` 328 (0), trigger `Attacks` 306 (1) |
+| Keys of a group (`CopyPermanent`, 113 cards) | `AtEOT` 27, `AddTypes` 20, `PumpKeywords` 20, `SetPower` and `SetToughness` 17, `TokenTapped` 17, `NumCopies` 16, `TokenAttacking` 13, `NonLegendary` 7, `Populate` 7 |
+| No DSL verb | `RepeatEach` 111 cards, `DigUntil` 66, `RollDice` 27, `AddPhase` 23, `FlipCoin` 23, `MultiplyCounter` 23, `Vote` 22 |
+
+Share of the grouped tail that one reader for each of the top groups covers:
+
+| Top groups | 1 | 3 | 5 | 10 | 20 | 50 | 100 |
+|---|---|---|---|---|---|---|---|
+| All 4,132 grouped cards | 2.6% | 6.8% | 12.9% | 21.2% | 36.8% | 64.5% | 83.2% |
+| The 2,377 that read some abilities | 0.3% | 10.5% | 15.7% | 24.7% | 42.1% | 67.5% | 84.8% |
+| The 1,755 that read nothing | 3.1% | 5.4% | 8.6% | 16.0% | 31.9% | 61.7% | 82.7% |
+
+The tail is long: ten readers free a fifth of the cards and fifty two thirds, because a card holds on average several groups. The groups that free cards alone (static `Continuous` 160, `ChangeZone` 107, `Token` 39, `ReduceCost` 38, `Mana` 34, `Pump` 29) are the pieces of `ROADMAP.md`, Model-assisted reading.
