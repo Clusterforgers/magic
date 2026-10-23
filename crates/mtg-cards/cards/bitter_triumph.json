@@ -1,0 +1,31 @@
+{
+  "oracle_id": "776341cb-d2ec-423f-9250-92dc8bd8d503",
+  "name": "Bitter Triumph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bitter Triumph",
+      "oracle_fingerprint": "7048fa12b41a3aca65c2ea5021642119",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "OneOf": [[{ "Discard": {} }], [{ "PayLife": 3 }]] }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

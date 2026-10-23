@@ -60,9 +60,12 @@ pub fn zone_is_visible(zone: Zone, viewer: PlayerId) -> bool {
     match zone {
         Zone::Library(_) => false,
         Zone::Hand(owner) => owner == viewer,
-        Zone::Battlefield | Zone::Graveyard(_) | Zone::Stack | Zone::Exile | Zone::Command(_) => {
-            true
-        }
+        Zone::Battlefield
+        | Zone::PhasedOut
+        | Zone::Graveyard(_)
+        | Zone::Stack
+        | Zone::Exile
+        | Zone::Command(_) => true,
     }
 }
 
@@ -475,6 +478,7 @@ impl TableView {
                 .map(|p| PlayerView::of(state, viewer, p))
                 .collect(),
             battlefield: zone_view(state, viewer, Zone::Battlefield),
+            phased_out: state.zone(Zone::PhasedOut).to_vec(),
             stack: zone_view(state, viewer, Zone::Stack),
             exile: zone_view(state, viewer, Zone::Exile),
             combat: CombatView {

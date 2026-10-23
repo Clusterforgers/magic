@@ -308,6 +308,8 @@ pub enum Keyword {
     Spectacle(Cost),
     /// Umbra armor (CR 702.89): if the creature this Aura enchants would be destroyed, instead all damage is removed from it and this Aura is destroyed.
     UmbraArmor,
+    /// Cipher (CR 702.99): as the spell resolves, its controller may exile it encoded on a creature they control; whenever that creature deals combat damage to a player, its controller may cast a copy of the encoded card without paying its mana cost, until the card leaves exile or the creature leaves the battlefield.
+    Cipher,
 }
 
 /// What a promised gift is (CR 702.174).
@@ -463,6 +465,7 @@ impl Keyword {
         "Horsemanship",
         "Spectacle",
         "Umbra armor",
+        "Cipher",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -610,6 +613,7 @@ impl Keyword {
             Keyword::Afterlife(_) => "Afterlife",
             Keyword::Horsemanship => "Horsemanship",
             Keyword::Spectacle(_) => "Spectacle",
+            Keyword::Cipher => "Cipher",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
         }
@@ -795,6 +799,7 @@ mod tests {
             Keyword::Horsemanship,
             Keyword::Spectacle(Cost::default()),
             Keyword::UmbraArmor,
+            Keyword::Cipher,
         ]
     }
 

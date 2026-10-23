@@ -14,7 +14,6 @@ use crate::characteristics::Characteristics;
 use crate::object::{GameObject, ObjectRef};
 use crate::state::GameState;
 use crate::turn::Step;
-use crate::zones::Zone;
 
 /// A layer of the continuous-effect system (CR 613.1); effects apply in this order.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
@@ -304,7 +303,7 @@ pub(crate) fn lasts(
         Duration::WhileSourceOnBattlefield => source.is_some_and(|source| {
             state
                 .object(source.id)
-                .is_some_and(|o| o.counter() == source.counter && o.zone() == Zone::Battlefield)
+                .is_some_and(|o| o.counter() == source.counter && o.zone().is_permanent_zone())
         }),
         // Only an exile lasts until an opponent becomes the monarch (a card in exile waits, `exile_return.rs`); no continuous
         // effect does.
@@ -441,6 +440,7 @@ mod tests {
     use crate::fixtures::{creature, state};
     use crate::fold::apply_event;
     use crate::player::LossReason;
+    use crate::zones::Zone;
 
     const ME: PlayerId = PlayerId(0);
     const FOE: PlayerId = PlayerId(1);

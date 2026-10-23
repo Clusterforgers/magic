@@ -19,6 +19,7 @@ mod cascade;
 mod casualty;
 mod changeling;
 mod choose_a_background;
+pub(crate) mod cipher;
 mod companion;
 mod convoke;
 mod crew;
@@ -517,6 +518,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Horsemanship => &horsemanship::Horsemanship,
         Keyword::Spectacle(_) => &spectacle::Spectacle,
         Keyword::UmbraArmor => &umbra_armor::UmbraArmor,
+        Keyword::Cipher => &cipher::Cipher,
         Keyword::Ascend => &ascend::Ascend,
         Keyword::ForMirrodin => &for_mirrodin::ForMirrodin,
         Keyword::JobSelect => &job_select::JobSelect,
@@ -637,6 +639,11 @@ pub fn player_keywords(state: &GameState, id: PlayerId) -> Vec<&Keyword> {
     };
     let mut held: Vec<&Keyword> = player.keywords().iter().collect();
     for keyword in state.layers().player_keywords(id) {
+        if !held.contains(&keyword) {
+            held.push(keyword);
+        }
+    }
+    for keyword in crate::rules::granted_player_keywords(state, id) {
         if !held.contains(&keyword) {
             held.push(keyword);
         }
@@ -873,6 +880,7 @@ mod tests {
             Keyword::Horsemanship,
             Keyword::Spectacle(cost()),
             Keyword::UmbraArmor,
+            Keyword::Cipher,
         ]
     }
 
@@ -1004,6 +1012,7 @@ mod tests {
         "Keyword.Horsemanship",
         "Keyword.Spectacle",
         "Keyword.UmbraArmor",
+        "Keyword.Cipher",
         "Keyword.SplitSecond",
         "Keyword.Undaunted",
     ];
@@ -1142,6 +1151,7 @@ mod tests {
     #[case::mentor(Keyword::Mentor, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::dethrone(Keyword::Dethrone, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::umbra_armor(Keyword::UmbraArmor, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::cipher(Keyword::Cipher, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::annihilator(Keyword::Annihilator(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::extort(Keyword::Extort, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::evolve(Keyword::Evolve, Hooks { abilities: 1, ..Hooks::none() })]

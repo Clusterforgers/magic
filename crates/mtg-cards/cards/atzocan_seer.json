@@ -19,7 +19,7 @@
             "targets": [
               {
                 "what": {
-                  "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, { "Subtype": "Dinosaur" }]
+                  "Object": [{ "Subtype": "Dinosaur" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
                 }
               }
             ],

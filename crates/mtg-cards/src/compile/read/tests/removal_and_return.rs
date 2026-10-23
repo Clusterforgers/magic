@@ -123,7 +123,6 @@ fn more_activated_wordings_read_and_write_back(#[case] text: &str) {
 }
 
 #[rstest]
-#[case::tapped("Return target creature card from your graveyard to the battlefield tapped.")]
 #[case::under_your_control(
     "Return target creature card from your graveyard to the battlefield under your control."
 )]

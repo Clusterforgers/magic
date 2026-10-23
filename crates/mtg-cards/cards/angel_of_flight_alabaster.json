@@ -14,7 +14,7 @@
             "targets": [
               {
                 "what": {
-                  "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, { "Subtype": "Spirit" }]
+                  "Object": [{ "Subtype": "Spirit" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
                 }
               }
             ],

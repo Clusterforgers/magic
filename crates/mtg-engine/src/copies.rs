@@ -173,6 +173,22 @@ pub struct SpellCopy {
     pub choices: Choices,
 }
 
+/// A card in exile was copied (CR 707.12): the copy is a token card in exile, owned by the player who made it, who may
+/// cast it. It ceases to exist as soon as it is in any zone but the stack (CR 704.5e).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct CardCopy {
+    /// The copy's object.
+    pub object: ObjectId,
+    /// The card it copies, as it was.
+    pub of: ObjectRef,
+    /// Who owns the copy.
+    pub owner: PlayerId,
+    /// The copiable values of the card.
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub definition: Arc<CardDefinition>,
+}
+
 /// An activated or triggered ability was copied (CR 707.10): the copy is an ability on the stack above the original,
 /// controlled by the player who copied it. It is neither activated nor triggered.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -254,6 +270,53 @@ pub(crate) fn fold_spell(state: &mut GameState, copy: &SpellCopy) -> Result<(), 
     state.zones.insert(Zone::Stack, id, Placement::Top);
     state.next_object = state.next_object.max(id.get() + 1);
     reset_passes(state);
+    Ok(())
+}
+
+/// Folds the event: the copy is a new token card on top of the exile zone, a copy of a card that lies there (CR 707.12).
+pub(crate) fn fold_card(state: &mut GameState, copy: &CardCopy) -> Result<(), EngineError> {
+    let id = copy.object;
+    if state.objects.contains_key(&id) || state.ceased.contains_key(&id) {
+        return Err(invalid(format!("{id:?} already exists")));
+    }
+    if !state.is_alive(copy.owner) {
+        return Err(invalid(format!(
+            "{:?} is out of the game and cannot own a copy",
+            copy.owner
+        )));
+    }
+    let copied = state.objects.get(&copy.of.id).is_some_and(|card| {
+        card.counter() == copy.of.counter
+            && card.zone() == Zone::Exile
+            && card.kind() == ObjectKind::Card
+    });
+    if !copied {
+        return Err(invalid(format!("{:?} is not a card in exile", copy.of)));
+    }
+    let mut card = GameObject::new(id, copy.owner, Arc::clone(&copy.definition), Zone::Exile);
+    card.kind = ObjectKind::Token;
+    card.stack_copy = Some(copy.of);
+    note_definition(state, &copy.definition);
+    state.objects.insert(id, card);
+    state.zones.insert(Zone::Exile, id, Placement::Top);
+    state.next_object = state.next_object.max(id.get() + 1);
+    Ok(())
+}
+
+/// Folds the event: a copy of a card that is anywhere but on the stack ceases to exist (CR 704.5e).
+pub(crate) fn fold_card_ceased(state: &mut GameState, object: ObjectId) -> Result<(), EngineError> {
+    let copy = state
+        .objects
+        .get(&object)
+        .filter(|copy| copy.kind() == ObjectKind::Token && copy.copied_from().is_some())
+        .ok_or_else(|| invalid(format!("{object:?} is not a copy of a card")))?;
+    if matches!(copy.zone(), Zone::Stack | Zone::Battlefield) {
+        return Err(invalid(format!(
+            "{object:?} is in {:?}, where a copy of a card stays",
+            copy.zone()
+        )));
+    }
+    crate::tokens::cease(state, object);
     Ok(())
 }
 

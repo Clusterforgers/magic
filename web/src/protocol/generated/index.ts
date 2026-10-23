@@ -19,6 +19,7 @@ export type { BlockOptions } from "./BlockOptions";
 export type { BlockerOption } from "./BlockerOption";
 export type { BottomOptions } from "./BottomOptions";
 export type { CardColor } from "./CardColor";
+export type { CardCopy } from "./CardCopy";
 export type { CardDetail } from "./CardDetail";
 export type { CardFaceView } from "./CardFaceView";
 export type { CardHit } from "./CardHit";

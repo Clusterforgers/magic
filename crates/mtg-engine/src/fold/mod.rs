@@ -131,6 +131,8 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::TokenCreated(token) => crate::tokens::fold(state, token),
         Event::BecameCopy(copy) => crate::copies::fold(state, copy),
         Event::SpellCopied(copy) => crate::copies::fold_spell(state, copy),
+        Event::CardCopied(copy) => crate::copies::fold_card(state, copy),
+        Event::CopyCeased { object } => crate::copies::fold_card_ceased(state, *object),
         Event::AbilityCopied(copy) => crate::copies::fold_ability(state, copy),
         Event::CopyEnded { object } => crate::copies::fold_ended(state, *object),
         Event::Crewed { .. } => tally_crewed(state, event),
@@ -210,22 +212,25 @@ fn settle_permanents(state: &mut GameState, active: PlayerId) {
     }
 }
 
+/// A turn begins: its number and active player, the first step, and a fresh combat.
+fn begin_turn(state: &mut GameState, number: u32, active: PlayerId) {
+    let (before, previous) = (state.turn.number, state.turn.active);
+    state.turn.number = number;
+    state.turn.active = active;
+    state.turn.step = Step::Untap;
+    state.turn.lands_played = 0;
+    if before == 0 || state.opens_round(previous, active) {
+        state.turn.round += 1;
+    }
+    state.clear_turn_uses();
+    state.priority = None;
+    state.combat = crate::combat::CombatState::default();
+    settle_permanents(state, active);
+}
+
 fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
-        Event::TurnBegan { number, active } => {
-            let (before, previous) = (state.turn.number, state.turn.active);
-            state.turn.number = *number;
-            state.turn.active = *active;
-            state.turn.step = Step::Untap;
-            state.turn.lands_played = 0;
-            if before == 0 || state.opens_round(previous, *active) {
-                state.turn.round += 1;
-            }
-            state.clear_turn_uses();
-            state.priority = None;
-            state.combat = crate::combat::CombatState::default();
-            settle_permanents(state, *active);
-        }
+        Event::TurnBegan { number, active } => begin_turn(state, *number, *active),
         Event::StepBegan { step } => {
             state.turn.step = *step;
             state.priority = None;
@@ -258,6 +263,12 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
 
         Event::PermanentTapped { object } => set_tapped(state, *object, true)?,
         Event::PermanentUntapped { object } => set_tapped(state, *object, false)?,
+        Event::PermanentPhasedOut {
+            object,
+            controller,
+            indirect,
+        } => crate::phasing::fold_out(state, *object, *controller, *indirect)?,
+        Event::PermanentPhasedIn { object } => crate::phasing::fold_in(state, *object)?,
         Event::Monstrous { object, .. } => set_monstrous(state, *object)?,
         Event::ClassLevelGained { object, level, .. } => set_level(state, *object, *level)?,
         Event::TurnedFaceUp { object, .. } => turn_face_up(state, *object)?,

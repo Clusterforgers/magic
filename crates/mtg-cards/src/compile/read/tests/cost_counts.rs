@@ -129,6 +129,16 @@ fn spells_cast_from_anywhere_other_than_the_hand(#[case] text: &str, #[case] jso
     reads_as(text, ClauseKind::Static, false, json);
 }
 
+#[test]
+fn a_subtype_of_cards_in_a_graveyard_is_counted() {
+    reads_as(
+        "This spell costs {1} less to cast for each Elf card in your graveyard.",
+        ClauseKind::Static,
+        false,
+        &itself(r#"{"Count":[{"Subtype":"Elf"},{"In":"Graveyard"},{"OwnedBy":"You"}]}"#),
+    );
+}
+
 #[rstest]
 #[case::the_number_of_with_x(
     "This spell costs {X} less to cast, where X is the number of artifacts you control."
@@ -138,9 +148,6 @@ fn spells_cast_from_anywhere_other_than_the_hand(#[case] text: &str, #[case] jso
 )]
 #[case::x_without_where("This spell costs {X} less to cast.")]
 #[case::a_party("This spell costs {1} less to cast for each creature in your party.")]
-#[case::a_subtype_of_cards(
-    "This spell costs {1} less to cast for each Elf card in your graveyard."
-)]
 #[case::counted_by_a_target("This spell costs {1} less to cast for each target.")]
 #[case::another_player(
     "This spell costs {1} less to cast for each creature card in their graveyard."

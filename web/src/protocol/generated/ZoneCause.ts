@@ -25,4 +25,8 @@ by: ObjectRef, } } | { "ExiledUntilMonarch": {
 /**
  * The player whose opponents' becoming the monarch returns it.
  */
-by: PlayerId, } } | "Adventure" | "Countered" | "Milled" | "StateBased" | "Discarded";
+by: PlayerId, } } | { "Encoded": { 
+/**
+ * The creature it is encoded on.
+ */
+by: ObjectRef, } } | "Adventure" | "Countered" | "Milled" | "StateBased" | "Discarded";

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "30b533a3-afc3-4500-a8f0-54e84301988f",
+  "name": "Stolen Identity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stolen Identity",
+      "oracle_fingerprint": "16976d38e8eb75ab4d4d2aa839014d3d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }]
+          }
+        },
+        { "Keyword": "Cipher" }
+      ]
+    }
+  ]
+}

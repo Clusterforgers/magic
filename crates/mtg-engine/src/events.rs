@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use crate::abilities::{AbilitySource, Cause, PutOnStack};
 use crate::choose::{Choice, Choices, Target};
 use crate::combat::{AttackTarget, DamageForm, DamageTarget};
-use crate::copies::{AbilityCopy, BecameCopy, SpellCopy};
+use crate::copies::{AbilityCopy, BecameCopy, CardCopy, SpellCopy};
 use crate::counters::CountersChanged;
 use crate::day_night::DayNight;
 use crate::effects::ContinuousEffect;
@@ -173,6 +173,23 @@ pub enum Event {
     },
     /// A permanent became untapped.
     PermanentUntapped {
+        /// The permanent.
+        object: ObjectId,
+    },
+    /// A permanent phased out (CR 702.26): it is treated as though it does not exist until it phases in. Nothing
+    /// leaves the battlefield and nothing triggers.
+    PermanentPhasedOut {
+        /// The permanent.
+        object: ObjectId,
+        /// The player who controlled it, who it phases in for during their untap step.
+        controller: PlayerId,
+        /// It went with the permanent it is attached to, and phases in with that permanent.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+        indirect: bool,
+    },
+    /// A permanent phased in (CR 702.26): it exists again, as the same object, with everything it had.
+    PermanentPhasedIn {
         /// The permanent.
         object: ObjectId,
     },
@@ -548,6 +565,14 @@ pub enum Event {
     BecameCopy(BecameCopy),
     /// A spell was copied (CR 707.10): the copy is put on the stack above it, not cast.
     SpellCopied(Box<SpellCopy>),
+    /// A card in exile was copied (CR 707.12): the copy is a token card in exile that its owner may cast, and it ceases to
+    /// exist once it is anywhere but on the stack.
+    CardCopied(Box<CardCopy>),
+    /// A copy of a card ceased to exist in a zone other than the stack (CR 704.5e).
+    CopyCeased {
+        /// The copy.
+        object: ObjectId,
+    },
     /// An activated or triggered ability was copied (CR 707.10): the copy is put on the stack above it, not activated or triggered.
     AbilityCopied(Box<AbilityCopy>),
     /// A permanent's copy effect that lasted until end of turn ended.
@@ -750,6 +775,12 @@ pub enum ZoneCause {
         /// The player whose opponents' becoming the monarch returns it.
         by: PlayerId,
     },
+    /// It was exiled encoded on the creature `by` (cipher, CR 702.99a): it lies face up in exile linked to the creature,
+    /// until it leaves exile or the creature leaves the battlefield.
+    Encoded {
+        /// The creature it is encoded on.
+        by: ObjectRef,
+    },
     /// It resolved as an Adventure (CR 715.4) and was exiled instead of going to its owner's graveyard: its controller may cast the card from exile.
     Adventure,
     /// It was countered (CR 701.6).
@@ -862,6 +893,7 @@ impl Event {
             Event::TokenCreated(token) => vec![token.object],
             Event::BecameCopy(copy) => vec![copy.object],
             Event::SpellCopied(copy) => vec![copy.object],
+            Event::CardCopied(copy) => vec![copy.object],
             Event::AbilityCopied(copy) => vec![copy.object],
             Event::AbilityPutOnStack(put) => vec![put.object],
             Event::LandPlayed { object, .. }
@@ -877,6 +909,8 @@ impl Event {
             | Event::Flipped { object }
             | Event::PermanentTapped { object }
             | Event::PermanentUntapped { object }
+            | Event::PermanentPhasedOut { object, .. }
+            | Event::PermanentPhasedIn { object }
             | Event::Regenerated { object }
             | Event::DamageRemoved { object }
             | Event::CardDrawn { object, .. }
@@ -893,6 +927,7 @@ impl Event {
             | Event::Cycled { object, .. }
             | Event::CreatureDied { object, .. }
             | Event::CopyEnded { object }
+            | Event::CopyCeased { object }
             // The spell of a merge is part of the permanent and no object of its own after the event.
             | Event::Mutated { object, .. }
             | Event::ObjectLeftGame { object } => vec![*object],

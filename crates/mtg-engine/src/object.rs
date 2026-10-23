@@ -111,6 +111,28 @@ pub struct Designations {
     pub(crate) level: u32,
 }
 
+/// How a permanent is phased out (CR 702.26): who controlled it when it phased out, which is who it phases in for, and
+/// whether it phased out with the permanent it is attached to.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct Phasing {
+    /// The player who controlled it when it phased out; it phases in during that player's untap step.
+    pub controller: PlayerId,
+    /// It phased out because the permanent it is attached to did (CR 702.26g), so it phases in with that permanent.
+    pub indirect: bool,
+}
+
+/// Whether a permanent is phased out. A phased-in permanent adds nothing to the hash of the game.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct PhasedState(pub(crate) Option<Phasing>);
+
+impl Hash for PhasedState {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        if let Some(phasing) = &self.0 {
+            phasing.hash(state);
+        }
+    }
+}
+
 /// State that only exists while an object is on the battlefield.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct PermanentState {
@@ -145,6 +167,8 @@ pub struct PermanentState {
     pub(crate) copy: Option<CopyEffect>,
     /// The cards the permanent is made of once a mutating creature spell has merged with it (CR 729).
     pub(crate) merged: Option<Merged>,
+    /// Set while the permanent is phased out (CR 702.26); it keeps everything else it had.
+    pub(crate) phased: PhasedState,
 }
 
 impl PermanentState {
@@ -177,7 +201,13 @@ impl PermanentState {
             spent,
             copy: None,
             merged: None,
+            phased: PhasedState::default(),
         }
+    }
+
+    /// How the permanent is phased out, or `None` while it is phased in (CR 702.26).
+    pub const fn phasing(&self) -> Option<Phasing> {
+        self.phased.0
     }
 
     /// The cards the permanent is made of, when a mutating creature spell merged with it (CR 729).
@@ -304,6 +334,9 @@ pub struct GameObject {
     /// The player whose opponents' becoming the monarch returns a card in exile (Palace Jailer), and whether one has since
     /// it was exiled; a zone change clears it.
     pub(crate) monarch_wait: Option<(PlayerId, bool)>,
+    /// The creature a card in exile is encoded on (cipher, CR 702.99); a zone change of the card clears it, and a creature
+    /// that has left the battlefield is another object, so the link ends with it.
+    pub(crate) encoded_on: Option<ObjectRef>,
     /// The spell was cast from its owner's hand (rebound reads it); a zone change clears it.
     pub(crate) cast_from_hand: bool,
     /// The spell was cast from a graveyard (aftermath reads it); a zone change clears it.
@@ -331,6 +364,7 @@ impl GameObject {
             face_down: None,
             adventure: None,
             exiled_until: None,
+            encoded_on: None,
             monarch_wait: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
@@ -365,6 +399,7 @@ impl GameObject {
             face_down: None,
             adventure: None,
             exiled_until: None,
+            encoded_on: None,
             monarch_wait: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
@@ -452,6 +487,12 @@ impl GameObject {
     /// The spell or ability on the stack this object is a copy of, as it was when copied (CR 707.10); none for anything else.
     pub const fn copied_from(&self) -> Option<ObjectRef> {
         self.stack_copy
+    }
+
+    /// Whether this is a copy of a card that lies in exile, made to be cast (CR 707.12): a token card there, which a
+    /// player may cast like the card and which ceases to exist anywhere but on the stack (CR 704.5e).
+    pub fn is_card_copy(&self) -> bool {
+        self.kind == ObjectKind::Token && self.zone == Zone::Exile && self.stack_copy.is_some()
     }
 
     /// Whether this is a copy of a spell on the stack: a spell that is no card, and ceases to exist when it leaves the stack (CR 707.10).
@@ -547,6 +588,12 @@ impl GameObject {
         self.exiled_until
     }
 
+    /// The creature this card in exile is encoded on (cipher, CR 702.99a), as it was when the card was encoded; the link
+    /// holds only while that creature is still the object it was on the battlefield (`GameState::encoded_on`).
+    pub const fn encoded_on(&self) -> Option<ObjectRef> {
+        self.encoded_on
+    }
+
     /// Whether a card in exile waits for an opponent of its exiler to become the monarch and one has.
     pub(crate) const fn monarch_released(&self) -> bool {
         matches!(self.monarch_wait, Some((_, true)))
@@ -627,6 +674,7 @@ impl PartialEq for GameObject {
             && self.face_down == other.face_down
             && self.adventure == other.adventure
             && self.exiled_until == other.exiled_until
+            && self.encoded_on == other.encoded_on
             && self.monarch_wait == other.monarch_wait
             && self.cast_from_hand == other.cast_from_hand
             && self.cast_from_graveyard == other.cast_from_graveyard
@@ -654,6 +702,9 @@ impl Hash for GameObject {
         self.adventure.hash(state);
         if let Some(until) = self.exiled_until {
             until.hash(state);
+        }
+        if let Some(carrier) = self.encoded_on {
+            carrier.hash(state);
         }
         if let Some(wait) = self.monarch_wait {
             wait.hash(state);
