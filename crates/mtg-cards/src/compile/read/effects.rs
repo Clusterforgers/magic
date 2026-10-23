@@ -16,6 +16,7 @@ use super::copy_spells;
 use super::costs;
 use super::counters;
 use super::create;
+use super::defining;
 use super::draws;
 use super::library;
 use super::modal;
@@ -377,7 +378,7 @@ pub(super) fn player(r: &mut Reader<'_>) -> Option<Ref> {
 pub(super) fn life(r: &mut Reader<'_>) -> Option<Amount> {
     if r.word("life") {
         r.need("equal to")?;
-        return its_stat(r);
+        return r.attempt(its_stat).or_else(|| defining::value(r));
     }
     let amount = points(r)?;
     r.word("life").then_some(())?;

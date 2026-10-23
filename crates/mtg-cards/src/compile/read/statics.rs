@@ -24,6 +24,7 @@ use super::selectors::{
 };
 use super::tokens::Reader;
 use super::triggers::{self, article};
+use super::where_x;
 use crate::ability::{Ability, CostChange};
 use crate::mana::ManaCostX;
 use crate::modify::{GameRule, Modification};
@@ -98,8 +99,16 @@ fn entering(r: &mut Reader<'_>) -> Option<Ability> {
     if !tapped {
         r.need("with")?;
     }
-    let (counter, count) = counters::entering(r)?;
+    // "enters with X +1/+1 counters on it, where X is the number of ...": the where clause gives X its count.
+    let named = where_x::ahead(r);
+    let outer = std::mem::replace(&mut r.where_x, named);
+    let found = counters::entering(r);
+    r.where_x = outer;
+    let (counter, mut count) = found?;
     r.need("on it")?;
+    if named {
+        count = where_x::counted(r)?;
+    }
     Some(replacement(
         ReplaceBy::WithCounters {
             counter,
@@ -833,13 +842,18 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
                 tapped,
             },
             None,
-        ) => counters::entering_text(counter, count)
-            .map(|counters| {
-                let tapped = if *tapped { " tapped" } else { "" };
-                format!("~ enters{tapped} with {counters} on it")
-            })
-            .into_iter()
-            .collect(),
+        ) => {
+            let tapped = if *tapped { " tapped" } else { "" };
+            // A counted number is X, named at the end of the sentence.
+            let (shown, tail) = match defining::value_text(count) {
+                Some(said) => (Amount::X, format!(", where X is {said}")),
+                None => (count.clone(), String::new()),
+            };
+            counters::entering_text(counter, &shown)
+                .map(|counters| format!("~ enters{tapped} with {counters} on it{tail}"))
+                .into_iter()
+                .collect()
+        }
         (
             ReplaceBy::WithCounters { counter, count, .. },
             Some(Condition::CastWith(CastWay::Escape)),
