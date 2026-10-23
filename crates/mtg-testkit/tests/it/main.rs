@@ -284,6 +284,8 @@ mod split_second_fuzz;
 mod state_based_actions;
 mod state_triggers;
 mod static_abilities;
+mod static_grants;
+mod static_grants_fuzz;
 mod statics_fuzz;
 mod station;
 mod storage_lands;

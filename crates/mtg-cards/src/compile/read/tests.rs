@@ -246,6 +246,7 @@ mod spell_copies;
 mod spell_keywords;
 mod spell_x_costs;
 mod spend_subtypes;
+mod static_grants;
 mod static_group_writers;
 mod static_pairs;
 mod statics;

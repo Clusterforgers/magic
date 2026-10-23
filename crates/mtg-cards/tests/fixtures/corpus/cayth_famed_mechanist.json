@@ -1,0 +1,164 @@
+{
+  "object": "card",
+  "id": "5f8e6e5d-63d8-48c3-93a0-e7de1d75f5ca",
+  "oracle_id": "d18a014e-16a0-4641-9546-ff3729437eed",
+  "multiverse_ids": [
+    665327
+  ],
+  "mtgo_id": 127473,
+  "arena_id": 92603,
+  "tcgplayer_id": 552430,
+  "cardmarket_id": 771311,
+  "name": "Cayth, Famed Mechanist",
+  "lang": "en",
+  "released_at": "2024-06-14",
+  "uri": "https://api.scryfall.com/cards/5f8e6e5d-63d8-48c3-93a0-e7de1d75f5ca",
+  "scryfall_uri": "https://scryfall.com/card/m3c/6/cayth-famed-mechanist?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:57:17Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/f/5f8e6e5d-63d8-48c3-93a0-e7de1d75f5ca.jpg?1783911437",
+    "normal": "https://cards.scryfall.io/normal/front/5/f/5f8e6e5d-63d8-48c3-93a0-e7de1d75f5ca.jpg?1783911437",
+    "large": "https://cards.scryfall.io/large/front/5/f/5f8e6e5d-63d8-48c3-93a0-e7de1d75f5ca.jpg?1783911437",
+    "png": "https://cards.scryfall.io/png/front/5/f/5f8e6e5d-63d8-48c3-93a0-e7de1d75f5ca.png?1783911437",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/f/5f8e6e5d-63d8-48c3-93a0-e7de1d75f5ca.jpg?1783911437",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/f/5f8e6e5d-63d8-48c3-93a0-e7de1d75f5ca.jpg?1783911437",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/f/5f8e6e5d-63d8-48c3-93a0-e7de1d75f5ca.webp?1783911437",
+    "grid": "https://cards.scryfall.io/grid/front/5/f/5f8e6e5d-63d8-48c3-93a0-e7de1d75f5ca.webp?1783911437",
+    "display": "https://cards.scryfall.io/display/front/5/f/5f8e6e5d-63d8-48c3-93a0-e7de1d75f5ca.webp?1783911437",
+    "art": "https://cards.scryfall.io/art/front/5/f/5f8e6e5d-63d8-48c3-93a0-e7de1d75f5ca.webp?1783911437",
+    "crop": "https://cards.scryfall.io/crop/front/5/f/5f8e6e5d-63d8-48c3-93a0-e7de1d75f5ca.webp?1783911437",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/f/5f8e6e5d-63d8-48c3-93a0-e7de1d75f5ca.jpg?1783911437"
+  },
+  "mana_cost": "{1}{U}{R}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Dwarf Artificer",
+  "oracle_text": "Fabricate 1 (When this creature enters, put a +1/+1 counter on it or create a 1/1 colorless Servo artifact creature token.)\nOther nontoken creatures you control have fabricate 1.\n{2}, {T}: Choose one —\n• Populate.\n• Proliferate.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Proliferate",
+    "Fabricate",
+    "Populate"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "23165814-3eb8-4d94-b9c8-ecc798afe7a0",
+      "component": "token",
+      "name": "Servo",
+      "type_line": "Token Artifact Creature — Servo",
+      "uri": "https://api.scryfall.com/cards/23165814-3eb8-4d94-b9c8-ecc798afe7a0"
+    },
+    {
+      "object": "related_card",
+      "id": "ecc9aa01-0036-453f-938d-8f2f76a7fef5",
+      "component": "combo_piece",
+      "name": "Cayth, Famed Mechanist",
+      "type_line": "Legendary Creature — Dwarf Artificer",
+      "uri": "https://api.scryfall.com/cards/ecc9aa01-0036-453f-938d-8f2f76a7fef5"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f5e00721-cf99-43ba-bf16-b22d56d12c73",
+  "set": "m3c",
+  "set_name": "Modern Horizons 3 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f5e00721-cf99-43ba-bf16-b22d56d12c73",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Am3c&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/m3c?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5f8e6e5d-63d8-48c3-93a0-e7de1d75f5ca/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad18a014e-16a0-4641-9546-ff3729437eed&unique=prints",
+  "collector_number": "6",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Eric Wilkerson",
+  "artist_ids": [
+    "525ec49d-a7c8-4ddc-96aa-58cf5ad5e937"
+  ],
+  "illustration_id": "05d424e8-662c-4776-bf49-25b63a7af7c5",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 4397,
+  "prices": {
+    "usd": "0.41",
+    "usd_foil": "0.46",
+    "usd_etched": null,
+    "eur": "0.44",
+    "eur_foil": "0.36",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=665327&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCayth%252C%2BFamed%2BMechanist",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCayth%252C%2BFamed%2BMechanist",
+    "edhrec": "https://edhrec.com/route/?cc=Cayth%2C+Famed+Mechanist"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F552430%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=771311&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/127473?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

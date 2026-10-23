@@ -1,0 +1,24 @@
+{
+  "oracle_id": "3635e4e5-e655-45f4-a444-39756f55129a",
+  "name": "Eldrazi Conscription",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eldrazi Conscription",
+      "oracle_fingerprint": "7711a245e1e590a606a3417ceacb5790",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 10, "toughness": 10 } },
+              { "AddKeyword": "Trample" },
+              { "AddKeyword": { "Annihilator": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

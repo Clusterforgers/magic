@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d925e560-faa1-40a9-b25a-47065ee891e6",
+  "name": "Guardian Augmenter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guardian Augmenter",
+      "oracle_fingerprint": "34d85de619f4420f507719819b4a0183",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": ["Commander", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Hexproof" }]
+          }
+        }
+      ]
+    }
+  ]
+}

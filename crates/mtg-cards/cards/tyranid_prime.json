@@ -1,0 +1,20 @@
+{
+  "oracle_id": "12a43da3-57aa-4394-8cce-e53ec7e3538e",
+  "name": "Tyranid Prime",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tyranid Prime",
+      "oracle_fingerprint": "def7c6cd9a14ebf045001ee33db73489",
+      "abilities": [
+        { "Keyword": "Evolve" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Evolve" }]
+          }
+        }
+      ]
+    }
+  ]
+}

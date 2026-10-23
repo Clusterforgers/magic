@@ -1,0 +1,54 @@
+{
+  "oracle_id": "d18a014e-16a0-4641-9546-ff3729437eed",
+  "name": "Cayth, Famed Mechanist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cayth, Famed Mechanist",
+      "oracle_fingerprint": "cdae3d795db1a6317a3157c4ac596839",
+      "abilities": [
+        { "Keyword": { "Fabricate": 1 } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Not": "Token" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Fabricate": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }]
+                            },
+                            "as": "token"
+                          }
+                        },
+                        { "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "token" } } } } }
+                      ]
+                    },
+                    { "effects": [{ "Proliferate": {} }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

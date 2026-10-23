@@ -75,6 +75,7 @@ Bard's Bow
 Basilica Screecher
 Basilisk Gate
 Basking Rootwalla
+Bastion Protector
 Baton of Courage
 Battering Krasis
 Batterskull
@@ -148,11 +149,13 @@ Cast Out
 Cathars' Crusade
 Cathartic Reunion
 Cavern Whisperer
+Cayth, Famed Mechanist
 Celestial Archon
 Celestial Colonnade
 Celestial Crusader
 Cemetery Tampering
 Ceremonial Groundbreaker
+Chains of Custody
 Challenger Troll
 Champion of Lambholt
 Champion's Helm
@@ -296,6 +299,8 @@ Echo Mage
 Echo Storm
 Echoes of the Kin Tree
 Eel Umbra
+Elder Owyn Lyons
+Eldrazi Conscription
 Electric Revelation
 Electro's Bolt
 Elegant Edgecrafters
@@ -425,6 +430,7 @@ Grim Initiate
 Grisly Salvage
 Growing Ranks
 Gruul Cluestone
+Guardian Augmenter
 Guardian Gladewalker
 Guidelight Matrix
 Guiding Voice
@@ -436,6 +442,7 @@ Hallowed Spiritkeeper
 Hammer Dropper
 Hangar Scrounger
 Hangarback Walker
+Harmonious Archon
 Harrow
 Hatut Zeraze Strike Force
 Haughty Djinn
@@ -563,8 +570,10 @@ Mardu Scout
 Mardu Shadowspear
 Mardu Strike Leader
 Maro
+Mask of Riddles
 Master of Etherium
 Master of Pearls
+Master of the Pearl Trident
 Mastery of the Unseen
 Maulfist Squad
 Mausoleum Harpy
@@ -573,8 +582,10 @@ Mayhem Patrol
 Megrim
 Memory Guardian
 Mer-Ek Nightblade
+Merchant of Truth
 Mercurial Chemister
 Merfolk Branchwalker
+Merfolk Mistbinder
 Mesmeric Orb
 Metropolis Reformer
 Midnight Banshee
@@ -670,11 +681,13 @@ Planar Outburst
 Plaxmanta
 Poet's Quill
 Pongify
+Pontiff of Blight
 Pop Quiz
 Porcuparrot
 Pouncing Jaguar
 Pouncing Shoreshark
 Powder Ganger
+Prava of the Steel Legion
 Predator Dragon
 Pridemalkin
 Primeval Protector
@@ -949,11 +962,13 @@ Tilonalli's Skinshifter
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
+Titania, Nature's Force
 Titania, Proud Pummeler
 Tithe Drinker
 Tithebearer Giant
 Towering Titan
 Toxic Deluge
+Trace of Abundance
 Trash for Treasure
 Traumatic Visions
 Treasure Cruise
@@ -965,6 +980,7 @@ Tumble Magnet
 Tuskguard Captain
 Twilight Mire
 Twincast
+Tyranid Prime
 Tyrant's Familiar
 Uktabi Efreet
 Ulamog's Crusher
@@ -1024,6 +1040,7 @@ Wild Wasteland
 Wilderness Elemental
 Windborn Muse
 Windbrisk Heights
+Winged Boots
 Wings of the Guard
 Wipe Away
 Withering Boon
@@ -1041,3 +1058,4 @@ Zendikar Resurgent
 Zhang Fei, Fierce Warrior
 Zodiac Goat
 Zoetic Cavern
+Zombie Master

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f5a95092-fb71-4b55-bc54-782bd1c603e1",
+  "name": "Pontiff of Blight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pontiff of Blight",
+      "oracle_fingerprint": "8b325e6a5ad88b39ef0408aa829d3a2f",
+      "abilities": [
+        { "Keyword": "Extort" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Extort" }]
+          }
+        }
+      ]
+    }
+  ]
+}

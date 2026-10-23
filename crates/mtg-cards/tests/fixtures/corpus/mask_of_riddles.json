@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "bf483e4c-4a6e-4b78-8e5d-c8b17f7bb433",
+  "oracle_id": "a50c55a7-4e7e-40f6-b76c-1e32598dc9b6",
+  "multiverse_ids": [
+    559919
+  ],
+  "tcgplayer_id": 270132,
+  "cardmarket_id": 652931,
+  "name": "Mask of Riddles",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/bf483e4c-4a6e-4b78-8e5d-c8b17f7bb433",
+  "scryfall_uri": "https://scryfall.com/card/ncc/347/mask-of-riddles?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:13:44Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/f/bf483e4c-4a6e-4b78-8e5d-c8b17f7bb433.jpg?1783923224",
+    "normal": "https://cards.scryfall.io/normal/front/b/f/bf483e4c-4a6e-4b78-8e5d-c8b17f7bb433.jpg?1783923224",
+    "large": "https://cards.scryfall.io/large/front/b/f/bf483e4c-4a6e-4b78-8e5d-c8b17f7bb433.jpg?1783923224",
+    "png": "https://cards.scryfall.io/png/front/b/f/bf483e4c-4a6e-4b78-8e5d-c8b17f7bb433.png?1783923224",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/f/bf483e4c-4a6e-4b78-8e5d-c8b17f7bb433.jpg?1783923224",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/f/bf483e4c-4a6e-4b78-8e5d-c8b17f7bb433.jpg?1783923224",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/f/bf483e4c-4a6e-4b78-8e5d-c8b17f7bb433.webp?1783923224",
+    "grid": "https://cards.scryfall.io/grid/front/b/f/bf483e4c-4a6e-4b78-8e5d-c8b17f7bb433.webp?1783923224",
+    "display": "https://cards.scryfall.io/display/front/b/f/bf483e4c-4a6e-4b78-8e5d-c8b17f7bb433.webp?1783923224",
+    "art": "https://cards.scryfall.io/art/front/b/f/bf483e4c-4a6e-4b78-8e5d-c8b17f7bb433.webp?1783923224",
+    "crop": "https://cards.scryfall.io/crop/front/b/f/bf483e4c-4a6e-4b78-8e5d-c8b17f7bb433.webp?1783923224",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/f/bf483e4c-4a6e-4b78-8e5d-c8b17f7bb433.jpg?1783923224"
+  },
+  "mana_cost": "{U}{B}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature has fear. (It can't be blocked except by artifact creatures and/or black creatures.)\nWhenever equipped creature deals combat damage to a player, you may draw a card.\nEquip {2}",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Equip"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "c51de34b-d4d6-4179-a432-573744ded119",
+  "set": "ncc",
+  "set_name": "New Capenna Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/c51de34b-d4d6-4179-a432-573744ded119",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ancc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ncc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/bf483e4c-4a6e-4b78-8e5d-c8b17f7bb433/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa50c55a7-4e7e-40f6-b76c-1e32598dc9b6&unique=prints",
+  "collector_number": "347",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Matt Cavotta",
+  "artist_ids": [
+    "2e6a0611-9411-4ba4-98e3-c0e18cbf9f83"
+  ],
+  "illustration_id": "376dedb3-27f1-4163-b013-5ef0932c3dab",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 7546,
+  "penny_rank": 10363,
+  "prices": {
+    "usd": "0.72",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.61",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=559919&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMask%2Bof%2BRiddles",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMask%2Bof%2BRiddles",
+    "edhrec": "https://edhrec.com/route/?cc=Mask+of+Riddles"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F270132%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=652931&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Mask+of+Riddles&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

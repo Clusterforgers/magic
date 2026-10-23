@@ -148,6 +148,8 @@ fn a_token_with_keywords_in_a_mode_reads_beside_the_other_modes() {
 
 #[rstest]
 #[case::gains_defender("Target creature gains defender until end of turn.")]
+#[case::a_token_with_a_landwalk("Create a 1/1 blue Squid creature token with islandwalk.")]
+#[case::gains_fear("Target creature gains fear until end of turn.")]
 #[case::gets_and_gains_prowess("Target creature gets +1/+1 and gains prowess until end of turn.")]
 #[case::gains_two_new_keywords("Creatures you control gain shroud and infect until end of turn.")]
 #[case::destroy_a_creature_with_infect("Destroy target creature with infect.")]
@@ -166,7 +168,6 @@ fn the_keywords_of_the_vocabulary_also_read_in_a_pump_and_a_selector(#[case] tex
 #[case::a_keyword_with_a_number(
     "Create a 1/1 colorless Phyrexian Mite artifact creature token with toxic 1."
 )]
-#[case::a_landwalk("Create a 1/1 blue Squid creature token with islandwalk.")]
 #[case::a_keyword_the_dsl_lacks("Create a 2/2 black Zombie creature token with decayed.")]
 #[case::a_keyword_the_vocabulary_lacks("Create a 1/1 white Soldier creature token with flanking.")]
 #[case::protection("Create a 1/1 white Knight creature token with protection from red.")]
