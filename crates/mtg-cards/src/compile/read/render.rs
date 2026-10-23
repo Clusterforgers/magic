@@ -14,7 +14,7 @@ use super::costs;
 use super::counters;
 use super::create;
 use super::draws;
-use super::effects::{BACK, RETURNED, returns_itself};
+use super::effects::{BACK, RETURNED, dead_card, returns_itself};
 use super::flicker;
 use super::group_pump;
 use super::lands;
@@ -30,8 +30,8 @@ use super::spent;
 use super::statics;
 use super::subtypes::plural_subtype;
 use super::triggers::{
-    article, condition_text, cycled_itself, itself_acts, leaves_itself, pattern_text,
-    targeted_itself,
+    article, condition_text, cycled_itself, graveyard_itself, itself_acts, leaves_itself,
+    pattern_text, targeted_itself,
 };
 use super::where_x;
 use crate::ability::{Ability, Limit, Timing};
@@ -180,7 +180,49 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     let more = group_pump::wordings(ability, &texts);
     texts.extend(more);
     texts.extend(where_x::wordings(ability));
+    graveyard_wordings(ability, &mut texts);
     texts
+}
+
+/// The wordings of an ability the card has in its graveyard: it returns itself "from your graveyard to your hand", and
+/// a card that goes to a graveyard from the battlefield "is put into a graveyard from the battlefield" as well as dies.
+fn graveyard_wordings(ability: &Ability, texts: &mut Vec<String>) {
+    match ability {
+        Ability::Activated {
+            from: ZoneKind::Graveyard,
+            ..
+        } => {
+            for text in texts.iter_mut() {
+                *text = text.replace(
+                    ": Return ~ to its owner's hand",
+                    ": Return ~ from your graveyard to your hand",
+                );
+            }
+        }
+        Ability::Triggered {
+            when:
+                TriggerPattern::ZoneChange {
+                    what,
+                    from: Some(ZoneKind::Battlefield),
+                    to: Some(ZoneKind::Graveyard),
+                },
+            ..
+        } if what.0 == [Pred::This] => {
+            let said: Vec<String> = texts
+                .iter()
+                .filter(|text| text.contains(" ~ dies, "))
+                .map(|text| {
+                    text.replacen(
+                        " ~ dies, ",
+                        " ~ is put into a graveyard from the battlefield, ",
+                        1,
+                    )
+                })
+                .collect();
+            texts.extend(said);
+        }
+        _ => {}
+    }
 }
 
 /// The line of a Saga chapter: its roman numeral, a dash and the sentences of its effects.
@@ -238,7 +280,7 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             targets,
             effects,
         } if *from
-            == if cycled_itself(when) || returns_itself(effects) {
+            == if cycled_itself(when) || graveyard_itself(when) || returns_itself(effects) {
                 ZoneKind::Graveyard
             } else {
                 ZoneKind::Battlefield
@@ -271,12 +313,18 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             timing,
             condition,
             limit,
-            from: ZoneKind::Battlefield,
+            from: from @ (ZoneKind::Battlefield | ZoneKind::Graveyard),
             targets,
             effects,
         } => {
             let Some(head) = costs::text(cost) else {
                 return Vec::new();
+            };
+            // Exiling the card from the battlefield is "Exile ~", from the graveyard "Exile ~ from your graveyard".
+            let head = if *from == ZoneKind::Battlefield {
+                head.replace("Exile ~ from your graveyard", "Exile ~")
+            } else {
+                head
             };
             let tails = match condition {
                 None => restriction_texts(*timing, *limit),
@@ -1088,7 +1136,7 @@ impl Writer<'_> {
 
     /// "return target card from your graveyard to your hand", "return target creature to its owner's hand".
     fn returned_to_hand(&mut self, what: &Ref) -> Option<String> {
-        if *what == Ref::This {
+        if *what == Ref::This || *what == dead_card() {
             Some("return ~ to its owner's hand".to_owned())
         } else if self.in_your_graveyard(what) {
             Some(format!("return {} to your hand", self.object(what)?))
@@ -1181,7 +1229,10 @@ impl Writer<'_> {
             | Effect::Move {
                 to: Destination::Library { .. },
                 ..
-            } => self.library(effect).or_else(|| cast::text(effect))?,
+            } => self
+                .library(effect)
+                .or_else(|| cast::text(effect))
+                .or_else(|| self.keyword_action(effect))?,
             Effect::Sacrifice {
                 who: Ref::You,
                 filter,
@@ -1336,13 +1387,24 @@ impl Writer<'_> {
                 what: Ref::This,
                 to:
                     Destination::Battlefield {
-                        tapped: false,
+                        tapped,
                         under: None,
                         transformed: false,
                         counters,
                     },
-            } if counters.is_empty() => {
-                "return ~ from your graveyard to the battlefield".to_owned()
+            } if counters.is_empty() => format!(
+                "return ~ from your graveyard to the battlefield{}",
+                if *tapped { " tapped" } else { "" }
+            ),
+            Effect::Move {
+                what,
+                to:
+                    Destination::Library {
+                        place: Place::Shuffled,
+                        order: None,
+                    },
+            } if *what == Ref::This || *what == dead_card() => {
+                "shuffle ~ into its owner's library".to_owned()
             }
             Effect::Surveil {
                 who: Ref::You,

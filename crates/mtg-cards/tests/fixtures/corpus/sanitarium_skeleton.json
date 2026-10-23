@@ -1,0 +1,25 @@
+{
+  "id": "119020b3-9d26-4153-b7b9-28375f7fa915",
+  "oracle_id": "d09b0648-e324-4a16-b78c-d1849177c04f",
+  "name": "Sanitarium Skeleton",
+  "lang": "en",
+  "layout": "normal",
+  "set": "inr",
+  "collector_number": "129",
+  "rarity": "common",
+  "released_at": "2025-01-24",
+  "digital": false,
+  "mana_cost": "{B}",
+  "cmc": 1.0,
+  "type_line": "Creature — Skeleton",
+  "oracle_text": "{2}{B}: Return this card from your graveyard to your hand.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "power": "1",
+  "toughness": "2"
+}

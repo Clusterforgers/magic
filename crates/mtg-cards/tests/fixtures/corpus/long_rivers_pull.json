@@ -1,0 +1,25 @@
+{
+  "id": "1c81d0fa-81a1-4f9b-a5fd-5a648fd01dea",
+  "oracle_id": "f1993767-1d07-49c8-b8dc-04ec9840a999",
+  "name": "Long River's Pull",
+  "lang": "en",
+  "layout": "normal",
+  "set": "blb",
+  "collector_number": "58",
+  "rarity": "uncommon",
+  "released_at": "2024-08-02",
+  "digital": false,
+  "mana_cost": "{U}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Gift a card (You may promise an opponent a gift as you cast this spell. If you do, they draw a card before its other effects.)\nCounter target creature spell. If the gift was promised, instead counter target spell.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Gift"
+  ]
+}

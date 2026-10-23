@@ -1,0 +1,27 @@
+{
+  "oracle_id": "12397dbf-99a9-40c3-aa7c-76d09baad008",
+  "name": "Teacher's Pest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teacher's Pest",
+      "oracle_fingerprint": "487fbccadd197f5f1182fac040cd779f",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{B}{G}",
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

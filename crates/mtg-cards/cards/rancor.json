@@ -1,0 +1,28 @@
+{
+  "oracle_id": "9d2d6479-531c-4ce1-b52b-00e36fa63b64",
+  "name": "Rancor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rancor",
+      "oracle_fingerprint": "1fc4464b4ff53a872674008149e59b28",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }, { "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Move": { "what": { "Each": [{ "In": "Graveyard" }, "This"] }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

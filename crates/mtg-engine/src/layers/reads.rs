@@ -126,6 +126,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Attached
         | Ref::AttachedPlayer
         | Ref::Monarch
+        | Ref::Promised
         | Ref::Defending
         | Ref::Attacked
         | Ref::MostLife
@@ -198,6 +199,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Divided
         | Amount::TargetCount(_)
         | Amount::Kicks
+        | Amount::Promised
         | Amount::Triggering => Traits::NONE,
         Amount::Count(selector) => reads_of_selector(selector),
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),

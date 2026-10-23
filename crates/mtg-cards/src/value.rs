@@ -224,6 +224,8 @@ pub enum Amount {
     /// How many times the kicker costs of the spell were paid, a multikicker once for each payment (CR 702.33); a
     /// permanent and its abilities read the spell it came from, and zero is no kicker paid.
     Kicks,
+    /// One if the caster promised a gift as they cast the spell the ability reads, else zero (CR 702.174).
+    Promised,
     /// The amount of the event that triggered the ability ("that much", "that many", "the damage dealt"): the damage
     /// dealt, the life gained or lost, the counters put or removed; for a batch ("one or more") how many of its events
     /// the pattern found.
@@ -264,6 +266,7 @@ enum Tagged {
     LowestLife(Ref),
     HighestLife(Ref),
     Kicks,
+    Promised,
     Triggering,
 }
 
@@ -303,6 +306,7 @@ enum TaggedRef<'a> {
     LowestLife(&'a Ref),
     HighestLife(&'a Ref),
     Kicks,
+    Promised,
     Triggering,
 }
 
@@ -327,6 +331,7 @@ impl From<Tagged> for Amount {
             Tagged::LowestLife(who) => Amount::LowestLife(who),
             Tagged::HighestLife(who) => Amount::HighestLife(who),
             Tagged::Kicks => Amount::Kicks,
+            Tagged::Promised => Amount::Promised,
             Tagged::Triggering => Amount::Triggering,
         }
     }
@@ -360,6 +365,7 @@ impl Serialize for Amount {
             Amount::LowestLife(who) => TaggedRef::LowestLife(who).serialize(serializer),
             Amount::HighestLife(who) => TaggedRef::HighestLife(who).serialize(serializer),
             Amount::Kicks => TaggedRef::Kicks.serialize(serializer),
+            Amount::Promised => TaggedRef::Promised.serialize(serializer),
             Amount::Triggering => TaggedRef::Triggering.serialize(serializer),
         }
     }

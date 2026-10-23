@@ -1,0 +1,43 @@
+{
+  "oracle_id": "ac7d1986-8388-4e4c-973e-d90382b12acf",
+  "name": "Sazacap's Brew",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sazacap's Brew",
+      "oracle_fingerprint": "d15d92b4e2f90d5790f33a73ce42bb10",
+      "abilities": [
+        { "Keyword": { "Gift": "TappedFish" } },
+        { "AdditionalCost": { "cost": [{ "Discard": {} }], "required": true } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 1, "max": "Promised" }
+              }
+            ],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 2 } },
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 1 },
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

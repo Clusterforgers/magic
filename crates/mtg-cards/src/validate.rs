@@ -294,6 +294,7 @@ impl<'a> Walker<'a> {
             | Ref::EachPlayer
             | Ref::AttachedPlayer
             | Ref::Monarch
+            | Ref::Promised
             | Ref::Attacked
             | Ref::MostLife
             | Ref::Defending => {
@@ -394,6 +395,21 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// The amounts that read the optional costs paid: the kicks and the gift promised.
+    fn paid_amount(&mut self, amount: &Amount) {
+        if *amount == Amount::Kicks {
+            self.uses("Amount", "Kicks");
+            if !self.has_kicker {
+                self.problem("`Kicks` needs a Kicker or Multikicker keyword on the card");
+            }
+        } else {
+            self.uses("Amount", "Promised");
+            if !self.has_additional_cost {
+                self.problem("`Promised` needs a Gift keyword on the card");
+            }
+        }
+    }
+
     fn amount(&mut self, amount: &Amount) {
         // Only the amount of damage or counters, or a sum or even share made of it, can be a recipient's share.
         let sharing = std::mem::take(&mut self.amounting) == Amounting::Shared;
@@ -484,12 +500,7 @@ impl<'a> Walker<'a> {
                 self.uses("Amount", "LowestLife");
                 self.at("LowestLife", |w| w.reference(who, Kind::Player));
             }
-            Amount::Kicks => {
-                self.uses("Amount", "Kicks");
-                if !self.has_kicker {
-                    self.problem("`Kicks` needs a Kicker or Multikicker keyword on the card");
-                }
-            }
+            Amount::Kicks | Amount::Promised => self.paid_amount(amount),
             Amount::Triggering => {
                 self.uses("Amount", "Triggering");
                 if !self.scope.in_trigger {

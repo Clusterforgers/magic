@@ -318,9 +318,6 @@ fn a_card_that_returns_itself_has_its_ability_in_the_graveyard(
 #[case::to_the_hand(
     "Whenever a land you control enters, return this card from your graveyard to your hand."
 )]
-#[case::tapped(
-    "Whenever a land you control enters, return this card from your graveyard to the battlefield tapped."
-)]
 fn a_return_of_the_card_from_the_graveyard_stays_with_the_table_otherwise(#[case] text: &str) {
     assert_eq!(trigger(text), None, "{text}");
 }

@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::answers::Outcome;
 use crate::error::{EngineError, IllegalAnswer};
+use crate::keywords::gift;
 
 /// One optional cost.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -65,6 +66,15 @@ pub(crate) fn answer(
         {
             return Err(IllegalAnswer::NotOffered("cost").into());
         }
+    }
+    // A gift is promised to one opponent at most.
+    if costs
+        .iter()
+        .filter(|cost| **cost >= gift::SEAT_BASE)
+        .count()
+        > 1
+    {
+        return Err(IllegalAnswer::Duplicate("gift").into());
     }
     costs.sort_unstable();
     Ok(Outcome::Costs(costs))

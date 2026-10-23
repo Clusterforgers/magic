@@ -270,7 +270,6 @@ fn every_ordered_run_of_cost_parts_with_every_effect_and_restriction_writes_back
 #[case::no_cost_part("{T},: Draw a card.")]
 #[case::nothing_to_do("{T}:")]
 #[case::no_colon("{T} Draw a card.")]
-#[case::exile_from_the_graveyard("{2}, Exile ~ from your graveyard: Draw a card.")]
 #[case::regenerate_a_spell("{B}: Regenerate target spell.")]
 #[case::regenerate_a_card_in_a_graveyard(
     "{B}: Regenerate target creature card from your graveyard."

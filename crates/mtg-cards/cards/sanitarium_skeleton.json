@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d09b0648-e324-4a16-b78c-d1849177c04f",
+  "name": "Sanitarium Skeleton",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sanitarium Skeleton",
+      "oracle_fingerprint": "1931e3950fbc6149950f7a41bf8f2cb4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{B}",
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

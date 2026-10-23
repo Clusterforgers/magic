@@ -23,7 +23,7 @@ use crate::characteristics::{Characteristics, characteristics, controller_of, se
 use crate::choose::legal_from;
 use crate::choose::{Choices, Target};
 use crate::combat::AttackTarget;
-use crate::keywords::{self, OptionalKind};
+use crate::keywords::{self, OptionalKind, gift};
 use crate::layers::{Held, View, outside};
 use crate::object::{Chosen, FaceDown, GameObject, ObjectKind, ObjectRef, PermanentState};
 use crate::snapshot::Snapshot;
@@ -438,6 +438,7 @@ impl<'a> Scope<'a> {
                 .into_iter()
                 .collect(),
             Ref::Monarch => state.monarch().map(Target::Player).into_iter().collect(),
+            Ref::Promised => self.promised().map(Target::Player).into_iter().collect(),
             Ref::Defending => self.defending().map(Target::Player).into_iter().collect(),
             Ref::Attacked => self
                 .attacked_opponents()
@@ -865,6 +866,7 @@ impl<'a> Scope<'a> {
                 .map_err(|_| ResolveError::Invalid("too many players".into()))?,
             Amount::LowestLife(who) => self.lives(who)?.min().unwrap_or(i64::from(i32::MAX)),
             Amount::HighestLife(who) => self.lives(who)?.max().unwrap_or(i64::from(i32::MIN)),
+            Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
             Amount::Kicks => i64::try_from(self.payments(OptionalKind::Kicker))
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
             Amount::Triggering => self
@@ -946,6 +948,11 @@ impl<'a> Scope<'a> {
             .object(self.source.id)
             .filter(|object| object.counter() == self.source.counter)
             .map_or(&[], GameObject::paid_costs)
+    }
+
+    /// The opponent a gift was promised to as the spell was cast, while they are still in the game (CR 702.174).
+    fn promised(&self) -> Option<PlayerId> {
+        gift::promised(self.paid_costs()).filter(|player| self.state.is_alive(*player))
     }
 
     /// How many times the optional costs of `kind` were paid (`paid_costs`), read against the costs the card prints.
@@ -1045,7 +1052,9 @@ impl<'a> Scope<'a> {
                 holds
             }
             Condition::Kicked => self.payments(OptionalKind::Kicker) > 0,
-            Condition::AdditionalCostPaid => self.payments(OptionalKind::Additional) > 0,
+            Condition::AdditionalCostPaid => {
+                self.payments(OptionalKind::Additional) + self.payments(OptionalKind::Gift) > 0
+            }
             Condition::CastWith(way) => self.cast_way() == Some(*way),
             Condition::ManaSpent(mana) => self.mana_spent().contains(mana),
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),

@@ -1,0 +1,30 @@
+{
+  "id": "2cf17d8a-c7ee-4909-bc80-4138dcfe7e67",
+  "oracle_id": "c1e456b6-5d2b-4c42-9464-54a8f9f8f3ba",
+  "name": "Whisperer of the Wilds",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2xm",
+  "collector_number": "187",
+  "rarity": "common",
+  "released_at": "2020-08-07",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Shaman",
+  "oracle_text": "{T}: Add {G}.\nFerocious — {T}: Add {G}{G}. Activate only if you control a creature with power 4 or greater.",
+  "power": "0",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Ferocious"
+  ],
+  "produced_mana": [
+    "G"
+  ]
+}

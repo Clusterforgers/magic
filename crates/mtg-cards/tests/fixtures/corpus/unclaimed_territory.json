@@ -1,0 +1,27 @@
+{
+  "id": "d3782952-3839-4a94-95bc-716611d3ece6",
+  "oracle_id": "584b15f2-6ae9-413a-8b8d-9244dbea4878",
+  "name": "Unclaimed Territory",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "275",
+  "rarity": "uncommon",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "As this land enters, choose a creature type.\n{T}: Add {C}.\n{T}: Add one mana of any color. Spend this mana only to cast a creature spell of the chosen type.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "C",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "dbc8512a-9f6c-40d4-8049-14505e260746",
+  "oracle_id": "c30f9be4-c274-4ad0-b5d7-7d3421aa4277",
+  "name": "Drownyard Temple",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "359",
+  "rarity": "rare",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{3}: Return this card from your graveyard to the battlefield tapped.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "C"
+  ]
+}

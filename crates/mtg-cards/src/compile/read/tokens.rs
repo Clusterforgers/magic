@@ -380,6 +380,9 @@ pub struct Reader<'a> {
     /// Whether the sentence ends with ", where X is its power" (a characteristic of an object), so `X` in it stands
     /// for that amount, which `where_x::bind` puts in once the effects are read.
     pub where_x: bool,
+    /// Whether the trigger is about the card itself put into a graveyard, so "return it" and "shuffle it" name the
+    /// card in the graveyard, a new object (`effects::dead_card`).
+    pub died: bool,
     /// The object that "its" and "that creature" name in a where clause when no sentence named one: the card in an
     /// activation and in a trigger of its own event, the creature of the event in a trigger of another's.
     pub subject: Option<Ref>,
@@ -406,6 +409,7 @@ impl<'a> Reader<'a> {
             cast_spell: false,
             attacker: false,
             where_x: false,
+            died: false,
             subject: None,
         }
     }

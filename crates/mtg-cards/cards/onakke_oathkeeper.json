@@ -1,0 +1,32 @@
+{
+  "oracle_id": "080df9eb-c26b-494a-96b4-d7e47e501866",
+  "name": "Onakke Oathkeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Onakke Oathkeeper",
+      "oracle_fingerprint": "56dc15cf811a0b62df70225f0fbda28a",
+      "abilities": [
+        { "Rule": { "rule": { "AttackTax": { "attacked": "Planeswalkers", "mana": "{1}" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{W}{W}" }, "ExileSelf"],
+            "from": "Graveyard",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Planeswalker" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

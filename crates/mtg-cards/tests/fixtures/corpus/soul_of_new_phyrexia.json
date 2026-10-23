@@ -1,0 +1,23 @@
+{
+  "id": "c3b6480a-9b25-42a2-b62c-1f375216b211",
+  "oracle_id": "add500e1-8eeb-45d7-a10d-2fae2cc69233",
+  "name": "Soul of New Phyrexia",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "974",
+  "rarity": "mythic",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{6}",
+  "cmc": 6.0,
+  "type_line": "Artifact Creature — Phyrexian Avatar",
+  "oracle_text": "Trample\n{5}: Permanents you control gain indestructible until end of turn.\n{5}, Exile this card from your graveyard: Permanents you control gain indestructible until end of turn.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Trample"
+  ],
+  "power": "6",
+  "toughness": "6"
+}

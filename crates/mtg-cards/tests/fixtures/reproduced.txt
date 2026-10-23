@@ -155,6 +155,7 @@ Creeping Tar Pit
 Crib Swap
 Crocanura
 Crop Rotation
+Crown of Skemfar
 Crucible of Worlds
 Crystal Quarry
 Curate
@@ -207,6 +208,7 @@ Dromoka Captain
 Dromoka's Gift
 Dromoka, the Eternal
 Drove of Elves
+Drownyard Temple
 Drudge Skeletons
 Dual Casting
 Dualcaster Mage
@@ -243,6 +245,7 @@ Faith Unbroken
 Faithful Watchdog
 Faithless Looting
 Famine
+Fanatic of Rhonas
 Faramir, Steward of Gondor
 Favorable Winds
 Fear of Failed Tests
@@ -292,6 +295,7 @@ Ghostblade Eidolon
 Ghostly Prison
 Giant Cindermaw
 Giant Growth
+Gift of Paradise
 Gilded Goose
 Gilded Lotus
 Girder Goons
@@ -456,6 +460,7 @@ Mystic Gate
 Nantuko Husk
 Nantuko Vigilante
 Nessian Asp
+New Horizons
 Night Clubber
 Nighthawk Scavenger
 Nightmare
@@ -468,6 +473,7 @@ Notion Rain
 Nyxborn Behemoth
 Obscuring Haze
 Okiba Reckoner Raid // Nezumi Road Captain
+Onakke Oathkeeper
 Opt
 Orchard Strider
 Organic Extinction
@@ -485,6 +491,7 @@ Pestilent Syphoner
 Phantasmal Image
 Phyrexian Prowler
 Phyrexian Soulgorger
+Pillar of Origins
 Pillar of the Paruns
 Pinion Feast
 Plague Myr
@@ -517,7 +524,9 @@ Rakdos Headliner
 Rally the Ranks
 Ramos, Dragon Engine
 Rampant Growth
+Rancor
 Ravenous Leucrocota
+Reassembling Skeleton
 Reckless Impulse
 Reconstructed Thopter
 Red Room Recruit
@@ -559,18 +568,22 @@ Sandcrafter Mage
 Sandsteppe Mastodon
 Sandsteppe Scavenger
 Sanguine Bond
+Sanitarium Skeleton
 Satyr Wayfinder
 Sauroform Hybrid
 Saw It Coming
 Sawtusk Demolisher
 Scheming Aspirant
 Scorn-Blade Berserker
+Scrapshooter
 Scuzzback Marauders
 Sea Gate
+Secluded Courtyard
 Seedglaive Mentor
 Seekers' Squire
 Serpent-Blade Assailant
 Serra Angel
+Serra Avatar
 Servant of the Conduit
 Shadowmage Infiltrator
 Shambling Shell
@@ -610,6 +623,8 @@ Solstice Zealot
 Soltari Foot Soldier
 Songs of the Damned
 Soul Shepherd
+Soul of New Phyrexia
+Soul of Zendikar
 Souldrinker
 Soultether Golem
 Space Marine Devastator
@@ -663,6 +678,7 @@ Tah-Crop Skirmisher
 Tainted Isle
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
+Teacher's Pest
 Temur Devotee
 Tender Wildguide
 Tendershoot Dryad
@@ -710,6 +726,7 @@ Uktabi Efreet
 Ulamog's Crusher
 Ultramarines Honour Guard
 Umbral Collar Zealot
+Unclaimed Territory
 Underworld Dreams
 Underworld Rage-Hound
 Universal Automaton
@@ -744,7 +761,9 @@ Weaponcraft Enthusiast
 Wear // Tear
 Wedgelight Rammer
 Weigh Down
+Weirding Wood
 Whir of Invention
+Whisperer of the Wilds
 White Auracite
 Wild Wasteland
 Wilderness Elemental
@@ -755,6 +774,7 @@ Withering Boon
 Wizard Class
 Wooded Bastion
 Woodripper
+Worldspine Wurm
 Wrath of God
 Wurmwall Sweeper
 Wyrm's Crossing Patrol

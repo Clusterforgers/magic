@@ -1,0 +1,55 @@
+{
+  "oracle_id": "b548578c-4910-402c-8e78-498924e0a9be",
+  "name": "Consumed by Greed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consumed by Greed",
+      "oracle_fingerprint": "00304a480804b80e9e534c8a03cf1373",
+      "abilities": [
+        { "Keyword": { "Gift": "Card" } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Opponent" },
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": 1, "max": "Promised" }
+              }
+            ],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "Power",
+                        "op": "Ge",
+                        "to": {
+                          "Greatest": {
+                            "of": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }],
+                            "stat": "Power"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [{ "Move": { "what": { "Target": 1 }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

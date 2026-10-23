@@ -1,0 +1,51 @@
+{
+  "oracle_id": "254f87cc-e0c2-484d-b5e8-1ea8c366990c",
+  "name": "Worldspine Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Worldspine Wurm",
+      "oracle_fingerprint": "9c8abe67bff13847d41b2784a6732e6b",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wurm",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wurm"],
+                      "power": 5,
+                      "toughness": 5,
+                      "abilities": [{ "Keyword": "Trample" }]
+                    }
+                  },
+                  "count": 3
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, "This"] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "79ba18fd-f184-43c1-86df-56ee18ce806c",
+  "name": "Secluded Courtyard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Secluded Courtyard",
+      "oracle_fingerprint": "8057a5001f9316edd2516574e42b4ab5",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [
+                    { "Spell": { "types": ["Creature"], "chosen_type": true } },
+                    { "Ability": { "types": ["Creature"], "chosen_type": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

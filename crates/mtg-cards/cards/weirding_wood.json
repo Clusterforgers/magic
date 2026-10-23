@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9ce5cc2f-e223-4c3b-adc1-c0109fd31762",
+  "name": "Weirding Wood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Weirding Wood",
+      "oracle_fingerprint": "6f42ffe930fe7286de12249101b812c8",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 2 } } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

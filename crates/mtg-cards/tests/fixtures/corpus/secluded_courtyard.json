@@ -1,0 +1,27 @@
+{
+  "id": "c0d17d04-cf0b-4918-bfec-b34b0d98a602",
+  "oracle_id": "79ba18fd-f184-43c1-86df-56ee18ce806c",
+  "name": "Secluded Courtyard",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "265",
+  "rarity": "uncommon",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "As this land enters, choose a creature type.\n{T}: Add {C}.\n{T}: Add one mana of any color. Spend this mana only to cast a creature spell of the chosen type or activate an ability of a creature source of the chosen type.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "C",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

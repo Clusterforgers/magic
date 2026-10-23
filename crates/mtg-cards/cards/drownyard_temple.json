@@ -1,0 +1,26 @@
+{
+  "oracle_id": "c30f9be4-c274-4ad0-b5d7-7d3421aa4277",
+  "name": "Drownyard Temple",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drownyard Temple",
+      "oracle_fingerprint": "3a810dc91d9e2b339f02fd6b0c81ff76",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
