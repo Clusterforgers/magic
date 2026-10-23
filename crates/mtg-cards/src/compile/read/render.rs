@@ -37,13 +37,13 @@ use super::reveal;
 use super::selectors::{Form, granted_text, phrase_text, spec_text};
 use super::spend;
 use super::spent;
-use super::statics;
 use super::subtypes::plural_subtype;
 use super::triggers::{
     article, cast_itself, condition_text, cycled_itself, graveyard_itself, itself_acts,
     leaves_itself, pattern_text, targeted_itself,
 };
 use super::where_x;
+use super::{as_long_as, statics};
 use crate::ability::{Ability, Limit, Timing};
 use crate::compile::classify;
 use crate::cost::Cost;
@@ -494,9 +494,13 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
                 None => restriction_texts(*timing, *limit),
                 // "Activate only if you control a Swamp." stands alone.
                 Some(condition) if *timing == Timing::Instant && limit.is_none() => {
-                    statics::control_texts(condition)
+                    let mut wordings = statics::control_texts(condition);
+                    if wordings.is_empty() {
+                        wordings = as_long_as::texts(condition);
+                    }
+                    wordings
                         .into_iter()
-                        .map(|held| format!("Activate only if {held}."))
+                        .map(|text| format!("Activate only if {text}."))
                         .collect()
                 }
                 Some(_) => return Vec::new(),

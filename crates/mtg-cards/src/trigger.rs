@@ -547,6 +547,8 @@ pub enum ReplaceBy {
         /// The permanents that may be sacrificed.
         of: Selector,
     },
+    /// Riot (CR 702.136): as the permanent enters, its controller chooses a +1/+1 counter on it or haste for as long as they control it.
+    Riot,
 }
 
 #[cfg(test)]
