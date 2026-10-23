@@ -260,6 +260,7 @@ function isTableView(value: unknown): value is TableView {
     isRecord(value.turn) &&
     isCount(value.turn.number) &&
     isCount(value.turn.active) &&
+    (value.turn.active_left === undefined || isFlag(value.turn.active_left)) &&
     isText(value.turn.step) &&
     isCount(value.turn.lands_played) &&
     (value.priority === null ||

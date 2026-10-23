@@ -298,6 +298,9 @@ describe('parseFrame checks the fields of each message', () => {
     ],
     ['Events', 'an event with an unusable body', ['events', '0'], { Public: 1 }],
     ['Events', 'table as null', ['table'], null],
+    ['Events', 'the turn without an active player as text', ['table', 'turn', 'active_left'], 'yes'],
+    ['Events', 'the turn without an active player as a number', ['table', 'turn', 'active_left'], 1],
+    ['Events', 'the turn without an active player as null', ['table', 'turn', 'active_left'], null],
     ['Events', 'table players as text', ['table', 'players'], 'x'],
     ['Events', 'a player seat as text', ['table', 'players', '0', 'seat'], 'a'],
     ['Events', 'a player life as a fraction', ['table', 'players', '0', 'life'], 1.5],
@@ -585,6 +588,13 @@ describe('parseFrame on what spells and abilities add to the wire', () => {
   it('accepts an ability on the stack among the objects of a batch, with its source and targets', () => {
     const batch = put(samples.Events, ['objects'], [ability])
     expect(parseFrame(wire(batch))).toEqual({ ok: true, message: batch })
+  })
+
+  it('accepts a turn without an active player and one with, as the server writes them', () => {
+    for (const left of [true, undefined]) {
+      const batch = put(samples.Events, ['table', 'turn', 'active_left'], left)
+      expect(parseFrame(wire(batch))).toMatchObject({ ok: true })
+    }
   })
 
   it('accepts a card without the fields an ability adds, as the server writes it', () => {

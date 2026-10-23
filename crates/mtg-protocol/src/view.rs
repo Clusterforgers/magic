@@ -263,8 +263,13 @@ pub struct PlayerView {
 pub struct TurnView {
     /// Turn number, from 1.
     pub number: u32,
-    /// The active player.
+    /// The active player; once they have left the game, the seat the turn belongs to (see `active_left`).
     pub active: PlayerId,
+    /// Whether the turn goes on without an active player, whose seat `active` names (CR 800.4); left out otherwise,
+    /// and in a game that has ended or has not begun its turns. The same for every seat, so a client never derives it.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub active_left: bool,
     /// The current step.
     pub step: Step,
     /// Lands the active player has played this turn.

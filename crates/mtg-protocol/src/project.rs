@@ -12,7 +12,7 @@ use mtg_engine::loyalty::loyalty_abilities;
 use mtg_engine::object::{FaceDown, GameObject, ObjectKind};
 use mtg_engine::player::{Player, PlayerStatus};
 use mtg_engine::sight::offered_cards;
-use mtg_engine::state::GameState;
+use mtg_engine::state::{GameState, Stage};
 use mtg_engine::zones::Zone;
 
 use crate::view::{
@@ -445,6 +445,7 @@ impl TableView {
             turn: TurnView {
                 number: turn.number(),
                 active: turn.active(),
+                active_left: state.stage() == Stage::Turns && state.active_player().is_none(),
                 step: turn.step(),
                 lands_played: turn.lands_played(),
                 day_night: state.day_night(),

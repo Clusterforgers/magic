@@ -29,7 +29,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Triggers and keywords: (c6b), (c4e), (c3b), (c3d), (c2c), (c2d), (n1d5) day and night effects, (o2c).
 - Statics and layers: (c8i), (c7d), (c7c), (o1d), (m4).
 - Compiler wordings, no engine change: (c10) one piece per wording family with (c10s), (c10d), (c10e) and (c10r), (o2f), (c11) and (c11c) layouts, (c9c), (c1l).
-- Commander and server: the turn without an active player in the table view, Companion.
+- Commander and server: Companion.
 - Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test.
 - After the card system: "Views complete", the Gate, then the web (M5 prompts for the decision kinds the engine asks, the manual-action menu, table states) and M7.
 - After each round: `mtg-cli ingest` and `compile` refresh the real database, `coverage` is re-run and the numbers go on the M6 target line; `fetch scryfall --printings` fills the printings once.
@@ -61,7 +61,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Umbra armor: a replacement of a destruction that removes the damage and destroys the Aura (`Event::DamageRemoved`), offered beside a regeneration shield, and `has base power and toughness N/N` in a static; Eel, Snake, Bear and Octopus Umbra are Verified
 - Faces and copies: multi-face cards, transform, fuse, daybound and nightbound, Sagas, Classes, flip cards, copiable values, token and spell copies, copies of abilities
 - Face-down objects: morph, megamorph and disguise with mana costs, manifest and cloak from the top of a library (the Manifest and Cloak effects, a controller other than the owner, turning a creature card face up for its mana cost), their compiler wordings and views; four manifest cards and seventeen morph cards are Verified
-- Commander: house rules (turn, life, table and Commander options) on the server and in the lobby, the Commander format rules in the engine, the deck check for a table, Partner, "can be your commander", commander replacement of a draw, the mid-turn departure of the active player
+- Commander: house rules (turn, life, table and Commander options) on the server and in the lobby, the Commander format rules in the engine, the deck check for a table, Partner, "can be your commander", commander replacement of a draw, the mid-turn departure of the active player, the turn without an active player in the table view (`TurnView.active_left`)
 - Manual cards: the `manual_play` flag of a table, stored with the game when it starts and listed by the game browser and the game lookup
 - Mana ability wordings: the storage-counter lands (an X of counters removed from the source for X mana in any combination of types), a combination counted by a where clause and restrictions by a subtype of spells and abilities (Crucible of the Spirit Dragon)
 - Tooling: `scripts/check.sh` with test slots, `scripts/agent-status.sh`, the quick test-time suite, derived corpus counts, current Cargo dependencies
@@ -93,7 +93,6 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] Gate: every corpus card is Verified except the two kept Partial and Manual by design, and fuzz games with a deck from each cluster pass every invariant
 
 ## M4 Commander
-- [~] (branch no-active-player) The table view says when a turn has no active player (`TurnView.active` names the seat that left; the turn indicator and the step bar show a turn without one), with a projection test
 - [~] (branch companion) Companion (CR 702.139): the companion is a card from outside the game that costs {3} to put into the hand; no stored precon has a companion board
 
 ## M5 Table and prompts
@@ -108,6 +107,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Attack and block prompts mark the creatures a rule requires (`AttackOptions.required`, `BlockOptions.required`) as chosen and locked, and a seat panel shows a revealed library top (`PlayerView.revealed_top`)
 - [ ] The forecast and block preview mark numbers that depend on a choice (`CombatForecast.depends_on_choice`)
 - [ ] Table states: counters, attachments tucked beside their host, loyalty, faces and face-down cards, copies, command zone and commander damage, support marks; each in the `/dev/table` fixture with screenshots at six sizes in both themes
+- [ ] The turn indicator and the step bar show a turn without an active player (`TurnView.active_left`: the seat `active` names has left and the next seat in turn order moves first), in the `/dev/table` fixture with screenshots at six sizes in both themes
 - [ ] Manual actions on any card: a menu and log entries
 - [ ] (U5b) One step ladder: the ladder that shows the turn also sets the stops (click a step), as in Arena, and the second row of step buttons goes
 - [ ] Playwright games with corpus decks that ask every decision kind
