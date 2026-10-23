@@ -6,6 +6,7 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_cards::compile::compile;
 use mtg_cards::support::{PrintedCard, PrintedFace};
+use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::ids::ObjectId;
 use mtg_engine::choose::Target;
@@ -14,7 +15,7 @@ use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{GameState, replay};
 use mtg_testkit::cards::{cost, free_creature, plains};
-use mtg_testkit::{Driver, Scenario, ScriptError};
+use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
 use crate::common::{names, pid};
@@ -245,6 +246,70 @@ fn a_graveyard_is_exiled(#[values(2, 3, 4)] seats: usize) -> Result<(), ScriptEr
         4,
         "the caster's graveyard stays with Reclaim"
     );
+    assert_replays(&driver);
+    Ok(())
+}
+
+#[rstest]
+fn a_card_returns_with_a_minus_counter_on_it(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = table(
+        seats,
+        "Return target nonlegendary creature card from your graveyard to the battlefield with a -1/-1 counter on it.",
+    )?;
+    let target = in_graveyard(&driver, 0, "Ogre");
+    driver.cast_at("Reclaim", &[target])?;
+    resolve(&mut driver)?;
+    let state = driver.state();
+    let id = permanent(state, "Ogre").expect("the Ogre returned");
+    let counters = state
+        .object(id)
+        .and_then(|o| o.permanent())
+        .map(|p| p.counters_of(&CounterKind::MinusOneMinusOne));
+    assert_eq!(counters, Some(1), "it entered with the counter");
+    assert_replays(&driver);
+    Ok(())
+}
+
+/// Seat 0 holds the spell and controls a Bear; seat 1 controls a Wolf and an Ogre.
+fn crowded_table(seats: usize, text: &str) -> Result<Driver, ScriptError> {
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .hand(0, [reclaim(text)])
+        .battlefield(0, [ready(free_creature("Bear", 2, 2))])
+        .battlefield(
+            1,
+            [
+                ready(free_creature("Wolf", 2, 2)),
+                ready(free_creature("Ogre", 3, 3)),
+            ],
+        );
+    Driver::from_scenario(scenario)
+}
+
+#[rstest]
+fn exactly_two_target_creatures_return_to_their_owners_hands(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let text = "Return two target creatures to their owners' hands.";
+    let mut driver = crowded_table(seats, text)?;
+    let one = [driver.target_named("Wolf")?];
+    assert!(
+        driver.cast_at("Reclaim", &one).is_err(),
+        "one target is too few"
+    );
+    let mut driver = crowded_table(seats, text)?;
+    let both = [driver.target_named("Wolf")?, driver.target_named("Ogre")?];
+    driver.cast_at("Reclaim", &both)?;
+    resolve(&mut driver)?;
+    let state = driver.state();
+    assert_eq!(
+        names(state, Zone::Hand(pid(1))),
+        ["Wolf", "Ogre"],
+        "both went to their owner's hand"
+    );
+    assert!(permanent(state, "Bear").is_some(), "the third stays");
     assert_replays(&driver);
     Ok(())
 }

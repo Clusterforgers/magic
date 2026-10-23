@@ -12,6 +12,7 @@ Adaptive Snapjaw
 Adorned Pouncer
 Adriana, Captain of the Guard
 Aeromunculus
+Aether Gale
 Aether Hub
 Agate Instigator
 Ainok Bond-Kin
@@ -232,6 +233,7 @@ Curse of Verbosity
 Curse of Vitality
 Curse of the Forsaken
 Curse of the Nightly Hunt
+Curtains' Call
 Custodi Lich
 Custodi Soulbinders
 Cut // Ribbons
@@ -711,6 +713,7 @@ Path to Exile
 Peacewalker Colossus
 Peema Outrider
 Pentad Prism
+Persist
 Pestilent Syphoner
 Phantasmal Image
 Phyrexian Prowler
@@ -1061,6 +1064,7 @@ Valley Rannet
 Vampire Cutthroat
 Vanguard Seraph
 Vanguard Suppressor
+Vanishing Verse
 Vanishment
 Vanquish the Horde
 Vault 75: Middle School

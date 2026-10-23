@@ -16,6 +16,7 @@ mod deck_table;
 mod fixture_real;
 mod generated;
 mod hand_written;
+mod linked_exile;
 mod printed;
 mod proposal;
 mod roundtrip;
