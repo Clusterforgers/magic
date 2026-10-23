@@ -1,0 +1,31 @@
+{
+  "oracle_id": "70ed2052-f03c-461d-b32a-8835c97c559f",
+  "name": "Snake Umbra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snake Umbra",
+      "oracle_fingerprint": "ac1b60eeb4f40dfb75cab1cc7bc083bb",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "DealsDamage": { "source": ["This"], "to": "Opponents" } },
+                    "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "UmbraArmor" }
+      ]
+    }
+  ]
+}

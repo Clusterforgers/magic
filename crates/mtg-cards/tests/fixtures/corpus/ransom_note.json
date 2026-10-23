@@ -1,0 +1,23 @@
+{
+  "id": "88158a11-a44e-49b4-8ae3-d81c14265802",
+  "oracle_id": "49c0aac5-d650-4ada-a194-3bf77f104bc1",
+  "name": "Ransom Note",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "45",
+  "rarity": "rare",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{1}",
+  "cmc": 1.0,
+  "type_line": "Artifact — Clue",
+  "oracle_text": "When this artifact enters, surveil 1.\n{2}, Sacrifice this artifact: Choose one —\n• Cloak the top card of your library.\n• Goad target creature.\n• Draw a card.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Surveil",
+    "Goad",
+    "Cloak"
+  ]
+}

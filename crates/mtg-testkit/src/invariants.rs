@@ -935,7 +935,7 @@ impl InvariantChecker {
                 Ok(())
             }
             // A permanent that regenerates loses its damage.
-            Event::Regenerated { object } => {
+            Event::Regenerated { object } | Event::DamageRemoved { object } => {
                 self.expected_damage.remove(object);
                 Ok(())
             }

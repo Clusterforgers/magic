@@ -69,14 +69,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Next {
 pub(super) fn spend(ctx: &Ctx<'_>, way: Option<CastWay>) -> Spend {
     let has_x = XCost::of(ctx.state, ctx.what, ctx.ability).is_some();
     match ctx.what {
-        What::Spell(spell) => {
-            let spend = Spend::for_spell(ctx.state, *spell, has_x);
-            if way == Some(CastWay::Bestow) {
-                spend.bestowed()
-            } else {
-                spend
-            }
-        }
+        What::Spell(spell) => Spend::for_spell(ctx.state, *spell, has_x).cast_as(way),
         What::Ability(ability) => Spend::for_ability(ctx.state, ability.object, has_x),
         What::Trigger(_) | What::Attack(_) => Spend::other(),
     }

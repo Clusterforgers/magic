@@ -49,6 +49,7 @@ mod levels;
 mod library;
 mod life_gain;
 mod mana_trigger;
+mod manifest;
 mod modal;
 mod pairs;
 mod payments;

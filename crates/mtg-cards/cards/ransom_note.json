@@ -1,0 +1,38 @@
+{
+  "oracle_id": "49c0aac5-d650-4ada-a194-3bf77f104bc1",
+  "name": "Ransom Note",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ransom Note",
+      "oracle_fingerprint": "1f3dd628754981b727fe14dd14f81107",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Surveil": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "Cloak": {} }] },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "Goad": { "what": { "Target": 0 } } }]
+                    },
+                    { "effects": [{ "Draw": {} }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
