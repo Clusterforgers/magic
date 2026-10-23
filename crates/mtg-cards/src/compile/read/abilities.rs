@@ -259,6 +259,7 @@ pub fn activated(r: &mut Reader<'_>) -> Option<Ability> {
     r.punct(':').then_some(())?;
     // An X in the cost is the payer's to choose, so the effects may use it.
     r.x_free |= cost.has_x();
+    r.paid |= costs::takes_objects(&cost);
     r.subject = Some(Ref::This);
     // A card that exiles itself from the graveyard or returns itself from there has its ability in the graveyard.
     let in_graveyard = r.from_graveyard || effects::returns_from_graveyard(r);

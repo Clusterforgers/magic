@@ -392,6 +392,9 @@ pub struct Reader<'a> {
     pub subject: Option<Ref>,
     /// The clause is a triggered or an activated ability, not the text of a spell.
     pub ability: bool,
+    /// Whether the cost of the clause takes objects out of their zones (a sacrifice, a discard, an exile), so "the
+    /// sacrificed creature's power" names what it took (`Ref::Paid`).
+    pub paid: bool,
 }
 
 impl<'a> Reader<'a> {
@@ -420,6 +423,7 @@ impl<'a> Reader<'a> {
             died: false,
             subject: None,
             ability: false,
+            paid: false,
         }
     }
 

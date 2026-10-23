@@ -228,6 +228,7 @@ fn scope_of<'a>(
 ) -> Scope<'a> {
     let ability = object.ability();
     let mut snapshots: Vec<&Snapshot> = resolving.snapshots.iter().collect();
+    snapshots.extend(object.choices().cost_shots());
     if let Some(ability) = ability {
         snapshots.push(ability.snapshot());
         snapshots.extend(ability.cause().iter().flat_map(|c| c.snapshots.iter()));

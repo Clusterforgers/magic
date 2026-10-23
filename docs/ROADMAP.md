@@ -24,7 +24,7 @@ One item is one piece of about 15 minutes; the commit that finishes it deletes i
 
 Ready pieces, grouped by the code they touch. A group runs one piece at a time, groups run side by side (about six agents at once); a piece is claimed with `[~]` and pushed before it starts, and `git merge main` plus the full `scripts/check.sh` end it.
 
-- Costs and casting: (g2e), (g5c), (g6d), (c1j), (c1k), (c12b), (c13b).
+- Costs and casting: (g2e), (g5c), (g6d), (c1j), (c1k), (c12c), (c13b).
 - Cast ways and zones: (c5c), (c2f), (n2) face-down objects, (n1d3) meld.
 - Triggers and keywords: (c6b), (c4d), (c3b), (c3d), (c2c), (c2d), (n1d5) day and night effects, (o2c).
 - Statics and layers: (c8i), (c7d), (c7c), (o1d), (m4).
@@ -50,7 +50,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Abilities and characteristics: one reader of an object's abilities, the derivation of CR 613 in one pass, `GameRule` effects, keyword abilities built from triggers, state triggers and abilities that work from other zones
 - Counters, planeswalkers and attachments: counters on permanents and players, loyalty abilities, the legend rule, Auras, Equipment, Reconfigure and living weapon
 - Replacement and prevention: the replacement step, enters tapped or with counters, damage shields, regeneration, protection
-- Costs and casting: the announcement of CR 601.2 with modes, X, optional, alternative and additional costs, kicker, multikicker, buyback, entwine, cascade, discover, madness, suspend, foretell, cost modifiers, convoke, delve, life, counter and counted costs, divided amounts, mana abilities with restrictions, filter lands, triggered mana and mana in any combination, required additional costs, free casts and Strive
+- Costs and casting: the announcement of CR 601.2 with modes, X, optional, alternative and additional costs, kicker, multikicker, buyback, entwine, cascade, discover, madness, suspend, foretell, cost modifiers, convoke, delve, life, counter and counted costs, divided amounts, mana abilities with restrictions, filter lands, triggered mana and mana in any combination, required additional costs, what a cost took ("the sacrificed creature's power"), free casts and Strive
 - Triggers: patterns for every logged event, batches, the nth card or spell, "first time each turn", evasion, impulse draw, the Monarch and the city's blessing
 - Vehicles and Mounts: a Vehicle that becomes an artifact creature by an ability (itself or another target Vehicle), by tapped tokens, by energy or while it holds counters, and a Mount that an ability saddles
 - Crew and saddle events: `Event::Crewed` from the `Crewed` effect that ends the Crew and Saddle abilities, its turn counts for each permanent, the triggers "becomes crewed" and "becomes saddled" with "for the first time each turn", and their reading and wording
@@ -120,7 +120,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c1j) A mana ability that takes permanents and is used more than once in a payment may take its own source with its last use (Skirk Prospector sacrificing itself after another Goblin for {R}{R})
 - [ ] (c1k) The triggered mana abilities of a nonland permanent (Kinnan Bonder Prodigy) and with a condition (the monarch)
 - [ ] (c1l) The mana ability wordings still unread: an amount counted as "the number of basic land types among lands you control" (Domain), X mana of any one color counted by a where clause or by "Remove X +1/+1 counters from this creature", and restrictions by a list of subtypes or "Elemental sources"
-- [~] (c12b) (branch c12b-additional-costs) The rest of the additional costs of a spell: a choice between costs ("discard a card or pay 3 life", "sacrifice a creature or pay {3}"), an X ("pay X life", "discard X cards"), mana in a required cost and the read of what the cost took ("the sacrificed creature's power")
+- [ ] (c12c) The rest of the additional costs of a spell: a choice between costs ("discard a card or pay 3 life", "sacrifice a creature or pay {3}"), an X ("pay X life", "discard X cards"), mana in a required cost, and the wordings of what a cost took that are still unread (two characteristics in a sentence, "Sacrifice a Cleric creature", "Sacrifice a Swamp and a Forest", "Remove all +1/+1 counters", an object returned to a hand)
 - [ ] (c13b) The rest of the commander free casts and strive spells: Deflecting Swat (choose new targets for a spell or ability on the stack) and the strive spells Launch the Fleet, Solidarity of Heroes, Call the Coppercoats and Twinflame (their effects are not read)
 
 ### Keywords and cast ways

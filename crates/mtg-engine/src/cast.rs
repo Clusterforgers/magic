@@ -49,9 +49,11 @@ pub(crate) fn activation_events(
     let rules = ability_reader::ability(state, ability)?;
     let mut before = snapshot(state, ability.object)?;
     let mut events = Vec::new();
+    let mut shots = Vec::new();
     match &*rules {
         Ability::Activated { cost, .. } => {
             let price = Price::announced(cost).ok()?.at(choices.x.unwrap_or(0));
+            shots = parts::photographed(state, &price.parts, choices.cost_picks());
             if price.tap {
                 events.push(Event::PermanentTapped {
                     object: ability.object,
@@ -129,7 +131,7 @@ pub(crate) fn activation_events(
         ability: ability.ability,
         origin: ability.source,
         controller: player,
-        choices: choices.clone(),
+        choices: choices.clone().with_cost_shots(shots),
         cause: None,
         delayed: None,
     })));
@@ -387,7 +389,13 @@ pub(crate) fn spell_events(
     granted: bool,
 ) -> Option<Vec<Event>> {
     let mut events = parts::pay(state, player, spell, parts, choices.cost_picks())?;
-    events.extend(spell_cast(player, spell, choices, granted));
+    let shots = parts::photographed(state, parts, choices.cost_picks());
+    events.extend(spell_cast(
+        player,
+        spell,
+        &choices.clone().with_cost_shots(shots),
+        granted,
+    ));
     Some(events)
 }
 
