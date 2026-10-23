@@ -1,0 +1,30 @@
+{
+  "oracle_id": "acd209d1-37e9-4713-b320-ee52854790bb",
+  "name": "Malleable Impostor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malleable Impostor",
+      "oracle_fingerprint": "29ef5d138adafcbb76109f5f0b3e6328",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "except": [
+                  { "AddSubtype": "Faerie" },
+                  { "AddSubtype": "Shapeshifter" },
+                  { "AddKeyword": "Flying" }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

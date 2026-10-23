@@ -1,0 +1,25 @@
+{
+  "cmc": 6,
+  "collector_number": "36",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "4cc35b82-a233-4460-968e-d90980fb2074",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{4}{U}{U}",
+  "name": "Auton Soldier",
+  "oracle_id": "94357494-4ccc-43d4-b2d4-351581cbf9b6",
+  "oracle_text": "You may have this creature enter as a copy of any creature on the battlefield, except it isn't legendary, is an artifact in addition to its other types, and has myriad. (Whenever it attacks, for each opponent other than defending player, you may create a token copy that's tapped and attacking that player or a planeswalker they control. Exile the tokens at end of combat.)",
+  "power": "0",
+  "rarity": "rare",
+  "released_at": "2023-10-13",
+  "set": "who",
+  "toughness": "0",
+  "type_line": "Artifact Creature — Alien Soldier"
+}

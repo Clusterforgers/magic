@@ -1068,9 +1068,7 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
         (ReplaceBy::PayLifeOrTapped(life), None) => vec![format!(
             "As ~ enters, you may pay {life} life. If you don't, it enters tapped"
         )],
-        (ReplaceBy::AsCopy { of, except }, None) => {
-            copies::enters_text(of, except).into_iter().collect()
-        }
+        (ReplaceBy::AsCopy { of, except }, None) => copies::enters_texts(of, except),
         _ => Vec::new(),
     }
 }

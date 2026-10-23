@@ -92,9 +92,6 @@ fn a_permanent_may_enter_as_a_copy_that_is_not_legendary() {
 #[case::a_size_with_the_types(
     "Create a token that's a copy of target creature you control, except it's a 2/2 artifact and it loses all other card types."
 )]
-#[case::a_subtype_with_the_types(
-    "Create a token that's a copy of target creature you control, except it's a Vehicle artifact and it loses all other card types."
-)]
 #[case::several_tokens_say_they(
     "Create two tokens that are copies of target creature you control, except they aren't legendary."
 )]

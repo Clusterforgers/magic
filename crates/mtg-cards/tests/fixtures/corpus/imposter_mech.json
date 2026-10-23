@@ -1,0 +1,27 @@
+{
+  "cmc": 2,
+  "collector_number": "13",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "59b7450c-3163-4f12-9af1-2e998a6c36cf",
+  "keywords": [
+    "Crew"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{U}",
+  "name": "Imposter Mech",
+  "oracle_id": "f434e266-d9d6-4058-96ff-a1bd4029d8dc",
+  "oracle_text": "You may have this Vehicle enter as a copy of a creature an opponent controls, except it's a Vehicle artifact with crew 3 and it loses all other card types.\nCrew 3",
+  "power": "3",
+  "rarity": "rare",
+  "released_at": "2022-02-18",
+  "set": "nec",
+  "toughness": "1",
+  "type_line": "Artifact — Vehicle"
+}

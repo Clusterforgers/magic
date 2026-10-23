@@ -176,6 +176,7 @@ mod commander_statics;
 mod compound;
 mod conditions;
 mod copies;
+mod copy_groups;
 mod copy_supertypes;
 mod copy_wordings;
 mod cost_conditions;

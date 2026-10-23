@@ -34,6 +34,9 @@ const CHOSEN: &str = "token";
 /// "create a token that's a copy of target creature you control", "create two tokens that are copies of it, except
 /// they have haste", also with the sentence that exiles or sacrifices the copy at the next end step.
 pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    if let Some(each) = r.attempt(each_copy) {
+        return Some(each);
+    }
     r.need("create")?;
     let mut tapped = false;
     let (count, plural) = if r.words("a token that's a copy of") {
@@ -106,6 +109,60 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             },
         ],
     })
+}
+
+/// "For each token you control, create a token that's a copy of that permanent.": one token for each permanent the
+/// group holds; the noun after "that" is the group's one card type, else "permanent".
+fn each_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("for each")?;
+    let from = phrase(r, Form::Count)?;
+    from.0
+        .iter()
+        .any(|pred| matches!(pred, Pred::ControlledBy(_)))
+        .then_some(())?;
+    r.punct(',').then_some(())?;
+    r.need("create a token that's a copy of that")?;
+    r.need(copy_spells::chosen_noun(&from)?)?;
+    Some(vec![Effect::CreateToken {
+        who: Ref::You,
+        token: TokenRef::CopyOf {
+            of: Ref::Each(from),
+            except: Vec::new(),
+            no_mana_cost: false,
+        },
+        count: Amount::one(),
+        tapped: false,
+        attacking: false,
+        bind: None,
+    }])
+}
+
+/// The sentence `each_copy` reads, without its first capital and period.
+pub(super) fn each_text(effect: &Effect, from: &Selector) -> Option<String> {
+    let Effect::CreateToken {
+        who: Ref::You,
+        token:
+            TokenRef::CopyOf {
+                of: Ref::Each(each),
+                except,
+                no_mana_cost: false,
+            },
+        count,
+        tapped: false,
+        attacking: false,
+        bind: None,
+    } = effect
+    else {
+        return None;
+    };
+    if each != from || !except.is_empty() || !count.is_one() {
+        return None;
+    }
+    Some(format!(
+        "for each {}, create a token that's a copy of that {}",
+        phrase_text(from, Form::Count)?,
+        copy_spells::chosen_noun(from)?
+    ))
 }
 
 /// What a token is a copy of: the card itself, what it enchants or equips, what the sentence before acted on, or one
@@ -252,19 +309,50 @@ pub(super) fn exceptions(r: &mut Reader<'_>, subject: Subject) -> Option<Vec<Mod
         r.word("that");
     }
     let mut mods = Vec::new();
+    part(r, subject, &mut mods)?;
     loop {
-        if subject != Subject::They && r.words(subject.is()) {
-            is(r, &mut mods)?;
-        } else if let Some(gone) = r.attempt(|r| not_legendary(r, subject)) {
-            mods.push(gone);
+        if r.word("and") {
+            part(r, subject, &mut mods)?;
+        } else if let Some(more) = r.attempt(|r| listed(r, subject)) {
+            mods.extend(more);
         } else {
-            r.need(subject.has())?;
-            has(r, &mut mods)?;
-        }
-        if !r.word("and") {
             return Some(mods);
         }
     }
+}
+
+/// One part of the exceptions, with the words that name the subject before it.
+fn part(r: &mut Reader<'_>, subject: Subject, mods: &mut Vec<Modification>) -> Option<()> {
+    if subject != Subject::They && r.words(subject.is()) {
+        is(r, mods)
+    } else if let Some(gone) = r.attempt(|r| not_legendary(r, subject)) {
+        mods.push(gone);
+        Some(())
+    } else {
+        r.need(subject.has())?;
+        has(r, mods)
+    }
+}
+
+/// A part of a list that names its subject once: ", is an artifact in addition to its other types, and has myriad".
+fn listed(r: &mut Reader<'_>, subject: Subject) -> Option<Vec<Modification>> {
+    r.punct(',').then_some(())?;
+    r.word("and");
+    let mut mods = Vec::new();
+    if subject != Subject::They && r.word("is") {
+        is(r, &mut mods)?;
+    } else if subject != Subject::They && r.word("isn't") {
+        r.need("legendary")?;
+        mods.push(Modification::RemoveSupertype(Supertype::Legendary));
+    } else {
+        r.need(if subject == Subject::They {
+            "have"
+        } else {
+            "has"
+        })?;
+        has(r, &mut mods)?;
+    }
+    Some(mods)
 }
 
 /// "it isn't legendary", "the token isn't legendary", "the copy isn't legendary": the copy has no supertype Legendary.
@@ -277,7 +365,10 @@ fn not_legendary(r: &mut Reader<'_>, subject: Subject) -> Option<Modification> {
 
 /// What follows "it has": keywords, or an ability in quotes.
 fn has(r: &mut Reader<'_>, mods: &mut Vec<Modification>) -> Option<()> {
-    if let Some(ability) = r.quoted(abilities::triggered) {
+    if let Some(ability) = r
+        .quoted(abilities::triggered)
+        .or_else(|| r.quoted(abilities::activated))
+    {
         mods.push(Modification::GrantAbility(Arc::new(ability)));
         return Some(());
     }
@@ -347,18 +438,43 @@ fn is(r: &mut Reader<'_>, mods: &mut Vec<Modification>) -> Option<()> {
         }
     }
     (!kinds.is_empty()).then_some(())?;
+    // "it's a Vehicle artifact with crew 3 and it loses all other card types": the keywords come with the kinds.
+    let with = r
+        .attempt(|r| {
+            r.word("with").then_some(())?;
+            granted_keywords(r)
+        })
+        .unwrap_or_default();
+    let types: Vec<CardType> = kinds
+        .iter()
+        .filter_map(|kind| match kind {
+            Modification::AddType(found) => Some(*found),
+            _ => None,
+        })
+        .collect();
     // "it's an artifact and it loses all other card types": these are the types, and no others.
     if size.is_none()
+        && !types.is_empty()
         && r.attempt(|r| r.need("and it loses all other card types"))
             .is_some()
     {
-        let types = kinds
-            .iter()
-            .map(|kind| match kind {
-                Modification::AddType(found) => Some(*found),
-                _ => None,
-            })
-            .collect::<Option<Vec<_>>>()?;
+        mods.push(Modification::SetTypes(types));
+        mods.extend(
+            kinds
+                .into_iter()
+                .filter(|kind| matches!(kind, Modification::AddSubtype(_))),
+        );
+        mods.extend(with.into_iter().map(Modification::AddKeyword));
+        return Some(());
+    }
+    if !with.is_empty() {
+        return None;
+    }
+    // "it's an artifact": the types, and no others, as the same words with "loses all other card types" mean.
+    if size.is_none()
+        && types.len() == kinds.len()
+        && r.lookahead(|r| r.need("in addition")).is_none()
+    {
         mods.push(Modification::SetTypes(types));
         return Some(());
     }
@@ -404,6 +520,77 @@ fn kinds_text(subject: Subject, these: &[Modification]) -> Option<String> {
 /// The exceptions as a card words them, with "except" and without a comma before it; `None` for a change the
 /// readers do not write. A copy of a spell is "except that the copy ...".
 pub(super) fn exceptions_text(mods: &[Modification], subject: Subject) -> Option<String> {
+    Some(joined(&exception_parts(mods, subject, false)?, subject))
+}
+
+/// The words "except" and the parts joined by "and".
+fn joined(parts: &[String], subject: Subject) -> String {
+    let that = if subject == Subject::Copy {
+        "that "
+    } else {
+        ""
+    };
+    format!("except {that}{}", parts.join(" and "))
+}
+
+/// Every wording of the exceptions: the parts joined by "and", a list that names its subject once when there are
+/// three or more ("it isn't legendary, is an artifact in addition to its other types, and has myriad"), and a type
+/// alone without "and it loses all other card types" ("it's an artifact and it has ...").
+pub(super) fn exceptions_texts(mods: &[Modification], subject: Subject) -> Vec<String> {
+    let mut texts: Vec<String> = Vec::new();
+    for terse in [false, true] {
+        let Some(parts) = exception_parts(mods, subject, terse) else {
+            continue;
+        };
+        for text in [Some(joined(&parts, subject)), listed_text(&parts, subject)]
+            .into_iter()
+            .flatten()
+        {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
+    texts
+}
+
+/// The parts of three or more as a list that names its subject once.
+fn listed_text(parts: &[String], subject: Subject) -> Option<String> {
+    let (first, rest) = parts.split_first().filter(|_| parts.len() > 2)?;
+    let heads: Vec<(&str, &str)> = [
+        Some((subject.is(), "is")),
+        subject.isnt().map(|isnt| (isnt, "isn't")),
+        Some((subject.has(), if subject == Subject::They { "have" } else { "has" })),
+    ]
+    .into_iter()
+    .flatten()
+    .collect();
+    let bare: Vec<String> = rest
+        .iter()
+        .map(|part| {
+            heads.iter().find_map(|(head, short)| {
+                part.strip_prefix(head)
+                    .filter(|tail| tail.starts_with(' '))
+                    .map(|tail| format!("{short}{tail}"))
+            })
+        })
+        .collect::<Option<_>>()?;
+    let (last, middle) = bare.split_last()?;
+    let that = if subject == Subject::Copy {
+        "that "
+    } else {
+        ""
+    };
+    let middle: String = middle.iter().map(|part| format!(", {part}")).collect();
+    Some(format!("except {that}{first}{middle}, and {last}"))
+}
+
+/// The parts of the exceptions, one for each change; a type alone is "it's an artifact" with `terse`.
+fn exception_parts(
+    mods: &[Modification],
+    subject: Subject,
+    terse: bool,
+) -> Option<Vec<String>> {
     let is_kind = |found: &Modification| {
         matches!(
             found,
@@ -421,6 +608,18 @@ pub(super) fn exceptions_text(mods: &[Modification], subject: Subject) -> Option
                 .count(),
             Modification::SetPT { .. } => 1 + rest[1..].iter().take_while(|m| is_kind(m)).count(),
             kind if is_kind(kind) => rest.iter().take_while(|m| is_kind(m)).count(),
+            // The subtypes of a type that replaces the others, and the keywords that come with them.
+            Modification::SetTypes(_) => {
+                let subtypes = rest[1..]
+                    .iter()
+                    .take_while(|m| matches!(m, Modification::AddSubtype(_)))
+                    .count();
+                let keywords = rest[1 + subtypes..]
+                    .iter()
+                    .take_while(|m| matches!(m, Modification::AddKeyword(_)))
+                    .count();
+                1 + subtypes + if subtypes > 0 { keywords } else { 0 }
+            }
             _ => 1,
         };
         let (these, after) = rest.split_at_checked(run)?;
@@ -435,16 +634,40 @@ pub(super) fn exceptions_text(mods: &[Modification], subject: Subject) -> Option
                 format!("{} legendary", subject.isnt()?)
             }
             Modification::SetTypes(types) if !types.is_empty() => {
-                let names = types
+                let types = types
                     .iter()
                     .map(|found| type_name(*found))
                     .collect::<Vec<_>>()
                     .join(" ");
-                format!(
-                    "{} {} {names} and it loses all other card types",
-                    subject.is(),
-                    article(&names)
-                )
+                let subtypes: Vec<&str> = these
+                    .iter()
+                    .filter_map(|found| match found {
+                        Modification::AddSubtype(Subtype(name)) => Some(name.as_str()),
+                        _ => None,
+                    })
+                    .collect();
+                let names = subtypes
+                    .iter()
+                    .copied()
+                    .chain([types.as_str()])
+                    .collect::<Vec<_>>()
+                    .join(" ");
+                let keywords: Vec<Modification> = these
+                    .iter()
+                    .filter(|found| matches!(found, Modification::AddKeyword(_)))
+                    .cloned()
+                    .collect();
+                let with = if keywords.is_empty() {
+                    String::new()
+                } else {
+                    format!(" with {}", granted_text(&keywords)?)
+                };
+                let loses = if these.len() == 1 && terse {
+                    ""
+                } else {
+                    " and it loses all other card types"
+                };
+                format!("{} {} {names}{with}{loses}", subject.is(), article(&names))
             }
             Modification::SetColors(colors) => {
                 format!("{} {}", subject.is(), colors_text(colors))
@@ -455,12 +678,7 @@ pub(super) fn exceptions_text(mods: &[Modification], subject: Subject) -> Option
             _ => return None,
         });
     }
-    let that = if subject == Subject::Copy {
-        "that "
-    } else {
-        ""
-    };
-    (!parts.is_empty()).then(|| format!("except {that}{}", parts.join(" and ")))
+    (!parts.is_empty()).then_some(parts)
 }
 
 /// A token copy as a sentence without its first capital and period; `of` says what is copied, and `delayed` that
@@ -558,22 +776,26 @@ pub(super) fn delay_text(created: &Effect, delayed: &Effect) -> Option<String> {
 /// "a creature you control" or "any creature on the battlefield": the permanents a permanent may enter as a copy of.
 fn choice_text(of: &Selector) -> Option<String> {
     let text = phrase_text(of, Form::Target)?;
-    if of.0.contains(&Pred::ControlledBy(Ref::You)) {
+    // "a creature you control", "a creature an opponent controls".
+    if text.ends_with(" controls") || text.ends_with(" you control") {
         Some(format!("{} {text}", article(&text)))
     } else {
         Some(format!("any {text} on the battlefield"))
     }
 }
 
-/// How a permanent that enters as a copy is written, without its first capital and period.
-pub(super) fn enters_text(of: &Selector, except: &[Modification]) -> Option<String> {
-    let tail = if except.is_empty() {
-        String::new()
-    } else {
-        format!(", {}", exceptions_text(except, Subject::It)?)
+/// How a permanent that enters as a copy is written in each wording of its exceptions, without its first capital and
+/// period.
+pub(super) fn enters_texts(of: &Selector, except: &[Modification]) -> Vec<String> {
+    let Some(choice) = choice_text(of) else {
+        return Vec::new();
     };
-    Some(format!(
-        "you may have ~ enter as a copy of {}{tail}",
-        choice_text(of)?
-    ))
+    let head = format!("you may have ~ enter as a copy of {choice}");
+    if except.is_empty() {
+        return vec![head];
+    }
+    exceptions_texts(except, Subject::It)
+        .into_iter()
+        .map(|text| format!("{head}, {text}"))
+        .collect()
 }

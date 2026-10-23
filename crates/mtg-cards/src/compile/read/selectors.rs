@@ -285,6 +285,10 @@ pub fn granted_keywords(r: &mut Reader<'_>) -> Option<Vec<Keyword>> {
     if r.word("ward") {
         return ward_cost(r).map(|cost| vec![Keyword::Ward(cost)]);
     }
+    if r.word("crew") {
+        let power = u32::try_from(r.number()?).ok()?;
+        return Some(vec![Keyword::Crew(power)]);
+    }
     if !r.words("protection from") {
         return keyword(r).map(|keyword| vec![keyword]);
     }
@@ -345,6 +349,9 @@ pub fn granted_text(mods: &[Modification]) -> Option<String> {
                 return None;
             };
             parts.push(format!("ward {mana}"));
+            protecting = false;
+        } else if let Keyword::Crew(power) = keyword {
+            parts.push(format!("crew {power}"));
             protecting = false;
         } else {
             parts.push(keyword_text(keyword)?);

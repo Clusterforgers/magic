@@ -205,9 +205,6 @@ fn a_permanent_may_enter_as_a_copy(#[case] text: &str, #[case] json: &str) {
 }
 
 #[rstest]
-#[case::another_kind_of_ability_in_the_quotes(
-    "Create a token that's a copy of target creature you control, except it has \"{T}: Add {G}.\""
-)]
 #[case::an_unknown_keyword(
     "Create a token that's a copy of target creature you control, except it has ward."
 )]
@@ -264,9 +261,6 @@ fn near_misses_of_a_token_copy_stay_unread(#[case] text: &str) {
 }
 
 #[rstest]
-#[case::a_land(
-    "You may have this land enter as a copy of any land on the battlefield, except it's a creature."
-)]
 #[case::target("You may have this creature enter as a copy of target creature.")]
 #[case::without_may("This creature enters as a copy of any creature on the battlefield.")]
 #[case::another_zone(
@@ -278,17 +272,11 @@ fn near_misses_of_a_token_copy_stay_unread(#[case] text: &str) {
 #[case::controlled_and_anywhere(
     "You may have this creature enter as a copy of any creature you control on the battlefield."
 )]
-#[case::an_opponents_creature(
-    "You may have this creature enter as a copy of a creature an opponent controls, except it's blue."
-)]
 #[case::until_end_of_turn(
     "You may have this creature become a copy of any creature until end of turn."
 )]
 #[case::a_name(
     "You may have this creature enter as a copy of any creature on the battlefield, except its name is Bob."
-)]
-#[case::an_activated_ability(
-    "You may have this creature enter as a copy of any creature on the battlefield, except it has \"{T}: Add {G}.\""
 )]
 #[case::unmatched_quote(
     "You may have this creature enter as a copy of any creature on the battlefield, except it has \"When this creature dies, draw a card."
