@@ -64,6 +64,7 @@ Azorius Signet
 Azure Fleet Admiral
 Azusa, Lost but Seeking
 Baird, Steward of Argive
+Banish to Another Universe
 Banisher Priest
 Banishing Light
 Banshee of the Dread Choir
@@ -155,6 +156,7 @@ Champion's Helm
 Changeling Outcast
 Chartooth Cougar
 Chemister's Insight
+Chief Engineer
 Chittering Harvester
 Chittering Witch
 Chomping Kavu
@@ -453,6 +455,7 @@ Impulsive Pilferer
 Inferno Project
 Inkwell Leviathan
 Inspired Sphinx
+Inspiring Statuary
 Intelligence Bobblehead
 Intrepid Rabbit
 Invading Manticore

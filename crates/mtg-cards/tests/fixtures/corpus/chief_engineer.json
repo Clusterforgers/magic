@@ -1,0 +1,25 @@
+{
+  "id": "8c67872b-f375-42b9-b81c-3c8c52c0c24e",
+  "oracle_id": "02dbb6f8-ef84-4156-87dc-34033e64fdb7",
+  "name": "Chief Engineer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c16",
+  "collector_number": "86",
+  "rarity": "rare",
+  "released_at": "2016-11-11",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Vedalken Artificer",
+  "oracle_text": "Artifact spells you cast have convoke. (Your creatures can help cast those spells. Each creature you tap while casting an artifact spell pays for {1} or one mana of that creature's color.)",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

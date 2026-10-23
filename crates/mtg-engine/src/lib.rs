@@ -38,6 +38,7 @@ mod price;
 mod replace_dry;
 mod saga;
 mod sba;
+mod spell_keywords;
 #[cfg(test)]
 mod spend_tests;
 mod steps;

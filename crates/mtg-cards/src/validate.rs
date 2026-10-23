@@ -1800,6 +1800,9 @@ impl<'a> Walker<'a> {
             });
         }
         self.at("mods", |w| w.mods(mods));
+        if names_spells(affected) {
+            self.spell_keywords(mods);
+        }
         if mods
             .iter()
             .any(|m| matches!(m, Modification::AddProtectionFromChosenColor))
@@ -1813,6 +1816,23 @@ impl<'a> Walker<'a> {
         }
         if defining {
             self.defining(affected, mods, condition.is_some(), from);
+        }
+    }
+
+    /// A static ability that names spells ("Artifact spells you cast have convoke") gives only the keywords that help
+    /// pay for a spell, since the engine reads no other keyword a spell is given.
+    fn spell_keywords(&mut self, mods: &[Modification]) {
+        self.uses("Ability", "Static.SpellKeywords");
+        let helps = |m: &Modification| {
+            matches!(
+                m,
+                Modification::AddKeyword(Keyword::Convoke | Keyword::Improvise | Keyword::Delve)
+            )
+        };
+        if !mods.iter().all(helps) {
+            self.at("mods", |w| {
+                w.problem("a spell is given only convoke, improvise or delve by a static ability");
+            });
         }
     }
 
@@ -2246,6 +2266,11 @@ const fn casts_a_spell(when: &TriggerPattern) -> bool {
 /// Whether the trigger is on a spell other than the card itself being cast, whose X the card does not print.
 fn casts_another_spell(when: &TriggerPattern) -> bool {
     matches!(when, TriggerPattern::SpellCast { what, .. } if !what.0.contains(&Pred::This))
+}
+
+/// Whether a static ability affects spells being cast: its selector holds the spell predicate.
+fn names_spells(affected: &Ref) -> bool {
+    matches!(affected, Ref::Each(selector) if selector.0.contains(&Pred::Spell))
 }
 
 /// Whether a static ability gives keywords a player can have (hexproof, shroud, protection) to players, and nothing else.
@@ -3014,6 +3039,24 @@ mod tests {
             .map(|name| (*name).to_owned())
             .collect();
         assert_eq!(used_primitives(&ability), expected, "no `Ability.From`");
+    }
+
+    #[rstest]
+    #[case::improvise(r#""Improvise""#, true)]
+    #[case::convoke(r#""Convoke""#, true)]
+    #[case::delve(r#""Delve""#, true)]
+    #[case::flying(r#""Flying""#, false)]
+    #[case::cascade(r#""Cascade""#, false)]
+    fn a_static_ability_over_spells_gives_only_the_keywords_that_help_pay(
+        #[case] keyword: &str,
+        #[case] allowed: bool,
+    ) {
+        let json = format!(
+            r#"{{"Static":{{"affected":{{"Each":["Spell",{{"ControlledBy":"You"}}]}},"mods":[{{"AddKeyword":{keyword}}}]}}}}"#
+        );
+        assert_eq!(problems(&json).is_empty(), allowed, "{keyword}");
+        let ability: Ability = serde_json::from_str(&json).unwrap();
+        assert!(used_primitives(&ability).contains("Ability.Static.SpellKeywords"));
     }
 
     const SWAMPS: &str = r#"{"Count":[{"Subtype":"Swamp"},{"ControlledBy":"You"}]}"#;

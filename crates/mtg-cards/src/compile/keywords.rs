@@ -839,6 +839,22 @@ mod tests {
     #[case::affinity_for_artifacts("Affinity for artifacts", Keyword::Affinity(Selector(vec![Pred::Type(CardType::Artifact)])))]
     #[case::affinity_for_a_subtype("Affinity for Islands", Keyword::Affinity(Selector(vec![Pred::Subtype(Subtype("Island".into()))])))]
     #[case::affinity_for_tokens("Affinity for tokens", Keyword::Affinity(Selector(vec![Pred::Token])))]
+    #[case::affinity_for_equipment(
+        "Affinity for Equipment",
+        Keyword::Affinity(Selector(vec![Pred::Subtype(Subtype("Equipment".into()))]))
+    )]
+    #[case::affinity_for_artifact_creatures(
+        "Affinity for artifact creatures",
+        Keyword::Affinity(Selector(vec![Pred::Type(CardType::Artifact), Pred::Type(CardType::Creature)]))
+    )]
+    #[case::affinity_for_historic_permanents(
+        "Affinity for historic permanents",
+        Keyword::Affinity(Selector(vec![Pred::AnyOf(vec![
+            Pred::Type(CardType::Artifact),
+            Pred::Supertype(Supertype::Legendary),
+            Pred::Subtype(Subtype("Saga".into())),
+        ])]))
+    )]
     #[case::madness("Madness {R}", Keyword::Madness(mana("{R}")))]
     #[case::miracle("Miracle {W}", Keyword::Miracle(mana("{W}")))]
     #[case::dredge("Dredge 3", Keyword::Dredge(3))]

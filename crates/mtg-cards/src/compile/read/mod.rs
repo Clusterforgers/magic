@@ -55,6 +55,7 @@ mod pronouns;
 mod render;
 mod reveal;
 mod selectors;
+mod spell_keywords;
 mod spend;
 mod spent;
 mod static_pairs;

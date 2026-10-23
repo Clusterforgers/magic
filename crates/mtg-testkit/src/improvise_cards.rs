@@ -42,6 +42,22 @@ fn clockwork(name: &str) -> Arc<CardDefinition> {
     )
 }
 
+/// A permanent of the kind affinity counts, with no cost: a legendary creature, a Saga or an Equipment; a plain
+/// enchantment is none of them.
+fn historic(name: &str) -> Option<Arc<CardDefinition>> {
+    let card = CardDefinition::new(name);
+    Some(Arc::new(match name {
+        "Legend" => card
+            .with_type(CardType::Creature)
+            .with_supertype(Supertype::Legendary)
+            .with_power_toughness(1, 1),
+        "Chapter" => card.with_type(CardType::Enchantment).with_subtype("Saga"),
+        "Blade" => card.with_type(CardType::Artifact).with_subtype("Equipment"),
+        "Plain Enchantment" => card.with_type(CardType::Enchantment),
+        _ => return None,
+    }))
+}
+
 /// A creature with a cost and these keywords, of any colour.
 fn with_keywords(
     name: &str,
@@ -111,11 +127,28 @@ pub fn improvise_card(name: &str) -> Result<Arc<CardDefinition>, CorpusError> {
             "{5}{B}",
             vec![affinity_for(CardType::Artifact), Keyword::Improvise],
         )?,
+        "Equipment Golem" => with_keywords(
+            name,
+            "{5}",
+            vec![Keyword::Affinity(Selector(vec![Pred::Subtype(Subtype(
+                "Equipment".into(),
+            ))]))],
+        )?,
+        // A spell that is no artifact and one that is: an ability that gives improvise to the first leaves the second.
+        "Statuary Bear" => creature(name, 3, &[Color::Blue], 2, 2),
+        "Pricey Relic" => Arc::new(
+            CardDefinition::new(name)
+                .with_type(CardType::Artifact)
+                .with_mana_cost(cost_of("{4}")?),
+        ),
         "Landcycling Ogre" => with_keywords(name, "{3}{G}", vec![landcycling(None, "{1}")?])?,
         "Swampcycling Ogre" => {
             with_keywords(name, "{3}{B}", vec![landcycling(Some("Swamp"), "{B}")?])?
         }
-        other => corpus::card(other)?,
+        other => match historic(other) {
+            Some(card) => card,
+            None => corpus::card(other)?,
+        },
     })
 }
 

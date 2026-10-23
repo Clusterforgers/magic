@@ -229,6 +229,7 @@ mod search_by_controller;
 mod search_lists;
 mod search_pairs;
 mod spell_copies;
+mod spell_keywords;
 mod spend_subtypes;
 mod static_pairs;
 mod statics;

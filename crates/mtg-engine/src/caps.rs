@@ -169,6 +169,7 @@ const RUNS: &[&str] = &[
     "Effect.Shield",
     "Ability.Static",
     "Ability.Static.Defining",
+    "Ability.Static.SpellKeywords",
     "Ability.Rule",
     "Rule.MustAttack",
     "Rule.MustAttackPlayers",
@@ -532,6 +533,7 @@ mod tests {
     #[case::block_restrictions("Mod.CantBlock", true)]
     #[case::static_abilities("Ability.Static", true)]
     #[case::characteristic_defining_abilities("Ability.Static.Defining", true)]
+    #[case::keywords_given_to_spells("Ability.Static.SpellKeywords", true)]
     #[case::rules_as_effects("Effect.Rule", true)]
     #[case::rules_as_static_abilities("Ability.Rule", true)]
     #[case::attack_requirements("Rule.MustAttack", true)]
