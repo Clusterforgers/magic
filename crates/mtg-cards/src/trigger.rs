@@ -316,6 +316,18 @@ pub enum TriggerPattern {
         /// The creature that becomes monstrous.
         what: Selector,
     },
+    /// A Vehicle matching the selector becomes crewed, a crew ability of it resolved ("whenever this Vehicle becomes
+    /// crewed", CR 702.122); `Triggering` is its controller.
+    BecomesCrewed {
+        /// The Vehicle that becomes crewed.
+        what: Selector,
+    },
+    /// A Mount matching the selector becomes saddled, a saddle ability of it resolved ("whenever this creature becomes
+    /// saddled", CR 702.171); `Triggering` is its controller.
+    BecomesSaddled {
+        /// The Mount that becomes saddled.
+        what: Selector,
+    },
     /// A permanent matching the selector is turned face up ("when this creature is turned face up", CR 702.37e); `Triggering` is
     /// its controller.
     TurnedFaceUp {

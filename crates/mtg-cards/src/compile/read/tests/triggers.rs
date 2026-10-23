@@ -227,7 +227,6 @@ fn an_ability_word_is_flavor_and_the_rest_is_read(#[case] text: &str, #[case] re
 #[case::discard_a_land("Whenever you discard a land card, draw a card.")]
 #[case::plural_subject("Whenever Elves you control enter, draw a card.")]
 #[case::dies_or_exiled("Whenever a creature you control dies or is put into exile, scry 1.")]
-#[case::cast_this_spell("When you cast this spell, draw a card.")]
 #[case::cast_a_named_spell("Whenever you cast a spell named Bolt, draw a card.")]
 #[case::cast_another("Whenever you cast another spell, draw a card.")]
 #[case::enters_under_your_control(

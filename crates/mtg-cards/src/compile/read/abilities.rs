@@ -105,6 +105,7 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         }
     );
     r.cast_spell = casts_a_spell(&when);
+    r.cast_itself = triggers::cast_itself(&when);
     r.subject = triggers::event_subject(&when);
     r.attacker = matches!(&when, TriggerPattern::Attacks { what } if *what == Selector::this());
     r.attacked = matches!(
@@ -163,7 +164,9 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     let limit = once_each_turn(r);
     // A card cycled is in its owner's graveyard when its own ability triggers, and a card that returns itself from the
     // graveyard has its ability there.
-    let from = if triggers::cycled_itself(&when)
+    let from = if triggers::cast_itself(&when) {
+        ZoneKind::Stack
+    } else if triggers::cycled_itself(&when)
         || triggers::graveyard_itself(&when)
         || effects::returns_itself(&effects)
     {

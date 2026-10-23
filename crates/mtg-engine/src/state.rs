@@ -100,6 +100,10 @@ pub(crate) enum Tally {
     Graved,
     /// A creature declared as an attacker (counted for its controller, once for each creature).
     Attackers,
+    /// A Vehicle that became crewed (counted for the object).
+    Crewed,
+    /// A Mount that became saddled (counted for the object).
+    Saddled,
     /// Damage dealt to a player after prevention (counted for the player, by the amount).
     Hurt,
 }
