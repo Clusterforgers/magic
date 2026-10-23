@@ -261,6 +261,8 @@ mod tap_and_mill;
 mod this_or_another;
 mod token_groups;
 mod token_keywords;
+mod probe_r1q;
+mod token_sizes;
 mod token_wordings;
 mod top_cast;
 mod transform;

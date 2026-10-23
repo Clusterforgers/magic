@@ -234,6 +234,19 @@ impl<'a> Scope<'a> {
             TurnTally::Attackers => Tally::Attackers,
             TurnTally::DamageTaken => Tally::Hurt,
             TurnTally::LifeGained => Tally::Gained,
+            TurnTally::CreaturesDied | TurnTally::NontokenCreaturesDied => {
+                let died = if what == TurnTally::CreaturesDied {
+                    Tally::Died
+                } else {
+                    Tally::DiedNontoken
+                };
+                let total: u32 = self
+                    .players(who)?
+                    .into_iter()
+                    .map(|player| self.state.tallied(player, died))
+                    .sum();
+                return Ok(i64::from(total));
+            }
             TurnTally::LifeLost => {
                 let lost: u32 = self
                     .players(who)?

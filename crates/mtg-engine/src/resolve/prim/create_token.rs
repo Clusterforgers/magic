@@ -117,6 +117,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let made_from: Vec<MadeFrom> = match token {
         TokenRef::Named(id) => vec![(Arc::new(token_definition(predefined(id)?, &caps())), None)],
         TokenRef::Custom(spec) => vec![(Arc::new(token_definition(spec, &caps())), None)],
+        TokenRef::Sized { size, token } => {
+            let size = i32::try_from(cx.scope.amount(size)?.max(0)).unwrap_or(i32::MAX);
+            let spec = TokenSpec {
+                power: Some(size),
+                toughness: Some(size),
+                ..(**token).clone()
+            };
+            vec![(Arc::new(token_definition(&spec, &caps())), None)]
+        }
         TokenRef::CopyOf {
             of,
             except,

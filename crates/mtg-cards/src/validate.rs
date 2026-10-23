@@ -1326,10 +1326,14 @@ impl<'a> Walker<'a> {
                 if self.nested < MOST_NESTED
                     && let Some(spec) = crate::builtin::token_spec(id)
                 {
-                    self.at(id.clone(), |w| w.token_spec(&spec));
+                    self.at(id.clone(), |w| w.token_spec(&spec, false));
                 }
             }
-            TokenRef::Custom(spec) => self.at("Custom", |w| w.token_spec(spec)),
+            TokenRef::Custom(spec) => self.at("Custom", |w| w.token_spec(spec, false)),
+            TokenRef::Sized { size, token } => {
+                self.at("size", |w| w.amount(size));
+                self.at("token", |w| w.token_spec(token, true));
+            }
             TokenRef::CopyOf { of, except, .. } => {
                 self.at("of", |w| w.reference(of, Kind::Object));
                 self.copy_exceptions(except);
@@ -1349,7 +1353,7 @@ impl<'a> Walker<'a> {
         }
     }
 
-    fn token_spec(&mut self, spec: &TokenSpec) {
+    fn token_spec(&mut self, spec: &TokenSpec, sized: bool) {
         if spec.name.is_empty() {
             self.problem("a token needs a name");
         }
@@ -1357,7 +1361,11 @@ impl<'a> Walker<'a> {
             self.problem("a token needs at least one card type");
         }
         let creature = spec.types.contains(&mtg_core::card::CardType::Creature);
-        if creature != (spec.power.is_some() && spec.toughness.is_some()) {
+        if sized {
+            if !creature || spec.power.is_some() || spec.toughness.is_some() {
+                self.problem("a token sized by an amount is a creature with no power and toughness of its own");
+            }
+        } else if creature != (spec.power.is_some() && spec.toughness.is_some()) {
             self.problem("a creature token needs power and toughness, any other token none");
         }
         let saved = std::mem::take(&mut self.scope);
@@ -2625,7 +2633,7 @@ pub(crate) fn check_token(id: &str, spec: &TokenSpec, tokens: &BTreeSet<String>)
             w.problem("a token id is lowercase letters, digits and underscores");
         });
     }
-    walker.at("token", |w| w.token_spec(spec));
+    walker.at("token", |w| w.token_spec(spec, false));
     walker.problems
 }
 
