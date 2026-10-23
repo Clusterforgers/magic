@@ -20,7 +20,7 @@ use crate::support::{Caps, PrintedCard, SupportRecord, support};
 /// How a clause of the printed text stands against the proposed abilities.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ClauseState {
-    /// An ability is written back as this clause (`render_variants` equals it, or the keyword reader reads it).
+    /// An ability is written back as this clause (`written_variants` equals it, or the keyword reader reads it).
     Reads {
         /// The index of the ability on the face, as proposed.
         ability: usize,

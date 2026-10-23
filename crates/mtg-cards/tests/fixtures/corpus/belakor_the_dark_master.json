@@ -1,0 +1,33 @@
+{
+  "id": "62b6ecb2-ac7e-4528-b53c-2cb4f1e38349",
+  "oracle_id": "3690ca72-c925-42ab-acc2-7cc1fda05789",
+  "name": "Be'lakor, the Dark Master",
+  "lang": "en",
+  "layout": "normal",
+  "set": "40k",
+  "collector_number": "6",
+  "rarity": "mythic",
+  "released_at": "2022-10-07",
+  "digital": false,
+  "mana_cost": "{3}{U}{B}{R}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Demon Noble",
+  "oracle_text": "Flying\nPrince of Chaos — When Be'lakor enters, you draw X cards and you lose X life, where X is the number of Demons you control.\nLord of Torment — Whenever another Demon you control enters, it deals damage equal to its power to any target.",
+  "power": "6",
+  "toughness": "5",
+  "colors": [
+    "B",
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Prince of Chaos",
+    "Lord of Torment"
+  ]
+}

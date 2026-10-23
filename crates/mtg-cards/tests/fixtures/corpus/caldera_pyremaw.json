@@ -1,0 +1,27 @@
+{
+  "id": "f5fab7a4-3612-4b79-b2f5-8a1e52ebe409",
+  "oracle_id": "3eb5ae68-7f76-4874-80a4-80058b10fc7a",
+  "name": "Caldera Pyremaw",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "33",
+  "rarity": "rare",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Dragon",
+  "oracle_text": "Flying\nWhenever you cast an instant or sorcery spell, put a +1/+1 counter on this creature. Then this creature deals damage equal to its power to target opponent.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

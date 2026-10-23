@@ -3,6 +3,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::ability::Ability;
+use crate::companion::DeckCondition;
 use crate::cost::Cost;
 use crate::refs::Selector;
 
@@ -58,8 +59,9 @@ pub enum Keyword {
     Storm,
     /// Partner.
     Partner,
-    /// Companion.
-    Companion,
+    /// Companion (CR 702.139): the card may be brought into the game from outside it when the starting deck meets the
+    /// condition.
+    Companion(Box<DeckCondition>),
     /// Battle cry.
     BattleCry,
     /// Fuse: both halves of a split card may be cast from hand together.
@@ -324,6 +326,11 @@ pub enum GiftKind {
 }
 
 impl Keyword {
+    /// Companion with this condition; the condition is boxed so a keyword, and every event that holds one, stays small.
+    pub fn companion(condition: DeckCondition) -> Keyword {
+        Keyword::Companion(Box::new(condition))
+    }
+
     /// Scryfall's spelling of every keyword in this enum, for matching a record's `keywords`.
     pub const NAMES: &[&str] = &[
         "Flash",
@@ -480,7 +487,7 @@ impl Keyword {
             Keyword::Cascade => "Cascade",
             Keyword::Storm => "Storm",
             Keyword::Partner => "Partner",
-            Keyword::Companion => "Companion",
+            Keyword::Companion(_) => "Companion",
             Keyword::BattleCry => "Battle cry",
             Keyword::Fuse => "Fuse",
             Keyword::Ward(_) => "Ward",
@@ -660,7 +667,7 @@ mod tests {
             Keyword::Cascade,
             Keyword::Storm,
             Keyword::Partner,
-            Keyword::Companion,
+            Keyword::companion(DeckCondition::ExtraCards(20)),
             Keyword::BattleCry,
             Keyword::Fuse,
             Keyword::Ward(cost.clone()),

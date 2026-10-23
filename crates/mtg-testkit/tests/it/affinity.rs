@@ -176,3 +176,51 @@ fn automatic_payment_after_affinity_taps_as_few_artifacts_as_it_can(
     assert_eq!(replayed.state_hash(), driver.engine().state_hash());
     assert_eq!(driver.decision().unwrap().player, pid(0));
 }
+
+#[rstest]
+#[case::nothing_historic_pays_the_whole_cost("Banish to Another Universe", &["Plains"; 5], &[], &[], true)]
+#[case::one_land_short("Banish to Another Universe", &["Plains"; 4], &[], &[], false)]
+#[case::an_artifact_counts("Banish to Another Universe", &["Plains"; 4], &["Trinket"], &[], true)]
+#[case::a_legendary_permanent_counts("Banish to Another Universe", &["Plains"; 4], &["Legend"], &[], true)]
+#[case::a_saga_counts("Banish to Another Universe", &["Plains"; 4], &["Chapter"], &[], true)]
+#[case::an_equipment_is_an_artifact("Banish to Another Universe", &["Plains"; 4], &["Blade"], &[], true)]
+#[case::a_tapped_permanent_counts("Banish to Another Universe", &["Plains"; 4], &["tapped Legend"], &[], true)]
+#[case::a_summoning_sick_permanent_counts("Banish to Another Universe", &["Plains"; 4], &["sick Clockwork"], &[], true)]
+#[case::the_three_kinds_add_up("Banish to Another Universe", &["Plains"; 2], &["Legend", "Chapter", "Trinket"], &[], true)]
+#[case::two_of_them_are_short("Banish to Another Universe", &["Plains"; 2], &["Legend", "Chapter"], &[], false)]
+#[case::a_permanent_of_two_kinds_counts_once("Banish to Another Universe", &["Plains"; 4], &["Legendary Relic"], &[], true)]
+#[case::and_takes_off_only_one("Banish to Another Universe", &["Plains"; 3], &["Legendary Relic"], &[], false)]
+#[case::the_colour_stays("Banish to Another Universe", &[], &["Legend", "Chapter", "Trinket", "Blade", "Clockwork"], &[], false)]
+#[case::other_permanents_do_not_count("Banish to Another Universe", &["Plains"; 4], &["Plain Enchantment", "Bear"], &[], false)]
+#[case::the_opponents_historic_permanents_do_not_count("Banish to Another Universe", &["Plains"; 4], &[], &["Legend", "Chapter", "Trinket"], false)]
+#[case::an_equipment_takes_one_off("Equipment Golem", &["Island"; 4], &["Blade"], &[], true)]
+#[case::an_equipment_is_short_by_one("Equipment Golem", &["Island"; 3], &["Blade"], &[], false)]
+#[case::five_equipment_make_it_free("Equipment Golem", &[], &["Blade"; 5], &[], true)]
+#[case::an_artifact_that_is_no_equipment_does_not_count("Equipment Golem", &["Island"; 4], &["Trinket", "Clockwork"], &[], false)]
+#[case::the_opponents_equipment_does_not_count("Equipment Golem", &["Island"; 4], &[], &["Blade"; 2], false)]
+fn affinity_for_historic_permanents_and_for_equipment_counts_what_the_card_names(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] spell: &str,
+    #[case] lands: &[&str],
+    #[case] others: &[&str],
+    #[case] theirs: &[&str],
+    #[case] expected: bool,
+) {
+    let driver = driver(table(seats, spell, lands, others, theirs));
+    assert_eq!(castable(&driver), expected);
+}
+
+#[rstest]
+#[case::banish_none("Banish to Another Universe", &[], "{4}{W}")]
+#[case::banish_historic_of_every_kind("Banish to Another Universe", &["Legend", "tapped Chapter", "Trinket"], "{1}{W}")]
+#[case::banish_beyond_the_generic_part("Banish to Another Universe", &["Legend", "Chapter", "Chapter", "Trinket", "Blade", "Clockwork"], "{W}")]
+#[case::equipment_two_of_five("Equipment Golem", &["Blade", "Blade", "Trinket"], "{3}")]
+fn the_cost_the_payment_asks_for_is_reduced_by_what_the_card_counts(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] spell: &str,
+    #[case] others: &[&str],
+    #[case] expected: &str,
+) {
+    let mut driver = driver(table(seats, spell, &["Plains"; 5], others, &[]));
+    assert_eq!(announced(&mut driver, spell), expected);
+}

@@ -130,7 +130,7 @@ fn phrase(cost: &Cost) -> Option<String> {
     };
     match item {
         CostItem::Mana(mana) if !mana.has_x() => Some(format!("pay {mana}")),
-        CostItem::PayLife(amount @ Amount::Fixed(_)) => {
+        CostItem::PayLife(amount @ (Amount::Fixed(_) | Amount::X)) => {
             Some(format!("pay {} life", points_text(amount)?))
         }
         CostItem::Discard {

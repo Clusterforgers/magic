@@ -38,6 +38,7 @@ mod price;
 mod replace_dry;
 mod saga;
 mod sba;
+mod spell_keywords;
 #[cfg(test)]
 mod spend_tests;
 mod steps;
@@ -53,6 +54,7 @@ pub mod characteristics;
 pub mod choose;
 mod citys_blessing;
 pub mod combat;
+pub mod companions;
 pub mod copies;
 pub mod counters;
 pub mod day_night;

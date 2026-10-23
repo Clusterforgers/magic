@@ -1,0 +1,29 @@
+{
+  "oracle_id": "954b30b2-b88c-4558-b06c-4518b49d7b20",
+  "name": "Getaway Car",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Getaway Car",
+      "oracle_fingerprint": "337065ec815225c37faa2412968d4f29",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Crewed": "This" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}

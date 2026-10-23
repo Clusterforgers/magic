@@ -406,6 +406,11 @@ pub(crate) fn engine_issue(error: DeckError, format: FormatKind) -> Issue {
                 DeckError::OutsideColorIdentity { name, .. } => {
                     (IssueCode::ColorIdentity, DeckZone::Main, Some(name.clone()))
                 }
+                DeckError::NotACompanion { name } | DeckError::CompanionCondition { name, .. } => (
+                    IssueCode::CompanionCondition,
+                    DeckZone::Companion,
+                    Some(name.clone()),
+                ),
                 DeckError::TooFewCards { .. } | DeckError::TooManyCopies { .. } => {
                     (IssueCode::DeckSize, DeckZone::Main, None)
                 }

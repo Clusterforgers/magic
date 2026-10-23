@@ -1,0 +1,49 @@
+{
+  "oracle_id": "d16298ac-67bd-4f9d-9979-23c1b7e4b359",
+  "name": "Starlit Sanctum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starlit Sanctum",
+      "oracle_fingerprint": "321baf553c0a2bed7d9cc9c191895209",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{W}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Subtype": "Cleric" }] } }
+            ],
+            "effects": [
+              { "GainLife": { "amount": { "Stat": { "of": "Paid", "stat": "Toughness" } } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{B}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Subtype": "Cleric" }] } }
+            ],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Paid", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

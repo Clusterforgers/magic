@@ -1,0 +1,24 @@
+{
+  "oracle_id": "46bfdcec-7cdc-413e-aa77-ed98b64f147b",
+  "name": "Insatiable Hemophage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Insatiable Hemophage",
+      "oracle_fingerprint": "5e04f8ec173a4ab50d5b8853174f4dab",
+      "abilities": [
+        { "Keyword": { "Mutate": "{2}{B}" } },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "Mutates": { "what": ["This"] } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": { "Mutations": "This" } } },
+              { "GainLife": { "amount": { "Mutations": "This" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

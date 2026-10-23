@@ -1,0 +1,27 @@
+{
+  "id": "c2e6e8a1-2e69-43de-964d-72f722439d4a",
+  "oracle_id": "ca4c0945-7035-47dc-aba8-fbda351d9b7b",
+  "name": "Cultivator of Blades",
+  "lang": "en",
+  "layout": "normal",
+  "set": "khc",
+  "collector_number": "55",
+  "rarity": "rare",
+  "released_at": "2021-02-05",
+  "digital": false,
+  "mana_cost": "{3}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Elf Artificer",
+  "oracle_text": "Fabricate 2 (When this creature enters, put two +1/+1 counters on it or create two 1/1 colorless Servo artifact creature tokens.)\nWhenever this creature attacks, you may have other attacking creatures get +X/+X until end of turn, where X is this creature's power.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Fabricate"
+  ]
+}

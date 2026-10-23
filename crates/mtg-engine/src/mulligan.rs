@@ -29,6 +29,8 @@ pub(crate) fn pregame(state: &GameState) -> Vec<Event> {
     let seats = state.players().len();
     let first = PlayerId::from_index(GameRng::substream(state.seed, state.rng_index).index(seats));
     let mut events = vec![Event::FirstPlayerChosen { player: first }];
+    // A companion is revealed before the libraries are shuffled, the first player's first (CR 702.139a).
+    events.extend(crate::companions::reveals(state, first));
     for (offset, seat) in (1u64..).zip(0..seats) {
         let player = PlayerId::from_index(seat);
         let order = shuffled(state, offset, state.zone(Zone::Library(player)).to_vec());

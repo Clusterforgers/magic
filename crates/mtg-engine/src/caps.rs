@@ -171,6 +171,7 @@ const RUNS: &[&str] = &[
     "Effect.Shield",
     "Ability.Static",
     "Ability.Static.Defining",
+    "Ability.Static.SpellKeywords",
     "Ability.Rule",
     "Rule.MustAttack",
     "Rule.MustAttackPlayers",
@@ -288,6 +289,7 @@ const RUNS: &[&str] = &[
     "Condition.Kicked",
     "Condition.Performed",
     "Amount.Kicks",
+    "Amount.Mutations",
     "Amount.Promised",
     "Amount.CastWith",
     "Amount.ColorsSpent",
@@ -316,6 +318,7 @@ const RUNS: &[&str] = &[
     "Keyword.Partner",
     "Keyword.PartnerWith",
     "Keyword.PartnerGroup",
+    "Keyword.Companion",
     "Keyword.DoctorsCompanion",
     "Keyword.ChooseABackground",
     "Keyword.Unearth",
@@ -540,6 +543,7 @@ mod tests {
     #[case::block_restrictions("Mod.CantBlock", true)]
     #[case::static_abilities("Ability.Static", true)]
     #[case::characteristic_defining_abilities("Ability.Static.Defining", true)]
+    #[case::keywords_given_to_spells("Ability.Static.SpellKeywords", true)]
     #[case::rules_as_effects("Effect.Rule", true)]
     #[case::rules_as_static_abilities("Ability.Rule", true)]
     #[case::attack_requirements("Rule.MustAttack", true)]
@@ -571,6 +575,7 @@ mod tests {
     #[case::spending_mana_to_cast("Condition.ManaSpent", true)]
     #[case::exiling_for_another_duration("Exile.Duration.UntilYourNextTurn", false)]
     #[case::the_number_of_kicks("Amount.Kicks", true)]
+    #[case::the_number_of_mutations("Amount.Mutations", true)]
     #[case::cast_for_a_way("Amount.CastWith", true)]
     #[case::colors_spent("Amount.ColorsSpent", true)]
     #[case::permanents_graved("Amount.PermanentsGraved", true)]

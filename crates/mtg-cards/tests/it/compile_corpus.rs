@@ -10,7 +10,7 @@ use serde_json::Value;
 use mtg_cards::ability::Ability;
 use mtg_cards::card::{Card, ImplStatus};
 use mtg_cards::compile::{
-    ClauseKind, Compiled, compile, render_variants, same_text, static_pair_texts,
+    ClauseKind, Compiled, compile, same_text, static_pair_texts, written_variants,
 };
 use mtg_cards::load::Library;
 use mtg_cards::support::PrintedCard;
@@ -267,7 +267,7 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
                     continue;
                 }
             }
-            let written = render_variants(ability);
+            let written = written_variants(ability);
             if written.is_empty() {
                 continue;
             }

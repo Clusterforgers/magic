@@ -48,6 +48,8 @@ export type { CommanderDamageLimit } from "./CommanderDamageLimit";
 export type { CommanderDamageView } from "./CommanderDamageView";
 export type { CommanderView } from "./CommanderView";
 export type { CommonToken } from "./CommonToken";
+export type { CompanionStage } from "./CompanionStage";
+export type { CompanionView } from "./CompanionView";
 export type { ContinuousEffect } from "./ContinuousEffect";
 export type { ConvokeOption } from "./ConvokeOption";
 export type { Convoked } from "./Convoked";

@@ -36,7 +36,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 21] = [
+const TEMPLATES: [Template; 22] = [
     entering,
     entering_tapped_if,
     group_enters_tapped,
@@ -50,6 +50,7 @@ const TEMPLATES: [Template; 21] = [
     lands::cast_from_the_top,
     cannot,
     cost_modifier,
+    super::spell_keywords::ability,
     modifies,
     defining::ability,
     prevention::static_rule,
@@ -704,7 +705,7 @@ pub(super) fn counts_targets(per: &Amount) -> bool {
 
 /// The spells a cost modifier names: "This spell", "Noncreature spells", "Artifact spells you cast", "Spells your opponents
 /// cast", "Spells you cast from anywhere other than your hand". The flag says the spell is the card itself.
-fn cost_subject(r: &mut Reader<'_>) -> Option<(Selector, bool)> {
+pub(super) fn cost_subject(r: &mut Reader<'_>) -> Option<(Selector, bool)> {
     if r.source() {
         return Some((Selector::this(), true));
     }
@@ -781,7 +782,7 @@ fn cost_modifier(r: &mut Reader<'_>) -> Option<Ability> {
 }
 
 /// The spells a cost modifier names, as the card words them before "cost".
-fn cost_subject_text(applies_to: &Selector) -> Option<String> {
+pub(super) fn cost_subject_text(applies_to: &Selector) -> Option<String> {
     if *applies_to == Selector::this() {
         return Some("~".to_owned());
     }
@@ -895,6 +896,13 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             condition: None,
             from,
         } => rule_texts(rule, *from),
+        Ability::Static {
+            affected: affected @ Ref::Each(Selector(spells)),
+            mods,
+            condition: None,
+            defining: false,
+            from: ZoneKind::Battlefield,
+        } if spells.first() == Some(&Pred::Spell) => super::spell_keywords::texts(affected, mods),
         Ability::Static {
             affected,
             mods,
@@ -1322,7 +1330,7 @@ fn static_texts(
 
 /// The predicate in each wording of the ability it gives in quotes: a triggered ability says "it deals" where another
 /// wording says "~ deals".
-fn predicate_variants(
+pub(super) fn predicate_variants(
     mods: &[Modification],
     plural: bool,
     itself: bool,

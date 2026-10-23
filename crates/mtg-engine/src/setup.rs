@@ -12,6 +12,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::combat::CombatState;
 use crate::commanders::Commanders;
+use crate::companions::CompanionStage;
 use crate::error::SetupError;
 use crate::format::{ExtraZone, FormatRules, RuleSet};
 use crate::layers::LayersCache;
@@ -82,6 +83,9 @@ pub struct PlayerSetup {
     /// The commanders the seat starts with in the command zone (CR 903.6), one or a pair of partners; the cards
     /// of the deck are the other ones.
     pub commanders: Vec<Arc<CardDefinition>>,
+    /// The companion the seat names (CR 702.139): a card outside its deck that the game keeps outside the game until the
+    /// seat pays to put it into its hand.
+    pub companion: Option<Arc<CardDefinition>>,
 }
 
 /// Where the game starts.
@@ -149,6 +153,15 @@ impl GameSetup {
         self
     }
 
+    /// The setup with these companions, one entry for each seat in table order.
+    #[must_use]
+    pub fn with_companions(mut self, companions: Vec<Option<Arc<CardDefinition>>>) -> Self {
+        for (player, card) in self.players.iter_mut().zip(companions) {
+            player.companion = card;
+        }
+        self
+    }
+
     /// The setup with `house_rules` laid over the format's values.
     #[must_use]
     pub fn with_house_rules(mut self, house_rules: HouseRules) -> Self {
@@ -192,6 +205,14 @@ impl GameSetup {
                         player: PlayerId::from_index(seat),
                         source,
                     })?;
+                if let Some(companion) = &player.companion {
+                    self.format
+                        .validate_companion(companion, &deck, &player.commanders, &self.ruleset())
+                        .map_err(|source| SetupError::InvalidCompanion {
+                            player: PlayerId::from_index(seat),
+                            source,
+                        })?;
+                }
             }
         }
         for (seat, player) in self.players.iter().enumerate() {
@@ -347,6 +368,24 @@ impl GameState {
             let life = setup.ruleset().starting_life(owner);
             players.push(starting_player(owner, setup_player, life, status));
         }
+        // A companion is no object yet: it keeps the id it will have in the hand. It is revealed with the opening
+        // procedure, or at once in a game that skips it.
+        let mut companions = crate::companions::Companions::default();
+        let stage = match setup.start {
+            Start::Mulligan => CompanionStage::Hidden,
+            Start::At { .. } => CompanionStage::Revealed,
+        };
+        for (seat, setup_player) in setup.players.iter().enumerate() {
+            if let Some(card) = &setup_player.companion {
+                companions.name(
+                    PlayerId::from_index(seat),
+                    ObjectId(next_id),
+                    Arc::clone(card),
+                    stage,
+                );
+                next_id += 1;
+            }
+        }
         for (id, preset) in presets {
             if let Some(object) = objects.get_mut(&id) {
                 let host = preset.attached_to.and_then(|place| placed.get(&place));
@@ -412,6 +451,7 @@ impl GameState {
             monarch: None,
             citys_blessing: std::collections::BTreeSet::new(),
             commanders: Commanders::of(commander_ids),
+            companions,
         };
         game.note_what_cards_can_do();
         // A commander is moved by a replacement effect and costs a tax, so both are looked for in its game.

@@ -8,6 +8,7 @@ pub mod ability;
 pub mod assemble;
 pub mod builtin;
 pub mod card;
+pub mod companion;
 pub mod compile;
 pub mod cost;
 pub mod coverage;

@@ -40,6 +40,7 @@ pub(crate) fn setup(
             keywords: Vec::new(),
             counters: Vec::new(),
             commanders: Vec::new(),
+            companion: None,
         })
         .collect();
     GameSetup {

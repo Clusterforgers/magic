@@ -1,0 +1,28 @@
+{
+  "id": "22dd2242-2fd8-4752-886c-fc6dbabcf89a",
+  "oracle_id": "699bc130-2f1f-4bc8-a25f-9329e40efbb1",
+  "name": "Bogardan Hellkite",
+  "lang": "en",
+  "layout": "normal",
+  "set": "afc",
+  "collector_number": "115",
+  "rarity": "mythic",
+  "released_at": "2021-07-23",
+  "digital": false,
+  "mana_cost": "{6}{R}{R}",
+  "cmc": 8.0,
+  "type_line": "Creature — Dragon",
+  "oracle_text": "Flash\nFlying\nWhen this creature enters, it deals 5 damage divided as you choose among any number of targets.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flying",
+    "Flash"
+  ]
+}

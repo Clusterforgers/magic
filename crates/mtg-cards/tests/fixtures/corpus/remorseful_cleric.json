@@ -1,0 +1,27 @@
+{
+  "id": "665a1bd1-db82-4db9-af7d-af161d31a696",
+  "oracle_id": "c40bc9f6-2b72-4ae1-b912-50075af59628",
+  "name": "Remorseful Cleric",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "164",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Spirit Cleric",
+  "oracle_text": "Flying\nSacrifice this creature: Exile target player's graveyard.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

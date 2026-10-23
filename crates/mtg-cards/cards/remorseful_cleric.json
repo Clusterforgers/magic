@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c40bc9f6-2b72-4ae1-b912-50075af59628",
+  "name": "Remorseful Cleric",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Remorseful Cleric",
+      "oracle_fingerprint": "d5e30251e84a2e81771ff91be628080c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

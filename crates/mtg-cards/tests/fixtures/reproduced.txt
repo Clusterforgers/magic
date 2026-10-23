@@ -65,6 +65,7 @@ Azorius Signet
 Azure Fleet Admiral
 Azusa, Lost but Seeking
 Baird, Steward of Argive
+Banish to Another Universe
 Banisher Priest
 Banishing Light
 Banshee of the Dread Choir
@@ -157,6 +158,7 @@ Champion's Helm
 Changeling Outcast
 Chartooth Cougar
 Chemister's Insight
+Chief Engineer
 Chittering Harvester
 Chittering Witch
 Chomping Kavu
@@ -367,11 +369,13 @@ Gemhide Sliver
 Gemrazer
 Generous Ent
 Gerrard's Wisdom
+Getaway Car
 Ghalta, Primal Hunger
 Ghost Quarter
 Ghostblade Eidolon
 Ghostly Prison
 Ghoulcaller Gisa
+Giant Beaver
 Giant Cindermaw
 Giant Growth
 Gift of Paradise
@@ -447,6 +451,7 @@ Horizon Canopy
 Hound of Griselbrand
 Howltooth Hollow
 Hulking Raptor
+Huntmaster Liger
 Icefeather Aven
 Idyllic Beachfront
 Igneous Inspiration
@@ -459,7 +464,9 @@ Impostor of the Sixth Pride
 Impulsive Pilferer
 Inferno Project
 Inkwell Leviathan
+Insatiable Hemophage
 Inspired Sphinx
+Inspiring Statuary
 Intelligence Bobblehead
 Intrepid Rabbit
 Invading Manticore
@@ -471,6 +478,7 @@ Izzet Charm
 Jacked Rabbit
 Jadelight Ranger
 Jagged Barrens
+Jarad, Golgari Lich Lord
 Jaspera Sentinel
 Jazal Goldmane
 Join the Maestros
@@ -516,11 +524,13 @@ Light 'Em Up
 Light Up the Stage
 Lightning Bolt
 Lithoform Engine
+Living Twister
 Lizard Blades
 Llanowar Behemoth
 Llanowar Elves
 Looter il-Kor
 Lord of Extinction
+Lotleth Troll
 Lotus Petal
 Lu Bu, Master-at-Arms
 Lu Xun, Scholar General
@@ -528,6 +538,7 @@ Ludevic's Test Subject // Ludevic's Abomination
 Lumen-Class Frigate
 Lurching Rotbeast
 M'Baku, Jabari Chieftain
+Magmatic Insight
 Make Disappear
 Makeshift Mauler
 Mana Bloom
@@ -567,6 +578,7 @@ Mirror Image
 Mishra's Workshop
 Mistmeadow Skulk
 Mizzium Mortars
+Mobilizer Mech
 Molten Slagheap
 Monastery Swiftspear
 Monk's Fist
@@ -645,6 +657,7 @@ Plaxmanta
 Poet's Quill
 Pongify
 Pop Quiz
+Porcuparrot
 Pouncing Jaguar
 Pouncing Shoreshark
 Powder Ganger
@@ -672,6 +685,7 @@ Rafter Demon
 Raging Goblinoids
 Rakdos Headliner
 Rally the Ranks
+Rambling Possum
 Ramos, Dragon Engine
 Rampant Growth
 Rancor
@@ -820,6 +834,7 @@ Squirrel Nest
 Sram, Senior Edificer
 Staggershock
 Star Whale
+Starlit Sanctum
 Starscape Cleric
 Steady Progress
 Steam Vents
@@ -839,9 +854,11 @@ Stratus Walk
 Strength Bobblehead
 Strionic Resonator
 Stroke of Genius
+Stubborn Burrowfiend
 Student of Warfare
 Study Break
 Sublime Exhalation
+Subterranean Schooner
 Sudden Death
 Sudden Edict
 Sudden Shock

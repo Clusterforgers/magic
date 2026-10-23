@@ -460,8 +460,16 @@ const IRREGULAR_PLURALS: [(&str, &str); 12] = [
 ];
 
 /// The subtypes written the same in the plural.
-const SAME_PLURAL: [&str; 8] = [
-    "Aurochs", "Dauthi", "Eldrazi", "Fish", "Plains", "Samurai", "Soltari", "Thalakos",
+const SAME_PLURAL: [&str; 9] = [
+    "Aurochs",
+    "Dauthi",
+    "Eldrazi",
+    "Equipment",
+    "Fish",
+    "Plains",
+    "Samurai",
+    "Soltari",
+    "Thalakos",
 ];
 
 /// A subtype in the plural, the way a rules text writes a group of them ("Heroes", "Elves", "Spies", "Foxes").
@@ -552,6 +560,7 @@ mod tests {
     #[case("Plains", "Plains")]
     #[case("Fish", "Fish")]
     #[case("Samurai", "Samurai")]
+    #[case("Equipment", "Equipment")]
     #[case("Armadillo", "Armadillos")]
     fn plurals_are_written_as_rules_text_writes_them(#[case] one: &str, #[case] many: &str) {
         assert_eq!(plural_subtype(one), many);

@@ -14,6 +14,7 @@ use crate::state::{GameResult, GameState};
 use crate::turn::{MAX_HAND_SIZE, POISON_LOSS};
 
 mod commander;
+mod companion;
 mod ruleset;
 
 pub use commander::Commander;
@@ -86,6 +87,20 @@ pub enum DeckError {
         /// The commanders' color identity, as WUBRG letters (`C` when colorless).
         identity: String,
     },
+    /// A card named as a companion that has no companion ability the engine reads.
+    #[error("{name} is no companion: it has no companion ability the game reads")]
+    NotACompanion {
+        /// Card name.
+        name: String,
+    },
+    /// The starting deck does not meet the companion's condition.
+    #[error("{name} cannot be the companion: {reason}")]
+    CompanionCondition {
+        /// The companion's name.
+        name: String,
+        /// Which part of the deck breaks the condition.
+        reason: String,
+    },
 }
 
 /// How a format handles the opening-hand mulligan.
@@ -136,6 +151,22 @@ pub trait FormatRules: Debug + Send + Sync {
         } else {
             Err(DeckError::CommandersNotAllowed)
         }
+    }
+    /// The fewest cards a starting deck holds under the `rules` of the game, which a companion such as Yorion measures
+    /// itself against.
+    fn deck_minimum(&self, _rules: &RuleSet<'_>) -> usize {
+        NORMAL_MIN_DECK
+    }
+    /// Checks the `companion` a seat names (CR 702.139a) against its starting deck: the `deck` and the `commanders`
+    /// it starts with, under the `rules` of the game.
+    fn validate_companion(
+        &self,
+        companion: &Arc<CardDefinition>,
+        deck: &[Arc<CardDefinition>],
+        commanders: &[Arc<CardDefinition>],
+        rules: &RuleSet<'_>,
+    ) -> Result<(), DeckError> {
+        companion::check_companion(companion, deck, commanders, self.deck_minimum(rules))
     }
     /// The opening-hand mulligan rule.
     fn mulligan_rule(&self) -> MulliganRule;

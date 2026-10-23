@@ -1,6 +1,8 @@
 //! Goal: the wire types, projection and REST contract of the protocol; one test binary so the crate's integration tests share one link and run together on the thread pool.
 
 mod ability_view;
+mod active_left_fuzz;
+mod active_left_view;
 mod attachment_view;
 mod batch_diff;
 mod batch_size;
@@ -12,6 +14,7 @@ mod commander_draw_view;
 mod commander_spectator;
 mod commander_view;
 mod common;
+mod companion_view;
 mod copy_view;
 mod counter_view;
 mod crew_hidden;

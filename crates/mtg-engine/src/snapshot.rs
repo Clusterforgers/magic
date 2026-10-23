@@ -69,16 +69,23 @@ pub struct Snapshot {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub face: Option<u8>,
-    /// The copiable values it had when it was a copy of another object (CR 707.2), which a token or a copy made from it
-    /// after it left reads; absent for an object that was not a copy.
+    /// The copiable values it had when it was a copy of another object (CR 707.2), or of its topmost card alone when it
+    /// was a merged permanent (CR 729.2a), which a token or a copy made from it after it left reads; absent for any other
+    /// object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(skip))]
     pub copy: Option<Arc<CardDefinition>>,
-    /// What it was made of when it was a merged permanent (CR 729): the characteristics of its topmost card with the
-    /// abilities of every card, which its abilities read after it has left; absent for any other object.
+    /// What it was made of when it was a merged permanent (CR 729): the characteristics of its topmost card (or of the
+    /// copy effect it was under) with the abilities of the other cards, which its abilities read after it has left;
+    /// absent for any other object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(skip))]
     pub merged: Option<Arc<CardDefinition>>,
+    /// How many times it had mutated when it left (CR 702.140), which "the number of times this creature has mutated"
+    /// reads; absent for an object that never merged.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub mutations: Option<u32>,
 }
 
 impl Snapshot {
@@ -125,9 +132,23 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
         way: object.cast_way(),
         spent: object.mana_spent().to_vec(),
         face: object.face(),
-        copy: object.copy_effect().map(crate::copies::CopyEffect::shared),
-        merged: object.merged().map(crate::merged::Merged::shared),
+        copy: copiable(object),
+        merged: object.merged().map(|cards| match object.copy_effect() {
+            Some(copy) => Arc::new(copy.shown().clone()),
+            None => cards.shared(),
+        }),
+        mutations: object.merged().map(crate::merged::Merged::mutations),
     })
+}
+
+/// The copiable values the object leaves for a copy of it: those of its copy effect, or of the topmost card of a merged
+/// permanent alone (CR 707.2, 729.2a).
+fn copiable(object: &crate::object::GameObject) -> Option<Arc<CardDefinition>> {
+    match (object.copy_effect(), object.merged()) {
+        (Some(copy), _) => Some(copy.shared()),
+        (None, Some(cards)) => Some(Arc::new(cards.top().card().copiable())),
+        (None, None) => None,
+    }
 }
 
 #[cfg(test)]

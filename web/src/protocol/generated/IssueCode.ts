@@ -3,4 +3,4 @@
 /**
  * What a legality issue is about; the wire spells it in snake case.
  */
-export type IssueCode = "empty" | "unknown_format" | "unknown_card" | "deck_size" | "sideboard_size" | "companion_count" | "no_commander_zone" | "commander_count" | "commander_eligibility" | "commander_pair" | "copies" | "color_identity" | "banned" | "not_legal";
+export type IssueCode = "empty" | "unknown_format" | "unknown_card" | "deck_size" | "sideboard_size" | "companion_count" | "companion_condition" | "no_commander_zone" | "commander_count" | "commander_eligibility" | "commander_pair" | "copies" | "color_identity" | "banned" | "not_legal";

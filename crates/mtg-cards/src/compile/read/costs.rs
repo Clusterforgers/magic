@@ -4,7 +4,7 @@
 use super::amounts::{cards, cards_text, count_word, number_word, points, points_text};
 use super::counters::{entering, text as counters_text};
 use super::effects::describes_a_kind;
-use super::selectors::{Form, phrase, phrase_text};
+use super::selectors::{Form, phrase, phrase_in, phrase_text};
 use super::tokens::Reader;
 use super::triggers::article;
 use crate::ability::Ability;
@@ -25,10 +25,30 @@ pub fn cost(r: &mut Reader<'_>) -> Option<Cost> {
 
 fn items(r: &mut Reader<'_>) -> Option<Vec<CostItem>> {
     let mut items = vec![item(r)?];
-    while r.punct(',') {
-        items.push(item(r)?);
+    loop {
+        if let Some(CostItem::Sacrifice { count, .. }) = items.last()
+            && *count == Amount::one()
+            && let Some(next) = r.attempt(and_sacrifice)
+        {
+            items.push(next);
+        } else if r.punct(',') {
+            items.push(item(r)?);
+        } else {
+            return Some(items);
+        }
     }
-    Some(items)
+}
+
+/// "and a Forest" after "Sacrifice a Swamp": one more permanent sacrificed, a part of its own.
+fn and_sacrifice(r: &mut Reader<'_>) -> Option<CostItem> {
+    r.word("and").then_some(())?;
+    (r.word("a") || r.word("an")).then_some(())?;
+    let filter = phrase(r, Form::Subject)?;
+    filter.0.iter().all(is_cost_filter).then_some(())?;
+    Some(CostItem::Sacrifice {
+        filter,
+        count: Amount::one(),
+    })
 }
 
 /// One part of a cost.
@@ -73,11 +93,7 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
         return Some(CostItem::PayLife(amount));
     }
     if r.word("discard") {
-        let count = cards(r)?;
-        return Some(CostItem::Discard {
-            count,
-            filter: None,
-        });
+        return discard(r);
     }
     if r.word("tap") {
         return tap(r);
@@ -96,6 +112,24 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
         return Some(CostItem::SacrificeSelf);
     }
     sacrifice(r)
+}
+
+/// "Discard a card", "Discard two cards", "Discard a land card", "Discard X creature cards".
+fn discard(r: &mut Reader<'_>) -> Option<CostItem> {
+    if let Some(count) = r.attempt(cards) {
+        return Some(CostItem::Discard {
+            count,
+            filter: None,
+        });
+    }
+    let (form, count) = how_many(r)?;
+    let filter = phrase_in(r, form, true)?;
+    // "a land" is not a card to discard: the noun must be "card".
+    matches!(r.last_word(), Some("card" | "cards")).then_some(())?;
+    Some(CostItem::Discard {
+        count,
+        filter: Some(kinds_only(filter).filter(|kinds| !kinds.0.is_empty())?),
+    })
 }
 
 /// "a" or "an" for one, a number above one for several, X for the number announced: how many a cost takes and how the
@@ -238,8 +272,22 @@ pub(super) fn takes_objects(cost: &Cost) -> bool {
 
 /// The cost as the card prints it, parts in order: `{2}, {T}, Sacrifice ~`.
 pub fn text(cost: &Cost) -> Option<String> {
-    let parts: Option<Vec<String>> = cost.0.iter().map(item_text).collect();
-    let parts = parts?;
+    let mut parts: Vec<String> = Vec::new();
+    let mut after_sacrifice = false;
+    for item in &cost.0 {
+        let part = item_text(item)?;
+        let single = matches!(item, CostItem::Sacrifice { filter, count }
+            if *count == Amount::one() && !filter.0.contains(&Pred::Other));
+        // "Sacrifice a Swamp and a Forest": a run of single sacrifices is one clause.
+        match parts.last_mut() {
+            Some(last) if single && after_sacrifice => {
+                last.push_str(" and ");
+                last.push_str(part.strip_prefix("Sacrifice ")?);
+            }
+            _ => parts.push(part),
+        }
+        after_sacrifice = single;
+    }
     (!parts.is_empty()).then(|| parts.join(", "))
 }
 
@@ -260,6 +308,16 @@ fn item_text(item: &CostItem) -> Option<String> {
             count,
             filter: None,
         } => format!("Discard {}", cards_text(count)?),
+        CostItem::Discard {
+            count,
+            filter: Some(filter),
+        } => {
+            let mut said = filter.clone();
+            said.0
+                .extend([Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]);
+            let text = taken_text(&said, count)?;
+            format!("Discard {}", text.strip_suffix(" from your hand")?)
+        }
         CostItem::TapPermanents { filter, count } => {
             let mut said = filter.clone();
             said.0

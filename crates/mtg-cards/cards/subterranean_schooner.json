@@ -1,0 +1,21 @@
+{
+  "oracle_id": "7f82bae3-feaa-4967-a843-32a4f72806d5",
+  "name": "Subterranean Schooner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Subterranean Schooner",
+      "oracle_fingerprint": "d47ec9bac4b8a16ddf610d99930780d3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Crewed": "This" }] } }],
+            "effects": [{ "Explore": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}
