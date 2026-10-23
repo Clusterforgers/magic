@@ -775,6 +775,11 @@ fn type_words(types: &[CardType], plural: bool) -> Vec<String> {
         .collect()
 }
 
+/// Whether the predicates name the commander its owner designated: "your commander".
+fn names_own_commander(preds: &[Pred]) -> bool {
+    preds.contains(&Pred::Commander) && preds.contains(&Pred::OwnedBy(Ref::You))
+}
+
 /// A selector as a phrase, the way `phrase` reads it.
 pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     let (spell, preds) = match selector.0.split_first() {
@@ -784,8 +789,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     let (mut adjectives, mut types, mut suffixes) = (Vec::new(), Vec::new(), Vec::new());
     let (mut subtype, mut card, mut token) = (None, false, false);
     let mut commander = false;
-    let own_commander =
-        preds.contains(&Pred::Commander) && preds.contains(&Pred::OwnedBy(Ref::You));
+    let own_commander = names_own_commander(preds);
     let mut kinds: Vec<CardType> = Vec::new();
     let mut rest = preds.iter().peekable();
     while let Some(pred) = rest.next() {

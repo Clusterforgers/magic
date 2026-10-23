@@ -355,7 +355,7 @@ fn deal(
         target,
         amount,
         deathtouch: dealer.keywords.deathtouch,
-        form: form,
+        form,
         toxic: if combat && matches!(target, DamageTarget::Player(_)) {
             dealer.keywords.toxic
         } else {

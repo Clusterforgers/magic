@@ -60,7 +60,7 @@ fn settle(driver: &mut Driver, target: &str) -> Result<(), ScriptError> {
 
 /// Each seat holds a Crown (an instant that makes its caster the monarch) and an Island and has a Wall (0/5) of its own,
 /// and seat 0 holds a Mountain for a Bolt too.
-fn table(seats: usize, extra_for_zero: Vec<PresetPermanent>) -> Scenario {
+fn table(seats: usize, extra_for_zero: &[PresetPermanent]) -> Scenario {
     let mut scenario = Scenario::new(seats);
     for seat in 0..seats {
         let mut permanents = vec![ready(island())];
@@ -138,7 +138,7 @@ fn the_archon_stops_the_loss_of_life_from_damage_only_while_its_controller_is_th
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
     let mut scenario =
-        table(seats, vec![ready(mountain())]).hand(0, [monarcher("Crown 0"), burn("Bolt", 3)]);
+        table(seats, &[ready(mountain())]).hand(0, [monarcher("Crown 0"), burn("Bolt", 3)]);
     scenario = scenario.battlefield(
         1,
         vec![
@@ -169,7 +169,7 @@ fn combat_damage_to_the_monarch_with_the_archon_loses_no_life_and_still_passes_t
     #[case] expected: i32,
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let mut scenario = table(seats, vec![ready(free_creature("Raider", 2, 2))]);
+    let mut scenario = table(seats, &[ready(free_creature("Raider", 2, 2))]);
     let mut seat_one = vec![ready(island()), ready(free_creature("Wall 1", 0, 5))];
     if archon {
         seat_one.push(ready(card("Archon of Coronation").unwrap()));
@@ -193,7 +193,7 @@ fn combat_damage_to_the_monarch_with_the_archon_loses_no_life_and_still_passes_t
 fn jailer_table(seats: usize) -> Scenario {
     let mut extra: Vec<_> = (0..4).map(|_| ready(plains())).collect();
     extra.push(ready(island()));
-    table(seats, extra).hand(0, [card("Palace Jailer").unwrap(), monarcher("Crown 0")])
+    table(seats, &extra).hand(0, [card("Palace Jailer").unwrap(), monarcher("Crown 0")])
 }
 
 /// Seat 0 casts the Jailer, which exiles the Wall of seat 1.
@@ -233,10 +233,7 @@ fn the_creature_returns_when_an_opponent_of_the_jailer_becomes_the_monarch(
 }
 
 fn knights_table(seats: usize) -> Scenario {
-    table(
-        seats,
-        vec![ready(card("Knights of the Black Rose").unwrap())],
-    )
+    table(seats, &[ready(card("Knights of the Black Rose").unwrap())])
 }
 
 #[rstest]
@@ -271,7 +268,7 @@ fn knights_of_the_black_rose_drain_when_their_controller_was_the_monarch_as_the_
 fn mbaku_table(seats: usize) -> Scenario {
     table(
         seats,
-        vec![
+        &[
             ready(card("M'Baku, Jabari Chieftain").unwrap()),
             ready(free_creature("Raider", 2, 2)),
         ],
