@@ -143,6 +143,10 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c10r) The flicker with a delayed return ("Exile target creature you control. Return it to the battlefield under its owner's control at the beginning of the next end step", also an exile that returns at the next end step of its owner), the same exile that returns when the source leaves for an Aura with several hosts (the owner chooses) and "until your next turn" durations
 - [ ] (c9c) Verified corpus cards for Doctor's companion, Partner—text, Choose a Background (with a Background) and a planeswalker that can be a commander, each once its other text is a card the engine runs
 
+### Model-assisted reading
+- [~] (r1) (branch r1-reference-engines) Forge, XMage and Magarena surveyed in `docs/reference-engines.md`: licence, card format, scale and what can cross-check or feed our readings
+- [~] (r2) (branch r2-model-reader) A model-assisted reader pilot: a rules checker (valid, reads back as the printed text, support state with its blockers) and a seeded sample of unread cards written as rules by a model, with the yield per outcome; the result decides an automated proposer
+
 ### Layouts
 - [ ] (c11) Rooms, Battles, Read ahead, the `prepare` layout (a "prepared" designation set by "enters prepared" and "becomes prepared", and a cast of a copy of the spell face from the battlefield that unprepares it, `docs/engine.md`), extra turns and extra combats (`Effect::ExtraTurn` is a stub), the initiative and dungeons, and the remaining long-tail mechanics found by the report, one task each
 - [ ] (c11c) The other 24 transforming Sagas (their chapter wordings and back-face abilities that stay with the table, by the wording families of (c10)) and the wordings of the two precon flip cards (Budoka Gardener "put a land card from your hand onto the battlefield. If you control ten or more lands, flip", Nezumi Graverobber "If no cards are in that graveyard, flip") and the `prepare` layout (11 precon cards), which the engine plays as the front face only
