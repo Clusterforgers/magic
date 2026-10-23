@@ -1,0 +1,46 @@
+{
+  "oracle_id": "250cb58b-2924-4dff-92fe-ac0ebbbeb218",
+  "name": "Creeping Tar Pit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Creeping Tar Pit",
+      "oracle_fingerprint": "6708f146c67d1a16a13397705c76ab28",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{U}{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 2 } },
+                    { "SetColors": ["Blue", "Black"] },
+                    { "SetCreatureTypes": ["Elemental"] },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

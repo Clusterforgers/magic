@@ -35,6 +35,7 @@ type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 /// The static shapes, tried in this order.
 const TEMPLATES: [Template; 15] = [
     entering,
+    entering_tapped_if,
     group_enters_tapped,
     life_gain::replacement,
     copies::enters_as_copy,
@@ -104,6 +105,16 @@ fn entering(r: &mut Reader<'_>) -> Option<Ability> {
         },
         escaped.then_some(Condition::CastWith(CastWay::Escape)),
     ))
+}
+
+/// "If you control two or more other lands, ~ enters tapped.": the card enters tapped when what a player controls holds.
+fn entering_tapped_if(r: &mut Reader<'_>) -> Option<Ability> {
+    r.need("if")?;
+    let condition = control(r)?;
+    r.punct(',').then_some(())?;
+    r.source().then_some(())?;
+    r.need("enters tapped")?;
+    Some(replacement(ReplaceBy::Tapped, Some(condition)))
 }
 
 /// "Creatures your opponents control enter tapped.", "Artifacts and creatures your opponents control enter tapped.": a
@@ -756,6 +767,10 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
         (ReplaceBy::Tapped, Some(Condition::Not(held))) => holds_texts(held)
             .into_iter()
             .map(|held| format!("~ enters tapped unless {held}"))
+            .collect(),
+        (ReplaceBy::Tapped, Some(held)) => control_texts(held)
+            .into_iter()
+            .map(|held| format!("if {held}, ~ enters tapped"))
             .collect(),
         (
             ReplaceBy::WithCounters {

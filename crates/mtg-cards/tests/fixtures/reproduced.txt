@@ -106,6 +106,7 @@ Cascade Bluffs
 Cathars' Crusade
 Cathartic Reunion
 Celestial Archon
+Celestial Colonnade
 Celestial Crusader
 Changeling Outcast
 Chartooth Cougar
@@ -131,6 +132,7 @@ Coruscation Mage
 Counterspell
 Courser of Kruphix
 Cram Session
+Creeping Tar Pit
 Crib Swap
 Crocanura
 Crop Rotation
@@ -409,6 +411,7 @@ Mukotai Ambusher
 Mulldrifter
 Murderous Cut
 Muscle Sliver
+Mutavault
 Myr Retriever
 Mystic Gate
 Nantuko Husk

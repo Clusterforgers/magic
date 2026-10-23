@@ -21,7 +21,7 @@ use super::library;
 use super::modal;
 use super::payments;
 use super::prevention;
-use super::selectors::{Form, all, granted_keywords, phrase, target};
+use super::selectors::{Form, all, each, granted_keywords, phrase, target};
 use super::spend;
 use super::tokens::Reader;
 use super::where_x;
@@ -50,6 +50,7 @@ const TEMPLATES: [Template; 35] = [
     player_effect,
     super::damage::damage,
     removal,
+    super::becomes::creature,
     pump,
     evasion,
     return_card,
@@ -732,6 +733,10 @@ fn subject(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
     }
     if let Some(objects) = all(r) {
         return Some((objects, true));
+    }
+    // "Each other creature you control gets +1/+1 until end of turn."
+    if let Some(objects) = each(r) {
+        return Some((objects, false));
     }
     phrase(r, Form::All).map(|selector| (Ref::Each(selector), true))
 }
