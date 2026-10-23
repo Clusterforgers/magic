@@ -44,39 +44,62 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
 /// The total cost of the spell or ability with `choices` announced, or `None` when it cannot be worked out: the object
 /// is gone or its cost has a part the engine does not pay.
 pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
-    let (printed, sources, life) = printed(ctx, choices)?;
-    let mana = alternative::replace(ctx, choices, printed);
+    let printed = printed(ctx, choices)?;
+    let mana = alternative::replace(ctx, choices, printed.mana);
     let mana = optional::add(ctx, choices, mana);
     let mana = x::add(ctx, choices, mana);
     let mana = modifiers::apply(ctx, choices, mana);
     let help = match ctx.what {
-        What::Spell(spell) => help::offered(ctx.state, ctx.player, *spell),
+        What::Spell(spell) => help::offered(ctx.state, ctx.player, *spell, &printed.taken),
         _ => Offered::default(),
     };
     Some(Total {
         mana,
-        sources,
-        life,
+        sources: printed.sources,
+        life: printed.life,
         help,
         spend: spend(ctx, choices.way),
     })
 }
 
+/// The cost as the card prints it, what its other parts take and the sources that may pay its mana.
+struct Printed {
+    /// The mana of the cost.
+    mana: Option<ManaCost>,
+    /// The mana abilities that may pay it.
+    sources: Vec<ManaOption>,
+    /// The life the other parts pay.
+    life: u32,
+    /// The objects the other parts sacrifice, tap, return or exile: no source of mana and no helper.
+    taken: Vec<ObjectId>,
+}
+
+impl Printed {
+    fn new(mana: Option<ManaCost>, sources: Vec<ManaOption>, life: u32) -> Self {
+        Printed {
+            mana,
+            sources,
+            life,
+            taken: Vec::new(),
+        }
+    }
+}
+
 /// The cost as the card prints it and the sources that may pay its mana: the mana cost of a spell, the cost of an
 /// activated ability (never paid from its own source when that is tapped or lost for it), nothing for a loyalty cost
 /// (counters, paid with the events) or a triggered ability.
-fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<(Option<ManaCost>, Vec<ManaOption>, u32)> {
+fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
     match ctx.what {
         What::Spell(spell) => {
             let cost = ctx.state.object(*spell)?.card().mana_cost.clone();
             let all = mana_options(ctx.state, ctx.player);
             let mut sources = crate::mana_takes::for_card(ctx.state, &all, *spell).into_owned();
             // The parts of the way it is cast and of its optional costs: the life they pay is not there for Phyrexian
-            // mana, and what they sacrifice, tap or return is not there to tap for mana. Before the picks are made the
-            // player is assumed to give what leaves the most mana.
+            // mana, and what they sacrifice, tap, return or exile is not there to tap for mana or to help pay (convoke,
+            // improvise, delve). Before the picks are made the player is assumed to give what leaves the most mana.
             let price = Price::casting(ctx.needs.cost_parts(choices));
             if price.parts.is_empty() {
-                return Some((cost, sources, 0));
+                return Some(Printed::new(cost, sources, 0));
             }
             let taken: Vec<ObjectId> = if choices.cost_picks().is_empty() {
                 price.claimed(ctx.state, ctx.player, *spell)?
@@ -85,7 +108,10 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<(Option<ManaCost>, Vec<Ma
             };
             crate::mana_takes::leave(&mut sources, &taken);
             reserve_energy(&mut sources, price.energy());
-            Some((cost, sources, price.life()))
+            Some(Printed {
+                taken,
+                ..Printed::new(cost, sources, price.life())
+            })
         }
         What::Ability(ability) => match ctx.ability? {
             Ability::Activated { cost, .. } => {
@@ -97,11 +123,11 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<(Option<ManaCost>, Vec<Ma
                     choices.cost_picks().iter().flatten().copied().collect();
                 crate::mana_takes::leave(&mut sources, &picked);
                 let life = price.life();
-                Some((price.mana, sources, life))
+                Some(Printed::new(price.mana, sources, life))
             }
-            _ => Some((None, Vec::new(), 0)),
+            _ => Some(Printed::new(None, Vec::new(), 0)),
         },
-        What::Trigger(_) | What::Attack(_) => Some((None, Vec::new(), 0)),
+        What::Trigger(_) | What::Attack(_) => Some(Printed::new(None, Vec::new(), 0)),
     }
 }
 

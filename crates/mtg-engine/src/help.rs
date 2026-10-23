@@ -108,6 +108,24 @@ impl Offered {
         self.convoke.is_empty() && self.improvise.is_empty() && self.delve.is_empty()
     }
 
+    /// Every creature, artifact and card offered, once for each keyword that offers it.
+    pub(crate) fn objects(&self) -> Vec<ObjectId> {
+        let creatures = self.convoke.iter().map(|option| option.creature);
+        creatures
+            .chain(self.improvise.iter().copied())
+            .chain(self.delve.iter().copied())
+            .collect()
+    }
+
+    /// The offer without the objects in `taken`, which the cost of the spell takes before the payment.
+    pub(crate) fn without(mut self, taken: &[ObjectId]) -> Offered {
+        self.convoke
+            .retain(|option| !taken.contains(&option.creature));
+        self.improvise.retain(|artifact| !taken.contains(artifact));
+        self.delve.retain(|card| !taken.contains(card));
+        self
+    }
+
     /// The offer as the payment functions read it.
     pub fn help(&self) -> Help<'_> {
         Help {
@@ -171,8 +189,14 @@ fn untapped<T>(
 /// What `player` may use to help pay for casting `spell`: the untapped creatures they control when it has convoke, the
 /// untapped artifacts when it has improvise and the cards in their graveyard when it has delve (the spell itself is on
 /// its way to the stack, not a card to exile). A static ability of a permanent may give the spell the keyword
-/// (`spell_keywords`).
-pub(crate) fn offered(state: &GameState, player: PlayerId, spell: ObjectId) -> Offered {
+/// (`spell_keywords`). The objects in `taken`, which the additional cost of the spell sacrifices, taps, returns or
+/// exiles, are not offered: a payment cannot use them twice.
+pub(crate) fn offered(
+    state: &GameState,
+    player: PlayerId,
+    spell: ObjectId,
+    taken: &[ObjectId],
+) -> Offered {
     let mut offer = Offered::default();
     let given = given_to_spell(state, player, spell);
     let has = |keyword: &Keyword| has_keyword(state, spell, keyword) || given.contains(keyword);
@@ -197,7 +221,7 @@ pub(crate) fn offered(state: &GameState, player: PlayerId, spell: ObjectId) -> O
             .filter(|id| *id != spell)
             .collect();
     }
-    offer
+    offer.without(taken)
 }
 
 /// Checks the helpers a payment names against the offer: each creature, artifact and card is offered once, no longer tapped or gone
@@ -492,7 +516,7 @@ pub(crate) fn together(kept: &Used, more: &Used) -> Used {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: the helpers of a plain cost are offered fewest first, each pays only what the cost has, a creature taps for mana or for convoke and not both, and what is offered follows the keyword.
+    //! Goal: the helpers of a plain cost are offered fewest first, each pays only what the cost has, a creature taps for mana or for convoke and not both, what is offered follows the keyword, and the objects a cost takes are left out of the offer.
     use mtg_core::mana::ManaCost;
     use rstest::rstest;
 
@@ -772,5 +796,33 @@ mod tests {
             check(&used, help, &cards(unusable), &cards(for_mana)),
             expected
         );
+    }
+
+    #[rstest]
+    #[case::nothing_taken(&[], &[1, 2], &[2, 3], &[4, 5, 6])]
+    #[case::a_creature_taken(&[1], &[2], &[2, 3], &[4, 5, 6])]
+    #[case::an_artifact_creature_taken_from_both(&[2], &[1], &[3], &[4, 5, 6])]
+    #[case::an_artifact_taken(&[3], &[1, 2], &[2], &[4, 5, 6])]
+    #[case::a_card_taken(&[5], &[1, 2], &[2, 3], &[4, 6])]
+    #[case::everything_taken(&[1, 2, 3, 4, 5, 6], &[], &[], &[])]
+    #[case::an_object_that_is_not_offered(&[9], &[1, 2], &[2, 3], &[4, 5, 6])]
+    fn the_objects_a_cost_takes_are_left_out_of_the_offer(
+        #[case] taken: &[u64],
+        #[case] creatures: &[u64],
+        #[case] artifacts: &[u64],
+        #[case] graveyard: &[u64],
+    ) {
+        // Object 1 is a creature, 2 an artifact creature, 3 an artifact, 4 to 6 cards in the graveyard.
+        let offer = Offered {
+            convoke: vec![creature(1, &[Color::Red]), creature(2, &[])],
+            improvise: cards(&[2, 3]),
+            delve: cards(&[4, 5, 6]),
+        };
+        assert_eq!(offer.objects().len(), 7);
+        let rest = offer.without(&cards(taken));
+        let convoking: Vec<ObjectId> = rest.convoke.iter().map(|o| o.creature).collect();
+        assert_eq!(convoking, cards(creatures));
+        assert_eq!(rest.improvise, cards(artifacts));
+        assert_eq!(rest.delve, cards(graveyard));
     }
 }

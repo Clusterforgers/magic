@@ -175,10 +175,23 @@ impl Price {
         player: PlayerId,
         source: ObjectId,
     ) -> Option<Vec<ObjectId>> {
-        let spare: Vec<ObjectId> = mana_options(state, player)
+        self.claimed_leaving(state, player, source, &[])
+    }
+
+    /// [`Self::claimed`] that leaves the objects in `leave` (the creatures, artifacts and cards that help pay) as far
+    /// as it can, as it does the permanents that make mana.
+    pub(crate) fn claimed_leaving(
+        &self,
+        state: &GameState,
+        player: PlayerId,
+        source: ObjectId,
+        leave: &[ObjectId],
+    ) -> Option<Vec<ObjectId>> {
+        let mut spare: Vec<ObjectId> = mana_options(state, player)
             .iter()
             .map(|option| option.source.object)
             .collect();
+        spare.extend_from_slice(leave);
         let mut taken: Vec<Vec<ObjectId>> = Vec::new();
         for part in &self.parts {
             let barred = self.barred(part, source, &taken);

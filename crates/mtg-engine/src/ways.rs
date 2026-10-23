@@ -102,6 +102,24 @@ fn parts_payable(state: &GameState, player: PlayerId, id: ObjectId, parts: &[Par
             .is_some()
 }
 
+/// The help `base` offers when the spell `id` is cast with `parts` as costs besides its mana: what the parts take is not
+/// there to help pay. Before the picks are made the player is assumed to give what leaves the most help.
+fn help_in(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    base: &help::Offered,
+    parts: &[Part],
+) -> help::Offered {
+    if parts.is_empty() || base.is_empty() {
+        return base.clone();
+    }
+    let taken = Price::casting(parts.to_vec())
+        .claimed_leaving(state, player, id, &base.objects())
+        .unwrap_or_default();
+    base.clone().without(&taken)
+}
+
 /// Whether the card is a split card as a whole, which is never cast: one of its halves is (CR 709.3a).
 fn both_halves(card: &GameObject) -> bool {
     card.whole_card().layout == Layout::Split && card.face().is_none()
@@ -654,8 +672,9 @@ pub(crate) fn grantable_as_is(
     let all = mana_options(state, player);
     let sources = for_card(state, &all, id);
     let spend = Spend::for_spell(state, id, card.card().x_in_cost > 0);
-    let help = help::offered(state, player, id);
+    let base = help::offered(state, player, id, &[]);
     granted(state, id, free, way).iter().any(|way| {
+        let help = help_in(state, player, id, &base, &way.parts);
         announceable_in(state, player, id, way.alternative)
             && parts_payable(state, player, id, &way.parts)
             && way
@@ -733,8 +752,9 @@ pub(crate) fn castable_as_is(
     };
     let printed_spend = Spend::for_spell(state, id, card.card().x_in_cost > 0);
     let sources = &for_card(state, sources, id);
-    let help = help::offered(state, player, id);
+    let base = help::offered(state, player, id, &[]);
     of(state, player, id).iter().any(|way| {
+        let help = help_in(state, player, id, &base, &way.parts);
         // A bestowed spell is an Aura spell and a face-down one a plain creature spell, whose mana restrictions read it so.
         let spend = printed_spend.clone().cast_as(way.alternative);
         (way.instant || sorcery_timing(state, player))

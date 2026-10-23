@@ -29,6 +29,10 @@ pub struct RandomBot {
     rng: GameRng,
     partial_payments: bool,
     symbol_choices: bool,
+    /// The last answer declared an attack that costs mana, so the next decision is the payment of it.
+    taxed_attack: bool,
+    /// The payment of the attack declared last was backed out of: the declaration that comes back must not repeat it.
+    backed_out: bool,
 }
 
 /// An attack as the declaration lists it: each attacker and what it attacks.
@@ -114,6 +118,8 @@ impl RandomBot {
             rng: GameRng::substream(seed, stream),
             partial_payments: false,
             symbol_choices: false,
+            taxed_attack: false,
+            backed_out: false,
         }
     }
 
@@ -160,6 +166,8 @@ impl RandomBot {
 
     /// Answers `decision` with a uniformly random legal choice.
     pub fn choose(&mut self, decision: &Decision) -> Answer {
+        // The decision that follows a declaration with a cost is the payment of it.
+        let paying_attack = std::mem::take(&mut self.taxed_attack);
         match &decision.kind {
             DecisionKind::Mulligan(options) => {
                 let mulligan = options.can_mulligan && self.rng.below(2) == 0;
@@ -176,7 +184,11 @@ impl RandomBot {
                 Answer::Discard(self.subset(&options.hand, options.count))
             }
             DecisionKind::Priority(options) => Answer::Priority(self.priority(options)),
-            DecisionKind::PayMana(options) => Answer::PayMana(self.pay(options)),
+            DecisionKind::PayMana(options) => {
+                let choice = self.pay(options);
+                self.backed_out = paying_attack && matches!(choice, PayChoice::Cancel);
+                Answer::PayMana(choice)
+            }
             DecisionKind::DeclareAttackers(options) => {
                 Answer::DeclareAttackers(self.attack(options))
             }
@@ -369,8 +381,12 @@ impl RandomBot {
 
     /// A random attack: each creature joins at random, one that must attack always does, and an attack that costs
     /// more than the player surely has (CR 508.1h) is cut back to what it can pay, the creatures that are not
-    /// required first.
+    /// required first. After backing out of the payment of an attack the declaration comes back and the bot does only
+    /// what the rules require, so backing out ends the step.
     fn attack(&mut self, options: &AttackOptions) -> Attack {
+        if std::mem::take(&mut self.backed_out) {
+            return options.required_attack();
+        }
         let mut attackers = Vec::new();
         for option in &options.attackers {
             let required = options.required.contains(&option.object);
@@ -390,6 +406,7 @@ impl RandomBot {
             };
             attackers = smaller;
         }
+        self.taxed_attack = !options.cost_of(&attackers).symbols().is_empty();
         attackers
     }
 
