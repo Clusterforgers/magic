@@ -1,0 +1,28 @@
+{
+  "oracle_id": "47735ef2-fc4c-4634-83ab-715b1e86da0c",
+  "name": "Writ of Return",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Writ of Return",
+      "oracle_fingerprint": "4361d3e9d9e01ec40df6a159b4d3846b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "tapped": true } } } }
+            ]
+          }
+        },
+        { "Keyword": "Cipher" }
+      ]
+    }
+  ]
+}

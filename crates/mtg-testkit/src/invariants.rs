@@ -853,7 +853,12 @@ impl InvariantChecker {
             .map_err(|e| Violation::Fold(format!("{event:?}: {e}")))?;
         self.account(event)?;
         let touched = event.touched_objects();
-        if matches!(event, Event::ObjectLeftGame { .. }) || ability_ends || token_ends {
+        if matches!(
+            event,
+            Event::ObjectLeftGame { .. } | Event::CopyCeased { .. }
+        ) || ability_ends
+            || token_ends
+        {
             self.expected_objects -= 1;
         }
         if matches!(
@@ -869,7 +874,10 @@ impl InvariantChecker {
         self.expected_objects += restored;
         if matches!(
             event,
-            Event::AbilityPutOnStack(_) | Event::SpellCopied(_) | Event::AbilityCopied(_)
+            Event::AbilityPutOnStack(_)
+                | Event::SpellCopied(_)
+                | Event::CardCopied(_)
+                | Event::AbilityCopied(_)
         ) {
             self.expected_objects += 1;
         }

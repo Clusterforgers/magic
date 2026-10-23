@@ -71,6 +71,8 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Ana copies the ability of Serra Angel',
   ],
   CopyEnded: [{ CopyEnded: { object: 3 } }, 'Forest stops being a copy'],
+  CardCopied: [{ CardCopied: { object: 9, of: { id: 5, counter: 0 }, owner: 0 } }, 'Ana copies Serra Angel'],
+  CopyCeased: [{ CopyCeased: { object: 3 } }, 'Forest ceases to exist'],
   DayNightChanged: [{ DayNightChanged: { to: 'Night' } }, 'It becomes night'],
   MonarchChanged: [{ MonarchChanged: { player: 1 } }, 'Bo becomes the monarch'],
   Proliferated: [{ Proliferated: { player: 1 } }, 'Bo proliferates'],

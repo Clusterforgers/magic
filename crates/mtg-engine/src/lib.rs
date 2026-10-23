@@ -12,6 +12,7 @@ mod attack_tax;
 mod cast;
 mod commanders;
 mod damage;
+mod encoded;
 mod exile_return;
 mod face_down;
 mod faces;

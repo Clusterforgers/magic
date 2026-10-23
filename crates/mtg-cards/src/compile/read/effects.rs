@@ -38,7 +38,7 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 50] = [
+const TEMPLATES: [Template; 53] = [
     modal::modal,
     super::spent::sacrifice_unless,
     super::actions::fight,
@@ -58,12 +58,15 @@ const TEMPLATES: [Template; 50] = [
     draws::wheel,
     player_effect,
     super::damage::damage,
+    super::zone_moves::exile_graveyard,
     removal,
     super::flicker::exile_and_return,
     super::becomes::creature,
     super::becomes::animate,
     pump,
     evasion,
+    super::zone_moves::from_graveyard,
+    super::zone_moves::may_put_from_hand,
     return_card,
     return_chosen,
     return_any_number,
@@ -92,11 +95,12 @@ const TEMPLATES: [Template; 50] = [
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
-pub(super) const IMPERATIVES: [Template; 14] = [
+pub(super) const IMPERATIVES: [Template; 15] = [
     super::actions::goad,
     super::manifest::manifest,
     chain,
     removal,
+    super::zone_moves::from_graveyard,
     return_card,
     return_chosen,
     copies::token_copy,

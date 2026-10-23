@@ -131,6 +131,8 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::TokenCreated(token) => crate::tokens::fold(state, token),
         Event::BecameCopy(copy) => crate::copies::fold(state, copy),
         Event::SpellCopied(copy) => crate::copies::fold_spell(state, copy),
+        Event::CardCopied(copy) => crate::copies::fold_card(state, copy),
+        Event::CopyCeased { object } => crate::copies::fold_card_ceased(state, *object),
         Event::AbilityCopied(copy) => crate::copies::fold_ability(state, copy),
         Event::CopyEnded { object } => crate::copies::fold_ended(state, *object),
         Event::Crewed { .. } => tally_crewed(state, event),

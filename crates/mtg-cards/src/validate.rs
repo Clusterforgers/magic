@@ -367,6 +367,7 @@ impl<'a> Walker<'a> {
             Pred::Is(r)
             | Pred::SharesSubtype(r)
             | Pred::ExiledWith(r)
+            | Pred::EncodedWith(r)
             | Pred::Crewed(r)
             | Pred::Saddled(r) => {
                 self.reference(r, Kind::Object);
@@ -1556,6 +1557,15 @@ impl<'a> Walker<'a> {
             Effect::Fight { what, with } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("with", |w| w.reference(with, Kind::Object));
+            }
+            Effect::Encode { what, on } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("on", |w| w.reference(on, Kind::Object));
+            }
+            Effect::CopyCard { who, what, bind } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("as", |w| w.bind(bind, Kind::Object));
             }
             Effect::Amass { count, .. }
             | Effect::Monstrosity { count }

@@ -152,7 +152,7 @@ pub fn other_wordings(texts: &[String]) -> Vec<String> {
 /// two 1/1 white Soldier creature tokens", "its controller creates a 3/3 green Beast creature token").
 pub fn made_by(r: &mut Reader<'_>, who: Ref) -> Option<Vec<Effect>> {
     r.need(if who == Ref::You { "create" } else { "creates" })?;
-    let quantity = if r.words("that many") {
+    let quantity = if r.ability && r.words("that many") {
         Quantity::ThatMany
     } else if r.words("a number of") {
         Quantity::NumberOf

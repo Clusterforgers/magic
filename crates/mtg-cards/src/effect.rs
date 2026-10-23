@@ -345,6 +345,15 @@ pub enum Effect {
         /// What is exiled face down.
         what: Ref,
     },
+    /// Exiles the card of the resolving spell encoded on a creature (cipher, CR 702.99a): it lies in exile linked to that
+    /// creature, and the link ends when the card leaves exile or the creature leaves the battlefield. Nothing happens
+    /// when `what` is no spell card on the stack (a copy of a spell is no card) or `on` names no creature.
+    Encode {
+        /// The spell card exiled.
+        what: Ref,
+        /// The creature it is encoded on.
+        on: Ref,
+    },
     /// The player sacrifices permanents they control that match, of their choice.
     Sacrifice {
         /// Who sacrifices.
@@ -632,6 +641,18 @@ pub enum Effect {
         /// Done when the card is not cast: the player declines, or nothing lets it be cast.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         otherwise: Vec<Effect>,
+    },
+    /// The player copies a card in exile (CR 707.12) and binds the copy: a token card in exile that its owner may cast
+    /// (`CastFromZone`) and that ceases to exist as soon as it is anywhere but on the stack (CR 704.5e).
+    CopyCard {
+        /// Who owns the copy.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The card copied.
+        what: Ref,
+        /// The name the copy is bound to, as the object it becomes in exile.
+        #[serde(rename = "as")]
+        bind: String,
     },
     /// The player learns (CR 701.48): they may discard a card, and draw a card if they do; a Lesson from outside the game is not available.
     Learn {
