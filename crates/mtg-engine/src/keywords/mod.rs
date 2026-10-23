@@ -118,6 +118,7 @@ mod toxic;
 mod trample;
 mod transmute;
 mod typecycling;
+mod umbra_armor;
 mod undaunted;
 mod undying;
 mod unearth;
@@ -507,6 +508,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Awaken { .. } => &awaken::Awaken,
         Keyword::Gravestorm => &gravestorm::Gravestorm,
         Keyword::Sunburst => &sunburst::Sunburst,
+        Keyword::UmbraArmor => &umbra_armor::UmbraArmor,
         Keyword::Ascend => &ascend::Ascend,
         Keyword::ForMirrodin => &for_mirrodin::ForMirrodin,
         Keyword::JobSelect => &job_select::JobSelect,
@@ -858,6 +860,7 @@ mod tests {
             },
             Keyword::Gravestorm,
             Keyword::Sunburst,
+            Keyword::UmbraArmor,
         ]
     }
 
@@ -983,6 +986,7 @@ mod tests {
         "Keyword.Awaken",
         "Keyword.Gravestorm",
         "Keyword.Sunburst",
+        "Keyword.UmbraArmor",
         "Keyword.SplitSecond",
         "Keyword.Undaunted",
     ];
@@ -1120,6 +1124,7 @@ mod tests {
     #[case::melee(Keyword::Melee, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::mentor(Keyword::Mentor, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::dethrone(Keyword::Dethrone, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::umbra_armor(Keyword::UmbraArmor, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::annihilator(Keyword::Annihilator(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::extort(Keyword::Extort, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::evolve(Keyword::Evolve, Hooks { abilities: 1, ..Hooks::none() })]

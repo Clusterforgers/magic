@@ -163,6 +163,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   RuleExpired: [{ RuleExpired: { id: 1 } }, 'A rule change ends'],
   Regenerated: [{ Regenerated: { object: 1 } }, 'Grizzly Bears regenerates'],
+  DamageRemoved: [{ DamageRemoved: { object: 1 } }, 'Grizzly Bears has all its damage removed'],
   ShieldUsed: [{ ShieldUsed: { id: 2, left: 3 } }, 'A prevention shield has 3 left'],
   CreatureDied: [
     { CreatureDied: { object: 1, cause: 'LethalDamage' } },
@@ -508,6 +509,7 @@ describe('minor lines', () => {
     { SpellCast: { player: 0, object: 4 } },
     { CreatureDied: { object: 1, cause: 'ZeroToughness' } },
     { Regenerated: { object: 1 } },
+    { DamageRemoved: { object: 1 } },
     { TurnBegan: { number: 1, active: 0 } },
     { PlayerLost: { player: 1, reason: 'Conceded' } },
     { CountersChanged: { on: { Player: 1 }, counter: 'poison', delta: 1 } },
