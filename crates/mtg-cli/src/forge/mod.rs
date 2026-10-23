@@ -25,7 +25,7 @@ use crate::coverage::precon_cards;
 use crate::error::CliError;
 use compare::{compare, verbs_of};
 use map::Map;
-use report::{CardCheck, Survey};
+use report::{CardCheck, Rows, Survey};
 use script::{Script, fold, read_checkout};
 
 /// Reads the scripts of the checkout, compares them with the rules of the stored precon cards and returns the report: the
@@ -38,11 +38,15 @@ pub async fn forge_check(db: &Database, args: &ForgeCheckArgs) -> Result<String,
         CliError::Config(format!("the embedded rules files do not load:\n{errors}"))
     })?;
     let survey = survey(&cards, &scripts, map, library, &mtg_engine::caps());
-    let summary = survey.render(args.top, false);
+    let rows = Rows {
+        top: args.top,
+        keys: args.keys,
+    };
+    let summary = survey.render(rows, false);
     let Some(path) = &args.out else {
         return Ok(summary);
     };
-    tokio::fs::write(path, format!("{}\n", survey.render(args.top, true)))
+    tokio::fs::write(path, format!("{}\n", survey.render(rows, true)))
         .await
         .map_err(|source| CliError::io(path, source))?;
     Ok(format!(
@@ -89,6 +93,7 @@ pub fn survey(
         .unwrap_or_default();
         survey.checks.push(CardCheck {
             name: result.name.clone(),
+            source: result.rules,
             support: result.support,
             unread: result
                 .blockers

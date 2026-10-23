@@ -121,6 +121,10 @@ pub struct ForgeCheckArgs {
     #[arg(long, value_name = "N", default_value_t = 20)]
     pub top: usize,
 
+    /// How many keys a row of the unread tail names.
+    #[arg(long, value_name = "N", default_value_t = 6)]
+    pub keys: usize,
+
     /// Write the whole report, with a line for every card, to this file; the summary is printed.
     #[arg(long, value_name = "FILE")]
     pub out: Option<PathBuf>,
@@ -359,13 +363,13 @@ mod tests {
     }
 
     #[rstest]
-    #[case(&["mtg-cli", "forge-check", "--forge", "f"], "f", None, 20, None)]
-    #[case(&["mtg-cli", "forge-check", "--forge", "f", "--deck", "C21", "--top", "5", "--out", "r.txt"], "f", Some("C21"), 5, Some("r.txt"))]
+    #[case(&["mtg-cli", "forge-check", "--forge", "f"], "f", None, (20, 6), None)]
+    #[case(&["mtg-cli", "forge-check", "--forge", "f", "--deck", "C21", "--top", "5", "--keys", "9", "--out", "r.txt"], "f", Some("C21"), (5, 9), Some("r.txt"))]
     fn forge_check_options_land_in_their_fields(
         #[case] args: &[&str],
         #[case] forge: &str,
         #[case] deck: Option<&str>,
-        #[case] top: usize,
+        #[case] rows: (usize, usize),
         #[case] out: Option<&str>,
     ) {
         let cli = Cli::try_parse_from(args).unwrap();
@@ -373,8 +377,13 @@ mod tests {
             panic!("expected forge-check");
         };
         assert_eq!(
-            (args.forge, args.deck.as_deref(), args.top, args.out),
-            (PathBuf::from(forge), deck, top, out.map(PathBuf::from))
+            (
+                args.forge,
+                args.deck.as_deref(),
+                (args.top, args.keys),
+                args.out
+            ),
+            (PathBuf::from(forge), deck, rows, out.map(PathBuf::from))
         );
     }
 

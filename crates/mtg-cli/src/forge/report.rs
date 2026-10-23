@@ -4,7 +4,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
 
-use mtg_cards::coverage::Bucket;
+use mtg_cards::coverage::{Bucket, RulesSource};
 use mtg_cards::support::Support;
 
 use super::compare::{Finding, Status};
@@ -15,6 +15,8 @@ use super::script::Kind;
 pub struct CardCheck {
     /// The card's name.
     pub name: String,
+    /// Where its rules came from.
+    pub source: RulesSource,
     /// How well the game plays it.
     pub support: Support,
     /// Whether a clause is left to the table or the rules are unusable.
@@ -115,6 +117,48 @@ pub struct Tail {
     pub covered: Vec<(usize, usize)>,
 }
 
+/// The cards of the unread tail a ranking is about.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Scope {
+    /// Every card with a clause left to the table.
+    All,
+    /// Those whose rules read at least one ability: what is left is the unread clauses.
+    Partly,
+    /// Those whose rules read nothing: every item of the script is open.
+    Nothing,
+}
+
+impl Scope {
+    /// The scopes in report order.
+    pub const ALL: [Scope; 3] = [Scope::All, Scope::Partly, Scope::Nothing];
+
+    fn holds(self, check: &CardCheck) -> bool {
+        check.unread
+            && match self {
+                Scope::All => true,
+                Scope::Partly => !check.ours.is_empty(),
+                Scope::Nothing => check.ours.is_empty(),
+            }
+    }
+
+    fn title(self) -> &'static str {
+        match self {
+            Scope::All => "all cards with a clause left to the table",
+            Scope::Partly => "those whose rules read some abilities",
+            Scope::Nothing => "those whose rules read nothing",
+        }
+    }
+}
+
+/// How many rows the report shows.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Rows {
+    /// Rows of each ranking.
+    pub top: usize,
+    /// Keys named in a row of the tail.
+    pub keys: usize,
+}
+
 /// A group of fewer cards lists every key.
 const DEFINING_MIN_CARDS: usize = 5;
 
@@ -204,7 +248,7 @@ impl Survey {
     }
 
     /// The unread tail grouped by Forge API and key.
-    pub fn tail(&self) -> Tail {
+    pub fn tail(&self, scope: Scope) -> Tail {
         type Key = (Kind, String);
         let mut by_group: BTreeMap<Key, BTreeSet<usize>> = BTreeMap::new();
         let mut keys: BTreeMap<Key, BTreeMap<String, BTreeSet<usize>>> = BTreeMap::new();
@@ -212,7 +256,7 @@ impl Survey {
         let mut groups_of: Vec<BTreeSet<Key>> = Vec::new();
         for (index, check) in self.checks.iter().enumerate() {
             let mut own = BTreeSet::new();
-            if check.unread {
+            if scope.holds(check) {
                 // A cost is a part of an ability, read with it.
                 for finding in check.gaps().filter(|finding| finding.kind != Kind::Cost) {
                     let group = (finding.kind, finding.name.clone());
@@ -277,7 +321,11 @@ impl Survey {
         }
         covered.push((groups.len(), grouped));
         Tail {
-            cards: self.checks.iter().filter(|check| check.unread).count(),
+            cards: self
+                .checks
+                .iter()
+                .filter(|check| scope.holds(check))
+                .count(),
             grouped,
             groups,
             covered,
@@ -285,7 +333,8 @@ impl Survey {
     }
 
     /// The report as text: `top` rows for each ranking; with `detail`, a line for every card.
-    pub fn render(&self, top: usize, detail: bool) -> String {
+    pub fn render(&self, rows: Rows, detail: bool) -> String {
+        let top = rows.top;
         let mut text = String::new();
         let matched = self.checks.len();
         let _ = writeln!(
@@ -297,7 +346,9 @@ impl Survey {
         );
         self.render_states(&mut text);
         self.render_missing(&mut text, top);
-        self.render_tail(&mut text, top);
+        for scope in Scope::ALL {
+            self.render_tail(&mut text, rows, scope);
+        }
         if detail {
             self.render_cards(&mut text);
         }
@@ -312,6 +363,18 @@ impl Survey {
             .map(|(bucket, cards)| format!("{} {cards}", bucket.name()))
             .collect();
         let _ = writeln!(text, "state of those cards: {}", states.join(", "));
+        let sources: Vec<String> = [
+            (RulesSource::HandWritten, "hand-written"),
+            (RulesSource::Compiled, "compiled"),
+            (RulesSource::Absent, "none"),
+        ]
+        .into_iter()
+        .map(|(source, word)| {
+            let cards = self.checks.iter().filter(|c| c.source == source).count();
+            format!("{word} {cards}")
+        })
+        .collect();
+        let _ = writeln!(text, "rules of those cards: {}", sources.join(", "));
         let items = self.items();
         let _ = writeln!(
             text,
@@ -367,11 +430,12 @@ impl Survey {
         }
     }
 
-    fn render_tail(&self, text: &mut String, top: usize) {
-        let tail = self.tail();
+    fn render_tail(&self, text: &mut String, rows: Rows, scope: Scope) {
+        let tail = self.tail(scope);
         let _ = writeln!(
             text,
-            "\nunread tail: {} cards have a clause left to the table, {} of them have items we do not read, {} have none",
+            "\nunread tail, {}: {} cards; {} have items we do not read, {} have none",
+            scope.title(),
             tail.cards,
             tail.grouped,
             tail.cards - tail.grouped
@@ -380,11 +444,11 @@ impl Survey {
             text,
             "groups by Forge API and key (cards, cards with no other group; map: verb, none = no DSL verb, unmapped):"
         );
-        for group in tail.groups.iter().take(top) {
+        for group in tail.groups.iter().take(rows.top) {
             let keys: Vec<String> = group
                 .keys
                 .iter()
-                .take(6)
+                .take(rows.keys)
                 .map(|(key, cards)| format!("{key} {cards}"))
                 .collect();
             let _ = writeln!(
@@ -419,9 +483,14 @@ impl Survey {
         for check in &self.checks {
             let gaps: BTreeSet<String> = check.gaps().map(label_of).collect();
             let state = if check.unread { "unread" } else { "read" };
+            let source = match check.source {
+                RulesSource::HandWritten => "hand-written",
+                RulesSource::Compiled => "compiled",
+                RulesSource::Absent => "no rules",
+            };
             let _ = writeln!(
                 text,
-                "  {} [{}, {state}]: {}",
+                "  {} [{}, {source}, {state}]: {}",
                 check.name,
                 Bucket::of(check.support).name(),
                 if gaps.is_empty() {

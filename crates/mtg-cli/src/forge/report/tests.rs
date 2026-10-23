@@ -33,6 +33,7 @@ fn exception(name: &str, key: &str) -> Finding {
 fn card(name: &str, unread: bool, findings: Vec<Finding>) -> CardCheck {
     CardCheck {
         name: name.to_owned(),
+        source: RulesSource::Compiled,
         support: if unread {
             Support::Partial
         } else {
@@ -146,6 +147,8 @@ fn missing_verbs_are_ranked_by_cards_with_the_cards_that_are_all_read() {
     assert_eq!(in_read[0].label, "Effect.Zap (Zap)");
 }
 
+const ROWS: Rows = Rows { top: 2, keys: 6 };
+
 fn tail_survey() -> Survey {
     survey(vec![
         card(
@@ -184,7 +187,7 @@ fn tail_survey() -> Survey {
 
 #[test]
 fn the_unread_tail_is_grouped_by_api_with_its_keys() {
-    let tail = tail_survey().tail();
+    let tail = tail_survey().tail(Scope::All);
     assert_eq!((tail.cards, tail.grouped), (4, 3));
     let groups: Vec<(String, usize, usize, Status)> = tail
         .groups
@@ -213,8 +216,43 @@ fn the_unread_tail_is_grouped_by_api_with_its_keys() {
 }
 
 #[test]
+fn the_tail_is_cut_by_whether_the_rules_read_anything_of_the_card() {
+    let mut empty = card(
+        "Empty",
+        true,
+        vec![
+            effect("Draw", Status::Missing, &[]),
+            effect("Zap", Status::Missing, &[]),
+        ],
+    );
+    empty.ours.clear();
+    empty.source = RulesSource::Absent;
+    let survey = survey(vec![
+        empty,
+        card("Some", true, vec![effect("Draw", Status::Missing, &[])]),
+        card("Read", false, vec![effect("Draw", Status::Missing, &[])]),
+    ]);
+    let cut = |scope| {
+        let tail = survey.tail(scope);
+        let groups: Vec<(String, usize)> = tail
+            .groups
+            .iter()
+            .map(|group| (group.label(), group.cards))
+            .collect();
+        (tail.cards, tail.grouped, groups)
+    };
+    let draw_and_zap = vec![("Draw".to_owned(), 2), ("Zap".to_owned(), 1)];
+    assert_eq!(cut(Scope::All), (2, 2, draw_and_zap));
+    assert_eq!(cut(Scope::Partly), (1, 1, vec![("Draw".to_owned(), 1)]));
+    assert_eq!(
+        cut(Scope::Nothing),
+        (1, 1, vec![("Draw".to_owned(), 1), ("Zap".to_owned(), 1)])
+    );
+}
+
+#[test]
 fn a_reader_per_group_frees_the_cards_whose_groups_it_covers() {
-    let tail = tail_survey().tail();
+    let tail = tail_survey().tail(Scope::All);
     // Cards A, B and C hold two, two and one groups: the top group alone frees none of them.
     assert_eq!(tail.covered, [(1, 0), (3, 3)]);
 }
@@ -228,7 +266,7 @@ fn readers_are_priced_from_the_top_of_the_ranking() {
             .collect();
         checks.push(card(name, true, findings));
     }
-    let tail = survey(checks).tail();
+    let tail = survey(checks).tail(Scope::All);
     let ranking: Vec<(&str, usize)> = tail
         .groups
         .iter()
@@ -255,7 +293,7 @@ fn a_key_every_card_of_a_group_carries_is_a_parameter_and_is_left_out() {
             )
         })
         .collect();
-    let tail = survey(checks).tail();
+    let tail = survey(checks).tail(Scope::All);
     assert_eq!(tail.groups[0].keys, [("Rare".to_owned(), 3)]);
 }
 
@@ -270,19 +308,21 @@ fn a_small_group_lists_every_key() {
             )
         })
         .collect();
-    let tail = survey(checks).tail();
+    let tail = survey(checks).tail(Scope::All);
     assert_eq!(tail.groups[0].keys, [("NumCards".to_owned(), 4)]);
 }
 
 #[test]
 fn the_report_prints_the_numbers_the_rankings_and_with_detail_every_card() {
     let survey = tail_survey();
-    let summary = survey.render(2, false);
+    let summary = survey.render(ROWS, false);
     for wanted in [
         "forge-check: 6 stored cards, 5 with a Forge script (83.3%), 1 without",
         "state of those cards: verified 1, partial 4, manual 0, other 0",
         "verbs Forge names that our rules lack",
-        "unread tail: 4 cards have a clause left to the table, 3 of them have items we do not read, 1 have none",
+        "unread tail, all cards with a clause left to the table: 4 cards; 3 have items we do not read, 1 have none",
+        "unread tail, those whose rules read nothing: 0 cards; 0 have items we do not read, 0 have none",
+        "rules of those cards: hand-written 0, compiled 5, none 0",
         "ChangeZone [verb]  Destination=Exile 2, Optional 1",
         "top   1 groups: 0 of 3 cards (0.0%)",
         "top   3 groups: 3 of 3 cards (100.0%)",
@@ -292,8 +332,8 @@ fn the_report_prints_the_numbers_the_rankings_and_with_detail_every_card() {
     assert!(!summary.contains("trigger ChangesZone [verb]"), "{summary}");
     assert!(!summary.contains("our verbs"), "{summary}");
 
-    let full = survey.render(2, true);
-    assert!(full.contains("  A [partial, unread]:"), "{full}");
+    let full = survey.render(ROWS, true);
+    assert!(full.contains("  A [partial, compiled, unread]:"), "{full}");
     assert!(full.contains("      our verbs: effect.draw"), "{full}");
     assert!(
         full.contains("stored cards with no Forge script:\n  Lost Card"),

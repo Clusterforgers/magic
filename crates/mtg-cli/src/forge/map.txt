@@ -39,7 +39,7 @@ variant replacement Moved Destination
 variant replacement Moved Origin
 
 # Cards, life, damage and mana.
-effect Draw => Effect.Draw
+effect Draw => Effect.Draw Keyword.Gift
 effect Discard => Effect.Discard
 effect GainLife => Effect.GainLife
 effect LoseLife => Effect.LoseLife

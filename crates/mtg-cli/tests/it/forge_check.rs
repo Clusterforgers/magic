@@ -55,6 +55,7 @@ fn args(forge: &Path, out: Option<&Path>) -> ForgeCheckArgs {
         forge: forge.to_path_buf(),
         deck: None,
         top: 20,
+        keys: 6,
         out: out.map(Path::to_path_buf),
     }
 }
