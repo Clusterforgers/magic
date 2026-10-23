@@ -544,6 +544,7 @@ mod tests {
             None,
             None,
             &[],
+            None,
         );
         assert_eq!(options.map(|o| (o.min, o.max)), expected);
     }
