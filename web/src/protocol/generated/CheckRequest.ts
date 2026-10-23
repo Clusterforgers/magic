@@ -3,11 +3,12 @@ import type { DeckLineBody } from "./DeckLineBody";
 import type { TableRules } from "./TableRules";
 
 /**
- * The body of `POST /api/decks/check`: a stored deck by id, or an unsaved list.
+ * The body of `POST /api/decks/check`: a stored deck by id, a precon by `precon:<code>`, or an unsaved list.
  */
 export type CheckRequest = { 
 /**
- * The id of a stored deck of the signed-in account; then `format` and `cards` are absent.
+ * The id of a stored deck of the signed-in account, or `precon:<code>` (a precon needs no account); then
+ * `format` and `cards` are absent.
  */
 deck: string | null, 
 /**
