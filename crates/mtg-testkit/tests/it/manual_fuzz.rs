@@ -125,7 +125,9 @@ fn a_rebuilt_engine_is_in_the_state_of_the_original_and_asks_what_it_asks(
                         | DecisionKind::ChooseTargets(_)
                         | DecisionKind::ChooseMode(_)
                 )
-                || matches!(&decision.kind, DecisionKind::ChooseCards(options) if options.can_cancel);
+                || matches!(&decision.kind, DecisionKind::ChooseCards(options) if options.can_cancel)
+                // The way a card is cast in (mutate beside its mana cost) is asked before anything is paid.
+                || matches!(&decision.kind, DecisionKind::ChooseOption(options) if options.text.starts_with("Choose how to cast"));
             if !outside {
                 assert_eq!(
                     resumed.decision(),
