@@ -526,6 +526,8 @@ mod tests {
     #[case::loyalty_abilities("Ability.Loyalty", true)]
     #[case::loyalty_costs_with_an_x("Cost.Loyalty.X", true)]
     #[case::being_kicked("Condition.Kicked", true)]
+    #[case::spending_mana_to_cast("Condition.ManaSpent", true)]
+    #[case::exiling_for_another_duration("Exile.Duration.UntilYourNextTurn", false)]
     #[case::the_number_of_kicks("Amount.Kicks", true)]
     #[case::may("Effect.May", true)]
     #[case::choosing("Effect.Choose", true)]

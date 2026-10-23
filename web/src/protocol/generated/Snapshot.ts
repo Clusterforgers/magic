@@ -3,6 +3,7 @@ import type { CastWay } from "./CastWay";
 import type { Characteristics } from "./Characteristics";
 import type { CounterKind } from "./CounterKind";
 import type { FaceDown } from "./FaceDown";
+import type { ManaType } from "./ManaType";
 import type { ObjectId } from "./ObjectId";
 import type { PlayerId } from "./PlayerId";
 import type { Zone } from "./Zone";
@@ -65,6 +66,10 @@ paid?: Array<number>,
  * The alternative cost it was cast for, as the object remembers it: its triggered abilities read it after it has left.
  */
 way?: CastWay, 
+/**
+ * The mana spent to cast it, as the object remembers it: its triggered abilities read it after it has left.
+ */
+spent?: Array<ManaType>, 
 /**
  * The face of a card with several faces it was in use as (the back face of a transformed permanent); left out for
  * the card as a whole.

@@ -8,4 +8,8 @@ export type ZoneCause = "Moved" | "Destroyed" | "Buried" | "Sacrificed" | "Exile
 /**
  * The permanent that hides it.
  */
+by: ObjectRef, } } | { "ExiledUntil": { 
+/**
+ * The permanent whose leaving returns it.
+ */
 by: ObjectRef, } } | "Adventure" | "Countered" | "Milled" | "StateBased" | "Discarded";

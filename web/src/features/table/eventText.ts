@@ -241,8 +241,8 @@ function describeChoice(choice: Choice, n: EventNames): string {
   return 'chooses which effect applies first'
 }
 
-/** The words for a cause that is a plain name; a card hidden with hideaway carries the permanent that hides it. */
-const BECAUSE: Record<Exclude<ZoneCause, { Hideaway: unknown }>, string> = {
+/** The words for a cause that is a plain name; a card hidden with hideaway or exiled until a permanent leaves carries that permanent. */
+const BECAUSE: Record<Exclude<ZoneCause, { Hideaway: unknown } | { ExiledUntil: unknown }>, string> = {
   Moved: 'moves',
   Destroyed: 'is destroyed',
   Buried: "is destroyed and can't be regenerated",
@@ -330,7 +330,7 @@ function describePipeline(event: PipelineEvent, n: EventNames): LogLine {
     return line(
       cause === 'Moved'
         ? `${n.card(object)} moves to ${zoneWord(to, n)}`
-        : `${n.card(object)} ${typeof cause === 'object' ? 'is exiled face down' : BECAUSE[cause]}`,
+        : `${n.card(object)} ${typeof cause === 'object' ? ('Hideaway' in cause ? 'is exiled face down' : 'is exiled for a while') : BECAUSE[cause]}`,
     )
   }
   if ('LifeGained' in event)
