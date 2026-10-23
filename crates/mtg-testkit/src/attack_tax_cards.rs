@@ -29,7 +29,13 @@ pub const TAX_CARDS: [&str; 8] = [
 pub fn tax_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
     let colors = [Color::White, Color::Blue, Color::Red, Color::Black];
     let mut deck: Vec<Arc<CardDefinition>> = (0..22)
-        .map(|i| land(if i % 4 == 3 { colors[1 + i / 4 % 3] } else { Color::White }))
+        .map(|i| {
+            land(if i % 4 == 3 {
+                colors[1 + i / 4 % 3]
+            } else {
+                Color::White
+            })
+        })
         .collect();
     for card in TAX_CARDS.iter().filter_map(|name| corpus::card(name).ok()) {
         deck.extend(std::iter::repeat_n(card, 3));

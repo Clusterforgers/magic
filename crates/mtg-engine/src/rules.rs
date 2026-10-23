@@ -106,10 +106,7 @@ pub struct AttackTax {
     /// The players it protects.
     pub players: Vec<PlayerId>,
     /// Whether it protects the players, the planeswalkers they control or both.
-    #[cfg_attr(
-        feature = "ts",
-        ts(type = "\"Player\" | \"Planeswalkers\" | \"Both\"")
-    )]
+    #[cfg_attr(feature = "ts", ts(type = "\"Player\" | \"Planeswalkers\" | \"Both\""))]
     pub attacked: Attacked,
     /// The attackers it taxes, judged when the attack is declared; every creature when empty.
     #[cfg_attr(feature = "ts", ts(type = "unknown"))]
@@ -476,9 +473,13 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
 
 /// The cost paid `times` over: its symbols repeated, the generic ones added up.
 pub(crate) fn repeated(cost: &ManaCost, times: usize) -> ManaCost {
-    ManaCost::from_symbols(cost.symbols().iter().copied().cycle().take(
-        cost.symbols().len().saturating_mul(times),
-    ))
+    ManaCost::from_symbols(
+        cost.symbols()
+            .iter()
+            .copied()
+            .cycle()
+            .take(cost.symbols().len().saturating_mul(times)),
+    )
 }
 
 /// Whether a rule names no player and no object, so putting it in force changes nothing.

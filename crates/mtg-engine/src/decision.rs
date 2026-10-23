@@ -246,7 +246,10 @@ pub struct AttackerOption {
     /// What it costs to attack each defender that an effect taxes (CR 508.1h): the attack is declared with the payment.
     /// Left out while it costs nothing to attack any of them.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<(AttackTarget, ManaCost)>>", optional))]
+    #[cfg_attr(
+        feature = "ts",
+        ts(as = "Option<Vec<(AttackTarget, ManaCost)>>", optional)
+    )]
     pub tax: Vec<(AttackTarget, ManaCost)>,
 }
 
@@ -295,11 +298,7 @@ impl AttackOptions {
         self.attackers
             .iter()
             .filter(|option| self.required.contains(&option.object))
-            .filter_map(|option| {
-                option
-                    .free_defender()
-                    .map(|first| (option.object, first))
-            })
+            .filter_map(|option| option.free_defender().map(|first| (option.object, first)))
             .collect()
     }
 
@@ -308,7 +307,10 @@ impl AttackOptions {
         let symbols = attackers
             .iter()
             .filter_map(|(object, target)| {
-                let option = self.attackers.iter().find(|option| option.object == *object)?;
+                let option = self
+                    .attackers
+                    .iter()
+                    .find(|option| option.object == *object)?;
                 option
                     .tax
                     .iter()

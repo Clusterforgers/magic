@@ -607,9 +607,7 @@ mod tests {
     fn attackers(required: &[u64]) -> DecisionKind {
         DecisionKind::DeclareAttackers(AttackOptions {
             attackers: (10..13)
-                .map(|n| {
-                    AttackerOption::free(ObjectId(n), vec![AttackTarget::Player(PlayerId(0))])
-                })
+                .map(|n| AttackerOption::free(ObjectId(n), vec![AttackTarget::Player(PlayerId(0))]))
                 .collect(),
             required: required.iter().copied().map(ObjectId).collect(),
             mana: 0,

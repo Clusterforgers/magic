@@ -29,8 +29,6 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Next {
         (What::Trigger(waiting), _) => {
             Next::Commit(vec![trigger_event(ctx.state, waiting, work.choices)])
         }
-        // An attack is paid for by `attack_tax::next` and never gets here.
-        (What::Attack(_), _) => Next::Drop,
         // A spell a resolution lets the player cast for nothing needs no payment decision.
         (What::Spell(spell), Some(cost))
             if ctx.granted.is_some()
@@ -49,7 +47,8 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Next {
             total.life,
             total.spend,
         ),
-        (What::Spell(_), None) => Next::Drop,
+        // An attack is paid for by `attack_tax::next` and never gets here.
+        (What::Spell(_) | What::Attack(_), None) | (What::Attack(_), _) => Next::Drop,
         (What::Ability(ability), Some(cost)) => pay(
             ctx,
             ability.object,

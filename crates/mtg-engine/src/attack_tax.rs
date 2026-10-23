@@ -12,8 +12,8 @@ use mtg_cards::modify::Attacked;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
-use crate::answers::Outcome;
 use crate::announce::Next;
+use crate::answers::Outcome;
 use crate::cast::payment_decision;
 use crate::combat::{AttackTarget, attack_events, defending_player};
 use crate::decision::{AttackOptions, Decision, DecisionKind, PayOptions};
@@ -197,7 +197,11 @@ pub(crate) fn describe(state: &GameState, player: PlayerId, options: &mut Attack
             .filter(|(_, cost)| !cost.symbols().is_empty())
             .collect();
     }
-    if options.attackers.iter().any(|option| !option.tax.is_empty()) {
+    if options
+        .attackers
+        .iter()
+        .any(|option| !option.tax.is_empty())
+    {
         let may_attack: Vec<ObjectId> = options.attackers.iter().map(|o| o.object).collect();
         options.mana = budget(state, player, &may_attack);
     }

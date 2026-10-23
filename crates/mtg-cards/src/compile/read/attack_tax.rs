@@ -44,7 +44,9 @@ fn tax(r: &mut Reader<'_>) -> Option<GameRule> {
     r.need("unless their controller pays")?;
     let mut symbols = String::new();
     while let Some(symbol) = r.symbol() {
-        symbols.push_str(&format!("{{{symbol}}}"));
+        symbols.push('{');
+        symbols.push_str(symbol);
+        symbols.push('}');
     }
     r.need("for each")?;
     each(r, attacked)?;
@@ -69,7 +71,10 @@ fn tax(r: &mut Reader<'_>) -> Option<GameRule> {
 /// "creatures", "nonblack creatures": the creatures the tax is for, none named when every creature is.
 fn attackers(r: &mut Reader<'_>) -> Option<Selector> {
     let selector = phrase(r, Form::All)?;
-    selector.0.contains(&Pred::Type(CardType::Creature)).then_some(())?;
+    selector
+        .0
+        .contains(&Pred::Type(CardType::Creature))
+        .then_some(())?;
     Some(if selector.0 == [Pred::Type(CardType::Creature)] {
         Selector::default()
     } else {
@@ -125,13 +130,15 @@ fn sentences(rule: &GameRule) -> Vec<String> {
     };
     let (price, tail) = match per {
         Amount::Fixed(1) if !mana.has_x() => (mana.to_string(), String::new()),
-        Amount::Count(counted) if mana.to_string() == "{1}" => match phrase_text(counted, Form::All) {
-            Some(counted) => (
-                "{X}".to_owned(),
-                format!(", where X is the number of {counted}"),
-            ),
-            None => return Vec::new(),
-        },
+        Amount::Count(counted) if mana.to_string() == "{1}" => {
+            match phrase_text(counted, Form::All) {
+                Some(counted) => (
+                    "{X}".to_owned(),
+                    format!(", where X is the number of {counted}"),
+                ),
+                None => return Vec::new(),
+            }
+        }
         _ => return Vec::new(),
     };
     let (whom, each): (&str, Vec<&str>) = match attacked {
@@ -142,7 +149,10 @@ fn sentences(rule: &GameRule) -> Vec<String> {
                 "of those creatures",
             ],
         ),
-        Attacked::Both => ("you or planeswalkers you control", vec!["of those creatures"]),
+        Attacked::Both => (
+            "you or planeswalkers you control",
+            vec!["of those creatures"],
+        ),
         Attacked::Planeswalkers => (
             "planeswalkers you control",
             vec![

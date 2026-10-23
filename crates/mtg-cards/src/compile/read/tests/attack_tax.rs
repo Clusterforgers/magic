@@ -56,16 +56,28 @@ fn an_attack_tax_reads_as_an_effect_for_a_while(#[case] text: &str, #[case] json
 }
 
 #[rstest]
-#[case::life("Creatures can't attack you unless their controller pays 2 life for each of those creatures.")]
-#[case::no_cost("Creatures can't attack you unless their controller pays for each of those creatures.")]
-#[case::an_x_without_a_count("Creatures can't attack you unless their controller pays {X} for each of those creatures.")]
-#[case::another_subject("Creatures can't attack target player unless their controller pays {2} for each of those creatures.")]
+#[case::life(
+    "Creatures can't attack you unless their controller pays 2 life for each of those creatures."
+)]
+#[case::no_cost(
+    "Creatures can't attack you unless their controller pays for each of those creatures."
+)]
+#[case::an_x_without_a_count(
+    "Creatures can't attack you unless their controller pays {X} for each of those creatures."
+)]
+#[case::another_subject(
+    "Creatures can't attack target player unless their controller pays {2} for each of those creatures."
+)]
 #[case::a_flat_cost("Creatures can't attack you unless their controller pays {2}.")]
 #[case::both_without_the_long_wording(
     "Creatures can't attack you or planeswalkers you control unless their controller pays {1} for each creature they control that's attacking you."
 )]
-#[case::the_opponents("Creatures can't attack your opponents unless their controller pays {2} for each of those creatures.")]
-#[case::a_tap("Creatures can't attack you unless their controller taps an untapped creature they control.")]
+#[case::the_opponents(
+    "Creatures can't attack your opponents unless their controller pays {2} for each of those creatures."
+)]
+#[case::a_tap(
+    "Creatures can't attack you unless their controller taps an untapped creature they control."
+)]
 fn a_tax_the_table_keeps_stays_unread(#[case] text: &str) {
     assert_eq!(stat(text), None, "{text}");
 }

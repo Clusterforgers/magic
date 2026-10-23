@@ -52,17 +52,17 @@ fn bot_games_with_attack_taxes_pay_for_each_attack_and_use_each_part_of_it() {
                 let Some(decision) = engine.decision().cloned() else {
                     break;
                 };
-                if matches!(decision.kind, DecisionKind::DeclareAttackers(_)) && step % 2 == 0 {
-                    if let Some(over) = everything(&decision.kind) {
-                        *counts.entry("taxed offer").or_default() += 1;
-                        let log = engine.events().len();
-                        if engine.apply(Answer::DeclareAttackers(over)).is_err() {
-                            *counts.entry("refused").or_default() += 1;
-                            assert_eq!(engine.events().len(), log, "a refused attack left a trace");
-                            assert_eq!(engine.decision(), Some(&decision), "seed {seed}");
-                        }
-                        continue;
+                if step % 2 == 0
+                    && let Some(over) = everything(&decision.kind)
+                {
+                    *counts.entry("taxed offer").or_default() += 1;
+                    let log = engine.events().len();
+                    if engine.apply(Answer::DeclareAttackers(over)).is_err() {
+                        *counts.entry("refused").or_default() += 1;
+                        assert_eq!(engine.events().len(), log, "a refused attack left a trace");
+                        assert_eq!(engine.decision(), Some(&decision), "seed {seed}");
                     }
+                    continue;
                 }
                 let before = engine.state().clone();
                 let answer = bots[decision.player.index()].choose(&decision);
@@ -90,7 +90,10 @@ fn bot_games_with_attack_taxes_pay_for_each_attack_and_use_each_part_of_it() {
                     assert_eq!(spent, 0, "seed {seed}: an attack paid for nothing");
                     continue;
                 }
-                assert_eq!(spent, owed, "seed {seed}, {players} seats: paid {spent} for {owed}");
+                assert_eq!(
+                    spent, owed,
+                    "seed {seed}, {players} seats: paid {spent} for {owed}"
+                );
                 *counts.entry("attack paid").or_default() += 1;
                 if attackers
                     .iter()
@@ -119,8 +122,17 @@ fn bot_games_with_attack_taxes_pay_for_each_attack_and_use_each_part_of_it() {
         }
     });
     let seen = seen.lock().unwrap();
-    for part in ["taxed offer", "attack paid", "refused", "stacked", "planeswalker paid"] {
-        assert!(seen.get(part).copied().unwrap_or(0) > 0, "no {part}: {seen:?}");
+    for part in [
+        "taxed offer",
+        "attack paid",
+        "refused",
+        "stacked",
+        "planeswalker paid",
+    ] {
+        assert!(
+            seen.get(part).copied().unwrap_or(0) > 0,
+            "no {part}: {seen:?}"
+        );
     }
 }
 

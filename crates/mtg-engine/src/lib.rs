@@ -7,8 +7,8 @@
 
 mod announce;
 mod answers;
-mod attack_tax;
 mod attach;
+mod attack_tax;
 mod cast;
 mod commanders;
 mod damage;

@@ -20,7 +20,8 @@ use rstest::rstest;
 use crate::common::casting::lands;
 use crate::common::pid;
 
-const MANA: &str = r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#;
+const MANA: &str =
+    r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#;
 
 /// Names of creatures with no abilities, each a 1/1.
 fn creatures(names: &[&str]) -> Vec<PresetPermanent> {
@@ -71,7 +72,11 @@ fn tapped(driver: &Driver, name: &str) -> usize {
         .iter()
         .filter_map(|id| driver.state().object(*id))
         .filter(|object| object.card().name == name)
-        .filter(|object| object.permanent().is_some_and(|p| p.tapped()))
+        .filter(|object| {
+            object
+                .permanent()
+                .is_some_and(mtg_engine::object::PermanentState::tapped)
+        })
         .count()
 }
 
@@ -86,7 +91,11 @@ fn attacks(names: &[&str], defender: usize) -> Vec<(String, usize)> {
         .collect()
 }
 
-fn declare(driver: &mut Driver, names: &[&str], defender: usize) -> Result<Vec<Event>, ScriptError> {
+fn declare(
+    driver: &mut Driver,
+    names: &[&str],
+    defender: usize,
+) -> Result<Vec<Event>, ScriptError> {
     let pairs = attacks(names, defender);
     let refs: Vec<(&str, usize)> = pairs.iter().map(|(n, d)| (n.as_str(), *d)).collect();
     driver.attack(&refs)
@@ -129,7 +138,11 @@ fn the_attack_is_declared_with_the_payment_of_its_total_cost(
     assert!(options.can_cancel);
     assert!(!declared(&driver), "the declaration waits for the payment");
     let events = pay_auto(&mut driver)?;
-    assert!(events.iter().any(|e| matches!(e, Event::AttackersDeclared { .. })));
+    assert!(
+        events
+            .iter()
+            .any(|e| matches!(e, Event::AttackersDeclared { .. }))
+    );
     assert_eq!(tapped(&driver, "Plains"), paid);
     assert_eq!(driver.state().combat().attackers().len(), attackers.len());
     Ok(())
@@ -157,7 +170,11 @@ fn backing_out_of_the_payment_returns_to_the_declaration_with_nothing_paid(
     declare(&mut driver, &["A", "B"], 1)?;
     driver.answer(Answer::PayMana(PayChoice::Cancel))?;
     driver.expect_decision(0, "declare-attackers")?;
-    assert_eq!(driver.engine().events().len(), log, "a cancelled attack leaves no trace");
+    assert_eq!(
+        driver.engine().events().len(),
+        log,
+        "a cancelled attack leaves no trace"
+    );
     assert_eq!(tapped(&driver, "Plains"), 0);
     // The same attack can be declared again, and paid.
     declare(&mut driver, &["A", "B"], 1)?;
@@ -172,7 +189,11 @@ fn an_attack_on_a_player_the_tax_does_not_protect_costs_nothing(
 ) -> Result<(), ScriptError> {
     let mut driver = table(seats, taxers(&["Propaganda"]), &["A", "B"], 4)?;
     let events = declare(&mut driver, &["A", "B"], 2)?;
-    assert!(events.iter().any(|e| matches!(e, Event::AttackersDeclared { .. })));
+    assert!(
+        events
+            .iter()
+            .any(|e| matches!(e, Event::AttackersDeclared { .. }))
+    );
     assert_eq!(tapped(&driver, "Plains"), 0);
     Ok(())
 }
@@ -186,7 +207,11 @@ fn the_attackers_pay_only_for_the_creatures_that_attack_the_protected_player(
     driver.attack(&pairs)?;
     driver.expect_decision(0, "pay-mana")?;
     pay_auto(&mut driver)?;
-    assert_eq!(tapped(&driver, "Plains"), 2, "one creature attacks the taxer");
+    assert_eq!(
+        tapped(&driver, "Plains"),
+        2,
+        "one creature attacks the taxer"
+    );
     Ok(())
 }
 
@@ -301,7 +326,11 @@ fn the_mana_of_an_attacking_creature_pays_only_if_the_attack_leaves_it_untapped(
         pay_auto(&mut driver)?;
         assert!(declared(&driver));
         assert_eq!(tapped(&driver, "Plains"), mana);
-        assert_eq!(tapped(&driver, name), 1, "it taps to attack or taps for mana");
+        assert_eq!(
+            tapped(&driver, name),
+            1,
+            "it taps to attack or taps for mana"
+        );
     }
     Ok(())
 }
@@ -338,9 +367,13 @@ fn a_creature_that_must_attack_is_not_required_to_when_attacking_costs_mana(
     };
     if seats == 2 {
         assert!(options.required.is_empty(), "the only defender is taxed");
-        assert!(options.required_attack().is_empty());
+        assert_eq!(options.required_attack().len(), 0);
     } else {
-        assert_eq!(options.required, [a], "a defender it can attack for nothing");
+        assert_eq!(
+            options.required,
+            [a],
+            "a defender it can attack for nothing"
+        );
         let free = options.required_attack();
         assert_eq!(free.len(), 1);
         assert_ne!(free[0].1, mtg_engine::combat::AttackTarget::Player(pid(1)));
@@ -354,14 +387,22 @@ fn a_creature_that_must_attack_is_not_required_to_when_attacking_costs_mana(
 fn the_options_name_what_each_attack_costs(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let driver = table(seats, taxers(&["Propaganda", "Baird, Steward of Argive"]), &["A", "B"], 3)?;
+    let driver = table(
+        seats,
+        taxers(&["Propaganda", "Baird, Steward of Argive"]),
+        &["A", "B"],
+        3,
+    )?;
     let DecisionKind::DeclareAttackers(options) = &driver.decision()?.kind else {
         panic!("the declaration is asked");
     };
     assert_eq!(options.mana, 3, "the lands");
     for option in &options.attackers {
         assert_eq!(option.tax.len(), 1, "only the protected player costs mana");
-        assert_eq!(option.tax[0].0, mtg_engine::combat::AttackTarget::Player(pid(1)));
+        assert_eq!(
+            option.tax[0].0,
+            mtg_engine::combat::AttackTarget::Player(pid(1))
+        );
         assert_eq!(option.tax[0].1.mana_value(), 3);
     }
     let json = serde_json::to_string(options).unwrap();
