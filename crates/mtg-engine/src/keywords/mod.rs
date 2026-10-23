@@ -497,6 +497,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Ascend => &ascend::Ascend,
         Keyword::ForMirrodin => &for_mirrodin::ForMirrodin,
         Keyword::JobSelect => &job_select::JobSelect,
+        Keyword::EquipTo { .. } => &equip::EquipTo,
         // The keywords before them are matched by `rules`.
         _ => &Unruled,
     }
@@ -823,6 +824,10 @@ mod tests {
             Keyword::Gift(GiftKind::Card),
             Keyword::ForMirrodin,
             Keyword::JobSelect,
+            Keyword::EquipTo {
+                to: Selector::default(),
+                cost: cost(),
+            },
         ]
     }
 
@@ -940,6 +945,7 @@ mod tests {
         "Keyword.Ascend",
         "Keyword.ForMirrodin",
         "Keyword.JobSelect",
+        "Keyword.EquipTo",
         "Keyword.Encore",
         "Keyword.SplitSecond",
         "Keyword.Undaunted",
@@ -1096,6 +1102,7 @@ mod tests {
     #[case::ascend(Keyword::Ascend, Hooks::none())]
     #[case::for_mirrodin(Keyword::ForMirrodin, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::job_select(Keyword::JobSelect, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::equip_to(Keyword::EquipTo { to: Selector::default(), cost: cost() }, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);

@@ -1,0 +1,23 @@
+{
+  "id": "64d823e1-a7d6-4296-94c8-b8ba9b4daa38",
+  "oracle_id": "da0b4e01-b312-4f37-a034-824ce58db02e",
+  "name": "Veteran's Powerblade",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bro",
+  "collector_number": "41",
+  "rarity": "common",
+  "released_at": "2022-11-18",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +2/+0.\nEquip Soldier {W}\nEquip {2} ({2}: Attach to target creature you control. Equip only as a sorcery.)",
+  "colors": [],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Equip"
+  ]
+}

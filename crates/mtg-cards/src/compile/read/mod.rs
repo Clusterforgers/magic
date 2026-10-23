@@ -55,7 +55,7 @@ mod spend;
 mod spent;
 mod statics;
 mod stations;
-mod subtypes;
+pub(super) mod subtypes;
 #[cfg(test)]
 mod tests;
 mod tokens;

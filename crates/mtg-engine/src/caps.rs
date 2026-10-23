@@ -341,6 +341,7 @@ const RUNS: &[&str] = &[
     "Keyword.Ascend",
     "Keyword.ForMirrodin",
     "Keyword.JobSelect",
+    "Keyword.EquipTo",
     "Condition.CitysBlessing",
     "Effect.MyriadCopies",
     "Keyword.JumpStart",
@@ -720,6 +721,7 @@ mod tests {
     #[case::typecycling("Keyword.Typecycling", true)]
     #[case::for_mirrodin("Keyword.ForMirrodin", true)]
     #[case::job_select("Keyword.JobSelect", true)]
+    #[case::equip_to("Keyword.EquipTo", true)]
     #[case::split_second("Keyword.SplitSecond", true)]
     #[case::undaunted("Keyword.Undaunted", true)]
     #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]

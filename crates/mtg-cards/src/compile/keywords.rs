@@ -340,7 +340,7 @@ pub fn read(item: &str) -> Option<Keyword> {
     }
     match found.name {
         "ward" => cost(rest).map(Keyword::Ward),
-        "equip" => cost(rest).map(Keyword::Equip),
+        "equip" => equip(rest),
         "reconfigure" => cost(rest).map(Keyword::Reconfigure),
         "cycling" => cost(rest).map(Keyword::Cycling),
         "kicker" => spell_cost(rest).map(Keyword::Kicker),
@@ -488,6 +488,26 @@ fn typecycling(item: &str, rest: &str) -> Option<Keyword> {
     Some(Keyword::Typecycling {
         find: Selector(vec![find]),
         cost: cost(rest)?,
+    })
+}
+
+/// Equip: its cost, or first the creatures it equips beyond the creatures its controller controls ("legendary creature {3}",
+/// "commander {2}", "creature token {1}", "Knight {2}"); any other quality stays with the table.
+fn equip(rest: &str) -> Option<Keyword> {
+    if let Some(cost) = cost(rest) {
+        return Some(Keyword::Equip(cost));
+    }
+    let (words, price) = rest.split_at(rest.find('{')?);
+    let only = match words.trim() {
+        "legendary creature" => Pred::Supertype(Supertype::Legendary),
+        "commander" => Pred::Commander,
+        "creature token" => Pred::Token,
+        kind if super::read::subtypes::is_subtype(kind) => Pred::Subtype(Subtype(kind.to_owned())),
+        _ => return None,
+    };
+    Some(Keyword::EquipTo {
+        to: Selector(vec![only]),
+        cost: cost(price)?,
     })
 }
 
@@ -660,6 +680,13 @@ mod tests {
         Cost::mana(text.parse().unwrap())
     }
 
+    fn equip_to(only: Pred, cost: &str) -> Keyword {
+        Keyword::EquipTo {
+            to: Selector(vec![only]),
+            cost: mana(cost),
+        }
+    }
+
     fn finds(preds: Vec<Pred>, cost: &str) -> Keyword {
         Keyword::Typecycling {
             find: Selector(preds),
@@ -742,6 +769,17 @@ mod tests {
     #[case::desertwalk("Desertwalk", walks("Desert"))]
     #[case::equip("Equip {1}", Keyword::Equip(mana("{1}")))]
     #[case::equip_two("Equip {2}{G}", Keyword::Equip(mana("{2}{G}")))]
+    #[case::equip_legendary(
+        "Equip legendary creature {3}",
+        equip_to(Pred::Supertype(Supertype::Legendary), "{3}")
+    )]
+    #[case::equip_commander("Equip commander {2}", equip_to(Pred::Commander, "{2}"))]
+    #[case::equip_token("Equip creature token {1}", equip_to(Pred::Token, "{1}"))]
+    #[case::equip_a_type("Equip Knight {2}", equip_to(Pred::Subtype(Subtype("Knight".into())), "{2}"))]
+    #[case::equip_a_named_legendary(
+        "Gae Bolg \u{2014} Equip legendary creature {4}",
+        equip_to(Pred::Supertype(Supertype::Legendary), "{4}")
+    )]
     #[case::kicker("Kicker {4}", Keyword::Kicker(mana("{4}")))]
     #[case::multikicker("Multikicker {1}{G}", Keyword::Multikicker(mana("{1}{G}")))]
     #[case::flashback("Flashback {2}{R}", Keyword::Flashback(mana("{2}{R}")))]
@@ -989,7 +1027,10 @@ mod tests {
 
     #[rstest]
     #[case::two_kicker_costs("Kicker {1}{R} and/or {2}{G}")]
-    #[case::qualified_equip("Equip legendary creature {3}")]
+    #[case::equip_for_a_quality_it_does_not_name("Equip worthy {2}")]
+    #[case::equip_for_a_made_up_type("Equip Banana {2}")]
+    #[case::equip_for_two_types("Equip Shaman, Warlock, or Wizard {2}")]
+    #[case::equip_without_a_cost("Equip legendary creature")]
     #[case::hexproof_from("Hexproof from white")]
     #[case::protection_from_a_pair("Protection from red and from blue")]
     #[case::protection_from_a_subtype("Protection from Vampires")]
@@ -1073,6 +1114,7 @@ mod tests {
             "Affinity" => "Affinity for",
             // Every typecycling is read from the word before `cycling`; `Basic landcycling` is the one with a table entry.
             "Typecycling" => "Basic landcycling",
+            "Equip to" => "Equip",
             other => other,
         }
     }
@@ -1206,6 +1248,7 @@ mod tests {
             "Gift a card",
             "For Mirrodin!",
             "Job select",
+            "Equip legendary creature {1}",
             "Ninjutsu {1}{U}",
             "Improvise",
             "Affinity for artifacts",
@@ -1216,7 +1259,7 @@ mod tests {
         for sample in samples {
             let keyword = read(sample).unwrap_or_else(|| panic!("{sample} is not read"));
             assert!(
-                matches!(keyword.name(), "Landwalk" | "Typecycling")
+                matches!(keyword.name(), "Landwalk" | "Typecycling" | "Equip to")
                     || sample
                         .to_ascii_lowercase()
                         .starts_with(&printed(keyword.name()).to_ascii_lowercase()),

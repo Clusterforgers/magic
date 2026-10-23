@@ -818,6 +818,10 @@ impl<'a> Walker<'a> {
                 self.at("cost", |w| w.cost(cost));
                 self.at("find", |w| w.selector(find));
             }
+            Keyword::EquipTo { to, cost } => {
+                self.at("cost", |w| w.cost(cost));
+                self.at("to", |w| w.selector(to));
+            }
             Keyword::Toxic(0) => self.problem("toxic needs a number of at least 1"),
             Keyword::Casualty(0) => self.problem("casualty needs a power of at least 1"),
             Keyword::Hideaway(0) => self.problem("hideaway needs a number of at least 1"),
@@ -2404,6 +2408,9 @@ fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str) -> bool {
                 // Scryfall lists `Enchant` for an Aura that enchants a player as it does for any other.
                 || (matches!(k, Keyword::EnchantPlayer { .. })
                     && "Enchant".eq_ignore_ascii_case(keyword))
+                // Scryfall lists `Equip` for an Equipment that equips only some creatures as for any other.
+                || (matches!(k, Keyword::EquipTo { .. })
+                    && Keyword::Equip(Cost::default()).name().eq_ignore_ascii_case(keyword))
                 // Scryfall lists `Cycling` as well for a typecycling card (CR 702.29).
                 || (matches!(k, Keyword::Typecycling { .. })
                     && Keyword::Cycling(Cost::default()).name().eq_ignore_ascii_case(keyword))

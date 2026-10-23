@@ -1,0 +1,21 @@
+{
+  "id": "6d2565e1-dd7b-462b-8270-a17913277793",
+  "oracle_id": "a54fb3de-0581-461e-be33-dc4f4d16a33e",
+  "name": "Thinking Cap",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkm",
+  "collector_number": "257",
+  "rarity": "common",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{1}",
+  "cmc": 1.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +1/+2.\nEquip Detective {1}\nEquip {3} ({3}: Attach to target creature you control. Equip only as a sorcery.)",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip"
+  ]
+}

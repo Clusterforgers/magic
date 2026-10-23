@@ -92,6 +92,7 @@ mod encore;
 mod encore_fuzz;
 mod energy_payments;
 mod enters;
+mod equip_to;
 mod equipment;
 mod equipment_creature;
 mod escape;

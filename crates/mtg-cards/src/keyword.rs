@@ -272,6 +272,13 @@ pub enum Keyword {
     ForMirrodin,
     /// Job select: when this Equipment enters, its controller creates a 1/1 colorless Hero creature token, then attaches the Equipment to it.
     JobSelect,
+    /// Equip with a restriction and its cost (CR 702.6): "[Cost]: Attach this permanent to target creature you control that `to` also names. Activate only as a sorcery" (Equip legendary creature, Equip commander, Equip Knight).
+    EquipTo {
+        /// What the creature must also be: legendary, a commander, a token, a creature type.
+        to: Selector,
+        /// The cost, paid as the cost of the activated ability the keyword adds.
+        cost: Cost,
+    },
 }
 
 /// What a promised gift is (CR 702.174).
@@ -410,6 +417,7 @@ impl Keyword {
         "Gift",
         "For Mirrodin!",
         "Job select",
+        "Equip to",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -542,6 +550,7 @@ impl Keyword {
             Keyword::Gift(_) => "Gift",
             Keyword::ForMirrodin => "For Mirrodin!",
             Keyword::JobSelect => "Job select",
+            Keyword::EquipTo { .. } => "Equip to",
             Keyword::Dash(_) => "Dash",
             Keyword::Blitz(_) => "Blitz",
             Keyword::Prowl(_) => "Prowl",
@@ -712,6 +721,10 @@ mod tests {
             Keyword::Gift(GiftKind::Card),
             Keyword::ForMirrodin,
             Keyword::JobSelect,
+            Keyword::EquipTo {
+                to: Selector::default(),
+                cost: Cost::default(),
+            },
         ]
     }
 

@@ -74,6 +74,7 @@ Binding the Old Gods
 Bird Admirer // Wing Shredder
 Black Dragon Gate
 Black Knight
+Blackblade Reforged
 Blasphemous Act
 Blastoderm
 Blaze
@@ -123,6 +124,7 @@ Cavern Whisperer
 Celestial Archon
 Celestial Colonnade
 Celestial Crusader
+Ceremonial Groundbreaker
 Champion of Lambholt
 Changeling Outcast
 Chartooth Cougar
@@ -219,6 +221,7 @@ Dunland Crebain
 Durkwood Baloth
 Dusk Charger
 Duskshell Crawler
+Dúnedain Blade
 Eagles of the North
 Easterling Vanguard
 Echo Inspector
@@ -652,6 +655,7 @@ Steady Progress
 Steam Vents
 Steampath Charger
 Steelburr Champion
+Steelclaw Lance
 Stitched Drake
 Stoke the Flames
 Stonewood Invocation
@@ -689,6 +693,7 @@ Tainted Isle
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
 Teacher's Pest
+Team Pennant
 Temur Devotee
 Tender Wildguide
 Tendershoot Dryad
@@ -703,6 +708,7 @@ The Spear of Bashenga
 The Thing, Ben Grimm
 Thelonite Hermit
 Thieving Magpie
+Thinking Cap
 Thopter Fabricator
 Thorn-Thrash Viashino
 Thought Monitor
@@ -741,6 +747,7 @@ Underworld Dreams
 Underworld Rage-Hound
 Universal Automaton
 Universal Surveillance
+Unstable Molecule Suit
 Urabrask the Hidden
 Uthros Research Craft
 Uthros Scanship
@@ -752,6 +759,7 @@ Vanquish the Horde
 Vault 75: Middle School
 Vengeful Vampire
 Vestige of Emrakul
+Veteran's Powerblade
 Village Rites
 Viridian Corrupter
 Visionary Augmenter

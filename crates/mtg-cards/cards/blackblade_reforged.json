@@ -1,0 +1,28 @@
+{
+  "oracle_id": "dca51281-fb21-45b6-beb4-1f13397caee2",
+  "name": "Blackblade Reforged",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blackblade Reforged",
+      "oracle_fingerprint": "c2999962d615946aa0ee7120d075650a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "EquipTo": { "to": [{ "Supertype": "Legendary" }], "cost": "{3}" } } },
+        { "Keyword": { "Equip": "{7}" } }
+      ]
+    }
+  ]
+}
