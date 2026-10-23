@@ -193,7 +193,7 @@ pub use protect_cards::protect_fuzz_setup;
 pub use prowl_cards::prowl_fuzz_setup;
 pub use pump_cards::pump_fuzz_setup;
 pub use recursion_cards::recursion_fuzz_setup;
-pub use reduction_cards::reduction_fuzz_setup;
+pub use reduction_cards::{more_reduction_fuzz_setup, reduction_fuzz_setup};
 pub use replace_cards::replace_fuzz_setup;
 pub use required_cost_cards::{
     REQUIRED_COST_CARDS, Takes, required_cost_fuzz_setup, required_cost_of,

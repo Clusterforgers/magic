@@ -16,7 +16,7 @@ use rstest::rstest;
 
 /// The table as seat 0 sees it: the hand `hand`, four lands of every kind, the permanents `mine` and, on the seats given,
 /// the permanents `theirs`; it is the second turn of seat 0, at the start of its combat.
-fn table(
+pub(crate) fn table(
     seats: usize,
     hand: &[&str],
     mine: Vec<PresetPermanent>,
@@ -39,12 +39,12 @@ fn table(
 }
 
 /// The cost as the engine writes it.
-fn cost(text: &str) -> String {
+pub(crate) fn cost(text: &str) -> String {
     ManaCost::parse(text).unwrap().to_string()
 }
 
 /// `count` ready copies of a corpus permanent.
-fn copies(name: &str, count: usize) -> Vec<PresetPermanent> {
+pub(crate) fn copies(name: &str, count: usize) -> Vec<PresetPermanent> {
     (0..count).map(|_| ready(card(name).unwrap())).collect()
 }
 
@@ -66,7 +66,7 @@ fn cost_at(driver: &mut Driver, name: &str, target: Target) -> Result<String, Sc
 }
 
 /// Everyone passes: the top of the stack resolves.
-fn resolve(driver: &mut Driver, seats: usize) -> Result<(), ScriptError> {
+pub(crate) fn resolve(driver: &mut Driver, seats: usize) -> Result<(), ScriptError> {
     for _ in 0..seats {
         driver.pass()?;
     }
@@ -74,7 +74,7 @@ fn resolve(driver: &mut Driver, seats: usize) -> Result<(), ScriptError> {
 }
 
 /// Passes until seat `seat` has the decision.
-fn until(driver: &mut Driver, seat: usize) -> Result<(), ScriptError> {
+pub(crate) fn until(driver: &mut Driver, seat: usize) -> Result<(), ScriptError> {
     for _ in 0..8 {
         if driver.decision()?.player == pid(seat) {
             return Ok(());
@@ -411,9 +411,14 @@ fn choose_type(driver: &mut Driver, label: &str) -> Result<(), ScriptError> {
             driver.answer(Answer::ChooseOption(OptionChoice(at)))?;
             return Ok(());
         }
+        if driver.state().stack().is_empty() {
+            break;
+        }
         driver.pass()?;
     }
-    Ok(())
+    Err(ScriptError::Stuck(format!(
+        "no creature type was asked ({label})"
+    )))
 }
 
 #[rstest]
@@ -422,10 +427,10 @@ fn choose_type(driver: &mut Driver, label: &str) -> Result<(), ScriptError> {
 fn creature_spells_of_the_chosen_type_cost_less_for_everyone_with_the_incubator(
     #[case] spell: &str,
     #[case] expected: &str,
-    #[values(2)] seats: usize,
+    #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
     let scenario = table(seats, &["Urza's Incubator", spell], vec![], vec![])
-        .graveyard_named(seats - 1, ["Grizzly Bears"]);
+        .graveyard_named(seats - 1, ["Grizzly Bears", "Aven Squire"]);
     let mut driver = Driver::from_scenario(scenario)?;
     driver.begin_cast("Urza's Incubator")?;
     driver.answer(Answer::PayMana(PayChoice::Auto))?;
