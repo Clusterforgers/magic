@@ -58,6 +58,7 @@ Battering Krasis
 Battle Sliver
 Battlefield Forge
 Beast Within
+Befriending the Moths // Imperial Moth
 Behold the Multiverse
 Bilious Skulldweller
 Binding the Old Gods
@@ -214,6 +215,7 @@ Empyrial Plate
 Enraged Revolutionary
 Enthusiastic Study
 Epic Proportions
+Era of Enlightenment // Hand of Enlightenment
 Eternal Witness
 Ethereal Armor
 Ethersworn Sphinx
@@ -377,6 +379,7 @@ Lavacore Elemental
 Lazotep Reaver
 Levitation
 Lhurgoyf
+Life of Toshiro Umezawa // Memory of Toshiro
 Light 'Em Up
 Lightning Bolt
 Lithoform Engine
@@ -446,6 +449,7 @@ Norn's Annex
 Notion Rain
 Nyxborn Behemoth
 Obscuring Haze
+Okiba Reckoner Raid // Nezumi Road Captain
 Opt
 Orchard Strider
 Organic Extinction
@@ -641,6 +645,7 @@ Tendrils of Agony
 Termagant Swarm
 Thalia, Guardian of Thraben
 The Birth of Meletis
+The Modern Age // Vector Glider
 The Seriema
 The Spear of Bashenga
 The Thing, Ben Grimm
