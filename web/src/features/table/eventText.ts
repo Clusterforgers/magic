@@ -465,6 +465,11 @@ function describePublic(event: Event, n: EventNames): LogLine {
   }
   if ('CopyEnded' in event) return line(`${n.card(event.CopyEnded.object)} stops being a copy`)
   if ('CommanderStayed' in event) return line(`${n.card(event.CommanderStayed.object)} stays where it is`)
+  if ('CompanionRevealed' in event)
+    return line(`${n.seat(event.CompanionRevealed.player)} reveals a companion`)
+  if ('CompanionBrought' in event) {
+    return line(`${n.seat(event.CompanionBrought.player)} puts a companion into their hand`)
+  }
   if ('DayNightChanged' in event)
     return line(`It becomes ${event.DayNightChanged.to === 'Day' ? 'day' : 'night'}`)
   if ('MonarchChanged' in event) return line(`${n.seat(event.MonarchChanged.player)} becomes the monarch`)
