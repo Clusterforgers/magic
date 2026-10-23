@@ -110,7 +110,9 @@ pub use cascade_cards::cascade_fuzz_setup;
 pub use cast_way_cards::cast_way_fuzz_setup;
 pub use choice_cards::choice_fuzz_setup;
 pub use combat_keyword_cards::combat_keywords_fuzz_setup;
-pub use commander_cards::{commander_fuzz_setup, partner_fuzz_setup};
+pub use commander_cards::{
+    CAST_KIND_CARDS, cast_kind_fuzz_setup, commander_fuzz_setup, partner_fuzz_setup,
+};
 pub use conditional_static_cards::conditional_static_fuzz_setup;
 pub use copy_cards::{copy_fuzz_setup, spell_copy_fuzz_setup};
 pub use copy_keyword_cards::copy_keywords_fuzz_setup;
