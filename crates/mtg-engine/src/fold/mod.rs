@@ -1,6 +1,8 @@
 //! The single state transition: folding one [`Event`] into a [`GameState`].
 
 mod combat;
+#[cfg(test)]
+mod crew_record;
 mod opening;
 mod resolution;
 #[cfg(test)]
