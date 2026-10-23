@@ -241,6 +241,7 @@ mod tests {
                 cause: None,
                 layered: None,
                 casting: None,
+                cast_targets: None,
             };
             (
                 scope.all_targets_illegal(),

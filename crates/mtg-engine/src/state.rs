@@ -124,6 +124,8 @@ pub(crate) enum Tally {
     Tokens,
     /// A kind of counter put on a permanent or a card in exile, once for each event (counted for the object).
     Countered,
+    /// Life gained, by the amount (counted for the player).
+    GainedTotal,
 }
 
 /// The events counted in the turn so far.

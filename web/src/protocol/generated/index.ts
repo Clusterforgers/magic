@@ -204,6 +204,7 @@ export type { Snapshot } from "./Snapshot";
 export type { Span } from "./Span";
 export type { SpellCopy } from "./SpellCopy";
 export type { Spend } from "./Spend";
+export type { SpendFact } from "./SpendFact";
 export type { SpendFilter } from "./SpendFilter";
 export type { SpendKind } from "./SpendKind";
 export type { SpendOn } from "./SpendOn";

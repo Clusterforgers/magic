@@ -321,7 +321,7 @@ async fn rules_that_fail_a_check_are_reported_and_never_stored(pool: PgPool) {
     assert_eq!(report.removed_unread, 1);
     assert!(!named_rows(&pool).await.contains(&"Fire // Ice".to_owned()));
     let text = report.render();
-    assert!(text.contains("1 invalid"), "{text}");
+    assert!(text.contains("1 compiled rules invalid"), "{text}");
     assert!(
         text.contains("Fire // Ice:\n      cards/fire_ice.json: faces:"),
         "{text}"
@@ -337,7 +337,7 @@ async fn the_report_says_what_was_done(pool: PgPool) {
 
     assert!(
         text.starts_with(
-            "compile: every stored card, 20 cards\n  rows: 9 written, 0 replaced, 0 unchanged, 0 removed\n  by state: 6 full, 3 partial\n  not compiled: 1 hand-written, 9 nothing to read, 1 invalid\n"
+            "compile: every stored card, 20 cards\n  rows: 9 written, 0 replaced, 0 unchanged, 0 removed\n  by state: 6 full, 3 partial\n  not compiled: 1 hand-written (0 invalid), 9 nothing to read, 1 compiled rules invalid\n"
         ),
         "{text}"
     );

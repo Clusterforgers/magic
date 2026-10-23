@@ -1,0 +1,48 @@
+{
+  "oracle_id": "befb211f-37ca-4083-98d4-9ff1f28be3f2",
+  "name": "Goreclaw, Terror of Qal Sisma",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goreclaw, Terror of Qal Sisma",
+      "oracle_fingerprint": "ba041373ac39534b7f8a1c8481741d49",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "Type": "Creature" },
+              { "ControlledBy": "You" },
+              { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+            ],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                    ]
+                  },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

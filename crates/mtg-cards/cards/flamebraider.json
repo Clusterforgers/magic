@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c552bd73-ce75-40fd-9d80-9e90b6f45274",
+  "name": "Flamebraider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flamebraider",
+      "oracle_fingerprint": "9a39d2165a066b3fc863c721fc6ad1d7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyCombination": { "count": 2 } },
+                  "only": [
+                    { "Spell": { "subtypes": ["Elemental"] } },
+                    { "Ability": { "subtypes": ["Elemental"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

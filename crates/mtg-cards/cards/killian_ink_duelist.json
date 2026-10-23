@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e233cb5b-7237-4271-8157-9179cc897b6c",
+  "name": "Killian, Ink Duelist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Killian, Ink Duelist",
+      "oracle_fingerprint": "a598dbd81c717e73b91823a389e5cbd9",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        { "Keyword": "Menace" },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "ControlledBy": "You" },
+              { "Targeting": [{ "Type": "Creature" }] }
+            ],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        }
+      ]
+    }
+  ]
+}

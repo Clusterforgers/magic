@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b9f3cf9f-24c7-43ed-9ba1-f4570df3d09e",
+  "name": "Thieving Varmint",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thieving Varmint",
+      "oracle_fingerprint": "54df7c2d5491209449e0b3a8fe901e01",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayLife": 1 }],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 2 },
+                  "only": [{ "Spell": { "facts": ["NotOwned"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

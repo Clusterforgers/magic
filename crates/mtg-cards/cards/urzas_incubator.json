@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b380c04b-0bce-4328-8f0a-1425e48bee72",
+  "name": "Urza's Incubator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urza's Incubator",
+      "oracle_fingerprint": "682dc285a9bc63bf0e1e9d774a5bfc46",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Type": "Creature" }, "ChosenSubtype"],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        }
+      ]
+    }
+  ]
+}
