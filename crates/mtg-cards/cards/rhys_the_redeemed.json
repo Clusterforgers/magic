@@ -1,0 +1,50 @@
+{
+  "oracle_id": "f7252190-ad24-4ba3-a644-2790dd1d680d",
+  "name": "Rhys the Redeemed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhys the Redeemed",
+      "oracle_fingerprint": "341e3dd7d386473f2926571dfed336c4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G/W}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elf Warrior",
+                      "colors": ["Green", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elf", "Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{G/W}{G/W}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

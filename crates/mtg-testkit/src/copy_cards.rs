@@ -13,23 +13,44 @@ use crate::cards::{creature, land};
 use crate::corpus::{self, CorpusError};
 
 /// A deck of lands in three colours, Clone, Phantasmal Image, Mirror Image, Cackling Counterpart, Rootborn Defenses,
-/// Growing Ranks and Followed Footsteps from the corpus, Hero of Bladehold and Questing Beast to copy and populate
-/// from, Lightning Bolts to aim at them, and creatures, derived entirely from `rng`.
+/// Growing Ranks, Followed Footsteps, Second Harvest, Rhys the Redeemed, Auton Soldier, Malleable Impostor, Imposter
+/// Mech and Machine God's Effigy from the corpus, Hero of Bladehold and Questing Beast to copy and populate from,
+/// Lightning Bolts to aim at them, and creatures, derived entirely from `rng`.
 pub fn copy_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
+    copies_deck(
+        rng,
+        22,
+        &[
+            ("Clone", 2),
+            ("Phantasmal Image", 2),
+            ("Mirror Image", 2),
+            ("Cackling Counterpart", 3),
+            ("Rootborn Defenses", 2),
+            ("Growing Ranks", 2),
+            ("Followed Footsteps", 2),
+            ("Second Harvest", 2),
+            ("Rhys the Redeemed", 1),
+            ("Auton Soldier", 2),
+            ("Malleable Impostor", 2),
+            ("Imposter Mech", 2),
+            ("Machine God's Effigy", 2),
+            ("Hero of Bladehold", 3),
+            ("Lightning Bolt", 3),
+        ],
+    )
+}
+
+/// A deck of `lands` lands in three colours and the corpus cards `cards` (name and count), filled up with creatures
+/// to copy, derived entirely from `rng`.
+fn copies_deck(
+    rng: &mut GameRng,
+    lands: usize,
+    cards: &[(&str, usize)],
+) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
     let colors = [Color::Blue, Color::White, Color::Green];
-    let mut deck: Vec<Arc<CardDefinition>> = (0..22).map(|i| land(colors[i % 3])).collect();
-    for (name, copies) in [
-        ("Clone", 3),
-        ("Phantasmal Image", 3),
-        ("Mirror Image", 2),
-        ("Cackling Counterpart", 3),
-        ("Rootborn Defenses", 3),
-        ("Growing Ranks", 2),
-        ("Followed Footsteps", 2),
-        ("Hero of Bladehold", 3),
-        ("Lightning Bolt", 4),
-    ] {
-        deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
+    let mut deck: Vec<Arc<CardDefinition>> = (0..lands).map(|i| land(colors[i % 3])).collect();
+    for (name, copies) in cards {
+        deck.extend(std::iter::repeat_n(corpus::card(name)?, *copies));
     }
     let mut slot = 0;
     while deck.len() < 60 {
@@ -50,6 +71,39 @@ pub fn copy_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusErr
     let mut decks = Vec::with_capacity(players);
     for seat in 0u64..players as u64 {
         decks.push(copy_deck(&mut GameRng::substream(seed, 12_000 + seat))?);
+    }
+    Ok(GameSetup::new(Arc::new(Normal), seed, decks))
+}
+
+/// A deck heavy in the permanents that enter as a copy with exceptions (Auton Soldier, Malleable Impostor, Imposter
+/// Mech, Machine God's Effigy) and the cards that copy every token (Second Harvest, Rhys the Redeemed), with token
+/// makers and creatures to copy, derived entirely from `rng`.
+pub fn copy_shapes_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
+    copies_deck(
+        rng,
+        20,
+        &[
+            ("Auton Soldier", 3),
+            ("Malleable Impostor", 4),
+            ("Imposter Mech", 4),
+            ("Machine God's Effigy", 3),
+            ("Second Harvest", 3),
+            ("Rhys the Redeemed", 1),
+            ("Cackling Counterpart", 4),
+            ("Hero of Bladehold", 4),
+            ("Lightning Bolt", 2),
+        ],
+    )
+}
+
+/// A normal game of `players` seats whose decks are [`copy_shapes_deck`]s, fully determined by `seed`.
+pub fn copy_shapes_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusError> {
+    let mut decks = Vec::with_capacity(players);
+    for seat in 0u64..players as u64 {
+        decks.push(copy_shapes_deck(&mut GameRng::substream(
+            seed,
+            12_500 + seat,
+        ))?);
     }
     Ok(GameSetup::new(Arc::new(Normal), seed, decks))
 }

@@ -27,6 +27,12 @@ impl Params {
         Params(pairs)
     }
 
+    /// The pairs and one more.
+    fn with(mut self, key: &str, value: &str) -> Params {
+        self.0.push((key.to_owned(), value.to_owned()));
+        self
+    }
+
     /// The value of the first pair with this key.
     pub fn get(&self, key: &str) -> Option<&str> {
         self.0
@@ -86,6 +92,7 @@ pub fn is_noise(key: &str) -> bool {
         "EffectZone",
         "ActiveZones",
         "ETB",
+        "Replacing",
     ];
     const SUFFIXES: &[&str] = &["Description", "Desc", "Prompt", "Title"];
     const PREFIXES: &[&str] = &[
@@ -281,7 +288,7 @@ impl Face {
         }
         for (name, value) in &self.svars {
             if !walk.seen.contains(name.as_str()) {
-                walk.svar(name, value, None);
+                walk.svar(name, value, None, None);
             }
         }
         walk.items
@@ -318,13 +325,16 @@ impl<'a> Walk<'a> {
                 .collect(),
             _ => Vec::new(),
         };
-        let names: Vec<(Option<Kind>, String)> = params
+        // The effect a replacement names stands for the replacement, which the key `Replacing` tells from an ability's.
+        let replaced = (kind == Kind::Replacement).then(|| name.clone());
+        let names: Vec<(Option<Kind>, String, Option<String>)> = params
             .iter()
             .filter(|(key, _)| !key.ends_with("Description") && !key.ends_with("Desc"))
             .flat_map(|(key, value)| {
+                let replacing = replaced.clone().filter(|_| key == "ReplaceWith");
                 references(value)
                     .into_iter()
-                    .map(move |token| (hint(key), token))
+                    .map(move |token| (hint(key), token, replacing.clone()))
             })
             .collect();
         self.items.push(Item { kind, name, params });
@@ -335,38 +345,65 @@ impl<'a> Walk<'a> {
                 params: Params::default(),
             });
         }
-        for (hint, token) in names {
-            self.reference(&token, hint);
+        for (hint, token, replacing) in names {
+            self.reference(&token, hint, replacing.as_deref());
         }
     }
 
-    /// Records a keyword line and follows the parts it names.
+    /// Records a keyword line and follows the parts it names; the ability of a keyword the DSL has whole (`Backup`,
+    /// `Gift`) is part of the keyword and gives no item.
     fn keyword(&mut self, body: &str) {
         let name = body.split(':').next().unwrap_or(body).trim().to_owned();
+        let own = OWN_ABILITIES.iter().find(|(word, _)| *word == name);
         self.items.push(Item {
             kind: Kind::Keyword,
             name,
             params: Params::default(),
         });
         for token in body.split(':').skip(1).flat_map(references) {
-            self.reference(&token, None);
+            match own {
+                Some(_) => self.absorb(&token),
+                None => self.reference(&token, None, None),
+            }
+        }
+        if let Some((_, Some(part))) = own {
+            self.absorb(part);
+        }
+    }
+
+    /// Marks a named part and the parts it names as read, with no item.
+    fn absorb(&mut self, token: &str) {
+        let svars = self.svars;
+        let Some((name, value)) = svars.get_key_value(token) else {
+            return;
+        };
+        if !self.seen.insert(name.as_str()) {
+            return;
+        }
+        for (key, value) in Params::parse(value).iter() {
+            if key.ends_with("Description") || key.ends_with("Desc") {
+                continue;
+            }
+            for token in references(value) {
+                self.absorb(&token);
+            }
         }
     }
 
     /// Follows a name to the part it stands for, once.
-    fn reference(&mut self, token: &str, hint: Option<Kind>) {
+    fn reference(&mut self, token: &str, hint: Option<Kind>, replacing: Option<&str>) {
         let svars = self.svars;
         let Some((name, value)) = svars.get_key_value(token) else {
             return;
         };
         if self.seen.insert(name.as_str()) {
-            self.svar(name, value, hint);
+            self.svar(name, value, hint, replacing);
         }
     }
 
     /// Reads the value of a named part by its shape: a part is an ability, a trigger, a static ability or a replacement
     /// effect; an amount, a count and a hint for the computer player are not items.
-    fn svar(&mut self, name: &'a str, value: &str, hint: Option<Kind>) {
+    fn svar(&mut self, name: &'a str, value: &str, hint: Option<Kind>, replacing: Option<&str>) {
         self.seen.insert(name);
         let params = Params::parse(value);
         let Some((first, _)) = params.iter().next() else {
@@ -384,9 +421,16 @@ impl<'a> Walk<'a> {
                 }),
             _ => return,
         };
+        let params = match replacing {
+            Some(event) => params.with("Replacing", event),
+            None => params,
+        };
         self.line(kind, params);
     }
 }
+
+/// The keywords whose abilities the DSL has whole, with the part that carries the ability when the line does not name it.
+const OWN_ABILITIES: &[(&str, Option<&str>)] = &[("Backup", None), ("Gift", Some("GiftAbility"))];
 
 /// The kind of part a key names: `Triggers$`, `AddStaticAbility$`, `ReplacementEffects$`.
 fn hint(key: &str) -> Option<Kind> {
@@ -452,7 +496,7 @@ fn cost_name(part: &str) -> String {
     let what = rest.trim_end_matches('>').split('/').nth(1).unwrap_or("");
     if what.eq_ignore_ascii_case("loyalty") {
         "Loyalty".to_owned()
-    } else if what == "CARDNAME" || what.starts_with("Card.Self") {
+    } else if matches!(what, "CARDNAME" | "NICKNAME") || what.starts_with("Card.Self") {
         format!("{}Me", word.trim_end_matches("Me"))
     } else {
         word.to_owned()

@@ -39,6 +39,7 @@ Angel of Vitality
 Angelic Ascension
 Angelic Field Marshal
 Ant-Man, Elusive Avenger
+Aquastrand Spider
 Arbor Colossus
 Arboreal Grazer
 Arcane Signet
@@ -61,6 +62,7 @@ Atzocan Seer
 Augury Raven
 Aura Gnarlid
 Authority of the Consuls
+Auton Soldier
 Avatar of Woe
 Aven Eternal
 Aven Initiate
@@ -503,6 +505,7 @@ Illustrious Wanderglyph
 Ilysian Caryatid
 Imperial Hellkite
 Imperious Oligarch
+Imposter Mech
 Impostor of the Sixth Pride
 Impulsive Pilferer
 Inferno Project
@@ -576,6 +579,7 @@ Lizard Blades
 Llanowar Behemoth
 Llanowar Elves
 Llanowar Loamspeaker
+Llanowar Reborn
 Looter il-Kor
 Lord of Extinction
 Lotleth Troll
@@ -586,9 +590,11 @@ Ludevic's Test Subject // Ludevic's Abomination
 Lumen-Class Frigate
 Lurching Rotbeast
 M'Baku, Jabari Chieftain
+Machine God's Effigy
 Magmatic Insight
 Make Disappear
 Makeshift Mauler
+Malleable Impostor
 Mana Bloom
 Manabarbs
 Manaweft Sliver
@@ -718,6 +724,7 @@ Pinion Feast
 Plague Myr
 Plague Stinger
 Planar Outburst
+Plaxcaster Frogling
 Plaxmanta
 Poet's Quill
 Polymorphist's Jest
@@ -785,6 +792,7 @@ Reverberate
 Reverse Engineer
 Rhox Charger
 Rhox Faithmender
+Rhys the Redeemed
 Rhystic Study
 Rift Bolt
 Righteous Avengers
@@ -831,6 +839,7 @@ Scuzzback Marauders
 Sea Gate
 Sea Gate Wreckage
 Secluded Courtyard
+Second Harvest
 Seedglaive Mentor
 Seeds of Renewal
 Seekers' Squire

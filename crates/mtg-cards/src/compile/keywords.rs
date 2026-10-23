@@ -398,6 +398,8 @@ pub fn read(item: &str) -> Option<Keyword> {
         "cumulative upkeep" => spell_cost(rest).map(Keyword::CumulativeUpkeep),
         "vanishing" => positive(rest).map(Keyword::Vanishing),
         "fading" => positive(rest).map(Keyword::Fading),
+        "graft" => positive(rest).map(Keyword::Graft),
+        "afflict" => positive(rest).map(Keyword::Afflict),
         "backup" => positive(rest).map(|count| Keyword::Backup {
             count,
             abilities: Vec::new(),
@@ -1141,6 +1143,8 @@ mod tests {
     #[case::dethrone("dethrone", Keyword::Dethrone)]
     #[case::umbra_armor("Umbra armor", Keyword::UmbraArmor)]
     #[case::cipher("Cipher", Keyword::Cipher)]
+    #[case::graft("Graft 2", Keyword::Graft(2))]
+    #[case::afflict("Afflict 3", Keyword::Afflict(3))]
     #[case::extort("Extort", Keyword::Extort)]
     #[case::evolve("Evolve", Keyword::Evolve)]
     #[case::annihilator("Annihilator 2", Keyword::Annihilator(2))]
@@ -1582,6 +1586,8 @@ mod tests {
             "Improvise",
             "Affinity for artifacts",
             "Cipher",
+            "Graft 2",
+            "Afflict 2",
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];

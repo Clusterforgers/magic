@@ -345,6 +345,9 @@ pub fn granted_keywords(r: &mut Reader<'_>) -> Option<Vec<Keyword>> {
     if let Some(found) = r.attempt(numbered_keyword) {
         return Some(vec![found]);
     }
+    if r.word("crew") {
+        return Some(vec![Keyword::Crew(r.number()?)]);
+    }
     if !r.words("protection from") {
         return keyword(r).map(|keyword| vec![keyword]);
     }
@@ -435,6 +438,9 @@ pub fn granted_text(mods: &[Modification]) -> Option<String> {
             protecting = false;
         } else if let Some(numbered) = numbered_keyword_text(keyword) {
             parts.push(numbered);
+            protecting = false;
+        } else if let Keyword::Crew(power) = keyword {
+            parts.push(format!("crew {power}"));
             protecting = false;
         } else {
             parts.push(keyword_text(keyword)?);

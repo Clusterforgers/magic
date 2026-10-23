@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f434e266-d9d6-4058-96ff-a1bd4029d8dc",
+  "name": "Imposter Mech",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imposter Mech",
+      "oracle_fingerprint": "5046c2efca02466b8968eca83709d6d5",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "except": [
+                  { "SetTypes": ["Artifact"] },
+                  { "AddSubtype": "Vehicle" },
+                  { "AddKeyword": { "Crew": 3 } }
+                ]
+              }
+            }
+          }
+        },
+        { "Keyword": { "Crew": 3 } }
+      ]
+    }
+  ]
+}

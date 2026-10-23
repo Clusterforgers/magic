@@ -1,0 +1,23 @@
+{
+  "cmc": 4,
+  "collector_number": "213",
+  "color_identity": [
+    "G"
+  ],
+  "colors": [
+    "G"
+  ],
+  "digital": false,
+  "id": "aaecd005-b849-4e75-a8e0-24231bf2a0c9",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{G}{G}",
+  "name": "Second Harvest",
+  "oracle_id": "61a6341e-0d36-44b6-8026-9c87c8ef61cb",
+  "oracle_text": "For each token you control, create a token that's a copy of that permanent.",
+  "rarity": "rare",
+  "released_at": "2025-01-24",
+  "set": "inr",
+  "type_line": "Instant"
+}
