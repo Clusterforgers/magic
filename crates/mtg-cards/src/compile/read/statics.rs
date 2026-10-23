@@ -477,6 +477,19 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
         .as_ref()
         .and_then(as_long_as::subject_of)
         .filter(|_| r.word("it"));
+    // "As long as ~ has three or more fire counters on it, it's an artifact creature."
+    let its = leading
+        .as_ref()
+        .and_then(as_long_as::subject_of)
+        .filter(|_| it.is_none() && r.word("it's"));
+    if let Some(its) = its {
+        r.words("an artifact creature").then_some(())?;
+        return Some(statics(
+            its,
+            super::becomes::artifact_creature_mods(),
+            leading,
+        ));
+    }
     let (affected, plural) = if let Some(it) = it {
         (it, false)
     } else {
@@ -1173,7 +1186,10 @@ fn static_texts(
                         .iter()
                         .any(|start| held.starts_with(start))
                 })
-                .map(|held| format!("as long as {held}, it {predicate}"));
+                .map(|held| match predicate.strip_prefix("is ") {
+                    Some(rest) => format!("as long as {held}, it's {rest}"),
+                    None => format!("as long as {held}, it {predicate}"),
+                });
             trailing.chain(leading).chain(pronoun).collect::<Vec<_>>()
         })
         .collect()
@@ -1200,6 +1216,13 @@ fn predicate(
         // Only a condition takes a type away: "As long as your devotion to white is less than five, ~ isn't a creature."
         [Modification::RemoveType(CardType::Creature)] if conditional && !plural => {
             return Some("isn't a creature".to_owned());
+        }
+        // A Vehicle that is a creature as long as it holds enough counters.
+        [
+            Modification::AddType(CardType::Artifact),
+            Modification::AddType(CardType::Creature),
+        ] if conditional && itself && !plural => {
+            return Some("is an artifact creature".to_owned());
         }
         // A card does not give itself a bonus, but it may grow by a count: "This creature gets +1/+1 for each Elf."
         _ if !conditional && itself && !counts_stats(mods) => return None,
