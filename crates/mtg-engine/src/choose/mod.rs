@@ -153,7 +153,7 @@ pub struct CostTaken {
     /// Which of the costs a card lets its caster choose between ("discard a card or pay 3 life") was chosen, by position
     /// among the combinations of the choices the card prints; 0 for a card with no such choice.
     #[serde(default, skip_serializing_if = "is_zero")]
-    #[cfg_attr(feature = "ts", ts(optional))]
+    #[cfg_attr(feature = "ts", ts(as = "Option<u8>", optional))]
     pub variant: u8,
 }
 

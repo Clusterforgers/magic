@@ -24,7 +24,7 @@ One item is one piece of about 15 minutes; the commit that finishes it deletes i
 
 Ready pieces, grouped by the code they touch. A group runs one piece at a time, groups run side by side (about six agents at once); a piece is claimed with `[~]` and pushed before it starts, and `git merge main` plus the full `scripts/check.sh` end it.
 
-- Costs and casting: (g2e), (g5c), (g6d), (c1j), (c1k), (c12e), (c13b).
+- Costs and casting: (g2e), (g5c), (g6d), (c1j), (c1k), (c12f), (c13b).
 - Cast ways and zones: (c5d), (c2h), (n2b) face-down objects, (n1d3) meld.
 - Triggers and keywords: (c6c), (c4e), (c3b), (c3d), (c2g), (c2d), (n1d5) day and night effects, (o2c).
 - Statics and layers: (c8i), (c7f), (c7e), (o1d), (m4).
@@ -50,7 +50,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Abilities and characteristics: one reader of an object's abilities, the derivation of CR 613 in one pass, `GameRule` effects, keyword abilities built from triggers, state triggers and abilities that work from other zones
 - Counters, planeswalkers and attachments: counters on permanents and players, loyalty abilities, the legend rule, Auras, Equipment, Reconfigure and living weapon
 - Replacement and prevention: the replacement step, enters tapped or with counters, damage shields, regeneration, protection
-- Costs and casting: the announcement of CR 601.2 with modes, X, optional, alternative and additional costs, kicker, multikicker, buyback, entwine, cascade, discover, madness, suspend, foretell, cost modifiers, convoke, delve, life, counter and counted costs, divided amounts, mana abilities with restrictions, filter lands, triggered mana and mana in any combination, required additional costs, what a cost took ("the sacrificed creature's power"), free casts and Strive
+- Costs and casting: the announcement of CR 601.2 with modes, X, optional, alternative and additional costs, kicker, multikicker, buyback, entwine, cascade, discover, madness, suspend, foretell, cost modifiers, convoke, delve, life, counter and counted costs, divided amounts, mana abilities with restrictions, filter lands, triggered mana and mana in any combination, required additional costs with a choice between costs, mana and a reveal from the hand, what a cost took ("the sacrificed creature's power"), free casts and Strive
 - Triggers: patterns for every logged event, batches, the nth card or spell, "first time each turn", evasion, impulse draw, the Monarch and the city's blessing
 - Vehicles and Mounts: a Vehicle that becomes an artifact creature by an ability (itself or another target Vehicle), by tapped tokens, by energy or while it holds counters, and a Mount that an ability saddles
 - Crew and saddle events: `Event::Crewed` from the `Crewed` effect that ends the Crew and Saddle abilities, its turn counts for each permanent, the triggers "becomes crewed" and "becomes saddled" with "for the first time each turn", and their reading and wording
@@ -129,14 +129,14 @@ The server is settled first, then the web is built once against the final types.
 ## M6 Coverage
 
 ### Target
-- [ ] Target: every stored card Verified, or as near as the rules allow; `mtg-cli coverage` (compile first) ranks the blockers, each piece below states the cards it frees, and after each round `compile` and `coverage` are re-run and the numbers recorded here (2,234 of the 6,429 stored precon cards, 34.7%, and 61.1% of the copies are Verified)
+- [ ] Target: every stored card Verified, or as near as the rules allow; `mtg-cli coverage` (compile first) ranks the blockers, each piece below states the cards it frees, and after each round `compile` and `coverage` are re-run and the numbers recorded here (2,293 of the 6,429 stored precon cards, 35.7%, and 61.6% of the copies are Verified)
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
 
 ### Mana and costs
 - [ ] (c1j) A mana ability that takes permanents and is used more than once in a payment may take its own source with its last use (Skirk Prospector sacrificing itself after another Goblin for {R}{R})
 - [ ] (c1k) The triggered mana abilities of a nonland permanent (Kinnan Bonder Prodigy) and with a condition (the monarch)
 - [ ] (c1l) The mana ability wordings still unread: an amount counted as "the number of basic land types among lands you control" (Domain), X mana of any one color counted by a where clause or by "Remove X +1/+1 counters from this creature", and restrictions by a list of subtypes or "Elemental sources"
-- [~] (c12e) (branch c12e-cost-choice) The rest of the additional costs of a spell: a choice between costs ("discard a card or pay 3 life": Bitter Triumph, Dusk Mangler; "reveal a Giant card or pay {2}": Surtland Elementalist, Thunderherd Migration), an exact count of targets from X ("Destroy X target creatures": Eliminate the Competition, Immoral Bargain), the readers of the X effects of Fire Covenant (X damage divided among any number of target creatures) and Channeled Force (two targets), mana in a required cost, a revealed card as a cost (Disaster Radius, Calamity of the Titans, Titan's Presence), and the wordings of what a cost took that are still unread (two characteristics in a sentence: Momentous Fall; "If the discarded card wasn't a land card": Grab the Prize; "Remove all +1/+1 counters": Vish Kal; "gain X life and put X counters": Dina, Essence Brewer; an object returned to a hand)
+- [ ] (c12f) The readers of the effects that follow the additional costs of a spell: an exact count of targets from X ("Destroy X target creatures": Eliminate the Competition, Immoral Bargain, and "Return X target creature cards from your graveyard to the battlefield": Entreat the Dead; `Bounds.min` is a `u32`), Fire Covenant (X damage divided among any number of target creatures) and Channeled Force (two targets from X), "the revealed card's mana value or power" in the effects of Disaster Radius, Calamity of the Titans and Titan's Presence, the attack trigger of Surtland Elementalist, and the wordings of what a cost took that are still unread (two characteristics in a sentence: Momentous Fall; "If the discarded card wasn't a land card": Grab the Prize; "Remove all +1/+1 counters": Vish Kal and Catti-brie of Mithral Hall; "gain X life and put X counters": Dina, Essence Brewer)
 - [ ] (c13b) The rest of the commander free casts and strive spells: Deflecting Swat (choose new targets for a spell or ability on the stack) and the strive spells Launch the Fleet, Solidarity of Heroes, Call the Coppercoats and Twinflame (their effects are not read)
 
 ### Keywords and cast ways

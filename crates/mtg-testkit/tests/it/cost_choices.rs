@@ -224,6 +224,48 @@ fn mana_pays_when_there_is_nothing_to_reveal(
     Ok(())
 }
 
+#[rstest]
+#[case::three(3)]
+#[case::five(5)]
+fn the_revealed_card_is_named_by_the_effects_with_the_value_it_has(
+    #[case] value: u32,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let rules = |json: &str| serde_json::from_str(json).unwrap();
+    let spell = Arc::new(
+        CardDefinition::new("Showing Off")
+            .with_type(CardType::Sorcery)
+            .with_mana_cost(mtg_testkit::cards::cost(1, &[]))
+            .with_rules(rules(
+                r#"{"AdditionalCost":{"cost":[{"RevealFromHand":{"filter":[{"Type":"Creature"}]}}],"required":true}}"#,
+            ))
+            .with_rules(rules(
+                r#"{"Spell":{"effects":[{"GainLife":{"amount":{"Stat":{"of":"Paid","stat":"ManaValue"}}}}]}}"#,
+            )),
+    );
+    let shown = Arc::new(
+        CardDefinition::new("Showpiece")
+            .with_type(CardType::Creature)
+            .with_mana_cost(mtg_testkit::cards::cost(value, &[]))
+            .with_power_toughness(1, 1),
+    );
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .hand(0, [spell, shown])
+            .battlefield(0, lands(1, forest))
+            .library(0, (0..8).map(|_| forest())),
+    )?;
+    driver.begin_cast("Showing Off")?;
+    pay(&mut driver)?;
+    for _ in 0..seats {
+        driver.pass()?;
+    }
+    let life = driver.state().player(pid(0)).unwrap().life();
+    assert_eq!(life, 20 + i32::try_from(value).unwrap());
+    assert_eq!(count(&driver, Zone::Hand(pid(0)), "Showpiece"), 1);
+    Ok(())
+}
+
 /// The kinds of event that pay the parts of a cast, in the run directly before `SpellCast`.
 #[derive(Debug, Default, Clone, Copy)]
 struct Paid {
