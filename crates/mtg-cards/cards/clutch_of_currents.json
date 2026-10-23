@@ -1,0 +1,20 @@
+{
+  "oracle_id": "2c6658c3-8c0e-46c9-8127-bc5b77eb0dab",
+  "name": "Clutch of Currents",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clutch of Currents",
+      "oracle_fingerprint": "153d6c094c3c05f22657b3c5ee5d4d2c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        { "Keyword": { "Awaken": { "count": 3, "cost": "{4}{U}" } } }
+      ]
+    }
+  ]
+}

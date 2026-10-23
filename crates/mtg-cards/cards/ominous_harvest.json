@@ -1,0 +1,23 @@
+{
+  "oracle_id": "76bc6518-dea4-4a5c-a8a7-352cd297197b",
+  "name": "Ominous Harvest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ominous Harvest",
+      "oracle_fingerprint": "e4ac32af04a3d88b0d60a37c9ca8074a",
+      "abilities": [
+        { "Keyword": "Gravestorm" },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 } } },
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

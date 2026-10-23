@@ -1,0 +1,28 @@
+{
+  "id": "ca1f2491-b54c-4d78-9542-a111906f3d75",
+  "oracle_id": "8778ddbe-9aba-4a45-a22a-5453fefef952",
+  "name": "Thrashing Mossdog",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clu",
+  "collector_number": "176",
+  "rarity": "common",
+  "released_at": "2024-02-23",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Plant Dog",
+  "oracle_text": "Reach (This creature can block creatures with flying.)\nScavenge {4}{G}{G} ({4}{G}{G}, Exile this card from your graveyard: Put a number of +1/+1 counters equal to this card's power on target creature. Scavenge only as a sorcery.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Scavenge",
+    "Reach"
+  ]
+}

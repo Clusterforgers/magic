@@ -1,0 +1,25 @@
+{
+  "id": "c2d737fb-fd09-4483-8128-8897cbcdc4f5",
+  "oracle_id": "1e7b18a3-43eb-4491-bb19-99f261a94719",
+  "name": "Mire's Malice",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bfz",
+  "collector_number": "117",
+  "rarity": "common",
+  "released_at": "2015-10-02",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Target opponent discards two cards.\nAwaken 3—{5}{B} (If you cast this spell for {5}{B}, also put three +1/+1 counters on target land you control and it becomes a 0/0 Elemental creature with haste. It's still a land.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Awaken"
+  ]
+}

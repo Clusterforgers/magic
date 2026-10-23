@@ -1,0 +1,24 @@
+{
+  "id": "3df1e8a0-6a54-4be9-bd0c-ac70f0ae9aa6",
+  "oracle_id": "58eab745-9afa-4db7-9d8a-f5eb0b9dca6c",
+  "name": "Skyreach Manta",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mm2",
+  "collector_number": "229",
+  "rarity": "common",
+  "released_at": "2015-05-22",
+  "digital": false,
+  "mana_cost": "{5}",
+  "cmc": 5.0,
+  "type_line": "Artifact Creature — Fish",
+  "oracle_text": "Sunburst (This creature enters with a +1/+1 counter on it for each color of mana spent to cast it.)\nFlying",
+  "power": "0",
+  "toughness": "0",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Flying",
+    "Sunburst"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "908901b7-fb40-4358-bca5-5e71bdafcbe7",
+  "oracle_id": "3ad6e495-d0e6-4b07-8f91-fe057e173975",
+  "name": "Ethereal Usher",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rav",
+  "collector_number": "47",
+  "rarity": "uncommon",
+  "released_at": "2005-10-07",
+  "digital": false,
+  "mana_cost": "{5}{U}",
+  "cmc": 6.0,
+  "type_line": "Creature — Spirit",
+  "oracle_text": "{U}, {T}: Target creature can't be blocked this turn.\nTransmute {1}{U}{U} ({1}{U}{U}, Discard this card: Search your library for a card with the same mana value as this card, reveal it, put it into your hand, then shuffle. Transmute only as a sorcery.)",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Transmute"
+  ]
+}
