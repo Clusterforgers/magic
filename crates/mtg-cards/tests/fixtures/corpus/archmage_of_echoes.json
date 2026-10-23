@@ -1,0 +1,28 @@
+{
+  "cmc": 5.0,
+  "collector_number": "9",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "c8a40d37-6bd7-4476-9968-36b1988f36e2",
+  "keywords": [
+    "Flying",
+    "Ward"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{4}{U}",
+  "name": "Archmage of Echoes",
+  "oracle_id": "f1ecb3d7-5ea0-45b2-b1b0-d7ae304db2a1",
+  "oracle_text": "Flying, ward {2}\nWhenever you cast a Faerie or Wizard permanent spell, copy it. (The copy becomes a token.)",
+  "power": "4",
+  "rarity": "rare",
+  "released_at": "2023-09-08",
+  "set": "woc",
+  "toughness": "4",
+  "type_line": "Creature — Faerie Wizard"
+}

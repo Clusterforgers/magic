@@ -1,0 +1,28 @@
+{
+  "cmc": 2.0,
+  "collector_number": "6",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "1ba76f68-e647-4786-903c-92dbd3cef05d",
+  "keywords": [
+    "Investigate",
+    "Doctor's companion"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{W}",
+  "name": "Sarah Jane Smith",
+  "oracle_id": "da268892-b190-4eee-9a2b-b0b9bb763033",
+  "oracle_text": "Whenever you cast a historic spell, investigate. This ability triggers only once each turn. (Artifacts, legendaries, and Sagas are historic. To investigate, create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")\nDoctor's companion (You can have two commanders if the other is the Doctor.)",
+  "power": "2",
+  "rarity": "rare",
+  "released_at": "2023-10-13",
+  "set": "who",
+  "toughness": "1",
+  "type_line": "Legendary Creature — Human Detective"
+}

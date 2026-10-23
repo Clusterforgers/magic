@@ -828,6 +828,11 @@ impl<'a> Scope<'a> {
                 .first()
                 .and_then(|p| self.state.player(*p))
                 .map_or(0, |p| i64::from(p.life())),
+            Amount::CommanderCasts(who) => self
+                .players(who)?
+                .into_iter()
+                .map(|player| i64::from(self.state.commander_casts_by(player)))
+                .sum(),
             Amount::Counters { on, counter } => {
                 let mut total = 0i64;
                 for named in self.refs(on)? {

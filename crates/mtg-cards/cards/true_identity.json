@@ -1,0 +1,26 @@
+{
+  "oracle_id": "901d3027-4394-481e-9a0e-dec4513d9f88",
+  "name": "True Identity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "True Identity",
+      "oracle_fingerprint": "1eb9f42680ee08354b9c7a1a6d79a04c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "TurnedFaceUp": { "what": ["This"] } },
+                { "TurnedFaceUp": { "what": ["Other", { "ControlledBy": "You" }] } }
+              ]
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Scry": {} }, { "Draw": {} }]
+          }
+        },
+        { "Keyword": { "Disguise": "{W}" } }
+      ]
+    }
+  ]
+}

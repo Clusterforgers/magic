@@ -83,6 +83,18 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(searches);
     let counted = where_x_draws(&texts);
     texts.extend(counted);
+    // A card may count the casts of "a commander" for those of "your commander" (Jirina Kudro).
+    let commanders: Vec<String> = texts
+        .iter()
+        .filter(|text| text.contains("you've cast your commander from"))
+        .map(|text| {
+            text.replace(
+                "you've cast your commander from",
+                "you've cast a commander from",
+            )
+        })
+        .collect();
+    texts.extend(commanders);
     // A card that becomes a target may call itself "it" in the counters it puts on itself (Seedglaive Mentor).
     if matches!(ability, Ability::Triggered { when, .. } if targeted_itself(when)) {
         let pronouns: Vec<String> = texts
@@ -317,7 +329,7 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
         Ability::Triggered {
             when,
             intervening_if,
-            limit: None,
+            limit: limit @ (None | Some(Limit::OncePerTurn)),
             from,
             targets,
             effects,
@@ -335,7 +347,7 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             alternatives(targets, effects)
                 .iter()
                 .flat_map(|sentences| {
-                    let tail = closed(sentences, false);
+                    let tail = triggered_tail(sentences, *limit);
                     heads
                         .iter()
                         .map(move |head| [head.clone(), tail.clone()].concat().join(" "))
@@ -480,7 +492,7 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
         matches!(
             effect,
             Effect::CreateToken {
-                count: Amount::Count(_) | Amount::Times { .. },
+                count: Amount::Count(_) | Amount::Times { .. } | Amount::CommanderCasts(_),
                 ..
             }
         )
@@ -760,6 +772,13 @@ fn closed(sentences: &[String], capital_first: bool) -> Vec<String> {
             }
         })
         .collect()
+}
+
+/// The sentences after the event of a triggered ability, and the one about how often it triggers.
+fn triggered_tail(sentences: &[String], limit: Option<Limit>) -> Vec<String> {
+    let mut tail = closed(sentences, false);
+    tail.extend(limit.map(|_| "This ability triggers only once each turn.".to_owned()));
+    tail
 }
 
 /// The sentences of a spell.

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "da268892-b190-4eee-9a2b-b0b9bb763033",
+  "name": "Sarah Jane Smith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sarah Jane Smith",
+      "oracle_fingerprint": "25a13ad1e3161a565c475bd24348a886",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Supertype": "Legendary" },
+                      { "Subtype": "Saga" }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        { "Keyword": "DoctorsCompanion" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "cmc": 4.0,
+  "collector_number": "111",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "8a800591-04a9-40d9-acfe-eebc04e8291b",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{W}{W}",
+  "name": "Commander's Insignia",
+  "oracle_id": "979a5d92-1c67-4fa4-b932-638b0cc1adcd",
+  "oracle_text": "Creatures you control get +1/+1 for each time you've cast your commander from the command zone this game.",
+  "rarity": "rare",
+  "released_at": "2025-04-11",
+  "set": "tdc",
+  "type_line": "Enchantment"
+}

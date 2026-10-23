@@ -1,0 +1,38 @@
+{
+  "oracle_id": "f1ecb3d7-5ea0-45b2-b1b0-d7ae304db2a1",
+  "name": "Archmage of Echoes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archmage of Echoes",
+      "oracle_fingerprint": "4b126395708b5871e0b994c454e376fe",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Battle" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Land" },
+                      { "Type": "Planeswalker" }
+                    ]
+                  },
+                  { "AnyOf": [{ "Subtype": "Faerie" }, { "Subtype": "Wizard" }] }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "CopySpell": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

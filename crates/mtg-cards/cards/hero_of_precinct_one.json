@@ -1,0 +1,39 @@
+{
+  "oracle_id": "5a66802a-76f9-4a31-a776-24110dcfca64",
+  "name": "Hero of Precinct One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hero of Precinct One",
+      "oracle_fingerprint": "0c8d39ea54abe6043408eb670f94b93f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

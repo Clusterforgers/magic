@@ -6,7 +6,7 @@
 
 use mtg_core::card::CardType;
 
-use super::amounts::{count_word, number_word};
+use super::amounts::{count_word, for_each, for_each_text, number_word};
 use super::copies::{self, Subject};
 use super::selectors::{Form, card_type, phrase, phrase_text, spec_text, target, type_name};
 use super::tokens::Reader;
@@ -38,7 +38,9 @@ pub fn copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         (Amount::one(), Vec::new())
     } else {
         (
-            r.attempt(times).unwrap_or_else(Amount::one),
+            r.attempt(times)
+                .or_else(|| r.attempt(for_each))
+                .unwrap_or_else(Amount::one),
             r.attempt(spell_exceptions).unwrap_or_default(),
         )
     };
@@ -256,6 +258,7 @@ fn tail_text(count: &Amount, new_targets: bool, except: &[Modification]) -> Opti
             format!(" {} times", count_word(u32::try_from(*number).ok()?)?)
         }
         Amount::X => " X times".to_owned(),
+        counted @ Amount::CommanderCasts(_) => format!(" for each {}", for_each_text(counted)?),
         _ => return None,
     };
     let except = if except.is_empty() {

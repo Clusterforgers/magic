@@ -1,0 +1,58 @@
+{
+  "oracle_id": "67f0cef6-8ef4-4c39-b306-2b580036894e",
+  "name": "Jyoti, Moag Ancient",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jyoti, Moag Ancient",
+      "oracle_fingerprint": "4f4ec1be152b6d0d6c261d6ec7a43329",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Forest Dryad",
+                      "colors": ["Green"],
+                      "types": ["Land", "Creature"],
+                      "subtypes": ["Forest", "Dryad"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "CommanderCasts": "You" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Land" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+                  },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "This", "stat": "Power" } },
+                        "toughness": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

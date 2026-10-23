@@ -1,0 +1,26 @@
+{
+  "cmc": 2.0,
+  "collector_number": "16",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "979c3262-7680-49a3-b0dc-12154e44c317",
+  "keywords": [
+    "Disguise",
+    "Scry"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{W}",
+  "name": "True Identity",
+  "oracle_id": "901d3027-4394-481e-9a0e-dec4513d9f88",
+  "oracle_text": "Whenever this enchantment or another permanent you control is turned face up, scry 1, then draw a card. This ability triggers only once each turn.\nDisguise {W} (You may cast this card face down for {3} as a 2/2 creature with ward {2}. Turn it face up any time for its disguise cost.)",
+  "rarity": "rare",
+  "released_at": "2024-02-09",
+  "set": "mkc",
+  "type_line": "Enchantment"
+}

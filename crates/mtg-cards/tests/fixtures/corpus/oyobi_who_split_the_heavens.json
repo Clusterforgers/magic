@@ -1,0 +1,27 @@
+{
+  "cmc": 7.0,
+  "collector_number": "95",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "8f279602-024a-44b6-9a36-465c16363cb5",
+  "keywords": [
+    "Flying"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{6}{W}",
+  "name": "Oyobi, Who Split the Heavens",
+  "oracle_id": "df5c1f34-94e4-4f89-b1af-943c430862d0",
+  "oracle_text": "Flying\nWhenever you cast a Spirit or Arcane spell, create a 3/3 white Spirit creature token with flying.",
+  "power": "3",
+  "rarity": "rare",
+  "released_at": "2021-11-19",
+  "set": "voc",
+  "toughness": "6",
+  "type_line": "Legendary Creature — Spirit"
+}

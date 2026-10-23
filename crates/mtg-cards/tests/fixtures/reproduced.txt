@@ -31,6 +31,7 @@ Angelic Ascension
 Ant-Man, Elusive Avenger
 Arbor Colossus
 Arcane Signet
+Archmage of Echoes
 Archon of Absolution
 Archon of Cruelty
 Archway Commons
@@ -152,6 +153,7 @@ Coastal Discovery
 Cold-Eyed Selkie
 Collective Unconscious
 Command Tower
+Commander's Insignia
 Conclave Tribunal
 Consider
 Consign // Oblivion
@@ -204,6 +206,7 @@ Debris Field Crusher
 Deep Analysis
 Deep Forest Hermit
 Deepfathom Skulker
+Deeproot Waters
 Defile
 Delver of Secrets // Insectile Aberration
 Demolition Field
@@ -376,6 +379,7 @@ Herald of Anguish
 Herald of the Dreadhorde
 Herald of the Host
 Hero of Bladehold
+Hero of Precinct One
 Hero's Heirloom
 Hidden Dragonslayer
 Highspire Artisan
@@ -409,6 +413,7 @@ Jaspera Sentinel
 Join the Maestros
 Jolting Merfolk
 Jungle Lion
+Jyoti, Moag Ancient
 Kalemne's Captain
 Karametra's Favor
 Karametra, God of Harvests
@@ -528,6 +533,7 @@ Origin of the Hulk
 Otherworldly Gaze
 Overgrown Arch
 Overgrowth
+Oyobi, Who Split the Heavens
 Pacifism
 Paladin's Arms
 Pale Bears
@@ -626,6 +632,7 @@ Sandsteppe Mastodon
 Sandsteppe Scavenger
 Sanguine Bond
 Sanitarium Skeleton
+Sarah Jane Smith
 Satyr Wayfinder
 Sauroform Hybrid
 Saw It Coming
@@ -698,6 +705,7 @@ Spire Winder
 Spring // Mind
 Springleaf Drum
 Squirrel Nest
+Sram, Senior Edificer
 Staggershock
 Star Whale
 Starscape Cleric
@@ -752,6 +760,7 @@ Tendo Ice Bridge
 Tendrils of Agony
 Termagant Swarm
 Terrus Wurm
+Teshar, Ancestor's Apostle
 Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Birth of Meletis
@@ -787,6 +796,7 @@ Trash for Treasure
 Traumatic Visions
 Treasure Cruise
 Trove Tracker
+True Identity
 Trumpeting Gnarr
 Tumble Magnet
 Tuskguard Captain

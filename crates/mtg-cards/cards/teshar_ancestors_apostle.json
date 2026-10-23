@@ -1,0 +1,45 @@
+{
+  "oracle_id": "d4193f50-33b5-4201-ba03-eb135eced7ff",
+  "name": "Teshar, Ancestor's Apostle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teshar, Ancestor's Apostle",
+      "oracle_fingerprint": "05cbf018942d265d7a36ed30cd9ae2f7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Supertype": "Legendary" },
+                      { "Subtype": "Saga" }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

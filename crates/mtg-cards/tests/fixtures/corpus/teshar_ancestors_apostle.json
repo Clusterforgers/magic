@@ -1,0 +1,27 @@
+{
+  "cmc": 4.0,
+  "collector_number": "180",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "6e80198c-cfae-46f9-84cb-584d091014c5",
+  "keywords": [
+    "Flying"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{3}{W}",
+  "name": "Teshar, Ancestor's Apostle",
+  "oracle_id": "d4193f50-33b5-4201-ba03-eb135eced7ff",
+  "oracle_text": "Flying\nWhenever you cast a historic spell, return target creature card with mana value 3 or less from your graveyard to the battlefield. (Artifacts, legendaries, and Sagas are historic.)",
+  "power": "2",
+  "rarity": "uncommon",
+  "released_at": "2026-04-24",
+  "set": "soc",
+  "toughness": "2",
+  "type_line": "Legendary Creature — Bird Cleric"
+}

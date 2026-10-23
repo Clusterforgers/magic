@@ -1,0 +1,27 @@
+{
+  "cmc": 4.0,
+  "collector_number": "8",
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "colors": [
+    "G",
+    "U"
+  ],
+  "digital": false,
+  "id": "9d2cb8d1-6aaa-487f-bf5a-89d657c0f37e",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{G}{U}",
+  "name": "Jyoti, Moag Ancient",
+  "oracle_id": "67f0cef6-8ef4-4c39-b306-2b580036894e",
+  "oracle_text": "When Jyoti enters, create a 1/1 green Forest Dryad land creature token for each time you've cast your commander from the command zone this game. (They're affected by summoning sickness.)\nAt the beginning of each combat, land creatures you control get +X/+X until end of turn, where X is Jyoti's power.",
+  "power": "2",
+  "rarity": "mythic",
+  "released_at": "2024-06-14",
+  "set": "m3c",
+  "toughness": "4",
+  "type_line": "Legendary Creature — Elemental"
+}

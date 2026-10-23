@@ -1,0 +1,35 @@
+{
+  "oracle_id": "8e7b31eb-7a91-4992-b24a-d81173e1dbc8",
+  "name": "Deeproot Waters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deeproot Waters",
+      "oracle_fingerprint": "4c373d357627e518d12f8fab2dbc3743",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Subtype": "Merfolk" }], "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Merfolk",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Merfolk"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Hexproof" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

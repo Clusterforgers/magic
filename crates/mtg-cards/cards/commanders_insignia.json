@@ -1,0 +1,26 @@
+{
+  "oracle_id": "979a5d92-1c67-4fa4-b932-638b0cc1adcd",
+  "name": "Commander's Insignia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Commander's Insignia",
+      "oracle_fingerprint": "284e580d36a8e8f950a1251738ab33ea",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "CommanderCasts": "You" },
+                  "toughness": { "CommanderCasts": "You" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

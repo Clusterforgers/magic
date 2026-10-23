@@ -431,6 +431,10 @@ impl<'a> Walker<'a> {
                 self.at("of", |w| w.reference(of, Kind::Object));
             }
             Amount::Life(who) => self.reference(who, Kind::Player),
+            Amount::CommanderCasts(who) => {
+                self.uses("Amount", "CommanderCasts");
+                self.at("CommanderCasts", |w| w.reference(who, Kind::Player));
+            }
             Amount::Counters { on, .. } => self.at("on", |w| w.reference(on, Kind::Either)),
             Amount::Sum(parts) => {
                 for (i, part) in parts.iter().enumerate() {

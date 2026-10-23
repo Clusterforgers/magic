@@ -180,9 +180,6 @@ fn a_targeted_spell_is_copied_more_than_once_or_with_other_exceptions(
 )]
 #[case::a_legend("Whenever you cast a spell, copy it, except the copy isn't legendary.")]
 #[case::a_name("Whenever you cast a spell, copy it, except the copy's name is Fork.")]
-#[case::once_each_turn(
-    "Whenever you cast a spell, copy it. This ability triggers only once each turn."
-)]
 #[case::without_a_comma("Whenever you cast a spell, copy it except the copy is red.")]
 #[case::after_new_targets(
     "Whenever you cast a spell, copy it. You may choose new targets for the copy, except the copy is red."

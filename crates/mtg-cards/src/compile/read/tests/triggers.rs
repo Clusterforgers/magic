@@ -249,9 +249,6 @@ fn an_ability_word_is_flavor_and_the_rest_is_read(#[case] text: &str, #[case] re
 #[case::an_if_without_a_comma(
     "At the beginning of your upkeep, if you have 40 or more life draw a card."
 )]
-#[case::once_each_turn(
-    "Whenever ~ attacks, draw a card. This ability triggers only once each turn."
-)]
 #[case::two_modes_of_three(
     "Whenever ~ attacks, choose two \u{2014}\n\u{2022} Draw a card.\n\u{2022} You gain 2 life.\n\u{2022} Scry 1."
 )]

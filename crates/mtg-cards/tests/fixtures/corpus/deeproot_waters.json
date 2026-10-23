@@ -1,0 +1,23 @@
+{
+  "cmc": 3.0,
+  "collector_number": "152",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "a624ef59-69e6-4a41-b41a-3d19e287fe08",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{U}",
+  "name": "Deeproot Waters",
+  "oracle_id": "8e7b31eb-7a91-4992-b24a-d81173e1dbc8",
+  "oracle_text": "Whenever you cast a Merfolk spell, create a 1/1 blue Merfolk creature token with hexproof. (A creature with hexproof can't be the target of spells or abilities your opponents control.)",
+  "rarity": "uncommon",
+  "released_at": "2023-11-17",
+  "set": "lcc",
+  "type_line": "Enchantment"
+}

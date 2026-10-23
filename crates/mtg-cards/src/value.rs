@@ -172,6 +172,9 @@ pub enum Amount {
     },
     /// A player's life total.
     Life(Ref),
+    /// How many times the player has cast their commanders from the command zone this game, all of them together
+    /// (CR 903.8): the count behind the commander tax.
+    CommanderCasts(Ref),
     /// How many counters of a kind are on the object or player.
     Counters {
         /// The object or player.
@@ -260,6 +263,7 @@ enum Tagged {
     Count(Selector),
     Stat { of: Ref, stat: StatKind },
     Life(Ref),
+    CommanderCasts(Ref),
     Counters { on: Ref, counter: CounterKind },
     Sum(Vec<Amount>),
     Times { by: i32, of: Box<Amount> },
@@ -291,6 +295,7 @@ enum TaggedRef<'a> {
         stat: StatKind,
     },
     Life(&'a Ref),
+    CommanderCasts(&'a Ref),
     Counters {
         on: &'a Ref,
         counter: &'a CounterKind,
@@ -331,6 +336,7 @@ impl From<Tagged> for Amount {
             Tagged::Count(selector) => Amount::Count(selector),
             Tagged::Stat { of, stat } => Amount::Stat { of, stat },
             Tagged::Life(who) => Amount::Life(who),
+            Tagged::CommanderCasts(who) => Amount::CommanderCasts(who),
             Tagged::Counters { on, counter } => Amount::Counters { on, counter },
             Tagged::Sum(parts) => Amount::Sum(parts),
             Tagged::Times { by, of } => Amount::Times { by, of },
@@ -362,6 +368,7 @@ impl Serialize for Amount {
             Amount::Count(selector) => TaggedRef::Count(selector).serialize(serializer),
             Amount::Stat { of, stat } => TaggedRef::Stat { of, stat: *stat }.serialize(serializer),
             Amount::Life(who) => TaggedRef::Life(who).serialize(serializer),
+            Amount::CommanderCasts(who) => TaggedRef::CommanderCasts(who).serialize(serializer),
             Amount::Counters { on, counter } => {
                 TaggedRef::Counters { on, counter }.serialize(serializer)
             }

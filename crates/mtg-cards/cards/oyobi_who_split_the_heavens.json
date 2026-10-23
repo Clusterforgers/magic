@@ -1,0 +1,41 @@
+{
+  "oracle_id": "df5c1f34-94e4-4f89-b1af-943c430862d0",
+  "name": "Oyobi, Who Split the Heavens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oyobi, Who Split the Heavens",
+      "oracle_fingerprint": "0a653086510ced1e145b74d22077c3e5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Spirit" }, { "Subtype": "Arcane" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

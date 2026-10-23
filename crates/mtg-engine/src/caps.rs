@@ -280,6 +280,7 @@ const RUNS: &[&str] = &[
     "Amount.CastWith",
     "Amount.ColorsSpent",
     "Amount.PermanentsGraved",
+    "Amount.CommanderCasts",
     "Ability.Replacement",
     "Ability.CostModifier",
     "ReplaceWhen.TokenCreation",
@@ -550,6 +551,7 @@ mod tests {
     #[case::cast_for_a_way("Amount.CastWith", true)]
     #[case::colors_spent("Amount.ColorsSpent", true)]
     #[case::permanents_graved("Amount.PermanentsGraved", true)]
+    #[case::commander_casts("Amount.CommanderCasts", true)]
     #[case::may("Effect.May", true)]
     #[case::choosing("Effect.Choose", true)]
     #[case::modes("Effect.Modal", true)]

@@ -10,13 +10,31 @@ use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::TriggerPattern;
 use crate::value::Condition;
 
+/// Whether the next sentence is a restriction that ends the effects: "Activate only ..." or "This ability triggers only
+/// once each turn."
+fn at_restriction(r: &mut Reader<'_>) -> bool {
+    r.peek_word() == Some("activate")
+        || r.lookahead(|r| r.words(ONCE_EACH_TURN).then_some(()))
+            .is_some()
+}
+
+/// "This ability triggers only once each turn." after the effects of a triggered ability.
+fn once_each_turn(r: &mut Reader<'_>) -> Option<Limit> {
+    r.attempt(|r| {
+        r.words(ONCE_EACH_TURN).then_some(())?;
+        r.sentence_end().then_some(Limit::OncePerTurn)
+    })
+}
+
+const ONCE_EACH_TURN: &str = "this ability triggers only once each turn";
+
 /// The sentences of an ability, in order, every one read; `None` when one is not, or when a `Modal`
 /// is not the only effect (the modes keep their own targets, so the ability has none). With
-/// `restricted` the sentences end where an "Activate only ..." sentence begins.
+/// `restricted` the sentences end where an "Activate only ..." or a "This ability triggers only once each turn."
+/// sentence begins.
 fn sentences(r: &mut Reader<'_>, restricted: bool) -> Option<Vec<Effect>> {
     let mut effects = Vec::new();
-    let restriction = |r: &Reader<'_>| restricted && r.peek_word() == Some("activate");
-    while !r.end() && !restriction(r) {
+    while !(r.end() || restricted && at_restriction(r)) {
         if !effects::sentence(r, &mut effects) {
             return None;
         }
@@ -123,8 +141,9 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     };
     let effects = match r.attempt(|r| mana_trigger::effects(r, &when)) {
         Some(mana) => mana,
-        None => sentences(r, false)?,
+        None => sentences(r, true)?,
     };
+    let limit = once_each_turn(r);
     // A card cycled is in its owner's graveyard when its own ability triggers, and a card that returns itself from the
     // graveyard has its ability there.
     let from = if triggers::cycled_itself(&when)
@@ -138,7 +157,7 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     Some(Ability::Triggered {
         when,
         intervening_if,
-        limit: None,
+        limit,
         from,
         targets: std::mem::take(&mut r.targets),
         effects,

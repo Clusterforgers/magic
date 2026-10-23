@@ -1,0 +1,25 @@
+{
+  "cmc": 2.0,
+  "collector_number": "101",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "4564f7b4-4fa3-40a3-88e8-2f1cfd15461c",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{W}",
+  "name": "Hero of Precinct One",
+  "oracle_id": "5a66802a-76f9-4a31-a776-24110dcfca64",
+  "oracle_text": "Whenever you cast a multicolored spell, create a 1/1 white Human creature token.",
+  "power": "2",
+  "rarity": "rare",
+  "released_at": "2022-09-09",
+  "set": "dmc",
+  "toughness": "2",
+  "type_line": "Creature — Human Warrior"
+}

@@ -231,7 +231,6 @@ fn another_player_acts_and_you_follow(#[case] text: &str, #[case] json: &str) {
 #[case::a_spell_in_a_zone("Copy target instant or sorcery spell from your graveyard.")]
 #[case::several_spells("Copy each instant or sorcery spell.")]
 #[case::up_to_one("Copy up to one target instant or sorcery spell.")]
-#[case::a_permanent_with_a_color("Copy target red permanent spell you control.")]
 fn near_misses_of_copying_a_spell_or_an_ability_stay_unread(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Spell, false), None, "{text}");
 }

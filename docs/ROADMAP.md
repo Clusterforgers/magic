@@ -7,7 +7,7 @@ One item is one piece of about 15 minutes; the commit that finishes it deletes i
 ## Status
 
 - Built: foundations, card data, the engine core, protocol and server, game flow, the web client and the deck builder (M0 to M2), and Commander in the engine, server and lobby (M4).
-- In progress: the card system and its coverage tail (M3, M6): 2,049 of the 6,429 stored precon cards (31.9%) and 59.0% of the copies are Verified; the open pieces are a flat long tail that frees a few cards each.
+- In progress: the card system and its coverage tail (M3, M6): 2,068 of the 6,429 stored precon cards (32.2%) and 59.2% of the copies are Verified; the open pieces are a flat long tail that frees a few cards each.
 - Not started: the web for the final card-system types (M5), the product pages (M7), polish and deploy (M8).
 
 ## Order of work
@@ -28,7 +28,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Cast ways and zones: (c5b), (c2e), (n2) face-down objects, (n1d3) meld.
 - Triggers and keywords: (c6b), (c4b), (c3b), (c3d), (c2c), (c2d), (n1d5) day and night effects, (o2c).
 - Statics and layers: (c8), (c7b), (c7c), (o1d), (m4).
-- Compiler wordings, no engine change: (c10) one piece per wording family with (c10c) to (c10e) and (c10r), (o2d), (c11) and (c11c) layouts, (c9c), (c1i).
+- Compiler wordings, no engine change: (c10) one piece per wording family with (c10c) to (c10e) and (c10r), (o2e), (c11) and (c11c) layouts, (c9c), (c1i).
 - Commander and server: (hr5b), the `manual_play` flag stored with the game, the turn without an active player in the table view, Companion.
 - Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test.
 - After the card system: "Views complete", the Gate, then the web (M5 prompts for the decision kinds the engine asks, the manual-action menu, table states) and M7.
@@ -44,6 +44,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Web: core client, game UI with prompts for all eight decision kinds, N-seat table with log and stack panel, table animations, concede, lobby, account pages, Playwright e2e; the UI rebuild U1 to U12 (tokens, fit engine, grid, controls dock, turn feedback, game browser, layout gate)
 - Decks: list, import, export, builder, and the deck check with the Verified marker; the importers pass the 29-deck corpus
 - Compiler: reader framework and renderer with goldens and a corpus ratchet, templates for mana, spell, trigger, activated, modal, pay, search, copy and static wordings, value nodes, `mtg-cli coverage` with its audit, generated rules stored as `card_rules`, one Scryfall fixture per corpus card
+- Cast and limit wordings: triggers on subtype, permanent, multicolored and historic spells, "This ability triggers only once each turn.", and counts of the times a commander was cast (`Amount::CommanderCasts`)
 - Abilities and characteristics: one reader of an object's abilities, the derivation of CR 613 in one pass, `GameRule` effects, keyword abilities built from triggers, state triggers and abilities that work from other zones
 - Counters, planeswalkers and attachments: counters on permanents and players, loyalty abilities, the legend rule, Auras, Equipment, Reconfigure and living weapon
 - Replacement and prevention: the replacement step, enters tapped or with counters, damage shields, regeneration, protection
@@ -69,7 +70,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] (n1d5) Day and night effects: the DSL has no node for "it becomes day" or "if it's neither day nor night" (`Effect` that sets the designation, `Condition` on it), the engine runs them, and the compiler reads their sentences with goldens
 - [ ] (n2) Face-down objects, remaining: manifest and cloak (a `FaceDown` kind each), morph costs with a part besides mana (Fathom Seer, Gift of Doom) or an {X} (Bane of the Living), and the reveal of a face-down permanent that returns to a hand or library
 - [ ] (o2c) A storm trigger or copy effect that resolves after its spell has left the stack copies it from last known information (the snapshot keeps the announced choices)
-- [ ] (o2d) The compiler reads the copy wordings left: the exceptions "isn't legendary" and "loses all other card types" (a `Modification` that removes a supertype or a type), a copy count taken from the game ("for each time you've cast your commander"), "when you next cast", a cast trigger whose spell is a subtype, "permanent" or "multicolored", and "This ability triggers only once each turn"
+- [ ] (o2e) The compiler and engine read the copy wordings left: the cast trigger of the card itself ("When you cast this spell", a `SpellCast` of `This` from the stack) that holds back the storm cards whose copy count now reads (Echo Storm, Empyrial Storm, Fury Storm, Hatut Zeraze Strike Force, Skull Storm, Genesis Storm), the exceptions "isn't legendary" (Helm of the Host, Living Laser, Quantum Misalignment, Tempestra, Loki, the Deceiver) and "loses all other card types" (Imprisoned in the Moon, Espers to Magicite, Imposter Mech) as a `Modification` that removes a supertype or sets the types, "when you next cast" (Galvanic Iteration, Solar Array, Magus Lucea Kane, Thunderclap Drake) as a delayed trigger on a cast, and the spells "that's two or more colors" (Ancient Cornucopia) and "noncreature or Dragon" (Firespitter Whelp)
 - [ ] (o1d) A transformed permanent that dies reads its trigger from the face it showed, and a static that a copy granted reads it from the copy when the copy left in the same batch (last known abilities, as (o1c) does for a copy that dies)
 
 ### Attachments
@@ -105,7 +106,7 @@ The server is settled first, then the web is built once against the final types.
 ## M6 Coverage
 
 ### Target
-- [ ] Target: every stored card Verified, or as near as the rules allow; `mtg-cli coverage` (compile first) ranks the blockers, each piece below states the cards it frees, and after each round `compile` and `coverage` are re-run and the numbers recorded here (2,049 of the 6,429 stored precon cards, 31.9%, and 59.0% of the copies are Verified)
+- [ ] Target: every stored card Verified, or as near as the rules allow; `mtg-cli coverage` (compile first) ranks the blockers, each piece below states the cards it frees, and after each round `compile` and `coverage` are re-run and the numbers recorded here (2,068 of the 6,429 stored precon cards, 32.2%, and 59.2% of the copies are Verified)
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
 
 ### Mana and costs

@@ -122,6 +122,14 @@ impl GameState {
         self.commanders.casts.get(&id).copied().unwrap_or(0)
     }
 
+    /// How many times the commanders `player` owns were cast from the command zone this game, all together.
+    pub fn commander_casts_by(&self, player: PlayerId) -> u32 {
+        self.commanders()
+            .filter(|id| self.object(*id).is_some_and(|card| card.owner() == player))
+            .map(|id| self.commander_casts(id))
+            .fold(0, u32::saturating_add)
+    }
+
     /// The generic mana the commander `id` costs more to cast from the command zone now (CR 903.8).
     pub fn commander_tax(&self, id: ObjectId) -> u32 {
         self.commander_casts(id)
@@ -359,6 +367,38 @@ mod tests {
         hit(&mut game, commander, 1, 10);
         assert_eq!(game.commander_damage(commander, PlayerId(1)), 21);
         assert!(lost(&game, 1));
+    }
+
+    #[rstest]
+    #[case::two_seats(2)]
+    #[case::three_seats(3)]
+    #[case::four_seats(4)]
+    fn the_casts_of_a_player_are_those_of_all_the_commanders_they_own(#[case] seats: usize) {
+        let mut game = game(seats, &[&["A", "B"], &["C"]]);
+        let commanders = ids(&game);
+        // A twice, B once and C three times, each cast from the command zone of its owner.
+        for (commander, owner, times) in [(0, 0, 2), (1, 0, 1), (2, 1, 3)] {
+            for _ in 0..times {
+                let cast = Event::SpellCast {
+                    player: PlayerId::from_index(owner),
+                    object: commanders[commander],
+                    choices: crate::choose::Choices::default(),
+                };
+                apply_event(&mut game, &cast).unwrap();
+                put_in(
+                    &mut game,
+                    commanders[commander],
+                    Zone::Command(PlayerId::from_index(owner)),
+                );
+            }
+        }
+        let counted: Vec<u32> = (0..seats)
+            .map(|seat| game.commander_casts_by(PlayerId::from_index(seat)))
+            .collect();
+        let mut expected = vec![0; seats];
+        expected[0] = 3;
+        expected[1] = 3;
+        assert_eq!(counted, expected);
     }
 
     #[test]
