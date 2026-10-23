@@ -372,7 +372,6 @@ fn a_bonus_or_a_keyword_reads_as_the_hand_written_files_say(
 #[case::a_keyword_and_an_ability("Equipped creature has flying and can't be blocked.")]
 #[case::a_keyword_adjective("Flying creatures you control get +1/+1.")]
 #[case::a_gain("Creatures you control gain haste.")]
-#[case::a_goad("Enchanted creature gets +1/+1 and is goaded.")]
 #[case::each_creature_attacks("Each creature you control attacks each combat if able.")]
 fn near_misses_stay_with_the_table(#[case] text: &str) {
     assert_eq!(stat(text), None, "{text}");

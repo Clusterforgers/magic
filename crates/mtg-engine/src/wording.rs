@@ -73,6 +73,7 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::Color(color) => adjectives.push(lower(color)),
             Pred::Colorless => adjectives.push("colorless".to_owned()),
             Pred::Token => adjectives.push("token".to_owned()),
+            Pred::Commander => nouns.push("commander".to_owned()),
             Pred::Spell => nouns.push("spell".to_owned()),
             Pred::Ability(AbilityKind::Activated) => nouns.push("activated ability".to_owned()),
             Pred::Ability(AbilityKind::Triggered) => nouns.push("triggered ability".to_owned()),

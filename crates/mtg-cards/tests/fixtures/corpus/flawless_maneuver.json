@@ -1,0 +1,23 @@
+{
+  "id": "3ffe82a4-584e-4ebd-9551-a745bed01e26",
+  "oracle_id": "4e183439-17d2-47ff-9d99-5e22821d91e3",
+  "name": "Flawless Maneuver",
+  "lang": "en",
+  "layout": "normal",
+  "set": "frc",
+  "collector_number": "25",
+  "rarity": "rare",
+  "released_at": "2026-10-02",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "If you control a commander, you may cast this spell without paying its mana cost.\nCreatures you control gain indestructible until end of turn.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

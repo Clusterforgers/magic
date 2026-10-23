@@ -138,7 +138,8 @@ pub struct Own {
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
     let text = match kind {
-        ClauseKind::Triggered => {
+        // An ability word is flavor: "Landfall — ", "Strive — ".
+        ClauseKind::Triggered | ClauseKind::Static => {
             let head = text.lines().next().unwrap_or_default();
             text.get(classify::ability_word_len(head).unwrap_or(0)..)?
         }

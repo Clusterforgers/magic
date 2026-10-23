@@ -665,6 +665,7 @@ impl<'a> Scope<'a> {
             Pred::Color(color) => seen.chars.colors.contains(*color),
             Pred::Colorless => seen.chars.colors.is_empty(),
             Pred::Token => seen.kind == ObjectKind::Token,
+            Pred::Commander => state.is_commander(reference.id),
             Pred::Spell => seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability,
             Pred::Ability(kind) => {
                 seen.zone == Zone::Stack

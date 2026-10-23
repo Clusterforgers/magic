@@ -1,0 +1,25 @@
+{
+  "id": "54cb25b6-049c-46dd-88a4-f3890e018db0",
+  "oracle_id": "8ac493f2-9519-44d7-b6ac-8c020ad2cede",
+  "name": "Consign to Dust",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c18",
+  "collector_number": "136",
+  "rarity": "uncommon",
+  "released_at": "2018-08-10",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Strive — This spell costs {2}{G} more to cast for each target beyond the first.\nDestroy any number of target artifacts and/or enchantments.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Strive"
+  ]
+}

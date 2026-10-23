@@ -33,7 +33,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 16] = [
+const TEMPLATES: [Template; 17] = [
     entering,
     entering_tapped_if,
     group_enters_tapped,
@@ -50,6 +50,7 @@ const TEMPLATES: [Template; 16] = [
     prevention::static_rule,
     super::costs::additional,
     super::attack_tax::static_rule,
+    free_cast,
 ];
 
 /// A static ability that is a whole sentence: the shape and its period.
@@ -115,6 +116,19 @@ fn entering_tapped_if(r: &mut Reader<'_>) -> Option<Ability> {
     r.source().then_some(())?;
     r.need("enters tapped")?;
     Some(replacement(ReplaceBy::Tapped, Some(condition)))
+}
+
+/// "If you control a commander, you may cast this spell without paying its mana cost.": a cast open while the condition holds.
+fn free_cast(r: &mut Reader<'_>) -> Option<Ability> {
+    r.need("if")?;
+    let condition = control(r)?;
+    r.punct(',').then_some(())?;
+    r.need("you may cast")?;
+    r.source().then_some(())?;
+    r.need("without paying its mana cost")?;
+    Some(Ability::FreeCast {
+        condition: Some(condition),
+    })
 }
 
 /// "Creatures your opponents control enter tapped.", "Artifacts and creatures your opponents control enter tapped.": a
@@ -453,25 +467,7 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
         subject(r, true).or_else(|| enchanted_other(r))?
     };
     let x_free = std::mem::replace(&mut r.x_free, false);
-    let mods = r.attempt(|r| {
-        let (gets, has) = if plural {
-            ("get", "have")
-        } else {
-            ("gets", "has")
-        };
-        if r.word(gets) {
-            let stats = power_toughness(r)?;
-            let mut mods = vec![counted_stats(r, stats)?];
-            if r.word("and") {
-                r.word(has).then_some(())?;
-                mods.extend(gives(r)?);
-            }
-            Some(mods)
-        } else {
-            r.word(has).then_some(())?;
-            gives(r)
-        }
-    });
+    let mods = r.attempt(|r| predicate_mods(r, plural));
     r.x_free = x_free;
     let mods = mods?;
     let condition = leading.or_else(|| r.attempt(as_long_as));
@@ -479,6 +475,43 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
         return None;
     }
     Some(statics(affected, mods, condition))
+}
+
+/// What a permanent gets and has: "gets +1/+1", "has flying", "gets +1/+1 and has flying", and as the last part "is
+/// goaded" ("gets +2/+2 and is goaded", "has indestructible and is goaded", "gets +1/+1, has deathtouch, and is goaded").
+fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Modification>> {
+    let (gets, has, is) = if plural {
+        ("get", "have", "are")
+    } else {
+        ("gets", "has", "is")
+    };
+    let goaded = |r: &mut Reader<'_>| r.words(&format!("and {is} goaded"));
+    let mut mods = Vec::new();
+    if r.word(gets) {
+        let stats = power_toughness(r)?;
+        mods.push(counted_stats(r, stats)?);
+        if goaded(r) {
+            mods.push(Modification::Goaded);
+            return Some(mods);
+        }
+        let listed = r.punct(',');
+        if listed || r.word("and") {
+            r.word(has).then_some(())?;
+            mods.extend(gives(r)?);
+        }
+        if listed {
+            r.punct(',').then_some(())?;
+            goaded(r).then_some(())?;
+            mods.push(Modification::Goaded);
+        }
+        return Some(mods);
+    }
+    r.word(has).then_some(())?;
+    mods.extend(gives(r)?);
+    if goaded(r) {
+        mods.push(Modification::Goaded);
+    }
+    Some(mods)
 }
 
 /// What a permanent is given: keywords, or one activated ability in quotes ("Enchanted creature has \"{R}, {T}: Copy
@@ -748,6 +781,12 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             per,
             condition: None,
         } => cost_modifier_texts(applies_to, *change, mana, per),
+        Ability::FreeCast {
+            condition: Some(held),
+        } => control_texts(held)
+            .into_iter()
+            .map(|held| format!("if {held}, you may cast ~ without paying its mana cost"))
+            .collect(),
         Ability::Replacement {
             when: ReplaceWhen::LifeGain { .. },
             ..
@@ -1161,10 +1200,15 @@ fn predicate(
             _ => {}
         }
     }
-    let (gets, has) = if plural {
-        ("get", "have")
+    let (gets, has, is) = if plural {
+        ("get", "have", "are")
     } else {
-        ("gets", "has")
+        ("gets", "has", "is")
+    };
+    // "is goaded" is the last part of the sentence.
+    let (mods, goaded) = match mods.split_last() {
+        Some((Modification::Goaded, rest)) if !rest.is_empty() => (rest, true),
+        _ => (mods, false),
     };
     let (stats, rest) = match mods.split_first() {
         Some((Modification::ModifyPT { power, toughness }, rest)) => {
@@ -1176,6 +1220,14 @@ fn predicate(
     let mut parts: Vec<String> = stats.into_iter().collect();
     if !rest.is_empty() {
         parts.push(format!("{has} {}", given_text(rest)?));
+    }
+    if goaded {
+        let last = format!("{is} goaded");
+        return match parts.as_slice() {
+            [one] => Some(format!("{one} and {last}")),
+            [first, second] => Some(format!("{first}, {second}, and {last}")),
+            _ => None,
+        };
     }
     (!parts.is_empty()).then(|| parts.join(" and "))
 }

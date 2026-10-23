@@ -469,7 +469,7 @@ mod tests {
     )]
     #[case::keyword_and_unread_trigger(
         "Creature \u{2014} Elf",
-        "Haste\nWhen ~ enters, goad target creature.",
+        "Haste\nWhen ~ enters, flip a coin.",
         Some(ImplStatus::Partial)
     )]
     #[case::trigger_with_an_ability_word(
@@ -487,7 +487,7 @@ mod tests {
         "Equipped creature can't be blocked except by creatures with flying.\nEquip {1}",
         Some(ImplStatus::Partial)
     )]
-    #[case::nothing_read("Instant", "Goad target creature.", Some(ImplStatus::Manual))]
+    #[case::nothing_read("Instant", "Flip a coin.", Some(ImplStatus::Manual))]
     #[case::spell_read_whole("Instant", "~ deals 3 damage to any target.", Some(ImplStatus::Full))]
     #[case::mana_ability_read("Creature \u{2014} Elf", "{T}: Add {G}.", Some(ImplStatus::Full))]
     #[case::spell_lines_read_as_one_ability(
@@ -497,7 +497,7 @@ mod tests {
     )]
     #[case::one_unread_spell_line_leaves_every_line(
         "Sorcery",
-        "Draw a card.\nGoad target creature.",
+        "Draw a card.\nFlip a coin.",
         Some(ImplStatus::Manual)
     )]
     #[case::unreadable_keyword_only(
@@ -516,7 +516,7 @@ mod tests {
     )]
     #[case::spell_with_keyword_and_unread_effect(
         "Instant",
-        "Kicker {1}\nGoad target creature.",
+        "Kicker {1}\nFlip a coin.",
         Some(ImplStatus::Partial)
     )]
     #[case::modes_are_the_whole_spell(
@@ -531,7 +531,7 @@ mod tests {
     )]
     #[case::an_unread_mode(
         "Instant",
-        "Choose one \u{2014}\n\u{2022} Draw a card.\n\u{2022} Goad target creature.",
+        "Choose one \u{2014}\n\u{2022} Draw a card.\n\u{2022} Flip a coin.",
         Some(ImplStatus::Manual)
     )]
     #[case::modes_beside_spell_lines(
@@ -556,12 +556,12 @@ mod tests {
     )]
     #[case::a_cost_that_counts_targets_the_spell_does_not_read(
         "Sorcery",
-        "This spell costs {1} more to cast for each target beyond the first.\nGoad any number of target creatures.",
+        "This spell costs {1} more to cast for each target beyond the first.\nAny number of target creatures phase out.",
         Some(ImplStatus::Manual)
     )]
     #[case::a_cost_that_counts_nothing_stands_alone(
         "Sorcery",
-        "This spell costs {1} less to cast.\nGoad target creature.",
+        "This spell costs {1} less to cast.\nFlip a coin.",
         Some(ImplStatus::Partial)
     )]
     fn the_status_follows_the_clauses(
@@ -596,7 +596,7 @@ mod tests {
 
     #[test]
     fn a_partial_card_keeps_a_manual_ability_for_each_unread_clause_in_order() {
-        let text = "Flying\nWhenever ~ attacks, goad target creature.\n{T}: Goad target creature.\nVigilance";
+        let text = "Flying\nWhenever ~ attacks, flip a coin.\n{T}: Flip a coin.\nVigilance";
         let compiled = one("Test Card", "Creature \u{2014} Bird", text);
         let card = compiled.card.unwrap();
         let abilities = &card.faces[0].abilities;
@@ -607,15 +607,12 @@ mod tests {
             panic!("{:?}", abilities[1]);
         };
         assert_eq!(reason, "a triggered ability the compiler does not read yet");
-        assert_eq!(
-            span.slice(text),
-            Some("Whenever ~ attacks, goad target creature.")
-        );
+        assert_eq!(span.slice(text), Some("Whenever ~ attacks, flip a coin."));
         assert_eq!(
             abilities[2],
             Ability::Manual {
                 reason: "an activated ability the compiler does not read yet".into(),
-                span: Span { start: 49, end: 75 }
+                span: Span { start: 40, end: 57 }
             }
         );
         let kinds: Vec<_> = compiled.clauses.iter().map(|clause| clause.kind).collect();
@@ -692,9 +689,9 @@ mod tests {
     }
 
     #[rstest]
-    #[case::a_sentence("Sorcery", "Goad target creature.", ClauseKind::Spell)]
+    #[case::a_sentence("Sorcery", "Flip a coin.", ClauseKind::Spell)]
     #[case::a_readable_line("Sorcery", "Draw a card", ClauseKind::Spell)]
-    #[case::a_closing_quote("Sorcery", "Goad target creature named \"A.\"", ClauseKind::Spell)]
+    #[case::a_closing_quote("Sorcery", "Flip a coin named \"A.\"", ClauseKind::Spell)]
     #[case::a_static_sentence(
         "Creature \u{2014} Elf",
         "Elves you control get +1/+1.",
@@ -726,11 +723,7 @@ mod tests {
 
     #[test]
     fn a_manual_card_has_no_abilities_and_lists_its_clauses() {
-        let compiled = one(
-            "Test Card",
-            "Instant",
-            "Goad target creature.\nGoad target land.",
-        );
+        let compiled = one("Test Card", "Instant", "Flip a coin.\nFlip two coins.");
         let card = compiled.card.unwrap();
         assert_eq!(card.impl_status, ImplStatus::Manual);
         assert!(card.faces[0].abilities.is_empty(), "{card:?}");
@@ -753,7 +746,7 @@ mod tests {
 
     #[test]
     fn every_face_of_a_double_faced_card_carries_its_own_fingerprint_and_name() {
-        let front = "Haste\nAt the beginning of your upkeep, goad target creature.";
+        let front = "Haste\nAt the beginning of your upkeep, flip a coin.";
         let back = "Flying";
         let compiled = compile(&card(vec![
             face("Delver of Secrets", "Creature \u{2014} Human Wizard", front),
@@ -779,7 +772,7 @@ mod tests {
         );
         assert_eq!(
             compiled.clauses[1].text,
-            "At the beginning of your upkeep, goad target creature."
+            "At the beginning of your upkeep, flip a coin."
         );
     }
 

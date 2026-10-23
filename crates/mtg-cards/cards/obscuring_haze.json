@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d0a31db0-69db-405c-99a3-945617900c54",
+  "name": "Obscuring Haze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Obscuring Haze",
+      "oracle_fingerprint": "f8a9f29fcb2b36520189cf65c2b6c8df",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["Commander", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "source": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

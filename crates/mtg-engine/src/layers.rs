@@ -247,7 +247,8 @@ impl Held {
             | Modification::CantAttack
             | Modification::CantBlock
             | Modification::CantBeBlocked
-            | Modification::CantBeBlockedBy { .. } => {}
+            | Modification::CantBeBlockedBy { .. }
+            | Modification::Goaded { .. } => {}
         }
     }
 }
@@ -460,7 +461,8 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         Wanted::CantAttack
         | Wanted::CantBlock
         | Wanted::CantBeBlocked
-        | Wanted::CantBeBlockedBy(_) => return None,
+        | Wanted::CantBeBlockedBy(_)
+        | Wanted::Goaded => return None,
     })
 }
 

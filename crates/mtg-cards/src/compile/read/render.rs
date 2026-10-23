@@ -155,6 +155,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
         }
     }
     pronouns::of_the_card(ability, &mut texts);
+    pronouns::you_after_the_attached(ability, &mut texts);
     pronouns::of_the_group(ability, &mut texts);
     // A trigger about damage the source deals may say "it deals" for the source (Questing Beast).
     if matches!(
@@ -776,6 +777,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::Exile { .. }
                 | Effect::Tap { .. }
                 | Effect::Untap { .. }
+                | Effect::Goad { .. }
                 | Effect::Regenerate { .. }
                 | Effect::Counter { .. }
                 | Effect::Move { .. }
@@ -1228,6 +1230,8 @@ impl Writer<'_> {
             Effect::Exile { what, bind: None } => format!("exile {}", self.object(what)?),
             Effect::Tap { what } => format!("tap {}", self.object(what)?),
             Effect::Untap { what } => format!("untap {}", self.object(what)?),
+            Effect::Goad { what } if self.named && self.single(what) => "goad it".to_owned(),
+            Effect::Goad { what } => format!("goad {}", self.object(what)?),
             Effect::Regenerate { what } => format!("regenerate {}", self.object(what)?),
             Effect::Counter { what } => format!("counter {}", self.object(what)?),
             Effect::Continuous {

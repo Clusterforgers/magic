@@ -1,0 +1,23 @@
+{
+  "id": "0e13f735-54fa-42b6-aea4-ced33811d7d4",
+  "oracle_id": "0456ec64-2c81-4763-a352-8ff64a4c3d6b",
+  "name": "Deadly Rollick",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "147",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "If you control a commander, you may cast this spell without paying its mana cost.\nExile target creature.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

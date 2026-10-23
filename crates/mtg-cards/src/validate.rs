@@ -376,6 +376,7 @@ impl<'a> Walker<'a> {
             | Pred::Color(_)
             | Pred::Colorless
             | Pred::Token
+            | Pred::Commander
             | Pred::Spell
             | Pred::Ability(_)
             | Pred::Tapped
@@ -848,7 +849,8 @@ impl<'a> Walker<'a> {
             | Modification::LoseAbilities
             | Modification::CantAttack
             | Modification::CantBlock
-            | Modification::CantBeBlocked => {}
+            | Modification::CantBeBlocked
+            | Modification::Goaded => {}
         }
     }
 
@@ -1878,6 +1880,12 @@ impl<'a> Walker<'a> {
                 ..
             } => w.cost_modifier(applies_to, mana, per, condition.as_ref()),
             Ability::AdditionalCost { cost, required } => w.additional_cost(cost, *required),
+            Ability::FreeCast { condition } => {
+                w.scope = Scope::new(&[], false);
+                if let Some(condition) = condition {
+                    w.at("condition", |w| w.condition(condition));
+                }
+            }
             Ability::Keyword(keyword) => w.keyword(keyword),
             Ability::Manual { reason, span } => {
                 if reason.trim().is_empty() {

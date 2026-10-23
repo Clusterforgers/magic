@@ -1,0 +1,27 @@
+{
+  "id": "cc36705f-9b1a-42fe-bebd-f23c7af8a368",
+  "oracle_id": "aae76e5c-f5e0-4d18-b465-e6a829be908a",
+  "name": "Shiny Impetus",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "231",
+  "rarity": "common",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature gets +2/+2 and is goaded. (It attacks each combat if able and attacks a player other than you if able.)\nWhenever enchanted creature attacks, you create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Goad",
+    "Treasure",
+    "Enchant"
+  ]
+}
