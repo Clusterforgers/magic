@@ -1,7 +1,7 @@
 //! Vehicles for the fuzz games: the corpus Vehicles that crew (Smuggler's Copter, Skysovereign, Goliath Truck, Thopter
 //! Fabricator), those animated by an ability or by counters (Peacewalker Colossus, War Balloon, Guidelight Matrix, Tangle
-//! Tumbler, Bespoke Battlewagon) and Vehicles of every crew number, beside the creatures that pay for them and the lands
-//! that cast them.
+//! Tumbler, Bespoke Battlewagon), those that read the crews (Mobilizer Mech, Getaway Car, Subterranean Schooner) and
+//! Vehicles of every crew number, beside the creatures that pay for them and the lands that cast them.
 
 use std::sync::Arc;
 
@@ -28,6 +28,9 @@ pub const VEHICLE_CARDS: &[&str] = &[
     "Guidelight Matrix",
     "Tangle Tumbler",
     "Bespoke Battlewagon",
+    "Mobilizer Mech",
+    "Getaway Car",
+    "Subterranean Schooner",
 ];
 
 /// A Vehicle for `generic` mana with this power and toughness and Crew `crew`.

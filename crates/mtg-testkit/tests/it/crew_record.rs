@@ -339,3 +339,187 @@ fn a_mount_that_attacks_unsaddled_does_nothing_with_the_record(
     assert_replays(&driver, &scenario);
     Ok(())
 }
+
+fn is_creature(driver: &Driver, name: &str) -> bool {
+    characteristics(driver.state(), driver.id_of(name).unwrap())
+        .unwrap()
+        .is_creature()
+}
+
+/// Seat 0 controls a Mobilizer Mech, the other Vehicles `others`, Rider A and Rider B (power 2 each, Crew 3 needs both);
+/// seat 1 controls a Vehicle of its own.
+fn mech_table(seats: usize, others: &[&str]) -> Scenario {
+    let mut mine = vec![ready(corpus("Mobilizer Mech"))];
+    mine.extend(others.iter().map(|name| ready(corpus(name))));
+    mine.extend(["Rider A", "Rider B"].map(|name| ready(free_creature(name, 2, 2))));
+    Scenario::new(seats)
+        .battlefield(0, mine)
+        .battlefield(1, [ready(corpus("Getaway Car"))])
+}
+
+#[rstest]
+#[case::the_other_vehicle(&["Getaway Car"], Some("Getaway Car"))]
+#[case::the_other_vehicle_of_two(&["Getaway Car", "Subterranean Schooner"], Some("Subterranean Schooner"))]
+#[case::none_chosen(&["Getaway Car"], None)]
+fn the_mech_animates_up_to_one_other_vehicle_of_its_controller_when_it_is_crewed(
+    #[case] others: &[&str],
+    #[case] chosen: Option<&str>,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let scenario = mech_table(seats, others);
+    let mut driver = Driver::from_scenario(scenario.clone())?;
+    driver.pass_until(Step::Main1)?;
+    driver.begin_activation("Mobilizer Mech")?;
+    let ids = ["Rider A", "Rider B"].map(|rider| driver.id_of(rider).unwrap());
+    driver.answer(Answer::ChooseCards(CardsChoice(ids.to_vec())))?;
+    // The trigger waits for its target after the crew resolves: not the Mech, not the Vehicle of seat 1.
+    for _ in 0..50 {
+        if matches!(driver.decision()?.kind, DecisionKind::ChooseTargets(_)) {
+            break;
+        }
+        driver.answer_passively()?;
+    }
+    let mut expected: Vec<String> = others.iter().map(|name| (*name).to_owned()).collect();
+    expected.sort();
+    assert_eq!(offered(&driver)?, (expected, 0));
+    let targets: Vec<Target> = match chosen {
+        Some(name) => vec![driver.target_named(name)?],
+        None => Vec::new(),
+    };
+    driver.choose_targets(&targets)?;
+    settle(&mut driver)?;
+    assert!(is_creature(&driver, "Mobilizer Mech"));
+    for name in others {
+        assert_eq!(is_creature(&driver, name), chosen == Some(*name), "{name}");
+    }
+    assert_replays(&driver, &scenario);
+    Ok(())
+}
+
+/// Seat 0 controls a Stubborn Burrowfiend and Rider A, Rider B (power 2 each, Saddle 2 needs one), `graveyard` creature
+/// cards are in its graveyard and `library` creature cards are on top of its library, then lands.
+fn burrow_table(seats: usize, graveyard: usize, library: usize) -> Scenario {
+    let cards = |prefix: &str, count: usize| -> Vec<Arc<CardDefinition>> {
+        (0..count)
+            .map(|at| free_creature(&format!("{prefix} {at}"), 1, 1))
+            .collect()
+    };
+    let mut top = cards("Milled", library);
+    top.extend((0..5).map(|_| mtg_testkit::cards::mountain()));
+    Scenario::new(seats)
+        .battlefield(
+            0,
+            [
+                ready(corpus("Stubborn Burrowfiend")),
+                ready(free_creature("Rider A", 2, 2)),
+                ready(free_creature("Rider B", 2, 2)),
+            ],
+        )
+        .graveyard(0, cards("Buried", graveyard))
+        .library(0, top)
+}
+
+#[rstest]
+#[case::nothing_in_the_yard_two_milled(0, 2, 2)]
+#[case::one_milled(0, 1, 1)]
+#[case::none_milled(0, 0, 0)]
+#[case::the_graveyard_counts_too(3, 2, 5)]
+#[case::the_graveyard_alone(3, 0, 3)]
+fn the_burrowfiend_counts_the_creature_cards_after_it_mills(
+    #[case] graveyard: usize,
+    #[case] library: usize,
+    #[case] bonus: i32,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let scenario = burrow_table(seats, graveyard, library);
+    let mut driver = Driver::from_scenario(scenario.clone())?;
+    driver.pass_until(Step::Main1)?;
+    pay_for(&mut driver, "Stubborn Burrowfiend", &["Rider A"])?;
+    let stats = characteristics(driver.state(), driver.id_of("Stubborn Burrowfiend")?).unwrap();
+    // Two cards are milled from the top of the library (the creatures first, then lands), then the size counts.
+    assert_eq!(
+        (stats.power, stats.toughness),
+        (Some(2 + bonus), Some(2 + bonus))
+    );
+    assert_eq!(
+        driver.state().zone(Zone::Graveyard(ME)).len(),
+        graveyard + 2
+    );
+    assert_replays(&driver, &scenario);
+    Ok(())
+}
+
+#[rstest]
+fn only_the_first_saddle_of_the_turn_mills_and_grows(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let scenario = burrow_table(seats, 0, 4);
+    let mut driver = Driver::from_scenario(scenario.clone())?;
+    driver.pass_until(Step::Main1)?;
+    pay_for(&mut driver, "Stubborn Burrowfiend", &["Rider A"])?;
+    let yard = driver.state().zone(Zone::Graveyard(ME)).len();
+    // Riders are tapped to pay; the Mount saddled again by Rider B is the second time this turn.
+    pay_for(&mut driver, "Stubborn Burrowfiend", &["Rider B"])?;
+    assert_eq!(driver.state().zone(Zone::Graveyard(ME)).len(), yard);
+    let stats = characteristics(driver.state(), driver.id_of("Stubborn Burrowfiend")?).unwrap();
+    assert_eq!((stats.power, stats.toughness), (Some(4), Some(4)));
+    assert_replays(&driver, &scenario);
+    Ok(())
+}
+
+const READERS: [&str; 6] = [
+    "Mobilizer Mech",
+    "Getaway Car",
+    "Subterranean Schooner",
+    "Giant Beaver",
+    "Rambling Possum",
+    "Stubborn Burrowfiend",
+];
+
+#[test]
+fn bot_games_with_the_crew_record_cards_keep_every_invariant_and_replay() {
+    use std::sync::Mutex;
+
+    use mtg_testkit::level_cards::SADDLE_CARDS;
+    use mtg_testkit::vehicle_cards::VEHICLE_CARDS;
+    use mtg_testkit::{PlayOptions, level_fuzz_setup, play_game_with, vehicle_fuzz_setup};
+
+    use crate::common::seeds::{for_each_seed, fuzz_games};
+
+    for name in READERS {
+        assert!(
+            VEHICLE_CARDS.contains(&name) || SADDLE_CARDS.contains(&name),
+            "{name} is in a fuzz deck"
+        );
+    }
+    // Crews and saddles of these cards in all the games.
+    let seen = Mutex::new(0u64);
+    for_each_seed(0..fuzz_games(12), |seed| {
+        for players in [2, 3, 4] {
+            for setup in [
+                vehicle_fuzz_setup(players, seed),
+                level_fuzz_setup(players, seed),
+            ] {
+                let outcome = play_game_with(setup.clone(), seed, PlayOptions::default())
+                    .unwrap_or_else(|failure| panic!("{failure}"));
+                let replayed = replay(&setup, &outcome.events).unwrap();
+                assert_eq!(replayed.state_hash(), outcome.final_hash, "seed {seed}");
+                let crews = outcome
+                    .events
+                    .iter()
+                    .filter(|event| match event {
+                        Event::Crewed { object, .. } => replayed
+                            .object(*object)
+                            .is_some_and(|o| READERS.contains(&o.card().name.as_str())),
+                        _ => false,
+                    })
+                    .count();
+                *seen.lock().unwrap() += u64::try_from(crews).unwrap();
+            }
+        }
+    });
+    assert!(
+        seen.into_inner().unwrap() > 0,
+        "some card that reads the crews was crewed or saddled"
+    );
+}

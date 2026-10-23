@@ -31,8 +31,13 @@ pub const OUTLAST_CARDS: &[&str] = &[
     "Mer-Ek Nightblade",
 ];
 
-/// The corpus Mount with Saddle.
-pub const SADDLE_CARDS: &[&str] = &["Bridled Bighorn"];
+/// The corpus Mounts with Saddle, those that read the creatures that saddled them among them.
+pub const SADDLE_CARDS: &[&str] = &[
+    "Bridled Bighorn",
+    "Giant Beaver",
+    "Rambling Possum",
+    "Stubborn Burrowfiend",
+];
 
 /// A legal Normal deck of lands, the corpus creatures that level up, outlast and saddle, and plain creatures of
 /// every power, derived entirely from `rng`.

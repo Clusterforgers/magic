@@ -629,8 +629,7 @@ fn written(
         // one sentence, which no joint splits.
         if let Some((text, used)) = cast::sentence_text(&effects[start..])
             .or_else(|| library::sequence(&effects[start..]))
-            .or_else(|| writer.explore_twice(&effects[start..]))
-            .or_else(|| writer.mill_then_change(&effects[start..]))
+            .or_else(|| writer.then_steps(&effects[start..]))
         {
             unsplit(mask, start, used)?;
             sentences.push(text);
@@ -1684,6 +1683,12 @@ impl Writer<'_> {
             }
             _ => None,
         }
+    }
+
+    /// Two steps that are one sentence, which no joint splits: an explore twice, or a mill and the change it counts.
+    fn then_steps(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
+        self.explore_twice(effects)
+            .or_else(|| self.mill_then_change(effects))
     }
 
     /// "~ explores, then it explores again": one creature that explores twice is one sentence, which no joint splits.

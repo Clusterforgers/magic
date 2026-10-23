@@ -127,12 +127,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::SpellCopied(copy) => crate::copies::fold_spell(state, copy),
         Event::AbilityCopied(copy) => crate::copies::fold_ability(state, copy),
         Event::CopyEnded { object } => crate::copies::fold_ended(state, *object),
-        Event::Crewed {
-            object,
-            creatures,
-            saddle,
-            ..
-        } => tally_crewed(state, *object, creatures, *saddle),
+        Event::Crewed { .. } => tally_crewed(state, event),
         // The change follows as events of its own; the action only restarts the round, so the other seats see it.
         Event::ManualAction { .. } => {
             reset_passes(state);
@@ -445,12 +440,17 @@ fn set_monstrous(state: &mut GameState, id: ObjectId) -> Result<(), EngineError>
 
 /// A Vehicle becomes crewed or a Mount saddled: counted for the object, which is a permanent, and the creatures still on
 /// the battlefield that were tapped to pay are recorded for it.
-fn tally_crewed(
-    state: &mut GameState,
-    id: ObjectId,
-    creatures: &[ObjectId],
-    saddle: bool,
-) -> Result<(), EngineError> {
+fn tally_crewed(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
+    let Event::Crewed {
+        object: id,
+        creatures,
+        saddle,
+        ..
+    } = event
+    else {
+        return Err(invalid("not a crew".to_owned()));
+    };
+    let (id, saddle) = (*id, *saddle);
     let object = state
         .object(id)
         .map(GameObject::reference)
