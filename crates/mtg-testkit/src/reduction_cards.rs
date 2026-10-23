@@ -85,7 +85,9 @@ mod tests {
     fn a_reduction_deck_has_every_listed_card_and_is_legal() {
         let deck = reduction_deck(&mut GameRng::substream(1, 17_000)).unwrap();
         for &name in REDUCTION_CARDS {
-            assert!(deck.iter().any(|card| card.name == name), "{name}");
+            // A card with two faces is named after its front face.
+            let front = name.split(" // ").next().unwrap_or(name);
+            assert!(deck.iter().any(|card| card.name == front), "{name}");
         }
         let setup = reduction_fuzz_setup(3, 5).unwrap();
         assert_eq!(setup.validate(), Ok(()));
