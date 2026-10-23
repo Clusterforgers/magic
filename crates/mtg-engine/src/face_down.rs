@@ -131,7 +131,7 @@ fn keyword_cost(card: &CardDefinition) -> Option<(ManaCost, bool)> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a face-down object reads as the 2/2 creature of CR 708.2a (no name, cost, colour, other type or ability, ward {2} for a disguise) through the layers, keeps its card for turning it face up, is copied as that 2/2 and not as its card, is looked at by its controller alone, and costs its morph, megamorph or disguise cost in mana to turn face up.
+    //! Goal: a face-down object (morph, disguise, manifest, cloak) reads as the 2/2 creature of CR 708.2a (no name, cost, colour, other type or ability, ward {2} for a disguise or a cloak) through the layers, keeps its card for turning it face up, is copied as that 2/2 and not as its card, is looked at by its controller alone, and costs its morph, megamorph or disguise cost in mana to turn face up, or for a manifested or cloaked creature card its mana cost.
     use mtg_cards::definition::CardDefinition;
     use mtg_core::ids::PlayerId;
     use rstest::rstest;

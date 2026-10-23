@@ -103,8 +103,8 @@ fn the_activation_manifests_the_top_card_and_a_creature_card_can_be_turned_face_
     assert_eq!(object.controller(), pid(0));
     assert_eq!(Some(object.id()), card, "the top card, now a new object");
     assert_eq!(library_size(&driver, 0), sizes[0] - 1);
-    for seat in 1..seats {
-        assert_eq!(library_size(&driver, seat), sizes[seat]);
+    for (seat, size) in sizes.iter().enumerate().skip(1) {
+        assert_eq!(library_size(&driver, seat), *size);
     }
     let chars = characteristics(driver.state(), made[0]).unwrap();
     assert_eq!((chars.power, chars.toughness), (Some(2), Some(2)));

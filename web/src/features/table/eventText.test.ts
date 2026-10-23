@@ -279,6 +279,14 @@ const MORE: [Event, string][] = [
   [{ ZoneChanged: { object: 3, from: 'Battlefield', to: 'Exile', cause: 'Moved' } }, 'Forest moves to exile'],
   [{ ZoneChanged: { object: 3, from: { Hand: 0 }, to: 'Exile', cause: 'Foretold' } }, 'Forest is foretold'],
   [
+    { ZoneChanged: { object: 3, from: { Library: 0 }, to: 'Battlefield', cause: { Manifested: { by: 0 } } } },
+    'Forest is manifested',
+  ],
+  [
+    { ZoneChanged: { object: 3, from: { Library: 1 }, to: 'Battlefield', cause: { Cloaked: { by: 0 } } } },
+    'Forest is cloaked',
+  ],
+  [
     {
       ZoneChanged: {
         object: 3,
