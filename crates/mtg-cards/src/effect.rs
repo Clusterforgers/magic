@@ -86,8 +86,9 @@ pub enum Destination {
 pub enum Produce {
     /// This mana, as printed (`{C}{C}`).
     Fixed(Vec<ManaType>),
-    /// This many mana of any one color, chosen when added.
-    AnyColor(u32),
+    /// This many mana of any one color, chosen when added ("X mana of any one color, where X is the number of Allies you
+    /// control"); a count that is not a fixed number is counted when the mana is added.
+    AnyColor(Amount),
     /// One mana of a type chosen when added from at least two ("Add {W} or {U}").
     OneOf(Vec<ManaType>),
     /// All the mana of one list, the list chosen when added from at least two ("Add {W}{W}, {W}{U}, or {U}{U}").
@@ -110,6 +111,16 @@ pub enum Produce {
     },
     /// One mana of a type the permanent tapped for mana produced; only in a triggered mana ability (CR 605.1b).
     OfTapped,
+    /// The first mana, or the second when the condition holds as the mana is added ("Add {G}. If you control four or more
+    /// creatures, add {G}{G} instead."); neither is itself a replacement.
+    Instead {
+        /// What is added when the condition does not hold.
+        base: Box<Produce>,
+        /// The condition for the second.
+        when: Condition,
+        /// What is added in its place when the condition holds.
+        instead: Box<Produce>,
+    },
     /// This many mana, each of a type chosen when added from `among` or, with none listed, from the five colors ("two mana
     /// in any combination of colors", "X mana in any combination of {R} and/or {G}"). A count of the X announced is the X
     /// of the cost of the ability that adds it.

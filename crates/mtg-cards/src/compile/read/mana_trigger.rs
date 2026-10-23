@@ -24,7 +24,7 @@ fn produced(r: &mut Reader<'_>) -> Option<Produce> {
     }
     r.need("an additional")?;
     if r.words("one mana of any color") {
-        return Some(Produce::AnyColor(1));
+        return Some(Produce::AnyColor(Amount::one()));
     }
     if r.words("one mana of the chosen color") {
         return Some(Produce::ChosenColor(1));
@@ -68,7 +68,9 @@ pub fn effects(r: &mut Reader<'_>, when: &TriggerPattern) -> Option<Vec<Effect>>
 fn mana_words(mana: &Produce) -> Option<String> {
     Some(match mana {
         Produce::OfTapped => "one mana of any type that land produced".to_owned(),
-        Produce::AnyColor(1) => "an additional one mana of any color".to_owned(),
+        Produce::AnyColor(count) if count.is_one() => {
+            "an additional one mana of any color".to_owned()
+        }
         Produce::ChosenColor(1) => "an additional one mana of the chosen color".to_owned(),
         Produce::AnyCombination { count, among } if count.fixed().is_some() => format!(
             "an additional {}",

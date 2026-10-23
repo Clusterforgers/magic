@@ -177,6 +177,7 @@ mod copy_wordings;
 mod cost_counts;
 mod cost_wordings;
 mod counted;
+mod counted_mana;
 mod counter_actions;
 mod counters;
 mod create;

@@ -1303,6 +1303,69 @@ impl<'a> Walker<'a> {
         self.scope.names.pop();
     }
 
+    /// The mana an effect adds: no list that adds nothing, a choice of at least two, and the amounts and conditions it reads.
+    fn produce(&mut self, mana: &Produce) {
+        match mana {
+            Produce::Fixed(list) if list.is_empty() => self.problem("adds no mana"),
+            Produce::ChosenColor(0)
+            | Produce::CommanderIdentity(0)
+            | Produce::ProducedBy { count: 0, .. } => self.problem("adds no mana"),
+            Produce::AnyColor(count) | Produce::AnyCombination { count, .. }
+                if count.fixed() == Some(0) =>
+            {
+                self.problem("adds no mana");
+            }
+            Produce::AnyColor(count) => {
+                self.at("AnyColor", |w| w.amount(count));
+            }
+            Produce::AnyCombination { among, .. } if among.len() == 1 => {
+                self.problem("a combination of one type is that mana");
+            }
+            Produce::AnyCombination { count, .. } => {
+                self.at("AnyCombination", |w| w.at("count", |w| w.amount(count)));
+            }
+            Produce::OneOf(list) if list.len() < 2 => {
+                self.problem("a choice of mana needs at least two types");
+            }
+            Produce::OneOfLists(lists) if lists.len() < 2 => {
+                self.problem("a choice of mana needs at least two lists");
+            }
+            Produce::OneOfLists(lists) if lists.len() > MANA_WAYS => {
+                self.problem("a choice of mana has at most six lists");
+            }
+            Produce::OneOfLists(lists) if lists.iter().any(Vec::is_empty) => {
+                self.problem("a list of mana adds no mana");
+            }
+            Produce::ProducedBy { among, .. } => {
+                self.at("ProducedBy", |w| w.at("among", |w| w.selector(among)));
+            }
+            Produce::Instead {
+                base,
+                when,
+                instead,
+            } => {
+                self.at("Instead", |w| {
+                    w.at("base", |w| w.produce(base));
+                    w.at("when", |w| w.condition(when));
+                    w.at("instead", |w| w.produce(instead));
+                });
+            }
+            Produce::Fixed(_)
+            | Produce::OneOf(_)
+            | Produce::OneOfLists(_)
+            | Produce::ChosenColor(_)
+            | Produce::OrChosenColor(_)
+            | Produce::CommanderIdentity(_)
+            | Produce::OfTapped => {}
+        }
+        // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.
+        match mana {
+            Produce::Fixed(_) => {}
+            Produce::AnyColor(count) if count.fixed().is_some() => {}
+            other => self.uses("Effect", &format!("AddMana.{}", tag_of(other))),
+        }
+    }
+
     #[allow(clippy::too_many_lines)]
     fn effect(&mut self, effect: &Effect, only_effect: bool) {
         let tag = tag_of(effect);
@@ -1543,50 +1606,7 @@ impl<'a> Walker<'a> {
                 if !only.is_empty() {
                     w.uses("Effect", "AddMana.Restricted");
                 }
-                match mana {
-                    Produce::Fixed(list) if list.is_empty() => w.problem("adds no mana"),
-                    Produce::AnyColor(0)
-                    | Produce::ChosenColor(0)
-                    | Produce::CommanderIdentity(0)
-                    | Produce::ProducedBy { count: 0, .. } => w.problem("adds no mana"),
-                    Produce::AnyCombination { count, .. } if count.fixed() == Some(0) => {
-                        w.problem("adds no mana");
-                    }
-                    Produce::AnyCombination { among, .. } if among.len() == 1 => {
-                        w.problem("a combination of one type is that mana");
-                    }
-                    Produce::AnyCombination { count, .. } => {
-                        w.at("mana", |w| w.at("AnyCombination", |w| w.at("count", |w| w.amount(count))));
-                    }
-                    Produce::OneOf(list) if list.len() < 2 => {
-                        w.problem("a choice of mana needs at least two types");
-                    }
-                    Produce::OneOfLists(lists) if lists.len() < 2 => {
-                        w.problem("a choice of mana needs at least two lists");
-                    }
-                    Produce::OneOfLists(lists) if lists.len() > MANA_WAYS => {
-                        w.problem("a choice of mana has at most six lists");
-                    }
-                    Produce::OneOfLists(lists) if lists.iter().any(Vec::is_empty) => {
-                        w.problem("a list of mana adds no mana");
-                    }
-                    Produce::ProducedBy { among, .. } => w.at("mana", |w| {
-                        w.at("ProducedBy", |w| w.at("among", |w| w.selector(among)));
-                    }),
-                    Produce::Fixed(_)
-                    | Produce::AnyColor(_)
-                    | Produce::OneOf(_)
-                    | Produce::OneOfLists(_)
-                    | Produce::ChosenColor(_)
-                    | Produce::OrChosenColor(_)
-                    | Produce::CommanderIdentity(_)
-                    | Produce::OfTapped => {}
-                }
-                // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.
-                match mana {
-                    Produce::Fixed(_) | Produce::AnyColor(_) => {}
-                    other => w.uses("Effect", &format!("AddMana.{}", tag_of(other))),
-                }
+                w.at("mana", |w| w.produce(mana));
                 w.at("times", |w| w.amount(times));
             }
             Effect::PutCounters { on, count, .. } => {
