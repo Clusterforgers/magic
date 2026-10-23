@@ -129,11 +129,12 @@ pub struct DeckList {
     pub decks: Vec<DeckListItem>,
 }
 
-/// The body of `POST /api/decks/check`: a stored deck by id, or an unsaved list.
+/// The body of `POST /api/decks/check`: a stored deck by id, a precon by `precon:<code>`, or an unsaved list.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRequest {
-    /// The id of a stored deck of the signed-in account; then `format` and `cards` are absent.
+    /// The id of a stored deck of the signed-in account, or `precon:<code>` (a precon needs no account); then
+    /// `format` and `cards` are absent.
     #[serde(default)]
     pub deck: Option<String>,
     /// The format to check an unsaved list in.
@@ -301,11 +302,13 @@ pub enum DeckErrorCode {
     Unavailable,
     /// 500: the server failed; the details stay in its log.
     Internal,
+    /// 429: the address asked for too many precons or precon checks; `Retry-After` says how long to wait.
+    RateLimited,
 }
 
 impl DeckErrorCode {
     /// Every code, in declaration order.
-    pub const ALL: [DeckErrorCode; 14] = [
+    pub const ALL: [DeckErrorCode; 15] = [
         DeckErrorCode::InvalidRequest,
         DeckErrorCode::InvalidDeck,
         DeckErrorCode::UnknownCards,
@@ -320,6 +323,7 @@ impl DeckErrorCode {
         DeckErrorCode::CardsUnavailable,
         DeckErrorCode::Unavailable,
         DeckErrorCode::Internal,
+        DeckErrorCode::RateLimited,
     ];
 
     /// The text on the wire.
@@ -339,6 +343,7 @@ impl DeckErrorCode {
             DeckErrorCode::CardsUnavailable => "cards_unavailable",
             DeckErrorCode::Unavailable => "unavailable",
             DeckErrorCode::Internal => "internal",
+            DeckErrorCode::RateLimited => "rate_limited",
         }
     }
 }
