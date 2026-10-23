@@ -567,12 +567,12 @@ impl Hash for GameState {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: the active player is none once they have left the game, the first player in turn order of that turn is the next seat in the game, wrapping round the table and skipping the seats that left before, a round ends with the last seat in play before the first player, and the creatures that dealt combat damage this turn open prowl for the cards that share a creature type with one and are forgotten at the next turn.
+    //! Goal: the active player is none once they have left the game, the first player in turn order of that turn is the next seat in the game, wrapping round the table and skipping the seats that left before, a round ends with the last seat in play before the first player, and the creatures that dealt combat damage this turn open prowl for the cards that share a creature type with one and are forgotten at the next turn, and a card counts for mayhem only while it lies in the graveyard a discard of its owner this turn put it in.
     use mtg_core::ids::PlayerId;
     use rstest::rstest;
 
     use super::*;
-    use crate::events::Event;
+    use crate::events::{Event, ZoneCause};
     use crate::fixtures::setup;
     use crate::fold::apply_event;
     use crate::player::LossReason;
@@ -680,5 +680,73 @@ mod tests {
             &subtypes(card_types),
             card_has_every_type
         ));
+    }
+
+    /// What happens to the one card of seat 0 that sits in its hand.
+    #[derive(Debug, Clone, Copy)]
+    enum Fate {
+        /// A discard (`CardDiscarded`).
+        Discard,
+        /// A discard whose move a replacement effect logged as a zone change.
+        DiscardMoved,
+        /// Put into the graveyard by some other effect.
+        Moved,
+        /// Discarded, then exiled, then put into the graveyard again.
+        DiscardThenAnotherZone,
+    }
+
+    #[rstest]
+    #[case::a_discard(Fate::Discard, true)]
+    #[case::a_discard_logged_as_a_move(Fate::DiscardMoved, true)]
+    #[case::any_other_move(Fate::Moved, false)]
+    #[case::a_card_that_left_and_came_back(Fate::DiscardThenAnotherZone, false)]
+    fn only_a_card_discarded_into_a_graveyard_this_turn_counts_for_mayhem(
+        #[case] fate: Fate,
+        #[case] counted: bool,
+        #[values(2, 3, 4)] seats: usize,
+    ) {
+        let hands = (0..seats)
+            .map(|seat| vec![crate::fixtures::creature(&format!("Card {seat}"), 1, 1)])
+            .collect();
+        let mut game = GameState::from_setup(&setup(hands, vec![Vec::new(); seats])).unwrap();
+        let me = PlayerId::from_index(0);
+        let card = game.zone(Zone::Hand(me))[0];
+        let moved = |from, to, cause| Event::ZoneChanged {
+            object: card,
+            from,
+            to,
+            cause,
+        };
+        let events = match fate {
+            Fate::Discard => vec![Event::CardDiscarded {
+                player: me,
+                object: card,
+            }],
+            Fate::DiscardMoved => vec![moved(
+                Zone::Hand(me),
+                Zone::Graveyard(me),
+                ZoneCause::Discarded,
+            )],
+            Fate::Moved => vec![moved(Zone::Hand(me), Zone::Graveyard(me), ZoneCause::Moved)],
+            Fate::DiscardThenAnotherZone => vec![
+                Event::CardDiscarded {
+                    player: me,
+                    object: card,
+                },
+                moved(Zone::Graveyard(me), Zone::Exile, ZoneCause::Exiled),
+                moved(Zone::Exile, Zone::Graveyard(me), ZoneCause::Moved),
+            ],
+        };
+        for event in &events {
+            apply_event(&mut game, event).unwrap();
+        }
+        assert_eq!(game.zone(Zone::Graveyard(me)), [card]);
+        assert_eq!(game.discarded_this_turn(me, card), counted);
+        // Nobody else discarded it.
+        for seat in 1..seats {
+            assert!(!game.discarded_this_turn(PlayerId::from_index(seat), card));
+        }
+        game.clear_turn_uses();
+        assert!(!game.discarded_this_turn(me, card), "the turn is over");
     }
 }
