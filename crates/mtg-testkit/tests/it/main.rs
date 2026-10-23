@@ -17,6 +17,7 @@ mod attachments;
 mod attack_budget;
 mod attack_tax;
 mod attack_tax_fuzz;
+mod aura_grants;
 mod backup_keyword;
 mod bestow;
 mod bestow_fuzz;

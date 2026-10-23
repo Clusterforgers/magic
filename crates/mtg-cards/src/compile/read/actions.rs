@@ -1,5 +1,6 @@
 //! Keyword actions of creatures: "it explores", "it connives", "target creature you control explores, then it explores again",
-//! "goad target creature" (`Effect::Explore`, `Effect::Connive`, `Effect::Goad`). The writer's side is an arm of the renderer.
+//! "goad target creature", "enchanted creature fights target creature" (`Effect::Explore`, `Effect::Connive`,
+//! `Effect::Goad`, `Effect::Fight`). The writer's side is an arm of the renderer.
 
 use super::effects::{attached, is_on_the_battlefield, object, target_object, up_to_one_object};
 use super::tokens::Reader;

@@ -1389,6 +1389,35 @@ pub(super) fn predicate_variants(
     written
 }
 
+/// The modifications before the last part of a sentence and the last part: "is goaded", "can't be blocked by more than
+/// one creature", "lose all creature types" and "is a Monk in addition to its other types".
+fn last_part(mods: &[Modification], plural: bool) -> (&[Modification], Option<String>) {
+    let is = if plural { "are" } else { "is" };
+    match mods.split_last() {
+        Some((Modification::Goaded, rest)) if !rest.is_empty() => {
+            (rest, Some(format!("{is} goaded")))
+        }
+        Some((Modification::MaxBlockers(1), rest)) if !rest.is_empty() => (
+            rest,
+            Some("can't be blocked by more than one creature".to_owned()),
+        ),
+        Some((Modification::SetCreatureTypes(types), rest))
+            if types.is_empty() && !rest.is_empty() =>
+        {
+            let lose = if plural { "lose" } else { "loses" };
+            (rest, Some(format!("{lose} all creature types")))
+        }
+        Some((Modification::AddSubtype(Subtype(kind)), rest)) if !rest.is_empty() && !plural => (
+            rest,
+            Some(format!(
+                "is {} {kind} in addition to its other types",
+                article(kind)
+            )),
+        ),
+        _ => (mods, None),
+    }
+}
+
 /// "can't attack or block", "gets +1/+1 and has flying", "have haste". The card itself gets a bonus or a keyword only
 /// under a condition, and a restriction is not read under one.
 pub(super) fn predicate(
@@ -1442,41 +1471,12 @@ pub(super) fn predicate(
         _ if !conditional && itself && !counts_stats(mods) => return None,
         _ => {}
     }
-    let (gets, has, is) = if plural {
-        ("get", "have", "are")
+    let (gets, has) = if plural {
+        ("get", "have")
     } else {
-        ("gets", "has", "is")
+        ("gets", "has")
     };
-    // "is goaded", "can't be blocked by more than one creature" and "is a Monk in addition to its other types" are the
-    // last part of the sentence.
-    let (mods, last) = match mods.split_last() {
-        Some((Modification::Goaded, rest)) if !rest.is_empty() => {
-            (rest, Some(format!("{is} goaded")))
-        }
-        Some((Modification::MaxBlockers(1), rest)) if !rest.is_empty() => (
-            rest,
-            Some("can't be blocked by more than one creature".to_owned()),
-        ),
-        Some((Modification::SetCreatureTypes(types), rest))
-            if types.is_empty() && !rest.is_empty() =>
-        {
-            (
-                rest,
-                Some(format!(
-                    "{} all creature types",
-                    if plural { "lose" } else { "loses" }
-                )),
-            )
-        }
-        Some((Modification::AddSubtype(Subtype(kind)), rest)) if !rest.is_empty() && !plural => (
-            rest,
-            Some(format!(
-                "is {} {kind} in addition to its other types",
-                article(kind)
-            )),
-        ),
-        _ => (mods, None),
-    };
+    let (mods, last) = last_part(mods, plural);
     let (stats, rest) = match mods.split_first() {
         Some((Modification::ModifyPT { power, toughness }, rest)) => {
             let (stats, tail) = stats_text(power, toughness)?;

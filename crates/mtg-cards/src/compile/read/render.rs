@@ -1451,6 +1451,24 @@ impl Writer<'_> {
         copy_spells::become_texts(choose, copy, &target)
     }
 
+    /// A verb that acts on objects: "destroy target creature", "tap enchanted creature", "enchanted creature fights
+    /// target creature".
+    fn on_objects(&mut self, effect: &Effect) -> Option<String> {
+        Some(match effect {
+            Effect::Destroy { what, .. } => format!("destroy {}", self.object(what)?),
+            Effect::Tap { what } => format!("tap {}", self.object(what)?),
+            Effect::Untap { what } => format!("untap {}", self.object(what)?),
+            Effect::Goad { what } if self.named && self.single(what) => "goad it".to_owned(),
+            Effect::Goad { what } => format!("goad {}", self.object(what)?),
+            Effect::Fight { what, with } => {
+                format!("{} fights {}", self.object(what)?, self.object(with)?)
+            }
+            Effect::Regenerate { what } => format!("regenerate {}", self.object(what)?),
+            Effect::Counter { what } => format!("counter {}", self.object(what)?),
+            _ => return None,
+        })
+    }
+
     /// An effect as a sentence without its first capital and its period.
     fn effect(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
@@ -1522,16 +1540,13 @@ impl Writer<'_> {
                 points_text(amount)?,
                 self.recipient(to)?
             ),
-            Effect::Destroy { what, .. } => format!("destroy {}", self.object(what)?),
-            Effect::Tap { what } => format!("tap {}", self.object(what)?),
-            Effect::Untap { what } => format!("untap {}", self.object(what)?),
-            Effect::Goad { what } if self.named && self.single(what) => "goad it".to_owned(),
-            Effect::Goad { what } => format!("goad {}", self.object(what)?),
-            Effect::Fight { what, with } => {
-                format!("{} fights {}", self.object(what)?, self.object(with)?)
-            }
-            Effect::Regenerate { what } => format!("regenerate {}", self.object(what)?),
-            Effect::Counter { what } => format!("counter {}", self.object(what)?),
+            Effect::Destroy { .. }
+            | Effect::Tap { .. }
+            | Effect::Untap { .. }
+            | Effect::Goad { .. }
+            | Effect::Fight { .. }
+            | Effect::Regenerate { .. }
+            | Effect::Counter { .. } => self.on_objects(effect)?,
             Effect::Continuous {
                 affected,
                 mods,
