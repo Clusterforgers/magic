@@ -231,6 +231,15 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
             continue;
         };
         let once = shape.once;
+        // Every use takes others, so what limits the uses is what the cost takes.
+        let repeat = !tap
+            && !sacrifice
+            && !once
+            && !takes.is_empty()
+            && shape.pays.is_empty()
+            && shape.mana.symbols().is_empty()
+            && shape.condition.is_none()
+            && shape.times.is_one();
         let options = additions
             .into_iter()
             .take(VARIANTS)
@@ -259,6 +268,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                     },
                     cost: shape.mana.clone(),
                     takes: takes.clone(),
+                    repeat,
                 })
             })
             .collect();

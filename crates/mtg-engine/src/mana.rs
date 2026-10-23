@@ -22,6 +22,7 @@ use crate::error::PaymentError;
 use crate::help::{self, Convoked, Help, Used};
 use crate::mana_cost::{self, Forced};
 use crate::mana_plan::{Needs, complete_with, covers_cost, plan, rest_after, spent_of};
+use crate::mana_repeat;
 use crate::mana_takes::{assignment, solving, sources_of, without_taken};
 use crate::spend::{Restricted, Spend, Spent, Step};
 
@@ -240,6 +241,10 @@ pub struct ManaOption {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Take>>", optional))]
     pub takes: Vec<Take>,
+    /// A payment may use it more than once: it neither taps nor sacrifices its source and costs only what it takes (Cadaverous Bloom, Skirk Prospector), so every use takes others; left out means a payment uses it once.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub repeat: bool,
 }
 
 /// Permanents or cards a mana ability's cost takes besides its source: "Tap an untapped creature you control", "Sacrifice
@@ -301,6 +306,7 @@ impl ManaOption {
             energy_held: 0,
             cost: ManaCost::ZERO,
             takes: Vec::new(),
+            repeat: false,
         }
     }
 
@@ -892,7 +898,7 @@ pub fn can_afford_with(
     spend: &Spend,
 ) -> bool {
     let floating = pool.floating(spend);
-    let sources = usable(sources, spend, life);
+    let sources = usable(&mana_repeat::expand(sources, cost), spend, life);
     within_energy(&sources, &[]).iter().any(|sources| {
         cost.resolutions().iter().any(|r| {
             can_pay_life(life, r.life)
@@ -982,7 +988,7 @@ pub fn auto_payment_with(
     spend: &Spend,
 ) -> Option<Payment> {
     let floating = pool.floating(spend);
-    let usable_sources = usable(sources, spend, life);
+    let usable_sources = usable(&mana_repeat::expand(sources, cost), spend, life);
     let mut best = None;
     for sources in within_energy(&usable_sources, &[]) {
         for resolution in cost.resolutions() {
@@ -1032,7 +1038,7 @@ pub fn auto_payment_with(
             }
         }
     }
-    best
+    best.map(mana_repeat::fold)
 }
 
 /// Checks the floating mana a payment names against the pool: mana without a restriction must be there, and restricted
@@ -1137,10 +1143,33 @@ pub fn check_payment_with(
     spend: &Spend,
     payment: &Payment,
 ) -> Result<Spent, PaymentError> {
+    mana_repeat::forged(payment)?;
+    let sources = mana_repeat::expand(sources, cost);
+    let payment = mana_repeat::unfold(payment, &sources);
+    check_expanded(cost, pool, &sources, help, tapped, life, spend, &payment)
+        .map(mana_repeat::fold_spent)
+}
+
+/// [`check_payment_with`] over the sources `mana_repeat::expand` made, for a payment that names the copies.
+#[allow(clippy::too_many_arguments)]
+fn check_expanded(
+    cost: &ManaCost,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    help: Help<'_>,
+    tapped: &[ObjectId],
+    life: i32,
+    spend: &Spend,
+    payment: &Payment,
+) -> Result<Spent, PaymentError> {
     let floating = check_pool(pool, sources, spend, payment)?;
     let sources = usable(sources, spend, life);
     let used = Used::new(&payment.convoke, &payment.improvise, &payment.delve);
-    let tapped_for_mana: Vec<ObjectId> = payment.taps.iter().map(|tap| tap.object).collect();
+    let tapped_for_mana: Vec<ObjectId> = payment
+        .taps
+        .iter()
+        .map(|tap| mana_repeat::real(tap.object))
+        .collect();
     help::check(&used, help, tapped, &tapped_for_mana)?;
     let parts = parts_of(&floating, &sources, tapped, &flat(payment))?;
     check_life(cost, life, payment.life)?;
@@ -1267,11 +1296,34 @@ pub fn complete_payment_with(
     spend: &Spend,
     partial: &Payment,
 ) -> Result<Payment, PaymentError> {
+    mana_repeat::forged(partial)?;
+    let sources = mana_repeat::expand(sources, cost);
+    let partial = mana_repeat::unfold(partial, &sources);
+    complete_expanded(cost, pool, &sources, help, tapped, life, spend, &partial)
+        .map(mana_repeat::fold)
+}
+
+/// [`complete_payment_with`] over the sources `mana_repeat::expand` made, for a payment that names the copies.
+#[allow(clippy::too_many_arguments)]
+fn complete_expanded(
+    cost: &ManaCost,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    help: Help<'_>,
+    tapped: &[ObjectId],
+    life: i32,
+    spend: &Spend,
+    partial: &Payment,
+) -> Result<Payment, PaymentError> {
     let floating = check_pool(pool, sources, spend, partial)?;
     let usable_sources = usable(sources, spend, life);
     let flat_partial = flat(partial);
     let kept = Used::new(&partial.convoke, &partial.improvise, &partial.delve);
-    let occupied: Vec<ObjectId> = partial.taps.iter().map(|tap| tap.object).collect();
+    let occupied: Vec<ObjectId> = partial
+        .taps
+        .iter()
+        .map(|tap| mana_repeat::real(tap.object))
+        .collect();
     help::check(&kept, help, tapped, &occupied)?;
     let parts = parts_of(&floating, &usable_sources, tapped, &flat_partial)?;
     check_life(cost, life, partial.life)?;
@@ -1340,7 +1392,7 @@ pub fn complete_payment_with(
         }
     }
     let whole = best.ok_or_else(|| refusal.unwrap_or(PaymentError::CannotComplete))?;
-    check_payment_with(cost, pool, sources, help, tapped, life, spend, &whole)?;
+    check_expanded(cost, pool, sources, help, tapped, life, spend, &whole)?;
     Ok(whole)
 }
 

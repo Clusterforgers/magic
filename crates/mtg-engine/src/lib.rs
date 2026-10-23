@@ -26,6 +26,7 @@ mod mana_ability;
 mod mana_cost;
 mod mana_kinds;
 mod mana_plan;
+mod mana_repeat;
 mod mana_takes;
 mod mulligan;
 mod parts;
