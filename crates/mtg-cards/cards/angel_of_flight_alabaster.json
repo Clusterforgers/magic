@@ -1,0 +1,27 @@
+{
+  "oracle_id": "9b6a74fb-c48f-4d85-b4b3-96eb80b9efc7",
+  "name": "Angel of Flight Alabaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angel of Flight Alabaster",
+      "oracle_fingerprint": "3239a95f883d64a619f8d7ca5ecf4c58",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, { "Subtype": "Spirit" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

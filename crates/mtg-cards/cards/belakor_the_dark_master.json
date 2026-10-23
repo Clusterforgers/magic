@@ -1,0 +1,51 @@
+{
+  "oracle_id": "3690ca72-c925-42ab-acc2-7cc1fda05789",
+  "name": "Be'lakor, the Dark Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Be'lakor, the Dark Master",
+      "oracle_fingerprint": "bf46ce8fe53a020536888db0dc263d20",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Count": [{ "Subtype": "Demon" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "LoseLife": {
+                  "amount": { "Count": [{ "Subtype": "Demon" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["Other", { "Subtype": "Demon" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Triggering",
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

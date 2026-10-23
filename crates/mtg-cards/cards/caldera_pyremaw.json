@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3eb5ae68-7f76-4874-80a4-80058b10fc7a",
+  "name": "Caldera Pyremaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caldera Pyremaw",
+      "oracle_fingerprint": "9751092d8659a4bf6e4de2f51ef26652",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

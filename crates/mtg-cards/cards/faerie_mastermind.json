@@ -1,0 +1,22 @@
+{
+  "oracle_id": "a984db23-40ea-428d-829f-e944267280f8",
+  "name": "Faerie Mastermind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faerie Mastermind",
+      "oracle_fingerprint": "9057053fb56b1a7734ce8ae12241f7eb",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "Opponents" } }, "nth": 2 } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Activated": { "cost": "{3}{U}", "effects": [{ "Draw": { "who": "EachPlayer" } }] } }
+      ]
+    }
+  ]
+}

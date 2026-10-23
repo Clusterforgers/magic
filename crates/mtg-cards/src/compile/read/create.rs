@@ -8,7 +8,7 @@ use mtg_core::color::Color;
 
 use super::amounts::{count_word, counted, counted_parts, number_word, stat_name};
 use super::selectors::{
-    Form, card_type, color, color_name, keyword, keyword_text, phrase, phrase_text, subtype,
+    Form, card_type, color, color_name, granted_text, keyword, phrase, phrase_text, subtype,
     type_name,
 };
 use super::tokens::Reader;
@@ -17,6 +17,7 @@ use super::where_x;
 use crate::ability::Ability;
 use crate::card::TokenSpec;
 use crate::effect::{Effect, TokenRef};
+use crate::modify::Modification;
 use crate::refs::Ref;
 use crate::value::Amount;
 
@@ -254,20 +255,18 @@ fn keywords_text(token: &TokenRef) -> Option<String> {
     let TokenRef::Custom(spec) = token else {
         return Some(String::new());
     };
-    let names: Vec<String> = spec
+    let granted: Vec<Modification> = spec
         .abilities
         .iter()
         .map(|ability| match ability {
-            Ability::Keyword(found) => keyword_text(found),
+            Ability::Keyword(found) => Some(Modification::AddKeyword(found.clone())),
             _ => None,
         })
         .collect::<Option<_>>()?;
-    Some(match names.as_slice() {
-        [] => String::new(),
-        [only] => format!(" with {only}"),
-        [first, last] => format!(" with {first} and {last}"),
-        [rest @ .., last] => format!(" with {}, and {last}", rest.join(", ")),
-    })
+    if granted.is_empty() {
+        return Some(String::new());
+    }
+    Some(format!(" with {}", granted_text(&granted)?))
 }
 
 /// An effect that creates tokens, as a sentence without its first capital and period. A count of things is worded

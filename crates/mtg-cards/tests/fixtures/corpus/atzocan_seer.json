@@ -1,0 +1,27 @@
+{
+  "id": "985448b8-5852-4074-a4bd-1dee5192b104",
+  "oracle_id": "affced7f-797d-4e50-8a24-2da14de44e43",
+  "name": "Atzocan Seer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "lcc",
+  "collector_number": "265",
+  "rarity": "uncommon",
+  "released_at": "2023-11-17",
+  "digital": false,
+  "mana_cost": "{1}{G}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Druid",
+  "oracle_text": "{T}: Add one mana of any color.\nSacrifice this creature: Return target Dinosaur card from your graveyard to your hand.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": []
+}

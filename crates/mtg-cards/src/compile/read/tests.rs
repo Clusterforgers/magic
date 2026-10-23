@@ -250,6 +250,7 @@ mod triggers;
 mod turned_face_up;
 mod vocabulary;
 mod where_x;
+mod written_effects;
 mod x_after;
 
 mod mana {

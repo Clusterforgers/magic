@@ -1,0 +1,27 @@
+{
+  "id": "9eb7b2ae-a364-485b-ae75-10dbb0af5541",
+  "oracle_id": "d18a0815-59d3-4667-b52b-9acda741215e",
+  "name": "Arboreal Grazer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "245",
+  "rarity": "common",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Creature — Sloth Beast",
+  "oracle_text": "Reach\nWhen this creature enters, you may put a land card from your hand onto the battlefield tapped.",
+  "power": "0",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach"
+  ]
+}

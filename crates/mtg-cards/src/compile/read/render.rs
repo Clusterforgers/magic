@@ -3,6 +3,12 @@
 //! player in a row are one compound sentence; the readers take ", then" between two steps as the
 //! same sequence.
 
+mod damage_by;
+mod divided;
+mod graveyards;
+mod may_have;
+mod put_onto;
+
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
 use super::attackers;
 use super::becomes;
@@ -16,6 +22,7 @@ use super::create;
 use super::defining;
 use super::draws;
 use super::effects::{BACK, RETURNED, dead_card, returns_itself};
+use super::event_wordings;
 use super::flicker;
 use super::group_pump;
 use super::lands;
@@ -273,6 +280,16 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(more);
     texts.extend(where_x::wordings(ability));
     graveyard_wordings(ability, &mut texts);
+    texts
+}
+
+/// Every wording the proposal checker accepts for an ability: the wordings of [`variants`], which the templates read,
+/// and the wordings of the oracle text that no template reads ("you" after another player's event, "Then" opening a
+/// sentence, "deals damage equal to its power").
+pub fn written_variants(ability: &Ability) -> Vec<String> {
+    let mut texts = variants(ability);
+    texts.extend(where_x::equal_to_wordings(ability));
+    event_wordings::add(ability, &mut texts);
     texts
 }
 
@@ -705,8 +722,7 @@ fn written(
             moved @ Effect::Move { .. },
             ..,
         ] = &effects[start..]
-            && let Some(text) =
-                put_back_text(choose, moved).or_else(|| returned_text(choose, moved))
+            && let Some(text) = chosen_move_text(choose, moved)
         {
             unsplit(mask, start, 2)?;
             sentences.push(text);
@@ -764,6 +780,13 @@ fn modal_texts(modes: &[Mode]) -> Vec<String> {
             .collect();
     }
     texts
+}
+
+/// A choice of cards and the move of what was chosen as one sentence.
+fn chosen_move_text(choose: &Effect, moved: &Effect) -> Option<String> {
+    put_back_text(choose, moved)
+        .or_else(|| returned_text(choose, moved))
+        .or_else(|| put_onto::put_onto_text(choose, moved))
 }
 
 /// "put two cards from your hand on top of your library in any order": the choice of cards of the
@@ -1471,6 +1494,13 @@ impl Writer<'_> {
             | Effect::MoveCounters { .. } => self.counters(effect)?,
             Effect::CreateToken { .. } => self.created(effect)?,
             Effect::DealDamage {
+                amount: Amount::Divided,
+                ..
+            } => self.divided(effect)?,
+            Effect::DealDamage {
+                source: Some(_), ..
+            } => self.damage_by(effect)?,
+            Effect::DealDamage {
                 source: None,
                 to,
                 amount,
@@ -1496,7 +1526,10 @@ impl Writer<'_> {
                 effects,
             } => match effects.as_slice() {
                 [inner] if is_imperative(inner) => format!("you may {}", self.effect(inner)?),
-                _ => return None,
+                [choose @ Effect::Choose { .. }, moved @ Effect::Move { .. }] => {
+                    format!("you may {}", put_onto::put_onto_text(choose, moved)?)
+                }
+                _ => self.may_have(effects)?,
             },
             Effect::Pay {
                 who,
@@ -1540,6 +1573,7 @@ impl Writer<'_> {
     /// The effects with a wording of their own: a card returned to the battlefield, the casting and the keyword actions.
     fn other_effect(&mut self, effect: &Effect) -> Option<String> {
         self.exiled(effect)
+            .or_else(|| self.graveyard_exile(effect))
             .or_else(|| self.reanimated(effect))
             .or_else(|| cast::text(effect))
             .or_else(|| self.keyword_action(effect))

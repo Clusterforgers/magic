@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d18a0815-59d3-4667-b52b-9acda741215e",
+  "name": "Arboreal Grazer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arboreal Grazer",
+      "oracle_fingerprint": "ca34bc287c6d39d2c03d5b7591c32c9b",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Land" }]
+                        },
+                        "as": "land"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "land" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

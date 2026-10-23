@@ -1,0 +1,27 @@
+{
+  "id": "02f74866-d0ea-42ce-bc44-500219fb73d4",
+  "oracle_id": "3469463e-ed4d-44bb-81f3-42bbe09d34ad",
+  "name": "Hunted Horror",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "758",
+  "rarity": "rare",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "{B}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Horror",
+  "oracle_text": "Trample\nWhen this creature enters, target opponent creates two 3/3 green Centaur creature tokens with protection from black.",
+  "power": "7",
+  "toughness": "7",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Trample"
+  ]
+}

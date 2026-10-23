@@ -1,0 +1,28 @@
+{
+  "id": "bc9a7599-3c7d-4b83-bff3-e3d1f20f1b0f",
+  "oracle_id": "a984db23-40ea-428d-829f-e944267280f8",
+  "name": "Faerie Mastermind",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "114",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Faerie Rogue",
+  "oracle_text": "Flash\nFlying\nWhenever an opponent draws their second card each turn, you draw a card.\n{3}{U}: Each player draws a card.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Flash"
+  ]
+}

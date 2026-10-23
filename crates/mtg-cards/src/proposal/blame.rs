@@ -3,7 +3,7 @@
 use serde_json::{Value, json};
 
 use crate::ability::Ability;
-use crate::compile::render_variants;
+use crate::compile::written_variants;
 
 /// An event that the renderers write, to test the parts of an ability that come after it.
 fn known_when() -> Value {
@@ -27,7 +27,7 @@ pub(super) fn name(ability: &Ability) -> String {
 /// Whether the renderers write the ability described by a JSON value.
 fn writes(value: &Value) -> bool {
     serde_json::from_value::<Ability>(value.clone())
-        .is_ok_and(|ability| !render_variants(&ability).is_empty())
+        .is_ok_and(|ability| !written_variants(&ability).is_empty())
 }
 
 /// The ability and the part of it that has no writer, found by writing each part with a known-good frame. A
