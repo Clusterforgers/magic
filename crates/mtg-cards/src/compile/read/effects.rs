@@ -1006,7 +1006,12 @@ fn comma_types(r: &mut Reader<'_>) -> Option<Vec<ManaType>> {
 /// "two mana in any combination of colors", "three mana in any combination of {R} and/or {G}": several mana, each of a
 /// type picked when it is added.
 pub(super) fn combination(r: &mut Reader<'_>) -> Option<Produce> {
-    let count = number_word(r.take_word()?).filter(|count| *count >= 2)?;
+    let count = if r.x() {
+        Amount::X
+    } else {
+        let number = number_word(r.take_word()?).filter(|count| *count >= 2)?;
+        Amount::Fixed(i32::try_from(number).ok()?)
+    };
     r.need("mana in any combination of")?;
     if r.word("colors") {
         return Some(Produce::AnyCombination {

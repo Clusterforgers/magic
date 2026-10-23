@@ -69,7 +69,9 @@ fn ways(
     match mana {
         Produce::Fixed(list) => vec![list.clone()],
         Produce::OfTapped => vec![vec![option.produces]],
-        Produce::AnyCombination { count, among } => combinations(among, *count),
+        Produce::AnyCombination { count, among } => count
+            .fixed()
+            .map_or_else(|| vec![Vec::new()], |count| combinations(among, count)),
         Produce::AnyColor(count) => COLORS
             .iter()
             .map(|color| vec![*color; *count as usize])

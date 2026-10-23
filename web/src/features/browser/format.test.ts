@@ -23,6 +23,7 @@ const game = (over: Partial<LobbyGame> = {}): LobbyGame => ({
   game: 'g1',
   host: 'Bo',
   format: 'normal',
+  manual_play: false,
   filled: 2,
   total: 4,
   created_at: '2026-10-19T12:00:00Z',

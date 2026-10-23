@@ -269,6 +269,14 @@ impl Amount {
     pub const fn is_one(&self) -> bool {
         matches!(self, Amount::Fixed(1))
     }
+
+    /// The number of a fixed amount; `None` for any other.
+    pub fn fixed(&self) -> Option<u32> {
+        match self {
+            Amount::Fixed(number) => u32::try_from(*number).ok(),
+            _ => None,
+        }
+    }
 }
 
 /// The tagged forms of [`Amount`], read by serde so errors keep their path.

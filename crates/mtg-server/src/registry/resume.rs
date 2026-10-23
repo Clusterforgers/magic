@@ -121,7 +121,7 @@ impl Registry {
         let house_rules = setup.house_rules.clone();
         let names: Vec<String> = seats.iter().map(|slot| slot.name.clone()).collect();
         let joined = record.seats.iter().map(|seat| seat.joined).collect();
-        let recorder = Recorder::new(records.clone(), id, joined);
+        let recorder = Recorder::new(records.clone(), id, joined, record.manual_play);
         // Replaying a log is where a bug would panic; that must cost one game, not the boot.
         let resuming = tokio::spawn(resume_named(
             records.store(),

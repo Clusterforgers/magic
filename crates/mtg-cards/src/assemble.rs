@@ -328,8 +328,8 @@ pub enum ManaProduced<'a> {
     /// This many mana, each of a type its controller picks from these (all five colors when none are listed) as the
     /// ability is activated.
     AnyCombination {
-        /// How many mana.
-        count: u32,
+        /// How many mana: a number, the X of the cost, or an amount counted when it is offered.
+        count: &'a Amount,
         /// The types to pick from; none means the five colors.
         among: &'a [ManaType],
     },
@@ -388,10 +388,9 @@ impl<'a> ManaProduced<'a> {
                 count: *count,
                 colorless: *colorless,
             },
-            Produce::AnyCombination { count, among } => ManaProduced::AnyCombination {
-                count: *count,
-                among,
-            },
+            Produce::AnyCombination { count, among } => {
+                ManaProduced::AnyCombination { count, among }
+            }
             Produce::OfTapped => return None,
         })
     }
@@ -405,8 +404,9 @@ impl ManaProduced<'_> {
             | ManaProduced::AnyColor(count)
             | ManaProduced::ChosenColor(count)
             | ManaProduced::CommanderIdentity(count)
-            | ManaProduced::ProducedBy { count, .. }
-            | ManaProduced::AnyCombination { count, .. } => *count,
+            | ManaProduced::ProducedBy { count, .. } => *count,
+            // A counted amount adds mana unless it counts nothing, which only the game can tell.
+            ManaProduced::AnyCombination { count, .. } => count.fixed().unwrap_or(1),
             ManaProduced::OneOf(_) | ManaProduced::OrChosenColor(_) => 1,
             ManaProduced::OneOfLists(lists) => lists
                 .iter()
@@ -486,16 +486,29 @@ fn needs_no_answer(effect: &Effect) -> bool {
 }
 
 /// Whether `item` is a part of a mana ability's cost the engine pays with the activation: a fixed amount of life,
-/// energy or counters of the source.
+/// energy or counters of the source, or X counters of the source (the X of "Remove X storage counters from this land:
+/// Add X mana in any combination of {R} and/or {G}").
 fn pays_with_activation(item: &CostItem) -> bool {
-    match item {
+    let fixed = match item {
         CostItem::PayLife(amount)
         | CostItem::PayEnergy(amount)
         | CostItem::RemoveCounters { count: amount, .. } => {
             matches!(amount, Amount::Fixed(number) if *number > 0)
         }
         _ => false,
-    }
+    };
+    fixed || is_x_counters(item)
+}
+
+/// Whether `item` removes X counters from the source.
+fn is_x_counters(item: &CostItem) -> bool {
+    matches!(
+        item,
+        CostItem::RemoveCounters {
+            count: Amount::X,
+            ..
+        }
+    )
 }
 
 /// Whether `item` is a part of a mana ability's cost that takes other permanents or cards of the payer, which the payment
@@ -573,9 +586,24 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
     // A combination keeps one source for each way to pick it, so it is added once and there are not too many ways.
     if let ManaProduced::AnyCombination { count, among } = &produces {
         let types = if among.is_empty() { 5 } else { among.len() };
-        if !times.is_one() || combinations(types, *count) > MANA_COMBINATIONS {
+        let fits = count
+            .fixed()
+            .is_none_or(|count| combinations(types, count) <= MANA_COMBINATIONS);
+        if !times.is_one() || !fits {
             return None;
         }
+    }
+    // The X of the cost is the X of the mana and nothing else binds it.
+    let x_paid = pays.iter().filter(|item| is_x_counters(item)).count();
+    let x_added = usize::from(matches!(
+        produces,
+        ManaProduced::AnyCombination {
+            count: Amount::X,
+            ..
+        }
+    ));
+    if x_paid != x_added {
+        return None;
     }
     let distinct = then
         .iter()

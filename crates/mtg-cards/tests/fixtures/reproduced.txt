@@ -125,6 +125,7 @@ Cached Defenses
 Cackling Counterpart
 Cadaverous Bloom
 Calciderm
+Calciform Pools
 Caldaia Strongarm
 Caldera Hellion
 Caller of the Pack
@@ -190,6 +191,7 @@ Crocanura
 Crop Rotation
 Crown of Skemfar
 Crucible of Worlds
+Crucible of the Spirit Dragon
 Crypt Ghast
 Crystal Quarry
 Curate
@@ -245,6 +247,7 @@ Doom Whisperer
 Dragonlord Ojutai
 Dragonspeaker Shaman
 Dragonwing Glider
+Dreadship Reef
 Dream's Grip
 Dreamtail Heron
 Dreg Mangler
@@ -337,6 +340,7 @@ Founding of Omashu
 Foundry Inspector
 Four Knocks
 Fruit of Tizerus
+Fungal Reaches
 Furtive Homunculus
 Gadwick, the Wizened
 Gaea's Cradle
@@ -528,6 +532,7 @@ Mirran Bardiche
 Mirror Image
 Mishra's Workshop
 Mizzium Mortars
+Molten Slagheap
 Monastery Swiftspear
 Monk's Fist
 Morinfen
@@ -675,6 +680,7 @@ Safehold Elite
 Sage of the Beyond
 Sagu Mauler
 Saiba Cryptomancer
+Saltcrusted Steppe
 Samurai's Katana
 Sandcrafter Mage
 Sandsteppe Mastodon

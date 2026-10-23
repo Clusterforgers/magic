@@ -269,6 +269,7 @@ async fn health_decks_and_game_lookup() {
         BTreeSet::from([
             "connected",
             "format",
+            "manual_play",
             "ready",
             "result",
             "seats",
@@ -278,6 +279,7 @@ async fn health_decks_and_game_lookup() {
     );
     assert_eq!(view["format"], "normal");
     assert_eq!(view["started"], false);
+    assert_eq!(view["manual_play"], false, "built-in decks run whole");
     assert_eq!(
         view["visibility"], "invite",
         "games are invite-only unless asked"

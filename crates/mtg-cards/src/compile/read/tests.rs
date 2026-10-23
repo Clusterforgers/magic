@@ -222,6 +222,7 @@ mod search_by_controller;
 mod search_lists;
 mod search_pairs;
 mod spell_copies;
+mod spend_subtypes;
 mod statics;
 mod stations;
 mod strive;
@@ -386,9 +387,6 @@ mod mana {
     }
 
     #[rstest]
-    #[case::a_kind_the_data_does_not_hold(
-        "{T}: Add {G}. Spend this mana only to cast Dragon spells."
-    )]
     #[case::two_uses(
         "{T}: Add {G}. Spend this mana only to cast artifact spells or activate abilities of artifacts."
     )]

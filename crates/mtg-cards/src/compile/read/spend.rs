@@ -1,8 +1,9 @@
 //! "Spend this mana only to cast creature spells.": what the mana a sentence adds may be spent on, one use per sentence.
 
-use mtg_core::card::{CardType, Supertype};
+use mtg_core::card::{CardType, Subtype, Supertype};
 
-use super::selectors::{card_type, type_name};
+use super::selectors::{card_type, plural_subtype, subtype, type_name};
+use super::subtypes::plural_subtype as plural_name;
 use super::tokens::Reader;
 use crate::spend::{SpendFilter, SpendOn};
 
@@ -13,6 +14,13 @@ const CHOSEN_TYPE: &str = " of the chosen type";
 
 /// The words that stand for a spell of a kind: a card type or two ("instant or sorcery"), or one adjective.
 fn kind(r: &mut Reader<'_>) -> Option<SpendFilter> {
+    // "Dragon spells": one creature type or other subtype, a capitalized word.
+    if let Some(name) = subtype(r) {
+        return Some(SpendFilter {
+            subtypes: vec![Subtype(name)],
+            ..SpendFilter::default()
+        });
+    }
     let first = r.peek_word()?;
     let adjective = match first {
         "noncreature" => Some(SpendFilter {
@@ -97,6 +105,12 @@ pub(super) fn only(r: &mut Reader<'_>) -> Option<Vec<SpendOn>> {
         let mut uses = vec![SpendOn::Spell(spell.clone())];
         if spell.chosen_type && r.word("or") {
             uses.push(SpendOn::Ability(ability_source(r)?));
+        } else if let [one] = spell.subtypes.as_slice()
+            && r.words("or activate abilities of")
+        {
+            // "Dragon spells or activate abilities of Dragons": the same subtype, in the plural.
+            (plural_subtype(r)? == one.0).then_some(())?;
+            uses.push(SpendOn::Ability(spell));
         }
         Some(uses)
     })
@@ -113,7 +127,17 @@ fn kind_text(filter: &SpendFilter) -> Option<String> {
         chosen_type: _,
     } = filter;
     if !subtypes.is_empty() {
-        return None;
+        return match subtypes.as_slice() {
+            [one]
+                if types.is_empty()
+                    && without.is_empty()
+                    && supertypes.is_empty()
+                    && !multicolored =>
+            {
+                Some(format!("{} ", one.0))
+            }
+            _ => None,
+        };
     }
     match (
         types.as_slice(),
@@ -158,6 +182,16 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
                 "Spend this mana only to cast {kind}spells{CHOSEN_TYPE} or activate an ability of {article} {kind}source{CHOSEN_TYPE}"
             )
         }
+        [SpendOn::Spell(spell), SpendOn::Ability(source)] if spell == source => {
+            let [one] = spell.subtypes.as_slice() else {
+                return None;
+            };
+            format!(
+                "Spend this mana only to cast {}spells or activate abilities of {}",
+                kind_text(spell)?,
+                plural_name(&one.0)
+            )
+        }
         _ => return None,
     })
 }
@@ -166,7 +200,7 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
 pub(super) fn singular(text: &str) -> Option<String> {
     let (head, nouns) = text.split_once("only to cast ")?;
     let (nouns, tail) = nouns.split_once("spells")?;
-    let article = if nouns.starts_with(['a', 'e', 'i', 'o', 'u']) {
+    let article = if nouns.starts_with(['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']) {
         "an"
     } else {
         "a"

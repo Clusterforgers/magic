@@ -1,0 +1,40 @@
+{
+  "oracle_id": "130a8cf5-1354-4d17-91c8-c073642eb3db",
+  "name": "Dreadship Reef",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreadship Reef",
+      "oracle_fingerprint": "1a2e77f91d47cd5d45ea59aab483e5df",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "storage" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "RemoveCounters": { "counter": { "Other": "storage" }, "count": "X" } }
+            ],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyCombination": { "count": "X", "among": ["Blue", "Black"] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -176,7 +176,9 @@ pub(crate) async fn resume_named<S: EventStore>(
     if !fresh.is_empty() {
         store.append(id, count(stored_len), fresh).await?;
     }
-    let mut running = Running::new(engine, config.pace);
+    // A game with a log began long ago: the table is the one the records stored.
+    let manual_play = recorder.as_ref().is_some_and(Recorder::manual_play);
+    let mut running = Running::new(engine, config.pace).with_manual_play(manual_play);
     running.settle(false, Halt::Ask);
     Ok(launch(
         id,
@@ -438,8 +440,10 @@ impl<S: EventStore> GameActor<S> {
 
     fn status(&mut self) -> GameStatus {
         let connected = self.seats.connected();
+        let manual_play = self.manual_play();
         match &self.phase {
             Phase::Lobby { ready, names } => GameStatus {
+                manual_play,
                 started: false,
                 events: 0,
                 state_hash: None,
@@ -460,6 +464,7 @@ impl<S: EventStore> GameActor<S> {
                     .collect(),
             },
             Phase::Running(running) => GameStatus {
+                manual_play,
                 started: true,
                 events: count(running.engine.events().len()),
                 state_hash: Some(running.engine.state_hash()),

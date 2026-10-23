@@ -36,4 +36,8 @@ result: GameResult | null,
 /**
  * Who may find the game; the host changes it with `PATCH /api/games/{id}` before the start.
  */
-visibility: Visibility, };
+visibility: Visibility, 
+/**
+ * Whether some seat plays a deck with cards the game does not run whole; fixed when the game begins.
+ */
+manual_play: boolean, };
