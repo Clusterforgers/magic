@@ -172,7 +172,7 @@ fn the_spell_is_exiled_encoded_on_the_creature_its_controller_picks(
     let card = cards_in(&driver, Zone::Exile, "Veil")[0];
     let carrier = cards_in(&driver, Zone::Battlefield, "Carrier B")[0];
     assert_eq!(driver.state().encoded_creature(card), Some(carrier));
-    assert!(cards_in(&driver, Zone::Graveyard(pid(0)), "Veil").is_empty());
+    assert_eq!(cards_in(&driver, Zone::Graveyard(pid(0)), "Veil"), []);
     assert_eq!(driver.state().player(pid(0)).unwrap().life(), 22);
     let encoded = driver.engine().events().iter().any(|event| {
         matches!(
@@ -201,7 +201,7 @@ fn a_spell_nobody_encodes_goes_to_the_graveyard(
         };
         cast_and_settle(&mut driver, "Veil", &policy)?;
         assert_eq!(cards_in(&driver, Zone::Graveyard(pid(0)), "Veil").len(), 1);
-        assert!(cards_in(&driver, Zone::Exile, "Veil").is_empty());
+        assert_eq!(cards_in(&driver, Zone::Exile, "Veil"), []);
     }
     Ok(())
 }
@@ -248,7 +248,7 @@ fn the_creature_dealing_combat_damage_casts_a_copy_of_the_card_for_nothing(
     let card = cards_in(&driver, Zone::Exile, "Veil");
     assert_eq!(card.len(), 1, "the copy is gone and the card stays");
     assert_eq!(driver.state().encoded_creature(card[0]), Some(carrier));
-    assert!(cards_in(&driver, Zone::Graveyard(pid(0)), "Veil").is_empty());
+    assert_eq!(cards_in(&driver, Zone::Graveyard(pid(0)), "Veil"), []);
     assert_eq!(count(&driver, |e| matches!(e, Event::CardCopied(_))), 1);
     assert_eq!(count(&driver, |e| matches!(e, Event::SpellCast { .. })), 2);
     assert_eq!(count(&driver, |e| matches!(e, Event::CopyCeased { .. })), 0);
@@ -287,7 +287,7 @@ fn a_card_whose_creature_died_is_exiled_for_good_and_a_new_attacker_casts_nothin
     driver.choose_targets(&[target])?;
     driver.answer(Answer::PayMana(PayChoice::Auto))?;
     settle(&mut driver, &policy)?;
-    assert!(cards_in(&driver, Zone::Battlefield, "Carrier A").is_empty());
+    assert_eq!(cards_in(&driver, Zone::Battlefield, "Carrier A"), []);
     let card = cards_in(&driver, Zone::Exile, "Veil");
     assert_eq!(card.len(), 1, "the card stays in exile");
     assert_eq!(driver.state().encoded_creature(card[0]), None);
@@ -447,7 +447,7 @@ fn a_copy_that_is_not_cast_ceases_to_exist_and_the_card_stays_encoded(
     assert_eq!(count(&driver, |e| matches!(e, Event::CardCopied(_))), 1);
     assert_eq!(count(&driver, |e| matches!(e, Event::CopyCeased { .. })), 1);
     assert_eq!(count(&driver, |e| matches!(e, Event::SpellCast { .. })), 1);
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack(), []);
     replays_to_the_same_state(&driver);
     Ok(())
 }

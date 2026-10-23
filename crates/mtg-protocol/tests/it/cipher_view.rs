@@ -41,7 +41,10 @@ fn table(seats: usize) -> Driver {
             0,
             [card("Writ of Return").unwrap(), card("Brainstorm").unwrap()],
         )
-        .graveyard(0, [free_creature("Corpse", 1, 1)])
+        .graveyard(
+            0,
+            [free_creature("Corpse", 1, 1), free_creature("Husk", 1, 1)],
+        )
         .battlefield(0, mine);
     let scenario = (0..seats).fold(scenario, |scenario, seat| {
         scenario.library(seat, (0..8).map(|_| swamp()))
@@ -88,9 +91,12 @@ fn play_until(driver: &mut Driver, cast: bool, stop: impl Fn(&Driver) -> bool) {
 /// and the exiled card.
 fn encoded(seats: usize) -> (Driver, ObjectId, GameState, Vec<Event>) {
     let mut driver = table(seats);
-    let corpse = driver.target_named("Corpse");
-    let target = corpse.unwrap_or_else(|_| driver.target_player(0));
     driver.begin_cast("Writ of Return").unwrap();
+    let DecisionKind::ChooseTargets(options) = &driver.decision().unwrap().kind else {
+        panic!("a creature card in the graveyard is the target");
+    };
+    assert_eq!(options.legal.len(), 2);
+    let target = options.legal[0];
     driver.choose_targets(&[target]).unwrap();
     driver.answer(Answer::PayMana(PayChoice::Auto)).unwrap();
     let before = driver.state().clone();
