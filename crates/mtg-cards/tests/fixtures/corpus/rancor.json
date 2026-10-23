@@ -1,0 +1,25 @@
+{
+  "id": "86d6b411-4a31-4bfc-8dd6-e19f553bb29b",
+  "oracle_id": "9d2d6479-531c-4ce1-b52b-00e36fa63b64",
+  "name": "Rancor",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2x2",
+  "collector_number": "156",
+  "rarity": "uncommon",
+  "released_at": "2022-07-08",
+  "digital": false,
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature gets +2/+0 and has trample.\nWhen this Aura is put into a graveyard from the battlefield, return it to its owner's hand.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

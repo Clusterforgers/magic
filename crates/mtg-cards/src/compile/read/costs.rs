@@ -138,6 +138,11 @@ fn tap(r: &mut Reader<'_>) -> Option<CostItem> {
 
 /// "Exile a creature card from your graveyard", "Exile two cards from your graveyard".
 fn exile(r: &mut Reader<'_>) -> Option<CostItem> {
+    if r.source() {
+        // "Exile ~ from your graveyard" is an ability of the graveyard; "Exile ~" is one of the battlefield.
+        r.from_graveyard = r.words("from your graveyard");
+        return Some(CostItem::ExileSelf);
+    }
     let (form, count) = how_many(r)?;
     let mut filter = phrase(r, form)?;
     let from_hand = without(&mut filter, &Pred::In(ZoneKind::Hand)).is_some();
@@ -231,6 +236,7 @@ fn item_text(item: &CostItem) -> Option<String> {
         CostItem::Untap => "{Q}".to_owned(),
         CostItem::PayLife(amount) => format!("Pay {} life", points_text(amount)?),
         CostItem::SacrificeSelf => "Sacrifice ~".to_owned(),
+        CostItem::ExileSelf => "Exile ~ from your graveyard".to_owned(),
         CostItem::PayEnergy(Amount::Fixed(count)) if *count > 0 => {
             format!("Pay {}", "{E}".repeat(usize::try_from(*count).ok()?))
         }

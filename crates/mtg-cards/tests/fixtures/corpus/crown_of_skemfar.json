@@ -1,0 +1,25 @@
+{
+  "id": "e6297586-8953-408e-a38c-2239d45807e1",
+  "oracle_id": "db961314-fe78-4362-902f-aa0dbf6c487d",
+  "name": "Crown of Skemfar",
+  "lang": "en",
+  "layout": "normal",
+  "set": "khc",
+  "collector_number": "13",
+  "rarity": "rare",
+  "released_at": "2021-02-05",
+  "digital": false,
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature gets +1/+1 for each Elf you control and has reach.\n{2}{G}: Return this card from your graveyard to your hand.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

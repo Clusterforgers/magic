@@ -1,0 +1,25 @@
+{
+  "id": "55d0caac-50c0-434e-af77-9ebd2a466415",
+  "oracle_id": "080df9eb-c26b-494a-96b4-d7e47e501866",
+  "name": "Onakke Oathkeeper",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "722",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Ogre Spirit",
+  "oracle_text": "Creatures can't attack planeswalkers you control unless their controller pays {1} for each creature they control that's attacking a planeswalker you control.\n{4}{W}{W}, Exile this card from your graveyard: Return target planeswalker card from your graveyard to the battlefield.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "power": "0",
+  "toughness": "4"
+}

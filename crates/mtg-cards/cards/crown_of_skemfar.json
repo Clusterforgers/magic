@@ -1,0 +1,35 @@
+{
+  "oracle_id": "db961314-fe78-4362-902f-aa0dbf6c487d",
+  "name": "Crown of Skemfar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crown of Skemfar",
+      "oracle_fingerprint": "8b4a44408cc755786f8f0d90f3c5e24f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }] }
+                }
+              },
+              { "AddKeyword": "Reach" }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{G}",
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

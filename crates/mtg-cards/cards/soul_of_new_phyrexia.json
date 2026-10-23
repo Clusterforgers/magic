@@ -1,0 +1,43 @@
+{
+  "oracle_id": "add500e1-8eeb-45d7-a10d-2fae2cc69233",
+  "name": "Soul of New Phyrexia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul of New Phyrexia",
+      "oracle_fingerprint": "cf70c7d3fed1afde6a152d585a848986",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": "{5}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "ExileSelf"],
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

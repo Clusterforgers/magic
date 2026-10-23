@@ -20,6 +20,14 @@ pub fn cycled_itself(pattern: &TriggerPattern) -> bool {
     )
 }
 
+/// Whether the pattern is the card itself put into a graveyard from anywhere, so its ability works from the graveyard.
+pub fn graveyard_itself(pattern: &TriggerPattern) -> bool {
+    matches!(
+        pattern,
+        TriggerPattern::ZoneChange { what, from: None, to: Some(ZoneKind::Graveyard) } if what.0 == [Pred::This]
+    )
+}
+
 /// Whether the pattern is the card itself entering, attacking or dealing damage, so the card's keyword actions may call it
 /// "it".
 pub fn itself_acts(pattern: &TriggerPattern) -> bool {
@@ -50,6 +58,12 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
             ..
         } => (what, true),
         TriggerPattern::Blocks { what } => (what, false),
+        // The card that dies, or is put into a graveyard, is "it" in what the card does about itself.
+        TriggerPattern::ZoneChange {
+            what,
+            to: Some(ZoneKind::Graveyard),
+            ..
+        } if what.0 == [Pred::This] => return Some(Ref::This),
         _ => return None,
     };
     if what.0 == [Pred::This] {
@@ -476,8 +490,10 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         // The older wording, "enters the battlefield", says the same.
         r.words("the battlefield");
         (None, Some(ZoneKind::Battlefield))
-    } else if r.word("dies") {
+    } else if r.word("dies") || r.words("is put into a graveyard from the battlefield") {
         (Some(ZoneKind::Battlefield), Some(ZoneKind::Graveyard))
+    } else if r.words("is put into a graveyard from anywhere") {
+        (None, Some(ZoneKind::Graveyard))
     } else if r.words("leaves the battlefield") {
         (Some(ZoneKind::Battlefield), None)
     } else if r.word("attacks") {
@@ -815,6 +831,7 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
             let verb = match (from, to) {
                 (None, Some(ZoneKind::Battlefield)) => "enters",
                 (Some(ZoneKind::Battlefield), Some(ZoneKind::Graveyard)) => "dies",
+                (None, Some(ZoneKind::Graveyard)) => "is put into a graveyard from anywhere",
                 (Some(ZoneKind::Battlefield), None) => "leaves the battlefield",
                 _ => return None,
             };
@@ -1126,6 +1143,7 @@ fn about(what: &Selector, verbs: &[String]) -> Option<String> {
                     verb.as_str(),
                     "enters"
                         | "dies"
+                        | "is put into a graveyard from anywhere"
                         | "leaves the battlefield"
                         | "becomes monstrous"
                         | "is turned face up"

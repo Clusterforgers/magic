@@ -1,0 +1,25 @@
+{
+  "id": "5041dcfd-c1af-448c-91f7-75fd1d34e93e",
+  "oracle_id": "c363725f-15cf-4955-aaf1-536b1f8daaed",
+  "name": "Serra Avatar",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dmr",
+  "collector_number": "26",
+  "rarity": "mythic",
+  "released_at": "2023-01-13",
+  "digital": false,
+  "mana_cost": "{4}{W}{W}{W}",
+  "cmc": 7.0,
+  "type_line": "Creature — Avatar",
+  "oracle_text": "Serra Avatar's power and toughness are each equal to your life total.\nWhen Serra Avatar is put into a graveyard from anywhere, shuffle it into its owner's library.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "power": "*",
+  "toughness": "*"
+}

@@ -115,7 +115,10 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     let effects = sentences(r, false)?;
     // A card cycled is in its owner's graveyard when its own ability triggers, and a card that returns itself from the
     // graveyard has its ability there.
-    let from = if triggers::cycled_itself(&when) || effects::returns_itself(&effects) {
+    let from = if triggers::cycled_itself(&when)
+        || triggers::graveyard_itself(&when)
+        || effects::returns_itself(&effects)
+    {
         ZoneKind::Graveyard
     } else {
         ZoneKind::Battlefield
@@ -206,6 +209,9 @@ pub fn activated(r: &mut Reader<'_>) -> Option<Ability> {
     // An X in the cost is the payer's to choose, so the effects may use it.
     r.x_free |= cost.has_x();
     r.subject = Some(Ref::This);
+    // A card that exiles itself from the graveyard or returns itself from there has its ability in the graveyard.
+    let in_graveyard = r.from_graveyard || effects::returns_from_graveyard(r);
+    r.from_graveyard = in_graveyard;
     let effects = sentences(r, true)?;
     let (timing, limit, condition) = restrictions(r)?;
     let targets = std::mem::take(&mut r.targets);
@@ -216,7 +222,11 @@ pub fn activated(r: &mut Reader<'_>) -> Option<Ability> {
         timing,
         condition,
         limit,
-        from: ZoneKind::Battlefield,
+        from: if in_graveyard {
+            ZoneKind::Graveyard
+        } else {
+            ZoneKind::Battlefield
+        },
         targets,
         effects,
     })

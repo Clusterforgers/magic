@@ -143,6 +143,7 @@ Creeping Tar Pit
 Crib Swap
 Crocanura
 Crop Rotation
+Crown of Skemfar
 Crucible of Worlds
 Crystal Quarry
 Curate
@@ -195,6 +196,7 @@ Dromoka Captain
 Dromoka's Gift
 Dromoka, the Eternal
 Drove of Elves
+Drownyard Temple
 Drudge Skeletons
 Dual Casting
 Dualcaster Mage
@@ -451,6 +453,7 @@ Notion Rain
 Nyxborn Behemoth
 Obscuring Haze
 Okiba Reckoner Raid // Nezumi Road Captain
+Onakke Oathkeeper
 Opt
 Orchard Strider
 Organic Extinction
@@ -498,7 +501,9 @@ Rakdos Headliner
 Rally the Ranks
 Ramos, Dragon Engine
 Rampant Growth
+Rancor
 Ravenous Leucrocota
+Reassembling Skeleton
 Reckless Impulse
 Reconstructed Thopter
 Red Room Recruit
@@ -540,6 +545,7 @@ Sandcrafter Mage
 Sandsteppe Mastodon
 Sandsteppe Scavenger
 Sanguine Bond
+Sanitarium Skeleton
 Satyr Wayfinder
 Sauroform Hybrid
 Saw It Coming
@@ -552,6 +558,7 @@ Seedglaive Mentor
 Seekers' Squire
 Serpent-Blade Assailant
 Serra Angel
+Serra Avatar
 Servant of the Conduit
 Shadowmage Infiltrator
 Shambling Shell
@@ -588,6 +595,8 @@ Solstice Zealot
 Soltari Foot Soldier
 Songs of the Damned
 Soul Shepherd
+Soul of New Phyrexia
+Soul of Zendikar
 Souldrinker
 Soultether Golem
 Space Marine Devastator
@@ -641,6 +650,7 @@ Tah-Crop Skirmisher
 Tainted Isle
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
+Teacher's Pest
 Temur Devotee
 Tender Wildguide
 Tendershoot Dryad
@@ -732,6 +742,7 @@ Withering Boon
 Wizard Class
 Wooded Bastion
 Woodripper
+Worldspine Wurm
 Wrath of God
 Wurmwall Sweeper
 Wyrm's Crossing Patrol

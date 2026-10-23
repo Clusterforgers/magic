@@ -1,0 +1,27 @@
+{
+  "id": "edb684f3-7787-4e54-96a2-61f95b6494a8",
+  "oracle_id": "254f87cc-e0c2-484d-b5e8-1ea8c366990c",
+  "name": "Worldspine Wurm",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "206",
+  "rarity": "mythic",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{8}{G}{G}{G}",
+  "cmc": 11.0,
+  "type_line": "Creature — Wurm",
+  "oracle_text": "Trample\nWhen this creature dies, create three 5/5 green Wurm creature tokens with trample.\nWhen Worldspine Wurm is put into a graveyard from anywhere, shuffle it into its owner's library.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Trample"
+  ],
+  "power": "15",
+  "toughness": "15"
+}

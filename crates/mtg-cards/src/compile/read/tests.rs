@@ -183,6 +183,7 @@ mod exile_bounce_shrink;
 mod flicker;
 mod for_each;
 mod goad;
+mod graveyard;
 mod group_statics;
 mod if_sentence;
 mod impulse;

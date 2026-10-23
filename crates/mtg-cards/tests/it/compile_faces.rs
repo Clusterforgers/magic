@@ -45,7 +45,7 @@ fn compiled(name: &str) -> (ImplStatus, Vec<Vec<String>>) {
 #[case::adventure("Bonecrusher Giant // Stomp", ImplStatus::Partial, vec![vec![GIANT], vec![STOMP]])]
 #[case::modal_with_lands("Hengegate Pathway // Mistgate Pathway", ImplStatus::Full, vec![vec![WHITE], vec![BLUE]])]
 #[case::split_with_fuse("Wear // Tear", ImplStatus::Full, vec![vec![DESTROY_ARTIFACT, r#"{"Keyword":"Fuse"}"#], vec![DESTROY_ENCHANTMENT, r#"{"Keyword":"Fuse"}"#]])]
-#[case::modal_nothing_read("Selfless Glyphweaver // Deadly Vanity", ImplStatus::Manual, vec![vec![], vec![]])]
+#[case::modal_one_face_read("Selfless Glyphweaver // Deadly Vanity", ImplStatus::Partial, vec![vec![r#"{"Activated":{"cost":["ExileSelf"],"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Indestructible"}],"duration":"UntilEndOfTurn"}}]}}"#], vec![r#"{"Manual":{"reason":"a spell effect the compiler does not read yet","span":{"start":0,"end":86}}}"#]])]
 #[case::transform_keywords("Tavern Ruffian // Tavern Smasher", ImplStatus::Full, vec![vec![r#"{"Keyword":"Daybound"}"#], vec![r#"{"Keyword":"Nightbound"}"#]])]
 #[case::transform_keyword_pairs(
     "Bird Admirer // Wing Shredder",

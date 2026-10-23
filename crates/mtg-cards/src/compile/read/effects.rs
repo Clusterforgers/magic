@@ -36,7 +36,7 @@ use crate::value::{Amount, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 39] = [
+const TEMPLATES: [Template; 40] = [
     modal::modal,
     cast::discover_sentence,
     cast::exile_until,
@@ -73,6 +73,7 @@ const TEMPLATES: [Template; 39] = [
     library::look,
     library::put_on_library,
     return_itself,
+    shuffle_itself,
     prevention::rule_effect,
     prevention::shield,
     super::attack_tax::rule_effect,
@@ -613,27 +614,54 @@ fn return_chosen(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     ])
 }
 
-/// "Return this card from your graveyard to the battlefield.": the card puts itself onto the battlefield from the
-/// graveyard, where only an ability that works from there (`Reader::from_graveyard`) finds it.
+/// "Return this card from your graveyard to the battlefield [tapped].", "... to your hand.": the card returns itself
+/// from the graveyard, where only an ability that works from there (`Reader::from_graveyard`) finds it.
 fn return_itself(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.from_graveyard.then_some(())?;
     r.need("return")?;
     r.source().then_some(())?;
-    r.need("from your graveyard to the battlefield")?;
-    Some(vec![rising()])
-}
-
-/// The card moves itself onto the battlefield.
-fn rising() -> Effect {
-    Effect::Move {
+    r.need("from your graveyard")?;
+    if r.words("to your hand") {
+        return Some(vec![Effect::Move {
+            what: Ref::This,
+            to: Destination::Hand,
+        }]);
+    }
+    r.need("to the battlefield")?;
+    let tapped = r.word("tapped");
+    Some(vec![Effect::Move {
         what: Ref::This,
         to: Destination::Battlefield {
-            tapped: false,
+            tapped,
             under: None,
             transformed: false,
             counters: Vec::new(),
         },
-    }
+    }])
+}
+
+/// "Shuffle it into its owner's library.": the card the trigger is about (`r.it` is `This`) goes into its owner's
+/// library, which is then shuffled.
+fn shuffle_itself(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    (r.it == Some(Ref::This)).then_some(())?;
+    r.need("shuffle it into its owner's library")?;
+    Some(vec![Effect::Move {
+        what: Ref::This,
+        to: Destination::Library {
+            place: Place::Shuffled,
+            order: None,
+        },
+    }])
+}
+
+/// Whether "return ~ from your graveyard" comes next: the card returns itself, so the ability works from there.
+pub fn returns_from_graveyard(r: &mut Reader<'_>) -> bool {
+    r.lookahead(|r| {
+        r.need("return")?;
+        r.source().then_some(())?;
+        r.need("from your graveyard")
+    })
+    .is_some()
 }
 
 /// Whether the effects put the card itself onto the battlefield, so that its ability works from the graveyard.
@@ -645,7 +673,17 @@ pub fn returns_itself(effects: &[Effect]) -> bool {
                 effects,
             },
         ] => returns_itself(effects),
-        [only] => *only == rising(),
+        [
+            Effect::Move {
+                what: Ref::This,
+                to:
+                    Destination::Battlefield {
+                        under: None,
+                        transformed: false,
+                        ..
+                    },
+            },
+        ] => true,
         _ => false,
     }
 }
