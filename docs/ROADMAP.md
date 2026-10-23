@@ -7,7 +7,7 @@ One item is one piece of about 15 minutes; the commit that finishes it deletes i
 ## Status
 
 - Built: foundations, card data, the engine core, protocol and server, game flow, the web client and the deck builder (M0 to M2), and Commander in the engine, server and lobby (M4).
-- In progress: the card system and its coverage tail (M3, M6): 2,131 of the 6,429 stored precon cards (33.1%) and 59.9% of the copies are Verified; the open pieces are a flat long tail that frees a few cards each.
+- In progress: the card system and its coverage tail (M3, M6): 2,165 of the 6,429 stored precon cards (33.7%) and 60.3% of the copies are Verified; the open pieces are a flat long tail that frees a few cards each.
 - Not started: the web for the final card-system types (M5), the product pages (M7), polish and deploy (M8).
 
 ## Order of work
@@ -110,7 +110,7 @@ The server is settled first, then the web is built once against the final types.
 ## M6 Coverage
 
 ### Target
-- [ ] Target: every stored card Verified, or as near as the rules allow; `mtg-cli coverage` (compile first) ranks the blockers, each piece below states the cards it frees, and after each round `compile` and `coverage` are re-run and the numbers recorded here (2,131 of the 6,429 stored precon cards, 33.1%, and 59.9% of the copies are Verified)
+- [ ] Target: every stored card Verified, or as near as the rules allow; `mtg-cli coverage` (compile first) ranks the blockers, each piece below states the cards it frees, and after each round `compile` and `coverage` are re-run and the numbers recorded here (2,165 of the 6,429 stored precon cards, 33.7%, and 60.3% of the copies are Verified)
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
 
 ### Mana and costs
@@ -143,6 +143,10 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c10e) The wordings (c10b) leaves: subtype plus type nouns ("artifact creature", "Human creature"), legendary names without a comma shortened to `~`, and the events "enters from your graveyard", "is turned face up", "is put into a graveyard from the battlefield" and "modified creature"
 - [ ] (c10r) The flicker with a delayed return ("Exile target creature you control. Return it to the battlefield under its owner's control at the beginning of the next end step", also an exile that returns at the next end step of its owner), the same exile that returns when the source leaves for an Aura with several hosts (the owner chooses) and "until your next turn" durations
 - [ ] (c9c) Verified corpus cards for Doctor's companion, Partner—text, Choose a Background (with a Background) and a planeswalker that can be a commander, each once its other text is a card the engine runs
+
+### Model-assisted reading
+- [~] (r1) (branch r1-reference-engines) Forge, XMage and Magarena surveyed in `docs/reference-engines.md`: licence, card format, scale and what can cross-check or feed our readings
+- [~] (r2) (branch r2-model-reader) A model-assisted reader pilot: a rules checker (valid, reads back as the printed text, support state with its blockers) and a seeded sample of unread cards written as rules by a model, with the yield per outcome; the result decides an automated proposer
 
 ### Layouts
 - [ ] (c11) Rooms, Battles, Read ahead, the `prepare` layout (a "prepared" designation set by "enters prepared" and "becomes prepared", and a cast of a copy of the spell face from the battlefield that unprepares it, `docs/engine.md`), extra turns and extra combats (`Effect::ExtraTurn` is a stub), the initiative and dungeons, and the remaining long-tail mechanics found by the report, one task each
