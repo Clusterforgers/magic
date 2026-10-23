@@ -155,6 +155,22 @@ object: ObjectId, } } | { "PermanentUntapped": {
 /**
  * The permanent.
  */
+object: ObjectId, } } | { "PermanentPhasedOut": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, 
+/**
+ * The player who controlled it, who it phases in for during their untap step.
+ */
+controller: PlayerId, 
+/**
+ * It went with the permanent it is attached to, and phases in with that permanent.
+ */
+indirect?: boolean, } } | { "PermanentPhasedIn": { 
+/**
+ * The permanent.
+ */
 object: ObjectId, } } | { "ManaAdded": { 
 /**
  * Whose pool.

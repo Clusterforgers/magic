@@ -440,9 +440,28 @@ fn check_zone_index(state: &GameState) -> Result<(), Violation> {
                     object.owner()
                 )));
             }
-            if object.permanent().is_some() != (zone == Zone::Battlefield) {
+            if object.permanent().is_some() != zone.is_permanent_zone() {
                 return Err(zone_error(format!(
                     "{id:?} permanent state does not match {zone:?}"
+                )));
+            }
+            let phasing = object.permanent().and_then(PermanentState::phasing);
+            if phasing.is_some() != (zone == Zone::PhasedOut) {
+                return Err(zone_error(format!(
+                    "{id:?} phasing does not match {zone:?}"
+                )));
+            }
+            // What phased out with its host phases in with it, so the host is still phased out (CR 702.26g).
+            if let (Some(phasing), Some(host)) = (
+                phasing,
+                object.permanent().and_then(PermanentState::attached_to),
+            ) && phasing.indirect
+                && state
+                    .object(host.id)
+                    .is_some_and(|h| h.counter() == host.counter && h.zone() != Zone::PhasedOut)
+            {
+                return Err(zone_error(format!(
+                    "{id:?} phased out with a host that is phased in"
                 )));
             }
         }
@@ -744,7 +763,10 @@ impl InvariantChecker {
         for object in self.shadow.objects() {
             let now = (object.zone(), object.counter());
             if let Some(&(zone, counter)) = self.zones_seen.get(&object.id()) {
-                let moved_without_counting = now.1 == counter && now.0 != zone;
+                // Phasing in or out is no change of zone (CR 702.26): the permanent stays the same object.
+                let same_place =
+                    now.0 == zone || (now.0.is_permanent_zone() && zone.is_permanent_zone());
+                let moved_without_counting = now.1 == counter && !same_place;
                 if now.1 < counter || moved_without_counting {
                     return Err(zone_error(format!(
                         "{:?} was in {zone:?} at counter {counter} and is in {:?} at counter {}",

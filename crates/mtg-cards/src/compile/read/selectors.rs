@@ -746,7 +746,7 @@ fn spell_subtypes(r: &mut Reader<'_>) -> Option<Pred> {
     })
 }
 
-/// A subtype in front of a card type in the singular: "Cleric creature", "Equipment artifact".
+/// A subtype in front of a card type in the singular, or of "card": "Cleric creature", "Equipment artifact", "Giant card".
 fn singular_qualifier(r: &mut Reader<'_>) -> Option<Pred> {
     r.attempt(|r| {
         let name = group_name(r).filter(|name| r.is_subtype(name))?;

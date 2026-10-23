@@ -129,6 +129,16 @@ fn spells_cast_from_anywhere_other_than_the_hand(#[case] text: &str, #[case] jso
     reads_as(text, ClauseKind::Static, false, json);
 }
 
+#[test]
+fn a_subtype_of_cards_in_a_graveyard_is_counted() {
+    reads_as(
+        "This spell costs {1} less to cast for each Elf card in your graveyard.",
+        ClauseKind::Static,
+        false,
+        &itself(r#"{"Count":[{"Subtype":"Elf"},{"In":"Graveyard"},{"OwnedBy":"You"}]}"#),
+    );
+}
+
 #[rstest]
 #[case::the_number_of_with_x(
     "This spell costs {X} less to cast, where X is the number of artifacts you control."

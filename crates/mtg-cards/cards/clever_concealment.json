@@ -1,0 +1,25 @@
+{
+  "oracle_id": "42bb7ea9-f6e4-4551-8d93-3b1eae84b865",
+  "name": "Clever Concealment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clever Concealment",
+      "oracle_fingerprint": "888546148f8e41a165bec63fabd6727f",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [{ "PhaseOut": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

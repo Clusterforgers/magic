@@ -257,6 +257,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::SpellResolved { .. }
         | Event::PermanentTapped { .. }
         | Event::PermanentUntapped { .. }
+        | Event::PermanentPhasedOut { .. }
+        | Event::PermanentPhasedIn { .. }
         | Event::ManaAdded { .. }
         | Event::ManaSpent { .. }
         | Event::ManaPoolEmptied { .. }

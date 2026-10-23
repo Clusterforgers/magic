@@ -12,6 +12,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::sync::OnceLock;
 
 use mtg_cards::ability::Ability;
+use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::{Attacked, GameRule};
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
@@ -50,6 +51,16 @@ pub enum Rule {
     CantGainLife(Vec<PlayerId>),
     /// Damage dealt to the players causes no loss of life.
     NoLifeLossFromDamage(Vec<PlayerId>),
+    /// The players' life totals can't change (CR 119.7, 119.8).
+    LifeTotalCantChange(Vec<PlayerId>),
+    /// The players have the keyword, such as protection from everything.
+    PlayersHave {
+        /// The players.
+        who: Vec<PlayerId>,
+        /// The keyword they have.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        keyword: Keyword,
+    },
     /// The players can't draw cards.
     CantDraw(Vec<PlayerId>),
     /// The players can't search libraries.
@@ -223,6 +234,8 @@ pub(crate) struct RulesInForce {
     uncounterable: BTreeSet<ObjectId>,
     no_life_gain: BTreeSet<PlayerId>,
     no_damage_loss: BTreeSet<PlayerId>,
+    no_life_change: BTreeSet<PlayerId>,
+    player_keywords: Vec<(PlayerId, Keyword)>,
     no_draw: BTreeSet<PlayerId>,
     no_search: BTreeSet<PlayerId>,
     reveal_top: BTreeSet<PlayerId>,
@@ -320,6 +333,10 @@ impl RulesInForce {
             Rule::CantBeCountered(named) => self.uncounterable.extend(ids(named)),
             Rule::CantGainLife(players) => self.no_life_gain.extend(players),
             Rule::NoLifeLossFromDamage(players) => self.no_damage_loss.extend(players),
+            Rule::LifeTotalCantChange(players) => self.no_life_change.extend(players),
+            Rule::PlayersHave { who, keyword } => self
+                .player_keywords
+                .extend(who.iter().map(|player| (*player, keyword.clone()))),
             Rule::CantDraw(players) => self.no_draw.extend(players),
             Rule::CantSearch(players) => self.no_search.extend(players),
             Rule::RevealTop(players) => self.reveal_top.extend(players),
@@ -440,6 +457,11 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::CantBeCountered(who) => Rule::CantBeCountered(objects(who, Zone::Stack)?),
         GameRule::CantGainLife(who) => Rule::CantGainLife(scope.players(who)?),
         GameRule::NoLifeLossFromDamage(who) => Rule::NoLifeLossFromDamage(scope.players(who)?),
+        GameRule::LifeTotalCantChange(who) => Rule::LifeTotalCantChange(scope.players(who)?),
+        GameRule::PlayersHave { who, keyword } => Rule::PlayersHave {
+            who: scope.players(who)?,
+            keyword: keyword.clone(),
+        },
         GameRule::CantDraw(who) => Rule::CantDraw(scope.players(who)?),
         GameRule::CantSearch(who) => Rule::CantSearch(scope.players(who)?),
         GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
@@ -497,6 +519,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::MustAttackPlayers(pairs) => pairs.is_empty(),
         Rule::CantGainLife(players)
         | Rule::NoLifeLossFromDamage(players)
+        | Rule::LifeTotalCantChange(players)
         | Rule::CantDraw(players)
         | Rule::CantSearch(players)
         | Rule::RevealTop(players)
@@ -507,6 +530,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::MayCast { who, only, .. } => {
             who.is_empty() || only.as_ref().is_some_and(Vec::is_empty)
         }
+        Rule::PlayersHave { who, .. } => who.is_empty(),
         Rule::TriggerAgain(_) | Rule::DamageCantBePrevented { .. } | Rule::Regenerate(_) => false,
         Rule::PreventDamage(shield) => shield.to.as_ref().is_some_and(Vec::is_empty),
     }
@@ -598,6 +622,8 @@ static NONE: RulesInForce = RulesInForce {
     uncounterable: BTreeSet::new(),
     no_life_gain: BTreeSet::new(),
     no_damage_loss: BTreeSet::new(),
+    no_life_change: BTreeSet::new(),
+    player_keywords: Vec::new(),
     no_draw: BTreeSet::new(),
     no_search: BTreeSet::new(),
     reveal_top: BTreeSet::new(),
@@ -680,6 +706,15 @@ pub(crate) fn fold_created(state: &mut GameState, effect: &RuleEffect) -> Result
     if matches!(effect.rule, Rule::PreventDamage(_) | Rule::Regenerate(_)) {
         state.possible.replacements = true;
     }
+    if matches!(
+        &effect.rule,
+        Rule::PlayersHave {
+            keyword: Keyword::Protection(_),
+            ..
+        }
+    ) {
+        state.possible.protection = true;
+    }
     state.rule_effects.push(effect.clone());
     Ok(())
 }
@@ -739,14 +774,34 @@ pub fn cant_be_countered(state: &GameState, id: ObjectId) -> bool {
     state.rules().uncounterable.contains(&id)
 }
 
-/// Whether `player` can't gain life: the one place a gain of life reads this rule.
+/// Whether `player` can't gain life: the one place a gain of life reads this rule. A life total that can't change
+/// gains none either.
 pub fn cant_gain_life(state: &GameState, player: PlayerId) -> bool {
-    state.rules().no_life_gain.contains(&player)
+    let rules = state.rules();
+    rules.no_life_gain.contains(&player) || rules.no_life_change.contains(&player)
+}
+
+/// Whether the life total of `player` can't change (CR 119.7, 119.8): the one place a loss or payment of life reads
+/// this rule.
+pub fn life_total_cant_change(state: &GameState, player: PlayerId) -> bool {
+    state.rules().no_life_change.contains(&player)
 }
 
 /// Whether damage dealt to `player` causes no loss of life: the one place the damage events read this rule.
 pub fn damage_causes_no_life_loss(state: &GameState, player: PlayerId) -> bool {
-    state.rules().no_damage_loss.contains(&player)
+    let rules = state.rules();
+    rules.no_damage_loss.contains(&player) || rules.no_life_change.contains(&player)
+}
+
+/// The keywords the rules in force give `player` for a time, such as protection from everything.
+pub(crate) fn granted_player_keywords(state: &GameState, player: PlayerId) -> Vec<&Keyword> {
+    state
+        .rules()
+        .player_keywords
+        .iter()
+        .filter(|(who, _)| *who == player)
+        .map(|(_, keyword)| keyword)
+        .collect()
 }
 
 /// Whether `player` can't draw cards: the one place a draw reads this rule.

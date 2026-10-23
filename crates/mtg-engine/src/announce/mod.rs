@@ -201,7 +201,7 @@ impl Needs {
         let mut parts = self
             .ways
             .iter()
-            .find(|way| way.alternative == choices.way)
+            .find(|way| way.is(choices))
             .map(|way| way.parts.clone())
             .unwrap_or_default();
         parts.extend(optional::parts_paid(&self.optional, choices));

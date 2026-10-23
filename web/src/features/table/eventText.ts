@@ -204,6 +204,7 @@ function zoneWord(zone: Zone, n: EventNames): string {
   if (zone === 'Battlefield') return 'the battlefield'
   if (zone === 'Stack') return 'the stack'
   if (zone === 'Exile') return 'exile'
+  if (zone === 'PhasedOut') return 'the battlefield, phased out'
   if ('Library' in zone) return `${n.seat(zone.Library)}'s library`
   if ('Hand' in zone) return `${n.seat(zone.Hand)}'s hand`
   if ('Graveyard' in zone) return `${n.seat(zone.Graveyard)}'s graveyard`
@@ -547,6 +548,8 @@ function describePublic(event: Event, n: EventNames): LogLine {
   if ('SpellResolved' in event) return line(`${n.card(event.SpellResolved.object)} resolves`)
   if ('PermanentTapped' in event) return quiet(`${n.card(event.PermanentTapped.object)} becomes tapped`)
   if ('PermanentUntapped' in event) return quiet(`${n.card(event.PermanentUntapped.object)} becomes untapped`)
+  if ('PermanentPhasedOut' in event) return line(`${n.card(event.PermanentPhasedOut.object)} phases out`)
+  if ('PermanentPhasedIn' in event) return line(`${n.card(event.PermanentPhasedIn.object)} phases in`)
   if ('ManaAdded' in event) {
     const { player, mana, source } = event.ManaAdded
     const from = source === null ? '' : ` from ${n.card(source)}`

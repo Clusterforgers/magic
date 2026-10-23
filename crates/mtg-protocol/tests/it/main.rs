@@ -41,6 +41,7 @@ mod morph_view;
 mod mutate_view;
 mod ninjutsu_hidden;
 mod paid_cost_hidden;
+mod phasing_view;
 mod player_aura_view;
 mod preview_fixture;
 mod projection;

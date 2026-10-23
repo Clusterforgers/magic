@@ -92,7 +92,8 @@ pub(super) fn move_object(
         object.choices = Choices::default();
     }
     let mut merged = Vec::new();
-    if from == Zone::Battlefield {
+    // A permanent leaves from the phased-out zone only when the player who controls it leaves the game.
+    if from.is_permanent_zone() {
         merged = crate::merged::taken(&mut object.permanent);
         object.permanent = None;
         state.combat.remove_object(id);
