@@ -66,6 +66,7 @@ pub mod pump_cards;
 pub mod replace_cards;
 pub mod required_cost_cards;
 pub mod rule_cards;
+pub mod saga_cards;
 pub mod scenario;
 pub mod script_error;
 pub mod small_cards;
@@ -146,6 +147,7 @@ pub use required_cost_cards::{
     REQUIRED_COST_CARDS, Takes, required_cost_fuzz_setup, required_cost_of,
 };
 pub use rule_cards::rules_fuzz_setup;
+pub use saga_cards::saga_fuzz_setup;
 pub use scenario::{
     Scenario, ScenarioError, attached_to, damaged, enchanting, ready, sick, tapped, with_counters,
 };

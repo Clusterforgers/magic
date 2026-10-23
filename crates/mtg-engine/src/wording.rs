@@ -1259,7 +1259,10 @@ mod tests {
         r#"{"CountersRemoved":{"what":["This"]}}"#,
         "Whenever counters are removed from it"
     )]
-    #[case::a_chapter(r#"{"Chapter":{"number":3}}"#, "When its lore counters reach chapter 3")]
+    #[case::a_chapter(
+        r#"{"Chapter":{"number":3}}"#,
+        "When its lore counters reach chapter 3"
+    )]
     #[case::counters_removed_anywhere(
         r#"{"CountersRemoved":{}}"#,
         "Whenever counters are removed from a permanent"

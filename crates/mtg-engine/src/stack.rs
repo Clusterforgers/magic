@@ -5,8 +5,8 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use crate::attach;
 use crate::events::{Event, ResolutionOutcome};
 use crate::loyalty;
-use crate::saga;
 use crate::resolve;
+use crate::saga;
 use crate::state::GameState;
 
 /// Active-player-nonactive-player order over the players still in the game (CR 101.4).

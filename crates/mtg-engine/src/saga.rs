@@ -95,9 +95,10 @@ fn has_chapter_waiting(state: &GameState, source: ObjectRef) -> bool {
         .any(|pending| pending.trigger().source == source && chapter_of(pending.rules()).is_some());
     waiting
         || state.stack().iter().any(|id| {
-            state.object(*id).and_then(GameObject::ability).is_some_and(|put| {
-                put.source() == source && chapter_of(put.rules()).is_some()
-            })
+            state
+                .object(*id)
+                .and_then(GameObject::ability)
+                .is_some_and(|put| put.source() == source && chapter_of(put.rules()).is_some())
         })
 }
 

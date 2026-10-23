@@ -56,7 +56,8 @@ fn a_chapter_ability_writes_back_as_its_line(#[case] text: &str) {
 
 #[test]
 fn a_chapter_of_choices_reads_its_modes() {
-    let Some(abilities) = block("III \u{2014} Choose one \u{2014}\n\u{2022} Draw a card.\n\u{2022} You gain 2 life.")
+    let Some(abilities) =
+        block("III \u{2014} Choose one \u{2014}\n\u{2022} Draw a card.\n\u{2022} You gain 2 life.")
     else {
         panic!("not read");
     };

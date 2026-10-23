@@ -218,7 +218,13 @@ fn without_ability_word(text: &str) -> &str {
 /// The text of a Saga chapter without its roman numerals ("I, II — "): a line of several chapters is one ability for each.
 fn without_numerals(text: &str) -> &str {
     match text.split_once(" \u{2014} ") {
-        Some((word, rest)) if word.chars().all(|c| matches!(c, 'I' | 'V' | 'X' | ',' | ' ')) => rest,
+        Some((word, rest))
+            if word
+                .chars()
+                .all(|c| matches!(c, 'I' | 'V' | 'X' | ',' | ' ')) =>
+        {
+            rest
+        }
         _ => text,
     }
 }
@@ -259,11 +265,9 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
                 lines.iter().map(|line| (*line).to_owned()).collect()
             };
             assert!(
-                wanted
+                wanted.iter().any(|text| written
                     .iter()
-                    .any(|text| written
-                        .iter()
-                        .any(|variant| same_text(without_numerals(variant), text))),
+                    .any(|variant| same_text(without_numerals(variant), text))),
                 "{}: none of {written:?} is in {wanted:?}",
                 printed.name
             );

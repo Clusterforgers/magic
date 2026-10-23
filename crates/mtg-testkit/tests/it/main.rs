@@ -201,6 +201,7 @@ mod restricted_fuzz;
 mod restricted_mana;
 mod rules_fuzz;
 mod rules_games;
+mod saga;
 mod search_effects;
 mod search_fuzz;
 mod seed_campaigns;
