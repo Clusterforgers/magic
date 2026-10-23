@@ -3,6 +3,7 @@
 //! player in a row are one compound sentence; the readers take ", then" between two steps as the
 //! same sequence.
 
+mod created;
 mod damage_by;
 mod divided;
 mod graveyards;
@@ -714,6 +715,12 @@ fn written(
             .or_else(|| writer.then_steps(&effects[start..]))
         {
             unsplit(mask, start, used)?;
+            sentences.push(text);
+            start += used;
+            continue;
+        }
+        // A list of tokens, or a draw and a token, closed into one sentence by the mask.
+        if let Some((text, used)) = writer.token_steps(&effects[start..], mask >> start) {
             sentences.push(text);
             start += used;
             continue;

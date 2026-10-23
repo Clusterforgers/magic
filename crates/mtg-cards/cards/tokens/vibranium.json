@@ -1,0 +1,24 @@
+{
+  "id": "vibranium",
+  "token": {
+    "name": "Vibranium",
+    "types": ["Artifact"],
+    "subtypes": ["Vibranium"],
+    "abilities": [
+      { "Keyword": "Indestructible" },
+      {
+        "Activated": {
+          "cost": ["Tap"],
+          "effects": [
+            {
+              "AddMana": {
+                "mana": { "Fixed": ["Colorless"] },
+                "only": [{ "Spell": { "types": ["Artifact"] } }, { "Ability": {} }]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

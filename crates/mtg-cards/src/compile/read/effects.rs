@@ -37,7 +37,7 @@ use crate::value::{Amount, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 50] = [
+const TEMPLATES: [Template; 51] = [
     modal::modal,
     super::spent::sacrifice_unless,
     super::actions::fight,
@@ -48,6 +48,7 @@ const TEMPLATES: [Template; 50] = [
     cast::exiled_card,
     payments::may_pay,
     may,
+    create::chained,
     chain,
     put_back,
     super::actions::explore,
@@ -307,7 +308,8 @@ fn put_back(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// The name the cards put back are bound to.
 pub const BACK: &str = "back";
 
-fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
+/// One step of "you" that begins with its verb: "scry 1", "draw a card", "mill three cards".
+pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
     let who = Ref::You;
     Some(match r.take_word()? {
         "scry" => Effect::Scry {
