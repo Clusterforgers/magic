@@ -102,7 +102,8 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
                 return Some(Printed::new(cost, sources, 0));
             }
             let taken: Vec<ObjectId> = if choices.cost_picks().is_empty() {
-                price.claimed(ctx.state, ctx.player, *spell)?
+                let helpers = help::offered(ctx.state, ctx.player, *spell, &[]).objects();
+                price.claimed_leaving(ctx.state, ctx.player, *spell, &helpers)?
             } else {
                 choices.cost_picks().iter().flatten().copied().collect()
             };

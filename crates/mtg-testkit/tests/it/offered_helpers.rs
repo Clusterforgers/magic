@@ -92,7 +92,9 @@ fn card(name: &str) -> Arc<CardDefinition> {
     match name {
         "Bear" | "Cub" => creature(name, 1, &[Color::Green], 2, 2),
         "Mountain" => mountain(),
-        "Trinket" | "Gadget" | "Pricey Relic" | "Inspiring Statuary" => improvise_card(name).unwrap(),
+        "Trinket" | "Gadget" | "Pricey Relic" | "Inspiring Statuary" => {
+            improvise_card(name).unwrap()
+        }
         other => corpus::card(other).unwrap(),
     }
 }
@@ -264,7 +266,11 @@ fn an_object_the_cost_does_not_touch_still_helps(
     #[case] taking: Help,
     #[case] spare: &str,
 ) -> Result<(), ScriptError> {
-    let taken = if spare == "Trinket" { "Bear" } else { "Trinket" };
+    let taken = if spare == "Trinket" {
+        "Bear"
+    } else {
+        "Trinket"
+    };
     let spell = spell_with(keyword.clone(), part, taking.filter());
     let (mut driver, _) = table(seats, spell, &[taken, spare], &[]);
     assert!(castable(&driver), "{keyword:?} with {part:?}");

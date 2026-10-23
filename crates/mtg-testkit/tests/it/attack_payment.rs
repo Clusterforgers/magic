@@ -119,7 +119,11 @@ fn the_phyrexian_tax_is_paid_with_mana_or_with_life_that_leaves_some(
     let result = attack(&mut driver, attackers);
     let Some((plains_tapped, life_after)) = paid else {
         assert!(unaffordable(&result), "{result:?}");
-        assert_eq!(driver.engine().state_hash(), hash, "the engine is as it was");
+        assert_eq!(
+            driver.engine().state_hash(),
+            hash,
+            "the engine is as it was"
+        );
         assert_eq!(driver.engine().events().len(), log);
         driver.expect_decision(0, "declare-attackers")?;
         return Ok(());
@@ -249,7 +253,10 @@ fn a_bot_that_backs_out_of_the_payment_does_not_declare_the_attack_again(
             "seed {seed}: the attack declared before is not declared again"
         );
     }
-    assert!(taxed > 10, "the bot declared a taxed attack in {taxed} runs");
+    assert!(
+        taxed > 10,
+        "the bot declared a taxed attack in {taxed} runs"
+    );
     Ok(())
 }
 
