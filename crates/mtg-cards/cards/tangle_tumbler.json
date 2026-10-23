@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0d81ea20-5e7d-4eea-b0ba-fe688f27df94",
+  "name": "Tangle Tumbler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tangle Tumbler",
+      "oracle_fingerprint": "fc996ab19bc5de728f1abae4e6dc2f60",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": ["Token"], "count": 2 } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

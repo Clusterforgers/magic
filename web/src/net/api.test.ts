@@ -29,6 +29,7 @@ const game = {
   ready: [0],
   result: null,
   visibility: 'public',
+  manual_play: false,
 }
 const decks = [
   {
@@ -149,6 +150,17 @@ describe('requests and answers', () => {
   it.each(['normal', 'commander'])('reads a game played in the %s format', async (format) => {
     const fake = fakeFetch(() => jsonResponse(200, { ...game, format }))
     expect((await createApi({ fetch: fake.fetch }).getGame('g-1')).format).toBe(format)
+  })
+
+  it.each([true, false])('reads a game whose table plays by hand: %s', async (manual_play) => {
+    const fake = fakeFetch(() => jsonResponse(200, { ...game, manual_play }))
+    expect((await createApi({ fetch: fake.fetch }).getGame('g-1')).manual_play).toBe(manual_play)
+  })
+
+  it('takes a server that sends no manual_play flag for one where no table played by hand', async () => {
+    const { manual_play: _manual, ...older } = game
+    const fake = fakeFetch(() => jsonResponse(200, older))
+    expect(await createApi({ fetch: fake.fetch }).getGame('g-1')).toEqual({ ...older, manual_play: false })
   })
 
   it('takes a server that names no format for one that plays Normal only', async () => {
@@ -281,6 +293,8 @@ describe('bodies that parse but do not have the documented shape', () => {
     ['getGame: format is a number', (api) => api.getGame('g'), { ...game, format: 1 }],
     ['getGame: format is null', (api) => api.getGame('g'), { ...game, format: null }],
     ['getGame: format is empty', (api) => api.getGame('g'), { ...game, format: '' }],
+    ['getGame: manual_play is text', (api) => api.getGame('g'), { ...game, manual_play: 'yes' }],
+    ['getGame: manual_play is null', (api) => api.getGame('g'), { ...game, manual_play: null }],
     ['getGame: visibility is null', (api) => api.getGame('g'), { ...game, visibility: null }],
     ['getGame: visibility is a number', (api) => api.getGame('g'), { ...game, visibility: 1 }],
     ['getGame: a seat has no name', (api) => api.getGame('g'), { ...game, seats: [{ seat: 0 }] }],

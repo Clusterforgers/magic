@@ -268,6 +268,7 @@ async fn a_listing_holds_no_token_no_code_and_no_digest() {
         host: _,
         format: _,
         house_rules: _,
+        manual_play: _,
         filled: _,
         total: _,
         created_at: _,

@@ -43,6 +43,7 @@ fn game(host: &str, filled: u32) -> LobbyGame {
         host: host.into(),
         format: "normal".into(),
         house_rules: None,
+        manual_play: false,
         filled,
         total: 4,
         created_at: "2026-10-19T12:30:00Z".into(),
@@ -62,6 +63,7 @@ fn the_listing_has_the_documented_wire_shape() {
             "game": "6f1e0c1a-3b1f-4d9e-8a3e-0d3c2d1b7a55",
             "host": "Ann",
             "format": "normal",
+            "manual_play": false,
             "filled": 1,
             "total": 4,
             "created_at": "2026-10-19T12:30:00Z",
@@ -97,6 +99,7 @@ fn lookup(started: bool, result: Option<GameResult>, visibility: Visibility) -> 
         ready: vec![PlayerId(0)],
         result,
         visibility,
+        manual_play: false,
     }
 }
 
@@ -114,6 +117,7 @@ fn the_game_lookup_has_the_documented_wire_shape() {
             "ready": [0],
             "result": null,
             "visibility": "public",
+            "manual_play": false,
         })
     );
     assert_eq!(serde_json::from_value::<GameInfo>(value).unwrap(), waiting);
@@ -383,6 +387,7 @@ fn the_bindings_carry_the_game_browser_types() {
         "game: string",
         "host: string",
         "format: string",
+        "manual_play: boolean",
         "filled: number",
         "total: number",
         "created_at: string",
@@ -407,6 +412,7 @@ fn the_bindings_carry_the_game_browser_types() {
         "ready: Array<PlayerId>",
         "result: GameResult | null",
         "visibility: Visibility",
+        "manual_play: boolean",
     ] {
         assert!(files["GameInfo.ts"].contains(field), "{field}");
     }
@@ -429,4 +435,44 @@ fn the_lobby_roster_says_an_open_seat_has_an_empty_name() {
         "{}",
         files["LobbySeat.ts"]
     );
+}
+
+#[rstest]
+#[case::plain(false)]
+#[case::with_manual_cards(true)]
+fn a_row_and_a_lookup_carry_the_manual_play_flag_as_it_is(#[case] flag: bool) {
+    let row = LobbyGame {
+        manual_play: flag,
+        ..game("Ann", 1)
+    };
+    let value = serde_json::to_value(&row).unwrap();
+    assert_eq!(value["manual_play"], json!(flag));
+    assert_eq!(serde_json::from_value::<LobbyGame>(value).unwrap(), row);
+
+    let info = GameInfo {
+        manual_play: flag,
+        ..lookup(false, None, Visibility::Public)
+    };
+    let value = serde_json::to_value(&info).unwrap();
+    assert_eq!(value["manual_play"], json!(flag));
+    assert_eq!(serde_json::from_value::<GameInfo>(value).unwrap(), info);
+}
+
+#[rstest]
+#[case::missing(None)]
+#[case::null(Some(json!(null)))]
+#[case::a_word(Some(json!("yes")))]
+#[case::a_number(Some(json!(1)))]
+fn the_manual_play_flag_must_be_a_flag(#[case] flag: Option<Value>) {
+    let mut row = serde_json::to_value(game("Ann", 1)).unwrap();
+    let mut info = serde_json::to_value(lookup(false, None, Visibility::Invite)).unwrap();
+    for body in [&mut row, &mut info] {
+        let body = body.as_object_mut().unwrap();
+        match flag.clone() {
+            Some(other) => body.insert("manual_play".into(), other),
+            None => body.remove("manual_play"),
+        };
+    }
+    assert!(serde_json::from_value::<LobbyGame>(row).is_err());
+    assert!(serde_json::from_value::<GameInfo>(info).is_err());
 }

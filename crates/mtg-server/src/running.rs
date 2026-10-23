@@ -135,6 +135,8 @@ pub(crate) struct Running {
     waits: Waits,
     /// The extensions each seat holds; empty again when a game is resumed.
     banks: Banks,
+    /// Whether the table played with manual cards when the game began.
+    manual_play: bool,
 }
 
 pub(crate) fn count(len: usize) -> u64 {
@@ -158,7 +160,20 @@ impl Running {
             pace,
             waits: Waits::fresh(pace.dwell),
             banks,
+            manual_play: false,
         }
+    }
+
+    /// The game of a table that plays with manual cards (`on`) or not.
+    #[must_use]
+    pub(crate) fn with_manual_play(mut self, on: bool) -> Running {
+        self.manual_play = on;
+        self
+    }
+
+    /// Whether the table played with manual cards when the game began.
+    pub(crate) fn manual_play(&self) -> bool {
+        self.manual_play
     }
 
     /// Writes the extensions every seat holds into `table`.

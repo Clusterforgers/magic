@@ -1,0 +1,21 @@
+{
+  "id": "cccf7fb5-c043-4a1f-ad2f-edb280cb5037",
+  "oracle_id": "98005890-d566-4a27-906f-625513171e85",
+  "name": "Guidelight Matrix",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dft",
+  "collector_number": "233",
+  "rarity": "common",
+  "released_at": "2025-02-14",
+  "digital": false,
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact",
+  "oracle_text": "When this artifact enters, draw a card.\n{2}, {T}: Target Mount you control becomes saddled until end of turn. Activate only as a sorcery.\n{2}, {T}: Target Vehicle you control becomes an artifact creature until end of turn.",
+  "power": null,
+  "toughness": null,
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}
