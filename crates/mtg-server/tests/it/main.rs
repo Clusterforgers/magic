@@ -2,6 +2,8 @@
 
 mod auto_pass;
 mod common;
+mod companion_recipe;
+mod companion_resume;
 mod concede;
 mod concurrent_games;
 mod full_games;
