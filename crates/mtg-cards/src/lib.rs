@@ -22,6 +22,7 @@ pub mod mana;
 pub mod mana_trigger;
 pub mod modify;
 pub mod pretty;
+pub mod proposal;
 pub mod refs;
 pub mod spend;
 pub mod support;
