@@ -14,6 +14,7 @@ mod announce_division;
 mod archon_fuzz;
 mod attach_fuzz;
 mod attachments;
+mod attack_budget;
 mod attack_tax;
 mod attack_tax_fuzz;
 mod backup_keyword;

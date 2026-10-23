@@ -3,21 +3,23 @@
 use mtg_core::color::Color;
 use mtg_core::ids::ObjectId;
 use mtg_core::mana::{ManaCost, ManaType, PHYREXIAN_LIFE, Resolution};
-use mtg_engine::Decision;
 use mtg_engine::choose::{
     CardsChoice, CardsOptions, CostsChoice, CostsOptions, DivideChoice, DivideOptions, ModeChoice,
     NumberChoice, NumberOptions, OptionChoice, OrderChoice, ReplacementChoice, Target,
     TargetChoice, TriggersChoice, YesNoChoice, YesNoOptions,
 };
+use mtg_engine::combat::AttackTarget;
 use mtg_engine::decision::{
-    Answer, DamageOptions, DecisionKind, MulliganChoice, PayChoice, PayOptions, PriorityAction,
-    PriorityOptions,
+    Answer, AttackOptions, DamageOptions, DecisionKind, MulliganChoice, PayChoice, PayOptions,
+    PriorityAction, PriorityOptions,
 };
+use mtg_engine::error::IllegalAnswer;
 use mtg_engine::help::{Convoked, Used, reduce, without_tapped};
 use mtg_engine::mana::{ManaOption, ManaSource, Payment, check_payment};
 use mtg_engine::rng::GameRng;
 use mtg_engine::spend::Restricted;
 use mtg_engine::turn::Step;
+use mtg_engine::{Decision, Engine, EngineError, Event};
 
 use crate::windows::{Mode, SeatWindows, Side, Stop};
 
@@ -27,6 +29,53 @@ pub struct RandomBot {
     rng: GameRng,
     partial_payments: bool,
     symbol_choices: bool,
+}
+
+/// An attack as the declaration lists it: each attacker and what it attacks.
+type Attack = Vec<(ObjectId, AttackTarget)>;
+
+/// `attackers` without its last creature that is not required to attack; `None` once only required ones are left,
+/// which cost nothing (a requirement never makes a player pay, CR 508.1d).
+fn smaller_attack(
+    options: &AttackOptions,
+    attackers: &[(ObjectId, AttackTarget)],
+) -> Option<Attack> {
+    let at = attackers
+        .iter()
+        .rposition(|(object, _)| !options.required.contains(object))?;
+    let mut smaller = attackers.to_vec();
+    smaller.remove(at);
+    Some(smaller)
+}
+
+/// Applies a bot's `answer` to the `decision` it answers.
+///
+/// An attack the engine refuses because its player cannot pay for it (CR 508.1h) is taken back one creature at a
+/// time, the creatures that are not required first, until the engine accepts it; so a game of bots never fails on the
+/// cost of attacking, whatever mana its budget (`AttackOptions::mana`) left out of account. The engine is untouched by
+/// a refusal.
+pub fn apply_answer(
+    engine: &mut Engine,
+    decision: &Decision,
+    answer: Answer,
+) -> Result<Vec<Event>, EngineError> {
+    let mut answer = answer;
+    loop {
+        let refused = match engine.apply(answer.clone()) {
+            Err(error @ EngineError::Illegal(IllegalAnswer::AttackUnaffordable(_))) => error,
+            result => return result,
+        };
+        let smaller = match (&decision.kind, &answer) {
+            (DecisionKind::DeclareAttackers(options), Answer::DeclareAttackers(attackers)) => {
+                smaller_attack(options, attackers)
+            }
+            _ => None,
+        };
+        match smaller {
+            Some(smaller) => answer = Answer::DeclareAttackers(smaller),
+            None => return Err(refused),
+        }
+    }
 }
 
 /// A way to produce one mana while paying: floating mana or a tap.
@@ -310,10 +359,7 @@ impl RandomBot {
     /// A random attack: each creature joins at random, one that must attack always does, and an attack that costs
     /// more than the player surely has (CR 508.1h) is cut back to what it can pay, the creatures that are not
     /// required first.
-    fn attack(
-        &mut self,
-        options: &mtg_engine::decision::AttackOptions,
-    ) -> Vec<(ObjectId, mtg_engine::combat::AttackTarget)> {
+    fn attack(&mut self, options: &AttackOptions) -> Attack {
         let mut attackers = Vec::new();
         for option in &options.attackers {
             let required = options.required.contains(&option.object);
@@ -328,13 +374,10 @@ impl RandomBot {
             }
         }
         while options.cost_of(&attackers).mana_value() > options.mana {
-            let Some(at) = attackers
-                .iter()
-                .rposition(|(object, _)| !options.required.contains(object))
-            else {
+            let Some(smaller) = smaller_attack(options, &attackers) else {
                 break;
             };
-            attackers.remove(at);
+            attackers = smaller;
         }
         attackers
     }
