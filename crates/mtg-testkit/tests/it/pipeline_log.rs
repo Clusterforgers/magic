@@ -233,10 +233,16 @@ fn games_without_spells_hold_none_of_the_new_events_and_log_a_cast_as_it_always_
                 "seed {seed}: {event:?}"
             );
             if let Event::SpellCast { .. } = event {
-                // Without announcements the event has the two fields it always had.
+                // Without announcements the event has the two fields it always had, and the only choice it carries is the
+                // mana the cast spent.
                 let json = serde_json::to_value(event).unwrap();
                 let fields = json["SpellCast"].as_object().unwrap();
-                assert_eq!(fields.len(), 2, "{json}");
+                let choices = fields.get("choices").and_then(|c| c.as_object());
+                assert_eq!(fields.len(), 2 + usize::from(choices.is_some()), "{json}");
+                assert!(
+                    choices.is_none_or(|c| c.len() == 1 && c.contains_key("spent")),
+                    "{json}"
+                );
             }
         }
     }
