@@ -110,6 +110,7 @@ const RUNS: &[&str] = &[
     "Effect.Move.Battlefield",
     "Effect.Move.Transformed",
     "Effect.ExileUntil",
+    "Effect.RevealUntil",
     "Effect.ExileTop",
     "Effect.ExileHidden",
     "Effect.Manifest",
@@ -645,6 +646,7 @@ mod tests {
     #[case::exploring("Effect.Explore", true)]
     #[case::conniving("Effect.Connive", true)]
     #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]
+    #[case::revealing_until_a_card_matches("Effect.RevealUntil", true)]
     #[case::exiling_the_top_cards("Effect.ExileTop", true)]
     #[case::exiling_face_down("Effect.ExileHidden", true)]
     #[case::manifesting("Effect.Manifest", true)]
