@@ -10,7 +10,7 @@ use std::path::{Path, PathBuf};
 use rstest::rstest;
 use serde_json::{Value, json};
 
-use crate::common::Corpus;
+use crate::common::{self, Corpus};
 
 /// Fields of a record that must equal the real record, including the ones the fixture leaves out.
 const FIELDS: [&str; 20] = [
@@ -97,33 +97,9 @@ fn face_list(record: &Value) -> Vec<Value> {
 
 /// The newest `oracle-cards-*.jsonl.gz` of `MTG_REAL_DATA_DIR`, else of the `mtg-cli` cache.
 fn oracle_cards_file() -> PathBuf {
-    let root = std::env::var_os("MTG_REAL_DATA_DIR")
-        .or_else(|| std::env::var_os("MTG_CACHE_DIR"))
-        .map(PathBuf::from)
-        .or_else(|| {
-            std::env::var_os("XDG_CACHE_HOME").map(|dir| PathBuf::from(dir).join("mtg-cli"))
-        })
-        .or_else(|| std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".cache/mtg-cli")))
-        .expect("set MTG_REAL_DATA_DIR, or fetch the cache with `mtg-cli fetch scryfall`");
-    let mut files: Vec<PathBuf> = [root.join("scryfall"), root.clone()]
-        .iter()
-        .filter_map(|dir| std::fs::read_dir(dir).ok())
-        .flatten()
-        .map(|entry| entry.unwrap().path())
-        .filter(|path| is_oracle_cards(path))
-        .collect();
-    files.sort_by_key(|path| path.file_name().map(ToOwned::to_owned));
-    files.pop().unwrap_or_else(|| {
-        panic!(
-            "no oracle-cards-*.jsonl.gz under {}; run `mtg-cli fetch scryfall`",
-            root.display()
-        )
-    })
-}
-
-fn is_oracle_cards(path: &Path) -> bool {
-    let name = path.file_name().unwrap().to_string_lossy();
-    name.starts_with("oracle-cards-") && name.ends_with(".jsonl.gz")
+    common::find_oracle_cards().expect(
+        "no oracle-cards-*.jsonl.gz: set MTG_REAL_DATA_DIR, or fetch the cache with `mtg-cli fetch scryfall`",
+    )
 }
 
 /// The records of `file` whose oracle id is in `wanted`, by oracle id.
