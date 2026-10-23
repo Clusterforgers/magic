@@ -1,0 +1,39 @@
+{
+  "oracle_id": "67791323-bf21-4c72-bf57-32197d3d5775",
+  "name": "Knight of the Last Breath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knight of the Last Breath",
+      "oracle_fingerprint": "e962d29fafb68e174cc40780690364d4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Not": "Token" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Afterlife": 3 } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "oracle_id": "490df3b5-ece2-45bb-af38-fcd7f83e37b0",
+  "name": "Mistmeadow Skulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mistmeadow Skulk",
+      "oracle_fingerprint": "174aa75323dd065a97d7b7a96768564d",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Keyword": { "Protection": [{ "Compare": { "stat": "ManaValue", "op": "Ge", "to": 3 } }] }
+        }
+      ]
+    }
+  ]
+}

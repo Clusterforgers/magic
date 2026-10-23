@@ -1,0 +1,29 @@
+{
+  "id": "1438d850-1e08-4d75-a79c-d6a4738d5a67",
+  "oracle_id": "67791323-bf21-4c72-bf57-32197d3d5775",
+  "name": "Knight of the Last Breath",
+  "lang": "en",
+  "layout": "normal",
+  "set": "moc",
+  "collector_number": "331",
+  "rarity": "uncommon",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{5}{W}{B}",
+  "cmc": 7.0,
+  "type_line": "Creature — Giant Knight",
+  "oracle_text": "{3}, Sacrifice another nontoken creature: Create a 1/1 white and black Spirit creature token with flying.\nAfterlife 3 (When this creature dies, create three 1/1 white and black Spirit creature tokens with flying.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Afterlife"
+  ]
+}

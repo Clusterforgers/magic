@@ -1,0 +1,29 @@
+{
+  "id": "c78aa786-a6ea-429f-a9e1-48f848578af3",
+  "oracle_id": "6a290adf-7b75-451e-bb79-9c13e10b38aa",
+  "name": "Spawn of Mayhem",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clu",
+  "collector_number": "122",
+  "rarity": "mythic",
+  "released_at": "2024-02-23",
+  "digital": false,
+  "mana_cost": "{2}{B}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Demon",
+  "oracle_text": "Spectacle {1}{B}{B} (You may cast this spell for its spectacle cost rather than its mana cost if an opponent lost life this turn.)\nFlying, trample\nAt the beginning of your upkeep, this creature deals 1 damage to each player. Then if you have 10 or less life, put a +1/+1 counter on this creature.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Spectacle",
+    "Trample"
+  ]
+}

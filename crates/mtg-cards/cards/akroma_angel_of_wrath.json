@@ -1,0 +1,20 @@
+{
+  "oracle_id": "107f204c-9fd3-490d-8887-be63d14fc6a4",
+  "name": "Akroma, Angel of Wrath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Akroma, Angel of Wrath",
+      "oracle_fingerprint": "649f63f3751e3e803d81bbed52a0d94e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        { "Keyword": { "Protection": [{ "Color": "Black" }] } },
+        { "Keyword": { "Protection": [{ "Color": "Red" }] } }
+      ]
+    }
+  ]
+}

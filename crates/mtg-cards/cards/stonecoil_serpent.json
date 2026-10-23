@@ -1,0 +1,22 @@
+{
+  "oracle_id": "78124cd1-2658-43f3-a339-0755d84154d2",
+  "name": "Stonecoil Serpent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stonecoil Serpent",
+      "oracle_fingerprint": "d30dbb598156569ba9387cc95c33a40f",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" },
+        { "Keyword": { "Protection": [{ "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }] } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        }
+      ]
+    }
+  ]
+}

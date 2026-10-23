@@ -1,0 +1,12 @@
+{
+  "oracle_id": "e9b403db-8981-440f-a451-aa77ae3cf006",
+  "name": "Spikewheel Acrobat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spikewheel Acrobat",
+      "oracle_fingerprint": "0574cc524529470f8a4d82501af2b8b7",
+      "abilities": [{ "Keyword": { "Spectacle": "{2}{R}" } }]
+    }
+  ]
+}

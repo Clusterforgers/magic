@@ -1,0 +1,28 @@
+{
+  "id": "c652ce39-903c-466b-91d5-5b1d6e645b57",
+  "oracle_id": "490df3b5-ece2-45bb-af38-fcd7f83e37b0",
+  "name": "Mistmeadow Skulk",
+  "lang": "en",
+  "layout": "normal",
+  "set": "otc",
+  "collector_number": "84",
+  "rarity": "uncommon",
+  "released_at": "2024-04-19",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Kithkin Rogue",
+  "oracle_text": "Lifelink, protection from mana value 3 or greater",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Lifelink",
+    "Protection"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "id": "9fc9b802-3381-4318-a352-d85451aba586",
+  "oracle_id": "1c96772b-463c-4655-836b-cf6e9dc6319f",
+  "name": "Sphinx of the Steel Wind",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ema",
+  "collector_number": "207",
+  "rarity": "mythic",
+  "released_at": "2016-06-10",
+  "digital": false,
+  "mana_cost": "{5}{W}{U}{B}",
+  "cmc": 8.0,
+  "type_line": "Artifact Creature — Sphinx",
+  "oracle_text": "Flying, first strike, vigilance, lifelink, protection from red and from green",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "B",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Lifelink",
+    "Vigilance",
+    "First strike",
+    "Protection"
+  ]
+}

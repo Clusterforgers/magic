@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ea658352-abef-4201-b20c-f5c5809d1d3e",
+  "name": "Lu Xun, Scholar General",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lu Xun, Scholar General",
+      "oracle_fingerprint": "8c241601afb58cb6ed24a2b5645c4942",
+      "abilities": [
+        { "Keyword": "Horsemanship" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents" } },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}
