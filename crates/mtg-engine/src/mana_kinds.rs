@@ -191,9 +191,11 @@ fn types_of(
                 for produce in [base, instead] {
                     match produce {
                         Produce::Fixed(list) | Produce::OneOf(list) => {
-                            found.extend_from_slice(list)
+                            found.extend_from_slice(list);
                         }
-                        Produce::OneOfLists(lists) => found.extend(lists.iter().flatten().copied()),
+                        Produce::OneOfLists(lists) => {
+                            found.extend(lists.iter().flatten().copied());
+                        }
                         _ => found.extend(COLORS),
                     }
                 }

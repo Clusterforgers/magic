@@ -77,6 +77,7 @@ mod cost_parts;
 mod countdown_keywords;
 mod counted_amounts;
 mod counted_costs;
+mod counted_mana;
 mod counter_actions;
 mod counter_effects;
 mod counter_mana;
