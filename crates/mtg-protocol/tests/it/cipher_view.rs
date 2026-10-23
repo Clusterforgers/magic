@@ -158,27 +158,30 @@ fn the_event_that_encodes_the_card_reaches_every_seat_as_logged(#[values(2, 3, 4
     }
 }
 
-/// The copy is on the stack: the state before the question, the log from there and the copy.
+/// The copy is on the stack: the state when the attack was declared, the log from there and the copy.
 fn with_a_copy(seats: usize) -> (Driver, ObjectId, ObjectId, GameState, Vec<Event>) {
     let (mut driver, exiled, ..) = encoded(seats);
     driver.pass_until(Step::DeclareAttackers).unwrap();
     driver.attack(&[("Carrier", 1)]).unwrap();
-    // The trigger waits on the stack until the players pass; the copy is asked as it resolves.
+    let before = driver.state().clone();
+    let from = driver.engine().events().len();
+    // The trigger waits on the stack until the players pass; it copies the card and asks whether to cast the copy.
     for _ in 0..40 {
         if matches!(driver.decision().unwrap().kind, DecisionKind::YesNo(_)) {
             break;
         }
         driver.answer_passively().unwrap();
     }
-    let before = driver.state().clone();
-    let from = driver.engine().events().len();
     driver.answer(Answer::YesNo(YesNoChoice(true))).unwrap();
-    for _ in 0..10 {
-        if driver.state().stack().len() > 1 {
-            break;
-        }
-        play_until(&mut driver, true, |driver| driver.state().stack().len() > 1);
-    }
+    // The trigger has finished by the time anyone has priority again; the copy waits on the stack.
+    play_until(&mut driver, true, |driver| {
+        let state = driver.state();
+        state
+            .stack()
+            .last()
+            .and_then(|id| state.object(*id))
+            .is_some_and(mtg_engine::object::GameObject::is_spell_copy)
+    });
     let events = driver.engine().events()[from..].to_vec();
     let copy = *driver.state().stack().last().unwrap();
     (driver, exiled, copy, before, events)
