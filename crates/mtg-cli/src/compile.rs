@@ -119,7 +119,7 @@ pub struct Plan {
 }
 
 /// The lowercase names of the cards and their faces: what a rule may name.
-fn names_of(cards: &[PrintedCard]) -> BTreeSet<String> {
+pub(crate) fn names_of(cards: &[PrintedCard]) -> BTreeSet<String> {
     cards
         .iter()
         .flat_map(|card| {

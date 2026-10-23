@@ -15,6 +15,7 @@ mod deck_table;
 mod fixture_real;
 mod generated;
 mod printed;
+mod proposal;
 mod roundtrip;
 mod transform_cards;
 mod vocabulary;

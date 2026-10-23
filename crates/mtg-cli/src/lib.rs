@@ -9,6 +9,7 @@ pub mod args;
 pub mod audit;
 pub mod bulk;
 pub mod cache;
+pub mod check_rules;
 pub mod compile;
 pub mod coverage;
 pub mod error;
@@ -107,6 +108,12 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             let url = cli.database_url.ok_or_else(missing_database_url)?;
             let db = Database::connect(&url).await?;
             Ok(compile::compile(&db, &args).await?.render())
+        }
+        Command::CheckRules(args) => {
+            let url = cli.database_url.ok_or_else(missing_database_url)?;
+            let db = Database::connect(&url).await?;
+            let checked = check_rules::check_rules(&db, &args).await?;
+            Ok(checked.render(args.verbose))
         }
         Command::Coverage(args) => {
             let url = cli.database_url.ok_or_else(missing_database_url)?;
