@@ -197,6 +197,8 @@ struct Walker<'a> {
     has_kicker: bool,
     /// Whether the card prints an optional additional cost ("As an additional cost to cast this spell, you may ...").
     has_additional_cost: bool,
+    /// Whether the cost being walked takes objects the effects can name (`Ref::Paid`): a part that picks, or a required additional cost that does.
+    pays_objects: bool,
     x_free: bool,
     /// Whether an `X` read here is the one announced for the ability being walked, which its effects read as it resolves.
     x_now: bool,
@@ -224,6 +226,7 @@ impl<'a> Walker<'a> {
             scope: Scope::default(),
             has_kicker: false,
             has_additional_cost: false,
+            pays_objects: false,
             x_free: false,
             x_now: false,
             amounting: Amounting::Other,
@@ -300,7 +303,13 @@ impl<'a> Walker<'a> {
             | Ref::Defending => {
                 self.expect(Kind::Player, want);
             }
-            Ref::This | Ref::Attached | Ref::Paid => self.expect(Kind::Object, want),
+            Ref::This | Ref::Attached => self.expect(Kind::Object, want),
+            Ref::Paid => {
+                if !self.pays_objects {
+                    self.problem("`Paid` needs a cost that takes objects: a sacrifice, a discard, an exile or a tap");
+                }
+                self.expect(Kind::Object, want);
+            }
             Ref::Target(index) => {
                 let index = usize::from(*index);
                 match self.scope.targets.get(index).map(|t| t.0) {
@@ -1802,6 +1811,7 @@ impl<'a> Walker<'a> {
         targets: &[TargetSpec],
         effects: &[Effect],
     ) {
+        let paid = std::mem::replace(&mut self.pays_objects, picks(cost));
         // The X a part of the cost counts is the one the ability announces.
         self.x_free = cost.has_x();
         self.x_now = self.x_free;
@@ -1819,6 +1829,7 @@ impl<'a> Walker<'a> {
         }
         self.x_now = cost.has_x();
         self.body(targets, effects, false);
+        self.pays_objects = paid;
     }
 
     /// A loyalty ability: a `-X` cost is asked as the ability is announced, and the effects read it.
@@ -2232,6 +2243,22 @@ fn gives_player_keywords(affected: &Ref, mods: &[Modification]) -> bool {
         && mods.iter().all(Modification::is_player_keyword)
 }
 
+/// Whether a cost has a part that picks objects the effects can name.
+fn picks(cost: &Cost) -> bool {
+    cost.0.iter().any(|item| {
+        matches!(
+            item,
+            CostItem::Sacrifice { .. }
+                | CostItem::Discard { .. }
+                | CostItem::ExileFromGraveyard { .. }
+                | CostItem::ExileFromHand { .. }
+                | CostItem::ReturnToHand { .. }
+                | CostItem::TapPermanents { .. }
+                | CostItem::TapPower { .. }
+        )
+    })
+}
+
 /// Whether a cost has an `{X}` in its mana.
 fn has_x_mana(cost: &Cost) -> bool {
     cost.0
@@ -2324,6 +2351,9 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
         Ability::Keyword(keyword) => keyword.has_additional_cost(),
         _ => false,
     });
+    walker.pays_objects = card
+        .abilities()
+        .any(|(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true } if picks(cost)));
     if !is_uuid(&card.oracle_id) {
         walker.at("oracle_id", |w| w.problem("not a lowercase UUID"));
     }

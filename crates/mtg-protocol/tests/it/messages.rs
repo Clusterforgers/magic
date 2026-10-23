@@ -1296,6 +1296,7 @@ fn pipeline_events() -> Vec<Event> {
             mtg_core::mana::ManaType::Green,
         ])),
         cost_picks: Some(Box::new(vec![vec![a], vec![b, a]])),
+        cost_shots: Some(Box::new(vec![shot.clone()])),
     };
     vec![
         Event::SpellCast {

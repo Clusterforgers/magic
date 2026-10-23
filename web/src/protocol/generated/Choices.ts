@@ -2,6 +2,7 @@
 import type { CastWay } from "./CastWay";
 import type { ManaType } from "./ManaType";
 import type { ObjectId } from "./ObjectId";
+import type { Snapshot } from "./Snapshot";
 import type { Target } from "./Target";
 
 /**
@@ -48,4 +49,9 @@ spent?: Array<ManaType>,
  * The permanents and cards picked for the parts of an ability's cost that take them (a sacrifice, a discard, an
  * exile from a graveyard, a tap, a return to hand), one list for each such part in the order the cost prints them.
  */
-cost_picks?: Array<Array<ObjectId>>, };
+cost_picks?: Array<Array<ObjectId>>, 
+/**
+ * The permanents and cards the cost took out of their zones (a sacrifice, a discard, an exile), as they were just
+ * before: "the sacrificed creature's power" reads them (CR 608.2h). Public, as every such object is shown as it leaves.
+ */
+cost_shots?: Array<Snapshot>, };

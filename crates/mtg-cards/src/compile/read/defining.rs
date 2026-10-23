@@ -9,6 +9,7 @@ use mtg_core::color::Color;
 use super::counters;
 use super::selectors::{Form, color, color_name, phrase, phrase_in, phrase_text, stat_word};
 use super::tokens::Reader;
+use super::where_x;
 use crate::ability::Ability;
 use crate::modify::Modification;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
@@ -88,6 +89,12 @@ fn part(r: &mut Reader<'_>) -> Option<Amount> {
 /// What is counted: "the number of ...", "the number of card types among ...", "your life total", "your devotion to
 /// black", "the greatest mana value among ...", "the total power of ...".
 pub(super) fn counting(r: &mut Reader<'_>) -> Option<Amount> {
+    if let Some(stat) = where_x::paid_stat(r) {
+        return Some(Amount::Stat {
+            of: Ref::Paid,
+            stat,
+        });
+    }
     if r.words("your life total") {
         return Some(Amount::Life(Ref::You));
     }

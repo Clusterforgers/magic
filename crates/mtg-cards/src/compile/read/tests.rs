@@ -212,6 +212,7 @@ mod modes;
 mod monarch;
 mod named_tokens;
 mod number_of;
+mod paid_reads;
 mod pay;
 mod payments;
 mod player_keywords;
