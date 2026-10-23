@@ -162,7 +162,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r2i) The DSL constructs the pilot found missing that (r2c) leaves: conditions on the turn so far ("the first time each turn" for investigate, surveil, cycling, token creation, discards, counters put and life lost; "a counter was put on it this turn"; "dealt damage to you this turn"), "from anywhere other than the battlefield" in a zone-change pattern, "must be blocked if able", exactly X targets, a token with characteristic-defining stats, a named option chosen as it enters, a total mana value limit on chosen cards, mana restricted to the chosen color, and "reveal until you reveal X cards" with an amount in the filter or another player's library; phasing stays with (c6b)
 - [ ] (r2d) `Cost.PayLife.Counted` in the engine (G'raha Tia, Scion Reborn and Lorcan, Warlock Collector are accepted as `Partial` until then)
 - [ ] (r2e) `mtg-cli propose`: sends a card, the DSL reference and the nearest hand-written files to a model and keeps the proposals the checker accepts; built after (r2f)
-- [ ] (r1a) A cross-check report of the compiler against Forge's scripts: a reader of the script lines, a map from the 60 most used APIs and the trigger and static modes to DSL verbs, the verbs Forge names that a compiled card lacks, and the unread tail grouped by Forge API and key (`docs/reference-engines.md`)
+- [~] (r1a) (branch r1a-forge-crosscheck) A cross-check report of the compiler against Forge's scripts: a reader of the script lines, a map from the 60 most used APIs and the trigger and static modes to DSL verbs, the verbs Forge names that a compiled card lacks, and the unread tail grouped by Forge API and key (`docs/reference-engines.md`)
 - [ ] (r1b) The proposer's (r2e) prompt takes its examples from Forge's pairs of a clause and its script parts by nearest wording, fetched at run time and never committed; examples kept in the repository come from XMage with its MIT notice
 - [ ] (r1c) Rules proposals converted from Forge scripts for the API families the (r1a) report shows unread, each passing the structure checks and the oracle fingerprint; the GPLv3 conditions for rules that reach browsers are decided first
 
@@ -172,6 +172,7 @@ The server is settled first, then the web is built once against the final types.
 
 ### Tooling
 - [ ] (t1) The `mtg-cli` `fetch_scryfall` tests are stable under parallel load (two of them failed once in a full run and passed alone and on rerun)
+- [~] (t2) (branch t2-offered-helpers) Two engine faults the fuzz decks of the writer cards expose: improvise, convoke and delve are offered from objects the spell's additional cost already took (a sacrificed Inspiring Statuary is also tapped in the same payment and `set_tapped` fails), and a bot loops on declaring attackers and cancelling the payment of an attack tax with Phyrexian mana until the answer limit
 - [ ] The expected X symbols in `x_cards.rs` of `mtg-testkit` are derived from the card list, so a new X card edits no test
 - [ ] Coverage dashboard in the web over `Library::support`: states, reasons and clause spans per card, ranked by saved-deck demand; target: 100% of the chosen precons (`docs/deck-check.md`)
 
