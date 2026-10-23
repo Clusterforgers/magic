@@ -1,0 +1,25 @@
+{
+  "id": "7e361851-346e-4747-bbce-e2dc19e39b31",
+  "oracle_id": "8b1aa532-4f19-407e-83a5-13b3160ad8c2",
+  "name": "Chittering Witch",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "175",
+  "rarity": "rare",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Warlock",
+  "oracle_text": "When this creature enters, create a number of 1/1 black Rat creature tokens equal to the number of opponents you have.\n{1}{B}, Sacrifice a creature: Target creature gets -2/-2 until end of turn.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

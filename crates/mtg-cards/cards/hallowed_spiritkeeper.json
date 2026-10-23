@@ -1,0 +1,39 @@
+{
+  "oracle_id": "5852ed2f-4332-4c30-b145-373deea471d9",
+  "name": "Hallowed Spiritkeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hallowed Spiritkeeper",
+      "oracle_fingerprint": "8dfe5a2cbca87c7dd2d0298230f1bf30",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

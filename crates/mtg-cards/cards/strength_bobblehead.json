@@ -1,0 +1,35 @@
+{
+  "oracle_id": "bd0e22d1-4789-406d-9293-3ade30365b32",
+  "name": "Strength Bobblehead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strength Bobblehead",
+      "oracle_fingerprint": "335816f48eb28613793983a49a240ba2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": { "Count": [{ "Subtype": "Bobblehead" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

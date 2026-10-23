@@ -1,0 +1,29 @@
+{
+  "oracle_id": "33f29fcb-c9ea-4d81-afa2-5c9575b4d58e",
+  "name": "Graveblade Marauder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Graveblade Marauder",
+      "oracle_fingerprint": "970343eb9c50386bbd1696609043ac72",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Triggering",
+                  "amount": {
+                    "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

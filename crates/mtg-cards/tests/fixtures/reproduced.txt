@@ -5,6 +5,7 @@ Abzan Advantage
 Abzan Battle Priest
 Abzan Falconer
 Abzan Skycaptain
+Academy Elite
 Accomplished Automaton
 Adaptive Snapjaw
 Adorned Pouncer
@@ -60,6 +61,7 @@ Banisher Priest
 Banishing Light
 Banshee of the Dread Choir
 Basilica Screecher
+Basilisk Gate
 Basking Rootwalla
 Battering Krasis
 Battle Sliver
@@ -76,6 +78,7 @@ Blasphemous Act
 Blastoderm
 Blaze
 Blight Mamba
+Blight Pile
 Blightwidow
 Bloodbraid Elf
 Bloodghast
@@ -126,6 +129,7 @@ Changeling Outcast
 Chartooth Cougar
 Chemister's Insight
 Chittering Harvester
+Chittering Witch
 Chomping Kavu
 Chromanticore
 Chromatic Lantern
@@ -139,6 +143,7 @@ Cloudskate
 Cold-Eyed Selkie
 Collective Unconscious
 Command Tower
+Commence the Endgame
 Conclave Tribunal
 Consider
 Consign // Oblivion
@@ -168,6 +173,7 @@ Curse of Vitality
 Curse of the Forsaken
 Curse of the Nightly Hunt
 Custodi Lich
+Custodi Soulbinders
 Cut // Ribbons
 Cut of the Profits
 Cyclonic Rift
@@ -175,6 +181,7 @@ Cytoshape
 Dalek Squadron
 Darkblast
 Darksteel Juggernaut
+Darksteel Splicer
 Dauthi Horror
 Dauthi Marauder
 Dawnglade Regent
@@ -305,6 +312,7 @@ Glorious Anthem
 Glowstone Recluse
 Gluttonous Cyclops
 Gluttonous Slime
+Gluttonous Troll
 Gnarled Professor
 Goblin Chieftain
 Goblin Spy
@@ -315,6 +323,7 @@ Goldlust Triad
 Goliath Truck
 Gorger Wurm
 Grapeshot
+Graveblade Marauder
 Graven Cairns
 Graveshifter
 Greater Mossdog
@@ -329,12 +338,15 @@ Guiding Voice
 Gurmag Angler
 Hada Spy Patrol
 Hall of Triumph
+Hallowed Spiritkeeper
 Hammer Dropper
 Hangar Scrounger
+Hangarback Walker
 Harrow
 Haughty Djinn
 Headless Skaab
 Hearthhull, the Worldseed
+Hellkite Igniter
 Hengegate Pathway // Mistgate Pathway
 Herald of Anguish
 Herald of the Dreadhorde
@@ -358,7 +370,10 @@ Illustrious Wanderglyph
 Imperial Hellkite
 Impostor of the Sixth Pride
 Impulsive Pilferer
+Inferno Project
 Inkwell Leviathan
+Inspired Sphinx
+Intelligence Bobblehead
 Intrepid Rabbit
 Invading Manticore
 Invisible Stalker
@@ -369,6 +384,7 @@ Jacked Rabbit
 Jadelight Ranger
 Jagged Barrens
 Jaspera Sentinel
+Jazal Goldmane
 Join the Maestros
 Jolting Merfolk
 Jungle Lion
@@ -471,6 +487,7 @@ Ninja of the New Moon
 Norn's Annex
 Notion Rain
 Nyxborn Behemoth
+Oath of Jace
 Obscuring Haze
 Okiba Reckoner Raid // Nezumi Road Captain
 Onakke Oathkeeper
@@ -526,6 +543,7 @@ Ramos, Dragon Engine
 Rampant Growth
 Rancor
 Ravenous Leucrocota
+Realm Seekers
 Reassembling Skeleton
 Reckless Impulse
 Reconstructed Thopter
@@ -596,6 +614,7 @@ Siege Wurm
 Sigiled Paladin
 Sigiled Sentinel
 Silhana Ledgewalker
+Silverwing Squadron
 Sinister Sabotage
 Sinister Starfish
 Sinuous Vermin
@@ -650,6 +669,7 @@ Storm Fleet Swashbuckler
 Stormchaser's Talent
 Strangleroot Geist
 Stratus Dancer
+Strength Bobblehead
 Strionic Resonator
 Stroke of Genius
 Student of Warfare
@@ -666,6 +686,7 @@ Sundering Growth
 Sunhome Stalwart
 Sunken Ruins
 Supreme Verdict
+Surgehacker Mech
 Susurian Dirgecraft
 Swarm Intelligence
 Swiftfoot Boots
@@ -713,6 +734,7 @@ Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Tithe Drinker
 Tithebearer Giant
+Towering Titan
 Trash for Treasure
 Traumatic Visions
 Treasure Cruise
@@ -765,6 +787,7 @@ Weirding Wood
 Whir of Invention
 Whisperer of the Wilds
 White Auracite
+Wickersmith's Tools
 Wild Wasteland
 Wilderness Elemental
 Windborn Muse

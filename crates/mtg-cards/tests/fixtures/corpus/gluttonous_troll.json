@@ -1,0 +1,30 @@
+{
+  "id": "56c560ee-ae26-4d52-a5b3-18f247ffcb15",
+  "oracle_id": "2a3712f9-6bed-4068-9064-2b5240fc7b28",
+  "name": "Gluttonous Troll",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c21",
+  "collector_number": "218",
+  "rarity": "rare",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{2}{B}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Troll",
+  "oracle_text": "Trample\nWhen this creature enters, create a number of Food tokens equal to the number of opponents you have. (Food tokens are artifacts with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\n{1}{G}, Sacrifice another nonland permanent: This creature gets +2/+2 until end of turn.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Food",
+    "Trample"
+  ]
+}

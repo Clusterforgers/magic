@@ -438,7 +438,10 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
         matches!(
             effect,
             Effect::CreateToken {
-                count: Amount::Count(_) | Amount::Times { .. },
+                count: Amount::Count(_)
+                    | Amount::Counters { .. }
+                    | Amount::Players(_)
+                    | Amount::Times { .. },
                 ..
             }
         )

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "1c0fc9b4-177e-4529-827f-a1e17ff7a752",
+  "name": "Blight Pile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blight Pile",
+      "oracle_fingerprint": "1c829f6083be3706ea1aabdf196b435f",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, "Tap"],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Opponents",
+                  "amount": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "HasKeyword": "Defender" },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

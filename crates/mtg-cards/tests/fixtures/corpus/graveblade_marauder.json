@@ -1,0 +1,27 @@
+{
+  "id": "a6e62471-07bf-48af-8868-b8a72032a50b",
+  "oracle_id": "33f29fcb-c9ea-4d81-afa2-5c9575b4d58e",
+  "name": "Graveblade Marauder",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2x2",
+  "collector_number": "77",
+  "rarity": "uncommon",
+  "released_at": "2022-07-08",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "Deathtouch (Any amount of damage this deals to a creature is enough to destroy it.)\nWhenever this creature deals combat damage to a player, that player loses life equal to the number of creature cards in your graveyard.",
+  "power": "1",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Deathtouch"
+  ]
+}
