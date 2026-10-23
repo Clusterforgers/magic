@@ -97,6 +97,8 @@ const RUNS: &[&str] = &[
     "Cost.TapPermanents",
     "Cost.ReturnToHand",
     "Cost.ExileFromHand",
+    "Cost.RevealFromHand",
+    "Cost.OneOf",
     "Cost.TapPower",
     "Effect.Draw",
     "Effect.Discard",

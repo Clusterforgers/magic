@@ -150,6 +150,16 @@ pub struct CostTaken {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Snapshot>>", optional))]
     pub shots: Vec<Snapshot>,
+    /// Which of the costs a card lets its caster choose between ("discard a card or pay 3 life") was chosen, by position
+    /// among the combinations of the choices the card prints; 0 for a card with no such choice.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub variant: u8,
+}
+
+/// Whether a count is 0, so serialization can leave it out.
+const fn is_zero(count: &u8) -> bool {
+    *count == 0
 }
 
 impl Choices {
@@ -161,6 +171,18 @@ impl Choices {
     /// The permanents and cards picked for the parts of the cost that take them, one list for each such part.
     pub fn cost_picks(&self) -> &[Vec<ObjectId>] {
         self.cost_taken.as_deref().map_or(&[], |taken| &taken.picks)
+    }
+
+    /// Which of the costs the card lets its caster choose between was chosen (`CostTaken::variant`).
+    pub fn cost_variant(&self) -> u8 {
+        self.cost_taken.as_deref().map_or(0, |taken| taken.variant)
+    }
+
+    /// Records the cost chosen between the costs of the card; nothing for 0 on choices that took nothing.
+    pub(crate) fn choose_cost(&mut self, variant: u8) {
+        if variant != 0 || self.cost_taken.is_some() {
+            self.cost_taken.get_or_insert_with(Box::default).variant = variant;
+        }
     }
 
     /// What the cost took out of its zones, as it was just before (`parts::photographed`).

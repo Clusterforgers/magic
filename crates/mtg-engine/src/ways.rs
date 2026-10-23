@@ -50,9 +50,17 @@ pub(crate) struct Way {
     pub(crate) instant: bool,
     /// What paying the way takes besides mana: life and the objects the player picks.
     pub(crate) parts: Vec<Part>,
+    /// Which of the costs the card lets its caster choose between the way pays (`announce/required.rs`); 0 for a way with
+    /// no such choice.
+    pub(crate) variant: u8,
 }
 
 impl Way {
+    /// Whether this is the way `choices` announced: the cast way and the cost chosen between.
+    pub(crate) fn is(&self, choices: &crate::choose::Choices) -> bool {
+        self.alternative == choices.way && self.variant == choices.cost_variant()
+    }
+
     /// The mana cost this way pays for `printed`.
     pub(crate) fn cost(&self, printed: Option<&ManaCost>) -> Option<ManaCost> {
         self.mana.clone().or_else(|| printed.cloned())
@@ -229,6 +237,7 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
             label: format!("Cast for {cost}"),
             mana: None,
             instant,
+            variant: 0,
             parts: Vec::new(),
         });
     }
@@ -254,6 +263,7 @@ fn free_way(instant: bool) -> Way {
         label: "Cast without paying its mana cost".to_owned(),
         mana: Some(ManaCost::default()),
         instant,
+        variant: 0,
         parts: Vec::new(),
     }
 }
@@ -375,6 +385,7 @@ fn keyword_way(
         label: format!("{name} {}", cost_words(&mana, &parts)),
         mana: Some(mana),
         instant,
+        variant: 0,
         parts,
     })
 }
@@ -405,6 +416,7 @@ fn face_down_way(instant: bool) -> Way {
         label: format!("Cast face down for {cost}"),
         mana: Some(cost),
         instant,
+        variant: 0,
         parts: Vec::new(),
     }
 }
@@ -432,6 +444,7 @@ fn discard_way(state: &GameState, id: ObjectId, way: CastWay, instant: bool) -> 
         label: format!("{name} {printed}, {words}"),
         mana: None,
         instant,
+        variant: 0,
         parts: price.parts,
     })
 }
@@ -502,6 +515,7 @@ fn granted_before_required(
                 label: format!("{} {}", way_name(named), cost_words(&mana, &parts)),
                 mana: Some(mana),
                 instant: true,
+                variant: 0,
                 parts,
             })
             .into_iter()
@@ -513,6 +527,7 @@ fn granted_before_required(
             label: "Cast without paying its mana cost".to_owned(),
             mana: Some(ManaCost::default()),
             instant: true,
+            variant: 0,
             parts: Vec::new(),
         }];
     }
@@ -524,6 +539,7 @@ fn granted_before_required(
             label: format!("Cast for {cost}"),
             mana: None,
             instant: true,
+            variant: 0,
             parts: Vec::new(),
         })
         .into_iter()

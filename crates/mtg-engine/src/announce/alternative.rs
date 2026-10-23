@@ -63,6 +63,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         },
     };
     work.choices.way = ctx.needs.ways[picked].alternative;
+    work.choices.choose_cost(ctx.needs.ways[picked].variant);
     work.done.alternative = true;
     None
 }
@@ -76,6 +77,7 @@ fn usable(ctx: &Ctx<'_>, choices: &Choices) -> Vec<usize> {
         .filter(|(_, way)| {
             let mut trial = choices.clone();
             trial.way = way.alternative;
+            trial.choose_cost(way.variant);
             ways::announceable_in(ctx.state, ctx.player, ctx.source, way.alternative)
                 && total::of(ctx, &trial).is_some_and(|total| total::affordable(ctx, &total))
         })
@@ -93,7 +95,7 @@ pub(super) fn replace(
         .needs
         .ways
         .iter()
-        .find(|way| way.alternative == choices.way)
+        .find(|way| way.is(choices))
     {
         Some(way) => way.cost(mana.as_ref()),
         None => mana,
