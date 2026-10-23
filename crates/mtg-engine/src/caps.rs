@@ -135,6 +135,7 @@ const RUNS: &[&str] = &[
     "Effect.Unattach",
     "Effect.JoinAttack",
     "Effect.Transform",
+    "Effect.Flip",
     "Effect.WinGame",
     "Effect.Surveil",
     "Effect.Proliferate",
@@ -439,6 +440,7 @@ mod tests {
     #[case::living_weapon("Keyword.LivingWeapon", true)]
     #[case::unattaching("Effect.Unattach", true)]
     #[case::transforming("Effect.Transform", true)]
+    #[case::flipping("Effect.Flip", true)]
     #[case::day_and_night("Keyword.Daybound", true)]
     #[case::the_night_face("Keyword.Nightbound", true)]
     #[case::fusing("Keyword.Fuse", true)]
