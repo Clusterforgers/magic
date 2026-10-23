@@ -112,6 +112,7 @@ Boon Reflection
 Boon Satyr
 Boon-Bringer Valkyrie
 Borderland Behemoth
+Bosh, Iron Golem
 Brain Freeze
 Brainstorm
 Branchblight Stalker
@@ -119,6 +120,7 @@ Breath of Life
 Briarblade Adept
 Bridled Bighorn
 Brightstone Ritual
+Brion Stoutarm
 Bronzeplate Boar
 Broodbirth Viper
 Broodhatch Nantuko
@@ -240,8 +242,10 @@ Demon of Wailing Agonies
 Dense Canopy
 Deputized Protester
 Dimir Infiltrator
+Dina, Soul Steeper
 Dire Fleet Interloper
 Direct Current
+Disciple of Griselbrand
 Disembowel
 Disrupt Decorum
 Dockside Extortionist
@@ -360,6 +364,7 @@ Ghalta, Primal Hunger
 Ghost Quarter
 Ghostblade Eidolon
 Ghostly Prison
+Ghoulcaller Gisa
 Giant Cindermaw
 Giant Growth
 Gift of Paradise
@@ -388,6 +393,7 @@ Grapeshot
 Graveblade Marauder
 Graven Cairns
 Graveshifter
+Greater Good
 Greater Mossdog
 Green Goblin, Back for More
 Grenzo's Cutthroat
@@ -493,6 +499,7 @@ Legion Loyalty
 Levitation
 Lhurgoyf
 Life of Toshiro Umezawa // Memory of Toshiro
+Life's Legacy
 Light 'Em Up
 Lightning Bolt
 Lithoform Engine
@@ -528,6 +535,7 @@ Mayhem Patrol
 Megrim
 Memory Guardian
 Mer-Ek Nightblade
+Mercurial Chemister
 Merfolk Branchwalker
 Mesmeric Orb
 Metropolis Reformer

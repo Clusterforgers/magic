@@ -1,0 +1,23 @@
+{
+  "cmc": 4.0,
+  "collector_number": "174",
+  "color_identity": [
+    "G"
+  ],
+  "colors": [
+    "G"
+  ],
+  "digital": false,
+  "id": "9dd8b16f-3dfd-4e04-a2e9-ec87d0e007c9",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{G}{G}",
+  "name": "Greater Good",
+  "oracle_id": "dc0593c2-ccb4-4648-a592-c5bcd121dc72",
+  "oracle_text": "Sacrifice a creature: Draw cards equal to the sacrificed creature's power, then discard three cards.",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "set": "msc",
+  "type_line": "Enchantment"
+}

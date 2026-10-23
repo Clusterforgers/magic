@@ -1,0 +1,23 @@
+{
+  "cmc": 2.0,
+  "collector_number": "300",
+  "color_identity": [
+    "G"
+  ],
+  "colors": [
+    "G"
+  ],
+  "digital": false,
+  "id": "bf0e70d2-5f1a-441b-99b9-d003fa15b999",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{G}",
+  "name": "Life's Legacy",
+  "oracle_id": "cb7baa46-7963-4d45-9a6e-e3c34db3c0e6",
+  "oracle_text": "As an additional cost to cast this spell, sacrifice a creature.\nDraw cards equal to the sacrificed creature's power.",
+  "rarity": "rare",
+  "released_at": "2022-04-29",
+  "set": "ncc",
+  "type_line": "Sorcery"
+}

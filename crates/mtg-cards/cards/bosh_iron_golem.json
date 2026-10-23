@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2fb6f65f-a0fb-4d45-be1b-d6405e61d47a",
+  "name": "Bosh, Iron Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bosh, Iron Golem",
+      "oracle_fingerprint": "6a2b9fff594ed547b13eee14e883ec1d",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{R}" }, { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

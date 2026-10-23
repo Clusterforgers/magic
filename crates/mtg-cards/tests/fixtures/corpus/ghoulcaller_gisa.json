@@ -1,0 +1,25 @@
+{
+  "cmc": 5.0,
+  "collector_number": "161",
+  "color_identity": [
+    "B"
+  ],
+  "colors": [
+    "B"
+  ],
+  "digital": false,
+  "id": "44d7906e-8a89-4644-acb5-46fbe97ab39f",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{3}{B}{B}",
+  "name": "Ghoulcaller Gisa",
+  "oracle_id": "0dd894cb-1968-471c-af08-ea7ec5ce8428",
+  "oracle_text": "{B}, {T}, Sacrifice another creature: Create X 2/2 black Zombie creature tokens, where X is the sacrificed creature's power.",
+  "power": "3",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "set": "cmm",
+  "toughness": "4",
+  "type_line": "Legendary Creature — Human Wizard"
+}

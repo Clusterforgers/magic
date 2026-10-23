@@ -1,0 +1,33 @@
+{
+  "oracle_id": "4243baf6-9ac2-4f87-988d-3ebf5e177f3b",
+  "name": "Mercurial Chemister",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mercurial Chemister",
+      "oracle_fingerprint": "a8483d9bdb75dc1f1b4d12eb80027d85",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap", { "Discard": {} }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

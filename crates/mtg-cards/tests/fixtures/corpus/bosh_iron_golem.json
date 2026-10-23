@@ -1,0 +1,25 @@
+{
+  "cmc": 8.0,
+  "collector_number": "237",
+  "color_identity": [
+    "R"
+  ],
+  "colors": [],
+  "digital": false,
+  "id": "09fb3b1f-c3a0-4da4-9b29-eff81fc1d562",
+  "keywords": [
+    "Trample"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{8}",
+  "name": "Bosh, Iron Golem",
+  "oracle_id": "2fb6f65f-a0fb-4d45-be1b-d6405e61d47a",
+  "oracle_text": "Trample\n{3}{R}, Sacrifice an artifact: Bosh deals damage equal to the sacrificed artifact's mana value to any target.",
+  "power": "6",
+  "rarity": "rare",
+  "released_at": "2021-04-23",
+  "set": "c21",
+  "toughness": "7",
+  "type_line": "Legendary Artifact Creature — Golem"
+}

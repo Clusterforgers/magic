@@ -1,0 +1,27 @@
+{
+  "cmc": 2.0,
+  "collector_number": "305",
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "colors": [
+    "B",
+    "G"
+  ],
+  "digital": false,
+  "id": "6ae992b6-506b-4667-884f-4f7fc075b71e",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{B}{G}",
+  "name": "Dina, Soul Steeper",
+  "oracle_id": "2121bcb4-f5fe-447f-9112-c7e5b5c45baf",
+  "oracle_text": "Whenever you gain life, each opponent loses 1 life.\n{1}, Sacrifice another creature: Dina gets +X/+0 until end of turn, where X is the sacrificed creature's power.",
+  "power": "1",
+  "rarity": "uncommon",
+  "released_at": "2026-04-24",
+  "set": "soc",
+  "toughness": "3",
+  "type_line": "Legendary Creature — Dryad Druid"
+}
