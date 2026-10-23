@@ -71,6 +71,16 @@ fn a_copy_of_a_spell_may_lose_a_supertype(#[case] text: &str, #[case] except: &s
     );
 }
 
+#[test]
+fn a_permanent_may_enter_as_a_copy_that_is_not_legendary() {
+    reads_as(
+        "You may have this creature enter as a copy of any creature on the battlefield, except it isn't legendary.",
+        ClauseKind::Static,
+        false,
+        r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"AsCopy":{"of":[{"Type":"Creature"}],"except":[{"RemoveSupertype":"Legendary"}]}}}}"#,
+    );
+}
+
 #[rstest]
 #[case::another_supertype(
     "Create a token that's a copy of target creature you control, except it isn't basic."
