@@ -1,0 +1,15 @@
+{
+  "oracle_id": "3d960d33-623a-4415-ae00-f8cffbc15f5a",
+  "name": "Dictate of the Twin Gods",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dictate of the Twin Gods",
+      "oracle_fingerprint": "11e403321faa43cce5068d8db99c5bd2",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Replacement": { "when": { "Damage": {} }, "by": { "Multiply": 2 } } }
+      ]
+    }
+  ]
+}
