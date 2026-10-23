@@ -1,0 +1,32 @@
+{
+  "oracle_id": "91f34686-cb96-49c0-b4a7-49dd1fd076e2",
+  "name": "Sea Gate Wreckage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sea Gate Wreckage",
+      "oracle_fingerprint": "42f023c549bbcf8a3da1356d9e677ccd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{C}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

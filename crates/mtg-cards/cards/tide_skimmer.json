@@ -1,0 +1,29 @@
+{
+  "oracle_id": "8d83dfb3-5662-4109-b465-bf5f257e58a5",
+  "name": "Tide Skimmer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tide Skimmer",
+      "oracle_fingerprint": "467949ce4ddc53ec4c57b4f704805f7b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasKeyword": "Flying" }
+                ],
+                "at_least": 2
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

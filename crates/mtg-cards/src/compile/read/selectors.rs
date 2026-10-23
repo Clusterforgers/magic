@@ -495,8 +495,10 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             "you don't control".to_owned()
         }
         Pred::HasKeyword(keyword) => format!("with {}", keyword_text(keyword)?),
-        // Only a lone creature is "each ... with a counter on it"; the plural and the other forms stay unwritten.
-        Pred::HasCounter(kind) if matches!(form, Form::Each) => {
+        Pred::HasCounter(kind) if form.plural() => {
+            format!("with {} counters on them", counters::kind_text(kind)?)
+        }
+        Pred::HasCounter(kind) => {
             let words = counters::trigger_kind_text(Some(kind))?;
             format!("with {words} on it")
         }
@@ -941,7 +943,7 @@ fn is_permanent(types: &[CardType]) -> bool {
 }
 
 /// The subtypes of a phrase: one name, or a list joined by "or".
-fn subtype_words(subtypes: &[&str], plural: bool) -> String {
+fn subtype_words(subtypes: &[&str], plural: bool, joiner: &str) -> String {
     let words: Vec<String> = subtypes
         .iter()
         .map(|name| {
@@ -952,7 +954,7 @@ fn subtype_words(subtypes: &[&str], plural: bool) -> String {
             }
         })
         .collect();
-    list_text(&words, "or")
+    list_text(&words, joiner)
 }
 
 /// Whether the predicates name the commander its owner designated: "your commander".
@@ -1028,7 +1030,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         || (!plural && !spell && !card && !token && !types.is_empty());
     // Several subtypes are only for a spell ("Faerie or Wizard permanent spell").
     if (!subtypes.is_empty() && !types.is_empty() && !qualified)
-        || (subtypes.len() > 1 && !spell)
+        || (subtypes.len() > 1 && !spell && (qualified || !types.is_empty()))
         || (spell && card)
         || (token && (spell || card))
         || (commander && (spell || card || token || !subtypes.is_empty() || !types.is_empty()))
@@ -1049,7 +1051,9 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         words.insert(0, "your".to_owned());
     }
     if !subtypes.is_empty() {
-        words.push(subtype_words(&subtypes, plural && !qualified && !card));
+        let nouns = plural && !qualified && !card;
+        let joiner = if nouns { form.connector() } else { "or" };
+        words.push(subtype_words(&subtypes, nouns, joiner));
     }
     words.extend(
         kinds

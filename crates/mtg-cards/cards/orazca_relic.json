@@ -1,0 +1,27 @@
+{
+  "oracle_id": "48b84b58-1a06-4bb4-be1f-ad3ca69e66dc",
+  "name": "Orazca Relic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orazca Relic",
+      "oracle_fingerprint": "c3b831477d0fde63c3c04a6e755c9f09",
+      "abilities": [
+        { "Keyword": "Ascend" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "condition": { "CitysBlessing": "You" },
+            "effects": [{ "GainLife": { "amount": 3 } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

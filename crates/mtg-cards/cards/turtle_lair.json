@@ -1,0 +1,53 @@
+{
+  "oracle_id": "eb002bbc-08df-4bf0-bea3-46494ad261b6",
+  "name": "Turtle Lair",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turtle Lair",
+      "oracle_fingerprint": "14371accfa6ec4848979a85f9ade6b92",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [{ "Spell": { "subtypes": ["Ninja", "Turtle"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Subtype": "Ninja" }, { "Subtype": "Turtle" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -14,18 +14,21 @@
 //! (an effect that depends on a condition), `reveal` (looking at the top card and revealing it),
 //! `damage` (what deals damage to whom and the life gained with it), `copies` (a token that is a copy, populate, entering as a copy), `levels` (the blocks of a level up creature), `chapters` (the lines of a Saga), `class` (the levels of a Class), `stations` (the blocks of a Spacecraft), `copy_spells` (a copy of a spell or an ability, a
 //! permanent that becomes a copy), `defining` (the power and toughness a card defines for itself), `life_gain` (replacements and rules about gaining life), `transform`, `draws` (draw and discard wordings), `actions` (the keyword actions of creatures),
-//! `pronouns` (the wordings that call the card "it"), `where_x` (an amount named after the sentence: "where X is its power") and `render`.
+//! `pronouns` (the wordings that call the card "it"), `where_x` (an amount named after the sentence: "where X is its power"), `render`, and the writers that no template reads: `replacements`, `batches`, `choices`, `static_parts` and `activations`.
 
 mod abilities;
 mod actions;
+mod activations;
 mod among;
 mod amounts;
 mod as_long_as;
 mod attack_tax;
 mod attackers;
+mod batches;
 mod becomes;
 mod cast;
 mod chapters;
+mod choices;
 mod class;
 mod conditional;
 mod copies;
@@ -57,6 +60,7 @@ mod player_keywords;
 mod prevention;
 mod pronouns;
 mod render;
+mod replacements;
 mod reveal;
 mod reveal_until;
 mod selectors;
@@ -64,6 +68,7 @@ mod spell_keywords;
 mod spend;
 mod spent;
 mod static_pairs;
+mod static_parts;
 mod statics;
 mod stations;
 pub(super) mod subtypes;

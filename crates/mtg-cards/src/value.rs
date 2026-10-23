@@ -165,6 +165,9 @@ pub enum TurnTally {
     DamageTaken,
     /// The times the player gained life, once for each gain of any amount.
     LifeGained,
+    /// The times counters were put on the object (read through an object reference, not a player): one for each
+    /// counter kind put, whatever the number ("a counter was put on it this turn").
+    CountersPut,
 }
 
 /// A number, fixed or worked out when the effect runs.

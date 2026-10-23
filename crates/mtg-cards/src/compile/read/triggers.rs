@@ -3,6 +3,7 @@
 //! upkeep" and written back the same way.
 
 use super::amounts::{count_word, number_word};
+use super::batches;
 use super::counters;
 use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
@@ -250,9 +251,18 @@ fn counters_batch(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         Some(counter)
     };
     let what = subject(r)?;
-    Some(TriggerPattern::Batch(Box::new(
-        TriggerPattern::CountersPut { what, counter },
-    )))
+    let put = TriggerPattern::CountersPut {
+        what,
+        counter: counter.clone(),
+    };
+    // The counters of any kind put on the object in a turn are counted.
+    if counter.is_none() {
+        let timed = first_time(r, put.clone());
+        if matches!(timed, TriggerPattern::Nth { .. }) {
+            return Some(timed);
+        }
+    }
+    Some(TriggerPattern::Batch(Box::new(put)))
 }
 
 /// "a +1/+1 counter is put on ~", "a counter is removed from a creature you control".
@@ -369,10 +379,10 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         })
     } else if verb == if third { "gains" } else { "gain" } {
         r.need("life")?;
-        Some(TriggerPattern::LifeGained { who: by })
+        Some(first_time(r, TriggerPattern::LifeGained { who: by }))
     } else if verb == if third { "loses" } else { "lose" } {
         r.need("life")?;
-        Some(TriggerPattern::LifeLost { who: by })
+        Some(first_time(r, TriggerPattern::LifeLost { who: by }))
     } else if verb == if third { "draws" } else { "draw" } {
         if let Some(nth) = each_turn(r, "card", whose) {
             let event = TriggerPattern::Drew {
@@ -404,7 +414,18 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
             r.need("a card")?;
             Selector::default()
         };
-        Some(TriggerPattern::Cycled { what, by })
+        // The card itself is cycled once, so it has no count.
+        let itself = what == Selector::this();
+        let cycled = TriggerPattern::Cycled { what, by };
+        Some(if itself {
+            cycled
+        } else {
+            first_time(r, cycled)
+        })
+    } else if verb == if third { "surveils" } else { "surveil" } {
+        Some(first_time(r, TriggerPattern::Surveilled { who: by }))
+    } else if verb == if third { "creates" } else { "create" } {
+        tokens_created(r, &by)
     } else if verb == if third { "becomes" } else { "become" } {
         r.need("the monarch")?;
         Some(TriggerPattern::BecomesMonarch { who: by })
@@ -435,6 +456,19 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     } else {
         None
     }
+}
+
+/// "you create one or more tokens for the first time each turn": the first token of the turn that enters under your
+/// control. Only the count of the turn has a pattern; the event of every token is a token entering.
+fn tokens_created(r: &mut Reader<'_>, by: &Ref) -> Option<TriggerPattern> {
+    (*by == Ref::You && r.words("one or more tokens")).then_some(())?;
+    let created = TriggerPattern::ZoneChange {
+        what: Selector(vec![Pred::Token, Pred::ControlledBy(Ref::You)]),
+        from: None,
+        to: Some(ZoneKind::Battlefield),
+    };
+    let counted = first_time(r, created);
+    matches!(counted, TriggerPattern::Nth { .. }).then_some(counted)
 }
 
 /// "you attack with two or more creatures": that many of the creatures you control attack together.
@@ -523,6 +557,23 @@ fn verb_list(r: &mut Reader<'_>, what: &Selector) -> Option<Vec<TriggerPattern>>
     Some(found)
 }
 
+/// "is put into a graveyard from anywhere other than the battlefield", also "into your graveyard" (the cards it owns).
+fn from_elsewhere(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
+    r.need("is put into")?;
+    let mut picked = what.clone();
+    if r.words("your graveyard") {
+        picked.0.push(Pred::OwnedBy(Ref::You));
+    } else {
+        r.need("a graveyard")?;
+    }
+    r.need("from anywhere other than the battlefield")?;
+    Some(TriggerPattern::ZoneChangeExcept {
+        what: picked,
+        except: ZoneKind::Battlefield,
+        to: Some(ZoneKind::Graveyard),
+    })
+}
+
 fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     let (from, to) = if r.word("enters") {
         // The older wording, "enters the battlefield", says the same.
@@ -530,6 +581,8 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         (None, Some(ZoneKind::Battlefield))
     } else if r.word("dies") || r.words("is put into a graveyard from the battlefield") {
         (Some(ZoneKind::Battlefield), Some(ZoneKind::Graveyard))
+    } else if let Some(elsewhere) = r.attempt(|r| from_elsewhere(r, what)) {
+        return Some(elsewhere);
     } else if r.words("is put into a graveyard from anywhere") {
         (None, Some(ZoneKind::Graveyard))
     } else if r.words("leaves the battlefield") {
@@ -887,7 +940,7 @@ pub fn article(words: &str) -> &'static str {
 }
 
 /// A subject with its article: "~", "a creature you control", "another Elf".
-fn subject_text(what: &Selector) -> Option<String> {
+pub(super) fn subject_text(what: &Selector) -> Option<String> {
     if what.0 == [Pred::This] {
         return Some("~".to_owned());
     }
@@ -931,6 +984,27 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
                 _ => return None,
             };
             said(what, verb)
+        }
+        TriggerPattern::ZoneChangeExcept {
+            what,
+            except: ZoneKind::Battlefield,
+            to: Some(ZoneKind::Graveyard),
+        } => {
+            let mut rest = what.clone();
+            let own = rest
+                .0
+                .iter()
+                .position(|pred| *pred == Pred::OwnedBy(Ref::You));
+            let whose = if let Some(at) = own {
+                rest.0.remove(at);
+                "your"
+            } else {
+                "a"
+            };
+            said(
+                &rest,
+                &format!("is put into {whose} graveyard from anywhere other than the battlefield"),
+            )
         }
         TriggerPattern::Attacks { what } => said(what, "attacks"),
         TriggerPattern::AttacksPlayer {
@@ -1074,6 +1148,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::Bolstered { who } => {
             Some(format!("Whenever {}", player_verb(who, "bolster")?))
         }
+        TriggerPattern::Surveilled { who } => {
+            Some(format!("Whenever {}", player_verb(who, "surveil")?))
+        }
         TriggerPattern::LifeGained { who } => {
             Some(format!("Whenever {} life", player_verb(who, "gain")?))
         }
@@ -1195,9 +1272,27 @@ fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
         | TriggerPattern::BecomesCrewed { .. }
         | TriggerPattern::BecomesSaddled { .. }
         | TriggerPattern::BecomesTarget { .. }
-        | TriggerPattern::DealsDamage { .. } => {
+        | TriggerPattern::DealsDamage { .. }
+        | TriggerPattern::LifeGained { .. }
+        | TriggerPattern::LifeLost { .. }
+        | TriggerPattern::Cycled { .. }
+        | TriggerPattern::Surveilled { .. } => {
             let counted = pattern_text(event)?;
             return Some(format!("{counted} for the {ordinal} time each turn"));
+        }
+        // The counters of one batch are one time: the first counter put in the turn is the one that counts.
+        TriggerPattern::CountersPut { counter: None, .. } => {
+            let counted = batch_text(event)?;
+            return Some(format!("{counted} for the {ordinal} time each turn"));
+        }
+        TriggerPattern::ZoneChange {
+            what,
+            from: None,
+            to: None | Some(ZoneKind::Battlefield),
+        } if what.0 == [Pred::Token, Pred::ControlledBy(Ref::You)] && nth == 1 => {
+            return Some(
+                "Whenever you create one or more tokens for the first time each turn".to_owned(),
+            );
         }
         _ => return None,
     };
@@ -1224,6 +1319,7 @@ fn batch_text(inner: &TriggerPattern) -> Option<String> {
         } if what.0 == [Pred::OwnedBy(Ref::You)] => Some(
             "Whenever one or more cards are put into your graveyard from your library".to_owned(),
         ),
+        TriggerPattern::ZoneChange { what, from, to } => batches::zone_change(what, *from, *to),
         TriggerPattern::CountersPut { what, counter } => {
             let kind = match counter {
                 Some(counter) => format!("{} ", counters::kind_text(counter)?),

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "3250466f-82a4-45e1-9722-ff247ddf8c15",
+  "name": "Vanguard Seraph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vanguard Seraph",
+      "oracle_fingerprint": "b4acdbf35f518fc31b0ac15e54e616bd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "LifeGained": { "who": "You" } }, "nth": 1 } },
+            "effects": [{ "Surveil": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

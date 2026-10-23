@@ -21,9 +21,11 @@ use super::lands;
 use super::life_gain;
 use super::prevention;
 use super::render::{self, capitalize, counts_stats, is_a_type, stats_text};
+use super::replacements;
 use super::selectors::{
     Form, all, color, color_name, each, granted_text, phrase, phrase_text, subtype,
 };
+use super::static_parts;
 use super::tokens::Reader;
 use super::triggers::article;
 use super::where_x;
@@ -992,6 +994,12 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             when: ReplaceWhen::LifeGain { .. },
             ..
         } => life_gain::replacement_sentences(ability),
+        Ability::Replacement {
+            when,
+            by,
+            condition: None,
+            from: ZoneKind::Battlefield,
+        } if replacements::handles(when) => replacements::sentences(when, by),
         Ability::Static { defining: true, .. } => defining::sentences(ability),
         _ => Vec::new(),
     };
@@ -1397,10 +1405,15 @@ pub(super) fn predicate_variants(
     itself: bool,
     conditional: bool,
 ) -> Vec<String> {
-    let Some(first) = predicate(mods, plural, itself, conditional) else {
-        return Vec::new();
+    let mut written = if itself && !conditional {
+        Vec::new()
+    } else {
+        static_parts::predicates(mods, plural)
     };
-    let mut written = vec![first.clone()];
+    let Some(first) = predicate(mods, plural, itself, conditional) else {
+        return written;
+    };
+    written.insert(0, first.clone());
     for modification in mods {
         let Modification::GrantAbility(ability) = modification else {
             continue;

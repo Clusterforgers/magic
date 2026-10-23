@@ -1,0 +1,25 @@
+{
+  "oracle_id": "0411aead-9f77-435d-a343-635f23221cf7",
+  "name": "Gravitational Shift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gravitational Shift",
+      "oracle_fingerprint": "b034196a8351345699dbe1f31ae5d803",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }] },
+            "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

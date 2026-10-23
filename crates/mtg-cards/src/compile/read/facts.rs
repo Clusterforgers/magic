@@ -35,6 +35,7 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Condition> {
         .or_else(|| r.attempt(total_power))
         .or_else(|| r.attempt(empty_hands))
         .or_else(|| r.attempt(exiled_with_it))
+        .or_else(|| r.attempt(counter_this_turn))
 }
 
 /// The cards exiled with the card, as hideaway links them.
@@ -128,6 +129,20 @@ fn exiled_with_it(r: &mut Reader<'_>) -> Option<Condition> {
     at_least(Amount::Count(exiled_with_this()), 1)
 }
 
+/// "a counter was put on ~ this turn" (also "on it"): counters of any kind put on the card itself.
+fn counter_this_turn(r: &mut Reader<'_>) -> Option<Condition> {
+    r.need("a counter was put on")?;
+    (r.word("it") || r.source()).then_some(())?;
+    r.need("this turn")?;
+    at_least(
+        Amount::Tallied {
+            who: Ref::This,
+            what: TurnTally::CountersPut,
+        },
+        1,
+    )
+}
+
 /// What `read` reads, written back after "if" or "as long as", one text for each wording.
 pub(super) fn texts(condition: &Condition) -> Vec<String> {
     let Condition::Compare { left, op, right } = condition else {
@@ -181,6 +196,16 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
         (Amount::Count(of), Cmp::Eq) if number == 0 && *of == every_hand() => {
             vec!["each player has no cards in hand".to_owned()]
         }
+        (
+            Amount::Tallied {
+                who: Ref::This,
+                what: TurnTally::CountersPut,
+            },
+            Cmp::Ge,
+        ) if number == 1 => vec![
+            "a counter was put on ~ this turn".to_owned(),
+            "a counter was put on it this turn".to_owned(),
+        ],
         (Amount::Count(of), Cmp::Ge) if number == 1 && *of == exiled_with_this() => vec![
             "there are cards exiled with it".to_owned(),
             "there are cards exiled with ~".to_owned(),
