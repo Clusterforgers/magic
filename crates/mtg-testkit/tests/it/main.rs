@@ -49,6 +49,8 @@ mod commander_objects;
 mod common;
 mod concede;
 mod concede_mid_cast;
+mod conditional_statics;
+mod conditional_statics_fuzz;
 mod connive;
 mod continuous_effects;
 mod controller_token;

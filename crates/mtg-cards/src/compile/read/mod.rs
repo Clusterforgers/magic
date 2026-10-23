@@ -20,6 +20,7 @@ mod abilities;
 mod actions;
 mod among;
 mod amounts;
+mod as_long_as;
 mod attack_tax;
 mod attackers;
 mod becomes;

@@ -1,0 +1,25 @@
+{
+  "id": "62534128-2a85-4a36-bc7b-e4f4c51fa1f6",
+  "oracle_id": "01e742ed-660c-43c6-b393-e589a54cbe1b",
+  "name": "Voice of the Blessed",
+  "lang": "en",
+  "layout": "normal",
+  "set": "inr",
+  "collector_number": "50",
+  "rarity": "rare",
+  "released_at": "2025-01-24",
+  "digital": false,
+  "mana_cost": "{W}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Spirit Cleric",
+  "oracle_text": "Whenever you gain life, put a +1/+1 counter on this creature.\nAs long as this creature has four or more +1/+1 counters on it, it has flying and vigilance.\nAs long as this creature has ten or more +1/+1 counters on it, it has indestructible.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

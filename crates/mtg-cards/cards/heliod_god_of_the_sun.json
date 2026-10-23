@@ -1,0 +1,50 @@
+{
+  "oracle_id": "4ea488b2-5ba0-4565-b928-570c8e03b926",
+  "name": "Heliod, God of the Sun",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heliod, God of the Sun",
+      "oracle_fingerprint": "a2cd532f1c9b2d09431bf41f0d9ef477",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": { "left": { "Devotion": ["White"] }, "op": "Lt", "right": 5 }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{W}{W}",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cleric",
+                      "colors": ["White"],
+                      "types": ["Enchantment", "Creature"],
+                      "subtypes": ["Cleric"],
+                      "power": 2,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

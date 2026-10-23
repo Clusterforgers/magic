@@ -1,0 +1,33 @@
+{
+  "oracle_id": "21254bdb-7b1f-4ac6-8fdd-f0ac2c35f47d",
+  "name": "Grim Flayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grim Flayer",
+      "oracle_fingerprint": "7d7838bc0700dcc978a820c7e7a7e2a5",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Surveil": { "count": 3 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "187d5819-6a63-4e4f-98c4-18191c03f164",
+  "oracle_id": "e119869d-1f66-402b-8251-d351965cf0d3",
+  "name": "Paradise Druid",
+  "lang": "en",
+  "layout": "normal",
+  "set": "afc",
+  "collector_number": "165",
+  "rarity": "uncommon",
+  "released_at": "2021-07-23",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Elf Druid",
+  "oracle_text": "This creature has hexproof as long as it's untapped. (It can't be the target of spells or abilities your opponents control.)\n{T}: Add one mana of any color.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

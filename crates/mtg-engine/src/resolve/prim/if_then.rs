@@ -239,25 +239,21 @@ mod tests {
     }
 
     #[rstest]
-    #[case::devotion(
-        r#"{"Compare":{"left":{"Devotion":["Red"]},"op":"Ge","right":1}}"#,
-        "devotion"
-    )]
     #[case::divided(
         r#"{"Compare":{"left":"Divided","op":"Ge","right":1}}"#,
         "a divided amount outside the damage or counters it divides"
     )]
     #[case::wrapped_in_not(
-        r#"{"Not":{"Compare":{"left":{"Devotion":["Red"]},"op":"Ge","right":1}}}"#,
-        "devotion"
+        r#"{"Not":{"Compare":{"left":"Divided","op":"Ge","right":1}}}"#,
+        "a divided amount outside the damage or counters it divides"
     )]
     #[case::wrapped_in_all(
-        r#"{"All":["YourTurn",{"Compare":{"left":{"Devotion":["Red"]},"op":"Ge","right":1}}]}"#,
-        "devotion"
+        r#"{"All":["YourTurn",{"Compare":{"left":"Divided","op":"Ge","right":1}}]}"#,
+        "a divided amount outside the damage or counters it divides"
     )]
     #[case::wrapped_in_any(
-        r#"{"Any":[{"Not":"YourTurn"},{"Compare":{"left":{"Devotion":["Red"]},"op":"Ge","right":1}}]}"#,
-        "devotion"
+        r#"{"Any":[{"Not":"YourTurn"},{"Compare":{"left":"Divided","op":"Ge","right":1}}]}"#,
+        "a divided amount outside the damage or counters it divides"
     )]
     fn a_condition_the_evaluator_cannot_read_is_refused_by_name(
         #[case] condition: &str,

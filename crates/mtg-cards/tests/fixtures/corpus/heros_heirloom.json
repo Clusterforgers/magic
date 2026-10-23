@@ -1,0 +1,21 @@
+{
+  "id": "5b7c0d2d-7107-4599-8d49-c7c57d21e467",
+  "oracle_id": "f707dfb5-dfa9-471b-ac29-5435c30069cc",
+  "name": "Hero's Heirloom",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dmu",
+  "collector_number": "231",
+  "rarity": "uncommon",
+  "released_at": "2022-09-09",
+  "digital": false,
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +2/+1.\nAs long as equipped creature is legendary, it has trample and haste.\nEquip {2}",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip"
+  ]
+}
