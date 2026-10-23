@@ -278,9 +278,6 @@ fn whole_clauses_of_cards_are_read(#[case] text: &str) {
 )]
 #[case::a_subtype_and_a_type("Whenever ~ or another Human creature you control dies, draw a card.")]
 #[case::paired("Whenever ~ or a creature it's paired with is dealt damage, draw a card.")]
-#[case::turned_face_up(
-    "Whenever ~ or another creature you control is turned face up, draw a card."
-)]
 #[case::the_wrong_verb_form("Whenever ~ or another Elf you control enter, draw a card.")]
 #[case::no_verb("Whenever ~ or another creature you control, draw a card.")]
 #[case::a_plural_group("Whenever ~ or other Elves you control die, draw a card.")]

@@ -310,6 +310,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Connived { .. }
         | Event::Amassed { .. }
         | Event::Monstrous { .. }
+        | Event::TurnedFaceUp { .. }
         | Event::Adapted { .. }
         | Event::Bolstered { .. }
         | Event::CommanderStayed { .. }
@@ -490,16 +491,16 @@ fn arrives_known(before: &GameState, object: ObjectId, cause: ZoneCause, viewer:
     cause.face_down(before.turn().number()).is_none_or(|how| {
         before
             .object(object)
-            .is_some_and(|o| how.may_look(o.owner(), viewer))
+            .is_some_and(|o| how.may_look(o.owner(), o.controller(), viewer))
     })
 }
 
 /// Whether `viewer` could identify the object a snapshot describes where it was photographed.
 fn snapshot_known(before: &GameState, shot: &Snapshot, viewer: PlayerId) -> bool {
     zone_is_visible_in(before, shot.zone, viewer)
-        && shot
-            .face_down
-            .is_none_or(|how| how.may_look(shot.owner, viewer))
+        && shot.face_down.is_none_or(|how| {
+            how.shows_characteristics() || how.may_look(shot.owner, shot.controller, viewer)
+        })
 }
 
 /// Projects `events` (which `before` has not yet seen) for each of `viewers`, one batch per viewer.

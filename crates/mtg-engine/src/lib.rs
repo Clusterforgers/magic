@@ -12,6 +12,7 @@ mod attack_tax;
 mod cast;
 mod commanders;
 mod damage;
+mod face_down;
 mod faces;
 #[cfg(test)]
 mod fixtures;

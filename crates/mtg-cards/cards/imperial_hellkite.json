@@ -1,0 +1,37 @@
+{
+  "oracle_id": "99642419-ab24-4770-9f1c-84d2806441b5",
+  "name": "Imperial Hellkite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imperial Hellkite",
+      "oracle_fingerprint": "613f76b820b70420b0ab572224e34bbe",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Morph": "{6}{R}{R}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Subtype": "Dragon" }],
+                        "reveal": true,
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

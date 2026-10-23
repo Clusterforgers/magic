@@ -79,6 +79,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Connived: [{ Connived: { object: 3, player: 1 } }, 'Forest connives'],
   Amassed: [{ Amassed: { object: 3, player: 1 } }, 'Bo amasses'],
   Monstrous: [{ Monstrous: { object: 3, player: 1 } }, 'Forest becomes monstrous'],
+  TurnedFaceUp: [{ TurnedFaceUp: { object: 3, player: 1 } }, 'Bo turns Forest face up'],
   Adapted: [{ Adapted: { object: 3, player: 1 } }, 'Forest adapts'],
   Bolstered: [{ Bolstered: { object: 3, player: 1 } }, 'Bo bolsters'],
   CommanderStayed: [{ CommanderStayed: { object: 3 } }, 'Forest stays where it is'],

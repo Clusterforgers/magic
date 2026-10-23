@@ -1,0 +1,27 @@
+{
+  "id": "f5c19b87-e114-46d4-9f6c-c02e838a08dd",
+  "oracle_id": "72aef1d8-11df-4bc2-af83-907b05df73a8",
+  "name": "Grim Haruspex",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "754",
+  "rarity": "rare",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "Morph {B} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its morph cost.)\nWhenever another nontoken creature you control dies, draw a card.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Morph"
+  ]
+}

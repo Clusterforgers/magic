@@ -1,0 +1,42 @@
+{
+  "oracle_id": "69d2e5f3-2f4d-4a36-bcd5-181164ecd894",
+  "name": "Thelonite Hermit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thelonite Hermit",
+      "oracle_fingerprint": "74d2d6aa1c4ffe7532147c7a24afbc08",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Saproling" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        { "Keyword": { "Morph": "{3}{G}{G}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 4
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

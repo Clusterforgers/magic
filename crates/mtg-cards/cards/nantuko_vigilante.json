@@ -1,0 +1,27 @@
+{
+  "oracle_id": "28ea78dc-7ad6-4006-aaf8-4b25057ec019",
+  "name": "Nantuko Vigilante",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nantuko Vigilante",
+      "oracle_fingerprint": "505109db2aec48bc2c0079781a0b9c2b",
+      "abilities": [
+        { "Keyword": { "Morph": "{1}{G}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

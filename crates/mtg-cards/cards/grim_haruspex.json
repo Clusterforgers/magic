@@ -1,0 +1,31 @@
+{
+  "oracle_id": "72aef1d8-11df-4bc2-af83-907b05df73a8",
+  "name": "Grim Haruspex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grim Haruspex",
+      "oracle_fingerprint": "93d4b87f164d8bf9b6aea8cfc1abe2d2",
+      "abilities": [
+        { "Keyword": { "Morph": "{B}" } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

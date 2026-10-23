@@ -1,0 +1,27 @@
+{
+  "id": "4271f5b2-32ca-4349-9a09-afffbdacf636",
+  "oracle_id": "69d2e5f3-2f4d-4a36-bcd5-181164ecd894",
+  "name": "Thelonite Hermit",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "188",
+  "rarity": "rare",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Elf Shaman",
+  "oracle_text": "All Saprolings get +1/+1.\nMorph {3}{G}{G} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its morph cost.)\nWhen this creature is turned face up, create four 1/1 green Saproling creature tokens.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Morph"
+  ]
+}

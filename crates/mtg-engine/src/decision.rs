@@ -162,6 +162,10 @@ pub struct PriorityOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub foretellable: Vec<ObjectId>,
+    /// Face-down permanents their controller can turn face up now (a special action that does not use the stack, CR 702.37e).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
+    pub turnable: Vec<ObjectId>,
     /// The faces of the cards with several faces that can be cast or played now, with their costs: a split card's halves, an
     /// Adventure, the back face of a modal double-faced card. `castable` and `playable_lands` list the card itself.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -491,6 +495,8 @@ pub enum PriorityAction {
     Suspend(ObjectId),
     /// Foretell this card from the hand (CR 702.143, a special action): pay {2} and exile it face down.
     Foretell(ObjectId),
+    /// Turn this face-down permanent face up (CR 702.37e, a special action): pay its morph, megamorph or disguise cost.
+    TurnFaceUp(ObjectId),
     /// Do something by hand for a card the engine does not run: a zone move, counters, life, a token and the like. Legal at
     /// any priority, checked against the state (`manual.rs`).
     Manual(ManualAction),

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "aca9df28-2df6-477c-b5b8-8e1863c84356",
+  "name": "Master of Pearls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Master of Pearls",
+      "oracle_fingerprint": "0a36d68b8721aefe3a37a49cc40a44b4",
+      "abilities": [
+        { "Keyword": { "Morph": "{3}{W}{W}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

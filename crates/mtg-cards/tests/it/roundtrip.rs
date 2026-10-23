@@ -278,6 +278,7 @@ fn keyword() -> impl Strategy<Value = Keyword> {
         cost().prop_map(Keyword::Madness),
         cost().prop_map(Keyword::Miracle),
         cost().prop_map(Keyword::Morph),
+        cost().prop_map(Keyword::Megamorph),
         cost().prop_map(Keyword::Disguise),
         (1u32..6, cost()).prop_map(|(time, cost)| Keyword::Suspend { time, cost }),
         cost().prop_map(Keyword::Evoke),

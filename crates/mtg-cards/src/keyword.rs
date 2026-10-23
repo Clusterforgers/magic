@@ -98,9 +98,11 @@ pub enum Keyword {
     Miracle(Cost),
     /// Dredge N (CR 702.52): in a graveyard, a player who would draw a card may instead mill N cards and return this card to their hand.
     Dredge(u32),
-    /// Morph with its cost.
+    /// Morph with its cost: the card may be cast face down for {3}, and turned face up for this cost (CR 702.37).
     Morph(Cost),
-    /// Disguise with its cost.
+    /// Megamorph with its cost: morph, and the permanent gets a +1/+1 counter as it is turned face up (CR 702.37b).
+    Megamorph(Cost),
+    /// Disguise with its cost: morph, and the permanent has ward {2} while it is face down (CR 702.168).
     Disguise(Cost),
     /// Suspend: the number of time counters and the cost.
     Suspend {
@@ -310,6 +312,7 @@ impl Keyword {
         "Miracle",
         "Dredge",
         "Morph",
+        "Megamorph",
         "Disguise",
         "Suspend",
         "Evoke",
@@ -427,6 +430,7 @@ impl Keyword {
             Keyword::Miracle(_) => "Miracle",
             Keyword::Dredge(_) => "Dredge",
             Keyword::Morph(_) => "Morph",
+            Keyword::Megamorph(_) => "Megamorph",
             Keyword::Disguise(_) => "Disguise",
             Keyword::Suspend { .. } => "Suspend",
             Keyword::Evoke(_) => "Evoke",
@@ -589,6 +593,7 @@ mod tests {
             Keyword::Miracle(cost.clone()),
             Keyword::Dredge(3),
             Keyword::Morph(cost.clone()),
+            Keyword::Megamorph(cost.clone()),
             Keyword::Disguise(cost.clone()),
             Keyword::Suspend {
                 time: 3,

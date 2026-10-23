@@ -16,7 +16,9 @@ use mtg_core::mana::ManaCost;
 
 use crate::announce::{self, Granted};
 use crate::attach;
+use crate::characteristics::controller_of;
 use crate::choose::announceable;
+use crate::face_down;
 use crate::faces;
 use crate::help;
 use crate::keywords::{self, aftermath, foretell, keywords_of};
@@ -120,10 +122,14 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     let Some(card) = state.object(id) else {
         return Vec::new();
     };
-    if card.kind() != ObjectKind::Card || card.base_types().contains(CardType::Land) {
+    if card.kind() != ObjectKind::Card {
         return Vec::new();
     }
     let zone = card.zone();
+    // A land is played, never cast, except face down: a land card with morph is a 2/2 creature spell then (CR 702.37c).
+    if card.base_types().contains(CardType::Land) {
+        return face_down_only(state, player, id);
+    }
     let allowed = match zone {
         Zone::Hand(owner) | Zone::Graveyard(owner) | Zone::Command(owner) => owner == player,
         // Only the top card of a library may be cast, by a permission.
@@ -239,6 +245,9 @@ fn keyword_way(
             cost,
             in_hand && prowl_open(state, player, id),
         ),
+        Keyword::Morph(_) | Keyword::Megamorph(_) | Keyword::Disguise(_) if in_hand => {
+            return Some(face_down_way(instant));
+        }
         Keyword::Foretell(cost) => (
             CastWay::Foretold,
             "Foretell",
@@ -272,6 +281,36 @@ fn keyword_way(
         instant,
         parts,
     })
+}
+
+/// The one way a land card in its owner's hand is cast: face down, when it has morph, megamorph or disguise.
+fn face_down_only(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
+    let in_hand = state
+        .object(id)
+        .is_some_and(|card| card.zone() == Zone::Hand(player));
+    let has = keywords_of(state, id).into_iter().any(|keyword| {
+        matches!(
+            keyword,
+            Keyword::Morph(_) | Keyword::Megamorph(_) | Keyword::Disguise(_)
+        )
+    });
+    if in_hand && has {
+        vec![face_down_way(false)]
+    } else {
+        Vec::new()
+    }
+}
+
+/// The way of casting a card with morph, megamorph or disguise face down as a 2/2 creature spell for {3} (CR 702.37c, 702.168a).
+fn face_down_way(instant: bool) -> Way {
+    let cost = face_down::cast_cost();
+    Way {
+        alternative: Some(CastWay::FaceDown),
+        label: format!("Cast face down for {cost}"),
+        mana: Some(cost),
+        instant,
+        parts: Vec::new(),
+    }
 }
 
 /// Jump-start (CR 702.133) and retrace (CR 702.81): the card is cast from a graveyard for its mana cost and the discard of a
@@ -470,6 +509,29 @@ pub(crate) fn can_foretell(
     card.kind() == ObjectKind::Card
         && card.zone() == Zone::Hand(player)
         && state.turn().active() == player
+        && can_afford(
+            &cost,
+            pool,
+            &for_card(state, sources, id),
+            life,
+            &Spend::other(),
+        )
+}
+
+/// Whether `player` can turn the face-down permanent `id` face up now: they control it and can pay its morph, megamorph or
+/// disguise cost (CR 702.37e). It is a special action, so the timing is any time they have priority.
+pub(crate) fn can_turn_up(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    life: i32,
+) -> bool {
+    let Some((cost, _)) = face_down::turn_up_cost(state, id) else {
+        return false;
+    };
+    controller_of(state, id) == Some(player)
         && can_afford(
             &cost,
             pool,

@@ -1,0 +1,27 @@
+{
+  "id": "4f3c1e1a-bd75-4bfb-b44b-05b94f64c634",
+  "oracle_id": "703ab192-7e0a-4f02-8381-568ad2d999ca",
+  "name": "Krosan Colossus",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "176",
+  "rarity": "rare",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{6}{G}{G}{G}",
+  "cmc": 9.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "Morph {6}{G}{G} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its morph cost.)",
+  "power": "9",
+  "toughness": "9",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Morph"
+  ]
+}

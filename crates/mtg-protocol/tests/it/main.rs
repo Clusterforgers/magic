@@ -30,6 +30,7 @@ mod manual_view;
 mod messages;
 mod miracle_hidden;
 mod monarch_view;
+mod morph_view;
 mod ninjutsu_hidden;
 mod player_aura_view;
 mod preview_fixture;

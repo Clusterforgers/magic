@@ -1,0 +1,16 @@
+{
+  "oracle_id": "8d877ee9-1751-48a1-9f2f-02897dae153b",
+  "name": "Sagu Mauler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sagu Mauler",
+      "oracle_fingerprint": "983942a341d6125517dad8b22298cb8d",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Hexproof" },
+        { "Keyword": { "Morph": "{3}{U}{G}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "c1fab763-4e62-418d-b3a6-77c52bf21f23",
+  "oracle_id": "a0ff742b-f709-43ac-84d2-dc00c723bad6",
+  "name": "Krosan Cloudscraper",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "175",
+  "rarity": "rare",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{7}{G}{G}{G}",
+  "cmc": 10.0,
+  "type_line": "Creature — Beast Mutant",
+  "oracle_text": "At the beginning of your upkeep, sacrifice this creature unless you pay {G}{G}.\nMorph {7}{G}{G} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its morph cost.)",
+  "power": "13",
+  "toughness": "13",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Morph"
+  ]
+}

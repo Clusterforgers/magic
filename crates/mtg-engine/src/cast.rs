@@ -12,7 +12,7 @@ use mtg_core::mana::ManaCost;
 
 use crate::abilities::{AbilityRef, PutOnStack};
 use crate::ability_reader;
-use crate::announce::{Pending, Special, What, foretell, suspend};
+use crate::announce::{Pending, Special, What, foretell, suspend, turn_up};
 use crate::answers::Outcome;
 use crate::choose::{Choice, Choices};
 use crate::decision::{PayChoice, PayOptions};
@@ -395,6 +395,11 @@ fn announcement(
             special: Some(Special::Foretell),
             ..
         }) => foretell::events(state, *card).ok_or_else(unexpected),
+        Some(Pending {
+            what: What::Spell(card),
+            special: Some(Special::TurnFaceUp),
+            ..
+        }) => turn_up::events(state, *card).ok_or_else(unexpected),
         Some(
             pending @ Pending {
                 what: What::Spell(spell),

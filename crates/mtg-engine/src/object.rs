@@ -67,13 +67,20 @@ pub enum FaceDown {
         /// The number of the turn it was foretold in.
         turn: u32,
     },
+    /// A spell or permanent cast face down for its morph or megamorph (CR 702.37): a 2/2 creature with no name, cost, colour,
+    /// type besides creature or ability (CR 708.2a) that only its controller may look at.
+    Morph,
+    /// A spell or permanent cast face down for its disguise (CR 702.168): as a morph, with ward {2}.
+    Disguise,
 }
 
 impl FaceDown {
-    /// Whether `viewer` may look at an object of `owner` that lies face down this way: the owner of a foretold card.
-    pub fn may_look(self, owner: PlayerId, viewer: PlayerId) -> bool {
+    /// Whether `viewer` may look at an object of `owner` under the control of `controller` that lies face down this way: the
+    /// owner of a foretold card, the controller of a face-down spell or permanent (CR 708.3).
+    pub fn may_look(self, owner: PlayerId, controller: PlayerId, viewer: PlayerId) -> bool {
         match self {
             FaceDown::Foretold { .. } => owner == viewer,
+            FaceDown::Morph | FaceDown::Disguise => controller == viewer,
         }
     }
 }
@@ -380,6 +387,9 @@ impl GameObject {
         if let Some(copy) = self.copy_effect() {
             return copy.definition();
         }
+        if let Some(shown) = self.face_down.and_then(FaceDown::characteristics) {
+            return shown;
+        }
         match self.face() {
             Some(face) => self.def.face(face),
             None => &self.def,
@@ -428,6 +438,8 @@ impl GameObject {
     pub fn base_types(&self) -> CardTypes {
         let printed = if let Some(copy) = self.copy_effect() {
             copy.definition().type_set()
+        } else if let Some(shown) = self.face_down.and_then(FaceDown::characteristics) {
+            shown.type_set()
         } else {
             match self.face() {
                 Some(face) if self.kind != ObjectKind::Ability => self.def.face(face).type_set(),
