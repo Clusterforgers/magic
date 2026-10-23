@@ -356,7 +356,11 @@ impl<'a> Walker<'a> {
             Pred::ControlledBy(r) | Pred::OwnedBy(r) | Pred::AttackingPlayer(r) => {
                 self.reference(r, Kind::Player);
             }
-            Pred::Is(r) | Pred::SharesSubtype(r) | Pred::ExiledWith(r) => {
+            Pred::Is(r)
+            | Pred::SharesSubtype(r)
+            | Pred::ExiledWith(r)
+            | Pred::Crewed(r)
+            | Pred::Saddled(r) => {
                 self.reference(r, Kind::Object);
             }
             Pred::HasKeyword(keyword) => self.keyword(keyword),
@@ -1333,6 +1337,27 @@ impl<'a> Walker<'a> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
                 w.at("as", |w| w.bind(bind, Kind::Object));
+            }
+            Effect::Manifest {
+                who,
+                count,
+                from,
+                bind,
+            }
+            | Effect::Cloak {
+                who,
+                count,
+                from,
+                bind,
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("count", |w| w.amount(count));
+                if let Some(library) = from {
+                    w.at("library", |w| w.reference(library, Kind::Player));
+                }
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
             }
             Effect::Exile {
                 what,

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "24bc7bd5-f262-45a2-8e94-377fef2ba5d5",
+  "name": "Stubborn Burrowfiend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stubborn Burrowfiend",
+      "oracle_fingerprint": "3ebabf80beca43525d777d58150ce013",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "BecomesSaddled": { "what": ["This"] } }, "nth": 1 } },
+            "effects": [
+              { "Mill": { "count": 2 } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "toughness": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": "You" }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Saddle": 2 } }
+      ]
+    }
+  ]
+}

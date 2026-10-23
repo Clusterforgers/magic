@@ -1,0 +1,23 @@
+{
+  "oracle_id": "2a4b42b3-6a95-41e1-9741-b35723d8da73",
+  "name": "Giant Beaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giant Beaver",
+      "oracle_fingerprint": "7ef10dd74406a264f54f86b0e33dc6a0",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "HasKeyword": "Saddled" }] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Saddled": "This" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        { "Keyword": { "Saddle": 3 } }
+      ]
+    }
+  ]
+}

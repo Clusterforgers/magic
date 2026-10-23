@@ -308,6 +308,8 @@ fn pred() -> impl Strategy<Value = Pred> {
             leaf_ref().prop_map(Pred::OwnedBy),
             leaf_ref().prop_map(Pred::Is),
             leaf_ref().prop_map(Pred::ExiledWith),
+            leaf_ref().prop_map(Pred::Crewed),
+            leaf_ref().prop_map(Pred::Saddled),
             keyword().prop_map(Pred::HasKeyword),
             (stat(), cmp(), simple_amount()).prop_map(|(stat, op, to)| Pred::Compare {
                 stat,
@@ -851,6 +853,28 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 count,
                 bind
             }),
+            (
+                who(),
+                amount(),
+                proptest::option::of(who()),
+                proptest::option::of(bound_name()),
+                any::<bool>()
+            )
+                .prop_map(|(who, count, from, bind, cloak)| if cloak {
+                    Effect::Cloak {
+                        who,
+                        count,
+                        from,
+                        bind,
+                    }
+                } else {
+                    Effect::Manifest {
+                        who,
+                        count,
+                        from,
+                        bind,
+                    }
+                }),
             who().prop_map(|who| Effect::TimeTravel { who }),
             who().prop_map(|who| Effect::ExtraTurn { who }),
             (who(), token_ref(), amount(), any::<bool>(), any::<bool>()).prop_map(

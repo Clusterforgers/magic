@@ -367,11 +367,13 @@ Gemhide Sliver
 Gemrazer
 Generous Ent
 Gerrard's Wisdom
+Getaway Car
 Ghalta, Primal Hunger
 Ghost Quarter
 Ghostblade Eidolon
 Ghostly Prison
 Ghoulcaller Gisa
+Giant Beaver
 Giant Cindermaw
 Giant Growth
 Gift of Paradise
@@ -537,6 +539,7 @@ Mardu Strike Leader
 Maro
 Master of Etherium
 Master of Pearls
+Mastery of the Unseen
 Maulfist Squad
 Mausoleum Harpy
 Maverick Thopterist
@@ -558,6 +561,7 @@ Mirran Bardiche
 Mirror Image
 Mishra's Workshop
 Mizzium Mortars
+Mobilizer Mech
 Molten Slagheap
 Monastery Swiftspear
 Monk's Fist
@@ -660,10 +664,13 @@ Raffine's Informant
 Raging Goblinoids
 Rakdos Headliner
 Rally the Ranks
+Rambling Possum
 Ramos, Dragon Engine
 Rampant Growth
 Rancor
+Ransom Note
 Ravenous Leucrocota
+Reality Shift
 Realm Seekers
 Reassembling Skeleton
 Reckless Impulse
@@ -818,9 +825,11 @@ Stratus Walk
 Strength Bobblehead
 Strionic Resonator
 Stroke of Genius
+Stubborn Burrowfiend
 Student of Warfare
 Study Break
 Sublime Exhalation
+Subterranean Schooner
 Sudden Death
 Sudden Edict
 Sudden Shock

@@ -1,6 +1,8 @@
 //! The single state transition: folding one [`Event`] into a [`GameState`].
 
 mod combat;
+#[cfg(test)]
+mod crew_record;
 mod opening;
 mod resolution;
 #[cfg(test)]
@@ -16,7 +18,7 @@ use crate::effects::Modification;
 use crate::error::EngineError;
 use crate::events::Event;
 use crate::mana::ManaPool;
-use crate::object::GameObject;
+use crate::object::{GameObject, ObjectRef};
 use crate::player::{LossReason, Player, PlayerStatus};
 use crate::priority::PriorityState;
 use crate::sight;
@@ -126,7 +128,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::SpellCopied(copy) => crate::copies::fold_spell(state, copy),
         Event::AbilityCopied(copy) => crate::copies::fold_ability(state, copy),
         Event::CopyEnded { object } => crate::copies::fold_ended(state, *object),
-        Event::Crewed { object, saddle, .. } => tally_crewed(state, *object, *saddle),
+        Event::Crewed { .. } => tally_crewed(state, event),
         // The change follows as events of its own; the action only restarts the round, so the other seats see it.
         Event::ManualAction { .. } => {
             reset_passes(state);
@@ -437,8 +439,19 @@ fn set_monstrous(state: &mut GameState, id: ObjectId) -> Result<(), EngineError>
     Ok(())
 }
 
-/// A Vehicle becomes crewed or a Mount saddled: counted for the object, which is a permanent.
-fn tally_crewed(state: &mut GameState, id: ObjectId, saddle: bool) -> Result<(), EngineError> {
+/// A Vehicle becomes crewed or a Mount saddled: counted for the object, which is a permanent, and the creatures still on
+/// the battlefield that were tapped to pay are recorded for it.
+fn tally_crewed(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
+    let Event::Crewed {
+        object: id,
+        creatures,
+        saddle,
+        ..
+    } = event
+    else {
+        return Err(invalid("not a crew".to_owned()));
+    };
+    let (id, saddle) = (*id, *saddle);
     let object = state
         .object(id)
         .map(GameObject::reference)
@@ -452,6 +465,16 @@ fn tally_crewed(state: &mut GameState, id: ObjectId, saddle: bool) -> Result<(),
             Tally::Crewed
         },
     );
+    let crew: Vec<ObjectRef> = creatures
+        .iter()
+        .filter_map(|creature| state.object(*creature))
+        .filter(|creature| creature.zone() == Zone::Battlefield)
+        .map(GameObject::reference)
+        .collect();
+    state
+        .tallies
+        .crews
+        .extend(crew.into_iter().map(|creature| (object, saddle, creature)));
     Ok(())
 }
 

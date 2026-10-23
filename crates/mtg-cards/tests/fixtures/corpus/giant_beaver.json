@@ -1,0 +1,28 @@
+{
+  "cmc": 4.0,
+  "collector_number": "165",
+  "color_identity": [
+    "G"
+  ],
+  "colors": [
+    "G"
+  ],
+  "digital": false,
+  "id": "919826a9-c427-42c6-8885-a87f0b6d2192",
+  "keywords": [
+    "Saddle",
+    "Vigilance"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{3}{G}",
+  "name": "Giant Beaver",
+  "oracle_id": "2a4b42b3-6a95-41e1-9741-b35723d8da73",
+  "oracle_text": "Vigilance\nWhenever this creature attacks while saddled, put a +1/+1 counter on target creature that saddled it this turn.\nSaddle 3 (Tap any number of other creatures you control with total power 3 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)",
+  "power": "4",
+  "rarity": "common",
+  "released_at": "2024-04-19",
+  "set": "otj",
+  "toughness": "4",
+  "type_line": "Creature — Beaver Mount"
+}

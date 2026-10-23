@@ -20,6 +20,7 @@ use super::flicker;
 use super::group_pump;
 use super::lands;
 use super::library;
+use super::manifest;
 use super::modal::{BULLET, DASH};
 use super::payments;
 use super::prevention;
@@ -40,7 +41,7 @@ use crate::compile::classify;
 use crate::cost::Cost;
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
 use crate::modify::{Duration, Modification};
-use crate::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::spend::SpendOn;
 use crate::trigger::TriggerPattern;
 use crate::value::{Amount, Condition, CounterKind};
@@ -646,7 +647,7 @@ fn written(
         // one sentence, which no joint splits.
         if let Some((text, used)) = cast::sentence_text(&effects[start..])
             .or_else(|| library::sequence(&effects[start..]))
-            .or_else(|| writer.explore_twice(&effects[start..]))
+            .or_else(|| writer.then_steps(&effects[start..]))
         {
             unsplit(mask, start, used)?;
             sentences.push(text);
@@ -832,7 +833,16 @@ fn returned_text(choose: &Effect, moved: &Effect) -> Option<String> {
     else {
         return None;
     };
-    if bind != RETURNED || name != RETURNED || !count.is_one() {
+    if bind != RETURNED || name != RETURNED {
+        return None;
+    }
+    if *count == (Bounds { min: 0, max: None }) {
+        let phrase = phrase_text(from, Form::All)?;
+        return Some(format!(
+            "you may return any number of {phrase} to their owner's hand"
+        ));
+    }
+    if !count.is_one() {
         return None;
     }
     let phrase = phrase_text(from, Form::Subject)?;
@@ -1210,9 +1220,23 @@ impl Writer<'_> {
             })
     }
 
-    /// Whether the reference is the one target and it is a permanent: not a spell, not a card in a zone.
-    fn is_a_permanent(&self, what: &Ref) -> bool {
+    /// Whether the reference is the one target or "up to one" target.
+    fn at_most_one(&self, what: &Ref) -> bool {
+        let up_to_one = Bounds {
+            min: 0,
+            max: Some(Amount::Fixed(1)),
+        };
         self.single(what)
+            || (matches!(what, Ref::Target(_))
+                && self
+                    .targets
+                    .first()
+                    .is_some_and(|spec| spec.bounds == up_to_one))
+    }
+
+    /// Whether the reference is the one target (or "up to one") and it is a permanent: not a spell, not a card in a zone.
+    fn is_a_permanent(&self, what: &Ref) -> bool {
+        self.at_most_one(what)
             && self.target_is(|kind| {
                 matches!(kind, Targetable::Object(selector)
                     if !selector.0.iter().any(|pred| matches!(pred, Pred::In(_) | Pred::Spell)))
@@ -1634,6 +1658,10 @@ impl Writer<'_> {
                 let text = texts.get(self.condition).or(texts.first())?;
                 format!("if {text}, {}", self.consequence(condition, then)?)
             }
+            Effect::Manifest { .. } | Effect::Cloak { .. } => {
+                let subject = self.player(manifest::who(effect)?)?;
+                manifest::text(effect, &subject)?
+            }
             Effect::BecomeMonarch { who } => format!(
                 "{} {} the monarch",
                 self.player(who)?,
@@ -1679,6 +1707,12 @@ impl Writer<'_> {
         }
     }
 
+    /// Two steps that are one sentence, which no joint splits: an explore twice, or a mill and the change it counts.
+    fn then_steps(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
+        self.explore_twice(effects)
+            .or_else(|| self.mill_then_change(effects))
+    }
+
     /// "~ explores, then it explores again": one creature that explores twice is one sentence, which no joint splits.
     fn explore_twice(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
         let [
@@ -1694,6 +1728,24 @@ impl Writer<'_> {
         }
         let subject = self.object(first)?;
         Some((format!("{subject} explores, then it explores again"), 2))
+    }
+
+    /// "mill two cards, then ~ gets +X/+X until end of turn": the change counts what the mill left, so it is one
+    /// sentence, which no joint splits.
+    fn mill_then_change(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
+        let [
+            mill @ Effect::Mill { who: Ref::You, .. },
+            change @ Effect::Continuous {
+                affected: Ref::This,
+                ..
+            },
+            ..,
+        ] = effects
+        else {
+            return None;
+        };
+        let (mill, change) = (self.effect(mill)?, self.effect(change)?);
+        Some((format!("{mill}, then {change}"), 2))
     }
 
     /// Tokens created: "create a Treasure token" for you, "target opponent creates a Treasure token" for another player.
@@ -1888,7 +1940,7 @@ impl Writer<'_> {
             Ref::This => ("~".to_owned(), false),
             Ref::Triggering => ("it".to_owned(), false),
             Ref::Target(0)
-                if self.single(affected)
+                if self.at_most_one(affected)
                     && self.target_is(|what| matches!(what, Targetable::Object(_))) =>
             {
                 (self.name_target()?, false)

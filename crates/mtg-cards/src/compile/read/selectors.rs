@@ -382,6 +382,13 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.words("defending player controls") {
         return Some(Pred::ControlledBy(Ref::Defending));
     }
+    // The creatures that paid for the source: "creature that crewed it this turn".
+    if r.words("that crewed it this turn") {
+        return Some(Pred::Crewed(Ref::This));
+    }
+    if r.words("that saddled it this turn") {
+        return Some(Pred::Saddled(Ref::This));
+    }
     if r.words("enchanted player controls") {
         return Some(Pred::ControlledBy(Ref::AttachedPlayer));
     }
@@ -473,6 +480,8 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::ControlledBy(Ref::You) => "you control".to_owned(),
         Pred::ControlledBy(Ref::Opponents) => form.opponents().to_owned(),
         Pred::ControlledBy(Ref::Triggering) => "that player controls".to_owned(),
+        Pred::Crewed(Ref::This) => "that crewed it this turn".to_owned(),
+        Pred::Saddled(Ref::This) => "that saddled it this turn".to_owned(),
         Pred::ControlledBy(Ref::AttachedPlayer) => "enchanted player controls".to_owned(),
         Pred::ControlledBy(Ref::Defending) => "defending player controls".to_owned(),
         Pred::ControlledBy(Ref::Monarch) => "the monarch controls".to_owned(),

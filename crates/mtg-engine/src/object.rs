@@ -75,6 +75,11 @@ pub enum FaceDown {
     Morph,
     /// A spell or permanent cast face down for its disguise (CR 702.168): as a morph, with ward {2}.
     Disguise,
+    /// A card put onto the battlefield face down by manifest (CR 701.40a): as a morph, a 2/2 creature that only its controller
+    /// may look at; it can be turned face up for its mana cost when it is a creature card.
+    Manifest,
+    /// A card put onto the battlefield face down by cloak (CR 701.58a): as a manifested card, with ward {2}.
+    Cloak,
     /// A card a permanent exiled face down with hideaway (CR 702.75a): it stays in exile with its own characteristics, and
     /// only its owner and the player who controls the permanent may look at it. The link is lost when the permanent leaves.
     Hideaway {
@@ -90,7 +95,9 @@ impl FaceDown {
     pub fn may_look(self, owner: PlayerId, controller: PlayerId, viewer: PlayerId) -> bool {
         match self {
             FaceDown::Foretold { .. } | FaceDown::Hideaway { .. } => owner == viewer,
-            FaceDown::Morph | FaceDown::Disguise => controller == viewer,
+            FaceDown::Morph | FaceDown::Disguise | FaceDown::Manifest | FaceDown::Cloak => {
+                controller == viewer
+            }
         }
     }
 }

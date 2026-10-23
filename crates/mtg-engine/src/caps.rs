@@ -112,6 +112,8 @@ const RUNS: &[&str] = &[
     "Effect.ExileUntil",
     "Effect.ExileTop",
     "Effect.ExileHidden",
+    "Effect.Manifest",
+    "Effect.Cloak",
     "Effect.CastFromZone",
     "Effect.Destroy",
     "Effect.Exile",
@@ -642,6 +644,8 @@ mod tests {
     #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]
     #[case::exiling_the_top_cards("Effect.ExileTop", true)]
     #[case::exiling_face_down("Effect.ExileHidden", true)]
+    #[case::manifesting("Effect.Manifest", true)]
+    #[case::cloaking("Effect.Cloak", true)]
     #[case::casting_during_a_resolution("Effect.CastFromZone", true)]
     #[case::cascading("Keyword.Cascade", true)]
     #[case::convoking("Keyword.Convoke", true)]

@@ -267,7 +267,11 @@ fn sentence_wordings(sentence: &str, later: bool) -> Vec<String> {
             .collect();
         out.extend(others);
     }
-    if later && (sentence.starts_with("if ") || sentence.starts_with("you may pay ")) {
+    if later
+        && (sentence.starts_with("if ")
+            || sentence.starts_with("you may pay ")
+            || sentence.starts_with("you may return any number of "))
+    {
         let then: Vec<String> = out.iter().map(|text| format!("then {text}")).collect();
         out.extend(then);
     }

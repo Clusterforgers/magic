@@ -5,7 +5,15 @@ import type { PlayerId } from "./PlayerId";
 /**
  * Why an object moved from one zone to another.
  */
-export type ZoneCause = "Moved" | "Destroyed" | "Buried" | "Sacrificed" | "Exiled" | "Foretold" | { "Hideaway": { 
+export type ZoneCause = "Moved" | "Destroyed" | "Buried" | "Sacrificed" | "Exiled" | "Foretold" | { "Manifested": { 
+/**
+ * The player who manifested it and controls it.
+ */
+by: PlayerId, } } | { "Cloaked": { 
+/**
+ * The player who cloaked it and controls it.
+ */
+by: PlayerId, } } | { "Hideaway": { 
 /**
  * The permanent that hides it.
  */

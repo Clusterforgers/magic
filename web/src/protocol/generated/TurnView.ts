@@ -12,9 +12,14 @@ export type TurnView = {
  */
 number: number, 
 /**
- * The active player.
+ * The active player; once they have left the game, the seat the turn belongs to (see `active_left`).
  */
 active: PlayerId, 
+/**
+ * Whether the turn goes on without an active player, whose seat `active` names (CR 800.4); left out otherwise,
+ * and in a game that has ended or has not begun its turns. The same for every seat, so a client never derives it.
+ */
+active_left?: boolean, 
 /**
  * The current step.
  */

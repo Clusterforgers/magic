@@ -1,0 +1,38 @@
+{
+  "oracle_id": "f60cd1d8-eeb6-41a3-af32-3e2a54937ca2",
+  "name": "Thieving Amalgam",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thieving Amalgam",
+      "oracle_fingerprint": "35405554af51549c97bc3f2f30b59c93",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "effects": [{ "Manifest": { "library": "Triggering" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Not": { "OwnedBy": "You" } }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "LoseLife": { "who": { "OwnerOf": "Triggering" }, "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
