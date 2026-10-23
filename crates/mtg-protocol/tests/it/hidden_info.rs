@@ -19,7 +19,7 @@ use mtg_protocol::{EventBatch, StateView, project_events};
 use mtg_testkit::{
     archon_fuzz_setup, attach_fuzz_setup, counters_fuzz_setup, keyword_triggers_fuzz_setup,
     loyalty_fuzz_setup, parts_fuzz_setup, prevent_fuzz_setup, rules_fuzz_setup, spell_fuzz_setup,
-    split_fuzz_setup, upkeep_fuzz_setup, zones_fuzz_setup,
+    split_fuzz_setup, umbra_fuzz_setup, upkeep_fuzz_setup, zones_fuzz_setup,
 };
 use rstest::rstest;
 use serde_json::Value;
@@ -2122,6 +2122,136 @@ fn the_seat_hurt_picks_the_damage_a_shield_takes_first_and_the_question_shows_no
     let viewers: Vec<PlayerId> = (0..seats).map(PlayerId::from_index).collect();
     let batches = project_events(&before, &events, &viewers, 0).unwrap();
     for (viewer, batch) in viewers.iter().zip(&batches) {
+        assert_clean(batch, &hidden_in(&after, *viewer));
+    }
+}
+
+/// Umbra armor removes the damage of a creature and destroys its Aura in place of the creature's destruction; both are
+/// public, and the question of which of two replacements applies names no card a viewer may not see.
+#[rstest]
+#[case(2, 411)]
+#[case(3, 412)]
+#[case(4, 413)]
+fn no_hidden_object_reaches_any_viewer_in_games_of_umbra_armor(
+    #[case] players: usize,
+    #[case] seed: u64,
+) {
+    let viewers: Vec<PlayerId> = (0..players).map(PlayerId::from_index).collect();
+    let (mut checked, mut saved, mut asked) = (0usize, 0usize, 0usize);
+    for seed in seed..seed + PREVENTION_GAMES * 4 {
+        let setup = with_unique_names(umbra_fuzz_setup(players, seed).unwrap());
+        let engine = run_game(setup, seed, |step: &Step| {
+            if let Some(decision) = step.decision
+                && matches!(decision.kind, DecisionKind::ChooseReplacement(_))
+            {
+                asked += 1;
+                let hidden = hidden_in(step.after, decision.player);
+                let found = leaks(&serde_json::to_value(decision).unwrap(), &hidden);
+                assert!(
+                    found.is_empty(),
+                    "seed {seed} answer {}: the question leaks {found:?}",
+                    step.answers
+                );
+            }
+            let removals = step
+                .events
+                .iter()
+                .filter(|event| matches!(event, mtg_engine::Event::DamageRemoved { .. }))
+                .count();
+            saved += removals;
+            let batches =
+                project_events(step.before, step.events, &viewers, step.from_seq).unwrap();
+            for (viewer, batch) in viewers.iter().zip(&batches) {
+                let hidden = hidden_across(step.before, step.after, *viewer);
+                checked += hidden.len();
+                for (part, value) in batch_parts(batch) {
+                    let found = leaks(&without_trigger_orders(value), &hidden);
+                    assert!(
+                        found.is_empty(),
+                        "seed {seed} answer {} viewer {viewer:?}: batch {part} leaks {found:?}",
+                        step.answers
+                    );
+                }
+                // The removal of the damage is public: every viewer gets each one whole.
+                let public = batch
+                    .events
+                    .iter()
+                    .filter(|view| {
+                        matches!(
+                            view,
+                            mtg_protocol::EventView::Public(
+                                mtg_engine::Event::DamageRemoved { .. }
+                            )
+                        )
+                    })
+                    .count();
+                assert_eq!(public, removals, "seed {seed} viewer {viewer:?}");
+            }
+            if step.answers.is_multiple_of(SNAPSHOT_EVERY) {
+                for viewer in &viewers {
+                    let hidden = hidden_in(step.after, *viewer);
+                    let view = StateView::for_player(step.after, *viewer);
+                    let found = leaks(&serde_json::to_value(&view).unwrap(), &hidden);
+                    assert!(
+                        found.is_empty(),
+                        "seed {seed} answer {} viewer {viewer:?}: snapshot leaks {found:?}",
+                        step.answers
+                    );
+                }
+            }
+        });
+        assert!(engine.result().is_some(), "game should finish");
+    }
+    assert!(
+        checked > 500 && saved > 0,
+        "test must not be vacuous: {checked} hidden, {saved} creatures saved by the armor, {asked} questions"
+    );
+}
+
+#[rstest]
+fn the_armor_that_saves_a_creature_reaches_every_seat_whole_and_nothing_hidden_with_it(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    use mtg_testkit::cards::{free_creature, mountain};
+    use mtg_testkit::prevent_cards::smite;
+    use mtg_testkit::{Driver, Scenario, attached_to, ready};
+    let mut scenario = Scenario::new(seats)
+        .battlefield(
+            0,
+            [
+                ready(free_creature("Subject", 2, 2)),
+                attached_to(ready(mtg_testkit::corpus::card("Eel Umbra").unwrap()), 0, 0),
+            ],
+        )
+        .hand(1, vec![smite("Smite").unwrap()])
+        .battlefield(1, [ready(mountain())]);
+    for seat in 0..seats {
+        scenario = scenario.library_named(seat, LIBRARY);
+    }
+    let before = GameState::from_setup(&scenario.clone().setup().unwrap()).unwrap();
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.pass().unwrap();
+    let subject = driver.target_named("Subject").unwrap();
+    driver.cast_at("Smite", &[subject]).unwrap();
+    while !driver.state().stack().is_empty() {
+        driver.pass().unwrap();
+    }
+    let events = driver.engine().events().to_vec();
+    let after = driver.state().clone();
+    let viewers: Vec<PlayerId> = (0..seats).map(PlayerId::from_index).collect();
+    let batches = project_events(&before, &events, &viewers, 0).unwrap();
+    for (viewer, batch) in viewers.iter().zip(&batches) {
+        let removed = batch
+            .events
+            .iter()
+            .filter(|view| {
+                matches!(
+                    view,
+                    mtg_protocol::EventView::Public(mtg_engine::Event::DamageRemoved { .. })
+                )
+            })
+            .count();
+        assert_eq!(removed, 1, "viewer {viewer:?}");
         assert_clean(batch, &hidden_in(&after, *viewer));
     }
 }

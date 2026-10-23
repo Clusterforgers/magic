@@ -296,6 +296,8 @@ pub enum Keyword {
     Gravestorm,
     /// Sunburst (CR 702.44): the permanent enters with a +1/+1 counter (a charge counter unless it is a creature) for each color of mana spent to cast it.
     Sunburst,
+    /// Umbra armor (CR 702.89): if the creature this Aura enchants would be destroyed, instead all damage is removed from it and this Aura is destroyed.
+    UmbraArmor,
 }
 
 /// What a promised gift is (CR 702.174).
@@ -441,6 +443,7 @@ impl Keyword {
         "Awaken",
         "Gravestorm",
         "Sunburst",
+        "Umbra armor",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -579,6 +582,7 @@ impl Keyword {
             Keyword::Awaken { .. } => "Awaken",
             Keyword::Gravestorm => "Gravestorm",
             Keyword::Sunburst => "Sunburst",
+            Keyword::UmbraArmor => "Umbra armor",
             Keyword::Dash(_) => "Dash",
             Keyword::Blitz(_) => "Blitz",
             Keyword::Prowl(_) => "Prowl",
@@ -763,6 +767,7 @@ mod tests {
             },
             Keyword::Gravestorm,
             Keyword::Sunburst,
+            Keyword::UmbraArmor,
         ]
     }
 

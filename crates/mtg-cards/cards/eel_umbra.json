@@ -1,0 +1,22 @@
+{
+  "oracle_id": "4be1ecd0-ee41-4ac0-9155-0fcae7a4d337",
+  "name": "Eel Umbra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eel Umbra",
+      "oracle_fingerprint": "4fd750ba9aa38fe876d8eab2a38f3d2b",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        { "Keyword": "UmbraArmor" }
+      ]
+    }
+  ]
+}
