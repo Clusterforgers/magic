@@ -1,12 +1,12 @@
 //! Goal: the Lieutenants that give a bonus and an ability in quotes (Demon of Wailing Agonies, Tyrant's Familiar, Stormsurge Kraken) or a bonus and a keyword for a group (Angelic Field Marshal, Thunderfoot Baloth) get them only while their controller controls their commander, at tables of two, three and four seats: sizes, the keywords of the group, and the granted triggers that sacrifice a creature and deal damage to a creature of the defending player.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use crate::common::{name_of, names, pid};
+use crate::common::{name_of, names};
 use mtg_cards::CardDefinition;
 use mtg_cards::keyword::Keyword;
 use mtg_core::color::Color;
 use mtg_engine::characteristics;
-use mtg_engine::choose::{CardsChoice, Target, TargetChoice};
+use mtg_engine::choose::{CardsChoice, TargetChoice};
 use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::format::Commander;
 use mtg_engine::keywords::keywords_of;
