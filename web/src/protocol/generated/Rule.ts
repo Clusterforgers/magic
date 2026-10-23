@@ -8,7 +8,15 @@ import type { PlayerId } from "./PlayerId";
  * A rule of the game as the engine plays it: the players or objects the data's references named, found when the rule
  * began (an effect) or whenever the state changes (a static ability).
  */
-export type Rule = { "MustAttack": Array<ObjectRef> } | { "MustAttackPlayers": Array<[ObjectRef, PlayerId]> } | { "MustBlock": Array<ObjectRef> } | { "AttackTax": AttackTax } | { "CantBeCountered": Array<ObjectRef> } | { "CantGainLife": Array<PlayerId> } | { "NoLifeLossFromDamage": Array<PlayerId> } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "RevealTop": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "SkipDrawStep": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "AdditionalLandPlays": Array<[PlayerId, number]> } | { "MayCast": { 
+export type Rule = { "MustAttack": Array<ObjectRef> } | { "MustAttackPlayers": Array<[ObjectRef, PlayerId]> } | { "MustBlock": Array<ObjectRef> } | { "AttackTax": AttackTax } | { "CantBeCountered": Array<ObjectRef> } | { "CantGainLife": Array<PlayerId> } | { "NoLifeLossFromDamage": Array<PlayerId> } | { "LifeTotalCantChange": Array<PlayerId> } | { "PlayersHave": { 
+/**
+ * The players.
+ */
+who: Array<PlayerId>, 
+/**
+ * The keyword they have.
+ */
+keyword: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "RevealTop": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "SkipDrawStep": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "AdditionalLandPlays": Array<[PlayerId, number]> } | { "MayCast": { 
 /**
  * The players who may cast.
  */

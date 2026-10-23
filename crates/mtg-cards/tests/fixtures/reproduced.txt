@@ -30,6 +30,7 @@ Ancestral Vision
 Ancient Hydra
 Ancient Stone Idol
 Ancient Ziggurat
+Angel of Flight Alabaster
 Angel of Invention
 Angel of Sanctions
 Angel of Vitality
@@ -53,6 +54,7 @@ Ash Barrens
 Assassin's Trophy
 Atlantean Skirmisher
 Atmospheric Greenhouse
+Atzocan Seer
 Augury Raven
 Aura Gnarlid
 Authority of the Consuls
@@ -94,6 +96,7 @@ Bespoke Battlewagon
 Bilious Skulldweller
 Binding the Old Gods
 Bird Admirer // Wing Shredder
+Bitter Triumph
 Black Dragon Gate
 Black Knight
 Blackblade Reforged
@@ -294,6 +297,7 @@ Dualcaster Mage
 Dunland Crebain
 Durkwood Baloth
 Dusk Charger
+Dusk Mangler
 Duskshell Crawler
 Dúnedain Blade
 Eagles of the North
@@ -970,6 +974,7 @@ Thriving Moor
 Throne of the High City
 Thunder-Thrash Elder
 Thunderfoot Baloth
+Thunderherd Migration
 Thunderous Wrath
 Tiamat's Fanatics
 Tilonalli's Skinshifter

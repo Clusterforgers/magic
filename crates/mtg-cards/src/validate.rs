@@ -58,6 +58,7 @@ fn is_fixed(item: &CostItem) -> bool {
         | CostItem::TapPermanents { count, .. }
         | CostItem::ExileFromGraveyard { count, .. }
         | CostItem::ExileFromHand { count, .. }
+        | CostItem::RevealFromHand { count, .. }
         | CostItem::ReturnToHand { count, .. } => fixed(count),
         _ => true,
     }
@@ -73,6 +74,7 @@ fn amount_is_x(item: &CostItem) -> bool {
         | CostItem::TapPermanents { count, .. }
         | CostItem::ExileFromGraveyard { count, .. }
         | CostItem::ExileFromHand { count, .. }
+        | CostItem::RevealFromHand { count, .. }
         | CostItem::ReturnToHand { count, .. } => *count == Amount::X,
         _ => false,
     }
@@ -204,6 +206,8 @@ struct Walker<'a> {
     x_free: bool,
     /// Whether an `X` read here is the one announced for the ability being walked, which its effects read as it resolves.
     x_now: bool,
+    /// Whether a choice between costs is walked as the required additional cost of a spell, the one place the engine asks it.
+    choosing: bool,
     /// What the amount being walked is the amount of, which says whether a divided amount has recipients to read it.
     amounting: Amounting,
     /// How many abilities deep the walk stands inside abilities that other abilities grant or tokens carry.
@@ -232,6 +236,7 @@ impl<'a> Walker<'a> {
             counts_x: false,
             x_free: false,
             x_now: false,
+            choosing: false,
             amounting: Amounting::Other,
             nested: 0,
             after: After::Nothing,
@@ -629,7 +634,9 @@ impl<'a> Walker<'a> {
     fn cost(&mut self, cost: &Cost) {
         for (i, item) in cost.0.iter().enumerate() {
             self.at(format!("[{i}]"), |w| {
-                w.uses("Cost", &tag_of(item));
+                if !matches!(item, CostItem::OneOf(_)) {
+                    w.uses("Cost", &tag_of(item));
+                }
                 if !is_fixed(item) {
                     w.uses("Cost", &format!("{}.Counted", tag_of(item)));
                 }
@@ -642,10 +649,12 @@ impl<'a> Walker<'a> {
                     | CostItem::TapPermanents { filter, count }
                     | CostItem::ExileFromGraveyard { filter, count }
                     | CostItem::ExileFromHand { filter, count }
+                    | CostItem::RevealFromHand { filter, count }
                     | CostItem::ReturnToHand { filter, count } => {
                         w.at("filter", |w| w.selector(filter));
                         w.at("count", |w| w.amount(count));
                     }
+                    CostItem::OneOf(costs) => w.alternatives(costs),
                     CostItem::Discard { count, filter } => {
                         w.at("count", |w| w.amount(count));
                         if let Some(filter) = filter {
@@ -666,15 +675,46 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// A choice between costs: the caster pays one, which only a required additional cost of a spell asks. Each cost is a
+    /// plain cost of at least one part.
+    fn alternatives(&mut self, costs: &[Cost]) {
+        let tag = if self.choosing {
+            "OneOf"
+        } else {
+            "OneOf.Elsewhere"
+        };
+        self.uses("Cost", tag);
+        let plain = |cost: &Cost| {
+            !cost.0.is_empty() && !cost.0.iter().any(|item| matches!(item, CostItem::OneOf(_)))
+        };
+        if costs.len() < 2 || !costs.iter().all(plain) {
+            self.problem(
+                "a choice between costs has two or more costs of at least one part, none a choice itself",
+            );
+        }
+        for (i, cost) in costs.iter().enumerate() {
+            self.at(format!("[{i}]"), |w| w.cost(cost));
+        }
+    }
+
     /// An additional cost is paid by the caster as the spell is announced, never by the spell itself. The announcement
-    /// pays the parts of a required one (life, picked objects) and no mana.
+    /// pays the parts of a required one (life, picked objects) and its mana, but not an `{X}` of mana.
     fn additional_cost(&mut self, cost: &Cost, required: bool) {
-        if required && cost.0.iter().any(|item| matches!(item, CostItem::Mana(_))) {
-            self.uses("Ability", "AdditionalCost.Required.Mana");
+        let x_mana = cost
+            .0
+            .iter()
+            .any(|item| matches!(item, CostItem::Mana(mana) if mana.has_x()));
+        if required && x_mana {
+            self.uses("Ability", "AdditionalCost.Required.Mana.X");
         }
         // The X a required cost counts is the one the caster announces as the spell is cast.
         let saved = std::mem::replace(&mut self.x_now, required && cost.has_x());
+        let choosing = std::mem::replace(&mut self.choosing, required);
+        if cost.0.len() > 1 && cost.0.iter().any(|item| matches!(item, CostItem::OneOf(_))) {
+            self.problem("a choice between costs is the only part of an additional cost");
+        }
         self.at("cost", |w| w.cost(cost));
+        self.choosing = choosing;
         self.x_now = saved;
         let by_the_source = cost.0.iter().any(|item| {
             matches!(
@@ -726,6 +766,7 @@ impl<'a> Walker<'a> {
                     | CostItem::Discard { .. }
                     | CostItem::ExileFromGraveyard { .. }
                     | CostItem::ExileFromHand { .. }
+                    | CostItem::RevealFromHand { .. }
                     | CostItem::TapPermanents { .. }
                     | CostItem::TapPower { .. }
                     | CostItem::ReturnToHand { .. }
@@ -1442,6 +1483,7 @@ impl<'a> Walker<'a> {
             | Effect::Counter { what }
             | Effect::Tap { what }
             | Effect::Untap { what }
+            | Effect::PhaseOut { what }
             | Effect::Transform { what }
             | Effect::Flip { what }
             | Effect::Goad { what }
@@ -2148,6 +2190,7 @@ impl<'a> Walker<'a> {
             }),
             GameRule::CantGainLife(who)
             | GameRule::NoLifeLossFromDamage(who)
+            | GameRule::LifeTotalCantChange(who)
             | GameRule::CantDraw(who)
             | GameRule::CantSearch(who)
             | GameRule::RevealTop(who)
@@ -2176,6 +2219,7 @@ impl<'a> Walker<'a> {
                     w.problem("an additional land play is at least one");
                 }
             }),
+            GameRule::PlayersHave { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
             GameRule::CanBeCommander => {}
             GameRule::TriggerAgain { cause } => {
                 let saved = std::mem::replace(&mut self.scope, Scope::new(&[], false));
@@ -2390,17 +2434,19 @@ fn gives_player_keywords(affected: &Ref, mods: &[Modification]) -> bool {
 
 /// Whether a cost has a part that picks objects the effects can name.
 fn picks(cost: &Cost) -> bool {
-    cost.0.iter().any(|item| {
-        matches!(
-            item,
+    cost.0.iter().any(|item| match item {
+        CostItem::OneOf(costs) => costs.iter().any(picks),
+        other => matches!(
+            other,
             CostItem::Sacrifice { .. }
                 | CostItem::Discard { .. }
                 | CostItem::ExileFromGraveyard { .. }
                 | CostItem::ExileFromHand { .. }
+                | CostItem::RevealFromHand { .. }
                 | CostItem::ReturnToHand { .. }
                 | CostItem::TapPermanents { .. }
                 | CostItem::TapPower { .. }
-        )
+        ),
     })
 }
 

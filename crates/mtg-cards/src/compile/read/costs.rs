@@ -101,6 +101,9 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
     if r.word("exile") {
         return exile(r);
     }
+    if r.word("reveal") {
+        return reveal(r);
+    }
     if r.word("return") {
         return bounce(r);
     }
@@ -192,6 +195,18 @@ fn exile(r: &mut Reader<'_>) -> Option<CostItem> {
     })
 }
 
+/// "Reveal a creature card from your hand", "Reveal a Giant card from your hand": the card stays in the hand.
+fn reveal(r: &mut Reader<'_>) -> Option<CostItem> {
+    let (form, count) = how_many(r)?;
+    let mut filter = phrase(r, form)?;
+    without(&mut filter, &Pred::In(ZoneKind::Hand))?;
+    without(&mut filter, &Pred::OwnedBy(Ref::You))?;
+    Some(CostItem::RevealFromHand {
+        filter: kinds_only(filter)?,
+        count,
+    })
+}
+
 /// "Return a land you control to its owner's hand".
 fn bounce(r: &mut Reader<'_>) -> Option<CostItem> {
     (r.word("a") || r.word("an")).then_some(())?;
@@ -259,14 +274,16 @@ fn is_cost_filter(pred: &Pred) -> bool {
 /// Whether the cost takes objects out of their zones (a sacrifice, a discard, an exile), which the effects name as
 /// "the sacrificed creature's power".
 pub(super) fn takes_objects(cost: &Cost) -> bool {
-    cost.0.iter().any(|item| {
-        matches!(
-            item,
+    cost.0.iter().any(|item| match item {
+        CostItem::OneOf(costs) => costs.iter().any(takes_objects),
+        other => matches!(
+            other,
             CostItem::Sacrifice { .. }
                 | CostItem::Discard { .. }
                 | CostItem::ExileFromGraveyard { .. }
                 | CostItem::ExileFromHand { .. }
-        )
+                | CostItem::RevealFromHand { .. }
+        ),
     })
 }
 
@@ -336,6 +353,13 @@ fn item_text(item: &CostItem) -> Option<String> {
                 .extend([Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]);
             format!("Exile {}", taken_text(&said, count)?)
         }
+        CostItem::RevealFromHand { filter, count } => {
+            let mut said = filter.clone();
+            said.0
+                .extend([Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]);
+            format!("Reveal {}", taken_text(&said, count)?)
+        }
+        CostItem::OneOf(costs) => choice_text(costs)?,
         CostItem::ReturnToHand { filter, count } if *count == Amount::one() => {
             let mut said = filter.clone();
             said.0.push(Pred::ControlledBy(Ref::You));
@@ -413,6 +437,10 @@ pub(super) fn additional(r: &mut Reader<'_>) -> Option<Ability> {
     };
     let cost = match paid_in_mana {
         Some(cost) => cost,
+        None if required => match r.attempt(alternatives) {
+            Some(choice) => choice,
+            None => cost(r)?,
+        },
         None => cost(r)?,
     };
     // The caster announces the X of a required cost that counts it ("Pay X life", "sacrifice X creatures"); an `{X}` of
@@ -425,6 +453,69 @@ pub(super) fn additional(r: &mut Reader<'_>) -> Option<Ability> {
         return None;
     }
     Some(Ability::AdditionalCost { cost, required })
+}
+
+/// "discard a card or pay 3 life", "sacrifice a creature, discard a card, or pay 4 life", "reveal a Giant card from your
+/// hand or pay {2}": the caster pays one of the costs, each of one part.
+fn alternatives(r: &mut Reader<'_>) -> Option<Cost> {
+    let before = std::mem::replace(&mut r.x_free, false);
+    let found = alternative_list(r);
+    r.x_free = before;
+    found
+}
+
+fn alternative_list(r: &mut Reader<'_>) -> Option<Cost> {
+    let mut costs = vec![alternative(r)?];
+    let mut chosen = false;
+    loop {
+        let comma = r.punct(',');
+        let or = r.word("or");
+        if !comma && !or {
+            break;
+        }
+        chosen |= or;
+        costs.push(alternative(r)?);
+    }
+    chosen.then(|| Cost(vec![CostItem::OneOf(costs)]))
+}
+
+/// One cost of a choice: "pay {2}" or a part.
+fn alternative(r: &mut Reader<'_>) -> Option<Cost> {
+    let paid = r.attempt(|r| {
+        r.word("pay").then_some(())?;
+        mana(r).map(Cost::mana)
+    });
+    paid.or_else(|| item(r).map(|item| Cost(vec![item])))
+}
+
+/// The words of a choice between costs: "Discard a card or pay 3 life", "Sacrifice a creature, discard a card, or pay 4 life".
+fn choice_text(costs: &[Cost]) -> Option<String> {
+    let mut words = Vec::new();
+    for (at, cost) in costs.iter().enumerate() {
+        let [item] = cost.0.as_slice() else {
+            return None;
+        };
+        let text = match item {
+            CostItem::Mana(mana) => format!("pay {mana}"),
+            CostItem::OneOf(_) => return None,
+            other => item_text(other)?,
+        };
+        words.push(if at == 0 { text } else { lowered(&text) });
+    }
+    match words.as_slice() {
+        [] | [_] => None,
+        [one, two] => Some(format!("{one} or {two}")),
+        [rest @ .., last] => Some(format!("{}, or {last}", rest.join(", "))),
+    }
+}
+
+/// `text` with its first letter in lower case.
+fn lowered(text: &str) -> String {
+    let mut chars = text.chars();
+    chars
+        .next()
+        .map(|first| first.to_lowercase().chain(chars).collect())
+        .unwrap_or_default()
 }
 
 /// The sentence an additional cost is written as; `None` for a cost the readers do not write.

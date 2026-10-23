@@ -12,7 +12,7 @@ use crate::zones::Zone;
 /// Whether `source` is still the permanent it names: on the battlefield and not a new object since (CR 400.7).
 pub(crate) fn holds(state: &GameState, source: ObjectRef) -> bool {
     state.object(source.id).is_some_and(|object| {
-        object.counter() == source.counter && object.zone() == Zone::Battlefield
+        object.counter() == source.counter && object.zone().is_permanent_zone()
     })
 }
 

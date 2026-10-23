@@ -111,6 +111,28 @@ pub struct Designations {
     pub(crate) level: u32,
 }
 
+/// How a permanent is phased out (CR 702.26): who controlled it when it phased out, which is who it phases in for, and
+/// whether it phased out with the permanent it is attached to.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct Phasing {
+    /// The player who controlled it when it phased out; it phases in during that player's untap step.
+    pub controller: PlayerId,
+    /// It phased out because the permanent it is attached to did (CR 702.26g), so it phases in with that permanent.
+    pub indirect: bool,
+}
+
+/// Whether a permanent is phased out. A phased-in permanent adds nothing to the hash of the game.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct PhasedState(pub(crate) Option<Phasing>);
+
+impl Hash for PhasedState {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        if let Some(phasing) = &self.0 {
+            phasing.hash(state);
+        }
+    }
+}
+
 /// State that only exists while an object is on the battlefield.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct PermanentState {
@@ -145,6 +167,8 @@ pub struct PermanentState {
     pub(crate) copy: Option<CopyEffect>,
     /// The cards the permanent is made of once a mutating creature spell has merged with it (CR 729).
     pub(crate) merged: Option<Merged>,
+    /// Set while the permanent is phased out (CR 702.26); it keeps everything else it had.
+    pub(crate) phased: PhasedState,
 }
 
 impl PermanentState {
@@ -177,7 +201,13 @@ impl PermanentState {
             spent,
             copy: None,
             merged: None,
+            phased: PhasedState::default(),
         }
+    }
+
+    /// How the permanent is phased out, or `None` while it is phased in (CR 702.26).
+    pub const fn phasing(&self) -> Option<Phasing> {
+        self.phased.0
     }
 
     /// The cards the permanent is made of, when a mutating creature spell merged with it (CR 729).

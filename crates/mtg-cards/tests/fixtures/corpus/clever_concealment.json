@@ -1,0 +1,25 @@
+{
+  "id": "41d45a8a-ea1d-4fbc-86d2-5d6340f3b639",
+  "oracle_id": "42bb7ea9-f6e4-4551-8d93-3b1eae84b865",
+  "name": "Clever Concealment",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "layout": "normal",
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)\nAny number of target nonland permanents you control phase out. (Treat them and anything attached to them as though they don't exist until your next turn.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Convoke"
+  ],
+  "set": "msc",
+  "collector_number": "125",
+  "digital": false,
+  "rarity": "rare"
+}

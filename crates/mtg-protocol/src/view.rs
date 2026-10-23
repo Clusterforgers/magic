@@ -361,8 +361,13 @@ pub struct TableView {
     pub priority: Option<PriorityView>,
     /// All seats in seat order.
     pub players: Vec<PlayerView>,
-    /// The shared battlefield.
+    /// The shared battlefield: the permanents that are phased in.
     pub battlefield: ZoneView,
+    /// The permanents that are phased out (CR 702.26): still on the battlefield, treated as though they don't exist, and
+    /// public to every seat; left out while there are none. Their objects have the zone `PhasedOut`.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<ObjectId>>", optional)]
+    pub phased_out: Vec<ObjectId>,
     /// The stack, top last.
     pub stack: ZoneView,
     /// The shared exile zone.

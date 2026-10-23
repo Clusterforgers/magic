@@ -235,6 +235,16 @@ pub enum GameRule {
     CantGainLife(Ref),
     /// Damage dealt to the players causes no loss of life: it is still dealt, and every other effect of it happens.
     NoLifeLossFromDamage(Ref),
+    /// The players' life totals can't change (CR 119.7, 119.8): they gain and lose no life, pay no life and have no life
+    /// total set; damage is still dealt.
+    LifeTotalCantChange(Ref),
+    /// The players have a keyword, such as protection from everything (CR 702.16j), while the rule lasts.
+    PlayersHave {
+        /// The players.
+        who: Ref,
+        /// The keyword they have.
+        keyword: Keyword,
+    },
     /// The players can't draw cards.
     CantDraw(Ref),
     /// The players can't search libraries.

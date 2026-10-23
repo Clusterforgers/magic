@@ -4,4 +4,4 @@ import type { PlayerId } from "./PlayerId";
 /**
  * A game zone; per-player zones carry their owner.
  */
-export type Zone = { "Library": PlayerId } | { "Hand": PlayerId } | "Battlefield" | { "Graveyard": PlayerId } | "Stack" | "Exile" | { "Command": PlayerId };
+export type Zone = { "Library": PlayerId } | { "Hand": PlayerId } | "Battlefield" | { "Graveyard": PlayerId } | "Stack" | "Exile" | { "Command": PlayerId } | "PhasedOut";

@@ -432,6 +432,12 @@ pub enum Effect {
         /// What is untapped.
         what: Ref,
     },
+    /// Phases permanents out (CR 702.26): they are treated as though they don't exist, with what is attached to them,
+    /// until they phase in during their controller's next untap step.
+    PhaseOut {
+        /// What phases out.
+        what: Ref,
+    },
     /// Attaches Auras, Equipment or Fortifications to an object (CR 701.3).
     Attach {
         /// The permanents attached; each moves to `to` when it can be attached there.
