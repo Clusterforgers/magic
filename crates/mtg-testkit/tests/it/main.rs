@@ -22,6 +22,8 @@ mod bestow;
 mod bestow_fuzz;
 mod blitz;
 mod blitz_fuzz;
+mod block_limits;
+mod block_limits_fuzz;
 mod block_restrictions;
 mod block_restrictions_fuzz;
 mod card_lists;
