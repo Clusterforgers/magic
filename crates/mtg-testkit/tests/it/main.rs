@@ -284,6 +284,7 @@ mod undaunted;
 mod unearth;
 mod upkeep_keywords;
 mod upkeep_keywords_fuzz;
+mod vehicle_shapes;
 mod vehicles;
 mod win_effects;
 mod windows_games;

@@ -945,13 +945,16 @@ fn spec(r: &mut Reader<'_>) -> Option<TargetSpec> {
     }
     if r.words("up to") {
         let count = number_word(r.take_word()?)?;
+        // "up to one other target Vehicle you control".
+        let other = count == 1 && r.word("other");
         r.need("target")?;
         let form = if count == 1 {
             Form::Target
         } else {
             Form::Targets
         };
-        let what = Targetable::Object(phrase(r, form)?);
+        let selector = phrase(r, form)?;
+        let what = Targetable::Object(if other { another(selector) } else { selector });
         let max = Some(Amount::Fixed(i32::try_from(count).ok()?));
         return Some(TargetSpec {
             what,
@@ -1044,10 +1047,13 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
             "any number of target {}",
             phrase_text(selector, Form::Targets)?
         )),
-        Some(Amount::Fixed(1)) => Some(format!(
-            "up to one target {}",
-            phrase_text(selector, Form::Target)?
-        )),
+        Some(Amount::Fixed(1)) => {
+            let phrase = phrase_text(selector, Form::Target)?;
+            Some(match phrase.strip_prefix("other ") {
+                Some(rest) => format!("up to one other target {rest}"),
+                None => format!("up to one target {phrase}"),
+            })
+        }
         Some(Amount::Fixed(count)) => Some(format!(
             "up to {} target {}",
             count_word(u32::try_from(*count).ok()?)?,

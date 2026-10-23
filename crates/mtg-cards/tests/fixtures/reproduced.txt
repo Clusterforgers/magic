@@ -79,6 +79,7 @@ Beast Within
 Beastmaster Ascension
 Befriending the Moths // Imperial Moth
 Behold the Multiverse
+Bespoke Battlewagon
 Bilious Skulldweller
 Binding the Old Gods
 Bird Admirer // Wing Shredder
@@ -383,6 +384,7 @@ Grisly Salvage
 Growing Ranks
 Gruul Cluestone
 Guardian Gladewalker
+Guidelight Matrix
 Guiding Voice
 Gurmag Angler
 Hada Spy Patrol
@@ -575,6 +577,7 @@ Paradise Druid
 Parhelion Patrol
 Patagia Viper
 Path to Exile
+Peacewalker Colossus
 Peema Outrider
 Pentad Prism
 Pestilent Syphoner
@@ -793,6 +796,7 @@ Syphon Life
 Tabaxi Toucaneers
 Tah-Crop Skirmisher
 Tainted Isle
+Tangle Tumbler
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
 Teacher's Pest
@@ -884,6 +888,7 @@ Vulshok Splitter
 Walking Ballista
 Wanderbrine Preacher
 Waning Wurm
+War Balloon
 Warchief Giant
 Wargate
 Warmonger Hellkite
