@@ -7,7 +7,7 @@ One item is one piece of about 15 minutes; the commit that finishes it deletes i
 ## Status
 
 - Built: foundations, card data, the engine core, protocol and server, game flow, the web client and the deck builder (M0 to M2), and Commander in the engine, server and lobby (M4).
-- In progress: the card system and its coverage tail (M3, M6): 2,131 of the 6,429 stored precon cards (33.1%) and 59.9% of the copies are Verified; the open pieces are a flat long tail that frees a few cards each.
+- In progress: the card system and its coverage tail (M3, M6): 2,165 of the 6,429 stored precon cards (33.7%) and 60.3% of the copies are Verified; the open pieces are a flat long tail that frees a few cards each.
 - Not started: the web for the final card-system types (M5), the product pages (M7), polish and deploy (M8).
 
 ## Order of work
@@ -75,7 +75,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] (n1d5) Day and night effects: the DSL has no node for "it becomes day" or "if it's neither day nor night" (`Effect` that sets the designation, `Condition` on it), the engine runs them, and the compiler reads their sentences with goldens
 - [~] (n2) (branch n2-face-down) Face-down objects, remaining: manifest and cloak (a `FaceDown` kind each), morph costs with a part besides mana (Fathom Seer, Gift of Doom) or an {X} (Bane of the Living), and the reveal of a face-down permanent that returns to a hand or library
 - [ ] (o2c) A storm trigger or copy effect that resolves after its spell has left the stack copies it from last known information (the snapshot keeps the announced choices)
-- [ ] (o2e) The compiler and engine read the copy wordings left: the cast trigger of the card itself ("When you cast this spell", a `SpellCast` of `This` from the stack) that holds back the storm cards whose copy count now reads (Echo Storm, Empyrial Storm, Fury Storm, Hatut Zeraze Strike Force, Skull Storm, Genesis Storm), the exceptions "isn't legendary" (Helm of the Host, Living Laser, Quantum Misalignment, Tempestra, Loki, the Deceiver) and "loses all other card types" (Imprisoned in the Moon, Espers to Magicite, Imposter Mech) as a `Modification` that removes a supertype or sets the types, "when you next cast" (Galvanic Iteration, Solar Array, Magus Lucea Kane, Thunderclap Drake) as a delayed trigger on a cast, and the spells "that's two or more colors" (Ancient Cornucopia) and "noncreature or Dragon" (Firespitter Whelp)
+- [~] (o2e) (branch o2e-cast-self) The compiler and engine read the copy wordings left: the cast trigger of the card itself ("When you cast this spell", a `SpellCast` of `This` from the stack) that holds back the storm cards whose copy count now reads (Echo Storm, Empyrial Storm, Fury Storm, Hatut Zeraze Strike Force, Skull Storm, Genesis Storm), the exceptions "isn't legendary" (Helm of the Host, Living Laser, Quantum Misalignment, Tempestra, Loki, the Deceiver) and "loses all other card types" (Imprisoned in the Moon, Espers to Magicite, Imposter Mech) as a `Modification` that removes a supertype or sets the types, "when you next cast" (Galvanic Iteration, Solar Array, Magus Lucea Kane, Thunderclap Drake) as a delayed trigger on a cast, and the spells "that's two or more colors" (Ancient Cornucopia) and "noncreature or Dragon" (Firespitter Whelp)
 - [ ] (o1d) A transformed permanent that dies reads its trigger from the face it showed, and a static that a copy granted reads it from the copy when the copy left in the same batch (last known abilities, as (o1c) does for a copy that dies)
 
 ### Attachments
@@ -109,7 +109,7 @@ The server is settled first, then the web is built once against the final types.
 ## M6 Coverage
 
 ### Target
-- [ ] Target: every stored card Verified, or as near as the rules allow; `mtg-cli coverage` (compile first) ranks the blockers, each piece below states the cards it frees, and after each round `compile` and `coverage` are re-run and the numbers recorded here (2,131 of the 6,429 stored precon cards, 33.1%, and 59.9% of the copies are Verified)
+- [ ] Target: every stored card Verified, or as near as the rules allow; `mtg-cli coverage` (compile first) ranks the blockers, each piece below states the cards it frees, and after each round `compile` and `coverage` are re-run and the numbers recorded here (2,165 of the 6,429 stored precon cards, 33.7%, and 60.3% of the copies are Verified)
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
 
 ### Mana and costs
