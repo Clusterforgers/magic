@@ -785,6 +785,12 @@ pub fn cost_paid(r: &mut Reader<'_>, spell: bool) -> Option<Condition> {
     if r.words("the gift was promised") {
         return Some(Condition::AdditionalCostPaid);
     }
+    // A card with two kickers names the one that was paid: "it was kicked with its {W} kicker".
+    if !spell && r.words("it was kicked with its") {
+        let cost = super::costs::cost(r)?;
+        r.need("kicker")?;
+        return Some(Condition::KickedWith(cost));
+    }
     if spell {
         r.source().then_some(())?;
         r.punct('\'').then_some(())?;
@@ -802,6 +808,10 @@ pub fn cost_paid(r: &mut Reader<'_>, spell: bool) -> Option<Condition> {
 pub fn cost_paid_text(condition: &Condition, spell: bool) -> Option<String> {
     if *condition == Condition::AdditionalCostPaid {
         return Some("the gift was promised".to_owned());
+    }
+    if let Condition::KickedWith(cost) = condition {
+        let cost = super::costs::text(cost)?;
+        return (!spell).then(|| format!("it was kicked with its {cost} kicker"));
     }
     let Condition::CastWith(way) = condition else {
         return None;

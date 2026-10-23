@@ -197,6 +197,8 @@ struct Walker<'a> {
     path: Vec<String>,
     scope: Scope,
     has_kicker: bool,
+    /// The costs of the card's Kicker keywords: what `KickedWith` may name.
+    kickers: Vec<Cost>,
     /// Whether the card prints an optional additional cost ("As an additional cost to cast this spell, you may ...").
     has_additional_cost: bool,
     /// Whether the cost being walked takes objects the effects can name (`Ref::Paid`): a part that picks, or a required additional cost that does.
@@ -231,6 +233,7 @@ impl<'a> Walker<'a> {
             path: Vec::new(),
             scope: Scope::default(),
             has_kicker: false,
+            kickers: Vec::new(),
             has_additional_cost: false,
             pays_objects: false,
             counts_x: false,
@@ -593,6 +596,12 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "Kicked");
                 if !self.has_kicker {
                     self.problem("`Kicked` needs a Kicker or Multikicker keyword on the card");
+                }
+            }
+            Condition::KickedWith(cost) => {
+                self.uses("Condition", "KickedWith");
+                if !self.kickers.contains(cost) {
+                    self.problem("`KickedWith` needs a Kicker keyword with that cost on the card");
                 }
             }
             Condition::AdditionalCostPaid => {
@@ -2588,6 +2597,13 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
     walker.has_kicker = card
         .abilities()
         .any(|(_, a)| matches!(a, Ability::Keyword(k) if k.is_kicker()));
+    walker.kickers = card
+        .abilities()
+        .filter_map(|(_, a)| match a {
+            Ability::Keyword(Keyword::Kicker(cost)) => Some(cost.clone()),
+            _ => None,
+        })
+        .collect();
     walker.has_additional_cost = card.abilities().any(|(_, a)| match a {
         Ability::AdditionalCost { required, .. } => !required,
         Ability::Keyword(keyword) => keyword.has_additional_cost(),
@@ -3489,6 +3505,10 @@ mod tests {
         r#"{"Spell":{"effects":[{"If":{"condition":"Kicked","then":[{"Draw":{}}]}}]}}"#,
         &["Ability.Spell", "Condition.Kicked", "Effect.Draw", "Effect.If"]
     )]
+    #[case::being_kicked_with_one_cost(
+        r#"{"Spell":{"effects":[{"If":{"condition":{"KickedWith":"{W}"},"then":[{"Draw":{}}]}}]}}"#,
+        &["Ability.Spell", "Condition.KickedWith", "Effect.Draw", "Effect.If"]
+    )]
     #[case::the_number_of_kicks(
         r#"{"Spell":{"effects":[{"Draw":{"count":"Kicks"}}]}}"#,
         &["Ability.Spell", "Amount.Kicks", "Effect.Draw"]
@@ -3578,6 +3598,10 @@ mod tests {
     #[case::kicked_without_kicker(
         r#"{"Spell":{"effects":[{"If":{"condition":"Kicked","then":[{"Draw":{}}]}}]}}"#,
         "`Kicked` needs a Kicker"
+    )]
+    #[case::kicked_with_a_cost_no_kicker_has(
+        r#"{"Spell":{"effects":[{"If":{"condition":{"KickedWith":"{W}"},"then":[{"Draw":{}}]}}]}}"#,
+        "`KickedWith` needs a Kicker keyword with that cost"
     )]
     #[case::kicks_without_kicker(
         r#"{"Spell":{"effects":[{"Draw":{"count":"Kicks"}}]}}"#,

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "38ee748d-adcd-41df-9b23-d2a34829784c",
+  "name": "Stormscape Battlemage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stormscape Battlemage",
+      "oracle_fingerprint": "63beffb57976a6fa529d6e6b1976e76f",
+      "abilities": [
+        { "Keyword": { "Kicker": "{W}" } },
+        { "Keyword": { "Kicker": "{2}{B}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "KickedWith": "{W}" },
+            "effects": [{ "GainLife": { "amount": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "KickedWith": "{2}{B}" },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

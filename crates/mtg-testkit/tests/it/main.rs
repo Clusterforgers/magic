@@ -190,6 +190,7 @@ mod keywords_snapshots;
 mod keywords_triggers;
 mod keywords_triggers_fuzz;
 mod kicker;
+mod kicker_either;
 mod lands_and_sickness;
 mod layers;
 mod layers_fuzz;

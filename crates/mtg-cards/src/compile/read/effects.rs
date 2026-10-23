@@ -212,11 +212,14 @@ fn regeneration(r: &mut Reader<'_>, effects: &mut [Effect]) -> Option<()> {
         return None;
     };
     let single = matches!(what, Ref::Target(_)) && r.targets.first()?.bounds.is_one();
-    r.need(if single {
-        "it can't be regenerated"
-    } else {
-        "they can't be regenerated"
-    })?;
+    // One creature destroyed may be called "that creature" (Stormscape Battlemage).
+    if !(single && r.words("that creature can't be regenerated")) {
+        r.need(if single {
+            "it can't be regenerated"
+        } else {
+            "they can't be regenerated"
+        })?;
+    }
     if !r.sentence_end() || !*regenerate {
         return None;
     }

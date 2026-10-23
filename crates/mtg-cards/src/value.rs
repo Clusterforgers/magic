@@ -8,6 +8,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use mtg_core::color::Color;
 use mtg_core::mana::ManaType;
 
+use crate::cost::Cost;
 use crate::refs::{Ref, Selector};
 
 /// A characteristic of an object that has a number.
@@ -550,6 +551,9 @@ pub enum Condition {
     },
     /// The spell was kicked (any kicker cost was paid); a permanent and its abilities read the spell it came from.
     Kicked,
+    /// The spell was kicked with this one of its kicker costs ('Kicker {W} and/or {2}{B}'): "if it was kicked with its {W}
+    /// kicker"; a permanent and its abilities read the spell it came from.
+    KickedWith(Cost),
     /// The optional additional cost of the spell ("As an additional cost to cast this spell, you may ...") was paid; a
     /// permanent and its abilities read the spell it came from.
     AdditionalCostPaid,

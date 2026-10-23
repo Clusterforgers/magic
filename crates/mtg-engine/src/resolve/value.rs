@@ -19,7 +19,7 @@ use thiserror::Error;
 
 use super::share::{OUTSIDE_A_DIVISION, Share};
 use crate::abilities::Cause;
-use crate::announce::payments;
+use crate::announce::{kicked_with, payments};
 use crate::characteristics::{Characteristics, characteristics, controller_of, seen_as};
 use crate::choose::legal_from;
 use crate::choose::{Choices, Target};
@@ -1311,6 +1311,10 @@ impl<'a> Scope<'a> {
                 holds
             }
             Condition::Kicked => self.payments(OptionalKind::Kicker) > 0,
+            Condition::KickedWith(cost) => self
+                .state
+                .object(self.source.id)
+                .is_some_and(|source| kicked_with(source.card(), self.paid_costs(), cost)),
             Condition::AdditionalCostPaid => {
                 self.payments(OptionalKind::Additional) + self.payments(OptionalKind::Gift) > 0
             }
