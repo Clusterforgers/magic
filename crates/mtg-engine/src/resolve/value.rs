@@ -615,6 +615,19 @@ impl<'a> Scope<'a> {
         Ok(true)
     }
 
+    /// Whether the object is a card in exile that one of the permanents the reference names hid face down (hideaway).
+    fn exiled_with(&self, named: &Ref, reference: ObjectRef) -> Result<bool, ResolveError> {
+        let hidden = self
+            .state
+            .object(reference.id)
+            .filter(|card| card.counter() == reference.counter && card.zone() == Zone::Exile)
+            .and_then(GameObject::face_down);
+        match hidden {
+            Some(FaceDown::Hideaway { by }) => Ok(self.objects(named)?.contains(&by)),
+            _ => Ok(false),
+        }
+    }
+
     /// Whether the object shares a subtype (its printed ones included) with one of the objects the reference names.
     fn shares_subtype(&self, named: &Ref, seen: &Seen<'_>) -> Result<bool, ResolveError> {
         for other in self.objects(named)? {
@@ -652,14 +665,7 @@ impl<'a> Scope<'a> {
             Pred::Other => reference.id != self.source.id,
             Pred::Is(named) => self.objects(named)?.contains(&reference),
             Pred::SharesSubtype(named) => self.shares_subtype(named, seen)?,
-            Pred::ExiledWith(named) => match state
-                .object(reference.id)
-                .filter(|card| card.counter() == reference.counter && card.zone() == Zone::Exile)
-                .and_then(GameObject::face_down)
-            {
-                Some(FaceDown::Hideaway { by }) => self.objects(named)?.contains(&by),
-                _ => false,
-            },
+            Pred::ExiledWith(named) => self.exiled_with(named, reference)?,
             Pred::Type(card_type) => seen.chars.types.contains(*card_type),
             Pred::Supertype(supertype) => seen
                 .card

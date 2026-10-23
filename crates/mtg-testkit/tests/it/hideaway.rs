@@ -68,7 +68,7 @@ fn settle(driver: &mut Driver, hide: &str, yes: bool) -> Result<Vec<String>, Scr
 /// Seat 0 holds Mosswort Bridge and a Forest, and has a Forest and two creatures of `powers` on the battlefield.
 fn bridge_table(
     seats: usize,
-    library: Vec<Arc<CardDefinition>>,
+    library: &[Arc<CardDefinition>],
     powers: [i32; 2],
 ) -> Result<Driver, ScriptError> {
     let mut table = lands(1, forest);
@@ -82,7 +82,7 @@ fn bridge_table(
             scenario.library(
                 seat,
                 if seat == 0 {
-                    library.clone()
+                    library.to_vec()
                 } else {
                     self::library(vec![], 4)
                 },
@@ -111,7 +111,7 @@ fn the_permanent_hides_one_of_the_top_four_face_down_and_the_others_go_to_the_bo
 ) {
     let mut driver = bridge_table(
         seats,
-        library(
+        &library(
             vec![free_creature("Hidden", 2, 2), forest(), forest(), forest()],
             0,
         ),
@@ -170,7 +170,7 @@ fn a_short_library_is_looked_at_whole_and_an_empty_one_hides_nothing(
     let pads: Vec<_> = (0..cards)
         .map(|i| free_creature(&format!("Short {i}"), 1, 1))
         .collect();
-    let mut driver = bridge_table(2, pads, [5, 5]).unwrap();
+    let mut driver = bridge_table(2, &pads, [5, 5]).unwrap();
     driver.play_land("Mosswort Bridge").unwrap();
     settle(&mut driver, "none", true).unwrap();
     let state = driver.state();
@@ -199,7 +199,7 @@ fn activate(
     land_first: bool,
 ) -> Outcome {
     let name = hidden.name.clone();
-    let mut driver = bridge_table(seats, library(vec![hidden], 3), powers).unwrap();
+    let mut driver = bridge_table(seats, &library(vec![hidden], 3), powers).unwrap();
     driver.play_land("Mosswort Bridge").unwrap();
     settle(&mut driver, &name, true).unwrap();
     let again = u32::try_from(seats).unwrap() + 1;
@@ -265,14 +265,14 @@ fn the_hidden_card_is_played_or_cast_free_only_while_the_condition_holds(
 
 fn forest_named(name: &str) -> Arc<CardDefinition> {
     let mut land = (*forest()).clone();
-    land.name = name.to_owned();
+    name.clone_into(&mut land.name);
     Arc::new(land)
 }
 
 #[test]
 fn the_link_is_lost_when_the_permanent_leaves_and_the_card_stays_hidden() {
     let mut driver =
-        bridge_table(2, library(vec![free_creature("Hidden", 2, 2)], 3), [5, 5]).unwrap();
+        bridge_table(2, &library(vec![free_creature("Hidden", 2, 2)], 3), [5, 5]).unwrap();
     driver.play_land("Mosswort Bridge").unwrap();
     settle(&mut driver, "Hidden", true).unwrap();
     let bridge = driver.id_of("Mosswort Bridge").unwrap();
