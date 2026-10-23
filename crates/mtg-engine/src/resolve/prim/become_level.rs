@@ -127,13 +127,16 @@ mod tests {
             .unwrap();
         }
         let json = format!(r#"{{"BecomeLevel":{{"level":{level}}}}}"#);
-        assert!(events(run_with(&game, &json)).is_empty());
+        assert_eq!(events(run_with(&game, &json)).len(), 0);
     }
 
     #[test]
     fn a_source_that_has_left_the_battlefield_does_nothing() {
         let game = game(false);
-        assert!(events(run_with(&game, r#"{"BecomeLevel":{"level":2}}"#)).is_empty());
+        assert_eq!(
+            events(run_with(&game, r#"{"BecomeLevel":{"level":2}}"#)).len(),
+            0
+        );
     }
 
     #[test]

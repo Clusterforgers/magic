@@ -31,6 +31,7 @@ mod choice_fuzz;
 mod choose_cards;
 mod choose_decisions;
 mod chosen_color_lands;
+mod class;
 mod combat_damage;
 mod combat_declarations;
 mod combat_forecast;

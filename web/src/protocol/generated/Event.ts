@@ -561,7 +561,19 @@ object: ObjectId,
 /**
  * Its controller.
  */
-player: PlayerId, } } | { "TurnedFaceUp": { 
+player: PlayerId, } } | { "ClassLevelGained": { 
+/**
+ * The Class that gained the level.
+ */
+object: ObjectId, 
+/**
+ * Its controller.
+ */
+player: PlayerId, 
+/**
+ * The level it is now.
+ */
+level: number, } } | { "TurnedFaceUp": { 
 /**
  * The permanent that was turned face up.
  */
