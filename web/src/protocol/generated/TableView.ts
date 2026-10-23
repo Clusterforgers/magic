@@ -3,6 +3,7 @@ import type { CombatForecast } from "./CombatForecast";
 import type { CombatView } from "./CombatView";
 import type { GameResult } from "./GameResult";
 import type { HouseRules } from "./HouseRules";
+import type { ObjectId } from "./ObjectId";
 import type { PlayerId } from "./PlayerId";
 import type { PlayerView } from "./PlayerView";
 import type { PriorityView } from "./PriorityView";
@@ -49,9 +50,14 @@ priority: PriorityView | null,
  */
 players: Array<PlayerView>, 
 /**
- * The shared battlefield.
+ * The shared battlefield: the permanents that are phased in.
  */
 battlefield: ZoneView, 
+/**
+ * The permanents that are phased out (CR 702.26): still on the battlefield, treated as though they don't exist, and
+ * public to every seat; left out while there are none. Their objects have the zone `PhasedOut`.
+ */
+phased_out?: Array<ObjectId>, 
 /**
  * The stack, top last.
  */

@@ -41,19 +41,31 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
     let active = state.active_player();
     match step {
         Step::Untap => {
-            let mut events: Vec<Event> = state
-                .zone(Zone::Battlefield)
+            // Phasing comes first (CR 502.1): what phases in untaps with the rest.
+            let mut events =
+                active.map_or_else(Vec::new, |active| crate::phasing::in_events(state, active));
+            let coming: Vec<_> = events
                 .iter()
-                .filter(|id| {
-                    active.is_some()
-                        && controller_of(state, **id) == active
-                        && state
-                            .object(**id)
-                            .and_then(GameObject::permanent)
-                            .is_some_and(PermanentState::tapped)
+                .filter_map(|event| match event {
+                    Event::PermanentPhasedIn { object } => Some(*object),
+                    _ => None,
                 })
-                .map(|id| Event::PermanentUntapped { object: *id })
                 .collect();
+            events.extend(
+                state
+                    .zone(Zone::Battlefield)
+                    .iter()
+                    .chain(&coming)
+                    .filter(|id| {
+                        active.is_some()
+                            && controller_of(state, **id) == active
+                            && state
+                                .object(**id)
+                                .and_then(GameObject::permanent)
+                                .is_some_and(PermanentState::tapped)
+                    })
+                    .map(|id| Event::PermanentUntapped { object: *id }),
+            );
             events.extend(leave_step(state));
             Progress::Events(events)
         }
@@ -237,7 +249,7 @@ fn pool_emptying(state: &GameState) -> Vec<Event> {
         .flat_map(|p| {
             let (player, amount) = (p.id(), p.mana().total());
             let mut events = vec![Event::ManaPoolEmptied { player }];
-            if burn && p.is_in_game() {
+            if burn && p.is_in_game() && !crate::rules::life_total_cant_change(state, player) {
                 events.push(Event::ManaBurned { player, amount });
                 events.push(Event::LifeLost { player, amount });
             }

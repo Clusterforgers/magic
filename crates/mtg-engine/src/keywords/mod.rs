@@ -639,6 +639,11 @@ pub fn player_keywords(state: &GameState, id: PlayerId) -> Vec<&Keyword> {
             held.push(keyword);
         }
     }
+    for keyword in crate::rules::granted_player_keywords(state, id) {
+        if !held.contains(&keyword) {
+            held.push(keyword);
+        }
+    }
     held
 }
 

@@ -195,7 +195,7 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
         // Only the top card of a library may be cast, by a permission.
         Zone::Library(owner) => owner == player && state.zone(zone).last() == Some(&id),
         Zone::Exile => true,
-        Zone::Battlefield | Zone::Stack => false,
+        Zone::Battlefield | Zone::PhasedOut | Zone::Stack => false,
     };
     if !allowed {
         return Vec::new();

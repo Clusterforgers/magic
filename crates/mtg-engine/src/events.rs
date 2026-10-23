@@ -176,6 +176,23 @@ pub enum Event {
         /// The permanent.
         object: ObjectId,
     },
+    /// A permanent phased out (CR 702.26): it is treated as though it does not exist until it phases in. Nothing
+    /// leaves the battlefield and nothing triggers.
+    PermanentPhasedOut {
+        /// The permanent.
+        object: ObjectId,
+        /// The player who controlled it, who it phases in for during their untap step.
+        controller: PlayerId,
+        /// It went with the permanent it is attached to, and phases in with that permanent.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+        indirect: bool,
+    },
+    /// A permanent phased in (CR 702.26): it exists again, as the same object, with everything it had.
+    PermanentPhasedIn {
+        /// The permanent.
+        object: ObjectId,
+    },
     /// Mana was added to a pool.
     ManaAdded {
         /// Whose pool.
@@ -877,6 +894,8 @@ impl Event {
             | Event::Flipped { object }
             | Event::PermanentTapped { object }
             | Event::PermanentUntapped { object }
+            | Event::PermanentPhasedOut { object, .. }
+            | Event::PermanentPhasedIn { object }
             | Event::Regenerated { object }
             | Event::DamageRemoved { object }
             | Event::CardDrawn { object, .. }

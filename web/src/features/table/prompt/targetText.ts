@@ -72,6 +72,7 @@ function placeWords(object: ObjectView, seatName: SeatNamer): string {
   if (zone === 'Battlefield') return seatName(object.controller)
   if (zone === 'Stack') return `on the stack, ${seatName(object.controller)}`
   if (zone === 'Exile') return 'in exile'
+  if (zone === 'PhasedOut') return `phased out, ${seatName(object.controller)}`
   if ('Graveyard' in zone) return `in ${seatName(zone.Graveyard)}'s graveyard`
   if ('Hand' in zone) return `in ${seatName(zone.Hand)}'s hand`
   if ('Library' in zone) return `in ${seatName(zone.Library)}'s library`

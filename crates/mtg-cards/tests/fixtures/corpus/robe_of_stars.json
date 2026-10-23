@@ -1,0 +1,25 @@
+{
+  "id": "b2992175-5499-4a83-9ff2-03c7c34819c3",
+  "oracle_id": "416f49e2-feb1-43e7-befc-b0e02181b202",
+  "name": "Robe of Stars",
+  "lang": "en",
+  "released_at": "2021-07-23",
+  "layout": "normal",
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +0/+3.\nAstral Projection — {1}{W}: Equipped creature phases out. (Treat it and anything attached to it as though they don't exist until its controller's next turn.)\nEquip {1}",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Equip"
+  ],
+  "set": "afc",
+  "collector_number": "11",
+  "digital": false,
+  "rarity": "rare"
+}
