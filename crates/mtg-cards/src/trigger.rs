@@ -316,6 +316,18 @@ pub enum TriggerPattern {
         /// The creature that becomes monstrous.
         what: Selector,
     },
+    /// A Vehicle matching the selector becomes crewed, a crew ability of it resolved ("whenever this Vehicle becomes
+    /// crewed", CR 702.122); `Triggering` is its controller.
+    BecomesCrewed {
+        /// The Vehicle that becomes crewed.
+        what: Selector,
+    },
+    /// A Mount matching the selector becomes saddled, a saddle ability of it resolved ("whenever this creature becomes
+    /// saddled", CR 702.171); `Triggering` is its controller.
+    BecomesSaddled {
+        /// The Mount that becomes saddled.
+        what: Selector,
+    },
     /// A permanent matching the selector is turned face up ("when this creature is turned face up", CR 702.37e); `Triggering` is
     /// its controller.
     TurnedFaceUp {
@@ -423,6 +435,12 @@ pub enum ReplaceWhen {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         to: Option<ZoneKind>,
     },
+    /// A permanent matching the selector would be destroyed (CR 701.8): by an effect that destroys, or by lethal damage or
+    /// deathtouch; not sacrificed, put into a graveyard for zero toughness, or exiled.
+    Destroyed {
+        /// The permanent that would be destroyed.
+        what: Selector,
+    },
     /// A card matching the selector would be discarded (CR 701.9): the move from a hand to the graveyard that a discard is.
     Discarded {
         /// The card that would be discarded.
@@ -510,6 +528,8 @@ pub enum ReplaceBy {
     Choose(EntersChoice),
     /// As the permanent enters, its controller may pay this much life; if they don't (or can't) it enters tapped.
     PayLifeOrTapped(u32),
+    /// Umbra armor (CR 702.89): all damage is removed from the permanent instead, and the object with the ability is destroyed.
+    UmbraArmor,
     /// As the permanent enters, its controller may have it enter as a copy of a permanent on the battlefield that
     /// matches the selector (CR 707.9, 614.1c), with these exceptions in its copiable values ("except it's an
     /// Illusion in addition to its other types").

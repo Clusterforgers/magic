@@ -105,6 +105,7 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         }
     );
     r.cast_spell = casts_a_spell(&when);
+    r.cast_itself = triggers::cast_itself(&when);
     r.subject = triggers::event_subject(&when);
     r.attacker = matches!(&when, TriggerPattern::Attacks { what } if *what == Selector::this());
     r.attacked = matches!(
@@ -163,7 +164,9 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     let limit = once_each_turn(r);
     // A card cycled is in its owner's graveyard when its own ability triggers, and a card that returns itself from the
     // graveyard has its ability there.
-    let from = if triggers::cycled_itself(&when)
+    let from = if triggers::cast_itself(&when) {
+        ZoneKind::Stack
+    } else if triggers::cycled_itself(&when)
         || triggers::graveyard_itself(&when)
         || effects::returns_itself(&effects)
     {
@@ -256,6 +259,7 @@ pub fn activated(r: &mut Reader<'_>) -> Option<Ability> {
     r.punct(':').then_some(())?;
     // An X in the cost is the payer's to choose, so the effects may use it.
     r.x_free |= cost.has_x();
+    r.paid |= costs::takes_objects(&cost);
     r.subject = Some(Ref::This);
     // A card that exiles itself from the graveyard or returns itself from there has its ability in the graveyard.
     let in_graveyard = r.from_graveyard || effects::returns_from_graveyard(r);

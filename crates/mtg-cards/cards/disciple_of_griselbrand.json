@@ -1,0 +1,21 @@
+{
+  "oracle_id": "2d92a035-dd7a-4426-a8c0-f04e0b836dad",
+  "name": "Disciple of Griselbrand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disciple of Griselbrand",
+      "oracle_fingerprint": "34151e8e27ac1350572858d99bc449f8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "GainLife": { "amount": { "Stat": { "of": "Paid", "stat": "Toughness" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -22,6 +22,7 @@ use crate::modify::Modification;
 use crate::support::{PrintedCard, PrintedFace, has_rules_text, oracle_fingerprint};
 
 pub use classify::ClauseKind;
+pub use keywords::read as read_keyword;
 pub use read::{render_ability, render_mode, render_variants, same_text, static_pair_texts};
 
 /// One clause of a face's oracle text, read or not.
@@ -329,6 +330,17 @@ fn own_names(face: &PrintedFace) -> Vec<String> {
     names
 }
 
+/// Whether a line of text is a required additional cost that takes objects out of their zones.
+fn requires_a_pick(line: &str) -> bool {
+    let line = line.to_lowercase();
+    line.strip_prefix("as an additional cost to cast this spell, ")
+        .is_some_and(|cost| {
+            ["sacrifice", "discard", "exile"]
+                .iter()
+                .any(|verb| cost.starts_with(verb))
+        })
+}
+
 /// What the readers take from the face besides its text: the subtypes on its type line, which count as subtypes
 /// whether or not the rules' list has them, and the power and toughness when they are printed as numbers.
 fn own_face(face: &PrintedFace) -> read::Own {
@@ -347,6 +359,7 @@ fn own_face(face: &PrintedFace) -> read::Own {
                 .filter_map(|line| clauses::station_header(line).map(|(threshold, _)| threshold))
                 .max()
         }),
+        pays: face.oracle_text.lines().any(requires_a_pick),
     }
 }
 

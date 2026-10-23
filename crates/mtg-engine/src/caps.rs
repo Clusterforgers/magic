@@ -62,6 +62,8 @@ const RUNS: &[&str] = &[
     "Trigger.Connived",
     "Trigger.Amassed",
     "Trigger.BecomesMonstrous",
+    "Trigger.BecomesCrewed",
+    "Trigger.BecomesSaddled",
     "Trigger.BecomesLevel",
     "Trigger.TurnedFaceUp",
     "Trigger.Mutates",
@@ -154,6 +156,7 @@ const RUNS: &[&str] = &[
     "Effect.Bolster",
     "Effect.Fabricate",
     "Effect.Learn",
+    "Effect.Crewed",
     "Effect.BecomeMonarch",
     "Condition.Monarch",
     "Condition.MonarchAtTurnStart",
@@ -193,6 +196,8 @@ const RUNS: &[&str] = &[
     "Mod.SwitchPT",
     "Mod.AddType",
     "Mod.RemoveType",
+    "Mod.SetTypes",
+    "Mod.RemoveSupertype",
     "Mod.AddSubtype",
     "Mod.SetCreatureTypes",
     "Mod.AddAllCreatureTypes",
@@ -376,6 +381,9 @@ const RUNS: &[&str] = &[
     "Keyword.Awaken",
     "Keyword.Gravestorm",
     "Keyword.Sunburst",
+    "Keyword.UmbraArmor",
+    "ReplaceWhen.Destroyed",
+    "ReplaceBy.UmbraArmor",
     "Condition.NewlyControlled",
     "Condition.Level",
     "Rule.CanBeCommander",
@@ -518,6 +526,8 @@ mod tests {
     #[case::switching_power_and_toughness("Mod.SwitchPT", true)]
     #[case::types("Mod.AddType", true)]
     #[case::removed_types("Mod.RemoveType", true)]
+    #[case::set_types("Mod.SetTypes", true)]
+    #[case::removed_supertypes("Mod.RemoveSupertype", true)]
     #[case::subtypes("Mod.AddSubtype", true)]
     #[case::colours("Mod.SetColors", true)]
     #[case::granted_abilities("Mod.GrantAbility", true)]
@@ -626,6 +636,7 @@ mod tests {
     #[case::bolstering("Effect.Bolster", true)]
     #[case::fabricating("Effect.Fabricate", true)]
     #[case::learning("Effect.Learn", true)]
+    #[case::crewing("Effect.Crewed", true)]
     #[case::exploring("Effect.Explore", true)]
     #[case::conniving("Effect.Connive", true)]
     #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]
@@ -680,6 +691,8 @@ mod tests {
     #[case::conniving_triggers("Trigger.Connived", true)]
     #[case::amassing_triggers("Trigger.Amassed", true)]
     #[case::becoming_monstrous_triggers("Trigger.BecomesMonstrous", true)]
+    #[case::becoming_crewed_triggers("Trigger.BecomesCrewed", true)]
+    #[case::becoming_saddled_triggers("Trigger.BecomesSaddled", true)]
     #[case::becoming_a_level_triggers("Trigger.BecomesLevel", true)]
     #[case::turning_face_up_triggers("Trigger.TurnedFaceUp", true)]
     #[case::adapting_triggers("Trigger.Adapted", true)]
@@ -779,6 +792,9 @@ mod tests {
     #[case::awaken("Keyword.Awaken", true)]
     #[case::gravestorm("Keyword.Gravestorm", true)]
     #[case::sunburst("Keyword.Sunburst", true)]
+    #[case::umbra_armor("Keyword.UmbraArmor", true)]
+    #[case::replacing_destruction("ReplaceWhen.Destroyed", true)]
+    #[case::saving_by_umbra_armor("ReplaceBy.UmbraArmor", true)]
     #[case::pairing_attackers_with_players("Rule.MustAttackPlayers", true)]
     #[case::taxing_attackers("Rule.AttackTax", true)]
     #[case::squad("Keyword.Squad", true)]

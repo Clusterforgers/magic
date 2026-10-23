@@ -42,7 +42,9 @@ impl Traits {
 /// What a modification changes in the object it applies to.
 pub(crate) fn writes(modification: &Modification) -> Traits {
     match modification {
-        Modification::AddType(_) | Modification::RemoveType(_) => Traits::TYPES,
+        Modification::AddType(_) | Modification::RemoveType(_) | Modification::SetTypes(_) => {
+            Traits::TYPES.or(Traits::SUBTYPES)
+        }
         Modification::AddSubtype(_)
         | Modification::SetCreatureTypes(_)
         | Modification::AddAllCreatureTypes => Traits::SUBTYPES,
@@ -69,7 +71,9 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
 /// What a modification of the data changes in the object it applies to.
 pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
     match wanted {
-        Wanted::AddType(_) | Wanted::RemoveType(_) => Traits::TYPES,
+        Wanted::AddType(_) | Wanted::RemoveType(_) | Wanted::SetTypes(_) => {
+            Traits::TYPES.or(Traits::SUBTYPES)
+        }
         Wanted::AddSubtype(_) | Wanted::SetCreatureTypes(_) | Wanted::AddAllCreatureTypes => {
             Traits::SUBTYPES
         }
@@ -83,6 +87,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
             Traits::POWER.or(Traits::TOUGHNESS)
         }
         Wanted::GrantAbility(_)
+        | Wanted::RemoveSupertype(_)
         | Wanted::CantAttack
         | Wanted::CantBlock
         | Wanted::CantBeBlocked
@@ -107,6 +112,8 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         Wanted::SwitchPT
         | Wanted::AddType(_)
         | Wanted::RemoveType(_)
+        | Wanted::SetTypes(_)
+        | Wanted::RemoveSupertype(_)
         | Wanted::AddSubtype(_)
         | Wanted::SetCreatureTypes(_)
         | Wanted::AddAllCreatureTypes
