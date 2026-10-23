@@ -88,7 +88,7 @@ fn a_seat_without_a_companion_has_nothing_to_judge_and_one_that_breaks_the_deck_
         None,
         &HouseRules::default(),
     );
-    assert!(none.is_empty());
+    assert_eq!(none.len(), 0);
     let few = &normal_deck()[..40];
     let issues = judged(
         FormatKind::Normal,
