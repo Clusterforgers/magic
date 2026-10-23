@@ -450,6 +450,8 @@ function describePublic(event: Event, n: EventNames): LogLine {
       `${n.seat(event.Mutated.player)} mutates a creature ${event.Mutated.over ? 'over' : 'under'} ${n.card(event.Mutated.object)}`,
     )
   if ('Adapted' in event) return line(`${n.card(event.Adapted.object)} adapts`)
+  if ('ClassLevelGained' in event)
+    return line(`${n.card(event.ClassLevelGained.object)} becomes level ${event.ClassLevelGained.level}`)
   if ('Bolstered' in event) return line(`${n.seat(event.Bolstered.player)} bolsters`)
   if ('AttachedToPlayer' in event) {
     return line(`${n.card(event.AttachedToPlayer.object)} enchants ${n.seat(event.AttachedToPlayer.player)}`)

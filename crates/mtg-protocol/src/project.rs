@@ -274,6 +274,11 @@ impl ObjectView {
                 damage: p.damage(),
                 // Haste excuses it, so the view says whether sickness holds it back, not only when it arrived.
                 summoning_sick: summoning_sick(state, id),
+                level: chars
+                    .subtypes
+                    .iter()
+                    .any(|subtype| subtype.0 == "Class")
+                    .then(|| p.level()),
             }),
             kind: object.kind(),
             source: object.ability().map(|ability| ability.source().id),

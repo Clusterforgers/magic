@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::attack_tax;
 use crate::characteristics::{
-    cant_attack, cant_be_blocked_by, cant_block, characteristics, controller_of,
+    cant_attack, cant_be_blocked_by, cant_block, characteristics, controller_of, goaded_by,
 };
 use crate::decision::{AttackOptions, AttackerOption, BlockOptions, BlockerOption};
 use crate::error::IllegalAnswer;
@@ -252,6 +252,31 @@ fn paired_defender(
         .find(|target| defenders.contains(target))
 }
 
+/// What a goaded creature may attack (CR 701.15): a player other than its goaders when it can attack one, else any of the
+/// `defenders`. `None` for a creature no one goads.
+fn goaded_defenders(
+    state: &GameState,
+    object: ObjectId,
+    defenders: &[AttackTarget],
+) -> Option<Vec<AttackTarget>> {
+    let goaders = goaded_by(state, object);
+    if goaders.is_empty() {
+        return None;
+    }
+    let others: Vec<AttackTarget> = defenders
+        .iter()
+        .copied()
+        .filter(
+            |target| matches!(target, AttackTarget::Player(player) if !goaders.contains(player)),
+        )
+        .collect();
+    Some(if others.is_empty() {
+        defenders.to_vec()
+    } else {
+        others
+    })
+}
+
 /// Every creature `player` may attack with and what each may attack.
 pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptions {
     let defenders = defenders_for(state, player);
@@ -264,7 +289,9 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
             AttackerOption::free(
                 object,
                 paired_defender(state, object, &defenders)
-                    .map_or_else(|| defenders.clone(), |only| vec![only]),
+                    .map(|only| vec![only])
+                    .or_else(|| goaded_defenders(state, object, &defenders))
+                    .unwrap_or_else(|| defenders.clone()),
             )
         })
         .collect::<Vec<_>>();
@@ -282,6 +309,7 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
         .filter(|option| {
             option.free_defender().is_some()
                 && (must_attack(state, option.object)
+                    || !goaded_by(state, option.object).is_empty()
                     || paired_defender(state, option.object, &defenders).is_some())
         })
         .map(|option| option.object)

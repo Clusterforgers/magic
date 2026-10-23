@@ -84,10 +84,10 @@ impl Form {
     }
 
     const fn connector(self) -> &'static str {
-        if matches!(self, Form::All) {
-            "and"
-        } else {
-            "or"
+        match self {
+            Form::All => "and",
+            Form::Targets => "and/or",
+            _ => "or",
         }
     }
 
@@ -470,6 +470,8 @@ enum Noun {
     Subtype(String),
     /// "tokens", after the card types before it: "creature tokens".
     Token,
+    /// "commander": a player's commander, with no card type before it.
+    Commander,
 }
 
 /// The card types before the noun and the noun; "permanent" names no type.
@@ -482,6 +484,12 @@ fn head(r: &mut Reader<'_>, form: Form) -> Option<(Vec<CardType>, Noun)> {
     };
     if let Some(name) = group {
         return Some((Vec::new(), Noun::Subtype(name)));
+    }
+    if let Some(word @ ("commander" | "commanders")) = r.peek_word()
+        && (word == "commanders") == plural
+    {
+        r.skip();
+        return Some((Vec::new(), Noun::Commander));
     }
     let mut types = Vec::new();
     let mut forms = Vec::new();
@@ -520,14 +528,29 @@ fn head(r: &mut Reader<'_>, form: Form) -> Option<(Vec<CardType>, Noun)> {
     }
 }
 
+/// Reads the word that joins two card types: the form's connector, which is the three tokens "and/or" for the targets of a
+/// group ("artifacts and/or enchantments").
+fn connect(r: &mut Reader<'_>, form: Form) -> bool {
+    if form == Form::Targets {
+        return r
+            .attempt(|r| {
+                r.word("and").then_some(())?;
+                r.punct('/').then_some(())?;
+                r.word("or").then_some(())
+            })
+            .is_some();
+    }
+    r.word(form.connector())
+}
+
 /// The words between two card types of a phrase: the form's connector ("artifact or creature"), or a comma with the
 /// connector after it ("artifact, creature, or planeswalker"); reads them when a card type follows.
 fn type_separator(r: &mut Reader<'_>, form: Form) -> bool {
     r.attempt(|r| {
         if r.punct(',') {
-            r.word(form.connector());
+            connect(r, form);
         } else {
-            r.word(form.connector()).then_some(())?;
+            connect(r, form).then_some(())?;
         }
         r.peek_word().and_then(type_noun).map(|_| ())
     })
@@ -637,6 +660,10 @@ pub(super) fn phrase_in(r: &mut Reader<'_>, form: Form, unplaced: bool) -> Optio
                 preds.push(Pred::Token);
                 preds.extend(adjectives);
             }
+            Noun::Commander => {
+                preds.push(Pred::Commander);
+                preds.extend(adjectives);
+            }
         }
         loop {
             if let Some(zone) = zone_suffix(r, form) {
@@ -681,6 +708,21 @@ fn comma_negations(adjectives: Vec<String>) -> Vec<String> {
     words
 }
 
+/// The names of the card types of a phrase, in the plural when the phrase names them alone.
+fn type_words(types: &[CardType], plural: bool) -> Vec<String> {
+    types
+        .iter()
+        .map(|card_type| {
+            let name = type_name(*card_type);
+            if plural {
+                plural_of(name)
+            } else {
+                name.to_owned()
+            }
+        })
+        .collect()
+}
+
 /// A selector as a phrase, the way `phrase` reads it.
 pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     let (spell, preds) = match selector.0.split_first() {
@@ -689,6 +731,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     };
     let (mut adjectives, mut types, mut suffixes) = (Vec::new(), Vec::new(), Vec::new());
     let (mut subtype, mut card, mut token) = (None, false, false);
+    let mut commander = false;
     let mut kinds: Vec<CardType> = Vec::new();
     let mut rest = preds.iter().peekable();
     while let Some(pred) = rest.next() {
@@ -720,6 +763,11 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
                 return None;
             }
             token = true;
+        } else if *pred == Pred::Commander {
+            if commander {
+                return None;
+            }
+            commander = true;
         } else if let Some(found) = type_preds(pred) {
             // A second card type before the noun qualifies it: "artifact creatures".
             if !types.is_empty() {
@@ -739,21 +787,12 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     if (subtype.is_some() && (card || (spell && !plural) || (!types.is_empty() && !qualified)))
         || (spell && card)
         || (token && (spell || card))
+        || (commander && (spell || card || token || subtype.is_some() || !types.is_empty()))
         || (!kinds.is_empty() && !qualified)
     {
         return None;
     }
-    let names: Vec<String> = types
-        .iter()
-        .map(|card_type| {
-            let name = type_name(*card_type);
-            if plural && !spell && !card && !token {
-                plural_of(name)
-            } else {
-                name.to_owned()
-            }
-        })
-        .collect();
+    let names = type_words(&types, plural && !spell && !card && !token);
     let mut words = comma_negations(adjectives);
     words.extend(subtype.map(|name| {
         if plural && !qualified {
@@ -776,6 +815,8 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         words.push(if plural { "spells" } else { "spell" }.to_owned());
     } else if card {
         words.push(if plural { "cards" } else { "card" }.to_owned());
+    } else if commander {
+        words.push(if plural { "commanders" } else { "commander" }.to_owned());
     } else if names.is_empty() && subtype.is_none() {
         words.push(if plural { "permanents" } else { "permanent" }.to_owned());
     }

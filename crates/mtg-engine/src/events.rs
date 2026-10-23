@@ -588,6 +588,15 @@ pub enum Event {
         /// Its controller.
         player: PlayerId,
     },
+    /// A Class became a higher level (CR 716.2): the permanent keeps the level while it stays on the battlefield.
+    ClassLevelGained {
+        /// The Class that gained the level.
+        object: ObjectId,
+        /// Its controller.
+        player: PlayerId,
+        /// The level it is now.
+        level: u32,
+    },
     /// A face-down permanent was turned face up (CR 702.37e), a special action: it shows its card and has its characteristics and
     /// abilities from now on. The counter of a megamorph is the event before it.
     TurnedFaceUp {
@@ -805,6 +814,7 @@ impl Event {
             | Event::Connived { object, .. }
             | Event::Amassed { object, .. }
             | Event::Monstrous { object, .. }
+            | Event::ClassLevelGained { object, .. }
             | Event::TurnedFaceUp { object, .. }
             | Event::Adapted { object, .. }
             | Event::Bolstered { object, .. }

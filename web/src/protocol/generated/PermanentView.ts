@@ -15,4 +15,8 @@ damage: number,
 /**
  * Whether summoning sickness holds it back: it has not been under its controller's control since their turn began and has no haste.
  */
-summoning_sick: boolean, };
+summoning_sick: boolean, 
+/**
+ * The level of a Class (CR 716.2); left out for any other permanent.
+ */
+level?: number, };

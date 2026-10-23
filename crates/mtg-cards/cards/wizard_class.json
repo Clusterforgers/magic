@@ -1,0 +1,47 @@
+{
+  "oracle_id": "36f68aa3-9955-46f1-bc87-497f16ef5222",
+  "name": "Wizard Class",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wizard Class",
+      "oracle_fingerprint": "9cf70bfb462c3e04cf498570ddbc8c01",
+      "abilities": [
+        { "Rule": { "rule": { "NoMaxHandSize": "You" } } },
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesLevel": { "what": ["This"], "level": 2 } },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 2 } },
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{U}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 3 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

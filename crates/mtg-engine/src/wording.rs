@@ -73,6 +73,7 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::Color(color) => adjectives.push(lower(color)),
             Pred::Colorless => adjectives.push("colorless".to_owned()),
             Pred::Token => adjectives.push("token".to_owned()),
+            Pred::Commander => nouns.push("commander".to_owned()),
             Pred::Spell => nouns.push("spell".to_owned()),
             Pred::Ability(AbilityKind::Activated) => nouns.push("activated ability".to_owned()),
             Pred::Ability(AbilityKind::Triggered) => nouns.push("triggered ability".to_owned()),
@@ -459,6 +460,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         ),
         TriggerPattern::BecomesMonstrous { what } => (
             format!("{} becomes monstrous", subject(what)),
+            what.0 == [Pred::This],
+        ),
+        TriggerPattern::BecomesLevel { what, level } => (
+            format!("{} becomes level {level}", subject(what)),
             what.0 == [Pred::This],
         ),
         TriggerPattern::TurnedFaceUp { what } => (
@@ -1312,6 +1317,10 @@ mod tests {
     #[case::this_becomes_monstrous(
         r#"{"BecomesMonstrous":{"what":["This"]}}"#,
         "When it becomes monstrous"
+    )]
+    #[case::this_class_becomes_level_two(
+        r#"{"BecomesLevel":{"what":["This"],"level":2}}"#,
+        "When it becomes level 2"
     )]
     #[case::a_creature_adapts(
         r#"{"Adapted":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#,

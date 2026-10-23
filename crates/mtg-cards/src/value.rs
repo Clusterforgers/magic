@@ -445,6 +445,15 @@ pub enum Condition {
     CitysBlessing(Ref),
     /// The referenced permanents are controlled by the controller and came under their control since their last turn began (echo, CR 702.30a): read in the upkeep, once that turn has begun.
     NewlyControlled(Ref),
+    /// The referenced Class compares to the level this way (CR 716.2): a Class that has gained no level is level 1.
+    Level {
+        /// The Class read; `This` for the Class with the ability.
+        of: Ref,
+        /// How its level compares to `level`.
+        op: Cmp,
+        /// The level compared to.
+        level: u32,
+    },
 }
 
 #[cfg(test)]

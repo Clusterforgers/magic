@@ -144,6 +144,25 @@ pub(crate) fn cant_attack(state: &GameState, id: ObjectId) -> bool {
     })
 }
 
+/// The players that goad the creature `id` (CR 701.15), by an effect that applies to it or by a static ability, in the
+/// order the effects applied: the one place the attack declaration reads this requirement.
+pub(crate) fn goaded_by(state: &GameState, id: ObjectId) -> Vec<PlayerId> {
+    state
+        .object(id)
+        .filter(|object| object.zone() == Zone::Battlefield)
+        .and_then(|object| state.layers().get(object.id()))
+        .map(|held| {
+            held.applied
+                .iter()
+                .filter_map(|applied| match applied.modification {
+                    Modification::Goaded { by } => Some(by),
+                    _ => None,
+                })
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
 /// Whether an effect that applies to `id` says it can't block: the one place the block rules read this restriction.
 pub(crate) fn cant_block(state: &GameState, id: ObjectId) -> bool {
     restricted(state, id, |modification| {

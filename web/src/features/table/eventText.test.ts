@@ -82,6 +82,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   TurnedFaceUp: [{ TurnedFaceUp: { object: 3, player: 1 } }, 'Bo turns Forest face up'],
   Mutated: [{ Mutated: { object: 3, spell: 9, over: true, player: 1 } }, 'Bo mutates a creature over Forest'],
   Adapted: [{ Adapted: { object: 3, player: 1 } }, 'Forest adapts'],
+  ClassLevelGained: [{ ClassLevelGained: { object: 3, player: 1, level: 2 } }, 'Forest becomes level 2'],
   Bolstered: [{ Bolstered: { object: 3, player: 1 } }, 'Bo bolsters'],
   CommanderStayed: [{ CommanderStayed: { object: 3 } }, 'Forest stays where it is'],
   MulliganPhaseEnded: ['MulliganPhaseEnded', 'The mulligan phase ends'],

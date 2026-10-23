@@ -67,6 +67,9 @@ pub enum Modification {
     CantBeBlocked,
     /// The object can't be blocked by creatures the selector matches (a restriction, no layer).
     CantBeBlockedBy(Selector),
+    /// The object is goaded by the controller of the effect or ability (CR 701.15; a restriction, no layer): it attacks
+    /// each combat if able and attacks a player other than the goader if able.
+    Goaded,
 }
 
 impl Modification {
@@ -91,7 +94,8 @@ impl Modification {
             Modification::CantAttack
             | Modification::CantBlock
             | Modification::CantBeBlocked
-            | Modification::CantBeBlockedBy(_) => None,
+            | Modification::CantBeBlockedBy(_)
+            | Modification::Goaded => None,
         }
     }
 }
@@ -270,6 +274,7 @@ mod tests {
     #[case(Modification::CantAttack, None)]
     #[case(Modification::CantBlock, None)]
     #[case(Modification::CantBeBlocked, None)]
+    #[case(Modification::Goaded, None)]
     #[case(Modification::CantBeBlockedBy(Selector(vec![crate::refs::Pred::Type(CardType::Creature)])), None)]
     fn layers_follow_the_kind(#[case] modification: Modification, #[case] layer: Option<&str>) {
         assert_eq!(modification.layer(), layer);

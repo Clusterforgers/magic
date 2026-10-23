@@ -142,6 +142,12 @@ pub enum Modification {
         /// What "this" is for the selector.
         source: ObjectRef,
     },
+    /// The object is goaded by `by` (CR 701.15): a restriction with no layer that the attack declaration reads; it attacks
+    /// each combat if able and attacks a player other than the goader if able.
+    Goaded {
+        /// The goader.
+        by: PlayerId,
+    },
 }
 
 impl Modification {
@@ -165,7 +171,8 @@ impl Modification {
             Modification::CantAttack
             | Modification::CantBlock
             | Modification::CantBeBlocked
-            | Modification::CantBeBlockedBy { .. } => return None,
+            | Modification::CantBeBlockedBy { .. }
+            | Modification::Goaded { .. } => return None,
         })
     }
 
@@ -213,7 +220,8 @@ impl Modification {
             | Modification::CantAttack
             | Modification::CantBlock
             | Modification::CantBeBlocked
-            | Modification::CantBeBlockedBy { .. } => {}
+            | Modification::CantBeBlockedBy { .. }
+            | Modification::Goaded { .. } => {}
         }
     }
 }

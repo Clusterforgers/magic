@@ -1,0 +1,37 @@
+{
+  "oracle_id": "4e183439-17d2-47ff-9d99-5e22821d91e3",
+  "name": "Flawless Maneuver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flawless Maneuver",
+      "oracle_fingerprint": "74d73617ef7ef229b0440157c446ec26",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["Commander", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

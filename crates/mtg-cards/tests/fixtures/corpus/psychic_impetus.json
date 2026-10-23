@@ -1,0 +1,27 @@
+{
+  "id": "ef419666-2bb5-40bc-90bf-c1c4d7793141",
+  "oracle_id": "47214acc-08c4-4dcb-9a8b-09196ce41045",
+  "name": "Psychic Impetus",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clu",
+  "collector_number": "92",
+  "rarity": "common",
+  "released_at": "2024-02-23",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature gets +2/+2 and is goaded. (It attacks each combat if able and attacks a player other than you if able.)\nWhenever enchanted creature attacks, you scry 2.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Goad",
+    "Enchant",
+    "Scry"
+  ]
+}

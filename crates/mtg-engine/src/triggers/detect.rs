@@ -133,6 +133,12 @@ enum Happened {
     Amassed { player: PlayerId },
     /// A creature became monstrous.
     Monstrous { object: ObjectId, player: PlayerId },
+    /// A Class became a higher level.
+    ClassLevel {
+        object: ObjectId,
+        player: PlayerId,
+        level: u32,
+    },
     /// A permanent was turned face up.
     TurnedFaceUp { object: ObjectId, player: PlayerId },
     /// A mutating creature spell merged with a creature.
@@ -613,6 +619,15 @@ fn about_players_and_permanents(
             object: *object,
             player: *player,
         }),
+        Event::ClassLevelGained {
+            object,
+            player,
+            level,
+        } => found.push(Happened::ClassLevel {
+            object: *object,
+            player: *player,
+            level: *level,
+        }),
         Event::TurnedFaceUp { object, player } => found.push(Happened::TurnedFaceUp {
             object: *object,
             player: *player,
@@ -942,6 +957,18 @@ fn matching_permanents(
         ) => {
             let actor = object(*actor)?;
             picks(what, actor)?
+                .then(|| cause(state, vec![Target::Player(*player), Target::Object(actor)]))
+        }
+        (
+            TriggerPattern::BecomesLevel { what, level },
+            Happened::ClassLevel {
+                object: actor,
+                player,
+                level: reached,
+            },
+        ) => {
+            let actor = object(*actor)?;
+            (level == reached && picks(what, actor)?)
                 .then(|| cause(state, vec![Target::Player(*player), Target::Object(actor)]))
         }
         (TriggerPattern::Tapped { what }, Happened::Tapped { object: tapped })

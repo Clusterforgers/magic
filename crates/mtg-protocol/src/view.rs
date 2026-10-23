@@ -43,6 +43,10 @@ pub struct PermanentView {
     pub damage: u32,
     /// Whether summoning sickness holds it back: it has not been under its controller's control since their turn began and has no haste.
     pub summoning_sick: bool,
+    /// The level of a Class (CR 716.2); left out for any other permanent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub level: Option<u32>,
 }
 
 /// That a permanent is a copy of another object (CR 707): its name, types and abilities shown are the copiable values of

@@ -377,6 +377,11 @@ fn condition() -> impl Strategy<Value = Condition> {
         leaf_ref().prop_map(Condition::Monarch),
         leaf_ref().prop_map(Condition::CitysBlessing),
         leaf_ref().prop_map(Condition::NewlyControlled),
+        (leaf_ref(), 1u32..=3).prop_map(|(of, level)| Condition::Level {
+            of,
+            op: Cmp::Ge,
+            level
+        }),
     ]
     .prop_recursive(2, 8, 2, |inner| {
         prop_oneof![
@@ -551,6 +556,8 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
         (selector(), proptest::option::of(counter()))
             .prop_map(|(what, counter)| TriggerPattern::CountersRemoved { what, counter }),
         (1u32..=10).prop_map(|number| TriggerPattern::Chapter { number }),
+        (selector(), 2u32..=3)
+            .prop_map(|(what, level)| TriggerPattern::BecomesLevel { what, level }),
         (selector(), selector()).prop_map(|(what, to)| TriggerPattern::Attached { what, to }),
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::Cycled { what, by }),
     ];
@@ -802,6 +809,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 count
             }),
             amount().prop_map(|count| Effect::Monstrosity { count }),
+            (2u32..=3).prop_map(|level| Effect::BecomeLevel { level }),
             amount().prop_map(|count| Effect::Adapt { count }),
             amount().prop_map(|count| Effect::Bolster { count }),
             reference().prop_map(|what| Effect::Explore { what }),

@@ -10,6 +10,7 @@ mod add_mana;
 mod amass;
 mod attach;
 mod become_copy;
+mod become_level;
 mod become_monarch;
 mod bolster;
 mod cast_from_zone;
@@ -122,6 +123,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::BecomeMonarch { .. } => become_monarch::run(cx, effect),
         Effect::Amass { .. } => amass::run(cx, effect),
         Effect::Monstrosity { .. } => monstrosity::run(cx, effect),
+        Effect::BecomeLevel { .. } => become_level::run(cx, effect),
         Effect::Adapt { .. } => adapt::run(cx, effect),
         Effect::Bolster { .. } => bolster::run(cx, effect),
         Effect::Fabricate { .. } => fabricate::run(cx, effect),
@@ -173,7 +175,7 @@ mod tests {
         {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"Tap":{"what":"This"}},
         {"Untap":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"WinGame":{}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
-        {"BecomeMonarch":{}}, {"Amass":{"subtype":"Orc","count":1}}, {"Monstrosity":{"count":1}},
+        {"BecomeMonarch":{}}, {"Amass":{"subtype":"Orc","count":1}}, {"Monstrosity":{"count":1}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
         {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}},
         {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}},
@@ -262,9 +264,11 @@ mod tests {
                 "Effect.WinGame",
                 "Effect.Surveil",
                 "Effect.Proliferate",
+                "Effect.Goad",
                 "Effect.BecomeMonarch",
                 "Effect.Amass",
                 "Effect.Monstrosity",
+                "Effect.BecomeLevel",
                 "Effect.Adapt",
                 "Effect.Bolster",
                 "Effect.Fabricate",

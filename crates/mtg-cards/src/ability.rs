@@ -207,6 +207,13 @@ pub enum Ability {
         #[serde(default, skip_serializing_if = "is_false")]
         required: bool,
     },
+    /// "If [condition], you may cast this spell without paying its mana cost." (CR 118.9): an alternative cost of zero mana that
+    /// is open while the condition holds; the additional costs, the commander tax and the cost modifiers still apply (CR 118.9d).
+    FreeCast {
+        /// The cast is open only while this holds for the caster; always when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        condition: Option<Condition>,
+    },
     /// A keyword ability; the engine knows what it does.
     Keyword(Keyword),
     /// A clause of the oracle text the data does not model; the table resolves it by hand.

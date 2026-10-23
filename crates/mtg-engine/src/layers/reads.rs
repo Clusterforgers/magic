@@ -58,7 +58,8 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::CantAttack
         | Modification::CantBlock
         | Modification::CantBeBlocked
-        | Modification::CantBeBlockedBy { .. } => Traits::NONE,
+        | Modification::CantBeBlockedBy { .. }
+        | Modification::Goaded { .. } => Traits::NONE,
     }
 }
 
@@ -82,7 +83,8 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::CantAttack
         | Wanted::CantBlock
         | Wanted::CantBeBlocked
-        | Wanted::CantBeBlockedBy(_) => Traits::NONE,
+        | Wanted::CantBeBlockedBy(_)
+        | Wanted::Goaded => Traits::NONE,
     }
 }
 
@@ -108,7 +110,8 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::LoseAbilities
         | Wanted::CantAttack
         | Wanted::CantBlock
-        | Wanted::CantBeBlocked => Traits::NONE,
+        | Wanted::CantBeBlocked
+        | Wanted::Goaded => Traits::NONE,
     }
 }
 
@@ -148,6 +151,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Other
         | Pred::Supertype(_)
         | Pred::Token
+        | Pred::Commander
         | Pred::Spell
         | Pred::Ability(_)
         | Pred::Tapped
@@ -233,5 +237,6 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::CastWith(_)
         | Condition::Performed => Traits::NONE,
         Condition::Monarch(who) | Condition::CitysBlessing(who) => reads_of_ref(who),
+        Condition::Level { of, .. } => reads_of_ref(of),
     }
 }
