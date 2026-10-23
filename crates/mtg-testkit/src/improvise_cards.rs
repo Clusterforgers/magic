@@ -42,7 +42,7 @@ fn clockwork(name: &str) -> Arc<CardDefinition> {
     )
 }
 
-/// A permanent of the kind affinity counts, with no cost: a legendary creature, a Saga or an Equipment; a plain
+/// A permanent of the kind affinity counts, with no cost: a legendary creature or artifact, a Saga or an Equipment; a plain
 /// enchantment is none of them.
 fn historic(name: &str) -> Option<Arc<CardDefinition>> {
     let card = CardDefinition::new(name);
@@ -53,6 +53,9 @@ fn historic(name: &str) -> Option<Arc<CardDefinition>> {
             .with_power_toughness(1, 1),
         "Chapter" => card.with_type(CardType::Enchantment).with_subtype("Saga"),
         "Blade" => card.with_type(CardType::Artifact).with_subtype("Equipment"),
+        "Legendary Relic" => card
+            .with_type(CardType::Artifact)
+            .with_supertype(Supertype::Legendary),
         "Plain Enchantment" => card.with_type(CardType::Enchantment),
         _ => return None,
     }))
@@ -206,6 +209,51 @@ pub fn improvise_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
     rng.shuffle(&mut deck);
     deck.truncate(60);
     deck
+}
+
+/// A legal Normal deck of the permanents that give improvise and convoke to spells (Inspiring Statuary, Chief Engineer),
+/// the spells and helpers they act on, and the cards that count historic permanents and Equipment, derived entirely
+/// from `rng`.
+pub fn granted_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
+    let colors = [Color::Blue, Color::White, Color::Red, Color::Green];
+    let mut deck: Vec<Arc<CardDefinition>> = (0..26).map(|i| land(colors[i % 4])).collect();
+    let mut cards: Vec<Arc<CardDefinition>> = [
+        "Inspiring Statuary",
+        "Chief Engineer",
+        "Statuary Bear",
+        "Pricey Relic",
+        "Trinket",
+        "Gadget",
+        "Clockwork",
+        "Sol Ring",
+        "Improvise Bear",
+        "Banish to Another Universe",
+        "Equipment Golem",
+        "Legend",
+        "Chapter",
+        "Blade",
+        "Legendary Relic",
+    ]
+    .iter()
+    .filter_map(|name| improvise_card(name).ok())
+    .collect();
+    cards.push(burn("Bolt", 3));
+    cards.push(creature("Plain Bear", 2, &[Color::Green], 2, 2));
+    for card in cards {
+        deck.extend(std::iter::repeat_n(card, 2));
+    }
+    rng.shuffle(&mut deck);
+    deck.truncate(60);
+    deck
+}
+
+/// A normal game of `players` seats whose decks are [`granted_deck`]s, fully determined by `seed`.
+pub fn granted_fuzz_setup(players: usize, seed: u64) -> GameSetup {
+    let decks = (0u64..)
+        .take(players)
+        .map(|seat| granted_deck(&mut GameRng::substream(seed, 24_500 + seat)))
+        .collect();
+    GameSetup::new(Arc::new(Normal), seed, decks)
 }
 
 /// A normal game of `players` seats whose decks are [`improvise_deck`]s, fully determined by `seed`.

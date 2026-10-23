@@ -136,6 +136,7 @@ mod gift;
 mod gift_fuzz;
 mod goad;
 mod granted_help;
+mod granted_help_fuzz;
 mod granted_mana;
 mod graveyard_discard_fuzz;
 mod graveyard_fuzz;

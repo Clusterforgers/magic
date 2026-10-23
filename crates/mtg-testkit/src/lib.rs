@@ -148,7 +148,7 @@ pub use group_static_cards::group_static_fuzz_setup;
 pub use harness::{FailureKind, GameFailure, GameOutcome, PlayOptions, play_game, play_game_with};
 pub use help_cards::help_fuzz_setup;
 pub use hideaway_cards::hideaway_fuzz_setup;
-pub use improvise_cards::{improvise_card, improvise_fuzz_setup};
+pub use improvise_cards::{granted_fuzz_setup, improvise_card, improvise_fuzz_setup};
 pub use impulse_cards::{impulse_fuzz_setup, impulse_spell};
 pub use invariants::{InvariantChecker, Violation, check_settled, check_state};
 pub use keyword_cards::keyword_triggers_fuzz_setup;

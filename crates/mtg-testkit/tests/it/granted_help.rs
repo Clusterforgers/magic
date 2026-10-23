@@ -175,8 +175,10 @@ fn the_spell_that_is_left_out_offers_no_helper(#[values(2, 3, 4)] seats: usize) 
         &[],
     ));
     driver.begin_cast("Pricey Relic").unwrap();
-    assert!(driver.pay_options().unwrap().help.improvise.is_empty());
-    assert!(driver.pay_options().unwrap().help.convoke.is_empty());
+    assert!(
+        driver.pay_options().unwrap().help.is_empty(),
+        "no artifact, creature or card helps"
+    );
     let trinket = driver.id_of("Trinket").unwrap();
     let payment = Payment {
         improvise: vec![trinket],
