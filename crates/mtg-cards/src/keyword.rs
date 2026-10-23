@@ -268,6 +268,21 @@ pub enum Keyword {
     Hideaway(u32),
     /// Gift (CR 702.174): as an additional cost the caster may promise an opponent a gift; the chosen opponent gets it as the spell resolves or when the permanent enters, before other effects.
     Gift(GiftKind),
+    /// Scavenge with its cost (CR 702.97): from a graveyard at sorcery speed the card is exiled for as many +1/+1 counters as its power on target creature.
+    Scavenge(Cost),
+    /// Transmute with its cost (CR 702.53): from a hand at sorcery speed the card is discarded to search the library for a card with the same mana value.
+    Transmute(Cost),
+    /// Awaken N with its cost (CR 702.113): the spell may be cast from a hand for the cost, and then also puts N +1/+1 counters on target land its caster controls, which becomes a 0/0 Elemental creature with haste.
+    Awaken {
+        /// The +1/+1 counters put on the land.
+        count: u32,
+        /// The alternative cost.
+        cost: Cost,
+    },
+    /// Gravestorm (CR 702.69): when the spell is cast, its caster copies it for each permanent put into a graveyard from the battlefield this turn.
+    Gravestorm,
+    /// Sunburst (CR 702.44): the permanent enters with a +1/+1 counter (a charge counter unless it is a creature) for each color of mana spent to cast it.
+    Sunburst,
 }
 
 /// What a promised gift is (CR 702.174).
@@ -404,6 +419,11 @@ impl Keyword {
         "Demonstrate",
         "Hideaway",
         "Gift",
+        "Scavenge",
+        "Transmute",
+        "Awaken",
+        "Gravestorm",
+        "Sunburst",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -534,6 +554,11 @@ impl Keyword {
             Keyword::Demonstrate => "Demonstrate",
             Keyword::Hideaway(_) => "Hideaway",
             Keyword::Gift(_) => "Gift",
+            Keyword::Scavenge(_) => "Scavenge",
+            Keyword::Transmute(_) => "Transmute",
+            Keyword::Awaken { .. } => "Awaken",
+            Keyword::Gravestorm => "Gravestorm",
+            Keyword::Sunburst => "Sunburst",
             Keyword::Dash(_) => "Dash",
             Keyword::Blitz(_) => "Blitz",
             Keyword::Prowl(_) => "Prowl",
@@ -702,6 +727,14 @@ mod tests {
             Keyword::Demonstrate,
             Keyword::Hideaway(4),
             Keyword::Gift(GiftKind::Card),
+            Keyword::Scavenge(Cost::default()),
+            Keyword::Transmute(Cost::default()),
+            Keyword::Awaken {
+                count: 3,
+                cost: Cost::default(),
+            },
+            Keyword::Gravestorm,
+            Keyword::Sunburst,
         ]
     }
 

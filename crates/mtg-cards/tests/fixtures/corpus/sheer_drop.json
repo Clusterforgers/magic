@@ -1,0 +1,25 @@
+{
+  "id": "75c85fa4-862d-4f94-9531-b62775838ab9",
+  "oracle_id": "7c42123d-c8e2-4571-b07d-f782e9ad1f8b",
+  "name": "Sheer Drop",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bfz",
+  "collector_number": "48",
+  "rarity": "common",
+  "released_at": "2015-10-02",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Destroy target tapped creature.\nAwaken 3—{5}{W} (If you cast this spell for {5}{W}, also put three +1/+1 counters on target land you control and it becomes a 0/0 Elemental creature with haste. It's still a land.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Awaken"
+  ]
+}

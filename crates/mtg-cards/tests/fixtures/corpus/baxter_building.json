@@ -1,0 +1,27 @@
+{
+  "id": "1abc652f-8e9d-4df7-bc4e-d8b515a40fec",
+  "oracle_id": "71bc69a5-7cec-4abd-b97d-13f8e1f9afac",
+  "name": "Baxter Building",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msh",
+  "collector_number": "261",
+  "rarity": "uncommon",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{4}, {T}: Add four mana in any combination of colors.\n{4}, {T}: Draw a card. Activate only if you control a creature with toughness 4 or greater.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "C",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

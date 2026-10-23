@@ -159,6 +159,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("transmute", Params::Cost),
     ("level up", Params::Cost),
     ("embalm", Params::Cost),
+    ("sunburst", Params::None),
     ("eternalize", Params::Cost),
     ("outlast", Params::Cost),
     ("cleave", Params::Cost),
@@ -358,6 +359,9 @@ pub fn read(item: &str) -> Option<Keyword> {
         "unearth" => spell_cost(rest).map(Keyword::Unearth),
         "embalm" => spell_cost(rest).map(Keyword::Embalm),
         "eternalize" => spell_cost(rest).map(Keyword::Eternalize),
+        "scavenge" => spell_cost(rest).map(Keyword::Scavenge),
+        "transmute" => spell_cost(rest).map(Keyword::Transmute),
+        "awaken" => awaken(rest),
         "escape" => spell_cost(rest).map(Keyword::Escape),
         "dash" => spell_cost(rest).map(Keyword::Dash),
         "bestow" => spell_cost(rest).map(Keyword::Bestow),
@@ -505,6 +509,8 @@ fn plain(name: &str) -> Option<Keyword> {
         "delve" => Keyword::Delve,
         "cascade" => Keyword::Cascade,
         "storm" => Keyword::Storm,
+        "gravestorm" => Keyword::Gravestorm,
+        "sunburst" => Keyword::Sunburst,
         "demonstrate" => Keyword::Demonstrate,
         "partner" => Keyword::Partner,
         "battle cry" => Keyword::BattleCry,
@@ -620,6 +626,15 @@ fn spell_cost(rest: &str) -> Option<Cost> {
     cost(rest).or_else(|| {
         let words = rest.strip_prefix('\u{2014}')?.trim().trim_end_matches('.');
         super::read::cost_in_words(words)
+    })
+}
+
+/// `3—{4}{U}`: the counters and the mana cost of awaken.
+fn awaken(rest: &str) -> Option<Keyword> {
+    let (count, price) = rest.split_once('\u{2014}')?;
+    Some(Keyword::Awaken {
+        count: count.trim().parse().ok().filter(|count| *count > 0)?,
+        cost: cost(price.trim())?,
     })
 }
 
@@ -853,6 +868,13 @@ mod tests {
     #[case::retrace("retrace", Keyword::Retrace)]
     #[case::embalm("Embalm {3}{W}", Keyword::Embalm(mana("{3}{W}")))]
     #[case::eternalize("Eternalize {4}{U}{U}", Keyword::Eternalize(mana("{4}{U}{U}")))]
+    #[case::scavenge("Scavenge {3}{G}", Keyword::Scavenge(mana("{3}{G}")))]
+    #[case::scavenge_free("Scavenge {0}", Keyword::Scavenge(mana("{0}")))]
+    #[case::transmute("Transmute {1}{U}{U}", Keyword::Transmute(mana("{1}{U}{U}")))]
+    #[case::awaken("Awaken 3\u{2014}{4}{U}", Keyword::Awaken { count: 3, cost: mana("{4}{U}") })]
+    #[case::awaken_big("Awaken 6\u{2014}{6}{U}{U}{U}", Keyword::Awaken { count: 6, cost: mana("{6}{U}{U}{U}") })]
+    #[case::gravestorm("Gravestorm", Keyword::Gravestorm)]
+    #[case::sunburst("Sunburst", Keyword::Sunburst)]
     #[case::eternalize_with_a_life_cost(
         "Eternalize—Pay 3 life.",
         Keyword::Eternalize(Cost(vec![CostItem::PayLife(Amount::Fixed(3))]))
@@ -1177,6 +1199,11 @@ mod tests {
             "Retrace",
             "Embalm {1}",
             "Eternalize {1}",
+            "Scavenge {1}",
+            "Transmute {1}{U}{U}",
+            "Awaken 3\u{2014}{4}{U}",
+            "Gravestorm",
+            "Sunburst",
             "Dash {1}",
             "Miracle {1}{W}",
             "Bestow {1}",

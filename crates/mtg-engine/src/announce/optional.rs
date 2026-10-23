@@ -336,6 +336,7 @@ fn targets_remain(ctx: &Ctx<'_>, choices: &Choices) -> bool {
                 ctx.cause(),
                 choices.x,
                 &choices.optional_costs,
+                choices.way,
             )
             .is_some()
         })

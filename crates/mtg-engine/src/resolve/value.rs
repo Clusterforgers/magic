@@ -140,6 +140,14 @@ fn stacked_x(object: &GameObject) -> u32 {
     }
 }
 
+/// How many different colors there are among the mana (colorless is none).
+fn colors_among(mana: &[ManaType]) -> usize {
+    ManaType::ALL
+        .iter()
+        .filter(|kind| **kind != ManaType::Colorless && mana.contains(kind))
+        .count()
+}
+
 /// Whether the predicate holds only for objects on the stack (a spell, an ability, or one of several that are).
 fn on_the_stack(pred: &Pred) -> bool {
     match pred {
@@ -868,6 +876,9 @@ impl<'a> Scope<'a> {
             Amount::LowestLife(who) => self.lives(who)?.min().unwrap_or(i64::from(i32::MAX)),
             Amount::HighestLife(who) => self.lives(who)?.max().unwrap_or(i64::from(i32::MIN)),
             Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
+            Amount::CastWith(way) => i64::from(self.cast_way() == Some(*way)),
+            Amount::ColorsSpent => i64::try_from(colors_among(&self.mana_spent())).unwrap_or(0),
+            Amount::PermanentsGraved => i64::from(self.state.graved_this_turn()),
             Amount::Kicks => i64::try_from(self.payments(OptionalKind::Kicker))
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
             Amount::Triggering => self

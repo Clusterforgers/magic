@@ -1,0 +1,27 @@
+{
+  "id": "6ad03e99-25d3-4a09-819b-9192dfd8c9d2",
+  "oracle_id": "1498f5a1-6df7-4f80-9470-c93528b64a9c",
+  "name": "Deadbridge Goliath",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rtr",
+  "collector_number": "120",
+  "rarity": "rare",
+  "released_at": "2012-10-05",
+  "digital": false,
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Insect",
+  "oracle_text": "Scavenge {4}{G}{G} ({4}{G}{G}, Exile this card from your graveyard: Put a number of +1/+1 counters equal to this card's power on target creature. Scavenge only as a sorcery.)",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Scavenge"
+  ]
+}

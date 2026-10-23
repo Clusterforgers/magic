@@ -1,0 +1,27 @@
+{
+  "id": "1998135c-7b7f-402b-a8a5-4f4af131b1bc",
+  "oracle_id": "0dfbee5a-0dc6-4f5b-abbd-9d8601de7107",
+  "name": "Terrus Wurm",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rtr",
+  "collector_number": "80",
+  "rarity": "common",
+  "released_at": "2012-10-05",
+  "digital": false,
+  "mana_cost": "{6}{B}",
+  "cmc": 7.0,
+  "type_line": "Creature — Zombie Wurm",
+  "oracle_text": "Scavenge {6}{B} ({6}{B}, Exile this card from your graveyard: Put a number of +1/+1 counters equal to this card's power on target creature. Scavenge only as a sorcery.)",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Scavenge"
+  ]
+}

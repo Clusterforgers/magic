@@ -31,7 +31,7 @@ use crate::decision::Decision;
 use crate::error::EngineError;
 use crate::events::{Event, ResolutionOutcome};
 use crate::flow;
-use crate::keywords::gift;
+use crate::keywords::{awaken, gift};
 use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::snapshot::Snapshot;
 use crate::state::GameState;
@@ -196,9 +196,15 @@ impl Cx<'_> {
 
 /// The `Spell` ability of `id` with its address: what the card does as an instant or sorcery.
 pub(crate) fn spell_ability(state: &GameState, id: ObjectId) -> Option<(AbilityRef, Arc<Ability>)> {
-    abilities_of(state, id)
+    let (address, rules) = abilities_of(state, id)
         .into_iter()
-        .find(|(_, rules)| matches!(**rules, Ability::Spell { .. }))
+        .find(|(_, rules)| matches!(**rules, Ability::Spell { .. }))?;
+    // Awaken adds a target and effects to the spell ability of its card.
+    let rules = match state.object(id) {
+        Some(card) => awaken::awakened(card, rules),
+        None => rules,
+    };
+    Some((address, rules))
 }
 
 /// The rules a stack object runs: those of the ability it is, or the `Spell` ability of its card.

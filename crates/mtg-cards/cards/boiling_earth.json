@@ -1,0 +1,26 @@
+{
+  "oracle_id": "fb34b671-b61a-47e2-90fa-dbe5cf6d3743",
+  "name": "Boiling Earth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boiling Earth",
+      "oracle_fingerprint": "1de93a7bd54d97f1645e0f5e43194254",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Awaken": { "count": 4, "cost": "{6}{R}" } } }
+      ]
+    }
+  ]
+}

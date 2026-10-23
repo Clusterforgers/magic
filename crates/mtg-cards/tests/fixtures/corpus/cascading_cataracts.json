@@ -1,0 +1,29 @@
+{
+  "id": "2f3fbd9b-91ab-4691-a916-e20db8ebc513",
+  "oracle_id": "d98b4250-3492-4864-9c4c-42db09b3ccd4",
+  "name": "Cascading Cataracts",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dmc",
+  "collector_number": "202",
+  "rarity": "rare",
+  "released_at": "2022-09-09",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "Indestructible\n{T}: Add {C}.\n{5}, {T}: Add five mana in any combination of colors.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Indestructible"
+  ],
+  "produced_mana": [
+    "B",
+    "C",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

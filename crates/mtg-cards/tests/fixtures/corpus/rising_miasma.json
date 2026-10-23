@@ -1,0 +1,25 @@
+{
+  "id": "4f9a8e87-3b8b-4dbf-9c1e-0a3290a33a0b",
+  "oracle_id": "83fb7dfb-64a4-4320-b544-830c29f24df9",
+  "name": "Rising Miasma",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bfz",
+  "collector_number": "122",
+  "rarity": "uncommon",
+  "released_at": "2015-10-02",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "All creatures get -2/-2 until end of turn.\nAwaken 3—{5}{B}{B} (If you cast this spell for {5}{B}{B}, also put three +1/+1 counters on target land you control and it becomes a 0/0 Elemental creature with haste. It's still a land.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Awaken"
+  ]
+}

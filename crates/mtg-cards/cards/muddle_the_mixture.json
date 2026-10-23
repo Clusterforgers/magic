@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0826cf7d-7ccc-459b-a92f-29dc169628f8",
+  "name": "Muddle the Mixture",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Muddle the Mixture",
+      "oracle_fingerprint": "cd4bf679abc238c444099a1498cc9d33",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Transmute": "{1}{U}{U}" } }
+      ]
+    }
+  ]
+}
