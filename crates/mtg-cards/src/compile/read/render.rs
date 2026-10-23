@@ -6,9 +6,13 @@
 mod created;
 mod damage_by;
 mod divided;
+mod from_graveyard;
 mod graveyards;
+mod instead;
+mod loyalty;
 mod may_have;
 mod put_onto;
+mod those;
 
 use super::activations;
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
@@ -310,6 +314,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     let mut texts = variants(ability);
     texts.extend(where_x::equal_to_wordings(ability));
     event_wordings::add(ability, &mut texts);
+    those::add(ability, &mut texts);
     texts
 }
 
@@ -519,6 +524,21 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
                     })
                 })
                 .collect()
+        }
+        Ability::Loyalty {
+            cost,
+            targets,
+            effects,
+        } => loyalty::texts(*cost, targets, effects),
+        Ability::Triggered {
+            when: when @ TriggerPattern::StepBegins { .. },
+            intervening_if: None,
+            limit: None,
+            from: ZoneKind::Graveyard,
+            targets,
+            effects,
+        } if from_graveyard::pays_to_return(effects) => {
+            from_graveyard::texts(when, targets, effects)
         }
         Ability::AdditionalCost { cost, required } => costs::additional_text(cost, *required)
             .into_iter()
@@ -745,6 +765,13 @@ fn written(
         if let Some((text, used)) = flicker::text(&effects[start..]) {
             unsplit(mask, start, used)?;
             sentences.push(text);
+            start += used;
+            continue;
+        }
+        // A move to the hand that a basic land type makes a move to the battlefield is two sentences.
+        if let Some((texts, used)) = writer.move_instead(&effects[start..]) {
+            unsplit(mask, start, used)?;
+            sentences.extend(texts);
             start += used;
             continue;
         }

@@ -6,7 +6,7 @@ use super::defining;
 use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
 use crate::modify::Modification;
-use crate::refs::{Pred, Ref};
+use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::value::{Amount, StatKind};
 
 /// The count words "one" to "twenty", in order.
@@ -218,9 +218,34 @@ pub fn counted_stats(r: &mut Reader<'_>, stats: Modification) -> Option<Modifica
     })
 }
 
+/// "creature card exiled this way": the cards of a kind that an earlier exile bound by a name.
+fn exiled_this_way(selector: &Selector) -> Option<String> {
+    let (mut bound, mut exiled) = (false, false);
+    let mut kinds = Vec::new();
+    for pred in &selector.0 {
+        match pred {
+            Pred::Is(Ref::Bound(_)) if !bound => bound = true,
+            Pred::In(ZoneKind::Exile) if !exiled => exiled = true,
+            other => kinds.push(other.clone()),
+        }
+    }
+    if !(bound && exiled) {
+        return None;
+    }
+    let kind = if kinds.is_empty() {
+        String::new()
+    } else {
+        format!("{} ", phrase_text(&Selector(kinds), Form::Count)?)
+    };
+    Some(format!("{kind}card exiled this way"))
+}
+
 /// What "for each" counts, as the card words it after "for each ".
 pub fn for_each_text(counted: &Amount) -> Option<String> {
     Some(match counted {
+        Amount::Count(selector) if exiled_this_way(selector).is_some() => {
+            exiled_this_way(selector)?
+        }
         Amount::Count(selector) => {
             let phrase = phrase_text(selector, Form::Count)?;
             if selector.0.iter().any(holds) {
