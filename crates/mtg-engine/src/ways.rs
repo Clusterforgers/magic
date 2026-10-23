@@ -174,7 +174,7 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     let Some(card) = state.object(id) else {
         return Vec::new();
     };
-    if card.kind() != ObjectKind::Card {
+    if card.kind() != ObjectKind::Card && !card.is_card_copy() {
         return Vec::new();
     }
     let zone = card.zone();
@@ -482,7 +482,7 @@ fn granted_before_required(
     let Some(card) = state.object(id) else {
         return Vec::new();
     };
-    let castable = card.kind() == ObjectKind::Card
+    let castable = (card.kind() == ObjectKind::Card || card.is_card_copy())
         && !card.base_types().contains(CardType::Land)
         && !matches!(card.zone(), Zone::Battlefield | Zone::Stack);
     if !castable

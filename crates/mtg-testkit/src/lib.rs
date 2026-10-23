@@ -17,6 +17,7 @@ pub mod cards;
 pub mod cascade_cards;
 pub mod cast_way_cards;
 pub mod choice_cards;
+pub mod cipher_cards;
 pub mod combat_keyword_cards;
 pub mod commander_cards;
 pub mod companion_cards;
@@ -117,6 +118,7 @@ pub use bot::RandomBot;
 pub use cascade_cards::cascade_fuzz_setup;
 pub use cast_way_cards::cast_way_fuzz_setup;
 pub use choice_cards::choice_fuzz_setup;
+pub use cipher_cards::cipher_fuzz_setup;
 pub use combat_keyword_cards::combat_keywords_fuzz_setup;
 pub use commander_cards::{
     CAST_KIND_CARDS, cast_kind_fuzz_setup, commander_fuzz_setup, partner_fuzz_setup,

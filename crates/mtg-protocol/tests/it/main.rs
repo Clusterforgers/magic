@@ -9,6 +9,7 @@ mod batch_size;
 mod batch_visibility;
 mod bindings;
 mod cast_hidden;
+mod cipher_view;
 mod combat_forecast;
 mod commander_draw_view;
 mod commander_spectator;

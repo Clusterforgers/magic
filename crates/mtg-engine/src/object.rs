@@ -459,6 +459,12 @@ impl GameObject {
         self.stack_copy
     }
 
+    /// Whether this is a copy of a card that lies in exile, made to be cast (CR 707.12): a token card there, which a
+    /// player may cast like the card and which ceases to exist anywhere but on the stack (CR 704.5e).
+    pub fn is_card_copy(&self) -> bool {
+        self.kind == ObjectKind::Token && self.zone == Zone::Exile && self.stack_copy.is_some()
+    }
+
     /// Whether this is a copy of a spell on the stack: a spell that is no card, and ceases to exist when it leaves the stack (CR 707.10).
     pub fn is_spell_copy(&self) -> bool {
         self.kind == ObjectKind::Token && self.zone == Zone::Stack

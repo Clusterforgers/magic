@@ -277,6 +277,7 @@ const BECAUSE: Record<
     | { Hideaway: unknown }
     | { ExiledUntil: unknown }
     | { ExiledUntilMonarch: unknown }
+    | { Encoded: unknown }
     | { Manifested: unknown }
     | { Cloaked: unknown }
   >,
@@ -298,6 +299,7 @@ const BECAUSE: Record<
 /** The words for a cause that carries a player or a permanent. */
 function objectCause(cause: Extract<ZoneCause, object>): string {
   if ('Hideaway' in cause) return 'is exiled face down'
+  if ('Encoded' in cause) return 'is exiled encoded on a creature'
   if ('Manifested' in cause) return 'is manifested'
   if ('Cloaked' in cause) return 'is cloaked'
   return 'is exiled for a while'
@@ -479,6 +481,11 @@ function describePublic(event: Event, n: EventNames): LogLine {
     return line(`${n.seat(controller)} copies the ability of ${n.card(of.id)}`)
   }
   if ('CopyEnded' in event) return line(`${n.card(event.CopyEnded.object)} stops being a copy`)
+  if ('CardCopied' in event) {
+    const { owner, of } = event.CardCopied
+    return line(`${n.seat(owner)} copies ${n.card(of.id)}`)
+  }
+  if ('CopyCeased' in event) return line(`${n.card(event.CopyCeased.object)} ceases to exist`)
   if ('CommanderStayed' in event) return line(`${n.card(event.CommanderStayed.object)} stays where it is`)
   if ('CompanionRevealed' in event)
     return line(`${n.seat(event.CompanionRevealed.player)} reveals a companion`)

@@ -11,7 +11,7 @@ use crate::counters::CountersChanged;
 use crate::events::{DeathCause, Event, ZoneCause};
 use crate::keywords;
 use crate::mulligan::shuffled;
-use crate::object::{ObjectKind, PermanentState};
+use crate::object::{GameObject, PermanentState};
 use crate::player::{LossReason, Player};
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -155,11 +155,7 @@ fn card_copies(state: &GameState) -> Vec<Event> {
     state
         .zone(Zone::Exile)
         .iter()
-        .filter(|id| {
-            state
-                .object(**id)
-                .is_some_and(|copy| copy.kind() == ObjectKind::Token)
-        })
+        .filter(|id| state.object(**id).is_some_and(GameObject::is_card_copy))
         .map(|id| Event::CopyCeased { object: *id })
         .collect()
 }
