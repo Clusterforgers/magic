@@ -286,6 +286,7 @@ const RUNS: &[&str] = &[
     "Condition.Kicked",
     "Condition.Performed",
     "Amount.Kicks",
+    "Amount.Mutations",
     "Amount.Promised",
     "Amount.CastWith",
     "Amount.ColorsSpent",
@@ -563,6 +564,7 @@ mod tests {
     #[case::spending_mana_to_cast("Condition.ManaSpent", true)]
     #[case::exiling_for_another_duration("Exile.Duration.UntilYourNextTurn", false)]
     #[case::the_number_of_kicks("Amount.Kicks", true)]
+    #[case::the_number_of_mutations("Amount.Mutations", true)]
     #[case::cast_for_a_way("Amount.CastWith", true)]
     #[case::colors_spent("Amount.ColorsSpent", true)]
     #[case::permanents_graved("Amount.PermanentsGraved", true)]

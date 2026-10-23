@@ -17,6 +17,7 @@ use crate::choose::Choices;
 use crate::error::EngineError;
 use crate::fold::{invalid, reset_passes};
 use crate::hash::stable_hash;
+use crate::merged::Merged;
 use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::snapshot::Snapshot;
 use crate::state::{GameState, Tally};
@@ -33,6 +34,8 @@ pub struct CopyEffect {
     temporary: bool,
     /// The copy effect this temporary one is over, which applies again when it ends (CR 613.7).
     under: Option<Box<CopyEffect>>,
+    /// What a merged permanent shows under the effect: the copiable values with the abilities of its other cards.
+    merged: Option<Arc<CardDefinition>>,
 }
 
 impl CopyEffect {
@@ -45,6 +48,21 @@ impl CopyEffect {
             timestamp,
             temporary: false,
             under: None,
+            merged: None,
+        }
+    }
+
+    /// What the permanent shows: the copiable values, and for a merged permanent those with the abilities of its other
+    /// cards (CR 729.2c).
+    pub fn shown(&self) -> &CardDefinition {
+        self.merged.as_deref().unwrap_or(&self.definition)
+    }
+
+    /// Works out what the permanent shows under this effect and the ones it is over, once `merged` is what it is made of.
+    pub(crate) fn over(&mut self, merged: Option<&Merged>) {
+        self.merged = merged.map(|cards| Arc::new(cards.under_copy(&self.definition)));
+        if let Some(under) = self.under.as_mut() {
+            under.over(merged);
         }
     }
 
@@ -193,6 +211,9 @@ pub(crate) fn fold(state: &mut GameState, event: &BecameCopy) -> Result<(), Engi
     } else {
         began
     });
+    if let Some(copy) = permanent.copy.as_mut() {
+        copy.over(permanent.merged.as_ref());
+    }
     state.next_timestamp += 1;
     note_definition(state, &event.definition);
     Ok(())
@@ -362,10 +383,12 @@ pub(crate) fn copiable_values(
         .object(reference.id)
         .filter(|object| object.counter() == reference.counter)
     {
-        // A merged permanent has the copiable values of its topmost card alone (CR 729.2a).
+        // A merged permanent has the copiable values of its topmost card alone, or of the copy effect it is under
+        // (CR 729.2a).
         let printed = match (object.merged(), object.copy_effect()) {
+            (_, Some(copy)) => copy.definition(),
             (Some(merged), None) => merged.top().card(),
-            _ => object.card(),
+            (None, None) => object.card(),
         };
         return may_be_copied(object).then(|| printed.copiable());
     }

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "e1efd99f-d918-4cd1-b85f-b90b106c3c88",
+  "name": "Porcuparrot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Porcuparrot",
+      "oracle_fingerprint": "ee7a7339c56981e0fc9ea856dde45520",
+      "abilities": [
+        { "Keyword": { "Mutate": "{2}{R}" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": { "Mutations": "This" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

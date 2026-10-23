@@ -227,6 +227,28 @@ impl<'a> Scope<'a> {
             .find(|shot| shot.id == reference.id && shot.counter == reference.counter)
     }
 
+    /// How many times the permanents `of` names have mutated (CR 702.140): as they are, or as they were when they left.
+    fn mutations(&self, of: &Ref) -> Result<i64, ResolveError> {
+        let mut total = 0i64;
+        for named in self.refs(of)? {
+            let Target::Object(object) = named else {
+                continue;
+            };
+            let live = self
+                .state
+                .object(object.id)
+                .filter(|held| held.counter() == object.counter);
+            let count: u32 = match live {
+                Some(held) => held.merged().map_or(0, crate::merged::Merged::mutations),
+                None => self
+                    .snapshot_of(object)
+                    .map_or(0, |shot| shot.mutations),
+            };
+            total += i64::from(count);
+        }
+        Ok(total)
+    }
+
     fn seen(&self, reference: ObjectRef) -> Option<Seen<'a>> {
         let live = self.state.object(reference.id);
         if let Some(object) = live.filter(|o| o.counter() == reference.counter) {
@@ -924,6 +946,7 @@ impl<'a> Scope<'a> {
                     .max()
                     .unwrap_or(0)
             }
+            Amount::Mutations(of) => self.mutations(of)?,
             Amount::Kicks => i64::try_from(self.payments(OptionalKind::Kicker))
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
             Amount::Triggering => self

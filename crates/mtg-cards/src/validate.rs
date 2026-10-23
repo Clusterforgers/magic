@@ -508,6 +508,10 @@ impl<'a> Walker<'a> {
             Amount::HighestLife(who) => self.player_amount("HighestLife", who),
             Amount::LowestLife(who) => self.player_amount("LowestLife", who),
             Amount::Kicks | Amount::Promised => self.paid_amount(amount),
+            Amount::Mutations(of) => {
+                self.uses("Amount", "Mutations");
+                self.at("of", |w| w.reference(of, Kind::Either));
+            }
             Amount::CastWith(_) => self.uses("Amount", "CastWith"),
             Amount::ColorsSpent => self.uses("Amount", "ColorsSpent"),
             Amount::PermanentsGraved => self.uses("Amount", "PermanentsGraved"),
