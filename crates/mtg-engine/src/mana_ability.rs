@@ -22,6 +22,7 @@ use crate::error::EngineError;
 use crate::events::{Event, ZoneCause};
 use crate::keywords;
 use crate::mana::{ManaOption, ManaSource, Take};
+use crate::mana_bonus;
 use crate::mana_kinds::{COLORS, identity_types, mana_of, producible_types};
 use crate::object::{Chosen, PermanentState};
 use crate::parts::{Kind, Part, Payer, energy};
@@ -113,7 +114,7 @@ fn paid_by(parts: &[Part]) -> (u32, u32) {
 }
 
 /// The mana of one addition split into the type the option names, how many of it and the rest.
-fn split(made: &[ManaType]) -> Option<(ManaType, u32, Vec<ManaType>)> {
+pub(crate) fn split(made: &[ManaType]) -> Option<(ManaType, u32, Vec<ManaType>)> {
     let (&first, _) = made.split_first()?;
     let run = made.iter().take_while(|mana| **mana == first).count();
     Some((
@@ -310,7 +311,7 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
             }
         }
     }
-    found
+    mana_bonus::fold(state, player, found)
 }
 
 /// The events of `player` using the mana ability `option` stands for: the payment of its cost (life, energy, counters,
@@ -327,9 +328,15 @@ pub(crate) fn activation(
         .object(id)
         .ok_or_else(|| EngineError::InvalidEvent("a mana ability of nothing".into()))?;
     let printed = characteristics(state, id).map_or(0, |chars| chars.abilities.len());
+    // The variants a triggered mana ability's pick makes of an option are numbered past the ability's own sources.
+    let base = option.source.ability % mana_bonus::STRIDE;
     let rule = rule_mana(state, player, id, printed)
         .into_iter()
-        .find(|mana| mana.options.iter().any(|o| o.source == option.source));
+        .find(|mana| {
+            mana.options
+                .iter()
+                .any(|o| o.source.object == id && o.source.ability == base)
+        });
     let shape = rule.as_ref().and_then(|mana| mana_shape(&mana.body));
     let mut events = Vec::new();
     if let Some(rule) = rule.as_ref().filter(|rule| rule.once) {

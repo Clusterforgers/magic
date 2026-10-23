@@ -255,6 +255,7 @@ mod trigger_any_of;
 mod trigger_families;
 mod triggered_keywords;
 mod triggered_keywords_fuzz;
+mod triggered_mana;
 mod triggers_chain;
 mod triggers_delayed;
 mod triggers_fuzz;

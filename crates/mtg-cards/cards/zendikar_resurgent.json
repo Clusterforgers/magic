@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a0af158b-f42a-4022-a438-e0a2e1fd6d9e",
+  "name": "Zendikar Resurgent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zendikar Resurgent",
+      "oracle_fingerprint": "391b1c74ee9201826a24eb0822386d28",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Type": "Land" }], "by": "You" } },
+            "effects": [{ "AddMana": { "mana": "OfTapped" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

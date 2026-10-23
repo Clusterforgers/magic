@@ -927,7 +927,7 @@ fn evasion(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 }
 
 /// The mana of a symbol, when it is one a land or creature can produce.
-fn mana_type(symbol: &str) -> Option<ManaType> {
+pub(super) fn mana_type(symbol: &str) -> Option<ManaType> {
     ManaType::ALL
         .into_iter()
         .find(|mana| symbol.len() == 1 && symbol.starts_with(mana.symbol()))

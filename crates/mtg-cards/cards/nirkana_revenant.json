@@ -1,0 +1,33 @@
+{
+  "oracle_id": "6dff1def-5b94-40c8-a942-dea8743ab47c",
+  "name": "Nirkana Revenant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nirkana Revenant",
+      "oracle_fingerprint": "9922dd9af9c98e44bee9c9fdcb057d32",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Subtype": "Swamp" }], "by": "You" } },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

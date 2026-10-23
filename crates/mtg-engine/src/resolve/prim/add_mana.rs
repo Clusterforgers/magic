@@ -76,6 +76,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut events = Vec::new();
     // The types a player picks between and how many mana of the one picked.
     let (kinds, each): (Vec<ManaType>, u32) = match mana {
+        // A triggered mana ability adds its mana with the tap that triggered it (`mana_bonus`), never on the stack.
+        Produce::OfTapped => return unsupported("Effect.AddMana.OfTapped.Stack"),
         Produce::Fixed(list) => {
             for player in &players {
                 for _ in 0..times {

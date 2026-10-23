@@ -108,6 +108,8 @@ pub enum Produce {
         #[serde(default, skip_serializing_if = "is_false")]
         colorless: bool,
     },
+    /// One mana of a type the permanent tapped for mana produced; only in a triggered mana ability (CR 605.1b).
+    OfTapped,
 }
 
 /// What a created token is.

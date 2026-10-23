@@ -258,6 +258,27 @@ fn head_wordings(head: Vec<String>) -> Vec<Vec<String>> {
     heads
 }
 
+fn mana_trigger_texts(ability: &Ability) -> Vec<String> {
+    let (
+        Ability::Triggered {
+            when,
+            intervening_if,
+            ..
+        },
+        Some(shape),
+    ) = (ability, crate::mana_trigger::mana_trigger(ability))
+    else {
+        return Vec::new();
+    };
+    match (
+        trigger_head(when, intervening_if.as_ref()),
+        super::mana_trigger::text(&shape),
+    ) {
+        (Some(head), Some(effect)) => vec![[head, vec![format!("{effect}.")]].concat().join(" ")],
+        _ => Vec::new(),
+    }
+}
+
 fn ability_texts(ability: &Ability) -> Vec<String> {
     match ability {
         Ability::Spell { targets, effects } => alternatives(targets, effects)
@@ -272,6 +293,10 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             targets,
             effects,
         } => chapter_texts(*number, targets, effects),
+        Ability::Triggered {
+            when: TriggerPattern::TappedForMana { .. },
+            ..
+        } if crate::mana_trigger::mana_trigger(ability).is_some() => mana_trigger_texts(ability),
         Ability::Triggered {
             when,
             intervening_if,
@@ -858,7 +883,7 @@ fn add_text(mana: &Produce, times: &Amount, only: &[SpendOn]) -> Option<String> 
 }
 
 /// "{W}{U}": the symbols of mana added together.
-fn symbols_text(list: &[mtg_core::mana::ManaType]) -> String {
+pub(super) fn symbols_text(list: &[mtg_core::mana::ManaType]) -> String {
     let mut symbols = String::new();
     for mana in list {
         symbols.push('{');

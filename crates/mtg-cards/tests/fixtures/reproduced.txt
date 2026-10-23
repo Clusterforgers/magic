@@ -157,6 +157,7 @@ Crocanura
 Crop Rotation
 Crown of Skemfar
 Crucible of Worlds
+Crypt Ghast
 Crystal Quarry
 Curate
 Curse of Bounty
@@ -254,6 +255,7 @@ Fearsome Goblin Pair
 Feaster of Fools
 Felidar Sovereign
 Fellwar Stone
+Fertile Ground
 Fetid Heath
 Field Trip
 Fierce Guardianship
@@ -440,6 +442,7 @@ Midnight Banshee
 Migratory Greathorn
 Migratory Route
 Mirari
+Mirari's Wake
 Mirror Image
 Mishra's Workshop
 Mizzium Mortars
@@ -468,6 +471,7 @@ Nightveil Sprite
 Ninja Pizza
 Ninja of the Deep Hours
 Ninja of the New Moon
+Nirkana Revenant
 Norn's Annex
 Notion Rain
 Nyxborn Behemoth
@@ -480,6 +484,7 @@ Organic Extinction
 Origin of the Hulk
 Otherworldly Gaze
 Overgrown Arch
+Overgrowth
 Pacifism
 Pale Bears
 Panther Robot
@@ -734,6 +739,7 @@ Universal Surveillance
 Urabrask the Hidden
 Uthros Research Craft
 Uthros Scanship
+Utopia Sprawl
 Valley Rannet
 Vampire Cutthroat
 Vanguard Suppressor
@@ -765,6 +771,7 @@ Weirding Wood
 Whir of Invention
 Whisperer of the Wilds
 White Auracite
+Wild Growth
 Wild Wasteland
 Wilderness Elemental
 Windborn Muse
@@ -780,5 +787,6 @@ Wurmwall Sweeper
 Wyrm's Crossing Patrol
 Young Wolf
 Zendikar Farguide
+Zendikar Resurgent
 Zodiac Goat
 Zoetic Cavern

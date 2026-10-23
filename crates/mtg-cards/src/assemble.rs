@@ -351,6 +351,7 @@ impl<'a> ManaProduced<'a> {
                 count: *count,
                 colorless: *colorless,
             },
+            Produce::OfTapped => return None,
         })
     }
 }

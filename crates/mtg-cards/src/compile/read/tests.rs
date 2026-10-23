@@ -224,6 +224,7 @@ mod token_keywords;
 mod token_wordings;
 mod top_cast;
 mod transform;
+mod triggered_mana;
 mod triggers;
 mod turned_face_up;
 mod vocabulary;

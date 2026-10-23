@@ -8,6 +8,7 @@ use std::collections::BTreeSet;
 use std::sync::Arc;
 
 use mtg_cards::ability::{Ability, Limit};
+use mtg_cards::mana_trigger::mana_trigger;
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
 use mtg_cards::value::CounterKind;
@@ -1161,6 +1162,10 @@ fn object_triggers(
         else {
             continue;
         };
+        // A triggered mana ability adds its mana with the tap that triggered it and never uses the stack (CR 605.4a).
+        if mana_trigger(&rules).is_some() {
+            continue;
+        }
         // "When ~ is put into a graveyard from anywhere" works from the graveyard and looks back at the battlefield.
         let from_anywhere = zone == ZoneKind::Battlefield
             && *from == ZoneKind::Graveyard
