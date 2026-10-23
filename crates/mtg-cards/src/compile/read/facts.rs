@@ -143,7 +143,9 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
                 what: TurnTally::Attackers,
             },
             Cmp::Ge,
-        ) if number > 1 => counted(&|n| format!("you attacked with {n} or more creatures this turn")),
+        ) if number > 1 => {
+            counted(&|n| format!("you attacked with {n} or more creatures this turn"))
+        }
         (
             Amount::Tallied {
                 who: Ref::Opponents,

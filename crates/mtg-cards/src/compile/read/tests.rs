@@ -191,6 +191,7 @@ mod goad;
 mod granted_mana;
 mod graveyard;
 mod group_statics;
+mod hideaway;
 mod if_sentence;
 mod impulse;
 mod lands;

@@ -138,6 +138,7 @@ mod help_fuzz;
 mod help_payment;
 mod hideaway;
 mod hideaway_fuzz;
+mod hideaway_turn;
 mod house_commander;
 mod house_rules;
 mod house_table;
