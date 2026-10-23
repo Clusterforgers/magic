@@ -1,0 +1,21 @@
+{
+  "oracle_id": "5b8f0cdf-572d-4025-b930-79291f7c35be",
+  "name": "Vanishing Verse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vanishing Verse",
+      "oracle_fingerprint": "bf596f23600c046edcd2c8e8d5a4051e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Compare": { "stat": "Colors", "op": "Eq", "to": 1 } }] } }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

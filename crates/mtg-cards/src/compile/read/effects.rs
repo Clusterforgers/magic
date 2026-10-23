@@ -600,6 +600,15 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             to: Destination::Hand,
         }]);
     }
+    if let Some(what) = several_permanents(r) {
+        r.need("to")?;
+        super::mass_moves::their_owners(r)?;
+        r.need("hands")?;
+        return Some(vec![Effect::Move {
+            what,
+            to: Destination::Hand,
+        }]);
+    }
     let what = target_object(r).or_else(|| up_to_one_object(r))?;
     let Some(Targetable::Object(selector)) = r.targets.first().map(|spec| &spec.what) else {
         return None;
@@ -636,6 +645,23 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         what,
         to: Destination::Hand,
     }])
+}
+
+/// "six target nonland permanents", "up to two target creatures": several target permanents.
+fn several_permanents(r: &mut Reader<'_>) -> Option<Ref> {
+    r.attempt(|r| {
+        let what = target(r)?;
+        let spec = r.targets.first()?;
+        let Targetable::Object(selector) = &spec.what else {
+            return None;
+        };
+        let several = spec.bounds.max != Some(Amount::Fixed(1));
+        let permanents = !selector
+            .0
+            .iter()
+            .any(|pred| matches!(pred, Pred::In(_) | Pred::Spell));
+        (several && permanents).then_some(what)
+    })
 }
 
 /// "Return a land you control to its owner's hand.": the player chooses one permanent they
