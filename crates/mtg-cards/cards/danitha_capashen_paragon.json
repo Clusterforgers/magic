@@ -1,0 +1,27 @@
+{
+  "oracle_id": "4b6377da-83e7-4519-9582-16a9c16b8faa",
+  "name": "Danitha Capashen, Paragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Danitha Capashen, Paragon",
+      "oracle_fingerprint": "c8f9a347bc489af15c16aeaba689e950",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Lifelink" },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        }
+      ]
+    }
+  ]
+}

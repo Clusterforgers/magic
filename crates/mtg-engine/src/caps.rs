@@ -309,6 +309,8 @@ const RUNS: &[&str] = &[
     "Amount.PermanentsGraved",
     "Amount.CommanderCasts",
     "Amount.Tallied",
+    "Amount.Largest",
+    "Amount.StartingLife",
     "Ability.Replacement",
     "Ability.CostModifier",
     "ReplaceWhen.TokenCreation",

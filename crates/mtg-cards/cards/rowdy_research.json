@@ -1,0 +1,22 @@
+{
+  "oracle_id": "1a33a5c2-5aa1-48e5-95a8-d52cdce980de",
+  "name": "Rowdy Research",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rowdy Research",
+      "oracle_fingerprint": "8c0a2734622249923816be57c4694619",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Tallied": { "who": "EachPlayer", "what": "CreaturesAttacked" } }
+          }
+        },
+        { "Spell": { "effects": [{ "Draw": { "count": 3 } }] } }
+      ]
+    }
+  ]
+}

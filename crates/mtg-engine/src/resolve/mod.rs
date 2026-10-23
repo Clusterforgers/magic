@@ -20,8 +20,8 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 pub(crate) use inline::run_inline;
 pub(crate) use prim::lower;
-pub(crate) use value::zone_kind;
 pub use value::{Bindings, ResolveError, Scope};
+pub(crate) use value::{CastTargets, zone_kind};
 
 use crate::abilities::{AbilityObject, AbilityRef};
 use crate::ability_reader::abilities_of;
@@ -253,6 +253,7 @@ fn scope_of<'a>(
         cause: ability.and_then(|a| a.cause()),
         layered: None,
         casting: None,
+        cast_targets: None,
     }
 }
 

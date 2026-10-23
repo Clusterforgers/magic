@@ -1,0 +1,47 @@
+{
+  "oracle_id": "4854f836-2247-43c3-adbc-1d1ee5eaf120",
+  "name": "Avatar of Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avatar of Fury",
+      "oracle_fingerprint": "e2454dd7fd1d98ce9755a893c349fb9b",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{6}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -176,6 +176,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Untapped
         | Pred::Monstrous
         | Pred::EnteredThisTurn
+        | Pred::DamagedThisTurn
         | Pred::Attacking
         | Pred::Blocking
         | Pred::Unblocked
@@ -198,6 +199,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::HasKeyword(_) => Traits::KEYWORDS,
         Pred::Compare { stat, to, .. } => reads_of_stat(*stat).or(reads_of_amount(to)),
         Pred::Not(inner) => reads_of_pred(inner),
+        Pred::Targeting(inner) => reads_of_selector(inner),
         Pred::AnyOf(any) => any
             .iter()
             .fold(Traits::NONE, |all, inner| all.or(reads_of_pred(inner))),
@@ -234,6 +236,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Mutations(who)
         | Amount::Players(who)
         | Amount::Tallied { who, .. }
+        | Amount::StartingLife(who)
         | Amount::LowestLife(who)
         | Amount::HighestLife(who) => reads_of_ref(who),
         Amount::Sum(parts) => parts
@@ -246,6 +249,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
             reads_of_selector(of).or(reads_of_stat(*stat))
         }
         Amount::CardTypes(of) => reads_of_selector(of).or(Traits::TYPES),
+        Amount::Largest { who, of } => reads_of_ref(who).or(reads_of_selector(of)),
     }
 }
 

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "1e0bb57a-f5c7-45e9-b5b9-5bb3ec930108",
+  "name": "Ephara's Dispersal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ephara's Dispersal",
+      "oracle_fingerprint": "201b2c591b50a38bd462c4e151be1214",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This", { "Targeting": [{ "Type": "Creature" }, "Attacking"] }],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Surveil": { "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

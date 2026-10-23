@@ -389,6 +389,7 @@ fn pay_life(state: &mut GameState, id: PlayerId, amount: u32) -> Result<(), Engi
 fn gain_life(state: &mut GameState, id: PlayerId, amount: u32) -> Result<(), EngineError> {
     change_life(state, id, amount, true)?;
     state.tally(id, Tally::Gained);
+    state.tally_by(id, Tally::GainedTotal, amount);
     Ok(())
 }
 

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "bf418a2f-e639-4e52-9cad-5a0713a1829b",
+  "name": "Morophon, the Boundless",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Morophon, the Boundless",
+      "oracle_fingerprint": "26d4e018c192a09dcb77d42c47d1e985",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", "ChosenSubtype", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{W}{U}{B}{R}{G}"
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }, "ChosenSubtype"]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}
