@@ -1025,6 +1025,11 @@ impl<'a> Walker<'a> {
                     });
                 }
             }
+            TriggerPattern::Chapter { number } => {
+                if *number == 0 {
+                    self.at("number", |w| w.problem("the first chapter is 1"));
+                }
+            }
             TriggerPattern::Batch(inner) => self.batch(inner),
             TriggerPattern::Nth { event, nth } => self.nth(event, *nth),
         }
@@ -1051,6 +1056,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::SpellCast { .. }
                 | TriggerPattern::BecomesTarget { .. }
                 | TriggerPattern::GroupAttacks { .. }
+                | TriggerPattern::Chapter { .. }
         ) {
             self.problem("a batch is of one event that can happen to several things at once");
         }
@@ -1868,6 +1874,22 @@ impl<'a> Walker<'a> {
             GameRule::MustAttackPlayers { who, players } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Object));
                 w.at("players", |w| w.reference(players, Kind::Player));
+            }),
+            GameRule::AttackTax {
+                who,
+                attackers,
+                mana,
+                per,
+                ..
+            } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("attackers", |w| w.selector(attackers));
+                w.at("per", |w| w.amount(per));
+                if mana.has_x() {
+                    w.at("mana", |w| {
+                        w.problem("an attack tax is fixed mana, repeated by `per`, not an {X}");
+                    });
+                }
             }),
             GameRule::CantGainLife(who)
             | GameRule::CantDraw(who)

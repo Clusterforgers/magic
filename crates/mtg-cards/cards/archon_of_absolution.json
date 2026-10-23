@@ -1,0 +1,16 @@
+{
+  "oracle_id": "0e3ac581-3d78-4879-9afb-3db69c5c47a5",
+  "name": "Archon of Absolution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archon of Absolution",
+      "oracle_fingerprint": "00f924a30bf503601384da5a23515270",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Protection": [{ "Color": "White" }] } },
+        { "Rule": { "rule": { "AttackTax": { "attacked": "Both", "mana": "{1}" } } } }
+      ]
+    }
+  ]
+}

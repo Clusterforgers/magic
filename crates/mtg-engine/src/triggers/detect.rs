@@ -19,6 +19,7 @@ use crate::ability_reader::{abilities_of, provided_here, working_here};
 use crate::characteristics::{controller_of, controller_of_object};
 use crate::choose::{Choices, Target};
 use crate::combat::{AttackTarget, DamageForm, DamageTarget};
+use crate::counters::CountersChanged;
 use crate::events::{Event, ResolutionOutcome, ZoneCause};
 use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::replace::in_combat_damage;
@@ -99,11 +100,13 @@ enum Happened {
     Untapped { object: ObjectId },
     /// A player tapped a permanent for mana: once for the tap, whatever mana it made.
     TappedForMana { object: ObjectId, player: PlayerId },
-    /// Counters of a kind were put on a permanent (`delta` above 0) or removed from it (below 0).
+    /// Counters of a kind were put on a permanent (`delta` above 0) or removed from it (below 0), which held `before`
+    /// of them until then.
     Counters {
         on: ObjectId,
         counter: CounterKind,
         delta: i32,
+        before: u32,
     },
     /// A creature was declared as a blocker of an attacker.
     Blocked {
@@ -394,6 +397,31 @@ struct Look<'a> {
     later: &'a [Event],
 }
 
+/// How many counters of the kind `on` held before the change: those it holds after the batch, less this change and the
+/// changes of the same counters that follow it in the batch.
+fn counters_before(look: Look<'_>, changed: &CountersChanged, on: ObjectRef) -> u32 {
+    let held = look
+        .post
+        .object(on.id)
+        .filter(|object| object.counter() == on.counter)
+        .and_then(GameObject::permanent)
+        .map_or(0, |permanent| permanent.counters_of(&changed.counter));
+    let later: i64 = look
+        .later
+        .iter()
+        .filter_map(|event| match event {
+            Event::CountersChanged(next)
+                if next.on == changed.on && next.counter == changed.counter =>
+            {
+                Some(i64::from(next.delta))
+            }
+            _ => None,
+        })
+        .sum();
+    let before = i64::from(held) - later - i64::from(changed.delta);
+    u32::try_from(before.max(0)).unwrap_or(u32::MAX)
+}
+
 /// The object `id` as it was before the batch, which is how the turn's tallies name it.
 fn before(look: Look<'_>, id: ObjectId) -> Option<ObjectRef> {
     let object = look.pre.object(id).or_else(|| look.post.object(id));
@@ -563,6 +591,7 @@ fn about_players_and_permanents(
                     on: on.id,
                     counter: changed.counter.clone(),
                     delta: changed.delta,
+                    before: counters_before(look, changed, on),
                 });
             }
         }
@@ -925,12 +954,33 @@ fn matching_permanents(
                 on,
                 counter: kind,
                 delta,
+                ..
             },
         ) => {
             let putting = matches!(pattern, TriggerPattern::CountersPut { .. });
             let on = object(*on)?;
             ((*delta > 0) == putting && of_kind(counter, kind) && picks(what, on)?)
                 .then(|| counted(state, vec![Target::Object(on)], happened.amount()))
+        }
+        // A chapter ability triggers when lore counters take the Saga from below its number to its number or more
+        // (CR 714.2b), so several chapters trigger on one change that passes them.
+        (
+            TriggerPattern::Chapter { number },
+            Happened::Counters {
+                on,
+                counter: kind,
+                delta,
+                before,
+            },
+        ) => {
+            let on = object(*on)?;
+            let after = before.saturating_add(delta.unsigned_abs());
+            (*delta > 0
+                && *kind == CounterKind::lore()
+                && before < number
+                && *number <= after
+                && picks(&Selector::this(), on)?)
+            .then(|| counted(state, vec![Target::Object(on)], happened.amount()))
         }
         (TriggerPattern::Blocks { what }, Happened::Blocked { blocker, attacker }) => {
             let (blocker, attacker) = (object(*blocker)?, object(*attacker)?);

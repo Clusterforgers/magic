@@ -1,0 +1,23 @@
+{
+  "id": "3992e262-0491-4379-b74b-13cc8b63065e",
+  "oracle_id": "e81fa87f-80ce-4db6-940e-d30309bc70e6",
+  "name": "Vault 75: Middle School",
+  "lang": "en",
+  "layout": "saga",
+  "set": "pip",
+  "collector_number": "27",
+  "rarity": "rare",
+  "released_at": "2024-03-08",
+  "digital": false,
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Exile all creatures with power 4 or greater.\nII, III — Put a +1/+1 counter on each creature you control.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

@@ -265,11 +265,12 @@ fn decision_kinds() -> Vec<DecisionKind> {
             help: Box::default(),
         }),
         DecisionKind::DeclareAttackers(AttackOptions {
-            attackers: vec![AttackerOption {
-                object: a,
-                defenders: vec![AttackTarget::Player(PlayerId(1))],
-            }],
+            attackers: vec![AttackerOption::free(
+                a,
+                vec![AttackTarget::Player(PlayerId(1))],
+            )],
             required: vec![a],
+            mana: 0,
         }),
         DecisionKind::DeclareBlockers(BlockOptions {
             blockers: vec![BlockerOption {

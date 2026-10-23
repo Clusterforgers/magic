@@ -73,6 +73,7 @@ const TEMPLATES: [Template; 36] = [
     return_itself,
     prevention::rule_effect,
     prevention::shield,
+    super::attack_tax::rule_effect,
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.

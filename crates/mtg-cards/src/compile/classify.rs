@@ -101,8 +101,29 @@ pub(super) fn ability_word_len(line: &str) -> Option<usize> {
 
 /// A saga chapter: roman numerals, then a dash.
 fn is_chapter(line: &str) -> bool {
-    line.split_once(" \u{2014} ")
-        .is_some_and(|(numbers, _)| numbers.split(", ").all(|number| CHAPTERS.contains(&number)))
+    chapter(line).is_some()
+}
+
+/// A saga chapter line "I, II — text" as its chapter numbers (ascending) and its text.
+pub(crate) fn chapter(line: &str) -> Option<(Vec<u32>, &str)> {
+    let (numbers, text) = line.split_once(" \u{2014} ")?;
+    let numbers: Vec<u32> = numbers
+        .split(", ")
+        .map(|number| {
+            let at = CHAPTERS.iter().position(|numeral| *numeral == number)?;
+            u32::try_from(at + 1).ok()
+        })
+        .collect::<Option<_>>()?;
+    numbers
+        .windows(2)
+        .all(|pair| pair[0] < pair[1])
+        .then_some((numbers, text))
+}
+
+/// The roman numeral of a chapter number.
+pub(crate) fn numeral(number: u32) -> Option<&'static str> {
+    let at = usize::try_from(number).ok()?.checked_sub(1)?;
+    CHAPTERS.get(at).copied()
 }
 
 /// Whether the line starts a triggered ability.

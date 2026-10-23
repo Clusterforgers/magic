@@ -1,0 +1,56 @@
+{
+  "oracle_id": "1ae54fe7-b1d3-4c13-a8ef-f502cf3eb1a0",
+  "name": "The Birth of Meletis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Birth of Meletis",
+      "oracle_fingerprint": "a3967e8dbe2676e5068c80a3bb0c9138",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Subtype": "Plains" }],
+                  "reveal": true,
+                  "as": "land"
+                }
+              },
+              { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wall",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Wall"],
+                      "power": 0,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Defender" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

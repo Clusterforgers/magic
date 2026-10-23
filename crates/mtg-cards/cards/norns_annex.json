@@ -1,0 +1,14 @@
+{
+  "oracle_id": "9a1fbe72-4a17-42be-8e23-d7d30a5e59c1",
+  "name": "Norn's Annex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Norn's Annex",
+      "oracle_fingerprint": "9449426e34c6d104bb81cafcab4ee935",
+      "abilities": [
+        { "Rule": { "rule": { "AttackTax": { "attacked": "Both", "mana": "{W/P}" } } } }
+      ]
+    }
+  ]
+}

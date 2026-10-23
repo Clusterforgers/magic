@@ -1,0 +1,27 @@
+{
+  "id": "3ce8b722-7bc0-4053-8627-7846f9d17eda",
+  "oracle_id": "75e09ac6-d789-4c4d-9aca-845d68f3899f",
+  "name": "Windborn Muse",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "92",
+  "rarity": "rare",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Spirit",
+  "oracle_text": "Flying\nCreatures can't attack you unless their controller pays {2} for each creature they control that's attacking you.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

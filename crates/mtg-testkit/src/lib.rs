@@ -7,6 +7,7 @@ pub mod action_cards;
 pub mod alternative_cards;
 pub mod announce_cards;
 pub mod attach_cards;
+pub mod attack_tax_cards;
 pub mod bestow_cards;
 pub mod blitz_cards;
 pub mod bot;
@@ -67,6 +68,7 @@ pub mod pump_cards;
 pub mod replace_cards;
 pub mod required_cost_cards;
 pub mod rule_cards;
+pub mod saga_cards;
 pub mod scenario;
 pub mod script_error;
 pub mod small_cards;
@@ -86,6 +88,7 @@ pub use action_cards::actions_fuzz_setup;
 pub use alternative_cards::alternative_fuzz_setup;
 pub use announce_cards::split_fuzz_setup;
 pub use attach_cards::attach_fuzz_setup;
+pub use attack_tax_cards::tax_fuzz_setup;
 pub use bestow_cards::bestow_fuzz_setup;
 pub use blitz_cards::blitz_fuzz_setup;
 pub use bot::RandomBot;
@@ -148,6 +151,7 @@ pub use required_cost_cards::{
     REQUIRED_COST_CARDS, Takes, required_cost_fuzz_setup, required_cost_of,
 };
 pub use rule_cards::rules_fuzz_setup;
+pub use saga_cards::saga_fuzz_setup;
 pub use scenario::{
     Scenario, ScenarioError, attached_to, damaged, enchanting, ready, sick, tapped, with_counters,
 };

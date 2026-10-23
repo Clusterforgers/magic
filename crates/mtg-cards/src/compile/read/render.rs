@@ -33,6 +33,7 @@ use super::triggers::{
 };
 use super::where_x;
 use crate::ability::{Ability, Limit, Timing};
+use crate::compile::classify;
 use crate::cost::Cost;
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
 use crate::modify::{Duration, Modification};
@@ -179,12 +180,53 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts
 }
 
+/// The line of a Saga chapter: its roman numeral, a dash and the sentences of its effects.
+fn chapter_texts(number: u32, targets: &[TargetSpec], effects: &[Effect]) -> Vec<String> {
+    let Some(numeral) = classify::numeral(number) else {
+        return Vec::new();
+    };
+    alternatives(targets, effects)
+        .iter()
+        .map(|sentences| format!("{numeral} \u{2014} {}", spell(sentences)))
+        .collect()
+}
+
+/// The ways the event of a triggered ability is worded.
+fn head_wordings(head: Vec<String>) -> Vec<Vec<String>> {
+    // An Equipment says "equipped creature" and an Aura "enchanted creature"; the data does not say which.
+    let mut heads = vec![head.clone()];
+    if head[0].contains("equipped creature") {
+        heads.push(
+            head.iter()
+                .map(|part| part.replace("equipped creature", "enchanted creature"))
+                .collect(),
+        );
+    }
+    // A card that is targeted once says "When" ("When this creature becomes the target of a spell or ability").
+    if head[0].starts_with("Whenever ~ becomes the target of a spell or ability")
+        && !head[0].contains(" each turn")
+    {
+        let mut when = head;
+        when[0] = when[0].replacen("Whenever", "When", 1);
+        heads.insert(0, when);
+    }
+    heads
+}
+
 fn ability_texts(ability: &Ability) -> Vec<String> {
     match ability {
         Ability::Spell { targets, effects } => alternatives(targets, effects)
             .iter()
             .map(|sentences| spell(sentences))
             .collect(),
+        Ability::Triggered {
+            when: TriggerPattern::Chapter { number },
+            intervening_if: None,
+            limit: None,
+            from: ZoneKind::Battlefield,
+            targets,
+            effects,
+        } => chapter_texts(*number, targets, effects),
         Ability::Triggered {
             when,
             intervening_if,
@@ -202,23 +244,7 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             let Some(head) = trigger_head(when, intervening_if.as_ref()) else {
                 return Vec::new();
             };
-            // An Equipment says "equipped creature" and an Aura "enchanted creature"; the data does not say which.
-            let mut heads = vec![head.clone()];
-            if head[0].contains("equipped creature") {
-                heads.push(
-                    head.iter()
-                        .map(|part| part.replace("equipped creature", "enchanted creature"))
-                        .collect(),
-                );
-            }
-            // A card that is targeted once says "When" ("When this creature becomes the target of a spell or ability").
-            if head[0].starts_with("Whenever ~ becomes the target of a spell or ability")
-                && !head[0].contains(" each turn")
-            {
-                let mut when = head.clone();
-                when[0] = when[0].replacen("Whenever", "When", 1);
-                heads.insert(0, when);
-            }
+            let heads = head_wordings(head);
             alternatives(targets, effects)
                 .iter()
                 .flat_map(|sentences| {
@@ -1330,7 +1356,11 @@ impl Writer<'_> {
                     "becomes"
                 }
             ),
-            _ => return prevention::effect_text(effect).or_else(|| lands::effect_text(effect)),
+            _ => {
+                return prevention::effect_text(effect)
+                    .or_else(|| lands::effect_text(effect))
+                    .or_else(|| super::attack_tax::effect_text(effect));
+            }
         })
     }
 

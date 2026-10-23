@@ -1,0 +1,15 @@
+{
+  "oracle_id": "75e09ac6-d789-4c4d-9aca-845d68f3899f",
+  "name": "Windborn Muse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Windborn Muse",
+      "oracle_fingerprint": "ce9412d9654c71be17b94c736e3e5716",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "AttackTax": { "attacked": "Player", "mana": "{2}" } } } }
+      ]
+    }
+  ]
+}

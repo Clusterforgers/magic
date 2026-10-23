@@ -1,0 +1,71 @@
+{
+  "oracle_id": "c15bb7eb-aaaa-4468-9641-8f706d6137e8",
+  "name": "History of Benalia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "History of Benalia",
+      "oracle_fingerprint": "1ecd726ae35fef8f94b5c886770c18f3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Knight",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Knight"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Knight",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Knight"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Knight" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "d25bbe18-709c-4ed3-a047-5578ecfaaba7",
+  "oracle_id": "9a1fbe72-4a17-42be-8e23-d7d30a5e59c1",
+  "name": "Norn's Annex",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "829",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{3}{W/P}{W/P}",
+  "cmc": 5.0,
+  "type_line": "Artifact",
+  "oracle_text": "({W/P} can be paid with either {W} or 2 life.)\nCreatures can't attack you or planeswalkers you control unless their controller pays {W/P} for each of those creatures.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

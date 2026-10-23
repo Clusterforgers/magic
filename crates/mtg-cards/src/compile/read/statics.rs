@@ -33,7 +33,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 15] = [
+const TEMPLATES: [Template; 16] = [
     entering,
     entering_tapped_if,
     group_enters_tapped,
@@ -49,6 +49,7 @@ const TEMPLATES: [Template; 15] = [
     defining::ability,
     prevention::static_rule,
     super::costs::additional,
+    super::attack_tax::static_rule,
 ];
 
 /// A static ability that is a whole sentence: the shape and its period.
@@ -993,6 +994,9 @@ fn rule_texts(rule: &GameRule, from: ZoneKind) -> Vec<String> {
         (GameRule::MustBlock(who), ZoneKind::Battlefield) => each_combat(who, "block"),
         (GameRule::DamageCantBePrevented { source, combat }, ZoneKind::Battlefield) => {
             prevention::static_texts(source, *combat)
+        }
+        (GameRule::AttackTax { .. }, ZoneKind::Battlefield) => {
+            super::attack_tax::static_texts(rule)
         }
         _ => Vec::new(),
     }

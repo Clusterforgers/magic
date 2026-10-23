@@ -1,0 +1,14 @@
+{
+  "oracle_id": "ea9709b6-4c37-4d5a-b04d-cd4c42e4f9dd",
+  "name": "Propaganda",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Propaganda",
+      "oracle_fingerprint": "4855567076dcb70b4d3b338ebfa85f9a",
+      "abilities": [
+        { "Rule": { "rule": { "AttackTax": { "attacked": "Player", "mana": "{2}" } } } }
+      ]
+    }
+  ]
+}

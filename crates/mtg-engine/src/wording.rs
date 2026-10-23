@@ -489,6 +489,9 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             };
             (format!("counters are removed from {from}"), false)
         }
+        TriggerPattern::Chapter { number } => {
+            (format!("its lore counters reach chapter {number}"), true)
+        }
         TriggerPattern::Attached { what, to } => {
             let attachment = if what.is_empty() {
                 "an attachment".to_owned()
@@ -1259,6 +1262,10 @@ mod tests {
     #[case::counters_removed(
         r#"{"CountersRemoved":{"what":["This"]}}"#,
         "Whenever counters are removed from it"
+    )]
+    #[case::a_chapter(
+        r#"{"Chapter":{"number":3}}"#,
+        "When its lore counters reach chapter 3"
     )]
     #[case::counters_removed_anywhere(
         r#"{"CountersRemoved":{}}"#,
