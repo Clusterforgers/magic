@@ -1,0 +1,27 @@
+{
+  "cmc": 5.0,
+  "collector_number": "221",
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "colors": [
+    "R",
+    "U"
+  ],
+  "digital": false,
+  "id": "24bf4eac-784d-4d9e-b7b3-92da98215376",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{3}{U}{R}",
+  "name": "Mercurial Chemister",
+  "oracle_id": "4243baf6-9ac2-4f87-988d-3ebf5e177f3b",
+  "oracle_text": "{U}, {T}: Draw two cards.\n{R}, {T}, Discard a card: This creature deals damage to target creature equal to the discarded card's mana value.",
+  "power": "2",
+  "rarity": "rare",
+  "released_at": "2020-04-17",
+  "set": "c20",
+  "toughness": "3",
+  "type_line": "Creature — Human Wizard"
+}

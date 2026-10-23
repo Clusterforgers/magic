@@ -112,6 +112,8 @@ const RUNS: &[&str] = &[
     "Effect.ExileUntil",
     "Effect.ExileTop",
     "Effect.ExileHidden",
+    "Effect.Manifest",
+    "Effect.Cloak",
     "Effect.CastFromZone",
     "Effect.Destroy",
     "Effect.Exile",
@@ -194,6 +196,8 @@ const RUNS: &[&str] = &[
     "Mod.SwitchPT",
     "Mod.AddType",
     "Mod.RemoveType",
+    "Mod.SetTypes",
+    "Mod.RemoveSupertype",
     "Mod.AddSubtype",
     "Mod.SetCreatureTypes",
     "Mod.AddAllCreatureTypes",
@@ -377,6 +381,9 @@ const RUNS: &[&str] = &[
     "Keyword.Awaken",
     "Keyword.Gravestorm",
     "Keyword.Sunburst",
+    "Keyword.UmbraArmor",
+    "ReplaceWhen.Destroyed",
+    "ReplaceBy.UmbraArmor",
     "Condition.NewlyControlled",
     "Condition.Level",
     "Rule.CanBeCommander",
@@ -519,6 +526,8 @@ mod tests {
     #[case::switching_power_and_toughness("Mod.SwitchPT", true)]
     #[case::types("Mod.AddType", true)]
     #[case::removed_types("Mod.RemoveType", true)]
+    #[case::set_types("Mod.SetTypes", true)]
+    #[case::removed_supertypes("Mod.RemoveSupertype", true)]
     #[case::subtypes("Mod.AddSubtype", true)]
     #[case::colours("Mod.SetColors", true)]
     #[case::granted_abilities("Mod.GrantAbility", true)]
@@ -633,6 +642,8 @@ mod tests {
     #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]
     #[case::exiling_the_top_cards("Effect.ExileTop", true)]
     #[case::exiling_face_down("Effect.ExileHidden", true)]
+    #[case::manifesting("Effect.Manifest", true)]
+    #[case::cloaking("Effect.Cloak", true)]
     #[case::casting_during_a_resolution("Effect.CastFromZone", true)]
     #[case::cascading("Keyword.Cascade", true)]
     #[case::convoking("Keyword.Convoke", true)]
@@ -781,6 +792,9 @@ mod tests {
     #[case::awaken("Keyword.Awaken", true)]
     #[case::gravestorm("Keyword.Gravestorm", true)]
     #[case::sunburst("Keyword.Sunburst", true)]
+    #[case::umbra_armor("Keyword.UmbraArmor", true)]
+    #[case::replacing_destruction("ReplaceWhen.Destroyed", true)]
+    #[case::saving_by_umbra_armor("ReplaceBy.UmbraArmor", true)]
     #[case::pairing_attackers_with_players("Rule.MustAttackPlayers", true)]
     #[case::taxing_attackers("Rule.AttackTax", true)]
     #[case::squad("Keyword.Squad", true)]

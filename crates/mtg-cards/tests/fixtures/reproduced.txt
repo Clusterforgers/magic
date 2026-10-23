@@ -78,6 +78,7 @@ Batterskull
 Battle Sliver
 Battlefield Forge
 Baxter Building
+Bear Umbra
 Beast Within
 Beastmaster Ascension
 Befriending the Moths // Imperial Moth
@@ -112,6 +113,7 @@ Boon Reflection
 Boon Satyr
 Boon-Bringer Valkyrie
 Borderland Behemoth
+Bosh, Iron Golem
 Brain Freeze
 Brainstorm
 Branchblight Stalker
@@ -119,6 +121,7 @@ Breath of Life
 Briarblade Adept
 Bridled Bighorn
 Brightstone Ritual
+Brion Stoutarm
 Bronzeplate Boar
 Broodbirth Viper
 Broodhatch Nantuko
@@ -240,8 +243,10 @@ Demon of Wailing Agonies
 Dense Canopy
 Deputized Protester
 Dimir Infiltrator
+Dina, Soul Steeper
 Dire Fleet Interloper
 Direct Current
+Disciple of Griselbrand
 Disembowel
 Disrupt Decorum
 Dockside Extortionist
@@ -277,7 +282,9 @@ Earthen Arms
 Easterling Vanguard
 Echo Inspector
 Echo Mage
+Echo Storm
 Echoes of the Kin Tree
+Eel Umbra
 Electric Revelation
 Electro's Bolt
 Elegant Edgecrafters
@@ -285,6 +292,7 @@ Elven Ambush
 Elvish Aberration
 Elvish Rejuvenator
 Empyrial Plate
+Empyrial Storm
 Enraged Revolutionary
 Enthusiastic Study
 Epic Proportions
@@ -347,6 +355,7 @@ Four Knocks
 Fruit of Tizerus
 Fungal Reaches
 Furtive Homunculus
+Fury Storm
 Gadwick, the Wizened
 Gaea's Cradle
 Galadhrim Brigade
@@ -361,6 +370,7 @@ Ghalta, Primal Hunger
 Ghost Quarter
 Ghostblade Eidolon
 Ghostly Prison
+Ghoulcaller Gisa
 Giant Beaver
 Giant Cindermaw
 Giant Growth
@@ -390,6 +400,7 @@ Grapeshot
 Graveblade Marauder
 Graven Cairns
 Graveshifter
+Greater Good
 Greater Mossdog
 Green Goblin, Back for More
 Grenzo's Cutthroat
@@ -410,6 +421,7 @@ Hammer Dropper
 Hangar Scrounger
 Hangarback Walker
 Harrow
+Hatut Zeraze Strike Force
 Haughty Djinn
 Headless Skaab
 Hearthhull, the Worldseed
@@ -495,6 +507,7 @@ Legion Loyalty
 Levitation
 Lhurgoyf
 Life of Toshiro Umezawa // Memory of Toshiro
+Life's Legacy
 Light 'Em Up
 Lightning Bolt
 Lithoform Engine
@@ -523,6 +536,7 @@ Mardu Strike Leader
 Maro
 Master of Etherium
 Master of Pearls
+Mastery of the Unseen
 Maulfist Squad
 Mausoleum Harpy
 Maverick Thopterist
@@ -530,6 +544,7 @@ Mayhem Patrol
 Megrim
 Memory Guardian
 Mer-Ek Nightblade
+Mercurial Chemister
 Merfolk Branchwalker
 Mesmeric Orb
 Metropolis Reformer
@@ -581,6 +596,7 @@ Notion Rain
 Nyxborn Behemoth
 Oath of Jace
 Obscuring Haze
+Octopus Umbra
 Okiba Reckoner Raid // Nezumi Road Captain
 Ominous Harvest
 Onakke Oathkeeper
@@ -636,6 +652,7 @@ Psychic Impetus
 Psychosis Crawler
 Putrid Goblin
 Pygmy Kavu
+Quantum Misalignment
 Quest for the Goblin Lord
 Questing Beast
 Rabble Rousing
@@ -648,7 +665,9 @@ Rambling Possum
 Ramos, Dragon Engine
 Rampant Growth
 Rancor
+Ransom Note
 Ravenous Leucrocota
+Reality Shift
 Realm Seekers
 Reassembling Skeleton
 Reckless Impulse
@@ -758,6 +777,7 @@ Slitherhead
 Sluiceway Scorpion
 Smuggler's Buggy
 Smuggler's Copter
+Snake Umbra
 Snubhorn Sentry
 Sodden Verdure
 Sol Ring

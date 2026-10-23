@@ -52,6 +52,7 @@ export type { ContinuousEffect } from "./ContinuousEffect";
 export type { ConvokeOption } from "./ConvokeOption";
 export type { Convoked } from "./Convoked";
 export type { CopyView } from "./CopyView";
+export type { CostTaken } from "./CostTaken";
 export type { CostsChoice } from "./CostsChoice";
 export type { CostsOptions } from "./CostsOptions";
 export type { CounterKind } from "./CounterKind";

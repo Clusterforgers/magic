@@ -1,0 +1,43 @@
+{
+  "oracle_id": "2121bcb4-f5fe-447f-9112-c7e5b5c45baf",
+  "name": "Dina, Soul Steeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dina, Soul Steeper",
+      "oracle_fingerprint": "b1f5e4c1634bb1a328484a50c0b7945a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "Paid", "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

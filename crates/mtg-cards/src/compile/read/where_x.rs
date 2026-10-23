@@ -8,6 +8,7 @@ use serde_json::Value;
 use super::amounts::stat_name;
 use super::defining;
 use super::render;
+use super::selectors::stat_word;
 use super::tokens::Reader;
 use crate::ability::Ability;
 use crate::effect::Effect;
@@ -22,6 +23,8 @@ enum Whose {
     Card,
     /// "that creature's power".
     ThatCreature,
+    /// "the sacrificed creature's power", "the discarded card's mana value": what the cost took.
+    Paid,
 }
 
 /// What a where clause names.
@@ -54,18 +57,53 @@ fn characteristic(r: &mut Reader<'_>) -> Option<(Whose, StatKind)> {
     } else if r.words("that creature's") {
         Whose::ThatCreature
     } else {
-        return None;
+        let stat = paid_stat(r)?;
+        return Some((Whose::Paid, stat));
     };
-    let stat = if r.word("power") {
-        StatKind::Power
-    } else if r.word("toughness") {
-        StatKind::Toughness
-    } else if r.words("mana value") {
-        StatKind::ManaValue
-    } else {
-        return None;
-    };
+    let stat = stat_word(r)?;
     Some((whose, stat))
+}
+
+/// What the cost of an ability or a spell took out of its zone, as a card words it.
+const PAID_VERBS: [&str; 3] = ["sacrificed", "discarded", "exiled"];
+
+/// What the cost took, as a card names it.
+const PAID_NOUNS: [&str; 7] = [
+    "creature",
+    "artifact",
+    "enchantment",
+    "land",
+    "permanent",
+    "planeswalker",
+    "card",
+];
+
+/// "the sacrificed creature's power", "the discarded card's mana value": a characteristic of what the cost took, read
+/// only where the cost took something (`Reader.paid`).
+pub(super) fn paid_stat(r: &mut Reader<'_>) -> Option<StatKind> {
+    r.paid.then_some(())?;
+    r.attempt(|r| {
+        r.need("the")?;
+        PAID_VERBS.contains(&r.take_word()?).then_some(())?;
+        let noun = r.take_word()?.strip_suffix("'s")?;
+        PAID_NOUNS.contains(&noun).then_some(())?;
+        stat_word(r)
+    })
+}
+
+/// Every wording of a characteristic of what the cost took.
+fn paid_names(stat: StatKind) -> Vec<String> {
+    let Some(name) = stat_name(stat) else {
+        return Vec::new();
+    };
+    PAID_VERBS
+        .iter()
+        .flat_map(|verb| {
+            PAID_NOUNS
+                .iter()
+                .map(move |noun| format!("the {verb} {noun}'s {name}"))
+        })
+        .collect()
 }
 
 /// "equal to its power", "equal to the number of opponents you have": the characteristic or the count an amount is.
@@ -104,6 +142,7 @@ fn object(r: &Reader<'_>, whose: &Whose) -> Option<Ref> {
     };
     match whose {
         Whose::Card => Some(Ref::This),
+        Whose::Paid => Some(Ref::Paid),
         Whose::Its => r.it.clone().or_else(lone_target).or(r.subject.clone()),
         Whose::ThatCreature => r
             .subject
@@ -201,11 +240,14 @@ fn counts(value: &Value, found: &mut Vec<Value>) {
     }
 }
 
-/// The wordings of a where clause for an object: how a card names it.
+/// How a card names a characteristic of an object in a where clause.
 fn tails(of: &Ref, stat: StatKind) -> Vec<String> {
     let Some(name) = stat_name(stat) else {
         return Vec::new();
     };
+    if *of == Ref::Paid {
+        return paid_names(stat);
+    }
     let owners: &[&str] = match of {
         Ref::This => &["~'s", "its"],
         Ref::Target(0) => &["its"],
@@ -214,7 +256,7 @@ fn tails(of: &Ref, stat: StatKind) -> Vec<String> {
     };
     owners
         .iter()
-        .map(|owner| format!(", where X is {owner} {name}"))
+        .map(|owner| format!("{owner} {name}"))
         .collect()
 }
 
@@ -353,9 +395,22 @@ pub(super) fn wordings(ability: &Ability) -> Vec<String> {
     let Some(replaced) = with_x(json, stat) else {
         return Vec::new();
     };
-    let tails = tails(&of, kind);
-    render::variants(&replaced)
+    let said = tails(&of, kind);
+    let texts = render::variants(&replaced);
+    let mut found: Vec<String> = texts
         .iter()
-        .flat_map(|text| tails.iter().flat_map(|tail| insert(text, tail)))
-        .collect()
+        .flat_map(|text| {
+            said.iter()
+                .flat_map(|said| insert(text, &format!(", where X is {said}")))
+        })
+        .collect();
+    // What a cost took is also worded after "equal to" ("draw cards equal to the sacrificed creature's power").
+    if of == Ref::Paid {
+        for text in &texts {
+            for said in &said {
+                found.extend(equal_to_forms(text, said));
+            }
+        }
+    }
+    found
 }

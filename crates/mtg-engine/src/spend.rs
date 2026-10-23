@@ -81,6 +81,25 @@ impl Spend {
         self
     }
 
+    /// The payment for a card cast face down: a creature spell with no supertype, subtype or colour (CR 708.4).
+    #[must_use]
+    pub fn face_down(mut self) -> Self {
+        self.traits = SpendTraits::default();
+        self.traits.types = self.traits.types.with(mtg_core::card::CardType::Creature);
+        self
+    }
+
+    /// The payment for the spell as cast the way `way` says: a bestowed card is an Aura spell, a card cast face down a
+    /// creature spell that is nothing else.
+    #[must_use]
+    pub fn cast_as(self, way: Option<mtg_cards::value::CastWay>) -> Self {
+        match way {
+            Some(mtg_cards::value::CastWay::Bestow) => self.bestowed(),
+            Some(mtg_cards::value::CastWay::FaceDown) => self.face_down(),
+            _ => self,
+        }
+    }
+
     /// Activating an ability of `source`; `has_x` when its cost has {X}.
     pub fn for_ability(state: &GameState, source: ObjectId, has_x: bool) -> Self {
         Spend {

@@ -1,0 +1,29 @@
+{
+  "cmc": 4.0,
+  "collector_number": "200",
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "colors": [
+    "R",
+    "W"
+  ],
+  "digital": false,
+  "id": "b097c70a-d1d6-4972-b94d-d7d8a6f443e2",
+  "keywords": [
+    "Lifelink"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{R}{W}",
+  "name": "Brion Stoutarm",
+  "oracle_id": "b816b3cc-ae4b-4fb7-8b1a-e01ab83459a3",
+  "oracle_text": "Lifelink\n{R}, {T}, Sacrifice another creature: Brion Stoutarm deals damage equal to the sacrificed creature's power to target player or planeswalker.",
+  "power": "4",
+  "rarity": "rare",
+  "released_at": "2018-03-16",
+  "set": "a25",
+  "toughness": "4",
+  "type_line": "Legendary Creature — Giant Warrior"
+}

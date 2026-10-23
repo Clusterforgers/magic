@@ -54,6 +54,23 @@ function keywordWords(keyword: unknown): string {
 }
 
 /** What a change does to what it changes, as a verb phrase ("becomes an artifact too", "gets +1/+1"). */
+/** The card types in declaration order; the wire set holds bit n for the nth. */
+const CARD_TYPE_ORDER = [
+  'artifact',
+  'battle',
+  'creature',
+  'enchantment',
+  'instant',
+  'kindred',
+  'land',
+  'planeswalker',
+  'sorcery',
+]
+
+function cardTypeNames(types: number): string[] {
+  return CARD_TYPE_ORDER.filter((_, bit) => (types >> bit) & 1)
+}
+
 function modificationWords(modification: Modification, group: boolean): string {
   const becomes = group ? 'become' : 'becomes'
   const gains = group ? 'gain' : 'gains'
@@ -78,6 +95,9 @@ function modificationWords(modification: Modification, group: boolean): string {
   }
   if ('AddType' in modification) return `${becomes} ${modification.AddType.toLowerCase()} too`
   if ('RemoveType' in modification) return `${loses} ${modification.RemoveType.toLowerCase()} as a type`
+  if ('SetTypes' in modification) {
+    return `${becomes} only ${joinWords(cardTypeNames(modification.SetTypes))}`
+  }
   if ('AddSubtype' in modification) return `${becomes} ${modification.AddSubtype} too`
   if ('SetCreatureTypes' in modification) {
     return `${becomes} ${joinWords(modification.SetCreatureTypes)}`
@@ -252,7 +272,14 @@ function describeChoice(choice: Choice, n: EventNames): string {
 
 /** The words for a cause that is a plain name; a card hidden with hideaway or exiled until a permanent leaves carries that permanent. */
 const BECAUSE: Record<
-  Exclude<ZoneCause, { Hideaway: unknown } | { ExiledUntil: unknown } | { ExiledUntilMonarch: unknown }>,
+  Exclude<
+    ZoneCause,
+    | { Hideaway: unknown }
+    | { ExiledUntil: unknown }
+    | { ExiledUntilMonarch: unknown }
+    | { Manifested: unknown }
+    | { Cloaked: unknown }
+  >,
   string
 > = {
   Moved: 'moves',
@@ -266,6 +293,14 @@ const BECAUSE: Record<
   Discarded: 'is discarded',
   Foretold: 'is foretold',
   Adventure: 'is exiled on an adventure',
+}
+
+/** The words for a cause that carries a player or a permanent. */
+function objectCause(cause: Extract<ZoneCause, object>): string {
+  if ('Hideaway' in cause) return 'is exiled face down'
+  if ('Manifested' in cause) return 'is manifested'
+  if ('Cloaked' in cause) return 'is cloaked'
+  return 'is exiled for a while'
 }
 
 /** The events of spells and abilities: abilities on the stack, the steps of a resolution, life, zones and what players learn. */
@@ -342,7 +377,7 @@ function describePipeline(event: PipelineEvent, n: EventNames): LogLine {
     return line(
       cause === 'Moved'
         ? `${n.card(object)} moves to ${zoneWord(to, n)}`
-        : `${n.card(object)} ${typeof cause === 'object' ? ('Hideaway' in cause ? 'is exiled face down' : 'is exiled for a while') : BECAUSE[cause]}`,
+        : `${n.card(object)} ${typeof cause === 'object' ? objectCause(cause) : BECAUSE[cause]}`,
     )
   }
   if ('LifeGained' in event)
@@ -551,6 +586,9 @@ function describePublic(event: Event, n: EventNames): LogLine {
   if ('RuleCreated' in event) return quiet(describeRule(event.RuleCreated.effect, n))
   if ('RuleExpired' in event) return quiet('A rule change ends')
   if ('Regenerated' in event) return line(`${n.card(event.Regenerated.object)} regenerates`)
+  if ('DamageRemoved' in event) {
+    return line(`${n.card(event.DamageRemoved.object)} has all its damage removed`)
+  }
   if ('ShieldUsed' in event) return quiet(`A prevention shield has ${event.ShieldUsed.left} left`)
   if ('CreatureDied' in event) {
     const HOW: Record<DeathCause, string> = {

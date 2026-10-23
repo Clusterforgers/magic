@@ -6,7 +6,7 @@
 
 use std::sync::Arc;
 
-use mtg_core::card::{CardType, Subtype};
+use mtg_core::card::{CardType, Subtype, Supertype};
 
 use super::abilities;
 use super::amounts::{count_word, number_word};
@@ -219,6 +219,15 @@ impl Subject {
         }
     }
 
+    /// The words before what the subject is not.
+    const fn isnt(self) -> Option<&'static str> {
+        match self {
+            Subject::It => Some("it isn't"),
+            Subject::Copy => Some("the copy isn't"),
+            Subject::They => None,
+        }
+    }
+
     /// The words before what the subject has.
     const fn has(self) -> &'static str {
         match self {
@@ -242,6 +251,8 @@ pub(super) fn exceptions(r: &mut Reader<'_>, subject: Subject) -> Option<Vec<Mod
     loop {
         if subject != Subject::They && r.words(subject.is()) {
             is(r, &mut mods)?;
+        } else if let Some(gone) = r.attempt(|r| not_legendary(r, subject)) {
+            mods.push(gone);
         } else {
             r.need(subject.has())?;
             has(r, &mut mods)?;
@@ -250,6 +261,14 @@ pub(super) fn exceptions(r: &mut Reader<'_>, subject: Subject) -> Option<Vec<Mod
             return Some(mods);
         }
     }
+}
+
+/// "it isn't legendary", "the token isn't legendary", "the copy isn't legendary": the copy has no supertype Legendary.
+fn not_legendary(r: &mut Reader<'_>, subject: Subject) -> Option<Modification> {
+    (r.words(subject.isnt()?) || (subject == Subject::It && r.words("the token isn't")))
+        .then_some(())?;
+    r.need("legendary")?;
+    Some(Modification::RemoveSupertype(Supertype::Legendary))
 }
 
 /// What follows "it has": keywords, or an ability in quotes.
@@ -324,6 +343,21 @@ fn is(r: &mut Reader<'_>, mods: &mut Vec<Modification>) -> Option<()> {
         }
     }
     (!kinds.is_empty()).then_some(())?;
+    // "it's an artifact and it loses all other card types": these are the types, and no others.
+    if size.is_none()
+        && r.attempt(|r| r.need("and it loses all other card types"))
+            .is_some()
+    {
+        let types = kinds
+            .iter()
+            .map(|kind| match kind {
+                Modification::AddType(found) => Some(*found),
+                _ => None,
+            })
+            .collect::<Option<Vec<_>>>()?;
+        mods.push(Modification::SetTypes(types));
+        return Some(());
+    }
     r.need("in addition to its other types")?;
     mods.extend(size);
     mods.extend(kinds);
@@ -393,6 +427,21 @@ pub(super) fn exceptions_text(mods: &[Modification], subject: Subject) -> Option
                 format!("{} \"{}\"", subject.has(), render::ability(ability)?)
             }
             _ if subject == Subject::They => return None,
+            Modification::RemoveSupertype(Supertype::Legendary) => {
+                format!("{} legendary", subject.isnt()?)
+            }
+            Modification::SetTypes(types) if !types.is_empty() => {
+                let names = types
+                    .iter()
+                    .map(|found| type_name(*found))
+                    .collect::<Vec<_>>()
+                    .join(" ");
+                format!(
+                    "{} {} {names} and it loses all other card types",
+                    subject.is(),
+                    article(&names)
+                )
+            }
             Modification::SetColors(colors) => {
                 format!("{} {}", subject.is(), colors_text(colors))
             }

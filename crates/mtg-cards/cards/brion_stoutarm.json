@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b816b3cc-ae4b-4fb7-8b1a-e01ab83459a3",
+  "name": "Brion Stoutarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brion Stoutarm",
+      "oracle_fingerprint": "c00f73b1c4c4cbccd753f8792e17ff5f",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{R}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Paid", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

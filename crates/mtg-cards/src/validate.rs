@@ -197,6 +197,8 @@ struct Walker<'a> {
     has_kicker: bool,
     /// Whether the card prints an optional additional cost ("As an additional cost to cast this spell, you may ...").
     has_additional_cost: bool,
+    /// Whether the cost being walked takes objects the effects can name (`Ref::Paid`): a part that picks, or a required additional cost that does.
+    pays_objects: bool,
     x_free: bool,
     /// Whether an `X` read here is the one announced for the ability being walked, which its effects read as it resolves.
     x_now: bool,
@@ -224,6 +226,7 @@ impl<'a> Walker<'a> {
             scope: Scope::default(),
             has_kicker: false,
             has_additional_cost: false,
+            pays_objects: false,
             x_free: false,
             x_now: false,
             amounting: Amounting::Other,
@@ -300,7 +303,13 @@ impl<'a> Walker<'a> {
             | Ref::Defending => {
                 self.expect(Kind::Player, want);
             }
-            Ref::This | Ref::Attached | Ref::Paid => self.expect(Kind::Object, want),
+            Ref::This | Ref::Attached => self.expect(Kind::Object, want),
+            Ref::Paid => {
+                if !self.pays_objects {
+                    self.problem("`Paid` needs a cost that takes objects: a sacrifice, a discard, an exile or a tap");
+                }
+                self.expect(Kind::Object, want);
+            }
             Ref::Target(index) => {
                 let index = usize::from(*index);
                 match self.scope.targets.get(index).map(|t| t.0) {
@@ -882,6 +891,8 @@ impl<'a> Walker<'a> {
             Modification::SwitchPT
             | Modification::AddType(_)
             | Modification::RemoveType(_)
+            | Modification::SetTypes(_)
+            | Modification::RemoveSupertype(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::AddAllCreatureTypes
@@ -975,7 +986,12 @@ impl<'a> Walker<'a> {
             self.problem("needs at least one modification");
         }
         for (i, modification) in mods.iter().enumerate() {
-            self.at(format!("[{i}]"), |w| w.modification(modification));
+            self.at(format!("[{i}]"), |w| {
+                w.modification(modification);
+                if matches!(modification, Modification::RemoveSupertype(_)) {
+                    w.problem("a supertype is taken away only from the copiable values of a copy (`except`)");
+                }
+            });
         }
     }
 
@@ -1321,6 +1337,27 @@ impl<'a> Walker<'a> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
                 w.at("as", |w| w.bind(bind, Kind::Object));
+            }
+            Effect::Manifest {
+                who,
+                count,
+                from,
+                bind,
+            }
+            | Effect::Cloak {
+                who,
+                count,
+                from,
+                bind,
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("count", |w| w.amount(count));
+                if let Some(library) = from {
+                    w.at("library", |w| w.reference(library, Kind::Player));
+                }
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
             }
             Effect::Exile {
                 what,
@@ -1813,6 +1850,7 @@ impl<'a> Walker<'a> {
         targets: &[TargetSpec],
         effects: &[Effect],
     ) {
+        let paid = std::mem::replace(&mut self.pays_objects, picks(cost));
         // The X a part of the cost counts is the one the ability announces.
         self.x_free = cost.has_x();
         self.x_now = self.x_free;
@@ -1830,6 +1868,7 @@ impl<'a> Walker<'a> {
         }
         self.x_now = cost.has_x();
         self.body(targets, effects, false);
+        self.pays_objects = paid;
     }
 
     /// A loyalty ability: a `-X` cost is asked as the ability is announced, and the effects read it.
@@ -2096,6 +2135,7 @@ impl<'a> Walker<'a> {
                 self.at("source", |w| w.selector(source));
             }
             ReplaceWhen::ZoneChange { what, .. }
+            | ReplaceWhen::Destroyed { what }
             | ReplaceWhen::Discarded { what }
             | ReplaceWhen::Enters { what } => {
                 self.at("what", |w| w.selector(what));
@@ -2127,6 +2167,7 @@ impl<'a> Walker<'a> {
                 if matches!(
                     when,
                     ReplaceWhen::ZoneChange { .. }
+                        | ReplaceWhen::Destroyed { .. }
                         | ReplaceWhen::Discarded { .. }
                         | ReplaceWhen::Enters { .. }
                 ) =>
@@ -2138,6 +2179,7 @@ impl<'a> Walker<'a> {
                 if matches!(
                     when,
                     ReplaceWhen::ZoneChange { .. }
+                        | ReplaceWhen::Destroyed { .. }
                         | ReplaceWhen::Discarded { .. }
                         | ReplaceWhen::Enters { .. }
                 ) =>
@@ -2188,6 +2230,9 @@ impl<'a> Walker<'a> {
                 self.at("of", |w| w.selector(of));
             }
             ReplaceBy::PayLifeOrTapped(0) => self.problem("paying no life is entering untapped"),
+            ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
+                self.problem("`UmbraArmor` replaces a `Destroyed`");
+            }
             ReplaceBy::AsCopy { of, except } => {
                 if !enters {
                     self.problem("only an `Enters` event is entered as a copy");
@@ -2241,6 +2286,22 @@ fn gives_player_keywords(affected: &Ref, mods: &[Modification]) -> bool {
         Ref::You | Ref::Opponents | Ref::EachPlayer | Ref::AttachedPlayer
     ) && !mods.is_empty()
         && mods.iter().all(Modification::is_player_keyword)
+}
+
+/// Whether a cost has a part that picks objects the effects can name.
+fn picks(cost: &Cost) -> bool {
+    cost.0.iter().any(|item| {
+        matches!(
+            item,
+            CostItem::Sacrifice { .. }
+                | CostItem::Discard { .. }
+                | CostItem::ExileFromGraveyard { .. }
+                | CostItem::ExileFromHand { .. }
+                | CostItem::ReturnToHand { .. }
+                | CostItem::TapPermanents { .. }
+                | CostItem::TapPower { .. }
+        )
+    })
 }
 
 /// Whether a cost has an `{X}` in its mana.
@@ -2335,6 +2396,9 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
         Ability::Keyword(keyword) => keyword.has_additional_cost(),
         _ => false,
     });
+    walker.pays_objects = card
+        .abilities()
+        .any(|(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true } if picks(cost)));
     if !is_uuid(&card.oracle_id) {
         walker.at("oracle_id", |w| w.problem("not a lowercase UUID"));
     }
@@ -2796,6 +2860,10 @@ mod tests {
     #[case::a_colour_is_chosen_as_an_effect_begins(
         r#"{"Static":{"affected":"This","mods":["AddProtectionFromChosenColor"]}}"#,
         "a colour is chosen as an effect begins, so only a `Continuous` effect adds protection from it"
+    )]
+    #[case::a_supertype_goes_with_a_copy_only(
+        r#"{"Static":{"affected":"This","mods":[{"RemoveSupertype":"Legendary"}]}}"#,
+        "a supertype is taken away only from the copiable values of a copy (`except`)"
     )]
     #[case::a_player_takes_only_the_keywords_players_have(
         r#"{"Static":{"affected":"You","mods":[{"AddKeyword":"Flying"}]}}"#,

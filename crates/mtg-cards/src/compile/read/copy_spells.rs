@@ -71,7 +71,11 @@ pub fn copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// "it" or "that spell" after a spell is cast: the spell the trigger is about.
 fn cast_spell(r: &mut Reader<'_>) -> Option<Ref> {
     r.cast_spell.then_some(())?;
-    (r.word("it") || r.words("that spell")).then_some(Ref::Triggering)
+    (r.word("it") || r.words("that spell")).then_some(if r.cast_itself {
+        Ref::This
+    } else {
+        Ref::Triggering
+    })
 }
 
 /// "twice", "three times", "X times": how many copies there are.
@@ -233,7 +237,7 @@ pub(super) fn copy_text(effect: &Effect, spec: &TargetSpec) -> Option<String> {
 /// twice, except that the copy is red. You may choose new targets for the copies".
 pub(super) fn cast_text(effect: &Effect) -> Option<String> {
     let Effect::CopySpell {
-        what: Ref::Triggering,
+        what: Ref::Triggering | Ref::This,
         who: Ref::You,
         count,
         new_targets,

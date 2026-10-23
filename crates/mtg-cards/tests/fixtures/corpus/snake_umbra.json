@@ -1,0 +1,26 @@
+{
+  "id": "106d17d6-5ef2-4634-8dd6-790b12574042",
+  "oracle_id": "70ed2052-f03c-461d-b32a-8835c97c559f",
+  "name": "Snake Umbra",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nec",
+  "collector_number": "130",
+  "rarity": "uncommon",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature gets +1/+1 and has \"Whenever this creature deals damage to an opponent, you may draw a card.\"\nUmbra armor (If enchanted creature would be destroyed, instead remove all damage from it and destroy this Aura.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Umbra armor",
+    "Enchant"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "cmc": 2.0,
+  "collector_number": "74",
+  "color_identity": [
+    "B"
+  ],
+  "colors": [
+    "B"
+  ],
+  "digital": false,
+  "id": "30c9c0f0-2668-4163-8158-fada2d953cb3",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{B}",
+  "name": "Disciple of Griselbrand",
+  "oracle_id": "2d92a035-dd7a-4426-a8c0-f04e0b836dad",
+  "oracle_text": "{1}, Sacrifice a creature: You gain life equal to the sacrificed creature's toughness.",
+  "power": "1",
+  "rarity": "uncommon",
+  "released_at": "2013-11-01",
+  "set": "c13",
+  "toughness": "1",
+  "type_line": "Creature — Human Cleric"
+}

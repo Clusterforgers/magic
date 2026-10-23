@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a178a789-1f5f-46ca-a90b-574bd236a671",
+  "name": "Winged Boots",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winged Boots",
+      "oracle_fingerprint": "3ad23a240646604926f0dfc6d01f6d80",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": { "Ward": "{4}" } }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

@@ -222,6 +222,20 @@ fn is_cost_filter(pred: &Pred) -> bool {
     *pred == Pred::Other || describes_a_kind(pred)
 }
 
+/// Whether the cost takes objects out of their zones (a sacrifice, a discard, an exile), which the effects name as
+/// "the sacrificed creature's power".
+pub(super) fn takes_objects(cost: &Cost) -> bool {
+    cost.0.iter().any(|item| {
+        matches!(
+            item,
+            CostItem::Sacrifice { .. }
+                | CostItem::Discard { .. }
+                | CostItem::ExileFromGraveyard { .. }
+                | CostItem::ExileFromHand { .. }
+        )
+    })
+}
+
 /// The cost as the card prints it, parts in order: `{2}, {T}, Sacrifice ~`.
 pub fn text(cost: &Cost) -> Option<String> {
     let parts: Option<Vec<String>> = cost.0.iter().map(item_text).collect();

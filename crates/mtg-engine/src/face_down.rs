@@ -54,8 +54,8 @@ impl FaceDown {
     pub(crate) fn characteristics(self) -> Option<&'static CardDefinition> {
         match self {
             FaceDown::Foretold { .. } | FaceDown::Hideaway { .. } => None,
-            FaceDown::Morph => Some(&MORPH),
-            FaceDown::Disguise => Some(&DISGUISE),
+            FaceDown::Morph | FaceDown::Manifest => Some(&MORPH),
+            FaceDown::Disguise | FaceDown::Cloak => Some(&DISGUISE),
         }
     }
 
@@ -63,6 +63,12 @@ impl FaceDown {
     /// and only the card behind it is hidden.
     pub fn shows_characteristics(self) -> bool {
         self.characteristics().is_some()
+    }
+
+    /// Whether an effect put the card onto the battlefield face down (manifest, cloak), so it is turned face up for its mana
+    /// cost when it is a creature card, and not a spell cast face down.
+    pub(crate) fn is_put_face_down_by_an_effect(self) -> bool {
+        matches!(self, FaceDown::Manifest | FaceDown::Cloak)
     }
 
     /// How the card with this definition lies when it is cast face down: with ward {2} for a card with disguise.
@@ -78,14 +84,38 @@ impl FaceDown {
 }
 
 /// What turning the face-down permanent `id` face up takes: its morph, megamorph or disguise cost, paid with mana alone,
-/// and whether it is a megamorph, whose permanent gets a +1/+1 counter (CR 702.37b). `None` for a permanent that is not
-/// face down or has no such cost.
+/// and whether it is a megamorph, whose permanent gets a +1/+1 counter (CR 702.37b). A manifested or cloaked creature card
+/// can also be turned face up for its mana cost, an {X} in it counting as 0 (CR 701.40a); a card with both is turned up
+/// for the cheaper. `None` for a permanent that is not face down or has no such cost.
 pub(crate) fn turn_up_cost(state: &GameState, id: ObjectId) -> Option<(ManaCost, bool)> {
     let object = state.object(id)?;
-    if object.zone() != Zone::Battlefield || !object.face_down()?.shows_characteristics() {
+    let how = object.face_down()?;
+    if object.zone() != Zone::Battlefield || !how.shows_characteristics() {
         return None;
     }
-    printed_rules(object.whole_card()).find_map(|rules| {
+    let card = object.whole_card();
+    let printed = keyword_cost(card);
+    let natural = how
+        .is_put_face_down_by_an_effect()
+        .then(|| card.types.contains(&CardType::Creature))
+        .filter(|creature| *creature)
+        .and_then(|_| card.mana_cost.clone())
+        .map(|cost| (cost, false));
+    match (printed, natural) {
+        (Some(printed), Some(natural)) => {
+            Some(if printed.0.mana_value() <= natural.0.mana_value() {
+                printed
+            } else {
+                natural
+            })
+        }
+        (printed, natural) => printed.or(natural),
+    }
+}
+
+/// The morph, megamorph or disguise cost of `card` if it is mana alone, and whether it is a megamorph's.
+fn keyword_cost(card: &CardDefinition) -> Option<(ManaCost, bool)> {
+    printed_rules(card).find_map(|rules| {
         let (cost, megamorph) = match &**rules {
             Ability::Keyword(Keyword::Morph(cost) | Keyword::Disguise(cost)) => (cost, false),
             Ability::Keyword(Keyword::Megamorph(cost)) => (cost, true),
@@ -101,7 +131,7 @@ pub(crate) fn turn_up_cost(state: &GameState, id: ObjectId) -> Option<(ManaCost,
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a face-down object reads as the 2/2 creature of CR 708.2a (no name, cost, colour, other type or ability, ward {2} for a disguise) through the layers, keeps its card for turning it face up, is copied as that 2/2 and not as its card, is looked at by its controller alone, and costs its morph, megamorph or disguise cost in mana to turn face up.
+    //! Goal: a face-down object (morph, disguise, manifest, cloak) reads as the 2/2 creature of CR 708.2a (no name, cost, colour, other type or ability, ward {2} for a disguise or a cloak) through the layers, keeps its card for turning it face up, is copied as that 2/2 and not as its card, is looked at by its controller alone, and costs its morph, megamorph or disguise cost in mana to turn face up, or for a manifested or cloaked creature card its mana cost.
     use mtg_cards::definition::CardDefinition;
     use mtg_core::ids::PlayerId;
     use rstest::rstest;
@@ -145,6 +175,8 @@ mod tests {
     #[rstest]
     #[case::morph(FaceDown::Morph, false)]
     #[case::disguise(FaceDown::Disguise, true)]
+    #[case::manifest(FaceDown::Manifest, false)]
+    #[case::cloak(FaceDown::Cloak, true)]
     fn a_face_down_creature_is_a_nameless_colourless_2_2_with_no_abilities_but_a_disguises_ward(
         #[case] kind: FaceDown,
         #[case] ward: bool,
@@ -230,6 +262,47 @@ mod tests {
         let expected: Option<(ManaCost, bool)> =
             expected.map(|(cost, megamorph)| (ManaCost::parse(cost).unwrap(), megamorph));
         assert_eq!(cost, expected);
+    }
+
+    #[rstest]
+    #[case::its_mana_cost(FaceDown::Manifest, Keyword::Flying, Some(("{3}{R}{R}", false)))]
+    #[case::cloaked_for_its_mana_cost(FaceDown::Cloak, Keyword::Flying, Some(("{3}{R}{R}", false)))]
+    #[case::a_cheaper_morph_cost(FaceDown::Manifest, Keyword::Morph(mana("{2}{R}")), Some(("{2}{R}", false)))]
+    #[case::a_dearer_morph_cost(FaceDown::Manifest, Keyword::Morph(mana("{4}{R}{R}")), Some(("{3}{R}{R}", false)))]
+    #[case::a_megamorph_cost(FaceDown::Cloak, Keyword::Megamorph(mana("{1}{R}")), Some(("{1}{R}", true)))]
+    #[case::a_disguise_cost(FaceDown::Cloak, Keyword::Disguise(mana("{R}")), Some(("{R}", false)))]
+    #[case::a_morph_cost_with_an_x_leaves_the_mana_cost(FaceDown::Manifest, Keyword::Morph(mana("{X}{R}")), Some(("{3}{R}{R}", false)))]
+    #[case::a_spell_cast_face_down_has_no_mana_cost_to_pay(FaceDown::Morph, Keyword::Flying, None)]
+    #[case::a_disguise_cast_face_down_has_no_mana_cost_to_pay(
+        FaceDown::Disguise,
+        Keyword::Flying,
+        None
+    )]
+    fn a_manifested_or_cloaked_creature_card_is_turned_face_up_for_its_mana_cost_or_its_keyword_cost(
+        #[case] kind: FaceDown,
+        #[case] keyword: Keyword,
+        #[case] expected: Option<(&str, bool)>,
+    ) {
+        let (game, id) = lies(kind, keyword);
+        let expected: Option<(ManaCost, bool)> =
+            expected.map(|(cost, megamorph)| (ManaCost::parse(cost).unwrap(), megamorph));
+        assert_eq!(turn_up_cost(&game, id), expected);
+    }
+
+    #[rstest]
+    #[case::an_artifact_that_is_no_creature(CardType::Artifact)]
+    #[case::a_land(CardType::Land)]
+    #[case::a_sorcery(CardType::Sorcery)]
+    fn a_manifested_card_that_is_no_creature_card_is_never_turned_face_up(
+        #[case] kind: CardType,
+        #[values(FaceDown::Manifest, FaceDown::Cloak)] how: FaceDown,
+    ) {
+        let mut def = CardDefinition::new("Plain Thing").with_type(kind);
+        def.mana_cost = Some(ManaCost::parse("{2}").unwrap());
+        let mut game = state(vec![vec![], vec![]], vec![vec![Arc::new(def)], vec![]]);
+        let id = game.zone(Zone::Battlefield)[0];
+        game.objects.get_mut(&id).unwrap().face_down = Some(how);
+        assert_eq!(turn_up_cost(&game, id), None);
     }
 
     #[test]

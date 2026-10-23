@@ -1,0 +1,34 @@
+{
+  "oracle_id": "92442ca0-e49d-4fab-8d3a-83405c1b1437",
+  "name": "Echo Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Echo Storm",
+      "oracle_fingerprint": "309b24491d13e19e0402c09d6a180cd0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [
+              {
+                "CopySpell": {
+                  "what": "This",
+                  "count": { "CommanderCasts": "You" },
+                  "new_targets": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

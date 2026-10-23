@@ -23,6 +23,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::events::Event;
 use crate::resolve::Scope;
+use crate::snapshot::{Snapshot, snapshot};
 use crate::state::GameState;
 
 /// What kind of object a pick takes and what paying does to it.
@@ -300,6 +301,29 @@ impl Part {
             Part::X(inner) => inner.events(state, player, source, picked),
         }
     }
+}
+
+/// The objects the picks of `parts` take out of their zones (a sacrifice, a discard, an exile from a graveyard or a
+/// hand), each as it is before the cost is paid: what "the sacrificed creature's power" reads. A tapped permanent stays
+/// where it is, and a returned one goes to a hand where a face-down permanent must stay hidden, so neither is photographed.
+pub(crate) fn photographed(
+    state: &GameState,
+    parts: &[Part],
+    picks: &[Vec<ObjectId>],
+) -> Vec<Snapshot> {
+    let mut picks = picks.iter();
+    let mut shots = Vec::new();
+    for part in parts {
+        let Part::Pick(pick) = part else { continue };
+        let Some(picked) = picks.next() else { break };
+        if matches!(
+            pick.kind,
+            Kind::Sacrifice | Kind::Discard | Kind::Exile | Kind::ExileHand
+        ) {
+            shots.extend(picked.iter().filter_map(|id| snapshot(state, *id)));
+        }
+    }
+    shots
 }
 
 /// The events that pay `parts` for `source` in the order of the cost, with the objects picked for the parts that take

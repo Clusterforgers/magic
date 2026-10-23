@@ -626,10 +626,32 @@ pub(super) fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Mod
         }
         return Some(mods);
     }
+    // "Enchanted creature has base power and toughness 8/8 and has ...": the size comes first.
+    if let Some(base) = r.attempt(|r| base_stats(r, has)) {
+        mods.push(base);
+        if r.words(&format!("and {has}")) {
+            mods.extend(gives(r)?);
+        }
+        mods.extend(tail(r));
+        return Some(mods);
+    }
     r.word(has).then_some(())?;
     mods.extend(gives(r)?);
     mods.extend(tail(r));
     Some(mods)
+}
+
+/// "has base power and toughness 8/8": the size a permanent has whatever its card prints.
+fn base_stats(r: &mut Reader<'_>, has: &str) -> Option<Modification> {
+    r.word(has).then_some(())?;
+    r.words("base power and toughness").then_some(())?;
+    let power = i32::try_from(r.number()?).ok()?;
+    r.punct('/').then_some(())?;
+    let toughness = i32::try_from(r.number()?).ok()?;
+    Some(Modification::SetPT {
+        power: Amount::Fixed(power),
+        toughness: Amount::Fixed(toughness),
+    })
 }
 
 /// "and is a Monk in addition to its other types" (the "and" optional): the creature type a permanent gets as well.
@@ -1402,6 +1424,18 @@ pub(super) fn predicate(
             let (stats, tail) = stats_text(power, toughness)?;
             (Some(format!("{gets} {stats}{tail}")), rest)
         }
+        Some((
+            Modification::SetPT {
+                power: Amount::Fixed(power),
+                toughness: Amount::Fixed(toughness),
+            },
+            rest,
+        )) => (
+            Some(format!(
+                "{has} base power and toughness {power}/{toughness}"
+            )),
+            rest,
+        ),
         _ => (None, mods),
     };
     let mut parts: Vec<String> = stats.into_iter().collect();

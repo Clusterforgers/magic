@@ -237,6 +237,7 @@ impl Held {
             }),
             Modification::AddType(_)
             | Modification::RemoveType(_)
+            | Modification::SetTypes(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::AddAllCreatureTypes
@@ -467,6 +468,8 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         Wanted::SetController(_) => Layer::Control,
         Wanted::AddType(_)
         | Wanted::RemoveType(_)
+        | Wanted::SetTypes(_)
+        | Wanted::RemoveSupertype(_)
         | Wanted::AddSubtype(_)
         | Wanted::SetCreatureTypes(_)
         | Wanted::AddAllCreatureTypes => Layer::Type,

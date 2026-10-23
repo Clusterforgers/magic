@@ -54,7 +54,7 @@ pub(super) fn retarget(
     may_choose: bool,
 ) -> Result<Retargeted, ResolveError> {
     let mut copy = original.choices.clone();
-    copy.cost_picks = None;
+    copy.forget_cost_picks();
     let state = cx.state();
     let specs = announced_specs(original.ability, &original.choices.modes);
     let mut changeable = Vec::new();
