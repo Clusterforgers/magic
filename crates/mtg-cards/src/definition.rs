@@ -346,7 +346,7 @@ impl CardDefinition {
         values
     }
 
-    /// Applies one exception of a copy effect to these copiable values (CR 707.9b): an extra type or subtype, a
+    /// Applies one exception of a copy effect to these copiable values (CR 707.9b): types and subtypes, a supertype taken away, a
     /// keyword or an ability, colours, a fixed power and toughness. False, with nothing changed, for any other
     /// modification.
     pub fn except(&mut self, modification: &Modification) -> bool {
@@ -358,6 +358,16 @@ impl CardDefinition {
                 if !self.subtypes.contains(subtype) {
                     self.subtypes.push(subtype.clone());
                 }
+            }
+            Modification::SetTypes(types) => {
+                self.types = types.iter().copied().collect();
+                // A creature type needs the type it is a type of (CR 205.3d).
+                if !self.is_type(CardType::Creature) && !self.is_type(CardType::Kindred) {
+                    self.subtypes.retain(|subtype| !subtype.is_creature_type());
+                }
+            }
+            Modification::RemoveSupertype(supertype) => {
+                self.supertypes.retain(|kept| kept != supertype);
             }
             Modification::AddKeyword(keyword) => {
                 self.rules.push(Arc::new(Ability::Keyword(keyword.clone())));
@@ -391,6 +401,36 @@ mod tests {
 
     use crate::effect::Effect;
     use crate::refs::Ref;
+
+    fn legendary_elf() -> CardDefinition {
+        CardDefinition::new("Elf Lord")
+            .with_supertype(Supertype::Legendary)
+            .with_supertype(Supertype::Snow)
+            .with_type(CardType::Creature)
+            .with_subtype("Elf")
+            .with_power_toughness(2, 2)
+    }
+
+    #[rstest]
+    #[case::legendary(Modification::RemoveSupertype(Supertype::Legendary), &[Supertype::Snow], &[CardType::Creature], true)]
+    #[case::a_supertype_it_lacks(Modification::RemoveSupertype(Supertype::Basic), &[Supertype::Legendary, Supertype::Snow], &[CardType::Creature], true)]
+    #[case::only_an_artifact(Modification::SetTypes(vec![CardType::Artifact]), &[Supertype::Legendary, Supertype::Snow], &[CardType::Artifact], false)]
+    #[case::an_artifact_creature(Modification::SetTypes(vec![CardType::Artifact, CardType::Creature]), &[Supertype::Legendary, Supertype::Snow], &[CardType::Artifact, CardType::Creature], true)]
+    fn the_exceptions_of_a_copy_take_a_supertype_away_and_set_the_types(
+        #[case] exception: Modification,
+        #[case] supertypes: &[Supertype],
+        #[case] types: &[CardType],
+        #[case] keeps_the_elf: bool,
+    ) {
+        let mut values = legendary_elf();
+        assert!(values.except(&exception));
+        assert_eq!(values.supertypes, supertypes.iter().copied().collect());
+        assert_eq!(values.types, types.iter().copied().collect());
+        assert_eq!(
+            values.subtypes.iter().any(|subtype| subtype.0 == "Elf"),
+            keeps_the_elf
+        );
+    }
 
     #[rstest]
     #[case(Some(Color::White), "Plains", ManaType::White)]

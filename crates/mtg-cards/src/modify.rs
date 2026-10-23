@@ -2,7 +2,7 @@
 
 use std::sync::Arc;
 
-use mtg_core::card::{CardType, Subtype};
+use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 use serde::{Deserialize, Serialize};
 
@@ -38,6 +38,12 @@ pub enum Modification {
     AddType(CardType),
     /// Removes a card type (layer 4).
     RemoveType(CardType),
+    /// Makes these the card types, the others gone (layer 4): "loses all other card types", "is a land". The creature
+    /// types go with the type when it is no longer a creature.
+    SetTypes(Vec<CardType>),
+    /// Takes a supertype away from the copiable values of a copy: "except it isn't legendary". Only the exceptions of a
+    /// copy have it, never a static ability or the effect of a spell.
+    RemoveSupertype(Supertype),
     /// Adds a subtype (layer 4).
     AddSubtype(Subtype),
     /// Replaces the creature types with these (layer 4): "becomes a red Weird" (CR 205.1b).
@@ -96,6 +102,8 @@ impl Modification {
             Modification::SetController(_) => Some("2"),
             Modification::AddType(_)
             | Modification::RemoveType(_)
+            | Modification::SetTypes(_)
+            | Modification::RemoveSupertype(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::AddAllCreatureTypes => Some("4"),
@@ -286,6 +294,8 @@ mod tests {
     #[case(Modification::SetController(Ref::You), Some("2"))]
     #[case(Modification::AddType(CardType::Artifact), Some("4"))]
     #[case(Modification::RemoveType(CardType::Creature), Some("4"))]
+    #[case(Modification::SetTypes(vec![CardType::Land]), Some("4"))]
+    #[case(Modification::RemoveSupertype(Supertype::Legendary), Some("4"))]
     #[case(Modification::GrantAbility(granted()), Some("6"))]
     #[case(Modification::LoseAbilities, Some("6"))]
     #[case(Modification::AddSubtype(Subtype("Elf".into())), Some("4"))]

@@ -1,0 +1,27 @@
+{
+  "id": "b4ab47ce-a6dd-4839-ab41-053c5c5de768",
+  "oracle_id": "4be1ecd0-ee41-4ac0-9155-0fcae7a4d337",
+  "name": "Eel Umbra",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2x2",
+  "collector_number": "48",
+  "rarity": "common",
+  "released_at": "2022-07-08",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Flash (You may cast this spell any time you could cast an instant.)\nEnchant creature\nEnchanted creature gets +1/+1.\nUmbra armor (If enchanted creature would be destroyed, instead remove all damage from it and destroy this Aura.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Umbra armor",
+    "Enchant",
+    "Flash"
+  ]
+}

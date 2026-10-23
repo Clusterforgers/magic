@@ -1,0 +1,22 @@
+{
+  "oracle_id": "dc0593c2-ccb4-4648-a592-c5bcd121dc72",
+  "name": "Greater Good",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greater Good",
+      "oracle_fingerprint": "765176f47d6bcbf733d31b6533776852",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Draw": { "count": { "Stat": { "of": "Paid", "stat": "Power" } } } },
+              { "Discard": { "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

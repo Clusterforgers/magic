@@ -1,0 +1,34 @@
+{
+  "oracle_id": "92ac307e-6531-4465-8870-07988458f5d4",
+  "name": "Hatut Zeraze Strike Force",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hatut Zeraze Strike Force",
+      "oracle_fingerprint": "ef598faf669352d06c3d2c198bfa4d3b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [{ "CopySpell": { "what": "This", "count": { "CommanderCasts": "You" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -80,6 +80,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Connived: [{ Connived: { object: 3, player: 1 } }, 'Forest connives'],
   Amassed: [{ Amassed: { object: 3, player: 1 } }, 'Bo amasses'],
   Monstrous: [{ Monstrous: { object: 3, player: 1 } }, 'Forest becomes monstrous'],
+  Crewed: [
+    { Crewed: { object: 3, player: 1, creatures: [1, 2] } },
+    'Forest is crewed by Grizzly Bears and Hill Giant',
+  ],
   TurnedFaceUp: [{ TurnedFaceUp: { object: 3, player: 1 } }, 'Bo turns Forest face up'],
   Mutated: [{ Mutated: { object: 3, spell: 9, over: true, player: 1 } }, 'Bo mutates a creature over Forest'],
   Adapted: [{ Adapted: { object: 3, player: 1 } }, 'Forest adapts'],
@@ -159,6 +163,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   RuleExpired: [{ RuleExpired: { id: 1 } }, 'A rule change ends'],
   Regenerated: [{ Regenerated: { object: 1 } }, 'Grizzly Bears regenerates'],
+  DamageRemoved: [{ DamageRemoved: { object: 1 } }, 'Grizzly Bears has all its damage removed'],
   ShieldUsed: [{ ShieldUsed: { id: 2, left: 3 } }, 'A prevention shield has 3 left'],
   CreatureDied: [
     { CreatureDied: { object: 1, cause: 'LethalDamage' } },
@@ -504,6 +509,7 @@ describe('minor lines', () => {
     { SpellCast: { player: 0, object: 4 } },
     { CreatureDied: { object: 1, cause: 'ZeroToughness' } },
     { Regenerated: { object: 1 } },
+    { DamageRemoved: { object: 1 } },
     { TurnBegan: { number: 1, active: 0 } },
     { PlayerLost: { player: 1, reason: 'Conceded' } },
     { CountersChanged: { on: { Player: 1 }, counter: 'poison', delta: 1 } },
@@ -643,6 +649,10 @@ describe('events with more than one shape', () => {
     [
       effect(objects(2), 'AddAllCreatureTypes', 'UntilEndOfTurn'),
       'Hill Giant becomes every creature type until end of turn',
+    ],
+    [
+      effect(objects(2), { SetTypes: 1 << 6 }, 'UntilEndOfTurn'),
+      'Hill Giant becomes only land until end of turn',
     ],
     [
       effect(

@@ -72,7 +72,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 }
             } else {
                 let mut choices = spell.choices().clone();
-                choices.cost_picks = None;
+                choices.forget_cost_picks();
                 choices
             };
             planned.push((*spell, choices));

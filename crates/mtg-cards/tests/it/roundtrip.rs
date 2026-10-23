@@ -243,6 +243,7 @@ fn keyword() -> impl Strategy<Value = Keyword> {
             Keyword::Melee,
             Keyword::Mentor,
             Keyword::Dethrone,
+            Keyword::UmbraArmor,
             Keyword::Extort,
             Keyword::Evolve,
         ]),
@@ -1054,6 +1055,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                 reference().prop_map(|who| ReplaceWhen::Draw { who }),
                 selector().prop_map(|what| ReplaceWhen::Enters { what }),
                 selector().prop_map(|what| ReplaceWhen::Discarded { what }),
+                selector().prop_map(|what| ReplaceWhen::Destroyed { what }),
                 (
                     selector(),
                     proptest::option::of(zone()),
@@ -1089,6 +1091,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                 .prop_map(ReplaceBy::Choose),
                 color().prop_map(|other| ReplaceBy::Choose(EntersChoice::ColorOtherThan(other))),
                 (1u32..5).prop_map(ReplaceBy::PayLifeOrTapped),
+                Just(ReplaceBy::UmbraArmor),
                 (selector(), proptest::collection::vec(modification(), 0..3))
                     .prop_map(|(of, except)| ReplaceBy::AsCopy { of, except }),
             ],

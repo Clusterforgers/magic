@@ -214,9 +214,6 @@ fn a_permanent_may_enter_as_a_copy(#[case] text: &str, #[case] json: &str) {
 #[case::a_type_without_in_addition(
     "Create a token that's a copy of target creature you control, except it's a Zombie."
 )]
-#[case::a_legendary_exception(
-    "Create a token that's a copy of target creature you control, except it isn't legendary."
-)]
 #[case::the_token(
     "Create a token that's a copy of target creature you control, except the token has haste."
 )]
@@ -289,9 +286,6 @@ fn near_misses_of_a_token_copy_stay_unread(#[case] text: &str) {
 )]
 #[case::a_name(
     "You may have this creature enter as a copy of any creature on the battlefield, except its name is Bob."
-)]
-#[case::not_legendary(
-    "You may have this creature enter as a copy of any creature on the battlefield, except it isn't legendary."
 )]
 #[case::an_activated_ability(
     "You may have this creature enter as a copy of any creature on the battlefield, except it has \"{T}: Add {G}.\""

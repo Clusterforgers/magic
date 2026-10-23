@@ -20,6 +20,15 @@ pub fn cycled_itself(pattern: &TriggerPattern) -> bool {
     )
 }
 
+/// Whether the pattern is the card itself being cast by its controller ("When you cast this spell"), so its ability works
+/// from the stack.
+pub fn cast_itself(pattern: &TriggerPattern) -> bool {
+    matches!(
+        pattern,
+        TriggerPattern::SpellCast { what, by: Ref::You } if what.0 == [Pred::This]
+    )
+}
+
 /// Whether the pattern is the card itself put into a graveyard from anywhere, so its ability works from the graveyard.
 pub fn graveyard_itself(pattern: &TriggerPattern) -> bool {
     matches!(
@@ -315,32 +324,44 @@ fn player(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
     }
 }
 
+/// What follows "you cast" or "an opponent casts": the nth spell of a turn, the card itself ("this spell", on the stack)
+/// or a kind of spell.
+fn spell_cast(r: &mut Reader<'_>, by: Ref, third: bool) -> Option<TriggerPattern> {
+    if let Some(nth) = each_turn(r, "spell", if third { "their" } else { "your" }) {
+        let event = TriggerPattern::SpellCast {
+            what: Selector::default(),
+            by,
+        };
+        return Some(TriggerPattern::Nth {
+            event: Box::new(event),
+            nth,
+        });
+    }
+    if !third && r.source() {
+        return Some(TriggerPattern::SpellCast {
+            what: Selector::this(),
+            by,
+        });
+    }
+    let mut spell = subject(r)?.0;
+    // The pattern is about a spell already; the selector keeps what the spell must be.
+    if spell.first() != Some(&Pred::Spell) || spell.contains(&Pred::Other) {
+        return None;
+    }
+    spell.remove(0);
+    Some(TriggerPattern::SpellCast {
+        what: Selector(spell),
+        by,
+    })
+}
+
 /// "you cast a creature spell", "an opponent casts a spell", "you sacrifice a Clue".
 fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     let (by, third) = player(r)?;
     let verb = r.take_word()?;
     let whose = if third { "their" } else { "your" };
     if verb == if third { "casts" } else { "cast" } {
-        if let Some(nth) = each_turn(r, "spell", whose) {
-            let event = TriggerPattern::SpellCast {
-                what: Selector::default(),
-                by,
-            };
-            return Some(TriggerPattern::Nth {
-                event: Box::new(event),
-                nth,
-            });
-        }
-        let mut spell = subject(r)?.0;
-        // The pattern is about a spell already; the selector keeps what the spell must be.
-        if spell.first() != Some(&Pred::Spell) || spell.contains(&Pred::Other) {
-            return None;
-        }
-        spell.remove(0);
-        Some(TriggerPattern::SpellCast {
-            what: Selector(spell),
-            by,
-        })
+        spell_cast(r, by, third)
     } else if verb == if third { "sacrifices" } else { "sacrifice" } {
         Some(TriggerPattern::Sacrificed {
             what: subject(r)?,
@@ -558,6 +579,16 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         return Some(TriggerPattern::Untapped { what: what.clone() });
     } else if r.word("explores") {
         return Some(TriggerPattern::Explored { what: what.clone() });
+    } else if r.words("becomes crewed") {
+        return Some(first_time(
+            r,
+            TriggerPattern::BecomesCrewed { what: what.clone() },
+        ));
+    } else if r.words("becomes saddled") {
+        return Some(first_time(
+            r,
+            TriggerPattern::BecomesSaddled { what: what.clone() },
+        ));
     } else if r.words("becomes monstrous") {
         return Some(TriggerPattern::BecomesMonstrous { what: what.clone() });
     } else if r.words("becomes level") {
@@ -917,6 +948,8 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::Explored { what } => said(what, "explores"),
         TriggerPattern::Connived { what } => said(what, "connives"),
         TriggerPattern::BecomesMonstrous { what } => said(what, "becomes monstrous"),
+        TriggerPattern::BecomesCrewed { what } => said(what, "becomes crewed"),
+        TriggerPattern::BecomesSaddled { what } => said(what, "becomes saddled"),
         TriggerPattern::BecomesLevel { what, level } => {
             said(what, &format!("becomes level {level}"))
         }
@@ -1011,6 +1044,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
     match pattern {
         TriggerPattern::StepBegins { step, whose } => {
             Some(format!("At the beginning of {}", step_text(*step, whose)?))
+        }
+        TriggerPattern::SpellCast { what, by: Ref::You } if what.0 == [Pred::This] => {
+            Some("When you cast ~".to_owned())
         }
         TriggerPattern::SpellCast { what, by } => {
             let mut preds = vec![Pred::Spell];
@@ -1152,6 +1188,8 @@ fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
         TriggerPattern::Drew { who, what } if what.is_empty() => (who, "draw", "card"),
         TriggerPattern::SpellCast { what, by } if what.is_empty() => (by, "cast", "spell"),
         TriggerPattern::Attacks { .. }
+        | TriggerPattern::BecomesCrewed { .. }
+        | TriggerPattern::BecomesSaddled { .. }
         | TriggerPattern::BecomesTarget { .. }
         | TriggerPattern::DealsDamage { .. } => {
             let counted = pattern_text(event)?;

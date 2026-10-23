@@ -1,0 +1,39 @@
+{
+  "oracle_id": "0dd894cb-1968-471c-af08-ea7ec5ce8428",
+  "name": "Ghoulcaller Gisa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghoulcaller Gisa",
+      "oracle_fingerprint": "31661e211c36550b9191b67f121d7158",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{B}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": { "Stat": { "of": "Paid", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

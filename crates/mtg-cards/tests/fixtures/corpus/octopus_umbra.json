@@ -1,0 +1,26 @@
+{
+  "id": "9efcf24c-ad57-4320-9b85-c838f5ed659b",
+  "oracle_id": "6d2ce0ba-f2ff-4c2b-ba85-f6c011ebda6c",
+  "name": "Octopus Umbra",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c18",
+  "collector_number": "11",
+  "rarity": "rare",
+  "released_at": "2018-08-10",
+  "digital": false,
+  "mana_cost": "{3}{U}{U}",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature has base power and toughness 8/8 and has \"Whenever this creature attacks, you may tap target creature with power 8 or less.\"\nUmbra armor (If enchanted creature would be destroyed, instead remove all damage from it and destroy this Aura.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Umbra armor",
+    "Enchant"
+  ]
+}

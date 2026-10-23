@@ -1,0 +1,23 @@
+{
+  "cmc": 5.0,
+  "collector_number": "221",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "75046d32-fb0b-4c25-9ffd-53db64ff6c9e",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{3}{U}{U}",
+  "name": "Echo Storm",
+  "oracle_id": "92442ca0-e49d-4fab-8d3a-83405c1b1437",
+  "oracle_text": "When you cast this spell, copy it for each time you've cast your commander from the command zone this game. You may choose new targets for the copies.\nCreate a token that's a copy of target artifact.",
+  "rarity": "rare",
+  "released_at": "2023-04-21",
+  "set": "moc",
+  "type_line": "Sorcery"
+}

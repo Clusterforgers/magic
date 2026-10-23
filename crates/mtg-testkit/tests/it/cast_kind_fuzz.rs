@@ -1,4 +1,4 @@
-//! Goal: whole bot games of Commander at 2 to 4 seats whose decks hold the cards that read the commander cast count, the once-a-turn limit and the subtype, permanent, multicolored and historic cast triggers finish and keep every invariant (zones, life, the journal, the replay of the log equal to the live state), those cards are cast and their abilities trigger, and a seeded game is the same game every time.
+//! Goal: whole bot games of Commander at 2 to 4 seats whose decks hold the cards that read the commander cast count, the cast trigger of the card itself, the once-a-turn limit and the subtype, permanent, multicolored and historic cast triggers finish and keep every invariant (zones, life, the journal, the replay of the log equal to the live state), those cards are cast and their abilities trigger, and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common::seeds::{for_each_seed, fuzz_games};
