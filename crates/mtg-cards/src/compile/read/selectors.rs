@@ -885,6 +885,15 @@ fn subtype_list(pred: &Pred) -> Option<Vec<&str>> {
         .collect()
 }
 
+/// Whether the card types are exactly those of a permanent but a land.
+fn is_nonland_permanent(types: &[CardType]) -> bool {
+    types.len() == PERMANENT_TYPES.len() - 1
+        && PERMANENT_TYPES
+            .iter()
+            .filter(|found| **found != CardType::Land)
+            .all(|found| types.contains(found))
+}
+
 /// Whether the card types are exactly those of a permanent.
 fn is_permanent(types: &[CardType]) -> bool {
     types.len() == PERMANENT_TYPES.len()
@@ -977,7 +986,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     // A subtype is the noun by itself, or qualifies a plural noun ("Sliver creatures"); a spell is not a card in a zone.
     let qualified = (plural || spell) && !card && (spell || !types.is_empty() || token);
     // Several subtypes are only for a spell ("Faerie or Wizard permanent spell").
-    if (!subtypes.is_empty() && (card || (!types.is_empty() && !qualified)))
+    if (!subtypes.is_empty() && !types.is_empty() && !qualified)
         || (subtypes.len() > 1 && !spell)
         || (spell && card)
         || (token && (spell || card))
@@ -987,7 +996,9 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         return None;
     }
     let permanent = spell && is_permanent(&types);
-    let names = if permanent {
+    // The card types of a permanent but land, for a card in a zone: "nonland permanent card".
+    let nonland_permanent = card && !spell && is_nonland_permanent(&types);
+    let names = if permanent || nonland_permanent {
         Vec::new()
     } else {
         type_words(&types, plural && !spell && !card && !token)
@@ -997,7 +1008,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         words.insert(0, "your".to_owned());
     }
     if !subtypes.is_empty() {
-        words.push(subtype_words(&subtypes, plural && !qualified));
+        words.push(subtype_words(&subtypes, plural && !qualified && !card));
     }
     words.extend(
         kinds
@@ -1006,6 +1017,9 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     );
     if permanent {
         words.push("permanent".to_owned());
+    }
+    if nonland_permanent {
+        words.extend(["nonland".to_owned(), "permanent".to_owned()]);
     }
     if !names.is_empty() {
         words.push(list_text(&names, form.connector()));

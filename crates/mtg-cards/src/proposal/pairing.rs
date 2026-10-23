@@ -5,7 +5,7 @@ use super::{ClauseReport, ClauseState, Stray};
 use crate::ability::Ability;
 use crate::card::{Card, Span};
 use crate::compile::{
-    Clause, ClauseKind, read_keyword, render_variants, same_text, static_pair_texts,
+    Clause, ClauseKind, read_keyword, same_text, static_pair_texts, written_variants,
 };
 use crate::keyword::Keyword;
 use crate::trigger::TriggerPattern;
@@ -268,7 +268,7 @@ impl<'a> Pairer<'a> {
             if self.taken[at] {
                 continue;
             }
-            let written = render_variants(ability);
+            let written = written_variants(ability);
             if written.is_empty() {
                 continue;
             }
@@ -406,7 +406,7 @@ fn unmatched(ability: &Ability, at: usize, wanted: &str, clause: &str) -> Clause
             },
         };
     }
-    let written = render_variants(ability);
+    let written = written_variants(ability);
     match written
         .into_iter()
         .max_by_key(|variant| common_prefix(variant, wanted))

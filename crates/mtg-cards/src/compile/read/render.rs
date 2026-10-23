@@ -7,6 +7,7 @@ mod damage_by;
 mod divided;
 mod graveyards;
 mod may_have;
+mod put_onto;
 
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
 use super::attackers;
@@ -277,8 +278,17 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     let more = group_pump::wordings(ability, &texts);
     texts.extend(more);
     texts.extend(where_x::wordings(ability));
-    event_wordings::add(ability, &mut texts);
     graveyard_wordings(ability, &mut texts);
+    texts
+}
+
+/// Every wording the proposal checker accepts for an ability: the wordings of [`variants`], which the templates read,
+/// and the wordings of the oracle text that no template reads ("you" after another player's event, "Then" opening a
+/// sentence, "deals damage equal to its power").
+pub fn written_variants(ability: &Ability) -> Vec<String> {
+    let mut texts = variants(ability);
+    texts.extend(where_x::equal_to_wordings(ability));
+    event_wordings::add(ability, &mut texts);
     texts
 }
 
@@ -712,7 +722,7 @@ fn written(
             ..,
         ] = &effects[start..]
             && let Some(text) =
-                put_back_text(choose, moved).or_else(|| returned_text(choose, moved))
+                put_back_text(choose, moved).or_else(|| returned_text(choose, moved)).or_else(|| put_onto::put_onto_text(choose, moved))
         {
             unsplit(mask, start, 2)?;
             sentences.push(text);
@@ -1486,6 +1496,9 @@ impl Writer<'_> {
                 effects,
             } => match effects.as_slice() {
                 [inner] if is_imperative(inner) => format!("you may {}", self.effect(inner)?),
+                [choose @ Effect::Choose { .. }, moved @ Effect::Move { .. }] => {
+                    format!("you may {}", put_onto::put_onto_text(choose, moved)?)
+                }
                 _ => self.may_have(effects)?,
             },
             Effect::Pay {

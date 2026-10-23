@@ -247,6 +247,7 @@ mod turned_face_up;
 mod vocabulary;
 mod where_x;
 mod x_after;
+mod written_effects;
 mod zz_scratch;
 
 mod mana {
