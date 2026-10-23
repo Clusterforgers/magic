@@ -191,7 +191,7 @@ fn pronoun(r: &mut Reader<'_>, plural: bool) -> Option<()> {
 }
 
 /// Where a search puts what it finds: "onto the battlefield", "onto the battlefield tapped", "into your hand".
-fn found_destination(r: &mut Reader<'_>) -> Option<Destination> {
+pub(super) fn found_destination(r: &mut Reader<'_>) -> Option<Destination> {
     if r.words("onto the battlefield") {
         let tapped = r.word("tapped");
         return Some(Destination::Battlefield {
@@ -491,7 +491,7 @@ pub(super) fn top_text(count: &Amount) -> Option<String> {
 }
 
 /// Where a search puts what it finds, as the card words it.
-fn destination_text(to: &Destination) -> Option<String> {
+pub(super) fn destination_text(to: &Destination) -> Option<String> {
     match to {
         Destination::Battlefield {
             tapped,
@@ -524,6 +524,7 @@ pub fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
                 .then(|| (format!("you may {text}"), 1))
         }
         [Effect::Search { .. }, ..] => search_sequence(effects, &Ref::You),
+        [Effect::RevealUntil { .. }, ..] => super::reveal_until::sequence(effects),
         [Effect::LookAtTop { .. }, ..] => {
             look_sequence(effects).or_else(|| super::among::sequence(effects))
         }

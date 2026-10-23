@@ -1,0 +1,34 @@
+{
+  "oracle_id": "44cf5ef4-2b0f-4d9d-bf87-8835424721d0",
+  "name": "Evolutionary Leap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evolutionary Leap",
+      "oracle_fingerprint": "a7708f92104ac705701a63ce1ddbd242",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
