@@ -282,6 +282,13 @@ fn keywords_in_the_data_appear_in_the_oracle_text() {
                         "{}: the text has no typecycling",
                         card.name
                     );
+                } else if let Ability::Keyword(Keyword::EquipTo { .. }) = ability {
+                    // An equip with a restriction is printed as `Equip legendary creature`.
+                    assert!(
+                        text.contains("equip "),
+                        "{}: the text has no equip",
+                        card.name
+                    );
                 } else if let Ability::Keyword(keyword) = ability
                     && !matches!(keyword, Keyword::Fuse)
                 {

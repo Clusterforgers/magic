@@ -45,6 +45,21 @@ use crate::spend::SpendOn;
 use crate::trigger::TriggerPattern;
 use crate::value::{Amount, Condition, CounterKind};
 
+/// "draws a card for each card in your hand" is also "draws X cards, where X is the number of cards in your hand".
+fn where_x_draws(texts: &[String]) -> Vec<String> {
+    texts
+        .iter()
+        .filter(|text| text.contains(" a card for each card in "))
+        .map(|text| {
+            text.replacen(
+                " a card for each card in ",
+                " X cards, where X is the number of cards in ",
+                1,
+            )
+        })
+        .collect()
+}
+
 /// The oracle wording of an ability the readers produce, in the first way its effects can be
 /// written (see [`variants`]); `None` for any other ability.
 pub fn ability(ability: &Ability) -> Option<String> {
@@ -67,6 +82,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(controller);
     let searches = library::other_wordings(&texts);
     texts.extend(searches);
+    let counted = where_x_draws(&texts);
+    texts.extend(counted);
     // A card that becomes a target may call itself "it" in the counters it puts on itself (Seedglaive Mentor).
     if matches!(ability, Ability::Triggered { when, .. } if targeted_itself(when)) {
         let pronouns: Vec<String> = texts
@@ -259,6 +276,27 @@ fn head_wordings(head: Vec<String>) -> Vec<Vec<String>> {
     heads
 }
 
+fn mana_trigger_texts(ability: &Ability) -> Vec<String> {
+    let (
+        Ability::Triggered {
+            when,
+            intervening_if,
+            ..
+        },
+        Some(shape),
+    ) = (ability, crate::mana_trigger::mana_trigger(ability))
+    else {
+        return Vec::new();
+    };
+    match (
+        trigger_head(when, intervening_if.as_ref()),
+        super::mana_trigger::text(&shape),
+    ) {
+        (Some(head), Some(effect)) => vec![[head, vec![format!("{effect}.")]].concat().join(" ")],
+        _ => Vec::new(),
+    }
+}
+
 fn ability_texts(ability: &Ability) -> Vec<String> {
     match ability {
         Ability::Spell { targets, effects } => alternatives(targets, effects)
@@ -273,6 +311,10 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             targets,
             effects,
         } => chapter_texts(*number, targets, effects),
+        Ability::Triggered {
+            when: TriggerPattern::TappedForMana { .. },
+            ..
+        } if crate::mana_trigger::mana_trigger(ability).is_some() => mana_trigger_texts(ability),
         Ability::Triggered {
             when,
             intervening_if,
@@ -839,6 +881,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::RemoveCounters { .. }
                 | Effect::MoveCounters { .. }
                 | Effect::Transform { .. }
+                | Effect::Flip { .. }
                 | Effect::CopySpell { .. }
         )
 }
@@ -862,7 +905,7 @@ fn add_text(mana: &Produce, times: &Amount, only: &[SpendOn]) -> Option<String> 
 }
 
 /// "{W}{U}": the symbols of mana added together.
-fn symbols_text(list: &[mtg_core::mana::ManaType]) -> String {
+pub(super) fn symbols_text(list: &[mtg_core::mana::ManaType]) -> String {
     let mut symbols = String::new();
     for mana in list {
         symbols.push('{');
@@ -872,6 +915,24 @@ fn symbols_text(list: &[mtg_core::mana::ManaType]) -> String {
     symbols
 }
 
+/// "two mana in any combination of colors", "three mana in any combination of {U}, {B}, and/or {R}".
+pub(super) fn combination_text(count: u32, among: &[mtg_core::mana::ManaType]) -> Option<String> {
+    let symbols: Vec<String> = among
+        .iter()
+        .map(|mana| format!("{{{}}}", mana.symbol()))
+        .collect();
+    let types = match symbols.as_slice() {
+        [] => "colors".to_owned(),
+        [_] => return None,
+        [first, second] => format!("{first} and/or {second}"),
+        [init @ .., last] => format!("{}, and/or {last}", init.join(", ")),
+    };
+    Some(format!(
+        "{} mana in any combination of {types}",
+        count_word(count)?
+    ))
+}
+
 fn mana_text(mana: &Produce) -> Option<String> {
     Some(match mana {
         Produce::Fixed(list) if !list.is_empty() => symbols_text(list),
@@ -879,6 +940,10 @@ fn mana_text(mana: &Produce) -> Option<String> {
         Produce::AnyColor(count @ 2..) => {
             format!("{} mana of any one color", count_word(*count)?)
         }
+        Produce::AnyCombination {
+            count: count @ 2..,
+            among,
+        } => combination_text(*count, among)?,
         Produce::ChosenColor(1) => "one mana of the chosen color".to_owned(),
         Produce::OrChosenColor(mana) => {
             format!("{{{}}} or one mana of the chosen color", mana.symbol())
@@ -1444,6 +1509,7 @@ impl Writer<'_> {
                 what: what @ (Ref::This | Ref::Target(0)),
             } => format!("{} connives", self.object(what)?),
             Effect::Transform { what } => format!("transform {}", self.object(what)?),
+            Effect::Flip { what } => format!("flip {}", self.object(what)?),
             Effect::If {
                 condition: Condition::Not(_),
                 ..

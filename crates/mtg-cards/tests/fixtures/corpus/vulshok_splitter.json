@@ -1,0 +1,26 @@
+{
+  "id": "f05078dd-b928-4b3f-9636-f299ebac180b",
+  "oracle_id": "6253f9d4-83ff-4a0b-b465-e9f9a565f664",
+  "name": "Vulshok Splitter",
+  "lang": "en",
+  "layout": "normal",
+  "set": "one",
+  "collector_number": "156",
+  "rarity": "common",
+  "released_at": "2023-02-10",
+  "digital": false,
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "For Mirrodin! (When this Equipment enters, create a 2/2 red Rebel creature token, then attach this to it.)\nEquipped creature gets +2/+0.\nEquip {2}{R} ({2}{R}: Attach to target creature you control. Equip only as a sorcery.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "For Mirrodin!",
+    "Equip"
+  ]
+}

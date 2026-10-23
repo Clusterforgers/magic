@@ -1,0 +1,44 @@
+{
+  "id": "73636ca0-2309-4bb3-9300-8bd0c0bb5b31",
+  "oracle_id": "6f571092-7244-4223-aa14-f5133cc000d8",
+  "name": "Budoka Pupil // Ichiga, Who Topples Oaks",
+  "lang": "en",
+  "layout": "flip",
+  "set": "bok",
+  "collector_number": "122",
+  "rarity": "uncommon",
+  "released_at": "2005-02-04",
+  "digital": false,
+  "mana_cost": "{1}{G}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Monk // Legendary Creature — Spirit",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Trample"
+  ],
+  "card_faces": [
+    {
+      "name": "Budoka Pupil",
+      "mana_cost": "{1}{G}{G}",
+      "type_line": "Creature — Human Monk",
+      "oracle_text": "Whenever you cast a Spirit or Arcane spell, you may put a ki counter on this creature.\nAt the beginning of the end step, if there are two or more ki counters on this creature, you may flip it.",
+      "power": "2",
+      "toughness": "2"
+    },
+    {
+      "name": "Ichiga, Who Topples Oaks",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Spirit",
+      "oracle_text": "Trample\nRemove a ki counter from Ichiga: Target creature gets +2/+2 until end of turn.",
+      "power": "4",
+      "toughness": "3"
+    }
+  ]
+}

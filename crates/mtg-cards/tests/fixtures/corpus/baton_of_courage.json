@@ -1,0 +1,22 @@
+{
+  "id": "d363970c-2418-42f9-8d13-0e5700161b62",
+  "oracle_id": "a20bb8b3-b724-4fec-b179-ca9e6adc4718",
+  "name": "Baton of Courage",
+  "lang": "en",
+  "layout": "normal",
+  "set": "5dn",
+  "collector_number": "105",
+  "rarity": "common",
+  "released_at": "2004-06-04",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact",
+  "oracle_text": "Flash\nSunburst (This artifact enters with a charge counter on it for each color of mana spent to cast it.)\nRemove a charge counter from this artifact: Target creature gets +1/+1 until end of turn.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Sunburst",
+    "Flash"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "e2e1694b-4d69-4961-b189-a7ba25a11836",
+  "oracle_id": "e6ccebf4-f4f0-404f-a634-4d751ef9c8aa",
+  "name": "Overgrowth",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c18",
+  "collector_number": "157",
+  "rarity": "common",
+  "released_at": "2018-08-10",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant land\nWhenever enchanted land is tapped for mana, its controller adds an additional {G}{G}.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "produced_mana": [
+    "G"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "be294c4e-712b-459c-a36c-e26ed5c27edb",
+  "oracle_id": "0fa51915-7c0b-4018-802a-90fd431f0036",
+  "name": "Team Pennant",
+  "lang": "en",
+  "layout": "normal",
+  "set": "stx",
+  "collector_number": "260",
+  "rarity": "uncommon",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{1}",
+  "cmc": 1.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +1/+1 and has vigilance and trample.\nEquip creature token {1}\nEquip {3}",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip"
+  ]
+}

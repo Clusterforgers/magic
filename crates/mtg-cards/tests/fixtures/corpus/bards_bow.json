@@ -1,0 +1,26 @@
+{
+  "id": "2ac03e90-1e16-453f-88e4-a0448db73403",
+  "oracle_id": "4aceb786-960d-4719-9de8-79dffd491a51",
+  "name": "Bard's Bow",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fin",
+  "collector_number": "174",
+  "rarity": "common",
+  "released_at": "2025-06-13",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Job select (When this Equipment enters, create a 1/1 colorless Hero creature token, then attach this to it.)\nEquipped creature gets +2/+2, has reach, and is a Bard in addition to its other types.\nPerseus's Bow — Equip {6} ({6}: Attach to target creature you control. Equip only as a sorcery.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Job select",
+    "Equip"
+  ]
+}

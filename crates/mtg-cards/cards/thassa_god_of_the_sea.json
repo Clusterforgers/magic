@@ -1,0 +1,44 @@
+{
+  "oracle_id": "69e5df2f-be1f-4608-a90f-3e2f51e2fea4",
+  "name": "Thassa, God of the Sea",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thassa, God of the Sea",
+      "oracle_fingerprint": "d787566cb0c929c64eb4550caa4c548e",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": { "Compare": { "left": { "Devotion": ["Blue"] }, "op": "Lt", "right": 5 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Scry": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

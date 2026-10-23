@@ -1,0 +1,21 @@
+{
+  "oracle_id": "7ecfa47e-1165-46a6-884c-290b1c14d020",
+  "name": "Etched Oracle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Etched Oracle",
+      "oracle_fingerprint": "74305372d9ad7f7f8da60586d450b02b",
+      "abilities": [
+        { "Keyword": "Sunburst" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "RemoveCounters": { "counter": "+1/+1", "count": 4 } }],
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Draw": { "who": { "Target": 0 }, "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

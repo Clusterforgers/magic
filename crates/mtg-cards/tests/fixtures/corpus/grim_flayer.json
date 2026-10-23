@@ -1,0 +1,31 @@
+{
+  "id": "b29e5af4-feb6-485a-a631-bfc42fa1b13a",
+  "oracle_id": "21254bdb-7b1f-4ac6-8fdd-f0ac2c35f47d",
+  "name": "Grim Flayer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "218",
+  "rarity": "mythic",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{B}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "Trample\nWhenever this creature deals combat damage to a player, surveil 3. (Look at the top three cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)\nDelirium — This creature gets +2/+2 as long as there are four or more card types among cards in your graveyard.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Delirium",
+    "Surveil",
+    "Trample"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "5e24bfd5-1bc1-4c4b-9268-8e3b9829784d",
+  "oracle_id": "2bc0821a-5a8f-465d-8532-3fb5c5d11d8f",
+  "name": "Unstable Molecule Suit",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "116",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +2/+2 and has indestructible.\nEquip commander {2}\nEquip {4}",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip"
+  ]
+}

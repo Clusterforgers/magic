@@ -1,0 +1,21 @@
+{
+  "oracle_id": "4c35f41a-55e4-49ca-b211-f57d7b1b90f6",
+  "name": "Goldwarden's Helm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goldwarden's Helm",
+      "oracle_fingerprint": "34e9cdd4b5a1191dceed1085dbd449e7",
+      "abilities": [
+        { "Keyword": "ForMirrodin" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 1 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}{W}" } }
+      ]
+    }
+  ]
+}

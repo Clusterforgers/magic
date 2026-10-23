@@ -1,0 +1,27 @@
+{
+  "oracle_id": "83fb7dfb-64a4-4320-b544-830c29f24df9",
+  "name": "Rising Miasma",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rising Miasma",
+      "oracle_fingerprint": "7e92d3954a445e5b1c7ddc7cda3956d7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Awaken": { "count": 3, "cost": "{5}{B}{B}" } } }
+      ]
+    }
+  ]
+}

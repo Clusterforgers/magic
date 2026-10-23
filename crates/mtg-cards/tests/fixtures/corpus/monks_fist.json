@@ -1,0 +1,22 @@
+{
+  "id": "995033f0-873d-4e46-b0c9-98ec8ef270ff",
+  "oracle_id": "1b524149-340e-4f94-9520-6a5258fabb00",
+  "name": "Monk's Fist",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fin",
+  "collector_number": "265",
+  "rarity": "common",
+  "released_at": "2025-06-13",
+  "digital": false,
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Job select (When this Equipment enters, create a 1/1 colorless Hero creature token, then attach this to it.)\nEquipped creature gets +1/+0 and is a Monk in addition to its other types.\nEquip {2} ({2}: Attach to target creature you control. Equip only as a sorcery.)",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Job select",
+    "Equip"
+  ]
+}

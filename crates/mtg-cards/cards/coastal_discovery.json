@@ -1,0 +1,15 @@
+{
+  "oracle_id": "f7c84690-8c7c-41a6-b430-a9771030f903",
+  "name": "Coastal Discovery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coastal Discovery",
+      "oracle_fingerprint": "9a5052b19fd233eefa58e1f1a721bf51",
+      "abilities": [
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }] } },
+        { "Keyword": { "Awaken": { "count": 4, "cost": "{5}{U}" } } }
+      ]
+    }
+  ]
+}

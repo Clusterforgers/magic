@@ -1,0 +1,32 @@
+{
+  "oracle_id": "26e555f1-e0ed-4b84-8783-1c0c968f462d",
+  "name": "Deathcap Cultivator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deathcap Cultivator",
+      "oracle_fingerprint": "fb8dd2231291524c5132bf98498f4867",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Black", "Green"] } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Deathtouch" }],
+            "condition": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

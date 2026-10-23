@@ -1,0 +1,43 @@
+{
+  "oracle_id": "2e19baba-2d66-4e3a-b2bf-cb27dce89f44",
+  "name": "Quest for the Goblin Lord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quest for the Goblin Lord",
+      "oracle_fingerprint": "a20e6c9b8f23a088654022f7b4f63229",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Goblin" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "quest" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "quest" } } },
+                "op": "Ge",
+                "right": 5
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

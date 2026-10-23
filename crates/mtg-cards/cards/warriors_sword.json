@@ -1,0 +1,21 @@
+{
+  "oracle_id": "a339961e-3555-467f-a4f8-c5eaac7e7ed1",
+  "name": "Warrior's Sword",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warrior's Sword",
+      "oracle_fingerprint": "c87cce26625dea353bd4486707178433",
+      "abilities": [
+        { "Keyword": "JobSelect" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 2 } }, { "AddSubtype": "Warrior" }]
+          }
+        },
+        { "Keyword": { "Equip": "{5}" } }
+      ]
+    }
+  ]
+}

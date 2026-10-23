@@ -1,0 +1,12 @@
+{
+  "oracle_id": "4b6966f6-052f-4d1d-a3bf-1d3cc91c71d4",
+  "name": "Slitherhead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slitherhead",
+      "oracle_fingerprint": "7fa17616dfe9dee5304eea0c7ca33fc1",
+      "abilities": [{ "Keyword": { "Scavenge": "{0}" } }]
+    }
+  ]
+}

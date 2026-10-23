@@ -1,0 +1,64 @@
+{
+  "oracle_id": "ea31c9a4-af4f-4cab-b53c-77ef4241d4a6",
+  "name": "Hired Muscle // Scarmaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hired Muscle",
+      "oracle_fingerprint": "71b1d43682cdacbbb7d76561200ceed2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Spirit" }, { "Subtype": "Arcane" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "ki" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "ki" } } },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Flip": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Scarmaker",
+      "oracle_fingerprint": "d181dc67355c955d0842e8d1fdcd99e9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "ki" } } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Fear" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

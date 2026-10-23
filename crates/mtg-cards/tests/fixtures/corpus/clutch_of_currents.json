@@ -1,0 +1,25 @@
+{
+  "id": "3d20f482-e0b2-4e4a-be32-347ab112912c",
+  "oracle_id": "2c6658c3-8c0e-46c9-8127-bc5b77eb0dab",
+  "name": "Clutch of Currents",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bfz",
+  "collector_number": "72",
+  "rarity": "common",
+  "released_at": "2015-10-02",
+  "digital": false,
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Return target creature to its owner's hand.\nAwaken 3—{4}{U} (If you cast this spell for {4}{U}, also put three +1/+1 counters on target land you control and it becomes a 0/0 Elemental creature with haste. It's still a land.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Awaken"
+  ]
+}
