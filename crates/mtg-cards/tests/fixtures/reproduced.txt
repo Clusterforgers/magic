@@ -168,6 +168,7 @@ Circle of Dreams Druid
 Citadel Gate
 Citanul Hierophants
 Cliffgate
+Clifftop Lookout
 Clive's Hideaway
 Clone
 Cloud Sprite
@@ -308,6 +309,7 @@ Ethereal Armor
 Ethereal Usher
 Ethersworn Sphinx
 Evercoat Ursine
+Evolutionary Leap
 Exalted Angel
 Excavation Technique
 Exotic Orchard
@@ -936,6 +938,7 @@ Towering Titan
 Trash for Treasure
 Traumatic Visions
 Treasure Cruise
+Treasure Hunt
 Trove Tracker
 True Identity
 Trumpeting Gnarr

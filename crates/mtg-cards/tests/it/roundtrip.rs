@@ -848,6 +848,15 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                     exiled_as
                 }
             ),
+            (who(), selector(), amount(), bound_name(), bound_name()).prop_map(
+                |(who, filter, count, bind, revealed_as)| Effect::RevealUntil {
+                    who,
+                    filter,
+                    count,
+                    bind,
+                    revealed_as
+                }
+            ),
             (who(), amount(), bound_name()).prop_map(|(who, count, bind)| Effect::ExileTop {
                 who,
                 count,

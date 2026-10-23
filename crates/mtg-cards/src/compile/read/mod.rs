@@ -56,6 +56,7 @@ mod prevention;
 mod pronouns;
 mod render;
 mod reveal;
+mod reveal_until;
 mod selectors;
 mod spell_keywords;
 mod spend;
