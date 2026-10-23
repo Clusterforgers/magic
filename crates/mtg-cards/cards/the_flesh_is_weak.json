@@ -1,0 +1,40 @@
+{
+  "oracle_id": "dafbb927-3d9d-4be7-b427-f6564b295161",
+  "name": "The Flesh Is Weak",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Flesh Is Weak",
+      "oracle_fingerprint": "d7be3848c32baa5e8445d1897af10d6a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "HasCounter": "+1/+1" }]
+            },
+            "mods": [{ "AddType": "Artifact" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }] },
+            "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

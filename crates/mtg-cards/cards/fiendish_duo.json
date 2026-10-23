@@ -1,0 +1,15 @@
+{
+  "oracle_id": "ab0dfae5-b9d4-417b-8a0d-2525ae3a73b9",
+  "name": "Fiendish Duo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fiendish Duo",
+      "oracle_fingerprint": "547ee8de5d6bb26137e478c13d6dcd82",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Replacement": { "when": { "Damage": { "to": "Opponents" } }, "by": { "Multiply": 2 } } }
+      ]
+    }
+  ]
+}

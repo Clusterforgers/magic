@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "83d990f5-a7b7-4482-95e6-b03a397192e2",
+  "oracle_id": "26e4b49e-77e7-41d9-94c5-924669a82591",
+  "multiverse_ids": [
+    634883
+  ],
+  "tcgplayer_id": 518914,
+  "cardmarket_id": 738844,
+  "name": "Gallifrey Council Chamber",
+  "lang": "en",
+  "released_at": "2023-10-13",
+  "uri": "https://api.scryfall.com/cards/83d990f5-a7b7-4482-95e6-b03a397192e2",
+  "scryfall_uri": "https://scryfall.com/card/who/188/gallifrey-council-chamber?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:50:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/3/83d990f5-a7b7-4482-95e6-b03a397192e2.jpg?1783914611",
+    "normal": "https://cards.scryfall.io/normal/front/8/3/83d990f5-a7b7-4482-95e6-b03a397192e2.jpg?1783914611",
+    "large": "https://cards.scryfall.io/large/front/8/3/83d990f5-a7b7-4482-95e6-b03a397192e2.jpg?1783914611",
+    "png": "https://cards.scryfall.io/png/front/8/3/83d990f5-a7b7-4482-95e6-b03a397192e2.png?1783914611",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/3/83d990f5-a7b7-4482-95e6-b03a397192e2.jpg?1783914611",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/3/83d990f5-a7b7-4482-95e6-b03a397192e2.jpg?1783914611",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/3/83d990f5-a7b7-4482-95e6-b03a397192e2.webp?1783914611",
+    "grid": "https://cards.scryfall.io/grid/front/8/3/83d990f5-a7b7-4482-95e6-b03a397192e2.webp?1783914611",
+    "display": "https://cards.scryfall.io/display/front/8/3/83d990f5-a7b7-4482-95e6-b03a397192e2.webp?1783914611",
+    "art": "https://cards.scryfall.io/art/front/8/3/83d990f5-a7b7-4482-95e6-b03a397192e2.webp?1783914611",
+    "crop": "https://cards.scryfall.io/crop/front/8/3/83d990f5-a7b7-4482-95e6-b03a397192e2.webp?1783914611",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/3/83d990f5-a7b7-4482-95e6-b03a397192e2.jpg?1783914611"
+  },
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Legendary Land",
+  "oracle_text": "When Gallifrey Council Chamber enters, surveil 1. (Look at the top card of your library. You may put that card into your graveyard.)\n{T}: Add {C}.\n{T}: Add one mana of any color. Spend this mana only to cast a Time Lord or Alien spell or activate an ability of a Time Lord or Alien.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Surveil"
+  ],
+  "produced_mana": [
+    "B",
+    "C",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set": "who",
+  "set_name": "Doctor Who",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awho&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/who?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/83d990f5-a7b7-4482-95e6-b03a397192e2/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A26e4b49e-77e7-41d9-94c5-924669a82591&unique=prints",
+  "collector_number": "188",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lixin Yin",
+  "artist_ids": [
+    "25645c87-71be-400b-8522-618a52c37454"
+  ],
+  "illustration_id": "e781392c-dfb3-4740-9960-db8d46cfa9e9",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 5641,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "",
+    "previewed_at": "2023-10-03"
+  },
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": "0.57",
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": "0.35",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=634883&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGallifrey%2BCouncil%2BChamber",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGallifrey%2BCouncil%2BChamber",
+    "edhrec": "https://edhrec.com/route/?cc=Gallifrey+Council+Chamber"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F518914%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=738844&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Gallifrey+Council+Chamber&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "object": "card",
+  "id": "9573ee62-4fdf-4fca-90e2-10a7d8161764",
+  "oracle_id": "50f144f8-29eb-4af7-9a50-eded3b9c83c2",
+  "multiverse_ids": [
+    620752
+  ],
+  "mtgo_id": 113164,
+  "tcgplayer_id": 488277,
+  "cardmarket_id": 716206,
+  "name": "Radagast, Wizard of Wilds",
+  "lang": "en",
+  "released_at": "2023-06-23",
+  "uri": "https://api.scryfall.com/cards/9573ee62-4fdf-4fca-90e2-10a7d8161764",
+  "scryfall_uri": "https://scryfall.com/card/ltc/66/radagast-wizard-of-wilds?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:13:36Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/5/9573ee62-4fdf-4fca-90e2-10a7d8161764.jpg?1783916016",
+    "normal": "https://cards.scryfall.io/normal/front/9/5/9573ee62-4fdf-4fca-90e2-10a7d8161764.jpg?1783916016",
+    "large": "https://cards.scryfall.io/large/front/9/5/9573ee62-4fdf-4fca-90e2-10a7d8161764.jpg?1783916016",
+    "png": "https://cards.scryfall.io/png/front/9/5/9573ee62-4fdf-4fca-90e2-10a7d8161764.png?1783916016",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/5/9573ee62-4fdf-4fca-90e2-10a7d8161764.jpg?1783916016",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/5/9573ee62-4fdf-4fca-90e2-10a7d8161764.jpg?1783916016",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/5/9573ee62-4fdf-4fca-90e2-10a7d8161764.webp?1783916016",
+    "grid": "https://cards.scryfall.io/grid/front/9/5/9573ee62-4fdf-4fca-90e2-10a7d8161764.webp?1783916016",
+    "display": "https://cards.scryfall.io/display/front/9/5/9573ee62-4fdf-4fca-90e2-10a7d8161764.webp?1783916016",
+    "art": "https://cards.scryfall.io/art/front/9/5/9573ee62-4fdf-4fca-90e2-10a7d8161764.webp?1783916016",
+    "crop": "https://cards.scryfall.io/crop/front/9/5/9573ee62-4fdf-4fca-90e2-10a7d8161764.webp?1783916016",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/5/9573ee62-4fdf-4fca-90e2-10a7d8161764.jpg?1783916016"
+  },
+  "mana_cost": "{2}{G}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Avatar Wizard",
+  "oracle_text": "Ward {1}\nBeasts and Birds you control have ward {1}.\nWhenever you cast a spell with mana value 5 or greater, choose one —\n• Create a 3/3 green Beast creature token.\n• Create a 2/2 blue Bird creature token with flying.",
+  "power": "3",
+  "toughness": "5",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Ward"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "c7ea6b4f-36bb-4c84-a3cb-f962ece41b2b",
+      "component": "combo_piece",
+      "name": "Radagast, Wizard of Wilds",
+      "type_line": "Legendary Creature — Avatar Wizard",
+      "uri": "https://api.scryfall.com/cards/c7ea6b4f-36bb-4c84-a3cb-f962ece41b2b"
+    },
+    {
+      "object": "related_card",
+      "id": "c622237d-92e5-4efc-aec4-0a18efd6fb38",
+      "component": "token",
+      "name": "Beast",
+      "type_line": "Token Creature — Beast",
+      "uri": "https://api.scryfall.com/cards/c622237d-92e5-4efc-aec4-0a18efd6fb38"
+    },
+    {
+      "object": "related_card",
+      "id": "c813d283-c996-4f85-afaa-7702414a1197",
+      "component": "token",
+      "name": "Bird",
+      "type_line": "Token Creature — Bird",
+      "uri": "https://api.scryfall.com/cards/c813d283-c996-4f85-afaa-7702414a1197"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set": "ltc",
+  "set_name": "Tales of Middle-earth Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Altc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ltc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9573ee62-4fdf-4fca-90e2-10a7d8161764/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A50f144f8-29eb-4af7-9a50-eded3b9c83c2&unique=prints",
+  "collector_number": "66",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tomas Duchek",
+  "artist_ids": [
+    "ceb3ce65-efa6-4bcc-b2a3-33e83a047528"
+  ],
+  "illustration_id": "bb2ebd1a-0031-42b7-8ba0-58dc057afacb",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 13674,
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.30",
+    "eur_foil": null,
+    "tix": "0.42"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=620752&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRadagast%252C%2BWizard%2Bof%2BWilds",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRadagast%252C%2BWizard%2Bof%2BWilds",
+    "edhrec": "https://edhrec.com/route/?cc=Radagast%2C+Wizard+of+Wilds"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F488277%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=716206&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/113164?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

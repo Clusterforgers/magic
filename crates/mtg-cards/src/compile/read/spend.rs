@@ -127,17 +127,19 @@ fn kind_text(filter: &SpendFilter) -> Option<String> {
         chosen_type: _,
     } = filter;
     if !subtypes.is_empty() {
-        return match subtypes.as_slice() {
-            [one]
-                if types.is_empty()
-                    && without.is_empty()
-                    && supertypes.is_empty()
-                    && !multicolored =>
-            {
-                Some(format!("{} ", one.0))
-            }
-            _ => None,
-        };
+        if !without.is_empty() || !supertypes.is_empty() || *multicolored {
+            return None;
+        }
+        // "Elf spells", "Ninja or Turtle spells", "Dragon creature spells".
+        let names: Vec<&str> = subtypes.iter().map(|one| one.0.as_str()).collect();
+        let kinds: Vec<&str> = types.iter().map(|kind| type_name(*kind)).collect();
+        let parts = [names.join(" or "), kinds.join(" or ")];
+        let parts: Vec<&str> = parts
+            .iter()
+            .map(String::as_str)
+            .filter(|part| !part.is_empty())
+            .collect();
+        return Some(format!("{} ", parts.join(" ")));
     }
     match (
         types.as_slice(),
@@ -183,13 +185,18 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
             )
         }
         [SpendOn::Spell(spell), SpendOn::Ability(source)] if spell == source => {
-            let [one] = spell.subtypes.as_slice() else {
+            if spell.subtypes.is_empty() || !spell.types.is_empty() {
                 return None;
-            };
+            }
+            let plurals: Vec<String> = spell
+                .subtypes
+                .iter()
+                .map(|one| plural_name(&one.0))
+                .collect();
             format!(
                 "Spend this mana only to cast {}spells or activate abilities of {}",
                 kind_text(spell)?,
-                plural_name(&one.0)
+                plurals.join(" or ")
             )
         }
         _ => return None,
@@ -206,4 +213,63 @@ pub(super) fn singular(text: &str) -> Option<String> {
         "a"
     };
     Some(format!("{head}only to cast {article} {nouns}spell{tail}"))
+}
+
+/// The other wordings of a sentence about what mana is spent on: spells in the singular, "and/or" for a list of the
+/// plural kinds ("instant and/or sorcery spells"), and the abilities of the same kind in each wording the cards use
+/// ("or activate an ability of a Hero source", "or to activate abilities of Heroes").
+pub(super) fn more(text: &str) -> Vec<String> {
+    let mut forms = vec![text.to_owned()];
+    forms.extend(singular(text));
+    let mut found: Vec<String> = forms[1..].to_vec();
+    for form in &forms {
+        found.extend(and_or(form));
+        found.extend(abilities(form));
+    }
+    found
+}
+
+/// "cast instant and/or sorcery spells" for "cast instant or sorcery spells".
+fn and_or(text: &str) -> Option<String> {
+    let (head, nouns) = text.split_once("only to cast ")?;
+    let (kinds, tail) = nouns.split_once(" spells")?;
+    (kinds.contains(" or ") && !kinds.starts_with("a ")).then(|| {
+        format!(
+            "{head}only to cast {} spells{tail}",
+            kinds.replace(" or ", " and/or ")
+        )
+    })
+}
+
+/// The ways the abilities of the kind of the spells are worded after the spells.
+fn abilities(text: &str) -> Vec<String> {
+    let Some((head, rest)) = text.split_once(" or activate abilities of ") else {
+        return Vec::new();
+    };
+    let (plurals, tail) = rest.find('.').map_or((rest, ""), |at| rest.split_at(at));
+    // The kind in the singular, from the spells: "a Time Lord or Alien spell" or "Time Lord or Alien spells".
+    let Some((_, spells)) = head.split_once("only to cast ") else {
+        return Vec::new();
+    };
+    let kind = spells
+        .strip_prefix("an ")
+        .or_else(|| spells.strip_prefix("a "))
+        .unwrap_or(spells);
+    let kind = kind
+        .strip_suffix(" spells")
+        .or_else(|| kind.strip_suffix(" spell"))
+        .unwrap_or(kind);
+    let article = super::triggers::article(kind);
+    let mut found = Vec::new();
+    for to in ["", "to "] {
+        for ability in [
+            format!("abilities of {plurals}"),
+            format!("an ability of {article} {kind}"),
+            format!("an ability of {article} {kind} source"),
+        ] {
+            found.push(format!("{head} or {to}activate {ability}{tail}"));
+        }
+    }
+    found.remove(0);
+    found
 }

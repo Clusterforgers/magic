@@ -1,0 +1,42 @@
+{
+  "oracle_id": "1e2ee630-9d37-4396-ae18-697c1a3a4e62",
+  "name": "Pip-Boy 3000",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pip-Boy 3000",
+      "oracle_fingerprint": "d1e7c31c0c181897ecbcf7844988384a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "label": "Sort Inventory", "effects": [{ "Draw": {} }, { "Discard": {} }] },
+                    {
+                      "label": "Pick a Perk",
+                      "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+                    },
+                    {
+                      "label": "Check Map",
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Land" }] },
+                          "bounds": { "min": 0, "max": 2 }
+                        }
+                      ],
+                      "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

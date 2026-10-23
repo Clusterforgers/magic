@@ -1,0 +1,160 @@
+{
+  "object": "card",
+  "id": "e04a05e5-7bff-46a4-aae1-6713977e6e30",
+  "oracle_id": "63e2cba7-ec1a-44bf-b915-d2ae75851430",
+  "multiverse_ids": [],
+  "resource_id": "01532878E7EA2FD52BF0DCB792E9DEF11CA9D7AF99A29FC012941AFF892B7AA8",
+  "mtgo_id": 140063,
+  "tcgplayer_id": 631147,
+  "cardmarket_id": 824555,
+  "name": "Hermes, Overseer of Elpis",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/e04a05e5-7bff-46a4-aae1-6713977e6e30",
+  "scryfall_uri": "https://scryfall.com/card/fic/36/hermes-overseer-of-elpis?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:32:43Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/0/e04a05e5-7bff-46a4-aae1-6713977e6e30.jpg?1783906363",
+    "normal": "https://cards.scryfall.io/normal/front/e/0/e04a05e5-7bff-46a4-aae1-6713977e6e30.jpg?1783906363",
+    "large": "https://cards.scryfall.io/large/front/e/0/e04a05e5-7bff-46a4-aae1-6713977e6e30.jpg?1783906363",
+    "png": "https://cards.scryfall.io/png/front/e/0/e04a05e5-7bff-46a4-aae1-6713977e6e30.png?1783906363",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/0/e04a05e5-7bff-46a4-aae1-6713977e6e30.jpg?1783906363",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/0/e04a05e5-7bff-46a4-aae1-6713977e6e30.jpg?1783906363",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/0/e04a05e5-7bff-46a4-aae1-6713977e6e30.webp?1783906363",
+    "grid": "https://cards.scryfall.io/grid/front/e/0/e04a05e5-7bff-46a4-aae1-6713977e6e30.webp?1783906363",
+    "display": "https://cards.scryfall.io/display/front/e/0/e04a05e5-7bff-46a4-aae1-6713977e6e30.webp?1783906363",
+    "art": "https://cards.scryfall.io/art/front/e/0/e04a05e5-7bff-46a4-aae1-6713977e6e30.webp?1783906363",
+    "crop": "https://cards.scryfall.io/crop/front/e/0/e04a05e5-7bff-46a4-aae1-6713977e6e30.webp?1783906363",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/0/e04a05e5-7bff-46a4-aae1-6713977e6e30.jpg?1783906363"
+  },
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Elder Wizard",
+  "oracle_text": "Whenever you cast a noncreature spell, create a 1/1 blue Bird creature token with flying and vigilance.\nWhenever you attack with one or more Birds, scry 2.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Scry"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "023cebe4-ebe4-4398-9fd7-d3507660040a",
+      "component": "token",
+      "name": "Bird",
+      "type_line": "Token Creature — Bird",
+      "uri": "https://api.scryfall.com/cards/023cebe4-ebe4-4398-9fd7-d3507660040a"
+    },
+    {
+      "object": "related_card",
+      "id": "ebacdfc9-7459-45b7-b563-572bdab27702",
+      "component": "combo_piece",
+      "name": "Hermes, Overseer of Elpis",
+      "type_line": "Legendary Creature — Elder Wizard",
+      "uri": "https://api.scryfall.com/cards/ebacdfc9-7459-45b7-b563-572bdab27702"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e04a05e5-7bff-46a4-aae1-6713977e6e30/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A63e2cba7-ec1a-44bf-b915-d2ae75851430&unique=prints",
+  "collector_number": "36",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"For us, there may be no higher purpose than to live for our world, but what of the other living beings out there?\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Darius Zablockis",
+  "artist_ids": [
+    "602daf30-797a-4071-991e-42d35f8969d1"
+  ],
+  "illustration_id": "29ee02d2-a228-45b6-a5ab-90ca1a6b6cb3",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "ffxiv",
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 3238,
+  "prices": {
+    "usd": "0.39",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.50",
+    "eur_foil": null,
+    "tix": "2.37"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHermes%252C%2BOverseer%2Bof%2BElpis",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHermes%252C%2BOverseer%2Bof%2BElpis",
+    "edhrec": "https://edhrec.com/route/?cc=Hermes%2C+Overseer+of+Elpis"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F631147%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824555&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/140063?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

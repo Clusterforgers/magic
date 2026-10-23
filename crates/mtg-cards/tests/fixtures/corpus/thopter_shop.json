@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "e72a798b-8dab-41f4-9c2d-1d461e1b46c5",
+  "oracle_id": "b2f9e07b-64b7-40b3-9a5e-5f1d59b35af7",
+  "multiverse_ids": [
+    588414
+  ],
+  "mtgo_id": 105246,
+  "tcgplayer_id": 452339,
+  "cardmarket_id": 682771,
+  "name": "Thopter Shop",
+  "lang": "en",
+  "released_at": "2022-11-18",
+  "uri": "https://api.scryfall.com/cards/e72a798b-8dab-41f4-9c2d-1d461e1b46c5",
+  "scryfall_uri": "https://scryfall.com/card/brc/19/thopter-shop?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:15:18Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/7/e72a798b-8dab-41f4-9c2d-1d461e1b46c5.jpg?1783919718",
+    "normal": "https://cards.scryfall.io/normal/front/e/7/e72a798b-8dab-41f4-9c2d-1d461e1b46c5.jpg?1783919718",
+    "large": "https://cards.scryfall.io/large/front/e/7/e72a798b-8dab-41f4-9c2d-1d461e1b46c5.jpg?1783919718",
+    "png": "https://cards.scryfall.io/png/front/e/7/e72a798b-8dab-41f4-9c2d-1d461e1b46c5.png?1783919718",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/7/e72a798b-8dab-41f4-9c2d-1d461e1b46c5.jpg?1783919718",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/7/e72a798b-8dab-41f4-9c2d-1d461e1b46c5.jpg?1783919718",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/7/e72a798b-8dab-41f4-9c2d-1d461e1b46c5.webp?1783919718",
+    "grid": "https://cards.scryfall.io/grid/front/e/7/e72a798b-8dab-41f4-9c2d-1d461e1b46c5.webp?1783919718",
+    "display": "https://cards.scryfall.io/display/front/e/7/e72a798b-8dab-41f4-9c2d-1d461e1b46c5.webp?1783919718",
+    "art": "https://cards.scryfall.io/art/front/e/7/e72a798b-8dab-41f4-9c2d-1d461e1b46c5.webp?1783919718",
+    "crop": "https://cards.scryfall.io/crop/front/e/7/e72a798b-8dab-41f4-9c2d-1d461e1b46c5.webp?1783919718",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/7/e72a798b-8dab-41f4-9c2d-1d461e1b46c5.jpg?1783919718"
+  },
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact",
+  "oracle_text": "Whenever one or more artifact creatures you control die, draw a card. This ability triggers only once each turn.\n{2}{W}, {T}: Create a 1/1 colorless Thopter artifact creature token with flying.",
+  "colors": [],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "4501d15d-d306-4372-9516-bd63cf788f45",
+      "component": "token",
+      "name": "Thopter",
+      "type_line": "Token Artifact Creature — Thopter",
+      "uri": "https://api.scryfall.com/cards/4501d15d-d306-4372-9516-bd63cf788f45"
+    },
+    {
+      "object": "related_card",
+      "id": "d42ad683-3336-4435-a605-571e53063cb6",
+      "component": "combo_piece",
+      "name": "Thopter Shop",
+      "type_line": "Artifact",
+      "uri": "https://api.scryfall.com/cards/d42ad683-3336-4435-a605-571e53063cb6"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "81d56780-1efc-4487-9803-43d634ca13d0",
+  "set": "brc",
+  "set_name": "The Brothers' War Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/81d56780-1efc-4487-9803-43d634ca13d0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abrc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/brc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e72a798b-8dab-41f4-9c2d-1d461e1b46c5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab2f9e07b-64b7-40b3-9a5e-5f1d59b35af7&unique=prints",
+  "collector_number": "19",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Rushed repairs once sent a thopter back to combat with a mechanic's still-warm lunch in the gunner's seat.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Craig J Spearing",
+  "artist_ids": [
+    "b0f15e74-0dd6-4156-959e-c5e30c5cdc52"
+  ],
+  "illustration_id": "8ec8f0e9-2736-4e19-ab27-f44e1d4650d4",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 8020,
+  "prices": {
+    "usd": "0.55",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.44",
+    "eur_foil": null,
+    "tix": "0.66"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=588414&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThopter%2BShop",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThopter%2BShop",
+    "edhrec": "https://edhrec.com/route/?cc=Thopter+Shop"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F452339%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=682771&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/105246?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
