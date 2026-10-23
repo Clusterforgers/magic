@@ -136,15 +136,15 @@ fn library(driver: &Driver, seat: usize) -> Vec<String> {
 #[rstest]
 fn two_basic_lands_that_share_a_type_are_asked_one_after_the_other(
     #[values(2, 3, 4)] seats: usize,
-    #[values(0, 1, 2)] which: usize,
+    #[values(0, 1)] which: usize,
 ) -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(table(seats, "Myriad Landscape"))?;
     activate(&mut driver, "Myriad Landscape")?;
     let (seat, first, offered_first) = offered(&driver);
     assert_eq!(seat, 0);
     assert_eq!(sorted(offered_first), sorted(owned(&LIBRARY)));
-    // The first land: a Forest, a Plains or a Swamp, by position among the cards offered.
-    let kinds = ["Forest", "Plains", "Swamp"];
+    // The first land: a Forest or a Plains, by position among the cards offered.
+    let kinds = ["Forest", "Plains"];
     let kind = kinds[which];
     let chosen = *first
         .iter()
@@ -186,6 +186,28 @@ fn two_basic_lands_that_share_a_type_are_asked_one_after_the_other(
     );
     let replayed = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.engine().state_hash());
+    Ok(())
+}
+
+#[rstest]
+fn a_land_type_with_one_card_left_gives_only_that_land(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(table(seats, "Myriad Landscape"))?;
+    activate(&mut driver, "Myriad Landscape")?;
+    let (_, first, _) = offered(&driver);
+    let swamp = *first
+        .iter()
+        .find(|id| common::name_of(driver.state(), **id) == "Swamp")
+        .unwrap();
+    pick(&mut driver, swamp)?;
+    assert!(
+        !matches!(driver.decision()?.kind, DecisionKind::ChooseCards(_)),
+        "no other Swamp, so no second question"
+    );
+    assert!(tapped(&driver, swamp));
+    assert_eq!(shuffles(&driver), [0]);
+    assert_eq!(library(&driver, 0).len(), LIBRARY.len() - 1);
     Ok(())
 }
 

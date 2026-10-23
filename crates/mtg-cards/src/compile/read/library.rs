@@ -578,7 +578,7 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
         return None;
     }
     // A pair: a second search that leaves out the first card, and a move for each.
-    let (looks_for, searches) = match rest {
+    let (looks_for, count_of) = match rest {
         [
             Effect::Search {
                 who: second,
@@ -595,7 +595,7 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
         ),
         _ => (what_text(filter, count)?, 1),
     };
-    let plural = searches == 2 || !count.is_one();
+    let plural = count_of == 2 || !count.is_one();
     let library = if *who == Ref::You { "your" } else { "their" };
     let mut text = format!("search {library} library for {looks_for}");
     if *reveal {
@@ -606,13 +606,13 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
         });
     }
     let found = Ref::Bound(bind.clone());
-    let rest = &effects[searches..];
+    let rest = &effects[count_of..];
     match rest {
         [
             Effect::Move { what, to },
             Effect::Shuffle { who: shuffler },
             ..,
-        ] if searches == 1 && *what == found && shuffler == who => {
+        ] if count_of == 1 && *what == found && shuffler == who => {
             let pron = if plural { "them" } else { "it" };
             let _ = write!(text, ", put {pron} {}, then shuffle", destination_text(to)?);
         }
@@ -624,7 +624,7 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
             },
             Effect::Shuffle { who: shuffler },
             ..,
-        ] if searches == 2
+        ] if count_of == 2
             && *what == found
             && *other == Ref::Bound(pairs::second_bind(bind))
             && to == other_to
@@ -643,12 +643,12 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
                     },
             },
             ..,
-        ] if searches == 1 && *what == found && !plural && shuffler == who => {
+        ] if count_of == 1 && *what == found && !plural && shuffler == who => {
             text.push_str(", then shuffle and put that card on top");
         }
         _ => return None,
     }
-    Some((text, searches * 2 + 1))
+    Some((text, count_of * 2 + 1))
 }
 
 /// A look at the top cards, the choice of one of them for the hand and where the rest go.
