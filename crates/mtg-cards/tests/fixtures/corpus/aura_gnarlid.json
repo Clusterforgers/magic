@@ -1,0 +1,25 @@
+{
+  "id": "808d06bb-1467-4c91-965e-bf8874ffa5e6",
+  "oracle_id": "586aebf2-4653-49fa-8425-13bd1f511bf0",
+  "name": "Aura Gnarlid",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c18",
+  "collector_number": "128",
+  "rarity": "common",
+  "released_at": "2018-08-10",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "Creatures with power less than this creature's power can't block it.\nThis creature gets +1/+1 for each Aura on the battlefield.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

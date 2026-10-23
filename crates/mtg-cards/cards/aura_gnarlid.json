@@ -1,0 +1,45 @@
+{
+  "oracle_id": "586aebf2-4653-49fa-8425-13bd1f511bf0",
+  "name": "Aura Gnarlid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aura Gnarlid",
+      "oracle_fingerprint": "acd879e6319ae8e2e5104a6a085d04dd",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  {
+                    "Compare": {
+                      "stat": "Power",
+                      "op": "Lt",
+                      "to": { "Stat": { "of": "This", "stat": "Power" } }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Subtype": "Aura" }] },
+                  "toughness": { "Count": [{ "Subtype": "Aura" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 Abbot of Keral Keep
 Aberrant
+Abundant Growth
 Abzan Advantage
 Abzan Battle Priest
 Abzan Falconer
@@ -26,6 +27,7 @@ Ancient Ziggurat
 Angel of Invention
 Angel of Vitality
 Angelic Ascension
+Ant-Man, Elusive Avenger
 Arbor Colossus
 Arcane Signet
 Archon of Absolution
@@ -40,6 +42,7 @@ Assassin's Trophy
 Atlantean Skirmisher
 Atmospheric Greenhouse
 Augury Raven
+Aura Gnarlid
 Authority of the Consuls
 Aven Eternal
 Aven Initiate
@@ -112,14 +115,17 @@ Cavern Whisperer
 Celestial Archon
 Celestial Colonnade
 Celestial Crusader
+Champion of Lambholt
 Changeling Outcast
 Chartooth Cougar
 Chemister's Insight
 Chittering Harvester
 Chomping Kavu
 Chromanticore
+Chromatic Lantern
 Circle of Dreams Druid
 Citadel Gate
+Citanul Hierophants
 Cliffgate
 Clone
 Cloudfin Raptor
@@ -262,6 +268,7 @@ Gaea's Cradle
 Galadhrim Brigade
 Galvanizing Sawship
 Game-Trail Changeling
+Gemhide Sliver
 Gemrazer
 Generous Ent
 Gerrard's Wisdom
@@ -348,6 +355,7 @@ Join the Maestros
 Jolting Merfolk
 Jungle Lion
 Kalemne's Captain
+Karametra's Favor
 Karn's Bastion
 Kathari Screecher
 Kazandu Tuskcaller
@@ -389,6 +397,7 @@ Make Disappear
 Makeshift Mauler
 Mana Bloom
 Manabarbs
+Manaweft Sliver
 Manor Gate
 Map the Wastes
 Marchesa's Emissary
@@ -436,6 +445,7 @@ Night Clubber
 Nighthawk Scavenger
 Nightmare
 Nightveil Sprite
+Ninja Pizza
 Ninja of the Deep Hours
 Ninja of the New Moon
 Norn's Annex
@@ -545,10 +555,12 @@ Servant of the Conduit
 Shadowmage Infiltrator
 Shambling Shell
 Shenanigans
+Shifting Sliver
 Siege Smash
 Siege Wurm
 Sigiled Paladin
 Sigiled Sentinel
+Silhana Ledgewalker
 Sinister Sabotage
 Sinister Starfish
 Sinuous Vermin

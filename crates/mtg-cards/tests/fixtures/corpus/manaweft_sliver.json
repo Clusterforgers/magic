@@ -1,0 +1,25 @@
+{
+  "id": "e51629ac-51d5-47cb-a7fc-315b34dd82ce",
+  "oracle_id": "bd47398d-da35-4a09-8754-771af91b14f4",
+  "name": "Manaweft Sliver",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "900",
+  "rarity": "uncommon",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Sliver",
+  "oracle_text": "Sliver creatures you control have \"{T}: Add one mana of any color.\"",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

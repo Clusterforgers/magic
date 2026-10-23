@@ -21,11 +21,7 @@ fn creature() -> Pred {
 pub(super) fn cannot_block(r: &mut Reader<'_>) -> Option<Ability> {
     let blockers = phrase(r, Form::All)?;
     r.need("can't block")?;
-    let affected = if r.word("it") {
-        Ref::This
-    } else {
-        plural(r)?
-    };
+    let affected = if r.word("it") { Ref::This } else { plural(r)? };
     Some(statics(
         affected,
         vec![Modification::CantBeBlockedBy(blockers)],
@@ -105,7 +101,11 @@ pub(super) fn texts(
         .map(|group| format!("can't be blocked except by {group}"))
         .collect();
     let blocked_by = phrase_text(blockers, Form::All);
-    predicates.extend(blocked_by.iter().map(|group| format!("can't be blocked by {group}")));
+    predicates.extend(
+        blocked_by
+            .iter()
+            .map(|group| format!("can't be blocked by {group}")),
+    );
     let mut written: Vec<String> = subjects(affected, true)
         .into_iter()
         .flat_map(|(subject, _)| {
