@@ -1,0 +1,28 @@
+{
+  "id": "9dc9111f-1ca6-4953-9f1e-cca55fa8c569",
+  "oracle_id": "55eb9310-f24b-410b-850b-a7d0d5117946",
+  "name": "Leafkin Druid",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ncc",
+  "collector_number": "299",
+  "rarity": "common",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Elemental Druid",
+  "oracle_text": "{T}: Add {G}. If you control four or more creatures, add {G}{G} instead.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "power": "0",
+  "toughness": "3",
+  "produced_mana": [
+    "G"
+  ]
+}

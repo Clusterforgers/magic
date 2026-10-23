@@ -9,8 +9,9 @@ use mtg_core::card::{CardType, Subtype};
 use mtg_core::color::Color;
 
 use super::abilities;
-use super::render;
-use super::selectors::{color, color_name, granted_keywords, granted_text, target};
+use super::effects::target_object;
+use super::render::{self, capitalize};
+use super::selectors::{color, color_name, granted_keywords, granted_text, spec_text, target};
 use super::tokens::Reader;
 use super::triggers::article;
 use crate::ability::Ability;
@@ -22,6 +23,8 @@ use crate::value::Amount;
 
 const END_OF_TURN: &str = "until end of turn";
 const STILL_A_LAND: &str = "It's still a land";
+const IN_ADDITION: &str = "in addition to its other types";
+const ARTIFACT_TOO: &str = "an artifact in addition to its other types";
 
 /// "~ becomes a 3/3 red Elemental creature with haste until end of turn", with the duration first or last, and the
 /// sentences "It's still a land." and "It can't be blocked this turn." after it.
@@ -29,14 +32,18 @@ pub(super) fn creature(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let leading = r
         .attempt(|r| (r.words(END_OF_TURN) && r.punct(',')).then_some(()))
         .is_some();
-    r.source().then_some(())?;
+    let affected = if r.source() {
+        Ref::This
+    } else {
+        target_object(r)?
+    };
     r.word("becomes").then_some(())?;
     let mods = description(r)?;
     let trailing = r.words(END_OF_TURN);
     (leading != trailing).then_some(())?;
     // The period of an ability in quotes is inside the quotes.
     let quoted = matches!(mods.last(), Some(Modification::GrantAbility(_)));
-    let mut effects = vec![until_end_of_turn(mods)];
+    let mut effects = vec![until_end_of_turn(affected.clone(), mods)];
     let still = r
         .attempt(|r| ((quoted || r.punct('.')) && r.words("it's still a land")).then_some(()))
         .is_some();
@@ -47,14 +54,18 @@ pub(super) fn creature(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         })
         .is_some();
     if unblockable {
-        effects.push(until_end_of_turn(vec![Modification::CantBeBlocked]));
+        (affected == Ref::This).then_some(())?;
+        effects.push(until_end_of_turn(
+            affected,
+            vec![Modification::CantBeBlocked],
+        ));
     }
     Some(effects)
 }
 
-fn until_end_of_turn(mods: Vec<Modification>) -> Effect {
+fn until_end_of_turn(affected: Ref, mods: Vec<Modification>) -> Effect {
     Effect::Continuous {
-        affected: Ref::This,
+        affected,
         mods,
         duration: Duration::UntilEndOfTurn,
     }
@@ -83,6 +94,8 @@ pub(super) fn animate(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         artifact_creature_mods()
     } else if r.word("saddled") {
         saddled_mods()
+    } else if r.words(ARTIFACT_TOO) {
+        vec![Modification::AddType(CardType::Artifact)]
     } else {
         return None;
     };
@@ -101,6 +114,8 @@ pub(super) fn animate_text(subject: &str, mods: &[Modification]) -> Option<Strin
         "an artifact creature"
     } else if mods == saddled_mods().as_slice() {
         "saddled"
+    } else if mods == [Modification::AddType(CardType::Artifact)] {
+        ARTIFACT_TOO
     } else {
         return None;
     };
@@ -110,13 +125,10 @@ pub(super) fn animate_text(subject: &str, mods: &[Modification]) -> Option<Strin
 /// What the card becomes: a size, colors, creature types, "artifact", "creature" and what it has.
 fn description(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
     (r.word("a") || r.word("an")).then_some(())?;
-    let power = i32::try_from(r.number()?).ok()?;
+    let power = side(r)?;
     r.punct('/').then_some(())?;
-    let toughness = i32::try_from(r.number()?).ok()?;
-    let mut mods = vec![Modification::SetPT {
-        power: Amount::Fixed(power),
-        toughness: Amount::Fixed(toughness),
-    }];
+    let toughness = side(r)?;
+    let mut mods = vec![Modification::SetPT { power, toughness }];
     if let Some(colors) = colors(r) {
         mods.push(Modification::SetColors(colors));
     }
@@ -136,11 +148,30 @@ fn description(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
     if r.word("with") {
         mods.extend(given(r)?);
     }
+    if r.words(IN_ADDITION) {
+        mods = mods
+            .into_iter()
+            .flat_map(|modification| match modification {
+                Modification::SetCreatureTypes(types) => {
+                    types.into_iter().map(Modification::AddSubtype).collect()
+                }
+                other => vec![other],
+            })
+            .collect();
+    }
     Some(mods)
 }
 
+/// A side of the size: a number, or X that the card names after the sentence.
+fn side(r: &mut Reader<'_>) -> Option<Amount> {
+    if r.x() {
+        return Some(Amount::X);
+    }
+    Some(Amount::Fixed(i32::try_from(r.number()?).ok()?))
+}
+
 /// "red", "white and blue", "white, blue, and red".
-fn colors(r: &mut Reader<'_>) -> Option<Vec<Color>> {
+pub(super) fn colors(r: &mut Reader<'_>) -> Option<Vec<Color>> {
     let first = r.peek_word().and_then(color)?;
     r.skip();
     let mut found = vec![first];
@@ -205,7 +236,7 @@ fn rank(modification: &Modification) -> u8 {
 }
 
 /// The words of colors: "red", "white and blue", "white, blue, and red".
-fn colors_text(colors: &[Color]) -> String {
+pub(super) fn colors_text(colors: &[Color]) -> String {
     let names: Vec<&str> = colors.iter().map(|found| color_name(*found)).collect();
     list(&names)
 }
@@ -238,17 +269,25 @@ fn given_text(mods: &[Modification]) -> Option<String> {
 /// except after an ability in quotes, which the period closes.
 pub(super) fn text(affected: &Ref, mods: &[Modification]) -> Option<String> {
     (*affected == Ref::This).then_some(())?;
-    let Some((
-        Modification::SetPT {
-            power: Amount::Fixed(power),
-            toughness: Amount::Fixed(toughness),
-        },
-        rest,
-    )) = mods.split_first()
-    else {
+    text_for("~", mods)
+}
+
+/// A side of the size in words: a number or X.
+fn side_text(amount: &Amount) -> Option<String> {
+    match amount {
+        Amount::Fixed(number) if *number >= 0 => Some(number.to_string()),
+        Amount::X => Some("X".to_owned()),
+        _ => None,
+    }
+}
+
+/// The sentence of a `Continuous` effect that makes its subject (written by the caller) a creature, without its
+/// period.
+pub(super) fn text_for(subject: &str, mods: &[Modification]) -> Option<String> {
+    let Some((Modification::SetPT { power, toughness }, rest)) = mods.split_first() else {
         return None;
     };
-    (*power >= 0 && *toughness >= 0).then_some(())?;
+    let size = format!("{}/{}", side_text(power)?, side_text(toughness)?);
     let (colors, rest) = match rest.split_first() {
         Some((Modification::SetColors(colors), after)) if !colors.is_empty() => {
             (format!("{} ", colors_text(colors)), after)
@@ -262,6 +301,23 @@ pub(super) fn text(affected: &Ref, mods: &[Modification]) -> Option<String> {
         }
         _ => (String::new(), rest),
     };
+    // "in addition to its other types": the creature types are added instead of replacing the others.
+    let added = rest
+        .iter()
+        .take_while(|found| matches!(found, Modification::AddSubtype(_)))
+        .count();
+    let (types, additive, rest) = if added > 0 && types.is_empty() {
+        let names: Vec<&str> = rest[..added]
+            .iter()
+            .filter_map(|found| match found {
+                Modification::AddSubtype(subtype) => Some(subtype.0.as_str()),
+                _ => None,
+            })
+            .collect();
+        (format!("{} ", names.join(" ")), true, &rest[added..])
+    } else {
+        (types, false, rest)
+    };
     let (artifact, rest) = match rest.split_first() {
         Some((Modification::AddType(CardType::Artifact), after)) => ("artifact ", after),
         _ => ("", rest),
@@ -269,10 +325,14 @@ pub(super) fn text(affected: &Ref, mods: &[Modification]) -> Option<String> {
     let [Modification::AddType(CardType::Creature), given @ ..] = rest else {
         return None;
     };
-    let size = format!("{power}/{toughness}");
     let with = match given {
         [] => String::new(),
         _ => format!(" with {}", given_text(given)?),
+    };
+    let addition = if additive {
+        format!(" {IN_ADDITION}")
+    } else {
+        String::new()
     };
     let tail = if with.ends_with('"') {
         ""
@@ -280,19 +340,30 @@ pub(super) fn text(affected: &Ref, mods: &[Modification]) -> Option<String> {
         " until end of turn"
     };
     Some(format!(
-        "~ becomes {} {size} {colors}{types}{artifact}creature{with}{tail}",
+        "{subject} becomes {} {size} {colors}{types}{artifact}creature{with}{addition}{tail}",
         article(&size)
     ))
 }
 
 /// The effect's sentence when it is one of a card becoming a creature.
-fn becoming(effect: &Effect) -> Option<String> {
-    match effect {
-        Effect::Continuous {
-            affected,
-            mods,
-            duration: Duration::UntilEndOfTurn,
-        } => text(affected, mods),
+fn becoming(effect: &Effect, ability: &Ability) -> Option<String> {
+    let Effect::Continuous {
+        affected,
+        mods,
+        duration: Duration::UntilEndOfTurn,
+    } = effect
+    else {
+        return None;
+    };
+    match affected {
+        Ref::This => text(affected, mods),
+        Ref::Target(0) => {
+            let spec = ability
+                .targets()
+                .first()
+                .filter(|spec| spec.bounds.is_one())?;
+            text_for(&spec_text(spec)?, mods)
+        }
         _ => None,
     }
 }
@@ -317,9 +388,17 @@ fn still_a_land(sentence: &str) -> String {
 /// The wordings of a card that becomes a creature beyond the one the renderer writes first: with or without "It's
 /// still a land." after it, the duration first, and "It can't be blocked this turn." for the card.
 pub(super) fn wordings(ability: &Ability, texts: &[String]) -> Vec<String> {
-    let sentences: Vec<String> = ability.effects().iter().filter_map(becoming).collect();
+    let sentences: Vec<String> = ability
+        .effects()
+        .iter()
+        .filter_map(|effect| becoming(effect, ability))
+        .collect();
     let mut found = Vec::new();
-    for sentence in &sentences {
+    for sentence in sentences
+        .iter()
+        .flat_map(|sentence| [sentence.clone(), capitalize(sentence)])
+    {
+        let sentence = &sentence;
         let closed = format!("{sentence}.");
         let forms = [
             still_a_land(sentence),

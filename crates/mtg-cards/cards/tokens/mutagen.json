@@ -1,0 +1,18 @@
+{
+  "id": "mutagen",
+  "token": {
+    "name": "Mutagen",
+    "types": ["Artifact"],
+    "subtypes": ["Mutagen"],
+    "abilities": [
+      {
+        "Activated": {
+          "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+          "timing": "Sorcery",
+          "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+          "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+        }
+      }
+    ]
+  }
+}

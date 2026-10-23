@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b7d4b7dd-fbb1-4ca3-875f-ef13a95e66ad",
+  "name": "Liquimetal Torque",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liquimetal Torque",
+      "oracle_fingerprint": "fc7022498ae2d95b40059b6886b417ec",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddType": "Artifact" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

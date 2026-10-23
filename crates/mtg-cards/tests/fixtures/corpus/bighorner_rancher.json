@@ -1,0 +1,30 @@
+{
+  "id": "861361bc-b357-4ff8-931b-a48d08817191",
+  "oracle_id": "826e6a6f-3b66-4225-87ee-04e345e047b3",
+  "name": "Bighorner Rancher",
+  "lang": "en",
+  "layout": "normal",
+  "set": "pip",
+  "collector_number": "73",
+  "rarity": "uncommon",
+  "released_at": "2024-03-08",
+  "digital": false,
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Human Ranger",
+  "oracle_text": "Vigilance\n{T}: Add an amount of {G} equal to the greatest power among creatures you control.\nSacrifice this creature: You gain life equal to the greatest toughness among other creatures you control.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Vigilance"
+  ],
+  "power": "2",
+  "toughness": "5",
+  "produced_mana": [
+    "G"
+  ]
+}

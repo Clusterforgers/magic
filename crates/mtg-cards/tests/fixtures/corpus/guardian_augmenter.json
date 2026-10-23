@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "78ba1a2a-a2dd-4e90-900e-1421b5e3924a",
+  "oracle_id": "d925e560-faa1-40a9-b25a-47065ee891e6",
+  "multiverse_ids": [],
+  "resource_id": "211AFA7F94C05E6DD48ECFBAD39C5C96BC9D5D34F5C9CFEAAC2F7D15424807F3",
+  "mtgo_id": 149009,
+  "tcgplayer_id": 687518,
+  "cardmarket_id": 881603,
+  "name": "Guardian Augmenter",
+  "lang": "en",
+  "released_at": "2026-04-24",
+  "uri": "https://api.scryfall.com/cards/78ba1a2a-a2dd-4e90-900e-1421b5e3924a",
+  "scryfall_uri": "https://scryfall.com/card/soc/271/guardian-augmenter?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:49:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/8/78ba1a2a-a2dd-4e90-900e-1421b5e3924a.jpg?1783903765",
+    "normal": "https://cards.scryfall.io/normal/front/7/8/78ba1a2a-a2dd-4e90-900e-1421b5e3924a.jpg?1783903765",
+    "large": "https://cards.scryfall.io/large/front/7/8/78ba1a2a-a2dd-4e90-900e-1421b5e3924a.jpg?1783903765",
+    "png": "https://cards.scryfall.io/png/front/7/8/78ba1a2a-a2dd-4e90-900e-1421b5e3924a.png?1783903765",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/8/78ba1a2a-a2dd-4e90-900e-1421b5e3924a.jpg?1783903765",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/8/78ba1a2a-a2dd-4e90-900e-1421b5e3924a.jpg?1783903765",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/8/78ba1a2a-a2dd-4e90-900e-1421b5e3924a.webp?1783903765",
+    "grid": "https://cards.scryfall.io/grid/front/7/8/78ba1a2a-a2dd-4e90-900e-1421b5e3924a.webp?1783903765",
+    "display": "https://cards.scryfall.io/display/front/7/8/78ba1a2a-a2dd-4e90-900e-1421b5e3924a.webp?1783903765",
+    "art": "https://cards.scryfall.io/art/front/7/8/78ba1a2a-a2dd-4e90-900e-1421b5e3924a.webp?1783903765",
+    "crop": "https://cards.scryfall.io/crop/front/7/8/78ba1a2a-a2dd-4e90-900e-1421b5e3924a.webp?1783903765",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/8/78ba1a2a-a2dd-4e90-900e-1421b5e3924a.jpg?1783903765"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Troll Wizard",
+  "oracle_text": "Flash\nCommander creatures you control get +2/+2.\nCommanders you control have hexproof.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Flash"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "97fab8d1-480a-419d-ab14-663968e29b9c",
+  "set": "soc",
+  "set_name": "Secrets of Strixhaven Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/97fab8d1-480a-419d-ab14-663968e29b9c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/soc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/78ba1a2a-a2dd-4e90-900e-1421b5e3924a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad925e560-faa1-40a9-b25a-47065ee891e6&unique=prints",
+  "collector_number": "271",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "After years of research, he finally unlocked the formula for the perfect punch.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Uros Sljivic",
+  "artist_ids": [
+    "1631aaf7-ffc9-4825-a516-f6f69193e6e2"
+  ],
+  "illustration_id": "3b20a948-828c-40fb-b79f-48ec6bbb4018",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 2744,
+  "prices": {
+    "usd": "1.01",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.87",
+    "eur_foil": null,
+    "tix": "1.13"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGuardian%2BAugmenter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGuardian%2BAugmenter",
+    "edhrec": "https://edhrec.com/route/?cc=Guardian+Augmenter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F687518%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=881603&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/149009?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

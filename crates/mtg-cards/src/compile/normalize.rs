@@ -143,7 +143,8 @@ fn reminder_ranges(chars: &[char]) -> Vec<Range<usize>> {
 
 /// Parts of the reminder text of the keyword actions that put counters (proliferate, amass, explore, connive,
 /// monstrosity, adapt, bolster): they say what the action does, and the reading has it.
-const COUNTER_ACTIONS: [&str; 7] = [
+const COUNTER_ACTIONS: [&str; 8] = [
+    "counter it unless that player pays",
     "another counter of each kind already there",
     "army creature token first",
     "put that card into your hand if it's a land",
@@ -162,6 +163,10 @@ pub fn reminder_mentions_counter(text: &str) -> bool {
         let reminder = reminder.to_lowercase();
         // "({E}{E}) (two energy counters)" only says what the symbols are.
         if reminder.contains("energy counter") {
+            return false;
+        }
+        // The reminder of infect names the counters the keyword puts, and the keyword is read whole.
+        if reminder.contains("deal damage to creatures in the form of -1/-1 counters") {
             return false;
         }
         if COUNTER_ACTIONS

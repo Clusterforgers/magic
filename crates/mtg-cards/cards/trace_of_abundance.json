@@ -1,0 +1,21 @@
+{
+  "oracle_id": "530140f1-e992-4b5e-882c-c15bacc328fa",
+  "name": "Trace of Abundance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trace of Abundance",
+      "oracle_fingerprint": "6f2843265764488b8c5a932326ff6ab7",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Shroud" }] } },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Is": "Attached" }, { "Type": "Land" }] } },
+            "effects": [{ "AddMana": { "who": "Triggering", "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

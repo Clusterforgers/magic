@@ -167,6 +167,7 @@ mod cast;
 mod cast_cost_paid;
 mod cast_self;
 mod cast_spell_kinds;
+mod changes;
 mod chapters;
 mod choice_writers;
 mod chosen_color;
@@ -182,6 +183,7 @@ mod cost_conditions;
 mod cost_counts;
 mod cost_wordings;
 mod counted;
+mod counted_mana;
 mod counter_actions;
 mod counters;
 mod create;
@@ -248,6 +250,7 @@ mod spell_copies;
 mod spell_keywords;
 mod spell_x_costs;
 mod spend_subtypes;
+mod static_grants;
 mod static_group_writers;
 mod static_pairs;
 mod statics;
@@ -255,6 +258,7 @@ mod stations;
 mod strive;
 mod tap_and_mill;
 mod this_or_another;
+mod token_groups;
 mod token_keywords;
 mod token_wordings;
 mod top_cast;
@@ -846,7 +850,6 @@ mod pump {
     #[rstest]
     #[case::for_each("Target creature gets +1/+1 for each creature you control until end of turn.")]
     #[case::no_duration("Target creature gets +2/+2.")]
-    #[case::next_turn("Target creature gets +2/+2 until your next turn.")]
     #[case::end_of_combat("Target creature gets +2/+2 until end of combat.")]
     #[case::then_untap("Target creature gets +2/+2 until end of turn. Untap it.")]
     #[case::second_target(

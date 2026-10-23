@@ -1,0 +1,38 @@
+{
+  "oracle_id": "8b27326f-e7b8-4a4d-b589-df459246d19a",
+  "name": "Shadowspear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadowspear",
+      "oracle_fingerprint": "e77e656a13e52212b35986d890fd57bf",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": "Trample" },
+              { "AddKeyword": "Lifelink" }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "ControlledBy": "Opponents" }] },
+                  "mods": [{ "RemoveKeyword": "Hexproof" }, { "RemoveKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

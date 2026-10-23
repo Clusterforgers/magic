@@ -1,0 +1,24 @@
+{
+  "oracle_id": "e6490e98-37a9-4a8b-a04c-cceeb22b0c35",
+  "name": "Mona Lisa, Science Geek",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mona Lisa, Science Geek",
+      "oracle_fingerprint": "954da0d2c3c979736f87331f37e7723b",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": { "mana": { "AnyColor": { "Stat": { "of": "This", "stat": "Power" } } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -252,13 +252,18 @@ pub(crate) fn complete_with(
                 // Anything added to a payment that covers the cost has a part to spare.
                 return;
             }
+            // A part that leaves single mana the cost has no room for is never completed (`rest_after`): the branch is
+            // dropped at once, or a board of many sources spends the whole budget on the subsets of useless mana
+            // before it reaches the one source that pays.
             for at in from..self.candidates.len() {
                 match &self.candidates[at] {
                     Candidate::Floating(mana) => {
                         let mana = *mana;
                         self.parts.push(vec![mana]);
                         self.pool.push(mana);
-                        self.visit(at + 1);
+                        if rest_after(self.cost, &self.parts).is_ok() {
+                            self.visit(at + 1);
+                        }
                         self.pool.pop();
                         self.parts.pop();
                     }
@@ -267,7 +272,9 @@ pub(crate) fn complete_with(
                         for option in options {
                             self.parts.push(option.made());
                             self.taps.push(option);
-                            self.visit(at + 1);
+                            if rest_after(self.cost, &self.parts).is_ok() {
+                                self.visit(at + 1);
+                            }
                             self.taps.pop();
                             self.parts.pop();
                         }
