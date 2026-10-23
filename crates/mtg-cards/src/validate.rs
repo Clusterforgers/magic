@@ -991,6 +991,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Connived { what }
             | TriggerPattern::BecomesMonstrous { what }
             | TriggerPattern::TurnedFaceUp { what }
+            | TriggerPattern::Mutates { what }
             | TriggerPattern::Adapted { what }
             | TriggerPattern::Untapped { what }
             | TriggerPattern::Blocks { what }
@@ -1012,19 +1013,7 @@ impl<'a> Walker<'a> {
             TriggerPattern::State { .. } => {
                 self.problem("a state is the whole pattern of a triggered ability");
             }
-            TriggerPattern::AnyOf(patterns) => {
-                if patterns.len() < 2 {
-                    self.problem("`AnyOf` needs at least two patterns");
-                }
-                for (i, inner) in patterns.iter().enumerate() {
-                    self.at(format!("[{i}]"), |w| {
-                        if matches!(inner, TriggerPattern::Batch(_)) {
-                            w.problem("a batch is the whole pattern of a triggered ability");
-                        }
-                        w.trigger_pattern(inner);
-                    });
-                }
-            }
+            TriggerPattern::AnyOf(patterns) => self.any_of(patterns),
             TriggerPattern::Chapter { number } => {
                 if *number == 0 {
                     self.at("number", |w| w.problem("the first chapter is 1"));
@@ -1032,6 +1021,21 @@ impl<'a> Walker<'a> {
             }
             TriggerPattern::Batch(inner) => self.batch(inner),
             TriggerPattern::Nth { event, nth } => self.nth(event, *nth),
+        }
+    }
+
+    /// The patterns of an `AnyOf`: at least two, none of them a batch.
+    fn any_of(&mut self, patterns: &[TriggerPattern]) {
+        if patterns.len() < 2 {
+            self.problem("`AnyOf` needs at least two patterns");
+        }
+        for (i, inner) in patterns.iter().enumerate() {
+            self.at(format!("[{i}]"), |w| {
+                if matches!(inner, TriggerPattern::Batch(_)) {
+                    w.problem("a batch is the whole pattern of a triggered ability");
+                }
+                w.trigger_pattern(inner);
+            });
         }
     }
 
@@ -1051,6 +1055,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::Connived { .. }
                 | TriggerPattern::BecomesMonstrous { .. }
                 | TriggerPattern::TurnedFaceUp { .. }
+                | TriggerPattern::Mutates { .. }
                 | TriggerPattern::Adapted { .. }
                 | TriggerPattern::Bolstered { .. }
                 | TriggerPattern::SpellCast { .. }

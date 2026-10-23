@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4c6c8155-efa0-4c22-b255-34974a80c496",
+  "name": "Migratory Greathorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Migratory Greathorn",
+      "oracle_fingerprint": "ebf1478571807586befdcb9ca80a9336",
+      "abilities": [
+        { "Keyword": { "Mutate": "{2}{G}" } },
+        {
+          "Triggered": {
+            "when": { "Mutates": { "what": ["This"] } },
+            "effects": [
+              {
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

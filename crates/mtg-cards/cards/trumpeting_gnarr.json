@@ -1,0 +1,35 @@
+{
+  "oracle_id": "734be5ec-6148-48b9-9021-380e9b62ec23",
+  "name": "Trumpeting Gnarr",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trumpeting Gnarr",
+      "oracle_fingerprint": "fe656d47b0017e015fa63f3217307d0f",
+      "abilities": [
+        { "Keyword": { "Mutate": "{3}{G/U}{G/U}" } },
+        {
+          "Triggered": {
+            "when": { "Mutates": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Beast",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Beast"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

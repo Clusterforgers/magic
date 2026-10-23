@@ -1,7 +1,7 @@
 {
   "oracle_id": "3dfb0c0a-b68f-43b9-8475-28d0192fc4ed",
   "name": "Gemrazer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gemrazer",
@@ -11,9 +11,19 @@
         { "Keyword": "Reach" },
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "No trigger yet for a creature that mutates.",
-            "span": { "start": 205, "end": 297 }
+          "Triggered": {
+            "when": { "Mutates": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
           }
         }
       ]

@@ -444,6 +444,10 @@ function describePublic(event: Event, n: EventNames): LogLine {
   if ('Monstrous' in event) return line(`${n.card(event.Monstrous.object)} becomes monstrous`)
   if ('TurnedFaceUp' in event)
     return line(`${n.seat(event.TurnedFaceUp.player)} turns ${n.card(event.TurnedFaceUp.object)} face up`)
+  if ('Mutated' in event)
+    return line(
+      `${n.seat(event.Mutated.player)} mutates a creature ${event.Mutated.over ? 'over' : 'under'} ${n.card(event.Mutated.object)}`,
+    )
   if ('Adapted' in event) return line(`${n.card(event.Adapted.object)} adapts`)
   if ('Bolstered' in event) return line(`${n.seat(event.Bolstered.player)} bolsters`)
   if ('AttachedToPlayer' in event) {

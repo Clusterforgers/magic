@@ -30,9 +30,9 @@ use Support::{Partial, Verified};
 /// (the table resolves it); a Partial card carries what the engine runs. A
 /// card joins this list when the engine cannot yet play it whole and leaves it when it can.
 const NOT_VERIFIED: &[(&str, Support, usize)] = &[
+    ("Auspicious Starrix", Partial, 1),
     ("Aven Mindcensor", Partial, 2),
     ("Bebop, Skull & Crossbones", Partial, 2),
-    ("Gemrazer", Partial, 2),
 ];
 
 /// The abilities a Verified card carries: those of its file the engine runs, and the mana ability each basic land type gives.

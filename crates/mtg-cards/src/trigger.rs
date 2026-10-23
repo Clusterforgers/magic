@@ -322,6 +322,12 @@ pub enum TriggerPattern {
         /// The permanent that is turned face up.
         what: Selector,
     },
+    /// A creature matching the selector mutates, a mutating creature spell merges with it ("whenever this creature
+    /// mutates", CR 702.140d); `Triggering` is its controller.
+    Mutates {
+        /// The creature that mutates.
+        what: Selector,
+    },
     /// A creature matching the selector adapts ("whenever a creature you control adapts"); `Triggering` is its
     /// controller.
     Adapted {

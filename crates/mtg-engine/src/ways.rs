@@ -24,6 +24,7 @@ use crate::help;
 use crate::keywords::{self, aftermath, foretell, keywords_of};
 use crate::mana::{ManaOption, ManaPool, can_afford, can_afford_with};
 use crate::mana_takes::for_card;
+use crate::merged;
 use crate::object::{FaceDown, GameObject, ObjectKind};
 use crate::parts::Part;
 use crate::price::Price;
@@ -239,6 +240,15 @@ fn keyword_way(
             cost,
             in_hand && is_creature(state, id),
         ),
+        // Offered only with a creature to merge with (CR 702.140a); a commander in the command zone may mutate too.
+        Keyword::Mutate(cost) => (
+            CastWay::Mutate,
+            "Mutate",
+            cost,
+            (in_hand || (matches!(zone, Zone::Command(_)) && state.is_commander(id)))
+                && is_creature(state, id)
+                && merged::announceable(state, player, id),
+        ),
         Keyword::Prowl(cost) => (
             CastWay::Prowl,
             "Prowl",
@@ -269,6 +279,7 @@ fn keyword_way(
             | CastWay::Bestow
             | CastWay::Blitz
             | CastWay::Prowl
+            | CastWay::Mutate
     ) {
         cast_cost(cost)?
     } else {
@@ -645,6 +656,10 @@ pub(crate) fn announceable_in(
     if way == Some(CastWay::Bestow) {
         // The creature card is an Aura spell with the one target of its enchant ability and no other (CR 702.103b).
         return attach::bestow_announceable(state, player, id);
+    }
+    if way == Some(CastWay::Mutate) {
+        // The creature spell has the one target of mutate and no other (CR 702.140a).
+        return merged::announceable(state, player, id);
     }
     way == Some(CastWay::Overload)
         || (spell_ability(state, id)

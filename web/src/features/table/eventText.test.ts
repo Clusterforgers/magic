@@ -80,6 +80,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Amassed: [{ Amassed: { object: 3, player: 1 } }, 'Bo amasses'],
   Monstrous: [{ Monstrous: { object: 3, player: 1 } }, 'Forest becomes monstrous'],
   TurnedFaceUp: [{ TurnedFaceUp: { object: 3, player: 1 } }, 'Bo turns Forest face up'],
+  Mutated: [{ Mutated: { object: 3, spell: 9, over: true, player: 1 } }, 'Bo mutates a creature over Forest'],
   Adapted: [{ Adapted: { object: 3, player: 1 } }, 'Forest adapts'],
   Bolstered: [{ Bolstered: { object: 3, player: 1 } }, 'Bo bolsters'],
   CommanderStayed: [{ CommanderStayed: { object: 3 } }, 'Forest stays where it is'],
@@ -255,6 +256,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
 
 /** The ways the pipeline's events that need more than one sentence differ, each next to its text. */
 const MORE: [Event, string][] = [
+  [{ Mutated: { object: 3, spell: 9, over: false, player: 1 } }, 'Bo mutates a creature under Forest'],
   [
     { ResolutionEnded: { object: 4, outcome: 'Fizzled' } },
     'Lightning Bolt does nothing: its targets are gone',

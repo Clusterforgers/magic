@@ -1,0 +1,26 @@
+{
+  "oracle_id": "38630f89-bc22-49b2-b97e-d31a5169decc",
+  "name": "Pouncing Shoreshark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pouncing Shoreshark",
+      "oracle_fingerprint": "195577079d46a72194ec524fdaf5c902",
+      "abilities": [
+        { "Keyword": { "Mutate": "{3}{U}" } },
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "Mutates": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

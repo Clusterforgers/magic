@@ -22,6 +22,10 @@ pub(super) fn specs(ctx: &Ctx<'_>, choices: &Choices) -> Vec<TargetSpec> {
     if choices.way == Some(CastWay::Bestow) && matches!(ctx.what, What::Spell(_)) {
         return vec![attach::bestow_target()];
     }
+    // A creature card cast for its mutate cost targets a non-Human creature with the same owner (CR 702.140a).
+    if choices.way == Some(CastWay::Mutate) && matches!(ctx.what, What::Spell(_)) {
+        return vec![crate::merged::target_spec()];
+    }
     let modes = &choices.modes;
     if let What::Spell(spell) = ctx.what
         && let Some(spec) = attach::spell_target(ctx.state, *spell)

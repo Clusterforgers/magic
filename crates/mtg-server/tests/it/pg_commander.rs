@@ -92,7 +92,7 @@ pub(crate) fn beast_pack() -> PreconDeck {
         "Beast Pack",
         "Commander Deck",
         &[("Questing Beast", 1)],
-        &[("Forest", 98), ("Gemrazer", 1)],
+        &[("Forest", 98), ("Auspicious Starrix", 1)],
     )
 }
 
@@ -426,7 +426,7 @@ async fn a_precon_makes_a_commander_game_in_one_request_at_every_table_size(pool
             let note = listed.deck.as_ref().unwrap();
             assert_eq!(note.name, "Beast Pack");
             assert_eq!(note.format, "commander");
-            assert_eq!(note.manual_cards, 1, "Gemrazer is played by hand");
+            assert_eq!(note.manual_cards, 1, "Auspicious Starrix is played by hand");
         }
         socket.close().await;
 
@@ -586,7 +586,7 @@ fn refused_decks() -> Vec<(&'static str, Value, &'static str)> {
                 "commander",
                 &[
                     line("commander", "Questing Beast", 1),
-                    line("main", "Gemrazer", 2),
+                    line("main", "Auspicious Starrix", 2),
                     line("main", "Forest", 97),
                 ],
             ),
@@ -971,10 +971,12 @@ fn the_decks_of_the_tests_name_cards_of_the_corpus() {
         .iter()
         .map(|card| card["name"].as_str().unwrap())
         .collect();
-    for name in LEADERS
-        .into_iter()
-        .chain(["Forest", "Gemrazer", "Lightning Bolt", "Grizzly Bears"])
-    {
+    for name in LEADERS.into_iter().chain([
+        "Forest",
+        "Auspicious Starrix",
+        "Lightning Bolt",
+        "Grizzly Bears",
+    ]) {
         assert!(names.contains(name), "{name}");
     }
 }

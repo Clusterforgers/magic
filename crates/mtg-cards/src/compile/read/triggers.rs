@@ -43,6 +43,7 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
     let (what, named_by_the_cause) = match pattern {
         TriggerPattern::Attacks { what }
         | TriggerPattern::BecomesBlocked { what }
+        | TriggerPattern::Mutates { what }
         | TriggerPattern::ZoneChange {
             what,
             to: Some(ZoneKind::Battlefield),
@@ -522,6 +523,8 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         return Some(TriggerPattern::BecomesMonstrous { what: what.clone() });
     } else if r.words("is turned face up") {
         return Some(TriggerPattern::TurnedFaceUp { what: what.clone() });
+    } else if r.word("mutates") {
+        return Some(TriggerPattern::Mutates { what: what.clone() });
     } else if r.word("adapts") {
         return Some(TriggerPattern::Adapted { what: what.clone() });
     } else if r.word("connives") {
@@ -829,6 +832,7 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::Connived { what } => said(what, "connives"),
         TriggerPattern::BecomesMonstrous { what } => said(what, "becomes monstrous"),
         TriggerPattern::TurnedFaceUp { what } => said(what, "is turned face up"),
+        TriggerPattern::Mutates { what } => said(what, "mutates"),
         TriggerPattern::Adapted { what } => said(what, "adapts"),
         TriggerPattern::Attached { what, to } if !what.is_empty() && !to.is_empty() => {
             said(what, &format!("becomes attached to {}", subject_text(to)?))

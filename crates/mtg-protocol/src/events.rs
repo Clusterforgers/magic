@@ -311,6 +311,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Amassed { .. }
         | Event::Monstrous { .. }
         | Event::TurnedFaceUp { .. }
+        | Event::Mutated { .. }
         | Event::Adapted { .. }
         | Event::Bolstered { .. }
         | Event::CommanderStayed { .. }
