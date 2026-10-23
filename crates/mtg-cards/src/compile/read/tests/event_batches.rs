@@ -86,6 +86,44 @@ fn more_of_the_new_events_read_and_write_back(#[case] text: &str) {
     golden(text, ClauseKind::Triggered, false);
 }
 
+#[test]
+fn a_trigger_given_in_quotes_names_the_amount_of_its_event() {
+    golden(
+        "Sliver creatures you control have \"Whenever this creature is dealt damage, it deals that much damage to target player or planeswalker.\"",
+        ClauseKind::Static,
+        false,
+    );
+}
+
+#[rstest]
+#[case::life_gained_after_a_loss_in_a_spell(
+    "Target opponent loses 1 life for each attacking creature you control. You gain that much life.",
+    ClauseKind::Spell
+)]
+#[case::life_gained_after_damage_in_a_spell(
+    "~ deals 3 damage to target creature. You gain that much life.",
+    ClauseKind::Spell
+)]
+#[case::cards_drawn_in_a_spell("Exile target creature. Draw that many cards.", ClauseKind::Spell)]
+#[case::life_gained_in_an_activated_ability(
+    "{T}: Target opponent loses 2 life. You gain that much life.",
+    ClauseKind::Activated
+)]
+#[case::cards_drawn_in_an_activated_ability(
+    "{2}, {T}: Draw that many cards.",
+    ClauseKind::Activated
+)]
+#[case::counters_put_in_an_activated_ability(
+    "{1}{G}: Put that many +1/+1 counters on ~.",
+    ClauseKind::Activated
+)]
+fn only_a_trigger_has_an_event_for_that_much_and_that_many_to_name(
+    #[case] text: &str,
+    #[case] kind: ClauseKind,
+) {
+    assert_eq!(clause(text, kind, false), None, "{text}");
+}
+
 #[rstest]
 #[case::a_creature_that_is_not_attached("Whenever the creature dies, draw a card.")]
 #[case::an_equipped_permanent("Whenever equipped permanent dies, draw a card.")]

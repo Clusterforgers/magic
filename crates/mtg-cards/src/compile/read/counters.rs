@@ -162,7 +162,7 @@ pub fn put(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("put")?;
     // "a number of +1/+1 counters on ~ equal to the number of creatures you control": the count follows the object.
     let equal = r.words("a number of");
-    let (counter, count) = if r.ability && r.words("that many") {
+    let (counter, count) = if r.ability && r.triggered && r.words("that many") {
         let counter = kind(r)?;
         r.need("counters")?;
         (counter, Amount::Triggering)
