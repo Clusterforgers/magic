@@ -259,6 +259,7 @@ fn keyword() -> impl Strategy<Value = Keyword> {
         cost().prop_map(Keyword::Bestow),
         cost().prop_map(Keyword::Blitz),
         cost().prop_map(Keyword::Prowl),
+        cost().prop_map(Keyword::Mayhem),
         cost().prop_map(Keyword::Scavenge),
         cost().prop_map(Keyword::Transmute),
         (1u32..10, cost()).prop_map(|(count, cost)| Keyword::Awaken { count, cost }),

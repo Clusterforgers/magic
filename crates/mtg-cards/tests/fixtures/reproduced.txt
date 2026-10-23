@@ -1,5 +1,6 @@
 Abbot of Keral Keep
 Aberrant
+Abomination, World Ravager
 Abundant Growth
 Abzan Advantage
 Abzan Battle Priest
@@ -257,6 +258,7 @@ Echo Inspector
 Echo Mage
 Echoes of the Kin Tree
 Electric Revelation
+Electro's Bolt
 Elegant Edgecrafters
 Elven Ambush
 Elvish Aberration
@@ -362,6 +364,7 @@ Graveblade Marauder
 Graven Cairns
 Graveshifter
 Greater Mossdog
+Green Goblin, Back for More
 Grenzo's Cutthroat
 Grim Flayer
 Grim Haruspex
@@ -594,6 +597,7 @@ Quest for the Goblin Lord
 Questing Beast
 Radical Idea
 Raffine's Informant
+Raging Goblinoids
 Rakdos Headliner
 Rally the Ranks
 Ramos, Dragon Engine
@@ -638,6 +642,7 @@ Rust-Shield Rampager
 Rustrazor Butcher
 Ruthless Radrat
 Sacred Cat
+Sadistic Slash
 Safehold Elite
 Sage of the Beyond
 Sagu Mauler
@@ -716,6 +721,7 @@ Space Marine Devastator
 Spectral Rider
 Sphere of Safety
 Sphinx of Jwar Isle
+Spider-Islanders
 Spire Golem
 Spire Winder
 Spring // Mind
@@ -757,6 +763,7 @@ Supreme Verdict
 Surgehacker Mech
 Susurian Dirgecraft
 Swarm Intelligence
+Swarm, Being of Bees
 Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
@@ -783,6 +790,7 @@ The Birth of Meletis
 The Modern Age // Vector Glider
 The Seriema
 The Spear of Bashenga
+The Squadron Sinister
 The Thing, Ben Grimm
 Thelonite Hermit
 Thieving Magpie

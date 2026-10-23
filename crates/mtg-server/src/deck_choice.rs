@@ -27,7 +27,7 @@ use crate::cards::CardSource;
 use crate::deck_cards::{Line, Loaded};
 use crate::decks::lines_of;
 use crate::demo;
-use crate::precons::Judge;
+use crate::precon_api::judged_precon;
 use crate::recipe::FormatKind;
 use crate::seat_deck::ChosenDeck;
 use crate::server::AppState;
@@ -138,19 +138,7 @@ async fn precon(app: &AppState, code: &str) -> Result<ChosenDeck, Refused> {
     let Some(source) = app.cards() else {
         return Err(Refused::Unknown);
     };
-    let index = source.precon_index().await.map_err(ApiError::from)?;
-    let found = index
-        .find(&code.trim().to_ascii_lowercase())
-        .ok_or(Refused::Unknown)?;
-    let deck = source
-        .database()
-        .precons()
-        .get(found.id)
-        .await
-        .map_err(|error| Refused::Failed(failed(&error)))?
-        .ok_or(Refused::Unknown)?;
-    let rules = source.rules().await.map_err(ApiError::from)?;
-    let judged = Judge::new(&rules).judge(&deck);
+    let (deck, judged) = judged_precon(source, code).await?.ok_or(Refused::Unknown)?;
     // What the deck check refuses and no table can lift ends here; the rest, and the engine's own
     // check, wait for the table the deck is chosen for.
     if is_held_back(&judged.report) {
@@ -234,28 +222,60 @@ pub(crate) async fn judge_at_table(
     format: FormatKind,
     house: &HouseRules,
 ) -> Result<(), ApiError> {
-    let none = HouseRules::default();
-    let house = if format == FormatKind::Commander {
-        house
-    } else {
-        &none
-    };
-    let mut legality: Vec<Issue> = report
-        .legality
-        .iter()
-        .filter(|issue| !issue.code.lifted_by(house))
-        .cloned()
-        .collect();
-    if legality.is_empty() && report.summary.counts.unplayable == 0 {
+    let house = deck_rules(format, house);
+    let mut legality = standing(report, &house);
+    if engine_judges(&legality, report) {
         let ids = library_ids(lines);
         let leaders = commander_ids(lines);
         let both: Vec<String> = ids.iter().chain(&leaders).cloned().collect();
         let mut cards = source.deck(&both).await?;
         let commanders = cards.split_off(ids.len());
-        legality = format_issues(format, &cards, &commanders, house);
+        legality = format_issues(format, &cards, &commanders, &house);
     }
     report.set_legality(legality);
     Ok(())
+}
+
+/// [`judge_at_table`] for a deck whose card definitions are in hand, the main deck's `library` and the
+/// `commanders`.
+pub(crate) fn judge_cards_at_table(
+    report: &mut DeckReport,
+    format: FormatKind,
+    house: &HouseRules,
+    library: &[Arc<CardDefinition>],
+    commanders: &[Arc<CardDefinition>],
+) {
+    let house = deck_rules(format, house);
+    let mut legality = standing(report, &house);
+    if engine_judges(&legality, report) {
+        legality = format_issues(format, library, commanders, &house);
+    }
+    report.set_legality(legality);
+}
+
+/// The house rules that reach a deck at a table of `format`: only a Commander table has any.
+fn deck_rules(format: FormatKind, house: &HouseRules) -> HouseRules {
+    if format == FormatKind::Commander {
+        house.clone()
+    } else {
+        HouseRules::default()
+    }
+}
+
+/// The issues of the deck's own check that the table's rules leave standing.
+fn standing(report: &DeckReport, house: &HouseRules) -> Vec<Issue> {
+    report
+        .legality
+        .iter()
+        .filter(|issue| !issue.code.lifted_by(house))
+        .cloned()
+        .collect()
+}
+
+/// Whether the engine's check of the table's format decides: the deck's own check has nothing left
+/// against it and no card is unplayable.
+fn engine_judges(standing: &[Issue], report: &DeckReport) -> bool {
+    standing.is_empty() && report.summary.counts.unplayable == 0
 }
 
 /// Whether the deck check refuses a deck at every table: a card the game cannot play, or an issue

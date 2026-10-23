@@ -1,0 +1,16 @@
+{
+  "oracle_id": "10c8cf3b-2530-49e7-b38e-95cdaae8a6e7",
+  "name": "Swarm, Being of Bees",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swarm, Being of Bees",
+      "oracle_fingerprint": "0e11ea109e4dcf9d3acc0b724e2eef35",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        { "Keyword": { "Mayhem": "{B}" } }
+      ]
+    }
+  ]
+}

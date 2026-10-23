@@ -1,0 +1,29 @@
+{
+  "id": "5a1d3cb7-cd6a-4a81-b2b1-8fb5eeb49595",
+  "oracle_id": "622fbc01-9099-4b6c-b2ce-e41247fc7355",
+  "name": "Green Goblin, Back for More",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "657",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Goblin Human Villain",
+  "oracle_text": "Flying, menace\nAt the beginning of combat on your turn, you may discard a card. If you do, each opponent discards a card.\nMayhem {3}{B}{B} (You may cast this card from your graveyard for {3}{B}{B} if you discarded it this turn. Timing rules still apply.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Mayhem",
+    "Menace"
+  ]
+}
