@@ -13,7 +13,11 @@ mod detect_crewed;
 #[cfg(test)]
 mod detect_events;
 #[cfg(test)]
+mod detect_except;
+#[cfg(test)]
 mod detect_nth;
+#[cfg(test)]
+mod detect_turn_nth;
 mod queue;
 mod reads_x;
 mod state;

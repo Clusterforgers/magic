@@ -25,6 +25,8 @@ pub const NTH_CARDS: &[&str] = &[
     "Nth Bulwark",
     "Nth Magnet",
     "Nth Rival",
+    "Nth Sufferer",
+    "Nth Grower",
 ];
 
 /// The corpus creature of an nth deck.
@@ -59,6 +61,25 @@ fn counting(
     ))
 }
 
+/// A creature that puts a +1/+1 counter on itself when it first attacks in a turn and gains its controller 1 life the first
+/// time counters are put on it in a turn.
+fn grower(name: &str) -> Result<Arc<CardDefinition>, CorpusError> {
+    let attacks = rules(
+        r#"{"Triggered":{"when":{"Nth":{"event":{"Attacks":{"what":["This"]}},"nth":1}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}}"#,
+    )?;
+    let grows = rules(
+        r#"{"Triggered":{"when":{"Nth":{"event":{"CountersPut":{"what":["This"]}},"nth":1}},"effects":[{"GainLife":{"amount":1}}]}}"#,
+    )?;
+    Ok(Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Creature)
+            .with_mana_cost(cost(1, &[Color::White]))
+            .with_power_toughness(1, 2)
+            .with_rules(attacks)
+            .with_rules(grows),
+    ))
+}
+
 /// The synthetic creatures: one that grows on its first attack of a turn, one that gains life when first dealt damage in a
 /// turn, one for the first time a creature of its controller is targeted by what its controller controls, and one for the
 /// second time a creature is targeted by what anyone controls.
@@ -86,6 +107,17 @@ pub fn nth_creatures() -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
         )?,
         counting(NTH_CARDS[2], (1, Color::Red), (2, 1), (mine, false))?,
         counting(NTH_CARDS[3], (1, Color::White), (2, 2), (anyones, false))?,
+        // The first time a player of the table loses life in a turn; the first time counters are put on it in a turn.
+        counting(
+            NTH_CARDS[4],
+            (1, Color::Red),
+            (2, 2),
+            (
+                r#"{"Nth":{"event":{"LifeLost":{"who":"EachPlayer"}},"nth":1}}"#,
+                false,
+            ),
+        )?,
+        grower(NTH_CARDS[5])?,
     ])
 }
 
@@ -99,7 +131,7 @@ pub fn nth_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusErr
     deck.extend(std::iter::repeat_n(corpus::card(MENTOR)?, 4));
     deck.extend(std::iter::repeat_n(corpus::card("Lightning Bolt")?, 3));
     for card in nth_creatures()? {
-        deck.extend(std::iter::repeat_n(card, 3));
+        deck.extend(std::iter::repeat_n(card, 2));
     }
     for (card, copies) in [
         (rush(), 4),
