@@ -30,6 +30,8 @@ Ancestral Vision
 Ancient Hydra
 Ancient Stone Idol
 Ancient Ziggurat
+Angel of Finality
+Angel of Flight Alabaster
 Angel of Invention
 Angel of Sanctions
 Angel of Vitality
@@ -37,6 +39,7 @@ Angelic Ascension
 Angelic Field Marshal
 Ant-Man, Elusive Avenger
 Arbor Colossus
+Arboreal Grazer
 Arcane Signet
 Archivist of Gondor
 Archmage of Echoes
@@ -52,6 +55,7 @@ Ash Barrens
 Assassin's Trophy
 Atlantean Skirmisher
 Atmospheric Greenhouse
+Atzocan Seer
 Augury Raven
 Aura Gnarlid
 Authority of the Consuls
@@ -724,6 +728,7 @@ Rejuvenation Chamber
 Relentless Advance
 Relentless Skaabs
 Relic of Sauron
+Remorseful Cleric
 Replication Technique
 Rescue Skiff
 Reshape
@@ -776,6 +781,7 @@ Scuzzback Marauders
 Sea Gate
 Secluded Courtyard
 Seedglaive Mentor
+Seeds of Renewal
 Seekers' Squire
 Serpent-Blade Assailant
 Serra Angel

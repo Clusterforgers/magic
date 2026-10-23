@@ -46,6 +46,7 @@ fn activated(text: &str) -> Option<Ability> {
 #[case::exile_a_creature_card("Exile target creature card from a graveyard.")]
 #[case::exile_a_players_graveyard("Exile target player's graveyard.")]
 #[case::exile_an_opponents_graveyard("Exile target opponent's graveyard.")]
+#[case::exile_all_graveyards("Exile all graveyards.")]
 #[case::exile_your_graveyard("Exile your graveyard.")]
 #[case::exile_each_opponents_graveyard("Exile each opponent's graveyard.")]
 fn spells_that_move_cards_between_zones_read_and_write_back(#[case] text: &str) {

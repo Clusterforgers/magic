@@ -71,6 +71,13 @@ fn battlefield(tapped: bool, under: Option<Ref>) -> Destination {
 /// opponent's graveyard.": every card in the graveyards named.
 pub fn exile_graveyard(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("exile")?;
+    if r.words("all graveyards") {
+        return Some(vec![Effect::Exile {
+            what: Ref::Each(Selector(vec![Pred::In(ZoneKind::Graveyard)])),
+            bind: None,
+            duration: None,
+        }]);
+    }
     let owner = if r.words("your graveyard") {
         Ref::You
     } else if r.words("each opponent's graveyard") {
