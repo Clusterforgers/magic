@@ -4,7 +4,7 @@
 
 use super::amounts::{self, count_word, number_word};
 use super::defining;
-use super::effects::target_object;
+use super::effects::{attached, target_object};
 use super::selectors::each;
 use super::tokens::Reader;
 use super::triggers::article;
@@ -149,6 +149,8 @@ fn place(r: &mut Reader<'_>) -> Option<Ref> {
         Some(Ref::This)
     } else if r.it == Some(Ref::Triggering) && r.word("it") {
         Some(Ref::Triggering)
+    } else if let Some(host) = attached(r) {
+        Some(host)
     } else {
         target_object(r)
     }

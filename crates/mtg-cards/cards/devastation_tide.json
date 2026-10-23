@@ -1,0 +1,21 @@
+{
+  "oracle_id": "4245ee98-2d4c-49d1-8d07-80760cae2bf9",
+  "name": "Devastation Tide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Devastation Tide",
+      "oracle_fingerprint": "110a03e63edcf54f42f75adf9677f29e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Move": { "what": { "Each": [{ "Not": { "Type": "Land" } }] }, "to": "Hand" } }
+            ]
+          }
+        },
+        { "Keyword": { "Miracle": "{1}{U}" } }
+      ]
+    }
+  ]
+}

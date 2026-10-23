@@ -53,6 +53,7 @@ mod rest_precons;
 mod saga_transform_view;
 mod seat_deck;
 mod spell_copy_view;
+mod spell_x_hidden;
 mod split_second_view;
 mod sync;
 mod table_hidden;

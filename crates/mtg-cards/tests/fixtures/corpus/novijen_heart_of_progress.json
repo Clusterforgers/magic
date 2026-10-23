@@ -1,0 +1,22 @@
+{
+  "id": "9a1e15e7-4ba6-41ad-b27b-aee2d037b6a7",
+  "oracle_id": "b3b5137d-0225-4dba-9231-d235ab0f137c",
+  "name": "Novijen, Heart of Progress",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c21",
+  "collector_number": "305",
+  "rarity": "uncommon",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{G}{U}, {T}: Put a +1/+1 counter on each creature that entered this turn.",
+  "colors": [],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": []
+}

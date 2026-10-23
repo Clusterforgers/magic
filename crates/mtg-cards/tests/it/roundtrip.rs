@@ -126,6 +126,7 @@ fn leaf_pred() -> impl Strategy<Value = Pred> {
         Just(Pred::Ability(AbilityKind::Triggered)),
         Just(Pred::Tapped),
         Just(Pred::Untapped),
+        Just(Pred::EnteredThisTurn),
         Just(Pred::Attacking),
         Just(Pred::Blocking),
         zone().prop_map(Pred::In),

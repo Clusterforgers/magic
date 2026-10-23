@@ -138,6 +138,8 @@ pub enum Pred {
     Crewed(Ref),
     /// Is a creature tapped this turn to saddle one of the Mounts the reference names ("creature that saddled it this turn").
     Saddled(Ref),
+    /// Entered the battlefield this turn, from anywhere and under any control (a token made this turn included).
+    EnteredThisTurn,
     /// Has the card type.
     Type(CardType),
     /// Has the supertype.

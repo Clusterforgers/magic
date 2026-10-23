@@ -106,6 +106,8 @@ pub(crate) enum Tally {
     Saddled,
     /// Damage dealt to a player after prevention (counted for the player, by the amount).
     Hurt,
+    /// A permanent put onto the battlefield, from any zone or made as a token (counted for the permanent).
+    Entered,
     /// Life lost, by damage that causes it, by a loss and by a payment (counted for the player, by the amount).
     Lost,
 }

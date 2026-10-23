@@ -1,0 +1,36 @@
+{
+  "oracle_id": "a6898364-c29e-4b97-a500-344efa3ec24a",
+  "name": "Banishing Stroke",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Banishing Stroke",
+      "oracle_fingerprint": "f5427cc3bca5275c78353b891c0220e9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        },
+        { "Keyword": { "Miracle": "{W}" } }
+      ]
+    }
+  ]
+}

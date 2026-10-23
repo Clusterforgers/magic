@@ -1,7 +1,8 @@
 //! Keyword actions of creatures: "it explores", "it connives", "target creature you control explores, then it explores again",
-//! "goad target creature" (`Effect::Explore`, `Effect::Connive`, `Effect::Goad`). The writer's side is an arm of the renderer.
+//! "goad target creature", "enchanted creature fights target creature" (`Effect::Explore`, `Effect::Connive`,
+//! `Effect::Goad`, `Effect::Fight`). The writer's side is an arm of the renderer.
 
-use super::effects::{is_on_the_battlefield, object, target_object};
+use super::effects::{attached, is_on_the_battlefield, object, target_object, up_to_one_object};
 use super::tokens::Reader;
 use crate::effect::Effect;
 use crate::refs::{Pred, Ref, Targetable};
@@ -50,6 +51,15 @@ pub fn connive(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 fn again(r: &mut Reader<'_>) -> Option<()> {
     r.punct(',').then_some(())?;
     r.need("then it explores again")
+}
+
+/// "Enchanted creature fights up to one target creature you don't control." and "~ fights target creature": one creature
+/// fights another (`Effect::Fight`).
+pub fn fight(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    let what = attached(r).or_else(|| r.source().then_some(Ref::This))?;
+    r.need("fights")?;
+    let with = up_to_one_object(r).or_else(|| target_object(r))?;
+    is_on_the_battlefield(r, &with).then_some(vec![Effect::Fight { what, with }])
 }
 
 /// "Goad target creature.", "goad target creature an opponent controls", "Goad all creatures you don't control." and

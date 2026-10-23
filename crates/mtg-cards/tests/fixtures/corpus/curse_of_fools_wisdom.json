@@ -1,0 +1,27 @@
+{
+  "id": "9b77ded4-a8af-4065-8c4a-fd76e7cdcc59",
+  "oracle_id": "93b2a685-8267-4cbd-ac55-db6ff95fe98d",
+  "name": "Curse of Fool's Wisdom",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c19",
+  "collector_number": "16",
+  "rarity": "rare",
+  "released_at": "2019-08-23",
+  "digital": false,
+  "mana_cost": "{4}{B}{B}",
+  "cmc": 6.0,
+  "type_line": "Enchantment — Aura Curse",
+  "oracle_text": "Enchant player\nWhenever enchanted player draws a card, they lose 2 life and you gain 2 life.\nMadness {3}{B} (If you discard this card, discard it into exile. When you do, cast it for its madness cost or put it into your graveyard.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Madness",
+    "Enchant"
+  ],
+  "produced_mana": null
+}

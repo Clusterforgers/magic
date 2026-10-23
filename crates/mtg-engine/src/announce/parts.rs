@@ -95,7 +95,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
 /// The most X the counted parts of the cost allow, `None` when no part is counted: each part can take as much as the
 /// player has of what it takes, after the picks made for the parts before it.
 pub(super) fn most(ctx: &Ctx<'_>, choices: &Choices) -> Option<u32> {
-    let price = ctx.needs.price.as_ref()?;
+    let price = price_of(ctx, choices)?;
     price
         .parts
         .iter()

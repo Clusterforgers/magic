@@ -1,0 +1,26 @@
+{
+  "id": "f54acc9f-d128-49d4-b1a9-47a7ece13833",
+  "oracle_id": "4b8183e6-4ff2-4254-9ee0-0ebbf8cef4a3",
+  "name": "Fallen Ideal",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "117",
+  "rarity": "uncommon",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature has flying and \"Sacrifice a creature: This creature gets +2/+1 until end of turn.\"\nWhen this Aura is put into a graveyard from the battlefield, return it to its owner's hand.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "produced_mana": null
+}

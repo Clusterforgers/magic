@@ -1,0 +1,24 @@
+{
+  "oracle_id": "93b2a685-8267-4cbd-ac55-db6ff95fe98d",
+  "name": "Curse of Fool's Wisdom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Fool's Wisdom",
+      "oracle_fingerprint": "a1d0e2b05b21b6854be713cca7288751",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "AttachedPlayer" } },
+            "effects": [
+              { "LoseLife": { "who": "Triggering", "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        },
+        { "Keyword": { "Madness": "{3}{B}" } }
+      ]
+    }
+  ]
+}

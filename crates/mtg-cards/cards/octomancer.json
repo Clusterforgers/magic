@@ -1,0 +1,23 @@
+{
+  "oracle_id": "1cf7e5a0-cc8f-4bf7-9767-2f3bcae26339",
+  "name": "Octomancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Octomancer",
+      "oracle_fingerprint": "6ee44e9fbfd84d518b1d3fe7345d599e",
+      "abilities": [
+        { "Keyword": { "Gift": "Octopus" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Token", "EnteredThisTurn"] } }
+            ],
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

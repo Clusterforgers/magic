@@ -80,6 +80,7 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::Tapped => adjectives.push("tapped".to_owned()),
             Pred::Untapped => adjectives.push("untapped".to_owned()),
             Pred::Monstrous => adjectives.push("monstrous".to_owned()),
+            Pred::EnteredThisTurn => tail.push("that entered this turn".to_owned()),
             Pred::Attacking => adjectives.push("attacking".to_owned()),
             Pred::AttackingPlayer(Ref::AttachedPlayer) => {
                 tail.push("attacking enchanted player".to_owned());
@@ -857,11 +858,7 @@ pub(crate) fn pay(parts: &[String]) -> String {
 
 /// The question of a cast an effect allows: "Cast Lightning Bolt without paying its mana cost?"
 /// `alternative` is the way and the mana of a cost the card names (madness, miracle).
-pub(crate) fn cast(
-    name: &str,
-    free: bool,
-    alternative: Option<(CastWay, &mtg_core::mana::ManaCost)>,
-) -> String {
+pub(crate) fn cast(name: &str, free: bool, alternative: Option<(CastWay, &str)>) -> String {
     if let Some((way, cost)) = alternative {
         let way = match way {
             CastWay::Miracle => "miracle",

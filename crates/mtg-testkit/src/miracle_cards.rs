@@ -20,17 +20,23 @@ pub const MIRACLE_CARDS: &[&str] = &[
     "Opt",
     "Rummaging Goblin",
     "Lightning Bolt",
+    "Terminus",
+    "Devastation Tide",
+    "Banishing Stroke",
+    "Redress Fate",
+    "Reforge the Soul",
+    "Entreat the Angels",
 ];
 
-/// A legal Normal deck of lands, four of each such card, derived entirely from `rng`.
+/// A legal Normal deck of lands, three of each such card, derived entirely from `rng`.
 pub fn miracle_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
     let colors = [Color::White, Color::Blue, Color::Red, Color::Black];
-    let mut deck: Vec<Arc<CardDefinition>> = (0..32).map(|i| land(colors[i % 4])).collect();
+    let mut deck: Vec<Arc<CardDefinition>> = (0..24).map(|i| land(colors[i % 4])).collect();
     for card in MIRACLE_CARDS
         .iter()
         .filter_map(|name| corpus::card(name).ok())
     {
-        deck.extend(std::iter::repeat_n(card, 4));
+        deck.extend(std::iter::repeat_n(card, 3));
     }
     rng.shuffle(&mut deck);
     deck.truncate(60);

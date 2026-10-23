@@ -3,6 +3,8 @@
 mod combat;
 #[cfg(test)]
 mod crew_record;
+#[cfg(test)]
+mod entered;
 mod opening;
 mod resolution;
 #[cfg(test)]

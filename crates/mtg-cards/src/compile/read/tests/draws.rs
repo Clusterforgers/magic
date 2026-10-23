@@ -200,8 +200,6 @@ fn a_trigger_discards_a_hand(#[case] text: &str, #[case] json: &str) {
 }
 
 #[rstest]
-#[case::each_player("Each player discards their hand.")]
-#[case::each_opponent("Each opponent discards their hand.")]
 #[case::your_for_another_player("Target player discards your hand.")]
 #[case::their_for_you("Discard their hand.")]
 #[case::the_hand_of_a_card("Discard the hand.")]

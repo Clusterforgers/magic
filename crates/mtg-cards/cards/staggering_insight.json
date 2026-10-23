@@ -1,0 +1,33 @@
+{
+  "oracle_id": "09071f5f-c9cb-43a9-b41d-faf6caf3beff",
+  "name": "Staggering Insight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Staggering Insight",
+      "oracle_fingerprint": "88cebbcc0e4e25eb005d998313f6ec24",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": "Lifelink" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                    },
+                    "effects": [{ "Draw": {} }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

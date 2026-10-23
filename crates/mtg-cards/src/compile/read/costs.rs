@@ -415,8 +415,13 @@ pub(super) fn additional(r: &mut Reader<'_>) -> Option<Ability> {
         Some(cost) => cost,
         None => cost(r)?,
     };
-    // The announcement of a spell asks for an X in its mana cost only ("Pay X life", "sacrifice X creatures" are left).
-    if cost.has_x() {
+    // The caster announces the X of a required cost that counts it ("Pay X life", "sacrifice X creatures"); an `{X}` of
+    // mana and the X of an optional cost are left.
+    let mana_x = cost
+        .0
+        .iter()
+        .any(|item| matches!(item, CostItem::Mana(mana) if mana.has_x()));
+    if mana_x || (!required && cost.has_x()) {
         return None;
     }
     Some(Ability::AdditionalCost { cost, required })
