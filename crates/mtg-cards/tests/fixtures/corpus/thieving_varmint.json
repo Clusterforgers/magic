@@ -1,0 +1,28 @@
+{
+  "id": "8e66d567-9f06-47c1-aa9f-f29ba5e9906a",
+  "oracle_id": "b9f3cf9f-24c7-43ed-9ba1-f4570df3d09e",
+  "name": "Thieving Varmint",
+  "lang": "en",
+  "layout": "normal",
+  "set": "otc",
+  "collector_number": "23",
+  "rarity": "rare",
+  "released_at": "2024-04-19",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2,
+  "type_line": "Creature — Varmint",
+  "oracle_text": "Deathtouch, lifelink\n{T}, Pay 1 life: Add two mana of any one color. Spend this mana only to cast spells you don't own.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Lifelink",
+    "Deathtouch"
+  ]
+}

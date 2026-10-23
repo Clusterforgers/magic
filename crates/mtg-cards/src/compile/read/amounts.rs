@@ -135,6 +135,9 @@ pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
             r.need("from the command zone this game")?;
             return Some(Amount::CommanderCasts(Ref::You));
         }
+        if let Some(died) = r.attempt(defining::died_each) {
+            return Some(died);
+        }
         // The colors of the spell that was cast: "put a +1/+1 counter on ~ for each of that spell's colors".
         if r.words("of that spell's colors") {
             return Some(Amount::Stat {
@@ -236,6 +239,7 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
             on: Ref::This,
             counter,
         } => format!("{} counter on ~", counters::kind_text(counter)?),
+        Amount::Tallied { .. } => defining::died_text(counted, true)?,
         _ => return None,
     })
 }

@@ -141,6 +141,14 @@ pub enum TokenRef {
     Named(String),
     /// A token described by the effect.
     Custom(Box<TokenSpec>),
+    /// An X/X token whose size is an amount counted as the token is created ("an X/X black Horror creature token, where X
+    /// is this creature's power"); the description leaves out its power and toughness.
+    Sized {
+        /// Both its power and its toughness.
+        size: Amount,
+        /// The rest of the token.
+        token: Box<TokenSpec>,
+    },
     /// A token that is a copy of the referenced object, with exceptions.
     CopyOf {
         /// The object copied.

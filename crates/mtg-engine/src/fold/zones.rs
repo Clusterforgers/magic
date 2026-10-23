@@ -27,21 +27,13 @@ pub(super) fn move_object(
     if !state.zones.exists(to) {
         return Err(invalid(format!("zone {to:?} does not exist")));
     }
+    // Whether it is a creature as it leaves the battlefield, before the move changes what it is.
+    let was_creature = crate::characteristics::characteristics(state, id)
+        .is_some_and(|chars| chars.types.contains(CardType::Creature));
     // A permanent that enters takes the next timestamp, which its static abilities carry (CR 613.7).
     let timestamp = state.next_timestamp;
     if to == Zone::Battlefield {
         state.next_timestamp += 1;
-    }
-    // A creature that goes from the battlefield to a graveyard died; it counts for the player who controlled it.
-    let died = if matches!(to, Zone::Graveyard(_)) && state.zone(Zone::Battlefield).contains(&id) {
-        crate::characteristics::characteristics(state, id)
-            .filter(crate::characteristics::Characteristics::is_creature)
-            .and_then(|_| crate::characteristics::controller_of(state, id))
-    } else {
-        None
-    };
-    if let Some(controller) = died {
-        state.tally(controller, Tally::Died);
     }
     let object = state
         .objects
@@ -125,6 +117,12 @@ pub(super) fn move_object(
     }
     if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {
         state.tally(owner, Tally::Graved);
+        if was_creature {
+            state.tally(owner, Tally::Died);
+            if !token {
+                state.tally(owner, Tally::DiedNontoken);
+            }
+        }
     }
     // A token is a token only on the battlefield (CR 111.7): anywhere else it ceases to exist.
     if token && !matches!(to, Zone::Battlefield | Zone::Stack) {

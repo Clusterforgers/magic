@@ -100,9 +100,6 @@ fn the_new_token_wordings_read_in_a_trigger(#[case] text: &str) {
 #[case::no_second_kind("Create a 1/1 green Snake creature token, and.")]
 #[case::a_name_without_the_legend("Create Tiny, a 2/2 green Dog Detective creature token.")]
 #[case::a_name_in_lower_case("Create a 3/1 red Beast creature token named carnivore.")]
-#[case::a_static_in_quotes(
-    "Create a 2/2 black Zombie creature token with \"This token can't block.\""
-)]
 #[case::a_kind_that_is_not_a_token("Create a 1/1 green Snake creature token and draw a card and.")]
 #[case::steps_with_no_token("Draw two cards and scry 2.")]
 fn wordings_the_data_cannot_hold_stay_unread(#[case] text: &str) {

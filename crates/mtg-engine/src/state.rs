@@ -98,6 +98,10 @@ pub(crate) enum Tally {
     Discarded,
     /// A permanent put into a graveyard from the battlefield (counted for its owner, gravestorm).
     Graved,
+    /// A creature put into a graveyard from the battlefield, a token too (counted for its owner).
+    Died,
+    /// A nontoken creature put into a graveyard from the battlefield (counted for its owner).
+    DiedNontoken,
     /// A creature declared as an attacker (counted for its controller, once for each creature).
     Attackers,
     /// A Vehicle that became crewed (counted for the object).
@@ -122,8 +126,6 @@ pub(crate) enum Tally {
     Countered,
     /// Life gained, by the amount (counted for the player).
     GainedTotal,
-    /// A creature that died, put into a graveyard from the battlefield (counted for its controller).
-    Died,
 }
 
 /// The events counted in the turn so far.

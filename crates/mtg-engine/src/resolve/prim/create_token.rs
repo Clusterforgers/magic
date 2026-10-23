@@ -95,6 +95,29 @@ fn attackable(state: &GameState, player: PlayerId) -> Vec<(AttackTarget, ChoiceO
         .collect()
 }
 
+/// What each token the effect makes is made from: a predefined or described token, a token sized by an amount counted
+/// now (never below zero), or the copies of the objects a reference names.
+fn made_from(cx: &Cx<'_>, token: &TokenRef) -> Result<Vec<MadeFrom>, ResolveError> {
+    Ok(match token {
+        TokenRef::Named(id) => vec![(Arc::new(token_definition(predefined(id)?, &caps())), None)],
+        TokenRef::Custom(spec) => vec![(Arc::new(token_definition(spec, &caps())), None)],
+        TokenRef::Sized { size, token } => {
+            let size = i32::try_from(cx.scope.amount(size)?.max(0)).unwrap_or(i32::MAX);
+            let spec = TokenSpec {
+                power: Some(size),
+                toughness: Some(size),
+                ..(**token).clone()
+            };
+            vec![(Arc::new(token_definition(&spec, &caps())), None)]
+        }
+        TokenRef::CopyOf {
+            of,
+            except,
+            no_mana_cost,
+        } => copies_of(cx, of, except, *no_mana_cost)?,
+    })
+}
+
 /// Each player `who` names who is still in the game creates `count` tokens, which enter tapped when the effect says
 /// so. A token that enters attacking (CR 508.4) was never declared as an attacker, so nothing triggers on its
 /// attack; its controller chooses the player or planeswalker it attacks when there is more than one (an attack by
@@ -114,15 +137,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         return Err(wrong_effect("CreateToken"));
     };
-    let made_from: Vec<MadeFrom> = match token {
-        TokenRef::Named(id) => vec![(Arc::new(token_definition(predefined(id)?, &caps())), None)],
-        TokenRef::Custom(spec) => vec![(Arc::new(token_definition(spec, &caps())), None)],
-        TokenRef::CopyOf {
-            of,
-            except,
-            no_mana_cost,
-        } => copies_of(cx, of, except, *no_mana_cost)?,
-    };
+    let made_from = made_from(cx, token)?;
     let state = cx.state();
     let number = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(0);
     let players: Vec<PlayerId> = cx
@@ -352,6 +367,27 @@ mod tests {
         assert!(def.is_type(mtg_core::card::CardType::Creature));
         assert_eq!(def.subtypes[0].0, "Soldier");
         assert_eq!(def.colors().len(), 1);
+    }
+
+    #[rstest]
+    #[case::nothing("0", 0)]
+    #[case::one("1", 1)]
+    #[case::many("7", 7)]
+    #[case::never_below_nothing("-3", 0)]
+    #[case::the_life_total(r#"{"Life":"You"}"#, 20)]
+    fn a_sized_token_is_as_large_as_the_amount_when_it_is_created(
+        #[case] size: &str,
+        #[case] expected: i32,
+    ) {
+        let token = format!(
+            r#"{{"Sized":{{"size":{size},"token":{{"name":"Horror","types":["Creature"],"subtypes":["Horror"]}}}}}}"#
+        );
+        let made = tokens(run_with(&game(2), Vec::new(), &effect(&token, "")).unwrap());
+        let [token] = made.as_slice() else {
+            panic!("one token");
+        };
+        let def = &token.definition;
+        assert_eq!((def.power, def.toughness), (Some(expected), Some(expected)));
     }
 
     #[rstest]

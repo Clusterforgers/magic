@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a65250f6-55e2-47ed-a355-d690047db6f2",
+  "name": "Master of Dark Rites",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Master of Dark Rites",
+      "oracle_fingerprint": "dc6d0febe2961f091db282b54488461e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Black", "Black", "Black"] },
+                  "only": [{ "Spell": { "subtypes": ["Vampire", "Cleric", "Demon"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -87,7 +87,7 @@ pub(super) fn counted(r: &mut Reader<'_>) -> Option<Amount> {
 pub(super) fn counted_plural(r: &mut Reader<'_>) -> Option<Amount> {
     let counter = kind(r)?;
     r.need("counters on")?;
-    r.source().then_some(Amount::Counters {
+    (r.source() || (r.it == Some(Ref::This) && r.word("it"))).then_some(Amount::Counters {
         on: Ref::This,
         counter,
     })

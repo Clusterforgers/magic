@@ -1,0 +1,38 @@
+{
+  "oracle_id": "3a25d1e2-63d8-4a93-b0ce-f9307736b3f9",
+  "name": "Lord of the Forsaken",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lord of the Forsaken",
+      "oracle_fingerprint": "073ec648b639578b0466761d6d1925e6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{B}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 3 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 1 }],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "only": [{ "Spell": { "facts": ["FromGraveyard"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

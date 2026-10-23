@@ -71,9 +71,13 @@ pub(super) fn spend(ctx: &Ctx<'_>, way: Option<CastWay>) -> Spend {
     let has_x = x.is_some();
     match ctx.what {
         // Only an `{X}` of the mana cost is mana for X: "pay X life" is paid with life.
-        What::Spell(spell) => {
-            Spend::for_spell(ctx.state, *spell, matches!(x, Some(XCost::Mana { .. }))).cast_as(way)
-        }
+        What::Spell(spell) => Spend::for_spell(
+            ctx.state,
+            *spell,
+            ctx.player,
+            matches!(x, Some(XCost::Mana { .. })),
+        )
+        .cast_as(way),
         What::Ability(ability) => Spend::for_ability(ctx.state, ability.object, has_x),
         What::Trigger(_) | What::Attack(_) => Spend::other(),
     }

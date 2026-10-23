@@ -10,7 +10,7 @@ use mtg_cards::load::{canonical, parse_json};
 use mtg_cards::mana::ManaCostX;
 use mtg_cards::modify::{CastPermission, Duration, GameRule, Modification};
 use mtg_cards::refs::{AbilityKind, Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
-use mtg_cards::spend::{SpendFilter, SpendOn};
+use mtg_cards::spend::{SpendFact, SpendFilter, SpendOn};
 use mtg_cards::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, Step, TriggerPattern};
 use mtg_cards::value::{Amount, CastWay, Cmp, Condition, CounterKind, StatKind};
 use mtg_core::card::{CardType, Subtype, Supertype};
@@ -334,11 +334,28 @@ fn spend_filter() -> impl Strategy<Value = SpendFilter> {
         vec(select(vec![CardType::Creature, CardType::Land]), 0..2),
         vec(select(vec![Supertype::Legendary, Supertype::Basic]), 0..2),
         vec(select(vec!["Dragon", "Elf"]), 0..2),
-        any::<bool>(),
-        any::<bool>(),
+        (any::<bool>(), any::<bool>()),
+        (
+            0u32..8,
+            vec(
+                select(vec![
+                    SpendFact::XInCost,
+                    SpendFact::NotOwned,
+                    SpendFact::FromGraveyard,
+                ]),
+                0..3,
+            ),
+        ),
     )
         .prop_map(
-            |(types, without, supertypes, subtypes, multicolored, chosen_type)| SpendFilter {
+            |(
+                types,
+                without,
+                supertypes,
+                subtypes,
+                (multicolored, chosen_type),
+                (min_value, facts),
+            )| SpendFilter {
                 types,
                 without,
                 supertypes,
@@ -348,6 +365,8 @@ fn spend_filter() -> impl Strategy<Value = SpendFilter> {
                     .collect(),
                 multicolored,
                 chosen_type,
+                min_value,
+                facts,
             },
         )
 }

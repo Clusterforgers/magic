@@ -146,7 +146,6 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 #[case::investigate_twice("Investigate twice.")]
 #[case::investigate_for_each("Investigate for each creature you control.")]
 #[case::a_defined_name("Create a Treasure token named Gold.")]
-#[case::a_named_x("Create X Treasure tokens, where X is your life total.")]
 #[case::a_plural_where("Create X Treasure tokens, where X is the number of creature you control.")]
 fn near_misses_stay_unread(#[case] text: &str) {
     assert_eq!(spell(text), None, "{text}");

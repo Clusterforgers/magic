@@ -172,15 +172,18 @@ pub enum TurnTally {
     LifeGainedTotal,
     /// The creatures that attacked this turn, whoever controls them. Summed over the players named.
     CreaturesAttacked,
-    /// The creatures that died this turn (put into a graveyard from the battlefield), counted for their controller.
-    /// Summed over the players named.
-    CreaturesDied,
     /// The spells the player cast this turn: while a spell is being cast the one being cast is not counted, so "the
     /// second spell you cast each turn" is a count of one.
     SpellsCast,
     /// The life the players lost, added up over the players read ("for each 1 life your opponents have lost this turn"):
     /// a loss, a payment or damage that takes life; infect damage does not.
     LifeLost,
+    /// The creatures put into a graveyard from the battlefield, tokens included, added up over the owners read ("the number
+    /// of creatures that died this turn": `EachPlayer`; "for each creature put into your graveyard from the battlefield
+    /// this turn": `You`).
+    CreaturesDied,
+    /// The same without the tokens ("for each nontoken creature put into your graveyard from the battlefield this turn").
+    NontokenCreaturesDied,
 }
 
 /// A number, fixed or worked out when the effect runs.

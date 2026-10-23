@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a3ce0fa9-8742-4e2c-a8a0-00fc009f998a",
+  "name": "Ixalli's Lorekeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ixalli's Lorekeeper",
+      "oracle_fingerprint": "76fd01ca6d7c30292d51251af9d964e9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [
+                    { "Spell": { "subtypes": ["Dinosaur"] } },
+                    { "Ability": { "subtypes": ["Dinosaur"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

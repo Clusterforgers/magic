@@ -295,7 +295,10 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(more);
     let more = changes::wordings(&texts);
     texts.extend(more);
-    texts.extend(where_x::wordings(ability));
+    let counted = where_x::wordings(ability);
+    let pronouns = create::pronoun_wordings(&counted);
+    texts.extend(counted);
+    texts.extend(pronouns);
     graveyard_wordings(ability, &mut texts);
     texts
 }
@@ -635,6 +638,7 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
                     | Amount::Counters { .. }
                     | Amount::Players(_)
                     | Amount::Times { .. }
+                    | Amount::Tallied { .. }
                     | Amount::CommanderCasts(_),
                 ..
             }

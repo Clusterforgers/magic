@@ -4,13 +4,14 @@
 //! spell or an ability its restriction allows, and a source whose mana is restricted is a source of such a payment only.
 
 use mtg_cards::spend::{SpendOn, SpendTraits};
-use mtg_core::ids::ObjectId;
+use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 use serde::{Deserialize, Serialize};
 
 use crate::characteristics::characteristics;
 use crate::mana::ManaSource;
 use crate::state::GameState;
+use crate::zones::Zone;
 
 /// One mana that may be spent only on what `only` lists.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -60,11 +61,21 @@ impl Spend {
         Spend::default()
     }
 
-    /// Casting `spell`; `has_x` when its cost has {X}.
-    pub fn for_spell(state: &GameState, spell: ObjectId, has_x: bool) -> Self {
+    /// `caster` casting `spell`; `has_x` when its cost has {X}.
+    pub fn for_spell(state: &GameState, spell: ObjectId, caster: PlayerId, has_x: bool) -> Self {
+        let mut traits = traits_of(state, spell);
+        if let Some(object) = state.object(spell) {
+            traits.not_owned = object.owner() != caster;
+            // A card on its way to the stack is still in its zone; one on the stack remembers where it came from.
+            traits.from_graveyard = match object.zone() {
+                Zone::Graveyard(_) => true,
+                Zone::Stack => object.cast_from_graveyard(),
+                _ => false,
+            };
+        }
         Spend {
             kind: SpendKind::Spell,
-            traits: traits_of(state, spell),
+            traits,
             has_x,
         }
     }
@@ -151,6 +162,9 @@ fn traits_of(state: &GameState, id: ObjectId) -> SpendTraits {
         supertypes: card.supertypes.iter().copied().collect(),
         subtypes,
         colors: u8::try_from(chars.colors.iter().count()).unwrap_or(u8::MAX),
+        value: object.mana_value(),
+        x_in_cost: card.x_in_cost > 0,
+        ..SpendTraits::default()
     }
 }
 
