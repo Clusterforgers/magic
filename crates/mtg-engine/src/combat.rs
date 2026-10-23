@@ -6,7 +6,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::attack_tax;
 use crate::characteristics::{
-    cant_attack, cant_be_blocked_by, cant_block, characteristics, controller_of, goaded_by,
+    blocker_limits, cant_attack, cant_be_blocked_by, cant_block, cant_block_attacker,
+    characteristics, controller_of, goaded_by,
 };
 use crate::decision::{AttackOptions, AttackerOption, BlockOptions, BlockerOption};
 use crate::error::IllegalAnswer;
@@ -370,6 +371,7 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
                 .filter(|attacker| {
                     !keywords::stops_block(state, *attacker, object)
                         && !cant_be_blocked_by(state, *attacker, object)
+                        && !cant_block_attacker(state, object, *attacker)
                 })
                 .collect();
             (object, can_block)
@@ -380,7 +382,9 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
             .iter()
             .filter(|(_, can_block)| can_block.contains(&attacker))
             .count();
-        able >= keywords::min_blockers(state, attacker)
+        let needed = keywords::min_blockers(state, attacker);
+        // An attacker that must have more blockers than it may have can't be blocked at all.
+        able >= needed && blocker_limits(state, attacker).1.is_none_or(|most| needed <= most)
     };
     let blockers: Vec<BlockerOption> = candidates
         .iter()
@@ -403,6 +407,12 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
         .map(|attacker| (attacker, keywords::min_blockers(state, attacker)))
         .filter(|(_, needed)| *needed > 1)
         .collect();
+    let max_blockers = blockable
+        .iter()
+        .copied()
+        .filter(|attacker| blockable_together(*attacker))
+        .filter_map(|attacker| Some((attacker, blocker_limits(state, attacker).1?)))
+        .collect();
     let required = blockers
         .iter()
         .map(|option| option.object)
@@ -411,6 +421,7 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
     BlockOptions {
         blockers,
         min_blockers,
+        max_blockers,
         required,
     }
 }
@@ -468,6 +479,10 @@ pub(crate) fn check_blockers(
         let needed = keywords::min_blockers(state, *attacker);
         if got < needed {
             return Err(IllegalAnswer::TooFewBlockers { needed, got });
+        }
+        let allowed = options.limit_for(*attacker);
+        if got > allowed {
+            return Err(IllegalAnswer::TooManyBlockers { allowed, got });
         }
     }
     // CR 509.1c: every requirement that can be obeyed is; a creature that must block does, unless every block it could

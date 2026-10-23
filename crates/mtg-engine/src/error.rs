@@ -235,6 +235,14 @@ pub enum IllegalAnswer {
         /// Creatures the answer blocks it with.
         got: usize,
     },
+    /// An attacker that can't be blocked by more than some creatures was blocked by more.
+    #[error("the attacker may be blocked by {allowed} creatures together at most but got {got}")]
+    TooManyBlockers {
+        /// The most creatures that may block it.
+        allowed: usize,
+        /// Creatures the answer blocks it with.
+        got: usize,
+    },
     /// Combat damage was not fully divided among the blockers.
     #[error("{power} damage must be divided among the blockers but {assigned} was assigned")]
     DamageSplit {

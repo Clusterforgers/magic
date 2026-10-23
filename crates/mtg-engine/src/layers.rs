@@ -248,6 +248,9 @@ impl Held {
             | Modification::CantBlock
             | Modification::CantBeBlocked
             | Modification::CantBeBlockedBy { .. }
+            | Modification::CanBlockOnly { .. }
+            | Modification::MinBlockers(_)
+            | Modification::MaxBlockers(_)
             | Modification::Goaded { .. } => {}
         }
     }
@@ -462,6 +465,9 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::CantBlock
         | Wanted::CantBeBlocked
         | Wanted::CantBeBlockedBy(_)
+        | Wanted::CanBlockOnly(_)
+        | Wanted::MinBlockers(_)
+        | Wanted::MaxBlockers(_)
         | Wanted::Goaded => return None,
     })
 }

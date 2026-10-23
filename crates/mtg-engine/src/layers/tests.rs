@@ -160,7 +160,7 @@ fn leaves(game: &mut GameState, name: &str) {
 }
 
 /// The modifications the engine runs.
-const MODIFICATIONS: [&str; 19] = [
+const MODIFICATIONS: [&str; 22] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
@@ -179,6 +179,9 @@ const MODIFICATIONS: [&str; 19] = [
     r#""CantBlock""#,
     r#""CantBeBlocked""#,
     r#"{"CantBeBlockedBy":[{"Type":"Creature"}]}"#,
+    r#"{"CanBlockOnly":[{"HasKeyword":"Flying"}]}"#,
+    r#"{"MinBlockers":2}"#,
+    r#"{"MaxBlockers":1}"#,
     r#""Goaded""#,
 ];
 
@@ -219,6 +222,9 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::CantBlock
             | mtg_cards::modify::Modification::CantBeBlocked
             | mtg_cards::modify::Modification::CantBeBlockedBy(_)
+            | mtg_cards::modify::Modification::CanBlockOnly(_)
+            | mtg_cards::modify::Modification::MinBlockers(_)
+            | mtg_cards::modify::Modification::MaxBlockers(_)
             | mtg_cards::modify::Modification::Goaded => {}
         }
     }

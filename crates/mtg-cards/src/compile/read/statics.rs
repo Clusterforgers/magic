@@ -34,7 +34,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 18] = [
+const TEMPLATES: [Template; 19] = [
     entering,
     entering_tapped_if,
     group_enters_tapped,
@@ -52,6 +52,7 @@ const TEMPLATES: [Template; 18] = [
     super::costs::additional,
     super::attack_tax::static_rule,
     evasion::cannot_block,
+    evasion::block_only,
     free_cast,
 ];
 
@@ -273,7 +274,9 @@ pub(super) fn control(r: &mut Reader<'_>) -> Option<Condition> {
     } else {
         return None;
     };
-    let (op, number, selector) = if r.word("a") || r.word("an") {
+    let (op, number, selector) = if r.words("your commander") {
+        (Cmp::Ge, 1, your_commander())
+    } else if r.word("a") || r.word("an") {
         (Cmp::Ge, 1, one_kind(r)?)
     } else {
         let number = number_word(r.take_word()?)?;
@@ -300,6 +303,11 @@ pub(super) fn control(r: &mut Reader<'_>) -> Option<Condition> {
         op,
         right: Amount::Fixed(i32::try_from(number).ok()?),
     })
+}
+
+/// "your commander": the card its owner designated, whoever controls it now (the controller is the verb's).
+fn your_commander() -> Selector {
+    Selector(vec![Pred::Commander, Pred::OwnedBy(Ref::You)])
 }
 
 /// One thing after "a": "planeswalker", "basic land", "Forest or a Plains", "Mount or Vehicle".
@@ -397,7 +405,7 @@ pub(super) fn plural(r: &mut Reader<'_>) -> Option<Ref> {
 }
 
 /// The permanent a static ability changes: the card, what it is attached to or a group.
-fn subject(r: &mut Reader<'_>, itself: bool) -> Option<(Ref, bool)> {
+pub(super) fn subject(r: &mut Reader<'_>, itself: bool) -> Option<(Ref, bool)> {
     if itself && r.source() {
         return Some((Ref::This, false));
     }
@@ -434,13 +442,19 @@ fn cannot(r: &mut Reader<'_>) -> Option<Ability> {
         vec![Modification::CantAttack, Modification::CantBlock]
     } else if r.words("block and can't be blocked") {
         vec![Modification::CantBlock, Modification::CantBeBlocked]
+    } else if r.words("be blocked by more than one creature") {
+        vec![Modification::MaxBlockers(1)]
     } else if r.words("be blocked by") {
         vec![Modification::CantBeBlockedBy(phrase(r, Form::All)?)]
     } else if r.words("be blocked except by") {
-        vec![Modification::CantBeBlockedBy(evasion::except(phrase(
-            r,
-            Form::All,
-        )?)?)]
+        if let Some(count) = evasion::or_more(r) {
+            vec![Modification::MinBlockers(count)]
+        } else {
+            vec![Modification::CantBeBlockedBy(evasion::except(phrase(
+                r,
+                Form::All,
+            )?)?)]
+        }
     } else if r.words("be blocked") {
         vec![Modification::CantBeBlocked]
     } else if r.word("attack") {
@@ -958,6 +972,9 @@ pub(super) fn control_texts(condition: &Condition) -> Vec<String> {
         _ => return Vec::new(),
     };
     let selector = Selector(rest);
+    if one && *op == Cmp::Ge && number == 1 && selector == your_commander() {
+        return vec![format!("{verb} your commander")];
+    }
     match (op, number) {
         (Cmp::Ge, 1) if one => single_texts(&selector)
             .into_iter()
@@ -1201,6 +1218,18 @@ fn predicate(
             [Modification::CantAttack] => return Some("can't attack".to_owned()),
             [Modification::CantBlock] => return Some("can't block".to_owned()),
             [Modification::CantBeBlocked] => return Some("can't be blocked".to_owned()),
+            [Modification::MaxBlockers(1)] => {
+                return Some("can't be blocked by more than one creature".to_owned());
+            }
+            [Modification::MinBlockers(count @ 2..)] => {
+                return Some(format!(
+                    "can't be blocked except by {} or more creatures",
+                    count_word(*count)?
+                ));
+            }
+            [Modification::CanBlockOnly(only)] => {
+                return Some(format!("can block only {}", phrase_text(only, Form::All)?));
+            }
             [Modification::CantBlock, Modification::CantBeBlocked] => {
                 return Some("can't block and can't be blocked".to_owned());
             }

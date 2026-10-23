@@ -347,6 +347,11 @@ pub struct BlockOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<(ObjectId, usize)>>", optional))]
     pub min_blockers: Vec<(ObjectId, usize)>,
+    /// The most creatures that may block an attacker together, for each attacker that is limited ("can't be blocked
+    /// by more than one creature"). Left out while no attacker is.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<(ObjectId, usize)>>", optional))]
+    pub max_blockers: Vec<(ObjectId, usize)>,
     /// The creatures among `blockers` that a rule requires to block (CR 509.1c); the declaration names each of them,
     /// together with the creatures an attacker that needs several blockers must have. Left out while there are none.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -363,6 +368,14 @@ impl BlockOptions {
             .map_or(1, |(_, needed)| *needed)
     }
 
+    /// How many creatures may block `attacker` together at most.
+    pub fn limit_for(&self, attacker: ObjectId) -> usize {
+        self.max_blockers
+            .iter()
+            .find(|(limited, _)| *limited == attacker)
+            .map_or(usize::MAX, |(_, most)| *most)
+    }
+
     /// The declaration that does only what the rules require: each creature that must block, at an attacker that
     /// is blocked already or needs one blocker if there is one, and free creatures to join an attacker that needs
     /// several. It is legal unless the free creatures run out.
@@ -373,10 +386,17 @@ impl BlockOptions {
             .iter()
             .filter(|option| self.required.contains(&option.object))
         {
+            let room = |attacker: &ObjectId| {
+                blocks.iter().filter(|(_, held)| held == attacker).count()
+                    < self.limit_for(*attacker)
+            };
             let easy = option.can_block.iter().copied().find(|attacker| {
-                self.needed_for(*attacker) <= 1 || blocks.iter().any(|(_, held)| held == attacker)
+                room(attacker)
+                    && (self.needed_for(*attacker) <= 1
+                        || blocks.iter().any(|(_, held)| held == attacker))
             });
-            if let Some(attacker) = easy.or_else(|| option.can_block.first().copied()) {
+            let any = || option.can_block.iter().copied().find(room);
+            if let Some(attacker) = easy.or_else(any) {
                 blocks.push((option.object, attacker));
             }
         }
@@ -412,6 +432,9 @@ impl BlockOptions {
         };
         option.can_block.iter().any(|attacker| {
             let held = blocks.iter().filter(|(_, at)| at == attacker).count();
+            if held >= self.limit_for(*attacker) {
+                return false;
+            }
             let needed = self.needed_for(*attacker);
             if held > 0 || needed <= 1 {
                 return true;
@@ -615,6 +638,7 @@ mod tests {
                 })
                 .collect(),
             min_blockers: menace.iter().map(|(a, n)| (id(*a), *n)).collect(),
+            max_blockers: Vec::new(),
             required: required.iter().map(|object| id(*object)).collect(),
         }
     }

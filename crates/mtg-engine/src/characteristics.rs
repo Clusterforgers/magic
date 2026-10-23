@@ -198,6 +198,57 @@ pub(crate) fn cant_be_blocked_by(state: &GameState, attacker: ObjectId, blocker:
         })
 }
 
+/// Whether an effect that applies to the creature `blocker` says it can block only attackers `attacker` is not one of
+/// ("can block only creatures with flying"): the one place the block rules read this restriction. The selector judges
+/// `attacker` as the layers leave it now.
+pub(crate) fn cant_block_attacker(state: &GameState, blocker: ObjectId, attacker: ObjectId) -> bool {
+    let Some(attacker) = state.object(attacker).map(GameObject::reference) else {
+        return false;
+    };
+    state
+        .object(blocker)
+        .filter(|object| object.zone() == Zone::Battlefield)
+        .and_then(|object| state.layers().get(object.id()))
+        .is_some_and(|held| {
+            held.applied
+                .iter()
+                .any(|applied| match &applied.modification {
+                    Modification::CanBlockOnly {
+                        only,
+                        controller,
+                        source,
+                    } => !Scope::announcing(state, *controller, *source)
+                        .selects(only, attacker)
+                        .unwrap_or(true),
+                    _ => false,
+                })
+        })
+}
+
+/// How many creatures may block the attacker `id` together, as the effects that apply to it say: at least the most any
+/// `MinBlockers` asks (1 when none does) and at most the fewest any `MaxBlockers` allows (`None` when none does). The
+/// keyword menace is read beside this by `keywords::min_blockers`.
+pub(crate) fn blocker_limits(state: &GameState, id: ObjectId) -> (usize, Option<usize>) {
+    let mut least = 1;
+    let mut most: Option<usize> = None;
+    let applied = state
+        .object(id)
+        .filter(|object| object.zone() == Zone::Battlefield)
+        .and_then(|object| state.layers().get(object.id()))
+        .map(|held| held.applied.as_slice())
+        .unwrap_or_default();
+    for applied in applied {
+        match applied.modification {
+            Modification::MinBlockers(count) => least = least.max(count as usize),
+            Modification::MaxBlockers(count) => {
+                most = Some(most.map_or(count as usize, |held| held.min(count as usize)));
+            }
+            _ => {}
+        }
+    }
+    (least, most)
+}
+
 /// Whether a modification that `is` applies to the permanent `id` once the layers are through with it.
 fn restricted(state: &GameState, id: ObjectId, is: impl Fn(&Modification) -> bool) -> bool {
     state
