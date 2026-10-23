@@ -298,6 +298,37 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         duration: Option<Duration>,
     },
+    /// The player puts the top cards of a library onto the battlefield face down as 2/2 creatures they control (manifest,
+    /// CR 701.40a); each can be turned face up for its mana cost if it is a creature card.
+    Manifest {
+        /// Who manifests and controls the permanents.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// How many cards.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+        /// Whose library the cards come from: their own unless the effect names another player's ("that player's library").
+        #[serde(rename = "library", default, skip_serializing_if = "Option::is_none")]
+        from: Option<Ref>,
+        /// The name the permanents are bound to, as the objects they become on the battlefield.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
+    },
+    /// As `Manifest`, and each permanent has ward {2} (cloak, CR 701.58a).
+    Cloak {
+        /// Who cloaks and controls the permanents.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// How many cards.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+        /// Whose library the cards come from: their own unless the effect names another player's.
+        #[serde(rename = "library", default, skip_serializing_if = "Option::is_none")]
+        from: Option<Ref>,
+        /// The name the permanents are bound to, as the objects they become on the battlefield.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
+    },
     /// Exiles objects face down, linked to the source of the effect: the permanent hides them (hideaway, CR 702.75a).
     ExileHidden {
         /// What is exiled face down.
