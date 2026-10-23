@@ -1,0 +1,41 @@
+{
+  "oracle_id": "26e4b49e-77e7-41d9-94c5-924669a82591",
+  "name": "Gallifrey Council Chamber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gallifrey Council Chamber",
+      "oracle_fingerprint": "96de739badc0b6d7ab2b1dcd8742d619",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Surveil": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [
+                    { "Spell": { "subtypes": ["Time Lord", "Alien"] } },
+                    { "Ability": { "subtypes": ["Time Lord", "Alien"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

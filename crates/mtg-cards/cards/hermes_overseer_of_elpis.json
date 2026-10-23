@@ -1,0 +1,43 @@
+{
+  "oracle_id": "63e2cba7-ec1a-44bf-b915-d2ae75851430",
+  "name": "Hermes, Overseer of Elpis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hermes, Overseer of Elpis",
+      "oracle_fingerprint": "e73790fb348e87fc28217a32498dcf54",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Vigilance" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Subtype": "Bird" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

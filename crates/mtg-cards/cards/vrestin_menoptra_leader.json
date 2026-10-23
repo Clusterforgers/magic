@@ -1,0 +1,60 @@
+{
+  "oracle_id": "1db6a042-303e-4b76-bb6c-63df846fd6c9",
+  "name": "Vrestin, Menoptra Leader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vrestin, Menoptra Leader",
+      "oracle_fingerprint": "87122dfbf4efdd9d63ca5fd4557983aa",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Alien Insect",
+                      "colors": ["Green", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Alien", "Insect"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": "X"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Subtype": "Insect" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [{ "Subtype": "Insect" }, { "ControlledBy": "You" }, "Attacking"]
+                  },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
