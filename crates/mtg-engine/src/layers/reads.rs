@@ -229,6 +229,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Life(who)
         | Amount::CommanderCasts(who)
         | Amount::Counters { on: who, .. }
+        | Amount::Mutations(who)
         | Amount::Players(who)
         | Amount::Tallied { who, .. }
         | Amount::LowestLife(who)

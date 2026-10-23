@@ -123,6 +123,24 @@ impl Merged {
         over.chain(under).collect()
     }
 
+    /// How many times the permanent has mutated: the cards merged into it, less the one it was (CR 702.140).
+    pub fn mutations(&self) -> u32 {
+        u32::try_from(self.others().len()).unwrap_or(u32::MAX)
+    }
+
+    /// What the permanent is under a copy effect that gives the copiable values `copy`: they stand in the place of the
+    /// topmost card's, and the abilities of the other cards stay (CR 729.2c).
+    pub(crate) fn under_copy(&self, copy: &CardDefinition) -> CardDefinition {
+        let top = self
+            .components
+            .iter()
+            .rposition(|card| card.over)
+            .unwrap_or(0);
+        let cards = self.components.iter().enumerate();
+        copy.clone()
+            .with_abilities_of(cards.map(|(at, card)| if at == top { copy } else { card.card() }))
+    }
+
     /// The cards other than the one the permanent was, in the order they merged.
     fn others(&self) -> &[Component] {
         self.components.get(1..).unwrap_or_default()
@@ -272,7 +290,11 @@ pub(crate) fn fold(
     let Some(held) = host.permanent.as_mut() else {
         return Err(invalid(format!("{permanent:?} is no permanent")));
     };
-    held.merged = Some(start.with(added));
+    let merged = start.with(added);
+    if let Some(copy) = held.copy.as_mut() {
+        copy.over(Some(&merged));
+    }
+    held.merged = Some(merged);
     host.face_down = None;
     crate::fold::priority_to_active(state);
     Ok(())

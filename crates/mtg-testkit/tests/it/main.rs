@@ -214,6 +214,7 @@ mod morph;
 mod morph_fuzz;
 mod mulligan;
 mod mutate;
+mod mutate_counts;
 mod mutate_fuzz;
 mod ninjutsu;
 mod object_nth;

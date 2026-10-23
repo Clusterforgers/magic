@@ -1,0 +1,28 @@
+{
+  "id": "70419590-2e0d-4232-b596-a5359b284647",
+  "oracle_id": "46bfdcec-7cdc-413e-aa77-ed98b64f147b",
+  "name": "Insatiable Hemophage",
+  "lang": "en",
+  "layout": "mutate",
+  "set": "iko",
+  "collector_number": "93",
+  "rarity": "uncommon",
+  "released_at": "2020-04-24",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Nightmare",
+  "oracle_text": "Mutate {2}{B} (If you cast this spell for its mutate cost, put it over or under target non-Human creature you own. They mutate into the creature on top plus all abilities from under it.)\nDeathtouch\nWhenever this creature mutates, each opponent loses X life and you gain X life, where X is the number of times this creature has mutated.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Mutate",
+    "Deathtouch"
+  ]
+}

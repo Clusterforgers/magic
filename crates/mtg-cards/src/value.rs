@@ -240,6 +240,9 @@ pub enum Amount {
     /// How many times the kicker costs of the spell were paid, a multikicker once for each payment (CR 702.33); a
     /// permanent and its abilities read the spell it came from, and zero is no kicker paid.
     Kicks,
+    /// How many times the permanents the reference names have mutated: the cards merged into each, less the one it was
+    /// (CR 702.140; "the number of times this creature has mutated"); zero for a permanent that never merged.
+    Mutations(Ref),
     /// One if the caster promised a gift as they cast the spell the ability reads, else zero (CR 702.174).
     Promised,
     /// One if the spell was cast for this alternative cost, else zero (a target specification that only awaken adds reads it in its most).
@@ -305,6 +308,7 @@ enum Tagged {
     LowestLife(Ref),
     HighestLife(Ref),
     Kicks,
+    Mutations(Ref),
     Promised,
     CastWith(CastWay),
     ColorsSpent,
@@ -350,6 +354,7 @@ enum TaggedRef<'a> {
     LowestLife(&'a Ref),
     HighestLife(&'a Ref),
     Kicks,
+    Mutations(&'a Ref),
     Promised,
     CastWith(CastWay),
     ColorsSpent,
@@ -383,6 +388,7 @@ impl From<Tagged> for Amount {
             Tagged::LowestLife(who) => Amount::LowestLife(who),
             Tagged::HighestLife(who) => Amount::HighestLife(who),
             Tagged::Kicks => Amount::Kicks,
+            Tagged::Mutations(of) => Amount::Mutations(of),
             Tagged::Promised => Amount::Promised,
             Tagged::CastWith(way) => Amount::CastWith(way),
             Tagged::ColorsSpent => Amount::ColorsSpent,
@@ -422,6 +428,7 @@ impl Serialize for Amount {
             Amount::LowestLife(who) => TaggedRef::LowestLife(who).serialize(serializer),
             Amount::HighestLife(who) => TaggedRef::HighestLife(who).serialize(serializer),
             Amount::Kicks => TaggedRef::Kicks.serialize(serializer),
+            Amount::Mutations(of) => TaggedRef::Mutations(of).serialize(serializer),
             Amount::Promised => TaggedRef::Promised.serialize(serializer),
             Amount::CastWith(way) => TaggedRef::CastWith(*way).serialize(serializer),
             Amount::ColorsSpent => TaggedRef::ColorsSpent.serialize(serializer),

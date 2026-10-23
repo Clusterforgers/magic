@@ -1,0 +1,27 @@
+{
+  "id": "058d6a7d-12b0-4d82-a5bd-91fa44bbc5e1",
+  "oracle_id": "38f5e6bf-18a3-4ff3-9726-a25a9715a2d9",
+  "name": "Huntmaster Liger",
+  "lang": "en",
+  "layout": "mutate",
+  "set": "iko",
+  "collector_number": "16",
+  "rarity": "uncommon",
+  "released_at": "2020-04-24",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Cat",
+  "oracle_text": "Mutate {2}{W} (If you cast this spell for its mutate cost, put it over or under target non-Human creature you own. They mutate into the creature on top plus all abilities from under it.)\nWhenever this creature mutates, other creatures you control get +X/+X until end of turn, where X is the number of times this creature has mutated.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Mutate"
+  ]
+}

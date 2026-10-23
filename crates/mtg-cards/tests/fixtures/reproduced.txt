@@ -447,6 +447,7 @@ Horizon Canopy
 Hound of Griselbrand
 Howltooth Hollow
 Hulking Raptor
+Huntmaster Liger
 Icefeather Aven
 Idyllic Beachfront
 Igneous Inspiration
@@ -458,6 +459,7 @@ Impostor of the Sixth Pride
 Impulsive Pilferer
 Inferno Project
 Inkwell Leviathan
+Insatiable Hemophage
 Inspired Sphinx
 Inspiring Statuary
 Intelligence Bobblehead
@@ -642,6 +644,7 @@ Plaxmanta
 Poet's Quill
 Pongify
 Pop Quiz
+Porcuparrot
 Pouncing Jaguar
 Pouncing Shoreshark
 Powder Ganger

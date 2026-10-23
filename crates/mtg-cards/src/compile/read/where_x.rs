@@ -214,7 +214,7 @@ fn stats(value: &Value, found: &mut Vec<Value>) {
 }
 
 /// The amounts that count, as the data names them.
-const COUNTS: [&str; 7] = [
+const COUNTS: [&str; 8] = [
     "Count",
     "Greatest",
     "Total",
@@ -222,6 +222,7 @@ const COUNTS: [&str; 7] = [
     "Sum",
     "Counters",
     "Players",
+    "Mutations",
 ];
 
 /// The counts in the data, each once; what a count holds is not searched.

@@ -477,7 +477,7 @@ impl GameObject {
     /// The printed definition of the object: the face it is in use as (`face`), else the card as a whole.
     pub fn card(&self) -> &CardDefinition {
         if let Some(copy) = self.copy_effect() {
-            return copy.definition();
+            return copy.shown();
         }
         if let Some(merged) = self.merged() {
             return merged.definition();
@@ -506,7 +506,7 @@ impl GameObject {
     /// The whole card, with every face it has, whichever one is in use.
     pub fn whole_card(&self) -> &CardDefinition {
         match (self.copy_effect(), self.merged()) {
-            (Some(copy), _) => copy.definition(),
+            (Some(copy), _) => copy.shown(),
             (None, Some(merged)) => merged.definition(),
             (None, None) => &self.def,
         }
@@ -560,7 +560,7 @@ impl GameObject {
     /// The printed card types of the face in use (no effects applied); a bestowed Aura is no creature (CR 702.103b).
     pub fn base_types(&self) -> CardTypes {
         let printed = if let Some(copy) = self.copy_effect() {
-            copy.definition().type_set()
+            copy.shown().type_set()
         } else if let Some(merged) = self.merged() {
             merged.definition().type_set()
         } else if let Some(shown) = self.face_down.and_then(FaceDown::characteristics) {
