@@ -1,0 +1,27 @@
+{
+  "id": "91df915e-3cc6-4f24-aaaf-db8f015127a6",
+  "oracle_id": "f5126c01-f765-44f4-9ced-0fc157f8b897",
+  "name": "Drudge Beetle",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rvr",
+  "collector_number": "136",
+  "rarity": "common",
+  "released_at": "2024-01-12",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Insect",
+  "oracle_text": "Scavenge {5}{G} ({5}{G}, Exile this card from your graveyard: Put a number of +1/+1 counters equal to this card's power on target creature. Scavenge only as a sorcery.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Scavenge"
+  ]
+}

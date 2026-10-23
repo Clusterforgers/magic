@@ -1,0 +1,23 @@
+{
+  "oracle_id": "00d8efa6-a2d9-4249-8da7-b45173675329",
+  "name": "Utopia Sprawl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Utopia Sprawl",
+      "oracle_fingerprint": "2e73d979253e73e49033fe7559be287f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Subtype": "Forest" }] } },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Is": "Attached" }, { "Subtype": "Forest" }] } },
+            "effects": [{ "AddMana": { "who": "Triggering", "mana": { "ChosenColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

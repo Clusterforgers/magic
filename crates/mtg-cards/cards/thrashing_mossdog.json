@@ -1,0 +1,12 @@
+{
+  "oracle_id": "8778ddbe-9aba-4a45-a22a-5453fefef952",
+  "name": "Thrashing Mossdog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thrashing Mossdog",
+      "oracle_fingerprint": "dfca9a81c6b551175f920e6aa5bcddb1",
+      "abilities": [{ "Keyword": "Reach" }, { "Keyword": { "Scavenge": "{4}{G}{G}" } }]
+    }
+  ]
+}

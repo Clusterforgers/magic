@@ -501,6 +501,9 @@ impl<'a> Walker<'a> {
                 self.at("LowestLife", |w| w.reference(who, Kind::Player));
             }
             Amount::Kicks | Amount::Promised => self.paid_amount(amount),
+            Amount::CastWith(_) => self.uses("Amount", "CastWith"),
+            Amount::ColorsSpent => self.uses("Amount", "ColorsSpent"),
+            Amount::PermanentsGraved => self.uses("Amount", "PermanentsGraved"),
             Amount::Triggering => {
                 self.uses("Amount", "Triggering");
                 if !self.scope.in_trigger {
@@ -747,6 +750,8 @@ impl<'a> Walker<'a> {
             | Keyword::Unearth(cost)
             | Keyword::Embalm(cost)
             | Keyword::Eternalize(cost)
+            | Keyword::Scavenge(cost)
+            | Keyword::Transmute(cost)
             | Keyword::Ninjutsu(cost)
             | Keyword::LevelUp(cost)
             | Keyword::Outlast(cost) => {
@@ -778,6 +783,7 @@ impl<'a> Walker<'a> {
             | Keyword::Mutate(cost)
             | Keyword::Encore(cost)
             | Keyword::Foretell(cost)
+            | Keyword::Awaken { cost, .. }
             | Keyword::Suspend { cost, .. } => {
                 self.at("cost", |w| w.cost(cost));
                 // Only mana is paid for these: a part that takes objects, life or counters is not.
@@ -1446,7 +1452,11 @@ impl<'a> Walker<'a> {
                     Produce::AnyColor(0)
                     | Produce::ChosenColor(0)
                     | Produce::CommanderIdentity(0)
-                    | Produce::ProducedBy { count: 0, .. } => w.problem("adds no mana"),
+                    | Produce::ProducedBy { count: 0, .. }
+                    | Produce::AnyCombination { count: 0, .. } => w.problem("adds no mana"),
+                    Produce::AnyCombination { among, .. } if among.len() == 1 => {
+                        w.problem("a combination of one type is that mana");
+                    }
                     Produce::OneOf(list) if list.len() < 2 => {
                         w.problem("a choice of mana needs at least two types");
                     }
@@ -1468,7 +1478,9 @@ impl<'a> Walker<'a> {
                     | Produce::OneOfLists(_)
                     | Produce::ChosenColor(_)
                     | Produce::OrChosenColor(_)
-                    | Produce::CommanderIdentity(_) => {}
+                    | Produce::CommanderIdentity(_)
+                    | Produce::AnyCombination { .. }
+                    | Produce::OfTapped => {}
                 }
                 // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.
                 match mana {

@@ -8,6 +8,7 @@ mod affinity;
 pub(crate) mod aftermath;
 mod annihilator;
 mod ascend;
+pub(crate) mod awaken;
 mod backup;
 mod battle_cry;
 mod bestow;
@@ -58,6 +59,7 @@ mod for_mirrodin;
 pub(crate) mod foretell;
 mod fuse;
 pub mod gift;
+mod gravestorm;
 mod haste;
 mod hexproof;
 mod hideaway;
@@ -101,6 +103,7 @@ mod rebound;
 mod reconfigure;
 mod retrace;
 mod saddle;
+mod scavenge;
 mod shadow;
 mod shroud;
 mod skulk;
@@ -108,9 +111,11 @@ mod split_second;
 mod squad;
 mod station;
 mod storm;
+mod sunburst;
 pub(crate) mod suspend;
 mod toxic;
 mod trample;
+mod transmute;
 mod typecycling;
 mod undaunted;
 mod undying;
@@ -494,6 +499,11 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Improvise => &improvise::Improvise,
         Keyword::Affinity(_) => &affinity::Affinity,
         Keyword::Typecycling { .. } => &typecycling::Typecycling,
+        Keyword::Scavenge(_) => &scavenge::Scavenge,
+        Keyword::Transmute(_) => &transmute::Transmute,
+        Keyword::Awaken { .. } => &awaken::Awaken,
+        Keyword::Gravestorm => &gravestorm::Gravestorm,
+        Keyword::Sunburst => &sunburst::Sunburst,
         Keyword::Ascend => &ascend::Ascend,
         Keyword::ForMirrodin => &for_mirrodin::ForMirrodin,
         Keyword::JobSelect => &job_select::JobSelect,
@@ -828,6 +838,14 @@ mod tests {
                 to: Box::default(),
                 cost: cost(),
             },
+            Keyword::Scavenge(cost()),
+            Keyword::Transmute(cost()),
+            Keyword::Awaken {
+                count: 3,
+                cost: cost(),
+            },
+            Keyword::Gravestorm,
+            Keyword::Sunburst,
         ]
     }
 
@@ -947,6 +965,11 @@ mod tests {
         "Keyword.JobSelect",
         "Keyword.EquipTo",
         "Keyword.Encore",
+        "Keyword.Scavenge",
+        "Keyword.Transmute",
+        "Keyword.Awaken",
+        "Keyword.Gravestorm",
+        "Keyword.Sunburst",
         "Keyword.SplitSecond",
         "Keyword.Undaunted",
     ];
@@ -1103,6 +1126,10 @@ mod tests {
     #[case::for_mirrodin(Keyword::ForMirrodin, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::job_select(Keyword::JobSelect, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::equip_to(Keyword::EquipTo { to: Box::default(), cost: Cost::mana("{1}".parse().unwrap()) }, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::scavenge(Keyword::Scavenge(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::transmute(Keyword::Transmute(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::gravestorm(Keyword::Gravestorm, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::sunburst(Keyword::Sunburst, Hooks { abilities: 2, ..Hooks::none() })]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);

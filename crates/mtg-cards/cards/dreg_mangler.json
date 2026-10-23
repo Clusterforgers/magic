@@ -1,0 +1,12 @@
+{
+  "oracle_id": "71358110-4e28-4794-befa-ea6e27e720ef",
+  "name": "Dreg Mangler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreg Mangler",
+      "oracle_fingerprint": "92e5d50ed74bab5e7836c896b2c32ef4",
+      "abilities": [{ "Keyword": "Haste" }, { "Keyword": { "Scavenge": "{3}{B}{G}" } }]
+    }
+  ]
+}

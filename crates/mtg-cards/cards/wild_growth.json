@@ -1,0 +1,20 @@
+{
+  "oracle_id": "706ae742-1807-44b7-a4fa-f2e26f61519a",
+  "name": "Wild Growth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wild Growth",
+      "oracle_fingerprint": "c4d0ff5b82a8a6238affe3b473b986e5",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Is": "Attached" }, { "Type": "Land" }] } },
+            "effects": [{ "AddMana": { "who": "Triggering", "mana": { "Fixed": ["Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

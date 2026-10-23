@@ -1,0 +1,22 @@
+{
+  "oracle_id": "e6ccebf4-f4f0-404f-a634-4d751ef9c8aa",
+  "name": "Overgrowth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overgrowth",
+      "oracle_fingerprint": "fc67a26bca84cd54d84549570e4ffe88",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Is": "Attached" }, { "Type": "Land" }] } },
+            "effects": [
+              { "AddMana": { "who": "Triggering", "mana": { "Fixed": ["Green", "Green"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
