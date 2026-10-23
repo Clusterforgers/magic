@@ -3,7 +3,7 @@ use super::*;
 use crate::cost::{Cost, CostItem};
 use crate::refs::{Pred, Selector};
 use crate::value::Amount;
-use mtg_core::card::CardType;
+use mtg_core::card::{CardType, Subtype};
 use mtg_core::color::Color;
 
 fn of(items: Vec<CostItem>) -> Ability {
@@ -99,12 +99,6 @@ fn a_required_additional_cost_reads_and_writes_back(#[case] text: &str, #[case] 
 }
 
 #[rstest]
-#[case::either_of_two_costs(
-    "As an additional cost to cast this spell, discard a card or pay 3 life."
-)]
-#[case::a_cost_or_mana(
-    "As an additional cost to cast this spell, sacrifice a creature or pay {3}."
-)]
 #[case::two_costs_with_and(
     "As an additional cost to cast this spell, discard a card and sacrifice a creature."
 )]
@@ -112,14 +106,87 @@ fn a_required_additional_cost_reads_and_writes_back(#[case] text: &str, #[case] 
 #[case::any_number(
     "As an additional cost to cast this spell, you may sacrifice any number of Spirits."
 )]
-#[case::revealing(
-    "As an additional cost to cast this spell, you may reveal a Dragon card from your hand."
+#[case::a_list_with_no_or(
+    "As an additional cost to cast this spell, discard a card, pay 3 life."
 )]
-#[case::revealing_a_required_card(
-    "As an additional cost to cast this spell, reveal a creature card from your hand."
+#[case::a_choice_with_a_choice_of_x(
+    "As an additional cost to cast this spell, discard X cards or pay 3 life."
+)]
+#[case::an_optional_choice(
+    "As an additional cost to cast this spell, you may discard a card or pay 3 life."
 )]
 fn a_cost_the_readers_do_not_model_stays_with_the_table(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Static, false), None);
+}
+
+#[rstest]
+#[case::discard_or_life(
+    "As an additional cost to cast this spell, discard a card or pay 3 life.",
+    must(vec![CostItem::OneOf(vec![
+        Cost(vec![CostItem::Discard { count: Amount::one(), filter: None }]),
+        Cost(vec![CostItem::PayLife(Amount::Fixed(3))]),
+    ])])
+)]
+#[case::three_costs(
+    "As an additional cost to cast this spell, sacrifice a creature, discard a card, or pay 4 life.",
+    must(vec![CostItem::OneOf(vec![
+        Cost(vec![CostItem::Sacrifice { filter: kind(CardType::Creature), count: Amount::one() }]),
+        Cost(vec![CostItem::Discard { count: Amount::one(), filter: None }]),
+        Cost(vec![CostItem::PayLife(Amount::Fixed(4))]),
+    ])])
+)]
+#[case::a_part_or_mana(
+    "As an additional cost to cast this spell, sacrifice a creature or pay {3}.",
+    must(vec![CostItem::OneOf(vec![
+        Cost(vec![CostItem::Sacrifice { filter: kind(CardType::Creature), count: Amount::one() }]),
+        Cost::mana("{3}".parse().unwrap()),
+    ])])
+)]
+#[case::a_reveal_or_mana(
+    "As an additional cost to cast this spell, reveal a Dinosaur card from your hand or pay {1}.",
+    must(vec![CostItem::OneOf(vec![
+        Cost(vec![CostItem::RevealFromHand {
+            filter: Selector(vec![Pred::Subtype(Subtype("Dinosaur".to_owned()))]),
+            count: Amount::one(),
+        }]),
+        Cost::mana("{1}".parse().unwrap()),
+    ])])
+)]
+fn a_choice_between_required_additional_costs_reads_and_writes_back(
+    #[case] text: &str,
+    #[case] expected: Ability,
+) {
+    assert_eq!(golden(text, ClauseKind::Static, false), expected);
+}
+
+#[rstest]
+#[case::a_creature_card(
+    "As an additional cost to cast this spell, reveal a creature card from your hand.",
+    must(vec![CostItem::RevealFromHand { filter: kind(CardType::Creature), count: Amount::one() }])
+)]
+#[case::a_colorless_creature_card(
+    "As an additional cost to cast this spell, reveal a colorless creature card from your hand.",
+    must(vec![CostItem::RevealFromHand {
+        filter: Selector(vec![Pred::Type(CardType::Creature), Pred::Colorless]),
+        count: Amount::one(),
+    }])
+)]
+#[case::two_cards(
+    "As an additional cost to cast this spell, reveal two creature cards from your hand.",
+    must(vec![CostItem::RevealFromHand { filter: kind(CardType::Creature), count: Amount::Fixed(2) }])
+)]
+#[case::optional(
+    "As an additional cost to cast this spell, you may reveal a Dragon card from your hand.",
+    of(vec![CostItem::RevealFromHand {
+        filter: Selector(vec![Pred::Subtype(Subtype("Dragon".to_owned()))]),
+        count: Amount::one(),
+    }])
+)]
+fn a_reveal_from_the_hand_as_an_additional_cost_reads_and_writes_back(
+    #[case] text: &str,
+    #[case] expected: Ability,
+) {
+    assert_eq!(golden(text, ClauseKind::Static, false), expected);
 }
 
 #[rstest]

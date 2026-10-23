@@ -39,6 +39,7 @@ fn eternal_witness_reads_in_the_shape_of_its_file() {
 #[case("Return target planeswalker card from your graveyard to your hand.")]
 #[case("Return target creature or planeswalker card from your graveyard to your hand.")]
 #[case("Return target nonland card from your graveyard to your hand.")]
+#[case("Return target Elf card from your graveyard to your hand.")]
 #[case("Return target noncreature card from your graveyard to your hand.")]
 #[case("Return target legendary creature card from your graveyard to your hand.")]
 #[case("Return target card from your graveyard to your hand. Draw a card.")]
@@ -63,7 +64,6 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 }
 
 #[rstest]
-#[case::a_subtype_before_card("Return target Elf card from your graveyard to your hand.")]
 #[case::bounce_to_your_hand("Return target creature you control to your hand.")]
 #[case::another_graveyard("Return target card from a graveyard to your hand.")]
 #[case::an_opponents_graveyard(
