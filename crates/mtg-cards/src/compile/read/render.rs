@@ -31,8 +31,8 @@ use super::spent;
 use super::statics;
 use super::subtypes::plural_subtype;
 use super::triggers::{
-    article, condition_text, cycled_itself, graveyard_itself, itself_acts, leaves_itself,
-    pattern_text, targeted_itself,
+    article, cast_itself, condition_text, cycled_itself, graveyard_itself, itself_acts,
+    leaves_itself, pattern_text, targeted_itself,
 };
 use super::where_x;
 use crate::ability::{Ability, Limit, Timing};
@@ -358,6 +358,17 @@ fn mana_trigger_texts(ability: &Ability) -> Vec<String> {
     }
 }
 
+/// The zone a triggered ability works from, as the wording of its event and effects implies.
+fn written_from(when: &TriggerPattern, effects: &[Effect]) -> ZoneKind {
+    if cast_itself(when) {
+        ZoneKind::Stack
+    } else if cycled_itself(when) || graveyard_itself(when) || returns_itself(effects) {
+        ZoneKind::Graveyard
+    } else {
+        ZoneKind::Battlefield
+    }
+}
+
 fn ability_texts(ability: &Ability) -> Vec<String> {
     match ability {
         Ability::Spell { targets, effects } => alternatives(targets, effects)
@@ -383,13 +394,7 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             from,
             targets,
             effects,
-        } if *from
-            == if cycled_itself(when) || graveyard_itself(when) || returns_itself(effects) {
-                ZoneKind::Graveyard
-            } else {
-                ZoneKind::Battlefield
-            } =>
-        {
+        } if *from == written_from(when, effects) => {
             let Some(head) = trigger_head(when, intervening_if.as_ref()) else {
                 return Vec::new();
             };
@@ -1344,7 +1349,7 @@ impl Writer<'_> {
         }
         // The spell a trigger is about has no target to name.
         if let Effect::CopySpell {
-            what: Ref::Triggering,
+            what: Ref::Triggering | Ref::This,
             ..
         } = effect
         {

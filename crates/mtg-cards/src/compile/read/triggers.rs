@@ -20,6 +20,15 @@ pub fn cycled_itself(pattern: &TriggerPattern) -> bool {
     )
 }
 
+/// Whether the pattern is the card itself being cast by its controller ("When you cast this spell"), so its ability works
+/// from the stack.
+pub fn cast_itself(pattern: &TriggerPattern) -> bool {
+    matches!(
+        pattern,
+        TriggerPattern::SpellCast { what, by: Ref::You } if what.0 == [Pred::This]
+    )
+}
+
 /// Whether the pattern is the card itself put into a graveyard from anywhere, so its ability works from the graveyard.
 pub fn graveyard_itself(pattern: &TriggerPattern) -> bool {
     matches!(
@@ -329,6 +338,13 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
             return Some(TriggerPattern::Nth {
                 event: Box::new(event),
                 nth,
+            });
+        }
+        // "When you cast this spell": the card itself, on the stack.
+        if !third && r.source() {
+            return Some(TriggerPattern::SpellCast {
+                what: Selector::this(),
+                by,
             });
         }
         let mut spell = subject(r)?.0;
@@ -1011,6 +1027,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
     match pattern {
         TriggerPattern::StepBegins { step, whose } => {
             Some(format!("At the beginning of {}", step_text(*step, whose)?))
+        }
+        TriggerPattern::SpellCast { what, by: Ref::You } if what.0 == [Pred::This] => {
+            Some("When you cast ~".to_owned())
         }
         TriggerPattern::SpellCast { what, by } => {
             let mut preds = vec![Pred::Spell];

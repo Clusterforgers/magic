@@ -161,6 +161,7 @@ mod becomes;
 mod block_limits;
 mod cast;
 mod cast_cost_paid;
+mod cast_self;
 mod cast_spell_kinds;
 mod chapters;
 mod chosen_color;

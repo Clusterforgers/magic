@@ -1,0 +1,23 @@
+{
+  "cmc": 4.0,
+  "collector_number": "22",
+  "color_identity": [
+    "R"
+  ],
+  "colors": [
+    "R"
+  ],
+  "digital": false,
+  "id": "10dad353-7200-46de-96ad-4c457b94c62b",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{R}{R}",
+  "name": "Fury Storm",
+  "oracle_id": "371fa9e3-5432-4f2f-89d4-55061b0b4e57",
+  "oracle_text": "When you cast this spell, copy it for each time you've cast your commander from the command zone this game. You may choose new targets for the copies.\nCopy target instant or sorcery spell. You may choose new targets for the copy.",
+  "rarity": "rare",
+  "released_at": "2018-08-10",
+  "set": "c18",
+  "type_line": "Instant"
+}
