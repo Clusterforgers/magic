@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f28b21a6-f7ce-437a-8c5b-0423cb55cefb",
+  "name": "Banishing Light",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Banishing Light",
+      "oracle_fingerprint": "3da6b29c38daeee9097923d1fa4b4f67",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

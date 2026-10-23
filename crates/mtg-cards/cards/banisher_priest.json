@@ -1,0 +1,24 @@
+{
+  "oracle_id": "9f560b83-32d4-4bb4-a956-8f5db18599db",
+  "name": "Banisher Priest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Banisher Priest",
+      "oracle_fingerprint": "34fcfa039a9f50454fc9748a4e6a92ed",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

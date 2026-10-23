@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a0476da9-51b1-4cd3-90c4-ad01d0e4c3d6",
+  "name": "Azorius Herald",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Azorius Herald",
+      "oracle_fingerprint": "10220a792f4064ad6d7c96240c5ee279",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 4 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Not": { "ManaSpent": "Blue" } },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

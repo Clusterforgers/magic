@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e938ee4c-d5df-4d93-bd61-9e518fb1dc30",
+  "name": "Conclave Tribunal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conclave Tribunal",
+      "oracle_fingerprint": "dde21adf459f7491c354bcde76b95679",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

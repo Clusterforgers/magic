@@ -24,6 +24,7 @@ Ancient Hydra
 Ancient Stone Idol
 Ancient Ziggurat
 Angel of Invention
+Angel of Sanctions
 Angel of Vitality
 Angelic Ascension
 Arbor Colossus
@@ -47,10 +48,13 @@ Aven Riftwatcher
 Aven Squire
 Aven Tactician
 Azorius Chancery
+Azorius Herald
 Azorius Signet
 Azure Fleet Admiral
 Azusa, Lost but Seeking
 Baird, Steward of Argive
+Banisher Priest
+Banishing Light
 Banshee of the Dread Choir
 Basilica Screecher
 Basking Rootwalla
@@ -107,6 +111,7 @@ Capsize
 Caravan Escort
 Carnage Tyrant
 Cascade Bluffs
+Cast Out
 Cathars' Crusade
 Cathartic Reunion
 Cavern Whisperer
@@ -128,6 +133,7 @@ Cloudskate
 Cold-Eyed Selkie
 Collective Unconscious
 Command Tower
+Conclave Tribunal
 Consider
 Consign // Oblivion
 Consign to Dust
@@ -227,6 +233,7 @@ Exploration
 Explore
 Exquisite Huntmaster
 Eyetwitch
+Faith Unbroken
 Faithful Watchdog
 Faithless Looting
 Famine
@@ -461,6 +468,7 @@ Pacifism
 Pale Bears
 Panther Robot
 Parhelion Patrol
+Patagia Viper
 Path to Exile
 Peema Outrider
 Pestilent Syphoner
@@ -471,6 +479,7 @@ Pillar of the Paruns
 Pinion Feast
 Plague Myr
 Plague Stinger
+Plaxmanta
 Poet's Quill
 Pongify
 Pop Quiz
@@ -555,6 +564,7 @@ Serra Angel
 Servant of the Conduit
 Shadowmage Infiltrator
 Shambling Shell
+Sheltered by Ghosts
 Shenanigans
 Shiny Impetus
 Siege Smash
@@ -723,6 +733,7 @@ Wear // Tear
 Wedgelight Rammer
 Weigh Down
 Whir of Invention
+White Auracite
 Wild Wasteland
 Wilderness Elemental
 Windborn Muse

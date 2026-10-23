@@ -1,0 +1,23 @@
+{
+  "id": "2df6f515-9d21-4769-b1c4-c219611bccbb",
+  "oracle_id": "6022608a-6cf2-45bd-adec-63211710a5ed",
+  "name": "White Auracite",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fin",
+  "collector_number": "41",
+  "rarity": "common",
+  "released_at": "2025-06-13",
+  "digital": false,
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Artifact",
+  "oracle_text": "When this artifact enters, exile target nonland permanent an opponent controls until this artifact leaves the battlefield.\n{T}: Add {W}.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

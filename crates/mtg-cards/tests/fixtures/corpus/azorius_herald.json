@@ -1,0 +1,26 @@
+{
+  "id": "813cea4e-1e87-4d2f-a580-16805ff53ff0",
+  "oracle_id": "a0476da9-51b1-4cd3-90c4-ad01d0e4c3d6",
+  "name": "Azorius Herald",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c13",
+  "collector_number": "6",
+  "rarity": "uncommon",
+  "released_at": "2013-11-01",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Spirit",
+  "oracle_text": "This creature can't be blocked.\nWhen this creature enters, you gain 4 life.\nWhen this creature enters, sacrifice it unless {U} was spent to cast it.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": []
+}

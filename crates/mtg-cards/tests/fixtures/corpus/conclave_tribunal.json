@@ -1,0 +1,25 @@
+{
+  "id": "f53b1b90-5bc6-4111-9083-4501ed92d39a",
+  "oracle_id": "e938ee4c-d5df-4d93-bd61-9e518fb1dc30",
+  "name": "Conclave Tribunal",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clu",
+  "collector_number": "56",
+  "rarity": "uncommon",
+  "released_at": "2024-02-23",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)\nWhen this enchantment enters, exile target nonland permanent an opponent controls until this enchantment leaves the battlefield.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Convoke"
+  ]
+}

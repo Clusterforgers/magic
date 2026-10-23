@@ -1,0 +1,25 @@
+{
+  "id": "0e518f9e-d74d-4a6f-8fde-5e3ec5834e63",
+  "oracle_id": "9f560b83-32d4-4bb4-a956-8f5db18599db",
+  "name": "Banisher Priest",
+  "lang": "en",
+  "layout": "normal",
+  "set": "moc",
+  "collector_number": "173",
+  "rarity": "uncommon",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{1}{W}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Cleric",
+  "oracle_text": "When this creature enters, exile target creature an opponent controls until this creature leaves the battlefield.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

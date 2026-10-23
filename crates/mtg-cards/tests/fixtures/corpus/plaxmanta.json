@@ -1,0 +1,28 @@
+{
+  "id": "f72dd5b7-0392-4299-afd5-f72af27a69bf",
+  "oracle_id": "36780340-824d-420b-b41b-182f88d944de",
+  "name": "Plaxmanta",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c15",
+  "collector_number": "100",
+  "rarity": "uncommon",
+  "released_at": "2015-11-13",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "Flash\nWhen this creature enters, creatures you control gain shroud until end of turn. (They can't be the targets of spells or abilities.)\nWhen this creature enters, sacrifice it unless {G} was spent to cast it.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Flash"
+  ]
+}

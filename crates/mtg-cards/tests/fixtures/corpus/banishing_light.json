@@ -1,0 +1,23 @@
+{
+  "id": "d53c7e49-745d-48ba-bc50-240472a4f039",
+  "oracle_id": "f28b21a6-f7ce-437a-8c5b-0423cb55cefb",
+  "name": "Banishing Light",
+  "lang": "en",
+  "layout": "normal",
+  "set": "hoc",
+  "collector_number": "161",
+  "rarity": "uncommon",
+  "released_at": "2026-08-14",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, exile target nonland permanent an opponent controls until this enchantment leaves the battlefield.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

@@ -189,7 +189,7 @@ fn color_of(mana: ManaType) -> Option<Color> {
 }
 
 /// Adds the colors of the mana symbols in the strings of an ability's serialized form, and of the mana an effect
-/// names by type (`Fixed`, `OneOf`, `OneOfLists`, `OrChosenColor`).
+/// names by type (`Fixed`, `OneOf`, `OneOfLists`, `OrChosenColor`) or asks about (`ManaSpent`).
 fn scan(value: &Value, set: &mut ColorSet) {
     match value {
         Value::String(text) => symbols(text, set),
@@ -198,7 +198,7 @@ fn scan(value: &Value, set: &mut ColorSet) {
             for (key, inner) in fields {
                 if matches!(
                     key.as_str(),
-                    "Fixed" | "OneOf" | "OneOfLists" | "OrChosenColor"
+                    "Fixed" | "OneOf" | "OneOfLists" | "OrChosenColor" | "ManaSpent"
                 ) {
                     named(inner, set);
                 }
@@ -308,6 +308,7 @@ mod tests {
     #[case::added_a_type_or_the_chosen_color(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OrChosenColor":"Red"}}}]}}"#)), "R")]
     #[case::added_lists_of_mana(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOfLists":[["Red","Red"],["Red","Black"],["Black","Colorless"]]}}}]}}"#)), "BR")]
     #[case::any_color_adds_none(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#)), "")]
+    #[case::mana_spent_to_cast(costing("{1}").with_rules(rules(r#"{"Triggered":{"when":{"ZoneChange":{"to":"Battlefield","what":["This"]}},"effects":[{"If":{"condition":{"Not":{"ManaSpent":"Green"}},"then":[{"Sacrifice":{"filter":["This"]}}]}}]}}"#)), "G")]
     #[case::rules_text_clause(costing("{1}").with_manual("{W}, {T}: Draw a card.", "not run"), "W")]
     #[case::reminder_text_is_no_rules_text(costing("{1}").with_manual("Flash (You may cast this for {W}.)", "not run"), "")]
     fn a_definition_names_its_color_identity(#[case] card: CardDefinition, #[case] expected: &str) {

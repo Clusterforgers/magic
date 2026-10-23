@@ -1,0 +1,25 @@
+{
+  "id": "514df7e7-3050-41ce-bd44-f215bbcfd1c5",
+  "oracle_id": "a57fe358-baf3-4eb5-9417-8945b41f84de",
+  "name": "Faith Unbroken",
+  "lang": "en",
+  "layout": "normal",
+  "set": "inr",
+  "collector_number": "21",
+  "rarity": "uncommon",
+  "released_at": "2025-01-24",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature you control\nWhen this Aura enters, exile target creature an opponent controls until this Aura leaves the battlefield.\nEnchanted creature gets +2/+2.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

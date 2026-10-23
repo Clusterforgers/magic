@@ -1,0 +1,39 @@
+{
+  "oracle_id": "d13fc657-c6fc-4394-bc70-691050550226",
+  "name": "Sheltered by Ghosts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sheltered by Ghosts",
+      "oracle_fingerprint": "e1a128ed4e11c615cab0aaadfc7c172d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 0 } },
+              { "AddKeyword": "Lifelink" },
+              { "AddKeyword": { "Ward": "{2}" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

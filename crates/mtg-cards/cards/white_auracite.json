@@ -1,0 +1,34 @@
+{
+  "oracle_id": "6022608a-6cf2-45bd-adec-63211710a5ed",
+  "name": "White Auracite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "White Auracite",
+      "oracle_fingerprint": "eb761262a6bdae21125786cf96aa290f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

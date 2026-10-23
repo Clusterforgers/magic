@@ -1,0 +1,41 @@
+{
+  "oracle_id": "36780340-824d-420b-b41b-182f88d944de",
+  "name": "Plaxmanta",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plaxmanta",
+      "oracle_fingerprint": "f41813fb096b6b1239badbe4e293c731",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Shroud" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Not": { "ManaSpent": "Green" } },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

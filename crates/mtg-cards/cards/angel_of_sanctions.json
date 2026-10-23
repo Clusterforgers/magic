@@ -1,0 +1,36 @@
+{
+  "oracle_id": "3c49e98d-d33b-47fa-8b07-b38b367de2c7",
+  "name": "Angel of Sanctions",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angel of Sanctions",
+      "oracle_fingerprint": "551247c5b6aa49eb4303a9d9a9d6f89a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Embalm": "{5}{W}" } }
+      ]
+    }
+  ]
+}

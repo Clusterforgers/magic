@@ -1,0 +1,49 @@
+{
+  "oracle_id": "b9985370-d908-431c-ad33-ec532fe07d1f",
+  "name": "Patagia Viper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Patagia Viper",
+      "oracle_fingerprint": "5ec7ee8c2f7f7162026ce24030cf371b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Snake",
+                      "colors": ["Green", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Snake"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Not": { "ManaSpent": "Blue" } },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

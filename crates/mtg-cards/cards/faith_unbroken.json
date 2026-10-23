@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a57fe358-baf3-4eb5-9417-8945b41f84de",
+  "name": "Faith Unbroken",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faith Unbroken",
+      "oracle_fingerprint": "b8dd02738d4e16ae8399226a225c8b54",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

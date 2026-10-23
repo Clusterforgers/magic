@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f90b00f6-36e0-4988-9409-57297483a952",
+  "name": "Cast Out",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cast Out",
+      "oracle_fingerprint": "c101637d8e708fe04fa197b23cf8ebd1",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{W}" } }
+      ]
+    }
+  ]
+}

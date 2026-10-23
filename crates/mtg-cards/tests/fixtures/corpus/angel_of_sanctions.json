@@ -1,0 +1,28 @@
+{
+  "id": "f3f7f258-7ac0-4149-9d8c-712b5ea7f0a8",
+  "oracle_id": "3c49e98d-d33b-47fa-8b07-b38b367de2c7",
+  "name": "Angel of Sanctions",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c19",
+  "collector_number": "61",
+  "rarity": "mythic",
+  "released_at": "2019-08-23",
+  "digital": false,
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Angel",
+  "oracle_text": "Flying\nWhen this creature enters, you may exile target nonland permanent an opponent controls until this creature leaves the battlefield.\nEmbalm {5}{W} ({5}{W}, Exile this card from your graveyard: Create a token that's a copy of it, except it's a white Zombie Angel with no mana cost. Embalm only as a sorcery.)",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Embalm"
+  ]
+}

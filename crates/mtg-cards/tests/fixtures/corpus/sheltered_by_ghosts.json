@@ -1,0 +1,25 @@
+{
+  "id": "8e8a5cfe-1b3f-4414-b9a4-078bdb4072a7",
+  "oracle_id": "d13fc657-c6fc-4394-bc70-691050550226",
+  "name": "Sheltered by Ghosts",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "171",
+  "rarity": "uncommon",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature you control\nWhen this Aura enters, exile target nonland permanent an opponent controls until this Aura leaves the battlefield.\nEnchanted creature gets +1/+0 and has lifelink and ward {2}.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}
