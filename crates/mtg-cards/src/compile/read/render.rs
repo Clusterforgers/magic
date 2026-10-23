@@ -1398,7 +1398,7 @@ impl Writer<'_> {
         } else if self.in_your_graveyard(what) {
             Some(format!("return {} to your hand", self.object(what)?))
         } else if self.is_a_permanent(what) || self.are_permanents(what) {
-            let tail = if self.single(what) {
+            let tail = if self.at_most_one(what) {
                 "its owner's hand"
             } else {
                 "their owners' hands"

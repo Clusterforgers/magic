@@ -149,7 +149,7 @@ pub use encore_cards::encore_fuzz_setup;
 pub use entered_cards::entered_fuzz_setup;
 pub use evasion_cards::evasion_fuzz_setup;
 pub use event_cards::events_fuzz_setup;
-pub use exile_until_cards::{EXILE_UNTIL_CARDS, SPENT_CARDS, exile_until_fuzz_setup};
+pub use exile_until_cards::{EXILE_UNTIL_CARDS, MOVE_CARDS, SPENT_CARDS, exile_until_fuzz_setup};
 pub use extra_cost_cards::extra_cost_fuzz_setup;
 pub use face_cards::face_fuzz_setup;
 pub use family_cards::families_fuzz_setup;

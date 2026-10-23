@@ -122,6 +122,7 @@ mod evasion;
 mod evasion_keywords;
 mod event_triggers;
 mod exile_hand_mana;
+mod exile_pair;
 mod exile_until;
 mod exile_until_fuzz;
 mod explore;
