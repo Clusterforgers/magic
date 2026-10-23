@@ -1,0 +1,19 @@
+{
+  "oracle_id": "6a262f53-2eea-45d0-8189-9222d66f1b52",
+  "name": "Shifting Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shifting Sliver",
+      "oracle_fingerprint": "acdf2e4ef32e21dc77a02ec2074fea6a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Sliver" }] },
+            "mods": [{ "CantBeBlockedBy": [{ "Not": { "Subtype": "Sliver" } }] }]
+          }
+        }
+      ]
+    }
+  ]
+}

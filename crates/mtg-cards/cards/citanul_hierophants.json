@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f67df84f-667e-41cf-80f9-911abafe70ac",
+  "name": "Citanul Hierophants",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Citanul Hierophants",
+      "oracle_fingerprint": "0d4a19d89ba9e95d89e03fafd8edaa26",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

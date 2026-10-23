@@ -1,0 +1,25 @@
+{
+  "id": "224af68a-41a6-4e4e-94d0-130be341b788",
+  "oracle_id": "2c09ca09-8e62-4fe3-9b3d-61573dd2ffbc",
+  "name": "Gemhide Sliver",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "896",
+  "rarity": "common",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Sliver",
+  "oracle_text": "All Slivers have \"{T}: Add one mana of any color.\"",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}
