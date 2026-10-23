@@ -92,6 +92,7 @@ Behold the Multiverse
 Bespoke Battlewagon
 Bilious Skulldweller
 Binding the Old Gods
+Biomass Mutation
 Bird Admirer // Wing Shredder
 Black Dragon Gate
 Black Knight
@@ -301,6 +302,7 @@ Echo Mage
 Echo Storm
 Echoes of the Kin Tree
 Eel Umbra
+Eldritch Immunity
 Electric Revelation
 Electro's Bolt
 Elegant Edgecrafters
@@ -328,6 +330,7 @@ Exotic Orchard
 Exploration
 Explore
 Exquisite Huntmaster
+Eyeblight Massacre
 Eyetwitch
 Faith Unbroken
 Faithful Watchdog
@@ -355,6 +358,7 @@ Finch Formation
 Fire-Lit Thicket
 Firestorm Hellkite
 Flame Jab
+Flatline
 Flawless Maneuver
 Fleecemane Lion
 Fleetfeather Cockatrice
@@ -490,6 +494,7 @@ Inspiring Statuary
 Intelligence Bobblehead
 Intrepid Rabbit
 Invading Manticore
+Invisible Force Field
 Invisible Stalker
 Iridescent Vinelasher
 Iron League Steed
@@ -523,6 +528,7 @@ Knight of the Last Breath
 Knights of the Black Rose
 Kolaghan Skirmisher
 Kongming, "Sleeping Dragon"
+Korozda Guildmage
 Korozda Monitor
 Kozilek's Translator
 Krenko's Enforcer
@@ -543,11 +549,13 @@ Life's Legacy
 Light 'Em Up
 Light Up the Stage
 Lightning Bolt
+Liquimetal Torque
 Lithoform Engine
 Living Twister
 Lizard Blades
 Llanowar Behemoth
 Llanowar Elves
+Llanowar Loamspeaker
 Looter il-Kor
 Lord of Extinction
 Lotleth Troll
@@ -572,6 +580,7 @@ Mardu Scout
 Mardu Shadowspear
 Mardu Strike Leader
 Maro
+Mass Diminish
 Master of Etherium
 Master of Pearls
 Mastery of the Unseen
@@ -619,6 +628,7 @@ Mycoloth
 Myr Retriever
 Myriad Landscape
 Mystic Gate
+Nameless Inversion
 Nantuko Husk
 Nantuko Vigilante
 Nessian Asp
@@ -642,6 +652,7 @@ Obscuring Haze
 Octomancer
 Octopus Umbra
 Okiba Reckoner Raid // Nezumi Road Captain
+Olivia's Wrath
 Ominous Harvest
 Onakke Oathkeeper
 Opt
@@ -656,6 +667,7 @@ Orzhov Racketeers
 Otherworldly Gaze
 Overgrown Arch
 Overgrowth
+Overwhelming Stampede
 Oyobi, Who Split the Heavens
 Pacifism
 Palace Jailer
@@ -681,6 +693,7 @@ Plague Stinger
 Planar Outburst
 Plaxmanta
 Poet's Quill
+Polymorphist's Jest
 Pongify
 Pop Quiz
 Porcuparrot
@@ -764,6 +777,7 @@ Sacred Cat
 Sadistic Slash
 Safehold Elite
 Sage of the Beyond
+Sage of the Maze
 Sagu Mauler
 Saiba Cryptomancer
 Saltcrusted Steppe
@@ -794,10 +808,12 @@ Serra Avatar
 Servant of the Conduit
 Shacklegeist
 Shadowmage Infiltrator
+Shadowspear
 Shambling Shell
 Sheer Drop
 Sheltered by Ghosts
 Shenanigans
+Shields of Velis Vel
 Shifting Sliver
 Shiny Impetus
 Shu Cavalry
@@ -895,6 +911,7 @@ Subterranean Schooner
 Sudden Death
 Sudden Edict
 Sudden Shock
+Sudden Spoiling
 Sulfur Elemental
 Sultai Devotee
 Summer Bloom
@@ -976,6 +993,8 @@ Trove Tracker
 True Identity
 Trumpeting Gnarr
 Tumble Magnet
+Turn // Burn
+Turn to Frog
 Tuskguard Captain
 Twilight Mire
 Twincast

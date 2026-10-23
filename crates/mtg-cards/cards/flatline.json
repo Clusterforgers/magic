@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d9c4a3ca-b966-4fd0-b189-ffbcbfb412b1",
+  "name": "Flatline",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flatline",
+      "oracle_fingerprint": "6178ce8d6ae43535783bac71971146ed",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [{ "SetPT": { "power": 0, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

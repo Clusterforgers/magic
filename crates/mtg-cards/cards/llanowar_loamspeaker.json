@@ -1,0 +1,40 @@
+{
+  "oracle_id": "08377424-619e-48ae-bc3c-fb199cd77cf9",
+  "name": "Llanowar Loamspeaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Llanowar Loamspeaker",
+      "oracle_fingerprint": "91c9492ff8eeb4ee58dd94e1ae32bc1e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 3 } },
+                    { "SetCreatureTypes": ["Elemental"] },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

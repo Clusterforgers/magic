@@ -1,0 +1,56 @@
+{
+  "oracle_id": "b209b4ae-ceba-4a98-b307-222d3c78f8a1",
+  "name": "Korozda Guildmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Korozda Guildmage",
+      "oracle_fingerprint": "bf1ee8f16d4abb21e86b4fa031c03ad4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{B}{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Intimidate" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{B}{G}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Not": "Token" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Stat": { "of": "Paid", "stat": "Toughness" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

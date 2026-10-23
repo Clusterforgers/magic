@@ -1,0 +1,25 @@
+{
+  "id": "9894bed2-c5dc-4569-9ed9-1d40df906f58",
+  "oracle_id": "2dbe8aaa-2e34-4552-8da7-cf8ecbbaa7b6",
+  "name": "Biomass Mutation",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "297",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{X}{G/U}{G/U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Creatures you control have base power and toughness X/X until end of turn.",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": []
+}

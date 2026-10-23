@@ -1,0 +1,26 @@
+{
+  "oracle_id": "2dbe8aaa-2e34-4552-8da7-cf8ecbbaa7b6",
+  "name": "Biomass Mutation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Biomass Mutation",
+      "oracle_fingerprint": "c7ba4bc1f292fa3be7a299803ccb3336",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "SetPT": { "power": "X", "toughness": "X" } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

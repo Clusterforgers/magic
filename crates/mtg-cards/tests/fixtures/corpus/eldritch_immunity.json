@@ -1,0 +1,21 @@
+{
+  "id": "64a63b90-dbd6-4b66-8031-a3e230ada5b9",
+  "oracle_id": "7dce1e8c-5cfd-4626-9f23-7bb3f1b10c1e",
+  "name": "Eldritch Immunity",
+  "lang": "en",
+  "layout": "normal",
+  "set": "m3c",
+  "collector_number": "33",
+  "rarity": "rare",
+  "released_at": "2024-06-14",
+  "digital": false,
+  "mana_cost": "{C}",
+  "cmc": 1.0,
+  "type_line": "Kindred Instant — Eldrazi",
+  "oracle_text": "Target creature you control gains protection from each color until end of turn.\nOverload {4}{C} (You may cast this spell for its overload cost. If you do, change \"target\" in its text to \"each.\")",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Overload"
+  ]
+}

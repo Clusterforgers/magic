@@ -6,7 +6,7 @@ use mtg_core::mana::ManaType;
 
 use super::among;
 use super::amounts::{
-    cards_counted, counted, counted_parts, counted_stats, for_each, its_stat, number_word, points,
+    cards_counted, counted, counted_parts, for_each, its_stat, number_word, points,
 };
 use super::attackers;
 use super::cast;
@@ -61,7 +61,7 @@ const TEMPLATES: [Template; 50] = [
     super::flicker::exile_and_return,
     super::becomes::creature,
     super::becomes::animate,
-    pump,
+    super::changes::pump,
     evasion,
     return_card,
     return_chosen,
@@ -256,7 +256,7 @@ fn chain(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// counts what the mill left in the graveyard.
 fn after_mill(r: &mut Reader<'_>, before: &[Effect]) -> Option<Vec<Effect>> {
     matches!(before, [Effect::Mill { .. }]).then_some(())?;
-    let step = pump(r)?;
+    let step = super::changes::pump(r)?;
     matches!(
         step.as_slice(),
         [Effect::Continuous {
@@ -897,7 +897,7 @@ pub(super) fn is_on_the_battlefield(r: &Reader<'_>, what: &Ref) -> bool {
 }
 
 /// The object a pump changes and whether it is several: "target creature", "~", "creatures you control".
-fn subject(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
+pub(super) fn subject(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
     if r.source() {
         return Some((Ref::This, false));
     }
@@ -928,7 +928,7 @@ fn chosen_protection(r: &mut Reader<'_>) -> Option<Modification> {
 }
 
 /// What a pump gives after "gains": keywords, or protection from a color chosen as it resolves.
-fn pump_grants(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
+pub(super) fn pump_grants(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
     match chosen_protection(r) {
         Some(protection) => Some(vec![protection]),
         None => granted(r),
@@ -979,37 +979,6 @@ pub(super) fn granted(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
         mods.extend(next.into_iter().map(Modification::AddKeyword));
     }
     Some(mods)
-}
-
-/// "Target creature gets +3/+3 until end of turn.", "... gains flying until end of turn."
-fn pump(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    let (affected, plural) = subject(r)?;
-    let (gets, gains) = if plural {
-        ("get", "gain")
-    } else {
-        ("gets", "gains")
-    };
-    let mut mods = Vec::new();
-    if r.word(gets) {
-        mods.push(power_toughness(r)?);
-        if r.word("and") {
-            r.word(gains).then_some(())?;
-            mods.extend(pump_grants(r)?);
-        }
-    } else {
-        r.word(gains).then_some(())?;
-        mods = pump_grants(r)?;
-    }
-    r.need("until end of turn")?;
-    // "Target creature gets -1/-1 until end of turn for each Swamp you control."
-    if let Some(stats) = mods.first_mut() {
-        *stats = counted_stats(r, stats.clone())?;
-    }
-    Some(vec![Effect::Continuous {
-        affected,
-        mods,
-        duration: Duration::UntilEndOfTurn,
-    }])
 }
 
 /// "Target creature can't be blocked this turn.", "Creatures you control can't be blocked this turn."

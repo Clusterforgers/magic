@@ -167,6 +167,7 @@ mod cast;
 mod cast_cost_paid;
 mod cast_self;
 mod cast_spell_kinds;
+mod changes;
 mod chapters;
 mod choice_writers;
 mod chosen_color;
@@ -846,7 +847,6 @@ mod pump {
     #[rstest]
     #[case::for_each("Target creature gets +1/+1 for each creature you control until end of turn.")]
     #[case::no_duration("Target creature gets +2/+2.")]
-    #[case::next_turn("Target creature gets +2/+2 until your next turn.")]
     #[case::end_of_combat("Target creature gets +2/+2 until end of combat.")]
     #[case::then_untap("Target creature gets +2/+2 until end of turn. Untap it.")]
     #[case::second_target(

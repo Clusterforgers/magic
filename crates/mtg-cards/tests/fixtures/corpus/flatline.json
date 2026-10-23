@@ -1,0 +1,23 @@
+{
+  "id": "baea4cd3-cc62-4138-ac2e-5c96c70bbcce",
+  "oracle_id": "d9c4a3ca-b966-4fd0-b189-ffbcbfb412b1",
+  "name": "Flatline",
+  "lang": "en",
+  "layout": "normal",
+  "set": "who",
+  "collector_number": "43",
+  "rarity": "rare",
+  "released_at": "2023-10-13",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Creatures your opponents control have base power and toughness 0/1 until end of turn.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

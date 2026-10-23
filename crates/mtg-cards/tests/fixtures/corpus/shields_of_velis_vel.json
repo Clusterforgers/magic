@@ -1,0 +1,25 @@
+{
+  "id": "f550f44f-8b8f-4c1d-a583-9fd986d3061c",
+  "oracle_id": "7ad6be4e-5c3c-4633-a641-beb06e4129b9",
+  "name": "Shields of Velis Vel",
+  "lang": "en",
+  "layout": "normal",
+  "set": "lrw",
+  "collector_number": "39",
+  "rarity": "common",
+  "released_at": "2007-10-12",
+  "digital": false,
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Kindred Instant — Shapeshifter",
+  "oracle_text": "Changeling (This card is every creature type.)\nCreatures target player controls get +0/+1 and gain all creature types until end of turn.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Changeling"
+  ]
+}
