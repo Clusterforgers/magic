@@ -1040,6 +1040,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Explored { what }
             | TriggerPattern::Connived { what }
             | TriggerPattern::BecomesMonstrous { what }
+            | TriggerPattern::BecomesCrewed { what }
+            | TriggerPattern::BecomesSaddled { what }
             | TriggerPattern::BecomesLevel { what, .. }
             | TriggerPattern::TurnedFaceUp { what }
             | TriggerPattern::Mutates { what }
@@ -1105,6 +1107,8 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::Explored { .. }
                 | TriggerPattern::Connived { .. }
                 | TriggerPattern::BecomesMonstrous { .. }
+                | TriggerPattern::BecomesCrewed { .. }
+                | TriggerPattern::BecomesSaddled { .. }
                 | TriggerPattern::BecomesLevel { .. }
                 | TriggerPattern::TurnedFaceUp { .. }
                 | TriggerPattern::Mutates { .. }
@@ -1130,7 +1134,9 @@ impl<'a> Walker<'a> {
             TriggerPattern::Drew { .. }
             | TriggerPattern::SpellCast { .. }
             | TriggerPattern::LifeGained { .. }
-            | TriggerPattern::Attacks { .. } => true,
+            | TriggerPattern::Attacks { .. }
+            | TriggerPattern::BecomesCrewed { .. }
+            | TriggerPattern::BecomesSaddled { .. } => true,
             TriggerPattern::BecomesTarget { by, .. } => {
                 by.is_empty() || by.0 == [Pred::ControlledBy(Ref::You)]
             }
@@ -1144,7 +1150,7 @@ impl<'a> Walker<'a> {
         };
         if !counted {
             self.problem(
-                "only cards drawn, spells cast, life gained, attacks, becoming a target of what anyone or you control and damage dealt to an object from any source are counted in a turn",
+                "only cards drawn, spells cast, life gained, attacks, becoming crewed or saddled, becoming a target of what anyone or you control and damage dealt to an object from any source are counted in a turn",
             );
         }
         self.at("event", |w| w.trigger_pattern(event));
@@ -1592,6 +1598,7 @@ impl<'a> Walker<'a> {
                     w.problem("a card can be a commander by a static ability, not by an effect");
                 }
             }),
+            Effect::Crewed { .. } => {}
             Effect::BecomeLevel { level } => {
                 if *level < 2 {
                     w.problem("a Class starts at level 1 and gains level 2 or more");

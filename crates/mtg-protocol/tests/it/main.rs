@@ -14,6 +14,7 @@ mod commander_view;
 mod common;
 mod copy_view;
 mod counter_view;
+mod crew_hidden;
 mod effect_view;
 mod exile_open;
 mod faces_view;
