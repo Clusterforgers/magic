@@ -61,6 +61,7 @@ fn activation(cost: &Cost) -> Ability {
                 to: Destination::Battlefield {
                     tapped: false,
                     under: None,
+                    transformed: false,
                     counters: Vec::new(),
                 },
             },
@@ -85,7 +86,10 @@ fn activation(cost: &Cost) -> Ability {
                             whose: Ref::EachPlayer,
                         },
                         once: true,
-                        effects: vec![Effect::Exile { what: unearthed() }],
+                        effects: vec![Effect::Exile {
+                            what: unearthed(),
+                            bind: None,
+                        }],
                     },
                 ],
                 otherwise: Vec::new(),

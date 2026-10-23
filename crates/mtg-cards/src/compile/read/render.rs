@@ -15,6 +15,7 @@ use super::counters;
 use super::create;
 use super::draws;
 use super::effects::{BACK, RETURNED, returns_itself};
+use super::flicker;
 use super::group_pump;
 use super::lands;
 use super::library;
@@ -470,6 +471,13 @@ fn written(
             unsplit(mask, start, used)?;
             let tail = writer.consequence(condition, then)?;
             sentences.push(reveal::text(condition, &tail)?);
+            start += used;
+            continue;
+        }
+        // An exile and the return of what was exiled are one sentence, which no joint splits.
+        if let Some((text, used)) = flicker::text(&effects[start..]) {
+            unsplit(mask, start, used)?;
+            sentences.push(text);
             start += used;
             continue;
         }
@@ -1219,7 +1227,7 @@ impl Writer<'_> {
                 self.recipient(to)?
             ),
             Effect::Destroy { what, .. } => format!("destroy {}", self.object(what)?),
-            Effect::Exile { what } => format!("exile {}", self.object(what)?),
+            Effect::Exile { what, bind: None } => format!("exile {}", self.object(what)?),
             Effect::Tap { what } => format!("tap {}", self.object(what)?),
             Effect::Untap { what } => format!("untap {}", self.object(what)?),
             Effect::Goad { what } if self.named && self.single(what) => "goad it".to_owned(),
@@ -1276,6 +1284,7 @@ impl Writer<'_> {
                 Destination::Battlefield {
                     tapped: false,
                     under: None,
+                    transformed: false,
                     counters,
                 },
         } = effect
@@ -1316,6 +1325,7 @@ impl Writer<'_> {
                     Destination::Battlefield {
                         tapped: false,
                         under: None,
+                        transformed: false,
                         counters,
                     },
             } if counters.is_empty() => {

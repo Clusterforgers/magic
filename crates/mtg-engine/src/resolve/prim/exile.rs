@@ -3,8 +3,9 @@
 use mtg_cards::effect::Effect;
 
 use super::wrong_effect;
+use crate::choose::Target;
 use crate::events::{Event, ZoneCause};
-use crate::object::ObjectKind;
+use crate::object::{ObjectKind, ObjectRef};
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::snapshot::snapshot;
 use crate::zones::Zone;
@@ -12,14 +13,16 @@ use crate::zones::Zone;
 /// Each object the effect names that is still where it was named moves to exile, all together, from whichever zone it
 /// is in. Every move carries `ZoneCause::Exiled` and the step carries what the object was. Indestructible does not
 /// matter. An ability, which is not an object that changes zones, the spell that is resolving, an object already in
-/// exile, one that has changed zones since it was named and a name that repeats are passed over.
+/// exile, one that has changed zones since it was named and a name that repeats are passed over. The effect's `as` name
+/// holds the objects exiled as the objects they become in exile (CR 400.7), so a later step can return them.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Exile { what } = effect else {
+    let Effect::Exile { what, bind } = effect else {
         return Err(wrong_effect("Exile"));
     };
     let state = cx.state();
     let mut events = Vec::new();
     let mut snapshots = Vec::new();
+    let mut exiled = Vec::new();
     for object in cx.scope.live_objects(what)? {
         let resolving_spell = object.zone() == Zone::Stack && object.id() == cx.resolving.object();
         if object.kind() == ObjectKind::Ability || resolving_spell || object.zone() == Zone::Exile {
@@ -32,10 +35,17 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             to: Zone::Exile,
             cause: ZoneCause::Exiled,
         });
+        exiled.push(Target::Object(ObjectRef {
+            id: object.id(),
+            counter: object.counter() + 1,
+        }));
     }
     Ok(Run::Done {
         events,
-        bound: Vec::new(),
+        bound: bind
+            .iter()
+            .map(|name| (name.clone(), exiled.clone()))
+            .collect(),
         snapshots,
         next: Next::Sibling,
     })
@@ -43,7 +53,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: an exile moves each object it names that is still where it was named to exile, from the battlefield, a graveyard, a hand, a library or the stack, all together, with the cause and as the object was, whether or not it is indestructible; abilities, the resolving spell, objects already exiled, names of objects that have changed zones and names that repeat are passed over; a chosen target is exiled while it is legal and the steps after it still read it as it was.
+    //! Goal: an exile moves each object it names that is still where it was named to exile, from the battlefield, a graveyard, a hand, a library or the stack, all together, with the cause and as the object was, whether or not it is indestructible; abilities, the resolving spell, objects already exiled, names of objects that have changed zones and names that repeat are passed over; a chosen target is exiled while it is legal and the steps after it still read it as it was; the objects exiled are bound to the effect name as the objects they become in exile.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -381,6 +391,47 @@ mod tests {
         assert_eq!((shot.reference(), shot.zone), (bear, Zone::Battlefield));
         assert_eq!((shot.controller, shot.owner), (ME, FOE));
         assert_eq!(shot.characteristics.power, Some(2));
+    }
+
+    #[rstest]
+    #[case::the_source_itself(r#""This""#, &["Source"])]
+    #[case::two_permanents(r#"{"Each":[{"Named":"Bear"}]}"#, &["Bear"])]
+    #[case::nothing_named(r#"{"Each":[{"Named":"Nobody"}]}"#, &[])]
+    fn the_objects_exiled_are_bound_as_the_objects_they_become_in_exile(
+        #[case] what: &str,
+        #[case] names: &[&str],
+    ) {
+        let game = game();
+        let exile = effect(&format!(r#"{{"Exile":{{"what":{what},"as":"gone"}}}}"#));
+        let Run::Done { bound, .. } =
+            run_with(&game, None, &Bindings::new(), Vec::new(), &[], &exile).unwrap()
+        else {
+            panic!("the exile is done");
+        };
+        let expected: Vec<Target> = names
+            .iter()
+            .map(|name| {
+                let now = named(&game, name);
+                Target::Object(ObjectRef {
+                    id: now.id,
+                    counter: now.counter + 1,
+                })
+            })
+            .collect();
+        // The name is bound even when nothing was exiled, so a later step finds it.
+        assert_eq!(bound, [("gone".to_owned(), expected)]);
+    }
+
+    #[test]
+    fn an_exile_without_a_name_binds_nothing() {
+        let game = game();
+        let exile = effect(r#"{"Exile":{"what":"This"}}"#);
+        let Run::Done { bound, .. } =
+            run_with(&game, None, &Bindings::new(), Vec::new(), &[], &exile).unwrap()
+        else {
+            panic!("the exile is done");
+        };
+        assert_eq!(bound, []);
     }
 
     #[test]

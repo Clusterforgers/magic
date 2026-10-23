@@ -36,7 +36,7 @@ use crate::value::{Amount, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 38] = [
+const TEMPLATES: [Template; 39] = [
     modal::modal,
     cast::discover_sentence,
     cast::exile_until,
@@ -51,6 +51,7 @@ const TEMPLATES: [Template; 38] = [
     player_effect,
     super::damage::damage,
     removal,
+    super::flicker::exile_and_return,
     super::becomes::creature,
     pump,
     evasion,
@@ -566,6 +567,7 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                 to: Destination::Battlefield {
                     tapped: false,
                     under: None,
+                    transformed: false,
                     counters: Vec::new(),
                 },
             }]);
@@ -628,6 +630,7 @@ fn rising() -> Effect {
         to: Destination::Battlefield {
             tapped: false,
             under: None,
+            transformed: false,
             counters: Vec::new(),
         },
     }
@@ -710,7 +713,7 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             what,
             regenerate: true,
         },
-        "exile" => Effect::Exile { what },
+        "exile" => Effect::Exile { what, bind: None },
         "tap" => Effect::Tap { what },
         "untap" => Effect::Untap { what },
         "regenerate" => Effect::Regenerate { what },

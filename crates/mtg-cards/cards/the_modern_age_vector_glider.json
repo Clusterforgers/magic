@@ -1,0 +1,44 @@
+{
+  "oracle_id": "a8995df6-99a7-41a7-bd3e-f34643b27947",
+  "name": "The Modern Age // Vector Glider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Modern Age",
+      "oracle_fingerprint": "38c025e5c3f86b04744c0d38c8e242b8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vector Glider",
+      "oracle_fingerprint": "75a4c2fe3b9e4d3cd2bd3d7787c7c138",
+      "abilities": [{ "Keyword": "Flying" }]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "54257132-c67a-4c19-bada-08e7025c2929",
+  "name": "Okiba Reckoner Raid // Nezumi Road Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Okiba Reckoner Raid",
+      "oracle_fingerprint": "b225ad7ee1016a321fe833e97ff4b95d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Nezumi Road Captain",
+      "oracle_fingerprint": "33b3d2b7e013a266530309d6cfd5d340",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Menace" }]
+          }
+        }
+      ]
+    }
+  ]
+}

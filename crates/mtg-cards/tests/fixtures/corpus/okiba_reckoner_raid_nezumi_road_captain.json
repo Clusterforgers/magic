@@ -1,0 +1,43 @@
+{
+  "id": "4f0582b4-d951-4450-b158-4a34109e48cd",
+  "oracle_id": "54257132-c67a-4c19-bada-08e7025c2929",
+  "name": "Okiba Reckoner Raid // Nezumi Road Captain",
+  "lang": "en",
+  "layout": "transform",
+  "set": "neo",
+  "collector_number": "117",
+  "rarity": "common",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "cmc": 1.0,
+  "type_line": "Enchantment — Saga // Enchantment Creature — Rat Rogue",
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Transform",
+    "Menace"
+  ],
+  "card_faces": [
+    {
+      "name": "Okiba Reckoner Raid",
+      "mana_cost": "{B}",
+      "type_line": "Enchantment — Saga",
+      "oracle_text": "(As this Saga enters and after your draw step, add a lore counter.)\nI, II — Each opponent loses 1 life and you gain 1 life.\nIII — Exile this Saga, then return it to the battlefield transformed under your control.",
+      "colors": [
+        "B"
+      ]
+    },
+    {
+      "name": "Nezumi Road Captain",
+      "mana_cost": "",
+      "type_line": "Enchantment Creature — Rat Rogue",
+      "oracle_text": "Menace\nVehicles you control have menace. (They can't be blocked except by two or more creatures.)",
+      "power": "2",
+      "toughness": "2",
+      "colors": [
+        "B"
+      ]
+    }
+  ]
+}
