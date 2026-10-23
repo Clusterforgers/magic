@@ -1,0 +1,27 @@
+{
+  "id": "18642a9e-ac45-402b-bb56-08cb6336c485",
+  "oracle_id": "130a8cf5-1354-4d17-91c8-c073642eb3db",
+  "name": "Dreadship Reef",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tsr",
+  "collector_number": "276",
+  "rarity": "uncommon",
+  "released_at": "2021-03-19",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{1}, {T}: Put a storage counter on this land.\n{1}, Remove X storage counters from this land: Add X mana in any combination of {U} and/or {B}.",
+  "colors": [],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "C",
+    "U"
+  ]
+}

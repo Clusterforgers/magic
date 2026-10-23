@@ -32,6 +32,7 @@ Angel of Invention
 Angel of Sanctions
 Angel of Vitality
 Angelic Ascension
+Angelic Field Marshal
 Ant-Man, Elusive Avenger
 Arbor Colossus
 Arcane Signet
@@ -73,6 +74,7 @@ Basilisk Gate
 Basking Rootwalla
 Baton of Courage
 Battering Krasis
+Batterskull
 Battle Sliver
 Battlefield Forge
 Baxter Building
@@ -125,6 +127,7 @@ Cached Defenses
 Cackling Counterpart
 Cadaverous Bloom
 Calciderm
+Calciform Pools
 Caldaia Strongarm
 Caldera Hellion
 Caller of the Pack
@@ -142,6 +145,7 @@ Cavern Whisperer
 Celestial Archon
 Celestial Colonnade
 Celestial Crusader
+Cemetery Tampering
 Ceremonial Groundbreaker
 Challenger Troll
 Champion of Lambholt
@@ -158,6 +162,7 @@ Circle of Dreams Druid
 Citadel Gate
 Citanul Hierophants
 Cliffgate
+Clive's Hideaway
 Clone
 Cloud Sprite
 Cloudfin Raptor
@@ -189,6 +194,7 @@ Crocanura
 Crop Rotation
 Crown of Skemfar
 Crucible of Worlds
+Crucible of the Spirit Dragon
 Crypt Ghast
 Crystal Quarry
 Curate
@@ -230,6 +236,7 @@ Defile
 Delver of Secrets // Insectile Aberration
 Demolition Field
 Demon Bolt
+Demon of Wailing Agonies
 Dense Canopy
 Deputized Protester
 Dimir Infiltrator
@@ -245,6 +252,7 @@ Doom Whisperer
 Dragonlord Ojutai
 Dragonspeaker Shaman
 Dragonwing Glider
+Dreadship Reef
 Dream's Grip
 Dreamtail Heron
 Dreg Mangler
@@ -287,6 +295,7 @@ Eternal Witness
 Ethereal Armor
 Ethereal Usher
 Ethersworn Sphinx
+Evercoat Ursine
 Exalted Angel
 Excavation Technique
 Exotic Orchard
@@ -314,6 +323,7 @@ Field Trip
 Fierce Guardianship
 Fiery Fall
 Fiery Temper
+Fight Rigging
 Finch Formation
 Fire-Lit Thicket
 Firestorm Hellkite
@@ -335,6 +345,7 @@ Founding of Omashu
 Foundry Inspector
 Four Knocks
 Fruit of Tizerus
+Fungal Reaches
 Furtive Homunculus
 Gadwick, the Wizened
 Gaea's Cradle
@@ -418,6 +429,7 @@ Honor Troll
 Honor's Reward
 Horizon Canopy
 Hound of Griselbrand
+Howltooth Hollow
 Hulking Raptor
 Icefeather Aven
 Idyllic Beachfront
@@ -437,6 +449,7 @@ Invading Manticore
 Invisible Stalker
 Iridescent Vinelasher
 Iron League Steed
+Ivory Mask
 Izzet Charm
 Jacked Rabbit
 Jadelight Ranger
@@ -517,6 +530,7 @@ Memory Guardian
 Mer-Ek Nightblade
 Merfolk Branchwalker
 Mesmeric Orb
+Metropolis Reformer
 Midnight Banshee
 Migratory Greathorn
 Migratory Route
@@ -527,11 +541,13 @@ Mirran Bardiche
 Mirror Image
 Mishra's Workshop
 Mizzium Mortars
+Molten Slagheap
 Monastery Swiftspear
 Monk's Fist
 Morinfen
 Morsel Theft
 Mortivore
+Mosswort Bridge
 Mothdust Changeling
 Mother of Runes
 Muddle the Mixture
@@ -619,6 +635,7 @@ Putrid Goblin
 Pygmy Kavu
 Quest for the Goblin Lord
 Questing Beast
+Rabble Rousing
 Radical Idea
 Raffine's Informant
 Raging Goblinoids
@@ -673,6 +690,7 @@ Safehold Elite
 Sage of the Beyond
 Sagu Mauler
 Saiba Cryptomancer
+Saltcrusted Steppe
 Samurai's Katana
 Sandcrafter Mage
 Sandsteppe Mastodon
@@ -734,6 +752,7 @@ Skysovereign, Consul Flagship
 Slip Through Space
 Slitherhead
 Sluiceway Scorpion
+Smuggler's Buggy
 Smuggler's Copter
 Snubhorn Sentry
 Sodden Verdure
@@ -751,8 +770,10 @@ Spectral Rider
 Sphere of Safety
 Sphinx of Jwar Isle
 Spider-Islanders
+Spinerock Knoll
 Spire Golem
 Spire Winder
+Spirit of the Hearth
 Spring // Mind
 Springleaf Drum
 Squirrel Nest
@@ -770,6 +791,7 @@ Stoke the Flames
 Stonewood Invocation
 Storm Fleet Swashbuckler
 Stormchaser's Talent
+Stormsurge Kraken
 Strangleroot Geist
 Stratus Dancer
 Stratus Walk
@@ -841,6 +863,7 @@ Thriving Isle
 Thriving Moor
 Throne of the High City
 Thunder-Thrash Elder
+Thunderfoot Baloth
 Thunderous Wrath
 Tiamat's Fanatics
 Tilonalli's Skinshifter
@@ -861,6 +884,7 @@ Tumble Magnet
 Tuskguard Captain
 Twilight Mire
 Twincast
+Tyrant's Familiar
 Uktabi Efreet
 Ulamog's Crusher
 Ultramarines Honour Guard
@@ -917,6 +941,7 @@ Wild Growth
 Wild Wasteland
 Wilderness Elemental
 Windborn Muse
+Windbrisk Heights
 Wings of the Guard
 Wipe Away
 Withering Boon

@@ -38,6 +38,7 @@ mod defining;
 mod draws;
 mod effects;
 mod evasion;
+mod facts;
 mod flicker;
 mod group_pump;
 mod lands;
@@ -48,6 +49,7 @@ mod mana_trigger;
 mod modal;
 mod pairs;
 mod payments;
+mod player_keywords;
 mod prevention;
 mod pronouns;
 mod render;
@@ -55,6 +57,7 @@ mod reveal;
 mod selectors;
 mod spend;
 mod spent;
+mod static_pairs;
 mod statics;
 mod stations;
 pub(super) mod subtypes;
@@ -69,6 +72,7 @@ pub use chapters::block as chapter_block;
 pub use class::block as class_block;
 pub use levels::block as level_block;
 pub use render::{ability as render_ability, mode as render_mode, variants as render_variants};
+pub use static_pairs::texts as static_pair_texts;
 pub use stations::block as station_block;
 pub use tokens::same_text;
 
@@ -125,6 +129,28 @@ pub fn clause(text: &str, kind: ClauseKind, x_free: bool) -> Option<Ability> {
     clause_with(text, kind, x_free, &Own::default())
 }
 
+/// Reads a static clause that is two statics in one sentence after one condition ("As long as you control your
+/// commander, this creature gets +2/+2 and creatures you control have vigilance.") into the two abilities in order. An
+/// ability word before a dash is flavor and left out.
+pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> {
+    let head = text.lines().next().unwrap_or_default();
+    let text = text.get(classify::ability_word_len(head).unwrap_or(0)..)?;
+    let tokens = tokenize(text);
+    let mut reader = Reader::new(&tokens, x_free);
+    reader.subtypes.clone_from(&own.subtypes);
+    let found = static_pairs::read(&mut reader)?;
+    if !reader.end() {
+        return None;
+    }
+    let [first, second] = found.as_slice() else {
+        return None;
+    };
+    static_pairs::texts(first, second)
+        .iter()
+        .any(|written| same_text(written, text))
+        .then_some(found)
+}
+
 /// What the readers know of the face a clause is on besides its text.
 #[derive(Debug, Clone, Default)]
 pub struct Own {
@@ -165,6 +191,7 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     let tokens = tokenize(text);
     let mut reader = Reader::new(&tokens, x_free);
     reader.subtypes.clone_from(&own.subtypes);
+    reader.ability = matches!(kind, ClauseKind::Triggered | ClauseKind::Activated);
     reader.power = own.power;
     reader.toughness = own.toughness;
     let ability = match kind {

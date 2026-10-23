@@ -533,6 +533,8 @@ struct Wording {
     per: bool,
     /// Each verb of "you" has its own subject: "you draw a card and you lose 1 life".
     again: bool,
+    /// Which of the wordings of a condition is written ("three or more" or "3 or more").
+    condition: usize,
 }
 
 /// The wordings to try for the effects: tokens counted by things say "for each" or "where X is", and two verbs of
@@ -561,11 +563,22 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
         &[false]
     };
     let agains: &[bool] = if repeats { &[false, true] } else { &[false] };
+    let conditions = effects
+        .iter()
+        .filter_map(|effect| match effect {
+            Effect::If { condition, .. } => Some(conditional::condition_texts(condition).len()),
+            _ => None,
+        })
+        .max()
+        .unwrap_or(1)
+        .max(1);
     pers.iter()
-        .flat_map(|per| {
-            agains.iter().map(|again| Wording {
-                per: *per,
-                again: *again,
+        .flat_map(|per| agains.iter().map(move |again| (*per, *again)))
+        .flat_map(|(per, again)| {
+            (0..conditions).map(move |condition| Wording {
+                per,
+                again,
+                condition,
             })
         })
         .collect()
@@ -607,14 +620,14 @@ fn written(
         named: false,
         per: wording.per,
         again: wording.again,
+        condition: wording.condition,
     };
     let mut sentences: Vec<String> = Vec::new();
     let mut start = 0;
     while start < effects.len() {
         // A search and what follows it, or a look at the top cards and the choice from them, are
         // one sentence, which no joint splits.
-        if let Some((text, used)) = cast::discover_text(&effects[start..])
-            .or_else(|| cast::impulse_text(&effects[start..]))
+        if let Some((text, used)) = cast::sentence_text(&effects[start..])
             .or_else(|| library::sequence(&effects[start..]))
             .or_else(|| writer.explore_twice(&effects[start..]))
         {
@@ -985,7 +998,15 @@ pub(super) fn symbols_text(list: &[mtg_core::mana::ManaType]) -> String {
 }
 
 /// "two mana in any combination of colors", "three mana in any combination of {U}, {B}, and/or {R}".
-pub(super) fn combination_text(count: u32, among: &[mtg_core::mana::ManaType]) -> Option<String> {
+pub(super) fn combination_text(
+    count: &Amount,
+    among: &[mtg_core::mana::ManaType],
+) -> Option<String> {
+    let number = match count {
+        Amount::X => "X",
+        Amount::Fixed(number) if *number >= 2 => count_word(u32::try_from(*number).ok()?)?,
+        _ => return None,
+    };
     let symbols: Vec<String> = among
         .iter()
         .map(|mana| format!("{{{}}}", mana.symbol()))
@@ -996,10 +1017,7 @@ pub(super) fn combination_text(count: u32, among: &[mtg_core::mana::ManaType]) -
         [first, second] => format!("{first} and/or {second}"),
         [init @ .., last] => format!("{}, and/or {last}", init.join(", ")),
     };
-    Some(format!(
-        "{} mana in any combination of {types}",
-        count_word(count)?
-    ))
+    Some(format!("{number} mana in any combination of {types}"))
 }
 
 fn mana_text(mana: &Produce) -> Option<String> {
@@ -1009,10 +1027,7 @@ fn mana_text(mana: &Produce) -> Option<String> {
         Produce::AnyColor(count @ 2..) => {
             format!("{} mana of any one color", count_word(*count)?)
         }
-        Produce::AnyCombination {
-            count: count @ 2..,
-            among,
-        } => combination_text(*count, among)?,
+        Produce::AnyCombination { count, among } => combination_text(count, among)?,
         Produce::ChosenColor(1) => "one mana of the chosen color".to_owned(),
         Produce::OrChosenColor(mana) => {
             format!("{{{}}} or one mana of the chosen color", mana.symbol())
@@ -1140,6 +1155,8 @@ struct Writer<'a> {
     per: bool,
     /// The verbs of "you" in one compound sentence each say "you": "you draw a card and you lose 1 life".
     again: bool,
+    /// Which of the wordings of a condition is written.
+    condition: usize,
 }
 
 impl Writer<'_> {
@@ -1595,11 +1612,11 @@ impl Writer<'_> {
                 condition,
                 then,
                 otherwise,
-            } if otherwise.is_empty() => format!(
-                "if {}, {}",
-                conditional::condition_text(condition)?,
-                self.consequence(condition, then)?
-            ),
+            } if otherwise.is_empty() => {
+                let texts = conditional::condition_texts(condition);
+                let text = texts.get(self.condition).or(texts.first())?;
+                format!("if {text}, {}", self.consequence(condition, then)?)
+            }
             Effect::BecomeMonarch { who } => format!(
                 "{} {} the monarch",
                 self.player(who)?,

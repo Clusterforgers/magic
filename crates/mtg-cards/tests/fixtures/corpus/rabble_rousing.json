@@ -1,0 +1,25 @@
+{
+  "id": "206c8529-56df-4ed9-97bc-6c9b5e2a04c4",
+  "oracle_id": "2e420001-2b3d-4eb7-b01c-3a49d5e241c2",
+  "name": "Rabble Rousing",
+  "lang": "en",
+  "layout": "normal",
+  "set": "snc",
+  "collector_number": "24",
+  "rarity": "rare",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Hideaway 5 (When this enchantment enters, look at the top five cards of your library, exile one face down, then put the rest on the bottom in a random order.)\nWhenever you attack with one or more creatures, create that many 1/1 green and white Citizen creature tokens. Then if you control ten or more creatures, you may play the exiled card without paying its mana cost.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Hideaway"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "72bdc7ba-2906-436d-8405-6a8a3335fdae",
+  "name": "Stormsurge Kraken",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stormsurge Kraken",
+      "oracle_fingerprint": "f57c0a73455dfad47bda08f57b766ae6",
+      "abilities": [
+        { "Keyword": "Hexproof" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "BecomesBlocked": { "what": ["This"] } },
+                    "effects": [{ "May": { "effects": [{ "Draw": { "count": 2 } }] } }]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["Commander", { "OwnedBy": "You" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "b02422f7-728b-481b-9eb1-34d17c696ce6",
+  "oracle_id": "028bc726-0e86-4c53-9648-625153ae4b01",
+  "name": "Ivory Mask",
+  "lang": "en",
+  "layout": "normal",
+  "set": "9ed",
+  "collector_number": "23",
+  "rarity": "rare",
+  "released_at": "2005-07-29",
+  "digital": false,
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "You have shroud. (You can't be the target of spells or abilities.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

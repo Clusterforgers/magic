@@ -21,7 +21,7 @@ use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
 /// A library of `pads` plain cards around the cards given, which sit in the middle where both ends of the library reach them.
-fn library(extra: Vec<Arc<CardDefinition>>, pads: usize) -> Vec<Arc<CardDefinition>> {
+pub(crate) fn library(extra: Vec<Arc<CardDefinition>>, pads: usize) -> Vec<Arc<CardDefinition>> {
     let pad = |i: usize| free_creature(&format!("Pad {i}"), 1, 1);
     let mut cards = vec![pad(0), pad(1)];
     cards.extend(extra);
@@ -30,7 +30,11 @@ fn library(extra: Vec<Arc<CardDefinition>>, pads: usize) -> Vec<Arc<CardDefiniti
 }
 
 /// What the players were asked while the stack emptied, and how they answered the yes-or-no questions.
-fn settle(driver: &mut Driver, hide: &str, yes: bool) -> Result<Vec<String>, ScriptError> {
+pub(crate) fn settle(
+    driver: &mut Driver,
+    hide: &str,
+    yes: bool,
+) -> Result<Vec<String>, ScriptError> {
     let mut asked = Vec::new();
     for _ in 0..60 {
         let decision = driver.decision()?.clone();
@@ -185,9 +189,9 @@ fn a_short_library_is_looked_at_whole_and_an_empty_one_hides_nothing(
 
 /// How the played card turns out: whether the question to play it was asked and where the card is.
 #[derive(Debug, PartialEq)]
-struct Outcome {
-    asked: usize,
-    on_battlefield: bool,
+pub(crate) struct Outcome {
+    pub(crate) asked: usize,
+    pub(crate) on_battlefield: bool,
 }
 
 /// The Bridge hides the card named "Hidden" on turn 1; on seat 0's next turn they hold creatures of `powers`, have played
@@ -227,7 +231,7 @@ fn activate(
     }
 }
 
-fn spell() -> Arc<CardDefinition> {
+pub(crate) fn spell() -> Arc<CardDefinition> {
     free_creature("Hidden", 2, 2)
 }
 

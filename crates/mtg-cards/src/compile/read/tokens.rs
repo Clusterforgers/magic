@@ -388,6 +388,8 @@ pub struct Reader<'a> {
     /// The object that "its" and "that creature" name in a where clause when no sentence named one: the card in an
     /// activation and in a trigger of its own event, the creature of the event in a trigger of another's.
     pub subject: Option<Ref>,
+    /// The clause is a triggered or an activated ability, not the text of a spell.
+    pub ability: bool,
 }
 
 impl<'a> Reader<'a> {
@@ -414,6 +416,7 @@ impl<'a> Reader<'a> {
             where_x: false,
             died: false,
             subject: None,
+            ability: false,
         }
     }
 

@@ -1,0 +1,27 @@
+{
+  "id": "297a2b09-562a-46d8-905d-0b32e854e9d2",
+  "oracle_id": "2031bc31-81cc-407a-8615-29832f586bbc",
+  "name": "Calciform Pools",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tsr",
+  "collector_number": "275",
+  "rarity": "uncommon",
+  "released_at": "2021-03-19",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{1}, {T}: Put a storage counter on this land.\n{1}, Remove X storage counters from this land: Add X mana in any combination of {W} and/or {U}.",
+  "colors": [],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "C",
+    "U",
+    "W"
+  ]
+}

@@ -81,6 +81,15 @@ pub enum Modification {
 }
 
 impl Modification {
+    /// Whether this adds or takes away a keyword a player can have (hexproof, shroud, protection): a static ability gives these to players.
+    pub fn is_player_keyword(&self) -> bool {
+        matches!(
+            self,
+            Modification::AddKeyword(keyword) | Modification::RemoveKeyword(keyword)
+                if matches!(keyword, Keyword::Hexproof | Keyword::Shroud | Keyword::Protection(_))
+        )
+    }
+
     /// The layer of CR 613 this applies in, or `None` for a restriction that changes no characteristic.
     pub const fn layer(&self) -> Option<&'static str> {
         match self {

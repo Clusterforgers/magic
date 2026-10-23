@@ -70,12 +70,9 @@ fn mana_words(mana: &Produce) -> Option<String> {
         Produce::OfTapped => "one mana of any type that land produced".to_owned(),
         Produce::AnyColor(1) => "an additional one mana of any color".to_owned(),
         Produce::ChosenColor(1) => "an additional one mana of the chosen color".to_owned(),
-        Produce::AnyCombination {
-            count: count @ 2..,
-            among,
-        } => format!(
+        Produce::AnyCombination { count, among } if count.fixed().is_some() => format!(
             "an additional {}",
-            super::render::combination_text(*count, among)?
+            super::render::combination_text(count, among)?
         ),
         Produce::Fixed(list) if !list.is_empty() => {
             format!("an additional {}", super::render::symbols_text(list))

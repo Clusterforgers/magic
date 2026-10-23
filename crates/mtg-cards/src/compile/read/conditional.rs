@@ -4,6 +4,8 @@
 //! below add this part's shapes (transform, the look and reveal, the sentence itself) to those of `effects`.
 
 use super::amounts::{count_word, number_word};
+use super::as_long_as;
+use super::cast;
 use super::counters;
 use super::effects::{self, Template};
 use super::reveal;
@@ -16,18 +18,52 @@ use crate::value::{Amount, Cmp, Condition, CounterKind};
 
 /// The sentence shapes of this part, tried before those of `effects` (a look at the top card is read with the
 /// reveal that follows it, not alone).
-pub const TEMPLATES: [Template; 3] = [reveal::look_reveal, if_sentence, transform::transform];
+pub const TEMPLATES: [Template; 4] = [
+    reveal::look_reveal,
+    if_sentence,
+    cast_if,
+    transform::transform,
+];
 
 /// The shapes that begin with a verb, which "you may" can precede.
 pub const IMPERATIVES: [Template; 1] = [transform::transform];
 
 /// "If there are five or more hatchling counters on ~, remove all of them and transform ~.", also "Then if ...".
 pub fn if_sentence(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    r.word("then");
+    let then_if = r.word("then");
     r.need("if")?;
-    let condition = condition(r)?;
+    let (condition, state) = match r.attempt(condition) {
+        Some(counted) => (counted, false),
+        None => (r.attempt(standing)?, true),
+    };
     r.punct(',').then_some(())?;
     let then = consequence(r, &condition)?;
+    // A state of the game is a condition of the resolution only after "Then" or before the cast of the exiled card;
+    // at the start of an ability it is the intervening "if" of a trigger, which the table keeps.
+    let casts = then
+        .iter()
+        .any(|effect| matches!(effect, Effect::CastFromZone { .. }));
+    if state && !then_if && !casts {
+        return None;
+    }
+    Some(vec![Effect::If {
+        condition,
+        then,
+        otherwise: Vec::new(),
+    }])
+}
+
+/// How the game stands: a count of cards, what a player controls, what happened this turn.
+fn standing(r: &mut Reader<'_>) -> Option<Condition> {
+    as_long_as::body(r, None)
+}
+
+/// "You may play the exiled card without paying its mana cost if you attacked with three or more creatures this turn.":
+/// the condition after the sentence, which the card words as "if C, you may ..." in a trigger.
+pub fn cast_if(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    let then = cast::exiled_card(r)?;
+    r.need("if")?;
+    let condition = r.attempt(condition).or_else(|| r.attempt(standing))?;
     Some(vec![Effect::If {
         condition,
         then,
@@ -131,14 +167,19 @@ fn counted(condition: &Condition) -> Option<&CounterKind> {
     }
 }
 
-/// The condition as the card words it, after "if".
-pub fn condition_text(condition: &Condition) -> Option<String> {
+/// The condition as the card words it, after "if", one text for each wording.
+pub fn condition_texts(condition: &Condition) -> Vec<String> {
     if let Some(paid) = triggers::cost_paid_text(condition, true) {
-        return Some(paid);
+        return vec![paid];
     }
     if *condition == Condition::Performed {
-        return Some("you do".to_owned());
+        return vec!["you do".to_owned()];
     }
+    counters_text(condition).map_or_else(|| as_long_as::texts(condition), |text| vec![text])
+}
+
+/// "there are five or more hatchling counters on ~".
+fn counters_text(condition: &Condition) -> Option<String> {
     let Condition::Compare {
         left: Amount::Counters {
             on: Ref::This,
@@ -213,6 +254,12 @@ fn sentence_wordings(sentence: &str, later: bool) -> Vec<String> {
         out.push(format!("{counted}, {}", it(rest)));
         out.push(format!("{}, {}", it(counted), it(rest)));
     }
+    if let Some(rest) = sentence.strip_prefix("if ")
+        && let Some((condition, cast)) = rest.split_once(", you may ")
+        && cast::is_exiled_card_text(cast)
+    {
+        out.push(format!("you may {cast} if {condition}"));
+    }
     for (from, to) in COPY_WORDINGS {
         let others: Vec<String> = out
             .iter()
@@ -220,7 +267,7 @@ fn sentence_wordings(sentence: &str, later: bool) -> Vec<String> {
             .collect();
         out.extend(others);
     }
-    if later && sentence.starts_with("if ") {
+    if later && (sentence.starts_with("if ") || sentence.starts_with("you may pay ")) {
         let then: Vec<String> = out.iter().map(|text| format!("then {text}")).collect();
         out.extend(then);
     }

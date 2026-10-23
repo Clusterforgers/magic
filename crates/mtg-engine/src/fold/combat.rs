@@ -115,6 +115,9 @@ fn damage_player(
     if in_combat && amount > 0 {
         record_hit(state, source);
     }
+    if amount > 0 {
+        state.tally_by(id, Tally::Hurt, amount);
+    }
     let player = player_mut(state, id)?;
     if !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss) {
         player.life = player
@@ -186,6 +189,9 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 .collect();
             for (attacker, _) in attackers {
                 tally(state, *attacker, Tally::Attacked);
+                if let Some(controller) = crate::characteristics::controller_of(state, *attacker) {
+                    state.tally(controller, Tally::Attackers);
+                }
             }
             state.combat.attackers_declared = true;
         }

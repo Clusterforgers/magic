@@ -9,7 +9,9 @@ use serde_json::Value;
 
 use mtg_cards::ability::Ability;
 use mtg_cards::card::{Card, ImplStatus};
-use mtg_cards::compile::{ClauseKind, Compiled, compile, render_variants, same_text};
+use mtg_cards::compile::{
+    ClauseKind, Compiled, compile, render_variants, same_text, static_pair_texts,
+};
 use mtg_cards::load::Library;
 use mtg_cards::support::PrintedCard;
 
@@ -237,7 +239,34 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
     let mut rendered = 0;
     for (printed, compiled) in compiled_corpus() {
         let by_hand = library.card(&printed.oracle_id).unwrap();
-        for (face, ability) in by_hand.abilities() {
+        let listed: Vec<(usize, &Ability)> = by_hand.abilities().collect();
+        let mut skip_next = false;
+        for (at, &(face, ability)) in listed.iter().enumerate() {
+            if std::mem::take(&mut skip_next) {
+                continue;
+            }
+            // Two statics under one condition are one sentence of the card.
+            if let Some(&(same, second)) = listed.get(at + 1) {
+                let pair = static_pair_texts(ability, second);
+                if same == face && !pair.is_empty() {
+                    let lines: Vec<&str> = compiled
+                        .clauses
+                        .iter()
+                        .filter(|clause| clause.face == face && clause.kind == ClauseKind::Static)
+                        .map(|clause| without_numerals(without_ability_word(&clause.text)))
+                        .collect();
+                    assert!(
+                        lines
+                            .iter()
+                            .any(|text| pair.iter().any(|written| same_text(written, text))),
+                        "{}: none of {pair:?} is in {lines:?}",
+                        printed.name
+                    );
+                    skip_next = true;
+                    rendered += 2;
+                    continue;
+                }
+            }
             let written = render_variants(ability);
             if written.is_empty() {
                 continue;

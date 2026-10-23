@@ -22,7 +22,7 @@ use crate::modify::Modification;
 use crate::support::{PrintedCard, PrintedFace, has_rules_text, oracle_fingerprint};
 
 pub use classify::ClauseKind;
-pub use read::{render_ability, render_mode, render_variants, same_text};
+pub use read::{render_ability, render_mode, render_variants, same_text, static_pair_texts};
 
 /// One clause of a face's oracle text, read or not.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -225,7 +225,16 @@ fn read_clause(
             (block.next(), block.collect())
         }
         ClauseKind::Triggered | ClauseKind::Activated | ClauseKind::Static if !reminds_counter => {
-            (read::clause_with(text, kind, x_free, own), Vec::new())
+            match read::clause_with(text, kind, x_free, own) {
+                // Two statics in one sentence after one condition read into two abilities.
+                None if kind == ClauseKind::Static => {
+                    let mut pair = read::static_pair(text, x_free, own)
+                        .unwrap_or_default()
+                        .into_iter();
+                    (pair.next(), pair.collect())
+                }
+                single => (single, Vec::new()),
+            }
         }
         _ => (None, Vec::new()),
     }

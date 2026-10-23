@@ -410,6 +410,12 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// An amount that counts something of the players a reference names.
+    fn player_amount(&mut self, name: &str, who: &Ref) {
+        self.uses("Amount", name);
+        self.at(name, |w| w.reference(who, Kind::Player));
+    }
+
     fn amount(&mut self, amount: &Amount) {
         // Only the amount of damage or counters, or a sum or even share made of it, can be a recipient's share.
         let sharing = std::mem::take(&mut self.amounting) == Amounting::Shared;
@@ -431,10 +437,7 @@ impl<'a> Walker<'a> {
                 self.at("of", |w| w.reference(of, Kind::Object));
             }
             Amount::Life(who) => self.reference(who, Kind::Player),
-            Amount::CommanderCasts(who) => {
-                self.uses("Amount", "CommanderCasts");
-                self.at("CommanderCasts", |w| w.reference(who, Kind::Player));
-            }
+            Amount::CommanderCasts(who) => self.player_amount("CommanderCasts", who),
             Amount::Counters { on, .. } => self.at("on", |w| w.reference(on, Kind::Either)),
             Amount::Sum(parts) => {
                 for (i, part) in parts.iter().enumerate() {
@@ -492,22 +495,14 @@ impl<'a> Walker<'a> {
                 self.uses("Amount", "CardTypes");
                 self.selector(of);
             }
-            Amount::Players(who) => {
-                self.uses("Amount", "Players");
-                self.at("Players", |w| w.reference(who, Kind::Player));
-            }
-            Amount::HighestLife(who) => {
-                self.uses("Amount", "HighestLife");
-                self.at("HighestLife", |w| w.reference(who, Kind::Player));
-            }
-            Amount::LowestLife(who) => {
-                self.uses("Amount", "LowestLife");
-                self.at("LowestLife", |w| w.reference(who, Kind::Player));
-            }
+            Amount::Players(who) => self.player_amount("Players", who),
+            Amount::HighestLife(who) => self.player_amount("HighestLife", who),
+            Amount::LowestLife(who) => self.player_amount("LowestLife", who),
             Amount::Kicks | Amount::Promised => self.paid_amount(amount),
             Amount::CastWith(_) => self.uses("Amount", "CastWith"),
             Amount::ColorsSpent => self.uses("Amount", "ColorsSpent"),
             Amount::PermanentsGraved => self.uses("Amount", "PermanentsGraved"),
+            Amount::Tallied { who, .. } => self.player_amount("Tallied", who),
             Amount::Triggering => {
                 self.uses("Amount", "Triggering");
                 if !self.scope.in_trigger {
@@ -1477,10 +1472,15 @@ impl<'a> Walker<'a> {
                     Produce::AnyColor(0)
                     | Produce::ChosenColor(0)
                     | Produce::CommanderIdentity(0)
-                    | Produce::ProducedBy { count: 0, .. }
-                    | Produce::AnyCombination { count: 0, .. } => w.problem("adds no mana"),
+                    | Produce::ProducedBy { count: 0, .. } => w.problem("adds no mana"),
+                    Produce::AnyCombination { count, .. } if count.fixed() == Some(0) => {
+                        w.problem("adds no mana");
+                    }
                     Produce::AnyCombination { among, .. } if among.len() == 1 => {
                         w.problem("a combination of one type is that mana");
+                    }
+                    Produce::AnyCombination { count, .. } => {
+                        w.at("mana", |w| w.at("AnyCombination", |w| w.at("count", |w| w.amount(count))));
                     }
                     Produce::OneOf(list) if list.len() < 2 => {
                         w.problem("a choice of mana needs at least two types");
@@ -1504,7 +1504,6 @@ impl<'a> Walker<'a> {
                     | Produce::ChosenColor(_)
                     | Produce::OrChosenColor(_)
                     | Produce::CommanderIdentity(_)
-                    | Produce::AnyCombination { .. }
                     | Produce::OfTapped => {}
                 }
                 // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.
@@ -1762,7 +1761,13 @@ impl<'a> Walker<'a> {
         from: ZoneKind,
     ) {
         self.scope = Scope::new(&[], false);
-        self.at("affected", |w| w.reference(affected, Kind::Object));
+        // A keyword a player has is given to the player: "You have hexproof."
+        let kind = if gives_player_keywords(affected, mods) {
+            Kind::Player
+        } else {
+            Kind::Object
+        };
+        self.at("affected", |w| w.reference(affected, kind));
         // The layers change permanents, and the source of this one is not on the battlefield.
         if !from.is_battlefield() && !matches!(affected, Ref::Each(_)) {
             self.at("affected", |w| {
@@ -2216,6 +2221,15 @@ const fn casts_a_spell(when: &TriggerPattern) -> bool {
 /// Whether the trigger is on a spell other than the card itself being cast, whose X the card does not print.
 fn casts_another_spell(when: &TriggerPattern) -> bool {
     matches!(when, TriggerPattern::SpellCast { what, .. } if !what.0.contains(&Pred::This))
+}
+
+/// Whether a static ability gives keywords a player can have (hexproof, shroud, protection) to players, and nothing else.
+fn gives_player_keywords(affected: &Ref, mods: &[Modification]) -> bool {
+    matches!(
+        affected,
+        Ref::You | Ref::Opponents | Ref::EachPlayer | Ref::AttachedPlayer
+    ) && !mods.is_empty()
+        && mods.iter().all(Modification::is_player_keyword)
 }
 
 /// Whether a cost has an `{X}` in its mana.
@@ -2708,6 +2722,10 @@ mod tests {
     #[case::a_keyword_taken_away(ALL_MINE, r#"{"RemoveKeyword":"Flying"}"#, &["Keyword.Flying", "Mod.RemoveKeyword"])]
     #[case::protection(ALL_MINE, r#"{"AddKeyword":{"Protection":[{"Color":"Red"}]}}"#, &["Keyword.Protection", "Mod.AddKeyword"])]
     #[case::shroud(ALL_MINE, r#"{"AddKeyword":"Shroud"}"#, &["Keyword.Shroud", "Mod.AddKeyword"])]
+    #[case::hexproof_for_you(r#""You""#, r#"{"AddKeyword":"Hexproof"}"#, &["Keyword.Hexproof", "Mod.AddKeyword"])]
+    #[case::shroud_for_each_player(r#""EachPlayer""#, r#"{"AddKeyword":"Shroud"}"#, &["Keyword.Shroud", "Mod.AddKeyword"])]
+    #[case::protection_for_opponents(r#""Opponents""#, r#"{"AddKeyword":{"Protection":[{"Color":"Red"}]}}"#, &["Keyword.Protection", "Mod.AddKeyword"])]
+    #[case::hexproof_taken_from_the_enchanted_player(r#""AttachedPlayer""#, r#"{"RemoveKeyword":"Hexproof"}"#, &["Keyword.Hexproof", "Mod.RemoveKeyword"])]
     #[case::every_ability_lost(ALL_MINE, r#""LoseAbilities""#, &["Mod.LoseAbilities"])]
     #[case::control_of_the_enchanted_creature(r#""Attached""#, r#"{"SetController":"You"}"#, &["Mod.SetController"])]
     #[case::not_attacking(ALL_MINE, r#""CantAttack""#, &["Mod.CantAttack"])]
@@ -2767,6 +2785,14 @@ mod tests {
     #[case::a_colour_is_chosen_as_an_effect_begins(
         r#"{"Static":{"affected":"This","mods":["AddProtectionFromChosenColor"]}}"#,
         "a colour is chosen as an effect begins, so only a `Continuous` effect adds protection from it"
+    )]
+    #[case::a_player_takes_only_the_keywords_players_have(
+        r#"{"Static":{"affected":"You","mods":[{"AddKeyword":"Flying"}]}}"#,
+        "abilities[0].Static.affected: expected an object but this is a player"
+    )]
+    #[case::a_player_takes_keywords_alone(
+        r#"{"Static":{"affected":"You","mods":[{"AddKeyword":"Hexproof"},{"AddType":"Artifact"}]}}"#,
+        "abilities[0].Static.affected: expected an object but this is a player"
     )]
     #[case::a_player_is_not_an_affected_object(
         r#"{"Static":{"affected":"You","mods":[{"AddType":"Artifact"}]}}"#,

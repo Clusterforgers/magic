@@ -1,0 +1,48 @@
+{
+  "oracle_id": "3589bcfc-42b0-414a-adce-bc690dc631c8",
+  "name": "Windbrisk Heights",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Windbrisk Heights",
+      "oracle_fingerprint": "d3296364796ebe5e417c3d89ee0dd844",
+      "abilities": [
+        { "Keyword": { "Hideaway": 4 } },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap"],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [
+                    {
+                      "CastFromZone": {
+                        "what": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                        "free": true,
+                        "play": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "f4d757f1-9398-494f-9a24-b01c5c8c6db5",
+  "oracle_id": "021e4165-2f02-4bd4-86ca-cb7bf4c9e23d",
+  "name": "Saltcrusted Steppe",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tsr",
+  "collector_number": "283",
+  "rarity": "uncommon",
+  "released_at": "2021-03-19",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{1}, {T}: Put a storage counter on this land.\n{1}, Remove X storage counters from this land: Add X mana in any combination of {G} and/or {W}.",
+  "colors": [],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "C",
+    "G",
+    "W"
+  ]
+}

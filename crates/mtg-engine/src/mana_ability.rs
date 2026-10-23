@@ -23,7 +23,7 @@ use crate::events::{Event, ZoneCause};
 use crate::keywords;
 use crate::mana::{ManaOption, ManaSource, Take};
 use crate::mana_bonus;
-use crate::mana_kinds::{COLORS, combinations, identity_types, mana_of, producible_types};
+use crate::mana_kinds::{COLORS, combinations_of, identity_types, mana_of, producible_types};
 use crate::object::{Chosen, PermanentState};
 use crate::parts::{Kind, Part, Payer, energy};
 use crate::resolve::{Scope, run_inline};
@@ -175,6 +175,8 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
             continue;
         }
         let (life, energy) = paid_by(&pays);
+        // A cost that removes X counters pays any number up to what the source holds; each is a way of its own.
+        let x_most = pays.iter().filter_map(|part| part.most(&owner)).min();
         let times = scope
             .amount(shape.times)
             .ok()
@@ -188,7 +190,22 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                 COLORS.iter().map(|c| vec![*c; count as usize]).collect()
             }
             ManaProduced::OneOf(types) => types.iter().map(|t| vec![*t]).collect(),
-            ManaProduced::AnyCombination { count, among } => combinations(among, count),
+            ManaProduced::AnyCombination { count, among } => {
+                let counts: Vec<u32> = match x_most {
+                    // Every X the cost can pay now, none for X = 0.
+                    Some(most) => {
+                        (1..=most.min(u32::try_from(VARIANTS).unwrap_or(u32::MAX))).collect()
+                    }
+                    None => vec![
+                        scope
+                            .amount(count)
+                            .ok()
+                            .and_then(|count| u32::try_from(count).ok())
+                            .unwrap_or(0),
+                    ],
+                };
+                combinations_of(among, counts, VARIANTS)
+            }
             ManaProduced::OneOfLists(lists) => lists.to_vec(),
             ManaProduced::ChosenColor(count) => {
                 match object.permanent().and_then(PermanentState::chosen) {
@@ -349,6 +366,12 @@ pub(crate) fn activation(
                 .any(|o| o.source.object == id && o.source.ability == base)
         });
     let shape = rule.as_ref().and_then(|mana| mana_shape(&mana.body));
+    // The X a cost counts is the mana the way adds, without what a triggered mana ability adds to it.
+    let x = rule
+        .iter()
+        .flat_map(|mana| &mana.options)
+        .find(|o| o.source.object == id && o.source.ability == base)
+        .map_or(0, |o| u32::try_from(o.made().len()).unwrap_or(0));
     let mut events = Vec::new();
     if let Some(rule) = rule.as_ref().filter(|rule| rule.once) {
         // A use is logged for the limit; no ability goes on the stack.
@@ -361,7 +384,7 @@ pub(crate) fn activation(
     }
     if let Some(shape) = &shape {
         for part in parts_of(&shape.pays) {
-            events.extend(part.events(state, player, id, &[]));
+            events.extend(part.at(x).events(state, player, id, &[]));
         }
         let picks = shape
             .picks
@@ -396,6 +419,8 @@ pub(crate) fn activation(
 
 #[cfg(test)]
 mod combos;
+#[cfg(test)]
+mod counted;
 
 #[cfg(test)]
 mod tests {

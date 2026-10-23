@@ -1,0 +1,15 @@
+{
+  "oracle_id": "30cd69a8-7893-4075-94ca-04450ff821d3",
+  "name": "Spirit of the Hearth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spirit of the Hearth",
+      "oracle_fingerprint": "324d27dd7c7d78e5bf66b41c457d67e9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Static": { "affected": "You", "mods": [{ "AddKeyword": "Hexproof" }] } }
+      ]
+    }
+  ]
+}
