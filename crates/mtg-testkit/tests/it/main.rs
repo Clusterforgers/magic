@@ -220,6 +220,7 @@ mod mutate_counts;
 mod mutate_fuzz;
 mod ninjutsu;
 mod object_nth;
+mod offered_helpers;
 mod owner_left;
 mod paid_reads;
 mod part_fuzz;
