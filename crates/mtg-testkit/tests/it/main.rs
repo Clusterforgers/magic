@@ -249,6 +249,8 @@ mod protection;
 mod protection_fuzz;
 mod prowl;
 mod prowl_fuzz;
+mod pump_animate;
+mod pump_animate_fuzz;
 mod pump_fuzz;
 mod pump_spells;
 mod rebound;

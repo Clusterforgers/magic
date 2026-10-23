@@ -16,6 +16,7 @@ pub mod bot;
 pub mod cards;
 pub mod cascade_cards;
 pub mod cast_way_cards;
+pub mod change_cards;
 pub mod choice_cards;
 pub mod combat_keyword_cards;
 pub mod commander_cards;
@@ -117,6 +118,7 @@ pub use block_restriction_cards::block_restriction_fuzz_setup;
 pub use bot::RandomBot;
 pub use cascade_cards::cascade_fuzz_setup;
 pub use cast_way_cards::cast_way_fuzz_setup;
+pub use change_cards::change_fuzz_setup;
 pub use choice_cards::choice_fuzz_setup;
 pub use combat_keyword_cards::combat_keywords_fuzz_setup;
 pub use commander_cards::{
