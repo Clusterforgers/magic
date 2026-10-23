@@ -449,6 +449,8 @@ enum Unit {
         to: Zone,
         /// The move is a discard.
         discard: bool,
+        /// The move is a destruction (CR 701.8): lethal damage or deathtouch, or an effect that destroys.
+        destroyed: bool,
     },
     /// A card would enter the battlefield.
     Enter {
@@ -525,6 +527,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
     match when {
         ReplaceWhen::Enters { what }
         | ReplaceWhen::ZoneChange { what, .. }
+        | ReplaceWhen::Destroyed { what }
         | ReplaceWhen::Discarded { what } => only_this(what),
         ReplaceWhen::Damage { to, .. } | ReplaceWhen::CountersPut { on: to, .. } => {
             matches!(to, Some(Ref::This))
@@ -540,6 +543,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
     match by {
         ReplaceBy::PreventUpTo(_) => matches!(unit, Unit::Damage { .. }),
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
+        ReplaceBy::UmbraArmor => matches!(unit, Unit::Move { destroyed: true, .. }),
         ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::Prevent => matches!(
             unit,
             Unit::Tokens { .. }
@@ -654,6 +658,7 @@ impl Pass<'_> {
                 from,
                 to,
                 discard: discards(event),
+                destroyed: destroyed(item).is_some(),
             };
         }
         match event {
@@ -817,6 +822,14 @@ impl Pass<'_> {
                     ..
                 },
             )
+            | (
+                ReplaceWhen::Destroyed { what },
+                Unit::Move {
+                    object,
+                    destroyed: true,
+                    ..
+                },
+            )
             | (ReplaceWhen::Enters { what }, Unit::Enter { object, .. }) => {
                 let Some(reference) = self.reference(*object) else {
                     return Ok(false);
@@ -834,10 +847,9 @@ impl Pass<'_> {
         if unit == Unit::Other || slot.frozen {
             return Ok(Vec::new());
         }
-        // A destruction is replaced by a regeneration shield before anything else applies to the permanent's move.
-        if let Some(regeneration) = self.regeneration_candidate(&slot.item) {
-            return Ok(vec![regeneration]);
-        }
+        // A destruction is replaced by a regeneration shield before anything else applies to the permanent's move, but
+        // for umbra armor, which is the other way to save it (CR 616.1).
+        let regeneration = self.regeneration_candidate(&slot.item);
         let unpreventable = matches!(
             unit,
             Unit::Damage { source, .. } if damage_cant_be_prevented(self.state, source, self.combat_damage())
@@ -869,6 +881,7 @@ impl Pass<'_> {
             if slot.applied.contains(&origin)
                 || found.iter().any(|c| c.origin == origin)
                 || !applies_to(by, &unit)
+                || (regeneration.is_some() && !matches!(by, ReplaceBy::UmbraArmor))
                 || (unpreventable && Action::Replace(by.clone()).prevents())
                 || matches!(by, ReplaceBy::Dredge(cards) if !step.can_dredge(at, source.object.id, *cards))
                 || !step.matches(source, when, &unit)?
@@ -917,6 +930,11 @@ impl Pass<'_> {
                     consider(self, &own)?;
                 }
             }
+        }
+        if let Some(regeneration) = regeneration {
+            found.push(regeneration);
+            found.sort_by_key(|candidate| candidate.origin);
+            return Ok(found);
         }
         if !unpreventable {
             found.extend(self.shield_candidates(slot, &unit)?);
@@ -1516,6 +1534,9 @@ impl Pass<'_> {
                 }
             }
             (ReplaceBy::Dredge(cards), Unit::Draw { .. }) => self.dredge(at, candidate, *cards),
+            (ReplaceBy::UmbraArmor, Unit::Move { object, .. }) => {
+                self.umbra(at, candidate, *object);
+            }
             (ReplaceBy::MoveTo(ZoneKind::Command), Unit::Draw { player }) => {
                 self.slots[at].applied.clone_from(&applied);
                 self.pull_drawn_commander(at, *player, &applied);
@@ -1529,6 +1550,37 @@ impl Pass<'_> {
             _ => self.slots[at].applied = applied,
         }
         Ok(Applied::Done)
+    }
+
+    /// The Aura's umbra armor saves the creature: its damage is removed in place of its destruction, and the Aura is
+    /// destroyed (CR 702.89a). That destruction is an event of its own that other effects replace, unless the batch
+    /// already moves the Aura or it is indestructible.
+    fn umbra(&mut self, at: usize, candidate: &Candidate, creature: ObjectId) {
+        let aura = candidate.object;
+        let mut slots = vec![Slot {
+            item: Item::One(Event::DamageRemoved { object: creature }),
+            applied: Vec::new(),
+            frozen: true,
+        }];
+        let state = self.state;
+        let destroyable = state.object(aura.id).filter(|object| {
+            object.zone() == Zone::Battlefield
+                && object.counter() == aura.counter
+                && !keywords::is_indestructible(state, aura.id)
+        });
+        let leaving = self.slots.iter().any(|slot| {
+            matches!(&slot.item, Item::One(event)
+                if moving(state, event).is_some_and(|(object, _, _)| object == aura.id))
+        });
+        if let (Some(object), false) = (destroyable, leaving) {
+            slots.push(Slot::new(Item::One(Event::ZoneChanged {
+                object: aura.id,
+                from: Zone::Battlefield,
+                to: Zone::Graveyard(object.owner()),
+                cause: ZoneCause::Destroyed,
+            })));
+        }
+        self.slots.splice(at..=at, slots);
     }
 
     /// Puts the commander the draw at `at` would take into its owner's command zone instead: no card is drawn.

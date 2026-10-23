@@ -272,6 +272,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CombatEnded
         | Event::DamageCleared
         | Event::Regenerated { .. }
+        | Event::DamageRemoved { .. }
         | Event::ShieldUsed { .. }
         | Event::EffectCreated { .. }
         | Event::EffectExpired { .. }

@@ -254,6 +254,15 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             perm.deathtouched = false;
             state.combat.remove_object(*object);
         }
+        Event::DamageRemoved { object } => {
+            let perm = state
+                .objects
+                .get_mut(object)
+                .and_then(|o| o.permanent.as_mut())
+                .ok_or_else(|| invalid(format!("{object:?} is not a permanent")))?;
+            perm.damage = 0;
+            perm.deathtouched = false;
+        }
         Event::DamageCleared => {
             for object in state.objects.values_mut() {
                 if let Some(perm) = &mut object.permanent {

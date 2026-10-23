@@ -306,6 +306,11 @@ pub enum Event {
         /// The permanent.
         object: ObjectId,
     },
+    /// All damage marked on a permanent was removed in place of its destruction (umbra armor, CR 702.89a).
+    DamageRemoved {
+        /// The permanent.
+        object: ObjectId,
+    },
     /// A shield that prevents a given amount of damage prevented some and has this much left (CR 615.7).
     ShieldUsed {
         /// The shield, one of the rule changes (they share the counter of continuous effects).
@@ -824,6 +829,7 @@ impl Event {
             | Event::PermanentTapped { object }
             | Event::PermanentUntapped { object }
             | Event::Regenerated { object }
+            | Event::DamageRemoved { object }
             | Event::CardDrawn { object, .. }
             | Event::CardDiscarded { object, .. }
             | Event::Explored { object, .. }
