@@ -125,6 +125,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::SpellCopied(copy) => crate::copies::fold_spell(state, copy),
         Event::AbilityCopied(copy) => crate::copies::fold_ability(state, copy),
         Event::CopyEnded { object } => crate::copies::fold_ended(state, *object),
+        Event::Crewed { object, saddle, .. } => tally_crewed(state, *object, *saddle),
         // The change follows as events of its own; the action only restarts the round, so the other seats see it.
         Event::ManualAction { .. } => {
             reset_passes(state);
@@ -249,7 +250,6 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::PermanentTapped { object } => set_tapped(state, *object, true)?,
         Event::PermanentUntapped { object } => set_tapped(state, *object, false)?,
         Event::Monstrous { object, .. } => set_monstrous(state, *object)?,
-        Event::Crewed { object, saddle, .. } => tally_crewed(state, *object, *saddle)?,
         Event::ClassLevelGained { object, level, .. } => set_level(state, *object, *level)?,
         Event::TurnedFaceUp { object, .. } => turn_face_up(state, *object)?,
         Event::ManaAdded {

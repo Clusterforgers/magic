@@ -176,6 +176,7 @@ mod counted;
 mod counter_actions;
 mod counters;
 mod create;
+mod crew_events;
 mod damage_wordings;
 mod defining;
 mod draws;

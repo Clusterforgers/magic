@@ -1164,6 +1164,8 @@ fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
         TriggerPattern::Drew { who, what } if what.is_empty() => (who, "draw", "card"),
         TriggerPattern::SpellCast { what, by } if what.is_empty() => (by, "cast", "spell"),
         TriggerPattern::Attacks { .. }
+        | TriggerPattern::BecomesCrewed { .. }
+        | TriggerPattern::BecomesSaddled { .. }
         | TriggerPattern::BecomesTarget { .. }
         | TriggerPattern::DealsDamage { .. } => {
             let counted = pattern_text(event)?;
