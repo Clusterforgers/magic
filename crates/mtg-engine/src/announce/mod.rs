@@ -20,6 +20,7 @@ pub(crate) mod required;
 pub(crate) mod suspend;
 mod targets;
 mod total;
+pub(crate) mod turn_up;
 mod x;
 
 use std::sync::Arc;
@@ -240,6 +241,8 @@ pub(crate) enum Special {
     Suspend,
     /// Foretell (CR 702.143a).
     Foretell,
+    /// Turning a face-down permanent face up (CR 702.37e).
+    TurnFaceUp,
 }
 
 /// A cast or activation that has begun and is not paid for yet.
@@ -521,6 +524,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         return match special {
             Special::Suspend => suspend::next(state, *player, *card),
             Special::Foretell => foretell::next(state, *player, *card),
+            Special::TurnFaceUp => turn_up::next(state, *player, *card),
         };
     }
     let what: &What = what;

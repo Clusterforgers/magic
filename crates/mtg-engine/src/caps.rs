@@ -62,6 +62,7 @@ const RUNS: &[&str] = &[
     "Trigger.Connived",
     "Trigger.Amassed",
     "Trigger.BecomesMonstrous",
+    "Trigger.TurnedFaceUp",
     "Trigger.Adapted",
     "Trigger.Bolstered",
     "Trigger.Batch",
@@ -239,6 +240,9 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Dredge",
     "Keyword.Suspend",
     "Keyword.Foretell",
+    "Keyword.Morph",
+    "Keyword.Megamorph",
+    "Keyword.Disguise",
     "Keyword.Daybound",
     "Keyword.Nightbound",
     "Keyword.Fuse",
@@ -621,6 +625,7 @@ mod tests {
     #[case::conniving_triggers("Trigger.Connived", true)]
     #[case::amassing_triggers("Trigger.Amassed", true)]
     #[case::becoming_monstrous_triggers("Trigger.BecomesMonstrous", true)]
+    #[case::turning_face_up_triggers("Trigger.TurnedFaceUp", true)]
     #[case::adapting_triggers("Trigger.Adapted", true)]
     #[case::bolstering_triggers("Trigger.Bolstered", true)]
     #[case::batch_triggers("Trigger.Batch", true)]

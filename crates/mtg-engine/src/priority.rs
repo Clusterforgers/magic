@@ -359,6 +359,12 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .copied()
         .filter(|id| ways::can_foretell(state, player, *id, &pool, &all_mana, life))
         .collect();
+    let turnable: Vec<ObjectId> = state
+        .zone(Zone::Battlefield)
+        .iter()
+        .copied()
+        .filter(|id| ways::can_turn_up(state, player, *id, &pool, &all_mana, life))
+        .collect();
     let abilities = if silenced {
         Vec::new()
     } else {
@@ -383,7 +389,12 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
             &playable_lands,
             &castable,
             &abilities,
-            &[suspendable.as_slice(), foretellable.as_slice()].concat(),
+            &[
+                suspendable.as_slice(),
+                foretellable.as_slice(),
+                turnable.as_slice(),
+            ]
+            .concat(),
         ) || !faces.is_empty(),
         playable_lands,
         castable,
@@ -391,6 +402,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         abilities,
         suspendable,
         foretellable,
+        turnable,
         faces,
         can_pass: true,
     }
@@ -453,6 +465,12 @@ pub(crate) fn answer(
                 return Err(IllegalAnswer::NotOffered("foretell").into());
             }
             Ok(Outcome::BeginForetell(object))
+        }
+        PriorityAction::TurnFaceUp(object) => {
+            if !options.turnable.contains(&object) {
+                return Err(IllegalAnswer::NotOffered("turn face up").into());
+            }
+            Ok(Outcome::BeginTurnUp(object))
         }
         PriorityAction::Manual(action) => manual::events(state, player, &action)
             .map(Outcome::Events)

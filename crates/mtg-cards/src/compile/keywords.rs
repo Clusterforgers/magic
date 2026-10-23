@@ -66,6 +66,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("flashback", Params::Cost),
     ("madness", Params::Cost),
     ("morph", Params::Cost),
+    ("megamorph", Params::Cost),
     ("disguise", Params::Cost),
     ("suspend", Params::Cost),
     ("evoke", Params::Cost),
@@ -133,7 +134,6 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("friends forever", Params::None),
     ("choose a background", Params::None),
     ("doctor's companion", Params::None),
-    ("megamorph", Params::Cost),
     ("bestow", Params::Cost),
     ("buyback", Params::Cost),
     ("dash", Params::Cost),
@@ -341,6 +341,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "miracle" => spell_cost(rest).map(Keyword::Miracle),
         "dredge" => positive(rest).map(Keyword::Dredge),
         "morph" => cost(rest).map(Keyword::Morph),
+        "megamorph" => cost(rest).map(Keyword::Megamorph),
         "disguise" => cost(rest).map(Keyword::Disguise),
         "evoke" => spell_cost(rest).map(Keyword::Evoke),
         "overload" => cost(rest).map(Keyword::Overload),
@@ -760,6 +761,7 @@ mod tests {
     #[case::dredge("Dredge 3", Keyword::Dredge(3))]
     #[case::dredge_six("Dredge 6", Keyword::Dredge(6))]
     #[case::morph("Morph {3}{B}", Keyword::Morph(mana("{3}{B}")))]
+    #[case::megamorph("Megamorph {1}{G}", Keyword::Megamorph(mana("{1}{G}")))]
     #[case::disguise("Disguise {1}{W}", Keyword::Disguise(mana("{1}{W}")))]
     #[case::overload("Overload {3}{U}{U}", Keyword::Overload(mana("{3}{U}{U}")))]
     #[case::reconfigure("Reconfigure {2}", Keyword::Reconfigure(mana("{2}")))]
@@ -1091,6 +1093,7 @@ mod tests {
             "Madness {1}",
             "Dredge 2",
             "Morph {1}",
+            "Megamorph {1}",
             "Disguise {1}",
             "Suspend 2\u{2014}{1}",
             "Evoke {1}",

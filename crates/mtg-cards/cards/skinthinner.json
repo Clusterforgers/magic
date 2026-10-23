@@ -1,0 +1,23 @@
+{
+  "oracle_id": "c4dee5fe-36f0-4155-9437-2c0504feba2c",
+  "name": "Skinthinner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skinthinner",
+      "oracle_fingerprint": "c4e6d0a56b67810a350aad334b740549",
+      "abilities": [
+        { "Keyword": { "Morph": "{3}{B}{B}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

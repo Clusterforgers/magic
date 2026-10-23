@@ -520,6 +520,8 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         return Some(TriggerPattern::Explored { what: what.clone() });
     } else if r.words("becomes monstrous") {
         return Some(TriggerPattern::BecomesMonstrous { what: what.clone() });
+    } else if r.words("is turned face up") {
+        return Some(TriggerPattern::TurnedFaceUp { what: what.clone() });
     } else if r.word("adapts") {
         return Some(TriggerPattern::Adapted { what: what.clone() });
     } else if r.word("connives") {
@@ -826,6 +828,7 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::Explored { what } => said(what, "explores"),
         TriggerPattern::Connived { what } => said(what, "connives"),
         TriggerPattern::BecomesMonstrous { what } => said(what, "becomes monstrous"),
+        TriggerPattern::TurnedFaceUp { what } => said(what, "is turned face up"),
         TriggerPattern::Adapted { what } => said(what, "adapts"),
         TriggerPattern::Attached { what, to } if !what.is_empty() && !to.is_empty() => {
             said(what, &format!("becomes attached to {}", subject_text(to)?))
@@ -1102,13 +1105,17 @@ fn counter_text(what: &Selector, counter: Option<&CounterKind>, moved: &str) -> 
 }
 
 /// "When ~ enters", "Whenever a land you control enters", "Whenever ~ enters or attacks": "when" is
-/// for the card itself entering, dying, leaving or becoming monstrous, "whenever" for the rest.
+/// for the card itself entering, dying, leaving, becoming monstrous or being turned face up, "whenever" for the rest.
 fn about(what: &Selector, verbs: &[String]) -> Option<String> {
     let once = what.0 == [Pred::This]
         && verbs.iter().all(|verb| {
             matches!(
                 verb.as_str(),
-                "enters" | "dies" | "leaves the battlefield" | "becomes monstrous"
+                "enters"
+                    | "dies"
+                    | "leaves the battlefield"
+                    | "becomes monstrous"
+                    | "is turned face up"
             )
         });
     Some(format!(

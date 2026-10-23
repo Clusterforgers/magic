@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5b6a821c-51e4-44dc-8353-f4d10eab7fcb",
+  "name": "Stratus Dancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stratus Dancer",
+      "oracle_fingerprint": "1fe1fa4eec3be8b0fdf0e7d7ea847fc5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Megamorph": "{1}{U}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

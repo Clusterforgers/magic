@@ -1,0 +1,22 @@
+{
+  "oracle_id": "a0ff742b-f709-43ac-84d2-dc00c723bad6",
+  "name": "Krosan Cloudscraper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krosan Cloudscraper",
+      "oracle_fingerprint": "77319f7e4356de444150174206884bfd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Pay": { "cost": "{G}{G}", "unpaid": [{ "Sacrifice": { "filter": ["This"] } }] } }
+            ]
+          }
+        },
+        { "Keyword": { "Morph": "{7}{G}{G}" } }
+      ]
+    }
+  ]
+}

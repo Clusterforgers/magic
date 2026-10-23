@@ -1,0 +1,20 @@
+{
+  "oracle_id": "3763de30-28e1-4689-a71c-07d2fea3a466",
+  "name": "Zoetic Cavern",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zoetic Cavern",
+      "oracle_fingerprint": "f12d271388aa212d40d2c91281dc439a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        { "Keyword": { "Morph": "{2}" } }
+      ]
+    }
+  ]
+}

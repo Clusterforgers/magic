@@ -316,6 +316,12 @@ pub enum TriggerPattern {
         /// The creature that becomes monstrous.
         what: Selector,
     },
+    /// A permanent matching the selector is turned face up ("when this creature is turned face up", CR 702.37e); `Triggering` is
+    /// its controller.
+    TurnedFaceUp {
+        /// The permanent that is turned face up.
+        what: Selector,
+    },
     /// A creature matching the selector adapts ("whenever a creature you control adapts"); `Triggering` is its
     /// controller.
     Adapted {

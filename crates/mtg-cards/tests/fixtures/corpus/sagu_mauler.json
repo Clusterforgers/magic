@@ -1,0 +1,31 @@
+{
+  "id": "23de1159-4466-432d-917c-0f77d0610b4e",
+  "oracle_id": "8d877ee9-1751-48a1-9f2f-02897dae153b",
+  "name": "Sagu Mauler",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c19",
+  "collector_number": "200",
+  "rarity": "rare",
+  "released_at": "2019-08-23",
+  "digital": false,
+  "mana_cost": "{4}{G}{U}",
+  "cmc": 6.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "Trample, hexproof\nMorph {3}{G}{U} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its morph cost.)",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Morph",
+    "Hexproof",
+    "Trample"
+  ]
+}

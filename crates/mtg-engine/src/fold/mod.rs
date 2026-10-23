@@ -249,6 +249,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::PermanentTapped { object } => set_tapped(state, *object, true)?,
         Event::PermanentUntapped { object } => set_tapped(state, *object, false)?,
         Event::Monstrous { object, .. } => set_monstrous(state, *object)?,
+        Event::TurnedFaceUp { object, .. } => turn_face_up(state, *object)?,
         Event::ManaAdded {
             player, mana, only, ..
         } => {
@@ -430,6 +431,23 @@ fn set_monstrous(state: &mut GameState, id: ObjectId) -> Result<(), EngineError>
         return Err(invalid(format!("{id:?} is already monstrous")));
     }
     perm.designations.monstrous = true;
+    Ok(())
+}
+
+/// A face-down permanent is turned face up (CR 702.37e): it is its card from now on.
+fn turn_face_up(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
+    let object = state
+        .objects
+        .get_mut(&id)
+        .filter(|object| object.zone == crate::zones::Zone::Battlefield)
+        .ok_or_else(|| invalid(format!("{id:?} is not a permanent")))?;
+    if !object
+        .face_down
+        .is_some_and(crate::object::FaceDown::shows_characteristics)
+    {
+        return Err(invalid(format!("{id:?} is not face down")));
+    }
+    object.face_down = None;
     Ok(())
 }
 
