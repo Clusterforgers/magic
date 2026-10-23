@@ -328,4 +328,5 @@ mod x_fuzz;
 mod x_modes;
 mod x_places;
 mod zone_abilities;
+mod zone_moves;
 mod zones_fuzz;

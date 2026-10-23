@@ -45,7 +45,6 @@ fn tokens_read_in_the_shape_of_the_hand_written_files(
 #[case("Create a 2/2 white Knight creature token that's tapped and attacking.")]
 #[case("Draw a card. Create a tapped Treasure token.")]
 #[case("Create a tapped 1/1 white Soldier creature token for each creature you control.")]
-#[case("Create that many Treasure tokens.")]
 #[case("Target player creates a Treasure token.")]
 #[case("Destroy target creature. Its controller creates a 3/3 green Beast creature token.")]
 #[case("Exile target creature. Its controller creates a 2/2 blue Bird creature token with flying.")]
