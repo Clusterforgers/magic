@@ -192,6 +192,8 @@ pub struct ManaSource {
 /// A legal mana ability and what it produces.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+// Each flag is a separate fact of one ability, and each is left out of the wire form while false.
+#[allow(clippy::struct_excessive_bools)]
 pub struct ManaOption {
     /// The ability.
     pub source: ManaSource,
@@ -2719,7 +2721,9 @@ mod tests {
     /// Sources of which some permanents may be used again (a Cadaverous Bloom): they neither tap nor sacrifice, each use
     /// exiles one or two of the 0 to 3 cards of a hand, and the cards are among the permanents 0 to 6 (so a card may be a
     /// source too).
-    fn repeating_scenario(costs: impl Strategy<Value = ManaCost>) -> impl Strategy<Value = Scenario> {
+    fn repeating_scenario(
+        costs: impl Strategy<Value = ManaCost>,
+    ) -> impl Strategy<Value = Scenario> {
         (
             complex_scenario(costs),
             prop::collection::vec(

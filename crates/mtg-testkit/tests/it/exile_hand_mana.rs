@@ -234,7 +234,10 @@ fn a_payment_names_the_bloom_for_each_use(
     if paid {
         assert_eq!(exiled(&driver).len(), uses.len(), "a card for each use");
     } else {
-        assert!(exiled(&driver).is_empty(), "a refused payment exiles nothing");
+        assert!(
+            exiled(&driver).is_empty(),
+            "a refused payment exiles nothing"
+        );
         driver.answer(Answer::PayMana(PayChoice::Cancel))?;
     }
     Ok(())

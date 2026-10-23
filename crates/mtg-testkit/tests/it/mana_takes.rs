@@ -207,12 +207,21 @@ fn the_prospector_sacrifices_a_different_goblin_for_each_use(
     let mut driver = table(
         seats,
         "{R}{R}",
-        &["Skirk Prospector", "Grizzly Bears", "Goblin Spy", "Putrid Goblin"],
+        &[
+            "Skirk Prospector",
+            "Grizzly Bears",
+            "Goblin Spy",
+            "Putrid Goblin",
+        ],
     )?;
     let events = driver.cast("Spell")?;
     let mut gone = names(&driver, &events, true);
     gone.sort();
-    assert_eq!(gone, ["Goblin Spy", "Putrid Goblin"], "never itself or the Bears");
+    assert_eq!(
+        gone,
+        ["Goblin Spy", "Putrid Goblin"],
+        "never itself or the Bears"
+    );
     let added = events
         .iter()
         .filter(|event| matches!(event, Event::ManaAdded { .. }))

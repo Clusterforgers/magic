@@ -65,7 +65,11 @@ pub(crate) fn expand<'a>(sources: &'a [ManaOption], cost: &ManaCost) -> Cow<'a, 
 
 /// The tap of `payment` that names a copy: only the engine numbers those, so an answer that does is refused.
 pub(crate) fn forged(payment: &Payment) -> Result<(), PaymentError> {
-    match payment.taps.iter().find(|tap| real(tap.object) != tap.object) {
+    match payment
+        .taps
+        .iter()
+        .find(|tap| real(tap.object) != tap.object)
+    {
         Some(tap) => Err(PaymentError::UnknownSource(*tap)),
         None => Ok(()),
     }
@@ -227,11 +231,10 @@ mod tests {
         let unfolded = unfold(&payment, &sources);
         let expected: Vec<ManaSource> = read.iter().copied().map(source).collect();
         assert_eq!(unfolded.taps, expected);
-        if expected.iter().all(|tap| {
-            sources
-                .iter()
-                .any(|o| o.source == *tap)
-        }) {
+        if expected
+            .iter()
+            .all(|tap| sources.iter().any(|o| o.source == *tap))
+        {
             assert_eq!(fold(unfolded).taps, payment.taps, "back to the permanents");
         }
     }

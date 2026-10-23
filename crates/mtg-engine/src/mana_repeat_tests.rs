@@ -111,7 +111,11 @@ fn automatic_payment_uses_a_source_as_often_as_it_needs(
     #[case] lands: &str,
     #[case] expected: Option<&[(u64, usize)]>,
 ) {
-    let (cost, pool, sources) = (cost(cost_text), ManaPool::default(), table(blooms, hand, lands));
+    let (cost, pool, sources) = (
+        cost(cost_text),
+        ManaPool::default(),
+        table(blooms, hand, lands),
+    );
     let found = auto_payment(&cost, &pool, &sources, LIFE, &Spend::other());
     assert_eq!(
         can_afford(&cost, &pool, &sources, LIFE, &Spend::other()),
@@ -153,7 +157,15 @@ fn a_checked_payment_names_a_source_once_for_each_use(
 ) {
     let (cost, pool) = (cost(cost_text), ManaPool::default());
     let sources = table(&[(1, "BG")], hand, "s");
-    let checked = check_payment(&cost, &pool, &sources, &[], LIFE, &Spend::other(), &pay(taps));
+    let checked = check_payment(
+        &cost,
+        &pool,
+        &sources,
+        &[],
+        LIFE,
+        &Spend::other(),
+        &pay(taps),
+    );
     match verdict {
         Ok(()) => {
             let spent = checked.unwrap();
@@ -203,7 +215,11 @@ fn a_partial_payment_is_finished_with_more_uses(
                     .map(|_| ()),
                 Ok(())
             );
-            for tap in &partial.iter().map(|(o, a)| source(*o, *a)).collect::<Vec<_>>() {
+            for tap in &partial
+                .iter()
+                .map(|(o, a)| source(*o, *a))
+                .collect::<Vec<_>>()
+            {
                 let kept = |p: &Payment| p.taps.iter().filter(|t| *t == tap).count();
                 assert!(kept(&whole) >= kept(&pay(partial)), "the chosen uses stay");
             }
