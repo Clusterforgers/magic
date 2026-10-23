@@ -1,0 +1,28 @@
+{
+  "id": "17f9339a-d327-4239-a0d8-12f7ff58982b",
+  "oracle_id": "26e555f1-e0ed-4b84-8783-1c0c968f462d",
+  "name": "Deathcap Cultivator",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "175",
+  "rarity": "rare",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Druid",
+  "oracle_text": "{T}: Add {B} or {G}.\nDelirium — This creature has deathtouch as long as there are four or more card types among cards in your graveyard.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Delirium"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "a9f39d28-08eb-4eff-ae55-abd377877a27",
+  "oracle_id": "654ff673-4630-4068-9bcf-e88a7877eb58",
+  "name": "Dragonlord Ojutai",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ncc",
+  "collector_number": "337",
+  "rarity": "mythic",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{3}{W}{U}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Elder Dragon",
+  "oracle_text": "Flying\nDragonlord Ojutai has hexproof as long as it's untapped.\nWhenever Dragonlord Ojutai deals combat damage to a player, look at the top three cards of your library. Put one of them into your hand and the rest on the bottom of your library in any order.",
+  "power": "5",
+  "toughness": "4",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

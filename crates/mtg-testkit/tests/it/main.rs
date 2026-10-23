@@ -24,6 +24,8 @@ mod blitz;
 mod blitz_fuzz;
 mod block_restrictions;
 mod block_restrictions_fuzz;
+mod conditional_statics;
+mod conditional_statics_fuzz;
 mod card_lists;
 mod cascade;
 mod cascade_fuzz;

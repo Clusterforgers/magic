@@ -65,6 +65,7 @@ Battering Krasis
 Battle Sliver
 Battlefield Forge
 Beast Within
+Beastmaster Ascension
 Befriending the Moths // Imperial Moth
 Behold the Multiverse
 Bilious Skulldweller
@@ -122,6 +123,7 @@ Celestial Archon
 Celestial Colonnade
 Celestial Crusader
 Champion of Lambholt
+Champion's Helm
 Changeling Outcast
 Chartooth Cougar
 Chemister's Insight
@@ -182,6 +184,7 @@ Deadeye Brawler
 Deadly Rollick
 Death Ward
 Death-Greeter's Champion
+Deathcap Cultivator
 Debris Field Crusher
 Deep Analysis
 Deep Forest Hermit
@@ -200,6 +203,7 @@ Dokuchi Shadow-Walker
 Domesticated Hydra
 Doom Blade
 Doom Whisperer
+Dragonlord Ojutai
 Dragonspeaker Shaman
 Dream's Grip
 Dreamtail Heron
@@ -231,6 +235,7 @@ Enraged Revolutionary
 Enthusiastic Study
 Epic Proportions
 Era of Enlightenment // Hand of Enlightenment
+Erebos, Bleak-Hearted
 Eternal Witness
 Ethereal Armor
 Ethersworn Sphinx
@@ -306,6 +311,7 @@ Glowstone Recluse
 Gluttonous Cyclops
 Gluttonous Slime
 Gnarled Professor
+Gnarlwood Dryad
 Goblin Chieftain
 Goblin Spy
 Goblin War Buggy
@@ -319,6 +325,7 @@ Graven Cairns
 Graveshifter
 Greater Mossdog
 Grenzo's Cutthroat
+Grim Flayer
 Grim Haruspex
 Grim Initiate
 Grisly Salvage
@@ -335,11 +342,14 @@ Harrow
 Haughty Djinn
 Headless Skaab
 Hearthhull, the Worldseed
+Heliod, God of the Sun
+Heliod, Sun-Crowned
 Hengegate Pathway // Mistgate Pathway
 Herald of Anguish
 Herald of the Dreadhorde
 Herald of the Host
 Hero of Bladehold
+Hero's Heirloom
 Hidden Dragonslayer
 Highspire Artisan
 History of Benalia
@@ -374,6 +384,7 @@ Jolting Merfolk
 Jungle Lion
 Kalemne's Captain
 Karametra's Favor
+Karametra, God of Harvests
 Karn's Bastion
 Kathari Screecher
 Kazandu Tuskcaller
@@ -483,6 +494,7 @@ Overgrown Arch
 Pacifism
 Pale Bears
 Panther Robot
+Paradise Druid
 Parhelion Patrol
 Patagia Viper
 Path to Exile
@@ -517,6 +529,7 @@ Psychic Impetus
 Psychosis Crawler
 Putrid Goblin
 Pygmy Kavu
+Quest for the Goblin Lord
 Questing Beast
 Radical Idea
 Raffine's Informant
@@ -686,6 +699,7 @@ Tendo Ice Bridge
 Tendrils of Agony
 Termagant Swarm
 Thalia, Guardian of Thraben
+Thassa, God of the Sea
 The Birth of Meletis
 The Modern Age // Vector Glider
 The Seriema
@@ -750,6 +764,7 @@ Vivid Creek
 Vivid Grove
 Vivid Marsh
 Vivid Meadow
+Voice of the Blessed
 Walking Ballista
 Wanderbrine Preacher
 Waning Wurm

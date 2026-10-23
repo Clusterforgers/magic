@@ -1,0 +1,27 @@
+{
+  "id": "84701927-799f-4af4-85b8-389f903c5bc0",
+  "oracle_id": "a5690dc9-f12e-4ecc-b528-f2f83c79c3c8",
+  "name": "Erebos, Bleak-Hearted",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "868",
+  "rarity": "mythic",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Legendary Enchantment Creature — God",
+  "oracle_text": "Indestructible\nAs long as your devotion to black is less than five, Erebos isn't a creature.\nWhenever another creature you control dies, you may pay 2 life. If you do, draw a card.\n{1}{B}, Sacrifice another creature: Target creature gets -2/-1 until end of turn.",
+  "power": "5",
+  "toughness": "6",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Indestructible"
+  ]
+}
