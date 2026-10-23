@@ -1,0 +1,28 @@
+{
+  "id": "aad61d99-5c8e-47b7-ab1a-e70905f59205",
+  "oracle_id": "ee35de1c-aef1-4bd4-85fd-fe77bc927790",
+  "name": "Marwyn, the Nurturer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "khc",
+  "collector_number": "68",
+  "rarity": "rare",
+  "released_at": "2021-02-05",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Elf Druid",
+  "oracle_text": "Whenever another Elf you control enters, put a +1/+1 counter on Marwyn.\n{T}: Add an amount of {G} equal to Marwyn's power.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "power": "1",
+  "toughness": "1",
+  "produced_mana": [
+    "G"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "74c4c1e2-c50d-4c8f-889a-0d5674dc6d67",
+  "name": "Turn to Frog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turn to Frog",
+      "oracle_fingerprint": "ca1a93d3bd4fb186fbf38f856f3f6234",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    "LoseAbilities",
+                    { "SetCreatureTypes": ["Frog"] },
+                    { "SetColors": ["Blue"] },
+                    { "SetPT": { "power": 1, "toughness": 1 } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

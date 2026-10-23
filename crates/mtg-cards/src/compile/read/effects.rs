@@ -6,8 +6,9 @@ use mtg_core::mana::ManaType;
 
 use super::among;
 use super::amounts::{
-    cards_counted, counted, counted_parts, counted_stats, for_each, its_stat, number_word, points,
+    cards_counted, counted, counted_parts, for_each, its_stat, number_word, points,
 };
+use super::as_long_as;
 use super::attackers;
 use super::cast;
 use super::conditional;
@@ -31,13 +32,13 @@ use crate::effect::{Destination, Effect, Order, Place, Produce};
 use crate::mana::ManaCostX;
 use crate::modify::{Duration, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, Targetable, ZoneKind};
-use crate::value::{Amount, CounterKind};
+use crate::value::{Amount, Condition, CounterKind};
 
 /// A template: the effects of the sentence it reads, or `None` when the sentence is not its shape.
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 53] = [
+const TEMPLATES: [Template; 54] = [
     modal::modal,
     super::spent::sacrifice_unless,
     super::actions::fight,
@@ -48,6 +49,7 @@ const TEMPLATES: [Template; 53] = [
     cast::exiled_card,
     payments::may_pay,
     may,
+    create::chained,
     chain,
     put_back,
     super::actions::explore,
@@ -62,7 +64,7 @@ const TEMPLATES: [Template; 53] = [
     super::flicker::exile_and_return,
     super::becomes::creature,
     super::becomes::animate,
-    pump,
+    super::changes::pump,
     evasion,
     super::zone_moves::from_graveyard,
     super::zone_moves::may_put_from_hand,
@@ -260,7 +262,7 @@ fn chain(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// counts what the mill left in the graveyard.
 fn after_mill(r: &mut Reader<'_>, before: &[Effect]) -> Option<Vec<Effect>> {
     matches!(before, [Effect::Mill { .. }]).then_some(())?;
-    let step = pump(r)?;
+    let step = super::changes::pump(r)?;
     matches!(
         step.as_slice(),
         [Effect::Continuous {
@@ -311,7 +313,8 @@ fn put_back(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// The name the cards put back are bound to.
 pub const BACK: &str = "back";
 
-fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
+/// One step of "you" that begins with its verb: "scry 1", "draw a card", "mill three cards".
+pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
     let who = Ref::You;
     Some(match r.take_word()? {
         "scry" => Effect::Scry {
@@ -470,7 +473,7 @@ fn phrases(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
 /// One verb phrase: what a player does, or "create a token" for you.
 fn verb_phrase(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
     if matches!(r.peek_word(), Some("create" | "creates")) {
-        return create::made_by(r, who.clone());
+        return create::made_by(r, who);
     }
     // The controller of a permanent the sentence before named investigates: "Its controller investigates."
     if matches!(who, Ref::ControllerOf(_)) && r.word("investigates") {
@@ -927,7 +930,7 @@ pub(super) fn is_on_the_battlefield(r: &Reader<'_>, what: &Ref) -> bool {
 }
 
 /// The object a pump changes and whether it is several: "target creature", "~", "creatures you control".
-fn subject(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
+pub(super) fn subject(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
     if r.source() {
         return Some((Ref::This, false));
     }
@@ -958,7 +961,7 @@ fn chosen_protection(r: &mut Reader<'_>) -> Option<Modification> {
 }
 
 /// What a pump gives after "gains": keywords, or protection from a color chosen as it resolves.
-fn pump_grants(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
+pub(super) fn pump_grants(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
     match chosen_protection(r) {
         Some(protection) => Some(vec![protection]),
         None => granted(r),
@@ -1009,37 +1012,6 @@ pub(super) fn granted(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
         mods.extend(next.into_iter().map(Modification::AddKeyword));
     }
     Some(mods)
-}
-
-/// "Target creature gets +3/+3 until end of turn.", "... gains flying until end of turn."
-fn pump(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    let (affected, plural) = subject(r)?;
-    let (gets, gains) = if plural {
-        ("get", "gain")
-    } else {
-        ("gets", "gains")
-    };
-    let mut mods = Vec::new();
-    if r.word(gets) {
-        mods.push(power_toughness(r)?);
-        if r.word("and") {
-            r.word(gains).then_some(())?;
-            mods.extend(pump_grants(r)?);
-        }
-    } else {
-        r.word(gains).then_some(())?;
-        mods = pump_grants(r)?;
-    }
-    r.need("until end of turn")?;
-    // "Target creature gets -1/-1 until end of turn for each Swamp you control."
-    if let Some(stats) = mods.first_mut() {
-        *stats = counted_stats(r, stats.clone())?;
-    }
-    Some(vec![Effect::Continuous {
-        affected,
-        mods,
-        duration: Duration::UntilEndOfTurn,
-    }])
 }
 
 /// "Target creature can't be blocked this turn.", "Creatures you control can't be blocked this turn."
@@ -1096,11 +1068,23 @@ fn choice_of_lists(r: &mut Reader<'_>) -> Option<Vec<Vec<ManaType>>> {
     (lists.len() > 1 && lists.iter().any(|list| list.len() > 1)).then_some(lists)
 }
 
-/// "two mana of any one color", "three mana of any one color": several mana of the one color picked.
-fn several_of_one_color(r: &mut Reader<'_>) -> Option<u32> {
-    let count = number_word(r.take_word()?).filter(|count| *count >= 2)?;
+/// "two mana of any one color", "X mana of any one color": several mana of the one color picked.
+fn several_of_one_color(r: &mut Reader<'_>) -> Option<Amount> {
+    let count = if r.x() {
+        Amount::X
+    } else {
+        let number = number_word(r.take_word()?).filter(|count| *count >= 2)?;
+        Amount::Fixed(i32::try_from(number).ok()?)
+    };
     r.need("mana of any one color")?;
     Some(count)
+}
+
+/// "an amount of {G} equal to the greatest power among creatures you control": one type of mana, as many as the amount.
+fn an_amount_of(r: &mut Reader<'_>) -> Option<(ManaType, Amount)> {
+    r.need("an amount of")?;
+    let mana = mana_type(r.symbol()?)?;
+    Some((mana, where_x::equal_to(r)?))
 }
 
 /// The types before the last of a list that is joined by commas and a final "and/or".
@@ -1180,40 +1164,20 @@ fn could_produce(r: &mut Reader<'_>) -> Option<Produce> {
 /// controls could produce."
 fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("add")?;
-    let mana = if r.words("one mana of any color in your commander's color identity") {
-        Produce::CommanderIdentity(1)
-    } else if let Some(produced) = r.attempt(could_produce) {
-        produced
-    } else if r.words("one mana of any color") {
-        Produce::AnyColor(1)
-    } else if let Some(combination) = r.attempt(combination) {
-        combination
-    } else if let Some(count) = r.attempt(several_of_one_color) {
-        Produce::AnyColor(count)
-    } else if r.words("one mana of the chosen color") {
-        Produce::ChosenColor(1)
-    } else if let Some(mana) = r.attempt(|r| {
-        let mana = mana_type(r.symbol()?)?;
-        r.need("or one mana of the chosen color")?;
-        Some(mana)
-    }) {
-        Produce::OrChosenColor(mana)
-    } else if let Some(lists) = r.attempt(choice_of_lists) {
-        Produce::OneOfLists(lists)
-    } else if let Some(list) = r.attempt(choice) {
-        Produce::OneOf(list)
-    } else {
-        let mut list = Vec::new();
-        while let Some(mana) = r.attempt(|r| mana_type(r.symbol()?)) {
-            list.push(mana);
-        }
-        if list.is_empty() {
-            return None;
-        }
-        Produce::Fixed(list)
-    };
+    let mut counted = None;
+    let mut mana = produced(r, &mut counted)?;
+    // "Add {G}. If you control four or more creatures, add {G}{G} instead."
+    if counted.is_none()
+        && let Some((when, instead)) = r.attempt(instead)
+    {
+        mana = Produce::Instead {
+            base: Box::new(mana),
+            when,
+            instead: Box::new(instead),
+        };
+    }
     // "Add {R} for each Goblin you control." adds the mana once for each; a number of times has no wording.
-    let times = match r.attempt(for_each) {
+    let times = match counted.or_else(|| r.attempt(for_each)) {
         Some(each) => each,
         None => Amount::one(),
     };
@@ -1224,4 +1188,58 @@ fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         times,
         only,
     }])
+}
+
+/// ". If you control a creature with power 4 or greater, add {G}{G} instead": the condition and the mana in place of
+/// the first.
+fn instead(r: &mut Reader<'_>) -> Option<(Condition, Produce)> {
+    r.punct('.').then_some(())?;
+    r.need("if")?;
+    let when = as_long_as::body(r, None)?;
+    r.punct(',').then_some(())?;
+    r.need("add")?;
+    let mana = produced(r, &mut None)?;
+    r.need("instead")?;
+    Some((when, mana))
+}
+
+/// The mana after "add": a fixed list, a choice, any color, a combination, or an amount of one type, which sets `counted`.
+fn produced(r: &mut Reader<'_>, counted: &mut Option<Amount>) -> Option<Produce> {
+    Some(
+        if r.words("one mana of any color in your commander's color identity") {
+            Produce::CommanderIdentity(1)
+        } else if let Some(produced) = r.attempt(could_produce) {
+            produced
+        } else if r.words("one mana of any color") {
+            Produce::AnyColor(Amount::one())
+        } else if let Some(combination) = r.attempt(combination) {
+            combination
+        } else if let Some(count) = r.attempt(several_of_one_color) {
+            Produce::AnyColor(count)
+        } else if r.words("one mana of the chosen color") {
+            Produce::ChosenColor(1)
+        } else if let Some(mana) = r.attempt(|r| {
+            let mana = mana_type(r.symbol()?)?;
+            r.need("or one mana of the chosen color")?;
+            Some(mana)
+        }) {
+            Produce::OrChosenColor(mana)
+        } else if let Some((mana, amount)) = r.attempt(an_amount_of) {
+            *counted = Some(amount);
+            Produce::Fixed(vec![mana])
+        } else if let Some(lists) = r.attempt(choice_of_lists) {
+            Produce::OneOfLists(lists)
+        } else if let Some(list) = r.attempt(choice) {
+            Produce::OneOf(list)
+        } else {
+            let mut list = Vec::new();
+            while let Some(mana) = r.attempt(|r| mana_type(r.symbol()?)) {
+                list.push(mana);
+            }
+            if list.is_empty() {
+                return None;
+            }
+            Produce::Fixed(list)
+        },
+    )
 }

@@ -150,7 +150,6 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 #[case::a_pronoun("Return it to its owner's hand.")]
 #[case::no_hand("Return target creature to its owner's")]
 #[case::no_duration("All creatures get -1/-1.")]
-#[case::until_your_next_turn("All creatures get -1/-1 until your next turn.")]
 #[case::all_you_control("All creatures you control get +1/+1 until end of turn.")]
 #[case::all_attacking("All attacking creatures get +1/+0 until end of turn.")]
 #[case::without_all("Creatures get -1/-1 until end of turn.")]

@@ -1,0 +1,32 @@
+{
+  "id": "78a538cf-2291-49aa-8429-17d97d454479",
+  "oracle_id": "ead985ec-f29f-4a3b-b8b1-061142cc5bd1",
+  "name": "Harabaz Druid",
+  "lang": "en",
+  "layout": "normal",
+  "set": "wwk",
+  "collector_number": "105",
+  "rarity": "rare",
+  "released_at": "2010-02-05",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Druid Ally",
+  "oracle_text": "{T}: Add X mana of any one color, where X is the number of Allies you control.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "power": "0",
+  "toughness": "1",
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

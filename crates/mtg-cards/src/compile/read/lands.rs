@@ -4,14 +4,15 @@
 
 use super::amounts::{count_word, number_word};
 use super::effects::Template;
-use super::selectors::{Form, phrase, phrase_text};
+use super::selectors::{Form, phrase, phrase_text, plural_subtype};
+use super::subtypes::plural_subtype as plural_subtype_word;
 use super::tokens::Reader;
 use crate::ability::Ability;
 use crate::effect::Effect;
 use crate::modify::{CastPermission, Duration, GameRule};
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::value::Amount;
-use mtg_core::card::CardType;
+use mtg_core::card::{CardType, Subtype};
 
 /// The effects of a spell: the land plays of one turn.
 pub const TEMPLATES: [Template; 1] = [additional_this_turn];
@@ -117,7 +118,15 @@ pub fn additional_texts(who: &Ref, count: &Amount) -> Vec<String> {
 
 /// "You may play lands from your graveyard.", "You may play lands from the top of your library."
 pub fn from_a_zone(r: &mut Reader<'_>) -> Option<Ability> {
-    r.need("you may play lands from")?;
+    r.need("you may play")?;
+    // "lands", or the lands of a basic land type: "Forests".
+    let lands = if r.word("lands") {
+        Selector(vec![Pred::Type(CardType::Land)])
+    } else {
+        Selector(vec![Pred::Subtype(Subtype(plural_subtype(r)?))])
+    };
+    is_lands(&lands).then_some(())?;
+    r.need("from")?;
     let from = if r.words("your graveyard") {
         ZoneKind::Graveyard
     } else {
@@ -127,7 +136,7 @@ pub fn from_a_zone(r: &mut Reader<'_>) -> Option<Ability> {
     Some(Ability::Rule {
         rule: GameRule::MayCast(CastPermission {
             who: Ref::You,
-            what: Selector(vec![Pred::Type(CardType::Land)]),
+            what: lands,
             from: Some(from),
             free: false,
             flash: false,
@@ -139,11 +148,22 @@ pub fn from_a_zone(r: &mut Reader<'_>) -> Option<Ability> {
     })
 }
 
+/// The basic land types, as the subtypes of the lands a permission may name.
+const BASIC_LAND_TYPES: [&str; 5] = ["Plains", "Island", "Swamp", "Mountain", "Forest"];
+
+/// Whether the selector names lands: all of them, or the lands of one basic land type.
+fn is_lands(selector: &Selector) -> bool {
+    match selector.0.as_slice() {
+        [Pred::Type(CardType::Land)] => true,
+        [Pred::Subtype(Subtype(kind))] => BASIC_LAND_TYPES.contains(&kind.as_str()),
+        _ => false,
+    }
+}
+
 /// The wording of the permission `from_a_zone` reads.
 pub fn from_a_zone_text(permission: &CastPermission) -> Option<String> {
-    let lands = Selector(vec![Pred::Type(CardType::Land)]);
     let ordinary = permission.who == Ref::You
-        && permission.what == lands
+        && is_lands(&permission.what)
         && !permission.free
         && !permission.flash
         && permission.only.is_none()
@@ -151,10 +171,14 @@ pub fn from_a_zone_text(permission: &CastPermission) -> Option<String> {
     if !ordinary {
         return None;
     }
+    let lands = match permission.what.0.as_slice() {
+        [Pred::Subtype(Subtype(kind))] => plural_subtype_word(kind),
+        _ => "lands".to_owned(),
+    };
     match permission.from {
-        Some(ZoneKind::Graveyard) => Some("You may play lands from your graveyard".to_owned()),
+        Some(ZoneKind::Graveyard) => Some(format!("You may play {lands} from your graveyard")),
         Some(ZoneKind::Library) => {
-            Some("You may play lands from the top of your library".to_owned())
+            Some(format!("You may play {lands} from the top of your library"))
         }
         _ => None,
     }

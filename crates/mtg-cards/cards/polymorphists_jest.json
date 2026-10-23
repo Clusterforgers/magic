@@ -1,0 +1,34 @@
+{
+  "oracle_id": "5bc66b2d-a93c-449d-a090-b61e1613aa15",
+  "name": "Polymorphist's Jest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Polymorphist's Jest",
+      "oracle_fingerprint": "6ac46833f54b4c2713f5c8ee6f2142b6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  },
+                  "mods": [
+                    "LoseAbilities",
+                    { "SetCreatureTypes": ["Frog"] },
+                    { "SetColors": ["Blue"] },
+                    { "SetPT": { "power": 1, "toughness": 1 } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

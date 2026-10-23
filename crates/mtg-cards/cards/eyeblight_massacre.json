@@ -1,0 +1,26 @@
+{
+  "oracle_id": "3b90dd70-798e-4dc4-99e7-b36d6823af2b",
+  "name": "Eyeblight Massacre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eyeblight Massacre",
+      "oracle_fingerprint": "4e715874b6db267c7bf127ef6104cfaf",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "Not": { "Subtype": "Elf" } }] },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

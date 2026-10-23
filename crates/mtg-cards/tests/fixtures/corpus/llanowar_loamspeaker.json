@@ -1,0 +1,32 @@
+{
+  "id": "bd5611db-82dd-464d-8b03-70d7619dcefe",
+  "oracle_id": "08377424-619e-48ae-bc3c-fb199cd77cf9",
+  "name": "Llanowar Loamspeaker",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dmu",
+  "collector_number": "170",
+  "rarity": "rare",
+  "released_at": "2022-09-09",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Elf Druid",
+  "oracle_text": "{T}: Add one mana of any color.\n{T}: Target land you control becomes a 3/3 Elemental creature with haste until end of turn. It's still a land. Activate only as a sorcery.",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

@@ -335,8 +335,18 @@ pub enum ManaProduced<'a> {
     },
     /// Mana of several types, one of each listed (`{W}{U}`, `{C}{G}`).
     Mixed(&'a [ManaType]),
-    /// This many mana of one colour its controller picks when the ability is activated.
-    AnyColor(u32),
+    /// This many mana of one colour its controller picks when the ability is activated: a number, or an amount counted
+    /// when it is offered.
+    AnyColor(&'a Amount),
+    /// What `base` adds, or what `instead` adds when the condition holds as the ability is offered.
+    Instead {
+        /// Added when the condition does not hold.
+        base: &'a Produce,
+        /// The condition.
+        when: &'a Condition,
+        /// Added in its place when the condition holds.
+        instead: &'a Produce,
+    },
     /// One mana of a type its controller picks from these when the ability is activated.
     OneOf(&'a [ManaType]),
     /// All the mana of one list its controller picks from these when the ability is activated.
@@ -360,7 +370,7 @@ pub enum ManaProduced<'a> {
 
 impl<'a> ManaProduced<'a> {
     /// What an effect that adds `mana` adds each time; none for a list of nothing or more mana than fit in a count.
-    fn of(mana: &'a Produce) -> Option<Self> {
+    pub fn of(mana: &'a Produce) -> Option<Self> {
         Some(match mana {
             Produce::Fixed(list) => {
                 let (&first, rest) = list.split_first()?;
@@ -373,7 +383,16 @@ impl<'a> ManaProduced<'a> {
                     ManaProduced::Mixed(list)
                 }
             }
-            Produce::AnyColor(count) => ManaProduced::AnyColor(*count),
+            Produce::AnyColor(count) => ManaProduced::AnyColor(count),
+            Produce::Instead {
+                base,
+                when,
+                instead,
+            } => ManaProduced::Instead {
+                base,
+                when,
+                instead,
+            },
             Produce::OneOf(types) => ManaProduced::OneOf(types),
             Produce::OneOfLists(lists) => ManaProduced::OneOfLists(lists),
             Produce::ChosenColor(count) => ManaProduced::ChosenColor(*count),
@@ -401,12 +420,20 @@ impl ManaProduced<'_> {
     pub fn each(&self) -> u32 {
         match self {
             ManaProduced::Fixed { count, .. }
-            | ManaProduced::AnyColor(count)
             | ManaProduced::ChosenColor(count)
             | ManaProduced::CommanderIdentity(count)
             | ManaProduced::ProducedBy { count, .. } => *count,
+            // The smaller of the two, as the condition is not known here.
+            ManaProduced::Instead { base, instead, .. } => [base, instead]
+                .into_iter()
+                .filter_map(|produce| ManaProduced::of(produce))
+                .map(|produced| produced.each())
+                .min()
+                .unwrap_or(0),
             // A counted amount adds mana unless it counts nothing, which only the game can tell.
-            ManaProduced::AnyCombination { count, .. } => count.fixed().unwrap_or(1),
+            ManaProduced::AnyColor(count) | ManaProduced::AnyCombination { count, .. } => {
+                count.fixed().unwrap_or(1)
+            }
             ManaProduced::OneOf(_) | ManaProduced::OrChosenColor(_) => 1,
             ManaProduced::OneOfLists(lists) => lists
                 .iter()
@@ -456,10 +483,9 @@ impl ManaShape<'_> {
     /// Whether it adds one mana of a fixed type or of any colour, once, and does nothing else (a Treasure, a Lotus
     /// Petal); any other shape is the primitive `Ability.ManaAbility.Complex`.
     pub fn is_simple(&self) -> bool {
-        matches!(
-            self.produces,
-            ManaProduced::Fixed { count: 1, .. } | ManaProduced::AnyColor(1)
-        ) && self.times.is_one()
+        (matches!(self.produces, ManaProduced::Fixed { count: 1, .. })
+            || matches!(self.produces, ManaProduced::AnyColor(count) if count.is_one()))
+            && self.times.is_one()
             && self.then.is_empty()
             && self.pays.is_empty()
             && self.mana.symbols().is_empty()
@@ -1163,6 +1189,9 @@ mod tests {
         mana_shape(parsed).map(|s| (s.produces, s.tap, s.sacrifice, s.then.len()))
     }
 
+    static ONE: Amount = Amount::Fixed(1);
+    static THREE: Amount = Amount::Fixed(3);
+
     const GREEN: ManaProduced<'static> = ManaProduced::Fixed {
         mana: ManaType::Green,
         count: 1,
@@ -1171,7 +1200,7 @@ mod tests {
     #[rstest]
     #[case::treasure(
         r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
-        Some((ManaProduced::AnyColor(1), true, true, 0))
+        Some((ManaProduced::AnyColor(&ONE), true, true, 0))
     )]
     #[case::lotus_petal_without_the_tap(
         r#"{"Activated":{"cost":["SacrificeSelf"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#,
@@ -1195,7 +1224,7 @@ mod tests {
     )]
     #[case::three_of_one_color(
         r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":3}}}]}}"#,
-        Some((ManaProduced::AnyColor(3), true, true, 0))
+        Some((ManaProduced::AnyColor(&THREE), true, true, 0))
     )]
     #[case::counted_times(
         r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]},"times":{"Count":[{"Type":"Creature"}]}}}]}}"#,
@@ -1215,7 +1244,7 @@ mod tests {
     )]
     #[case::egg_draws(
         r#"{"Activated":{"cost":["SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}},{"Draw":{}}]}}"#,
-        Some((ManaProduced::AnyColor(1), false, true, 1))
+        Some((ManaProduced::AnyColor(&ONE), false, true, 1))
     )]
     #[case::damage_and_a_draw(
         r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}},{"DealDamage":{"to":"You","amount":1}},{"Draw":{}}]}}"#,
@@ -1255,11 +1284,11 @@ mod tests {
     )]
     #[case::sacrifices_another_without_the_tap(
         r#"{"Activated":{"cost":[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
-        Some((ManaProduced::AnyColor(1), false, false, 0))
+        Some((ManaProduced::AnyColor(&ONE), false, false, 0))
     )]
     #[case::costs_mana(
         r#"{"Activated":{"cost":[{"Mana":"{1}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
-        Some((ManaProduced::AnyColor(1), true, false, 0))
+        Some((ManaProduced::AnyColor(&ONE), true, false, 0))
     )]
     #[case::costs_mana_with_a_phyrexian_symbol(
         r#"{"Activated":{"cost":[{"Mana":"{B/P}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
@@ -1275,15 +1304,15 @@ mod tests {
     )]
     #[case::costs_energy(
         r#"{"Activated":{"cost":["Tap",{"PayEnergy":1}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
-        Some((ManaProduced::AnyColor(1), true, false, 0))
+        Some((ManaProduced::AnyColor(&ONE), true, false, 0))
     )]
     #[case::removes_counters_from_the_source(
         r#"{"Activated":{"cost":["Tap",{"RemoveCounters":{"counter":"charge"}}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
-        Some((ManaProduced::AnyColor(1), true, false, 0))
+        Some((ManaProduced::AnyColor(&ONE), true, false, 0))
     )]
     #[case::removes_counters_without_a_tap(
         r#"{"Activated":{"cost":[{"RemoveCounters":{"counter":"charge"}}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
-        Some((ManaProduced::AnyColor(1), false, false, 0))
+        Some((ManaProduced::AnyColor(&ONE), false, false, 0))
     )]
     #[case::pays_life_you_count(
         r#"{"Activated":{"cost":["Tap",{"PayLife":"X"}],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,

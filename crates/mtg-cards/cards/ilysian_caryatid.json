@@ -1,0 +1,43 @@
+{
+  "oracle_id": "5f2be3c2-060a-43e1-b63b-9cd3c78ffcb0",
+  "name": "Ilysian Caryatid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ilysian Caryatid",
+      "oracle_fingerprint": "e0ce1197289b8739c8eca005878fd4ea",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "Instead": {
+                      "base": { "AnyColor": 1 },
+                      "when": {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                              { "ControlledBy": "You" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "instead": { "AnyColor": 2 }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "762a0e40-af3c-4ef9-a9fc-0414a1758385",
+  "oracle_id": "3a3fd911-b71c-49eb-aadb-cfa80b9e3a3a",
+  "name": "Mass Diminish",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c19",
+  "collector_number": "10",
+  "rarity": "rare",
+  "released_at": "2019-08-23",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Until your next turn, creatures target player controls have base power and toughness 1/1.\nFlashback {3}{U} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flashback"
+  ]
+}

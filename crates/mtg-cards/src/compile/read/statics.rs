@@ -523,7 +523,9 @@ fn cannot(r: &mut Reader<'_>) -> Option<Ability> {
 /// The condition a sentence opens with: "As long as it's your turn, ...".
 pub(super) fn leading_condition(r: &mut Reader<'_>) -> Option<Condition> {
     r.attempt(|r| {
-        let condition = as_long_as::read(r, None)?;
+        // "During your turn, creature tokens you control get +1/+4."
+        let condition = as_long_as::read(r, None)
+            .or_else(|| r.words("during your turn").then_some(Condition::YourTurn))?;
         r.punct(',').then_some(condition)
     })
 }
@@ -695,7 +697,7 @@ pub(super) fn gives(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
 }
 
 /// One activated or triggered ability in quotes.
-fn quoted_ability(r: &mut Reader<'_>) -> Option<Ability> {
+pub(super) fn quoted_ability(r: &mut Reader<'_>) -> Option<Ability> {
     r.quoted(abilities::activated)
         .or_else(|| r.quoted(abilities::triggered))
 }
@@ -1344,8 +1346,21 @@ fn static_texts(
         vec![String::new()]
     };
     let mut subjects = subjects(affected, true);
-    // An Aura that gives an ability may enchant a land, an artifact or any permanent.
-    if *affected == Ref::Attached && matches!(mods, [Modification::GrantAbility(_)]) {
+    // An Aura that gives a keyword or an ability may enchant a land, an artifact or any permanent.
+    if *affected == Ref::Attached
+        && !mods.is_empty()
+        && mods.iter().all(|m| {
+            matches!(
+                m,
+                Modification::GrantAbility(_) | Modification::AddKeyword(_)
+            )
+        })
+        && mods
+            .iter()
+            .filter(|m| matches!(m, Modification::GrantAbility(_)))
+            .count()
+            <= 1
+    {
         subjects.extend(
             [
                 "Enchanted land",
@@ -1380,6 +1395,13 @@ fn static_texts(
             let trailing = tails
                 .iter()
                 .map(|tail| format!("{subject} {predicate}{tail}"));
+            let during = (condition == Some(&Condition::YourTurn)).then(|| {
+                let mut words = subject.chars();
+                let lowered: String = words.next().map_or_else(String::new, |first| {
+                    first.to_lowercase().chain(words).collect()
+                });
+                format!("during your turn, {lowered} {predicate}")
+            });
             // "As long as ~ is monstrous, it has menace."
             let pronoun = helds
                 .iter()
@@ -1392,7 +1414,11 @@ fn static_texts(
                     Some(rest) => format!("as long as {held}, it's {rest}"),
                     None => format!("as long as {held}, it {predicate}"),
                 });
-            trailing.chain(leading).chain(pronoun).collect::<Vec<_>>()
+            trailing
+                .chain(leading)
+                .chain(pronoun)
+                .chain(during)
+                .collect::<Vec<_>>()
         })
         .collect()
 }

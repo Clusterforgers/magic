@@ -1,0 +1,23 @@
+{
+  "id": "5c2410cc-4094-48c4-a219-b4fc385b3746",
+  "oracle_id": "74c4c1e2-c50d-4c8f-889a-0d5674dc6d67",
+  "name": "Turn to Frog",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clu",
+  "collector_number": "103",
+  "rarity": "uncommon",
+  "released_at": "2024-02-23",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Until end of turn, target creature loses all abilities and becomes a blue Frog with base power and toughness 1/1.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

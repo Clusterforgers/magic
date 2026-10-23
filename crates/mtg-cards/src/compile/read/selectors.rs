@@ -69,11 +69,22 @@ const KEYWORDS: &[&str] = &[
     "defender",
     "prowess",
     "changeling",
+    "intimidate",
     "infect",
     "skulk",
     "horsemanship",
     "melee",
     "myriad",
+    "fear",
+    "intimidate",
+    "exalted",
+    "extort",
+    "evolve",
+    "persist",
+    "undying",
+    "wither",
+    "flash",
+    "shadow",
     "riot",
 ];
 
@@ -241,6 +252,19 @@ pub(super) fn adjective(word: &str, form: Form) -> Option<Pred> {
     })
 }
 
+/// The adjective at the reader: a word of `adjective`, "commander" before a card type ("Commander creatures you
+/// control"), or "non-" with a subtype ("Non-Archon creatures").
+fn next_adjective(r: &Reader<'_>, form: Form) -> Option<Pred> {
+    let word = r.peek_word()?;
+    if word == "commander" && r.word_at(1).and_then(type_noun).is_some() {
+        return Some(Pred::Commander);
+    }
+    if word.starts_with("non-") {
+        return non_subtype(r, word);
+    }
+    adjective(word, form)
+}
+
 /// The adjective for a predicate.
 pub(super) fn adjective_text(pred: &Pred, form: Form) -> Option<String> {
     Some(match pred {
@@ -264,6 +288,7 @@ pub(super) fn adjective_text(pred: &Pred, form: Form) -> Option<String> {
             Pred::Type(card_type) => format!("non{}", type_name(*card_type)),
             Pred::Supertype(Supertype::Legendary) => "nonlegendary".to_owned(),
             Pred::Supertype(Supertype::Basic) => "nonbasic".to_owned(),
+            Pred::Subtype(subtype) => format!("non-{}", subtype.0),
             Pred::Token => "nontoken".to_owned(),
             _ => return None,
         },
@@ -289,12 +314,24 @@ fn type_preds(pred: &Pred) -> Option<Vec<CardType>> {
 
 /// A keyword by its words ("flying", "first strike").
 pub fn keyword(r: &mut Reader<'_>) -> Option<Keyword> {
-    let name = KEYWORDS.iter().find(|name| r.words(name))?;
-    keywords::read(name)
+    if let Some(name) = KEYWORDS.iter().find(|name| r.words(name)) {
+        return keywords::read(name);
+    }
+    // "islandwalk", "swampwalk": the land type is part of the word.
+    let word = r.peek_word().filter(|word| word.ends_with("walk"))?;
+    let found = keywords::read(word).filter(|found| matches!(found, Keyword::Landwalk(_)))?;
+    r.skip();
+    Some(found)
 }
 
 /// The words of a keyword the readers know.
 pub fn keyword_text(keyword: &Keyword) -> Option<String> {
+    if let Keyword::Landwalk(Selector(preds)) = keyword {
+        return match preds.as_slice() {
+            [Pred::Subtype(Subtype(land))] => Some(format!("{}walk", land.to_lowercase())),
+            _ => None,
+        };
+    }
     let name = keyword.name().to_lowercase();
     KEYWORDS.contains(&name.as_str()).then_some(name)
 }
@@ -304,6 +341,9 @@ pub fn keyword_text(keyword: &Keyword) -> Option<String> {
 pub fn granted_keywords(r: &mut Reader<'_>) -> Option<Vec<Keyword>> {
     if r.word("ward") {
         return ward_cost(r).map(|cost| vec![Keyword::Ward(cost)]);
+    }
+    if let Some(found) = r.attempt(numbered_keyword) {
+        return Some(vec![found]);
     }
     if !r.words("protection from") {
         return keyword(r).map(|keyword| vec![keyword]);
@@ -316,6 +356,30 @@ pub fn granted_keywords(r: &mut Reader<'_>) -> Option<Vec<Keyword>> {
         found.push(next);
     }
     Some(found)
+}
+
+/// The keywords a creature is given with a number after the word: "fabricate 1", "annihilator 2".
+const NUMBERED_KEYWORDS: [&str; 4] = ["fabricate", "annihilator", "toxic", "afterlife"];
+
+fn numbered_keyword(r: &mut Reader<'_>) -> Option<Keyword> {
+    let name = NUMBERED_KEYWORDS
+        .iter()
+        .find(|name| r.peek_word() == Some(**name))?;
+    r.skip();
+    let number = r.number()?;
+    keywords::read(&format!("{name} {number}"))
+}
+
+/// The words of a keyword with a number, as `numbered_keyword` reads them.
+fn numbered_keyword_text(keyword: &Keyword) -> Option<String> {
+    let number = match keyword {
+        Keyword::Fabricate(number)
+        | Keyword::Annihilator(number)
+        | Keyword::Toxic(number)
+        | Keyword::Afterlife(number) => *number,
+        _ => return None,
+    };
+    Some(format!("{} {number}", keyword.name().to_lowercase()))
 }
 
 /// The mana after "ward": "{1}", "{2}{U}".
@@ -331,6 +395,9 @@ fn ward_cost(r: &mut Reader<'_>) -> Option<Cost> {
 }
 
 fn protection_from(r: &mut Reader<'_>) -> Option<Keyword> {
+    if r.words("each color") {
+        return Some(Keyword::Protection(keywords::each_color()));
+    }
     let quality = keywords::quality(r.peek_word()?)?;
     r.skip();
     Some(Keyword::Protection(quality))
@@ -365,6 +432,9 @@ pub fn granted_text(mods: &[Modification]) -> Option<String> {
                 return None;
             };
             parts.push(format!("ward {mana}"));
+            protecting = false;
+        } else if let Some(numbered) = numbered_keyword_text(keyword) {
+            parts.push(numbered);
             protecting = false;
         } else {
             parts.push(keyword_text(keyword)?);
@@ -512,6 +582,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::ControlledBy(Ref::AttachedPlayer) => "enchanted player controls".to_owned(),
         Pred::ControlledBy(Ref::Defending) => "defending player controls".to_owned(),
         Pred::ControlledBy(Ref::Monarch) => "the monarch controls".to_owned(),
+        Pred::ControlledBy(Ref::Target(0)) => "target player controls".to_owned(),
         Pred::Not(inner) if **inner == Pred::ControlledBy(Ref::You) => {
             "you don't control".to_owned()
         }
@@ -814,6 +885,15 @@ pub fn phrase(r: &mut Reader<'_>, form: Form) -> Option<Selector> {
     phrase_in(r, form, false)
 }
 
+/// "non-Elf", "non-Vampire": anything but a creature type (the word is lowercase in the tokens).
+fn non_subtype(r: &Reader<'_>, word: &str) -> Option<Pred> {
+    let name = word.strip_prefix("non-")?;
+    let mut chars = name.chars();
+    let name = format!("{}{}", chars.next()?.to_uppercase(), chars.as_str());
+    r.is_subtype(&name)
+        .then(|| not(Pred::Subtype(Subtype(name))))
+}
+
 /// A phrase like `phrase`, except that "cards" may stand without the zone they are in, which the caller reads next
 /// ("creature cards" before "in your graveyard").
 pub(super) fn phrase_in(r: &mut Reader<'_>, form: Form, unplaced: bool) -> Option<Selector> {
@@ -826,7 +906,7 @@ pub(super) fn phrase_in(r: &mut Reader<'_>, form: Form, unplaced: bool) -> Optio
             })
             .is_some();
         let mut adjectives = Vec::new();
-        while let Some(pred) = r.peek_word().and_then(|word| adjective(word, form)) {
+        while let Some(pred) = next_adjective(r, form) {
             r.skip();
             adjectives.push(pred);
             // "attacking or blocking creature": either state.
@@ -836,7 +916,7 @@ pub(super) fn phrase_in(r: &mut Reader<'_>, form: Form, unplaced: bool) -> Optio
             }
             // "nonartifact, nonblack creature": a comma joins two negations.
             let negation = |word: Option<&str>| {
-                word.and_then(|word| adjective(word, form))
+                word.and_then(|word| adjective(word, form).or_else(|| non_subtype(r, word)))
                     .is_some_and(|pred| matches!(pred, Pred::Not(_)))
             };
             if matches!(adjectives.last(), Some(Pred::Not(_)))
@@ -930,6 +1010,29 @@ fn list_text(names: &[String], connector: &str) -> String {
         [rest @ .., last] if rest.len() > 1 => format!("{}, {connector} {last}", rest.join(", ")),
         _ => names.join(&format!(" {connector} ")),
     }
+}
+
+/// The words for the card types of a phrase: the kinds before them, "permanent" or "nonland permanent", "commander" as
+/// an adjective of the types, and the types themselves.
+fn type_phrase(
+    kinds: &[CardType],
+    (permanent, nonland_permanent): (bool, bool),
+    commander: bool,
+    names: &[String],
+    form: Form,
+) -> Vec<String> {
+    let mut words: Vec<String> = kinds
+        .iter()
+        .map(|card_type| type_name(*card_type).to_owned())
+        .collect();
+    words.extend(permanent_words(permanent, nonland_permanent));
+    if commander && !names.is_empty() {
+        words.push("commander".to_owned());
+    }
+    if !names.is_empty() {
+        words.push(list_text(names, form.connector()));
+    }
+    words
 }
 
 /// The adjectives of a phrase, with a comma after each negation that another follows: "nonartifact, nonblack".
@@ -1103,7 +1206,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         || (subtypes.len() > 1 && !spell && !card && (qualified || !types.is_empty()))
         || (spell && card)
         || (token && (spell || card))
-        || (commander && (spell || card || token || !subtypes.is_empty() || !types.is_empty()))
+        || (commander && (spell || card || token || !subtypes.is_empty()))
         || (!kinds.is_empty() && !qualified)
     {
         return None;
@@ -1117,25 +1220,26 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         type_words(&types, plural && !spell && !card && !token)
     };
     let mut words = comma_negations(adjectives);
-    if own_commander {
-        words.insert(0, "your".to_owned());
-    }
+    words.splice(0..0, own_commander.then(|| "your".to_owned()));
     if !subtypes.is_empty() {
         let nouns = plural && !qualified && !card;
         let joiner = if nouns { form.connector() } else { "or" };
         words.push(subtype_words(&subtypes, nouns, joiner));
     }
-    words.extend(
-        kinds
-            .iter()
-            .map(|card_type| type_name(*card_type).to_owned()),
-    );
-    words.extend(permanent_words(permanent, nonland_permanent));
-    if !names.is_empty() {
-        words.push(list_text(&names, form.connector()));
-    }
+    words.extend(type_phrase(
+        &kinds,
+        (permanent, nonland_permanent),
+        commander,
+        &names,
+        form,
+    ));
+    // "Commander creatures you control": the commander is an adjective of the card types.
+    let commander_noun = commander && names.is_empty();
     let bare = names.is_empty() && subtypes.is_empty();
-    words.extend(noun_word([token, spell, card, commander, bare], plural));
+    words.extend(noun_word(
+        [token, spell, card, commander_noun, bare],
+        plural,
+    ));
     words.extend(suffixes);
     words.extend(zone);
     Some(words.join(" "))

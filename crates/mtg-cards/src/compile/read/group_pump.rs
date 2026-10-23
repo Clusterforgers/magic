@@ -35,14 +35,21 @@ pub(super) fn wordings(ability: &Ability, texts: &[String]) -> Vec<String> {
                 (plural.clone(), single.clone()),
                 (capitalize(&plural), capitalize(&single)),
             ] {
-                for (many, one) in [("get", "gets"), ("gain", "gains")] {
+                for (many, one) in [
+                    ("get", "gets"),
+                    ("gain", "gains"),
+                    ("lose", "loses"),
+                    ("have", "has"),
+                    ("become", "becomes"),
+                ] {
                     let from = format!("{plain} {many} ");
                     if text.contains(&from) {
-                        let singular = text.replacen(&from, &format!("{each} {one} "), 1).replacen(
-                            " and gain ",
-                            " and gains ",
-                            1,
-                        );
+                        let singular = text
+                            .replacen(&from, &format!("{each} {one} "), 1)
+                            .replacen(" and gain ", " and gains ", 1)
+                            .replacen(" and lose ", " and loses ", 1)
+                            .replacen(" and have ", " and has ", 1)
+                            .replacen(" and become ", " and becomes ", 1);
                         found.push(singular);
                     }
                 }

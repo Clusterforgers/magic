@@ -1,0 +1,37 @@
+{
+  "oracle_id": "19788405-7141-475e-94ee-d0c89488f50f",
+  "name": "Elder Owyn Lyons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elder Owyn Lyons",
+      "oracle_fingerprint": "06b2ab4f25a7b9829308986144a206c0",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Ward": "{1}" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Artifact" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

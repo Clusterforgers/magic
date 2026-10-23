@@ -1,0 +1,31 @@
+{
+  "oracle_id": "d6911456-42cb-4b23-a560-dc98784530f5",
+  "name": "Nameless Inversion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nameless Inversion",
+      "oracle_fingerprint": "28ef457d590d2d592bfd09fb06e5b43b",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": -3 } },
+                    { "SetCreatureTypes": [] }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

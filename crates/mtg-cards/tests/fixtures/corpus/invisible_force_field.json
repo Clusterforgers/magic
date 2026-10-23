@@ -1,0 +1,25 @@
+{
+  "id": "7b05925b-ac8f-4ca5-9c9d-5e4e408c9f1d",
+  "oracle_id": "c96d67fb-359c-4439-aa1b-598d9bca2880",
+  "name": "Invisible Force Field",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "19",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Up to four target permanents you control gain indestructible until end of turn.\nRebound (If you cast this spell from your hand, exile it as it resolves. At the beginning of your next upkeep, you may cast this card from exile without paying its mana cost.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Rebound"
+  ]
+}

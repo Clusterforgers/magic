@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3a3fd911-b71c-49eb-aadb-cfa80b9e3a3a",
+  "name": "Mass Diminish",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mass Diminish",
+      "oracle_fingerprint": "bbc49d9daa8ba192bf5e1f3e621d144d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  },
+                  "mods": [{ "SetPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{3}{U}" } }
+      ]
+    }
+  ]
+}

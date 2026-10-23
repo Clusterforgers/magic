@@ -1,0 +1,61 @@
+{
+  "oracle_id": "d82618e7-494a-46d0-a19e-9cc647f96cfe",
+  "name": "Sage of the Maze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sage of the Maze",
+      "oracle_fingerprint": "98ee43a2c49c634d098f8ebe38513eef",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyCombination": { "count": 2 } } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": {
+                          "Sum": [
+                            { "Count": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }] },
+                            { "Count": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }] }
+                          ]
+                        },
+                        "toughness": {
+                          "Sum": [
+                            { "Count": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }] },
+                            { "Count": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }] }
+                          ]
+                        }
+                      }
+                    },
+                    { "AddSubtype": "Citizen" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Gate" }] } }],
+            "effects": [{ "Untap": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}
