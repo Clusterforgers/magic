@@ -138,7 +138,7 @@ pub fn tokens(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if r.word("investigate") {
         return Some(vec![clue(Ref::You)]);
     }
-    made_by(r, Ref::You)
+    made_by(r, &Ref::You)
 }
 
 /// The Clue token a player creates when they investigate.
@@ -154,24 +154,48 @@ pub fn clue(who: Ref) -> Effect {
 
 /// The other wording of the tokens the controller of an object creates: "That creature's controller" for "Its controller".
 pub fn other_wordings(texts: &[String]) -> Vec<String> {
-    texts
+    let controllers = texts
         .iter()
         .filter(|text| text.contains("Its controller creates "))
-        .map(|text| text.replacen("Its controller", "That creature's controller", 1))
-        .collect()
+        .map(|text| text.replacen("Its controller", "That creature's controller", 1));
+    // A list of two kinds may say the verb again: "create two Fish tokens and create two tapped Treasure tokens".
+    let again = texts.iter().filter_map(|text| {
+        let at = text.find("create ")?;
+        let (head, tail) = text.split_at(at);
+        let joint = [" token and ", " tokens and "]
+            .into_iter()
+            .find_map(|joint| tail.find(joint).map(|found| (joint, found)))?;
+        let (joint, found) = joint;
+        let (before, after) = tail.split_at(found + joint.len());
+        // Only the first joint, and only the one that is followed by a kind of token.
+        (!after.contains(" and ")).then(|| format!("{head}{before}create {after}"))
+    });
+    controllers.chain(again).collect()
 }
 
 /// The tokens a player creates: "create ..." for you, "creates ..." after another player ("target opponent creates
 /// two 1/1 white Soldier creature tokens", "its controller creates a 3/3 green Beast creature token").
-pub fn made_by(r: &mut Reader<'_>, who: Ref) -> Option<Vec<Effect>> {
-    r.need(if who == Ref::You { "create" } else { "creates" })?;
-    let mut effects = vec![group(r, &who)?];
+pub fn made_by(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
+    r.need(if *who == Ref::You {
+        "create"
+    } else {
+        "creates"
+    })?;
+    let mut effects = vec![group(r, who)?];
     // "create a 1/1 Snake token, a 2/2 Wolf token, and a 3/3 Elephant token": one group after another.
     while let Some(next) = r.attempt(|r| {
         let listed = r.punct(',');
         let joined = r.word("and");
         (listed || joined).then_some(())?;
-        group(r, &who)
+        // "create two Fish tokens and create two tapped Treasure tokens": the verb may be said again.
+        if joined {
+            r.word(if *who == Ref::You {
+                "create"
+            } else {
+                "creates"
+            });
+        }
+        group(r, who)
     }) {
         effects.push(next);
     }
@@ -203,7 +227,7 @@ pub fn chained(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// One step of "you": a token created, or a draw, mill, scry and the like.
 fn step(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if r.peek_word() == Some("create") {
-        return made_by(r, Ref::You);
+        return made_by(r, &Ref::You);
     }
     super::effects::imperative(r).map(|effect| vec![effect])
 }

@@ -740,14 +740,7 @@ fn written(
             start += used;
             continue;
         }
-        // Populate is two steps and one word; a copy that is exiled or sacrificed at the end step is two sentences.
-        // No joint splits either.
-        if copies::is_populate(&effects[start..]) {
-            unsplit(mask, start, 2)?;
-            sentences.push("populate".to_owned());
-            start += 2;
-            continue;
-        }
+        // A copy that is exiled or sacrificed at the end step is two sentences, which no joint splits.
         if let [created @ Effect::CreateToken { .. }, delayed, ..] = &effects[start..]
             && let Some(delay) = copies::delay_text(created, delayed)
         {
@@ -1796,6 +1789,8 @@ impl Writer<'_> {
         self.explore_twice(effects)
             .or_else(|| self.mill_then_change(effects))
             .or_else(|| wheel_text(effects))
+            // Populate is two steps and one word.
+            .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))
     }
 
     /// "~ explores, then it explores again": one creature that explores twice is one sentence, which no joint splits.

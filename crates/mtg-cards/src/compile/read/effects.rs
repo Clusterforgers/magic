@@ -468,7 +468,7 @@ fn phrases(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
 /// One verb phrase: what a player does, or "create a token" for you.
 fn verb_phrase(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
     if matches!(r.peek_word(), Some("create" | "creates")) {
-        return create::made_by(r, who.clone());
+        return create::made_by(r, who);
     }
     // The controller of a permanent the sentence before named investigates: "Its controller investigates."
     if matches!(who, Ref::ControllerOf(_)) && r.word("investigates") {

@@ -83,6 +83,9 @@ fn a_token_with_an_ability_in_quotes_writes_back(#[case] text: &str) {
     "When this creature enters, create a 1/1 white Soldier creature token and a Treasure token."
 )]
 #[case(
+    "When this creature enters, create two 1/1 blue Fish creature tokens and create two tapped Treasure tokens."
+)]
+#[case(
     "When this creature dies, create a 0/1 colorless Eldrazi Spawn creature token with \"Sacrifice this token: Add {C}.\""
 )]
 #[case(

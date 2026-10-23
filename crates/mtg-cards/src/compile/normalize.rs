@@ -164,6 +164,10 @@ pub fn reminder_mentions_counter(text: &str) -> bool {
         if reminder.contains("energy counter") {
             return false;
         }
+        // The reminder of infect names the counters the keyword puts, and the keyword is read whole.
+        if reminder.contains("deal damage to creatures in the form of -1/-1 counters") {
+            return false;
+        }
         if COUNTER_ACTIONS
             .iter()
             .any(|action| reminder.contains(action))
