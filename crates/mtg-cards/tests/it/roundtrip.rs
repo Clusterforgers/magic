@@ -321,9 +321,10 @@ fn spend_filter() -> impl Strategy<Value = SpendFilter> {
         vec(select(vec![Supertype::Legendary, Supertype::Basic]), 0..2),
         vec(select(vec!["Dragon", "Elf"]), 0..2),
         any::<bool>(),
+        any::<bool>(),
     )
         .prop_map(
-            |(types, without, supertypes, subtypes, multicolored)| SpendFilter {
+            |(types, without, supertypes, subtypes, multicolored, chosen_type)| SpendFilter {
                 types,
                 without,
                 supertypes,
@@ -332,6 +333,7 @@ fn spend_filter() -> impl Strategy<Value = SpendFilter> {
                     .map(|s| Subtype(s.to_owned()))
                     .collect(),
                 multicolored,
+                chosen_type,
             },
         )
 }

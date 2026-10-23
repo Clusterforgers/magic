@@ -8,6 +8,9 @@ use crate::spend::{SpendFilter, SpendOn};
 
 const LEAD: &str = "spend this mana only";
 
+/// The words that name the creature type the source chose.
+const CHOSEN_TYPE: &str = " of the chosen type";
+
 /// The words that stand for a spell of a kind: a card type or two ("instant or sorcery"), or one adjective.
 fn kind(r: &mut Reader<'_>) -> Option<SpendFilter> {
     let first = r.peek_word()?;
@@ -46,18 +49,34 @@ fn kind(r: &mut Reader<'_>) -> Option<SpendFilter> {
     })
 }
 
-/// "creature spells", "a creature spell", "spells" or "a spell".
+/// "creature spells", "a creature spell", "spells" or "a spell", then "of the chosen type" for the creature type the
+/// source chose as it entered.
 fn spells(r: &mut Reader<'_>) -> Option<SpendFilter> {
-    r.attempt(|r| {
-        let filter = r.attempt(kind).unwrap_or_default();
-        r.word("spells").then_some(filter)
-    })
-    .or_else(|| {
-        r.attempt(|r| {
-            (r.word("a") || r.word("an")).then_some(())?;
+    let mut filter = r
+        .attempt(|r| {
             let filter = r.attempt(kind).unwrap_or_default();
-            r.word("spell").then_some(filter)
+            r.word("spells").then_some(filter)
         })
+        .or_else(|| {
+            r.attempt(|r| {
+                (r.word("a") || r.word("an")).then_some(())?;
+                let filter = r.attempt(kind).unwrap_or_default();
+                r.word("spell").then_some(filter)
+            })
+        })?;
+    filter.chosen_type = r.words("of the chosen type");
+    Some(filter)
+}
+
+/// "activate an ability of a creature source of the chosen type": a source of the kind the chosen type names.
+fn ability_source(r: &mut Reader<'_>) -> Option<SpendFilter> {
+    r.attempt(|r| {
+        r.need("activate an ability of")?;
+        (r.word("a") || r.word("an")).then_some(())?;
+        let mut filter = r.attempt(kind)?;
+        r.need("source of the chosen type")?;
+        filter.chosen_type = true;
+        Some(filter)
     })
 }
 
@@ -74,7 +93,12 @@ pub(super) fn only(r: &mut Reader<'_>) -> Option<Vec<SpendOn>> {
             return Some(vec![SpendOn::abilities()]);
         }
         r.need("cast")?;
-        Some(vec![SpendOn::Spell(spells(r)?)])
+        let spell = spells(r)?;
+        let mut uses = vec![SpendOn::Spell(spell.clone())];
+        if spell.chosen_type && r.word("or") {
+            uses.push(SpendOn::Ability(ability_source(r)?));
+        }
+        Some(uses)
     })
 }
 
@@ -86,6 +110,7 @@ fn kind_text(filter: &SpendFilter) -> Option<String> {
         supertypes,
         subtypes,
         multicolored,
+        chosen_type: _,
     } = filter;
     if !subtypes.is_empty() {
         return None;
@@ -115,8 +140,23 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
         [SpendOn::Ability(filter)] if *filter == SpendFilter::default() => {
             "Spend this mana only to activate abilities".to_owned()
         }
-        [SpendOn::Spell(filter)] => {
-            format!("Spend this mana only to cast {}spells", kind_text(filter)?)
+        [SpendOn::Spell(filter)] => format!(
+            "Spend this mana only to cast {}spells{}",
+            kind_text(filter)?,
+            CHOSEN_TYPE.repeat(usize::from(filter.chosen_type))
+        ),
+        [SpendOn::Spell(spell), SpendOn::Ability(source)]
+            if spell == source && spell.chosen_type =>
+        {
+            let kind = kind_text(source)?;
+            let article = if kind.starts_with(['a', 'e', 'i', 'o', 'u']) {
+                "an"
+            } else {
+                "a"
+            };
+            format!(
+                "Spend this mana only to cast {kind}spells{CHOSEN_TYPE} or activate an ability of {article} {kind}source{CHOSEN_TYPE}"
+            )
         }
         _ => return None,
     })

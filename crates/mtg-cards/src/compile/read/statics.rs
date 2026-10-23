@@ -515,9 +515,9 @@ fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Modification>>
 }
 
 /// What a permanent is given: keywords, or one activated ability in quotes ("Enchanted creature has \"{R}, {T}: Copy
-/// target instant or sorcery spell you control.\""). A mana ability stays with the table.
+/// target instant or sorcery spell you control.\"") or a mana ability ("Enchanted land has \"{T}: Add {G}.\"").
 fn gives(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
-    match r.quoted(|r| abilities::activated(r).filter(|ability| !ability.is_mana_ability())) {
+    match r.quoted(abilities::activated) {
         Some(ability) => Some(vec![Modification::GrantAbility(Arc::new(ability))]),
         None => granted(r),
     }

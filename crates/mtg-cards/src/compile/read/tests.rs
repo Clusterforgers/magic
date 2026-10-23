@@ -193,6 +193,7 @@ mod life;
 mod life_gain;
 mod lords;
 mod mana_triggers;
+mod mana_wordings;
 mod may;
 mod modes;
 mod monarch;

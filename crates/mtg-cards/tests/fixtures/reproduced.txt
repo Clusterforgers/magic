@@ -1,5 +1,6 @@
 Abbot of Keral Keep
 Aberrant
+Abundant Growth
 Abzan Advantage
 Abzan Battle Priest
 Abzan Falconer
@@ -230,6 +231,7 @@ Eyetwitch
 Faithful Watchdog
 Faithless Looting
 Famine
+Fanatic of Rhonas
 Faramir, Steward of Gondor
 Favorable Winds
 Fear of Failed Tests
@@ -278,6 +280,7 @@ Ghostblade Eidolon
 Ghostly Prison
 Giant Cindermaw
 Giant Growth
+Gift of Paradise
 Gilded Goose
 Gilded Lotus
 Girder Goons
@@ -440,6 +443,7 @@ Mystic Gate
 Nantuko Husk
 Nantuko Vigilante
 Nessian Asp
+New Horizons
 Night Clubber
 Nighthawk Scavenger
 Nightmare
@@ -467,6 +471,7 @@ Pestilent Syphoner
 Phantasmal Image
 Phyrexian Prowler
 Phyrexian Soulgorger
+Pillar of Origins
 Pillar of the Paruns
 Pinion Feast
 Plague Myr
@@ -548,6 +553,7 @@ Scheming Aspirant
 Scorn-Blade Berserker
 Scuzzback Marauders
 Sea Gate
+Secluded Courtyard
 Seedglaive Mentor
 Seekers' Squire
 Serpent-Blade Assailant
@@ -688,6 +694,7 @@ Uktabi Efreet
 Ulamog's Crusher
 Ultramarines Honour Guard
 Umbral Collar Zealot
+Unclaimed Territory
 Underworld Dreams
 Underworld Rage-Hound
 Universal Automaton
@@ -722,7 +729,9 @@ Weaponcraft Enthusiast
 Wear // Tear
 Wedgelight Rammer
 Weigh Down
+Weirding Wood
 Whir of Invention
+Whisperer of the Wilds
 Wild Wasteland
 Wilderness Elemental
 Windborn Muse

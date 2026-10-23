@@ -1,0 +1,38 @@
+{
+  "oracle_id": "c1e456b6-5d2b-4c42-9464-54a8f9f8f3ba",
+  "name": "Whisperer of the Wilds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whisperer of the Wilds",
+      "oracle_fingerprint": "a62cce808d299730186cda1887ac6bbd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green", "Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

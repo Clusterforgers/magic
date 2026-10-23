@@ -135,6 +135,9 @@ pub struct Own {
     pub creature_at: Option<i32>,
 }
 
+/// The ability words that may stand before an activated ability and are flavor ("Ferocious — {T}: Add {G}{G}.").
+const ACTIVATED_WORDS: [&str; 1] = ["Ferocious \u{2014} "];
+
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
     let text = match kind {
@@ -142,6 +145,16 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         ClauseKind::Triggered | ClauseKind::Static => {
             let head = text.lines().next().unwrap_or_default();
             text.get(classify::ability_word_len(head).unwrap_or(0)..)?
+        }
+        // Only the words of mana abilities: "Channel — " and the like name another zone the ability works from.
+        ClauseKind::Activated => {
+            let head = text.lines().next().unwrap_or_default();
+            let word = ACTIVATED_WORDS
+                .iter()
+                .any(|word| head.starts_with(word))
+                .then(|| classify::ability_word_len(head))
+                .flatten();
+            text.get(word.unwrap_or(0)..)?
         }
         _ => text,
     };

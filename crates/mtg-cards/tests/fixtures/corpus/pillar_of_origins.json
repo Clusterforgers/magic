@@ -1,0 +1,26 @@
+{
+  "id": "c92c8c43-e7b5-4339-8926-1268a89bb2da",
+  "oracle_id": "9e62f30d-3130-416e-b459-48b5f71f8be9",
+  "name": "Pillar of Origins",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "970",
+  "rarity": "uncommon",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact",
+  "oracle_text": "As this artifact enters, choose a creature type.\n{T}: Add one mana of any color. Spend this mana only to cast a creature spell of the chosen type.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}
