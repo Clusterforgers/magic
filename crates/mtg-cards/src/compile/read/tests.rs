@@ -152,6 +152,7 @@ mod actions;
 mod activated;
 mod additional;
 mod among;
+mod attached_kinds;
 mod attack_tax;
 mod attacked_player;
 mod audit;

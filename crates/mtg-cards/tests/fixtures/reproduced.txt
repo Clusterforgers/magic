@@ -59,6 +59,8 @@ Baird, Steward of Argive
 Banisher Priest
 Banishing Light
 Banshee of the Dread Choir
+Barbed Batterfist
+Bard's Bow
 Basilica Screecher
 Basking Rootwalla
 Battering Krasis
@@ -201,6 +203,7 @@ Domesticated Hydra
 Doom Blade
 Doom Whisperer
 Dragonspeaker Shaman
+Dragonwing Glider
 Dream's Grip
 Dreamtail Heron
 Dregscape Zombie
@@ -312,6 +315,7 @@ Goblin War Buggy
 Goblin-town Flunkies
 Golden-Scale Aeronaut
 Goldlust Triad
+Goldwarden's Helm
 Goliath Truck
 Gorger Wurm
 Grapeshot
@@ -378,6 +382,7 @@ Karn's Bastion
 Kathari Screecher
 Kazandu Tuskcaller
 Keep Watch
+Kemba's Banner
 Kessig Wolf Run
 Kingpin's Pet
 Kinjalli's Sunwing
@@ -440,10 +445,12 @@ Midnight Banshee
 Migratory Greathorn
 Migratory Route
 Mirari
+Mirran Bardiche
 Mirror Image
 Mishra's Workshop
 Mizzium Mortars
 Monastery Swiftspear
+Monk's Fist
 Morinfen
 Morsel Theft
 Mortivore
@@ -481,6 +488,7 @@ Origin of the Hulk
 Otherworldly Gaze
 Overgrown Arch
 Pacifism
+Paladin's Arms
 Pale Bears
 Panther Robot
 Parhelion Patrol
@@ -564,6 +572,7 @@ Safehold Elite
 Sage of the Beyond
 Sagu Mauler
 Saiba Cryptomancer
+Samurai's Katana
 Sandcrafter Mage
 Sandsteppe Mastodon
 Sandsteppe Scavenger
@@ -671,6 +680,7 @@ Swarm Intelligence
 Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
+Sylvok Battle-Chair
 Syndic of Tithes
 Syphon Life
 Tabaxi Toucaneers
@@ -750,12 +760,14 @@ Vivid Creek
 Vivid Grove
 Vivid Marsh
 Vivid Meadow
+Vulshok Splitter
 Walking Ballista
 Wanderbrine Preacher
 Waning Wurm
 Warchief Giant
 Wargate
 Warmonger Hellkite
+Warrior's Sword
 Wasteland Raider
 Weaponcraft Enthusiast
 Wear // Tear

@@ -249,6 +249,7 @@ mod symbol_fuzz;
 mod tap_effects;
 mod token_costs;
 mod token_effects;
+mod token_equipment;
 mod token_fuzz;
 mod transform;
 mod trigger_any_of;

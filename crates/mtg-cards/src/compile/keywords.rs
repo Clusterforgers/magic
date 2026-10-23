@@ -103,6 +103,8 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("evolve", Params::None),
     ("extort", Params::None),
     ("living weapon", Params::None),
+    ("for mirrodin!", Params::None),
+    ("job select", Params::None),
     ("totem armor", Params::None),
     ("umbra armor", Params::None),
     ("undaunted", Params::None),
@@ -227,6 +229,14 @@ fn starts_with_word(item: &str, name: &str) -> bool {
 
 /// The keyword an item starts with: the longest name that fits, then `...cycling` and `...walk`.
 fn find(item: &str) -> Option<Found<'_>> {
+    // "Murasame — Equip {5}": the name an Equipment gives an equip ability is flavor.
+    if let Some(len) = super::classify::ability_word_len(item)
+        && let Some(equip) = item
+            .get(len..)
+            .filter(|rest| starts_with_word(rest, "equip"))
+    {
+        return find(equip);
+    }
     let best = KEYWORDS
         .iter()
         .filter(|(name, _)| starts_with_word(item, name))
@@ -509,6 +519,8 @@ fn plain(name: &str) -> Option<Keyword> {
         "partner" => Keyword::Partner,
         "battle cry" => Keyword::BattleCry,
         "living weapon" => Keyword::LivingWeapon,
+        "for mirrodin!" => Keyword::ForMirrodin,
+        "job select" => Keyword::JobSelect,
         "fuse" => Keyword::Fuse,
         "changeling" => Keyword::Changeling,
         "devoid" => Keyword::Devoid,
@@ -881,6 +893,13 @@ mod tests {
     #[case::backup("Backup 2", Keyword::Backup { count: 2, abilities: vec![] })]
     #[case::saddle("Saddle 2", Keyword::Saddle(2))]
     #[case::station("Station", Keyword::Station)]
+    #[case::for_mirrodin("For Mirrodin!", Keyword::ForMirrodin)]
+    #[case::job_select("Job select", Keyword::JobSelect)]
+    #[case::a_named_equip("Murasame \u{2014} Equip {5}", Keyword::Equip(mana("{5}")))]
+    #[case::a_named_equip_of_two_words(
+        "Lightbringer and Hero's Shield \u{2014} Equip {4}",
+        Keyword::Equip(mana("{4}"))
+    )]
     #[case::level_up("Level up {1}{U}", Keyword::LevelUp(mana("{1}{U}")))]
     #[case::level_up_for_one("level up {1}", Keyword::LevelUp(mana("{1}")))]
     #[case::outlast("Outlast {W}", Keyword::Outlast(mana("{W}")))]
@@ -1185,6 +1204,8 @@ mod tests {
             "Demonstrate",
             "Hideaway 4",
             "Gift a card",
+            "For Mirrodin!",
+            "Job select",
             "Ninjutsu {1}{U}",
             "Improvise",
             "Affinity for artifacts",

@@ -503,13 +503,21 @@ fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Modification>>
         }
         let listed = r.punct(',');
         if listed || r.word("and") {
+            // "Equipped creature gets +1/+0 and is a Monk in addition to its other types."
+            if let Some(kind) = r.attempt(|r| of_a_kind(r, is)) {
+                mods.push(kind);
+                return Some(mods);
+            }
             r.word(has).then_some(())?;
             mods.extend(gives(r)?);
         }
         if listed {
             r.punct(',').then_some(())?;
-            goaded(r).then_some(())?;
-            mods.push(Modification::Goaded);
+            if goaded(r) {
+                mods.push(Modification::Goaded);
+            } else {
+                mods.push(of_a_kind(r, is)?);
+            }
         }
         return Some(mods);
     }
@@ -519,6 +527,16 @@ fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Modification>>
         mods.push(Modification::Goaded);
     }
     Some(mods)
+}
+
+/// "and is a Monk in addition to its other types" (the "and" optional): the creature type a permanent gets as well.
+fn of_a_kind(r: &mut Reader<'_>, is: &str) -> Option<Modification> {
+    r.word("and");
+    r.word(is).then_some(())?;
+    (r.word("a") || r.word("an")).then_some(())?;
+    let kind = subtype(r)?;
+    r.words("in addition to its other types")
+        .then_some(Modification::AddSubtype(Subtype(kind)))
 }
 
 /// What a permanent is given: keywords, or one activated ability in quotes ("Enchanted creature has \"{R}, {T}: Copy
@@ -1214,10 +1232,19 @@ fn predicate(
     } else {
         ("gets", "has", "is")
     };
-    // "is goaded" is the last part of the sentence.
-    let (mods, goaded) = match mods.split_last() {
-        Some((Modification::Goaded, rest)) if !rest.is_empty() => (rest, true),
-        _ => (mods, false),
+    // "is goaded" and "is a Monk in addition to its other types" are the last part of the sentence.
+    let (mods, last) = match mods.split_last() {
+        Some((Modification::Goaded, rest)) if !rest.is_empty() => {
+            (rest, Some(format!("{is} goaded")))
+        }
+        Some((Modification::AddSubtype(Subtype(kind)), rest)) if !rest.is_empty() && !plural => (
+            rest,
+            Some(format!(
+                "is {} {kind} in addition to its other types",
+                article(kind)
+            )),
+        ),
+        _ => (mods, None),
     };
     let (stats, rest) = match mods.split_first() {
         Some((Modification::ModifyPT { power, toughness }, rest)) => {
@@ -1230,8 +1257,7 @@ fn predicate(
     if !rest.is_empty() {
         parts.push(format!("{has} {}", given_text(rest)?));
     }
-    if goaded {
-        let last = format!("{is} goaded");
+    if let Some(last) = last {
         return match parts.as_slice() {
             [one] => Some(format!("{one} and {last}")),
             [first, second] => Some(format!("{first}, {second}, and {last}")),

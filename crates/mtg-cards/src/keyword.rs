@@ -268,6 +268,10 @@ pub enum Keyword {
     Hideaway(u32),
     /// Gift (CR 702.174): as an additional cost the caster may promise an opponent a gift; the chosen opponent gets it as the spell resolves or when the permanent enters, before other effects.
     Gift(GiftKind),
+    /// For Mirrodin! (CR 702.163): when this Equipment enters, its controller creates a 2/2 red Rebel creature token, then attaches the Equipment to it.
+    ForMirrodin,
+    /// Job select: when this Equipment enters, its controller creates a 1/1 colorless Hero creature token, then attaches the Equipment to it.
+    JobSelect,
 }
 
 /// What a promised gift is (CR 702.174).
@@ -404,6 +408,8 @@ impl Keyword {
         "Demonstrate",
         "Hideaway",
         "Gift",
+        "For Mirrodin!",
+        "Job select",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -534,6 +540,8 @@ impl Keyword {
             Keyword::Demonstrate => "Demonstrate",
             Keyword::Hideaway(_) => "Hideaway",
             Keyword::Gift(_) => "Gift",
+            Keyword::ForMirrodin => "For Mirrodin!",
+            Keyword::JobSelect => "Job select",
             Keyword::Dash(_) => "Dash",
             Keyword::Blitz(_) => "Blitz",
             Keyword::Prowl(_) => "Prowl",
@@ -702,6 +710,8 @@ mod tests {
             Keyword::Demonstrate,
             Keyword::Hideaway(4),
             Keyword::Gift(GiftKind::Card),
+            Keyword::ForMirrodin,
+            Keyword::JobSelect,
         ]
     }
 

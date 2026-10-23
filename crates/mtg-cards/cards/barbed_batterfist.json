@@ -1,0 +1,21 @@
+{
+  "oracle_id": "93c2b91d-7d4e-483c-a11f-4a525f881503",
+  "name": "Barbed Batterfist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barbed Batterfist",
+      "oracle_fingerprint": "6b6809ea9f9b3fd2b8c1fdaf848e352f",
+      "abilities": [
+        { "Keyword": "ForMirrodin" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": -1 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

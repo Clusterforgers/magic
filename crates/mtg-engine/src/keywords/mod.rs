@@ -54,6 +54,7 @@ mod first_strike;
 mod flash;
 mod flashback;
 mod flying;
+mod for_mirrodin;
 pub(crate) mod foretell;
 mod fuse;
 pub mod gift;
@@ -64,6 +65,7 @@ mod improvise;
 mod indestructible;
 mod infect;
 mod intimidate;
+mod job_select;
 mod jump_start;
 mod kicker;
 mod landwalk;
@@ -493,6 +495,8 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Affinity(_) => &affinity::Affinity,
         Keyword::Typecycling { .. } => &typecycling::Typecycling,
         Keyword::Ascend => &ascend::Ascend,
+        Keyword::ForMirrodin => &for_mirrodin::ForMirrodin,
+        Keyword::JobSelect => &job_select::JobSelect,
         // The keywords before them are matched by `rules`.
         _ => &Unruled,
     }
@@ -817,6 +821,8 @@ mod tests {
             Keyword::Demonstrate,
             Keyword::Hideaway(4),
             Keyword::Gift(GiftKind::Card),
+            Keyword::ForMirrodin,
+            Keyword::JobSelect,
         ]
     }
 
@@ -932,6 +938,8 @@ mod tests {
         "Keyword.Typecycling",
         "Keyword.Fabricate",
         "Keyword.Ascend",
+        "Keyword.ForMirrodin",
+        "Keyword.JobSelect",
         "Keyword.Encore",
         "Keyword.SplitSecond",
         "Keyword.Undaunted",
@@ -1086,6 +1094,8 @@ mod tests {
     #[case::ravenous(Keyword::Ravenous, Hooks { abilities: 2, ..Hooks::none() })]
     #[case::fabricate(Keyword::Fabricate(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ascend(Keyword::Ascend, Hooks::none())]
+    #[case::for_mirrodin(Keyword::ForMirrodin, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::job_select(Keyword::JobSelect, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);

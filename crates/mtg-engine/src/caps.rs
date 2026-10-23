@@ -339,6 +339,8 @@ const RUNS: &[&str] = &[
     "Keyword.Ravenous",
     "Keyword.Fabricate",
     "Keyword.Ascend",
+    "Keyword.ForMirrodin",
+    "Keyword.JobSelect",
     "Condition.CitysBlessing",
     "Effect.MyriadCopies",
     "Keyword.JumpStart",
@@ -716,6 +718,8 @@ mod tests {
     #[case::improvise("Keyword.Improvise", true)]
     #[case::affinity("Keyword.Affinity", true)]
     #[case::typecycling("Keyword.Typecycling", true)]
+    #[case::for_mirrodin("Keyword.ForMirrodin", true)]
+    #[case::job_select("Keyword.JobSelect", true)]
     #[case::split_second("Keyword.SplitSecond", true)]
     #[case::undaunted("Keyword.Undaunted", true)]
     #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "6253f9d4-83ff-4a0b-b465-e9f9a565f664",
+  "name": "Vulshok Splitter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vulshok Splitter",
+      "oracle_fingerprint": "229711db9b00eb2759931ab87a265a01",
+      "abilities": [
+        { "Keyword": "ForMirrodin" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}{R}" } }
+      ]
+    }
+  ]
+}

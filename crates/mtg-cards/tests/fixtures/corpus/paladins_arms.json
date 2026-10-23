@@ -1,0 +1,26 @@
+{
+  "id": "446506c5-5e1d-4b42-aef3-ea247d7881ef",
+  "oracle_id": "22076484-e9d5-4f33-8cf3-b9b427436b05",
+  "name": "Paladin's Arms",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fin",
+  "collector_number": "28",
+  "rarity": "common",
+  "released_at": "2025-06-13",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Job select (When this Equipment enters, create a 1/1 colorless Hero creature token, then attach this to it.)\nEquipped creature gets +2/+1, has ward {1}, and is a Knight in addition to its other types.\nLightbringer and Hero's Shield — Equip {4} ({4}: Attach to target creature you control. Equip only as a sorcery.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Job select",
+    "Equip"
+  ]
+}
