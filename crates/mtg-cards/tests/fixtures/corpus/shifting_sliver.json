@@ -1,0 +1,25 @@
+{
+  "id": "c1d3b30b-d4c4-4f60-a7b3-e8854bd203d5",
+  "oracle_id": "6a262f53-2eea-45d0-8189-9222d66f1b52",
+  "name": "Shifting Sliver",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "855",
+  "rarity": "uncommon",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Sliver",
+  "oracle_text": "Slivers can't be blocked except by Slivers.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

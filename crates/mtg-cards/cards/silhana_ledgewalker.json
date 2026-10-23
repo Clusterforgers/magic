@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5b15dcac-38dc-4957-bc01-40153ea07559",
+  "name": "Silhana Ledgewalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silhana Ledgewalker",
+      "oracle_fingerprint": "b31cc05dc84e1170e3c842107e06fe64",
+      "abilities": [
+        { "Keyword": "Hexproof" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CantBeBlockedBy": [{ "Not": { "HasKeyword": "Flying" } }] }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "f1993767-1d07-49c8-b8dc-04ec9840a999",
+  "name": "Long River's Pull",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Long River's Pull",
+      "oracle_fingerprint": "792404e2e0093088b99d045fbb4df413",
+      "abilities": [
+        { "Keyword": { "Gift": "Card" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": ["Spell", { "Type": "Creature" }] },
+                "bounds": {
+                  "min": 1,
+                  "max": { "Sum": [1, { "Times": { "by": -1, "of": "Promised" } }] }
+                }
+              },
+              { "what": { "Object": ["Spell"] }, "bounds": { "min": 1, "max": "Promised" } }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [{ "Counter": { "what": { "Target": 1 } } }],
+                  "otherwise": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

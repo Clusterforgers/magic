@@ -60,6 +60,19 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .filter(|player| state.is_alive(*player))
         .collect();
     let source = Some(cx.scope.source.id).filter(|id| state.object(*id).is_some());
+    let chosen_type = match source
+        .and_then(|id| state.object(id))
+        .and_then(GameObject::permanent)
+        .and_then(PermanentState::chosen)
+    {
+        Some(Chosen::CreatureType(subtype)) => Some(subtype),
+        _ => None,
+    };
+    // Mana that may be spent only on the chosen type is none while no type is chosen.
+    let Some(only) = mtg_cards::spend::resolve_uses(only, chosen_type) else {
+        return Ok(Run::events(Vec::new()));
+    };
+    let only = &only;
     let mut events = Vec::new();
     // The types a player picks between and how many mana of the one picked.
     let (kinds, each): (Vec<ManaType>, u32) = match mana {

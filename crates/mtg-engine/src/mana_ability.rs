@@ -222,7 +222,15 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
             shape.sacrifice,
             !shape.then.is_empty() || !pays.is_empty() || shape.once || !takes.is_empty(),
         );
-        let (only, once) = (shape.only.to_vec(), shape.once);
+        // "of the chosen type" is the type the source chose; without one the mana could pay for nothing.
+        let chosen = match object.permanent().and_then(PermanentState::chosen) {
+            Some(Chosen::CreatureType(subtype)) => Some(subtype),
+            _ => None,
+        };
+        let Some(only) = mtg_cards::spend::resolve_uses(shape.only, chosen) else {
+            continue;
+        };
+        let once = shape.once;
         let options = additions
             .into_iter()
             .take(VARIANTS)

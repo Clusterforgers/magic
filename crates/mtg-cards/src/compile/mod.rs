@@ -484,7 +484,7 @@ mod tests {
     )]
     #[case::keyword_and_an_unread_static(
         "Artifact \u{2014} Equipment",
-        "Equipped creature can't be blocked except by creatures with flying.\nEquip {1}",
+        "Equipped creature can't be blocked by more than one creature.\nEquip {1}",
         Some(ImplStatus::Partial)
     )]
     #[case::nothing_read("Instant", "Flip a coin.", Some(ImplStatus::Manual))]
@@ -649,7 +649,7 @@ mod tests {
     #[rstest]
     #[case::mayhem("Mayhem {1}{B}")]
     #[case::with_a_number("Squad 2")]
-    #[case::with_a_word("Gift a card")]
+    #[case::with_a_word("Epic")]
     #[case::with_a_dash("Impending 4\u{2014}{2}{U}")]
     #[case::alone("Surge")]
     fn an_unknown_keyword_line_does_not_block_the_effect_lines_of_its_spell(#[case] line: &str) {

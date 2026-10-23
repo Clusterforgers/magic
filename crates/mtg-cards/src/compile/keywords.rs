@@ -7,7 +7,7 @@ use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 
 use crate::cost::{Cost, CostItem};
-use crate::keyword::Keyword;
+use crate::keyword::{GiftKind, Keyword};
 use crate::mana::ManaCostX;
 use crate::refs::{Pred, Selector};
 use crate::value::Amount;
@@ -190,6 +190,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("fading", Params::Number),
     ("graft", Params::Number),
     ("hideaway", Params::Number),
+    ("gift", Params::Text),
     ("modular", Params::Number),
     ("poisonous", Params::Number),
     ("rampage", Params::Number),
@@ -351,6 +352,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "offspring" => spell_cost(rest).map(Keyword::Offspring),
         "casualty" => positive(rest).map(Keyword::Casualty),
         "hideaway" => positive(rest).map(Keyword::Hideaway),
+        "gift" => gift(rest),
         "devour" => devour(rest),
         "foretell" => cost(rest).map(Keyword::Foretell),
         "unearth" => spell_cost(rest).map(Keyword::Unearth),
@@ -419,6 +421,20 @@ fn devour(rest: &str) -> Option<Keyword> {
 /// A whole number above zero, as the counted keywords print it ("Crew 2", "Dredge 3").
 fn positive(rest: &str) -> Option<u32> {
     rest.parse().ok().filter(|number| *number > 0)
+}
+
+/// `a card`, `a Treasure`, `a tapped Fish`: what the promised gift is.
+fn gift(rest: &str) -> Option<Keyword> {
+    let kind = match rest.trim().to_ascii_lowercase().as_str() {
+        "a card" => GiftKind::Card,
+        "a treasure" => GiftKind::Treasure,
+        "a food" => GiftKind::Food,
+        "a tapped fish" => GiftKind::TappedFish,
+        "an octopus" => GiftKind::Octopus,
+        "an extra turn" => GiftKind::ExtraTurn,
+        _ => return None,
+    };
+    Some(Keyword::Gift(kind))
 }
 
 /// The text of a `Partner—<text>` item (`Friends forever`, `Character select`), the group of commanders that pair.
@@ -771,6 +787,10 @@ mod tests {
     #[case::offspring("Offspring {2}", Keyword::Offspring(mana("{2}")))]
     #[case::casualty("Casualty 2", Keyword::Casualty(2))]
     #[case::hideaway("Hideaway 4", Keyword::Hideaway(4))]
+    #[case::gift_a_card("Gift a card", Keyword::Gift(GiftKind::Card))]
+    #[case::gift_a_treasure("Gift a Treasure", Keyword::Gift(GiftKind::Treasure))]
+    #[case::gift_a_tapped_fish("Gift a tapped Fish", Keyword::Gift(GiftKind::TappedFish))]
+    #[case::gift_an_extra_turn("Gift an extra turn", Keyword::Gift(GiftKind::ExtraTurn))]
     #[case::hideaway_five("hideaway 5", Keyword::Hideaway(5))]
     #[case::demonstrate("Demonstrate", Keyword::Demonstrate)]
     #[case::devour("Devour 2", Keyword::Devour { counters: 2, of: creature() })]
@@ -1164,6 +1184,7 @@ mod tests {
             "Prowl {1}",
             "Demonstrate",
             "Hideaway 4",
+            "Gift a card",
             "Ninjutsu {1}{U}",
             "Improvise",
             "Affinity for artifacts",

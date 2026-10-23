@@ -1,0 +1,40 @@
+{
+  "oracle_id": "27905301-333e-4cdd-90cf-188159fcf8e9",
+  "name": "Wear Down",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wear Down",
+      "oracle_fingerprint": "1fac458a9979a16b0f97869e6528e54b",
+      "abilities": [
+        { "Keyword": { "Gift": "Card" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              },
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                },
+                "bounds": { "min": 1, "max": "Promised" }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [{ "Destroy": { "what": { "Target": 1 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

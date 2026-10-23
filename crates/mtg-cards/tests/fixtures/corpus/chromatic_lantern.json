@@ -1,0 +1,19 @@
+{
+  "id": "9b29492a-8bdd-4806-8d1b-3058ed277cc1",
+  "oracle_id": "539f5396-d99a-417d-a84c-dff7930b5900",
+  "name": "Chromatic Lantern",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mbc",
+  "collector_number": "73",
+  "rarity": "rare",
+  "released_at": "2026-10-19",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact",
+  "oracle_text": "Lands you control have \"{T}: Add one mana of any color.\"\n{T}: Add one mana of any color.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

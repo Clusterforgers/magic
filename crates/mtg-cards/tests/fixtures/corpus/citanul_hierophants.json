@@ -1,0 +1,25 @@
+{
+  "id": "f378ee17-bf8b-4a83-b42e-86da10817dba",
+  "oracle_id": "f67df84f-667e-41cf-80f9-911abafe70ac",
+  "name": "Citanul Hierophants",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "81",
+  "rarity": "rare",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Druid",
+  "oracle_text": "Creatures you control have \"{T}: Add {G}.\"",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

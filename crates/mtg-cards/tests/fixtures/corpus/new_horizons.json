@@ -1,0 +1,32 @@
+{
+  "id": "86b3923c-c35c-4eb2-9dd3-b15c13778ecf",
+  "oracle_id": "8834d3c9-cdb5-423b-bc78-94a94add5e74",
+  "name": "New Horizons",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fdn",
+  "collector_number": "557",
+  "rarity": "common",
+  "released_at": "2024-11-15",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant land\nWhen this Aura enters, put a +1/+1 counter on target creature you control.\nEnchanted land has \"{T}: Add two mana of any one color.\"",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

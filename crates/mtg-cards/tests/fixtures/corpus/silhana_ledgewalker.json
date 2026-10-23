@@ -1,0 +1,27 @@
+{
+  "id": "21a2d11e-48b7-4e9a-a574-838cc26c2b17",
+  "oracle_id": "5b15dcac-38dc-4957-bc01-40153ea07559",
+  "name": "Silhana Ledgewalker",
+  "lang": "en",
+  "layout": "normal",
+  "set": "otc",
+  "collector_number": "206",
+  "rarity": "common",
+  "released_at": "2024-04-19",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Elf Rogue",
+  "oracle_text": "Hexproof (This creature can't be the target of spells or abilities your opponents control.)\nThis creature can't be blocked except by creatures with flying.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Hexproof"
+  ]
+}

@@ -664,6 +664,10 @@ const PAID_WAYS: [(&str, CastWay); 1] = [("prowl", CastWay::Prowl)];
 
 /// "its prowl cost was paid", or "this spell's prowl cost was paid" with `spell`: it was cast for that alternative cost.
 pub fn cost_paid(r: &mut Reader<'_>, spell: bool) -> Option<Condition> {
+    // Gift (CR 702.174): the one optional additional cost a card with the keyword has.
+    if r.words("the gift was promised") {
+        return Some(Condition::AdditionalCostPaid);
+    }
     if spell {
         r.source().then_some(())?;
         r.punct('\'').then_some(())?;
@@ -679,6 +683,9 @@ pub fn cost_paid(r: &mut Reader<'_>, spell: bool) -> Option<Condition> {
 
 /// The condition `cost_paid` reads, written back for the same `spell`.
 pub fn cost_paid_text(condition: &Condition, spell: bool) -> Option<String> {
+    if *condition == Condition::AdditionalCostPaid {
+        return Some("the gift was promised".to_owned());
+    }
     let Condition::CastWith(way) = condition else {
         return None;
     };

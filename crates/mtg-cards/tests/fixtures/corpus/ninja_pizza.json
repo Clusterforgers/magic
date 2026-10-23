@@ -1,0 +1,25 @@
+{
+  "id": "74c24ff9-d3d2-4ffb-bf8b-dba803481a99",
+  "oracle_id": "58c615f3-8c3b-47bf-8032-809fc4232ccb",
+  "name": "Ninja Pizza",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tmc",
+  "collector_number": "32",
+  "rarity": "rare",
+  "released_at": "2026-03-06",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Foods you control have \"{T}, Sacrifice this artifact: Add one mana of any color.\"\nAt the beginning of your second main phase, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Food"
+  ]
+}

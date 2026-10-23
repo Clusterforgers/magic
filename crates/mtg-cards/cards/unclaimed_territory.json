@@ -1,0 +1,38 @@
+{
+  "oracle_id": "584b15f2-6ae9-413a-8b8d-9244dbea4878",
+  "name": "Unclaimed Territory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unclaimed Territory",
+      "oracle_fingerprint": "0e7193f4a07074f1b116298d1c3ee96a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [{ "Spell": { "types": ["Creature"], "chosen_type": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

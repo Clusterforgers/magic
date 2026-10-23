@@ -1,0 +1,28 @@
+{
+  "id": "c42ab407-e72d-4c48-9a9e-2055b5e71c69",
+  "oracle_id": "235e3231-c5e5-4696-a867-705b2c4158fe",
+  "name": "Scrapshooter",
+  "lang": "en",
+  "layout": "normal",
+  "set": "blb",
+  "collector_number": "191",
+  "rarity": "rare",
+  "released_at": "2024-08-02",
+  "digital": false,
+  "mana_cost": "{1}{G}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Raccoon Archer",
+  "oracle_text": "Gift a card (You may promise an opponent a gift as you cast this spell. If you do, when it enters, they draw a card.)\nReach\nWhen this creature enters, if the gift was promised, destroy target artifact or enchantment an opponent controls.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach",
+    "Gift"
+  ]
+}

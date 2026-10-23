@@ -1,0 +1,35 @@
+{
+  "oracle_id": "43a86d36-9653-4498-a533-8b30b919cdbf",
+  "name": "Gift of Paradise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gift of Paradise",
+      "oracle_fingerprint": "0fca80e88aacc7a9d08b11f25efbdf10",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 3 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 2 } } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

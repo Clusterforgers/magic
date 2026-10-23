@@ -1,5 +1,6 @@
 Abbot of Keral Keep
 Aberrant
+Abundant Growth
 Abzan Advantage
 Abzan Battle Priest
 Abzan Falconer
@@ -26,6 +27,7 @@ Ancient Ziggurat
 Angel of Invention
 Angel of Vitality
 Angelic Ascension
+Ant-Man, Elusive Avenger
 Arbor Colossus
 Arcane Signet
 Archon of Absolution
@@ -40,6 +42,7 @@ Assassin's Trophy
 Atlantean Skirmisher
 Atmospheric Greenhouse
 Augury Raven
+Aura Gnarlid
 Authority of the Consuls
 Aven Eternal
 Aven Initiate
@@ -113,14 +116,17 @@ Cavern Whisperer
 Celestial Archon
 Celestial Colonnade
 Celestial Crusader
+Champion of Lambholt
 Changeling Outcast
 Chartooth Cougar
 Chemister's Insight
 Chittering Harvester
 Chomping Kavu
 Chromanticore
+Chromatic Lantern
 Circle of Dreams Druid
 Citadel Gate
+Citanul Hierophants
 Cliffgate
 Clone
 Cloudfin Raptor
@@ -232,6 +238,7 @@ Eyetwitch
 Faithful Watchdog
 Faithless Looting
 Famine
+Fanatic of Rhonas
 Faramir, Steward of Gondor
 Favorable Winds
 Fear of Failed Tests
@@ -271,6 +278,7 @@ Gaea's Cradle
 Galadhrim Brigade
 Galvanizing Sawship
 Game-Trail Changeling
+Gemhide Sliver
 Gemrazer
 Generous Ent
 Gerrard's Wisdom
@@ -280,6 +288,7 @@ Ghostblade Eidolon
 Ghostly Prison
 Giant Cindermaw
 Giant Growth
+Gift of Paradise
 Gilded Goose
 Gilded Lotus
 Girder Goons
@@ -357,6 +366,7 @@ Join the Maestros
 Jolting Merfolk
 Jungle Lion
 Kalemne's Captain
+Karametra's Favor
 Karn's Bastion
 Kathari Screecher
 Kazandu Tuskcaller
@@ -399,6 +409,7 @@ Make Disappear
 Makeshift Mauler
 Mana Bloom
 Manabarbs
+Manaweft Sliver
 Manor Gate
 Map the Wastes
 Marchesa's Emissary
@@ -442,10 +453,12 @@ Mystic Gate
 Nantuko Husk
 Nantuko Vigilante
 Nessian Asp
+New Horizons
 Night Clubber
 Nighthawk Scavenger
 Nightmare
 Nightveil Sprite
+Ninja Pizza
 Ninja of the Deep Hours
 Ninja of the New Moon
 Norn's Annex
@@ -470,6 +483,7 @@ Pestilent Syphoner
 Phantasmal Image
 Phyrexian Prowler
 Phyrexian Soulgorger
+Pillar of Origins
 Pillar of the Paruns
 Pinion Feast
 Plague Myr
@@ -552,8 +566,10 @@ Saw It Coming
 Sawtusk Demolisher
 Scheming Aspirant
 Scorn-Blade Berserker
+Scrapshooter
 Scuzzback Marauders
 Sea Gate
+Secluded Courtyard
 Seedglaive Mentor
 Seekers' Squire
 Serpent-Blade Assailant
@@ -563,11 +579,13 @@ Servant of the Conduit
 Shadowmage Infiltrator
 Shambling Shell
 Shenanigans
+Shifting Sliver
 Shiny Impetus
 Siege Smash
 Siege Wurm
 Sigiled Paladin
 Sigiled Sentinel
+Silhana Ledgewalker
 Sinister Sabotage
 Sinister Starfish
 Sinuous Vermin
@@ -698,6 +716,7 @@ Uktabi Efreet
 Ulamog's Crusher
 Ultramarines Honour Guard
 Umbral Collar Zealot
+Unclaimed Territory
 Underworld Dreams
 Underworld Rage-Hound
 Universal Automaton
@@ -732,7 +751,9 @@ Weaponcraft Enthusiast
 Wear // Tear
 Wedgelight Rammer
 Weigh Down
+Weirding Wood
 Whir of Invention
+Whisperer of the Wilds
 Wild Wasteland
 Wilderness Elemental
 Windborn Muse

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "7973820b-fdaf-46ec-9e3e-d4c0e77b5067",
+  "name": "Fanatic of Rhonas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fanatic of Rhonas",
+      "oracle_fingerprint": "22d05ab979c8b9c9774aff6122ec82f1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Green", "Green", "Green", "Green"] } } }
+            ]
+          }
+        },
+        { "Keyword": { "Eternalize": "{2}{G}{G}" } }
+      ]
+    }
+  ]
+}

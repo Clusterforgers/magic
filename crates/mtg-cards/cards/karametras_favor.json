@@ -1,0 +1,35 @@
+{
+  "oracle_id": "fc3e48c9-e303-435c-bdb1-7dc7881a9858",
+  "name": "Karametra's Favor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karametra's Favor",
+      "oracle_fingerprint": "d6e3b5d5f0cd9f5cc3b2bce7f418b827",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

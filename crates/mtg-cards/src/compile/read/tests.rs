@@ -177,12 +177,14 @@ mod each_pump;
 mod enchanted_player;
 mod enters;
 mod enters_tapped;
+mod evasion;
 mod event_batches;
 mod events;
 mod exile_bounce_shrink;
 mod flicker;
 mod for_each;
 mod goad;
+mod granted_mana;
 mod graveyard;
 mod group_statics;
 mod if_sentence;
@@ -194,6 +196,7 @@ mod life;
 mod life_gain;
 mod lords;
 mod mana_triggers;
+mod mana_wordings;
 mod may;
 mod modes;
 mod monarch;
@@ -379,8 +382,8 @@ mod mana {
     #[case::two_uses(
         "{T}: Add {G}. Spend this mana only to cast artifact spells or activate abilities of artifacts."
     )]
-    #[case::the_chosen_type(
-        "{T}: Add one mana of any color. Spend this mana only to cast a creature spell of the chosen type."
+    #[case::a_chosen_kind(
+        "{T}: Add one mana of any color. Spend this mana only to cast a creature spell of the chosen kind."
     )]
     #[case::without_the_period_after_the_mana(
         "{T}: Add {G} Spend this mana only to cast creature spells."

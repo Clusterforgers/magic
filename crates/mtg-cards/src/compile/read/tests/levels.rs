@@ -110,7 +110,9 @@ fn a_static_ability_keeps_its_own_condition_beside_the_levels() {
 #[case::an_unread_line("LEVEL 2-3\n1/1\nFrobnicate the widgets.")]
 #[case::a_size_that_is_not_one("LEVEL 2-3\n*/1")]
 #[case::a_spell_line_in_the_block("LEVEL 2-3\n1/1\nDraw a card.")]
-#[case::a_mana_ability_granted("LEVEL 5+\n1/4\nElves you control have \"{T}: Add {G}{G}.\"")]
+#[case::an_ability_granted_that_is_unread(
+    "LEVEL 5+\n1/4\nElves you control have \"{T}: Do something odd.\""
+)]
 fn a_block_with_a_line_the_reader_does_not_know_stays_with_the_table(#[case] text: &str) {
     assert_eq!(block(text), None, "{text}");
 }
