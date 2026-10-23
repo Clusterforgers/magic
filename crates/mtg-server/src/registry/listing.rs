@@ -27,6 +27,8 @@ pub struct ListedGame {
     pub format: FormatKind,
     /// What the creator set in place of the format's values.
     pub house_rules: HouseRules,
+    /// Whether the table plays with manual cards, as the roster says it now.
+    pub manual_play: bool,
     /// Seats somebody holds, the host's included.
     pub filled: usize,
     /// Seats in all; a lobby with `filled == total` is full and waits for everybody to be ready.
@@ -72,6 +74,8 @@ impl Registry {
                         .unwrap_or_default(),
                     format: entry.format,
                     house_rules: entry.house_rules.clone(),
+                    // The actor knows the roster; the status below fills it in.
+                    manual_play: false,
                     filled: entry
                         .seats
                         .iter()
@@ -88,11 +92,14 @@ impl Registry {
         candidates.sort_by(|a, b| b.0.cmp(&a.0).then_with(|| b.2.game.cmp(&a.2.game)));
 
         let mut listed = Vec::new();
-        for (_, handle, game) in candidates {
+        for (_, handle, mut game) in candidates {
             if listed.len() == MAX_LISTED_LOBBIES {
                 break;
             }
-            if matches!(handle.status().await, Ok(status) if !status.started) {
+            if let Ok(status) = handle.status().await
+                && !status.started
+            {
+                game.manual_play = status.manual_play;
                 listed.push(game);
             }
         }

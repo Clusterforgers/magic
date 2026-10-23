@@ -214,38 +214,56 @@ impl<S: EventStore> GameActor<S> {
         }
     }
 
+    /// Whether the table plays with manual cards: what the roster says while the game is in its
+    /// lobby, what it said when the game began once it runs.
+    pub(crate) fn manual_play(&self) -> bool {
+        match &self.phase {
+            Phase::Lobby { .. } => self
+                .lobby_seats(&[])
+                .is_some_and(|seats| mtg_protocol::manual_play(&seats)),
+            Phase::Running(running) => running.manual_play(),
+        }
+    }
+
     /// The lobby as the seats see it, `None` once the game runs; `connected` are the seats with a live client.
     fn roster(&self, connected: &[PlayerId]) -> Option<ServerMessage> {
-        let Phase::Lobby { ready, names } = &self.phase else {
-            return None;
-        };
-        let seats: Vec<LobbySeat> = names
-            .iter()
-            .zip(ready)
-            .enumerate()
-            .map(|(index, (name, ready))| {
-                let seat = PlayerId::from_index(index);
-                // Nobody holds an open seat, so it plays nothing the table should hear about.
-                let deck = self
-                    .decks
-                    .as_ref()
-                    .filter(|_| !name.is_empty())
-                    .and_then(|decks| decks.note(index))
-                    .cloned();
-                LobbySeat {
-                    seat,
-                    name: name.clone(),
-                    connected: connected.contains(&seat),
-                    ready: *ready,
-                    deck,
-                }
-            })
-            .collect();
+        let seats = self.lobby_seats(connected)?;
         let needed = seats.iter().filter(|seat| !seat.ready).count();
         Some(ServerMessage::Lobby {
             seats,
             needed: u32::try_from(needed).unwrap_or(u32::MAX),
         })
+    }
+
+    /// The seats of the lobby, `None` once the game runs; `connected` are the seats with a live client.
+    fn lobby_seats(&self, connected: &[PlayerId]) -> Option<Vec<LobbySeat>> {
+        let Phase::Lobby { ready, names } = &self.phase else {
+            return None;
+        };
+        Some(
+            names
+                .iter()
+                .zip(ready)
+                .enumerate()
+                .map(|(index, (name, ready))| {
+                    let seat = PlayerId::from_index(index);
+                    // Nobody holds an open seat, so it plays nothing the table should hear about.
+                    let deck = self
+                        .decks
+                        .as_ref()
+                        .filter(|_| !name.is_empty())
+                        .and_then(|decks| decks.note(index))
+                        .cloned();
+                    LobbySeat {
+                        seat,
+                        name: name.clone(),
+                        connected: connected.contains(&seat),
+                        ready: *ready,
+                        deck,
+                    }
+                })
+                .collect(),
+        )
     }
 
     /// Creates the engine, persists its opening events and shows them from seq 0 like any other batch.
@@ -262,16 +280,17 @@ impl<S: EventStore> GameActor<S> {
         };
         // The decks the seats chose go into the recipe before the first event is stored, so a log
         // can never be replayed under the decks the game was made with. A recipe that already
-        // names them is left alone.
+        // names them is left alone. The flag is stored with them, as the roster tells it now.
+        let manual_play = self.manual_play();
         let recipe = self
             .decks
             .as_ref()
             .filter(|decks| decks.changed())
             .and_then(SeatDecks::recipe);
-        if let (Some(recipe), Some(recorder)) = (recipe, &self.recorder)
-            && let Err(error) = recorder.decks(&recipe).await
+        if let Some(recorder) = &self.recorder
+            && let Err(error) = recorder.start_with(recipe.as_ref(), manual_play).await
         {
-            tracing::error!(game = %self.id, %error, "could not store the decks the game starts with");
+            tracing::error!(game = %self.id, %error, "could not store what the game starts with");
             let reason = "the game could not be started";
             self.refuse(trigger, Rejection::new(ErrorCode::Internal, reason));
             return Ok(());
@@ -279,7 +298,7 @@ impl<S: EventStore> GameActor<S> {
         let opening = engine.events().to_vec();
         match self.persist(&before, &opening, 0).await {
             Ok(batches) => {
-                let mut running = Running::new(engine, self.pace);
+                let mut running = Running::new(engine, self.pace).with_manual_play(manual_play);
                 let first = running.settle(false, Halt::Ask);
                 // A game starts in the mulligans, but a scenario can open on a priority decision nobody is asked.
                 let idle = first.as_ref().is_some_and(|issued| {

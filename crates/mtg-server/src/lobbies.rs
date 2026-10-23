@@ -200,6 +200,7 @@ fn view(game: ListedGame) -> LobbyGame {
         host: game.host,
         format: game.format.as_str().to_owned(),
         house_rules: Some(game.house_rules).filter(|rules| !rules.is_empty()),
+        manual_play: game.manual_play,
         filled: count(game.filled),
         total: count(game.total),
         created_at: game.created_at,
@@ -212,6 +213,7 @@ fn view(game: ListedGame) -> LobbyGame {
 fn listing_tag(listed: &[ListedGame]) -> String {
     let mut hash = Sha256::new();
     for game in listed {
+        let manual = if game.manual_play { "1" } else { "0" };
         let filled = game.filled.to_string();
         let total = game.total.to_string();
         let id = game.game.to_string();
@@ -222,6 +224,7 @@ fn listing_tag(listed: &[ListedGame]) -> String {
             &game.host,
             game.format.as_str(),
             &rules,
+            manual,
             &filled,
             &total,
             &game.created_at,
@@ -602,6 +605,7 @@ mod tests {
             host: host.to_owned(),
             format: FormatKind::Normal,
             house_rules: HouseRules::default(),
+            manual_play: false,
             filled,
             total: 4,
             created_at: "2026-10-19T12:30:00Z".to_owned(),
@@ -649,6 +653,10 @@ mod tests {
             },
             ListedGame {
                 total: 5,
+                ..base.clone()
+            },
+            ListedGame {
+                manual_play: true,
                 ..base.clone()
             },
             ListedGame {

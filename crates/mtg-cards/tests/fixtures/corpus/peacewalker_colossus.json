@@ -1,0 +1,25 @@
+{
+  "id": "e66a27a1-f15d-46d6-8247-f098603957f1",
+  "oracle_id": "f89f7c7d-6eb3-4335-b9df-0ccaa9c50558",
+  "name": "Peacewalker Colossus",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nec",
+  "collector_number": "155",
+  "rarity": "rare",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Vehicle",
+  "oracle_text": "{1}{W}: Another target Vehicle you control becomes an artifact creature until end of turn.\nCrew 4 (Tap any number of creatures you control with total power 4 or more: This Vehicle becomes an artifact creature until end of turn.)",
+  "power": "6",
+  "toughness": "6",
+  "colors": [],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Crew"
+  ]
+}

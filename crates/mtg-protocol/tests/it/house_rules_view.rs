@@ -109,6 +109,7 @@ fn row(house_rules: Option<HouseRules>) -> LobbyGame {
         host: "Ann".into(),
         format: "normal".into(),
         house_rules,
+        manual_play: false,
         filled: 1,
         total: 4,
         created_at: "2026-10-19T12:30:00Z".into(),

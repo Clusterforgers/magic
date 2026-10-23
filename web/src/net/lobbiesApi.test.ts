@@ -13,6 +13,7 @@ const row = {
   game: GAME,
   host: 'Ann',
   format: 'normal',
+  manual_play: false,
   filled: 1,
   total: 4,
   created_at: '2026-10-19T12:30:00Z',
