@@ -44,9 +44,7 @@ impl Seen {
                     self.god_enchantments += 1;
                 }
             }
-            if DELIRIUM_CREATURES.contains(&name)
-                && chars.power > object.card().power
-            {
+            if DELIRIUM_CREATURES.contains(&name) && chars.power > object.card().power {
                 self.grown_delirium += 1;
             }
             if QUESTS.contains(&name)

@@ -132,16 +132,19 @@ fn a_static_ability_under_a_state_or_a_count_reads_as_the_hand_written_files_say
         text,
         ClauseKind::Static,
         false,
-        &json
-            .replace("CONDITION", &condition.replace("GRAVEYARD", GRAVEYARD)),
+        &json.replace("CONDITION", &condition.replace("GRAVEYARD", GRAVEYARD)),
     );
 }
 
 #[rstest]
 #[case::devotion_at_most("As long as your devotion to white is five or less, ~ isn't a creature.")]
-#[case::a_devotion_of_no_color("As long as your devotion to lime is less than five, ~ isn't a creature.")]
+#[case::a_devotion_of_no_color(
+    "As long as your devotion to lime is less than five, ~ isn't a creature."
+)]
 #[case::no_type_taken_without_a_condition("~ isn't a creature.")]
-#[case::another_zone("As long as there are seven or more cards in your hand, this creature gets +2/+2.")]
+#[case::another_zone(
+    "As long as there are seven or more cards in your hand, this creature gets +2/+2."
+)]
 #[case::an_opponents_graveyard(
     "As long as there are seven or more cards in an opponent's graveyard, this creature gets +2/+2."
 )]
@@ -150,8 +153,12 @@ fn a_static_ability_under_a_state_or_a_count_reads_as_the_hand_written_files_say
 )]
 #[case::a_state_of_another_thing("This creature has haste as long as target creature is untapped.")]
 #[case::a_state_it_does_not_know("This creature has haste as long as it's enchanted.")]
-#[case::counters_of_no_kind("This creature has haste as long as it has three or more counters on it.")]
-#[case::counters_it_may_not_name("This creature has haste as long as it has three or more +1/+1 counters.")]
+#[case::counters_of_no_kind(
+    "This creature has haste as long as it has three or more counters on it."
+)]
+#[case::counters_it_may_not_name(
+    "This creature has haste as long as it has three or more +1/+1 counters."
+)]
 #[case::controlling_none_of_the_opponents_things(
     "This creature can't be blocked as long as you control no creatures your opponents control."
 )]

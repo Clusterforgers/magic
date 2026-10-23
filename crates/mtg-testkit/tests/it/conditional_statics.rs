@@ -2,8 +2,8 @@
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common::pid;
-use mtg_cards::value::CounterKind;
 use mtg_cards::CardDefinition;
+use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::mana::ManaCost;
 use mtg_engine::characteristics;
@@ -173,10 +173,7 @@ fn a_quest_enchantment_pumps_the_creatures_of_its_controller_once_it_holds_enoug
         )
         .battlefield(1, vec![ready(free_creature("Theirs", 2, 2))]);
     let driver = Driver::from_scenario(scenario)?;
-    assert_eq!(
-        stats(&driver, "Mine"),
-        (Some(expected.0), Some(expected.1))
-    );
+    assert_eq!(stats(&driver, "Mine"), (Some(expected.0), Some(expected.1)));
     assert_eq!(stats(&driver, "Theirs"), (Some(2), Some(2)));
     Ok(())
 }

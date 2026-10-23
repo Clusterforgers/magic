@@ -74,10 +74,17 @@ pub fn conditional_static_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefiniti
         Color::Red,
     ];
     let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS).map(|i| land(colors[i % 5])).collect();
-    for (name, copies) in [("Thassa, God of the Sea", 4)] {
-        deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
-    }
-    for &name in GODS.iter().skip(1).chain(DELIRIUM_CREATURES).chain(QUESTS).chain(OTHER_CONDITIONAL) {
+    deck.extend(std::iter::repeat_n(
+        corpus::card("Thassa, God of the Sea")?,
+        4,
+    ));
+    for &name in GODS
+        .iter()
+        .skip(1)
+        .chain(DELIRIUM_CREATURES)
+        .chain(QUESTS)
+        .chain(OTHER_CONDITIONAL)
+    {
         deck.push(corpus::card(name)?);
     }
     for name in ["Tide Weaver", "Wave Binder", "Reef Singer"] {

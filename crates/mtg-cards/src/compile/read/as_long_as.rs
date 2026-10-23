@@ -163,11 +163,7 @@ fn cards_counted(r: &mut Reader<'_>) -> Option<Condition> {
     r.need("there are")?;
     if r.words("fewer than") {
         let number = quantity(r)?;
-        return Some(compare(
-            Amount::Count(graveyard(r)?),
-            Cmp::Lt,
-            number,
-        ));
+        return Some(compare(Amount::Count(graveyard(r)?), Cmp::Lt, number));
     }
     let number = quantity(r)?;
     r.need("or more")?;
@@ -201,8 +197,7 @@ fn graveyard_cards() -> Selector {
 
 /// "cards in your graveyard".
 fn graveyard(r: &mut Reader<'_>) -> Option<Selector> {
-    r.words("cards in your graveyard")
-        .then(graveyard_cards)
+    r.words("cards in your graveyard").then(graveyard_cards)
 }
 
 /// A count of the amount compared with a number.
@@ -331,7 +326,10 @@ fn devotion_texts(condition: &Condition) -> Vec<String> {
     let Ok(number) = u32::try_from(*number) else {
         return Vec::new();
     };
-    let names: Vec<&str> = colors.iter().map(|shade: &Color| color_name(*shade)).collect();
+    let names: Vec<&str> = colors
+        .iter()
+        .map(|shade: &Color| color_name(*shade))
+        .collect();
     vec![format!(
         "your devotion to {} is less than {}",
         names.join(" and "),
@@ -396,4 +394,3 @@ fn none_texts(condition: &Condition) -> Vec<String> {
         .into_iter()
         .collect()
 }
-

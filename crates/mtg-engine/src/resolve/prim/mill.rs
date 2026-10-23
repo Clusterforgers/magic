@@ -164,11 +164,7 @@ mod tests {
     #[test]
     fn a_count_the_evaluator_cannot_read_is_refused_by_name() {
         assert_eq!(
-            run_on(
-                &game(2, &[], &[]),
-                r#"{"Mill":{"count":"Divided"}}"#
-            )
-            .unwrap_err(),
+            run_on(&game(2, &[], &[]), r#"{"Mill":{"count":"Divided"}}"#).unwrap_err(),
             ResolveError::Unsupported("a divided amount outside the damage or counters it divides")
         );
     }
