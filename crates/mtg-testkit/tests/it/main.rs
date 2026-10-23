@@ -66,6 +66,7 @@ mod copy_dies;
 mod copy_effects;
 mod copy_keywords;
 mod copy_keywords_fuzz;
+mod copy_not_legendary;
 mod corpus_cards;
 mod cost_fuzz;
 mod cost_modifiers;

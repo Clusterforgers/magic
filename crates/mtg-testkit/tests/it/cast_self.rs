@@ -58,7 +58,7 @@ fn cast_and_watch(driver: &mut Driver, name: &str, taps: &[&str]) -> Result<(), 
     driver.cast_tapping(name, taps)?;
     assert_eq!(casts(driver), before + 1);
     assert_eq!(driver.state().stack().len(), 2, "the spell and its trigger");
-    assert!(spell_copies(driver).is_empty());
+    assert_eq!(spell_copies(driver).len(), 0, "no copy yet");
     Ok(())
 }
 

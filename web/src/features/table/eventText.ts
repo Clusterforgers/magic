@@ -54,6 +54,23 @@ function keywordWords(keyword: unknown): string {
 }
 
 /** What a change does to what it changes, as a verb phrase ("becomes an artifact too", "gets +1/+1"). */
+/** The card types in declaration order; the wire set holds bit n for the nth. */
+const CARD_TYPE_ORDER = [
+  'artifact',
+  'battle',
+  'creature',
+  'enchantment',
+  'instant',
+  'kindred',
+  'land',
+  'planeswalker',
+  'sorcery',
+]
+
+function cardTypeNames(types: number): string[] {
+  return CARD_TYPE_ORDER.filter((_, bit) => (types >> bit) & 1)
+}
+
 function modificationWords(modification: Modification, group: boolean): string {
   const becomes = group ? 'become' : 'becomes'
   const gains = group ? 'gain' : 'gains'
@@ -78,6 +95,9 @@ function modificationWords(modification: Modification, group: boolean): string {
   }
   if ('AddType' in modification) return `${becomes} ${modification.AddType.toLowerCase()} too`
   if ('RemoveType' in modification) return `${loses} ${modification.RemoveType.toLowerCase()} as a type`
+  if ('SetTypes' in modification) {
+    return `${becomes} only ${joinWords(cardTypeNames(modification.SetTypes))}`
+  }
   if ('AddSubtype' in modification) return `${becomes} ${modification.AddSubtype} too`
   if ('SetCreatureTypes' in modification) {
     return `${becomes} ${joinWords(modification.SetCreatureTypes)}`

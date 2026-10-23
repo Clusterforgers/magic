@@ -324,39 +324,44 @@ fn player(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
     }
 }
 
+/// What follows "you cast" or "an opponent casts": the nth spell of a turn, the card itself ("this spell", on the stack)
+/// or a kind of spell.
+fn spell_cast(r: &mut Reader<'_>, by: Ref, third: bool) -> Option<TriggerPattern> {
+    if let Some(nth) = each_turn(r, "spell", if third { "their" } else { "your" }) {
+        let event = TriggerPattern::SpellCast {
+            what: Selector::default(),
+            by,
+        };
+        return Some(TriggerPattern::Nth {
+            event: Box::new(event),
+            nth,
+        });
+    }
+    if !third && r.source() {
+        return Some(TriggerPattern::SpellCast {
+            what: Selector::this(),
+            by,
+        });
+    }
+    let mut spell = subject(r)?.0;
+    // The pattern is about a spell already; the selector keeps what the spell must be.
+    if spell.first() != Some(&Pred::Spell) || spell.contains(&Pred::Other) {
+        return None;
+    }
+    spell.remove(0);
+    Some(TriggerPattern::SpellCast {
+        what: Selector(spell),
+        by,
+    })
+}
+
 /// "you cast a creature spell", "an opponent casts a spell", "you sacrifice a Clue".
 fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     let (by, third) = player(r)?;
     let verb = r.take_word()?;
     let whose = if third { "their" } else { "your" };
     if verb == if third { "casts" } else { "cast" } {
-        if let Some(nth) = each_turn(r, "spell", whose) {
-            let event = TriggerPattern::SpellCast {
-                what: Selector::default(),
-                by,
-            };
-            return Some(TriggerPattern::Nth {
-                event: Box::new(event),
-                nth,
-            });
-        }
-        // "When you cast this spell": the card itself, on the stack.
-        if !third && r.source() {
-            return Some(TriggerPattern::SpellCast {
-                what: Selector::this(),
-                by,
-            });
-        }
-        let mut spell = subject(r)?.0;
-        // The pattern is about a spell already; the selector keeps what the spell must be.
-        if spell.first() != Some(&Pred::Spell) || spell.contains(&Pred::Other) {
-            return None;
-        }
-        spell.remove(0);
-        Some(TriggerPattern::SpellCast {
-            what: Selector(spell),
-            by,
-        })
+        spell_cast(r, by, third)
     } else if verb == if third { "sacrifices" } else { "sacrifice" } {
         Some(TriggerPattern::Sacrificed {
             what: subject(r)?,

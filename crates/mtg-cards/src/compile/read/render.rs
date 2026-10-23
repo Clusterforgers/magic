@@ -96,6 +96,18 @@ pub fn variants(ability: &Ability) -> Vec<String> {
         })
         .collect();
     texts.extend(commanders);
+    // A card may call the token of a copy "the token" for "it" in its exceptions (Helm of the Host).
+    let tokens: Vec<String> = texts
+        .iter()
+        .filter(|text| text.contains("except it isn't legendary"))
+        .map(|text| {
+            text.replace(
+                "except it isn't legendary",
+                "except the token isn't legendary",
+            )
+        })
+        .collect();
+    texts.extend(tokens);
     // A card that becomes a target may call itself "it" in the counters it puts on itself (Seedglaive Mentor).
     if matches!(ability, Ability::Triggered { when, .. } if targeted_itself(when)) {
         let pronouns: Vec<String> = texts

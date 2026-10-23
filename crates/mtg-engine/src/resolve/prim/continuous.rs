@@ -115,6 +115,12 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::SwitchPT => Modification::SwitchPowerToughness,
         Wanted::AddType(ty) => Modification::AddType(*ty),
         Wanted::RemoveType(ty) => Modification::RemoveType(*ty),
+        Wanted::SetTypes(types) => Modification::SetTypes(types.iter().copied().collect()),
+        Wanted::RemoveSupertype(_) => {
+            return Err(ResolveError::Unsupported(
+                "Mod.RemoveSupertype outside the exceptions of a copy",
+            ));
+        }
         Wanted::AddSubtype(subtype) => Modification::AddSubtype(subtype.clone()),
         Wanted::SetCreatureTypes(types) => Modification::SetCreatureTypes(types.clone()),
         Wanted::AddAllCreatureTypes => Modification::AddAllCreatureTypes,

@@ -1,0 +1,25 @@
+{
+  "cmc": 5.0,
+  "collector_number": "152",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "561caecd-e065-48f6-8fde-85b938794ed3",
+  "keywords": [
+    "Rebound"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{4}{U}",
+  "name": "Quantum Misalignment",
+  "oracle_id": "197582b9-4c86-41a3-ad0c-789a0db8e087",
+  "oracle_text": "Create a token that's a copy of target creature you control, except it isn't legendary.\nRebound (If you cast this spell from your hand, exile it as it resolves. At the beginning of your next upkeep, you may cast this card from exile without paying its mana cost.)",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "set": "msc",
+  "type_line": "Sorcery"
+}

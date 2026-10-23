@@ -878,6 +878,8 @@ impl<'a> Walker<'a> {
             Modification::SwitchPT
             | Modification::AddType(_)
             | Modification::RemoveType(_)
+            | Modification::SetTypes(_)
+            | Modification::RemoveSupertype(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::AddAllCreatureTypes
@@ -971,7 +973,12 @@ impl<'a> Walker<'a> {
             self.problem("needs at least one modification");
         }
         for (i, modification) in mods.iter().enumerate() {
-            self.at(format!("[{i}]"), |w| w.modification(modification));
+            self.at(format!("[{i}]"), |w| {
+                w.modification(modification);
+                if matches!(modification, Modification::RemoveSupertype(_)) {
+                    w.problem("a supertype is taken away only from the copiable values of a copy (`except`)");
+                }
+            });
         }
     }
 
@@ -2785,6 +2792,10 @@ mod tests {
     #[case::a_colour_is_chosen_as_an_effect_begins(
         r#"{"Static":{"affected":"This","mods":["AddProtectionFromChosenColor"]}}"#,
         "a colour is chosen as an effect begins, so only a `Continuous` effect adds protection from it"
+    )]
+    #[case::a_supertype_goes_with_a_copy_only(
+        r#"{"Static":{"affected":"This","mods":[{"RemoveSupertype":"Legendary"}]}}"#,
+        "a supertype is taken away only from the copiable values of a copy (`except`)"
     )]
     #[case::a_player_takes_only_the_keywords_players_have(
         r#"{"Static":{"affected":"You","mods":[{"AddKeyword":"Flying"}]}}"#,
