@@ -64,6 +64,7 @@ Basking Rootwalla
 Battering Krasis
 Battle Sliver
 Battlefield Forge
+Baxter Building
 Beast Within
 Befriending the Moths // Imperial Moth
 Behold the Multiverse
@@ -114,6 +115,7 @@ Capsize
 Caravan Escort
 Carnage Tyrant
 Cascade Bluffs
+Cascading Cataracts
 Cast Out
 Cathars' Crusade
 Cathartic Reunion
@@ -145,6 +147,7 @@ Consign // Oblivion
 Consign to Dust
 Consuming Aetherborn
 Contentious Plan
+Conversion Apparatus
 Copper-Leaf Angel
 Coralhelm Commander
 Coruscation Mage
@@ -178,6 +181,7 @@ Darkblast
 Darksteel Juggernaut
 Dauthi Horror
 Dauthi Marauder
+Dawn's Reflection
 Dawnglade Regent
 Deadeye Brawler
 Deadly Rollick
@@ -541,6 +545,7 @@ Reiterate
 Rejuvenation Chamber
 Relentless Advance
 Relentless Skaabs
+Relic of Sauron
 Replication Technique
 Rescue Skiff
 Reshape

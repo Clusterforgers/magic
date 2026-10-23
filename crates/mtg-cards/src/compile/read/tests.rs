@@ -161,6 +161,7 @@ mod cast_cost_paid;
 mod chapters;
 mod chosen_color;
 mod class;
+mod combination_mana;
 mod compound;
 mod conditions;
 mod copies;

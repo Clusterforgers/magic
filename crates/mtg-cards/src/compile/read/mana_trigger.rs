@@ -2,7 +2,7 @@
 //! land produced." and "Whenever enchanted land is tapped for mana, its controller adds an additional {G}.", read and
 //! written back. The event is read by `triggers`.
 
-use super::effects::mana_type;
+use super::effects::{combination, mana_type};
 use super::tokens::Reader;
 use crate::effect::{Effect, Produce};
 use crate::mana_trigger::ManaTrigger;
@@ -28,6 +28,9 @@ fn produced(r: &mut Reader<'_>) -> Option<Produce> {
     }
     if r.words("one mana of the chosen color") {
         return Some(Produce::ChosenColor(1));
+    }
+    if let Some(combination) = r.attempt(combination) {
+        return Some(combination);
     }
     let mut list = Vec::new();
     while let Some(mana) = r.attempt(|r| mana_type(r.symbol()?)) {
@@ -67,6 +70,13 @@ fn mana_words(mana: &Produce) -> Option<String> {
         Produce::OfTapped => "one mana of any type that land produced".to_owned(),
         Produce::AnyColor(1) => "an additional one mana of any color".to_owned(),
         Produce::ChosenColor(1) => "an additional one mana of the chosen color".to_owned(),
+        Produce::AnyCombination {
+            count: count @ 2..,
+            among,
+        } => format!(
+            "an additional {}",
+            super::render::combination_text(*count, among)?
+        ),
         Produce::Fixed(list) if !list.is_empty() => {
             format!("an additional {}", super::render::symbols_text(list))
         }

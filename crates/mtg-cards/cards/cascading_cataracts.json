@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d98b4250-3492-4864-9c4c-42db09b3ccd4",
+  "name": "Cascading Cataracts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cascading Cataracts",
+      "oracle_fingerprint": "62fc14d66cc86937760bae8d26b8d027",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyCombination": { "count": 5 } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

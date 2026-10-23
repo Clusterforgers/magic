@@ -126,6 +126,7 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.CommanderIdentity",
     "Effect.AddMana.ProducedBy",
     "Effect.AddMana.OfTapped",
+    "Effect.AddMana.AnyCombination",
     "Ability.ManaAbility.Complex",
     "Effect.PutCounters",
     "Effect.RemoveCounters",
@@ -615,6 +616,7 @@ mod tests {
     #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", true)]
     #[case::mana_a_land_could_produce("Effect.AddMana.ProducedBy", true)]
     #[case::mana_the_tapped_land_produced("Effect.AddMana.OfTapped", true)]
+    #[case::mana_in_any_combination("Effect.AddMana.AnyCombination", true)]
     #[case::devotion("Amount.Devotion", false)]
     #[case::the_greatest_value("Amount.Greatest", true)]
     #[case::totals("Amount.Total", true)]

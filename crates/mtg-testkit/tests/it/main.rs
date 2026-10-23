@@ -40,6 +40,7 @@ mod combat_declarations;
 mod combat_forecast;
 mod combat_keywords_fuzz;
 mod combat_preview;
+mod combination_mana;
 mod commander;
 mod commander_draw;
 mod commander_fuzz;

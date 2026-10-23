@@ -110,6 +110,15 @@ pub enum Produce {
     },
     /// One mana of a type the permanent tapped for mana produced; only in a triggered mana ability (CR 605.1b).
     OfTapped,
+    /// This many mana, each of a type chosen when added from `among` or, with none listed, from the five colors ("two mana
+    /// in any combination of colors", "X mana in any combination of {R} and/or {G}").
+    AnyCombination {
+        /// How many mana.
+        count: u32,
+        /// The types to pick from; none means the five colors.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        among: Vec<ManaType>,
+    },
 }
 
 /// What a created token is.

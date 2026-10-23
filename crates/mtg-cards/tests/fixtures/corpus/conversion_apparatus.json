@@ -1,0 +1,27 @@
+{
+  "id": "79193ac5-bb36-4055-bb94-d7bc0ed2760b",
+  "oracle_id": "931d3dcb-4bbb-4f1a-95e2-7e315faf4158",
+  "name": "Conversion Apparatus",
+  "lang": "en",
+  "layout": "normal",
+  "set": "m3c",
+  "collector_number": "76",
+  "rarity": "rare",
+  "released_at": "2024-06-14",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact",
+  "oracle_text": "{T}: Add {C}.\n{3}, {T}: You get {E}{E}{E} (three energy counters).\n{T}, Pay {E}{E}{E}: Add three mana in any combination of colors.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "C",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

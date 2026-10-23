@@ -18,7 +18,7 @@ use crate::ability_reader::abilities_of;
 use crate::characteristics::controller_of_object;
 use crate::mana::ManaOption;
 use crate::mana_ability::split;
-use crate::mana_kinds::{COLORS, mana_of};
+use crate::mana_kinds::{COLORS, combinations, mana_of};
 use crate::object::{Chosen, GameObject, ObjectRef, PermanentState};
 use crate::resolve::Scope;
 use crate::state::GameState;
@@ -26,7 +26,7 @@ use crate::zones::Zone;
 
 /// The distance between the source numbers of the variants a trigger's pick makes of one option: variant `n` of the
 /// option numbered `a` is `a + n * STRIDE`.
-pub(crate) const STRIDE: usize = 1 << 12;
+pub(crate) const STRIDE: usize = 1 << 14;
 
 /// A triggered mana ability on the battlefield.
 struct Trigger {
@@ -69,6 +69,7 @@ fn ways(
     match mana {
         Produce::Fixed(list) => vec![list.clone()],
         Produce::OfTapped => vec![vec![option.produces]],
+        Produce::AnyCombination { count, among } => combinations(among, *count),
         Produce::AnyColor(count) => COLORS
             .iter()
             .map(|color| vec![*color; *count as usize])

@@ -52,7 +52,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Err(wrong_effect("AddMana"));
     };
     let state = cx.state();
-    let times = usize::try_from(cx.scope.amount(times)?.max(0)).unwrap_or(0);
+    let mut times = usize::try_from(cx.scope.amount(times)?.max(0)).unwrap_or(0);
     let players: Vec<PlayerId> = cx
         .scope
         .players(who)?
@@ -78,6 +78,16 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let (kinds, each): (Vec<ManaType>, u32) = match mana {
         // A triggered mana ability adds its mana with the tap that triggered it (`mana_bonus`), never on the stack.
         Produce::OfTapped => return unsupported("Effect.AddMana.OfTapped.Stack"),
+        // Each mana of the combination is picked as it is added: the pick is asked once for each of them.
+        Produce::AnyCombination { count, among } => {
+            times = times.saturating_mul(*count as usize);
+            let types = if among.is_empty() {
+                COLORS.iter().copied().map(mana_of).collect()
+            } else {
+                among.clone()
+            };
+            (types, 1)
+        }
         Produce::Fixed(list) => {
             for player in &players {
                 for _ in 0..times {
@@ -169,13 +179,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             .iter()
             .map(|kind| ChoiceOption::Label(format!("{{{}}}", kind.symbol())))
             .collect(),
-        Produce::ProducedBy { .. } | Produce::OrChosenColor(_) => kinds
-            .iter()
-            .map(|kind| match kind.color() {
-                Some(color) => ChoiceOption::Color(color),
-                None => ChoiceOption::Label(format!("{{{}}}", kind.symbol())),
-            })
-            .collect(),
+        Produce::ProducedBy { .. } | Produce::OrChosenColor(_) | Produce::AnyCombination { .. } => {
+            kinds
+                .iter()
+                .map(|kind| match kind.color() {
+                    Some(color) => ChoiceOption::Color(color),
+                    None => ChoiceOption::Label(format!("{{{}}}", kind.symbol())),
+                })
+                .collect()
+        }
         Produce::CommanderIdentity(_) => kinds
             .iter()
             .filter_map(|kind| kind.color().map(ChoiceOption::Color))
@@ -427,6 +439,47 @@ mod tests {
         ));
         let run = run_with(&game, vec![(ME, Choice::Option(3))], &three).unwrap();
         assert_eq!(added(run), [(ME, ManaType::Red); 3]);
+    }
+
+    #[rstest]
+    #[case::any_colors(r#"{"AddMana":{"mana":{"AnyCombination":{"count":2}}}}"#, 5)]
+    #[case::listed_types(
+        r#"{"AddMana":{"mana":{"AnyCombination":{"count":2,"among":["Red","Green"]}}}}"#,
+        2
+    )]
+    fn each_mana_of_a_combination_asks_for_its_own_type(
+        #[case] json: &str,
+        #[case] options: usize,
+    ) {
+        let game = game();
+        let combination = effect(json);
+        let first = |run: Run| {
+            let Run::Ask(decision) = run else {
+                panic!("the player chooses");
+            };
+            let DecisionKind::ChooseOption(asked) = decision.kind else {
+                panic!("a choice of option");
+            };
+            asked.options.len()
+        };
+        assert_eq!(
+            first(run_with(&game, Vec::new(), &combination).unwrap()),
+            options
+        );
+        assert_eq!(
+            first(run_with(&game, vec![(ME, Choice::Option(0))], &combination).unwrap()),
+            options,
+            "a second mana asks again"
+        );
+        let run = run_with(
+            &game,
+            vec![(ME, Choice::Option(0)), (ME, Choice::Option(1))],
+            &combination,
+        )
+        .unwrap();
+        let types = added(run);
+        assert_eq!(types.len(), 2);
+        assert_ne!(types[0].1, types[1].1, "the two picks were different");
     }
 
     #[test]

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "362b7838-3b70-4a00-8c26-1c8b8a3b6acf",
+  "name": "Dawn's Reflection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dawn's Reflection",
+      "oracle_fingerprint": "04d570ac64efb4655c0f1a649546d259",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Is": "Attached" }, { "Type": "Land" }] } },
+            "effects": [
+              { "AddMana": { "who": "Triggering", "mana": { "AnyCombination": { "count": 2 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

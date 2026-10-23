@@ -893,6 +893,24 @@ pub(super) fn symbols_text(list: &[mtg_core::mana::ManaType]) -> String {
     symbols
 }
 
+/// "two mana in any combination of colors", "three mana in any combination of {U}, {B}, and/or {R}".
+pub(super) fn combination_text(count: u32, among: &[mtg_core::mana::ManaType]) -> Option<String> {
+    let symbols: Vec<String> = among
+        .iter()
+        .map(|mana| format!("{{{}}}", mana.symbol()))
+        .collect();
+    let types = match symbols.as_slice() {
+        [] => "colors".to_owned(),
+        [_] => return None,
+        [first, second] => format!("{first} and/or {second}"),
+        [init @ .., last] => format!("{}, and/or {last}", init.join(", ")),
+    };
+    Some(format!(
+        "{} mana in any combination of {types}",
+        count_word(count)?
+    ))
+}
+
 fn mana_text(mana: &Produce) -> Option<String> {
     Some(match mana {
         Produce::Fixed(list) if !list.is_empty() => symbols_text(list),
@@ -900,6 +918,10 @@ fn mana_text(mana: &Produce) -> Option<String> {
         Produce::AnyColor(count @ 2..) => {
             format!("{} mana of any one color", count_word(*count)?)
         }
+        Produce::AnyCombination {
+            count: count @ 2..,
+            among,
+        } => combination_text(*count, among)?,
         Produce::ChosenColor(1) => "one mana of the chosen color".to_owned(),
         Produce::OrChosenColor(mana) => {
             format!("{{{}}} or one mana of the chosen color", mana.symbol())

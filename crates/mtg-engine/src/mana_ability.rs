@@ -23,16 +23,16 @@ use crate::events::{Event, ZoneCause};
 use crate::keywords;
 use crate::mana::{ManaOption, ManaSource, Take};
 use crate::mana_bonus;
-use crate::mana_kinds::{COLORS, identity_types, mana_of, producible_types};
+use crate::mana_kinds::{COLORS, combinations, identity_types, mana_of, producible_types};
 use crate::object::{Chosen, PermanentState};
 use crate::parts::{Kind, Part, Payer, energy};
 use crate::resolve::{Scope, run_inline};
 use crate::state::GameState;
 use crate::zones::Zone;
 
-/// The most ways one ability makes its mana: one for each type, and the lists of a choice among lists (the validator
-/// refuses more).
-const VARIANTS: usize = mtg_cards::assemble::MANA_WAYS;
+/// The most ways one ability makes its mana: one for each type, one for each list of a choice among lists and one for
+/// each combination of mana (`mana_shape` refuses an ability with more).
+const VARIANTS: usize = mtg_cards::assemble::MANA_COMBINATIONS;
 
 /// A mana ability from the rules of a permanent, with the option that stands for each way to use it.
 struct RuleMana {
@@ -188,6 +188,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                 COLORS.iter().map(|c| vec![*c; count as usize]).collect()
             }
             ManaProduced::OneOf(types) => types.iter().map(|t| vec![*t]).collect(),
+            ManaProduced::AnyCombination { count, among } => combinations(among, count),
             ManaProduced::OneOfLists(lists) => lists.to_vec(),
             ManaProduced::ChosenColor(count) => {
                 match object.permanent().and_then(PermanentState::chosen) {
@@ -382,6 +383,9 @@ pub(crate) fn activation(
     }
     Ok(events)
 }
+
+#[cfg(test)]
+mod combos;
 
 #[cfg(test)]
 mod tests {

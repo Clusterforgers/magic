@@ -1441,7 +1441,11 @@ impl<'a> Walker<'a> {
                     Produce::AnyColor(0)
                     | Produce::ChosenColor(0)
                     | Produce::CommanderIdentity(0)
-                    | Produce::ProducedBy { count: 0, .. } => w.problem("adds no mana"),
+                    | Produce::ProducedBy { count: 0, .. }
+                    | Produce::AnyCombination { count: 0, .. } => w.problem("adds no mana"),
+                    Produce::AnyCombination { among, .. } if among.len() == 1 => {
+                        w.problem("a combination of one type is that mana");
+                    }
                     Produce::OneOf(list) if list.len() < 2 => {
                         w.problem("a choice of mana needs at least two types");
                     }
@@ -1464,6 +1468,7 @@ impl<'a> Walker<'a> {
                     | Produce::ChosenColor(_)
                     | Produce::OrChosenColor(_)
                     | Produce::CommanderIdentity(_)
+                    | Produce::AnyCombination { .. }
                     | Produce::OfTapped => {}
                 }
                 // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.
