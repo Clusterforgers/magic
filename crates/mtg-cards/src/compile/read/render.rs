@@ -3,6 +3,7 @@
 //! player in a row are one compound sentence; the readers take ", then" between two steps as the
 //! same sequence.
 
+use super::activations;
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
 use super::attackers;
 use super::becomes;
@@ -446,14 +447,13 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             };
             let tails = match condition {
                 None => restriction_texts(*timing, *limit),
-                // "Activate only if you control a Swamp." stands alone.
-                Some(condition) if *timing == Timing::Instant && limit.is_none() => {
-                    statics::control_texts(condition)
-                        .into_iter()
-                        .map(|held| format!("Activate only if {held}."))
-                        .collect()
+                Some(condition) => {
+                    let tails = activations::tails(*timing, condition, *limit);
+                    if tails.is_empty() {
+                        return Vec::new();
+                    }
+                    tails
                 }
-                Some(_) => return Vec::new(),
             };
             alternatives(targets, effects)
                 .iter()
