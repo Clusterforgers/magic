@@ -26,4 +26,8 @@ subtypes?: Array<Subtype>,
 /**
  * Has two or more colors.
  */
-multicolored?: boolean, };
+multicolored?: boolean, 
+/**
+ * Has the creature type chosen as the source entered the battlefield; the engine puts that type in `subtypes` when the mana is added.
+ */
+chosen_type?: boolean, };

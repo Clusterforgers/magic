@@ -1,0 +1,25 @@
+{
+  "id": "46eff31d-f460-48f2-aab7-8b9b89cd87fe",
+  "oracle_id": "c549b0fd-1e08-4873-952e-a14dc45a0fd2",
+  "name": "Champion of Lambholt",
+  "lang": "en",
+  "layout": "normal",
+  "set": "moc",
+  "collector_number": "293",
+  "rarity": "rare",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{1}{G}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "Creatures with power less than this creature's power can't block creatures you control.\nWhenever another creature you control enters, put a +1/+1 counter on this creature.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

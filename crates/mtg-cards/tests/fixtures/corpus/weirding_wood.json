@@ -1,0 +1,33 @@
+{
+  "id": "82e20104-117e-47de-ac0c-cca9250c1f3c",
+  "oracle_id": "9ce5cc2f-e223-4c3b-adc1-c0109fd31762",
+  "name": "Weirding Wood",
+  "lang": "en",
+  "layout": "normal",
+  "set": "moc",
+  "collector_number": "315",
+  "rarity": "uncommon",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant land\nWhen this Aura enters, investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")\nEnchanted land has \"{T}: Add two mana of any one color.\"",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Investigate",
+    "Enchant"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

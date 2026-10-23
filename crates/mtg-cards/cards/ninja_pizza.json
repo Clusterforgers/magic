@@ -1,0 +1,34 @@
+{
+  "oracle_id": "58c615f3-8c3b-47bf-8032-809fc4232ccb",
+  "name": "Ninja Pizza",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ninja Pizza",
+      "oracle_fingerprint": "c2db2fc4cdee2985bb4094c57f864cba",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Food" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap", "SacrificeSelf"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

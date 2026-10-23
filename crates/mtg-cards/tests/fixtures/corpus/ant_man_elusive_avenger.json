@@ -1,0 +1,29 @@
+{
+  "id": "18e2b0a4-0ed3-48e6-8334-198a19e54bff",
+  "oracle_id": "f334087a-deda-4e9e-ab58-68f7e226d7ce",
+  "name": "Ant-Man, Elusive Avenger",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "73",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{1}{U}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Rogue Hero",
+  "oracle_text": "Ant-Man can't be blocked by creatures with greater power.\nWhenever Ant-Man deals combat damage to a player, create that many Treasure tokens.",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Treasure"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "48273e83-139a-43a4-9bb8-171d3620da60",
+  "oracle_id": "43a86d36-9653-4498-a533-8b30b919cdbf",
+  "name": "Gift of Paradise",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c21",
+  "collector_number": "191",
+  "rarity": "common",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant land\nWhen this Aura enters, you gain 3 life.\nEnchanted land has \"{T}: Add two mana of any one color.\"",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

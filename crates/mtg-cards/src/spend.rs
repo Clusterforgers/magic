@@ -28,6 +28,10 @@ pub struct SpendFilter {
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub multicolored: bool,
+    /// Has the creature type chosen as the source entered the battlefield; the engine puts that type in `subtypes` when the mana is added.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub chosen_type: bool,
 }
 
 #[allow(clippy::trivially_copy_pass_by_ref)]
@@ -62,10 +66,23 @@ impl SpendFilter {
         }
     }
 
-    /// Whether something with these traits is of the kind.
+    /// The filter with the chosen creature type put in its subtypes; `None` when it asks for one and none was chosen.
+    pub fn resolved(&self, chosen: Option<&Subtype>) -> Option<SpendFilter> {
+        if !self.chosen_type {
+            return Some(self.clone());
+        }
+        Some(SpendFilter {
+            subtypes: vec![chosen?.clone()],
+            chosen_type: false,
+            ..self.clone()
+        })
+    }
+
+    /// Whether something with these traits is of the kind; a filter whose chosen type is not resolved holds for nothing.
     pub fn holds(&self, traits: &SpendTraits) -> bool {
         let any = |wanted: &[CardType]| wanted.iter().any(|t| traits.types.contains(*t));
-        (self.types.is_empty() || any(&self.types))
+        !self.chosen_type
+            && (self.types.is_empty() || any(&self.types))
             && !any(&self.without)
             && (self.supertypes.is_empty()
                 || self
@@ -92,6 +109,15 @@ pub enum SpendOn {
 }
 
 impl SpendOn {
+    /// The use with the chosen creature type put in its filter; `None` when it asks for a type and none was chosen.
+    pub fn resolved(&self, chosen: Option<&Subtype>) -> Option<SpendOn> {
+        Some(match self {
+            SpendOn::Spell(filter) => SpendOn::Spell(filter.resolved(chosen)?),
+            SpendOn::Ability(filter) => SpendOn::Ability(filter.resolved(chosen)?),
+            SpendOn::CostWithX => SpendOn::CostWithX,
+        })
+    }
+
     /// "Cast creature spells."
     pub fn spells(filter: SpendFilter) -> Self {
         SpendOn::Spell(filter)
@@ -101,6 +127,13 @@ impl SpendOn {
     pub fn abilities() -> Self {
         SpendOn::Ability(SpendFilter::default())
     }
+}
+
+/// The uses with the chosen creature type put in them; the uses that ask for a type when none was chosen are dropped,
+/// and `None` when that leaves a restriction no use satisfies.
+pub fn resolve_uses(only: &[SpendOn], chosen: Option<&Subtype>) -> Option<Vec<SpendOn>> {
+    let kept: Vec<SpendOn> = only.iter().filter_map(|on| on.resolved(chosen)).collect();
+    (only.is_empty() || !kept.is_empty()).then_some(kept)
 }
 
 #[cfg(test)]
@@ -150,6 +183,49 @@ mod tests {
             filter.holds(&traits(types, supertypes, subtypes, colors)),
             holds
         );
+    }
+
+    fn elf() -> Subtype {
+        Subtype("Elf".to_owned())
+    }
+
+    fn chosen_creature() -> SpendFilter {
+        SpendFilter {
+            types: vec![CardType::Creature],
+            chosen_type: true,
+            ..SpendFilter::default()
+        }
+    }
+
+    #[rstest]
+    #[case::the_type_chosen(Some(elf()), &["Elf"], true)]
+    #[case::another_type(Some(elf()), &["Goblin"], false)]
+    #[case::no_type_chosen(None, &["Elf"], false)]
+    fn a_filter_of_the_chosen_type_holds_for_that_type_once_resolved(
+        #[case] chosen: Option<Subtype>,
+        #[case] subtypes: &[&str],
+        #[case] holds: bool,
+    ) {
+        let filter = chosen_creature();
+        let creature = traits(&[CardType::Creature], &[], subtypes, 1);
+        assert!(!filter.holds(&creature), "unresolved, it holds for nothing");
+        let resolved = filter.resolved(chosen.as_ref());
+        assert_eq!(
+            resolved.is_some_and(|resolved| resolved.holds(&creature)),
+            holds
+        );
+    }
+
+    #[test]
+    fn uses_without_a_chosen_type_are_dropped_and_a_restriction_left_empty_is_refused() {
+        let uses = [SpendOn::Spell(chosen_creature()), SpendOn::abilities()];
+        assert_eq!(resolve_uses(&uses, None), Some(vec![SpendOn::abilities()]));
+        assert_eq!(resolve_uses(&uses[..1], None), None);
+        let chosen = elf();
+        let kept = resolve_uses(&uses[..1], Some(&chosen)).unwrap();
+        assert_eq!(kept.len(), 1);
+        assert!(matches!(&kept[0], SpendOn::Spell(f) if f.subtypes == [elf()] && !f.chosen_type));
+        assert_eq!(resolve_uses(&[], None), Some(Vec::new()));
     }
 
     #[rstest]

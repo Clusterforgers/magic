@@ -1,0 +1,30 @@
+{
+  "oracle_id": "bd47398d-da35-4a09-8754-771af91b14f4",
+  "name": "Manaweft Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Manaweft Sliver",
+      "oracle_fingerprint": "9f534f820291041edbb586857e56a92a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Subtype": "Sliver" }, { "ControlledBy": "You" }]
+            },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

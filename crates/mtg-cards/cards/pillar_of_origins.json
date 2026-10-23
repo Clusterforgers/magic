@@ -1,0 +1,32 @@
+{
+  "oracle_id": "9e62f30d-3130-416e-b459-48b5f71f8be9",
+  "name": "Pillar of Origins",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pillar of Origins",
+      "oracle_fingerprint": "8657cad30a9f6e04f7b4f087ef75a8ad",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [{ "Spell": { "types": ["Creature"], "chosen_type": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
