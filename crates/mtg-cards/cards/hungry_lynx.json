@@ -1,0 +1,62 @@
+{
+  "oracle_id": "a5fdc358-25de-4a5b-b965-53a01df6019c",
+  "name": "Hungry Lynx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hungry Lynx",
+      "oracle_fingerprint": "f1a91c4f5fa5d8f3900dadc72f5f7abf",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Cat" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Protection": [{ "Subtype": "Rat" }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "Target": 0 },
+                  "token": {
+                    "Custom": {
+                      "name": "Rat",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rat"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Deathtouch" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Rat" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Subtype": "Cat" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

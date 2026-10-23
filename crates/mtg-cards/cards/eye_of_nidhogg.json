@@ -1,0 +1,35 @@
+{
+  "oracle_id": "c288f184-0beb-4cc9-9b0a-5f3c4b9e70d7",
+  "name": "Eye of Nidhogg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eye of Nidhogg",
+      "oracle_fingerprint": "48e3182e7f99823f248948dd597b0575",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetColors": ["Black"] },
+              { "SetCreatureTypes": ["Dragon"] },
+              { "SetPT": { "power": 4, "toughness": 2 } },
+              { "AddKeyword": "Flying" },
+              { "AddKeyword": "Deathtouch" },
+              "Goaded"
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Move": { "what": { "Each": [{ "In": "Graveyard" }, "This"] }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

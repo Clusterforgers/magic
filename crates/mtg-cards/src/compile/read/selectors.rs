@@ -401,9 +401,44 @@ fn protection_from(r: &mut Reader<'_>) -> Option<Keyword> {
     if r.words("each color") {
         return Some(Keyword::Protection(keywords::each_color()));
     }
-    let quality = keywords::quality(r.peek_word()?)?;
-    r.skip();
-    Some(Keyword::Protection(quality))
+    // What the controller chose as the permanent entered: "protection from the chosen color", "... creatures of the
+    // chosen type".
+    if r.static_grant && r.words("the chosen color") {
+        return Some(Keyword::Protection(Selector(vec![Pred::ChosenColor])));
+    }
+    if r.static_grant && r.words("creatures of the chosen type") {
+        return Some(Keyword::Protection(chosen_creatures()));
+    }
+    if let Some(quality) = r.peek_word().and_then(keywords::quality) {
+        r.skip();
+        return Some(Keyword::Protection(quality));
+    }
+    // A creature type in the plural: "protection from Rats".
+    let name = plural_subtype(r)?;
+    Some(Keyword::Protection(Selector(vec![Pred::Subtype(Subtype(
+        name,
+    ))])))
+}
+
+/// The creatures of the type the controller chose.
+fn chosen_creatures() -> Selector {
+    Selector(vec![Pred::Type(CardType::Creature), Pred::ChosenSubtype])
+}
+
+/// The words after "protection from" for a quality: a color or kind of source, "the chosen color", "creatures of the
+/// chosen type", or a creature type in the plural.
+fn protection_word(quality: &Selector) -> Option<String> {
+    if let Some(word) = keywords::quality_word(quality) {
+        return Some(word.to_owned());
+    }
+    if *quality == chosen_creatures() {
+        return Some("creatures of the chosen type".to_owned());
+    }
+    match quality.0.as_slice() {
+        [Pred::ChosenColor] => Some("the chosen color".to_owned()),
+        [Pred::Subtype(Subtype(name))] => Some(plural_subtype_word(name)),
+        _ => None,
+    }
 }
 
 /// The keywords given, written as `granted_keywords` reads them: "flying and haste", "protection from white and from
@@ -421,11 +456,11 @@ pub fn granted_text(mods: &[Modification]) -> Option<String> {
             return None;
         };
         if let Keyword::Protection(quality) = keyword {
-            let word = keywords::quality_word(quality)?;
+            let word = protection_word(quality)?;
             match parts.last_mut() {
                 Some(last) if protecting => {
                     last.push_str(" and from ");
-                    last.push_str(word);
+                    last.push_str(&word);
                 }
                 _ => parts.push(format!("protection from {word}")),
             }
@@ -747,16 +782,19 @@ fn head(r: &mut Reader<'_>, form: Form) -> Option<(Vec<CardType>, Noun)> {
 /// Reads the word that joins two card types: the form's connector, which is the three tokens "and/or" for the targets of a
 /// group ("artifacts and/or enchantments").
 fn connect(r: &mut Reader<'_>, form: Form) -> bool {
+    let and_or = |r: &mut Reader<'_>| {
+        r.attempt(|r| {
+            r.word("and").then_some(())?;
+            r.punct('/').then_some(())?;
+            r.word("or").then_some(())
+        })
+        .is_some()
+    };
     if form == Form::Targets {
-        return r
-            .attempt(|r| {
-                r.word("and").then_some(())?;
-                r.punct('/').then_some(())?;
-                r.word("or").then_some(())
-            })
-            .is_some();
+        return and_or(r);
     }
-    r.word(form.connector())
+    // A count says it either way: "for each artifact or enchantment you control", "... artifact and/or enchantment ...".
+    r.word(form.connector()) || (form == Form::Count && and_or(r))
 }
 
 /// The words between two card types of a phrase: the form's connector ("artifact or creature"), or a comma with the

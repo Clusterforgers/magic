@@ -1,0 +1,26 @@
+{
+  "oracle_id": "05a4f8ff-49da-42af-add5-6248c4b0644b",
+  "name": "Darksteel Mutation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Darksteel Mutation",
+      "oracle_fingerprint": "5ff2b4e9552b91e88d4e3a1311dd81d9",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetTypes": ["Artifact", "Creature"] },
+              { "SetCreatureTypes": ["Insect"] },
+              { "SetPT": { "power": 0, "toughness": 1 } },
+              "LoseAbilities",
+              { "AddKeyword": "Indestructible" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

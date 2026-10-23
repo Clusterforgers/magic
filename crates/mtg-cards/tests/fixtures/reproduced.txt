@@ -23,6 +23,7 @@ Akim, the Soaring Wind
 Akrasan Squire
 Akroma's Vengeance
 Akroma, Angel of Wrath
+All That Glitters
 Alpha Deathclaw
 Alphinaud Leveilleur
 Altar's Reap
@@ -113,6 +114,7 @@ Blade of Selves
 Blasphemous Act
 Blastoderm
 Blaze
+Blazing Sunsteel
 Blight Mamba
 Blight Pile
 Blightwidow
@@ -199,6 +201,7 @@ Coastal Breach
 Coastal Discovery
 Cold-Eyed Selkie
 Collective Unconscious
+Colossus Hammer
 Command Tower
 Commander's Insignia
 Commence the Endgame
@@ -248,6 +251,7 @@ Dalek Squadron
 Danny Pink
 Darkblast
 Darksteel Juggernaut
+Darksteel Mutation
 Darksteel Splicer
 Dauthi Horror
 Dauthi Marauder
@@ -349,6 +353,7 @@ Exotic Orchard
 Exploration
 Explore
 Exquisite Huntmaster
+Eye of Nidhogg
 Eyeblight Massacre
 Eyetwitch
 Faith Unbroken
@@ -501,6 +506,7 @@ Hound of Griselbrand
 Hour of Revelation
 Howltooth Hollow
 Hulking Raptor
+Hungry Lynx
 Huntmaster Liger
 Icefeather Aven
 Idyllic Beachfront
@@ -548,6 +554,7 @@ Kathari Screecher
 Kazandu Tuskcaller
 Keep Watch
 Kemba's Banner
+Kenrith's Transformation
 Kessig Wolf Run
 Kingpin's Pet
 Kinjalli's Sunwing
@@ -581,6 +588,7 @@ Life's Legacy
 Light 'Em Up
 Light Up the Stage
 Lightning Bolt
+Lignify
 Liquimetal Torque
 Lithoform Engine
 Living Twister
@@ -675,6 +683,7 @@ Nameless Inversion
 Nantuko Husk
 Nantuko Vigilante
 Nessian Asp
+Nettlecyst
 New Horizons
 Night Clubber
 Nighthawk Scavenger
@@ -806,6 +815,7 @@ Rhox Charger
 Rhox Faithmender
 Rhys the Redeemed
 Rhystic Study
+Riders of Gavony
 Rift Bolt
 Righteous Avengers
 Riptide Survivor
@@ -1094,6 +1104,7 @@ Vivid Creek
 Vivid Grove
 Vivid Marsh
 Vivid Meadow
+Voice of All
 Voice of the Blessed
 Vorel of the Hull Clade
 Vorrac Battlehorns

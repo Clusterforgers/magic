@@ -1,0 +1,23 @@
+{
+  "oracle_id": "8ec03b88-8d3a-4a32-8b7c-7da59b0c03d0",
+  "name": "Colossus Hammer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Colossus Hammer",
+      "oracle_fingerprint": "1f9ed4e12f9adc62a6f3188dc1e52737",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 10, "toughness": 10 } },
+              { "RemoveKeyword": "Flying" }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{8}" } }
+      ]
+    }
+  ]
+}

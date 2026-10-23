@@ -979,7 +979,7 @@ impl<'a> Scope<'a> {
     }
 
     /// What the source of the scope chose as it entered, if it is on the battlefield and asked for a choice.
-    fn entered_choice(&self) -> Option<&'a Chosen> {
+    pub(crate) fn entered_choice(&self) -> Option<&'a Chosen> {
         self.state
             .object(self.source.id)
             .and_then(|object| object.permanent())

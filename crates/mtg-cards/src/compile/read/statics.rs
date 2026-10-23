@@ -11,6 +11,7 @@ use mtg_core::card::{CardType, Subtype};
 use super::abilities;
 use super::amounts::{count_word, counted_stats, for_each, for_each_text, number_word};
 use super::as_long_as;
+use super::aura_forms;
 use super::copies;
 use super::cost_conditions;
 use super::counters;
@@ -23,13 +24,14 @@ use super::prevention;
 use super::render::{self, capitalize, counts_stats, is_a_type, stats_text};
 use super::replacements;
 use super::selectors::{
-    self, Form, all, color, color_name, each, granted_text, phrase, phrase_text, subtype,
+    self, Form, all, color, color_name, each, granted_text, keyword, phrase, phrase_text, subtype,
 };
 use super::static_parts;
 use super::tokens::Reader;
 use super::triggers::article;
 use super::where_x;
 use crate::ability::{Ability, CostChange};
+use crate::keyword::Keyword;
 use crate::mana::ManaCostX;
 use crate::modify::{GameRule, Modification};
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
@@ -564,16 +566,30 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
     let named = where_x::ahead(r);
     let x_free = std::mem::replace(&mut r.x_free, false);
     let outer = std::mem::replace(&mut r.where_x, named);
-    let mods = r.attempt(|r| predicate_mods(r, plural));
+    let granting = std::mem::replace(&mut r.static_grant, true);
+    let mods = r.attempt(|r| {
+        // "Enchanted creature is a Treefolk with base power and toughness 0/4 and loses all abilities."
+        if affected == Ref::Attached
+            && let Some(form) = r.attempt(aura_forms::form)
+        {
+            return Some(form);
+        }
+        predicate_mods(r, plural)
+    });
     r.x_free = x_free;
     r.where_x = outer;
+    r.static_grant = granting;
     let mut mods = mods?;
     if named {
         let count = where_x::counted(r)?;
         mods = where_x::put_in(&mods, &count)?;
     }
     let condition = leading.or_else(|| r.attempt(|r| as_long_as::read(r, Some(&affected))));
-    if affected == Ref::This && condition.is_none() && !counts_stats(&mods) {
+    if affected == Ref::This
+        && condition.is_none()
+        && !counts_stats(&mods)
+        && !chosen_protection(&mods)
+    {
         return None;
     }
     Some(statics(affected, mods, condition))
@@ -623,6 +639,14 @@ pub(super) fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Mod
             // "Equipped creature gets +1/+0 and is a Monk in addition to its other types."
             if let Some(kind) = r.attempt(|r| of_a_kind(r, is)) {
                 mods.push(kind);
+                return Some(mods);
+            }
+            // "Equipped creature gets +10/+10 and loses flying."
+            if let Some(lost) = r.attempt(|r| {
+                r.word(lose).then_some(())?;
+                keyword(r)
+            }) {
+                mods.push(Modification::RemoveKeyword(lost));
                 return Some(mods);
             }
             r.word(has).then_some(())?;
@@ -1458,11 +1482,14 @@ pub(super) fn predicate_variants(
     itself: bool,
     conditional: bool,
 ) -> Vec<String> {
-    let mut written = if itself && !conditional {
+    let mut written = if itself && !conditional && !chosen_protection(mods) {
         Vec::new()
     } else {
         static_parts::predicates(mods, plural)
     };
+    if !plural && !itself {
+        written.extend(aura_forms::texts(mods));
+    }
     let Some(first) = predicate(mods, plural, itself, conditional) else {
         return written;
     };
@@ -1480,7 +1507,42 @@ pub(super) fn predicate_variants(
             }
         }
     }
+    count_wordings(&mut written);
     written
+}
+
+/// Whether the changes are protection from what the card's controller chose as it entered, which a card gives itself
+/// without a printed keyword line: "This creature has protection from the chosen color."
+fn chosen_protection(mods: &[Modification]) -> bool {
+    !mods.is_empty()
+        && mods.iter().all(|modification| {
+            matches!(
+                modification,
+                Modification::AddKeyword(Keyword::Protection(Selector(preds)))
+                    if preds.contains(&Pred::ChosenColor) || preds.contains(&Pred::ChosenSubtype)
+            )
+        })
+}
+
+/// The other ways a card words what a bonus counts: "for each opponent you have" and "for each artifact and/or
+/// enchantment you control" for the "for each opponent" and "... artifact or enchantment ..." the writer says.
+fn count_wordings(written: &mut Vec<String>) {
+    let mut more = Vec::new();
+    for text in written.iter() {
+        let Some(at) = text.find("for each ") else {
+            continue;
+        };
+        let (head, count) = text.split_at(at);
+        if let Some(rest) = count.strip_prefix("for each opponent")
+            && !rest.starts_with('s')
+        {
+            more.push(format!("{head}for each opponent you have{rest}"));
+        }
+        if count.contains(" or ") {
+            more.push(format!("{head}{}", count.replacen(" or ", " and/or ", 1)));
+        }
+    }
+    written.extend(more);
 }
 
 /// The modifications before the last part of a sentence and the last part: "is goaded", "can't be blocked by more than
@@ -1562,7 +1624,9 @@ pub(super) fn predicate(
             return Some("is an artifact creature".to_owned());
         }
         // A card does not give itself a bonus, but it may grow by a count: "This creature gets +1/+1 for each Elf."
-        _ if !conditional && itself && !counts_stats(mods) => return None,
+        _ if !conditional && itself && !counts_stats(mods) && !chosen_protection(mods) => {
+            return None;
+        }
         _ => {}
     }
     let (gets, has) = if plural {

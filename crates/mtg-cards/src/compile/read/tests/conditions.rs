@@ -159,12 +159,10 @@ fn a_pump_with_protections_reads_as_the_hand_written_files_say(
 }
 
 #[rstest]
-#[case::a_subtype_quality("Equipped creature has protection from Vampires.")]
 #[case::without_the_second_from("Equipped creature has protection from red and blue.")]
 #[case::a_comma("Equipped creature has protection from red, from blue.")]
 #[case::no_quality("Equipped creature has protection from.")]
 #[case::no_from("Equipped creature has protection red.")]
-#[case::a_chosen_color("Equipped creature has protection from the chosen color.")]
 #[case::a_player("Equipped creature has protection from each player.")]
 #[case::all_colors("Equipped creature has protection from all colors.")]
 #[case::a_second_protection("Equipped creature has protection from red and protection from blue.")]

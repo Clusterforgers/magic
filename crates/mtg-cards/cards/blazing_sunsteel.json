@@ -1,0 +1,27 @@
+{
+  "oracle_id": "46c77100-ab2e-43eb-b1cb-c22ed114213e",
+  "name": "Blazing Sunsteel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blazing Sunsteel",
+      "oracle_fingerprint": "ff8e47f0a7c86746e5baad4011f0665c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": { "Players": "Opponents" }, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "Attached" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

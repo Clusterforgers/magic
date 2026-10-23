@@ -1,0 +1,24 @@
+{
+  "oracle_id": "63625b26-3a19-4c3c-b18a-91247bb2a40c",
+  "name": "Lignify",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lignify",
+      "oracle_fingerprint": "5f58ec47f0adf6c4a3332e6b4a92ec9c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetCreatureTypes": ["Treefolk"] },
+              { "SetPT": { "power": 0, "toughness": 4 } },
+              "LoseAbilities"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

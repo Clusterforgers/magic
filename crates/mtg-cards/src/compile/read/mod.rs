@@ -24,6 +24,7 @@ mod amounts;
 mod as_long_as;
 mod attack_tax;
 mod attackers;
+mod aura_forms;
 mod batches;
 mod becomes;
 mod cast;

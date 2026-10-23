@@ -1,0 +1,28 @@
+{
+  "oracle_id": "60dabe9e-4872-4aec-9e8e-35358b3b7dd5",
+  "name": "Riders of Gavony",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riders of Gavony",
+      "oracle_fingerprint": "e5846f150560deec0ee3b938a29a5814",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Subtype": "Human" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": { "Protection": [{ "Type": "Creature" }, "ChosenSubtype"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}
