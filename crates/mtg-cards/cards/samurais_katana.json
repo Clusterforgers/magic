@@ -1,0 +1,26 @@
+{
+  "oracle_id": "9b8b5812-73bd-453e-bdff-aad1fafa9226",
+  "name": "Samurai's Katana",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Samurai's Katana",
+      "oracle_fingerprint": "a03fefff6adcf994287ecfea68859b9b",
+      "abilities": [
+        { "Keyword": "JobSelect" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Trample" },
+              { "AddKeyword": "Haste" },
+              { "AddSubtype": "Samurai" }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{5}" } }
+      ]
+    }
+  ]
+}

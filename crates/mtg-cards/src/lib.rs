@@ -19,6 +19,7 @@ mod identity;
 pub mod keyword;
 pub mod load;
 pub mod mana;
+pub mod mana_trigger;
 pub mod modify;
 pub mod pretty;
 pub mod refs;

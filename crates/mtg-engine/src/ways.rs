@@ -274,6 +274,7 @@ fn keyword_way(
             cost,
             in_hand && prowl_open(state, player, id),
         ),
+        Keyword::Awaken { cost, .. } => (CastWay::Awaken, "Awaken", cost, in_hand),
         Keyword::Morph(_) | Keyword::Megamorph(_) | Keyword::Disguise(_) if in_hand => {
             return Some(face_down_way(instant));
         }

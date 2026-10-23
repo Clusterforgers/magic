@@ -1,0 +1,12 @@
+{
+  "oracle_id": "58eab745-9afa-4db7-9d8a-f5eb0b9dca6c",
+  "name": "Skyreach Manta",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyreach Manta",
+      "oracle_fingerprint": "ffaba7e6cc99dec95b8531ea83d6095b",
+      "abilities": [{ "Keyword": "Sunburst" }, { "Keyword": "Flying" }]
+    }
+  ]
+}

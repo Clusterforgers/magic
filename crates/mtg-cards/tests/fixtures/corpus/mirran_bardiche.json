@@ -1,0 +1,26 @@
+{
+  "id": "3006ea5a-5391-41eb-b0c8-092741dca2eb",
+  "oracle_id": "1fd04d9e-cf89-49ba-a932-5d278f65bf77",
+  "name": "Mirran Bardiche",
+  "lang": "en",
+  "layout": "normal",
+  "set": "one",
+  "collector_number": "22",
+  "rarity": "common",
+  "released_at": "2023-02-10",
+  "digital": false,
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "For Mirrodin! (When this Equipment enters, create a 2/2 red Rebel creature token, then attach this to it.)\nEquipped creature gets +2/+1 and has vigilance.\nEquip {3}{W} ({3}{W}: Attach to target creature you control. Equip only as a sorcery.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "For Mirrodin!",
+    "Equip"
+  ]
+}

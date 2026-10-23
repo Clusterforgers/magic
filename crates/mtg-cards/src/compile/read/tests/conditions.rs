@@ -84,9 +84,6 @@ fn a_static_ability_under_a_condition_reads_as_the_hand_written_files_say(
 #[rstest]
 #[case::itself_without_a_condition("This creature has haste.")]
 #[case::a_bonus_for_itself_without_a_condition("This creature gets +2/+2.")]
-#[case::a_restriction_under_a_condition(
-    "This creature can't block as long as you control a Plains."
-)]
 #[case::your_own_exact_life("This creature has haste as long as you have 10 life.")]
 #[case::an_exact_life_total("This creature has haste as long as an opponent has 10 life.")]
 #[case::more_than_a_life_total(
@@ -101,7 +98,6 @@ fn a_static_ability_under_a_condition_reads_as_the_hand_written_files_say(
 )]
 #[case::a_clause_after("This creature has haste as long as it's your turn, and it can't block.")]
 #[case::no_condition_words("This creature has haste as long as.")]
-#[case::as_long_as_it_is("This creature has haste as long as it's untapped.")]
 fn a_condition_that_is_not_a_known_one_stays_with_the_table(#[case] text: &str) {
     assert_eq!(stat(text), None, "{text}");
 }

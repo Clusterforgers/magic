@@ -1,0 +1,21 @@
+{
+  "oracle_id": "da0b4e01-b312-4f37-a034-824ce58db02e",
+  "name": "Veteran's Powerblade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veteran's Powerblade",
+      "oracle_fingerprint": "4abf50cb095acbb66230ce0fccee96b4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        },
+        { "Keyword": { "EquipTo": { "to": [{ "Subtype": "Soldier" }], "cost": "{W}" } } },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b3a81bb1-cbd5-41a0-8dd4-faea06593f84",
+  "name": "Relic of Sauron",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Relic of Sauron",
+      "oracle_fingerprint": "7029d01b47d5adf19ac70b242d48ac3d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyCombination": { "count": 2, "among": ["Blue", "Black", "Red"] } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [{ "Draw": { "count": 2 } }, { "Discard": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

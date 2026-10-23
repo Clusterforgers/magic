@@ -1,0 +1,12 @@
+{
+  "oracle_id": "75d4f61a-8276-43ad-99e6-0d756a597e4b",
+  "name": "Suntouched Myr",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Suntouched Myr",
+      "oracle_fingerprint": "281b1907b9edf556b4c1f4a4d94386f1",
+      "abilities": [{ "Keyword": "Sunburst" }]
+    }
+  ]
+}

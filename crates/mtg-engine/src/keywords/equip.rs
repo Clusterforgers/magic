@@ -23,6 +23,26 @@ impl KeywordRules for Equip {
     }
 }
 
+/// The rules of equip with a restriction ("Equip legendary creature {1}").
+#[derive(Debug)]
+pub(super) struct EquipTo;
+
+impl KeywordRules for EquipTo {
+    fn adds_abilities(&self, keyword: &Keyword) -> Vec<Ability> {
+        let Keyword::EquipTo { to, cost } = keyword else {
+            return Vec::new();
+        };
+        let mut ability = attach_to_a_creature_you_control(cost, false, None);
+        if let Ability::Activated { targets, .. } = &mut ability
+            && let Some(Targetable::Object(Selector(host))) =
+                targets.first_mut().map(|spec| &mut spec.what)
+        {
+            host.extend(to.0.iter().cloned());
+        }
+        vec![ability]
+    }
+}
+
 /// "[Cost]: Attach this permanent to target creature you control. Activate only as a sorcery." With `another`, the
 /// creature is another one than the permanent itself, and `condition` is what must hold to activate it (reconfigure,
 /// CR 702.151a).
@@ -78,6 +98,24 @@ mod tests {
     fn equip_attaches_the_source_to_a_creature_you_control_at_sorcery_speed(#[case] cost: &str) {
         let keyword = Keyword::Equip(Cost::mana(cost.parse().unwrap()));
         assert_eq!(Equip.adds_abilities(&keyword), [written(cost, YOURS)]);
+    }
+
+    #[rstest]
+    #[case::legendary(r#"{"Supertype":"Legendary"}"#)]
+    #[case::commander(r#""Commander""#)]
+    #[case::token(r#""Token""#)]
+    #[case::a_type(r#"{"Subtype":"Knight"}"#)]
+    fn equip_to_narrows_the_creatures_it_attaches_to(#[case] restriction: &str) {
+        let to: Selector = serde_json::from_str(&format!("[{restriction}]")).unwrap();
+        let keyword = Keyword::EquipTo {
+            to: Box::new(to),
+            cost: Cost::mana("{3}".parse().unwrap()),
+        };
+        assert_eq!(
+            EquipTo.adds_abilities(&keyword),
+            [written("{3}", &format!("{YOURS},{restriction}"))]
+        );
+        assert_eq!(Equip.adds_abilities(&keyword), []);
     }
 
     #[test]

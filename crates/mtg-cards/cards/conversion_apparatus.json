@@ -1,0 +1,33 @@
+{
+  "oracle_id": "931d3dcb-4bbb-4f1a-95e2-7e315faf4158",
+  "name": "Conversion Apparatus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conversion Apparatus",
+      "oracle_fingerprint": "765e50c88cac769ce09a62b920df118c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 3 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayEnergy": 3 }],
+            "effects": [{ "AddMana": { "mana": { "AnyCombination": { "count": 3 } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

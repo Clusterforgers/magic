@@ -1,0 +1,22 @@
+{
+  "oracle_id": "2146fa14-dc6a-4e13-bed0-dda235784ee6",
+  "name": "Earthen Arms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Earthen Arms",
+      "oracle_fingerprint": "2b0470891cab35c6b5d5eed67e966faa",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        },
+        { "Keyword": { "Awaken": { "count": 4, "cost": "{6}{G}" } } }
+      ]
+    }
+  ]
+}

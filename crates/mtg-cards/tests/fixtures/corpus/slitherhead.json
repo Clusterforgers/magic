@@ -1,0 +1,29 @@
+{
+  "id": "4703f1d0-088e-4036-b50c-ce9f7c053ec7",
+  "oracle_id": "4b6966f6-052f-4d1d-a3bf-1d3cc91c71d4",
+  "name": "Slitherhead",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rvr",
+  "collector_number": "226",
+  "rarity": "common",
+  "released_at": "2024-01-12",
+  "digital": false,
+  "mana_cost": "{B/G}",
+  "cmc": 1.0,
+  "type_line": "Creature — Plant Zombie",
+  "oracle_text": "Scavenge {0} ({0}, Exile this card from your graveyard: Put a number of +1/+1 counters equal to this card's power on target creature. Scavenge only as a sorcery.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Scavenge"
+  ]
+}

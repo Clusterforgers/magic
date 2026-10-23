@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7c42123d-c8e2-4571-b07d-f782e9ad1f8b",
+  "name": "Sheer Drop",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sheer Drop",
+      "oracle_fingerprint": "0f425f638b0924a0babba197987cacf7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Tapped"] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Awaken": { "count": 3, "cost": "{5}{W}" } } }
+      ]
+    }
+  ]
+}

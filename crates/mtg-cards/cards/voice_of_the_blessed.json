@@ -1,0 +1,45 @@
+{
+  "oracle_id": "01e742ed-660c-43c6-b393-e589a54cbe1b",
+  "name": "Voice of the Blessed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voice of the Blessed",
+      "oracle_fingerprint": "c7d04964454e3ad97c27dbfefdd9b876",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                "op": "Ge",
+                "right": 10
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

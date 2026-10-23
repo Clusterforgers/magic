@@ -1,0 +1,12 @@
+{
+  "oracle_id": "f5126c01-f765-44f4-9ced-0fc157f8b897",
+  "name": "Drudge Beetle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drudge Beetle",
+      "oracle_fingerprint": "4ec25322ad2402a1d2cf348419bdbd14",
+      "abilities": [{ "Keyword": { "Scavenge": "{5}{G}" } }]
+    }
+  ]
+}

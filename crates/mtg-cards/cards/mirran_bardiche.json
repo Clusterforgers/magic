@@ -1,0 +1,21 @@
+{
+  "oracle_id": "1fd04d9e-cf89-49ba-a932-5d278f65bf77",
+  "name": "Mirran Bardiche",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirran Bardiche",
+      "oracle_fingerprint": "acb2fabbe8609e6a7b62840685d37333",
+      "abilities": [
+        { "Keyword": "ForMirrodin" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }, { "AddKeyword": "Vigilance" }]
+          }
+        },
+        { "Keyword": { "Equip": "{3}{W}" } }
+      ]
+    }
+  ]
+}

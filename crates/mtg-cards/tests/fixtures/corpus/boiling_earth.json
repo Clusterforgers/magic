@@ -1,0 +1,25 @@
+{
+  "id": "cdaab44c-4ce1-43fb-915c-c687fe8559ce",
+  "oracle_id": "fb34b671-b61a-47e2-90fa-dbe5cf6d3743",
+  "name": "Boiling Earth",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bfz",
+  "collector_number": "142",
+  "rarity": "common",
+  "released_at": "2015-10-02",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Boiling Earth deals 1 damage to each creature your opponents control.\nAwaken 4—{6}{R} (If you cast this spell for {6}{R}, also put four +1/+1 counters on target land you control and it becomes a 0/0 Elemental creature with haste. It's still a land.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Awaken"
+  ]
+}

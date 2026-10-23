@@ -1,0 +1,23 @@
+{
+  "oracle_id": "316cae8b-31b0-4b76-8b72-8122005e1b4e",
+  "name": "Clutch of the Undercity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clutch of the Undercity",
+      "oracle_fingerprint": "5579272a4f4fcacba3b6f5c7717724d3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "LoseLife": { "who": { "ControllerOf": { "Target": 0 } }, "amount": 3 } }
+            ]
+          }
+        },
+        { "Keyword": { "Transmute": "{1}{U}{B}" } }
+      ]
+    }
+  ]
+}

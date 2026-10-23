@@ -39,6 +39,10 @@ Report (max 15 lines): files added, public API in one line each, test counts, de
 - Coverage pieces measure the Verified counts in a scratch database (`ingest`, `compile`, `coverage` with `--database-url`), never in `magic`; the numbers go to the M6 target line.
 - Corpus fixtures (`crates/mtg-cards/tests/fixtures/corpus/*.json`) are the trimmed Scryfall record of the card from the cache (`~/.cache/mtg-cli/scryfall`, `zcat ... | jq`): the id, oracle id, set, collector number and release date are real, never written from memory.
 - A change to a wire type regenerates the bindings and can break the web: the agent also runs `pnpm typecheck` and `pnpm test` in `web/` (`check.sh rust` skips the web). Counts kept in code (`TEMPLATES: [Template; N]`, the effect sample count in `resolve/prim/mod.rs`, the keyword name lists) are recounted at every merge of branches that each added one.
+- A conflict in a list (keyword names, test modules, `reproduced.txt`) keeps both sides; `reproduced.txt` is re-sorted with `LC_ALL=C sort -u` and `cargo fmt` follows. The full check runs again on the merged tree after any conflict and after `main` moved.
+- A new enum variant with a payload as large as the largest one grows the enum and can break a size test (`Event` is limited to 144 bytes): box the payload.
+- A check that fails with `E0514` (a crate compiled by another rustc) ran across a toolchain update: run it again. After an update, run `docker compose up -d db` and `scripts/agent-status.sh` before launching agents.
+- Edit roadmap lines by their id, never by a line number held in a shell variable that can be empty.
 
 ### Parallel agents
 

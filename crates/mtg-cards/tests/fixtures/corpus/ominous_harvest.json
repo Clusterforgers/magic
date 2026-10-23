@@ -1,0 +1,25 @@
+{
+  "id": "2271184b-08eb-4d2a-8ebf-a1807d51dd2a",
+  "oracle_id": "76bc6518-dea4-4a5c-a8a7-352cd297197b",
+  "name": "Ominous Harvest",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "28",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Gravestorm (When you cast this spell, copy it for each permanent put into a graveyard from the battlefield this turn.)\nTarget player draws a card and loses 1 life.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Gravestorm"
+  ]
+}

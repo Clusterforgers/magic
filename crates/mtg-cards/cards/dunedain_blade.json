@@ -1,0 +1,21 @@
+{
+  "oracle_id": "4b418846-6426-448a-b4cb-ce631e0a99a2",
+  "name": "Dúnedain Blade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dúnedain Blade",
+      "oracle_fingerprint": "baec893ae5cc9cef314586359fc392a7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }]
+          }
+        },
+        { "Keyword": { "EquipTo": { "to": [{ "Subtype": "Human" }], "cost": "{1}" } } },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

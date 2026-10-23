@@ -1,0 +1,25 @@
+{
+  "oracle_id": "ff0d05b9-0c9c-4217-abd2-7e7757a0c4c9",
+  "name": "Planar Outburst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planar Outburst",
+      "oracle_fingerprint": "210fc33f4dadf9c018f11534044a9e5c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Not": { "Type": "Land" } }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Awaken": { "count": 4, "cost": "{5}{W}{W}{W}" } } }
+      ]
+    }
+  ]
+}
