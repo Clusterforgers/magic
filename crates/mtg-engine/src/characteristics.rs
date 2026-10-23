@@ -201,7 +201,11 @@ pub(crate) fn cant_be_blocked_by(state: &GameState, attacker: ObjectId, blocker:
 /// Whether an effect that applies to the creature `blocker` says it can block only attackers `attacker` is not one of
 /// ("can block only creatures with flying"): the one place the block rules read this restriction. The selector judges
 /// `attacker` as the layers leave it now.
-pub(crate) fn cant_block_attacker(state: &GameState, blocker: ObjectId, attacker: ObjectId) -> bool {
+pub(crate) fn cant_block_attacker(
+    state: &GameState,
+    blocker: ObjectId,
+    attacker: ObjectId,
+) -> bool {
     let Some(attacker) = state.object(attacker).map(GameObject::reference) else {
         return false;
     };

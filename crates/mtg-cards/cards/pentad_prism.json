@@ -1,0 +1,20 @@
+{
+  "oracle_id": "72e8d67a-41e6-4074-bcbd-b54ead995237",
+  "name": "Pentad Prism",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pentad Prism",
+      "oracle_fingerprint": "f7ad4701d5a588f1bc8d9c6368e1bdcf",
+      "abilities": [
+        { "Keyword": "Sunburst" },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": "charge" } }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

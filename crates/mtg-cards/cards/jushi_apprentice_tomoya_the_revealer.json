@@ -1,0 +1,53 @@
+{
+  "oracle_id": "2b565791-1b94-4dad-a48d-be7fc2198e19",
+  "name": "Jushi Apprentice // Tomoya the Revealer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jushi Apprentice",
+      "oracle_fingerprint": "dffd5fce07b741ad4b5229c9bc0ec3c6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, "Tap"],
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 9
+                    }
+                  },
+                  "then": [{ "Flip": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tomoya the Revealer",
+      "oracle_fingerprint": "9582b2f19e7bda27067ccdf2aa042f1b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{U}{U}" }, "Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Draw": {
+                  "who": { "Target": 0 },
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

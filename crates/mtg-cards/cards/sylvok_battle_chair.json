@@ -1,0 +1,21 @@
+{
+  "oracle_id": "2f6c21a1-d618-497c-bfde-c0f2e1014d99",
+  "name": "Sylvok Battle-Chair",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sylvok Battle-Chair",
+      "oracle_fingerprint": "17337b63dc9f7ac3508d496d96cb7745",
+      "abilities": [
+        { "Keyword": "ForMirrodin" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 4, "toughness": 4 } }, { "AddKeyword": "Trample" }]
+          }
+        },
+        { "Keyword": { "Equip": "{5}{G}{G}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "2bc0821a-5a8f-465d-8532-3fb5c5d11d8f",
+  "name": "Unstable Molecule Suit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unstable Molecule Suit",
+      "oracle_fingerprint": "fb6e00d46dcb24df25d04f18c434aa84",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Indestructible" }
+            ]
+          }
+        },
+        { "Keyword": { "EquipTo": { "to": ["Commander"], "cost": "{2}" } } },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

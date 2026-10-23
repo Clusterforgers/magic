@@ -24,6 +24,30 @@ pub(crate) const COLORS: [ManaType; 5] = [
     ManaType::Green,
 ];
 
+/// Every way to pick `count` mana among `types` (all five colors when none are given), the mana of a pick in the order of
+/// the types: the combinations of a multiset, so `{W}{U}` and `{U}{W}` are one.
+pub(crate) fn combinations(types: &[ManaType], count: u32) -> Vec<Vec<ManaType>> {
+    let pool: &[ManaType] = if types.is_empty() { &COLORS } else { types };
+    let mut found: Vec<Vec<ManaType>> = vec![Vec::new()];
+    for _ in 0..count {
+        let mut next = Vec::new();
+        for picked in &found {
+            // Only a type at or after the last one picked, so each multiset is made once.
+            let from = picked
+                .last()
+                .and_then(|last| pool.iter().position(|t| t == last))
+                .unwrap_or(0);
+            for kind in &pool[from..] {
+                let mut longer = picked.clone();
+                longer.push(*kind);
+                next.push(longer);
+            }
+        }
+        found = next;
+    }
+    found
+}
+
 /// The mana of a colour.
 pub(crate) const fn mana_of(color: Color) -> ManaType {
     match color {
@@ -122,7 +146,10 @@ fn types_of(
             ManaProduced::Fixed { mana, .. } => found.push(mana),
             ManaProduced::Mixed(list) | ManaProduced::OneOf(list) => found.extend_from_slice(list),
             ManaProduced::OneOfLists(lists) => found.extend(lists.iter().flatten().copied()),
-            ManaProduced::AnyColor(_) => found.extend(COLORS),
+            ManaProduced::AnyColor(_) | ManaProduced::AnyCombination { among: [], .. } => {
+                found.extend(COLORS);
+            }
+            ManaProduced::AnyCombination { among, .. } => found.extend_from_slice(among),
             ManaProduced::ChosenColor(_) => {
                 if let Some(Chosen::Color(color)) =
                     object.permanent().and_then(PermanentState::chosen)

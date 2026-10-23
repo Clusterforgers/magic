@@ -1,0 +1,27 @@
+{
+  "id": "11f1d378-c78c-402a-ac46-2d32598c23e7",
+  "oracle_id": "9b8b5812-73bd-453e-bdff-aad1fafa9226",
+  "name": "Samurai's Katana",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fin",
+  "collector_number": "154",
+  "rarity": "uncommon",
+  "released_at": "2025-06-13",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Job select (When this Equipment enters, create a 1/1 colorless Hero creature token, then attach this to it.)\nEquipped creature gets +2/+2, has trample and haste, and is a Samurai in addition to its other types.\nMurasame — Equip {5}",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Murasame",
+    "Job select",
+    "Equip"
+  ]
+}

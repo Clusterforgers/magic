@@ -194,7 +194,10 @@ fn another_players_challenger_troll_limits_none_of_mine(
     let mut driver = table(
         seats,
         units(&[("Big", 5, 5, "")]),
-        vec![ready(card("Challenger Troll")?), ready(free_creature("B1", 1, 5))],
+        vec![
+            ready(card("Challenger Troll")?),
+            ready(free_creature("B1", 1, 5)),
+        ],
     )?;
     driver.attack(&[("Big", 1)])?;
     to_blockers(&mut driver, 1)?;
@@ -231,7 +234,11 @@ fn familiar_ground_limits_the_creatures_of_its_controller(
     } else {
         scenario.battlefield(
             1,
-            [ready(free_creature("B1", 1, 5)), ready(free_creature("B2", 1, 5)), ground],
+            [
+                ready(free_creature("B1", 1, 5)),
+                ready(free_creature("B2", 1, 5)),
+                ground,
+            ],
         )
     };
     let mut driver = Driver::from_scenario(scenario)?;
@@ -315,7 +322,14 @@ fn without_dense_canopy_a_flier_blocks_the_ground() -> Result<(), ScriptError> {
 #[case::two_at_least_and_one_at_most(None, Some(2), Some(1), 4, false, None)]
 #[case::menace_asks_three_of_two(Some("menace"), Some(3), None, 2, false, None)]
 #[case::menace_asks_three_of_three(Some("menace"), Some(3), None, 3, true, Some(Declared::TooFew { needed: 3, got: 2 }))]
-#[case::menace_asks_more_than_the_effect(Some("menace"), Some(2), None, 2, true, Some(Declared::Accepted))]
+#[case::menace_asks_more_than_the_effect(
+    Some("menace"),
+    Some(2),
+    None,
+    2,
+    true,
+    Some(Declared::Accepted)
+)]
 fn numbers_of_blockers_from_effects_combine_with_menace(
     #[values(2, 3, 4)] seats: usize,
     #[case] keyword: Option<&'static str>,
@@ -345,9 +359,11 @@ fn numbers_of_blockers_from_effects_combine_with_menace(
         return Ok(());
     };
     let blocks: Vec<(&str, &str)> = match &declared {
-        Declared::TooMany { got, .. } | Declared::TooFew { got, .. } => {
-            blockers.iter().take(*got).map(|unit| (unit.0, "A")).collect()
-        }
+        Declared::TooMany { got, .. } | Declared::TooFew { got, .. } => blockers
+            .iter()
+            .take(*got)
+            .map(|unit| (unit.0, "A"))
+            .collect(),
         Declared::Accepted => blockers
             .iter()
             .take(at_most.map_or(creatures, |most| most as usize))
@@ -402,7 +418,11 @@ fn titania_gives_melee_to_the_other_creatures_of_its_controller(
     ];
     driver.attack(&attacks)?;
     settle(&mut driver)?;
-    let distinct = if seat(targets[0]) == seat(targets[1]) { 1 } else { 2 };
+    let distinct = if seat(targets[0]) == seat(targets[1]) {
+        1
+    } else {
+        2
+    };
     assert_eq!(size(&driver, "Cub"), (1 + distinct, 1 + distinct));
     let titania = driver.id_of("Titania, Proud Pummeler")?;
     assert_eq!(

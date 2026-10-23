@@ -1,0 +1,49 @@
+{
+  "oracle_id": "984e763c-5a83-4231-8ec4-1be76846479a",
+  "name": "Karametra, God of Harvests",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karametra, God of Harvests",
+      "oracle_fingerprint": "f33983611a8902a517fb3f490ae489ae",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": { "left": { "Devotion": ["Green", "White"] }, "op": "Lt", "right": 7 }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "AnyOf": [{ "Subtype": "Forest" }, { "Subtype": "Plains" }] }],
+                        "as": "land"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "land" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

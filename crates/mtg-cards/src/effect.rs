@@ -108,6 +108,17 @@ pub enum Produce {
         #[serde(default, skip_serializing_if = "is_false")]
         colorless: bool,
     },
+    /// One mana of a type the permanent tapped for mana produced; only in a triggered mana ability (CR 605.1b).
+    OfTapped,
+    /// This many mana, each of a type chosen when added from `among` or, with none listed, from the five colors ("two mana
+    /// in any combination of colors", "X mana in any combination of {R} and/or {G}").
+    AnyCombination {
+        /// How many mana.
+        count: u32,
+        /// The types to pick from; none means the five colors.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        among: Vec<ManaType>,
+    },
 }
 
 /// What a created token is.
@@ -417,6 +428,11 @@ pub enum Effect {
     /// Transforms permanents.
     Transform {
         /// What transforms.
+        what: Ref,
+    },
+    /// Flips flip cards (CR 710): a flip card on the battlefield becomes its bottom half and stays so until it leaves.
+    Flip {
+        /// What flips.
         what: Ref,
     },
     /// The player surveils (CR 701.25): looks at the top cards of their library and puts any into the graveyard.

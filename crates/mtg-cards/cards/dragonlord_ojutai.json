@@ -1,0 +1,37 @@
+{
+  "oracle_id": "654ff673-4630-4068-9bcf-e88a7877eb58",
+  "name": "Dragonlord Ojutai",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragonlord Ojutai",
+      "oracle_fingerprint": "941d051cbbd01a6096c80efa210af742",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["Untapped"] } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

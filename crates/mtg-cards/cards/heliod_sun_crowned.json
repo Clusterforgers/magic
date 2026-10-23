@@ -1,0 +1,54 @@
+{
+  "oracle_id": "63e596a2-9126-4af6-8782-c38687d664ad",
+  "name": "Heliod, Sun-Crowned",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heliod, Sun-Crowned",
+      "oracle_fingerprint": "553bdaab5eeb659faf31fd7da6228dc6",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": { "left": { "Devotion": ["White"] }, "op": "Lt", "right": 5 }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

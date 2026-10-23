@@ -1,0 +1,25 @@
+{
+  "oracle_id": "22076484-e9d5-4f33-8cf3-b9b427436b05",
+  "name": "Paladin's Arms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Paladin's Arms",
+      "oracle_fingerprint": "26a8ac5ebc9d7349e46832746e5da215",
+      "abilities": [
+        { "Keyword": "JobSelect" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 1 } },
+              { "AddKeyword": { "Ward": "{1}" } },
+              { "AddSubtype": "Knight" }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

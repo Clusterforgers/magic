@@ -210,6 +210,9 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::TargetCount(_)
         | Amount::Kicks
         | Amount::Promised
+        | Amount::CastWith(_)
+        | Amount::ColorsSpent
+        | Amount::PermanentsGraved
         | Amount::Triggering => Traits::NONE,
         Amount::Count(selector) => reads_of_selector(selector),
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),

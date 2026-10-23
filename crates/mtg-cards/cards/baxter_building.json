@@ -1,0 +1,44 @@
+{
+  "oracle_id": "71bc69a5-7cec-4abd-b97d-13f8e1f9afac",
+  "name": "Baxter Building",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baxter Building",
+      "oracle_fingerprint": "2cb0e89179f565edca4a5a1216b7b06e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyCombination": { "count": 4 } } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Toughness", "op": "Ge", "to": 4 } },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

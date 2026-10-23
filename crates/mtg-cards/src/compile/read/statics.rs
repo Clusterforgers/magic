@@ -6,10 +6,11 @@
 
 use std::sync::Arc;
 
-use mtg_core::card::Subtype;
+use mtg_core::card::{CardType, Subtype};
 
 use super::abilities;
 use super::amounts::{count_word, counted_stats, for_each, for_each_text, number_word};
+use super::as_long_as;
 use super::copies;
 use super::counters;
 use super::defining;
@@ -23,7 +24,7 @@ use super::selectors::{
     Form, all, color, color_name, each, granted_text, phrase, phrase_text, subtype,
 };
 use super::tokens::Reader;
-use super::triggers::{self, article};
+use super::triggers::article;
 use crate::ability::{Ability, CostChange};
 use crate::mana::ManaCostX;
 use crate::modify::{GameRule, Modification};
@@ -194,7 +195,7 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
 
 /// What must hold for a permanent not to enter tapped: one thing, or several joined by "or" ("you have two or more
 /// opponents or a player has 13 or less life").
-fn holds(r: &mut Reader<'_>) -> Option<Condition> {
+pub(super) fn holds(r: &mut Reader<'_>) -> Option<Condition> {
     let mut any = vec![held(r)?];
     while let Some(next) = r.attempt(|r| {
         r.need("or")?;
@@ -436,6 +437,8 @@ fn enchanted_other(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
 /// "~ can't block.", "Enchanted creature can't attack or block.", "~ can't be blocked.", "~ can't be blocked by
 /// creatures with power 2 or less."
 fn cannot(r: &mut Reader<'_>) -> Option<Ability> {
+    // The condition may come first: "As long as you have the city's blessing, Detectives you control can't be blocked."
+    let leading = leading_condition(r);
     let (affected, _) = subject(r, true)?;
     r.need("can't")?;
     let mods = if r.words("attack or block") {
@@ -464,7 +467,16 @@ fn cannot(r: &mut Reader<'_>) -> Option<Ability> {
     } else {
         return None;
     };
-    Some(statics(affected, mods, None))
+    let condition = leading.or_else(|| r.attempt(|r| as_long_as::read(r, Some(&affected))));
+    Some(statics(affected, mods, condition))
+}
+
+/// The condition a sentence opens with: "As long as it's your turn, ...".
+fn leading_condition(r: &mut Reader<'_>) -> Option<Condition> {
+    r.attempt(|r| {
+        let condition = as_long_as::read(r, None)?;
+        r.punct(',').then_some(condition)
+    })
 }
 
 /// "Equipped creature gets +2/+0.", "Creatures you control have haste.", "Enchanted creature gets
@@ -473,17 +485,14 @@ fn cannot(r: &mut Reader<'_>) -> Option<Ability> {
 /// given something only under a condition.
 fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
     // The condition may come first: "As long as you're the monarch, permanents you control have hexproof."
-    let leading = r.attempt(|r| {
-        let condition = as_long_as(r)?;
-        r.punct(',').then_some(condition)
-    });
+    let leading = leading_condition(r);
     // After a condition about the card itself, "it" is the card: "As long as ~ is monstrous, it has menace."
     let it = leading
         .as_ref()
-        .is_some_and(|condition| *condition == is_monstrous())
-        && r.word("it");
-    let (affected, plural) = if it {
-        (Ref::This, false)
+        .and_then(as_long_as::subject_of)
+        .filter(|_| r.word("it"));
+    let (affected, plural) = if let Some(it) = it {
+        (it, false)
     } else {
         subject(r, true).or_else(|| enchanted_other(r))?
     };
@@ -491,7 +500,7 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
     let mods = r.attempt(|r| predicate_mods(r, plural));
     r.x_free = x_free;
     let mods = mods?;
-    let condition = leading.or_else(|| r.attempt(as_long_as));
+    let condition = leading.or_else(|| r.attempt(|r| as_long_as::read(r, Some(&affected))));
     if affected == Ref::This && condition.is_none() && !counts_stats(&mods) {
         return None;
     }
@@ -516,6 +525,9 @@ fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Modification>>
             None
         }
     };
+    if !plural && r.words("isn't a creature") {
+        return Some(vec![Modification::RemoveType(CardType::Creature)]);
+    }
     let mut mods = Vec::new();
     if r.word(gets) {
         let stats = power_toughness(r)?;
@@ -526,12 +538,21 @@ fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Modification>>
         }
         let listed = r.punct(',');
         if listed || r.word("and") {
+            // "Equipped creature gets +1/+0 and is a Monk in addition to its other types."
+            if let Some(kind) = r.attempt(|r| of_a_kind(r, is)) {
+                mods.push(kind);
+                return Some(mods);
+            }
             r.word(has).then_some(())?;
             mods.extend(gives(r)?);
         }
         if listed {
             r.punct(',').then_some(())?;
-            mods.push(tail(r)?);
+            if let Some(last) = tail(r) {
+                mods.push(last);
+            } else {
+                mods.push(of_a_kind(r, is)?);
+            }
         }
         return Some(mods);
     }
@@ -539,6 +560,16 @@ fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Modification>>
     mods.extend(gives(r)?);
     mods.extend(tail(r));
     Some(mods)
+}
+
+/// "and is a Monk in addition to its other types" (the "and" optional): the creature type a permanent gets as well.
+fn of_a_kind(r: &mut Reader<'_>, is: &str) -> Option<Modification> {
+    r.word("and");
+    r.word(is).then_some(())?;
+    (r.word("a") || r.word("an")).then_some(())?;
+    let kind = subtype(r)?;
+    r.words("in addition to its other types")
+        .then_some(Modification::AddSubtype(Subtype(kind)))
 }
 
 /// What a permanent is given: keywords, or one activated ability in quotes ("Enchanted creature has \"{R}, {T}: Copy
@@ -557,46 +588,6 @@ fn given_text(mods: &[Modification]) -> Option<String> {
             Some(format!("\"{}\"", render::ability(ability)?))
         }
         _ => granted_text(mods),
-    }
-}
-
-/// " as long as an opponent has 10 or less life", " as long as you control a Plains", " as long as it's your turn".
-fn as_long_as(r: &mut Reader<'_>) -> Option<Condition> {
-    r.need("as long as")?;
-    if r.words("it's your turn") {
-        return Some(Condition::YourTurn);
-    }
-    triggers::monarch_condition(r)
-        .or_else(|| r.attempt(monstrous))
-        .or_else(|| holds(r))
-        .or_else(|| r.attempt(triggers::condition))
-}
-
-/// "~ is monstrous": the card itself has become monstrous (CR 701.37).
-fn monstrous(r: &mut Reader<'_>) -> Option<Condition> {
-    r.source().then_some(())?;
-    r.need("is monstrous")?;
-    Some(is_monstrous())
-}
-
-/// The card itself is monstrous.
-fn is_monstrous() -> Condition {
-    Condition::Matches {
-        subject: Ref::This,
-        selector: Selector(vec![Pred::Monstrous]),
-    }
-}
-
-/// What `as_long_as` reads, written back.
-fn as_long_as_texts(condition: &Condition) -> Vec<String> {
-    if *condition == Condition::YourTurn {
-        vec!["it's your turn".to_owned()]
-    } else if *condition == is_monstrous() {
-        vec!["~ is monstrous".to_owned()]
-    } else if let Some(written) = triggers::condition_text(condition) {
-        vec![written]
-    } else {
-        holds_texts(condition)
     }
 }
 
@@ -897,7 +888,7 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
 }
 
 /// What holds for a permanent not to enter tapped, as `holds` reads it: one thing, or several joined by "or".
-fn holds_texts(condition: &Condition) -> Vec<String> {
+pub(super) fn holds_texts(condition: &Condition) -> Vec<String> {
     let Condition::Any(list) = condition else {
         return control_texts(condition);
     };
@@ -1154,7 +1145,7 @@ fn static_texts(
     condition: Option<&Condition>,
 ) -> Vec<String> {
     // The wordings of the condition, each as the tail of the sentence; one empty tail for no condition.
-    let helds: Vec<String> = condition.map(as_long_as_texts).unwrap_or_default();
+    let helds: Vec<String> = condition.map(as_long_as::texts).unwrap_or_default();
     let tails: Vec<String> = if condition.is_some() {
         helds
             .iter()
@@ -1201,7 +1192,11 @@ fn static_texts(
             // "As long as ~ is monstrous, it has menace."
             let pronoun = helds
                 .iter()
-                .filter(|held| held.as_str() == "~ is monstrous")
+                .filter(|held| {
+                    ["~ ", "equipped creature ", "enchanted creature "]
+                        .iter()
+                        .any(|start| held.starts_with(start))
+                })
                 .map(|held| format!("as long as {held}, it {predicate}"));
             trailing.chain(leading).chain(pronoun).collect::<Vec<_>>()
         })
@@ -1216,40 +1211,45 @@ fn predicate(
     itself: bool,
     conditional: bool,
 ) -> Option<String> {
-    if !conditional {
-        match mods {
-            [Modification::CantAttack, Modification::CantBlock] => {
-                return Some("can't attack or block".to_owned());
-            }
-            [Modification::CantAttack] => return Some("can't attack".to_owned()),
-            [Modification::CantBlock] => return Some("can't block".to_owned()),
-            [Modification::CantBeBlocked] => return Some("can't be blocked".to_owned()),
-            [Modification::MaxBlockers(1)] => {
-                return Some("can't be blocked by more than one creature".to_owned());
-            }
-            [Modification::MinBlockers(count @ 2..)] => {
-                return Some(format!(
-                    "can't be blocked except by {} or more creatures",
-                    count_word(*count)?
-                ));
-            }
-            [Modification::CanBlockOnly(only)] => {
-                return Some(format!("can block only {}", phrase_text(only, Form::All)?));
-            }
-            [Modification::CantBlock, Modification::CantBeBlocked] => {
-                return Some("can't block and can't be blocked".to_owned());
-            }
-            // A card does not give itself a bonus, but it may grow by a count: "This creature gets +1/+1 for each Elf."
-            _ if itself && !counts_stats(mods) => return None,
-            _ => {}
+    match mods {
+        [Modification::CantAttack, Modification::CantBlock] => {
+            return Some("can't attack or block".to_owned());
         }
+        [Modification::CantAttack] => return Some("can't attack".to_owned()),
+        [Modification::CantBlock] => return Some("can't block".to_owned()),
+        [Modification::CantBeBlocked] => {
+            return Some("can't be blocked".to_owned());
+        }
+        [Modification::MaxBlockers(1)] => {
+            return Some("can't be blocked by more than one creature".to_owned());
+        }
+        [Modification::MinBlockers(count @ 2..)] => {
+            return Some(format!(
+                "can't be blocked except by {} or more creatures",
+                count_word(*count)?
+            ));
+        }
+        [Modification::CanBlockOnly(only)] => {
+            return Some(format!("can block only {}", phrase_text(only, Form::All)?));
+        }
+        [Modification::CantBlock, Modification::CantBeBlocked] => {
+            return Some("can't block and can't be blocked".to_owned());
+        }
+        // Only a condition takes a type away: "As long as your devotion to white is less than five, ~ isn't a creature."
+        [Modification::RemoveType(CardType::Creature)] if conditional && !plural => {
+            return Some("isn't a creature".to_owned());
+        }
+        // A card does not give itself a bonus, but it may grow by a count: "This creature gets +1/+1 for each Elf."
+        _ if !conditional && itself && !counts_stats(mods) => return None,
+        _ => {}
     }
     let (gets, has, is) = if plural {
         ("get", "have", "are")
     } else {
         ("gets", "has", "is")
     };
-    // "is goaded" and "can't be blocked by more than one creature" are the last part of the sentence.
+    // "is goaded", "can't be blocked by more than one creature" and "is a Monk in addition to its other types" are the
+    // last part of the sentence.
     let (mods, last) = match mods.split_last() {
         Some((Modification::Goaded, rest)) if !rest.is_empty() => {
             (rest, Some(format!("{is} goaded")))
@@ -1257,6 +1257,13 @@ fn predicate(
         Some((Modification::MaxBlockers(1), rest)) if !rest.is_empty() => (
             rest,
             Some("can't be blocked by more than one creature".to_owned()),
+        ),
+        Some((Modification::AddSubtype(Subtype(kind)), rest)) if !rest.is_empty() && !plural => (
+            rest,
+            Some(format!(
+                "is {} {kind} in addition to its other types",
+                article(kind)
+            )),
         ),
         _ => (mods, None),
     };

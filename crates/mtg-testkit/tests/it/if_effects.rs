@@ -248,7 +248,7 @@ const LOYALTY: &str =
     r#"{"Compare":{"left":{"Stat":{"of":"This","stat":"Loyalty"}},"op":"Ge","right":1}}"#;
 const LOYALTY_OF_A_MATCH: &str = r#"{"Matches":{"subject":"This","selector":[{"Compare":{"stat":"Loyalty","op":"Ge","to":1}}]}}"#;
 
-/// A condition the engine does not read yet: the devotion of a colour.
+/// A condition made of an amount the engine reads: the devotion of a colour.
 const DEVOTION: &str = r#"{"Compare":{"left":{"Devotion":["Red"]},"op":"Ge","right":1}}"#;
 
 #[rstest]
@@ -258,10 +258,10 @@ const DEVOTION: &str = r#"{"Compare":{"left":{"Devotion":["Red"]},"op":"Ge","rig
 #[case::counters(with_condition(COUNTERS), &[])]
 #[case::loyalty(with_condition(LOYALTY), &[])]
 #[case::loyalty_of_a_match(with_condition(LOYALTY_OF_A_MATCH), &[])]
-#[case::devotion(with_condition(DEVOTION), &["Amount.Devotion"])]
-#[case::not_devotion(with_condition(&format!(r#"{{"Not":{DEVOTION}}}"#)), &["Amount.Devotion"])]
+#[case::devotion(with_condition(DEVOTION), &[])]
+#[case::not_devotion(with_condition(&format!(r#"{{"Not":{DEVOTION}}}"#)), &[])]
 #[case::one_of_all(with_condition(&format!(r#"{{"All":["YourTurn",{COUNTERS}]}}"#)), &[])]
-#[case::one_of_any(with_condition(&format!(r#"{{"Any":[{LOYALTY},{DEVOTION}]}}"#)), &["Amount.Devotion"])]
+#[case::one_of_any(with_condition(&format!(r#"{{"Any":[{LOYALTY},{DEVOTION}]}}"#)), &[])]
 #[case::inside_the_then_of_another_if(
     format!(r#"{{"Spell":{{"effects":[{{"If":{{"condition":"YourTurn","then":[{{"If":{{"condition":{COUNTERS},"then":[]}}}}]}}}}]}}}}"#),
     &[]

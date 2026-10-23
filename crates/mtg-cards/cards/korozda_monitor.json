@@ -1,0 +1,12 @@
+{
+  "oracle_id": "55195474-c7ea-4c0a-b504-af15e64ec7e9",
+  "name": "Korozda Monitor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Korozda Monitor",
+      "oracle_fingerprint": "2eac0f88cae3fbdf5cc0ea09a2b65cb2",
+      "abilities": [{ "Keyword": "Trample" }, { "Keyword": { "Scavenge": "{5}{G}{G}" } }]
+    }
+  ]
+}

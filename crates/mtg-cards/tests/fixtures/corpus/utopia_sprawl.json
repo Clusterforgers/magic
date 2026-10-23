@@ -1,0 +1,32 @@
+{
+  "id": "5ea568df-04a1-4012-98ec-ba75e189e0ca",
+  "oracle_id": "00d8efa6-a2d9-4249-8da7-b45173675329",
+  "name": "Utopia Sprawl",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rvr",
+  "collector_number": "159",
+  "rarity": "uncommon",
+  "released_at": "2024-01-12",
+  "digital": false,
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant Forest\nAs this Aura enters, choose a color.\nWhenever enchanted Forest is tapped for mana, its controller adds an additional one mana of the chosen color.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

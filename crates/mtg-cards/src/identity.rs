@@ -202,6 +202,12 @@ fn scan(value: &Value, set: &mut ColorSet) {
                 ) {
                     named(inner, set);
                 }
+                // "in any combination of {U}, {B}, and/or {R}" names the types it picks from.
+                if key == "AnyCombination"
+                    && let Some(among) = inner.get("among")
+                {
+                    named(among, set);
+                }
                 scan(inner, set);
             }
         }
@@ -307,6 +313,8 @@ mod tests {
     #[case::added_mana(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green","Colorless"]}}}]}}"#)), "G")]
     #[case::added_a_type_or_the_chosen_color(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OrChosenColor":"Red"}}}]}}"#)), "R")]
     #[case::added_lists_of_mana(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOfLists":[["Red","Red"],["Red","Black"],["Black","Colorless"]]}}}]}}"#)), "BR")]
+    #[case::a_combination_of_listed_types(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyCombination":{"count":2,"among":["Blue","Black","Red"]}}}}]}}"#)), "BRU")]
+    #[case::a_combination_of_any_color_adds_none(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyCombination":{"count":2}}}}]}}"#)), "")]
     #[case::any_color_adds_none(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#)), "")]
     #[case::mana_spent_to_cast(costing("{1}").with_rules(rules(r#"{"Triggered":{"when":{"ZoneChange":{"to":"Battlefield","what":["This"]}},"effects":[{"If":{"condition":{"Not":{"ManaSpent":"Green"}},"then":[{"Sacrifice":{"filter":["This"]}}]}}]}}"#)), "G")]
     #[case::rules_text_clause(costing("{1}").with_manual("{W}, {T}: Draw a card.", "not run"), "W")]

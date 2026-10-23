@@ -23,6 +23,7 @@ mod help_tests;
 mod layers;
 mod legend;
 mod mana_ability;
+mod mana_bonus;
 mod mana_cost;
 mod mana_kinds;
 mod mana_plan;

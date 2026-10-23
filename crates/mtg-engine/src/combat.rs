@@ -384,7 +384,10 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
             .count();
         let needed = keywords::min_blockers(state, attacker);
         // An attacker that must have more blockers than it may have can't be blocked at all.
-        able >= needed && blocker_limits(state, attacker).1.is_none_or(|most| needed <= most)
+        able >= needed
+            && blocker_limits(state, attacker)
+                .1
+                .is_none_or(|most| needed <= most)
     };
     let blockers: Vec<BlockerOption> = candidates
         .iter()

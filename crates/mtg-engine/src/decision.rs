@@ -682,11 +682,7 @@ mod tests {
     }
 
     /// `blocking` with attackers that may be blocked by so many creatures at most.
-    fn limited(
-        blockers: &[(u64, &[u64])],
-        max: &[(u64, usize)],
-        required: &[u64],
-    ) -> BlockOptions {
+    fn limited(blockers: &[(u64, &[u64])], max: &[(u64, usize)], required: &[u64]) -> BlockOptions {
         BlockOptions {
             max_blockers: max.iter().map(|(a, n)| (id(*a), *n)).collect(),
             ..blocking(blockers, &[], required)

@@ -1,0 +1,42 @@
+{
+  "id": "33a8e5b9-6bfb-4ff2-a16d-3168a5412807",
+  "oracle_id": "2b565791-1b94-4dad-a48d-be7fc2198e19",
+  "name": "Jushi Apprentice // Tomoya the Revealer",
+  "lang": "en",
+  "layout": "flip",
+  "set": "chk",
+  "collector_number": "70",
+  "rarity": "rare",
+  "released_at": "2004-10-01",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Wizard // Legendary Creature — Human Wizard",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "card_faces": [
+    {
+      "name": "Jushi Apprentice",
+      "mana_cost": "{1}{U}",
+      "type_line": "Creature — Human Wizard",
+      "oracle_text": "{2}{U}, {T}: Draw a card. If you have nine or more cards in hand, flip this creature.",
+      "power": "1",
+      "toughness": "2"
+    },
+    {
+      "name": "Tomoya the Revealer",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Human Wizard",
+      "oracle_text": "{3}{U}{U}, {T}: Target player draws X cards, where X is the number of cards in your hand.",
+      "power": "2",
+      "toughness": "3"
+    }
+  ]
+}

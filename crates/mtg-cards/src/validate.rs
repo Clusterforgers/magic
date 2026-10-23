@@ -501,6 +501,9 @@ impl<'a> Walker<'a> {
                 self.at("LowestLife", |w| w.reference(who, Kind::Player));
             }
             Amount::Kicks | Amount::Promised => self.paid_amount(amount),
+            Amount::CastWith(_) => self.uses("Amount", "CastWith"),
+            Amount::ColorsSpent => self.uses("Amount", "ColorsSpent"),
+            Amount::PermanentsGraved => self.uses("Amount", "PermanentsGraved"),
             Amount::Triggering => {
                 self.uses("Amount", "Triggering");
                 if !self.scope.in_trigger {
@@ -732,6 +735,19 @@ impl<'a> Walker<'a> {
         }
     }
 
+    fn backup(&mut self, count: u32, abilities: &[Ability]) {
+        if count == 0 {
+            self.problem("backup needs a number of at least 1");
+        }
+        // The abilities that follow the keyword are what the target gains.
+        for ability in abilities {
+            match ability {
+                Ability::Keyword(granted) => self.keyword(granted),
+                other => self.granted(other),
+            }
+        }
+    }
+
     fn keyword(&mut self, keyword: &Keyword) {
         self.uses("Keyword", &tag_of(keyword));
         match keyword {
@@ -747,6 +763,8 @@ impl<'a> Walker<'a> {
             | Keyword::Unearth(cost)
             | Keyword::Embalm(cost)
             | Keyword::Eternalize(cost)
+            | Keyword::Scavenge(cost)
+            | Keyword::Transmute(cost)
             | Keyword::Ninjutsu(cost)
             | Keyword::LevelUp(cost)
             | Keyword::Outlast(cost) => {
@@ -778,24 +796,14 @@ impl<'a> Walker<'a> {
             | Keyword::Mutate(cost)
             | Keyword::Encore(cost)
             | Keyword::Foretell(cost)
+            | Keyword::Awaken { cost, .. }
             | Keyword::Suspend { cost, .. } => {
                 self.at("cost", |w| w.cost(cost));
                 // Only mana is paid for these: a part that takes objects, life or counters is not.
                 self.parts_that_need_an_announcement("Keyword", "Cost", cost);
             }
             Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
-            Keyword::Backup { count, abilities } => {
-                if *count == 0 {
-                    self.problem("backup needs a number of at least 1");
-                }
-                // The abilities that follow the keyword are what the target gains.
-                for ability in abilities {
-                    match ability {
-                        Ability::Keyword(granted) => self.keyword(granted),
-                        other => self.granted(other),
-                    }
-                }
-            }
+            Keyword::Backup { count, abilities } => self.backup(*count, abilities),
             Keyword::Saddle(0) => self.problem("saddle needs a power of at least 1"),
             Keyword::Enchant(selector) => {
                 self.selector(selector);
@@ -817,6 +825,10 @@ impl<'a> Walker<'a> {
             Keyword::Typecycling { find, cost } => {
                 self.at("cost", |w| w.cost(cost));
                 self.at("find", |w| w.selector(find));
+            }
+            Keyword::EquipTo { to, cost } => {
+                self.at("cost", |w| w.cost(cost));
+                self.at("to", |w| w.selector(to));
             }
             Keyword::Toxic(0) => self.problem("toxic needs a number of at least 1"),
             Keyword::Casualty(0) => self.problem("casualty needs a power of at least 1"),
@@ -1316,6 +1328,7 @@ impl<'a> Walker<'a> {
             | Effect::Tap { what }
             | Effect::Untap { what }
             | Effect::Transform { what }
+            | Effect::Flip { what }
             | Effect::Goad { what }
             | Effect::Explore { what }
             | Effect::Connive { what }
@@ -1448,7 +1461,11 @@ impl<'a> Walker<'a> {
                     Produce::AnyColor(0)
                     | Produce::ChosenColor(0)
                     | Produce::CommanderIdentity(0)
-                    | Produce::ProducedBy { count: 0, .. } => w.problem("adds no mana"),
+                    | Produce::ProducedBy { count: 0, .. }
+                    | Produce::AnyCombination { count: 0, .. } => w.problem("adds no mana"),
+                    Produce::AnyCombination { among, .. } if among.len() == 1 => {
+                        w.problem("a combination of one type is that mana");
+                    }
                     Produce::OneOf(list) if list.len() < 2 => {
                         w.problem("a choice of mana needs at least two types");
                     }
@@ -1470,7 +1487,9 @@ impl<'a> Walker<'a> {
                     | Produce::OneOfLists(_)
                     | Produce::ChosenColor(_)
                     | Produce::OrChosenColor(_)
-                    | Produce::CommanderIdentity(_) => {}
+                    | Produce::CommanderIdentity(_)
+                    | Produce::AnyCombination { .. }
+                    | Produce::OfTapped => {}
                 }
                 // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.
                 match mana {
@@ -2411,6 +2430,9 @@ fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str) -> bool {
                 // Scryfall lists `Enchant` for an Aura that enchants a player as it does for any other.
                 || (matches!(k, Keyword::EnchantPlayer { .. })
                     && "Enchant".eq_ignore_ascii_case(keyword))
+                // Scryfall lists `Equip` for an Equipment that equips only some creatures as for any other.
+                || (matches!(k, Keyword::EquipTo { .. })
+                    && Keyword::Equip(Cost::default()).name().eq_ignore_ascii_case(keyword))
                 // Scryfall lists `Cycling` as well for a typecycling card (CR 702.29).
                 || (matches!(k, Keyword::Typecycling { .. })
                     && Keyword::Cycling(Cost::default()).name().eq_ignore_ascii_case(keyword))

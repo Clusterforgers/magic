@@ -1,0 +1,12 @@
+{
+  "oracle_id": "1498f5a1-6df7-4f80-9470-c93528b64a9c",
+  "name": "Deadbridge Goliath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deadbridge Goliath",
+      "oracle_fingerprint": "0515693b36bdd8e853904bc67311ff8b",
+      "abilities": [{ "Keyword": { "Scavenge": "{4}{G}{G}" } }]
+    }
+  ]
+}

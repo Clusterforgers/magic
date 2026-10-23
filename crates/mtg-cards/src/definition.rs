@@ -62,6 +62,8 @@ pub enum Layout {
     ModalDfc,
     /// A transforming double-faced card (CR 712.3): the front face everywhere but on the battlefield, where the face it is turned to counts.
     Transform,
+    /// A flip card (CR 710): its top half everywhere but on the battlefield, where a flipped permanent is its bottom half.
+    Flip,
 }
 
 impl Layout {
@@ -72,6 +74,7 @@ impl Layout {
             "adventure" => Some(Layout::Adventure),
             "modal_dfc" => Some(Layout::ModalDfc),
             "transform" => Some(Layout::Transform),
+            "flip" => Some(Layout::Flip),
             _ => None,
         }
     }

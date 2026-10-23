@@ -54,6 +54,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             ctx.cause(),
             work.choices.x,
             &work.choices.optional_costs,
+            work.choices.way,
         ) else {
             return Some(Next::Drop);
         };

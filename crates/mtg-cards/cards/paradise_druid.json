@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e119869d-1f66-402b-8251-d351965cf0d3",
+  "name": "Paradise Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Paradise Druid",
+      "oracle_fingerprint": "6c23971eee96708aacdc1df4a84f6e10",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["Untapped"] } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

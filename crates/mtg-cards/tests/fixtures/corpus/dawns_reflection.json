@@ -1,0 +1,32 @@
+{
+  "id": "1366d406-4539-408f-93c1-f940327c1ba2",
+  "oracle_id": "362b7838-3b70-4a00-8c26-1c8b8a3b6acf",
+  "name": "Dawn's Reflection",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c18",
+  "collector_number": "139",
+  "rarity": "common",
+  "released_at": "2018-08-10",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant land\nWhenever enchanted land is tapped for mana, its controller adds an additional two mana in any combination of colors.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

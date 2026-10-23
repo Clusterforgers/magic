@@ -1,0 +1,12 @@
+{
+  "oracle_id": "0dfbee5a-0dc6-4f5b-abbd-9d8601de7107",
+  "name": "Terrus Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Terrus Wurm",
+      "oracle_fingerprint": "8333a76d4edea9f436682266e4c10152",
+      "abilities": [{ "Keyword": { "Scavenge": "{6}{B}" } }]
+    }
+  ]
+}

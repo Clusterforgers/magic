@@ -23,11 +23,7 @@ fn commander_held() -> Condition {
     }
 }
 
-fn gives(
-    affected: Ref,
-    mods: Vec<Modification>,
-    condition: Option<Condition>,
-) -> Ability {
+fn gives(affected: Ref, mods: Vec<Modification>, condition: Option<Condition>) -> Ability {
     Ability::Static {
         affected,
         mods,
@@ -124,9 +120,13 @@ fn the_ability_word_is_flavor(#[case] with: &str, #[case] without: &str) {
 }
 
 #[rstest]
-#[case::a_commander_you_do_not_control("As long as your opponents control your commander, ~ has flying.")]
+#[case::a_commander_you_do_not_control(
+    "As long as your opponents control your commander, ~ has flying."
+)]
 #[case::someone_elses_commander("As long as you control their commander, ~ has flying.")]
-#[case::a_count_of_commanders("As long as you control two or more of your commander, ~ has flying.")]
+#[case::a_count_of_commanders(
+    "As long as you control two or more of your commander, ~ has flying."
+)]
 #[case::riot_is_not_given_yet("Nontoken creatures you control have riot.")]
 fn a_near_miss_is_left_to_the_table(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Static, false), None, "{text}");
