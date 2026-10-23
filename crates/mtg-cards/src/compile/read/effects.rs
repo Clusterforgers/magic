@@ -21,7 +21,7 @@ use super::library;
 use super::modal;
 use super::payments;
 use super::prevention;
-use super::selectors::{Form, all, granted_keywords, phrase, target};
+use super::selectors::{Form, all, each, granted_keywords, phrase, target};
 use super::spend;
 use super::tokens::Reader;
 use super::where_x;
@@ -36,7 +36,7 @@ use crate::value::{Amount, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 34] = [
+const TEMPLATES: [Template; 36] = [
     modal::modal,
     cast::discover_sentence,
     cast::exile_until,
@@ -50,6 +50,7 @@ const TEMPLATES: [Template; 34] = [
     player_effect,
     super::damage::damage,
     removal,
+    super::becomes::creature,
     pump,
     evasion,
     return_card,
@@ -71,6 +72,7 @@ const TEMPLATES: [Template; 34] = [
     return_itself,
     prevention::rule_effect,
     prevention::shield,
+    super::attack_tax::rule_effect,
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
@@ -731,6 +733,10 @@ fn subject(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
     }
     if let Some(objects) = all(r) {
         return Some((objects, true));
+    }
+    // "Each other creature you control gets +1/+1 until end of turn."
+    if let Some(objects) = each(r) {
+        return Some((objects, false));
     }
     phrase(r, Form::All).map(|selector| (Ref::Each(selector), true))
 }

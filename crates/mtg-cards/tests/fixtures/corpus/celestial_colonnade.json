@@ -1,0 +1,26 @@
+{
+  "id": "4c830a99-595b-4aed-9f6b-85a78917f498",
+  "oracle_id": "876ac6f6-74de-4666-84c6-83d81f054723",
+  "name": "Celestial Colonnade",
+  "lang": "en",
+  "layout": "normal",
+  "set": "uma",
+  "collector_number": "238",
+  "rarity": "rare",
+  "released_at": "2018-12-07",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land enters tapped.\n{T}: Add {W} or {U}.\n{3}{W}{U}: Until end of turn, this land becomes a 4/4 white and blue Elemental creature with flying and vigilance. It's still a land.",
+  "colors": [],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "U",
+    "W"
+  ]
+}

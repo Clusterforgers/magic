@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::ability::Ability;
 use crate::keyword::Keyword;
+use crate::mana::ManaCostX;
 use crate::refs::{Ref, Selector, ZoneKind};
 use crate::trigger::TriggerPattern;
 use crate::value::Amount;
@@ -140,6 +141,17 @@ pub struct CastPermission {
     pub play: bool,
 }
 
+/// What a rule that taxes attackers protects: the players, the planeswalkers they control, or both.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum Attacked {
+    /// Creatures attacking the players.
+    Player,
+    /// Creatures attacking planeswalkers the players control.
+    Planeswalkers,
+    /// Creatures attacking the players or planeswalkers they control.
+    Both,
+}
+
 /// A change to the rules of the game rather than to an object. `Effect::Rule` makes it for a duration and
 /// `Ability::Rule` for as long as its source has the ability; the references name the players or objects it is about.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -166,6 +178,23 @@ pub enum GameRule {
     },
     /// The creatures block each combat if able: a requirement on the declaration (CR 509.1c).
     MustBlock(Ref),
+    /// Creatures can't attack the players (or their planeswalkers) unless their controller pays the mana for each of them
+    /// as the attack is declared (CR 508.1h): the declaration is made only with the payment.
+    AttackTax {
+        /// The players it protects.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// Whether it protects the players, the planeswalkers they control or both.
+        attacked: Attacked,
+        /// The attacking creatures it taxes, judged when the attack is declared; every creature when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        attackers: Selector,
+        /// The mana each taxed creature costs, once for each of `per`; no `{X}`.
+        mana: ManaCostX,
+        /// How many times the mana is paid for each creature, counted when the attack is declared.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        per: Amount,
+    },
     /// The spells can't be countered.
     CantBeCountered(Ref),
     /// The players can't gain life.
@@ -252,6 +281,26 @@ mod tests {
     }
 
     #[rstest]
+    #[case(
+        GameRule::AttackTax {
+            who: Ref::You,
+            attacked: Attacked::Player,
+            attackers: Selector::default(),
+            mana: "{2}".parse().unwrap(),
+            per: Amount::Fixed(1),
+        },
+        r#"{"AttackTax":{"attacked":"Player","mana":"{2}"}}"#
+    )]
+    #[case(
+        GameRule::AttackTax {
+            who: Ref::Opponents,
+            attacked: Attacked::Both,
+            attackers: Selector(vec![crate::refs::Pred::Type(CardType::Creature)]),
+            mana: "{W/P}".parse().unwrap(),
+            per: Amount::Fixed(2),
+        },
+        r#"{"AttackTax":{"who":"Opponents","attacked":"Both","attackers":[{"Type":"Creature"}],"mana":"{W/P}","per":2}}"#
+    )]
     #[case(
         GameRule::DamageCantBePrevented { source: Selector::default(), combat: None },
         r#"{"DamageCantBePrevented":{}}"#

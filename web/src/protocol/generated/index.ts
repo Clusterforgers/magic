@@ -9,6 +9,7 @@ export type { Answer } from "./Answer";
 export type { AttackOptions } from "./AttackOptions";
 export type { AttackRange } from "./AttackRange";
 export type { AttackTarget } from "./AttackTarget";
+export type { AttackTax } from "./AttackTax";
 export type { AttackerForecast } from "./AttackerForecast";
 export type { AttackerOption } from "./AttackerOption";
 export type { AttackerView } from "./AttackerView";

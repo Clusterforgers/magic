@@ -1,0 +1,15 @@
+{
+  "oracle_id": "69aa6809-5468-413a-94c9-562e6de93957",
+  "name": "Baird, Steward of Argive",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baird, Steward of Argive",
+      "oracle_fingerprint": "a7ada532b3a34477a1cb98952e663062",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Rule": { "rule": { "AttackTax": { "attacked": "Both", "mana": "{1}" } } } }
+      ]
+    }
+  ]
+}

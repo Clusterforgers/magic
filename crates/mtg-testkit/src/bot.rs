@@ -129,16 +129,7 @@ impl RandomBot {
             DecisionKind::Priority(options) => Answer::Priority(self.priority(options)),
             DecisionKind::PayMana(options) => Answer::PayMana(self.pay(options)),
             DecisionKind::DeclareAttackers(options) => {
-                let mut attackers = Vec::new();
-                for option in &options.attackers {
-                    // A creature a rule requires to attack always does; the others at random.
-                    let required = options.required.contains(&option.object);
-                    if (self.rng.below(2) == 0 || required) && !option.defenders.is_empty() {
-                        let target = option.defenders[self.rng.index(option.defenders.len())];
-                        attackers.push((option.object, target));
-                    }
-                }
-                Answer::DeclareAttackers(attackers)
+                Answer::DeclareAttackers(self.attack(options))
             }
             DecisionKind::DeclareBlockers(options) => {
                 let mut blocks = Vec::new();
@@ -314,6 +305,38 @@ impl RandomBot {
         }
         let pick = self.rng.index(choices.len());
         choices.swap_remove(pick)
+    }
+
+    /// A random attack: each creature joins at random, one that must attack always does, and an attack that costs
+    /// more than the player surely has (CR 508.1h) is cut back to what it can pay, the creatures that are not
+    /// required first.
+    fn attack(
+        &mut self,
+        options: &mtg_engine::decision::AttackOptions,
+    ) -> Vec<(ObjectId, mtg_engine::combat::AttackTarget)> {
+        let mut attackers = Vec::new();
+        for option in &options.attackers {
+            let required = options.required.contains(&option.object);
+            if (self.rng.below(2) == 0 || required) && !option.defenders.is_empty() {
+                let target = option.defenders[self.rng.index(option.defenders.len())];
+                // A creature that is required to attack attacks where it costs nothing.
+                let target = match option.free_defender() {
+                    Some(free) if required && option.tax.iter().any(|(t, _)| *t == target) => free,
+                    _ => target,
+                };
+                attackers.push((option.object, target));
+            }
+        }
+        while options.cost_of(&attackers).mana_value() > options.mana {
+            let Some(at) = attackers
+                .iter()
+                .rposition(|(object, _)| !options.required.contains(object))
+            else {
+                break;
+            };
+            attackers.remove(at);
+        }
+        attackers
     }
 
     /// A random part of `payment` (possibly all or none of it), the way a player who has paid part by hand leaves it.

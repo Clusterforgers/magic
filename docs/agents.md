@@ -37,6 +37,7 @@ Report (max 15 lines): files added, public API in one line each, test counts, de
 - Run about six agents at once at most (24 cores): each runs one cargo job at a time and ends with `git merge main` and the full `scripts/check.sh` (after a clean merge of a `main` that moved meanwhile, only the fast check and the touched crates' tests); the orchestrator fast-forwards `main` to its tip when `main` is an ancestor and otherwise sends the agent back to merge.
 - Dependencies stay current: after a round, with no agent running, `cargo update --dry-run` lists what is behind; the (dep) piece updates it alone because `Cargo.lock` changes rebuild every worktree.
 - Coverage pieces measure the Verified counts in a scratch database (`ingest`, `compile`, `coverage` with `--database-url`), never in `magic`; the numbers go to the M6 target line.
+- Corpus fixtures (`crates/mtg-cards/tests/fixtures/corpus/*.json`) are the trimmed Scryfall record of the card from the cache (`~/.cache/mtg-cli/scryfall`, `zcat ... | jq`): the id, oracle id, set, collector number and release date are real, never written from memory.
 
 ### Parallel agents
 

@@ -1,0 +1,14 @@
+{
+  "oracle_id": "e828b189-0e8f-43b8-b909-4c23e742e028",
+  "name": "Ghostly Prison",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghostly Prison",
+      "oracle_fingerprint": "4855567076dcb70b4d3b338ebfa85f9a",
+      "abilities": [
+        { "Rule": { "rule": { "AttackTax": { "attacked": "Player", "mana": "{2}" } } } }
+      ]
+    }
+  ]
+}

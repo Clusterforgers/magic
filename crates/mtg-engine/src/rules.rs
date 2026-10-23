@@ -12,10 +12,11 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::sync::OnceLock;
 
 use mtg_cards::ability::Ability;
-use mtg_cards::modify::GameRule;
+use mtg_cards::modify::{Attacked, GameRule};
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
+use mtg_core::mana::ManaCost;
 use serde::{Deserialize, Serialize};
 
 use crate::ability_reader::{abilities_of, definition_has_rule};
@@ -40,6 +41,9 @@ pub enum Rule {
     MustAttackPlayers(Vec<(ObjectRef, PlayerId)>),
     /// The creatures block each combat if able (CR 509.1c).
     MustBlock(Vec<ObjectRef>),
+    /// Creatures can't attack the players unless their controller pays for each of them as the attack is declared
+    /// (CR 508.1h).
+    AttackTax(AttackTax),
     /// The spells can't be countered.
     CantBeCountered(Vec<ObjectRef>),
     /// The players can't gain life.
@@ -93,6 +97,22 @@ pub enum Rule {
     PreventDamage(DamageShield),
     /// A regeneration shield (CR 701.19): the next time the permanent would be destroyed, it regenerates instead.
     Regenerate(ObjectRef),
+}
+
+/// A tax on attacking: whom it protects, which attackers it taxes and what each costs.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct AttackTax {
+    /// The players it protects.
+    pub players: Vec<PlayerId>,
+    /// Whether it protects the players, the planeswalkers they control or both.
+    #[cfg_attr(feature = "ts", ts(type = "\"Player\" | \"Planeswalkers\" | \"Both\""))]
+    pub attacked: Attacked,
+    /// The attackers it taxes, judged when the attack is declared; every creature when empty.
+    #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+    pub creatures: Selector,
+    /// What each taxed creature costs, counted when the rule began or the state last changed.
+    pub mana: ManaCost,
 }
 
 /// What a prevention shield protects and how much it prevents.
@@ -210,6 +230,18 @@ pub(crate) struct RulesInForce {
     again: Vec<Again>,
     unpreventable: Vec<Unpreventable>,
     casts: Vec<Cast>,
+    taxes: Vec<Taxing>,
+}
+
+/// A tax on attacking in force, with whose it is.
+#[derive(Debug, Clone)]
+pub(crate) struct Taxing {
+    /// The controller of the effect or permanent that taxes, for the selector's "you".
+    pub(crate) controller: PlayerId,
+    /// The object that taxes, for the selector's "this"; none for a rule that no object began.
+    pub(crate) source: Option<ObjectRef>,
+    /// The tax.
+    pub(crate) tax: AttackTax,
 }
 
 /// A permission to cast cards, with whose it is.
@@ -277,6 +309,11 @@ impl RulesInForce {
                 .attack_players
                 .extend(pairs.iter().map(|(named, player)| (named.id, *player))),
             Rule::MustBlock(named) => self.must_block.extend(ids(named)),
+            Rule::AttackTax(tax) => self.taxes.push(Taxing {
+                controller,
+                source,
+                tax: tax.clone(),
+            }),
             Rule::CantBeCountered(named) => self.uncounterable.extend(ids(named)),
             Rule::CantGainLife(players) => self.no_life_gain.extend(players),
             Rule::CantDraw(players) => self.no_draw.extend(players),
@@ -381,6 +418,21 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 .collect(),
         ),
         GameRule::MustBlock(who) => Rule::MustBlock(objects(who, Zone::Battlefield)?),
+        GameRule::AttackTax {
+            who,
+            attacked,
+            attackers,
+            mana,
+            per,
+        } => {
+            let times = usize::try_from(scope.amount(per)?.max(0)).unwrap_or(usize::MAX);
+            Rule::AttackTax(AttackTax {
+                players: scope.players(who)?,
+                attacked: *attacked,
+                creatures: attackers.clone(),
+                mana: repeated(mana.rest(), times),
+            })
+        }
         GameRule::CantBeCountered(who) => Rule::CantBeCountered(objects(who, Zone::Stack)?),
         GameRule::CantGainLife(who) => Rule::CantGainLife(scope.players(who)?),
         GameRule::CantDraw(who) => Rule::CantDraw(scope.players(who)?),
@@ -419,9 +471,21 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
     })
 }
 
+/// The cost paid `times` over: its symbols repeated, the generic ones added up.
+pub(crate) fn repeated(cost: &ManaCost, times: usize) -> ManaCost {
+    ManaCost::from_symbols(
+        cost.symbols()
+            .iter()
+            .copied()
+            .cycle()
+            .take(cost.symbols().len().saturating_mul(times)),
+    )
+}
+
 /// Whether a rule names no player and no object, so putting it in force changes nothing.
 pub(crate) fn names_nothing(rule: &Rule) -> bool {
     match rule {
+        Rule::AttackTax(tax) => tax.players.is_empty() || tax.mana.symbols().is_empty(),
         Rule::MustAttack(named) | Rule::MustBlock(named) | Rule::CantBeCountered(named) => {
             named.is_empty()
         }
@@ -537,6 +601,7 @@ static NONE: RulesInForce = RulesInForce {
     again: Vec::new(),
     unpreventable: Vec::new(),
     casts: Vec::new(),
+    taxes: Vec::new(),
 };
 
 /// The rules of a state, built when first asked for and dropped when the state changes.
@@ -725,6 +790,11 @@ pub(crate) fn damage_cant_be_prevented(state: &GameState, dealer: ObjectId, comb
 /// The permissions to cast cards in force: the one place a cast reads them (`ways`).
 pub(crate) fn cast_permissions(state: &GameState) -> &[Cast] {
     &state.rules().casts
+}
+
+/// The taxes on attacking in force: the one place the attack declaration reads this rule (`attack_tax`).
+pub(crate) fn attack_taxes(state: &GameState) -> &[Taxing] {
+    &state.rules().taxes
 }
 
 /// The triggers that trigger an additional time: the one place trigger detection reads this rule.

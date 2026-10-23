@@ -8,6 +8,7 @@
 mod announce;
 mod answers;
 mod attach;
+mod attack_tax;
 mod cast;
 mod commanders;
 mod damage;
