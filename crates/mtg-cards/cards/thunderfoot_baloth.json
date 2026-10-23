@@ -1,0 +1,40 @@
+{
+  "oracle_id": "f55334d9-1ec2-4667-bf28-5a0384d6f053",
+  "name": "Thunderfoot Baloth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thunderfoot Baloth",
+      "oracle_fingerprint": "09a859ab3c4d76eae2c8d75d5e8c8e8a",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["Commander", { "OwnedBy": "You" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Trample" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["Commander", { "OwnedBy": "You" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

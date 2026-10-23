@@ -276,7 +276,6 @@ fn near_misses_of_becoming_a_copy_stay_unread(#[case] text: &str) {
 }
 
 #[rstest]
-#[case::a_triggered_ability("Enchanted creature has \"When this creature dies, draw a card.\"")]
 #[case::an_ability_and_a_keyword("Enchanted creature has \"{T}: Draw a card.\" and flying")]
 #[case::an_unfinished_quote("Enchanted creature has \"{T}: Draw a card.")]
 #[case::an_unread_ability("Enchanted creature has \"{T}: Do something odd.\"")]

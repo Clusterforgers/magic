@@ -1,0 +1,28 @@
+{
+  "id": "80c1b1ea-2459-4986-8846-4db916d6b771",
+  "oracle_id": "f55334d9-1ec2-4667-bf28-5a0384d6f053",
+  "name": "Thunderfoot Baloth",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "201",
+  "rarity": "rare",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "Trample\nLieutenant — As long as you control your commander, this creature gets +2/+2 and other creatures you control get +2/+2 and have trample.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Trample",
+    "Lieutenant"
+  ]
+}

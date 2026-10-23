@@ -1,0 +1,29 @@
+{
+  "id": "08076c82-edb6-4c3c-abda-3d3ad7bdd78f",
+  "oracle_id": "63394e24-a456-4cc6-9885-8c62447b050a",
+  "name": "Tyrant's Familiar",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cm2",
+  "collector_number": "125",
+  "rarity": "rare",
+  "released_at": "2018-06-08",
+  "digital": false,
+  "mana_cost": "{5}{R}{R}",
+  "cmc": 7.0,
+  "type_line": "Creature — Dragon",
+  "oracle_text": "Flying, haste\nLieutenant — As long as you control your commander, this creature gets +2/+2 and has \"Whenever this creature attacks, it deals 7 damage to target creature defending player controls.\"",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flying",
+    "Haste",
+    "Lieutenant"
+  ]
+}

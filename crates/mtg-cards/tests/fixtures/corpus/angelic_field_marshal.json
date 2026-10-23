@@ -1,0 +1,28 @@
+{
+  "id": "496e9fe2-843c-4dfe-b94a-b542a2ddaae4",
+  "oracle_id": "502575f4-7c56-44bc-a77f-ae28d66c8e1f",
+  "name": "Angelic Field Marshal",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "13",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Angel",
+  "oracle_text": "Flying\nLieutenant — As long as you control your commander, this creature gets +2/+2 and creatures you control have vigilance.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Lieutenant"
+  ]
+}

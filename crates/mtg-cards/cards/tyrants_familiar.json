@@ -1,0 +1,45 @@
+{
+  "oracle_id": "63394e24-a456-4cc6-9885-8c62447b050a",
+  "name": "Tyrant's Familiar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tyrant's Familiar",
+      "oracle_fingerprint": "65aed8b1e3c69f566b40ac624ddbfb61",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }]
+                        }
+                      }
+                    ],
+                    "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 7 } }]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["Commander", { "OwnedBy": "You" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

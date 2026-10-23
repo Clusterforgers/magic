@@ -1,0 +1,41 @@
+{
+  "oracle_id": "2ee46c98-aee7-459a-80fa-4ed9d8a3acda",
+  "name": "Demon of Wailing Agonies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demon of Wailing Agonies",
+      "oracle_fingerprint": "eb1f82678f355a6db3e4f5e1532c294f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                    },
+                    "effects": [
+                      { "Sacrifice": { "who": "Triggering", "filter": [{ "Type": "Creature" }] } }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["Commander", { "OwnedBy": "You" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "525d742f-dadb-4a59-b70d-3b328bf99cca",
+  "oracle_id": "72bdc7ba-2906-436d-8405-6a8a3335fdae",
+  "name": "Stormsurge Kraken",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "122",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{3}{U}{U}",
+  "cmc": 5.0,
+  "type_line": "Creature — Kraken",
+  "oracle_text": "Hexproof\nLieutenant — As long as you control your commander, this creature gets +2/+2 and has \"Whenever this creature becomes blocked, you may draw two cards.\"",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Hexproof",
+    "Lieutenant"
+  ]
+}

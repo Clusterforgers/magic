@@ -1,0 +1,28 @@
+{
+  "id": "ace249fc-0d05-4132-8c0c-4abdc3b42119",
+  "oracle_id": "2ee46c98-aee7-459a-80fa-4ed9d8a3acda",
+  "name": "Demon of Wailing Agonies",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c14",
+  "collector_number": "21",
+  "rarity": "rare",
+  "released_at": "2014-11-07",
+  "digital": false,
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Demon",
+  "oracle_text": "Flying\nLieutenant — As long as you control your commander, this creature gets +2/+2 and has \"Whenever this creature deals combat damage to a player, that player sacrifices a creature of their choice.\"",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Lieutenant"
+  ]
+}

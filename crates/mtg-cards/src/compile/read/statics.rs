@@ -562,7 +562,7 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
 
 /// What a permanent gets and has: "gets +1/+1", "has flying", "gets +1/+1 and has flying", and as the last part "is
 /// goaded" ("gets +2/+2 and is goaded", "has indestructible and is goaded", "gets +1/+1, has deathtouch, and is goaded").
-fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Modification>> {
+pub(super) fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Modification>> {
     let (gets, has, is) = if plural {
         ("get", "have", "are")
     } else {
@@ -629,19 +629,28 @@ fn of_a_kind(r: &mut Reader<'_>, is: &str) -> Option<Modification> {
         .then_some(Modification::AddSubtype(Subtype(kind)))
 }
 
-/// What a permanent is given: keywords, or one activated ability in quotes ("Enchanted creature has \"{R}, {T}: Copy
-/// target instant or sorcery spell you control.\"", "Lands you control have \"{T}: Add one mana of any color.\"").
-fn gives(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
-    match r.quoted(abilities::activated) {
+/// What a permanent is given: keywords, or one activated or triggered ability in quotes ("Enchanted creature has
+/// \"{R}, {T}: Copy target instant or sorcery spell you control.\"", "Lands you control have \"{T}: Add one mana of any
+/// color.\"", "Sliver creatures you control have \"When this creature enters, ...\"").
+pub(super) fn gives(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
+    let quoted = r
+        .quoted(abilities::activated)
+        .or_else(|| r.quoted(abilities::triggered));
+    match quoted {
         Some(ability) => Some(vec![Modification::GrantAbility(Arc::new(ability))]),
         None => granted(r),
     }
 }
 
 /// What `gives` reads, written back.
-fn given_text(mods: &[Modification]) -> Option<String> {
+pub(super) fn given_text(mods: &[Modification]) -> Option<String> {
     match mods {
-        [Modification::GrantAbility(ability)] if matches!(**ability, Ability::Activated { .. }) => {
+        [Modification::GrantAbility(ability)]
+            if matches!(
+                **ability,
+                Ability::Activated { .. } | Ability::Triggered { .. }
+            ) =>
+        {
             Some(format!("\"{}\"", render::ability(ability)?))
         }
         _ => granted_text(mods),
@@ -1236,14 +1245,16 @@ fn static_texts(
     }
     subjects
         .into_iter()
-        .filter_map(|(subject, plural)| {
-            let predicate = predicate(
+        .flat_map(|(subject, plural)| {
+            let predicates = predicate_variants(
                 mods,
                 plural,
                 matches!(affected, Ref::This),
                 condition.is_some(),
-            )?;
-            Some((subject, predicate))
+            );
+            predicates
+                .into_iter()
+                .map(move |predicate| (subject.clone(), predicate))
         })
         .flat_map(|(subject, predicate)| {
             // The condition may also come first: "As long as you're the monarch, creatures you control have flying."
@@ -1271,9 +1282,37 @@ fn static_texts(
         .collect()
 }
 
+/// The predicate in each wording of the ability it gives in quotes: a triggered ability says "it deals" where another
+/// wording says "~ deals".
+fn predicate_variants(
+    mods: &[Modification],
+    plural: bool,
+    itself: bool,
+    conditional: bool,
+) -> Vec<String> {
+    let Some(first) = predicate(mods, plural, itself, conditional) else {
+        return Vec::new();
+    };
+    let mut written = vec![first.clone()];
+    for modification in mods {
+        let Modification::GrantAbility(ability) = modification else {
+            continue;
+        };
+        let Some(plain) = render::ability(ability) else {
+            continue;
+        };
+        for inner in render::variants(ability) {
+            if inner != plain {
+                written.push(first.replace(&format!("\"{plain}\""), &format!("\"{inner}\"")));
+            }
+        }
+    }
+    written
+}
+
 /// "can't attack or block", "gets +1/+1 and has flying", "have haste". The card itself gets a bonus or a keyword only
 /// under a condition, and a restriction is not read under one.
-fn predicate(
+pub(super) fn predicate(
     mods: &[Modification],
     plural: bool,
     itself: bool,

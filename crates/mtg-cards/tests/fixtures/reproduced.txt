@@ -32,6 +32,7 @@ Angel of Invention
 Angel of Sanctions
 Angel of Vitality
 Angelic Ascension
+Angelic Field Marshal
 Ant-Man, Elusive Avenger
 Arbor Colossus
 Arcane Signet
@@ -226,6 +227,7 @@ Defile
 Delver of Secrets // Insectile Aberration
 Demolition Field
 Demon Bolt
+Demon of Wailing Agonies
 Dense Canopy
 Deputized Protester
 Dimir Infiltrator
@@ -762,6 +764,7 @@ Stoke the Flames
 Stonewood Invocation
 Storm Fleet Swashbuckler
 Stormchaser's Talent
+Stormsurge Kraken
 Strangleroot Geist
 Stratus Dancer
 Stratus Walk
@@ -831,6 +834,7 @@ Thriving Isle
 Thriving Moor
 Throne of the High City
 Thunder-Thrash Elder
+Thunderfoot Baloth
 Thunderous Wrath
 Tiamat's Fanatics
 Tilonalli's Skinshifter
@@ -850,6 +854,7 @@ Tumble Magnet
 Tuskguard Captain
 Twilight Mire
 Twincast
+Tyrant's Familiar
 Uktabi Efreet
 Ulamog's Crusher
 Ultramarines Honour Guard

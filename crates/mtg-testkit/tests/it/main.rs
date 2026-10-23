@@ -168,6 +168,7 @@ mod legend_rule;
 mod level_up;
 mod library_effects;
 mod library_fuzz;
+mod lieutenants;
 mod lifecycle_keywords_fuzz;
 mod living_weapon;
 mod lords;

@@ -347,6 +347,9 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.words(form.opponents()) {
         return Some(Pred::ControlledBy(Ref::Opponents));
     }
+    if r.words("defending player controls") {
+        return Some(Pred::ControlledBy(Ref::Defending));
+    }
     if r.words("enchanted player controls") {
         return Some(Pred::ControlledBy(Ref::AttachedPlayer));
     }
@@ -439,6 +442,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::ControlledBy(Ref::Opponents) => form.opponents().to_owned(),
         Pred::ControlledBy(Ref::Triggering) => "that player controls".to_owned(),
         Pred::ControlledBy(Ref::AttachedPlayer) => "enchanted player controls".to_owned(),
+        Pred::ControlledBy(Ref::Defending) => "defending player controls".to_owned(),
         Pred::ControlledBy(Ref::Monarch) => "the monarch controls".to_owned(),
         Pred::Not(inner) if **inner == Pred::ControlledBy(Ref::You) => {
             "you don't control".to_owned()
