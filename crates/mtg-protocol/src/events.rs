@@ -492,7 +492,7 @@ fn arrives_known(before: &GameState, object: ObjectId, cause: ZoneCause, viewer:
     cause.face_down(before.turn().number()).is_none_or(|how| {
         before
             .object(object)
-            .is_some_and(|o| how.may_look(o.owner(), o.controller(), viewer))
+            .is_some_and(|o| before.may_look_as(how, o.owner(), o.controller(), viewer))
     })
 }
 
@@ -500,7 +500,8 @@ fn arrives_known(before: &GameState, object: ObjectId, cause: ZoneCause, viewer:
 fn snapshot_known(before: &GameState, shot: &Snapshot, viewer: PlayerId) -> bool {
     zone_is_visible_in(before, shot.zone, viewer)
         && shot.face_down.is_none_or(|how| {
-            how.shows_characteristics() || how.may_look(shot.owner, shot.controller, viewer)
+            how.shows_characteristics()
+                || before.may_look_as(how, shot.owner, shot.controller, viewer)
         })
 }
 

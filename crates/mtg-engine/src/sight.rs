@@ -8,7 +8,7 @@
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::decision::{Decision, DecisionKind};
-use crate::object::GameObject;
+use crate::object::{FaceDown, GameObject};
 use crate::resolve::{Progress, Shown, step};
 use crate::state::{GameState, Stage};
 use crate::zones::Zone;
@@ -22,11 +22,35 @@ impl GameState {
             return false;
         };
         object.face_down().is_none_or(|how| {
-            how.may_look(
+            self.may_look_as(
+                how,
                 object.owner(),
                 crate::characteristics::controller_of_object(self, object),
                 viewer,
             )
+        })
+    }
+
+    /// Whether `viewer` may look at a card of `owner` that lies face down as `how` under the control of `controller`. A
+    /// hidden card (hideaway, CR 702.75a) is also looked at by the controller of the permanent that hid it while that
+    /// permanent is still the one that did; the players who controlled it before are not tracked.
+    pub fn may_look_as(
+        &self,
+        how: FaceDown,
+        owner: PlayerId,
+        controller: PlayerId,
+        viewer: PlayerId,
+    ) -> bool {
+        if how.may_look(owner, controller, viewer) {
+            return true;
+        }
+        let FaceDown::Hideaway { by } = how else {
+            return false;
+        };
+        self.object(by.id).is_some_and(|hider| {
+            hider.counter() == by.counter
+                && hider.zone() == Zone::Battlefield
+                && crate::characteristics::controller_of_object(self, hider) == viewer
         })
     }
 

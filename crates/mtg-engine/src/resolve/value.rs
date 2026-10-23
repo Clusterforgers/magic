@@ -24,7 +24,7 @@ use crate::choose::{Choices, Target};
 use crate::combat::AttackTarget;
 use crate::keywords::{self, OptionalKind};
 use crate::layers::{Held, View, outside};
-use crate::object::{Chosen, GameObject, ObjectKind, ObjectRef, PermanentState};
+use crate::object::{Chosen, FaceDown, GameObject, ObjectKind, ObjectRef, PermanentState};
 use crate::snapshot::Snapshot;
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -652,6 +652,14 @@ impl<'a> Scope<'a> {
             Pred::Other => reference.id != self.source.id,
             Pred::Is(named) => self.objects(named)?.contains(&reference),
             Pred::SharesSubtype(named) => self.shares_subtype(named, seen)?,
+            Pred::ExiledWith(named) => match state
+                .object(reference.id)
+                .filter(|card| card.counter() == reference.counter && card.zone() == Zone::Exile)
+                .and_then(GameObject::face_down)
+            {
+                Some(FaceDown::Hideaway { by }) => self.objects(named)?.contains(&by),
+                _ => false,
+            },
             Pred::Type(card_type) => seen.chars.types.contains(*card_type),
             Pred::Supertype(supertype) => seen
                 .card

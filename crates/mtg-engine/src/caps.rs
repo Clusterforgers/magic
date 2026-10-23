@@ -106,6 +106,7 @@ const RUNS: &[&str] = &[
     "Effect.Move.Battlefield",
     "Effect.ExileUntil",
     "Effect.ExileTop",
+    "Effect.ExileHidden",
     "Effect.CastFromZone",
     "Effect.Destroy",
     "Effect.Exile",
@@ -317,6 +318,7 @@ const RUNS: &[&str] = &[
     "Keyword.Casualty",
     "Keyword.Offspring",
     "Keyword.Demonstrate",
+    "Keyword.Hideaway",
     "ReplaceBy.Devour",
     "Keyword.LevelUp",
     "Keyword.Outlast",
@@ -583,6 +585,7 @@ mod tests {
     #[case::conniving("Effect.Connive", true)]
     #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]
     #[case::exiling_the_top_cards("Effect.ExileTop", true)]
+    #[case::exiling_face_down("Effect.ExileHidden", true)]
     #[case::casting_during_a_resolution("Effect.CastFromZone", true)]
     #[case::cascading("Keyword.Cascade", true)]
     #[case::convoking("Keyword.Convoke", true)]
@@ -678,6 +681,7 @@ mod tests {
     #[case::devour("Keyword.Devour", true)]
     #[case::casualty("Keyword.Casualty", true)]
     #[case::demonstrate("Keyword.Demonstrate", true)]
+    #[case::hideaway("Keyword.Hideaway", true)]
     #[case::offspring("Keyword.Offspring", true)]
     #[case::sacrificing_as_it_enters("ReplaceBy.Devour", true)]
     #[case::level_up("Keyword.LevelUp", true)]

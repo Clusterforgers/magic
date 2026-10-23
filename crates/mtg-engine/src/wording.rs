@@ -862,6 +862,15 @@ pub(crate) fn cast(
     }
 }
 
+/// The question of a play an effect allows: "Play Forest without paying its mana cost?"
+pub(crate) fn play(name: &str, free: bool) -> String {
+    if free {
+        format!("Play {name} without paying its mana cost?")
+    } else {
+        format!("Play {name}?")
+    }
+}
+
 /// What a choice among players asks: "Choose an opponent." or "Choose a player."
 pub(crate) fn choose_player(from: &Ref) -> String {
     match from {

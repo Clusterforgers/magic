@@ -296,6 +296,7 @@ fn pred() -> impl Strategy<Value = Pred> {
             leaf_ref().prop_map(Pred::ControlledBy),
             leaf_ref().prop_map(Pred::OwnedBy),
             leaf_ref().prop_map(Pred::Is),
+            leaf_ref().prop_map(Pred::ExiledWith),
             keyword().prop_map(Pred::HasKeyword),
             (stat(), cmp(), simple_amount()).prop_map(|(stat, op, to)| Pred::Compare {
                 stat,
@@ -687,6 +688,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         (reference(), any::<bool>())
             .prop_map(|(what, regenerate)| Effect::Destroy { what, regenerate }),
         reference().prop_map(|what| Effect::Exile { what }),
+        reference().prop_map(|what| Effect::ExileHidden { what }),
         (who(), selector(), amount()).prop_map(|(who, filter, count)| Effect::Sacrifice {
             who,
             filter,
@@ -863,6 +865,7 @@ fn effect() -> impl Strategy<Value = Effect> {
                 reference(),
                 reference(),
                 any::<bool>(),
+                any::<bool>(),
                 list(),
                 proptest::option::of(select(vec![
                     CastWay::Madness,
@@ -870,10 +873,11 @@ fn effect() -> impl Strategy<Value = Effect> {
                     CastWay::Suspend
                 ])),
             )
-                .prop_map(|(who, what, free, otherwise, way)| Effect::CastFromZone {
+                .prop_map(|(who, what, free, play, otherwise, way)| Effect::CastFromZone {
                     who,
                     what,
                     free,
+                    play,
                     way,
                     otherwise,
                 }),

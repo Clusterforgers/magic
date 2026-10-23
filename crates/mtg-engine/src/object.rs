@@ -73,14 +73,21 @@ pub enum FaceDown {
     Morph,
     /// A spell or permanent cast face down for its disguise (CR 702.168): as a morph, with ward {2}.
     Disguise,
+    /// A card a permanent exiled face down with hideaway (CR 702.75a): it stays in exile with its own characteristics, and
+    /// only its owner and the player who controls the permanent may look at it. The link is lost when the permanent leaves.
+    Hideaway {
+        /// The permanent that hid it.
+        by: ObjectRef,
+    },
 }
 
 impl FaceDown {
     /// Whether `viewer` may look at an object of `owner` under the control of `controller` that lies face down this way: the
-    /// owner of a foretold card, the controller of a face-down spell or permanent (CR 708.3).
+    /// owner of a foretold or hidden card, the controller of a face-down spell or permanent (CR 708.3). The player who
+    /// controls the permanent that hid a card also looks at it: `GameState::may_look_as` adds that.
     pub fn may_look(self, owner: PlayerId, controller: PlayerId, viewer: PlayerId) -> bool {
         match self {
-            FaceDown::Foretold { .. } => owner == viewer,
+            FaceDown::Foretold { .. } | FaceDown::Hideaway { .. } => owner == viewer,
             FaceDown::Morph | FaceDown::Disguise => controller == viewer,
         }
     }

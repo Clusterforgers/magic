@@ -130,6 +130,8 @@ pub enum Pred {
     Is(Ref),
     /// Shares a subtype with one of the objects the reference names (`{"SharesSubtype": {"Bound": "land"}}`).
     SharesSubtype(Ref),
+    /// Is a card exiled face down by one of the permanents the reference names, which has not left since (hideaway, CR 702.75a).
+    ExiledWith(Ref),
     /// Has the card type.
     Type(CardType),
     /// Has the supertype.

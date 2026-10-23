@@ -274,6 +274,11 @@ pub enum Effect {
         /// What is exiled.
         what: Ref,
     },
+    /// Exiles objects face down, linked to the source of the effect: the permanent hides them (hideaway, CR 702.75a).
+    ExileHidden {
+        /// What is exiled face down.
+        what: Ref,
+    },
     /// The player sacrifices permanents they control that match, of their choice.
     Sacrifice {
         /// Who sacrifices.
@@ -509,6 +514,9 @@ pub enum Effect {
         /// It is cast without paying its mana cost (CR 118.9).
         #[serde(default, skip_serializing_if = "is_false")]
         free: bool,
+        /// The card is played, not cast: a land is put onto the battlefield as a land play when its player could play one now, other cards are cast (CR 305.1, 702.75a).
+        #[serde(default, skip_serializing_if = "is_false")]
+        play: bool,
         /// The alternative cost it is cast for (CR 118.9): `Madness` pays the madness cost of the card, `Suspend` pays nothing; the spell remembers it.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         way: Option<CastWay>,
@@ -708,6 +716,7 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
             who: Ref::You,
             what: Ref::Bound(FOUND.to_owned()),
             free: true,
+            play: false,
             way: None,
             otherwise,
         },
@@ -783,6 +792,44 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
                 play: true,
             }),
             duration,
+        },
+    ]
+}
+
+/// The name the cards a hideaway permanent looks at are bound to.
+pub const LOOKED: &str = "looked";
+
+/// The name the card a hideaway permanent exiles face down is bound to.
+pub const HIDDEN: &str = "hidden";
+
+/// The name the cards a hideaway permanent puts on the bottom are bound to.
+pub const UNHIDDEN: &str = "unhidden";
+
+/// The steps of hideaway N (CR 702.75a): the controller looks at the top `count` cards of their library, exiles one face
+/// down, linked to the source, and puts the rest on the bottom in a random order.
+pub fn hideaway(count: Amount) -> Vec<Effect> {
+    vec![
+        Effect::LookAtTop {
+            who: Ref::You,
+            count,
+            bind: LOOKED.to_owned(),
+        },
+        Effect::Choose {
+            who: Ref::You,
+            from: Ref::Bound(LOOKED.to_owned()),
+            count: Bounds::default(),
+            bind: HIDDEN.to_owned(),
+            rest_as: Some(UNHIDDEN.to_owned()),
+        },
+        Effect::ExileHidden {
+            what: Ref::Bound(HIDDEN.to_owned()),
+        },
+        Effect::Move {
+            what: Ref::Bound(UNHIDDEN.to_owned()),
+            to: Destination::Library {
+                place: Place::Bottom,
+                order: Some(Order::Random),
+            },
         },
     ]
 }

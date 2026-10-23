@@ -346,7 +346,9 @@ impl<'a> Walker<'a> {
             Pred::ControlledBy(r) | Pred::OwnedBy(r) | Pred::AttackingPlayer(r) => {
                 self.reference(r, Kind::Player);
             }
-            Pred::Is(r) | Pred::SharesSubtype(r) => self.reference(r, Kind::Object),
+            Pred::Is(r) | Pred::SharesSubtype(r) | Pred::ExiledWith(r) => {
+                self.reference(r, Kind::Object);
+            }
             Pred::HasKeyword(keyword) => self.keyword(keyword),
             Pred::Named(name) => self
                 .names
@@ -1253,6 +1255,7 @@ impl<'a> Walker<'a> {
             }
             Effect::Reveal { what }
             | Effect::Exile { what }
+            | Effect::ExileHidden { what }
             | Effect::Counter { what }
             | Effect::Tap { what }
             | Effect::Untap { what }

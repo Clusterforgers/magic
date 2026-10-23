@@ -1781,6 +1781,7 @@ impl Pass<'_> {
                     who: Ref::You,
                     what: Ref::This,
                     free: true,
+                    play: false,
                     way: None,
                     otherwise: Vec::new(),
                 }],

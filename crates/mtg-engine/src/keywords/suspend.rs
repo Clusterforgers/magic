@@ -73,6 +73,7 @@ impl KeywordRules for Suspend {
                     who: Ref::You,
                     what: Ref::This,
                     free: true,
+                    play: false,
                     way: Some(CastWay::Suspend),
                     otherwise: Vec::new(),
                 }],
