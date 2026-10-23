@@ -109,6 +109,8 @@ mod forecast_replacement;
 mod foretell;
 mod foretell_fuzz;
 mod format_hooks;
+mod free_cast_fuzz;
+mod free_casts;
 mod fuse;
 mod fuzz_games;
 mod goad;

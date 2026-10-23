@@ -130,6 +130,7 @@ Collective Unconscious
 Command Tower
 Consider
 Consign // Oblivion
+Consign to Dust
 Consuming Aetherborn
 Contentious Plan
 Copper-Leaf Angel
@@ -165,6 +166,7 @@ Dauthi Horror
 Dauthi Marauder
 Dawnglade Regent
 Deadeye Brawler
+Deadly Rollick
 Death Ward
 Death-Greeter's Champion
 Debris Field Crusher
@@ -238,12 +240,14 @@ Felidar Sovereign
 Fellwar Stone
 Fetid Heath
 Field Trip
+Fierce Guardianship
 Fiery Fall
 Fiery Temper
 Finch Formation
 Fire-Lit Thicket
 Firestorm Hellkite
 Flame Jab
+Flawless Maneuver
 Fleecemane Lion
 Fleetfeather Cockatrice
 Flooded Grove
@@ -445,6 +449,7 @@ Ninja of the New Moon
 Norn's Annex
 Notion Rain
 Nyxborn Behemoth
+Obscuring Haze
 Okiba Reckoner Raid // Nezumi Road Captain
 Opt
 Orchard Strider

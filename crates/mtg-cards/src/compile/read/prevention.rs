@@ -85,15 +85,21 @@ impl Combat {
     }
 }
 
-/// "Prevent all damage that would be dealt this turn.", "Prevent all combat damage that would be dealt this turn."
+/// "Prevent all damage that would be dealt this turn.", "Prevent all combat damage that would be dealt this turn.",
+/// "Prevent all damage that would be dealt this turn by creatures your opponents control."
 pub fn shield(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("prevent all")?;
     let combat = kind(r)?.flag();
     r.need("that would be dealt this turn")?;
+    let source = if r.word("by") {
+        phrase(r, Form::All)?
+    } else {
+        Selector::default()
+    };
     Some(vec![Effect::Shield {
         when: ReplaceWhen::Damage {
             to: None,
-            source: Selector::default(),
+            source,
             combat,
         },
         by: ReplaceBy::Prevent,
@@ -149,10 +155,17 @@ pub fn effect_text(effect: &Effect) -> Option<String> {
                 },
             by: ReplaceBy::Prevent,
             duration: Duration::UntilEndOfTurn,
-        } if source.0.is_empty() => Some(format!(
-            "prevent all {} that would be dealt this turn",
-            damage_text(*combat)
-        )),
+        } => {
+            let by = if source.0.is_empty() {
+                String::new()
+            } else {
+                format!(" by {}", phrase_text(source, Form::All)?)
+            };
+            Some(format!(
+                "prevent all {} that would be dealt this turn{by}",
+                damage_text(*combat)
+            ))
+        }
         _ => None,
     }
 }

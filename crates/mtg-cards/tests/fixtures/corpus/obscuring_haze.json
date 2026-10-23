@@ -1,0 +1,23 @@
+{
+  "id": "21c8e59c-edf1-4b4d-982d-3c891e7b96ba",
+  "oracle_id": "d0a31db0-69db-405c-99a3-945617900c54",
+  "name": "Obscuring Haze",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "308",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "If you control a commander, you may cast this spell without paying its mana cost.\nPrevent all damage that would be dealt this turn by creatures your opponents control.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

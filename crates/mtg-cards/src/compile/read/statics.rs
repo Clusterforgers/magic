@@ -33,7 +33,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 16] = [
+const TEMPLATES: [Template; 17] = [
     entering,
     entering_tapped_if,
     group_enters_tapped,
@@ -50,6 +50,7 @@ const TEMPLATES: [Template; 16] = [
     prevention::static_rule,
     super::costs::additional,
     super::attack_tax::static_rule,
+    free_cast,
 ];
 
 /// A static ability that is a whole sentence: the shape and its period.
@@ -115,6 +116,19 @@ fn entering_tapped_if(r: &mut Reader<'_>) -> Option<Ability> {
     r.source().then_some(())?;
     r.need("enters tapped")?;
     Some(replacement(ReplaceBy::Tapped, Some(condition)))
+}
+
+/// "If you control a commander, you may cast this spell without paying its mana cost.": a cast open while the condition holds.
+fn free_cast(r: &mut Reader<'_>) -> Option<Ability> {
+    r.need("if")?;
+    let condition = control(r)?;
+    r.punct(',').then_some(())?;
+    r.need("you may cast")?;
+    r.source().then_some(())?;
+    r.need("without paying its mana cost")?;
+    Some(Ability::FreeCast {
+        condition: Some(condition),
+    })
 }
 
 /// "Creatures your opponents control enter tapped.", "Artifacts and creatures your opponents control enter tapped.": a
@@ -767,6 +781,12 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             per,
             condition: None,
         } => cost_modifier_texts(applies_to, *change, mana, per),
+        Ability::FreeCast {
+            condition: Some(held),
+        } => control_texts(held)
+            .into_iter()
+            .map(|held| format!("if {held}, you may cast ~ without paying its mana cost"))
+            .collect(),
         Ability::Replacement {
             when: ReplaceWhen::LifeGain { .. },
             ..
