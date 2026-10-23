@@ -31,7 +31,9 @@ Angelic Ascension
 Ant-Man, Elusive Avenger
 Arbor Colossus
 Arcane Signet
+Archivist of Gondor
 Archon of Absolution
+Archon of Coronation
 Archon of Cruelty
 Archway Commons
 Armguard Familiar
@@ -384,6 +386,7 @@ Kinjalli's Sunwing
 Kinsbaile Courier
 Kitchen Finks
 Knight of Dusk's Shadow
+Knights of the Black Rose
 Kolaghan Skirmisher
 Kongming, "Sleeping Dragon"
 Kozilek's Translator
@@ -412,6 +415,7 @@ Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
 Lumen-Class Frigate
 Lurching Rotbeast
+M'Baku, Jabari Chieftain
 Make Disappear
 Makeshift Mauler
 Mana Bloom
@@ -481,6 +485,7 @@ Origin of the Hulk
 Otherworldly Gaze
 Overgrown Arch
 Pacifism
+Palace Jailer
 Pale Bears
 Panther Robot
 Parhelion Patrol

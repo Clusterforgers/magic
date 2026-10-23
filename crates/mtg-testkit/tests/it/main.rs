@@ -184,6 +184,7 @@ mod mill_effects;
 mod miracle;
 mod miracle_fuzz;
 mod monarch;
+mod monarch_followups;
 mod monarch_wordings;
 mod morph;
 mod morph_fuzz;

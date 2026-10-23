@@ -1,0 +1,39 @@
+{
+  "oracle_id": "9e4656ba-c375-4ef8-ba1d-5a7b0833242f",
+  "name": "M'Baku, Jabari Chieftain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "M'Baku, Jabari Chieftain",
+      "oracle_fingerprint": "7bc62f720da524515dc39f07af8e0529",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": { "Not": { "Monarch": "EachPlayer" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "BecomeMonarch": { "who": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "AttacksPlayer": { "what": [{ "Type": "Creature" }], "at": "Opponents" } },
+            "if": { "Monarch": "Defending" },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

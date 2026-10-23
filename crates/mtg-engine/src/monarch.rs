@@ -213,6 +213,45 @@ mod tests {
         assert_eq!(game.monarch(), Some(PlayerId(0)));
     }
 
+    #[rstest]
+    #[case::held_before_the_turn(Some(1), None, Some(1))]
+    #[case::taken_in_the_turn(None, Some(2), None)]
+    #[case::held_and_lost_in_the_turn(Some(0), Some(2), Some(0))]
+    #[case::nobody(None, None, None)]
+    fn the_monarch_as_the_turn_began_is_the_one_before_anything_in_the_turn_changed_it(
+        #[case] before: Option<usize>,
+        #[case] during: Option<usize>,
+        #[case] began: Option<usize>,
+    ) {
+        let mut game = game(None);
+        let seat = |n: usize| PlayerId::from_index(n);
+        if let Some(n) = before {
+            apply_event(&mut game, &Event::MonarchChanged { player: seat(n) }).unwrap();
+        }
+        apply_event(
+            &mut game,
+            &Event::TurnBegan {
+                number: 2,
+                active: PlayerId(1),
+            },
+        )
+        .unwrap();
+        if let Some(n) = during {
+            apply_event(&mut game, &Event::MonarchChanged { player: seat(n) }).unwrap();
+        }
+        assert_eq!(game.monarch_at_turn_start(), began.map(seat));
+        // The next turn starts from what this one ended with.
+        apply_event(
+            &mut game,
+            &Event::TurnBegan {
+                number: 3,
+                active: PlayerId(2),
+            },
+        )
+        .unwrap();
+        assert_eq!(game.monarch_at_turn_start(), game.monarch());
+    }
+
     #[test]
     fn the_designation_is_part_of_the_state_hash() {
         assert_ne!(game(None).state_hash(), game(Some(1)).state_hash());

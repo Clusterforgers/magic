@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9dbfa01b-ce7e-4dd1-9257-0c89b831f477",
+  "name": "Knights of the Black Rose",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knights of the Black Rose",
+      "oracle_fingerprint": "f5393a0bbc8bf6852ef7566144e440a4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesMonarch": { "who": "Opponents" } },
+            "if": { "MonarchAtTurnStart": "You" },
+            "effects": [
+              { "LoseLife": { "who": "Triggering", "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
