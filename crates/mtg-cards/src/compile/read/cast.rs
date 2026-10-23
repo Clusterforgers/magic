@@ -260,6 +260,14 @@ pub fn exiled_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     Some(effects)
 }
 
+/// The sentence the effects at the front of the list are when they are a discover, an impulse draw or the free cast of the
+/// card exiled with the source, and how many effects it takes.
+pub fn sentence_text(effects: &[Effect]) -> Option<(String, usize)> {
+    discover_text(effects)
+        .or_else(|| impulse_text(effects))
+        .or_else(|| exiled_text(effects))
+}
+
 /// The sentence the effects at the front of the list are when they play or cast the card exiled with the source, and how
 /// many effects it takes.
 pub fn exiled_text(effects: &[Effect]) -> Option<(String, usize)> {

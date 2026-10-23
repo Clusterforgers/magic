@@ -175,9 +175,7 @@ pub fn condition_texts(condition: &Condition) -> Vec<String> {
     if *condition == Condition::Performed {
         return vec!["you do".to_owned()];
     }
-    counters_text(condition)
-        .map(|text| vec![text])
-        .unwrap_or_else(|| as_long_as::texts(condition))
+    counters_text(condition).map_or_else(|| as_long_as::texts(condition), |text| vec![text])
 }
 
 /// "there are five or more hatchling counters on ~".

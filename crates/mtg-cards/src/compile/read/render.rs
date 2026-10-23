@@ -561,9 +561,7 @@ fn written(
     while start < effects.len() {
         // A search and what follows it, or a look at the top cards and the choice from them, are
         // one sentence, which no joint splits.
-        if let Some((text, used)) = cast::discover_text(&effects[start..])
-            .or_else(|| cast::impulse_text(&effects[start..]))
-            .or_else(|| cast::exiled_text(&effects[start..]))
+        if let Some((text, used)) = cast::sentence_text(&effects[start..])
             .or_else(|| library::sequence(&effects[start..]))
             .or_else(|| writer.explore_twice(&effects[start..]))
         {
