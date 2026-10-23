@@ -15,4 +15,9 @@ picks?: Array<Array<ObjectId>>,
  * The permanents and cards the cost took out of their zones (a sacrifice, a discard, an exile), as they were just
  * before: "the sacrificed creature's power" reads them (CR 608.2h). Public, as every such object is shown as it leaves.
  */
-shots?: Array<Snapshot>, };
+shots?: Array<Snapshot>, 
+/**
+ * Which of the costs a card lets its caster choose between ("discard a card or pay 3 life") was chosen, by position
+ * among the combinations of the choices the card prints; 0 for a card with no such choice.
+ */
+variant?: number, };

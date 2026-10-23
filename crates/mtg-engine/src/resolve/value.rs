@@ -162,7 +162,7 @@ pub(crate) const fn zone_kind(zone: Zone) -> ZoneKind {
     match zone {
         Zone::Library(_) => ZoneKind::Library,
         Zone::Hand(_) => ZoneKind::Hand,
-        Zone::Battlefield => ZoneKind::Battlefield,
+        Zone::Battlefield | Zone::PhasedOut => ZoneKind::Battlefield,
         Zone::Graveyard(_) => ZoneKind::Graveyard,
         Zone::Stack => ZoneKind::Stack,
         Zone::Exile => ZoneKind::Exile,
@@ -717,6 +717,19 @@ impl<'a> Scope<'a> {
         }
     }
 
+    /// Whether the object is a creature that one of the cards the reference names is encoded on (cipher).
+    fn encoded_with(&self, named: &Ref, reference: ObjectRef) -> Result<bool, ResolveError> {
+        let current = self
+            .state
+            .object(reference.id)
+            .is_some_and(|creature| creature.counter() == reference.counter);
+        Ok(current
+            && self
+                .objects(named)?
+                .into_iter()
+                .any(|card| self.state.encoded_creature(card.id) == Some(reference.id)))
+    }
+
     /// Whether the object was tapped this turn to crew (saddle) one of the permanents the reference names.
     fn crewed_by(
         &self,
@@ -768,6 +781,7 @@ impl<'a> Scope<'a> {
             Pred::Is(named) => self.objects(named)?.contains(&reference),
             Pred::SharesSubtype(named) => self.shares_subtype(named, seen)?,
             Pred::ExiledWith(named) => self.exiled_with(named, reference)?,
+            Pred::EncodedWith(named) => self.encoded_with(named, reference)?,
             Pred::Crewed(named) => self.crewed_by(named, false, reference)?,
             Pred::Saddled(named) => self.crewed_by(named, true, reference)?,
             Pred::Type(card_type) => seen.chars.types.contains(*card_type),

@@ -5,6 +5,9 @@
 //! lists the noun's predicate first (a spell's is `Spell`, then its adjectives and types), then the
 //! adjectives in the order they are printed ("other" last, where the files put it), then the suffixes.
 
+use std::iter::Peekable;
+use std::slice::Iter;
+
 use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 
@@ -605,6 +608,15 @@ fn head(r: &mut Reader<'_>, form: Form) -> Option<(Vec<CardType>, Noun)> {
         r.skip();
         return Some((PERMANENT_TYPES.to_vec(), Noun::Spell));
     }
+    // "permanent card": a card with any of the permanent types, in a zone the phrase names.
+    if r.word_at(0) == Some("permanent")
+        && matches!(r.word_at(1), Some("card" | "cards"))
+        && (r.word_at(1) == Some("cards")) == plural
+    {
+        r.skip();
+        r.skip();
+        return Some((PERMANENT_TYPES.to_vec(), Noun::Card));
+    }
     let mut types = Vec::new();
     let mut forms = Vec::new();
     while let Some((card_type, is_plural)) = r.peek_word().and_then(type_noun) {
@@ -674,18 +686,39 @@ fn type_separator(r: &mut Reader<'_>, form: Form) -> bool {
 }
 
 /// "from your graveyard", "from your hand": the zone and its owner.
-fn zone_suffix(r: &mut Reader<'_>, form: Form) -> Option<[Pred; 2]> {
+fn zone_suffix(r: &mut Reader<'_>, form: Form) -> Option<Vec<Pred>> {
     let (hand, graveyard) = if form == Form::Count {
         ("in your hand", "in your graveyard")
     } else {
         ("from your hand", "from your graveyard")
     };
     if r.words(hand) {
-        return Some([Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]);
+        return Some(vec![Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]);
     }
-    r.words(graveyard)
-        .then_some([Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)])
+    if r.words(graveyard) {
+        return Some(vec![Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)]);
+    }
+    if form == Form::Count {
+        return None;
+    }
+    // The graveyard of any player, or of the one the phrase names.
+    OTHER_GRAVEYARDS
+        .iter()
+        .find(|(words, _)| r.words(words))
+        .map(|(_, owner)| {
+            let mut preds = vec![Pred::In(ZoneKind::Graveyard)];
+            preds.extend(owner.clone().map(Pred::OwnedBy));
+            preds
+        })
 }
+
+/// The graveyards a card is taken from besides one's own: "from a graveyard", "from an opponent's graveyard", "from
+/// defending player's graveyard".
+const OTHER_GRAVEYARDS: [(&str, Option<Ref>); 3] = [
+    ("from a graveyard", None),
+    ("from an opponent's graveyard", Some(Ref::Opponents)),
+    ("from defending player's graveyard", Some(Ref::Defending)),
+];
 
 /// The subtypes before "spell" in the singular: "Merfolk spell", "Vampire creature spell", "Faerie or Wizard permanent
 /// spell" (several are an `AnyOf`).
@@ -709,7 +742,7 @@ fn spell_subtypes(r: &mut Reader<'_>) -> Option<Pred> {
             {
                 r.skip();
             }
-            r.word("spell").then_some(())
+            (r.word("spell") || r.word("card")).then_some(())
         })?;
         Some(if found.len() == 1 {
             found.remove(0)
@@ -719,14 +752,15 @@ fn spell_subtypes(r: &mut Reader<'_>) -> Option<Pred> {
     })
 }
 
-/// A subtype in front of a card type in the singular: "Cleric creature", "Equipment artifact".
+/// A subtype in front of a card type in the singular, or of "card": "Cleric creature", "Equipment artifact", "Giant card".
 fn singular_qualifier(r: &mut Reader<'_>) -> Option<Pred> {
     r.attempt(|r| {
         let name = group_name(r).filter(|name| r.is_subtype(name))?;
         let typed = r
             .peek_word()
             .and_then(type_noun)
-            .is_some_and(|(_, plural)| !plural);
+            .is_some_and(|(_, plural)| !plural)
+            || r.peek_word() == Some("card");
         typed.then_some(Pred::Subtype(Subtype(name)))
     })
 }
@@ -737,7 +771,7 @@ fn qualifier(r: &mut Reader<'_>) -> Option<Pred> {
     r.attempt(|r| {
         let plural_noun = |word: Option<&str>| {
             word.is_some_and(|word| {
-                matches!(word, "tokens" | "spells")
+                matches!(word, "tokens" | "spells" | "cards")
                     || type_noun(word).is_some_and(|(_, plural)| plural)
             })
         };
@@ -749,6 +783,19 @@ fn qualifier(r: &mut Reader<'_>) -> Option<Pred> {
         r.skip();
         (!plural && plural_noun(r.peek_word())).then_some(Pred::Type(card_type))
     })
+}
+
+/// "nonland permanent card": the permanent types but land, with the adjective "nonland" taken into them.
+fn nonland_permanent_card(noun: &Noun, types: &mut Vec<CardType>, adjectives: &mut Vec<Pred>) {
+    if *noun == Noun::Card
+        && is_permanent(types)
+        && let Some(at) = adjectives
+            .iter()
+            .position(|pred| *pred == not(Pred::Type(CardType::Land)))
+    {
+        adjectives.remove(at);
+        types.retain(|card_type| *card_type != CardType::Land);
+    }
 }
 
 /// A phrase naming a set of objects ("nonblack creature", "creatures you control", "noncreature spell").
@@ -809,7 +856,8 @@ pub(super) fn phrase_in(r: &mut Reader<'_>, form: Form, unplaced: bool) -> Optio
         let (kinds, subtypes): (Vec<Pred>, Vec<Pred>) = qualifiers
             .into_iter()
             .partition(|pred| matches!(pred, Pred::Type(_)));
-        let (types, noun) = head(r, form)?;
+        let (mut types, noun) = head(r, form)?;
+        nonland_permanent_card(&noun, &mut types, &mut adjectives);
         let type_pred = match types.as_slice() {
             [] => None,
             [only] => Some(Pred::Type(*only)),
@@ -861,7 +909,10 @@ pub(super) fn phrase_in(r: &mut Reader<'_>, form: Form, unplaced: bool) -> Optio
         let qualified = preds[adjectives_end..]
             .iter()
             .any(|pred| matches!(pred, Pred::HasKeyword(_) | Pred::Compare { .. }));
-        if types.len() > 2 && qualified {
+        // A permanent card is the one noun for its types: "permanent card with mana value 3 or less".
+        let permanent_card =
+            noun == Noun::Card && (is_permanent(&types) || is_nonland_permanent(&types));
+        if types.len() > 2 && qualified && !permanent_card {
             return None;
         }
         let placed = preds.iter().any(|pred| matches!(pred, Pred::In(_)));
@@ -989,24 +1040,20 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     };
     let (mut adjectives, mut types, mut suffixes) = (Vec::new(), Vec::new(), Vec::new());
     let (mut subtypes, mut card, mut token) = (Vec::<&str>::new(), false, false);
+    // The zone of a card comes last ("permanent card with mana value 3 or less from your graveyard").
+    let mut zone: Option<String> = None;
     let mut commander = false;
     let own_commander = names_own_commander(preds);
     let mut kinds: Vec<CardType> = Vec::new();
     let mut rest = preds.iter().peekable();
     while let Some(pred) = rest.next() {
-        if let Pred::In(zone @ (ZoneKind::Graveyard | ZoneKind::Hand)) = pred
-            && rest
-                .next_if(|next| **next == Pred::OwnedBy(Ref::You))
-                .is_some()
-        {
+        if let Some(place) = zone_words(pred, &mut rest, form) {
             card = true;
-            let preposition = if form == Form::Count { "in" } else { "from" };
-            let place = if *zone == ZoneKind::Hand {
-                "hand"
+            if form == Form::Count {
+                suffixes.push(place);
             } else {
-                "graveyard"
-            };
-            suffixes.push(format!("{preposition} your {place}"));
+                zone = Some(place);
+            }
         } else if let Some(listed) = subtype_list(pred) {
             if !subtypes.is_empty() {
                 return None;
@@ -1048,8 +1095,8 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     let qualified = ((plural || spell) && !card && (spell || !types.is_empty() || token))
         || (!plural && !spell && !card && !token && !types.is_empty());
     // Several subtypes are only for a spell ("Faerie or Wizard permanent spell").
-    if (!subtypes.is_empty() && !types.is_empty() && !qualified)
-        || (subtypes.len() > 1 && !spell && (qualified || !types.is_empty()))
+    if (!subtypes.is_empty() && !types.is_empty() && !qualified && !card)
+        || (subtypes.len() > 1 && !spell && !card && (qualified || !types.is_empty()))
         || (spell && card)
         || (token && (spell || card))
         || (commander && (spell || card || token || !subtypes.is_empty() || !types.is_empty()))
@@ -1057,7 +1104,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     {
         return None;
     }
-    let permanent = spell && is_permanent(&types);
+    let permanent = (spell || card) && is_permanent(&types);
     // The card types of a permanent but land, for a card in a zone: "nonland permanent card".
     let nonland_permanent = card && !spell && is_nonland_permanent(&types);
     let names = if permanent || nonland_permanent {
@@ -1086,7 +1133,41 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     let bare = names.is_empty() && subtypes.is_empty();
     words.extend(noun_word([token, spell, card, commander, bare], plural));
     words.extend(suffixes);
+    words.extend(zone);
     Some(words.join(" "))
+}
+
+/// The predicates after `pred` that name the zone of a card, said as the card words it: "from your graveyard", "in your
+/// hand" (counting), "from an opponent's graveyard", "from a graveyard".
+fn zone_words(pred: &Pred, rest: &mut Peekable<Iter<'_, Pred>>, form: Form) -> Option<String> {
+    let Pred::In(zone @ (ZoneKind::Graveyard | ZoneKind::Hand)) = pred else {
+        return None;
+    };
+    if rest
+        .next_if(|next| **next == Pred::OwnedBy(Ref::You))
+        .is_some()
+    {
+        let preposition = if form == Form::Count { "in" } else { "from" };
+        let place = if *zone == ZoneKind::Hand {
+            "hand"
+        } else {
+            "graveyard"
+        };
+        return Some(format!("{preposition} your {place}"));
+    }
+    if *zone != ZoneKind::Graveyard || form == Form::Count {
+        return None;
+    }
+    for (words, owner) in OTHER_GRAVEYARDS {
+        if let Some(owner) = owner
+            && rest
+                .next_if(|next| **next == Pred::OwnedBy(owner.clone()))
+                .is_some()
+        {
+            return Some(words.to_owned());
+        }
+    }
+    Some(OTHER_GRAVEYARDS[0].0.to_owned())
 }
 
 fn plain(what: Targetable) -> TargetSpec {

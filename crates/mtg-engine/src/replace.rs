@@ -2460,7 +2460,7 @@ fn zone_word(zone: Zone) -> &'static str {
     match zone {
         Zone::Library(_) => "a library",
         Zone::Hand(_) => "a hand",
-        Zone::Battlefield => "the battlefield",
+        Zone::Battlefield | Zone::PhasedOut => "the battlefield",
         Zone::Graveyard(_) => "a graveyard",
         Zone::Stack => "the stack",
         Zone::Exile => "exile",

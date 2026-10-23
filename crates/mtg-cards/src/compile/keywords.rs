@@ -672,6 +672,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "mentor" => Keyword::Mentor,
         "dethrone" => Keyword::Dethrone,
         "umbra armor" => Keyword::UmbraArmor,
+        "cipher" => Keyword::Cipher,
         "extort" => Keyword::Extort,
         "evolve" => Keyword::Evolve,
         "saddled" => Keyword::Saddled,
@@ -1139,6 +1140,7 @@ mod tests {
     #[case::mentor("Mentor", Keyword::Mentor)]
     #[case::dethrone("dethrone", Keyword::Dethrone)]
     #[case::umbra_armor("Umbra armor", Keyword::UmbraArmor)]
+    #[case::cipher("Cipher", Keyword::Cipher)]
     #[case::extort("Extort", Keyword::Extort)]
     #[case::evolve("Evolve", Keyword::Evolve)]
     #[case::annihilator("Annihilator 2", Keyword::Annihilator(2))]
@@ -1579,6 +1581,7 @@ mod tests {
             "Ninjutsu {1}{U}",
             "Improvise",
             "Affinity for artifacts",
+            "Cipher",
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];

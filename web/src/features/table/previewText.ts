@@ -8,6 +8,8 @@ export function zoneText(zone: Zone, name: SeatNamer): string {
     switch (zone) {
       case 'Battlefield':
         return 'On the battlefield'
+      case 'PhasedOut':
+        return 'Phased out'
       case 'Stack':
         return 'On the stack'
       case 'Exile':

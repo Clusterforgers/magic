@@ -51,7 +51,7 @@ pub fn count_word(number: u32) -> Option<&'static str> {
 /// How many cards: "a card", "two cards", "X cards".
 pub fn cards(r: &mut Reader<'_>) -> Option<Amount> {
     r.attempt(|r| {
-        if r.words("that many") {
+        if r.ability && r.words("that many") {
             return (r.word("card") || r.word("cards")).then_some(Amount::Triggering);
         }
         let count = if r.x() {

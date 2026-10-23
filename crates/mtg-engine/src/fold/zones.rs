@@ -57,6 +57,7 @@ pub(super) fn move_object(
     }
     object.adventure = None;
     object.exiled_until = None;
+    object.encoded_on = None;
     object.monarch_wait = None;
     object.cast_from_hand = false;
     object.cast_from_graveyard = false;
@@ -91,7 +92,8 @@ pub(super) fn move_object(
         object.choices = Choices::default();
     }
     let mut merged = Vec::new();
-    if from == Zone::Battlefield {
+    // A permanent leaves from the phased-out zone only when the player who controls it leaves the game.
+    if from.is_permanent_zone() {
         merged = crate::merged::taken(&mut object.permanent);
         object.permanent = None;
         state.combat.remove_object(id);
@@ -114,7 +116,7 @@ pub(super) fn move_object(
         state.tally(owner, Tally::Graved);
     }
     // A token is a token only on the battlefield (CR 111.7): anywhere else it ceases to exist.
-    if token && to != Zone::Battlefield {
+    if token && !matches!(to, Zone::Battlefield | Zone::Stack) {
         crate::tokens::cease(state, id);
     }
     // Each card of a merged permanent that left is an object of its own in the new zone (CR 729.3).
@@ -290,6 +292,11 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 if let Some(object) = state.objects.get_mut(object) {
                     object.exiled_until = Some(*by);
                 }
+            }
+            if let ZoneCause::Encoded { by } = cause
+                && let Some(object) = state.objects.get_mut(object)
+            {
+                object.encoded_on = Some(*by);
             }
             if let ZoneCause::ExiledUntilMonarch { by } = cause {
                 state.possible.linked_exile = true;

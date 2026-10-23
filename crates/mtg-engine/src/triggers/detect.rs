@@ -1299,6 +1299,15 @@ fn causes(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> V
     }
 }
 
+/// Who controls the triggered abilities of `object`: its controller, except that a card in exile encoded on a creature
+/// gives the creature the ability of cipher, which the creature's controller controls (CR 702.99a).
+fn trigger_controller(state: &GameState, object: &GameObject) -> PlayerId {
+    state
+        .encoded_creature(object.id())
+        .and_then(|creature| controller_of(state, creature))
+        .unwrap_or_else(|| controller_of_object(state, object))
+}
+
 /// The triggered abilities of `object`, which is in the zone `zone`, that trigger on `happened`: `abilities` are those
 /// that work there. A permanent's abilities may trigger again (`repeats`); a card elsewhere's do not.
 fn object_triggers(
@@ -1312,7 +1321,7 @@ fn object_triggers(
 ) {
     // Most objects have no triggered ability, and a snapshot costs the layers, so it is only taken for a trigger.
     let mut shot = None;
-    let (source, controller) = (object.reference(), controller_of_object(state, object));
+    let (source, controller) = (object.reference(), trigger_controller(state, object));
     if !state.is_alive(controller) {
         return;
     }

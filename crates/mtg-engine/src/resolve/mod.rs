@@ -31,10 +31,11 @@ use crate::decision::Decision;
 use crate::error::EngineError;
 use crate::events::{Event, ResolutionOutcome};
 use crate::flow;
-use crate::keywords::{awaken, gift};
+use crate::keywords::{awaken, cipher, gift};
 use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::snapshot::Snapshot;
 use crate::state::GameState;
+use crate::zones::Zone;
 
 /// The position of the first effect: a path of indices into the effect tree.
 const START: [usize; 1] = [0];
@@ -211,7 +212,8 @@ pub(crate) fn spell_ability(state: &GameState, id: ObjectId) -> Option<(AbilityR
 fn rules_of(state: &GameState, object: &GameObject) -> Option<Arc<Ability>> {
     match object.ability() {
         Some(ability) => Some(ability.shared_rules()),
-        None => spell_ability(state, object.id()).map(|(_, rules)| gift::before(object, rules)),
+        None => spell_ability(state, object.id())
+            .map(|(_, rules)| cipher::encoded(object, gift::before(object, rules))),
     }
 }
 
@@ -260,8 +262,15 @@ fn finish(state: &GameState, object: &GameObject) -> Vec<Event> {
         object: object.id(),
         outcome: ResolutionOutcome::Resolved,
     }];
-    if object.kind() != ObjectKind::Ability {
+    if object.kind() == ObjectKind::Ability {
+        return events;
+    }
+    if object.zone() == Zone::Stack {
         events.extend(crate::stack::resolved(state, object.id()));
+    } else if let Some(player) = state.turn_order_from(state.turn().active()).first() {
+        // A spell that left the stack by its own effect (cipher exiles it encoded) is not moved again; the active player
+        // gets priority as after any resolution.
+        events.push(Event::PriorityGranted { player: *player });
     }
     events
 }
