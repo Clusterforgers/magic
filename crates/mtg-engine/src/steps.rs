@@ -77,7 +77,13 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
             events.push(grant(state));
             Progress::Events(events)
         }
-        Step::Upkeep | Step::Main1 | Step::BeginCombat | Step::EndCombat | Step::Main2 => {
+        // The Sagas of the active player get a lore counter as the precombat main phase begins (CR 714.3b).
+        Step::Main1 => {
+            let mut events = crate::saga::precombat_counters(state);
+            events.push(grant(state));
+            Progress::Events(events)
+        }
+        Step::Upkeep | Step::BeginCombat | Step::EndCombat | Step::Main2 => {
             Progress::Events(vec![grant(state)])
         }
     }

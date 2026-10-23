@@ -1,0 +1,25 @@
+{
+  "id": "41802f18-7d46-431a-acb3-dbcc82eb415a",
+  "oracle_id": "4050e5b3-07c2-461c-9852-a2c081c0198d",
+  "name": "Binding the Old Gods",
+  "lang": "en",
+  "layout": "saga",
+  "set": "ecc",
+  "collector_number": "120",
+  "rarity": "uncommon",
+  "released_at": "2026-01-23",
+  "digital": false,
+  "mana_cost": "{2}{B}{G}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Destroy target nonland permanent an opponent controls.\nII — Search your library for a Forest card, put it onto the battlefield tapped, then shuffle.\nIII — Creatures you control gain deathtouch until end of turn.",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": []
+}

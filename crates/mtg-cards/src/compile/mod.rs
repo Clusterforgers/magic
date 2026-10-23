@@ -212,11 +212,24 @@ fn read_clause(
             let mut block = block.unwrap_or_default().into_iter();
             (block.next(), block.collect())
         }
+        ClauseKind::Triggered if !reminds_counter && is_chapter_line(text) => {
+            let mut block = read::chapter_block(text, x_free, own)
+                .unwrap_or_default()
+                .into_iter();
+            (block.next(), block.collect())
+        }
         ClauseKind::Triggered | ClauseKind::Activated | ClauseKind::Static if !reminds_counter => {
             (read::clause_with(text, kind, x_free, own), Vec::new())
         }
         _ => (None, Vec::new()),
     }
+}
+
+/// Whether the clause is a Saga chapter line ("I — ...", "II, III — ...").
+fn is_chapter_line(text: &str) -> bool {
+    text.lines()
+        .next()
+        .is_some_and(|head| classify::chapter(head).is_some())
 }
 
 /// Leaves the cost modifiers that count targets ("for each target beyond the first") to the table.

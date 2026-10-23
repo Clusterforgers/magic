@@ -6,6 +6,7 @@ use crate::attach;
 use crate::events::{Event, ResolutionOutcome};
 use crate::loyalty;
 use crate::resolve;
+use crate::saga;
 use crate::state::GameState;
 
 /// Active-player-nonactive-player order over the players still in the game (CR 101.4).
@@ -19,7 +20,7 @@ pub fn apnap_order(state: &GameState) -> Vec<PlayerId> {
 ///
 /// An ability, and a spell with rules to run, begins a resolution that runs its effects step by step; any
 /// other spell (a permanent, or a card whose text is left to the table) has no steps and just resolves, and a
-/// planeswalker comes in with its loyalty counters in the same batch (CR 306.5b).
+/// planeswalker comes in with its loyalty counters in the same batch (CR 306.5b) and a Saga with a lore counter.
 pub(crate) fn resolve_top(state: &GameState) -> Option<Vec<Event>> {
     let object = state.object(*state.stack().last()?)?;
     let id = object.id();
@@ -43,11 +44,12 @@ pub(crate) fn resolve_top(state: &GameState) -> Option<Vec<Event>> {
     })
 }
 
-/// A permanent spell resolving: the spell, then the loyalty counters a planeswalker enters with and the host an Aura
+/// A permanent spell resolving: the spell, then the loyalty counters a planeswalker and the lore counter a Saga enter with, and the host an Aura
 /// enters attached to (CR 303.4f).
 pub(crate) fn resolved(state: &GameState, id: ObjectId) -> Vec<Event> {
     let mut events = vec![Event::SpellResolved { object: id }];
     events.extend(loyalty::entering(state, id));
+    events.extend(saga::entering(state, id));
     events.extend(attach::entering(state, id));
     events
 }

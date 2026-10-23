@@ -1,0 +1,23 @@
+{
+  "id": "e1f723a8-0be9-4270-b451-a52d6b2fda4e",
+  "oracle_id": "e828b189-0e8f-43b8-b909-4c23e742e028",
+  "name": "Ghostly Prison",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "146",
+  "rarity": "uncommon",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Creatures can't attack you unless their controller pays {2} for each creature they control that's attacking you.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

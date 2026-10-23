@@ -1,0 +1,28 @@
+{
+  "id": "684ca60c-7ed4-49e1-b54a-91d129539375",
+  "oracle_id": "0e3ac581-3d78-4879-9afb-3db69c5c47a5",
+  "name": "Archon of Absolution",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eld",
+  "collector_number": "3",
+  "rarity": "uncommon",
+  "released_at": "2019-10-04",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Archon",
+  "oracle_text": "Flying\nProtection from white (This creature can't be blocked, targeted, dealt damage, enchanted, or equipped by anything white.)\nCreatures can't attack you or planeswalkers you control unless their controller pays {1} for each of those creatures.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Protection"
+  ]
+}

@@ -143,6 +143,7 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
             _ => None,
         })
         .collect();
+    events.extend(crate::saga::sacrifices(state, &died));
     events.extend(annihilation(state, &died));
     events.extend(crate::attach::state_based(state, &died));
     events

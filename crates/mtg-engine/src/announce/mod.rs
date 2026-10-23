@@ -32,6 +32,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use crate::abilities::{AbilityRef, Cause};
 use crate::ability_reader;
 use crate::choose::{Choices, Target};
+use crate::combat::AttackTarget;
 use crate::decision::{Decision, DecisionKind};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
@@ -56,6 +57,8 @@ pub(crate) enum What {
     Ability(AbilityRef),
     /// A triggered ability that waits in the queue; its targets are chosen as it goes on the stack (CR 603.3d).
     Trigger(Box<PendingTrigger>),
+    /// An attack declared whose cost is not paid yet (CR 508.1h); only its payment is asked (`attack_tax`).
+    Attack(Vec<(ObjectId, AttackTarget)>),
 }
 
 /// One step of the announcement, named by the rule of CR 601.2 it carries out.
@@ -482,11 +485,12 @@ pub(super) struct Work<'a> {
 }
 
 /// The object whose abilities and targets are being announced.
-const fn source_of(what: &What) -> ObjectId {
+fn source_of(what: &What) -> ObjectId {
     match what {
         What::Spell(spell) => *spell,
         What::Ability(ability) => ability.object,
         What::Trigger(waiting) => waiting.trigger.source.id,
+        What::Attack(attackers) => attackers.first().map_or(ObjectId(0), |(object, _)| *object),
     }
 }
 
@@ -499,6 +503,7 @@ fn rules_of(state: &GameState, what: &What) -> Option<Arc<Ability>> {
             .map(|(_, rules)| rules),
         What::Ability(address) => object.and_then(|_| ability_reader::ability(state, *address)),
         What::Trigger(waiting) => Some(Arc::clone(&waiting.rules)),
+        What::Attack(_) => None,
     }
 }
 
@@ -518,6 +523,9 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         special,
         needs,
     } = pending;
+    if let What::Attack(attackers) = what {
+        return crate::attack_tax::next(state, *player, attackers);
+    }
     if let Some(special) = special
         && let What::Spell(card) = what
     {

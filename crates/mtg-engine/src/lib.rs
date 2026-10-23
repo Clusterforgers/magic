@@ -8,6 +8,7 @@
 mod announce;
 mod answers;
 mod attach;
+mod attack_tax;
 mod cast;
 mod commanders;
 mod damage;
@@ -30,6 +31,7 @@ mod parts;
 mod preview;
 mod price;
 mod replace_dry;
+mod saga;
 mod sba;
 #[cfg(test)]
 mod spend_tests;

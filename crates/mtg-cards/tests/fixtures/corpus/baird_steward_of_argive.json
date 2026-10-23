@@ -1,0 +1,27 @@
+{
+  "id": "91bbe20b-0d39-46fc-a09a-fc8c676f1fe7",
+  "oracle_id": "69aa6809-5468-413a-94c9-562e6de93957",
+  "name": "Baird, Steward of Argive",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "15",
+  "rarity": "uncommon",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Soldier",
+  "oracle_text": "Vigilance\nCreatures can't attack you or planeswalkers you control unless their controller pays {1} for each of those creatures.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Vigilance"
+  ]
+}

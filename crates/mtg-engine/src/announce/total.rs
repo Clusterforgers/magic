@@ -101,7 +101,7 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<(Option<ManaCost>, Vec<Ma
             }
             _ => Some((None, Vec::new(), 0)),
         },
-        What::Trigger(_) => Some((None, Vec::new(), 0)),
+        What::Trigger(_) | What::Attack(_) => Some((None, Vec::new(), 0)),
     }
 }
 

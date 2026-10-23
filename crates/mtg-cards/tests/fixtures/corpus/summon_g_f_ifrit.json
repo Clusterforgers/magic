@@ -1,0 +1,25 @@
+{
+  "id": "c6c73092-5195-4bdc-b039-a699f6e297b2",
+  "oracle_id": "96d1bfc1-b80f-466f-b07d-df1ab361e8e0",
+  "name": "Summon: G.F. Ifrit",
+  "lang": "en",
+  "layout": "saga",
+  "set": "fin",
+  "collector_number": "163",
+  "rarity": "common",
+  "released_at": "2025-06-13",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Enchantment Creature — Saga Demon",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.)\nI, II — You may discard a card. If you do, draw a card.\nIII, IV — Add {R}.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

@@ -549,6 +549,7 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
         selector().prop_map(|what| TriggerPattern::Untapped { what }),
         (selector(), proptest::option::of(counter()))
             .prop_map(|(what, counter)| TriggerPattern::CountersRemoved { what, counter }),
+        (1u32..=10).prop_map(|number| TriggerPattern::Chapter { number }),
         (selector(), selector()).prop_map(|(what, to)| TriggerPattern::Attached { what, to }),
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::Cycled { what, by }),
     ];

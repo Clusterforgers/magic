@@ -1,0 +1,23 @@
+{
+  "id": "5c4e3031-ffc2-4d4d-a9f9-e85820059315",
+  "oracle_id": "92f6c063-a740-4c3c-a60a-569fd298854d",
+  "name": "Sphere of Safety",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "104",
+  "rarity": "uncommon",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Creatures can't attack you or planeswalkers you control unless their controller pays {X} for each of those creatures, where X is the number of enchantments you control.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}
