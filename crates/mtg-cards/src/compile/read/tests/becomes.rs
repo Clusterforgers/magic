@@ -219,7 +219,10 @@ fn a_vehicle_that_becomes_an_artifact_creature_or_a_mount_saddled_reads_and_writ
 }
 
 #[rstest]
-#[case::the_card("{1}: This Vehicle becomes an artifact creature until end of turn.", Ref::This)]
+#[case::the_card(
+    "{1}: This Vehicle becomes an artifact creature until end of turn.",
+    Ref::This
+)]
 #[case::a_target(
     "{1}: Another target Vehicle you control becomes an artifact creature until end of turn.",
     Ref::Target(0)

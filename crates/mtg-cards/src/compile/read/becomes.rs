@@ -77,11 +77,7 @@ fn saddled_mods() -> Vec<Modification> {
 /// creature until end of turn" and "target Mount you control becomes saddled until end of turn": a Vehicle animated
 /// with the size it prints, or a Mount saddled; the subject is the card itself or a target.
 pub(super) fn animate(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    let affected = if r.source() {
-        Ref::This
-    } else {
-        target(r)?
-    };
+    let affected = if r.source() { Ref::This } else { target(r)? };
     r.word("becomes").then_some(())?;
     let mods = if r.words("an artifact creature") {
         artifact_creature_mods()

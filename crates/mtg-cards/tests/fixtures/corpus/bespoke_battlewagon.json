@@ -1,0 +1,27 @@
+{
+  "id": "3feccebc-c792-420d-b96c-51494b5c41db",
+  "oracle_id": "cdfcfd2b-966a-4e03-8ed5-4fa7fab423d0",
+  "name": "Bespoke Battlewagon",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mh3",
+  "collector_number": "52",
+  "rarity": "uncommon",
+  "released_at": "2024-06-14",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Artifact — Vehicle",
+  "oracle_text": "{T}: You get {E}{E} (two energy counters).\n{T}, Pay {E}{E}: Tap target creature.\n{T}, Pay {E}{E}{E}: Draw a card.\nPay {E}{E}{E}{E}: This Vehicle becomes an artifact creature until end of turn.\nCrew 4",
+  "power": "5",
+  "toughness": "6",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Crew"
+  ]
+}

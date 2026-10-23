@@ -170,9 +170,7 @@ fn a_condition_or_effect_that_is_not_modeled_stays_with_the_table(#[case] text: 
 #[case::three_fire_counters(
     "As long as this Vehicle has three or more fire counters on it, it's an artifact creature."
 )]
-#[case::one_counter(
-    "As long as this Vehicle has a fire counter on it, it's an artifact creature."
-)]
+#[case::one_counter("As long as this Vehicle has a fire counter on it, it's an artifact creature.")]
 #[case::plus_counters(
     "As long as this Vehicle has five or more +1/+1 counters on it, it's an artifact creature."
 )]
