@@ -534,6 +534,11 @@ pub enum Event {
         #[cfg_attr(feature = "ts", ts(optional))]
         face: Option<u8>,
     },
+    /// A flip card on the battlefield was flipped (CR 710): the same object as its bottom half until it leaves.
+    Flipped {
+        /// The permanent.
+        object: ObjectId,
+    },
     /// A permanent became a copy of another object (CR 707.2), with the copiable values of the copy effect.
     BecameCopy(BecameCopy),
     /// A spell was copied (CR 707.10): the copy is put on the stack above it, not cast.
@@ -810,6 +815,7 @@ impl Event {
             | Event::JoinedAttack { object, .. }
             | Event::AttachedToPlayer { object, .. }
             | Event::Transformed { object, .. }
+            | Event::Flipped { object }
             | Event::PermanentTapped { object }
             | Event::PermanentUntapped { object }
             | Event::Regenerated { object }

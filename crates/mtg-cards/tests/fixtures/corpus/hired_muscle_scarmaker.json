@@ -1,0 +1,42 @@
+{
+  "id": "28f72260-c8f9-4c44-92b5-23cef6690fdd",
+  "oracle_id": "ea31c9a4-af4f-4cab-b53c-77ef4241d4a6",
+  "name": "Hired Muscle // Scarmaker",
+  "lang": "en",
+  "layout": "flip",
+  "set": "bok",
+  "collector_number": "69",
+  "rarity": "uncommon",
+  "released_at": "2005-02-04",
+  "digital": false,
+  "mana_cost": "{1}{B}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Warrior // Legendary Creature — Spirit",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "card_faces": [
+    {
+      "name": "Hired Muscle",
+      "mana_cost": "{1}{B}{B}",
+      "type_line": "Creature — Human Warrior",
+      "oracle_text": "Whenever you cast a Spirit or Arcane spell, you may put a ki counter on this creature.\nAt the beginning of the end step, if there are two or more ki counters on this creature, you may flip it.",
+      "power": "2",
+      "toughness": "2"
+    },
+    {
+      "name": "Scarmaker",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Spirit",
+      "oracle_text": "Remove a ki counter from Scarmaker: Target creature gains fear until end of turn. (It can't be blocked except by artifact creatures and/or black creatures.)",
+      "power": "4",
+      "toughness": "4"
+    }
+  ]
+}

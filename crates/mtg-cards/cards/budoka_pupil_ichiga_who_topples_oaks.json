@@ -1,0 +1,65 @@
+{
+  "oracle_id": "6f571092-7244-4223-aa14-f5133cc000d8",
+  "name": "Budoka Pupil // Ichiga, Who Topples Oaks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Budoka Pupil",
+      "oracle_fingerprint": "71b1d43682cdacbbb7d76561200ceed2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Spirit" }, { "Subtype": "Arcane" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "ki" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "ki" } } },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Flip": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ichiga, Who Topples Oaks",
+      "oracle_fingerprint": "8d342cf6d02cbba1463e89785bdc2efa",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "ki" } } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
