@@ -102,3 +102,52 @@ fn the_passage_under_a_trigger_or_a_cost_reads_and_writes_back(
 fn a_wording_of_another_count_player_or_place_does_not_read(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Spell, false), None, "{text}");
 }
+
+#[rstest]
+#[case::lands_tapped(
+    "Reveal cards from the top of your library until you reveal X land cards. Put those land cards onto the battlefield tapped and the rest on the bottom of your library in a random order.",
+    r#"[{"Type":"Land"}]"#,
+    r#"{"Battlefield":{"tapped":true}}"#
+)]
+#[case::creatures_to_the_hand(
+    "Reveal cards from the top of your library until you reveal X creature cards. Put those creature cards into your hand and the rest on the bottom of your library in a random order.",
+    r#"[{"Type":"Creature"}]"#,
+    r#""Hand""#
+)]
+fn revealing_until_x_cards_reads_with_those_cards_and_writes_back(
+    #[case] text: &str,
+    #[case] filter: &str,
+    #[case] found: &str,
+) {
+    let json = format!(
+        r#"{{"Spell":{{"effects":[{{"RevealUntil":{{"filter":{filter},"count":"X","as":"found","revealed_as":"revealed"}}}}{}]}}}}"#,
+        moves(found, BOTTOM)
+    );
+    reads_as(text, ClauseKind::Spell, true, &json);
+}
+
+#[test]
+fn a_card_that_may_be_put_onto_the_battlefield_leaves_the_rest_of_the_cards_revealed_below() {
+    let text = "Reveal cards from the top of your library until you reveal a creature card. You may put that card onto the battlefield. Then put all cards revealed this way that weren't put onto the battlefield on the bottom of your library in a random order.";
+    let json = format!(
+        r#"{{"Spell":{{"effects":[{{"RevealUntil":{{"filter":[{{"Type":"Creature"}}],"as":"found","revealed_as":"revealed"}}}},{{"May":{{"effects":[{{"Move":{{"what":{{"Bound":"found"}},"to":{{"Battlefield":{{}}}}}}}}]}}}},{{"Move":{{"what":{{"Bound":"revealed"}},"to":{BOTTOM}}}}}]}}}}"#
+    );
+    reads_as(text, ClauseKind::Spell, false, &json);
+}
+
+#[rstest]
+#[case::x_without_the_x_of_the_spell(
+    "Reveal cards from the top of your library until you reveal X creature cards. Put those creature cards into your hand and the rest on the bottom of your library in a random order.",
+    false
+)]
+#[case::those_cards_of_another_kind(
+    "Reveal cards from the top of your library until you reveal X land cards. Put those creature cards onto the battlefield and the rest on the bottom of your library in a random order.",
+    true
+)]
+#[case::x_cards_all_into_the_hand(
+    "Reveal cards from the top of your library until you reveal X land cards, then put all cards revealed this way into your hand.",
+    true
+)]
+fn x_cards_with_a_tail_that_does_not_fit_stay_unread(#[case] text: &str, #[case] x_free: bool) {
+    assert_eq!(clause(text, ClauseKind::Spell, x_free), None, "{text}");
+}

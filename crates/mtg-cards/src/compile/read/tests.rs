@@ -227,6 +227,7 @@ mod mass_moves;
 mod may;
 mod modes;
 mod monarch;
+mod multiply_counters;
 mod mutations;
 mod named_tokens;
 mod number_of;

@@ -222,6 +222,45 @@ pub fn moving(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     }])
 }
 
+/// "Double the number of +1/+1 counters on ~.", "Triple the number of each kind of counter on target creature.", "Double
+/// the number of each kind of counter you have.": the counters one object or player holds are multiplied.
+pub fn multiply(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    let factor = if r.word("double") {
+        2
+    } else {
+        r.need("triple")?;
+        3
+    };
+    r.need("the number of")?;
+    let counter = if r.words("each kind of counter") {
+        if r.words("you have") {
+            return Some(vec![Effect::MultiplyCounters {
+                on: Ref::You,
+                counter: None,
+                factor,
+            }]);
+        }
+        None
+    } else {
+        let counter = kind(r)?;
+        r.need("counters")?;
+        Some(counter)
+    };
+    r.need("on")?;
+    let on = match each(r) {
+        Some(objects) => objects,
+        None => place(r)?,
+    };
+    if on == Ref::This {
+        r.it = Some(Ref::This);
+    }
+    Some(vec![Effect::MultiplyCounters {
+        on,
+        counter,
+        factor,
+    }])
+}
+
 /// The words for a kind of counter.
 pub(super) fn kind_text(counter: &CounterKind) -> Option<&str> {
     match counter {

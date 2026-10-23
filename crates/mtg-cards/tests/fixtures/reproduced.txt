@@ -97,6 +97,7 @@ Beastmaster Ascension
 Befriending the Moths // Imperial Moth
 Behold the Multiverse
 Bespoke Battlewagon
+Big Mother Mouser
 Bighorner Rancher
 Bilious Skulldweller
 Binding the Old Gods
@@ -402,6 +403,7 @@ Game-Trail Changeling
 Gemhide Sliver
 Gemrazer
 Generous Ent
+Genesis Storm
 Gerrard's Wisdom
 Getaway Car
 Ghalta, Primal Hunger
@@ -531,6 +533,7 @@ Jolting Merfolk
 Jungle Lion
 Jyoti, Moag Ancient
 Kalemne's Captain
+Kalonian Hydra
 Karametra's Favor
 Karametra, God of Harvests
 Karn's Bastion
@@ -736,6 +739,7 @@ Prava of the Steel Legion
 Predator Dragon
 Pridemalkin
 Primeval Protector
+Primordial Hydra
 Prismatic Lens
 Professional Face-Breaker
 Professor of Symbology
@@ -1076,6 +1080,7 @@ Vivid Grove
 Vivid Marsh
 Vivid Meadow
 Voice of the Blessed
+Vorel of the Hull Clade
 Vorrac Battlehorns
 Vulshok Splitter
 Walking Ballista

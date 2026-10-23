@@ -1711,6 +1711,12 @@ impl<'a> Walker<'a> {
                 w.at("from", |w| w.reference(from, Kind::Either));
                 w.at("count", |w| w.amount(count));
             }
+            Effect::MultiplyCounters { on, factor, .. } => {
+                w.at("on", |w| w.reference(on, Kind::Either));
+                if *factor < 2 {
+                    w.problem("a factor below two multiplies the counters by nothing");
+                }
+            }
             Effect::MoveCounters {
                 from, to, count, ..
             } => {

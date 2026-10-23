@@ -15,7 +15,7 @@ effect ChangeZone Origin=Hand|Library Hidden Destination=Exile => Effect.Exile E
 effect ChangeZoneAll => Effect.Move Effect.Exile Effect.Sacrifice Effect.Destroy
 effect ChangeZoneAll Destination=Exile => Effect.Exile Effect.ExileUntil Effect.Move
 effect Dig => Effect.LookAtTop Effect.ExileTop Effect.Reveal
-effect DigUntil => -
+effect DigUntil => Effect.RevealUntil Effect.ExileUntil
 effect PeekAndReveal => Effect.LookAtTop Effect.Reveal
 effect RearrangeTopOfLibrary => Effect.LookAtTop Effect.Move
 effect Mill => Effect.Mill
@@ -91,7 +91,7 @@ effect PutCounter ETB => ReplaceBy.WithCounters Effect.PutCounters
 effect PutCounterAll => Effect.PutCounters
 effect RemoveCounter => Effect.RemoveCounters
 effect MoveCounter => Effect.MoveCounters
-effect MultiplyCounter => -
+effect MultiplyCounter => Effect.MultiplyCounters
 effect Token => Effect.CreateToken
 effect Investigate => Effect.CreateToken
 effect CopyPermanent => Effect.CreateToken.Copy Effect.BecomeCopy

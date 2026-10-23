@@ -145,6 +145,7 @@ const RUNS: &[&str] = &[
     "Effect.PutCounters",
     "Effect.RemoveCounters",
     "Effect.MoveCounters",
+    "Effect.MultiplyCounters",
     "Effect.Tap",
     "Effect.Untap",
     "Effect.PhaseOut",
@@ -584,6 +585,7 @@ mod tests {
     #[case::putting_counters("Effect.PutCounters", true)]
     #[case::removing_counters("Effect.RemoveCounters", true)]
     #[case::moving_counters("Effect.MoveCounters", true)]
+    #[case::multiplying_counters("Effect.MultiplyCounters", true)]
     #[case::divided_amounts_read_outside_damage_and_counters("Amount.Divided.Elsewhere", false)]
     #[case::even_shares_read_outside_damage_and_counters("Amount.EvenShare.Elsewhere", false)]
     #[case::loyalty_abilities("Ability.Loyalty", true)]

@@ -442,6 +442,18 @@ pub enum Effect {
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
     },
+    /// Multiplies the counters an object or player holds: each one gets `factor` times as many, so "double" puts as many
+    /// more as there are (CR 122.1).
+    MultiplyCounters {
+        /// What holds them.
+        on: Ref,
+        /// The kind; none means each kind it holds ("double the number of each kind of counter").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        counter: Option<CounterKind>,
+        /// What the number is multiplied by; two doubles it.
+        #[serde(default = "two", skip_serializing_if = "is_two")]
+        factor: u32,
+    },
     /// Taps permanents.
     Tap {
         /// What is tapped.
@@ -835,6 +847,17 @@ pub const EXILED: &str = "exiled";
 /// The name every card revealed until a card matches is bound to, the cards found included.
 pub const REVEALED: &str = "revealed";
 
+/// The factor of `MultiplyCounters` when none is written: counters are doubled.
+const fn two() -> u32 {
+    2
+}
+
+/// Whether a factor is the default one, so serialization can leave it out (serde hands over a reference).
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_two(factor: &u32) -> bool {
+    *factor == 2
+}
+
 /// The steps that exile cards from the top of the library until one matches `filter`, let the player cast it free (and do
 /// `otherwise` when they do not) and put every card exiled that is still in exile on the bottom in a random order.
 fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
@@ -1010,6 +1033,14 @@ mod tests {
     #[case::remove_all_the_counters_of_a_kind(
         Effect::RemoveCounters { from: Ref::This, counter: CounterKind::Other("energy".into()), count: Amount::Counters { on: Ref::This, counter: CounterKind::Other("energy".into()) } },
         r#"{"RemoveCounters":{"from":"This","counter":{"Other":"energy"},"count":{"Counters":{"on":"This","counter":{"Other":"energy"}}}}}"#
+    )]
+    #[case::double_the_counters_of_a_kind(
+        Effect::MultiplyCounters { on: Ref::This, counter: Some(CounterKind::PlusOnePlusOne), factor: 2 },
+        r#"{"MultiplyCounters":{"on":"This","counter":"+1/+1"}}"#
+    )]
+    #[case::triple_each_kind(
+        Effect::MultiplyCounters { on: Ref::Target(0), counter: None, factor: 3 },
+        r#"{"MultiplyCounters":{"on":{"Target":0},"factor":3}}"#
     )]
     #[case::attach_the_source_to_a_target(
         Effect::Attach { what: Ref::This, to: Ref::Target(0) },

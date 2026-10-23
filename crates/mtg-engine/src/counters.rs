@@ -110,6 +110,31 @@ pub(crate) fn held_by(state: &GameState, target: Target, kind: &CounterKind) -> 
     }
 }
 
+/// Every kind of counter `target` holds and how many of each, in the fixed order of the kinds.
+pub(crate) fn kinds_held(state: &GameState, target: Target) -> Vec<(CounterKind, u32)> {
+    match target {
+        Target::Player(id) => state
+            .player(id)
+            .map(|p| p.counters().map(|(kind, n)| (kind.clone(), n)).collect())
+            .unwrap_or_default(),
+        Target::Object(named) => state
+            .object(named.id)
+            .filter(|object| object.counter() == named.counter)
+            .map(|object| match object.permanent() {
+                Some(permanent) => permanent
+                    .counters()
+                    .map(|(kind, n)| (kind.clone(), n))
+                    .collect(),
+                None => object
+                    .card_counters
+                    .iter()
+                    .map(|(kind, n)| (kind.clone(), *n))
+                    .collect(),
+            })
+            .unwrap_or_default(),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: counters are put on and taken off permanents and players by the fold, never fewer than none and never on what cannot hold them (a card elsewhere, an object that has since changed zones, a player who is out); a kind that falls to none is no longer listed; counters leave with the object, so a permanent that comes back holds none (CR 400.7); and only +1/+1 and -1/-1 counters make the layers look at the power and toughness.

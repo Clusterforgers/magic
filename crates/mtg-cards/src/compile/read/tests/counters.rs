@@ -81,7 +81,6 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 #[case::a_second_target(
     "Put a +1/+1 counter on target creature and a -1/-1 counter on target land."
 )]
-#[case::double("Double the number of +1/+1 counters on ~.")]
 #[case::no_place("Put a +1/+1 counter.")]
 fn near_misses_stay_unread(#[case] text: &str) {
     assert_eq!(spell(text), None, "{text}");

@@ -228,6 +228,7 @@ mod monarch_wordings;
 mod morph;
 mod morph_fuzz;
 mod mulligan;
+mod multiply_counters;
 mod mutate;
 mod mutate_counts;
 mod mutate_fuzz;

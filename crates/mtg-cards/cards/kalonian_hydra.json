@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7bd36106-04fe-481f-b16e-e076dcbb183b",
+  "name": "Kalonian Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kalonian Hydra",
+      "oracle_fingerprint": "57c5cb32827ef552c14ff0f9ede12e44",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 4 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "MultiplyCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

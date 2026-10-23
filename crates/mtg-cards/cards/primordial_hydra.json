@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1c36ed3a-c806-47e5-83f9-e44999c67fe5",
+  "name": "Primordial Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primordial Hydra",
+      "oracle_fingerprint": "004abe4b7e6d3c66d64bb12e7032c570",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "MultiplyCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Trample" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                "op": "Ge",
+                "right": 10
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

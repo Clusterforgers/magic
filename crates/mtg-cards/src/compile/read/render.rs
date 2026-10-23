@@ -1037,6 +1037,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::PutCounters { .. }
                 | Effect::RemoveCounters { .. }
                 | Effect::MoveCounters { .. }
+                | Effect::MultiplyCounters { .. }
                 | Effect::Transform { .. }
                 | Effect::Flip { .. }
                 | Effect::CopySpell { .. }
@@ -1381,6 +1382,33 @@ impl Writer<'_> {
                     self.counter_place(from, false)?
                 )
             }
+            Effect::MultiplyCounters {
+                on,
+                counter,
+                factor,
+            } => {
+                let verb = match factor {
+                    2 => "double",
+                    3 => "triple",
+                    _ => return None,
+                };
+                match (counter, on) {
+                    (None, Ref::You) => {
+                        format!("{verb} the number of each kind of counter you have")
+                    }
+                    (_, Ref::You) => return None,
+                    (kind, on) => {
+                        let counters = match kind {
+                            Some(kind) => format!("{} counters", counters::kind_text(kind)?),
+                            None => "each kind of counter".to_owned(),
+                        };
+                        format!(
+                            "{verb} the number of {counters} on {}",
+                            self.counter_place(on, true)?
+                        )
+                    }
+                }
+            }
             Effect::MoveCounters {
                 from,
                 to,
@@ -1581,7 +1609,8 @@ impl Writer<'_> {
             }
             Effect::PutCounters { .. }
             | Effect::RemoveCounters { .. }
-            | Effect::MoveCounters { .. } => self.counters(effect)?,
+            | Effect::MoveCounters { .. }
+            | Effect::MultiplyCounters { .. } => self.counters(effect)?,
             Effect::CreateToken { .. } => self.created(effect)?,
             Effect::DealDamage {
                 amount: Amount::Divided,

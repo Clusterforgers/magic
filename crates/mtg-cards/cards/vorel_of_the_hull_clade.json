@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3001f971-c4db-4176-89b5-e7f4a8890c0f",
+  "name": "Vorel of the Hull Clade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vorel of the Hull Clade",
+      "oracle_fingerprint": "3c4928012698269d984cfeca666e1069",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}{G}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "Type": "Land" }]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "MultiplyCounters": { "on": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

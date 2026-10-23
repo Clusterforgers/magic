@@ -55,6 +55,7 @@ mod modal;
 mod monstrosity;
 mod move_counters;
 mod move_to;
+mod multiply_counters;
 mod myriad_copies;
 mod pay;
 mod phase_out;
@@ -118,6 +119,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::PutCounters { .. } => put_counters::run(cx, effect),
         Effect::RemoveCounters { .. } => remove_counters::run(cx, effect),
         Effect::MoveCounters { .. } => move_counters::run(cx, effect),
+        Effect::MultiplyCounters { .. } => multiply_counters::run(cx, effect),
         Effect::Tap { .. } => tap::run(cx, effect),
         Effect::Untap { .. } => untap::run(cx, effect),
         Effect::PhaseOut { .. } => phase_out::run(cx, effect),
@@ -186,7 +188,7 @@ mod tests {
         {"Counter":{"what":"This"}}, {"DealDamage":{"to":"You","amount":1}}, {"GainLife":{"amount":1}},
         {"LoseLife":{"amount":1}}, {"AddMana":{"mana":{"Fixed":["Green"]}}},
         {"PutCounters":{"on":"This","counter":"+1/+1"}}, {"RemoveCounters":{"from":"This","counter":"+1/+1"}},
-        {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"Tap":{"what":"This"}},
+        {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"MultiplyCounters":{"on":"This"}}, {"Tap":{"what":"This"}},
         {"Untap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"WinGame":{}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"BecomeMonarch":{}}, {"Amass":{"subtype":"Orc","count":1}}, {"Monstrosity":{"count":1}}, {"BecomeLevel":{"level":2}},
@@ -215,7 +217,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 69, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 70, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -271,6 +273,7 @@ mod tests {
         "Effect.PutCounters",
         "Effect.RemoveCounters",
         "Effect.MoveCounters",
+        "Effect.MultiplyCounters",
         "Effect.Tap",
         "Effect.Untap",
         "Effect.PhaseOut",

@@ -5,6 +5,8 @@ use std::ops::Range;
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_engine::choose::YesNoChoice;
+use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::library::Revealed;
 use mtg_engine::object::PermanentState;
 use mtg_engine::zones::Zone;
@@ -188,5 +190,72 @@ fn clifftop_lookout_puts_the_first_land_onto_the_battlefield_tapped_and_the_rest
         .filter(|name| name != "Forest")
         .collect();
     assert_eq!(sorted(library[below.len()..].to_vec()), sorted(rest));
+    Ok(())
+}
+
+/// Genesis Storm: casts it and answers the "may" put as `yes`; passes in between.
+fn storm(driver: &mut Driver, yes: bool) -> Result<Vec<Event>, ScriptError> {
+    let start = driver.engine().events().len();
+    driver.cast("Genesis Storm")?;
+    while !matches!(driver.decision()?.kind, DecisionKind::YesNo(_)) {
+        driver.pass()?;
+    }
+    driver.answer(Answer::YesNo(YesNoChoice(yes)))?;
+    while !driver.state().zone(Zone::Stack).is_empty() {
+        driver.pass()?;
+    }
+    Ok(driver.engine().events()[start..].to_vec())
+}
+
+#[rstest]
+#[case::the_first_card_put_onto_the_battlefield(2, "cllll", true)]
+#[case::after_two_lands(3, "llcll", true)]
+#[case::deep_at_four_seats(4, "lllllc", true)]
+#[case::declined_the_card_goes_below_with_the_rest(2, "llcll", false)]
+#[case::declined_at_three_seats(3, "cllll", false)]
+#[case::no_match_takes_the_library(2, "llll", true)]
+fn genesis_storm_may_put_the_card_found_onto_the_battlefield_and_the_rest_below(
+    #[case] seats: usize,
+    #[case] spec: &str,
+    #[case] yes: bool,
+) -> Result<(), ScriptError> {
+    let table = Scenario::new(seats)
+        .hand_named(0, ["Genesis Storm"])
+        .battlefield(0, lands(6, forest))
+        .library(0, library_of(spec));
+    let mut driver = Driver::from_scenario(table)?;
+    let events = storm(&mut driver, yes)?;
+    let found = spec.find('c');
+    let revealed_count = found.map_or(spec.len(), |at| at + 1);
+    let reveals = revealed(&events);
+    assert_eq!(reveals.len(), 1);
+    assert_eq!(reveals[0].cards.len(), revealed_count);
+    let state = driver.state();
+    let put = found.is_some() && yes;
+    let creature_name = found.map(|at| format!("Creature {at}"));
+    assert_eq!(
+        names(state, Zone::Battlefield)
+            .iter()
+            .any(|name| Some(name) == creature_name.as_ref()),
+        put,
+        "the creature is on the battlefield only when the player agreed"
+    );
+    let library = top_first(state);
+    let below = named(spec, revealed_count..spec.len());
+    assert_eq!(
+        library[..below.len()],
+        below,
+        "the unrevealed cards stay on top"
+    );
+    let rest: Vec<String> = named(spec, 0..revealed_count)
+        .into_iter()
+        .filter(|name| !put || Some(name) != creature_name.as_ref())
+        .collect();
+    assert_eq!(
+        sorted(library[below.len()..].to_vec()),
+        sorted(rest),
+        "every card revealed that was not put onto the battlefield is on the bottom"
+    );
+    replays(&driver, seats);
     Ok(())
 }

@@ -802,6 +802,13 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 }),
             (reference(), counter(), amount())
                 .prop_map(|(on, counter, count)| Effect::PutCounters { on, counter, count }),
+            (reference(), proptest::option::of(counter()), 2u32..6).prop_map(
+                |(on, counter, factor)| Effect::MultiplyCounters {
+                    on,
+                    counter,
+                    factor
+                }
+            ),
             reference().prop_map(|what| Effect::Tap { what }),
             reference().prop_map(|what| Effect::Untap { what }),
             (reference(), reference()).prop_map(|(what, to)| Effect::Attach { what, to }),

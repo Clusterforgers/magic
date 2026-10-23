@@ -44,6 +44,7 @@ fn names(list: &[&str]) -> BTreeSet<String> {
 #[case::explore(r#"{"Spell":{"effects":[{"Explore":{"what":"This"}}]}}"#, &["Ability.Spell", "Effect.Explore"])]
 #[case::connive(r#"{"Spell":{"effects":[{"Connive":{"what":"This"}}]}}"#, &["Ability.Spell", "Effect.Connive"])]
 #[case::exile_until(r#"{"Spell":{"effects":[{"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}]}}"#, &["Ability.Spell", "Effect.ExileUntil"])]
+#[case::multiply_counters(r#"{"Spell":{"effects":[{"MultiplyCounters":{"on":"This","counter":"+1/+1"}}]}}"#, &["Ability.Spell", "Effect.MultiplyCounters"])]
 #[case::cast_from_zone(r#"{"Spell":{"effects":[{"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}},{"CastFromZone":{"what":{"Bound":"found"},"free":true,"otherwise":[{"Move":{"what":{"Bound":"found"},"to":"Hand"}}]}}]}}"#, &["Ability.Spell", "Effect.ExileUntil", "Effect.CastFromZone", "Effect.Move"])]
 #[case::reveal_until(r#"{"Spell":{"effects":[{"RevealUntil":{"filter":[{"Type":"Creature"}],"count":2,"as":"found","revealed_as":"revealed"}},{"Move":{"what":{"Bound":"found"},"to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.RevealUntil", "Effect.Move"])]
 #[case::exile_top(r#"{"Spell":{"effects":[{"ExileTop":{"count":2,"as":"impulse"}}]}}"#, &["Ability.Spell", "Effect.ExileTop"])]

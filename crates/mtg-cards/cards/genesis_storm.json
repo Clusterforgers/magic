@@ -1,0 +1,58 @@
+{
+  "oracle_id": "80e72437-0c17-44c0-b0a7-eab075a64569",
+  "name": "Genesis Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Genesis Storm",
+      "oracle_fingerprint": "01f05ea62b758ae6cf3702389d2137a9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [{ "CopySpell": { "what": "This", "count": { "CommanderCasts": "You" } } }]
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" },
+                        { "Type": "Battle" }
+                      ]
+                    }
+                  ],
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
