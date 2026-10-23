@@ -1,5 +1,7 @@
 //! Vehicles for the fuzz games: the corpus Vehicles that crew (Smuggler's Copter, Skysovereign, Goliath Truck, Thopter
-//! Fabricator) and Vehicles of every crew number, beside the creatures that pay for them and the lands that cast them.
+//! Fabricator), those animated by an ability or by counters (Peacewalker Colossus, War Balloon, Guidelight Matrix, Tangle
+//! Tumbler, Bespoke Battlewagon) and Vehicles of every crew number, beside the creatures that pay for them and the lands
+//! that cast them.
 
 use std::sync::Arc;
 
@@ -21,6 +23,11 @@ pub const VEHICLE_CARDS: &[&str] = &[
     "Skysovereign, Consul Flagship",
     "Goliath Truck",
     "Thopter Fabricator",
+    "Peacewalker Colossus",
+    "War Balloon",
+    "Guidelight Matrix",
+    "Tangle Tumbler",
+    "Bespoke Battlewagon",
 ];
 
 /// A Vehicle for `generic` mana with this power and toughness and Crew `crew`.
@@ -42,8 +49,8 @@ fn vehicle(
 /// A legal Normal deck of lands, the corpus Vehicles, plain Vehicles with Crew 1 to 4 and creatures of every power,
 /// derived entirely from `rng`.
 pub fn vehicle_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
-    let colors = [Color::Red, Color::White, Color::Green];
-    let mut deck: Vec<Arc<CardDefinition>> = (0..24).map(|i| land(colors[i % 3])).collect();
+    let colors = [Color::Red, Color::White, Color::Green, Color::Blue];
+    let mut deck: Vec<Arc<CardDefinition>> = (0..24).map(|i| land(colors[i % 4])).collect();
     let mut cards: Vec<Arc<CardDefinition>> = VEHICLE_CARDS
         .iter()
         .filter_map(|name| corpus::card(name).ok())

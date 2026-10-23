@@ -10,11 +10,12 @@ use mtg_core::color::Color;
 
 use super::abilities;
 use super::render;
-use super::selectors::{color, color_name, granted_keywords, granted_text};
+use super::selectors::{color, color_name, granted_keywords, granted_text, target};
 use super::tokens::Reader;
 use super::triggers::article;
 use crate::ability::Ability;
 use crate::effect::Effect;
+use crate::keyword::Keyword;
 use crate::modify::{Duration, Modification};
 use crate::refs::Ref;
 use crate::value::Amount;
@@ -57,6 +58,53 @@ fn until_end_of_turn(mods: Vec<Modification>) -> Effect {
         mods,
         duration: Duration::UntilEndOfTurn,
     }
+}
+
+/// What a Vehicle becomes: an artifact creature that keeps its printed power and toughness.
+pub(crate) fn artifact_creature_mods() -> Vec<Modification> {
+    vec![
+        Modification::AddType(CardType::Artifact),
+        Modification::AddType(CardType::Creature),
+    ]
+}
+
+/// What a Mount becomes: saddled, the designation cards read as a keyword.
+fn saddled_mods() -> Vec<Modification> {
+    vec![Modification::AddKeyword(Keyword::Saddled)]
+}
+
+/// "~ becomes an artifact creature until end of turn", "another target Vehicle you control becomes an artifact
+/// creature until end of turn" and "target Mount you control becomes saddled until end of turn": a Vehicle animated
+/// with the size it prints, or a Mount saddled; the subject is the card itself or a target.
+pub(super) fn animate(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    let affected = if r.source() { Ref::This } else { target(r)? };
+    r.word("becomes").then_some(())?;
+    let mods = if r.words("an artifact creature") {
+        artifact_creature_mods()
+    } else if r.word("saddled") {
+        saddled_mods()
+    } else {
+        return None;
+    };
+    r.words(END_OF_TURN).then_some(())?;
+    Some(vec![Effect::Continuous {
+        affected,
+        mods,
+        duration: Duration::UntilEndOfTurn,
+    }])
+}
+
+/// The sentence of a `Continuous` effect that makes its subject an artifact creature or saddles it, with the subject
+/// written by the caller ("~", or the target in full).
+pub(super) fn animate_text(subject: &str, mods: &[Modification]) -> Option<String> {
+    let what = if mods == artifact_creature_mods().as_slice() {
+        "an artifact creature"
+    } else if mods == saddled_mods().as_slice() {
+        "saddled"
+    } else {
+        return None;
+    };
+    Some(format!("{subject} becomes {what} until end of turn"))
 }
 
 /// What the card becomes: a size, colors, creature types, "artifact", "creature" and what it has.

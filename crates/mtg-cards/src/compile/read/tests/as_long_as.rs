@@ -1,4 +1,4 @@
-//! Goal: a static ability under "as long as" on the state of the card, its counters, the cards in a graveyard or a hand, a devotion or what is controlled reads into one `Static` with a `condition`, writes back as the same text, and leaves every near-miss to the table.
+//! Goal: a static ability under "as long as" on the state of the card, its counters (a Vehicle that is an artifact creature while it holds enough), the cards in a graveyard or a hand, a devotion or what is controlled reads into one `Static` with a `condition`, writes back as the same text, and leaves every near-miss to the table.
 use super::*;
 
 fn stat(text: &str) -> Option<Ability> {
@@ -163,5 +163,31 @@ fn a_static_ability_under_a_state_or_a_count_reads_as_the_hand_written_files_say
     "This creature can't be blocked as long as you control no creatures your opponents control."
 )]
 fn a_condition_or_effect_that_is_not_modeled_stays_with_the_table(#[case] text: &str) {
+    assert_eq!(stat(text), None, "{text}");
+}
+
+#[rstest]
+#[case::three_fire_counters(
+    "As long as this Vehicle has three or more fire counters on it, it's an artifact creature."
+)]
+#[case::one_counter("As long as this Vehicle has a fire counter on it, it's an artifact creature.")]
+#[case::plus_counters(
+    "As long as this Vehicle has five or more +1/+1 counters on it, it's an artifact creature."
+)]
+fn a_vehicle_that_is_a_creature_while_it_holds_counters_reads_and_writes_back(#[case] text: &str) {
+    golden(text, ClauseKind::Static, false);
+}
+
+#[rstest]
+#[case::another_permanent(
+    "As long as you control three or more artifacts, it's an artifact creature."
+)]
+#[case::a_creature(
+    "As long as this Vehicle has three or more fire counters on it, it's a creature."
+)]
+#[case::an_artifact_only(
+    "As long as this Vehicle has three or more fire counters on it, it's an artifact."
+)]
+fn near_misses_of_a_vehicle_animated_by_counters_stay_with_the_table(#[case] text: &str) {
     assert_eq!(stat(text), None, "{text}");
 }

@@ -1,4 +1,4 @@
-//! Goal: a permanent that becomes a creature until end of turn (the manlands: size, colors, creature types, artifact, keywords, all creature types and an ability in quotes, the duration first or last, "It's still a land." and "It can't be blocked this turn.") reads into one `Continuous` effect of the card, writes back as the same text, and the near-misses stay with the table; a land that enters tapped "if you control two or more other lands" reads and writes back too.
+//! Goal: a Vehicle that becomes an artifact creature until end of turn (the card or another target Vehicle, with the size it prints) and a Mount that becomes saddled read and write back, and a permanent that becomes a creature until end of turn (the manlands: size, colors, creature types, artifact, keywords, all creature types and an ability in quotes, the duration first or last, "It's still a land." and "It can't be blocked this turn.") reads into one `Continuous` effect of the card, writes back as the same text, and the near-misses stay with the table; a land that enters tapped "if you control two or more other lands" reads and writes back too.
 use super::*;
 use crate::effect::Effect;
 use crate::keyword::Keyword;
@@ -193,4 +193,67 @@ fn a_land_that_enters_tapped_when_it_controls_other_lands(#[case] text: &str) {
 #[case::without_the_comma("If you control two or more other lands this land enters tapped.")]
 fn near_misses_of_a_land_entering_tapped_stay_with_the_table(#[case] text: &str) {
     assert!(clause(text, ClauseKind::Static, false).is_none(), "{text}");
+}
+
+#[rstest]
+#[case::the_card_with_energy(
+    "Pay {E}{E}{E}{E}: This Vehicle becomes an artifact creature until end of turn."
+)]
+#[case::tapped_tokens(
+    "Tap two untapped tokens you control: This Vehicle becomes an artifact creature until end of turn."
+)]
+#[case::another_vehicle(
+    "{1}{W}: Another target Vehicle you control becomes an artifact creature until end of turn."
+)]
+#[case::a_vehicle_you_control(
+    "{2}, {T}: Target Vehicle you control becomes an artifact creature until end of turn."
+)]
+#[case::a_mount_saddled(
+    "{2}, {T}: Target Mount you control becomes saddled until end of turn. Activate only as a sorcery."
+)]
+#[case::the_card_itself("{2}: This artifact becomes an artifact creature until end of turn.")]
+fn a_vehicle_that_becomes_an_artifact_creature_or_a_mount_saddled_reads_and_writes_back(
+    #[case] text: &str,
+) {
+    golden(text, ClauseKind::Activated, false);
+}
+
+#[rstest]
+#[case::the_card(
+    "{1}: This Vehicle becomes an artifact creature until end of turn.",
+    Ref::This
+)]
+#[case::a_target(
+    "{1}: Another target Vehicle you control becomes an artifact creature until end of turn.",
+    Ref::Target(0)
+)]
+fn a_vehicle_keeps_its_printed_size_while_it_is_an_artifact_creature(
+    #[case] text: &str,
+    #[case] affected: Ref,
+) {
+    let Some(Ability::Activated { effects, .. }) = activated(text) else {
+        panic!("not read: {text}");
+    };
+    assert_eq!(
+        effects,
+        [Effect::Continuous {
+            affected,
+            mods: vec![
+                Modification::AddType(CardType::Artifact),
+                Modification::AddType(CardType::Creature),
+            ],
+            duration: Duration::UntilEndOfTurn,
+        }]
+    );
+}
+
+#[rstest]
+#[case::lasting("{1}: This Vehicle becomes an artifact creature.")]
+#[case::not_an_artifact("{1}: This Vehicle becomes a creature until end of turn.")]
+#[case::two_steps(
+    "{1}: Target Vehicle becomes an artifact creature until end of turn and untaps target land."
+)]
+#[case::saddled_for_good("{1}: This Mount becomes saddled.")]
+fn near_misses_of_a_vehicle_becoming_a_creature_stay_with_the_table(#[case] text: &str) {
+    assert!(activated(text).is_none(), "{text}");
 }
