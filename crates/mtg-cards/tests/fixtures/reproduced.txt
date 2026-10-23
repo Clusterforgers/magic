@@ -38,6 +38,7 @@ Angelic Field Marshal
 Ant-Man, Elusive Avenger
 Arbor Colossus
 Arcane Signet
+Arch of Orazca
 Archivist of Gondor
 Archmage of Echoes
 Archon of Absolution
@@ -55,6 +56,7 @@ Atmospheric Greenhouse
 Augury Raven
 Aura Gnarlid
 Authority of the Consuls
+Avatar of Woe
 Aven Eternal
 Aven Initiate
 Aven Riftwatcher
@@ -268,6 +270,7 @@ Dokuchi Shadow-Walker
 Domesticated Hydra
 Doom Blade
 Doom Whisperer
+Draconic Lore
 Dragonlord Ojutai
 Dragonspeaker Shaman
 Dragonwing Glider
@@ -369,6 +372,7 @@ Forum of Amity
 Founding of Omashu
 Foundry Inspector
 Four Knocks
+Frogtosser Banneret
 Fruit of Tizerus
 Fungal Reaches
 Furtive Homunculus
@@ -434,6 +438,7 @@ Guiding Voice
 Gurmag Angler
 Hackrobat
 Hada Spy Patrol
+Hagra Mauling // Hagra Broodpit
 Hall of Triumph
 Hallowed Spiritkeeper
 Hammer Dropper
@@ -451,6 +456,7 @@ Hellkite Igniter
 Hengegate Pathway // Mistgate Pathway
 Herald of Anguish
 Herald of Hoofbeats
+Herald of War
 Herald of the Dreadhorde
 Herald of the Host
 Hero of Bladehold
@@ -465,6 +471,7 @@ Honor Troll
 Honor's Reward
 Horizon Canopy
 Hound of Griselbrand
+Hour of Revelation
 Howltooth Hollow
 Hulking Raptor
 Huntmaster Liger
@@ -604,6 +611,7 @@ Monastery Swiftspear
 Monk's Fist
 Morinfen
 Morsel Theft
+Mortality Spear
 Mortivore
 Mosswort Bridge
 Mothdust Changeling
@@ -625,6 +633,7 @@ New Horizons
 Night Clubber
 Nighthawk Scavenger
 Nightmare
+Nightscape Familiar
 Nightveil Sprite
 Ninja Pizza
 Ninja of the Deep Hours
@@ -644,6 +653,7 @@ Ominous Harvest
 Onakke Oathkeeper
 Opt
 Oran-Rief, the Vastwood
+Orazca Relic
 Orchard Strider
 Organic Extinction
 Origin of the Hulk
@@ -782,6 +792,7 @@ Scorn-Blade Berserker
 Scrapshooter
 Scuzzback Marauders
 Sea Gate
+Sea Gate Wreckage
 Secluded Courtyard
 Seedglaive Mentor
 Seekers' Squire
@@ -874,6 +885,7 @@ Stitched Drake
 Stoke the Flames
 Stonecoil Serpent
 Stonewood Invocation
+Stonybrook Banneret
 Storm Fleet Swashbuckler
 Stormchaser's Talent
 Stormsurge Kraken
@@ -1037,6 +1049,7 @@ Wild Wasteland
 Wilderness Elemental
 Windborn Muse
 Windbrisk Heights
+Winged Words
 Wings of the Guard
 Wipe Away
 Wirewood Channeler

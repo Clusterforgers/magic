@@ -194,6 +194,11 @@ fn grants_replacement_by(modification: &WantedModification) -> bool {
         WantedModification::GrantAbility(granted) => {
             matches!(**granted, Ability::Replacement { .. })
         }
+        // A keyword that adds an enters replacement (riot) given to a creature that is not in play yet.
+        WantedModification::AddKeyword(keyword) => keywords::rules(keyword)
+            .adds_abilities(keyword)
+            .iter()
+            .any(|added| matches!(added, Ability::Replacement { .. })),
         _ => false,
     }
 }

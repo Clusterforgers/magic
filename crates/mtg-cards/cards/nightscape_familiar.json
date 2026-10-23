@@ -1,0 +1,25 @@
+{
+  "oracle_id": "57296ea3-3c0d-49b7-bc08-0d0d8414e9ad",
+  "name": "Nightscape Familiar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nightscape Familiar",
+      "oracle_fingerprint": "09f0ce64913c08776da0f9645a136c73",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Color": "Blue" }, { "Color": "Red" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        { "Activated": { "cost": "{1}{B}", "effects": [{ "Regenerate": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

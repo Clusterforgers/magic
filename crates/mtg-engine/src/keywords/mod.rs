@@ -105,6 +105,7 @@ mod reach;
 mod rebound;
 mod reconfigure;
 mod retrace;
+mod riot;
 mod saddle;
 mod scavenge;
 mod shadow;
@@ -493,6 +494,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Gift(_) => &gift::Gift,
         Keyword::Offspring(_) => &offspring::Offspring,
         Keyword::Ravenous => &ravenous::Ravenous,
+        Keyword::Riot => &riot::Riot,
         Keyword::Fabricate(_) => &fabricate::Fabricate,
         Keyword::LevelUp(_) => &level_up::LevelUp,
         Keyword::Outlast(_) => &outlast::Outlast,
@@ -825,6 +827,7 @@ mod tests {
             Keyword::Saddled,
             Keyword::Station,
             Keyword::Ravenous,
+            Keyword::Riot,
             Keyword::JumpStart,
             Keyword::Retrace,
             Keyword::Embalm(cost()),
@@ -978,6 +981,7 @@ mod tests {
         "Keyword.Myriad",
         "Keyword.Squad",
         "Keyword.Ravenous",
+        "Keyword.Riot",
         "Keyword.JumpStart",
         "Keyword.Retrace",
         "Keyword.Embalm",
@@ -1153,6 +1157,7 @@ mod tests {
     #[case::myriad(Keyword::Myriad, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::squad(Keyword::Squad(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ravenous(Keyword::Ravenous, Hooks { abilities: 2, ..Hooks::none() })]
+    #[case::riot(Keyword::Riot, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::fabricate(Keyword::Fabricate(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ascend(Keyword::Ascend, Hooks::none())]
     #[case::for_mirrodin(Keyword::ForMirrodin, Hooks { abilities: 1, ..Hooks::none() })]

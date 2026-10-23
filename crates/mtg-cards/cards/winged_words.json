@@ -1,0 +1,34 @@
+{
+  "oracle_id": "c623aeb1-e6d4-48fe-bd2a-a7a6729aa4df",
+  "name": "Winged Words",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winged Words",
+      "oracle_fingerprint": "a0eb25c6b0686cc5721a2b214cfb8822",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "HasKeyword": "Flying" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }] } }
+      ]
+    }
+  ]
+}
