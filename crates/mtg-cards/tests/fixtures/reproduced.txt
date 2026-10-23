@@ -78,6 +78,7 @@ Batterskull
 Battle Sliver
 Battlefield Forge
 Baxter Building
+Bear Umbra
 Beast Within
 Beastmaster Ascension
 Befriending the Moths // Imperial Moth
@@ -283,6 +284,7 @@ Echo Inspector
 Echo Mage
 Echo Storm
 Echoes of the Kin Tree
+Eel Umbra
 Electric Revelation
 Electro's Bolt
 Elegant Edgecrafters
@@ -590,6 +592,7 @@ Notion Rain
 Nyxborn Behemoth
 Oath of Jace
 Obscuring Haze
+Octopus Umbra
 Okiba Reckoner Raid // Nezumi Road Captain
 Ominous Harvest
 Onakke Oathkeeper
@@ -767,6 +770,7 @@ Slitherhead
 Sluiceway Scorpion
 Smuggler's Buggy
 Smuggler's Copter
+Snake Umbra
 Snubhorn Sentry
 Sodden Verdure
 Sol Ring

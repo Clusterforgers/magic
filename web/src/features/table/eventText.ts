@@ -571,6 +571,9 @@ function describePublic(event: Event, n: EventNames): LogLine {
   if ('RuleCreated' in event) return quiet(describeRule(event.RuleCreated.effect, n))
   if ('RuleExpired' in event) return quiet('A rule change ends')
   if ('Regenerated' in event) return line(`${n.card(event.Regenerated.object)} regenerates`)
+  if ('DamageRemoved' in event) {
+    return line(`${n.card(event.DamageRemoved.object)} has all its damage removed`)
+  }
   if ('ShieldUsed' in event) return quiet(`A prevention shield has ${event.ShieldUsed.left} left`)
   if ('CreatureDied' in event) {
     const HOW: Record<DeathCause, string> = {
