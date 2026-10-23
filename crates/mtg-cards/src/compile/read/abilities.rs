@@ -96,6 +96,15 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     if r.it.is_none() {
         r.it = triggers::event_creature(&when);
     }
+    // The card that dies, or is put into a graveyard, is a new object there, which "it" names in what the card does.
+    r.died = triggers::event_creature(&when) == Some(Ref::This)
+        && matches!(
+            &when,
+            TriggerPattern::ZoneChange {
+                to: Some(ZoneKind::Graveyard),
+                ..
+            }
+        );
     // A permanent entering is not the card itself, which may wait in the graveyard for it.
     r.from_graveyard = matches!(
         &when,

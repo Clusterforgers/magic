@@ -48,15 +48,15 @@ fn an_ability_of_the_graveyard_reads_into_the_dsl_and_writes_back(
 #[rstest]
 #[case::shuffled_from_anywhere(
     "When ~ is put into a graveyard from anywhere, shuffle it into its owner's library.",
-    r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Graveyard"}},"from":"Graveyard","effects":[{"Move":{"what":"This","to":{"Library":{"place":"Shuffled"}}}}]}}"#
+    r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Graveyard"}},"from":"Graveyard","effects":[{"Move":{"what":{"Each":[{"In":"Graveyard"},"This"]},"to":{"Library":{"place":"Shuffled"}}}}]}}"#
 )]
 #[case::an_aura_back_to_the_hand(
     "When ~ is put into a graveyard from the battlefield, return it to its owner's hand.",
-    r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"effects":[{"Move":{"what":"This","to":"Hand"}}]}}"#
+    r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"effects":[{"Move":{"what":{"Each":[{"In":"Graveyard"},"This"]},"to":"Hand"}}]}}"#
 )]
 #[case::a_creature_back_to_the_hand(
     "When ~ dies, return it to its owner's hand.",
-    r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"effects":[{"Move":{"what":"This","to":"Hand"}}]}}"#
+    r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"effects":[{"Move":{"what":{"Each":[{"In":"Graveyard"},"This"]},"to":"Hand"}}]}}"#
 )]
 #[case::tapped_from_the_graveyard(
     "Whenever a land you control enters, return ~ from your graveyard to the battlefield tapped.",
@@ -80,7 +80,10 @@ fn a_trigger_on_the_card_in_a_graveyard_reads_into_the_dsl_and_writes_back(
 fn the_card_names_itself_in_any_of_its_words(#[case] text: &str) {
     let tokens = tokenize(text);
     let mut reader = Reader::new(&tokens, false);
-    assert!(abilities::triggered(&mut reader).is_some() && reader.end(), "{text}");
+    assert!(
+        abilities::triggered(&mut reader).is_some() && reader.end(),
+        "{text}"
+    );
 }
 
 #[rstest]

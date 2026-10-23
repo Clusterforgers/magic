@@ -1161,7 +1161,14 @@ fn object_triggers(
         else {
             continue;
         };
-        if *from != zone {
+        // "When ~ is put into a graveyard from anywhere" works from the graveyard and looks back at the battlefield.
+        let from_anywhere = zone == ZoneKind::Battlefield
+            && *from == ZoneKind::Graveyard
+            && matches!(
+                when,
+                TriggerPattern::ZoneChange { what, from: None, to: Some(ZoneKind::Graveyard) } if *what == Selector::this()
+            );
+        if *from != zone && !from_anywhere {
             continue;
         }
         let scope = Scope::announcing(state, controller, source);

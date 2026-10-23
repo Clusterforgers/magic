@@ -14,8 +14,14 @@ const SENTENCE: [(&str, &str); 2] = [(". ~ gets ", ". It gets "), (". ~ gains ",
 
 /// The ways a trigger about the card itself names the card: `(written with ~, written with the pronoun)`.
 const OF_THE_EVENT: [(&str, &str); 6] = [
-    (", return ~ to its owner's hand", ", return it to its owner's hand"),
-    (", shuffle ~ into its owner's library", ", shuffle it into its owner's library"),
+    (
+        ", return ~ to its owner's hand",
+        ", return it to its owner's hand",
+    ),
+    (
+        ", shuffle ~ into its owner's library",
+        ", shuffle it into its owner's library",
+    ),
     (", ~ gets ", ", it gets "),
     (", ~ gains ", ", it gains "),
     (" counter on ~", " counter on it"),

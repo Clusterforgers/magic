@@ -14,7 +14,7 @@ use super::costs;
 use super::counters;
 use super::create;
 use super::draws;
-use super::effects::{BACK, RETURNED, returns_itself};
+use super::effects::{BACK, RETURNED, dead_card, returns_itself};
 use super::flicker;
 use super::group_pump;
 use super::lands;
@@ -29,8 +29,8 @@ use super::spend;
 use super::statics;
 use super::subtypes::plural_subtype;
 use super::triggers::{
-    article, condition_text, cycled_itself, graveyard_itself, itself_acts, leaves_itself, pattern_text,
-    targeted_itself,
+    article, condition_text, cycled_itself, graveyard_itself, itself_acts, leaves_itself,
+    pattern_text, targeted_itself,
 };
 use super::where_x;
 use crate::ability::{Ability, Limit, Timing};
@@ -1135,7 +1135,7 @@ impl Writer<'_> {
 
     /// "return target card from your graveyard to your hand", "return target creature to its owner's hand".
     fn returned_to_hand(&mut self, what: &Ref) -> Option<String> {
-        if *what == Ref::This {
+        if *what == Ref::This || *what == dead_card() {
             Some("return ~ to its owner's hand".to_owned())
         } else if self.in_your_graveyard(what) {
             Some(format!("return {} to your hand", self.object(what)?))
@@ -1228,7 +1228,10 @@ impl Writer<'_> {
             | Effect::Move {
                 to: Destination::Library { .. },
                 ..
-            } => self.library(effect).or_else(|| cast::text(effect)).or_else(|| self.keyword_action(effect))?,
+            } => self
+                .library(effect)
+                .or_else(|| cast::text(effect))
+                .or_else(|| self.keyword_action(effect))?,
             Effect::Sacrifice {
                 who: Ref::You,
                 filter,
@@ -1381,13 +1384,15 @@ impl Writer<'_> {
                 if *tapped { " tapped" } else { "" }
             ),
             Effect::Move {
-                what: Ref::This,
+                what,
                 to:
                     Destination::Library {
                         place: Place::Shuffled,
                         order: None,
                     },
-            } => "shuffle ~ into its owner's library".to_owned(),
+            } if *what == Ref::This || *what == dead_card() => {
+                "shuffle ~ into its owner's library".to_owned()
+            }
             Effect::Surveil {
                 who: Ref::You,
                 count,

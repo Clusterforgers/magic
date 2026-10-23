@@ -19,7 +19,12 @@
             "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
             "from": "Graveyard",
             "effects": [
-              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, "This"] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
             ]
           }
         }

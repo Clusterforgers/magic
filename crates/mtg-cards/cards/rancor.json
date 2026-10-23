@@ -17,7 +17,9 @@
         {
           "Triggered": {
             "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
-            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+            "effects": [
+              { "Move": { "what": { "Each": [{ "In": "Graveyard" }, "This"] }, "to": "Hand" } }
+            ]
           }
         }
       ]

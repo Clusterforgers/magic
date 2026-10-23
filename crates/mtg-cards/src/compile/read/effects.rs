@@ -544,7 +544,7 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if r.it == Some(Ref::This) && r.word("it") {
         r.need("to its owner's hand")?;
         return Some(vec![Effect::Move {
-            what: Ref::This,
+            what: if r.died { dead_card() } else { Ref::This },
             to: Destination::Hand,
         }]);
     }
@@ -646,12 +646,18 @@ fn shuffle_itself(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     (r.it == Some(Ref::This)).then_some(())?;
     r.need("shuffle it into its owner's library")?;
     Some(vec![Effect::Move {
-        what: Ref::This,
+        what: if r.died { dead_card() } else { Ref::This },
         to: Destination::Library {
             place: Place::Shuffled,
             order: None,
         },
     }])
+}
+
+/// The card that went to a graveyard, which is "it" in what its own trigger does about that: the card of the ability in
+/// the graveyard (it is a new object there, so `This` alone names the one that left).
+pub fn dead_card() -> Ref {
+    Ref::Each(Selector(vec![Pred::In(ZoneKind::Graveyard), Pred::This]))
 }
 
 /// Whether "return ~ from your graveyard" comes next: the card returns itself, so the ability works from there.
