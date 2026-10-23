@@ -263,7 +263,6 @@ fn every_ordered_run_of_cost_parts_with_every_effect_and_restriction_writes_back
 #[case::digits("Sacrifice 2 creatures: Draw a card.")]
 #[case::a_count_of_the_card("Sacrifice two ~: Draw a card.")]
 #[case::discard_the_card("Discard ~: Draw a card.")]
-#[case::discard_a_kind("Discard a creature card: Draw a card.")]
 #[case::energy_beside_life("{T}, Pay {E} and 2 life: Add one mana of any color.")]
 #[case::life_of_an_unnamed_kind("{T}, Pay life: Add {B}.")]
 #[case::loyalty_is_not_a_cost("+1: Draw a card.")]

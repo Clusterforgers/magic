@@ -24,7 +24,7 @@ One item is one piece of about 15 minutes; the commit that finishes it deletes i
 
 Ready pieces, grouped by the code they touch. A group runs one piece at a time, groups run side by side (about six agents at once); a piece is claimed with `[~]` and pushed before it starts, and `git merge main` plus the full `scripts/check.sh` end it.
 
-- Costs and casting: (g2e), (g5c), (g6d), (c1j), (c1k), (c12c), (c13b).
+- Costs and casting: (g2e), (g5c), (g6d), (c1j), (c1k), (c12d), (c13b).
 - Cast ways and zones: (c5c), (c2f), (n2) face-down objects, (n1d3) meld.
 - Triggers and keywords: (c6b), (c4d), (c3b), (c3d), (c2c), (c2d), (n1d5) day and night effects, (o2c).
 - Statics and layers: (c8i), (c7b), (c7c), (o1d), (m4).
@@ -60,6 +60,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Faces and copies: multi-face cards, transform, fuse, daybound and nightbound, Sagas, Classes, flip cards, copiable values, token and spell copies, copies of abilities
 - Commander: house rules (turn, life, table and Commander options) on the server and in the lobby, the Commander format rules in the engine, the deck check for a table, Partner, "can be your commander", commander replacement of a draw, the mid-turn departure of the active player
 - Manual cards: the `manual_play` flag of a table, stored with the game when it starts and listed by the game browser and the game lookup
+- Cost wordings: a discard of a kind of card, a sacrifice by subtype and type word ("a Cleric creature", also in selectors of triggers and targets) and a run of sacrifices ("a Swamp and a Forest"); Magmatic Insight, Lotleth Troll, Living Twister, Starlit Sanctum and Jarad, Golgari Lich Lord Verified
 - Mana ability wordings: the storage-counter lands (an X of counters removed from the source for X mana in any combination of types), a combination counted by a where clause and restrictions by a subtype of spells and abilities (Crucible of the Spirit Dragon)
 - Tooling: `scripts/check.sh` with test slots, `scripts/agent-status.sh`, the quick test-time suite, derived corpus counts, current Cargo dependencies
 - Reference engines: Forge, XMage and Magarena surveyed for licence, card format, scale and fit to the compiler's readings (`docs/reference-engines.md`)
@@ -120,7 +121,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c1j) A mana ability that takes permanents and is used more than once in a payment may take its own source with its last use (Skirk Prospector sacrificing itself after another Goblin for {R}{R})
 - [ ] (c1k) The triggered mana abilities of a nonland permanent (Kinnan Bonder Prodigy) and with a condition (the monarch)
 - [ ] (c1l) The mana ability wordings still unread: an amount counted as "the number of basic land types among lands you control" (Domain), X mana of any one color counted by a where clause or by "Remove X +1/+1 counters from this creature", and restrictions by a list of subtypes or "Elemental sources"
-- [~] (c12c) (branch c12c-cost-choices) The rest of the additional costs of a spell: a choice between costs ("discard a card or pay 3 life", "sacrifice a creature or pay {3}"), an X ("pay X life", "discard X cards"), mana in a required cost, and the wordings of what a cost took that are still unread (two characteristics in a sentence, "Sacrifice a Cleric creature", "Sacrifice a Swamp and a Forest", "Remove all +1/+1 counters", an object returned to a hand)
+- [ ] (c12d) The rest of the additional costs of a spell: a choice between costs ("discard a card or pay 3 life": Bitter Triumph, Dusk Mangler; "reveal a Giant card or pay {2}"), an X in the cost ("pay X life", "discard X cards", "exile X cards from your graveyard", "sacrifice X creatures": Toxic Deluge, Fire Covenant, Channeled Force, Skeletal Scrying, Eliminate the Competition, Immoral Bargain), mana in a required cost, a revealed card as a cost (Disaster Radius, Calamity of the Titans, Titan's Presence), and the wordings of what a cost took that are still unread (two characteristics in a sentence: Momentous Fall; "If the discarded card wasn't a land card": Grab the Prize; "Remove all +1/+1 counters": Vish Kal; "gain X life and put X counters": Dina, Essence Brewer; an object returned to a hand)
 - [ ] (c13b) The rest of the commander free casts and strive spells: Deflecting Swat (choose new targets for a spell or ability on the stack) and the strive spells Launch the Fleet, Solidarity of Heroes, Call the Coppercoats and Twinflame (their effects are not read)
 
 ### Keywords and cast ways
