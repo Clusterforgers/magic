@@ -220,7 +220,7 @@ fn hand_written_text(file: &str) -> String {
 #[rstest]
 #[case::a_loyalty_ability("Jace Beleren", "jace_beleren.json", "Loyalty")]
 #[case::a_modification("Control Magic", "control_magic.json", "SetController")]
-#[case::a_replacement("Hardened Scales", "hardened_scales.json", "Replacement")]
+#[case::a_rule("Mindlock Orb", "mindlock_orb.json", "Rule")]
 fn a_construct_without_a_writer_cannot_be_read_back_and_is_named(
     #[case] card: &str,
     #[case] file: &str,

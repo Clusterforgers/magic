@@ -1,0 +1,25 @@
+{
+  "id": "4c53c684-37f9-4b95-88be-a42b9600c47c",
+  "oracle_id": "3dd196b6-a85a-4e3e-bb57-ec34241f8117",
+  "name": "Terminus",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "70",
+  "rarity": "rare",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{4}{W}{W}",
+  "cmc": 6.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Put all creatures on the bottom of their owners' libraries.\nMiracle {W} (You may cast this card for its miracle cost when you draw it if it's the first card you drew this turn.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Miracle"
+  ]
+}

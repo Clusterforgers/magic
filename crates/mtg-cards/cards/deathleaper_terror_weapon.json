@@ -1,0 +1,23 @@
+{
+  "oracle_id": "8e22495d-a921-4c91-ada3-79098851e5d4",
+  "name": "Deathleaper, Terror Weapon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deathleaper, Terror Weapon",
+      "oracle_fingerprint": "8b4225caa19fe276c3d28b37c4c6f146",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "EnteredThisTurn"]
+            },
+            "mods": [{ "AddKeyword": "DoubleStrike" }]
+          }
+        }
+      ]
+    }
+  ]
+}

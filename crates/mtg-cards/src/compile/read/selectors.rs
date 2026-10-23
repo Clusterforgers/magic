@@ -383,6 +383,10 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.words("defending player controls") {
         return Some(Pred::ControlledBy(Ref::Defending));
     }
+    // What came onto the battlefield this turn: "creature token that entered the battlefield this turn".
+    if r.words("that entered the battlefield this turn") || r.words("that entered this turn") {
+        return Some(Pred::EnteredThisTurn);
+    }
     // The creatures that paid for the source: "creature that crewed it this turn".
     if r.words("that crewed it this turn") {
         return Some(Pred::Crewed(Ref::This));
@@ -481,6 +485,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::ControlledBy(Ref::You) => "you control".to_owned(),
         Pred::ControlledBy(Ref::Opponents) => form.opponents().to_owned(),
         Pred::ControlledBy(Ref::Triggering) => "that player controls".to_owned(),
+        Pred::EnteredThisTurn => "that entered this turn".to_owned(),
         Pred::Crewed(Ref::This) => "that crewed it this turn".to_owned(),
         Pred::Saddled(Ref::This) => "that saddled it this turn".to_owned(),
         Pred::ControlledBy(Ref::AttachedPlayer) => "enchanted player controls".to_owned(),
@@ -490,8 +495,10 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             "you don't control".to_owned()
         }
         Pred::HasKeyword(keyword) => format!("with {}", keyword_text(keyword)?),
-        // Only a lone creature is "each ... with a counter on it"; the plural and the other forms stay unwritten.
-        Pred::HasCounter(kind) if matches!(form, Form::Each) => {
+        Pred::HasCounter(kind) if form.plural() => {
+            format!("with {} counters on them", counters::kind_text(kind)?)
+        }
+        Pred::HasCounter(kind) => {
             let words = counters::trigger_kind_text(Some(kind))?;
             format!("with {words} on it")
         }
@@ -560,7 +567,7 @@ enum Noun {
     Card,
     /// A subtype alone ("Clue"), singular only.
     Subtype(String),
-    /// "tokens", after the card types before it: "creature tokens".
+    /// "token" or "tokens", after the card types before it: "creature tokens", "target creature token".
     Token,
     /// "commander": a player's commander, with no card type before it.
     Commander,
@@ -617,7 +624,9 @@ fn head(r: &mut Reader<'_>, form: Form) -> Option<(Vec<CardType>, Noun)> {
             r.skip();
             Some((types, Noun::Plain))
         }
-        Some("tokens") if plural && forms.iter().all(|is_plural| !is_plural) => {
+        Some(word @ ("token" | "tokens"))
+            if (word == "tokens") == plural && forms.iter().all(|is_plural| !is_plural) =>
+        {
             r.skip();
             Some((types, Noun::Token))
         }
@@ -884,8 +893,7 @@ fn noun_word(which: [bool; 5], plural: bool) -> Option<String> {
     let nouns = ["token", "spell", "card", "commander", "permanent"];
     let at = which.iter().position(|chosen| *chosen)?;
     let noun = nouns[at];
-    // A token is always named in the plural.
-    Some(if plural || at == 0 {
+    Some(if plural {
         format!("{noun}s")
     } else {
         noun.to_owned()
@@ -935,7 +943,7 @@ fn is_permanent(types: &[CardType]) -> bool {
 }
 
 /// The subtypes of a phrase: one name, or a list joined by "or".
-fn subtype_words(subtypes: &[&str], plural: bool) -> String {
+fn subtype_words(subtypes: &[&str], plural: bool, joiner: &str) -> String {
     let words: Vec<String> = subtypes
         .iter()
         .map(|name| {
@@ -946,7 +954,7 @@ fn subtype_words(subtypes: &[&str], plural: bool) -> String {
             }
         })
         .collect();
-    list_text(&words, "or")
+    list_text(&words, joiner)
 }
 
 /// Whether the predicates name the commander its owner designated: "your commander".
@@ -992,7 +1000,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
                 adjectives.push(word);
             }
         } else if *pred == Pred::Token {
-            if token || !form.plural() {
+            if token {
                 return None;
             }
             token = true;
@@ -1022,7 +1030,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         || (!plural && !spell && !card && !token && !types.is_empty());
     // Several subtypes are only for a spell ("Faerie or Wizard permanent spell").
     if (!subtypes.is_empty() && !types.is_empty() && !qualified)
-        || (subtypes.len() > 1 && !spell)
+        || (subtypes.len() > 1 && !spell && (qualified || !types.is_empty()))
         || (spell && card)
         || (token && (spell || card))
         || (commander && (spell || card || token || !subtypes.is_empty() || !types.is_empty()))
@@ -1043,7 +1051,9 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         words.insert(0, "your".to_owned());
     }
     if !subtypes.is_empty() {
-        words.push(subtype_words(&subtypes, plural && !qualified && !card));
+        let nouns = plural && !qualified && !card;
+        let joiner = if nouns { form.connector() } else { "or" };
+        words.push(subtype_words(&subtypes, nouns, joiner));
     }
     words.extend(
         kinds

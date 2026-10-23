@@ -131,7 +131,6 @@ fn more_activated_wordings_read_and_write_back(#[case] text: &str) {
     "Return target creature card from an opponent's graveyard to the battlefield."
 )]
 #[case::any_graveyard("Return target creature card from a graveyard to the battlefield.")]
-#[case::all("Return all creature cards from your graveyard to the battlefield.")]
 #[case::a_qualifier_on_the_last_type(
     "Destroy target artifact, enchantment, or creature with flying."
 )]

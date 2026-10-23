@@ -3,6 +3,7 @@
 use super::amounts::{cards, cards_counted, cards_text, count_word, number_word};
 use super::tokens::Reader;
 use crate::ability::Ability;
+use crate::effect::Effect;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::{Step, TriggerPattern};
 use crate::value::Amount;
@@ -14,7 +15,7 @@ pub(super) fn drawn(r: &mut Reader<'_>) -> Option<Amount> {
 }
 
 /// The cards in a player's hand: what "discard your hand" discards.
-fn hand_of(who: &Ref) -> Amount {
+pub(super) fn hand_of(who: &Ref) -> Amount {
     Amount::Count(Selector(vec![
         Pred::In(ZoneKind::Hand),
         Pred::OwnedBy(who.clone()),
@@ -22,20 +23,43 @@ fn hand_of(who: &Ref) -> Amount {
 }
 
 /// How many cards a player discards: "a card", "two cards", or every card of the hand when it is "your hand" (or
-/// "their hand" for a player a target or the event names).
+/// "their hand" for a player a target or the event names, or for each player or opponent: the count is every card in
+/// those hands, more than any one of them holds, so each hand is taken whole).
 pub(super) fn discarded(r: &mut Reader<'_>, who: &Ref) -> Option<Amount> {
     let own = match who {
         Ref::You => "your",
-        Ref::Target(_) | Ref::Triggering => "their",
+        Ref::Target(_) | Ref::Triggering | Ref::EachPlayer | Ref::Opponents => "their",
         _ => return cards(r),
     };
     let hand = r.attempt(|r| (r.word(own) && r.word("hand")).then(|| hand_of(who)));
     hand.or_else(|| cards(r))
 }
 
+/// "Each player discards their hand, then draws seven cards.": every player empties their hand and draws.
+pub(super) fn wheel(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("each player discards their hand")?;
+    r.punct(',').then_some(())?;
+    r.need("then draws")?;
+    Some(vec![
+        Effect::Discard {
+            who: Ref::EachPlayer,
+            count: hand_of(&Ref::EachPlayer),
+            random: false,
+        },
+        Effect::Draw {
+            who: Ref::EachPlayer,
+            count: drawn(r)?,
+        },
+    ])
+}
+
 /// What a player discards, in words: the hand, or a number of cards.
 pub(super) fn discarded_text(who: &Ref, count: &Amount) -> Option<String> {
-    if matches!(who, Ref::You | Ref::Target(_) | Ref::Triggering) && *count == hand_of(who) {
+    let own_hand = matches!(
+        who,
+        Ref::You | Ref::Target(_) | Ref::Triggering | Ref::EachPlayer | Ref::Opponents
+    );
+    if own_hand && *count == hand_of(who) {
         let own = if *who == Ref::You { "your" } else { "their" };
         return Some(format!("{own} hand"));
     }
@@ -70,6 +94,7 @@ pub(super) fn wordings(ability: &Ability, texts: &[String]) -> Vec<String> {
             }
         }
         TriggerPattern::GroupAttacks { at_least, .. } => {
+            found.extend(super::batches::attack_wordings(ability, texts));
             let Some(count) = count_word(*at_least) else {
                 return found;
             };

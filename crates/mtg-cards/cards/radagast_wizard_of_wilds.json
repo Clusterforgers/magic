@@ -1,0 +1,80 @@
+{
+  "oracle_id": "50f144f8-29eb-4af7-9a50-eded3b9c83c2",
+  "name": "Radagast, Wizard of Wilds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radagast, Wizard of Wilds",
+      "oracle_fingerprint": "8d5b0b3d4db358e6182c9b152d002a92",
+      "abilities": [
+        { "Keyword": { "Ward": "{1}" } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Subtype": "Beast" }, { "Subtype": "Bird" }] },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Ward": "{1}" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Compare": { "stat": "ManaValue", "op": "Ge", "to": 5 } }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Beast",
+                                "colors": ["Green"],
+                                "types": ["Creature"],
+                                "subtypes": ["Beast"],
+                                "power": 3,
+                                "toughness": 3
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Bird",
+                                "colors": ["Blue"],
+                                "types": ["Creature"],
+                                "subtypes": ["Bird"],
+                                "power": 2,
+                                "toughness": 2,
+                                "abilities": [{ "Keyword": "Flying" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

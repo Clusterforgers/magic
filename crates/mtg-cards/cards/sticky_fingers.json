@@ -1,0 +1,44 @@
+{
+  "oracle_id": "fa8ddc13-5108-4fe9-b3aa-dc28df476f7b",
+  "name": "Sticky Fingers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sticky Fingers",
+      "oracle_fingerprint": "b5d245141fe942afeaef44cb4dc95d84",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "AddKeyword": "Menace" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                    },
+                    "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -29,6 +29,18 @@ pub struct RandomBot {
     rng: GameRng,
     partial_payments: bool,
     symbol_choices: bool,
+    taxed: Taxed,
+}
+
+/// Where the bot is in declaring an attack that costs mana.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Taxed {
+    /// No attack with a cost is waiting for its payment.
+    Idle,
+    /// The last answer declared an attack that costs mana, so the next decision is the payment of it.
+    Paying,
+    /// The payment of that attack was backed out of: the declaration that comes back must not repeat it.
+    BackedOut,
 }
 
 /// An attack as the declaration lists it: each attacker and what it attacks.
@@ -114,6 +126,7 @@ impl RandomBot {
             rng: GameRng::substream(seed, stream),
             partial_payments: false,
             symbol_choices: false,
+            taxed: Taxed::Idle,
         }
     }
 
@@ -160,6 +173,11 @@ impl RandomBot {
 
     /// Answers `decision` with a uniformly random legal choice.
     pub fn choose(&mut self, decision: &Decision) -> Answer {
+        // The decision that follows a declaration with a cost is the payment of it.
+        let paying_attack = self.taxed == Taxed::Paying;
+        if paying_attack {
+            self.taxed = Taxed::Idle;
+        }
         match &decision.kind {
             DecisionKind::Mulligan(options) => {
                 let mulligan = options.can_mulligan && self.rng.below(2) == 0;
@@ -176,7 +194,7 @@ impl RandomBot {
                 Answer::Discard(self.subset(&options.hand, options.count))
             }
             DecisionKind::Priority(options) => Answer::Priority(self.priority(options)),
-            DecisionKind::PayMana(options) => Answer::PayMana(self.pay(options)),
+            DecisionKind::PayMana(options) => Answer::PayMana(self.pay_for(options, paying_attack)),
             DecisionKind::DeclareAttackers(options) => {
                 Answer::DeclareAttackers(self.attack(options))
             }
@@ -336,6 +354,15 @@ impl RandomBot {
         actions.swap_remove(self.rng.index(actions.len()))
     }
 
+    /// [`Self::pay`], remembering that the payment of an attack was backed out of (`attack`).
+    fn pay_for(&mut self, options: &PayOptions, attack: bool) -> PayChoice {
+        let choice = self.pay(options);
+        if attack && matches!(choice, PayChoice::Cancel) {
+            self.taxed = Taxed::BackedOut;
+        }
+        choice
+    }
+
     fn pay(&mut self, options: &PayOptions) -> PayChoice {
         let manual = if !options.help.is_empty() {
             self.random_helped_payment(options)
@@ -369,8 +396,13 @@ impl RandomBot {
 
     /// A random attack: each creature joins at random, one that must attack always does, and an attack that costs
     /// more than the player surely has (CR 508.1h) is cut back to what it can pay, the creatures that are not
-    /// required first.
+    /// required first. After backing out of the payment of an attack the declaration comes back and the bot does only
+    /// what the rules require, so backing out ends the step.
     fn attack(&mut self, options: &AttackOptions) -> Attack {
+        if self.taxed == Taxed::BackedOut {
+            self.taxed = Taxed::Idle;
+            return options.required_attack();
+        }
         let mut attackers = Vec::new();
         for option in &options.attackers {
             let required = options.required.contains(&option.object);
@@ -389,6 +421,9 @@ impl RandomBot {
                 break;
             };
             attackers = smaller;
+        }
+        if !options.cost_of(&attackers).symbols().is_empty() {
+            self.taxed = Taxed::Paying;
         }
         attackers
     }

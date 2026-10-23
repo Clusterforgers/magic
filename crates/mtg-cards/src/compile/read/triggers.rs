@@ -3,6 +3,7 @@
 //! upkeep" and written back the same way.
 
 use super::amounts::{count_word, number_word};
+use super::batches;
 use super::counters;
 use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
@@ -939,7 +940,7 @@ pub fn article(words: &str) -> &'static str {
 }
 
 /// A subject with its article: "~", "a creature you control", "another Elf".
-fn subject_text(what: &Selector) -> Option<String> {
+pub(super) fn subject_text(what: &Selector) -> Option<String> {
     if what.0 == [Pred::This] {
         return Some("~".to_owned());
     }
@@ -1318,6 +1319,7 @@ fn batch_text(inner: &TriggerPattern) -> Option<String> {
         } if what.0 == [Pred::OwnedBy(Ref::You)] => Some(
             "Whenever one or more cards are put into your graveyard from your library".to_owned(),
         ),
+        TriggerPattern::ZoneChange { what, from, to } => batches::zone_change(what, *from, *to),
         TriggerPattern::CountersPut { what, counter } => {
             let kind = match counter {
                 Some(counter) => format!("{} ", counters::kind_text(counter)?),
