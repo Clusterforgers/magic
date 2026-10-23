@@ -369,6 +369,9 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
         if let Some(keyword) = keyword(r) {
             return Some(Pred::HasKeyword(keyword));
         }
+        if let Some(pred) = r.attempt(like_this) {
+            return Some(pred);
+        }
         let stat = stat_word(r)?;
         // "mana value X or less": the X of the card's own cost.
         let to = if r.x_free && r.word("x") {
@@ -387,8 +390,49 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     })
 }
 
+/// "greater power", "power less than this creature's power": a stat compared with the same stat of the source.
+fn like_this(r: &mut Reader<'_>) -> Option<Pred> {
+    let (stat, op) = if r.words("greater power") {
+        (StatKind::Power, Cmp::Gt)
+    } else {
+        let stat = stat_word(r)?;
+        let op = if r.words("less than") {
+            Cmp::Lt
+        } else if r.words("greater than") {
+            Cmp::Gt
+        } else {
+            return None;
+        };
+        r.source().then_some(())?;
+        (r.punct('\'') && r.word("s")).then_some(())?;
+        (stat_word(r)? == stat).then_some(())?;
+        (stat, op)
+    };
+    Some(Pred::Compare {
+        stat,
+        op,
+        to: Amount::Stat {
+            of: Ref::This,
+            stat,
+        },
+    })
+}
+
 pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
     Some(match pred {
+        Pred::Compare {
+            stat,
+            op: op @ (Cmp::Lt | Cmp::Gt),
+            to:
+                Amount::Stat {
+                    of: Ref::This,
+                    stat: same,
+                },
+        } if stat == same => {
+            let more = if *op == Cmp::Lt { "less" } else { "greater" };
+            let name = stat_name(*stat)?;
+            format!("with {name} {more} than ~'s {name}")
+        }
         Pred::ControlledBy(Ref::You) => "you control".to_owned(),
         Pred::ControlledBy(Ref::Opponents) => form.opponents().to_owned(),
         Pred::ControlledBy(Ref::Triggering) => "that player controls".to_owned(),

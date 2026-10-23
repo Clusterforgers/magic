@@ -35,6 +35,7 @@ mod damage;
 mod defining;
 mod draws;
 mod effects;
+mod evasion;
 mod group_pump;
 mod lands;
 mod levels;

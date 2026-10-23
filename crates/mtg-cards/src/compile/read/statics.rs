@@ -14,6 +14,7 @@ use super::copies;
 use super::counters;
 use super::defining;
 use super::effects::{granted, power_toughness};
+use super::evasion;
 use super::lands;
 use super::life_gain;
 use super::prevention;
@@ -33,7 +34,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 16] = [
+const TEMPLATES: [Template; 17] = [
     entering,
     entering_tapped_if,
     group_enters_tapped,
@@ -50,6 +51,7 @@ const TEMPLATES: [Template; 16] = [
     prevention::static_rule,
     super::costs::additional,
     super::attack_tax::static_rule,
+    evasion::cannot_block,
 ];
 
 /// A static ability that is a whole sentence: the shape and its period.
@@ -367,7 +369,7 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
 
 /// A group of permanents: "all creatures", "creatures you control", "other creatures you control",
 /// "creatures you control of the chosen type".
-fn plural(r: &mut Reader<'_>) -> Option<Ref> {
+pub(super) fn plural(r: &mut Reader<'_>) -> Option<Ref> {
     if let Some(objects) = all(r) {
         return Some(objects);
     }
@@ -420,6 +422,11 @@ fn cannot(r: &mut Reader<'_>) -> Option<Ability> {
         vec![Modification::CantBlock, Modification::CantBeBlocked]
     } else if r.words("be blocked by") {
         vec![Modification::CantBeBlockedBy(phrase(r, Form::All)?)]
+    } else if r.words("be blocked except by") {
+        vec![Modification::CantBeBlockedBy(evasion::except(phrase(
+            r,
+            Form::All,
+        )?)?)]
     } else if r.words("be blocked") {
         vec![Modification::CantBeBlocked]
     } else if r.word("attack") {
@@ -482,9 +489,9 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
 }
 
 /// What a permanent is given: keywords, or one activated ability in quotes ("Enchanted creature has \"{R}, {T}: Copy
-/// target instant or sorcery spell you control.\""). A mana ability stays with the table.
+/// target instant or sorcery spell you control.\"", "Lands you control have \"{T}: Add one mana of any color.\"").
 fn gives(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
-    match r.quoted(|r| abilities::activated(r).filter(|ability| !ability.is_mana_ability())) {
+    match r.quoted(abilities::activated) {
         Some(ability) => Some(vec![Modification::GrantAbility(Arc::new(ability))]),
         None => granted(r),
     }
@@ -700,7 +707,11 @@ fn cost_modifier_texts(
     vec![format!("{subject} {verb} {mana} {more} to cast{tail}")]
 }
 
-fn statics(affected: Ref, mods: Vec<Modification>, condition: Option<Condition>) -> Ability {
+pub(super) fn statics(
+    affected: Ref,
+    mods: Vec<Modification>,
+    condition: Option<Condition>,
+) -> Ability {
     Ability::Static {
         affected,
         mods,
@@ -740,7 +751,11 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             condition,
             defining: false,
             from: ZoneKind::Battlefield,
-        } => static_texts(affected, mods, condition.as_ref()),
+        } => {
+            let mut written = static_texts(affected, mods, condition.as_ref());
+            written.extend(evasion::texts(affected, mods, condition.as_ref()));
+            written
+        }
         Ability::CostModifier {
             applies_to,
             change,
@@ -1019,7 +1034,7 @@ fn each_combat(who: &Ref, verb: &str) -> Vec<String> {
 
 /// The subjects of a static ability and whether each is plural: the card, what it is attached to
 /// (an Equipment says "equipped", an Aura "enchanted") or a group.
-fn subjects(affected: &Ref, itself: bool) -> Vec<(String, bool)> {
+pub(super) fn subjects(affected: &Ref, itself: bool) -> Vec<(String, bool)> {
     match affected {
         Ref::This if itself => vec![("~".to_owned(), false)],
         Ref::Attached => vec![
@@ -1149,12 +1164,6 @@ fn predicate(
             [Modification::CantBeBlocked] => return Some("can't be blocked".to_owned()),
             [Modification::CantBlock, Modification::CantBeBlocked] => {
                 return Some("can't block and can't be blocked".to_owned());
-            }
-            [Modification::CantBeBlockedBy(blockers)] => {
-                return Some(format!(
-                    "can't be blocked by {}",
-                    phrase_text(blockers, Form::All)?
-                ));
             }
             // A card does not give itself a bonus, but it may grow by a count: "This creature gets +1/+1 for each Elf."
             _ if itself && !counts_stats(mods) => return None,
