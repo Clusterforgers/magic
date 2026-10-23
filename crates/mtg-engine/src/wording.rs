@@ -80,6 +80,7 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::Tapped => adjectives.push("tapped".to_owned()),
             Pred::Untapped => adjectives.push("untapped".to_owned()),
             Pred::Monstrous => adjectives.push("monstrous".to_owned()),
+            Pred::EnteredThisTurn => tail.push("that entered this turn".to_owned()),
             Pred::Attacking => adjectives.push("attacking".to_owned()),
             Pred::AttackingPlayer(Ref::AttachedPlayer) => {
                 tail.push("attacking enchanted player".to_owned());

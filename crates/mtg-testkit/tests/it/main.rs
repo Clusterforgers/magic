@@ -106,6 +106,7 @@ mod enchant_player;
 mod encore;
 mod encore_fuzz;
 mod energy_payments;
+mod entered_this_turn;
 mod enters;
 mod equip_to;
 mod equipment;

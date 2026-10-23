@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b3b5137d-0225-4dba-9231-d235ab0f137c",
+  "name": "Novijen, Heart of Progress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Novijen, Heart of Progress",
+      "oracle_fingerprint": "d3c3f2ae7baa27709c916f08d73d2290",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}{G}" }, "Tap"],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, "EnteredThisTurn"] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

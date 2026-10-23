@@ -236,6 +236,7 @@ Deadly Rollick
 Death Ward
 Death-Greeter's Champion
 Deathcap Cultivator
+Deathleaper, Terror Weapon
 Debris Field Crusher
 Debtors' Transport
 Deep Analysis
@@ -619,14 +620,17 @@ Nirkana Revenant
 Norn's Annex
 Norwood Riders
 Notion Rain
+Novijen, Heart of Progress
 Nyxborn Behemoth
 Oath of Jace
 Obscuring Haze
+Octomancer
 Octopus Umbra
 Okiba Reckoner Raid // Nezumi Road Captain
 Ominous Harvest
 Onakke Oathkeeper
 Opt
+Oran-Rief, the Vastwood
 Orchard Strider
 Organic Extinction
 Origin of the Hulk

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e88027a6-24cc-4a8b-86db-734f26149ea8",
+  "name": "Oran-Rief, the Vastwood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oran-Rief, the Vastwood",
+      "oracle_fingerprint": "61f46a0c671bfc39118bfc2e0df28174",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [{ "Type": "Creature" }, { "Color": "Green" }, "EnteredThisTurn"]
+                  },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
