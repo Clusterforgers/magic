@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ead985ec-f29f-4a3b-b8b1-061142cc5bd1",
+  "name": "Harabaz Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harabaz Druid",
+      "oracle_fingerprint": "f1064908afb60a8d2282f3ae8d3fd4fb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyColor": { "Count": [{ "Subtype": "Ally" }, { "ControlledBy": "You" }] }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e3e255e0-ab04-4488-bdc1-bb1542f51e16",
+  "name": "Heronblade Elite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heronblade Elite",
+      "oracle_fingerprint": "ba4eba3241c33315ee587fe37bc07072",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Human" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": { "mana": { "AnyColor": { "Stat": { "of": "This", "stat": "Power" } } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

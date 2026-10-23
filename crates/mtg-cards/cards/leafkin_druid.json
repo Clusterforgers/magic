@@ -1,0 +1,37 @@
+{
+  "oracle_id": "55eb9310-f24b-410b-850b-a7d0d5117946",
+  "name": "Leafkin Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leafkin Druid",
+      "oracle_fingerprint": "3f659f7cc5aef684a4af278961bb1cb3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "Instead": {
+                      "base": { "Fixed": ["Green"] },
+                      "when": {
+                        "Compare": {
+                          "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                          "op": "Ge",
+                          "right": 4
+                        }
+                      },
+                      "instead": { "Fixed": ["Green", "Green"] }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

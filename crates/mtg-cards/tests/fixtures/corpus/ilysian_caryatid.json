@@ -1,0 +1,32 @@
+{
+  "id": "3db65137-c9d6-4352-b7a0-f3968b167233",
+  "oracle_id": "5f2be3c2-060a-43e1-b63b-9cd3c78ffcb0",
+  "name": "Ilysian Caryatid",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "297",
+  "rarity": "common",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Plant",
+  "oracle_text": "{T}: Add one mana of any color. If you control a creature with power 4 or greater, add two mana of any one color instead.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "power": "1",
+  "toughness": "1",
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

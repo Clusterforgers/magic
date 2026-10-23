@@ -445,6 +445,8 @@ pub(crate) fn activation(
 mod combos;
 #[cfg(test)]
 mod counted;
+#[cfg(test)]
+mod replaced;
 
 #[cfg(test)]
 mod tests {
