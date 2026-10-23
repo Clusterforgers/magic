@@ -362,7 +362,12 @@ pub(crate) fn copiable_values(
         .object(reference.id)
         .filter(|object| object.counter() == reference.counter)
     {
-        return may_be_copied(object).then(|| object.card().copiable());
+        // A merged permanent has the copiable values of its topmost card alone (CR 729.2a).
+        let printed = match (object.merged(), object.copy_effect()) {
+            (Some(merged), None) => merged.top().card(),
+            _ => object.card(),
+        };
+        return may_be_copied(object).then(|| printed.copiable());
     }
     let shot = shot.filter(|shot| shot.reference() == reference)?;
     if let Some(copy) = &shot.copy {

@@ -171,6 +171,8 @@ mod monarch_wordings;
 mod morph;
 mod morph_fuzz;
 mod mulligan;
+mod mutate;
+mod mutate_fuzz;
 mod ninjutsu;
 mod object_nth;
 mod owner_left;

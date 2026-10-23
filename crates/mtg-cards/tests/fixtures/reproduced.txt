@@ -108,12 +108,14 @@ Carnage Tyrant
 Cascade Bluffs
 Cathars' Crusade
 Cathartic Reunion
+Cavern Whisperer
 Celestial Archon
 Celestial Colonnade
 Celestial Crusader
 Changeling Outcast
 Chartooth Cougar
 Chemister's Insight
+Chittering Harvester
 Chomping Kavu
 Chromanticore
 Circle of Dreams Druid
@@ -182,6 +184,7 @@ Doom Blade
 Doom Whisperer
 Dragonspeaker Shaman
 Dream's Grip
+Dreamtail Heron
 Dregscape Zombie
 Dromoka Captain
 Dromoka's Gift
@@ -259,6 +262,7 @@ Gaea's Cradle
 Galadhrim Brigade
 Galvanizing Sawship
 Game-Trail Changeling
+Gemrazer
 Generous Ent
 Gerrard's Wisdom
 Ghalta, Primal Hunger
@@ -272,6 +276,7 @@ Girder Goons
 Glimpse of Freedom
 Glint-Sleeve Artisan
 Glorious Anthem
+Glowstone Recluse
 Gluttonous Cyclops
 Gluttonous Slime
 Gnarled Professor
@@ -403,6 +408,7 @@ Mer-Ek Nightblade
 Merfolk Branchwalker
 Mesmeric Orb
 Midnight Banshee
+Migratory Greathorn
 Migratory Route
 Mirari
 Mirror Image
@@ -457,6 +463,7 @@ Poet's Quill
 Pongify
 Pop Quiz
 Pouncing Jaguar
+Pouncing Shoreshark
 Powder Ganger
 Predator Dragon
 Pridemalkin
@@ -523,6 +530,7 @@ Sanguine Bond
 Satyr Wayfinder
 Sauroform Hybrid
 Saw It Coming
+Sawtusk Demolisher
 Scheming Aspirant
 Scorn-Blade Berserker
 Scuzzback Marauders
@@ -656,6 +664,7 @@ Trash for Treasure
 Traumatic Visions
 Treasure Cruise
 Trove Tracker
+Trumpeting Gnarr
 Tumble Magnet
 Tuskguard Captain
 Twilight Mire

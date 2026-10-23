@@ -128,7 +128,7 @@ fn modern() -> Value {
     )
 }
 
-/// A hundred cards: Questing Beast, whose rules the corpus models in full, Gemrazer, which it models in part,
+/// A hundred cards: Questing Beast, whose rules the corpus models in full, Auspicious Starrix, which it models in part,
 /// and ninety-eight Forests.
 fn commander() -> Value {
     body(
@@ -137,7 +137,7 @@ fn commander() -> Value {
         &[
             line("commander", "Questing Beast", 1),
             line("main", "Forest", 98),
-            line("main", "Gemrazer", 1),
+            line("main", "Auspicious Starrix", 1),
         ],
     )
 }

@@ -55,6 +55,15 @@ pub struct CopyView {
     pub of: Option<ObjectId>,
 }
 
+/// One card of a merged permanent (CR 729): the creature spells that mutated onto a creature, and the creature itself.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct MergedCardView {
+    /// The id the card has as an object of its own once the permanent leaves the battlefield.
+    pub id: ObjectId,
+    /// The card's name.
+    pub name: String,
+}
+
 /// A loyalty ability of a planeswalker and what activating it does to the loyalty counters.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct LoyaltyAbilityView {
@@ -150,6 +159,11 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub copy: Option<CopyView>,
+    /// The cards of a merged permanent from the top down: the values above are those of the first card and the abilities
+    /// those of all; left out for any other object.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<MergedCardView>>", optional)]
+    pub merged: Vec<MergedCardView>,
     /// The clauses of its rules text the engine does not run, as the card prints them, for every seat to follow; left out
     /// while there are none. The card's controller does them by hand.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]

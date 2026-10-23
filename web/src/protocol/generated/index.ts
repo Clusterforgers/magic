@@ -136,6 +136,7 @@ export type { ManualAction } from "./ManualAction";
 export type { ManualClause } from "./ManualClause";
 export type { ManualToken } from "./ManualToken";
 export type { ManualZone } from "./ManualZone";
+export type { MergedCardView } from "./MergedCardView";
 export type { ModeChoice } from "./ModeChoice";
 export type { ModeOption } from "./ModeOption";
 export type { ModeOptions } from "./ModeOptions";

@@ -74,7 +74,44 @@ fn zone_error(message: impl Into<String>) -> Violation {
 /// Stateless checks on a single state; callable at any decision point.
 pub fn check_state(state: &GameState) -> Result<(), Violation> {
     check_zone_index(state)?;
+    check_merged(state)?;
     check_bookkeeping(state)
+}
+
+/// A merged permanent (CR 729) is on the battlefield and made of at least two cards, one of them its own; the other
+/// cards are no object of the game while they are part of it, and no card is part of two permanents.
+fn check_merged(state: &GameState) -> Result<(), Violation> {
+    let mut claimed: BTreeSet<ObjectId> = BTreeSet::new();
+    for object in state.objects() {
+        let Some(merged) = object.merged() else {
+            continue;
+        };
+        let cards = merged.from_the_top();
+        if object.zone() != Zone::Battlefield || cards.len() < 2 {
+            return Err(zone_error(format!(
+                "{:?} is merged but is {:?} with {} cards",
+                object.id(),
+                object.zone(),
+                cards.len()
+            )));
+        }
+        if !cards.iter().any(|card| card.id() == object.id()) {
+            return Err(zone_error(format!(
+                "{:?} is merged without its own card",
+                object.id()
+            )));
+        }
+        for card in cards.iter().filter(|card| card.id() != object.id()) {
+            if state.object(card.id()).is_some() || !claimed.insert(card.id()) {
+                return Err(zone_error(format!(
+                    "{:?} is part of {:?} and also an object or part of another permanent",
+                    card.id(),
+                    object.id()
+                )));
+            }
+        }
+    }
+    Ok(())
 }
 
 /// Checks what must hold where the engine has stopped to ask: the player asked is still in the game and only an
@@ -726,6 +763,26 @@ impl InvariantChecker {
                 .map(mtg_engine::object::GameObject::id),
             _ => None,
         };
+        // The cards of a merged permanent become objects of their own as it leaves the battlefield (CR 729.3).
+        let restored = match event {
+            Event::ZoneChanged {
+                object,
+                from: Zone::Battlefield,
+                ..
+            }
+            | Event::CreatureDied { object, .. } => self
+                .shadow
+                .object(*object)
+                .and_then(GameObject::merged)
+                .map_or(0, |merged| {
+                    merged
+                        .from_the_top()
+                        .iter()
+                        .filter(|card| card.id() != *object && !card.is_token())
+                        .count()
+                }),
+            _ => 0,
+        };
         // The next turn goes to the next player in turn order after the last active player, who may have left (CR 800.4).
         if let Event::TurnBegan { number, active } = event
             && self.shadow.turn().number() > 0
@@ -747,6 +804,11 @@ impl InvariantChecker {
         if matches!(event, Event::TokenCreated(_)) {
             self.expected_objects += 1;
         }
+        // The spell's card is part of the permanent, no object of its own.
+        if matches!(event, Event::Mutated { .. }) {
+            self.expected_objects -= 1;
+        }
+        self.expected_objects += restored;
         if matches!(
             event,
             Event::AbilityPutOnStack(_) | Event::SpellCopied(_) | Event::AbilityCopied(_)

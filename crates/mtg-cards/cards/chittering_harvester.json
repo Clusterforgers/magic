@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9473b445-294b-4572-8267-f1f2fc2a05a7",
+  "name": "Chittering Harvester",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chittering Harvester",
+      "oracle_fingerprint": "51308ce9da010b065cda541e14c3c059",
+      "abilities": [
+        { "Keyword": { "Mutate": "{4}{B}" } },
+        {
+          "Triggered": {
+            "when": { "Mutates": { "what": ["This"] } },
+            "effects": [{ "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -15,6 +15,7 @@ use crate::abilities::AbilityObject;
 use crate::choose::Choices;
 use crate::copies::CopyEffect;
 use crate::hash::stable_hash;
+use crate::merged::Merged;
 use crate::zones::Zone;
 
 /// What a game object is.
@@ -123,9 +124,46 @@ pub struct PermanentState {
     pub(crate) face: Option<u8>,
     /// The copy effect that makes the permanent a copy of another object (CR 707): its copiable values replace the card's.
     pub(crate) copy: Option<CopyEffect>,
+    /// The cards the permanent is made of once a mutating creature spell has merged with it (CR 729).
+    pub(crate) merged: Option<Merged>,
 }
 
 impl PermanentState {
+    /// The state of a permanent as it enters the battlefield with the timestamp its static abilities carry.
+    pub(crate) fn entering(
+        timestamp: u64,
+        paid: Vec<usize>,
+        way: Option<CastWay>,
+        x: Option<u32>,
+        face: Option<u8>,
+    ) -> Self {
+        PermanentState {
+            tapped: false,
+            designations: Designations::default(),
+            damage: 0,
+            deathtouched: false,
+            summoning_sick: true,
+            new_to: None,
+            counters: BTreeMap::new(),
+            attached_to: None,
+            attached_player: None,
+            timestamp,
+            observed: None,
+            chosen: None,
+            paid,
+            way,
+            x,
+            face,
+            copy: None,
+            merged: None,
+        }
+    }
+
+    /// The cards the permanent is made of, when a mutating creature spell merged with it (CR 729).
+    pub const fn merged(&self) -> Option<&Merged> {
+        self.merged.as_ref()
+    }
+
     /// The copy effect the permanent is under, if it is a copy of another object (CR 707).
     pub const fn copy(&self) -> Option<&CopyEffect> {
         self.copy.as_ref()
@@ -388,6 +426,9 @@ impl GameObject {
         if let Some(copy) = self.copy_effect() {
             return copy.definition();
         }
+        if let Some(merged) = self.merged() {
+            return merged.definition();
+        }
         if let Some(shown) = self.face_down.and_then(FaceDown::characteristics) {
             return shown;
         }
@@ -411,10 +452,16 @@ impl GameObject {
 
     /// The whole card, with every face it has, whichever one is in use.
     pub fn whole_card(&self) -> &CardDefinition {
-        match self.copy_effect() {
-            Some(copy) => copy.definition(),
-            None => &self.def,
+        match (self.copy_effect(), self.merged()) {
+            (Some(copy), _) => copy.definition(),
+            (None, Some(merged)) => merged.definition(),
+            (None, None) => &self.def,
         }
+    }
+
+    /// The cards the object is made of, when it is a permanent a mutating creature spell merged with (CR 729).
+    pub fn merged(&self) -> Option<&Merged> {
+        self.permanent.as_ref().and_then(PermanentState::merged)
     }
 
     /// The copy effect the object is under, if it is a permanent that is a copy of another object (CR 707).
@@ -451,6 +498,8 @@ impl GameObject {
     pub fn base_types(&self) -> CardTypes {
         let printed = if let Some(copy) = self.copy_effect() {
             copy.definition().type_set()
+        } else if let Some(merged) = self.merged() {
+            merged.definition().type_set()
         } else if let Some(shown) = self.face_down.and_then(FaceDown::characteristics) {
             shown.type_set()
         } else {

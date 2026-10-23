@@ -274,6 +274,7 @@ fn preset_state(
         x: None,
         face: None,
         copy: None,
+        merged: None,
     }
 }
 

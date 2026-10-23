@@ -92,6 +92,7 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
         copy: event.copy_of.map(|of| {
             crate::copies::CopyEffect::new(of, Arc::clone(&event.definition), state.next_timestamp)
         }),
+        merged: None,
     });
     state.next_timestamp += 1;
     // A token can bring what no card of the game had: a triggered ability, a static ability, a legend.

@@ -315,6 +315,24 @@ impl CardDefinition {
         self.mana_cost.as_ref().map_or(0, ManaCost::mana_value)
     }
 
+    /// This definition with the abilities of every definition of `cards` in the order given and none of its own, for a
+    /// merged permanent (CR 729.2): its other characteristics stay.
+    #[must_use]
+    pub fn with_abilities_of<'a>(
+        mut self,
+        cards: impl IntoIterator<Item = &'a CardDefinition>,
+    ) -> CardDefinition {
+        self.rules.clear();
+        self.abilities.clear();
+        self.manual.clear();
+        for card in cards {
+            self.rules.extend(card.rules.iter().cloned());
+            self.abilities.extend(card.abilities.iter().copied());
+            self.manual.extend(card.manual.iter().cloned());
+        }
+        self
+    }
+
     /// The copiable values of this face (CR 707.2): what it prints, as a card of one face. A copy of a face of a card
     /// with several faces has the values of that face alone (CR 707.8).
     #[must_use]

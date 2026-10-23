@@ -52,6 +52,24 @@ pub(crate) enum Outcome {
     DropTrigger,
 }
 
+/// Whether a yes-or-no question outside any resolution is one the game itself asks: about a commander or a mutating spell.
+fn table_asks(state: &GameState, options: &choose::YesNoOptions) -> bool {
+    crate::commanders::asks(state, options) || crate::merged::asks(state, options)
+}
+
+/// The answer to a question of [`table_asks`].
+fn table_answer(
+    state: &GameState,
+    options: &choose::YesNoOptions,
+    choice: choose::YesNoChoice,
+) -> Outcome {
+    if crate::commanders::asks(state, options) {
+        crate::commanders::answer(state, options, choice)
+    } else {
+        crate::merged::answer(state, options, choice)
+    }
+}
+
 /// Checks `answer` against `decision`; the result is only built from legal options.
 ///
 /// `pending` is the cast or activation in progress, whose announcements its payment puts on the spell or ability;
@@ -135,14 +153,15 @@ pub(crate) fn handle(
             choose::order_answer(player, options, choice)
         }
         // Nothing resolving and nothing announced: the question is the owner's choice for a commander in a graveyard or
-        // exile (CR 903.9a).
+        // exile (CR 903.9a), or whether a mutating creature spell goes over the creature it merges with or under it
+        // (CR 702.140b).
         (DecisionKind::YesNo(options), Answer::YesNo(choice))
             if state.resolving().is_none()
                 && pending.is_none()
                 && !replacing
-                && crate::commanders::asks(state, options) =>
+                && table_asks(state, options) =>
         {
-            Ok(crate::commanders::answer(state, options, choice))
+            Ok(table_answer(state, options, choice))
         }
         (DecisionKind::YesNo(options), Answer::YesNo(choice)) => {
             choose::yes_no_answer(player, options, choice)

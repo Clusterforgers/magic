@@ -116,7 +116,7 @@ fn commander() -> PreconDeck {
         "Commander Deck",
         "2022-02-02",
         &[("Questing Beast", 1)],
-        &[("Forest", 98), ("Gemrazer", 1)],
+        &[("Forest", 98), ("Auspicious Starrix", 1)],
     )
 }
 
@@ -379,7 +379,7 @@ async fn one_precon_lists_its_cards_by_board_with_each_cards_support(pool: PgPoo
         (json!("Forest"), json!(98), json!("verified"))
     );
     assert_eq!(land["reasons"], json!([]));
-    let partial = find("Gemrazer");
+    let partial = find("Auspicious Starrix");
     assert_ne!(partial["support"], "verified", "the rules model it in part");
     assert!(
         !partial["reasons"].as_array().unwrap().is_empty(),

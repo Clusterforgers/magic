@@ -17,7 +17,8 @@ use mtg_engine::zones::Zone;
 
 use crate::view::{
     AttackerView, CombatView, CommanderDamageView, CommanderView, CopyView, LoyaltyAbilityView,
-    ObjectView, PermanentView, PlayerView, PriorityView, StateView, TableView, TurnView, ZoneView,
+    MergedCardView, ObjectView, PermanentView, PlayerView, PriorityView, StateView, TableView,
+    TurnView, ZoneView,
 };
 
 /// Every card type, for expanding a [`CardTypes`] set into a list.
@@ -180,6 +181,20 @@ fn copy_view(state: &GameState, sight: &Sight<'_>, object: &GameObject) -> Optio
         })
 }
 
+/// The cards of a merged permanent from the top down; every card of a face-up permanent is public (CR 729).
+fn merged_view(object: &GameObject) -> Vec<MergedCardView> {
+    object.merged().map_or_else(Vec::new, |merged| {
+        merged
+            .from_the_top()
+            .into_iter()
+            .map(|card| MergedCardView {
+                id: card.id(),
+                name: card.card().name.clone(),
+            })
+            .collect()
+    })
+}
+
 impl ObjectView {
     /// The view of `id` for `viewer`, or `None` when the object is unknown or hidden from them.
     pub fn of(state: &GameState, viewer: PlayerId, id: ObjectId) -> Option<ObjectView> {
@@ -288,6 +303,7 @@ impl ObjectView {
             face_down: object.face_down().is_some(),
             face: object.face().filter(|_| printed),
             copy: copy_view(state, sight, object),
+            merged: merged_view(object),
             // The clauses the engine leaves to the table are printed on the card every seat can read.
             manual: if printed {
                 card.manual.clone()
@@ -326,6 +342,7 @@ impl ObjectView {
             face_down: true,
             face: None,
             copy: None,
+            merged: Vec::new(),
             manual: Vec::new(),
         }
     }
