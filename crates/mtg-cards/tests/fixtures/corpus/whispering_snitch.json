@@ -1,0 +1,25 @@
+{
+  "id": "be9abe56-7d56-4fc6-ab24-7b78646266be",
+  "oracle_id": "b6836023-4475-415e-9671-980d9eb6e762",
+  "name": "Whispering Snitch",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "144",
+  "rarity": "uncommon",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2,
+  "type_line": "Creature — Vampire Rogue",
+  "oracle_text": "Whenever you surveil for the first time each turn, this creature deals 1 damage to each opponent and you gain 1 life.",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

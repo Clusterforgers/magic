@@ -210,6 +210,7 @@ fn about_a_player(when: &TriggerPattern) -> bool {
             | TriggerPattern::Proliferated { .. }
             | TriggerPattern::Amassed { .. }
             | TriggerPattern::Bolstered { .. }
+            | TriggerPattern::Surveilled { .. }
             | TriggerPattern::Cycled { .. }
             | TriggerPattern::TappedForMana { .. }
             | TriggerPattern::StepBegins {

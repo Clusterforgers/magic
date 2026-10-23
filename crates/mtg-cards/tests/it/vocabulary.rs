@@ -185,6 +185,34 @@ fn names(list: &[&str]) -> BTreeSet<String> {
     r#"{"Triggered":{"when":{"Nth":{"event":{"DealsDamage":{"source":[],"to":"This"}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
     &["Ability.Triggered", "Effect.Draw", "Trigger.DealsDamage", "Trigger.Nth"]
 )]
+#[case::the_first_life_lost_in_a_turn(
+    r#"{"Triggered":{"when":{"Nth":{"event":{"LifeLost":{"who":"You"}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.LifeLost", "Trigger.Nth"]
+)]
+#[case::the_first_cycling_in_a_turn(
+    r#"{"Triggered":{"when":{"Nth":{"event":{"Cycled":{"what":["Other"],"by":"You"}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.Cycled", "Trigger.Nth"]
+)]
+#[case::the_first_surveil_in_a_turn(
+    r#"{"Triggered":{"when":{"Nth":{"event":{"Surveilled":{"who":"You"}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.Nth", "Trigger.Surveilled"]
+)]
+#[case::the_first_token_in_a_turn(
+    r#"{"Triggered":{"when":{"Nth":{"event":{"ZoneChange":{"what":["Token",{"ControlledBy":"You"}],"to":"Battlefield"}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.Nth", "Trigger.ZoneChange"]
+)]
+#[case::the_first_counters_on_an_object_in_a_turn(
+    r#"{"Triggered":{"when":{"Nth":{"event":{"CountersPut":{"what":["This"]}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.CountersPut", "Trigger.Nth"]
+)]
+#[case::a_zone_change_from_anywhere_but_one(
+    r#"{"Triggered":{"when":{"ZoneChangeExcept":{"what":[],"except":"Battlefield","to":"Graveyard"}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.ZoneChangeExcept"]
+)]
+#[case::counters_put_on_it_this_turn(
+    r#"{"Triggered":{"when":{"StepBegins":{"step":"End"}},"if":{"Compare":{"left":{"Tallied":{"who":"This","what":"CountersPut"}},"op":"Ge","right":1}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Amount.Tallied", "Effect.Draw", "Trigger.StepBegins"]
+)]
 #[case::attacking_together(
     r#"{"Triggered":{"when":{"GroupAttacks":{"what":[{"ControlledBy":"You"}],"at_least":2}},"effects":[{"Draw":{}}]}}"#,
     &["Ability.Triggered", "Effect.Draw", "Trigger.GroupAttacks"]
@@ -315,6 +343,38 @@ fn a_node_validates_round_trips_and_names_its_primitive(
 #[case::a_count_of_combat_damage_only(
     r#"{"Triggered":{"when":{"Nth":{"event":{"DealsDamage":{"source":[],"to":"This","combat":true}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
     "are counted in a turn"
+)]
+#[case::a_count_of_cycling_itself(
+    r#"{"Triggered":{"when":{"Nth":{"event":{"Cycled":{"what":["This"],"by":"You"}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
+    "are counted in a turn"
+)]
+#[case::a_count_of_other_tokens(
+    r#"{"Triggered":{"when":{"Nth":{"event":{"ZoneChange":{"what":["Token"],"to":"Battlefield"}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
+    "are counted in a turn"
+)]
+#[case::a_count_of_one_kind_of_counter(
+    r#"{"Triggered":{"when":{"Nth":{"event":{"CountersPut":{"what":["This"],"counter":"+1/+1"}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
+    "are counted in a turn"
+)]
+#[case::a_batch_of_surveils(
+    r#"{"Triggered":{"when":{"Batch":{"Surveilled":{"who":"You"}}},"effects":[{"Draw":{}}]}}"#,
+    "a batch is of one event"
+)]
+#[case::a_player_who_surveils_is_a_player(
+    r#"{"Triggered":{"when":{"Surveilled":{"who":"This"}},"effects":[{"Draw":{}}]}}"#,
+    "expected a player"
+)]
+#[case::the_counters_put_are_read_through_an_object(
+    r#"{"Triggered":{"when":{"StepBegins":{"step":"End"}},"if":{"Compare":{"left":{"Tallied":{"who":"You","what":"CountersPut"}},"op":"Ge","right":1}},"effects":[{"Draw":{}}]}}"#,
+    "expected an object"
+)]
+#[case::the_attackers_are_read_through_a_player(
+    r#"{"Triggered":{"when":{"StepBegins":{"step":"End"}},"if":{"Compare":{"left":{"Tallied":{"who":"This","what":"Attackers"}},"op":"Ge","right":1}},"effects":[{"Draw":{}}]}}"#,
+    "expected a player"
+)]
+#[case::a_zone_change_selector_is_checked(
+    r#"{"Triggered":{"when":{"ZoneChangeExcept":{"what":[{"ControlledBy":"This"}],"except":"Battlefield"}},"effects":[{"Draw":{}}]}}"#,
+    "expected a player"
 )]
 #[case::a_count_of_something_else(
     r#"{"Triggered":{"when":{"Nth":{"event":{"Blocks":{"what":["This"]}},"nth":1}},"effects":[{"Draw":{}}]}}"#,

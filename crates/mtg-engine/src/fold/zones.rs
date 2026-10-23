@@ -422,6 +422,7 @@ pub(super) fn surveil(state: &mut GameState, surveilled: &Surveilled) -> Result<
         .collect();
     state.zones.set(zone, arranged);
     crate::sight::show(state, Some(surveilled.player), &looked);
+    state.tally(surveilled.player, Tally::Surveilled);
     Ok(())
 }
 
