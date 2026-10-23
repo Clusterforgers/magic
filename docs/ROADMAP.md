@@ -153,7 +153,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r2d) `Cost.PayLife.Counted` in the engine (G'raha Tia, Scion Reborn and Lorcan, Warlock Collector are accepted as `Partial` until then)
 - [ ] (r2e) `mtg-cli propose`: sends a card, the DSL reference and the nearest hand-written files to a model and keeps the proposals the checker accepts; built after (r2a) and (r2b)
 - [ ] (r1a) A cross-check report of the compiler against Forge's scripts: a reader of the script lines, a map from the 60 most used APIs and the trigger and static modes to DSL verbs, the verbs Forge names that a compiled card lacks, and the unread tail grouped by Forge API and key (`docs/reference-engines.md`)
-- [ ] (r1b) The reader pilot's (r2) prompt takes its examples from Forge's pairs of a clause and its script parts by nearest wording, fetched at run time and never committed; examples kept in the repository come from XMage with its MIT notice
+- [ ] (r1b) The proposer's (r2e) prompt takes its examples from Forge's pairs of a clause and its script parts by nearest wording, fetched at run time and never committed; examples kept in the repository come from XMage with its MIT notice
 - [ ] (r1c) Rules proposals converted from Forge scripts for the API families the (r1a) report shows unread, each passing the structure checks and the oracle fingerprint; the GPLv3 conditions for rules that reach browsers are decided first
 
 ### Layouts
