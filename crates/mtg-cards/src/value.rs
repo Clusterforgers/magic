@@ -451,6 +451,9 @@ pub enum Condition {
     /// A player the reference names is the monarch (CR 724): any of them when it names several, so `EachPlayer` is "there is a
     /// monarch" and its `Not` "there is no monarch".
     Monarch(Ref),
+    /// A player the reference names was the monarch as the turn began: the designation they held before anything in the
+    /// turn changed it ("if you were the monarch as the turn began").
+    MonarchAtTurnStart(Ref),
     /// The player has the city's blessing (CR 702.131).
     CitysBlessing(Ref),
     /// The referenced permanents are controlled by the controller and came under their control since their last turn began (echo, CR 702.30a): read in the upkeep, once that turn has begun.

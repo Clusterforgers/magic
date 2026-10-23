@@ -113,6 +113,8 @@ pub enum Duration {
     UntilEndOfYourNextTurn,
     /// For as long as the source stays on the battlefield.
     WhileSourceOnBattlefield,
+    /// Until a player who is an opponent of the controller becomes the monarch (an exile that lasts that long).
+    UntilOpponentBecomesMonarch,
     /// Without end (until the object or the game is gone).
     Forever,
 }

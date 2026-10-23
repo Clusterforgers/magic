@@ -150,6 +150,7 @@ const RUNS: &[&str] = &[
     "Effect.Learn",
     "Effect.BecomeMonarch",
     "Condition.Monarch",
+    "Condition.MonarchAtTurnStart",
     "Effect.CreateToken",
     "Effect.CreateToken.Copy",
     "Effect.CopySpell",
@@ -655,6 +656,7 @@ mod tests {
     #[case::if_you_do("Condition.Performed", true)]
     #[case::if_you_do_after_another_effect("Condition.Performed.Other", false)]
     #[case::the_monarch("Condition.Monarch", true)]
+    #[case::the_monarch_as_the_turn_began("Condition.MonarchAtTurnStart", true)]
     #[case::the_citys_blessing("Condition.CitysBlessing", true)]
     #[case::unblockable_creatures("Mod.CantBeBlocked", true)]
     #[case::creatures_that_cant_be_blocked_by_some("Mod.CantBeBlockedBy", true)]

@@ -763,7 +763,7 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     }
     // "Exile target creature an opponent controls until this creature leaves the battlefield."
     let duration = if verb == "exile" {
-        r.attempt(until_source_leaves)
+        r.attempt(until_exile_ends)
     } else {
         None
     };
@@ -784,9 +784,13 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     }])
 }
 
-/// "until ~ leaves the battlefield": the exile lasts as long as the source stays (CR 610.3).
-fn until_source_leaves(r: &mut Reader<'_>) -> Option<Duration> {
+/// "until ~ leaves the battlefield": the exile lasts as long as the source stays (CR 610.3); "until an opponent becomes
+/// the monarch": until the designation passes to an opponent of the controller.
+fn until_exile_ends(r: &mut Reader<'_>) -> Option<Duration> {
     r.need("until")?;
+    if r.words("an opponent becomes the monarch") {
+        return Some(Duration::UntilOpponentBecomesMonarch);
+    }
     r.source().then_some(())?;
     r.need("leaves the battlefield")?;
     Some(Duration::WhileSourceOnBattlefield)
@@ -812,7 +816,7 @@ fn subject(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
     }
     // "Whenever ~ attacks, it gets +1/+1 until end of turn."
     if let Some(it) = r.it.clone()
-        && r.word("it")
+        && (r.word("it") || (it == Ref::Triggering && r.words("that creature")))
     {
         return Some((it, false));
     }

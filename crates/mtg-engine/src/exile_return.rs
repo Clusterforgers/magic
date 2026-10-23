@@ -27,7 +27,9 @@ pub(crate) fn returns(state: &GameState) -> Vec<Event> {
         .zone(Zone::Exile)
         .iter()
         .filter_map(|id| state.object(*id))
-        .filter(|card| card.exiled_until().is_some_and(|by| !holds(state, by)))
+        .filter(|card| {
+            card.monarch_released() || card.exiled_until().is_some_and(|by| !holds(state, by))
+        })
         .flat_map(|card| back(state, card))
         .collect()
 }

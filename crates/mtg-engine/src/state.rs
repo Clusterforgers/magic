@@ -106,6 +106,8 @@ pub(crate) struct Tallies {
     pub(crate) objects: BTreeMap<(ObjectRef, Option<PlayerId>, Tally), u32>,
     /// The creatures that dealt combat damage to a player, in the order they did.
     pub(crate) hits: Vec<CombatHit>,
+    /// The monarch as the turn began (CR 724): who held the designation before anything in the turn changed it.
+    pub(crate) monarch_began: Option<PlayerId>,
 }
 
 /// A creature that dealt combat damage to a player this turn, as it was then (prowl, CR 702.76).
@@ -362,6 +364,7 @@ impl GameState {
         self.limits_spent.clear();
         self.loyalty_used.clear();
         self.tallies = Tallies::default();
+        self.tallies.monarch_began = self.monarch;
     }
 
     /// Counts one more event of the kind for the player this turn.
@@ -536,6 +539,9 @@ impl Hash for GameState {
         }
         if !self.tallies.hits.is_empty() {
             self.tallies.hits.hash(state);
+        }
+        if let Some(began) = self.tallies.monarch_began {
+            began.hash(state);
         }
         self.result.hash(state);
         // A game that has seen neither day nor night hashes as it did before they existed.

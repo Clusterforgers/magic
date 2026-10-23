@@ -699,6 +699,11 @@ pub enum ZoneCause {
         /// The permanent whose leaving returns it.
         by: ObjectRef,
     },
+    /// It was exiled until an opponent of the player `by` becomes the monarch: it returns once one has.
+    ExiledUntilMonarch {
+        /// The player whose opponents' becoming the monarch returns it.
+        by: PlayerId,
+    },
     /// It resolved as an Adventure (CR 715.4) and was exiled instead of going to its owner's graveyard: its controller may cast the card from exile.
     Adventure,
     /// It was countered (CR 701.6).

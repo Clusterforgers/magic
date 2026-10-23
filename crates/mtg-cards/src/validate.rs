@@ -574,6 +574,10 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "Monarch");
                 self.at("Monarch", |w| w.reference(who, Kind::Player));
             }
+            Condition::MonarchAtTurnStart(who) => {
+                self.uses("Condition", "MonarchAtTurnStart");
+                self.at("MonarchAtTurnStart", |w| w.reference(who, Kind::Player));
+            }
             Condition::CitysBlessing(who) => {
                 self.uses("Condition", "CitysBlessing");
                 self.at("CitysBlessing", |w| w.reference(who, Kind::Player));
@@ -1298,8 +1302,15 @@ impl<'a> Walker<'a> {
                 if let Some(name) = bind {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }
-                // The engine returns the cards when the source leaves the battlefield and no other duration.
-                if let Some(duration) = duration.filter(|d| *d != Duration::WhileSourceOnBattlefield) {
+                // The engine returns the cards when the source leaves the battlefield or an opponent becomes the monarch,
+                // and no other duration.
+                let known = |d: &Duration| {
+                    matches!(
+                        d,
+                        Duration::WhileSourceOnBattlefield | Duration::UntilOpponentBecomesMonarch
+                    )
+                };
+                if let Some(duration) = duration.filter(|d| !known(d)) {
                     w.uses("Exile", &format!("Duration.{}", tag_of(&duration)));
                 }
             }

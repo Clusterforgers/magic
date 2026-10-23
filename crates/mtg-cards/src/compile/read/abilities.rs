@@ -79,6 +79,13 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
             ..
         }
     );
+    r.attacked_player = matches!(
+        when,
+        TriggerPattern::AttacksPlayer {
+            at: Ref::Opponents,
+            ..
+        }
+    );
     r.cast_spell = casts_a_spell(&when);
     r.subject = triggers::event_subject(&when);
     r.attacker = matches!(&when, TriggerPattern::Attacks { what } if *what == Selector::this());
@@ -171,7 +178,7 @@ fn about_a_player(when: &TriggerPattern) -> bool {
             | TriggerPattern::Cycled { .. }
             | TriggerPattern::TappedForMana { .. }
             | TriggerPattern::StepBegins {
-                whose: Ref::EachPlayer | Ref::Opponents,
+                whose: Ref::EachPlayer | Ref::Opponents | Ref::Monarch,
                 ..
             }
             | TriggerPattern::PlayerAttacks { .. }

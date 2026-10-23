@@ -1065,6 +1065,12 @@ impl<'a> Scope<'a> {
                     .iter()
                     .any(|player| self.state.monarch() == Some(*player))
             }
+            Condition::MonarchAtTurnStart(who) => {
+                let began = self.state.monarch_at_turn_start();
+                self.players(who)?
+                    .iter()
+                    .any(|player| began == Some(*player))
+            }
             Condition::CitysBlessing(who) => self
                 .players(who)?
                 .iter()

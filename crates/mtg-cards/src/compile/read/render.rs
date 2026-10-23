@@ -108,6 +108,39 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(pronouns);
     }
+    // The creature that attacks a player is "it" or "that creature" (M'Baku).
+    if matches!(
+        ability,
+        Ability::Triggered {
+            when: TriggerPattern::AttacksPlayer { .. },
+            ..
+        }
+    ) {
+        let named: Vec<String> = texts
+            .iter()
+            .filter(|text| text.contains(", it gets ") || text.contains(", it gains "))
+            .map(|text| {
+                text.replace(", it gets ", ", that creature gets ")
+                    .replace(", it gains ", ", that creature gains ")
+            })
+            .collect();
+        texts.extend(named);
+    }
+    // A card may open with "When" for the damage its commander deals (Archivist of Gondor).
+    if matches!(
+        ability,
+        Ability::Triggered {
+            when: TriggerPattern::DealsDamage { source, .. },
+            ..
+        } if source.0.contains(&Pred::Commander) && source.0.contains(&Pred::OwnedBy(Ref::You))
+    ) {
+        let once: Vec<String> = texts
+            .iter()
+            .filter_map(|text| text.strip_prefix("Whenever your commander "))
+            .map(|rest| format!("When your commander {rest}"))
+            .collect();
+        texts.extend(once);
+    }
     texts.extend(attackers::named_draws(ability, &texts));
     texts.extend(counters::pronouns_after_none(ability, &texts));
     // The counters counted by "for each" may be those "on it" for the card.
@@ -1322,6 +1355,14 @@ impl Writer<'_> {
                 duration: Some(Duration::WhileSourceOnBattlefield),
             } => Some(format!(
                 "exile {} until ~ leaves the battlefield",
+                self.object(what)?
+            )),
+            Effect::Exile {
+                what,
+                bind: None,
+                duration: Some(Duration::UntilOpponentBecomesMonarch),
+            } => Some(format!(
+                "exile {} until an opponent becomes the monarch",
                 self.object(what)?
             )),
             _ => None,

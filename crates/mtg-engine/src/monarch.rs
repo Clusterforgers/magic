@@ -13,11 +13,37 @@ use crate::combat::DamageTarget;
 use crate::events::Event;
 use crate::state::GameState;
 use crate::steps::draw;
+use crate::zones::Zone;
 
 impl GameState {
     /// The monarch, or nobody before a card has made a player the monarch.
     pub const fn monarch(&self) -> Option<PlayerId> {
         self.monarch
+    }
+
+    /// The monarch as the current turn began, or nobody.
+    pub const fn monarch_at_turn_start(&self) -> Option<PlayerId> {
+        self.tallies.monarch_began
+    }
+}
+
+/// Makes `player` the monarch, or nobody, and releases the cards exiled until an opponent of their exiler becomes the
+/// monarch (their exile ends the moment the designation moves, CR 610.3).
+pub(crate) fn set(state: &mut GameState, player: Option<PlayerId>) {
+    state.monarch = player;
+    let Some(player) = player else {
+        return;
+    };
+    if !state.possible.linked_exile {
+        return;
+    }
+    for id in state.zone(Zone::Exile).to_vec() {
+        if let Some(object) = state.objects.get_mut(&id)
+            && let Some((by, released)) = &mut object.monarch_wait
+            && by != &player
+        {
+            *released = true;
+        }
     }
 }
 

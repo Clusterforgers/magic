@@ -271,6 +271,9 @@ pub(crate) fn lasts(
                 .object(source.id)
                 .is_some_and(|o| o.counter() == source.counter && o.zone() == Zone::Battlefield)
         }),
+        // Only an exile lasts until an opponent becomes the monarch (a card in exile waits, `exile_return.rs`); no continuous
+        // effect does.
+        Duration::UntilOpponentBecomesMonarch => false,
     }
 }
 

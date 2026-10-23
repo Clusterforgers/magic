@@ -57,6 +57,7 @@ pub(super) fn move_object(
     }
     object.adventure = None;
     object.exiled_until = None;
+    object.monarch_wait = None;
     object.cast_from_hand = false;
     object.cast_from_graveyard = false;
     // What the spell paid for stays with the permanent it becomes, for its abilities to read.
@@ -276,6 +277,12 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 state.possible.linked_exile = true;
                 if let Some(object) = state.objects.get_mut(object) {
                     object.exiled_until = Some(*by);
+                }
+            }
+            if let ZoneCause::ExiledUntilMonarch { by } = cause {
+                state.possible.linked_exile = true;
+                if let Some(object) = state.objects.get_mut(object) {
+                    object.monarch_wait = Some((*by, false));
                 }
             }
         }
