@@ -11,6 +11,7 @@ mod put_onto;
 
 use super::activations;
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
+use super::as_long_as;
 use super::attackers;
 use super::becomes;
 use super::cast;
@@ -1042,18 +1043,58 @@ fn is_imperative(effect: &Effect) -> bool {
 /// "{G}{G}", "one mana of any color": the mana an effect adds.
 /// "add {C}{C}" and, when the mana is restricted, the sentence that says what it may be spent on.
 fn add_text(mana: &Produce, times: &Amount, only: &[SpendOn]) -> Option<String> {
+    // "Add {G}. If you control four or more creatures, add {G}{G} instead."
+    if let Produce::Instead {
+        base,
+        when,
+        instead,
+    } = mana
+    {
+        let when = as_long_as::texts(when).into_iter().next()?;
+        if !times.is_one() || !only.is_empty() {
+            return None;
+        }
+        return Some(format!(
+            "add {}. If {when}, add {} instead",
+            mana_text(base)?,
+            mana_text(instead)?
+        ));
+    }
     let mut added = format!("add {}", mana_text(mana)?);
     // "Add {R} for each Goblin you control.": once for each thing counted, never a number of times.
     if !times.is_one() {
-        let (Amount::Fixed(1), tail) = counted_parts(times)? else {
-            return None;
-        };
-        added = format!("{added} {tail}");
+        if let Some((Amount::Fixed(1), tail)) = counted_parts(times) {
+            added = format!("{added} {tail}");
+        } else {
+            // "Add an amount of {G} equal to the greatest power among creatures you control."
+            let Produce::Fixed(list) = mana else {
+                return None;
+            };
+            let [one] = list.as_slice() else {
+                return None;
+            };
+            added = format!(
+                "add an amount of {{{}}} equal to {}",
+                one.symbol(),
+                equal_text(times)?
+            );
+        }
     }
     if only.is_empty() {
         Some(added)
     } else {
         Some(format!("{added}. {}", spend::text(only)?))
+    }
+}
+
+/// What an amount equals in "equal to ...": a characteristic of the card, or a count.
+fn equal_text(amount: &Amount) -> Option<String> {
+    match amount {
+        Amount::Stat {
+            of: Ref::This,
+            stat,
+        } => Some(format!("~'s {}", stat_name(*stat)?)),
+        other => defining::value_text(other),
     }
 }
 
@@ -1094,9 +1135,13 @@ pub(super) fn combination_text(
 fn mana_text(mana: &Produce) -> Option<String> {
     Some(match mana {
         Produce::Fixed(list) if !list.is_empty() => symbols_text(list),
-        Produce::AnyColor(1) => "one mana of any color".to_owned(),
-        Produce::AnyColor(count @ 2..) => {
-            format!("{} mana of any one color", count_word(*count)?)
+        Produce::AnyColor(count) if count.is_one() => "one mana of any color".to_owned(),
+        Produce::AnyColor(Amount::X) => "X mana of any one color".to_owned(),
+        Produce::AnyColor(Amount::Fixed(count @ 2..)) => {
+            format!(
+                "{} mana of any one color",
+                count_word(u32::try_from(*count).ok()?)?
+            )
         }
         Produce::AnyCombination { count, among } => combination_text(count, among)?,
         Produce::ChosenColor(1) => "one mana of the chosen color".to_owned(),

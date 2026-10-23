@@ -93,6 +93,7 @@ Beastmaster Ascension
 Befriending the Moths // Imperial Moth
 Behold the Multiverse
 Bespoke Battlewagon
+Bighorner Rancher
 Bilious Skulldweller
 Binding the Old Gods
 Bird Admirer // Wing Shredder
@@ -453,6 +454,7 @@ Hallowed Spiritkeeper
 Hammer Dropper
 Hangar Scrounger
 Hangarback Walker
+Harabaz Druid
 Harmonious Archon
 Harrow
 Hatut Zeraze Strike Force
@@ -471,6 +473,7 @@ Herald of the Host
 Hero of Bladehold
 Hero of Precinct One
 Hero's Heirloom
+Heronblade Elite
 Hidden Dragonslayer
 Highspire Artisan
 History of Benalia
@@ -489,6 +492,7 @@ Igneous Inspiration
 Ill-Tempered Cyclops
 Illicit Shipment
 Illustrious Wanderglyph
+Ilysian Caryatid
 Imperial Hellkite
 Imperious Oligarch
 Impostor of the Sixth Pride
@@ -546,6 +550,7 @@ Latchkey Faerie
 Laughing Mad
 Lavacore Elemental
 Lazotep Reaver
+Leafkin Druid
 Legion Loyalty
 Levitation
 Lhurgoyf
@@ -583,6 +588,7 @@ Mardu Scout
 Mardu Shadowspear
 Mardu Strike Leader
 Maro
+Marwyn, the Nurturer
 Mask of Riddles
 Master of Etherium
 Master of Pearls
@@ -615,6 +621,7 @@ Mistmeadow Skulk
 Mizzium Mortars
 Mobilizer Mech
 Molten Slagheap
+Mona Lisa, Science Geek
 Monastery Swiftspear
 Monk's Fist
 Morinfen
@@ -785,6 +792,7 @@ Sagu Mauler
 Saiba Cryptomancer
 Saltcrusted Steppe
 Samurai's Katana
+Sanctum Weaver
 Sandcrafter Mage
 Sandsteppe Mastodon
 Sandsteppe Scavenger
@@ -1066,6 +1074,7 @@ Winged Boots
 Winged Words
 Wings of the Guard
 Wipe Away
+Wirewood Channeler
 Withering Boon
 Wizard Class
 Wooded Bastion

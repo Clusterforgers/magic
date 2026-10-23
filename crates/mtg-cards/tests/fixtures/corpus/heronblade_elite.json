@@ -1,0 +1,34 @@
+{
+  "id": "36938a8e-8da0-4f27-86c3-6032aa7642b5",
+  "oracle_id": "e3e255e0-ab04-4488-bdc1-bb1542f51e16",
+  "name": "Heronblade Elite",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mic",
+  "collector_number": "26",
+  "rarity": "rare",
+  "released_at": "2021-09-24",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "Vigilance\nWhenever another Human you control enters, put a +1/+1 counter on this creature.\n{T}: Add X mana of any one color, where X is this creature's power.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Vigilance"
+  ],
+  "power": "1",
+  "toughness": "1",
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

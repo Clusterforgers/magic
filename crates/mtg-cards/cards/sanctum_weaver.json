@@ -1,0 +1,27 @@
+{
+  "oracle_id": "acfe7ec0-0606-4d5e-b1fa-25f0c7aeec47",
+  "name": "Sanctum Weaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sanctum Weaver",
+      "oracle_fingerprint": "b94e97e7335133b065aa93f04dc92a0d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyColor": { "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }] }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

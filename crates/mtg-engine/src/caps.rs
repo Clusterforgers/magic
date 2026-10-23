@@ -137,6 +137,8 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.ProducedBy",
     "Effect.AddMana.OfTapped",
     "Effect.AddMana.AnyCombination",
+    "Effect.AddMana.AnyColor",
+    "Effect.AddMana.Instead",
     "Ability.ManaAbility.Complex",
     "Effect.PutCounters",
     "Effect.RemoveCounters",
@@ -679,6 +681,8 @@ mod tests {
     #[case::devotion("Amount.Devotion", true)]
     #[case::mana_the_tapped_land_produced("Effect.AddMana.OfTapped", true)]
     #[case::mana_in_any_combination("Effect.AddMana.AnyCombination", true)]
+    #[case::mana_of_one_color_counted("Effect.AddMana.AnyColor", true)]
+    #[case::mana_replaced_when_a_condition_holds("Effect.AddMana.Instead", true)]
     #[case::the_greatest_value("Amount.Greatest", true)]
     #[case::totals("Amount.Total", true)]
     #[case::card_types_among_cards("Amount.CardTypes", true)]
