@@ -965,7 +965,15 @@ pub(super) fn symbols_text(list: &[mtg_core::mana::ManaType]) -> String {
 }
 
 /// "two mana in any combination of colors", "three mana in any combination of {U}, {B}, and/or {R}".
-pub(super) fn combination_text(count: u32, among: &[mtg_core::mana::ManaType]) -> Option<String> {
+pub(super) fn combination_text(
+    count: &Amount,
+    among: &[mtg_core::mana::ManaType],
+) -> Option<String> {
+    let number = match count {
+        Amount::X => "X",
+        Amount::Fixed(number) if *number >= 2 => count_word(u32::try_from(*number).ok()?)?,
+        _ => return None,
+    };
     let symbols: Vec<String> = among
         .iter()
         .map(|mana| format!("{{{}}}", mana.symbol()))
@@ -976,10 +984,7 @@ pub(super) fn combination_text(count: u32, among: &[mtg_core::mana::ManaType]) -
         [first, second] => format!("{first} and/or {second}"),
         [init @ .., last] => format!("{}, and/or {last}", init.join(", ")),
     };
-    Some(format!(
-        "{} mana in any combination of {types}",
-        count_word(count)?
-    ))
+    Some(format!("{number} mana in any combination of {types}"))
 }
 
 fn mana_text(mana: &Produce) -> Option<String> {
@@ -989,10 +994,7 @@ fn mana_text(mana: &Produce) -> Option<String> {
         Produce::AnyColor(count @ 2..) => {
             format!("{} mana of any one color", count_word(*count)?)
         }
-        Produce::AnyCombination {
-            count: count @ 2..,
-            among,
-        } => combination_text(*count, among)?,
+        Produce::AnyCombination { count, among } => combination_text(count, among)?,
         Produce::ChosenColor(1) => "one mana of the chosen color".to_owned(),
         Produce::OrChosenColor(mana) => {
             format!("{{{}}} or one mana of the chosen color", mana.symbol())

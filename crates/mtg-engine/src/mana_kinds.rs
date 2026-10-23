@@ -48,6 +48,42 @@ pub(crate) fn combinations(types: &[ManaType], count: u32) -> Vec<Vec<ManaType>>
     found
 }
 
+/// Every way to pick mana among `types` (all five colors when none are given) for each count in `counts`, the picks of
+/// the first count first and no more than `limit` in all. A count with more ways than are left offers only the picks
+/// of one type and the picks of one type but one mana, and ends the list: the engine keeps a source for each way.
+pub(crate) fn combinations_of(
+    types: &[ManaType],
+    counts: impl IntoIterator<Item = u32>,
+    limit: usize,
+) -> Vec<Vec<ManaType>> {
+    let pool: &[ManaType] = if types.is_empty() { &COLORS } else { types };
+    let mut found: Vec<Vec<ManaType>> = Vec::new();
+    for count in counts {
+        if found.len() >= limit {
+            break;
+        }
+        let ways = mtg_cards::assemble::combinations(pool.len(), count);
+        if ways <= limit - found.len() {
+            found.extend(combinations(types, count));
+            continue;
+        }
+        found.extend(pool.iter().map(|kind| vec![*kind; count as usize]));
+        for (at, spare) in pool.iter().enumerate() {
+            for (other, kind) in pool.iter().enumerate() {
+                if at != other {
+                    let mut pick = vec![*kind; (count as usize).saturating_sub(1)];
+                    pick.push(*spare);
+                    pick.sort_by_key(|mana| pool.iter().position(|t| t == mana));
+                    found.push(pick);
+                }
+            }
+        }
+        found.truncate(limit);
+        break;
+    }
+    found
+}
+
 /// The mana of a colour.
 pub(crate) const fn mana_of(color: Color) -> ManaType {
     match color {

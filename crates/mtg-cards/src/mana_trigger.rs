@@ -55,9 +55,8 @@ pub fn mana_trigger(ability: &Ability) -> Option<ManaTrigger<'_>> {
     let taps_for_them = *who == Ref::Triggering;
     let adds = match mana {
         Produce::Fixed(list) => !list.is_empty(),
-        Produce::AnyColor(count)
-        | Produce::ChosenColor(count)
-        | Produce::AnyCombination { count, .. } => *count > 0,
+        Produce::AnyColor(count) | Produce::ChosenColor(count) => *count > 0,
+        Produce::AnyCombination { count, .. } => count.fixed().is_some_and(|count| count > 0),
         Produce::OfTapped => true,
         _ => false,
     };
