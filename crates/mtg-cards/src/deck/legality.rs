@@ -91,6 +91,8 @@ pub enum IssueCode {
     SideboardSize,
     /// More than one companion.
     CompanionCount,
+    /// A companion whose condition the starting deck does not meet, or a card that is no companion.
+    CompanionCondition,
     /// Cards in the command zone of a format that has none.
     NoCommanderZone,
     /// No commander, or more than two.
@@ -170,7 +172,7 @@ impl Issue {
         }
     }
 
-    fn card(
+    pub(super) fn card(
         code: IssueCode,
         zone: DeckZone,
         id: &str,

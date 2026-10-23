@@ -661,4 +661,16 @@ action: ManualAction, } } | { "CommanderStayed": {
 /**
  * The commander.
  */
+object: ObjectId, } } | { "CompanionRevealed": { 
+/**
+ * Whose companion.
+ */
+player: PlayerId, } } | { "CompanionBrought": { 
+/**
+ * Whose companion.
+ */
+player: PlayerId, 
+/**
+ * The object the card became, in the hand.
+ */
 object: ObjectId, } };

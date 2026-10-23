@@ -53,6 +53,8 @@ mod commander_fuzz;
 mod commander_identity;
 mod commander_objects;
 mod common;
+mod companion;
+mod companion_fuzz;
 mod concede;
 mod concede_mid_cast;
 mod conditional_statics;

@@ -166,6 +166,11 @@ pub struct PriorityOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub turnable: Vec<ObjectId>,
+    /// Whether the holder can put their companion into their hand now: a special action (CR 702.139) for {3} at sorcery
+    /// timing, once a game.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub companion: bool,
     /// The faces of the cards with several faces that can be cast or played now, with their costs: a split card's halves, an
     /// Adventure, the back face of a modal double-faced card. `castable` and `playable_lands` list the card itself.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -237,6 +242,12 @@ impl PayOptions {
 #[allow(clippy::trivially_copy_pass_by_ref)]
 const fn is_zero(count: &u32) -> bool {
     *count == 0
+}
+
+/// Whether a flag is off, so serialization can leave it out.
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_false(flag: &bool) -> bool {
+    !*flag
 }
 
 /// One creature that may attack and the defenders it may attack.
@@ -520,6 +531,8 @@ pub enum PriorityAction {
     Foretell(ObjectId),
     /// Turn this face-down permanent face up (CR 702.37e, a special action): pay its morph, megamorph or disguise cost.
     TurnFaceUp(ObjectId),
+    /// Put the companion into the hand (CR 702.139, a special action): pay {3}, once a game.
+    BringCompanion,
     /// Do something by hand for a card the engine does not run: a zone move, counters, life, a token and the like. Legal at
     /// any priority, checked against the state (`manual.rs`).
     Manual(ManualAction),

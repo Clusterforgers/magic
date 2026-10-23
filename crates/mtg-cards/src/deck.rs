@@ -5,6 +5,7 @@
 //! The report keeps "illegal" (`legality`) apart from "not implemented" (`cards`), reports every
 //! zone, and counts the sideboard and the companion like any other card when it decides the state.
 
+mod companion;
 mod hashes;
 mod legality;
 mod marker;
@@ -334,7 +335,8 @@ pub fn deck_report(
         reported.extend(in_zone);
     }
 
-    let legality = legality::check(format, &deck, cards);
+    let mut legality = legality::check(format, &deck, cards);
+    legality.extend(companion::issues(format, &deck, cards, library, caps));
     let mut counts = Counts::default();
     let mut zones = Vec::new();
     for zone in DeckZone::ALL {

@@ -7,6 +7,7 @@
 //! (`docs/engine.md`, Casting).
 
 mod alternative;
+pub(crate) mod companion;
 mod division;
 mod face;
 pub(crate) mod foretell;
@@ -246,6 +247,8 @@ pub(crate) enum Special {
     Foretell,
     /// Turning a face-down permanent face up (CR 702.37e).
     TurnFaceUp,
+    /// Putting a companion from outside the game into the hand (CR 702.139): the card is the id it will have there.
+    Companion,
 }
 
 /// A cast or activation that has begun and is not paid for yet.
@@ -533,6 +536,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
             Special::Suspend => suspend::next(state, *player, *card),
             Special::Foretell => foretell::next(state, *player, *card),
             Special::TurnFaceUp => turn_up::next(state, *player, *card),
+            Special::Companion => companion::next(state, *player, *card),
         };
     }
     let what: &What = what;

@@ -14,6 +14,7 @@ mod commander_draw_view;
 mod commander_spectator;
 mod commander_view;
 mod common;
+mod companion_view;
 mod copy_view;
 mod counter_view;
 mod crew_hidden;

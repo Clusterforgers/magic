@@ -219,6 +219,15 @@ impl Scenario {
         self
     }
 
+    /// Names the card as a player's companion (CR 702.139): it starts outside the game, already revealed.
+    #[must_use]
+    pub fn companion(mut self, player: usize, card: Arc<CardDefinition>) -> Self {
+        if let Some(seat) = self.seat(player) {
+            seat.companion = Some(card);
+        }
+        self
+    }
+
     /// The corpus cards called `names`; one that is not there is recorded and the rest are returned.
     fn corpus_cards<N: AsRef<str>>(
         &mut self,

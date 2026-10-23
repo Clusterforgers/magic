@@ -6,11 +6,12 @@ use std::str::FromStr;
 use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 
+use crate::companion::DeckCondition;
 use crate::cost::{Cost, CostItem};
 use crate::keyword::{GiftKind, Keyword};
 use crate::mana::ManaCostX;
 use crate::refs::{Pred, Selector};
-use crate::value::Amount;
+use crate::value::{Amount, Cmp, StatKind};
 
 /// What may follow a keyword's name.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -400,7 +401,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "partner with" => Some(Keyword::PartnerWith(rest.to_owned())),
         "partner" if rest.starts_with('\u{2014}') => partner_group(rest),
         "protection" => protection(rest).map(Keyword::Protection),
-        "companion" => Some(Keyword::Companion),
+        "companion" => companion(rest),
         "toxic" => positive(rest).map(Keyword::Toxic),
         "annihilator" => positive(rest).map(Keyword::Annihilator),
         "landwalk" => landwalk(item),
@@ -461,6 +462,89 @@ fn partner_group(rest: &str) -> Option<Keyword> {
         .trim_end_matches('.')
         .trim();
     (!text.is_empty()).then(|| Keyword::PartnerGroup(text.to_owned()))
+}
+
+/// The permanent card types.
+const PERMANENT_CARDS: [CardType; 6] = [
+    CardType::Artifact,
+    CardType::Creature,
+    CardType::Enchantment,
+    CardType::Land,
+    CardType::Planeswalker,
+    CardType::Battle,
+];
+
+/// The condition of a `Companion—<text>` item for the wordings that read from the card alone (`Each permanent card in
+/// your starting deck has mana value 2 or less.`); the other conditions are not read, so the line stays with the table.
+fn companion(rest: &str) -> Option<Keyword> {
+    let text = rest
+        .trim_start_matches('\u{2014}')
+        .trim()
+        .trim_end_matches('.')
+        .trim();
+    let lower = text.to_ascii_lowercase();
+    let value = |op: Cmp, to: &str| Pred::Compare {
+        stat: StatKind::ManaValue,
+        op,
+        to: Amount::Fixed(to.parse().unwrap_or(0)),
+    };
+    let number_after = |head: &str, tail: &str| {
+        lower
+            .strip_prefix(head)
+            .and_then(|rest| rest.strip_suffix(tail))
+            .filter(|number| number.parse::<u32>().is_ok())
+            .map(str::to_owned)
+    };
+    let condition = if lower == "each nonland card in your starting deck has a different name" {
+        DeckCondition::Distinct {
+            of: Selector(vec![Pred::Not(Box::new(Pred::Type(CardType::Land)))]),
+        }
+    } else if let Some(number) = number_after(
+        "each permanent card in your starting deck has mana value ",
+        " or less",
+    ) {
+        DeckCondition::Each {
+            of: Selector(vec![Pred::AnyOf(
+                PERMANENT_CARDS.iter().map(|ty| Pred::Type(*ty)).collect(),
+            )]),
+            has: Selector(vec![value(Cmp::Le, &number)]),
+        }
+    } else if let Some(number) = number_after(
+        "your starting deck contains only cards with mana value ",
+        " or greater and land cards",
+    ) {
+        DeckCondition::Each {
+            of: Selector::default(),
+            has: Selector(vec![Pred::AnyOf(vec![
+                Pred::Type(CardType::Land),
+                value(Cmp::Ge, &number),
+            ])]),
+        }
+    } else if lower
+        == "your starting deck contains at least twenty cards more than the minimum deck size"
+    {
+        DeckCondition::ExtraCards(20)
+    } else {
+        creature_types(text)?
+    };
+    Some(Keyword::companion(condition))
+}
+
+/// `Each creature card in your starting deck is a Cat, Elemental, or Beast card`: every creature has one of the types.
+fn creature_types(text: &str) -> Option<DeckCondition> {
+    let list = text
+        .strip_prefix("Each creature card in your starting deck is a ")?
+        .strip_suffix(" card")?;
+    let kinds: Vec<Pred> = list
+        .replace(", or ", ", ")
+        .replace(" or ", ", ")
+        .split(", ")
+        .map(|kind| Pred::Subtype(Subtype(kind.trim().to_owned())))
+        .collect();
+    Some(DeckCondition::Each {
+        of: Selector(vec![Pred::Type(CardType::Creature)]),
+        has: Selector(vec![Pred::AnyOf(kinds)]),
+    })
 }
 
 /// The land types a landwalk can name.
@@ -1043,7 +1127,45 @@ mod tests {
     )]
     #[case::companion(
         "Companion \u{2014} Each nonland card in your starting deck has a different name.",
-        Keyword::Companion
+        Keyword::companion(DeckCondition::Distinct {
+            of: Selector(vec![Pred::Not(Box::new(Pred::Type(CardType::Land)))])
+        })
+    )]
+    #[case::companion_permanent_value(
+        "Companion \u{2014} Each permanent card in your starting deck has mana value 2 or less.",
+        Keyword::companion(DeckCondition::Each {
+            of: Selector(vec![Pred::AnyOf(PERMANENT_CARDS.iter().map(|ty| Pred::Type(*ty)).collect())]),
+            has: Selector(vec![Pred::Compare {
+                stat: StatKind::ManaValue,
+                op: Cmp::Le,
+                to: Amount::Fixed(2)
+            }])
+        })
+    )]
+    #[case::companion_land_or_big(
+        "Companion \u{2014} Your starting deck contains only cards with mana value 3 or greater and land cards.",
+        Keyword::companion(DeckCondition::Each {
+            of: Selector::default(),
+            has: Selector(vec![Pred::AnyOf(vec![
+                Pred::Type(CardType::Land),
+                Pred::Compare { stat: StatKind::ManaValue, op: Cmp::Ge, to: Amount::Fixed(3) }
+            ])])
+        })
+    )]
+    #[case::companion_creature_types(
+        "Companion \u{2014} Each creature card in your starting deck is a Cat, Elemental, Nightmare, Dinosaur, or Beast card.",
+        Keyword::companion(DeckCondition::Each {
+            of: Selector(vec![Pred::Type(CardType::Creature)]),
+            has: Selector(vec![Pred::AnyOf(
+                ["Cat", "Elemental", "Nightmare", "Dinosaur", "Beast"]
+                    .map(|name| Pred::Subtype(Subtype(name.into())))
+                    .to_vec()
+            )])
+        })
+    )]
+    #[case::companion_extra_cards(
+        "Companion \u{2014} Your starting deck contains at least twenty cards more than the minimum deck size.",
+        Keyword::companion(DeckCondition::ExtraCards(20))
     )]
     #[case::partner_with(
         "Partner with Pir, Imaginative Rascal",
@@ -1087,6 +1209,13 @@ mod tests {
     #[case::enchant_nothing("Enchant")]
     #[case::partner_without_a_text("Partner\u{2014}")]
     #[case::doctors_companion_with_a_cost("Doctor's companion {1}")]
+    #[case::companion_with_even_values(
+        "Companion \u{2014} Your starting deck contains only cards with even mana values."
+    )]
+    #[case::companion_with_activated_abilities(
+        "Companion \u{2014} Each permanent card in your starting deck has an activated ability."
+    )]
+    #[case::companion_without_a_condition("Companion")]
     #[case::undeclared("Horsemanship")]
     #[case::crew_x("Crew X")]
     #[case::dredge_x("Dredge X")]

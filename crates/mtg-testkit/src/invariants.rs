@@ -13,6 +13,7 @@ use mtg_engine::ability_reader;
 use mtg_engine::characteristics::controller_of;
 use mtg_engine::choose::Target;
 use mtg_engine::combat::{AttackTarget, DamageForm, DamageTarget};
+use mtg_engine::companions::CompanionStage;
 use mtg_engine::counters::CountersChanged;
 use mtg_engine::effects::Duration;
 use mtg_engine::keywords::{is_indestructible, keywords_of};
@@ -75,7 +76,39 @@ fn zone_error(message: impl Into<String>) -> Violation {
 pub fn check_state(state: &GameState) -> Result<(), Violation> {
     check_zone_index(state)?;
     check_merged(state)?;
+    check_companions(state)?;
     check_bookkeeping(state)
+}
+
+/// A companion (CR 702.139) is no object while it lies outside the game and is revealed once the opening is over; once
+/// brought it is an object of its owner's, unless the owner has left the game.
+fn check_companions(state: &GameState) -> Result<(), Violation> {
+    for player in state.players() {
+        let Some(info) = state.companion(player.id()) else {
+            continue;
+        };
+        let object = state.object(info.card);
+        let broken = match info.stage {
+            CompanionStage::Hidden => {
+                state.stage() != Stage::PreGame || object.is_some() || state.has_ceased(info.card)
+            }
+            CompanionStage::Revealed => object.is_some() || state.has_ceased(info.card),
+            CompanionStage::Brought => match object {
+                Some(card) => card.owner() != player.id() || card.whole_card().name != info.name,
+                None => state.is_alive(player.id()),
+            },
+        };
+        if broken {
+            return Err(Violation::Bookkeeping(format!(
+                "the companion {} of {:?} is {:?} but {:?} says otherwise",
+                info.name,
+                player.id(),
+                info.stage,
+                object.map(GameObject::zone)
+            )));
+        }
+    }
+    Ok(())
 }
 
 /// A merged permanent (CR 729) is on the battlefield and made of at least two cards, one of them its own; the other
@@ -801,7 +834,10 @@ impl InvariantChecker {
         if matches!(event, Event::ObjectLeftGame { .. }) || ability_ends || token_ends {
             self.expected_objects -= 1;
         }
-        if matches!(event, Event::TokenCreated(_)) {
+        if matches!(
+            event,
+            Event::TokenCreated(_) | Event::CompanionBrought { .. }
+        ) {
             self.expected_objects += 1;
         }
         // The spell's card is part of the permanent, no object of its own.

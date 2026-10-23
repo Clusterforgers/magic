@@ -37,6 +37,11 @@ foretellable?: Array<ObjectId>,
  */
 turnable?: Array<ObjectId>, 
 /**
+ * Whether the holder can put their companion into their hand now: a special action (CR 702.139) for {3} at sorcery
+ * timing, once a game.
+ */
+companion?: boolean, 
+/**
  * The faces of the cards with several faces that can be cast or played now, with their costs: a split card's halves, an
  * Adventure, the back face of a modal double-faced card. `castable` and `playable_lands` list the card itself.
  */

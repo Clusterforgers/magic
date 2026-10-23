@@ -9,6 +9,7 @@ use mtg_core::color::{Color, ColorSet};
 use mtg_core::house::HouseRules;
 use mtg_core::ids::PlayerId;
 
+use super::companion::check_companion;
 use super::{DeckError, ExtraZone, FormatRules, MulliganRule, RuleSet};
 use crate::commanders::damage_dealt_to;
 use crate::player::LossReason;
@@ -26,6 +27,30 @@ pub const COMMANDER_TAX: u32 = 2;
 /// The Commander format.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Commander;
+
+/// The colour identity of the commanders together.
+fn identity_of(commanders: &[Arc<CardDefinition>]) -> ColorSet {
+    commanders.iter().fold(ColorSet::EMPTY, |all, card| {
+        card.color_identity().iter().fold(all, ColorSet::with)
+    })
+}
+
+/// Whether the colour identity of `card` lies inside `identity`, or the colours outside it.
+fn inside_identity(card: &CardDefinition, identity: ColorSet) -> Result<(), DeckError> {
+    let own = card.color_identity();
+    if own.is_subset_of(identity) {
+        return Ok(());
+    }
+    let outside = own
+        .iter()
+        .filter(|color| !identity.contains(*color))
+        .fold(ColorSet::EMPTY, ColorSet::with);
+    Err(DeckError::OutsideColorIdentity {
+        name: card.name.clone(),
+        outside: letters(outside),
+        identity: letters(identity),
+    })
+}
 
 /// The letters of the colors in `set`, in WUBRG order; `C` for none.
 fn letters(set: ColorSet) -> String {
@@ -132,22 +157,25 @@ impl FormatRules for Commander {
         if !rules.checks_colour_identity() {
             return Ok(());
         }
-        let identity = commanders.iter().fold(ColorSet::EMPTY, |all, card| {
-            card.color_identity().iter().fold(all, ColorSet::with)
-        });
-        for card in deck {
-            let own = card.color_identity();
-            if !own.is_subset_of(identity) {
-                let outside = own
-                    .iter()
-                    .filter(|color| !identity.contains(*color))
-                    .fold(ColorSet::EMPTY, ColorSet::with);
-                return Err(DeckError::OutsideColorIdentity {
-                    name: card.name.clone(),
-                    outside: letters(outside),
-                    identity: letters(identity),
-                });
-            }
+        let identity = identity_of(commanders);
+        deck.iter()
+            .try_for_each(|card| inside_identity(card, identity))
+    }
+
+    fn deck_minimum(&self, rules: &RuleSet<'_>) -> usize {
+        rules.deck_size(COMMANDER_DECK)
+    }
+
+    fn validate_companion(
+        &self,
+        companion: &Arc<CardDefinition>,
+        deck: &[Arc<CardDefinition>],
+        commanders: &[Arc<CardDefinition>],
+        rules: &RuleSet<'_>,
+    ) -> Result<(), DeckError> {
+        check_companion(companion, deck, commanders, self.deck_minimum(rules))?;
+        if rules.checks_colour_identity() {
+            inside_identity(companion, identity_of(commanders))?;
         }
         Ok(())
     }

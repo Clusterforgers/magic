@@ -768,6 +768,15 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// A companion condition may only ask about the card itself, since the deck check reads it from the card alone.
+    fn companion(&mut self, condition: &crate::companion::DeckCondition) {
+        for pred in condition.unreadable() {
+            self.problem(format!(
+                "a companion condition reads the card alone, not `{pred}`"
+            ));
+        }
+    }
+
     fn keyword(&mut self, keyword: &Keyword) {
         self.uses("Keyword", &tag_of(keyword));
         match keyword {
@@ -863,6 +872,7 @@ impl<'a> Walker<'a> {
             Keyword::Annihilator(0) => self.problem("annihilator needs a number of at least 1"),
             Keyword::Dredge(0) => self.problem("dredge needs a number of at least 1"),
             Keyword::Fabricate(0) => self.problem("fabricate needs a number of at least 1"),
+            Keyword::Companion(condition) => self.companion(condition),
             Keyword::PartnerWith(name) => {
                 self.names
                     .push((self.face, self.current_path(), name.clone()));

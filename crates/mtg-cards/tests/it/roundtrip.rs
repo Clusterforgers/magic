@@ -224,7 +224,7 @@ fn keyword() -> impl Strategy<Value = Keyword> {
             Keyword::Cascade,
             Keyword::Storm,
             Keyword::Partner,
-            Keyword::Companion,
+            Keyword::companion(mtg_cards::companion::DeckCondition::ExtraCards(20)),
             Keyword::BattleCry,
             Keyword::Fuse,
             Keyword::Changeling,

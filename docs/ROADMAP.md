@@ -29,7 +29,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Triggers and keywords: (c6b), (c4e), (c3b), (c3d), (c2g), (c2d), (n1d5) day and night effects, (o2c).
 - Statics and layers: (c8i), (c7d), (c7e), (o1d), (m4).
 - Compiler wordings, no engine change: (c10) one piece per wording family with (c10s), (c10d), (c10e) and (c10r), (o2f), (c11) and (c11c) layouts, (c9c), (c1l).
-- Commander and server: Companion.
+- Commander and server: (m4b) the companion at the table.
 - Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test.
 - After the card system: "Views complete", the Gate, then the web (M5 prompts for the decision kinds the engine asks, the manual-action menu, table states) and M7.
 - After each round: `mtg-cli ingest` and `compile` refresh the real database, `coverage` is re-run and the numbers go on the M6 target line; `fetch scryfall --printings` fills the printings once.
@@ -69,6 +69,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Mana ability wordings: the storage-counter lands (an X of counters removed from the source for X mana in any combination of types), a combination counted by a where clause and restrictions by a subtype of spells and abilities (Crucible of the Spirit Dragon)
 - Tooling: `scripts/check.sh` with test slots, `scripts/agent-status.sh`, the quick test-time suite, derived corpus counts, current Cargo dependencies
 - Reference engines: Forge, XMage and Magarena surveyed for licence, card format, scale and fit to the compiler's readings (`docs/reference-engines.md`)
+- Companion: `Keyword::Companion(DeckCondition)` with the conditions that read the card alone, the card kept outside the game, revealed in turn order before the shuffles and put into the hand for {3} at sorcery timing once a game (`PriorityAction::BringCompanion`), the deck check and the setup validation in Normal and Commander, `PlayerView.companion` and the public events, the testkit scenario, invariants and fuzz games (`docs/engine.md`, Companion)
 - Model-assisted reading: `mtg-cli check-rules` accepts a model's rules only when they are valid, read back as the printed text and have a support state; the pilot over 40 unread precon cards (`docs/cards-dsl.md`, Model-assisted reading); writers for divided damage, an exile of a graveyard, tokens for a chosen player or with protection, a pump the player may choose, a put from the hand, damage by the creature of an event, life paid as X and the wordings "you draw" after another player's event, "Then" and "damage equal to its power" (13 corpus cards)
 
 ## M3 Card system
@@ -96,7 +97,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] Gate: every corpus card is Verified except the two kept Partial and Manual by design, and fuzz games with a deck from each cluster pass every invariant
 
 ## M4 Commander
-- [~] (branch companion) Companion (CR 702.139): the companion is a card from outside the game that costs {3} to put into the hand; no stored precon has a companion board
+- [ ] (m4b) The companion at the table: a seat's stored deck names its companion in the game (the recipe's seat deck and fingerprint, `ChosenDeck`, the deck choice with `validate_companion`, the registry and lobby setup, a resume), the conditions that need more than the card alone (even or odd mana values, an activated ability, a shared card type, one mana symbol, expansion symbols), a corpus card with the keyword, and the web (the companion slot, the action in the priority menu); no stored precon has a companion board
 
 ## M5 Table and prompts
 
