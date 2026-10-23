@@ -130,16 +130,26 @@ pub struct Choices {
         ts(as = "Option<Vec<mtg_core::mana::ManaType>>", optional)
     )]
     pub spent: Option<Box<Vec<mtg_core::mana::ManaType>>>,
+    /// What the cost of an ability or a spell took: the objects picked and how the ones that left were.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub cost_taken: Option<Box<CostTaken>>,
+}
+
+/// What the cost of an ability or a spell took (CR 601.2h, 608.2h).
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct CostTaken {
     /// The permanents and cards picked for the parts of an ability's cost that take them (a sacrifice, a discard, an
     /// exile from a graveyard, a tap, a return to hand), one list for each such part in the order the cost prints them.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Vec<ObjectId>>>", optional))]
-    pub cost_picks: Option<Box<Vec<Vec<ObjectId>>>>,
+    pub picks: Vec<Vec<ObjectId>>,
     /// The permanents and cards the cost took out of their zones (a sacrifice, a discard, an exile), as they were just
     /// before: "the sacrificed creature's power" reads them (CR 608.2h). Public, as every such object is shown as it leaves.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Snapshot>>", optional))]
-    pub cost_shots: Option<Box<Vec<Snapshot>>>,
+    pub shots: Vec<Snapshot>,
 }
 
 impl Choices {
@@ -150,24 +160,34 @@ impl Choices {
 
     /// The permanents and cards picked for the parts of the cost that take them, one list for each such part.
     pub fn cost_picks(&self) -> &[Vec<ObjectId>] {
-        self.cost_picks.as_deref().map_or(&[], Vec::as_slice)
+        self.cost_taken.as_deref().map_or(&[], |taken| &taken.picks)
     }
 
     /// What the cost took out of its zones, as it was just before (`parts::photographed`).
     pub fn cost_shots(&self) -> &[Snapshot] {
-        self.cost_shots.as_deref().map_or(&[], Vec::as_slice)
+        self.cost_taken.as_deref().map_or(&[], |taken| &taken.shots)
     }
 
     /// These choices with `shots` as the objects the cost took.
     pub(crate) fn with_cost_shots(mut self, shots: Vec<Snapshot>) -> Choices {
-        self.cost_shots = (!shots.is_empty()).then(|| Box::new(shots));
+        if !shots.is_empty() || self.cost_taken.is_some() {
+            self.cost_taken.get_or_insert_with(Box::default).shots = shots;
+        }
         self
+    }
+
+    /// Forgets the objects picked, as a copy of a spell pays nothing; what the cost of the original took stays named.
+    pub(crate) fn forget_cost_picks(&mut self) {
+        if let Some(taken) = self.cost_taken.as_deref_mut() {
+            taken.picks.clear();
+        }
     }
 
     /// Adds the objects picked for the next part of the cost that takes some.
     pub(crate) fn pick_for_cost(&mut self, objects: Vec<ObjectId>) {
-        self.cost_picks
+        self.cost_taken
             .get_or_insert_with(Box::default)
+            .picks
             .push(objects);
     }
 

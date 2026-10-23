@@ -60,8 +60,7 @@ static NO_CHOICES: Choices = Choices {
     way: None,
     face: None,
     spent: None,
-    cost_picks: None,
-    cost_shots: None,
+    cost_taken: None,
 };
 static NO_BINDINGS: Bindings = BTreeMap::new();
 

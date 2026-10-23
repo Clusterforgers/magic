@@ -56,10 +56,9 @@ fn characteristic(r: &mut Reader<'_>) -> Option<(Whose, StatKind)> {
         Whose::Card
     } else if r.words("that creature's") {
         Whose::ThatCreature
-    } else if let Some(stat) = paid_stat(r) {
-        return Some((Whose::Paid, stat));
     } else {
-        return None;
+        let stat = paid_stat(r)?;
+        return Some((Whose::Paid, stat));
     };
     let stat = stat_word(r)?;
     Some((whose, stat))

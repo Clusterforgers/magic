@@ -158,7 +158,10 @@ fn an_ability_reads_the_object_its_cost_took_as_it_was(
     settle(&mut driver).unwrap();
     assert_eq!(life(&driver) - before, gained);
     assert_ne!(
-        driver.state().object(picked).map(|o| o.zone()),
+        driver
+            .state()
+            .object(picked)
+            .map(mtg_engine::object::GameObject::zone),
         Some(zone),
         "the cost took it"
     );

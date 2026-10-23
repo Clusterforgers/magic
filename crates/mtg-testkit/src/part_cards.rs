@@ -218,6 +218,14 @@ pub fn parts_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusE
         ("Souldrinker", 2),
         ("Solstice Zealot", 4),
         ("Copper-Leaf Angel", 2),
+        ("Bosh, Iron Golem", 1),
+        ("Brion Stoutarm", 1),
+        ("Dina, Soul Steeper", 1),
+        ("Disciple of Griselbrand", 1),
+        ("Ghoulcaller Gisa", 1),
+        ("Greater Good", 1),
+        ("Life's Legacy", 2),
+        ("Mercurial Chemister", 1),
     ] {
         deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
     }
