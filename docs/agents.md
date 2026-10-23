@@ -38,6 +38,7 @@ Report (max 15 lines): files added, public API in one line each, test counts, de
 - Dependencies stay current: after a round, with no agent running, `cargo update --dry-run` lists what is behind; the (dep) piece updates it alone because `Cargo.lock` changes rebuild every worktree.
 - Coverage pieces measure the Verified counts in a scratch database (`ingest`, `compile`, `coverage` with `--database-url`), never in `magic`; the numbers go to the M6 target line.
 - Corpus fixtures (`crates/mtg-cards/tests/fixtures/corpus/*.json`) are the trimmed Scryfall record of the card from the cache (`~/.cache/mtg-cli/scryfall`, `zcat ... | jq`): the id, oracle id, set, collector number and release date are real, never written from memory.
+- A change to a wire type regenerates the bindings and can break the web: the agent also runs `pnpm typecheck` and `pnpm test` in `web/` (`check.sh rust` skips the web). Counts kept in code (`TEMPLATES: [Template; N]`, the effect sample count in `resolve/prim/mod.rs`, the keyword name lists) are recounted at every merge of branches that each added one.
 
 ### Parallel agents
 
