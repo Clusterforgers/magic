@@ -1,0 +1,27 @@
+{
+  "id": "bf5e0a50-304c-4b3f-b5f7-1ca1213c0282",
+  "oracle_id": "92cda790-7907-47d1-8e5a-d3364c1e881f",
+  "name": "Danny Pink",
+  "lang": "en",
+  "layout": "normal",
+  "set": "who",
+  "collector_number": "39",
+  "rarity": "rare",
+  "released_at": "2023-10-13",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4,
+  "type_line": "Legendary Creature — Human Soldier Advisor",
+  "oracle_text": "Mentor (Whenever this creature attacks, put a +1/+1 counter on target attacking creature with lesser power.)\nCreatures you control have \"Whenever one or more counters are put on this creature for the first time each turn, draw a card.\"",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Mentor"
+  ]
+}

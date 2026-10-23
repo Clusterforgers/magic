@@ -237,7 +237,6 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         // `ManaBurned` is information in the log: the life it cost is its own `LifeLost`.
         Event::NothingToDo { .. }
         | Event::ManaBurned { .. }
-        | Event::Cycled { .. }
         | Event::Explored { .. }
         | Event::Connived { .. }
         | Event::Amassed { .. }
@@ -245,6 +244,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Bolstered { .. }
         | Event::Learned { .. }
         | Event::Proliferated { .. } => {}
+        Event::Cycled { player, .. } => state.tally(*player, Tally::Cycled),
         Event::PriorityGranted { player } => {
             state.priority = Some(PriorityState {
                 holder: *player,
@@ -365,7 +365,7 @@ fn pay_life(state: &mut GameState, id: PlayerId, amount: u32) -> Result<(), Engi
     match i32::try_from(amount) {
         Ok(paid) if paid > 0 && paid <= player.life => {
             player.life -= paid;
-            state.tally_by(id, Tally::Lost, amount);
+            state.tally_loss(id, amount);
             Ok(())
         }
         _ => Err(invalid(format!(
@@ -398,7 +398,7 @@ fn change_life(
                 player.life.saturating_sub(change)
             };
             if !gain {
-                state.tally_by(id, Tally::Lost, amount);
+                state.tally_loss(id, amount);
             }
             Ok(())
         }

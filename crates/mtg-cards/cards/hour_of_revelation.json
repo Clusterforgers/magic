@@ -1,0 +1,32 @@
+{
+  "oracle_id": "920c1dd4-c3f6-4020-a6f0-2e8acad2c212",
+  "name": "Hour of Revelation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hour of Revelation",
+      "oracle_fingerprint": "80319452d547fdf5c9eb13fb3e502114",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{3}",
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Not": { "Type": "Land" } }] },
+                "op": "Ge",
+                "right": 10
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [{ "Destroy": { "what": { "Each": [{ "Not": { "Type": "Land" } }] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

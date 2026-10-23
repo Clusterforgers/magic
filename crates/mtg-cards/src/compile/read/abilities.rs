@@ -3,7 +3,7 @@
 //! activated an activated ability.
 
 use super::tokens::Reader;
-use super::{costs, effects, mana_trigger, modal, render, statics, triggers};
+use super::{as_long_as, costs, effects, mana_trigger, modal, render, statics, triggers};
 use crate::ability::{Ability, Limit, Timing};
 use crate::effect::Effect;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
@@ -210,6 +210,7 @@ fn about_a_player(when: &TriggerPattern) -> bool {
             | TriggerPattern::Proliferated { .. }
             | TriggerPattern::Amassed { .. }
             | TriggerPattern::Bolstered { .. }
+            | TriggerPattern::Surveilled { .. }
             | TriggerPattern::Cycled { .. }
             | TriggerPattern::TappedForMana { .. }
             | TriggerPattern::StepBegins {
@@ -231,7 +232,9 @@ fn restrictions(r: &mut Reader<'_>) -> Option<(Timing, Option<Limit>, Option<Con
         return Some((Timing::Instant, None, None));
     }
     if r.word("if") {
-        let condition = statics::control(r)?;
+        let condition = r
+            .attempt(statics::control)
+            .or_else(|| r.attempt(|r| as_long_as::body(r, Some(&Ref::This))))?;
         return r
             .sentence_end()
             .then_some((Timing::Instant, None, Some(condition)));

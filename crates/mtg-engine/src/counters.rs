@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use crate::choose::Target;
 use crate::error::EngineError;
 use crate::fold::{invalid, player_mut};
-use crate::state::GameState;
+use crate::state::{GameState, Tally};
 use crate::zones::Zone;
 
 /// Counters put on or removed from an object or a player.
@@ -53,6 +53,9 @@ pub(crate) fn fold(state: &mut GameState, event: &CountersChanged) -> Result<(),
             change(counters, &event.counter, event.delta)?;
             if event.delta > 0 && changes_power_toughness(&event.counter) {
                 state.possible.counters = true;
+            }
+            if event.delta > 0 {
+                state.tally_object(named, None, Tally::Countered);
             }
         }
         Target::Player(id) => {

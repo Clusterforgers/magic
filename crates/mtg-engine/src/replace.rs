@@ -429,11 +429,19 @@ fn gather(state: &GameState) -> Vec<Source> {
             if matches!(&*rules, Ability::Replacement { from, .. } if *from == zone_kind(zone)) {
                 found.push(Source {
                     address,
-                    ability: rules,
+                    ability: Arc::clone(&rules),
                     controller: controller_of_object(state, object),
                     object: object.reference(),
                     copied: false,
                 });
+            }
+            if zone == Zone::Battlefield {
+                found.extend(riot::given_to_entering(
+                    address,
+                    &rules,
+                    controller_of_object(state, object),
+                    object.reference(),
+                ));
             }
         }
     }
@@ -581,6 +589,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::Choose(_)
         | ReplaceBy::PayLifeOrTapped(_)
         | ReplaceBy::Devour { .. }
+        | ReplaceBy::Riot
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         // Not run yet: a card that uses it is not Verified.
         ReplaceBy::Instead(_) => false,
@@ -1306,6 +1315,7 @@ impl Pass<'_> {
                                 | ReplaceBy::Choose(_)
                                 | ReplaceBy::WithCounters { .. }
                                 | ReplaceBy::Devour { .. }
+                                | ReplaceBy::Riot
                         )
                     )
                 });
@@ -1574,6 +1584,9 @@ impl Pass<'_> {
             }
             (ReplaceBy::Devour { .. }, Unit::Enter { object, controller }) => {
                 return self.devour(at, candidate, by, *object, *controller, applied);
+            }
+            (ReplaceBy::Riot, Unit::Enter { object, controller }) => {
+                return self.riot(at, *object, *controller, applied);
             }
             (_, Unit::Enter { object, controller }) => {
                 return self.enter(at, candidate, by, *object, *controller, applied);
@@ -2456,6 +2469,8 @@ fn zone_word(zone: Zone) -> &'static str {
 }
 
 mod dredge;
+
+mod riot;
 
 #[cfg(test)]
 mod shields;

@@ -127,7 +127,6 @@ fn the_ability_word_is_flavor(#[case] with: &str, #[case] without: &str) {
 #[case::a_count_of_commanders(
     "As long as you control two or more of your commander, ~ has flying."
 )]
-#[case::riot_is_not_given_yet("Nontoken creatures you control have riot.")]
 fn a_near_miss_is_left_to_the_table(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Static, false), None, "{text}");
 }

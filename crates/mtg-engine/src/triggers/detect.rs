@@ -22,12 +22,14 @@ use crate::choose::{Choices, Target};
 use crate::combat::{AttackTarget, DamageForm, DamageTarget};
 use crate::counters::CountersChanged;
 use crate::events::{Event, ResolutionOutcome, ZoneCause};
+use crate::library::Surveilled;
 use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::replace::in_combat_damage;
 use crate::resolve::{Scope, zone_kind};
 use crate::rules::triggers_again;
 use crate::snapshot::{Snapshot, snapshot};
 use crate::state::{GameState, Tally};
+use crate::tokens::TokenCreated;
 use crate::turn::Step;
 use crate::zones::Zone;
 
@@ -41,8 +43,8 @@ enum Happened {
         to: Zone,
         cause: Option<ZoneCause>,
     },
-    /// A token was created: it enters the battlefield from no zone.
-    Created { object: ObjectId },
+    /// A token was created, the `nth` of its controller's turn: it enters the battlefield from no zone.
+    Created { object: ObjectId, nth: u32 },
     /// A creature was declared as an attacker, the `nth` time this turn for it.
     Attacked { attacker: ObjectId, nth: u32 },
     /// A creature was declared as the only attacker.
@@ -87,8 +89,12 @@ enum Happened {
         amount: u32,
         nth: u32,
     },
-    /// A player lost life: by an effect, by paying it or from damage (CR 120.3a).
-    LifeLost { player: PlayerId, amount: u32 },
+    /// A player lost life, the `nth` time of their turn: by an effect, by paying it or from damage (CR 120.3a).
+    LifeLost {
+        player: PlayerId,
+        amount: u32,
+        nth: u32,
+    },
     /// A player drew `card`, the `nth` of their turn.
     Drew {
         player: PlayerId,
@@ -102,12 +108,13 @@ enum Happened {
     /// A player tapped a permanent for mana: once for the tap, whatever mana it made.
     TappedForMana { object: ObjectId, player: PlayerId },
     /// Counters of a kind were put on a permanent (`delta` above 0) or removed from it (below 0), which held `before`
-    /// of them until then.
+    /// of them until then; a put is the `nth` time this turn for the object.
     Counters {
         on: ObjectId,
         counter: CounterKind,
         delta: i32,
         before: u32,
+        nth: u32,
     },
     /// A creature was declared as a blocker of an attacker.
     Blocked {
@@ -120,8 +127,14 @@ enum Happened {
     AttackedTogether { attackers: Vec<ObjectId> },
     /// An Aura, Equipment or Fortification became attached to a permanent.
     Attached { attachment: ObjectId, to: ObjectId },
-    /// A player cycled a card.
-    Cycled { player: PlayerId, card: ObjectId },
+    /// A player cycled a card, the `nth` of their turn.
+    Cycled {
+        player: PlayerId,
+        card: ObjectId,
+        nth: u32,
+    },
+    /// A player surveilled, the `nth` time of their turn.
+    Surveilled { player: PlayerId, nth: u32 },
     /// A player became the monarch.
     BecameMonarch { player: PlayerId },
     /// A player proliferated.
@@ -199,7 +212,12 @@ impl Happened {
             | Happened::Saddled { nth, .. }
             | Happened::Targeted { nth, .. }
             | Happened::Damaged { nth, .. }
-            | Happened::LifeGained { nth, .. } => Some(*nth),
+            | Happened::LifeGained { nth, .. }
+            | Happened::LifeLost { nth, .. }
+            | Happened::Cycled { nth, .. }
+            | Happened::Surveilled { nth, .. }
+            | Happened::Created { nth, .. }
+            | Happened::Counters { nth, .. } => Some(*nth),
             _ => None,
         }
     }
@@ -296,6 +314,7 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
         match event {
             Event::TokenCreated(token) => found.push(Happened::Created {
                 object: token.object,
+                nth: ordinal(post, later, token.controller, Tally::Tokens),
             }),
             Event::AttackersDeclared { attackers, .. } => {
                 found.extend(attackers.iter().map(|(attacker, _)| Happened::Attacked {
@@ -404,12 +423,52 @@ fn ordinal(post: &GameState, later: &[Event], player: PlayerId, kind: Tally) -> 
     let same = |event: &Event| match (kind, event) {
         (Tally::Drawn, Event::CardDrawn { player: who, .. })
         | (Tally::Cast, Event::SpellCast { player: who, .. })
-        | (Tally::Gained, Event::LifeGained { player: who, .. }) => *who == player,
+        | (Tally::Gained, Event::LifeGained { player: who, .. })
+        | (Tally::Cycled, Event::Cycled { player: who, .. })
+        | (Tally::Surveilled, Event::Surveilled(Surveilled { player: who, .. }))
+        | (
+            Tally::Tokens,
+            Event::TokenCreated(TokenCreated {
+                controller: who, ..
+            }),
+        ) => *who == player,
+        (
+            Tally::Losses,
+            Event::LifeLost {
+                player: who,
+                amount,
+            }
+            | Event::LifePaid {
+                player: who,
+                amount,
+            },
+        ) => *who == player && *amount > 0,
+        (
+            Tally::Losses,
+            Event::DamageDealt {
+                target: DamageTarget::Player(who),
+                amount,
+                form,
+                ..
+            },
+        ) => {
+            *who == player
+                && *amount > 0
+                && !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss)
+        }
         _ => false,
     };
     let after = post.tallied(player, kind);
     after
         .saturating_sub(u32::try_from(later.iter().filter(|e| same(e)).count()).unwrap_or(u32::MAX))
+}
+
+/// Which time of the turn a loss of `amount` life is for `player`; none for a loss of nothing, which the turn does not count.
+fn loss_ordinal(look: Look<'_>, player: PlayerId, amount: u32) -> u32 {
+    if amount == 0 {
+        return 0;
+    }
+    ordinal(look.post, look.later, player, Tally::Losses)
 }
 
 /// Where an event stands in its batch: the state before the batch, the state after it and the events that follow the event.
@@ -484,6 +543,9 @@ fn object_ordinal(look: Look<'_>, object: ObjectRef, by: Option<PlayerId>, kind:
         ) => by_them(*player) && choices.targeted_objects().contains(&object),
         (Tally::Targeted, Event::AbilityPutOnStack(put)) => {
             by_them(put.controller) && put.choices.targeted_objects().contains(&object)
+        }
+        (Tally::Countered, Event::CountersChanged(changed)) => {
+            changed.delta > 0 && matches!(changed.on, Target::Object(on) if on.id == object.id)
         }
         (
             Tally::Crewed | Tally::Saddled,
@@ -587,6 +649,7 @@ fn about_players_and_permanents(
                 found.push(Happened::LifeLost {
                     player: *player,
                     amount: *amount,
+                    nth: loss_ordinal(look, *player, *amount),
                 });
             }
         }
@@ -599,6 +662,7 @@ fn about_players_and_permanents(
             found.push(Happened::LifeLost {
                 player: *player,
                 amount: *amount,
+                nth: loss_ordinal(look, *player, *amount),
             });
         }
         Event::CardDrawn { player, object } => found.push(Happened::Drew {
@@ -631,6 +695,11 @@ fn about_players_and_permanents(
                     counter: changed.counter.clone(),
                     delta: changed.delta,
                     before: counters_before(look, changed, on),
+                    nth: if changed.delta > 0 {
+                        object_ordinal(look, on, None, Tally::Countered)
+                    } else {
+                        0
+                    },
                 });
             }
         }
@@ -641,6 +710,11 @@ fn about_players_and_permanents(
         Event::Cycled { player, object } => found.push(Happened::Cycled {
             player: *player,
             card: *object,
+            nth: ordinal(look.post, look.later, *player, Tally::Cycled),
+        }),
+        Event::Surveilled(surveilled) => found.push(Happened::Surveilled {
+            player: surveilled.player,
+            nth: ordinal(look.post, look.later, surveilled.player, Tally::Surveilled),
         }),
         Event::MonarchChanged { player } => found.push(Happened::BecameMonarch { player: *player }),
         Event::Proliferated { player } => found.push(Happened::Proliferated { player: *player }),
@@ -764,12 +838,31 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
                 .then(|| cause(state, vec![Target::Object(reference)]))
         }
         (
+            TriggerPattern::ZoneChangeExcept {
+                what,
+                except,
+                to: entered,
+            },
+            Happened::Moved {
+                object: moved,
+                from,
+                to,
+                ..
+            },
+        ) => {
+            let reference = object(*moved)?;
+            (zone_kind(*from) != *except
+                && entered.is_none_or(|kind| zone_kind(*to) == kind)
+                && scope.selects(what, reference).ok()?)
+            .then(|| cause(state, vec![Target::Object(reference)]))
+        }
+        (
             TriggerPattern::ZoneChange {
                 what,
                 from: None,
                 to: entered,
             },
-            Happened::Created { object: made },
+            Happened::Created { object: made, .. },
         ) => {
             let reference = object(*made)?;
             (entered.is_none_or(|kind| kind == ZoneKind::Battlefield)
@@ -927,6 +1020,7 @@ fn matching_event(
         | (TriggerPattern::BecomesMonarch { who }, Happened::BecameMonarch { player })
         | (TriggerPattern::Proliferated { who }, Happened::Proliferated { player })
         | (TriggerPattern::Amassed { who }, Happened::Amassed { player })
+        | (TriggerPattern::Surveilled { who }, Happened::Surveilled { player, .. })
         | (TriggerPattern::Bolstered { who }, Happened::Bolstered { player }) => by(who, player)
             .then(|| counted(state, vec![Target::Player(*player)], happened.amount())),
         (TriggerPattern::Drew { who, what }, Happened::Drew { player, card, .. }) => {
@@ -944,7 +1038,7 @@ fn matching_event(
                 ..
             },
         )
-        | (TriggerPattern::Cycled { what, by: who }, Happened::Cycled { player, card }) => {
+        | (TriggerPattern::Cycled { what, by: who }, Happened::Cycled { player, card, .. }) => {
             let card = object(*card)?;
             (by(who, player) && picks(what, card)?)
                 .then(|| cause(state, vec![Target::Player(*player), Target::Object(card)]))
@@ -1082,6 +1176,7 @@ fn matching_permanents(
                 counter: kind,
                 delta,
                 before,
+                ..
             },
         ) => {
             let on = object(*on)?;

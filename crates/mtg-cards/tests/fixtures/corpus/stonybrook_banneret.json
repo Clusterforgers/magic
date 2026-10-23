@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "1b3bc8fd-97bd-4383-9ce4-8cfe7a6c1e62",
+  "oracle_id": "0d6202c7-b19c-429a-85c4-332024381dd7",
+  "multiverse_ids": [
+    640469
+  ],
+  "mtgo_id": 118746,
+  "tcgplayer_id": 526227,
+  "cardmarket_id": 743525,
+  "name": "Stonybrook Banneret",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/1b3bc8fd-97bd-4383-9ce4-8cfe7a6c1e62",
+  "scryfall_uri": "https://scryfall.com/card/lcc/173/stonybrook-banneret?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:38:01Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/b/1b3bc8fd-97bd-4383-9ce4-8cfe7a6c1e62.jpg?1783913881",
+    "normal": "https://cards.scryfall.io/normal/front/1/b/1b3bc8fd-97bd-4383-9ce4-8cfe7a6c1e62.jpg?1783913881",
+    "large": "https://cards.scryfall.io/large/front/1/b/1b3bc8fd-97bd-4383-9ce4-8cfe7a6c1e62.jpg?1783913881",
+    "png": "https://cards.scryfall.io/png/front/1/b/1b3bc8fd-97bd-4383-9ce4-8cfe7a6c1e62.png?1783913881",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/b/1b3bc8fd-97bd-4383-9ce4-8cfe7a6c1e62.jpg?1783913881",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/b/1b3bc8fd-97bd-4383-9ce4-8cfe7a6c1e62.jpg?1783913881",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/b/1b3bc8fd-97bd-4383-9ce4-8cfe7a6c1e62.webp?1783913881",
+    "grid": "https://cards.scryfall.io/grid/front/1/b/1b3bc8fd-97bd-4383-9ce4-8cfe7a6c1e62.webp?1783913881",
+    "display": "https://cards.scryfall.io/display/front/1/b/1b3bc8fd-97bd-4383-9ce4-8cfe7a6c1e62.webp?1783913881",
+    "art": "https://cards.scryfall.io/art/front/1/b/1b3bc8fd-97bd-4383-9ce4-8cfe7a6c1e62.webp?1783913881",
+    "crop": "https://cards.scryfall.io/crop/front/1/b/1b3bc8fd-97bd-4383-9ce4-8cfe7a6c1e62.webp?1783913881",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/b/1b3bc8fd-97bd-4383-9ce4-8cfe7a6c1e62.jpg?1783913881"
+  },
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Merfolk Wizard",
+  "oracle_text": "Islandwalk (This creature can't be blocked as long as defending player controls an Island.)\nMerfolk spells and Wizard spells you cast cost {1} less to cast.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Landwalk",
+    "Islandwalk"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set": "lcc",
+  "set_name": "The Lost Caverns of Ixalan Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1b3bc8fd-97bd-4383-9ce4-8cfe7a6c1e62/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0d6202c7-b19c-429a-85c4-332024381dd7&unique=prints",
+  "collector_number": "173",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "Made from trout scales and crawfish whiskers, merrows' shimmering banners flash in the water like lightning.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ernanda Souza",
+  "artist_ids": [
+    "e87a8b19-f97f-4df0-9dda-1310ab0257bb"
+  ],
+  "illustration_id": "6f843aae-44ec-4a65-b610-e8bd68746cbb",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 3096,
+  "penny_rank": 4661,
+  "prices": {
+    "usd": "0.64",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.40",
+    "eur_foil": null,
+    "tix": "0.31"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=640469&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DStonybrook%2BBanneret",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DStonybrook%2BBanneret",
+    "edhrec": "https://edhrec.com/route/?cc=Stonybrook+Banneret"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F526227%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743525&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/118746?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
