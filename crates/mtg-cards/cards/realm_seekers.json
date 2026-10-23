@@ -1,0 +1,31 @@
+{
+  "oracle_id": "ccb66cdc-909a-42c1-a10f-3886e9ed1936",
+  "name": "Realm Seekers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Realm Seekers",
+      "oracle_fingerprint": "c2e621516984311e85c95ac8a535466e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": { "counter": "+1/+1", "count": { "Count": [{ "In": "Hand" }] } }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G}" }, { "RemoveCounters": { "counter": "+1/+1" } }],
+            "effects": [
+              { "Search": { "filter": [{ "Type": "Land" }], "reveal": true, "as": "land" } },
+              { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

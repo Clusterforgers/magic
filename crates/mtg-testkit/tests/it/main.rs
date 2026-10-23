@@ -186,6 +186,8 @@ mod manual_actions;
 mod manual_cards;
 mod manual_fuzz;
 mod manual_triggers;
+mod mayhem;
+mod mayhem_fuzz;
 mod mill_effects;
 mod miracle;
 mod miracle_fuzz;

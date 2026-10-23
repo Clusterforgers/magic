@@ -206,6 +206,7 @@ mod may;
 mod modes;
 mod monarch;
 mod named_tokens;
+mod number_of;
 mod pay;
 mod payments;
 mod prevention;
@@ -503,7 +504,9 @@ mod cards_and_life {
     }
 
     #[rstest]
-    #[case::equal_to("Draw cards equal to the number of creatures you control.")]
+    #[case::equal_to_an_unread_count(
+        "Draw cards equal to the number of cards in target opponent's hand."
+    )]
     #[case::unless("Target player draws a card unless they discard a card.")]
     #[case::if_you_do("Draw a card. If you do, gain 1 life.")]
     #[case::if_first("If you control a creature, draw a card.")]
@@ -578,8 +581,8 @@ mod damage {
     #[case::two_targets("~ deals 2 damage to target creature and 1 damage to target player.")]
     #[case::for_each("~ deals 1 damage to any target for each creature you control.")]
     #[case::equal_to("~ deals damage equal to its power to target creature.")]
-    #[case::equal_to_the_number(
-        "~ deals damage to any target equal to the number of lands you control."
+    #[case::equal_to_a_count_held_by_a_player(
+        "~ deals damage to any target equal to the number of cards in their hand."
     )]
     #[case::each_of_up_to("~ deals 2 damage to each of up to two target creatures.")]
     #[case::if_clause(

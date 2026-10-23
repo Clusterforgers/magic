@@ -1,10 +1,12 @@
 Abbot of Keral Keep
 Aberrant
+Abomination, World Ravager
 Abundant Growth
 Abzan Advantage
 Abzan Battle Priest
 Abzan Falconer
 Abzan Skycaptain
+Academy Elite
 Accomplished Automaton
 Adaptive Snapjaw
 Adorned Pouncer
@@ -62,6 +64,7 @@ Banshee of the Dread Choir
 Barbed Batterfist
 Bard's Bow
 Basilica Screecher
+Basilisk Gate
 Basking Rootwalla
 Baton of Courage
 Battering Krasis
@@ -82,6 +85,7 @@ Blasphemous Act
 Blastoderm
 Blaze
 Blight Mamba
+Blight Pile
 Blightwidow
 Bloodbraid Elf
 Bloodghast
@@ -92,6 +96,7 @@ Boiling Earth
 Bola Slinger
 Bone Shredder
 Bonecaller Cleric
+Bonehoard
 Bonesplitter
 Book of Mazarbul
 Boon Reflection
@@ -120,6 +125,7 @@ Caprichrome
 Capsize
 Caravan Escort
 Carnage Tyrant
+Carrion Grub
 Cascade Bluffs
 Cascading Cataracts
 Cast Out
@@ -136,6 +142,7 @@ Changeling Outcast
 Chartooth Cougar
 Chemister's Insight
 Chittering Harvester
+Chittering Witch
 Chomping Kavu
 Chromanticore
 Chromatic Lantern
@@ -152,6 +159,7 @@ Coastal Discovery
 Cold-Eyed Selkie
 Collective Unconscious
 Command Tower
+Commence the Endgame
 Conclave Tribunal
 Consider
 Consign // Oblivion
@@ -183,6 +191,7 @@ Curse of Vitality
 Curse of the Forsaken
 Curse of the Nightly Hunt
 Custodi Lich
+Custodi Soulbinders
 Cut // Ribbons
 Cut of the Profits
 Cyclonic Rift
@@ -190,6 +199,7 @@ Cytoshape
 Dalek Squadron
 Darkblast
 Darksteel Juggernaut
+Darksteel Splicer
 Dauthi Horror
 Dauthi Marauder
 Dawn's Reflection
@@ -248,6 +258,7 @@ Echo Inspector
 Echo Mage
 Echoes of the Kin Tree
 Electric Revelation
+Electro's Bolt
 Elegant Edgecrafters
 Elven Ambush
 Elvish Aberration
@@ -336,6 +347,7 @@ Glorious Anthem
 Glowstone Recluse
 Gluttonous Cyclops
 Gluttonous Slime
+Gluttonous Troll
 Gnarled Professor
 Gnarlwood Dryad
 Goblin Chieftain
@@ -348,9 +360,11 @@ Goldwarden's Helm
 Goliath Truck
 Gorger Wurm
 Grapeshot
+Graveblade Marauder
 Graven Cairns
 Graveshifter
 Greater Mossdog
+Green Goblin, Back for More
 Grenzo's Cutthroat
 Grim Flayer
 Grim Haruspex
@@ -363,14 +377,17 @@ Guiding Voice
 Gurmag Angler
 Hada Spy Patrol
 Hall of Triumph
+Hallowed Spiritkeeper
 Hammer Dropper
 Hangar Scrounger
+Hangarback Walker
 Harrow
 Haughty Djinn
 Headless Skaab
 Hearthhull, the Worldseed
 Heliod, God of the Sun
 Heliod, Sun-Crowned
+Hellkite Igniter
 Hengegate Pathway // Mistgate Pathway
 Herald of Anguish
 Herald of the Dreadhorde
@@ -395,7 +412,10 @@ Illustrious Wanderglyph
 Imperial Hellkite
 Impostor of the Sixth Pride
 Impulsive Pilferer
+Inferno Project
 Inkwell Leviathan
+Inspired Sphinx
+Intelligence Bobblehead
 Intrepid Rabbit
 Invading Manticore
 Invisible Stalker
@@ -406,6 +426,7 @@ Jacked Rabbit
 Jadelight Ranger
 Jagged Barrens
 Jaspera Sentinel
+Jazal Goldmane
 Join the Maestros
 Jolting Merfolk
 Jungle Lion
@@ -499,6 +520,7 @@ Mulldrifter
 Murderous Cut
 Muscle Sliver
 Mutavault
+Mycoloth
 Myr Retriever
 Myriad Landscape
 Mystic Gate
@@ -517,6 +539,7 @@ Nirkana Revenant
 Norn's Annex
 Notion Rain
 Nyxborn Behemoth
+Oath of Jace
 Obscuring Haze
 Okiba Reckoner Raid // Nezumi Road Captain
 Ominous Harvest
@@ -525,6 +548,7 @@ Opt
 Orchard Strider
 Organic Extinction
 Origin of the Hulk
+Orochi Hatchery
 Otherworldly Gaze
 Overgrown Arch
 Overgrowth
@@ -573,12 +597,14 @@ Quest for the Goblin Lord
 Questing Beast
 Radical Idea
 Raffine's Informant
+Raging Goblinoids
 Rakdos Headliner
 Rally the Ranks
 Ramos, Dragon Engine
 Rampant Growth
 Rancor
 Ravenous Leucrocota
+Realm Seekers
 Reassembling Skeleton
 Reckless Impulse
 Reconstructed Thopter
@@ -616,6 +642,7 @@ Rust-Shield Rampager
 Rustrazor Butcher
 Ruthless Radrat
 Sacred Cat
+Sadistic Slash
 Safehold Elite
 Sage of the Beyond
 Sagu Mauler
@@ -655,6 +682,7 @@ Siege Wurm
 Sigiled Paladin
 Sigiled Sentinel
 Silhana Ledgewalker
+Silverwing Squadron
 Sinister Sabotage
 Sinister Starfish
 Sinuous Vermin
@@ -693,6 +721,7 @@ Space Marine Devastator
 Spectral Rider
 Sphere of Safety
 Sphinx of Jwar Isle
+Spider-Islanders
 Spire Golem
 Spire Winder
 Spring // Mind
@@ -713,6 +742,7 @@ Storm Fleet Swashbuckler
 Stormchaser's Talent
 Strangleroot Geist
 Stratus Dancer
+Strength Bobblehead
 Strionic Resonator
 Stroke of Genius
 Student of Warfare
@@ -730,8 +760,10 @@ Sunhome Stalwart
 Sunken Ruins
 Suntouched Myr
 Supreme Verdict
+Surgehacker Mech
 Susurian Dirgecraft
 Swarm Intelligence
+Swarm, Being of Bees
 Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
@@ -758,6 +790,7 @@ The Birth of Meletis
 The Modern Age // Vector Glider
 The Seriema
 The Spear of Bashenga
+The Squadron Sinister
 The Thing, Ben Grimm
 Thelonite Hermit
 Thieving Magpie
@@ -783,6 +816,7 @@ Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Tithe Drinker
 Tithebearer Giant
+Towering Titan
 Trash for Treasure
 Traumatic Visions
 Treasure Cruise
@@ -841,6 +875,7 @@ Weirding Wood
 Whir of Invention
 Whisperer of the Wilds
 White Auracite
+Wickersmith's Tools
 Wild Growth
 Wild Wasteland
 Wilderness Elemental

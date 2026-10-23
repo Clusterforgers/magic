@@ -1,0 +1,22 @@
+{
+  "id": "57c0258f-f464-4f52-b234-ba44a76d932a",
+  "oracle_id": "83c69c05-173d-4c1b-9541-1dde474fef5f",
+  "name": "Bonehoard",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nec",
+  "collector_number": "147",
+  "rarity": "rare",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "mana_cost": "{4}",
+  "cmc": 4.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Living weapon (When this Equipment enters, create a 0/0 black Phyrexian Germ creature token, then attach this to it.)\nEquipped creature gets +X/+X, where X is the number of creature cards in all graveyards.\nEquip {2}",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip",
+    "Living weapon"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "8a89d8ca-d084-415a-9247-90902f8bb541",
+  "oracle_id": "10c8cf3b-2530-49e7-b38e-95cdaae8a6e7",
+  "name": "Swarm, Being of Bees",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "799",
+  "rarity": "common",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Insect Villain",
+  "oracle_text": "Flash\nFlying\nMayhem {B} (You may cast this card from your graveyard for {B} if you discarded it this turn. Timing rules still apply.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Mayhem",
+    "Flash"
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "c89cd328-b4cc-4760-8b6c-59e82eed8dac",
+  "name": "Wickersmith's Tools",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wickersmith's Tools",
+      "oracle_fingerprint": "8bfdb8808102537b80d80589a2f84db1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "CountersPut": { "what": [{ "Type": "Creature" }], "counter": "-1/-1" } }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Scarecrow",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Scarecrow"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": { "Counters": { "on": "This", "counter": "charge" } },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
