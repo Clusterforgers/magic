@@ -1,0 +1,37 @@
+{
+  "oracle_id": "6b3cc59a-7ea5-4eb5-9bf9-5a9c07f80e2b",
+  "name": "Mutavault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mutavault",
+      "oracle_fingerprint": "323afd4ee120789f538fe14683dcdb73",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 2 } },
+                    { "AddType": "Creature" },
+                    "AddAllCreatureTypes"
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

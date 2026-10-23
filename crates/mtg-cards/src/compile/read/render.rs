@@ -5,6 +5,7 @@
 
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
 use super::attackers;
+use super::becomes;
 use super::cast;
 use super::conditional;
 use super::copies;
@@ -14,6 +15,7 @@ use super::counters;
 use super::create;
 use super::draws;
 use super::effects::{BACK, RETURNED, returns_itself};
+use super::group_pump;
 use super::lands;
 use super::library;
 use super::modal::{BULLET, DASH};
@@ -166,6 +168,10 @@ pub fn variants(ability: &Ability) -> Vec<String> {
         texts.extend(pronouns);
     }
     let more = draws::wordings(ability, &texts);
+    texts.extend(more);
+    let more = becomes::wordings(ability, &texts);
+    texts.extend(more);
+    let more = group_pump::wordings(ability, &texts);
     texts.extend(more);
     texts.extend(where_x::wordings(ability));
     texts
@@ -1545,6 +1551,9 @@ impl Writer<'_> {
 
     /// "target creature gets +2/+2 and gains flying until end of turn".
     fn pump(&mut self, affected: &Ref, mods: &[Modification]) -> Option<String> {
+        if let Some(sentence) = becomes::text(affected, mods) {
+            return Some(sentence);
+        }
         let (subject, plural) = match affected {
             Ref::This => ("~".to_owned(), false),
             Ref::Triggering => ("it".to_owned(), false),

@@ -156,6 +156,7 @@ mod mana_fuzz;
 mod mana_limits;
 mod mana_payment;
 mod mana_takes;
+mod manlands;
 mod manual_actions;
 mod manual_cards;
 mod manual_fuzz;

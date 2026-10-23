@@ -1,0 +1,41 @@
+{
+  "oracle_id": "876ac6f6-74de-4666-84c6-83d81f054723",
+  "name": "Celestial Colonnade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Celestial Colonnade",
+      "oracle_fingerprint": "0a92f4862f040c664f9903cb5f9d934e",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["White", "Blue"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{W}{U}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "SetColors": ["White", "Blue"] },
+                    { "SetCreatureTypes": ["Elemental"] },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Flying" },
+                    { "AddKeyword": "Vigilance" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
