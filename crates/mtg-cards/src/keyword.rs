@@ -266,6 +266,25 @@ pub enum Keyword {
     Demonstrate,
     /// Hideaway N (CR 702.75): when the permanent enters, its controller looks at the top N cards of their library, exiles one face down and puts the rest on the bottom in a random order.
     Hideaway(u32),
+    /// Gift (CR 702.174): as an additional cost the caster may promise an opponent a gift; the chosen opponent gets it as the spell resolves or when the permanent enters, before other effects.
+    Gift(GiftKind),
+}
+
+/// What a promised gift is (CR 702.174).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum GiftKind {
+    /// The opponent draws a card.
+    Card,
+    /// The opponent creates a Treasure token.
+    Treasure,
+    /// The opponent creates a Food token.
+    Food,
+    /// The opponent creates a tapped 1/1 blue Fish creature token.
+    TappedFish,
+    /// The opponent creates an 8/8 blue Octopus creature token.
+    Octopus,
+    /// The opponent takes an extra turn after this one.
+    ExtraTurn,
 }
 
 impl Keyword {
@@ -384,6 +403,7 @@ impl Keyword {
         "Offspring",
         "Demonstrate",
         "Hideaway",
+        "Gift",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -513,6 +533,7 @@ impl Keyword {
             Keyword::Offspring(_) => "Offspring",
             Keyword::Demonstrate => "Demonstrate",
             Keyword::Hideaway(_) => "Hideaway",
+            Keyword::Gift(_) => "Gift",
             Keyword::Dash(_) => "Dash",
             Keyword::Blitz(_) => "Blitz",
             Keyword::Prowl(_) => "Prowl",
@@ -528,9 +549,12 @@ impl Keyword {
             .any(|name| name.eq_ignore_ascii_case(printed))
     }
 
-    /// Whether the keyword gives the caster an optional additional cost that `Condition::AdditionalCostPaid` reads: casualty and offspring.
+    /// Whether the keyword gives the caster an optional additional cost that `Condition::AdditionalCostPaid` reads: casualty, offspring and gift.
     pub const fn has_additional_cost(&self) -> bool {
-        matches!(self, Keyword::Casualty(_) | Keyword::Offspring(_))
+        matches!(
+            self,
+            Keyword::Casualty(_) | Keyword::Offspring(_) | Keyword::Gift(_)
+        )
     }
 
     /// Whether paying the cost of this keyword counts as a kick (`Amount::Kicks`): kicker, multikicker and squad.
@@ -677,6 +701,7 @@ mod tests {
             Keyword::Offspring(Cost::default()),
             Keyword::Demonstrate,
             Keyword::Hideaway(4),
+            Keyword::Gift(GiftKind::Card),
         ]
     }
 

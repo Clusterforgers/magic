@@ -55,6 +55,7 @@ mod flash;
 mod flashback;
 mod flying;
 pub(crate) mod foretell;
+pub(crate) mod gift;
 mod fuse;
 mod haste;
 mod hexproof;
@@ -233,6 +234,8 @@ pub enum OptionalKind {
     Entwine,
     /// "As an additional cost to cast this spell, you may ...": read as `Condition::AdditionalCostPaid`.
     Additional,
+    /// Gift: the caster promises an opponent a gift, read as `Condition::AdditionalCostPaid` and `Ref::Promised`; the cost is offered once for each opponent.
+    Gift,
 }
 
 /// A cost a keyword lets the caster pay in addition: kicker, multikicker, buyback and entwine.
@@ -473,6 +476,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Casualty(_) => &casualty::Casualty,
         Keyword::Demonstrate => &demonstrate::Demonstrate,
         Keyword::Hideaway(_) => &hideaway::Hideaway,
+        Keyword::Gift(_) => &gift::Gift,
         Keyword::Offspring(_) => &offspring::Offspring,
         Keyword::Ravenous => &ravenous::Ravenous,
         Keyword::Fabricate(_) => &fabricate::Fabricate,
@@ -676,6 +680,7 @@ mod tests {
     use crate::zones::Zone;
     use mtg_cards::CardDefinition;
     use mtg_cards::cost::Cost;
+    use mtg_cards::keyword::GiftKind;
     use mtg_cards::refs::Selector;
     use mtg_cards::validate::used_primitives;
     use mtg_core::card::CardType;
@@ -811,6 +816,7 @@ mod tests {
             Keyword::Offspring(cost()),
             Keyword::Demonstrate,
             Keyword::Hideaway(4),
+            Keyword::Gift(GiftKind::Card),
         ]
     }
 
@@ -908,6 +914,7 @@ mod tests {
         "Keyword.Offspring",
         "Keyword.Demonstrate",
         "Keyword.Hideaway",
+        "Keyword.Gift",
         "Keyword.LevelUp",
         "Keyword.Outlast",
         "Keyword.Saddle",
@@ -1072,6 +1079,7 @@ mod tests {
     #[case::casualty(Keyword::Casualty(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::demonstrate(Keyword::Demonstrate, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::hideaway(Keyword::Hideaway(4), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::gift(Keyword::Gift(GiftKind::Card), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::offspring(Keyword::Offspring(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::myriad(Keyword::Myriad, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::squad(Keyword::Squad(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
@@ -1084,7 +1092,7 @@ mod tests {
     }
 
     #[test]
-    fn only_six_keywords_and_squad_add_a_cost_and_only_multikicker_and_squad_repeat() {
+    fn only_seven_keywords_and_squad_add_a_cost_and_only_multikicker_and_squad_repeat() {
         let given: Vec<(&str, bool, OptionalKind)> = every_keyword()
             .iter()
             .filter_map(|keyword| {
@@ -1102,6 +1110,7 @@ mod tests {
                 ("Squad", true, OptionalKind::Kicker),
                 ("Casualty", false, OptionalKind::Additional),
                 ("Offspring", false, OptionalKind::Additional),
+                ("Gift a card", false, OptionalKind::Gift),
             ]
         );
     }

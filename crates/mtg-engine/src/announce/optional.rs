@@ -14,13 +14,13 @@ use mtg_cards::cost::Cost;
 use mtg_cards::value::CastWay;
 use mtg_core::mana::ManaCost;
 
-use super::{Ctx, Next, What, Work, total};
+use super::{Ctx, Next, What, Work, targets, total};
 use crate::ability_reader;
 use crate::choose::{
-    Choices, CostsOptions, NumberOptions, OptionalCost, every_mode_is_legal, modal_of,
+    Choices, CostsOptions, NumberOptions, OptionalCost, every_mode_is_legal, modal_of, options_for,
 };
 use crate::decision::DecisionKind;
-use crate::keywords::{self, OptionalKind};
+use crate::keywords::{self, OptionalKind, gift};
 use crate::object::{GameObject, ObjectRef};
 use crate::parts::Part;
 use crate::price::Price;
@@ -112,6 +112,13 @@ fn read_cost(printed: Printed) -> Optional {
         kind,
         offerable: false,
     };
+    // A promise costs nothing and is always offered; who gets the gift is chosen with it (`offered_once`).
+    if kind == OptionalKind::Gift {
+        return Optional {
+            offerable: true,
+            ..none(name.to_owned())
+        };
+    }
     let Ok(price) = Price::announced(&cost) else {
         return none(name.to_owned());
     };
@@ -158,8 +165,16 @@ pub(crate) fn payments(card: &CardDefinition, paid: &[usize], kind: OptionalKind
         return 0;
     }
     let kinds: Vec<OptionalKind> = printed(card).map(|cost| cost.kind).collect();
+    // A number from `gift::SEAT_BASE` up is a gift promised to a seat.
+    let kind_of = |index: usize| {
+        if index >= gift::SEAT_BASE {
+            Some(OptionalKind::Gift)
+        } else {
+            kinds.get(index).copied()
+        }
+    };
     paid.iter()
-        .filter(|index| kinds.get(**index) == Some(&kind))
+        .filter(|index| kind_of(**index) == Some(kind))
         .count()
 }
 
@@ -259,21 +274,71 @@ pub(super) fn add(ctx: &Ctx<'_>, choices: &Choices, mana: Option<ManaCost>) -> O
 
 /// The costs that may be paid once and that the player can pay for with the rest of the total cost, by index.
 fn offered_once(ctx: &Ctx<'_>, choices: &Choices) -> Vec<OptionalCost> {
-    ctx.needs
-        .optional
+    let mut offered = Vec::new();
+    for (index, cost) in ctx.needs.optional.iter().enumerate() {
+        if !cost.offerable || cost.repeatable {
+            continue;
+        }
+        if cost.kind == OptionalKind::Gift {
+            offered.extend(gifts(ctx, choices, cost));
+        } else if (cost.kind != OptionalKind::Entwine || every_mode_legal(ctx))
+            && affordable(ctx, choices, &[index])
+        {
+            offered.push(OptionalCost {
+                index,
+                label: cost.label.clone(),
+            });
+        }
+    }
+    offered
+}
+
+/// The promise of a gift to each opponent still in the game, as the spell could still be cast with it: the targets the
+/// spell needs with the gift promised must exist. It is offered as `gift::promise(opponent)`; one promise at most is
+/// chosen (`choose::costs`).
+fn gifts(ctx: &Ctx<'_>, choices: &Choices, cost: &Optional) -> Vec<OptionalCost> {
+    if choices
+        .optional_costs
         .iter()
-        .enumerate()
-        .filter(|(index, cost)| {
-            cost.offerable
-                && !cost.repeatable
-                && (cost.kind != OptionalKind::Entwine || every_mode_legal(ctx))
-                && affordable(ctx, choices, &[*index])
+        .any(|paid| *paid >= gift::SEAT_BASE)
+    {
+        return Vec::new();
+    }
+    ctx.state
+        .turn_order_from(ctx.player)
+        .into_iter()
+        .filter(|opponent| *opponent != ctx.player)
+        .filter(|opponent| {
+            let mut trial = choices.clone();
+            trial.optional_costs.push(gift::promise(*opponent));
+            targets_remain(ctx, &trial)
         })
-        .map(|(index, cost)| OptionalCost {
-            index,
-            label: cost.label.clone(),
+        .map(|opponent| OptionalCost {
+            index: gift::promise(opponent),
+            label: format!("{} to player {}", cost.label, opponent.index() + 1),
         })
         .collect()
+}
+
+/// Whether every target specification of the spell can still be met with the costs `choices` pays.
+fn targets_remain(ctx: &Ctx<'_>, choices: &Choices) -> bool {
+    targets::specs(ctx, choices)
+        .iter()
+        .enumerate()
+        .all(|(index, spec)| {
+            options_for(
+                ctx.state,
+                ctx.source,
+                ctx.player,
+                index,
+                spec,
+                false,
+                ctx.cause(),
+                choices.x,
+                &choices.optional_costs,
+            )
+            .is_some()
+        })
 }
 
 /// Whether the spell is modal and every one of its modes has the targets it needs, which entwine asks for.

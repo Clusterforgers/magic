@@ -294,6 +294,7 @@ impl<'a> Walker<'a> {
             | Ref::EachPlayer
             | Ref::AttachedPlayer
             | Ref::Monarch
+            | Ref::Promised
             | Ref::Attacked
             | Ref::MostLife
             | Ref::Defending => {
@@ -488,6 +489,12 @@ impl<'a> Walker<'a> {
                 self.uses("Amount", "Kicks");
                 if !self.has_kicker {
                     self.problem("`Kicks` needs a Kicker or Multikicker keyword on the card");
+                }
+            }
+            Amount::Promised => {
+                self.uses("Amount", "Promised");
+                if !self.has_additional_cost {
+                    self.problem("`Promised` needs a Gift keyword on the card");
                 }
             }
             Amount::Triggering => {

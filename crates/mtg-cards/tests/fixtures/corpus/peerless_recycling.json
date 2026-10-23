@@ -1,0 +1,25 @@
+{
+  "id": "5f72466c-505b-4371-9366-0fde525a37e6",
+  "oracle_id": "938c03fc-8adf-4c7a-8ae1-eca8401f7a83",
+  "name": "Peerless Recycling",
+  "lang": "en",
+  "layout": "normal",
+  "set": "blb",
+  "collector_number": "188",
+  "rarity": "uncommon",
+  "released_at": "2024-08-02",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Gift a card (You may promise an opponent a gift as you cast this spell. If you do, they draw a card before its other effects.)\nReturn target permanent card from your graveyard to your hand. If the gift was promised, instead return two target permanent cards from your graveyard to your hand.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Gift"
+  ]
+}

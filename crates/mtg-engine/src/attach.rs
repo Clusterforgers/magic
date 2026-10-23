@@ -217,7 +217,7 @@ pub(crate) fn bestow_target() -> TargetSpec {
 
 /// Whether `player` can announce a creature for the card `id` cast for its bestow cost (CR 601.2c).
 pub(crate) fn bestow_announceable(state: &GameState, player: PlayerId, id: ObjectId) -> bool {
-    options_for(state, id, player, 0, &bestow_target(), true, None, None).is_some()
+    options_for(state, id, player, 0, &bestow_target(), true, None, None, &[]).is_some()
 }
 
 /// What an Aura is attached to: a permanent or a player.
@@ -243,7 +243,7 @@ impl Host {
 /// may target (CR 601.2c); any other spell asks nothing here.
 pub(crate) fn announceable(state: &GameState, player: PlayerId, id: ObjectId) -> bool {
     spell_target(state, id)
-        .is_none_or(|spec| options_for(state, id, player, 0, &spec, true, None, None).is_some())
+        .is_none_or(|spec| options_for(state, id, player, 0, &spec, true, None, None, &[]).is_some())
 }
 
 /// Whether `id` is an Aura spell on the stack.

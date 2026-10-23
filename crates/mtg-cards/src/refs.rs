@@ -66,6 +66,8 @@ pub enum Ref {
     AttachedPlayer,
     /// The monarch ("the monarch"); nobody while no player is the monarch.
     Monarch,
+    /// The opponent the gift was promised to as the spell the ability reads was cast (CR 702.174); nobody when none was promised or they have left the game.
+    Promised,
     /// The defending player of the attacking creature that triggered the ability, else of the source: whoever it
     /// attacks, or controls the planeswalker it attacks (CR 506.3); still named once the creature has left combat.
     Defending,

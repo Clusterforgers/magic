@@ -1,0 +1,25 @@
+{
+  "id": "fded2b83-3b7d-4c8c-83c4-0624a1069628",
+  "oracle_id": "27905301-333e-4cdd-90cf-188159fcf8e9",
+  "name": "Wear Down",
+  "lang": "en",
+  "layout": "normal",
+  "set": "blb",
+  "collector_number": "203",
+  "rarity": "uncommon",
+  "released_at": "2024-08-02",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Gift a card (You may promise an opponent a gift as you cast this spell. If you do, they draw a card before its other effects.)\nDestroy target artifact or enchantment. If the gift was promised, instead destroy two target artifacts and/or enchantments.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Gift"
+  ]
+}

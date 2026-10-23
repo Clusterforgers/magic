@@ -271,6 +271,7 @@ const RUNS: &[&str] = &[
     "Condition.Kicked",
     "Condition.Performed",
     "Amount.Kicks",
+    "Amount.Promised",
     "Ability.Replacement",
     "Ability.CostModifier",
     "ReplaceWhen.TokenCreation",
@@ -325,6 +326,7 @@ const RUNS: &[&str] = &[
     "Keyword.Offspring",
     "Keyword.Demonstrate",
     "Keyword.Hideaway",
+    "Keyword.Gift",
     "ReplaceBy.Devour",
     "Keyword.LevelUp",
     "Keyword.Outlast",
@@ -694,6 +696,7 @@ mod tests {
     #[case::casualty("Keyword.Casualty", true)]
     #[case::demonstrate("Keyword.Demonstrate", true)]
     #[case::hideaway("Keyword.Hideaway", true)]
+    #[case::gift("Keyword.Gift", true)]
     #[case::offspring("Keyword.Offspring", true)]
     #[case::sacrificing_as_it_enters("ReplaceBy.Devour", true)]
     #[case::level_up("Keyword.LevelUp", true)]

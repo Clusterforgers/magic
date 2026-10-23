@@ -1,0 +1,32 @@
+{
+  "oracle_id": "235e3231-c5e5-4696-a867-705b2c4158fe",
+  "name": "Scrapshooter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scrapshooter",
+      "oracle_fingerprint": "5065252efd033c6d558edbb2d3cc1e50",
+      "abilities": [
+        { "Keyword": { "Gift": "Card" } },
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": "AdditionalCostPaid",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

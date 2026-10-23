@@ -34,7 +34,7 @@ pub(crate) fn options_before_x(
         ..spec.clone()
     };
     options_for(
-        state, source, controller, index, &relaxed, true, cause, None,
+        state, source, controller, index, &relaxed, true, cause, None, &[],
     )
 }
 
@@ -53,7 +53,7 @@ pub(crate) fn targets_met(
     x: Option<u32>,
 ) -> bool {
     specs.iter().enumerate().all(|(index, spec)| {
-        options_for(state, source, controller, index, spec, false, cause, x).is_some()
+        options_for(state, source, controller, index, spec, false, cause, x, &[]).is_some()
     })
 }
 
@@ -246,14 +246,12 @@ pub(crate) fn options_for(
     can_cancel: bool,
     cause: Option<&Cause>,
     x: Option<u32>,
+    paid: &[usize],
 ) -> Option<TargetOptions> {
     let legal = legal_for(state, spec, source, controller, cause, x);
     let available = u32::try_from(legal.len()).unwrap_or(u32::MAX);
-    if available < spec.bounds.min {
-        return None;
-    }
     let max = match &spec.bounds.max {
-        None => available,
+        None => u32::MAX,
         Some(Amount::Fixed(n)) => u32::try_from(*n).unwrap_or(0),
         Some(other) => {
             let origin = state.object(source).map_or(
@@ -265,6 +263,7 @@ pub(crate) fn options_for(
             );
             let announced = Choices {
                 x,
+                optional_costs: paid.to_vec(),
                 ..Choices::default()
             };
             let mut scope = Scope::announcing(state, controller, origin);
@@ -278,11 +277,16 @@ pub(crate) fn options_for(
         Some(Amount::Fixed(n)) => max.min(u32::try_from(*n).unwrap_or(0)),
         _ => max,
     };
+    // A specification whose most is zero asks for nothing, whatever its least is (a target only a promised gift adds).
+    let min = spec.bounds.min.min(max);
+    if available < min {
+        return None;
+    }
     Some(TargetOptions {
         source,
         spec: index,
         legal,
-        min: spec.bounds.min,
+        min,
         max: max.min(available),
         can_cancel,
         wording: wording::spec(spec),
@@ -507,7 +511,7 @@ mod tests {
     ) {
         let game = game();
         let spell = game.zone(Zone::Hand(PlayerId(0)))[0];
-        let options = options_for(&game, spell, PlayerId(0), 0, &spec(json), true, None, None);
+        let options = options_for(&game, spell, PlayerId(0), 0, &spec(json), true, None, None, &[]);
         assert_eq!(options.map(|o| (o.min, o.max)), expected);
     }
 

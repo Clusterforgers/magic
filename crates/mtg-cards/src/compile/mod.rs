@@ -649,7 +649,7 @@ mod tests {
     #[rstest]
     #[case::mayhem("Mayhem {1}{B}")]
     #[case::with_a_number("Squad 2")]
-    #[case::with_a_word("Gift a card")]
+    #[case::with_a_word("Epic")]
     #[case::with_a_dash("Impending 4\u{2014}{2}{U}")]
     #[case::alone("Surge")]
     fn an_unknown_keyword_line_does_not_block_the_effect_lines_of_its_spell(#[case] line: &str) {

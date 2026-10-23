@@ -28,6 +28,7 @@ use crate::ability_reader::abilities_of;
 use crate::announce::Pending;
 use crate::choose::{Choice, Target, announced_specs, targets_before};
 use crate::decision::Decision;
+use crate::keywords::gift;
 use crate::error::EngineError;
 use crate::events::{Event, ResolutionOutcome};
 use crate::flow;
@@ -204,7 +205,7 @@ pub(crate) fn spell_ability(state: &GameState, id: ObjectId) -> Option<(AbilityR
 fn rules_of(state: &GameState, object: &GameObject) -> Option<Arc<Ability>> {
     match object.ability() {
         Some(ability) => Some(ability.shared_rules()),
-        None => spell_ability(state, object.id()).map(|(_, rules)| rules),
+        None => spell_ability(state, object.id()).map(|(_, rules)| gift::before(object, rules)),
     }
 }
 
