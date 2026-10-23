@@ -27,6 +27,7 @@ mod batches;
 mod becomes;
 mod cast;
 mod chapters;
+mod choices;
 mod class;
 mod conditional;
 mod copies;

@@ -894,7 +894,7 @@ fn is_permanent(types: &[CardType]) -> bool {
 }
 
 /// The subtypes of a phrase: one name, or a list joined by "or".
-fn subtype_words(subtypes: &[&str], plural: bool) -> String {
+fn subtype_words(subtypes: &[&str], plural: bool, joiner: &str) -> String {
     let words: Vec<String> = subtypes
         .iter()
         .map(|name| {
@@ -905,7 +905,7 @@ fn subtype_words(subtypes: &[&str], plural: bool) -> String {
             }
         })
         .collect();
-    list_text(&words, "or")
+    list_text(&words, joiner)
 }
 
 /// Whether the predicates name the commander its owner designated: "your commander".
@@ -980,7 +980,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     let qualified = (plural || spell) && !card && (spell || !types.is_empty() || token);
     // Several subtypes are only for a spell ("Faerie or Wizard permanent spell").
     if (!subtypes.is_empty() && (card || (!types.is_empty() && !qualified)))
-        || (subtypes.len() > 1 && !spell)
+        || (subtypes.len() > 1 && !spell && !(plural && !qualified))
         || (spell && card)
         || (token && (spell || card))
         || (commander && (spell || card || token || !subtypes.is_empty() || !types.is_empty()))
@@ -999,7 +999,9 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         words.insert(0, "your".to_owned());
     }
     if !subtypes.is_empty() {
-        words.push(subtype_words(&subtypes, plural && !qualified));
+        let nouns = plural && !qualified;
+        let joiner = if nouns { form.connector() } else { "or" };
+        words.push(subtype_words(&subtypes, nouns, joiner));
     }
     words.extend(
         kinds
