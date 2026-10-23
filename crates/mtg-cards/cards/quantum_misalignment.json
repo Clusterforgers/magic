@@ -1,0 +1,33 @@
+{
+  "oracle_id": "197582b9-4c86-41a3-ad0c-789a0db8e087",
+  "name": "Quantum Misalignment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quantum Misalignment",
+      "oracle_fingerprint": "68891166fb4567b5fbd29389bccab1d8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [{ "RemoveSupertype": "Legendary" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Rebound" }
+      ]
+    }
+  ]
+}

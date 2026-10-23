@@ -45,7 +45,7 @@ fn table(seats: usize, commanders: Vec<Arc<CardDefinition>>) -> Scenario {
         .hand_named(0, ["Jyoti, Moag Ancient"])
 }
 
-fn single() -> Vec<Arc<CardDefinition>> {
+pub(crate) fn single() -> Vec<Arc<CardDefinition>> {
     vec![legend("Cmd", 1, &[Color::Red], 2, 2)]
 }
 
@@ -57,7 +57,7 @@ fn pair() -> Vec<Arc<CardDefinition>> {
 }
 
 /// Lets everything on the stack resolve.
-fn resolve(driver: &mut Driver) -> Result<(), ScriptError> {
+pub(crate) fn resolve(driver: &mut Driver) -> Result<(), ScriptError> {
     for _ in 0..40 {
         if driver.state().stack().is_empty() {
             return Ok(());
@@ -95,7 +95,7 @@ fn cast_commander(
 }
 
 /// Casts `name` from the command zone `times` times, the last time leaving it on the battlefield.
-fn cast_times(driver: &mut Driver, name: &str, times: u32) -> Result<(), ScriptError> {
+pub(crate) fn cast_times(driver: &mut Driver, name: &str, times: u32) -> Result<(), ScriptError> {
     for earlier in 0..times {
         cast_commander(driver, name, earlier, earlier + 1 == times)?;
     }

@@ -16,6 +16,7 @@ use crate::effects::Modification;
 use crate::error::EngineError;
 use crate::events::Event;
 use crate::mana::ManaPool;
+use crate::object::GameObject;
 use crate::player::{LossReason, Player, PlayerStatus};
 use crate::priority::PriorityState;
 use crate::sight;
@@ -125,6 +126,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::SpellCopied(copy) => crate::copies::fold_spell(state, copy),
         Event::AbilityCopied(copy) => crate::copies::fold_ability(state, copy),
         Event::CopyEnded { object } => crate::copies::fold_ended(state, *object),
+        Event::Crewed { object, saddle, .. } => tally_crewed(state, *object, *saddle),
         // The change follows as events of its own; the action only restarts the round, so the other seats see it.
         Event::ManualAction { .. } => {
             reset_passes(state);
@@ -432,6 +434,24 @@ fn set_monstrous(state: &mut GameState, id: ObjectId) -> Result<(), EngineError>
         return Err(invalid(format!("{id:?} is already monstrous")));
     }
     perm.designations.monstrous = true;
+    Ok(())
+}
+
+/// A Vehicle becomes crewed or a Mount saddled: counted for the object, which is a permanent.
+fn tally_crewed(state: &mut GameState, id: ObjectId, saddle: bool) -> Result<(), EngineError> {
+    let object = state
+        .object(id)
+        .map(GameObject::reference)
+        .ok_or_else(|| invalid(format!("{id:?} is not an object")))?;
+    state.tally_object(
+        object,
+        None,
+        if saddle {
+            Tally::Saddled
+        } else {
+            Tally::Crewed
+        },
+    );
     Ok(())
 }
 

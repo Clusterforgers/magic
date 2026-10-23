@@ -278,6 +278,7 @@ Earthen Arms
 Easterling Vanguard
 Echo Inspector
 Echo Mage
+Echo Storm
 Echoes of the Kin Tree
 Eel Umbra
 Electric Revelation
@@ -287,6 +288,7 @@ Elven Ambush
 Elvish Aberration
 Elvish Rejuvenator
 Empyrial Plate
+Empyrial Storm
 Enraged Revolutionary
 Enthusiastic Study
 Epic Proportions
@@ -349,6 +351,7 @@ Four Knocks
 Fruit of Tizerus
 Fungal Reaches
 Furtive Homunculus
+Fury Storm
 Gadwick, the Wizened
 Gaea's Cradle
 Galadhrim Brigade
@@ -410,6 +413,7 @@ Hammer Dropper
 Hangar Scrounger
 Hangarback Walker
 Harrow
+Hatut Zeraze Strike Force
 Haughty Djinn
 Headless Skaab
 Hearthhull, the Worldseed
@@ -636,6 +640,7 @@ Psychic Impetus
 Psychosis Crawler
 Putrid Goblin
 Pygmy Kavu
+Quantum Misalignment
 Quest for the Goblin Lord
 Questing Beast
 Rabble Rousing

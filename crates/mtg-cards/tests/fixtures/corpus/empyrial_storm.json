@@ -1,0 +1,23 @@
+{
+  "cmc": 6.0,
+  "collector_number": "2",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "dbfb7f01-87bf-4eb6-8a8f-3401f37c3ebf",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{4}{W}{W}",
+  "name": "Empyrial Storm",
+  "oracle_id": "0af5f9f4-04d6-4701-be1f-65d4a0940737",
+  "oracle_text": "When you cast this spell, copy it for each time you've cast your commander from the command zone this game.\nCreate a 4/4 white Angel creature token with flying.",
+  "rarity": "rare",
+  "released_at": "2018-08-10",
+  "set": "c18",
+  "type_line": "Sorcery"
+}

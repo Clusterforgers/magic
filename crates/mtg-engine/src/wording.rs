@@ -462,6 +462,14 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             format!("{} becomes monstrous", subject(what)),
             what.0 == [Pred::This],
         ),
+        TriggerPattern::BecomesCrewed { what } => (
+            format!("{} becomes crewed", subject(what)),
+            what.0 == [Pred::This],
+        ),
+        TriggerPattern::BecomesSaddled { what } => (
+            format!("{} becomes saddled", subject(what)),
+            what.0 == [Pred::This],
+        ),
         TriggerPattern::BecomesLevel { what, level } => (
             format!("{} becomes level {level}", subject(what)),
             what.0 == [Pred::This],
@@ -1317,6 +1325,22 @@ mod tests {
     #[case::this_becomes_monstrous(
         r#"{"BecomesMonstrous":{"what":["This"]}}"#,
         "When it becomes monstrous"
+    )]
+    #[case::this_vehicle_becomes_crewed(
+        r#"{"BecomesCrewed":{"what":["This"]}}"#,
+        "When it becomes crewed"
+    )]
+    #[case::a_vehicle_you_control_becomes_crewed(
+        r#"{"BecomesCrewed":{"what":[{"ControlledBy":"You"}]}}"#,
+        "Whenever a permanent you control becomes crewed"
+    )]
+    #[case::this_mount_becomes_saddled(
+        r#"{"BecomesSaddled":{"what":["This"]}}"#,
+        "When it becomes saddled"
+    )]
+    #[case::the_first_crew_each_turn(
+        r#"{"Nth":{"event":{"BecomesCrewed":{"what":["This"]}},"nth":1}}"#,
+        "Whenever it becomes crewed (time 1 this turn)"
     )]
     #[case::this_class_becomes_level_two(
         r#"{"BecomesLevel":{"what":["This"],"level":2}}"#,

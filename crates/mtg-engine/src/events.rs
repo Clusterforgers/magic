@@ -598,6 +598,19 @@ pub enum Event {
         /// Its controller.
         player: PlayerId,
     },
+    /// A Vehicle became crewed or a Mount saddled (CR 702.122, 702.171): its crew or saddle ability resolved; the type
+    /// change is the effect before it.
+    Crewed {
+        /// The Vehicle or Mount.
+        object: ObjectId,
+        /// Its controller, who activated the ability.
+        player: PlayerId,
+        /// The creatures tapped to pay the cost, in the order they were picked.
+        creatures: Vec<ObjectId>,
+        /// The ability was saddle: the Mount became saddled.
+        #[serde(default, skip_serializing_if = "is_false")]
+        saddle: bool,
+    },
     /// A Class became a higher level (CR 716.2): the permanent keeps the level while it stays on the battlefield.
     ClassLevelGained {
         /// The Class that gained the level.
@@ -836,6 +849,7 @@ impl Event {
             | Event::Connived { object, .. }
             | Event::Amassed { object, .. }
             | Event::Monstrous { object, .. }
+            | Event::Crewed { object, .. }
             | Event::ClassLevelGained { object, .. }
             | Event::TurnedFaceUp { object, .. }
             | Event::Adapted { object, .. }
@@ -919,6 +933,27 @@ mod tests {
         let json = r#"{"DamageDealt":{"source":4,"target":{"Player":1},"amount":3}}"#;
         assert_eq!(serde_json::to_string(&plain).unwrap(), json);
         assert_eq!(serde_json::from_str::<Event>(json).unwrap(), plain);
+    }
+
+    #[rstest::rstest]
+    #[case::crewed(false, r#"{"Crewed":{"object":4,"player":1,"creatures":[7,8]}}"#)]
+    #[case::saddled(
+        true,
+        r#"{"Crewed":{"object":4,"player":1,"creatures":[7,8],"saddle":true}}"#
+    )]
+    fn a_crew_names_its_creatures_and_says_so_only_for_a_saddle(
+        #[case] saddle: bool,
+        #[case] json: &str,
+    ) {
+        let crewed = Event::Crewed {
+            object: ObjectId(4),
+            player: PlayerId(1),
+            creatures: vec![ObjectId(7), ObjectId(8)],
+            saddle,
+        };
+        assert_eq!(serde_json::to_string(&crewed).unwrap(), json);
+        assert_eq!(serde_json::from_str::<Event>(json).unwrap(), crewed);
+        assert_eq!(crewed.touched_objects(), vec![ObjectId(4)]);
     }
 
     #[test]

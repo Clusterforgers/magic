@@ -178,7 +178,6 @@ fn a_targeted_spell_is_copied_more_than_once_or_with_other_exceptions(
 #[case::a_color_among_kinds(
     "Whenever you cast a spell, copy it, except the copy is a black Zombie in addition to its other types."
 )]
-#[case::a_legend("Whenever you cast a spell, copy it, except the copy isn't legendary.")]
 #[case::a_name("Whenever you cast a spell, copy it, except the copy's name is Fork.")]
 #[case::without_a_comma("Whenever you cast a spell, copy it except the copy is red.")]
 #[case::after_new_targets(
@@ -243,9 +242,6 @@ fn a_permanent_enters_as_a_copy_with_several_kinds() {
 )]
 #[case::the_token_is(
     "Create a token that's a copy of target creature you control, except the token is 1/1."
-)]
-#[case::not_legendary(
-    "Create a token that's a copy of target creature you control, except it isn't legendary."
 )]
 fn near_misses_of_a_token_copy_exception_stay_unread(#[case] text: &str) {
     assert_eq!(spell(text), None, "{text}");

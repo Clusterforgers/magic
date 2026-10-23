@@ -569,7 +569,23 @@ object: ObjectId,
 /**
  * Its controller.
  */
-player: PlayerId, } } | { "ClassLevelGained": { 
+player: PlayerId, } } | { "Crewed": { 
+/**
+ * The Vehicle or Mount.
+ */
+object: ObjectId, 
+/**
+ * Its controller, who activated the ability.
+ */
+player: PlayerId, 
+/**
+ * The creatures tapped to pay the cost, in the order they were picked.
+ */
+creatures: Array<ObjectId>, 
+/**
+ * The ability was saddle: the Mount became saddled.
+ */
+saddle?: boolean, } } | { "ClassLevelGained": { 
 /**
  * The Class that gained the level.
  */

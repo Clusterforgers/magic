@@ -377,6 +377,8 @@ pub struct Reader<'a> {
     pub from_graveyard: bool,
     /// Whether the event of the trigger is a spell being cast, so "it" and "that spell" in a copy are that spell.
     pub cast_spell: bool,
+    /// Whether that spell is the card itself ("When you cast this spell"), which "it" names as the card.
+    pub cast_itself: bool,
     /// Whether the event of the trigger is the card itself attacking, so "it" is the card.
     pub attacker: bool,
     /// Whether the sentence ends with ", where X is its power" (a characteristic of an object), so `X` in it stands
@@ -412,6 +414,7 @@ impl<'a> Reader<'a> {
             attacked: false,
             from_graveyard: false,
             cast_spell: false,
+            cast_itself: false,
             attacker: false,
             where_x: false,
             died: false,

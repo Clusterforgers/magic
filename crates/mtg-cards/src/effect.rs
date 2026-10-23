@@ -482,6 +482,13 @@ pub enum Effect {
         /// How many +1/+1 counters.
         count: Amount,
     },
+    /// The source Vehicle becomes crewed (CR 702.122) by the creatures tapped to pay the ability, or the source Mount
+    /// becomes saddled (CR 702.171) by them when `saddle`: the event cards trigger on; the type change is its own effect.
+    Crewed {
+        /// The source is a Mount that becomes saddled.
+        #[serde(default, skip_serializing_if = "is_false")]
+        saddle: bool,
+    },
     /// The source Class becomes this level (CR 716.2): its level rises to it; a Class already at that level or above does
     /// nothing.
     BecomeLevel {
