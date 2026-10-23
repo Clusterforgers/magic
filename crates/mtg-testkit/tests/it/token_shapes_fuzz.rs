@@ -59,6 +59,14 @@ fn makers() -> Vec<Arc<CardDefinition>> {
             &format!(r#"[{{"CreateToken":{{"who":"Opponents","token":{WOLF}}}}}]"#),
         ),
         maker(
+            "Sizer",
+            r#"[{"CreateToken":{"token":{"Sized":{"size":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]},"token":{"name":"Horror","colors":["Black"],"types":["Creature"],"subtypes":["Horror"],"abilities":[{"Static":{"affected":"This","mods":["CantBlock"]}}]}}}}}]"#,
+        ),
+        maker(
+            "Mourner",
+            r#"[{"CreateToken":{"token":{"Sized":{"size":{"Tallied":{"who":"EachPlayer","what":"CreaturesDied"}},"token":{"name":"Ghoul","types":["Creature"],"subtypes":["Ghoul"]}}}}}]"#,
+        ),
+        maker(
             "Grower",
             &format!(
                 r#"[{{"CreateToken":{{"token":{SNAKE},"as":"made"}}}},{{"PutCounters":{{"on":{{"Bound":"made"}},"counter":"+1/+1","count":2}}}}]"#
@@ -114,6 +122,8 @@ fn bot_games_with_every_token_shape_finish_and_keep_every_invariant(#[case] seat
         "Mutagen",
         "Tiny",
         "Eldrazi Spawn",
+        "Horror",
+        "Ghoul",
     ] {
         assert!(seen.contains_key(name), "{name} was made: {seen:?}");
     }

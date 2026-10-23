@@ -25,6 +25,8 @@ enum Whose {
     ThatCreature,
     /// "the sacrificed creature's power", "the discarded card's mana value": what the cost took.
     Paid,
+    /// "that spell's mana value": the spell whose cast triggered the ability.
+    ThatSpell,
 }
 
 /// What a where clause names.
@@ -56,6 +58,8 @@ fn characteristic(r: &mut Reader<'_>) -> Option<(Whose, StatKind)> {
         Whose::Card
     } else if r.words("that creature's") {
         Whose::ThatCreature
+    } else if r.words("that spell's") {
+        Whose::ThatSpell
     } else {
         let stat = paid_stat(r)?;
         return Some((Whose::Paid, stat));
@@ -143,6 +147,7 @@ fn object(r: &Reader<'_>, whose: &Whose) -> Option<Ref> {
     match whose {
         Whose::Card => Some(Ref::This),
         Whose::Paid => Some(Ref::Paid),
+        Whose::ThatSpell => r.cast_spell.then_some(Ref::Triggering),
         Whose::Its => r.it.clone().or_else(lone_target).or(r.subject.clone()),
         Whose::ThatCreature => r
             .subject
@@ -214,7 +219,7 @@ fn stats(value: &Value, found: &mut Vec<Value>) {
 }
 
 /// The amounts that count, as the data names them.
-const COUNTS: [&str; 9] = [
+const COUNTS: [&str; 10] = [
     "Count",
     "Greatest",
     "Total",
@@ -224,6 +229,7 @@ const COUNTS: [&str; 9] = [
     "Players",
     "Mutations",
     "Tallied",
+    "Life",
 ];
 
 /// The counts in the data, each once; what a count holds is not searched.
@@ -253,7 +259,7 @@ fn tails(of: &Ref, stat: StatKind) -> Vec<String> {
     let owners: &[&str] = match of {
         Ref::This => &["~'s", "its"],
         Ref::Target(0) => &["its"],
-        Ref::Triggering => &["that creature's", "its"],
+        Ref::Triggering => &["that creature's", "its", "that spell's"],
         _ => &[],
     };
     owners

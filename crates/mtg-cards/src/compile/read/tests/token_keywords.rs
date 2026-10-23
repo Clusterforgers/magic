@@ -159,9 +159,6 @@ fn the_keywords_of_the_vocabulary_also_read_in_a_pump_and_a_selector(#[case] tex
 }
 
 #[rstest]
-#[case::a_quoted_ability(
-    r#"Create a 1/1 colorless Pilot creature token with "This token can't block.""#
-)]
 #[case::a_keyword_and_a_quoted_ability(
     r#"Create a 6/6 black and red Dragon creature token with flying, menace, and "Whenever this token deals combat damage to a player, draw a card.""#
 )]
@@ -197,9 +194,6 @@ fn the_keywords_of_the_vocabulary_also_read_in_a_pump_and_a_selector(#[case] tex
 )]
 #[case::attacking_after_an_open_count(
     "Create X 1/1 white Spirit creature tokens with flying that are attacking."
-)]
-#[case::an_open_count_named_otherwise(
-    "Create X 1/1 white Pegasus creature tokens with flying, where X is your life total."
 )]
 #[case::a_second_token_that_is_not_a_kind(
     "Create a 1/1 white Spirit creature token with flying and a 2/2 white Knight."
