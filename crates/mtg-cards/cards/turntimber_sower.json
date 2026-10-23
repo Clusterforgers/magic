@@ -1,0 +1,57 @@
+{
+  "oracle_id": "23d7d8ba-5237-4ffc-bd5f-b07ff9ec73af",
+  "name": "Turntimber Sower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turntimber Sower",
+      "oracle_fingerprint": "8cb5d8f15847c1f3050a808e1b2b8acb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Land" }, { "OwnedBy": "You" }],
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Plant",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Plant"],
+                      "power": 0,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{G}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }], "count": 3 } }
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Land" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

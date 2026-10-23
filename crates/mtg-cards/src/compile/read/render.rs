@@ -9,10 +9,12 @@ mod graveyards;
 mod may_have;
 mod put_onto;
 
+use super::activations;
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
 use super::attackers;
 use super::becomes;
 use super::cast;
+use super::choices;
 use super::conditional;
 use super::copies;
 use super::copy_spells;
@@ -29,7 +31,6 @@ use super::lands;
 use super::library;
 use super::manifest;
 use super::mass_moves;
-use super::modal::{BULLET, DASH};
 use super::payments;
 use super::prevention;
 use super::pronouns;
@@ -37,13 +38,13 @@ use super::reveal;
 use super::selectors::{Form, granted_text, phrase_text, spec_text};
 use super::spend;
 use super::spent;
+use super::statics;
 use super::subtypes::plural_subtype;
 use super::triggers::{
     article, cast_itself, condition_text, cycled_itself, graveyard_itself, itself_acts,
     leaves_itself, pattern_text, targeted_itself,
 };
 use super::where_x;
-use super::{as_long_as, statics};
 use crate::ability::{Ability, Limit, Timing};
 use crate::compile::classify;
 use crate::cost::Cost;
@@ -81,10 +82,7 @@ pub fn ability(ability: &Ability) -> Option<String> {
 #[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
     let mut texts = ability_texts(ability);
-    let singulars: Vec<String> = texts
-        .iter()
-        .filter_map(|text| spend::singular(text))
-        .collect();
+    let singulars: Vec<String> = texts.iter().flat_map(|text| spend::more(text)).collect();
     texts.extend(singulars);
     texts = texts.into_iter().flat_map(cast::impulse_wordings).collect();
     let controller = create::other_wordings(&texts);
@@ -492,18 +490,13 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             };
             let tails = match condition {
                 None => restriction_texts(*timing, *limit),
-                // "Activate only if you control a Swamp." stands alone.
-                Some(condition) if *timing == Timing::Instant && limit.is_none() => {
-                    let mut wordings = statics::control_texts(condition);
-                    if wordings.is_empty() {
-                        wordings = as_long_as::texts(condition);
+                Some(condition) => {
+                    let tails = activations::tails(*timing, condition, *limit);
+                    if tails.is_empty() {
+                        return Vec::new();
                     }
-                    wordings
-                        .into_iter()
-                        .map(|text| format!("Activate only if {text}."))
-                        .collect()
+                    tails
                 }
-                Some(_) => return Vec::new(),
             };
             alternatives(targets, effects)
                 .iter()
@@ -550,7 +543,7 @@ pub(super) fn capitalize(text: &str) -> String {
 
 /// The ways the effects can be written as sentences, without their first capital and period: the
 /// effects of one player in a row may be joined into one sentence, in any run of them.
-fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Vec<String>> {
+pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Vec<String>> {
     if targets.len() > 1 || effects.is_empty() {
         return Vec::new();
     }
@@ -562,10 +555,10 @@ fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Vec<String>> 
         },
     ] = effects
     {
-        if !targets.is_empty() || !choose.is_one() || modes.len() < 2 {
+        if !targets.is_empty() || modes.len() < 2 {
             return Vec::new();
         }
-        return modal_texts(modes)
+        return choices::texts(choose, modes)
             .into_iter()
             .map(|text| vec![text])
             .collect();
@@ -808,32 +801,6 @@ fn written(
         start = end;
     }
     (targets.is_empty() || writer.named).then_some(sentences)
-}
-
-/// "choose one —" and a bullet line for each mode, in every wording of each mode; the last bullet
-/// has no period, which the sentence that holds the text adds.
-fn modal_texts(modes: &[Mode]) -> Vec<String> {
-    let mut texts = vec![format!("choose one {DASH}")];
-    for (at, mode) in modes.iter().enumerate() {
-        let bullets: Vec<String> = alternatives(&mode.targets, &mode.effects)
-            .iter()
-            .map(|sentences| {
-                let capitalized: Vec<String> = sentences.iter().map(|s| capitalize(s)).collect();
-                capitalized.join(". ")
-            })
-            .collect();
-        let stop = if at + 1 == modes.len() { "" } else { "." };
-        texts = texts
-            .iter()
-            .flat_map(|so_far| {
-                bullets
-                    .iter()
-                    .map(move |bullet| format!("{so_far}\n{BULLET} {bullet}{stop}"))
-            })
-            .take(64)
-            .collect();
-    }
-    texts
 }
 
 /// A choice of cards and the move of what was chosen as one sentence.

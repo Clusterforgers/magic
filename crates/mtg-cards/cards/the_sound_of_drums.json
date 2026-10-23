@@ -1,0 +1,28 @@
+{
+  "oracle_id": "0afcc646-cb34-4c0e-b3f5-4115ad4faa8e",
+  "name": "The Sound of Drums",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Sound of Drums",
+      "oracle_fingerprint": "1df1cadc4788a0c21fc3f6e884f5894d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["Goaded"] } },
+        {
+          "Replacement": {
+            "when": { "Damage": { "source": [{ "Is": "Attached" }], "combat": true } },
+            "by": { "Multiply": 2 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{R}",
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

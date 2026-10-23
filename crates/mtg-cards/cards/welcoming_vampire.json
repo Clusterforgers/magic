@@ -1,0 +1,33 @@
+{
+  "oracle_id": "605c1ee0-5e8a-4e0a-a99b-42a38873f822",
+  "name": "Welcoming Vampire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Welcoming Vampire",
+      "oracle_fingerprint": "61fd9ea1c41fe160290672aa04bf5ad8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [
+                    { "Type": "Creature" },
+                    "Other",
+                    { "ControlledBy": "You" },
+                    { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                  ],
+                  "to": "Battlefield"
+                }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

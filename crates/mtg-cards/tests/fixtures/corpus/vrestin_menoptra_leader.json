@@ -1,0 +1,164 @@
+{
+  "object": "card",
+  "id": "b117d388-ac94-4e20-84f0-f4d242121d7f",
+  "oracle_id": "1db6a042-303e-4b76-bb6c-63df846fd6c9",
+  "multiverse_ids": [
+    634861
+  ],
+  "tcgplayer_id": 520256,
+  "cardmarket_id": 738800,
+  "name": "Vrestin, Menoptra Leader",
+  "lang": "en",
+  "released_at": "2023-10-13",
+  "uri": "https://api.scryfall.com/cards/b117d388-ac94-4e20-84f0-f4d242121d7f",
+  "scryfall_uri": "https://scryfall.com/card/who/166/vrestin-menoptra-leader?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:50:20Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/1/b117d388-ac94-4e20-84f0-f4d242121d7f.jpg?1783914620",
+    "normal": "https://cards.scryfall.io/normal/front/b/1/b117d388-ac94-4e20-84f0-f4d242121d7f.jpg?1783914620",
+    "large": "https://cards.scryfall.io/large/front/b/1/b117d388-ac94-4e20-84f0-f4d242121d7f.jpg?1783914620",
+    "png": "https://cards.scryfall.io/png/front/b/1/b117d388-ac94-4e20-84f0-f4d242121d7f.png?1783914620",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/1/b117d388-ac94-4e20-84f0-f4d242121d7f.jpg?1783914620",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/1/b117d388-ac94-4e20-84f0-f4d242121d7f.jpg?1783914620",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/1/b117d388-ac94-4e20-84f0-f4d242121d7f.webp?1783914620",
+    "grid": "https://cards.scryfall.io/grid/front/b/1/b117d388-ac94-4e20-84f0-f4d242121d7f.webp?1783914620",
+    "display": "https://cards.scryfall.io/display/front/b/1/b117d388-ac94-4e20-84f0-f4d242121d7f.webp?1783914620",
+    "art": "https://cards.scryfall.io/art/front/b/1/b117d388-ac94-4e20-84f0-f4d242121d7f.webp?1783914620",
+    "crop": "https://cards.scryfall.io/crop/front/b/1/b117d388-ac94-4e20-84f0-f4d242121d7f.webp?1783914620",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/1/b117d388-ac94-4e20-84f0-f4d242121d7f.jpg?1783914620"
+  },
+  "mana_cost": "{X}{G}{G}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Alien Insect Scout",
+  "oracle_text": "Flying\nVrestin enters with X +1/+1 counters on it.\nWhen Vrestin enters, create X 1/1 green and white Alien Insect creature tokens with flying.\nWhenever you attack with one or more Insects, put a +1/+1 counter on each of them.",
+  "power": "0",
+  "toughness": "0",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "78130eb5-fa5d-4007-9b6b-714732bf97c5",
+      "component": "combo_piece",
+      "name": "Vrestin, Menoptra Leader",
+      "type_line": "Legendary Creature — Alien Insect Scout",
+      "uri": "https://api.scryfall.com/cards/78130eb5-fa5d-4007-9b6b-714732bf97c5"
+    },
+    {
+      "object": "related_card",
+      "id": "c832e03c-111a-409e-a88c-6edbb528a239",
+      "component": "token",
+      "name": "Alien Insect",
+      "type_line": "Token Creature — Alien Insect",
+      "uri": "https://api.scryfall.com/cards/c832e03c-111a-409e-a88c-6edbb528a239"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set": "who",
+  "set_name": "Doctor Who",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awho&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/who?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b117d388-ac94-4e20-84f0-f4d242121d7f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1db6a042-303e-4b76-bb6c-63df846fd6c9&unique=prints",
+  "collector_number": "166",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ivan Dedov",
+  "artist_ids": [
+    "00344d1a-303c-478c-a7fd-043e084223db"
+  ],
+  "illustration_id": "92038e23-b307-40b3-afec-4e7bc7823439",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 13904,
+  "preview": {
+    "source": "Tolarian Community College",
+    "source_uri": "https://www.youtube.com/watch?v=_5gqXG_PPjk",
+    "previewed_at": "2023-10-06"
+  },
+  "prices": {
+    "usd": "0.38",
+    "usd_foil": "1.80",
+    "usd_etched": null,
+    "eur": "0.30",
+    "eur_foil": "0.41",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=634861&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVrestin%252C%2BMenoptra%2BLeader",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVrestin%252C%2BMenoptra%2BLeader",
+    "edhrec": "https://edhrec.com/route/?cc=Vrestin%2C+Menoptra+Leader"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F520256%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=738800&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Vrestin%2C+Menoptra+Leader&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
