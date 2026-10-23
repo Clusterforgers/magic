@@ -68,6 +68,7 @@ mod copies;
 mod copies_fuzz;
 mod copy_dies;
 mod copy_effects;
+mod copy_groups;
 mod copy_keywords;
 mod copy_keywords_fuzz;
 mod copy_not_legendary;

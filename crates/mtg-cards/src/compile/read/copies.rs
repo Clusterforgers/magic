@@ -560,7 +560,14 @@ fn listed_text(parts: &[String], subject: Subject) -> Option<String> {
     let heads: Vec<(&str, &str)> = [
         Some((subject.is(), "is")),
         subject.isnt().map(|isnt| (isnt, "isn't")),
-        Some((subject.has(), if subject == Subject::They { "have" } else { "has" })),
+        Some((
+            subject.has(),
+            if subject == Subject::They {
+                "have"
+            } else {
+                "has"
+            },
+        )),
     ]
     .into_iter()
     .flatten()
@@ -586,11 +593,7 @@ fn listed_text(parts: &[String], subject: Subject) -> Option<String> {
 }
 
 /// The parts of the exceptions, one for each change; a type alone is "it's an artifact" with `terse`.
-fn exception_parts(
-    mods: &[Modification],
-    subject: Subject,
-    terse: bool,
-) -> Option<Vec<String>> {
+fn exception_parts(mods: &[Modification], subject: Subject, terse: bool) -> Option<Vec<String>> {
     let is_kind = |found: &Modification| {
         matches!(
             found,
@@ -777,7 +780,7 @@ pub(super) fn delay_text(created: &Effect, delayed: &Effect) -> Option<String> {
 fn choice_text(of: &Selector) -> Option<String> {
     let text = phrase_text(of, Form::Target)?;
     // "a creature you control", "a creature an opponent controls".
-    if text.ends_with(" controls") || text.ends_with(" you control") {
+    if text.contains(" you control") || text.contains(" an opponent controls") {
         Some(format!("{} {text}", article(&text)))
     } else {
         Some(format!("any {text} on the battlefield"))

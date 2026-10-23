@@ -2,9 +2,7 @@
 use super::*;
 
 fn each_token(group: &str) -> String {
-    format!(
-        r#"{{"CreateToken":{{"token":{{"CopyOf":{{"of":{{"Each":{group}}}}}}}}}}}"#
-    )
+    format!(r#"{{"CreateToken":{{"token":{{"CopyOf":{{"of":{{"Each":{group}}}}}}}}}}}"#)
 }
 
 #[rstest]
@@ -147,4 +145,15 @@ fn the_list_and_the_and_form_of_one_set_of_exceptions_are_the_same_reading() {
 )]
 fn near_misses_of_the_exceptions_of_a_copy_stay_with_the_table(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Static, false), None, "{text}");
+}
+
+#[rstest]
+#[case::power_after_the_control_words(
+    "You may have this creature enter as a copy of a creature you control with power 4 or greater, except it's a Dragon in addition to its other types and it has flying."
+)]
+#[case::an_opponents_creature_alone(
+    "You may have this creature enter as a copy of a creature an opponent controls."
+)]
+fn the_choice_of_what_to_copy_writes_back_as_the_card_words_it(#[case] text: &str) {
+    golden(text, ClauseKind::Static, false);
 }
