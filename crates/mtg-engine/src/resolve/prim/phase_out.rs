@@ -3,6 +3,7 @@
 use mtg_cards::effect::Effect;
 
 use super::wrong_effect;
+use crate::object::GameObject;
 use crate::resolve::{Cx, ResolveError, Run};
 use crate::zones::Zone;
 
@@ -19,7 +20,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .live_objects(what)?
         .into_iter()
         .filter(|object| object.zone() == Zone::Battlefield)
-        .map(|object| object.id())
+        .map(GameObject::id)
         .collect();
     Ok(Run::events(crate::phasing::out_events(cx.state(), &named)))
 }

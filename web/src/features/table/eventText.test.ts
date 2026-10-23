@@ -103,6 +103,11 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   SpellResolved: [{ SpellResolved: { object: 4 } }, 'Lightning Bolt resolves'],
   PermanentTapped: [{ PermanentTapped: { object: 3 } }, 'Forest becomes tapped'],
   PermanentUntapped: [{ PermanentUntapped: { object: 3 } }, 'Forest becomes untapped'],
+  PermanentPhasedOut: [
+    { PermanentPhasedOut: { object: 3, controller: 0 } },
+    'Forest phases out',
+  ],
+  PermanentPhasedIn: [{ PermanentPhasedIn: { object: 3 } }, 'Forest phases in'],
   ManaAdded: [{ ManaAdded: { player: 0, mana: 'Green', source: 3 } }, 'Ana adds {G} from Forest'],
   ManaSpent: [{ ManaSpent: { player: 0, mana: ['Green', 'Red', 'Colorless'] } }, 'Ana spends {G}{R}{C}'],
   ManaPoolEmptied: [{ ManaPoolEmptied: { player: 0 } }, "Ana's mana pool empties"],

@@ -210,22 +210,25 @@ fn settle_permanents(state: &mut GameState, active: PlayerId) {
     }
 }
 
+/// A turn begins: its number and active player, the first step, and a fresh combat.
+fn begin_turn(state: &mut GameState, number: u32, active: PlayerId) {
+    let (before, previous) = (state.turn.number, state.turn.active);
+    state.turn.number = number;
+    state.turn.active = active;
+    state.turn.step = Step::Untap;
+    state.turn.lands_played = 0;
+    if before == 0 || state.opens_round(previous, active) {
+        state.turn.round += 1;
+    }
+    state.clear_turn_uses();
+    state.priority = None;
+    state.combat = crate::combat::CombatState::default();
+    settle_permanents(state, active);
+}
+
 fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
-        Event::TurnBegan { number, active } => {
-            let (before, previous) = (state.turn.number, state.turn.active);
-            state.turn.number = *number;
-            state.turn.active = *active;
-            state.turn.step = Step::Untap;
-            state.turn.lands_played = 0;
-            if before == 0 || state.opens_round(previous, *active) {
-                state.turn.round += 1;
-            }
-            state.clear_turn_uses();
-            state.priority = None;
-            state.combat = crate::combat::CombatState::default();
-            settle_permanents(state, *active);
-        }
+        Event::TurnBegan { number, active } => begin_turn(state, *number, *active),
         Event::StepBegan { step } => {
             state.turn.step = *step;
             state.priority = None;

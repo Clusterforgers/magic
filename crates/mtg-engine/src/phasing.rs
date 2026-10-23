@@ -9,7 +9,7 @@ use crate::characteristics::controller_of;
 use crate::error::EngineError;
 use crate::events::Event;
 use crate::fold::invalid;
-use crate::object::{GameObject, PhasedState, Phasing};
+use crate::object::{GameObject, PermanentState, PhasedState, Phasing};
 use crate::state::GameState;
 use crate::zones::{Placement, Zone};
 
@@ -33,7 +33,7 @@ fn attached_in(state: &GameState, zone: Zone, host: ObjectId) -> Vec<ObjectId> {
             state
                 .object(*id)
                 .and_then(GameObject::permanent)
-                .and_then(|permanent| permanent.attached_to())
+                .and_then(PermanentState::attached_to)
                 .is_some_and(|attached| attached == host)
         })
         .collect();
@@ -44,7 +44,7 @@ fn attached_in(state: &GameState, zone: Zone, host: ObjectId) -> Vec<ObjectId> {
 /// The events that phase out the permanents `named` (CR 702.26): each one on the battlefield once, in order, and after
 /// it the Auras, Equipment and Fortifications attached to it, which phase out with it (CR 702.26g). An object `named`
 /// that is gone, not a permanent or phased out already is passed over.
-pub(crate) fn out_events(state: &GameState, named: &[ObjectId]) -> Vec<Event> {
+pub fn out_events(state: &GameState, named: &[ObjectId]) -> Vec<Event> {
     let direct: BTreeSet<ObjectId> = named
         .iter()
         .copied()
@@ -84,19 +84,19 @@ pub(crate) fn out_events(state: &GameState, named: &[ObjectId]) -> Vec<Event> {
 /// The events that phase in what phases in as the untap step of `player` begins (CR 502.1, 702.26): the permanents that
 /// were phased out as `player` controlled them, each followed by what phased out with it. An attachment whose host is no
 /// longer phased out, because it left the game, phases in on its own.
-pub(crate) fn in_events(state: &GameState, player: PlayerId) -> Vec<Event> {
+pub fn in_events(state: &GameState, player: PlayerId) -> Vec<Event> {
     let phasing = |id: ObjectId| {
         state
             .object(id)
             .and_then(GameObject::permanent)
-            .and_then(|permanent| permanent.phasing())
+            .and_then(PermanentState::phasing)
     };
     let phased = state.zone(Zone::PhasedOut);
     let hosts_waiting = |attachment: ObjectId| {
         state
             .object(attachment)
             .and_then(GameObject::permanent)
-            .and_then(|permanent| permanent.attached_to())
+            .and_then(PermanentState::attached_to)
             .is_some_and(|host| {
                 state.object(host.id).is_some_and(|object| {
                     object.zone() == Zone::PhasedOut && object.counter() == host.counter
@@ -176,4 +176,139 @@ pub(crate) fn fold_in(state: &mut GameState, id: ObjectId) -> Result<(), EngineE
     state.zones.remove(Zone::PhasedOut, id);
     state.zones.insert(Zone::Battlefield, id, Placement::Top);
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: a permanent phases out of every scan of the battlefield and in again as the same object with the state it had, at tables of two to four seats; only the untap step of the player it phased out for phases it in, it is controlled by that player while it is out, and what is not a permanent on the battlefield cannot phase out.
+    use mtg_core::ids::PlayerId;
+    use rstest::rstest;
+
+    use super::*;
+    use crate::fixtures::{creature, state};
+    use crate::fold::apply_event;
+
+    /// Every seat controls a creature named after it; seat 0 also controls a Bear.
+    fn table(seats: usize) -> GameState {
+        let mut battlefields: Vec<Vec<_>> = (0..seats)
+            .map(|seat| vec![creature(&format!("Seat {seat}"), 2, 2)])
+            .collect();
+        battlefields[0].push(creature("Bear", 1, 1));
+        state(vec![Vec::new(); seats], battlefields)
+    }
+
+    fn id(game: &GameState, name: &str) -> ObjectId {
+        game.objects()
+            .find(|object| object.card().name == name)
+            .map(GameObject::id)
+            .unwrap()
+    }
+
+    fn apply(game: &mut GameState, events: &[Event]) {
+        for event in events {
+            apply_event(game, event).unwrap();
+        }
+    }
+
+    #[rstest]
+    #[case::two_seats_untapped(2, false)]
+    #[case::two_seats_tapped(2, true)]
+    #[case::three_seats_untapped(3, false)]
+    #[case::three_seats_tapped(3, true)]
+    #[case::four_seats_untapped(4, false)]
+    #[case::four_seats_tapped(4, true)]
+    fn a_permanent_phases_out_and_in_as_the_same_object(
+        #[case] seats: usize,
+        #[case] tapped: bool,
+    ) {
+        let mut game = table(seats);
+        let bear = id(&game, "Bear");
+        if tapped {
+            apply(&mut game, &[Event::PermanentTapped { object: bear }]);
+        }
+        let (counter, hash) = (game.object(bear).unwrap().counter(), game.state_hash());
+        let out = out_events(&game, &[bear]);
+        apply(&mut game, &out);
+        assert!(is_phased_out(&game, bear));
+        assert!(!game.zone(Zone::Battlefield).contains(&bear));
+        assert_eq!(game.zone(Zone::PhasedOut), [bear]);
+        assert_ne!(game.state_hash(), hash);
+        // It is not found by a scan, but it is still an object with the state it had.
+        let held = game.object(bear).unwrap();
+        assert_eq!(held.permanent().unwrap().tapped(), tapped);
+        assert_eq!(held.counter(), counter);
+        let back = in_events(&game, PlayerId(0));
+        apply(&mut game, &back);
+        assert!(!is_phased_out(&game, bear));
+        assert_eq!(game.zone(Zone::PhasedOut), [] as [ObjectId; 0]);
+        let held = game.object(bear).unwrap();
+        assert_eq!(held.counter(), counter, "phasing is no new object");
+        assert_eq!(held.permanent().unwrap().tapped(), tapped);
+        assert_eq!(game.zone(Zone::Battlefield).len(), seats + 1);
+    }
+
+    #[rstest]
+    #[case::two_seats(2)]
+    #[case::three_seats(3)]
+    #[case::four_seats(4)]
+    fn only_the_untap_step_of_the_player_it_phased_out_for_phases_a_permanent_in(
+        #[case] seats: usize,
+    ) {
+        let mut game = table(seats);
+        let everything: Vec<ObjectId> = game.zone(Zone::Battlefield).to_vec();
+        let out = out_events(&game, &everything);
+        apply(&mut game, &out);
+        assert_eq!(game.zone(Zone::Battlefield), [] as [ObjectId; 0]);
+        for seat in 0..seats {
+            let coming: Vec<ObjectId> = in_events(&game, PlayerId::from_index(seat))
+                .iter()
+                .map(|event| match event {
+                    Event::PermanentPhasedIn { object } => *object,
+                    other => panic!("unexpected {other:?}"),
+                })
+                .collect();
+            let want = if seat == 0 { 2 } else { 1 };
+            assert_eq!(coming.len(), want, "seat {seat}");
+            assert!(
+                coming
+                    .iter()
+                    .all(|object| controller_of(&game, *object) == Some(PlayerId::from_index(seat)))
+            );
+        }
+        assert_eq!(
+            in_events(&game, PlayerId::from_index(seats)),
+            Vec::<Event>::new()
+        );
+    }
+
+    #[rstest]
+    #[case::two_seats(2)]
+    #[case::four_seats(4)]
+    fn a_name_that_repeats_or_is_not_on_the_battlefield_phases_out_once_at_most(
+        #[case] seats: usize,
+    ) {
+        let game = table(seats);
+        let bear = id(&game, "Bear");
+        let library = game.zone(Zone::Library(PlayerId(0)))[0];
+        let events = out_events(&game, &[bear, library, bear]);
+        assert_eq!(
+            events,
+            [Event::PermanentPhasedOut {
+                object: bear,
+                controller: PlayerId(0),
+                indirect: false
+            }]
+        );
+        let mut game = game;
+        let first = out_events(&game, &[bear])[0].clone();
+        assert!(apply_event(&mut game, &first).is_ok());
+        let again = Event::PermanentPhasedOut {
+            object: bear,
+            controller: PlayerId(0),
+            indirect: false,
+        };
+        assert!(apply_event(&mut game, &again).is_err(), "it is out already");
+        assert_eq!(out_events(&game, &[bear]), Vec::<Event>::new());
+        assert!(apply_event(&mut game, &Event::PermanentPhasedIn { object: library }).is_err());
+    }
 }

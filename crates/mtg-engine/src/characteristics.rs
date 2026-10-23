@@ -132,7 +132,7 @@ pub(crate) fn controller_of_object(state: &GameState, object: &GameObject) -> Pl
         // The layers leave it out; it is the controller it had when it phased out who it phases in for.
         return object
             .permanent()
-            .and_then(|permanent| permanent.phasing())
+            .and_then(crate::object::PermanentState::phasing)
             .map_or_else(|| object.controller(), |phasing| phasing.controller);
     }
     if object.zone() != Zone::Battlefield {

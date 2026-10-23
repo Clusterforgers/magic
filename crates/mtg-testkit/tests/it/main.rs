@@ -233,6 +233,7 @@ mod pay_fuzz;
 mod pay_parts;
 mod pay_unless;
 mod payment_fuzz;
+mod phasing;
 mod pipeline_log;
 mod planeswalkers;
 mod player_keywords;
