@@ -1,0 +1,44 @@
+{
+  "oracle_id": "ecfbebc9-7fc7-474e-8c59-8ede800e082e",
+  "name": "Crucible of the Spirit Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crucible of the Spirit Dragon",
+      "oracle_fingerprint": "6558dc6c90338e8a4cd689efd8863388",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "storage" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "storage" }, "count": "X" } }
+            ],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyCombination": { "count": "X" } },
+                  "only": [
+                    { "Spell": { "subtypes": ["Dragon"] } },
+                    { "Ability": { "subtypes": ["Dragon"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

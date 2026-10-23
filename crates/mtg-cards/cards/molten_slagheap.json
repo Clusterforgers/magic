@@ -1,0 +1,40 @@
+{
+  "oracle_id": "33587cb2-0fd3-4e4c-bc5e-e7299cc9dab5",
+  "name": "Molten Slagheap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Molten Slagheap",
+      "oracle_fingerprint": "2448af9e26070bd85559b5bbdca3baf4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "storage" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "RemoveCounters": { "counter": { "Other": "storage" }, "count": "X" } }
+            ],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyCombination": { "count": "X", "among": ["Black", "Red"] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

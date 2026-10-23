@@ -1,0 +1,40 @@
+{
+  "oracle_id": "2031bc31-81cc-407a-8615-29832f586bbc",
+  "name": "Calciform Pools",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Calciform Pools",
+      "oracle_fingerprint": "fd12a4d02fe78e7e6dc9c3e151df82d5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "storage" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "RemoveCounters": { "counter": { "Other": "storage" }, "count": "X" } }
+            ],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyCombination": { "count": "X", "among": ["White", "Blue"] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

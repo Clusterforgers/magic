@@ -1,0 +1,40 @@
+{
+  "oracle_id": "021e4165-2f02-4bd4-86ca-cb7bf4c9e23d",
+  "name": "Saltcrusted Steppe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saltcrusted Steppe",
+      "oracle_fingerprint": "51ba68f7d4e5763e9668e5a347a29757",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "storage" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "RemoveCounters": { "counter": { "Other": "storage" }, "count": "X" } }
+            ],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyCombination": { "count": "X", "among": ["Green", "White"] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
