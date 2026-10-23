@@ -7,9 +7,10 @@ use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
 use mtg_core::card::CardType;
-use mtg_core::mana::ManaCost;
-use mtg_engine::decision::DecisionKind;
+use mtg_core::mana::{ManaCost, ManaType};
+use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::format::Normal;
+use mtg_engine::mana::{ManaSource, Payment};
 use mtg_engine::{Event, GameSetup};
 use mtg_testkit::cards::{bear, forest, giant, island, mountain, plains, swamp};
 use mtg_testkit::corpus::card;
@@ -155,6 +156,76 @@ fn a_bighorn_rancher_adds_mana_for_the_greatest_power_among_the_creatures_its_co
     }
 }
 
+/// A board of `others` lands that make no green, two Forests and a Leafkin Druid that adds {G}{G} beside three bears,
+/// with `{G}{G}` in hand: the player pays with one Forest and leaves the rest to the engine, or backs out.
+fn wide_board(seats: usize, others: usize) -> Driver {
+    // The druid comes first, so the plan of a tie in weight uses it and leaves the first Forest spare.
+    let mut board = vec![ready(card("Leafkin Druid").unwrap())];
+    board.extend((0..3).map(|_| ready(bear())));
+    board.extend((0..others).map(|n| ready(if n % 2 == 0 { plains() } else { island() })));
+    board.extend([ready(forest()), ready(forest())]);
+    let scenario = Scenario::new(seats)
+        .battlefield(0, board)
+        .hand(0, [spell("{G}{G}")]);
+    Driver::from_scenario(libraries(scenario, seats)).unwrap()
+}
+
+/// The source of a Forest: the one green source that makes a single mana.
+fn forest_source(driver: &Driver) -> ManaSource {
+    driver
+        .pay_options()
+        .unwrap()
+        .sources
+        .iter()
+        .find(|option| option.produces == ManaType::Green && option.made().len() == 1)
+        .map(|option| option.source)
+        .expect("a Forest is offered")
+}
+
+#[rstest]
+#[case::a_few_sources(4)]
+#[case::a_row_of_lands(20)]
+#[case::a_very_wide_board(40)]
+fn a_partial_payment_is_completed_on_a_board_of_many_sources(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] others: usize,
+) {
+    // The completion must find the second Forest, not the {G}{G} of the druid (which would leave the first Forest
+    // spare), among every subset of the lands that make no green.
+    let mut driver = wide_board(seats, others);
+    driver.begin_cast("Trick").unwrap();
+    let first = forest_source(&driver);
+    let events = driver
+        .answer(Answer::PayMana(PayChoice::Complete(Payment {
+            taps: vec![first],
+            ..Payment::default()
+        })))
+        .unwrap();
+    assert_eq!(taps(&events), 2, "two Forests: {events:?}");
+    assert!(
+        events.iter().any(|event| matches!(
+            event,
+            Event::ManaSpent { mana, .. } if mana.len() == 2 && mana.iter().all(|m| *m == ManaType::Green)
+        )),
+        "{events:?}"
+    );
+}
+
+#[rstest]
+#[case::a_few_sources(4)]
+#[case::a_very_wide_board(40)]
+fn backing_out_of_a_payment_on_a_wide_board_leaves_the_spell_castable(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] others: usize,
+) {
+    let mut driver = wide_board(seats, others);
+    driver.begin_cast("Trick").unwrap();
+    let before = driver.engine().state_hash();
+    driver.answer(Answer::PayMana(PayChoice::Cancel)).unwrap();
+    assert!(castable(&driver));
+    assert_eq!(driver.engine().state_hash(), before);
+}
+
 /// Lands, the creatures that count or double mana and spells to spend it on.
 fn deck() -> Vec<Arc<CardDefinition>> {
     let mut deck: Vec<Arc<CardDefinition>> = Vec::new();
@@ -220,10 +291,7 @@ fn deck_with_counted_colors() -> Vec<Arc<CardDefinition>> {
     deck
 }
 
-/// Seed 8 at three seats ends with a payment the engine refuses ("the rest of the cost cannot be paid from the
-/// remaining mana") after the bot tapped the counted sources one by one; the cause is open (roadmap r1n).
 #[test]
-#[ignore = "open engine fault: partial payments with a source of X mana of one color (r1n)"]
 fn bot_games_with_the_counted_colors_keep_every_invariant() {
     for_each_seed(0..fuzz_games(10), |seed| {
         let decks = (0..3).map(|_| deck_with_counted_colors()).collect();
