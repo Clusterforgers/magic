@@ -58,6 +58,8 @@ const KEYWORDS: &[&str] = &[
     "changeling",
     "infect",
     "skulk",
+    "melee",
+    "myriad",
 ];
 
 /// How a phrase is introduced, which decides its number, how it joins card types and how it names
@@ -644,6 +646,13 @@ pub fn phrase(r: &mut Reader<'_>, form: Form) -> Option<Selector> {
 /// ("creature cards" before "in your graveyard").
 pub(super) fn phrase_in(r: &mut Reader<'_>, form: Form, unplaced: bool) -> Option<Selector> {
     r.attempt(|r| {
+        // "your commander": the commander its owner designated, whoever controls it.
+        let own_commander = r
+            .attempt(|r| {
+                (r.word("your") && matches!(r.peek_word(), Some("commander" | "commanders")))
+                    .then_some(())
+            })
+            .is_some();
         let mut adjectives = Vec::new();
         while let Some(pred) = r.peek_word().and_then(|word| adjective(word, form)) {
             r.skip();
@@ -706,6 +715,7 @@ pub(super) fn phrase_in(r: &mut Reader<'_>, form: Form, unplaced: bool) -> Optio
             }
             Noun::Commander => {
                 preds.push(Pred::Commander);
+                preds.extend(own_commander.then_some(Pred::OwnedBy(Ref::You)));
                 preds.extend(adjectives);
             }
         }
@@ -767,6 +777,11 @@ fn type_words(types: &[CardType], plural: bool) -> Vec<String> {
         .collect()
 }
 
+/// Whether the predicates name the commander its owner designated: "your commander".
+fn names_own_commander(preds: &[Pred]) -> bool {
+    preds.contains(&Pred::Commander) && preds.contains(&Pred::OwnedBy(Ref::You))
+}
+
 /// A selector as a phrase, the way `phrase` reads it.
 pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     let (spell, preds) = match selector.0.split_first() {
@@ -776,6 +791,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     let (mut adjectives, mut types, mut suffixes) = (Vec::new(), Vec::new(), Vec::new());
     let (mut subtype, mut card, mut token) = (None, false, false);
     let mut commander = false;
+    let own_commander = names_own_commander(preds);
     let mut kinds: Vec<CardType> = Vec::new();
     let mut rest = preds.iter().peekable();
     while let Some(pred) = rest.next() {
@@ -812,6 +828,8 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
                 return None;
             }
             commander = true;
+        } else if own_commander && *pred == Pred::OwnedBy(Ref::You) {
+            // Said as "your" before the noun.
         } else if let Some(found) = type_preds(pred) {
             // A second card type before the noun qualifies it: "artifact creatures".
             if !types.is_empty() {
@@ -838,6 +856,9 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     }
     let names = type_words(&types, plural && !spell && !card && !token);
     let mut words = comma_negations(adjectives);
+    if own_commander {
+        words.insert(0, "your".to_owned());
+    }
     words.extend(subtype.map(|name| {
         if plural && !qualified {
             plural_subtype_word(name)

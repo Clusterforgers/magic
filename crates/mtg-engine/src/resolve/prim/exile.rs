@@ -45,6 +45,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 by: cx.scope.source,
             }
         }
+        Some(Duration::UntilOpponentBecomesMonarch) => ZoneCause::ExiledUntilMonarch {
+            by: cx.scope.controller,
+        },
         Some(_) => return Err(ResolveError::Unsupported("Exile.Duration")),
     };
     let mut events = Vec::new();

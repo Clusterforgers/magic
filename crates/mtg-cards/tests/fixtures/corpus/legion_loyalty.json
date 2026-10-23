@@ -1,0 +1,23 @@
+{
+  "id": "11681eae-f5bd-4e78-a980-5ab58db0d9f3",
+  "oracle_id": "24e39d26-6a2b-461e-b194-bda575bcf898",
+  "name": "Legion Loyalty",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "122",
+  "rarity": "mythic",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{6}{W}{W}",
+  "cmc": 8.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Creatures you control have myriad. (Whenever a creature with myriad attacks, for each opponent other than defending player, you may create a token copy that's tapped and attacking that player or a planeswalker they control. Exile the tokens at end of combat.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

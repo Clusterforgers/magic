@@ -1,0 +1,23 @@
+{
+  "id": "a26e990d-726c-4b3b-84b4-9c15a5c4be8c",
+  "oracle_id": "3b92c4dc-2605-42f4-a374-c3be4de3279e",
+  "name": "Familiar Ground",
+  "lang": "en",
+  "layout": "normal",
+  "set": "7ed",
+  "collector_number": "243",
+  "rarity": "uncommon",
+  "released_at": "2001-04-11",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Each creature you control can't be blocked by more than one creature.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

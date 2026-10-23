@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ba6c3c72-c014-45c6-a0b4-59eb9a65303e",
+  "name": "Academy Elite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Academy Elite",
+      "oracle_fingerprint": "377e5cfcc7d1a17fbf70a36bc54b1a29",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Count": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, { "RemoveCounters": { "counter": "+1/+1" } }],
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

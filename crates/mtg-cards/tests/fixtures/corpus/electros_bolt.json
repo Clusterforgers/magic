@@ -1,0 +1,25 @@
+{
+  "id": "25fe063f-35e4-4fca-9889-06834a8ef9b9",
+  "oracle_id": "e9222f89-e495-4502-bb0c-f5e802686b01",
+  "name": "Electro's Bolt",
+  "lang": "en",
+  "layout": "normal",
+  "set": "spm",
+  "collector_number": "77",
+  "rarity": "common",
+  "released_at": "2025-09-26",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Electro's Bolt deals 4 damage to target creature.\nMayhem {1}{R} (You may cast this card from your graveyard for {1}{R} if you discarded it this turn. Timing rules still apply.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Mayhem"
+  ]
+}

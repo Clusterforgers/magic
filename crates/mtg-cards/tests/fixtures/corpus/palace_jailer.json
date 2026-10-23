@@ -1,0 +1,25 @@
+{
+  "id": "3a8c2a84-e0f2-4611-af3d-42f4578ad4e3",
+  "oracle_id": "180eda7c-fca2-403b-85cd-8ffebaf9f408",
+  "name": "Palace Jailer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "140",
+  "rarity": "uncommon",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4,
+  "type_line": "Creature — Human Soldier",
+  "oracle_text": "When this creature enters, you become the monarch.\nWhen this creature enters, exile target creature an opponent controls until an opponent becomes the monarch.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

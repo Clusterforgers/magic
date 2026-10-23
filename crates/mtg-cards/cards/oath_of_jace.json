@@ -1,0 +1,31 @@
+{
+  "oracle_id": "dc92b420-8ac7-4478-a287-3d897357be08",
+  "name": "Oath of Jace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oath of Jace",
+      "oracle_fingerprint": "6570d2905175415315ee2f583a3b3574",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 3 } }, { "Discard": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Scry": {
+                  "count": { "Count": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

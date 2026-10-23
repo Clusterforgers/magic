@@ -168,7 +168,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
 fn designate(state: &mut GameState, event: &Event) {
     match event {
         Event::DayNightChanged { to } => state.day_night = Some(*to),
-        Event::MonarchChanged { player } => state.monarch = Some(*player),
+        Event::MonarchChanged { player } => crate::monarch::set(state, Some(*player)),
         Event::CitysBlessingGained { player } => {
             state.citys_blessing.insert(*player);
         }
@@ -533,7 +533,8 @@ fn player_lost(
         .combat
         .remove_attackers_targeting(crate::combat::AttackTarget::Player(id));
     if state.monarch == Some(id) {
-        state.monarch = crate::monarch::successor(state, id);
+        let successor = crate::monarch::successor(state, id);
+        crate::monarch::set(state, successor);
     }
     let successor = state.next_alive_after(id);
     if let Some(priority) = &mut state.priority {

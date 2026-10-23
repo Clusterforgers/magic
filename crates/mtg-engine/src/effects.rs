@@ -142,6 +142,23 @@ pub enum Modification {
         /// What "this" is for the selector.
         source: ObjectRef,
     },
+    /// The object can block only the attackers the selector names, judged when blockers are declared as `controller`
+    /// and `source` see them: a restriction with no layer that `block_options` reads.
+    CanBlockOnly {
+        /// The attackers it may block.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        only: mtg_cards::refs::Selector,
+        /// Who "you" is for the selector.
+        controller: PlayerId,
+        /// What "this" is for the selector.
+        source: ObjectRef,
+    },
+    /// The object can't be blocked except by this many creatures together or more: a restriction with no layer that
+    /// the block rules read beside menace.
+    MinBlockers(u32),
+    /// The object can't be blocked by more than this many creatures together: a restriction with no layer that the
+    /// block rules read.
+    MaxBlockers(u32),
     /// The object is goaded by `by` (CR 701.15): a restriction with no layer that the attack declaration reads; it attacks
     /// each combat if able and attacks a player other than the goader if able.
     Goaded {
@@ -172,6 +189,9 @@ impl Modification {
             | Modification::CantBlock
             | Modification::CantBeBlocked
             | Modification::CantBeBlockedBy { .. }
+            | Modification::CanBlockOnly { .. }
+            | Modification::MinBlockers(_)
+            | Modification::MaxBlockers(_)
             | Modification::Goaded { .. } => return None,
         })
     }
@@ -221,6 +241,9 @@ impl Modification {
             | Modification::CantBlock
             | Modification::CantBeBlocked
             | Modification::CantBeBlockedBy { .. }
+            | Modification::CanBlockOnly { .. }
+            | Modification::MinBlockers(_)
+            | Modification::MaxBlockers(_)
             | Modification::Goaded { .. } => {}
         }
     }
@@ -271,6 +294,9 @@ pub(crate) fn lasts(
                 .object(source.id)
                 .is_some_and(|o| o.counter() == source.counter && o.zone() == Zone::Battlefield)
         }),
+        // Only an exile lasts until an opponent becomes the monarch (a card in exile waits, `exile_return.rs`); no continuous
+        // effect does.
+        Duration::UntilOpponentBecomesMonarch => false,
     }
 }
 

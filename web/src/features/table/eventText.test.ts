@@ -653,6 +653,22 @@ describe('events with more than one shape', () => {
       "Hill Giant can't be blocked by some creatures until end of turn",
     ],
     [
+      effect(
+        objects(2),
+        { CanBlockOnly: { only: [], controller: 0, source: { id: 1, counter: 0 } } },
+        'UntilEndOfTurn',
+      ),
+      'Hill Giant can block only some creatures until end of turn',
+    ],
+    [
+      effect(objects(2), { MinBlockers: 2 }, 'UntilEndOfTurn'),
+      "Hill Giant can't be blocked except by 2 or more creatures until end of turn",
+    ],
+    [
+      effect(objects(2), { MaxBlockers: 1 }, 'UntilEndOfTurn'),
+      "Hill Giant can't be blocked by more than 1 creature until end of turn",
+    ],
+    [
       effect(objects(2), { AddSubtype: 'Elf' }, 'UntilEndOfTurn'),
       'Hill Giant becomes Elf too until end of turn',
     ],

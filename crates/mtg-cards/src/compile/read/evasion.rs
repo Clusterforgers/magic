@@ -3,8 +3,9 @@
 
 use mtg_core::card::CardType;
 
+use super::amounts::number_word;
 use super::selectors::{Form, phrase, phrase_text};
-use super::statics::{plural, statics, subjects};
+use super::statics::{plural, statics, subject, subjects};
 use super::tokens::Reader;
 use crate::ability::Ability;
 use crate::modify::Modification;
@@ -27,6 +28,27 @@ pub(super) fn cannot_block(r: &mut Reader<'_>) -> Option<Ability> {
         vec![Modification::CantBeBlockedBy(blockers)],
         None,
     ))
+}
+
+/// "This creature can block only creatures with flying.", "Enchanted creature can block only creatures with flying.":
+/// the creature that blocks, and the attackers it is held to.
+pub(super) fn block_only(r: &mut Reader<'_>) -> Option<Ability> {
+    let (affected, _) = subject(r, true)?;
+    r.need("can block only")?;
+    let attackers = phrase(r, Form::All)?;
+    Some(statics(
+        affected,
+        vec![Modification::CanBlockOnly(attackers)],
+        None,
+    ))
+}
+
+/// "two or more creatures" after "can't be blocked except by": the fewest creatures that may block together.
+pub(super) fn or_more(r: &mut Reader<'_>) -> Option<u32> {
+    r.attempt(|r| {
+        let count = number_word(r.take_word()?).filter(|count| *count >= 2)?;
+        r.words("or more creatures").then_some(count)
+    })
 }
 
 /// The blockers a creature can't be blocked except by, as a selector of the blockers it can't be blocked by: not one

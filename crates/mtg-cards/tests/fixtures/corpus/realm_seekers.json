@@ -1,0 +1,25 @@
+{
+  "id": "93167de6-cbce-4bd6-bc41-c35f54f28544",
+  "oracle_id": "ccb66cdc-909a-42c1-a10f-3886e9ed1936",
+  "name": "Realm Seekers",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c16",
+  "collector_number": "162",
+  "rarity": "rare",
+  "released_at": "2016-11-11",
+  "digital": false,
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Creature — Elf Scout",
+  "oracle_text": "This creature enters with X +1/+1 counters on it, where X is the total number of cards in all players' hands.\n{2}{G}, Remove a +1/+1 counter from this creature: Search your library for a land card, reveal it, put it into your hand, then shuffle.",
+  "power": "0",
+  "toughness": "0",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

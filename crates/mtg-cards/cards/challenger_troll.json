@@ -1,0 +1,25 @@
+{
+  "oracle_id": "78cb1f05-edad-4430-9095-f3eabd80bf41",
+  "name": "Challenger Troll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Challenger Troll",
+      "oracle_fingerprint": "cb2498f0620482eb30f6be11a11b7b17",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+              ]
+            },
+            "mods": [{ "MaxBlockers": 1 }]
+          }
+        }
+      ]
+    }
+  ]
+}

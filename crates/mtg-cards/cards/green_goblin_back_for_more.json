@@ -1,0 +1,29 @@
+{
+  "oracle_id": "622fbc01-9099-4b6c-b2ce-e41247fc7355",
+  "name": "Green Goblin, Back for More",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Green Goblin, Back for More",
+      "oracle_fingerprint": "7859139fabd8792c4695b43626ebfdb4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": {} }],
+                  "paid": [{ "Discard": { "who": "Opponents" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Mayhem": "{3}{B}{B}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "ffd1bf4b-3ab0-4ab3-b351-01cc2e857bb6",
+  "oracle_id": "9dbfa01b-ce7e-4dd1-9257-0c89b831f477",
+  "name": "Knights of the Black Rose",
+  "lang": "en",
+  "layout": "normal",
+  "set": "moc",
+  "collector_number": "332",
+  "rarity": "uncommon",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{3}{W}{B}",
+  "cmc": 5,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "When this creature enters, you become the monarch.\nWhenever an opponent becomes the monarch, if you were the monarch as the turn began, that player loses 2 life and you gain 2 life.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": []
+}

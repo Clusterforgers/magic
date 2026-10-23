@@ -5,13 +5,13 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::answers::Outcome;
 use crate::characteristics::{characteristics, controller_of};
-use crate::combat::{AttackTarget, Attacker, DamageTarget};
+use crate::combat::{AttackTarget, Attacker, DamageForm, DamageTarget};
 use crate::decision::DamageOptions;
 use crate::error::IllegalAnswer;
 use crate::events::Event;
 use crate::keywords::{self, DamageRules};
 use crate::object::GameObject;
-use crate::rules::cant_gain_life;
+use crate::rules::{cant_gain_life, damage_causes_no_life_loss};
 use crate::snapshot::Snapshot;
 use crate::state::GameState;
 use crate::turn::Step;
@@ -343,12 +343,19 @@ fn deal(
     if amount == 0 {
         return Vec::new();
     }
+    let mut form = dealer.keywords.form();
+    if let DamageTarget::Player(player) = target
+        && form != DamageForm::Infect
+        && damage_causes_no_life_loss(state, player)
+    {
+        form = DamageForm::NoLifeLoss;
+    }
     let mut events = vec![Event::DamageDealt {
         source: dealer.id,
         target,
         amount,
         deathtouch: dealer.keywords.deathtouch,
-        form: dealer.keywords.form(),
+        form,
         toxic: if combat && matches!(target, DamageTarget::Player(_)) {
             dealer.keywords.toxic
         } else {
@@ -802,6 +809,147 @@ mod tests {
             sacrifice(&mut game, id);
             let events = dealt_by(&game, &Dealer::known(&shot), DamageTarget::Player(FOE), 0);
             assert_eq!(events.len(), 0);
+        }
+    }
+
+    mod no_life_loss {
+        //! Goal: damage to a player under the rule "damage doesn't cause you to lose life" is dealt in the form that loses no life, to that player only, while its condition holds, whatever the source's keywords make of it except infect (which gives poison counters all the same), and damage to a permanent is plain damage; the player's life stays and the damage event is still dealt.
+        use std::sync::Arc;
+
+        use mtg_cards::CardDefinition;
+        use mtg_cards::ability::Ability;
+        use mtg_cards::keyword::Keyword;
+        use mtg_core::card::CardType;
+
+        use super::*;
+        use crate::fixtures::{creature, state};
+        use crate::fold::apply_event;
+
+        const ME: PlayerId = PlayerId(0);
+        const FOE: PlayerId = PlayerId(1);
+
+        fn protector(condition: &str) -> Arc<CardDefinition> {
+            let json =
+                format!(r#"{{"Rule":{{"rule":{{"NoLifeLossFromDamage":"You"}}{condition}}}}}"#);
+            Arc::new(
+                CardDefinition::new("Protector")
+                    .with_type(CardType::Creature)
+                    .with_power_toughness(1, 1)
+                    .with_rules(serde_json::from_str::<Ability>(&json).unwrap()),
+            )
+        }
+
+        fn source(keyword: Option<Keyword>) -> Arc<CardDefinition> {
+            let card = CardDefinition::new("Source")
+                .with_type(CardType::Creature)
+                .with_power_toughness(3, 3);
+            Arc::new(match keyword {
+                Some(keyword) => card.with_rules(Ability::Keyword(keyword)),
+                None => card,
+            })
+        }
+
+        /// Seat 0 controls the Source and a Bear; seat 1 controls the Protector.
+        fn game(condition: &str, keyword: Option<Keyword>) -> (GameState, ObjectId) {
+            let game = state(
+                vec![vec![], vec![]],
+                vec![
+                    vec![source(keyword), creature("Bear", 2, 2)],
+                    vec![protector(condition)],
+                ],
+            );
+            let id = game.zone(Zone::Battlefield)[0];
+            (game, id)
+        }
+
+        fn form_of(events: &[Event]) -> Option<DamageForm> {
+            events.iter().find_map(|event| match event {
+                Event::DamageDealt { form, .. } => Some(*form),
+                _ => None,
+            })
+        }
+
+        #[rstest]
+        #[case::the_protected_player_loses_none(FOE, None, Some(DamageForm::NoLifeLoss))]
+        #[case::wither_is_plain_damage_to_a_player(
+            FOE,
+            Some(Keyword::Wither),
+            Some(DamageForm::NoLifeLoss)
+        )]
+        #[case::infect_gives_poison_all_the_same(
+            FOE,
+            Some(Keyword::Infect),
+            Some(DamageForm::Infect)
+        )]
+        #[case::another_player_loses_life(ME, None, Some(DamageForm::Normal))]
+        fn damage_to_a_player_is_dealt_in_the_form_the_rule_and_the_source_make_of_it(
+            #[case] hurt: PlayerId,
+            #[case] keyword: Option<Keyword>,
+            #[case] form: Option<DamageForm>,
+        ) {
+            let (game, id) = game("", keyword);
+            let events = dealt_by(
+                &game,
+                &Dealer::live(&game, id),
+                DamageTarget::Player(hurt),
+                3,
+            );
+            assert_eq!(form_of(&events), form);
+        }
+
+        #[test]
+        fn damage_to_a_permanent_is_plain_damage() {
+            let (game, id) = game("", None);
+            let bear = game.zone(Zone::Battlefield)[1];
+            let events = dealt_by(
+                &game,
+                &Dealer::live(&game, id),
+                DamageTarget::Object(bear),
+                3,
+            );
+            assert_eq!(form_of(&events), Some(DamageForm::Normal));
+        }
+
+        #[rstest]
+        #[case::nobody_is_the_monarch(None, DamageForm::Normal)]
+        #[case::the_protected_player_is_the_monarch(Some(FOE), DamageForm::NoLifeLoss)]
+        #[case::another_player_is_the_monarch(Some(ME), DamageForm::Normal)]
+        fn under_a_condition_the_rule_holds_exactly_while_the_condition_does(
+            #[case] holder: Option<PlayerId>,
+            #[case] form: DamageForm,
+        ) {
+            let (mut game, id) = game(r#","condition":{"Monarch":"You"}"#, None);
+            if let Some(player) = holder {
+                apply_event(&mut game, &Event::MonarchChanged { player }).unwrap();
+            }
+            let events = dealt_by(
+                &game,
+                &Dealer::live(&game, id),
+                DamageTarget::Player(FOE),
+                3,
+            );
+            assert_eq!(form_of(&events), Some(form));
+        }
+
+        #[rstest]
+        #[case::normal(DamageForm::Normal, 17)]
+        #[case::no_life_loss(DamageForm::NoLifeLoss, 20)]
+        #[case::infect(DamageForm::Infect, 20)]
+        fn the_life_of_the_player_falls_with_the_form_of_the_damage_and_the_damage_is_dealt_in_each(
+            #[case] form: DamageForm,
+            #[case] life: i32,
+        ) {
+            let (mut game, id) = game("", None);
+            let event = Event::DamageDealt {
+                source: id,
+                target: DamageTarget::Player(FOE),
+                amount: 3,
+                deathtouch: false,
+                form,
+                toxic: 0,
+            };
+            apply_event(&mut game, &event).unwrap();
+            assert_eq!(game.player(FOE).unwrap().life(), life);
         }
     }
 }

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "8733a4fc-4068-4af4-9598-dc3d895e8556",
+  "name": "Basilisk Gate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Basilisk Gate",
+      "oracle_fingerprint": "2040fbcf61facc28c445de8700434fa7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }] },
+                        "toughness": { "Count": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

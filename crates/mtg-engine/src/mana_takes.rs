@@ -12,6 +12,7 @@ use std::borrow::Cow;
 use mtg_core::ids::ObjectId;
 
 use crate::mana::{ManaOption, ManaSource, Payment};
+use crate::mana_repeat;
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -38,10 +39,9 @@ pub(crate) fn assignment(options: &[&ManaOption]) -> Option<Vec<Vec<Vec<ObjectId
                 .iter()
                 .copied()
                 .filter(|id| {
-                    !options
-                        .iter()
-                        .enumerate()
-                        .any(|(other, o)| other != owner && o.source.object == *id)
+                    !options.iter().enumerate().any(|(other, o)| {
+                        other != owner && mana_repeat::real(o.source.object) == *id
+                    })
                 })
                 .collect();
             for _ in 0..take.count {

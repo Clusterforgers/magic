@@ -1,0 +1,26 @@
+{
+  "oracle_id": "3b7352e6-6508-491c-9935-426a6eebb429",
+  "name": "The Squadron Sinister",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Squadron Sinister",
+      "oracle_fingerprint": "080bd9f6c0285e0d65bd9e3f649c4d25",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Villain" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Flying" },
+              { "AddKeyword": "Haste" }
+            ]
+          }
+        },
+        { "Keyword": { "Mayhem": "{3}{U}{R}" } }
+      ]
+    }
+  ]
+}

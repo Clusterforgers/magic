@@ -1,0 +1,27 @@
+{
+  "id": "e3a8bdfa-a39c-4ca7-b591-1c6aca4cc5ac",
+  "oracle_id": "797c2b1c-c373-4735-b397-f561559c7c61",
+  "name": "Regal Behemoth",
+  "lang": "en",
+  "layout": "normal",
+  "set": "lcc",
+  "collector_number": "251",
+  "rarity": "rare",
+  "released_at": "2023-11-17",
+  "digital": false,
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6,
+  "type_line": "Creature — Dinosaur",
+  "oracle_text": "Trample\nWhen this creature enters, you become the monarch.\nWhenever you tap a land for mana while you're the monarch, add an additional one mana of any color.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Trample"
+  ]
+}

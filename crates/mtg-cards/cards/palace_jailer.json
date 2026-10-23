@@ -1,0 +1,30 @@
+{
+  "oracle_id": "180eda7c-fca2-403b-85cd-8ffebaf9f408",
+  "name": "Palace Jailer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Palace Jailer",
+      "oracle_fingerprint": "ebef798daae41e516d20804a13f774ad",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "UntilOpponentBecomesMonarch" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

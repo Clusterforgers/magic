@@ -16,6 +16,11 @@ blockers: Array<BlockerOption>,
  */
 min_blockers?: Array<[ObjectId, number]>, 
 /**
+ * The most creatures that may block an attacker together, for each attacker that is limited ("can't be blocked
+ * by more than one creature"). Left out while no attacker is.
+ */
+max_blockers?: Array<[ObjectId, number]>, 
+/**
  * The creatures among `blockers` that a rule requires to block (CR 509.1c); the declaration names each of them,
  * together with the creatures an attacker that needs several blockers must have. Left out while there are none.
  */

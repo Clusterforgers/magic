@@ -1,0 +1,12 @@
+{
+  "oracle_id": "2d1a15dc-3123-4425-b036-a3b5a83fcdf8",
+  "name": "Spider-Islanders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spider-Islanders",
+      "oracle_fingerprint": "c63002307bce7c17228166b0ef365188",
+      "abilities": [{ "Keyword": { "Mayhem": "{1}{R}" } }]
+    }
+  ]
+}

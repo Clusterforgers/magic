@@ -1,0 +1,24 @@
+{
+  "id": "3c4bf679-01cc-4786-a3bd-89c8ae70fdfa",
+  "oracle_id": "bf9421d2-54e2-44d8-8b39-2e41192a6517",
+  "name": "Surgehacker Mech",
+  "lang": "en",
+  "layout": "normal",
+  "set": "neo",
+  "collector_number": "260",
+  "rarity": "rare",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "mana_cost": "{4}",
+  "cmc": 4.0,
+  "type_line": "Artifact — Vehicle",
+  "oracle_text": "Menace\nWhen this Vehicle enters, it deals damage equal to twice the number of Vehicles you control to target creature or planeswalker an opponent controls.\nCrew 4",
+  "power": "5",
+  "toughness": "5",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Crew",
+    "Menace"
+  ]
+}

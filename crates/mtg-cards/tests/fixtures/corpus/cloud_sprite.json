@@ -1,0 +1,27 @@
+{
+  "id": "feacf831-a6e4-456b-b8f2-d7ec554281a1",
+  "oracle_id": "283433cb-9466-4b40-8af9-30934654d43b",
+  "name": "Cloud Sprite",
+  "lang": "en",
+  "layout": "normal",
+  "set": "10e",
+  "collector_number": "75",
+  "rarity": "common",
+  "released_at": "2007-07-13",
+  "digital": false,
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Creature — Faerie",
+  "oracle_text": "Flying (This creature can't be blocked except by creatures with flying or reach.)\nThis creature can block only creatures with flying.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

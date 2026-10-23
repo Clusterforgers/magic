@@ -1,0 +1,21 @@
+{
+  "oracle_id": "61f55e39-4028-4c91-910e-16b88c73beb5",
+  "name": "Archon of Coronation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archon of Coronation",
+      "oracle_fingerprint": "6eb273003acff3491bf7df4f77ab7315",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        { "Rule": { "rule": { "NoLifeLossFromDamage": "You" }, "condition": { "Monarch": "You" } } }
+      ]
+    }
+  ]
+}

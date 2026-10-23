@@ -1,0 +1,28 @@
+{
+  "id": "8519598f-ab7f-49b0-90cc-c0b6422ebdf8",
+  "oracle_id": "c807b53f-2917-41a0-812c-57240b623365",
+  "name": "Raging Goblinoids",
+  "lang": "en",
+  "layout": "normal",
+  "set": "spm",
+  "collector_number": "85",
+  "rarity": "uncommon",
+  "released_at": "2025-09-26",
+  "digital": false,
+  "mana_cost": "{4}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Goblin Berserker Villain",
+  "oracle_text": "Haste\nMayhem {2}{R} (You may cast this card from your graveyard for {2}{R} if you discarded it this turn. Timing rules still apply.)",
+  "power": "5",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Mayhem",
+    "Haste"
+  ]
+}

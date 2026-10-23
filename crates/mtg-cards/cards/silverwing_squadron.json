@@ -1,0 +1,52 @@
+{
+  "oracle_id": "ba968a1e-c946-4cbe-9727-160c73cde3f4",
+  "name": "Silverwing Squadron",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silverwing Squadron",
+      "oracle_fingerprint": "cc5b9cf1f984bcb326b51db8ff598e62",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Knight",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Knight"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  },
+                  "count": { "Players": "Opponents" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

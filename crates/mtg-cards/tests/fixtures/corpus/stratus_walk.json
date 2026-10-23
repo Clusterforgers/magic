@@ -1,0 +1,25 @@
+{
+  "id": "947bb8f3-51f5-4fbe-9098-7e48f9fe1452",
+  "oracle_id": "eda37caa-d676-460a-804b-3ba9d8a8d044",
+  "name": "Stratus Walk",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ori",
+  "collector_number": "77",
+  "rarity": "common",
+  "released_at": "2015-07-17",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nWhen this Aura enters, draw a card.\nEnchanted creature has flying. (It can't be blocked except by creatures with flying or reach.)\nEnchanted creature can block only creatures with flying.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "61cceb14-9568-4a5e-9b56-07afa6407df2",
+  "name": "Inspired Sphinx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inspired Sphinx",
+      "oracle_fingerprint": "b5abe28706a98085a0d20be17678d9fd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": { "Players": "Opponents" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{U}",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Thopter",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Thopter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
