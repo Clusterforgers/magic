@@ -83,9 +83,15 @@ pub(crate) fn variants(card: &CardDefinition) -> Option<Vec<Variant>> {
 fn words_of(mana: &ManaCost, parts: &[Part]) -> String {
     let mut words: Vec<String> = Vec::new();
     if mana.mana_value() > 0 {
-        words.push(mana.to_string());
+        words.push(format!("pay {mana}"));
     }
-    words.extend(parts.iter().map(|part| part.text().to_lowercase()));
+    words.extend(parts.iter().map(|part| {
+        let text = part.text();
+        let mut chars = text.chars();
+        chars.next().map_or(String::new(), |first| {
+            first.to_lowercase().chain(chars).collect()
+        })
+    }));
     words.join(" and ")
 }
 

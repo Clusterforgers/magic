@@ -65,6 +65,7 @@ mod connive;
 mod continuous_effects;
 mod controller_token;
 mod copies;
+mod cost_choices;
 mod copies_fuzz;
 mod copy_dies;
 mod copy_effects;
