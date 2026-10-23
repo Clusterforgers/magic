@@ -19,6 +19,7 @@ pub mod cast_way_cards;
 pub mod choice_cards;
 pub mod combat_keyword_cards;
 pub mod commander_cards;
+pub mod companion_cards;
 pub mod conditional_static_cards;
 pub mod copy_cards;
 pub mod copy_keyword_cards;
@@ -114,6 +115,7 @@ pub use combat_keyword_cards::combat_keywords_fuzz_setup;
 pub use commander_cards::{
     CAST_KIND_CARDS, cast_kind_fuzz_setup, commander_fuzz_setup, partner_fuzz_setup,
 };
+pub use companion_cards::companion_fuzz_setup;
 pub use conditional_static_cards::conditional_static_fuzz_setup;
 pub use copy_cards::{copy_fuzz_setup, spell_copy_fuzz_setup};
 pub use copy_keyword_cards::copy_keywords_fuzz_setup;
