@@ -1,0 +1,33 @@
+{
+  "oracle_id": "0d4ecdb1-ec90-497f-a7a4-1c68092b8757",
+  "name": "Teferi's Protection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teferi's Protection",
+      "oracle_fingerprint": "e1f37af71d72884039dd826f862f2f05",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "LifeTotalCantChange": "You" },
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "PlayersHave": { "who": "You", "keyword": { "Protection": [] } } },
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              { "PhaseOut": { "what": { "Each": [{ "ControlledBy": "You" }] } } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

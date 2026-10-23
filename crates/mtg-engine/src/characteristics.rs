@@ -128,6 +128,13 @@ pub fn controller_of(state: &GameState, id: ObjectId) -> Option<PlayerId> {
 
 /// Who controls `object`, as [`controller_of`] says, for a caller that has the object at hand.
 pub(crate) fn controller_of_object(state: &GameState, object: &GameObject) -> PlayerId {
+    if object.zone() == Zone::PhasedOut {
+        // The layers leave it out; it is the controller it had when it phased out who it phases in for.
+        return object
+            .permanent()
+            .and_then(|permanent| permanent.phasing())
+            .map_or_else(|| object.controller(), |phasing| phasing.controller);
+    }
     if object.zone() != Zone::Battlefield {
         return object.controller();
     }

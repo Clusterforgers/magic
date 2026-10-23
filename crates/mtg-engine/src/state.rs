@@ -268,7 +268,8 @@ impl GameState {
     /// The permanent `id` is attached to (it is an Aura or Equipment), if that host is still the very object it was
     /// attached to and on the battlefield: a host that left is a new object (CR 400.7).
     pub fn host_of(&self, id: ObjectId) -> Option<ObjectId> {
-        let attached = self.object(id)?.permanent()?.attached_to()?;
+        let object = self.object(id).filter(|o| o.zone() == Zone::Battlefield)?;
+        let attached = object.permanent()?.attached_to()?;
         let host = self.object(attached.id)?;
         (host.zone() == Zone::Battlefield && host.counter() == attached.counter)
             .then_some(attached.id)
@@ -277,7 +278,8 @@ impl GameState {
     /// The player `id` is attached to (an Aura that enchants a player), while that player is still in the game: a
     /// player who left takes the Auras on them away (CR 800.4a, 704.5m).
     pub fn player_host_of(&self, id: ObjectId) -> Option<PlayerId> {
-        let player = self.object(id)?.permanent()?.attached_player()?;
+        let object = self.object(id).filter(|o| o.zone() == Zone::Battlefield)?;
+        let player = object.permanent()?.attached_player()?;
         self.is_alive(player).then_some(player)
     }
 

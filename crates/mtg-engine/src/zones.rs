@@ -21,6 +21,16 @@ pub enum Zone {
     Exile,
     /// A player's command zone (Commander extension point; unused by Normal).
     Command(PlayerId),
+    /// The permanents that are phased out (CR 702.26): still on the battlefield, but treated as though they don't
+    /// exist, so no scan of the battlefield finds them.
+    PhasedOut,
+}
+
+impl Zone {
+    /// Whether an object here is a permanent: on the battlefield, phased in or out.
+    pub const fn is_permanent_zone(self) -> bool {
+        matches!(self, Zone::Battlefield | Zone::PhasedOut)
+    }
 }
 
 /// Where in an ordered zone an object is inserted.
@@ -40,6 +50,7 @@ pub struct Zones {
     graveyard: Vec<Vec<ObjectId>>,
     command: Vec<Vec<ObjectId>>,
     battlefield: Vec<ObjectId>,
+    phased_out: Vec<ObjectId>,
     stack: Vec<ObjectId>,
     exile: Vec<ObjectId>,
 }
@@ -53,6 +64,7 @@ impl Zones {
             graveyard: per_player(),
             command: per_player(),
             battlefield: Vec::new(),
+            phased_out: Vec::new(),
             stack: Vec::new(),
             exile: Vec::new(),
         }
@@ -66,6 +78,7 @@ impl Zones {
             Zone::Graveyard(p) => by_player(&self.graveyard, p),
             Zone::Command(p) => by_player(&self.command, p),
             Zone::Battlefield => &self.battlefield,
+            Zone::PhasedOut => &self.phased_out,
             Zone::Stack => &self.stack,
             Zone::Exile => &self.exile,
         }
@@ -78,6 +91,7 @@ impl Zones {
             Zone::Graveyard(p) => self.graveyard.get_mut(p.index()),
             Zone::Command(p) => self.command.get_mut(p.index()),
             Zone::Battlefield => Some(&mut self.battlefield),
+            Zone::PhasedOut => Some(&mut self.phased_out),
             Zone::Stack => Some(&mut self.stack),
             Zone::Exile => Some(&mut self.exile),
         }
@@ -90,7 +104,7 @@ impl Zones {
             Zone::Hand(p) => p.index() < self.hand.len(),
             Zone::Graveyard(p) => p.index() < self.graveyard.len(),
             Zone::Command(p) => p.index() < self.command.len(),
-            Zone::Battlefield | Zone::Stack | Zone::Exile => true,
+            Zone::Battlefield | Zone::PhasedOut | Zone::Stack | Zone::Exile => true,
         }
     }
 
@@ -144,7 +158,7 @@ impl Zones {
                 Zone::Command(p),
             ]
         });
-        per_player.chain([Zone::Battlefield, Zone::Stack, Zone::Exile])
+        per_player.chain([Zone::Battlefield, Zone::PhasedOut, Zone::Stack, Zone::Exile])
     }
 }
 
@@ -168,6 +182,7 @@ mod tests {
     #[case(Zone::Graveyard(PlayerId(1)))]
     #[case(Zone::Command(PlayerId(0)))]
     #[case(Zone::Battlefield)]
+    #[case(Zone::PhasedOut)]
     #[case(Zone::Stack)]
     #[case(Zone::Exile)]
     fn top_is_the_end_and_bottom_the_start(#[case] zone: Zone) {
@@ -191,8 +206,8 @@ mod tests {
     }
 
     #[rstest]
-    #[case(2, 11)]
-    #[case(5, 23)]
+    #[case(2, 12)]
+    #[case(5, 24)]
     fn zone_enumeration_covers_every_container(#[case] players: usize, #[case] expected: usize) {
         assert_eq!(Zones::all_zones(players).count(), expected);
     }

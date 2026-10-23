@@ -76,6 +76,7 @@ pub mod manual;
 pub mod merged;
 pub mod monarch;
 pub mod object;
+pub mod phasing;
 pub mod player;
 pub mod priority;
 pub mod replace;

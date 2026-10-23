@@ -258,6 +258,12 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
 
         Event::PermanentTapped { object } => set_tapped(state, *object, true)?,
         Event::PermanentUntapped { object } => set_tapped(state, *object, false)?,
+        Event::PermanentPhasedOut {
+            object,
+            controller,
+            indirect,
+        } => crate::phasing::fold_out(state, *object, *controller, *indirect)?,
+        Event::PermanentPhasedIn { object } => crate::phasing::fold_in(state, *object)?,
         Event::Monstrous { object, .. } => set_monstrous(state, *object)?,
         Event::ClassLevelGained { object, level, .. } => set_level(state, *object, *level)?,
         Event::TurnedFaceUp { object, .. } => turn_face_up(state, *object)?,

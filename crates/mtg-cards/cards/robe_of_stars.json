@@ -1,0 +1,21 @@
+{
+  "oracle_id": "416f49e2-feb1-43e7-befc-b0e02181b202",
+  "name": "Robe of Stars",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Robe of Stars",
+      "oracle_fingerprint": "60452d365b417b6965c13f4a3a84e698",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 3 } }]
+          }
+        },
+        { "Activated": { "cost": "{1}{W}", "effects": [{ "PhaseOut": { "what": "Attached" } }] } },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

@@ -1414,6 +1414,7 @@ impl<'a> Walker<'a> {
             | Effect::Counter { what }
             | Effect::Tap { what }
             | Effect::Untap { what }
+            | Effect::PhaseOut { what }
             | Effect::Transform { what }
             | Effect::Flip { what }
             | Effect::Goad { what }
@@ -2120,6 +2121,7 @@ impl<'a> Walker<'a> {
             }),
             GameRule::CantGainLife(who)
             | GameRule::NoLifeLossFromDamage(who)
+            | GameRule::LifeTotalCantChange(who)
             | GameRule::CantDraw(who)
             | GameRule::CantSearch(who)
             | GameRule::RevealTop(who)
@@ -2148,6 +2150,7 @@ impl<'a> Walker<'a> {
                     w.problem("an additional land play is at least one");
                 }
             }),
+            GameRule::PlayersHave { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
             GameRule::CanBeCommander => {}
             GameRule::TriggerAgain { cause } => {
                 let saved = std::mem::replace(&mut self.scope, Scope::new(&[], false));

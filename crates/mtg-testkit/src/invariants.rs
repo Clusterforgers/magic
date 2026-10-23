@@ -440,9 +440,27 @@ fn check_zone_index(state: &GameState) -> Result<(), Violation> {
                     object.owner()
                 )));
             }
-            if object.permanent().is_some() != (zone == Zone::Battlefield) {
+            if object.permanent().is_some() != zone.is_permanent_zone() {
                 return Err(zone_error(format!(
                     "{id:?} permanent state does not match {zone:?}"
+                )));
+            }
+            let phasing = object.permanent().and_then(|p| p.phasing());
+            if phasing.is_some() != (zone == Zone::PhasedOut) {
+                return Err(zone_error(format!(
+                    "{id:?} phasing does not match {zone:?}"
+                )));
+            }
+            // What phased out with its host phases in with it, so the host is still phased out (CR 702.26g).
+            if let (Some(phasing), Some(host)) =
+                (phasing, object.permanent().and_then(|p| p.attached_to()))
+                && phasing.indirect
+                && state
+                    .object(host.id)
+                    .is_some_and(|h| h.counter() == host.counter && h.zone() != Zone::PhasedOut)
+            {
+                return Err(zone_error(format!(
+                    "{id:?} phased out with a host that is phased in"
                 )));
             }
         }
