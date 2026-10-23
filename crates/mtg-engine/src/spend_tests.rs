@@ -519,6 +519,27 @@ fn a_payment_that_spends_restricted_mana_on_a_signets_cost_is_refused() {
 }
 
 #[rstest]
+#[case::creature_mana(CardType::Creature, true)]
+#[case::artifact_mana(CardType::Artifact, false)]
+#[case::enchantment_mana(CardType::Enchantment, false)]
+fn a_card_cast_face_down_is_a_plain_creature_spell_for_the_mana_restrictions(
+    #[case] restricted_to: CardType,
+    #[case] allowed: bool,
+) {
+    let spend = spell_of(&[CardType::Artifact, CardType::Creature], false);
+    assert!(spend.allows(&only_for(CardType::Artifact)));
+    let face_down = spend.clone().face_down();
+    assert_eq!(face_down.allows(&only_for(restricted_to)), allowed);
+    assert_eq!(
+        spend
+            .clone()
+            .cast_as(Some(mtg_cards::value::CastWay::FaceDown)),
+        face_down
+    );
+    assert_eq!(spend.clone().cast_as(None), spend);
+}
+
+#[rstest]
 #[case::creature_mana(CardType::Creature, false)]
 #[case::enchantment_mana(CardType::Enchantment, true)]
 fn a_bestowed_creature_spell_is_an_aura_spell_for_the_mana_restrictions(

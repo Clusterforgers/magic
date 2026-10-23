@@ -587,6 +587,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "melee" => Keyword::Melee,
         "mentor" => Keyword::Mentor,
         "dethrone" => Keyword::Dethrone,
+        "umbra armor" => Keyword::UmbraArmor,
         "extort" => Keyword::Extort,
         "evolve" => Keyword::Evolve,
         "saddled" => Keyword::Saddled,
@@ -1028,6 +1029,7 @@ mod tests {
     #[case::melee("Melee", Keyword::Melee)]
     #[case::mentor("Mentor", Keyword::Mentor)]
     #[case::dethrone("dethrone", Keyword::Dethrone)]
+    #[case::umbra_armor("Umbra armor", Keyword::UmbraArmor)]
     #[case::extort("Extort", Keyword::Extort)]
     #[case::evolve("Evolve", Keyword::Evolve)]
     #[case::annihilator("Annihilator 2", Keyword::Annihilator(2))]
@@ -1361,6 +1363,7 @@ mod tests {
             "Melee",
             "Mentor",
             "Dethrone",
+            "Umbra armor",
             "Annihilator 2",
             "Extort",
             "Evolve",

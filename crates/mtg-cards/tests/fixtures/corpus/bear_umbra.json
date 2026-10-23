@@ -1,0 +1,26 @@
+{
+  "id": "5a195fb1-f2e9-4e05-8a04-c335e1afbef6",
+  "oracle_id": "44661108-d72f-4d02-9303-7e4b0ecf7e9c",
+  "name": "Bear Umbra",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nec",
+  "collector_number": "113",
+  "rarity": "rare",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature gets +2/+2 and has \"Whenever this creature attacks, untap all lands you control.\"\nUmbra armor (If enchanted creature would be destroyed, instead remove all damage from it and destroy this Aura.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Umbra armor",
+    "Enchant"
+  ]
+}

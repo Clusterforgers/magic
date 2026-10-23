@@ -168,6 +168,21 @@ fn tally(state: &mut GameState, id: mtg_core::ids::ObjectId, kind: Tally) {
     }
 }
 
+/// A permanent loses the damage marked on it and the mark of deathtouch.
+fn remove_damage(
+    state: &mut GameState,
+    object: mtg_core::ids::ObjectId,
+) -> Result<&mut crate::object::PermanentState, EngineError> {
+    let perm = state
+        .objects
+        .get_mut(&object)
+        .and_then(|o| o.permanent.as_mut())
+        .ok_or_else(|| invalid(format!("{object:?} is not a permanent")))?;
+    perm.damage = 0;
+    perm.deathtouched = false;
+    Ok(perm)
+}
+
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::AttackersDeclared { attackers, .. } => {
@@ -247,15 +262,11 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
         Event::CombatEnded => state.combat = CombatState::default(),
         Event::JoinedAttack { object, target } => join_attack(state, *object, *target)?,
         Event::Regenerated { object } => {
-            let perm = state
-                .objects
-                .get_mut(object)
-                .and_then(|o| o.permanent.as_mut())
-                .ok_or_else(|| invalid(format!("{object:?} is not a permanent")))?;
-            perm.tapped = true;
-            perm.damage = 0;
-            perm.deathtouched = false;
+            remove_damage(state, *object)?.tapped = true;
             state.combat.remove_object(*object);
+        }
+        Event::DamageRemoved { object } => {
+            remove_damage(state, *object)?;
         }
         Event::DamageCleared => {
             for object in state.objects.values_mut() {

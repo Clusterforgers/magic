@@ -112,6 +112,8 @@ const RUNS: &[&str] = &[
     "Effect.ExileUntil",
     "Effect.ExileTop",
     "Effect.ExileHidden",
+    "Effect.Manifest",
+    "Effect.Cloak",
     "Effect.CastFromZone",
     "Effect.Destroy",
     "Effect.Exile",
@@ -382,6 +384,9 @@ const RUNS: &[&str] = &[
     "Keyword.Afterlife",
     "Keyword.Horsemanship",
     "Keyword.Spectacle",
+    "Keyword.UmbraArmor",
+    "ReplaceWhen.Destroyed",
+    "ReplaceBy.UmbraArmor",
     "Condition.NewlyControlled",
     "Condition.Level",
     "Rule.CanBeCommander",
@@ -640,6 +645,8 @@ mod tests {
     #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]
     #[case::exiling_the_top_cards("Effect.ExileTop", true)]
     #[case::exiling_face_down("Effect.ExileHidden", true)]
+    #[case::manifesting("Effect.Manifest", true)]
+    #[case::cloaking("Effect.Cloak", true)]
     #[case::casting_during_a_resolution("Effect.CastFromZone", true)]
     #[case::cascading("Keyword.Cascade", true)]
     #[case::convoking("Keyword.Convoke", true)]
@@ -791,6 +798,9 @@ mod tests {
     #[case::afterlife("Keyword.Afterlife", true)]
     #[case::horsemanship("Keyword.Horsemanship", true)]
     #[case::spectacle("Keyword.Spectacle", true)]
+    #[case::umbra_armor("Keyword.UmbraArmor", true)]
+    #[case::replacing_destruction("ReplaceWhen.Destroyed", true)]
+    #[case::saving_by_umbra_armor("ReplaceBy.UmbraArmor", true)]
     #[case::pairing_attackers_with_players("Rule.MustAttackPlayers", true)]
     #[case::taxing_attackers("Rule.AttackTax", true)]
     #[case::squad("Keyword.Squad", true)]

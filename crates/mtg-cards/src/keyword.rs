@@ -302,6 +302,8 @@ pub enum Keyword {
     Horsemanship,
     /// Spectacle with its cost (CR 702.137): an alternative cost to cast the card from a hand when an opponent lost life this turn.
     Spectacle(Cost),
+    /// Umbra armor (CR 702.89): if the creature this Aura enchants would be destroyed, instead all damage is removed from it and this Aura is destroyed.
+    UmbraArmor,
 }
 
 /// What a promised gift is (CR 702.174).
@@ -450,6 +452,7 @@ impl Keyword {
         "Afterlife",
         "Horsemanship",
         "Spectacle",
+        "Umbra armor",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -588,6 +591,7 @@ impl Keyword {
             Keyword::Awaken { .. } => "Awaken",
             Keyword::Gravestorm => "Gravestorm",
             Keyword::Sunburst => "Sunburst",
+            Keyword::UmbraArmor => "Umbra armor",
             Keyword::Dash(_) => "Dash",
             Keyword::Blitz(_) => "Blitz",
             Keyword::Prowl(_) => "Prowl",
@@ -778,6 +782,7 @@ mod tests {
             Keyword::Afterlife(2),
             Keyword::Horsemanship,
             Keyword::Spectacle(Cost::default()),
+            Keyword::UmbraArmor,
         ]
     }
 
