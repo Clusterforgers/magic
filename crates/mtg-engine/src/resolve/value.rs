@@ -61,6 +61,7 @@ static NO_CHOICES: Choices = Choices {
     face: None,
     spent: None,
     cost_picks: None,
+    cost_shots: None,
 };
 static NO_BINDINGS: Bindings = BTreeMap::new();
 
@@ -460,14 +461,7 @@ impl<'a> Scope<'a> {
                 .get(name)
                 .cloned()
                 .ok_or_else(|| ResolveError::Invalid(format!("`{name}` is not bound")))?,
-            Ref::Paid => self
-                .choices
-                .cost_picks()
-                .iter()
-                .flatten()
-                .filter_map(|picked| state.object(*picked))
-                .map(|picked| Target::Object(picked.reference()))
-                .collect(),
+            Ref::Paid => self.paid(),
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
             Ref::Each(selector) => self
@@ -476,6 +470,42 @@ impl<'a> Scope<'a> {
                 .map(Target::Object)
                 .collect(),
         })
+    }
+
+    /// The objects the cost picked, in the order of its parts: one the cost took out of its zone is the object it was
+    /// (`Choices.cost_shots` holds how it was), any other the object it is now. A copy of a spell paid nothing and names
+    /// what the original's cost took.
+    fn paid(&self) -> Vec<Target> {
+        let shots = self.choices.cost_shots();
+        let named = |id: ObjectId| {
+            shots
+                .iter()
+                .find(|shot| shot.id == id)
+                .map(|shot| ObjectRef {
+                    id,
+                    counter: shot.counter,
+                })
+                .or_else(|| self.state.object(id).map(GameObject::reference))
+        };
+        let picked: Vec<ObjectId> = self
+            .choices
+            .cost_picks()
+            .iter()
+            .flatten()
+            .copied()
+            .collect();
+        let refs: Vec<ObjectRef> = if picked.is_empty() {
+            shots
+                .iter()
+                .map(|shot| ObjectRef {
+                    id: shot.id,
+                    counter: shot.counter,
+                })
+                .collect()
+        } else {
+            picked.into_iter().filter_map(named).collect()
+        };
+        refs.into_iter().map(Target::Object).collect()
     }
 
     /// The player the attacking creature of the event, else the source, attacks or attacked when it left combat.

@@ -22,6 +22,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
 use crate::object::ObjectRef;
+use crate::snapshot::Snapshot;
 
 pub use cards::{CardsChoice, CardsOptions};
 pub use costs::{CostsChoice, CostsOptions, OptionalCost};
@@ -134,6 +135,11 @@ pub struct Choices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Vec<ObjectId>>>", optional))]
     pub cost_picks: Option<Box<Vec<Vec<ObjectId>>>>,
+    /// The permanents and cards the cost took out of their zones (a sacrifice, a discard, an exile), as they were just
+    /// before: "the sacrificed creature's power" reads them (CR 608.2h). Public, as every such object is shown as it leaves.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Snapshot>>", optional))]
+    pub cost_shots: Option<Box<Vec<Snapshot>>>,
 }
 
 impl Choices {
@@ -145,6 +151,17 @@ impl Choices {
     /// The permanents and cards picked for the parts of the cost that take them, one list for each such part.
     pub fn cost_picks(&self) -> &[Vec<ObjectId>] {
         self.cost_picks.as_deref().map_or(&[], Vec::as_slice)
+    }
+
+    /// What the cost took out of its zones, as it was just before (`parts::photographed`).
+    pub fn cost_shots(&self) -> &[Snapshot] {
+        self.cost_shots.as_deref().map_or(&[], Vec::as_slice)
+    }
+
+    /// These choices with `shots` as the objects the cost took.
+    pub(crate) fn with_cost_shots(mut self, shots: Vec<Snapshot>) -> Choices {
+        self.cost_shots = (!shots.is_empty()).then(|| Box::new(shots));
+        self
     }
 
     /// Adds the objects picked for the next part of the cost that takes some.

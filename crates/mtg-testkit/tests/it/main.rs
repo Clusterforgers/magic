@@ -209,6 +209,7 @@ mod mutate_fuzz;
 mod ninjutsu;
 mod object_nth;
 mod owner_left;
+mod paid_reads;
 mod part_fuzz;
 mod partner_with;
 mod pay_fuzz;
