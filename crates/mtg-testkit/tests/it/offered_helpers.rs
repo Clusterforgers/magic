@@ -239,7 +239,11 @@ fn a_pick_for_the_cost_leaves_the_other_helper_and_the_taken_one_is_refused(
     else {
         panic!("a payment error was expected, not {result:?}");
     };
-    assert_eq!(error, PaymentError::NotOffered(taken_id));
+    let expected = match help {
+        Help::Delve => PaymentError::NotInGraveyard(taken_id),
+        _ => PaymentError::NotOffered(taken_id),
+    };
+    assert_eq!(error, expected);
     assert_eq!(driver.engine().state_hash(), hash);
     assert_eq!(driver.engine().events().len(), log);
     // The other one pays, and the log replays.
