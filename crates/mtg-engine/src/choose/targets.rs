@@ -34,7 +34,15 @@ pub(crate) fn options_before_x(
         ..spec.clone()
     };
     options_for(
-        state, source, controller, index, &relaxed, true, cause, None, &[],
+        state,
+        source,
+        controller,
+        index,
+        &relaxed,
+        true,
+        cause,
+        None,
+        &[],
     )
 }
 
@@ -511,7 +519,17 @@ mod tests {
     ) {
         let game = game();
         let spell = game.zone(Zone::Hand(PlayerId(0)))[0];
-        let options = options_for(&game, spell, PlayerId(0), 0, &spec(json), true, None, None, &[]);
+        let options = options_for(
+            &game,
+            spell,
+            PlayerId(0),
+            0,
+            &spec(json),
+            true,
+            None,
+            None,
+            &[],
+        );
         assert_eq!(options.map(|o| (o.min, o.max)), expected);
     }
 

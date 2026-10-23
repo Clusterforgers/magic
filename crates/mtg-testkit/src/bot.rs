@@ -687,6 +687,14 @@ impl RandomBot {
         let indices: Vec<usize> = options.optional.iter().map(|cost| cost.index).collect();
         let wanted = self.rng.index(indices.len() + 1);
         let mut chosen = self.pick(&indices, wanted);
+        // A gift is promised to one opponent at most.
+        let mut promised = false;
+        chosen.retain(|index| {
+            let promise = *index >= mtg_engine::keywords::gift::SEAT_BASE;
+            let keep = !(promise && promised);
+            promised |= promise;
+            keep
+        });
         chosen.sort_unstable();
         Answer::ChooseCosts(CostsChoice::Costs(chosen))
     }

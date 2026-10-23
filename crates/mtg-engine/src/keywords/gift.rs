@@ -24,7 +24,7 @@ use crate::ability_reader;
 use crate::object::GameObject;
 
 /// The first number among the optional costs paid that names a seat: `SEAT_BASE + seat` is a gift promised to it.
-pub(crate) const SEAT_BASE: usize = 1 << 16;
+pub const SEAT_BASE: usize = 1 << 16;
 
 /// The number that stands for a gift promised to `player` among the costs paid.
 pub(crate) fn promise(player: PlayerId) -> usize {
@@ -166,7 +166,7 @@ mod tests {
         assert_eq!(extra.name, name);
         assert!(!extra.repeatable);
         assert_eq!(extra.kind, OptionalKind::Gift);
-        assert!(extra.cost.0.is_empty());
+        assert_eq!(extra.cost.0, []);
     }
 
     #[rstest]

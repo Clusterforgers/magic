@@ -68,7 +68,12 @@ pub(crate) fn answer(
         }
     }
     // A gift is promised to one opponent at most.
-    if costs.iter().filter(|cost| **cost >= gift::SEAT_BASE).count() > 1 {
+    if costs
+        .iter()
+        .filter(|cost| **cost >= gift::SEAT_BASE)
+        .count()
+        > 1
+    {
         return Err(IllegalAnswer::Duplicate("gift").into());
     }
     costs.sort_unstable();

@@ -114,6 +114,8 @@ mod free_cast_fuzz;
 mod free_casts;
 mod fuse;
 mod fuzz_games;
+mod gift;
+mod gift_fuzz;
 mod goad;
 mod graveyard_discard_fuzz;
 mod graveyard_fuzz;
