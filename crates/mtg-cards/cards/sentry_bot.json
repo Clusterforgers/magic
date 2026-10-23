@@ -1,0 +1,56 @@
+{
+  "oracle_id": "d0c78ee6-babb-410d-9d3a-0c1395596e56",
+  "name": "Sentry Bot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sentry Bot",
+      "oracle_fingerprint": "d227c42ce2ef19509ecee09b968c1c81",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Count": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }] }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "You",
+                  "counter": { "Other": "energy" },
+                  "count": { "Count": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 3 }],
+                  "paid": [
+                    {
+                      "PutCounters": {
+                        "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "counter": "+1/+1"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "45d5cd4c-7285-4507-8cbf-eace7a734f41",
+  "name": "Price of Fame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Price of Fame",
+      "oracle_fingerprint": "0bdab2e2a17eebf3ec6e3f0567f54e02",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "This",
+              { "Targeting": [{ "Supertype": "Legendary" }, { "Type": "Creature" }] }
+            ],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }, { "Surveil": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

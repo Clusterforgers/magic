@@ -103,3 +103,66 @@ fn another_use_is_not_the_text(#[case] only: &str, #[case] text: &str) {
     let json = any_color(only);
     assert!(!writes(&json, text), "{text}");
 }
+
+#[rstest]
+#[case::troyan(
+    r#"[{"Spell":{"min_value":5}},{"Spell":{"facts":["XInCost"]}}]"#,
+    "{T}: Add one mana of any color. Spend this mana only to cast spells with mana value 5 or greater or spells with {X} in their mana costs."
+)]
+#[case::thieving_varmint(
+    r#"[{"Spell":{"facts":["NotOwned"]}}]"#,
+    "{T}: Add one mana of any color. Spend this mana only to cast spells you don't own."
+)]
+#[case::lord_of_the_forsaken(
+    r#"[{"Spell":{"facts":["FromGraveyard"]}}]"#,
+    "{T}: Add one mana of any color. Spend this mana only to cast a spell from your graveyard."
+)]
+#[case::the_ringhart_crest(
+    r#"[{"Spell":{"types":["Creature"],"chosen_type":true}},{"Spell":{"types":["Creature"],"supertypes":["Legendary"]}}]"#,
+    "{T}: Add one mana of any color. Spend this mana only to cast a creature spell of the chosen type or a legendary creature spell."
+)]
+#[case::master_of_dark_rites(
+    r#"[{"Spell":{"subtypes":["Vampire","Cleric","Demon"]}}]"#,
+    "{T}: Add one mana of any color. Spend this mana only to cast Vampire, Cleric, and/or Demon spells."
+)]
+#[case::vedalken_engineer(
+    r#"[{"Spell":{"types":["Artifact"]}},{"Ability":{"types":["Artifact"]}}]"#,
+    "{T}: Add one mana of any color. Spend this mana only to cast artifact spells or activate abilities of artifacts."
+)]
+#[case::flamebraider(
+    r#"[{"Spell":{"subtypes":["Elemental"]}},{"Ability":{"subtypes":["Elemental"]}}]"#,
+    "{T}: Add one mana of any color. Spend this mana only to cast Elemental spells or activate abilities of Elemental sources."
+)]
+#[case::ixallis_lorekeeper(
+    r#"[{"Spell":{"subtypes":["Dinosaur"]}},{"Ability":{"subtypes":["Dinosaur"]}}]"#,
+    "{T}: Add one mana of any color. Spend this mana only to cast a Dinosaur spell or activate an ability of a Dinosaur source."
+)]
+fn the_restrictions_of_the_spender_cards_are_written_as_they_are_worded(
+    #[case] only: &str,
+    #[case] text: &str,
+) {
+    let json = any_color(only);
+    assert!(
+        writes(&json, text),
+        "{text}: {:?}",
+        render_variants(&ability(&json))
+    );
+}
+
+#[rstest]
+#[case::a_lower_value(
+    r#"[{"Spell":{"min_value":5}}]"#,
+    "{T}: Add one mana of any color. Spend this mana only to cast spells with mana value 6 or greater."
+)]
+#[case::a_hand_for_a_graveyard(
+    r#"[{"Spell":{"facts":["FromGraveyard"]}}]"#,
+    "{T}: Add one mana of any color. Spend this mana only to cast a spell from your hand."
+)]
+#[case::owned_for_not_owned(
+    r#"[{"Spell":{"facts":["NotOwned"]}}]"#,
+    "{T}: Add one mana of any color. Spend this mana only to cast spells you own."
+)]
+fn another_value_zone_or_owner_is_not_the_text(#[case] only: &str, #[case] text: &str) {
+    let json = any_color(only);
+    assert!(!writes(&json, text), "{text}");
+}

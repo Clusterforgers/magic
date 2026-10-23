@@ -75,6 +75,73 @@ pub fn reduction_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, Corp
     Ok(GameSetup::new(Arc::new(Normal), seed, decks))
 }
 
+/// The corpus cards whose cost falls with a target, a tally of the turn, a count of one opponent, a kind of spell, the
+/// chosen creature type or the creatures attacking the caster.
+pub const MORE_REDUCTION_CARDS: &[&str] = &[
+    "Avatar of Fury",
+    "Into the Story",
+    "Game Over",
+    "Bitter Downfall",
+    "Ephara's Dispersal",
+    "Price of Fame",
+    "Killian, Ink Duelist",
+    "Elderwood Scion",
+    "Ezzaroot Channeler",
+    "Blood for the Blood God!",
+    "Rowdy Research",
+    "Alisaie Leveilleur",
+    "Danitha Capashen, Paragon",
+    "Goreclaw, Terror of Qal Sisma",
+    "Urza's Incubator",
+    "Morophon, the Boundless",
+    "Sentry Bot",
+];
+
+/// A legal Normal deck in five colours of the cards above, one of each, with the creatures, Auras and Equipment they
+/// reduce and the spells that damage, kill and gain life so their conditions come true.
+///
+/// It has its own generator, so the other decks and the games seeded from them stay as they were.
+pub fn more_reduction_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
+    let colors = [
+        Color::Blue,
+        Color::Black,
+        Color::Green,
+        Color::White,
+        Color::Red,
+    ];
+    let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS).map(|i| land(colors[i % 5])).collect();
+    for &name in MORE_REDUCTION_CARDS {
+        deck.push(corpus::card(name)?);
+    }
+    for (name, copies) in [
+        ("Renewed Faith", 3),
+        ("Lightning Bolt", 4),
+        ("Grizzly Bears", 4),
+        ("Bogardan Hellkite", 2),
+        ("Pacifism", 2),
+        ("Bonesplitter", 2),
+        ("Llanowar Elves", 3),
+        ("Sol Ring", 3),
+        ("Academy Elite", 2),
+    ] {
+        deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
+    }
+    rng.shuffle(&mut deck);
+    Ok(deck)
+}
+
+/// A normal game of `players` seats whose decks are [`more_reduction_deck`]s, fully determined by `seed`.
+pub fn more_reduction_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusError> {
+    let mut decks = Vec::with_capacity(players);
+    for seat in 0u64..players as u64 {
+        decks.push(more_reduction_deck(&mut GameRng::substream(
+            seed,
+            17_500 + seat,
+        ))?);
+    }
+    Ok(GameSetup::new(Arc::new(Normal), seed, decks))
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: a reduction deck is a legal sixty-one cards with every card of the list in it, and the games built from one
@@ -99,5 +166,28 @@ mod tests {
                 .collect::<Vec<_>>()
         };
         assert_eq!(names(&setup), names(&reduction_fuzz_setup(3, 5).unwrap()));
+    }
+
+    #[test]
+    fn the_second_reduction_deck_has_every_listed_card_and_is_legal() {
+        let deck = more_reduction_deck(&mut GameRng::substream(1, 17_500)).unwrap();
+        for &name in MORE_REDUCTION_CARDS {
+            assert!(deck.iter().any(|card| card.name == name), "{name}");
+        }
+        for players in 2..=4 {
+            let setup = more_reduction_fuzz_setup(players, 5).unwrap();
+            assert_eq!(setup.validate(), Ok(()));
+        }
+        let names = |setup: &GameSetup| {
+            setup
+                .players
+                .iter()
+                .map(|p| p.library.iter().map(|c| c.name.clone()).collect::<Vec<_>>())
+                .collect::<Vec<_>>()
+        };
+        assert_eq!(
+            names(&more_reduction_fuzz_setup(3, 5).unwrap()),
+            names(&more_reduction_fuzz_setup(3, 5).unwrap())
+        );
     }
 }

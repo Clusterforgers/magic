@@ -25,6 +25,7 @@ Akroma's Vengeance
 Akroma, Angel of Wrath
 All That Glitters
 Alpha Deathclaw
+Alphinaud Leveilleur
 Altar's Reap
 Ambitious Aetherborn
 Anafenza, Kin-Tree Spirit
@@ -212,6 +213,7 @@ Contentious Plan
 Conversion Apparatus
 Copper-Leaf Angel
 Coralhelm Commander
+Cormela, Glamour Thief
 Coruscation Mage
 Counterspell
 Courser of Kruphix
@@ -379,6 +381,7 @@ Finch Formation
 Fire-Lit Thicket
 Firestorm Hellkite
 Flame Jab
+Flamebraider
 Flatline
 Flawless Maneuver
 Fleecemane Lion
@@ -440,6 +443,7 @@ Golden-Scale Aeronaut
 Goldlust Triad
 Goldwarden's Helm
 Goliath Truck
+Goreclaw, Terror of Qal Sisma
 Gorger Wurm
 Grapeshot
 Graveblade Marauder
@@ -527,6 +531,7 @@ Invisible Stalker
 Iridescent Vinelasher
 Iron League Steed
 Ivory Mask
+Ixalli's Lorekeeper
 Izzet Charm
 Jacked Rabbit
 Jadelight Ranger
@@ -556,6 +561,7 @@ Knight of Dusk's Shadow
 Knight of the Last Breath
 Knights of the Black Rose
 Kolaghan Skirmisher
+Kolvori, God of Kinship // The Ringhart Crest
 Kongming, "Sleeping Dragon"
 Korozda Guildmage
 Korozda Monitor
@@ -590,6 +596,7 @@ Llanowar Loamspeaker
 Llanowar Reborn
 Looter il-Kor
 Lord of Extinction
+Lord of the Forsaken
 Lotleth Troll
 Lotus Petal
 Lu Bu, Master-at-Arms
@@ -617,6 +624,7 @@ Maro
 Marwyn, the Nurturer
 Mask of Riddles
 Mass Diminish
+Master of Dark Rites
 Master of Etherium
 Master of Pearls
 Master of the Pearl Trident
@@ -1011,6 +1019,7 @@ The Squadron Sinister
 The Thing, Ben Grimm
 Thelonite Hermit
 Thieving Magpie
+Thieving Varmint
 Thinking Cap
 Thopter Fabricator
 Thorn-Thrash Viashino
@@ -1045,6 +1054,7 @@ Traumatic Visions
 Treasure Cruise
 Treasure Hunt
 Trove Tracker
+Troyan, Gutsy Explorer
 True Identity
 Trumpeting Gnarr
 Tumble Magnet
@@ -1078,6 +1088,7 @@ Vanishing Verse
 Vanishment
 Vanquish the Horde
 Vault 75: Middle School
+Vedalken Engineer
 Vengeful Vampire
 Vestige of Emrakul
 Veteran's Powerblade

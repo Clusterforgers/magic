@@ -723,7 +723,7 @@ pub(crate) fn grantable_as_is(
     };
     let all = mana_options(state, player);
     let sources = for_card(state, &all, id);
-    let spend = Spend::for_spell(state, id, card.card().x_in_cost > 0);
+    let spend = Spend::for_spell(state, id, player, card.card().x_in_cost > 0);
     let base = help::offered(state, player, id, &[]);
     granted(state, id, free, way).iter().any(|way| {
         let help = help_in(state, player, id, &base, &way.parts);
@@ -802,7 +802,7 @@ pub(crate) fn castable_as_is(
     let Some(card) = state.object(id) else {
         return false;
     };
-    let printed_spend = Spend::for_spell(state, id, card.card().x_in_cost > 0);
+    let printed_spend = Spend::for_spell(state, id, player, card.card().x_in_cost > 0);
     let sources = &for_card(state, sources, id);
     let base = help::offered(state, player, id, &[]);
     of(state, player, id).iter().any(|way| {

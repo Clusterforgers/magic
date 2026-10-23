@@ -22,4 +22,20 @@ subtypes?: Array<Subtype>,
 /**
  * How many colors it has.
  */
-colors: number, };
+colors: number, 
+/**
+ * Its mana value.
+ */
+value?: number, 
+/**
+ * It has {X} in its mana cost.
+ */
+x_in_cost?: boolean, 
+/**
+ * The caster does not own it.
+ */
+not_owned?: boolean, 
+/**
+ * It is cast from a graveyard.
+ */
+from_graveyard?: boolean, };

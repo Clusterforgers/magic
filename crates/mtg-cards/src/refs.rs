@@ -201,6 +201,11 @@ pub enum Pred {
         /// The amount compared with.
         to: Amount,
     },
+    /// A spell or ability on the stack with a target that matches the selector. A spell being cast reads the targets
+    /// announced so far; the cost judged before any target holds it where some object in play matches.
+    Targeting(Selector),
+    /// Was dealt damage this turn.
+    DamagedThisTurn,
     /// The predicate is false.
     Not(Box<Pred>),
     /// At least one of the predicates is true.

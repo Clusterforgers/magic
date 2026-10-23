@@ -22,7 +22,7 @@ use crate::ability_reader::{abilities_of, definition_has_cost_modifier};
 use crate::characteristics::controller_of_object;
 use crate::choose::Choices;
 use crate::object::{ObjectKind, ObjectRef};
-use crate::resolve::Scope;
+use crate::resolve::{CastTargets, Scope};
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -38,7 +38,7 @@ pub(super) fn apply(ctx: &Ctx<'_>, choices: &Choices, mana: Option<ManaCost>) ->
         return mana;
     }
     let specs = targets::specs(ctx, choices);
-    modified(ctx.state, ctx.player, *spell, &specs, choices, mana)
+    modified(ctx.state, ctx.player, *spell, &specs, choices, mana, false)
 }
 
 /// The mana cost `player` pays for `spell` before anything is announced, at least: the printed cost with the
@@ -59,6 +59,7 @@ pub(crate) fn cheapest<'a>(
         &[],
         &Choices::default(),
         Some(printed.clone()),
+        true,
     );
     Cow::Owned(cost.unwrap_or(ManaCost::ZERO))
 }
@@ -124,6 +125,7 @@ pub(crate) fn modified(
     specs: &[TargetSpec],
     choices: &Choices,
     mana: Option<ManaCost>,
+    judging: bool,
 ) -> Option<ManaCost> {
     let Some(target) = state
         .object(spell)
@@ -149,6 +151,7 @@ pub(crate) fn modified(
         let own = modifier.source.id == spell;
         let scope = Scope {
             casting: Some((spell, player)),
+            cast_targets: Some(CastTargets { choices, judging }),
             choices: if own { choices } else { &announced },
             specs: if own {
                 specs.iter().collect()

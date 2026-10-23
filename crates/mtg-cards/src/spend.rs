@@ -32,11 +32,36 @@ pub struct SpendFilter {
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub chosen_type: bool,
+    /// Its mana value is at least this ("spells with mana value 5 or greater"); 0 means any.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
+    pub min_value: u32,
+    /// Facts about the spell beyond its kind that must all hold.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<SpendFact>>", optional))]
+    pub facts: Vec<SpendFact>,
+}
+
+/// A fact about a spell that a restriction reads.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum SpendFact {
+    /// It has {X} in its mana cost ("spells with {X} in their mana costs").
+    XInCost,
+    /// The caster does not own it ("spells you don't own").
+    NotOwned,
+    /// It is cast from a graveyard ("a spell from your graveyard").
+    FromGraveyard,
 }
 
 #[allow(clippy::trivially_copy_pass_by_ref)]
 const fn is_false(flag: &bool) -> bool {
     !*flag
+}
+
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_zero(number: &u32) -> bool {
+    *number == 0
 }
 
 /// What a spell or an ability source is, as far as a restriction reads it.
@@ -55,6 +80,22 @@ pub struct SpendTraits {
     pub subtypes: Vec<Subtype>,
     /// How many colors it has.
     pub colors: u8,
+    /// Its mana value.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
+    pub value: u32,
+    /// It has {X} in its mana cost.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub x_in_cost: bool,
+    /// The caster does not own it.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub not_owned: bool,
+    /// It is cast from a graveyard.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub from_graveyard: bool,
 }
 
 impl SpendFilter {
@@ -92,6 +133,12 @@ impl SpendFilter {
             && (self.subtypes.is_empty()
                 || self.subtypes.iter().any(|s| traits.subtypes.contains(s)))
             && (!self.multicolored || traits.colors >= 2)
+            && traits.value >= self.min_value
+            && self.facts.iter().all(|fact| match fact {
+                SpendFact::XInCost => traits.x_in_cost,
+                SpendFact::NotOwned => traits.not_owned,
+                SpendFact::FromGraveyard => traits.from_graveyard,
+            })
     }
 }
 
@@ -154,6 +201,7 @@ mod tests {
             supertypes: supertypes.to_vec(),
             subtypes: subtypes.iter().map(|s| Subtype((*s).to_owned())).collect(),
             colors,
+            ..SpendTraits::default()
         }
     }
 
@@ -182,6 +230,47 @@ mod tests {
         assert_eq!(
             filter.holds(&traits(types, supertypes, subtypes, colors)),
             holds
+        );
+    }
+
+    #[rstest]
+    #[case::value_met(r#"{"min_value":5}"#, 5, false, false, false, true)]
+    #[case::value_above(r#"{"min_value":5}"#, 7, false, false, false, true)]
+    #[case::value_short(r#"{"min_value":5}"#, 4, false, false, false, false)]
+    #[case::x_in_the_cost(r#"{"facts":["XInCost"]}"#, 0, true, false, false, true)]
+    #[case::no_x_in_the_cost(r#"{"facts":["XInCost"]}"#, 9, false, false, false, false)]
+    #[case::not_owned(r#"{"facts":["NotOwned"]}"#, 0, false, true, false, true)]
+    #[case::owned(r#"{"facts":["NotOwned"]}"#, 0, false, false, false, false)]
+    #[case::from_a_graveyard(r#"{"facts":["FromGraveyard"]}"#, 0, false, false, true, true)]
+    #[case::from_a_hand(r#"{"facts":["FromGraveyard"]}"#, 0, false, false, false, false)]
+    #[case::every_part(
+        r#"{"min_value":3,"facts":["NotOwned","FromGraveyard"]}"#,
+        3,
+        false,
+        true,
+        false,
+        false
+    )]
+    fn a_filter_reads_the_value_the_cost_the_owner_and_the_zone(
+        #[case] json: &str,
+        #[case] value: u32,
+        #[case] x_in_cost: bool,
+        #[case] not_owned: bool,
+        #[case] from_graveyard: bool,
+        #[case] holds: bool,
+    ) {
+        let filter: SpendFilter = serde_json::from_str(json).unwrap();
+        let spell = SpendTraits {
+            value,
+            x_in_cost,
+            not_owned,
+            from_graveyard,
+            ..SpendTraits::default()
+        };
+        assert_eq!(filter.holds(&spell), holds);
+        assert_eq!(
+            serde_json::from_str::<SpendFilter>(&serde_json::to_string(&filter).unwrap()).unwrap(),
+            filter
         );
     }
 

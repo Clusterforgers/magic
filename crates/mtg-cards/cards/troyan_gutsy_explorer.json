@@ -1,0 +1,32 @@
+{
+  "oracle_id": "1135ebc3-9537-4341-956b-6e22d8be5f20",
+  "name": "Troyan, Gutsy Explorer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Troyan, Gutsy Explorer",
+      "oracle_fingerprint": "3f38c8f4af10f3628b77d981a162ce1e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green", "Blue"] },
+                  "only": [{ "Spell": { "min_value": 5 } }, { "Spell": { "facts": ["XInCost"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

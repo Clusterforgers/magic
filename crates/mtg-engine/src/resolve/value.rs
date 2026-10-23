@@ -86,6 +86,17 @@ pub struct Scope<'a> {
     /// The spell being cast and the player who casts it: the announcement reads it as a spell on the stack that this
     /// player controls, though it is still in a hand (CR 601.2a), when a cost modifier asks what it affects.
     pub(crate) casting: Option<(ObjectId, PlayerId)>,
+    /// What the spell being cast has announced, which `Pred::Targeting` reads whoever's ability asks.
+    pub(crate) cast_targets: Option<CastTargets<'a>>,
+}
+
+/// The targets a spell being cast has chosen so far (CR 601.2c).
+#[derive(Debug, Clone, Copy)]
+pub(crate) struct CastTargets<'a> {
+    /// The choices announced.
+    pub(crate) choices: &'a Choices,
+    /// Nothing is announced yet: the cost is judged for the priority decision, where a target is assumed to be found.
+    pub(crate) judging: bool,
 }
 
 /// What is known of an object: the object itself if it is still the one that was named, else how it was.
@@ -157,6 +168,24 @@ fn on_the_stack(pred: &Pred) -> bool {
     }
 }
 
+/// Whether `seen` is an ability on the stack of this kind.
+fn is_ability(seen: &Seen<'_>, kind: AbilityKind) -> bool {
+    seen.zone == Zone::Stack
+        && seen
+            .card
+            .and_then(GameObject::ability)
+            .is_some_and(|ability| {
+                matches!(
+                    (kind, ability.rules()),
+                    (AbilityKind::Triggered, Ability::Triggered { .. })
+                        | (
+                            AbilityKind::Activated,
+                            Ability::Activated { .. } | Ability::Loyalty { .. }
+                        )
+                )
+            })
+}
+
 /// The kind of zone a zone is.
 pub(crate) const fn zone_kind(zone: Zone) -> ZoneKind {
     match zone {
@@ -186,6 +215,7 @@ impl<'a> Scope<'a> {
             cause: None,
             layered: None,
             casting: None,
+            cast_targets: None,
         }
     }
 
@@ -234,6 +264,22 @@ impl<'a> Scope<'a> {
             TurnTally::Attackers => Tally::Attackers,
             TurnTally::DamageTaken => Tally::Hurt,
             TurnTally::LifeGained => Tally::Gained,
+            TurnTally::SpellsCast => Tally::Cast,
+            TurnTally::LifeGainedTotal
+            | TurnTally::CreaturesAttacked
+            | TurnTally::CreaturesDied => {
+                let kind = match what {
+                    TurnTally::LifeGainedTotal => Tally::GainedTotal,
+                    TurnTally::CreaturesAttacked => Tally::Attackers,
+                    _ => Tally::Died,
+                };
+                let total: u32 = self
+                    .players(who)?
+                    .into_iter()
+                    .map(|player| self.state.tallied(player, kind))
+                    .sum();
+                return Ok(i64::from(total));
+            }
             TurnTally::LifeLost => {
                 let lost: u32 = self
                     .players(who)?
@@ -258,6 +304,65 @@ impl<'a> Scope<'a> {
             .map(|player| i64::from(self.state.tallied(player, kind)))
             .max()
             .unwrap_or(0))
+    }
+
+    /// The most objects `of` names for any one of the players `who` names, each taken as the controller of the scope.
+    fn largest(&self, who: &Ref, of: &Selector) -> Result<i64, ResolveError> {
+        let counted = Amount::Count(of.clone());
+        let mut most = 0;
+        for player in self.players(who)? {
+            let each = Scope {
+                controller: player,
+                ..self.clone()
+            };
+            most = most.max(each.amount(&counted)?);
+        }
+        Ok(most)
+    }
+
+    /// Whether the spell `seen` being cast, or on the stack, has a target an object `inner` selects: a spell being
+    /// cast reads what it announced, and before anything is announced a target is found where some object in play
+    /// matches; a spell or ability on the stack reads its own targets.
+    fn targets_match(
+        &self,
+        inner: &Selector,
+        reference: ObjectRef,
+        seen: &Seen<'_>,
+    ) -> Result<bool, ResolveError> {
+        if seen.zone != Zone::Stack {
+            return Ok(false);
+        }
+        let casting = self.casting.is_some_and(|(cast, _)| cast == reference.id);
+        let chosen: Vec<ObjectRef> = match self.cast_targets {
+            Some(CastTargets { judging: true, .. }) if casting => {
+                let mut found = false;
+                for id in self
+                    .state
+                    .zone(Zone::Battlefield)
+                    .iter()
+                    .chain(self.state.zone(Zone::Stack).iter())
+                {
+                    let Some(object) = self.state.object(*id) else {
+                        continue;
+                    };
+                    if *id != reference.id && self.selects(inner, object.reference())? {
+                        found = true;
+                        break;
+                    }
+                }
+                return Ok(found);
+            }
+            Some(CastTargets { choices, .. }) if casting => choices.targeted_objects(),
+            _ => seen
+                .card
+                .map_or_else(Vec::new, |card| card.choices().targeted_objects()),
+        };
+        for target in chosen {
+            if self.selects(inner, target)? {
+                return Ok(true);
+            }
+        }
+        Ok(false)
     }
 
     /// How many times the permanents `of` names have mutated (CR 702.140): as they are, or as they were when they left.
@@ -807,26 +912,13 @@ impl<'a> Scope<'a> {
             Pred::Token => seen.kind == ObjectKind::Token,
             Pred::Commander => state.is_commander(reference.id),
             Pred::Spell => seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability,
-            Pred::Ability(kind) => {
-                seen.zone == Zone::Stack
-                    && seen
-                        .card
-                        .and_then(GameObject::ability)
-                        .is_some_and(|ability| {
-                            matches!(
-                                (kind, ability.rules()),
-                                (AbilityKind::Triggered, Ability::Triggered { .. })
-                                    | (
-                                        AbilityKind::Activated,
-                                        Ability::Activated { .. } | Ability::Loyalty { .. }
-                                    )
-                            )
-                        })
-            }
+            Pred::Ability(kind) => is_ability(seen, *kind),
             Pred::Tapped => seen.tapped == Some(true),
             Pred::Untapped => seen.tapped == Some(false),
             Pred::Monstrous => matches!(seen.counters, Counted::Live(held) if held.monstrous()),
             Pred::EnteredThisTurn => state.object_tallied(reference, None, Tally::Entered) > 0,
+            Pred::DamagedThisTurn => state.object_tallied(reference, None, Tally::Damaged) > 0,
+            Pred::Targeting(inner) => self.targets_match(inner, reference, seen)?,
             Pred::Attacking => state
                 .combat()
                 .attackers()
@@ -1000,6 +1092,13 @@ impl<'a> Scope<'a> {
             Amount::ColorsSpent => i64::try_from(colors_among(&self.mana_spent())).unwrap_or(0),
             Amount::PermanentsGraved => i64::from(self.state.graved_this_turn()),
             Amount::Tallied { who, what } => self.tallied(who, *what)?,
+            Amount::Largest { who, of } => self.largest(who, of)?,
+            Amount::StartingLife(who) => self
+                .players(who)?
+                .into_iter()
+                .map(|player| i64::from(self.state.ruleset().starting_life(player)))
+                .min()
+                .unwrap_or(0),
             Amount::Mutations(of) => self.mutations(of)?,
             Amount::Kicks => i64::try_from(self.payments(OptionalKind::Kicker))
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
