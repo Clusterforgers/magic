@@ -1,0 +1,27 @@
+{
+  "id": "11d64cab-2ed1-46d9-8034-0c2ba3f2e1ed",
+  "oracle_id": "4a58954a-1d20-48b8-847c-3615de67e122",
+  "name": "Warbriar Blessing",
+  "lang": "en",
+  "layout": "normal",
+  "set": "thb",
+  "collector_number": "204",
+  "rarity": "common",
+  "released_at": "2020-01-24",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature you control\nWhen this Aura enters, enchanted creature fights up to one target creature you don't control. (Each deals damage equal to its power to the other.)\nEnchanted creature gets +0/+2.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Fight",
+    "Enchant"
+  ],
+  "produced_mana": null
+}

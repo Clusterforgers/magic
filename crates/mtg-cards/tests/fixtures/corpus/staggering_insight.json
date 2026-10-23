@@ -1,0 +1,28 @@
+{
+  "id": "125b8be1-76b9-434e-a505-5099d950767c",
+  "oracle_id": "09071f5f-c9cb-43a9-b41d-faf6caf3beff",
+  "name": "Staggering Insight",
+  "lang": "en",
+  "layout": "normal",
+  "set": "thb",
+  "collector_number": "228",
+  "rarity": "uncommon",
+  "released_at": "2020-01-24",
+  "digital": false,
+  "mana_cost": "{W}{U}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature gets +1/+1 and has lifelink and \"Whenever this creature deals combat damage to a player, draw a card.\"",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "produced_mana": null
+}

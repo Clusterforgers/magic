@@ -583,17 +583,23 @@ pub(super) fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Mod
         ("gets", "has", "is")
     };
     // The last part: "and is goaded", "and can't be blocked by more than one creature".
+    let lose = if plural { "lose" } else { "loses" };
     let tail = |r: &mut Reader<'_>| {
         if r.words(&format!("and {is} goaded")) {
             Some(Modification::Goaded)
         } else if r.words("and can't be blocked by more than one creature") {
             Some(Modification::MaxBlockers(1))
+        } else if r.words(&format!("and {lose} all creature types")) {
+            Some(Modification::SetCreatureTypes(Vec::new()))
         } else {
             None
         }
     };
     if !plural && r.words("isn't a creature") {
         return Some(vec![Modification::RemoveType(CardType::Creature)]);
+    }
+    if r.words(&format!("{lose} all creature types")) {
+        return Some(vec![Modification::SetCreatureTypes(Vec::new())]);
     }
     let mut mods = Vec::new();
     if r.word(gets) {
@@ -669,13 +675,26 @@ fn of_a_kind(r: &mut Reader<'_>, is: &str) -> Option<Modification> {
 /// \"{R}, {T}: Copy target instant or sorcery spell you control.\"", "Lands you control have \"{T}: Add one mana of any
 /// color.\"", "Sliver creatures you control have \"When this creature enters, ...\"").
 pub(super) fn gives(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
-    let quoted = r
-        .quoted(abilities::activated)
-        .or_else(|| r.quoted(abilities::triggered));
-    match quoted {
-        Some(ability) => Some(vec![Modification::GrantAbility(Arc::new(ability))]),
-        None => granted(r),
+    if let Some(ability) = quoted_ability(r) {
+        return Some(vec![Modification::GrantAbility(Arc::new(ability))]);
     }
+    let mut mods = granted(r)?;
+    // "Enchanted creature has flying and \"Sacrifice a creature: ~ gets +2/+1 until end of turn.\""
+    if let [Modification::AddKeyword(_)] = mods.as_slice()
+        && let Some(ability) = r.attempt(|r| {
+            r.need("and")?;
+            quoted_ability(r)
+        })
+    {
+        mods.push(Modification::GrantAbility(Arc::new(ability)));
+    }
+    Some(mods)
+}
+
+/// One activated or triggered ability in quotes.
+fn quoted_ability(r: &mut Reader<'_>) -> Option<Ability> {
+    r.quoted(abilities::activated)
+        .or_else(|| r.quoted(abilities::triggered))
 }
 
 /// What `gives` reads, written back.
@@ -688,6 +707,20 @@ pub(super) fn given_text(mods: &[Modification]) -> Option<String> {
             ) =>
         {
             Some(format!("\"{}\"", render::ability(ability)?))
+        }
+        [
+            keyword @ Modification::AddKeyword(_),
+            Modification::GrantAbility(ability),
+        ] if matches!(
+            **ability,
+            Ability::Activated { .. } | Ability::Triggered { .. }
+        ) =>
+        {
+            Some(format!(
+                "{} and \"{}\"",
+                granted_text(std::slice::from_ref(keyword))?,
+                render::ability(ability)?
+            ))
         }
         _ => granted_text(mods),
     }
@@ -1388,6 +1421,12 @@ pub(super) fn predicate(
         [Modification::CantBlock, Modification::CantBeBlocked] => {
             return Some("can't block and can't be blocked".to_owned());
         }
+        [Modification::SetCreatureTypes(types)] if types.is_empty() => {
+            return Some(format!(
+                "{} all creature types",
+                if plural { "lose" } else { "loses" }
+            ));
+        }
         // Only a condition takes a type away: "As long as your devotion to white is less than five, ~ isn't a creature."
         [Modification::RemoveType(CardType::Creature)] if conditional && !plural => {
             return Some("isn't a creature".to_owned());
@@ -1418,6 +1457,17 @@ pub(super) fn predicate(
             rest,
             Some("can't be blocked by more than one creature".to_owned()),
         ),
+        Some((Modification::SetCreatureTypes(types), rest))
+            if types.is_empty() && !rest.is_empty() =>
+        {
+            (
+                rest,
+                Some(format!(
+                    "{} all creature types",
+                    if plural { "lose" } else { "loses" }
+                )),
+            )
+        }
         Some((Modification::AddSubtype(Subtype(kind)), rest)) if !rest.is_empty() && !plural => (
             rest,
             Some(format!(

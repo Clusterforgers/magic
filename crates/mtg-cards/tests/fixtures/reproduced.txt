@@ -204,7 +204,9 @@ Crypt Ghast
 Crystal Quarry
 Curate
 Curse of Bounty
+Curse of Conformity
 Curse of Disturbance
+Curse of Fool's Wisdom
 Curse of Opulence
 Curse of Predation
 Curse of Verbosity
@@ -316,6 +318,7 @@ Eyetwitch
 Faith Unbroken
 Faithful Watchdog
 Faithless Looting
+Fallen Ideal
 Familiar Ground
 Famine
 Fanatic of Rhonas
@@ -812,6 +815,7 @@ Spring // Mind
 Springleaf Drum
 Squirrel Nest
 Sram, Senior Edificer
+Staggering Insight
 Staggershock
 Star Whale
 Starlit Sanctum
@@ -821,6 +825,7 @@ Steam Vents
 Steampath Charger
 Steelburr Champion
 Steelclaw Lance
+Sticky Fingers
 Stitched Drake
 Stoke the Flames
 Stonewood Invocation
@@ -960,6 +965,7 @@ Walking Ballista
 Wanderbrine Preacher
 Waning Wurm
 War Balloon
+Warbriar Blessing
 Warchief Giant
 Wargate
 Warmonger Hellkite
