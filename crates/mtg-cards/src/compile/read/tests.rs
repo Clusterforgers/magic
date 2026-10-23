@@ -208,6 +208,7 @@ mod search_pairs;
 mod spell_copies;
 mod statics;
 mod stations;
+mod strive;
 mod tap_and_mill;
 mod this_or_another;
 mod token_keywords;

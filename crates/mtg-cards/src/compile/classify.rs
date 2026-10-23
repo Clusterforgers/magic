@@ -54,7 +54,8 @@ const SPELL_RULES: [&str; 4] = [
 /// may cast this spell without paying its mana cost."
 fn is_spell_rule(body: &str) -> bool {
     SPELL_RULES.iter().any(|rule| body.starts_with(rule))
-        || (body.starts_with("If ") && body.contains(", you may cast this spell without paying its mana cost"))
+        || (body.starts_with("If ")
+            && body.contains(", you may cast this spell without paying its mana cost"))
 }
 
 const CHAPTERS: [&str; 10] = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];

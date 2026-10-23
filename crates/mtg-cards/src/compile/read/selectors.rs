@@ -84,10 +84,10 @@ impl Form {
     }
 
     const fn connector(self) -> &'static str {
-        if matches!(self, Form::All) {
-            "and"
-        } else {
-            "or"
+        match self {
+            Form::All => "and",
+            Form::Targets => "and/or",
+            _ => "or",
         }
     }
 
@@ -528,14 +528,29 @@ fn head(r: &mut Reader<'_>, form: Form) -> Option<(Vec<CardType>, Noun)> {
     }
 }
 
+/// Reads the word that joins two card types: the form's connector, which is the three tokens "and/or" for the targets of a
+/// group ("artifacts and/or enchantments").
+fn connect(r: &mut Reader<'_>, form: Form) -> bool {
+    if form == Form::Targets {
+        return r
+            .attempt(|r| {
+                r.word("and").then_some(())?;
+                r.punct('/').then_some(())?;
+                r.word("or").then_some(())
+            })
+            .is_some();
+    }
+    r.word(form.connector())
+}
+
 /// The words between two card types of a phrase: the form's connector ("artifact or creature"), or a comma with the
 /// connector after it ("artifact, creature, or planeswalker"); reads them when a card type follows.
 fn type_separator(r: &mut Reader<'_>, form: Form) -> bool {
     r.attempt(|r| {
         if r.punct(',') {
-            r.word(form.connector());
+            connect(r, form);
         } else {
-            r.word(form.connector()).then_some(())?;
+            connect(r, form).then_some(())?;
         }
         r.peek_word().and_then(type_noun).map(|_| ())
     })
@@ -693,6 +708,21 @@ fn comma_negations(adjectives: Vec<String>) -> Vec<String> {
     words
 }
 
+/// The names of the card types of a phrase, in the plural when the phrase names them alone.
+fn type_words(types: &[CardType], plural: bool) -> Vec<String> {
+    types
+        .iter()
+        .map(|card_type| {
+            let name = type_name(*card_type);
+            if plural {
+                plural_of(name)
+            } else {
+                name.to_owned()
+            }
+        })
+        .collect()
+}
+
 /// A selector as a phrase, the way `phrase` reads it.
 pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     let (spell, preds) = match selector.0.split_first() {
@@ -762,17 +792,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     {
         return None;
     }
-    let names: Vec<String> = types
-        .iter()
-        .map(|card_type| {
-            let name = type_name(*card_type);
-            if plural && !spell && !card && !token {
-                plural_of(name)
-            } else {
-                name.to_owned()
-            }
-        })
-        .collect();
+    let names = type_words(&types, plural && !spell && !card && !token);
     let mut words = comma_negations(adjectives);
     words.extend(subtype.map(|name| {
         if plural && !qualified {

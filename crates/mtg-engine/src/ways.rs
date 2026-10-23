@@ -15,8 +15,8 @@ use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
-use crate::announce::{self, Granted};
 use crate::ability_reader;
+use crate::announce::{self, Granted};
 use crate::attach;
 use crate::characteristics::controller_of;
 use crate::choose::announceable;
