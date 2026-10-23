@@ -1,0 +1,27 @@
+{
+  "id": "924976cf-9b46-4cbf-ab27-07ca72a21608",
+  "oracle_id": "d7fd16ce-282d-49cd-b2b4-0d25935e7a72",
+  "name": "Mycoloth",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "276",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{3}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Fungus",
+  "oracle_text": "Devour 2 (As this creature enters, you may sacrifice any number of creatures. It enters with twice that many +1/+1 counters on it.)\nAt the beginning of your upkeep, create a 1/1 green Saproling creature token for each +1/+1 counter on this creature.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Devour"
+  ]
+}

@@ -1,6 +1,8 @@
 //! "..., where X is its power": an amount that is a characteristic of an object is written as X in the sentence and named
 //! at its end ("Whenever ~ attacks, each other creature you control gets +X/+X until end of turn, where X is ~'s power.").
 
+use serde::Serialize;
+use serde::de::DeserializeOwned;
 use serde_json::Value;
 
 use super::amounts::stat_name;
@@ -128,8 +130,13 @@ pub(super) fn bind(r: &mut Reader<'_>, effects: &[Effect]) -> Option<Vec<Effect>
         },
         Named::Counted(amount) => amount,
     };
+    put_in(&effects.to_vec(), &amount)
+}
+
+/// The data with the amount in the place of each X; `None` when there is no X.
+pub(super) fn put_in<T: Serialize + DeserializeOwned>(data: &T, amount: &Amount) -> Option<T> {
     let amount = serde_json::to_value(amount).ok()?;
-    let mut json = serde_json::to_value(effects).ok()?;
+    let mut json = serde_json::to_value(data).ok()?;
     replace(&mut json, &x(), &amount).then_some(())?;
     serde_json::from_value(json).ok()
 }

@@ -482,10 +482,18 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
     } else {
         subject(r, true).or_else(|| enchanted_other(r))?
     };
+    // "Equipped creature gets +X/+X, where X is the number of creature cards in all graveyards."
+    let named = where_x::ahead(r);
     let x_free = std::mem::replace(&mut r.x_free, false);
+    let outer = std::mem::replace(&mut r.where_x, named);
     let mods = r.attempt(|r| predicate_mods(r, plural));
     r.x_free = x_free;
-    let mods = mods?;
+    r.where_x = outer;
+    let mut mods = mods?;
+    if named {
+        let count = where_x::counted(r)?;
+        mods = where_x::put_in(&mods, &count)?;
+    }
     let condition = leading.or_else(|| r.attempt(as_long_as));
     if affected == Ref::This && condition.is_none() && !counts_stats(&mods) {
         return None;
@@ -508,6 +516,10 @@ fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Modification>>
         mods.push(counted_stats(r, stats)?);
         if goaded(r) {
             mods.push(Modification::Goaded);
+            return Some(mods);
+        }
+        // ", where X is ..." names the X of the change and ends the clause.
+        if r.at_punct(',') && r.word_at(1) == Some("where") {
             return Some(mods);
         }
         let listed = r.punct(',');

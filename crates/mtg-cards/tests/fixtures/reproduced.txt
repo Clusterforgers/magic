@@ -88,6 +88,7 @@ Boggart Ram-Gang
 Bola Slinger
 Bone Shredder
 Bonecaller Cleric
+Bonehoard
 Bonesplitter
 Book of Mazarbul
 Boon Reflection
@@ -116,6 +117,7 @@ Caprichrome
 Capsize
 Caravan Escort
 Carnage Tyrant
+Carrion Grub
 Cascade Bluffs
 Cast Out
 Cathars' Crusade
@@ -470,6 +472,7 @@ Mulldrifter
 Murderous Cut
 Muscle Sliver
 Mutavault
+Mycoloth
 Myr Retriever
 Myriad Landscape
 Mystic Gate
@@ -495,6 +498,7 @@ Opt
 Orchard Strider
 Organic Extinction
 Origin of the Hulk
+Orochi Hatchery
 Otherworldly Gaze
 Overgrown Arch
 Pacifism

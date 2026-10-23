@@ -111,6 +111,21 @@ fn a_permanent_enters_with_as_many_counters_as_a_count(#[case] text: &str) {
 }
 
 #[rstest]
+#[case::equipped(
+    "Equipped creature gets +X/+X, where X is the number of creature cards in all graveyards."
+)]
+#[case::enchanted("Enchanted creature gets +X/+0, where X is the number of artifacts you control.")]
+#[case::the_card_itself(
+    "This creature gets +X/+0, where X is the greatest power among creature cards in your graveyard."
+)]
+#[case::a_group(
+    "Other creatures you control get +X/+X, where X is the number of creatures your opponents control."
+)]
+fn a_static_pump_counts_what_the_clause_names(#[case] text: &str) {
+    golden(text, ClauseKind::Static, false);
+}
+
+#[rstest]
 #[case::lands(
     "{1}{R}: This creature gets +X/+0 until end of turn, where X is the number of lands you control.",
     r#"{"Count":[{"Type":"Land"},{"ControlledBy":"You"}]}"#
