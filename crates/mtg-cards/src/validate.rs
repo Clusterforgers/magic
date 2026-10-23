@@ -1228,6 +1228,18 @@ impl<'a> Walker<'a> {
         }
         // A move onto the battlefield needs entering permanents and a random order needs the engine's randomness;
         // a move to a hand, a graveyard or a library in the owner's order needs neither.
+        if matches!(
+            effect,
+            Effect::Move {
+                to: Destination::Battlefield {
+                    transformed: true,
+                    ..
+                },
+                ..
+            }
+        ) {
+            self.uses("Effect", "Move.Transformed");
+        }
         match effect {
             Effect::Move {
                 to: Destination::Battlefield { .. },
@@ -1257,8 +1269,13 @@ impl<'a> Walker<'a> {
                 w.at("count", |w| w.amount(count));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
+            Effect::Exile { what, bind } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
+            }
             Effect::Reveal { what }
-            | Effect::Exile { what }
             | Effect::Counter { what }
             | Effect::Tap { what }
             | Effect::Untap { what }
@@ -2520,6 +2537,7 @@ mod tests {
     #[case::a_move_to_the_top_of_a_library(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Top","order":"Chosen"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_shuffled_in(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Shuffled","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_to_the_battlefield(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield"])]
+    #[case::a_move_to_the_battlefield_transformed(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{"transformed":true}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield", "Effect.Move.Transformed"])]
     #[case::a_move_to_the_top_in_a_random_order(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Top","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Random.Top"])]
     #[case::a_move_to_the_bottom_in_a_random_order(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Bottom","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_named_token_brings_its_own_abilities(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Named":"treasure"}}}]}}"#, &["Ability.Activated", "Ability.Spell", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana", "Effect.CreateToken"])]

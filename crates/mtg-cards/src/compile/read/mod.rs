@@ -36,6 +36,7 @@ mod damage;
 mod defining;
 mod draws;
 mod effects;
+mod flicker;
 mod group_pump;
 mod lands;
 mod levels;

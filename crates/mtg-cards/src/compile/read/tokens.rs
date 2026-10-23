@@ -25,6 +25,7 @@ pub enum Token {
 /// The nouns a card calls itself by after "this".
 const SOURCE_NOUNS: [&str; 14] = [
     "creature",
+    "saga",
     "spell",
     "artifact",
     "enchantment",

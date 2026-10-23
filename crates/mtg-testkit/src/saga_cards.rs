@@ -1,5 +1,6 @@
 //! Sagas for the scenario and fuzz games: test Sagas whose chapters gain a different amount of life, the spells that put
-//! lore counters on a Saga or return one with extra counters, the corpus Sagas, and the decks and games built from them.
+//! lore counters on a Saga or return one with extra counters, a Saga that returns transformed, the corpus Sagas, and the
+//! decks and games built from them.
 
 use std::sync::Arc;
 
@@ -116,6 +117,90 @@ pub fn saga_fuzz_setup(players: usize, seed: u64) -> GameSetup {
     let decks = (0u64..)
         .take(players)
         .map(|seat| saga_deck(&mut GameRng::substream(seed, 28_000 + seat)))
+        .collect();
+    GameSetup::new(Arc::new(Normal), seed, decks)
+}
+
+/// The corpus Sagas that return transformed as a creature.
+pub const TRANSFORMING_SAGA_CARDS: &[&str] = &[
+    "Life of Toshiro Umezawa // Memory of Toshiro",
+    "Befriending the Moths // Imperial Moth",
+    "Okiba Reckoner Raid // Nezumi Road Captain",
+    "Era of Enlightenment // Hand of Enlightenment",
+    "The Modern Age // Vector Glider",
+];
+
+/// A Saga costing `{1}{W}` that returns transformed: chapter I gains 1 life and chapter III exiles the Saga and returns
+/// it transformed under its controller's control. Its back face, "Hero of `name`", is a 3/3 enchantment creature that
+/// enters tapped and gains its controller 5 life when it enters, so the tests see that the face that came in is the
+/// one whose rules apply.
+pub fn transforming_saga(name: &str) -> Arc<CardDefinition> {
+    let chapters = [
+        r#"{"Triggered":{"when":{"Chapter":{"number":1}},"effects":[{"GainLife":{"amount":1}}]}}"#,
+        r#"{"Triggered":{"when":{"Chapter":{"number":3}},"effects":[{"Exile":{"what":"This","as":"exiled"}},{"Move":{"what":{"Bound":"exiled"},"to":{"Battlefield":{"under":"You","transformed":true}}}}]}}"#,
+    ];
+    let mut front = CardDefinition::new(name)
+        .with_type(CardType::Enchantment)
+        .with_subtype("Saga")
+        .with_mana_cost(cost(1, &[Color::White]));
+    for json in chapters {
+        front = front.with_rules(rules(json));
+    }
+    let back = CardDefinition::new(format!("Hero of {name}"))
+        .with_type(CardType::Enchantment)
+        .with_type(CardType::Creature)
+        .with_power_toughness(3, 3)
+        .with_rules(rules(
+            r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":"Tapped"}}"#,
+        ))
+        .with_rules(rules(
+            r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"GainLife":{"amount":5}}]}}"#,
+        ));
+    Arc::new(
+        front
+            .clone()
+            .with_faces(mtg_cards::definition::Layout::Transform, vec![front, back]),
+    )
+}
+
+/// A legal Normal deck of lands, the corpus Sagas that return transformed, the spells that put lore counters on a Saga,
+/// and plain creatures, derived entirely from `rng`.
+pub fn transforming_saga_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
+    let colors = [
+        Color::White,
+        Color::Blue,
+        Color::Black,
+        Color::Red,
+        Color::Green,
+    ];
+    let mut deck: Vec<Arc<CardDefinition>> = (0..28).map(|i| land(colors[i % 5])).collect();
+    for name in TRANSFORMING_SAGA_CARDS {
+        if let Ok(card) = corpus::card(name) {
+            deck.extend(std::iter::repeat_n(card, 3));
+        }
+    }
+    deck.extend([
+        lore_spell("Lore Surge", 2),
+        lore_spell("Lore Surge", 2),
+        lore_spell("Lore Trickle", 1),
+        transforming_saga("Test Tale"),
+        transforming_saga("Test Tale"),
+    ]);
+    for slot in 0..12 {
+        let power = i32::try_from(1 + rng.index(3)).unwrap_or(1);
+        let name = format!("Helper {slot} {power}/{power}");
+        deck.push(creature(&name, 1, &[colors[rng.index(5)]], power, power));
+    }
+    rng.shuffle(&mut deck);
+    deck.truncate(60);
+    deck
+}
+
+/// A normal game of `players` seats whose decks are [`transforming_saga_deck`]s, fully determined by `seed`.
+pub fn transforming_saga_fuzz_setup(players: usize, seed: u64) -> GameSetup {
+    let decks = (0u64..)
+        .take(players)
+        .map(|seat| transforming_saga_deck(&mut GameRng::substream(seed, 29_000 + seat)))
         .collect();
     GameSetup::new(Arc::new(Normal), seed, decks)
 }

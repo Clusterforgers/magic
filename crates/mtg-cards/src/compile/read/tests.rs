@@ -180,6 +180,7 @@ mod enters_tapped;
 mod event_batches;
 mod events;
 mod exile_bounce_shrink;
+mod flicker;
 mod for_each;
 mod group_statics;
 mod if_sentence;

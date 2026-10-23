@@ -8,7 +8,7 @@ use mtg_engine::state::{GameState, Stage};
 use mtg_engine::{Decision, Engine, EngineError, Event, GameResult, GameSetup};
 use thiserror::Error;
 
-use crate::bot::RandomBot;
+use crate::bot::{RandomBot, apply_answer};
 use crate::invariants::{InvariantChecker, Violation};
 use crate::manual_script::ManualScript;
 use crate::windows::{Mode, SeatWindows, Windows};
@@ -212,8 +212,7 @@ pub fn play_game_with(
             bot.choose(&decision)
         };
         let seat_passes = !table_passes && answer == pass;
-        let events = engine
-            .apply(answer)
+        let events = apply_answer(&mut engine, &decision, answer)
             .map_err(|e| fail(e.into(), engine.events()))?;
         windows.observe(&events);
         if seat_passes {

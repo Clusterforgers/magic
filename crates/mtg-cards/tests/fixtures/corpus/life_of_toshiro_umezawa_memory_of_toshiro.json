@@ -1,0 +1,42 @@
+{
+  "id": "f7f4adf7-b871-417b-8904-7f024ca21486",
+  "oracle_id": "0a708566-2994-47b3-8d89-0547cc115e7c",
+  "name": "Life of Toshiro Umezawa // Memory of Toshiro",
+  "lang": "en",
+  "layout": "transform",
+  "set": "neo",
+  "collector_number": "108",
+  "rarity": "uncommon",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "cmc": 2.0,
+  "type_line": "Enchantment — Saga // Enchantment Creature — Human Samurai",
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Transform"
+  ],
+  "card_faces": [
+    {
+      "name": "Life of Toshiro Umezawa",
+      "mana_cost": "{1}{B}",
+      "type_line": "Enchantment — Saga",
+      "oracle_text": "(As this Saga enters and after your draw step, add a lore counter.)\nI, II — Choose one —\n• Target creature gets +2/+2 until end of turn.\n• Target creature gets -1/-1 until end of turn.\n• You gain 2 life.\nIII — Exile this Saga, then return it to the battlefield transformed under your control.",
+      "colors": [
+        "B"
+      ]
+    },
+    {
+      "name": "Memory of Toshiro",
+      "mana_cost": "",
+      "type_line": "Enchantment Creature — Human Samurai",
+      "oracle_text": "{T}, Pay 1 life: Add {B}. Spend this mana only to cast an instant or sorcery spell.",
+      "power": "2",
+      "toughness": "3",
+      "colors": [
+        "B"
+      ]
+    }
+  ]
+}

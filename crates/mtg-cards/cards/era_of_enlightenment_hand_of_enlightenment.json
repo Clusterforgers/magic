@@ -1,0 +1,44 @@
+{
+  "oracle_id": "a6d646e8-0d84-489b-a46a-3bd5b1141864",
+  "name": "Era of Enlightenment // Hand of Enlightenment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Era of Enlightenment",
+      "oracle_fingerprint": "0d39bbaaae8abe61c5199c96bf742b7f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hand of Enlightenment",
+      "oracle_fingerprint": "364e5ef085b4ee40fb1f02b931e1cb2b",
+      "abilities": [{ "Keyword": "FirstStrike" }]
+    }
+  ]
+}
