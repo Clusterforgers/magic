@@ -1,0 +1,42 @@
+{
+  "oracle_id": "ed8392b8-71e9-4874-a5bd-3c9fa5605780",
+  "name": "Harmonious Archon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harmonious Archon",
+      "oracle_fingerprint": "7c3df2967778a8316876cbefe942fcea",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Not": { "Subtype": "Archon" } }] },
+            "mods": [{ "SetPT": { "power": 3, "toughness": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -3,6 +3,7 @@
 
 use mtg_cards::AbilityDef;
 use mtg_cards::assemble::{ManaProduced, mana_shape};
+use mtg_cards::effect::Produce;
 use mtg_cards::refs::Selector;
 use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -184,6 +185,20 @@ fn types_of(
             ManaProduced::OneOfLists(lists) => found.extend(lists.iter().flatten().copied()),
             ManaProduced::AnyColor(_) | ManaProduced::AnyCombination { among: [], .. } => {
                 found.extend(COLORS);
+            }
+            // Either branch could be added.
+            ManaProduced::Instead { base, instead, .. } => {
+                for produce in [base, instead] {
+                    match produce {
+                        Produce::Fixed(list) | Produce::OneOf(list) => {
+                            found.extend_from_slice(list);
+                        }
+                        Produce::OneOfLists(lists) => {
+                            found.extend(lists.iter().flatten().copied());
+                        }
+                        _ => found.extend(COLORS),
+                    }
+                }
             }
             ManaProduced::AnyCombination { among, .. } => found.extend_from_slice(among),
             ManaProduced::ChosenColor(_) => {

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "ee35de1c-aef1-4bd4-85fd-fe77bc927790",
+  "name": "Marwyn, the Nurturer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marwyn, the Nurturer",
+      "oracle_fingerprint": "d10d0f89a9fcbfd3b324c97a02c7a3f7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Elf" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green"] },
+                  "times": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "id": "c2164204-120c-4dff-86ac-46ca9012ccd9",
+  "oracle_id": "e6490e98-37a9-4a8b-a04c-cceeb22b0c35",
+  "name": "Mona Lisa, Science Geek",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tmt",
+  "collector_number": "123",
+  "rarity": "uncommon",
+  "released_at": "2026-03-06",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Lizard Mutant",
+  "oracle_text": "Reach\n{T}: Add X mana of any one color, where X is Mona Lisa's power.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach"
+  ],
+  "power": "1",
+  "toughness": "3",
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

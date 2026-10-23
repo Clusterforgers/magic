@@ -1,0 +1,32 @@
+{
+  "oracle_id": "84275aab-f718-4896-b61c-63bf49fb483b",
+  "name": "Merchant of Truth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Merchant of Truth",
+      "oracle_fingerprint": "a0f371052be2319522a146333a55f1eb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Clue" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Exalted" }]
+          }
+        }
+      ]
+    }
+  ]
+}

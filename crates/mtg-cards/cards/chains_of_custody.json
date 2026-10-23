@@ -1,0 +1,30 @@
+{
+  "oracle_id": "5acff7a3-bc84-4251-bd37-80231396ac38",
+  "name": "Chains of Custody",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chains of Custody",
+      "oracle_fingerprint": "38c1a0170b5b8c9a96c5b8ffe1efa52f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": { "Ward": "{2}" } }] } }
+      ]
+    }
+  ]
+}

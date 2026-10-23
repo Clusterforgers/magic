@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9f6ea9fe-eee5-4dca-a34e-c66d3e218716",
+  "name": "Master of the Pearl Trident",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Master of the Pearl Trident",
+      "oracle_fingerprint": "20ed9a8f97a51e111edb0cc209a223cb",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Merfolk" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": { "Landwalk": [{ "Subtype": "Island" }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

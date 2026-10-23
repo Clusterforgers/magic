@@ -1,0 +1,19 @@
+{
+  "oracle_id": "be56dfea-1ece-4f06-b1cc-d7425b5018b4",
+  "name": "Merfolk Mistbinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Merfolk Mistbinder",
+      "oracle_fingerprint": "ac26fc0080723f2a3146b7321cc8706e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Merfolk" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

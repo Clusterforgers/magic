@@ -1,0 +1,32 @@
+{
+  "id": "5670ae47-befb-4aaf-a77a-d7dbd4d8dc08",
+  "oracle_id": "8badfd34-9b63-4ada-8012-b8cddaf5b492",
+  "name": "Wirewood Channeler",
+  "lang": "en",
+  "layout": "normal",
+  "set": "khc",
+  "collector_number": "79",
+  "rarity": "uncommon",
+  "released_at": "2021-02-05",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Elf Druid",
+  "oracle_text": "{T}: Add X mana of any one color, where X is the number of Elves on the battlefield.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "power": "2",
+  "toughness": "2",
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

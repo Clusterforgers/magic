@@ -1,0 +1,22 @@
+{
+  "oracle_id": "858f53ef-3fec-4aa0-867d-b7f040614b3c",
+  "name": "Bastion Protector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bastion Protector",
+      "oracle_fingerprint": "2dd1ff167cd24cab8bdc57b6bf89cc1d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "ControlledBy": "You" }] },
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Indestructible" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

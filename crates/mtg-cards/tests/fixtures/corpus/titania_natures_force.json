@@ -1,0 +1,155 @@
+{
+  "object": "card",
+  "id": "1230be09-8436-4023-bb8b-d325456c0914",
+  "oracle_id": "46c3a69a-4984-40b0-905f-4b0762c7ad72",
+  "multiverse_ids": [
+    676075
+  ],
+  "mtgo_id": 131029,
+  "tcgplayer_id": 579116,
+  "cardmarket_id": 788920,
+  "name": "Titania, Nature's Force",
+  "lang": "en",
+  "released_at": "2024-09-27",
+  "uri": "https://api.scryfall.com/cards/1230be09-8436-4023-bb8b-d325456c0914",
+  "scryfall_uri": "https://scryfall.com/card/dsc/202/titania-natures-force?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:26:38Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/2/1230be09-8436-4023-bb8b-d325456c0914.jpg?1783909598",
+    "normal": "https://cards.scryfall.io/normal/front/1/2/1230be09-8436-4023-bb8b-d325456c0914.jpg?1783909598",
+    "large": "https://cards.scryfall.io/large/front/1/2/1230be09-8436-4023-bb8b-d325456c0914.jpg?1783909598",
+    "png": "https://cards.scryfall.io/png/front/1/2/1230be09-8436-4023-bb8b-d325456c0914.png?1783909598",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/2/1230be09-8436-4023-bb8b-d325456c0914.jpg?1783909598",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/2/1230be09-8436-4023-bb8b-d325456c0914.jpg?1783909598",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/2/1230be09-8436-4023-bb8b-d325456c0914.webp?1783909598",
+    "grid": "https://cards.scryfall.io/grid/front/1/2/1230be09-8436-4023-bb8b-d325456c0914.webp?1783909598",
+    "display": "https://cards.scryfall.io/display/front/1/2/1230be09-8436-4023-bb8b-d325456c0914.webp?1783909598",
+    "art": "https://cards.scryfall.io/art/front/1/2/1230be09-8436-4023-bb8b-d325456c0914.webp?1783909598",
+    "crop": "https://cards.scryfall.io/crop/front/1/2/1230be09-8436-4023-bb8b-d325456c0914.webp?1783909598",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/2/1230be09-8436-4023-bb8b-d325456c0914.jpg?1783909598"
+  },
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Elemental",
+  "oracle_text": "You may play Forests from your graveyard.\nWhenever a Forest you control enters, create a 5/3 green Elemental creature token.\nWhenever an Elemental you control dies, you may mill three cards.",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Mill"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "41af35a0-90c0-401c-ab44-b02e3129aa8b",
+      "component": "token",
+      "name": "Elemental",
+      "type_line": "Token Creature — Elemental",
+      "uri": "https://api.scryfall.com/cards/41af35a0-90c0-401c-ab44-b02e3129aa8b"
+    },
+    {
+      "object": "related_card",
+      "id": "1230be09-8436-4023-bb8b-d325456c0914",
+      "component": "combo_piece",
+      "name": "Titania, Nature's Force",
+      "type_line": "Legendary Creature — Elemental",
+      "uri": "https://api.scryfall.com/cards/1230be09-8436-4023-bb8b-d325456c0914"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "4c822528-83c3-42c7-8708-dd1d37166819",
+  "set": "dsc",
+  "set_name": "Duskmourn: House of Horror Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/4c822528-83c3-42c7-8708-dd1d37166819",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dsc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1230be09-8436-4023-bb8b-d325456c0914/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A46c3a69a-4984-40b0-905f-4b0762c7ad72&unique=prints",
+  "collector_number": "202",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Heonhwa",
+  "artist_ids": [
+    "ce415f9e-8a20-4d64-bcba-2b1b7e94012e"
+  ],
+  "illustration_id": "b9f13a6d-1d3f-412c-891e-91bb4428b9a3",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 4139,
+  "prices": {
+    "usd": "0.83",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.79",
+    "eur_foil": null,
+    "tix": "1.34"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=676075&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTitania%252C%2BNature%2527s%2BForce",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTitania%252C%2BNature%2527s%2BForce",
+    "edhrec": "https://edhrec.com/route/?cc=Titania%2C+Nature%27s+Force"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F579116%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=788920&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/131029?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

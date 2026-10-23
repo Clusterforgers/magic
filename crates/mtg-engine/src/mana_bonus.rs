@@ -74,7 +74,7 @@ fn ways(
             .map_or_else(|| vec![Vec::new()], |count| combinations(among, count)),
         Produce::AnyColor(count) => COLORS
             .iter()
-            .map(|color| vec![*color; *count as usize])
+            .map(|color| vec![*color; count.fixed().unwrap_or(0) as usize])
             .collect(),
         Produce::ChosenColor(count) => {
             let chosen = state
