@@ -588,8 +588,12 @@ fn listed_text(parts: &[String], subject: Subject) -> Option<String> {
     } else {
         ""
     };
-    let middle: String = middle.iter().map(|part| format!(", {part}")).collect();
-    Some(format!("except {that}{first}{middle}, and {last}"))
+    let mut text = format!("except {that}{first}");
+    for part in middle {
+        text.push_str(", ");
+        text.push_str(part);
+    }
+    Some(format!("{text}, and {last}"))
 }
 
 /// The parts of the exceptions, one for each change; a type alone is "it's an artifact" with `terse`.

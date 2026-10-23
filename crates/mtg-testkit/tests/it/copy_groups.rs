@@ -125,7 +125,7 @@ fn a_token_is_made_for_each_token_its_controller_controls(
     }
     if rhys {
         // The ability taps Rhys, and the Elf Warrior of his other ability is not made.
-        assert!(named(&driver, "Elf Warrior").is_empty());
+        assert_eq!(named(&driver, "Elf Warrior").len(), 0);
     }
     replays(&driver, &setup);
     Ok(())

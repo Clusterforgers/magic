@@ -286,8 +286,7 @@ pub fn granted_keywords(r: &mut Reader<'_>) -> Option<Vec<Keyword>> {
         return ward_cost(r).map(|cost| vec![Keyword::Ward(cost)]);
     }
     if r.word("crew") {
-        let power = u32::try_from(r.number()?).ok()?;
-        return Some(vec![Keyword::Crew(power)]);
+        return Some(vec![Keyword::Crew(r.number()?)]);
     }
     if !r.words("protection from") {
         return keyword(r).map(|keyword| vec![keyword]);
