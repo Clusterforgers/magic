@@ -1,0 +1,29 @@
+{
+  "oracle_id": "19c22e08-29b6-4b3d-bf6e-28a5add620bb",
+  "name": "Bitter Downfall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bitter Downfall",
+      "oracle_fingerprint": "f0cfdb8be175731e9e6497af444a4fb5",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This", { "Targeting": [{ "Type": "Creature" }, "DamagedThisTurn"] }],
+            "change": "Reduce",
+            "mana": "{3}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "LoseLife": { "who": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

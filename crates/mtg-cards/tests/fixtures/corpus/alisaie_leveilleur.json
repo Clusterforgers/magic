@@ -1,0 +1,162 @@
+{
+  "object": "card",
+  "id": "ba96f831-02cb-4a74-a2e4-7f76444e3cd7",
+  "oracle_id": "4bd1d079-314e-4fb5-9b43-c9c83e5528bc",
+  "multiverse_ids": [],
+  "resource_id": "46F206628794EB04D87DBDDD9F297F30F4020CA60778C36E2E64BA0DFE8133AE",
+  "mtgo_id": 140009,
+  "tcgplayer_id": 631095,
+  "cardmarket_id": 824497,
+  "name": "Alisaie Leveilleur",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/ba96f831-02cb-4a74-a2e4-7f76444e3cd7",
+  "scryfall_uri": "https://scryfall.com/card/fic/9/alisaie-leveilleur?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:32:51Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/a/ba96f831-02cb-4a74-a2e4-7f76444e3cd7.jpg?1783906371",
+    "normal": "https://cards.scryfall.io/normal/front/b/a/ba96f831-02cb-4a74-a2e4-7f76444e3cd7.jpg?1783906371",
+    "large": "https://cards.scryfall.io/large/front/b/a/ba96f831-02cb-4a74-a2e4-7f76444e3cd7.jpg?1783906371",
+    "png": "https://cards.scryfall.io/png/front/b/a/ba96f831-02cb-4a74-a2e4-7f76444e3cd7.png?1783906371",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/a/ba96f831-02cb-4a74-a2e4-7f76444e3cd7.jpg?1783906371",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/a/ba96f831-02cb-4a74-a2e4-7f76444e3cd7.jpg?1783906371",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/a/ba96f831-02cb-4a74-a2e4-7f76444e3cd7.webp?1783906371",
+    "grid": "https://cards.scryfall.io/grid/front/b/a/ba96f831-02cb-4a74-a2e4-7f76444e3cd7.webp?1783906371",
+    "display": "https://cards.scryfall.io/display/front/b/a/ba96f831-02cb-4a74-a2e4-7f76444e3cd7.webp?1783906371",
+    "art": "https://cards.scryfall.io/art/front/b/a/ba96f831-02cb-4a74-a2e4-7f76444e3cd7.webp?1783906371",
+    "crop": "https://cards.scryfall.io/crop/front/b/a/ba96f831-02cb-4a74-a2e4-7f76444e3cd7.webp?1783906371",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/a/ba96f831-02cb-4a74-a2e4-7f76444e3cd7.jpg?1783906371"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Elf Wizard",
+  "oracle_text": "Partner with Alphinaud Leveilleur (When this creature enters, target player may put Alphinaud Leveilleur into their hand from their library, then shuffle.)\nFirst strike\nDualcast — The second spell you cast each turn costs {2} less to cast.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Dualcast",
+    "Partner with",
+    "First strike",
+    "Partner"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "de9e594c-fe46-4c24-8e64-a5929472453d",
+      "component": "combo_piece",
+      "name": "Alisaie Leveilleur",
+      "type_line": "Legendary Creature — Elf Wizard",
+      "uri": "https://api.scryfall.com/cards/de9e594c-fe46-4c24-8e64-a5929472453d"
+    },
+    {
+      "object": "related_card",
+      "id": "37e4ab61-bf18-4f9f-ba78-3e08a21aaf4d",
+      "component": "combo_piece",
+      "name": "Alphinaud Leveilleur",
+      "type_line": "Legendary Creature — Elf Wizard",
+      "uri": "https://api.scryfall.com/cards/37e4ab61-bf18-4f9f-ba78-3e08a21aaf4d"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ba96f831-02cb-4a74-a2e4-7f76444e3cd7/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4bd1d079-314e-4fb5-9b43-c9c83e5528bc&unique=prints",
+  "collector_number": "9",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Justyna Dura",
+  "artist_ids": [
+    "d2340aef-8ca9-4e0d-864c-6a4e8d5e350a"
+  ],
+  "illustration_id": "e57158d1-c2c4-432e-8a21-0eac273f8d0b",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "ffxiv",
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 3522,
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.40",
+    "eur_foil": null,
+    "tix": "1.96"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAlisaie%2BLeveilleur",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAlisaie%2BLeveilleur",
+    "edhrec": "https://edhrec.com/route/?cc=Alisaie+Leveilleur"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F631095%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824497&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/140009?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

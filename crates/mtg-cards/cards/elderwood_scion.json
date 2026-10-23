@@ -1,0 +1,29 @@
+{
+  "oracle_id": "99c8647f-e08d-4217-b637-3f8f2bffdaa3",
+  "name": "Elderwood Scion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elderwood Scion",
+      "oracle_fingerprint": "0b5c483c00747ea827d37a97921638f8",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Lifelink" },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "You" }, { "Targeting": ["This"] }],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "Opponents" }, { "Targeting": ["This"] }],
+            "change": "Increase",
+            "mana": "{2}"
+          }
+        }
+      ]
+    }
+  ]
+}

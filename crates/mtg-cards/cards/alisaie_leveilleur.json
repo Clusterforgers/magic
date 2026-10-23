@@ -1,0 +1,29 @@
+{
+  "oracle_id": "4bd1d079-314e-4fb5-9b43-c9c83e5528bc",
+  "name": "Alisaie Leveilleur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alisaie Leveilleur",
+      "oracle_fingerprint": "684ddd4bcb2f4c152fd72695285a5db3",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Alphinaud Leveilleur" } },
+        { "Keyword": "FirstStrike" },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                "op": "Eq",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -8,7 +8,7 @@ use mtg_cards::PrintedCard;
 use mtg_cards::builtin;
 use mtg_cards::card::ImplStatus as RulesStatus;
 use mtg_cards::generated::{COMPILER_VERSION, Generation, generate, input_fingerprint};
-use mtg_cards::load::Library;
+use mtg_cards::load::{Library, LoadError};
 use mtg_db::{Database, ImplStatus, NewRules, RuleStamp};
 use mtg_import::ids::OracleId;
 
@@ -56,9 +56,11 @@ pub struct CompileReport {
     pub removed_unread: usize,
     /// Cards left to their hand-written files.
     pub hand_written: usize,
+    /// Of those, the cards whose file fails the checks against the stored card (an erratum, a changed keyword list).
+    pub hand_written_invalid: Vec<Invalid>,
     /// Cards the compiler reads nothing of.
     pub nothing: usize,
-    /// Cards whose rules failed a check; no row is kept for them.
+    /// Cards whose compiled rules failed a check; no row is kept for them.
     pub invalid: Vec<Invalid>,
     /// Of the rows held for the cards looked at, those that cover the whole text.
     pub full: usize,
@@ -83,27 +85,33 @@ impl CompileReport {
         }
         let _ = write!(
             text,
-            "\n  by state: {} full, {} partial\n  not compiled: {} hand-written, {} nothing to read, {} invalid",
+            "\n  by state: {} full, {} partial\n  not compiled: {} hand-written ({} invalid), {} nothing to read, {} compiled rules invalid",
             self.full,
             self.partial,
             self.hand_written,
+            self.hand_written_invalid.len(),
             self.nothing,
             self.invalid.len()
         );
-        for invalid in self.invalid.iter().take(INVALID_SHOWN) {
-            let _ = write!(text, "\n    {}:", invalid.card);
-            for problem in &invalid.problems {
-                let _ = write!(text, "\n      {problem}");
-            }
+        if !self.hand_written_invalid.is_empty() {
+            text.push_str("\n  hand-written files that fail the stored cards:");
+            list_invalid(&mut text, &self.hand_written_invalid);
         }
-        if self.invalid.len() > INVALID_SHOWN {
-            let _ = write!(
-                text,
-                "\n    and {} more",
-                self.invalid.len() - INVALID_SHOWN
-            );
-        }
+        list_invalid(&mut text, &self.invalid);
         text
+    }
+}
+
+/// The first cards of `invalid` with their problems, and how many more there are.
+fn list_invalid(text: &mut String, invalid: &[Invalid]) {
+    for card in invalid.iter().take(INVALID_SHOWN) {
+        let _ = write!(text, "\n    {}:", card.card);
+        for problem in &card.problems {
+            let _ = write!(text, "\n      {problem}");
+        }
+    }
+    if invalid.len() > INVALID_SHOWN {
+        let _ = write!(text, "\n    and {} more", invalid.len() - INVALID_SHOWN);
     }
 }
 
@@ -137,6 +145,18 @@ fn db_status(status: RulesStatus) -> Option<ImplStatus> {
     }
 }
 
+/// The card with the first of its problems, as the report lists them.
+fn invalid(printed: &PrintedCard, problems: &[LoadError]) -> Invalid {
+    Invalid {
+        card: printed.name.clone(),
+        problems: problems
+            .iter()
+            .take(PROBLEMS_SHOWN)
+            .map(ToString::to_string)
+            .collect(),
+    }
+}
+
 /// The status and the JSON of the rules the compiler makes of a card that pass the checks; a card it reads nothing of or
 /// whose rules fail a check is counted in the report instead.
 fn compiled(
@@ -151,14 +171,7 @@ fn compiled(
             None
         }
         Generation::Invalid(problems) => {
-            report.invalid.push(Invalid {
-                card: printed.name.clone(),
-                problems: problems
-                    .iter()
-                    .take(PROBLEMS_SHOWN)
-                    .map(ToString::to_string)
-                    .collect(),
-            });
+            report.invalid.push(invalid(printed, &problems));
             None
         }
         Generation::Rules(card) => {
@@ -213,8 +226,14 @@ pub fn plan(
         .filter(|card| selected.is_none_or(|ids| ids.contains(&card.oracle_id)))
     {
         report.looked_at += 1;
-        if hand_written.card(&printed.oracle_id).is_some() {
+        if let Some(file) = hand_written.card(&printed.oracle_id) {
             report.hand_written += 1;
+            let problems = hand_written.check_generated(file, printed, &names);
+            if !problems.is_empty() {
+                report
+                    .hand_written_invalid
+                    .push(invalid(printed, &problems));
+            }
             continue;
         }
         let row = rows.get(printed.oracle_id.as_str());
@@ -337,6 +356,7 @@ pub async fn compile(db: &Database, args: &CompileArgs) -> Result<CompileReport,
 mod tests {
     //! Goal: a plan writes a card the compiler reads, skips one a hand-written file covers, keeps a row whose fingerprint and compiler version are current, writes again one that is not, and removes the rows of cards that are gone, that a file covers or that the compiler no longer reads; the report lists a bounded number of invalid cards with their reasons.
     use mtg_cards::PrintedFace;
+    use rstest::rstest;
 
     use super::*;
 
@@ -474,22 +494,69 @@ mod tests {
         );
     }
 
-    #[test]
-    fn a_hand_written_card_is_skipped_and_its_row_removed() {
-        let bolt = card(
+    fn bolt() -> PrintedCard {
+        card(
             1,
             "Lightning Bolt",
             "Lightning Bolt deals 3 damage to any target.",
-        );
-        let hand_written = Library::from_sources(&[mtg_cards::load::Source {
+        )
+    }
+
+    /// The library of the one hand-written file, a `Manual` Lightning Bolt.
+    fn bolt_file(bolt: &PrintedCard) -> Library {
+        Library::from_sources(&[mtg_cards::load::Source {
             path: "cards/lightning_bolt.json".into(),
             text: format!(
                 r#"{{"oracle_id":"{}","name":"Lightning Bolt","impl_status":"Manual","faces":[{{"name":"Lightning Bolt","oracle_fingerprint":"{}","abilities":[]}}]}}"#,
                 bolt.oracle_id,
-                input_fingerprint(&bolt)
+                input_fingerprint(bolt)
             ),
         }])
-        .unwrap();
+        .unwrap()
+    }
+
+    #[rstest]
+    #[case::the_card_as_written(|_: &mut PrintedCard| {}, None)]
+    #[case::a_renamed_card(|card: &mut PrintedCard| card.name = "Lightning Strike".into(), Some("imported name"))]
+    #[case::a_second_face(
+        |card: &mut PrintedCard| card.faces.push(card.faces[0].clone()),
+        Some("face(s)")
+    )]
+    fn a_hand_written_file_that_fails_the_stored_card_is_named(
+        #[case] change: fn(&mut PrintedCard),
+        #[case] problem: Option<&str>,
+    ) {
+        let (written, mut stored) = (bolt(), bolt());
+        let hand_written = bolt_file(&written);
+        change(&mut stored);
+
+        let report = plan(&[stored], None, &[], &hand_written, "tests").report;
+
+        assert_eq!(report.hand_written, 1);
+        assert!(report.invalid.is_empty(), "{:?}", report.invalid);
+        let text = report.render();
+        match problem {
+            None => {
+                assert!(report.hand_written_invalid.is_empty(), "{text}");
+                assert!(text.contains("1 hand-written (0 invalid)"), "{text}");
+                assert!(!text.contains("fail the stored cards"), "{text}");
+            }
+            Some(problem) => {
+                assert_eq!(report.hand_written_invalid.len(), 1, "{text}");
+                assert!(text.contains("1 hand-written (1 invalid)"), "{text}");
+                assert!(
+                    text.contains("hand-written files that fail the stored cards:\n    "),
+                    "{text}"
+                );
+                assert!(text.contains(problem), "{text}");
+            }
+        }
+    }
+
+    #[test]
+    fn a_hand_written_card_is_skipped_and_its_row_removed() {
+        let bolt = bolt();
+        let hand_written = bolt_file(&bolt);
 
         let plan = plan(
             std::slice::from_ref(&bolt),
@@ -531,7 +598,9 @@ mod tests {
             "{text}"
         );
         assert!(
-            text.contains("22 invalid\n    Card 0:\n      cards/card_0.json: faces: why 0"),
+            text.contains(
+                "22 compiled rules invalid\n    Card 0:\n      cards/card_0.json: faces: why 0"
+            ),
             "{text}"
         );
         assert!(

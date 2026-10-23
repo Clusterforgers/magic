@@ -384,6 +384,7 @@ impl<'a> Walker<'a> {
                     self.problem("`CastFrom` names a hand or a graveyard");
                 }
             }
+            Pred::Targeting(inner) => self.selector(inner),
             Pred::Not(inner) => self.pred(inner),
             Pred::AnyOf(preds) => {
                 if preds.is_empty() {
@@ -408,6 +409,7 @@ impl<'a> Walker<'a> {
             | Pred::Untapped
             | Pred::Monstrous
             | Pred::EnteredThisTurn
+            | Pred::DamagedThisTurn
             | Pred::Attacking
             | Pred::Blocking
             | Pred::Unblocked
@@ -540,6 +542,11 @@ impl<'a> Walker<'a> {
             Amount::ColorsSpent => self.uses("Amount", "ColorsSpent"),
             Amount::PermanentsGraved => self.uses("Amount", "PermanentsGraved"),
             Amount::Tallied { who, what } => self.tallied(who, *what),
+            Amount::Largest { who, of } => {
+                self.player_amount("Largest", who);
+                self.at("of", |w| w.selector(of));
+            }
+            Amount::StartingLife(who) => self.player_amount("StartingLife", who),
             Amount::Triggering => {
                 self.uses("Amount", "Triggering");
                 if !self.scope.in_trigger {
