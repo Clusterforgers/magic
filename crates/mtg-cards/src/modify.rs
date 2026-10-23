@@ -67,6 +67,14 @@ pub enum Modification {
     CantBeBlocked,
     /// The object can't be blocked by creatures the selector matches (a restriction, no layer).
     CantBeBlockedBy(Selector),
+    /// The object can block only the attackers the selector matches (a restriction, no layer): "can block only
+    /// creatures with flying".
+    CanBlockOnly(Selector),
+    /// The object can't be blocked except by this many creatures or more (a restriction, no layer): menace without
+    /// the keyword.
+    MinBlockers(u32),
+    /// The object can't be blocked by more than this many creatures (a restriction, no layer).
+    MaxBlockers(u32),
     /// The object is goaded by the controller of the effect or ability (CR 701.15; a restriction, no layer): it attacks
     /// each combat if able and attacks a player other than the goader if able.
     Goaded,
@@ -95,6 +103,9 @@ impl Modification {
             | Modification::CantBlock
             | Modification::CantBeBlocked
             | Modification::CantBeBlockedBy(_)
+            | Modification::CanBlockOnly(_)
+            | Modification::MinBlockers(_)
+            | Modification::MaxBlockers(_)
             | Modification::Goaded => None,
         }
     }
@@ -113,6 +124,8 @@ pub enum Duration {
     UntilEndOfYourNextTurn,
     /// For as long as the source stays on the battlefield.
     WhileSourceOnBattlefield,
+    /// Until a player who is an opponent of the controller becomes the monarch (an exile that lasts that long).
+    UntilOpponentBecomesMonarch,
     /// Without end (until the object or the game is gone).
     Forever,
 }
@@ -203,6 +216,8 @@ pub enum GameRule {
     CantBeCountered(Ref),
     /// The players can't gain life.
     CantGainLife(Ref),
+    /// Damage dealt to the players causes no loss of life: it is still dealt, and every other effect of it happens.
+    NoLifeLossFromDamage(Ref),
     /// The players can't draw cards.
     CantDraw(Ref),
     /// The players can't search libraries.
@@ -275,6 +290,9 @@ mod tests {
     #[case(Modification::CantBlock, None)]
     #[case(Modification::CantBeBlocked, None)]
     #[case(Modification::Goaded, None)]
+    #[case(Modification::MinBlockers(2), None)]
+    #[case(Modification::MaxBlockers(1), None)]
+    #[case(Modification::CanBlockOnly(Selector(vec![crate::refs::Pred::HasKeyword(Keyword::Flying)])), None)]
     #[case(Modification::CantBeBlockedBy(Selector(vec![crate::refs::Pred::Type(CardType::Creature)])), None)]
     fn layers_follow_the_kind(#[case] modification: Modification, #[case] layer: Option<&str>) {
         assert_eq!(modification.layer(), layer);
@@ -324,6 +342,10 @@ mod tests {
     #[case(
         GameRule::CantGainLife(Ref::EachPlayer),
         r#"{"CantGainLife":"EachPlayer"}"#
+    )]
+    #[case(
+        GameRule::NoLifeLossFromDamage(Ref::You),
+        r#"{"NoLifeLossFromDamage":"You"}"#
     )]
     #[case(GameRule::CantDraw(Ref::Opponents), r#"{"CantDraw":"Opponents"}"#)]
     #[case(GameRule::CantSearch(Ref::You), r#"{"CantSearch":"You"}"#)]

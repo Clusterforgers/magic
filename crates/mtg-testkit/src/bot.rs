@@ -189,6 +189,14 @@ impl RandomBot {
                         blocks.push((option.object, *attacker));
                     }
                 }
+                // An attacker that may be blocked by few creatures only (one at most) keeps the first blockers it got.
+                for (attacker, most) in &options.max_blockers {
+                    let mut kept = 0;
+                    blocks.retain(|(_, a)| {
+                        kept += usize::from(a == attacker);
+                        a != attacker || kept <= *most
+                    });
+                }
                 // An attacker that needs several blockers (menace) is left alone unless it got that many.
                 for (attacker, needed) in &options.min_blockers {
                     let got = blocks.iter().filter(|(_, a)| a == attacker).count();

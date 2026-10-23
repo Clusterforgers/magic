@@ -1,0 +1,27 @@
+{
+  "oracle_id": "a3f09898-6c77-4d68-8d10-8440c75f884c",
+  "name": "Rope",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rope",
+      "oracle_fingerprint": "b53b51028859ac790eab2dd1af776c07",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 2 } },
+              { "AddKeyword": "Reach" },
+              { "MaxBlockers": 1 }
+            ]
+          }
+        },
+        {
+          "Activated": { "cost": [{ "Mana": "{2}" }, "SacrificeSelf"], "effects": [{ "Draw": {} }] }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

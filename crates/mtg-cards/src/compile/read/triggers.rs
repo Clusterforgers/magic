@@ -466,8 +466,9 @@ fn subject(r: &mut Reader<'_>) -> Option<Selector> {
     r.attempt(|r| {
         let article = r.word("a") || r.word("an");
         let selector = phrase(r, Form::Subject)?;
-        // "another" stands for the article and for "other".
-        (article != selector.0.contains(&Pred::Other)).then_some(selector)
+        // "another" stands for the article and for "other", and "your commander" needs none.
+        let bare = selector.0.contains(&Pred::Other) || own_commander(&selector);
+        (article != bare).then_some(selector)
     })
 }
 
@@ -523,6 +524,12 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
             return Some(TriggerPattern::AttacksPlayer {
                 what: what.clone(),
                 at: Ref::Monarch,
+            });
+        }
+        if r.words("one of your opponents") {
+            return Some(TriggerPattern::AttacksPlayer {
+                what: what.clone(),
+                at: Ref::Opponents,
             });
         }
         let attacks = TriggerPattern::Attacks { what: what.clone() };
@@ -682,7 +689,7 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
 }
 
 /// The alternative costs a permanent or spell can be asked about: "its prowl cost was paid".
-const PAID_WAYS: [(&str, CastWay); 1] = [("prowl", CastWay::Prowl)];
+const PAID_WAYS: [(&str, CastWay); 2] = [("prowl", CastWay::Prowl), ("mayhem", CastWay::Mayhem)];
 
 /// "its prowl cost was paid", or "this spell's prowl cost was paid" with `spell`: it was cast for that alternative cost.
 pub fn cost_paid(r: &mut Reader<'_>, spell: bool) -> Option<Condition> {
@@ -748,6 +755,12 @@ pub fn monarch_condition(r: &mut Reader<'_>) -> Option<Condition> {
         Some(Condition::Monarch(Ref::You))
     } else if r.words("an opponent is the monarch") {
         Some(Condition::Monarch(Ref::Opponents))
+    } else if r.attacked_player && r.words("that player is the monarch") {
+        Some(Condition::Monarch(Ref::Defending))
+    } else if r.words("you were the monarch as the turn began") {
+        Some(Condition::MonarchAtTurnStart(Ref::You))
+    } else if r.words("an opponent was the monarch as the turn began") {
+        Some(Condition::MonarchAtTurnStart(Ref::Opponents))
     } else if r.words("there is no monarch") {
         Some(no_monarch())
     } else if r.words("you have the city's blessing") {
@@ -767,6 +780,13 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
     Some(match condition {
         Condition::Monarch(Ref::You) => "you're the monarch".to_owned(),
         Condition::Monarch(Ref::Opponents) => "an opponent is the monarch".to_owned(),
+        Condition::Monarch(Ref::Defending) => "that player is the monarch".to_owned(),
+        Condition::MonarchAtTurnStart(Ref::You) => {
+            "you were the monarch as the turn began".to_owned()
+        }
+        Condition::MonarchAtTurnStart(Ref::Opponents) => {
+            "an opponent was the monarch as the turn began".to_owned()
+        }
         Condition::CitysBlessing(Ref::You) => "you have the city's blessing".to_owned(),
         condition if *condition == no_monarch() => "there is no monarch".to_owned(),
         _ => return None,
@@ -840,11 +860,16 @@ fn subject_text(what: &Selector) -> Option<String> {
         return Some("equipped creature".to_owned());
     }
     let text = phrase_text(what, Form::Subject)?;
-    if what.0.contains(&Pred::Other) {
+    if what.0.contains(&Pred::Other) || own_commander(what) {
         Some(text)
     } else {
         Some(format!("{} {text}", article(&text)))
     }
+}
+
+/// Whether the selector is "your commander": a commander its owner designated.
+fn own_commander(what: &Selector) -> bool {
+    what.0.contains(&Pred::Commander) && what.0.contains(&Pred::OwnedBy(Ref::You))
 }
 
 /// "you cast", "an opponent casts", "a player casts" for the verb ("cast" or "sacrifice").
@@ -881,6 +906,10 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
             what,
             at: Ref::Monarch,
         } => said(what, "attacks the monarch"),
+        TriggerPattern::AttacksPlayer {
+            what,
+            at: Ref::Opponents,
+        } => said(what, "attacks one of your opponents"),
         TriggerPattern::Blocks { what } => said(what, "blocks"),
         TriggerPattern::BecomesBlocked { what } => said(what, "becomes blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),

@@ -1,0 +1,21 @@
+{
+  "id": "d0ca6a34-724f-47bb-b12d-c4998ffc3bf7",
+  "oracle_id": "9c329f3d-4d0a-4012-8aa6-92afdd120a52",
+  "name": "Blade of Selves",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "313",
+  "rarity": "rare",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature has myriad. (Whenever it attacks, for each opponent other than defending player, you may create a token copy that's tapped and attacking that player or a planeswalker they control. Exile the tokens at end of combat.)\nEquip {4}",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip"
+  ]
+}

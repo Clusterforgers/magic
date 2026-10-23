@@ -1,0 +1,25 @@
+{
+  "id": "2f75be32-0e5a-4d4f-93b4-149892df381c",
+  "oracle_id": "a95309ac-f920-474d-81b5-0f68c8a54f34",
+  "name": "Towering Titan",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "276",
+  "rarity": "mythic",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Creature — Giant",
+  "oracle_text": "This creature enters with X +1/+1 counters on it, where X is the total toughness of other creatures you control.\nSacrifice a creature with defender: All creatures gain trample until end of turn.",
+  "power": "0",
+  "toughness": "0",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

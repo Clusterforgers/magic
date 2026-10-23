@@ -113,6 +113,7 @@ fn the_options_of_blocks_and_damage_keep_their_json_until_they_carry_something_n
         serde_json::to_value(BlockOptions {
             blockers: blockers.clone(),
             min_blockers: Vec::new(),
+            max_blockers: Vec::new(),
             required: Vec::new()
         })
         .unwrap(),
@@ -122,6 +123,7 @@ fn the_options_of_blocks_and_damage_keep_their_json_until_they_carry_something_n
         serde_json::to_value(BlockOptions {
             blockers,
             min_blockers: vec![(b, 2)],
+            max_blockers: Vec::new(),
             required: Vec::new()
         })
         .unwrap(),

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "6d51f00e-46a5-4064-a0c8-e840c66dbf2b",
+  "name": "Titania, Proud Pummeler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Titania, Proud Pummeler",
+      "oracle_fingerprint": "b8c7d5c99e7cdfdc4f7049ae51a5089b",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Melee" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Melee" }]
+          }
+        }
+      ]
+    }
+  ]
+}

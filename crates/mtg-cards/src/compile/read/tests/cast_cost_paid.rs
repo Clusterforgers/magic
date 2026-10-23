@@ -1,4 +1,4 @@
-//! Goal: "if its prowl cost was paid" reads as the condition `CastWith(Prowl)` on an enters trigger and "If this spell's prowl cost was paid, ..." as an `Effect::If` after a spell's effects, each written back as the same text, and a cost the template does not model stays with the table.
+//! Goal: "if its prowl cost was paid" and "if its mayhem cost was paid" read as the condition `CastWith` of the way on an enters trigger and "If this spell's prowl cost was paid, ..." as an `Effect::If` after a spell's effects, each written back as the same text, and a cost the template does not model stays with the table.
 use super::*;
 
 fn spell_of(text: &str) -> Option<Ability> {
@@ -16,7 +16,17 @@ fn spell_of(text: &str) -> Option<Ability> {
     ClauseKind::Spell,
     r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"LoseLife":{"who":{"Target":0},"amount":3}},{"GainLife":{"amount":3}},{"If":{"condition":{"CastWith":"Prowl"},"then":[{"Draw":{}}]}}]}}"#
 )]
-fn the_prowl_cost_condition_reads_and_writes_back(
+#[case::mayhem_when_it_enters(
+    "When this creature enters, if its mayhem cost was paid, draw a card.",
+    ClauseKind::Triggered,
+    r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"if":{"CastWith":"Mayhem"},"effects":[{"Draw":{}}]}}"#
+)]
+#[case::mayhem_after_the_effects_of_a_spell(
+    "Target player loses 3 life and you gain 3 life. If this spell's mayhem cost was paid, draw a card.",
+    ClauseKind::Spell,
+    r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"LoseLife":{"who":{"Target":0},"amount":3}},{"GainLife":{"amount":3}},{"If":{"condition":{"CastWith":"Mayhem"},"then":[{"Draw":{}}]}}]}}"#
+)]
+fn the_cost_paid_condition_reads_and_writes_back(
     #[case] text: &str,
     #[case] kind: ClauseKind,
     #[case] json: &str,

@@ -133,6 +133,8 @@ impl Delayed {
             Duration::WhileSourceOnBattlefield => !state.object(self.source.id).is_some_and(|o| {
                 o.counter() == self.source.counter && o.zone() == Zone::Battlefield
             }),
+            // Only an exile lasts until an opponent becomes the monarch; a delayed trigger never does.
+            Duration::UntilOpponentBecomesMonarch => true,
         }
     }
 }

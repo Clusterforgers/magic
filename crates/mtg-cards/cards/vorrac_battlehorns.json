@@ -1,0 +1,20 @@
+{
+  "oracle_id": "89750d72-d1c0-4c8a-aa72-fdd48570aa92",
+  "name": "Vorrac Battlehorns",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vorrac Battlehorns",
+      "oracle_fingerprint": "7552cc87c64312677c7434c8e3c16d21",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Trample" }, { "MaxBlockers": 1 }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

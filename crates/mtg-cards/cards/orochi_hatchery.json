@@ -1,0 +1,41 @@
+{
+  "oracle_id": "65fb1945-ed7a-4f1b-bc6b-166cbec1d8ec",
+  "name": "Orochi Hatchery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orochi Hatchery",
+      "oracle_fingerprint": "3eff43b593bbab7a3de96a7c798344fc",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "charge", "count": "X" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Snake",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Snake"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Counters": { "on": "This", "counter": "charge" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

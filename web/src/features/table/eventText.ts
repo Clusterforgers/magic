@@ -69,6 +69,13 @@ function modificationWords(modification: Modification, group: boolean): string {
     }[modification]
   }
   if ('CantBeBlockedBy' in modification) return "can't be blocked by some creatures"
+  if ('CanBlockOnly' in modification) return 'can block only some creatures'
+  if ('MinBlockers' in modification) {
+    return `can't be blocked except by ${modification.MinBlockers} or more creatures`
+  }
+  if ('MaxBlockers' in modification) {
+    return `can't be blocked by more than ${modification.MaxBlockers} ${modification.MaxBlockers === 1 ? 'creature' : 'creatures'}`
+  }
   if ('AddType' in modification) return `${becomes} ${modification.AddType.toLowerCase()} too`
   if ('RemoveType' in modification) return `${loses} ${modification.RemoveType.toLowerCase()} as a type`
   if ('AddSubtype' in modification) return `${becomes} ${modification.AddSubtype} too`
@@ -137,6 +144,8 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   else if ('MustBlock' in rule) what = `${named(rule.MustBlock)} must block if able`
   else if ('CantBeCountered' in rule) what = `${named(rule.CantBeCountered)} can't be countered`
   else if ('CantGainLife' in rule) what = `${seats(rule.CantGainLife)} can't gain life`
+  else if ('NoLifeLossFromDamage' in rule)
+    what = `Damage doesn't cause ${seats(rule.NoLifeLossFromDamage)} to lose life`
   else if ('CantDraw' in rule) what = `${seats(rule.CantDraw)} can't draw cards`
   else if ('CantSearch' in rule) what = `${seats(rule.CantSearch)} can't search libraries`
   else if ('RevealTop' in rule)
@@ -242,7 +251,10 @@ function describeChoice(choice: Choice, n: EventNames): string {
 }
 
 /** The words for a cause that is a plain name; a card hidden with hideaway or exiled until a permanent leaves carries that permanent. */
-const BECAUSE: Record<Exclude<ZoneCause, { Hideaway: unknown } | { ExiledUntil: unknown }>, string> = {
+const BECAUSE: Record<
+  Exclude<ZoneCause, { Hideaway: unknown } | { ExiledUntil: unknown } | { ExiledUntilMonarch: unknown }>,
+  string
+> = {
   Moved: 'moves',
   Destroyed: 'is destroyed',
   Buried: "is destroyed and can't be regenerated",

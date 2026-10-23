@@ -1,0 +1,29 @@
+{
+  "id": "01c2337d-1c3c-4c5e-8b06-dc8a8c56164e",
+  "oracle_id": "de23275e-e9c1-4151-aed8-f79ead03d5d4",
+  "name": "Adriana, Captain of the Guard",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dmc",
+  "collector_number": "139",
+  "rarity": "rare",
+  "released_at": "2022-09-09",
+  "digital": false,
+  "mana_cost": "{3}{R}{W}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Human Knight",
+  "oracle_text": "Melee (Whenever this creature attacks, it gets +1/+1 until end of turn for each opponent you attacked this combat.)\nOther creatures you control have melee. (If a creature has multiple instances of melee, each triggers separately.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Melee"
+  ]
+}

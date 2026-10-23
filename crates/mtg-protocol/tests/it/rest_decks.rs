@@ -13,8 +13,8 @@ use mtg_cards::support::Support;
 use mtg_protocol::rest::{
     CardSuggestion, CheckRequest, DeckBody, DeckErrorCode, DeckLineBody, DeckList, DeckListItem,
     ImportRequest, ImportSource, MAX_DECK_CARDS, MAX_DECK_LINES, MAX_DECK_NAME_CHARS,
-    MAX_DECK_NOTES_CHARS, MAX_DECKS_PER_USER, MAX_IMPORT_CHARS, MAX_IMPORT_LINES, UnresolvedLine,
-    UnresolvedReason,
+    MAX_DECK_NOTES_CHARS, MAX_DECKS_PER_USER, MAX_IMPORT_CHARS, MAX_IMPORT_LINES,
+    PRECON_DECK_PREFIX, UnresolvedLine, UnresolvedReason,
 };
 use rstest::rstest;
 use serde_json::{Value, json};
@@ -167,6 +167,21 @@ fn the_check_request_may_name_the_table_that_judges_the_deck() {
     ] {
         assert!(serde_json::from_value::<CheckRequest>(body).is_err());
     }
+}
+
+#[rstest]
+#[case::alone(json!({"deck": "precon:c18-adaptive-enchantment"}))]
+#[case::at_a_game(json!({"deck": "precon:c18-adaptive-enchantment", "game": "g-1"}))]
+#[case::at_a_described_table(json!({"deck": "precon:c18-adaptive-enchantment", "table": {"format": "commander"}}))]
+#[case::at_a_table_with_rules(json!({"deck": "precon:c18-adaptive-enchantment", "table": {"format": "commander", "house_rules": {"deck": {"singleton": false}}}}))]
+fn the_check_request_names_a_precon_as_its_deck_by_the_prefix(#[case] body: Value) {
+    let request: CheckRequest = serde_json::from_value(body).unwrap();
+    let deck = request.deck.as_deref().unwrap();
+    assert_eq!(
+        deck.strip_prefix(PRECON_DECK_PREFIX),
+        Some("c18-adaptive-enchantment")
+    );
+    assert_eq!((request.format, request.cards), (None, None));
 }
 
 #[test]
@@ -343,6 +358,7 @@ fn index(code: DeckErrorCode) -> usize {
         DeckErrorCode::CardsUnavailable => 11,
         DeckErrorCode::Unavailable => 12,
         DeckErrorCode::Internal => 13,
+        DeckErrorCode::RateLimited => 14,
     }
 }
 

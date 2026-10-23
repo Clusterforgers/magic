@@ -27,7 +27,9 @@ pub(crate) fn returns(state: &GameState) -> Vec<Event> {
         .zone(Zone::Exile)
         .iter()
         .filter_map(|id| state.object(*id))
-        .filter(|card| card.exiled_until().is_some_and(|by| !holds(state, by)))
+        .filter(|card| {
+            card.monarch_released() || card.exiled_until().is_some_and(|by| !holds(state, by))
+        })
         .flat_map(|card| back(state, card))
         .collect()
 }
@@ -56,7 +58,7 @@ fn back(state: &GameState, card: &GameObject) -> Vec<Event> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a card in exile linked to a permanent returns once that permanent is gone (left the battlefield, or is a new object after a flicker), not while it stays, only the card of the permanent that left returns, a card with no link or whose link was cleared by another move stays, and nothing is watched in a game where no card was exiled until.
+    //! Goal: a card in exile linked to a permanent returns once that permanent is gone (left the battlefield, or is a new object after a flicker), not while it stays, only the card of the permanent that left returns, a card with no link or whose link was cleared by another move stays, nothing is watched in a game where no card was exiled until, and a card exiled until an opponent becomes the monarch returns once any opponent of its exiler has become it (also by the monarch leaving the game), not when its exiler holds it or leaves the battlefield.
     use mtg_core::ids::PlayerId;
     use rstest::rstest;
 
@@ -192,5 +194,124 @@ mod tests {
         leave(&mut game, a);
         assert_eq!(returns(&game).len(), 0);
         assert!(!game.possible.linked_exile);
+    }
+
+    /// `seats` seats; seat 1's Bear was exiled until an opponent of seat 0 becomes the monarch, and seat 0 is the monarch.
+    fn jailed(seats: usize) -> (GameState, ObjectRef) {
+        let mut battlefields = vec![vec![creature("Jailer", 1, 1)], vec![creature("Bear", 2, 2)]];
+        battlefields.resize(seats, Vec::new());
+        let mut game = state(vec![Vec::new(); seats], battlefields);
+        let bear = game
+            .object(game.zone(Zone::Battlefield)[1])
+            .unwrap()
+            .reference();
+        apply_event(&mut game, &Event::MonarchChanged { player: ME }).unwrap();
+        apply_event(
+            &mut game,
+            &Event::ZoneChanged {
+                object: bear.id,
+                from: Zone::Battlefield,
+                to: Zone::Exile,
+                cause: ZoneCause::ExiledUntilMonarch { by: ME },
+            },
+        )
+        .unwrap();
+        (game, bear)
+    }
+
+    #[rstest]
+    #[case::the_exiler_takes_it_again(2, 0, false)]
+    #[case::the_only_opponent(2, 1, true)]
+    #[case::an_opponent_among_three(3, 2, true)]
+    #[case::the_first_opponent_among_three(3, 1, true)]
+    #[case::the_last_of_four(4, 3, true)]
+    #[case::the_exiler_among_four(4, 0, false)]
+    fn a_card_exiled_until_an_opponent_becomes_the_monarch_returns_when_one_does(
+        #[case] seats: usize,
+        #[case] becomes: usize,
+        #[case] returns_now: bool,
+    ) {
+        let (mut game, bear) = jailed(seats);
+        assert_eq!(
+            returns(&game).len(),
+            0,
+            "it waits while the exiler holds it"
+        );
+        assert_eq!(game.object(bear.id).unwrap().zone(), Zone::Exile);
+        apply_event(
+            &mut game,
+            &Event::MonarchChanged {
+                player: PlayerId::from_index(becomes),
+            },
+        )
+        .unwrap();
+        let events = returns(&game);
+        assert_eq!(events.len(), usize::from(returns_now), "{events:?}");
+        for event in &events {
+            apply_event(&mut game, event).unwrap();
+        }
+        let back = game.object(bear.id).unwrap();
+        assert_eq!(back.zone() == Zone::Battlefield, returns_now);
+        assert_eq!(returns(&game).len(), 0, "nothing returns twice");
+    }
+
+    #[test]
+    fn the_exiler_leaving_the_battlefield_does_not_return_the_card() {
+        let (mut game, bear) = jailed(3);
+        let jailer = game.zone(Zone::Battlefield)[0];
+        let jailer = game.object(jailer).unwrap().reference();
+        leave(&mut game, jailer);
+        assert_eq!(returns(&game).len(), 0);
+        assert_eq!(game.object(bear.id).unwrap().zone(), Zone::Exile);
+    }
+
+    #[test]
+    fn a_released_card_still_returns_after_the_designation_moves_on() {
+        let (mut game, bear) = jailed(2);
+        apply_event(&mut game, &Event::MonarchChanged { player: FOE }).unwrap();
+        assert_eq!(returns(&game).len(), 1);
+        apply_event(&mut game, &Event::MonarchChanged { player: ME }).unwrap();
+        // The designation back with its exiler does not take the release back.
+        assert_eq!(returns(&game).len(), 1);
+        assert_eq!(game.object(bear.id).unwrap().zone(), Zone::Exile);
+    }
+
+    #[test]
+    fn a_monarch_who_leaves_the_game_passes_it_to_an_opponent_who_frees_the_card() {
+        let (mut game, bear) = jailed(3);
+        let lost = Event::PlayerLost {
+            player: ME,
+            reason: crate::player::LossReason::Conceded,
+        };
+        apply_event(&mut game, &lost).unwrap();
+        assert_eq!(game.monarch(), Some(FOE));
+        assert_eq!(returns(&game).len(), 1);
+        assert_eq!(game.object(bear.id).unwrap().zone(), Zone::Exile);
+    }
+
+    #[test]
+    fn a_card_moved_on_before_the_designation_moves_stays_where_it_is() {
+        let (mut game, bear) = jailed(2);
+        apply_event(
+            &mut game,
+            &Event::ZoneChanged {
+                object: bear.id,
+                from: Zone::Exile,
+                to: Zone::Graveyard(FOE),
+                cause: ZoneCause::Moved,
+            },
+        )
+        .unwrap();
+        apply_event(&mut game, &Event::MonarchChanged { player: FOE }).unwrap();
+        assert_eq!(returns(&game).len(), 0);
+    }
+
+    #[test]
+    fn the_wait_is_part_of_the_state_hash() {
+        let (waiting, _) = jailed(2);
+        let (mut released, _) = jailed(2);
+        assert_eq!(waiting.state_hash(), released.state_hash());
+        apply_event(&mut released, &Event::MonarchChanged { player: FOE }).unwrap();
+        assert_ne!(waiting.state_hash(), released.state_hash());
     }
 }

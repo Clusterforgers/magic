@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8ade0824-9fd0-417d-94dd-ac399e35b582",
+  "name": "Skyhunter Strike Force",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyhunter Strike Force",
+      "oracle_fingerprint": "27104624a48b85bf29d08f9ee6c95430",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Melee" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Melee" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["Commander", { "OwnedBy": "You" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

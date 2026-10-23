@@ -145,6 +145,13 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             controller: scope.controller,
             source: scope.source,
         },
+        Wanted::CanBlockOnly(only) => Modification::CanBlockOnly {
+            only: only.clone(),
+            controller: scope.controller,
+            source: scope.source,
+        },
+        Wanted::MinBlockers(count) => Modification::MinBlockers(*count),
+        Wanted::MaxBlockers(count) => Modification::MaxBlockers(*count),
     })
 }
 

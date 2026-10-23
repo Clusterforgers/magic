@@ -581,6 +581,10 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "Monarch");
                 self.at("Monarch", |w| w.reference(who, Kind::Player));
             }
+            Condition::MonarchAtTurnStart(who) => {
+                self.uses("Condition", "MonarchAtTurnStart");
+                self.at("MonarchAtTurnStart", |w| w.reference(who, Kind::Player));
+            }
             Condition::CitysBlessing(who) => {
                 self.uses("Condition", "CitysBlessing");
                 self.at("CitysBlessing", |w| w.reference(who, Kind::Player));
@@ -788,7 +792,8 @@ impl<'a> Walker<'a> {
             | Keyword::Dash(cost)
             | Keyword::Bestow(cost)
             | Keyword::Blitz(cost)
-            | Keyword::Prowl(cost) => {
+            | Keyword::Prowl(cost)
+            | Keyword::Mayhem(cost) => {
                 self.at("cost", |w| w.cost(cost));
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost);
             }
@@ -867,7 +872,14 @@ impl<'a> Walker<'a> {
             }
             Modification::SetController(who) => self.reference(who, Kind::Player),
             Modification::GrantAbility(granted) => self.granted(granted),
-            Modification::CantBeBlockedBy(blockers) => self.selector(blockers),
+            Modification::CantBeBlockedBy(selector) | Modification::CanBlockOnly(selector) => {
+                self.selector(selector);
+            }
+            Modification::MinBlockers(count) | Modification::MaxBlockers(count) => {
+                if *count < 1 {
+                    self.problem("a limit on blockers needs a count of at least one");
+                }
+            }
             Modification::SwitchPT
             | Modification::AddType(_)
             | Modification::RemoveType(_)
@@ -1314,8 +1326,15 @@ impl<'a> Walker<'a> {
                 if let Some(name) = bind {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }
-                // The engine returns the cards when the source leaves the battlefield and no other duration.
-                if let Some(duration) = duration.filter(|d| *d != Duration::WhileSourceOnBattlefield) {
+                // The engine returns the cards when the source leaves the battlefield or an opponent becomes the monarch,
+                // and no other duration.
+                let known = |d: &Duration| {
+                    matches!(
+                        d,
+                        Duration::WhileSourceOnBattlefield | Duration::UntilOpponentBecomesMonarch
+                    )
+                };
+                if let Some(duration) = duration.filter(|d| !known(d)) {
                     w.uses("Exile", &format!("Duration.{}", tag_of(&duration)));
                 }
             }
@@ -1983,6 +2002,7 @@ impl<'a> Walker<'a> {
                 }
             }),
             GameRule::CantGainLife(who)
+            | GameRule::NoLifeLossFromDamage(who)
             | GameRule::CantDraw(who)
             | GameRule::CantSearch(who)
             | GameRule::RevealTop(who)
@@ -2780,6 +2800,7 @@ mod tests {
         "CantBeCountered"
     )]
     #[case::no_life_gain(r#"{"CantGainLife":"EachPlayer"}"#, "CantGainLife")]
+    #[case::no_life_loss_from_damage(r#"{"NoLifeLossFromDamage":"You"}"#, "NoLifeLossFromDamage")]
     #[case::no_draw(r#"{"CantDraw":"Opponents"}"#, "CantDraw")]
     #[case::no_search(r#"{"CantSearch":"You"}"#, "CantSearch")]
     #[case::a_revealed_top(r#"{"RevealTop":"You"}"#, "RevealTop")]
