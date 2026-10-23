@@ -233,6 +233,7 @@ impl<'a> Scope<'a> {
         let kind = match what {
             TurnTally::Attackers => Tally::Attackers,
             TurnTally::DamageTaken => Tally::Hurt,
+            TurnTally::LifeGained => Tally::Gained,
             TurnTally::CountersPut => {
                 let counts = self.refs(who)?.into_iter().filter_map(|named| match named {
                     Target::Object(object) => {

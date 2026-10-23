@@ -365,6 +365,8 @@ const RUNS: &[&str] = &[
     "Keyword.Myriad",
     "Keyword.Squad",
     "Keyword.Ravenous",
+    "Keyword.Riot",
+    "ReplaceBy.Riot",
     "Keyword.Fabricate",
     "Keyword.Ascend",
     "Keyword.ForMirrodin",
@@ -775,6 +777,8 @@ mod tests {
     #[case::saddled("Keyword.Saddled", true)]
     #[case::station("Keyword.Station", true)]
     #[case::ravenous("Keyword.Ravenous", true)]
+    #[case::riot("Keyword.Riot", true)]
+    #[case::choosing_a_counter_or_haste_as_it_enters("ReplaceBy.Riot", true)]
     #[case::copies_for_the_other_defenders("Effect.MyriadCopies", true)]
     #[case::jump_start("Keyword.JumpStart", true)]
     #[case::retrace("Keyword.Retrace", true)]

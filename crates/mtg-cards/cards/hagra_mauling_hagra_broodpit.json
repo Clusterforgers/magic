@@ -1,0 +1,52 @@
+{
+  "oracle_id": "37783ce6-af58-4ef6-8ab4-587079970307",
+  "name": "Hagra Mauling // Hagra Broodpit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hagra Mauling",
+      "oracle_fingerprint": "14f1db0495f1ce268202a11f8f8af9ee",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Land" },
+                    { "Supertype": "Basic" },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hagra Broodpit",
+      "oracle_fingerprint": "21b302bea123539cae84880aa0174cb9",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

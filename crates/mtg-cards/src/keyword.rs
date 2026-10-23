@@ -220,6 +220,8 @@ pub enum Keyword {
     Station,
     /// Ravenous (CR 702.156): it enters with X +1/+1 counters, and its controller draws a card when it enters if X is 5 or more.
     Ravenous,
+    /// Riot (CR 702.136): as it enters, its controller chooses a +1/+1 counter on it or haste for as long as they control it; each instance chooses on its own.
+    Riot,
     /// Jump-start (CR 702.133): the card may be cast from a graveyard by discarding a card in addition to its other costs, and is then exiled.
     JumpStart,
     /// Retrace (CR 702.81): the card may be cast from a graveyard by discarding a land card in addition to its other costs.
@@ -430,6 +432,7 @@ impl Keyword {
         "Saddled",
         "Station",
         "Ravenous",
+        "Riot",
         "Jump-start",
         "Retrace",
         "Embalm",
@@ -565,6 +568,7 @@ impl Keyword {
             Keyword::Saddled => "Saddled",
             Keyword::Station => "Station",
             Keyword::Ravenous => "Ravenous",
+            Keyword::Riot => "Riot",
             Keyword::JumpStart => "Jump-start",
             Keyword::Retrace => "Retrace",
             Keyword::Embalm(_) => "Embalm",
@@ -745,6 +749,7 @@ mod tests {
             Keyword::Saddled,
             Keyword::Station,
             Keyword::Ravenous,
+            Keyword::Riot,
             Keyword::JumpStart,
             Keyword::Retrace,
             Keyword::Embalm(Cost::default()),
