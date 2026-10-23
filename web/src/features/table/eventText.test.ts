@@ -165,6 +165,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   RuleExpired: [{ RuleExpired: { id: 1 } }, 'A rule change ends'],
   Regenerated: [{ Regenerated: { object: 1 } }, 'Grizzly Bears regenerates'],
+  DamageRemoved: [{ DamageRemoved: { object: 1 } }, 'Grizzly Bears has all its damage removed'],
   ShieldUsed: [{ ShieldUsed: { id: 2, left: 3 } }, 'A prevention shield has 3 left'],
   CreatureDied: [
     { CreatureDied: { object: 1, cause: 'LethalDamage' } },
@@ -284,6 +285,14 @@ const MORE: [Event, string][] = [
   ],
   [{ ZoneChanged: { object: 3, from: 'Battlefield', to: 'Exile', cause: 'Moved' } }, 'Forest moves to exile'],
   [{ ZoneChanged: { object: 3, from: { Hand: 0 }, to: 'Exile', cause: 'Foretold' } }, 'Forest is foretold'],
+  [
+    { ZoneChanged: { object: 3, from: { Library: 0 }, to: 'Battlefield', cause: { Manifested: { by: 0 } } } },
+    'Forest is manifested',
+  ],
+  [
+    { ZoneChanged: { object: 3, from: { Library: 1 }, to: 'Battlefield', cause: { Cloaked: { by: 0 } } } },
+    'Forest is cloaked',
+  ],
   [
     {
       ZoneChanged: {
@@ -510,6 +519,7 @@ describe('minor lines', () => {
     { SpellCast: { player: 0, object: 4 } },
     { CreatureDied: { object: 1, cause: 'ZeroToughness' } },
     { Regenerated: { object: 1 } },
+    { DamageRemoved: { object: 1 } },
     { TurnBegan: { number: 1, active: 0 } },
     { PlayerLost: { player: 1, reason: 'Conceded' } },
     { CountersChanged: { on: { Player: 1 }, counter: 'poison', delta: 1 } },

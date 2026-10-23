@@ -272,6 +272,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CombatEnded
         | Event::DamageCleared
         | Event::Regenerated { .. }
+        | Event::DamageRemoved { .. }
         | Event::ShieldUsed { .. }
         | Event::EffectCreated { .. }
         | Event::EffectExpired { .. }
@@ -495,9 +496,11 @@ fn identified_in(before: &GameState, object: ObjectId, zone: Zone, viewer: Playe
 /// they may not look at it.
 fn arrives_known(before: &GameState, object: ObjectId, cause: ZoneCause, viewer: PlayerId) -> bool {
     cause.face_down(before.turn().number()).is_none_or(|how| {
-        before
-            .object(object)
-            .is_some_and(|o| before.may_look_as(how, o.owner(), o.controller(), viewer))
+        before.object(object).is_some_and(|o| {
+            // A manifested card is controlled by the player who manifested it, whose library it may not be.
+            let controller = cause.enters_under().unwrap_or(o.controller());
+            before.may_look_as(how, o.owner(), controller, viewer)
+        })
     })
 }
 

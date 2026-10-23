@@ -243,6 +243,7 @@ fn keyword() -> impl Strategy<Value = Keyword> {
             Keyword::Melee,
             Keyword::Mentor,
             Keyword::Dethrone,
+            Keyword::UmbraArmor,
             Keyword::Extort,
             Keyword::Evolve,
         ]),
@@ -850,6 +851,28 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 count,
                 bind
             }),
+            (
+                who(),
+                amount(),
+                proptest::option::of(who()),
+                proptest::option::of(bound_name()),
+                any::<bool>()
+            )
+                .prop_map(|(who, count, from, bind, cloak)| if cloak {
+                    Effect::Cloak {
+                        who,
+                        count,
+                        from,
+                        bind,
+                    }
+                } else {
+                    Effect::Manifest {
+                        who,
+                        count,
+                        from,
+                        bind,
+                    }
+                }),
             who().prop_map(|who| Effect::TimeTravel { who }),
             who().prop_map(|who| Effect::ExtraTurn { who }),
             (who(), token_ref(), amount(), any::<bool>(), any::<bool>()).prop_map(
@@ -1054,6 +1077,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                 reference().prop_map(|who| ReplaceWhen::Draw { who }),
                 selector().prop_map(|what| ReplaceWhen::Enters { what }),
                 selector().prop_map(|what| ReplaceWhen::Discarded { what }),
+                selector().prop_map(|what| ReplaceWhen::Destroyed { what }),
                 (
                     selector(),
                     proptest::option::of(zone()),
@@ -1089,6 +1113,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                 .prop_map(ReplaceBy::Choose),
                 color().prop_map(|other| ReplaceBy::Choose(EntersChoice::ColorOtherThan(other))),
                 (1u32..5).prop_map(ReplaceBy::PayLifeOrTapped),
+                Just(ReplaceBy::UmbraArmor),
                 (selector(), proptest::collection::vec(modification(), 0..3))
                     .prop_map(|(of, except)| ReplaceBy::AsCopy { of, except }),
             ],

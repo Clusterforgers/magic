@@ -78,6 +78,7 @@ Batterskull
 Battle Sliver
 Battlefield Forge
 Baxter Building
+Bear Umbra
 Beast Within
 Beastmaster Ascension
 Befriending the Moths // Imperial Moth
@@ -283,6 +284,7 @@ Echo Inspector
 Echo Mage
 Echo Storm
 Echoes of the Kin Tree
+Eel Umbra
 Electric Revelation
 Electro's Bolt
 Elegant Edgecrafters
@@ -532,6 +534,7 @@ Mardu Strike Leader
 Maro
 Master of Etherium
 Master of Pearls
+Mastery of the Unseen
 Maulfist Squad
 Mausoleum Harpy
 Maverick Thopterist
@@ -590,6 +593,7 @@ Notion Rain
 Nyxborn Behemoth
 Oath of Jace
 Obscuring Haze
+Octopus Umbra
 Okiba Reckoner Raid // Nezumi Road Captain
 Ominous Harvest
 Onakke Oathkeeper
@@ -657,7 +661,9 @@ Rally the Ranks
 Ramos, Dragon Engine
 Rampant Growth
 Rancor
+Ransom Note
 Ravenous Leucrocota
+Reality Shift
 Realm Seekers
 Reassembling Skeleton
 Reckless Impulse
@@ -767,6 +773,7 @@ Slitherhead
 Sluiceway Scorpion
 Smuggler's Buggy
 Smuggler's Copter
+Snake Umbra
 Snubhorn Sentry
 Sodden Verdure
 Sol Ring

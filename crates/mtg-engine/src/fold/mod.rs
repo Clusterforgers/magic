@@ -94,6 +94,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::CombatEnded
         | Event::JoinedAttack { .. }
         | Event::Regenerated { .. }
+        | Event::DamageRemoved { .. }
         | Event::DamageCleared => combat::apply(state, event),
         Event::AbilityPutOnStack(_)
         | Event::AbilityActivated { .. }

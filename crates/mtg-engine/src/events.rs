@@ -306,6 +306,11 @@ pub enum Event {
         /// The permanent.
         object: ObjectId,
     },
+    /// All damage marked on a permanent was removed in place of its destruction (umbra armor, CR 702.89a).
+    DamageRemoved {
+        /// The permanent.
+        object: ObjectId,
+    },
     /// A shield that prevents a given amount of damage prevented some and has this much left (CR 615.7).
     ShieldUsed {
         /// The shield, one of the rule changes (they share the counter of continuous effects).
@@ -719,6 +724,16 @@ pub enum ZoneCause {
     Exiled,
     /// It was exiled face down by foretelling (CR 702.143a): it lies face down, and only its owner may look at it.
     Foretold,
+    /// It was manifested by `by` (CR 701.40a): it entered the battlefield face down under the control of `by`, who alone may look at it.
+    Manifested {
+        /// The player who manifested it and controls it.
+        by: PlayerId,
+    },
+    /// It was cloaked by `by` (CR 701.58a): as a manifested card, with ward {2}.
+    Cloaked {
+        /// The player who cloaked it and controls it.
+        by: PlayerId,
+    },
     /// It was exiled face down by the permanent `by` with hideaway (CR 702.75a): it lies face down, and its owner and the
     /// controller of the permanent may look at it.
     Hideaway {
@@ -754,6 +769,17 @@ impl ZoneCause {
         match self {
             ZoneCause::Foretold => Some(FaceDown::Foretold { turn }),
             ZoneCause::Hideaway { by } => Some(FaceDown::Hideaway { by }),
+            ZoneCause::Manifested { .. } => Some(FaceDown::Manifest),
+            ZoneCause::Cloaked { .. } => Some(FaceDown::Cloak),
+            _ => None,
+        }
+    }
+
+    /// The player a move for this cause puts the object under the control of, when the cause says so: whoever manifested
+    /// or cloaked it, who may differ from its owner.
+    pub const fn enters_under(self) -> Option<PlayerId> {
+        match self {
+            ZoneCause::Manifested { by } | ZoneCause::Cloaked { by } => Some(by),
             _ => None,
         }
     }
@@ -852,6 +878,7 @@ impl Event {
             | Event::PermanentTapped { object }
             | Event::PermanentUntapped { object }
             | Event::Regenerated { object }
+            | Event::DamageRemoved { object }
             | Event::CardDrawn { object, .. }
             | Event::CardDiscarded { object, .. }
             | Event::Explored { object, .. }

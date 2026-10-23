@@ -196,6 +196,27 @@ fn merged_view(object: &GameObject) -> Vec<MergedCardView> {
     })
 }
 
+/// The name the viewer reads on the object: the card's, except for an ability on the stack of a permanent that still lies
+/// face down and that the viewer may not look at, which is named after its source, and a face-down permanent has no name
+/// (CR 708.2a).
+fn shown_name(state: &GameState, viewer: PlayerId, object: &GameObject, card_name: &str) -> String {
+    let hidden = object.ability().is_some_and(|ability| {
+        let source = ability.source();
+        state.object(source.id).is_some_and(|source_object| {
+            source_object.counter() == source.counter
+                && source_object
+                    .face_down()
+                    .is_some_and(FaceDown::shows_characteristics)
+                && !state.may_look_at(viewer, source.id)
+        })
+    });
+    if hidden {
+        String::new()
+    } else {
+        card_name.to_owned()
+    }
+}
+
 impl ObjectView {
     /// The view of `id` for `viewer`, or `None` when the object is unknown or hidden from them.
     pub fn of(state: &GameState, viewer: PlayerId, id: ObjectId) -> Option<ObjectView> {
@@ -237,7 +258,7 @@ impl ObjectView {
             owner: object.owner(),
             controller: controller_of(state, id).unwrap_or_else(|| object.controller()),
             zone: object.zone(),
-            name: card.name.clone(),
+            name: shown_name(state, sight.viewer, object, &card.name),
             mana_cost: card.mana_cost.clone().filter(|_| printed),
             supertypes: if printed {
                 card.supertypes.iter().copied().collect()
