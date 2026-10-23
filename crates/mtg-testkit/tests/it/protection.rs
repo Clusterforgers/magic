@@ -1,4 +1,4 @@
-//! Goal: protection (CR 702.16) and shroud play as the rules say, at tables of two, three and four seats, for every kind of quality a keyword can name (a colour, a card type, a player and everything): a spell or ability whose source has the quality is not offered the holder as a target, its holder's controller included, and the answer that names it is refused; damage that source deals to the holder, a creature or a player, is prevented, combat damage included; an Aura or Equipment with the quality is not attached to the holder and one already attached when protection arrives comes off (the Aura to the graveyard); a creature with the quality is not offered as a blocker for the holder, whatever else the blockers are; a multicoloured source has every colour it has and a colourless one none; protection that arrives mid-turn works from then, one that is taken away or ends stops, and a target that becomes protected as the spell resolves makes it do nothing; shroud keeps out every spell and ability and hexproof only the opponents'; and Mother of Runes, Kor Firewalker and Black Knight do what their cards say.
+//! Goal: protection (CR 702.16) and shroud play as the rules say, at tables of two, three and four seats, for every kind of quality a keyword can name (a colour, a card type, multicoloured, a mana value bound, a player and everything): a spell or ability whose source has the quality is not offered the holder as a target, its holder's controller included, and the answer that names it is refused; damage that source deals to the holder, a creature or a player, is prevented, combat damage included; an Aura or Equipment with the quality is not attached to the holder and one already attached when protection arrives comes off (the Aura to the graveyard); a creature with the quality is not offered as a blocker for the holder, whatever else the blockers are; a multicoloured source has every colour it has and a colourless one none; protection that arrives mid-turn works from then, one that is taken away or ends stops, and a target that becomes protected as the spell resolves makes it do nothing; shroud keeps out every spell and ability and hexproof only the opponents'; and Mother of Runes, Kor Firewalker and Black Knight do what their cards say.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -10,6 +10,7 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{Pred, Ref, Selector, Targetable};
+use mtg_cards::value::{Amount, Cmp, StatKind};
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::ids::ObjectId;
@@ -36,6 +37,8 @@ enum Quality {
     Creatures,
     Opponents,
     Everything,
+    Multicolored,
+    UpToOne,
 }
 
 impl Quality {
@@ -45,6 +48,16 @@ impl Quality {
             Quality::Creatures => Selector(vec![Pred::Type(CardType::Creature)]),
             Quality::Opponents => Selector(vec![Pred::ControlledBy(Ref::Opponents)]),
             Quality::Everything => Selector::default(),
+            Quality::Multicolored => Selector(vec![Pred::Compare {
+                stat: StatKind::Colors,
+                op: Cmp::Ge,
+                to: Amount::Fixed(2),
+            }]),
+            Quality::UpToOne => Selector(vec![Pred::Compare {
+                stat: StatKind::ManaValue,
+                op: Cmp::Le,
+                to: Amount::Fixed(1),
+            }]),
         }
     }
 
@@ -59,6 +72,8 @@ impl Quality {
             Quality::Creatures => source == Source::Creature,
             Quality::Opponents => caster != 1,
             Quality::Everything => true,
+            Quality::Multicolored => source.colors().len() > 1,
+            Quality::UpToOne => source != Source::RedBlue,
         }
     }
 }
@@ -201,7 +216,9 @@ fn targeting_is_refused_to_a_source_with_the_quality_whoever_controls_it(
         Quality::Red,
         Quality::Creatures,
         Quality::Opponents,
-        Quality::Everything
+        Quality::Everything,
+        Quality::Multicolored,
+        Quality::UpToOne
     )]
     quality: Quality,
     #[values(
@@ -258,7 +275,9 @@ fn damage_that_does_not_target_is_prevented_by_the_quality_alone(
         Quality::Red,
         Quality::Creatures,
         Quality::Opponents,
-        Quality::Everything
+        Quality::Everything,
+        Quality::Multicolored,
+        Quality::UpToOne
     )]
     quality: Quality,
     #[values(Source::Red, Source::RedBlue, Source::Blue, Source::Colorless)] source: Source,
@@ -306,7 +325,7 @@ fn damage_to_a_player_with_protection_is_prevented_and_the_rest_is_not(
     let stopped = match quality {
         Quality::Red => source == Source::Red,
         Quality::Opponents | Quality::Everything => true,
-        Quality::Creatures => unreachable!("not in the table"),
+        _ => unreachable!("not in the table"),
     };
     driver.expect_life(1, if stopped { 20 } else { 17 })?;
     for seat in (0..seats).filter(|seat| *seat != 1) {

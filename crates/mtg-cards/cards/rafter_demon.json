@@ -1,0 +1,21 @@
+{
+  "oracle_id": "2e7a03ac-44bb-45f1-b209-85fc3b6e90d3",
+  "name": "Rafter Demon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rafter Demon",
+      "oracle_fingerprint": "54512975f930841847dab47710c620af",
+      "abilities": [
+        { "Keyword": { "Spectacle": "{3}{B}{R}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Spectacle" },
+            "effects": [{ "Discard": { "who": "Opponents" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

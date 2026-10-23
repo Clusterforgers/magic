@@ -1,0 +1,27 @@
+{
+  "id": "7beebc99-b027-49e2-95ad-e51ce302457f",
+  "oracle_id": "c9b40f24-c08e-4e05-a141-0a8a670d37c9",
+  "name": "Herald of Hoofbeats",
+  "lang": "en",
+  "layout": "normal",
+  "set": "moc",
+  "collector_number": "22",
+  "rarity": "rare",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "Horsemanship (This creature can't be blocked except by creatures with horsemanship.)\nOther Knights you control have horsemanship.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Horsemanship"
+  ]
+}

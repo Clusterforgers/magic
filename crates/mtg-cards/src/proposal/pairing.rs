@@ -5,7 +5,7 @@ use super::{ClauseReport, ClauseState, Stray};
 use crate::ability::Ability;
 use crate::card::{Card, Span};
 use crate::compile::{
-    Clause, ClauseKind, read_keyword, same_text, static_pair_texts, written_variants,
+    Clause, ClauseKind, read_keyword, read_keywords, same_text, static_pair_texts, written_variants,
 };
 use crate::keyword::Keyword;
 use crate::trigger::TriggerPattern;
@@ -226,18 +226,39 @@ impl<'a> Pairer<'a> {
     fn keywords(&mut self) {
         let abilities = self.abilities;
         for (at, ability) in abilities.iter().enumerate() {
-            let Ability::Keyword(keyword) = ability else {
+            let Ability::Keyword(_) = ability else {
                 continue;
             };
+            if self.taken[at] {
+                continue;
+            }
             let found = self.slots.iter().position(|slot| {
                 slot.state.is_none()
                     && slot.clause.kind == ClauseKind::Keyword
-                    && read_keyword(&slot.clause.text).as_ref().map(bare) == Some(bare(keyword))
+                    && self.run_reads(at, &read_keywords(&slot.clause.text).unwrap_or_default())
             });
             if let Some(slot) = found {
                 self.settle(at, slot, ClauseState::Reads { ability: at });
+                // A clause that reads into several keywords ("protection from white and from blue") stands for the run.
+                let more = read_keywords(&self.slots[slot].clause.text).map_or(0, |all| all.len());
+                for later in at + 1..at + more {
+                    self.taken[later] = true;
+                    self.slot_of[later] = Some(slot);
+                    self.places[later] = Some(self.slots[slot].clause.span.start);
+                }
             }
         }
+    }
+
+    /// Whether the abilities from `at` on are the keywords, one after the other.
+    fn run_reads(&self, at: usize, keywords: &[Keyword]) -> bool {
+        !keywords.is_empty()
+            && keywords.iter().enumerate().all(|(offset, keyword)| {
+                matches!(
+                    self.abilities.get(at + offset),
+                    Some(Ability::Keyword(found)) if bare(found) == bare(keyword)
+                ) && (offset == 0 || !self.taken[at + offset])
+            })
     }
 
     /// Two statics under one condition are one sentence of the card.

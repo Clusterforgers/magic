@@ -1,4 +1,4 @@
-//! Goal: the statics about groups read into the shapes the engine runs and write back as the same text: permanents that enter tapped, a group picked by a counter on it, granted ward and skulk, and the skipped draw step.
+//! Goal: the statics about groups read into the shapes the engine runs and write back as the same text: permanents that enter tapped, a group picked by a counter on it, granted ward, skulk and horsemanship, and the skipped draw step.
 use super::*;
 
 fn stat(text: &str) -> Option<Ability> {
@@ -63,6 +63,14 @@ fn a_group_with_a_counter_is_given_a_keyword(#[case] text: &str, #[case] json: &
 #[case::skulk(
     "Creatures you control have skulk.",
     r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Skulk"}]}}"#
+)]
+#[case::horsemanship_for_a_subtype(
+    "Other Knights you control have horsemanship.",
+    r#"{"Static":{"affected":{"Each":[{"Subtype":"Knight"},"Other",{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Horsemanship"}]}}"#
+)]
+#[case::horsemanship_for_all(
+    "Creatures you control have horsemanship.",
+    r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Horsemanship"}]}}"#
 )]
 fn ward_and_skulk_are_granted(#[case] text: &str, #[case] json: &str) {
     reads_as(text, ClauseKind::Static, false, json);

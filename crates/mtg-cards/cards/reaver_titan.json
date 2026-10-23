@@ -1,0 +1,23 @@
+{
+  "oracle_id": "2951671b-ac01-4e65-857f-0b7b7c7478ce",
+  "name": "Reaver Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reaver Titan",
+      "oracle_fingerprint": "b588ade0efe4b9046025b39f1a6b3e47",
+      "abilities": [
+        {
+          "Keyword": { "Protection": [{ "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }] }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 5 } }]
+          }
+        },
+        { "Keyword": { "Crew": 4 } }
+      ]
+    }
+  ]
+}

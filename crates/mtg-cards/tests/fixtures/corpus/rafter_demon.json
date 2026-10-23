@@ -1,0 +1,29 @@
+{
+  "id": "bf8dad4d-bc4f-46fb-892c-dbf6481cdc46",
+  "oracle_id": "2e7a03ac-44bb-45f1-b209-85fc3b6e90d3",
+  "name": "Rafter Demon",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rna",
+  "collector_number": "196",
+  "rarity": "common",
+  "released_at": "2019-01-25",
+  "digital": false,
+  "mana_cost": "{2}{B}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Demon",
+  "oracle_text": "Spectacle {3}{B}{R} (You may cast this spell for its spectacle cost rather than its mana cost if an opponent lost life this turn.)\nWhen this creature enters, if its spectacle cost was paid, each opponent discards a card.",
+  "power": "4",
+  "toughness": "2",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [
+    "Spectacle"
+  ]
+}

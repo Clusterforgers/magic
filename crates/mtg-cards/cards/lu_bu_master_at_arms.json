@@ -1,0 +1,12 @@
+{
+  "oracle_id": "ff959f1f-0982-4761-a6b0-3044dff1d617",
+  "name": "Lu Bu, Master-at-Arms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lu Bu, Master-at-Arms",
+      "oracle_fingerprint": "f6bec2589ebde1e07fb452289b7ed834",
+      "abilities": [{ "Keyword": "Haste" }, { "Keyword": "Horsemanship" }]
+    }
+  ]
+}
