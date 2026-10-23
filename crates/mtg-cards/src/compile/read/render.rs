@@ -1279,19 +1279,6 @@ impl Writer<'_> {
                 self.recipient(to)?
             ),
             Effect::Destroy { what, .. } => format!("destroy {}", self.object(what)?),
-            Effect::Exile {
-                what,
-                bind: None,
-                duration: None,
-            } => format!("exile {}", self.object(what)?),
-            Effect::Exile {
-                what,
-                bind: None,
-                duration: Some(Duration::WhileSourceOnBattlefield),
-            } => format!(
-                "exile {} until ~ leaves the battlefield",
-                self.object(what)?
-            ),
             Effect::Tap { what } => format!("tap {}", self.object(what)?),
             Effect::Untap { what } => format!("untap {}", self.object(what)?),
             Effect::Goad { what } if self.named && self.single(what) => "goad it".to_owned(),
@@ -1321,9 +1308,30 @@ impl Writer<'_> {
         })
     }
 
+    /// An exile with no binding: "exile target creature", and "... until ~ leaves the battlefield" with the duration.
+    fn exiled(&mut self, effect: &Effect) -> Option<String> {
+        match effect {
+            Effect::Exile {
+                what,
+                bind: None,
+                duration: None,
+            } => Some(format!("exile {}", self.object(what)?)),
+            Effect::Exile {
+                what,
+                bind: None,
+                duration: Some(Duration::WhileSourceOnBattlefield),
+            } => Some(format!(
+                "exile {} until ~ leaves the battlefield",
+                self.object(what)?
+            )),
+            _ => None,
+        }
+    }
+
     /// The effects with a wording of their own: a card returned to the battlefield, the casting and the keyword actions.
     fn other_effect(&mut self, effect: &Effect) -> Option<String> {
-        self.reanimated(effect)
+        self.exiled(effect)
+            .or_else(|| self.reanimated(effect))
             .or_else(|| cast::text(effect))
             .or_else(|| self.keyword_action(effect))
             .or_else(|| self.controller_search(effect))
