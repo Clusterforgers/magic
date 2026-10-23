@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ae0701c1-7a99-46fe-bcb1-ea33ad2a0fc9",
+  "name": "Mastery of the Unseen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mastery of the Unseen",
+      "oracle_fingerprint": "bf835345fe43f79fcc69787fe7f7c653",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": [{ "ControlledBy": "You" }] } },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{3}{W}", "effects": [{ "Manifest": {} }] } }
+      ]
+    }
+  ]
+}

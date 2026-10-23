@@ -211,6 +211,7 @@ mod lords;
 mod mana_spent;
 mod mana_triggers;
 mod mana_wordings;
+mod manifest;
 mod may;
 mod modes;
 mod monarch;

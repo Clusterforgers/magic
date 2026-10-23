@@ -534,6 +534,7 @@ Mardu Strike Leader
 Maro
 Master of Etherium
 Master of Pearls
+Mastery of the Unseen
 Maulfist Squad
 Mausoleum Harpy
 Maverick Thopterist
@@ -660,7 +661,9 @@ Rally the Ranks
 Ramos, Dragon Engine
 Rampant Growth
 Rancor
+Ransom Note
 Ravenous Leucrocota
+Reality Shift
 Realm Seekers
 Reassembling Skeleton
 Reckless Impulse

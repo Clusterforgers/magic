@@ -1334,6 +1334,27 @@ impl<'a> Walker<'a> {
                 w.at("count", |w| w.amount(count));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
+            Effect::Manifest {
+                who,
+                count,
+                from,
+                bind,
+            }
+            | Effect::Cloak {
+                who,
+                count,
+                from,
+                bind,
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("count", |w| w.amount(count));
+                if let Some(library) = from {
+                    w.at("library", |w| w.reference(library, Kind::Player));
+                }
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
+            }
             Effect::Exile {
                 what,
                 bind,

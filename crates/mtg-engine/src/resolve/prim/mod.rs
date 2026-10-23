@@ -46,6 +46,7 @@ mod if_then;
 mod learn;
 mod look_at_top;
 mod lose_life;
+mod manifest;
 mod may;
 mod mill;
 mod modal;
@@ -102,6 +103,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Destroy { .. } => destroy::run(cx, effect),
         Effect::Exile { .. } => exile::run(cx, effect),
         Effect::ExileHidden { .. } => exile_hidden::run(cx, effect),
+        Effect::Manifest { .. } | Effect::Cloak { .. } => manifest::run(cx, effect),
         Effect::Sacrifice { .. } => sacrifice::run(cx, effect),
         Effect::Counter { .. } => counter::run(cx, effect),
         Effect::DealDamage { .. } => deal_damage::run(cx, effect),
@@ -181,7 +183,7 @@ mod tests {
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"BecomeMonarch":{}}, {"Amass":{"subtype":"Orc","count":1}}, {"Monstrosity":{"count":1}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
-        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}},
+        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Manifest":{}}, {"Cloak":{}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}},
         {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}},
         {"BecomeCopy":{"what":"This","of":"This","duration":"UntilEndOfTurn"}},
         {"CreateToken":{"token":{"Named":"treasure"}}},
@@ -205,7 +207,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 63, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 65, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -284,6 +286,8 @@ mod tests {
                 "Effect.ExileUntil",
                 "Effect.ExileTop",
                 "Effect.ExileHidden",
+                "Effect.Manifest",
+                "Effect.Cloak",
                 "Effect.CastFromZone",
                 "Effect.CopySpell",
                 "Effect.CopyAbility",
