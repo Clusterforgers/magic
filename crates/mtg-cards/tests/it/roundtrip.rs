@@ -269,7 +269,10 @@ fn keyword() -> impl Strategy<Value = Keyword> {
         cost().prop_map(Keyword::CumulativeUpkeep),
         cost().prop_map(Keyword::Ward),
         cost().prop_map(Keyword::Equip),
-        (leaf_selector(), cost()).prop_map(|(to, cost)| Keyword::EquipTo { to: Box::new(to), cost }),
+        (leaf_selector(), cost()).prop_map(|(to, cost)| Keyword::EquipTo {
+            to: Box::new(to),
+            cost
+        }),
         cost().prop_map(Keyword::Reconfigure),
         leaf_selector().prop_map(Keyword::Enchant),
         cost().prop_map(Keyword::Cycling),
