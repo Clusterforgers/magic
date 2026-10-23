@@ -13,11 +13,37 @@ use crate::combat::DamageTarget;
 use crate::events::Event;
 use crate::state::GameState;
 use crate::steps::draw;
+use crate::zones::Zone;
 
 impl GameState {
     /// The monarch, or nobody before a card has made a player the monarch.
     pub const fn monarch(&self) -> Option<PlayerId> {
         self.monarch
+    }
+
+    /// The monarch as the current turn began, or nobody.
+    pub const fn monarch_at_turn_start(&self) -> Option<PlayerId> {
+        self.tallies.monarch_began
+    }
+}
+
+/// Makes `player` the monarch, or nobody, and releases the cards exiled until an opponent of their exiler becomes the
+/// monarch (their exile ends the moment the designation moves, CR 610.3).
+pub(crate) fn set(state: &mut GameState, player: Option<PlayerId>) {
+    state.monarch = player;
+    let Some(player) = player else {
+        return;
+    };
+    if !state.possible.linked_exile {
+        return;
+    }
+    for id in state.zone(Zone::Exile).to_vec() {
+        if let Some(object) = state.objects.get_mut(&id)
+            && let Some((by, released)) = &mut object.monarch_wait
+            && by != &player
+        {
+            *released = true;
+        }
     }
 }
 
@@ -185,6 +211,45 @@ mod tests {
         };
         apply_event(&mut game, &event).unwrap();
         assert_eq!(game.monarch(), Some(PlayerId(0)));
+    }
+
+    #[rstest]
+    #[case::held_before_the_turn(Some(1), None, Some(1))]
+    #[case::taken_in_the_turn(None, Some(2), None)]
+    #[case::held_and_lost_in_the_turn(Some(0), Some(2), Some(0))]
+    #[case::nobody(None, None, None)]
+    fn the_monarch_as_the_turn_began_is_the_one_before_anything_in_the_turn_changed_it(
+        #[case] before: Option<usize>,
+        #[case] during: Option<usize>,
+        #[case] began: Option<usize>,
+    ) {
+        let mut game = game(None);
+        let seat = |n: usize| PlayerId::from_index(n);
+        if let Some(n) = before {
+            apply_event(&mut game, &Event::MonarchChanged { player: seat(n) }).unwrap();
+        }
+        apply_event(
+            &mut game,
+            &Event::TurnBegan {
+                number: 2,
+                active: PlayerId(1),
+            },
+        )
+        .unwrap();
+        if let Some(n) = during {
+            apply_event(&mut game, &Event::MonarchChanged { player: seat(n) }).unwrap();
+        }
+        assert_eq!(game.monarch_at_turn_start(), began.map(seat));
+        // The next turn starts from what this one ended with.
+        apply_event(
+            &mut game,
+            &Event::TurnBegan {
+                number: 3,
+                active: PlayerId(2),
+            },
+        )
+        .unwrap();
+        assert_eq!(game.monarch_at_turn_start(), game.monarch());
     }
 
     #[test]

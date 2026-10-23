@@ -294,6 +294,9 @@ pub struct GameObject {
     /// The permanent a card in exile waits for: it returns to the battlefield once that permanent has left it
     /// (CR 610.3); a zone change clears it.
     pub(crate) exiled_until: Option<ObjectRef>,
+    /// The player whose opponents' becoming the monarch returns a card in exile (Palace Jailer), and whether one has since
+    /// it was exiled; a zone change clears it.
+    pub(crate) monarch_wait: Option<(PlayerId, bool)>,
     /// The spell was cast from its owner's hand (rebound reads it); a zone change clears it.
     pub(crate) cast_from_hand: bool,
     /// The spell was cast from a graveyard (aftermath reads it); a zone change clears it.
@@ -321,6 +324,7 @@ impl GameObject {
             face_down: None,
             adventure: None,
             exiled_until: None,
+            monarch_wait: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
             kind: ObjectKind::Card,
@@ -354,6 +358,7 @@ impl GameObject {
             face_down: None,
             adventure: None,
             exiled_until: None,
+            monarch_wait: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
             kind: ObjectKind::Ability,
@@ -535,6 +540,11 @@ impl GameObject {
         self.exiled_until
     }
 
+    /// Whether a card in exile waits for an opponent of its exiler to become the monarch and one has.
+    pub(crate) const fn monarch_released(&self) -> bool {
+        matches!(self.monarch_wait, Some((_, true)))
+    }
+
     /// The player who may cast the card from exile as the creature of the Adventure it was exiled on.
     pub const fn on_adventure(&self) -> Option<PlayerId> {
         self.adventure
@@ -610,6 +620,7 @@ impl PartialEq for GameObject {
             && self.face_down == other.face_down
             && self.adventure == other.adventure
             && self.exiled_until == other.exiled_until
+            && self.monarch_wait == other.monarch_wait
             && self.cast_from_hand == other.cast_from_hand
             && self.cast_from_graveyard == other.cast_from_graveyard
             && self.counter == other.counter
@@ -636,6 +647,9 @@ impl Hash for GameObject {
         self.adventure.hash(state);
         if let Some(until) = self.exiled_until {
             until.hash(state);
+        }
+        if let Some(wait) = self.monarch_wait {
+            wait.hash(state);
         }
         // Left out while it is off, so the hash of a game without rebound is the one it always had.
         if self.cast_from_hand {

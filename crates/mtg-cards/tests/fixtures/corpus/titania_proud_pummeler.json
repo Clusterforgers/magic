@@ -1,0 +1,28 @@
+{
+  "id": "31255422-9afa-416c-90b2-62baf1d02cca",
+  "oracle_id": "6d51f00e-46a5-4064-a0c8-e840c66dbf2b",
+  "name": "Titania, Proud Pummeler",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "62",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Villain",
+  "oracle_text": "First strike\nMelee (Whenever this creature attacks, it gets +1/+1 until end of turn for each opponent you attacked this combat.)\nOther creatures you control have melee.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "First strike",
+    "Melee"
+  ]
+}

@@ -60,4 +60,8 @@ cost?: ManaCost,
 /**
  * Permanents the activation taps or sacrifices besides its source, and the ones it may take (Springleaf Drum, Skirk Prospector); paid inside a payment only, the engine picks (`mana_takes.rs`); left out means none.
  */
-takes?: Array<Take>, };
+takes?: Array<Take>, 
+/**
+ * A payment may use it more than once: it neither taps nor sacrifices its source and costs only what it takes (Cadaverous Bloom, Skirk Prospector), so every use takes others; left out means a payment uses it once.
+ */
+repeat?: boolean, };

@@ -1,0 +1,25 @@
+{
+  "id": "6881946c-5036-4d9f-926f-932c9a592aff",
+  "oracle_id": "a3f09898-6c77-4d68-8d10-8440c75f884c",
+  "name": "Rope",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkm",
+  "collector_number": "173",
+  "rarity": "uncommon",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Artifact — Clue Equipment",
+  "oracle_text": "Equipped creature gets +1/+2, has reach, and can't be blocked by more than one creature.\n{2}, Sacrifice this Equipment: Draw a card.\nEquip {3}",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Equip"
+  ]
+}

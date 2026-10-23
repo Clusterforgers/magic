@@ -1,0 +1,29 @@
+{
+  "id": "fddd2e68-8e1e-4162-a2c7-49da2c86d471",
+  "oracle_id": "e0b12c48-7234-40b5-a84c-6901d2b4e5b0",
+  "name": "Abomination, World Ravager",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "47",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{7}{R}",
+  "cmc": 8.0,
+  "type_line": "Legendary Creature — Gamma Berserker Villain",
+  "oracle_text": "Menace, trample\nMayhem {4}{R} (You may cast this card from your graveyard for {4}{R} if you discarded it this turn. Timing rules still apply.)",
+  "power": "10",
+  "toughness": "10",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Mayhem",
+    "Trample",
+    "Menace"
+  ]
+}

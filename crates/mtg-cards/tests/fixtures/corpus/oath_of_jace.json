@@ -1,0 +1,25 @@
+{
+  "id": "da62e9a8-d1aa-4fea-abb7-50c10d40fa6a",
+  "oracle_id": "dc92b420-8ac7-4478-a287-3d897357be08",
+  "name": "Oath of Jace",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "854",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Legendary Enchantment",
+  "oracle_text": "When Oath of Jace enters, draw three cards, then discard two cards.\nAt the beginning of your upkeep, scry X, where X is the number of planeswalkers you control.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Scry"
+  ]
+}

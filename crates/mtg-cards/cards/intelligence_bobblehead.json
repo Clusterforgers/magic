@@ -1,0 +1,31 @@
+{
+  "oracle_id": "16e6bd4b-fbf1-4bbe-9271-a74f59320e0d",
+  "name": "Intelligence Bobblehead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intelligence Bobblehead",
+      "oracle_fingerprint": "3e43b0f092015c48f62cad4ca516fbeb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap"],
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Count": [{ "Subtype": "Bobblehead" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

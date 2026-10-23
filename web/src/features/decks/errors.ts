@@ -31,6 +31,7 @@ const MESSAGES: Record<DeckFailureCode, (error: DeckError) => string> = {
   cards_unavailable: () => 'This server has no card database, so it cannot read or check decks.',
   unavailable: () => 'The server is shutting down or restarting. Wait a minute, then try again.',
   internal: () => 'The server ran into a problem. Try again in a moment.',
+  rate_limited: () => 'Too many requests came from this address. Wait a moment, then try again.',
   unknown: (error) =>
     `The server refused the request, and this page does not know why. It said "${error.message}".`,
   network: () =>

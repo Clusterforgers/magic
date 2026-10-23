@@ -1,0 +1,25 @@
+{
+  "id": "087b6745-0b3c-428c-b5b2-7639fa30f8f5",
+  "oracle_id": "78cb1f05-edad-4430-9095-f3eabd80bf41",
+  "name": "Challenger Troll",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clu",
+  "collector_number": "159",
+  "rarity": "uncommon",
+  "released_at": "2024-02-23",
+  "digital": false,
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Troll",
+  "oracle_text": "Each creature you control with power 4 or greater can't be blocked by more than one creature.",
+  "power": "6",
+  "toughness": "5",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

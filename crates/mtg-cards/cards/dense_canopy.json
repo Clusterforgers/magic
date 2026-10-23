@@ -1,0 +1,19 @@
+{
+  "oracle_id": "d182ab7d-77bd-49d1-9001-9b4016350181",
+  "name": "Dense Canopy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dense Canopy",
+      "oracle_fingerprint": "cce21efb51bb0fb5aae3f0d5ec927ac1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] },
+            "mods": [{ "CanBlockOnly": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }]
+          }
+        }
+      ]
+    }
+  ]
+}

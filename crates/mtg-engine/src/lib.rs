@@ -27,6 +27,9 @@ mod mana_bonus;
 mod mana_cost;
 mod mana_kinds;
 mod mana_plan;
+mod mana_repeat;
+#[cfg(test)]
+mod mana_repeat_tests;
 mod mana_takes;
 mod mulligan;
 mod parts;

@@ -1,4 +1,4 @@
-//! Goal: the turn view names the monarch to every seat at two to four seats and leaves the field out while nobody is, the event that makes a player the monarch reaches every seat whole, and a table view with a monarch round-trips through its JSON.
+//! Goal: the turn view names the monarch to every seat at two to four seats and leaves the field out while nobody is, the event that makes a player the monarch and the exile of a card until an opponent becomes it reach every seat whole, and a table view with a monarch round-trips through its JSON.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -115,6 +115,59 @@ fn a_trigger_on_becoming_the_monarch_reaches_every_seat_whole_and_the_draw_that_
             drew,
             Some((seat(0), viewer == 0)),
             "the monarch drew at the end step and only they see the card"
+        );
+    }
+}
+
+#[rstest]
+fn a_card_exiled_until_an_opponent_becomes_the_monarch_is_told_to_every_seat_whole(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    let plains = || ready(mtg_testkit::cards::plains());
+    let scenario = Scenario::new(seats)
+        .hand(0, [mtg_testkit::corpus::card("Palace Jailer").unwrap()])
+        .battlefield(0, [plains(), plains(), plains(), plains()])
+        .battlefield(1, [ready(mtg_testkit::cards::free_creature("Wall", 0, 5))]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let before = driver.state().clone();
+    let from = driver.engine().events().len();
+    driver.cast("Palace Jailer").unwrap();
+    for _ in 0..30 {
+        match &driver.decision().unwrap().kind {
+            mtg_engine::decision::DecisionKind::ChooseTargets(_) => {
+                let wall = driver.target_named("Wall").unwrap();
+                driver.choose_targets(&[wall]).unwrap();
+            }
+            mtg_engine::decision::DecisionKind::OrderTriggers(options) => {
+                let order: Vec<usize> = (0..options.triggers.len()).collect();
+                driver.order_triggers(&order).unwrap();
+            }
+            _ if driver.state().stack().is_empty() => break,
+            _ => {
+                driver.pass().unwrap();
+            }
+        }
+    }
+    let events = driver.engine().events()[from..].to_vec();
+    let viewers: Vec<PlayerId> = (0..seats).map(seat).collect();
+    let batches = project_events(&before, &events, &viewers, 0).unwrap();
+    for (viewer, batch) in batches.iter().enumerate() {
+        assert!(
+            batch.events.iter().any(|view| matches!(
+                view,
+                EventView::Public(Event::ZoneChanged {
+                    cause: mtg_engine::events::ZoneCause::ExiledUntilMonarch { by },
+                    ..
+                }) if *by == seat(0)
+            )),
+            "seat {viewer} is told the Wall was exiled until an opponent becomes the monarch"
+        );
+        assert!(
+            batch.events.iter().any(|view| matches!(
+                view,
+                EventView::Public(Event::MonarchChanged { player }) if *player == seat(0)
+            )),
+            "seat {viewer} is told who became the monarch"
         );
     }
 }

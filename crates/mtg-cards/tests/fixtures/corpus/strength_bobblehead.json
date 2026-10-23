@@ -1,0 +1,19 @@
+{
+  "id": "f9af73ad-625a-4260-8917-6a837f9fdf88",
+  "oracle_id": "bd0e22d1-4789-406d-9293-3ade30365b32",
+  "name": "Strength Bobblehead",
+  "lang": "en",
+  "layout": "normal",
+  "set": "pip",
+  "collector_number": "143",
+  "rarity": "uncommon",
+  "released_at": "2024-03-08",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Bobblehead",
+  "oracle_text": "{T}: Add one mana of any color.\n{3}, {T}: Put X +1/+1 counters on target creature, where X is the number of Bobbleheads you control. Activate only as a sorcery.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

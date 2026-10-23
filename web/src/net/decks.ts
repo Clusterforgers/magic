@@ -49,6 +49,7 @@ const DECK_CODES: Record<DeckErrorCode, true> = {
   cards_unavailable: true,
   unavailable: true,
   internal: true,
+  rate_limited: true,
 }
 
 /** True for a code the card and deck endpoints send. */

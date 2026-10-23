@@ -355,7 +355,7 @@ fn a_bonus_or_a_keyword_reads_as_the_hand_written_files_say(
 #[case::unblockable_except_by(
     "This creature can't be blocked except by creatures with flying or reach."
 )]
-#[case::unblockable_by_more_than_one("This creature can't be blocked by more than one creature.")]
+#[case::unblockable_by_more_than_two("This creature can't be blocked by more than two creatures.")]
 #[case::unblockable_this_turn("Creatures you control can't be blocked this turn.")]
 #[case::an_additional_land_this_turn("You may play an additional land this turn.")]
 #[case::hand_size_for_a_turn("You have no maximum hand size this turn.")]

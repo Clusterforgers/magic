@@ -6,6 +6,7 @@
 
 use mtg_core::color::Color;
 
+use super::counters;
 use super::selectors::{Form, color, color_name, phrase, phrase_in, phrase_text, stat_word};
 use super::tokens::Reader;
 use crate::ability::Ability;
@@ -50,8 +51,14 @@ pub(super) fn ability(r: &mut Reader<'_>) -> Option<Ability> {
     })
 }
 
+/// "equal to the number of opponents you have": the count an amount is.
+pub(super) fn equal_to(r: &mut Reader<'_>) -> Option<Amount> {
+    r.need("equal to")?;
+    value(r)
+}
+
 /// A number the ability counts: parts joined by "plus", each "twice" a count, a count or a plain number.
-fn value(r: &mut Reader<'_>) -> Option<Amount> {
+pub(super) fn value(r: &mut Reader<'_>) -> Option<Amount> {
     let mut parts = vec![part(r)?];
     while r.words("plus") {
         parts.push(part(r)?);
@@ -87,7 +94,13 @@ pub(super) fn counting(r: &mut Reader<'_>) -> Option<Amount> {
     if r.words("the number of card types among") {
         return Some(Amount::CardTypes(counted(r)?));
     }
+    if r.words("the total number of") {
+        return Some(Amount::Count(counted(r)?));
+    }
     if r.words("the number of") {
+        if let Some(held) = r.attempt(held) {
+            return Some(held);
+        }
         return Some(Amount::Count(counted(r)?));
     }
     if r.words("the greatest") {
@@ -114,6 +127,14 @@ pub(super) fn counting(r: &mut Reader<'_>) -> Option<Amount> {
         return Some(Amount::Devotion(colors));
     }
     None
+}
+
+/// What "the number of" counts besides objects: "opponents you have", "charge counters on ~".
+fn held(r: &mut Reader<'_>) -> Option<Amount> {
+    if r.words("opponents you have") {
+        return Some(Amount::Players(Ref::Opponents));
+    }
+    counters::counted_plural(r)
 }
 
 /// The objects a count looks at: "creatures you control", "Forests on the battlefield", "cards in your hand", "creature
@@ -143,6 +164,14 @@ fn in_zone(r: &mut Reader<'_>) -> Option<Vec<Pred>> {
     }
     if r.words("in all graveyards") {
         return Some(vec![Pred::In(ZoneKind::Graveyard)]);
+    }
+    if let Some(hands) = r.attempt(|r| {
+        r.need("in all players")?;
+        r.punct('\'').then_some(())?;
+        r.word("hands").then_some(())?;
+        Some(vec![Pred::In(ZoneKind::Hand)])
+    }) {
+        return Some(hands);
     }
     r.attempt(|r| {
         r.need("in your opponents")?;
@@ -206,7 +235,7 @@ fn sentence(power: &Amount, toughness: &Amount) -> Option<String> {
     ))
 }
 
-fn value_text(amount: &Amount) -> Option<String> {
+pub(super) fn value_text(amount: &Amount) -> Option<String> {
     let Amount::Sum(parts) = amount else {
         return counting_text(amount);
     };
@@ -235,7 +264,19 @@ pub(super) fn counting_text(amount: &Amount) -> Option<String> {
             "the number of card types among {}",
             counted_text(of)?
         )),
+        // The cards of every hand are the "total" number.
+        Amount::Count(of) if of.0.last() == Some(&Pred::In(ZoneKind::Hand)) => {
+            Some(format!("the total number of {}", counted_text(of)?))
+        }
         Amount::Count(of) => Some(format!("the number of {}", counted_text(of)?)),
+        Amount::Players(Ref::Opponents) => Some("the number of opponents you have".to_owned()),
+        Amount::Counters {
+            on: Ref::This,
+            counter,
+        } => Some(format!(
+            "the number of {} counters on ~",
+            counters::kind_text(counter)?
+        )),
         Amount::Greatest { of, stat } => Some(format!(
             "the greatest {} among {}",
             stat_text(*stat)?,
@@ -266,9 +307,13 @@ fn counted_text(selector: &Selector) -> Option<String> {
     let preds = &selector.0;
     let Some(at) = preds.iter().position(|pred| matches!(pred, Pred::In(_))) else {
         let text = phrase_text(selector, Form::All)?;
-        let placed = preds
-            .iter()
-            .any(|pred| matches!(pred, Pred::ControlledBy(_) | Pred::OwnedBy(_)));
+        // An attacking or blocking creature is on the battlefield, and the card does not say so.
+        let placed = preds.iter().any(|pred| {
+            matches!(
+                pred,
+                Pred::ControlledBy(_) | Pred::OwnedBy(_) | Pred::Attacking | Pred::Blocking
+            )
+        });
         return Some(if placed {
             text
         } else {
@@ -282,6 +327,7 @@ fn counted_text(selector: &Selector) -> Option<String> {
         (ZoneKind::Hand, [Pred::OwnedBy(Ref::You)]) => " in your hand",
         (ZoneKind::Graveyard, [Pred::OwnedBy(Ref::You)]) => " in your graveyard",
         (ZoneKind::Graveyard, []) => " in all graveyards",
+        (ZoneKind::Hand, []) => " in all players' hands",
         (ZoneKind::Graveyard, [Pred::OwnedBy(Ref::Opponents)]) => " in your opponents' graveyards",
         _ => return None,
     };

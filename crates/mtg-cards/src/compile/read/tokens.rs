@@ -367,6 +367,8 @@ pub struct Reader<'a> {
     pub toughness: Option<i32>,
     /// Whether the trigger is about an attack at the monarch, so "that player controls" is the monarch's.
     pub at_monarch: bool,
+    /// Whether the trigger is about an attack at one of the controller's opponents, so "that player" is the player attacked.
+    pub attacked_player: bool,
     /// Whether the trigger is about the enchanted player being attacked, so "each opponent attacking that player"
     /// names the opponents with a creature attacking them.
     pub attacked: bool,
@@ -404,6 +406,7 @@ impl<'a> Reader<'a> {
             power: None,
             toughness: None,
             at_monarch: false,
+            attacked_player: false,
             attacked: false,
             from_graveyard: false,
             cast_spell: false,

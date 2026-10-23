@@ -1,0 +1,21 @@
+{
+  "id": "b1b19949-90c9-46f1-85d4-d6eda0b7977e",
+  "oracle_id": "89750d72-d1c0-4c8a-aa72-fdd48570aa92",
+  "name": "Vorrac Battlehorns",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mrd",
+  "collector_number": "271",
+  "rarity": "common",
+  "released_at": "2003-10-02",
+  "digital": false,
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature has trample and can't be blocked by more than one creature.\nEquip {1} ({1}: Attach to target creature you control. Equip only as a sorcery.)",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a086f7a5-1319-4c5d-b23f-41bec2f81027",
+  "name": "Archivist of Gondor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archivist of Gondor",
+      "oracle_fingerprint": "47025484647c30edf63d9a30a973acf7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["Commander", { "OwnedBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "if": { "Not": { "Monarch": "EachPlayer" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "Monarch" } },
+            "effects": [{ "Draw": { "who": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

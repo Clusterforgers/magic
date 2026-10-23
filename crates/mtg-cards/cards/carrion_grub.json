@@ -1,0 +1,37 @@
+{
+  "oracle_id": "c54b375d-a456-4886-96f2-8dc7a0024a5b",
+  "name": "Carrion Grub",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Carrion Grub",
+      "oracle_fingerprint": "fdc648f6f371c9337792b2b332a5b66c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Greatest": {
+                      "of": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }],
+                      "stat": "Power"
+                    }
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "count": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

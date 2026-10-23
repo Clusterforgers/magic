@@ -1,0 +1,45 @@
+{
+  "oracle_id": "a95309ac-f920-474d-81b5-0f68c8a54f34",
+  "name": "Towering Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Towering Titan",
+      "oracle_fingerprint": "4e3d9c6e086315e1909edceb54160eb3",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Total": {
+                    "of": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "stat": "Toughness"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "HasKeyword": "Defender" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
