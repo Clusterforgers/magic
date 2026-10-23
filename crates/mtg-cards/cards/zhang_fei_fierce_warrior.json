@@ -1,0 +1,12 @@
+{
+  "oracle_id": "f3f815b8-75c6-40e0-9716-872f0f5c9d46",
+  "name": "Zhang Fei, Fierce Warrior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zhang Fei, Fierce Warrior",
+      "oracle_fingerprint": "c0028b9b1ce7c865690df4fbf15d8e53",
+      "abilities": [{ "Keyword": "Vigilance" }, { "Keyword": "Horsemanship" }]
+    }
+  ]
+}

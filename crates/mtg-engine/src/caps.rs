@@ -379,6 +379,9 @@ const RUNS: &[&str] = &[
     "Keyword.Awaken",
     "Keyword.Gravestorm",
     "Keyword.Sunburst",
+    "Keyword.Afterlife",
+    "Keyword.Horsemanship",
+    "Keyword.Spectacle",
     "Condition.NewlyControlled",
     "Condition.Level",
     "Rule.CanBeCommander",
@@ -785,6 +788,9 @@ mod tests {
     #[case::awaken("Keyword.Awaken", true)]
     #[case::gravestorm("Keyword.Gravestorm", true)]
     #[case::sunburst("Keyword.Sunburst", true)]
+    #[case::afterlife("Keyword.Afterlife", true)]
+    #[case::horsemanship("Keyword.Horsemanship", true)]
+    #[case::spectacle("Keyword.Spectacle", true)]
     #[case::pairing_attackers_with_players("Rule.MustAttackPlayers", true)]
     #[case::taxing_attackers("Rule.AttackTax", true)]
     #[case::squad("Keyword.Squad", true)]

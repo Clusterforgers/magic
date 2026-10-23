@@ -23,6 +23,7 @@ use crate::support::{PrintedCard, PrintedFace, has_rules_text, oracle_fingerprin
 
 pub use classify::ClauseKind;
 pub use keywords::read as read_keyword;
+pub use keywords::read_all as read_keywords;
 pub use read::{render_ability, render_mode, render_variants, same_text, static_pair_texts};
 
 /// One clause of a face's oracle text, read or not.
@@ -197,13 +198,15 @@ fn read_clause(
     own: &read::Own,
 ) -> (Option<Ability>, Vec<Ability>) {
     match kind {
-        ClauseKind::Keyword => (
-            keywords::read(text)
-                // `check_printed` accepts Enchant on an Aura only.
+        ClauseKind::Keyword => {
+            // `check_printed` accepts Enchant on an Aura only.
+            let mut keywords = keywords::read_all(text)
+                .unwrap_or_default()
+                .into_iter()
                 .filter(|keyword| aura || !matches!(keyword, Keyword::Enchant(_)))
-                .map(Ability::Keyword),
-            Vec::new(),
-        ),
+                .map(Ability::Keyword);
+            (keywords.next(), keywords.collect())
+        }
         ClauseKind::Static
             if text.starts_with("LEVEL ")
                 || clauses::is_station_block(text)
@@ -522,11 +525,7 @@ mod tests {
         "Draw a card.\nFlip a coin.",
         Some(ImplStatus::Manual)
     )]
-    #[case::unreadable_keyword_only(
-        "Creature \u{2014} Elf",
-        "Horsemanship",
-        Some(ImplStatus::Manual)
-    )]
+    #[case::unreadable_keyword_only("Creature \u{2014} Elf", "Banding", Some(ImplStatus::Manual))]
     #[case::reminder_only("Basic Land \u{2014} Forest", "({T}: Add {G}.)", None)]
     #[case::vanilla("Creature \u{2014} Bear", "", None)]
     #[case::whitespace_only("Creature \u{2014} Bear", "  \n ", None)]

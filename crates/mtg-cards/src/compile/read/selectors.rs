@@ -68,6 +68,7 @@ const KEYWORDS: &[&str] = &[
     "changeling",
     "infect",
     "skulk",
+    "horsemanship",
     "melee",
     "myriad",
 ];

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "65ce903f-8c3e-4283-9b6e-ee9b3176f059",
+  "name": "Hackrobat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hackrobat",
+      "oracle_fingerprint": "608783b3af757399921e23c57d5685ee",
+      "abilities": [
+        { "Keyword": { "Spectacle": "{B}{R}" } },
+        {
+          "Activated": {
+            "cost": "{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

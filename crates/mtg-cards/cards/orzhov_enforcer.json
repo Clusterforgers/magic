@@ -1,0 +1,12 @@
+{
+  "oracle_id": "f60b879e-82b4-442d-a544-2349429fe4c9",
+  "name": "Orzhov Enforcer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orzhov Enforcer",
+      "oracle_fingerprint": "52379a0f8bca118558d269150b194964",
+      "abilities": [{ "Keyword": "Deathtouch" }, { "Keyword": { "Afterlife": 1 } }]
+    }
+  ]
+}

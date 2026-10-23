@@ -281,6 +281,13 @@ fn keyword_way(
             cost,
             in_graveyard && state.discarded_this_turn(player, id),
         ),
+        // Open from a hand in a turn in which an opponent of the caster lost life (CR 702.137a).
+        Keyword::Spectacle(cost) => (
+            CastWay::Spectacle,
+            "Spectacle",
+            cost,
+            in_hand && state.opponent_lost_life(player),
+        ),
         Keyword::Awaken { cost, .. } => (CastWay::Awaken, "Awaken", cost, in_hand),
         Keyword::Morph(_) | Keyword::Megamorph(_) | Keyword::Disguise(_) if in_hand => {
             return Some(face_down_way(instant));
@@ -306,6 +313,7 @@ fn keyword_way(
             | CastWay::Bestow
             | CastWay::Blitz
             | CastWay::Prowl
+            | CastWay::Spectacle
             | CastWay::Mayhem
             | CastWay::Mutate
     ) {

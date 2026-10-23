@@ -296,6 +296,12 @@ pub enum Keyword {
     Gravestorm,
     /// Sunburst (CR 702.44): the permanent enters with a +1/+1 counter (a charge counter unless it is a creature) for each color of mana spent to cast it.
     Sunburst,
+    /// Afterlife N (CR 702.135): when the permanent is put into a graveyard from the battlefield, its controller creates N 1/1 white and black Spirit creature tokens with flying.
+    Afterlife(u32),
+    /// Horsemanship (CR 702.31): the creature can't be blocked except by creatures with horsemanship.
+    Horsemanship,
+    /// Spectacle with its cost (CR 702.137): an alternative cost to cast the card from a hand when an opponent lost life this turn.
+    Spectacle(Cost),
 }
 
 /// What a promised gift is (CR 702.174).
@@ -441,6 +447,9 @@ impl Keyword {
         "Awaken",
         "Gravestorm",
         "Sunburst",
+        "Afterlife",
+        "Horsemanship",
+        "Spectacle",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -583,6 +592,9 @@ impl Keyword {
             Keyword::Blitz(_) => "Blitz",
             Keyword::Prowl(_) => "Prowl",
             Keyword::Mayhem(_) => "Mayhem",
+            Keyword::Afterlife(_) => "Afterlife",
+            Keyword::Horsemanship => "Horsemanship",
+            Keyword::Spectacle(_) => "Spectacle",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
         }
@@ -763,6 +775,9 @@ mod tests {
             },
             Keyword::Gravestorm,
             Keyword::Sunburst,
+            Keyword::Afterlife(2),
+            Keyword::Horsemanship,
+            Keyword::Spectacle(Cost::default()),
         ]
     }
 

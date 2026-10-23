@@ -797,7 +797,8 @@ impl<'a> Walker<'a> {
             | Keyword::Bestow(cost)
             | Keyword::Blitz(cost)
             | Keyword::Prowl(cost)
-            | Keyword::Mayhem(cost) => {
+            | Keyword::Mayhem(cost)
+            | Keyword::Spectacle(cost) => {
                 self.at("cost", |w| w.cost(cost));
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost);
             }
@@ -855,6 +856,7 @@ impl<'a> Walker<'a> {
             Keyword::Annihilator(0) => self.problem("annihilator needs a number of at least 1"),
             Keyword::Dredge(0) => self.problem("dredge needs a number of at least 1"),
             Keyword::Fabricate(0) => self.problem("fabricate needs a number of at least 1"),
+            Keyword::Afterlife(0) => self.problem("afterlife needs a number of at least 1"),
             Keyword::PartnerWith(name) => {
                 self.names
                     .push((self.face, self.current_path(), name.clone()));

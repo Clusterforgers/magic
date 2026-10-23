@@ -1,0 +1,26 @@
+{
+  "id": "dacc5e02-c21e-4a41-a704-5b87151a28c6",
+  "oracle_id": "2951671b-ac01-4e65-857f-0b7b7c7478ce",
+  "name": "Reaver Titan",
+  "lang": "en",
+  "layout": "normal",
+  "set": "40k",
+  "collector_number": "163",
+  "rarity": "rare",
+  "released_at": "2022-10-07",
+  "digital": false,
+  "mana_cost": "{7}",
+  "cmc": 7.0,
+  "type_line": "Artifact — Vehicle",
+  "oracle_text": "Void Shields — Protection from mana value 3 or less\nGatling Blaster — Whenever this Vehicle attacks, it deals 5 damage to each opponent.\nCrew 4 (Tap any number of creatures you control with total power 4 or more: This Vehicle becomes an artifact creature until end of turn.)",
+  "power": "10",
+  "toughness": "10",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Gatling Blaster",
+    "Void Shields",
+    "Protection",
+    "Crew"
+  ]
+}

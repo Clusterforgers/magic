@@ -256,6 +256,8 @@ mod search_fuzz;
 mod search_pairs;
 mod seed_campaigns;
 mod small_effects_fuzz;
+mod spectacle;
+mod spectacle_fuzz;
 mod spell_copies;
 mod spell_copies_fuzz;
 mod spell_fuzz;

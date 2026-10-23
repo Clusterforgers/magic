@@ -5,6 +5,7 @@
 //! keywords an object has through [`keywords_of`] and the helpers below it, never from the rules of the card.
 
 mod affinity;
+mod afterlife;
 pub(crate) mod aftermath;
 mod annihilator;
 mod ascend;
@@ -63,6 +64,7 @@ mod gravestorm;
 mod haste;
 mod hexproof;
 mod hideaway;
+mod horsemanship;
 mod improvise;
 mod indestructible;
 mod infect;
@@ -108,6 +110,7 @@ mod scavenge;
 mod shadow;
 mod shroud;
 mod skulk;
+mod spectacle;
 mod split_second;
 mod squad;
 mod station;
@@ -507,6 +510,9 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Awaken { .. } => &awaken::Awaken,
         Keyword::Gravestorm => &gravestorm::Gravestorm,
         Keyword::Sunburst => &sunburst::Sunburst,
+        Keyword::Afterlife(_) => &afterlife::Afterlife,
+        Keyword::Horsemanship => &horsemanship::Horsemanship,
+        Keyword::Spectacle(_) => &spectacle::Spectacle,
         Keyword::Ascend => &ascend::Ascend,
         Keyword::ForMirrodin => &for_mirrodin::ForMirrodin,
         Keyword::JobSelect => &job_select::JobSelect,
@@ -858,6 +864,9 @@ mod tests {
             },
             Keyword::Gravestorm,
             Keyword::Sunburst,
+            Keyword::Afterlife(2),
+            Keyword::Horsemanship,
+            Keyword::Spectacle(cost()),
         ]
     }
 
@@ -983,6 +992,9 @@ mod tests {
         "Keyword.Awaken",
         "Keyword.Gravestorm",
         "Keyword.Sunburst",
+        "Keyword.Afterlife",
+        "Keyword.Horsemanship",
+        "Keyword.Spectacle",
         "Keyword.SplitSecond",
         "Keyword.Undaunted",
     ];
@@ -1144,6 +1156,9 @@ mod tests {
     #[case::transmute(Keyword::Transmute(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::gravestorm(Keyword::Gravestorm, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::sunburst(Keyword::Sunburst, Hooks { abilities: 2, ..Hooks::none() })]
+    #[case::afterlife(Keyword::Afterlife(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::horsemanship(Keyword::Horsemanship, Hooks::none())]
+    #[case::spectacle(Keyword::Spectacle(Cost::mana("{1}{B}".parse().unwrap())), Hooks::none())]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);

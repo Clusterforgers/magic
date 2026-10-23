@@ -1,0 +1,28 @@
+{
+  "id": "91bf3a4f-f004-459e-a6fd-122d4cce7d17",
+  "oracle_id": "ff959f1f-0982-4761-a6b0-3044dff1d617",
+  "name": "Lu Bu, Master-at-Arms",
+  "lang": "en",
+  "layout": "normal",
+  "set": "me3",
+  "collector_number": "108",
+  "rarity": "rare",
+  "released_at": "2009-09-07",
+  "digital": true,
+  "mana_cost": "{5}{R}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Human Soldier Warrior",
+  "oracle_text": "Haste; horsemanship (This creature can't be blocked except by creatures with horsemanship.)",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Haste",
+    "Horsemanship"
+  ]
+}

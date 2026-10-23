@@ -84,6 +84,8 @@ pub enum CastWay {
     Blitz,
     /// Prowl (CR 702.76): a spell cast for its prowl cost, which its abilities read as "if its prowl cost was paid".
     Prowl,
+    /// Spectacle (CR 702.137): a spell cast from a hand for its spectacle cost, which its abilities read as "if its spectacle cost was paid".
+    Spectacle,
     /// Mayhem (CR 702.190): a spell cast from a graveyard for its mayhem cost, which its abilities read as "if its mayhem cost was paid".
     Mayhem,
     /// Awaken (CR 702.113): a spell cast from a hand for its awaken cost, which also puts counters on a land and animates it.
@@ -552,6 +554,7 @@ mod tests {
     #[case::dash(CastWay::Dash, true)]
     #[case::blitz(CastWay::Blitz, true)]
     #[case::prowl(CastWay::Prowl, true)]
+    #[case::spectacle(CastWay::Spectacle, true)]
     #[case::mayhem(CastWay::Mayhem, true)]
     #[case::mutate(CastWay::Mutate, true)]
     #[case::face_down(CastWay::FaceDown, true)]

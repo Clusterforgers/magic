@@ -117,6 +117,9 @@ fn damage_player(
     }
     if amount > 0 {
         state.tally_by(id, Tally::Hurt, amount);
+        if !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss) {
+            state.tally_by(id, Tally::Lost, amount);
+        }
     }
     let player = player_mut(state, id)?;
     if !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss) {
