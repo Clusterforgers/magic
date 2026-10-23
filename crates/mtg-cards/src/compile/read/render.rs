@@ -30,6 +30,7 @@ use super::group_pump;
 use super::lands;
 use super::library;
 use super::manifest;
+use super::mass_moves;
 use super::payments;
 use super::prevention;
 use super::pronouns;
@@ -102,6 +103,18 @@ pub fn variants(ability: &Ability) -> Vec<String> {
         })
         .collect();
     texts.extend(commanders);
+    // A card may say the permanent "entered the battlefield" this turn for "entered" (Octomancer).
+    let entered: Vec<String> = texts
+        .iter()
+        .filter(|text| text.contains(" that entered this turn"))
+        .map(|text| {
+            text.replace(
+                " that entered this turn",
+                " that entered the battlefield this turn",
+            )
+        })
+        .collect();
+    texts.extend(entered);
     // A card may call the token of a copy "the token" for "it" in its exceptions (Helm of the Host).
     let tokens: Vec<String> = texts
         .iter()
@@ -254,6 +267,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     }
     pronouns::of_the_card(ability, &mut texts);
     pronouns::you_after_the_attached(ability, &mut texts);
+    pronouns::they(ability, &mut texts);
     pronouns::of_the_group(ability, &mut texts);
     // A trigger about damage the source deals may say "it deals" for the source (Questing Beast).
     if matches!(
@@ -354,6 +368,17 @@ fn head_wordings(head: Vec<String>) -> Vec<Vec<String>> {
                 .collect(),
         );
     }
+    // An Aura says "When enchanted creature dies".
+    let whens: Vec<Vec<String>> = heads
+        .iter()
+        .filter(|found| found[0].starts_with("Whenever enchanted creature dies"))
+        .map(|found| {
+            let mut when = found.clone();
+            when[0] = when[0].replacen("Whenever", "When", 1);
+            when
+        })
+        .collect();
+    heads.extend(whens);
     // A card that is targeted once says "When" ("When this creature becomes the target of a spell or ability").
     if head[0].starts_with("Whenever ~ becomes the target of a spell or ability")
         && !head[0].contains(" each turn")
@@ -567,6 +592,31 @@ struct Wording {
     again: bool,
     /// Which of the wordings of a condition is written ("three or more" or "3 or more").
     condition: usize,
+}
+
+/// "each player discards their hand, then draws seven cards": every hand emptied and the cards drawn, one sentence.
+fn wheel_text(effects: &[Effect]) -> Option<(String, usize)> {
+    let [
+        Effect::Discard {
+            who: Ref::EachPlayer,
+            count: hand,
+            random: false,
+        },
+        Effect::Draw {
+            who: Ref::EachPlayer,
+            count,
+        },
+        ..,
+    ] = effects
+    else {
+        return None;
+    };
+    (*hand == draws::hand_of(&Ref::EachPlayer)).then_some(())?;
+    let cards = cards_text(count)?;
+    Some((
+        format!("each player discards their hand, then draws {cards}"),
+        2,
+    ))
 }
 
 /// The wordings to try for the effects: tokens counted by things say "for each" or "where X is", and two verbs of
@@ -1151,6 +1201,7 @@ pub(super) fn signed_text(amount: &Amount) -> Option<String> {
         Amount::Fixed(number) if *number >= 0 => Some(format!("+{number}")),
         Amount::Fixed(number) => Some(number.to_string()),
         Amount::X => Some("+X".to_owned()),
+        Amount::Times { by: -1, of } if **of == Amount::X => Some("-X".to_owned()),
         _ => None,
     }
 }
@@ -1242,6 +1293,7 @@ impl Writer<'_> {
     fn counter_place(&mut self, place: &Ref, several: bool) -> Option<String> {
         match place {
             Ref::This => Some("~".to_owned()),
+            Ref::Attached => Some("enchanted creature".to_owned()),
             // The creature that attacks enchanted player.
             Ref::Triggering => Some("it".to_owned()),
             Ref::Target(0)
@@ -1409,6 +1461,24 @@ impl Writer<'_> {
         copy_spells::become_texts(choose, copy, &target)
     }
 
+    /// A verb that acts on objects: "destroy target creature", "tap enchanted creature", "enchanted creature fights
+    /// target creature".
+    fn on_objects(&mut self, effect: &Effect) -> Option<String> {
+        Some(match effect {
+            Effect::Destroy { what, .. } => format!("destroy {}", self.object(what)?),
+            Effect::Tap { what } => format!("tap {}", self.object(what)?),
+            Effect::Untap { what } => format!("untap {}", self.object(what)?),
+            Effect::Goad { what } if self.named && self.single(what) => "goad it".to_owned(),
+            Effect::Goad { what } => format!("goad {}", self.object(what)?),
+            Effect::Fight { what, with } => {
+                format!("{} fights {}", self.object(what)?, self.object(with)?)
+            }
+            Effect::Regenerate { what } => format!("regenerate {}", self.object(what)?),
+            Effect::Counter { what } => format!("counter {}", self.object(what)?),
+            _ => return None,
+        })
+    }
+
     /// An effect as a sentence without its first capital and its period.
     fn effect(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
@@ -1424,10 +1494,7 @@ impl Writer<'_> {
             | Effect::Move {
                 to: Destination::Library { .. },
                 ..
-            } => self
-                .library(effect)
-                .or_else(|| cast::text(effect))
-                .or_else(|| self.keyword_action(effect))?,
+            } => self.library(effect).or_else(|| self.moved(effect))?,
             Effect::Sacrifice {
                 who: Ref::You,
                 filter,
@@ -1446,10 +1513,7 @@ impl Writer<'_> {
             Effect::Move {
                 what,
                 to: Destination::Hand,
-            } => self
-                .returned_to_hand(what)
-                .or_else(|| cast::text(effect))
-                .or_else(|| self.keyword_action(effect))?,
+            } => self.returned_to_hand(what).or_else(|| self.moved(effect))?,
             Effect::AddMana {
                 who: Ref::You,
                 mana,
@@ -1480,13 +1544,13 @@ impl Writer<'_> {
                 points_text(amount)?,
                 self.recipient(to)?
             ),
-            Effect::Destroy { what, .. } => format!("destroy {}", self.object(what)?),
-            Effect::Tap { what } => format!("tap {}", self.object(what)?),
-            Effect::Untap { what } => format!("untap {}", self.object(what)?),
-            Effect::Goad { what } if self.named && self.single(what) => "goad it".to_owned(),
-            Effect::Goad { what } => format!("goad {}", self.object(what)?),
-            Effect::Regenerate { what } => format!("regenerate {}", self.object(what)?),
-            Effect::Counter { what } => format!("counter {}", self.object(what)?),
+            Effect::Destroy { .. }
+            | Effect::Tap { .. }
+            | Effect::Untap { .. }
+            | Effect::Goad { .. }
+            | Effect::Fight { .. }
+            | Effect::Regenerate { .. }
+            | Effect::Counter { .. } => self.on_objects(effect)?,
             Effect::Continuous {
                 affected,
                 mods,
@@ -1541,11 +1605,19 @@ impl Writer<'_> {
         }
     }
 
+    /// A move that is a mass move, a cast or a keyword action.
+    fn moved(&mut self, effect: &Effect) -> Option<String> {
+        mass_moves::text(effect)
+            .or_else(|| cast::text(effect))
+            .or_else(|| self.keyword_action(effect))
+    }
+
     /// The effects with a wording of their own: a card returned to the battlefield, the casting and the keyword actions.
     fn other_effect(&mut self, effect: &Effect) -> Option<String> {
         self.exiled(effect)
             .or_else(|| self.graveyard_exile(effect))
             .or_else(|| self.reanimated(effect))
+            .or_else(|| mass_moves::text(effect))
             .or_else(|| cast::text(effect))
             .or_else(|| self.keyword_action(effect))
             .or_else(|| self.controller_search(effect))
@@ -1716,6 +1788,7 @@ impl Writer<'_> {
     fn then_steps(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
         self.explore_twice(effects)
             .or_else(|| self.mill_then_change(effects))
+            .or_else(|| wheel_text(effects))
     }
 
     /// "~ explores, then it explores again": one creature that explores twice is one sentence, which no joint splits.
@@ -1919,6 +1992,7 @@ impl Writer<'_> {
             }
             Ref::Each(selector) => Some(format!("all {}", phrase_text(selector, Form::All)?)),
             Ref::This => Some("~".to_owned()),
+            Ref::Attached => Some("enchanted creature".to_owned()),
             _ => None,
         }
     }

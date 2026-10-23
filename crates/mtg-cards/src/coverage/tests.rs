@@ -108,7 +108,7 @@ fn filed(n: u32, name: &str, status: ImplStatus, from: Option<&PrintedCard>) -> 
     RulesSource::Compiled,
     &["spell: Tap up to N target creatures. Pay {M}."]
 )]
-#[case::unreadable_keyword("Creature \u{2014} Elf", "Horsemanship", &[], Support::Manual, RulesSource::Compiled, &["keyword: Horsemanship"])]
+#[case::unreadable_keyword("Creature \u{2014} Elf", "Banding", &[], Support::Manual, RulesSource::Compiled, &["keyword: Banding"])]
 #[case::keyword_the_engine_lacks("Creature \u{2014} Elf", "Reach", &[], Support::Manual, RulesSource::Compiled, &["engine: Keyword.Reach"])]
 #[case::effect_the_engine_lacks("Sorcery", "Scry 2.", &[], Support::Manual, RulesSource::Compiled, &["engine: Effect.Scry"])]
 #[case::invalid_compiled_rules("Sorcery", "Draw a card.", &["Flying"], Support::Manual, RulesSource::Compiled, &["rules: invalid"])]

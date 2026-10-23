@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ece854f8-8c60-4f30-894f-2286d3dd61b9",
+  "name": "Reforge the Soul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reforge the Soul",
+      "oracle_fingerprint": "af6f513a19852e576603f0a2d7da2eb0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Discard": {
+                  "who": "EachPlayer",
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "EachPlayer" }] }
+                }
+              },
+              { "Draw": { "who": "EachPlayer", "count": 7 } }
+            ]
+          }
+        },
+        { "Keyword": { "Miracle": "{1}{R}" } }
+      ]
+    }
+  ]
+}

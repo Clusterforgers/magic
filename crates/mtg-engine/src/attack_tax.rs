@@ -3,8 +3,9 @@
 //!
 //! A declaration is checked against the options first. The cost of each attacker is the mana of every tax in force
 //! (`Rule::AttackTax`) that protects what it attacks and taxes it, and the total is locked in. A declaration with a
-//! total of nothing is made at once. One with a total is legal only if its player can pay it with the attackers tapped
-//! that tap to attack (CR 508.1f), and then it becomes a pending attack (`What::Attack`) whose payment is the ordinary
+//! total of nothing is made at once. One with a total is legal only if its player can pay it, without paying down to 0
+//! life, with the attackers tapped that tap to attack (CR 508.1f), and then it becomes a pending attack
+//! (`What::Attack`) whose payment is the ordinary
 //! mana payment (`PayMana`, mana abilities included): the declaration is made with the payment, and backing out of the
 //! payment returns to the declaration, with nothing paid.
 
@@ -23,7 +24,6 @@ use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::fold::apply_event;
 use crate::help::Offered;
-use crate::mana::can_afford_with;
 use crate::priority::mana_options;
 use crate::resolve::Scope;
 use crate::rules::{Taxing, attack_taxes};
@@ -123,6 +123,10 @@ fn tapped(
 
 /// The payment of the total cost of an attack, if its player can make it. The mana abilities offered are those of the
 /// permanents the attack leaves untapped; the object named is the first attacker.
+///
+/// The attack is payable when an automatic payment exists, which never pays life down to 0: an attack that only a
+/// payment taking the player's last life would cover is not made, so a payment decision always has the automatic answer
+/// beside backing out and a player who backs out is not offered the same attack for nothing.
 fn payment(
     state: &GameState,
     player: PlayerId,
@@ -141,15 +145,7 @@ fn payment(
         true,
         0,
     )?;
-    can_afford_with(
-        &options.cost,
-        &options.pool,
-        &options.sources,
-        options.help(),
-        options.life,
-        &options.spend,
-    )
-    .then_some(options)
+    options.auto_available.then_some(options)
 }
 
 /// What a declared attack does: with nothing to pay it is made, else it is paid for first (CR 508.1h) or, if its player

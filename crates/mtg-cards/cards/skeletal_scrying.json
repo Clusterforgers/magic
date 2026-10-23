@@ -1,0 +1,22 @@
+{
+  "oracle_id": "561c68d8-b727-48d8-a832-2e42d1345fac",
+  "name": "Skeletal Scrying",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skeletal Scrying",
+      "oracle_fingerprint": "4b660b64a28acc09910b33d808ed5c91",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "ExileFromGraveyard": { "filter": [], "count": "X" } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": { "effects": [{ "Draw": { "count": "X" } }, { "LoseLife": { "amount": "X" } }] }
+        }
+      ]
+    }
+  ]
+}

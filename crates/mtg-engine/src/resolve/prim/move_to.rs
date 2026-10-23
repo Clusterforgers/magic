@@ -316,7 +316,10 @@ fn into_libraries(
     let mut shuffles = 0;
     for (owner, group) in owners {
         let library = Zone::Library(*owner);
-        let mut ids: Vec<ObjectId> = group.iter().map(|object| object.id()).collect();
+        // A token ceases to exist in the library (CR 111.7): it leaves its zone but is not put in the order.
+        let (cards, tokens): (Vec<&GameObject>, Vec<&GameObject>) =
+            group.iter().partition(|object| object.kind().is_card());
+        let mut ids: Vec<ObjectId> = cards.iter().map(|object| object.id()).collect();
         let drawn = random && place == Place::Bottom && ids.len() > 1;
         if drawn {
             ids = shuffled(state, shuffles, ids);
@@ -338,7 +341,8 @@ fn into_libraries(
         } else {
             ids.clone()
         };
-        for id in putting {
+        let ceasing = tokens.iter().map(|object| object.id());
+        for id in putting.into_iter().chain(ceasing) {
             if let Some(zone) = zone_of(id).filter(|zone| *zone != library || place == Place::Top) {
                 let (event, shot) = moved(state, id, zone, library);
                 events.push(event);
@@ -347,6 +351,7 @@ fn into_libraries(
         }
         match place {
             Place::Top => {}
+            Place::Bottom if ids.is_empty() => {}
             Place::Bottom => events.push(Event::LibraryBottomed {
                 player: *owner,
                 cards: ids,

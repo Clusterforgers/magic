@@ -72,16 +72,47 @@ fn mana_only(cost: &mtg_cards::cost::Cost) -> Option<ManaCost> {
 /// the mana, and life and the objects the player picks. A cost that taps or loses its source, counts X or removes counters
 /// is not paid; nor is one with nothing to pay.
 pub(crate) fn cast_cost(cost: &mtg_cards::cost::Cost) -> Option<(ManaCost, Vec<Part>)> {
+    cast_cost_counting(cost, false)
+}
+
+/// [`cast_cost`], where a part that counts the X announced is paid too when `counted` (the required additional cost of a
+/// spell: "pay X life", "sacrifice X creatures").
+pub(crate) fn cast_cost_counting(
+    cost: &mtg_cards::cost::Cost,
+    counted: bool,
+) -> Option<(ManaCost, Vec<Part>)> {
+    cast_cost_x(cost, counted)
+        .filter(|(_, _, x)| *x == 0)
+        .map(|(mana, parts, _)| (mana, parts))
+}
+
+/// [`cast_cost_counting`] that also allows `{X}` in the mana: the mana without the X, the parts, and how many `{X}` the
+/// cost holds.
+fn cast_cost_x(cost: &mtg_cards::cost::Cost, counted: bool) -> Option<(ManaCost, Vec<Part>, u32)> {
     let price = Price::announced(cost).ok()?;
     let unpaid = price.tap
         || price.moves_source()
-        || price.x > 0
         || (price.mana.is_none() && price.parts.is_empty())
         || price
             .parts
             .iter()
-            .any(|part| part.is_counted() || matches!(part, Part::Counters { .. }));
-    (!unpaid).then(|| (price.mana.unwrap_or(ManaCost::ZERO), price.parts))
+            .any(|part| (part.is_counted() && !counted) || matches!(part, Part::Counters { .. }));
+    (!unpaid).then(|| (price.mana.unwrap_or(ManaCost::ZERO), price.parts, price.x))
+}
+
+/// How many `{X}` the cost of the alternative way `way` of the card `id` holds: the miracle cost may hold some
+/// ("Miracle {X}{W}{W}", CR 107.3), whose X is announced in place of the one of the printed cost; any other way holds none.
+pub(crate) fn alternative_x(state: &GameState, id: ObjectId, way: CastWay) -> u32 {
+    if way != CastWay::Miracle {
+        return 0;
+    }
+    keywords_of(state, id)
+        .into_iter()
+        .find_map(|keyword| match keyword {
+            Keyword::Miracle(cost) => cast_cost_x(cost, false).map(|(_, _, x)| x),
+            _ => None,
+        })
+        .unwrap_or(0)
 }
 
 /// A cost in words: its mana, then its parts.
@@ -100,6 +131,24 @@ fn parts_payable(state: &GameState, player: PlayerId, id: ObjectId, parts: &[Par
         || Price::casting(parts.to_vec())
             .claimed(state, player, id)
             .is_some()
+}
+
+/// The help `base` offers when the spell `id` is cast with `parts` as costs besides its mana: what the parts take is not
+/// there to help pay. Before the picks are made the player is assumed to give what leaves the most help.
+fn help_in(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    base: &help::Offered,
+    parts: &[Part],
+) -> help::Offered {
+    if parts.is_empty() || base.is_empty() {
+        return base.clone();
+    }
+    let taken = Price::casting(parts.to_vec())
+        .claimed_leaving(state, player, id, &base.objects())
+        .unwrap_or_default();
+    base.clone().without(&taken)
 }
 
 /// Whether the card is a split card as a whole, which is never cast: one of its halves is (CR 709.3a).
@@ -281,6 +330,13 @@ fn keyword_way(
             cost,
             in_graveyard && state.discarded_this_turn(player, id),
         ),
+        // Open from a hand in a turn in which an opponent of the caster lost life (CR 702.137a).
+        Keyword::Spectacle(cost) => (
+            CastWay::Spectacle,
+            "Spectacle",
+            cost,
+            in_hand && state.opponent_lost_life(player),
+        ),
         Keyword::Awaken { cost, .. } => (CastWay::Awaken, "Awaken", cost, in_hand),
         Keyword::Morph(_) | Keyword::Megamorph(_) | Keyword::Disguise(_) if in_hand => {
             return Some(face_down_way(instant));
@@ -306,6 +362,7 @@ fn keyword_way(
             | CastWay::Bestow
             | CastWay::Blitz
             | CastWay::Prowl
+            | CastWay::Spectacle
             | CastWay::Mayhem
             | CastWay::Mutate
     ) {
@@ -580,15 +637,18 @@ pub(crate) fn can_turn_up(
         )
 }
 
-/// The way and the mana of the madness or miracle cost of the card `id` (CR 702.35, 702.94) when a resolution casts it
-/// in that way and the card has a cost the engine pays.
+/// The way and the mana, in words, of the madness or miracle cost of the card `id` (CR 702.35, 702.94) when a resolution
+/// casts it in that way and the card has a cost the engine pays; a miracle cost with `{X}` names them first.
 pub(crate) fn alternative_cost(
     state: &GameState,
     id: ObjectId,
     way: Option<CastWay>,
-) -> Option<(CastWay, ManaCost)> {
+) -> Option<(CastWay, String)> {
     let way = way.filter(|way| matches!(way, CastWay::Madness | CastWay::Miracle))?;
-    keyword_cost(state, id, way).map(|(mana, _)| (way, mana))
+    keyword_cost(state, id, way).map(|(mana, _)| {
+        let x = "{X}".repeat(usize::try_from(alternative_x(state, id, way)).unwrap_or(0));
+        (way, format!("{x}{mana}"))
+    })
 }
 
 /// The name a cost-bearing way goes by in a label.
@@ -604,8 +664,10 @@ fn keyword_cost(state: &GameState, id: ObjectId, way: CastWay) -> Option<(ManaCo
     keywords_of(state, id)
         .into_iter()
         .find_map(|keyword| match (way, keyword) {
-            (CastWay::Madness, Keyword::Madness(cost))
-            | (CastWay::Miracle, Keyword::Miracle(cost)) => cast_cost(cost),
+            (CastWay::Madness, Keyword::Madness(cost)) => cast_cost(cost),
+            (CastWay::Miracle, Keyword::Miracle(cost)) => {
+                cast_cost_x(cost, false).map(|(mana, parts, _)| (mana, parts))
+            }
             _ => None,
         })
 }
@@ -646,8 +708,9 @@ pub(crate) fn grantable_as_is(
     let all = mana_options(state, player);
     let sources = for_card(state, &all, id);
     let spend = Spend::for_spell(state, id, card.card().x_in_cost > 0);
-    let help = help::offered(state, player, id);
+    let base = help::offered(state, player, id, &[]);
     granted(state, id, free, way).iter().any(|way| {
+        let help = help_in(state, player, id, &base, &way.parts);
         announceable_in(state, player, id, way.alternative)
             && parts_payable(state, player, id, &way.parts)
             && way
@@ -725,8 +788,9 @@ pub(crate) fn castable_as_is(
     };
     let printed_spend = Spend::for_spell(state, id, card.card().x_in_cost > 0);
     let sources = &for_card(state, sources, id);
-    let help = help::offered(state, player, id);
+    let base = help::offered(state, player, id, &[]);
     of(state, player, id).iter().any(|way| {
+        let help = help_in(state, player, id, &base, &way.parts);
         // A bestowed spell is an Aura spell and a face-down one a plain creature spell, whose mana restrictions read it so.
         let spend = printed_spend.clone().cast_as(way.alternative);
         (way.instant || sorcery_timing(state, player))

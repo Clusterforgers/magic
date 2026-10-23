@@ -1,0 +1,12 @@
+{
+  "oracle_id": "72f89173-2998-45e6-94da-5b5bb9738a6b",
+  "name": "Debtors' Transport",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Debtors' Transport",
+      "oracle_fingerprint": "aaf3e6b4759ec161c05b41da0d0122b0",
+      "abilities": [{ "Keyword": { "Afterlife": 2 } }]
+    }
+  ]
+}

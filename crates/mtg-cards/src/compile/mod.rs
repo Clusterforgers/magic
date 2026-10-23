@@ -23,6 +23,7 @@ use crate::support::{PrintedCard, PrintedFace, has_rules_text, oracle_fingerprin
 
 pub use classify::ClauseKind;
 pub use keywords::read as read_keyword;
+pub use keywords::read_all as read_keywords;
 pub use read::{
     render_ability, render_mode, render_variants, same_text, static_pair_texts, written_variants,
 };
@@ -95,7 +96,7 @@ struct Pending {
 fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec<Ability> {
     let text = normalize::normalize(&shown.oracle_text, &own_names(shown));
     let (spell, aura) = (is_spell(shown), is_aura(shown));
-    let x_free = shown.mana_cost.contains("{X}");
+    let x_free = shown.mana_cost.contains("{X}") || shown.oracle_text.lines().any(counts_x);
     let own = own_face(shown);
     let mut pending = Vec::new();
     for raw in clauses::split(&text) {
@@ -199,13 +200,15 @@ fn read_clause(
     own: &read::Own,
 ) -> (Option<Ability>, Vec<Ability>) {
     match kind {
-        ClauseKind::Keyword => (
-            keywords::read(text)
-                // `check_printed` accepts Enchant on an Aura only.
+        ClauseKind::Keyword => {
+            // `check_printed` accepts Enchant on an Aura only.
+            let mut keywords = keywords::read_all(text)
+                .unwrap_or_default()
+                .into_iter()
                 .filter(|keyword| aura || !matches!(keyword, Keyword::Enchant(_)))
-                .map(Ability::Keyword),
-            Vec::new(),
-        ),
+                .map(Ability::Keyword);
+            (keywords.next(), keywords.collect())
+        }
         ClauseKind::Static
             if text.starts_with("LEVEL ")
                 || clauses::is_station_block(text)
@@ -340,6 +343,19 @@ fn requires_a_pick(line: &str) -> bool {
             ["sacrifice", "discard", "exile"]
                 .iter()
                 .any(|verb| cost.starts_with(verb))
+        })
+}
+
+/// Whether a line of text is a required additional cost that counts the X the caster announces ("As an additional cost
+/// to cast this spell, pay X life."), which the effects of the spell read.
+fn counts_x(line: &str) -> bool {
+    let line = line.to_lowercase();
+    line.strip_prefix("as an additional cost to cast this spell, ")
+        .is_some_and(|cost| {
+            !cost.starts_with("you may ")
+                && cost
+                    .split(|c: char| !c.is_alphanumeric())
+                    .any(|word| word == "x")
         })
 }
 
@@ -514,6 +530,22 @@ mod tests {
     #[case::nothing_read("Instant", "Flip a coin.", Some(ImplStatus::Manual))]
     #[case::spell_read_whole("Instant", "~ deals 3 damage to any target.", Some(ImplStatus::Full))]
     #[case::mana_ability_read("Creature \u{2014} Elf", "{T}: Add {G}.", Some(ImplStatus::Full))]
+    #[case::x_counted_by_a_required_cost(
+        "Instant",
+        "As an additional cost to cast this spell, pay X life.\nDraw X cards.",
+        Some(ImplStatus::Full)
+    )]
+    #[case::x_counted_by_a_required_pick(
+        "Sorcery",
+        "As an additional cost to cast this spell, sacrifice X creatures.\nDraw X cards.",
+        Some(ImplStatus::Full)
+    )]
+    #[case::x_nobody_announces("Instant", "You draw X cards.", Some(ImplStatus::Manual))]
+    #[case::x_of_an_optional_cost_is_not_announced(
+        "Instant",
+        "As an additional cost to cast this spell, you may pay X life.\nDraw X cards.",
+        Some(ImplStatus::Manual)
+    )]
     #[case::spell_lines_read_as_one_ability(
         "Sorcery",
         "Draw a card.\nYou gain 2 life.",
@@ -524,11 +556,7 @@ mod tests {
         "Draw a card.\nFlip a coin.",
         Some(ImplStatus::Manual)
     )]
-    #[case::unreadable_keyword_only(
-        "Creature \u{2014} Elf",
-        "Horsemanship",
-        Some(ImplStatus::Manual)
-    )]
+    #[case::unreadable_keyword_only("Creature \u{2014} Elf", "Banding", Some(ImplStatus::Manual))]
     #[case::reminder_only("Basic Land \u{2014} Forest", "({T}: Add {G}.)", None)]
     #[case::vanilla("Creature \u{2014} Bear", "", None)]
     #[case::whitespace_only("Creature \u{2014} Bear", "  \n ", None)]

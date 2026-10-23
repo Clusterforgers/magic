@@ -1,0 +1,12 @@
+{
+  "oracle_id": "0cee5539-d10b-4de2-aee8-e02f0e24ac26",
+  "name": "Ministrant of Obligation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ministrant of Obligation",
+      "oracle_fingerprint": "aaf3e6b4759ec161c05b41da0d0122b0",
+      "abilities": [{ "Keyword": { "Afterlife": 2 } }]
+    }
+  ]
+}

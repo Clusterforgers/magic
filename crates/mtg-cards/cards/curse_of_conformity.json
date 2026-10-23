@@ -1,0 +1,26 @@
+{
+  "oracle_id": "71de5f9a-73e4-4a93-b199-b280687f71eb",
+  "name": "Curse of Conformity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Conformity",
+      "oracle_fingerprint": "03ecbe856d461a89acf78495ce7ee0cd",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Not": { "Supertype": "Legendary" } },
+                { "ControlledBy": "AttachedPlayer" }
+              ]
+            },
+            "mods": [{ "SetPT": { "power": 3, "toughness": 3 } }, { "SetCreatureTypes": [] }]
+          }
+        }
+      ]
+    }
+  ]
+}

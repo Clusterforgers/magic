@@ -126,6 +126,7 @@ fn leaf_pred() -> impl Strategy<Value = Pred> {
         Just(Pred::Ability(AbilityKind::Triggered)),
         Just(Pred::Tapped),
         Just(Pred::Untapped),
+        Just(Pred::EnteredThisTurn),
         Just(Pred::Attacking),
         Just(Pred::Blocking),
         zone().prop_map(Pred::In),
@@ -846,6 +847,15 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                     filter,
                     bind,
                     exiled_as
+                }
+            ),
+            (who(), selector(), amount(), bound_name(), bound_name()).prop_map(
+                |(who, filter, count, bind, revealed_as)| Effect::RevealUntil {
+                    who,
+                    filter,
+                    count,
+                    bind,
+                    revealed_as
                 }
             ),
             (who(), amount(), bound_name()).prop_map(|(who, count, bind)| Effect::ExileTop {

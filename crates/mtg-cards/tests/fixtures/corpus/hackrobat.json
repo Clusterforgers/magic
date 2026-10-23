@@ -1,0 +1,29 @@
+{
+  "id": "a41335c2-3d11-4f95-8d9f-66b04398c10b",
+  "oracle_id": "65ce903f-8c3e-4283-9b6e-ee9b3176f059",
+  "name": "Hackrobat",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rna",
+  "collector_number": "181",
+  "rarity": "uncommon",
+  "released_at": "2019-01-25",
+  "digital": false,
+  "mana_cost": "{1}{B}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Rogue",
+  "oracle_text": "Spectacle {B}{R} (You may cast this spell for its spectacle cost rather than its mana cost if an opponent lost life this turn.)\n{B}: This creature gains deathtouch until end of turn.\n{R}: This creature gets +2/-2 until end of turn.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [
+    "Spectacle"
+  ]
+}

@@ -37,11 +37,13 @@ use crate::value::{Amount, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 45] = [
+const TEMPLATES: [Template; 50] = [
     modal::modal,
     super::spent::sacrifice_unless,
+    super::actions::fight,
     cast::discover_sentence,
     cast::exile_until,
+    super::reveal_until::reveal_until,
     cast::exile_top,
     cast::exiled_card,
     payments::may_pay,
@@ -52,6 +54,7 @@ const TEMPLATES: [Template; 45] = [
     super::actions::connive,
     super::actions::goad,
     super::manifest::manifest,
+    draws::wheel,
     player_effect,
     super::damage::damage,
     removal,
@@ -78,6 +81,8 @@ const TEMPLATES: [Template; 45] = [
     among::among,
     library::look,
     library::put_on_library,
+    super::mass_moves::put_all,
+    super::mass_moves::return_all,
     return_itself,
     shuffle_itself,
     prevention::rule_effect,
@@ -380,7 +385,7 @@ pub(super) fn player(r: &mut Reader<'_>) -> Option<Ref> {
     {
         return r.it.clone().map(|it| Ref::ControllerOf(Box::new(it)));
     }
-    if r.that_player && r.words("that player") {
+    if r.that_player && (r.words("that player") || r.word("they")) {
         return Some(Ref::Triggering);
     }
     if r.that_permanent && r.words("that permanent's controller") {
@@ -416,7 +421,7 @@ fn player_effect(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     // The sentences of two other players stay with the table.
     while let Some(more) = r.attempt(|r| {
         r.need("and")?;
-        let next = if r.that_player && r.words("that player") {
+        let next = if r.that_player && (r.words("that player") || r.word("they")) {
             Ref::Triggering
         } else if r.word("you") {
             Ref::You
@@ -775,8 +780,14 @@ pub(super) fn target_object(r: &mut Reader<'_>) -> Option<Ref> {
     })
 }
 
+/// "enchanted creature" in the ability of an Aura: the permanent it is attached to.
+pub(super) fn attached(r: &mut Reader<'_>) -> Option<Ref> {
+    r.ability.then_some(())?;
+    r.words("enchanted creature").then_some(Ref::Attached)
+}
+
 /// "up to one target creature": a target object that may also be left unchosen.
-fn up_to_one_object(r: &mut Reader<'_>) -> Option<Ref> {
+pub(super) fn up_to_one_object(r: &mut Reader<'_>) -> Option<Ref> {
     r.attempt(|r| {
         let what = target(r)?;
         let spec = r.targets.first()?;
@@ -792,6 +803,9 @@ fn up_to_one_object(r: &mut Reader<'_>) -> Option<Ref> {
 pub(super) fn object(r: &mut Reader<'_>) -> Option<Ref> {
     if let Some(objects) = all(r) {
         return Some(objects);
+    }
+    if let Some(host) = attached(r) {
+        return Some(host);
     }
     r.attempt(|r| {
         let what = target(r)?;
@@ -921,7 +935,7 @@ fn pump_grants(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
     }
 }
 
-/// "+2/+2", "-3/-3", "+X/+X".
+/// "+2/+2", "-3/-3", "+X/+X", "-X/-X".
 fn signed(r: &mut Reader<'_>) -> Option<Amount> {
     r.attempt(|r| {
         if r.punct('+') {
@@ -931,6 +945,12 @@ fn signed(r: &mut Reader<'_>) -> Option<Amount> {
             return Some(Amount::Fixed(i32::try_from(r.number()?).ok()?));
         }
         r.punct('-').then_some(())?;
+        if r.x() {
+            return Some(Amount::Times {
+                by: -1,
+                of: Box::new(Amount::X),
+            });
+        }
         Some(Amount::Fixed(-i32::try_from(r.number()?).ok()?))
     })
 }

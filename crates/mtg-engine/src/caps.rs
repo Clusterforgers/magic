@@ -110,6 +110,7 @@ const RUNS: &[&str] = &[
     "Effect.Move.Battlefield",
     "Effect.Move.Transformed",
     "Effect.ExileUntil",
+    "Effect.RevealUntil",
     "Effect.ExileTop",
     "Effect.ExileHidden",
     "Effect.Manifest",
@@ -384,6 +385,9 @@ const RUNS: &[&str] = &[
     "Keyword.Awaken",
     "Keyword.Gravestorm",
     "Keyword.Sunburst",
+    "Keyword.Afterlife",
+    "Keyword.Horsemanship",
+    "Keyword.Spectacle",
     "Keyword.UmbraArmor",
     "ReplaceWhen.Destroyed",
     "ReplaceBy.UmbraArmor",
@@ -645,6 +649,7 @@ mod tests {
     #[case::exploring("Effect.Explore", true)]
     #[case::conniving("Effect.Connive", true)]
     #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]
+    #[case::revealing_until_a_card_matches("Effect.RevealUntil", true)]
     #[case::exiling_the_top_cards("Effect.ExileTop", true)]
     #[case::exiling_face_down("Effect.ExileHidden", true)]
     #[case::manifesting("Effect.Manifest", true)]
@@ -797,6 +802,9 @@ mod tests {
     #[case::awaken("Keyword.Awaken", true)]
     #[case::gravestorm("Keyword.Gravestorm", true)]
     #[case::sunburst("Keyword.Sunburst", true)]
+    #[case::afterlife("Keyword.Afterlife", true)]
+    #[case::horsemanship("Keyword.Horsemanship", true)]
+    #[case::spectacle("Keyword.Spectacle", true)]
     #[case::umbra_armor("Keyword.UmbraArmor", true)]
     #[case::replacing_destruction("ReplaceWhen.Destroyed", true)]
     #[case::saving_by_umbra_armor("ReplaceBy.UmbraArmor", true)]

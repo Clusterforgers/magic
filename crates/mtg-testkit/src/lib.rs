@@ -37,6 +37,7 @@ pub mod discard_cast_cards;
 pub mod dredge_cards;
 pub mod driver;
 pub mod encore_cards;
+pub mod entered_cards;
 pub mod evasion_cards;
 pub mod event_cards;
 pub mod exile_until_cards;
@@ -82,11 +83,13 @@ pub mod pump_cards;
 pub mod recursion_cards;
 pub mod replace_cards;
 pub mod required_cost_cards;
+pub mod reveal_until_cards;
 pub mod rule_cards;
 pub mod saga_cards;
 pub mod scenario;
 pub mod script_error;
 pub mod small_cards;
+pub mod spectacle_cards;
 pub mod split_second_cards;
 pub mod static_cards;
 pub mod station_cards;
@@ -98,6 +101,7 @@ pub mod vehicle_cards;
 pub mod windows;
 pub mod x_after_cards;
 pub mod x_cards;
+pub mod x_cost_cards;
 pub mod zone_cards;
 
 pub use action_cards::actions_fuzz_setup;
@@ -137,6 +141,7 @@ pub use discard_cast_cards::discard_cast_fuzz_setup;
 pub use dredge_cards::dredge_fuzz_setup;
 pub use driver::Driver;
 pub use encore_cards::encore_fuzz_setup;
+pub use entered_cards::entered_fuzz_setup;
 pub use evasion_cards::evasion_fuzz_setup;
 pub use event_cards::events_fuzz_setup;
 pub use exile_until_cards::{EXILE_UNTIL_CARDS, SPENT_CARDS, exile_until_fuzz_setup};
@@ -183,6 +188,7 @@ pub use replace_cards::replace_fuzz_setup;
 pub use required_cost_cards::{
     REQUIRED_COST_CARDS, Takes, required_cost_fuzz_setup, required_cost_of,
 };
+pub use reveal_until_cards::{REVEAL_UNTIL_CARDS, reveal_until_fuzz_setup};
 pub use rule_cards::rules_fuzz_setup;
 pub use saga_cards::{
     TRANSFORMING_SAGA_CARDS, saga_fuzz_setup, transforming_saga, transforming_saga_fuzz_setup,
@@ -192,6 +198,7 @@ pub use scenario::{
 };
 pub use script_error::ScriptError;
 pub use small_cards::small_fuzz_setup;
+pub use spectacle_cards::spectacle_fuzz_setup;
 pub use split_second_cards::split_second_fuzz_setup;
 pub use static_cards::statics_fuzz_setup;
 pub use station_cards::station_fuzz_setup;
@@ -202,4 +209,5 @@ pub use vehicle_cards::vehicle_fuzz_setup;
 pub use windows::{SeatWindows, Windows};
 pub use x_after_cards::x_after_fuzz_setup;
 pub use x_cards::x_fuzz_setup;
+pub use x_cost_cards::{X_COST_CARDS, x_cost_fuzz_setup};
 pub use zone_cards::zones_fuzz_setup;

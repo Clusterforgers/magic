@@ -1,0 +1,29 @@
+{
+  "id": "f260197a-0297-4673-96de-dee915d79353",
+  "oracle_id": "1cf7e5a0-cc8f-4bf7-9767-2f3bcae26339",
+  "name": "Octomancer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "blc",
+  "collector_number": "37",
+  "rarity": "rare",
+  "released_at": "2024-08-02",
+  "digital": false,
+  "mana_cost": "{3}{G}{U}",
+  "cmc": 5.0,
+  "type_line": "Creature — Frog Druid",
+  "oracle_text": "Gift an Octopus (You may promise an opponent a gift as you cast this spell. If you do, when it enters, they create an 8/8 blue Octopus creature token.)\nAt the beginning of each end step, create a token that's a copy of target creature token that entered the battlefield this turn.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Gift"
+  ]
+}

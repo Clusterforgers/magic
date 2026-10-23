@@ -11,12 +11,7 @@
         {
           "Spell": {
             "effects": [
-              {
-                "Move": {
-                  "what": { "Each": [{ "In": "Battlefield" }, { "Not": { "Type": "Land" } }] },
-                  "to": "Hand"
-                }
-              }
+              { "Move": { "what": { "Each": [{ "Not": { "Type": "Land" } }] }, "to": "Hand" } }
             ]
           }
         }

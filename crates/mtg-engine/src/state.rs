@@ -106,6 +106,10 @@ pub(crate) enum Tally {
     Saddled,
     /// Damage dealt to a player after prevention (counted for the player, by the amount).
     Hurt,
+    /// A permanent put onto the battlefield, from any zone or made as a token (counted for the permanent).
+    Entered,
+    /// Life lost, by damage that causes it, by a loss and by a payment (counted for the player, by the amount).
+    Lost,
 }
 
 /// The events counted in the turn so far.
@@ -445,6 +449,14 @@ impl GameState {
         self.object(id).is_some_and(|card| {
             self.object_tallied(card.reference(), Some(player), Tally::Discarded) > 0
         })
+    }
+
+    /// Whether an opponent of `player` lost life this turn: the condition of spectacle (CR 702.137a).
+    pub(crate) fn opponent_lost_life(&self, player: PlayerId) -> bool {
+        self.players()
+            .iter()
+            .filter(|other| other.id() != player)
+            .any(|other| self.tallied(other.id(), Tally::Lost) > 0)
     }
 
     /// Whether a creature `player` controlled dealt combat damage to a player this turn and shared a creature type with
