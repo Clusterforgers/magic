@@ -557,7 +557,13 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
     match by {
         ReplaceBy::PreventUpTo(_) => matches!(unit, Unit::Damage { .. }),
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
-        ReplaceBy::UmbraArmor => matches!(unit, Unit::Move { destroyed: true, .. }),
+        ReplaceBy::UmbraArmor => matches!(
+            unit,
+            Unit::Move {
+                destroyed: true,
+                ..
+            }
+        ),
         ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::Prevent => matches!(
             unit,
             Unit::Tokens { .. }
@@ -954,14 +960,25 @@ impl Pass<'_> {
             found.extend(self.shield_candidates(slot, &unit)?);
         }
         if matches!(&unit, Unit::Move { .. }) {
-            found.extend(self.exile_from_stack_candidate(slot));
-            found.extend(self.buyback_candidate(slot));
-            found.extend(self.adventure_candidate(slot));
-            found.extend(self.rebound_candidate(slot));
+            found.extend(self.move_rule_candidates(slot));
         }
         found.extend(self.commander_candidate(at, &unit));
         found.sort_by_key(|candidate| candidate.origin);
         Ok(found)
+    }
+
+    /// The rules about a move that are no abilities: the exile of a spell that leaves the stack, buyback, an Adventure
+    /// and rebound.
+    fn move_rule_candidates(&self, slot: &Slot) -> Vec<Candidate> {
+        [
+            self.exile_from_stack_candidate(slot),
+            self.buyback_candidate(slot),
+            self.adventure_candidate(slot),
+            self.rebound_candidate(slot),
+        ]
+        .into_iter()
+        .flatten()
+        .collect()
     }
 
     /// The card the draw at `at` takes: the one the event names, or once a draw of the batch was changed, the top card

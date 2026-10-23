@@ -1431,7 +1431,9 @@ pub(super) fn predicate(
             },
             rest,
         )) => (
-            Some(format!("{has} base power and toughness {power}/{toughness}")),
+            Some(format!(
+                "{has} base power and toughness {power}/{toughness}"
+            )),
             rest,
         ),
         _ => (None, mods),

@@ -289,6 +289,7 @@ mod turn_burn;
 mod turn_structure;
 mod typecycling;
 mod umbra_armor;
+mod umbra_fuzz;
 mod undaunted;
 mod unearth;
 mod upkeep_keywords;

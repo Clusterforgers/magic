@@ -208,12 +208,17 @@ fn an_umbra_aura_saves_its_creature_from_a_destruction_and_is_destroyed_in_its_p
 #[rstest]
 fn the_aura_pump_applies_while_it_is_attached_and_the_armor_ends_with_the_aura(
     #[values(2, 3, 4)] seats: usize,
-    #[values(("Eel Umbra", 3), ("Snake Umbra", 3), ("Bear Umbra", 4), ("Octopus Umbra", 8))]
-    aura: (&str, i32),
+    #[values(("Eel Umbra", 3), ("Snake Umbra", 3), ("Bear Umbra", 4), ("Octopus Umbra", 8))] aura: (
+        &str,
+        i32,
+    ),
 ) -> Result<(), ScriptError> {
     let driver = Driver::from_scenario(scenario(seats, &[aura.0], Destroyer::Effect, 2))?;
     let id = driver.id_of("Subject")?;
-    assert_eq!(size(&driver, id).map(|(_, toughness)| toughness), Some(aura.1));
+    assert_eq!(
+        size(&driver, id).map(|(_, toughness)| toughness),
+        Some(aura.1)
+    );
     Ok(())
 }
 
@@ -377,7 +382,11 @@ fn a_regeneration_shield_and_the_armor_are_offered_together_and_the_controller_p
     driver.cast_at("Foe0", &[at])?;
     let mut asked = false;
     for _ in 0..40 {
-        match driver.engine().decision().map(|d| (d.player, d.kind.clone())) {
+        match driver
+            .engine()
+            .decision()
+            .map(|d| (d.player, d.kind.clone()))
+        {
             Some((player, DecisionKind::ChooseReplacement(options))) => {
                 assert_eq!(player, common::pid(0));
                 assert_eq!(options.candidates.len(), 2);
@@ -420,4 +429,3 @@ fn a_regeneration_shield_and_the_armor_are_offered_together_and_the_controller_p
     replays(&driver, &setup);
     Ok(())
 }
-

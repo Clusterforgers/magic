@@ -291,6 +291,10 @@ toxic?: number, } } | "CombatEnded" | "DamageCleared" | { "Regenerated": {
 /**
  * The permanent.
  */
+object: ObjectId, } } | { "DamageRemoved": { 
+/**
+ * The permanent.
+ */
 object: ObjectId, } } | { "ShieldUsed": { 
 /**
  * The shield, one of the rule changes (they share the counter of continuous effects).

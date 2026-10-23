@@ -41,14 +41,14 @@ fn id(game: &GameState, name: &str) -> ObjectId {
 }
 
 /// Every seat controls a Bear of its number; seat 1 also controls these Auras, each attached to the Bear it is paired with.
-fn game_on(seats: usize, auras: Vec<(Arc<CardDefinition>, &str)>) -> GameState {
+fn game_on(seats: usize, auras: &[(Arc<CardDefinition>, &str)]) -> GameState {
     let hands = vec![Vec::new(); seats];
     let mut fields: Vec<Vec<Arc<CardDefinition>>> = (0..seats)
         .map(|n| vec![creature(&format!("Bear{n}"), 2, 2)])
         .collect();
     fields[1].extend(auras.iter().map(|(aura, _)| Arc::clone(aura)));
     let mut table = state(hands, fields);
-    for (aura, host) in &auras {
+    for (aura, host) in auras {
         let (object, to) = (id(&table, &aura.name), id(&table, host));
         apply_event(&mut table, &Event::Attached { object, to }).unwrap();
     }
@@ -57,7 +57,13 @@ fn game_on(seats: usize, auras: Vec<(Arc<CardDefinition>, &str)>) -> GameState {
 
 /// The Auras are attached to `Bear0`.
 fn game(seats: usize, auras: Vec<Arc<CardDefinition>>) -> GameState {
-    game_on(seats, auras.into_iter().map(|aura| (aura, "Bear0")).collect())
+    game_on(
+        seats,
+        &auras
+            .into_iter()
+            .map(|aura| (aura, "Bear0"))
+            .collect::<Vec<_>>(),
+    )
 }
 
 fn move_of(game: &GameState, name: &str, cause: ZoneCause) -> Event {
@@ -197,7 +203,10 @@ fn an_aura_the_batch_destroys_anyway_is_destroyed_once(#[values(2, 3, 4)] seats:
 fn a_batch_saves_each_creature_with_its_own_aura(#[values(3, 4)] seats: usize) {
     let table = game_on(
         seats,
-        vec![(umbra("Umbra", &[]), "Bear0"), (umbra("Second", &[]), "Bear2")],
+        &[
+            (umbra("Umbra", &[]), "Bear0"),
+            (umbra("Second", &[]), "Bear2"),
+        ],
     );
     let batch = [
         move_of(&table, "Bear0", ZoneCause::Destroyed),
