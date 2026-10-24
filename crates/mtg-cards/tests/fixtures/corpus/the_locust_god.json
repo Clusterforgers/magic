@@ -1,0 +1,29 @@
+{
+  "cmc": 6.0,
+  "collector_number": "335",
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "colors": [
+    "R",
+    "U"
+  ],
+  "digital": false,
+  "id": "7e599847-8ab0-4fd6-b2c0-cb44a7669aa5",
+  "keywords": [
+    "Flying"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{4}{U}{R}",
+  "name": "The Locust God",
+  "oracle_id": "e025a714-02da-4b0c-8021-cf3e8dc9b19e",
+  "oracle_text": "Flying\nWhenever you draw a card, create a 1/1 blue and red Insect creature token with flying and haste.\n{2}{U}{R}: Draw a card, then discard a card.\nWhen The Locust God dies, return it to its owner's hand at the beginning of the next end step.",
+  "power": "4",
+  "rarity": "mythic",
+  "released_at": "2023-04-21",
+  "set": "moc",
+  "toughness": "4",
+  "type_line": "Legendary Creature — God"
+}

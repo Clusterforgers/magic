@@ -15,17 +15,14 @@
                   "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
                   "count": { "min": 0, "max": 2 },
                   "reveal": true,
-                  "as": "found"
+                  "as": "land"
                 }
               },
-              { "Choose": { "from": { "Bound": "found" }, "as": "battlefield", "rest_as": "hand" } },
+              { "Choose": { "from": { "Bound": "land" }, "as": "kept", "rest_as": "rest" } },
               {
-                "Move": {
-                  "what": { "Bound": "battlefield" },
-                  "to": { "Battlefield": { "tapped": true } }
-                }
+                "Move": { "what": { "Bound": "kept" }, "to": { "Battlefield": { "tapped": true } } }
               },
-              { "Move": { "what": { "Bound": "hand" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest" }, "to": "Hand" } },
               { "Shuffle": {} }
             ]
           }

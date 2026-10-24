@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "e32b7d4b-60ac-4970-9af0-8c50623f6d64",
+  "oracle_id": "0429d146-332f-4fb0-8273-c73679ca6d47",
+  "multiverse_ids": [
+    519258
+  ],
+  "mtgo_id": 89551,
+  "tcgplayer_id": 236418,
+  "cardmarket_id": 559514,
+  "name": "Magister of Worth",
+  "lang": "en",
+  "released_at": "2021-04-23",
+  "uri": "https://api.scryfall.com/cards/e32b7d4b-60ac-4970-9af0-8c50623f6d64",
+  "scryfall_uri": "https://scryfall.com/card/c21/223/magister-of-worth?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:25:21Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/3/e32b7d4b-60ac-4970-9af0-8c50623f6d64.jpg?1783927521",
+    "normal": "https://cards.scryfall.io/normal/front/e/3/e32b7d4b-60ac-4970-9af0-8c50623f6d64.jpg?1783927521",
+    "large": "https://cards.scryfall.io/large/front/e/3/e32b7d4b-60ac-4970-9af0-8c50623f6d64.jpg?1783927521",
+    "png": "https://cards.scryfall.io/png/front/e/3/e32b7d4b-60ac-4970-9af0-8c50623f6d64.png?1783927521",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/3/e32b7d4b-60ac-4970-9af0-8c50623f6d64.jpg?1783927521",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/3/e32b7d4b-60ac-4970-9af0-8c50623f6d64.jpg?1783927521",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/3/e32b7d4b-60ac-4970-9af0-8c50623f6d64.webp?1783927521",
+    "grid": "https://cards.scryfall.io/grid/front/e/3/e32b7d4b-60ac-4970-9af0-8c50623f6d64.webp?1783927521",
+    "display": "https://cards.scryfall.io/display/front/e/3/e32b7d4b-60ac-4970-9af0-8c50623f6d64.webp?1783927521",
+    "art": "https://cards.scryfall.io/art/front/e/3/e32b7d4b-60ac-4970-9af0-8c50623f6d64.webp?1783927521",
+    "crop": "https://cards.scryfall.io/crop/front/e/3/e32b7d4b-60ac-4970-9af0-8c50623f6d64.webp?1783927521",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/3/e32b7d4b-60ac-4970-9af0-8c50623f6d64.jpg?1783927521"
+  },
+  "mana_cost": "{4}{W}{B}",
+  "cmc": 6.0,
+  "type_line": "Creature — Angel",
+  "oracle_text": "Flying\nWill of the council — When this creature enters, starting with you, each player votes for grace or condemnation. If grace gets more votes, each player returns each creature card from their graveyard to the battlefield. If condemnation gets more votes or the vote is tied, destroy all creatures other than this creature.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Will of the council"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "27bf6dbd-a9e1-4904-afa7-d28fc7745c4f",
+  "set": "c21",
+  "set_name": "Commander 2021",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/27bf6dbd-a9e1-4904-afa7-d28fc7745c4f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac21&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c21?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e32b7d4b-60ac-4970-9af0-8c50623f6d64/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0429d146-332f-4fb0-8273-c73679ca6d47&unique=prints",
+  "collector_number": "223",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "John Stanko",
+  "artist_ids": [
+    "b0f038a0-73b5-4806-918e-9cd11b5f92e1"
+  ],
+  "illustration_id": "238fac71-df2c-41fe-bc23-1a570ca97eda",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9983,
+  "penny_rank": 848,
+  "prices": {
+    "usd": "0.34",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.43",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=519258&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMagister%2Bof%2BWorth",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMagister%2Bof%2BWorth",
+    "edhrec": "https://edhrec.com/route/?cc=Magister+of+Worth"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F236418%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=559514&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/89551?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

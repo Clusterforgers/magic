@@ -394,10 +394,12 @@ fn redact_effects(before: &GameState, event: &Event, viewer: PlayerId) -> Option
                 cause: *cause,
             })
         }
-        // Whoever answers knows the answer; the others know it when everything it names is open to them.
+        // Whoever answers knows the answer; the others know it when everything it names is open to them, and never
+        // for a vote cast face down: the vote that is done shows the tally.
         Event::ChoiceMade { player, choice }
             if *player != viewer
-                && !choice.objects().iter().all(|id| knows(before, *id, viewer)) =>
+                && (matches!(choice, mtg_engine::choose::Choice::Vote(_))
+                    || !choice.objects().iter().all(|id| knows(before, *id, viewer))) =>
         {
             Some(HiddenEvent::ChoiceMade { player: *player })
         }

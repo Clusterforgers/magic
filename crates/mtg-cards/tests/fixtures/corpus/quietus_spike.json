@@ -1,0 +1,21 @@
+{
+  "cmc": 3.0,
+  "collector_number": "377",
+  "color_identity": [],
+  "colors": [],
+  "digital": false,
+  "id": "7dc8e9cc-1aac-4709-9629-9f4318c86cb0",
+  "keywords": [
+    "Equip"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{3}",
+  "name": "Quietus Spike",
+  "oracle_id": "0ff0a309-9b4a-4f9e-9ea6-c4d07906ebec",
+  "oracle_text": "Equipped creature has deathtouch.\nWhenever equipped creature deals combat damage to a player, that player loses half their life, rounded up.\nEquip {3}",
+  "rarity": "rare",
+  "released_at": "2022-04-29",
+  "set": "ncc",
+  "type_line": "Artifact — Equipment"
+}

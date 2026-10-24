@@ -1,0 +1,51 @@
+{
+  "oracle_id": "e025a714-02da-4b0c-8021-cf3e8dc9b19e",
+  "name": "The Locust God",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Locust God",
+      "oracle_fingerprint": "881c0776acb6bf5f3fce91cf3bf31bbb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Insect",
+                      "colors": ["Blue", "Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Insect"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Haste" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{2}{U}{R}", "effects": [{ "Draw": {} }, { "Discard": {} }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Choose": { "from": { "Each": [{ "In": "Graveyard" }, "This"] }, "as": "later" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": { "Bound": "later" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

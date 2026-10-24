@@ -388,6 +388,7 @@ pub fn mind_rot(name: &str) -> Arc<CardDefinition> {
                     who: Ref::Target(0),
                     count: Amount::Fixed(2),
                     random: false,
+                    bind: None,
                 }],
             }),
     )

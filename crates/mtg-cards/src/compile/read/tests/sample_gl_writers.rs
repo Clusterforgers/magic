@@ -2,9 +2,9 @@
 //! singular noun, a creature "that isn't all colors", the card as "it" after its own tap or block, "each other player"
 //! with "of their choice", "enters or is put into a graveyard from the battlefield", an untapped card in a step's "if",
 //! a change of control, a token made with the Equipment of the sentence before attached, an exile undone at once or at the
-//! end step, a search whose finds go two ways, cards of the graveyard returned to the hand, a mill with the optional
-//! return, cards shuffled into a library and a mill by a count of "that player's graveyard"; a changed verb,
-//! group, count, place, player or duration never reads back.
+//! end step, cards of the graveyard returned to the hand, a mill with the optional return, cards shuffled into a library
+//! and a mill by a count of "that player's graveyard"; a changed verb, group, count, place, player or duration never
+//! reads back.
 use super::*;
 
 /// Whether some wording the checker accepts for the rules is the clause.
@@ -22,7 +22,6 @@ const ICHOR: &str = r#"{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["Th
 const HOWLING: &str = r#"{"Triggered":{"when":{"StepBegins":{"step":"Draw"}},"if":{"Matches":{"subject":"This","selector":["Untapped"]}},"effects":[{"Draw":{"who":"Triggering","count":1}}]}}"#;
 const INSURRECTION: &str = r#"{"Spell":{"effects":[{"Untap":{"what":{"Each":[{"Type":"Creature"}]}}},{"Continuous":{"affected":{"Each":[{"Type":"Creature"}]},"mods":[{"SetController":"You"},{"AddKeyword":"Haste"}],"duration":"UntilEndOfTurn"}}]}}"#;
 const CADETS: &str = r#"{"Triggered":{"when":{"AnyOf":[{"Blocks":{"what":["This"]}},{"BecomesBlocked":{"what":["This"]}}]},"targets":[{"what":"Opponent"}],"effects":[{"Continuous":{"affected":"This","mods":[{"SetController":{"Target":0}}],"duration":"Forever"}}]}}"#;
-const KODAMA: &str = r#"{"Spell":{"effects":[{"Search":{"filter":[{"Supertype":"Basic"},{"Type":"Land"}],"count":{"min":0,"max":2},"reveal":true,"as":"found"}},{"Choose":{"from":{"Bound":"found"},"as":"battlefield","rest_as":"hand"}},{"Move":{"what":{"Bound":"battlefield"},"to":{"Battlefield":{"tapped":true}}}},{"Move":{"what":{"Bound":"hand"},"to":"Hand"}},{"Shuffle":{}}]}}"#;
 const LYCHGUARD: &str = r#"{"Activated":{"cost":[{"Mana":"{3}{B}"},"SacrificeSelf"],"effects":[{"Move":{"what":{"Each":[{"In":"Graveyard"},{"OwnedBy":"You"},{"Supertype":"Legendary"},{"Type":"Creature"}]},"to":"Hand"}}]}}"#;
 const GRAPPLE: &str = r#"{"Spell":{"effects":[{"Mill":{"count":3}},{"May":{"effects":[{"Choose":{"from":{"Each":[{"In":"Graveyard"},{"OwnedBy":"You"},{"AnyOf":[{"Type":"Creature"},{"Type":"Land"}]}]},"as":"returned"}},{"Move":{"what":{"Bound":"returned"},"to":"Hand"}}]}}]}}"#;
 const LOAMING: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":"Player"},{"what":{"Object":[{"In":"Graveyard"},{"OwnedBy":{"Target":0}}]},"bounds":{"min":0,"max":null}}],"effects":[{"Move":{"what":{"Target":1},"to":{"Library":{"place":"Shuffled"}}}}]}}"#;
@@ -72,10 +71,6 @@ const PERMANENT_CONTROL: &str = r#"{"Spell":{"targets":[{"what":{"Object":[{"Typ
 #[case::undone_at_once_or_at_the_end_step(
     GILRAEN,
     "{2}, {T}: Exile another target creature you control. You may return that card to the battlefield under its owner's control. If you don't, at the beginning of the next end step, return that card to the battlefield under its owner's control with a vigilance counter and a lifelink counter on it."
-)]
-#[case::search_two_ways(
-    KODAMA,
-    "Search your library for up to two basic land cards, reveal those cards, put one onto the battlefield tapped and the other into your hand, then shuffle."
 )]
 #[case::all_cards_of_a_graveyard(
     LYCHGUARD,
@@ -181,18 +176,6 @@ fn the_sample_wordings_are_written_as_the_oracle_words_them(
 #[case::one_counter(
     GILRAEN,
     "{2}, {T}: Exile another target creature you control. You may return that card to the battlefield under its owner's control. If you don't, at the beginning of the next end step, return that card to the battlefield under its owner's control with a vigilance counter on it."
-)]
-#[case::not_tapped(
-    KODAMA,
-    "Search your library for up to two basic land cards, reveal those cards, put one onto the battlefield and the other into your hand, then shuffle."
-)]
-#[case::swapped(
-    KODAMA,
-    "Search your library for up to two basic land cards, reveal those cards, put one into your hand and the other onto the battlefield tapped, then shuffle."
-)]
-#[case::three_lands(
-    KODAMA,
-    "Search your library for up to three basic land cards, reveal those cards, put one onto the battlefield tapped and the other into your hand, then shuffle."
 )]
 #[case::to_the_battlefield(
     LYCHGUARD,

@@ -268,6 +268,7 @@ function describeChoice(choice: Choice, n: EventNames): string {
   if ('Order' in choice) return `puts ${cards(choice.Order.length)} in order`
   if ('YesNo' in choice) return choice.YesNo ? 'answers yes' : 'answers no'
   if ('Option' in choice) return `chooses option ${choice.Option + 1}`
+  if ('Vote' in choice) return `votes for option ${choice.Vote + 1}`
   return 'chooses which effect applies first'
 }
 

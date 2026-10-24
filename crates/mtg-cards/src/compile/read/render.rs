@@ -31,7 +31,6 @@ mod populated;
 mod put_onto;
 mod revealed;
 mod shuffled_in;
-mod split_search;
 mod switched;
 mod target_counts;
 mod those;
@@ -58,9 +57,11 @@ use super::defining;
 use super::draws;
 use super::effects::{BACK, RETURNED, dead_card, returns_itself};
 use super::event_wordings;
+use super::exiled_kind;
 use super::flicker;
 use super::group_copies;
 use super::group_pump;
+use super::instead_pairs;
 use super::kicked_copies;
 use super::lands;
 use super::library;
@@ -143,6 +144,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(named);
     let searches = library::other_wordings(&texts);
     texts.extend(searches);
+    let replaced = instead_pairs::other_wordings(&texts);
+    texts.extend(replaced);
     let counted = where_x_draws(&texts);
     texts.extend(counted);
     let regenerating = regeneration_wordings(&texts);
@@ -724,6 +727,7 @@ fn wheel_text(effects: &[Effect]) -> Option<(String, usize)> {
             who: Ref::EachPlayer,
             count: hand,
             random: false,
+            bind,
         },
         Effect::Draw {
             who: Ref::EachPlayer,
@@ -735,7 +739,13 @@ fn wheel_text(effects: &[Effect]) -> Option<(String, usize)> {
         return None;
     };
     (*hand == draws::hand_of(&Ref::EachPlayer)).then_some(())?;
-    let cards = cards_text(count)?;
+    let cards = match bind {
+        None => cards_text(count)?,
+        Some(name) if name == draws::DISCARDED && *count == draws::most_discarded() => {
+            draws::MOST_DISCARDED.to_owned()
+        }
+        Some(_) => return None,
+    };
     Some((
         format!("each player discards their hand, then draws {cards}"),
         2,
@@ -879,16 +889,15 @@ fn written(
             start += used;
             continue;
         }
-        // Tokens and what is done to them, or a copy and its delayed exile, are two sentences, which no joint splits.
-        if let Some((texts, used)) = writer.made_then(&effects[start..]) {
-            unsplit(mask, start, used)?;
-            sentences.extend(texts);
-            start += used;
-            continue;
-        }
-        // A permanent chosen and the target that becomes a copy of it, a copy made more times when the spell was
-        // kicked, or a group that becomes a copy of the target: sentences that no joint splits.
-        if let Some((texts, used)) = writer.copy_group(&effects[start..], wording.chosen) {
+        // Tokens and what is done to them, a copy and its delayed exile, a permanent chosen and the target that becomes a
+        // copy of it, a group that becomes a copy, an exile and what follows when the object was of a kind, or an
+        // effect that another replaces when a condition holds: sentences that no joint splits.
+        if let Some((texts, used)) = writer
+            .made_then(&effects[start..])
+            .or_else(|| writer.copy_group(&effects[start..], wording.chosen))
+            .or_else(|| writer.exile_kind(&effects[start..]))
+            .or_else(|| instead::pair(targets, &effects[start..], wording))
+        {
             unsplit(mask, start, used)?;
             sentences.extend(texts);
             start += used;
@@ -1107,6 +1116,7 @@ fn your_cards(effect: &Effect) -> Option<String> {
             who: Ref::You,
             count,
             random,
+            bind: None,
         } => format!(
             "discard {}{}",
             draws::discarded_text(&Ref::You, count)?,
@@ -2252,7 +2262,6 @@ impl Writer<'_> {
             .or_else(|| self.opponent_exiles(effects))
             .or_else(|| populated::text(effects))
             .or_else(|| revealed::text(effects))
-            .or_else(|| split_search::text(effects))
             .or_else(|| self.mill_then_hand(effects))
             .or_else(|| Self::untapped_and_controlled(effects))
             .or_else(|| self.owner_shuffles(effects))
@@ -2341,6 +2350,16 @@ impl Writer<'_> {
             Amount::Stat { of, stat } if *of == Ref::Target(0) && self.named => {
                 format!("life equal to its {}", stat_name(*stat)?)
             }
+            Amount::Half { of, up } => {
+                let Amount::Life(whose) = of.as_ref() else {
+                    return None;
+                };
+                let own = if *whose == Ref::You { "your" } else { "their" };
+                format!(
+                    "half {own} life, rounded {}",
+                    if *up { "up" } else { "down" }
+                )
+            }
             _ => match counted_parts(amount) {
                 Some((each, tail)) => format!("{} life {tail}", points_text(&each)?),
                 None => format!("{} life", points_text(amount)?),
@@ -2355,7 +2374,12 @@ impl Writer<'_> {
         Some(match effect {
             Effect::Draw { count, .. } => format!("draw{s} {}", cards_text(count)?),
             Effect::Mill { count, .. } => format!("mill{s} {}", cards_text(count)?),
-            Effect::Discard { who, count, random } => {
+            Effect::Discard {
+                who,
+                count,
+                random,
+                bind: None,
+            } => {
                 let cards = draws::discarded_text(who, count)?;
                 format!("discard{s} {cards}{}", at_random(*random))
             }

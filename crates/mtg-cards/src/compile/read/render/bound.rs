@@ -26,6 +26,8 @@ impl Writer<'_> {
         }
         self.exile_and_return_later(effects)
             .or_else(|| self.exile_and_maybe_return(effects))
+            .or_else(|| Writer::return_itself_later(effects))
+            .or_else(|| self.exile_chosen_from_graveyard(effects))
     }
 
     /// The creation and the sentence that acts on its tokens, and the number of effects they cover.
