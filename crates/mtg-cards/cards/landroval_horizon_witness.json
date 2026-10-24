@@ -1,0 +1,44 @@
+{
+  "oracle_id": "467c9fe6-d1d3-4242-bc0c-e522b4f21d56",
+  "name": "Landroval, Horizon Witness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Landroval, Horizon Witness",
+      "oracle_fingerprint": "2a5a3e6ef35c7903db6874c063ebcdee",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at_least": 2
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    "Attacking",
+                    { "Not": { "HasKeyword": "Flying" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

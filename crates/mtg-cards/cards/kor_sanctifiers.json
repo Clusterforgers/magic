@@ -1,0 +1,28 @@
+{
+  "oracle_id": "55d8ac5b-622c-42a9-83dc-f2c1c6c2506f",
+  "name": "Kor Sanctifiers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kor Sanctifiers",
+      "oracle_fingerprint": "a3d687ff4d0c141c85c994ee3bfcb8cb",
+      "abilities": [
+        { "Keyword": { "Kicker": "{W}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": "Kicked",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

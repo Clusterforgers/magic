@@ -1,0 +1,25 @@
+{
+  "oracle_id": "babeeaf6-0fe4-491f-bbf5-63a0568b3d6e",
+  "name": "Honor-Worn Shaku",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Honor-Worn Shaku",
+      "oracle_fingerprint": "116c4601121bb52734bf8fd832385fb8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Supertype": "Legendary" }] } }],
+            "effects": [{ "Untap": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

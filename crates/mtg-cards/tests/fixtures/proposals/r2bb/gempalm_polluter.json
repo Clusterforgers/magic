@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Cycling":"{B}{B}"}},{"Triggered":{"when":{"Cycled":{"what":["This"],"by":"You"}},"targets":[{"what":"Player"}],"effects":[{"May":{"effects":[{"LoseLife":{"who":{"Target":0},"amount":{"Count":[{"Subtype":"Zombie"}]}}}]}}],"from":"Graveyard"}}]}]}

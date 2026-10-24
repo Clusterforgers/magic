@@ -1,0 +1,32 @@
+{
+  "oracle_id": "878b6808-48af-4047-ac35-bfc58bf92e7d",
+  "name": "Goblin Bushwhacker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Bushwhacker",
+      "oracle_fingerprint": "e8b5a170b83f6292a12a5348aec6fb0d",
+      "abilities": [
+        { "Keyword": { "Kicker": "{R}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": "Kicked",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

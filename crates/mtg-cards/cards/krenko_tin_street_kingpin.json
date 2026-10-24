@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e8065e1d-e937-4b56-8011-78f0d07328a0",
+  "name": "Krenko, Tin Street Kingpin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krenko, Tin Street Kingpin",
+      "oracle_fingerprint": "5dcd90066dcdfe9f287a7eb36a51d634",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3f372107-6c52-4f1f-8bf0-7b3fa21b2cae",
+  "name": "Lord of the Accursed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lord of the Accursed",
+      "oracle_fingerprint": "0b1cfb5320c423b5b087ce7fbc936dda",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Zombie" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "Tap"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Zombie" }] },
+                  "mods": [{ "AddKeyword": "Menace" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b2457982-6c28-47e9-9b32-9db359eb0ac5",
+  "name": "Galepowder Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Galepowder Mage",
+      "oracle_fingerprint": "0f51e82c9911f32a0a6be75c048af322",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

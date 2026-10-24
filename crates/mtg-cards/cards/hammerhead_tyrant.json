@@ -1,0 +1,38 @@
+{
+  "oracle_id": "7830f600-c7c7-48f8-8020-3493c5745eed",
+  "name": "Hammerhead Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hammerhead Tyrant",
+      "oracle_fingerprint": "ed5205794ab44e71bf42576ad172d922",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Land" } },
+                    { "ControlledBy": "Opponents" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

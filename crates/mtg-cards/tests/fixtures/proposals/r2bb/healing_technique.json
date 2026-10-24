@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Demonstrate"},{"Spell":{"targets":[{"what":{"Object":[{"In":"Graveyard"},{"OwnedBy":"You"}]}}],"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}},{"GainLife":{"amount":{"Stat":{"of":{"Target":0},"stat":"ManaValue"}}}},{"Exile":{"what":"This"}}]}}]}]}

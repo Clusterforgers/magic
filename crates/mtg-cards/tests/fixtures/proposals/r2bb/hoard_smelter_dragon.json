@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Activated":{"cost":[{"Mana":"{3}{R}"}],"targets":[{"what":{"Object":[{"Type":"Artifact"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}},{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":{"Stat":{"of":{"Target":0},"stat":"ManaValue"}},"toughness":0}}],"duration":"UntilEndOfTurn"}}]}}]}]}

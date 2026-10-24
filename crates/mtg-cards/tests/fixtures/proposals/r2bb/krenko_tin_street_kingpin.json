@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}},{"CreateToken":{"token":{"Custom":{"name":"Goblin","colors":["Red"],"types":["Creature"],"subtypes":["Goblin"],"power":1,"toughness":1}},"count":{"Stat":{"of":"This","stat":"Power"}}}}]}}]}]}

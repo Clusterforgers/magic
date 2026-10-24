@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":{"Each":[{"Subtype":"Zombie"},"Other",{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":1,"toughness":1}}]}},{"Activated":{"cost":[{"Mana":"{1}{B}"},"Tap"],"effects":[{"Continuous":{"affected":{"Each":[{"Subtype":"Zombie"}]},"mods":[{"AddKeyword":"Menace"}],"duration":"UntilEndOfTurn"}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Menace"},{"Triggered":{"when":{"DealsDamage":{"source":[{"Type":"Creature"},{"ControlledBy":"You"}],"to":"EachPlayer","combat":true}},"effects":[{"GainLife":{"amount":{"Stat":{"of":"Dealer","stat":"Toughness"}}}}]}},{"Keyword":"Partner"}]}]}

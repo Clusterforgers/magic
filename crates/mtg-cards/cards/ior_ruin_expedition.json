@@ -1,0 +1,39 @@
+{
+  "oracle_id": "fc338ba2-c3a4-45d6-895f-af7f72bf7a94",
+  "name": "Ior Ruin Expedition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ior Ruin Expedition",
+      "oracle_fingerprint": "c5a16321f054a2910286ee29c81ec079",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "quest" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "RemoveCounters": { "counter": { "Other": "quest" }, "count": 3 } },
+              "SacrificeSelf"
+            ],
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

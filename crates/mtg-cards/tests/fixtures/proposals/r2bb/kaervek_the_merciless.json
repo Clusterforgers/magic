@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"SpellCast":{"by":"Opponents"}},"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"source":"This","to":{"Target":0},"amount":{"Stat":{"of":"Triggering","stat":"ManaValue"}}}}]}}]}]}

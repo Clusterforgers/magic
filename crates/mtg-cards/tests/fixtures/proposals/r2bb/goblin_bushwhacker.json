@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Kicker":"{R}"}},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"if":"Kicked","effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":1,"toughness":0}},{"AddKeyword":"Haste"}],"duration":"UntilEndOfTurn"}}]}}]}]}

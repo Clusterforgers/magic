@@ -1,0 +1,49 @@
+{
+  "oracle_id": "f0ab7166-9fcf-46e5-af2c-b7f628db4789",
+  "name": "Golgari Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Golgari Charm",
+      "oracle_fingerprint": "16414379bdafb148f838a409fc67d233",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Each": [{ "Type": "Creature" }] },
+                            "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Regenerate": {
+                            "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

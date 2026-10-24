@@ -1,0 +1,31 @@
+{
+  "oracle_id": "9ae669dd-7e60-4649-b96e-35da28be641a",
+  "name": "Korvold, Fae-Cursed King",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Korvold, Fae-Cursed King",
+      "oracle_fingerprint": "3da5c4069673eb01647abb4f329d8897",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [{ "Sacrifice": { "filter": ["Other"] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

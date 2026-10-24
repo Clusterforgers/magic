@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flash"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"Type":"Creature"},"Attacking"]}}],"effects":[{"If":{"condition":{"Matches":{"subject":{"Target":0},"selector":[{"Subtype":"Demon"}]}},"then":[{"Exile":{"what":{"Target":0}}}],"otherwise":[{"Destroy":{"what":{"Target":0}}}]}}]}}]}]}

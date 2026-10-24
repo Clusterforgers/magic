@@ -1,0 +1,36 @@
+{
+  "oracle_id": "467ea3e3-7767-405a-9d1a-8fa5de696376",
+  "name": "Gempalm Incinerator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gempalm Incinerator",
+      "oracle_fingerprint": "40cc62a27f10163e8f85ab2e29bec645",
+      "abilities": [
+        { "Keyword": { "Cycling": "{1}{R}" } },
+        {
+          "Triggered": {
+            "when": { "Cycled": { "what": ["This"], "by": "You" } },
+            "from": "Graveyard",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": "This",
+                        "to": { "Target": 0 },
+                        "amount": { "Count": [{ "Subtype": "Goblin" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

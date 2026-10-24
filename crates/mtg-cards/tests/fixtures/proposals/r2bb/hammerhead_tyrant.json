@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"SpellCast":{"by":"You"}},"targets":[{"what":{"Object":[{"Not":{"Type":"Land"}},{"ControlledBy":"Opponents"},{"Compare":{"stat":"ManaValue","op":"Le","to":{"Stat":{"of":"Triggering","stat":"ManaValue"}}}}]},"bounds":{"min":0,"max":1}}],"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}}]}}]}]}

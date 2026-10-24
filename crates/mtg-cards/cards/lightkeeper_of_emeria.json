@@ -1,0 +1,21 @@
+{
+  "oracle_id": "7f31aa43-cf75-4488-b47f-e16e923a2d01",
+  "name": "Lightkeeper of Emeria",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightkeeper of Emeria",
+      "oracle_fingerprint": "6b46b09f68aa2b30a1a216a9b2d99cca",
+      "abilities": [
+        { "Keyword": { "Multikicker": "{W}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": { "Times": { "by": 2, "of": "Kicks" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

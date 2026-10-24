@@ -1,0 +1,26 @@
+{
+  "oracle_id": "1b99c32d-1d02-410e-84bf-9db2ca05f576",
+  "name": "Healing Technique",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Healing Technique",
+      "oracle_fingerprint": "3e29972bdcaf41e31b542f8b34176b11",
+      "abilities": [
+        { "Keyword": "Demonstrate" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "GainLife": { "amount": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } } }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

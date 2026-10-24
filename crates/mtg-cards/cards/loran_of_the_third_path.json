@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b3d81980-76f2-44e2-b1c9-01e30c726312",
+  "name": "Loran of the Third Path",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loran of the Third Path",
+      "oracle_fingerprint": "6ee950156406f5a07657eb33ba800121",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Draw": {} }, { "Draw": { "who": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
