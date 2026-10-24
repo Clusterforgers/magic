@@ -1,0 +1,38 @@
+{
+  "oracle_id": "65ea3638-1766-4096-88a8-662a0d6faf0c",
+  "name": "Jo Grant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jo Grant",
+      "oracle_fingerprint": "d02c6fe305a894ba2f3b65e8023203f9",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    { "Type": "Artifact" },
+                    { "Supertype": "Legendary" },
+                    { "Subtype": "Saga" }
+                  ]
+                },
+                { "In": "Hand" },
+                { "OwnedBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Cycling": "{2}{W}" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Cycled": { "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        { "Keyword": "DoctorsCompanion" }
+      ]
+    }
+  ]
+}

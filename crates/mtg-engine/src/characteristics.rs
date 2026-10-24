@@ -95,7 +95,12 @@ pub(crate) fn seen_as(state: &GameState, id: ObjectId) -> Option<(Characteristic
             None => (base(object), object.controller()),
         });
     }
-    Some((outside(state, object, None), object.controller()))
+    let mut chars = outside(state, object, None);
+    // What static abilities give to a card outside the battlefield (`layers::outside_zones`).
+    if let Some(held) = state.layers().get(id) {
+        held.replay(&mut chars);
+    }
+    Some((chars, object.controller()))
 }
 
 /// The creature types of `id` as the game sees it now (printed ones no effect replaced and those effects gave), and whether it

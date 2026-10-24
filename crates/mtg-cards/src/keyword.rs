@@ -314,6 +314,8 @@ pub enum Keyword {
     Graft(u32),
     /// Afflict N (CR 702.130): whenever the creature becomes blocked, the defending player loses N life.
     Afflict(u32),
+    /// Replicate with its cost: paid any number of times as the spell is cast, each time the cast copies it (CR 702.56).
+    Replicate(Cost),
 }
 
 /// What a promised gift is (CR 702.174).
@@ -472,6 +474,7 @@ impl Keyword {
         "Cipher",
         "Graft",
         "Afflict",
+        "Replicate",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -622,6 +625,7 @@ impl Keyword {
             Keyword::Cipher => "Cipher",
             Keyword::Graft(_) => "Graft",
             Keyword::Afflict(_) => "Afflict",
+            Keyword::Replicate(_) => "Replicate",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
         }
@@ -642,11 +646,14 @@ impl Keyword {
         )
     }
 
-    /// Whether paying the cost of this keyword counts as a kick (`Amount::Kicks`): kicker, multikicker and squad.
+    /// Whether paying the cost of this keyword counts as a kick (`Amount::Kicks`): kicker, multikicker, squad and replicate.
     pub const fn is_kicker(&self) -> bool {
         matches!(
             self,
-            Keyword::Kicker(_) | Keyword::Multikicker(_) | Keyword::Squad(_)
+            Keyword::Kicker(_)
+                | Keyword::Multikicker(_)
+                | Keyword::Squad(_)
+                | Keyword::Replicate(_)
         )
     }
 }
@@ -810,6 +817,7 @@ mod tests {
             Keyword::Cipher,
             Keyword::Graft(2),
             Keyword::Afflict(2),
+            Keyword::Replicate(Cost::default()),
         ]
     }
 

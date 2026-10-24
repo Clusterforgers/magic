@@ -1,0 +1,27 @@
+{
+  "cmc": 3.0,
+  "collector_number": "23",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "a4c73220-363e-44d7-b406-436246c02a75",
+  "keywords": [
+    "Doctor's companion"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{W}",
+  "name": "Jo Grant",
+  "oracle_id": "65ea3638-1766-4096-88a8-662a0d6faf0c",
+  "oracle_text": "Each historic card in your hand has cycling {2}{W}. ({2}{W}, Discard that card: Draw a card.)\nWhenever you cycle a card, put a +1/+1 counter on Jo Grant.\nDoctor's companion (You can have two commanders if the other is the Doctor.)",
+  "power": "3",
+  "rarity": "rare",
+  "released_at": "2023-10-13",
+  "set": "who",
+  "toughness": "2",
+  "type_line": "Legendary Creature — Human Soldier"
+}

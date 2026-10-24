@@ -420,7 +420,7 @@ fn gather(state: &GameState) -> Vec<Source> {
         } else if state.possible.elsewhere {
             working_here(object)
                 .map(|(address, rules)| (address, Arc::clone(rules)))
-                .chain(provided_here(object))
+                .chain(provided_here(state, object))
                 .collect()
         } else {
             continue;

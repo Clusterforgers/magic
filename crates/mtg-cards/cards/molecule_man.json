@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ba944437-0b55-47cb-92dc-2477ce6726c3",
+  "name": "Molecule Man",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Molecule Man",
+      "oracle_fingerprint": "440022b43b6745b59961fdb7a16294f0",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Not": { "Type": "Land" } }, { "In": "Hand" }, { "OwnedBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": { "Miracle": "{0}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

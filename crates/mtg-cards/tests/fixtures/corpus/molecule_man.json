@@ -1,0 +1,21 @@
+{
+  "cmc": 6.0,
+  "collector_number": "9",
+  "color_identity": [],
+  "colors": [],
+  "digital": false,
+  "id": "ee64d0dd-e3d8-4abc-b9d6-b19c505fbfa1",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{6}",
+  "name": "Molecule Man",
+  "oracle_id": "ba944437-0b55-47cb-92dc-2477ce6726c3",
+  "oracle_text": "Nonland cards in your hand have miracle {0}. (You may cast a card for its miracle cost when you draw it if it's the first card you drew this turn.)",
+  "power": "5",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "set": "msc",
+  "toughness": "5",
+  "type_line": "Legendary Creature — Human Villain"
+}
