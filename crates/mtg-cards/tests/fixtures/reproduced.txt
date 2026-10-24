@@ -541,6 +541,7 @@ Jagged Barrens
 Jarad, Golgari Lich Lord
 Jaspera Sentinel
 Jazal Goldmane
+Jo Grant
 Join the Maestros
 Jolting Merfolk
 Jungle Lion
@@ -658,6 +659,7 @@ Mishra's Workshop
 Mistmeadow Skulk
 Mizzium Mortars
 Mobilizer Mech
+Molecule Man
 Molten Slagheap
 Mona Lisa, Science Geek
 Monastery Swiftspear
@@ -811,6 +813,7 @@ Reshape
 Revel Ruiner
 Reverberate
 Reverse Engineer
+Rhet-Tomb Mystic
 Rhox Charger
 Rhox Faithmender
 Rhys the Redeemed
@@ -1004,6 +1007,7 @@ Taurean Mauler
 Tavern Ruffian // Tavern Smasher
 Teacher's Pest
 Team Pennant
+Tectonic Reformation
 Temur Devotee
 Tender Wildguide
 Tendershoot Dryad

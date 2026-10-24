@@ -1,0 +1,20 @@
+{
+  "oracle_id": "e445825a-e70e-4796-99be-4a7c4080b8cc",
+  "name": "Rhet-Tomb Mystic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhet-Tomb Mystic",
+      "oracle_fingerprint": "8996c7b7a6148ca1abeb670421207e9d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "In": "Hand" }, { "OwnedBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Cycling": "{1}{U}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}
