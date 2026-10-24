@@ -1,0 +1,28 @@
+{
+  "oracle_id": "27bc0219-3fc1-4c84-92cc-da2273a5fd16",
+  "name": "Reap the Past",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reap the Past",
+      "oracle_fingerprint": "90981da0e2c93b05c751351bc5f02ef9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                  "count": "X",
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

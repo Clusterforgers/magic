@@ -1,0 +1,23 @@
+{
+  "id": "393a864c-caa0-4030-b8bd-be0bb967eb72",
+  "oracle_id": "ce723db6-2a80-42a5-a176-cd322b4e1e27",
+  "name": "Back in Town",
+  "lang": "en",
+  "layout": "normal",
+  "set": "otc",
+  "collector_number": "18",
+  "rarity": "rare",
+  "released_at": "2024-04-19",
+  "digital": false,
+  "mana_cost": "{X}{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Return X target outlaw creature cards from your graveyard to the battlefield. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

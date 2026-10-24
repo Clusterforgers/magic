@@ -12,6 +12,7 @@ use super::library::{
 use super::tokens::Reader;
 use crate::effect::{Destination, Effect};
 use crate::refs::{Bounds, Pred, Ref, Selector, ZoneKind};
+use crate::value::Amount;
 
 /// The cards of the library named `TOP` that match a filter.
 fn among_top(filter: Selector) -> Selector {
@@ -63,7 +64,10 @@ fn pronoun(r: &mut Reader<'_>, plural: bool) -> Option<()> {
 
 /// The cards a player may take at most: "a creature card" is up to one, "up to two" up to two.
 fn optional(bounds: Bounds) -> Bounds {
-    Bounds { min: 0, ..bounds }
+    Bounds {
+        min: Amount::Fixed(0),
+        ..bounds
+    }
 }
 
 /// "Look at the top five cards of your library. You may reveal an artifact card from among them and put it into your

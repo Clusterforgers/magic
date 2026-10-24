@@ -25,7 +25,7 @@ pub fn divided(most: i32) -> TargetSpec {
     TargetSpec {
         what: Targetable::AnyTarget,
         bounds: Bounds {
-            min: 1,
+            min: Amount::one(),
             max: Some(Amount::Fixed(most)),
         },
         divide: Some(Amount::Fixed(most)),
@@ -76,7 +76,10 @@ pub fn even_bolt(name: &str, total: i32) -> Arc<CardDefinition> {
         Ability::Spell {
             targets: vec![TargetSpec {
                 what: Targetable::AnyTarget,
-                bounds: Bounds { min: 1, max: None },
+                bounds: Bounds {
+                    min: Amount::one(),
+                    max: None,
+                },
                 divide: None,
             }],
             effects: vec![Effect::DealDamage {
@@ -113,7 +116,7 @@ pub fn split_charm(name: &str) -> Arc<CardDefinition> {
             targets: Vec::new(),
             effects: vec![Effect::Modal {
                 choose: Bounds {
-                    min: 1,
+                    min: Amount::one(),
                     max: Some(Amount::Fixed(1)),
                 },
                 repeat: false,

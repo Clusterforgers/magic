@@ -76,6 +76,7 @@ Azorius Herald
 Azorius Signet
 Azure Fleet Admiral
 Azusa, Lost but Seeking
+Back in Town
 Baird, Steward of Argive
 Banish to Another Universe
 Banisher Priest
@@ -177,6 +178,7 @@ Challenger Troll
 Champion of Lambholt
 Champion's Helm
 Changeling Outcast
+Charmbreaker Devils
 Chartooth Cougar
 Chemister's Insight
 Chief Engineer
@@ -286,6 +288,7 @@ Direct Current
 Disciple of Griselbrand
 Disembowel
 Disrupt Decorum
+Distorting Wake
 Dockside Extortionist
 Dokuchi Shadow-Walker
 Domesticated Hydra
@@ -330,6 +333,7 @@ Eldritch Immunity
 Electric Revelation
 Electro's Bolt
 Elegant Edgecrafters
+Eliminate the Competition
 Elven Ambush
 Elvish Aberration
 Elvish Rejuvenator
@@ -338,6 +342,7 @@ Empyrial Storm
 Enraged Revolutionary
 Enthusiastic Study
 Entreat the Angels
+Entreat the Dead
 Epic Proportions
 Era of Enlightenment // Hand of Enlightenment
 Erebos, Bleak-Hearted
@@ -516,6 +521,7 @@ Ill-Tempered Cyclops
 Illicit Shipment
 Illustrious Wanderglyph
 Ilysian Caryatid
+Immoral Bargain
 Imperial Hellkite
 Imperious Oligarch
 Imposter Mech
@@ -792,6 +798,7 @@ Ransom Note
 Ravenous Leucrocota
 Reality Shift
 Realm Seekers
+Reap the Past
 Reassembling Skeleton
 Reaver Titan
 Reckless Impulse
@@ -991,6 +998,7 @@ Sunken Ruins
 Suntouched Myr
 Supreme Verdict
 Surgehacker Mech
+Surreal Memoir
 Susurian Dirgecraft
 Swarm Intelligence
 Swarm, Being of Bees

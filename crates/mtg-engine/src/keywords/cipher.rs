@@ -86,10 +86,7 @@ pub(crate) fn encoded(object: &GameObject, rules: Arc<Ability>) -> Arc<Ability> 
                 Pred::Type(CardType::Creature),
                 Pred::ControlledBy(Ref::You),
             ])),
-            count: Bounds {
-                min: 0,
-                max: Some(Amount::one()),
-            },
+            count: Bounds::up_to(Some(Amount::one())),
             bind: CARRIER.to_owned(),
             rest_as: None,
         },

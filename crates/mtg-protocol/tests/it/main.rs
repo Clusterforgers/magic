@@ -48,6 +48,7 @@ mod phasing_view;
 mod player_aura_view;
 mod preview_fixture;
 mod projection;
+mod random_pick_view;
 mod refill_hidden;
 mod required_cost_hidden;
 mod rest;

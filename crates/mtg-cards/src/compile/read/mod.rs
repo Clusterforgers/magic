@@ -62,6 +62,7 @@ mod payments;
 mod player_keywords;
 mod prevention;
 mod pronouns;
+mod random_moves;
 mod render;
 mod replacements;
 mod reveal;

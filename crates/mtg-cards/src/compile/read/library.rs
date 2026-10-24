@@ -169,9 +169,9 @@ pub(super) fn what(r: &mut Reader<'_>) -> Option<(Selector, Bounds)> {
     let (bounds, plural) = if r.words("up to") {
         let number = number_word(r.take_word()?).filter(|number| *number > 1)?;
         let max = Some(Amount::Fixed(i32::try_from(number).ok()?));
-        (Bounds { min: 0, max }, true)
+        (Bounds::up_to(max), true)
     } else if r.words("any number of") {
-        (Bounds { min: 0, max: None }, true)
+        (Bounds::up_to(None), true)
     } else if r.word("a") || r.word("an") {
         (Bounds::default(), false)
     } else {
@@ -468,7 +468,7 @@ pub(super) fn what_text(filter: &Selector, count: &Bounds) -> Option<String> {
         return Some(format!("{} {text}", article(&text)));
     }
     let text = filter_text(filter, true)?;
-    match (count.min, &count.max) {
+    match (count.fixed_min()?, &count.max) {
         (0, None) => Some(format!("any number of {text}")),
         (0, Some(Amount::Fixed(most))) if *most > 1 => Some(format!(
             "up to {} {text}",
