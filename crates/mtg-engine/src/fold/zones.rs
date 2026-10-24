@@ -232,6 +232,12 @@ fn spell_cast(
     state.commanders.cast(object, from);
     move_object(state, object, Zone::Stack, Placement::Top)?;
     set_controller(state, object, player);
+    let instant_or_sorcery = state.objects.get(&object).is_some_and(|spell| {
+        spell.card().is_type(CardType::Instant) || spell.card().is_type(CardType::Sorcery)
+    });
+    if instant_or_sorcery {
+        state.tally(player, Tally::CastInstantOrSorcery);
+    }
     // The face cast is the card a spell is from now on: its buyback and flashback below are those of the face.
     if let Some(spell) = state.objects.get_mut(&object) {
         spell.choices.clone_from(choices);
@@ -355,8 +361,10 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
     Ok(())
 }
 
-/// Counts the card `id` among the discards of `player` this turn when it lies in a graveyard (mayhem, CR 702.190a).
+/// Counts the card `id` among the discards of `player` this turn when it lies in a graveyard (mayhem, CR 702.190a), and
+/// the player's discards, wherever the card is later.
 fn tally_discard(state: &mut GameState, player: PlayerId, id: ObjectId) {
+    state.tally(player, Tally::Discarded);
     let lies_there = state
         .object(id)
         .filter(|card| matches!(card.zone(), Zone::Graveyard(_)))

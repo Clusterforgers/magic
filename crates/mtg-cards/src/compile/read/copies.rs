@@ -12,13 +12,16 @@ use super::abilities;
 use super::amounts::{count_word, number_word};
 use super::copy_spells;
 use super::create::colors_text;
+use super::defining;
 use super::render;
 use super::selectors::{
     Form, card_type, color, granted_keywords, granted_text, phrase, phrase_in, phrase_text,
     subtype, target, type_name,
 };
+use super::token_binds::TOKENS;
 use super::tokens::Reader;
 use super::triggers::article;
+use super::where_x;
 use crate::ability::Ability;
 use crate::effect::{Effect, TokenRef};
 use crate::modify::{Duration, Modification};
@@ -32,19 +35,22 @@ pub(super) const COPY: &str = "copy";
 /// The name the token that populate copies is chosen as.
 const CHOSEN: &str = "token";
 
-/// "create a token that's a copy of target creature you control", "create two tokens that are copies of it, except
-/// they have haste", also with the sentence that exiles or sacrifices the copy at the next end step.
-pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    if let Some(each) = r.attempt(each_copy) {
-        return Some(each);
-    }
-    let chosen = r.attempt(chosen_first).is_some();
-    if chosen {
-        r.it = Some(Ref::Target(0));
-    }
-    r.need("create")?;
-    let mut tapped = false;
-    let mut attacking = false;
+/// How many tokens a copy makes and how they enter.
+struct Made {
+    /// The number of tokens.
+    count: Amount,
+    /// Whether the sentences after the creation say "they" and "those tokens".
+    plural: bool,
+    /// Whether they enter tapped.
+    tapped: bool,
+    /// Whether they enter attacking.
+    attacking: bool,
+}
+
+/// "a token that's a copy of", "a tapped and attacking token that's a copy of", "X tokens that are copies of": the
+/// words that open a token copy after "create".
+fn made(r: &mut Reader<'_>) -> Option<Made> {
+    let (mut tapped, mut attacking) = (false, false);
     let (count, plural) = if r.words("a token that's a copy of") {
         (Amount::one(), false)
     } else if r.words("a tapped token that's a copy of") {
@@ -63,10 +69,52 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         r.need("tokens that are copies of")?;
         (count, true)
     };
+    Some(Made {
+        count,
+        plural,
+        tapped,
+        attacking,
+    })
+}
+
+/// ", where X is the number of creatures defending player controls" after X copies: the count, read here because the
+/// sentences that act on the copies follow it.
+fn where_count(r: &mut Reader<'_>, count: Amount) -> Option<Amount> {
+    if count != Amount::X || !r.where_x {
+        return Some(count);
+    }
+    let found = r.attempt(where_x::amount)?;
+    // The sentence's where clause is read: none is left for `where_x::bind` to find.
+    r.where_x = false;
+    Some(found)
+}
+
+/// "create a token that's a copy of target creature you control", "create two tokens that are copies of it, except
+/// they have haste", also with the sentence that exiles or sacrifices the copy at the next end step.
+pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    if let Some(each) = r.attempt(each_copy) {
+        return Some(each);
+    }
+    let chosen = r.attempt(chosen_first).is_some();
+    if chosen {
+        r.it = Some(Ref::Target(0));
+    }
+    // "for each card you've discarded this turn, create a token that's a copy of ~": a token for each.
+    let each = r.attempt(each_counted);
+    r.need("create")?;
+    let Made {
+        mut count,
+        plural,
+        mut tapped,
+        mut attacking,
+    } = made(r)?;
+    if let Some(each) = each {
+        (count.is_one() && !plural && !tapped).then_some(())?;
+        count = each;
+    }
     // One token for each object the sentence before chose.
     (!chosen || !(plural || tapped)).then_some(())?;
-    let of = copied(r);
-    let of = of?;
+    let of = copied(r)?;
     // "... and that's tapped and attacking": the token enters attacking a player or planeswalker its controller picks.
     let late = if plural {
         "and that are tapped and attacking"
@@ -82,8 +130,15 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             exceptions(r, if plural { Subject::They } else { Subject::It })
         })
         .unwrap_or_default();
+    count = where_count(r, count)?;
     // A token for each of several targets is several tokens to the sentences after it.
-    let several = plural || (chosen && r.targets.first().is_some_and(|spec| !spec.bounds.is_one()));
+    let several = plural
+        || !count.is_one()
+        || (chosen && r.targets.first().is_some_and(|spec| !spec.bounds.is_one()));
+    // ". The tokens enter tapped and attacking."
+    if !tapped && r.attempt(|r| copy_enters(r, several)).is_some() {
+        (tapped, attacking) = (true, true);
+    }
     let gains = r.attempt(|r| {
         r.punct('.').then_some(())?;
         copy_gains(r, several)
@@ -198,16 +253,7 @@ fn copy_gains(r: &mut Reader<'_>, plural: bool) -> Option<Effect> {
         .find(|subject| r.words(subject))?;
     r.word(if plural { "gain" } else { "gains" })
         .then_some(())?;
-    let mut mods: Vec<Modification> = granted_keywords(r)?
-        .into_iter()
-        .map(Modification::AddKeyword)
-        .collect();
-    while let Some(more) = r.attempt(|r| {
-        r.word("and").then_some(())?;
-        granted_keywords(r)
-    }) {
-        mods.extend(more.into_iter().map(Modification::AddKeyword));
-    }
+    let mods = gained_keywords(r)?;
     let duration = if r.words("until end of turn") {
         Duration::UntilEndOfTurn
     } else {
@@ -218,6 +264,40 @@ fn copy_gains(r: &mut Reader<'_>, plural: bool) -> Option<Effect> {
         mods,
         duration,
     })
+}
+
+/// "for each card you've discarded this turn," before "create a token that's a copy of ...": what the tokens are counted by.
+fn each_counted(r: &mut Reader<'_>) -> Option<Amount> {
+    r.need("for each")?;
+    let count = defining::died_each(r)?;
+    r.punct(',').then_some(())?;
+    Some(count)
+}
+
+/// ". The token enters tapped and attacking", ". The tokens enter tapped and attacking": the copies enter attacking a
+/// player or planeswalker their controller picks.
+fn copy_enters(r: &mut Reader<'_>, several: bool) -> Option<()> {
+    r.punct('.').then_some(())?;
+    r.need(if several {
+        "the tokens enter tapped and attacking"
+    } else {
+        "the token enters tapped and attacking"
+    })
+}
+
+/// The keywords after "gains": "haste", "flying and haste".
+fn gained_keywords(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
+    let mut mods: Vec<Modification> = granted_keywords(r)?
+        .into_iter()
+        .map(Modification::AddKeyword)
+        .collect();
+    while let Some(more) = r.attempt(|r| {
+        r.word("and").then_some(())?;
+        granted_keywords(r)
+    }) {
+        mods.extend(more.into_iter().map(Modification::AddKeyword));
+    }
+    Some(mods)
 }
 
 /// "Exile it at the beginning of the next end step.", "Sacrifice those tokens at end of combat.": what is done to the
@@ -324,9 +404,63 @@ fn copied(r: &mut Reader<'_>) -> Option<Ref> {
     copy_spells::permanent_target(r)
 }
 
-/// "populate": a creature token you control is chosen and a token that is a copy of it is created.
+/// "populate": a creature token you control is chosen and a token that is a copy of it is created. The sentences after
+/// it may make the token enter tapped and attacking ("The token enters tapped and attacking.") or give it keywords
+/// and sacrifice it at the next end step ("The token created this way gains haste. Sacrifice it at the beginning of
+/// the next end step.").
 pub fn populate(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    r.word("populate").then_some(populate_steps())
+    r.word("populate").then_some(())?;
+    let mut steps = populate_steps();
+    if r.attempt(populate_enters).is_some() {
+        if let Some(Effect::CreateToken {
+            tapped, attacking, ..
+        }) = steps.get_mut(1)
+        {
+            (*tapped, *attacking) = (true, true);
+        }
+    } else if let Some(later) = r.attempt(populate_later) {
+        if let Some(Effect::CreateToken { bind, .. }) = steps.get_mut(1) {
+            *bind = Some(TOKENS.to_owned());
+        }
+        steps.extend(later);
+    }
+    Some(steps)
+}
+
+/// ". The token enters tapped and attacking".
+fn populate_enters(r: &mut Reader<'_>) -> Option<()> {
+    r.punct('.').then_some(())?;
+    r.need("the token enters tapped and attacking")
+}
+
+/// ". The token created this way gains haste. Sacrifice it at the beginning of the next end step": the keywords the
+/// token has for good and its sacrifice.
+fn populate_later(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.punct('.').then_some(())?;
+    r.need("the token created this way gains")?;
+    let mods = gained_keywords(r)?;
+    r.punct('.').then_some(())?;
+    r.need("sacrifice it at the beginning of the next end step")?;
+    let token = Ref::Bound(TOKENS.to_owned());
+    Some(vec![
+        Effect::Continuous {
+            affected: token.clone(),
+            mods,
+            duration: Duration::Forever,
+        },
+        Effect::DelayedTrigger {
+            when: TriggerPattern::StepBegins {
+                step: Step::End,
+                whose: Ref::EachPlayer,
+            },
+            once: true,
+            effects: vec![Effect::Sacrifice {
+                who: Ref::You,
+                filter: Selector(vec![Pred::Is(token)]),
+                count: Amount::one(),
+            }],
+        },
+    ])
 }
 
 /// ", then populate" after the sentence before it.
@@ -885,11 +1019,17 @@ pub(super) fn token_text(effect: &Effect, of: &str, delayed: bool) -> Option<Str
     if *attacking && !*tapped {
         return None;
     }
+    // "for each card you've discarded this turn, create a token that's a copy of ~".
+    let each = match count {
+        Amount::Tallied { .. } => Some(defining::died_text(count, true)?),
+        _ => None,
+    };
     let (head, plural) = match count {
-        Amount::Fixed(1) if *attacking => (
+        Amount::Tallied { .. } | Amount::Fixed(1) if *attacking => (
             "a tapped and attacking token that's a copy of".to_owned(),
             false,
         ),
+        Amount::Tallied { .. } if !*tapped => ("a token that's a copy of".to_owned(), false),
         Amount::Fixed(1) if *tapped => ("a tapped token that's a copy of".to_owned(), false),
         Amount::Fixed(1) => ("a token that's a copy of".to_owned(), false),
         _ if *tapped && !*attacking => return None,
@@ -916,7 +1056,10 @@ pub(super) fn token_text(effect: &Effect, of: &str, delayed: bool) -> Option<Str
     } else {
         ""
     };
-    Some(format!("create {head} {of}{attack}{tail}"))
+    let each = each
+        .map(|each| format!("for each {each}, "))
+        .unwrap_or_default();
+    Some(format!("{each}create {head} {of}{attack}{tail}"))
 }
 
 /// The sentences after the creation of a copy that the effects after it write: what the copy gains ("it gains haste until
@@ -1029,7 +1172,50 @@ pub(super) fn attacking_wordings(texts: &[String]) -> Vec<String> {
             text.replace("copy of ~", "copy of it")
                 .replace("copies of ~", "copies of it")
         });
-    single.chain(itself).collect()
+    let mut found: Vec<String> = single.chain(itself).collect();
+    let entering = entering_wordings(texts)
+        .into_iter()
+        .chain(entering_wordings(&found))
+        .collect::<Vec<_>>();
+    found.extend(entering);
+    found
+}
+
+/// "create a tapped and attacking token that's a copy of X, except ..." is also "create a token that's a copy of X, except
+/// .... The token enters tapped and attacking" (the tokens enter, after "for each ...").
+fn entering_wordings(texts: &[String]) -> Vec<String> {
+    const HEAD: &str = "create a tapped and attacking token that's a copy of ";
+    let mut found = Vec::new();
+    for text in texts {
+        let Some(at) = text.find(HEAD) else {
+            continue;
+        };
+        let from = at + HEAD.len();
+        // The sentence ends at the first period that is not inside a quoted ability.
+        let mut quoted = false;
+        let Some(end) = text[from..]
+            .char_indices()
+            .find(|(_, c)| {
+                quoted ^= *c == '"';
+                *c == '.' && !quoted
+            })
+            .map(|(at, _)| from + at)
+        else {
+            continue;
+        };
+        for sentence in [
+            "The token enters tapped and attacking",
+            "The tokens enter tapped and attacking",
+        ] {
+            found.push(format!(
+                "{}create a token that's a copy of {}. {sentence}{}",
+                &text[..at],
+                &text[from..end],
+                &text[end..]
+            ));
+        }
+    }
+    found
 }
 
 /// The words that name the copy as what a sentence acts on: one token or several.

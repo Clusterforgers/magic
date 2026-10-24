@@ -78,6 +78,7 @@ mod copies;
 mod copies_fuzz;
 mod copy_attacks;
 mod copy_cards;
+mod copy_counts;
 mod copy_dies;
 mod copy_effects;
 mod copy_exiles_itself;
