@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Trample"},{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"effects":[{"May":{"effects":[{"CastFromZone":{"what":{"Each":["Commander",{"In":"Command"},{"OwnedBy":"You"}]},"free":true}}]}}]}}]}]}

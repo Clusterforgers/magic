@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}],"effects":[{"DelayedTrigger":{"when":{"DealsDamage":{"source":[{"Is":{"Target":0}}],"combat":true}},"once":false,"effects":[{"Draw":{"count":"Triggering"}}]}}]}}]}]}

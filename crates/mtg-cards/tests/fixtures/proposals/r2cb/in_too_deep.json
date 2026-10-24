@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"SplitSecond"},{"Keyword":{"Enchant":[{"AnyOf":[{"Type":"Creature"},{"Type":"Planeswalker"},{"Subtype":"Clue"}]}]}},{"Static":{"affected":"Attached","mods":[{"SetTypes":["Artifact"]},{"AddSubtype":"Clue"},{"SetColors":[]},"LoseAbilities",{"GrantAbility":{"Activated":{"cost":[{"Mana":"{2}"},"SacrificeSelf"],"effects":[{"Draw":{}}]}}}]}}]}]}

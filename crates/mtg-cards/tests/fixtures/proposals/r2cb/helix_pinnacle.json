@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Shroud"},{"Activated":{"cost":"{X}","effects":[{"PutCounters":{"on":"This","counter":{"Other":"tower"},"count":"X"}}]}},{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"if":{"Compare":{"left":{"Counters":{"on":"This","counter":{"Other":"tower"}}},"op":"Ge","right":100}},"effects":[{"WinGame":{}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"DealsDamage":{"source":[{"Type":"Creature"}],"to":"Opponents","combat":true}},"effects":[{"Pay":{"who":{"ControllerOf":"Triggering"},"cost":[{"PayLife":1}],"paid":[{"Draw":{"who":{"ControllerOf":"Triggering"}}}]}}]}}]}]}

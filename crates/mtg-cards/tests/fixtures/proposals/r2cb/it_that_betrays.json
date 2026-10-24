@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Annihilator":2}},{"Triggered":{"when":{"Sacrificed":{"what":[{"Not":"Token"}],"by":"Opponents"}},"effects":[{"Move":{"what":"Triggering","to":{"Battlefield":{"under":"You"}}}}]}}]}]}
