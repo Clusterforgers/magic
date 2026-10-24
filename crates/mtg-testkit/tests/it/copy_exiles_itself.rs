@@ -55,7 +55,7 @@ fn a_copy_that_exiles_itself_ends_its_resolution(
         }
     }
     assert_eq!(copies(&driver), 1, "Twincast copied the spell");
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack(), []);
     let exiled: Vec<String> = driver
         .state()
         .zone(Zone::Exile)
