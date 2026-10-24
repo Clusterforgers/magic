@@ -22,7 +22,7 @@ use std::sync::{Arc, OnceLock};
 
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::modify::Modification as Wanted;
+use mtg_cards::modify::{Duration, Modification as Wanted};
 use mtg_cards::refs::{Pred, Ref, Selector as Named, ZoneKind};
 use mtg_cards::value::CounterKind;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
@@ -575,12 +575,42 @@ struct Pass<'a> {
 }
 
 /// Works out what the layers make of every permanent of `state`.
+///
+/// An effect that lasts "for as long as you control ~" ends when its source is no longer controlled by the player of the
+/// effect, and who controls the source is itself a result of this pass. The pass therefore applies all such effects
+/// first, then drops the earliest one whose source ended up under another player's control and works the pass again
+/// without it (a dropped effect never comes back, so this ends), so that the check reads the control as the layers left
+/// it and never the control as a stale state records it (CR 611.2b, 613.7).
 fn compute(state: &GameState) -> Layers {
-    let registered: Vec<&ContinuousEffect> = state
+    let mut registered: Vec<&ContinuousEffect> = state
         .effects()
         .iter()
-        .filter(|effect| effect.is_active(state))
+        .filter(|effect| effect.is_active_before_control(state))
         .collect();
+    loop {
+        let layers = compute_with(state, &registered);
+        let lost = registered.iter().position(|effect| {
+            effect.duration == Duration::WhileYouControlSource
+                && !effect.source.is_some_and(|source| {
+                    layers
+                        .get(source.id)
+                        .map(|held| held.controller)
+                        .or_else(|| state.object(source.id).map(GameObject::controller))
+                        == Some(effect.controller)
+                })
+        });
+        match lost {
+            Some(at) => {
+                registered.remove(at);
+            }
+            None => return layers,
+        }
+    }
+}
+
+/// The pass over these effects (and the static abilities of the permanents).
+fn compute_with(state: &GameState, registered: &[&ContinuousEffect]) -> Layers {
+    let registered: Vec<&ContinuousEffect> = registered.to_vec();
     // With no effect and no static ability that works where its card is, every permanent is as its card prints it.
     let statics_in_play = state
         .zone(Zone::Battlefield)
@@ -1243,6 +1273,8 @@ pub(crate) fn outside(
     chars
 }
 
+#[cfg(test)]
+mod c4_control;
 #[cfg(test)]
 mod characteristic_keywords;
 #[cfg(test)]

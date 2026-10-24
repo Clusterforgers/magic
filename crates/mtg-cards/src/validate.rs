@@ -1995,12 +1995,23 @@ impl<'a> Walker<'a> {
                     w.uses("Copy", &format!("Duration.{}", tag_of(duration)));
                 }
             }
-            Effect::Continuous { affected, mods, .. } => {
+            Effect::Continuous {
+                affected,
+                mods,
+                duration,
+            } => {
                 w.at("affected", |w| w.reference(affected, Kind::Object));
                 w.at("mods", |w| w.mods(mods));
+                if *duration == Duration::WhileYouControlSource {
+                    w.uses("Duration", "WhileYouControlSource");
+                }
             }
-            Effect::Rule { rule, .. } => w.at("rule", |w| {
+            Effect::Rule { rule, duration } => w.at("rule", |w| {
                 w.rule(rule);
+                // Only the layers end an effect when the source changes controller.
+                if *duration == Duration::WhileYouControlSource {
+                    w.uses("Rule", "Duration.WhileYouControlSource");
+                }
                 if matches!(rule, GameRule::CanBeCommander) {
                     w.problem("a card can be a commander by a static ability, not by an effect");
                 }
@@ -2013,7 +2024,14 @@ impl<'a> Walker<'a> {
                 }
             }
             Effect::Regenerate { what } => w.at("what", |w| w.reference(what, Kind::Object)),
-            Effect::Shield { when, by, .. } => {
+            Effect::Shield {
+                when,
+                by,
+                duration,
+            } => {
+                if *duration == Duration::WhileYouControlSource {
+                    w.uses("Shield", "Duration.WhileYouControlSource");
+                }
                 w.at("when", |w| w.replace_when(when));
                 w.at("by", |w| w.replace_by(when, by));
                 // The engine makes shields of damage prevention; any other shield waits.
@@ -3204,6 +3222,8 @@ mod tests {
     #[case::a_mode_not_chosen_twice_in_a_turn(r#"{"Spell":{"effects":[{"Modal":{"once_each_turn":true,"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":1}}]}]}}]}}"#, &["Ability.Spell", "Effect.Draw", "Effect.GainLife", "Effect.Modal", "Effect.Modal.OnceEachTurn"])]
     #[case::an_x_beside_a_tap(r#"{"Activated":{"cost":[{"Mana":"{X}{R}{G}"},"Tap"],"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Activated", "Cost.Mana", "Cost.Mana.X", "Cost.Tap", "Effect.Draw"])]
     #[case::an_exile_until_the_source_leaves(r#"{"Spell":{"effects":[{"Exile":{"what":"This","duration":"WhileSourceOnBattlefield"}}]}}"#, &["Ability.Spell", "Effect.Exile"])]
+    #[case::a_control_for_as_long_as_you_control_the_source(r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"SetController":"You"}],"duration":"WhileYouControlSource"}}]}}"#, &["Ability.Triggered", "Duration.WhileYouControlSource", "Effect.Continuous", "Mod.SetController", "Trigger.ZoneChange"])]
+    #[case::a_rule_for_as_long_as_you_control_the_source(r#"{"Spell":{"effects":[{"Rule":{"rule":{"CantDraw":"You"},"duration":"WhileYouControlSource"}}]}}"#, &["Ability.Spell", "Effect.Rule", "Rule.CantDraw", "Rule.Duration.WhileYouControlSource"])]
     #[case::an_exile_with_another_duration(r#"{"Spell":{"effects":[{"Exile":{"what":"This","duration":"UntilYourNextTurn"}}]}}"#, &["Ability.Spell", "Effect.Exile", "Exile.Duration.UntilYourNextTurn"])]
     #[case::mana_spent_to_cast(r#"{"Spell":{"effects":[{"If":{"condition":{"ManaSpent":"Red"},"then":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Condition.ManaSpent", "Effect.Draw", "Effect.If"])]
     #[case::an_x_that_the_ability_never_announced(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Activated", "Amount.X.Elsewhere", "Cost.Tap", "Effect.Draw"])]

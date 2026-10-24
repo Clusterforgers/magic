@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8dd473c7-afd9-40f1-bb8e-0a00f4687318",
+  "name": "Mind Flayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Flayer",
+      "oracle_fingerprint": "1c2bcfc714bea3812c17def1d25b780d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

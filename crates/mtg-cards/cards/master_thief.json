@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a32b8502-7427-48a5-a880-14516ff2fe77",
+  "name": "Master Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Master Thief",
+      "oracle_fingerprint": "44128fba322f42d8bacbae903fa790a1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

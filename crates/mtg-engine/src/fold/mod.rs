@@ -409,8 +409,11 @@ fn create_effect(
     if effect.layer != effect.modification.layer() {
         return Err(invalid("effect layer does not match its modification"));
     }
-    if effect.duration == mtg_cards::modify::Duration::WhileSourceOnBattlefield
-        && effect.source.is_none()
+    if matches!(
+        effect.duration,
+        mtg_cards::modify::Duration::WhileSourceOnBattlefield
+            | mtg_cards::modify::Duration::WhileYouControlSource
+    ) && effect.source.is_none()
     {
         return Err(invalid(
             "an effect that lasts while its source stays has a source",
