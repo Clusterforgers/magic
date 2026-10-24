@@ -1,0 +1,42 @@
+{
+  "oracle_id": "7579f57d-c76e-4703-a030-34fb7160cb23",
+  "name": "Wolfwillow Haven",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wolfwillow Haven",
+      "oracle_fingerprint": "b909e477c191dcd7c3833f41a71495e2",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Is": "Attached" }, { "Type": "Land" }] } },
+            "effects": [{ "AddMana": { "who": "Triggering", "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{G}" }, "SacrificeSelf"],
+            "condition": "YourTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wolf",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wolf"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

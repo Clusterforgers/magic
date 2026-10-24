@@ -590,6 +590,18 @@ impl<'a> Reader<'a> {
         self.punct('.') || self.end()
     }
 
+    /// Reads the comma of ", then you ..." (the next sentence opens with "Then you"), leaving "then" to be read.
+    pub fn then_you_follows(&mut self) -> bool {
+        let then_you = matches!(
+            self.tokens.get(self.at..self.at + 3),
+            Some([Token::Punct(','), Token::Word(then), Token::Word(you)]) if then == "then" && you == "you"
+        );
+        if then_you {
+            self.at += 1;
+        }
+        then_you
+    }
+
     /// Reads what is between a pair of quotes with a reader of its own over those tokens, which `read` must read
     /// whole: the ability a copy or a permanent is given ("it has \"When ~ dies, draw a card.\"").
     pub fn quoted<T>(&mut self, read: impl FnOnce(&mut Reader<'a>) -> Option<T>) -> Option<T> {

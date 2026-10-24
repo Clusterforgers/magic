@@ -160,7 +160,7 @@ fn leaves(game: &mut GameState, name: &str) {
 }
 
 /// The modifications the engine runs.
-const MODIFICATIONS: [&str; 23] = [
+const MODIFICATIONS: [&str; 24] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
@@ -178,6 +178,7 @@ const MODIFICATIONS: [&str; 23] = [
     r#"{"SetController":"Opponents"}"#,
     r#""CantAttack""#,
     r#""CantBlock""#,
+    r#""DoesntUntap""#,
     r#""CantBeBlocked""#,
     r#"{"CantBeBlockedBy":[{"Type":"Creature"}]}"#,
     r#"{"CanBlockOnly":[{"HasKeyword":"Flying"}]}"#,
@@ -224,6 +225,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::SetController(_)
             | mtg_cards::modify::Modification::CantAttack
             | mtg_cards::modify::Modification::CantBlock
+            | mtg_cards::modify::Modification::DoesntUntap
             | mtg_cards::modify::Modification::CantBeBlocked
             | mtg_cards::modify::Modification::CantBeBlockedBy(_)
             | mtg_cards::modify::Modification::CanBlockOnly(_)

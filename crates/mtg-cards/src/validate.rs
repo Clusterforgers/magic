@@ -646,6 +646,9 @@ impl<'a> Walker<'a> {
             }
             Condition::IsDay => self.uses("Condition", "IsDay"),
             Condition::IsNight => self.uses("Condition", "IsNight"),
+            Condition::Step(_) => self.uses("Condition", "Step"),
+            Condition::BeforeAttackers => self.uses("Condition", "BeforeAttackers"),
+            Condition::InCombat => self.uses("Condition", "InCombat"),
             Condition::NeitherDayNorNight => self.uses("Condition", "NeitherDayNorNight"),
             Condition::NewlyControlled(what) => {
                 self.uses("Condition", "NewlyControlled");
@@ -1028,6 +1031,7 @@ impl<'a> Walker<'a> {
             | Modification::LoseAbilities
             | Modification::CantAttack
             | Modification::CantBlock
+            | Modification::DoesntUntap
             | Modification::CantBeBlocked
             | Modification::Goaded => {}
         }
