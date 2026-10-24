@@ -181,6 +181,7 @@ mod copies;
 mod copy_groups;
 mod copy_supertypes;
 mod copy_wordings;
+mod group_copies;
 mod cost_conditions;
 mod cost_counts;
 mod cost_wordings;

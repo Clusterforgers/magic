@@ -47,6 +47,7 @@ mod evasion;
 mod event_wordings;
 mod facts;
 mod flicker;
+mod group_copies;
 mod group_pump;
 mod lands;
 mod levels;

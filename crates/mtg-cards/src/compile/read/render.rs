@@ -34,6 +34,7 @@ use super::draws;
 use super::effects::{BACK, RETURNED, dead_card, returns_itself};
 use super::event_wordings;
 use super::flicker;
+use super::group_copies;
 use super::group_pump;
 use super::lands;
 use super::library;
@@ -639,6 +640,8 @@ struct Wording {
     again: bool,
     /// Which of the wordings of a condition is written ("three or more" or "3 or more").
     condition: usize,
+    /// A group that becomes a copy of the target is worded after a sentence that chooses the target.
+    chosen: bool,
 }
 
 /// "each player discards their hand, then draws seven cards": every hand emptied and the cards drawn, one sentence.
@@ -693,6 +696,11 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
         &[false]
     };
     let agains: &[bool] = if repeats { &[false, true] } else { &[false] };
+    let chosens: &[bool] = if effects.iter().any(group_copies::is_group_copy) {
+        &[false, true]
+    } else {
+        &[false]
+    };
     let conditions = effects
         .iter()
         .filter_map(|effect| match effect {
@@ -704,11 +712,13 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
         .max(1);
     pers.iter()
         .flat_map(|per| agains.iter().map(move |again| (*per, *again)))
-        .flat_map(|(per, again)| {
+        .flat_map(|pair| chosens.iter().map(move |chosen| (pair, *chosen)))
+        .flat_map(|((per, again), chosen)| {
             (0..conditions).map(move |condition| Wording {
                 per,
                 again,
                 condition,
+                chosen,
             })
         })
         .collect()
@@ -806,6 +816,16 @@ fn written(
             unsplit(mask, start, 2)?;
             sentences.extend(texts);
             start += 2;
+            continue;
+        }
+        // A group that becomes a copy of the target, after a sentence that chooses it or not.
+        if let [copy @ Effect::BecomeCopy { .. }, ..] = &effects[start..]
+            && group_copies::is_group_copy(copy)
+            && let Some(texts) = writer.group_becomes(copy, wording.chosen)
+        {
+            unsplit(mask, start, 1)?;
+            sentences.extend(texts);
+            start += 1;
             continue;
         }
         // A choice of cards and the move of what was chosen are one sentence, which no joint splits.
@@ -1592,6 +1612,16 @@ impl Writer<'_> {
         let text = copy_spells::copy_text(effect, self.targets.first()?)?;
         self.named = true;
         Some(text)
+    }
+
+    /// The sentence of a group that becomes a copy of the target, or the two of a target chosen first.
+    fn group_becomes(&mut self, copy: &Effect, chosen: bool) -> Option<Vec<String>> {
+        if !self.is_a_permanent(&Ref::Target(0)) {
+            return None;
+        }
+        let target = self.name_target()?;
+        let kind = &self.targets.first()?.what;
+        group_copies::texts(copy, &target, kind, chosen)
     }
 
     /// The two sentences of a permanent chosen and a target that becomes a copy of it.
