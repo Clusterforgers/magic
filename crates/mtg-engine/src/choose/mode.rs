@@ -517,12 +517,13 @@ mod tests {
 
     #[test]
     fn a_mode_the_renderer_cannot_write_has_no_label() {
-        // Two target specifications are more than the renderer writes for a mode.
+        // Two target specifications whose effects do not follow the order of the targets are more than the renderer
+        // writes for a mode.
         let rules: Ability = serde_json::from_str(
             r#"{"Spell":{"effects":[{"Modal":{"choose":{"min":1,"max":1},"modes":[
                 {"effects":[{"Draw":{}}]},
                 {"targets":[{"what":"AnyTarget"},{"what":"AnyTarget"}],"effects":[
-                    {"DealDamage":{"to":{"Target":0},"amount":1}},{"DealDamage":{"to":{"Target":1},"amount":1}}]}]}}]}}"#,
+                    {"DealDamage":{"to":{"Target":1},"amount":1}},{"DealDamage":{"to":{"Target":0},"amount":1}}]}]}}]}}"#,
         )
         .unwrap();
         let options = options_of(&game(false), &rules, true).unwrap();
