@@ -182,7 +182,10 @@ fn living_laser_makes_a_token_for_each_card_discarded_that_enters_attacking_and_
     replays(&driver, &setup);
     let turn = driver.state().turn().number();
     driver.idle_until(turn + 1, Step::Upkeep)?;
-    assert!(tokens_named(&driver, "Living Laser").is_empty());
+    assert!(
+        tokens_named(&driver, "Living Laser").is_empty(),
+        "exiled at the end step"
+    );
     assert_eq!(named(&driver, "Living Laser").len(), 1);
     Ok(())
 }

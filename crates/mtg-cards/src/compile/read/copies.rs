@@ -1025,15 +1025,11 @@ pub(super) fn token_text(effect: &Effect, of: &str, delayed: bool) -> Option<Str
         _ => None,
     };
     let (head, plural) = match count {
-        Amount::Tallied { .. } if *attacking => (
+        Amount::Tallied { .. } | Amount::Fixed(1) if *attacking => (
             "a tapped and attacking token that's a copy of".to_owned(),
             false,
         ),
         Amount::Tallied { .. } if !*tapped => ("a token that's a copy of".to_owned(), false),
-        Amount::Fixed(1) if *attacking => (
-            "a tapped and attacking token that's a copy of".to_owned(),
-            false,
-        ),
         Amount::Fixed(1) if *tapped => ("a tapped token that's a copy of".to_owned(), false),
         Amount::Fixed(1) => ("a token that's a copy of".to_owned(), false),
         _ if *tapped && !*attacking => return None,
