@@ -7,7 +7,7 @@ use super::tokens::Reader;
 use crate::ability::Ability;
 use crate::effect::Effect;
 use crate::modify::{Duration, GameRule};
-use crate::refs::{Pred, Selector, ZoneKind};
+use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::{ReplaceBy, ReplaceWhen};
 
 /// "Damage can't be prevented.", "Combat damage can't be prevented.", "Damage that would be dealt by this creature
@@ -16,6 +16,43 @@ pub fn static_rule(r: &mut Reader<'_>) -> Option<Ability> {
     let (source, combat) = cant_be_prevented(r)?;
     Some(Ability::Rule {
         rule: GameRule::DamageCantBePrevented { source, combat },
+        condition: None,
+        from: ZoneKind::Battlefield,
+    })
+}
+
+/// The damage a permanent prevents for itself or its controller: "Prevent all combat damage that would be dealt to this
+/// creature.", "Prevent all damage that would be dealt to you.", and "If damage would be dealt to this creature, prevent
+/// that damage. Remove a +1/+1 counter from this creature."
+pub fn static_prevent(r: &mut Reader<'_>) -> Option<Ability> {
+    let (to, combat, by) = if r.words("prevent all") {
+        let combat = kind(r)?.flag();
+        r.need("that would be dealt to")?;
+        let to = if r.source() {
+            Ref::This
+        } else {
+            r.word("you").then_some(Ref::You)?
+        };
+        (to, combat, ReplaceBy::Prevent)
+    } else {
+        r.need("if damage would be dealt to")?;
+        r.source().then_some(())?;
+        r.punct(',').then_some(())?;
+        r.need("prevent that damage")?;
+        r.punct('.').then_some(())?;
+        r.need("remove a")?;
+        let counter = super::counters::kind(r)?;
+        r.need("counter from")?;
+        r.source().then_some(())?;
+        (Ref::This, None, ReplaceBy::PreventRemovingCounter(counter))
+    };
+    Some(Ability::Replacement {
+        when: ReplaceWhen::Damage {
+            to: Some(to),
+            source: Selector::default(),
+            combat,
+        },
+        by,
         condition: None,
         from: ZoneKind::Battlefield,
     })

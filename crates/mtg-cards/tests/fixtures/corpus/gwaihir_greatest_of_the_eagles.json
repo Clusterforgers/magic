@@ -1,0 +1,27 @@
+{
+  "cmc": 5.0,
+  "collector_number": "15",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "9c17c3bb-aa20-43b0-8a28-b46a18b060ef",
+  "keywords": [
+    "Flying"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{4}{W}",
+  "name": "Gwaihir, Greatest of the Eagles",
+  "oracle_id": "77572e70-4b8b-46ae-8c8d-f71b7dd456e0",
+  "oracle_text": "Flying\nWhenever Gwaihir attacks, target attacking creature gains flying until end of turn.\nAt the beginning of each end step, if you gained 3 or more life this turn, create a 3/3 white Bird creature token with flying and \"Whenever this token attacks, target attacking creature gains flying until end of turn.\"",
+  "power": "5",
+  "rarity": "rare",
+  "released_at": "2023-06-23",
+  "set": "ltc",
+  "toughness": "5",
+  "type_line": "Legendary Creature — Bird Noble"
+}

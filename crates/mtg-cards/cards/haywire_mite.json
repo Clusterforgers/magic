@@ -1,0 +1,35 @@
+{
+  "oracle_id": "749d2994-44e7-40d3-8630-7bebed239e9e",
+  "name": "Haywire Mite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haywire Mite",
+      "oracle_fingerprint": "f781c4525052de5ddd84715f75ca8614",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "Not": { "Type": "Creature" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

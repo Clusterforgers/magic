@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use crate::effect::{Effect, is_false};
 use crate::modify::Modification;
 use crate::refs::{Ref, Selector, ZoneKind};
-use crate::value::{Amount, Condition, CounterKind};
+use crate::value::{Amount, Condition, CounterKind, DayNight};
 
 /// A step or main phase of a turn, as triggers name it (the same thirteen as the engine's).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -291,6 +291,12 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// Day becomes night or night becomes day (CR 726.3): not the first time it becomes day from neither.
+    DayNightChanges {
+        /// Only this change ("whenever night becomes day"); either change when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        to: Option<DayNight>,
+    },
     /// A player proliferates ("whenever you proliferate"); `Triggering` is that player.
     Proliferated {
         /// Who proliferates.
@@ -528,6 +534,9 @@ pub enum ReplaceBy {
     PreventUpTo(u32),
     /// These effects happen instead.
     Instead(Vec<Effect>),
+    /// All of the damage is prevented and the permanent with the ability loses one counter of this kind, if it has one
+    /// ("prevent that damage. Remove a +1/+1 counter from this creature").
+    PreventRemovingCounter(CounterKind),
     /// A draw is skipped: the player mills this many cards and returns the card with the ability from its graveyard to
     /// their hand (dredge, CR 702.52a).
     Dredge(u32),
@@ -578,6 +587,8 @@ pub enum ReplaceBy {
     },
     /// Riot (CR 702.136): as the permanent enters, its controller chooses a +1/+1 counter on it or haste for as long as they control it.
     Riot,
+    /// As the permanent enters, it becomes day if it is neither day nor night (CR 726.2).
+    DayIfNeither,
 }
 
 #[cfg(test)]

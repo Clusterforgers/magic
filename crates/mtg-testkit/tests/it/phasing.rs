@@ -90,11 +90,8 @@ fn teferis_protection_takes_everything_off_the_board_until_the_next_turn(
         assert_eq!(zone_of(&driver, name), Zone::PhasedOut, "{name}");
     }
     assert_eq!(zone_of(&driver, "Wolf"), Zone::Battlefield);
-    // The spell has resolved (it exiles itself, which the engine leaves to the move off the stack).
-    assert!(!matches!(
-        zone_of(&driver, "Teferi's Protection"),
-        Zone::Stack | Zone::Hand(_)
-    ));
+    // The spell has resolved and exiled itself: it is not put into the graveyard after.
+    assert_eq!(zone_of(&driver, "Teferi's Protection"), Zone::Exile);
     // The permanents that phased out stay objects of the game and appear in no scan of the battlefield.
     assert!(
         !driver

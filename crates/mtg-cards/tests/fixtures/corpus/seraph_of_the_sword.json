@@ -1,0 +1,27 @@
+{
+  "cmc": 4.0,
+  "collector_number": "31",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "d9789cac-5774-4f72-82c3-18f11f9d4a62",
+  "keywords": [
+    "Flying"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{3}{W}",
+  "name": "Seraph of the Sword",
+  "oracle_id": "84ee74e9-b3e3-4f47-8b3c-5c1a70f5cad6",
+  "oracle_text": "Flying\nPrevent all combat damage that would be dealt to this creature.",
+  "power": "3",
+  "rarity": "rare",
+  "released_at": "2013-07-19",
+  "set": "m14",
+  "toughness": "3",
+  "type_line": "Creature — Angel"
+}

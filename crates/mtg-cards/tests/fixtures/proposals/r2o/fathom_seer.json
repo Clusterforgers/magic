@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Morph":[{"ReturnToHand":{"filter":[{"Subtype":"Island"},{"ControlledBy":"You"}],"count":2}}]}},{"Triggered":{"when":{"TurnedFaceUp":{"what":["This"]}},"effects":[{"Draw":{"count":2}}]}}]}]}

@@ -34,6 +34,7 @@ pub mod count_cards;
 pub mod counter_cards;
 pub mod counting_cards;
 pub mod curse_cards;
+pub mod day_night_cards;
 pub mod decks;
 pub mod defining_cards;
 pub mod demonstrate_cards;
@@ -104,11 +105,13 @@ pub mod spectacle_cards;
 pub mod split_second_cards;
 pub mod static_cards;
 pub mod station_cards;
+pub mod tail_cards;
 pub mod trigger_cards;
 pub mod triggered_cards;
 pub mod umbra_cards;
 pub mod upkeep_cards;
 pub mod vehicle_cards;
+pub mod walker_cards;
 pub mod windows;
 pub mod x_after_cards;
 pub mod x_cards;
@@ -148,9 +151,11 @@ pub use count_cards::count_fuzz_setup;
 pub use counter_cards::counters_fuzz_setup;
 pub use counting_cards::counting_fuzz_setup;
 pub use curse_cards::curse_fuzz_setup;
+pub use day_night_cards::{DAY_NIGHT_CARDS, day_maker, day_night_fuzz_setup, mass_landing};
 pub use decks::{
-    archon_fuzz_setup, fuzz_setup, keyword_fuzz_setup, library_fuzz_setup, pick_fuzz_setup,
-    ramp_fuzz_setup, removal_fuzz_setup, spell_fuzz_setup, symbol_fuzz_setup, trigger_fuzz_setup,
+    archon_fuzz_setup, counter_fuzz_setup, fuzz_setup, keyword_fuzz_setup, library_fuzz_setup,
+    pick_fuzz_setup, ramp_fuzz_setup, removal_fuzz_setup, spell_fuzz_setup, symbol_fuzz_setup,
+    trigger_fuzz_setup,
 };
 pub use defining_cards::defining_fuzz_setup;
 pub use demonstrate_cards::demonstrate_fuzz_setup;
@@ -226,10 +231,12 @@ pub use spectacle_cards::spectacle_fuzz_setup;
 pub use split_second_cards::split_second_fuzz_setup;
 pub use static_cards::statics_fuzz_setup;
 pub use station_cards::station_fuzz_setup;
+pub use tail_cards::tail_fuzz_setup;
 pub use triggered_cards::triggered_fuzz_setup;
 pub use umbra_cards::umbra_fuzz_setup;
 pub use upkeep_cards::upkeep_fuzz_setup;
 pub use vehicle_cards::vehicle_fuzz_setup;
+pub use walker_cards::walker_fuzz_setup;
 pub use windows::{SeatWindows, Windows};
 pub use x_after_cards::x_after_fuzz_setup;
 pub use x_cards::x_fuzz_setup;

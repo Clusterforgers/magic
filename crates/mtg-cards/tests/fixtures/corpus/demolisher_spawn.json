@@ -1,0 +1,29 @@
+{
+  "id": "16b97600-e4cf-4b9e-8f2d-2eb74298eb54",
+  "oracle_id": "17bdd827-2e89-4559-939a-fc5c153189ed",
+  "name": "Demolisher Spawn",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "31",
+  "rarity": "rare",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{5}{G}{G}",
+  "cmc": 7.0,
+  "type_line": "Enchantment Creature — Horror",
+  "oracle_text": "Trample, haste\nDelirium — Whenever this creature attacks, if there are four or more card types among cards in your graveyard, other attacking creatures get +4/+4 until end of turn.",
+  "power": "7",
+  "toughness": "7",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Delirium",
+    "Haste",
+    "Trample"
+  ]
+}

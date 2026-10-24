@@ -1,0 +1,27 @@
+{
+  "id": "58891dae-1c59-4f53-82ec-5b4c47133182",
+  "oracle_id": "2788cc1e-18b6-4506-be4c-f4056600e33c",
+  "name": "Gavony Dawnguard",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mid",
+  "collector_number": "20",
+  "rarity": "uncommon",
+  "released_at": "2021-09-24",
+  "digital": false,
+  "mana_cost": "{1}{W}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Soldier",
+  "oracle_text": "Ward {1}\nIf it's neither day nor night, it becomes day as this creature enters.\nWhenever day becomes night or night becomes day, look at the top four cards of your library. You may reveal a creature card with mana value 3 or less from among them and put it into your hand. Put the rest on the bottom of your library in any order.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Ward"
+  ]
+}

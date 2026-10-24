@@ -1,0 +1,23 @@
+{
+  "id": "ef192364-713a-42ff-8249-69a73ae61bd8",
+  "oracle_id": "0d49cf51-af1f-4c17-9cf4-b82bc7c2c72e",
+  "name": "Traverse the Outlands",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "258",
+  "rarity": "rare",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "{4}{G}",
+  "cmc": 5,
+  "type_line": "Sorcery",
+  "oracle_text": "Search your library for up to X basic land cards, where X is the greatest power among creatures you control. Put those cards onto the battlefield tapped, then shuffle.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}
