@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"AnyOf":[{"Blocks":{"what":["This"]}},{"BecomesBlocked":{"what":["This"]}}]},"targets":[{"what":"Opponent"}],"effects":[{"Continuous":{"affected":"This","mods":[{"SetController":{"Target":0}}],"duration":"Forever"}}]}}]}]}

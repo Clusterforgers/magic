@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Untap":{"what":{"Each":[{"Type":"Creature"}]}}},{"Continuous":{"affected":{"Each":[{"Type":"Creature"}]},"mods":[{"SetController":"You"},{"AddKeyword":"Haste"}],"duration":"UntilEndOfTurn"}}]}}]}]}

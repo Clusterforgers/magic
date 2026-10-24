@@ -1,0 +1,24 @@
+{
+  "oracle_id": "5b5ef43b-13fd-4461-8d2d-18be65e9a790",
+  "name": "Ichor Wellspring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ichor Wellspring",
+      "oracle_fingerprint": "e4bf9909a8a6ea954ed19c53f2356340",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

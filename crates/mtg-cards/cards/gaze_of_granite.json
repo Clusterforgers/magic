@@ -1,0 +1,29 @@
+{
+  "oracle_id": "103d9ad0-d655-4bd5-a899-e9f8869e333d",
+  "name": "Gaze of Granite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gaze of Granite",
+      "oracle_fingerprint": "2f8ae62fbdb91f533245305a2f25a520",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

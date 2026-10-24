@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d0f06250-25a5-4003-8f3a-6d85ef32ea10",
+  "name": "Keening Stone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keening Stone",
+      "oracle_fingerprint": "24dab988fd2f0d20c30abe4898d82507",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Mill": {
+                  "who": { "Target": 0 },
+                  "count": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
