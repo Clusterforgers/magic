@@ -1,0 +1,28 @@
+{
+  "id": "2b3ec666-0e57-4c42-872c-51799e0b5c68",
+  "oracle_id": "515c522f-51d5-4f6d-b9b1-ea3c7f6a378e",
+  "name": "Rousing Refrain",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "253",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Add {R} for each card in target opponent's hand. Until end of turn, you don't lose this mana as steps and phases end. Exile Rousing Refrain with three time counters on it.\nSuspend 3—{1}{R} (Rather than cast this card from your hand, you may pay {1}{R} and exile it with three time counters on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Suspend"
+  ],
+  "produced_mana": [
+    "R"
+  ]
+}

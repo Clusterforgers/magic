@@ -632,7 +632,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
         ManaProduced::AnyCombination {
             count: Amount::X,
             ..
-        }
+        } | ManaProduced::AnyColor(Amount::X)
     ));
     if x_paid != x_added {
         return None;

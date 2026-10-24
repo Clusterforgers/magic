@@ -205,12 +205,22 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
             ManaProduced::Fixed { mana, count } => vec![vec![mana; count as usize]],
             ManaProduced::Mixed(list) => vec![list.to_vec()],
             ManaProduced::AnyColor(count) => {
-                let count = scope
-                    .amount(count)
-                    .ok()
-                    .and_then(|count| usize::try_from(count).ok())
-                    .unwrap_or(0);
-                COLORS.iter().map(|c| vec![*c; count]).collect()
+                // "Remove X +1/+1 counters from this creature: Add X mana of any one color.": every X the cost can
+                // pay now, fewest mana first, in each color.
+                let counts: Vec<usize> = match x_most {
+                    Some(most) => (1..=usize::try_from(most).unwrap_or(0).min(VARIANTS)).collect(),
+                    None => vec![
+                        scope
+                            .amount(count)
+                            .ok()
+                            .and_then(|count| usize::try_from(count).ok())
+                            .unwrap_or(0),
+                    ],
+                };
+                counts
+                    .into_iter()
+                    .flat_map(|count| COLORS.iter().map(move |c| vec![*c; count]))
+                    .collect()
             }
             ManaProduced::Instead { .. } => Vec::new(),
             ManaProduced::OneOf(types) => types.iter().map(|t| vec![*t]).collect(),
