@@ -144,8 +144,8 @@ pub use counting_cards::counting_fuzz_setup;
 pub use curse_cards::curse_fuzz_setup;
 pub use day_night_cards::{DAY_NIGHT_CARDS, day_maker, day_night_fuzz_setup, mass_landing};
 pub use decks::{
-    archon_fuzz_setup, fuzz_setup, keyword_fuzz_setup, library_fuzz_setup, ramp_fuzz_setup,
-    removal_fuzz_setup, spell_fuzz_setup, symbol_fuzz_setup, trigger_fuzz_setup,
+    archon_fuzz_setup, fuzz_setup, keyword_fuzz_setup, library_fuzz_setup, pick_fuzz_setup,
+    ramp_fuzz_setup, removal_fuzz_setup, spell_fuzz_setup, symbol_fuzz_setup, trigger_fuzz_setup,
 };
 pub use defining_cards::defining_fuzz_setup;
 pub use demonstrate_cards::demonstrate_fuzz_setup;

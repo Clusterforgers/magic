@@ -16,6 +16,7 @@ mod become_monarch;
 mod bolster;
 mod cast_from_zone;
 mod choose;
+mod choose_at_random;
 mod connive;
 mod continuous;
 mod copy_ability;
@@ -104,6 +105,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Reveal { .. } => reveal::run(cx, effect),
         Effect::Search { .. } => search::run(cx, effect),
         Effect::Choose { .. } => choose::run(cx, effect),
+        Effect::ChooseAtRandom { .. } => choose_at_random::run(cx, effect),
         Effect::Shuffle { .. } => shuffle::run(cx, effect),
         Effect::Move { .. } => move_to::run(cx, effect),
         Effect::Destroy { .. } => destroy::run(cx, effect),
@@ -185,7 +187,7 @@ mod tests {
     const EFFECTS: &str = r#"[
         {"Draw":{}}, {"Discard":{}}, {"Mill":{}}, {"Scry":{}}, {"LookAtTop":{"as":"top"}},
         {"Reveal":{"what":"This"}}, {"Search":{"filter":[],"as":"found"}},
-        {"Choose":{"from":"This","as":"chosen"}}, {"Shuffle":{}}, {"Move":{"what":"This","to":"Hand"}},
+        {"Choose":{"from":"This","as":"chosen"}}, {"ChooseAtRandom":{"from":"This","as":"picked"}}, {"Shuffle":{}}, {"Move":{"what":"This","to":"Hand"}},
         {"Destroy":{"what":"This"}}, {"Exile":{"what":"This"}}, {"Sacrifice":{"filter":[]}},
         {"Counter":{"what":"This"}}, {"DealDamage":{"to":"You","amount":1}}, {"GainLife":{"amount":1}},
         {"LoseLife":{"amount":1}}, {"AddMana":{"mana":{"Fixed":["Green"]}}},
@@ -262,6 +264,7 @@ mod tests {
         "Effect.Reveal",
         "Effect.Search",
         "Effect.Choose",
+        "Effect.ChooseAtRandom",
         "Effect.Shuffle",
         "Effect.Move",
         "Effect.Destroy",

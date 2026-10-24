@@ -44,6 +44,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { LibraryBottomed: { player: 0, cards: [1, 2], random: false } },
     'Ana puts 2 cards on the bottom of their library',
   ],
+  ChosenAtRandom: [{ ChosenAtRandom: { cards: [3] } }, 'Forest is picked at random'],
   Entered: [
     { Entered: { object: 3, tapped: true, controller: 1 } },
     "Forest enters tapped under Bo's control",

@@ -277,6 +277,18 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         rest_as: Option<String>,
     },
+    /// Cards of a public zone are picked at random, with the game's random source, and the pick is bound; fewer are
+    /// picked when the set holds fewer.
+    ChooseAtRandom {
+        /// The objects picked from.
+        from: Ref,
+        /// How many are picked.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+        /// The name the picked objects are bound to.
+        #[serde(rename = "as")]
+        bind: String,
+    },
     /// The player shuffles their library.
     Shuffle {
         /// Who shuffles.

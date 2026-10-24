@@ -239,6 +239,7 @@ const RUNS: &[&str] = &[
     "Effect.May",
     "Effect.Pay",
     "Effect.Choose",
+    "Effect.ChooseAtRandom",
     "Effect.Modal",
     "Keyword.Flash",
     "Keyword.Flying",
@@ -611,6 +612,7 @@ mod tests {
     #[case::commander_casts("Amount.CommanderCasts", true)]
     #[case::may("Effect.May", true)]
     #[case::choosing("Effect.Choose", true)]
+    #[case::choosing_at_random("Effect.ChooseAtRandom", true)]
     #[case::modes("Effect.Modal", true)]
     #[case::adding_mana("Effect.AddMana", true)]
     #[case::tapping_permanents("Effect.Tap", true)]

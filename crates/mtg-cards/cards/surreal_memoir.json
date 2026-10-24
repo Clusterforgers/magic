@@ -1,0 +1,29 @@
+{
+  "oracle_id": "fa482ded-b24c-4f9e-948e-d0620e907b8b",
+  "name": "Surreal Memoir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surreal Memoir",
+      "oracle_fingerprint": "c438deaf9c89dd7a0d8e69c4246c6fe9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": {
+                    "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, { "Type": "Instant" }]
+                  },
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+            ]
+          }
+        },
+        { "Keyword": "Rebound" }
+      ]
+    }
+  ]
+}

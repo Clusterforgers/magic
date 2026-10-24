@@ -5,7 +5,7 @@
 //! They are hints for a person choosing, not rules: a predicate with no short phrase is left out.
 
 use mtg_cards::effect::Effect;
-use mtg_cards::refs::{AbilityKind, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use mtg_cards::refs::{AbilityKind, Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::trigger::{Step, TriggerPattern};
 use mtg_cards::value::{Amount, CastWay, Cmp, Condition, DayNight, StatKind};
 use mtg_core::ids::PlayerId;
@@ -207,7 +207,10 @@ pub(crate) fn spec(spec: &TargetSpec) -> String {
             join(&format!("target {head}s"), &tail)
         }
     };
-    let (min, max) = (spec.bounds.min, &spec.bounds.max);
+    if spec.bounds == Bounds::exactly(&Amount::X) {
+        return format!("X {}", several(&head));
+    }
+    let (min, max) = (spec.bounds.fixed_min().unwrap_or(0), &spec.bounds.max);
     match max {
         Some(Amount::Fixed(1)) if min == 1 => one(&head),
         Some(Amount::Fixed(1)) => {

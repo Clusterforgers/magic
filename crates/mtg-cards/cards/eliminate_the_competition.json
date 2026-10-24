@@ -1,0 +1,30 @@
+{
+  "oracle_id": "26e549c0-a08b-475b-9138-6dde175cdf55",
+  "name": "Eliminate the Competition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eliminate the Competition",
+      "oracle_fingerprint": "f4168d234456d012d8a2ce564a56b351",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }], "count": "X" } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

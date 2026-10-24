@@ -12,6 +12,8 @@ effect ChangeZone Destination=Library => Effect.Move
 effect ChangeZone Destination=Graveyard => Effect.Move Effect.Destroy Effect.Sacrifice
 effect ChangeZone Origin=Library Hidden => Effect.Search
 effect ChangeZone Origin=Hand|Library Hidden Destination=Exile => Effect.Exile Effect.ExileHidden Effect.Search
+# The return of what an exile took ("until this leaves") is the duration of the exile or a delayed trigger.
+effect ChangeZone Origin=Exile Destination=Battlefield Defined=Remembered|DirectRemembered|ExiledWith => Effect.Move Effect.Exile Effect.ExileUntil Effect.DelayedTrigger
 effect ChangeZoneAll => Effect.Move Effect.Exile Effect.Sacrifice Effect.Destroy
 effect ChangeZoneAll Destination=Exile => Effect.Exile Effect.ExileUntil Effect.Move
 effect Dig => Effect.LookAtTop Effect.ExileTop Effect.Reveal
@@ -73,7 +75,7 @@ effect ExchangeControl => -
 effect Fight => Effect.Fight
 effect Counter => Effect.Counter
 effect SetState => Effect.Transform Effect.Flip
-effect Phases => -
+effect Phases => Effect.PhaseOut
 effect Goad => Effect.Goad
 effect BecomeMonarch => Effect.BecomeMonarch
 effect Proliferate => Effect.Proliferate
@@ -102,6 +104,8 @@ effect Seek => -
 
 # Continuous changes.
 effect Pump => Effect.Continuous
+# A pump of the player ("you gain protection from everything") is a rule about players.
+effect Pump Defined=You => Effect.Rule Effect.Continuous
 effect PumpAll => Effect.Continuous
 effect Animate => Effect.Continuous Effect.BecomeCopy
 effect AnimateAll => Effect.Continuous
@@ -160,6 +164,7 @@ also effect CopyPermanent AddSubTypes => Mod.AddSubtype
 also effect CopyPermanent SetPower => Mod.SetPT
 also effect CopyPermanent SetColor => Mod.SetColors
 also effect Pump KW => Mod.AddKeyword
+also effect Pump KW Defined=You => Effect.Rule Mod.AddKeyword
 also effect Pump NumAtt => Mod.ModifyPT
 also effect Pump NumDef => Mod.ModifyPT
 also effect PumpAll KW => Mod.AddKeyword
@@ -175,7 +180,11 @@ also effect Animate RemoveCreatureTypes => Mod.SetCreatureTypes Mod.SetTypes
 also effect Protection Gains => Mod.AddKeyword Mod.AddProtectionFromChosenColor
 also effect ChangeZone Shuffle => Effect.Shuffle Effect.Move
 also effect ChangeZone GainControl => Mod.SetController
+# A card that enters under another player's control is the `under` of the move.
+also effect ChangeZone GainControl Destination=Battlefield => Effect.Move Effect.Search
 also effect ChangeZoneAll Shuffle => Effect.Shuffle Effect.Move
+# Cards that go to exile are not shuffled into a library.
+also effect ChangeZoneAll Shuffle Destination=Exile => Effect.Exile Effect.Move
 also effect Draw Optional => Effect.May
 also effect Discard Optional => Effect.May
 also effect Mill Optional => Effect.May
@@ -187,6 +196,9 @@ also effect Destroy Optional => Effect.May
 also effect PutCounter Optional => Effect.May
 also effect Untap Optional => Effect.May
 also trigger * OptionalDecider => Effect.May Effect.Pay Effect.CastFromZone
+also trigger BecomesCrewed FirstTimeCrewed => Trigger.Nth
+also trigger CounterTypeAddedAll FirstTime => Trigger.Nth
+also trigger TokenCreatedOnce OnlyFirst => Trigger.Nth
 
 # --- Triggers: Mode$ ---
 trigger ChangesZone => Trigger.ZoneChange
@@ -231,7 +243,7 @@ trigger Transformed => -
 trigger AbilityCast => -
 trigger Exploited => -
 trigger Scry => -
-trigger Surveil => -
+trigger Surveil => Trigger.Surveilled
 trigger RolledDie => -
 trigger RolledDieOnce => -
 trigger FlippedCoin => -
@@ -268,6 +280,7 @@ static Panharmonicon => Rule.TriggerAgain
 static CastWithFlash => Rule.MayCast Keyword.Flash
 static OptionalCost => Ability.AdditionalCost
 static AlternativeCost => -
+static AlternativeCost Cost=0 => Ability.FreeCast
 static CantBeCast => -
 static CantBeActivated => -
 static CanAttackDefender => -
@@ -324,11 +337,13 @@ replacement Counter => Rule.CantBeCountered
 replacement Destroy => ReplaceWhen.Destroyed
 replacement Untap => -
 replacement BeginPhase => -
+replacement BeginPhase Phase=Draw => Rule.SkipDrawStep
 replacement GameLoss => -
 replacement GameWin => -
 replacement ProduceMana => -
 replacement TurnFaceUp => -
 replacement LifeReduced => -
+replacement LifeReduced Layer=CantHappen => Rule.NoLifeLossFromDamage
 replacement LoseMana => -
 replacement BeginTurn => -
 replacement Transform => -
@@ -342,7 +357,8 @@ keyword ETBReplacement => ReplaceWhen.Enters ReplaceBy.Choose ReplaceBy.WithCoun
 keyword Chapter => Trigger.Chapter
 keyword TypeCycling => Keyword.Typecycling
 keyword AlternateAdditionalCost => Ability.AdditionalCost
-keyword Class => -
+keyword Class => Effect.BecomeLevel
+keyword Partner => Keyword.Partner Keyword.PartnerWith Keyword.PartnerGroup
 keyword Strive => Ability.CostModifier
 keyword StickerSheet => -
 keyword MayEffectFromOpeningHand => -
@@ -368,6 +384,7 @@ cost SubCounter => Cost.RemoveCounters
 cost PayEnergy => Cost.PayEnergy
 cost Return => Cost.ReturnToHand
 cost AddCounter => -
+cost Draw => Effect.May Effect.Pay
 cost untapYouCtrl => -
 cost Mill => -
 cost Reveal => -
@@ -405,6 +422,10 @@ effect ChooseSector => -
 effect AssignGroup => -
 effect PermanentCreature => -
 trigger SpellAbilityCast => Trigger.SpellCast
+trigger BecomeMonarch => Trigger.BecomesMonarch
+trigger BecomeMonarch TriggerZones=Command => Trigger.BecomesMonarch Effect.Exile
+trigger BecomesCrewed => Trigger.BecomesCrewed
+trigger CounterTypeAddedAll => Trigger.CountersPut Trigger.Batch
 trigger BecomesTargetOnce => Trigger.BecomesTarget
 trigger Connives => Trigger.Connived
 trigger Explores => Trigger.Explored
@@ -418,12 +439,12 @@ trigger SpellCopy => -
 trigger ChangesController => -
 trigger DungeonCompleted => -
 trigger TokenCreated => -
-trigger TokenCreatedOnce => -
+trigger TokenCreatedOnce => Trigger.Batch Trigger.Nth
 trigger Vote => -
 static CantAttack,CantBlock => Mod.CantAttack Mod.CantBlock
 static CantAttack,CantBlock,CantBeActivated => Mod.CantAttack Mod.CantBlock
 static BlockRestrict => -
 static CountersRemain => -
 static NumLoyaltyAct => -
-static CantChangeLife => -
+static CantChangeLife => Rule.LifeTotalCantChange
 replacement Attached => -

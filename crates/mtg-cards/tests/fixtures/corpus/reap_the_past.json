@@ -1,0 +1,25 @@
+{
+  "id": "c0b7e59a-5302-4a73-816a-b759adff3ee6",
+  "oracle_id": "27bc0219-3fc1-4c84-92cc-da2273a5fd16",
+  "name": "Reap the Past",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mh1",
+  "collector_number": "211",
+  "rarity": "rare",
+  "released_at": "2019-06-14",
+  "digital": false,
+  "mana_cost": "{X}{R}{G}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Return X cards at random from your graveyard to your hand. Exile Reap the Past.",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": []
+}
