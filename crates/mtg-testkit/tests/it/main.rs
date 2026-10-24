@@ -353,6 +353,7 @@ mod symbol_fuzz;
 mod tail_alone;
 mod tail_fuzz;
 mod tail_pairs;
+mod tail_third;
 mod tap_effects;
 mod token_binds;
 mod token_costs;
