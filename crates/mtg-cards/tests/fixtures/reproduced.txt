@@ -74,6 +74,7 @@ Aven Initiate
 Aven Riftwatcher
 Aven Squire
 Aven Tactician
+Avenging Huntbonder
 Azorius Chancery
 Azorius Herald
 Azorius Signet
@@ -893,6 +894,7 @@ Sanctum Weaver
 Sandcrafter Mage
 Sandsteppe Mastodon
 Sandsteppe Scavenger
+Sangromancer
 Sanguine Bond
 Sanitarium Skeleton
 Sarah Jane Smith
