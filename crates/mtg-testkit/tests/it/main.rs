@@ -339,6 +339,8 @@ mod storage_lands;
 mod surveil;
 mod suspend;
 mod symbol_fuzz;
+mod tail_alone;
+mod tail_fuzz;
 mod tap_effects;
 mod token_binds;
 mod token_costs;

@@ -337,6 +337,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Add",
     "ReplaceBy.Prevent",
     "ReplaceBy.PreventUpTo",
+    "ReplaceBy.PreventRemovingCounter",
     "ReplaceBy.MoveTo",
     "ReplaceBy.Tapped",
     "ReplaceBy.WithCounters",
@@ -535,6 +536,7 @@ mod tests {
     #[case::replacing_entering("ReplaceWhen.Enters", true)]
     #[case::multiplying("ReplaceBy.Multiply", true)]
     #[case::adding("ReplaceBy.Add", true)]
+    #[case::preventing_with_a_counter_removed("ReplaceBy.PreventRemovingCounter", true)]
     #[case::moving_instead("ReplaceBy.MoveTo", true)]
     #[case::entering_tapped("ReplaceBy.Tapped", true)]
     #[case::entering_with_counters("ReplaceBy.WithCounters", true)]

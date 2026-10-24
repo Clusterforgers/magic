@@ -534,6 +534,9 @@ pub enum ReplaceBy {
     PreventUpTo(u32),
     /// These effects happen instead.
     Instead(Vec<Effect>),
+    /// All of the damage is prevented and the permanent with the ability loses one counter of this kind, if it has one
+    /// ("prevent that damage. Remove a +1/+1 counter from this creature").
+    PreventRemovingCounter(CounterKind),
     /// A draw is skipped: the player mills this many cards and returns the card with the ability from its graveyard to
     /// their hand (dredge, CR 702.52a).
     Dredge(u32),

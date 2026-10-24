@@ -2505,6 +2505,9 @@ impl<'a> Walker<'a> {
             ReplaceBy::PreventUpTo(_) if !matches!(when, ReplaceWhen::Damage { .. }) => {
                 self.problem("only damage is prevented in part");
             }
+            ReplaceBy::PreventRemovingCounter(_) if !matches!(when, ReplaceWhen::Damage { .. }) => {
+                self.problem("only damage is prevented with a counter removed");
+            }
             ReplaceBy::Instead(effects) => {
                 if effects.is_empty() {
                     self.problem("needs at least one effect");

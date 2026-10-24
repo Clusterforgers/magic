@@ -38,6 +38,7 @@ Angel of Flight Alabaster
 Angel of Invention
 Angel of Sanctions
 Angel of Vitality
+Angelic Accord
 Angelic Ascension
 Angelic Field Marshal
 Ant-Man, Elusive Avenger
@@ -64,6 +65,7 @@ Atmospheric Greenhouse
 Atzocan Seer
 Augury Raven
 Aura Gnarlid
+Auriok Champion
 Authority of the Consuls
 Auton Soldier
 Avatar of Woe
@@ -473,17 +475,20 @@ Greater Good
 Greater Mossdog
 Green Goblin, Back for More
 Grenzo's Cutthroat
+Griffin Aerie
 Grim Flayer
 Grim Haruspex
 Grim Initiate
 Grisly Salvage
 Growing Ranks
 Gruul Cluestone
+Guard Gomazoa
 Guardian Augmenter
 Guardian Gladewalker
 Guidelight Matrix
 Guiding Voice
 Gurmag Angler
+Gwaihir, Greatest of the Eagles
 Hackrobat
 Hada Spy Patrol
 Hagra Mauling // Hagra Broodpit
@@ -539,6 +544,7 @@ Imperious Oligarch
 Imposter Mech
 Impostor of the Sixth Pride
 Impulsive Pilferer
+Indulging Patrician
 Inferno Project
 Inkwell Leviathan
 Insatiable Hemophage
@@ -567,6 +573,7 @@ Jungle Lion
 Jyoti, Moag Ancient
 Kalemne's Captain
 Kalonian Hydra
+Kang, Temporal Tyrant
 Karametra's Favor
 Karametra, God of Harvests
 Karn's Bastion
@@ -587,6 +594,7 @@ Knights of the Black Rose
 Kolaghan Skirmisher
 Kolvori, God of Kinship // The Ringhart Crest
 Kongming, "Sleeping Dragon"
+Kor Firewalker
 Korozda Guildmage
 Korozda Monitor
 Kozilek's Translator
@@ -654,6 +662,7 @@ Master of Etherium
 Master of Pearls
 Master of the Pearl Trident
 Mastery of the Unseen
+Maul of the Skyclaves
 Maulfist Squad
 Mausoleum Harpy
 Maverick Thopterist
@@ -762,6 +771,8 @@ Pentad Prism
 Persist
 Pestilent Syphoner
 Phantasmal Image
+Phantom Nantuko
+Phantom Nishoba
 Photon, Mighty Marvel
 Phyrexian Prowler
 Phyrexian Soulgorger
@@ -833,9 +844,11 @@ Relentless Advance
 Relentless Skaabs
 Relic of Sauron
 Remorseful Cleric
+Renewed Faith
 Replication Technique
 Rescue Skiff
 Reshape
+Resplendent Angel
 Revel Ruiner
 Reverberate
 Reverse Engineer
@@ -896,6 +909,7 @@ Second Harvest
 Seedglaive Mentor
 Seeds of Renewal
 Seekers' Squire
+Seraph of the Sword
 Serpent-Blade Assailant
 Serra Angel
 Serra Avatar
@@ -954,6 +968,7 @@ Songs of the Damned
 Soul Shepherd
 Soul of New Phyrexia
 Soul of Zendikar
+Soul's Attendant
 Souldrinker
 Soultether Golem
 Space Marine Devastator
@@ -1052,6 +1067,7 @@ Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Birth of Meletis
 The Celestus
+The Gaffer
 The Modern Age // Vector Glider
 The Mycosynth Gardens
 The Seriema
@@ -1110,6 +1126,7 @@ Tyrant's Familiar
 Uktabi Efreet
 Ulamog's Crusher
 Ultramarines Honour Guard
+Ultron, Unlimited
 Umbral Collar Zealot
 Unbreakable Bond
 Unclaimed Territory
@@ -1123,6 +1140,7 @@ Uthros Research Craft
 Uthros Scanship
 Utopia Sprawl
 Valiant Rescuer
+Valkyrie Harbinger
 Valley Rannet
 Vampire Cutthroat
 Vanguard Seraph
@@ -1136,6 +1154,7 @@ Vengeful Vampire
 Vestige of Emrakul
 Vesuva
 Veteran's Powerblade
+Vibranium Strike Gauntlets
 Village Rites
 Viridian Corrupter
 Visionary Augmenter

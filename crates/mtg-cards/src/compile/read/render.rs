@@ -296,6 +296,13 @@ pub fn variants(ability: &Ability) -> Vec<String> {
                 .collect();
             texts.extend(pronouns);
         }
+        // A creature that is a person on its card (Kang, Ultron) connives as "he".
+        let people: Vec<String> = texts
+            .iter()
+            .filter(|text| text.contains(", ~ connives"))
+            .map(|text| text.replacen(", ~ connives", ", he connives", 1))
+            .collect();
+        texts.extend(people);
     }
     pronouns::of_the_card(ability, &mut texts);
     pronouns::you_after_the_attached(ability, &mut texts);
@@ -1747,6 +1754,23 @@ impl Writer<'_> {
         })
     }
 
+    /// The sentence of a "you may" over the effects of one choice.
+    fn may_effects(&mut self, effects: &[Effect]) -> Option<String> {
+        Some(match effects {
+            [inner] if is_imperative(inner) => format!("you may {}", self.effect(inner)?),
+            [
+                inner @ (Effect::GainLife { who: Ref::You, .. }
+                | Effect::LoseLife { who: Ref::You, .. }),
+            ] => {
+                format!("you may {}", self.predicate(inner, false)?)
+            }
+            [choose @ Effect::Choose { .. }, moved @ Effect::Move { .. }] => {
+                format!("you may {}", put_onto::put_onto_text(choose, moved)?)
+            }
+            _ => self.may_have(effects).or_else(|| self.may_do(effects))?,
+        })
+    }
+
     /// An effect as a sentence without its first capital and its period.
     fn effect(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
@@ -1829,13 +1853,7 @@ impl Writer<'_> {
             Effect::May {
                 who: Ref::You,
                 effects,
-            } => match effects.as_slice() {
-                [inner] if is_imperative(inner) => format!("you may {}", self.effect(inner)?),
-                [choose @ Effect::Choose { .. }, moved @ Effect::Move { .. }] => {
-                    format!("you may {}", put_onto::put_onto_text(choose, moved)?)
-                }
-                _ => self.may_have(effects).or_else(|| self.may_do(effects))?,
-            },
+            } => self.may_effects(effects)?,
             Effect::Pay {
                 who,
                 cost,
@@ -2022,6 +2040,10 @@ impl Writer<'_> {
             Effect::Connive {
                 what: what @ (Ref::This | Ref::Target(0)),
             } => format!("{} connives", self.object(what)?),
+            Effect::Attach {
+                what: Ref::This,
+                to: to @ Ref::Target(0),
+            } => format!("attach ~ to {}", self.object(to)?),
             Effect::Transform { what } => format!("transform {}", self.object(what)?),
             Effect::Flip { what } => format!("flip {}", self.object(what)?),
             Effect::If {

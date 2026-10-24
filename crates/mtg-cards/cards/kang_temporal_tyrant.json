@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b43350a8-fc4d-41ed-becd-f0277512bb5f",
+  "name": "Kang, Temporal Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kang, Temporal Tyrant",
+      "oracle_fingerprint": "2a2d80836555e581895448fa3038fdf2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "Connive": { "what": "This" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
