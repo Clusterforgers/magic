@@ -24,6 +24,13 @@
   "keywords": [
     "Flying"
   ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
   "power": "4",
   "toughness": "4"
 }

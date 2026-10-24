@@ -15,5 +15,12 @@
   "oracle_text": "{T}: Add one mana of any color.\n{3}, {T}: Put X +1/+1 counters on target creature, where X is the number of Bobbleheads you control. Activate only as a sorcery.",
   "colors": [],
   "color_identity": [],
-  "keywords": []
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
 }

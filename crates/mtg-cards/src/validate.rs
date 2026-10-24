@@ -197,6 +197,8 @@ struct Walker<'a> {
     path: Vec<String>,
     scope: Scope,
     has_kicker: bool,
+    /// The costs of the card's Kicker keywords: what `KickedWith` may name.
+    kickers: Vec<Cost>,
     /// Whether the card prints an optional additional cost ("As an additional cost to cast this spell, you may ...").
     has_additional_cost: bool,
     /// Whether the cost being walked takes objects the effects can name (`Ref::Paid`): a part that picks, or a required additional cost that does.
@@ -220,6 +222,8 @@ struct Walker<'a> {
     spell_targets: Vec<TargetSpec>,
     x_uses: Vec<(usize, String)>,
     names: Vec<(usize, String, String)>,
+    /// The keywords the abilities grant: `AddKeyword`, the abilities of a token, the abilities a backup gives.
+    granted: Vec<Keyword>,
 }
 
 impl<'a> Walker<'a> {
@@ -231,6 +235,7 @@ impl<'a> Walker<'a> {
             path: Vec::new(),
             scope: Scope::default(),
             has_kicker: false,
+            kickers: Vec::new(),
             has_additional_cost: false,
             pays_objects: false,
             counts_x: false,
@@ -245,6 +250,7 @@ impl<'a> Walker<'a> {
             spell_targets: Vec::new(),
             x_uses: Vec::new(),
             names: Vec::new(),
+            granted: Vec::new(),
         }
     }
 
@@ -593,6 +599,12 @@ impl<'a> Walker<'a> {
                     self.problem("`Kicked` needs a Kicker or Multikicker keyword on the card");
                 }
             }
+            Condition::KickedWith(cost) => {
+                self.uses("Condition", "KickedWith");
+                if !self.kickers.contains(cost) {
+                    self.problem("`KickedWith` needs a Kicker keyword with that cost on the card");
+                }
+            }
             Condition::AdditionalCostPaid => {
                 self.uses("Condition", "AdditionalCostPaid");
                 if !self.has_additional_cost {
@@ -832,7 +844,10 @@ impl<'a> Walker<'a> {
         // The abilities that follow the keyword are what the target gains.
         for ability in abilities {
             match ability {
-                Ability::Keyword(granted) => self.keyword(granted),
+                Ability::Keyword(granted) => {
+                    self.granted.push(granted.clone());
+                    self.keyword(granted);
+                }
                 other => self.granted(other),
             }
         }
@@ -845,6 +860,14 @@ impl<'a> Walker<'a> {
                 "a companion condition reads the card alone, not `{pred}`"
             ));
         }
+    }
+
+    /// A keyword ability: the card's own, or the one a token or a granted ability has, which grants that keyword.
+    fn keyword_ability(&mut self, keyword: &Keyword) {
+        if self.nested > 0 {
+            self.granted.push(keyword.clone());
+        }
+        self.keyword(keyword);
     }
 
     fn keyword(&mut self, keyword: &Keyword) {
@@ -962,6 +985,9 @@ impl<'a> Walker<'a> {
                 self.at("toughness", |w| w.amount(toughness));
             }
             Modification::AddKeyword(keyword) | Modification::RemoveKeyword(keyword) => {
+                if matches!(modification, Modification::AddKeyword(_)) {
+                    self.granted.push(keyword.clone());
+                }
                 self.keyword(keyword);
             }
             Modification::SetController(who) => self.reference(who, Kind::Player),
@@ -2196,7 +2222,7 @@ impl<'a> Walker<'a> {
                     w.at("condition", |w| w.condition(condition));
                 }
             }
-            Ability::Keyword(keyword) => w.keyword(keyword),
+            Ability::Keyword(keyword) => w.keyword_ability(keyword),
             Ability::Manual { reason, span } => {
                 if reason.trim().is_empty() {
                     w.problem("a clause left to the table needs a reason");
@@ -2591,6 +2617,13 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
     walker.has_kicker = card
         .abilities()
         .any(|(_, a)| matches!(a, Ability::Keyword(k) if k.is_kicker()));
+    walker.kickers = card
+        .abilities()
+        .filter_map(|(_, a)| match a {
+            Ability::Keyword(Keyword::Kicker(cost)) => Some(cost.clone()),
+            _ => None,
+        })
+        .collect();
     walker.has_additional_cost = card.abilities().any(|(_, a)| match a {
         Ability::AdditionalCost { required, .. } => !required,
         Ability::Keyword(keyword) => keyword.has_additional_cost(),
@@ -2670,7 +2703,7 @@ pub(crate) fn check_printed(
     tokens: &BTreeSet<String>,
 ) -> Vec<Problem> {
     let checked = walk(card, tokens);
-    let (x_uses, names) = (checked.x_uses, checked.names);
+    let (x_uses, names, granted) = (checked.x_uses, checked.names, checked.granted);
     let mut walker = Walker::new(tokens);
     if card.oracle_id != printed.oracle_id {
         walker.at("oracle_id", |w| {
@@ -2703,7 +2736,7 @@ pub(crate) fn check_printed(
     }
     if live {
         for keyword in &printed.keywords {
-            if Keyword::is_known_name(keyword) && !has_keyword(card, printed, keyword) {
+            if Keyword::is_known_name(keyword) && !has_keyword(card, printed, keyword, &granted) {
                 walker.at("faces", |w| {
                     w.problem(format!(
                         "the imported card has the keyword `{keyword}` but no face has it"
@@ -2727,43 +2760,42 @@ pub(crate) fn check_printed(
     walker.problems
 }
 
-/// Whether some face has the keyword as an ability, or a `Manual` clause names it in that face's
-/// printed text (a granted keyword, a typecycling form).
-fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str) -> bool {
-    card.abilities().any(|(face, ability)| match ability {
-        Ability::Keyword(k) => {
-            k.name().eq_ignore_ascii_case(keyword)
-                // Scryfall lists `Partner` as well for a "Partner with" card and a "Partner—text" card (CR 702.124).
-                || (matches!(k, Keyword::PartnerWith(_) | Keyword::PartnerGroup(_))
-                    && Keyword::Partner.name().eq_ignore_ascii_case(keyword))
-                // Scryfall lists `Enchant` for an Aura that enchants a player as it does for any other.
-                || (matches!(k, Keyword::EnchantPlayer { .. })
-                    && "Enchant".eq_ignore_ascii_case(keyword))
-                // Scryfall lists `Equip` for an Equipment that equips only some creatures as for any other.
-                || (matches!(k, Keyword::EquipTo { .. })
-                    && Keyword::Equip(Cost::default()).name().eq_ignore_ascii_case(keyword))
-                // Scryfall lists `Cycling` as well for a typecycling card (CR 702.29).
-                || (matches!(k, Keyword::Typecycling { .. })
-                    && Keyword::Cycling(Cost::default()).name().eq_ignore_ascii_case(keyword))
-        }
-        // A keyword the card gives itself, as a level up creature does under a level.
-        Ability::Static {
-            affected: Ref::This,
-            mods,
-            ..
-        } => mods.iter().any(|modification| {
-            matches!(modification, Modification::AddKeyword(k) if k.name().eq_ignore_ascii_case(keyword))
-        }),
-        Ability::Manual { span, .. } => printed
-            .faces
-            .get(face)
-            .and_then(|shown| span.slice(&shown.oracle_text))
-            .is_some_and(|clause| {
-                names_keyword(clause, keyword)
-                    || (keyword.eq_ignore_ascii_case("Typecycling") && names_typecycling(clause))
-            }),
-        _ => false,
-    })
+/// Whether some face has the keyword as an ability, an ability grants it (`granted`: the
+/// `AddKeyword`s and the keyword abilities of tokens and of granted abilities, which Scryfall lists
+/// for "Enchanted creature has flying" and "a token with flying" as for a keyword line), or a
+/// `Manual` clause names it in that face's printed text (a typecycling or landwalk form).
+fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str, granted: &[Keyword]) -> bool {
+    granted.iter().any(|k| lists(k, keyword))
+        || card.abilities().any(|(face, ability)| match ability {
+            Ability::Keyword(k) => lists(k, keyword),
+            Ability::Manual { span, .. } => printed
+                .faces
+                .get(face)
+                .and_then(|shown| span.slice(&shown.oracle_text))
+                .is_some_and(|clause| {
+                    names_keyword(clause, keyword)
+                        || (keyword.eq_ignore_ascii_case("Typecycling")
+                            && names_typecycling(clause))
+                        || (keyword.eq_ignore_ascii_case("Landwalk") && names_landwalk(clause))
+                }),
+            _ => false,
+        })
+}
+
+/// Whether Scryfall lists `keyword` (any case) for a card that has the keyword `k`.
+fn lists(k: &Keyword, keyword: &str) -> bool {
+    k.name().eq_ignore_ascii_case(keyword)
+        // Scryfall lists `Partner` as well for a "Partner with" card and a "Partner—text" card (CR 702.124).
+        || (matches!(k, Keyword::PartnerWith(_) | Keyword::PartnerGroup(_))
+            && Keyword::Partner.name().eq_ignore_ascii_case(keyword))
+        // Scryfall lists `Enchant` for an Aura that enchants a player as it does for any other.
+        || (matches!(k, Keyword::EnchantPlayer { .. }) && "Enchant".eq_ignore_ascii_case(keyword))
+        // Scryfall lists `Equip` for an Equipment that equips only some creatures as for any other.
+        || (matches!(k, Keyword::EquipTo { .. })
+            && Keyword::Equip(Cost::default()).name().eq_ignore_ascii_case(keyword))
+        // Scryfall lists `Cycling` as well for a typecycling card (CR 702.29).
+        || (matches!(k, Keyword::Typecycling { .. })
+            && Keyword::Cycling(Cost::default()).name().eq_ignore_ascii_case(keyword))
 }
 
 /// Whether the clause holds the keyword (any case) at the end of a word: no letter or digit
@@ -2784,6 +2816,15 @@ fn names_typecycling(clause: &str) -> bool {
     clause.split(|c: char| !c.is_alphabetic()).any(|word| {
         let word = word.to_ascii_lowercase();
         word.len() > "cycling".len() && word.ends_with("cycling")
+    })
+}
+
+/// Whether the clause has a word that is a landwalk: some letters before `walk` (`Mountainwalk`), which
+/// Scryfall lists as `Landwalk` (CR 702.14).
+fn names_landwalk(clause: &str) -> bool {
+    clause.split(|c: char| !c.is_alphabetic()).any(|word| {
+        let word = word.to_ascii_lowercase();
+        word.len() > "walk".len() && word.ends_with("walk")
     })
 }
 
@@ -3492,6 +3533,10 @@ mod tests {
         r#"{"Spell":{"effects":[{"If":{"condition":"Kicked","then":[{"Draw":{}}]}}]}}"#,
         &["Ability.Spell", "Condition.Kicked", "Effect.Draw", "Effect.If"]
     )]
+    #[case::being_kicked_with_one_cost(
+        r#"{"Spell":{"effects":[{"If":{"condition":{"KickedWith":"{W}"},"then":[{"Draw":{}}]}}]}}"#,
+        &["Ability.Spell", "Condition.KickedWith", "Effect.Draw", "Effect.If"]
+    )]
     #[case::the_number_of_kicks(
         r#"{"Spell":{"effects":[{"Draw":{"count":"Kicks"}}]}}"#,
         &["Ability.Spell", "Amount.Kicks", "Effect.Draw"]
@@ -3581,6 +3626,10 @@ mod tests {
     #[case::kicked_without_kicker(
         r#"{"Spell":{"effects":[{"If":{"condition":"Kicked","then":[{"Draw":{}}]}}]}}"#,
         "`Kicked` needs a Kicker"
+    )]
+    #[case::kicked_with_a_cost_no_kicker_has(
+        r#"{"Spell":{"effects":[{"If":{"condition":{"KickedWith":"{W}"},"then":[{"Draw":{}}]}}]}}"#,
+        "`KickedWith` needs a Kicker keyword with that cost"
     )]
     #[case::kicks_without_kicker(
         r#"{"Spell":{"effects":[{"Draw":{"count":"Kicks"}}]}}"#,
@@ -3684,7 +3733,7 @@ mod tests {
 
 #[cfg(test)]
 mod printed_keywords {
-    //! Goal: a Scryfall keyword counts as present when an ability has it (a "Partner with" card has `Partner` too) or a `Manual` clause names it at the end of a word in its face's printed text, and as missing otherwise.
+    //! Goal: a Scryfall keyword counts as present when an ability has it (a "Partner with" card has `Partner` too), an ability grants it (a static `AddKeyword`, a token's keyword) or a `Manual` clause names it at the end of a word in its face's printed text (`Mountainwalk` names `Landwalk`), and as missing otherwise.
     use super::*;
     use rstest::rstest;
 
@@ -3874,6 +3923,74 @@ mod printed_keywords {
         &["Partner with"],
         &["Partner with"]
     )]
+    #[case::a_grant_to_the_enchanted_creature_has_the_keyword(
+        "Full",
+        &[(
+            AURA,
+            "Enchant creature\nEnchanted creature has flying, first strike, and vigilance.",
+            r#"{"Keyword":{"Enchant":[{"Type":"Creature"}]}},{"Static":{"affected":"Attached","mods":[{"AddKeyword":"Flying"},{"AddKeyword":"FirstStrike"},{"AddKeyword":"Vigilance"}]}}"#
+        )],
+        &["Enchant", "First strike"],
+        &[]
+    )]
+    #[case::a_grant_to_other_creatures_has_the_keyword(
+        "Full",
+        &[(
+            BIRD,
+            "Other Soldiers you control have trample.",
+            r#"{"Static":{"affected":{"Each":[{"Subtype":"Soldier"},"Other",{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Trample"}]}}"#
+        )],
+        &["Trample"],
+        &[]
+    )]
+    #[case::a_token_with_the_keyword_has_it(
+        "Full",
+        &[(
+            "Sorcery",
+            "Create a 1/1 white Spirit creature token with flying.",
+            r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Spirit","colors":["White"],"types":["Creature"],"subtypes":["Spirit"],"power":1,"toughness":1,"abilities":[{"Keyword":"Flying"}]}}}}]}}"#
+        )],
+        &["Flying"],
+        &[]
+    )]
+    #[case::a_grant_of_another_keyword_is_no_grant_of_this_one(
+        "Full",
+        &[(
+            AURA,
+            "Enchant creature\nEnchanted creature has reach.",
+            r#"{"Keyword":{"Enchant":[{"Type":"Creature"}]}},{"Static":{"affected":"Attached","mods":[{"AddKeyword":"Reach"}]}}"#
+        )],
+        &["Enchant", "Flying"],
+        &["Flying"]
+    )]
+    #[case::taking_a_keyword_away_is_no_grant(
+        "Full",
+        &[(
+            AURA,
+            "Enchant creature\nEnchanted creature loses flying.",
+            r#"{"Keyword":{"Enchant":[{"Type":"Creature"}]}},{"Static":{"affected":"Attached","mods":[{"RemoveKeyword":"Flying"}]}}"#
+        )],
+        &["Enchant", "Flying"],
+        &["Flying"]
+    )]
+    #[case::a_card_without_a_grant_or_a_clause_lacks_the_keyword(
+        "Full",
+        &[(BIRD, "Haste", r#"{"Keyword":"Haste"}"#)],
+        &["Haste", "Trample"],
+        &["Trample"]
+    )]
+    #[case::mountainwalk_names_landwalk(
+        "Partial",
+        &[(BIRD, "Flying, mountainwalk", r#"{"Manual":{"reason":"x","span":{"start":0,"end":20}}}"#)],
+        &["Landwalk"],
+        &[]
+    )]
+    #[case::a_walk_without_letters_before_it_is_no_landwalk(
+        "Partial",
+        &[(BIRD, "Take a walk", r#"{"Manual":{"reason":"x","span":{"start":0,"end":11}}}"#)],
+        &["Landwalk"],
+        &["Landwalk"]
+    )]
     #[case::flashback_is_not_flash(
         "Partial",
         &[(BIRD, "Flashback {2}{R}", r#"{"Manual":{"reason":"x","span":{"start":0,"end":16}}}"#)],
@@ -3916,7 +4033,7 @@ mod printed_keywords {
         &["Enchant"],
         &["Enchant"]
     )]
-    fn a_keyword_is_present_when_an_ability_has_it_or_a_clause_names_it(
+    fn a_keyword_is_present_when_an_ability_has_or_grants_it_or_a_clause_names_it(
         #[case] status: &str,
         #[case] faces: &[(&str, &str, &str)],
         #[case] keywords: &[&str],

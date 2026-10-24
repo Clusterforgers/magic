@@ -24,5 +24,12 @@
   "keywords": [
     "Lifelink",
     "Deathtouch"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
   ]
 }

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "c5f52c7f-5dba-4d4c-8acc-068732964031",
+  "name": "Monstrosity of the Lake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Monstrosity of the Lake",
+      "oracle_fingerprint": "3d16218a238b5b6f9650bde168e31cc8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{5}",
+                  "paid": [
+                    {
+                      "Tap": {
+                        "what": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                        }
+                      }
+                    },
+                    {
+                      "PutCounters": {
+                        "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                        "counter": { "Other": "stun" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Typecycling": { "find": [{ "Subtype": "Island" }], "cost": "{2}" } } }
+      ]
+    }
+  ]
+}

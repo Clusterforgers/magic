@@ -67,6 +67,14 @@ fn makers() -> Vec<Arc<CardDefinition>> {
             r#"[{"CreateToken":{"token":{"Sized":{"size":{"Tallied":{"who":"EachPlayer","what":"CreaturesDied"}},"token":{"name":"Ghoul","types":["Creature"],"subtypes":["Ghoul"]}}}}}]"#,
         ),
         maker(
+            "Warboss",
+            r#"[{"CreateToken":{"token":{"Custom":{"name":"Goblin","colors":["Red"],"types":["Creature"],"subtypes":["Goblin"],"power":1,"toughness":1}},"as":"tokens"}},{"Continuous":{"affected":{"Bound":"tokens"},"mods":[{"AddKeyword":"Haste"}],"duration":"UntilEndOfTurn"}},{"Rule":{"rule":{"MustAttack":{"Bound":"tokens"}},"duration":"UntilEndOfTurn"}}]"#,
+        ),
+        maker(
+            "Kennel",
+            r#"[{"CreateToken":{"token":{"Custom":{"name":"Hound","colors":["Red"],"types":["Creature"],"subtypes":["Hound"],"power":1,"toughness":1}},"count":2,"as":"tokens"}},{"PutCounters":{"on":{"Bound":"tokens"},"counter":"+1/+1","count":1}},{"Continuous":{"affected":{"Bound":"tokens"},"mods":[{"AddKeyword":"Haste"}],"duration":"UntilEndOfTurn"}}]"#,
+        ),
+        maker(
             "Grower",
             &format!(
                 r#"[{{"CreateToken":{{"token":{SNAKE},"as":"made"}}}},{{"PutCounters":{{"on":{{"Bound":"made"}},"counter":"+1/+1","count":2}}}}]"#
@@ -124,6 +132,8 @@ fn bot_games_with_every_token_shape_finish_and_keep_every_invariant(#[case] seat
         "Eldrazi Spawn",
         "Horror",
         "Ghoul",
+        "Goblin",
+        "Hound",
     ] {
         assert!(seen.contains_key(name), "{name} was made: {seen:?}");
     }

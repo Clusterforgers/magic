@@ -18,8 +18,10 @@ use crate::value::Amount;
 pub fn cost(r: &mut Reader<'_>) -> Option<Cost> {
     // An X in a cost is the one the player announces as they activate the ability: "Pay X life", "Sacrifice X creatures".
     let before = std::mem::replace(&mut r.x_free, true);
+    let unpaid = std::mem::replace(&mut r.x_unpaid, !before);
     let items = items(r);
     r.x_free = before;
+    r.x_unpaid = unpaid;
     items.map(Cost)
 }
 
@@ -54,6 +56,10 @@ fn and_sacrifice(r: &mut Reader<'_>) -> Option<CostItem> {
 /// One part of a cost.
 fn item(r: &mut Reader<'_>) -> Option<CostItem> {
     if let Some(mana) = r.attempt(mana) {
+        // An `{X}` paid here is the number announced, which the stat of a later part may name.
+        if mana.has_x() {
+            r.x_unpaid = false;
+        }
         return Some(CostItem::Mana(mana));
     }
     if let Some(symbol) = r.attempt(|r| r.symbol().filter(|symbol| matches!(*symbol, "T" | "Q"))) {

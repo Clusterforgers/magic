@@ -59,13 +59,20 @@ pub struct Compiled {
 /// The status is `Full` when every clause is read, `Partial` when some are, and `Manual` (no
 /// abilities) when none is. Every face of a `Full` or `Partial` card carries the fingerprint of its text.
 pub fn compile(printed: &PrintedCard) -> Compiled {
+    compile_among(printed, None)
+}
+
+/// Compiles an imported card among the cards `known` (their lowercase names) when the library is at hand: a "Partner
+/// with" that names no known card has no partner to find, so its line is left to the table. Without `known` every
+/// name stands.
+pub fn compile_among(printed: &PrintedCard, known: Option<&BTreeSet<String>>) -> Compiled {
     let mut listed = Vec::new();
     let mut faces = Vec::with_capacity(printed.faces.len());
     for (index, shown) in printed.faces.iter().enumerate() {
         faces.push(Face {
             name: shown.name.clone(),
             oracle_fingerprint: oracle_fingerprint(&shown.oracle_text),
-            abilities: read_face(index, shown, &mut listed),
+            abilities: read_face(index, shown, known, &mut listed),
         });
     }
     let card = build(printed, faces, &mut listed);
@@ -94,7 +101,13 @@ struct Pending {
 ///
 /// The spell clauses of an instant or sorcery are one `Spell` ability (the engine resolves the
 /// first one of a face): read together when every one of them reads, left to the table otherwise.
-fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec<Ability> {
+fn read_face(
+    index: usize,
+    shown: &PrintedFace,
+    known: Option<&BTreeSet<String>>,
+    listed: &mut Vec<Clause>,
+) -> Vec<Ability> {
+    let partners = Partners::of(shown, known);
     let text = normalize::normalize(&shown.oracle_text, &own_names(shown));
     let (spell, aura) = (is_spell(shown), is_aura(shown));
     let x_free = shown.mana_cost.contains("{X}") || shown.oracle_text.lines().any(counts_x);
@@ -113,8 +126,13 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
             && span
                 .slice(&shown.oracle_text)
                 .is_some_and(normalize::reminder_mentions_counter);
-        let (ability, more) =
-            read_clause(&clause_text, kind, (aura, reminds_counter), x_free, &own);
+        let (ability, more) = read_clause(
+            &clause_text,
+            kind,
+            (aura, reminds_counter),
+            x_free,
+            (&own, partners),
+        );
         pending.push(Pending {
             span,
             text: clause_text,
@@ -191,6 +209,39 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
     abilities
 }
 
+/// The names a "Partner with" line may use: the card's own and those of the cards the library holds.
+#[derive(Clone, Copy)]
+struct Partners<'a> {
+    own: &'a str,
+    known: Option<&'a BTreeSet<String>>,
+}
+
+impl<'a> Partners<'a> {
+    /// The names for a face among the cards `known`, when the library is at hand.
+    fn of(face: &'a PrintedFace, known: Option<&'a BTreeSet<String>>) -> Self {
+        Partners {
+            own: &face.name,
+            known,
+        }
+    }
+
+    /// The keyword as the card names its partner: "Partner with itself" names the card (a commander deck holds two of
+    /// it, CR 702.124), and a name no card bears ("Partner with Knight") is no partner, so its line is left to the table.
+    fn named(self, keyword: Keyword) -> Option<Keyword> {
+        let Keyword::PartnerWith(name) = keyword else {
+            return Some(keyword);
+        };
+        let name = if name.eq_ignore_ascii_case("itself") {
+            self.own.to_owned()
+        } else {
+            name
+        };
+        self.known
+            .is_none_or(|known| known.contains(&name.to_lowercase()))
+            .then_some(Keyword::PartnerWith(name))
+    }
+}
+
 /// The ability a clause reads into, and the abilities after it that the same clause reads into (a level block reads into
 /// one ability for each of its lines). `aura` says whether the face is an Aura and `reminds_counter` whether the
 /// reminder text of the clause explains a counter, which the reading would lose.
@@ -199,7 +250,7 @@ fn read_clause(
     kind: ClauseKind,
     (aura, reminds_counter): (bool, bool),
     x_free: bool,
-    own: &read::Own,
+    (own, partners): (&read::Own, Partners<'_>),
 ) -> (Option<Ability>, Vec<Ability>) {
     match kind {
         ClauseKind::Keyword => {
@@ -208,6 +259,7 @@ fn read_clause(
                 .unwrap_or_default()
                 .into_iter()
                 .filter(|keyword| aura || !matches!(keyword, Keyword::Enchant(_)))
+                .filter_map(|keyword| partners.named(keyword))
                 .map(Ability::Keyword);
             (keywords.next(), keywords.collect())
         }
@@ -349,13 +401,19 @@ fn requires_a_pick(line: &str) -> bool {
 }
 
 /// Whether a line of text is a required additional cost that counts the X the caster announces ("As an additional cost
-/// to cast this spell, pay X life."), which the effects of the spell read.
+/// to cast this spell, pay X life."), which the effects of the spell read. The X of "with mana value X" is no amount the
+/// caster announces: it names the mana value of the permanent the cost takes, which the table plays.
 fn counts_x(line: &str) -> bool {
     let line = line.to_lowercase();
     line.strip_prefix("as an additional cost to cast this spell, ")
         .is_some_and(|cost| {
+            let announced = ["mana value", "power", "toughness"]
+                .iter()
+                .fold(cost.to_owned(), |cost, stat| {
+                    cost.replace(&format!("{stat} x"), stat)
+                });
             !cost.starts_with("you may ")
-                && cost
+                && announced
                     .split(|c: char| !c.is_alphanumeric())
                     .any(|word| word == "x")
         })

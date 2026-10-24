@@ -207,6 +207,7 @@ Colossus Hammer
 Command Tower
 Commander's Insignia
 Commence the Endgame
+Conclave Sledge-Captain
 Conclave Tribunal
 Consider
 Consign // Oblivion
@@ -967,6 +968,7 @@ Stonewood Invocation
 Stonybrook Banneret
 Storm Fleet Swashbuckler
 Stormchaser's Talent
+Stormscape Battlemage
 Stormsurge Kraken
 Strangleroot Geist
 Stratus Dancer
@@ -1126,6 +1128,7 @@ Wargate
 Warmonger Hellkite
 Warrior's Sword
 Wasteland Raider
+Wastescape Battlemage
 Weaponcraft Enthusiast
 Wear // Tear
 Wedgelight Rammer

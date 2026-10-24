@@ -149,6 +149,11 @@ fn place(r: &mut Reader<'_>) -> Option<Ref> {
         Some(Ref::This)
     } else if r.it == Some(Ref::Triggering) && r.word("it") {
         Some(Ref::Triggering)
+    } else if matches!(r.it, Some(Ref::Bound(_)))
+        && (r.word("it") || r.words("that token") || r.words("each of them"))
+    {
+        // The tokens the sentence before created.
+        r.it.clone()
     } else if let Some(host) = attached(r) {
         Some(host)
     } else {
@@ -162,7 +167,7 @@ pub fn put(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("put")?;
     // "a number of +1/+1 counters on ~ equal to the number of creatures you control": the count follows the object.
     let equal = r.words("a number of");
-    let (counter, count) = if r.ability && r.words("that many") {
+    let (counter, count) = if r.ability && r.triggered && r.words("that many") {
         let counter = kind(r)?;
         r.need("counters")?;
         (counter, Amount::Triggering)
