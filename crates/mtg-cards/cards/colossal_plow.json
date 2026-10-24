@@ -1,0 +1,23 @@
+{
+  "oracle_id": "4cdf524a-1a99-4143-823b-d3c5c867c580",
+  "name": "Colossal Plow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Colossal Plow",
+      "oracle_fingerprint": "00ea8f863620179929bd56ed87a96680",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["White", "White", "White"] }, "lasts": "Turn" } },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 6 } }
+      ]
+    }
+  ]
+}

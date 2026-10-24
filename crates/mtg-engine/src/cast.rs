@@ -222,6 +222,7 @@ fn tap_events(player: PlayerId, option: &ManaOption) -> Vec<Event> {
         mana: option.produces,
         source: Some(option.source.object),
         only: option.only.clone(),
+        lasts: mtg_cards::spend::ManaLasts::Step,
     }));
     events
 }

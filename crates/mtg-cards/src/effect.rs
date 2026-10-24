@@ -8,7 +8,7 @@ use crate::card::TokenSpec;
 use crate::cost::Cost;
 use crate::modify::{CastPermission, Duration, GameRule, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, ZoneKind};
-use crate::spend::SpendOn;
+use crate::spend::{ManaLasts, SpendOn};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind, StatKind};
 
@@ -442,6 +442,9 @@ pub enum Effect {
         /// What the mana may be spent on, any one of these ("Spend this mana only to cast creature spells"); none means anything.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         only: Vec<SpendOn>,
+        /// How long the mana stays in the pool ("Until end of turn, you don't lose this mana as steps and phases end"); left out means until the step ends.
+        #[serde(default, skip_serializing_if = "ManaLasts::is_step")]
+        lasts: ManaLasts,
     },
     /// Puts counters on an object or player.
     PutCounters {

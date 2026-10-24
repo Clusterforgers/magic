@@ -263,6 +263,8 @@ mod pay_fuzz;
 mod pay_parts;
 mod pay_unless;
 mod payment_fuzz;
+mod persistent_mana;
+mod persistent_mana_fuzz;
 mod phasing;
 mod pick_fuzz;
 mod pipeline_log;

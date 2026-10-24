@@ -242,7 +242,7 @@ fn mana_left_in_the_pool_costs_life_when_the_step_ends(
         (n, Some(at)) => {
             // The pool empties, the rule is named, and the normal life loss follows.
             assert!(
-                matches!(events[at - 1], Event::ManaPoolEmptied { player } if player == pid(0))
+                matches!(events[at - 1], Event::ManaPoolEmptied { player, .. } if player == pid(0))
             );
             assert!(
                 matches!(events[at + 1], Event::LifeLost { player, amount } if player == pid(0) && i64::from(amount) == i64::from(n))

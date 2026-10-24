@@ -434,6 +434,7 @@ pub(crate) fn activation(
         mana,
         source: Some(id),
         only: option.only.clone(),
+        lasts: mtg_cards::spend::ManaLasts::Step,
     }));
     if let Some(shape) = shape {
         events.extend(run_inline(state, player, object, shape.then)?);
@@ -618,7 +619,8 @@ mod tests {
                     player: ME,
                     mana,
                     source: Some(id),
-                    only: Vec::new()
+                    only: Vec::new(),
+                    lasts: mtg_cards::spend::ManaLasts::Step,
                 },
             ]
         );
@@ -655,7 +657,8 @@ mod tests {
                     player: ME,
                     mana: ManaType::Green,
                     source: Some(id),
-                    only: Vec::new()
+                    only: Vec::new(),
+                    lasts: mtg_cards::spend::ManaLasts::Step,
                 },
             ]
         );

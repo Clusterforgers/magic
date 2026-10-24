@@ -7,7 +7,7 @@ use mtg_core::card::{CardType, Subtype, Supertype};
 use super::selectors::{card_type, plural_subtype, subtype, type_name};
 use super::subtypes::plural_subtype as plural_name;
 use super::tokens::Reader;
-use crate::spend::{SpendFact, SpendFilter, SpendOn};
+use crate::spend::{ManaLasts, SpendFact, SpendFilter, SpendOn};
 
 const LEAD: &str = "spend this mana only";
 
@@ -229,6 +229,27 @@ pub(super) fn only(r: &mut Reader<'_>) -> Option<Vec<SpendOn>> {
         }
         // An "or" left over is a use no reader knows.
         (r.peek_word() != Some("or")).then_some(uses)
+    })
+}
+
+/// The sentence "Until end of turn, you don't lose this mana as steps and phases end." (or "Until end of combat, ...
+/// as steps end.") read after the period that ends the sentence adding the mana.
+pub(super) fn lasts(r: &mut Reader<'_>) -> Option<ManaLasts> {
+    r.attempt(|r| {
+        r.punct('.').then_some(())?;
+        r.need("until end of")?;
+        let lasts = if r.word("turn") {
+            ManaLasts::Turn
+        } else {
+            r.need("combat")?;
+            ManaLasts::Combat
+        };
+        r.punct(',').then_some(())?;
+        r.need("you don't lose this mana as steps")?;
+        if lasts == ManaLasts::Turn {
+            r.need("and phases")?;
+        }
+        r.word("end").then_some(lasts)
     })
 }
 

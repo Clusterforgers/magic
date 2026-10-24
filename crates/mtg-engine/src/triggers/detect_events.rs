@@ -657,6 +657,7 @@ fn tap_for_mana(state: &GameState, land: &str, player: PlayerId, mana: usize) ->
         mana: ManaType::Green,
         source: Some(object),
         only: Vec::new(),
+        lasts: mtg_cards::spend::ManaLasts::Step,
     }));
     events
 }

@@ -304,6 +304,7 @@ pub fn plain_mana_ability(ability: &Ability) -> Option<ManaType> {
             mana: Produce::Fixed(mana),
             times,
             only,
+            lasts,
         },
     ] = effects.as_slice()
     else {
@@ -312,7 +313,7 @@ pub fn plain_mana_ability(ability: &Ability) -> Option<ManaType> {
     let [one] = mana.as_slice() else {
         return None;
     };
-    (targets.is_empty() && times.is_one() && only.is_empty()).then_some(*one)
+    (targets.is_empty() && times.is_one() && only.is_empty() && lasts.is_step()).then_some(*one)
 }
 
 /// What a mana ability the engine runs without the stack adds each time.
@@ -602,12 +603,16 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             mana,
             times,
             only,
+            lasts,
         },
         then @ ..,
     ] = effects.as_slice()
     else {
         return None;
     };
+    if !lasts.is_step() {
+        return None;
+    }
     let produces = ManaProduced::of(mana)?;
     // A combination keeps one source for each way to pick it, so it is added once and there are not too many ways.
     if let ManaProduced::AnyCombination { count, among } = &produces {

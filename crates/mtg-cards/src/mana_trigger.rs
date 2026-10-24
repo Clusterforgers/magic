@@ -45,6 +45,7 @@ pub fn mana_trigger(ability: &Ability) -> Option<ManaTrigger<'_>> {
             mana,
             times,
             only,
+            lasts,
         },
     ] = effects.as_slice()
     else {
@@ -64,6 +65,7 @@ pub fn mana_trigger(ability: &Ability) -> Option<ManaTrigger<'_>> {
     (targets.is_empty()
         && times.is_one()
         && only.is_empty()
+        && lasts.is_step()
         && adds
         && (taps_for_you || taps_for_them))
         .then_some(ManaTrigger {

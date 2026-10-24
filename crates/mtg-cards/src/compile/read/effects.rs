@@ -32,6 +32,7 @@ use crate::effect::{Destination, Effect, Order, Place, Produce};
 use crate::mana::ManaCostX;
 use crate::modify::{Duration, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, Targetable, ZoneKind};
+use crate::spend::ManaLasts;
 use crate::value::{Amount, Condition, CounterKind};
 
 /// A template: the effects of the sentence it reads, or `None` when the sentence is not its shape.
@@ -1175,6 +1176,15 @@ fn could_produce(r: &mut Reader<'_>) -> Option<Produce> {
     })
 }
 
+/// "and you gain 3 life", after the mana a sentence adds.
+fn gain_life(r: &mut Reader<'_>) -> Option<Effect> {
+    r.need("and you gain")?;
+    Some(Effect::GainLife {
+        who: Ref::You,
+        amount: life(r)?,
+    })
+}
+
 /// "Add {G}{G}.", "Add {W} or {U}.", "Add one mana of any color.", "Add one mana of the chosen color.", "Add one
 /// mana of any color in your commander's color identity." or "Add one mana of any color that a land an opponent
 /// controls could produce."
@@ -1197,13 +1207,27 @@ fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         Some(each) => each,
         None => Amount::one(),
     };
-    let only = spend::only(r).unwrap_or_default();
-    Some(vec![Effect::AddMana {
+    // "Add {W}{W}{W} and you gain 3 life.": the life is gained as the mana is added.
+    let gained = r.attempt(gain_life);
+    let mut effects = vec![Effect::AddMana {
         who: Ref::You,
         mana,
         times,
-        only,
-    }])
+        only: Vec::new(),
+        lasts: ManaLasts::Step,
+    }];
+    effects.extend(gained);
+    // "..., where X is the total power of attacking creatures. Spend this mana only to cast spells.": the where clause
+    // comes before the sentences about the mana.
+    if r.where_x {
+        effects = where_x::bind(r, &effects)?;
+        r.where_x = false;
+    }
+    if let Some(Effect::AddMana { only, lasts, .. }) = effects.first_mut() {
+        *only = spend::only(r).unwrap_or_default();
+        *lasts = spend::lasts(r).unwrap_or_default();
+    }
+    Some(effects)
 }
 
 /// ". If you control a creature with power 4 or greater, add {G}{G} instead": the condition and the mana in place of
@@ -1228,6 +1252,14 @@ fn produced(r: &mut Reader<'_>, counted: &mut Option<Amount>) -> Option<Produce>
             produced
         } else if r.words("one mana of any color") {
             Produce::AnyColor(Amount::one())
+        } else if r.words("that much mana of any one color") {
+            Produce::AnyColor(Amount::Triggering)
+        } else if let Some(mana) = r.attempt(|r| {
+            r.need("that much")?;
+            mana_type(r.symbol()?)
+        }) {
+            *counted = Some(Amount::Triggering);
+            Produce::Fixed(vec![mana])
         } else if let Some(combination) = r.attempt(combination) {
             combination
         } else if let Some(count) = r.attempt(several_of_one_color) {

@@ -1,5 +1,6 @@
 //! Turn-based actions and step transitions (CR 500-514).
 
+use mtg_cards::spend::ManaLasts;
 use mtg_core::ids::PlayerId;
 
 use crate::characteristics::controller_of;
@@ -228,27 +229,33 @@ fn next_step(state: &GameState, step: Step) -> Step {
 /// Empties mana pools (CR 500.4), closes combat if leaving it, and starts the next step.
 pub(crate) fn leave_step(state: &GameState) -> Vec<Event> {
     let step = state.turn().step();
-    let mut events = pool_emptying(state);
+    let next = next_step(state, step);
+    // Mana kept through the steps of a phase goes as the phase ends.
+    let through = if step.phase() == next.phase() {
+        ManaLasts::Step
+    } else {
+        ManaLasts::Combat
+    };
+    let mut events = pool_emptying(state, through);
     if step == Step::EndCombat {
         events.push(Event::CombatEnded);
     }
-    events.push(Event::StepBegan {
-        step: next_step(state, step),
-    });
+    events.push(Event::StepBegan { step: next });
     events
 }
 
-/// Empties every mana pool; under the house rule of mana burn, a player in the game loses 1 life for each mana that
-/// was left, restricted mana included.
-fn pool_emptying(state: &GameState) -> Vec<Event> {
+/// Empties every mana pool of the mana that lasts no longer than `through`; under the house rule of mana burn, a player
+/// in the game loses 1 life for each mana that was left, restricted mana included.
+fn pool_emptying(state: &GameState, through: ManaLasts) -> Vec<Event> {
     let burn = state.ruleset().mana_burn();
     state
         .players()
         .iter()
-        .filter(|p| !p.mana().is_empty())
+        .filter(|p| p.mana().emptying(through) > 0)
         .flat_map(|p| {
-            let (player, amount) = (p.id(), p.mana().total());
-            let mut events = vec![Event::ManaPoolEmptied { player }];
+            let (player, amount) = (p.id(), p.mana().emptying(through));
+            let through = p.mana().least_through(through);
+            let mut events = vec![Event::ManaPoolEmptied { player, through }];
             if burn && p.is_in_game() && !crate::rules::life_total_cant_change(state, player) {
                 events.push(Event::ManaBurned { player, amount });
                 events.push(Event::LifeLost { player, amount });
@@ -317,7 +324,7 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
             })
             .map(|o| Event::CopyEnded { object: o.id() }),
     );
-    events.extend(pool_emptying(state));
+    events.extend(pool_emptying(state, ManaLasts::Turn));
     if turn_limit_reached(state) {
         // The turn is wound down first, so the result reads the life totals after the mana burn.
         return if events.is_empty() {

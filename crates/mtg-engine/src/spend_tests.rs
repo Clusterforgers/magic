@@ -49,7 +49,7 @@ fn pool(plain: &[ManaType], restricted: &[(ManaType, Vec<SpendOn>)]) -> ManaPool
         pool.add(*mana);
     }
     for (mana, only) in restricted {
-        pool.add_restricted(*mana, only.clone());
+        pool.add_restricted(*mana, only.clone(), mtg_cards::spend::ManaLasts::Step);
     }
     pool
 }
@@ -101,6 +101,7 @@ fn restricted_mana_in_the_pool_pays_only_what_it_allows(
     let unit = Restricted {
         mana: ManaType::Red,
         only,
+        lasts: mtg_cards::spend::ManaLasts::Step,
     };
     let by_hand = Payment {
         restricted: vec![unit.clone()],
@@ -212,6 +213,7 @@ fn a_cost_with_x_is_paid_with_mana_restricted_to_costs_with_x() {
         restricted: vec![Restricted {
             mana: ManaType::Colorless,
             only: vec![SpendOn::CostWithX],
+            lasts: mtg_cards::spend::ManaLasts::Step,
         }],
         ..Payment::default()
     };
@@ -307,7 +309,11 @@ fn world((plain, restricted, taps, cost_text, spend): &Case) -> World {
         parts.push((Part::Plain(at), TYPES[*mana]));
     }
     for (at, (mana, only)) in restricted.iter().enumerate() {
-        held.add_restricted(TYPES[*mana], restrictions[*only].clone());
+        held.add_restricted(
+            TYPES[*mana],
+            restrictions[*only].clone(),
+            mtg_cards::spend::ManaLasts::Step,
+        );
         if spend.allows(&restrictions[*only]) {
             parts.push((Part::Restricted(at), TYPES[*mana]));
         }
@@ -345,6 +351,7 @@ fn payment_of(world: &World, case: &Case, chosen: &[&Part], life: u32) -> Paymen
                 payment.restricted.push(Restricted {
                     mana: TYPES[mana],
                     only: restrictions[only].clone(),
+                    lasts: mtg_cards::spend::ManaLasts::Step,
                 });
             }
             Part::Tap(at) => payment.taps.push(world.sources[*at].source),
@@ -500,6 +507,7 @@ fn a_payment_that_spends_restricted_mana_on_a_signets_cost_is_refused() {
         restricted: vec![Restricted {
             mana: ManaType::Green,
             only: only_for(CardType::Creature),
+            lasts: mtg_cards::spend::ManaLasts::Step,
         }],
         taps: vec![tap(1)],
         ..Payment::default()
