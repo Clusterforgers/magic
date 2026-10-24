@@ -241,6 +241,7 @@ mod number_of;
 mod paid_reads;
 mod pay;
 mod payments;
+mod per_opponent_writers;
 mod persistent_mana;
 mod player_keywords;
 mod prevention;
