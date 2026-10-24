@@ -19,7 +19,7 @@ impl Writer<'_> {
             return Some((vec![self.copy_token(created, true)?, delay], 2));
         }
         self.exile_and_return_later(effects)
-            .or_else(|| self.return_itself_later(effects))
+            .or_else(|| Writer::return_itself_later(effects))
             .or_else(|| self.exile_chosen_from_graveyard(effects))
     }
 

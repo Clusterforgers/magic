@@ -261,6 +261,7 @@ mod offered_helpers;
 mod optional_triggers;
 mod owner_left;
 mod paid_reads;
+mod pair_fuzz;
 mod part_fuzz;
 mod partner_with;
 mod pay_fuzz;

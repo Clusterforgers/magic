@@ -70,10 +70,7 @@ impl Writer<'_> {
 
     /// The card of the ability chosen and the delayed trigger that returns it to its owner's hand, as one sentence, and
     /// the number of effects it covers: "return ~ to its owner's hand at the beginning of the next end step".
-    pub(super) fn return_itself_later(
-        &mut self,
-        effects: &[Effect],
-    ) -> Option<(Vec<String>, usize)> {
+    pub(super) fn return_itself_later(effects: &[Effect]) -> Option<(Vec<String>, usize)> {
         let [
             Effect::Choose {
                 who: Ref::You,
