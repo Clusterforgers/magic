@@ -66,6 +66,25 @@ fn a_permanent_becomes_a_copy_with_no_end(#[case] text: &str, #[case] json: &str
 }
 
 #[rstest]
+#[case::the_card_without_an_end(
+    "~ becomes a copy of target creature.",
+    ClauseKind::Spell,
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"BecomeCopy":{"what":"This","of":{"Target":0},"duration":"Forever"}}]}}"#
+)]
+#[case::an_attacker_with_an_exception(
+    "Whenever ~ attacks, it becomes a copy of another target creature until end of turn, except it has flying.",
+    ClauseKind::Triggered,
+    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":{"Object":[{"Type":"Creature"},"Other"]}}],"effects":[{"BecomeCopy":{"what":"This","of":{"Target":0},"except":[{"AddKeyword":"Flying"}],"duration":"UntilEndOfTurn"}}]}}"#
+)]
+fn a_permanent_becomes_a_copy_with_exceptions_or_no_end_after_a_trigger_or_alone(
+    #[case] text: &str,
+    #[case] kind: ClauseKind,
+    #[case] json: &str,
+) {
+    reads_as(text, kind, false, json);
+}
+
+#[rstest]
 #[case::clone_legion(
     "For each creature target player controls, create a token that's a copy of that creature.",
     r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"CreateToken":{"token":{"CopyOf":{"of":{"Each":[{"Type":"Creature"},{"ControlledBy":{"Target":0}}]}}}}}]}}"#
