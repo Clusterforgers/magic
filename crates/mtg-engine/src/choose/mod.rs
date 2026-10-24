@@ -44,7 +44,9 @@ pub(crate) use mode::{
     targets_before,
 };
 pub(crate) use option::{OptionChooser, Optioned, pick_options};
-pub(crate) use targets::{asks, legal_for, legal_from, options_for, reads_x, targets_met};
+pub(crate) use targets::{
+    asks, legal_for, legal_from, options_for, reads_x, targets_met, without_earlier,
+};
 pub(crate) use yes_no::{Said, pick_yes_no};
 
 pub(crate) use cards::answer as cards_answer;

@@ -206,6 +206,7 @@ mod event_batches;
 mod events;
 mod exile_bounce_shrink;
 mod exile_while;
+mod fights;
 mod flicker;
 mod for_each;
 mod goad;

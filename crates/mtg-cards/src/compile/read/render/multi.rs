@@ -12,6 +12,9 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
     if let Some(sentence) = super::each_target::text(targets, effects) {
         return vec![vec![sentence]];
     }
+    if let Some(options) = super::each_target::fight_among(targets, effects) {
+        return options;
+    }
     let Some(parts) = split(targets.len(), effects) else {
         return Vec::new();
     };
@@ -57,7 +60,7 @@ fn split(count: usize, effects: &[Effect]) -> Option<Vec<Vec<Effect>>> {
 }
 
 /// The numbers of the targets the data refers to.
-fn targets_used(value: &Value, found: &mut Vec<u8>) {
+pub(super) fn targets_used(value: &Value, found: &mut Vec<u8>) {
     match value {
         Value::Object(map) => {
             if let (1, Some(Value::Number(number))) = (map.len(), map.get("Target"))

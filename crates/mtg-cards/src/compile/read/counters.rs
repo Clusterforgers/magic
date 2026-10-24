@@ -187,6 +187,10 @@ pub fn put(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if on == Ref::This {
         r.it = Some(Ref::This);
     }
+    // The one target the counters went on is what the next sentence's "it" and "that creature" mean.
+    if on == Ref::Target(0) && r.targets.first().is_some_and(|spec| spec.bounds.is_one()) {
+        r.it = Some(on.clone());
+    }
     let count = if equal {
         defining::equal_to(r)?
     } else {

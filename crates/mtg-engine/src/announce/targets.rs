@@ -8,7 +8,7 @@ use mtg_cards::value::CastWay;
 
 use super::{Ctx, Next, What, Work};
 use crate::attach;
-use crate::choose::{Choices, announced_specs, asks, options_for};
+use crate::choose::{Choices, announced_specs, asks, options_for, without_earlier};
 use crate::decision::DecisionKind;
 
 /// The target specifications announced, in the order they are asked: an Aura spell's one, from its enchant ability
@@ -58,6 +58,13 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         ) else {
             return Some(Next::Drop);
         };
+        // "Another target" cannot name what an earlier specification took: the minimum may no longer be met.
+        without_earlier(&specs[index], &work.choices.targets, &mut options.legal);
+        let left = u32::try_from(options.legal.len()).unwrap_or(u32::MAX);
+        if left < options.min {
+            return Some(Next::Drop);
+        }
+        options.max = options.max.min(left);
         if !asks(&options) {
             work.choices.targets.push(Vec::new());
             continue;

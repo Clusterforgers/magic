@@ -1543,10 +1543,48 @@ pub fn each(r: &mut Reader<'_>) -> Option<Ref> {
     })
 }
 
+/// "other than the first target": what "another target" says after a first target (CR 115.3), which the engine keeps
+/// apart when the targets are chosen.
+pub fn other_than_first() -> Pred {
+    Pred::Not(Box::new(Pred::Is(Ref::Target(0))))
+}
+
+/// A "target ..." phrase after the first target of the clause: `Target(1)`. "Another" and "other" in it mean other than
+/// the first target, not other than the card.
+pub fn second_target(r: &mut Reader<'_>) -> Option<Ref> {
+    (r.targets.len() == 1).then_some(())?;
+    let mut spec = r.attempt(spec)?;
+    if let Targetable::Object(selector) = &mut spec.what {
+        for pred in &mut selector.0 {
+            if *pred == Pred::Other {
+                *pred = other_than_first();
+            }
+        }
+    }
+    r.targets.push(spec);
+    Some(Ref::Target(1))
+}
+
 /// A target as the card words it.
 pub fn spec_text(spec: &TargetSpec) -> Option<String> {
     if spec.divide.is_some() {
         return None;
+    }
+    // "Another target creature" after a first target: the same word as "other than the card".
+    let mut own;
+    let mut spec = spec;
+    if let Targetable::Object(selector) = &spec.what
+        && selector.0.contains(&other_than_first())
+    {
+        own = spec.clone();
+        if let Targetable::Object(chosen) = &mut own.what {
+            for pred in &mut chosen.0 {
+                if *pred == other_than_first() {
+                    *pred = Pred::Other;
+                }
+            }
+        }
+        spec = &own;
     }
     if spec.bounds.is_one() {
         return Some(match &spec.what {
