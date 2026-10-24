@@ -913,6 +913,14 @@ pub enum Effect {
         /// The same mode may be chosen more than once.
         #[serde(default, skip_serializing_if = "is_false")]
         repeat: bool,
+        /// The game picks the modes with its random source instead of the controller ('choose one at random'): the
+        /// pick is public. Needs a fixed number of modes and no repeats.
+        #[serde(default, skip_serializing_if = "is_false")]
+        at_random: bool,
+        /// A mode this ability chose earlier in the turn is not offered ('choose one that hasn't been chosen this
+        /// turn'); a spell has no earlier choice to keep.
+        #[serde(default, skip_serializing_if = "is_false")]
+        once_each_turn: bool,
         /// The modes, in printed order.
         modes: Vec<Mode>,
     },
