@@ -1,0 +1,21 @@
+{
+  "oracle_id": "7af23925-6d32-407d-9a99-a57b2ebb63ac",
+  "name": "Brimstone Vandal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brimstone Vandal",
+      "oracle_fingerprint": "4b6bf36053db5cd66fed96e55c58d714",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "DayIfNeither" } },
+        {
+          "Triggered": {
+            "when": { "DayNightChanges": {} },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

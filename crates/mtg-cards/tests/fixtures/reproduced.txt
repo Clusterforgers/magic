@@ -145,6 +145,7 @@ Breath of Life
 Briarblade Adept
 Bridled Bighorn
 Brightstone Ritual
+Brimstone Vandal
 Brion Stoutarm
 Bronzeplate Boar
 Broodbirth Viper
@@ -395,6 +396,7 @@ Fight Rigging
 Finch Formation
 Fire-Lit Thicket
 Firestorm Hellkite
+Firmament Sage
 Flame Jab
 Flamebraider
 Flatline
@@ -424,6 +426,7 @@ Gaea's Cradle
 Galadhrim Brigade
 Galvanizing Sawship
 Game-Trail Changeling
+Gavony Dawnguard
 Gemhide Sliver
 Gemrazer
 Generous Ent
@@ -683,6 +686,7 @@ Molten Slagheap
 Mona Lisa, Science Geek
 Monastery Swiftspear
 Monk's Fist
+Moonrager's Slash
 Morinfen
 Morsel Theft
 Mortality Spear
@@ -1011,6 +1015,7 @@ Summon: G.F. Ifrit
 Sundering Growth
 Sunhome Stalwart
 Sunken Ruins
+Sunrise Cavalier
 Suntouched Myr
 Supreme Verdict
 Surgehacker Mech
@@ -1046,6 +1051,7 @@ Teshar, Ancestor's Apostle
 Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Birth of Meletis
+The Celestus
 The Modern Age // Vector Glider
 The Mycosynth Gardens
 The Seriema

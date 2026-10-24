@@ -2041,6 +2041,13 @@ impl Writer<'_> {
                 let subject = self.player(manifest::who(effect)?)?;
                 manifest::text(effect, &subject)?
             }
+            Effect::BecomeDayNight { .. }
+            | Effect::If {
+                condition: Condition::IsDay | Condition::IsNight,
+                ..
+            } if super::day_night::effect_text(effect).is_some() => {
+                super::day_night::effect_text(effect)?
+            }
             Effect::BecomeMonarch { who } => format!(
                 "{} {} the monarch",
                 self.player(who)?,

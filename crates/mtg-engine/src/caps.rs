@@ -173,6 +173,12 @@ const RUNS: &[&str] = &[
     "Effect.BecomeMonarch",
     "Condition.Monarch",
     "Condition.MonarchAtTurnStart",
+    "Effect.BecomeDayNight",
+    "Condition.IsDay",
+    "Condition.IsNight",
+    "Condition.NeitherDayNorNight",
+    "Trigger.DayNightChanges",
+    "ReplaceBy.DayIfNeither",
     "Effect.CreateToken",
     "Effect.CreateToken.Copy",
     "Effect.CopySpell",
@@ -756,6 +762,12 @@ mod tests {
     #[case::the_monarch("Condition.Monarch", true)]
     #[case::the_monarch_as_the_turn_began("Condition.MonarchAtTurnStart", true)]
     #[case::the_citys_blessing("Condition.CitysBlessing", true)]
+    #[case::becoming_day_or_night("Effect.BecomeDayNight", true)]
+    #[case::it_is_day("Condition.IsDay", true)]
+    #[case::it_is_night("Condition.IsNight", true)]
+    #[case::it_is_neither_day_nor_night("Condition.NeitherDayNorNight", true)]
+    #[case::day_becoming_night_triggers("Trigger.DayNightChanges", true)]
+    #[case::becoming_day_as_it_enters("ReplaceBy.DayIfNeither", true)]
     #[case::unblockable_creatures("Mod.CantBeBlocked", true)]
     #[case::creatures_that_cant_be_blocked_by_some("Mod.CantBeBlockedBy", true)]
     #[case::creatures_that_can_block_only_some("Mod.CanBlockOnly", true)]

@@ -193,6 +193,7 @@ mod create;
 mod crew_events;
 mod crew_record;
 mod damage_wordings;
+mod day_night;
 mod defining;
 mod draws;
 mod each_pump;
