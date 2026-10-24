@@ -1,0 +1,25 @@
+{
+  "id": "cdde244a-d2f4-44b3-badd-d6142785e25c",
+  "oracle_id": "0b5f7a1b-fbb9-4659-8fcb-7822dc0263bc",
+  "name": "Curse of the Restless Dead",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mic",
+  "collector_number": "18",
+  "rarity": "rare",
+  "released_at": "2021-09-24",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura Curse",
+  "oracle_text": "Enchant player\nWhenever a land enchanted player controls enters, you create a 2/2 black Zombie creature token with decayed. (It can't block. When it attacks, sacrifice it at end of combat.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

@@ -86,6 +86,7 @@ const KEYWORDS: &[&str] = &[
     "flash",
     "shadow",
     "riot",
+    "decayed",
 ];
 
 /// How a phrase is introduced, which decides its number, how it joins card types and how it names
@@ -649,6 +650,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         }
         Pred::Not(inner) => match &**inner {
             Pred::HasKeyword(keyword) => format!("without {}", keyword_text(keyword)?),
+            Pred::CastFrom(ZoneKind::Hand) => "from anywhere other than your hand".to_owned(),
             _ => return None,
         },
         Pred::Compare { stat, op, to } => {
@@ -830,10 +832,12 @@ fn zone_suffix(r: &mut Reader<'_>, form: Form) -> Option<Vec<Pred>> {
     } else {
         ("from your hand", "from your graveyard")
     };
-    if r.words(hand) {
+    // A group of cards says where they are as the count does: "nonland cards in your hand".
+    let in_zone = form == Form::All;
+    if r.words(hand) || (in_zone && r.words("in your hand")) {
         return Some(vec![Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]);
     }
-    if r.words(graveyard) {
+    if r.words(graveyard) || (in_zone && r.words("in your graveyard")) {
         return Some(vec![Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)]);
     }
     if form == Form::Count {
@@ -1148,6 +1152,27 @@ fn subtype_list(pred: &Pred) -> Option<Vec<&str>> {
         .collect()
 }
 
+/// The names of an `AnyOf` of subtypes and card types together, in order: subtypes as they are written and card types in
+/// lowercase ("Plant", "Treefolk", "land").
+fn mixed_list(pred: &Pred) -> Option<Vec<String>> {
+    let Pred::AnyOf(list) = pred else {
+        return None;
+    };
+    let names: Vec<String> = list
+        .iter()
+        .map(|one| match one {
+            Pred::Subtype(Subtype(name)) => Some(name.clone()),
+            Pred::Type(card_type) => Some(type_name(*card_type).to_owned()),
+            _ => None,
+        })
+        .collect::<Option<_>>()?;
+    let subtypes = list
+        .iter()
+        .filter(|one| matches!(one, Pred::Subtype(_)))
+        .count();
+    (list.len() > 1 && subtypes > 0 && subtypes < list.len()).then_some(names)
+}
+
 /// The words of a phrase that names the permanent types: "permanent" (a spell) or "nonland permanent" (a card in a zone).
 fn permanent_words(permanent: bool, nonland: bool) -> Vec<String> {
     let mut words = Vec::new();
@@ -1208,6 +1233,8 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     let mut commander = false;
     let own_commander = names_own_commander(preds);
     let mut kinds: Vec<CardType> = Vec::new();
+    // Subtypes and card types in one list: "Plant, Treefolk, or land card".
+    let mut mixed: Option<Vec<String>> = None;
     let mut rest = preds.iter().peekable();
     while let Some(pred) = rest.next() {
         if let Some(place) = zone_words(pred, &mut rest, form) {
@@ -1222,6 +1249,10 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
                 return None;
             }
             subtypes = listed;
+        } else if let Some(listed) =
+            mixed_list(pred).filter(|_| mixed.is_none() && subtypes.is_empty() && !form.plural())
+        {
+            mixed = Some(listed);
         } else if let Some(word) = adjective_text(pred, form) {
             if *pred == Pred::Other {
                 adjectives.insert(0, word);
@@ -1243,9 +1274,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         } else if let Some(found) = type_preds(pred) {
             // A second card type before the noun qualifies it: "artifact creatures".
             if !types.is_empty() {
-                if !form.plural() || types.len() != 1 || found.len() != 1 {
-                    return None;
-                }
+                qualifies(&types, &found, form).then_some(())?;
                 kinds.append(&mut types);
             }
             types = found;
@@ -1282,6 +1311,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         let joiner = if nouns { form.connector() } else { "or" };
         words.push(subtype_words(&subtypes, nouns, joiner));
     }
+    words.extend(mixed.iter().map(|listed| list_text(listed, "or")));
     words.extend(type_phrase(
         &kinds,
         (permanent, nonland_permanent),
@@ -1291,14 +1321,51 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     ));
     // "Commander creatures you control": the commander is an adjective of the card types.
     let commander_noun = commander && names.is_empty();
-    let bare = names.is_empty() && subtypes.is_empty();
+    let bare = names.is_empty() && subtypes.is_empty() && mixed.is_none();
     words.extend(noun_word(
         [token, spell, card, commander_noun, bare],
         plural,
     ));
-    words.extend(suffixes);
+    words.extend(without_list(suffixes));
     words.extend(zone);
     Some(words.join(" "))
+}
+
+/// Whether the card type `found` qualifies the noun of the type before it: "artifact creatures", and in the singular
+/// only "artifact creature".
+fn qualifies(types: &[CardType], found: &[CardType], form: Form) -> bool {
+    let creature = found.contains(&CardType::Creature);
+    (form.plural() || creature) && types.len() == 1 && found.len() == 1
+}
+
+/// Several "without ..." suffixes are one: "creatures without flying or islandwalk".
+fn without_list(suffixes: Vec<String>) -> Vec<String> {
+    let lacks: Vec<&str> = suffixes
+        .iter()
+        .filter_map(|suffix| suffix.strip_prefix("without "))
+        .collect();
+    if lacks.len() < 2 {
+        return suffixes;
+    }
+    let joined = format!("without {}", join_or(&lacks));
+    let mut merged = Vec::with_capacity(suffixes.len());
+    for suffix in &suffixes {
+        if !suffix.starts_with("without ") {
+            merged.push(suffix.clone());
+        } else if !merged.contains(&joined) {
+            merged.push(joined.clone());
+        }
+    }
+    merged
+}
+
+/// "a or b", "a, b, or c".
+fn join_or(items: &[&str]) -> String {
+    match items {
+        [first, second] => format!("{first} or {second}"),
+        [rest @ .., last] => format!("{}, or {last}", rest.join(", ")),
+        [] => String::new(),
+    }
 }
 
 /// The predicates after `pred` that name the zone of a card, said as the card words it: "from your graveyard", "in your

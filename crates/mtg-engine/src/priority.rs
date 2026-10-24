@@ -266,7 +266,7 @@ pub(crate) fn other_abilities(state: &GameState, player: PlayerId) -> Vec<Abilit
     if state.possible.elsewhere {
         for object in own_cards_elsewhere(state, player) {
             let printed = working_here(object).map(|(address, rules)| (address, Arc::clone(rules)));
-            for (address, rules) in printed.chain(provided_here(object)) {
+            for (address, rules) in printed.chain(provided_here(state, object)) {
                 if can_activate(state, player, object, address, &rules) {
                     found.push(address);
                 }
@@ -609,6 +609,7 @@ mod tests {
                 mana: ManaType::Red,
                 source: None,
                 only: Vec::new(),
+                lasts: mtg_cards::spend::ManaLasts::Step,
             },
         )
         .unwrap();

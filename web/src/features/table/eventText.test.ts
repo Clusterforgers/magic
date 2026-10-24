@@ -78,6 +78,8 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   MonarchChanged: [{ MonarchChanged: { player: 1 } }, 'Bo becomes the monarch'],
   Proliferated: [{ Proliferated: { player: 1 } }, 'Bo proliferates'],
   Learned: [{ Learned: { player: 1 } }, 'Bo learns'],
+  DieRolled: [{ DieRolled: { player: 1, sides: 20, result: 14 } }, 'Bo rolls a d20: 14'],
+  CoinFlipped: [{ CoinFlipped: { player: 1, won: true } }, 'Bo wins a coin flip'],
   CitysBlessingGained: [{ CitysBlessingGained: { player: 1 } }, "Bo gets the city's blessing"],
   Explored: [{ Explored: { object: 3, player: 1 } }, 'Forest explores'],
   Connived: [{ Connived: { object: 3, player: 1 } }, 'Forest connives'],

@@ -62,7 +62,8 @@ pub(crate) const fn works_from(ability: &Ability) -> Option<ZoneKind> {
     }
 }
 
-/// Whether a card with this definition prints an ability that works from a zone other than the battlefield
+/// Whether a card with this definition prints an ability that works from a zone other than the battlefield, or a static
+/// ability that gives something to the cards of another zone ("Each creature card in your hand has cycling {1}{U}")
 /// (`GameState::possible`).
 pub(crate) fn definition_works_elsewhere(definition: &CardDefinition) -> bool {
     let elsewhere = |rules: &Ability| works_from(rules).is_some_and(|from| !from.is_battlefield());
@@ -71,18 +72,34 @@ pub(crate) fn definition_works_elsewhere(definition: &CardDefinition) -> bool {
             .adds_abilities(keyword)
             .iter()
             .any(elsewhere),
+        Ability::Static {
+            affected: mtg_cards::refs::Ref::Each(selector),
+            ..
+        } => elsewhere(rules) || !crate::layers::zone_named(selector).is_battlefield(),
         other => elsewhere(other),
     })
 }
 
 /// The abilities that the keywords printed on `object`, which is not on the battlefield, add and that work from the
 /// zone it is in (cycling works from a hand).
-pub(crate) fn provided_here(object: &GameObject) -> Vec<(AbilityRef, Arc<Ability>)> {
+pub(crate) fn provided_here(
+    state: &GameState,
+    object: &GameObject,
+) -> Vec<(AbilityRef, Arc<Ability>)> {
     if object.zone() == Zone::PhasedOut {
         return Vec::new();
     }
     let zone = zone_kind(object.zone());
-    printed_and_provided(object)
+    // A keyword a static ability gave to the card (a hand's cycling, a graveyard's flashback) adds its abilities too.
+    let abilities = match state.layers().get(object.id()) {
+        Some(held) => held
+            .abilities
+            .iter()
+            .map(|held| (held.address, Arc::clone(&held.body)))
+            .collect(),
+        None => printed_and_provided(object),
+    };
+    abilities
         .into_iter()
         .filter(|(address, rules)| {
             !matches!(address.source, AbilitySource::Printed) && works_from(rules) == Some(zone)
@@ -282,9 +299,7 @@ pub fn abilities_of(state: &GameState, id: ObjectId) -> Vec<(AbilityRef, Arc<Abi
     let Some(object) = holder(state, id) else {
         return Vec::new();
     };
-    if object.zone() == Zone::Battlefield
-        && let Some(held) = state.layers().get(object.id())
-    {
+    if let Some(held) = state.layers().get(object.id()) {
         return held
             .abilities
             .iter()

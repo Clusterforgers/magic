@@ -1,0 +1,25 @@
+{
+  "oracle_id": "90b540ab-b05a-4d29-b896-7ff5da0b101d",
+  "name": "Exterminate!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exterminate!",
+      "oracle_fingerprint": "ffaf6dd01a66b1077ca948e427c6dfb8",
+      "abilities": [
+        {
+          "Keyword": { "Replicate": [{ "TapPermanents": { "filter": [{ "Subtype": "Dalek" }] } }] }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "LoseLife": { "who": { "ControllerOf": { "Target": 0 } }, "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -41,7 +41,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 22] = [
+const TEMPLATES: [Template; 23] = [
     entering,
     entering_tapped_if,
     group_enters_tapped,
@@ -56,6 +56,7 @@ const TEMPLATES: [Template; 22] = [
     cannot,
     cost_modifier,
     super::spell_keywords::ability,
+    super::card_grants::ability,
     modifies,
     defining::ability,
     prevention::static_rule,
@@ -1022,6 +1023,13 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             from: ZoneKind::Battlefield,
         } if spells.first() == Some(&Pred::Spell) => super::spell_keywords::texts(affected, mods),
         Ability::Static {
+            affected: affected @ Ref::Each(Selector(cards)),
+            mods,
+            condition: None,
+            defining: false,
+            from: ZoneKind::Battlefield,
+        } if super::card_grants::names_cards(cards) => super::card_grants::texts(affected, mods),
+        Ability::Static {
             affected,
             mods,
             condition,
@@ -1123,15 +1131,25 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
         (ReplaceBy::PayLifeOrTapped(life), None) => vec![format!(
             "As ~ enters, you may pay {life} life. If you don't, it enters tapped"
         )],
-        (ReplaceBy::AsCopy { of, except }, None) => copies::enters_texts(of, except),
+        (
+            ReplaceBy::AsCopy {
+                of,
+                except,
+                tapped,
+                until_end_of_turn,
+            },
+            None,
+        ) => copies::enters_texts(of, except, *tapped, *until_end_of_turn),
         _ => Vec::new(),
     }
 }
 
 /// What holds for a permanent not to enter tapped, as `holds` reads it: one thing, or several joined by "or".
 pub(super) fn holds_texts(condition: &Condition) -> Vec<String> {
-    let Condition::Any(list) = condition else {
-        return control_texts(condition);
+    let (list, joiner) = match condition {
+        Condition::Any(list) => (list, " or "),
+        Condition::All(list) => (list, " and "),
+        _ => return control_texts(condition),
     };
     list.iter().fold(vec![String::new()], |written, item| {
         let choices = control_texts(item);
@@ -1141,8 +1159,12 @@ pub(super) fn holds_texts(condition: &Condition) -> Vec<String> {
                 choices.iter().map(move |choice| {
                     if start.is_empty() {
                         choice.clone()
+                    } else if joiner == " and " {
+                        // "you control an Urza's Mine and an Urza's Power-Plant": the verb is said once.
+                        let rest = choice.strip_prefix("you control ").unwrap_or(choice);
+                        format!("{start}{joiner}{rest}")
                     } else {
-                        format!("{start} or {choice}")
+                        format!("{start}{joiner}{choice}")
                     }
                 })
             })

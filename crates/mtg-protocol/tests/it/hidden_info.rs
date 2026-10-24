@@ -28,6 +28,8 @@ use serde_json::Value;
 const SCALAR_KEYS: &[&str] = &[
     "PayLife",
     "counts",
+    "combat_end",
+    "turn_end",
     "life",
     "life_after",
     "count",
@@ -124,7 +126,7 @@ pub(crate) fn hidden_across(
 }
 
 /// Describes every place `value` mentions one of the hidden objects.
-fn leaks(value: &Value, hidden: &BTreeMap<ObjectId, String>) -> Vec<String> {
+pub(crate) fn leaks(value: &Value, hidden: &BTreeMap<ObjectId, String>) -> Vec<String> {
     fn walk(value: &Value, key: &str, hidden: &BTreeMap<ObjectId, String>, out: &mut Vec<String>) {
         match value {
             Value::String(text) => {
@@ -168,7 +170,7 @@ fn leaks(value: &Value, hidden: &BTreeMap<ObjectId, String>) -> Vec<String> {
 }
 
 /// The parts of a batch that can mention an object, named so a failure says where the leak is.
-fn batch_parts(batch: &EventBatch) -> [(&'static str, Value); 4] {
+pub(crate) fn batch_parts(batch: &EventBatch) -> [(&'static str, Value); 4] {
     [
         ("events", serde_json::to_value(&batch.events).unwrap()),
         ("table", serde_json::to_value(&batch.table).unwrap()),
@@ -696,7 +698,7 @@ fn a_card_discarded_or_exiled_to_pay_a_cost_reaches_every_seat_and_no_hidden_obj
 }
 
 /// The order of triggers that go on the stack is a list of positions among them, not of objects.
-fn without_trigger_orders(events: Value) -> Value {
+pub(crate) fn without_trigger_orders(events: Value) -> Value {
     match events {
         Value::Array(items) => Value::Array(
             items

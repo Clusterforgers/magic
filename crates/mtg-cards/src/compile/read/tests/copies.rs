@@ -264,7 +264,7 @@ fn near_misses_of_a_token_copy_stay_unread(#[case] text: &str) {
 #[case::target("You may have this creature enter as a copy of target creature.")]
 #[case::without_may("This creature enters as a copy of any creature on the battlefield.")]
 #[case::another_zone(
-    "You may have this creature enter as a copy of any creature card in a graveyard."
+    "You may have this creature enter as a copy of any creature card in your graveyard."
 )]
 #[case::no_exception_after_the_comma(
     "You may have this creature enter as a copy of any creature on the battlefield,"

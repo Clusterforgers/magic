@@ -1,0 +1,23 @@
+{
+  "oracle_id": "4957c166-9734-4ba0-a4b9-2a248c0ff38f",
+  "name": "Avenging Huntbonder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avenging Huntbonder",
+      "oracle_fingerprint": "bb5fa901272086067e7ee6d330b48777",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking", "Other"] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "double strike" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

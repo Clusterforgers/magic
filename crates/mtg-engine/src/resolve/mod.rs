@@ -37,6 +37,9 @@ use crate::snapshot::Snapshot;
 use crate::state::GameState;
 use crate::zones::Zone;
 
+/// The prefix of a bound name in a finished step that removes the name instead: the way a repeat frees what its body bound.
+pub(crate) const CLEAR: &str = "~clear:";
+
 /// The position of the first effect: a path of indices into the effect tree.
 const START: [usize; 1] = [0];
 

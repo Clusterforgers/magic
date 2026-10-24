@@ -1,0 +1,25 @@
+{
+  "cmc": 2.0,
+  "collector_number": "162",
+  "color_identity": [
+    "R"
+  ],
+  "colors": [
+    "R"
+  ],
+  "digital": false,
+  "id": "656c3e32-8928-4b99-b79c-5761c592aa3d",
+  "keywords": [
+    "Cycling"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{R}",
+  "name": "Tectonic Reformation",
+  "oracle_id": "10da681b-50bd-4a1b-9934-f0c90e0af55c",
+  "oracle_text": "Each land card in your hand has cycling {R}.\nCycling {2} ({2}, Discard this card: Draw a card.)",
+  "rarity": "rare",
+  "released_at": "2020-04-17",
+  "set": "c20",
+  "type_line": "Enchantment"
+}

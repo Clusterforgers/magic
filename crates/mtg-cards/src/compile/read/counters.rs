@@ -262,6 +262,7 @@ pub fn multiply(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// The words for a kind of counter.
 pub(super) fn kind_text(counter: &CounterKind) -> Option<&str> {
     match counter {
+        // A keyword counter may have two words: "double strike", "first strike".
         CounterKind::Other(name) if !name.chars().all(|c| c.is_ascii_lowercase() || c == ' ') => {
             None
         }

@@ -135,6 +135,7 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.ChosenColor",
     "Effect.AddMana.OrChosenColor",
     "Effect.AddMana.Restricted",
+    "Effect.AddMana.Lasts",
     "Effect.AddMana.CommanderIdentity",
     "Effect.AddMana.ProducedBy",
     "Effect.AddMana.OfTapped",
@@ -158,6 +159,7 @@ const RUNS: &[&str] = &[
     "Effect.Surveil",
     "Effect.Proliferate",
     "Effect.Goad",
+    "Effect.Fight",
     "Effect.Explore",
     "Effect.Connive",
     "Effect.Amass",
@@ -235,6 +237,9 @@ const RUNS: &[&str] = &[
     "Effect.Choose",
     "Effect.ChooseAtRandom",
     "Effect.Modal",
+    "Effect.RepeatEach",
+    "Effect.RollDice",
+    "Effect.FlipCoin",
     "Keyword.Flash",
     "Keyword.Flying",
     "Keyword.Reach",
@@ -380,6 +385,7 @@ const RUNS: &[&str] = &[
     "Keyword.Squad",
     "Keyword.Ravenous",
     "Keyword.Riot",
+    "Keyword.Decayed",
     "ReplaceBy.Riot",
     "Keyword.Fabricate",
     "Keyword.Ascend",
@@ -410,6 +416,7 @@ const RUNS: &[&str] = &[
     "Keyword.Cipher",
     "Keyword.Graft",
     "Keyword.Afflict",
+    "Keyword.Replicate",
     "ReplaceWhen.Destroyed",
     "ReplaceBy.UmbraArmor",
     "Condition.NewlyControlled",
@@ -608,6 +615,9 @@ mod tests {
     #[case::choosing("Effect.Choose", true)]
     #[case::choosing_at_random("Effect.ChooseAtRandom", true)]
     #[case::modes("Effect.Modal", true)]
+    #[case::repeating_for_each("Effect.RepeatEach", true)]
+    #[case::rolling_dice("Effect.RollDice", true)]
+    #[case::flipping_coins("Effect.FlipCoin", true)]
     #[case::adding_mana("Effect.AddMana", true)]
     #[case::tapping_permanents("Effect.Tap", true)]
     #[case::untapping_permanents("Effect.Untap", true)]
@@ -660,7 +670,7 @@ mod tests {
     #[case::surveilling("Effect.Surveil", true)]
     #[case::proliferating("Effect.Proliferate", true)]
     #[case::goading("Effect.Goad", true)]
-    #[case::fighting("Effect.Fight", false)]
+    #[case::fighting("Effect.Fight", true)]
     #[case::becoming_the_monarch("Effect.BecomeMonarch", true)]
     #[case::amassing("Effect.Amass", true)]
     #[case::monstrosity("Effect.Monstrosity", true)]
@@ -691,6 +701,7 @@ mod tests {
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]
     #[case::mana_of_a_type_or_the_chosen_color("Effect.AddMana.OrChosenColor", true)]
     #[case::mana_restricted_to_what_it_may_be_spent_on("Effect.AddMana.Restricted", true)]
+    #[case::mana_kept_past_the_step("Effect.AddMana.Lasts", true)]
     #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", true)]
     #[case::mana_a_land_could_produce("Effect.AddMana.ProducedBy", true)]
     #[case::devotion("Amount.Devotion", true)]
@@ -802,6 +813,7 @@ mod tests {
     #[case::station("Keyword.Station", true)]
     #[case::ravenous("Keyword.Ravenous", true)]
     #[case::riot("Keyword.Riot", true)]
+    #[case::decayed("Keyword.Decayed", true)]
     #[case::choosing_a_counter_or_haste_as_it_enters("ReplaceBy.Riot", true)]
     #[case::copies_for_the_other_defenders("Effect.MyriadCopies", true)]
     #[case::jump_start("Keyword.JumpStart", true)]
@@ -841,6 +853,7 @@ mod tests {
     #[case::cipher("Keyword.Cipher", true)]
     #[case::graft("Keyword.Graft", true)]
     #[case::afflict("Keyword.Afflict", true)]
+    #[case::replicate("Keyword.Replicate", true)]
     #[case::replacing_destruction("ReplaceWhen.Destroyed", true)]
     #[case::saving_by_umbra_armor("ReplaceBy.UmbraArmor", true)]
     #[case::pairing_attackers_with_players("Rule.MustAttackPlayers", true)]

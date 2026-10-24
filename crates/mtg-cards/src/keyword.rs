@@ -222,6 +222,8 @@ pub enum Keyword {
     Ravenous,
     /// Riot (CR 702.136): as it enters, its controller chooses a +1/+1 counter on it or haste for as long as they control it; each instance chooses on its own.
     Riot,
+    /// Decayed (CR 702.147): the creature can't block, and when it attacks it is sacrificed at end of combat.
+    Decayed,
     /// Jump-start (CR 702.133): the card may be cast from a graveyard by discarding a card in addition to its other costs, and is then exiled.
     JumpStart,
     /// Retrace (CR 702.81): the card may be cast from a graveyard by discarding a land card in addition to its other costs.
@@ -314,6 +316,8 @@ pub enum Keyword {
     Graft(u32),
     /// Afflict N (CR 702.130): whenever the creature becomes blocked, the defending player loses N life.
     Afflict(u32),
+    /// Replicate with its cost: paid any number of times as the spell is cast, each time the cast copies it (CR 702.56).
+    Replicate(Cost),
 }
 
 /// What a promised gift is (CR 702.174).
@@ -439,6 +443,7 @@ impl Keyword {
         "Station",
         "Ravenous",
         "Riot",
+        "Decayed",
         "Jump-start",
         "Retrace",
         "Embalm",
@@ -472,6 +477,7 @@ impl Keyword {
         "Cipher",
         "Graft",
         "Afflict",
+        "Replicate",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -578,6 +584,7 @@ impl Keyword {
             Keyword::Station => "Station",
             Keyword::Ravenous => "Ravenous",
             Keyword::Riot => "Riot",
+            Keyword::Decayed => "Decayed",
             Keyword::JumpStart => "Jump-start",
             Keyword::Retrace => "Retrace",
             Keyword::Embalm(_) => "Embalm",
@@ -622,6 +629,7 @@ impl Keyword {
             Keyword::Cipher => "Cipher",
             Keyword::Graft(_) => "Graft",
             Keyword::Afflict(_) => "Afflict",
+            Keyword::Replicate(_) => "Replicate",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
         }
@@ -642,11 +650,14 @@ impl Keyword {
         )
     }
 
-    /// Whether paying the cost of this keyword counts as a kick (`Amount::Kicks`): kicker, multikicker and squad.
+    /// Whether paying the cost of this keyword counts as a kick (`Amount::Kicks`): kicker, multikicker, squad and replicate.
     pub const fn is_kicker(&self) -> bool {
         matches!(
             self,
-            Keyword::Kicker(_) | Keyword::Multikicker(_) | Keyword::Squad(_)
+            Keyword::Kicker(_)
+                | Keyword::Multikicker(_)
+                | Keyword::Squad(_)
+                | Keyword::Replicate(_)
         )
     }
 }
@@ -762,6 +773,7 @@ mod tests {
             Keyword::Station,
             Keyword::Ravenous,
             Keyword::Riot,
+            Keyword::Decayed,
             Keyword::JumpStart,
             Keyword::Retrace,
             Keyword::Embalm(Cost::default()),
@@ -810,6 +822,7 @@ mod tests {
             Keyword::Cipher,
             Keyword::Graft(2),
             Keyword::Afflict(2),
+            Keyword::Replicate(Cost::default()),
         ]
     }
 

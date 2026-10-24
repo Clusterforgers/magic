@@ -385,8 +385,30 @@ fn own_names(face: &PrintedFace) -> Vec<String> {
         .any(|word| word == "Legendary");
     if legendary && let Some((short, _)) = face.name.split_once(',') {
         names.push(short.trim().to_owned());
+    } else if legendary && let Some(first) = first_name(face) {
+        names.push(first);
     }
     names
+}
+
+/// The first word of a legendary name without a comma when the text uses it alone ("Legolas" for "Legolas Greenleaf").
+fn first_name(face: &PrintedFace) -> Option<String> {
+    let first = face.name.split_once(' ')?.0;
+    let word = first.chars().all(char::is_alphabetic)
+        && first.chars().next().is_some_and(char::is_uppercase)
+        && first.chars().count() > 2
+        && !["The", "Der", "Die", "Los", "Las", "Les"].contains(&first);
+    let text = face.oracle_text.replace(&face.name, "");
+    let alone = text.match_indices(first).any(|(at, _)| {
+        let before = text[..at].chars().next_back();
+        let after = &text[at + first.len()..];
+        // Not the start of another name ("Partner with Test Trynn").
+        let next_word = after.strip_prefix(' ').and_then(|rest| rest.chars().next());
+        !before.is_some_and(char::is_alphanumeric)
+            && !after.starts_with(|c: char| c.is_alphabetic())
+            && !next_word.is_some_and(char::is_uppercase)
+    });
+    (word && alone).then(|| first.to_owned())
 }
 
 /// Whether a line of text is a required additional cost that takes objects out of their zones.
@@ -924,6 +946,24 @@ mod tests {
         "Legendary Creature \u{2014} Beast",
         "Questing Beast can't be blocked.",
         "~ can't be blocked."
+    )]
+    #[case::first_name_alone(
+        "Legolas Greenleaf",
+        "Legendary Creature \u{2014} Elf Archer",
+        "Legolas can't be blocked. Whenever Legolas Greenleaf attacks, draw a card.",
+        "~ can't be blocked. Whenever ~ attacks, draw a card."
+    )]
+    #[case::first_name_of_a_card_that_is_not_legendary(
+        "Fire Imp",
+        "Creature \u{2014} Imp",
+        "Fire deals 2 damage.",
+        "Fire deals 2 damage."
+    )]
+    #[case::an_article_is_no_name(
+        "The Ur-Dragon",
+        "Legendary Creature \u{2014} Dragon",
+        "The Ur-Dragon flies. The best.",
+        "~ flies. The best."
     )]
     fn the_card_names_become_tildes_in_the_clause_text(
         #[case] name: &str,

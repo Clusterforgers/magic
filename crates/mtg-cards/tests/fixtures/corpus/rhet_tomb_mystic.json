@@ -1,0 +1,27 @@
+{
+  "cmc": 2.0,
+  "collector_number": "10",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "131a68e6-09ee-4afd-a0e1-d63bbc0775e8",
+  "keywords": [
+    "Flying"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{U}",
+  "name": "Rhet-Tomb Mystic",
+  "oracle_id": "e445825a-e70e-4796-99be-4a7c4080b8cc",
+  "oracle_text": "Flying\nEach creature card in your hand has cycling {1}{U}. ({1}{U}, Discard that card: Draw a card.)",
+  "power": "2",
+  "rarity": "rare",
+  "released_at": "2025-02-14",
+  "set": "drc",
+  "toughness": "1",
+  "type_line": "Creature — Zombie Bird Wizard"
+}

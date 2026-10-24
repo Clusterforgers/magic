@@ -8,7 +8,7 @@ use crate::card::TokenSpec;
 use crate::cost::Cost;
 use crate::modify::{CastPermission, Duration, GameRule, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, ZoneKind};
-use crate::spend::SpendOn;
+use crate::spend::{ManaLasts, SpendOn};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind, StatKind};
 
@@ -173,6 +173,19 @@ pub struct Mode {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub targets: Vec<TargetSpec>,
     /// What the mode does.
+    pub effects: Vec<Effect>,
+}
+
+/// One row of the table of a die roll: what happens for the totals from `from` to `to`.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct DieRow {
+    /// The lowest total of the row.
+    pub from: u32,
+    /// The highest total of the row; none when there is no highest ("15+").
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub to: Option<u32>,
+    /// What the row does.
     pub effects: Vec<Effect>,
 }
 
@@ -429,6 +442,9 @@ pub enum Effect {
         /// What the mana may be spent on, any one of these ("Spend this mana only to cast creature spells"); none means anything.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         only: Vec<SpendOn>,
+        /// How long the mana stays in the pool ("Until end of turn, you don't lose this mana as steps and phases end"); left out means until the step ends.
+        #[serde(default, skip_serializing_if = "ManaLasts::is_step")]
+        lasts: ManaLasts,
     },
     /// Puts counters on an object or player.
     PutCounters {
@@ -710,6 +726,45 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// Does `effects` once for each player or object `over` names, in the order it lists them, with `bind` naming the one
+    /// the pass is for (CR 608.2c: "for each player", "each opponent ... that player"). The list is fixed when the effect
+    /// begins; a name bound inside `effects` is bound anew in each pass.
+    RepeatEach {
+        /// The players or objects to repeat for.
+        over: Ref,
+        /// The name of the one the pass is for.
+        #[serde(rename = "as")]
+        bind: String,
+        /// What each pass does.
+        effects: Vec<Effect>,
+    },
+    /// The player rolls a die with `sides` sides (CR 706) and adds `plus`; the first row of `results` that holds the total
+    /// is done, none when no row does. The roll comes from the game's random stream and is logged as it happened.
+    RollDice {
+        /// Who rolls.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// How many faces the die has.
+        sides: u32,
+        /// Added to the number rolled before the rows are read ("roll a d20 and add the number of cards in your hand").
+        #[serde(default = "Amount::zero", skip_serializing_if = "Amount::is_zero")]
+        plus: Amount,
+        /// What the total does.
+        results: Vec<DieRow>,
+    },
+    /// The player flips a coin (CR 705): `win` is done when they win the flip, `lose` when they lose it. The call carries no
+    /// choice, so a flip is won with even odds. The flip comes from the game's random stream and is logged as it happened.
+    FlipCoin {
+        /// Who flips.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// Done when the flip is won.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        win: Vec<Effect>,
+        /// Done when the flip is lost.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        lose: Vec<Effect>,
+    },
     /// Creates tokens.
     CreateToken {
         /// Who controls them.
@@ -866,6 +921,44 @@ pub const EXILED: &str = "exiled";
 
 /// The name every card revealed until a card matches is bound to, the cards found included.
 pub const REVEALED: &str = "revealed";
+
+/// The names the effects bind, those inside the lists nested in them too: the fields written `as`, `rest_as`, `exiled_as`
+/// and `revealed_as`, sorted.
+pub fn bound_names(effects: &[Effect]) -> Vec<String> {
+    let mut names = Vec::new();
+    if let Ok(value) = serde_json::to_value(effects) {
+        collect_names(&value, &mut names);
+    }
+    names.sort();
+    names.dedup();
+    names
+}
+
+fn collect_names(value: &serde_json::Value, names: &mut Vec<String>) {
+    match value {
+        serde_json::Value::Object(fields) => {
+            for (key, inner) in fields {
+                match inner.as_str() {
+                    Some(name)
+                        if matches!(
+                            key.as_str(),
+                            "as" | "rest_as" | "exiled_as" | "revealed_as"
+                        ) =>
+                    {
+                        names.push(name.to_owned());
+                    }
+                    _ => collect_names(inner, names),
+                }
+            }
+        }
+        serde_json::Value::Array(items) => {
+            for item in items {
+                collect_names(item, names);
+            }
+        }
+        _ => {}
+    }
+}
 
 /// The factor of `MultiplyCounters` when none is written: counters are doubled.
 const fn two() -> u32 {
@@ -1062,6 +1155,18 @@ mod tests {
         Effect::MultiplyCounters { on: Ref::Target(0), counter: None, factor: 3 },
         r#"{"MultiplyCounters":{"on":{"Target":0},"factor":3}}"#
     )]
+    #[case::repeat_for_each_opponent(
+        Effect::RepeatEach { over: Ref::Opponents, bind: "foe".to_owned(), effects: vec![Effect::Draw { who: Ref::Bound("foe".to_owned()), count: Amount::one() }] },
+        r#"{"RepeatEach":{"over":"Opponents","as":"foe","effects":[{"Draw":{"who":{"Bound":"foe"}}}]}}"#
+    )]
+    #[case::roll_a_die_with_a_table(
+        Effect::RollDice { who: Ref::You, sides: 20, plus: Amount::Fixed(2), results: vec![DieRow { from: 1, to: Some(9), effects: vec![Effect::Shuffle { who: Ref::You }] }, DieRow { from: 10, to: None, effects: vec![Effect::Shuffle { who: Ref::You }] }] },
+        r#"{"RollDice":{"sides":20,"plus":2,"results":[{"from":1,"to":9,"effects":[{"Shuffle":{}}]},{"from":10,"effects":[{"Shuffle":{}}]}]}}"#
+    )]
+    #[case::flip_a_coin(
+        Effect::FlipCoin { who: Ref::You, win: vec![Effect::Draw { who: Ref::You, count: Amount::one() }], lose: Vec::new() },
+        r#"{"FlipCoin":{"win":[{"Draw":{}}]}}"#
+    )]
     #[case::attach_the_source_to_a_target(
         Effect::Attach { what: Ref::This, to: Ref::Target(0) },
         r#"{"Attach":{"what":"This","to":{"Target":0}}}"#
@@ -1074,6 +1179,23 @@ mod tests {
     fn effects_have_stable_json(#[case] value: Effect, #[case] json: &str) {
         assert_eq!(serde_json::to_string(&value).unwrap(), json);
         assert_eq!(serde_json::from_str::<Effect>(json).unwrap(), value);
+    }
+
+    #[rstest]
+    #[case::nothing_bound(r#"[{"Draw":{}}]"#, &[])]
+    #[case::one_name(r#"[{"LookAtTop":{"as":"looked"}}]"#, &["looked"])]
+    #[case::the_names_of_a_choice(r#"[{"Choose":{"from":"Opponents","as":"one","rest_as":"others"}}]"#, &["one", "others"])]
+    #[case::the_names_of_a_reveal(r#"[{"RevealUntil":{"filter":[],"as":"found","revealed_as":"seen"}}]"#, &["found", "seen"])]
+    #[case::inside_nested_lists(
+        r#"[{"If":{"condition":"YourTurn","then":[{"ExileTop":{"as":"top"}}],"otherwise":[{"RepeatEach":{"over":"Opponents","as":"foe","effects":[{"ExileTop":{"as":"inner"}}]}}]}}]"#,
+        &["foe", "inner", "top"]
+    )]
+    fn the_names_effects_bind_are_found_in_nested_lists(
+        #[case] json: &str,
+        #[case] expected: &[&str],
+    ) {
+        let effects: Vec<Effect> = serde_json::from_str(json).unwrap();
+        assert_eq!(bound_names(&effects), expected);
     }
 
     #[rstest]

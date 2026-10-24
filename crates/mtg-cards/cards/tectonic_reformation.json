@@ -1,0 +1,20 @@
+{
+  "oracle_id": "10da681b-50bd-4a1b-9934-f0c90e0af55c",
+  "name": "Tectonic Reformation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tectonic Reformation",
+      "oracle_fingerprint": "0337a875bc923c2a6281a85dc602023e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }, { "In": "Hand" }, { "OwnedBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Cycling": "{R}" } }]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

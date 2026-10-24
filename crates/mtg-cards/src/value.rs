@@ -337,6 +337,16 @@ impl Amount {
         matches!(self, Amount::Fixed(1))
     }
 
+    /// The amount of nothing: zero.
+    pub const fn zero() -> Amount {
+        Amount::Fixed(0)
+    }
+
+    /// Whether this is the fixed amount zero, so serialization can leave it out.
+    pub const fn is_zero(&self) -> bool {
+        matches!(self, Amount::Fixed(0))
+    }
+
     /// The number of a fixed amount; `None` for any other.
     pub fn fixed(&self) -> Option<u32> {
         match self {

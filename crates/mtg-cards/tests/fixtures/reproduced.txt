@@ -123,6 +123,7 @@ Blightwidow
 Bloodbraid Elf
 Bloodghast
 Bloom Hulk
+Body Double
 Bog Wraith
 Boggart Ram-Gang
 Boiling Earth
@@ -195,6 +196,7 @@ Cliffgate
 Clifftop Lookout
 Clive's Hideaway
 Clone
+Clone Legion
 Cloud Sprite
 Cloudfin Raptor
 Cloudskate
@@ -204,6 +206,7 @@ Coastal Breach
 Coastal Discovery
 Cold-Eyed Selkie
 Collective Unconscious
+Colossal Plow
 Colossus Hammer
 Command Tower
 Commander's Insignia
@@ -243,6 +246,8 @@ Curse of Verbosity
 Curse of Vitality
 Curse of the Forsaken
 Curse of the Nightly Hunt
+Curse of the Restless Dead
+Cursed Mirror
 Curtains' Call
 Custodi Lich
 Custodi Soulbinders
@@ -352,6 +357,7 @@ Eternal Witness
 Ethereal Armor
 Ethereal Usher
 Ethersworn Sphinx
+Eureka Moment
 Evercoat Ursine
 Evolutionary Leap
 Exalted Angel
@@ -360,6 +366,7 @@ Exotic Orchard
 Exploration
 Explore
 Exquisite Huntmaster
+Exterminate!
 Eye of Nidhogg
 Eyeblight Massacre
 Eyetwitch
@@ -550,6 +557,7 @@ Jagged Barrens
 Jarad, Golgari Lich Lord
 Jaspera Sentinel
 Jazal Goldmane
+Jo Grant
 Join the Maestros
 Jolting Merfolk
 Jungle Lion
@@ -569,6 +577,7 @@ Kingpin's Pet
 Kinjalli's Sunwing
 Kinsbaile Courier
 Kitchen Finks
+Klauth, Unrivaled Ancient
 Knight of Dusk's Shadow
 Knight of the Last Breath
 Knights of the Black Rose
@@ -590,6 +599,7 @@ Lavacore Elemental
 Lazotep Reaver
 Leafkin Druid
 Legion Loyalty
+Legolas Greenleaf
 Levitation
 Lhurgoyf
 Life of Toshiro Umezawa // Memory of Toshiro
@@ -663,10 +673,12 @@ Mirari's Wake
 Mire's Malice
 Mirran Bardiche
 Mirror Image
+Mirrorweave
 Mishra's Workshop
 Mistmeadow Skulk
 Mizzium Mortars
 Mobilizer Mech
+Molecule Man
 Molten Slagheap
 Mona Lisa, Science Geek
 Monastery Swiftspear
@@ -689,6 +701,7 @@ Myr Retriever
 Myriad Landscape
 Mystic Gate
 Nameless Inversion
+Nanogene Conversion
 Nantuko Husk
 Nantuko Vigilante
 Nessian Asp
@@ -745,6 +758,7 @@ Pentad Prism
 Persist
 Pestilent Syphoner
 Phantasmal Image
+Photon, Mighty Marvel
 Phyrexian Prowler
 Phyrexian Soulgorger
 Pillar of Origins
@@ -821,6 +835,7 @@ Reshape
 Revel Ruiner
 Reverberate
 Reverse Engineer
+Rhet-Tomb Mystic
 Rhox Charger
 Rhox Faithmender
 Rhys the Redeemed
@@ -830,6 +845,7 @@ Rift Bolt
 Righteous Avengers
 Riptide Survivor
 Rising Miasma
+Rite of Replication
 Riveteers Requisitioner
 Rob the Archives
 Rocksteady, Mutant Marauder
@@ -861,6 +877,7 @@ Sanitarium Skeleton
 Sarah Jane Smith
 Satyr Wayfinder
 Sauroform Hybrid
+Savage Ventmaw
 Saw It Coming
 Sawtusk Demolisher
 Scatter to the Winds
@@ -1016,6 +1033,7 @@ Taurean Mauler
 Tavern Ruffian // Tavern Smasher
 Teacher's Pest
 Team Pennant
+Tectonic Reformation
 Temur Devotee
 Tender Wildguide
 Tendershoot Dryad
@@ -1029,6 +1047,7 @@ Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Birth of Meletis
 The Modern Age // Vector Glider
+The Mycosynth Gardens
 The Seriema
 The Spear of Bashenga
 The Squadron Sinister
@@ -1109,6 +1128,7 @@ Vault 75: Middle School
 Vedalken Engineer
 Vengeful Vampire
 Vestige of Emrakul
+Vesuva
 Veteran's Powerblade
 Village Rites
 Viridian Corrupter
@@ -1127,6 +1147,7 @@ Walking Ballista
 Wanderbrine Preacher
 Waning Wurm
 War Balloon
+Warbriar Blessing
 Warchief Giant
 Wargate
 Warmonger Hellkite

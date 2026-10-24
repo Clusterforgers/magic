@@ -284,12 +284,22 @@ pub fn becomes_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     (r.source() || (r.attacker && r.word("it"))).then_some(())?;
     r.need("becomes a copy of")?;
     let of = permanent_target(r)?;
-    r.need("until end of turn")?;
+    let duration = if r.words("until end of turn") {
+        Duration::UntilEndOfTurn
+    } else {
+        Duration::Forever
+    };
+    let except = r
+        .attempt(|r| {
+            r.punct(',').then_some(())?;
+            copies::exceptions(r, Subject::It)
+        })
+        .unwrap_or_default();
     Some(vec![Effect::BecomeCopy {
         what: Ref::This,
         of,
-        except: Vec::new(),
-        duration: Duration::UntilEndOfTurn,
+        except,
+        duration,
     }])
 }
 
@@ -399,12 +409,20 @@ pub(super) fn becomes_text(effect: &Effect, target: &str) -> Option<String> {
         what: Ref::This,
         of: Ref::Target(0),
         except,
-        duration: Duration::UntilEndOfTurn,
+        duration,
     } = effect
     else {
         return None;
     };
-    except
-        .is_empty()
-        .then(|| format!("~ becomes a copy of {target} until end of turn"))
+    let until = match duration {
+        Duration::UntilEndOfTurn => " until end of turn",
+        Duration::Forever => "",
+        _ => return None,
+    };
+    let except = if except.is_empty() {
+        String::new()
+    } else {
+        format!(", {}", copies::exceptions_text(except, Subject::It)?)
+    };
+    Some(format!("~ becomes a copy of {target}{until}{except}"))
 }

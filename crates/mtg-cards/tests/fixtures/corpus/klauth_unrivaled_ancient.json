@@ -1,0 +1,37 @@
+{
+  "id": "7f5cf828-17b2-4105-9a9a-ee0ab720c2ee",
+  "oracle_id": "8cefa5d6-5151-4e75-8b72-f210a4c751ea",
+  "name": "Klauth, Unrivaled Ancient",
+  "lang": "en",
+  "layout": "normal",
+  "set": "afc",
+  "collector_number": "50",
+  "rarity": "mythic",
+  "released_at": "2021-07-23",
+  "digital": false,
+  "mana_cost": "{5}{R}{G}",
+  "cmc": 7,
+  "type_line": "Legendary Creature — Dragon",
+  "oracle_text": "Flying, haste\nWhenever Klauth attacks, add X mana in any combination of colors, where X is the total power of attacking creatures. Spend this mana only to cast spells. Until end of turn, you don't lose this mana as steps and phases end.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Flying",
+    "Haste"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

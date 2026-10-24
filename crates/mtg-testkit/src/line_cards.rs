@@ -1,4 +1,4 @@
-//! A seeded deck of the corpus cards of the keyword lines (graft, afflict, kicker and/or, backup), with lands of their colours and creatures to attack with,
+//! A seeded deck of the corpus cards of the keyword lines (graft, afflict, kicker and/or, backup, replicate), with lands of their colours and Dalek creatures to attack with,
 //! block and enter, for fuzz games.
 
 use std::sync::Arc;
@@ -12,8 +12,8 @@ use mtg_engine::rng::GameRng;
 use crate::cards::{creature, land};
 use crate::corpus;
 
-/// The corpus cards with graft, afflict, a second kicker or a backup wording.
-pub const LINE_CARDS: [&str; 7] = [
+/// The corpus cards with graft, afflict, a second kicker, a backup wording or replicate.
+pub const LINE_CARDS: [&str; 8] = [
     "Aquastrand Spider",
     "Llanowar Reborn",
     "Plaxcaster Frogling",
@@ -21,6 +21,7 @@ pub const LINE_CARDS: [&str; 7] = [
     "Stormscape Battlemage",
     "Wastescape Battlemage",
     "Conclave Sledge-Captain",
+    "Exterminate!",
 ];
 
 /// A legal Normal deck of lands, three of each such card and creatures to attack and block with, derived entirely from `rng`.
@@ -42,8 +43,10 @@ pub fn line_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
     while deck.len() < 60 {
         let power = i32::try_from(1 + rng.index(3)).unwrap_or(1);
         let name = format!("Line Fodder {slot} {power}/{power}");
+        // Daleks, which pay the replicate cost of Exterminate!.
+        let fodder = creature(&name, 1, &[colors[rng.index(3)]], power, power);
         deck.extend(std::iter::repeat_n(
-            creature(&name, 1, &[colors[rng.index(3)]], power, power),
+            Arc::new((*fodder).clone().with_subtype("Dalek")),
             2,
         ));
         slot += 1;

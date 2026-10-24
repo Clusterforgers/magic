@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Sacrificed":{"what":[],"by":"You"}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":{"Stat":{"of":"This","stat":"Power"}}}}]}}]}]}

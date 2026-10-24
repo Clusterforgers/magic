@@ -1,0 +1,45 @@
+{
+  "oracle_id": "03f5c566-825c-4c46-9c01-a2f9b1e70a13",
+  "name": "The Mycosynth Gardens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Mycosynth Gardens",
+      "oracle_fingerprint": "5763375aea76b60bcaee29446de092f7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "Not": "Token" },
+                    { "ControlledBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "BecomeCopy": { "what": "This", "of": { "Target": 0 }, "duration": "Forever" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

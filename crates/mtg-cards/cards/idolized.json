@@ -1,0 +1,54 @@
+{
+  "oracle_id": "8cbf0173-2349-4205-b720-378643c347a4",
+  "name": "Idolized",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Idolized",
+      "oracle_fingerprint": "723d355b1594457b2a00a807f92296d8",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "AttacksAlone": { "what": ["This"] } },
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [
+                            {
+                              "ModifyPT": {
+                                "power": {
+                                  "Count": [
+                                    { "Not": { "Type": "Land" } },
+                                    { "ControlledBy": "You" }
+                                  ]
+                                },
+                                "toughness": {
+                                  "Count": [
+                                    { "Not": { "Type": "Land" } },
+                                    { "ControlledBy": "You" }
+                                  ]
+                                }
+                              }
+                            }
+                          ],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

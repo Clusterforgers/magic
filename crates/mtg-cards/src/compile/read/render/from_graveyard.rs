@@ -13,6 +13,41 @@ pub(super) fn pays_to_return(effects: &[Effect]) -> bool {
     )
 }
 
+/// Whether the effects are the card returning itself to its owner's hand, which it does from its graveyard ("you may
+/// return this card from your graveyard to your hand").
+pub(super) fn returns_to_hand(effects: &[Effect]) -> bool {
+    match effects {
+        [
+            Effect::May {
+                who: Ref::You,
+                effects,
+            },
+        ] => returns_to_hand(effects),
+        [
+            Effect::Move {
+                what: Ref::This,
+                to: Destination::Hand,
+            },
+        ] => true,
+        _ => false,
+    }
+}
+
+/// The wording of the return from the graveyard to the hand: the card names the zone it comes from.
+pub(super) fn from_your_graveyard(texts: &mut Vec<String>) {
+    let said: Vec<String> = texts
+        .iter()
+        .filter(|text| text.contains("return ~ to its owner's hand"))
+        .map(|text| {
+            text.replace(
+                "return ~ to its owner's hand",
+                "return ~ from your graveyard to your hand",
+            )
+        })
+        .collect();
+    *texts = said;
+}
+
 /// The wordings of the trigger: the card says it is in the graveyard after the event, and "it" for itself.
 pub(super) fn say(texts: &mut Vec<String>) {
     let said: Vec<String> = texts

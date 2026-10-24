@@ -1,0 +1,33 @@
+{
+  "oracle_id": "026b7221-0caf-4c8b-8c1b-e7de836797b7",
+  "name": "Mirrorweave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirrorweave",
+      "oracle_fingerprint": "715b562007253887fd8e99410e94b26b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "Not": { "Supertype": "Legendary" } }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] },
+                  "of": { "Target": 0 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

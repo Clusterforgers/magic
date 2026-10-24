@@ -1,0 +1,25 @@
+{
+  "id": "49d5d62b-72ed-446a-b280-ad04c38bdd0c",
+  "oracle_id": "fb3defc0-c93a-4423-9ff9-c399f8a8ef1f",
+  "name": "Jadar, Ghoulcaller of Nephalia",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "217",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Wizard",
+  "oracle_text": "At the beginning of your end step, if you control no creatures with decayed, create a 2/2 black Zombie creature token with decayed. (It can't block. When it attacks, sacrifice it at end of combat.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

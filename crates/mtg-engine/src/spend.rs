@@ -3,7 +3,7 @@
 //! A restricted mana stays in the pool with what it allows until the pool empties. A payment may use it only for a
 //! spell or an ability its restriction allows, and a source whose mana is restricted is a source of such a payment only.
 
-use mtg_cards::spend::{SpendOn, SpendTraits};
+use mtg_cards::spend::{ManaLasts, SpendOn, SpendTraits};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 use serde::{Deserialize, Serialize};
@@ -21,6 +21,10 @@ pub struct Restricted {
     pub mana: ManaType,
     /// What it may be spent on: any one of these.
     pub only: Vec<SpendOn>,
+    /// How long it stays in the pool; left out means until the step ends.
+    #[serde(default, skip_serializing_if = "ManaLasts::is_step")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<ManaLasts>", optional))]
+    pub lasts: ManaLasts,
 }
 
 /// What is paid for.

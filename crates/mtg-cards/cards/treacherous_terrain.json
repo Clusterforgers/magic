@@ -1,0 +1,40 @@
+{
+  "oracle_id": "eced76b8-b29a-4c89-b77a-cbae99f56cb7",
+  "name": "Treacherous Terrain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Treacherous Terrain",
+      "oracle_fingerprint": "a291f0d0fee395eaf9e915d7267fea7d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Bound": "opponent" },
+                        "amount": {
+                          "Count": [{ "Type": "Land" }, { "ControlledBy": { "Bound": "opponent" } }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Typecycling": { "find": [{ "Type": "Land" }, { "Supertype": "Basic" }], "cost": "{2}" }
+          }
+        }
+      ]
+    }
+  ]
+}

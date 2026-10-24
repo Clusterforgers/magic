@@ -1,6 +1,6 @@
 //! The event log vocabulary: every change to game state is exactly one of these.
 
-use mtg_cards::spend::SpendOn;
+use mtg_cards::spend::{ManaLasts, SpendOn};
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 use serde::{Deserialize, Serialize};
@@ -205,6 +205,10 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         #[cfg_attr(feature = "ts", ts(as = "Option<Vec<SpendOn>>", optional))]
         only: Vec<SpendOn>,
+        /// How long it stays in the pool; left out means until the step ends.
+        #[serde(default, skip_serializing_if = "ManaLasts::is_step")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<ManaLasts>", optional))]
+        lasts: ManaLasts,
     },
     /// Mana was spent from a pool.
     ManaSpent {
@@ -217,10 +221,14 @@ pub enum Event {
         #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Restricted>>", optional))]
         restricted: Vec<Restricted>,
     },
-    /// Unspent mana disappeared at the end of a step or phase.
+    /// Unspent mana disappeared at the end of a step, a phase or the turn.
     ManaPoolEmptied {
         /// Whose pool.
         player: PlayerId,
+        /// The longest-lasting mana that went: all that lasts no longer than this; left out means the mana of the step.
+        #[serde(default, skip_serializing_if = "ManaLasts::is_step")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<ManaLasts>", optional))]
+        through: ManaLasts,
     },
     /// Unspent mana cost its owner life under the house rule of mana burn; the `LifeLost` of the same amount follows.
     ManaBurned {
@@ -601,6 +609,22 @@ pub enum Event {
         /// Who learned.
         player: PlayerId,
     },
+    /// A player rolled a die (CR 706): the number came from the game's random stream, which the roll moved on by one.
+    DieRolled {
+        /// Who rolled.
+        player: PlayerId,
+        /// How many faces the die has.
+        sides: u32,
+        /// The number rolled, from 1 to `sides`.
+        result: u32,
+    },
+    /// A player flipped a coin (CR 705): the flip came from the game's random stream, which it moved on by one.
+    CoinFlipped {
+        /// Who flipped.
+        player: PlayerId,
+        /// The flip was won.
+        won: bool,
+    },
     /// A player proliferated (CR 701.34): the counters it gave are the `CountersChanged` events that follow it.
     Proliferated {
         /// Who proliferated.
@@ -847,6 +871,8 @@ impl Event {
             | Event::MonarchChanged { .. }
             | Event::CitysBlessingGained { .. }
             | Event::Learned { .. }
+            | Event::DieRolled { .. }
+            | Event::CoinFlipped { .. }
             | Event::Proliferated { .. }
             | Event::PriorityGranted { .. }
             | Event::PriorityPassed { .. }

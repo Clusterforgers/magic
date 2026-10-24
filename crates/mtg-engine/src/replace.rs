@@ -420,7 +420,7 @@ fn gather(state: &GameState) -> Vec<Source> {
         } else if state.possible.elsewhere {
             working_here(object)
                 .map(|(address, rules)| (address, Arc::clone(rules)))
-                .chain(provided_here(object))
+                .chain(provided_here(state, object))
                 .collect()
         } else {
             continue;
@@ -2059,23 +2059,23 @@ impl Pass<'_> {
                     *slot = chosen;
                 }
             }
-            ReplaceBy::AsCopy { of, except } => {
+            ReplaceBy::AsCopy {
+                of,
+                except,
+                tapped: enters_tapped,
+                until_end_of_turn,
+            } => {
                 let copy = match self.copies(candidate.object, controller, object, of, except)? {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
                     Asked::Got(copy) => copy,
                 };
-                if let Some(copy) = copy {
-                    let mut inherited = applied.clone();
-                    inherited.dedup();
-                    // The copy begins as the permanent enters, so the effects of the copied values apply to its entering.
-                    self.slots.insert(
-                        at + 1,
-                        Slot {
-                            item: Item::One(Event::BecameCopy(copy)),
-                            applied: inherited,
-                            frozen: false,
-                        },
-                    );
+                if let Some(mut copy) = copy {
+                    copy.until_end_of_turn = *until_end_of_turn;
+                    // "Enter tapped as a copy": only the copy is tapped.
+                    if *enters_tapped {
+                        tapped(self, at);
+                    }
+                    self.begin_copy(at, copy, &applied);
                 }
             }
             _ => {}
@@ -2219,6 +2219,20 @@ impl Pass<'_> {
             Item::One(Event::BecameCopy(copy)) if copy.object == object => Some(copy),
             _ => None,
         })
+    }
+
+    /// Puts the copy right after the entering at `at`, so the effects of the copied values apply to its entering.
+    fn begin_copy(&mut self, at: usize, copy: BecameCopy, applied: &[Origin]) {
+        let mut inherited = applied.to_vec();
+        inherited.dedup();
+        self.slots.insert(
+            at + 1,
+            Slot {
+                item: Item::One(Event::BecameCopy(copy)),
+                applied: inherited,
+                frozen: false,
+            },
+        );
     }
 
     /// What `controller` has the card `entering` copy as it enters (CR 614.1c, 707.9): any permanent `of` selects, none

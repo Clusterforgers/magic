@@ -137,6 +137,7 @@ fn phrase(cost: &Cost) -> Option<String> {
             count: count @ Amount::Fixed(_),
             filter: None,
         } => Some(format!("discard {}", cards_text(count)?)),
+        CostItem::SacrificeSelf => Some("sacrifice ~".to_owned()),
         CostItem::PayEnergy(Amount::Fixed(_))
         | CostItem::Sacrifice {
             count: Amount::Fixed(_),
@@ -155,6 +156,22 @@ fn lower(text: &str) -> Option<String> {
 /// "you may pay {1}. If you do, draw a card": the payment and the sentence that follows it.
 pub fn may_pay_text(cost: &Cost, paid: &str) -> Option<String> {
     Some(format!("you may {}. If you do, {paid}", phrase(cost)?))
+}
+
+/// "unless they sacrifice a creature of their choice": another player sacrifices a permanent so that the sentence before
+/// does not happen to them.
+pub fn unless_sacrifice_text(who: &Ref, cost: &Cost) -> Option<String> {
+    let [
+        CostItem::Sacrifice {
+            count: Amount::Fixed(1),
+            ..
+        },
+    ] = cost.0.as_slice()
+    else {
+        return None;
+    };
+    let phrase = lower(&costs::text(cost)?)?;
+    (*who != Ref::You).then(|| format!("unless they {phrase} of their choice"))
 }
 
 /// "unless that player pays {2}", "unless you discard a card": what follows the sentence that happens without payment.

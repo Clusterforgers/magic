@@ -1437,7 +1437,7 @@ fn elsewhere(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>,
         }
         let here = working_here(object)
             .map(|(address, rules)| (address, Arc::clone(rules)))
-            .chain(provided_here(object));
+            .chain(provided_here(state, object));
         object_triggers(
             state,
             object,
@@ -1718,7 +1718,10 @@ mod tests {
         let pre = board(with("Watcher", vec![triggered(when)]));
         let events = [
             Event::StepBegan { step: Step::Upkeep },
-            Event::ManaPoolEmptied { player: ME },
+            Event::ManaPoolEmptied {
+                player: ME,
+                through: mtg_cards::spend::ManaLasts::Step,
+            },
             died(&pre, "Bear"),
         ];
         let (_, found) = fire(&pre, &events);

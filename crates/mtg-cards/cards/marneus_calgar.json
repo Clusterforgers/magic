@@ -1,0 +1,47 @@
+{
+  "oracle_id": "f6479f7e-01f4-49f1-a444-04bf38934f6b",
+  "name": "Marneus Calgar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marneus Calgar",
+      "oracle_fingerprint": "327baa83cbc63c36a8a56a741e004172",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": { "what": ["Token", { "ControlledBy": "You" }], "to": "Battlefield" }
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{6}",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Astartes Warrior",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Astartes", "Warrior"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

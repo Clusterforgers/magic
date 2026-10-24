@@ -108,6 +108,41 @@ pub fn copy_shapes_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, Co
     Ok(GameSetup::new(Arc::new(Normal), seed, decks))
 }
 
+/// A deck of the cards whose copy wordings read a group that becomes a copy, a token for each creature of a player, a
+/// kicker, a card in a graveyard and a land or an artifact that enters as a copy (Mirrorweave, Nanogene Conversion, The
+/// Mycosynth Gardens, Clone Legion, Rite of Replication, Body Double, Vesuva, Cursed Mirror), with Hero of Bladehold
+/// to copy and Lightning Bolts to put creature cards into graveyards, derived entirely from `rng`.
+pub fn copy_wording_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
+    copies_deck(
+        rng,
+        22,
+        &[
+            ("Mirrorweave", 2),
+            ("Nanogene Conversion", 2),
+            ("The Mycosynth Gardens", 1),
+            ("Clone Legion", 2),
+            ("Rite of Replication", 2),
+            ("Body Double", 3),
+            ("Vesuva", 2),
+            ("Cursed Mirror", 2),
+            ("Hero of Bladehold", 3),
+            ("Lightning Bolt", 3),
+        ],
+    )
+}
+
+/// A normal game of `players` seats whose decks are [`copy_wording_deck`]s, fully determined by `seed`.
+pub fn copy_wording_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusError> {
+    let mut decks = Vec::with_capacity(players);
+    for seat in 0u64..players as u64 {
+        decks.push(copy_wording_deck(&mut GameRng::substream(
+            seed,
+            14_700 + seat,
+        ))?);
+    }
+    Ok(GameSetup::new(Arc::new(Normal), seed, decks))
+}
+
 /// A deck of lands in four colours, the cards that copy spells and abilities (Twincast, Reverberate, Fork, Reiterate,
 /// Dualcaster Mage, Strionic Resonator, Lithoform Engine, Cytoshape), the storm spells (Grapeshot, Brain Freeze, Tendrils of
 /// Agony), spells to copy (Lightning Bolt, Burst Lightning) and creatures with triggers to copy, derived entirely from `rng`.

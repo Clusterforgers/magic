@@ -256,6 +256,13 @@ fn tails(of: &Ref, stat: StatKind) -> Vec<String> {
     if *of == Ref::Paid {
         return paid_names(stat);
     }
+    // What an earlier step exiled: "the mana value of the permanent exiled this way".
+    if matches!(of, Ref::Bound(_)) {
+        return ["permanent", "card", "creature"]
+            .iter()
+            .map(|noun| format!("the {name} of the {noun} exiled this way"))
+            .collect();
+    }
     let owners: &[&str] = match of {
         Ref::This => &["~'s", "its"],
         Ref::Target(0) => &["its"],

@@ -230,8 +230,6 @@ fn begin_turn(state: &mut GameState, number: u32, active: PlayerId) {
 
 fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
-        // Each random choice spends a substream of the generator, as a shuffle does.
-        Event::ChosenAtRandom { .. } => state.rng_index += 1,
         Event::TurnBegan { number, active } => begin_turn(state, *number, *active),
         Event::StepBegan { step } => {
             state.turn.step = *step;
@@ -249,6 +247,10 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Bolstered { .. }
         | Event::Learned { .. }
         | Event::Proliferated { .. } => {}
+        // Each random pick, roll and flip spends a substream of the generator, as a shuffle does.
+        Event::ChosenAtRandom { .. } | Event::DieRolled { .. } | Event::CoinFlipped { .. } => {
+            state.rng_index += 1;
+        }
         Event::Cycled { player, .. } => state.tally(*player, Tally::Cycled),
         Event::PriorityGranted { player } => {
             state.priority = Some(PriorityState {
@@ -275,9 +277,13 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::ClassLevelGained { object, level, .. } => set_level(state, *object, *level)?,
         Event::TurnedFaceUp { object, .. } => turn_face_up(state, *object)?,
         Event::ManaAdded {
-            player, mana, only, ..
+            player,
+            mana,
+            only,
+            lasts,
+            ..
         } => {
-            pool_mut(state, *player)?.add_restricted(*mana, only.clone());
+            pool_mut(state, *player)?.add_restricted(*mana, only.clone(), *lasts);
             reset_passes(state);
         }
         Event::ManaSpent {
@@ -306,7 +312,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
                 }
             }
         }
-        Event::ManaPoolEmptied { player } => pool_mut(state, *player)?.clear(),
+        Event::ManaPoolEmptied { player, through } => pool_mut(state, *player)?.empty(*through),
         Event::LifePaid { player, amount } => pay_life(state, *player, *amount)?,
         Event::LifeGained { player, amount } => gain_life(state, *player, *amount)?,
         Event::LifeLost { player, amount } => change_life(state, *player, *amount, false)?,

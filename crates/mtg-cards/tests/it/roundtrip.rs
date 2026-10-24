@@ -10,7 +10,7 @@ use mtg_cards::load::{canonical, parse_json};
 use mtg_cards::mana::ManaCostX;
 use mtg_cards::modify::{CastPermission, Duration, GameRule, Modification};
 use mtg_cards::refs::{AbilityKind, Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
-use mtg_cards::spend::{SpendFact, SpendFilter, SpendOn};
+use mtg_cards::spend::{ManaLasts, SpendFact, SpendFilter, SpendOn};
 use mtg_cards::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, Step, TriggerPattern};
 use mtg_cards::value::{Amount, CastWay, Cmp, Condition, CounterKind, StatKind};
 use mtg_core::card::{CardType, Subtype, Supertype};
@@ -811,13 +811,15 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                     }),
                 ],
                 amount(),
-                vec(spend_on(), 0..3)
+                vec(spend_on(), 0..3),
+                select(vec![ManaLasts::Step, ManaLasts::Combat, ManaLasts::Turn])
             )
-                .prop_map(|(who, mana, times, only)| Effect::AddMana {
+                .prop_map(|(who, mana, times, only, lasts)| Effect::AddMana {
                     who,
                     mana,
                     times,
-                    only
+                    only,
+                    lasts
                 }),
             (reference(), counter(), amount())
                 .prop_map(|(on, counter, count)| Effect::PutCounters { on, counter, count }),
@@ -1168,8 +1170,20 @@ fn ability() -> impl Strategy<Value = Ability> {
                 color().prop_map(|other| ReplaceBy::Choose(EntersChoice::ColorOtherThan(other))),
                 (1u32..5).prop_map(ReplaceBy::PayLifeOrTapped),
                 Just(ReplaceBy::UmbraArmor),
-                (selector(), proptest::collection::vec(modification(), 0..3))
-                    .prop_map(|(of, except)| ReplaceBy::AsCopy { of, except }),
+                (
+                    selector(),
+                    proptest::collection::vec(modification(), 0..3),
+                    any::<bool>(),
+                    any::<bool>()
+                )
+                    .prop_map(|(of, except, tapped, until_end_of_turn)| {
+                        ReplaceBy::AsCopy {
+                            of,
+                            except,
+                            tapped,
+                            until_end_of_turn,
+                        }
+                    }),
             ],
             tail()
         )

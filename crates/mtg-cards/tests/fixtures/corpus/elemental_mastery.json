@@ -1,0 +1,25 @@
+{
+  "id": "77dd1c84-0c67-41a2-aa19-ca448520ac54",
+  "oracle_id": "4234f07e-583f-40db-8b47-7e16c7316e19",
+  "name": "Elemental Mastery",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nec",
+  "collector_number": "105",
+  "rarity": "rare",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature has \"{T}: Create X 1/1 red Elemental creature tokens with haste, where X is this creature's power. Exile them at the beginning of the next end step.\"",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

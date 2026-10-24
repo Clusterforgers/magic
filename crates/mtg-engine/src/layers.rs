@@ -23,7 +23,7 @@ use std::sync::{Arc, OnceLock};
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::Modification as Wanted;
-use mtg_cards::refs::{Ref, ZoneKind};
+use mtg_cards::refs::{Pred, Ref, Selector as Named, ZoneKind};
 use mtg_cards::value::CounterKind;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
@@ -185,6 +185,22 @@ impl Held {
             abilities,
             keywords,
             applied: Vec::new(),
+        }
+    }
+
+    /// A card that is not on the battlefield as its card prints it, with the characteristic-defining abilities it has
+    /// there: the layers change it like a permanent when a static ability names the zone it is in.
+    fn outside(state: &GameState, object: &GameObject) -> Held {
+        let mut held = Held::new(object);
+        held.chars = outside(state, object, None);
+        held
+    }
+
+    /// The changes the layers made, applied to `chars`: the characteristics of a card outside the battlefield with its
+    /// own defining abilities, then what the effects and static abilities of the game gave it.
+    pub(crate) fn replay(&self, chars: &mut Characteristics) {
+        for change in &self.applied {
+            change.modification.apply(chars);
         }
     }
 
@@ -494,6 +510,57 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
     })
 }
 
+/// The zone a selector looks in: the one it names, the stack for spells, else the battlefield.
+pub(crate) fn zone_named(selector: &Named) -> ZoneKind {
+    selector
+        .0
+        .iter()
+        .find_map(|pred| match pred {
+            Pred::In(kind) => Some(*kind),
+            _ => None,
+        })
+        .unwrap_or_else(|| {
+            if selector.0.contains(&Pred::Spell) {
+                ZoneKind::Stack
+            } else {
+                ZoneKind::Battlefield
+            }
+        })
+}
+
+/// The zones other than the battlefield that a static ability of the game names in the selector of what it affects:
+/// the cards there are held by the pass like permanents ("Each creature card in your hand has cycling {1}{U}").
+fn outside_zones(state: &GameState) -> Vec<ZoneKind> {
+    let mut zones = Vec::new();
+    for object in state.objects() {
+        let here = object.zone() == Zone::Battlefield;
+        if object.kind() == ObjectKind::Ability
+            || !definition_has_static(object.card())
+            || (!here && !state.possible.elsewhere)
+        {
+            continue;
+        }
+        let abilities: Vec<&Arc<Ability>> = if here {
+            printed(object).map(|(_, rules)| rules).collect()
+        } else {
+            working_here(object).map(|(_, rules)| rules).collect()
+        };
+        for rules in abilities {
+            if let Ability::Static {
+                affected: Ref::Each(selector),
+                ..
+            } = &**rules
+            {
+                let zone = zone_named(selector);
+                if zone != ZoneKind::Battlefield && !zones.contains(&zone) {
+                    zones.push(zone);
+                }
+            }
+        }
+    }
+    zones
+}
+
 /// The pass: the permanents as the layers have left them so far, and what has been applied.
 struct Pass<'a> {
     state: &'a GameState,
@@ -545,6 +612,18 @@ fn compute(state: &GameState) -> Layers {
             && object.kind() != ObjectKind::Ability
         {
             held.insert(id, Held::new(object));
+        }
+    }
+    let zones = outside_zones(state);
+    if !zones.is_empty() {
+        for object in state.objects() {
+            if object.kind() != ObjectKind::Ability
+                && object.zone() != Zone::Battlefield
+                && object.zone() != Zone::PhasedOut
+                && zones.contains(&zone_kind(object.zone()))
+            {
+                held.insert(object.id(), Held::outside(state, object));
+            }
         }
     }
     let mut pass = Pass {
@@ -811,7 +890,8 @@ impl<'a> Pass<'a> {
                         .iter()
                         .filter(|(id, held)| {
                             self.state.object(*id).is_some_and(|object| {
-                                selector.matches(object, &held.chars, held.controller)
+                                object.zone() == Zone::Battlefield
+                                    && selector.matches(object, &held.chars, held.controller)
                             })
                         })
                         .map(|(id, _)| id)
@@ -882,15 +962,18 @@ impl<'a> Pass<'a> {
                     view.get(host)?;
                     BTreeSet::from([host])
                 }
-                Ref::Each(selector) => view
-                    .iter()
-                    .filter(|(id, held)| {
-                        self.state.object(*id).is_some_and(|object| {
-                            scope.selects_with(selector, object, held).unwrap_or(false)
+                Ref::Each(selector) => {
+                    let zone = zone_named(selector);
+                    view.iter()
+                        .filter(|(id, held)| {
+                            self.state.object(*id).is_some_and(|object| {
+                                zone_kind(object.zone()) == zone
+                                    && scope.selects_with(selector, object, held).unwrap_or(false)
+                            })
                         })
-                    })
-                    .map(|(id, _)| id)
-                    .collect(),
+                        .map(|(id, _)| id)
+                        .collect()
+                }
                 // The data check keeps every other reference out of a static ability.
                 _ => BTreeSet::new(),
             }
@@ -1170,5 +1253,7 @@ mod defining;
 mod dependencies;
 #[cfg(test)]
 mod keyword_counters;
+#[cfg(test)]
+mod outside;
 #[cfg(test)]
 mod tests;

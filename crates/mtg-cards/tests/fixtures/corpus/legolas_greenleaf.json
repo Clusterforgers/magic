@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "130237e7-6f45-4b92-b49d-12f10db29bb8",
+  "oracle_id": "beacbb51-51fe-47f7-a612-02cd93fbffdd",
+  "multiverse_ids": [
+    620726
+  ],
+  "mtgo_id": 113112,
+  "tcgplayer_id": 499610,
+  "cardmarket_id": 717358,
+  "name": "Legolas Greenleaf",
+  "lang": "en",
+  "released_at": "2023-06-23",
+  "uri": "https://api.scryfall.com/cards/130237e7-6f45-4b92-b49d-12f10db29bb8",
+  "scryfall_uri": "https://scryfall.com/card/ltc/40/legolas-greenleaf?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:13:46Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/3/130237e7-6f45-4b92-b49d-12f10db29bb8.jpg?1783916026",
+    "normal": "https://cards.scryfall.io/normal/front/1/3/130237e7-6f45-4b92-b49d-12f10db29bb8.jpg?1783916026",
+    "large": "https://cards.scryfall.io/large/front/1/3/130237e7-6f45-4b92-b49d-12f10db29bb8.jpg?1783916026",
+    "png": "https://cards.scryfall.io/png/front/1/3/130237e7-6f45-4b92-b49d-12f10db29bb8.png?1783916026",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/3/130237e7-6f45-4b92-b49d-12f10db29bb8.jpg?1783916026",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/3/130237e7-6f45-4b92-b49d-12f10db29bb8.jpg?1783916026",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/3/130237e7-6f45-4b92-b49d-12f10db29bb8.webp?1783916026",
+    "grid": "https://cards.scryfall.io/grid/front/1/3/130237e7-6f45-4b92-b49d-12f10db29bb8.webp?1783916026",
+    "display": "https://cards.scryfall.io/display/front/1/3/130237e7-6f45-4b92-b49d-12f10db29bb8.webp?1783916026",
+    "art": "https://cards.scryfall.io/art/front/1/3/130237e7-6f45-4b92-b49d-12f10db29bb8.webp?1783916026",
+    "crop": "https://cards.scryfall.io/crop/front/1/3/130237e7-6f45-4b92-b49d-12f10db29bb8.webp?1783916026",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/3/130237e7-6f45-4b92-b49d-12f10db29bb8.jpg?1783916026"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Elf Archer",
+  "oracle_text": "Reach\nLegolas can't be blocked by creatures with power 2 or less.\nWhenever another legendary creature you control enters, put a +1/+1 counter on Legolas.\nWhenever Legolas deals combat damage to a player, draw a card.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set": "ltc",
+  "set_name": "Tales of Middle-earth Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Altc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ltc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/130237e7-6f45-4b92-b49d-12f10db29bb8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abeacbb51-51fe-47f7-a612-02cd93fbffdd&unique=prints",
+  "collector_number": "40",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Anna Steinbauer",
+  "artist_ids": [
+    "3516496c-c279-4b56-8239-720683d03ae0"
+  ],
+  "illustration_id": "5d866c22-b607-4f28-9b95-242a985f2e6b",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 5780,
+  "prices": {
+    "usd": "0.42",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.82",
+    "eur_foil": null,
+    "tix": "1.11"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=620726&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLegolas%2BGreenleaf",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLegolas%2BGreenleaf",
+    "edhrec": "https://edhrec.com/route/?cc=Legolas+Greenleaf"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F499610%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=717358&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/113112?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

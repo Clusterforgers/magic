@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0e2c11b2-d95f-4402-9a4a-afd3f7ffb8be",
+  "name": "Eureka Moment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eureka Moment",
+      "oracle_fingerprint": "dad4f3913cdfb0d0b8e3f288961e20ed",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Land" }]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

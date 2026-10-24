@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Vigilance"},{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Cat Soldier","colors":["White"],"types":["Creature"],"subtypes":["Cat","Soldier"],"power":1,"toughness":1,"abilities":[{"Keyword":"Vigilance"}]}},"attacking":true}}]}}]}]}
