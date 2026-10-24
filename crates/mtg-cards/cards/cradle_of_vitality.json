@@ -1,0 +1,35 @@
+{
+  "oracle_id": "956250da-532a-4457-8696-73915be56943",
+  "name": "Cradle of Vitality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cradle of Vitality",
+      "oracle_fingerprint": "0d784c311dbed59d511321fd5a24a056",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{W}",
+                  "paid": [
+                    {
+                      "PutCounters": {
+                        "on": { "Target": 0 },
+                        "counter": "+1/+1",
+                        "count": "Triggering"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

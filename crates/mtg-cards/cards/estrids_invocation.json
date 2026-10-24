@@ -1,0 +1,47 @@
+{
+  "oracle_id": "7f5f10ee-6428-4053-8824-3bc70420ec2c",
+  "name": "Estrid's Invocation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Estrid's Invocation",
+      "oracle_fingerprint": "8a3fc4b9c7dcc6925e08deec89b37b85",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }],
+                "except": [
+                  {
+                    "GrantAbility": {
+                      "Triggered": {
+                        "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                        "effects": [
+                          {
+                            "May": {
+                              "effects": [
+                                { "Exile": { "what": "This", "as": "self" } },
+                                {
+                                  "Move": {
+                                    "what": { "Bound": "self" },
+                                    "to": { "Battlefield": {} }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"LookAtTop":{"count":5,"as":"top"}},{"Choose":{"from":{"Each":[{"In":"Library"},{"Is":{"Bound":"top"}},"Colorless"]},"count":{"min":0,"max":1},"as":"kept"}},{"Reveal":{"what":{"Bound":"kept"}}},{"Move":{"what":{"Bound":"kept"},"to":"Hand"}},{"Move":{"what":{"Bound":"top"},"to":{"Library":{"place":"Bottom","order":"Chosen"}}}}]}}]}]}

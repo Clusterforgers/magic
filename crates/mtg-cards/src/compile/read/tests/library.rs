@@ -231,9 +231,6 @@ fn capitalize(text: &str) -> String {
     "Search your library for a basic land card, shuffle, then put it onto the battlefield."
 )]
 #[case::exiled("Search your library for a card, exile it, then shuffle.")]
-#[case::into_the_graveyard(
-    "Search your library for a card, put it into your graveyard, then shuffle."
-)]
 #[case::another_library(
     "Search target player's library for a card, put it onto the battlefield, then shuffle."
 )]

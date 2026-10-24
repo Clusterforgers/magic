@@ -1,0 +1,19 @@
+{
+  "oracle_id": "35426427-4268-4c8f-9fe1-270f2ce43d97",
+  "name": "Dissipation Field",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dissipation Field",
+      "oracle_fingerprint": "37fc75393bcfcf382ae7e458859e8e2f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "You" } },
+            "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

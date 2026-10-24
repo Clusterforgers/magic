@@ -5,10 +5,13 @@
 mod also_create;
 mod bare;
 mod cast_graveyard;
+mod commander_draw;
 mod conditions;
+mod controller_may;
 mod copy_quotes;
 mod counter_any;
 mod discard_play;
+mod double_counters;
 mod each_of;
 mod either_event;
 mod energy_amount;
@@ -16,10 +19,12 @@ mod entry_counters;
 mod exile_each;
 mod exile_play;
 mod land_types;
+mod life_counters;
 mod look_split;
 mod non_lists;
 mod one_or_more_attack;
 mod put_into_graveyard;
+mod return_damager;
 mod unless;
 mod wheres;
 
@@ -29,10 +34,13 @@ use crate::ability::Ability;
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     also_create::add(ability, texts);
     cast_graveyard::add(ability, texts);
+    commander_draw::add(ability, texts);
     conditions::add(ability, texts);
+    controller_may::add(ability, texts);
     copy_quotes::add(ability, texts);
     counter_any::add(ability, texts);
     discard_play::add(ability, texts);
+    double_counters::add(ability, texts);
     each_of::add(ability, texts);
     either_event::add(ability, texts);
     energy_amount::add(ability, texts);
@@ -40,10 +48,12 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     exile_each::add(ability, texts);
     exile_play::add(ability, texts);
     land_types::add(ability, texts);
+    life_counters::add(ability, texts);
     look_split::add(ability, texts);
     non_lists::add(ability, texts);
     one_or_more_attack::add(ability, texts);
     put_into_graveyard::add(ability, texts);
+    return_damager::add(ability, texts);
     unless::add(ability, texts);
     wheres::add(ability, texts);
 }

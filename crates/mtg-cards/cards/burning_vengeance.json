@@ -1,0 +1,25 @@
+{
+  "oracle_id": "ef1fb174-9a34-43d0-8caf-9c1938147a12",
+  "name": "Burning Vengeance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burning Vengeance",
+      "oracle_fingerprint": "29feda3f7361076533ef14c2c2f49930",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "CastFrom": "Graveyard" }, { "OwnedBy": "You" }],
+                "by": "You"
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

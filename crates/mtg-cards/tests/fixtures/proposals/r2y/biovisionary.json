@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"End"}},"if":{"Compare":{"left":{"Count":[{"Type":"Creature"},{"Named":"Biovisionary"},{"ControlledBy":"You"}]},"op":"Ge","right":4}},"effects":[{"WinGame":{}}]}}]}]}
