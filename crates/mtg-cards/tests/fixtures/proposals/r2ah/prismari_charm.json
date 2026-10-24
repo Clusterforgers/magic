@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Modal":{"modes":[{"effects":[{"Surveil":{"count":2}},{"Draw":{}}]},{"targets":[{"what":"AnyTarget","bounds":{"min":1,"max":2}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":1}}]},{"targets":[{"what":{"Object":[{"Not":{"Type":"Land"}}]}}],"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}}]}]}}]}}]}]}

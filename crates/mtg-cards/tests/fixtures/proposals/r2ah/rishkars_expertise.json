@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Draw":{"count":{"Greatest":{"of":[{"Type":"Creature"},{"ControlledBy":"You"}],"stat":"Power"}}}},{"CastFromZone":{"what":{"Each":[{"In":"Hand"},{"OwnedBy":"You"},{"Compare":{"stat":"ManaValue","op":"Le","to":5}}]},"free":true}}]}}]}]}

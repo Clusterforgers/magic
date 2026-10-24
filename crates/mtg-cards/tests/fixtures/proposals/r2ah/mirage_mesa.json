@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":"Tapped"}},{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"Choose":"Color"}}},{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"ChosenColor":1}}}]}}]}]}

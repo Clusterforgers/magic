@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"SpellCast":{"what":[{"Not":{"CastFrom":"Hand"}}],"by":"You"}},"targets":[{"what":"Player"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":2}},{"Discard":{"who":{"Target":0}}},{"Draw":{"who":{"Target":0}}},{"PutCounters":{"on":"This","counter":"+1/+1"}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Sacrifice":{"who":"EachPlayer","filter":[{"Type":"Creature"}],"count":6}},{"CreateToken":{"token":{"Custom":{"name":"Zombie","colors":["Black"],"types":["Creature"],"subtypes":["Zombie"],"power":2,"toughness":2}},"count":6,"tapped":true}}]}}]}]}
