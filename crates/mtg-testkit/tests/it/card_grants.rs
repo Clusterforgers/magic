@@ -1,4 +1,4 @@
-//! Goal: a keyword a static ability gives to the cards of a hand plays as the rules say at two to four seats. Rhet-Tomb Mystic gives each creature card in its controller's hand cycling {1}{U}, Tectonic Reformation gives each land card in its controller's hand cycling {R}, and Molecule Man gives each nonland card in its controller's hand miracle {0}: the grant is offered only for the cards it names, only to the player whose cards they are, only while its source is on the battlefield and only when the cost can be paid, the cycling is logged and draws a card, and the game replays to the same state.
+//! Goal: a keyword a static ability gives to the cards of a hand, and to a spell on the stack (cascade), plays as the rules say at two to four seats. Rhet-Tomb Mystic gives each creature card in its controller's hand cycling {1}{U}, Tectonic Reformation gives each land card in its controller's hand cycling {R}, and Molecule Man gives each nonland card in its controller's hand miracle {0}: the grant is offered only for the cards it names, only to the player whose cards they are, only while its source is on the battlefield and only when the cost can be paid, the cycling is logged and draws a card, and the game replays to the same state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -177,4 +177,77 @@ fn cycling_a_granted_card_discards_it_draws_and_replays(
     let replayed = replay(&setup, driver.engine().events())?;
     assert_eq!(replayed.state_hash(), driver.state().state_hash());
     Ok(())
+}
+
+/// A creature that gives its controller's spells `mods` (a static ability over the spells on the stack).
+fn spell_lord(mods: &str) -> std::sync::Arc<mtg_cards::CardDefinition> {
+    let ability = format!(
+        r#"{{"Static":{{"affected":{{"Each":["Spell",{{"ControlledBy":"You"}}]}},"mods":[{mods}]}}}}"#
+    );
+    std::sync::Arc::new(
+        mtg_cards::CardDefinition::new("Spell Lord")
+            .with_type(mtg_core::card::CardType::Creature)
+            .with_power_toughness(1, 1)
+            .with_rules(serde_json::from_str(&ability).unwrap()),
+    )
+}
+
+/// Seat 0 casts a spell for {2} with `lord` in play (when there is one); its library holds a cheaper card on top.
+fn cascade_table(seats: usize, lord: Option<std::sync::Arc<mtg_cards::CardDefinition>>) -> Driver {
+    let two = mtg_testkit::cards::creature("Two", 2, &[], 2, 2);
+    let cheap = mtg_testkit::cards::creature("Cheap", 1, &[], 1, 1);
+    let scenario = Scenario::new(seats)
+        .hand(0, [two])
+        .battlefield(
+            0,
+            lord.map(ready)
+                .into_iter()
+                .chain([ready(mountain()), ready(mountain())]),
+        )
+        .library(0, [forest(), forest(), cheap]);
+    Driver::from_scenario(scenario).unwrap()
+}
+
+#[rstest]
+fn a_keyword_given_to_a_spell_on_the_stack_works_as_a_printed_one(#[values(2, 3, 4)] seats: usize) {
+    let mut driver = cascade_table(seats, Some(spell_lord(r#"{"AddKeyword":"Cascade"}"#)));
+    driver.cast("Two").unwrap();
+    assert!(
+        keywords_of(driver.state(), on_stack(&driver, "Two"))
+            .iter()
+            .any(|keyword| matches!(keyword, Keyword::Cascade)),
+        "the spell on the stack has cascade"
+    );
+    for _ in 0..8 {
+        if matches!(driver.decision().unwrap().kind, DecisionKind::YesNo(_)) {
+            break;
+        }
+        driver.pass().unwrap();
+    }
+    let DecisionKind::YesNo(question) = &driver.decision().unwrap().kind else {
+        panic!("the cascade asks to cast the card it found");
+    };
+    assert_eq!(question.text, "Cast Cheap without paying its mana cost?");
+}
+
+#[rstest]
+fn a_spell_the_source_does_not_cover_is_not_given_the_keyword(#[values(2, 3, 4)] seats: usize) {
+    let mut driver = cascade_table(seats, None);
+    driver.cast("Two").unwrap();
+    assert!(
+        !keywords_of(driver.state(), on_stack(&driver, "Two"))
+            .iter()
+            .any(|keyword| matches!(keyword, Keyword::Cascade))
+    );
+}
+
+/// The spell called `name` on the stack.
+fn on_stack(driver: &Driver, name: &str) -> mtg_core::ids::ObjectId {
+    driver
+        .state()
+        .zone(Zone::Stack)
+        .iter()
+        .copied()
+        .find(|id| name_of(driver.state(), *id) == name)
+        .unwrap()
 }
