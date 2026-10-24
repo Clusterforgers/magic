@@ -4,7 +4,7 @@
 //! wording with the pronoun.
 
 use super::selectors::{Form, phrase_text};
-use super::triggers::event_creature;
+use super::triggers::{event_creature, itself_acts};
 use crate::ability::Ability;
 use crate::effect::Effect;
 use crate::refs::{Pred, Ref};
@@ -75,7 +75,8 @@ pub(super) fn of_the_group(ability: &Ability, texts: &mut Vec<String>) {
 pub(super) fn of_the_card(ability: &Ability, texts: &mut Vec<String>) {
     let itself = matches!(
         ability,
-        Ability::Triggered { when, .. } if event_creature(when) == Some(Ref::This)
+        Ability::Triggered { when, .. }
+            if event_creature(when) == Some(Ref::This) || itself_acts(when)
     );
     let pronouns: Vec<String> = texts
         .iter()

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c9739382-9fe0-4d24-b58e-1e45a88491b6",
+  "name": "Smell Fear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smell Fear",
+      "oracle_fingerprint": "93183b3dd40b0824b67e3942bf503328",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Proliferate": {} },
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

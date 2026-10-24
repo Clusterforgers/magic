@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c0c4ecf6-84e6-443e-8a81-e395b31c631d",
+  "name": "Prizefight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prizefight",
+      "oracle_fingerprint": "6f8e9a68ad643449e8c7dc204b108c8c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } },
+              { "CreateToken": { "token": { "Named": "treasure" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

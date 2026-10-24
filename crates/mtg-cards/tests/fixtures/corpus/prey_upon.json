@@ -1,0 +1,25 @@
+{
+  "id": "0eb1b036-0856-4cfb-ace5-2731f13696bd",
+  "oracle_id": "b3c12848-528d-4005-878f-4f950a07240a",
+  "name": "Prey Upon",
+  "lang": "en",
+  "layout": "normal",
+  "set": "uma",
+  "collector_number": "178",
+  "rarity": "common",
+  "released_at": "2018-12-07",
+  "digital": false,
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Target creature you control fights target creature you don't control. (Each deals damage equal to its power to the other.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Fight"
+  ]
+}

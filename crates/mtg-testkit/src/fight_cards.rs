@@ -31,10 +31,26 @@ pub const CORPUS_CARDS: &[(&str, usize)] = &[
     ("Level Up", 1),
     ("Idolized", 1),
     ("Elemental Mastery", 1),
+    ("Clash of Titans", 2),
+    ("Hunt the Weak", 2),
+    ("Prey Upon", 2),
+    ("Pit Fight", 1),
+    ("Primal Might", 1),
+    ("Epic Confrontation", 1),
+    ("Prizefight", 1),
+    ("Smell Fear", 1),
+    ("Apex Altisaur", 1),
+    ("Gruul Ragebeast", 1),
 ];
 
 /// The spells whose resolution is a fight.
-pub const FIGHT_SPELLS: &[&str] = &["Brawl", "Warbriar Blessing"];
+pub const FIGHT_SPELLS: &[&str] = &[
+    "Brawl",
+    "Warbriar Blessing",
+    "Clash of Titans",
+    "Hunt the Weak",
+    "Prey Upon",
+];
 
 /// The creature cards of the deck that have decayed.
 pub const DECAYED_CARDS: &[&str] = &["Zombie Husk"];

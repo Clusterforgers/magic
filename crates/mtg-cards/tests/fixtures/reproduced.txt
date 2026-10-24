@@ -41,6 +41,7 @@ Angel of Vitality
 Angelic Ascension
 Angelic Field Marshal
 Ant-Man, Elusive Avenger
+Apex Altisaur
 Aquastrand Spider
 Arbor Colossus
 Arboreal Grazer
@@ -191,6 +192,7 @@ Chromatic Lantern
 Circle of Dreams Druid
 Citadel Gate
 Citanul Hierophants
+Clash of Titans
 Cliffgate
 Clifftop Lookout
 Clive's Hideaway
@@ -348,6 +350,7 @@ Enraged Revolutionary
 Enthusiastic Study
 Entreat the Angels
 Entreat the Dead
+Epic Confrontation
 Epic Proportions
 Era of Enlightenment // Hand of Enlightenment
 Erebos, Bleak-Hearted
@@ -475,6 +478,7 @@ Grim Initiate
 Grisly Salvage
 Growing Ranks
 Gruul Cluestone
+Gruul Ragebeast
 Guardian Augmenter
 Guardian Gladewalker
 Guidelight Matrix
@@ -520,6 +524,7 @@ Hour of Revelation
 Howltooth Hollow
 Hulking Raptor
 Hungry Lynx
+Hunt the Weak
 Huntmaster Liger
 Icefeather Aven
 Idyllic Beachfront
@@ -762,6 +767,7 @@ Phyrexian Soulgorger
 Pillar of Origins
 Pillar of the Paruns
 Pinion Feast
+Pit Fight
 Plague Myr
 Plague Stinger
 Planar Outburst
@@ -778,10 +784,13 @@ Pouncing Shoreshark
 Powder Ganger
 Prava of the Steel Legion
 Predator Dragon
+Prey Upon
 Pridemalkin
+Primal Might
 Primeval Protector
 Primordial Hydra
 Prismatic Lens
+Prizefight
 Professional Face-Breaker
 Professor of Symbology
 Propaganda
@@ -936,6 +945,7 @@ Skysovereign, Consul Flagship
 Slip Through Space
 Slitherhead
 Sluiceway Scorpion
+Smell Fear
 Smuggler's Buggy
 Smuggler's Copter
 Snake Umbra

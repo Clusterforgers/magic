@@ -1738,6 +1738,10 @@ impl Writer<'_> {
             Effect::Untap { what } => format!("untap {}", self.object(what)?),
             Effect::Goad { what } if self.named && self.single(what) => "goad it".to_owned(),
             Effect::Goad { what } => format!("goad {}", self.object(what)?),
+            Effect::Fight {
+                what: Ref::Triggering,
+                with,
+            } => format!("that creature fights {}", self.object(with)?),
             Effect::Fight { what, with } => {
                 format!("{} fights {}", self.object(what)?, self.object(with)?)
             }

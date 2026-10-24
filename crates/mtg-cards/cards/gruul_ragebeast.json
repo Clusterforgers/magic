@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e5fa93a3-0b2b-4477-ad3f-4fc1b325ca19",
+  "name": "Gruul Ragebeast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gruul Ragebeast",
+      "oracle_fingerprint": "2f1d060fa49e9733c1387cd5093cc207",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [{ "Fight": { "what": "Triggering", "with": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

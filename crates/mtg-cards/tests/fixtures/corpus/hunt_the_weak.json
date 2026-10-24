@@ -1,0 +1,25 @@
+{
+  "id": "05d6cab6-b0f9-4631-a4bd-5ff1d6d53880",
+  "oracle_id": "37864d13-2aaa-477b-8453-a42f77ab4437",
+  "name": "Hunt the Weak",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rix",
+  "collector_number": "133",
+  "rarity": "common",
+  "released_at": "2018-01-19",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Put a +1/+1 counter on target creature you control. Then that creature fights target creature you don't control. (Each deals damage equal to its power to the other.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Fight"
+  ]
+}

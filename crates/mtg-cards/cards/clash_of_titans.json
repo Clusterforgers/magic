@@ -1,0 +1,24 @@
+{
+  "oracle_id": "198c05ca-fb2d-4f15-a28f-1dad36466a4f",
+  "name": "Clash of Titans",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clash of Titans",
+      "oracle_fingerprint": "313ce977fec7a4fdae355d50ee5c2d65",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] }
+              }
+            ],
+            "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "37864d13-2aaa-477b-8453-a42f77ab4437",
+  "name": "Hunt the Weak",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hunt the Weak",
+      "oracle_fingerprint": "54eee2ec70483638855c5236a2fa25cf",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

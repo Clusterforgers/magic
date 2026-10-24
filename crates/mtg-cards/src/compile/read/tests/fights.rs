@@ -121,6 +121,23 @@ fn a_trigger_makes_creatures_fight(
 }
 
 #[rstest]
+#[case::enrage(
+    "Whenever ~ is dealt damage, it fights up to one target creature you don't control.",
+    r#"{"Triggered":{"when":{"DealsDamage":{"source":[],"to":"This"}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"Not":{"ControlledBy":"You"}}]},"bounds":{"min":0,"max":1}}],"effects":[{"Fight":{"what":"This","with":{"Target":0}}}]}}"#
+)]
+#[case::the_card_or_another_that_enters(
+    "Whenever ~ or another Vampire you control enters, ~ fights up to one target creature an opponent controls.",
+    r#"{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"ZoneChange":{"what":[{"Subtype":"Vampire"},"Other",{"ControlledBy":"You"}],"to":"Battlefield"}}]},"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]},"bounds":{"min":0,"max":1}}],"effects":[{"Fight":{"what":"This","with":{"Target":0}}}]}}"#
+)]
+#[case::the_creature_that_entered(
+    "Whenever ~ or another creature you control enters, that creature fights target creature an opponent controls.",
+    r#"{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"ZoneChange":{"what":[{"Type":"Creature"},"Other",{"ControlledBy":"You"}],"to":"Battlefield"}}]},"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}}],"effects":[{"Fight":{"what":"Triggering","with":{"Target":0}}}]}}"#
+)]
+fn other_events_make_creatures_fight(#[case] text: &str, #[case] json: &str) {
+    reads_as(text, ClauseKind::Triggered, false, json);
+}
+
+#[rstest]
 #[case::a_creature_in_a_graveyard(
     "Target creature you control fights target creature card in a graveyard."
 )]
