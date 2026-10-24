@@ -1535,12 +1535,15 @@ fn delayed(
     }
 }
 
-/// Whether [`detect`] reads the state before `events`: only a move out of the battlefield, a death, a discard and a
+/// Whether [`detect`] reads the state before `events`: only a move out of the battlefield, a death, a discard, a change
+/// of day or night (which was something else before) and a
 /// spell or ability that ends without resolving look back at it. Any other batch is judged by the state after it
 /// alone, which saves copying the whole state for it.
 pub(crate) fn needs_before(events: &[Event]) -> bool {
     events.iter().any(|event| match event {
-        Event::CreatureDied { .. } | Event::CardDiscarded { .. } => true,
+        Event::CreatureDied { .. }
+        | Event::CardDiscarded { .. }
+        | Event::DayNightChanged { .. } => true,
         Event::ZoneChanged { from, .. } => *from == Zone::Battlefield,
         Event::ResolutionEnded { outcome, .. } => *outcome != ResolutionOutcome::Resolved,
         _ => false,

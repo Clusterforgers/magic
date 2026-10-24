@@ -32,6 +32,7 @@ pub mod count_cards;
 pub mod counter_cards;
 pub mod counting_cards;
 pub mod curse_cards;
+pub mod day_night_cards;
 pub mod decks;
 pub mod defining_cards;
 pub mod demonstrate_cards;
@@ -141,6 +142,7 @@ pub use count_cards::count_fuzz_setup;
 pub use counter_cards::counters_fuzz_setup;
 pub use counting_cards::counting_fuzz_setup;
 pub use curse_cards::curse_fuzz_setup;
+pub use day_night_cards::{DAY_NIGHT_CARDS, day_maker, day_night_fuzz_setup, mass_landing};
 pub use decks::{
     archon_fuzz_setup, fuzz_setup, keyword_fuzz_setup, library_fuzz_setup, ramp_fuzz_setup,
     removal_fuzz_setup, spell_fuzz_setup, symbol_fuzz_setup, trigger_fuzz_setup,

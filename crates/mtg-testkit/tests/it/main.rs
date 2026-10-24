@@ -103,6 +103,8 @@ mod curses_attacked;
 mod damage_forms;
 mod dash;
 mod day_night;
+mod day_night_effects;
+mod day_night_fuzz;
 mod defining;
 mod defining_fuzz;
 mod demonstrate;
