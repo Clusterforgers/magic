@@ -1,0 +1,23 @@
+{
+  "oracle_id": "f92673fe-cd73-48ae-bfbd-aa750582b80b",
+  "name": "Taste of Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Taste of Death",
+      "oracle_fingerprint": "3088ffa9b91b98907b38dfd6d5a8ebe6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Creature" }], "count": 3 }
+              },
+              { "CreateToken": { "token": { "Named": "food" }, "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "c8ff464f-0059-4055-a2f2-556fe6db8fbf",
+  "name": "Sunscorch Regent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunscorch Regent",
+      "oracle_fingerprint": "2e842cdc4f2040eb83a5297ed5a60775",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

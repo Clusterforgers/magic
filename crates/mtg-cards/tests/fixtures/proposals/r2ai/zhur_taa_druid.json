@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}},{"Triggered":{"when":{"TappedForMana":{"what":["This"],"by":"You"}},"effects":[{"DealDamage":{"to":"Opponents","amount":1}}]}}]}]}

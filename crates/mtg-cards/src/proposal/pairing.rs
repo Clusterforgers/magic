@@ -6,7 +6,7 @@ use super::{ClauseReport, ClauseState, Stray};
 use crate::ability::Ability;
 use crate::card::{Card, Span};
 use crate::compile::{
-    Clause, ClauseKind, block_plan, creature_at, read_keyword, read_keywords, same_text,
+    Clause, ClauseKind, block_plan, creature_at, own_names, read_keyword, read_keywords, same_text,
     static_pair_texts, written_variants,
 };
 use crate::keyword::Keyword;
@@ -50,7 +50,8 @@ pub(super) fn pair_card(card: &Card, clauses: &[Clause], printed: &PrintedCard) 
             .map_or(&[][..], |rules| rules.abilities.as_slice());
         let of_face: Vec<&Clause> = clauses.iter().filter(|c| c.face == face).collect();
         let creature_at = printed.faces.get(face).and_then(creature_at);
-        let found = Pairer::new(face, abilities, &of_face, creature_at).run();
+        let names = printed.faces.get(face).map(own_names).unwrap_or_default();
+        let found = Pairer::new(face, abilities, &of_face, (creature_at, names)).run();
         paired.clauses.extend(found.clauses);
         paired.strays.extend(found.strays);
         paired.places.extend(found.places);
@@ -156,6 +157,8 @@ struct Pairer<'a> {
     abilities: &'a [Ability],
     /// Where a Spacecraft with a printed power becomes a creature, for the head of a station block.
     creature_at: Option<i32>,
+    /// The names the face calls itself by, which the clauses show as `~` (also inside the name of a token).
+    names: Vec<String>,
     slots: Vec<Slot<'a>>,
     taken: Vec<bool>,
     slot_of: Vec<Option<usize>>,
@@ -168,12 +171,13 @@ impl<'a> Pairer<'a> {
         face: usize,
         abilities: &'a [Ability],
         clauses: &[&'a Clause],
-        creature_at: Option<i32>,
+        (creature_at, names): (Option<i32>, Vec<String>),
     ) -> Self {
         Pairer {
             face,
             abilities,
             creature_at,
+            names,
             slots: clauses
                 .iter()
                 .map(|&clause| Slot {
@@ -230,9 +234,21 @@ impl<'a> Pairer<'a> {
                 || (again && matches!(slot.state, Some(ClauseState::Reads { .. })));
             free && kinds.contains(&slot.clause.kind)
                 && written.iter().any(|variant| {
-                    same_text(variant, slot.text) || same_text(stripped(variant), slot.text)
+                    self.same(variant, slot.text) || self.same(stripped(variant), slot.text)
                 })
         })
+    }
+
+    /// Whether a written wording is the clause text; the face's own names count as `~` in it, as in the clause.
+    fn same(&self, variant: &str, text: &str) -> bool {
+        if same_text(variant, text) {
+            return true;
+        }
+        let mut shown = variant.to_owned();
+        for name in &self.names {
+            shown = shown.replace(name.as_str(), "~");
+        }
+        shown != variant && same_text(&shown, text)
     }
 
     /// The clauses a `Manual` ability of the proposal leaves to the table.
@@ -328,7 +344,7 @@ impl<'a> Pairer<'a> {
             if matches!(ability, Ability::Spell { .. }) {
                 let open = self.open_slots(kinds_of(ability));
                 let joined = self.joined(&open);
-                if written.iter().any(|variant| same_text(variant, &joined)) {
+                if written.iter().any(|variant| self.same(variant, &joined)) {
                     for &slot in &open {
                         self.settle(at, slot, ClauseState::Reads { ability: at });
                     }

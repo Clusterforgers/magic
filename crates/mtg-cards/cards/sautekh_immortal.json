@@ -1,0 +1,25 @@
+{
+  "oracle_id": "7388a797-d40d-4783-a281-d17bc159b856",
+  "name": "Sautekh Immortal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sautekh Immortal",
+      "oracle_fingerprint": "ade5d8c1262ab128df3337ce1482b4d6",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

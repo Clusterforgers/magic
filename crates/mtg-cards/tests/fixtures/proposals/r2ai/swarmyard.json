@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]}}}]}},{"Activated":{"cost":["Tap"],"targets":[{"what":{"Object":[{"AnyOf":[{"Subtype":"Insect"},{"Subtype":"Rat"},{"Subtype":"Spider"},{"Subtype":"Squirrel"}]}]}}],"effects":[{"Regenerate":{"what":{"Target":0}}}]}}]}]}

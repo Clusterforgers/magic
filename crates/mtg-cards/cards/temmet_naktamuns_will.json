@@ -1,0 +1,37 @@
+{
+  "oracle_id": "3dc43ffe-f6b0-4cdc-86b3-01c0f41df0ae",
+  "name": "Temmet, Naktamun's Will",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temmet, Naktamun's Will",
+      "oracle_fingerprint": "0e30bae74869c87298a530f81faee8d7",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

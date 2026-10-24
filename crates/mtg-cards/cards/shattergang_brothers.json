@@ -1,0 +1,36 @@
+{
+  "oracle_id": "7fb63d9a-8d90-4b43-8390-924de2d7e32c",
+  "name": "Shattergang Brothers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shattergang Brothers",
+      "oracle_fingerprint": "b6347b4f7206eb54c91a1411f84d26bc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}" }, { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+            "effects": [{ "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Artifact" }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{G}" },
+              { "Sacrifice": { "filter": [{ "Type": "Enchantment" }] } }
+            ],
+            "effects": [
+              { "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Enchantment" }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

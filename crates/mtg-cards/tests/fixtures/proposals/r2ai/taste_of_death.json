@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Sacrifice":{"who":"EachPlayer","filter":[{"Type":"Creature"}],"count":3}},{"CreateToken":{"token":{"Named":"food"},"count":3}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"End","whose":"You"}},"if":{"Compare":{"left":{"Tallied":{"who":"You","what":"LifeGainedTotal"}},"op":"Ge","right":3}},"from":"Graveyard","effects":[{"Move":{"what":"This","to":{"Battlefield":{"tapped":true}}}}]}},{"Activated":{"cost":[{"Mana":"{1}{B}"},"SacrificeSelf"],"effects":[{"Draw":{}}]}}]}]}

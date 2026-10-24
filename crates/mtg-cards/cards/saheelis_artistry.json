@@ -1,0 +1,47 @@
+{
+  "oracle_id": "0038e74a-b950-47ff-8853-dba6a3b31091",
+  "name": "Saheeli's Artistry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saheeli's Artistry",
+      "oracle_fingerprint": "92bfefb6657844f83092b8e062257189",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [
+                        { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "CopyOf": {
+                                "of": { "Target": 0 },
+                                "except": [{ "AddType": "Artifact" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

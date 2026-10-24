@@ -1,0 +1,33 @@
+{
+  "oracle_id": "e6108735-8370-4611-ad59-d7da7fd0323f",
+  "name": "Sure-Footed Infiltrator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sure-Footed Infiltrator",
+      "oracle_fingerprint": "98176e10039178f025e467e6fd327c87",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Rogue" }, "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

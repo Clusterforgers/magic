@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Menace"},{"Triggered":{"when":{"Nth":{"event":{"SpellCast":{"what":[{"Not":{"Type":"Creature"}}],"by":"Opponents"}},"nth":1}},"effects":[{"LoseLife":{"who":{"ControllerOf":"Triggering"},"amount":{"Stat":{"of":"Triggering","stat":"ManaValue"}}}}]}}]}]}

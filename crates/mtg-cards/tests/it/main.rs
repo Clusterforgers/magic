@@ -21,6 +21,7 @@ mod linked_exile;
 mod printed;
 mod proposal;
 mod proposal_blocks;
+mod proposal_names;
 mod roundtrip;
 mod transform_cards;
 mod vocabulary;

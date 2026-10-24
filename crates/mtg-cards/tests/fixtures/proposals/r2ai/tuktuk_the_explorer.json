@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Haste"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Tuktuk the Returned","supertypes":["Legendary"],"types":["Artifact","Creature"],"subtypes":["Goblin","Golem"],"power":5,"toughness":5}}}}]}}]}]}

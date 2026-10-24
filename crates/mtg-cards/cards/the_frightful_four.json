@@ -1,0 +1,34 @@
+{
+  "oracle_id": "6d3469dd-d39e-463b-9b41-2f6215a41feb",
+  "name": "The Frightful Four",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Frightful Four",
+      "oracle_fingerprint": "ec73b7881fd399061d4b3537b688a087",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "Opponents" }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "amount": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -269,6 +269,7 @@ mod riot;
 mod sample_af_writers;
 mod sample_gl_writers;
 mod sample_mr_writers;
+mod sample_sz_two_writers;
 mod search_by_controller;
 mod search_lists;
 mod search_pairs;

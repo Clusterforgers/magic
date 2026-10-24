@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7c766365-82c2-46d6-8521-42e73129f4ef",
+  "name": "Surrak Dragonclaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surrak Dragonclaw",
+      "oracle_fingerprint": "38104c25a2b83399edfe0cb982742da9",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Rule": {
+            "rule": {
+              "CantBeCountered": {
+                "Each": ["Spell", { "Type": "Creature" }, { "ControlledBy": "You" }]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        }
+      ]
+    }
+  ]
+}

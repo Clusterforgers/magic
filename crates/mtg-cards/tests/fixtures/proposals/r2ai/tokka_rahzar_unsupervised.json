@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"FirstStrike"},{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"Not":"Token"},"Other",{"ControlledBy":"You"}],"from":"Battlefield"}},"limit":"OncePerTurn","effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}},{"CreateToken":{"token":{"Named":"treasure"}}}]}}]}]}

@@ -89,6 +89,10 @@ fn the_monarch_is_a_player_a_trigger_names(#[case] text: &str, #[case] json: &st
     "As long as there is no monarch, equipped creature gets +1/+1.",
     r#"{"Static":{"affected":"Attached","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"condition":{"Not":{"Monarch":"EachPlayer"}}}}"#
 )]
+#[case::the_monarch_as_a_blocker_under_a_condition(
+    "This creature can't be blocked by creatures the monarch controls as long as you're the monarch.",
+    r#"{"Static":{"affected":"This","mods":[{"CantBeBlockedBy":[{"Type":"Creature"},{"ControlledBy":"Monarch"}]}],"condition":{"Monarch":"You"}}}"#
+)]
 fn a_static_ability_reads_the_monarch(#[case] text: &str, #[case] json: &str) {
     reads_as(text, ClauseKind::Static, false, json);
 }
@@ -105,9 +109,6 @@ fn near_misses_of_the_events_stay_with_the_table(#[case] text: &str) {
 #[rstest]
 #[case::a_player_who_is_the_monarch(
     "Creatures you control get +1/+1 as long as a player is the monarch."
-)]
-#[case::the_monarch_as_a_blocker_is_a_restriction_under_a_condition(
-    "This creature can't be blocked by creatures the monarch controls as long as you're the monarch."
 )]
 #[case::the_monarch_has_no_pronoun("Creatures the monarch has get +1/+1.")]
 fn near_misses_of_the_statics_stay_with_the_table(#[case] text: &str) {

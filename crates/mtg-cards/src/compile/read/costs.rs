@@ -345,12 +345,7 @@ fn item_text(item: &CostItem) -> Option<String> {
             let text = taken_text(&said, count)?;
             format!("Discard {}", text.strip_suffix(" from your hand")?)
         }
-        CostItem::TapPermanents { filter, count } => {
-            let mut said = filter.clone();
-            said.0
-                .extend([Pred::Untapped, Pred::ControlledBy(Ref::You)]);
-            format!("Tap {}", taken_text(&said, count)?)
-        }
+        CostItem::TapPermanents { filter, count } => tap_text(filter, count)?,
         CostItem::ExileFromGraveyard { filter, count } => {
             let mut said = filter.clone();
             said.0
@@ -380,6 +375,26 @@ fn item_text(item: &CostItem) -> Option<String> {
         }
         _ => return None,
     })
+}
+
+/// "Tap an untapped creature you control", "Tap another untapped Rogue you control": untapped permanents the payer
+/// controls, other than the source where the filter says so.
+fn tap_text(filter: &Selector, count: &Amount) -> Option<String> {
+    let mut said = filter.clone();
+    let other = said.0.iter().position(|pred| *pred == Pred::Other);
+    if let Some(at) = other {
+        said.0.remove(at);
+    }
+    said.0
+        .extend([Pred::Untapped, Pred::ControlledBy(Ref::You)]);
+    let text = taken_text(&said, count)?;
+    if other.is_none() {
+        return Some(format!("Tap {text}"));
+    }
+    let rest = text
+        .strip_prefix("an ")
+        .or_else(|| text.strip_prefix("a "))?;
+    Some(format!("Tap another {rest}"))
 }
 
 /// "a creature you control", "two untapped creatures you control": what a cost takes, in the words `phrase` reads.

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "77ae7caa-e180-4efb-9348-ab389364b186",
+  "name": "Sphinx Summoner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphinx Summoner",
+      "oracle_fingerprint": "fd9d101980c2e43d7191db068174aafe",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Artifact" }, { "Type": "Creature" }],
+                        "reveal": true,
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

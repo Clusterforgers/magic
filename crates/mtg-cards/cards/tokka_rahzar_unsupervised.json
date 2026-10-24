@@ -1,0 +1,34 @@
+{
+  "oracle_id": "8d857d79-bdb2-4ca3-abd6-7db8f6b3bcfa",
+  "name": "Tokka & Rahzar, Unsupervised",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tokka & Rahzar, Unsupervised",
+      "oracle_fingerprint": "ad252a861d995821d27dc9a9592a08a2",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield"
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "CreateToken": { "token": { "Named": "treasure" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

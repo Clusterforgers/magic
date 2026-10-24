@@ -1,0 +1,25 @@
+{
+  "oracle_id": "5979310e-38c8-489f-ab9e-2723af98a3a5",
+  "name": "Zhur-Taa Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zhur-Taa Druid",
+      "oracle_fingerprint": "24a6e8162297fc8675cc7236f6aedbde",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": ["This"], "by": "You" } },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

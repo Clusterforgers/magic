@@ -1,0 +1,33 @@
+{
+  "oracle_id": "89931cf0-f20b-49b5-88c6-2a92aee8c50c",
+  "name": "Valeria Richards, Precocious",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valeria Richards, Precocious",
+      "oracle_fingerprint": "1783bad0dc8d35f2b97ffe989afcea7c",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Not": { "Type": "Creature" } }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

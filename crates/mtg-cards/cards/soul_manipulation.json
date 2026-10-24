@@ -1,0 +1,44 @@
+{
+  "oracle_id": "419c2ae1-fec7-4c27-a7a0-99f777abb4de",
+  "name": "Soul Manipulation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Manipulation",
+      "oracle_fingerprint": "e676b2694ed518cde1d2e6bfd1c52274",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": ["Spell", { "Type": "Creature" }] } }],
+                      "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

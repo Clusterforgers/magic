@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Landwalk":[{"Subtype":"Forest"}]}},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":"Player"}],"effects":[{"May":{"effects":[{"Search":{"filter":[{"Subtype":"Forest"}],"as":"card"}},{"Move":{"what":{"Bound":"card"},"to":{"Battlefield":{"tapped":true,"under":{"Target":0}}}}},{"Shuffle":{}}]}}]}}]}]}

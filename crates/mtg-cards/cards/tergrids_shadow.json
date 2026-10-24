@@ -1,0 +1,23 @@
+{
+  "oracle_id": "692260bb-e01c-4550-832a-9611856a6ff0",
+  "name": "Tergrid's Shadow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tergrid's Shadow",
+      "oracle_fingerprint": "d8d7f906a84289c6c156fdde63ad9fb1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Creature" }], "count": 2 }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Foretell": "{2}{B}{B}" } }
+      ]
+    }
+  ]
+}

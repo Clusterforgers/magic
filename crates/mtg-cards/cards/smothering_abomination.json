@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c3db28e5-6162-4642-a1c9-a7ace0737950",
+  "name": "Smothering Abomination",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smothering Abomination",
+      "oracle_fingerprint": "65497ceb5363ded69179e62186601d6c",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

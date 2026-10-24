@@ -13,11 +13,15 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     if !after {
         return;
     }
-    let (from, into) = (". Then create ", ". You create ");
+    let into = ". You create ";
     let said: Vec<String> = texts
         .iter()
-        .filter(|text| text.contains(from))
-        .map(|text| text.replacen(from, into, 1))
+        .flat_map(|text| {
+            [". Then create ", ". Create "]
+                .into_iter()
+                .filter(|from| text.contains(from))
+                .map(|from| text.replacen(from, into, 1))
+        })
         .collect();
     texts.extend(said);
 }
