@@ -42,6 +42,9 @@ pub struct Clause {
     pub kind: ClauseKind,
     /// Whether the compiler turned it into rules; otherwise it is a `Manual` ability.
     pub read: bool,
+    /// A spell line that reads on its own while another line of the same spell does not: the spell is one ability that
+    /// reads whole or not at all, so the other line holds the card back, not this one.
+    pub held_by_others: bool,
 }
 
 /// What the compiler made of one card.
@@ -95,6 +98,8 @@ struct Pending {
     more: Vec<Ability>,
     /// Its reminder text explains a counter, so the reading would lose what the counter does.
     reminds_counter: bool,
+    /// A spell line that reads on its own while the spell does not read whole (`Clause::held_by_others`).
+    held: bool,
 }
 
 /// The abilities of one face; its clauses are appended to `listed`.
@@ -110,6 +115,7 @@ fn read_face(
     let partners = Partners::of(shown, known);
     let text = normalize::normalize(&shown.oracle_text, &own_names(shown));
     let (spell, aura) = (is_spell(shown), is_aura(shown));
+    let walker = is_planeswalker(shown);
     let x_free = shown.mana_cost.contains("{X}") || shown.oracle_text.lines().any(counts_x);
     let own = own_face(shown);
     let mut pending = Vec::new();
@@ -126,13 +132,18 @@ fn read_face(
             && span
                 .slice(&shown.oracle_text)
                 .is_some_and(normalize::reminder_mentions_counter);
-        let (ability, more) = read_clause(
-            &clause_text,
-            kind,
-            (aura, reminds_counter),
-            x_free,
-            (&own, partners),
-        );
+        // A loyalty cost on a face that is no planeswalker is a line of the card's own, not an ability.
+        let (ability, more) = if kind == ClauseKind::Loyalty && !walker {
+            (None, Vec::new())
+        } else {
+            read_clause(
+                &clause_text,
+                kind,
+                (aura, reminds_counter),
+                x_free,
+                (&own, partners),
+            )
+        };
         pending.push(Pending {
             span,
             text: clause_text,
@@ -141,40 +152,11 @@ fn read_face(
             ability,
             more,
             reminds_counter,
+            held: false,
         });
     }
-    let lines: Vec<&str> = pending
-        .iter()
-        .filter(|clause| clause.kind == ClauseKind::Spell)
-        .map(|clause| clause.text.as_str())
-        .collect();
-    let spell_text = lines.join("\n");
-    let counter_explained = pending
-        .iter()
-        .any(|clause| clause.kind == ClauseKind::Spell && clause.reminds_counter);
-    let spell_ability = if spell_text.is_empty() || counter_explained {
-        None
-    } else {
-        read::clause_with(&spell_text, ClauseKind::Spell, x_free, &own)
-    };
-    // A cost that counts targets needs the targets of the spell ability beside it: without them it is left to the table.
-    let has_targets = spell_ability
-        .as_ref()
-        .is_some_and(|ability| !ability.targets().is_empty());
-    if !has_targets {
-        unread_target_counts(&mut pending);
-    }
-    if let Some(ability) = spell_ability {
-        let mut ability = Some(ability);
-        for clause in pending
-            .iter_mut()
-            .filter(|clause| clause.kind == ClauseKind::Spell)
-        {
-            clause.read = true;
-            clause.ability = ability.take();
-        }
-    }
-    if spell && spell_text.is_empty() {
+    let has_spell_lines = read_spell_lines(&mut pending, x_free, &own);
+    if spell && !has_spell_lines {
         // The modes of an instant or sorcery are its whole spell ability when no other line is.
         let mut modals = pending
             .iter_mut()
@@ -204,6 +186,7 @@ fn read_face(
             text: clause.text,
             kind: clause.kind,
             read: clause.read,
+            held_by_others: clause.held,
         });
     }
     abilities
@@ -284,7 +267,12 @@ fn read_clause(
                 .into_iter();
             (block.next(), block.collect())
         }
-        ClauseKind::Triggered | ClauseKind::Activated | ClauseKind::Static if !reminds_counter => {
+        ClauseKind::Triggered
+        | ClauseKind::Activated
+        | ClauseKind::Loyalty
+        | ClauseKind::Static
+            if !reminds_counter =>
+        {
             match read::clause_with(text, kind, x_free, own) {
                 // Two statics in one sentence after one condition read into two abilities.
                 None if kind == ClauseKind::Static => {
@@ -308,13 +296,76 @@ fn is_chapter_line(text: &str) -> bool {
 }
 
 /// Leaves the cost modifiers that count targets ("for each target beyond the first") to the table.
-fn unread_target_counts(pending: &mut [Pending]) {
+fn unread_target_counts(pending: &mut [Pending], spell_unread: bool) {
     for clause in pending {
         if matches!(&clause.ability, Some(Ability::CostModifier { per, .. }) if read::counts_targets(per))
         {
             clause.ability = None;
             clause.read = false;
+            clause.held = spell_unread;
         }
+    }
+}
+
+/// Reads the spell lines of a face as one `Spell` ability, which the first of them carries; whether the face has any
+/// spell line. When the spell does not read whole, the costs that count its targets wait for it and the lines that read
+/// alone are held back by the others.
+fn read_spell_lines(pending: &mut [Pending], x_free: bool, own: &read::Own) -> bool {
+    let lines: Vec<&str> = pending
+        .iter()
+        .filter(|clause| clause.kind == ClauseKind::Spell)
+        .map(|clause| clause.text.as_str())
+        .collect();
+    let spell_text = lines.join("\n");
+    let counter_explained = pending
+        .iter()
+        .any(|clause| clause.kind == ClauseKind::Spell && clause.reminds_counter);
+    let spell_ability = if spell_text.is_empty() || counter_explained {
+        None
+    } else {
+        read::clause_with(&spell_text, ClauseKind::Spell, x_free, own)
+    };
+    // A cost that counts targets needs the targets of the spell ability beside it: without them it is left to the table.
+    let has_targets = spell_ability
+        .as_ref()
+        .is_some_and(|ability| !ability.targets().is_empty());
+    if !has_targets {
+        unread_target_counts(pending, !spell_text.is_empty() && spell_ability.is_none());
+    }
+    if spell_ability.is_none() && !counter_explained {
+        hold_back_by_unread_lines(pending, x_free, own);
+    }
+    if let Some(ability) = spell_ability {
+        let mut ability = Some(ability);
+        for clause in pending
+            .iter_mut()
+            .filter(|clause| clause.kind == ClauseKind::Spell)
+        {
+            clause.read = true;
+            clause.ability = ability.take();
+        }
+    }
+    !spell_text.is_empty()
+}
+
+/// The spell lines of a spell that does not read whole: a line that reads on its own is held back by the others (the
+/// report names the lines that do not read). When every line reads on its own, the fault lies in how they join, and
+/// none is held.
+fn hold_back_by_unread_lines(pending: &mut [Pending], x_free: bool, own: &read::Own) {
+    let mut alone = pending
+        .iter()
+        .filter(|clause| clause.kind == ClauseKind::Spell)
+        .map(|clause| read::clause_with(&clause.text, ClauseKind::Spell, x_free, own).is_some())
+        .collect::<Vec<_>>();
+    if alone.iter().all(|reads| *reads) {
+        return;
+    }
+    alone.reverse();
+    for clause in pending
+        .iter_mut()
+        .filter(|clause| clause.kind == ClauseKind::Spell)
+    {
+        clause.held = alone.pop().unwrap_or(false);
     }
 }
 
@@ -468,6 +519,12 @@ fn is_aura(face: &PrintedFace) -> bool {
     face.type_line
         .split_once('\u{2014}')
         .is_some_and(|(_, subtypes)| subtypes.split_whitespace().any(|word| word == "Aura"))
+}
+
+/// Whether the face is a planeswalker.
+fn is_planeswalker(face: &PrintedFace) -> bool {
+    let types = face.type_line.split('\u{2014}').next().unwrap_or_default();
+    types.split_whitespace().any(|word| word == "Planeswalker")
 }
 
 /// Whether the face is an instant or a sorcery.
@@ -998,5 +1055,46 @@ mod tests {
         );
         assert_eq!(compiled.clauses[2].kind, ClauseKind::Loyalty);
         assert_eq!(compiled.clauses[2].text, "\u{2212}X: ~ deals X damage.");
+    }
+
+    #[rstest]
+    #[case::a_planeswalker(
+        "Planeswalker \u{2014} Jace",
+        "+1: Draw a card.\n\u{2212}2: Draw a card.",
+        Some(ImplStatus::Full),
+        2
+    )]
+    #[case::one_line_unread(
+        "Planeswalker \u{2014} Jace",
+        "+1: Draw a card.\n\u{2212}2: Wibble the wobble.",
+        Some(ImplStatus::Partial),
+        1
+    )]
+    #[case::no_line_read(
+        "Planeswalker \u{2014} Jace",
+        "+1: Wibble the wobble.",
+        Some(ImplStatus::Manual),
+        0
+    )]
+    #[case::a_creature_with_a_line_like_a_loyalty_cost(
+        "Creature \u{2014} Elf",
+        "+1: Draw a card.",
+        Some(ImplStatus::Manual),
+        0
+    )]
+    fn loyalty_lines_are_abilities_on_a_planeswalker_only(
+        #[case] type_line: &str,
+        #[case] text: &str,
+        #[case] expected: Option<ImplStatus>,
+        #[case] loyalty: usize,
+    ) {
+        let compiled = one("Jace", type_line, text);
+        assert_eq!(status(&compiled), expected, "{text}");
+        let found = compiled
+            .card
+            .iter()
+            .flat_map(Card::abilities)
+            .filter(|(_, ability)| matches!(ability, Ability::Loyalty { .. }));
+        assert_eq!(found.count(), loyalty, "{text}");
     }
 }

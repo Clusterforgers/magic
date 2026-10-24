@@ -1,0 +1,30 @@
+{
+  "cmc": 3.0,
+  "collector_number": "100",
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "colors": [
+    "B",
+    "U"
+  ],
+  "digital": false,
+  "id": "bf5b410f-d6cb-4a74-a975-372975cf21f6",
+  "keywords": [
+    "Flying",
+    "Connive"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{U}{B}",
+  "name": "Ultron, Unlimited",
+  "oracle_id": "436501ca-0998-43fc-975f-87c2d34caab3",
+  "oracle_text": "Flying\nWhenever Ultron attacks, he connives. (Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on this creature.)\nWhenever a creature you control connives, you may pay {1}. If you do, create a 2/2 colorless Robot Villain artifact creature token.",
+  "power": "2",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "set": "msc",
+  "toughness": "2",
+  "type_line": "Legendary Artifact Creature — Robot Villain"
+}

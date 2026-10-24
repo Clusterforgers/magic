@@ -433,6 +433,9 @@ fn blockers_of(
                         .clauses
                         .iter()
                         .find(|clause| clause.face == face && clause.span.overlaps(span));
+                    if listed.is_some_and(|clause| clause.held_by_others) {
+                        continue;
+                    }
                     found.insert(Blocker::Clause(listed.map_or_else(
                         || format!("manual: {reason}"),
                         |clause| shape::shape(clause.kind, &clause.text),
@@ -454,6 +457,7 @@ fn blockers_of(
             compiled
                 .clauses
                 .iter()
+                .filter(|clause| !clause.held_by_others)
                 .map(|clause| Blocker::Clause(shape::shape(clause.kind, &clause.text))),
         ),
     }

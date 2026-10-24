@@ -119,6 +119,17 @@ fn damage(
         ReplaceBy::Prevent => {
             found.push(format!("{head}, prevent that damage"));
             found.extend(passive.map(|passive| format!("{passive}, prevent that damage")));
+            // A permanent or a player prevents all the damage that would be dealt to it.
+            if source.is_empty() && matches!(to, Some(Ref::This | Ref::You)) {
+                found.push(format!("prevent all {kind} that would be dealt to {whom}"));
+            }
+        }
+        ReplaceBy::PreventRemovingCounter(counter) if matches!(to, Some(Ref::This)) => {
+            if let (Some(passive), Some(name)) = (passive, kind_text(counter)) {
+                found.push(format!(
+                    "{passive}, prevent that damage. Remove a {name} counter from ~"
+                ));
+            }
         }
         ReplaceBy::PreventUpTo(most) if *most > 0 => {
             for number in numbers(*most) {

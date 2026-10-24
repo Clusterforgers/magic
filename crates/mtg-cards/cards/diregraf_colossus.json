@@ -1,0 +1,48 @@
+{
+  "oracle_id": "fd62ad01-601f-4250-bc2a-8ef3982e45c4",
+  "name": "Diregraf Colossus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diregraf Colossus",
+      "oracle_fingerprint": "d94de613a9dd401bbb5d4f0e8e474a9b",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, { "Subtype": "Zombie" }]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Subtype": "Zombie" }], "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

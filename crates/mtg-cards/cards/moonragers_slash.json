@@ -1,0 +1,27 @@
+{
+  "oracle_id": "40a41774-fe50-438d-85e4-7f2beb29fb82",
+  "name": "Moonrager's Slash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moonrager's Slash",
+      "oracle_fingerprint": "5689221002c2b4e9c93a8970170f5004",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": "IsNight"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

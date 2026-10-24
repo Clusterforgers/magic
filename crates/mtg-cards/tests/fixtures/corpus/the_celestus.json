@@ -1,0 +1,26 @@
+{
+  "id": "39226a07-d44e-41a6-b9f1-685ef505d015",
+  "oracle_id": "c0ad2b5f-066b-424b-bddf-d3014731e599",
+  "name": "The Celestus",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mid",
+  "collector_number": "252",
+  "rarity": "rare",
+  "released_at": "2021-09-24",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Legendary Artifact",
+  "oracle_text": "If it's neither day nor night, it becomes day as The Celestus enters.\n{T}: Add one mana of any color.\n{3}, {T}: If it's night, it becomes day. Otherwise, it becomes night. Activate only as a sorcery.\nWhenever day becomes night or night becomes day, you gain 1 life. You may draw a card. If you do, discard a card.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

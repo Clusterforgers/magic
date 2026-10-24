@@ -92,13 +92,13 @@ fn filed(n: u32, name: &str, status: ImplStatus, from: Option<&PrintedCard>) -> 
     &["triggered: When ~ enters, flip a coin."]
 )]
 #[case::nothing_read("Instant", "Flip a coin.", &[], Support::Manual, RulesSource::Compiled, &["spell: Flip a coin."])]
-#[case::unread_spell_line_leaves_every_line(
+#[case::an_unread_spell_line_is_the_only_blocker_of_its_spell(
     "Sorcery",
     "Draw a card.\nFlip a coin.",
     &[],
     Support::Manual,
     RulesSource::Compiled,
-    &["spell: Draw a card.", "spell: Flip a coin."]
+    &["spell: Flip a coin."]
 )]
 #[case::numbers_and_mana_are_abstracted(
     "Instant",
@@ -714,4 +714,41 @@ fn a_full_report_stays_within_about_eighty_lines() {
     let text = Report { cards }.render(crate::coverage::DEFAULT_TOP);
     assert!(text.lines().count() <= 80, "{}", text.lines().count());
     assert!(text.lines().all(|line| line.chars().count() <= 130));
+}
+
+#[rstest]
+#[case::the_unread_line_alone(
+    "Wibble the wobble.\nDraw a card.",
+    &["spell: Wibble the wobble."]
+)]
+#[case::the_unread_line_in_front(
+    "Draw a card.\nWibble the wobble.",
+    &["spell: Wibble the wobble."]
+)]
+#[case::two_unread_lines_and_a_read_one(
+    "Wibble the wobble.\nDraw a card.\nWobble the wibble.",
+    &["spell: Wibble the wobble.", "spell: Wobble the wibble."]
+)]
+#[case::every_line_unread(
+    "Wibble the wobble.\nWobble the wibble.",
+    &["spell: Wibble the wobble.", "spell: Wobble the wibble."]
+)]
+fn a_spell_line_that_reads_is_no_blocker_beside_one_that_does_not(
+    #[case] text: &str,
+    #[case] blockers: &[&str],
+) {
+    let result = analyzed_alone(printed(2, "Test Spell", "Sorcery", text), &small_caps());
+    assert_eq!(result.support, Support::Manual);
+    assert_eq!(labels(&result), blockers);
+}
+
+#[test]
+fn a_cost_that_counts_targets_waits_for_its_spell_and_is_no_blocker_of_its_own() {
+    let strive =
+        "Strive \u{2014} This spell costs {1} more to cast for each target beyond the first.";
+    let text = format!("Wibble the wobble.\n{strive}");
+    let held = analyzed_alone(printed(2, "Test Strive", "Sorcery", &text), &small_caps());
+    assert_eq!(labels(&held), ["spell: Wibble the wobble."]);
+    let alone = analyzed_alone(printed(3, "Test Strive", "Sorcery", strive), &small_caps());
+    assert_eq!(labels(&alone).len(), 1, "{alone:?}");
 }

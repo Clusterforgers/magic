@@ -638,6 +638,9 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "CitysBlessing");
                 self.at("CitysBlessing", |w| w.reference(who, Kind::Player));
             }
+            Condition::IsDay => self.uses("Condition", "IsDay"),
+            Condition::IsNight => self.uses("Condition", "IsNight"),
+            Condition::NeitherDayNorNight => self.uses("Condition", "NeitherDayNorNight"),
             Condition::NewlyControlled(what) => {
                 self.uses("Condition", "NewlyControlled");
                 self.at("NewlyControlled", |w| w.reference(what, Kind::Object));
@@ -1139,6 +1142,7 @@ impl<'a> Walker<'a> {
             TriggerPattern::StepBegins { whose, .. } => {
                 self.at("whose", |w| w.reference(whose, Kind::Player));
             }
+            TriggerPattern::DayNightChanges { .. } => {}
             TriggerPattern::DealsDamage { source, to, .. } => {
                 self.at("source", |w| w.selector(source));
                 if let Some(to) = to {
@@ -1230,6 +1234,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::State { .. }
                 | TriggerPattern::StepBegins { .. }
                 | TriggerPattern::BecomesMonarch { .. }
+                | TriggerPattern::DayNightChanges { .. }
                 | TriggerPattern::Proliferated { .. }
                 | TriggerPattern::Amassed { .. }
                 | TriggerPattern::Explored { .. }
@@ -1954,7 +1959,8 @@ impl<'a> Walker<'a> {
                     w.problem("a card can be a commander by a static ability, not by an effect");
                 }
             }),
-            Effect::Crewed { .. } => {}
+            Effect::Crewed { .. }
+            | Effect::BecomeDayNight { .. } => {}
             Effect::BecomeLevel { level } => {
                 if *level < 2 {
                     w.problem("a Class starts at level 1 and gains level 2 or more");
@@ -2533,6 +2539,9 @@ impl<'a> Walker<'a> {
             ReplaceBy::PreventUpTo(_) if !matches!(when, ReplaceWhen::Damage { .. }) => {
                 self.problem("only damage is prevented in part");
             }
+            ReplaceBy::PreventRemovingCounter(_) if !matches!(when, ReplaceWhen::Damage { .. }) => {
+                self.problem("only damage is prevented with a counter removed");
+            }
             ReplaceBy::Instead(effects) => {
                 if effects.is_empty() {
                     self.problem("needs at least one effect");
@@ -2565,6 +2574,7 @@ impl<'a> Walker<'a> {
             | ReplaceBy::Choose(_)
             | ReplaceBy::PayLifeOrTapped(_)
             | ReplaceBy::Riot
+            | ReplaceBy::DayIfNeither
                 if !enters =>
             {
                 self.problem("only an `Enters` event is entered tapped, chosen on or paid for");

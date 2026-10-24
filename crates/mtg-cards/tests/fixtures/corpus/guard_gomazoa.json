@@ -1,0 +1,28 @@
+{
+  "cmc": 3.0,
+  "collector_number": "17",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "505969a2-0869-461e-a69a-3b380579e00a",
+  "keywords": [
+    "Flying",
+    "Defender"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{U}",
+  "name": "Guard Gomazoa",
+  "oracle_id": "7c565975-aebc-4599-ac32-5594c718e2cb",
+  "oracle_text": "Defender, flying\nPrevent all combat damage that would be dealt to this creature.",
+  "power": "1",
+  "rarity": "uncommon",
+  "released_at": "2016-11-25",
+  "set": "pca",
+  "toughness": "3",
+  "type_line": "Creature — Jellyfish"
+}

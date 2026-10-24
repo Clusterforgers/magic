@@ -108,12 +108,12 @@ fn of(cx: &Cx<'_>, of: &mtg_cards::refs::Ref, bind: &str) -> Result<Run, Resolve
             "a vote is on players or on objects, not both".into(),
         ));
     }
-    let voters = voters(cx);
+    let seats = voters(cx);
     let votes: Vec<Target> = if candidates.is_empty() {
         Vec::new()
     } else if objects.is_empty() {
         let options: Vec<ChoiceOption> = players.iter().map(|p| ChoiceOption::Player(*p)).collect();
-        let choosers: Vec<OptionChooser> = voters
+        let choosers: Vec<OptionChooser> = seats
             .iter()
             .map(|player| OptionChooser {
                 player: *player,
@@ -129,7 +129,7 @@ fn of(cx: &Cx<'_>, of: &mtg_cards::refs::Ref, bind: &str) -> Result<Run, Resolve
                 .collect(),
         }
     } else {
-        let selections: Vec<Selection> = voters
+        let selections: Vec<Selection> = seats
             .iter()
             .map(|player| Selection {
                 player: *player,

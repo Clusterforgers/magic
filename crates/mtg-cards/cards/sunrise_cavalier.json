@@ -1,0 +1,25 @@
+{
+  "oracle_id": "0718ea67-ced3-46bc-9164-8841e6bd73ae",
+  "name": "Sunrise Cavalier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunrise Cavalier",
+      "oracle_fingerprint": "737199a800f098c821bb0dcfd408aa9f",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "DayIfNeither" } },
+        {
+          "Triggered": {
+            "when": { "DayNightChanges": {} },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

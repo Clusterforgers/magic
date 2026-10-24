@@ -1,0 +1,45 @@
+{
+  "oracle_id": "c0ad2b5f-066b-424b-bddf-d3014731e599",
+  "name": "The Celestus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Celestus",
+      "oracle_fingerprint": "2ba2f9e71427eb122a6ab3601d0255eb",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "DayIfNeither" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "If": {
+                  "condition": "IsNight",
+                  "then": [{ "BecomeDayNight": { "to": "Day" } }],
+                  "otherwise": [{ "BecomeDayNight": { "to": "Night" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DayNightChanges": {} },
+            "effects": [
+              { "GainLife": { "amount": 1 } },
+              { "May": { "effects": [{ "Draw": {} }] } },
+              { "If": { "condition": "Performed", "then": [{ "Discard": {} }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

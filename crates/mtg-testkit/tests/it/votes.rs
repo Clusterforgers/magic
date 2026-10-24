@@ -7,7 +7,6 @@ use mtg_engine::decision::{Answer, Decision, DecisionKind};
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, replay};
 use mtg_testkit::cards::{forest, free_creature, island, plains, swamp};
-use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready, secret_ballot};
 use rstest::rstest;
 

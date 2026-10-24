@@ -53,15 +53,28 @@ fn mana_in_a_spell_or_a_trigger_uses_the_stack_and_reads(
 #[case::shield("Put a shield counter on target creature.")]
 #[case::stun("Put a stun counter on target creature.")]
 #[case::finality("Put a finality counter on target creature.")]
-#[case::flying("Put a flying counter on target creature.")]
-#[case::deathtouch("Put a deathtouch counter on each creature you control.")]
-#[case::lifelink("Put a lifelink counter on ~.")]
+#[case::exalted("Put an exalted counter on target creature.")]
+#[case::decayed("Put a decayed counter on ~.")]
 #[case::lore("Put a lore counter on ~.")]
 #[case::defense("Put two defense counters on ~.")]
 #[case::removing("Remove a shield counter from ~.")]
-#[case::moving("Move a flying counter from target creature onto ~.")]
+#[case::moving("Move a shield counter from target creature onto ~.")]
 fn a_counter_the_rules_give_an_effect_to_is_not_read(#[case] text: &str) {
     assert_eq!(spell(text), None, "{text}");
+}
+
+#[rstest]
+#[case::flying("Put a flying counter on target creature.")]
+#[case::first_strike("Put a first strike counter on target creature.")]
+#[case::double_strike("Put a double strike counter on ~.")]
+#[case::deathtouch("Put a deathtouch counter on each creature you control.")]
+#[case::lifelink("Put a lifelink counter on ~.")]
+#[case::indestructible("Put an indestructible counter on target creature.")]
+#[case::two_reach("Put two reach counters on target creature.")]
+#[case::removing_one("Remove a flying counter from ~.")]
+#[case::moving_one("Move a flying counter from target creature onto ~.")]
+fn a_keyword_counter_reads_and_writes_back(#[case] text: &str) {
+    golden(text, ClauseKind::Spell, false);
 }
 
 #[rstest]

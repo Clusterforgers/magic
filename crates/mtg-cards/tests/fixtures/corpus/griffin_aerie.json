@@ -1,0 +1,23 @@
+{
+  "cmc": 2.0,
+  "collector_number": "22",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "6ea1ee60-5644-4f78-913d-32c36065957f",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{W}",
+  "name": "Griffin Aerie",
+  "oracle_id": "7cab62dc-a256-4da8-a3ea-b3903ec37077",
+  "oracle_text": "At the beginning of your end step, if you gained 3 or more life this turn, create a 2/2 white Griffin creature token with flying.",
+  "rarity": "uncommon",
+  "released_at": "2020-07-03",
+  "set": "m21",
+  "type_line": "Enchantment"
+}

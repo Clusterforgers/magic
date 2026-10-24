@@ -26,10 +26,10 @@
                     { "Type": "Artifact" },
                     { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
                   ],
-                  "as": "artifact"
+                  "as": "card"
                 }
               },
-              { "Move": { "what": { "Bound": "artifact" }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
               { "Shuffle": {} }
             ]
           }

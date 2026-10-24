@@ -1,0 +1,18 @@
+{
+  "oracle_id": "7c565975-aebc-4599-ac32-5594c718e2cb",
+  "name": "Guard Gomazoa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guard Gomazoa",
+      "oracle_fingerprint": "5de9521347ec86e6926ad8260ae63535",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Flying" },
+        {
+          "Replacement": { "when": { "Damage": { "to": "This", "combat": true } }, "by": "Prevent" }
+        }
+      ]
+    }
+  ]
+}
