@@ -64,6 +64,7 @@ mod manifest;
 mod mass_moves;
 mod modal;
 mod pairs;
+mod pay_phrases;
 mod payments;
 mod player_keywords;
 mod prevention;

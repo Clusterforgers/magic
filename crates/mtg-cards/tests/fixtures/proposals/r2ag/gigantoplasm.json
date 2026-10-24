@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"AsCopy":{"of":[{"Type":"Creature"}],"except":[{"GrantAbility":{"Activated":{"cost":"{X}","effects":[{"Continuous":{"affected":"This","mods":[{"SetPT":{"power":"X","toughness":"X"}}],"duration":"Forever"}}]}}}]}}}}]}]}

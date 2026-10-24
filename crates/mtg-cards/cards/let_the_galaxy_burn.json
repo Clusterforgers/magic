@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8c70980b-3c38-4624-8f19-5e29d271acf5",
+  "name": "Let the Galaxy Burn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Let the Galaxy Burn",
+      "oracle_fingerprint": "9b23bcde73cb259b5ca193840173439b",
+      "abilities": [
+        { "Keyword": "Cascade" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": "EnteredThisTurn" }] },
+                  "amount": { "Sum": ["X", 2] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

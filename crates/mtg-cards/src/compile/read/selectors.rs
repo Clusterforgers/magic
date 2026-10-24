@@ -688,6 +688,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::Not(inner) => match &**inner {
             Pred::HasKeyword(keyword) => format!("without {}", keyword_text(keyword)?),
             Pred::CastFrom(ZoneKind::Hand) => "from anywhere other than your hand".to_owned(),
+            Pred::EnteredThisTurn => "that didn't enter this turn".to_owned(),
             _ => return None,
         },
         Pred::Compare {

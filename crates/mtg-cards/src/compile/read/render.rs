@@ -16,6 +16,7 @@ mod each_target;
 mod either;
 mod exiled_cast;
 mod exiled_until;
+mod flicker_targets;
 mod free_casts;
 mod from_graveyard;
 mod graveyards;
@@ -1541,7 +1542,7 @@ impl Writer<'_> {
     /// Whether the counters are put on a player other than you (the energy of "you get {E}{E}" has its own wording).
     fn player_gets(&self, on: &Ref) -> bool {
         match on {
-            Ref::Opponents => true,
+            Ref::Opponents | Ref::EachPlayer => true,
             Ref::Target(0) => {
                 self.target_is(|what| matches!(what, Targetable::Player | Targetable::Opponent))
             }
@@ -1689,6 +1690,8 @@ impl Writer<'_> {
             Some("return ~ to its owner's hand".to_owned())
         } else if self.in_your_graveyard(what) {
             Some(format!("return {} to your hand", self.object(what)?))
+        } else if self.in_another_graveyard(what) {
+            Some(format!("return {} to its owner's hand", self.object(what)?))
         } else if self.is_a_permanent(what) || self.are_permanents(what) {
             let tail = if self.at_most_one(what) {
                 "its owner's hand"
@@ -2275,6 +2278,7 @@ impl Writer<'_> {
             .or_else(|| self.mill_then_change(effects))
             .or_else(|| self.move_instead(effects))
             .or_else(|| self.either_way(effects))
+            .or_else(|| self.flicker_targets(effects))
             .or_else(|| self.counter_or_not(effects))
             .or_else(|| self.chosen_then_group(effects))
             .or_else(|| opponent_picks::text(effects))

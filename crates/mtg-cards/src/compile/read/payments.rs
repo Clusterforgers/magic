@@ -126,7 +126,7 @@ fn after_pay(r: &mut Reader<'_>) -> Option<Cost> {
 /// The one part of a payment, as the verb phrase of the player who pays it: "pay {1}", "pay 2 life", "discard a card".
 fn phrase(cost: &Cost) -> Option<String> {
     let [item] = cost.0.as_slice() else {
-        return None;
+        return super::pay_phrases::phrase(cost);
     };
     match item {
         CostItem::Mana(mana) if !mana.has_x() => Some(format!("pay {mana}")),
@@ -143,7 +143,7 @@ fn phrase(cost: &Cost) -> Option<String> {
             count: Amount::Fixed(_),
             ..
         } => lower(&costs::text(cost)?),
-        _ => None,
+        _ => super::pay_phrases::phrase(cost),
     }
 }
 
