@@ -51,7 +51,16 @@ fn copies_deck(
     lands: usize,
     cards: &[(&str, usize)],
 ) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
-    let colors = [Color::Blue, Color::White, Color::Green];
+    copies_deck_in(rng, [Color::Blue, Color::White, Color::Green], lands, cards)
+}
+
+/// A deck like [`copies_deck`] whose lands are of the three `colors`.
+fn copies_deck_in(
+    rng: &mut GameRng,
+    colors: [Color; 3],
+    lands: usize,
+    cards: &[(&str, usize)],
+) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
     let mut deck: Vec<Arc<CardDefinition>> = (0..lands).map(|i| land(colors[i % 3])).collect();
     for (name, copies) in cards {
         deck.extend(std::iter::repeat_n(corpus::card(name)?, *copies));
@@ -142,6 +151,36 @@ pub fn copy_wording_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, C
         decks.push(copy_wording_deck(&mut GameRng::substream(
             seed,
             14_700 + seat,
+        ))?);
+    }
+    Ok(GameSetup::new(Arc::new(Normal), seed, decks))
+}
+
+/// A deck of the cards whose copies enter attacking or are chosen first among artifact creatures (Flamerush Rider, Loki,
+/// March of Progress), with Hero of Bladehold to attack with and copy and Lightning Bolts to aim at creatures, derived
+/// entirely from `rng`.
+pub fn copy_attack_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
+    copies_deck_in(
+        rng,
+        [Color::Red, Color::Blue, Color::White],
+        22,
+        &[
+            ("Flamerush Rider", 3),
+            ("Loki, the Deceiver", 3),
+            ("March of Progress", 2),
+            ("Hero of Bladehold", 3),
+            ("Lightning Bolt", 3),
+        ],
+    )
+}
+
+/// A normal game of `players` seats whose decks are [`copy_attack_deck`]s, fully determined by `seed`.
+pub fn copy_attack_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusError> {
+    let mut decks = Vec::with_capacity(players);
+    for seat in 0u64..players as u64 {
+        decks.push(copy_attack_deck(&mut GameRng::substream(
+            seed,
+            15_100 + seat,
         ))?);
     }
     Ok(GameSetup::new(Arc::new(Normal), seed, decks))

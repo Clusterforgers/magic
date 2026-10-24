@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flash"},{"Keyword":"Flying"},{"Keyword":{"Cycling":"{2}{U}"}},{"Triggered":{"when":{"Cycled":{"what":["This"],"by":"You"}},"from":"Graveyard","targets":[{"what":{"Object":[{"AnyOf":[{"Ability":"Activated"},{"Ability":"Triggered"}]},{"Not":{"ControlledBy":"You"}}]}}],"effects":[{"Counter":{"what":{"Target":0}}}]}}]}]}

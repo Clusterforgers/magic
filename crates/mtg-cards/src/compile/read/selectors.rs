@@ -305,6 +305,7 @@ pub(super) fn adjective_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::Other => "other".to_owned(),
         Pred::Supertype(Supertype::Legendary) => "legendary".to_owned(),
         Pred::Supertype(Supertype::Basic) => "basic".to_owned(),
+        Pred::Not(inner) if **inner == outlaw() => "non-outlaw".to_owned(),
         Pred::Not(inner) => match &**inner {
             Pred::Color(color) => format!("non{}", color_name(*color)),
             Pred::Type(card_type) => format!("non{}", type_name(*card_type)),
@@ -431,6 +432,9 @@ fn protection_from(r: &mut Reader<'_>) -> Option<Keyword> {
     if r.static_grant && r.words("creatures of the chosen type") {
         return Some(Keyword::Protection(chosen_creatures()));
     }
+    if r.static_grant && r.words("the chosen player") {
+        return Some(Keyword::Protection(chosen_player()));
+    }
     if let Some(quality) = r.peek_word().and_then(keywords::quality) {
         r.skip();
         return Some(Keyword::Protection(quality));
@@ -440,6 +444,11 @@ fn protection_from(r: &mut Reader<'_>) -> Option<Keyword> {
     Some(Keyword::Protection(Selector(vec![Pred::Subtype(Subtype(
         name,
     ))])))
+}
+
+/// The objects the player the controller chose controls.
+fn chosen_player() -> Selector {
+    Selector(vec![Pred::ControlledBy(Ref::Chosen)])
 }
 
 /// The creatures of the type the controller chose.
@@ -455,6 +464,9 @@ fn protection_word(quality: &Selector) -> Option<String> {
     }
     if *quality == chosen_creatures() {
         return Some("creatures of the chosen type".to_owned());
+    }
+    if *quality == chosen_player() {
+        return Some("the chosen player".to_owned());
     }
     match quality.0.as_slice() {
         [Pred::ChosenColor] => Some("the chosen color".to_owned()),
@@ -861,6 +873,25 @@ fn type_separator(r: &mut Reader<'_>, form: Form) -> bool {
     .is_some()
 }
 
+/// "in target opponent's hand", "in target player's hand": the hand of the one player the sentence targets.
+fn target_hand(r: &mut Reader<'_>) -> Option<Ref> {
+    r.need("in target")?;
+    let what = if r.word("player's") {
+        Targetable::Player
+    } else {
+        r.need("opponent's")?;
+        Targetable::Opponent
+    };
+    r.need("hand")?;
+    r.targets.is_empty().then_some(())?;
+    r.targets.push(TargetSpec {
+        what,
+        bounds: Bounds::default(),
+        divide: None,
+    });
+    Some(Ref::Target(0))
+}
+
 /// "from your graveyard", "from your hand": the zone and its owner.
 fn zone_suffix(r: &mut Reader<'_>, form: Form) -> Option<Vec<Pred>> {
     let (hand, graveyard) = if form == Form::Count {
@@ -868,6 +899,11 @@ fn zone_suffix(r: &mut Reader<'_>, form: Form) -> Option<Vec<Pred>> {
     } else {
         ("from your hand", "from your graveyard")
     };
+    if form == Form::Count
+        && let Some(owner) = r.attempt(target_hand)
+    {
+        return Some(vec![Pred::In(ZoneKind::Hand), Pred::OwnedBy(owner)]);
+    }
     // A group of cards says where they are as the count does: "nonland cards in your hand".
     let in_zone = form == Form::All;
     if r.words(hand) || (in_zone && r.words("in your hand")) {
@@ -930,9 +966,18 @@ fn spell_subtypes(r: &mut Reader<'_>) -> Option<Pred> {
     })
 }
 
-/// A subtype in front of a card type in the singular, or of "card": "Cleric creature", "Equipment artifact", "Giant card".
+/// A subtype in front of a card type in the singular, or of "card": "Cleric creature", "Equipment artifact", "Giant card"; a
+/// card type in front of another one: "artifact creature".
 fn singular_qualifier(r: &mut Reader<'_>) -> Option<Pred> {
     r.attempt(|r| {
+        if let Some((card_type, false)) = r.peek_word().and_then(type_noun)
+            && r.word_at(1)
+                .and_then(type_noun)
+                .is_some_and(|(_, plural)| !plural)
+        {
+            r.skip();
+            return Some(Pred::Type(card_type));
+        }
         let name = group_name(r).filter(|name| r.is_subtype(name))?;
         let typed = r
             .peek_word()
@@ -1431,6 +1476,15 @@ fn zone_words(pred: &Pred, rest: &mut Peekable<Iter<'_, Pred>>, form: Form) -> O
     {
         return Some("in their hand".to_owned());
     }
+    // The hand of the one player the sentence targets: the writer of the effect says "player's" for a target player.
+    if form == Form::Count
+        && *zone == ZoneKind::Hand
+        && rest
+            .next_if(|next| **next == Pred::OwnedBy(Ref::Target(0)))
+            .is_some()
+    {
+        return Some("in target opponent's hand".to_owned());
+    }
     if *zone != ZoneKind::Graveyard || form == Form::Count {
         return None;
     }
@@ -1610,6 +1664,19 @@ pub fn second_target(r: &mut Reader<'_>) -> Option<Ref> {
     Some(Ref::Target(1))
 }
 
+/// One target of several kinds of objects: "target artifact, enchantment, or creature with power 4 or greater".
+fn either_objects(kinds: &[Targetable]) -> Option<String> {
+    let phrases: Vec<String> = kinds
+        .iter()
+        .map(|kind| match kind {
+            Targetable::Object(selector) => phrase_text(selector, Form::Target),
+            _ => None,
+        })
+        .collect::<Option<_>>()?;
+    let phrases: Vec<&str> = phrases.iter().map(String::as_str).collect();
+    Some(format!("target {}", join_or(&phrases)))
+}
+
 /// A target as the card words it.
 pub fn spec_text(spec: &TargetSpec) -> Option<String> {
     if spec.divide.is_some() {
@@ -1647,6 +1714,8 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
                 {
                     "target opponent or planeswalker".to_owned()
                 }
+                // Objects of different kinds: "target artifact, enchantment, or creature with power 4 or greater".
+                [_, _, ..] => either_objects(kinds)?,
                 _ => return None,
             },
             Targetable::Object(selector) => {
@@ -1696,6 +1765,10 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
         Some(Amount::Fixed(count)) => Some(format!(
             "up to {} target {}",
             count_word(u32::try_from(*count).ok()?)?,
+            phrase_text(selector, Form::Targets)?
+        )),
+        Some(Amount::X) => Some(format!(
+            "up to X target {}",
             phrase_text(selector, Form::Targets)?
         )),
         Some(_) => None,

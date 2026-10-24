@@ -610,6 +610,9 @@ fn quantity_text(count: &Amount, what: &str, per: bool) -> Option<(String, bool,
             String::new(),
         ),
         Amount::X => ("X".to_owned(), false, String::new()),
+        Amount::Times { by: 2, of } if **of == Amount::X => {
+            ("twice X".to_owned(), false, String::new())
+        }
         Amount::Triggering => ("that many".to_owned(), false, String::new()),
         // "a number of 1/1 Rabbit creature tokens equal to ~'s power"
         Amount::Stat { of, stat } if matches!(of, Ref::This | Ref::Triggering) => {

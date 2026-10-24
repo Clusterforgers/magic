@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"Upkeep"}},"if":{"Compare":{"left":{"Count":[{"Subtype":"Snake"},{"ControlledBy":"You"}]},"op":"Eq","right":0}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Snake","colors":["Black"],"types":["Creature"],"subtypes":["Snake"],"power":1,"toughness":1,"abilities":[{"Keyword":"Deathtouch"}]}}}}]}}]}]}

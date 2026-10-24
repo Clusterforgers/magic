@@ -1,0 +1,162 @@
+{
+  "object": "card",
+  "id": "c0cd3d41-909b-4f20-a44b-db82807d10ae",
+  "oracle_id": "17e45fd8-c924-4b42-87ad-189469a8dd18",
+  "multiverse_ids": [],
+  "resource_id": "97E5F6C9E6FA7E65762562FFDF56E4D0E8AAF2D7E110FC40041D38EC36389D6B",
+  "mtgo_id": 150611,
+  "arena_id": 105468,
+  "tcgplayer_id": 696397,
+  "cardmarket_id": 891093,
+  "name": "Loki, the Deceiver",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/c0cd3d41-909b-4f20-a44b-db82807d10ae",
+  "scryfall_uri": "https://scryfall.com/card/msc/86/loki-the-deceiver?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:41:09Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/0/c0cd3d41-909b-4f20-a44b-db82807d10ae.jpg?1783903269",
+    "normal": "https://cards.scryfall.io/normal/front/c/0/c0cd3d41-909b-4f20-a44b-db82807d10ae.jpg?1783903269",
+    "large": "https://cards.scryfall.io/large/front/c/0/c0cd3d41-909b-4f20-a44b-db82807d10ae.jpg?1783903269",
+    "png": "https://cards.scryfall.io/png/front/c/0/c0cd3d41-909b-4f20-a44b-db82807d10ae.png?1783903269",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/0/c0cd3d41-909b-4f20-a44b-db82807d10ae.jpg?1783903269",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/0/c0cd3d41-909b-4f20-a44b-db82807d10ae.jpg?1783903269",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/0/c0cd3d41-909b-4f20-a44b-db82807d10ae.webp?1783903269",
+    "grid": "https://cards.scryfall.io/grid/front/c/0/c0cd3d41-909b-4f20-a44b-db82807d10ae.webp?1783903269",
+    "display": "https://cards.scryfall.io/display/front/c/0/c0cd3d41-909b-4f20-a44b-db82807d10ae.webp?1783903269",
+    "art": "https://cards.scryfall.io/art/front/c/0/c0cd3d41-909b-4f20-a44b-db82807d10ae.webp?1783903269",
+    "crop": "https://cards.scryfall.io/crop/front/c/0/c0cd3d41-909b-4f20-a44b-db82807d10ae.webp?1783903269",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/0/c0cd3d41-909b-4f20-a44b-db82807d10ae.jpg?1783903269"
+  },
+  "mana_cost": "{1}{U}{B}{R}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — God Sorcerer Villain",
+  "oracle_text": "Whenever Loki attacks, create a tapped and attacking token that's a copy of another target Villain you control, except it isn't legendary and it's an Illusion in addition to its other types. Sacrifice that token at the beginning of the next end step.\nWhenever one or more Villains you control deal combat damage to a player, draw a card.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "R",
+    "U"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "91177999-7e98-4c7c-ba19-cc4fc7cfa8f8",
+      "component": "combo_piece",
+      "name": "Loki, the Deceiver",
+      "type_line": "Legendary Creature — God Sorcerer Villain",
+      "uri": "https://api.scryfall.com/cards/91177999-7e98-4c7c-ba19-cc4fc7cfa8f8"
+    },
+    {
+      "object": "related_card",
+      "id": "f4e87a11-b3b1-47b2-bd73-f4c78d6fbe6c",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/f4e87a11-b3b1-47b2-bd73-f4c78d6fbe6c"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c0cd3d41-909b-4f20-a44b-db82807d10ae/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A17e45fd8-c924-4b42-87ad-189469a8dd18&unique=prints",
+  "collector_number": "86",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alexander Mokhov",
+  "artist_ids": [
+    "3a6a9d37-e62c-44bd-90f2-f5126324e3f0"
+  ],
+  "illustration_id": "8d3603f9-8570-43ef-bb3a-a56539129aae",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 10435,
+  "prices": {
+    "usd": "0.33",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.37",
+    "eur_foil": null,
+    "tix": "1.60"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLoki%252C%2Bthe%2BDeceiver",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLoki%252C%2Bthe%2BDeceiver",
+    "edhrec": "https://edhrec.com/route/?cc=Loki%2C+the+Deceiver"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F696397%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=891093&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/150611?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

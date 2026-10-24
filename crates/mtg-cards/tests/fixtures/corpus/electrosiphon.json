@@ -1,0 +1,155 @@
+{
+  "object": "card",
+  "id": "8377fce8-edc8-4926-bf75-57162ff6df9f",
+  "oracle_id": "bff9105f-d8d4-4412-88d9-c9697581ebe9",
+  "multiverse_ids": [
+    652191
+  ],
+  "mtgo_id": 132457,
+  "tcgplayer_id": 541470,
+  "cardmarket_id": 758315,
+  "name": "Electrosiphon",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/8377fce8-edc8-4926-bf75-57162ff6df9f",
+  "scryfall_uri": "https://scryfall.com/card/pip/104/electrosiphon?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:08Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/3/8377fce8-edc8-4926-bf75-57162ff6df9f.jpg?1783912388",
+    "normal": "https://cards.scryfall.io/normal/front/8/3/8377fce8-edc8-4926-bf75-57162ff6df9f.jpg?1783912388",
+    "large": "https://cards.scryfall.io/large/front/8/3/8377fce8-edc8-4926-bf75-57162ff6df9f.jpg?1783912388",
+    "png": "https://cards.scryfall.io/png/front/8/3/8377fce8-edc8-4926-bf75-57162ff6df9f.png?1783912388",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/3/8377fce8-edc8-4926-bf75-57162ff6df9f.jpg?1783912388",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/3/8377fce8-edc8-4926-bf75-57162ff6df9f.jpg?1783912388",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/3/8377fce8-edc8-4926-bf75-57162ff6df9f.webp?1783912388",
+    "grid": "https://cards.scryfall.io/grid/front/8/3/8377fce8-edc8-4926-bf75-57162ff6df9f.webp?1783912388",
+    "display": "https://cards.scryfall.io/display/front/8/3/8377fce8-edc8-4926-bf75-57162ff6df9f.webp?1783912388",
+    "art": "https://cards.scryfall.io/art/front/8/3/8377fce8-edc8-4926-bf75-57162ff6df9f.webp?1783912388",
+    "crop": "https://cards.scryfall.io/crop/front/8/3/8377fce8-edc8-4926-bf75-57162ff6df9f.webp?1783912388",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/3/8377fce8-edc8-4926-bf75-57162ff6df9f.jpg?1783912388"
+  },
+  "mana_cost": "{U}{U}{R}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Counter target spell. You get an amount of {E} (energy counters) equal to its mana value.",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "2a794202-875f-4397-a8de-9722c8d78448",
+      "component": "combo_piece",
+      "name": "Energy Reserve",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/2a794202-875f-4397-a8de-9722c8d78448"
+    },
+    {
+      "object": "related_card",
+      "id": "5f388077-d7a5-41a2-a9e9-4c3a5f7c6b48",
+      "component": "combo_piece",
+      "name": "Electrosiphon",
+      "type_line": "Instant",
+      "uri": "https://api.scryfall.com/cards/5f388077-d7a5-41a2-a9e9-4c3a5f7c6b48"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8377fce8-edc8-4926-bf75-57162ff6df9f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abff9105f-d8d4-4412-88d9-c9697581ebe9&unique=prints",
+  "collector_number": "104",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"I calculate your chance of success to be . . . well, I don't want to be morbid . . .\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Antonio José Manzanedo",
+  "artist_ids": [
+    "74986d28-0001-4a78-827c-e490b325d0e3"
+  ],
+  "illustration_id": "b1aa21fd-6f1d-4945-bee6-7a6f06e31aaa",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 5802,
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "0.79",
+    "usd_etched": null,
+    "eur": "0.79",
+    "eur_foil": "1.28",
+    "tix": "0.69"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652191&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DElectrosiphon",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DElectrosiphon",
+    "edhrec": "https://edhrec.com/route/?cc=Electrosiphon"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F541470%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=758315&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132457?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "5cdc4654-b8c5-4599-a1d2-9e9d5f6509cb",
+  "name": "Duelist's Heritage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Duelist's Heritage",
+      "oracle_fingerprint": "24f3804ee0e2b262a5ea5c8cb9a45c3e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "Attacks": { "what": [{ "Type": "Creature" }] } } },
+            "targets": [{ "what": { "Object": ["Attacking", { "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "DoubleStrike" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -91,6 +91,14 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
         {
             return Some(Ref::Triggering);
         }
+        // "Whenever this creature or equipped creature attacks": the creature that attacks.
+        TriggerPattern::AnyOf(patterns)
+            if patterns
+                .iter()
+                .all(|pattern| matches!(pattern, TriggerPattern::Attacks { .. })) =>
+        {
+            return Some(Ref::Triggering);
+        }
         _ => return None,
     };
     if what.0 == [Pred::This] {
@@ -952,6 +960,9 @@ pub fn condition_text(condition: &Condition) -> Option<String> {
     }
     if let Some(control) = super::statics::control_texts(condition).into_iter().next() {
         return Some(control);
+    }
+    if let Some(none) = super::as_long_as::none_texts(condition).into_iter().next() {
+        return Some(none);
     }
     if let Condition::Compare {
         left: Amount::Counters {

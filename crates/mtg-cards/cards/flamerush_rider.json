@@ -1,0 +1,36 @@
+{
+  "oracle_id": "f797a325-ec2a-4142-b0ff-90cac1356da9",
+  "name": "Flamerush Rider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flamerush Rider",
+      "oracle_fingerprint": "f9f65ac1844b9dc28df28a3cbe8b4ece",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking", "Other"] } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "CopyOf": { "of": { "Target": 0 } } },
+                  "tapped": true,
+                  "attacking": true,
+                  "as": "copy"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Dash": "{2}{R}{R}" } }
+      ]
+    }
+  ]
+}

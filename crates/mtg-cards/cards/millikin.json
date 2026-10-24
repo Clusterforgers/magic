@@ -1,0 +1,19 @@
+{
+  "oracle_id": "fa4dffda-6f04-4d0b-829d-28a1a5794dee",
+  "name": "Millikin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Millikin",
+      "oracle_fingerprint": "b805b29ad0c2078c60cac2084de9dea6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Mill": 1 }],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

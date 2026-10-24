@@ -347,14 +347,18 @@ pub(crate) fn pay_answer(
         PayChoice::Cancel => Vec::new(),
         _ => announcement(state, player, pending)?,
     };
-    pay_with(
+    let outcome = pay_with(
         player,
         options,
         &unusable(state, player, options),
         choice,
         announced,
         &|option, taken| mana_ability::activation(state, player, option, taken),
-    )
+    )?;
+    Ok(match outcome {
+        Outcome::Events(events) => Outcome::Events(parts::mill::in_turn(state, player, events)),
+        other => other,
+    })
 }
 
 /// The events of a spell being cast: `SpellCast`, and for a cast that the resolution of another spell or ability allowed

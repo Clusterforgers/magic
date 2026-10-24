@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "9889fe0b-d93f-4f84-9081-4bc4efc4127a",
+  "oracle_id": "148145ef-a368-4caf-921d-e3809adf03de",
+  "multiverse_ids": [
+    612156
+  ],
+  "mtgo_id": 111438,
+  "tcgplayer_id": 491298,
+  "cardmarket_id": 705479,
+  "name": "Vodalian Wave-Knight",
+  "lang": "en",
+  "released_at": "2023-04-21",
+  "uri": "https://api.scryfall.com/cards/9889fe0b-d93f-4f84-9081-4bc4efc4127a",
+  "scryfall_uri": "https://scryfall.com/card/moc/43/vodalian-wave-knight?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:34:34Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/8/9889fe0b-d93f-4f84-9081-4bc4efc4127a.jpg?1783917274",
+    "normal": "https://cards.scryfall.io/normal/front/9/8/9889fe0b-d93f-4f84-9081-4bc4efc4127a.jpg?1783917274",
+    "large": "https://cards.scryfall.io/large/front/9/8/9889fe0b-d93f-4f84-9081-4bc4efc4127a.jpg?1783917274",
+    "png": "https://cards.scryfall.io/png/front/9/8/9889fe0b-d93f-4f84-9081-4bc4efc4127a.png?1783917274",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/8/9889fe0b-d93f-4f84-9081-4bc4efc4127a.jpg?1783917274",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/8/9889fe0b-d93f-4f84-9081-4bc4efc4127a.jpg?1783917274",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/8/9889fe0b-d93f-4f84-9081-4bc4efc4127a.webp?1783917274",
+    "grid": "https://cards.scryfall.io/grid/front/9/8/9889fe0b-d93f-4f84-9081-4bc4efc4127a.webp?1783917274",
+    "display": "https://cards.scryfall.io/display/front/9/8/9889fe0b-d93f-4f84-9081-4bc4efc4127a.webp?1783917274",
+    "art": "https://cards.scryfall.io/art/front/9/8/9889fe0b-d93f-4f84-9081-4bc4efc4127a.webp?1783917274",
+    "crop": "https://cards.scryfall.io/crop/front/9/8/9889fe0b-d93f-4f84-9081-4bc4efc4127a.webp?1783917274",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/8/9889fe0b-d93f-4f84-9081-4bc4efc4127a.jpg?1783917274"
+  },
+  "mana_cost": "{2}{W}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Merfolk Knight",
+  "oracle_text": "Whenever you draw a card, put a +1/+1 counter on each other Merfolk and/or Knight you control.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "6bba5de9-5afb-42af-a7eb-24ac854bf671",
+  "set": "moc",
+  "set_name": "March of the Machine Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/6bba5de9-5afb-42af-a7eb-24ac854bf671",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/moc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9889fe0b-d93f-4f84-9081-4bc4efc4127a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A148145ef-a368-4caf-921d-e3809adf03de&unique=prints",
+  "collector_number": "43",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "As Phyrexian portals roared open, she whispered a prayer to Svyelun for the strength to cleanse the sky.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Olivier Bernard",
+  "artist_ids": [
+    "11c6f325-68c2-4f2a-972d-98d2ffe6c224"
+  ],
+  "illustration_id": "3969c8b1-8536-4992-99c1-e338c7ac2145",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 6312,
+  "preview": {
+    "source": "Elder Dragon Hijinks",
+    "source_uri": "https://www.youtube.com/watch?v=Yi62YnjwtDs",
+    "previewed_at": "2023-04-04"
+  },
+  "prices": {
+    "usd": "4.26",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "4.23",
+    "eur_foil": null,
+    "tix": "5.45"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=612156&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVodalian%2BWave-Knight",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVodalian%2BWave-Knight",
+    "edhrec": "https://edhrec.com/route/?cc=Vodalian+Wave-Knight"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F491298%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=705479&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/111438?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

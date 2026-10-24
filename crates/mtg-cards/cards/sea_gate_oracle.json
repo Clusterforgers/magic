@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b333c194-d285-4dfb-984c-57b7e88393af",
+  "name": "Sea Gate Oracle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sea Gate Oracle",
+      "oracle_fingerprint": "32e70fc5ba5f8878f2e8402b76fd1797",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": { "what": { "Bound": "rest" }, "to": { "Library": { "place": "Bottom" } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

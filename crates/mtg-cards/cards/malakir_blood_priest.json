@@ -1,0 +1,22 @@
+{
+  "oracle_id": "3a3cb6fe-24ef-4c09-8ff8-f303fc472a8b",
+  "name": "Malakir Blood-Priest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malakir Blood-Priest",
+      "oracle_fingerprint": "33270b2da69fe8ea4b6fc350235ed11a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": { "Party": "You" } } },
+              { "GainLife": { "amount": { "Party": "You" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

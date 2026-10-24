@@ -178,10 +178,10 @@ mod commander_statics;
 mod compound;
 mod conditions;
 mod copies;
+mod copy_attacks;
 mod copy_groups;
 mod copy_leftovers;
 mod copy_supertypes;
-mod copy_wordings;
 mod cost_conditions;
 mod cost_counts;
 mod cost_wordings;
@@ -247,6 +247,7 @@ mod named_tokens;
 mod number_of;
 mod oracle_only_writers;
 mod paid_reads;
+mod party;
 mod pay;
 mod payments;
 mod per_opponent_writers;
@@ -266,6 +267,9 @@ mod reveal;
 mod reveal_cast_writers;
 mod reveal_until;
 mod riot;
+mod sample_af_writers;
+mod sample_gl_writers;
+mod sample_mr_writers;
 mod search_by_controller;
 mod search_lists;
 mod search_pairs;
@@ -281,6 +285,8 @@ mod statics;
 mod stations;
 mod step_writers;
 mod strive;
+mod sz_more_writers;
+mod sz_writers;
 mod tail_alone;
 mod tail_pairs;
 mod tap_and_mill;
@@ -760,7 +766,7 @@ mod removal {
     )]
     #[case::and_gain("Destroy target creature and gain 3 life.")]
     #[case::mixed_connector("Destroy all artifacts or enchantments.")]
-    #[case::two_types_adjective("Destroy target artifact creature.")]
+    #[case::two_types_adjective("Destroy target artifact land.")]
     fn near_misses_stay_unread(#[case] text: &str) {
         assert_eq!(spell(text), None, "{text}");
     }

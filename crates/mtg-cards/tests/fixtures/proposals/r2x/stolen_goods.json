@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"Opponent"}],"effects":[{"ExileUntil":{"who":{"Target":0},"filter":[{"Not":{"Type":"Land"}}],"as":"found","exiled_as":"exiled"}},{"Rule":{"rule":{"MayCast":{"from":"Exile","only":{"Bound":"found"},"free":true}},"duration":"UntilEndOfTurn"}}]}}]}]}

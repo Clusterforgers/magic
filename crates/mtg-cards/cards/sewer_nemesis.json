@@ -1,0 +1,39 @@
+{
+  "oracle_id": "c7f1a49a-cc22-432f-bf3e-50ba61982b87",
+  "name": "Sewer Nemesis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sewer Nemesis",
+      "oracle_fingerprint": "718e8c911e482a20916c4774ac21739e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "Player" }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "Chosen" }] },
+                  "toughness": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "Chosen" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Chosen" } },
+            "effects": [{ "Mill": { "who": "Chosen" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

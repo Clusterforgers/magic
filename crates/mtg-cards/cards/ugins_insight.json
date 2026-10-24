@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ad7b9db0-e061-4360-9b81-0408d18d971d",
+  "name": "Ugin's Insight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ugin's Insight",
+      "oracle_fingerprint": "8694c046751a496d81e14311b477d9b8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Scry": {
+                  "count": {
+                    "Greatest": { "of": [{ "ControlledBy": "You" }], "stat": "ManaValue" }
+                  }
+                }
+              },
+              { "Draw": { "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

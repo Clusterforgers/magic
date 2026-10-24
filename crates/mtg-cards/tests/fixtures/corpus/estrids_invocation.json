@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "8920e7e4-d89e-4ff9-8922-27fdc2f8ed6e",
+  "oracle_id": "7f5f10ee-6428-4053-8824-3bc70420ec2c",
+  "multiverse_ids": [
+    664048
+  ],
+  "mtgo_id": 125949,
+  "arena_id": 91095,
+  "tcgplayer_id": 552726,
+  "cardmarket_id": 771815,
+  "name": "Estrid's Invocation",
+  "lang": "en",
+  "released_at": "2024-06-14",
+  "uri": "https://api.scryfall.com/cards/8920e7e4-d89e-4ff9-8922-27fdc2f8ed6e",
+  "scryfall_uri": "https://scryfall.com/card/mh3/269/estrids-invocation?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:53:37Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/9/8920e7e4-d89e-4ff9-8922-27fdc2f8ed6e.jpg?1783911217",
+    "normal": "https://cards.scryfall.io/normal/front/8/9/8920e7e4-d89e-4ff9-8922-27fdc2f8ed6e.jpg?1783911217",
+    "large": "https://cards.scryfall.io/large/front/8/9/8920e7e4-d89e-4ff9-8922-27fdc2f8ed6e.jpg?1783911217",
+    "png": "https://cards.scryfall.io/png/front/8/9/8920e7e4-d89e-4ff9-8922-27fdc2f8ed6e.png?1783911217",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/9/8920e7e4-d89e-4ff9-8922-27fdc2f8ed6e.jpg?1783911217",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/9/8920e7e4-d89e-4ff9-8922-27fdc2f8ed6e.jpg?1783911217",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/9/8920e7e4-d89e-4ff9-8922-27fdc2f8ed6e.webp?1783911217",
+    "grid": "https://cards.scryfall.io/grid/front/8/9/8920e7e4-d89e-4ff9-8922-27fdc2f8ed6e.webp?1783911217",
+    "display": "https://cards.scryfall.io/display/front/8/9/8920e7e4-d89e-4ff9-8922-27fdc2f8ed6e.webp?1783911217",
+    "art": "https://cards.scryfall.io/art/front/8/9/8920e7e4-d89e-4ff9-8922-27fdc2f8ed6e.webp?1783911217",
+    "crop": "https://cards.scryfall.io/crop/front/8/9/8920e7e4-d89e-4ff9-8922-27fdc2f8ed6e.webp?1783911217",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/9/8920e7e4-d89e-4ff9-8922-27fdc2f8ed6e.jpg?1783911217"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "You may have this enchantment enter as a copy of an enchantment you control, except it has \"At the beginning of your upkeep, you may exile this enchantment. If you do, return it to the battlefield under its owner's control.\"",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "3ed80bb6-77e8-4aa7-8262-95377a38aba1",
+  "set": "mh3",
+  "set_name": "Modern Horizons 3",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/3ed80bb6-77e8-4aa7-8262-95377a38aba1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amh3&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mh3?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8920e7e4-d89e-4ff9-8922-27fdc2f8ed6e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7f5f10ee-6428-4053-8824-3bc70420ec2c&unique=prints",
+  "collector_number": "269",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "set",
+  "flavor_text": "Enchanters add layer upon layer of complexity to the world around them.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Johannes Voss",
+  "artist_ids": [
+    "3593dd7e-c547-4a32-81cd-7da725f60118"
+  ],
+  "illustration_id": "97015034-0971-433e-ae02-ba877461628a",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 2728,
+  "penny_rank": 4237,
+  "preview": {
+    "source": "Steve Stillman",
+    "source_uri": "https://twitter.com/stillman_steve/status/1793673363069841818",
+    "previewed_at": "2024-05-23"
+  },
+  "prices": {
+    "usd": "0.47",
+    "usd_foil": "0.77",
+    "usd_etched": null,
+    "eur": "0.47",
+    "eur_foil": "0.78",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=664048&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEstrid%2527s%2BInvocation",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEstrid%2527s%2BInvocation",
+    "edhrec": "https://edhrec.com/route/?cc=Estrid%27s+Invocation"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F552726%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=771815&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/125949?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

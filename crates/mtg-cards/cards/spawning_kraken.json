@@ -1,0 +1,50 @@
+{
+  "oracle_id": "f0357833-80b5-40ba-874a-bd22ea6e4e46",
+  "name": "Spawning Kraken",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spawning Kraken",
+      "oracle_fingerprint": "9b5c30188600dd84068bee11e2b14ffe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  {
+                    "AnyOf": [
+                      { "Subtype": "Kraken" },
+                      { "Subtype": "Leviathan" },
+                      { "Subtype": "Octopus" },
+                      { "Subtype": "Serpent" }
+                    ]
+                  },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Kraken",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Kraken"],
+                      "power": 9,
+                      "toughness": 9
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

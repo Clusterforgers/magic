@@ -1,0 +1,23 @@
+{
+  "id": "978c2c7d-6898-4be2-aed7-e673210ce654",
+  "oracle_id": "499dceab-1890-49c8-b35d-b059a1dc950f",
+  "name": "Stuffy Doll",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "875",
+  "rarity": "rare",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "{5}",
+  "cmc": 5.0,
+  "type_line": "Artifact Creature — Construct",
+  "oracle_text": "Indestructible\nAs this creature enters, choose a player.\nWhenever this creature is dealt damage, it deals that much damage to the chosen player.\n{T}: This creature deals 1 damage to itself.",
+  "power": "0",
+  "toughness": "1",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Indestructible"
+  ]
+}

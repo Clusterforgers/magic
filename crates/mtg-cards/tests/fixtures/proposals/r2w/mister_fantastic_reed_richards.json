@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Reach"},{"Triggered":{"when":{"Batch":{"ZoneChange":{"what":["Token",{"ControlledBy":"You"}],"to":"Battlefield"}}},"effects":[{"May":{"effects":[{"Draw":{}}]}}]}}]}]}

@@ -1,0 +1,33 @@
+{
+  "id": "99fd1cd5-4740-4a0f-b773-3d3b66861d77",
+  "oracle_id": "df0b5995-117b-4ba8-964d-ea3c592621ef",
+  "name": "The Warring Triad",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fic",
+  "collector_number": "99",
+  "rarity": "rare",
+  "released_at": "2025-06-13",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Legendary Artifact Creature — God",
+  "oracle_text": "Flying, trample, haste\nAs long as there are fewer than eight cards in your graveyard, The Warring Triad isn't a creature.\n{T}, Mill a card: Target player adds one mana of any color. (Activate only as an instant.)",
+  "power": "5",
+  "toughness": "5",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Flying",
+    "Haste",
+    "Trample",
+    "Mill"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

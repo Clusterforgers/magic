@@ -1,0 +1,22 @@
+{
+  "oracle_id": "83409a22-10de-4d51-90a3-e0579ca8cbea",
+  "name": "Insight Engine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Insight Engine",
+      "oracle_fingerprint": "8d2374a0218a15b5d729fc9ff88d63b3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "charge" } },
+              { "Draw": { "count": { "Counters": { "on": "This", "counter": "charge" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

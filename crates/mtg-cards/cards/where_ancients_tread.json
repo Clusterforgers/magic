@@ -1,0 +1,31 @@
+{
+  "oracle_id": "fca2fcab-4f17-448d-bf6d-f6c913159df8",
+  "name": "Where Ancients Tread",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Where Ancients Tread",
+      "oracle_fingerprint": "7e0702b59aaab21dcd88e4bae35037e1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "Power", "op": "Ge", "to": 5 } }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "May": { "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

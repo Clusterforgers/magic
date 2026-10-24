@@ -157,6 +157,7 @@ Broodbirth Viper
 Broodcaller Scourge
 Broodhatch Nantuko
 Broodstar
+Buried Alive
 Cached Defenses
 Cackling Counterpart
 Cadaverous Bloom
@@ -416,6 +417,7 @@ Firmament Sage
 Fists of Flame
 Flame Jab
 Flamebraider
+Flamerush Rider
 Flatline
 Flawless Maneuver
 Fleecemane Lion
@@ -522,6 +524,7 @@ Hangarback Walker
 Harabaz Druid
 Harmonious Archon
 Harrow
+Haruspex
 Harvest Season
 Hate Mirage
 Hatut Zeraze Strike Force
@@ -663,6 +666,7 @@ Llanowar Behemoth
 Llanowar Elves
 Llanowar Loamspeaker
 Llanowar Reborn
+Loki, the Deceiver
 Looter il-Kor
 Lord of Extinction
 Lord of the Forsaken
@@ -679,6 +683,7 @@ Machine God's Effigy
 Magmatic Insight
 Make Disappear
 Makeshift Mauler
+Malakir Blood-Priest
 Malleable Impostor
 Mana Bloom
 Manabarbs
@@ -686,6 +691,7 @@ Manaweft Sliver
 Manor Gate
 Map the Frontier
 Map the Wastes
+March of Progress
 Marchesa's Emissary
 Mardu Devotee
 Mardu Scout
@@ -717,6 +723,7 @@ Metropolis Reformer
 Midnight Banshee
 Migratory Greathorn
 Migratory Route
+Millikin
 Ministrant of Obligation
 Mirari
 Mirari's Wake
@@ -758,6 +765,7 @@ Nantuko Vigilante
 Nessian Asp
 Nettlecyst
 New Horizons
+Nick Valentine, Private Eye
 Night Clubber
 Nighthawk Scavenger
 Nightmare
@@ -919,6 +927,7 @@ Rocksteady, Mutant Marauder
 Rootborn Defenses
 Rope
 Rosheen Meanderer
+Rousing Refrain
 Rugged Prairie
 Ruinous Path
 Rumbleweed
@@ -973,6 +982,7 @@ Shadowmage Infiltrator
 Shadowspear
 Shamanic Revelation
 Shambling Shell
+Sharding Sphinx
 Sheer Drop
 Sheltered by Ghosts
 Shenanigans
@@ -1039,6 +1049,7 @@ Spinerock Knoll
 Spire Golem
 Spire Winder
 Spirit of the Hearth
+Spoils of Adventure
 Spring // Mind
 Springleaf Drum
 Squirrel Nest
@@ -1051,6 +1062,7 @@ Starscape Cleric
 Steady Progress
 Steam Vents
 Steampath Charger
+Steel Overseer
 Steelburr Champion
 Steelclaw Lance
 Sticky Fingers
@@ -1105,6 +1117,7 @@ Tabaxi Toucaneers
 Tah-Crop Skirmisher
 Tainted Isle
 Tangle Tumbler
+Tanuki Transplanter
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
 Teacher's Pest
@@ -1134,6 +1147,7 @@ The Seriema
 The Spear of Bashenga
 The Squadron Sinister
 The Thing, Ben Grimm
+The Warring Triad
 Thelonite Hermit
 Thieving Magpie
 Thieving Varmint
@@ -1175,6 +1189,7 @@ Treasure Hunt
 Trove Tracker
 Troyan, Gutsy Explorer
 True Identity
+True-Name Nemesis
 Trumpeting Gnarr
 Tumble Magnet
 Turn // Burn

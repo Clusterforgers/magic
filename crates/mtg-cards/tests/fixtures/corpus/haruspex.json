@@ -1,0 +1,35 @@
+{
+  "id": "76e93d5d-c255-45a6-9217-84ac270740a7",
+  "oracle_id": "2309436e-3442-46d7-8ffc-9dc4a2314ae9",
+  "name": "Haruspex",
+  "lang": "en",
+  "layout": "normal",
+  "set": "40k",
+  "collector_number": "91",
+  "rarity": "rare",
+  "released_at": "2022-10-07",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Tyranid",
+  "oracle_text": "Rapacious Hunger — Whenever another creature dies, put a +1/+1 counter on this creature.\nDevouring Monster — {T}, Remove X +1/+1 counters from this creature: Add X mana of any one color.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Rapacious Hunger",
+    "Devouring Monster"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

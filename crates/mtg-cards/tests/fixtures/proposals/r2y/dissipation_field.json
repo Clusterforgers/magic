@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"DealsDamage":{"source":[],"to":"You"}},"effects":[{"Move":{"what":"Triggering","to":"Hand"}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Drew":{"who":"You"}},"effects":[{"PutCounters":{"on":{"Each":[{"AnyOf":[{"Subtype":"Merfolk"},{"Subtype":"Knight"}]},{"ControlledBy":"You"},"Other"]},"counter":"+1/+1"}}]}}]}]}

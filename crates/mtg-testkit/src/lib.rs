@@ -87,6 +87,7 @@ pub mod mutate_cards;
 pub mod nth_cards;
 pub mod pair_cards;
 pub mod part_cards;
+pub mod party_cards;
 pub mod pay_cards;
 pub mod player_keyword_cards;
 pub mod prevent_cards;
@@ -146,7 +147,8 @@ pub use commander_cards::{
 pub use companion_cards::companion_fuzz_setup;
 pub use conditional_static_cards::conditional_static_fuzz_setup;
 pub use copy_cards::{
-    copy_fuzz_setup, copy_shapes_fuzz_setup, copy_wording_fuzz_setup, spell_copy_fuzz_setup,
+    copy_attack_fuzz_setup, copy_fuzz_setup, copy_shapes_fuzz_setup, copy_wording_fuzz_setup,
+    spell_copy_fuzz_setup,
 };
 pub use copy_keyword_cards::copy_keywords_fuzz_setup;
 pub use cost_cards::cost_fuzz_setup;
@@ -211,6 +213,7 @@ pub use mutate_cards::mutate_fuzz_setup;
 pub use nth_cards::nth_fuzz_setup;
 pub use pair_cards::pair_fuzz_setup;
 pub use part_cards::{paid_fuzz_setup, parts_fuzz_setup};
+pub use party_cards::{PARTY_CARDS, ROLES, party_fuzz_setup, role_creature, typed_creature};
 pub use pay_cards::pay_fuzz_setup;
 pub use player_keyword_cards::player_keyword_fuzz_setup;
 pub use prevent_cards::prevent_fuzz_setup;

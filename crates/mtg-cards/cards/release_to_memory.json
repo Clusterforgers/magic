@@ -1,0 +1,46 @@
+{
+  "oracle_id": "3ae456e4-cb35-47be-b654-051e288622fe",
+  "name": "Release to Memory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Release to Memory",
+      "oracle_fingerprint": "6564f3086126e7d0d97c8f022241e6a5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "exiled"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "In": "Exile" },
+                      { "Is": { "Bound": "exiled" } },
+                      { "Type": "Creature" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

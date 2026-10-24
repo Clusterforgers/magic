@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b76f123d-7b78-42a1-a66e-0dee6f773687",
+  "name": "Synapse Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Synapse Sliver",
+      "oracle_fingerprint": "f96c064d3c8a1904af67e8af4ef9bc33",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Subtype": "Sliver" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "effects": [{ "Draw": { "who": { "ControllerOf": "Triggering" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

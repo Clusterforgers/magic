@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Move":{"what":{"Each":[{"Type":"Creature"},{"ControlledBy":"Opponents"},{"Compare":{"stat":"Toughness","op":"Le","to":{"Count":[{"Subtype":"Island"},{"ControlledBy":"You"}]}}}]},"to":"Hand"}}]}}]}]}

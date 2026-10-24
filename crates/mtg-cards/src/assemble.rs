@@ -518,6 +518,7 @@ fn needs_no_answer(effect: &Effect) -> bool {
 fn pays_with_activation(item: &CostItem) -> bool {
     let fixed = match item {
         CostItem::PayLife(amount)
+        | CostItem::Mill(amount)
         | CostItem::PayEnergy(amount)
         | CostItem::RemoveCounters { count: amount, .. } => {
             matches!(amount, Amount::Fixed(number) if *number > 0)
@@ -631,7 +632,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
         ManaProduced::AnyCombination {
             count: Amount::X,
             ..
-        }
+        } | ManaProduced::AnyColor(Amount::X)
     ));
     if x_paid != x_added {
         return None;

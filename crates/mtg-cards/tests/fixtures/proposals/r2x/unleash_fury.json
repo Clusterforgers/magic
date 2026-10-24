@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"ModifyPT":{"power":{"Stat":{"of":{"Target":0},"stat":"Power"}},"toughness":0}}],"duration":"UntilEndOfTurn"}}]}}]}]}

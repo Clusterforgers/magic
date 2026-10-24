@@ -1,0 +1,26 @@
+{
+  "oracle_id": "33fd9192-3e9b-4d3a-92aa-06de29d449df",
+  "name": "Vraska's Fall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vraska's Fall",
+      "oracle_fingerprint": "9d7b6221cc1fe51314a9b63b7cf6b19c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              },
+              { "PutCounters": { "on": "Opponents", "counter": "poison" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

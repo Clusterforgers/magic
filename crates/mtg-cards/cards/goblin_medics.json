@@ -1,0 +1,20 @@
+{
+  "oracle_id": "457bee4c-2332-440c-9336-36f6a69614f9",
+  "name": "Goblin Medics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Medics",
+      "oracle_fingerprint": "807fb028eacc3d7f7d47d64fcd5e56a7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

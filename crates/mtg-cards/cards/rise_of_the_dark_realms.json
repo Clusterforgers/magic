@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e5223a09-f732-4747-8914-e6546ab0ef4c",
+  "name": "Rise of the Dark Realms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rise of the Dark Realms",
+      "oracle_fingerprint": "19e5c6033641a9563815cb7e39db12a5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

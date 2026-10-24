@@ -1,0 +1,27 @@
+{
+  "oracle_id": "81fa8e6a-5fb8-43de-802f-df5b985c6a7d",
+  "name": "Spell Swindle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spell Swindle",
+      "oracle_fingerprint": "03d2361eb3e69b0257d74e56720a13ee",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

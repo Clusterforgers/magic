@@ -1,0 +1,28 @@
+{
+  "oracle_id": "05b9dccb-2364-4bca-a12e-8cb54a3f3a0b",
+  "name": "Viseling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viseling",
+      "oracle_fingerprint": "73e2764f5df483748ab1e4b6f86c877c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": {
+                    "Sum": [{ "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] }, -4]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

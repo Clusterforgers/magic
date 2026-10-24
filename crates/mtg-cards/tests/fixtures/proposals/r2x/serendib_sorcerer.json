@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap"],"targets":[{"what":{"Object":[{"Type":"Creature"},"Other"]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"SetPT":{"power":0,"toughness":2}}],"duration":"UntilEndOfTurn"}}]}}]}]}

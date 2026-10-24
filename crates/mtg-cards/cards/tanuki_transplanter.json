@@ -1,0 +1,33 @@
+{
+  "oracle_id": "4d1c7f42-19ef-405e-9edc-50a81b78f97c",
+  "name": "Tanuki Transplanter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tanuki Transplanter",
+      "oracle_fingerprint": "f73aebbfd6560de323c4069d49263194",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Attacks": { "what": ["This"] } },
+                { "Attacks": { "what": [{ "Is": "Attached" }] } }
+              ]
+            },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green"] },
+                  "times": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                  "lasts": "Turn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Reconfigure": "{3}" } }
+      ]
+    }
+  ]
+}

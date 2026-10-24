@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"End","whose":"You"}},"if":{"Compare":{"left":{"Tallied":{"who":"You","what":"Attackers"}},"op":"Ge","right":1}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Goblin","colors":["Red"],"types":["Creature"],"subtypes":["Goblin"],"power":1,"toughness":1}}}}]}}]}]}

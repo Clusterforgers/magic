@@ -38,6 +38,7 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Condition> {
         .or_else(|| r.attempt(exiled_with_it))
         .or_else(|| r.attempt(counter_this_turn))
         .or_else(|| r.attempt(died_under_you))
+        .or_else(|| r.attempt(full_party))
 }
 
 /// What `died_under_you` reads, written back.
@@ -84,6 +85,12 @@ fn died_under_you(r: &mut Reader<'_>) -> Option<Condition> {
         },
         number,
     )
+}
+
+/// "you have a full party": the party of four roles (CR 700.8) is complete.
+fn full_party(r: &mut Reader<'_>) -> Option<Condition> {
+    r.words("you have a full party").then_some(())?;
+    at_least(Amount::Party(Ref::You), 4)
 }
 
 /// The cards exiled with the card, as hideaway links them.
@@ -232,7 +239,7 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
         return Vec::new();
     };
     let Amount::Fixed(number) = right else {
-        return Vec::new();
+        return more_than_you(left, *op, right);
     };
     let Ok(number) = u32::try_from(*number) else {
         return Vec::new();
@@ -244,6 +251,9 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
             .collect()
     };
     match (left, op) {
+        (Amount::Party(Ref::You), Cmp::Ge) if number == 4 => {
+            vec!["you have a full party".to_owned()]
+        }
         (
             Amount::Tallied {
                 who: Ref::You,
@@ -316,9 +326,44 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
     }
 }
 
+/// "an opponent controls more lands than you": the largest count among the opponents against the count you control.
+fn more_than_you(left: &Amount, op: Cmp, right: &Amount) -> Vec<String> {
+    match (left, op, right) {
+        (
+            Amount::Largest {
+                who: Ref::Opponents,
+                of,
+            },
+            Cmp::Gt,
+            Amount::Count(yours),
+        ) if of == yours => controlled_group(of)
+            .map(|group| format!("an opponent controls more {group} than you"))
+            .into_iter()
+            .collect(),
+        _ => Vec::new(),
+    }
+}
+
 /// "each player has no cards in hand", "a counter was put on ~ this turn" and "there are cards exiled with it".
 fn state_texts(left: &Amount, op: Cmp, number: u32) -> Vec<String> {
     match (left, op) {
+        (
+            Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::Attackers,
+            },
+            Cmp::Ge,
+        ) if number == 1 => vec!["you attacked this turn".to_owned()],
+        (
+            Amount::Tallied {
+                who: Ref::Opponents,
+                what: TurnTally::LifeLost,
+            },
+            Cmp::Ge,
+        ) if number > 1 => quantity_texts(number)
+            .iter()
+            .map(|n| format!("an opponent lost {n} or more life this turn"))
+            .collect(),
         (Amount::Count(of), Cmp::Eq) if number == 0 && *of == every_hand() => {
             vec!["each player has no cards in hand".to_owned()]
         }

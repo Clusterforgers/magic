@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}}]},"effects":[{"Draw":{"count":1}}]}}]}]}

@@ -92,6 +92,7 @@ const RUNS: &[&str] = &[
     "Cost.DiscardSelf",
     "Cost.PayLife",
     "Cost.PayEnergy",
+    "Cost.Mill",
     "Cost.Sacrifice",
     "Cost.Discard",
     "Cost.RemoveCounters",
@@ -327,6 +328,7 @@ const RUNS: &[&str] = &[
     "Amount.Tallied",
     "Amount.Largest",
     "Amount.StartingLife",
+    "Amount.Party",
     "Ability.Replacement",
     "Ability.CostModifier",
     "ReplaceWhen.TokenCreation",
@@ -621,6 +623,7 @@ mod tests {
     #[case::exiling_for_another_duration("Exile.Duration.UntilYourNextTurn", false)]
     #[case::the_number_of_kicks("Amount.Kicks", true)]
     #[case::the_number_of_mutations("Amount.Mutations", true)]
+    #[case::the_size_of_a_party("Amount.Party", true)]
     #[case::cast_for_a_way("Amount.CastWith", true)]
     #[case::colors_spent("Amount.ColorsSpent", true)]
     #[case::permanents_graved("Amount.PermanentsGraved", true)]
@@ -729,6 +732,7 @@ mod tests {
     #[case::the_greatest_value("Amount.Greatest", true)]
     #[case::totals("Amount.Total", true)]
     #[case::card_types_among_cards("Amount.CardTypes", true)]
+    #[case::milling_as_a_cost("Cost.Mill", true)]
     #[case::paying_energy("Cost.PayEnergy", true)]
     #[case::paying_a_counted_amount_of_energy("Cost.PayEnergy.Counted", false)]
     #[case::removing_counters_as_a_cost("Cost.RemoveCounters", true)]
@@ -859,8 +863,6 @@ mod tests {
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]
     #[case::the_highest_life_total("Amount.HighestLife", true)]
-    #[case::choosing_a_player_as_it_enters("ReplaceBy.Choose.Player", false)]
-    #[case::choosing_an_opponent_as_it_enters("ReplaceBy.Choose.Opponent", false)]
     #[case::myriad("Keyword.Myriad", true)]
     #[case::crew("Keyword.Crew", true)]
     #[case::tapping_creatures_for_their_power_as_a_cost("Cost.TapPower", true)]

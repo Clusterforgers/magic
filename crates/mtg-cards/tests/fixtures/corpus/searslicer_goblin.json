@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "94ad0b97-a318-4e76-ac79-b3e83417c333",
+  "oracle_id": "86ec0b56-497f-481c-a03a-c4e64e8e7404",
+  "multiverse_ids": [
+    679170
+  ],
+  "resource_id": "F1BB0DD4A7D012F760DCA326484401556BB11D7B1066F2CDBB24848F6A0289DB",
+  "mtgo_id": 133754,
+  "arena_id": 93806,
+  "tcgplayer_id": 589362,
+  "cardmarket_id": 795112,
+  "name": "Searslicer Goblin",
+  "lang": "en",
+  "released_at": "2024-11-15",
+  "uri": "https://api.scryfall.com/cards/94ad0b97-a318-4e76-ac79-b3e83417c333",
+  "scryfall_uri": "https://scryfall.com/card/fdn/93/searslicer-goblin?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:18:22Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/4/94ad0b97-a318-4e76-ac79-b3e83417c333.jpg?1783909102",
+    "normal": "https://cards.scryfall.io/normal/front/9/4/94ad0b97-a318-4e76-ac79-b3e83417c333.jpg?1783909102",
+    "large": "https://cards.scryfall.io/large/front/9/4/94ad0b97-a318-4e76-ac79-b3e83417c333.jpg?1783909102",
+    "png": "https://cards.scryfall.io/png/front/9/4/94ad0b97-a318-4e76-ac79-b3e83417c333.png?1783909102",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/4/94ad0b97-a318-4e76-ac79-b3e83417c333.jpg?1783909102",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/4/94ad0b97-a318-4e76-ac79-b3e83417c333.jpg?1783909102",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/4/94ad0b97-a318-4e76-ac79-b3e83417c333.webp?1783909102",
+    "grid": "https://cards.scryfall.io/grid/front/9/4/94ad0b97-a318-4e76-ac79-b3e83417c333.webp?1783909102",
+    "display": "https://cards.scryfall.io/display/front/9/4/94ad0b97-a318-4e76-ac79-b3e83417c333.webp?1783909102",
+    "art": "https://cards.scryfall.io/art/front/9/4/94ad0b97-a318-4e76-ac79-b3e83417c333.webp?1783909102",
+    "crop": "https://cards.scryfall.io/crop/front/9/4/94ad0b97-a318-4e76-ac79-b3e83417c333.webp?1783909102",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/4/94ad0b97-a318-4e76-ac79-b3e83417c333.jpg?1783909102"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Creature — Goblin Warrior",
+  "oracle_text": "Raid — At the beginning of your end step, if you attacked this turn, create a 1/1 red Goblin creature token.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Raid"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "70f8a1de-cd4c-4afa-bf03-0245d375d42e",
+      "component": "token",
+      "name": "Goblin",
+      "type_line": "Token Creature — Goblin",
+      "uri": "https://api.scryfall.com/cards/70f8a1de-cd4c-4afa-bf03-0245d375d42e"
+    },
+    {
+      "object": "related_card",
+      "id": "9e3059e4-b198-4eba-98e8-f0f9f83d1928",
+      "component": "combo_piece",
+      "name": "Searslicer Goblin",
+      "type_line": "Creature — Goblin Warrior",
+      "uri": "https://api.scryfall.com/cards/9e3059e4-b198-4eba-98e8-f0f9f83d1928"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set": "fdn",
+  "set_name": "Foundations",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afdn&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fdn?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/94ad0b97-a318-4e76-ac79-b3e83417c333/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A86ec0b56-497f-481c-a03a-c4e64e8e7404&unique=prints",
+  "collector_number": "93",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Ikko hadn't intended to start a riot, but now that it was under way, he was having a lot of fun.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Wayne Reynolds",
+  "artist_ids": [
+    "afc47cec-3ccc-404e-a8c6-4d83dd504271"
+  ],
+  "illustration_id": "36ed71da-11aa-41ca-bdb2-6c139bf3e25f",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 3647,
+  "penny_rank": 627,
+  "prices": {
+    "usd": "1.47",
+    "usd_foil": "2.21",
+    "usd_etched": null,
+    "eur": "1.24",
+    "eur_foil": "1.44",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=679170&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSearslicer%2BGoblin",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSearslicer%2BGoblin",
+    "edhrec": "https://edhrec.com/route/?cc=Searslicer+Goblin"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F589362%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=795112&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/133754?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

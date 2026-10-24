@@ -1,0 +1,38 @@
+{
+  "oracle_id": "fe3b4c74-2bf8-464a-8f55-9de401a8c4b9",
+  "name": "Volcanic Vision",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Volcanic Vision",
+      "oracle_fingerprint": "9e50ed5163b44d6c460f0ede68e80d1a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

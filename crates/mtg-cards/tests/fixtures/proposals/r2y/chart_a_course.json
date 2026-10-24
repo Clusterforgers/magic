@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Draw":{"count":2}},{"If":{"condition":{"Compare":{"left":{"Tallied":{"who":"You","what":"Attackers"}},"op":"Lt","right":1}},"then":[{"Discard":{}}]}}]}}]}]}

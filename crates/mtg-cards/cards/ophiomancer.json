@@ -1,0 +1,42 @@
+{
+  "oracle_id": "55eca80c-dcd8-4c2f-aa0f-fb0aec7b80f7",
+  "name": "Ophiomancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ophiomancer",
+      "oracle_fingerprint": "616994ad2c12f6d75dcf3fe2d8eca42c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Snake" }, { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Snake",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Snake"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Deathtouch" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

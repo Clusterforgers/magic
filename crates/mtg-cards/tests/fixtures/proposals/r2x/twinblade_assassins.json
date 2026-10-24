@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"End","whose":"You"}},"if":{"Compare":{"left":{"Tallied":{"who":"EachPlayer","what":"CreaturesDied"}},"op":"Ge","right":1}},"effects":[{"Draw":{}}]}}]}]}

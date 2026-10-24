@@ -1,0 +1,37 @@
+{
+  "oracle_id": "ae61b2ef-2e60-499a-8708-e37b9bd5620e",
+  "name": "Aligned Heart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aligned Heart",
+      "oracle_fingerprint": "0826ed070e9d5266dd29cc762345ff31",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 2 } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "rally" } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Monk",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Monk"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Prowess" }]
+                    }
+                  },
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "rally" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

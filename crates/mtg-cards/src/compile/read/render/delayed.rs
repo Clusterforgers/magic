@@ -57,11 +57,17 @@ impl Writer<'_> {
             Some(_) => return None,
         };
         let tapped = if *tapped { " tapped" } else { "" };
+        // Any number of targets come back as "those cards" under "their owner's" control.
+        let (cards, control) = if self.single(what) || self.at_most_one(what) {
+            ("that card", control.to_owned())
+        } else {
+            ("those cards", control.replace("its", "their"))
+        };
         Some((
             vec![
                 format!("exile {}", self.object(what)?),
                 format!(
-                    "return that card to the battlefield{tapped} under {control} control at the beginning of the next end step"
+                    "return {cards} to the battlefield{tapped} under {control} control at the beginning of the next end step"
                 ),
             ],
             2,

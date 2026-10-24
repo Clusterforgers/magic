@@ -3,34 +3,45 @@
 //! player in a row are one compound sentence; the readers take ", then" between two steps as the
 //! same sequence.
 
+mod all_graveyards;
 mod and_lists;
 mod bound;
+mod compared_to_chosen;
+mod control;
 mod created;
 mod damage_by;
 mod delayed;
 mod divided;
 mod each_target;
 mod either;
+mod exiled_cast;
 mod exiled_until;
 mod free_casts;
 mod from_graveyard;
 mod graveyards;
 mod group_becomes;
+mod hand_returns;
+mod has_counter;
 mod instead;
 mod library_steps;
 mod loyalty;
+mod may_flicker;
 mod may_have;
 mod multi;
+mod opponent_picks;
+mod optional_return;
 mod oracle_only;
 mod otherwise;
 mod player_events;
 mod populated;
 mod put_onto;
 mod revealed;
+mod shuffled_in;
 mod switched;
 mod target_counts;
 mod those;
 mod together;
+mod token_attach;
 mod twins;
 mod untapped;
 
@@ -137,6 +148,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(controller);
     let named = copies::pronoun_wordings(&texts);
     texts.extend(named);
+    let attacking = copies::attacking_wordings(&texts);
+    texts.extend(attacking);
     let searches = library::other_wordings(&texts);
     texts.extend(searches);
     let replaced = instead_pairs::other_wordings(&texts);
@@ -1260,6 +1273,11 @@ fn equal_text(amount: &Amount) -> Option<String> {
             of: Ref::This,
             stat,
         } => Some(format!("~'s {}", stat_name(*stat)?)),
+        // The creature of the event, in a sentence of the trigger that names it already.
+        Amount::Stat {
+            of: Ref::Triggering,
+            stat,
+        } => Some(format!("its {}", stat_name(*stat)?)),
         other => defining::value_text(other),
     }
 }
@@ -1556,6 +1574,10 @@ impl Writer<'_> {
             Ref::Each(selector) if several => {
                 Some(format!("each {}", phrase_text(selector, Form::Each)?))
             }
+            // Several targets: "each of up to three target creatures".
+            Ref::Target(0) if several && self.are_permanents(place) => {
+                Some(format!("each of {}", self.name_target()?))
+            }
             _ => None,
         }
     }
@@ -1646,7 +1668,7 @@ impl Writer<'_> {
             } => {
                 let whose = if self.in_your_graveyard(what) {
                     "your"
-                } else if self.is_a_permanent(what) {
+                } else if self.is_a_permanent(what) || self.in_another_graveyard(what) {
                     "its owner's"
                 } else {
                     return None;
@@ -1886,7 +1908,10 @@ impl Writer<'_> {
             [choose @ Effect::Choose { .. }, moved @ Effect::Move { .. }] => {
                 format!("you may {}", put_onto::put_onto_text(choose, moved)?)
             }
-            _ => self.may_have(effects).or_else(|| self.may_do(effects))?,
+            _ => self
+                .may_have(effects)
+                .or_else(|| self.may_do(effects))
+                .or_else(|| may_flicker::text(effects))?,
         })
     }
 
@@ -1926,12 +1951,12 @@ impl Writer<'_> {
                 to: Destination::Hand,
             } => self.returned_to_hand(what).or_else(|| self.moved(effect))?,
             Effect::AddMana {
-                who: Ref::You,
+                who,
                 mana,
                 times,
                 only,
                 lasts,
-            } => add_text(mana, times, only, *lasts, "")?,
+            } => self.mana_added(who, (mana, times), only, *lasts)?,
             // "you get {E}{E}": energy is a counter on the player, written with its symbol.
             Effect::PutCounters { count, .. } if gets_energy(effect) => {
                 format!("you get {}", costs::energy_text(count)?)
@@ -2025,6 +2050,7 @@ impl Writer<'_> {
     fn moved(&mut self, effect: &Effect) -> Option<String> {
         mass_moves::text(effect)
             .or_else(|| self.hand_shuffled(effect))
+            .or_else(|| hand_returns::all_text(effect))
             .or_else(|| cast::text(effect))
             .or_else(|| self.keyword_action(effect))
     }
@@ -2036,9 +2062,11 @@ impl Writer<'_> {
             .or_else(|| self.exiled(effect))
             .or_else(|| self.reanimated(effect))
             .or_else(|| mass_moves::text(effect))
+            .or_else(|| all_graveyards::text(effect))
             .or_else(|| cast::text(effect))
             .or_else(|| self.keyword_action(effect))
             .or_else(|| self.controller_search(effect))
+            .or_else(|| self.control_for_good(effect))
     }
 
     /// A search another player may make: "its controller may search their library for a basic land card, put it onto
@@ -2247,14 +2275,20 @@ impl Writer<'_> {
             .or_else(|| self.mill_then_change(effects))
             .or_else(|| self.move_instead(effects))
             .or_else(|| self.either_way(effects))
+            .or_else(|| self.counter_or_not(effects))
+            .or_else(|| self.chosen_then_group(effects))
+            .or_else(|| opponent_picks::text(effects))
             .or_else(|| self.library_steps(effects))
             .or_else(|| self.library_then_return(effects))
             .or_else(|| wheel_text(effects))
             .or_else(|| untapped::text(effects))
             .or_else(|| free_casts::text(effects))
             .or_else(|| self.opponent_exiles(effects))
+            .or_else(|| self.opponent_exiles_for_the_turn(effects))
             .or_else(|| populated::text(effects))
             .or_else(|| revealed::text(effects))
+            .or_else(|| self.mill_then_hand(effects))
+            .or_else(|| Self::untapped_and_controlled(effects))
             .or_else(|| self.owner_shuffles(effects))
             // Populate is two steps and one word.
             .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))
@@ -2416,6 +2450,35 @@ impl Writer<'_> {
         Some(clauses.join(" and "))
     }
 
+    /// Mana added to a pool: "add {R}{R}" for you, "target player adds one mana of any color" for another player.
+    fn mana_added(
+        &mut self,
+        who: &Ref,
+        (mana, times): (&Produce, &Amount),
+        only: &[SpendOn],
+        lasts: ManaLasts,
+    ) -> Option<String> {
+        let mut added = add_text(mana, times, only, lasts, "")?;
+        // "for each card in target opponent's hand": the selector knows the owner only as the target.
+        if added.contains("target opponent's hand") {
+            if self.named {
+                return None;
+            }
+            self.named = true;
+            if self.target_is(|what| matches!(what, Targetable::Player)) {
+                added = added.replace("target opponent's hand", "target player's hand");
+            }
+        }
+        if *who == Ref::You {
+            return Some(added);
+        }
+        if matches!(mana, Produce::Instead { .. }) {
+            return None;
+        }
+        let rest = added.strip_prefix("add ")?;
+        Some(format!("{} adds {rest}", self.player(who)?))
+    }
+
     /// Mana and the life gained with it as one sentence: "add {W}{W}{W} and you gain 3 life".
     fn mana_group(&mut self, group: &[Effect]) -> Option<String> {
         let [
@@ -2493,7 +2556,15 @@ impl Writer<'_> {
     /// The objects a verb acts on: the target in full, or "all creatures".
     fn object(&mut self, what: &Ref) -> Option<String> {
         match what {
-            Ref::Target(0) if self.target_is(|what| matches!(what, Targetable::Object(_))) => {
+            Ref::Target(0)
+                if self.target_is(|what| match what {
+                    Targetable::Object(_) => true,
+                    Targetable::Either(kinds) => kinds
+                        .iter()
+                        .all(|kind| matches!(kind, Targetable::Object(_))),
+                    _ => false,
+                }) =>
+            {
                 self.name_target()
             }
             Ref::Each(selector) => Some(format!("all {}", phrase_text(selector, Form::All)?)),
@@ -2524,6 +2595,9 @@ impl Writer<'_> {
         duration: Duration,
     ) -> Option<String> {
         if let Some(sentence) = self.switched(affected, mods, duration) {
+            return Some(sentence);
+        }
+        if let Some(sentence) = self.control(affected, mods, duration) {
             return Some(sentence);
         }
         if duration == Duration::UntilEndOfTurn
@@ -2571,7 +2645,13 @@ impl Writer<'_> {
             _ => return None,
         };
         if let [Modification::CantBeBlocked] = mods {
-            return Some(format!("{subject} can't be blocked this turn"));
+            return match duration {
+                Duration::UntilEndOfTurn => Some(format!("{subject} can't be blocked this turn")),
+                Duration::UntilYourNextTurn => {
+                    Some(format!("until your next turn, {subject} can't be blocked"))
+                }
+                _ => None,
+            };
         }
         if duration == Duration::UntilEndOfTurn
             && matches!(

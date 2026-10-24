@@ -1,0 +1,22 @@
+{
+  "oracle_id": "c4f3a6c6-a123-43ad-9513-d65fbff10d02",
+  "name": "Spoils of Adventure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spoils of Adventure",
+      "oracle_fingerprint": "b8f822b220b7927ca2a3d9aa74a0ab93",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Party": "You" }
+          }
+        },
+        { "Spell": { "effects": [{ "GainLife": { "amount": 3 } }, { "Draw": { "count": 3 } }] } }
+      ]
+    }
+  ]
+}

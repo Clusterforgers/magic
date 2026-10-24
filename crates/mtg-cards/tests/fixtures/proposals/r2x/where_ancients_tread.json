@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"ControlledBy":"You"},{"Compare":{"stat":"Power","op":"Ge","to":5}}],"to":"Battlefield"}},"targets":[{"what":"AnyTarget"}],"effects":[{"May":{"effects":[{"DealDamage":{"to":{"Target":0},"amount":5}}]}}]}}]}]}

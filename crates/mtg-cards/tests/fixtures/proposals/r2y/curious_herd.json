@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"Opponent"}],"effects":[{"CreateToken":{"token":{"Custom":{"name":"Beast","colors":["Green"],"types":["Creature"],"subtypes":["Beast"],"power":3,"toughness":3}},"count":{"Count":[{"Type":"Artifact"},{"ControlledBy":{"Target":0}}]}}}]}}]}]}

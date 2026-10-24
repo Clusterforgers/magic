@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ac914d98-221e-426c-8a50-342896b15f9e",
+  "name": "Snap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snap",
+      "oracle_fingerprint": "b4a21298a2a40f16a2cf3304cd38289e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "lands"
+                }
+              },
+              { "Untap": { "what": { "Bound": "lands" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

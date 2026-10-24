@@ -1,0 +1,22 @@
+{
+  "oracle_id": "b2f09e41-0a91-4fb6-8804-874b3a5166b0",
+  "name": "Rogue Refiner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rogue Refiner",
+      "oracle_fingerprint": "335695bc22ca335795a8ca1830e00dde",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Draw": {} },
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

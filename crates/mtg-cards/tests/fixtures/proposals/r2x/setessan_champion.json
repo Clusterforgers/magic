@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Enchantment"},{"ControlledBy":"You"}],"to":"Battlefield"}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}},{"Draw":{}}]}}]}]}

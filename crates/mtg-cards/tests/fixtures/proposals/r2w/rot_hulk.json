@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Menace"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"Subtype":"Zombie"},{"In":"Graveyard"},{"OwnedBy":"You"}]},"bounds":{"min":0,"max":{"Players":"Opponents"}}}],"effects":[{"Move":{"what":{"Target":0},"to":{"Battlefield":{}}}}]}}]}]}

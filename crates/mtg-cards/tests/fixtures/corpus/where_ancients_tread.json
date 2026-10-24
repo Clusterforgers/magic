@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "abf25a2a-961c-42ef-8d76-aa089720b12c",
+  "oracle_id": "fca2fcab-4f17-448d-bf6d-f6c913159df8",
+  "multiverse_ids": [
+    376585
+  ],
+  "mtgo_id": 50964,
+  "mtgo_foil_id": 50965,
+  "tcgplayer_id": 72338,
+  "cardmarket_id": 264870,
+  "name": "Where Ancients Tread",
+  "lang": "en",
+  "released_at": "2013-11-01",
+  "uri": "https://api.scryfall.com/cards/abf25a2a-961c-42ef-8d76-aa089720b12c",
+  "scryfall_uri": "https://scryfall.com/card/c13/130/where-ancients-tread?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:47:43Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/b/abf25a2a-961c-42ef-8d76-aa089720b12c.jpg?1783939663",
+    "normal": "https://cards.scryfall.io/normal/front/a/b/abf25a2a-961c-42ef-8d76-aa089720b12c.jpg?1783939663",
+    "large": "https://cards.scryfall.io/large/front/a/b/abf25a2a-961c-42ef-8d76-aa089720b12c.jpg?1783939663",
+    "png": "https://cards.scryfall.io/png/front/a/b/abf25a2a-961c-42ef-8d76-aa089720b12c.png?1783939663",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/b/abf25a2a-961c-42ef-8d76-aa089720b12c.jpg?1783939663",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/b/abf25a2a-961c-42ef-8d76-aa089720b12c.jpg?1783939663",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/b/abf25a2a-961c-42ef-8d76-aa089720b12c.webp?1783939663",
+    "grid": "https://cards.scryfall.io/grid/front/a/b/abf25a2a-961c-42ef-8d76-aa089720b12c.webp?1783939663",
+    "display": "https://cards.scryfall.io/display/front/a/b/abf25a2a-961c-42ef-8d76-aa089720b12c.webp?1783939663",
+    "art": "https://cards.scryfall.io/art/front/a/b/abf25a2a-961c-42ef-8d76-aa089720b12c.webp?1783939663",
+    "crop": "https://cards.scryfall.io/crop/front/a/b/abf25a2a-961c-42ef-8d76-aa089720b12c.webp?1783939663",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/b/abf25a2a-961c-42ef-8d76-aa089720b12c.jpg?1783939663"
+  },
+  "mana_cost": "{4}{R}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever a creature you control with power 5 or greater enters, you may have this enchantment deal 5 damage to any target.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "c62e6d4f-af8c-4f27-9bc8-361291890146",
+  "set": "c13",
+  "set_name": "Commander 2013",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/c62e6d4f-af8c-4f27-9bc8-361291890146",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac13&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c13?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/abf25a2a-961c-42ef-8d76-aa089720b12c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Afca2fcab-4f17-448d-bf6d-f6c913159df8&unique=prints",
+  "collector_number": "130",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Never subtle nor cryptic is the reckoning of the mighty.\"\n—Mayael the Anima",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Zoltan Boros & Gabor Szikszai",
+  "artist_ids": [
+    "1885e6cb-c827-4896-994e-3d0a027d602f",
+    "44c3877f-8771-43dc-9e40-f4c765f59d2e"
+  ],
+  "illustration_id": "63c93935-2459-4489-a218-6ce9a55f5d86",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 11657,
+  "penny_rank": 5352,
+  "prices": {
+    "usd": "0.73",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.32",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=376585&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWhere%2BAncients%2BTread",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWhere%2BAncients%2BTread",
+    "edhrec": "https://edhrec.com/route/?cc=Where+Ancients+Tread"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F72338%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=264870&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/50964?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

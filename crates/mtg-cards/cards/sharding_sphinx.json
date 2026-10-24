@@ -1,0 +1,52 @@
+{
+  "oracle_id": "9ebc0144-fc45-4de7-b3d8-ef8cf2e211ae",
+  "name": "Sharding Sphinx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sharding Sphinx",
+      "oracle_fingerprint": "5224d9c6560c8cb846c731344bb89f70",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  { "Type": "Artifact" },
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Thopter",
+                            "colors": ["Blue"],
+                            "types": ["Artifact", "Creature"],
+                            "subtypes": ["Thopter"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

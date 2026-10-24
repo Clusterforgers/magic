@@ -17,7 +17,7 @@ use crate::modify::{Duration, GameRule, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::spend::SpendOn;
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
-use crate::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, TriggerPattern};
+use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::CastWay;
 use crate::value::{Amount, Condition, TurnTally};
 
@@ -51,7 +51,9 @@ fn is_fixed(item: &CostItem) -> bool {
         matches!(amount, Amount::Fixed(number) if *number >= 0) || *amount == Amount::X
     };
     match item {
-        CostItem::PayLife(amount) | CostItem::PayEnergy(amount) => fixed(amount),
+        CostItem::PayLife(amount) | CostItem::PayEnergy(amount) | CostItem::Mill(amount) => {
+            fixed(amount)
+        }
         CostItem::RemoveCounters { count, .. }
         | CostItem::Sacrifice { count, .. }
         | CostItem::Discard { count, .. }
@@ -67,7 +69,9 @@ fn is_fixed(item: &CostItem) -> bool {
 /// Whether the amount of a part of a cost is the X announced.
 fn amount_is_x(item: &CostItem) -> bool {
     match item {
-        CostItem::PayLife(amount) | CostItem::PayEnergy(amount) => *amount == Amount::X,
+        CostItem::PayLife(amount) | CostItem::PayEnergy(amount) | CostItem::Mill(amount) => {
+            *amount == Amount::X
+        }
         CostItem::RemoveCounters { count, .. }
         | CostItem::Sacrifice { count, .. }
         | CostItem::Discard { count, .. }
@@ -311,6 +315,7 @@ impl<'a> Walker<'a> {
             | Ref::EachPlayer
             | Ref::AttachedPlayer
             | Ref::Monarch
+            | Ref::Chosen
             | Ref::Promised
             | Ref::Attacked
             | Ref::MostLife
@@ -553,6 +558,7 @@ impl<'a> Walker<'a> {
                 self.at("of", |w| w.selector(of));
             }
             Amount::StartingLife(who) => self.player_amount("StartingLife", who),
+            Amount::Party(who) => self.player_amount("Party", who),
             Amount::Triggering => {
                 self.uses("Amount", "Triggering");
                 if !self.scope.in_trigger {
@@ -665,7 +671,11 @@ impl<'a> Walker<'a> {
                     w.uses("Cost", &format!("{}.Counted", tag_of(item)));
                 }
                 match item {
-                    CostItem::PayLife(amount) | CostItem::PayEnergy(amount) => w.amount(amount),
+                    CostItem::PayLife(amount)
+                    | CostItem::PayEnergy(amount)
+                    | CostItem::Mill(amount) => {
+                        w.amount(amount);
+                    }
                     CostItem::RemoveCounters { count, .. } => {
                         w.at("count", |w| w.amount(count));
                     }
@@ -785,6 +795,7 @@ impl<'a> Walker<'a> {
             if matches!(
                 item,
                 CostItem::PayLife(_)
+                    | CostItem::Mill(_)
                     | CostItem::RemoveCounters { .. }
                     | CostItem::Sacrifice { .. }
                     | CostItem::Discard { .. }
@@ -1429,6 +1440,7 @@ impl<'a> Walker<'a> {
             | Ref::EachPlayer
             | Ref::AttachedPlayer
             | Ref::Monarch
+            | Ref::Chosen
             | Ref::Promised
             | Ref::Attacked
             | Ref::MostLife
@@ -2544,12 +2556,6 @@ impl<'a> Walker<'a> {
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
         let enters = matches!(when, ReplaceWhen::Enters { .. });
-        // Choosing a player waits for the engine that runs it, as an Aura on a card elsewhere does.
-        match by {
-            ReplaceBy::Choose(EntersChoice::Player) => self.uses("ReplaceBy", "Choose.Player"),
-            ReplaceBy::Choose(EntersChoice::Opponent) => self.uses("ReplaceBy", "Choose.Opponent"),
-            _ => {}
-        }
         match by {
             ReplaceBy::Multiply(0) => self.problem("multiplying by zero is `Prevent`"),
             ReplaceBy::Add(0) => self.problem("adding nothing changes nothing"),

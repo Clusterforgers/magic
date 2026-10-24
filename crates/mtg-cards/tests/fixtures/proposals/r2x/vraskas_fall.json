@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Sacrifice":{"who":"Opponents","filter":[{"AnyOf":[{"Type":"Creature"},{"Type":"Planeswalker"}]}]}},{"PutCounters":{"on":"Opponents","counter":"poison"}}]}}]}]}

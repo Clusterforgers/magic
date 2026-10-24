@@ -144,6 +144,9 @@ pub(super) fn counting(r: &mut Reader<'_>) -> Option<Amount> {
 
 /// What "the number of" counts besides objects: "opponents you have", "charge counters on ~".
 fn held(r: &mut Reader<'_>) -> Option<Amount> {
+    if r.words("creatures in your party") {
+        return Some(Amount::Party(Ref::You));
+    }
     if let Some(died) = r.attempt(died) {
         return Some(died);
     }
@@ -302,6 +305,7 @@ pub(super) fn counting_text(amount: &Amount) -> Option<String> {
         }
         Amount::Count(of) => Some(format!("the number of {}", counted_text(of)?)),
         Amount::Players(Ref::Opponents) => Some("the number of opponents you have".to_owned()),
+        Amount::Party(Ref::You) => Some("the number of creatures in your party".to_owned()),
         Amount::Mutations(Ref::This) => {
             Some("the number of times this creature has mutated".to_owned())
         }
@@ -361,6 +365,7 @@ fn counted_text(selector: &Selector) -> Option<String> {
     let words = match (zone, &preds[at + 1..]) {
         (ZoneKind::Hand, [Pred::OwnedBy(Ref::You)]) => " in your hand",
         (ZoneKind::Graveyard, [Pred::OwnedBy(Ref::You)]) => " in your graveyard",
+        (ZoneKind::Graveyard, [Pred::OwnedBy(Ref::Target(0))]) => " in that player's graveyard",
         (ZoneKind::Graveyard, []) => " in all graveyards",
         (ZoneKind::Hand, []) => " in all players' hands",
         (ZoneKind::Graveyard, [Pred::OwnedBy(Ref::Opponents)]) => " in your opponents' graveyards",

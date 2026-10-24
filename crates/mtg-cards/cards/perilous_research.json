@@ -1,0 +1,14 @@
+{
+  "oracle_id": "9243b539-5f9e-4bb3-9973-3d48366aa7cc",
+  "name": "Perilous Research",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Perilous Research",
+      "oracle_fingerprint": "f5ae8e46019eb1284e3b3abaec568c26",
+      "abilities": [
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }, { "Sacrifice": { "filter": [] } }] } }
+      ]
+    }
+  ]
+}
