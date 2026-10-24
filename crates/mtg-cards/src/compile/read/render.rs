@@ -897,6 +897,7 @@ fn chosen_move_text(choose: &Effect, moved: &Effect) -> Option<String> {
         .or_else(|| put_back_text(choose, moved))
         .or_else(|| returned_text(choose, moved))
         .or_else(|| put_onto::put_onto_text(choose, moved))
+        .or_else(|| put_onto::returned_to_battlefield_text(choose, moved))
 }
 
 /// "put two cards from your hand on top of your library in any order": the choice of cards of the
@@ -2095,6 +2096,7 @@ impl Writer<'_> {
             .or_else(|| self.mill_then_change(effects))
             .or_else(|| self.move_instead(effects))
             .or_else(|| self.library_steps(effects))
+            .or_else(|| self.library_then_return(effects))
             .or_else(|| wheel_text(effects))
             // Populate is two steps and one word.
             .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))
@@ -2386,6 +2388,16 @@ impl Writer<'_> {
         };
         if let [Modification::CantBeBlocked] = mods {
             return Some(format!("{subject} can't be blocked this turn"));
+        }
+        if duration == Duration::UntilEndOfTurn
+            && matches!(
+                mods,
+                [Modification::CantAttack | Modification::CantBlock]
+                    | [Modification::CantAttack, Modification::CantBlock]
+            )
+        {
+            let restriction = statics::predicate(mods, plural, false, false)?;
+            return Some(format!("{subject} {restriction} this turn"));
         }
         if !plural && let Some(sentence) = becomes::animate_text(&subject, mods) {
             return Some(sentence);

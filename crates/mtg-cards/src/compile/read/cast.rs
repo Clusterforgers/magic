@@ -325,11 +325,12 @@ pub fn text(effect: &Effect) -> Option<String> {
         return Some(text);
     }
     Some(match effect {
+        // The name the cards are bound to is bookkeeping: the sentence is the same whatever a later step calls them.
         Effect::ExileTop {
             who: Ref::You,
             count,
-            bind,
-        } if bind == IMPULSE => format!("exile {} of your library", top_text(count)?),
+            ..
+        } => format!("exile {} of your library", top_text(count)?),
         Effect::ExileUntil {
             who: Ref::You,
             filter: Selector(preds),
