@@ -231,7 +231,7 @@ pub use triggered_cards::triggered_fuzz_setup;
 pub use umbra_cards::umbra_fuzz_setup;
 pub use upkeep_cards::upkeep_fuzz_setup;
 pub use vehicle_cards::vehicle_fuzz_setup;
-pub use vote_cards::{VOTE_CARDS, secret_ballot, vote_fuzz_setup};
+pub use vote_cards::{VOTE_CARDS, open_ballot, secret_ballot, vote_fuzz_setup};
 pub use windows::{SeatWindows, Windows};
 pub use x_after_cards::x_after_fuzz_setup;
 pub use x_cards::x_fuzz_setup;

@@ -30,6 +30,16 @@ pub const VOTE_CARDS: &[(&str, usize)] = &[
 /// A sorcery for `{U}`: "Each player secretly votes for heads or tails, then those votes are revealed. You draw a card
 /// for each heads vote."
 pub fn secret_ballot(name: &str) -> Arc<CardDefinition> {
+    ballot(name, true)
+}
+
+/// The same sorcery with the votes cast in the open: "Each player votes for heads or tails."
+pub fn open_ballot(name: &str) -> Arc<CardDefinition> {
+    ballot(name, false)
+}
+
+/// A sorcery for `{U}` that holds a vote on heads or tails, secret or open, and draws a card for each heads vote.
+fn ballot(name: &str, secret: bool) -> Arc<CardDefinition> {
     Arc::new(
         CardDefinition::new(name)
             .with_type(CardType::Sorcery)
@@ -39,7 +49,7 @@ pub fn secret_ballot(name: &str) -> Arc<CardDefinition> {
                 effects: vec![
                     Effect::Vote {
                         options: VoteFor::Named(vec!["heads".to_owned(), "tails".to_owned()]),
-                        secret: true,
+                        secret,
                         bind: None,
                     },
                     Effect::Draw {

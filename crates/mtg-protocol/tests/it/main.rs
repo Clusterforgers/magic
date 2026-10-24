@@ -21,6 +21,7 @@ mod companion_view;
 mod copy_view;
 mod counter_view;
 mod crew_hidden;
+mod vote_hidden;
 mod effect_view;
 mod exile_open;
 mod faces_view;
