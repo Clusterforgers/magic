@@ -243,6 +243,7 @@ The server is settled first, then the web is built once against the final types.
 
 ### Tooling
 - [ ] (t1) The `mtg-cli` `fetch_scryfall` tests are stable under parallel load (two of them failed once in a full run and passed alone and on rerun)
+- [ ] (t4) Web tests that depend on the clock fail on a loaded machine: the render budgets of `perf.test.tsx` (1500 ms) and the 20 s `beforeAll` of `transcript.test.tsx`; an environment switch relaxes the budgets so the check stays meaningful while many agents build
 - [ ] (t3c) The compiler reads the cards (t3a) leaves to the table: a DSL amount for what an earlier effect of the ability did ("You gain that much life" after a loss: Foul-Tongue Shriek) and for the mana value of the permanent a cost takes (Nahiri's Sacrifice), and a partner chosen by creature type (The Knight of Land Drops: "Partner with Knight")
 - [ ] The expected X symbols in `x_cards.rs` of `mtg-testkit` are derived from the card list, so a new X card edits no test
 - [ ] Coverage dashboard in the web over `Library::support`: states, reasons and clause spans per card, ranked by saved-deck demand; target: 100% of the chosen precons (`docs/deck-check.md`)
