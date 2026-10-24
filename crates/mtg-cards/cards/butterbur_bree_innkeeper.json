@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ec136f6f-015b-4200-97b6-a2c1bf39e135",
+  "name": "Butterbur, Bree Innkeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Butterbur, Bree Innkeeper",
+      "oracle_fingerprint": "974d63018daa1ce0cc332d894f2c4182",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Food" }, { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

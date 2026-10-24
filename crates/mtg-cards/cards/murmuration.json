@@ -1,0 +1,42 @@
+{
+  "oracle_id": "84e7be36-b8cd-4111-a91b-3628f421d5d5",
+  "name": "Murmuration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Murmuration",
+      "oracle_fingerprint": "1bf45f71ee6cfb98cec697a228856933",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Bird" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Storm Crow",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 1,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": { "Tallied": { "who": "You", "what": "SpellsCast" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

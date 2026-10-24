@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "4980879b-87a4-4e5a-9f29-9136f022d849",
+  "oracle_id": "b26e3596-5b28-4eb6-b3e2-03f63d8c6d49",
+  "multiverse_ids": [
+    675814
+  ],
+  "mtgo_id": 131317,
+  "tcgplayer_id": 579031,
+  "cardmarket_id": 788567,
+  "name": "Deathreap Ritual",
+  "lang": "en",
+  "released_at": "2024-09-27",
+  "uri": "https://api.scryfall.com/cards/4980879b-87a4-4e5a-9f29-9136f022d849",
+  "scryfall_uri": "https://scryfall.com/card/dsc/86/deathreap-ritual?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:27:18Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/9/4980879b-87a4-4e5a-9f29-9136f022d849.jpg?1783909638",
+    "normal": "https://cards.scryfall.io/normal/front/4/9/4980879b-87a4-4e5a-9f29-9136f022d849.jpg?1783909638",
+    "large": "https://cards.scryfall.io/large/front/4/9/4980879b-87a4-4e5a-9f29-9136f022d849.jpg?1783909638",
+    "png": "https://cards.scryfall.io/png/front/4/9/4980879b-87a4-4e5a-9f29-9136f022d849.png?1783909638",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/9/4980879b-87a4-4e5a-9f29-9136f022d849.jpg?1783909638",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/9/4980879b-87a4-4e5a-9f29-9136f022d849.jpg?1783909638",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/9/4980879b-87a4-4e5a-9f29-9136f022d849.webp?1783909638",
+    "grid": "https://cards.scryfall.io/grid/front/4/9/4980879b-87a4-4e5a-9f29-9136f022d849.webp?1783909638",
+    "display": "https://cards.scryfall.io/display/front/4/9/4980879b-87a4-4e5a-9f29-9136f022d849.webp?1783909638",
+    "art": "https://cards.scryfall.io/art/front/4/9/4980879b-87a4-4e5a-9f29-9136f022d849.webp?1783909638",
+    "crop": "https://cards.scryfall.io/crop/front/4/9/4980879b-87a4-4e5a-9f29-9136f022d849.webp?1783909638",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/9/4980879b-87a4-4e5a-9f29-9136f022d849.jpg?1783909638"
+  },
+  "mana_cost": "{2}{B}{G}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Morbid — At the beginning of each end step, if a creature died this turn, you may draw a card.",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Morbid"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "4c822528-83c3-42c7-8708-dd1d37166819",
+  "set": "dsc",
+  "set_name": "Duskmourn: House of Horror Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/4c822528-83c3-42c7-8708-dd1d37166819",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dsc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4980879b-87a4-4e5a-9f29-9136f022d849/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab26e3596-5b28-4eb6-b3e2-03f63d8c6d49&unique=prints",
+  "collector_number": "86",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "There is no atrocity Valgavoth's devotees would not commit for the promise of freedom from fear.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "GodMachine",
+  "artist_ids": [
+    "5ad61ffb-a337-4140-bdce-b0a251b135ae"
+  ],
+  "illustration_id": "29523d1f-4833-4941-a700-44a0a0b6cabf",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 2131,
+  "penny_rank": 7655,
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.16",
+    "eur_foil": null,
+    "tix": "0.07"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=675814&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDeathreap%2BRitual",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDeathreap%2BRitual",
+    "edhrec": "https://edhrec.com/route/?cc=Deathreap+Ritual"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F579031%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=788567&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/131317?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

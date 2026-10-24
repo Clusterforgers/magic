@@ -13,6 +13,7 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
     if let Some(sentence) = super::each_target::text(targets, effects)
         .or_else(|| super::target_counts::text(targets, effects))
         .or_else(|| super::shuffled_in::text(targets, effects))
+        .or_else(|| super::two_targets::text(targets, effects))
     {
         return vec![vec![sentence]];
     }

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "17b60106-a4c7-410a-8ac3-ec8e74e29a7c",
+  "name": "Mystic Sanctuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mystic Sanctuary",
+      "oracle_fingerprint": "e2e5754dc3586608dbd95e64552ebd5e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": { "Count": [{ "Subtype": "Island" }, "Other", { "ControlledBy": "You" }] },
+                  "op": "Ge",
+                  "right": 3
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "This", "selector": ["Untapped"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

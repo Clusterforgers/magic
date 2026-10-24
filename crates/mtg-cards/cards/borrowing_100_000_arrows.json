@@ -1,0 +1,27 @@
+{
+  "oracle_id": "a3f10772-d055-419d-a535-4f094eaf437c",
+  "name": "Borrowing 100,000 Arrows",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Borrowing 100,000 Arrows",
+      "oracle_fingerprint": "b7fae155a850d88573aa134ca3d326cc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, "Tapped", { "ControlledBy": { "Target": 0 } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

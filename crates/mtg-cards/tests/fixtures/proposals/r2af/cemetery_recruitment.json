@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]}}],"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}},{"If":{"condition":{"Matches":{"subject":{"Target":0},"selector":[{"Subtype":"Zombie"}]}},"then":[{"Draw":{}}]}}]}}]}]}

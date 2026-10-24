@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Keyword":{"Protection":[{"Color":"White"}]}},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"LoseLife":{"who":"Opponents","amount":{"Count":[{"Subtype":"Vampire"},{"ControlledBy":"You"}]}}},{"GainLife":{"amount":{"Count":[{"Subtype":"Vampire"},{"ControlledBy":"You"}]}}}]}}]}]}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "31324235-8a2b-4ce4-b0d4-6d947489b930",
+  "name": "Prowess of the Fair",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prowess of the Fair",
+      "oracle_fingerprint": "60fe6b79069c139fa4708b0a0015152a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["Other", { "Not": "Token" }, { "Subtype": "Elf" }, { "OwnedBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Elf Warrior",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Elf", "Warrior"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

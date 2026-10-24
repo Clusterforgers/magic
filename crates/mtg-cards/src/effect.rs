@@ -972,6 +972,10 @@ pub enum Effect {
         /// turn'); a spell has no earlier choice to keep.
         #[serde(default, skip_serializing_if = "is_false")]
         once_each_turn: bool,
+        /// Every mode may be chosen instead when this holds as the ability is announced ("If you control a commander as
+        /// you cast this spell, you may choose both instead"); the fewest to choose stays.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        all_if: Option<Condition>,
         /// The modes, in printed order.
         modes: Vec<Mode>,
     },

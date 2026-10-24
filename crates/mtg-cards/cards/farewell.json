@@ -1,0 +1,32 @@
+{
+  "oracle_id": "4eb813fd-2d5a-4b02-8193-662681ef4e7d",
+  "name": "Farewell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Farewell",
+      "oracle_fingerprint": "1c66fb500faf44d897ede62641908768",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": null },
+                  "modes": [
+                    { "effects": [{ "Exile": { "what": { "Each": [{ "Type": "Artifact" }] } } }] },
+                    { "effects": [{ "Exile": { "what": { "Each": [{ "Type": "Creature" }] } } }] },
+                    {
+                      "effects": [{ "Exile": { "what": { "Each": [{ "Type": "Enchantment" }] } } }]
+                    },
+                    { "effects": [{ "Exile": { "what": { "Each": [{ "In": "Graveyard" }] } } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "3b6f608d-f27d-44cd-b0a1-0e1e1aa1c98a",
+  "name": "On Wings of Gold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "On Wings of Gold",
+      "oracle_fingerprint": "ba7f750b23c20d504dd6767ce869abe1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "AnyOf": [{ "Subtype": "Zombie" }, "Token"] }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Flying" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "ZoneChange": { "what": [{ "OwnedBy": "You" }], "from": "Graveyard" } }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "83d8eda7-b8d2-479a-b1ec-de56833a3182",
+  "name": "Praetor's Counsel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Praetor's Counsel",
+      "oracle_fingerprint": "e7124cb05119975db6e1f415a19a7df2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                  "to": "Hand"
+                }
+              },
+              { "Exile": { "what": "This" } },
+              { "Rule": { "rule": { "NoMaxHandSize": "You" }, "duration": "Forever" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "da103316-2a85-4de9-8531-ac2cd2859d6f",
+  "name": "Armistice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Armistice",
+      "oracle_fingerprint": "6d8a1df1ac2f3f64ce4a89307baa6a13",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{W}{W}",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Draw": {} }, { "GainLife": { "who": { "Target": 0 }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "45f1e957-09f0-4d46-8e32-238f26060a87",
+  "name": "Kolaghan's Command",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kolaghan's Command",
+      "oracle_fingerprint": "9ab2ebab0808428b7947588000c59a45",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [{ "Discard": { "who": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": "AnyTarget" }],
+                      "effects": [
+                        { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 2 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

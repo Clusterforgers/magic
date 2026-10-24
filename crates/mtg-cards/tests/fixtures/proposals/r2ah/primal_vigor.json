@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"TokenCreation":{"controller":"EachPlayer"}},"by":{"Multiply":2}}},{"Replacement":{"when":{"CountersPut":{"on":{"Each":[{"Type":"Creature"}]},"counter":"+1/+1"}},"by":{"Multiply":2}}}]}]}

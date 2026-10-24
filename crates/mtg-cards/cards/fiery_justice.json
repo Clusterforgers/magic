@@ -1,0 +1,25 @@
+{
+  "oracle_id": "333809cb-e196-45f2-8a67-31374438e56e",
+  "name": "Fiery Justice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fiery Justice",
+      "oracle_fingerprint": "11695c61dd17ba194ee2439c0b2bd232",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "AnyTarget", "bounds": { "min": 1, "max": null }, "divide": 5 },
+              { "what": "Opponent" }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } },
+              { "GainLife": { "who": { "Target": 1 }, "amount": 5 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

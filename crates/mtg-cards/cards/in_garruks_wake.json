@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a6899b94-427d-4851-a474-4087e0a0918a",
+  "name": "In Garruk's Wake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "In Garruk's Wake",
+      "oracle_fingerprint": "4308a90611528dfdf3c6b12ec43577cf",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+                }
+              },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "Type": "Planeswalker" }, { "Not": { "ControlledBy": "You" } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "f7139c70-dfcc-41ae-9d0d-b6e8c07a063d",
+  "name": "Jagged-Scar Archers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jagged-Scar Archers",
+      "oracle_fingerprint": "755e3f00483b60028728c91c6c32caeb",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

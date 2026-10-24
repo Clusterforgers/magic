@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"DealsDamage":{"source":[{"Subtype":"Vampire"},{"ControlledBy":"You"}],"to":"EachPlayer","combat":true}},"effects":[{"PutCounters":{"on":"Triggering","counter":"+1/+1"}}]}}]}]}
