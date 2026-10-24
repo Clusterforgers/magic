@@ -159,11 +159,6 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.rng_index += u64::from(*random);
             Ok(())
         }
-        // Each random choice spends a substream of the generator, as a shuffle does.
-        Event::ChosenAtRandom { .. } => {
-            state.rng_index += 1;
-            Ok(())
-        }
         Event::LibraryLooked(_) | Event::CardsFound(_) | Event::Revealed(_) => {
             show_learned(state, event);
             Ok(())
@@ -235,6 +230,8 @@ fn begin_turn(state: &mut GameState, number: u32, active: PlayerId) {
 
 fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
+        // Each random choice spends a substream of the generator, as a shuffle does.
+        Event::ChosenAtRandom { .. } => state.rng_index += 1,
         Event::TurnBegan { number, active } => begin_turn(state, *number, *active),
         Event::StepBegan { step } => {
             state.turn.step = *step;

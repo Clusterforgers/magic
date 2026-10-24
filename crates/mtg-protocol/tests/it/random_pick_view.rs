@@ -33,10 +33,21 @@ fn a_pick_at_random_is_public_to_every_seat(#[values(2, 3, 4)] seats: usize) {
         })
         .collect();
     assert_eq!(picked.len(), 1, "one pick in the log");
-    let name = driver.state().object(picked[0][0]).unwrap().card().name.clone();
+    let name = driver
+        .state()
+        .object(picked[0][0])
+        .unwrap()
+        .card()
+        .name
+        .clone();
     assert!(["Lightning Bolt", "Giant Growth", "Counterspell"].contains(&name.as_str()));
-    let hand = driver.state().zone(mtg_engine::zones::Zone::Hand(PlayerId(0)));
-    assert!(hand.contains(&picked[0][0]), "the card picked is the one in the hand");
+    let hand = driver
+        .state()
+        .zone(mtg_engine::zones::Zone::Hand(PlayerId(0)));
+    assert!(
+        hand.contains(&picked[0][0]),
+        "the card picked is the one in the hand"
+    );
     let viewers: Vec<PlayerId> = (0..seats).map(PlayerId::from_index).collect();
     let batches = project_events(&before, &events, &viewers, 0).unwrap();
     for (seat, batch) in batches.iter().enumerate() {

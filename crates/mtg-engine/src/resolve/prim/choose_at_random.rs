@@ -196,7 +196,7 @@ mod tests {
         else {
             panic!("a pick at random asks nothing");
         };
-        assert!(events.is_empty());
+        assert!(matches!(events.as_slice(), []));
         assert!(bound.iter().all(|(_, targets)| targets.is_empty()));
     }
 

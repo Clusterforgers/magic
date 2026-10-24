@@ -125,7 +125,7 @@ fn nothing_to_pick_is_no_event_and_spends_no_randomness(
     let start = Driver::from_scenario(table(2, 5, graveyard))?;
     let before = start.state().rng_index();
     let driver = played(2, 5, graveyard)?;
-    assert!(picks(&driver).is_empty());
+    assert_eq!(picks(&driver), Vec::<Vec<mtg_core::ids::ObjectId>>::new());
     assert_eq!(returned(&driver), None);
     assert_eq!(driver.state().rng_index(), before);
     Ok(())

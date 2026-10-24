@@ -61,14 +61,12 @@ fn wake(seats: usize, islands: usize, each: usize) -> Scenario {
     scenario
 }
 
-/// The names of the creatures on the battlefield of every seat but the first.
-fn foes(driver: &Driver, seats: usize) -> Vec<String> {
-    (1..seats)
-        .flat_map(|seat| names(driver.state(), Zone::Battlefield))
+/// How many of the creatures called "Foe ..." are on the battlefield.
+fn foes(driver: &Driver) -> usize {
+    names(driver.state(), Zone::Battlefield)
+        .iter()
         .filter(|name| name.starts_with("Foe"))
-        .collect::<std::collections::BTreeSet<_>>()
-        .into_iter()
-        .collect()
+        .count()
 }
 
 #[rstest]
@@ -114,11 +112,7 @@ fn x_targets_are_asked_for_exactly_x_and_returned(
         })
         .sum();
     assert_eq!(returned, x as usize);
-    assert_eq!(
-        foes(&driver, seats).len(),
-        (seats - 1) * 2 - x as usize,
-        "the rest stay"
-    );
+    assert_eq!(foes(&driver), (seats - 1) * 2 - x as usize, "the rest stay");
     replays(&driver, scenario());
     Ok(())
 }
