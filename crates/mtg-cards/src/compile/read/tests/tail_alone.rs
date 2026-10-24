@@ -119,3 +119,52 @@ fn attach_near_misses_stay_unread(#[case] text: &str) {
     assert_eq!(trigger(text), None, "{text}");
     assert_eq!(spell(text), None, "{text}");
 }
+
+fn stat(text: &str) -> Option<Ability> {
+    clause(text, ClauseKind::Static, false)
+}
+
+#[rstest]
+#[case::combat_to_the_card(
+    "Prevent all combat damage that would be dealt to this creature.",
+    r#"{"to":"This","combat":true}"#,
+    r#""Prevent""#
+)]
+#[case::all_to_the_card(
+    "Prevent all damage that would be dealt to this creature.",
+    r#"{"to":"This"}"#,
+    r#""Prevent""#
+)]
+#[case::combat_to_you(
+    "Prevent all combat damage that would be dealt to you.",
+    r#"{"to":"You","combat":true}"#,
+    r#""Prevent""#
+)]
+#[case::with_a_counter_removed(
+    "If damage would be dealt to this creature, prevent that damage. Remove a +1/+1 counter from this creature.",
+    r#"{"to":"This"}"#,
+    r#"{"PreventRemovingCounter":"+1/+1"}"#
+)]
+fn damage_to_the_card_is_prevented(#[case] text: &str, #[case] when: &str, #[case] by: &str) {
+    let json = format!(r#"{{"Replacement":{{"when":{{"Damage":{when}}},"by":{by}}}}}"#);
+    reads_as(text, ClauseKind::Static, false, &json);
+}
+
+#[rstest]
+#[case::to_creatures_you_control(
+    "Prevent all combat damage that would be dealt to creatures you control."
+)]
+#[case::to_an_opponent("Prevent all damage that would be dealt to target opponent.")]
+#[case::a_counter_of_another_creature(
+    "If damage would be dealt to this creature, prevent that damage. Remove a +1/+1 counter from target creature."
+)]
+#[case::no_kind(
+    "If damage would be dealt to this creature, prevent that damage. Remove a counter from this creature."
+)]
+#[case::two_counters(
+    "If damage would be dealt to this creature, prevent that damage. Remove two +1/+1 counters from this creature."
+)]
+#[case::this_turn("Prevent all combat damage that would be dealt to this creature this turn.")]
+fn prevention_near_misses_stay_unread(#[case] text: &str) {
+    assert_eq!(stat(text), None, "{text}");
+}

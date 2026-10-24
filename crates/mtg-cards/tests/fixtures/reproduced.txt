@@ -471,6 +471,7 @@ Grim Initiate
 Grisly Salvage
 Growing Ranks
 Gruul Cluestone
+Guard Gomazoa
 Guardian Augmenter
 Guardian Gladewalker
 Guidelight Matrix
@@ -751,6 +752,8 @@ Pentad Prism
 Persist
 Pestilent Syphoner
 Phantasmal Image
+Phantom Nantuko
+Phantom Nishoba
 Phyrexian Prowler
 Phyrexian Soulgorger
 Pillar of Origins
@@ -883,6 +886,7 @@ Second Harvest
 Seedglaive Mentor
 Seeds of Renewal
 Seekers' Squire
+Seraph of the Sword
 Serpent-Blade Assailant
 Serra Angel
 Serra Avatar
