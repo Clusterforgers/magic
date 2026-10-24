@@ -7,8 +7,8 @@ export type Kept = {
 /**
  * Mana that is lost as the combat phase ends.
  */
-combat: [number, number, number, number, number, number], 
+combat_end: [number, number, number, number, number, number], 
 /**
  * Mana that is lost as the turn ends.
  */
-turn: [number, number, number, number, number, number], };
+turn_end: [number, number, number, number, number, number], };

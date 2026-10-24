@@ -48,14 +48,17 @@ pub struct ManaPool {
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct Kept {
     /// Mana that is lost as the combat phase ends.
-    pub combat: [u32; 6],
+    pub combat_end: [u32; 6],
     /// Mana that is lost as the turn ends.
-    pub turn: [u32; 6],
+    pub turn_end: [u32; 6],
 }
 
 impl Kept {
     fn is_empty(&self) -> bool {
-        self.combat.iter().chain(&self.turn).all(|held| *held == 0)
+        self.combat_end
+            .iter()
+            .chain(&self.turn_end)
+            .all(|held| *held == 0)
     }
 }
 
@@ -104,8 +107,8 @@ impl ManaPool {
         let kept = self.kept.get_or_insert_with(Box::default);
         match lasts {
             ManaLasts::Step => {}
-            ManaLasts::Combat => kept.combat[mana.index()] += 1,
-            ManaLasts::Turn => kept.turn[mana.index()] += 1,
+            ManaLasts::Combat => kept.combat_end[mana.index()] += 1,
+            ManaLasts::Turn => kept.turn_end[mana.index()] += 1,
         }
         self.tidy_kept();
     }
@@ -125,11 +128,11 @@ impl ManaPool {
         };
         self.counts[at] = left;
         if let Some(kept) = self.kept.as_mut() {
-            if kept.combat[at] + kept.turn[at] > left {
-                if kept.combat[at] > 0 {
-                    kept.combat[at] -= 1;
+            if kept.combat_end[at] + kept.turn_end[at] > left {
+                if kept.combat_end[at] > 0 {
+                    kept.combat_end[at] -= 1;
                 } else {
-                    kept.turn[at] -= 1;
+                    kept.turn_end[at] -= 1;
                 }
             }
             self.tidy_kept();
@@ -160,15 +163,15 @@ impl ManaPool {
     pub(crate) fn empty(&mut self, through: ManaLasts) {
         let kept = self.kept.take();
         let held = |lasts: ManaLasts, at: usize| match (&kept, lasts) {
-            (Some(kept), ManaLasts::Combat) if through < ManaLasts::Combat => kept.combat[at],
-            (Some(kept), ManaLasts::Turn) if through < ManaLasts::Turn => kept.turn[at],
+            (Some(kept), ManaLasts::Combat) if through < ManaLasts::Combat => kept.combat_end[at],
+            (Some(kept), ManaLasts::Turn) if through < ManaLasts::Turn => kept.turn_end[at],
             _ => 0,
         };
         let mut left = Kept::default();
         for at in 0..6 {
-            left.combat[at] = held(ManaLasts::Combat, at);
-            left.turn[at] = held(ManaLasts::Turn, at);
-            self.counts[at] = left.combat[at] + left.turn[at];
+            left.combat_end[at] = held(ManaLasts::Combat, at);
+            left.turn_end[at] = held(ManaLasts::Turn, at);
+            self.counts[at] = left.combat_end[at] + left.turn_end[at];
         }
         self.kept = Some(Box::new(left));
         self.tidy_kept();

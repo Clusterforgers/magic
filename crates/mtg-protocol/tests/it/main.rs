@@ -32,6 +32,7 @@ mod keyword_view;
 mod lobby_message;
 mod loyalty_view;
 mod mana_cost_hidden;
+mod mana_lasts_view;
 mod manifest_view;
 mod manual_view;
 mod messages;

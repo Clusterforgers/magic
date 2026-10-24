@@ -53,7 +53,7 @@ fn pool(driver: &Driver) -> ManaPool {
 
 /// The mana of the pool that is kept to the end of the turn, by type.
 fn kept_turn(pool: &ManaPool, mana: ManaType) -> u32 {
-    pool.kept().map_or(0, |kept| kept.turn[mana.index()])
+    pool.kept().map_or(0, |kept| kept.turn_end[mana.index()])
 }
 
 /// Attacks seat 1 with the attacker and answers until the attack trigger has resolved and the game waits at priority

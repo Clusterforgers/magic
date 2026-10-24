@@ -236,6 +236,7 @@ mod number_of;
 mod paid_reads;
 mod pay;
 mod payments;
+mod persistent_mana;
 mod player_keywords;
 mod prevention;
 mod pump_wordings;

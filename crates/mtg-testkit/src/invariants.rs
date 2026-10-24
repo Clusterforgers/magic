@@ -1426,8 +1426,8 @@ impl InvariantChecker {
                 let mut kept = Kept::default();
                 for (mana, lasts) in self.expected_kept.get(player.index()).into_iter().flatten() {
                     match lasts {
-                        ManaLasts::Combat => kept.combat[mana.index()] += 1,
-                        ManaLasts::Turn => kept.turn[mana.index()] += 1,
+                        ManaLasts::Combat => kept.combat_end[mana.index()] += 1,
+                        ManaLasts::Turn => kept.turn_end[mana.index()] += 1,
                         ManaLasts::Step => {}
                     }
                 }
