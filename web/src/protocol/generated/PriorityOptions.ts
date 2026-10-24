@@ -43,7 +43,9 @@ turnable?: Array<ObjectId>,
 companion?: boolean, 
 /**
  * The faces of the cards with several faces that can be cast or played now, with their costs: a split card's halves, an
- * Adventure, the back face of a modal double-faced card. `castable` and `playable_lands` list the card itself.
+ * Adventure, the back face of a modal double-faced card. `castable` and `playable_lands` list the card itself. A
+ * prepared permanent whose spell its controller can cast is listed with its spell face and no entry in `castable`
+ * (`PriorityAction::CastPrepared`).
  */
 faces?: Array<FaceOption>, 
 /**

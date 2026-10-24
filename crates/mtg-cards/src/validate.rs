@@ -1735,6 +1735,7 @@ impl<'a> Walker<'a> {
             | Effect::PhaseOut { what }
             | Effect::Transform { what }
             | Effect::Flip { what }
+            | Effect::Prepare { what }
             | Effect::Goad { what }
             | Effect::Explore { what }
             | Effect::Connive { what }
@@ -2639,6 +2640,7 @@ impl<'a> Walker<'a> {
             | ReplaceBy::RevealOrTapped(_)
             | ReplaceBy::Riot
             | ReplaceBy::DayIfNeither
+            | ReplaceBy::EntersPrepared
                 if !enters =>
             {
                 self.problem("only an `Enters` event is entered tapped, chosen on or paid for");

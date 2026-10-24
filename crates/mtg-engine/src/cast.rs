@@ -404,6 +404,19 @@ pub(crate) fn spell_events(
     Some(events)
 }
 
+/// `events` of a cast with the `Unprepared` of the permanent first when the spell is a copy of its spell face: the
+/// permanent stops being prepared as the spell is cast (a copy that is countered does not prepare it again).
+fn unpreparing(state: &GameState, spell: ObjectId, mut events: Vec<Event>) -> Vec<Event> {
+    if let Some(unprepared) = crate::prepared::unprepare(state, spell) {
+        let cast = events
+            .iter()
+            .position(|event| matches!(event, Event::SpellCast { .. }))
+            .unwrap_or(events.len());
+        events.insert(cast, unprepared);
+    }
+    events
+}
+
 /// The events that say what a payment is for, which come between the life paid and the mana: the cast of the spell,
 /// the activation of the ability, or the answer "paid" to the effect that asked.
 fn announcement(
@@ -447,6 +460,7 @@ fn announcement(
             choices,
             granted.is_some(),
         )
+        .map(|events| unpreparing(state, *spell, events))
         .ok_or_else(unexpected),
         Some(Pending {
             what: What::Ability(ability),

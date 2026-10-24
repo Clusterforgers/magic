@@ -83,7 +83,7 @@ A printed gap makes the card `Manual` and attaches no rules. `support` computes 
 |---|---|---|
 | `*`, `1+*` or `X` as power, toughness, loyalty or defense | `None` | `Card.VariableStats` |
 | `{X}` in the cost | `x_in_cost`; the engine asks X as the spell is cast and the spell, its permanent, its enters trigger and the delayed triggers it sets up remember it; its cast triggers read it | `Card.XCost` |
-| A second face | A split card, an Adventure, a modal double-faced card and a transforming double-faced card (`PrintedCard.layout`: `split`, `adventure`, `modal_dfc`, `transform`, `flip`, two faces) are played with their faces, each face assembled like a card of its own (`CardDefinition.layout` and `faces`; a split card's definition is both halves, the others their front face, and the bottom half of a flip card has the mana cost and colour of its top half; a split card with `Fuse` also carries the spell of both halves, their targets in order and the effects of the left half then the right half with its targets renumbered); any other card with a second face (meld) is only its front face and names the face | `Card.Faces` |
+| A second face | A split card, an Adventure, a modal double-faced card and a transforming double-faced card (`PrintedCard.layout`: `split`, `adventure`, `modal_dfc`, `transform`, `flip`, `prepare`, two faces) are played with their faces, each face assembled like a card of its own (`CardDefinition.layout` and `faces`; a split card's definition is both halves, the others their front face, and the bottom half of a flip card has the mana cost and colour of its top half; a split card with `Fuse` also carries the spell of both halves, their targets in order and the effects of the left half then the right half with its targets renumbered); a `prepare` card is its creature face and plays its spell face as a copy cast by the prepared permanent, `docs/engine.md`; any other card with a second face (meld) is only its front face and names the face | `Card.Faces`, `Card.Prepare` |
 | A mana symbol the engine does not know, an unreadable cost, a type word that is no card type | No cost, or the word dropped | Nothing |
 
 ## The type tree
@@ -131,7 +131,7 @@ Effect (one variant per engine primitive)
   AddMana{who,mana: Fixed([ManaType]) | AnyColor(Amount) | OneOf([ManaType]) | OneOfLists([[ManaType]]) | ChosenColor(n) | OrChosenColor(ManaType) | CommanderIdentity(n)
           | ProducedBy{among,count,colorless} | AnyCombination{count,among} | Instead{base,when,instead} | OfTapped,times,only: [SpendOn],lasts: Step|Combat|Turn} PutCounters{on,counter,count}
   RemoveCounters{from,counter,count} MoveCounters{from,to,counter,count} MultiplyCounters{on,counter?,factor}
-  Tap{what} Untap{what} PhaseOut{what} Attach{what,to} Unattach{what} Transform{what} Flip{what} WinGame{who}
+  Tap{what} Untap{what} PhaseOut{what} Attach{what,to} Unattach{what} Transform{what} Flip{what} Prepare{what} WinGame{who}
   Surveil{who,count} Proliferate{who} Goad{what} Fight{what,with} BecomeMonarch{who} BecomeDayNight{to} Amass{subtype,count}
   Monstrosity{count} BecomeLevel{level} Adapt{count} Bolster{count} Explore{what} Connive{what} Fabricate{count} Learn{who} Crewed{saddle} TimeTravel{who}
   RepeatEach{over,as,effects} RollDice{who,sides,plus?,results: [{from,to?,effects}]} FlipCoin{who,win,lose} Vote{options: Named([name]) | Of(ref),secret?,as?}
@@ -154,7 +154,7 @@ ReplaceWhen = TokenCreation{controller} | Damage{to?,source?,combat?} | ZoneChan
             | CountersPut{on?,counter?} | LifeGain{who} | Draw{who} | Enters{what}
 ReplaceBy   = Multiply(n) | Add(n) | Prevent | PreventUpTo(n) | PreventRemovingCounter(kind) | Instead([Effect]) | Dredge(n) | MoveTo(zone)
             | Tapped | WithCounters{counter,count,tapped?} | Choose(Color|ColorOtherThan(c)|CreatureType|Player|Opponent) | PayLifeOrTapped(n) | RevealOrTapped(Selector)
-            | AsCopy{of: Selector, except: [Modification]} | UmbraArmor | DayIfNeither
+            | AsCopy{of: Selector, except: [Modification]} | UmbraArmor | DayIfNeither | EntersPrepared
 CostItem    = Mana(ManaCostX) | Tap | Untap | PayLife(Amount) | SacrificeSelf | ExileSelf | DiscardSelf
             | Sacrifice{filter,count} | Discard{count,filter?} | PayEnergy(Amount) | RemoveCounters{counter,count}
             | TapPermanents{filter,count} | TapPower{filter,power} | ExileFromGraveyard{filter,count} | ExileFromHand{filter,count}

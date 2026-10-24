@@ -84,7 +84,7 @@ pub(crate) fn candidates(state: &GameState, id: ObjectId) -> Vec<Option<u8>> {
     match whole.layout {
         // A transforming double-faced card is cast as its front face (CR 712.14); the back face is only turned up. A flip
         // card is its top half in every zone but the battlefield (CR 710.2).
-        Layout::Normal | Layout::Transform | Layout::Flip => vec![None],
+        Layout::Normal | Layout::Transform | Layout::Flip | Layout::Prepare => vec![None],
         Layout::Split => {
             let halves = u8::try_from(whole.faces.len()).unwrap_or(u8::MAX);
             // A position past the last half is the card cast as all of them, from a hand only (CR 702.102a).

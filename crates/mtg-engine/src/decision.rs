@@ -172,7 +172,9 @@ pub struct PriorityOptions {
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub companion: bool,
     /// The faces of the cards with several faces that can be cast or played now, with their costs: a split card's halves, an
-    /// Adventure, the back face of a modal double-faced card. `castable` and `playable_lands` list the card itself.
+    /// Adventure, the back face of a modal double-faced card. `castable` and `playable_lands` list the card itself. A
+    /// prepared permanent whose spell its controller can cast is listed with its spell face and no entry in `castable`
+    /// (`PriorityAction::CastPrepared`).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<FaceOption>>", optional))]
     pub faces: Vec<FaceOption>,
@@ -531,6 +533,9 @@ pub enum PriorityAction {
     Foretell(ObjectId),
     /// Turn this face-down permanent face up (CR 702.37e, a special action): pay its morph, megamorph or disguise cost.
     TurnFaceUp(ObjectId),
+    /// Cast a copy of the spell face of this prepared permanent (it must be offered in `PriorityOptions.faces`): the copy is made and the
+    /// cast is announced and paid like any spell, at the timing of the face; the permanent is unprepared as the spell is cast.
+    CastPrepared(ObjectId),
     /// Put the companion into the hand (CR 702.139, a special action): pay {3}, once a game.
     BringCompanion,
     /// Do something by hand for a card the engine does not run: a zone move, counters, life, a token and the like. Legal at

@@ -258,6 +258,7 @@ mod persistent_mana;
 mod player_event_writers;
 mod player_keywords;
 mod populate_tails;
+mod prepare;
 mod prevention;
 mod pump_wordings;
 mod put_back;

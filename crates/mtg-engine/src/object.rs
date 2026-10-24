@@ -109,6 +109,8 @@ impl FaceDown {
 pub struct Designations {
     /// It has become monstrous (CR 701.37).
     pub(crate) monstrous: bool,
+    /// It is prepared: its controller may cast a copy of its spell face.
+    pub(crate) prepared: bool,
     /// The level a Class has reached (CR 716.2); 0 until a level ability resolves, which reads as level 1.
     pub(crate) level: u32,
 }
@@ -247,6 +249,11 @@ impl PermanentState {
     /// object and is not.
     pub const fn monstrous(&self) -> bool {
         self.designations.monstrous
+    }
+
+    /// Whether the permanent is prepared; a permanent that leaves the battlefield is a new object and is not.
+    pub const fn prepared(&self) -> bool {
+        self.designations.prepared
     }
 
     /// The level of a Class (CR 716.2): 1 as it enters, higher once its level abilities resolve; a permanent that

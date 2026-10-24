@@ -17,6 +17,11 @@ damage: number,
  */
 summoning_sick: boolean, 
 /**
+ * Whether the permanent is prepared: its controller may cast a copy of its spell face. A public fact of a permanent; left out
+ * while it is not.
+ */
+prepared?: boolean, 
+/**
  * The level of a Class (CR 716.2); left out for any other permanent.
  */
 level?: number, };

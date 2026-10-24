@@ -348,6 +348,14 @@ impl RandomBot {
                 .iter()
                 .map(|o| PriorityAction::TurnFaceUp(*o)),
         );
+        // The spell face of a prepared permanent is listed with no card in `castable`.
+        actions.extend(
+            options
+                .faces
+                .iter()
+                .filter(|option| !option.land && !options.castable.contains(&option.card))
+                .map(|option| PriorityAction::CastPrepared(option.card)),
+        );
         if options.companion {
             actions.push(PriorityAction::BringCompanion);
         }

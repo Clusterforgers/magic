@@ -556,6 +556,11 @@ pub enum Effect {
         /// What flips.
         what: Ref,
     },
+    /// Makes prepare cards on the battlefield prepared: while one is, its controller may cast a copy of its spell face and doing so unprepares it. A permanent that is prepared already, is no prepare card or is not on the battlefield is passed over.
+    Prepare {
+        /// What becomes prepared.
+        what: Ref,
+    },
     /// The player surveils (CR 701.25): looks at the top cards of their library and puts any into the graveyard.
     Surveil {
         /// Who surveils.

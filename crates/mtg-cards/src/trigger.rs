@@ -591,6 +591,8 @@ pub enum ReplaceBy {
     Riot,
     /// As the permanent enters, it becomes day if it is neither day nor night (CR 726.2).
     DayIfNeither,
+    /// The permanent enters prepared (a prepare card; its controller may then cast a copy of its spell face).
+    EntersPrepared,
 }
 
 #[cfg(test)]
