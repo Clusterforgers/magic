@@ -54,7 +54,8 @@ export function optionLabel(
     const name = seatName(option.Player)
     return option.Player === viewer ? `${name} (you)` : name
   }
-  return 'Color' in option ? option.Color : option.Label
+  if ('Color' in option) return option.Color
+  return 'Secret' in option ? option.Secret : option.Label
 }
 
 /** One mode as its button names it: the card's name for it, else its place on the card. */

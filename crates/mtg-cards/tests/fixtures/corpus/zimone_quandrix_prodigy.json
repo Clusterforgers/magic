@@ -1,0 +1,27 @@
+{
+  "id": "5a9a9f44-479e-47ca-afc4-d8372a11c9b3",
+  "oracle_id": "ee2ef1e0-6803-4eb5-8664-605438c67505",
+  "name": "Zimone, Quandrix Prodigy",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "341",
+  "rarity": "uncommon",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{G}{U}",
+  "cmc": 2,
+  "type_line": "Legendary Creature — Human Wizard",
+  "oracle_text": "{1}, {T}: You may put a land card from your hand onto the battlefield tapped.\n{4}, {T}: Draw a card. If you control eight or more lands, draw two cards instead.",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": []
+}

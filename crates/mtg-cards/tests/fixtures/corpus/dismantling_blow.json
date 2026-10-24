@@ -1,0 +1,26 @@
+{
+  "id": "70edc5da-4477-49f6-bbcc-f208fdaae0d3",
+  "oracle_id": "300cba5a-adbb-4852-be06-ac00d9d6fd37",
+  "name": "Dismantling Blow",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mh1",
+  "collector_number": "5",
+  "rarity": "uncommon",
+  "released_at": "2019-06-14",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3,
+  "type_line": "Instant",
+  "oracle_text": "Kicker {2}{U} (You may pay an additional {2}{U} as you cast this spell.)\nDestroy target artifact or enchantment. If this spell was kicked, draw two cards.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Kicker"
+  ]
+}

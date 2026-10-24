@@ -1,0 +1,46 @@
+{
+  "oracle_id": "3cbdf37b-7fe3-4791-b33c-8591158b0ce5",
+  "name": "Primal Growth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primal Growth",
+      "oracle_fingerprint": "c25866f4bef0f34b4e5ec153123fee9a",
+      "abilities": [
+        { "Keyword": { "Kicker": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }] } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "Search": {
+                        "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                        "count": { "min": 0, "max": 2 },
+                        "as": "land"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ],
+                  "otherwise": [
+                    {
+                      "Search": {
+                        "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                        "as": "land"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

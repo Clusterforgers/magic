@@ -248,6 +248,7 @@ const RUNS: &[&str] = &[
     "Effect.FlipCoin",
     "Effect.Modal.AtRandom",
     "Effect.Modal.OnceEachTurn",
+    "Effect.Vote",
     "Keyword.Flash",
     "Keyword.Flying",
     "Keyword.Reach",
@@ -630,6 +631,7 @@ mod tests {
     #[case::flipping_coins("Effect.FlipCoin", true)]
     #[case::modes_at_random("Effect.Modal.AtRandom", true)]
     #[case::modes_not_chosen_twice_in_a_turn("Effect.Modal.OnceEachTurn", true)]
+    #[case::voting("Effect.Vote", true)]
     #[case::adding_mana("Effect.AddMana", true)]
     #[case::tapping_permanents("Effect.Tap", true)]
     #[case::untapping_permanents("Effect.Untap", true)]

@@ -24,6 +24,8 @@ pub enum ChoiceOption {
     Color(Color),
     /// Anything else, by its name.
     Label(String),
+    /// A name voted for face down: the answer is not shown to the other seats until the vote is done.
+    Secret(String),
 }
 
 /// The things a player may choose between.
@@ -66,9 +68,14 @@ pub(crate) fn answer(
     if announcing {
         return Ok(Outcome::Way(choice.0));
     }
+    let secret = matches!(options.options.get(choice.0), Some(ChoiceOption::Secret(_)));
     Ok(Outcome::Events(vec![Event::ChoiceMade {
         player,
-        choice: Choice::Option(choice.0),
+        choice: if secret {
+            Choice::Vote(choice.0)
+        } else {
+            Choice::Option(choice.0)
+        },
     }]))
 }
 
@@ -117,7 +124,7 @@ pub(crate) fn pick_options(
                         }),
                     }));
                 }
-                Some((player, Choice::Option(index)))
+                Some((player, Choice::Option(index) | Choice::Vote(index)))
                     if *player == chooser.player && check(&chooser.options, *index).is_ok() =>
                 {
                     taken.push((chooser.player, *index));

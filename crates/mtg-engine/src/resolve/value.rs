@@ -1072,6 +1072,10 @@ impl<'a> Scope<'a> {
                 sum
             }
             Amount::Times { by, of } => i64::from(*by) * self.amount_of(of, share)?,
+            Amount::Half { of, up } => {
+                let whole = self.amount_of(of, share)?.max(0);
+                if *up { (whole + 1) / 2 } else { whole / 2 }
+            }
             Amount::Divided => {
                 let share = share.ok_or(ResolveError::Unsupported(OUTSIDE_A_DIVISION))?;
                 self.divided_share(share.recipient)
@@ -1650,6 +1654,17 @@ mod tests {
     )]
     #[case::times_zero_things(r#"{"Times":{"by":3,"of":{"Count":[{"Type":"Land"}]}}}"#, 0)]
     #[case::times_the_opponents(r#"{"Times":{"by":2,"of":{"Players":"Opponents"}}}"#, 2)]
+    #[case::half_of_your_life(r#"{"Half":{"of":{"Life":"You"},"up":true}}"#, 10)]
+    #[case::half_an_odd_count_rounded_up(
+        r#"{"Half":{"of":{"Count":[{"Type":"Creature"}]},"up":true}}"#,
+        2
+    )]
+    #[case::half_an_odd_count_rounded_down(
+        r#"{"Half":{"of":{"Count":[{"Type":"Creature"}]},"up":false}}"#,
+        1
+    )]
+    #[case::half_of_less_than_nothing(r#"{"Half":{"of":-5,"up":true}}"#, 0)]
+    #[case::half_of_one(r#"{"Half":{"of":1,"up":true}}"#, 1)]
     #[case::cards_in_your_hand(r#"{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}"#, 1)]
     #[case::cards_in_your_graveyard(r#"{"Count":[{"In":"Graveyard"},{"OwnedBy":"You"}]}"#, 0)]
     #[case::each_opponents_creatures(

@@ -54,6 +54,7 @@ fn names(list: &[&str]) -> BTreeSet<String> {
 )]
 #[case::time_travel(r#"{"Spell":{"effects":[{"TimeTravel":{}}]}}"#, &["Ability.Spell", "Effect.TimeTravel"])]
 #[case::extra_turn(r#"{"Spell":{"effects":[{"ExtraTurn":{}}]}}"#, &["Ability.Spell", "Effect.ExtraTurn"])]
+#[case::vote(r#"{"Spell":{"effects":[{"Vote":{"options":{"Named":["time","knowledge"]},"secret":true}}]}}"#, &["Ability.Spell", "Effect.Vote"])]
 #[case::a_choice_of_mana(
     r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOf":["White","Blue"]}}}]}}"#,
     &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Effect.AddMana", "Effect.AddMana.OneOf"]

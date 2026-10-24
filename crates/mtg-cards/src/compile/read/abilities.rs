@@ -3,7 +3,10 @@
 //! activated an activated ability, and a loyalty cost, a colon and sentences a loyalty ability.
 
 use super::tokens::Reader;
-use super::{as_long_as, costs, effects, mana_trigger, modal, render, statics, triggers};
+use super::{
+    as_long_as, costs, effects, exiled_kind, instead_pairs, mana_trigger, modal, render, statics,
+    triggers,
+};
 use crate::ability::{Ability, Limit, LoyaltyCost, Timing};
 use crate::effect::Effect;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
@@ -35,8 +38,17 @@ const ONCE_EACH_TURN: &str = "this ability triggers only once each turn";
 fn sentences(r: &mut Reader<'_>, restricted: bool) -> Option<Vec<Effect>> {
     let mut effects = Vec::new();
     while !(r.end() || restricted && at_restriction(r)) {
+        let before = effects.len();
         if !effects::sentence(r, &mut effects) {
             return None;
+        }
+        // ". If C, instead S2." replaces the sentence just read.
+        if let Some(replaced) = instead_pairs::tail(r, &effects[before..]) {
+            effects.truncate(before);
+            effects.push(replaced);
+        } else if effects.len() > before {
+            // ". If it was a creature card, S." after the exile of a target.
+            exiled_kind::tail(r, &mut effects);
         }
     }
     let alone = effects.len() == 1 || !effects.iter().any(|e| matches!(e, Effect::Modal { .. }));

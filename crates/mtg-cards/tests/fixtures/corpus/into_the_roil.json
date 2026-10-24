@@ -1,0 +1,25 @@
+{
+  "id": "25edefa9-9fff-4b71-83ae-696c196a795c",
+  "oracle_id": "c2898bbd-82a4-4d26-b6ee-169b0ebe71b4",
+  "name": "Into the Roil",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fdn",
+  "collector_number": "509",
+  "rarity": "common",
+  "released_at": "2024-11-15",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2,
+  "type_line": "Instant",
+  "oracle_text": "Kicker {1}{U} (You may pay an additional {1}{U} as you cast this spell.)\nReturn target nonland permanent to its owner's hand. If this spell was kicked, draw a card.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Kicker"
+  ]
+}

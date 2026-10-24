@@ -1,0 +1,25 @@
+{
+  "id": "8c504c23-1e9a-411b-9cfe-4180d0c744f6",
+  "oracle_id": "1ff25f67-36a7-4cfa-a2b1-2135b5b6fb67",
+  "name": "Scavenging Ooze",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fdn",
+  "collector_number": "232",
+  "rarity": "rare",
+  "released_at": "2024-11-15",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2,
+  "type_line": "Creature — Ooze",
+  "oracle_text": "{G}: Exile target card from a graveyard. If it was a creature card, put a +1/+1 counter on this creature and you gain 1 life.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

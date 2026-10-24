@@ -1,0 +1,23 @@
+{
+  "id": "165f4428-e1a1-477d-bd90-138189e88163",
+  "oracle_id": "11a46cb6-ab01-4630-9541-782db2ef3b91",
+  "name": "Map the Frontier",
+  "lang": "en",
+  "layout": "normal",
+  "set": "otj",
+  "collector_number": "170",
+  "rarity": "uncommon",
+  "released_at": "2024-04-19",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4,
+  "type_line": "Sorcery",
+  "oracle_text": "Search your library for up to two basic land cards and/or Desert cards, put them onto the battlefield tapped, then shuffle.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

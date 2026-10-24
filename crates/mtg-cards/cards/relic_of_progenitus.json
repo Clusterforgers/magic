@@ -1,0 +1,38 @@
+{
+  "oracle_id": "6a9c3401-570c-41cb-a605-75dfa57d6ab7",
+  "name": "Relic of Progenitus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Relic of Progenitus",
+      "oracle_fingerprint": "ae940b24ccfac312051968d545b691da",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "exiled_card"
+                }
+              },
+              { "Exile": { "what": { "Bound": "exiled_card" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "ExileSelf"],
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "In": "Graveyard" }] } } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

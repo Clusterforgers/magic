@@ -1,0 +1,41 @@
+{
+  "oracle_id": "08becc07-28bc-4a2f-a6b0-28a2998d2f50",
+  "name": "Windfall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Windfall",
+      "oracle_fingerprint": "da40d57a51263ff9d55ef2822c3809ba",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Discard": {
+                  "who": "EachPlayer",
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "EachPlayer" }] },
+                  "as": "discarded"
+                }
+              },
+              {
+                "Draw": {
+                  "who": "EachPlayer",
+                  "count": {
+                    "Largest": {
+                      "who": "EachPlayer",
+                      "of": [
+                        { "In": "Graveyard" },
+                        { "Is": { "Bound": "discarded" } },
+                        { "OwnedBy": "You" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

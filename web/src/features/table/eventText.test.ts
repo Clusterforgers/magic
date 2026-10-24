@@ -330,6 +330,7 @@ const MORE: [Event, string][] = [
   [{ ChoiceMade: { player: 1, choice: { Number: 3 } } }, 'Bo chooses 3'],
   [{ ChoiceMade: { player: 1, choice: { YesNo: true } } }, 'Bo answers yes'],
   [{ ChoiceMade: { player: 1, choice: { YesNo: false } } }, 'Bo answers no'],
+  [{ ChoiceMade: { player: 1, choice: { Vote: 1 } } }, 'Bo votes for option 2'],
   [{ ChoiceMade: { player: 1, choice: { Order: [1, 2] } } }, 'Bo puts 2 cards in order'],
   [{ ChoiceMade: { player: 1, choice: { Option: 0 } } }, 'Bo chooses option 1'],
   [{ ChoiceMade: { player: 1, choice: { Replacement: 1 } } }, 'Bo chooses which effect applies first'],
