@@ -132,7 +132,7 @@ fn more_oracle_wordings_of_one_subject_in_a_trigger_read_and_write_back(#[case] 
 #[case::win("You gain 3 life and win the game.")]
 #[case::unless("Target player draws a card and loses 1 life unless they discard a card.")]
 #[case::if_you_do("Target player draws a card. If you do, they lose 1 life.")]
-#[case::two_creatures("Target opponent sacrifices two creatures.")]
+#[case::two_or_more_creatures("Target opponent sacrifices two or more creatures.")]
 #[case::all_creatures("Target opponent sacrifices all creatures.")]
 #[case::another("Target opponent sacrifices another creature.")]
 #[case::a_creature_you_control("Target opponent sacrifices a creature you control.")]
@@ -187,7 +187,9 @@ fn a_compound_has_more_than_one_wording_and_a_second_target_cannot_be_named_twic
         [
             "Draw a card. You gain 2 life.",
             "You draw a card and gain 2 life.",
-            "You draw a card and you gain 2 life."
+            "You draw a card and you gain 2 life.",
+            "Draw a card and you gain 2 life.",
+            "Draw a card. Then you gain 2 life."
         ]
     );
     let targeted = ability(

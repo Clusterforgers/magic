@@ -87,8 +87,8 @@ fn the_card_names_itself_in_any_of_its_words(#[case] text: &str) {
 }
 
 #[rstest]
-#[case::until_the_upkeep(
-    "{3}{W}{W}: Return ~ from your graveyard to your hand. Activate only during your upkeep.",
+#[case::until_the_end_step(
+    "{3}{W}{W}: Return ~ from your graveyard to your hand. Activate only during your end step.",
     ClauseKind::Activated
 )]
 #[case::attached_to_a_target(

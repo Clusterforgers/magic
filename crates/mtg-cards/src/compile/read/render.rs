@@ -7,6 +7,7 @@ mod af_steps;
 mod all_graveyards;
 mod and_lists;
 mod bound;
+mod chance;
 mod compared_to_chosen;
 mod control;
 mod created;
@@ -70,6 +71,7 @@ use super::flicker;
 use super::group_copies;
 use super::group_pump;
 use super::instead_pairs;
+use super::joined;
 use super::kicked_copies;
 use super::lands;
 use super::library;
@@ -367,6 +369,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     let more = group_pump::wordings(ability, &texts);
     texts.extend(more);
     let more = changes::wordings(&texts);
+    texts.extend(more);
+    let more = joined::wordings(&texts);
     texts.extend(more);
     let counted = where_x::wordings(ability);
     let pronouns = create::pronoun_wordings(&counted);
@@ -906,6 +910,7 @@ fn written(
             .made_then(&effects[start..])
             .or_else(|| writer.copy_group(&effects[start..], wording.chosen))
             .or_else(|| writer.exile_kind(&effects[start..]))
+            .or_else(|| writer.chance(&effects[start..]))
             .or_else(|| instead::pair(targets, &effects[start..], wording))
         {
             unsplit(mask, start, used)?;
@@ -2413,6 +2418,15 @@ impl Writer<'_> {
             }
             Effect::GainLife { amount, .. } => format!("gain{s} {}", self.life(amount)?),
             Effect::LoseLife { amount, .. } => format!("lose{s} {}", self.life(amount)?),
+            Effect::Sacrifice {
+                filter,
+                count: Amount::Fixed(number),
+                ..
+            } if *number > 1 => format!(
+                "sacrifice{s} {} {}",
+                count_word(u32::try_from(*number).ok()?)?,
+                phrase_text(filter, Form::All)?
+            ),
             Effect::Sacrifice { filter, count, .. } if count.is_one() => {
                 format!("sacrifice{s} {}", sacrifice_text(filter)?)
             }

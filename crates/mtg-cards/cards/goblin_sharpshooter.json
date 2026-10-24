@@ -1,0 +1,33 @@
+{
+  "oracle_id": "d81285b7-a718-411a-8be3-ecc0cfe0bcb0",
+  "name": "Goblin Sharpshooter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Sharpshooter",
+      "oracle_fingerprint": "bf919ea93d6451e46ebbbdd6e90d42bc",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["DoesntUntap"] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Untap": { "what": "This" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

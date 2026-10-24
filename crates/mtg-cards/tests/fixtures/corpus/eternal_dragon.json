@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "0f57fc0c-cab1-4eb0-a58a-0c7a762f1572",
+  "oracle_id": "04d8615c-3883-4251-9790-1d8a4a40e142",
+  "multiverse_ids": [
+    532453
+  ],
+  "tcgplayer_id": 243914,
+  "cardmarket_id": 572239,
+  "name": "Eternal Dragon",
+  "lang": "en",
+  "released_at": "2021-07-23",
+  "uri": "https://api.scryfall.com/cards/0f57fc0c-cab1-4eb0-a58a-0c7a762f1572",
+  "scryfall_uri": "https://scryfall.com/card/afc/66/eternal-dragon?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:03:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/f/0f57fc0c-cab1-4eb0-a58a-0c7a762f1572.jpg?1783926233",
+    "normal": "https://cards.scryfall.io/normal/front/0/f/0f57fc0c-cab1-4eb0-a58a-0c7a762f1572.jpg?1783926233",
+    "large": "https://cards.scryfall.io/large/front/0/f/0f57fc0c-cab1-4eb0-a58a-0c7a762f1572.jpg?1783926233",
+    "png": "https://cards.scryfall.io/png/front/0/f/0f57fc0c-cab1-4eb0-a58a-0c7a762f1572.png?1783926233",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/f/0f57fc0c-cab1-4eb0-a58a-0c7a762f1572.jpg?1783926233",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/f/0f57fc0c-cab1-4eb0-a58a-0c7a762f1572.jpg?1783926233",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/f/0f57fc0c-cab1-4eb0-a58a-0c7a762f1572.webp?1783926233",
+    "grid": "https://cards.scryfall.io/grid/front/0/f/0f57fc0c-cab1-4eb0-a58a-0c7a762f1572.webp?1783926233",
+    "display": "https://cards.scryfall.io/display/front/0/f/0f57fc0c-cab1-4eb0-a58a-0c7a762f1572.webp?1783926233",
+    "art": "https://cards.scryfall.io/art/front/0/f/0f57fc0c-cab1-4eb0-a58a-0c7a762f1572.webp?1783926233",
+    "crop": "https://cards.scryfall.io/crop/front/0/f/0f57fc0c-cab1-4eb0-a58a-0c7a762f1572.webp?1783926233",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/f/0f57fc0c-cab1-4eb0-a58a-0c7a762f1572.jpg?1783926233"
+  },
+  "mana_cost": "{5}{W}{W}",
+  "cmc": 7.0,
+  "type_line": "Creature — Dragon Spirit",
+  "oracle_text": "Flying\n{3}{W}{W}: Return this card from your graveyard to your hand. Activate only during your upkeep.\nPlainscycling {2} ({2}, Discard this card: Search your library for a Plains card, reveal it, put it into your hand, then shuffle.)",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Plainscycling",
+    "Landcycling",
+    "Typecycling",
+    "Cycling"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "db1b46f9-893c-4623-9465-985ff6e4472c",
+  "set": "afc",
+  "set_name": "Forgotten Realms Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/db1b46f9-893c-4623-9465-985ff6e4472c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aafc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/afc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0f57fc0c-cab1-4eb0-a58a-0c7a762f1572/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A04d8615c-3883-4251-9790-1d8a4a40e142&unique=prints",
+  "collector_number": "66",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Justin Sweet",
+  "artist_ids": [
+    "bb15780e-8f96-4823-b258-a7a9fd79b02c"
+  ],
+  "illustration_id": "205c027f-81fe-4d98-ac0b-1afd910f7712",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 11939,
+  "penny_rank": 1560,
+  "prices": {
+    "usd": "0.43",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.40",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=532453&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEternal%2BDragon",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEternal%2BDragon",
+    "edhrec": "https://edhrec.com/route/?cc=Eternal+Dragon"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F243914%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=572239&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Eternal+Dragon&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

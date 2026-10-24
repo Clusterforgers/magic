@@ -124,6 +124,12 @@ pub(super) fn consequence(r: &mut Reader<'_>, condition: &Condition) -> Option<V
     })
 }
 
+/// What the effects after a flip, a roll or a vote do, which no condition on the card shapes: steps joined by "and" or
+/// one sentence, up to the end of the sentence.
+pub(super) fn body(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    consequence(r, &Condition::All(Vec::new()))
+}
+
 /// Steps joined by "and" or in a list.
 fn steps(r: &mut Reader<'_>, condition: &Condition) -> Option<Vec<Effect>> {
     let mut found = step(r, condition)?;

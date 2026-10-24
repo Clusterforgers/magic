@@ -69,6 +69,8 @@ pub enum Modification {
     CantAttack,
     /// The object can't block (a restriction, no layer).
     CantBlock,
+    /// The object does not untap during its controller's untap step (a restriction, no layer).
+    DoesntUntap,
     /// The object can't be blocked (a restriction, no layer).
     CantBeBlocked,
     /// The object can't be blocked by creatures the selector matches (a restriction, no layer).
@@ -118,6 +120,7 @@ impl Modification {
             Modification::SwitchPT => Some("7d"),
             Modification::CantAttack
             | Modification::CantBlock
+            | Modification::DoesntUntap
             | Modification::CantBeBlocked
             | Modification::CantBeBlockedBy(_)
             | Modification::CanBlockOnly(_)

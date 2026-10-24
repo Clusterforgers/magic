@@ -100,7 +100,7 @@ fn a_transform_the_template_does_not_model_stays_unread(#[case] text: &str) {
 
 #[rstest]
 #[case::only_if("{1}{G}: Transform ~. Activate only if an opponent controls a Wolf.")]
-#[case::only_during("{1}{G}: Transform ~. Activate only during your turn.")]
+#[case::only_during("{1}{G}: Transform ~. Activate only during your end step.")]
 #[case::two_sentences_of_restriction(
     "{1}{G}: Transform ~. Activate only as a sorcery. Draw a card."
 )]

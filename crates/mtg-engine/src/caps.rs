@@ -231,6 +231,7 @@ const RUNS: &[&str] = &[
     "Mod.SetController",
     "Mod.CantAttack",
     "Mod.CantBlock",
+    "Mod.DoesntUntap",
     "Mod.CantBeBlocked",
     "Mod.CantBeBlockedBy",
     "Mod.CanBlockOnly",
@@ -433,6 +434,9 @@ const RUNS: &[&str] = &[
     "ReplaceBy.UmbraArmor",
     "Condition.NewlyControlled",
     "Condition.Level",
+    "Condition.Step",
+    "Condition.BeforeAttackers",
+    "Condition.InCombat",
     "Rule.CanBeCommander",
 ];
 
@@ -854,6 +858,9 @@ mod tests {
     #[case::undaunted("Keyword.Undaunted", true)]
     #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]
     #[case::a_class_level("Condition.Level", true)]
+    #[case::a_step_of_the_turn("Condition.Step", true)]
+    #[case::before_attackers("Condition.BeforeAttackers", true)]
+    #[case::in_combat("Condition.InCombat", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]
     #[case::the_highest_life_total("Amount.HighestLife", true)]
