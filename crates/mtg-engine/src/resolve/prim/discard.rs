@@ -3,9 +3,10 @@
 use mtg_cards::effect::Effect;
 
 use super::{unsupported, wrong_effect};
-use crate::choose::{Chooser, Picked, pick_cards};
+use crate::choose::{Chooser, Picked, Target, pick_cards};
 use crate::events::Event;
-use crate::resolve::{Cx, ResolveError, Run};
+use crate::object::ObjectRef;
+use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::wording;
 use crate::zones::Zone;
 
@@ -13,7 +14,13 @@ use crate::zones::Zone;
 /// order. The player chooses which and is asked only when the hand holds more than they discard; a smaller hand is
 /// discarded whole, and an empty one is no event. A random discard is not played yet and `Caps` does not name it.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Discard { who, count, random } = effect else {
+    let Effect::Discard {
+        who,
+        count,
+        random,
+        bind,
+    } = effect
+    else {
         return Err(wrong_effect("Discard"));
     };
     if *random {
@@ -34,16 +41,37 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .collect();
     Ok(match pick_cards(cx, &choosers)? {
         Picked::Ask(decision) => Run::Ask(decision),
-        Picked::Done(chosen) => Run::events(
-            chosen
+        Picked::Done(chosen) => {
+            // The cards as they become in their graveyards (CR 400.7), for a later step that counts them.
+            let discarded: Vec<Target> = chosen
+                .iter()
+                .flat_map(|(_, cards)| cards)
+                .filter_map(|id| cx.state().object(*id))
+                .map(|object| {
+                    Target::Object(ObjectRef {
+                        id: object.id(),
+                        counter: object.counter() + 1,
+                    })
+                })
+                .collect();
+            let events = chosen
                 .into_iter()
                 .flat_map(|(player, cards)| {
                     cards
                         .into_iter()
                         .map(move |object| Event::CardDiscarded { player, object })
                 })
-                .collect(),
-        ),
+                .collect();
+            match bind {
+                None => Run::events(events),
+                Some(name) => Run::Done {
+                    events,
+                    bound: vec![(name.clone(), discarded)],
+                    snapshots: Vec::new(),
+                    next: Next::Sibling,
+                },
+            }
+        }
     })
 }
 
@@ -149,6 +177,40 @@ mod tests {
                 }),
             }
         );
+    }
+
+    #[test]
+    fn the_cards_discarded_are_bound_as_the_objects_they_become_in_the_graveyards() {
+        let game = game();
+        let run = run_with(
+            &game,
+            Vec::new(),
+            &effect(r#"{"Discard":{"who":"EachPlayer","count":9,"as":"gone"}}"#),
+        )
+        .unwrap();
+        let Run::Done { events, bound, .. } = run else {
+            panic!("the effect is done");
+        };
+        let [(name, gone)] = bound.as_slice() else {
+            panic!("one name is bound");
+        };
+        assert_eq!(name, "gone");
+        let all: Vec<ObjectId> = [ME, FOE]
+            .into_iter()
+            .flat_map(|player| hand(&game, player))
+            .collect();
+        assert_eq!(events.len(), all.len());
+        assert_eq!(gone.len(), all.len());
+        for (target, id) in gone.iter().zip(&all) {
+            let was = game.object(*id).unwrap().counter();
+            assert_eq!(
+                *target,
+                Target::Object(ObjectRef {
+                    id: *id,
+                    counter: was + 1
+                })
+            );
+        }
     }
 
     #[test]

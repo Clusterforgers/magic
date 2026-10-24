@@ -1,6 +1,7 @@
 //! Goal: the wordings that alone held back two precon cards each (half a life total, rounded up or down) read into the DSL, write back as the same text, and leave their near-misses to the table.
 use super::effects::{LATER, dead_card};
 use super::*;
+use crate::compile::read::draws;
 use crate::effect::{Destination, Effect};
 use crate::refs::Ref;
 use crate::trigger::{Step, TriggerPattern};
@@ -137,4 +138,72 @@ fn a_card_returns_to_its_owners_hand_at_the_next_end_step(#[case] text: &str, #[
 #[case::no_step("When ~ dies, return it to its owner's hand at the beginning of the next.")]
 fn a_late_return_near_misses_stay_unread(#[case] text: &str) {
     assert_eq!(trigger(text), None, "{text}");
+}
+
+#[rstest]
+#[case::a_spell(
+    "Each player discards their hand, then draws cards equal to the greatest number of cards a player discarded this way.",
+    ClauseKind::Spell
+)]
+#[case::an_ability(
+    "{U}, {T}: Each player discards their hand, then draws cards equal to the greatest number of cards a player discarded this way.",
+    ClauseKind::Activated
+)]
+fn each_player_draws_the_most_cards_a_player_discarded(
+    #[case] text: &str,
+    #[case] kind: ClauseKind,
+) {
+    let read = golden(text, kind, false);
+    let effects = match read {
+        Ability::Spell { effects, .. } | Ability::Activated { effects, .. } => effects,
+        other => panic!("not a spell or an ability: {other:?}"),
+    };
+    assert_eq!(
+        effects,
+        vec![
+            Effect::Discard {
+                who: Ref::EachPlayer,
+                count: draws::hand_of(&Ref::EachPlayer),
+                random: false,
+                bind: Some(draws::DISCARDED.to_owned()),
+            },
+            Effect::Draw {
+                who: Ref::EachPlayer,
+                count: draws::most_discarded(),
+            },
+        ],
+        "{text}"
+    );
+}
+
+#[rstest]
+#[case::the_wheel("Each player discards their hand, then draws seven cards.", None)]
+fn a_plain_wheel_binds_nothing(#[case] text: &str, #[case] bind: Option<String>) {
+    let Ability::Spell { effects, .. } = golden(text, ClauseKind::Spell, false) else {
+        panic!("not a spell: {text}");
+    };
+    assert!(
+        matches!(&effects[0], Effect::Discard { bind: found, .. } if *found == bind),
+        "{text}"
+    );
+}
+
+#[rstest]
+#[case::the_number_of_cards(
+    "Each player discards their hand, then draws cards equal to the number of cards a player discarded this way."
+)]
+#[case::the_least(
+    "Each player discards their hand, then draws cards equal to the least number of cards a player discarded this way."
+)]
+#[case::exiled_this_way(
+    "Each player discards their hand, then draws cards equal to the greatest number of cards a player exiled this way."
+)]
+#[case::only_you(
+    "You discard your hand, then draw cards equal to the greatest number of cards a player discarded this way."
+)]
+#[case::one_discard_for_all(
+    "Each player discards a card, then draws cards equal to the greatest number of cards a player discarded this way."
+)]
+fn the_most_discarded_near_misses_stay_unread(#[case] text: &str) {
+    assert_eq!(spell(text), None, "{text}");
 }

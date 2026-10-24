@@ -2,11 +2,11 @@
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common::pid;
-use mtg_engine::decision::DecisionKind;
+use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::replay;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_testkit::cards::{burn, free_creature, mountain, swamp};
+use mtg_testkit::cards::{burn, free_creature, island, mountain, swamp};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, attached_to, ready};
 use rstest::rstest;
@@ -135,6 +135,73 @@ fn a_god_that_dies_returns_to_its_owners_hand_at_the_next_end_step(
         "back in its owner's hand"
     );
     assert_eq!(in_zone(&driver, Zone::Graveyard(pid(0)), god), 0);
+    assert_replays(&driver);
+    Ok(())
+}
+
+/// The number of cards in a hand.
+fn hand_size(driver: &Driver, seat: usize) -> usize {
+    driver.state().zone(Zone::Hand(pid(seat))).len()
+}
+
+#[rstest]
+fn each_player_draws_the_greatest_number_of_cards_a_player_discarded(
+    #[values("Windfall", "Whispering Madness", "Jace's Archivist")] source: &str,
+    #[values(2, 3, 4)] seats: usize,
+    #[values(0, 1, 3)] richest: usize,
+) -> Result<(), ScriptError> {
+    // Every hand holds one card but the richest seat's, which holds five.
+    let richest = richest % seats;
+    let hold = |seat: usize| -> Vec<_> {
+        let size = if seat == richest { 5 } else { 1 };
+        (0..size).map(|_| swamp()).collect()
+    };
+    let mut scenario = Scenario::new(seats).at(1, 0, Step::Main1);
+    for seat in 0..seats {
+        let mut hand = hold(seat);
+        if seat == 0 && source != "Jace's Archivist" {
+            hand.push(card(source).unwrap());
+        }
+        scenario = scenario.hand(seat, hand);
+    }
+    let mut table = vec![
+        ready(island()),
+        ready(island()),
+        ready(swamp()),
+        ready(swamp()),
+    ];
+    if source == "Jace's Archivist" {
+        table.push(ready(card(source).unwrap()));
+    }
+    scenario = scenario.battlefield(0, table);
+    let mut driver = Driver::from_scenario(scenario)?;
+    if source == "Jace's Archivist" {
+        driver.begin_activation(source)?;
+        driver.answer(Answer::PayMana(PayChoice::Auto))?;
+    } else {
+        driver.cast(source)?;
+    }
+    settle(&mut driver)?;
+    for seat in 0..seats {
+        assert_eq!(
+            hand_size(&driver, seat),
+            5,
+            "seat {seat} draws what the richest discarded"
+        );
+    }
+    // The cards discarded went to their owners' graveyards: the small hands' card and the richest seat's five.
+    let discarded: usize = (0..seats)
+        .map(|seat| {
+            driver
+                .state()
+                .zone(Zone::Graveyard(pid(seat)))
+                .iter()
+                .filter_map(|id| driver.state().object(*id))
+                .filter(|object| object.card().name == "Swamp")
+                .count()
+        })
+        .sum();
+    assert_eq!(discarded, 5 + (seats - 1));
     assert_replays(&driver);
     Ok(())
 }

@@ -565,6 +565,7 @@ Ivory Mask
 Ixalli's Lorekeeper
 Izzet Charm
 Jace Beleren
+Jace's Archivist
 Jacked Rabbit
 Jadelight Ranger
 Jagged Barrens
@@ -1197,6 +1198,7 @@ Weigh Down
 Weirding Wood
 Whir of Invention
 Whisperer of the Wilds
+Whispering Madness
 Whispering Snitch
 White Auracite
 Wickersmith's Tools
@@ -1205,6 +1207,7 @@ Wild Wasteland
 Wilderness Elemental
 Windborn Muse
 Windbrisk Heights
+Windfall
 Winged Boots
 Winged Words
 Wings of the Guard

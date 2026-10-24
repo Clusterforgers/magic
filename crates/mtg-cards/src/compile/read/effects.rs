@@ -387,7 +387,12 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         "discard" => {
             let count = draws::discarded(r, &who)?;
             let random = r.words("at random");
-            Effect::Discard { who, count, random }
+            Effect::Discard {
+                who,
+                count,
+                random,
+                bind: None,
+            }
         }
         _ => return None,
     })
@@ -557,7 +562,12 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
         "discard" | "discards" => {
             let count = draws::discarded(r, &who)?;
             let random = r.words("at random");
-            Effect::Discard { who, count, random }
+            Effect::Discard {
+                who,
+                count,
+                random,
+                bind: None,
+            }
         }
         "gain" | "gains" => Effect::GainLife {
             who,
