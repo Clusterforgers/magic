@@ -91,6 +91,7 @@ Banishing Stroke
 Banshee of the Dread Choir
 Barbed Batterfist
 Bard's Bow
+Basalt Monolith
 Basilica Screecher
 Basilisk Gate
 Basking Rootwalla
@@ -139,6 +140,7 @@ Bonecaller Cleric
 Bonehoard
 Bonesplitter
 Book of Mazarbul
+Boompile
 Boon Reflection
 Boon Satyr
 Boon-Bringer Valkyrie
@@ -300,6 +302,7 @@ Demon Bolt
 Demon of Wailing Agonies
 Dense Canopy
 Deputized Protester
+Desert
 Devastation Tide
 Dimir Infiltrator
 Dina, Soul Steeper
@@ -342,6 +345,7 @@ Dusk Mangler
 Duskshell Crawler
 Dúnedain Blade
 Eagles of the North
+Earth-Cult Elemental
 Earthen Arms
 Easterling Vanguard
 Echo Inspector
@@ -371,6 +375,7 @@ Epic Proportions
 Era of Enlightenment // Hand of Enlightenment
 Erebos, Bleak-Hearted
 Etched Oracle
+Eternal Dragon
 Eternal Witness
 Ethereal Armor
 Ethereal Usher
@@ -391,6 +396,7 @@ Eyetwitch
 Faith Unbroken
 Faithful Watchdog
 Faithless Looting
+Fall from Favor
 Fallen Ideal
 Familiar Ground
 Famine
@@ -478,8 +484,10 @@ Gluttonous Slime
 Gluttonous Troll
 Gnarled Professor
 Gnarlwood Dryad
+Goblin Archaeologist
 Goblin Chieftain
 Goblin Glasswright // Craft with Pride
+Goblin Sharpshooter
 Goblin Spy
 Goblin War Buggy
 Goblin-town Flunkies
@@ -553,10 +561,12 @@ History of Benalia
 Holdout Settlement
 Honor Troll
 Honor's Reward
+Hoofprints of the Stag
 Horizon Canopy
 Hound of Griselbrand
 Hour of Revelation
 Howltooth Hollow
+Hua Tuo, Honored Physician
 Hulking Raptor
 Hungry Lynx
 Hunt the Weak
@@ -673,6 +683,7 @@ Lord of Extinction
 Lord of the Forsaken
 Lotleth Troll
 Lotus Petal
+Loyal Retainers
 Lu Bu, Master-at-Arms
 Lu Xun, Scholar General
 Ludevic's Test Subject // Ludevic's Abomination
@@ -924,6 +935,7 @@ River of Tears
 Riveteers Requisitioner
 Rob the Archives
 Rocksteady, Mutant Marauder
+Rogue Refiner
 Rootborn Defenses
 Rope
 Rosheen Meanderer
@@ -1177,6 +1189,7 @@ Titania, Nature's Force
 Titania, Proud Pummeler
 Tithe Drinker
 Tithebearer Giant
+Tomb Tyrant
 Towering Titan
 Toxic Deluge
 Trace of Abundance
@@ -1247,6 +1260,7 @@ Vivid Marsh
 Vivid Meadow
 Voice of All
 Voice of the Blessed
+Vona, Butcher of Magan
 Vorel of the Hull Clade
 Vorrac Battlehorns
 Vulshok Splitter
@@ -1267,6 +1281,7 @@ Wedgelight Rammer
 Wei Scout
 Weigh Down
 Weirding Wood
+Well Rested
 Whir of Invention
 Whisperer of the Wilds
 Whispering Madness
@@ -1286,6 +1301,7 @@ Wipe Away
 Wirewood Channeler
 Withering Boon
 Wizard Class
+Wolfwillow Haven
 Wooded Bastion
 Woodripper
 Worldspine Wurm

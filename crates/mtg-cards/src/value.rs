@@ -11,6 +11,7 @@ use mtg_core::mana::ManaType;
 use crate::cost::Cost;
 use crate::keyword::Keyword;
 use crate::refs::{Ref, Selector};
+use crate::trigger::Step;
 
 /// A characteristic of an object that has a number.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -659,6 +660,13 @@ pub enum Condition {
     NeitherDayNorNight,
     /// The referenced permanents are controlled by the controller and came under their control since their last turn began (echo, CR 702.30a): read in the upkeep, once that turn has begun.
     NewlyControlled(Ref),
+    /// The turn is in this step or main phase: "Activate only during the declare blockers step" (with `YourTurn` for
+    /// "during your upkeep").
+    Step(Step),
+    /// The turn has not reached its declare attackers step: "Activate only ... before attackers are declared".
+    BeforeAttackers,
+    /// The turn is in its combat phase: "Activate only during combat".
+    InCombat,
     /// The referenced Class compares to the level this way (CR 716.2): a Class that has gained no level is level 1.
     Level {
         /// The Class read; `This` for the Class with the ability.

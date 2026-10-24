@@ -41,7 +41,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 27] = [
+const TEMPLATES: [Template; 28] = [
     entering,
     entering_tapped_if,
     group_enters_tapped,
@@ -67,6 +67,7 @@ const TEMPLATES: [Template; 27] = [
     super::costs::additional,
     super::attack_tax::static_rule,
     evasion::cannot_block,
+    super::untap_rules::doesnt_untap,
     evasion::block_only,
     free_cast,
 ];
@@ -1148,6 +1149,11 @@ pub fn texts(ability: &Ability) -> Vec<String> {
         } => {
             let mut written = static_texts(affected, mods, condition.as_ref());
             written.extend(evasion::texts(affected, mods, condition.as_ref()));
+            written.extend(super::untap_rules::texts(
+                affected,
+                mods,
+                condition.as_ref(),
+            ));
             written
         }
         Ability::CostModifier {

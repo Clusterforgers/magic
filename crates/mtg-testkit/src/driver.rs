@@ -608,7 +608,7 @@ impl Driver {
     }
 
     /// A passive answer to whatever is pending: pass, keep, attack with nothing, block nothing.
-    fn passive_answer(decision: &Decision) -> Answer {
+    pub fn passive_answer(decision: &Decision) -> Answer {
         match &decision.kind {
             DecisionKind::Mulligan(_) => Answer::Mulligan(MulliganChoice::Keep),
             DecisionKind::BottomCards(o) => {
