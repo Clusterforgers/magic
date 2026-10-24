@@ -297,6 +297,7 @@ Demon Bolt
 Demon of Wailing Agonies
 Dense Canopy
 Deputized Protester
+Desert
 Devastation Tide
 Dimir Infiltrator
 Dina, Soul Steeper
@@ -367,6 +368,7 @@ Epic Proportions
 Era of Enlightenment // Hand of Enlightenment
 Erebos, Bleak-Hearted
 Etched Oracle
+Eternal Dragon
 Eternal Witness
 Ethereal Armor
 Ethereal Usher
@@ -546,10 +548,12 @@ History of Benalia
 Holdout Settlement
 Honor Troll
 Honor's Reward
+Hoofprints of the Stag
 Horizon Canopy
 Hound of Griselbrand
 Hour of Revelation
 Howltooth Hollow
+Hua Tuo, Honored Physician
 Hulking Raptor
 Hungry Lynx
 Hunt the Weak
@@ -664,6 +668,7 @@ Lord of Extinction
 Lord of the Forsaken
 Lotleth Troll
 Lotus Petal
+Loyal Retainers
 Lu Bu, Master-at-Arms
 Lu Xun, Scholar General
 Ludevic's Test Subject // Ludevic's Abomination
@@ -1158,6 +1163,7 @@ Titania, Nature's Force
 Titania, Proud Pummeler
 Tithe Drinker
 Tithebearer Giant
+Tomb Tyrant
 Towering Titan
 Toxic Deluge
 Trace of Abundance
@@ -1227,6 +1233,7 @@ Vivid Marsh
 Vivid Meadow
 Voice of All
 Voice of the Blessed
+Vona, Butcher of Magan
 Vorel of the Hull Clade
 Vorrac Battlehorns
 Vulshok Splitter
@@ -1266,6 +1273,7 @@ Wipe Away
 Wirewood Channeler
 Withering Boon
 Wizard Class
+Wolfwillow Haven
 Wooded Bastion
 Woodripper
 Worldspine Wurm

@@ -273,6 +273,9 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::ManaSpent(_)
         | Condition::IsDay
         | Condition::IsNight
+        | Condition::Step(_)
+        | Condition::BeforeAttackers
+        | Condition::InCombat
         | Condition::NeitherDayNorNight
         | Condition::Performed => Traits::NONE,
         Condition::Monarch(who)

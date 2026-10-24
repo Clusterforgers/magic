@@ -3,6 +3,7 @@
 mod abilities;
 mod ability_costs;
 mod actions_fuzz;
+mod activation_moments;
 mod active_leaves;
 mod active_leaves_fuzz;
 mod affinity;
@@ -315,6 +316,7 @@ mod replicate;
 mod required_costs;
 mod restricted_fuzz;
 mod restricted_mana;
+mod restriction_fuzz;
 mod reveal_until;
 mod reveal_until_fuzz;
 mod riot;

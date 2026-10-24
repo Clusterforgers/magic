@@ -1353,6 +1353,13 @@ impl<'a> Scope<'a> {
             Condition::IsNight => self.state.day_night() == Some(DayNight::Night),
             Condition::NeitherDayNorNight => self.state.day_night().is_none(),
             Condition::YourTurn => self.state.turn().active() == self.controller,
+            Condition::Step(named) => {
+                crate::triggers::step_matches(*named, self.state.turn().step())
+            }
+            Condition::BeforeAttackers => {
+                self.state.turn().step() < crate::turn::Step::DeclareAttackers
+            }
+            Condition::InCombat => self.state.turn().step().phase() == crate::turn::Phase::Combat,
             Condition::Level { of, op, level } => {
                 let named = self.objects(of)?;
                 !named.is_empty()

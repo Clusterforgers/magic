@@ -1,0 +1,53 @@
+{
+  "oracle_id": "17739f55-486b-46ea-8785-70cc2bd2d872",
+  "name": "Hoofprints of the Stag",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hoofprints of the Stag",
+      "oracle_fingerprint": "4b5bbcbaf7bee6f6e2154613a3762cbd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "PutCounters": { "on": "This", "counter": { "Other": "hoofprint" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{W}" },
+              { "RemoveCounters": { "counter": { "Other": "hoofprint" }, "count": 4 } }
+            ],
+            "condition": "YourTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
