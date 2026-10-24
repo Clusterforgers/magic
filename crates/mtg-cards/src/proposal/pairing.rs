@@ -6,8 +6,8 @@ use super::{ClauseReport, ClauseState, Stray};
 use crate::ability::Ability;
 use crate::card::{Card, Span};
 use crate::compile::{
-    Clause, ClauseKind, block_plan, creature_at, own_names, read_keyword, read_keywords, same_text,
-    static_pair_texts, written_variants,
+    Clause, ClauseKind, block_plan, creature_at, die_row, die_row_texts, own_names, read_keyword,
+    read_keywords, same_text, static_pair_texts, written_variants,
 };
 use crate::keyword::Keyword;
 use crate::support::PrintedCard;
@@ -101,15 +101,7 @@ fn is_block(text: &str) -> bool {
 
 /// Whether a clause is a row of the table of a die roll: a range of totals, then `|` ("1—9 | ...", "15+ | ...", "20 | ...").
 fn is_die_row(text: &str) -> bool {
-    text.lines()
-        .next()
-        .and_then(|head| head.split_once(" | "))
-        .is_some_and(|(range, _)| {
-            range.starts_with(|c: char| c.is_ascii_digit())
-                && range
-                    .chars()
-                    .all(|c| c.is_ascii_digit() || c == '—' || c == '+')
-        })
+    text.lines().next().and_then(die_row).is_some()
 }
 
 /// Whether an ability rolls a die, in any of its effect lists.
@@ -397,7 +389,8 @@ impl<'a> Pairer<'a> {
         }
     }
 
-    /// The rows of the table of a die roll (`1—9 | ...`) stand for the ability of the clause before them when it rolls.
+    /// The rows of the table of a die roll (`1—9 | ...`) stand for the ability of the clause before them when it rolls; a
+    /// row is read back when it is the row of the table at its place, written as the line says.
     fn tables(&mut self) {
         for at in 1..self.slots.len() {
             if self.slots[at].state.is_some() || !is_die_row(&self.slots[at].clause.text) {
@@ -411,10 +404,40 @@ impl<'a> Pairer<'a> {
                 ) => self.abilities.get(*ability).is_some_and(rolls_dice),
                 _ => false,
             };
-            if rolls {
-                let state = self.slots[at - 1].state.clone();
-                self.slots[at].state = state;
+            if !rolls {
+                continue;
             }
+            let head = (0..at)
+                .rev()
+                .find(|&slot| !is_die_row(&self.slots[slot].clause.text))
+                .unwrap_or(at - 1);
+            let mut state = self.slots[at - 1].state.clone();
+            if let (Some(ClauseState::Reads { ability }), Some(rows)) = (
+                &self.slots[head].state,
+                self.slots[head]
+                    .state
+                    .as_ref()
+                    .and_then(|state| match state {
+                        ClauseState::Reads { ability } => self.abilities.get(*ability),
+                        _ => None,
+                    })
+                    .map(die_row_texts),
+            ) {
+                let text = &self.slots[at].clause.text;
+                let wanted = rows.get(at - head - 1).map_or(&[][..], Vec::as_slice);
+                if !wanted.iter().any(|written| same_text(written, text)) {
+                    let written = wanted
+                        .iter()
+                        .max_by_key(|variant| common_prefix(variant, text))
+                        .cloned()
+                        .unwrap_or_default();
+                    state = Some(ClauseState::Differs {
+                        ability: *ability,
+                        written,
+                    });
+                }
+            }
+            self.slots[at].state = state;
         }
     }
 

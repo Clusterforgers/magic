@@ -663,6 +663,10 @@ describe('events with more than one shape', () => {
       'Hill Giant has power and toughness switched until end of turn',
     ],
     [effect(objects(2), 'CantBlock', 'UntilEndOfTurn'), "Hill Giant can't block until end of turn"],
+    [
+      effect(objects(2), 'DoesntUntap', 'UntilEndOfTurn'),
+      "Hill Giant doesn't untap during their controller's untap step until end of turn",
+    ],
     [effect(objects(2), 'CantBeBlocked', 'UntilEndOfTurn'), "Hill Giant can't be blocked until end of turn"],
     [
       effect(objects(2), 'AddAllCreatureTypes', 'UntilEndOfTurn'),

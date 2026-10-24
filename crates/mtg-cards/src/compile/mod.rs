@@ -13,6 +13,7 @@ mod linked;
 mod manual;
 mod normalize;
 mod read;
+mod tables;
 
 use std::collections::BTreeSet;
 
@@ -26,8 +27,8 @@ pub use classify::ClauseKind;
 pub use keywords::read as read_keyword;
 pub use keywords::read_all as read_keywords;
 pub use read::{
-    BlockPlan, block_plan, keyword_grant, render_ability, render_mode, render_variants, same_text,
-    static_pair_texts, without_header, written_variants,
+    BlockPlan, block_plan, die_row, die_row_texts, keyword_grant, render_ability, render_mode,
+    render_variants, same_text, static_pair_texts, without_header, written_variants,
 };
 
 /// One clause of a face's oracle text, read or not.
@@ -169,6 +170,7 @@ fn read_face(
             only.read = only.ability.is_some();
         }
     }
+    tables::attach(&mut pending, x_free, &own);
     give_backup(&mut pending);
     linked::exile_pair(&mut pending);
     let mut abilities = Vec::new();

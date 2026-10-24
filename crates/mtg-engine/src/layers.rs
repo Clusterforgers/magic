@@ -263,6 +263,7 @@ impl Held {
             | Modification::SwitchPowerToughness
             | Modification::CantAttack
             | Modification::CantBlock
+            | Modification::DoesntUntap
             | Modification::CantBeBlocked
             | Modification::CantBeBlockedBy { .. }
             | Modification::CanBlockOnly { .. }
@@ -501,6 +502,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         Wanted::SwitchPT => Layer::PtSwitch,
         Wanted::CantAttack
         | Wanted::CantBlock
+        | Wanted::DoesntUntap
         | Wanted::CantBeBlocked
         | Wanted::CantBeBlockedBy(_)
         | Wanted::CanBlockOnly(_)

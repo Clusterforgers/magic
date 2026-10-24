@@ -65,6 +65,8 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
         TriggerPattern::Attacks { what }
         | TriggerPattern::BecomesBlocked { what }
         | TriggerPattern::Mutates { what }
+        | TriggerPattern::Tapped { what }
+        | TriggerPattern::Untapped { what }
         | TriggerPattern::ZoneChange {
             what,
             to: Some(ZoneKind::Battlefield),
