@@ -21,13 +21,12 @@ const CARDS: &[(&str, usize)] = &[
     ("Lita, Little Orphan Amphibian", 3),
     ("Teval's Judgment", 3),
     ("Broodcaller Scourge", 3),
-    ("Grizzly Bears", 4),
 ];
 
 /// Lands in four colours, the cards above, bears and burn.
 fn deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
     let colors = [Color::Red, Color::Green, Color::White, Color::Black];
-    let mut deck: Vec<Arc<CardDefinition>> = (0..24).map(|i| land(colors[i % 4])).collect();
+    let mut deck: Vec<Arc<CardDefinition>> = (0..41).map(|i| land(colors[i % 4])).collect();
     for &(name, copies) in CARDS {
         deck.extend(std::iter::repeat_n(card(name).unwrap(), copies));
     }
