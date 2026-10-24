@@ -58,6 +58,16 @@ fn the_toggle_is_an_activated_ability_at_sorcery_speed() {
 }
 
 #[test]
+fn an_activation_is_restricted_to_the_night() {
+    reads_as(
+        "{1}{G}: Transform ~. Activate only if it's night.",
+        ClauseKind::Activated,
+        false,
+        r#"{"Activated":{"cost":[{"Mana":"{1}{G}"}],"condition":"IsNight","effects":[{"Transform":{"what":"This"}}]}}"#,
+    );
+}
+
+#[test]
 fn a_permanent_starts_the_day_as_it_enters() {
     reads_as(
         "If it's neither day nor night, it becomes day as ~ enters.",
