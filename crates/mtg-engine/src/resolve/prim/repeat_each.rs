@@ -6,7 +6,7 @@ use mtg_cards::effect::{Effect, bound_names};
 use super::wrong_effect;
 use crate::choose::Target;
 use crate::resolve::tree::is_next_pass;
-use crate::resolve::{Cx, Next, ResolveError, Run};
+use crate::resolve::{CLEAR, Cx, Next, ResolveError, Run};
 
 /// The name under which the items still to come are kept; no card can write it, since a name has no `~`.
 fn left_name(bind: &str) -> String {
@@ -40,8 +40,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .into_iter()
         .chain([bind.clone(), left.clone()]);
     for name in names {
-        if held.get(&name).is_some_and(|targets| !targets.is_empty()) {
-            bound.push((name, Vec::new()));
+        if held.contains_key(&name) {
+            bound.push((format!("{CLEAR}{name}"), Vec::new()));
         }
     }
     bound.push((bind.clone(), vec![*first]));
@@ -154,6 +154,56 @@ mod tests {
             panic!("a repeat asks nothing");
         };
         assert!(bound.is_empty() && events.is_empty());
+        assert_eq!(next, Next::Sibling);
+    }
+
+    /// The step of the repeat at the start of a next pass, with these names held and the items kept for the passes to come.
+    fn next_pass(left: &[u64]) -> (Vec<(String, Vec<Target>)>, Next) {
+        let game = game(3);
+        let source = game
+            .object(game.zone(crate::zones::Zone::Battlefield)[0])
+            .unwrap();
+        let mut resolving = Resolving::begin(source.id());
+        resolving.position = vec![0, 1];
+        let players = |list: &[u64]| -> Vec<Target> {
+            list.iter().map(|n| Target::Player(PlayerId(*n))).collect()
+        };
+        resolving.bindings.insert("each".into(), players(&[0]));
+        resolving.bindings.insert("inner".into(), players(&[0]));
+        resolving.bindings.insert("each~left".into(), players(left));
+        let cx = Cx {
+            scope: Scope::announcing(&game, ME, source.reference()),
+            resolving: &resolving,
+        };
+        match run(&cx, &effect(r#""EachPlayer""#)).unwrap() {
+            Run::Done { bound, next, .. } => (bound, next),
+            other => panic!("a repeat asks nothing: {other:?}"),
+        }
+    }
+
+    #[test]
+    fn a_next_pass_frees_the_names_of_the_one_before_and_takes_the_next_item() {
+        let (bound, next) = next_pass(&[1, 2]);
+        let names: Vec<&str> = bound.iter().map(|(name, _)| name.as_str()).collect();
+        assert_eq!(
+            names,
+            [
+                "~clear:inner",
+                "~clear:each",
+                "~clear:each~left",
+                "each",
+                "each~left"
+            ]
+        );
+        assert_eq!(bound[3].1, [Target::Player(PlayerId(1))]);
+        assert_eq!(bound[4].1, [Target::Player(PlayerId(2))]);
+        assert_eq!(next, Next::Enter(0));
+    }
+
+    #[test]
+    fn a_next_pass_with_nothing_left_goes_on_past_the_repeat() {
+        let (bound, next) = next_pass(&[]);
+        assert_eq!(bound, []);
         assert_eq!(next, Next::Sibling);
     }
 
