@@ -155,6 +155,9 @@ pub fn pattern(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     if let Some(found) = r.attempt(player_event) {
         return Some(found);
     }
+    if let Some(found) = r.attempt(super::day_night::changes) {
+        return Some(found);
+    }
     if let Some(found) = r.attempt(attached_tapped_for_mana) {
         return Some(found);
     }
@@ -874,7 +877,7 @@ pub fn monarch_condition(r: &mut Reader<'_>) -> Option<Condition> {
     } else if r.words("you have the city's blessing") {
         Some(Condition::CitysBlessing(Ref::You))
     } else {
-        None
+        super::day_night::condition(r)
     }
 }
 
@@ -897,7 +900,7 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
         }
         Condition::CitysBlessing(Ref::You) => "you have the city's blessing".to_owned(),
         condition if *condition == no_monarch() => "there is no monarch".to_owned(),
-        _ => return None,
+        _ => return super::day_night::condition_text(condition),
     })
 }
 
@@ -1166,6 +1169,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             "Whenever {} the monarch",
             player_verb(who, "become")?
         )),
+        TriggerPattern::DayNightChanges { to } => {
+            Some(format!("Whenever {}", super::day_night::changes_text(*to)))
+        }
         TriggerPattern::Proliferated { who } => {
             Some(format!("Whenever {}", player_verb(who, "proliferate")?))
         }

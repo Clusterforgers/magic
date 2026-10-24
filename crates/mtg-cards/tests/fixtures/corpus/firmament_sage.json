@@ -1,0 +1,25 @@
+{
+  "id": "9db186a1-3dc5-4ed2-8cd4-1e4f13094885",
+  "oracle_id": "57163ade-fe89-4ba0-98a9-daeeed5badb9",
+  "name": "Firmament Sage",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mid",
+  "collector_number": "53",
+  "rarity": "uncommon",
+  "released_at": "2021-09-24",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "If it's neither day nor night, it becomes day as this creature enters.\nWhenever day becomes night or night becomes day, draw a card.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

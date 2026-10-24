@@ -41,7 +41,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 22] = [
+const TEMPLATES: [Template; 23] = [
     entering,
     entering_tapped_if,
     group_enters_tapped,
@@ -49,6 +49,7 @@ const TEMPLATES: [Template; 22] = [
     no_life_loss,
     copies::enters_as_copy,
     as_entering,
+    super::day_night::starts_the_day,
     rule,
     super::player_keywords::ability,
     lands::from_a_zone,
@@ -1123,6 +1124,9 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
         (ReplaceBy::PayLifeOrTapped(life), None) => vec![format!(
             "As ~ enters, you may pay {life} life. If you don't, it enters tapped"
         )],
+        (ReplaceBy::DayIfNeither, None) => {
+            vec!["If it's neither day nor night, it becomes day as ~ enters".to_owned()]
+        }
         (ReplaceBy::AsCopy { of, except }, None) => copies::enters_texts(of, except),
         _ => Vec::new(),
     }
