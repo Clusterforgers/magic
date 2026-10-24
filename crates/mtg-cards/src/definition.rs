@@ -64,6 +64,8 @@ pub enum Layout {
     Transform,
     /// A flip card (CR 710): its top half everywhere but on the battlefield, where a flipped permanent is its bottom half.
     Flip,
+    /// A prepare card: its creature face everywhere; the second face is the spell a prepared permanent lets its controller cast a copy of.
+    Prepare,
 }
 
 impl Layout {
@@ -75,6 +77,7 @@ impl Layout {
             "modal_dfc" => Some(Layout::ModalDfc),
             "transform" => Some(Layout::Transform),
             "flip" => Some(Layout::Flip),
+            "prepare" => Some(Layout::Prepare),
             _ => None,
         }
     }

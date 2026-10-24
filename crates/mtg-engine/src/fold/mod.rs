@@ -261,6 +261,8 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::PriorityPassed { player } => pass_priority(state, *player)?,
         Event::Transformed { object, face } => set_face(state, *object, *face)?,
         Event::Flipped { object } => flip(state, *object)?,
+        Event::Prepared { object } => set_prepared(state, *object, true)?,
+        Event::Unprepared { object } => set_prepared(state, *object, false)?,
         Event::DayNightChanged { .. }
         | Event::MonarchChanged { .. }
         | Event::CitysBlessingGained { .. } => designate(state, event),
@@ -466,6 +468,30 @@ fn set_monstrous(state: &mut GameState, id: ObjectId) -> Result<(), EngineError>
         return Err(invalid(format!("{id:?} is already monstrous")));
     }
     perm.designations.monstrous = true;
+    Ok(())
+}
+
+/// A prepare card on the battlefield becomes prepared or stops being so: it was not (or was), and it is a permanent of
+/// the `prepare` layout.
+fn set_prepared(state: &mut GameState, id: ObjectId, prepared: bool) -> Result<(), EngineError> {
+    let object = state
+        .objects
+        .get_mut(&id)
+        .ok_or_else(|| invalid(format!("{id:?} does not exist")))?;
+    if object.def.layout != mtg_cards::definition::Layout::Prepare {
+        return Err(invalid(format!("{id:?} is not a prepare card")));
+    }
+    let perm = object
+        .permanent
+        .as_mut()
+        .ok_or_else(|| invalid(format!("{id:?} is not a permanent")))?;
+    if perm.designations.prepared == prepared {
+        return Err(invalid(format!(
+            "{id:?} is {}prepared already",
+            if prepared { "" } else { "un" }
+        )));
+    }
+    perm.designations.prepared = prepared;
     Ok(())
 }
 

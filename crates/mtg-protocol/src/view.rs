@@ -44,6 +44,11 @@ pub struct PermanentView {
     pub damage: u32,
     /// Whether summoning sickness holds it back: it has not been under its controller's control since their turn began and has no haste.
     pub summoning_sick: bool,
+    /// Whether the permanent is prepared: its controller may cast a copy of its spell face. A public fact of a permanent; left out
+    /// while it is not.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub prepared: bool,
     /// The level of a Class (CR 716.2); left out for any other permanent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]

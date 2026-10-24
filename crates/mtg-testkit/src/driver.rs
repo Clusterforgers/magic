@@ -374,6 +374,26 @@ impl Driver {
         Ok(())
     }
 
+    /// Chooses to cast a copy of the spell face of the named prepared permanent; its announcement is then pending.
+    pub fn begin_prepared(&mut self, name: &str) -> Result<(), ScriptError> {
+        let (_, options) = self.priority()?;
+        let spells: Vec<ObjectId> = options
+            .faces
+            .iter()
+            .filter(|option| option.face == 1 && !option.land)
+            .map(|option| option.card)
+            .collect();
+        let id = self.find(spells, name, "prepared permanents with a spell to cast")?;
+        self.answer(Answer::Priority(PriorityAction::CastPrepared(id)))?;
+        Ok(())
+    }
+
+    /// Casts a copy of the spell face of the named prepared permanent and pays automatically.
+    pub fn cast_prepared(&mut self, name: &str) -> Result<Vec<Event>, ScriptError> {
+        self.begin_prepared(name)?;
+        self.answer(Answer::PayMana(PayChoice::Auto))
+    }
+
     /// A player as a target.
     pub fn target_player(&self, seat: usize) -> Target {
         Target::Player(PlayerId::from_index(seat))

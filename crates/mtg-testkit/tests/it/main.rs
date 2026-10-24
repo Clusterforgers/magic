@@ -292,6 +292,8 @@ mod pipeline_log;
 mod planeswalkers;
 mod player_keywords;
 mod player_keywords_fuzz;
+mod prepare;
+mod prepare_fuzz;
 mod prevention;
 mod prevention_fuzz;
 mod preview_matches_games;

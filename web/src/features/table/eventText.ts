@@ -473,6 +473,8 @@ function describePublic(event: Event, n: EventNames): LogLine {
   }
   if ('Transformed' in event) return line(`${n.card(event.Transformed.object)} transforms`)
   if ('Flipped' in event) return line(`${n.card(event.Flipped.object)} flips`)
+  if ('Prepared' in event) return line(`${n.card(event.Prepared.object)} becomes prepared`)
+  if ('Unprepared' in event) return line(`${n.card(event.Unprepared.object)} is no longer prepared`)
   if ('BecameCopy' in event) {
     const { object, of } = event.BecameCopy
     return line(`${n.card(object)} becomes a copy of ${n.card(of.id)}`)

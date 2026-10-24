@@ -69,6 +69,7 @@ mod tests {
                 tapped: false,
                 damage: 0,
                 summoning_sick: false,
+                prepared: false,
                 level: None,
             }),
             face_down: false,

@@ -287,11 +287,14 @@ pub(crate) fn fold_card(state: &mut GameState, copy: &CardCopy) -> Result<(), En
     }
     let copied = state.objects.get(&copy.of.id).is_some_and(|card| {
         card.counter() == copy.of.counter
-            && card.zone() == Zone::Exile
-            && card.kind() == ObjectKind::Card
+            && ((card.zone() == Zone::Exile && card.kind() == ObjectKind::Card)
+                || card.permanent().is_some_and(|held| held.prepared()))
     });
     if !copied {
-        return Err(invalid(format!("{:?} is not a card in exile", copy.of)));
+        return Err(invalid(format!(
+            "{:?} is not a card in exile or a prepared permanent",
+            copy.of
+        )));
     }
     let mut card = GameObject::new(id, copy.owner, Arc::clone(&copy.definition), Zone::Exile);
     card.kind = ObjectKind::Token;
