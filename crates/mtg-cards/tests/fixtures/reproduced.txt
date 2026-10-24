@@ -585,6 +585,7 @@ Ivory Mask
 Ixalli's Lorekeeper
 Izzet Charm
 Jace Beleren
+Jace's Archivist
 Jacked Rabbit
 Jadelight Ranger
 Jagged Barrens
@@ -853,6 +854,7 @@ Pygmy Kavu
 Quantum Misalignment
 Quest for the Goblin Lord
 Questing Beast
+Quietus Spike
 Rabble Rousing
 Radical Idea
 Raffine's Informant
@@ -883,6 +885,7 @@ Reiterate
 Rejuvenation Chamber
 Relentless Advance
 Relentless Skaabs
+Relic of Progenitus
 Relic of Sauron
 Remorseful Cleric
 Renewed Faith
@@ -944,8 +947,10 @@ Scatter to the Winds
 Scavenging Ooze
 Scheming Aspirant
 Scorn-Blade Berserker
+Scrabbling Claws
 Scrapshooter
 Scuzzback Marauders
+Scytheclaw
 Sea Gate
 Sea Gate Wreckage
 Secluded Courtyard
@@ -1116,8 +1121,10 @@ Thassa, God of the Sea
 The Birth of Meletis
 The Celestus
 The Gaffer
+The Locust God
 The Modern Age // Vector Glider
 The Mycosynth Gardens
+The Scorpion God
 The Seriema
 The Spear of Bashenga
 The Squadron Sinister
@@ -1242,6 +1249,7 @@ Weigh Down
 Weirding Wood
 Whir of Invention
 Whisperer of the Wilds
+Whispering Madness
 Whispering Snitch
 White Auracite
 Wickersmith's Tools
@@ -1250,6 +1258,7 @@ Wild Wasteland
 Wilderness Elemental
 Windborn Muse
 Windbrisk Heights
+Windfall
 Winged Boots
 Winged Words
 Wings of the Guard

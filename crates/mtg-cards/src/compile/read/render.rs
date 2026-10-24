@@ -722,6 +722,7 @@ fn wheel_text(effects: &[Effect]) -> Option<(String, usize)> {
             who: Ref::EachPlayer,
             count: hand,
             random: false,
+            bind,
         },
         Effect::Draw {
             who: Ref::EachPlayer,
@@ -733,7 +734,13 @@ fn wheel_text(effects: &[Effect]) -> Option<(String, usize)> {
         return None;
     };
     (*hand == draws::hand_of(&Ref::EachPlayer)).then_some(())?;
-    let cards = cards_text(count)?;
+    let cards = match bind {
+        None => cards_text(count)?,
+        Some(name) if name == draws::DISCARDED && *count == draws::most_discarded() => {
+            draws::MOST_DISCARDED.to_owned()
+        }
+        Some(_) => return None,
+    };
     Some((
         format!("each player discards their hand, then draws {cards}"),
         2,
@@ -1104,6 +1111,7 @@ fn your_cards(effect: &Effect) -> Option<String> {
             who: Ref::You,
             count,
             random,
+            bind: None,
         } => format!(
             "discard {}{}",
             draws::discarded_text(&Ref::You, count)?,
@@ -2333,6 +2341,16 @@ impl Writer<'_> {
             Amount::Stat { of, stat } if *of == Ref::Target(0) && self.named => {
                 format!("life equal to its {}", stat_name(*stat)?)
             }
+            Amount::Half { of, up } => {
+                let Amount::Life(whose) = of.as_ref() else {
+                    return None;
+                };
+                let own = if *whose == Ref::You { "your" } else { "their" };
+                format!(
+                    "half {own} life, rounded {}",
+                    if *up { "up" } else { "down" }
+                )
+            }
             _ => match counted_parts(amount) {
                 Some((each, tail)) => format!("{} life {tail}", points_text(&each)?),
                 None => format!("{} life", points_text(amount)?),
@@ -2347,7 +2365,12 @@ impl Writer<'_> {
         Some(match effect {
             Effect::Draw { count, .. } => format!("draw{s} {}", cards_text(count)?),
             Effect::Mill { count, .. } => format!("mill{s} {}", cards_text(count)?),
-            Effect::Discard { who, count, random } => {
+            Effect::Discard {
+                who,
+                count,
+                random,
+                bind: None,
+            } => {
                 let cards = draws::discarded_text(who, count)?;
                 format!("discard{s} {cards}{}", at_random(*random))
             }

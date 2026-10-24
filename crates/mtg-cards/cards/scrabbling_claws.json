@@ -1,0 +1,36 @@
+{
+  "oracle_id": "4538ec2c-867e-412b-b6e3-a57f8e29ba84",
+  "name": "Scrabbling Claws",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scrabbling Claws",
+      "oracle_fingerprint": "f515ee4e6a3b79e493674f3e0af6e73d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "exiled_card"
+                }
+              },
+              { "Exile": { "what": { "Bound": "exiled_card" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

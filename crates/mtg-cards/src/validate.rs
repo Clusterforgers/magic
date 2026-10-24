@@ -486,7 +486,7 @@ impl<'a> Walker<'a> {
                     self.at(format!("[{i}]"), |w| w.amount(part));
                 }
             }
-            Amount::Times { of, .. } => {
+            Amount::Times { of, .. } | Amount::Half { of, .. } => {
                 self.amounting = Amounting::of(sharing);
                 self.at("of", |w| w.amount(of));
             }
@@ -1643,10 +1643,18 @@ impl<'a> Walker<'a> {
             Effect::Draw { who, count }
             | Effect::Mill { who, count }
             | Effect::Scry { who, count }
-            | Effect::Surveil { who, count }
-            | Effect::Discard { who, count, .. } => {
+            | Effect::Surveil { who, count } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
+            }
+            Effect::Discard {
+                who, count, bind, ..
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("count", |w| w.amount(count));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
             }
             Effect::LookAtTop { who, count, bind } | Effect::ExileTop { who, count, bind } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
