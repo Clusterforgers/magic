@@ -1107,6 +1107,7 @@ Sundering Growth
 Sunhome Stalwart
 Sunken Ruins
 Sunrise Cavalier
+Sunscorch Regent
 Suntouched Myr
 Supreme Verdict
 Surgehacker Mech
@@ -1137,6 +1138,7 @@ Tender Wildguide
 Tendershoot Dryad
 Tendo Ice Bridge
 Tendrils of Agony
+Tergrid's Shadow
 Termagant Swarm
 Terminus
 Terrus Wurm
