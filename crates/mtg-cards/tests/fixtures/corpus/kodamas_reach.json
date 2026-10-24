@@ -1,0 +1,23 @@
+{
+  "id": "90c423cc-1264-4067-9c50-e7c88c68ef2d",
+  "oracle_id": "1593ea18-2f2f-4ab4-83fb-6ccc0bec8a90",
+  "name": "Kodama's Reach",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ecc",
+  "collector_number": "113",
+  "rarity": "common",
+  "released_at": "2026-01-23",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3,
+  "type_line": "Sorcery — Arcane",
+  "oracle_text": "Search your library for up to two basic land cards, reveal those cards, put one onto the battlefield tapped and the other into your hand, then shuffle.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "0429d146-332f-4fb0-8273-c73679ca6d47",
+  "name": "Magister of Worth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magister of Worth",
+      "oracle_fingerprint": "b0b6684db6026073ba0020d3fca4ccf8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Vote": { "options": { "Named": ["grace", "condemnation"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Players": { "Bound": "grace" } },
+                      "op": "Gt",
+                      "right": { "Players": { "Bound": "condemnation" } }
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "In": "Graveyard" }, { "Type": "Creature" }] },
+                        "to": { "Battlefield": {} }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Destroy": { "what": { "Each": [{ "Type": "Creature" }, "Other"] } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

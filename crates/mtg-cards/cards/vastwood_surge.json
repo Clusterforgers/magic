@@ -1,0 +1,45 @@
+{
+  "oracle_id": "8ba2a7ad-a09b-4f52-9c76-c70510dc4feb",
+  "name": "Vastwood Surge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vastwood Surge",
+      "oracle_fingerprint": "f076a49df0614b9a4c7fd5c7e6c9122d",
+      "abilities": [
+        { "Keyword": { "Kicker": "{4}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": { "min": 0, "max": 2 },
+                  "as": "land"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "PutCounters": {
+                        "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "counter": "+1/+1",
+                        "count": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

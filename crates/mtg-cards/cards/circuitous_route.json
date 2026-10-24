@@ -1,0 +1,33 @@
+{
+  "oracle_id": "30afacd9-4680-4aac-8c22-584f9418822d",
+  "name": "Circuitous Route",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Circuitous Route",
+      "oracle_fingerprint": "b2b38e6de3ef2c4b26904267287ed3a8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Land" },
+                    { "AnyOf": [{ "Supertype": "Basic" }, { "Subtype": "Gate" }] }
+                  ],
+                  "count": { "min": 0, "max": 2 },
+                  "as": "land"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

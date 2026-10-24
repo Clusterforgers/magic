@@ -53,6 +53,11 @@ pub fn if_sentence(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     }])
 }
 
+/// The condition after "if" in a sentence that replaces another: a cost paid, a count of counters, or how the game stands.
+pub(super) fn if_condition(r: &mut Reader<'_>) -> Option<Condition> {
+    r.attempt(condition).or_else(|| r.attempt(standing))
+}
+
 /// How the game stands: a count of cards, what a player controls, what happened this turn.
 fn standing(r: &mut Reader<'_>) -> Option<Condition> {
     as_long_as::body(r, None)
@@ -125,7 +130,13 @@ fn steps(r: &mut Reader<'_>, condition: &Condition) -> Option<Vec<Effect>> {
         let listed = r.punct(',');
         let joined = r.word("and");
         (listed || joined).then_some(())?;
-        step(r, condition)
+        // A step of "you" after "and": "put a +1/+1 counter on ~ and you gain 1 life".
+        step(r, condition).or_else(|| {
+            let you = r.lookahead(|r| r.word("you").then_some(()));
+            (joined && you.is_some())
+                .then(|| effects::player_effect(r))
+                .flatten()
+        })
     }) {
         found.extend(more);
     }

@@ -33,6 +33,7 @@ use crate::mana::ManaCostX;
 use crate::modify::{Duration, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, Targetable, ZoneKind};
 use crate::spend::ManaLasts;
+use crate::trigger::{Step, TriggerPattern};
 use crate::value::{Amount, Condition, CounterKind};
 
 /// A template: the effects of the sentence it reads, or `None` when the sentence is not its shape.
@@ -131,6 +132,19 @@ fn templates() -> impl Iterator<Item = Template> {
         .into_iter()
         .chain(TEMPLATES)
         .chain(super::lands::TEMPLATES)
+}
+
+/// The effects of the first sentence shape that reads and after which `close` ends the sentence.
+pub(super) fn closed_shape(
+    r: &mut Reader<'_>,
+    close: impl Fn(&mut Reader<'_>) -> bool,
+) -> Option<Vec<Effect>> {
+    templates().find_map(|template| {
+        r.attempt(|r| {
+            let found = template(r)?;
+            close(r).then_some(found)
+        })
+    })
 }
 
 /// Reads the next sentence and its period into `effects`; false when it is not a shape the
@@ -387,7 +401,12 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         "discard" => {
             let count = draws::discarded(r, &who)?;
             let random = r.words("at random");
-            Effect::Discard { who, count, random }
+            Effect::Discard {
+                who,
+                count,
+                random,
+                bind: None,
+            }
         }
         _ => return None,
     })
@@ -454,12 +473,35 @@ pub(super) fn life(r: &mut Reader<'_>) -> Option<Amount> {
     counted(r, amount)
 }
 
+/// "half their life, rounded up", "half your life, rounded down": the life total of the player who loses it, halved.
+fn half_life(r: &mut Reader<'_>, who: &Ref) -> Option<Amount> {
+    r.attempt(|r| {
+        r.need("half")?;
+        let own = match who {
+            Ref::You => "your",
+            Ref::Target(_) | Ref::Triggering => "their",
+            _ => return None,
+        };
+        r.word(own).then_some(())?;
+        r.word("life").then_some(())?;
+        r.punct(',').then_some(())?;
+        let up = r.words("rounded up");
+        if !up {
+            r.need("rounded down")?;
+        }
+        Some(Amount::Half {
+            of: Box::new(Amount::Life(who.clone())),
+            up,
+        })
+    })
+}
+
 /// A player draws, discards, mills, gains, loses or sacrifices; one subject may have several verb
 /// phrases, joined by "and" or in a list: "target opponent sacrifices a creature, discards a card,
 /// and loses 3 life". The player the event is about may act after "and" ("you create a Wolf token and that player mills
 /// ten cards"), and so may you after another player ("target player loses 2 life and you gain 2 life") or after
 /// yourself ("you draw a card and you lose 1 life"). The effects are those of the sentence, in order.
-fn player_effect(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+pub(super) fn player_effect(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let who = player(r)?;
     let mut effects = phrases(r, &who)?;
     // The sentences of two other players stay with the table.
@@ -512,11 +554,39 @@ fn verb_phrase(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
     if matches!(r.peek_word(), Some("create" | "creates")) {
         return create::made_by(r, who);
     }
+    if matches!(r.peek_word(), Some("exile" | "exiles")) {
+        return exiles_from_graveyard(r, who);
+    }
     // The controller of a permanent the sentence before named investigates: "Its controller investigates."
     if matches!(who, Ref::ControllerOf(_)) && r.word("investigates") {
         return Some(vec![create::clue(who.clone())]);
     }
     predicate(r, who).map(|effect| vec![effect])
+}
+
+/// "Target player exiles a card from their graveyard.": that player chooses the card, bound as `exiled_card`, and it is
+/// exiled.
+fn exiles_from_graveyard(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
+    matches!(who, Ref::Target(_)).then_some(())?;
+    (r.word("exile") || r.word("exiles")).then_some(())?;
+    r.need("a card from their graveyard")?;
+    Some(vec![
+        Effect::Choose {
+            who: who.clone(),
+            from: Ref::Each(Selector(vec![
+                Pred::In(ZoneKind::Graveyard),
+                Pred::OwnedBy(who.clone()),
+            ])),
+            count: Bounds::default(),
+            bind: EXILED_CARD.to_owned(),
+            rest_as: None,
+        },
+        Effect::Exile {
+            what: Ref::Bound(EXILED_CARD.to_owned()),
+            bind: None,
+            duration: None,
+        },
+    ])
 }
 
 /// What a player does: the verb and its object, without the subject.
@@ -534,15 +604,23 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
         "discard" | "discards" => {
             let count = draws::discarded(r, &who)?;
             let random = r.words("at random");
-            Effect::Discard { who, count, random }
+            Effect::Discard {
+                who,
+                count,
+                random,
+                bind: None,
+            }
         }
         "gain" | "gains" => Effect::GainLife {
             who,
             amount: life(r)?,
         },
         "lose" | "loses" => Effect::LoseLife {
+            amount: match half_life(r, &who) {
+                Some(half) => half,
+                None => life(r)?,
+            },
             who,
-            amount: life(r)?,
         },
         "scry" if who == Ref::You => Effect::Scry {
             who,
@@ -621,19 +699,11 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     // The permanent itself once the ability has spoken of the card: "return it to its owner's hand" (a card that
     // returns from the graveyard says its name, and is the table's).
     if r.it == Some(Ref::This) && r.word("it") {
-        r.need("to its owner's hand")?;
-        return Some(vec![Effect::Move {
-            what: if r.died { dead_card() } else { Ref::This },
-            to: Destination::Hand,
-        }]);
+        return itself_to_hand(r);
     }
     // The card by its name: "return ~ to its owner's hand".
     if r.ability && r.source() {
-        r.need("to its owner's hand")?;
-        return Some(vec![Effect::Move {
-            what: if r.died { dead_card() } else { Ref::This },
-            to: Destination::Hand,
-        }]);
+        return itself_to_hand(r);
     }
     if let Some(what) = several_permanents(r) {
         r.need("to")?;
@@ -680,6 +750,40 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         what,
         to: Destination::Hand,
     }])
+}
+
+/// "... to its owner's hand", also "... to its owner's hand at the beginning of the next end step": the card of the
+/// ability goes to its owner's hand now, or the card is chosen now and a delayed trigger returns it (one that left
+/// since is not returned).
+fn itself_to_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("to its owner's hand")?;
+    let card = if r.died { dead_card() } else { Ref::This };
+    if !r.words("at the beginning of the next end step") {
+        return Some(vec![Effect::Move {
+            what: card,
+            to: Destination::Hand,
+        }]);
+    }
+    Some(vec![
+        Effect::Choose {
+            who: Ref::You,
+            from: card,
+            count: Bounds::default(),
+            bind: LATER.to_owned(),
+            rest_as: None,
+        },
+        Effect::DelayedTrigger {
+            when: TriggerPattern::StepBegins {
+                step: Step::End,
+                whose: Ref::EachPlayer,
+            },
+            once: true,
+            effects: vec![Effect::Move {
+                what: Ref::Bound(LATER.to_owned()),
+                to: Destination::Hand,
+            }],
+        },
+    ])
 }
 
 /// "six target nonland permanents", "up to two target creatures": several target permanents.
@@ -840,6 +944,13 @@ pub fn returns_itself(effects: &[Effect]) -> bool {
 
 /// The name the permanent returned to its owner's hand is bound to.
 pub const RETURNED: &str = "returned";
+
+/// The name of the card a player chose to exile from their graveyard ("Target player exiles a card from their graveyard").
+pub const EXILED_CARD: &str = "exiled_card";
+
+/// The name of the card a delayed trigger returns at the next end step ("return it to its owner's hand at the beginning
+/// of the next end step"), chosen when the ability resolves.
+pub const LATER: &str = "later";
 
 /// A target object chosen one at a time.
 pub(super) fn target_object(r: &mut Reader<'_>) -> Option<Ref> {

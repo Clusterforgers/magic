@@ -1,0 +1,60 @@
+{
+  "oracle_id": "ee2ef1e0-6803-4eb5-8664-605438c67505",
+  "name": "Zimone, Quandrix Prodigy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zimone, Quandrix Prodigy",
+      "oracle_fingerprint": "02bcec7602b1809e3021208b98e7c6cf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Land" }]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "card" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 8
+                    }
+                  },
+                  "then": [{ "Draw": { "count": 2 } }],
+                  "otherwise": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -840,6 +840,9 @@ pub fn cost_paid(r: &mut Reader<'_>, spell: bool) -> Option<Condition> {
     }
     if spell {
         r.source().then_some(())?;
+        if r.words("was kicked") {
+            return Some(Condition::Kicked);
+        }
         r.punct('\'').then_some(())?;
         r.need("s")?;
     } else {
@@ -859,6 +862,9 @@ pub fn cost_paid_text(condition: &Condition, spell: bool) -> Option<String> {
     if let Condition::KickedWith(cost) = condition {
         let cost = super::costs::text(cost)?;
         return (!spell).then(|| format!("it was kicked with its {cost} kicker"));
+    }
+    if *condition == Condition::Kicked {
+        return spell.then(|| "this spell was kicked".to_owned());
     }
     let Condition::CastWith(way) = condition else {
         return None;
