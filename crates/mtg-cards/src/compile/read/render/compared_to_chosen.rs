@@ -2,7 +2,9 @@
 //! all creatures with power less than that creature's power."
 
 use super::super::selectors::type_name;
-use super::{Amount, Effect, Form, Pred, Ref, Selector, Targetable, Writer, phrase_text, stat_name};
+use super::{
+    Amount, Effect, Form, Pred, Ref, Selector, Targetable, Writer, phrase_text, stat_name,
+};
 use crate::value::Cmp;
 
 /// "less than", "greater than": how the group's characteristic compares with the target's.

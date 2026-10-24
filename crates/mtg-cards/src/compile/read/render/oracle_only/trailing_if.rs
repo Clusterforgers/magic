@@ -38,7 +38,9 @@ fn moved(text: &str) -> Vec<String> {
     };
     let sentences: Vec<&str> = body.split(". ").collect();
     let flipped: Vec<Option<String>> = sentences.iter().map(|s| trailing(s)).collect();
-    let at: Vec<usize> = (0..flipped.len()).filter(|i| flipped[*i].is_some()).collect();
+    let at: Vec<usize> = (0..flipped.len())
+        .filter(|i| flipped[*i].is_some())
+        .collect();
     if at.is_empty() || at.len() > MOST_MOVED {
         return Vec::new();
     }

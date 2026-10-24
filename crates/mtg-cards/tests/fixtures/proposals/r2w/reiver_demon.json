@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"if":{"Matches":{"subject":"This","selector":[{"CastFrom":"Hand"}]}},"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"},{"Not":{"Type":"Artifact"}},{"Not":{"Color":"Black"}}]},"regenerate":false}}]}}]}]}

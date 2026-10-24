@@ -1,0 +1,152 @@
+{
+  "object": "card",
+  "id": "3bd63804-d538-471f-b57f-e1023f7e14a8",
+  "oracle_id": "5a73d439-bd78-42e1-90ae-eedd30536881",
+  "multiverse_ids": [
+    650206
+  ],
+  "mtgo_id": 122364,
+  "tcgplayer_id": 535678,
+  "cardmarket_id": 753373,
+  "name": "Nadir Kraken",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/3bd63804-d538-471f-b57f-e1023f7e14a8",
+  "scryfall_uri": "https://scryfall.com/card/mkc/112/nadir-kraken?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:23:33Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/b/3bd63804-d538-471f-b57f-e1023f7e14a8.jpg?1783913013",
+    "normal": "https://cards.scryfall.io/normal/front/3/b/3bd63804-d538-471f-b57f-e1023f7e14a8.jpg?1783913013",
+    "large": "https://cards.scryfall.io/large/front/3/b/3bd63804-d538-471f-b57f-e1023f7e14a8.jpg?1783913013",
+    "png": "https://cards.scryfall.io/png/front/3/b/3bd63804-d538-471f-b57f-e1023f7e14a8.png?1783913013",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/b/3bd63804-d538-471f-b57f-e1023f7e14a8.jpg?1783913013",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/b/3bd63804-d538-471f-b57f-e1023f7e14a8.jpg?1783913013",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/b/3bd63804-d538-471f-b57f-e1023f7e14a8.webp?1783913013",
+    "grid": "https://cards.scryfall.io/grid/front/3/b/3bd63804-d538-471f-b57f-e1023f7e14a8.webp?1783913013",
+    "display": "https://cards.scryfall.io/display/front/3/b/3bd63804-d538-471f-b57f-e1023f7e14a8.webp?1783913013",
+    "art": "https://cards.scryfall.io/art/front/3/b/3bd63804-d538-471f-b57f-e1023f7e14a8.webp?1783913013",
+    "crop": "https://cards.scryfall.io/crop/front/3/b/3bd63804-d538-471f-b57f-e1023f7e14a8.webp?1783913013",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/b/3bd63804-d538-471f-b57f-e1023f7e14a8.jpg?1783913013"
+  },
+  "mana_cost": "{1}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Kraken",
+  "oracle_text": "Whenever you draw a card, you may pay {1}. If you do, put a +1/+1 counter on this creature and create a 1/1 blue Tentacle creature token.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "3bd63804-d538-471f-b57f-e1023f7e14a8",
+      "component": "combo_piece",
+      "name": "Nadir Kraken",
+      "type_line": "Creature — Kraken",
+      "uri": "https://api.scryfall.com/cards/3bd63804-d538-471f-b57f-e1023f7e14a8"
+    },
+    {
+      "object": "related_card",
+      "id": "870375a1-4d19-4ec6-9e90-6c69eed8302f",
+      "component": "token",
+      "name": "Tentacle",
+      "type_line": "Token Creature — Tentacle",
+      "uri": "https://api.scryfall.com/cards/870375a1-4d19-4ec6-9e90-6c69eed8302f"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set": "mkc",
+  "set_name": "Murders at Karlov Manor Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3bd63804-d538-471f-b57f-e1023f7e14a8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5a73d439-bd78-42e1-90ae-eedd30536881&unique=prints",
+  "collector_number": "112",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Meeting one is definitely the low point of your life.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dan Murayama Scott",
+  "artist_ids": [
+    "f852fa13-137e-40f2-bbc1-0f01df09c0e0"
+  ],
+  "illustration_id": "81fb0188-5040-4d80-a8e7-0c733c4d0d09",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 2676,
+  "penny_rank": 6680,
+  "prices": {
+    "usd": "0.43",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.25",
+    "eur_foil": null,
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=650206&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNadir%2BKraken",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNadir%2BKraken",
+    "edhrec": "https://edhrec.com/route/?cc=Nadir+Kraken"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F535678%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=753373&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/122364?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -19,7 +19,10 @@ pub(super) fn text(effect: &Effect) -> Option<String> {
         return None;
     };
     let any_graveyard = selector.0.contains(&Pred::In(ZoneKind::Graveyard))
-        && !selector.0.iter().any(|pred| matches!(pred, Pred::OwnedBy(_)));
+        && !selector
+            .0
+            .iter()
+            .any(|pred| matches!(pred, Pred::OwnedBy(_)));
     (counters.is_empty() && any_graveyard).then_some(())?;
     let phrase = phrase_text(selector, Form::All)?;
     let cards = phrase.strip_suffix(" from a graveyard")?;

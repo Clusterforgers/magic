@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"SpellCast":{"what":[{"Compare":{"stat":"Colors","op":"Ge","to":2}}],"by":"You"}},"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":{"Stat":{"of":"Triggering","stat":"Colors"}}}}]}}]}]}

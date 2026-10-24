@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d121108e-f0bc-469b-bf94-e5e5308014a2",
+  "name": "Razor Hippogriff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Razor Hippogriff",
+      "oracle_fingerprint": "7b368f9753dcf2959422d4cdac68d618",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Artifact" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "GainLife": { "amount": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

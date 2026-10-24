@@ -1549,6 +1549,10 @@ impl Writer<'_> {
             Ref::Each(selector) if several => {
                 Some(format!("each {}", phrase_text(selector, Form::Each)?))
             }
+            // Several targets: "each of up to three target creatures".
+            Ref::Target(0) if several && self.are_permanents(place) => {
+                Some(format!("each of {}", self.name_target()?))
+            }
             _ => None,
         }
     }
@@ -1639,7 +1643,7 @@ impl Writer<'_> {
             } => {
                 let whose = if self.in_your_graveyard(what) {
                     "your"
-                } else if self.is_a_permanent(what) {
+                } else if self.is_a_permanent(what) || self.in_another_graveyard(what) {
                     "its owner's"
                 } else {
                     return None;

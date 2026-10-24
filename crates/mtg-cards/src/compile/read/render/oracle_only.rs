@@ -13,6 +13,7 @@ mod look_split;
 mod non_lists;
 mod paid_steps;
 mod sacrifices;
+mod target_and;
 mod trailing_if;
 mod wheres;
 
@@ -31,6 +32,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     non_lists::add(ability, texts);
     paid_steps::add(ability, texts);
     sacrifices::add(ability, texts);
+    target_and::add(ability, texts);
     trailing_if::add(ability, texts);
     wheres::add(ability, texts);
 }

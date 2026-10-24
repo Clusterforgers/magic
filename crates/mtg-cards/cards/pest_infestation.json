@@ -1,0 +1,57 @@
+{
+  "oracle_id": "1b704798-0c69-4c18-ac7e-42933ce90028",
+  "name": "Pest Infestation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pest Infestation",
+      "oracle_fingerprint": "fa904593b3c32c4ac7148b51d4455014",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                },
+                "bounds": { "min": 0, "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Pest",
+                      "colors": ["Black", "Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Pest"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": ["This"],
+                                "from": "Battlefield",
+                                "to": "Graveyard"
+                              }
+                            },
+                            "effects": [{ "GainLife": { "amount": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": { "Times": { "by": 2, "of": "X" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

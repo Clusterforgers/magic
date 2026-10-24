@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"GainLife":{"amount":{"Count":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}}},{"Shield":{"when":{"Damage":{"to":"You"}},"by":"Prevent","duration":"UntilEndOfTurn"}}]}}]}]}

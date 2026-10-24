@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "5ba12cfc-36d3-4f9c-950e-3ed8b8f105fd",
+  "oracle_id": "26d28b68-e03b-4367-ae4b-5e54f42f8a88",
+  "multiverse_ids": [
+    580155
+  ],
+  "mtgo_id": 103052,
+  "tcgplayer_id": 282913,
+  "cardmarket_id": 671742,
+  "name": "Mana Cannons",
+  "lang": "en",
+  "released_at": "2022-09-09",
+  "uri": "https://api.scryfall.com/cards/5ba12cfc-36d3-4f9c-950e-3ed8b8f105fd",
+  "scryfall_uri": "https://scryfall.com/card/dmc/7/mana-cannons?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:44:37Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/b/5ba12cfc-36d3-4f9c-950e-3ed8b8f105fd.jpg?1783921477",
+    "normal": "https://cards.scryfall.io/normal/front/5/b/5ba12cfc-36d3-4f9c-950e-3ed8b8f105fd.jpg?1783921477",
+    "large": "https://cards.scryfall.io/large/front/5/b/5ba12cfc-36d3-4f9c-950e-3ed8b8f105fd.jpg?1783921477",
+    "png": "https://cards.scryfall.io/png/front/5/b/5ba12cfc-36d3-4f9c-950e-3ed8b8f105fd.png?1783921477",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/b/5ba12cfc-36d3-4f9c-950e-3ed8b8f105fd.jpg?1783921477",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/b/5ba12cfc-36d3-4f9c-950e-3ed8b8f105fd.jpg?1783921477",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/b/5ba12cfc-36d3-4f9c-950e-3ed8b8f105fd.webp?1783921477",
+    "grid": "https://cards.scryfall.io/grid/front/5/b/5ba12cfc-36d3-4f9c-950e-3ed8b8f105fd.webp?1783921477",
+    "display": "https://cards.scryfall.io/display/front/5/b/5ba12cfc-36d3-4f9c-950e-3ed8b8f105fd.webp?1783921477",
+    "art": "https://cards.scryfall.io/art/front/5/b/5ba12cfc-36d3-4f9c-950e-3ed8b8f105fd.webp?1783921477",
+    "crop": "https://cards.scryfall.io/crop/front/5/b/5ba12cfc-36d3-4f9c-950e-3ed8b8f105fd.webp?1783921477",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/b/5ba12cfc-36d3-4f9c-950e-3ed8b8f105fd.jpg?1783921477"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever you cast a multicolored spell, this enchantment deals X damage to any target, where X is the number of colors that spell is.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "78076b27-f888-4723-b27c-44074accd261",
+  "set": "dmc",
+  "set_name": "Dominaria United Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/78076b27-f888-4723-b27c-44074accd261",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Admc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dmc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5ba12cfc-36d3-4f9c-950e-3ed8b8f105fd/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A26d28b68-e03b-4367-ae4b-5e54f42f8a88&unique=prints",
+  "collector_number": "7",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"I hate the smell of charred Phyrexian, but it sure beats the alternative!\"\n—Jaya",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Sidharth Chaturvedi",
+  "artist_ids": [
+    "55e6d846-2f73-4fba-9b88-441686bb8dcb"
+  ],
+  "illustration_id": "f21fdfbc-4f7a-47f6-bcf6-5d7fb591a2fc",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9692,
+  "preview": {
+    "source": "The Command Zone",
+    "source_uri": "https://www.youtube.com/watch?v=DliVsku3kJE",
+    "previewed_at": "2022-08-19"
+  },
+  "prices": {
+    "usd": "0.64",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.34",
+    "eur_foil": null,
+    "tix": "0.37"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580155&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMana%2BCannons",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMana%2BCannons",
+    "edhrec": "https://edhrec.com/route/?cc=Mana+Cannons"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F282913%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=671742&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/103052?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "2b7c4dab-e432-4b34-b058-3cec5c0d72df",
+  "name": "Martial Coup",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Martial Coup",
+      "oracle_fingerprint": "1bbf5fa95456c2c21471bf79c48e12b1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": "X"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 5 } },
+                  "then": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }, "Other"] } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

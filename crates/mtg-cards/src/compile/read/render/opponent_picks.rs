@@ -46,8 +46,16 @@ pub(super) fn text(effects: &[Effect]) -> Option<(String, usize)> {
     else {
         return None;
     };
-    let cards_looked_at = pool.0 == [Pred::In(ZoneKind::Library), Pred::Is(Ref::Bound(top.clone()))];
-    (top == shown && cards_looked_at && *one == Bounds::default() && taken == chosen && left == rest)
+    let cards_looked_at = pool.0
+        == [
+            Pred::In(ZoneKind::Library),
+            Pred::Is(Ref::Bound(top.clone())),
+        ];
+    (top == shown
+        && cards_looked_at
+        && *one == Bounds::default()
+        && taken == chosen
+        && left == rest)
         .then_some(())?;
     let words = count_word(u32::try_from(*count).ok()?)?;
     Some((

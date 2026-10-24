@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"LookAtTop":{"count":3,"as":"top"}},{"Reveal":{"what":{"Bound":"top"}}},{"Choose":{"who":"Opponents","from":{"Each":[{"In":"Library"},{"Is":{"Bound":"top"}}]},"as":"chosen","rest_as":"rest"}},{"Move":{"what":{"Bound":"chosen"},"to":"Graveyard"}},{"Move":{"what":{"Bound":"rest"},"to":"Hand"}}]}}]}]}
