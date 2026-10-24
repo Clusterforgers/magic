@@ -50,6 +50,10 @@ pub enum Command {
     CheckRules(CheckRulesArgs),
     /// Cross-check the rules of the stored precon cards against Forge's card scripts, read from a local checkout: the verbs Forge names that the rules lack, and the unread tail grouped by Forge API and key.
     ForgeCheck(ForgeCheckArgs),
+    /// Ask a model for the rules of cards and keep the proposals the checker accepts (needs `ANTHROPIC_API_KEY` and costs money; --dry-run sends nothing).
+    Propose(ProposeArgs),
+    /// Print the reference of the rules DSL that `propose` sends to the model: the type tree and its vocabulary.
+    DslReference,
 }
 
 /// What `fetch` downloads.
@@ -165,6 +169,59 @@ pub struct CheckRulesArgs {
     /// The rules files (JSON); with `--card`, exactly one.
     #[arg(value_name = "FILE", required = true)]
     pub files: Vec<PathBuf>,
+}
+
+/// Options of `propose`.
+#[derive(Debug, Args)]
+pub struct ProposeArgs {
+    /// The cards to ask about, by name (any case; the name of a face also selects its card): `--cards "Wind Drake" "Opt"`.
+    #[arg(long, value_name = "NAME", num_args = 1.., conflicts_with = "sample", value_parser = clap::builder::NonEmptyStringValueParser::new())]
+    pub cards: Vec<String>,
+
+    /// Ask about a seeded sample of this many stored cards that have no hand-written file and are not `Verified`, short ones first.
+    #[arg(long, value_name = "N")]
+    pub sample: Option<usize>,
+
+    /// The seed of the sample (default 1): the same seed takes the same cards.
+    #[arg(long, value_name = "N", requires = "sample", conflicts_with = "cards")]
+    pub seed: Option<u64>,
+
+    /// Take sample cards whose name begins with these letters: `A-L`, `A-F,M`.
+    #[arg(
+        long,
+        value_name = "A-L",
+        requires = "sample",
+        conflicts_with = "cards"
+    )]
+    pub letters: Option<String>,
+
+    /// The model id.
+    #[arg(long, value_name = "ID", default_value = crate::propose::DEFAULT_MODEL)]
+    pub model: String,
+
+    /// The most requests to send (a repair round is a request).
+    #[arg(long, value_name = "N", default_value_t = 100)]
+    pub max_requests: u32,
+
+    /// The most input tokens to spend, cached tokens included; a request is not sent when its estimate would pass this.
+    #[arg(long, value_name = "N", default_value_t = 3_000_000)]
+    pub max_input_tokens: u64,
+
+    /// How many hand-written examples each prompt holds.
+    #[arg(long, value_name = "N", default_value_t = 4, value_parser = clap::value_parser!(u8).range(3..=5))]
+    pub examples: u8,
+
+    /// Where the proposals go (default: `proposals/propose` in the cache directory). Accepted ones are `<slug>.json`, the rest are under `rejected/`.
+    #[arg(long, value_name = "DIR")]
+    pub out: Option<PathBuf>,
+
+    /// Skip the cards that already have a saved proposal in the output directory.
+    #[arg(long)]
+    pub resume: bool,
+
+    /// Print the prompt of the first card and the estimated size of the run, and send nothing (no API key is needed).
+    #[arg(long)]
+    pub dry_run: bool,
 }
 
 /// How many cards `audit` lists by default.
@@ -407,5 +464,83 @@ mod tests {
             panic!("expected coverage");
         };
         assert_eq!((args.deck.as_deref(), args.top), (deck, top));
+    }
+
+    fn propose(args: &[&str]) -> Result<ProposeArgs, clap::Error> {
+        let mut line = vec!["mtg-cli", "propose"];
+        line.extend_from_slice(args);
+        match Cli::try_parse_from(line)?.command {
+            Command::Propose(args) => Ok(args),
+            other => panic!("expected propose, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn propose_defaults_are_a_modest_budget_and_the_documented_model() {
+        let args = propose(&["--cards", "Opt"]).unwrap();
+        assert_eq!(
+            (
+                args.model.as_str(),
+                args.max_requests,
+                args.max_input_tokens,
+                args.examples
+            ),
+            ("claude-sonnet-5-5", 100, 3_000_000, 4)
+        );
+        assert!(!args.resume && !args.dry_run && args.out.is_none());
+    }
+
+    #[test]
+    fn propose_takes_several_names_after_one_flag_names_with_commas_and_a_sample() {
+        let args = propose(&["--cards", "Alesha, Who Smiles at Death", "Opt", "--resume"]).unwrap();
+        assert_eq!(args.cards, ["Alesha, Who Smiles at Death", "Opt"]);
+        assert!(args.resume);
+        let sample = propose(&[
+            "--sample",
+            "40",
+            "--seed",
+            "20261029",
+            "--letters",
+            "A-L",
+            "--out",
+            "/tmp/p",
+        ])
+        .unwrap();
+        assert_eq!(
+            (
+                sample.sample,
+                sample.seed,
+                sample.letters.as_deref(),
+                sample.out
+            ),
+            (
+                Some(40),
+                Some(20_261_029),
+                Some("A-L"),
+                Some(PathBuf::from("/tmp/p"))
+            )
+        );
+    }
+
+    #[rstest]
+    #[case::names_and_a_sample(&["--cards", "Opt", "--sample", "3"])]
+    #[case::seed_without_a_sample(&["--cards", "Opt", "--seed", "3"])]
+    #[case::letters_without_a_sample(&["--letters", "A-L"])]
+    #[case::too_few_examples(&["--cards", "Opt", "--examples", "2"])]
+    #[case::too_many_examples(&["--cards", "Opt", "--examples", "6"])]
+    #[case::an_empty_name(&["--cards", ""])]
+    fn propose_refuses_options_that_do_not_fit_together(#[case] args: &[&str]) {
+        assert!(propose(args).is_err());
+    }
+
+    #[test]
+    fn the_dsl_reference_command_takes_no_arguments() {
+        assert!(matches!(
+            Cli::try_parse_from(["mtg-cli", "dsl-reference"])
+                .unwrap()
+                .command,
+            Command::DslReference
+        ));
+        assert!(Cli::try_parse_from(["mtg-cli", "dsl-reference", "x"]).is_err());
     }
 }

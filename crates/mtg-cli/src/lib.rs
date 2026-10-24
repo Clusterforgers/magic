@@ -20,6 +20,7 @@ pub mod http;
 pub mod ingest;
 pub mod pacer;
 pub mod progress;
+pub mod propose;
 pub mod status;
 
 use args::{Cli, Command, Fetch};
@@ -126,6 +127,8 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             let db = Database::connect(&url).await?;
             coverage::coverage(&db, &args).await
         }
+        Command::Propose(args) => propose::command(cli.database_url, &cache, &args, progress).await,
+        Command::DslReference => Ok(mtg_cards::reference::dsl_reference().trim_end().to_owned()),
     }
 }
 
