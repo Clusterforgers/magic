@@ -1,0 +1,23 @@
+{
+  "id": "326b5fad-bb8d-4019-84a8-1a319a14962e",
+  "oracle_id": "ec6d52f9-1c8f-48da-951c-be8d7813c7be",
+  "name": "Harvest Season",
+  "lang": "en",
+  "layout": "normal",
+  "set": "khc",
+  "collector_number": "63",
+  "rarity": "rare",
+  "released_at": "2021-02-05",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3,
+  "type_line": "Sorcery",
+  "oracle_text": "Search your library for up to X basic land cards, where X is the number of tapped creatures you control, put those cards onto the battlefield tapped, then shuffle.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

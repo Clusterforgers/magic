@@ -1,0 +1,45 @@
+{
+  "oracle_id": "1f1ad44c-1811-40e3-976b-03f19866abd5",
+  "name": "Assemble the Entmoot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Assemble the Entmoot",
+      "oracle_fingerprint": "6a2a26af2ec6584e9632cb19bf28833e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Reach" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": { "Tallied": { "who": "You", "what": "LifeGained" } },
+                      "token": {
+                        "name": "Treefolk",
+                        "colors": ["Green"],
+                        "types": ["Creature"],
+                        "subtypes": ["Treefolk"]
+                      }
+                    }
+                  },
+                  "count": 3,
+                  "tapped": true,
+                  "as": "tokens"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "tokens" }, "counter": { "Other": "reach" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

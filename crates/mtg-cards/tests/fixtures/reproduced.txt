@@ -58,6 +58,7 @@ Artful Maneuver
 Arvad the Cursed
 Ash Barrens
 Assassin's Trophy
+Assemble the Entmoot
 Atlantean Skirmisher
 Atmospheric Greenhouse
 Atzocan Seer
@@ -484,6 +485,7 @@ Hangarback Walker
 Harabaz Druid
 Harmonious Archon
 Harrow
+Harvest Season
 Hatut Zeraze Strike Force
 Haughty Djinn
 Headless Skaab
@@ -1065,6 +1067,7 @@ Toxic Deluge
 Trace of Abundance
 Trash for Treasure
 Traumatic Visions
+Traverse the Outlands
 Treasure Cruise
 Treasure Hunt
 Trove Tracker
