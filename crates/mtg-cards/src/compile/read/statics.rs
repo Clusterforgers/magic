@@ -1146,8 +1146,10 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
 
 /// What holds for a permanent not to enter tapped, as `holds` reads it: one thing, or several joined by "or".
 pub(super) fn holds_texts(condition: &Condition) -> Vec<String> {
-    let Condition::Any(list) = condition else {
-        return control_texts(condition);
+    let (list, joiner) = match condition {
+        Condition::Any(list) => (list, " or "),
+        Condition::All(list) => (list, " and "),
+        _ => return control_texts(condition),
     };
     list.iter().fold(vec![String::new()], |written, item| {
         let choices = control_texts(item);
@@ -1157,8 +1159,12 @@ pub(super) fn holds_texts(condition: &Condition) -> Vec<String> {
                 choices.iter().map(move |choice| {
                     if start.is_empty() {
                         choice.clone()
+                    } else if joiner == " and " {
+                        // "you control an Urza's Mine and an Urza's Power-Plant": the verb is said once.
+                        let rest = choice.strip_prefix("you control ").unwrap_or(choice);
+                        format!("{start}{joiner}{rest}")
                     } else {
-                        format!("{start} or {choice}")
+                        format!("{start}{joiner}{choice}")
                     }
                 })
             })

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d3a50d73-3a1f-43aa-ab97-c6c0031bb734",
+  "name": "Reaper from the Abyss",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reaper from the Abyss",
+      "oracle_fingerprint": "175c07f52a6dc814a33dbaaae93efd38",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Subtype": "Demon" } }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

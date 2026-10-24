@@ -1,0 +1,48 @@
+{
+  "oracle_id": "f03bc648-08e4-4ecd-b339-ff72b00367c2",
+  "name": "Kirri, Talented Sprout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kirri, Talented Sprout",
+      "oracle_fingerprint": "e878a660a4408e19dfb3b54b4503d234",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                "Other",
+                { "AnyOf": [{ "Subtype": "Plant" }, { "Subtype": "Treefolk" }] },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Plant" },
+                        { "Subtype": "Treefolk" },
+                        { "Type": "Land" }
+                      ]
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

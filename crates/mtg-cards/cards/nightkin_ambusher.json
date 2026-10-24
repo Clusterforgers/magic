@@ -1,0 +1,38 @@
+{
+  "oracle_id": "2808d652-907d-4071-b386-814507a1549e",
+  "name": "Nightkin Ambusher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nightkin Ambusher",
+      "oracle_fingerprint": "48b050bc6cf9291da9b16cdc30002e8e",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "rad" }, "count": 4 }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "Defending", "counter": { "Other": "rad" } } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

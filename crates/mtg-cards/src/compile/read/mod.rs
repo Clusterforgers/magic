@@ -70,6 +70,7 @@ mod replacements;
 mod reveal;
 mod reveal_until;
 mod selectors;
+mod shortened;
 mod spell_keywords;
 mod spend;
 mod spent;

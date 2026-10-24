@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "361769b3-7e10-4e0f-b623-c00e2144463d",
+  "oracle_id": "ac46f435-5b25-4b46-b89f-175bca81b9ad",
+  "multiverse_ids": [
+    634723
+  ],
+  "tcgplayer_id": 518885,
+  "cardmarket_id": 738524,
+  "name": "Tegan Jovanka",
+  "lang": "en",
+  "released_at": "2023-10-13",
+  "uri": "https://api.scryfall.com/cards/361769b3-7e10-4e0f-b623-c00e2144463d",
+  "scryfall_uri": "https://scryfall.com/card/who/28/tegan-jovanka?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:51:15Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/6/361769b3-7e10-4e0f-b623-c00e2144463d.jpg?1783914675",
+    "normal": "https://cards.scryfall.io/normal/front/3/6/361769b3-7e10-4e0f-b623-c00e2144463d.jpg?1783914675",
+    "large": "https://cards.scryfall.io/large/front/3/6/361769b3-7e10-4e0f-b623-c00e2144463d.jpg?1783914675",
+    "png": "https://cards.scryfall.io/png/front/3/6/361769b3-7e10-4e0f-b623-c00e2144463d.png?1783914675",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/6/361769b3-7e10-4e0f-b623-c00e2144463d.jpg?1783914675",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/6/361769b3-7e10-4e0f-b623-c00e2144463d.jpg?1783914675",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/6/361769b3-7e10-4e0f-b623-c00e2144463d.webp?1783914675",
+    "grid": "https://cards.scryfall.io/grid/front/3/6/361769b3-7e10-4e0f-b623-c00e2144463d.webp?1783914675",
+    "display": "https://cards.scryfall.io/display/front/3/6/361769b3-7e10-4e0f-b623-c00e2144463d.webp?1783914675",
+    "art": "https://cards.scryfall.io/art/front/3/6/361769b3-7e10-4e0f-b623-c00e2144463d.webp?1783914675",
+    "crop": "https://cards.scryfall.io/crop/front/3/6/361769b3-7e10-4e0f-b623-c00e2144463d.webp?1783914675",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/6/361769b3-7e10-4e0f-b623-c00e2144463d.jpg?1783914675"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human",
+  "oracle_text": "Brave Heart — Whenever you attack, target attacking historic creature gets +1/+1 and gains indestructible until end of turn. (Artifacts, legendaries, and Sagas are historic.)\nDoctor's companion (You can have two commanders if the other is the Doctor.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Brave Heart",
+    "Doctor's companion"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set": "who",
+  "set_name": "Doctor Who",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awho&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/who?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/361769b3-7e10-4e0f-b623-c00e2144463d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aac46f435-5b25-4b46-b89f-175bca81b9ad&unique=prints",
+  "collector_number": "28",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"You certainly know how to fly this crate, don't you?\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Aurore Folny",
+  "artist_ids": [
+    "02f6cdda-7a80-4184-853d-20b28d580868"
+  ],
+  "illustration_id": "28fcba9d-ee38-441b-88ee-7158c1845694",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 12467,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "",
+    "previewed_at": "2023-10-03"
+  },
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": "1.52",
+    "usd_etched": null,
+    "eur": "0.30",
+    "eur_foil": "0.42",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=634723&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTegan%2BJovanka",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTegan%2BJovanka",
+    "edhrec": "https://edhrec.com/route/?cc=Tegan+Jovanka"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F518885%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=738524&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Tegan+Jovanka&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}],"to":"Battlefield"}},"targets":[{"what":"Opponent"}],"effects":[{"LoseLife":{"who":{"Target":0},"amount":{"Sum":[{"Stat":{"of":"Triggering","stat":"Power"}},{"Times":{"by":-1,"of":{"Stat":{"of":"Triggering","stat":"Toughness"}}}}]}}}]}}]}]}

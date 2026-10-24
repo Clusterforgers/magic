@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Surveil":{"count":2}}]}},{"Triggered":{"when":{"Nth":{"nth":2,"event":{"Drew":{"who":"Opponents"}}}},"from":"Graveyard","effects":[{"May":{"effects":[{"Move":{"what":"This","to":"Hand"}}]}}]}}]}]}

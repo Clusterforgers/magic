@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"BecomesMonstrous":{"what":["This"]}},"targets":[{"what":{"Object":[]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}]}]}

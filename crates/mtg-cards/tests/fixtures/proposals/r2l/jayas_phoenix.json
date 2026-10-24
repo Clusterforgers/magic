@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Keyword":"Haste"},{"Triggered":{"when":{"SpellCast":{"what":[{"Type":"Planeswalker"}],"by":"You"}},"from":"Graveyard","effects":[{"May":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{}}}}]}}]}}]}]}

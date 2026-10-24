@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"DelayedTrigger":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},"Token",{"ControlledBy":"Opponents"}],"to":"Battlefield"}},"once":false,"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"Triggering"}}}}]}}]}}]}]}

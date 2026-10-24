@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Surveil":{"count":3}},{"Choose":{"from":{"Each":[{"In":"Graveyard"},{"OwnedBy":"You"},{"Type":"Creature"}]},"as":"card"}},{"Move":{"what":{"Bound":"card"},"to":{"Battlefield":{"counters":[[{"Other":"finality"},1]]}}}}]}},{"Keyword":{"Suspend":{"time":3,"cost":"{2}{B}"}}}]}]}
