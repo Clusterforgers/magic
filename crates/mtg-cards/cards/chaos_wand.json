@@ -1,0 +1,36 @@
+{
+  "oracle_id": "0b95c115-6745-4ce1-896b-9021e93c161e",
+  "name": "Chaos Wand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chaos Wand",
+      "oracle_fingerprint": "dbb6bd7ec74c6fcbfe997fc4a78e4639",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "ExileUntil": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "found" }, "free": true } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

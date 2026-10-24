@@ -1,0 +1,63 @@
+{
+  "oracle_id": "ba13cbdb-8043-4c1b-8a85-084c86886ac8",
+  "name": "Descendants' Path",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Descendants' Path",
+      "oracle_fingerprint": "9984e4502f2db038c7473420acba86d1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "top" },
+                      "selector": [
+                        { "Type": "Creature" },
+                        {
+                          "SharesSubtype": {
+                            "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "then": [
+                    {
+                      "CastFromZone": {
+                        "what": { "Bound": "top" },
+                        "free": true,
+                        "otherwise": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "top" },
+                              "to": { "Library": { "place": "Bottom" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "top" },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

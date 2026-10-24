@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{3}"},"Tap",{"Sacrifice":{"filter":[{"Subtype":"Zombie"},"Other"]}}],"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"Paid"}},"count":2}}]}}]}]}

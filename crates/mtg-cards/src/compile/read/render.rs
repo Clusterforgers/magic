@@ -3,6 +3,7 @@
 //! player in a row are one compound sentence; the readers take ", then" between two steps as the
 //! same sequence.
 
+mod and_lists;
 mod bound;
 mod created;
 mod damage_by;
@@ -10,6 +11,8 @@ mod delayed;
 mod divided;
 mod each_target;
 mod either;
+mod exiled_until;
+mod free_casts;
 mod from_graveyard;
 mod graveyards;
 mod instead;
@@ -18,9 +21,16 @@ mod may_have;
 mod multi;
 mod oracle_only;
 mod otherwise;
+mod player_events;
+mod populated;
 mod put_onto;
+mod revealed;
+mod switched;
+mod target_counts;
 mod those;
+mod together;
 mod twins;
+mod untapped;
 
 use super::activations;
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
@@ -351,6 +361,8 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     texts.extend(where_x::equal_to_wordings(ability));
     event_wordings::add(ability, &mut texts);
     those::add(ability, &mut texts);
+    together::add(&mut texts);
+    and_lists::add(ability, &mut texts);
     twins::add(ability, &mut texts);
     super::shortened::add(&mut texts);
     oracle_only::add(ability, &mut texts);
@@ -1034,7 +1046,8 @@ fn trigger_head(when: &TriggerPattern, condition: Option<&Condition>) -> Option<
     {
         return Some(vec![format!("{} while saddled,", pattern_text(when)?)]);
     }
-    let mut parts = vec![format!("{},", pattern_text(when)?)];
+    let event = player_events::text(when).or_else(|| pattern_text(when))?;
+    let mut parts = vec![format!("{event},")];
     if let Some(condition) = condition {
         parts.push(format!("if {},", condition_text(condition)?));
     }
@@ -1658,6 +1671,7 @@ impl Writer<'_> {
         let copied = match of {
             Ref::This => "~".to_owned(),
             Ref::Attached => "enchanted creature".to_owned(),
+            Ref::Paid => "the sacrificed creature".to_owned(),
             Ref::Target(0) if self.is_a_permanent(of) => {
                 if self.named {
                     "it".to_owned()
@@ -2140,6 +2154,12 @@ impl Writer<'_> {
             .or_else(|| self.move_instead(effects))
             .or_else(|| self.either_way(effects))
             .or_else(|| wheel_text(effects))
+            .or_else(|| untapped::text(effects))
+            .or_else(|| free_casts::text(effects))
+            .or_else(|| self.opponent_exiles(effects))
+            .or_else(|| populated::text(effects))
+            .or_else(|| revealed::text(effects))
+            .or_else(|| self.owner_shuffles(effects))
             // Populate is two steps and one word.
             .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))
     }
@@ -2392,6 +2412,9 @@ impl Writer<'_> {
         mods: &[Modification],
         duration: Duration,
     ) -> Option<String> {
+        if let Some(sentence) = self.switched(affected, mods, duration) {
+            return Some(sentence);
+        }
         if duration == Duration::UntilEndOfTurn
             && let Some(sentence) = becomes::text(affected, mods)
         {

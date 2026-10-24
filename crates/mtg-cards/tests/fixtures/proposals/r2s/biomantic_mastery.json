@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"Player"},{"what":"Player"}],"effects":[{"Draw":{"count":{"Count":[{"Type":"Creature"},{"ControlledBy":{"Target":0}}]}}},{"Draw":{"count":{"Count":[{"Type":"Creature"},{"ControlledBy":{"Target":1}}]}}}]}}]}]}

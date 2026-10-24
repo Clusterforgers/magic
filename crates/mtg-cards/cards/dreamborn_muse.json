@@ -1,0 +1,26 @@
+{
+  "oracle_id": "68d7f338-c6e7-4372-b41c-901e39e08bde",
+  "name": "Dreamborn Muse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreamborn Muse",
+      "oracle_fingerprint": "e7a0c9ae8d942345c71b01fd79053c49",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "Mill": {
+                  "who": "Triggering",
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

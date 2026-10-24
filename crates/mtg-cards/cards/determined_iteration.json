@@ -1,0 +1,45 @@
+{
+  "oracle_id": "e4ed7935-0263-4cde-8118-ac18fffce3ef",
+  "name": "Determined Iteration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Determined Iteration",
+      "oracle_fingerprint": "4bed0d5c3ffd46dc2bb96af27eb2e721",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+                  "as": "token"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": { "CopyOf": { "of": { "Bound": "token" } } },
+                  "as": "tokens"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "tokens" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "tokens" } }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

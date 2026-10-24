@@ -1,0 +1,29 @@
+{
+  "oracle_id": "16e015b2-f8a3-4b1a-80be-58a8f5fb5e8c",
+  "name": "Frantic Search",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frantic Search",
+      "oracle_fingerprint": "9214e83822ade80a264f45bc3ae99e29",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              { "Discard": { "count": 2 } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }] },
+                  "count": { "min": 0, "max": 3 },
+                  "as": "lands"
+                }
+              },
+              { "Untap": { "what": { "Bound": "lands" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
