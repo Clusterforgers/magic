@@ -258,6 +258,7 @@ mod prevention;
 mod pump_wordings;
 mod put_back;
 mod removal_and_return;
+mod repeats;
 mod replacement_writers;
 mod restricted_mana_writers;
 mod return_and_restriction_writers;
@@ -300,6 +301,7 @@ mod turn_events;
 mod turned_face_up;
 mod twin_writers;
 mod vocabulary;
+mod votes;
 mod where_x;
 mod written_effects;
 mod x_after;
@@ -920,7 +922,7 @@ mod sentences {
     #[rstest]
     #[case::a_second_target("Exile target creature. Target player draws a card.")]
     #[case::unread_second("Destroy target creature. Flip two coins.")]
-    #[case::unread_first("Flip a coin. Draw a card.")]
+    #[case::unread_first("Flip two coins. Draw a card.")]
     #[case::garbled("Destroy target creature. Draw")]
     #[case::empty("")]
     #[case::only_a_period(".")]

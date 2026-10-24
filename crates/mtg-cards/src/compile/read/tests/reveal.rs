@@ -61,7 +61,7 @@ fn the_kind_of_the_revealed_card_and_the_effects_after_it_vary(
     "At the beginning of your upkeep, look at the top card of target player's library. You may reveal that card. If an instant or sorcery card is revealed this way, transform ~."
 )]
 #[case::an_unread_effect(
-    "At the beginning of your upkeep, look at the top card of your library. You may reveal that card. If an instant or sorcery card is revealed this way, flip a coin."
+    "At the beginning of your upkeep, look at the top card of your library. You may reveal that card. If an instant or sorcery card is revealed this way, flip two coins."
 )]
 #[case::an_otherwise(
     "At the beginning of your upkeep, look at the top card of your library. You may reveal that card. If an instant or sorcery card is revealed this way, transform ~. Otherwise, draw a card."

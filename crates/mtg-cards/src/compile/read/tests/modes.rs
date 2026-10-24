@@ -126,8 +126,8 @@ fn more_oracle_wordings_of_modes_in_a_trigger_read_and_write_back(
 #[case::lowercase(lines("choose one", &["Draw a card.", "You gain 2 life."]))]
 #[case::one_mode(choose(&["Draw a card."]))]
 #[case::no_modes("Choose one \u{2014}".to_owned())]
-#[case::an_unread_mode(choose(&["Draw a card.", "Flip a coin."]))]
-#[case::an_unread_first_mode(choose(&["Flip a coin.", "Draw a card."]))]
+#[case::an_unread_mode(choose(&["Draw a card.", "Flip two coins."]))]
+#[case::an_unread_first_mode(choose(&["Flip two coins.", "Draw a card."]))]
 #[case::an_empty_mode("Choose one \u{2014}\n\u{2022} Draw a card.\n\u{2022}".to_owned())]
 #[case::a_second_target(choose(&["Destroy target artifact and target enchantment.", "Draw a card."]))]
 #[case::it_from_another_mode(choose(&["Destroy target creature.", "Its controller gains 3 life."]))]
@@ -194,7 +194,7 @@ fn a_mode_picked_at_random_or_not_chosen_this_turn_reads_and_writes_back(
 )]
 #[case::one_mode("Whenever ~ attacks, choose one at random \u{2014}\n\u{2022} Draw a card.")]
 #[case::an_unread_mode(
-    "Whenever ~ attacks, choose one at random \u{2014}\n\u{2022} Draw a card.\n\u{2022} Flip a coin."
+    "Whenever ~ attacks, choose one at random \u{2014}\n\u{2022} Draw a card.\n\u{2022} Flip two coins."
 )]
 fn the_other_wordings_of_a_random_or_fresh_choice_stay_unread(#[case] text: &str) {
     assert_eq!(trigger(text), None, "{text}");

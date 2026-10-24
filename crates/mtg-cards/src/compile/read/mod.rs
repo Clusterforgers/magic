@@ -70,6 +70,7 @@ mod prevention;
 mod pronouns;
 mod random_moves;
 mod render;
+mod repeat;
 mod replacements;
 mod reveal;
 mod reveal_until;
@@ -89,6 +90,7 @@ mod token_binds;
 mod tokens;
 mod transform;
 mod triggers;
+mod vote;
 mod where_x;
 mod zone_moves;
 
