@@ -1,0 +1,36 @@
+{
+  "oracle_id": "5ed445c1-8a04-4fab-91ef-4d52db95c3b5",
+  "name": "Soaring Thought-Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soaring Thought-Thief",
+      "oracle_fingerprint": "eb24382508df77236d7b788955130fdb",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Rogue" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Largest": { "who": "Opponents", "of": [{ "In": "Graveyard" }] } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Subtype": "Rogue" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [{ "Mill": { "who": "Opponents", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "fcc38b0b-d54a-4ecf-96f7-e09709227735",
+  "name": "Sister of Silence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sister of Silence",
+      "oracle_fingerprint": "a90c92ba668aa2493185d1a06a2dab68",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": ["Spell", { "Type": "Instant" }] },
+                    { "Object": ["Spell", { "Type": "Sorcery" }] },
+                    { "Object": [{ "Ability": "Activated" }] },
+                    { "Object": [{ "Ability": "Triggered" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

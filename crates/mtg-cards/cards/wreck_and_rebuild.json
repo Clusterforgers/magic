@@ -1,0 +1,67 @@
+{
+  "oracle_id": "7e10c141-dfb0-409b-b8c9-cdfe93b42a06",
+  "name": "Wreck and Rebuild",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wreck and Rebuild",
+      "oracle_fingerprint": "16932c0a33781723dfff125c59372802",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "effects": [
+                        { "Mill": { "count": 5 } },
+                        {
+                          "May": {
+                            "effects": [
+                              {
+                                "Choose": {
+                                  "from": {
+                                    "Each": [
+                                      { "In": "Graveyard" },
+                                      { "OwnedBy": "You" },
+                                      { "Type": "Land" }
+                                    ]
+                                  },
+                                  "as": "land"
+                                }
+                              },
+                              {
+                                "Move": {
+                                  "what": { "Bound": "land" },
+                                  "to": { "Battlefield": { "tapped": true } }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{3}{R}{G}" } }
+      ]
+    }
+  ]
+}

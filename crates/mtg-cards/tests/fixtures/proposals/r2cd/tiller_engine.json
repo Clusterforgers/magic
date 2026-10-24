@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Land"},{"ControlledBy":"You"},"Tapped"],"to":"Battlefield"}},"effects":[{"Modal":{"modes":[{"effects":[{"Untap":{"what":"Triggering"}}]},{"targets":[{"what":{"Object":[{"Not":{"Type":"Land"}},{"ControlledBy":"Opponents"}]}}],"effects":[{"Tap":{"what":{"Target":0}}}]}]}}]}}]}]}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f69d65e0-4d8a-4e27-b4dd-dd8c50acb8eb",
+  "name": "Summary Dismissal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summary Dismissal",
+      "oracle_fingerprint": "4dd9cf20b0f19ecd0e316bcecbb0f8cf",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Exile": { "what": { "Each": ["Spell", "Other"] } } },
+              {
+                "Counter": {
+                  "what": {
+                    "Each": [{ "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

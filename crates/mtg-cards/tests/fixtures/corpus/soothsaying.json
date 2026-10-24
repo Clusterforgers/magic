@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "def384ff-1b6f-4c4f-8151-3c72c29b63ce",
+  "oracle_id": "517b702a-2c5c-40d7-825e-6c674019b298",
+  "multiverse_ids": [
+    19807
+  ],
+  "mtgo_id": 13447,
+  "mtgo_foil_id": 13448,
+  "tcgplayer_id": 6705,
+  "cardmarket_id": 11477,
+  "name": "Soothsaying",
+  "lang": "en",
+  "released_at": "1999-10-04",
+  "uri": "https://api.scryfall.com/cards/def384ff-1b6f-4c4f-8151-3c72c29b63ce",
+  "scryfall_uri": "https://scryfall.com/card/mmq/104/soothsaying?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:32:40Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/e/def384ff-1b6f-4c4f-8151-3c72c29b63ce.jpg?1783945960",
+    "normal": "https://cards.scryfall.io/normal/front/d/e/def384ff-1b6f-4c4f-8151-3c72c29b63ce.jpg?1783945960",
+    "large": "https://cards.scryfall.io/large/front/d/e/def384ff-1b6f-4c4f-8151-3c72c29b63ce.jpg?1783945960",
+    "png": "https://cards.scryfall.io/png/front/d/e/def384ff-1b6f-4c4f-8151-3c72c29b63ce.png?1783945960",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/e/def384ff-1b6f-4c4f-8151-3c72c29b63ce.jpg?1783945960",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/e/def384ff-1b6f-4c4f-8151-3c72c29b63ce.jpg?1783945960",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/e/def384ff-1b6f-4c4f-8151-3c72c29b63ce.webp?1783945960",
+    "grid": "https://cards.scryfall.io/grid/front/d/e/def384ff-1b6f-4c4f-8151-3c72c29b63ce.webp?1783945960",
+    "display": "https://cards.scryfall.io/display/front/d/e/def384ff-1b6f-4c4f-8151-3c72c29b63ce.webp?1783945960",
+    "art": "https://cards.scryfall.io/art/front/d/e/def384ff-1b6f-4c4f-8151-3c72c29b63ce.webp?1783945960",
+    "crop": "https://cards.scryfall.io/crop/front/d/e/def384ff-1b6f-4c4f-8151-3c72c29b63ce.webp?1783945960",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/e/def384ff-1b6f-4c4f-8151-3c72c29b63ce.jpg?1783945960"
+  },
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Enchantment",
+  "oracle_text": "{3}{U}{U}: Shuffle your library.\n{X}: Look at the top X cards of your library, then put them back in any order.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "385e11a4-492b-4d07-b4a6-a1409ef829b8",
+  "set": "mmq",
+  "set_name": "Mercadian Masques",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/385e11a4-492b-4d07-b4a6-a1409ef829b8",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ammq&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mmq?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/def384ff-1b6f-4c4f-8151-3c72c29b63ce/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A517b702a-2c5c-40d7-825e-6c674019b298&unique=prints",
+  "collector_number": "104",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "The vizier's wisdom proved invaluable in untangling the Mercadian knot of lies.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Pat Lewis",
+  "artist_ids": [
+    "3130411f-ddd5-4cab-a2f4-0a9c3b95a26e"
+  ],
+  "illustration_id": "c7dba925-f0ea-4003-8ce6-64494f1f4136",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 8244,
+  "prices": {
+    "usd": "3.57",
+    "usd_foil": "33.99",
+    "usd_etched": null,
+    "eur": "1.22",
+    "eur_foil": "14.13",
+    "tix": "0.74"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=19807&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSoothsaying",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSoothsaying",
+    "edhrec": "https://edhrec.com/route/?cc=Soothsaying"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F6705%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=11477&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/13447?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

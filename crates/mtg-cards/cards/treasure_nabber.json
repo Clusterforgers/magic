@@ -1,0 +1,27 @@
+{
+  "oracle_id": "20a6d576-a5b2-43b4-8be9-75be001e567d",
+  "name": "Treasure Nabber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Treasure Nabber",
+      "oracle_fingerprint": "ce96e778f918fff21681e35b4eb5d794",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Type": "Artifact" }], "by": "Opponents" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

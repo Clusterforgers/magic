@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "c91c3606-d037-4b97-a7b6-ab1ed09bc976",
+  "oracle_id": "9da65d66-71f0-4e17-a1f9-6da6cd1cfa8a",
+  "multiverse_ids": [
+    433247
+  ],
+  "mtgo_id": 73784,
+  "tcgplayer_id": 139826,
+  "cardmarket_id": 300321,
+  "name": "Scalelord Reckoner",
+  "lang": "en",
+  "released_at": "2017-08-25",
+  "uri": "https://api.scryfall.com/cards/c91c3606-d037-4b97-a7b6-ab1ed09bc976",
+  "scryfall_uri": "https://scryfall.com/card/c17/6/scalelord-reckoner?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:45:50Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/9/c91c3606-d037-4b97-a7b6-ab1ed09bc976.jpg?1783935950",
+    "normal": "https://cards.scryfall.io/normal/front/c/9/c91c3606-d037-4b97-a7b6-ab1ed09bc976.jpg?1783935950",
+    "large": "https://cards.scryfall.io/large/front/c/9/c91c3606-d037-4b97-a7b6-ab1ed09bc976.jpg?1783935950",
+    "png": "https://cards.scryfall.io/png/front/c/9/c91c3606-d037-4b97-a7b6-ab1ed09bc976.png?1783935950",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/9/c91c3606-d037-4b97-a7b6-ab1ed09bc976.jpg?1783935950",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/9/c91c3606-d037-4b97-a7b6-ab1ed09bc976.jpg?1783935950",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/9/c91c3606-d037-4b97-a7b6-ab1ed09bc976.webp?1783935950",
+    "grid": "https://cards.scryfall.io/grid/front/c/9/c91c3606-d037-4b97-a7b6-ab1ed09bc976.webp?1783935950",
+    "display": "https://cards.scryfall.io/display/front/c/9/c91c3606-d037-4b97-a7b6-ab1ed09bc976.webp?1783935950",
+    "art": "https://cards.scryfall.io/art/front/c/9/c91c3606-d037-4b97-a7b6-ab1ed09bc976.webp?1783935950",
+    "crop": "https://cards.scryfall.io/crop/front/c/9/c91c3606-d037-4b97-a7b6-ab1ed09bc976.webp?1783935950",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/9/c91c3606-d037-4b97-a7b6-ab1ed09bc976.jpg?1783935950"
+  },
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Dragon",
+  "oracle_text": "Flying\nWhenever a Dragon you control becomes the target of a spell or ability an opponent controls, destroy target nonland permanent that player controls.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5caec427-0c78-4c37-b4ec-30f7e0ba9abf",
+  "set": "c17",
+  "set_name": "Commander 2017",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/5caec427-0c78-4c37-b4ec-30f7e0ba9abf",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac17&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c17?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c91c3606-d037-4b97-a7b6-ab1ed09bc976/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9da65d66-71f0-4e17-a1f9-6da6cd1cfa8a&unique=prints",
+  "collector_number": "6",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "The justice of dragons demands more than just an eye for an eye.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Even Amundsen",
+  "artist_ids": [
+    "127faa6a-6c02-49a0-beba-ae76d06dd153"
+  ],
+  "illustration_id": "947416b8-96e7-44e0-b93b-9db61606fb53",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 6368,
+  "prices": {
+    "usd": "7.05",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "4.95",
+    "eur_foil": null,
+    "tix": "0.10"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=433247&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DScalelord%2BReckoner",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DScalelord%2BReckoner",
+    "edhrec": "https://edhrec.com/route/?cc=Scalelord+Reckoner"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F139826%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=300321&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/73784?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

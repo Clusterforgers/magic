@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Devoid"},{"Triggered":{"when":{"AnyOf":[{"SpellCast":{"what":["This"],"by":"You"}},{"Attacks":{"what":["This"]}}]},"effects":[{"PutCounters":{"on":{"Each":["Colorless",{"Type":"Creature"},{"ControlledBy":"You"}]},"counter":"+1/+1"}}]}},{"Keyword":"Trample"}]}]}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1a88a378-051c-42b4-bd0e-9c40ae8efea6",
+  "name": "Thunderstaff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thunderstaff",
+      "oracle_fingerprint": "85bedc5ae1c230d9159e38ec1c33783e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "to": "You", "source": [{ "Type": "Creature" }], "combat": true }
+            },
+            "by": { "PreventUpTo": 1 },
+            "condition": { "Matches": { "subject": "This", "selector": ["Untapped"] } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

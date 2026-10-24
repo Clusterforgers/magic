@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"DealDamage":{"to":{"Each":[{"Type":"Creature"}]},"amount":4}}]}},{"Keyword":{"Cycling":"{2}{R}"}},{"Triggered":{"when":{"Cycled":{"what":["This"],"by":"You"}},"from":"Graveyard","effects":[{"May":{"effects":[{"DealDamage":{"source":"This","to":{"Each":[{"Type":"Creature"}]},"amount":1}}]}}]}}]}]}

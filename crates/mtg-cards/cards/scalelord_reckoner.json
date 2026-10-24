@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9da65d66-71f0-4e17-a1f9-6da6cd1cfa8a",
+  "name": "Scalelord Reckoner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scalelord Reckoner",
+      "oracle_fingerprint": "c08e29e3523d7b50521e1200a8697345",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }],
+                "by": [{ "ControlledBy": "Opponents" }]
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Land" } },
+                    { "ControlledBy": { "ControllerOf": "Dealer" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

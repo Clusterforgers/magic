@@ -1,0 +1,34 @@
+{
+  "oracle_id": "24f7143c-d43a-4120-baa0-0235b15d8186",
+  "name": "Wave of Reckoning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wave of Reckoning",
+      "oracle_fingerprint": "bc082467d672cfae31f599b3840d1a55",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }] },
+                  "as": "c",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "c" },
+                        "to": { "Bound": "c" },
+                        "amount": { "Stat": { "of": { "Bound": "c" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Exile":{"what":{"Each":["Spell","Other"]}}},{"Counter":{"what":{"Each":[{"AnyOf":[{"Ability":"Activated"},{"Ability":"Triggered"}]}]}}}]}}]}]}

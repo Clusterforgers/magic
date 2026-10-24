@@ -1,0 +1,38 @@
+{
+  "oracle_id": "c857de66-f4e0-4e97-ad01-fac623af8225",
+  "name": "Tomb Blade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tomb Blade",
+      "oracle_fingerprint": "7a9811a64fddc954643a9e4e8ac7099e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+                  "unpaid": [
+                    {
+                      "LoseLife": {
+                        "who": "Triggering",
+                        "amount": {
+                          "Count": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Unearth": "{6}{B}{B}" } }
+      ]
+    }
+  ]
+}

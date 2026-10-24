@@ -1,0 +1,32 @@
+{
+  "oracle_id": "abd9ed47-e3ef-40f3-9c18-769228e68792",
+  "name": "Titan Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Titan Hunter",
+      "oracle_fingerprint": "952ca66216e1263bf66ce8d1c6986b14",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "DealDamage": { "source": "This", "to": "Triggering", "amount": 4 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [{ "GainLife": { "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

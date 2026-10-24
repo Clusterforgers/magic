@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Devoid"},{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Land"},{"ControlledBy":"Opponents"}],"to":"Battlefield"}},"effects":[{"ExileTop":{"who":{"ControllerOf":"Triggering"},"count":2,"as":"x"}},{"Draw":{"count":2}}]}}]}]}

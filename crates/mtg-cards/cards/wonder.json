@@ -1,0 +1,28 @@
+{
+  "oracle_id": "232284f7-c623-4895-9ab9-8b1a39926830",
+  "name": "Wonder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wonder",
+      "oracle_fingerprint": "cd13051fc15b9134fb09242eace5640c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

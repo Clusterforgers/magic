@@ -1,0 +1,47 @@
+{
+  "oracle_id": "115bc79e-a109-42d7-ac58-2ee8dc0a959f",
+  "name": "Stinging Study",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stinging Study",
+      "oracle_fingerprint": "500abb3542acf1284ec6463f923024db",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Greatest": {
+                      "of": [
+                        "Commander",
+                        { "OwnedBy": "You" },
+                        { "AnyOf": [{ "In": "Battlefield" }, { "In": "Command" }] }
+                      ],
+                      "stat": "ManaValue"
+                    }
+                  }
+                }
+              },
+              {
+                "LoseLife": {
+                  "amount": {
+                    "Greatest": {
+                      "of": [
+                        "Commander",
+                        { "OwnedBy": "You" },
+                        { "AnyOf": [{ "In": "Battlefield" }, { "In": "Command" }] }
+                      ],
+                      "stat": "ManaValue"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

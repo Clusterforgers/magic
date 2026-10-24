@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Draw":{"count":{"Greatest":{"of":["Commander",{"OwnedBy":"You"},{"AnyOf":[{"In":"Battlefield"},{"In":"Command"}]}],"stat":"ManaValue"}}}},{"LoseLife":{"amount":{"Greatest":{"of":["Commander",{"OwnedBy":"You"},{"AnyOf":[{"In":"Battlefield"},{"In":"Command"}]}],"stat":"ManaValue"}}}}]}}]}]}

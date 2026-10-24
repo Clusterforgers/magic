@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Attacks":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}},"effects":[{"Continuous":{"affected":"Triggering","mods":[{"ModifyPT":{"power":{"Count":["Attacking",{"Not":{"Is":"Triggering"}},{"SharesSubtype":"Triggering"}]},"toughness":0}}],"duration":"UntilEndOfTurn"}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]}}],"effects":[{"If":{"condition":{"Compare":{"left":{"Count":[{"In":"Graveyard"},{"OwnedBy":"You"}]},"op":"Ge","right":7}},"then":[{"Move":{"what":{"Target":0},"to":{"Battlefield":{}}}}],"otherwise":[{"Move":{"what":{"Target":0},"to":"Hand"}}]}}]}}]}]}

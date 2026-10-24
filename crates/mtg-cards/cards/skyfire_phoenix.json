@@ -1,0 +1,22 @@
+{
+  "oracle_id": "8fdb3350-a6ff-4d02-a649-10663436c40f",
+  "name": "Skyfire Phoenix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyfire Phoenix",
+      "oracle_fingerprint": "7b93633ec7eaccf8b10f032678c20e82",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["Commander"], "by": "You" } },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

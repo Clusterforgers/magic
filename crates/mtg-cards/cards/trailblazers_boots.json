@@ -1,0 +1,26 @@
+{
+  "oracle_id": "634d5009-cbf3-44cb-8c15-7057f501a210",
+  "name": "Trailblazer's Boots",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trailblazer's Boots",
+      "oracle_fingerprint": "0b4445247ff858958b9510c6d6dfbec6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "AddKeyword": {
+                  "Landwalk": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

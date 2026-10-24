@@ -1,0 +1,21 @@
+{
+  "oracle_id": "abc37d6c-6300-47b5-a679-9db5b83eb54f",
+  "name": "Syphon Mind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Syphon Mind",
+      "oracle_fingerprint": "fa20492ab5e58ce53dc8a9710aa97086",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Discard": { "who": "Opponents", "as": "d" } },
+              { "Draw": { "count": { "Count": [{ "Is": { "Bound": "d" } }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

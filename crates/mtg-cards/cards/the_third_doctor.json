@@ -1,0 +1,47 @@
+{
+  "oracle_id": "2a73db99-5e31-49a8-91e7-b28b3434585d",
+  "name": "The Third Doctor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Third Doctor",
+      "oracle_fingerprint": "27d0f0578d4f70e6d675717a2f856cf0",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": ["Token", { "Not": { "Type": "Creature" } }, { "ControlledBy": "You" }]
+                  },
+                  "toughness": {
+                    "Count": ["Token", { "Not": { "Type": "Creature" } }, { "ControlledBy": "You" }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }] },
+                    { "effects": [{ "CreateToken": { "token": { "Named": "food" } } }] },
+                    { "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

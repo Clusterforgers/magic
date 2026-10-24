@@ -1,0 +1,28 @@
+{
+  "oracle_id": "78541a40-c27a-49c0-aa3e-5a48b97065f0",
+  "name": "Scourglass",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scourglass",
+      "oracle_fingerprint": "6c7d85228f28266dd3afd76aea87a038",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "condition": { "All": [{ "Step": "Upkeep" }, "YourTurn"] },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "Not": { "Type": "Artifact" } }, { "Not": { "Type": "Land" } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

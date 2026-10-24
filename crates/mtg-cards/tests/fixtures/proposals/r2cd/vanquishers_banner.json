@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"Choose":"CreatureType"}}},{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},"ChosenSubtype"]},"mods":[{"ModifyPT":{"power":1,"toughness":1}}]}},{"Triggered":{"when":{"SpellCast":{"what":[{"Type":"Creature"},"ChosenSubtype"],"by":"You"}},"effects":[{"Draw":{}}]}}]}]}

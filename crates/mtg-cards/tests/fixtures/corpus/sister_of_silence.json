@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "15d56042-db45-40dc-a197-e2b7a3e6ab06",
+  "oracle_id": "fcc38b0b-d54a-4ecf-96f7-e09709227735",
+  "multiverse_ids": [
+    580848
+  ],
+  "mtgo_id": 108524,
+  "tcgplayer_id": 286537,
+  "cardmarket_id": 675715,
+  "name": "Sister of Silence",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/15d56042-db45-40dc-a197-e2b7a3e6ab06",
+  "scryfall_uri": "https://scryfall.com/card/40k/26/sister-of-silence?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:35:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/5/15d56042-db45-40dc-a197-e2b7a3e6ab06.jpg?1783920931",
+    "normal": "https://cards.scryfall.io/normal/front/1/5/15d56042-db45-40dc-a197-e2b7a3e6ab06.jpg?1783920931",
+    "large": "https://cards.scryfall.io/large/front/1/5/15d56042-db45-40dc-a197-e2b7a3e6ab06.jpg?1783920931",
+    "png": "https://cards.scryfall.io/png/front/1/5/15d56042-db45-40dc-a197-e2b7a3e6ab06.png?1783920931",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/5/15d56042-db45-40dc-a197-e2b7a3e6ab06.jpg?1783920931",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/5/15d56042-db45-40dc-a197-e2b7a3e6ab06.jpg?1783920931",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/5/15d56042-db45-40dc-a197-e2b7a3e6ab06.webp?1783920931",
+    "grid": "https://cards.scryfall.io/grid/front/1/5/15d56042-db45-40dc-a197-e2b7a3e6ab06.webp?1783920931",
+    "display": "https://cards.scryfall.io/display/front/1/5/15d56042-db45-40dc-a197-e2b7a3e6ab06.webp?1783920931",
+    "art": "https://cards.scryfall.io/art/front/1/5/15d56042-db45-40dc-a197-e2b7a3e6ab06.webp?1783920931",
+    "crop": "https://cards.scryfall.io/crop/front/1/5/15d56042-db45-40dc-a197-e2b7a3e6ab06.webp?1783920931",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/5/15d56042-db45-40dc-a197-e2b7a3e6ab06.jpg?1783920931"
+  },
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "Flash\nPsychic Abomination — When this creature enters, counter target instant spell, sorcery spell, activated ability, or triggered ability.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Psychic Abomination",
+    "Flash"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set": "40k",
+  "set_name": "Warhammer 40,000 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A40k&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/40k?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/15d56042-db45-40dc-a197-e2b7a3e6ab06/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Afcc38b0b-d54a-4ecf-96f7-e09709227735&unique=prints",
+  "collector_number": "26",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Games Workshop",
+  "artist_ids": [
+    "9456da4e-410b-4932-8bf3-a69a2da3cdc9"
+  ],
+  "illustration_id": "a8e05d73-c88d-4314-96a8-56ba21e27efb",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 12946,
+  "preview": {
+    "source": "PleasantKenobi",
+    "source_uri": "https://www.youtube.com/watch?v=cZUMys8LVis",
+    "previewed_at": "2022-09-16"
+  },
+  "prices": {
+    "usd": "0.42",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.35",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580848&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSister%2Bof%2BSilence",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSister%2Bof%2BSilence",
+    "edhrec": "https://edhrec.com/route/?cc=Sister+of+Silence"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F286537%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=675715&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/108524?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

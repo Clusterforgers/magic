@@ -1,0 +1,29 @@
+{
+  "oracle_id": "bb04f927-0348-4a14-9e74-381f18083f6a",
+  "name": "Thunderbreak Regent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thunderbreak Regent",
+      "oracle_fingerprint": "bab07f9532a1012506d8b9d62d9f401c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }],
+                "by": [{ "ControlledBy": "Opponents" }]
+              }
+            },
+            "effects": [
+              {
+                "DealDamage": { "source": "This", "to": { "ControllerOf": "Dealer" }, "amount": 3 }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "986f510c-e2ec-423e-a443-51a169939558",
+  "name": "Tomb Fortress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tomb Fortress",
+      "oracle_fingerprint": "e1d76a7e552409e64fc92d723e48c4b2",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}{B}{B}" }, "Tap", "ExileSelf"],
+            "timing": "Sorcery",
+            "effects": [
+              { "Mill": { "count": 4 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, { "Type": "Creature" }]
+                  },
+                  "as": "c"
+                }
+              },
+              { "Move": { "what": { "Bound": "c" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

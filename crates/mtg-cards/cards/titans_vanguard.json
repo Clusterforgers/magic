@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3da6d24b-ecbd-4a41-a37e-84a19b243414",
+  "name": "Titans' Vanguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Titans' Vanguard",
+      "oracle_fingerprint": "002d576fbcf0a7ae9b370a23b5d822b8",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "SpellCast": { "what": ["This"], "by": "You" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": ["Colorless", { "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Trample" }
+      ]
+    }
+  ]
+}

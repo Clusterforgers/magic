@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"RepeatEach":{"over":{"Each":[{"Type":"Creature"}]},"as":"c","effects":[{"DealDamage":{"source":{"Bound":"c"},"to":{"Bound":"c"},"amount":{"Stat":{"of":{"Bound":"c"},"stat":"Power"}}}}]}}]}}]}]}
