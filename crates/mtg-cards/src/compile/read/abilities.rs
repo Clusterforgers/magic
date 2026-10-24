@@ -1,10 +1,10 @@
 //! Abilities: a clause's sentences become a spell ability, an event, a comma and sentences a
 //! triggered ability, and a cost, a colon, sentences and the restrictions on when it may be
-//! activated an activated ability.
+//! activated an activated ability, and a loyalty cost, a colon and sentences a loyalty ability.
 
 use super::tokens::Reader;
 use super::{as_long_as, costs, effects, mana_trigger, modal, render, statics, triggers};
-use crate::ability::{Ability, Limit, Timing};
+use crate::ability::{Ability, Limit, LoyaltyCost, Timing};
 use crate::effect::Effect;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::TriggerPattern;
@@ -290,6 +290,36 @@ pub fn activated(r: &mut Reader<'_>) -> Option<Ability> {
         } else {
             ZoneKind::Battlefield
         },
+        targets,
+        effects,
+    })
+}
+
+/// A loyalty cost: `+N`, `−N`, `0` or `−X`.
+fn loyalty_cost(r: &mut Reader<'_>) -> Option<LoyaltyCost> {
+    if r.punct('+') {
+        return r.number().map(LoyaltyCost::Plus);
+    }
+    if r.punct('\u{2212}') {
+        if r.word("x") {
+            return Some(LoyaltyCost::MinusX);
+        }
+        return r.number().map(LoyaltyCost::Minus);
+    }
+    (r.number()? == 0).then_some(LoyaltyCost::Zero)
+}
+
+/// A planeswalker's loyalty ability: its loyalty cost, a colon and sentences, every one read. The X of a `−X` is the
+/// number of counters the player removes, which the effects may use.
+pub fn loyalty(r: &mut Reader<'_>) -> Option<Ability> {
+    let cost = loyalty_cost(r)?;
+    r.punct(':').then_some(())?;
+    r.x_free |= cost == LoyaltyCost::MinusX;
+    r.subject = Some(Ref::This);
+    let effects = sentences(r, false)?;
+    let targets = std::mem::take(&mut r.targets);
+    Some(Ability::Loyalty {
+        cost,
         targets,
         effects,
     })

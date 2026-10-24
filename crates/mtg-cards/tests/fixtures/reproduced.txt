@@ -418,6 +418,7 @@ Forum of Amity
 Founding of Omashu
 Foundry Inspector
 Four Knocks
+Freyalise, Llanowar's Fury
 Frogtosser Banneret
 Fruit of Tizerus
 Fungal Reaches
@@ -428,6 +429,8 @@ Gaea's Cradle
 Galadhrim Brigade
 Galvanizing Sawship
 Game-Trail Changeling
+Garruk Wildspeaker
+Garruk, Primal Hunter
 Gavony Dawnguard
 Gemhide Sliver
 Gemrazer
@@ -560,6 +563,7 @@ Iron League Steed
 Ivory Mask
 Ixalli's Lorekeeper
 Izzet Charm
+Jace Beleren
 Jacked Rabbit
 Jadelight Ranger
 Jagged Barrens
