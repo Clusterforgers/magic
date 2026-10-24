@@ -1,8 +1,8 @@
-//! Goal: the writers of the proposal checker give the oracle wording of the effects the sample of model-written rules
+//! Goal: the writers of the proposal checker give the oracle wording of the effects the samples of model-written rules
 //! found missing: a bound exile that returns at the next end step or whose mana value an amount names, counters on a
-//! player, a sacrifice in place of damage, a choice of several steps, a spell cast from anywhere other than the hand, a
-//! trigger of the card and another creature, life gained this turn and a creature that died; a changed count, kind,
-//! player or object never reads back.
+//! player or on three targets, a fight, a sacrifice in place of damage, a choice of several steps, an X/X token, a
+//! spell cast from anywhere other than the hand, a trigger of the card and another creature, life gained this turn
+//! and a creature that died; a changed count, kind, player or object never reads back.
 use super::*;
 
 /// Whether some wording the checker accepts for the rules is the clause.
@@ -438,6 +438,273 @@ fn life_equal_to_a_characteristic_of_the_target_is_written_as_the_oracle_words_i
 )]
 fn a_group_is_named_as_the_oracle_names_it(#[case] json: &str, #[case] clause: &str) {
     assert!(written(json, clause), "{clause}");
+}
+
+const HYDRA: &str = r#"{"CreateToken":{"token":{"Sized":{"size":"X","token":{"name":"Hydra","colors":["Green"],"types":["Creature"],"subtypes":["Hydra"]}}}}}"#;
+const SNAKE_WITH_COUNTERS: &str = r#"{"CreateToken":{"token":{"Custom":{"name":"Snake","colors":["Green"],"types":["Creature"],"subtypes":["Snake"],"power":1,"toughness":1}},"as":"tokens"}},{"PutCounters":{"on":{"Bound":"tokens"},"counter":"+1/+1","count":"X"}}"#;
+
+#[rstest]
+#[case::an_x_by_x_token(
+    format!(r#"{{"Spell":{{"effects":[{HYDRA}]}}}}"#),
+    "Create an X/X green Hydra creature token."
+)]
+#[case::a_token_and_counters_on_it(
+    format!(r#"{{"Spell":{{"effects":[{SNAKE_WITH_COUNTERS}]}}}}"#),
+    "Create a 1/1 green Snake creature token. Put X +1/+1 counters on it."
+)]
+fn a_token_of_a_size_x_and_counters_on_a_token_just_made_are_written_as_the_oracle_words_it(
+    #[case] json: String,
+    #[case] clause: &str,
+) {
+    assert!(written(&json, clause), "{clause}");
+}
+
+#[rstest]
+#[case::a_fixed_size("Create a 1/1 green Hydra creature token.")]
+#[case::another_color("Create an X/X black Hydra creature token.")]
+#[case::counters_on_the_card(
+    "Create an X/X green Hydra creature token. Put X +1/+1 counters on ~."
+)]
+fn a_token_of_a_size_x_does_not_read_as_another_token(#[case] clause: &str) {
+    let json = format!(r#"{{"Spell":{{"effects":[{HYDRA}]}}}}"#);
+    assert!(!written(&json, clause), "{clause}");
+}
+
+fn counters_on_each(counts: [u32; 3]) -> String {
+    let others = r#"{"what":{"Object":["Other",{"Type":"Creature"}]}}"#;
+    let put = |at: u32, count: u32| {
+        format!(r#"{{"PutCounters":{{"on":{{"Target":{at}}},"counter":"-1/-1","count":{count}}}}}"#)
+    };
+    format!(
+        r#"{{"Spell":{{"targets":[{{"what":{{"Object":[{{"Type":"Creature"}}]}}}},{others},{others}],"effects":[{},{},{}]}}}}"#,
+        put(0, counts[0]),
+        put(1, counts[1]),
+        put(2, counts[2])
+    )
+}
+
+#[rstest]
+#[case::incremental_blight(
+    counters_on_each([1, 2, 3]),
+    "Put a -1/-1 counter on target creature, two -1/-1 counters on another target creature, and three -1/-1 counters on a third target creature."
+)]
+#[case::other_numbers(
+    counters_on_each([2, 2, 4]),
+    "Put two -1/-1 counters on target creature, two -1/-1 counters on another target creature, and four -1/-1 counters on a third target creature."
+)]
+fn counters_on_three_targets_are_one_sentence_with_a_number_for_each(
+    #[case] json: String,
+    #[case] clause: &str,
+) {
+    assert!(written(&json, clause), "{clause}");
+}
+
+#[rstest]
+#[case::another_count(
+    "Put a -1/-1 counter on target creature, two -1/-1 counters on another target creature, and four -1/-1 counters on a third target creature."
+)]
+#[case::the_counts_reversed(
+    "Put three -1/-1 counters on target creature, two -1/-1 counters on another target creature, and a -1/-1 counter on a third target creature."
+)]
+#[case::every_target_the_same(
+    "Put a -1/-1 counter on target creature, two -1/-1 counters on target creature, and three -1/-1 counters on target creature."
+)]
+#[case::another_kind(
+    "Put a +1/+1 counter on target creature, two +1/+1 counters on another target creature, and three +1/+1 counters on a third target creature."
+)]
+#[case::two_sentences(
+    "Put a -1/-1 counter on target creature. Put two -1/-1 counters on another target creature. Put three -1/-1 counters on a third target creature."
+)]
+fn counters_on_three_targets_do_not_read_as_other_numbers_or_targets(#[case] clause: &str) {
+    assert!(!written(&counters_on_each([1, 2, 3]), clause), "{clause}");
+}
+
+#[rstest]
+#[case::double_strike(
+    "double strike",
+    "put a double strike counter on another target attacking creature"
+)]
+#[case::first_strike(
+    "first strike",
+    "put a first strike counter on another target attacking creature"
+)]
+#[case::flying("flying", "put a flying counter on another target attacking creature")]
+fn a_keyword_counter_with_two_words_is_written_as_the_oracle_words_it(
+    #[case] kind: &str,
+    #[case] effect: &str,
+) {
+    let json = format!(
+        r#"{{"Triggered":{{"when":{{"Attacks":{{"what":["This"]}}}},"targets":[{{"what":{{"Object":[{{"Type":"Creature"}},"Attacking","Other"]}}}}],"effects":[{{"PutCounters":{{"on":{{"Target":0}},"counter":{{"Other":"{kind}"}}}}}}]}}}}"#
+    );
+    let clause = format!("Whenever this creature attacks, {effect}.");
+    assert!(written(&json, &clause), "{clause}");
+    let other = clause.replace("another target", "target");
+    assert!(!written(&json, &other), "{other}");
+}
+
+fn fights(second: &str) -> String {
+    format!(
+        r#"{{"Activated":{{"cost":["Tap"],"targets":[{{"what":{{"Object":[{{"Type":"Creature"}},{{"ControlledBy":"You"}}]}}}},{{"what":{{"Object":{second}}}}}],"effects":[{{"Fight":{{"what":{{"Target":0}},"with":{{"Target":1}}}}}}]}}}}"#
+    )
+}
+
+#[rstest]
+#[case::wayta(
+    fights(r#"[{"Type":"Creature"},"Other"]"#),
+    "{T}: Target creature you control fights another target creature."
+)]
+#[case::one_you_do_not_control(
+    fights(r#"[{"Type":"Creature"},{"Not":{"ControlledBy":"You"}}]"#),
+    "{T}: Target creature you control fights target creature you don't control."
+)]
+fn a_fight_between_two_targets_is_written_as_the_oracle_words_it(
+    #[case] json: String,
+    #[case] clause: &str,
+) {
+    assert!(written(&json, clause), "{clause}");
+}
+
+#[rstest]
+#[case::one_target("{T}: Target creature you control fights it.")]
+#[case::a_third_target("{T}: Target creature you control fights up to one target creature.")]
+#[case::the_other_way("{T}: Another target creature fights target creature you control.")]
+fn a_fight_between_two_targets_does_not_read_as_another_fight(#[case] clause: &str) {
+    assert!(
+        !written(&fights(r#"[{"Type":"Creature"},"Other"]"#), clause),
+        "{clause}"
+    );
+}
+
+fn returns_from_the_graveyard(event: &str, to: &str) -> String {
+    format!(
+        r#"{{"Triggered":{{"when":{event},"from":"Graveyard","effects":[{{"May":{{"effects":[{{"Move":{{"what":"This","to":{to}}}}}]}}}}]}}}}"#
+    )
+}
+
+const SECOND_CARD: &str = r#"{"Nth":{"nth":2,"event":{"Drew":{"who":"Opponents"}}}}"#;
+const PLANESWALKER_CAST: &str = r#"{"SpellCast":{"what":[{"Type":"Planeswalker"}],"by":"You"}}"#;
+
+#[rstest]
+#[case::dogged_detective(
+    returns_from_the_graveyard(SECOND_CARD, r#""Hand""#),
+    "Whenever an opponent draws their second card each turn, you may return this card from your graveyard to your hand."
+)]
+#[case::on_a_spell(
+    returns_from_the_graveyard(PLANESWALKER_CAST, r#""Hand""#),
+    "Whenever you cast a planeswalker spell, you may return this card from your graveyard to your hand."
+)]
+#[case::to_the_battlefield(
+    returns_from_the_graveyard(PLANESWALKER_CAST, r#"{"Battlefield":{}}"#),
+    "Whenever you cast a planeswalker spell, you may return this card from your graveyard to the battlefield."
+)]
+fn a_card_that_returns_itself_from_the_graveyard_is_written_as_the_oracle_words_it(
+    #[case] json: String,
+    #[case] clause: &str,
+) {
+    assert!(written(&json, clause), "{clause}");
+}
+
+#[rstest]
+#[case::from_the_battlefield(
+    "Whenever you cast a planeswalker spell, you may return this card to your hand."
+)]
+#[case::to_the_battlefield(
+    "Whenever you cast a planeswalker spell, you may return this card from your graveyard to the battlefield."
+)]
+#[case::no_choice(
+    "Whenever you cast a planeswalker spell, return this card from your graveyard to your hand."
+)]
+fn a_card_that_returns_itself_from_the_graveyard_does_not_read_as_another_return(
+    #[case] clause: &str,
+) {
+    let json = returns_from_the_graveyard(PLANESWALKER_CAST, r#""Hand""#);
+    assert!(!written(&json, clause), "{clause}");
+}
+
+fn returns_to_hand(list: &str, step: &str) -> String {
+    format!(
+        r#"{{"Triggered":{{"when":{{"StepBegins":{{"step":"{step}","whose":"You"}}}},"targets":[{{"what":{{"Object":[{{"AnyOf":{list}}},{{"In":"Graveyard"}},{{"OwnedBy":"You"}}]}}}}],"effects":[{{"Move":{{"what":{{"Target":0}},"to":"Hand"}}}}]}}}}"#
+    )
+}
+
+const PLANT_TREEFOLK_LAND: &str = r#"[{"Subtype":"Plant"},{"Subtype":"Treefolk"},{"Type":"Land"}]"#;
+
+#[rstest]
+#[case::kirri(
+    returns_to_hand(PLANT_TREEFOLK_LAND, "Main2"),
+    "At the beginning of each of your postcombat main phases, return target Plant, Treefolk, or land card from your graveyard to your hand."
+)]
+#[case::one_phase(
+    returns_to_hand(PLANT_TREEFOLK_LAND, "Main2"),
+    "At the beginning of your postcombat main phase, return target Plant, Treefolk, or land card from your graveyard to your hand."
+)]
+#[case::a_subtype_and_a_type(
+    returns_to_hand(r#"[{"Subtype":"Plant"},{"Type":"Land"}]"#, "Main1"),
+    "At the beginning of each of your precombat main phases, return target Plant or land card from your graveyard to your hand."
+)]
+fn a_list_of_subtypes_and_card_types_is_written_as_the_oracle_words_it(
+    #[case] json: String,
+    #[case] clause: &str,
+) {
+    assert!(written(&json, clause), "{clause}");
+}
+
+#[rstest]
+#[case::a_type_left_out(
+    "At the beginning of each of your postcombat main phases, return target Plant or Treefolk card from your graveyard to your hand."
+)]
+#[case::another_phase(
+    "At the beginning of each of your precombat main phases, return target Plant, Treefolk, or land card from your graveyard to your hand."
+)]
+#[case::all_phases(
+    "At the beginning of each main phase, return target Plant, Treefolk, or land card from your graveyard to your hand."
+)]
+#[case::an_and(
+    "At the beginning of each of your postcombat main phases, return target Plant, Treefolk, and land card from your graveyard to your hand."
+)]
+fn a_list_of_subtypes_and_card_types_does_not_read_as_another_list_or_phase(#[case] clause: &str) {
+    assert!(
+        !written(&returns_to_hand(PLANT_TREEFOLK_LAND, "Main2"), clause),
+        "{clause}"
+    );
+}
+
+fn noncreature_spell(nth: u32, effect: &str) -> String {
+    format!(
+        r#"{{"Triggered":{{"when":{{"Nth":{{"nth":{nth},"event":{{"SpellCast":{{"what":[{{"Not":{{"Type":"Creature"}}}}],"by":"You"}}}}}}}},"effects":[{effect}]}}}}"#
+    )
+}
+
+const SACRIFICE_FOR_A_CONSTRUCT: &str = r#"{"Pay":{"cost":["SacrificeSelf"],"paid":[{"CreateToken":{"token":{"Custom":{"name":"Construct","colors":[],"types":["Artifact","Creature"],"subtypes":["Construct"],"power":4,"toughness":4,"abilities":[{"Keyword":"Flying"},{"Keyword":"Haste"}]}},"count":4}}]}}"#;
+
+#[rstest]
+#[case::the_fantasticar(
+    noncreature_spell(4, SACRIFICE_FOR_A_CONSTRUCT),
+    "Whenever you cast your fourth noncreature spell each turn, you may sacrifice ~. If you do, create four 4/4 colorless Construct artifact creature tokens with flying and haste."
+)]
+#[case::the_second(
+    noncreature_spell(2, r#"{"Draw":{}}"#),
+    "Whenever you cast your second noncreature spell each turn, draw a card."
+)]
+fn a_numbered_spell_of_a_kind_is_written_as_the_oracle_words_it(
+    #[case] json: String,
+    #[case] clause: &str,
+) {
+    assert!(written(&json, clause), "{clause}");
+}
+
+#[rstest]
+#[case::the_third("Whenever you cast your third noncreature spell each turn, draw a card.")]
+#[case::any_spell("Whenever you cast your second spell each turn, draw a card.")]
+#[case::a_creature("Whenever you cast your second creature spell each turn, draw a card.")]
+#[case::an_opponent(
+    "Whenever an opponent casts their second noncreature spell each turn, draw a card."
+)]
+fn a_numbered_spell_of_a_kind_does_not_read_as_another_number_or_kind(#[case] clause: &str) {
+    assert!(
+        !written(&noncreature_spell(2, r#"{"Draw":{}}"#), clause),
+        "{clause}"
+    );
 }
 
 #[rstest]

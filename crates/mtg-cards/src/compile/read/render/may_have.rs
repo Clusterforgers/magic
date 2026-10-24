@@ -1,4 +1,4 @@
-//! A choice about a group: "you may have other attacking creatures get +X/+X until end of turn".
+//! A choice: "you may have other attacking creatures get +X/+X until end of turn", "you may draw a card and lose 1 life".
 
 use super::Writer;
 use crate::effect::Effect;
@@ -22,6 +22,7 @@ impl Writer<'_> {
             "you may have {}",
             pump.replacen(" gets ", " get ", 1)
                 .replacen(" gains ", " gain ", 1)
+                .replacen(" becomes ", " become ", 1)
         ))
     }
 

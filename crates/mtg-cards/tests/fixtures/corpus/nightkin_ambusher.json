@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "ca7cfcb2-83fb-41ad-ae31-9c32c942506c",
+  "oracle_id": "2808d652-907d-4071-b386-814507a1549e",
+  "multiverse_ids": [
+    652199
+  ],
+  "mtgo_id": 132473,
+  "tcgplayer_id": 540898,
+  "cardmarket_id": 758545,
+  "name": "Nightkin Ambusher",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/ca7cfcb2-83fb-41ad-ae31-9c32c942506c",
+  "scryfall_uri": "https://scryfall.com/card/pip/112/nightkin-ambusher?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:05Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/a/ca7cfcb2-83fb-41ad-ae31-9c32c942506c.jpg?1783912385",
+    "normal": "https://cards.scryfall.io/normal/front/c/a/ca7cfcb2-83fb-41ad-ae31-9c32c942506c.jpg?1783912385",
+    "large": "https://cards.scryfall.io/large/front/c/a/ca7cfcb2-83fb-41ad-ae31-9c32c942506c.jpg?1783912385",
+    "png": "https://cards.scryfall.io/png/front/c/a/ca7cfcb2-83fb-41ad-ae31-9c32c942506c.png?1783912385",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/a/ca7cfcb2-83fb-41ad-ae31-9c32c942506c.jpg?1783912385",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/a/ca7cfcb2-83fb-41ad-ae31-9c32c942506c.jpg?1783912385",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/a/ca7cfcb2-83fb-41ad-ae31-9c32c942506c.webp?1783912385",
+    "grid": "https://cards.scryfall.io/grid/front/c/a/ca7cfcb2-83fb-41ad-ae31-9c32c942506c.webp?1783912385",
+    "display": "https://cards.scryfall.io/display/front/c/a/ca7cfcb2-83fb-41ad-ae31-9c32c942506c.webp?1783912385",
+    "art": "https://cards.scryfall.io/art/front/c/a/ca7cfcb2-83fb-41ad-ae31-9c32c942506c.webp?1783912385",
+    "crop": "https://cards.scryfall.io/crop/front/c/a/ca7cfcb2-83fb-41ad-ae31-9c32c942506c.webp?1783912385",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/a/ca7cfcb2-83fb-41ad-ae31-9c32c942506c.jpg?1783912385"
+  },
+  "mana_cost": "{2}{U}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Mutant Warrior",
+  "oracle_text": "Ward {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)\nWhen this creature enters, target player gets four rad counters.\nThis creature can't be blocked as long as defending player has a rad counter.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Ward"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "2323747a-1d2e-4f08-a788-afa4dda56c13",
+      "component": "combo_piece",
+      "name": "Nightkin Ambusher",
+      "type_line": "Creature — Mutant Warrior",
+      "uri": "https://api.scryfall.com/cards/2323747a-1d2e-4f08-a788-afa4dda56c13"
+    },
+    {
+      "object": "related_card",
+      "id": "0886657d-afb0-4f1f-9af7-960724793077",
+      "component": "combo_piece",
+      "name": "Radiation",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/0886657d-afb0-4f1f-9af7-960724793077"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ca7cfcb2-83fb-41ad-ae31-9c32c942506c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2808d652-907d-4071-b386-814507a1549e&unique=prints",
+  "collector_number": "112",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Antonio José Manzanedo",
+  "artist_ids": [
+    "74986d28-0001-4a78-827c-e490b325d0e3"
+  ],
+  "illustration_id": "82c2b070-e13b-4f24-baf5-bfeaa1f389b3",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 7257,
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "2.36",
+    "usd_etched": null,
+    "eur": "0.28",
+    "eur_foil": "0.68",
+    "tix": "0.18"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652199&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNightkin%2BAmbusher",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNightkin%2BAmbusher",
+    "edhrec": "https://edhrec.com/route/?cc=Nightkin+Ambusher"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F540898%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=758545&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132473?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

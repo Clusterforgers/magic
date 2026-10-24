@@ -1,0 +1,32 @@
+{
+  "oracle_id": "131a7475-0b9e-46eb-9ade-fef1b9820184",
+  "name": "Stormtide Leviathan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stormtide Leviathan",
+      "oracle_fingerprint": "7230e24ebec68f3b0c057205ace16ca3",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Island" }] } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }] },
+            "mods": [{ "AddSubtype": "Island" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Not": { "HasKeyword": "Flying" } },
+                { "Not": { "HasKeyword": { "Landwalk": [{ "Subtype": "Island" }] } } }
+              ]
+            },
+            "mods": ["CantAttack"]
+          }
+        }
+      ]
+    }
+  ]
+}

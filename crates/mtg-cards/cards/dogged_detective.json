@@ -1,0 +1,26 @@
+{
+  "oracle_id": "c5a1516a-5e01-48c5-88c7-2178f4b2ad24",
+  "name": "Dogged Detective",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dogged Detective",
+      "oracle_fingerprint": "a5d2b05f38e557ec7435c5237525ff60",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Surveil": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "Opponents" } }, "nth": 2 } },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

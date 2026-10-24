@@ -1,1 +1,1 @@
-{"faces":[{"abilities":[{"Triggered":{"when":{"Sacrificed":{"what":[{"Not":"Token"}],"by":"You"}},"effects":[{"ExileTop":{"count":1}}]}},{"Activated":{"cost":["Tap",{"Sacrifice":{"filter":[{"Type":"Land"}]}}],"effects":[{"AddMana":{"mana":{"Fixed":["Red","Red"]}}}]}}]}]}
+{"faces":[{"abilities":[{"Triggered":{"when":{"Sacrificed":{"what":[{"Not":"Token"}],"by":"You"}},"effects":[{"ExileTop":{"count":1,"as":"exiled"}}]}},{"Activated":{"cost":["Tap",{"Sacrifice":{"filter":[{"Type":"Land"}]}}],"effects":[{"AddMana":{"mana":{"Fixed":["Red","Red"]}}}]}}]}]}

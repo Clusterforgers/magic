@@ -1,1 +1,1 @@
-{"faces":[{"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]},"times":{"Tallied":{"who":"You","what":"CardsDrawn"}}}}]}},{"Keyword":"Partner"}]}]}
+{"faces":[{"abilities":[{"Keyword":"Partner"}]}]}

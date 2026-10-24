@@ -137,6 +137,7 @@ fn phrase(cost: &Cost) -> Option<String> {
             count: count @ Amount::Fixed(_),
             filter: None,
         } => Some(format!("discard {}", cards_text(count)?)),
+        CostItem::SacrificeSelf => Some("sacrifice ~".to_owned()),
         CostItem::PayEnergy(Amount::Fixed(_))
         | CostItem::Sacrifice {
             count: Amount::Fixed(_),

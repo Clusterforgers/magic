@@ -346,6 +346,7 @@ Eternal Witness
 Ethereal Armor
 Ethereal Usher
 Ethersworn Sphinx
+Eureka Moment
 Evercoat Ursine
 Evolutionary Leap
 Exalted Angel
@@ -582,6 +583,7 @@ Lavacore Elemental
 Lazotep Reaver
 Leafkin Druid
 Legion Loyalty
+Legolas Greenleaf
 Levitation
 Lhurgoyf
 Life of Toshiro Umezawa // Memory of Toshiro

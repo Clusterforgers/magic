@@ -9,6 +9,9 @@ use super::{Effect, TargetSpec};
 /// The ways to write the effects of a clause with several targets as sentences, which are the ways to write the
 /// effects of each target joined; empty when an effect acts on more than one target or the targets are not used in order.
 pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Vec<String>> {
+    if let Some(sentence) = super::each_target::text(targets, effects) {
+        return vec![vec![sentence]];
+    }
     let Some(parts) = split(targets.len(), effects) else {
         return Vec::new();
     };

@@ -1,1 +1,1 @@
-{"faces":[{"abilities":[{"Keyword":"Haste"},{"Activated":{"cost":[{"Mana":"{2}{G}"},"Tap"],"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}},{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Fight":{"a":{"Target":0},"b":{"Target":1}}}]}}]}]}
+{"faces":[{"abilities":[{"Keyword":"Haste"},{"Activated":{"cost":[{"Mana":"{2}{G}"},"Tap"],"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}},{"what":{"Object":[{"Type":"Creature"},"Other"]}}],"effects":[{"Fight":{"what":{"Target":0},"with":{"Target":1}}}]}}]}]}

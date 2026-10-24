@@ -1,0 +1,37 @@
+{
+  "oracle_id": "e5912d21-e188-4b9e-8e92-a6e8196353c6",
+  "name": "Mogis, God of Slaughter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mogis, God of Slaughter",
+      "oracle_fingerprint": "f38830d33bbcd6f8ffbd0a5ad4e2412e",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": { "left": { "Devotion": ["Black", "Red"] }, "op": "Lt", "right": 7 }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+                  "unpaid": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

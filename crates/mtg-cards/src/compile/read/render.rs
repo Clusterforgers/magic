@@ -8,6 +8,7 @@ mod created;
 mod damage_by;
 mod delayed;
 mod divided;
+mod each_target;
 mod from_graveyard;
 mod graveyards;
 mod instead;
@@ -362,6 +363,11 @@ fn graveyard_wordings(ability: &Ability, texts: &mut Vec<String>) {
             ..
         } if from_graveyard::pays_to_return(effects) => from_graveyard::say(texts),
         Ability::Triggered {
+            from: ZoneKind::Graveyard,
+            effects,
+            ..
+        } if from_graveyard::returns_to_hand(effects) => from_graveyard::from_your_graveyard(texts),
+        Ability::Triggered {
             when:
                 TriggerPattern::ZoneChange {
                     what,
@@ -399,9 +405,19 @@ fn chapter_texts(number: u32, targets: &[TargetSpec], effects: &[Effect]) -> Vec
 }
 
 /// The ways the event of a triggered ability is worded.
-fn head_wordings(head: Vec<String>) -> Vec<Vec<String>> {
+fn head_wordings(head: Vec<String>, condition: Option<&Condition>) -> Vec<Vec<String>> {
     // An Equipment says "equipped creature" and an Aura "enchanted creature"; the data does not say which.
     let mut heads = vec![head.clone()];
+    // A number in the condition is a word or digits ("if you gained 3 or more life this turn").
+    heads.extend(condition.iter().flat_map(|held| {
+        let facts = super::facts::texts(held);
+        let others: Vec<Vec<String>> = facts
+            .into_iter()
+            .skip(1)
+            .map(|fact| vec![head[0].clone(), format!("if {fact},")])
+            .collect();
+        others
+    }));
     if head[0].contains("equipped creature") {
         heads.push(
             head.iter()
@@ -420,6 +436,15 @@ fn head_wordings(head: Vec<String>) -> Vec<Vec<String>> {
         })
         .collect();
     heads.extend(whens);
+    // Each main phase of the player's: "At the beginning of each of your postcombat main phases".
+    if let Some(phase) = head[0]
+        .strip_prefix("At the beginning of your ")
+        .and_then(|phase| phase.strip_suffix("main phase,"))
+    {
+        let mut each = head.clone();
+        each[0] = format!("At the beginning of each of your {phase}main phases,");
+        heads.push(each);
+    }
     // A card that is targeted once says "When" ("When this creature becomes the target of a spell or ability").
     if head[0].starts_with("Whenever ~ becomes the target of a spell or ability")
         && !head[0].contains(" each turn")
@@ -492,19 +517,13 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             from,
             targets,
             effects,
-        } if *from == written_from(when, effects) => {
+        } if *from == written_from(when, effects)
+            || (*from == ZoneKind::Graveyard && from_graveyard::returns_to_hand(effects)) =>
+        {
             let Some(head) = trigger_head(when, intervening_if.as_ref()) else {
                 return Vec::new();
             };
-            // A number in the condition is a word or digits ("if you gained 3 or more life this turn").
-            let numerals: Vec<Vec<String>> = intervening_if
-                .iter()
-                .flat_map(super::facts::texts)
-                .skip(1)
-                .map(|fact| vec![head[0].clone(), format!("if {fact},")])
-                .collect();
-            let mut heads = head_wordings(head);
-            heads.extend(numerals);
+            let heads = head_wordings(head, intervening_if.as_ref());
             alternatives(targets, effects)
                 .iter()
                 .flat_map(|sentences| {
@@ -1760,17 +1779,14 @@ impl Writer<'_> {
     /// An exile with no binding: "exile target creature", and "... until ~ leaves the battlefield" with the duration.
     fn exiled(&mut self, effect: &Effect) -> Option<String> {
         match effect {
+            // A target exiled and bound for a later step ("the mana value of the permanent exiled this way") is the same.
             Effect::Exile {
                 what,
-                bind: None,
+                bind,
                 duration: None,
-            } => Some(format!("exile {}", self.object(what)?)),
-            // A target exiled and bound for a later step ("the mana value of the permanent exiled this way").
-            Effect::Exile {
-                what: what @ Ref::Target(_),
-                bind: Some(_),
-                duration: None,
-            } => Some(format!("exile {}", self.object(what)?)),
+            } if bind.is_none() || matches!(what, Ref::Target(_)) => {
+                Some(format!("exile {}", self.object(what)?))
+            }
             Effect::Exile {
                 what,
                 bind: None,
