@@ -67,6 +67,12 @@ thread_local! {
     static NEEDED: RefCell<Vec<Traits>> = const { RefCell::new(Vec::new()) };
 }
 
+#[cfg(test)]
+thread_local! {
+    /// How many times the pass has been worked out on this thread, for the tests that guard the cost of a crowded table.
+    static COMPUTED: Cell<u64> = const { Cell::new(0) };
+}
+
 /// Ends the pass of this thread, whether it returned or unwound.
 struct Computing;
 
@@ -342,6 +348,8 @@ impl GameState {
             return &EMPTY;
         }
         self.layers.0.get_or_init(|| {
+            #[cfg(test)]
+            COMPUTED.with(|count| count.set(count.get() + 1));
             let _computing = Computing::enter();
             compute(self)
         })
@@ -1249,6 +1257,8 @@ mod characteristic_keywords;
 mod chosen;
 #[cfg(test)]
 mod counters;
+#[cfg(test)]
+mod crowd;
 #[cfg(test)]
 mod defining;
 #[cfg(test)]

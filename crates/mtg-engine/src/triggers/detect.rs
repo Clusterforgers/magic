@@ -1457,7 +1457,10 @@ fn object_triggers(
 
 /// The permanents of a state that have a triggered ability, with the abilities they have, in battlefield order: found once
 /// for all the events of a batch instead of once for each event, since only these can trigger on any of them.
-struct Watchers(Vec<(ObjectId, Vec<(AbilityRef, Arc<Ability>)>)>);
+struct Watchers(Vec<(ObjectId, Held)>);
+
+/// The abilities of an object with their addresses.
+type Held = Vec<(AbilityRef, Arc<Ability>)>;
 
 impl Watchers {
     fn of(state: &GameState) -> Watchers {
@@ -1622,10 +1625,7 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
     // The events of the batch together, after each of them: what looks back is judged against `pre`, the rest `post`.
     let (back, forward): (Vec<Happened>, Vec<Happened>) =
         all.into_iter().partition(Happened::looks_back);
-    for (state, watching, members) in [
-        (pre, &before, back),
-        (post, &after, forward),
-    ] {
+    for (state, watching, members) in [(pre, &before, back), (post, &after, forward)] {
         if !members.is_empty() {
             let together = Happened::Batch(members);
             let watching = watching.get_or_init(|| Watchers::of(state));

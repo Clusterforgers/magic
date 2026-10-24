@@ -112,6 +112,7 @@ mod counting_fuzz;
 mod crew_events;
 mod crew_record;
 mod crowded_games;
+mod crowded_turn;
 mod curse_fuzz;
 mod curses_attacked;
 mod damage_batch;
