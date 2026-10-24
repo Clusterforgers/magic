@@ -248,7 +248,6 @@ mod returns;
 mod reveal;
 mod reveal_until;
 mod riot;
-mod scratch;
 mod search_by_controller;
 mod search_lists;
 mod search_pairs;
