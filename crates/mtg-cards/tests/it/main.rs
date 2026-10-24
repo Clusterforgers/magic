@@ -20,6 +20,7 @@ mod hand_written;
 mod linked_exile;
 mod printed;
 mod proposal;
+mod proposal_blocks;
 mod roundtrip;
 mod transform_cards;
 mod vocabulary;

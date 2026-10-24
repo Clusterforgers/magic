@@ -2,6 +2,7 @@
 use super::*;
 
 use crate::compile::read::level_block;
+use crate::compile::{block_plan, without_header};
 use crate::value::Condition;
 
 /// The condition of a range of level counters, as data.
@@ -187,4 +188,105 @@ fn attacking_while_saddled_is_the_attack_with_the_saddled_designation(
 )]
 fn saddled_is_read_only_for_the_attack(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Triggered, false), None, "{text}");
+}
+
+#[rstest]
+#[case::a_leveler("LEVEL 2-3\n2/4\nFlying\n{T}: Draw a card.", None, 1, &["Flying", "{T}: Draw a card."])]
+#[case::a_class("{3}{U}: Level 2\nWhen this Class becomes level 2, draw a card.", None, 1, &["When this Class becomes level 2, draw a card."])]
+#[case::a_class_with_several_lines("{1}{R}: Level 3\nFlying\nHaste", None, 1, &["Flying", "Haste"])]
+#[case::a_station_block("3+ | Flying, haste\nWhen this Spacecraft enters, draw a card.", None, 0, &["Flying, haste", "When this Spacecraft enters, draw a card."])]
+#[case::the_station_where_it_becomes_a_creature("8+ | Flying", Some(8), 1, &["Flying"])]
+#[case::another_station_than_the_creature_one("3+ | Flying", Some(8), 0, &["Flying"])]
+fn a_plan_splits_a_block_into_the_abilities_of_its_header_and_the_lines_under_it(
+    #[case] text: &str,
+    #[case] creature_at: Option<i32>,
+    #[case] head: usize,
+    #[case] lines: &[&str],
+) {
+    let Some(plan) = block_plan(text, creature_at) else {
+        panic!("no plan: {text}");
+    };
+
+    assert_eq!(plan.head.len(), head, "{text}");
+    assert_eq!(plan.lines, lines, "{text}");
+}
+
+#[rstest]
+#[case::flying("Flying")]
+#[case::level_up("Level up {1}{U}")]
+#[case::a_class_header_without_cost("Level 2")]
+#[case::a_range_backwards("LEVEL 3-2\n1/1")]
+#[case::a_leveler_without_a_size("LEVEL 2-3\nFlying")]
+#[case::a_station_without_a_threshold("+ | Flying")]
+#[case::a_threshold_that_is_not_a_number("x+ | Flying")]
+fn a_text_that_is_no_block_has_no_plan(#[case] text: &str) {
+    assert_eq!(block_plan(text, None), None, "{text}");
+}
+
+/// A JSON text with the places of the condition filled: `RANGE` is the whole range, `GE` and `LE` its two ends.
+fn with_range(json: &str) -> String {
+    json.replace("RANGE", &between(2, 3))
+        .replace("GE", &compare("Ge", 2))
+        .replace("LE", &compare("Le", 3))
+}
+
+#[rstest]
+#[case::the_levels_alone(
+    r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Flying"}],"condition":RANGE}}"#,
+    r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Flying"}]}}"#
+)]
+#[case::an_own_condition_after_it(
+    r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Haste"}],"condition":{"All":[RANGE,"YourTurn"]}}}"#,
+    r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Haste"}],"condition":"YourTurn"}}"#
+)]
+#[case::an_own_condition_before_it(
+    r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Haste"}],"condition":{"All":["YourTurn",RANGE]}}}"#,
+    r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Haste"}],"condition":"YourTurn"}}"#
+)]
+#[case::both_ends_beside_an_own_condition(
+    r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Haste"}],"condition":{"All":[GE,LE,"YourTurn"]}}}"#,
+    r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Haste"}],"condition":"YourTurn"}}"#
+)]
+#[case::an_activation(
+    r#"{"Activated":{"cost":["Tap"],"condition":RANGE,"effects":[{"Draw":{}}]}}"#,
+    r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#
+)]
+#[case::a_trigger(
+    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"if":RANGE,"effects":[{"Draw":{}}]}}"#,
+    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"Draw":{}}]}}"#
+)]
+fn the_condition_of_a_block_is_taken_off_an_ability_that_works_under_it(
+    #[case] with: &str,
+    #[case] without: &str,
+) {
+    let level: Condition = serde_json::from_str(&between(2, 3)).unwrap();
+
+    assert_eq!(
+        without_header(&ability(&with_range(with)), &level),
+        Some(ability(&with_range(without)))
+    );
+}
+
+#[rstest]
+#[case::no_condition(r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Flying"}]}}"#)]
+#[case::another_range(
+    r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Flying"}],"condition":{"All":[GE,{"Compare":{"left":{"Counters":{"on":"This","counter":{"Other":"level"}}},"op":"Le","right":4}}]}}}"#
+)]
+#[case::only_one_end(
+    r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Flying"}],"condition":GE}}"#
+)]
+#[case::another_condition(
+    r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Flying"}],"condition":"YourTurn"}}"#
+)]
+#[case::a_spell_has_no_condition(r#"{"Spell":{"effects":[{"Draw":{}}]}}"#)]
+fn an_ability_that_does_not_work_under_the_condition_of_a_block_keeps_none_of_it(
+    #[case] json: &str,
+) {
+    let level: Condition = serde_json::from_str(&between(2, 3)).unwrap();
+
+    assert_eq!(
+        without_header(&ability(&with_range(json)), &level),
+        None,
+        "{json}"
+    );
 }
