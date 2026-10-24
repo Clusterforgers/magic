@@ -1,0 +1,51 @@
+{
+  "oracle_id": "5badc2e8-a7d6-48c7-b594-65db953d9d57",
+  "name": "Wingmate Roc",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wingmate Roc",
+      "oracle_fingerprint": "934d7a944098baf7e064175709cc0af4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 3,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "GainLife": { "amount": { "Count": [{ "Type": "Creature" }, "Attacking"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

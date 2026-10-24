@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "c63a5253-b3b7-48d0-8c2c-700fbd0e4c3f",
+  "oracle_id": "aece819e-3678-48bc-9677-d06ebfa58b4e",
+  "multiverse_ids": [
+    675981
+  ],
+  "mtgo_id": 130839,
+  "tcgplayer_id": 578996,
+  "cardmarket_id": 788618,
+  "name": "Verge Rangers",
+  "lang": "en",
+  "released_at": "2024-09-27",
+  "uri": "https://api.scryfall.com/cards/c63a5253-b3b7-48d0-8c2c-700fbd0e4c3f",
+  "scryfall_uri": "https://scryfall.com/card/dsc/108/verge-rangers?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:27:09Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/6/c63a5253-b3b7-48d0-8c2c-700fbd0e4c3f.jpg?1783909629",
+    "normal": "https://cards.scryfall.io/normal/front/c/6/c63a5253-b3b7-48d0-8c2c-700fbd0e4c3f.jpg?1783909629",
+    "large": "https://cards.scryfall.io/large/front/c/6/c63a5253-b3b7-48d0-8c2c-700fbd0e4c3f.jpg?1783909629",
+    "png": "https://cards.scryfall.io/png/front/c/6/c63a5253-b3b7-48d0-8c2c-700fbd0e4c3f.png?1783909629",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/6/c63a5253-b3b7-48d0-8c2c-700fbd0e4c3f.jpg?1783909629",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/6/c63a5253-b3b7-48d0-8c2c-700fbd0e4c3f.jpg?1783909629",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/6/c63a5253-b3b7-48d0-8c2c-700fbd0e4c3f.webp?1783909629",
+    "grid": "https://cards.scryfall.io/grid/front/c/6/c63a5253-b3b7-48d0-8c2c-700fbd0e4c3f.webp?1783909629",
+    "display": "https://cards.scryfall.io/display/front/c/6/c63a5253-b3b7-48d0-8c2c-700fbd0e4c3f.webp?1783909629",
+    "art": "https://cards.scryfall.io/art/front/c/6/c63a5253-b3b7-48d0-8c2c-700fbd0e4c3f.webp?1783909629",
+    "crop": "https://cards.scryfall.io/crop/front/c/6/c63a5253-b3b7-48d0-8c2c-700fbd0e4c3f.webp?1783909629",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/6/c63a5253-b3b7-48d0-8c2c-700fbd0e4c3f.jpg?1783909629"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Scout Ranger",
+  "oracle_text": "First strike\nYou may look at the top card of your library any time.\nAs long as an opponent controls more lands than you, you may play lands from the top of your library. (You can play a land this way only if you have an available land play remaining.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "First strike"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "4c822528-83c3-42c7-8708-dd1d37166819",
+  "set": "dsc",
+  "set_name": "Duskmourn: House of Horror Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/4c822528-83c3-42c7-8708-dd1d37166819",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dsc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c63a5253-b3b7-48d0-8c2c-700fbd0e4c3f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aaece819e-3678-48bc-9677-d06ebfa58b4e&unique=prints",
+  "collector_number": "108",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Livia Prima",
+  "artist_ids": [
+    "0f41e561-bc26-4d85-aab6-66c384e01b74"
+  ],
+  "illustration_id": "c9c54405-b2c2-4a03-9782-3fe7756a3f50",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 5528,
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": null,
+    "tix": "0.12"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=675981&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVerge%2BRangers",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVerge%2BRangers",
+    "edhrec": "https://edhrec.com/route/?cc=Verge+Rangers"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F578996%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=788618&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/130839?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

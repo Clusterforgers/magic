@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c9404d7d-a026-4082-9fcb-1ab571a136b5",
+  "name": "Winding Constrictor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winding Constrictor",
+      "oracle_fingerprint": "a2b1a6c040590f69f3d8cb86a1452cdd",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": {
+                  "Each": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            },
+            "by": { "Add": 1 }
+          }
+        },
+        { "Replacement": { "when": { "CountersPut": { "on": "You" } }, "by": { "Add": 1 } } }
+      ]
+    }
+  ]
+}

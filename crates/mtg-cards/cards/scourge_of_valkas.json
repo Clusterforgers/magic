@@ -1,0 +1,53 @@
+{
+  "oracle_id": "0a147009-a57c-4ac1-ab81-d8bd8b737631",
+  "name": "Scourge of Valkas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scourge of Valkas",
+      "oracle_fingerprint": "40908fc5a04239d4424eaa2c7e7f4b07",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }, "Other"],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Triggering",
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

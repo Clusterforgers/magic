@@ -1,0 +1,164 @@
+{
+  "object": "card",
+  "id": "b33354a5-d99a-46dd-8715-34dbc5f0ec3b",
+  "oracle_id": "5c924f9f-84e2-4051-ae18-0c2cc57cf464",
+  "multiverse_ids": [
+    634850
+  ],
+  "tcgplayer_id": 519307,
+  "cardmarket_id": 738779,
+  "name": "Sally Sparrow",
+  "lang": "en",
+  "released_at": "2023-10-13",
+  "uri": "https://api.scryfall.com/cards/b33354a5-d99a-46dd-8715-34dbc5f0ec3b",
+  "scryfall_uri": "https://scryfall.com/card/who/155/sally-sparrow?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:50:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/3/b33354a5-d99a-46dd-8715-34dbc5f0ec3b.jpg?1783914623",
+    "normal": "https://cards.scryfall.io/normal/front/b/3/b33354a5-d99a-46dd-8715-34dbc5f0ec3b.jpg?1783914623",
+    "large": "https://cards.scryfall.io/large/front/b/3/b33354a5-d99a-46dd-8715-34dbc5f0ec3b.jpg?1783914623",
+    "png": "https://cards.scryfall.io/png/front/b/3/b33354a5-d99a-46dd-8715-34dbc5f0ec3b.png?1783914623",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/3/b33354a5-d99a-46dd-8715-34dbc5f0ec3b.jpg?1783914623",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/3/b33354a5-d99a-46dd-8715-34dbc5f0ec3b.jpg?1783914623",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/3/b33354a5-d99a-46dd-8715-34dbc5f0ec3b.webp?1783914623",
+    "grid": "https://cards.scryfall.io/grid/front/b/3/b33354a5-d99a-46dd-8715-34dbc5f0ec3b.webp?1783914623",
+    "display": "https://cards.scryfall.io/display/front/b/3/b33354a5-d99a-46dd-8715-34dbc5f0ec3b.webp?1783914623",
+    "art": "https://cards.scryfall.io/art/front/b/3/b33354a5-d99a-46dd-8715-34dbc5f0ec3b.webp?1783914623",
+    "crop": "https://cards.scryfall.io/crop/front/b/3/b33354a5-d99a-46dd-8715-34dbc5f0ec3b.webp?1783914623",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/3/b33354a5-d99a-46dd-8715-34dbc5f0ec3b.jpg?1783914623"
+  },
+  "mana_cost": "{2}{W}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Detective",
+  "oracle_text": "You may cast creature spells as though they had flash.\nWhenever one or more other creatures you control leave the battlefield, investigate. This ability triggers only once each turn. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Investigate"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "1145be5c-62f5-43ef-8dea-3a1e85ad9b72",
+      "component": "token",
+      "name": "Clue",
+      "type_line": "Token Artifact — Clue",
+      "uri": "https://api.scryfall.com/cards/1145be5c-62f5-43ef-8dea-3a1e85ad9b72"
+    },
+    {
+      "object": "related_card",
+      "id": "6209b79d-02a4-40d5-9301-98cf97ac095a",
+      "component": "combo_piece",
+      "name": "Sally Sparrow",
+      "type_line": "Legendary Creature — Human Detective",
+      "uri": "https://api.scryfall.com/cards/6209b79d-02a4-40d5-9301-98cf97ac095a"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set": "who",
+  "set_name": "Doctor Who",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awho&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/who?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b33354a5-d99a-46dd-8715-34dbc5f0ec3b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5c924f9f-84e2-4051-ae18-0c2cc57cf464&unique=prints",
+  "collector_number": "155",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tatiana Veryayskaya",
+  "artist_ids": [
+    "9dc3cb79-1f1d-4246-b56e-ce164022a8ae"
+  ],
+  "illustration_id": "52766330-9aab-4bfe-b940-24d4f1e29ec6",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 14491,
+  "preview": {
+    "source": "Mistystep",
+    "source_uri": "https://www.tiktok.com/@mistystep/video/7285815678408412462",
+    "previewed_at": "2023-10-03"
+  },
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "0.45",
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": "0.34",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=634850&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSally%2BSparrow",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSally%2BSparrow",
+    "edhrec": "https://edhrec.com/route/?cc=Sally+Sparrow"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F519307%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=738779&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Sally+Sparrow&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

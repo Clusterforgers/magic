@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flash"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"},"Other"]}}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":{"Other":"shield"}}}]}},{"Rule":{"rule":{"MayCast":{"what":[{"Subtype":"Merfolk"}],"flash":true}}}}]}]}

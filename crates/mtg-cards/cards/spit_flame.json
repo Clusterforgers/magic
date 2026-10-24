@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f63278e0-3c67-421d-87ce-67725e5e74df",
+  "name": "Spit Flame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spit Flame",
+      "oracle_fingerprint": "e6696da746094bbe6a6000da0590d3eb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              { "Pay": { "cost": "{R}", "paid": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

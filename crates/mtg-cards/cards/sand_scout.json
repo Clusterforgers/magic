@@ -1,0 +1,66 @@
+{
+  "oracle_id": "ca9f9017-c952-4e89-b284-02396e6be0af",
+  "name": "Sand Scout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sand Scout",
+      "oracle_fingerprint": "6588d1aecd6877be6cd897d1c57e8c36",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Gt",
+                "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Desert" }], "as": "land" } },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Land" }, { "OwnedBy": "You" }],
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Sand Warrior",
+                      "colors": ["Red", "Green", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Sand", "Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

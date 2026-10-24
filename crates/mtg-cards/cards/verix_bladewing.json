@@ -1,0 +1,39 @@
+{
+  "oracle_id": "d7315b3b-6e5d-4d28-a503-bfae1daf6c43",
+  "name": "Verix Bladewing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Verix Bladewing",
+      "oracle_fingerprint": "9dd0c0b2bcc5bda650dae6c80f86f057",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": "Kicked",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Karox Bladewing",
+                      "colors": ["Red"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dragon"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

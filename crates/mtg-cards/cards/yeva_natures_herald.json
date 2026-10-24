@@ -1,0 +1,21 @@
+{
+  "oracle_id": "2d513c3e-bd27-479e-af32-7f66d96d0de0",
+  "name": "Yeva, Nature's Herald",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yeva, Nature's Herald",
+      "oracle_fingerprint": "89f5b7ac5f8a56e5e6df958aa4dd6f36",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": [{ "Color": "Green" }, { "Type": "Creature" }], "flash": true }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

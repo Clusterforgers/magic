@@ -1,0 +1,48 @@
+{
+  "oracle_id": "8776d14f-a5a2-4ef3-98d0-e1148e579e4d",
+  "name": "Sacred Mesa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sacred Mesa",
+      "oracle_fingerprint": "98cb72a0a613b58a9a6247383058901a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Pegasus" }] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Pegasus",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Pegasus"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

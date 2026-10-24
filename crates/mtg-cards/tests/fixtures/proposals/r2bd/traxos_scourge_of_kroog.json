@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Trample"},{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":"Tapped"}},{"Static":{"affected":"This","mods":["DoesntUntap"]}},{"Triggered":{"when":{"SpellCast":{"by":"You","what":[{"AnyOf":[{"Type":"Artifact"},{"Supertype":"Legendary"},{"Subtype":"Saga"}]}]}},"effects":[{"Untap":{"what":"This"}}]}}]}]}

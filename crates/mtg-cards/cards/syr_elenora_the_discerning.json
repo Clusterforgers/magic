@@ -1,0 +1,40 @@
+{
+  "oracle_id": "8f6a3dcf-32e0-48c7-9265-0e298df4a5e4",
+  "name": "Syr Elenora, the Discerning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Syr Elenora, the Discerning",
+      "oracle_fingerprint": "ee66151e0865d15cf2f02e8ff1f21e00",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "toughness": 4
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "Opponents" }, { "Targeting": ["This"] }],
+            "change": "Increase",
+            "mana": "{2}"
+          }
+        }
+      ]
+    }
+  ]
+}

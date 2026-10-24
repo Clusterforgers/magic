@@ -1,0 +1,22 @@
+{
+  "oracle_id": "95b53836-18aa-451a-992d-2a111deeeab2",
+  "name": "Yarok, the Desecrated",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yarok, the Desecrated",
+      "oracle_fingerprint": "5cfd72360d439f4ba52006cdef3b71e5",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Lifelink" },
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": { "cause": { "ZoneChange": { "what": [], "to": "Battlefield" } } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

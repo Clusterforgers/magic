@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Land"},{"OwnedBy":"You"}],"to":"Graveyard"}},"effects":[{"GainLife":{"amount":1}}]}},{"Activated":{"cost":"{2}{G}","effects":[{"Mill":{}}]}}]}]}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "2bade11e-04e0-42a2-8861-9257c99a7c08",
+  "name": "Saruman, the White Hand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saruman, the White Hand",
+      "oracle_fingerprint": "393ec5a85c8f3108faeb5d5196b6972e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              {
+                "Amass": {
+                  "subtype": "Orc",
+                  "count": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Subtype": "Goblin" }, { "Subtype": "Orc" }] },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Ward": "{2}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

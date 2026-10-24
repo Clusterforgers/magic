@@ -1,0 +1,40 @@
+{
+  "oracle_id": "98b283dc-96a6-45a3-8a3f-11458497f358",
+  "name": "Teysa, Envoy of Ghosts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teysa, Envoy of Ghosts",
+      "oracle_fingerprint": "491cf43b1ebdb3643eed36d042b2e8f7",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": { "Protection": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": { "source": [{ "Type": "Creature" }], "to": "You", "combat": true }
+            },
+            "effects": [
+              { "Destroy": { "what": "Dealer" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

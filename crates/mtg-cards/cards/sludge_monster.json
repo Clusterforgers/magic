@@ -1,0 +1,44 @@
+{
+  "oracle_id": "2802fc92-49a0-43c8-bc10-24882eeee3f1",
+  "name": "Sludge Monster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sludge Monster",
+      "oracle_fingerprint": "6e0d3ab9d9fd1efb5e5f171943e2f756",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "slime" } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Not": { "Subtype": "Horror" } },
+                { "HasCounter": { "Other": "slime" } }
+              ]
+            },
+            "mods": ["LoseAbilities", { "SetPT": { "power": 2, "toughness": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

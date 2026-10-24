@@ -1,0 +1,34 @@
+{
+  "oracle_id": "8951d797-6356-4f27-a6de-e013216274d6",
+  "name": "Tajic, Blade of the Legion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tajic, Blade of the Legion",
+      "oracle_fingerprint": "45e3e1957eb52e8409147a0da875d31f",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at_least": 3
+              }
+            },
+            "if": { "Matches": { "subject": "This", "selector": ["Attacking"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 5, "toughness": 5 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

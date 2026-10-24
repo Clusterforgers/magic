@@ -1,0 +1,33 @@
+{
+  "oracle_id": "97248734-6e99-42a2-8f11-f3337b25f8ab",
+  "name": "Sage's Nouliths",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sage's Nouliths",
+      "oracle_fingerprint": "b5391b8f8d1c0d411ea31a34c9cd638a",
+      "abilities": [
+        { "Keyword": "JobSelect" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 0 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+                    "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+                  }
+                }
+              },
+              { "AddSubtype": "Cleric" }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

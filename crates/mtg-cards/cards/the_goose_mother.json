@@ -1,0 +1,46 @@
+{
+  "oracle_id": "de595f1b-3f7d-45e0-a31b-ed23e5d1ee48",
+  "name": "The Goose Mother",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Goose Mother",
+      "oracle_fingerprint": "3623811d8547ad8204ecc11b471753d9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "food" },
+                  "count": { "Half": { "of": "X", "up": true } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Food" }] } }],
+                  "paid": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

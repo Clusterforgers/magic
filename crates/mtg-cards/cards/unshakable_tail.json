@@ -1,0 +1,45 @@
+{
+  "oracle_id": "3d28e89d-d5e2-46b1-8dd2-d808b78f08fe",
+  "name": "Unshakable Tail",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unshakable Tail",
+      "oracle_fingerprint": "8417bdf3698b3f4fdda1d6eeb345ec6e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "StepBegins": { "step": "Upkeep", "whose": "You" } }
+              ]
+            },
+            "effects": [{ "Surveil": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
+                  "from": "Library",
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "Sacrifice": { "filter": [{ "Subtype": "Clue" }] } }],
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

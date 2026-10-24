@@ -1,0 +1,32 @@
+{
+  "oracle_id": "3319b2df-7354-44b5-afa1-b9bc4a577254",
+  "name": "Solidarity of Heroes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Solidarity of Heroes",
+      "oracle_fingerprint": "d7b67ee46e8fa4aa887ecbe3d6353268",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Increase",
+            "mana": "{1}{G}",
+            "per": { "Sum": [{ "TargetCount": 0 }, -1] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [{ "MultiplyCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

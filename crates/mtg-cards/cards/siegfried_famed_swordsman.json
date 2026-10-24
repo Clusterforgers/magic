@@ -1,0 +1,46 @@
+{
+  "oracle_id": "a7cac6c3-cbb1-41f4-905d-2eb581e8e2e0",
+  "name": "Siegfried, Famed Swordsman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Siegfried, Famed Swordsman",
+      "oracle_fingerprint": "8c9ea168c8a61d177d61f1e216b6815a",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" }
+                        ]
+                      },
+                      {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "1820af5c-9cc2-4b77-b4ca-86084442f087",
+  "name": "Sun Droplet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sun Droplet",
+      "oracle_fingerprint": "b87065c797e3c55c7e330f77c53ce857",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "charge", "count": "Triggering" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "RemoveCounters": { "from": "This", "counter": "charge" } }]
+                }
+              },
+              { "If": { "condition": "Performed", "then": [{ "GainLife": { "amount": 1 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

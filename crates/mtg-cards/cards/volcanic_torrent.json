@@ -1,0 +1,31 @@
+{
+  "oracle_id": "ec2968fb-163d-4907-862b-b84a1f167833",
+  "name": "Volcanic Torrent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Volcanic Torrent",
+      "oracle_fingerprint": "963dad6d81ef00252f22e1341d5a699f",
+      "abilities": [
+        { "Keyword": "Cascade" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "ControlledBy": "Opponents" }
+                    ]
+                  },
+                  "amount": { "Tallied": { "who": "You", "what": "SpellsCast" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

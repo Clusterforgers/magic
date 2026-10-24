@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"SpellCast":{"by":"You","what":[{"Not":{"Type":"Creature"}}]}},"effects":[{"Amass":{"count":{"Stat":{"of":"Triggering","stat":"ManaValue"}},"subtype":"Orc"}}]}},{"Static":{"affected":{"Each":[{"AnyOf":[{"Subtype":"Goblin"},{"Subtype":"Orc"}]},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":{"Ward":"{2}"}}]}}]}]}

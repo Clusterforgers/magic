@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"WithCounters":{"counter":"+1/+1","count":{"Sum":[{"Count":[{"Subtype":"Zombie"},"Other",{"ControlledBy":"You"}]},{"Count":[{"Subtype":"Zombie"},{"In":"Graveyard"},{"OwnedBy":"You"}]}]}}}}},{"Replacement":{"when":{"Damage":{"to":"This"}},"by":{"PreventRemovingCounter":"+1/+1"}}}]}]}
