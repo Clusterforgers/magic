@@ -241,6 +241,31 @@ mod tests {
     }
 
     #[test]
+    fn each_face_of_a_card_has_its_own_block_and_loyalty_is_shown() {
+        let mut card = dragon();
+        card.name = "Front // Back".into();
+        card.faces.push(PrintedFace {
+            name: "Back".into(),
+            type_line: "Legendary Planeswalker — Chandra".into(),
+            oracle_text: "+1: Add {R}{R}.".into(),
+            loyalty: Some("4".into()),
+            ..PrintedFace::default()
+        });
+        let text = card_prompt(&card, &[]);
+        assert!(
+            text.contains("\nFace 1 of 2: Shivan Dragon\nMana cost: {4}{R}{R}\n"),
+            "{text}"
+        );
+        assert!(
+            text.contains(
+                "\nFace 2 of 2: Back\nType line: Legendary Planeswalker — Chandra\nLoyalty: 4\n"
+            ),
+            "{text}"
+        );
+        assert!(!text.contains("Hand-written examples"));
+    }
+
+    #[test]
     fn the_card_of_a_request_is_found_by_its_marker() {
         let request = first_request("m", "s", card_prompt(&dragon(), &[]));
         assert_eq!(card_of(&request), Some("Shivan Dragon"));

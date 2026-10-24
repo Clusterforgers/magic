@@ -1,6 +1,6 @@
 //! The hand-written rules nearest to a card, by the words, word pairs and keywords their oracle texts share.
 
-use std::collections::{BTreeMap, HashMap};
+use std::collections::{BTreeMap, HashMap, HashSet};
 
 use mtg_cards::PrintedCard;
 use mtg_cards::ability::Ability;
@@ -231,10 +231,13 @@ impl ExampleIndex {
             })
             .collect();
         scored.sort_by(|a, b| b.0.total_cmp(&a.0).then_with(|| a.1.name.cmp(&b.1.name)));
+        // Two cards with the same rules teach once.
+        let mut seen = HashSet::new();
         scored
             .into_iter()
-            .take(count)
             .map(|(_, example)| example)
+            .filter(|example| seen.insert(example.rules.as_str()))
+            .take(count)
             .collect()
     }
 }
@@ -267,7 +270,12 @@ mod tests {
             name: card.name.clone(),
             type_line: card.faces[0].type_line.clone(),
             oracle_text: card.faces[0].oracle_text.clone(),
-            rules: rules.to_owned(),
+            // `{}` stands for rules of the card's own, so that no two examples are the same.
+            rules: if rules == "{}" {
+                format!("{{\"card\":\"{}\"}}", card.name)
+            } else {
+                rules.to_owned()
+            },
             terms: terms_of(card),
         }
     }
@@ -330,7 +338,7 @@ mod tests {
     #[test]
     fn the_card_itself_is_never_its_own_example_and_ties_go_by_name() {
         let wanted = printed("Same", "Instant", "Draw a card.", &[]);
-        let a = printed("Beta", "Instant", "Draw a card.", &[]);
+        let a = printed("Bravo", "Instant", "Draw a card.", &[]);
         let b = printed("Alpha", "Instant", "Draw a card.", &[]);
         let index = ExampleIndex {
             examples: vec![example(&wanted, "{}"), example(&a, "{}"), example(&b, "{}")],
@@ -340,7 +348,28 @@ mod tests {
             .iter()
             .map(|e| e.name.as_str())
             .collect();
-        assert_eq!(found, ["Alpha", "Beta"]);
+        assert_eq!(found, ["Alpha", "Bravo"]);
+    }
+
+    #[test]
+    fn cards_with_the_same_rules_are_one_example() {
+        let wanted = printed("W", "Creature", "Shadow", &["Shadow"]);
+        let a = printed("Alpha", "Creature", "Shadow", &["Shadow"]);
+        let b = printed("Beta", "Creature", "Shadow", &["Shadow"]);
+        let c = printed("Gamma", "Creature", "Shadow and more", &["Shadow"]);
+        let index = ExampleIndex {
+            examples: vec![
+                example(&a, "same"),
+                example(&b, "same"),
+                example(&c, "other"),
+            ],
+        };
+        let found: Vec<&str> = index
+            .nearest(&wanted, 5)
+            .iter()
+            .map(|e| e.name.as_str())
+            .collect();
+        assert_eq!(found, ["Alpha", "Gamma"]);
     }
 
     #[test]

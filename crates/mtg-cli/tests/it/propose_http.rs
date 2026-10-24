@@ -157,6 +157,22 @@ async fn the_client_gives_up_after_its_attempts_and_a_refused_key_is_not_retried
 }
 
 #[tokio::test(flavor = "multi_thread")]
+async fn a_printed_client_does_not_show_its_key() {
+    let server = start(|_| messages_reply("{}")).await;
+    let (progress, _) = progress();
+    let key = ApiKey::from_env(|_| Some(KEY.to_owned())).unwrap_or_else(|e| panic!("key: {e}"));
+    let client = AnthropicClient::new(
+        key.clone(),
+        &config(&server),
+        tokio::runtime::Handle::current(),
+        progress,
+    )
+    .unwrap_or_else(|e| panic!("client builds: {e}"));
+    let shown = format!("{client:?} {key:?}");
+    assert!(!shown.contains("SECRET"), "{shown}");
+}
+
+#[tokio::test(flavor = "multi_thread")]
 async fn a_broken_connection_is_retried_as_a_transport_failure() {
     let server = start(|_| messages_reply("{}").cut_after(10)).await;
     let (progress, _) = progress();
