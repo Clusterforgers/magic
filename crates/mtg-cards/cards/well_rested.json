@@ -1,0 +1,34 @@
+{
+  "oracle_id": "f8cebb33-9235-4f63-8171-15af8b8e1436",
+  "name": "Well Rested",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Well Rested",
+      "oracle_fingerprint": "9f5ac7ea9a2d43b391aa06c0ac633a53",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Untapped": { "what": ["This"] } },
+                    "limit": "OncePerTurn",
+                    "effects": [
+                      { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } },
+                      { "GainLife": { "amount": 2 } },
+                      { "Draw": {} }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-//! Goal: whole bot games with decks of fights (Warbriar Blessing, a spell that makes two creatures fight) and decayed creatures finish and keep every invariant for many seeds at tables of two, three and four seats, and the mechanics occur in a campaign (a fight resolves and damages creatures outside combat, a decayed creature attacks and is sacrificed at end of combat and never blocks), and a seeded game is the same game every time.
+//! Goal: whole bot games with decks of fights (Warbriar Blessing, a spell that makes two creatures fight), decayed creatures and permanents that stay tapped (Basalt Monolith, Goblin Sharpshooter, Fall from Favor, Well Rested) finish and keep every invariant for many seeds at tables of two, three and four seats, and the mechanics occur in a campaign (a fight resolves and damages creatures outside combat, a decayed creature attacks and is sacrificed at end of combat and never blocks), and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeMap;

@@ -130,6 +130,8 @@ pub enum Modification {
     CantAttack,
     /// The object can't block: a restriction with no layer that `block_options` reads.
     CantBlock,
+    /// The object does not untap during its controller's untap step: a restriction with no layer that `steps` reads.
+    DoesntUntap,
     /// The object can't be blocked: a restriction with no layer that `block_options` reads.
     CantBeBlocked,
     /// The object can't be blocked by the creatures the selector names, judged when blockers are declared as `controller`
@@ -189,6 +191,7 @@ impl Modification {
             Modification::SwitchPowerToughness => Layer::PtSwitch,
             Modification::CantAttack
             | Modification::CantBlock
+            | Modification::DoesntUntap
             | Modification::CantBeBlocked
             | Modification::CantBeBlockedBy { .. }
             | Modification::CanBlockOnly { .. }
@@ -250,6 +253,7 @@ impl Modification {
             | Modification::GrantAbility(_)
             | Modification::CantAttack
             | Modification::CantBlock
+            | Modification::DoesntUntap
             | Modification::CantBeBlocked
             | Modification::CantBeBlockedBy { .. }
             | Modification::CanBlockOnly { .. }

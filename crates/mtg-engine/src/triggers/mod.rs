@@ -39,7 +39,7 @@ use crate::snapshot::Snapshot;
 
 pub use delayed::{Delayed, DelayedCreated, DelayedId};
 pub use detect::detect;
-pub(crate) use detect::needs_before;
+pub(crate) use detect::{needs_before, step_matches};
 pub use queue::PendingTrigger;
 pub(crate) use reads_x::read as x_read;
 

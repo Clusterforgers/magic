@@ -1,0 +1,27 @@
+{
+  "oracle_id": "195107ad-879d-4b02-a44a-a3ba70fedf88",
+  "name": "Desert",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desert",
+      "oracle_fingerprint": "20b995d9b5455da89048669388d992b8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": { "Step": "EndCombat" },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

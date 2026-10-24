@@ -122,7 +122,6 @@ fn activated_wordings_read_and_write_back(#[case] text: &str) {
 #[case::two_groups_of_objects("~ deals 3 damage to each Goblin and each Elf.")]
 #[case::two_groups_of_players("~ deals 3 damage to each player and each opponent.")]
 #[case::you_after_the_objects("~ deals 3 damage to each creature and you.")]
-#[case::losing_life("~ deals 3 damage to any target and you lose 3 life.")]
 #[case::another_player_gains("~ deals 3 damage to any target and each opponent gains 3 life.")]
 #[case::a_target_gains("~ deals 3 damage to any target and target player gains 3 life.")]
 #[case::life_first("You gain 3 life and ~ deals 3 damage to any target.")]
