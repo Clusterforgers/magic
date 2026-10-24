@@ -27,6 +27,7 @@ use crate::combat::AttackTarget;
 use crate::keywords::{self, OptionalKind, gift};
 use crate::layers::{Held, View, outside};
 use crate::object::{Chosen, FaceDown, GameObject, ObjectKind, ObjectRef, PermanentState};
+use crate::party;
 use crate::snapshot::Snapshot;
 use crate::state::{GameState, Tally};
 use crate::zones::Zone;
@@ -624,6 +625,11 @@ impl<'a> Scope<'a> {
                 .collect(),
             Ref::Monarch => state.monarch().map(Target::Player).into_iter().collect(),
             Ref::Promised => self.promised().map(Target::Player).into_iter().collect(),
+            Ref::Chosen => self
+                .chosen_player()
+                .map(Target::Player)
+                .into_iter()
+                .collect(),
             Ref::Defending => self.defending().map(Target::Player).into_iter().collect(),
             Ref::Attacked => self
                 .attacked_opponents()
@@ -1120,6 +1126,7 @@ impl<'a> Scope<'a> {
             Amount::PermanentsGraved => i64::from(self.state.graved_this_turn()),
             Amount::Tallied { who, what } => self.tallied(who, *what)?,
             Amount::Largest { who, of } => self.largest(who, of)?,
+            Amount::Party(who) => self.party(who)?,
             Amount::StartingLife(who) => self
                 .players(who)?
                 .into_iter()
@@ -1212,6 +1219,28 @@ impl<'a> Scope<'a> {
         i64::try_from(among).map_err(|_| ResolveError::Invalid("too many card types".into()))
     }
 
+    /// The size of the party of the player the reference names, the largest when it names several (CR 700.8).
+    fn party(&self, who: &Ref) -> Result<i64, ResolveError> {
+        let creatures: Vec<Seen<'a>> = self
+            .matching(&Selector(vec![Pred::Type(CardType::Creature)]))?
+            .into_iter()
+            .filter_map(|object| self.seen(object))
+            .collect();
+        let mut largest = 0;
+        for player in self.players(who)? {
+            let masks: Vec<u8> = creatures
+                .iter()
+                .filter(|one| one.controller == player)
+                .map(|one| {
+                    let printed = one.card.map_or(&[][..], |card| &card.card().subtypes[..]);
+                    party::roles(&one.chars, printed)
+                })
+                .collect();
+            largest = largest.max(party::size(&masks));
+        }
+        Ok(i64::from(largest))
+    }
+
     /// The life totals of the players a reference names.
     fn lives(&self, who: &Ref) -> Result<impl Iterator<Item = i64>, ResolveError> {
         let players = self.players(who)?;
@@ -1232,6 +1261,14 @@ impl<'a> Scope<'a> {
             .object(self.source.id)
             .filter(|object| object.counter() == self.source.counter)
             .map_or(&[], GameObject::paid_costs)
+    }
+
+    /// The player the source chose as it entered, while they are still in the game.
+    fn chosen_player(&self) -> Option<PlayerId> {
+        match self.entered_choice() {
+            Some(Chosen::Player(player)) if self.state.is_alive(*player) => Some(*player),
+            _ => None,
+        }
     }
 
     /// The opponent a gift was promised to as the spell was cast, while they are still in the game (CR 702.174).

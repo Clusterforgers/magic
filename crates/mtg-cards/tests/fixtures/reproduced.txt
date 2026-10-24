@@ -682,6 +682,7 @@ Machine God's Effigy
 Magmatic Insight
 Make Disappear
 Makeshift Mauler
+Malakir Blood-Priest
 Malleable Impostor
 Mana Bloom
 Manabarbs
@@ -1052,6 +1053,7 @@ Spinerock Knoll
 Spire Golem
 Spire Winder
 Spirit of the Hearth
+Spoils of Adventure
 Spring // Mind
 Springleaf Drum
 Squirrel Nest
@@ -1190,6 +1192,7 @@ Treasure Hunt
 Trove Tracker
 Troyan, Gutsy Explorer
 True Identity
+True-Name Nemesis
 Trumpeting Gnarr
 Tumble Magnet
 Turn // Burn

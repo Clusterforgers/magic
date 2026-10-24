@@ -58,6 +58,8 @@ pub enum Chosen {
     Color(mtg_core::color::Color),
     /// A creature type.
     CreatureType(mtg_core::card::Subtype),
+    /// A player (public, like every choice made as a permanent enters).
+    Player(PlayerId),
 }
 
 /// Why an object lies face down (CR 708): the rules read that it does, who may look at it and what made it so. A zone

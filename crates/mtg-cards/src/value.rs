@@ -346,6 +346,9 @@ pub enum Amount {
     },
     /// The life total the players the reference names began the game with (the least of them).
     StartingLife(Ref),
+    /// The size of the party of the player the reference names (CR 700.8): the most roles among Cleric, Rogue, Warrior and
+    /// Wizard their creatures fill, each creature filling one role and each role once, so 0 to 4; the largest when it names several.
+    Party(Ref),
     /// The amount of the event that triggered the ability ("that much", "that many", "the damage dealt"): the damage
     /// dealt, the life gained or lost, the counters put or removed; for a batch ("one or more") how many of its events
     /// the pattern found, and for a batch of damage the damage dealt in all.
@@ -414,6 +417,7 @@ enum Tagged {
     Tallied { who: Ref, what: TurnTally },
     Largest { who: Ref, of: Selector },
     StartingLife(Ref),
+    Party(Ref),
     Triggering,
 }
 
@@ -472,6 +476,7 @@ enum TaggedRef<'a> {
         of: &'a Selector,
     },
     StartingLife(&'a Ref),
+    Party(&'a Ref),
     Triggering,
 }
 
@@ -506,6 +511,7 @@ impl From<Tagged> for Amount {
             Tagged::Tallied { who, what } => Amount::Tallied { who, what },
             Tagged::Largest { who, of } => Amount::Largest { who, of },
             Tagged::StartingLife(who) => Amount::StartingLife(who),
+            Tagged::Party(who) => Amount::Party(who),
             Tagged::Triggering => Amount::Triggering,
         }
     }
@@ -551,6 +557,7 @@ impl Serialize for Amount {
             }
             Amount::Largest { who, of } => TaggedRef::Largest { who, of }.serialize(serializer),
             Amount::StartingLife(who) => TaggedRef::StartingLife(who).serialize(serializer),
+            Amount::Party(who) => TaggedRef::Party(who).serialize(serializer),
             Amount::Triggering => TaggedRef::Triggering.serialize(serializer),
         }
     }

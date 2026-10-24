@@ -73,6 +73,10 @@ fn a_reduction_for_each_thing_counted(#[case] text: &str, #[case] per: &str) {
     "Dragon spells you cast cost {1} less to cast for each Dragon you control.",
     r#"{"CostModifier":{"applies_to":["Spell",{"Subtype":"Dragon"},{"ControlledBy":"You"}],"change":"Reduce","mana":"{1}","per":{"Count":[{"Subtype":"Dragon"},{"ControlledBy":"You"}]}}}"#
 )]
+#[case::creatures_in_your_party(
+    "This spell costs {1} less to cast for each creature in your party.",
+    r#"{"CostModifier":{"applies_to":["This"],"change":"Reduce","mana":"{1}","per":{"Party":"You"}}}"#
+)]
 #[case::counters_on_the_card(
     "Creature spells you cast cost {1} less to cast for each +1/+1 counter on ~.",
     r#"{"CostModifier":{"applies_to":["Spell",{"Type":"Creature"},{"ControlledBy":"You"}],"change":"Reduce","mana":"{1}","per":{"Counters":{"on":"This","counter":"+1/+1"}}}}"#
@@ -147,7 +151,9 @@ fn a_subtype_of_cards_in_a_graveyard_is_counted() {
     "This spell costs {1} less to cast, where X is the greatest power among creatures you control."
 )]
 #[case::x_without_where("This spell costs {X} less to cast.")]
-#[case::a_party("This spell costs {1} less to cast for each creature in your party.")]
+#[case::a_party_of_another_player(
+    "This spell costs {1} less to cast for each creature in their party."
+)]
 #[case::counted_by_a_target("This spell costs {1} less to cast for each target.")]
 #[case::another_player(
     "This spell costs {1} less to cast for each creature card in their graveyard."
