@@ -45,6 +45,8 @@ pub enum CostItem {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         filter: Option<Selector>,
     },
+    /// Mill cards from the top of the payer's library ("Mill a card").
+    Mill(Amount),
     /// Pay energy (`{E}`, CR 107.14): remove that many energy counters from the payer.
     PayEnergy(Amount),
     /// Remove counters of a kind from the source ("Remove a charge counter from this land").
@@ -123,7 +125,9 @@ impl Cost {
     pub fn has_x(&self) -> bool {
         self.0.iter().any(|item| match item {
             CostItem::Mana(mana) => mana.has_x(),
-            CostItem::PayLife(amount) | CostItem::PayEnergy(amount) => *amount == Amount::X,
+            CostItem::PayLife(amount) | CostItem::PayEnergy(amount) | CostItem::Mill(amount) => {
+                *amount == Amount::X
+            }
             CostItem::RemoveCounters { count, .. }
             | CostItem::Sacrifice { count, .. }
             | CostItem::Discard { count, .. }

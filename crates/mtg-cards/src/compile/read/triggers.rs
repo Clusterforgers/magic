@@ -91,6 +91,14 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
         {
             return Some(Ref::Triggering);
         }
+        // "Whenever this creature or equipped creature attacks": the creature that attacks.
+        TriggerPattern::AnyOf(patterns)
+            if patterns
+                .iter()
+                .all(|pattern| matches!(pattern, TriggerPattern::Attacks { .. })) =>
+        {
+            return Some(Ref::Triggering);
+        }
         _ => return None,
     };
     if what.0 == [Pred::This] {

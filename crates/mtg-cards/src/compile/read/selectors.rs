@@ -873,6 +873,25 @@ fn type_separator(r: &mut Reader<'_>, form: Form) -> bool {
     .is_some()
 }
 
+/// "in target opponent's hand", "in target player's hand": the hand of the one player the sentence targets.
+fn target_hand(r: &mut Reader<'_>) -> Option<Ref> {
+    r.need("in target")?;
+    let what = if r.word("player's") {
+        Targetable::Player
+    } else {
+        r.need("opponent's")?;
+        Targetable::Opponent
+    };
+    r.need("hand")?;
+    r.targets.is_empty().then_some(())?;
+    r.targets.push(TargetSpec {
+        what,
+        bounds: Bounds::default(),
+        divide: None,
+    });
+    Some(Ref::Target(0))
+}
+
 /// "from your graveyard", "from your hand": the zone and its owner.
 fn zone_suffix(r: &mut Reader<'_>, form: Form) -> Option<Vec<Pred>> {
     let (hand, graveyard) = if form == Form::Count {
@@ -880,6 +899,11 @@ fn zone_suffix(r: &mut Reader<'_>, form: Form) -> Option<Vec<Pred>> {
     } else {
         ("from your hand", "from your graveyard")
     };
+    if form == Form::Count
+        && let Some(owner) = r.attempt(target_hand)
+    {
+        return Some(vec![Pred::In(ZoneKind::Hand), Pred::OwnedBy(owner)]);
+    }
     // A group of cards says where they are as the count does: "nonland cards in your hand".
     let in_zone = form == Form::All;
     if r.words(hand) || (in_zone && r.words("in your hand")) {
@@ -1442,6 +1466,15 @@ fn zone_words(pred: &Pred, rest: &mut Peekable<Iter<'_, Pred>>, form: Form) -> O
             .is_some()
     {
         return Some("in their hand".to_owned());
+    }
+    // The hand of the one player the sentence targets: the writer of the effect says "player's" for a target player.
+    if form == Form::Count
+        && *zone == ZoneKind::Hand
+        && rest
+            .next_if(|next| **next == Pred::OwnedBy(Ref::Target(0)))
+            .is_some()
+    {
+        return Some("in target opponent's hand".to_owned());
     }
     if *zone != ZoneKind::Graveyard || form == Form::Count {
         return None;

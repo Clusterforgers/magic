@@ -116,6 +116,9 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
     if r.word("remove") {
         return remove(r);
     }
+    if r.word("mill") {
+        return cards(r).map(CostItem::Mill);
+    }
     r.need("sacrifice")?;
     if r.source() {
         return Some(CostItem::SacrificeSelf);
@@ -326,6 +329,7 @@ fn item_text(item: &CostItem) -> Option<String> {
             format!("Pay {}", "{E}".repeat(usize::try_from(*count).ok()?))
         }
         CostItem::PayEnergy(Amount::X) => "Pay X {E}".to_owned(),
+        CostItem::Mill(count) => format!("Mill {}", cards_text(count)?),
         CostItem::Sacrifice { filter, count } => sacrifice_text(filter, count)?,
         CostItem::Discard {
             count,

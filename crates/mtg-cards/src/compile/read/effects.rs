@@ -40,7 +40,7 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 61] = [
+const TEMPLATES: [Template; 62] = [
     modal::modal,
     super::spent::sacrifice_unless,
     super::actions::fight,
@@ -68,6 +68,7 @@ const TEMPLATES: [Template; 61] = [
     super::random_moves::from_graveyard,
     removal,
     super::flicker::exile_and_return,
+    super::flicker::exile_with_counters,
     super::becomes::creature,
     super::becomes::animate,
     super::changes::pump,
@@ -1325,7 +1326,16 @@ fn gain_life(r: &mut Reader<'_>) -> Option<Effect> {
 /// mana of any color in your commander's color identity." or "Add one mana of any color that a land an opponent
 /// controls could produce."
 fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    r.need("add")?;
+    // "Target player adds one mana of any color.": another player's pool.
+    let who = if r.word("add") {
+        Ref::You
+    } else {
+        r.attempt(|r| {
+            let who = player(r).filter(|who| *who != Ref::You)?;
+            r.need("adds")?;
+            Some(who)
+        })?
+    };
     let mut counted = None;
     let mut mana = produced(r, &mut counted)?;
     // "Add {G}. If you control four or more creatures, add {G}{G} instead."
@@ -1346,7 +1356,7 @@ fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     // "Add {W}{W}{W} and you gain 3 life.": the life is gained as the mana is added.
     let gained = r.attempt(gain_life);
     let mut effects = vec![Effect::AddMana {
-        who: Ref::You,
+        who,
         mana,
         times,
         only: Vec::new(),

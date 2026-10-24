@@ -1,0 +1,36 @@
+{
+  "oracle_id": "515c522f-51d5-4f6d-b9b1-ea3c7f6a378e",
+  "name": "Rousing Refrain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rousing Refrain",
+      "oracle_fingerprint": "7fe7f72963a98f69e6503f015e448348",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "times": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "lasts": "Turn"
+                }
+              },
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "exiled" },
+                  "counter": { "Other": "time" },
+                  "count": 3
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Suspend": { "time": 3, "cost": "{1}{R}" } } }
+      ]
+    }
+  ]
+}

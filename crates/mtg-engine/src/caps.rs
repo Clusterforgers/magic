@@ -92,6 +92,7 @@ const RUNS: &[&str] = &[
     "Cost.DiscardSelf",
     "Cost.PayLife",
     "Cost.PayEnergy",
+    "Cost.Mill",
     "Cost.Sacrifice",
     "Cost.Discard",
     "Cost.RemoveCounters",
@@ -728,6 +729,7 @@ mod tests {
     #[case::the_greatest_value("Amount.Greatest", true)]
     #[case::totals("Amount.Total", true)]
     #[case::card_types_among_cards("Amount.CardTypes", true)]
+    #[case::milling_as_a_cost("Cost.Mill", true)]
     #[case::paying_energy("Cost.PayEnergy", true)]
     #[case::paying_a_counted_amount_of_energy("Cost.PayEnergy.Counted", false)]
     #[case::removing_counters_as_a_cost("Cost.RemoveCounters", true)]

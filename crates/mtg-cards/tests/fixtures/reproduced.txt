@@ -521,6 +521,7 @@ Hangarback Walker
 Harabaz Druid
 Harmonious Archon
 Harrow
+Haruspex
 Harvest Season
 Hate Mirage
 Hatut Zeraze Strike Force
@@ -714,6 +715,7 @@ Metropolis Reformer
 Midnight Banshee
 Migratory Greathorn
 Migratory Route
+Millikin
 Ministrant of Obligation
 Mirari
 Mirari's Wake
@@ -916,6 +918,7 @@ Rocksteady, Mutant Marauder
 Rootborn Defenses
 Rope
 Rosheen Meanderer
+Rousing Refrain
 Rugged Prairie
 Ruinous Path
 Rumbleweed
@@ -1103,6 +1106,7 @@ Tabaxi Toucaneers
 Tah-Crop Skirmisher
 Tainted Isle
 Tangle Tumbler
+Tanuki Transplanter
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
 Teacher's Pest
@@ -1132,6 +1136,7 @@ The Seriema
 The Spear of Bashenga
 The Squadron Sinister
 The Thing, Ben Grimm
+The Warring Triad
 Thelonite Hermit
 Thieving Magpie
 Thieving Varmint
