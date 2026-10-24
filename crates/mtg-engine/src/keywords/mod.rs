@@ -148,7 +148,6 @@ use crate::combat::DamageForm;
 use crate::object::{ObjectKind, ObjectRef};
 use crate::snapshot::Snapshot;
 use crate::state::GameState;
-use crate::zones::Zone;
 
 /// How a keyword changes the combat damage its holder deals.
 // Independent switches the keyword tasks set by name, not the states of one machine.
@@ -559,9 +558,8 @@ pub fn keywords_of(state: &GameState, id: ObjectId) -> Vec<&Keyword> {
     if object.kind() == ObjectKind::Ability {
         return Vec::new();
     }
-    if object.zone() == Zone::Battlefield
-        && let Some(held) = state.layers().get(id)
-    {
+    // The layers hold the permanents and the cards elsewhere that a static ability of the game names by zone.
+    if let Some(held) = state.layers().get(id) {
         return held.keywords.iter().collect();
     }
     keyword_abilities(state, id)
@@ -1456,6 +1454,8 @@ mod tests {
         assert_eq!(keywords_of(&game, idle).len(), 0);
         // A new object does not keep what the old one was given (CR 400.7).
         game.objects.get_mut(&plain).unwrap().counter += 1;
+        // The test changed the object without an event, so the layers are asked again.
+        game.layers.reset();
         assert_eq!(keywords_of(&game, plain).len(), 0);
     }
 }

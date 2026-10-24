@@ -30,6 +30,8 @@ mod block_limits;
 mod block_limits_fuzz;
 mod block_restrictions;
 mod block_restrictions_fuzz;
+mod card_grants;
+mod card_grants_fuzz;
 mod card_lists;
 mod cascade;
 mod cascade_fuzz;
