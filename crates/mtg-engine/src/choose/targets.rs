@@ -1,7 +1,7 @@
 //! `ChooseTargets`: who and what a target specification may name, the decision that picks them, and the
 //! recheck on resolution that uses the same rule (CR 115, 608.2b).
 
-use mtg_cards::refs::{Pred, Selector, TargetSpec, Targetable};
+use mtg_cards::refs::{Bounds, Pred, Selector, TargetSpec, Targetable};
 use mtg_cards::value::{Amount, CastWay};
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
@@ -31,6 +31,12 @@ pub(crate) fn options_before_x(
 ) -> Option<TargetOptions> {
     let relaxed = TargetSpec {
         what: without_x(&spec.what),
+        // An exact count of X is not known yet: some X has as many targets as it asks.
+        bounds: if reads_x_count(spec) {
+            Bounds::up_to(None)
+        } else {
+            spec.bounds.clone()
+        },
         ..spec.clone()
     };
     options_for(
@@ -49,7 +55,12 @@ pub(crate) fn options_before_x(
 
 /// Whether what `spec` may target depends on X: a comparison against X among its predicates.
 pub(crate) fn reads_x(spec: &TargetSpec) -> bool {
-    without_x(&spec.what) != spec.what
+    without_x(&spec.what) != spec.what || reads_x_count(spec)
+}
+
+/// Whether how many targets `spec` takes depends on X: an exact count such as "X target creature cards".
+fn reads_x_count(spec: &TargetSpec) -> bool {
+    spec.bounds.min == Amount::X
 }
 
 /// Whether every one of `specs` can be met when the X announced is `x` (CR 601.2c): each has enough legal targets.
@@ -272,28 +283,30 @@ pub(crate) fn options_for(
 ) -> Option<TargetOptions> {
     let legal = legal_for(state, spec, source, controller, cause, x);
     let available = u32::try_from(legal.len()).unwrap_or(u32::MAX);
+    let amount_of = |amount: &Amount| -> Option<u32> {
+        if let Amount::Fixed(n) = amount {
+            return Some(u32::try_from(*n).unwrap_or(0));
+        }
+        let origin = state.object(source).map_or(
+            ObjectRef {
+                id: source,
+                counter: 0,
+            },
+            GameObject::reference,
+        );
+        let announced = Choices {
+            x,
+            optional_costs: paid.to_vec(),
+            way,
+            ..Choices::default()
+        };
+        let mut scope = Scope::announcing(state, controller, origin);
+        scope.choices = &announced;
+        Some(u32::try_from(scope.amount(amount).ok()?).unwrap_or(0))
+    };
     let max = match &spec.bounds.max {
         None => u32::MAX,
-        Some(Amount::Fixed(n)) => u32::try_from(*n).unwrap_or(0),
-        Some(other) => {
-            let origin = state.object(source).map_or(
-                ObjectRef {
-                    id: source,
-                    counter: 0,
-                },
-                GameObject::reference,
-            );
-            let announced = Choices {
-                x,
-                optional_costs: paid.to_vec(),
-                way,
-                ..Choices::default()
-            };
-            let mut scope = Scope::announcing(state, controller, origin);
-            scope.choices = &announced;
-            let amount = scope.amount(other).ok()?;
-            u32::try_from(amount).unwrap_or(0)
-        }
+        Some(amount) => amount_of(amount)?,
     };
     // Every target of a divided amount gets at least one (CR 601.2d), so there are never more targets than the amount.
     let max = match &spec.divide {
@@ -301,7 +314,7 @@ pub(crate) fn options_for(
         _ => max,
     };
     // A specification whose most is zero asks for nothing, whatever its least is (a target only a promised gift adds).
-    let min = spec.bounds.min.min(max);
+    let min = amount_of(&spec.bounds.min)?.min(max);
     if available < min {
         return None;
     }

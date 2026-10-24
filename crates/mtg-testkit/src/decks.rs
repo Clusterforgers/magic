@@ -388,6 +388,51 @@ pub fn ramp_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusErr
     Ok(GameSetup::new(Arc::new(Normal), seed, decks))
 }
 
+/// A legal Normal deck in blue, red and black of the cards that return cards of a graveyard or hands back by an exact
+/// count of X targets or by a pick at random (the corpus cards, as printed), instants to fill the graveyards, and
+/// creatures, derived entirely from `rng`.
+pub fn pick_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
+    let colors = [Color::Blue, Color::Red, Color::Black];
+    let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS).map(|i| land(colors[i % 3])).collect();
+    for (name, copies) in [
+        ("Surreal Memoir", 3),
+        ("Charmbreaker Devils", 2),
+        ("Distorting Wake", 3),
+        ("Entreat the Dead", 3),
+        ("Back in Town", 2),
+        ("Reap the Past", 2),
+        ("Lightning Bolt", 4),
+        ("Counterspell", 2),
+    ] {
+        deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
+    }
+    // Fifteen creatures make the 60 cards.
+    for slot in 0..15 {
+        let generic = u32::try_from(rng.index(3)).unwrap_or(0);
+        let power = i32::try_from(1 + rng.index(4)).unwrap_or(1);
+        let toughness = i32::try_from(1 + rng.index(4)).unwrap_or(1);
+        let name = format!("Pick Fodder {slot} {generic} {power}/{toughness}");
+        deck.push(creature(
+            &name,
+            generic,
+            &[colors[rng.index(3)]],
+            power,
+            toughness,
+        ));
+    }
+    rng.shuffle(&mut deck);
+    Ok(deck)
+}
+
+/// A normal game of `players` seats whose decks are [`pick_deck`]s, fully determined by `seed`.
+pub fn pick_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusError> {
+    let mut decks = Vec::with_capacity(players);
+    for seat in 0u64..players as u64 {
+        decks.push(pick_deck(&mut GameRng::substream(seed, 12_000 + seat))?);
+    }
+    Ok(GameSetup::new(Arc::new(Normal), seed, decks))
+}
+
 /// A legal Normal deck in white, blue and black whose cards remove and counter: four each of Doom Blade, Swords to
 /// Plowshares and Counterspell and two Wrath of God (the corpus cards, as printed), creatures that watch deaths, die
 /// with a trigger aimed at an opponent or leave the battlefield with one, creatures that cannot be destroyed, and lands.

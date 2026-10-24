@@ -605,7 +605,7 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
 }
 
 fn bounds() -> impl Strategy<Value = Bounds> {
-    (0u32..4, proptest::option::of(amount())).prop_map(|(min, max)| Bounds { min, max })
+    (amount(), proptest::option::of(amount())).prop_map(|(min, max)| Bounds { min, max })
 }
 
 fn target_spec() -> impl Strategy<Value = TargetSpec> {

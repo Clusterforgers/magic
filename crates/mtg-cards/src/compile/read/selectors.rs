@@ -209,6 +209,16 @@ fn historic() -> Pred {
     ])
 }
 
+/// An Assassin, Mercenary, Pirate, Rogue or Warlock (CR 205.3m).
+fn outlaw() -> Pred {
+    Pred::AnyOf(
+        ["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
+            .into_iter()
+            .map(|name| Pred::Subtype(Subtype(name.to_owned())))
+            .collect(),
+    )
+}
+
 fn not(pred: Pred) -> Pred {
     Pred::Not(Box::new(pred))
 }
@@ -240,6 +250,7 @@ pub(super) fn adjective(word: &str, form: Form) -> Option<Pred> {
         "multicolored" => multicolored(),
         "monocolored" => monocolored(),
         "historic" => historic(),
+        "outlaw" => outlaw(),
         "tapped" => Pred::Tapped,
         "untapped" => Pred::Untapped,
         "attacking" => Pred::Attacking,
@@ -274,6 +285,7 @@ pub(super) fn adjective_text(pred: &Pred, form: Form) -> Option<String> {
         pred if *pred == monocolored() => "monocolored".to_owned(),
         pred if *pred == attacking_or_blocking() => "attacking or blocking".to_owned(),
         pred if *pred == historic() => "historic".to_owned(),
+        pred if *pred == outlaw() => "outlaw".to_owned(),
         Pred::Tapped => "tapped".to_owned(),
         Pred::Untapped => "untapped".to_owned(),
         Pred::Attacking => "attacking".to_owned(),
@@ -1126,7 +1138,7 @@ fn noun_word(which: [bool; 5], plural: bool) -> Option<String> {
 fn subtype_list(pred: &Pred) -> Option<Vec<&str>> {
     let list = match pred {
         Pred::Subtype(Subtype(name)) => return Some(vec![name.as_str()]),
-        Pred::AnyOf(list) if list.len() > 1 => list,
+        Pred::AnyOf(list) if list.len() > 1 && *pred != outlaw() => list,
         _ => return None,
     };
     list.iter()
@@ -1433,7 +1445,7 @@ fn spec(r: &mut Reader<'_>) -> Option<TargetSpec> {
     }
     if r.words("any number of target") {
         let what = Targetable::Object(phrase(r, Form::Targets)?);
-        let bounds = Bounds { min: 0, max: None };
+        let bounds = Bounds::up_to(None);
         return Some(TargetSpec {
             what,
             bounds,
@@ -1455,7 +1467,18 @@ fn spec(r: &mut Reader<'_>) -> Option<TargetSpec> {
         let max = Some(Amount::Fixed(i32::try_from(count).ok()?));
         return Some(TargetSpec {
             what,
-            bounds: Bounds { min: 0, max },
+            bounds: Bounds::up_to(max),
+            divide: None,
+        });
+    }
+    // "X target creature cards": exactly the X announced.
+    if r.attempt(|r| (r.x() && r.word("target")).then_some(()))
+        .is_some()
+    {
+        let what = Targetable::Object(phrase(r, Form::Targets)?);
+        return Some(TargetSpec {
+            what,
+            bounds: Bounds::exactly(&Amount::X),
             divide: None,
         });
     }
@@ -1469,7 +1492,10 @@ fn spec(r: &mut Reader<'_>) -> Option<TargetSpec> {
         let max = Some(Amount::Fixed(i32::try_from(count).ok()?));
         return Some(TargetSpec {
             what,
-            bounds: Bounds { min: count, max },
+            bounds: Bounds {
+                min: Amount::Fixed(i32::try_from(count).ok()?),
+                max,
+            },
             divide: None,
         });
     }
@@ -1550,7 +1576,14 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
     let Targetable::Object(selector) = &spec.what else {
         return None;
     };
-    if let (count @ 2.., Some(Amount::Fixed(max))) = (spec.bounds.min, &spec.bounds.max)
+    if spec.bounds == Bounds::exactly(&Amount::X) {
+        return Some(format!(
+            "X target {}",
+            phrase_text(selector, Form::Targets)?
+        ));
+    }
+    if let (Some(count @ 2..), Some(Amount::Fixed(max))) =
+        (spec.bounds.fixed_min(), &spec.bounds.max)
         && i64::from(count) == i64::from(*max)
     {
         return Some(format!(
@@ -1559,7 +1592,7 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
             phrase_text(selector, Form::Targets)?
         ));
     }
-    if spec.bounds.min != 0 {
+    if spec.bounds.fixed_min() != Some(0) {
         return None;
     }
     match &spec.bounds.max {

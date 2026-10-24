@@ -1,0 +1,25 @@
+{
+  "id": "e6c10004-eaef-4b19-828f-a0f9bde82984",
+  "oracle_id": "fa482ded-b24c-4f9e-948e-d0620e907b8b",
+  "name": "Surreal Memoir",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2x2",
+  "collector_number": "127",
+  "rarity": "uncommon",
+  "released_at": "2022-07-08",
+  "digital": false,
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Return an instant card at random from your graveyard to your hand.\nRebound (If you cast this spell from your hand, exile it as it resolves. At the beginning of your next upkeep, you may cast this card from exile without paying its mana cost.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Rebound"
+  ]
+}
