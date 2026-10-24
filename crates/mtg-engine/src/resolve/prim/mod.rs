@@ -81,6 +81,7 @@ mod tap;
 mod time_travel;
 mod transform;
 mod untap;
+mod vote;
 mod win_game;
 
 use mtg_cards::effect::Effect;
@@ -175,6 +176,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::RepeatEach { .. } => repeat_each::run(cx, effect),
         Effect::RollDice { .. } => roll_dice::run(cx, effect),
         Effect::FlipCoin { .. } => flip_coin::run(cx, effect),
+        Effect::Vote { .. } => vote::run(cx, effect),
     }
 }
 
@@ -214,7 +216,8 @@ mod tests {
         {"DelayedTrigger":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[]}},
         {"If":{"condition":"YourTurn","then":[]}}, {"May":{"effects":[]}}, {"Pay":{"cost":"{1}"}},
         {"Modal":{"modes":[]}}, {"RepeatEach":{"over":"EachPlayer","as":"each","effects":[{"Draw":{}}]}},
-        {"RollDice":{"sides":6,"results":[{"from":1,"effects":[]}]}}, {"FlipCoin":{"win":[]}}
+        {"RollDice":{"sides":6,"results":[{"from":1,"effects":[]}]}}, {"FlipCoin":{"win":[]}},
+        {"Vote":{"options":{"Named":["time","knowledge"]}}}
     ]"#;
 
     fn tag(effect: &Effect) -> String {
@@ -228,7 +231,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 75, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 76, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -336,5 +339,6 @@ mod tests {
         "Effect.RepeatEach",
         "Effect.RollDice",
         "Effect.FlipCoin",
+        "Effect.Vote",
     ];
 }

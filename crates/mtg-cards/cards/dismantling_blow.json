@@ -1,0 +1,29 @@
+{
+  "oracle_id": "300cba5a-adbb-4852-be06-ac00d9d6fd37",
+  "name": "Dismantling Blow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dismantling Blow",
+      "oracle_fingerprint": "318fc1be69dffa1863bcdd2069cc5695",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{U}" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "If": { "condition": "Kicked", "then": [{ "Draw": { "count": 2 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

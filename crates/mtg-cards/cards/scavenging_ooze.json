@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1ff25f67-36a7-4cfa-a2b1-2135b5b6fb67",
+  "name": "Scavenging Ooze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scavenging Ooze",
+      "oracle_fingerprint": "359a2e60f5f8d25f9a8919e2c7d8d0f9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{G}",
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Creature" }]
+                    }
+                  },
+                  "then": [
+                    { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+                    { "GainLife": { "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

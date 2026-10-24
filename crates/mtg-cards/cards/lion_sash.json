@@ -1,0 +1,58 @@
+{
+  "oracle_id": "50330e48-db74-4c5f-a0bc-f9a8607e8f31",
+  "name": "Lion Sash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lion Sash",
+      "oracle_fingerprint": "1145f7ceda7d71004f9f0e37b2db5e4f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{W}",
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Creature" },
+                            { "Type": "Enchantment" },
+                            { "Type": "Land" },
+                            { "Type": "Planeswalker" },
+                            { "Type": "Battle" }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                  "toughness": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Reconfigure": "{2}" } }
+      ]
+    }
+  ]
+}

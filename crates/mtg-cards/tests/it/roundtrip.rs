@@ -692,7 +692,8 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         (who(), amount(), any::<bool>()).prop_map(|(who, count, random)| Effect::Discard {
             who,
             count,
-            random
+            random,
+            bind: None
         }),
         (who(), amount()).prop_map(|(who, count)| Effect::Mill { who, count }),
         (who(), amount()).prop_map(|(who, count)| Effect::Scry { who, count }),

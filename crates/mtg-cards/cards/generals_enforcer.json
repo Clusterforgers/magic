@@ -1,0 +1,60 @@
+{
+  "oracle_id": "8e953251-aa5c-4aa3-8e69-1ff1f609f3ff",
+  "name": "General's Enforcer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "General's Enforcer",
+      "oracle_fingerprint": "14066c6dba59dae121b6f9bfc3e7dd37",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Subtype": "Human" },
+                { "Supertype": "Legendary" },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Indestructible" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{W}{B}",
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Creature" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Human Soldier",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Human", "Soldier"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "db67c59e-a9fb-4580-a8cc-ac5ef6c07440",
+  "oracle_id": "2ef797ef-c05f-4309-85c7-1bd151dac3fa",
+  "name": "Far Wanderings",
+  "lang": "en",
+  "layout": "normal",
+  "set": "znc",
+  "collector_number": "66",
+  "rarity": "common",
+  "released_at": "2020-09-25",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3,
+  "type_line": "Sorcery",
+  "oracle_text": "Search your library for a basic land card, put that card onto the battlefield tapped, then shuffle.\nThreshold — If there are seven or more cards in your graveyard, instead search your library for up to three basic land cards, put them onto the battlefield tapped, then shuffle.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Threshold"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "6664675f-1ef6-49ba-8f08-cfeac2f38ec7",
+  "oracle_id": "3cbdf37b-7fe3-4791-b33c-8591158b0ce5",
+  "name": "Primal Growth",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cma",
+  "collector_number": "137",
+  "rarity": "common",
+  "released_at": "2017-06-09",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3,
+  "type_line": "Sorcery",
+  "oracle_text": "Kicker—Sacrifice a creature. (You may sacrifice a creature in addition to any other costs as you cast this spell.)\nSearch your library for a basic land card, put that card onto the battlefield, then shuffle. If this spell was kicked, instead search your library for up to two basic land cards, put them onto the battlefield, then shuffle.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Kicker"
+  ]
+}

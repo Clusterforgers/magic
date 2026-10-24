@@ -1,0 +1,23 @@
+{
+  "cmc": 3.0,
+  "collector_number": "123",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "9ce7113b-08f7-4584-b65f-a7b5caa90c2f",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{U}",
+  "name": "Windfall",
+  "oracle_id": "08becc07-28bc-4a2f-a6b0-28a2998d2f50",
+  "oracle_text": "Each player discards their hand, then draws cards equal to the greatest number of cards a player discarded this way.",
+  "rarity": "uncommon",
+  "released_at": "2024-04-19",
+  "set": "otc",
+  "type_line": "Sorcery"
+}
