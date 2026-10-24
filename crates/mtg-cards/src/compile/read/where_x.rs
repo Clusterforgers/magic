@@ -250,6 +250,10 @@ fn counts(value: &Value, found: &mut Vec<Value>) {
 
 /// How a card names a characteristic of an object in a where clause.
 fn tails(of: &Ref, stat: StatKind) -> Vec<String> {
+    // The colors of the spell that was cast are counted, not named.
+    if stat == StatKind::Colors && *of == Ref::Triggering {
+        return vec!["the number of colors that spell is".to_owned()];
+    }
     let Some(name) = stat_name(stat) else {
         return Vec::new();
     };

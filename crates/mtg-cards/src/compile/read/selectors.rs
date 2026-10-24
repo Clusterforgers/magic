@@ -1698,6 +1698,10 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
             count_word(u32::try_from(*count).ok()?)?,
             phrase_text(selector, Form::Targets)?
         )),
+        Some(Amount::X) => Some(format!(
+            "up to X target {}",
+            phrase_text(selector, Form::Targets)?
+        )),
         Some(_) => None,
     }
 }

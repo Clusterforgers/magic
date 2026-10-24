@@ -16,6 +16,7 @@ mod free_casts;
 mod from_graveyard;
 mod graveyards;
 mod group_becomes;
+mod has_counter;
 mod instead;
 mod library_steps;
 mod loyalty;
@@ -2236,6 +2237,7 @@ impl Writer<'_> {
             .or_else(|| self.mill_then_change(effects))
             .or_else(|| self.move_instead(effects))
             .or_else(|| self.either_way(effects))
+            .or_else(|| self.counter_or_not(effects))
             .or_else(|| self.library_steps(effects))
             .or_else(|| self.library_then_return(effects))
             .or_else(|| wheel_text(effects))
