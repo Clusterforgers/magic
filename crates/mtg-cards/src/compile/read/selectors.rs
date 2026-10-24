@@ -220,6 +220,15 @@ fn outlaw() -> Pred {
     )
 }
 
+/// Held by the player the first target is, or by the controller of the permanent it is: "that player or that
+/// planeswalker's controller".
+fn target_or_its_controller() -> Vec<Pred> {
+    vec![
+        Pred::ControlledBy(Ref::Target(0)),
+        Pred::ControlledBy(Ref::ControllerOf(Box::new(Ref::Target(0)))),
+    ]
+}
+
 fn not(pred: Pred) -> Pred {
     Pred::Not(Box::new(pred))
 }
@@ -637,6 +646,11 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::ControlledBy(Ref::Defending) => "defending player controls".to_owned(),
         Pred::ControlledBy(Ref::Monarch) => "the monarch controls".to_owned(),
         Pred::ControlledBy(Ref::Target(0)) => "target player controls".to_owned(),
+        Pred::ControlledBy(Ref::Target(1)) => "another target player controls".to_owned(),
+        // The player target, or the controller of the planeswalker target.
+        Pred::AnyOf(held) if *held == target_or_its_controller() => {
+            "that player or that planeswalker's controller controls".to_owned()
+        }
         Pred::Not(inner) if **inner == Pred::ControlledBy(Ref::You) => {
             "you don't control".to_owned()
         }
@@ -1385,6 +1399,15 @@ fn zone_words(pred: &Pred, rest: &mut Peekable<Iter<'_, Pred>>, form: Form) -> O
             "graveyard"
         };
         return Some(format!("{preposition} your {place}"));
+    }
+    // The hand of the player an event is about is counted as "their hand".
+    if form == Form::Count
+        && *zone == ZoneKind::Hand
+        && rest
+            .next_if(|next| **next == Pred::OwnedBy(Ref::Triggering))
+            .is_some()
+    {
+        return Some("in their hand".to_owned());
     }
     if *zone != ZoneKind::Graveyard || form == Form::Count {
         return None;
