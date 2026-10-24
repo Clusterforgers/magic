@@ -1,0 +1,32 @@
+{
+  "oracle_id": "55b88d43-ec45-4435-a316-1c8aee249ff0",
+  "name": "Loyal Retainers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loyal Retainers",
+      "oracle_fingerprint": "8c9dfe29cb59076873df8ec50774bbbb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "condition": { "All": ["YourTurn", "BeforeAttackers"] },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Supertype": "Legendary" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

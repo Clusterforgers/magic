@@ -1,8 +1,10 @@
 //! The sentence that limits when an ability is activated: "Activate only if you control a Swamp.", "Activate only during
-//! your turn and only if a card left your graveyard this turn.", "Activate only as a sorcery and only once each turn." The
-//! parts (a condition, a timing, a limit) come in any order on the cards. Written from the data only.
+//! your turn and only if a card left your graveyard this turn.", "Activate only during your upkeep.", "Activate only as a
+//! sorcery and only once each turn." The parts (a condition, a timing, a limit) come in any order on the cards. Read by
+//! `restrictions.rs`.
 
 use super::as_long_as;
+use super::restrictions::moments;
 use super::statics::control_texts;
 use crate::ability::{Limit, Timing};
 use crate::value::Condition;
@@ -16,25 +18,60 @@ pub(super) fn tails(timing: Timing, condition: &Condition, limit: Option<Limit>)
     if limit.is_some() {
         parts.push(vec!["once each turn".to_owned()]);
     }
-    let held = held(condition);
-    if held.is_empty() {
+    let Some(held) = held(condition) else {
         return Vec::new();
-    }
-    parts.push(held);
+    };
+    parts.extend(held);
     orders(&parts)
         .into_iter()
         .map(|order| format!("Activate only {}.", order.join(" and only ")))
         .collect()
 }
 
-/// The condition after "only": "during your turn", or "if" and what holds.
-fn held(condition: &Condition) -> Vec<String> {
-    if *condition == Condition::YourTurn {
-        return vec!["during your turn".to_owned()];
+/// The conditions in one list, an `All` flattened.
+fn flat<'a>(condition: &'a Condition, into: &mut Vec<&'a Condition>) {
+    match condition {
+        Condition::All(all) => all.iter().for_each(|inner| flat(inner, into)),
+        other => into.push(other),
     }
-    let mut said = control_texts(condition);
-    said.extend(as_long_as::texts(condition));
-    said.into_iter().map(|held| format!("if {held}")).collect()
+}
+
+/// The parts after "only", each in its wordings: a moment of the turn ("during your upkeep", with "before attackers are
+/// declared" after it), or "if" and a state of the game; `None` when a condition has no wording.
+fn held(condition: &Condition) -> Option<Vec<Vec<String>>> {
+    let mut list = Vec::new();
+    flat(condition, &mut list);
+    let mut known = moments();
+    known.sort_by_key(|(_, conditions)| std::cmp::Reverse(conditions.len()));
+    let mut parts = Vec::new();
+    let mut at = 0;
+    while at < list.len() {
+        let moment = known.iter().find(|(_, conditions)| {
+            list.get(at..at + conditions.len())
+                .is_some_and(|found| found.iter().zip(conditions).all(|(a, b)| *a == b))
+        });
+        if let Some((words, conditions)) = moment {
+            at += conditions.len();
+            let mut said = format!("during {words}");
+            if list.get(at) == Some(&&Condition::BeforeAttackers) {
+                said.push_str(", before attackers are declared");
+                at += 1;
+            }
+            parts.push(vec![said]);
+        } else if *list[at] == Condition::BeforeAttackers {
+            parts.push(vec!["before attackers are declared".to_owned()]);
+            at += 1;
+        } else {
+            let mut said = control_texts(list[at]);
+            said.extend(as_long_as::texts(list[at]));
+            if said.is_empty() {
+                return None;
+            }
+            parts.push(said.into_iter().map(|held| format!("if {held}")).collect());
+            at += 1;
+        }
+    }
+    Some(parts)
 }
 
 /// Every order of the parts, each part in each of its wordings.

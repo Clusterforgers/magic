@@ -178,6 +178,14 @@ pub(crate) fn goaded_by(state: &GameState, id: ObjectId) -> Vec<PlayerId> {
         .unwrap_or_default()
 }
 
+/// Whether an effect that applies to `id` says it does not untap during its controller's untap step: the one place the
+/// untap step reads this restriction.
+pub(crate) fn doesnt_untap(state: &GameState, id: ObjectId) -> bool {
+    restricted(state, id, |modification| {
+        matches!(modification, Modification::DoesntUntap)
+    })
+}
+
 /// Whether an effect that applies to `id` says it can't block: the one place the block rules read this restriction.
 pub(crate) fn cant_block(state: &GameState, id: ObjectId) -> bool {
     restricted(state, id, |modification| {

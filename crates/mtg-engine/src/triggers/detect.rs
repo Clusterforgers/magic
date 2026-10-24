@@ -1276,7 +1276,7 @@ fn matching_permanents(
 }
 
 /// Whether the step a pattern names is the step that began (the two enums list the same thirteen steps).
-fn step_matches(named: mtg_cards::trigger::Step, began: Step) -> bool {
+pub(crate) fn step_matches(named: mtg_cards::trigger::Step, began: Step) -> bool {
     use mtg_cards::trigger::Step as Named;
     matches!(
         (named, began),
