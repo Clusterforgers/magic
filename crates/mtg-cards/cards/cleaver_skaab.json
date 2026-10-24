@@ -1,0 +1,23 @@
+{
+  "oracle_id": "9fa66e03-7b20-43f6-8c53-1ce18169c382",
+  "name": "Cleaver Skaab",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cleaver Skaab",
+      "oracle_fingerprint": "45dd532f5e17aba09b5c1d39f2d0ec84",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Subtype": "Zombie" }, "Other"] } }
+            ],
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": "Paid" } }, "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

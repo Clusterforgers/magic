@@ -1,0 +1,33 @@
+{
+  "oracle_id": "fedcb737-723b-4a38-b86c-dad6ac7bec7b",
+  "name": "Inversion Behemoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inversion Behemoth",
+      "oracle_fingerprint": "1d71a9d9ae232ce606215c9d3064344c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["SwitchPT"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

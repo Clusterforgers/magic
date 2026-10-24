@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4475e9a7-4e94-4965-8e7e-211d40a98217",
+  "name": "Lavalanche",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lavalanche",
+      "oracle_fingerprint": "9a1b149953b38907cbc57d365b6f311e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      {
+                        "AnyOf": [
+                          { "ControlledBy": { "Target": 0 } },
+                          { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                        ]
+                      }
+                    ]
+                  },
+                  "amount": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

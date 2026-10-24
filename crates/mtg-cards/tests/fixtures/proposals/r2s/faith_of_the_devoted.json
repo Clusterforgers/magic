@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"AnyOf":[{"Cycled":{"what":[],"by":"You"}},{"Discarded":{"by":"You"}}]},"effects":[{"Pay":{"cost":"{1}","paid":[{"LoseLife":{"who":"Opponents","amount":2}},{"GainLife":{"amount":2}}]}}]}}]}]}

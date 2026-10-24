@@ -1,0 +1,52 @@
+{
+  "oracle_id": "07a0cba9-8768-4fd9-a3d5-b0f83b4bf8e8",
+  "name": "Chaos Warp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chaos Warp",
+      "oracle_fingerprint": "d3cbf33eeb6f65ae0f1ad69eb19a1a98",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } },
+              { "LookAtTop": { "who": { "OwnerOf": { "Target": 0 } }, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "top" },
+                      "selector": [
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Creature" },
+                            { "Type": "Enchantment" },
+                            { "Type": "Land" },
+                            { "Type": "Planeswalker" },
+                            { "Type": "Battle" }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "top" },
+                        "to": { "Battlefield": { "under": { "OwnerOf": { "Target": 0 } } } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

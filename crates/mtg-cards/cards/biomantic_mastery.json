@@ -1,0 +1,34 @@
+{
+  "oracle_id": "c302d64b-8026-401a-a8dd-52cf01160046",
+  "name": "Biomantic Mastery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Biomantic Mastery",
+      "oracle_fingerprint": "ed1d0171a1f56824f0551678aa64256c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }, { "what": "Player" }],
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  }
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 1 } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

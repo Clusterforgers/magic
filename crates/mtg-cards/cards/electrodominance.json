@@ -1,0 +1,36 @@
+{
+  "oracle_id": "4a59d86e-405d-4c70-b2a5-c64f5cecfd9e",
+  "name": "Electrodominance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Electrodominance",
+      "oracle_fingerprint": "f9e98bcbbd6e8020dbbe8bc695f5f350",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" },
+                      { "Not": { "Type": "Land" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "spell"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "spell" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

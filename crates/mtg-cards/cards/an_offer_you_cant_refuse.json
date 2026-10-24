@@ -1,0 +1,28 @@
+{
+  "oracle_id": "234a734b-ba28-4f1b-9d01-3c3e7d516590",
+  "name": "An Offer You Can't Refuse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "An Offer You Can't Refuse",
+      "oracle_fingerprint": "c0bdfd6dc825e93cb90d8b39767a3ac4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Not": { "Type": "Creature" } }] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": { "Named": "treasure" },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

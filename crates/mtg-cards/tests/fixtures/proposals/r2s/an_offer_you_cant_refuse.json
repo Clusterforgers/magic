@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":["Spell",{"Not":{"Type":"Creature"}}]}}],"effects":[{"Counter":{"what":{"Target":0}}},{"CreateToken":{"who":{"ControllerOf":{"Target":0}},"token":{"Named":"treasure"},"count":2}}]}}]}]}

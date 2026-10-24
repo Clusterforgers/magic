@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "30498d6c-29e2-4d05-a5bc-e2e623c5704d",
+  "oracle_id": "9fa66e03-7b20-43f6-8c53-1ce18169c382",
+  "multiverse_ids": [
+    540454
+  ],
+  "mtgo_id": 93804,
+  "tcgplayer_id": 248743,
+  "cardmarket_id": 575377,
+  "name": "Cleaver Skaab",
+  "lang": "en",
+  "released_at": "2021-09-24",
+  "uri": "https://api.scryfall.com/cards/30498d6c-29e2-4d05-a5bc-e2e623c5704d",
+  "scryfall_uri": "https://scryfall.com/card/mic/11/cleaver-skaab?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:49:40Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/0/30498d6c-29e2-4d05-a5bc-e2e623c5704d.jpg?1783925380",
+    "normal": "https://cards.scryfall.io/normal/front/3/0/30498d6c-29e2-4d05-a5bc-e2e623c5704d.jpg?1783925380",
+    "large": "https://cards.scryfall.io/large/front/3/0/30498d6c-29e2-4d05-a5bc-e2e623c5704d.jpg?1783925380",
+    "png": "https://cards.scryfall.io/png/front/3/0/30498d6c-29e2-4d05-a5bc-e2e623c5704d.png?1783925380",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/0/30498d6c-29e2-4d05-a5bc-e2e623c5704d.jpg?1783925380",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/0/30498d6c-29e2-4d05-a5bc-e2e623c5704d.jpg?1783925380",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/0/30498d6c-29e2-4d05-a5bc-e2e623c5704d.webp?1783925380",
+    "grid": "https://cards.scryfall.io/grid/front/3/0/30498d6c-29e2-4d05-a5bc-e2e623c5704d.webp?1783925380",
+    "display": "https://cards.scryfall.io/display/front/3/0/30498d6c-29e2-4d05-a5bc-e2e623c5704d.webp?1783925380",
+    "art": "https://cards.scryfall.io/art/front/3/0/30498d6c-29e2-4d05-a5bc-e2e623c5704d.webp?1783925380",
+    "crop": "https://cards.scryfall.io/crop/front/3/0/30498d6c-29e2-4d05-a5bc-e2e623c5704d.webp?1783925380",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/0/30498d6c-29e2-4d05-a5bc-e2e623c5704d.jpg?1783925380"
+  },
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Zombie Horror",
+  "oracle_text": "{3}, {T}, Sacrifice another Zombie: Create two tokens that are copies of the sacrificed creature.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "4b976756-e988-4211-95c2-0e3587118488",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/4b976756-e988-4211-95c2-0e3587118488"
+    },
+    {
+      "object": "related_card",
+      "id": "5e31b79e-5f58-4af8-bd9c-c2c5e475c6e1",
+      "component": "combo_piece",
+      "name": "Cleaver Skaab",
+      "type_line": "Creature — Zombie Horror",
+      "uri": "https://api.scryfall.com/cards/5e31b79e-5f58-4af8-bd9c-c2c5e475c6e1"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "7f9a4deb-715e-47d2-afac-3843ef92f39b",
+  "set": "mic",
+  "set_name": "Midnight Hunt Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/7f9a4deb-715e-47d2-afac-3843ef92f39b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/30498d6c-29e2-4d05-a5bc-e2e623c5704d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9fa66e03-7b20-43f6-8c53-1ce18169c382&unique=prints",
+  "collector_number": "11",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Furious and unable to separate, the bitter rivals consoled themselves by splitting everything else they saw in half.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Johann Bodin",
+  "artist_ids": [
+    "d92e2dd9-9ef6-43f6-81f8-df87f9066983"
+  ],
+  "illustration_id": "12925265-0929-4725-b93c-510aa437a70c",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 4651,
+  "prices": {
+    "usd": "4.41",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "4.38",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=540454&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCleaver%2BSkaab",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCleaver%2BSkaab",
+    "edhrec": "https://edhrec.com/route/?cc=Cleaver+Skaab"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F248743%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=575377&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/93804?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

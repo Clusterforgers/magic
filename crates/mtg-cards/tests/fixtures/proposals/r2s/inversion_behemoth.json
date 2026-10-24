@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"BeginCombat","whose":"You"}},"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0,"max":null}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":["SwitchPT"],"duration":"UntilEndOfTurn"}}]}}]}]}

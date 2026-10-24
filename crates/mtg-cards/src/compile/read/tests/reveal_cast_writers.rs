@@ -1,4 +1,4 @@
-//! Goal: the writers give the oracle wording of the top card revealed and put onto the battlefield, cast or put on the bottom, of the owner of a permanent shuffling it away and revealing the card on top, of a free cast from the hand, of an untap of a few lands and of a token made by populate that gains a keyword and is sacrificed, and a wrong kind, limit, number or step never reads back.
+//! Goal: the writers give the oracle wording of the top card revealed and put onto the battlefield, cast or put on the bottom, of the owner of a permanent shuffling it away and revealing the card on top, of an opponent who exiles until a card is found, of a free cast from the hand, of an untap of a few lands and of a token made by populate that gains a keyword and is sacrificed, and a wrong kind, limit, number or step never reads back.
 use super::*;
 
 /// Whether some wording the checker accepts for the rules is the clause.
@@ -6,6 +6,41 @@ fn written(json: &str, clause: &str) -> bool {
     written_variants(&ability(json))
         .iter()
         .any(|wording| same_text(wording, clause))
+}
+
+fn wand(who: &str, kind: &str, rest: &str) -> String {
+    format!(
+        r#"{{"Activated":{{"cost":[{{"Mana":"{{4}}"}},"Tap"],"targets":[{{"what":"Opponent"}}],"effects":[{{"ExileUntil":{{"who":{who},"filter":[{kind}],"as":"found","exiled_as":"exiled"}}}},{{"CastFromZone":{{"what":{{"Bound":"found"}},"free":true}}}},{{"Move":{{"what":{{"Bound":"exiled"}},"to":{{"Library":{{"place":"Bottom"{rest}}}}}}}}}]}}}}"#
+    )
+}
+
+const INSTANT_OR_SORCERY: &str = r#"{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]}"#;
+const RANDOMLY: &str = r#","order":"Random""#;
+const CHAOS_WAND: &str = "{4}, {T}: Target opponent exiles cards from the top of their library until they exile an instant or sorcery card. You may cast that card without paying its mana cost. Then put the exiled cards that weren't cast this way on the bottom of that library in a random order.";
+
+#[test]
+fn an_opponent_who_exiles_until_a_card_is_found_is_written_as_the_oracle_words_it() {
+    let json = wand(r#"{"Target":0}"#, INSTANT_OR_SORCERY, RANDOMLY);
+    assert!(written(&json, CHAOS_WAND));
+}
+
+#[rstest]
+#[case::you(r#""You""#, INSTANT_OR_SORCERY, RANDOMLY)]
+#[case::another_kind(r#"{"Target":0}"#, r#"{"Type":"Creature"}"#, RANDOMLY)]
+#[case::in_order(r#"{"Target":0}"#, INSTANT_OR_SORCERY, "")]
+fn an_opponent_who_exiles_until_a_card_is_found_does_not_read_as_another_player_kind_or_order(
+    #[case] who: &str,
+    #[case] kind: &str,
+    #[case] rest: &str,
+) {
+    assert!(!written(&wand(who, kind, rest), CHAOS_WAND));
+}
+
+#[test]
+fn an_exile_until_a_land_is_found_is_not_an_instant_or_sorcery() {
+    let json = wand(r#"{"Target":0}"#, INSTANT_OR_SORCERY, RANDOMLY);
+    let clause = CHAOS_WAND.replace("an instant or sorcery card", "a land card");
+    assert!(!written(&json, &clause));
 }
 
 const TOP: &str = r#"{"Bound":"top"}"#;

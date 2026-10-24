@@ -10,6 +10,7 @@ mod damage_by;
 mod delayed;
 mod divided;
 mod each_target;
+mod exiled_until;
 mod free_casts;
 mod from_graveyard;
 mod graveyards;
@@ -2106,6 +2107,7 @@ impl Writer<'_> {
             .or_else(|| wheel_text(effects))
             .or_else(|| untapped::text(effects))
             .or_else(|| free_casts::text(effects))
+            .or_else(|| self.opponent_exiles(effects))
             .or_else(|| populated::text(effects))
             .or_else(|| revealed::text(effects))
             .or_else(|| self.owner_shuffles(effects))
