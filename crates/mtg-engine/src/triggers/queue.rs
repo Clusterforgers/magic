@@ -230,7 +230,7 @@ pub(crate) fn removing(entry: &PendingTrigger) -> Event {
         ability: t.ability,
         origin: t.origin,
         delayed: t.delayed,
-        cause: t.cause.clone(),
+        cause: Box::new(t.cause.clone()),
     }
 }
 

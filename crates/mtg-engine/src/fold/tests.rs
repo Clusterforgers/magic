@@ -440,7 +440,7 @@ fn trigger_of(game: &GameState, ability: usize) -> Event {
     |g: &GameState| trigger_of(g, 5)
 )]
 #[case::a_trigger_removed_that_never_waited(
-    |g: &GameState| Event::TriggerRemoved { source: g.object(totem_id(g)).unwrap().reference(), ability: 0, origin: crate::abilities::AbilitySource::default(), delayed: None, cause: cause() }
+    |g: &GameState| Event::TriggerRemoved { source: g.object(totem_id(g)).unwrap().reference(), ability: 0, origin: crate::abilities::AbilitySource::default(), delayed: None, cause: Box::new(cause()) }
 )]
 #[case::a_trigger_put_on_the_stack_that_never_triggered(
     |g: &GameState| { let Event::AbilityPutOnStack(mut put) = put_totem_ability(g) else { unreachable!() }; put.cause = Some(cause()); Event::AbilityPutOnStack(put) }

@@ -429,7 +429,7 @@ pub enum Event {
         #[cfg_attr(feature = "ts", ts(optional))]
         delayed: Option<DelayedId>,
         /// What it triggered on.
-        cause: Cause,
+        cause: Box<Cause>,
     },
     /// A delayed triggered ability was set up (CR 603.7).
     DelayedTriggerCreated(Box<DelayedCreated>),

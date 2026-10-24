@@ -1348,7 +1348,7 @@ fn pipeline_events() -> Vec<Event> {
             ability: 0,
             origin: mtg_engine::abilities::AbilitySource::default(),
             delayed: Some(DelayedId(2)),
-            cause: Cause::default(),
+            cause: Box::default(),
         },
         Event::DelayedTriggerExpired { id: DelayedId(2) },
         Event::ResolutionBegan { object: a },
