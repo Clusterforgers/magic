@@ -1,0 +1,44 @@
+{
+  "oracle_id": "d8d9c7e2-8ae7-4e1c-9859-bb3b85a48117",
+  "name": "Duskmantle Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Duskmantle Seer",
+      "oracle_fingerprint": "68551354013777fa9ff47fb64076290c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "RevealUntil": {
+                        "who": { "Bound": "player" },
+                        "filter": [],
+                        "as": "card",
+                        "revealed_as": "seen"
+                      }
+                    },
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "player" },
+                        "amount": { "Stat": { "of": { "Bound": "card" }, "stat": "ManaValue" } }
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "26bbc473-cf99-4a82-b432-604757a832c4",
+  "name": "Incite Rebellion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Incite Rebellion",
+      "oracle_fingerprint": "ba40af58187edc0bda5238ec7ca9f481",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Bound": "player" },
+                        "amount": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "amount": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

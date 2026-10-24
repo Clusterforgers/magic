@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "4a1b6cfe-8927-4d9d-ba32-82453f7157ca",
+  "oracle_id": "7e6ca948-a66d-46a9-9174-ac7b75d7b348",
+  "multiverse_ids": [
+    580956
+  ],
+  "mtgo_id": 108740,
+  "tcgplayer_id": 286172,
+  "cardmarket_id": 675255,
+  "name": "Mutalith Vortex Beast",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/4a1b6cfe-8927-4d9d-ba32-82453f7157ca",
+  "scryfall_uri": "https://scryfall.com/card/40k/134/mutalith-vortex-beast?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:33:59Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/a/4a1b6cfe-8927-4d9d-ba32-82453f7157ca.jpg?1783920839",
+    "normal": "https://cards.scryfall.io/normal/front/4/a/4a1b6cfe-8927-4d9d-ba32-82453f7157ca.jpg?1783920839",
+    "large": "https://cards.scryfall.io/large/front/4/a/4a1b6cfe-8927-4d9d-ba32-82453f7157ca.jpg?1783920839",
+    "png": "https://cards.scryfall.io/png/front/4/a/4a1b6cfe-8927-4d9d-ba32-82453f7157ca.png?1783920839",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/a/4a1b6cfe-8927-4d9d-ba32-82453f7157ca.jpg?1783920839",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/a/4a1b6cfe-8927-4d9d-ba32-82453f7157ca.jpg?1783920839",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/a/4a1b6cfe-8927-4d9d-ba32-82453f7157ca.webp?1783920839",
+    "grid": "https://cards.scryfall.io/grid/front/4/a/4a1b6cfe-8927-4d9d-ba32-82453f7157ca.webp?1783920839",
+    "display": "https://cards.scryfall.io/display/front/4/a/4a1b6cfe-8927-4d9d-ba32-82453f7157ca.webp?1783920839",
+    "art": "https://cards.scryfall.io/art/front/4/a/4a1b6cfe-8927-4d9d-ba32-82453f7157ca.webp?1783920839",
+    "crop": "https://cards.scryfall.io/crop/front/4/a/4a1b6cfe-8927-4d9d-ba32-82453f7157ca.webp?1783920839",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/a/4a1b6cfe-8927-4d9d-ba32-82453f7157ca.jpg?1783920839"
+  },
+  "mana_cost": "{4}{U}{R}",
+  "cmc": 6.0,
+  "type_line": "Creature — Mutant Beast",
+  "oracle_text": "Trample\nWarp Vortex — When this creature enters, flip a coin for each opponent you have. For each flip you win, draw a card. For each flip you lose, this creature deals 3 damage to that player.",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Warp Vortex",
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set": "40k",
+  "set_name": "Warhammer 40,000 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A40k&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/40k?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4a1b6cfe-8927-4d9d-ba32-82453f7157ca/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7e6ca948-a66d-46a9-9174-ac7b75d7b348&unique=prints",
+  "collector_number": "134",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kekai Kotaki",
+  "artist_ids": [
+    "4b771085-c049-4308-930d-ec9665f803a4"
+  ],
+  "illustration_id": "626835fc-99f9-49f9-bc55-c43033fadda0",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 9825,
+  "preview": {
+    "source": "LoadingReadyRun",
+    "source_uri": "https://www.youtube.com/watch?v=Dghfv1yptDI",
+    "previewed_at": "2022-09-14"
+  },
+  "prices": {
+    "usd": "0.47",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.32",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580956&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMutalith%2BVortex%2BBeast",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMutalith%2BVortex%2BBeast",
+    "edhrec": "https://edhrec.com/route/?cc=Mutalith+Vortex+Beast"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F286172%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=675255&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/108740?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

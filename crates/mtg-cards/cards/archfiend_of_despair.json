@@ -1,0 +1,38 @@
+{
+  "oracle_id": "9c36760b-57c5-488b-afc9-ef141942c6ab",
+  "name": "Archfiend of Despair",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archfiend of Despair",
+      "oracle_fingerprint": "33151d34b7325be0919676a2c6621fbc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "CantGainLife": "Opponents" } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "opponent" },
+                        "amount": {
+                          "Tallied": { "who": { "Bound": "opponent" }, "what": "LifeLost" }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

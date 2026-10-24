@@ -1,0 +1,32 @@
+{
+  "oracle_id": "119585c7-ddfa-47ed-b2f8-488ebc156222",
+  "name": "Diviner's Portent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diviner's Portent",
+      "oracle_fingerprint": "abd73fb6c69fc18bab2e851ffd197ccb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "plus": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "results": [
+                    { "from": 1, "to": 14, "effects": [{ "Draw": { "count": "X" } }] },
+                    {
+                      "from": 15,
+                      "effects": [{ "Scry": { "count": "X" } }, { "Draw": { "count": "X" } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
