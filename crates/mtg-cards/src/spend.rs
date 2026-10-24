@@ -142,6 +142,28 @@ impl SpendFilter {
     }
 }
 
+/// How long mana stays in a pool: it is lost as the step ends unless the effect that added it says otherwise.
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, Serialize, Deserialize,
+)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum ManaLasts {
+    /// Lost as the step ends (CR 500.4).
+    #[default]
+    Step,
+    /// Kept as steps end and lost as the combat phase ends ("Until end of combat, you don't lose this mana as steps end").
+    Combat,
+    /// Kept as steps and phases end and lost as the turn ends ("Until end of turn, you don't lose this mana as steps and phases end").
+    Turn,
+}
+
+impl ManaLasts {
+    /// Whether it is the default, which the card files and the wire forms leave out.
+    pub const fn is_step(&self) -> bool {
+        matches!(self, ManaLasts::Step)
+    }
+}
+
 /// One thing mana may be spent on; a restriction lists the uses that are allowed.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]

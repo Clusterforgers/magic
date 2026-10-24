@@ -253,6 +253,7 @@ mod pay_fuzz;
 mod pay_parts;
 mod pay_unless;
 mod payment_fuzz;
+mod persistent_mana;
 mod phasing;
 mod pipeline_log;
 mod planeswalkers;

@@ -1718,7 +1718,10 @@ mod tests {
         let pre = board(with("Watcher", vec![triggered(when)]));
         let events = [
             Event::StepBegan { step: Step::Upkeep },
-            Event::ManaPoolEmptied { player: ME },
+            Event::ManaPoolEmptied {
+                player: ME,
+                through: mtg_cards::spend::ManaLasts::Step,
+            },
             died(&pre, "Bear"),
         ];
         let (_, found) = fire(&pre, &events);

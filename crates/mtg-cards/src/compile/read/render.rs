@@ -54,7 +54,7 @@ use crate::cost::Cost;
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
 use crate::modify::{Duration, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
-use crate::spend::SpendOn;
+use crate::spend::{ManaLasts, SpendOn};
 use crate::trigger::TriggerPattern;
 use crate::value::{Amount, Condition, CounterKind};
 
@@ -820,6 +820,7 @@ fn written(
             group => sentences.push(
                 writer
                     .damage_group(group)
+                    .or_else(|| writer.mana_group(group))
                     .or_else(|| writer.compound(group))?,
             ),
         }
@@ -1067,7 +1068,13 @@ fn is_imperative(effect: &Effect) -> bool {
 
 /// "{G}{G}", "one mana of any color": the mana an effect adds.
 /// "add {C}{C}" and, when the mana is restricted, the sentence that says what it may be spent on.
-fn add_text(mana: &Produce, times: &Amount, only: &[SpendOn]) -> Option<String> {
+fn add_text(
+    mana: &Produce,
+    times: &Amount,
+    only: &[SpendOn],
+    lasts: ManaLasts,
+    also: &str,
+) -> Option<String> {
     // "Add {G}. If you control four or more creatures, add {G}{G} instead."
     if let Produce::Instead {
         base,
@@ -1076,7 +1083,7 @@ fn add_text(mana: &Produce, times: &Amount, only: &[SpendOn]) -> Option<String> 
     } = mana
     {
         let when = as_long_as::texts(when).into_iter().next()?;
-        if !times.is_one() || !only.is_empty() {
+        if !times.is_one() || !only.is_empty() || !lasts.is_step() || !also.is_empty() {
             return None;
         }
         return Some(format!(
@@ -1086,8 +1093,14 @@ fn add_text(mana: &Produce, times: &Amount, only: &[SpendOn]) -> Option<String> 
         ));
     }
     let mut added = format!("add {}", mana_text(mana)?);
-    // "Add {R} for each Goblin you control.": once for each thing counted, never a number of times.
-    if !times.is_one() {
+    if *times == Amount::Triggering
+        && let Produce::Fixed(list) = mana
+        && let [one] = list.as_slice()
+    {
+        // "Add that much {R}."
+        added = format!("add that much {{{}}}", one.symbol());
+    } else if !times.is_one() {
+        // "Add {R} for each Goblin you control.": once for each thing counted, never a number of times.
         if let Some((Amount::Fixed(1), tail)) = counted_parts(times) {
             added = format!("{added} {tail}");
         } else {
@@ -1105,10 +1118,24 @@ fn add_text(mana: &Produce, times: &Amount, only: &[SpendOn]) -> Option<String> 
             );
         }
     }
-    if only.is_empty() {
-        Some(added)
-    } else {
-        Some(format!("{added}. {}", spend::text(only)?))
+    added.push_str(also);
+    if !only.is_empty() {
+        added = format!("{added}. {}", spend::text(only)?);
+    }
+    if let Some(lasting) = lasts_text(lasts) {
+        added = format!("{added}. {lasting}");
+    }
+    Some(added)
+}
+
+/// The sentence that keeps mana in the pool, or none for mana that is lost as the step ends.
+pub(super) const fn lasts_text(lasts: ManaLasts) -> Option<&'static str> {
+    match lasts {
+        ManaLasts::Step => None,
+        ManaLasts::Combat => Some("Until end of combat, you don't lose this mana as steps end"),
+        ManaLasts::Turn => {
+            Some("Until end of turn, you don't lose this mana as steps and phases end")
+        }
     }
 }
 
@@ -1162,6 +1189,7 @@ fn mana_text(mana: &Produce) -> Option<String> {
         Produce::Fixed(list) if !list.is_empty() => symbols_text(list),
         Produce::AnyColor(count) if count.is_one() => "one mana of any color".to_owned(),
         Produce::AnyColor(Amount::X) => "X mana of any one color".to_owned(),
+        Produce::AnyColor(Amount::Triggering) => "that much mana of any one color".to_owned(),
         Produce::AnyColor(Amount::Fixed(count @ 2..)) => {
             format!(
                 "{} mana of any one color",
@@ -1638,7 +1666,8 @@ impl Writer<'_> {
                 mana,
                 times,
                 only,
-            } => add_text(mana, times, only)?,
+                lasts,
+            } => add_text(mana, times, only, *lasts, "")?,
             // "you get {E}{E}": energy is a counter on the player, written with its symbol.
             Effect::PutCounters { count, .. } if gets_energy(effect) => {
                 format!("you get {}", costs::energy_text(count)?)
@@ -2081,6 +2110,28 @@ impl Writer<'_> {
             rest = &rest[run..];
         }
         Some(clauses.join(" and "))
+    }
+
+    /// Mana and the life gained with it as one sentence: "add {W}{W}{W} and you gain 3 life".
+    fn mana_group(&mut self, group: &[Effect]) -> Option<String> {
+        let [
+            Effect::AddMana {
+                who: Ref::You,
+                mana,
+                times,
+                only,
+                lasts,
+            },
+            Effect::GainLife {
+                who: Ref::You,
+                amount,
+            },
+        ] = group
+        else {
+            return None;
+        };
+        let also = format!(" and you gain {}", self.life(amount)?);
+        add_text(mana, times, only, *lasts, &also)
     }
 
     /// Damage to two recipients that are no targets and the life gained with it as one sentence: "~ deals 2 damage to each

@@ -1,0 +1,27 @@
+{
+  "id": "2b164aca-2bda-49a6-81ce-16ef4721ec63",
+  "oracle_id": "c46d6f42-5e50-4c0d-8908-360337285f83",
+  "name": "Photon, Mighty Marvel",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "58",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{3}{R}",
+  "cmc": 4,
+  "type_line": "Legendary Creature — Human Hero",
+  "oracle_text": "Flying\nWhenever Photon deals combat damage to a player, add that much mana of any one color. Until end of turn, you don't lose this mana as steps and phases end.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

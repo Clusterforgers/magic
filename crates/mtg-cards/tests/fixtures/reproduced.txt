@@ -201,6 +201,7 @@ Coastal Breach
 Coastal Discovery
 Cold-Eyed Selkie
 Collective Unconscious
+Colossal Plow
 Colossus Hammer
 Command Tower
 Commander's Insignia
@@ -561,6 +562,7 @@ Kingpin's Pet
 Kinjalli's Sunwing
 Kinsbaile Courier
 Kitchen Finks
+Klauth, Unrivaled Ancient
 Knight of Dusk's Shadow
 Knight of the Last Breath
 Knights of the Black Rose
@@ -737,6 +739,7 @@ Pentad Prism
 Persist
 Pestilent Syphoner
 Phantasmal Image
+Photon, Mighty Marvel
 Phyrexian Prowler
 Phyrexian Soulgorger
 Pillar of Origins
@@ -852,6 +855,7 @@ Sanitarium Skeleton
 Sarah Jane Smith
 Satyr Wayfinder
 Sauroform Hybrid
+Savage Ventmaw
 Saw It Coming
 Sawtusk Demolisher
 Scatter to the Winds

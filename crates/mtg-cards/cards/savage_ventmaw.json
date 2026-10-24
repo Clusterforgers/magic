@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f743d85f-754e-4e70-9907-af54acb9e8d4",
+  "name": "Savage Ventmaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Savage Ventmaw",
+      "oracle_fingerprint": "71dd600b9d74a5fbe738dbfd905e0f34",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red", "Red", "Red", "Green", "Green", "Green"] },
+                  "lasts": "Turn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

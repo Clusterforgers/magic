@@ -135,6 +135,7 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.ChosenColor",
     "Effect.AddMana.OrChosenColor",
     "Effect.AddMana.Restricted",
+    "Effect.AddMana.Lasts",
     "Effect.AddMana.CommanderIdentity",
     "Effect.AddMana.ProducedBy",
     "Effect.AddMana.OfTapped",
@@ -689,6 +690,7 @@ mod tests {
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]
     #[case::mana_of_a_type_or_the_chosen_color("Effect.AddMana.OrChosenColor", true)]
     #[case::mana_restricted_to_what_it_may_be_spent_on("Effect.AddMana.Restricted", true)]
+    #[case::mana_kept_past_the_step("Effect.AddMana.Lasts", true)]
     #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", true)]
     #[case::mana_a_land_could_produce("Effect.AddMana.ProducedBy", true)]
     #[case::devotion("Amount.Devotion", true)]

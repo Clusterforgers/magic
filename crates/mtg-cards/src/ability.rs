@@ -272,6 +272,7 @@ mod tests {
     use rstest::rstest;
 
     use crate::effect::Produce;
+    use crate::spend::ManaLasts;
     use mtg_core::mana::ManaType;
 
     fn add(mana: &[ManaType]) -> Effect {
@@ -280,6 +281,7 @@ mod tests {
             mana: Produce::Fixed(mana.to_vec()),
             times: Amount::one(),
             only: Vec::new(),
+            lasts: ManaLasts::Step,
         }
     }
 

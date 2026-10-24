@@ -1715,6 +1715,7 @@ impl<'a> Walker<'a> {
                 mana,
                 times,
                 only,
+                lasts,
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 if only.iter().any(|on| matches!(on, SpendOn::Spell(f) | SpendOn::Ability(f) if f.types.iter().any(|t| f.without.contains(t)))) {
@@ -1722,6 +1723,9 @@ impl<'a> Walker<'a> {
                 }
                 if !only.is_empty() {
                     w.uses("Effect", "AddMana.Restricted");
+                }
+                if !lasts.is_step() {
+                    w.uses("Effect", "AddMana.Lasts");
                 }
                 w.at("mana", |w| w.produce(mana));
                 w.at("times", |w| w.amount(times));

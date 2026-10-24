@@ -543,6 +543,7 @@ mod tests {
                 mana: ManaType::Green,
                 source: None,
                 only: Vec::new(),
+                lasts: mtg_cards::spend::ManaLasts::Step,
             }))
             .chain((means.life_lost > 0).then_some(Event::LifeLost {
                 player: ME,

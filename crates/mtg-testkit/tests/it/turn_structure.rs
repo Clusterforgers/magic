@@ -150,7 +150,7 @@ fn unspent_mana_vanishes_when_the_step_ends(
     );
     driver.expect_event(
         "ManaPoolEmptied",
-        |e| matches!(e, Event::ManaPoolEmptied { player } if *player == pid(0)),
+        |e| matches!(e, Event::ManaPoolEmptied { player, .. } if *player == pid(0)),
     )
 }
 
