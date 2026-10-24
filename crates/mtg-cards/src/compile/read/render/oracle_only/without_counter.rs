@@ -24,10 +24,9 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     if !targets.is_empty() {
         return;
     }
-    let (kept, lacking): (Vec<&Pred>, Vec<&Pred>) = selector
-        .0
-        .iter()
-        .partition(|pred| !matches!(pred, Pred::Not(inner) if matches!(**inner, Pred::HasCounter(_))));
+    let (kept, lacking): (Vec<&Pred>, Vec<&Pred>) = selector.0.iter().partition(
+        |pred| !matches!(pred, Pred::Not(inner) if matches!(**inner, Pred::HasCounter(_))),
+    );
     let [Pred::Not(inner)] = lacking.as_slice() else {
         return;
     };

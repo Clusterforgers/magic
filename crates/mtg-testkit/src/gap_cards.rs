@@ -23,6 +23,7 @@ pub const GAP_CARDS: &[(&str, usize)] = &[
     ("Springbloom Druid", 2),
     ("Defense of the Heart", 2),
     ("Bounty of the Luxa", 2),
+    ("Wave Goodbye", 2),
 ];
 
 /// A legal Normal deck of sixty cards: these cards, burn to answer them and creatures for the search and the board,

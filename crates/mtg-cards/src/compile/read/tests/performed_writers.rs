@@ -1,4 +1,4 @@
-//! Goal: the writers of steps that follow a step which took something away give the oracle wording of a sacrifice followed by "When you do" and a search, a payment that buys a search, a sacrifice and a search in one sentence and a removal of every counter with a branch on none removed, and a wrong land type, number, life, counter kind, step or link never reads back.
+//! Goal: the writers of steps that follow a step which took something away give the oracle wording of a sacrifice followed by "When you do" and a search, a payment that buys a search, a sacrifice and a search in one sentence, a removal of every counter with a branch on none removed and a bounce of each object without a counter, and a wrong land type, number, life, counter kind, step, place or link never reads back.
 use super::*;
 
 /// Whether some wording the checker accepts for the rules is the clause.
@@ -116,6 +116,37 @@ fn a_sacrifice_and_a_search_may_be_one_sentence(#[case] most: u32, #[case] word:
 )]
 fn a_sacrifice_and_a_search_do_not_read_as_another_number_step_or_count(#[case] clause: &str) {
     assert!(!written(&heart(2), clause));
+}
+
+fn bounce(card_type: &str, counter: &str) -> String {
+    format!(
+        r#"{{"Spell":{{"effects":[{{"Move":{{"what":{{"Each":[{{"Type":"{card_type}"}},{{"Not":{{"HasCounter":"{counter}"}}}}]}},"to":"Hand"}}}}]}}}}"#
+    )
+}
+
+#[rstest]
+#[case::creatures("Creature", "+1/+1", "creature", "+1/+1")]
+#[case::artifacts("Artifact", "charge", "artifact", "charge")]
+fn a_bounce_of_each_object_without_a_counter_is_worded_in_the_singular(
+    #[case] card_type: &str,
+    #[case] counter: &str,
+    #[case] noun: &str,
+    #[case] kind: &str,
+) {
+    let clause = format!("Return each {noun} without a {kind} counter on it to its owner's hand.");
+    assert!(written(&bounce(card_type, counter), &clause), "{clause}");
+}
+
+#[rstest]
+#[case::another_counter("Return each creature without a -1/-1 counter on it to its owner's hand.")]
+#[case::another_type("Return each artifact without a +1/+1 counter on it to its owner's hand.")]
+#[case::with_the_counter("Return each creature with a +1/+1 counter on it to its owner's hand.")]
+#[case::all_of_them("Return all creatures without a +1/+1 counter on them to their owners' hands.")]
+#[case::another_place("Return each creature without a +1/+1 counter on it to its owner's library.")]
+fn a_bounce_without_a_counter_does_not_read_as_another_counter_type_place_or_quality(
+    #[case] clause: &str,
+) {
+    assert!(!written(&bounce("Creature", "+1/+1"), clause), "{clause}");
 }
 
 fn bounty(step: &str, kind: &str, adds: &str) -> String {

@@ -404,6 +404,7 @@ mod vehicles;
 mod vote_fuzz;
 mod votes;
 mod walker_fuzz;
+mod wave_goodbye;
 mod win_effects;
 mod windows_games;
 mod x_after;

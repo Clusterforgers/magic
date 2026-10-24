@@ -65,6 +65,7 @@ mod trailing_if;
 mod unless;
 mod untap_lands;
 mod wheres;
+mod without_counter;
 mod you_create;
 
 use crate::ability::Ability;
@@ -133,5 +134,6 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     other_players::add(ability, texts);
     put_into::add(ability, texts);
     wheres::add(ability, texts);
+    without_counter::add(ability, texts);
     you_create::add(ability, texts);
 }
