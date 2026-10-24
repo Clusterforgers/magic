@@ -817,6 +817,7 @@ Pygmy Kavu
 Quantum Misalignment
 Quest for the Goblin Lord
 Questing Beast
+Quietus Spike
 Rabble Rousing
 Radical Idea
 Raffine's Informant
@@ -908,6 +909,7 @@ Scheming Aspirant
 Scorn-Blade Berserker
 Scrapshooter
 Scuzzback Marauders
+Scytheclaw
 Sea Gate
 Sea Gate Wreckage
 Secluded Courtyard

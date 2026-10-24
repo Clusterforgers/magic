@@ -1,0 +1,34 @@
+{
+  "oracle_id": "0ff0a309-9b4a-4f9e-9ea6-c4d07906ebec",
+  "name": "Quietus Spike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quietus Spike",
+      "oracle_fingerprint": "b0d06f95cd099d6c887e05698bad9ae2",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Deathtouch" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Triggering",
+                  "amount": { "Half": { "of": { "Life": "Triggering" }, "up": true } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

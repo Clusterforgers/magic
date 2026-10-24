@@ -2207,6 +2207,16 @@ impl Writer<'_> {
             Amount::Stat { of, stat } if *of == Ref::Target(0) && self.named => {
                 format!("life equal to its {}", stat_name(*stat)?)
             }
+            Amount::Half { of, up } => {
+                let Amount::Life(whose) = of.as_ref() else {
+                    return None;
+                };
+                let own = if *whose == Ref::You { "your" } else { "their" };
+                format!(
+                    "half {own} life, rounded {}",
+                    if *up { "up" } else { "down" }
+                )
+            }
             _ => match counted_parts(amount) {
                 Some((each, tail)) => format!("{} life {tail}", points_text(&each)?),
                 None => format!("{} life", points_text(amount)?),

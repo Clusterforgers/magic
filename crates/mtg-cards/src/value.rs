@@ -263,6 +263,13 @@ pub enum Amount {
         /// The amount multiplied.
         of: Box<Amount>,
     },
+    /// Half of the amount, rounded up or down, never below zero ("half their life, rounded up").
+    Half {
+        /// The amount halved.
+        of: Box<Amount>,
+        /// Rounded up; else down.
+        up: bool,
+    },
     /// This target's share of the amount divided as the controller chose.
     Divided,
     /// The amount divided evenly, rounded down, among the targets the effect names.
@@ -378,6 +385,7 @@ enum Tagged {
     Counters { on: Ref, counter: CounterKind },
     Sum(Vec<Amount>),
     Times { by: i32, of: Box<Amount> },
+    Half { of: Box<Amount>, up: bool },
     Divided,
     EvenShare(Box<Amount>),
     TargetCount(u8),
@@ -419,6 +427,10 @@ enum TaggedRef<'a> {
     Times {
         by: i32,
         of: &'a Amount,
+    },
+    Half {
+        of: &'a Amount,
+        up: bool,
     },
     Divided,
     EvenShare(&'a Amount),
@@ -465,6 +477,7 @@ impl From<Tagged> for Amount {
             Tagged::Counters { on, counter } => Amount::Counters { on, counter },
             Tagged::Sum(parts) => Amount::Sum(parts),
             Tagged::Times { by, of } => Amount::Times { by, of },
+            Tagged::Half { of, up } => Amount::Half { of, up },
             Tagged::Divided => Amount::Divided,
             Tagged::EvenShare(total) => Amount::EvenShare(total),
             Tagged::TargetCount(index) => Amount::TargetCount(index),
@@ -503,6 +516,7 @@ impl Serialize for Amount {
             }
             Amount::Sum(parts) => TaggedRef::Sum(parts).serialize(serializer),
             Amount::Times { by, of } => TaggedRef::Times { by: *by, of }.serialize(serializer),
+            Amount::Half { of, up } => TaggedRef::Half { of, up: *up }.serialize(serializer),
             Amount::Divided => TaggedRef::Divided.serialize(serializer),
             Amount::EvenShare(total) => TaggedRef::EvenShare(total).serialize(serializer),
             Amount::TargetCount(index) => TaggedRef::TargetCount(*index).serialize(serializer),
@@ -679,6 +693,10 @@ mod tests {
     #[case::negative(Amount::Fixed(-1), "-1")]
     #[case::x(Amount::X, r#""X""#)]
     #[case::divided(Amount::Divided, r#""Divided""#)]
+    #[case::half(
+        Amount::Half { of: Box::new(Amount::Life(Ref::You)), up: true },
+        r#"{"Half":{"of":{"Life":"You"},"up":true}}"#
+    )]
     #[case::count(
         Amount::Count(Selector(vec![Pred::Type(CardType::Creature)])),
         r#"{"Count":[{"Type":"Creature"}]}"#

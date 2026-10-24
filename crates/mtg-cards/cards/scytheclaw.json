@@ -1,0 +1,40 @@
+{
+  "oracle_id": "a75ddd9c-2574-46e9-ac85-58082789ff3e",
+  "name": "Scytheclaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scytheclaw",
+      "oracle_fingerprint": "5bc0a7cf3a04973e9213eb1b876b7068",
+      "abilities": [
+        { "Keyword": "LivingWeapon" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Triggering",
+                  "amount": { "Half": { "of": { "Life": "Triggering" }, "up": true } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

@@ -269,6 +269,7 @@ mod statics;
 mod stations;
 mod strive;
 mod tail_alone;
+mod tail_pairs;
 mod tap_and_mill;
 mod this_or_another;
 mod token_binds;

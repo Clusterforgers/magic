@@ -453,6 +453,29 @@ pub(super) fn life(r: &mut Reader<'_>) -> Option<Amount> {
     counted(r, amount)
 }
 
+/// "half their life, rounded up", "half your life, rounded down": the life total of the player who loses it, halved.
+fn half_life(r: &mut Reader<'_>, who: &Ref) -> Option<Amount> {
+    r.attempt(|r| {
+        r.need("half")?;
+        let own = match who {
+            Ref::You => "your",
+            Ref::Target(_) | Ref::Triggering => "their",
+            _ => return None,
+        };
+        r.word(own).then_some(())?;
+        r.word("life").then_some(())?;
+        r.punct(',').then_some(())?;
+        let up = r.words("rounded up");
+        if !up {
+            r.need("rounded down")?;
+        }
+        Some(Amount::Half {
+            of: Box::new(Amount::Life(who.clone())),
+            up,
+        })
+    })
+}
+
 /// A player draws, discards, mills, gains, loses or sacrifices; one subject may have several verb
 /// phrases, joined by "and" or in a list: "target opponent sacrifices a creature, discards a card,
 /// and loses 3 life". The player the event is about may act after "and" ("you create a Wolf token and that player mills
@@ -540,8 +563,11 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
             amount: life(r)?,
         },
         "lose" | "loses" => Effect::LoseLife {
+            amount: match half_life(r, &who) {
+                Some(half) => half,
+                None => life(r)?,
+            },
             who,
-            amount: life(r)?,
         },
         "scry" if who == Ref::You => Effect::Scry {
             who,

@@ -486,7 +486,7 @@ impl<'a> Walker<'a> {
                     self.at(format!("[{i}]"), |w| w.amount(part));
                 }
             }
-            Amount::Times { of, .. } => {
+            Amount::Times { of, .. } | Amount::Half { of, .. } => {
                 self.amounting = Amounting::of(sharing);
                 self.at("of", |w| w.amount(of));
             }
