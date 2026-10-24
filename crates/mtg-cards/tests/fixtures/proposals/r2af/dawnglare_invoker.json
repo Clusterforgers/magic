@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Activated":{"cost":[{"Mana":"{8}"}],"targets":[{"what":"Player"}],"effects":[{"Tap":{"what":{"Each":[{"Type":"Creature"},{"ControlledBy":{"Target":0}}]}}}]}}]}]}

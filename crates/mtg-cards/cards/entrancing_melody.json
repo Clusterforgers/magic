@@ -1,0 +1,36 @@
+{
+  "oracle_id": "f9f82958-a7c6-4161-b0d8-fdbf7a3dd911",
+  "name": "Entrancing Melody",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Entrancing Melody",
+      "oracle_fingerprint": "1b437712312a53fbbda9c0d71f49c39a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

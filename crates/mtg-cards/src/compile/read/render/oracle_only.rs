@@ -2,6 +2,7 @@
 //! [`super::variants`] by the data of the ability. The compiler's own reads stay on `variants`; only the proposal
 //! checker accepts these (`written_variants`).
 
+mod af2;
 mod also_create;
 mod and_draw;
 mod and_or;
@@ -135,6 +136,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     except_for::add(ability, texts);
     exile_each::add(ability, texts);
     exile_play::add(ability, texts);
+    af2::add(ability, texts);
     for_each_card::add(ability, texts);
     goaded::add(ability, texts);
     have_deal::add(texts);

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "ecbc234d-e1d3-4bcc-81d4-fffc2c7ea16a",
+  "name": "Crush Contraband",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crush Contraband",
+      "oracle_fingerprint": "a78ca6755a91b8b72c8e70782dfe70a0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

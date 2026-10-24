@@ -272,6 +272,7 @@ mod reveal;
 mod reveal_cast_writers;
 mod reveal_until;
 mod riot;
+mod sample_af2_writers;
 mod sample_af_writers;
 mod sample_gl_writers;
 mod sample_mr2_writers;

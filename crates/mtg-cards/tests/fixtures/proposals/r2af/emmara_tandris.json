@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"Damage":{"to":{"Each":[{"Type":"Creature"},"Token",{"ControlledBy":"You"}]}}},"by":"Prevent"}}]}]}

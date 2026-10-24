@@ -1,0 +1,36 @@
+{
+  "oracle_id": "77db8db4-9fe4-478e-b919-5348b0b87b0d",
+  "name": "Dominate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dominate",
+      "oracle_fingerprint": "4ca801a47367f93f7e695310a9515837",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
