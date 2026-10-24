@@ -7,6 +7,7 @@ use std::fmt::Write;
 use mtg_core::card::{CardType, Subtype};
 
 use super::amounts::{count_word, number_word};
+use super::defining;
 use super::effects::target_object;
 use super::pairs;
 use super::selectors::{
@@ -166,7 +167,11 @@ pub(super) fn filter(r: &mut Reader<'_>, plural: bool) -> Option<Selector> {
 
 /// "a basic land card", "up to two Forest cards", "any number of Dragon creature cards".
 pub(super) fn what(r: &mut Reader<'_>) -> Option<(Selector, Bounds)> {
-    let (bounds, plural) = if r.words("up to") {
+    // "up to X basic land cards, where X is the greatest power among creatures you control": the count follows the cards.
+    let counted = r.words("up to x");
+    let (mut bounds, plural) = if counted {
+        (Bounds::up_to(Some(Amount::X)), true)
+    } else if r.words("up to") {
         let number = number_word(r.take_word()?).filter(|number| *number > 1)?;
         let max = Some(Amount::Fixed(i32::try_from(number).ok()?));
         (Bounds::up_to(max), true)
@@ -177,7 +182,15 @@ pub(super) fn what(r: &mut Reader<'_>) -> Option<(Selector, Bounds)> {
     } else {
         return None;
     };
-    Some((filter(r, plural)?, bounds))
+    let found = filter(r, plural)?;
+    if counted {
+        r.punct(',').then_some(())?;
+        r.need("where x is")?;
+        bounds.max = Some(defining::value(r)?);
+        // The sentence's where clause is read: none is left for `where_x::bind` to find.
+        r.where_x = false;
+    }
+    Some((found, bounds))
 }
 
 /// "it" or "that card" for one card, "them" or "those cards" for several.
@@ -229,6 +242,7 @@ fn searched_by(r: &mut Reader<'_>, who: Ref, optional: bool) -> Option<Vec<Effec
         "search their library for"
     })?;
     let (filter, count) = what(r)?;
+    let counted = matches!(&count.max, Some(amount) if !matches!(amount, Amount::Fixed(_)));
     let bind = bound_as(&who, &filter);
     let pair = r.attempt(|r| pairs::read(r, &filter, &count, &bind));
     let plural = !count.is_one() || pair.is_some();
@@ -244,7 +258,10 @@ fn searched_by(r: &mut Reader<'_>, who: Ref, optional: bool) -> Option<Vec<Effec
     let (mut searches, found) =
         pairs::searches(&who, (filter, count, bind), second, reveal.is_some());
     let shuffle = Effect::Shuffle { who: who.clone() };
-    r.punct(',').then_some(())?;
+    // A where clause may end the sentence: "..., where X is ... . Put those cards onto the battlefield, then shuffle."
+    if !(counted && r.punct('.')) {
+        r.punct(',').then_some(())?;
+    }
     let effects = if r.need("then shuffle and put").is_some() {
         (!plural).then_some(())?;
         pronoun(r, false)?;
@@ -474,6 +491,10 @@ pub(super) fn what_text(filter: &Selector, count: &Bounds) -> Option<String> {
             "up to {} {text}",
             count_word(u32::try_from(*most).ok()?)?
         )),
+        (0, Some(amount)) if !matches!(amount, Amount::Fixed(_) | Amount::X) => Some(format!(
+            "up to X {text}, where X is {}",
+            defining::value_text(amount)?
+        )),
         _ => None,
     }
 }
@@ -544,6 +565,11 @@ pub fn other_wordings(texts: &[String]) -> Vec<String> {
         );
         if that != *text {
             found.push(that.clone());
+        }
+        // "put those cards", or the put in a sentence of its own, after a count that a where clause names.
+        if text.contains(", where X is ") {
+            found.push(text.replacen(", put them ", ", put those cards ", 1));
+            found.push(text.replacen(", put them ", ". Put those cards ", 1));
         }
         for owner in ["That creature's controller", "That land's controller"] {
             if text.contains("Its controller may search") {

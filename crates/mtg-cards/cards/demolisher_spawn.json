@@ -1,0 +1,36 @@
+{
+  "oracle_id": "17bdd827-2e89-4559-939a-fc5c153189ed",
+  "name": "Demolisher Spawn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demolisher Spawn",
+      "oracle_fingerprint": "8957d2b2be4def7be8e8ce5c70375203",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                  "mods": [{ "ModifyPT": { "power": 4, "toughness": 4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

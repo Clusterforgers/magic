@@ -1,0 +1,27 @@
+{
+  "cmc": 3.0,
+  "collector_number": "32",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "59adbd35-9959-4a0f-babf-46ea3c15f018",
+  "keywords": [
+    "Flying"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{W}{W}",
+  "name": "Resplendent Angel",
+  "oracle_id": "2ac93092-1a57-4cf7-8f03-1dca86d5c476",
+  "oracle_text": "Flying\nAt the beginning of each end step, if you gained 5 or more life this turn, create a 4/4 white Angel creature token with flying and vigilance.\n{3}{W}{W}{W}: Until end of turn, this creature gets +2/+2 and gains lifelink.",
+  "power": "3",
+  "rarity": "mythic",
+  "released_at": "2023-11-17",
+  "set": "lci",
+  "toughness": "3",
+  "type_line": "Creature — Angel"
+}

@@ -75,6 +75,37 @@ fn a_search_reads_in_the_shape_of_the_hand_written_files(#[case] text: &str, #[c
 }
 
 #[rstest]
+#[case::the_greatest_power(
+    "Search your library for up to X basic land cards, where X is the greatest power among creatures you control. Put those cards onto the battlefield tapped, then shuffle."
+)]
+#[case::tapped_creatures(
+    "Search your library for up to X basic land cards, where X is the number of tapped creatures you control, put those cards onto the battlefield tapped, then shuffle."
+)]
+#[case::tapped_creatures_sentences(
+    "Search your library for up to X basic land cards, where X is the number of tapped creatures you control. Put those cards onto the battlefield tapped, then shuffle."
+)]
+#[case::the_greatest_power_in_one_sentence(
+    "Search your library for up to X basic land cards, where X is the greatest power among creatures you control, put those cards onto the battlefield tapped, then shuffle."
+)]
+#[case::into_the_hand(
+    "Search your library for up to X Plains cards, where X is the number of creatures you control, reveal them, put them into your hand, then shuffle."
+)]
+fn a_search_for_a_count_a_where_clause_names_writes_back(#[case] text: &str) {
+    golden(text, ClauseKind::Spell, false);
+}
+
+#[rstest]
+#[case::no_where_clause(
+    "Search your library for up to X basic land cards, put them onto the battlefield, then shuffle."
+)]
+#[case::an_unread_count(
+    "Search your library for up to X basic land cards, where X is the number of different powers among creatures you control. Put those cards onto the battlefield tapped, then shuffle."
+)]
+fn a_count_that_is_not_read_stays_with_the_table(#[case] text: &str) {
+    assert_eq!(clause(text, ClauseKind::Spell, false), None, "{text}");
+}
+
+#[rstest]
 #[case::flooded_strand(
     "{T}, Pay 1 life, Sacrifice ~: Search your library for a Plains or Island card, put it onto the battlefield, then shuffle.",
     r#"{"Activated":{"cost":["Tap",{"PayLife":1},"SacrificeSelf"],"effects":[{"Search":{"filter":[{"AnyOf":[{"Subtype":"Plains"},{"Subtype":"Island"}]}],"as":"land"}},{"Move":{"what":{"Bound":"land"},"to":{"Battlefield":{}}}},{"Shuffle":{}}]}}"#

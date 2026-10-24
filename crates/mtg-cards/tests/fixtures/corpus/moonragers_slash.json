@@ -1,0 +1,23 @@
+{
+  "id": "eb4f266b-c41c-4047-ae6f-b2226c7459e8",
+  "oracle_id": "40a41774-fe50-438d-85e4-7f2beb29fb82",
+  "name": "Moonrager's Slash",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mid",
+  "collector_number": "148",
+  "rarity": "common",
+  "released_at": "2021-09-24",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "This spell costs {2} less to cast if it's night.\nMoonrager's Slash deals 3 damage to any target.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

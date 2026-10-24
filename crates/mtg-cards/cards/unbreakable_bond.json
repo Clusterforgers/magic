@@ -1,0 +1,32 @@
+{
+  "oracle_id": "36cfdbd6-f971-4ee5-aa1b-fa3ddad5b4b1",
+  "name": "Unbreakable Bond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unbreakable Bond",
+      "oracle_fingerprint": "7747a8503eb16712b9ee256926687279",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "counters": [[{ "Other": "lifelink" }, 1]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

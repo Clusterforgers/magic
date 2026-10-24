@@ -1,0 +1,38 @@
+{
+  "oracle_id": "c7aecca5-2f67-4245-ab2d-e723d8b23a67",
+  "name": "Expressive Iteration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Expressive Iteration",
+      "oracle_fingerprint": "0c9fb3dc12144ee3f992c22ae91dfd70",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "others" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              { "Choose": { "from": { "Bound": "others" }, "as": "bottomed", "rest_as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "bottomed" },
+                  "to": { "Library": { "place": "Bottom" } }
+                }
+              },
+              { "Exile": { "what": { "Bound": "exiled" }, "as": "exiled_card" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled_card" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

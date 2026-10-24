@@ -1,0 +1,32 @@
+{
+  "oracle_id": "0951b529-646c-4dfd-88ad-84ee117ce722",
+  "name": "Phantom Nantuko",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phantom Nantuko",
+      "oracle_fingerprint": "a9ce14a047280ff930200e93fbd3c8f8",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": { "PreventRemovingCounter": "+1/+1" }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

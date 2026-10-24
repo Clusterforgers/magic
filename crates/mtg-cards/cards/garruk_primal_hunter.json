@@ -1,0 +1,73 @@
+{
+  "oracle_id": "298a7e1a-b254-442e-bc1d-2a3e5296d849",
+  "name": "Garruk, Primal Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Garruk, Primal Hunter",
+      "oracle_fingerprint": "8db5babfa68c882ca2b13aaad9064dab",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Beast",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Beast"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Greatest": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wurm",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wurm"],
+                      "power": 6,
+                      "toughness": 6
+                    }
+                  },
+                  "count": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

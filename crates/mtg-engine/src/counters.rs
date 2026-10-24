@@ -23,12 +23,13 @@ pub struct CountersChanged {
     pub delta: i32,
 }
 
-/// Whether counters of this kind change the power and toughness of the permanent that holds them (CR 613.4c).
-pub(crate) const fn changes_power_toughness(kind: &CounterKind) -> bool {
+/// Whether counters of this kind change the characteristics of the permanent that holds them: the power and toughness
+/// (CR 613.4c) or the keywords (CR 122.1b).
+pub(crate) fn changes_characteristics(kind: &CounterKind) -> bool {
     matches!(
         kind,
         CounterKind::PlusOnePlusOne | CounterKind::MinusOneMinusOne
-    )
+    ) || kind.keyword().is_some()
 }
 
 /// Folds the event. Only a permanent on the battlefield, the very object that was named (CR 400.7), and a player who is
@@ -51,7 +52,7 @@ pub(crate) fn fold(state: &mut GameState, event: &CountersChanged) -> Result<(),
                 )));
             };
             change(counters, &event.counter, event.delta)?;
-            if event.delta > 0 && changes_power_toughness(&event.counter) {
+            if event.delta > 0 && changes_characteristics(&event.counter) {
                 state.possible.counters = true;
             }
             if event.delta > 0 {
@@ -387,10 +388,13 @@ mod tests {
     #[rstest]
     #[case::a_plus_counter(CounterKind::PlusOnePlusOne, true)]
     #[case::a_minus_counter(CounterKind::MinusOneMinusOne, true)]
+    #[case::a_keyword_counter(CounterKind::Other("lifelink".into()), true)]
+    #[case::a_two_word_keyword_counter(CounterKind::Other("first strike".into()), true)]
+    #[case::a_counter_the_rules_give_no_keyword(CounterKind::Other("shield".into()), false)]
     #[case::a_charge_counter(CounterKind::Charge, false)]
     #[case::a_loyalty_counter(CounterKind::Loyalty, false)]
     #[case::a_named_counter(CounterKind::Other("quest".into()), false)]
-    fn only_counters_that_change_power_and_toughness_make_the_layers_look(
+    fn only_counters_that_change_characteristics_make_the_layers_look(
         #[case] kind: CounterKind,
         #[case] flagged: bool,
     ) {

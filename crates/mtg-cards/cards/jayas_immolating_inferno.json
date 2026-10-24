@@ -1,0 +1,19 @@
+{
+  "oracle_id": "f5f0deb0-070a-45b6-9b81-0bc8143f3040",
+  "name": "Jaya's Immolating Inferno",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jaya's Immolating Inferno",
+      "oracle_fingerprint": "75af548a88f6ba0a5c991d754da4e2ce",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 0, "max": 3 } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

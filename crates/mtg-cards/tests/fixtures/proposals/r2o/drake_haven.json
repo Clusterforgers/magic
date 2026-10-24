@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"AnyOf":[{"Cycled":{"what":[],"by":"You"}},{"Discarded":{"what":[],"by":"You"}}]},"effects":[{"Pay":{"cost":"{1}","paid":[{"CreateToken":{"token":{"Custom":{"name":"Drake","colors":["Blue"],"types":["Creature"],"subtypes":["Drake"],"power":2,"toughness":2,"abilities":[{"Keyword":"Flying"}]}}}}]}}]}}]}]}

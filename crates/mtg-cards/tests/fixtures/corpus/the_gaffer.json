@@ -1,0 +1,25 @@
+{
+  "cmc": 3.0,
+  "collector_number": "12",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "863ed552-dc6d-4910-b188-3cefc3ebf0ed",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{W}",
+  "name": "The Gaffer",
+  "oracle_id": "a177295e-3b58-4e46-a1cb-fc003a7a0848",
+  "oracle_text": "At the beginning of each end step, if you gained 3 or more life this turn, draw a card.",
+  "power": "2",
+  "rarity": "rare",
+  "released_at": "2023-06-23",
+  "set": "ltc",
+  "toughness": "3",
+  "type_line": "Legendary Creature — Halfling Peasant"
+}

@@ -1,0 +1,23 @@
+{
+  "cmc": 4.0,
+  "collector_number": "7",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "349e8190-15fd-44ed-a821-9a5f3615d2d9",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{3}{W}",
+  "name": "Angelic Accord",
+  "oracle_id": "aa95501f-bb59-494a-bcae-b74ca10ad57e",
+  "oracle_text": "At the beginning of each end step, if you gained 4 or more life this turn, create a 4/4 white Angel creature token with flying.",
+  "rarity": "uncommon",
+  "released_at": "2017-11-17",
+  "set": "ima",
+  "type_line": "Enchantment"
+}

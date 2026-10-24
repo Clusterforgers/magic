@@ -76,6 +76,18 @@ fn this_turn(r: &mut Reader<'_>) -> Option<Condition> {
             1,
         );
     }
+    if r.words("you gained") {
+        // Life is counted in digits ("4 or more life"), the creatures of the next wording in words.
+        let number = r.number().filter(|number| *number > 1)?;
+        r.need("or more life this turn")?;
+        return at_least(
+            Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::LifeGainedTotal,
+            },
+            number,
+        );
+    }
     if r.words("you attacked with") {
         let number = quantity(r).filter(|number| *number > 1)?;
         r.need("or more creatures this turn")?;
