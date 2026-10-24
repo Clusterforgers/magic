@@ -133,8 +133,8 @@ fn read_cost(printed: Printed) -> Optional {
     } else {
         format!("{name} {}", words.join(", "))
     };
-    // A part that needs a source to lose, tap or hold counters, or an X, is not paid for a spell; a repeated cost has no
-    // picks to ask for each payment.
+    // A part that needs a source to lose, tap or hold counters, or an X, is not paid for a spell; a repeated cost asks
+    // its picks again for each payment.
     let payable = !price.tap
         && !price.moves_source()
         && price.x == 0
@@ -142,8 +142,7 @@ fn read_cost(printed: Printed) -> Optional {
         && price
             .parts
             .iter()
-            .all(|part| !part.is_counted() && !matches!(part, Part::Counters { .. }))
-        && (!repeatable || price.parts.is_empty());
+            .all(|part| !part.is_counted() && !matches!(part, Part::Counters { .. }));
     Optional {
         label,
         mana,
@@ -410,9 +409,9 @@ fn paid_by(state: &GameState, source: ObjectRef) -> Vec<usize> {
 
 /// The parts the paid optional costs of a spell pay, in the order of the costs.
 pub(super) fn parts_paid(optional: &[Optional], choices: &Choices) -> Vec<Part> {
-    let mut paid: Vec<usize> = choices.optional_costs.clone();
-    paid.dedup();
-    paid.iter()
+    choices
+        .optional_costs
+        .iter()
         .filter_map(|index| optional.get(*index))
         .flat_map(|cost| cost.parts.iter().cloned())
         .collect()

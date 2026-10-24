@@ -897,6 +897,7 @@ impl<'a> Walker<'a> {
             // The cost of these is paid as the spell is announced: the mana, and the parts the engine pays there.
             Keyword::Kicker(cost)
             | Keyword::Squad(cost)
+            | Keyword::Replicate(cost)
             | Keyword::Offspring(cost)
             | Keyword::Flashback(cost)
             | Keyword::Madness(cost)

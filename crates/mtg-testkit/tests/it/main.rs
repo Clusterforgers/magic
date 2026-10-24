@@ -274,6 +274,7 @@ mod pump_fuzz;
 mod pump_spells;
 mod rebound;
 mod reconfigure;
+mod replicate;
 mod recursion;
 mod recursion_fuzz;
 mod removal_fuzz;

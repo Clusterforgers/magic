@@ -107,6 +107,7 @@ mod ravenous;
 mod reach;
 mod rebound;
 mod reconfigure;
+mod replicate;
 mod retrace;
 mod riot;
 mod saddle;
@@ -523,6 +524,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Cipher => &cipher::Cipher,
         Keyword::Graft(_) => &graft::Graft,
         Keyword::Afflict(_) => &afflict::Afflict,
+        Keyword::Replicate(_) => &replicate::Replicate,
         Keyword::Ascend => &ascend::Ascend,
         Keyword::ForMirrodin => &for_mirrodin::ForMirrodin,
         Keyword::JobSelect => &job_select::JobSelect,
@@ -887,6 +889,7 @@ mod tests {
             Keyword::Cipher,
             Keyword::Graft(2),
             Keyword::Afflict(2),
+            Keyword::Replicate(cost()),
         ]
     }
 
@@ -1021,6 +1024,7 @@ mod tests {
         "Keyword.Cipher",
         "Keyword.Graft",
         "Keyword.Afflict",
+        "Keyword.Replicate",
         "Keyword.SplitSecond",
         "Keyword.Undaunted",
     ];
@@ -1162,6 +1166,7 @@ mod tests {
     #[case::cipher(Keyword::Cipher, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::graft(Keyword::Graft(2), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::afflict(Keyword::Afflict(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::replicate(Keyword::Replicate(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::annihilator(Keyword::Annihilator(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::extort(Keyword::Extort, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::evolve(Keyword::Evolve, Hooks { abilities: 1, ..Hooks::none() })]
@@ -1196,7 +1201,7 @@ mod tests {
     }
 
     #[test]
-    fn only_seven_keywords_and_squad_add_a_cost_and_only_multikicker_and_squad_repeat() {
+    fn only_the_cost_keywords_add_a_cost_and_only_multikicker_squad_and_replicate_repeat() {
         let given: Vec<(&str, bool, OptionalKind)> = every_keyword()
             .iter()
             .filter_map(|keyword| {
@@ -1215,6 +1220,7 @@ mod tests {
                 ("Casualty", false, OptionalKind::Additional),
                 ("Offspring", false, OptionalKind::Additional),
                 ("Gift a card", false, OptionalKind::Gift),
+                ("Replicate", true, OptionalKind::Kicker),
             ]
         );
     }
