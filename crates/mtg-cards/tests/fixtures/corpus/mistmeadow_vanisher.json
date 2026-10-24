@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "252e87b7-3998-4e88-802e-cf981ca114d9",
+  "oracle_id": "5d11ada1-6459-4a91-bd10-66673dc1ad3c",
+  "multiverse_ids": [
+    612155
+  ],
+  "mtgo_id": 111436,
+  "tcgplayer_id": 491522,
+  "cardmarket_id": 705478,
+  "name": "Mistmeadow Vanisher",
+  "lang": "en",
+  "released_at": "2023-04-21",
+  "uri": "https://api.scryfall.com/cards/252e87b7-3998-4e88-802e-cf981ca114d9",
+  "scryfall_uri": "https://scryfall.com/card/moc/42/mistmeadow-vanisher?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:34:33Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/5/252e87b7-3998-4e88-802e-cf981ca114d9.jpg?1783917273",
+    "normal": "https://cards.scryfall.io/normal/front/2/5/252e87b7-3998-4e88-802e-cf981ca114d9.jpg?1783917273",
+    "large": "https://cards.scryfall.io/large/front/2/5/252e87b7-3998-4e88-802e-cf981ca114d9.jpg?1783917273",
+    "png": "https://cards.scryfall.io/png/front/2/5/252e87b7-3998-4e88-802e-cf981ca114d9.png?1783917273",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/5/252e87b7-3998-4e88-802e-cf981ca114d9.jpg?1783917273",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/5/252e87b7-3998-4e88-802e-cf981ca114d9.jpg?1783917273",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/5/252e87b7-3998-4e88-802e-cf981ca114d9.webp?1783917273",
+    "grid": "https://cards.scryfall.io/grid/front/2/5/252e87b7-3998-4e88-802e-cf981ca114d9.webp?1783917273",
+    "display": "https://cards.scryfall.io/display/front/2/5/252e87b7-3998-4e88-802e-cf981ca114d9.webp?1783917273",
+    "art": "https://cards.scryfall.io/art/front/2/5/252e87b7-3998-4e88-802e-cf981ca114d9.webp?1783917273",
+    "crop": "https://cards.scryfall.io/crop/front/2/5/252e87b7-3998-4e88-802e-cf981ca114d9.webp?1783917273",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/5/252e87b7-3998-4e88-802e-cf981ca114d9.jpg?1783917273"
+  },
+  "mana_cost": "{2}{W/U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Kithkin Wizard",
+  "oracle_text": "Whenever this creature becomes tapped, exile up to one target nonland, nontoken permanent. Return that card to the battlefield under its owner's control at the beginning of the next end step.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "6bba5de9-5afb-42af-a7eb-24ac854bf671",
+  "set": "moc",
+  "set_name": "March of the Machine Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/6bba5de9-5afb-42af-a7eb-24ac854bf671",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/moc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/252e87b7-3998-4e88-802e-cf981ca114d9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5d11ada1-6459-4a91-bd10-66673dc1ad3c&unique=prints",
+  "collector_number": "42",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Thanks to the thoughtweft, kithkin mages knew the instant one of their own was in danger.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Iris Compiet",
+  "artist_ids": [
+    "aa807c8c-d07f-4f09-90d3-b2cbf5b86dbf"
+  ],
+  "illustration_id": "81320894-1abb-4913-9381-63a5c6db87f3",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 16020,
+  "preview": {
+    "source": "The Command Zone",
+    "source_uri": "https://www.youtube.com/watch?v=ztAt03EG140",
+    "previewed_at": "2023-04-04"
+  },
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.29",
+    "eur_foil": null,
+    "tix": "1.47"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=612155&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMistmeadow%2BVanisher",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMistmeadow%2BVanisher",
+    "edhrec": "https://edhrec.com/route/?cc=Mistmeadow+Vanisher"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F491522%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=705478&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/111436?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

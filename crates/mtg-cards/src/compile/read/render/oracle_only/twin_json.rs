@@ -14,6 +14,14 @@ pub(super) fn twin(
     serde_json::from_value(value).ok()
 }
 
+/// The body of a spell, a triggered ability or an activated ability.
+pub(super) fn inner_mut(value: &mut Value) -> Option<&mut Value> {
+    let key = ["Spell", "Triggered", "Activated"]
+        .into_iter()
+        .find(|key| value.get(key).is_some())?;
+    value.get_mut(key)
+}
+
 /// The text with its first letter in lower case: a sentence that follows an introduction.
 pub(super) fn lowered(text: &str) -> String {
     let mut chars = text.chars();

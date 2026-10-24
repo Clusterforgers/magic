@@ -1,4 +1,4 @@
-//! Goal: the writers of the second sample of the names M to R give the oracle wording of steps joined by "and" or ", then", of a return from the graveyard for a payment, of a spell of the chosen color, of life over the starting life total, of a group "that are Zombies and/or tokens", of an attach to the returned object, of a search by a characteristic of the card, of a step on the discarded card, of the tokens of any player, of a token for each spell cast, of converge and of the defending player's mill, and a wrong count, zone, kind, player or step never reads back.
+//! Goal: the writers of the second sample of the names M to R give the oracle wording of steps joined by "and" or ", then", of a return from the graveyard for a payment, of a spell of the chosen color, of life over the starting life total, of a group "that are Zombies and/or tokens", of an attach to the returned object, of a search by a characteristic of the card, of a step on the discarded card, of the tokens of any player, of a token for each spell cast, of converge, of the defending player's mill, of a repeated mode, of an exile that returns at once, of a pump with evasion, of no maximum hand size, of the creature of an event pumped, of an entry choice and of combat damage prevented for a group, and a wrong count, zone, kind, player or step never reads back.
 use super::*;
 
 /// Whether some wording the checker accepts for the rules is the clause.
@@ -211,5 +211,102 @@ fn the_wording_of_each_sample_card_reads_back(#[case] json: &str, #[case] clause
     "Whenever this creature attacks, each opponent mills ten cards and you mill ten cards."
 )]
 fn another_part_does_not_read_as_the_sample_cards(#[case] json: &str, #[case] clause: &str) {
+    assert!(!written(json, clause), "{clause}");
+}
+/// "Choose three. You may choose the same mode more than once. ..."
+const RIGHTEOUS_CONFLUENCE: &str = r#"{"Spell":{"effects":[{"Modal":{"choose":{"min":3,"max":3},"repeat":true,"modes":[{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Knight","colors":["White"],"types":["Creature"],"subtypes":["Knight"],"power":2,"toughness":2,"abilities":[{"Keyword":"Vigilance"}]}}}}]},{"targets":[{"what":{"Object":[{"Type":"Enchantment"}]}}],"effects":[{"Exile":{"what":{"Target":0}}}]},{"effects":[{"GainLife":{"amount":5}}]}]}}]}}"#;
+
+/// "Exile target creature you control, then return it to the battlefield under its owner's control."
+const MOMENTARY_BLINK: &str = r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}],"effects":[{"Exile":{"what":{"Target":0},"as":"gone"}},{"Move":{"what":{"Bound":"gone"},"to":{"Battlefield":{}}}}]}}"#;
+
+/// "Whenever a creature you control explores, this creature gets +1/+0 until end of turn and can't be blocked this turn."
+const MERFOLK_CAVE_DIVER: &str = r#"{"Triggered":{"when":{"Explored":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}},"effects":[{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":0}},"CantBeBlocked"],"duration":"UntilEndOfTurn"}}]}}"#;
+
+/// "Return all cards from your graveyard to your hand. Exile ~. You have no maximum hand size for the rest of the game."
+const PRAETORS_COUNSEL: &str = r#"{"Spell":{"effects":[{"Move":{"what":{"Each":[{"In":"Graveyard"},{"OwnedBy":"You"}]},"to":"Hand"}},{"Exile":{"what":"This"}},{"Rule":{"rule":{"NoMaxHandSize":"You"},"duration":"Forever"}}]}}"#;
+
+/// "Whenever another creature you control enters, that creature gets +2/+0 and gains haste until end of turn."
+const OGRE_BATTLEDRIVER: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},"Other",{"ControlledBy":"You"}],"to":"Battlefield"}},"effects":[{"Continuous":{"affected":"Triggering","mods":[{"ModifyPT":{"power":2,"toughness":0}},{"AddKeyword":"Haste"}],"duration":"UntilEndOfTurn"}}]}}"#;
+
+/// "As it enters, choose a color."
+const MIRAGE_MESA_CHOICE: &str =
+    r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"Choose":"Color"}}}"#;
+
+/// "Whenever this creature attacks, prevent all combat damage that would be dealt this turn to Dogs you control."
+const PACK_LEADER_ATTACKS: &str = r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"Shield":{"when":{"Damage":{"to":{"Each":[{"Subtype":"Dog"},{"ControlledBy":"You"}]},"combat":true}},"by":"Prevent","duration":"UntilEndOfTurn"}}]}}"#;
+
+#[rstest]
+#[case::the_same_mode_more_than_once(
+    RIGHTEOUS_CONFLUENCE,
+    "Choose three. You may choose the same mode more than once.\n\u{2022} Create a 2/2 white Knight creature token with vigilance.\n\u{2022} Exile target enchantment.\n\u{2022} You gain 5 life."
+)]
+#[case::exile_and_return_at_once(
+    MOMENTARY_BLINK,
+    "Exile target creature you control, then return it to the battlefield under its owner's control."
+)]
+#[case::pump_and_unblockable(
+    MERFOLK_CAVE_DIVER,
+    "Whenever a creature you control explores, ~ gets +1/+0 until end of turn and can't be blocked this turn."
+)]
+#[case::no_maximum_hand_size(
+    PRAETORS_COUNSEL,
+    "Return all cards from your graveyard to your hand. Exile ~. You have no maximum hand size for the rest of the game."
+)]
+#[case::the_creature_of_the_event(
+    OGRE_BATTLEDRIVER,
+    "Whenever another creature you control enters, that creature gets +2/+0 and gains haste until end of turn."
+)]
+#[case::as_it_enters(MIRAGE_MESA_CHOICE, "As it enters, choose a color.")]
+#[case::damage_prevented_for_a_group(
+    PACK_LEADER_ATTACKS,
+    "Whenever ~ attacks, prevent all combat damage that would be dealt this turn to Dogs you control."
+)]
+fn the_second_round_of_sample_wordings_reads_back(#[case] json: &str, #[case] clause: &str) {
+    assert!(written(json, clause), "{clause}");
+}
+
+#[rstest]
+#[case::another_number_of_modes(
+    RIGHTEOUS_CONFLUENCE,
+    "Choose two. You may choose the same mode more than once.\n\u{2022} Create a 2/2 white Knight creature token with vigilance.\n\u{2022} Exile target enchantment.\n\u{2022} You gain 5 life."
+)]
+#[case::returned_under_your_control(
+    MOMENTARY_BLINK,
+    "Exile target creature you control, then return it to the battlefield under your control."
+)]
+#[case::another_kind_of_target(
+    MOMENTARY_BLINK,
+    "Exile target artifact you control, then return it to the battlefield under its owner's control."
+)]
+#[case::cannot_block_instead(
+    MERFOLK_CAVE_DIVER,
+    "Whenever a creature you control explores, ~ gets +1/+0 until end of turn and can't block this turn."
+)]
+#[case::another_bonus(
+    MERFOLK_CAVE_DIVER,
+    "Whenever a creature you control explores, ~ gets +2/+0 until end of turn and can't be blocked this turn."
+)]
+#[case::for_a_turn_only(
+    PRAETORS_COUNSEL,
+    "Return all cards from your graveyard to your hand. Exile ~. You have no maximum hand size until end of turn."
+)]
+#[case::another_duration(
+    OGRE_BATTLEDRIVER,
+    "Whenever another creature you control enters, that creature gets +2/+0 and gains haste until your next turn."
+)]
+#[case::another_bonus_for_the_creature(
+    OGRE_BATTLEDRIVER,
+    "Whenever another creature you control enters, that creature gets +3/+0 and gains haste until end of turn."
+)]
+#[case::another_choice(MIRAGE_MESA_CHOICE, "As it enters, choose a creature type.")]
+#[case::another_group(
+    PACK_LEADER_ATTACKS,
+    "Whenever ~ attacks, prevent all combat damage that would be dealt this turn to Cats you control."
+)]
+#[case::damage_to_you(
+    PACK_LEADER_ATTACKS,
+    "Whenever ~ attacks, prevent all combat damage that would be dealt to you this turn."
+)]
+fn another_part_does_not_read_as_the_second_round(#[case] json: &str, #[case] clause: &str) {
     assert!(!written(json, clause), "{clause}");
 }

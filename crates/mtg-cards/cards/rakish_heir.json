@@ -1,0 +1,25 @@
+{
+  "oracle_id": "3318c391-7aa1-4550-88a0-b29d8dca28b7",
+  "name": "Rakish Heir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rakish Heir",
+      "oracle_fingerprint": "88f366a22498278ab03248e1c30a2468",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}
