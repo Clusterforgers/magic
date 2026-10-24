@@ -567,7 +567,7 @@ mod cards_and_life {
     #[case::may_for_a_player("Target player may draw a card.")]
     #[case::then_a_player("Each player draws a card, then discards a card.")]
     #[case::x_without_an_x_cost("Draw X cards.")]
-    #[case::lose_half("You lose half your life, rounded up.")]
+    #[case::lose_half("You lose half your life.")]
     #[case::a_second_target("Target player draws a card. Target player loses 1 life.")]
     #[case::zero("You gain 0 life.")]
     #[case::life_equal_to_a_creature("You gain life equal to its power.")]

@@ -163,7 +163,7 @@ fn the_amount_is_the_count_the_clause_names(#[case] text: &str, #[case] amount: 
 )]
 #[case::the_difference("Draw cards equal to the difference.")]
 #[case::the_greatest(
-    "Each player discards their hand, then draws cards equal to the greatest number of cards a player discarded this way."
+    "Each player discards their hand, then draws cards equal to the greatest number of cards a player exiled this way."
 )]
 #[case::a_count_of_what_happened(
     "Draw X cards, where X is the number of creatures that died under your control this turn."
