@@ -298,6 +298,7 @@ Demon Bolt
 Demon of Wailing Agonies
 Dense Canopy
 Deputized Protester
+Determined Iteration
 Devastation Tide
 Dimir Infiltrator
 Dina, Soul Steeper
@@ -455,6 +456,7 @@ Genesis Storm
 Gerrard's Wisdom
 Getaway Car
 Ghalta, Primal Hunger
+Ghired, Conclave Exile
 Ghost Quarter
 Ghostblade Eidolon
 Ghostly Prison
@@ -656,6 +658,7 @@ Lion Sash
 Liquimetal Torque
 Lita, Little Orphan Amphibian
 Lithoform Engine
+Living Laser
 Living Twister
 Lizard Blades
 Llanowar Behemoth
@@ -912,6 +915,7 @@ Rhystic Study
 Riders of Gavony
 Rift Bolt
 Righteous Avengers
+Rionya, Fire Dancer
 Riptide Survivor
 Rising Miasma
 Rite of Replication

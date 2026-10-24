@@ -186,6 +186,38 @@ pub fn copy_attack_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, Co
     Ok(GameSetup::new(Arc::new(Normal), seed, decks))
 }
 
+/// A deck of the cards that make copies in a counted number or populate a token that enters attacking (Rionya, Fire
+/// Dancer, Living Laser, Ghired, Conclave Exile, Determined Iteration), with Hero of Bladehold to attack with and make
+/// tokens, Faithless Looting to discard and Lightning Bolts to cast, derived entirely from `rng`.
+pub fn copy_count_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
+    copies_deck_in(
+        rng,
+        [Color::Red, Color::Green, Color::White],
+        22,
+        &[
+            ("Rionya, Fire Dancer", 3),
+            ("Living Laser", 3),
+            ("Ghired, Conclave Exile", 3),
+            ("Determined Iteration", 2),
+            ("Hero of Bladehold", 3),
+            ("Faithless Looting", 3),
+            ("Lightning Bolt", 3),
+        ],
+    )
+}
+
+/// A normal game of `players` seats whose decks are [`copy_count_deck`]s, fully determined by `seed`.
+pub fn copy_count_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusError> {
+    let mut decks = Vec::with_capacity(players);
+    for seat in 0u64..players as u64 {
+        decks.push(copy_count_deck(&mut GameRng::substream(
+            seed,
+            15_900 + seat,
+        ))?);
+    }
+    Ok(GameSetup::new(Arc::new(Normal), seed, decks))
+}
+
 /// A deck of lands in four colours, the cards that copy spells and abilities (Twincast, Reverberate, Fork, Reiterate,
 /// Dualcaster Mage, Strionic Resonator, Lithoform Engine, Cytoshape), the storm spells (Grapeshot, Brain Freeze, Tendrils of
 /// Agony), spells to copy (Lightning Bolt, Burst Lightning) and creatures with triggers to copy, derived entirely from `rng`.
