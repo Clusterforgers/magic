@@ -1,0 +1,41 @@
+{
+  "oracle_id": "788a4896-3414-40bf-b391-d2efea2fb5f9",
+  "name": "Springbloom Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Springbloom Druid",
+      "oracle_fingerprint": "1703972b907b7828bbd3f55aeda08005",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+                  "paid": [
+                    {
+                      "Search": {
+                        "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                        "count": { "min": 0, "max": 2 },
+                        "as": "lands"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "lands" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

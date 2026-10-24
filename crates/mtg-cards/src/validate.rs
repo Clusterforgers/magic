@@ -632,7 +632,7 @@ impl<'a> Walker<'a> {
             Condition::YourTurn => {}
             Condition::Performed => {
                 self.uses("Condition", "Performed");
-                // The engine knows whether a `May` was accepted and whether a `CastFromZone` cast or played the card; any other effect before it waits.
+                // The engine knows whether a `May` was accepted, whether a `CastFromZone` cast or played the card and whether a `Sacrifice` or a `RemoveCounters` took something; any other effect before it waits.
                 if !self.after_may {
                     self.uses("Condition", "Performed.Other");
                 }
@@ -1555,7 +1555,12 @@ impl<'a> Walker<'a> {
             self.after_may = i > 0
                 && matches!(
                     list.get(i - 1),
-                    Some(Effect::May { .. } | Effect::CastFromZone { .. })
+                    Some(
+                        Effect::May { .. }
+                            | Effect::CastFromZone { .. }
+                            | Effect::Sacrifice { .. }
+                            | Effect::RemoveCounters { .. }
+                    )
                 );
             self.at(format!("{field}[{i}]"), |w| w.effect(effect, only));
         }

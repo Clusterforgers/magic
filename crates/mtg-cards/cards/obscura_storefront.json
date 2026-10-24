@@ -1,0 +1,51 @@
+{
+  "oracle_id": "dc31a6f8-6228-4a25-b937-5d8d78514333",
+  "name": "Obscura Storefront",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Obscura Storefront",
+      "oracle_fingerprint": "0ba8080e9a7ac1697f553891434811bd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Supertype": "Basic" },
+                          {
+                            "AnyOf": [
+                              { "Subtype": "Plains" },
+                              { "Subtype": "Island" },
+                              { "Subtype": "Swamp" }
+                            ]
+                          }
+                        ],
+                        "as": "land"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "land" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} },
+                    { "GainLife": { "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

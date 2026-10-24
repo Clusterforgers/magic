@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e6b20c30-88c2-4cb0-a5e4-46f1df924a7c",
+  "name": "Bounty of the Luxa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bounty of the Luxa",
+      "oracle_fingerprint": "9eecf31a653511b7c50bec114a8747ec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [
+              {
+                "RemoveCounters": {
+                  "from": "This",
+                  "counter": { "Other": "flood" },
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "flood" } } }
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [
+                    { "PutCounters": { "on": "This", "counter": { "Other": "flood" } } },
+                    { "Draw": {} }
+                  ],
+                  "otherwise": [
+                    { "AddMana": { "mana": { "Fixed": ["Colorless", "Green", "Blue"] } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
