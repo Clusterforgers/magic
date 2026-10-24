@@ -9,6 +9,7 @@ use mtg_core::color::Color;
 use mtg_core::mana::ManaType;
 
 use crate::cost::Cost;
+use crate::keyword::Keyword;
 use crate::refs::{Ref, Selector};
 
 /// A characteristic of an object that has a number.
@@ -144,6 +145,31 @@ impl CounterKind {
         CounterKind::Other("lore".to_owned())
     }
 
+    /// The keyword a counter of this kind gives its permanent (CR 122.1b): a counter named for a keyword that adds no
+    /// ability of its own. `exalted` and `decayed` counters are not among them.
+    pub fn keyword(&self) -> Option<Keyword> {
+        let CounterKind::Other(name) = self else {
+            return None;
+        };
+        Some(match name.as_str() {
+            "flying" => Keyword::Flying,
+            "first strike" => Keyword::FirstStrike,
+            "double strike" => Keyword::DoubleStrike,
+            "deathtouch" => Keyword::Deathtouch,
+            "haste" => Keyword::Haste,
+            "hexproof" => Keyword::Hexproof,
+            "indestructible" => Keyword::Indestructible,
+            "lifelink" => Keyword::Lifelink,
+            "menace" => Keyword::Menace,
+            "reach" => Keyword::Reach,
+            "shadow" => Keyword::Shadow,
+            "skulk" => Keyword::Skulk,
+            "trample" => Keyword::Trample,
+            "vigilance" => Keyword::Vigilance,
+            _ => return None,
+        })
+    }
+
     /// The kind as a card names it: `+1/+1`, `poison`, `charge`.
     pub fn name(&self) -> &str {
         match self {
@@ -155,6 +181,16 @@ impl CounterKind {
             CounterKind::Other(name) => name,
         }
     }
+}
+
+/// Whether it is day or night (CR 726.1).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum DayNight {
+    /// It is day.
+    Day,
+    /// It is night.
+    Night,
 }
 
 /// What the game counts for a player in a turn.
@@ -585,6 +621,12 @@ pub enum Condition {
     MonarchAtTurnStart(Ref),
     /// The player has the city's blessing (CR 702.131).
     CitysBlessing(Ref),
+    /// It is day (CR 726): "if it's day".
+    IsDay,
+    /// It is night (CR 726): "if it's night".
+    IsNight,
+    /// It is neither day nor night (CR 726.2): before a card or a permanent with daybound or nightbound has made it day.
+    NeitherDayNorNight,
     /// The referenced permanents are controlled by the controller and came under their control since their last turn began (echo, CR 702.30a): read in the upkeep, once that turn has begun.
     NewlyControlled(Ref),
     /// The referenced Class compares to the level this way (CR 716.2): a Class that has gained no level is level 1.

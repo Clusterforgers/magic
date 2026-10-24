@@ -127,8 +127,7 @@ fn a_reading_that_does_not_write_back_as_the_text_stays_unread(#[case] text: &st
 #[case::spell_kind_only(ClauseKind::Static)]
 #[case::keyword(ClauseKind::Keyword)]
 #[case::modal(ClauseKind::Modal)]
-#[case::loyalty(ClauseKind::Loyalty)]
-fn only_spell_triggered_and_activated_clauses_are_read(#[case] kind: ClauseKind) {
+fn only_spell_triggered_activated_and_loyalty_clauses_are_read(#[case] kind: ClauseKind) {
     assert_eq!(clause("Draw a card.", kind, false), None);
     assert_eq!(
         clause("When ~ enters, draw a card.", kind, false),
@@ -193,6 +192,7 @@ mod create;
 mod crew_events;
 mod crew_record;
 mod damage_wordings;
+mod day_night;
 mod defining;
 mod draws;
 mod each_pump;
@@ -224,6 +224,7 @@ mod library;
 mod life;
 mod life_gain;
 mod lords;
+mod loyalty;
 mod mana_spent;
 mod mana_triggers;
 mod mana_wordings;
@@ -237,6 +238,7 @@ mod multiply_counters;
 mod mutations;
 mod named_tokens;
 mod number_of;
+mod oracle_only_writers;
 mod paid_reads;
 mod pay;
 mod payments;
@@ -267,6 +269,7 @@ mod statics;
 mod stations;
 mod step_writers;
 mod strive;
+mod tail_alone;
 mod tap_and_mill;
 mod this_or_another;
 mod token_binds;

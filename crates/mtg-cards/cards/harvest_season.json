@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ec6d52f9-1c8f-48da-951c-be8d7813c7be",
+  "name": "Harvest Season",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harvest Season",
+      "oracle_fingerprint": "ae53258fde2130f49b1f0b433ab667f4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [{ "Type": "Creature" }, "Tapped", { "ControlledBy": "You" }]
+                    }
+                  },
+                  "as": "land"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -155,6 +155,9 @@ pub fn pattern(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     if let Some(found) = r.attempt(player_event) {
         return Some(found);
     }
+    if let Some(found) = r.attempt(super::day_night::changes) {
+        return Some(found);
+    }
     if let Some(found) = r.attempt(attached_tapped_for_mana) {
         return Some(found);
     }
@@ -874,7 +877,7 @@ pub fn monarch_condition(r: &mut Reader<'_>) -> Option<Condition> {
     } else if r.words("you have the city's blessing") {
         Some(Condition::CitysBlessing(Ref::You))
     } else {
-        None
+        super::day_night::condition(r)
     }
 }
 
@@ -897,7 +900,7 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
         }
         Condition::CitysBlessing(Ref::You) => "you have the city's blessing".to_owned(),
         condition if *condition == no_monarch() => "there is no monarch".to_owned(),
-        _ => return None,
+        _ => return super::day_night::condition_text(condition),
     })
 }
 
@@ -1166,6 +1169,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             "Whenever {} the monarch",
             player_verb(who, "become")?
         )),
+        TriggerPattern::DayNightChanges { to } => Some(super::day_night::changes_text(*to)),
         TriggerPattern::Proliferated { who } => {
             Some(format!("Whenever {}", player_verb(who, "proliferate")?))
         }
@@ -1188,15 +1192,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::Discarded { what, by } if what.is_empty() => {
             Some(format!("Whenever {} a card", player_verb(by, "discard")?))
         }
-        TriggerPattern::Cycled { what, by } => {
-            let card = match what.0.as_slice() {
-                [] => "a card",
-                [Pred::Other] => "another card",
-                [Pred::This] if *by == Ref::You => return Some("When you cycle ~".to_owned()),
-                _ => return None,
-            };
-            Some(format!("Whenever {} {card}", player_verb(by, "cycle")?))
-        }
+        TriggerPattern::Cycled { what, by } => cycled_text(what, by),
         TriggerPattern::PlayerAttacked { who } => {
             let (subject, be) = match who {
                 Ref::You => ("you", "are"),
@@ -1244,6 +1240,17 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             about(&what, &[verb])
         }
     }
+}
+
+/// "Whenever you cycle a card", "Whenever a player cycles another card" and "When you cycle ~".
+fn cycled_text(what: &Selector, by: &Ref) -> Option<String> {
+    let card = match what.0.as_slice() {
+        [] => "a card",
+        [Pred::Other] => "another card",
+        [Pred::This] if *by == Ref::You => return Some("When you cycle ~".to_owned()),
+        _ => return None,
+    };
+    Some(format!("Whenever {} {card}", player_verb(by, "cycle")?))
 }
 
 /// Several events of one subject ("~ enters or attacks"), or of the card and a second subject in turn: "Whenever ~ or

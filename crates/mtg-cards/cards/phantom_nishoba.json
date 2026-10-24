@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e43e06fb-52b7-4f38-8fac-f31973b043f7",
+  "name": "Phantom Nishoba",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phantom Nishoba",
+      "oracle_fingerprint": "097aa4544614ce4d2bdd8968e3185dbd",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 7 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"] } },
+            "effects": [{ "GainLife": { "amount": "Triggering" } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": { "PreventRemovingCounter": "+1/+1" }
+          }
+        }
+      ]
+    }
+  ]
+}

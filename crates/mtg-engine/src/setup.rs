@@ -504,7 +504,7 @@ impl GameState {
             object.permanent().is_some_and(|permanent| {
                 permanent
                     .counters()
-                    .any(|(kind, _)| crate::counters::changes_power_toughness(kind))
+                    .any(|(kind, _)| crate::counters::changes_characteristics(kind))
             })
         });
         self.possible.counters = counters;

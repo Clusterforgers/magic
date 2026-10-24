@@ -1,0 +1,29 @@
+{
+  "oracle_id": "45a8c126-5396-4736-a37e-460a50706a98",
+  "name": "Escape to the Wilds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Escape to the Wilds",
+      "oracle_fingerprint": "f33a886fb0d401320604e7d4ec73b858",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": 5, "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              },
+              { "Rule": { "rule": { "AdditionalLandPlays": {} }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

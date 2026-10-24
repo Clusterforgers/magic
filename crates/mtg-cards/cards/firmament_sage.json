@@ -1,0 +1,15 @@
+{
+  "oracle_id": "57163ade-fe89-4ba0-98a9-daeeed5badb9",
+  "name": "Firmament Sage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Firmament Sage",
+      "oracle_fingerprint": "3759db050de0fa389665cc0a9d987488",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "DayIfNeither" } },
+        { "Triggered": { "when": { "DayNightChanges": {} }, "effects": [{ "Draw": {} }] } }
+      ]
+    }
+  ]
+}

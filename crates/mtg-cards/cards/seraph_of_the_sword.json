@@ -1,0 +1,17 @@
+{
+  "oracle_id": "84ee74e9-b3e3-4f47-8b3c-5c1a70f5cad6",
+  "name": "Seraph of the Sword",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seraph of the Sword",
+      "oracle_fingerprint": "9744e25480c03a59b2d23932cfaf558d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": { "when": { "Damage": { "to": "This", "combat": true } }, "by": "Prevent" }
+        }
+      ]
+    }
+  ]
+}

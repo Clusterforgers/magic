@@ -2,6 +2,7 @@
 
 use mtg_cards::effect::Effect;
 use mtg_cards::modify::Duration;
+use mtg_cards::refs::Ref;
 
 use super::wrong_effect;
 use crate::choose::Target;
@@ -13,8 +14,9 @@ use crate::zones::Zone;
 
 /// Each object the effect names that is still where it was named moves to exile, all together, from whichever zone it
 /// is in. Every move carries `ZoneCause::Exiled` and the step carries what the object was. Indestructible does not
-/// matter. An ability, which is not an object that changes zones, the spell that is resolving, an object already in
-/// exile, one that has changed zones since it was named and a name that repeats are passed over. The effect's `as` name
+/// matter. An ability, which is not an object that changes zones, the spell that is resolving (unless the effect names it as
+/// `This`, "Exile ~.": it leaves the stack by its own effect and no graveyard move follows), an object already in exile,
+/// one that has changed zones since it was named and a name that repeats are passed over. The effect's `as` name
 /// holds the objects exiled as the objects they become in exile (CR 400.7), so a later step can return them.
 ///
 /// With the duration `WhileSourceOnBattlefield` ("until ~ leaves the battlefield") the move carries the source in its
@@ -54,7 +56,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut snapshots = Vec::new();
     let mut exiled = Vec::new();
     for object in cx.scope.live_objects(what)? {
-        let resolving_spell = object.zone() == Zone::Stack && object.id() == cx.resolving.object();
+        // A spell exiles itself only by name ("Exile ~."); a group that reaches it by its zone leaves it be.
+        let resolving_spell = object.zone() == Zone::Stack
+            && object.id() == cx.resolving.object()
+            && !matches!(what, Ref::This);
         if object.kind() == ObjectKind::Ability || resolving_spell || object.zone() == Zone::Exile {
             continue;
         }
@@ -83,7 +88,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: an exile moves each object it names that is still where it was named to exile, from the battlefield, a graveyard, a hand, a library or the stack, all together, with the cause and as the object was, whether or not it is indestructible; abilities, the resolving spell, objects already exiled, names of objects that have changed zones and names that repeat are passed over; a chosen target is exiled while it is legal and the steps after it still read it as it was; the objects exiled are bound to the effect name as the objects they become in exile.
+    //! Goal: an exile moves each object it names that is still where it was named to exile, from the battlefield, a graveyard, a hand, a library or the stack, all together, with the cause and as the object was, whether or not it is indestructible; abilities, the resolving spell (unless it exiles itself by name), objects already exiled, names of objects that have changed zones and names that repeat are passed over; a chosen target is exiled while it is legal and the steps after it still read it as it was; the objects exiled are bound to the effect name as the objects they become in exile.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -306,6 +311,45 @@ mod tests {
         let (moves, shots) = exiled(run);
         assert_eq!(moves, [(spell.id, Zone::Stack, Zone::Exile)]);
         assert_eq!(shots, [spell.id]);
+    }
+
+    #[rstest]
+    #[case::named_as_this(r#"{"Exile":{"what":"This"}}"#, true)]
+    #[case::reached_by_its_zone(r#"{"Exile":{"what":{"Each":["Spell"]}}}"#, false)]
+    #[case::reached_as_a_target(r#"{"Exile":{"what":{"Target":0}}}"#, false)]
+    fn the_resolving_spell_leaves_the_stack_only_when_it_exiles_itself(
+        #[case] json: &str,
+        #[case] exiles_itself: bool,
+    ) {
+        let mut game = game();
+        let ritual = named(&game, "Ritual");
+        apply_event(
+            &mut game,
+            &Event::SpellCast {
+                player: ME,
+                object: ritual.id,
+                choices: Choices::default(),
+            },
+        )
+        .unwrap();
+        let ritual = game.object(ritual.id).unwrap().reference();
+        let specs = [on(r#"[{"In":"Stack"}]"#)];
+        let run = run_with(
+            &game,
+            Some(ritual),
+            &Bindings::new(),
+            vec![vec![Target::Object(ritual)]],
+            &specs,
+            &effect(json),
+        )
+        .unwrap();
+        let (moves, shots) = exiled(run);
+        let expected: Vec<_> = exiles_itself
+            .then_some((ritual.id, Zone::Stack, Zone::Exile))
+            .into_iter()
+            .collect();
+        assert_eq!(moves, expected);
+        assert_eq!(shots, expected.iter().map(|m| m.0).collect::<Vec<_>>());
     }
 
     #[test]

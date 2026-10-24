@@ -7,23 +7,13 @@
 
 use mtg_cards::definition::Layout;
 use mtg_cards::keyword::Keyword;
+pub use mtg_cards::value::DayNight;
 use mtg_core::ids::ObjectId;
-use serde::{Deserialize, Serialize};
 
 use crate::events::Event;
 use crate::keywords::has_keyword;
 use crate::state::{GameState, Tally};
 use crate::zones::Zone;
-
-/// Whether it is day or night (CR 726.1).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
-pub enum DayNight {
-    /// It is day.
-    Day,
-    /// It is night.
-    Night,
-}
 
 impl GameState {
     /// Day or night, or neither before a permanent with daybound or nightbound has appeared.
