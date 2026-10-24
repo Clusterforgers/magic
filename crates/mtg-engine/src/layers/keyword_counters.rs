@@ -84,14 +84,14 @@ fn the_keywords_of_a_permanent_are_those_of_its_keyword_counters(
 #[test]
 fn the_keyword_comes_and_goes_with_the_last_counter() {
     let mut game = game_with(&[]);
-    assert!(has(&game, "Bear").is_empty());
+    assert_eq!(has(&game, "Bear"), Vec::<Keyword>::new());
     change(&mut game, "Bear", "lifelink", 1);
     assert_eq!(has(&game, "Bear"), [Keyword::Lifelink]);
     change(&mut game, "Bear", "lifelink", 1);
     change(&mut game, "Bear", "lifelink", -1);
     assert_eq!(has(&game, "Bear"), [Keyword::Lifelink], "one is left");
     change(&mut game, "Bear", "lifelink", -1);
-    assert!(has(&game, "Bear").is_empty());
+    assert_eq!(has(&game, "Bear"), Vec::<Keyword>::new());
 }
 
 #[test]
@@ -113,7 +113,7 @@ fn a_counter_beside_the_same_printed_keyword_adds_it_once() {
 fn an_effect_of_layer_six_applies_after_the_counters(#[case] modification: Modification) {
     let mut game = game_with(&[(counter("lifelink"), 1)]);
     effect(&mut game, "Bear", modification, 0);
-    assert!(has(&game, "Bear").is_empty());
+    assert_eq!(has(&game, "Bear"), Vec::<Keyword>::new());
 }
 
 #[test]

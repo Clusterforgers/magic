@@ -150,11 +150,11 @@ fn a_creature_returned_with_a_lifelink_counter_has_lifelink(
         }
         driver.pass()?;
     }
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack().len(), 0);
     assert_eq!(held(&driver, returned, &counter("lifelink")), 1);
     assert!(keywords(&driver, returned).contains(&"Lifelink".to_owned()));
     // The other creature card stayed where it was and the Wolf has nothing.
-    assert!(keywords(&driver, "Wolf").is_empty());
+    assert_eq!(keywords(&driver, "Wolf"), Vec::<String>::new());
     assert_eq!(driver.state().zone(Zone::Graveyard(pid(0))).len(), 2);
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.engine().state_hash());

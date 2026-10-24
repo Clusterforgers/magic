@@ -58,7 +58,7 @@ fn lands_in_play(driver: &Driver) -> (usize, usize) {
         .filter(|object| {
             object
                 .permanent()
-                .is_some_and(|permanent| permanent.tapped())
+                .is_some_and(mtg_engine::object::PermanentState::tapped)
         })
         .count();
     (lands.len(), tapped)

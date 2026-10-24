@@ -1,4 +1,4 @@
-//! Goal: the embedded map reads a Forge shape that our rules state another way as read (an optional trigger that pays or casts, an "unless" payment taken as a choice, an ability a static grants to its own card, a subtype added by a type line, strive, backup and gift, a source named by its nickname, a draw a replacement states, an effect that tracks an exile) and still reports the card whose rules lack it.
+//! Goal: the embedded map reads a Forge shape that our rules state another way as read (an optional trigger that pays or casts, an "unless" payment taken as a choice, an ability a static grants to its own card, a subtype added by a type line, strive, backup and gift, a source named by its nickname, a draw a replacement states, an effect that tracks an exile, the triggers on surveil, the monarch, a crew, counters and tokens, a draw paid as a cost, a free cast, a life lock, damage that costs no life, a skipped draw step, phasing, a class, the return of an exile, a card that enters under your control, a shuffle of cards sent to exile, a pump of the player and a partner text) and still reports the card whose rules lack it; the wider shapes of those names have no verb.
 use std::collections::BTreeSet;
 
 use mtg_cards::card::Card;
@@ -100,6 +100,101 @@ fn bracket(ability: &str) -> serde_json::Value {
     json!([{ "Spell": { "targets": [{ "what": "Player" }],
         "effects": [{ "Exile": { "what": { "Target": 0 }, "duration": "UntilOpponentBecomesMonarch" } }] } }])
 )]
+#[case::a_surveil_trigger_is_surveilled(
+    "T:Mode$ Surveil | ValidPlayer$ You | Execute$ TrigDraw\nSVar:TrigDraw:DB$ Draw",
+    json!([{ "Triggered": { "when": { "Surveilled": { "who": "You" } }, "effects": [{ "Draw": {} }] } }])
+)]
+#[case::a_monarch_trigger_is_becomes_monarch(
+    "T:Mode$ BecomeMonarch | ValidPlayer$ You | TriggerZones$ Battlefield | Execute$ TrigDraw\nSVar:TrigDraw:DB$ Draw",
+    json!([{ "Triggered": { "when": { "BecomesMonarch": { "who": "You" } }, "effects": [{ "Draw": {} }] } }])
+)]
+#[case::a_monarch_trigger_of_an_effect_is_the_end_of_the_exile(
+    "A:SP$ Effect | Triggers$ Back | ForgetOnMoved$ Exile\nSVar:Back:Mode$ BecomeMonarch | TriggerZones$ Command | Execute$ TrigBack\nSVar:TrigBack:DB$ ChangeZoneAll | Origin$ Exile | Destination$ Battlefield",
+    json!([{ "Spell": { "targets": [{ "what": "Player" }],
+        "effects": [{ "Exile": { "what": { "Target": 0 }, "duration": "UntilOpponentBecomesMonarch" } }] } }])
+)]
+#[case::a_crew_trigger_is_becomes_crewed(
+    "T:Mode$ BecomesCrewed | ValidCard$ Card.Self | Execute$ TrigDraw\nSVar:TrigDraw:DB$ Draw",
+    json!([{ "Triggered": { "when": { "BecomesCrewed": { "what": ["This"] } }, "effects": [{ "Draw": {} }] } }])
+)]
+#[case::the_first_crew_of_a_turn_is_the_nth_crew(
+    "T:Mode$ BecomesCrewed | ValidCard$ Card.Self | FirstTimeCrewed$ True | Execute$ TrigDraw\nSVar:TrigDraw:DB$ Draw",
+    json!([{ "Triggered": { "when": { "Nth": { "event": { "BecomesCrewed": { "what": ["This"] } }, "nth": 1 } },
+        "effects": [{ "Draw": {} }] } }])
+)]
+#[case::counters_added_together_are_a_batch_of_counters_put(
+    "T:Mode$ CounterTypeAddedAll | ValidObject$ Card.Self | Execute$ TrigDraw\nSVar:TrigDraw:DB$ Draw",
+    json!([{ "Triggered": { "when": { "Batch": { "CountersPut": { "what": ["This"] } } }, "effects": [{ "Draw": {} }] } }])
+)]
+#[case::the_first_counters_of_a_turn_are_the_nth_counters_put(
+    "T:Mode$ CounterTypeAddedAll | ValidObject$ Card.Self | FirstTime$ True | Execute$ TrigDraw\nSVar:TrigDraw:DB$ Draw",
+    json!([{ "Triggered": { "when": { "Nth": { "event": { "CountersPut": { "what": ["This"] } }, "nth": 1 } },
+        "effects": [{ "Draw": {} }] } }])
+)]
+#[case::the_first_tokens_of_a_turn_are_the_nth_token_created(
+    "T:Mode$ TokenCreatedOnce | OnlyFirst$ You | Execute$ TrigDraw\nSVar:TrigDraw:DB$ Draw",
+    json!([{ "Triggered": { "when": { "Nth": { "event": { "ZoneChange": { "what": ["Token", { "ControlledBy": "You" }], "to": "Battlefield" } }, "nth": 1 } },
+        "effects": [{ "Draw": {} }] } }])
+)]
+#[case::a_draw_that_is_a_cost_is_an_optional_draw(
+    "T:Mode$ Phase | Phase$ Upkeep | Execute$ TrigLoot\nSVar:TrigLoot:AB$ Discard | Defined$ You | Mode$ TgtChoose | NumCards$ 1 | Cost$ Draw<1/You>",
+    json!([{ "Triggered": { "when": { "StepBegins": { "step": "Upkeep" } },
+        "effects": [{ "May": { "effects": [{ "Draw": {} }] } }, { "If": { "condition": "Performed", "then": [{ "Discard": {} }] } }] } }])
+)]
+#[case::a_cast_for_nothing_is_a_free_cast(
+    "S:Mode$ AlternativeCost | ValidSA$ Spell | ValidCard$ Card.Self | Cost$ 0 | EffectZone$ All\nA:SP$ Draw",
+    json!([{ "FreeCast": {} }, { "Spell": { "effects": [{ "Draw": {} }] } }])
+)]
+#[case::a_life_total_that_cannot_change_is_a_rule(
+    "S:Mode$ CantChangeLife | ValidPlayer$ You",
+    json!([{ "Rule": { "rule": { "LifeTotalCantChange": "You" } } }])
+)]
+#[case::damage_that_costs_no_life_is_a_rule(
+    "R:Event$ LifeReduced | ValidPlayer$ You | IsDamage$ True | Layer$ CantHappen",
+    json!([{ "Rule": { "rule": { "NoLifeLossFromDamage": "You" } } }])
+)]
+#[case::a_skipped_draw_step_is_a_rule(
+    "R:Event$ BeginPhase | ValidPlayer$ You | Phase$ Draw | Skip$ True",
+    json!([{ "Rule": { "rule": { "SkipDrawStep": "You" } } }])
+)]
+#[case::phasing_out_is_the_effect_of_that_name(
+    "A:AB$ Phases | Cost$ 1 W | Defined$ Self",
+    json!([{ "Activated": { "cost": "{1}{W}", "effects": [{ "PhaseOut": { "what": "Attached" } }] } }])
+)]
+#[case::a_class_is_read_as_its_level_ups(
+    "K:Class:2:2 U:AddStaticAbility$ Lv2",
+    json!([{ "Activated": { "cost": "{2}{U}", "timing": "Sorcery", "effects": [{ "BecomeLevel": { "level": 2 } }] } }])
+)]
+#[case::the_return_of_an_exile_is_its_duration(
+    "T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigOut\nT:Mode$ ChangesZone | Origin$ Battlefield | Destination$ Any | ValidCard$ Card.Self | Execute$ TrigBack\nSVar:TrigOut:DB$ ChangeZone | ValidTgts$ Creature | Origin$ Battlefield | Destination$ Exile\nSVar:TrigBack:DB$ ChangeZone | Defined$ Remembered | Origin$ Exile | Destination$ Battlefield",
+    json!([{ "Triggered": { "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+        "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+        "effects": [{ "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }] } }])
+)]
+#[case::the_return_of_the_card_exiled_by_name_is_its_duration(
+    "A:SP$ ChangeZone | Origin$ Exile | Destination$ Battlefield | Defined$ DirectRemembered",
+    json!([{ "Spell": { "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+        "effects": [{ "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }] } }])
+)]
+#[case::a_card_that_enters_under_your_control_is_a_move(
+    "A:SP$ ChangeZone | Origin$ Graveyard | Destination$ Battlefield | GainControl$ True | ValidTgts$ Creature",
+    json!([{ "Spell": { "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+        "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } }] } }])
+)]
+#[case::a_shuffle_of_cards_sent_to_exile_is_an_exile(
+    "A:SP$ ChangeZoneAll | Origin$ Graveyard | Destination$ Exile | ValidTgts$ Player | Shuffle$ True",
+    json!([{ "Spell": { "targets": [{ "what": "Player" }],
+        "effects": [{ "Exile": { "what": { "Each": [{ "In": "Graveyard" }] } } }] } }])
+)]
+#[case::a_pump_of_the_player_is_a_rule(
+    "A:SP$ Pump | Defined$ You | KW$ Protection from everything | Duration$ UntilYourNextTurn",
+    json!([{ "Spell": { "effects": [{ "Rule": { "rule": { "PlayersHave": { "who": "You", "keyword": { "Protection": [] } } },
+        "duration": "UntilYourNextTurn" } }] } }])
+)]
+#[case::a_partner_text_is_a_partner_group(
+    "K:Partner:Character select",
+    json!([{ "Keyword": { "PartnerGroup": "Character select" } }])
+)]
 fn the_standard_map_reads_a_shape_our_rules_state_another_way(
     #[case] script: &str,
     #[case] abilities: serde_json::Value,
@@ -136,6 +231,78 @@ fn the_standard_map_reads_a_shape_our_rules_state_another_way(
     "A:AB$ Draw | Cost$ 1 Sac<1/Creature>",
     json!([{ "Activated": { "cost": [{ "Mana": "{1}" }, "SacrificeSelf"], "effects": [{ "Draw": {} }] } }])
 )]
+#[case::a_surveil_trigger_is_not_a_scry_trigger(
+    "T:Mode$ Surveil | ValidPlayer$ You",
+    json!([{ "Triggered": { "when": { "SpellCast": { "by": "You" } }, "effects": [] } }])
+)]
+#[case::a_monarch_trigger_is_not_a_zone_change(
+    "T:Mode$ BecomeMonarch | ValidPlayer$ You | TriggerZones$ Battlefield",
+    json!([{ "Triggered": { "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } }, "effects": [] } }])
+)]
+#[case::a_monarch_trigger_of_an_effect_needs_the_exile_or_the_trigger(
+    "T:Mode$ BecomeMonarch | TriggerZones$ Command",
+    json!([{ "Spell": { "effects": [{ "Draw": {} }] } }])
+)]
+#[case::the_first_crew_of_a_turn_is_not_every_crew(
+    "T:Mode$ BecomesCrewed | ValidCard$ Card.Self | FirstTimeCrewed$ True",
+    json!([{ "Triggered": { "when": { "BecomesCrewed": { "what": ["This"] } }, "effects": [] } }])
+)]
+#[case::the_first_counters_of_a_turn_are_not_every_counter(
+    "T:Mode$ CounterTypeAddedAll | ValidObject$ Card.Self | FirstTime$ True",
+    json!([{ "Triggered": { "when": { "Batch": { "CountersPut": { "what": ["This"] } } }, "effects": [] } }])
+)]
+#[case::the_first_tokens_of_a_turn_are_not_every_token(
+    "T:Mode$ TokenCreatedOnce | OnlyFirst$ You",
+    json!([{ "Triggered": { "when": { "Batch": { "ZoneChange": { "what": ["Token"], "to": "Battlefield" } } }, "effects": [] } }])
+)]
+#[case::a_draw_cost_needs_the_choice_to_pay(
+    "A:AB$ Discard | Cost$ Draw<1/You> | Defined$ You | NumCards$ 1",
+    json!([{ "Spell": { "effects": [{ "Draw": {} }, { "Discard": {} }] } }])
+)]
+#[case::a_free_cast_needs_the_free_cast(
+    "S:Mode$ AlternativeCost | ValidSA$ Spell | Cost$ 0 | EffectZone$ All",
+    json!([{ "Spell": { "effects": [{ "Draw": {} }] } }])
+)]
+#[case::a_life_lock_needs_the_rule(
+    "S:Mode$ CantChangeLife | ValidPlayer$ You",
+    json!([{ "Rule": { "rule": { "NoMaxHandSize": "You" } } }])
+)]
+#[case::damage_without_life_loss_needs_the_rule(
+    "R:Event$ LifeReduced | ValidPlayer$ You | IsDamage$ True | Layer$ CantHappen",
+    json!([{ "Rule": { "rule": { "NoMaxHandSize": "You" } } }])
+)]
+#[case::a_skipped_draw_step_needs_the_rule(
+    "R:Event$ BeginPhase | Phase$ Draw | Skip$ True",
+    json!([{ "Rule": { "rule": { "NoMaxHandSize": "You" } } }])
+)]
+#[case::phasing_needs_the_effect(
+    "A:AB$ Phases | Cost$ 1 W | Defined$ Self",
+    json!([{ "Activated": { "cost": "{1}{W}", "effects": [{ "Draw": {} }] } }])
+)]
+#[case::a_class_needs_its_level_ups(
+    "K:Class:2:2 U:AddStaticAbility$ Lv2",
+    json!([{ "Spell": { "effects": [{ "Draw": {} }] } }])
+)]
+#[case::the_return_of_an_exile_needs_a_move_or_an_exile(
+    "A:SP$ ChangeZone | Defined$ Remembered | Origin$ Exile | Destination$ Battlefield",
+    json!([{ "Spell": { "effects": [{ "Draw": {} }] } }])
+)]
+#[case::a_card_that_enters_under_your_control_needs_a_move(
+    "A:SP$ ChangeZone | Origin$ Graveyard | Destination$ Battlefield | GainControl$ True | ValidTgts$ Creature",
+    json!([{ "Spell": { "effects": [{ "Draw": {} }] } }])
+)]
+#[case::a_shuffle_into_the_library_needs_the_shuffle(
+    "A:SP$ ChangeZoneAll | Origin$ Graveyard | Destination$ Library | Shuffle$ True",
+    json!([{ "Spell": { "effects": [{ "Exile": { "what": { "Each": [{ "In": "Graveyard" }] } } }] } }])
+)]
+#[case::a_pump_of_the_player_needs_a_rule(
+    "A:SP$ Pump | Defined$ You | KW$ Protection from everything",
+    json!([{ "Spell": { "effects": [{ "Draw": {} }] } }])
+)]
+#[case::a_partner_text_needs_the_partner_keyword(
+    "K:Partner:Character select",
+    json!([{ "Keyword": "Flying" }])
+)]
 fn the_standard_map_still_reports_a_card_whose_rules_lack_the_shape(
     #[case] script: &str,
     #[case] abilities: serde_json::Value,
@@ -147,4 +314,18 @@ fn the_standard_map_still_reports_a_card_whose_rules_lack_the_shape(
             .any(|finding| finding.status == Status::Missing),
         "{script}: {found:?}"
     );
+}
+
+#[rstest]
+#[case::an_alternative_cost_that_is_not_free(
+    "S:Mode$ AlternativeCost | ValidSA$ Spell.Self | Cost$ W U | EffectZone$ All"
+)]
+#[case::damage_that_stops_at_one_life(
+    "R:Event$ LifeReduced | ValidPlayer$ You.lifeGE1 | Result$ LT1 | IsDamage$ True | ReplaceWith$ Stop"
+)]
+#[case::a_skipped_untap_step("R:Event$ BeginPhase | Phase$ Untap | Skip$ True")]
+fn the_standard_map_has_no_verb_for_the_wider_shapes_of_those_names(#[case] script: &str) {
+    let found = stand(script, &json!([]));
+    let statuses: Vec<Status> = found.iter().map(|finding| finding.status).collect();
+    assert_eq!(statuses, [Status::NoVerb], "{script}");
 }
