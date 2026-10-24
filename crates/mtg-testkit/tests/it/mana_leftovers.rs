@@ -5,7 +5,7 @@ use crate::common::pid;
 use mtg_core::mana::ManaType;
 use mtg_engine::characteristics::characteristics;
 use mtg_engine::turn::Step;
-use mtg_testkit::cards::{forest, free_creature, island, study};
+use mtg_testkit::cards::{forest, free_creature, island, mountain, study};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
@@ -186,5 +186,40 @@ fn knowledge_is_power_grows_your_creatures_by_the_cards_you_drew(
     assert_eq!(power(&driver, "Theirs"), 1, "only your creatures");
     driver.idle_until(u32::try_from(seats).unwrap() + 1, Step::Main1)?;
     assert_eq!(power(&driver, "Mine"), 2, "the draw step of the new turn");
+    Ok(())
+}
+
+#[rstest]
+#[case::alone(false, 1)]
+#[case::after_a_cantrip(true, 3)]
+fn fists_of_flame_gives_a_bonus_for_each_card_drawn_this_turn(
+    #[case] study_first: bool,
+    #[case] bonus: i32,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .hand(0, [study("Study"), card("Fists of Flame").unwrap()])
+        .battlefield(
+            0,
+            [
+                ready(free_creature("Mine", 1, 1)),
+                ready(island()),
+                ready(mountain()),
+                ready(mountain()),
+            ],
+        );
+    for seat in 0..seats {
+        scenario = scenario.library(seat, (0..12).map(|_| forest()));
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    if study_first {
+        driver.cast("Study")?;
+        resolve(&mut driver)?;
+    }
+    let target = driver.target_named("Mine")?;
+    driver.cast_at("Fists of Flame", &[target])?;
+    resolve(&mut driver)?;
+    assert_eq!(power(&driver, "Mine"), 1 + bonus);
     Ok(())
 }

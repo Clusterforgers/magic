@@ -28,3 +28,22 @@ fn near_misses_stay_with_the_table(#[case] text: &str) {
         "{text}"
     );
 }
+
+#[rstest]
+#[case::the_number_of_cards_drawn(
+    "Creatures you control get +X/+X, where X is the number of cards you've drawn this turn.",
+    ClauseKind::Static,
+    r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":{"Tallied":{"who":"You","what":"Drawn"}},"toughness":{"Tallied":{"who":"You","what":"Drawn"}}}}]}}"#
+)]
+#[case::a_bonus_for_each_card_drawn(
+    "Draw a card. Until end of turn, target creature gains trample and gets +1/+0 for each card you've drawn this turn.",
+    ClauseKind::Spell,
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Draw":{}},{"Continuous":{"affected":{"Target":0},"mods":[{"AddKeyword":"Trample"},{"ModifyPT":{"power":{"Tallied":{"who":"You","what":"Drawn"}},"toughness":0}}],"duration":"UntilEndOfTurn"}}]}}"#
+)]
+fn amounts_of_cards_drawn_read_and_write_back(
+    #[case] text: &str,
+    #[case] kind: ClauseKind,
+    #[case] json: &str,
+) {
+    reads_as(text, kind, false, json);
+}

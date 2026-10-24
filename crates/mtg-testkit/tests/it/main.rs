@@ -222,6 +222,7 @@ mod mana_cost_abilities;
 mod mana_costs;
 mod mana_fuzz;
 mod mana_leftovers;
+mod mana_leftovers_fuzz;
 mod mana_limits;
 mod mana_payment;
 mod mana_spent;
