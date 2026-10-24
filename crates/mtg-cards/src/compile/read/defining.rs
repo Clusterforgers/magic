@@ -375,6 +375,12 @@ fn died(r: &mut Reader<'_>) -> Option<Amount> {
         TurnTally::CreaturesDied
     };
     r.word("creatures").then_some(())?;
+    if r.words("that died under your control this turn") {
+        return Some(Amount::Tallied {
+            who: Ref::You,
+            what: under(what),
+        });
+    }
     let who = if r.words("that died this turn") {
         Ref::EachPlayer
     } else {
@@ -382,6 +388,14 @@ fn died(r: &mut Reader<'_>) -> Option<Amount> {
         Ref::You
     };
     Some(Amount::Tallied { who, what })
+}
+
+/// The tally of the creatures that died while the player controlled them, in place of the one counted by owner.
+const fn under(what: TurnTally) -> TurnTally {
+    match what {
+        TurnTally::NontokenCreaturesDied => TurnTally::NontokenCreaturesDiedUnder,
+        _ => TurnTally::CreaturesDiedUnder,
+    }
 }
 
 /// "creature put into your graveyard from the battlefield this turn", after "for each".
@@ -392,6 +406,12 @@ pub(super) fn died_each(r: &mut Reader<'_>) -> Option<Amount> {
         TurnTally::CreaturesDied
     };
     r.word("creature").then_some(())?;
+    if r.words("that died under your control this turn") {
+        return Some(Amount::Tallied {
+            who: Ref::You,
+            what: under(what),
+        });
+    }
     r.need("put into your graveyard from the battlefield this turn")?;
     Some(Amount::Tallied {
         who: Ref::You,
@@ -405,11 +425,18 @@ pub(super) fn died_text(amount: &Amount, each: bool) -> Option<String> {
         return None;
     };
     let kind = match what {
-        TurnTally::CreaturesDied => "",
-        TurnTally::NontokenCreaturesDied => "nontoken ",
+        TurnTally::CreaturesDied | TurnTally::CreaturesDiedUnder => "",
+        TurnTally::NontokenCreaturesDied | TurnTally::NontokenCreaturesDiedUnder => "nontoken ",
         _ => return None,
     };
     let noun = if each { "creature" } else { "creatures" };
+    if matches!(
+        what,
+        TurnTally::CreaturesDiedUnder | TurnTally::NontokenCreaturesDiedUnder
+    ) {
+        return (*who == Ref::You)
+            .then(|| format!("{kind}{noun} that died under your control this turn"));
+    }
     match who {
         Ref::You => Some(format!(
             "{kind}{noun} put into your graveyard from the battlefield this turn"

@@ -117,6 +117,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts = texts.into_iter().flat_map(cast::impulse_wordings).collect();
     let controller = create::other_wordings(&texts);
     texts.extend(controller);
+    let named = copies::pronoun_wordings(&texts);
+    texts.extend(named);
     let searches = library::other_wordings(&texts);
     texts.extend(searches);
     let counted = where_x_draws(&texts);
@@ -731,7 +733,10 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
         &[false]
     };
     let agains: &[bool] = if repeats { &[false, true] } else { &[false] };
-    let chosens: &[bool] = if effects.iter().any(group_copies::is_group_copy) {
+    let chosens: &[bool] = if effects
+        .iter()
+        .any(|effect| group_copies::is_group_copy(effect) || copies::is_target_copy(effect))
+    {
         &[false, true]
     } else {
         &[false]
@@ -797,6 +802,11 @@ fn written(
         again: wording.again,
         condition: wording.condition,
         made: None,
+        naming: if wording.chosen {
+            Naming::ChosenFirst
+        } else {
+            Naming::InPlace
+        },
     };
     let mut sentences: Vec<String> = Vec::new();
     let mut start = 0;
@@ -1390,6 +1400,17 @@ struct Writer<'a> {
     condition: usize,
     /// Whether the tokens the sentence being written names are one token, while that sentence acts on tokens just made.
     made: Option<bool>,
+    /// Whether a copy of the target is worded after a sentence that chooses it.
+    naming: Naming,
+}
+
+/// Where a copy of the target names it.
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Naming {
+    /// In the sentence that makes the copy.
+    InPlace,
+    /// In a sentence of its own before: "Choose target creature you control."
+    ChosenFirst,
 }
 
 impl Writer<'_> {
@@ -1654,6 +1675,50 @@ impl Writer<'_> {
         copies::token_text(effect, &copied, delayed)
     }
 
+    /// Whether the copy is made of several targets, so the sentences after it name several tokens.
+    fn several_copies(&self, created: &Effect) -> bool {
+        self.naming == Naming::ChosenFirst
+            && copies::is_target_copy(created)
+            && self.are_permanents(&Ref::Target(0))
+    }
+
+    /// The sentences of a token copy: one, or (`chosen`) the sentence that chooses the target and the one that makes a
+    /// token for each of them.
+    fn copy_sentences(&mut self, effect: &Effect, delayed: bool) -> Option<Vec<String>> {
+        let Effect::CreateToken {
+            token: TokenRef::CopyOf {
+                of: Ref::Target(0), ..
+            },
+            count,
+            tapped: false,
+            ..
+        } = effect
+        else {
+            return Some(vec![self.copy_token(effect, delayed)?]);
+        };
+        if self.naming != Naming::ChosenFirst
+            || self.named
+            || *count != Amount::one()
+            || !(self.is_a_permanent(&Ref::Target(0)) || self.are_permanents(&Ref::Target(0)))
+        {
+            return Some(vec![self.copy_token(effect, delayed)?]);
+        }
+        let spec = self.targets.first()?;
+        let Targetable::Object(selector) = &spec.what else {
+            return None;
+        };
+        let noun = copies::chosen_kind(selector)?;
+        let several = !spec.bounds.is_one();
+        let target = self.name_target()?;
+        let (each, copied) = if several {
+            (format!("for each of those {noun}s"), format!("that {noun}"))
+        } else {
+            (format!("for each {noun} chosen this way"), "it".to_owned())
+        };
+        let token = copies::token_text(effect, &copied, delayed)?;
+        Some(vec![format!("choose {target}"), format!("{each}, {token}")])
+    }
+
     /// A copy of a spell or an ability, or the card that becomes a copy of the target, naming the one target the first
     /// time.
     fn copy_effect(&mut self, effect: &Effect) -> Option<String> {
@@ -1699,6 +1764,22 @@ impl Writer<'_> {
         }
         if group_copies::is_group_copy(effect) {
             return Some((self.group_becomes(effect, chosen)?, 1));
+        }
+        // A token copy of the target chosen first, with nothing done to it later.
+        if chosen
+            && matches!(
+                effect,
+                Effect::CreateToken {
+                    token: TokenRef::CopyOf {
+                        of: Ref::Target(0),
+                        ..
+                    },
+                    bind: None,
+                    ..
+                }
+            )
+        {
+            return Some((self.copy_sentences(effect, false)?, 1));
         }
         None
     }

@@ -102,6 +102,10 @@ pub(crate) enum Tally {
     Died,
     /// A nontoken creature put into a graveyard from the battlefield (counted for its owner).
     DiedNontoken,
+    /// A creature put into a graveyard from the battlefield, a token too (counted for the player who controlled it as it died).
+    DiedUnder,
+    /// A nontoken creature put into a graveyard from the battlefield (counted for the player who controlled it as it died).
+    DiedNontokenUnder,
     /// A creature declared as an attacker (counted for its controller, once for each creature).
     Attackers,
     /// A Vehicle that became crewed (counted for the object).

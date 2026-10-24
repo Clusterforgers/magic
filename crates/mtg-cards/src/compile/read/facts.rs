@@ -36,6 +36,53 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Condition> {
         .or_else(|| r.attempt(empty_hands))
         .or_else(|| r.attempt(exiled_with_it))
         .or_else(|| r.attempt(counter_this_turn))
+        .or_else(|| r.attempt(died_under_you))
+}
+
+/// What `died_under_you` reads, written back.
+fn died_under_texts(what: TurnTally, number: u32) -> Vec<String> {
+    let kind = if what == TurnTally::CreaturesDiedUnder {
+        ""
+    } else {
+        "nontoken "
+    };
+    if number == 1 {
+        return vec![format!(
+            "a {kind}creature died under your control this turn"
+        )];
+    }
+    quantity_texts(number)
+        .iter()
+        .map(|n| format!("{n} or more {kind}creatures died under your control this turn"))
+        .collect()
+}
+
+/// "a creature died under your control this turn", "two or more creatures died under your control this turn".
+fn died_under_you(r: &mut Reader<'_>) -> Option<Condition> {
+    let (number, noun) = if r.words("a nontoken creature") {
+        (1, TurnTally::NontokenCreaturesDiedUnder)
+    } else if r.words("a creature") {
+        (1, TurnTally::CreaturesDiedUnder)
+    } else {
+        let number = quantity(r).filter(|number| *number > 1)?;
+        r.need("or more")?;
+        let nontoken = r.word("nontoken");
+        r.need("creatures")?;
+        let noun = if nontoken {
+            TurnTally::NontokenCreaturesDiedUnder
+        } else {
+            TurnTally::CreaturesDiedUnder
+        };
+        (number, noun)
+    };
+    r.need("died under your control this turn")?;
+    at_least(
+        Amount::Tallied {
+            who: Ref::You,
+            what: noun,
+        },
+        number,
+    )
 }
 
 /// The cards exiled with the card, as hideaway links them.
@@ -191,6 +238,13 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
             },
             Cmp::Ge,
         ) if number == 1 => vec!["a creature died this turn".to_owned()],
+        (
+            Amount::Tallied {
+                who: Ref::You,
+                what: what @ (TurnTally::CreaturesDiedUnder | TurnTally::NontokenCreaturesDiedUnder),
+            },
+            Cmp::Ge,
+        ) => died_under_texts(*what, number),
         (
             Amount::Tallied {
                 who: Ref::Opponents,
