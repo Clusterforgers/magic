@@ -22,6 +22,7 @@ use mtg_engine::{Decision, Engine, EngineError, Event, GameState};
 use crate::invariants::InvariantChecker;
 use crate::scenario::Scenario;
 use crate::script_error::ScriptError;
+use crate::watchdog::Watchdog;
 
 /// Safety valve for loops that wait for a step to arrive.
 const MAX_WAIT_ANSWERS: usize = 20_000;
@@ -31,6 +32,7 @@ const MAX_WAIT_ANSWERS: usize = 20_000;
 pub struct Driver {
     pub(crate) engine: Engine,
     checker: InvariantChecker,
+    watchdog: Watchdog,
 }
 
 impl Driver {
@@ -38,7 +40,12 @@ impl Driver {
     pub fn new(engine: Engine) -> Result<Self, ScriptError> {
         let mut checker = InvariantChecker::new(engine.setup())?;
         checker.observe_engine(&engine)?;
-        Ok(Driver { engine, checker })
+        let watchdog = Watchdog::scripted(engine.setup().seed);
+        Ok(Driver {
+            engine,
+            checker,
+            watchdog,
+        })
     }
 
     /// Builds a scenario and wraps the resulting engine.
@@ -65,7 +72,13 @@ impl Driver {
 
     /// Applies a raw answer and checks invariants; returns the events it produced.
     pub fn answer(&mut self, answer: Answer) -> Result<Vec<Event>, ScriptError> {
+        let asked = self.engine.decision().map(|d| (d.player, d.kind.name()));
+        let given = answer.clone();
         let events = self.engine.apply(answer)?;
+        if let Some((player, kind)) = asked {
+            self.watchdog
+                .answered(self.engine.state(), player, kind, &given);
+        }
         self.checker.observe_engine(&self.engine)?;
         Ok(events)
     }

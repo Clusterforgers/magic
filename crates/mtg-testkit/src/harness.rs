@@ -5,16 +5,22 @@ use std::fmt;
 use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
 use mtg_engine::manual::ManualAction;
 use mtg_engine::state::{GameState, Stage};
+use mtg_engine::zones::Zone;
 use mtg_engine::{Decision, Engine, EngineError, Event, GameResult, GameSetup};
 use thiserror::Error;
 
 use crate::bot::{RandomBot, apply_answer};
 use crate::invariants::{InvariantChecker, Violation};
 use crate::manual_script::ManualScript;
+use crate::watchdog::Watchdog;
 use crate::windows::{Mode, SeatWindows, Windows};
 
 /// Whole-state invariants run every this many answers; per-event checks run on every event.
 const FULL_CHECK_EVERY: usize = 25;
+
+/// Permanents on the table above which the bots only pass priority (see [`crowded`]); the fullest table of the suites
+/// holds about 250 and the watchdog stops a game at [`crate::watchdog::MAX_PERMANENTS`].
+pub const CROWDED_TABLE: usize = 300;
 
 /// Limits and switches for [`play_game_with`].
 // Independent switches that tests set by name, not states of one machine.
@@ -152,27 +158,11 @@ pub fn play_game_with(
         None
     };
     let mut bots = bots_for(setup.players.len(), seed, options);
+    let mut watchdog = Watchdog::for_game(seed, &setup);
     let mut engine = Engine::new(setup).map_err(|e| fail(e.into(), &[]))?;
     observe(&mut checker, &engine).map_err(|v| fail(v.into(), engine.events()))?;
 
-    let start = if options.auto_pass {
-        Mode::Off
-    } else {
-        Mode::Held
-    };
-    let seats = bots
-        .iter_mut()
-        .map(|bot| {
-            if options.bot_windows {
-                bot.windows()
-            } else {
-                SeatWindows::in_mode(start)
-            }
-        })
-        .collect();
-    let mut windows = Windows::new(seats, engine.state());
-    windows.observe(engine.events());
-
+    let mut windows = table_windows(&mut bots, &engine, options);
     let pass = Answer::Priority(PriorityAction::Pass);
     let mut script = ManualScript::new(seed, options.manual_every);
     let mut manual_actions = 0;
@@ -208,10 +198,13 @@ pub fn play_game_with(
         } else if let Some(action) = scripted {
             manual_actions += 1;
             Answer::Priority(PriorityAction::Manual(action))
+        } else if crowded(engine.state(), &decision) {
+            pass.clone()
         } else {
             bot.choose(&decision)
         };
         let seat_passes = !table_passes && answer == pass;
+        let given = answer.clone();
         let events = apply_answer(&mut engine, &decision, answer)
             .map_err(|e| fail(e.into(), engine.events()))?;
         windows.observe(&events);
@@ -219,6 +212,12 @@ pub fn play_game_with(
             windows.passed(decision.player);
         }
         answers += 1;
+        watchdog.answered(
+            engine.state(),
+            decision.player,
+            decision.kind.name(),
+            &given,
+        );
         observe(&mut checker, &engine).map_err(|v| fail(v.into(), engine.events()))?;
     }
     finish(&engine, checker.as_mut(), answers, auto_passes)
@@ -229,6 +228,36 @@ pub fn play_game_with(
             ..outcome
         })
         .map_err(|kind| fail(kind, engine.events()))
+}
+
+/// The windows of the table: every seat in Full Control, passed for by the table (`auto_pass`) or set by its bot.
+fn table_windows(bots: &mut [RandomBot], engine: &Engine, options: PlayOptions) -> Windows {
+    let start = if options.auto_pass {
+        Mode::Off
+    } else {
+        Mode::Held
+    };
+    let seats = bots
+        .iter_mut()
+        .map(|bot| {
+            if options.bot_windows {
+                bot.windows()
+            } else {
+                SeatWindows::in_mode(start)
+            }
+        })
+        .collect();
+    let mut windows = Windows::new(seats, engine.state());
+    windows.observe(engine.events());
+    windows
+}
+
+/// Whether `decision` is a priority decision at a table so full that its bots stop adding to it: a player may always
+/// pass (CR 117.3d), and attacks, blocks and choices stay random. A board that doubles its tokens every round
+/// (Rhys the Redeemed) otherwise grows without end, and every action of the engine costs more than the last.
+fn crowded(state: &GameState, decision: &Decision) -> bool {
+    matches!(decision.kind, DecisionKind::Priority(_))
+        && state.zone(Zone::Battlefield).len() > CROWDED_TABLE
 }
 
 /// One seeded bot for each seat, set up as the options say.
