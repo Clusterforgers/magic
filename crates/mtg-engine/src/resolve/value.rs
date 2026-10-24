@@ -606,6 +606,12 @@ impl<'a> Scope<'a> {
                 .cause
                 .map(|cause| cause.subjects.clone())
                 .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
+            Ref::Dealer => self
+                .cause
+                .and_then(|cause| cause.source)
+                .map(Target::Object)
+                .into_iter()
+                .collect(),
             Ref::Attached => state
                 .host_of(self.source.id)
                 .and_then(|host| state.object(host))
@@ -933,6 +939,14 @@ impl<'a> Scope<'a> {
             Pred::Monstrous => matches!(seen.counters, Counted::Live(held) if held.monstrous()),
             Pred::EnteredThisTurn => state.object_tallied(reference, None, Tally::Entered) > 0,
             Pred::DamagedThisTurn => state.object_tallied(reference, None, Tally::Damaged) > 0,
+            Pred::DamagedBy(named) => self
+                .objects(named)?
+                .iter()
+                .any(|source| state.damaged_by(reference, *source)),
+            Pred::SameCard(named) => self
+                .objects(named)?
+                .iter()
+                .any(|card| card.id == reference.id),
             Pred::Targeting(inner) => self.targets_match(inner, reference, seen)?,
             Pred::Attacking => state
                 .combat()
@@ -1977,6 +1991,7 @@ mod tests {
             subjects: vec![Target::Player(PlayerId(1))],
             snapshots: Vec::new(),
             amount: 0,
+            source: None,
         };
         let mut scope = scope(&game);
         let triggering: Ref = serde_json::from_str(r#""Triggering""#).unwrap();

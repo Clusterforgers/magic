@@ -204,9 +204,6 @@ fn a_static_never_chooses_a_color(#[case] text: &str) {
 #[case::another_blocker(
     "Whenever another creature you control blocks, it gets +1/+1 until end of turn."
 )]
-#[case::the_damaged_player(
-    "Whenever a Vampire you control deals combat damage to a player, put a +1/+1 counter on it."
-)]
 #[case::it_after_the_trigger_of_a_player("Whenever you draw a card, put a +1/+1 counter on it.")]
 #[case::it_in_a_second_sentence_without_antecedent("Draw a card. It gets +1/+1 until end of turn.")]
 #[case::it_leaves("Whenever ~ leaves the battlefield, put a +1/+1 counter on it.")]

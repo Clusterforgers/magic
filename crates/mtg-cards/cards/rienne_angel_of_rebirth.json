@@ -1,0 +1,57 @@
+{
+  "oracle_id": "1ef2415f-f88f-41fb-b084-ea52631a60c1",
+  "name": "Rienne, Angel of Rebirth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rienne, Angel of Rebirth",
+      "oracle_fingerprint": "57b1ef11b5c9282b6b9c2949136d3689",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Graveyard" }, { "SameCard": "Triggering" }] },
+                  "as": "later"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": { "Bound": "later" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

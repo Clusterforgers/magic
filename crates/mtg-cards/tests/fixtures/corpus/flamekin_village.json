@@ -1,0 +1,24 @@
+{
+  "cmc": 0.0,
+  "collector_number": "149",
+  "color_identity": [
+    "R"
+  ],
+  "colors": [],
+  "digital": false,
+  "id": "df0affe7-92d8-422f-833d-74089626b829",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "",
+  "name": "Flamekin Village",
+  "oracle_id": "34a1eb04-08f6-49d8-a1d1-b987a76bd8b1",
+  "oracle_text": "As this land enters, you may reveal an Elemental card from your hand. If you don't, this land enters tapped.\n{T}: Add {R}.\n{R}, {T}: Target creature gains haste until end of turn.",
+  "produced_mana": [
+    "R"
+  ],
+  "rarity": "rare",
+  "released_at": "2026-01-23",
+  "set": "ecc",
+  "type_line": "Land"
+}

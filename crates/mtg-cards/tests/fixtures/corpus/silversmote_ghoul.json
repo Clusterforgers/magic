@@ -1,0 +1,25 @@
+{
+  "cmc": 3.0,
+  "collector_number": "154",
+  "color_identity": [
+    "B"
+  ],
+  "colors": [
+    "B"
+  ],
+  "digital": false,
+  "id": "c50a8053-7e79-4e0f-8e72-8df089377cd1",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{B}",
+  "name": "Silversmote Ghoul",
+  "oracle_id": "67d55b4f-944e-4376-93ed-1a240bca1eae",
+  "oracle_text": "At the beginning of your end step, if you gained 3 or more life this turn, return this card from your graveyard to the battlefield tapped.\n{1}{B}, Sacrifice this creature: Draw a card.",
+  "power": "3",
+  "rarity": "uncommon",
+  "released_at": "2021-04-23",
+  "set": "c21",
+  "toughness": "1",
+  "type_line": "Creature — Zombie Vampire"
+}

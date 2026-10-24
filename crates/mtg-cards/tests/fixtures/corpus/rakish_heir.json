@@ -1,0 +1,25 @@
+{
+  "cmc": 3.0,
+  "collector_number": "149",
+  "color_identity": [
+    "R"
+  ],
+  "colors": [
+    "R"
+  ],
+  "digital": false,
+  "id": "0da15652-8207-4be1-b821-3fb3dad66e37",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{R}",
+  "name": "Rakish Heir",
+  "oracle_id": "3318c391-7aa1-4550-88a0-b29d8dca28b7",
+  "oracle_text": "Whenever a Vampire you control deals combat damage to a player, put a +1/+1 counter on it.",
+  "power": "2",
+  "rarity": "uncommon",
+  "released_at": "2021-11-19",
+  "set": "voc",
+  "toughness": "2",
+  "type_line": "Creature — Vampire"
+}

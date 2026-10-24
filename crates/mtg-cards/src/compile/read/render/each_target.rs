@@ -4,6 +4,7 @@
 //! between two targets.
 
 use super::{Effect, Ref, TargetSpec, counters, join_list, multi, spec_text};
+use crate::value::{Amount, StatKind};
 
 /// What the ordinals before "target" say for the targets after the first.
 const AFTER_THE_FIRST: [&str; 2] = ["another target ", "a third target "];
@@ -102,15 +103,10 @@ pub(super) fn fight_among(targets: &[TargetSpec], effects: &[Effect]) -> Option<
     let [first, second] = targets else {
         return None;
     };
-    let at = effects.iter().position(|effect| {
-        matches!(
-            effect,
-            Effect::Fight {
-                what: Ref::Target(0),
-                with: Ref::Target(1)
-            }
-        )
-    })?;
+    let at = effects
+        .iter()
+        .position(|effect| what_they_do(effect).is_some())?;
+    let verb = what_they_do(&effects[at])?;
     let (before, after) = (&effects[..at], &effects[at + 1..]);
     let free = before
         .iter()
@@ -120,8 +116,9 @@ pub(super) fn fight_among(targets: &[TargetSpec], effects: &[Effect]) -> Option<
     let (free, about_the_first) = before.split_at(free);
     let opponent = spec_text(second)?;
     let fights: Vec<Vec<String>> = if about_the_first.is_empty() {
-        vec![vec![format!("{} fights {opponent}", spec_text(first)?)]]
+        vec![vec![format!("{} {verb} {opponent}", spec_text(first)?)]]
     } else {
+        (verb == "fights").then_some(())?;
         let mut all = Vec::new();
         for sentences in super::alternatives(std::slice::from_ref(first), about_the_first) {
             for fights in FIGHTS {
@@ -132,4 +129,24 @@ pub(super) fn fight_among(targets: &[TargetSpec], effects: &[Effect]) -> Option<
     };
     let found = then(&then(&targetless(free)?, &fights), &targetless(after)?);
     (!found.is_empty()).then_some(found)
+}
+
+/// What the first of two targets does to the second: it fights it, or deals damage to it equal to its own power.
+fn what_they_do(effect: &Effect) -> Option<&'static str> {
+    match effect {
+        Effect::Fight {
+            what: Ref::Target(0),
+            with: Ref::Target(1),
+        } => Some("fights"),
+        Effect::DealDamage {
+            source: Some(Ref::Target(0)),
+            to: Ref::Target(1),
+            amount:
+                Amount::Stat {
+                    of: Ref::Target(0),
+                    stat: StatKind::Power,
+                },
+        } => Some("deals damage equal to its power to"),
+        _ => None,
+    }
 }

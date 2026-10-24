@@ -1,0 +1,25 @@
+{
+  "cmc": 2.0,
+  "collector_number": "77",
+  "color_identity": [
+    "B"
+  ],
+  "colors": [
+    "B"
+  ],
+  "digital": false,
+  "id": "fe88cbee-5f6c-47e0-8a84-192c4c2ca984",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{B}",
+  "name": "Blood Seeker",
+  "oracle_id": "41087db6-34c4-4e2b-9f54-5e4488ca9c0b",
+  "oracle_text": "Whenever a creature an opponent controls enters, you may have that player lose 1 life.",
+  "power": "1",
+  "rarity": "common",
+  "released_at": "2024-09-27",
+  "set": "dsc",
+  "toughness": "1",
+  "type_line": "Creature — Vampire Shaman"
+}

@@ -349,6 +349,12 @@ impl<'a> Walker<'a> {
                     self.problem("`Triggering` is only valid in a triggered ability");
                 }
             }
+            Ref::Dealer => {
+                if !self.scope.in_trigger {
+                    self.problem("`Dealer` is only valid in a triggered ability");
+                }
+                self.expect(Kind::Object, want);
+            }
             Ref::Bound(name) => match self.scope.lookup(name) {
                 None => self.problem(format!("`{name}` is not bound by an earlier step")),
                 Some(kind) => self.expect(kind, want),
@@ -380,7 +386,9 @@ impl<'a> Walker<'a> {
             | Pred::ExiledWith(r)
             | Pred::EncodedWith(r)
             | Pred::Crewed(r)
-            | Pred::Saddled(r) => {
+            | Pred::Saddled(r)
+            | Pred::DamagedBy(r)
+            | Pred::SameCard(r) => {
                 self.reference(r, Kind::Object);
             }
             Pred::HasKeyword(keyword) => self.keyword(keyword),
@@ -1448,7 +1456,7 @@ impl<'a> Walker<'a> {
             | Ref::Defending
             | Ref::ControllerOf(_)
             | Ref::OwnerOf(_) => Kind::Player,
-            Ref::This | Ref::Attached | Ref::Paid | Ref::Each(_) => Kind::Object,
+            Ref::This | Ref::Dealer | Ref::Attached | Ref::Paid | Ref::Each(_) => Kind::Object,
             Ref::Target(index) => self
                 .scope
                 .targets
@@ -2621,6 +2629,7 @@ impl<'a> Walker<'a> {
             ReplaceBy::Tapped
             | ReplaceBy::Choose(_)
             | ReplaceBy::PayLifeOrTapped(_)
+            | ReplaceBy::RevealOrTapped(_)
             | ReplaceBy::Riot
             | ReplaceBy::DayIfNeither
             | ReplaceBy::EntersPrepared
@@ -2638,6 +2647,7 @@ impl<'a> Walker<'a> {
                 self.at("of", |w| w.selector(of));
             }
             ReplaceBy::PayLifeOrTapped(0) => self.problem("paying no life is entering untapped"),
+            ReplaceBy::RevealOrTapped(of) => self.at("of", |w| w.selector(of)),
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");
             }

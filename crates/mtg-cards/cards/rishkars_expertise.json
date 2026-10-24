@@ -1,0 +1,44 @@
+{
+  "oracle_id": "97407cd0-2bd2-4074-94d3-4ec3d243fa78",
+  "name": "Rishkar's Expertise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rishkar's Expertise",
+      "oracle_fingerprint": "9065123f9cd0bcc81337f909b5284b07",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Greatest": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  }
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" },
+                      { "Not": { "Type": "Land" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 5 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "spell"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "spell" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

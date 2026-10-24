@@ -60,6 +60,9 @@ pub enum Ref {
     Target(u8),
     /// The player or object the trigger event is about ("that creature", "that player").
     Triggering,
+    /// The object that did what the trigger event is about: the source of the damage ("Whenever a Vampire you control deals
+    /// combat damage to a player, put a +1/+1 counter on it"); nobody for an event with no such object.
+    Dealer,
     /// What the source is attached to ("enchanted creature", "equipped creature").
     Attached,
     /// The player the source is attached to ("enchanted player").
@@ -208,6 +211,11 @@ pub enum Pred {
     Targeting(Selector),
     /// Was dealt damage this turn.
     DamagedThisTurn,
+    /// Was dealt damage this turn by one of the objects the reference names (the object as it is now: one that left and came back is another).
+    DamagedBy(Ref),
+    /// Is the card one of the objects the reference names is, in whatever zone it is now: a card that went to a graveyard is a
+    /// new object there (CR 400.7), and this finds it again by its card.
+    SameCard(Ref),
     /// The predicate is false.
     Not(Box<Pred>),
     /// At least one of the predicates is true.

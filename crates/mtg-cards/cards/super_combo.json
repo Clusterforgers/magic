@@ -1,0 +1,31 @@
+{
+  "oracle_id": "68555673-2833-459a-b415-e2805f837778",
+  "name": "Super Combo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Super Combo",
+      "oracle_fingerprint": "22d1bc32aad0a97c6158705669ba1bd9",
+      "abilities": [
+        { "Keyword": { "Replicate": "{2}" } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

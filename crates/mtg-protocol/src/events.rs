@@ -442,6 +442,9 @@ fn redact_triggers(before: &GameState, event: &Event, viewer: PlayerId) -> Optio
                 .iter()
                 .filter_map(|subject| subject.object())
                 .any(|object| !knows(before, object.id, viewer))
+            || cause
+                .source
+                .is_some_and(|object| !knows(before, object.id, viewer))
     };
     match event {
         Event::AbilityTriggered(t)
@@ -581,6 +584,7 @@ mod tests {
     use mtg_engine::counters::CountersChanged;
     use mtg_engine::events::{ResolutionOutcome, ZoneCause};
     use mtg_engine::library::{CardsFound, LibraryLooked, Revealed, Scried, Surveilled};
+    use mtg_engine::object::GameObject;
     use mtg_engine::snapshot::snapshot;
     use mtg_engine::tokens::TokenCreated;
     use mtg_engine::triggers::{DelayedCreated, DelayedId, Triggered};
@@ -923,6 +927,7 @@ mod tests {
                 subjects: vec![Target::Object(reference)],
                 snapshots: vec![snapshot(&t.state, subject).unwrap()],
                 amount: 0,
+                source: None,
             },
             snapshot: snapshot(&t.state, t.creature).unwrap(),
             delayed: None,
@@ -980,7 +985,7 @@ mod tests {
             ability: 1,
             origin: mtg_engine::abilities::AbilitySource::default(),
             delayed: None,
-            cause: trigger.cause.clone(),
+            cause: Box::new(trigger.cause.clone()),
         };
         assert_eq!(told(&t.state, &removed(&in_hand), OWNER), Ok(()));
         assert_eq!(
@@ -988,6 +993,33 @@ mod tests {
             Err(HiddenEvent::TriggerRemoved { source, ability: 1 })
         );
         assert_eq!(told(&t.state, &removed(&on_the_table), OTHER), Ok(()));
+    }
+
+    #[test]
+    fn a_trigger_whose_dealer_is_a_card_only_its_owner_can_see_is_shown_to_the_others_without_it() {
+        let t = table();
+        let source = t.state.object(t.creature).unwrap().reference();
+        let dealer = |dealt_by: ObjectId| {
+            let mut trigger = triggered_on(&t, t.creature);
+            trigger.cause = Cause {
+                source: t.state.object(dealt_by).map(GameObject::reference),
+                ..Cause::default()
+            };
+            Event::AbilityTriggered(Box::new(trigger))
+        };
+        // The dealer of the damage is named by the cause, so it is judged like any other thing the cause names.
+        assert_eq!(told(&t.state, &dealer(t.hand), OWNER), Ok(()));
+        assert_eq!(
+            told(&t.state, &dealer(t.hand), OTHER),
+            Err(HiddenEvent::AbilityTriggered {
+                source,
+                ability: 1,
+                controller: OWNER
+            })
+        );
+        for viewer in [OWNER, OTHER] {
+            assert_eq!(told(&t.state, &dealer(t.creature), viewer), Ok(()));
+        }
     }
 
     #[test]

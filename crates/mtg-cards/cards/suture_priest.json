@@ -1,0 +1,43 @@
+{
+  "oracle_id": "c4d36522-3ace-4bfb-bf2d-1a366f458698",
+  "name": "Suture Priest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Suture Priest",
+      "oracle_fingerprint": "d2c1fe290a50b8c802318edbcd1cab34",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "GainLife": { "amount": 1 } }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

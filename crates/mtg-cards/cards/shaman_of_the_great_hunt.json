@@ -1,0 +1,44 @@
+{
+  "oracle_id": "4f87eb3c-c261-4d92-a260-4b20daddb601",
+  "name": "Shaman of the Great Hunt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shaman of the Great Hunt",
+      "oracle_fingerprint": "16708de310e54fb8821a7779220f06f8",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Dealer", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{G/U}{G/U}",
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

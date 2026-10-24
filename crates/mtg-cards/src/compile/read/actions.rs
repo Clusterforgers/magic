@@ -7,7 +7,7 @@ use super::selectors::second_target;
 use super::tokens::Reader;
 use crate::effect::Effect;
 use crate::refs::{Bounds, Pred, Ref, Targetable};
-use crate::value::Amount;
+use crate::value::{Amount, StatKind};
 
 /// The creature that does the action: the card ("~", and "it" when the trigger is about the card itself or the sentence
 /// before spoke of it), or one target creature, which "it" names after.
@@ -119,6 +119,25 @@ pub fn fight(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("fights")?;
     let with = fought(r)?;
     is_on_the_battlefield(r, &with).then_some(vec![Effect::Fight { what, with }])
+}
+
+/// "Target creature you control deals damage equal to its power to target creature an opponent controls.": one creature
+/// deals damage to another equal to its own power (a bite, `Effect::DealDamage` from the first target).
+pub fn bite(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.targets.is_empty().then_some(())?;
+    let dealer = target_object(r)?;
+    is_on_the_battlefield(r, &dealer).then_some(())?;
+    r.need("deals damage equal to its power to")?;
+    let hit = fought(r)?;
+    is_on_the_battlefield(r, &hit).then_some(())?;
+    Some(vec![Effect::DealDamage {
+        source: Some(dealer.clone()),
+        to: hit,
+        amount: Amount::Stat {
+            of: dealer,
+            stat: StatKind::Power,
+        },
+    }])
 }
 
 /// "Goad target creature.", "goad target creature an opponent controls", "Goad all creatures you don't control." and

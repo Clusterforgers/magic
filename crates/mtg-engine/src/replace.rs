@@ -590,6 +590,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::WithCounters { .. }
         | ReplaceBy::Choose(_)
         | ReplaceBy::PayLifeOrTapped(_)
+        | ReplaceBy::RevealOrTapped(_)
         | ReplaceBy::Devour { .. }
         | ReplaceBy::DayIfNeither
         | ReplaceBy::EntersPrepared
@@ -1603,6 +1604,9 @@ impl Pass<'_> {
             (ReplaceBy::Riot, Unit::Enter { object, controller }) => {
                 return self.riot(at, *object, *controller, applied);
             }
+            (ReplaceBy::RevealOrTapped(of), Unit::Enter { object, controller }) => {
+                return self.reveal_or_tapped(at, candidate, of, (*object, *controller), applied);
+            }
             (ReplaceBy::DayIfNeither, Unit::Enter { .. }) => {
                 self.day_if_neither(at, applied);
                 return Ok(Applied::Done);
@@ -2550,6 +2554,8 @@ mod day;
 mod prepared;
 
 mod dredge;
+
+mod reveal;
 
 mod riot;
 

@@ -126,6 +126,7 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         &when,
         TriggerPattern::ZoneChange { what, to: Some(ZoneKind::Battlefield), .. } if what.0 != [Pred::This]
     );
+    note_other_creatures(r, &when);
     let held = if render::while_held(&when) {
         r.attempt(|r| {
             r.need("while")?;
@@ -200,6 +201,21 @@ fn note_attacks_and_casts(r: &mut Reader<'_>, when: &TriggerPattern) {
             who: Ref::AttachedPlayer
         }
     );
+}
+
+/// What the event says about the other creatures it is about: whose permanent entered, which card went to a graveyard,
+/// and where a card that returns itself waits.
+fn note_other_creatures(r: &mut Reader<'_>, when: &TriggerPattern) {
+    r.that_controller = matches!(
+        when,
+        TriggerPattern::ZoneChange { what, to: Some(ZoneKind::Battlefield), .. } if !what.0.contains(&Pred::This)
+    );
+    r.others_died = matches!(
+        when,
+        TriggerPattern::ZoneChange { what, from: Some(ZoneKind::Battlefield), to: Some(ZoneKind::Graveyard) } if !what.0.contains(&Pred::This)
+    );
+    // An ability that triggers at a step works from the graveyard when its card returns itself.
+    r.from_graveyard |= matches!(when, TriggerPattern::StepBegins { .. });
 }
 
 /// Whether the event is a spell being cast, in every one of the events joined by "or", also the nth in a turn.

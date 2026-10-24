@@ -1,0 +1,30 @@
+{
+  "cmc": 4.0,
+  "collector_number": "113",
+  "color_identity": [
+    "G",
+    "R",
+    "U"
+  ],
+  "colors": [
+    "R"
+  ],
+  "digital": false,
+  "id": "bfbd8cd1-465c-4501-94ba-5a3402f30ded",
+  "keywords": [
+    "Ferocious",
+    "Haste"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{3}{R}",
+  "name": "Shaman of the Great Hunt",
+  "oracle_id": "4f87eb3c-c261-4d92-a260-4b20daddb601",
+  "oracle_text": "Haste\nWhenever a creature you control deals combat damage to a player, put a +1/+1 counter on it.\nFerocious — {2}{G/U}{G/U}: Draw a card for each creature you control with power 4 or greater.",
+  "power": "4",
+  "rarity": "mythic",
+  "released_at": "2015-01-23",
+  "set": "frf",
+  "toughness": "2",
+  "type_line": "Creature — Orc Shaman"
+}

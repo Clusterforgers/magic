@@ -1,0 +1,27 @@
+{
+  "oracle_id": "09f52275-99e6-45e0-b2db-cafe26d5fb91",
+  "name": "Secluded Glen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Secluded Glen",
+      "oracle_fingerprint": "976c99250fa72b92c1c052e733dbab52",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "RevealOrTapped": [{ "Subtype": "Faerie" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

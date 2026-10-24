@@ -292,6 +292,7 @@ mod sz_more_writers;
 mod sz_writers;
 mod tail_alone;
 mod tail_pairs;
+mod tail_third;
 mod tap_and_mill;
 mod target_pair_writers;
 mod this_or_another;
@@ -673,9 +674,6 @@ mod damage {
     #[case::no_amount("~ deals damage to any target.")]
     #[case::not_the_card("Target creature deals 3 damage to any target.")]
     #[case::it("It deals 3 damage to any target.")]
-    #[case::fights(
-        "Target creature you control deals damage equal to its power to target creature you don't control."
-    )]
     fn near_misses_stay_unread(#[case] text: &str) {
         assert_eq!(spell(text), None, "{text}");
     }

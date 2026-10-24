@@ -230,7 +230,7 @@ pub(crate) fn removing(entry: &PendingTrigger) -> Event {
         ability: t.ability,
         origin: t.origin,
         delayed: t.delayed,
-        cause: t.cause.clone(),
+        cause: Box::new(t.cause.clone()),
     }
 }
 
@@ -393,6 +393,7 @@ mod tests {
                 subjects: vec![crate::choose::Target::Player(subject)],
                 snapshots: Vec::new(),
                 amount: 0,
+                source: None,
             },
             snapshot: snapshot(state, object.id()).unwrap(),
             delayed: None,
