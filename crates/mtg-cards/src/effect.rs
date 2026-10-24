@@ -189,6 +189,17 @@ pub struct DieRow {
     pub effects: Vec<Effect>,
 }
 
+/// What the players of a `Vote` vote for.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub enum VoteFor {
+    /// Named choices ("votes for time or knowledge"): each name is bound to the players who voted for it, once for each
+    /// of their votes, so the size of a name is the number of votes the choice got.
+    Named(Vec<String>),
+    /// The players or objects a reference names ("votes for a nonland permanent you don't control").
+    Of(Ref),
+}
+
 /// One instruction of a spell or ability. Optional fields have defaults: `who` is the
 /// controller, an `Amount` is one, `source` is the ability's source.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -765,6 +776,19 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         lose: Vec<Effect>,
     },
+    /// Each player votes (CR 701.38), the controller first and the others in turn order. A vote on named choices binds
+    /// each name to the players who voted for it; a vote on players or objects binds `bind` to those with the most votes,
+    /// all of them when tied. A secret vote is shown to the other seats only when every vote is cast.
+    Vote {
+        /// What is voted for.
+        options: VoteFor,
+        /// The votes are cast face down and revealed together ("secretly votes for").
+        #[serde(default, skip_serializing_if = "is_false")]
+        secret: bool,
+        /// Names the players or objects with the most votes when `options` is `Of`.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
+    },
     /// Creates tokens.
     CreateToken {
         /// Who controls them.
@@ -1166,6 +1190,14 @@ mod tests {
     #[case::flip_a_coin(
         Effect::FlipCoin { who: Ref::You, win: vec![Effect::Draw { who: Ref::You, count: Amount::one() }], lose: Vec::new() },
         r#"{"FlipCoin":{"win":[{"Draw":{}}]}}"#
+    )]
+    #[case::vote_on_two_names(
+        Effect::Vote { options: VoteFor::Named(vec!["time".to_owned(), "knowledge".to_owned()]), secret: true, bind: None },
+        r#"{"Vote":{"options":{"Named":["time","knowledge"]},"secret":true}}"#
+    )]
+    #[case::vote_on_objects(
+        Effect::Vote { options: VoteFor::Of(Ref::Each(Selector(vec![Pred::In(ZoneKind::Battlefield)]))), secret: false, bind: Some("top".to_owned()) },
+        r#"{"Vote":{"options":{"Of":{"Each":[{"In":"Battlefield"}]}},"as":"top"}}"#
     )]
     #[case::attach_the_source_to_a_target(
         Effect::Attach { what: Ref::This, to: Ref::Target(0) },

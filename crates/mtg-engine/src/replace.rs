@@ -2433,7 +2433,7 @@ impl Pass<'_> {
         Ok(Asked::Got(picked.and_then(|option| match option {
             ChoiceOption::Color(color) => Some(Chosen::Color(color)),
             ChoiceOption::Label(name) => Some(Chosen::CreatureType(Subtype(name))),
-            ChoiceOption::Player(_) => None,
+            ChoiceOption::Player(_) | ChoiceOption::Secret(_) => None,
         })))
     }
 

@@ -245,6 +245,8 @@ pub enum Choice {
     YesNo(bool),
     /// One of the offered options, by index (`ChooseOption`).
     Option(usize),
+    /// One of the options of a secret vote, by index (`ChoiceOption::Secret`); the other seats do not see which.
+    Vote(usize),
     /// One of the applicable replacement effects, by index (`ChooseReplacement`).
     Replacement(usize),
     /// The targets chosen for a copy of a spell or ability (`ChooseTargets`); targets are public.
@@ -259,6 +261,7 @@ impl Choice {
             Choice::Number(_)
             | Choice::YesNo(_)
             | Choice::Option(_)
+            | Choice::Vote(_)
             | Choice::Replacement(_)
             | Choice::Targets(_) => &[],
         }

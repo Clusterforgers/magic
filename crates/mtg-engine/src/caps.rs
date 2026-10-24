@@ -240,6 +240,7 @@ const RUNS: &[&str] = &[
     "Effect.RepeatEach",
     "Effect.RollDice",
     "Effect.FlipCoin",
+    "Effect.Vote",
     "Keyword.Flash",
     "Keyword.Flying",
     "Keyword.Reach",
@@ -618,6 +619,7 @@ mod tests {
     #[case::repeating_for_each("Effect.RepeatEach", true)]
     #[case::rolling_dice("Effect.RollDice", true)]
     #[case::flipping_coins("Effect.FlipCoin", true)]
+    #[case::voting("Effect.Vote", true)]
     #[case::adding_mana("Effect.AddMana", true)]
     #[case::tapping_permanents("Effect.Tap", true)]
     #[case::untapping_permanents("Effect.Untap", true)]

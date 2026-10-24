@@ -1,0 +1,42 @@
+{
+  "oracle_id": "07c7193e-f591-4aee-a3cc-3a2c52a38f9b",
+  "name": "Custodi Squire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Custodi Squire",
+      "oracle_fingerprint": "ef0468176186729869da6f6579d0c461",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Vote": {
+                  "options": {
+                    "Of": {
+                      "Each": [
+                        { "In": "Graveyard" },
+                        { "OwnedBy": "You" },
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Creature" },
+                            { "Type": "Enchantment" }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "as": "chosen"
+                }
+              },
+              { "Move": { "what": { "Bound": "chosen" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

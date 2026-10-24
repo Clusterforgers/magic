@@ -367,6 +367,8 @@ mod upkeep_keywords;
 mod upkeep_keywords_fuzz;
 mod vehicle_shapes;
 mod vehicles;
+mod vote_fuzz;
+mod votes;
 mod win_effects;
 mod windows_games;
 mod x_after;
