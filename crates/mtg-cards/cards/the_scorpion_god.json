@@ -1,0 +1,46 @@
+{
+  "oracle_id": "aff223d4-6338-460d-a4d5-d45f522864dc",
+  "name": "The Scorpion God",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Scorpion God",
+      "oracle_fingerprint": "353afeda5b3c7ee544c8d19ce3849929",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "HasCounter": "-1/-1" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{B}{R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Choose": { "from": { "Each": [{ "In": "Graveyard" }, "This"] }, "as": "later" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": { "Bound": "later" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

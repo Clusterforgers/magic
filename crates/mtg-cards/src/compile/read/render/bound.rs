@@ -19,6 +19,7 @@ impl Writer<'_> {
             return Some((vec![self.copy_token(created, true)?, delay], 2));
         }
         self.exile_and_return_later(effects)
+            .or_else(|| self.return_itself_later(effects))
     }
 
     /// The creation and the sentence that acts on its tokens, and the number of effects they cover.

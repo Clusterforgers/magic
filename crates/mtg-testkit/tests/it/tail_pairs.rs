@@ -5,7 +5,8 @@ use crate::common::pid;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::replay;
 use mtg_engine::turn::Step;
-use mtg_testkit::cards::{free_creature, swamp};
+use mtg_engine::zones::Zone;
+use mtg_testkit::cards::{burn, free_creature, mountain, swamp};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, attached_to, ready};
 use rstest::rstest;
@@ -78,6 +79,62 @@ fn the_equipped_creature_halves_the_life_of_the_player_it_hurts(
     for seat in (0..seats).filter(|seat| *seat != 1) {
         assert_eq!(life(&driver, seat), 20, "seat {seat}");
     }
+    assert_replays(&driver);
+    Ok(())
+}
+
+/// Passes priority until the stack is empty.
+fn settle(driver: &mut Driver) -> Result<(), ScriptError> {
+    for _ in 0..200 {
+        if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
+            return Ok(());
+        }
+        driver.answer_passively()?;
+    }
+    Err(ScriptError::Stuck("the stack".into()))
+}
+
+/// How many cards called `name` are in `zone`.
+fn in_zone(driver: &Driver, zone: Zone, name: &str) -> usize {
+    crate::common::names(driver.state(), zone)
+        .iter()
+        .filter(|found| found.as_str() == name)
+        .count()
+}
+
+#[rstest]
+fn a_god_that_dies_returns_to_its_owners_hand_at_the_next_end_step(
+    #[values("The Locust God", "The Scorpion God")] god: &str,
+    #[values(2, 3, 4)] seats: usize,
+    #[values(0, 1)] killer: usize,
+) -> Result<(), ScriptError> {
+    // Seat 0 owns the God; seat `killer` burns it during its own turn.
+    let mut scenario = Scenario::new(seats)
+        .at(1, killer, Step::Main1)
+        .hand(killer, [burn("Bolt", 7)]);
+    let mut owned = vec![ready(card(god).unwrap())];
+    if killer == 0 {
+        owned.extend([ready(mountain()), ready(mountain())]);
+    } else {
+        scenario = scenario.battlefield(killer, [ready(mountain()), ready(mountain())]);
+    }
+    scenario = scenario.battlefield(0, owned);
+    let mut driver = Driver::from_scenario(scenario)?;
+    let target = driver.target_named(god)?;
+    driver.cast_at("Bolt", &[target])?;
+    settle(&mut driver)?;
+    // It died: it waits in the graveyard until the end step.
+    assert_eq!(in_zone(&driver, Zone::Battlefield, god), 0);
+    assert_eq!(in_zone(&driver, Zone::Graveyard(pid(0)), god), 1);
+    assert_eq!(in_zone(&driver, Zone::Hand(pid(0)), god), 0);
+    driver.pass_until(Step::End)?;
+    settle(&mut driver)?;
+    assert_eq!(
+        in_zone(&driver, Zone::Hand(pid(0)), god),
+        1,
+        "back in its owner's hand"
+    );
+    assert_eq!(in_zone(&driver, Zone::Graveyard(pid(0)), god), 0);
     assert_replays(&driver);
     Ok(())
 }

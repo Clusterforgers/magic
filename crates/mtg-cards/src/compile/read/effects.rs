@@ -33,6 +33,7 @@ use crate::mana::ManaCostX;
 use crate::modify::{Duration, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, Targetable, ZoneKind};
 use crate::spend::ManaLasts;
+use crate::trigger::{Step, TriggerPattern};
 use crate::value::{Amount, Condition, CounterKind};
 
 /// A template: the effects of the sentence it reads, or `None` when the sentence is not its shape.
@@ -646,19 +647,11 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     // The permanent itself once the ability has spoken of the card: "return it to its owner's hand" (a card that
     // returns from the graveyard says its name, and is the table's).
     if r.it == Some(Ref::This) && r.word("it") {
-        r.need("to its owner's hand")?;
-        return Some(vec![Effect::Move {
-            what: if r.died { dead_card() } else { Ref::This },
-            to: Destination::Hand,
-        }]);
+        return itself_to_hand(r);
     }
     // The card by its name: "return ~ to its owner's hand".
     if r.ability && r.source() {
-        r.need("to its owner's hand")?;
-        return Some(vec![Effect::Move {
-            what: if r.died { dead_card() } else { Ref::This },
-            to: Destination::Hand,
-        }]);
+        return itself_to_hand(r);
     }
     if let Some(what) = several_permanents(r) {
         r.need("to")?;
@@ -705,6 +698,40 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         what,
         to: Destination::Hand,
     }])
+}
+
+/// "... to its owner's hand", also "... to its owner's hand at the beginning of the next end step": the card of the
+/// ability goes to its owner's hand now, or the card is chosen now and a delayed trigger returns it (one that left
+/// since is not returned).
+fn itself_to_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("to its owner's hand")?;
+    let card = if r.died { dead_card() } else { Ref::This };
+    if !r.words("at the beginning of the next end step") {
+        return Some(vec![Effect::Move {
+            what: card,
+            to: Destination::Hand,
+        }]);
+    }
+    Some(vec![
+        Effect::Choose {
+            who: Ref::You,
+            from: card,
+            count: Bounds::default(),
+            bind: LATER.to_owned(),
+            rest_as: None,
+        },
+        Effect::DelayedTrigger {
+            when: TriggerPattern::StepBegins {
+                step: Step::End,
+                whose: Ref::EachPlayer,
+            },
+            once: true,
+            effects: vec![Effect::Move {
+                what: Ref::Bound(LATER.to_owned()),
+                to: Destination::Hand,
+            }],
+        },
+    ])
 }
 
 /// "six target nonland permanents", "up to two target creatures": several target permanents.
@@ -865,6 +892,10 @@ pub fn returns_itself(effects: &[Effect]) -> bool {
 
 /// The name the permanent returned to its owner's hand is bound to.
 pub const RETURNED: &str = "returned";
+
+/// The name of the card a delayed trigger returns at the next end step ("return it to its owner's hand at the beginning
+/// of the next end step"), chosen when the ability resolves.
+pub const LATER: &str = "later";
 
 /// A target object chosen one at a time.
 pub(super) fn target_object(r: &mut Reader<'_>) -> Option<Ref> {
