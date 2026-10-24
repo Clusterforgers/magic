@@ -1,0 +1,26 @@
+{
+  "cmc": 0.0,
+  "collector_number": "268",
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "colors": [],
+  "digital": false,
+  "id": "cc4bbbb5-4218-4b2a-9ca2-de4d5f5dda19",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "",
+  "name": "Gilt-Leaf Palace",
+  "oracle_id": "85573a3d-2993-491a-8f8d-bbdb844fa84e",
+  "oracle_text": "As this land enters, you may reveal an Elf card from your hand. If you don't, this land enters tapped.\n{T}: Add {B} or {G}.",
+  "produced_mana": [
+    "B",
+    "G"
+  ],
+  "rarity": "rare",
+  "released_at": "2007-10-12",
+  "set": "lrw",
+  "type_line": "Land"
+}

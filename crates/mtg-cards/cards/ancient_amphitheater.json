@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7211221d-d4d8-4bbe-9d2a-b82e005bfe8a",
+  "name": "Ancient Amphitheater",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancient Amphitheater",
+      "oracle_fingerprint": "85eab1176ae840d4fff7f76296bc1327",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "RevealOrTapped": [{ "Subtype": "Giant" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

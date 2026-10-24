@@ -2,7 +2,7 @@
 use super::*;
 use crate::effect::{Destination, Effect};
 use crate::refs::{Bounds, Pred, Ref, Selector, ZoneKind};
-use crate::trigger::TriggerPattern;
+use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::{Amount, Cmp, StatKind};
 use mtg_core::card::CardType;
 
@@ -370,7 +370,10 @@ fn a_creature_dealt_damage_by_this_creature_dies(#[case] text: &str) {
     };
     assert_eq!(
         what,
-        Selector(vec![Pred::Type(CardType::Creature), Pred::DamagedBy(Ref::This)]),
+        Selector(vec![
+            Pred::Type(CardType::Creature),
+            Pred::DamagedBy(Ref::This)
+        ]),
         "{text}"
     );
     assert_eq!(
@@ -394,4 +397,79 @@ fn a_creature_dealt_damage_by_this_creature_dies(#[case] text: &str) {
 )]
 fn damage_by_something_else_stays_unread(#[case] text: &str) {
     assert_eq!(trigger(text), None, "{text}");
+}
+
+fn stat(text: &str) -> Option<Ability> {
+    clause(text, ClauseKind::Static, false)
+}
+
+#[rstest]
+#[case::elemental(
+    "As ~ enters, you may reveal an Elemental card from your hand. If you don't, ~ enters tapped.",
+    "Elemental"
+)]
+#[case::faerie(
+    "As ~ enters, you may reveal a Faerie card from your hand. If you don't, ~ enters tapped.",
+    "Faerie"
+)]
+#[case::elf(
+    "As ~ enters, you may reveal an Elf card from your hand. If you don't, ~ enters tapped.",
+    "Elf"
+)]
+#[case::treefolk(
+    "As ~ enters, you may reveal a Treefolk card from your hand. If you don't, ~ enters tapped.",
+    "Treefolk"
+)]
+#[case::kithkin(
+    "As ~ enters, you may reveal a Kithkin card from your hand. If you don't, ~ enters tapped.",
+    "Kithkin"
+)]
+#[case::it(
+    "As ~ enters, you may reveal a Giant card from your hand. If you don't, it enters tapped.",
+    "Giant"
+)]
+fn a_land_enters_tapped_unless_a_card_of_its_kind_is_revealed(
+    #[case] text: &str,
+    #[case] kind: &str,
+) {
+    let Ability::Replacement {
+        by: ReplaceBy::RevealOrTapped(of),
+        when: ReplaceWhen::Enters { what },
+        ..
+    } = golden(text, ClauseKind::Static, false)
+    else {
+        panic!("not a reveal: {text}");
+    };
+    assert_eq!(what, Selector::this());
+    assert_eq!(of.0.len(), 3, "{of:?}");
+    for pred in [
+        Pred::Subtype(mtg_core::card::Subtype(kind.to_owned())),
+        Pred::In(ZoneKind::Hand),
+        Pred::OwnedBy(Ref::You),
+    ] {
+        assert!(of.0.contains(&pred), "{pred:?} in {of:?}");
+    }
+}
+
+#[rstest]
+#[case::the_graveyard(
+    "As ~ enters, you may reveal an Elemental card from your graveyard. If you don't, ~ enters tapped."
+)]
+#[case::another_penalty(
+    "As ~ enters, you may reveal an Elemental card from your hand. If you don't, you lose 1 life."
+)]
+#[case::if_you_do(
+    "As ~ enters, you may reveal an Elemental card from your hand. If you do, ~ enters tapped."
+)]
+#[case::untapped(
+    "As ~ enters, you may reveal an Elemental card from your hand. If you don't, ~ enters untapped."
+)]
+#[case::two_cards(
+    "As ~ enters, you may reveal two Elemental cards from your hand. If you don't, ~ enters tapped."
+)]
+#[case::pay_life_too(
+    "As ~ enters, you may reveal an Elemental card from your hand or pay 2 life. If you don't, ~ enters tapped."
+)]
+fn a_reveal_that_is_not_for_a_card_of_a_kind_from_the_hand_stays_unread(#[case] text: &str) {
+    assert_eq!(stat(text), None, "{text}");
 }

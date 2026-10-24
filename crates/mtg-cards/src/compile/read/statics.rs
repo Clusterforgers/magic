@@ -300,6 +300,9 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
     if r.words("choose an opponent") {
         return Some(replacement(ReplaceBy::Choose(EntersChoice::Opponent), None));
     }
+    if r.words("you may reveal") {
+        return reveal_or_tapped(r);
+    }
     r.need("you may pay")?;
     let life = r.number().filter(|life| *life > 0)?;
     r.need("life")?;
@@ -308,6 +311,20 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
     r.punct(',').then_some(())?;
     r.need("it enters tapped")?;
     Some(replacement(ReplaceBy::PayLifeOrTapped(life), None))
+}
+
+/// "a Faerie card from your hand. If you don't, ~ enters tapped.": a land that enters tapped unless its controller reveals
+/// a card of the kind from their hand.
+fn reveal_or_tapped(r: &mut Reader<'_>) -> Option<Ability> {
+    (r.word("a") || r.word("an")).then_some(())?;
+    let of = phrase(r, Form::Subject)?;
+    of.0.contains(&Pred::In(ZoneKind::Hand)).then_some(())?;
+    r.punct('.').then_some(())?;
+    r.need("if you don't")?;
+    r.punct(',').then_some(())?;
+    (r.source() || r.word("it")).then_some(())?;
+    r.need("enters tapped")?;
+    Some(replacement(ReplaceBy::RevealOrTapped(of), None))
 }
 
 /// What must hold for a permanent not to enter tapped: one thing, or several joined by "or" ("you have two or more
@@ -1240,6 +1257,7 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
         (ReplaceBy::PayLifeOrTapped(life), None) => vec![format!(
             "As ~ enters, you may pay {life} life. If you don't, it enters tapped"
         )],
+        (ReplaceBy::RevealOrTapped(of), None) => reveal_texts(of),
         (ReplaceBy::DayIfNeither, None) => {
             vec!["If it's neither day nor night, it becomes day as ~ enters".to_owned()]
         }
@@ -1800,4 +1818,20 @@ pub(super) fn predicate(
         };
     }
     (!parts.is_empty()).then(|| parts.join(" and "))
+}
+
+/// "As ~ enters, you may reveal a Faerie card from your hand. If you don't, ~ enters tapped".
+fn reveal_texts(of: &Selector) -> Vec<String> {
+    let Some(card) = phrase_text(of, Form::Subject) else {
+        return Vec::new();
+    };
+    let article = article(&card);
+    ["~", "it"]
+        .into_iter()
+        .map(|tail| {
+            format!(
+                "As ~ enters, you may reveal {article} {card}. If you don't, {tail} enters tapped"
+            )
+        })
+        .collect()
 }

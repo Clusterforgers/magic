@@ -1,0 +1,43 @@
+{
+  "oracle_id": "541744d9-449d-420a-a5a1-2fffba18450f",
+  "name": "Primal Beyond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primal Beyond",
+      "oracle_fingerprint": "36470a659defa08224afde89f475e0c9",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "RevealOrTapped": [{ "Subtype": "Elemental" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [
+                    { "Spell": { "subtypes": ["Elemental"] } },
+                    { "Ability": { "subtypes": ["Elemental"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -30,6 +30,7 @@ Altar's Reap
 Ambitious Aetherborn
 Anafenza, Kin-Tree Spirit
 Ancestral Vision
+Ancient Amphitheater
 Ancient Hydra
 Ancient Stone Idol
 Ancient Ziggurat
@@ -65,6 +66,7 @@ Atlantean Skirmisher
 Atmospheric Greenhouse
 Atzocan Seer
 Augury Raven
+Auntie's Hovel
 Aura Gnarlid
 Auriok Champion
 Authority of the Consuls
@@ -417,6 +419,7 @@ Firmament Sage
 Fists of Flame
 Flame Jab
 Flamebraider
+Flamekin Village
 Flatline
 Flawless Maneuver
 Fleecemane Lion
@@ -466,6 +469,7 @@ Giant Growth
 Gift of Paradise
 Gilded Goose
 Gilded Lotus
+Gilt-Leaf Palace
 Girder Goons
 Glimpse of Freedom
 Glint-Sleeve Artisan
@@ -744,6 +748,7 @@ Muddle the Mixture
 Mukotai Ambusher
 Mulldrifter
 Murderous Cut
+Murmuring Bosk
 Muscle Sliver
 Mutavault
 Mycoloth
@@ -839,6 +844,7 @@ Predator Ooze
 Prey Upon
 Pridemalkin
 Priest of the Crossing
+Primal Beyond
 Primal Growth
 Primal Might
 Primaris Eliminator
@@ -961,6 +967,7 @@ Scytheclaw
 Sea Gate
 Sea Gate Wreckage
 Secluded Courtyard
+Secluded Glen
 Second Harvest
 Seedglaive Mentor
 Seeds of Renewal
@@ -1244,6 +1251,7 @@ Vorrac Battlehorns
 Vulshok Splitter
 Walking Ballista
 Wanderbrine Preacher
+Wanderwine Hub
 Waning Wurm
 War Balloon
 Warbriar Blessing

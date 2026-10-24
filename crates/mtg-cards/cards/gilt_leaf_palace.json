@@ -1,0 +1,27 @@
+{
+  "oracle_id": "85573a3d-2993-491a-8f8d-bbdb844fa84e",
+  "name": "Gilt-Leaf Palace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gilt-Leaf Palace",
+      "oracle_fingerprint": "36dc5ad99347c599b75bf1b8e3d8343b",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "RevealOrTapped": [{ "Subtype": "Elf" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Black", "Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

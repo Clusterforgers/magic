@@ -1,0 +1,26 @@
+{
+  "cmc": 0.0,
+  "collector_number": "232",
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "colors": [],
+  "digital": false,
+  "id": "c68137c5-c2f9-4b0d-ac4b-12c519854166",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "",
+  "name": "Ancient Amphitheater",
+  "oracle_id": "7211221d-d4d8-4bbe-9d2a-b82e005bfe8a",
+  "oracle_text": "As this land enters, you may reveal a Giant card from your hand. If you don't, this land enters tapped.\n{T}: Add {R} or {W}.",
+  "produced_mana": [
+    "R",
+    "W"
+  ],
+  "rarity": "rare",
+  "released_at": "2018-06-08",
+  "set": "cm2",
+  "type_line": "Land"
+}

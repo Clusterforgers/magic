@@ -11,9 +11,9 @@ use mtg_core::card::CardType;
 use mtg_core::color::{Color, ColorSet};
 use mtg_engine::choose::{CardsChoice, YesNoChoice};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
-use mtg_engine::replay;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
+use mtg_engine::{Event, replay};
 use mtg_testkit::cards::{
     burn, creature, forest, free_creature, gain_life, island, mountain, plains, swamp,
 };
@@ -244,10 +244,19 @@ fn super_combo_has_one_creature_deal_damage_equal_to_its_power_to_another(
     driver.answer(Answer::PayMana(PayChoice::Auto))?;
     settle(&mut driver, false, None)?;
     // The creature of the first target deals the damage and takes none back (this is no fight).
-    assert_eq!(in_zone(&driver, Zone::Battlefield, "Theirs"), usize::from(power < 3));
+    assert_eq!(
+        in_zone(&driver, Zone::Battlefield, "Theirs"),
+        usize::from(power < 3)
+    );
     let damage = |name: &str| {
         let id = on_battlefield(driver.state(), name).unwrap();
-        driver.state().object(id).unwrap().permanent().unwrap().damage()
+        driver
+            .state()
+            .object(id)
+            .unwrap()
+            .permanent()
+            .unwrap()
+            .damage()
     };
     assert_eq!(damage("Mine"), 0);
     if power < 3 {
@@ -290,7 +299,13 @@ fn a_creature_that_left_before_super_combo_resolved_deals_no_damage(
     assert_eq!(in_zone(&driver, Zone::Battlefield, "Mine"), 0);
     let theirs = on_battlefield(driver.state(), "Theirs").unwrap();
     assert_eq!(
-        driver.state().object(theirs).unwrap().permanent().unwrap().damage(),
+        driver
+            .state()
+            .object(theirs)
+            .unwrap()
+            .permanent()
+            .unwrap()
+            .damage(),
         0
     );
     assert_replays(&driver);
@@ -351,7 +366,10 @@ fn another_multicolored_creature_that_dies_returns_to_its_owners_hand_at_the_end
     settle(&mut driver, false, None)?;
     let returned = usize::from(victim == "Gold");
     assert_eq!(in_zone(&driver, Zone::Hand(pid(0)), victim), returned);
-    assert_eq!(in_zone(&driver, Zone::Graveyard(pid(0)), victim), 1 - returned);
+    assert_eq!(
+        in_zone(&driver, Zone::Graveyard(pid(0)), victim),
+        1 - returned
+    );
     assert_replays(&driver);
     Ok(())
 }
@@ -374,10 +392,7 @@ fn ping_then_burn(
             ],
         )
         .hand(1, [burn("Bolt", 3)])
-        .battlefield(
-            1,
-            [ready(mountain()), ready(free_creature("Victim", 1, 3))],
-        );
+        .battlefield(1, [ready(mountain()), ready(free_creature("Victim", 1, 3))]);
     for seat in 2..seats {
         scenario = scenario.battlefield(seat, [ready(swamp())]);
     }
@@ -449,7 +464,10 @@ fn predator_ooze_grows_when_it_attacks_and_when_a_creature_it_hurt_dies(
     }
     // One counter for the attack; a second only when the 1/1 Ooze killed the blocker.
     let dies = toughness == 1;
-    assert_eq!(in_zone(&driver, Zone::Battlefield, "Blocker"), usize::from(!dies));
+    assert_eq!(
+        in_zone(&driver, Zone::Battlefield, "Blocker"),
+        usize::from(!dies)
+    );
     assert_eq!(counters(&driver, "Predator Ooze"), 1 + u32::from(dies));
     assert_replays(&driver);
     Ok(())
@@ -487,12 +505,121 @@ fn silver_shroud_costume_attaches_and_gives_shroud_for_the_turn(
     let costume = driver.id_of("Silver Shroud Costume")?;
     let wearer = driver.id_of("Wearer")?;
     assert_eq!(driver.state().host_of(costume), Some(wearer));
-    assert!(mtg_engine::keywords::has_keyword(driver.state(), wearer, &Keyword::Shroud));
+    assert!(mtg_engine::keywords::has_keyword(
+        driver.state(),
+        wearer,
+        &Keyword::Shroud
+    ));
     // The shroud ends with the turn.
     driver.idle_until(2, Step::Upkeep)?;
     let wearer = driver.id_of("Wearer")?;
-    assert!(!mtg_engine::keywords::has_keyword(driver.state(), wearer, &Keyword::Shroud));
+    assert!(!mtg_engine::keywords::has_keyword(
+        driver.state(),
+        wearer,
+        &Keyword::Shroud
+    ));
     assert_replays(&driver);
+    Ok(())
+}
+
+/// A creature card of this creature type.
+fn kin(name: &str, kind: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Creature)
+            .with_subtype(kind)
+            .with_power_toughness(1, 1),
+    )
+}
+
+fn is_tapped(driver: &Driver, name: &str) -> bool {
+    let id = driver.id_of(name).unwrap();
+    driver
+        .state()
+        .object(id)
+        .unwrap()
+        .permanent()
+        .unwrap()
+        .tapped()
+}
+
+#[rstest]
+fn a_land_asks_whether_to_reveal_a_card_and_enters_untapped_only_when_it_does(
+    #[values(("Flamekin Village", "Elemental"), ("Gilt-Leaf Palace", "Elf"))] land: (&str, &str),
+    #[values(2, 3, 4)] seats: usize,
+    // How many cards of the kind the hand holds, and what the player answers.
+    #[values((0, false), (1, true), (1, false), (2, true), (2, false))] hand: (usize, bool),
+) -> Result<(), ScriptError> {
+    let (land, kind) = land;
+    let (cards, reveals) = hand;
+    let mut held = vec![card(land).unwrap(), kin("Bystander", "Human")];
+    held.extend((0..cards).map(|n| kin(&format!("Kin {n}"), kind)));
+    let scenario = || Scenario::new(seats).hand(0, held.clone());
+    let setup = scenario().setup().unwrap();
+    let mut driver = Driver::from_scenario(scenario())?;
+    let begun = driver.engine().events().len();
+    driver.play_land(land)?;
+    // The question is asked all the same when no card can be shown, with No the only answer: the pace tells nothing.
+    let decision = driver.decision()?.clone();
+    assert_eq!(decision.player, pid(0));
+    let DecisionKind::YesNo(question) = &decision.kind else {
+        panic!("a question was expected, got {:?}", decision.kind);
+    };
+    assert_eq!(question.only_no, cards == 0);
+    assert_eq!(in_zone(&driver, Zone::Hand(pid(0)), land), 1);
+    if question.only_no {
+        assert!(driver.answer(Answer::YesNo(YesNoChoice(true))).is_err());
+    }
+    driver.answer(Answer::YesNo(YesNoChoice(reveals)))?;
+    let mut shown = None;
+    if reveals && cards > 1 {
+        // Only the cards of the kind are offered, never the Human.
+        let DecisionKind::ChooseCards(options) = driver.decision()?.kind.clone() else {
+            panic!("a choice of cards was expected");
+        };
+        let mut offered: Vec<String> = options
+            .from
+            .iter()
+            .map(|id| crate::common::name_of(driver.state(), *id))
+            .collect();
+        offered.sort();
+        assert_eq!(offered, ["Kin 0", "Kin 1"]);
+        let last = *options.from.last().unwrap();
+        shown = Some(last);
+        driver.answer(Answer::ChooseCards(CardsChoice(vec![last])))?;
+    }
+    assert_eq!(in_zone(&driver, Zone::Battlefield, land), 1);
+    assert_eq!(is_tapped(&driver, land), !reveals);
+    let revealed: Vec<_> = driver.engine().events()[begun..]
+        .iter()
+        .filter_map(|event| match event {
+            Event::Revealed(revealed) => Some(revealed.clone()),
+            _ => None,
+        })
+        .collect();
+    if reveals {
+        assert_eq!(revealed.len(), 1);
+        assert_eq!(revealed[0].player, pid(0));
+        assert_eq!(revealed[0].cards.len(), 1);
+        if let Some(shown) = shown {
+            assert_eq!(revealed[0].cards, [shown]);
+        }
+        // The card revealed stays in the hand.
+        assert_eq!(in_zone(&driver, Zone::Hand(pid(0)), "Bystander"), 1);
+        assert_eq!(
+            in_zone(&driver, Zone::Hand(pid(0)), "Kin 0")
+                + in_zone(&driver, Zone::Hand(pid(0)), "Kin 1"),
+            cards
+        );
+    } else {
+        assert!(revealed.is_empty());
+    }
+    assert_eq!(
+        replay(&setup, driver.engine().events())
+            .unwrap()
+            .state_hash(),
+        driver.state().state_hash()
+    );
     Ok(())
 }
 
@@ -528,11 +655,25 @@ fn the_ghoul_returns_tapped_at_the_end_step_after_three_life_gained(
     driver.pass_until(Step::End)?;
     settle(&mut driver, false, None)?;
     let back = gained >= 3;
-    assert_eq!(in_zone(&driver, Zone::Battlefield, "Silversmote Ghoul"), usize::from(back));
-    assert_eq!(in_zone(&driver, Zone::Graveyard(pid(0)), "Silversmote Ghoul"), usize::from(!back));
+    assert_eq!(
+        in_zone(&driver, Zone::Battlefield, "Silversmote Ghoul"),
+        usize::from(back)
+    );
+    assert_eq!(
+        in_zone(&driver, Zone::Graveyard(pid(0)), "Silversmote Ghoul"),
+        usize::from(!back)
+    );
     if back {
         let ghoul = on_battlefield(driver.state(), "Silversmote Ghoul").unwrap();
-        assert!(driver.state().object(ghoul).unwrap().permanent().unwrap().tapped());
+        assert!(
+            driver
+                .state()
+                .object(ghoul)
+                .unwrap()
+                .permanent()
+                .unwrap()
+                .tapped()
+        );
     }
     assert_replays(&driver);
     Ok(())

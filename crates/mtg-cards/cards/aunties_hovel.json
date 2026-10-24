@@ -1,0 +1,27 @@
+{
+  "oracle_id": "245469ff-72b6-4846-8a82-a1d29f4d09bb",
+  "name": "Auntie's Hovel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Auntie's Hovel",
+      "oracle_fingerprint": "0136225ab7b886de782949ee809c814a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "RevealOrTapped": [{ "Subtype": "Goblin" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Black", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

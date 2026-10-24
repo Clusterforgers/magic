@@ -2612,6 +2612,7 @@ impl<'a> Walker<'a> {
             ReplaceBy::Tapped
             | ReplaceBy::Choose(_)
             | ReplaceBy::PayLifeOrTapped(_)
+            | ReplaceBy::RevealOrTapped(_)
             | ReplaceBy::Riot
             | ReplaceBy::DayIfNeither
                 if !enters =>
@@ -2628,6 +2629,7 @@ impl<'a> Walker<'a> {
                 self.at("of", |w| w.selector(of));
             }
             ReplaceBy::PayLifeOrTapped(0) => self.problem("paying no life is entering untapped"),
+            ReplaceBy::RevealOrTapped(of) => self.at("of", |w| w.selector(of)),
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");
             }
