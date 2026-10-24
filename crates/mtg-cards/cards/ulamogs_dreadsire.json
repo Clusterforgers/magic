@@ -1,0 +1,45 @@
+{
+  "oracle_id": "2afefaab-c614-4fca-afba-d8d206d9a8b9",
+  "name": "Ulamog's Dreadsire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ulamog's Dreadsire",
+      "oracle_fingerprint": "d44d359e7512d83690b339899383c755",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Keyword": {
+            "Ward": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Compare": { "stat": "ManaValue", "op": "Ge", "to": 1 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Eldrazi",
+                      "types": ["Creature"],
+                      "subtypes": ["Eldrazi"],
+                      "power": 10,
+                      "toughness": 10
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

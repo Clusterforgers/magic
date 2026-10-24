@@ -15,7 +15,9 @@ mod exiled_until;
 mod free_casts;
 mod from_graveyard;
 mod graveyards;
+mod group_becomes;
 mod instead;
+mod library_steps;
 mod loyalty;
 mod may_have;
 mod multi;
@@ -933,6 +935,7 @@ fn chosen_move_text(choose: &Effect, moved: &Effect) -> Option<String> {
         .or_else(|| put_back_text(choose, moved))
         .or_else(|| returned_text(choose, moved))
         .or_else(|| put_onto::put_onto_text(choose, moved))
+        .or_else(|| put_onto::returned_to_battlefield_text(choose, moved))
 }
 
 /// "put two cards from your hand on top of your library in any order": the choice of cards of the
@@ -1534,7 +1537,7 @@ impl Writer<'_> {
                 .to_owned(),
             ),
             Ref::Target(0)
-                if self.single(place)
+                if self.at_most_one(place)
                     && self.target_is(|what| matches!(what, Targetable::Object(_))) =>
             {
                 self.name_target()
@@ -1570,10 +1573,7 @@ impl Writer<'_> {
                 count,
             } => {
                 let counters = counters::text(counter, count)?;
-                format!(
-                    "remove {counters} from {}",
-                    self.counter_place(from, false)?
-                )
+                format!("remove {counters} from {}", self.counter_place(from, true)?)
             }
             Effect::MultiplyCounters {
                 on,
@@ -2013,6 +2013,7 @@ impl Writer<'_> {
     /// A move that is a mass move, a cast or a keyword action.
     fn moved(&mut self, effect: &Effect) -> Option<String> {
         mass_moves::text(effect)
+            .or_else(|| self.hand_shuffled(effect))
             .or_else(|| cast::text(effect))
             .or_else(|| self.keyword_action(effect))
     }
@@ -2020,6 +2021,7 @@ impl Writer<'_> {
     /// The effects with a wording of their own: a card returned to the battlefield, the casting and the keyword actions.
     fn other_effect(&mut self, effect: &Effect) -> Option<String> {
         self.graveyard_exile(effect)
+            .or_else(|| self.library_exile(effect))
             .or_else(|| self.exiled(effect))
             .or_else(|| self.reanimated(effect))
             .or_else(|| mass_moves::text(effect))
@@ -2234,6 +2236,8 @@ impl Writer<'_> {
             .or_else(|| self.mill_then_change(effects))
             .or_else(|| self.move_instead(effects))
             .or_else(|| self.either_way(effects))
+            .or_else(|| self.library_steps(effects))
+            .or_else(|| self.library_then_return(effects))
             .or_else(|| wheel_text(effects))
             .or_else(|| untapped::text(effects))
             .or_else(|| free_casts::text(effects))
@@ -2543,7 +2547,22 @@ impl Writer<'_> {
         if let [Modification::CantBeBlocked] = mods {
             return Some(format!("{subject} can't be blocked this turn"));
         }
+        if duration == Duration::UntilEndOfTurn
+            && matches!(
+                mods,
+                [Modification::CantAttack | Modification::CantBlock]
+                    | [Modification::CantAttack, Modification::CantBlock]
+            )
+        {
+            let restriction = statics::predicate(mods, plural, false, false)?;
+            return Some(format!("{subject} {restriction} this turn"));
+        }
         if !plural && let Some(sentence) = becomes::animate_text(&subject, mods) {
+            return Some(sentence);
+        }
+        if let Ref::Each(group) = affected
+            && let Some(sentence) = group_becomes::text(&subject, group, mods, duration)
+        {
             return Some(sentence);
         }
         if !plural

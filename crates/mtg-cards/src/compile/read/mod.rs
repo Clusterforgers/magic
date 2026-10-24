@@ -92,6 +92,7 @@ mod zone_moves;
 pub use chapters::block as chapter_block;
 pub use class::block as class_block;
 pub use levels::block as level_block;
+pub use levels::{Plan as BlockPlan, given as keyword_grant, plan as block_plan, without_header};
 pub use render::{
     ability as render_ability, mode as render_mode, variants as render_variants, written_variants,
 };

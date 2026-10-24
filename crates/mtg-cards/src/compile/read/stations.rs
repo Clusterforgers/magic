@@ -4,7 +4,7 @@
 //! toughness an artifact creature.
 
 use super::Own;
-use super::levels::under_the_header;
+use super::levels::Plan;
 use crate::ability::Ability;
 use crate::compile::clauses;
 use crate::modify::Modification;
@@ -16,6 +16,12 @@ use mtg_core::card::CardType;
 /// (`Own::creature_at`), then every line of the block, each conditioned on the charge counters; `None` when any line is
 /// not read (the whole block stays with the table).
 pub fn block(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> {
+    plan(text, own.creature_at)?.read(x_free, own)
+}
+
+/// The plan of a station block: the creature type where the Spacecraft becomes one, and the lines (the text after the
+/// bar of the header, then the rest) under the charge counters.
+pub(super) fn plan(text: &str, creature_at: Option<i32>) -> Option<Plan> {
     let mut lines = text.lines();
     let (threshold, first) = clauses::station_header(lines.next()?)?;
     let charged = Condition::Compare {
@@ -26,18 +32,23 @@ pub fn block(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> {
         op: Cmp::Ge,
         right: Amount::Fixed(threshold),
     };
-    let mut abilities = Vec::new();
-    if own.creature_at == Some(threshold) {
-        abilities.push(Ability::Static {
+    let mut head = Vec::new();
+    if creature_at == Some(threshold) {
+        let creature = Ability::Static {
             affected: Ref::This,
             mods: vec![Modification::AddType(CardType::Creature)],
             condition: Some(charged.clone()),
             defining: false,
             from: ZoneKind::Battlefield,
-        });
+        };
+        head.push((format!("artifact creature at {threshold}+"), creature));
     }
-    for line in std::iter::once(first).chain(lines) {
-        abilities.push(under_the_header(line, &charged, x_free, own)?);
-    }
-    Some(abilities)
+    Some(Plan {
+        condition: charged,
+        head,
+        lines: std::iter::once(first)
+            .chain(lines)
+            .map(str::to_owned)
+            .collect(),
+    })
 }

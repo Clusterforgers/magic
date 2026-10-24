@@ -1,0 +1,22 @@
+{
+  "id": "94b9d7af-3e6f-4227-bb7d-a17d6f250535",
+  "oracle_id": "4927150d-7ff6-4232-b20e-d2ea245ac710",
+  "name": "Tectonic Edge",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c14",
+  "collector_number": "313",
+  "rarity": "uncommon",
+  "released_at": "2014-11-07",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{1}, {T}, Sacrifice this land: Destroy target nonbasic land. Activate only if an opponent controls four or more lands.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "C"
+  ]
+}

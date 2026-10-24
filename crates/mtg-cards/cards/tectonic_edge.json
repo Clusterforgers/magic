@@ -1,0 +1,40 @@
+{
+  "oracle_id": "4927150d-7ff6-4232-b20e-d2ea245ac710",
+  "name": "Tectonic Edge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tectonic Edge",
+      "oracle_fingerprint": "15df214294d702c9874174a2d9ae6cf7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

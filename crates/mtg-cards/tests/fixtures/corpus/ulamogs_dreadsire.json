@@ -1,0 +1,24 @@
+{
+  "id": "b5821c21-8133-40f7-a28d-addf64b1e35f",
+  "oracle_id": "2afefaab-c614-4fca-afba-d8d206d9a8b9",
+  "name": "Ulamog's Dreadsire",
+  "lang": "en",
+  "layout": "normal",
+  "set": "m3c",
+  "collector_number": "38",
+  "rarity": "rare",
+  "released_at": "2024-06-14",
+  "digital": false,
+  "mana_cost": "{10}",
+  "cmc": 10.0,
+  "type_line": "Creature — Eldrazi",
+  "oracle_text": "Vigilance\nWard—Sacrifice a permanent with mana value 1 or greater.\n{T}: Create a 10/10 colorless Eldrazi creature token.",
+  "power": "10",
+  "toughness": "10",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Vigilance",
+    "Ward"
+  ]
+}

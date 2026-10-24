@@ -41,9 +41,8 @@ pub(super) fn construct(ability: &Ability) -> String {
         return head;
     };
     let parts = match head.as_str() {
-        "Spell" | "Triggered" | "Activated" => action_parts(&head, body),
+        "Spell" | "Triggered" | "Activated" | "Loyalty" => action_parts(&head, body),
         "Static" => static_parts(body),
-        "Loyalty" => vec!["no writer for a loyalty ability".to_owned()],
         _ => Vec::new(),
     };
     if parts.is_empty() {
@@ -64,6 +63,8 @@ fn action_parts(head: &str, body: &serde_json::Map<String, Value>) -> Vec<String
             frame.insert("when".to_owned(), when.unwrap_or_else(known_when));
         } else if head == "Activated" {
             frame.insert("cost".to_owned(), json!(["Tap"]));
+        } else if head == "Loyalty" {
+            frame.insert("cost".to_owned(), json!("Zero"));
         }
         frame.insert("effects".to_owned(), effects);
         json!({ head: frame })

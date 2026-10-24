@@ -5,6 +5,7 @@
 use mtg_core::card::CardType;
 
 use super::amounts::{count_word, number_word};
+use super::selectors::{Form, phrase_text};
 use super::tokens::Reader;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::value::{Amount, Cmp, Condition, StatKind, TurnTally};
@@ -211,6 +212,20 @@ fn counter_this_turn(r: &mut Reader<'_>) -> Option<Condition> {
     )
 }
 
+/// The objects a player controls, written for "you" in the data, as the plural a card names them: "lands",
+/// "nonbasic lands"; `None` when they are not the player's.
+fn controlled_group(of: &Selector) -> Option<String> {
+    let yours = Pred::ControlledBy(Ref::You);
+    of.0.contains(&yours).then_some(())?;
+    let group = Selector(
+        of.0.iter()
+            .filter(|pred| **pred != yours)
+            .cloned()
+            .collect(),
+    );
+    phrase_text(&group, Form::All)
+}
+
 /// What `read` reads, written back after "if" or "as long as", one text for each wording.
 pub(super) fn texts(condition: &Condition) -> Vec<String> {
     let Condition::Compare { left, op, right } = condition else {
@@ -285,6 +300,25 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
         ) if *of == creatures_you_control() => {
             counted(&|n| format!("creatures you control have total power {n} or greater"))
         }
+        // The largest number any one opponent controls: "an opponent controls four or more lands", never "your
+        // opponents control", which is every opponent together.
+        (
+            Amount::Largest {
+                who: Ref::Opponents,
+                of,
+            },
+            Cmp::Ge,
+        ) if number > 1 => match controlled_group(of) {
+            Some(group) => counted(&|n| format!("an opponent controls {n} or more {group}")),
+            None => Vec::new(),
+        },
+        _ => state_texts(left, *op, number),
+    }
+}
+
+/// "each player has no cards in hand", "a counter was put on ~ this turn" and "there are cards exiled with it".
+fn state_texts(left: &Amount, op: Cmp, number: u32) -> Vec<String> {
+    match (left, op) {
         (Amount::Count(of), Cmp::Eq) if number == 0 && *of == every_hand() => {
             vec!["each player has no cards in hand".to_owned()]
         }

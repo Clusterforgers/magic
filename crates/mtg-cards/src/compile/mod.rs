@@ -26,7 +26,8 @@ pub use classify::ClauseKind;
 pub use keywords::read as read_keyword;
 pub use keywords::read_all as read_keywords;
 pub use read::{
-    render_ability, render_mode, render_variants, same_text, static_pair_texts, written_variants,
+    BlockPlan, block_plan, keyword_grant, render_ability, render_mode, render_variants, same_text,
+    static_pair_texts, without_header, written_variants,
 };
 
 /// One clause of a face's oracle text, read or not.
@@ -504,14 +505,18 @@ fn own_face(face: &PrintedFace) -> read::Own {
             .unwrap_or_default(),
         power: number(&face.power),
         toughness: number(&face.toughness),
-        creature_at: number(&face.power).and_then(|_: i32| {
-            face.oracle_text
-                .lines()
-                .filter_map(|line| clauses::station_header(line).map(|(threshold, _)| threshold))
-                .max()
-        }),
+        creature_at: creature_at(face),
         pays: face.oracle_text.lines().any(requires_a_pick),
     }
+}
+
+/// The charge counters at which a Spacecraft with a printed power becomes a creature: its highest station threshold.
+pub fn creature_at(face: &PrintedFace) -> Option<i32> {
+    face.power.as_deref()?.parse::<i32>().ok()?;
+    face.oracle_text
+        .lines()
+        .filter_map(|line| clauses::station_header(line).map(|(threshold, _)| threshold))
+        .max()
 }
 
 /// Whether the face is an Aura.
