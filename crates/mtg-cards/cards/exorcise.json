@@ -1,0 +1,34 @@
+{
+  "oracle_id": "58916455-844c-4d97-908f-8205bdc117c0",
+  "name": "Exorcise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exorcise",
+      "oracle_fingerprint": "d79fa2405230d6db5893b1d50f2fa390",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": [{ "Type": "Artifact" }] },
+                    { "Object": [{ "Type": "Enchantment" }] },
+                    {
+                      "Object": [
+                        { "Type": "Creature" },
+                        { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

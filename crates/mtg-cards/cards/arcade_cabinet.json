@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a8e55287-f0df-46f2-a41d-27bea90216cc",
+  "name": "Arcade Cabinet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcade Cabinet",
+      "oracle_fingerprint": "9d7596df99693dc21e2bd47181c78eeb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 4 } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", { "Sacrifice": { "filter": ["Token"] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "MultiplyCounters": { "on": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

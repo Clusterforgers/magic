@@ -1,0 +1,76 @@
+{
+  "oracle_id": "9c0f7cdc-9095-40ae-bf83-75a5ffda72b9",
+  "name": "Quandrix Command",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quandrix Command",
+      "oracle_fingerprint": "73c83125f4def6dc8984edcc1043692a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              "Spell",
+                              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        { "what": "Player" },
+                        {
+                          "what": {
+                            "Object": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }]
+                          },
+                          "bounds": { "min": 0, "max": 3 }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 1 },
+                            "to": { "Library": { "place": "Shuffled" } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

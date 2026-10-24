@@ -1,0 +1,19 @@
+{
+  "oracle_id": "b1d70845-869b-45f7-b4bf-1549bac51d58",
+  "name": "Nemesis of Reason",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nemesis of Reason",
+      "oracle_fingerprint": "9cb2669728f7d2ee58fffd6385f0f423",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "Mill": { "who": "Defending", "count": 10 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

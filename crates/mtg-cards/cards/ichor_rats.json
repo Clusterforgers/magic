@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f8148664-49c0-421f-93a5-cd59e4e9ea36",
+  "name": "Ichor Rats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ichor Rats",
+      "oracle_fingerprint": "3aae566ad184bbdc92cdc4a6c49d1096",
+      "abilities": [
+        { "Keyword": "Infect" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "PutCounters": { "on": "EachPlayer", "counter": "poison" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

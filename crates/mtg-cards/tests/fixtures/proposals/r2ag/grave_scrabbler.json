@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Madness":"{1}{B}"}},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"if":{"CastWith":"Madness"},"targets":[{"what":{"Object":[{"Type":"Creature"},{"In":"Graveyard"}]}}],"effects":[{"May":{"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}}]}}]}}]}]}

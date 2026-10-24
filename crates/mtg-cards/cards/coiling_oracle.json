@@ -1,0 +1,31 @@
+{
+  "oracle_id": "69fd4ddf-9ed8-4c56-bef3-9944daf05e4f",
+  "name": "Coiling Oracle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coiling Oracle",
+      "oracle_fingerprint": "ce8c4bd1020d1fb29cac231fe0ae3264",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Bound": "top" }, "selector": [{ "Type": "Land" }] }
+                  },
+                  "then": [{ "Move": { "what": { "Bound": "top" }, "to": { "Battlefield": {} } } }],
+                  "otherwise": [{ "Move": { "what": { "Bound": "top" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

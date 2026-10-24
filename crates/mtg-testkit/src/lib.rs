@@ -148,8 +148,8 @@ pub use commander_cards::{
 pub use companion_cards::companion_fuzz_setup;
 pub use conditional_static_cards::conditional_static_fuzz_setup;
 pub use copy_cards::{
-    copy_attack_fuzz_setup, copy_fuzz_setup, copy_shapes_fuzz_setup, copy_wording_fuzz_setup,
-    spell_copy_fuzz_setup,
+    copy_attack_fuzz_setup, copy_count_fuzz_setup, copy_fuzz_setup, copy_shapes_fuzz_setup,
+    copy_wording_fuzz_setup, spell_copy_fuzz_setup,
 };
 pub use copy_keyword_cards::copy_keywords_fuzz_setup;
 pub use cost_cards::cost_fuzz_setup;

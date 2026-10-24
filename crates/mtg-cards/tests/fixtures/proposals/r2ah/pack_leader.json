@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":{"Each":[{"Subtype":"Dog"},"Other",{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":1,"toughness":1}}]}},{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"Shield":{"when":{"Damage":{"to":{"Each":[{"Subtype":"Dog"},{"ControlledBy":"You"}]},"combat":true}},"by":"Prevent","duration":"UntilEndOfTurn"}}]}}]}]}

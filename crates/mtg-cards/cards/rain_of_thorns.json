@@ -1,0 +1,38 @@
+{
+  "oracle_id": "363b0504-27bf-40df-96ec-9e3cb1e47588",
+  "name": "Rain of Thorns",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rain of Thorns",
+      "oracle_fingerprint": "6cb83c35db8f67eedf64b53442f3fd80",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": null },
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "oracle_id": "fd949f82-fc10-4e37-8aa9-6c7569fe3c55",
+  "name": "Akroma's Will",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Akroma's Will",
+      "oracle_fingerprint": "036aef4e4be499142ef63c7fa0f31e80",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "all_if": {
+                    "Compare": {
+                      "left": { "Count": ["Commander", { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            },
+                            "mods": [
+                              { "AddKeyword": "Flying" },
+                              { "AddKeyword": "Vigilance" },
+                              { "AddKeyword": "DoubleStrike" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            },
+                            "mods": [
+                              { "AddKeyword": "Lifelink" },
+                              { "AddKeyword": "Indestructible" },
+                              { "AddKeyword": { "Protection": [{ "Not": "Colorless" }] } }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

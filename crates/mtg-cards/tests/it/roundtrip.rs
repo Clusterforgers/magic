@@ -1034,6 +1034,7 @@ fn effect() -> impl Strategy<Value = Effect> {
                     repeat,
                     at_random: false,
                     once_each_turn: false,
+                    all_if: None,
                     modes: modes
                         .into_iter()
                         .map(|(label, targets, effects)| Mode {

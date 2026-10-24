@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Tapped":{"what":["This"]}},"targets":[{"what":{"Object":[{"Not":{"Type":"Land"}},{"Not":"Token"}]},"bounds":{"min":0,"max":1}}],"effects":[{"Exile":{"what":{"Target":0},"as":"gone"}},{"DelayedTrigger":{"when":{"StepBegins":{"step":"End"}},"effects":[{"Move":{"what":{"Bound":"gone"},"to":{"Battlefield":{}}}}]}}]}}]}]}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "5a10c3a5-6724-4e5a-ae4f-b27dde12735a",
+  "name": "Brass Squire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brass Squire",
+      "oracle_fingerprint": "23897afd86a06f57cb86fbf24658ce49",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Attach": { "what": { "Target": 0 }, "to": { "Target": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

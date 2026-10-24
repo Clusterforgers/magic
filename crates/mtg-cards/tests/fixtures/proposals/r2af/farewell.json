@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Modal":{"choose":{"min":1,"max":null},"modes":[{"effects":[{"Exile":{"what":{"Each":[{"Type":"Artifact"}]}}}]},{"effects":[{"Exile":{"what":{"Each":[{"Type":"Creature"}]}}}]},{"effects":[{"Exile":{"what":{"Each":[{"Type":"Enchantment"}]}}}]},{"effects":[{"Exile":{"what":{"Each":[{"In":"Graveyard"}]}}}]}]}}]}}]}]}

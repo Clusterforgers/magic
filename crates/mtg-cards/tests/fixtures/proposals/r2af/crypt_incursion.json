@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"Player"}],"effects":[{"Exile":{"what":{"Each":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":{"Target":0}}]},"as":"exiled"}},{"GainLife":{"amount":{"Times":{"by":3,"of":{"Count":[{"Is":{"Bound":"exiled"}}]}}}}}]}}]}]}

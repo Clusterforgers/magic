@@ -1,0 +1,28 @@
+{
+  "oracle_id": "665e52f1-901b-49a1-bfbd-ee38bdee8983",
+  "name": "Paradise Plume",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Paradise Plume",
+      "oracle_fingerprint": "e4727e0631c46daf152f8b1bc10298b7",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["ChosenColor"] } },
+            "effects": [{ "May": { "effects": [{ "GainLife": { "amount": 1 } }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "ChosenColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"End","whose":"You"}},"if":{"Compare":{"left":{"Count":[{"Subtype":"Food"},{"ControlledBy":"You"}]},"op":"Eq","right":0}},"effects":[{"CreateToken":{"token":{"Named":"food"}}}]}}]}]}

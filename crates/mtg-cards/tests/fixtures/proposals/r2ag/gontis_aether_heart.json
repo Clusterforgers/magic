@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"ZoneChange":{"what":[{"Type":"Artifact"},"Other",{"ControlledBy":"You"}],"to":"Battlefield"}}]},"effects":[{"PutCounters":{"on":"You","counter":{"Other":"energy"},"count":2}}]}},{"Activated":{"cost":[{"PayEnergy":8},"ExileSelf"],"effects":[{"ExtraTurn":{}}]}}]}]}

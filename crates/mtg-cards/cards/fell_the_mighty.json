@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1fbb2a7c-8093-4729-b8fe-cf032d99470f",
+  "name": "Fell the Mighty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fell the Mighty",
+      "oracle_fingerprint": "b33c7389664cee1aced8e4c8f55ecbb4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      {
+                        "Compare": {
+                          "stat": "Power",
+                          "op": "Gt",
+                          "to": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

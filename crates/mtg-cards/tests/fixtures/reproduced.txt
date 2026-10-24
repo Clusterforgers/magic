@@ -22,6 +22,7 @@ Ajani's Pridemate
 Akim, the Soaring Wind
 Akrasan Squire
 Akroma's Vengeance
+Akroma's Will
 Akroma, Angel of Wrath
 All That Glitters
 Alpha Deathclaw
@@ -93,6 +94,7 @@ Banshee of the Dread Choir
 Baral's Expertise
 Barbed Batterfist
 Bard's Bow
+Barter in Blood
 Basalt Monolith
 Basilica Screecher
 Basilisk Gate
@@ -305,6 +307,7 @@ Demon of Wailing Agonies
 Dense Canopy
 Deputized Protester
 Desert
+Determined Iteration
 Devastation Tide
 Dimir Infiltrator
 Dina, Soul Steeper
@@ -399,6 +402,7 @@ Faith Unbroken
 Faithful Watchdog
 Faithless Looting
 Fall from Favor
+Fall of the Hammer
 Fallen Ideal
 Familiar Ground
 Famine
@@ -467,6 +471,7 @@ Genesis Storm
 Gerrard's Wisdom
 Getaway Car
 Ghalta, Primal Hunger
+Ghired, Conclave Exile
 Ghost Quarter
 Ghostblade Eidolon
 Ghostly Prison
@@ -613,6 +618,7 @@ Jagged Barrens
 Jarad, Golgari Lich Lord
 Jaspera Sentinel
 Jazal Goldmane
+Jeska's Will
 Jo Grant
 Join the Maestros
 Jolting Merfolk
@@ -674,6 +680,7 @@ Lion Sash
 Liquimetal Torque
 Lita, Little Orphan Amphibian
 Lithoform Engine
+Living Laser
 Living Twister
 Lizard Blades
 Llanowar Behemoth
@@ -937,6 +944,7 @@ Riders of Gavony
 Rienne, Angel of Rebirth
 Rift Bolt
 Righteous Avengers
+Rionya, Fire Dancer
 Riptide Survivor
 Rishkar's Expertise
 Rising Miasma

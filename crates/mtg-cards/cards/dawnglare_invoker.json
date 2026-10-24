@@ -1,0 +1,27 @@
+{
+  "oracle_id": "0d603aef-2b92-43fb-81ba-f89953a198df",
+  "name": "Dawnglare Invoker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dawnglare Invoker",
+      "oracle_fingerprint": "6d90027ce6cb3af2e5d80eb6d0d04891",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{8}",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Either":[{"Object":[{"Type":"Artifact"}]},{"Object":[{"Type":"Enchantment"}]},{"Object":[{"Type":"Creature"},{"HasKeyword":"Flying"}]}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}]}]}
