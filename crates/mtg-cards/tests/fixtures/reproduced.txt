@@ -849,6 +849,7 @@ Reiterate
 Rejuvenation Chamber
 Relentless Advance
 Relentless Skaabs
+Relic of Progenitus
 Relic of Sauron
 Remorseful Cleric
 Renewed Faith
@@ -908,6 +909,7 @@ Sawtusk Demolisher
 Scatter to the Winds
 Scheming Aspirant
 Scorn-Blade Berserker
+Scrabbling Claws
 Scrapshooter
 Scuzzback Marauders
 Scytheclaw

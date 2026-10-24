@@ -540,11 +540,39 @@ fn verb_phrase(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
     if matches!(r.peek_word(), Some("create" | "creates")) {
         return create::made_by(r, who);
     }
+    if matches!(r.peek_word(), Some("exile" | "exiles")) {
+        return exiles_from_graveyard(r, who);
+    }
     // The controller of a permanent the sentence before named investigates: "Its controller investigates."
     if matches!(who, Ref::ControllerOf(_)) && r.word("investigates") {
         return Some(vec![create::clue(who.clone())]);
     }
     predicate(r, who).map(|effect| vec![effect])
+}
+
+/// "Target player exiles a card from their graveyard.": that player chooses the card, bound as `exiled_card`, and it is
+/// exiled.
+fn exiles_from_graveyard(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
+    matches!(who, Ref::Target(_)).then_some(())?;
+    (r.word("exile") || r.word("exiles")).then_some(())?;
+    r.need("a card from their graveyard")?;
+    Some(vec![
+        Effect::Choose {
+            who: who.clone(),
+            from: Ref::Each(Selector(vec![
+                Pred::In(ZoneKind::Graveyard),
+                Pred::OwnedBy(who.clone()),
+            ])),
+            count: Bounds::default(),
+            bind: EXILED_CARD.to_owned(),
+            rest_as: None,
+        },
+        Effect::Exile {
+            what: Ref::Bound(EXILED_CARD.to_owned()),
+            bind: None,
+            duration: None,
+        },
+    ])
 }
 
 /// What a player does: the verb and its object, without the subject.
@@ -902,6 +930,9 @@ pub fn returns_itself(effects: &[Effect]) -> bool {
 
 /// The name the permanent returned to its owner's hand is bound to.
 pub const RETURNED: &str = "returned";
+
+/// The name of the card a player chose to exile from their graveyard ("Target player exiles a card from their graveyard").
+pub const EXILED_CARD: &str = "exiled_card";
 
 /// The name of the card a delayed trigger returns at the next end step ("return it to its owner's hand at the beginning
 /// of the next end step"), chosen when the ability resolves.

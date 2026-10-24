@@ -2,6 +2,7 @@
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common::pid;
+use mtg_engine::choose::CardsChoice;
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::replay;
 use mtg_engine::turn::Step;
@@ -135,6 +136,65 @@ fn a_god_that_dies_returns_to_its_owners_hand_at_the_next_end_step(
         "back in its owner's hand"
     );
     assert_eq!(in_zone(&driver, Zone::Graveyard(pid(0)), god), 0);
+    assert_replays(&driver);
+    Ok(())
+}
+
+#[rstest]
+fn the_target_player_chooses_the_card_they_exile_from_their_graveyard(
+    #[values("Relic of Progenitus", "Scrabbling Claws")] artifact: &str,
+    #[values(2, 3, 4)] seats: usize,
+    #[values(0, 1, 2, 3)] victim: usize,
+    #[values(0, 1, 2)] cards: usize,
+) -> Result<(), ScriptError> {
+    let victim = victim % seats;
+    let names = ["Alpha", "Beta"];
+    let mut scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, [ready(card(artifact).unwrap())]);
+    if cards > 0 {
+        scenario = scenario.graveyard(
+            victim,
+            names[..cards].iter().map(|name| free_creature(name, 1, 1)),
+        );
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.begin_activation(artifact)?;
+    let target = driver.target_player(victim);
+    driver.choose_targets(&[target])?;
+    for _ in 0..40 {
+        if let DecisionKind::ChooseCards(options) = driver.decision()?.kind.clone() {
+            // The player whose graveyard it is chooses, never the player of the artifact (unless they are the same).
+            assert_eq!(driver.decision()?.player, pid(victim));
+            assert_eq!(options.from.len(), cards);
+            let wanted = *options
+                .from
+                .iter()
+                .find(|id| crate::common::name_of(driver.state(), **id) == "Beta")
+                .unwrap();
+            driver.answer(Answer::ChooseCards(CardsChoice(vec![wanted])))?;
+        } else if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
+            break;
+        } else {
+            driver.answer_passively()?;
+        }
+    }
+    let graveyard = |name: &str| in_zone(&driver, Zone::Graveyard(pid(victim)), name);
+    let exiled = |name: &str| in_zone(&driver, Zone::Exile, name);
+    match cards {
+        0 => assert_eq!((exiled("Alpha"), exiled("Beta")), (0, 0)),
+        // A lone card is exiled without a question.
+        1 => assert_eq!((graveyard("Alpha"), exiled("Alpha")), (0, 1)),
+        _ => assert_eq!(
+            (
+                graveyard("Alpha"),
+                exiled("Alpha"),
+                graveyard("Beta"),
+                exiled("Beta")
+            ),
+            (1, 0, 0, 1)
+        ),
+    }
     assert_replays(&driver);
     Ok(())
 }

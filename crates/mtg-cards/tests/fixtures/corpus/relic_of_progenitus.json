@@ -1,0 +1,19 @@
+{
+  "cmc": 1.0,
+  "collector_number": "231",
+  "color_identity": [],
+  "colors": [],
+  "digital": false,
+  "id": "436cd66c-0622-43cd-8748-af4d21a2db3f",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}",
+  "name": "Relic of Progenitus",
+  "oracle_id": "6a9c3401-570c-41cb-a605-75dfa57d6ab7",
+  "oracle_text": "{T}: Target player exiles a card from their graveyard.\n{1}, Exile this artifact: Exile all graveyards. Draw a card.",
+  "rarity": "uncommon",
+  "released_at": "2016-06-10",
+  "set": "ema",
+  "type_line": "Artifact"
+}

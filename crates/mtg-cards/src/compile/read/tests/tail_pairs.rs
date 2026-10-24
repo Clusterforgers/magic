@@ -1,9 +1,9 @@
 //! Goal: the wordings that alone held back two precon cards each (half a life total, rounded up or down) read into the DSL, write back as the same text, and leave their near-misses to the table.
-use super::effects::{LATER, dead_card};
+use super::effects::{EXILED_CARD, LATER, dead_card};
 use super::*;
 use crate::compile::read::draws;
 use crate::effect::{Destination, Effect};
-use crate::refs::Ref;
+use crate::refs::{Bounds, Pred, Ref, Selector, ZoneKind};
 use crate::trigger::{Step, TriggerPattern};
 use crate::value::Amount;
 
@@ -186,6 +186,60 @@ fn a_plain_wheel_binds_nothing(#[case] text: &str, #[case] bind: Option<String>)
         matches!(&effects[0], Effect::Discard { bind: found, .. } if *found == bind),
         "{text}"
     );
+}
+
+#[rstest]
+#[case::a_player("{T}: Target player exiles a card from their graveyard.", "Player")]
+#[case::an_opponent("{T}: Target opponent exiles a card from their graveyard.", "Opponent")]
+#[case::with_a_cost(
+    "{2}, {T}: Target player exiles a card from their graveyard.",
+    "Player"
+)]
+fn a_player_exiles_a_card_of_their_own_graveyard(#[case] text: &str, #[case] target: &str) {
+    let Ability::Activated {
+        targets, effects, ..
+    } = golden(text, ClauseKind::Activated, false)
+    else {
+        panic!("not an activated ability: {text}");
+    };
+    assert_eq!(
+        serde_json::to_string(&targets[0].what).unwrap(),
+        format!("\"{target}\""),
+        "{text}"
+    );
+    assert_eq!(
+        effects,
+        vec![
+            Effect::Choose {
+                who: Ref::Target(0),
+                from: Ref::Each(Selector(vec![
+                    Pred::In(ZoneKind::Graveyard),
+                    Pred::OwnedBy(Ref::Target(0)),
+                ])),
+                count: Bounds::default(),
+                bind: EXILED_CARD.to_owned(),
+                rest_as: None,
+            },
+            Effect::Exile {
+                what: Ref::Bound(EXILED_CARD.to_owned()),
+                bind: None,
+                duration: None,
+            },
+        ],
+        "{text}"
+    );
+}
+
+#[rstest]
+#[case::your_own("{T}: Exile a card from your graveyard.")]
+#[case::a_hand("{T}: Target player exiles a card from their hand.")]
+#[case::two_cards("{T}: Target player exiles two cards from their graveyard.")]
+#[case::any_graveyard("{T}: Target player exiles a card from a graveyard.")]
+#[case::your_graveyard("{T}: Target player exiles a card from your graveyard.")]
+#[case::each_player("{T}: Each player exiles a card from their graveyard.")]
+#[case::you("{T}: You exile a card from their graveyard.")]
+fn exiling_a_card_from_a_graveyard_near_misses_stay_unread(#[case] text: &str) {
+    assert_eq!(clause(text, ClauseKind::Activated, false), None, "{text}");
 }
 
 #[rstest]
