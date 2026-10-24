@@ -183,6 +183,16 @@ impl ManaPool {
         }
     }
 
+    /// The shortest lifetime that takes out of the pool all that `empty(through)` would, so a log names only the
+    /// lifetimes that went.
+    pub fn least_through(&self, through: ManaLasts) -> ManaLasts {
+        let all = self.emptying(through);
+        [ManaLasts::Step, ManaLasts::Combat]
+            .into_iter()
+            .find(|shorter| *shorter < through && self.emptying(*shorter) == all)
+            .unwrap_or(through)
+    }
+
     /// How much mana `empty(through)` would take out of the pool.
     pub fn emptying(&self, through: ManaLasts) -> u32 {
         let mut left = self.clone();

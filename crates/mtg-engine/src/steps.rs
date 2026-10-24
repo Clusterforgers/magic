@@ -254,6 +254,7 @@ fn pool_emptying(state: &GameState, through: ManaLasts) -> Vec<Event> {
         .filter(|p| p.mana().emptying(through) > 0)
         .flat_map(|p| {
             let (player, amount) = (p.id(), p.mana().emptying(through));
+            let through = p.mana().least_through(through);
             let mut events = vec![Event::ManaPoolEmptied { player, through }];
             if burn && p.is_in_game() && !crate::rules::life_total_cant_change(state, player) {
                 events.push(Event::ManaBurned { player, amount });

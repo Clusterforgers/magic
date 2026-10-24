@@ -292,6 +292,63 @@ fn damage_dealt_is_the_mana_added_by_photon(
     Ok(())
 }
 
+#[rstest]
+fn mana_kept_to_the_end_of_combat_goes_as_the_combat_phase_ends(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let pyre = Arc::new(
+        CardDefinition::new("Pyre")
+            .with_type(CardType::Creature)
+            .with_power_toughness(1, 1)
+            .with_rules(
+                serde_json::from_str(
+                    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"AddMana":{"mana":{"Fixed":["Red","Red"]},"lasts":"Combat"}}]}}"#,
+                )
+                .unwrap(),
+            ),
+    );
+    let mut scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, [ready(pyre)]);
+    for seat in 1..seats {
+        scenario =
+            scenario.battlefield(seat, [ready(free_creature(&format!("Wall {seat}"), 0, 9))]);
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    attack(&mut driver, "Pyre")?;
+    assert_eq!(pool(&driver).total(), 2);
+    let seen = walk(&mut driver)?;
+    let at = |step: Step| -> Vec<u32> {
+        seen.iter()
+            .filter(|(turn, at, _)| *turn == 1 && *at == step)
+            .map(|(_, _, total)| *total)
+            .collect()
+    };
+    for step in [Step::DeclareBlockers, Step::CombatDamage, Step::EndCombat] {
+        assert!(
+            at(step).iter().all(|total| *total == 2),
+            "{step:?}: {seen:?}"
+        );
+    }
+    for step in [Step::Main2, Step::End] {
+        assert!(
+            !at(step).is_empty() && at(step).iter().all(|total| *total == 0),
+            "{step:?}: {seen:?}"
+        );
+    }
+    let emptied: Vec<ManaLasts> = driver
+        .engine()
+        .events()
+        .iter()
+        .filter_map(|event| match event {
+            Event::ManaPoolEmptied { player, through } if *player == pid(0) => Some(*through),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(emptied, [ManaLasts::Combat]);
+    Ok(())
+}
+
 /// Crews the Vehicle with the first creature the activation asks for and lets the activation resolve.
 fn crew(driver: &mut Driver, name: &str) -> Result<(), ScriptError> {
     let offered = driver.offered_abilities(name)?;

@@ -91,3 +91,23 @@ fn restricted_mana_goes_by_its_lifetime_too(
     assert!(held.restricted().iter().all(|unit| unit.lasts > through));
     assert_eq!(kept(&held, Green), green);
 }
+
+#[rstest]
+#[case::only_step_mana_at_the_end_of_a_phase(&[(Red, Step)], Combat, Step)]
+#[case::only_step_mana_at_the_end_of_the_turn(&[(Red, Step)], Turn, Step)]
+#[case::combat_mana_at_the_end_of_a_phase(&[(Red, Step), (Red, Combat)], Combat, Combat)]
+#[case::combat_mana_at_the_end_of_the_turn(&[(Red, Combat)], Turn, Combat)]
+#[case::turn_mana_at_the_end_of_the_turn(&[(Red, Combat), (Red, Turn)], Turn, Turn)]
+#[case::turn_mana_kept_at_the_end_of_a_phase(&[(Red, Turn)], Combat, Step)]
+fn the_log_names_the_shortest_lifetime_that_empties_the_same_mana(
+    #[case] added: &[(ManaType, ManaLasts)],
+    #[case] through: ManaLasts,
+    #[case] named: ManaLasts,
+) {
+    let held = pool(added);
+    assert_eq!(held.least_through(through), named);
+    let (mut by_named, mut by_through) = (held.clone(), held);
+    by_named.empty(named);
+    by_through.empty(through);
+    assert_eq!(by_named, by_through);
+}
