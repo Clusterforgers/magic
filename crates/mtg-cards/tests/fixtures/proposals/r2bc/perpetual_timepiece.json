@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"Mill":{"count":2}}]}},{"Activated":{"cost":[{"Mana":"{2}"},"ExileSelf"],"targets":[{"what":{"Object":[{"In":"Graveyard"},{"OwnedBy":"You"}]},"bounds":{"min":0,"max":null}}],"effects":[{"Move":{"what":{"Target":0},"to":{"Library":{"place":"Shuffled"}}}}]}}]}]}

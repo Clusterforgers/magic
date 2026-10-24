@@ -1,0 +1,33 @@
+{
+  "oracle_id": "154104b7-4125-4276-8bc7-9a6edfe48cb9",
+  "name": "Ob Nixilis, the Fallen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ob Nixilis, the Fallen",
+      "oracle_fingerprint": "5f10df6db9491d4f4aa13d84775f3ca5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "May": { "effects": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 3 } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

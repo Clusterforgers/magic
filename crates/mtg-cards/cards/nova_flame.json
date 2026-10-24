@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f4310dfd-52eb-4c1f-b1ad-bfbc9b50fe7b",
+  "name": "Nova Flame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nova Flame",
+      "oracle_fingerprint": "44f23d8d0f2db88549eb643cb9ec5e60",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "X" } },
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

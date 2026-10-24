@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"CostModifier":{"applies_to":["Commander",{"OwnedBy":"You"}],"change":"Reduce","mana":"{1}","per":{"CommanderCasts":"You"}}},{"Triggered":{"when":{"ZoneChange":{"what":["Commander",{"ControlledBy":"You"}],"to":"Command"}},"effects":[{"Draw":{}}]}}]}]}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "aeeb50f2-8e02-4d40-a1dd-28b1c5c85c7e",
+  "name": "Moonstone, Harsh Mistress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moonstone, Harsh Mistress",
+      "oracle_fingerprint": "3fb041e221d9ef410179e9de1c2f50c0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": "Triggering", "as": "exiled" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "only": { "Bound": "exiled" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfYourNextTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

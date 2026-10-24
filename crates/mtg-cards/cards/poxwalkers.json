@@ -1,0 +1,21 @@
+{
+  "oracle_id": "e4275202-4960-4cde-b941-27be8163ad6e",
+  "name": "Poxwalkers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Poxwalkers",
+      "oracle_fingerprint": "f7ef1a9d14ab21f95796fe41f63b2ca8",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "CastFrom": "Hand" } }], "by": "You" } },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

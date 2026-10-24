@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flash"},{"Keyword":"Flying"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Pay":{"cost":[{"ReturnToHand":{"filter":["Other",{"Type":"Creature"}]}}],"unpaid":[{"Sacrifice":{"filter":["This"]}}]}}]}}]}]}

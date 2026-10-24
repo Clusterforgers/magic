@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{X}{U}{R}"},"Tap"],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"DealDamage":{"source":"This","to":{"Target":0},"amount":"X"}},{"Draw":{"who":{"ControllerOf":{"Target":0}},"count":"X"}}]}}]}]}

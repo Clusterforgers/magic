@@ -1,0 +1,22 @@
+{
+  "oracle_id": "cc20f910-03e9-4019-a62a-2e713ddb3c06",
+  "name": "Quicksilver, Speedster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quicksilver, Speedster",
+      "oracle_fingerprint": "6b17da695f05213a09b5c52dc47498ed",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "DoubleStrike" },
+        { "Keyword": "Haste" },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "flash": true } },
+            "condition": { "Matches": { "subject": "This", "selector": ["Tapped"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

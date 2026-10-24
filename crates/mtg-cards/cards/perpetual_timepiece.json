@@ -1,0 +1,28 @@
+{
+  "oracle_id": "17b4778b-82b1-4845-ad08-00f3ff66877b",
+  "name": "Perpetual Timepiece",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Perpetual Timepiece",
+      "oracle_fingerprint": "3799f79a5c05958d1ece31834dd9fcdf",
+      "abilities": [
+        { "Activated": { "cost": ["Tap"], "effects": [{ "Mill": { "count": 2 } }] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "ExileSelf"],
+            "targets": [
+              {
+                "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

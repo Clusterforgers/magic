@@ -1,0 +1,33 @@
+{
+  "oracle_id": "13044ca1-76a3-43b2-a8e4-3bbc692c30c5",
+  "name": "Raff Capashen, Ship's Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raff Capashen, Ship's Mage",
+      "oracle_fingerprint": "fc352a8acbd411e01c7be02e1ec4037d",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Supertype": "Legendary" },
+                      { "Subtype": "Saga" }
+                    ]
+                  }
+                ],
+                "flash": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

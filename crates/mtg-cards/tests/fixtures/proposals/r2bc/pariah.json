@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Enchant":[{"Type":"Creature"}]}},{"Replacement":{"when":{"Damage":{"to":"You"}},"by":{"Instead":[{"DealDamage":{"to":"Attached","amount":"Triggering"}}]}}}]}]}

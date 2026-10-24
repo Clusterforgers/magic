@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"This","mods":["CantBlock","CantBeBlocked"]}},{"Rule":{"rule":{"MayCast":{"what":["This"],"from":"Graveyard"}},"condition":{"Compare":{"left":{"Count":[{"AnyOf":[{"Color":"Black"},{"Color":"Green"}]},{"ControlledBy":"You"}]},"op":"Ge","right":1}},"from":"Graveyard"}}]}]}

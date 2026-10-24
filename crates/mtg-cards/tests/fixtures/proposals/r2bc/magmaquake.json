@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"DealDamage":{"to":{"Each":[{"Type":"Creature"},{"Not":{"HasKeyword":"Flying"}}]},"amount":"X"}},{"DealDamage":{"to":{"Each":[{"Type":"Planeswalker"}]},"amount":"X"}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"WithCounters":{"counter":"+1/+1","count":{"Greatest":{"of":[{"Type":"Creature"},"Other",{"ControlledBy":"You"}],"stat":"Power"}}}}}},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Draw":{"count":{"Stat":{"of":"This","stat":"Power"}}}}]}}]}]}

@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "eda8bfa5-1e7d-442d-9d8c-651eb5630124",
+  "oracle_id": "5b29c26f-c0f0-4703-83db-3a249ebc5792",
+  "multiverse_ids": [],
+  "resource_id": "903FBBF9E685285627858352A396146CE176A540342BFFB189B562E6DB1BE9D1",
+  "mtgo_id": 154836,
+  "arena_id": 108026,
+  "tcgplayer_id": 709665,
+  "cardmarket_id": 900730,
+  "name": "Mirkwood Elk",
+  "lang": "en",
+  "released_at": "2026-08-14",
+  "uri": "https://api.scryfall.com/cards/eda8bfa5-1e7d-442d-9d8c-651eb5630124",
+  "scryfall_uri": "https://scryfall.com/card/hoc/210/mirkwood-elk?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-31T11:33:43Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/d/eda8bfa5-1e7d-442d-9d8c-651eb5630124.jpg?1785497623",
+    "normal": "https://cards.scryfall.io/normal/front/e/d/eda8bfa5-1e7d-442d-9d8c-651eb5630124.jpg?1785497623",
+    "large": "https://cards.scryfall.io/large/front/e/d/eda8bfa5-1e7d-442d-9d8c-651eb5630124.jpg?1785497623",
+    "png": "https://cards.scryfall.io/png/front/e/d/eda8bfa5-1e7d-442d-9d8c-651eb5630124.png?1785497623",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/d/eda8bfa5-1e7d-442d-9d8c-651eb5630124.jpg?1785497623",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/d/eda8bfa5-1e7d-442d-9d8c-651eb5630124.jpg?1785497623",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/d/eda8bfa5-1e7d-442d-9d8c-651eb5630124.webp?1785497623",
+    "grid": "https://cards.scryfall.io/grid/front/e/d/eda8bfa5-1e7d-442d-9d8c-651eb5630124.webp?1785497623",
+    "display": "https://cards.scryfall.io/display/front/e/d/eda8bfa5-1e7d-442d-9d8c-651eb5630124.webp?1785497623",
+    "art": "https://cards.scryfall.io/art/front/e/d/eda8bfa5-1e7d-442d-9d8c-651eb5630124.webp?1785497623",
+    "crop": "https://cards.scryfall.io/crop/front/e/d/eda8bfa5-1e7d-442d-9d8c-651eb5630124.webp?1785497623",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/d/eda8bfa5-1e7d-442d-9d8c-651eb5630124.jpg?1785497623"
+  },
+  "mana_cost": "{5}{G}",
+  "cmc": 6.0,
+  "type_line": "Creature — Elk",
+  "oracle_text": "Trample\nWhenever this creature enters or attacks, return target Elf card from your graveyard to your hand. You gain life equal to that card's power.",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "a185c905-5359-4f40-85c3-a3eae2ca4ff0",
+  "set": "hoc",
+  "set_name": "The Hobbit Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/a185c905-5359-4f40-85c3-a3eae2ca4ff0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ahoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/hoc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/eda8bfa5-1e7d-442d-9d8c-651eb5630124/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5b29c26f-c0f0-4703-83db-3a249ebc5792&unique=prints",
+  "collector_number": "210",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Christina Kraus",
+  "artist_ids": [
+    "685354c3-302d-486a-b575-cb19bb2c31c9"
+  ],
+  "illustration_id": "9d537d37-84fd-4ae6-a4e4-92984b36d20e",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 14699,
+  "prices": {
+    "usd": "5.95",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "2.32",
+    "eur_foil": null,
+    "tix": "0.10"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMirkwood%2BElk",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMirkwood%2BElk",
+    "edhrec": "https://edhrec.com/route/?cc=Mirkwood+Elk"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F709665%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=900730&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/154836?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

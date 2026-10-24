@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"Discarded":{"by":"You"}},"effects":[{"May":{"effects":[{"Exile":{"what":"Triggering","as":"exiled"}},{"Rule":{"rule":{"MayCast":{"from":"Exile","only":{"Bound":"exiled"},"play":true}},"duration":"UntilEndOfYourNextTurn"}}]}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"Attached","mods":[{"AddKeyword":"Trample"},{"GrantAbility":{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1","count":"Triggering"}}]}}}]}},{"Keyword":{"Equip":"{2}"}}]}]}

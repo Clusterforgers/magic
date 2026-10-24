@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"In":"Graveyard"},{"AnyOf":[{"Type":"Creature"},{"Type":"Land"}]}]}}],"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}},{"GainLife":{"amount":6}}]}}]}]}

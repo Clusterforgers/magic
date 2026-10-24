@@ -1,0 +1,26 @@
+{
+  "oracle_id": "53bfffae-b99e-44bd-8954-6cf236f93f26",
+  "name": "Mnemonic Sphere",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mnemonic Sphere",
+      "oracle_fingerprint": "8020afac923f34cd656b33a453789763",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}" }, "SacrificeSelf"],
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "DiscardSelf"],
+            "from": "Hand",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

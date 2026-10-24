@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "06b7312a-c775-4fa8-ba62-c84ff38459e8",
+  "oracle_id": "ed4cd3a1-688b-4c05-948d-39d3336e00c0",
+  "multiverse_ids": [
+    598970
+  ],
+  "mtgo_id": 107681,
+  "tcgplayer_id": 457112,
+  "cardmarket_id": 688489,
+  "name": "Oversold Cemetery",
+  "lang": "en",
+  "released_at": "2023-01-13",
+  "uri": "https://api.scryfall.com/cards/06b7312a-c775-4fa8-ba62-c84ff38459e8",
+  "scryfall_uri": "https://scryfall.com/card/dmr/96/oversold-cemetery?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:54:33Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/6/06b7312a-c775-4fa8-ba62-c84ff38459e8.jpg?1783918473",
+    "normal": "https://cards.scryfall.io/normal/front/0/6/06b7312a-c775-4fa8-ba62-c84ff38459e8.jpg?1783918473",
+    "large": "https://cards.scryfall.io/large/front/0/6/06b7312a-c775-4fa8-ba62-c84ff38459e8.jpg?1783918473",
+    "png": "https://cards.scryfall.io/png/front/0/6/06b7312a-c775-4fa8-ba62-c84ff38459e8.png?1783918473",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/6/06b7312a-c775-4fa8-ba62-c84ff38459e8.jpg?1783918473",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/6/06b7312a-c775-4fa8-ba62-c84ff38459e8.jpg?1783918473",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/6/06b7312a-c775-4fa8-ba62-c84ff38459e8.webp?1783918473",
+    "grid": "https://cards.scryfall.io/grid/front/0/6/06b7312a-c775-4fa8-ba62-c84ff38459e8.webp?1783918473",
+    "display": "https://cards.scryfall.io/display/front/0/6/06b7312a-c775-4fa8-ba62-c84ff38459e8.webp?1783918473",
+    "art": "https://cards.scryfall.io/art/front/0/6/06b7312a-c775-4fa8-ba62-c84ff38459e8.webp?1783918473",
+    "crop": "https://cards.scryfall.io/crop/front/0/6/06b7312a-c775-4fa8-ba62-c84ff38459e8.webp?1783918473",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/6/06b7312a-c775-4fa8-ba62-c84ff38459e8.jpg?1783918473"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "At the beginning of your upkeep, if you have four or more creature cards in your graveyard, you may return target creature card from your graveyard to your hand.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "ca4c2884-e539-4b7f-980d-5d6a50220f2a",
+  "set": "dmr",
+  "set_name": "Dominaria Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/ca4c2884-e539-4b7f-980d-5d6a50220f2a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Admr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dmr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/06b7312a-c775-4fa8-ba62-c84ff38459e8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aed4cd3a1-688b-4c05-948d-39d3336e00c0&unique=prints",
+  "collector_number": "96",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "It was a profitable scheme, at least until the dead began to object.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jarel Threat",
+  "artist_ids": [
+    "0fd89fbd-bd59-4ded-890e-731a8982f278"
+  ],
+  "illustration_id": "b7432c72-cf83-43a1-89a0-dc19292a027b",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 1681,
+  "penny_rank": 2397,
+  "prices": {
+    "usd": "2.67",
+    "usd_foil": "2.88",
+    "usd_etched": null,
+    "eur": "1.50",
+    "eur_foil": "1.67",
+    "tix": "0.08"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=598970&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DOversold%2BCemetery",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DOversold%2BCemetery",
+    "edhrec": "https://edhrec.com/route/?cc=Oversold+Cemetery"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F457112%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=688489&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/107681?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

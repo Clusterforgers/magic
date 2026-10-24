@@ -1,0 +1,39 @@
+{
+  "oracle_id": "93cf50cf-0ecc-4d3e-abea-778c1ebacec4",
+  "name": "Massacre Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Massacre Wurm",
+      "oracle_fingerprint": "1fee2952e870fe96591f88040e092f78",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

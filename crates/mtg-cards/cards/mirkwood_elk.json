@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5b29c26f-c0f0-4703-83db-3a249ebc5792",
+  "name": "Mirkwood Elk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirkwood Elk",
+      "oracle_fingerprint": "b053d033fab64a81b5476c0912e3f51a",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, { "Subtype": "Elf" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "GainLife": { "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Modal":{"modes":[{"effects":[{"Exile":{"what":{"Each":[{"Type":"Creature"},{"Compare":{"stat":"Power","op":"Gt","to":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}]}}}]},{"effects":[{"Exile":{"what":{"Each":[{"Type":"Creature"},{"Compare":{"stat":"Power","op":"Lt","to":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}]}}}]}]}}]}}]}]}

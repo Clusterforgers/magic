@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c52cfb41-18f3-4e73-b5e7-d75baf74e578",
+  "name": "River's Rebuke",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "River's Rebuke",
+      "oracle_fingerprint": "bbf882057d7a8d38219ec17c07edacdc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "Not": { "Type": "Land" } }, { "ControlledBy": { "Target": 0 } }]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

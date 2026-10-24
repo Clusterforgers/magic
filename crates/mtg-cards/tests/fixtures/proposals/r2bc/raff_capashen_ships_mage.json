@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flash"},{"Keyword":"Flying"},{"Rule":{"rule":{"MayCast":{"what":[{"AnyOf":[{"Type":"Artifact"},{"Supertype":"Legendary"},{"Subtype":"Saga"}]}],"flash":true}}}}]}]}

@@ -37,7 +37,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         },
         Effect::Rule {
             rule: GameRule::MayCast(permission),
-            duration: Duration::UntilEndOfTurn,
+            duration: duration @ (Duration::UntilEndOfTurn | Duration::UntilEndOfYourNextTurn),
         },
     ] = inner.as_slice()
     else {
@@ -55,9 +55,13 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     if !targets.is_empty() || *permission != wanted {
         return;
     }
+    let until = match duration {
+        Duration::UntilEndOfTurn => "you may play that card this turn",
+        _ => "until the end of your next turn, you may play that card",
+    };
     if let Some(event) = pattern_text(when) {
         texts.push(format!(
-            "{event}, you may exile that card from your graveyard. If you do, you may play that card this turn."
+            "{event}, you may exile that card from your graveyard. If you do, {until}."
         ));
     }
 }

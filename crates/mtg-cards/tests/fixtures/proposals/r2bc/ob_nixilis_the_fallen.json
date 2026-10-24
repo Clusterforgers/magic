@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Land"},{"ControlledBy":"You"}],"to":"Battlefield"}},"targets":[{"what":"Player"}],"effects":[{"May":{"effects":[{"LoseLife":{"who":{"Target":0},"amount":3}}]}},{"If":{"condition":"Performed","then":[{"PutCounters":{"on":"This","counter":"+1/+1","count":3}}]}}]}}]}]}

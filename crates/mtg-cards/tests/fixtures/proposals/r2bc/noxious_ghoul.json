@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"ZoneChange":{"what":["Other",{"Subtype":"Zombie"}],"to":"Battlefield"}}]},"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"Not":{"Subtype":"Zombie"}}]},"mods":[{"ModifyPT":{"power":-1,"toughness":-1}}],"duration":"UntilEndOfTurn"}}]}}]}]}

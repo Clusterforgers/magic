@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e2fe1847-4003-41c5-a64b-03afd888b81e",
+  "name": "Morkrut Banshee",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Morkrut Banshee",
+      "oracle_fingerprint": "33cc84ad38508f1244e61c76fbc1fa2d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -4, "toughness": -4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

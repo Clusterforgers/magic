@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a52037df-0be1-4c99-b9eb-b033157af203",
+  "name": "Magmaquake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magmaquake",
+      "oracle_fingerprint": "0fec5ad2cd15a719349628f84c3e5c51",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }] },
+                  "amount": "X"
+                }
+              },
+              { "DealDamage": { "to": { "Each": [{ "Type": "Planeswalker" }] }, "amount": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

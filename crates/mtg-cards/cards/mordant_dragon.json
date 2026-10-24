@@ -1,0 +1,51 @@
+{
+  "oracle_id": "c02ed1b7-1f8d-4196-a9b6-65e1b5a763d7",
+  "name": "Mordant Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mordant Dragon",
+      "oracle_fingerprint": "302cc237ad2c716449dfb6b2c7753dac",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": "This",
+                        "to": { "Target": 0 },
+                        "amount": "Triggering"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

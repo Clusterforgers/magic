@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Land"},{"ControlledBy":"You"}],"to":"Battlefield"}},"effects":[{"PutCounters":{"on":"You","counter":{"Other":"energy"}}}]}},{"Activated":{"cost":["Tap",{"PayEnergy":6}],"effects":[{"Draw":{"count":3}}]}}]}]}

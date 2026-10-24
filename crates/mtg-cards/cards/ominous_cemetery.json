@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d002391f-1dad-4966-ac36-56cc3ec015b2",
+  "name": "Ominous Cemetery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ominous Cemetery",
+      "oracle_fingerprint": "b5db58afb4f6742a5acc20fa083083a9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap", "ExileSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

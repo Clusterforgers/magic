@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e7c4bc25-806c-4a75-85bf-a0e66308d5d8",
+  "name": "Mycosynth Fiend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mycosynth Fiend",
+      "oracle_fingerprint": "a82614f53d95da229ddcb29c65f44eea",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "Opponents", "counter": "poison" } },
+                  "toughness": { "Counters": { "on": "Opponents", "counter": "poison" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

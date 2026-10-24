@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Vigilance"},{"Keyword":"Lifelink"},{"Activated":{"cost":["ExileSelf"],"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},{"AnyOf":[{"Type":"Artifact"},{"Subtype":"Human"}]}]},"mods":[{"AddKeyword":"Indestructible"}],"duration":"UntilEndOfTurn"}}]}}]}]}

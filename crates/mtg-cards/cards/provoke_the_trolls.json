@@ -1,0 +1,37 @@
+{
+  "oracle_id": "ac844303-487b-49e9-9170-02892153ca6a",
+  "name": "Provoke the Trolls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Provoke the Trolls",
+      "oracle_fingerprint": "a82d3ceec94945ac7383d1eb93ba7185",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": [{ "Type": "Creature" }] }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": 5, "toughness": 0 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

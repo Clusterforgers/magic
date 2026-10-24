@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{1}{U}"},"SacrificeSelf"],"effects":[{"Draw":{"count":2}}]}},{"Activated":{"cost":[{"Mana":"{U}"},"DiscardSelf"],"from":"Hand","effects":[{"Draw":{}}]}}]}]}

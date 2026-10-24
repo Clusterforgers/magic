@@ -81,7 +81,7 @@ fn stripped(text: &str) -> &str {
     let Some((word, rest)) = text.split_once(" \u{2014} ") else {
         return text;
     };
-    let ability_word = !word.contains(['~', ',', '.', ':']) && word.split(' ').count() <= 3;
+    let ability_word = !word.contains(['~', ',', '.', ':']) && word.split(' ').count() <= 5;
     let numerals = word
         .chars()
         .all(|c| matches!(c, 'I' | 'V' | 'X' | ',' | ' '));

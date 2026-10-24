@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":2}}]}},{"Triggered":{"when":{"LifeGained":{"who":"Opponents"}},"from":"Graveyard","effects":[{"Pay":{"cost":"{R}","paid":[{"Move":{"what":"This","to":"Hand"}}]}}]}}]}]}

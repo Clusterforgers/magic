@@ -1,0 +1,34 @@
+{
+  "oracle_id": "367ac7e2-5056-48f3-a296-87d6cb1f7b54",
+  "name": "Nykthos Paragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nykthos Paragon",
+      "oracle_fingerprint": "c56bb0697751fe3972c601d9e34b92e2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "PutCounters": {
+                        "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "counter": "+1/+1",
+                        "count": "Triggering"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

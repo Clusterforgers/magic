@@ -1,0 +1,23 @@
+{
+  "oracle_id": "ec439630-e18b-45f6-8034-2ecbea27772f",
+  "name": "Nin, the Pain Artist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nin, the Pain Artist",
+      "oracle_fingerprint": "e33bee3b5b36da8cb0b5722f5581d796",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{U}{R}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": "X" } },
+              { "Draw": { "who": { "ControllerOf": { "Target": 0 } }, "count": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

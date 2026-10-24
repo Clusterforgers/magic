@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},{"ZoneChange":{"what":["Other",{"Subtype":"Elf"},{"ControlledBy":"You"}],"from":"Battlefield","to":"Graveyard"}}]},"effects":[{"Pay":{"cost":[{"Mana":"{1}"},{"PayLife":1}],"paid":[{"Draw":{}}]}}]}},{"Keyword":"Partner"}]}]}

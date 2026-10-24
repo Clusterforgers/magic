@@ -1,0 +1,27 @@
+{
+  "oracle_id": "65dc05d0-f885-4fe5-9a23-d6b75185c179",
+  "name": "Peel from Reality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peel from Reality",
+      "oracle_fingerprint": "679ff51091a599c0638df20a008ff57c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 1 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

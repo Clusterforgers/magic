@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}],"effects":[{"DealDamage":{"source":"This","to":{"Target":0},"amount":1}},{"Continuous":{"affected":{"Target":0},"mods":[{"AddKeyword":"Trample"}],"duration":"UntilEndOfTurn"}},{"Draw":{}}]}}]}]}

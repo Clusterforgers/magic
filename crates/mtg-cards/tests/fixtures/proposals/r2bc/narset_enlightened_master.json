@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"FirstStrike"},{"Keyword":"Hexproof"},{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"ExileTop":{"count":4,"as":"exiled"}},{"Rule":{"rule":{"MayCast":{"what":[{"Not":{"Type":"Creature"}}],"from":"Exile","free":true,"only":{"Bound":"exiled"}}},"duration":"UntilEndOfTurn"}}]}}]}]}

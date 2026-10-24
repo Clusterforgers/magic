@@ -1,0 +1,31 @@
+{
+  "oracle_id": "d5b446a4-a761-42f0-acf0-ea0a1a9538d6",
+  "name": "Pulse of Murasa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pulse of Murasa",
+      "oracle_fingerprint": "77b5f27a1b3bdb825d5edc972db7dc77",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "In": "Graveyard" },
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "GainLife": { "amount": 6 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "54917578-9493-499e-b200-51d5cf7978ff",
+  "name": "Rescue, Pepper Potts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rescue, Pepper Potts",
+      "oracle_fingerprint": "549366b7b0ac6f5c0945704ae4a788fb",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": [{ "Type": "Artifact" }] }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
