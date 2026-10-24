@@ -122,7 +122,7 @@ effect ReplaceMana => -
 effect Charm => Effect.Modal
 effect Branch => Effect.If
 effect Repeat => -
-effect RepeatEach => -
+effect RepeatEach => Effect.RepeatEach
 effect GenericChoice => Effect.Modal Effect.May Effect.Choose
 effect ChooseCard => Effect.Choose
 effect ChooseType => Effect.Choose ReplaceBy.Choose
@@ -138,8 +138,8 @@ effect StoreSVar => ~
 effect Draft => ~
 
 # Chance and the rest of the game.
-effect RollDice => -
-effect FlipCoin => -
+effect RollDice => Effect.RollDice
+effect FlipCoin => Effect.FlipCoin
 effect Vote => -
 effect TwoPiles => -
 effect Venture => -

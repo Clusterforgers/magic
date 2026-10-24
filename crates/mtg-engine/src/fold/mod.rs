@@ -247,6 +247,8 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Bolstered { .. }
         | Event::Learned { .. }
         | Event::Proliferated { .. } => {}
+        // Each roll and flip spent a substream of the generator, as a shuffle does.
+        Event::DieRolled { .. } | Event::CoinFlipped { .. } => state.rng_index += 1,
         Event::Cycled { player, .. } => state.tally(*player, Tally::Cycled),
         Event::PriorityGranted { player } => {
             state.priority = Some(PriorityState {

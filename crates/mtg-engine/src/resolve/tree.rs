@@ -4,15 +4,30 @@
 //! effects (`If`, `May`, `Pay`, `Modal`) is entered by a branch: `[2, 1, 0]` is the first effect of the second
 //! list of the third effect (the `otherwise` of an `If`, the `unpaid` of a `Pay`). The branches of a `Modal` are the
 //! modes chosen, in the order they happen: `[0, 1, 0]` is the first effect of the second mode chosen, which is the
-//! same mode as the first one when it was chosen twice.
+//! same mode as the first one when it was chosen twice. A `RepeatEach` holds its body as branch 0 and runs again at the
+//! position `[2, 1]` after each pass: the repeat itself, with no effect index, which begins the next pass. A `RollDice`
+//! holds a branch for each row of its table and a `FlipCoin` the list for a win and then the list for a loss.
 
 use mtg_cards::effect::Effect;
 
 use super::Next;
 
+/// The branch of a `RepeatEach` that stands for the start of its next pass: no effect of the body, the repeat itself.
+const NEXT_PASS: usize = 1;
+
+/// Whether the position is the start of the next pass of a repeat, which holds a branch and no effect index.
+pub(crate) const fn is_next_pass(position: &[usize]) -> bool {
+    position.len() % 2 == 0
+}
+
 /// The lists of effects inside an effect, in branch order; `chosen` are the modes chosen for a `Modal`.
 fn branches<'a>(effect: &'a Effect, chosen: &[usize]) -> Vec<&'a [Effect]> {
     match effect {
+        Effect::RepeatEach { effects, .. } => vec![effects],
+        Effect::RollDice { results, .. } => {
+            results.iter().map(|row| row.effects.as_slice()).collect()
+        }
+        Effect::FlipCoin { win, lose, .. } => vec![win, lose],
         Effect::If {
             then, otherwise, ..
         } => vec![then, otherwise],
@@ -42,6 +57,9 @@ pub(crate) fn effect_at<'a>(
             return Some(effect);
         }
         let (&branch, deeper) = rest.split_first()?;
+        if deeper.is_empty() && branch == NEXT_PASS && matches!(effect, Effect::RepeatEach { .. }) {
+            return Some(effect);
+        }
         list = branches(effect, chosen).get(branch).copied()?;
         path = deeper;
     }
@@ -75,10 +93,16 @@ pub(crate) fn after(
     if next == Next::Again {
         return position.to_vec();
     }
-    if let Next::Enter(branch) = next
-        && let Some(inside) = enter(root, chosen, position, branch)
-    {
-        return inside;
+    if let Next::Enter(branch) = next {
+        // The next pass of a repeat is entered from the repeat.
+        let at = if is_next_pass(position) {
+            &position[..position.len() - 1]
+        } else {
+            position
+        };
+        if let Some(inside) = enter(root, chosen, at, branch) {
+            return inside;
+        }
     }
     sibling(root, chosen, position)
 }
@@ -101,6 +125,10 @@ fn enter(
 }
 
 fn sibling(root: &[Effect], chosen: &[usize], position: &[usize]) -> Vec<usize> {
+    // Past the next pass of a repeat is past the repeat.
+    if is_next_pass(position) {
+        return sibling(root, chosen, &position[..position.len() - 1]);
+    }
     let mut next = position.to_vec();
     if let Some(last) = next.last_mut() {
         *last += 1;
@@ -108,8 +136,15 @@ fn sibling(root: &[Effect], chosen: &[usize], position: &[usize]) -> Vec<usize> 
     if next.len() == 1 || effect_at(root, chosen, &next).is_some() {
         return next;
     }
-    // The list is done: on to the next mode chosen if the effect that holds it is a `Modal`, else past that effect.
     let holder = &position[..position.len().saturating_sub(2)];
+    // The body of a repeat is done: the repeat begins its next pass.
+    if matches!(
+        effect_at(root, chosen, holder),
+        Some(Effect::RepeatEach { .. })
+    ) {
+        return [holder, &[NEXT_PASS]].concat();
+    }
+    // The list is done: on to the next mode chosen if the effect that holds it is a `Modal`, else past that effect.
     if let Some(&branch) = position.get(holder.len())
         && matches!(effect_at(root, chosen, holder), Some(Effect::Modal { .. }))
         && let Some(inside) = enter(root, chosen, holder, branch + 1)
@@ -272,5 +307,127 @@ mod tests {
     ) {
         let tree = if modal_tree { modal() } else { tree() };
         assert_eq!(mode_at(&tree, chosen, position), expected);
+    }
+
+    /// A repeat of two effects between two others, and a repeat that holds a repeat as its only effect.
+    fn repeats() -> Vec<Effect> {
+        effects(
+            r#"[
+                {"Draw":{}},
+                {"RepeatEach":{"over":"EachPlayer","as":"p","effects":[{"Draw":{}},{"GainLife":{"amount":1}}]}},
+                {"RepeatEach":{"over":"EachPlayer","as":"p","effects":[
+                    {"RepeatEach":{"over":"Opponents","as":"q","effects":[{"LoseLife":{"amount":1}}]}}
+                ]}},
+                {"GainLife":{"amount":2}}
+            ]"#,
+        )
+    }
+
+    /// A die with a table of two rows and a coin, each followed by another effect.
+    fn chances() -> Vec<Effect> {
+        effects(
+            r#"[
+                {"RollDice":{"sides":6,"results":[
+                    {"from":1,"to":3,"effects":[{"Draw":{}}]},
+                    {"from":4,"effects":[{"GainLife":{"amount":1}},{"LoseLife":{"amount":1}}]}
+                ]}},
+                {"FlipCoin":{"win":[{"Shuffle":{}}],"lose":[{"Mill":{}}]}},
+                {"GainLife":{"amount":2}}
+            ]"#,
+        )
+    }
+
+    #[rstest]
+    #[case::the_repeat(&[1], "RepeatEach")]
+    #[case::the_body(&[1, 0, 1], "GainLife")]
+    #[case::the_next_pass_is_the_repeat_itself(&[1, 1], "RepeatEach")]
+    #[case::no_pass_after_the_next(&[1, 2], "end")]
+    #[case::an_inner_repeat(&[2, 0, 0], "RepeatEach")]
+    #[case::the_next_pass_of_an_inner_repeat(&[2, 0, 0, 1], "RepeatEach")]
+    #[case::inside_an_inner_repeat(&[2, 0, 0, 0, 0], "LoseLife")]
+    fn a_repeat_is_an_effect_and_its_next_pass_is_the_repeat_again(
+        #[case] position: &[usize],
+        #[case] expected: &str,
+    ) {
+        assert_eq!(name(effect_at(&repeats(), &[], position)), expected);
+    }
+
+    #[rstest]
+    #[case::into_the_body(&[1], Next::Enter(0), &[1, 0, 0])]
+    #[case::through_the_body(&[1, 0, 0], Next::Sibling, &[1, 0, 1])]
+    #[case::the_body_ends_with_the_next_pass(&[1, 0, 1], Next::Sibling, &[1, 1])]
+    #[case::the_next_pass_enters_the_body(&[1, 1], Next::Enter(0), &[1, 0, 0])]
+    #[case::the_last_pass_goes_past_the_repeat(&[1, 1], Next::Sibling, &[2])]
+    #[case::the_first_visit_with_nothing_to_repeat_goes_past(&[1], Next::Sibling, &[2])]
+    #[case::the_inner_body_ends_with_its_next_pass(&[2, 0, 0, 0, 0], Next::Sibling, &[2, 0, 0, 1])]
+    #[case::the_inner_repeat_done_is_the_next_pass_of_the_outer(&[2, 0, 0, 1], Next::Sibling, &[2, 1])]
+    #[case::the_outer_repeat_done(&[2, 1], Next::Sibling, &[3])]
+    #[case::an_inner_next_pass_enters_the_inner_body(&[2, 0, 0, 1], Next::Enter(0), &[2, 0, 0, 0, 0])]
+    fn the_next_position_follows_the_passes_of_a_repeat(
+        #[case] position: &[usize],
+        #[case] next: Next,
+        #[case] expected: &[usize],
+    ) {
+        assert_eq!(after(&repeats(), &[], position, next), expected);
+    }
+
+    #[rstest]
+    #[case::the_low_row(&[0], Next::Enter(0), &[0, 0, 0])]
+    #[case::the_high_row(&[0], Next::Enter(1), &[0, 1, 0])]
+    #[case::inside_the_high_row(&[0, 1, 0], Next::Sibling, &[0, 1, 1])]
+    #[case::out_of_the_high_row(&[0, 1, 1], Next::Sibling, &[1])]
+    #[case::out_of_the_low_row(&[0, 0, 0], Next::Sibling, &[1])]
+    #[case::no_row_holds_the_total(&[0], Next::Sibling, &[1])]
+    #[case::a_row_that_is_not_there(&[0], Next::Enter(2), &[1])]
+    #[case::a_won_flip(&[1], Next::Enter(0), &[1, 0, 0])]
+    #[case::a_lost_flip(&[1], Next::Enter(1), &[1, 1, 0])]
+    #[case::out_of_a_lost_flip(&[1, 1, 0], Next::Sibling, &[2])]
+    fn a_roll_enters_the_row_of_its_total_and_a_flip_the_list_of_its_result(
+        #[case] position: &[usize],
+        #[case] next: Next,
+        #[case] expected: &[usize],
+    ) {
+        assert_eq!(after(&chances(), &[], position, next), expected);
+    }
+
+    #[test]
+    fn a_walk_through_three_passes_visits_the_body_each_time_and_ends_past_the_repeat() {
+        let tree = repeats();
+        let mut position = vec![1];
+        let mut seen = Vec::new();
+        let mut passes = 0;
+        while let Some(effect) = effect_at(&tree, &[], &position) {
+            let repeat = name(Some(effect)) == "RepeatEach" && position.len() <= 2;
+            seen.push(name(Some(effect)));
+            if repeat {
+                passes += 1;
+            }
+            // The repeat enters its body for three passes, then goes on.
+            let next = if repeat && passes <= 3 {
+                Next::Enter(0)
+            } else {
+                Next::Sibling
+            };
+            position = after(&tree, &[], &position, next);
+            if position == [2] {
+                break;
+            }
+        }
+        assert_eq!(
+            seen,
+            [
+                "RepeatEach",
+                "Draw",
+                "GainLife",
+                "RepeatEach",
+                "Draw",
+                "GainLife",
+                "RepeatEach",
+                "Draw",
+                "GainLife",
+                "RepeatEach"
+            ]
+        );
+        assert_eq!(position, [2]);
     }
 }

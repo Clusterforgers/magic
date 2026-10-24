@@ -82,6 +82,9 @@ fn effects_trigger(effects: &[Effect]) -> bool {
             then, otherwise, ..
         } => effects_trigger(then) || effects_trigger(otherwise),
         Effect::May { effects, .. } => effects_trigger(effects),
+        Effect::RepeatEach { effects, .. } => effects_trigger(effects),
+        Effect::RollDice { results, .. } => results.iter().any(|row| effects_trigger(&row.effects)),
+        Effect::FlipCoin { win, lose, .. } => effects_trigger(win) || effects_trigger(lose),
         Effect::Pay { paid, unpaid, .. } => effects_trigger(paid) || effects_trigger(unpaid),
         Effect::CastFromZone { otherwise, .. } => effects_trigger(otherwise),
         Effect::Modal { modes, .. } => modes.iter().any(|mode| effects_trigger(&mode.effects)),
@@ -145,6 +148,13 @@ fn effects_state_trigger(effects: &[Effect]) -> bool {
             then, otherwise, ..
         } => effects_state_trigger(then) || effects_state_trigger(otherwise),
         Effect::May { effects, .. } => effects_state_trigger(effects),
+        Effect::RepeatEach { effects, .. } => effects_state_trigger(effects),
+        Effect::RollDice { results, .. } => results
+            .iter()
+            .any(|row| effects_state_trigger(&row.effects)),
+        Effect::FlipCoin { win, lose, .. } => {
+            effects_state_trigger(win) || effects_state_trigger(lose)
+        }
         Effect::Pay { paid, unpaid, .. } => {
             effects_state_trigger(paid) || effects_state_trigger(unpaid)
         }

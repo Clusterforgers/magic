@@ -234,6 +234,9 @@ const RUNS: &[&str] = &[
     "Effect.Pay",
     "Effect.Choose",
     "Effect.Modal",
+    "Effect.RepeatEach",
+    "Effect.RollDice",
+    "Effect.FlipCoin",
     "Keyword.Flash",
     "Keyword.Flying",
     "Keyword.Reach",
@@ -606,6 +609,9 @@ mod tests {
     #[case::may("Effect.May", true)]
     #[case::choosing("Effect.Choose", true)]
     #[case::modes("Effect.Modal", true)]
+    #[case::repeating_for_each("Effect.RepeatEach", true)]
+    #[case::rolling_dice("Effect.RollDice", true)]
+    #[case::flipping_coins("Effect.FlipCoin", true)]
     #[case::adding_mana("Effect.AddMana", true)]
     #[case::tapping_permanents("Effect.Tap", true)]
     #[case::untapping_permanents("Effect.Untap", true)]

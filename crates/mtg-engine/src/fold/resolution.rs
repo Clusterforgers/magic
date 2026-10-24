@@ -76,7 +76,10 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             let resolving = resolving_mut(state)?;
             resolving.position.clone_from(position);
             for (name, targets) in bound {
+                // A name bound to nothing is free again: a repeat clears what its body bound before its next pass.
                 if let Some(old) = resolving.bindings.insert(name.clone(), targets.clone())
+                    && !old.is_empty()
+                    && !targets.is_empty()
                     && !renews(&old, targets)
                 {
                     return Err(invalid(format!("`{name}` was bound twice")));
