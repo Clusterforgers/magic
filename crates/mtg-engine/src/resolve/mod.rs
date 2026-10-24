@@ -292,9 +292,25 @@ fn step_with(
     let resolving = state
         .resolving()
         .ok_or_else(|| EngineError::Resolution("nothing is resolving".into()))?;
-    let object = state.object(resolving.object).ok_or_else(|| {
-        EngineError::Resolution(format!("{:?} is not in the game", resolving.object))
-    })?;
+    let Some(object) = state.object(resolving.object) else {
+        // A copy of a spell that its own effect moved ("Exile Teferi's Protection") ceased to exist with that move
+        // (CR 111.7, 707.10a): its resolution is over, and the active player gets priority as after any resolution.
+        return if state.has_ceased(resolving.object) {
+            let mut events = vec![Event::ResolutionEnded {
+                object: resolving.object,
+                outcome: ResolutionOutcome::Resolved,
+            }];
+            if let Some(player) = state.turn_order_from(state.turn().active()).first() {
+                events.push(Event::PriorityGranted { player: *player });
+            }
+            Ok(Progress::Done(events))
+        } else {
+            Err(EngineError::Resolution(format!(
+                "{:?} is not in the game",
+                resolving.object
+            )))
+        };
+    };
     if !state.is_alive(object.controller()) {
         return Ok(Progress::Done(vec![Event::ResolutionEnded {
             object: object.id(),
