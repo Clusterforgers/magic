@@ -1,0 +1,27 @@
+{
+  "oracle_id": "875c3db1-2752-48e7-9664-bbb12120c032",
+  "name": "Nightshade Harvester",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nightshade Harvester",
+      "oracle_fingerprint": "247a63c2426839c72919d0ce7b21da54",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "Opponents" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 1 } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

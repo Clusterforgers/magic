@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flash"},{"Keyword":"DoubleStrike"},{"Keyword":"Haste"},{"Rule":{"rule":{"MayCast":{"flash":true}},"condition":{"Matches":{"subject":"This","selector":["Tapped"]}}}}]}]}

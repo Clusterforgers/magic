@@ -1,0 +1,26 @@
+{
+  "oracle_id": "da989677-3647-46b8-aa56-b2cfb60f7a2a",
+  "name": "Pugnacious Hammerskull",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pugnacious Hammerskull",
+      "oracle_fingerprint": "821ccc580e4b3be7b55268181a668f50",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Dinosaur" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "stun" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

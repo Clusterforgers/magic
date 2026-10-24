@@ -1,0 +1,31 @@
+{
+  "oracle_id": "0c4e0e46-77f1-4ff6-afbc-1a67feceedfb",
+  "name": "Rile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rile",
+      "oracle_fingerprint": "1eb295342a349afbff49237e779746d2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 1 } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

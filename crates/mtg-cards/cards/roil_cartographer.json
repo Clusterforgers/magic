@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3cd7ef87-4cb4-42ff-842f-e9a465dab165",
+  "name": "Roil Cartographer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roil Cartographer",
+      "oracle_fingerprint": "104d7084f3210b0c78f6eeda95ed6067",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "energy" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayEnergy": 6 }],
+            "effects": [{ "Draw": { "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

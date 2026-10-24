@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]},"as":"discarded"}},{"Sacrifice":{"who":"Opponents","filter":[{"Type":"Creature"}],"count":{"Count":[{"Is":{"Bound":"discarded"}}]}}}]}}]}]}

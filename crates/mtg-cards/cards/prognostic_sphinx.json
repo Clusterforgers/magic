@@ -1,0 +1,35 @@
+{
+  "oracle_id": "92c470c9-1373-4f3a-9805-5e9613874793",
+  "name": "Prognostic Sphinx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prognostic Sphinx",
+      "oracle_fingerprint": "433f38538eced34f416efee2fe9dd777",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": "This" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "Scry": { "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

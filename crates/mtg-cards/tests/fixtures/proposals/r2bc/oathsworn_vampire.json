@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":"Tapped"}},{"Rule":{"rule":{"MayCast":{"what":["This"],"from":"Graveyard"}},"condition":{"Compare":{"left":{"Tallied":{"who":"You","what":"LifeGained"}},"op":"Ge","right":1}},"from":"Graveyard"}}]}]}

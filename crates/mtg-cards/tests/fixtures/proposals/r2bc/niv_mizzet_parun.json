@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Rule":{"rule":{"CantBeCountered":"This"},"from":"Stack"}},{"Keyword":"Flying"},{"Triggered":{"when":{"Drew":{"who":"You"}},"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":1}}]}},{"Triggered":{"when":{"SpellCast":{"what":[{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]}]}},"effects":[{"Draw":{}}]}}]}]}

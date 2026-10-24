@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"SpellCast":{"what":[{"Not":{"Type":"Creature"}}],"by":"You"}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Merfolk","colors":["Blue"],"types":["Creature"],"subtypes":["Merfolk"],"power":1,"toughness":1}}}}]}}]}]}

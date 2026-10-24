@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Trample"},{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"Attacks":{"what":["This"]}}]},"targets":[{"what":{"Object":[{"In":"Graveyard"},{"OwnedBy":"You"},{"Subtype":"Elf"}]}}],"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}},{"GainLife":{"amount":{"Stat":{"of":{"Target":0},"stat":"Power"}}}}]}}]}]}

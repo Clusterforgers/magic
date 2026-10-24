@@ -1,0 +1,37 @@
+{
+  "oracle_id": "ed4cd3a1-688b-4c05-948d-39d3336e00c0",
+  "name": "Oversold Cemetery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oversold Cemetery",
+      "oracle_fingerprint": "bb3aa9dd38668565a1604d32bf77ded7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, { "Type": "Creature" }]
+                },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, { "Type": "Creature" }]
+                }
+              }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

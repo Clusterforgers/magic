@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Deathtouch"},{"Triggered":{"when":{"SpellCast":{"what":[{"Not":{"CastFrom":"Hand"}}],"by":"You"}},"from":"Graveyard","effects":[{"Move":{"what":"This","to":{"Battlefield":{"tapped":true}}}}]}}]}]}

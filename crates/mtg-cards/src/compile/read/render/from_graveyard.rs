@@ -29,6 +29,15 @@ pub(super) fn returns_to_hand(effects: &[Effect]) -> bool {
                 to: Destination::Hand,
             },
         ] => true,
+        // A payment after which the card returns: "you may pay {R}. If you do, return this card from your graveyard".
+        [
+            Effect::Pay {
+                who: Ref::You,
+                paid,
+                unpaid,
+                ..
+            },
+        ] if unpaid.is_empty() => returns_to_hand(paid),
         _ => false,
     }
 }

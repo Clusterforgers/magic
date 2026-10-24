@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"LifeGained":{"who":"You"}},"limit":"OncePerTurn","effects":[{"May":{"effects":[{"PutCounters":{"on":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"counter":"+1/+1","count":"Triggering"}}]}}]}}]}]}

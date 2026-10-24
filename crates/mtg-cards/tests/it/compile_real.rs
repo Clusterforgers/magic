@@ -76,7 +76,7 @@ fn shape(text: &str) -> String {
 /// A triggered clause without its ability word ("Landfall — "), which is flavor.
 fn without_ability_word(text: &str) -> &str {
     match text.split_once(" \u{2014} ") {
-        Some((word, rest)) if !word.contains(['~', ',', '.']) && word.split(' ').count() <= 3 => {
+        Some((word, rest)) if !word.contains(['~', ',', '.']) && word.split(' ').count() <= 5 => {
             rest
         }
         _ => text,

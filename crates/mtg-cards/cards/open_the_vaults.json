@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1e9c473e-bd65-4e1f-b2ab-cac58dc581c9",
+  "name": "Open the Vaults",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Open the Vaults",
+      "oracle_fingerprint": "c428731832a3011a6d8dbf1b21893fb0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

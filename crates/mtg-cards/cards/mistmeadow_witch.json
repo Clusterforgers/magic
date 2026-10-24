@@ -1,0 +1,30 @@
+{
+  "oracle_id": "38e274e2-bd04-48de-a1df-44f0ee987ba8",
+  "name": "Mistmeadow Witch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mistmeadow Witch",
+      "oracle_fingerprint": "3600d5fce6b68faa7e7625f3ea5c8b14",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{W}{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

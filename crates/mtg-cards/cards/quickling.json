@@ -1,0 +1,28 @@
+{
+  "oracle_id": "109899e1-abd7-4582-8b67-b0852755bf75",
+  "name": "Quickling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quickling",
+      "oracle_fingerprint": "2120988a8dd767d9e298c488ec8d0f8d",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ReturnToHand": { "filter": ["Other", { "Type": "Creature" }] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

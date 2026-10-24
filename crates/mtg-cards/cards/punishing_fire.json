@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1890ef1b-38e5-432d-b040-f33cea7814e7",
+  "name": "Punishing Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Punishing Fire",
+      "oracle_fingerprint": "fddc9d0bcf4e5dfe2407da357ef0d549",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "Opponents" } },
+            "from": "Graveyard",
+            "effects": [
+              { "Pay": { "cost": "{R}", "paid": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "530a5740-041c-42df-8fe0-fcea87258038",
+  "name": "Quick Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quick Sliver",
+      "oracle_fingerprint": "224e0997a91564ae8ac7dfe23c066487",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "who": "EachPlayer", "what": [{ "Subtype": "Sliver" }], "flash": true }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

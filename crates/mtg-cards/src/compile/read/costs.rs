@@ -392,6 +392,10 @@ fn taken_text(said: &Selector, count: &Amount) -> Option<String> {
     };
     if *number == 1 {
         let text = phrase_text(said, Form::Subject)?;
+        // "another creature you control" takes no article of its own.
+        if text.starts_with("another ") {
+            return Some(text);
+        }
         return Some(format!("{} {text}", article(&text)));
     }
     let text = phrase_text(said, Form::Targets)?;

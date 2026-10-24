@@ -1,0 +1,22 @@
+{
+  "oracle_id": "860e744d-899c-43c7-84bb-d52c69d2f45a",
+  "name": "Oblation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oblation",
+      "oracle_fingerprint": "05676d70e1a172265dd2678fc8e95e4e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } },
+              { "Draw": { "who": { "OwnerOf": { "Target": 0 } }, "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

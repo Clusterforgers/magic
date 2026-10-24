@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"Player"}],"effects":[{"Move":{"what":{"Each":[{"Not":{"Type":"Land"}},{"ControlledBy":{"Target":0}}]},"to":"Hand"}}]}}]}]}

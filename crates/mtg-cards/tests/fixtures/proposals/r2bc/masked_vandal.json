@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Changeling"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"AnyOf":[{"Type":"Artifact"},{"Type":"Enchantment"}]},{"ControlledBy":"Opponents"}]}}],"effects":[{"Pay":{"cost":[{"ExileFromGraveyard":{"filter":[{"Type":"Creature"}]}}],"paid":[{"Exile":{"what":{"Target":0}}}]}}]}}]}]}

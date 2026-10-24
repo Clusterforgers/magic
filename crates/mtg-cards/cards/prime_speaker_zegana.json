@@ -1,0 +1,35 @@
+{
+  "oracle_id": "311e9368-696a-47e7-aa2f-3ef1b1a92e2b",
+  "name": "Prime Speaker Zegana",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prime Speaker Zegana",
+      "oracle_fingerprint": "6944e1a84f2328d65e1f1113739d907d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Greatest": {
+                    "of": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "stat": "Power"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": { "Stat": { "of": "This", "stat": "Power" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

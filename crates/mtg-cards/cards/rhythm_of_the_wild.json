@@ -1,0 +1,30 @@
+{
+  "oracle_id": "acfa77fd-3610-4f12-9c3c-bd860ce91700",
+  "name": "Rhythm of the Wild",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhythm of the Wild",
+      "oracle_fingerprint": "72e96d1b12154fe56c425aa7d0e82811",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "CantBeCountered": {
+                "Each": [{ "Type": "Creature" }, "Spell", { "ControlledBy": "You" }]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": "Riot" }]
+          }
+        }
+      ]
+    }
+  ]
+}

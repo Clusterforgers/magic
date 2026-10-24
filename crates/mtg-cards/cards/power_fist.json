@@ -1,0 +1,34 @@
+{
+  "oracle_id": "bdfcf7df-8c06-4abe-af41-eccabb9fc2c8",
+  "name": "Power Fist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Power Fist",
+      "oracle_fingerprint": "5323183949d54c6d15dbe5ca40ed434e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "AddKeyword": "Trample" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                    },
+                    "effects": [
+                      { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

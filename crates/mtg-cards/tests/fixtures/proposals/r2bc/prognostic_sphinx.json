@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Activated":{"cost":[{"Discard":{}}],"effects":[{"Continuous":{"affected":"This","mods":[{"AddKeyword":"Hexproof"}],"duration":"UntilEndOfTurn"}},{"Tap":{"what":"This"}}]}},{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"Scry":{"count":3}}]}}]}]}

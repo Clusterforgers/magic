@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "f7749b2d-05a6-40ec-8d6a-8c1223cd5a09",
+  "oracle_id": "530a5740-041c-42df-8fe0-fcea87258038",
+  "multiverse_ids": [
+    625312
+  ],
+  "mtgo_id": 114155,
+  "tcgplayer_id": 505199,
+  "cardmarket_id": 722848,
+  "name": "Quick Sliver",
+  "lang": "en",
+  "released_at": "2023-08-04",
+  "uri": "https://api.scryfall.com/cards/f7749b2d-05a6-40ec-8d6a-8c1223cd5a09",
+  "scryfall_uri": "https://scryfall.com/card/cmm/907/quick-sliver?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:03:40Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/7/f7749b2d-05a6-40ec-8d6a-8c1223cd5a09.jpg?1783915420",
+    "normal": "https://cards.scryfall.io/normal/front/f/7/f7749b2d-05a6-40ec-8d6a-8c1223cd5a09.jpg?1783915420",
+    "large": "https://cards.scryfall.io/large/front/f/7/f7749b2d-05a6-40ec-8d6a-8c1223cd5a09.jpg?1783915420",
+    "png": "https://cards.scryfall.io/png/front/f/7/f7749b2d-05a6-40ec-8d6a-8c1223cd5a09.png?1783915420",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/7/f7749b2d-05a6-40ec-8d6a-8c1223cd5a09.jpg?1783915420",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/7/f7749b2d-05a6-40ec-8d6a-8c1223cd5a09.jpg?1783915420",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/7/f7749b2d-05a6-40ec-8d6a-8c1223cd5a09.webp?1783915420",
+    "grid": "https://cards.scryfall.io/grid/front/f/7/f7749b2d-05a6-40ec-8d6a-8c1223cd5a09.webp?1783915420",
+    "display": "https://cards.scryfall.io/display/front/f/7/f7749b2d-05a6-40ec-8d6a-8c1223cd5a09.webp?1783915420",
+    "art": "https://cards.scryfall.io/art/front/f/7/f7749b2d-05a6-40ec-8d6a-8c1223cd5a09.webp?1783915420",
+    "crop": "https://cards.scryfall.io/crop/front/f/7/f7749b2d-05a6-40ec-8d6a-8c1223cd5a09.webp?1783915420",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/7/f7749b2d-05a6-40ec-8d6a-8c1223cd5a09.jpg?1783915420"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Sliver",
+  "oracle_text": "Flash\nAny player may cast Sliver spells as though they had flash.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Flash"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set": "cmm",
+  "set_name": "Commander Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f7749b2d-05a6-40ec-8d6a-8c1223cd5a09/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A530a5740-041c-42df-8fe0-fcea87258038&unique=prints",
+  "collector_number": "907",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "The directors of the Riptide Project wanted instant results on the sliver experiments. They got their wish.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "John Avon",
+  "artist_ids": [
+    "798f3932-30e0-4420-aa3f-db4d613f89ca"
+  ],
+  "illustration_id": "4b772e16-f83a-42e1-846e-7dedba851b7a",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 4761,
+  "penny_rank": 7269,
+  "preview": {
+    "source": "Commander At Home",
+    "source_uri": "https://www.youtube.com/watch?v=LyQ-JPT3XEk",
+    "previewed_at": "2023-07-17"
+  },
+  "prices": {
+    "usd": "0.92",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.33",
+    "eur_foil": null,
+    "tix": "0.24"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=625312&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DQuick%2BSliver",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DQuick%2BSliver",
+    "edhrec": "https://edhrec.com/route/?cc=Quick+Sliver"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F505199%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=722848&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/114155?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

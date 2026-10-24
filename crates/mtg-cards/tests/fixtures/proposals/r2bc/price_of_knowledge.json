@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Rule":{"rule":{"NoMaxHandSize":"EachPlayer"}}},{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"Opponents"}},"effects":[{"DealDamage":{"source":"This","to":"Triggering","amount":{"Count":[{"In":"Hand"},{"OwnedBy":"Triggering"}]}}}]}}]}]}

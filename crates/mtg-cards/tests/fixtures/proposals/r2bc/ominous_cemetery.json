@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]}}}]}},{"Activated":{"cost":[{"Mana":"{5}"},"Tap","ExileSelf"],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Move":{"what":{"Target":0},"to":{"Library":{"place":"Shuffled"}}}}]}}]}]}

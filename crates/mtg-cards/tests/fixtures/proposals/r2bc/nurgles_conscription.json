@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"In":"Graveyard"},{"Type":"Creature"},{"OwnedBy":"Opponents"}]}}],"effects":[{"Move":{"what":{"Target":0},"to":{"Battlefield":{"tapped":true,"under":"You"}}}},{"Exile":{"what":{"Each":[{"In":"Graveyard"},{"OwnedBy":{"OwnerOf":{"Target":0}}}]}}}]}}]}]}

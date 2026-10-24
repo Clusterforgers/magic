@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d5e4bf5e-1a66-4315-8c82-640c27977b88",
+  "name": "Prophetic Bolt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prophetic Bolt",
+      "oracle_fingerprint": "86a4d239b6303869e4d33822dc215519",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 4 } },
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

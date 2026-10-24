@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "b381d3c4-b318-4dff-a214-8a16a3872107",
+  "oracle_id": "1890ef1b-38e5-432d-b040-f33cea7814e7",
+  "multiverse_ids": [
+    247550
+  ],
+  "mtgo_id": 40482,
+  "mtgo_foil_id": 40802,
+  "tcgplayer_id": 47468,
+  "cardmarket_id": 247312,
+  "name": "Punishing Fire",
+  "lang": "en",
+  "released_at": "2011-06-17",
+  "uri": "https://api.scryfall.com/cards/b381d3c4-b318-4dff-a214-8a16a3872107",
+  "scryfall_uri": "https://scryfall.com/card/cmd/131/punishing-fire?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:13:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/3/b381d3c4-b318-4dff-a214-8a16a3872107.jpg?1783941205",
+    "normal": "https://cards.scryfall.io/normal/front/b/3/b381d3c4-b318-4dff-a214-8a16a3872107.jpg?1783941205",
+    "large": "https://cards.scryfall.io/large/front/b/3/b381d3c4-b318-4dff-a214-8a16a3872107.jpg?1783941205",
+    "png": "https://cards.scryfall.io/png/front/b/3/b381d3c4-b318-4dff-a214-8a16a3872107.png?1783941205",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/3/b381d3c4-b318-4dff-a214-8a16a3872107.jpg?1783941205",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/3/b381d3c4-b318-4dff-a214-8a16a3872107.jpg?1783941205",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/3/b381d3c4-b318-4dff-a214-8a16a3872107.webp?1783941205",
+    "grid": "https://cards.scryfall.io/grid/front/b/3/b381d3c4-b318-4dff-a214-8a16a3872107.webp?1783941205",
+    "display": "https://cards.scryfall.io/display/front/b/3/b381d3c4-b318-4dff-a214-8a16a3872107.webp?1783941205",
+    "art": "https://cards.scryfall.io/art/front/b/3/b381d3c4-b318-4dff-a214-8a16a3872107.webp?1783941205",
+    "crop": "https://cards.scryfall.io/crop/front/b/3/b381d3c4-b318-4dff-a214-8a16a3872107.webp?1783941205",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/3/b381d3c4-b318-4dff-a214-8a16a3872107.jpg?1783941205"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Punishing Fire deals 2 damage to any target.\nWhenever an opponent gains life, you may pay {R}. If you do, return this card from your graveyard to your hand.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "banned",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "84ff1a64-4e69-4ed2-8c08-26206e3b97a0",
+  "set": "cmd",
+  "set_name": "Commander 2011",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/84ff1a64-4e69-4ed2-8c08-26206e3b97a0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmd&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmd?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b381d3c4-b318-4dff-a214-8a16a3872107/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1890ef1b-38e5-432d-b040-f33cea7814e7&unique=prints",
+  "collector_number": "131",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Christopher Moeller",
+  "artist_ids": [
+    "21e10012-06ae-44f2-b38d-3824dd2e73d4"
+  ],
+  "illustration_id": "540df3c7-a19e-488b-b4ad-b77d616f0cd5",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 16629,
+  "penny_rank": 5912,
+  "prices": {
+    "usd": "0.34",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.32",
+    "eur_foil": null,
+    "tix": "0.33"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=247550&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPunishing%2BFire",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPunishing%2BFire",
+    "edhrec": "https://edhrec.com/route/?cc=Punishing+Fire"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F47468%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=247312&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/40482?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Not":{"Type":"Land"}}]}}],"effects":[{"Move":{"what":{"Target":0},"to":{"Library":{"place":"Shuffled"}}}},{"Draw":{"who":{"OwnerOf":{"Target":0}},"count":2}}]}}]}]}

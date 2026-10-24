@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"source":"This","to":{"Target":0},"amount":3}},{"If":{"condition":{"Matches":{"subject":{"Target":0},"selector":[{"Type":"Creature"}]}},"then":[{"Continuous":{"affected":{"Target":0},"mods":[{"ModifyPT":{"power":5,"toughness":0}}],"duration":"UntilEndOfTurn"}}]}}]}}]}]}

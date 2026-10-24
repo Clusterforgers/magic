@@ -1,0 +1,28 @@
+{
+  "oracle_id": "7fbcd256-c132-406f-a490-df9709835504",
+  "name": "Renegade Tactics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Renegade Tactics",
+      "oracle_fingerprint": "b3d3bbc305be41d9980afee25fd6c7b6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

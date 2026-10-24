@@ -1,0 +1,33 @@
+{
+  "oracle_id": "6895d7a2-264b-4731-9294-c02e1e220384",
+  "name": "Miara, Thorn of the Glade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Miara, Thorn of the Glade",
+      "oracle_fingerprint": "9ea10fc0ecd3387bdf0ed33cafa881ca",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": ["Other", { "Subtype": "Elf" }, { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "Pay": { "cost": [{ "Mana": "{1}" }, { "PayLife": 1 }], "paid": [{ "Draw": {} }] } }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

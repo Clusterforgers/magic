@@ -1,0 +1,38 @@
+{
+  "oracle_id": "3f2ab9ff-10b8-494a-be7a-2fce172f62a3",
+  "name": "Nakia, Wakandan Operative",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nakia, Wakandan Operative",
+      "oracle_fingerprint": "3a9382250115128e527dd4f3d9586f8c",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": ["Commander", { "OwnedBy": "You" }], "to": "Battlefield" }
+            },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"if":{"Compare":{"left":{"Count":[{"In":"Graveyard"},{"OwnedBy":"You"},{"Type":"Creature"}]},"op":"Ge","right":4}},"targets":[{"what":{"Object":[{"In":"Graveyard"},{"OwnedBy":"You"},{"Type":"Creature"}]}}],"effects":[{"May":{"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}}]}}]}}]}]}

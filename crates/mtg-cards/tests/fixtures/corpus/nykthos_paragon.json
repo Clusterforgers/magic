@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "2963205e-b181-44d1-809f-6577e29fa812",
+  "oracle_id": "367ac7e2-5056-48f3-a296-87d6cb1f7b54",
+  "multiverse_ids": [
+    522098
+  ],
+  "mtgo_id": 90413,
+  "tcgplayer_id": 240432,
+  "cardmarket_id": 566889,
+  "name": "Nykthos Paragon",
+  "lang": "en",
+  "released_at": "2021-06-18",
+  "uri": "https://api.scryfall.com/cards/2963205e-b181-44d1-809f-6577e29fa812",
+  "scryfall_uri": "https://scryfall.com/card/mh2/22/nykthos-paragon?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:14:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/9/2963205e-b181-44d1-809f-6577e29fa812.jpg?1783926889",
+    "normal": "https://cards.scryfall.io/normal/front/2/9/2963205e-b181-44d1-809f-6577e29fa812.jpg?1783926889",
+    "large": "https://cards.scryfall.io/large/front/2/9/2963205e-b181-44d1-809f-6577e29fa812.jpg?1783926889",
+    "png": "https://cards.scryfall.io/png/front/2/9/2963205e-b181-44d1-809f-6577e29fa812.png?1783926889",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/9/2963205e-b181-44d1-809f-6577e29fa812.jpg?1783926889",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/9/2963205e-b181-44d1-809f-6577e29fa812.jpg?1783926889",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/9/2963205e-b181-44d1-809f-6577e29fa812.webp?1783926889",
+    "grid": "https://cards.scryfall.io/grid/front/2/9/2963205e-b181-44d1-809f-6577e29fa812.webp?1783926889",
+    "display": "https://cards.scryfall.io/display/front/2/9/2963205e-b181-44d1-809f-6577e29fa812.webp?1783926889",
+    "art": "https://cards.scryfall.io/art/front/2/9/2963205e-b181-44d1-809f-6577e29fa812.webp?1783926889",
+    "crop": "https://cards.scryfall.io/crop/front/2/9/2963205e-b181-44d1-809f-6577e29fa812.webp?1783926889",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/9/2963205e-b181-44d1-809f-6577e29fa812.jpg?1783926889"
+  },
+  "mana_cost": "{4}{W}{W}",
+  "cmc": 6.0,
+  "type_line": "Enchantment Creature — Human Soldier",
+  "oracle_text": "Whenever you gain life, you may put that many +1/+1 counters on each creature you control. Do this only once each turn.",
+  "power": "4",
+  "toughness": "6",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c1c7eb8c-f205-40ab-a609-767cb296544e",
+  "set": "mh2",
+  "set_name": "Modern Horizons 2",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/c1c7eb8c-f205-40ab-a609-767cb296544e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amh2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mh2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2963205e-b181-44d1-809f-6577e29fa812/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A367ac7e2-5056-48f3-a296-87d6cb1f7b54&unique=prints",
+  "collector_number": "22",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Though Heliod turned against humanity in his hunger for power, the ideals he once championed still stand strong.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Martina Pilcerova",
+  "artist_ids": [
+    "30fead7c-da53-4c1b-b514-4be6e5ce487c"
+  ],
+  "illustration_id": "f7e373bf-54e2-4414-87cf-abc96f1cc300",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 2874,
+  "penny_rank": 12228,
+  "preview": {
+    "source": "Sebastián Pozzo",
+    "source_uri": "https://twitter.com/sebastianpozzo/status/1399787347663859713",
+    "previewed_at": "2021-06-01"
+  },
+  "prices": {
+    "usd": "1.10",
+    "usd_foil": "1.85",
+    "usd_etched": null,
+    "eur": "0.38",
+    "eur_foil": "1.16",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=522098&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNykthos%2BParagon",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNykthos%2BParagon",
+    "edhrec": "https://edhrec.com/route/?cc=Nykthos+Paragon"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F240432%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=566889&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/90413?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

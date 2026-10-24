@@ -1,0 +1,36 @@
+{
+  "oracle_id": "602e421e-afab-4488-8a52-af66b4fdce4b",
+  "name": "Noxious Ghoul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noxious Ghoul",
+      "oracle_fingerprint": "2a42cff3e1533f6733d4b31debb6ea30",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": { "what": ["Other", { "Subtype": "Zombie" }], "to": "Battlefield" }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "Subtype": "Zombie" } }]
+                  },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "ee2ca311-7639-436d-8ecb-d2aad075f25f",
+  "name": "Rattlechains",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rattlechains",
+      "oracle_fingerprint": "30c2e380801b848ac54043c5c90ebbdf",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Subtype": "Spirit" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "MayCast": { "what": [{ "Subtype": "Spirit" }], "flash": true } } } }
+      ]
+    }
+  ]
+}
