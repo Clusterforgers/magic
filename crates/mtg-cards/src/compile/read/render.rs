@@ -11,7 +11,9 @@ mod divided;
 mod each_target;
 mod from_graveyard;
 mod graveyards;
+mod group_becomes;
 mod instead;
+mod library_steps;
 mod loyalty;
 mod may_have;
 mod multi;
@@ -1484,7 +1486,7 @@ impl Writer<'_> {
                 .to_owned(),
             ),
             Ref::Target(0)
-                if self.single(place)
+                if self.at_most_one(place)
                     && self.target_is(|what| matches!(what, Targetable::Object(_))) =>
             {
                 self.name_target()
@@ -1881,6 +1883,7 @@ impl Writer<'_> {
     /// A move that is a mass move, a cast or a keyword action.
     fn moved(&mut self, effect: &Effect) -> Option<String> {
         mass_moves::text(effect)
+            .or_else(|| self.hand_shuffled(effect))
             .or_else(|| cast::text(effect))
             .or_else(|| self.keyword_action(effect))
     }
@@ -1888,6 +1891,7 @@ impl Writer<'_> {
     /// The effects with a wording of their own: a card returned to the battlefield, the casting and the keyword actions.
     fn other_effect(&mut self, effect: &Effect) -> Option<String> {
         self.graveyard_exile(effect)
+            .or_else(|| self.library_exile(effect))
             .or_else(|| self.exiled(effect))
             .or_else(|| self.reanimated(effect))
             .or_else(|| mass_moves::text(effect))
@@ -2090,6 +2094,7 @@ impl Writer<'_> {
         self.explore_twice(effects)
             .or_else(|| self.mill_then_change(effects))
             .or_else(|| self.move_instead(effects))
+            .or_else(|| self.library_steps(effects))
             .or_else(|| wheel_text(effects))
             // Populate is two steps and one word.
             .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))
@@ -2383,6 +2388,11 @@ impl Writer<'_> {
             return Some(format!("{subject} can't be blocked this turn"));
         }
         if !plural && let Some(sentence) = becomes::animate_text(&subject, mods) {
+            return Some(sentence);
+        }
+        if let Ref::Each(group) = affected
+            && let Some(sentence) = group_becomes::text(&subject, group, mods, duration)
+        {
             return Some(sentence);
         }
         if !plural
