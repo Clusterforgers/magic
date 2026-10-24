@@ -157,7 +157,7 @@ fn a_cast_backed_out_of_at_the_question_leaves_no_trace() -> Result<(), ScriptEr
     driver.begin_cast("Chant")?;
     driver.expect_decision(0, "choose-number")?;
     driver.answer(Answer::ChooseNumber(NumberChoice::Cancel))?;
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack(), []);
     assert_eq!(life(&driver, 0), 20);
     assert!(
         driver.engine().events()[before..]
@@ -194,7 +194,7 @@ fn tapped_daleks(driver: &Driver) -> usize {
                 object.card().name.starts_with("Dalek")
                     && object
                         .permanent()
-                        .is_some_and(|permanent| permanent.tapped())
+                        .is_some_and(mtg_engine::object::PermanentState::tapped)
             })
         })
         .count()
