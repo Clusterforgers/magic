@@ -24,7 +24,7 @@ One item is one piece of about 15 minutes; the commit that finishes it deletes i
 
 Ready pieces, grouped by the code they touch. A group runs one piece at a time, groups run side by side (about six agents at once); a piece is claimed with `[~]` and pushed before it starts, and `git merge main` plus the full `scripts/check.sh` end it.
 
-- Costs and casting: (g2e), (g5c), (g6d), (c1j), (c1k), (c12f), (c13b).
+- Costs and casting: (g2e), (g5c), (g6d), (c1j), (c1k), (c12f), (c13b), (c14a).
 - Cast ways and zones: (c5e), (c2k), (n2b) face-down objects, (n1d3) meld.
 - Triggers and keywords: (c6d), (c4e), (c3b), (c3d), (c2g), (c2d), (n1d5) day and night effects, (o2c).
 - Statics and layers: (c8j), (c7f), (c7e), (o1d), (m4).
