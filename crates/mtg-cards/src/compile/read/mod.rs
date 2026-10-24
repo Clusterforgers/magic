@@ -27,6 +27,7 @@ mod attackers;
 mod aura_forms;
 mod batches;
 mod becomes;
+mod card_grants;
 mod cast;
 mod changes;
 mod chapters;

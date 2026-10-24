@@ -107,6 +107,7 @@ mod ravenous;
 mod reach;
 mod rebound;
 mod reconfigure;
+mod replicate;
 mod retrace;
 mod riot;
 mod saddle;
@@ -147,7 +148,6 @@ use crate::combat::DamageForm;
 use crate::object::{ObjectKind, ObjectRef};
 use crate::snapshot::Snapshot;
 use crate::state::GameState;
-use crate::zones::Zone;
 
 /// How a keyword changes the combat damage its holder deals.
 // Independent switches the keyword tasks set by name, not the states of one machine.
@@ -523,6 +523,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Cipher => &cipher::Cipher,
         Keyword::Graft(_) => &graft::Graft,
         Keyword::Afflict(_) => &afflict::Afflict,
+        Keyword::Replicate(_) => &replicate::Replicate,
         Keyword::Ascend => &ascend::Ascend,
         Keyword::ForMirrodin => &for_mirrodin::ForMirrodin,
         Keyword::JobSelect => &job_select::JobSelect,
@@ -557,9 +558,8 @@ pub fn keywords_of(state: &GameState, id: ObjectId) -> Vec<&Keyword> {
     if object.kind() == ObjectKind::Ability {
         return Vec::new();
     }
-    if object.zone() == Zone::Battlefield
-        && let Some(held) = state.layers().get(id)
-    {
+    // The layers hold the permanents and the cards elsewhere that a static ability of the game names by zone.
+    if let Some(held) = state.layers().get(id) {
         return held.keywords.iter().collect();
     }
     keyword_abilities(state, id)
@@ -887,6 +887,7 @@ mod tests {
             Keyword::Cipher,
             Keyword::Graft(2),
             Keyword::Afflict(2),
+            Keyword::Replicate(cost()),
         ]
     }
 
@@ -1021,6 +1022,7 @@ mod tests {
         "Keyword.Cipher",
         "Keyword.Graft",
         "Keyword.Afflict",
+        "Keyword.Replicate",
         "Keyword.SplitSecond",
         "Keyword.Undaunted",
     ];
@@ -1162,6 +1164,7 @@ mod tests {
     #[case::cipher(Keyword::Cipher, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::graft(Keyword::Graft(2), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::afflict(Keyword::Afflict(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::replicate(Keyword::Replicate(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::annihilator(Keyword::Annihilator(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::extort(Keyword::Extort, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::evolve(Keyword::Evolve, Hooks { abilities: 1, ..Hooks::none() })]
@@ -1196,7 +1199,7 @@ mod tests {
     }
 
     #[test]
-    fn only_seven_keywords_and_squad_add_a_cost_and_only_multikicker_and_squad_repeat() {
+    fn only_the_cost_keywords_add_a_cost_and_only_multikicker_squad_and_replicate_repeat() {
         let given: Vec<(&str, bool, OptionalKind)> = every_keyword()
             .iter()
             .filter_map(|keyword| {
@@ -1215,6 +1218,7 @@ mod tests {
                 ("Casualty", false, OptionalKind::Additional),
                 ("Offspring", false, OptionalKind::Additional),
                 ("Gift a card", false, OptionalKind::Gift),
+                ("Replicate", true, OptionalKind::Kicker),
             ]
         );
     }
@@ -1450,6 +1454,8 @@ mod tests {
         assert_eq!(keywords_of(&game, idle).len(), 0);
         // A new object does not keep what the old one was given (CR 400.7).
         game.objects.get_mut(&plain).unwrap().counter += 1;
+        // The test changed the object without an event, so the layers are asked again.
+        game.layers.reset();
         assert_eq!(keywords_of(&game, plain).len(), 0);
     }
 }

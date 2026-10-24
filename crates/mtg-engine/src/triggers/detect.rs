@@ -1437,7 +1437,7 @@ fn elsewhere(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>,
         }
         let here = working_here(object)
             .map(|(address, rules)| (address, Arc::clone(rules)))
-            .chain(provided_here(object));
+            .chain(provided_here(state, object));
         object_triggers(
             state,
             object,
