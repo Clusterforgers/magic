@@ -1,0 +1,24 @@
+{
+  "oracle_id": "28fe909b-06e0-424c-9f75-c824a25f5865",
+  "name": "Branching Evolution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Branching Evolution",
+      "oracle_fingerprint": "24f705062226fe11b0ee02034d57484f",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "counter": "+1/+1"
+              }
+            },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

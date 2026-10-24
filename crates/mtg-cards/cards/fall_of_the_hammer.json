@@ -1,0 +1,32 @@
+{
+  "oracle_id": "7e3fe8e4-e56a-4109-a314-96c44bbe7d22",
+  "name": "Fall of the Hammer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fall of the Hammer",
+      "oracle_fingerprint": "4b88058019c38e60cc5c050f23c540af",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

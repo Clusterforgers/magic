@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"End","whose":"You"}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"Not":{"ControlledBy":"You"}}]},"bounds":{"min":0,"max":1}}],"effects":[{"Goad":{"what":{"Target":0}}},{"PutCounters":{"on":"This","counter":"+1/+1"}},{"PhaseOut":{"what":"This"}}]}}]}]}

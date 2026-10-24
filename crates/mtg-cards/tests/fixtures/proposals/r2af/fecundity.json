@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"}],"from":"Battlefield","to":"Graveyard"}},"effects":[{"May":{"who":{"ControllerOf":"Triggering"},"effects":[{"Draw":{"who":{"ControllerOf":"Triggering"}}}]}}]}}]}]}

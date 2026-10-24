@@ -1,0 +1,55 @@
+{
+  "oracle_id": "ce08fbfb-5d51-4dfc-80ae-87d5d9c7726f",
+  "name": "Ghired, Conclave Exile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghired, Conclave Exile",
+      "oracle_fingerprint": "cf9e28d2411b2262fa927e89e26116fb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rhino",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rhino"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Trample" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+                  "as": "token"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": { "CopyOf": { "of": { "Bound": "token" } } },
+                  "tapped": true,
+                  "attacking": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

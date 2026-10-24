@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c665544f-557b-4631-a1dc-39571470ca2e",
+  "name": "Primal Vigor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primal Vigor",
+      "oracle_fingerprint": "c98d20feb493125b9526a9da1cc9c9c6",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "TokenCreation": { "controller": "EachPlayer" } },
+            "by": { "Multiply": 2 }
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": { "on": { "Each": [{ "Type": "Creature" }] }, "counter": "+1/+1" }
+            },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

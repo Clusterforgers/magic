@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ffa64ac6-fe55-48b8-b015-849982cd7ad8",
+  "name": "Fecundity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fecundity",
+      "oracle_fingerprint": "26b274608e7efe6353a652c767d015d1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "effects": [{ "Draw": { "who": { "ControllerOf": "Triggering" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

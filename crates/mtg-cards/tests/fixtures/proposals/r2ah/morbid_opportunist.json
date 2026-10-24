@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Batch":{"ZoneChange":{"what":["Other",{"Type":"Creature"}],"from":"Battlefield","to":"Graveyard"}}},"limit":"OncePerTurn","effects":[{"Draw":{}}]}}]}]}

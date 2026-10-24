@@ -1,0 +1,26 @@
+{
+  "oracle_id": "bdbde5d0-f5e4-44da-b27c-b4ad6f374cc9",
+  "name": "Dryad of the Ilysian Grove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dryad of the Ilysian Grove",
+      "oracle_fingerprint": "c1e6642d35bd364f5354003ba08549de",
+      "abilities": [
+        { "Rule": { "rule": { "AdditionalLandPlays": {} } } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "AddSubtype": "Plains" },
+              { "AddSubtype": "Island" },
+              { "AddSubtype": "Swamp" },
+              { "AddSubtype": "Mountain" },
+              { "AddSubtype": "Forest" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

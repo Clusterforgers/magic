@@ -1,0 +1,32 @@
+{
+  "oracle_id": "7e8c2a18-e404-40ff-a9e0-ec3eeb6d576e",
+  "name": "Command Beacon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Command Beacon",
+      "oracle_fingerprint": "41ef977936d566118ff93a36cdb7969a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": ["Commander", { "OwnedBy": "You" }, { "In": "Command" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
