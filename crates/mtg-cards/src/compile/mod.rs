@@ -42,6 +42,9 @@ pub struct Clause {
     pub kind: ClauseKind,
     /// Whether the compiler turned it into rules; otherwise it is a `Manual` ability.
     pub read: bool,
+    /// A spell line that reads on its own while another line of the same spell does not: the spell is one ability that
+    /// reads whole or not at all, so the other line holds the card back, not this one.
+    pub held_by_others: bool,
 }
 
 /// What the compiler made of one card.
@@ -95,6 +98,8 @@ struct Pending {
     more: Vec<Ability>,
     /// Its reminder text explains a counter, so the reading would lose what the counter does.
     reminds_counter: bool,
+    /// A spell line that reads on its own while the spell does not read whole (`Clause::held_by_others`).
+    held: bool,
 }
 
 /// The abilities of one face; its clauses are appended to `listed`.
@@ -147,6 +152,7 @@ fn read_face(
             ability,
             more,
             reminds_counter,
+            held: false,
         });
     }
     let lines: Vec<&str> = pending
@@ -168,7 +174,10 @@ fn read_face(
         .as_ref()
         .is_some_and(|ability| !ability.targets().is_empty());
     if !has_targets {
-        unread_target_counts(&mut pending);
+        unread_target_counts(&mut pending, !spell_text.is_empty() && spell_ability.is_none());
+    }
+    if spell_ability.is_none() && !counter_explained {
+        hold_back_by_unread_lines(&mut pending, x_free, &own);
     }
     if let Some(ability) = spell_ability {
         let mut ability = Some(ability);
@@ -210,6 +219,7 @@ fn read_face(
             text: clause.text,
             kind: clause.kind,
             read: clause.read,
+            held_by_others: clause.held,
         });
     }
     abilities
@@ -316,13 +326,35 @@ fn is_chapter_line(text: &str) -> bool {
 }
 
 /// Leaves the cost modifiers that count targets ("for each target beyond the first") to the table.
-fn unread_target_counts(pending: &mut [Pending]) {
+fn unread_target_counts(pending: &mut [Pending], spell_unread: bool) {
     for clause in pending {
         if matches!(&clause.ability, Some(Ability::CostModifier { per, .. }) if read::counts_targets(per))
         {
             clause.ability = None;
             clause.read = false;
+            clause.held = spell_unread;
         }
+    }
+}
+
+/// The spell lines of a spell that does not read whole: a line that reads on its own is held back by the others (the
+/// report names the lines that do not read). When every line reads on its own, the fault lies in how they join, and
+/// none is held.
+fn hold_back_by_unread_lines(pending: &mut [Pending], x_free: bool, own: &read::Own) {
+    let mut alone = pending
+        .iter()
+        .filter(|clause| clause.kind == ClauseKind::Spell)
+        .map(|clause| read::clause_with(&clause.text, ClauseKind::Spell, x_free, own).is_some())
+        .collect::<Vec<_>>();
+    if alone.iter().all(|reads| *reads) {
+        return;
+    }
+    alone.reverse();
+    for clause in pending
+        .iter_mut()
+        .filter(|clause| clause.kind == ClauseKind::Spell)
+    {
+        clause.held = alone.pop().unwrap_or(false);
     }
 }
 
