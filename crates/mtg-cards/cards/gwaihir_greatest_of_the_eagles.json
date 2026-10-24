@@ -1,0 +1,77 @@
+{
+  "oracle_id": "77572e70-4b8b-46ae-8c8d-f71b7dd456e0",
+  "name": "Gwaihir, Greatest of the Eagles",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gwaihir, Greatest of the Eagles",
+      "oracle_fingerprint": "4eaf2833318c53263970166a33daf9f8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [
+                        { "Keyword": "Flying" },
+                        {
+                          "Triggered": {
+                            "when": { "Attacks": { "what": ["This"] } },
+                            "targets": [
+                              { "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }
+                            ],
+                            "effects": [
+                              {
+                                "Continuous": {
+                                  "affected": { "Target": 0 },
+                                  "mods": [{ "AddKeyword": "Flying" }],
+                                  "duration": "UntilEndOfTurn"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

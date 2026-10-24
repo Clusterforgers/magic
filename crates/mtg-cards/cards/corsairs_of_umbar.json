@@ -1,0 +1,48 @@
+{
+  "oracle_id": "edc74fb9-a368-4f73-8147-f318a32a3d06",
+  "name": "Corsairs of Umbar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Corsairs of Umbar",
+      "oracle_fingerprint": "c1b4e3674426131f7d4cc0046f6366bf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Goblin" },
+                        { "Subtype": "Orc" },
+                        { "Subtype": "Pirate" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Amass": { "subtype": "Orc", "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

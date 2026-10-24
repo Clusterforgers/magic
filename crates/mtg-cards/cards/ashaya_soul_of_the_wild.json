@@ -1,0 +1,35 @@
+{
+  "oracle_id": "162572f2-1757-42e9-bd97-e6bd9a762c0e",
+  "name": "Ashaya, Soul of the Wild",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashaya, Soul of the Wild",
+      "oracle_fingerprint": "562f1568fb57b26c43ebdb6dc26335c1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddType": "Land" }, { "AddSubtype": "Forest" }]
+          }
+        }
+      ]
+    }
+  ]
+}

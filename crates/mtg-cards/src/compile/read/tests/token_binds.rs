@@ -34,6 +34,12 @@ fn a_sentence_on_the_new_tokens_reads_and_writes_back(#[case] text: &str) {
     "Create three tapped 1/1 green Treefolk creature tokens. Put a +1/+1 counter on each of them."
 )]
 #[case::a_counter_on_it("Create a 2/2 black Zombie creature token. Put a +1/+1 counter on it.")]
+#[case::a_keyword_counter_on_each(
+    "Create three tapped X/X green Treefolk creature tokens, where X is the amount of life you gained this turn. Put a reach counter on each of them."
+)]
+#[case::a_keyword_counter_on_it(
+    "Create a 2/2 black Zombie creature token. Put a flying counter on it."
+)]
 fn counters_on_the_tokens_of_a_spell_write_back(#[case] text: &str) {
     golden(text, ClauseKind::Spell, false);
 }

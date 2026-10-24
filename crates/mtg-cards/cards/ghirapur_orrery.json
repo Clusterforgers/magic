@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c6bb3a58-131a-4d7b-8c07-173a7de23b06",
+  "name": "Ghirapur Orrery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghirapur Orrery",
+      "oracle_fingerprint": "6c7ce559a364a60857e8650a82f94b10",
+      "abilities": [
+        { "Rule": { "rule": { "AdditionalLandPlays": { "who": "EachPlayer" } } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "Draw": { "who": "Triggering", "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

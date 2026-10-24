@@ -1,0 +1,23 @@
+{
+  "id": "409c226b-ef01-4ccd-b23e-d94bdc1e4aa5",
+  "oracle_id": "1f1ad44c-1811-40e3-976b-03f19866abd5",
+  "name": "Assemble the Entmoot",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ltc",
+  "collector_number": "36",
+  "rarity": "rare",
+  "released_at": "2023-06-23",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4,
+  "type_line": "Enchantment",
+  "oracle_text": "Creatures you control have reach.\nSacrifice this enchantment: Create three tapped X/X green Treefolk creature tokens, where X is the amount of life you gained this turn. Put a reach counter on each of them.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

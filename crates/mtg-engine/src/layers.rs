@@ -597,7 +597,9 @@ fn compute(state: &GameState) -> Layers {
             .zone(Zone::Battlefield)
             .iter()
             .filter_map(|id| state.object(*id)?.permanent())
-            .any(|permanent| power_toughness_from_counters(permanent) != 0);
+            .any(|permanent| {
+                power_toughness_from_counters(permanent) != 0 || has_keyword_counter(permanent)
+            });
     if registered.is_empty() && !statics_in_play && !counters_in_play {
         return Layers {
             held: BTreeMap::new(),
@@ -646,6 +648,9 @@ impl<'a> Pass<'a> {
     /// Applies the effects of one layer (none: the restrictions, which come last), one at a time, each chosen again
     /// from what is left once the one before has applied (CR 613.8c).
     fn run(&mut self, layer: Option<Layer>) {
+        if layer == Some(Layer::Ability) {
+            self.apply_keyword_counters();
+        }
         if layer == Some(Layer::PtModify) {
             self.apply_counters();
         }
@@ -662,6 +667,23 @@ impl<'a> Pass<'a> {
                     }
                 }
                 Self::order(&mut waiting);
+            }
+        }
+    }
+
+    /// The keywords the keyword counters give the permanents (CR 122.1b, 613.1f): they apply first in layer 6, so an
+    /// effect that takes the keyword or the abilities away applies after them, and a keyword from two counters or from
+    /// a counter and the card is held once.
+    fn apply_keyword_counters(&mut self) {
+        let state = self.state;
+        for (id, held) in &mut self.held {
+            let Some(permanent) = state.object(*id).and_then(GameObject::permanent) else {
+                continue;
+            };
+            for keyword in permanent.counters().filter_map(|(kind, _)| kind.keyword()) {
+                if !held.keywords.contains(&keyword) {
+                    held.keywords.push(keyword);
+                }
             }
         }
     }
@@ -1135,6 +1157,13 @@ impl<'a> Pass<'a> {
     }
 }
 
+/// Whether a keyword counter is on the permanent.
+fn has_keyword_counter(permanent: &PermanentState) -> bool {
+    permanent
+        .counters()
+        .any(|(kind, _)| kind.keyword().is_some())
+}
+
 /// What the +1/+1 and -1/-1 counters on a permanent add to its power and to its toughness: one for each +1/+1 counter and
 /// minus one for each -1/-1 counter.
 fn power_toughness_from_counters(permanent: &PermanentState) -> i32 {
@@ -1222,6 +1251,8 @@ mod counters;
 mod defining;
 #[cfg(test)]
 mod dependencies;
+#[cfg(test)]
+mod keyword_counters;
 #[cfg(test)]
 mod outside;
 #[cfg(test)]
