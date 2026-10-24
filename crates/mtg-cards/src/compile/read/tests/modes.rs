@@ -155,6 +155,51 @@ fn a_modal_is_the_only_effect_of_its_ability() {
     assert!(trigger(&format!("When ~ enters, {trigger_modes}")).is_some());
 }
 
+#[rstest]
+#[case::at_random(
+    "Whenever ~ attacks, choose one at random \u{2014}\n\u{2022} Draw a card.\n\u{2022} You gain 2 life.",
+    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"Modal":{"at_random":true,"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":2}}]}]}}]}}"#
+)]
+#[case::named_modes_at_random(
+    "At the beginning of combat on your turn, choose one at random \u{2014}\n\u{2022} Thay \u{2014} Draw a card.\n\u{2022} Typhoid Mary \u{2014} You gain 2 life.",
+    r#"{"Triggered":{"when":{"StepBegins":{"step":"BeginCombat","whose":"You"}},"effects":[{"Modal":{"at_random":true,"modes":[{"label":"Thay","effects":[{"Draw":{}}]},{"label":"Typhoid Mary","effects":[{"GainLife":{"amount":2}}]}]}}]}}"#
+)]
+#[case::not_chosen_this_turn_with_a_dash(
+    "Whenever you cast a noncreature spell, choose one that hasn't been chosen this turn \u{2014}\n\u{2022} Draw a card.\n\u{2022} You gain 2 life.",
+    r#"{"Triggered":{"when":{"SpellCast":{"what":[{"Not":{"Type":"Creature"}}],"by":"You"}},"effects":[{"Modal":{"once_each_turn":true,"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":2}}]}]}}]}}"#
+)]
+#[case::not_chosen_this_turn_with_a_period(
+    "Whenever ~ attacks, choose one that hasn't been chosen this turn.\n\u{2022} Draw a card.\n\u{2022} You gain 2 life.",
+    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"Modal":{"once_each_turn":true,"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":2}}]}]}}]}}"#
+)]
+fn a_mode_picked_at_random_or_not_chosen_this_turn_reads_and_writes_back(
+    #[case] text: &str,
+    #[case] json: &str,
+) {
+    reads_as(text, ClauseKind::Triggered, false, json);
+}
+
+#[rstest]
+#[case::two_at_random(
+    "Whenever ~ attacks, choose two at random \u{2014}\n\u{2022} Draw a card.\n\u{2022} You gain 2 life.\n\u{2022} Scry 1."
+)]
+#[case::random_with_a_period(
+    "Whenever ~ attacks, choose one at random.\n\u{2022} Draw a card.\n\u{2022} You gain 2 life."
+)]
+#[case::both_at_once(
+    "Whenever ~ attacks, choose one at random that hasn't been chosen this turn \u{2014}\n\u{2022} Draw a card.\n\u{2022} You gain 2 life."
+)]
+#[case::without_this_turn(
+    "Whenever ~ attacks, choose one that hasn't been chosen \u{2014}\n\u{2022} Draw a card.\n\u{2022} You gain 2 life."
+)]
+#[case::one_mode("Whenever ~ attacks, choose one at random \u{2014}\n\u{2022} Draw a card.")]
+#[case::an_unread_mode(
+    "Whenever ~ attacks, choose one at random \u{2014}\n\u{2022} Draw a card.\n\u{2022} Flip a coin."
+)]
+fn the_other_wordings_of_a_random_or_fresh_choice_stay_unread(#[case] text: &str) {
+    assert_eq!(trigger(text), None, "{text}");
+}
+
 #[test]
 fn modes_read_in_a_spell_only_through_the_modal_kind_or_the_spell_kind() {
     let text = choose(&["Draw a card.", "You gain 2 life."]);

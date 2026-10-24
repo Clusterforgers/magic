@@ -610,6 +610,8 @@ mod tests {
     #[case::choosing("Effect.Choose", true)]
     #[case::choosing_at_random("Effect.ChooseAtRandom", true)]
     #[case::modes("Effect.Modal", true)]
+    #[case::modes_at_random("Effect.Modal.AtRandom", true)]
+    #[case::modes_not_chosen_twice_in_a_turn("Effect.Modal.OnceEachTurn", true)]
     #[case::adding_mana("Effect.AddMana", true)]
     #[case::tapping_permanents("Effect.Tap", true)]
     #[case::untapping_permanents("Effect.Untap", true)]

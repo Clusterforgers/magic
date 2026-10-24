@@ -18,6 +18,18 @@ use super::*;
     "Whenever one or more cards are put into your graveyard from your library, you gain 1 life.",
     r#"{"Triggered":{"when":{"Batch":{"ZoneChange":{"what":[{"OwnedBy":"You"}],"from":"Library","to":"Graveyard"}}},"effects":[{"GainLife":{"amount":1}}]}}"#
 )]
+#[case::batch_of_cards_leaving_the_graveyard(
+    "Whenever one or more cards leave your graveyard, you gain 1 life.",
+    r#"{"Triggered":{"when":{"Batch":{"ZoneChange":{"what":[{"OwnedBy":"You"}],"from":"Graveyard"}}},"effects":[{"GainLife":{"amount":1}}]}}"#
+)]
+#[case::batch_of_damage_by_a_subtype(
+    "Whenever one or more Dragons you control deal combat damage to a player, draw a card.",
+    r#"{"Triggered":{"when":{"Batch":{"DealsDamage":{"source":[{"Subtype":"Dragon"},{"ControlledBy":"You"}],"to":"EachPlayer","combat":true}}},"effects":[{"Draw":{}}]}}"#
+)]
+#[case::a_card_by_the_damage_dealt(
+    "Whenever one or more Dragons you control deal combat damage to a player, you may put a permanent card with mana value less than or equal to that damage from your hand onto the battlefield.",
+    r#"{"Triggered":{"when":{"Batch":{"DealsDamage":{"source":[{"Subtype":"Dragon"},{"ControlledBy":"You"}],"to":"EachPlayer","combat":true}}},"effects":[{"May":{"effects":[{"Choose":{"from":{"Each":[{"In":"Hand"},{"OwnedBy":"You"},{"AnyOf":[{"Type":"Artifact"},{"Type":"Battle"},{"Type":"Creature"},{"Type":"Enchantment"},{"Type":"Land"},{"Type":"Planeswalker"}]},{"Compare":{"stat":"ManaValue","op":"Le","to":"Triggering"}}]},"as":"card"}},{"Move":{"what":{"Bound":"card"},"to":{"Battlefield":{}}}}]}}]}}"#
+)]
 #[case::attackers_together(
     "Whenever one or more creatures you control attack, draw a card.",
     r#"{"Triggered":{"when":{"GroupAttacks":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}},"effects":[{"Draw":{}}]}}"#

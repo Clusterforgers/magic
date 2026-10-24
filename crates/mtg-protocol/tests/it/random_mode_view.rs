@@ -46,6 +46,9 @@ fn the_mode_drawn_at_random_is_public_to_every_seat(#[values(2, 3, 4)] seats: us
             .collect();
         assert_eq!(shown, picked, "seat {seat} is told the pick as logged");
         let json = serde_json::to_string(&batch.events).unwrap();
-        assert!(!json.contains("Hidden\":{\"AbilityPutOnStack"), "seat {seat}");
+        assert!(
+            !json.contains("Hidden\":{\"AbilityPutOnStack"),
+            "seat {seat}"
+        );
     }
 }
