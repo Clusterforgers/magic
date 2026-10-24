@@ -1,0 +1,12 @@
+{
+  "oracle_id": "d5b9b75d-4bf0-4328-9bb3-7b260a0c46af",
+  "name": "Savor the Moment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Savor the Moment",
+      "oracle_fingerprint": "2675f97b47921498911bb2de55f294bf",
+      "abilities": [{ "Spell": { "effects": [{ "ExtraTurn": { "skip_untap": true } }] } }]
+    }
+  ]
+}

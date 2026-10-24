@@ -1,0 +1,12 @@
+{
+  "oracle_id": "6b6ac99a-7548-4cad-9fe5-ea611618ab9e",
+  "name": "Temporal Manipulation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temporal Manipulation",
+      "oracle_fingerprint": "21dae84ac6f563e23866327868602238",
+      "abilities": [{ "Spell": { "effects": [{ "ExtraTurn": {} }] } }]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "dbd6a94b-62ff-4a10-9d52-bdd90b26e425",
+  "name": "Time Warp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Time Warp",
+      "oracle_fingerprint": "44bae33403bf935cf178e94a21cb234d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "ExtraTurn": { "who": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

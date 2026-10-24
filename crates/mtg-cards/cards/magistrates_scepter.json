@@ -1,0 +1,25 @@
+{
+  "oracle_id": "487485a6-cf79-48c0-bea9-0ec6b3ee253c",
+  "name": "Magistrate's Scepter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magistrate's Scepter",
+      "oracle_fingerprint": "8c74d8c35e21a72393b36a02fb2e7a6d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": "charge", "count": 3 } }],
+            "effects": [{ "ExtraTurn": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

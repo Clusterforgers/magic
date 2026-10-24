@@ -1,0 +1,19 @@
+{
+  "oracle_id": "72e56963-a9dd-44dc-a4d3-992b4d89dd28",
+  "name": "Time Stretch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Time Stretch",
+      "oracle_fingerprint": "b022b5f5592f42e8658736ebe982a05e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "ExtraTurn": { "who": { "Target": 0 }, "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

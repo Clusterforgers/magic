@@ -17,7 +17,7 @@ use crate::cards::{cost, land};
 use crate::corpus;
 
 /// The corpus cards of the deck of turns besides lands: spells that take extra turns, with a skipped untap step or for
-/// another player, and spells that add a combat phase and a main phase after the main phase they are cast in.
+/// another player, and spells and abilities that add a combat phase and a main phase after the main phase they are used in.
 pub const TURN_CARDS: &[&str] = &[
     "Time Walk",
     "Temporal Manipulation",
@@ -25,12 +25,10 @@ pub const TURN_CARDS: &[&str] = &[
     "Time Warp",
     "Time Stretch",
     "Savor the Moment",
-    "Relentless Assault",
     "Aggravated Assault",
-    "Waves of Aggression",
     "Seize the Day",
-    "Full Throttle",
-    "Combat Celebrant",
+    "Time Sieve",
+    "Magistrate's Scepter",
 ];
 
 /// A free sorcery whose effects are `effects`.
@@ -74,7 +72,7 @@ pub fn phase_spell(name: &str, phases: &[PhaseKind]) -> Arc<CardDefinition> {
 /// derived entirely from `rng`.
 pub fn turn_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
     let colors = [Color::Red, Color::White, Color::Blue, Color::Green];
-    let mut deck: Vec<Arc<CardDefinition>> = (0..30).map(|i| land(colors[i % 4])).collect();
+    let mut deck: Vec<Arc<CardDefinition>> = (0..36).map(|i| land(colors[i % 4])).collect();
     for card in TURN_CARDS.iter().filter_map(|name| corpus::card(name).ok()) {
         deck.extend(std::iter::repeat_n(card, 2));
     }

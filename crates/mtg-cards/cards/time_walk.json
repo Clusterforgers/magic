@@ -1,0 +1,12 @@
+{
+  "oracle_id": "d0209d3f-3f7e-4fd5-bce5-10bce6f29c86",
+  "name": "Time Walk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Time Walk",
+      "oracle_fingerprint": "21dae84ac6f563e23866327868602238",
+      "abilities": [{ "Spell": { "effects": [{ "ExtraTurn": {} }] } }]
+    }
+  ]
+}
