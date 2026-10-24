@@ -86,7 +86,7 @@ fn incite_rebellion_hurts_each_player_and_their_creatures_by_their_own_count(
             before[seat] - hurt,
             "life of seat {seat}"
         );
-        let survivors = if *count == 1 { 1 } else { 0 };
+        let survivors = usize::from(*count == 1);
         assert_eq!(
             creatures(&driver, seat),
             survivors,
@@ -207,12 +207,8 @@ fn at_the_end_step_each_opponent_loses_the_life_they_lost_this_turn(
         before[1] - 2 * burnt,
         "seat 1 lost it twice over"
     );
-    for seat in 2..seats {
-        assert_eq!(
-            life(&driver, seat),
-            before[seat],
-            "seat {seat} lost nothing"
-        );
+    for (seat, start) in before.iter().enumerate().skip(2) {
+        assert_eq!(life(&driver, seat), *start, "seat {seat} lost nothing");
     }
     replays(&driver);
     Ok(())

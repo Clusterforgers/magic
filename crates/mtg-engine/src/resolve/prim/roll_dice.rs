@@ -163,7 +163,7 @@ mod tests {
         let Run::Done { events, next, .. } = roll(&game, &json).unwrap() else {
             panic!("a roll asks nothing");
         };
-        assert!(events.is_empty());
+        assert_eq!(events.len(), 0);
         assert_eq!(next, Next::Sibling);
     }
 

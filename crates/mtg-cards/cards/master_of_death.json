@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3a16bdda-8499-47e4-b870-b9576f4c1a83",
+  "name": "Master of Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Master of Death",
+      "oracle_fingerprint": "0f0c94d321b35696ddcd34cf7cc52582",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Surveil": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayLife": 1 }],
+                  "paid": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

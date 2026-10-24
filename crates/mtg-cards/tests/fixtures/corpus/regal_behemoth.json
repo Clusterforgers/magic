@@ -23,5 +23,12 @@
   ],
   "keywords": [
     "Trample"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
   ]
 }

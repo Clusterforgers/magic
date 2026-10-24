@@ -23,6 +23,13 @@
     "Flying",
     "Food"
   ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
   "power": "0",
   "toughness": "2"
 }

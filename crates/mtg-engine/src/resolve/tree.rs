@@ -17,13 +17,12 @@ const NEXT_PASS: usize = 1;
 
 /// Whether the position is the start of the next pass of a repeat, which holds a branch and no effect index.
 pub(crate) const fn is_next_pass(position: &[usize]) -> bool {
-    position.len() % 2 == 0
+    position.len().is_multiple_of(2)
 }
 
 /// The lists of effects inside an effect, in branch order; `chosen` are the modes chosen for a `Modal`.
 fn branches<'a>(effect: &'a Effect, chosen: &[usize]) -> Vec<&'a [Effect]> {
     match effect {
-        Effect::RepeatEach { effects, .. } => vec![effects],
         Effect::RollDice { results, .. } => {
             results.iter().map(|row| row.effects.as_slice()).collect()
         }
@@ -31,7 +30,7 @@ fn branches<'a>(effect: &'a Effect, chosen: &[usize]) -> Vec<&'a [Effect]> {
         Effect::If {
             then, otherwise, ..
         } => vec![then, otherwise],
-        Effect::May { effects, .. } => vec![effects],
+        Effect::May { effects, .. } | Effect::RepeatEach { effects, .. } => vec![effects],
         Effect::Pay { paid, unpaid, .. } => vec![paid, unpaid],
         Effect::CastFromZone { otherwise, .. } => vec![otherwise],
         Effect::Modal { modes, .. } => chosen

@@ -27,7 +27,7 @@ fn resolve(driver: &mut Driver) -> Result<(), ScriptError> {
 
 /// The first seed whose stream, from the substream `index` on, wins and loses the flips as `wins` says.
 fn coin_seed(index: u64, wins: &[bool]) -> u64 {
-    (0u64..)
+    (0u64..100_000)
         .find(|seed| {
             wins.iter()
                 .zip(index..)
@@ -38,7 +38,7 @@ fn coin_seed(index: u64, wins: &[bool]) -> u64 {
 
 /// The first seed whose roll of a die of `sides` faces from the substream `index` is `face`.
 fn die_seed(index: u64, sides: u64, face: u64) -> u64 {
-    (0u64..)
+    (0u64..100_000)
         .find(|seed| GameRng::substream(*seed, index).below(sides) + 1 == face)
         .unwrap()
 }

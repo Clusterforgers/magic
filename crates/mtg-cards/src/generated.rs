@@ -6,7 +6,7 @@ use std::collections::BTreeSet;
 use sha2::{Digest, Sha256};
 
 use crate::card::{Card, ImplStatus};
-use crate::compile::compile;
+use crate::compile::compile_among;
 use crate::load::{Library, LoadError};
 use crate::support::{PrintedCard, hex};
 
@@ -65,7 +65,7 @@ pub fn generate(
     hand_written: &Library,
     names: &BTreeSet<String>,
 ) -> Generation {
-    let Some(card) = compile(printed)
+    let Some(card) = compile_among(printed, Some(names))
         .card
         .filter(|card| matches!(card.impl_status, ImplStatus::Full | ImplStatus::Partial))
     else {

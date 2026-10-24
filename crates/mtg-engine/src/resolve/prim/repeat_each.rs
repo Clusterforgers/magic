@@ -100,7 +100,7 @@ mod tests {
                 events,
                 ..
             } => {
-                assert!(events.is_empty());
+                assert_eq!(events.len(), 0);
                 (bound, next)
             }
             other => panic!("a repeat asks nothing: {other:?}"),

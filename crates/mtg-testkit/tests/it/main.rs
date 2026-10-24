@@ -322,6 +322,7 @@ mod surveil;
 mod suspend;
 mod symbol_fuzz;
 mod tap_effects;
+mod token_binds;
 mod token_costs;
 mod token_effects;
 mod token_equipment;

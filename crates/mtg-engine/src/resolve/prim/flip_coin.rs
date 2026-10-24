@@ -108,7 +108,7 @@ mod tests {
         let Run::Done { events, next, .. } = flip(&game, json).unwrap() else {
             panic!("a flip asks nothing");
         };
-        assert!(events.is_empty());
+        assert_eq!(events.len(), 0);
         assert_eq!(next, Next::Sibling);
     }
 
