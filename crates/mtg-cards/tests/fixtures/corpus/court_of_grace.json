@@ -1,0 +1,23 @@
+{
+  "id": "02f0be1b-554e-4b61-b495-6e2a7369cdb1",
+  "oracle_id": "f63c2438-27d4-449a-828f-f0a2ea86ff16",
+  "name": "Court of Grace",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmr",
+  "collector_number": "16",
+  "rarity": "rare",
+  "released_at": "2020-11-20",
+  "digital": false,
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, you become the monarch.\nAt the beginning of your upkeep, create a 1/1 white Spirit creature token with flying. If you're the monarch, create a 4/4 white Angel creature token with flying instead.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

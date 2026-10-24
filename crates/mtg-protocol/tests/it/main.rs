@@ -67,3 +67,4 @@ mod sync;
 mod table_hidden;
 mod transcript;
 mod transform_view;
+mod vote_hidden;

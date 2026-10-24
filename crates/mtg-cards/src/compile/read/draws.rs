@@ -40,17 +40,42 @@ pub(super) fn wheel(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("each player discards their hand")?;
     r.punct(',').then_some(())?;
     r.need("then draws")?;
+    let (bind, count) = if r.words(MOST_DISCARDED) {
+        (Some(DISCARDED.to_owned()), most_discarded())
+    } else {
+        (None, drawn(r)?)
+    };
     Some(vec![
         Effect::Discard {
             who: Ref::EachPlayer,
             count: hand_of(&Ref::EachPlayer),
             random: false,
+            bind,
         },
         Effect::Draw {
             who: Ref::EachPlayer,
-            count: drawn(r)?,
+            count,
         },
     ])
+}
+
+/// The name the cards a sentence discards are bound to, for the sentence that counts them.
+pub(super) const DISCARDED: &str = "discarded";
+
+/// The count of "cards equal to the greatest number of cards a player discarded this way".
+pub(super) const MOST_DISCARDED: &str =
+    "cards equal to the greatest number of cards a player discarded this way";
+
+/// The most cards one player discarded in the sentence before: the cards bound as `discarded`, counted for each player.
+pub(super) fn most_discarded() -> Amount {
+    Amount::Largest {
+        who: Ref::EachPlayer,
+        of: Selector(vec![
+            Pred::In(ZoneKind::Graveyard),
+            Pred::Is(Ref::Bound(DISCARDED.to_owned())),
+            Pred::OwnedBy(Ref::You),
+        ]),
+    }
 }
 
 /// What a player discards, in words: the hand, or a number of cards.

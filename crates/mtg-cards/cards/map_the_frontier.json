@@ -1,0 +1,33 @@
+{
+  "oracle_id": "11a46cb6-ab01-4630-9541-782db2ef3b91",
+  "name": "Map the Frontier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Map the Frontier",
+      "oracle_fingerprint": "e4c167dd9d4dff916e0139fba775a242",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Land" },
+                    { "AnyOf": [{ "Supertype": "Basic" }, { "Subtype": "Desert" }] }
+                  ],
+                  "count": { "min": 0, "max": 2 },
+                  "as": "land"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

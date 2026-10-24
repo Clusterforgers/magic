@@ -5,4 +5,4 @@ import type { PlayerId } from "./PlayerId";
 /**
  * One thing to choose.
  */
-export type ChoiceOption = { "Player": PlayerId } | { "Color": Color } | { "Label": string };
+export type ChoiceOption = { "Player": PlayerId } | { "Color": Color } | { "Label": string } | { "Secret": string };

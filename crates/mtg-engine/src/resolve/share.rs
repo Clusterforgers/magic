@@ -26,7 +26,7 @@ fn reads_division(amount: &Amount) -> bool {
     match amount {
         Amount::Divided | Amount::EvenShare(_) => true,
         Amount::Sum(parts) => parts.iter().any(reads_division),
-        Amount::Times { of, .. } => reads_division(of),
+        Amount::Times { of, .. } | Amount::Half { of, .. } => reads_division(of),
         _ => false,
     }
 }

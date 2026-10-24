@@ -1,0 +1,27 @@
+{
+  "cmc": 5.0,
+  "collector_number": "133",
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "colors": [
+    "B",
+    "R"
+  ],
+  "digital": false,
+  "id": "792eabed-6c49-41f0-a9ce-0184e5c577e9",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{3}{B}{R}",
+  "name": "The Scorpion God",
+  "oracle_id": "aff223d4-6338-460d-a4d5-d45f522864dc",
+  "oracle_text": "Whenever a creature with a -1/-1 counter on it dies, draw a card.\n{1}{B}{R}: Put a -1/-1 counter on another target creature.\nWhen The Scorpion God dies, return it to its owner's hand at the beginning of the next end step.",
+  "power": "6",
+  "rarity": "mythic",
+  "released_at": "2026-01-23",
+  "set": "ecc",
+  "toughness": "5",
+  "type_line": "Legendary Creature — God"
+}

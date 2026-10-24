@@ -1,0 +1,19 @@
+{
+  "cmc": 1.0,
+  "collector_number": "238",
+  "color_identity": [],
+  "colors": [],
+  "digital": false,
+  "id": "67b06cb5-5e74-456f-81b1-fced1346cc47",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}",
+  "name": "Scrabbling Claws",
+  "oracle_id": "4538ec2c-867e-412b-b6e3-a57f8e29ba84",
+  "oracle_text": "{T}: Target player exiles a card from their graveyard.\n{1}, Sacrifice this artifact: Exile target card from a graveyard. Draw a card.",
+  "rarity": "uncommon",
+  "released_at": "2019-01-25",
+  "set": "rna",
+  "type_line": "Artifact"
+}

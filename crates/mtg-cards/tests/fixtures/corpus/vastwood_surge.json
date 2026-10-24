@@ -1,0 +1,25 @@
+{
+  "id": "1dcd904c-fac6-490d-a9dd-ccdf39cbe597",
+  "oracle_id": "8ba2a7ad-a09b-4f52-9c76-c70510dc4feb",
+  "name": "Vastwood Surge",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nec",
+  "collector_number": "133",
+  "rarity": "uncommon",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4,
+  "type_line": "Sorcery",
+  "oracle_text": "Kicker {4} (You may pay an additional {4} as you cast this spell.)\nSearch your library for up to two basic land cards, put them onto the battlefield tapped, then shuffle. If this spell was kicked, put two +1/+1 counters on each creature you control.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Kicker"
+  ]
+}
