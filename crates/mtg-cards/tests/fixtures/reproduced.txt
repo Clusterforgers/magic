@@ -409,6 +409,7 @@ Firmament Sage
 Fists of Flame
 Flame Jab
 Flamebraider
+Flamerush Rider
 Flatline
 Flawless Maneuver
 Fleecemane Lion
@@ -649,6 +650,7 @@ Llanowar Behemoth
 Llanowar Elves
 Llanowar Loamspeaker
 Llanowar Reborn
+Loki, the Deceiver
 Looter il-Kor
 Lord of Extinction
 Lord of the Forsaken
@@ -670,6 +672,7 @@ Manabarbs
 Manaweft Sliver
 Manor Gate
 Map the Wastes
+March of Progress
 Marchesa's Emissary
 Mardu Devotee
 Mardu Scout
@@ -742,6 +745,7 @@ Nantuko Vigilante
 Nessian Asp
 Nettlecyst
 New Horizons
+Nick Valentine, Private Eye
 Night Clubber
 Nighthawk Scavenger
 Nightmare

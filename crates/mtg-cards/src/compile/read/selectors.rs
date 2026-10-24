@@ -930,9 +930,18 @@ fn spell_subtypes(r: &mut Reader<'_>) -> Option<Pred> {
     })
 }
 
-/// A subtype in front of a card type in the singular, or of "card": "Cleric creature", "Equipment artifact", "Giant card".
+/// A subtype in front of a card type in the singular, or of "card": "Cleric creature", "Equipment artifact", "Giant card"; a
+/// card type in front of another one: "artifact creature".
 fn singular_qualifier(r: &mut Reader<'_>) -> Option<Pred> {
     r.attempt(|r| {
+        if let Some((card_type, false)) = r.peek_word().and_then(type_noun)
+            && r.word_at(1)
+                .and_then(type_noun)
+                .is_some_and(|(_, plural)| !plural)
+        {
+            r.skip();
+            return Some(Pred::Type(card_type));
+        }
         let name = group_name(r).filter(|name| r.is_subtype(name))?;
         let typed = r
             .peek_word()

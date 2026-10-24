@@ -135,6 +135,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(controller);
     let named = copies::pronoun_wordings(&texts);
     texts.extend(named);
+    let attacking = copies::attacking_wordings(&texts);
+    texts.extend(attacking);
     let searches = library::other_wordings(&texts);
     texts.extend(searches);
     let counted = where_x_draws(&texts);
