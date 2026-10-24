@@ -1,0 +1,44 @@
+{
+  "oracle_id": "3cc6475d-aae9-4592-a26b-0fbb4269759d",
+  "name": "Wastescape Battlemage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wastescape Battlemage",
+      "oracle_fingerprint": "e01543b2141ff6011162064de83dea1f",
+      "abilities": [
+        { "Keyword": { "Kicker": "{G}" } },
+        { "Keyword": { "Kicker": "{1}{U}" } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "if": { "KickedWith": "{G}" },
+            "from": "Stack",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "if": { "KickedWith": "{1}{U}" },
+            "from": "Stack",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

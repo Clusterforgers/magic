@@ -3,6 +3,7 @@
 //! player in a row are one compound sentence; the readers take ", then" between two steps as the
 //! same sequence.
 
+mod bound;
 mod created;
 mod damage_by;
 mod divided;
@@ -43,6 +44,7 @@ use super::spend;
 use super::spent;
 use super::statics;
 use super::subtypes::plural_subtype;
+use super::token_binds::TOKENS;
 use super::triggers::{
     article, cast_itself, condition_text, cycled_itself, graveyard_itself, itself_acts,
     leaves_itself, pattern_text, targeted_itself,
@@ -73,6 +75,21 @@ fn where_x_draws(texts: &[String]) -> Vec<String> {
         .collect()
 }
 
+/// "It can't be regenerated." after the destruction of one object is also "That creature can't be regenerated.".
+fn regeneration_wordings(texts: &[String]) -> Vec<String> {
+    texts
+        .iter()
+        .filter(|text| text.contains(". It can't be regenerated"))
+        .map(|text| {
+            text.replacen(
+                ". It can't be regenerated",
+                ". That creature can't be regenerated",
+                1,
+            )
+        })
+        .collect()
+}
+
 /// The oracle wording of an ability the readers produce, in the first way its effects can be
 /// written (see [`variants`]); `None` for any other ability.
 pub fn ability(ability: &Ability) -> Option<String> {
@@ -94,6 +111,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(searches);
     let counted = where_x_draws(&texts);
     texts.extend(counted);
+    let regenerating = regeneration_wordings(&texts);
+    texts.extend(regenerating);
     // A card may count the casts of "a commander" for those of "your commander" (Jirina Kudro).
     let commanders: Vec<String> = texts
         .iter()
@@ -712,6 +731,7 @@ fn written(
         per: wording.per,
         again: wording.again,
         condition: wording.condition,
+        made: None,
     };
     let mut sentences: Vec<String> = Vec::new();
     let mut start = 0;
@@ -748,14 +768,11 @@ fn written(
             start += used;
             continue;
         }
-        // A copy that is exiled or sacrificed at the end step is two sentences, which no joint splits.
-        if let [created @ Effect::CreateToken { .. }, delayed, ..] = &effects[start..]
-            && let Some(delay) = copies::delay_text(created, delayed)
-        {
-            unsplit(mask, start, 2)?;
-            sentences.push(writer.copy_token(created, true)?);
-            sentences.push(delay);
-            start += 2;
+        // Tokens and what is done to them, or a copy and its delayed exile, are two sentences, which no joint splits.
+        if let Some((texts, used)) = writer.made_then(&effects[start..]) {
+            unsplit(mask, start, used)?;
+            sentences.extend(texts);
+            start += used;
             continue;
         }
         // A permanent chosen and the target that becomes a copy of it are two sentences, which no joint splits.
@@ -1282,6 +1299,8 @@ struct Writer<'a> {
     again: bool,
     /// Which of the wordings of a condition is written.
     condition: usize,
+    /// Whether the tokens the sentence being written names are one token, while that sentence acts on tokens just made.
+    made: Option<bool>,
 }
 
 impl Writer<'_> {
@@ -1359,6 +1378,14 @@ impl Writer<'_> {
             Ref::Attached => Some("enchanted creature".to_owned()),
             // The creature that attacks enchanted player.
             Ref::Triggering => Some("it".to_owned()),
+            Ref::Bound(name) if name == TOKENS && self.made.is_some() => Some(
+                if self.made == Some(true) {
+                    "it"
+                } else {
+                    "each of them"
+                }
+                .to_owned(),
+            ),
             Ref::Target(0)
                 if self.single(place)
                     && self.target_is(|what| matches!(what, Targetable::Object(_))) =>
@@ -2159,6 +2186,13 @@ impl Writer<'_> {
         let (subject, plural) = match affected {
             Ref::This => ("~".to_owned(), false),
             Ref::Triggering => ("it".to_owned(), false),
+            Ref::Bound(name) if name == TOKENS && self.made.is_some() => {
+                if self.made == Some(true) {
+                    ("that token".to_owned(), false)
+                } else {
+                    ("those tokens".to_owned(), true)
+                }
+            }
             Ref::Target(0)
                 if self.at_most_one(affected)
                     && self.target_is(|what| matches!(what, Targetable::Object(_))) =>

@@ -100,11 +100,17 @@ pub fn event_subject(pattern: &TriggerPattern) -> Option<Ref> {
     })
 }
 
-/// Whether the pattern is the card itself becoming a target (counted or not), so the card's effects may call it "it".
+/// Whether the pattern is the card itself becoming a target (counted or not) or dealing damage to a player, so the card's
+/// effects may call it "it".
 pub fn targeted_itself(pattern: &TriggerPattern) -> bool {
     match pattern {
         TriggerPattern::Nth { event, .. } => targeted_itself(event),
         TriggerPattern::BecomesTarget { what, .. } => what.0 == [Pred::This],
+        TriggerPattern::DealsDamage {
+            source,
+            to: Some(_),
+            ..
+        } => source.0 == [Pred::This],
         _ => false,
     }
 }
@@ -755,6 +761,10 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
     if let Some(fact) = super::facts::read(r) {
         return Some(fact);
     }
+    // "if you control your commander", "if you control three or more artifacts"
+    if let Some(control) = r.attempt(super::statics::control) {
+        return Some(control);
+    }
     r.need("you have")?;
     let number = i32::try_from(r.number()?).ok()?;
     let op = if r.words("or more") {
@@ -785,6 +795,12 @@ pub fn cost_paid(r: &mut Reader<'_>, spell: bool) -> Option<Condition> {
     if r.words("the gift was promised") {
         return Some(Condition::AdditionalCostPaid);
     }
+    // A card with two kickers names the one that was paid: "it was kicked with its {W} kicker".
+    if !spell && r.words("it was kicked with its") {
+        let cost = super::costs::cost(r)?;
+        r.need("kicker")?;
+        return Some(Condition::KickedWith(cost));
+    }
     if spell {
         r.source().then_some(())?;
         r.punct('\'').then_some(())?;
@@ -802,6 +818,10 @@ pub fn cost_paid(r: &mut Reader<'_>, spell: bool) -> Option<Condition> {
 pub fn cost_paid_text(condition: &Condition, spell: bool) -> Option<String> {
     if *condition == Condition::AdditionalCostPaid {
         return Some("the gift was promised".to_owned());
+    }
+    if let Condition::KickedWith(cost) = condition {
+        let cost = super::costs::text(cost)?;
+        return (!spell).then(|| format!("it was kicked with its {cost} kicker"));
     }
     let Condition::CastWith(way) = condition else {
         return None;
@@ -894,6 +914,9 @@ pub fn condition_text(condition: &Condition) -> Option<String> {
     }
     if let Some(fact) = super::facts::texts(condition).into_iter().next() {
         return Some(fact);
+    }
+    if let Some(control) = super::statics::control_texts(condition).into_iter().next() {
+        return Some(control);
     }
     if let Condition::Compare {
         left: Amount::Counters {

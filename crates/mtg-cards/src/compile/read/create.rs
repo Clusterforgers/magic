@@ -13,6 +13,7 @@ use super::selectors::{
     type_name,
 };
 use super::statics;
+use super::token_binds;
 use super::tokens::Reader;
 use super::triggers::article;
 use super::where_x;
@@ -313,11 +314,13 @@ pub fn chained(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         } else {
             r.need("and")?;
         }
-        step(r)
+        // "create a 1/1 white Soldier creature token, then attach this Equipment to it"
+        token_binds::joined(r, &effects).or_else(|| step(r))
     }) {
         effects.extend(next);
         steps += 1;
     }
+    token_binds::bind(&mut effects);
     let creates = effects
         .iter()
         .any(|effect| matches!(effect, Effect::CreateToken { .. }));
@@ -519,6 +522,18 @@ fn keywords_text(token: &TokenRef) -> Option<String> {
         return Some(String::new());
     }
     Some(format!(" with {}", parts.join(" and ")))
+}
+
+/// The same for tokens a later sentence names (`bind`), which is written as the sentence that makes them.
+pub fn text_bound(effect: &Effect, per: bool) -> Option<String> {
+    let Effect::CreateToken { bind: Some(_), .. } = effect else {
+        return None;
+    };
+    let mut unbound = effect.clone();
+    if let Effect::CreateToken { bind, .. } = &mut unbound {
+        *bind = None;
+    }
+    text(&unbound, per)
 }
 
 /// An effect that creates tokens, as a sentence without its first capital and period. A count of things is worded

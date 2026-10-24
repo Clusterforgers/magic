@@ -267,6 +267,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         Condition::YourTurn => Traits::CONTROL,
         Condition::NewlyControlled(what) => reads_of_ref(what).or(Traits::CONTROL),
         Condition::Kicked
+        | Condition::KickedWith(_)
         | Condition::AdditionalCostPaid
         | Condition::CastWith(_)
         | Condition::ManaSpent(_)

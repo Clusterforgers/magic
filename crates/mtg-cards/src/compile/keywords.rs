@@ -333,10 +333,16 @@ pub fn is_keyword_line(line: &str) -> bool {
     split_items(line).is_some()
 }
 
-/// The keywords an item names: one, or a protection from several qualities ("protection from white and from blue") as one
-/// protection for each; `None` leaves the item to the table.
+/// The keywords an item names: one, a protection from several qualities ("protection from white and from blue") as one
+/// protection for each, or "Kicker {W} and/or {2}{B}" as the two kickers; `None` leaves the item to the table.
 pub fn read_all(item: &str) -> Option<Vec<Keyword>> {
     let found = find(item)?;
+    if found.name == "kicker"
+        && let Some((first, second)) = found.rest.split_once(" and/or ")
+    {
+        let kicker = |rest: &str| spell_cost(rest.trim()).map(Keyword::Kicker);
+        return Some(vec![kicker(first)?, kicker(second)?]);
+    }
     if found.name == "protection" && plausible(found.params, found.rest) {
         let qualities = protections(found.rest)?;
         return Some(qualities.into_iter().map(Keyword::Protection).collect());
@@ -906,6 +912,10 @@ mod tests {
         &[protects(Pred::Color(Color::Green)), protects(Pred::Color(Color::Red))]
     )]
     #[case::another_keyword("Flying", &[Keyword::Flying])]
+    #[case::two_kickers(
+        "Kicker {W} and/or {2}{B}",
+        &[Keyword::Kicker(mana("{W}")), Keyword::Kicker(mana("{2}{B}"))]
+    )]
     fn an_item_reads_into_a_keyword_for_each_quality(
         #[case] item: &str,
         #[case] expected: &[Keyword],
