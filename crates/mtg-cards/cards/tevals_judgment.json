@@ -1,0 +1,49 @@
+{
+  "oracle_id": "71fc2393-f55c-4b06-897c-fb7d4199b5f5",
+  "name": "Teval's Judgment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teval's Judgment",
+      "oracle_fingerprint": "085f69d69f231dca036324f132f563ab",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "ZoneChange": { "what": [{ "OwnedBy": "You" }], "from": "Graveyard" } }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "once_each_turn": true,
+                  "modes": [
+                    { "effects": [{ "Draw": {} }] },
+                    { "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }] },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Zombie Druid",
+                                "colors": ["Black"],
+                                "types": ["Creature"],
+                                "subtypes": ["Zombie", "Druid"],
+                                "power": 2,
+                                "toughness": 2
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

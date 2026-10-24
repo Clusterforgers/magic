@@ -1,0 +1,29 @@
+{
+  "cmc": 2.0,
+  "collector_number": "19",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "9fbaabb5-e981-4cbf-888c-46449412711f",
+  "keywords": [
+    "Alliance",
+    "Food",
+    "Scry"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{W}",
+  "name": "Lita, Little Orphan Amphibian",
+  "oracle_id": "212fdb7c-1c7e-4eed-b1ed-bcc14a425da8",
+  "oracle_text": "Alliance — Whenever another creature you control enters, choose one that hasn't been chosen this turn.\n• Put a +1/+1 counter on Lita.\n• Create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\n• Scry 1.",
+  "power": "2",
+  "rarity": "uncommon",
+  "released_at": "2026-03-06",
+  "set": "tmt",
+  "toughness": "1",
+  "type_line": "Legendary Creature — Mutant Ninja Turtle"
+}

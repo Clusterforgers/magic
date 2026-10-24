@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"from":"Graveyard","to":"Battlefield"}},{"ZoneChange":{"what":["Other"],"from":"Graveyard","to":"Battlefield"}}]},"effects":[{"Draw":{}}]}},{"Triggered":{"when":{"SpellCast":{"what":[{"CastFrom":"Graveyard"}],"by":"EachPlayer"}},"effects":[{"Draw":{}}]}},{"Keyword":"Persist"}]}]}

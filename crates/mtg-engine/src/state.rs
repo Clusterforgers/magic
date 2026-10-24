@@ -145,6 +145,8 @@ pub(crate) struct Tallies {
     pub(crate) monarch_began: Option<PlayerId>,
     /// The creatures tapped to crew or saddle a permanent, as (permanent, saddled, creature).
     pub(crate) crews: BTreeSet<(ObjectRef, bool, ObjectRef)>,
+    /// The modes the abilities chose, as (source, where the ability comes from, its index, the mode).
+    pub(crate) modes: BTreeSet<(ObjectRef, AbilitySource, usize, usize)>,
 }
 
 /// A creature that dealt combat damage to a player this turn, as it was then (prowl, CR 702.76).
@@ -632,6 +634,9 @@ impl Hash for GameState {
         }
         if !self.tallies.crews.is_empty() {
             self.tallies.crews.hash(state);
+        }
+        if !self.tallies.modes.is_empty() {
+            self.tallies.modes.hash(state);
         }
         self.result.hash(state);
         // A game that has seen neither day nor night hashes as it did before they existed.

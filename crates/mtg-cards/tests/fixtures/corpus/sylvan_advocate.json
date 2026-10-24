@@ -1,0 +1,27 @@
+{
+  "id": "7f5ac7ee-52e0-4c30-83cd-d27c29c19dbc",
+  "oracle_id": "beaf7a85-426a-4a33-80c8-33ad01614ad3",
+  "name": "Sylvan Advocate",
+  "lang": "en",
+  "layout": "normal",
+  "set": "znc",
+  "collector_number": "84",
+  "rarity": "rare",
+  "released_at": "2020-09-25",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2,
+  "type_line": "Creature — Elf Druid Ally",
+  "oracle_text": "Vigilance\nAs long as you control six or more lands, this creature and land creatures you control get +2/+2.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Vigilance"
+  ]
+}

@@ -107,6 +107,12 @@ pub(crate) struct Modal<'a> {
     pub(crate) repeat: bool,
     /// The modes, in printed order.
     pub(crate) modes: &'a [Mode],
+    /// The game picks the modes at random.
+    pub(crate) at_random: bool,
+    /// A mode chosen earlier in the turn by this ability is not offered.
+    pub(crate) once_each_turn: bool,
+    /// The modes this ability chose earlier in the turn (read from the tally by the announcement).
+    pub(crate) used: Vec<usize>,
 }
 
 /// The modes of the ability, if it is a modal one: a `Modal` is the only effect of its ability.
@@ -117,11 +123,16 @@ pub(crate) fn modal_of(rules: &Ability) -> Option<Modal<'_>> {
                 choose,
                 repeat,
                 modes,
+                at_random,
+                once_each_turn,
             },
         ] => Some(Modal {
             choose,
             repeat: *repeat,
             modes,
+            at_random: *at_random,
+            once_each_turn: *once_each_turn,
+            used: Vec::new(),
         }),
         _ => None,
     }
@@ -192,6 +203,7 @@ pub(crate) fn mode_options(
         .modes
         .iter()
         .enumerate()
+        .filter(|(index, _)| !(modal.once_each_turn && modal.used.contains(index)))
         .filter(|(_, mode)| is_legal(state, source, controller, mode, cause))
         .map(|(index, mode)| ModeOption {
             index,

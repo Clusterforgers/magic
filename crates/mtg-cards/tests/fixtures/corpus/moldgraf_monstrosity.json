@@ -1,0 +1,27 @@
+{
+  "id": "714ba062-f8ae-4ae6-a1c2-8fa093cc0fb2",
+  "oracle_id": "3c4d5392-27cf-492e-9ae1-dee330b82223",
+  "name": "Moldgraf Monstrosity",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "83",
+  "rarity": "rare",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{4}{G}{G}{G}",
+  "cmc": 7,
+  "type_line": "Creature — Insect",
+  "oracle_text": "Trample\nWhen this creature dies, exile it, then return two creature cards at random from your graveyard to the battlefield.",
+  "power": "8",
+  "toughness": "8",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Trample"
+  ]
+}
