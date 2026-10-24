@@ -1,0 +1,27 @@
+{
+  "cmc": 6.0,
+  "collector_number": "63",
+  "color_identity": [
+    "R"
+  ],
+  "colors": [
+    "R"
+  ],
+  "digital": false,
+  "id": "31aed8e9-44be-4e7c-85ac-a084eaecaea7",
+  "keywords": [
+    "Trample"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{5}{R}",
+  "name": "Umaro, Raging Yeti",
+  "oracle_id": "0f4350ad-dc44-4942-b097-e4033e29d659",
+  "oracle_text": "Trample\nAt the beginning of combat on your turn, choose one at random —\n• Other creatures you control get +3/+0 and gain trample until end of turn.\n• Discard your hand, then draw four cards.\n• Umaro deals 5 damage to any target.",
+  "power": "6",
+  "rarity": "rare",
+  "released_at": "2025-06-13",
+  "set": "fic",
+  "toughness": "6",
+  "type_line": "Legendary Creature — Yeti Berserker"
+}

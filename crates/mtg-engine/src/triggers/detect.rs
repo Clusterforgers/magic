@@ -1312,6 +1312,12 @@ fn causes(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> V
                     .filter(|subject| matches!(subject, Target::Player(_)))
                     .copied()
                     .collect();
+                // The damage dealt together is one amount ("that damage"); any other batch counts its events.
+                let weight = if matches!(**inner, TriggerPattern::DealsDamage { .. }) {
+                    found.amount
+                } else {
+                    1
+                };
                 let at = groups.iter().position(|(key, _)| *key == players);
                 let at = at.unwrap_or_else(|| {
                     groups.push((players, Cause::default()));
@@ -1328,7 +1334,7 @@ fn causes(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> V
                         group.snapshots.push(shot);
                     }
                 }
-                group.amount = group.amount.saturating_add(1);
+                group.amount = group.amount.saturating_add(weight);
             }
             groups.into_iter().map(|(_, cause)| cause).collect()
         }

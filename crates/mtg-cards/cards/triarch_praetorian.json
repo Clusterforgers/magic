@@ -1,0 +1,21 @@
+{
+  "oracle_id": "52aa5a79-db0e-4eaa-b2df-e41674c47794",
+  "name": "Triarch Praetorian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Triarch Praetorian",
+      "oracle_fingerprint": "4e077447b669872b736afff8d5e38de5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Graveyard", "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 2 } }, { "LoseLife": { "amount": 2 } }]
+          }
+        },
+        { "Keyword": { "Unearth": "{4}{B}" } }
+      ]
+    }
+  ]
+}

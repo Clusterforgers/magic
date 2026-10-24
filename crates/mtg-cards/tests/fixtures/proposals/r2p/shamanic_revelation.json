@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Draw":{"count":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}},{"GainLife":{"amount":{"Times":{"by":4,"of":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"},{"Compare":{"stat":"Power","op":"Ge","to":4}}]}}}}}]}}]}]}

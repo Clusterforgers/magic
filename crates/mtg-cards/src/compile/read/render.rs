@@ -10,6 +10,7 @@ mod damage_by;
 mod delayed;
 mod divided;
 mod each_target;
+mod either;
 mod exiled_until;
 mod free_casts;
 mod from_graveyard;
@@ -19,6 +20,7 @@ mod loyalty;
 mod may_have;
 mod multi;
 mod oracle_only;
+mod otherwise;
 mod player_events;
 mod populated;
 mod put_onto;
@@ -27,6 +29,7 @@ mod switched;
 mod target_counts;
 mod those;
 mod together;
+mod twins;
 mod untapped;
 
 use super::activations;
@@ -360,6 +363,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     those::add(ability, &mut texts);
     together::add(&mut texts);
     and_lists::add(ability, &mut texts);
+    twins::add(ability, &mut texts);
     super::shortened::add(&mut texts);
     oracle_only::add(ability, &mut texts);
     texts
@@ -656,14 +660,17 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
             choose,
             repeat: false,
             modes,
+            at_random,
+            once_each_turn,
         },
     ] = effects
     {
         if !targets.is_empty() || modes.len() < 2 {
             return Vec::new();
         }
-        return choices::texts(choose, modes)
+        return choices::texts(choose, modes, *at_random, *once_each_turn)
             .into_iter()
+            .chain(either::texts(choose, modes))
             .map(|text| vec![text])
             .collect();
     }
@@ -1884,6 +1891,12 @@ impl Writer<'_> {
     /// An exile with no binding: "exile target creature", and "... until ~ leaves the battlefield" with the duration.
     fn exiled(&mut self, effect: &Effect) -> Option<String> {
         match effect {
+            // The card of a trigger that put it into a graveyard is "it" in what that trigger does about it.
+            Effect::Exile {
+                what,
+                bind: None,
+                duration: None,
+            } if *what == dead_card() => Some("exile it".to_owned()),
             // A target exiled and bound for a later step ("the mana value of the permanent exiled this way") is the same.
             Effect::Exile {
                 what,
@@ -2135,6 +2148,7 @@ impl Writer<'_> {
         self.explore_twice(effects)
             .or_else(|| self.mill_then_change(effects))
             .or_else(|| self.move_instead(effects))
+            .or_else(|| self.either_way(effects))
             .or_else(|| wheel_text(effects))
             .or_else(|| untapped::text(effects))
             .or_else(|| free_casts::text(effects))

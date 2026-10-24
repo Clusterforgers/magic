@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Indestructible"},{"Keyword":"Shadow"},{"Triggered":{"when":{"StepBegins":{"step":"End"}},"if":{"Compare":{"left":{"Tallied":{"who":"EachPlayer","what":"CreaturesDied"}},"op":"Ge","right":1}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}}]}]}

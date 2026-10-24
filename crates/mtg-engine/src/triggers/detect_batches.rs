@@ -145,14 +145,14 @@ fn a_host_that_dies_with_its_equipment_is_still_the_subject_as_it_was() {
 const DAMAGE_BATCH: &str = r#"{"Batch":{"DealsDamage":{"source":[{"Type":"Creature"},{"ControlledBy":"You"}],"to":"EachPlayer","combat":true}}}"#;
 
 #[rstest]
-#[case::two_creatures_one_player_are_one_batch(&[("Bear", FOE), ("Watcher", FOE)], &[2])]
-#[case::one_creature_is_enough(&[("Bear", FOE)], &[1])]
+#[case::two_creatures_one_player_are_one_batch(&[("Bear", FOE), ("Watcher", FOE)], &[4])]
+#[case::one_creature_is_enough(&[("Bear", FOE)], &[2])]
 #[case::an_opponents_creature_is_not_mine(&[("Ogre", ME)], &[])]
-#[case::each_player_hurt_is_a_batch_of_its_own(&[("Bear", FOE), ("Watcher", ME), ("Bear", ME)], &[1, 2])]
-#[case::mine_among_theirs_counts_mine_only(&[("Ogre", FOE), ("Bear", FOE)], &[1])]
+#[case::each_player_hurt_is_a_batch_of_its_own(&[("Bear", FOE), ("Watcher", ME), ("Bear", ME)], &[2, 4])]
+#[case::mine_among_theirs_counts_mine_only(&[("Ogre", FOE), ("Bear", FOE)], &[2])]
 fn creatures_that_deal_damage_together_trigger_once_for_each_player_they_hurt(
     #[case] hits: &[(&str, PlayerId)],
-    #[case] amounts: &[u32],
+    #[case] damage_dealt: &[u32],
 ) {
     let pre = in_combat_damage(&board(DAMAGE_BATCH));
     let events: Vec<Event> = hits
@@ -163,7 +163,10 @@ fn creatures_that_deal_damage_together_trigger_once_for_each_player_they_hurt(
         .iter()
         .map(|t| t.cause.amount)
         .collect();
-    assert_eq!(counted, amounts);
+    assert_eq!(
+        counted, damage_dealt,
+        "the amount of a batch of damage is the damage dealt in all"
+    );
 }
 
 #[test]
