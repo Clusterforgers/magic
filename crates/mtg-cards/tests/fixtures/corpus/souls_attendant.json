@@ -1,0 +1,25 @@
+{
+  "cmc": 1.0,
+  "collector_number": "44",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "3223c0ac-cc22-4886-8919-11273b477cc7",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{W}",
+  "name": "Soul's Attendant",
+  "oracle_id": "045a9d3d-c20d-427f-a77b-0bffc6f55526",
+  "oracle_text": "Whenever another creature enters, you may gain 1 life.",
+  "power": "1",
+  "rarity": "common",
+  "released_at": "2010-04-23",
+  "set": "roe",
+  "toughness": "1",
+  "type_line": "Creature — Human Cleric"
+}

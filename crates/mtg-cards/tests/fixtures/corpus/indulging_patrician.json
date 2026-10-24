@@ -1,0 +1,30 @@
+{
+  "cmc": 3.0,
+  "collector_number": "292",
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "colors": [
+    "B",
+    "W"
+  ],
+  "digital": false,
+  "id": "a2c1765c-0054-4c9f-a6b3-5e54189b44c3",
+  "keywords": [
+    "Flying",
+    "Lifelink"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{W}{B}",
+  "name": "Indulging Patrician",
+  "oracle_id": "189131b7-ed59-4750-a4ed-453e4497a5c8",
+  "oracle_text": "Flying\nLifelink (Damage dealt by this creature also causes you to gain that much life.)\nAt the beginning of your end step, if you gained 3 or more life this turn, each opponent loses 3 life.",
+  "power": "1",
+  "rarity": "uncommon",
+  "released_at": "2025-04-11",
+  "set": "tdc",
+  "toughness": "4",
+  "type_line": "Creature — Vampire Noble"
+}

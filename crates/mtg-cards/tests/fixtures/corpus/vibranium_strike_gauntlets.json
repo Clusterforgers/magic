@@ -1,0 +1,22 @@
+{
+  "cmc": 4.0,
+  "collector_number": "118",
+  "color_identity": [],
+  "colors": [],
+  "digital": false,
+  "id": "2b47e8b0-471c-4429-8273-d114fdf95e13",
+  "keywords": [
+    "Equip",
+    "Flash"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{4}",
+  "name": "Vibranium Strike Gauntlets",
+  "oracle_id": "4a9d36eb-db72-459a-8de9-6d04a1d7563c",
+  "oracle_text": "Flash\nWhen this Equipment enters, attach it to target creature you control.\nEquipped creature gets +3/+0 and has trample and \"Whenever this creature deals combat damage to a player, draw a card.\"\nEquip {3}",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "set": "msc",
+  "type_line": "Artifact — Equipment"
+}

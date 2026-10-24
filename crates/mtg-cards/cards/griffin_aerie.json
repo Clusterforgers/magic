@@ -1,0 +1,42 @@
+{
+  "oracle_id": "7cab62dc-a256-4da8-a3ea-b3903ec37077",
+  "name": "Griffin Aerie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Griffin Aerie",
+      "oracle_fingerprint": "4bc53fa18ff33dd6988139616559a825",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Griffin",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Griffin"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

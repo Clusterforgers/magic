@@ -38,10 +38,11 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 56] = [
+const TEMPLATES: [Template; 57] = [
     modal::modal,
     super::spent::sacrifice_unless,
     super::actions::fight,
+    super::actions::attach,
     cast::discover_sentence,
     cast::exile_until,
     super::reveal_until::reveal_until,
@@ -236,6 +237,9 @@ fn regeneration(r: &mut Reader<'_>, effects: &mut [Effect]) -> Option<()> {
 /// "You may draw a card.": one step that the controller may do.
 fn may(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("you may")?;
+    if let Some(life) = r.attempt(may_life) {
+        return Some(life);
+    }
     IMPERATIVES
         .iter()
         .chain(&conditional::IMPERATIVES)
@@ -251,6 +255,25 @@ fn may(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                 })
             })
         })
+}
+
+/// "you may gain 1 life", "you may lose 1 life": the life change is the one choice.
+fn may_life(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    let effect = match r.take_word()? {
+        "gain" => Effect::GainLife {
+            who: Ref::You,
+            amount: life(r)?,
+        },
+        "lose" => Effect::LoseLife {
+            who: Ref::You,
+            amount: life(r)?,
+        },
+        _ => return None,
+    };
+    Some(vec![Effect::May {
+        who: Ref::You,
+        effects: vec![effect],
+    }])
 }
 
 /// Steps of "you" joined by ", then": "Scry 1, then draw a card."
