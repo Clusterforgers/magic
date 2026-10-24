@@ -1,0 +1,25 @@
+{
+  "id": "fc01f092-80fb-4643-8ada-c2e5aeb68658",
+  "oracle_id": "c82cc78b-ffd6-4f72-881d-85913830feb2",
+  "name": "Immoral Bargain",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "47",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{1}{B}{G}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "As an additional cost to cast this spell, sacrifice X creatures.\nDestroy X target nonland permanents.",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": []
+}

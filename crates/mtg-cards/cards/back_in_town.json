@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ce723db6-2a80-42a5-a176-cd322b4e1e27",
+  "name": "Back in Town",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Back in Town",
+      "oracle_fingerprint": "f1632066b60c4a07c3fa383f3fd20e7a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Assassin" },
+                        { "Subtype": "Mercenary" },
+                        { "Subtype": "Pirate" },
+                        { "Subtype": "Rogue" },
+                        { "Subtype": "Warlock" }
+                      ]
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

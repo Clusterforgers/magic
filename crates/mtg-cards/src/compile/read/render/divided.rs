@@ -3,7 +3,7 @@
 
 use super::{Form, Writer, count_word, phrase_text, points_text};
 use crate::effect::Effect;
-use crate::refs::{Bounds, Ref, TargetSpec, Targetable};
+use crate::refs::{Ref, TargetSpec, Targetable};
 use crate::value::Amount;
 
 impl Writer<'_> {
@@ -41,7 +41,7 @@ fn among_text(spec: &TargetSpec) -> Option<String> {
         ),
         _ => return None,
     };
-    let Bounds { min, max } = &spec.bounds;
+    let (min, max) = (spec.bounds.fixed_min()?, &spec.bounds.max);
     let how_many = match (min, max) {
         (0 | 1, None) => "any number of".to_owned(),
         (1, Some(Amount::Fixed(last))) if *last >= 2 => listed(u32::try_from(*last).ok()?)?,

@@ -21,7 +21,7 @@ fn header(choose: &Bounds, modes: usize) -> Option<String> {
         return None;
     }
     let word = |number: u32| count_word(number);
-    let words = match (choose.min, most) {
+    let words = match (choose.fixed_min()?, most) {
         (1, Some(1)) => "one".to_owned(),
         (1, Some(2)) if modes == 2 => "one or both".to_owned(),
         (1, None) => "one or more".to_owned(),

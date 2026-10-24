@@ -107,7 +107,7 @@ pub fn charm(name: &str, min: u32, max: u32, repeat: bool) -> Arc<CardDefinition
         &[Color::Red],
         vec![Effect::Modal {
             choose: Bounds {
-                min,
+                min: Amount::Fixed(i32::try_from(min).unwrap_or(i32::MAX)),
                 max: Some(Amount::Fixed(i32::try_from(max).unwrap_or(i32::MAX))),
             },
             repeat,
