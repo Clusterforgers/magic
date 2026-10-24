@@ -1,0 +1,44 @@
+{
+  "oracle_id": "48edc348-93f6-4dce-9cc4-7244d76b6f4a",
+  "name": "Accursed Duneyard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Accursed Duneyard",
+      "oracle_fingerprint": "182b79901442fb83e4bb3620c1ddf490",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Shade" },
+                        { "Subtype": "Skeleton" },
+                        { "Subtype": "Specter" },
+                        { "Subtype": "Spirit" },
+                        { "Subtype": "Vampire" },
+                        { "Subtype": "Wraith" },
+                        { "Subtype": "Zombie" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Regenerate": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

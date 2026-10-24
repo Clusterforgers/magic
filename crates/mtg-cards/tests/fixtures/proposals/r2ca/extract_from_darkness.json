@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Mill":{"who":"EachPlayer","count":2}},{"Choose":{"from":{"Each":[{"In":"Graveyard"},{"Type":"Creature"}]},"as":"card"}},{"Move":{"what":{"Bound":"card"},"to":{"Battlefield":{"under":"You"}}}}]}}]}]}

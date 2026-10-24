@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":{"Each":[{"Type":"Creature"},"Commander",{"OwnedBy":"You"}]},"mods":[{"GrantAbility":{"Triggered":{"when":{"SpellCast":{"what":[{"SharesSubtype":"This"}],"by":"You"}},"limit":"OncePerTurn","effects":[{"Draw":{}}]}}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"DealsDamage":{"source":[{"Type":"Creature"},{"ControlledBy":"You"}],"to":"EachPlayer","combat":true}},"effects":[{"May":{"effects":[{"Draw":{}}]}}]}},{"Activated":{"cost":[{"Mana":"{1}{U}"},"Tap"],"effects":[{"Rule":{"rule":{"MustAttack":{"Each":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}},"duration":"UntilEndOfTurn"}}]}}]}]}

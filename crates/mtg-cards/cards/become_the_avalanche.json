@@ -1,0 +1,44 @@
+{
+  "oracle_id": "e5fcbbaf-9431-4fa8-ac11-12ace1f2054c",
+  "name": "Become the Avalanche",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Become the Avalanche",
+      "oracle_fingerprint": "caabb8c9beca185636b548f8edc68f3b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                    ]
+                  }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                        "toughness": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

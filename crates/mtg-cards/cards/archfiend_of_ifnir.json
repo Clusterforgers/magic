@@ -1,0 +1,33 @@
+{
+  "oracle_id": "535e2af0-7b08-4026-b1bf-87626407dd42",
+  "name": "Archfiend of Ifnir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archfiend of Ifnir",
+      "oracle_fingerprint": "a622ba9a6dd614c39aa67362539ea43c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Cycled": { "what": ["Other"], "by": "You" } },
+                { "Discarded": { "what": ["Other"], "by": "You" } }
+              ]
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "counter": "-1/-1"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

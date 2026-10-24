@@ -19,6 +19,7 @@ mod bare;
 mod battalion;
 mod blink;
 mod bounce_all;
+mod c4_af;
 mod cant_countered;
 mod cant_unless;
 mod cast_condition;
@@ -241,6 +242,12 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     counters_equal::add(ability, texts);
     counters_put::add(ability, texts);
     add_more(ability, texts);
+    add_c4_af(ability, texts);
+}
+
+/// The wordings of the fourth sample of the names A to F; it runs after the others because it rewrites their texts.
+fn add_c4_af(ability: &Ability, texts: &mut Vec<String>) {
+    c4_af::add(ability, texts);
 }
 
 /// The wordings of the modules after `counters_put`, in a function of their own to keep each under the line limit.

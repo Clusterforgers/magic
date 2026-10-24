@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"Enters":{"what":[{"Type":"Creature"},"Other",{"ControlledBy":"You"}]}},"by":{"WithCounters":{"counter":"+1/+1","count":{"Stat":{"of":"This","stat":"Toughness"}}}}}}]}]}

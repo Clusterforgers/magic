@@ -1,1 +1,0 @@
-{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}],"from":"Battlefield","to":"Graveyard"}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":"+1/+1","count":{"Stat":{"of":"Triggering","stat":"Power"}}}}]}}]}]}

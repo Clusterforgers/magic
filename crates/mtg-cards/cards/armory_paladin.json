@@ -1,0 +1,35 @@
+{
+  "oracle_id": "360f7bfd-3b4c-4e87-a251-fd55c8a62320",
+  "name": "Armory Paladin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Armory Paladin",
+      "oracle_fingerprint": "fb52eba82028708b59bcdb3f7adf9c61",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "ExileTop": { "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

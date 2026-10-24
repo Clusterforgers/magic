@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Replacement":{"when":{"Enters":{"what":[{"Type":"Creature"},{"Subtype":"Human"},{"ControlledBy":"You"}]}},"by":{"WithCounters":{"counter":"+1/+1","count":1}},"from":"Graveyard"}}]}]}

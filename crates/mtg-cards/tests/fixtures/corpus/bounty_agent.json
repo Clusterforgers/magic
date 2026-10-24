@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "1542ad81-169e-4ac8-bd85-038494489594",
+  "oracle_id": "056b5d53-f2fd-4e83-9fd3-d8f0d0be64b9",
+  "multiverse_ids": [
+    482706
+  ],
+  "tcgplayer_id": 212337,
+  "cardmarket_id": 453578,
+  "name": "Bounty Agent",
+  "lang": "en",
+  "released_at": "2020-04-17",
+  "uri": "https://api.scryfall.com/cards/1542ad81-169e-4ac8-bd85-038494489594",
+  "scryfall_uri": "https://scryfall.com/card/c20/78/bounty-agent?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:26:44Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/5/1542ad81-169e-4ac8-bd85-038494489594.jpg?1783931204",
+    "normal": "https://cards.scryfall.io/normal/front/1/5/1542ad81-169e-4ac8-bd85-038494489594.jpg?1783931204",
+    "large": "https://cards.scryfall.io/large/front/1/5/1542ad81-169e-4ac8-bd85-038494489594.jpg?1783931204",
+    "png": "https://cards.scryfall.io/png/front/1/5/1542ad81-169e-4ac8-bd85-038494489594.png?1783931204",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/5/1542ad81-169e-4ac8-bd85-038494489594.jpg?1783931204",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/5/1542ad81-169e-4ac8-bd85-038494489594.jpg?1783931204",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/5/1542ad81-169e-4ac8-bd85-038494489594.webp?1783931204",
+    "grid": "https://cards.scryfall.io/grid/front/1/5/1542ad81-169e-4ac8-bd85-038494489594.webp?1783931204",
+    "display": "https://cards.scryfall.io/display/front/1/5/1542ad81-169e-4ac8-bd85-038494489594.webp?1783931204",
+    "art": "https://cards.scryfall.io/art/front/1/5/1542ad81-169e-4ac8-bd85-038494489594.webp?1783931204",
+    "crop": "https://cards.scryfall.io/crop/front/1/5/1542ad81-169e-4ac8-bd85-038494489594.webp?1783931204",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/5/1542ad81-169e-4ac8-bd85-038494489594.jpg?1783931204"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Soldier",
+  "oracle_text": "Vigilance\n{T}, Sacrifice this creature: Destroy target legendary permanent that's an artifact, creature, or enchantment.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Vigilance"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set": "c20",
+  "set_name": "Commander 2020",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac20&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c20?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1542ad81-169e-4ac8-bd85-038494489594/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A056b5d53-f2fd-4e83-9fd3-d8f0d0be64b9&unique=prints",
+  "collector_number": "78",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Lately I've seen the biggest bounties of my career—and for the biggest names.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Randy Vargas",
+  "artist_ids": [
+    "d20672ca-0555-4238-a984-fd171d36b247"
+  ],
+  "illustration_id": "32521110-8168-4b0d-8b8f-bbda6e4ade58",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 7163,
+  "penny_rank": 10862,
+  "prices": {
+    "usd": "0.35",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.27",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=482706&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBounty%2BAgent",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBounty%2BAgent",
+    "edhrec": "https://edhrec.com/route/?cc=Bounty+Agent"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F212337%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=453578&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Bounty+Agent&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "056b5d53-f2fd-4e83-9fd3-d8f0d0be64b9",
+  "name": "Bounty Agent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bounty Agent",
+      "oracle_fingerprint": "603d34407d7c86404bd9ad97b016c76f",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Supertype": "Legendary" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

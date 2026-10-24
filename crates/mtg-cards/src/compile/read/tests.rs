@@ -163,6 +163,7 @@ mod base_stats;
 mod batch_writers;
 mod becomes;
 mod block_limits;
+mod c4_af_writers;
 mod card_grants;
 mod cast;
 mod cast_cost_paid;

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Vigilance"},{"Activated":{"cost":["Tap","SacrificeSelf"],"targets":[{"what":{"Object":[{"Supertype":"Legendary"},{"AnyOf":[{"Type":"Artifact"},{"Type":"Creature"},{"Type":"Enchantment"}]}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}]}]}

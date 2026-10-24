@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"SpellCast":{"by":"You"}},"effects":[{"GainLife":{"amount":{"Tallied":{"who":"You","what":"SpellsCast"}}}}]}},{"Activated":{"cost":[{"PayLife":50}],"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"source":"This","to":{"Target":0},"amount":50}}]}}]}]}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "6ebd4b3f-246e-475f-8cec-838eaaf597e2",
+  "name": "Clan Crafter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clan Crafter",
+      "oracle_fingerprint": "105757bcd813a2bbcbb0ad2af3b41755",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [
+                      { "Mana": "{2}" },
+                      { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }
+                    ],
+                    "effects": [
+                      { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+                      { "Draw": {} }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "95d018f4-7f97-4b2c-abb4-cef69031caa1",
+  "name": "Dalek Drone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dalek Drone",
+      "oracle_fingerprint": "c7307865fa856932f9b0a585acff26f8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "LoseLife": { "who": { "ControllerOf": { "Target": 0 } }, "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

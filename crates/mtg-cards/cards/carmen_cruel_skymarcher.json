@@ -1,0 +1,56 @@
+{
+  "oracle_id": "84c24e62-26bd-4ca4-b6b9-d31e2065f13b",
+  "name": "Carmen, Cruel Skymarcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Carmen, Cruel Skymarcher",
+      "oracle_fingerprint": "5fb8ba041c7ecb0f7d0b822ae685edd5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [] } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

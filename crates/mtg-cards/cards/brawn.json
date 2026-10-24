@@ -1,0 +1,28 @@
+{
+  "oracle_id": "00876e98-d062-4a12-85e6-86a2b20cf867",
+  "name": "Brawn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brawn",
+      "oracle_fingerprint": "175733d38e80d8b373b632ab67ef13b6",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Trample" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

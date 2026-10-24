@@ -1,0 +1,25 @@
+{
+  "oracle_id": "63b0538e-aa94-4e23-adf1-704cbf5bc3e5",
+  "name": "Brass's Bounty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brass's Bounty",
+      "oracle_fingerprint": "5f6271d42c0484cabea5ddced8f06b98",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"from":"Graveyard","effects":[{"RollDice":{"sides":4,"results":[{"from":1,"to":1,"effects":[{"Move":{"what":"This","to":{"Battlefield":{}}}}]}]}}]}}]}]}

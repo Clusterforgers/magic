@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"DealsDamage":{"source":[{"ControlledBy":"Opponents"}],"to":"You"}},"effects":[{"Sacrifice":{"filter":["This"]}},{"If":{"condition":"Performed","then":[{"CreateToken":{"token":{"Custom":{"name":"Dragon","colors":["Red"],"types":["Creature"],"subtypes":["Dragon"],"power":5,"toughness":5,"abilities":[{"Keyword":"Flying"}]}}}}]}}]}}]}]}
