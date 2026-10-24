@@ -1,0 +1,29 @@
+{
+  "oracle_id": "521b1598-58c6-47a0-a7b3-021d70bf2b05",
+  "name": "Keiga, the Tide Star",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keiga, the Tide Star",
+      "oracle_fingerprint": "9a3a77cfc9f2230d83019afd8c5cfbd1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

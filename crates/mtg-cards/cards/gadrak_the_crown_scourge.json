@@ -1,0 +1,40 @@
+{
+  "oracle_id": "42d7ec93-0943-43e2-9b65-b7edc3349410",
+  "name": "Gadrak, the Crown-Scourge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gadrak, the Crown-Scourge",
+      "oracle_fingerprint": "e0d0c167bede9e304a72e13f3f53ac9b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                "op": "Lt",
+                "right": 4
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "Tallied": { "who": "EachPlayer", "what": "NontokenCreaturesDied" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
