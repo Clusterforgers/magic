@@ -101,7 +101,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   TurnBegan: [{ TurnBegan: { number: 3, active: 1 } }, "Turn 3 begins: Bo's turn"],
   ExtraTurnAdded: [{ ExtraTurnAdded: { player: 1 } }, 'Bo takes an extra turn after this one'],
   ExtraTurnSkipped: [{ ExtraTurnSkipped: { player: 1 } }, 'Bo skips an extra turn'],
-  PhasesAdded: [{ PhasesAdded: { steps: ['BeginCombat', 'Main2'] } }, '2 additional phase(s) follow this phase'],
+  PhasesAdded: [
+    { PhasesAdded: { steps: ['BeginCombat', 'Main2'] } },
+    '2 additional phase(s) follow this phase',
+  ],
   StepBegan: [{ StepBegan: { step: 'DeclareAttackers' } }, 'Declare attackers begins'],
   NothingToDo: [{ NothingToDo: { player: 0, kind: 'Attack' } }, 'Ana has no possible attackers'],
   PriorityGranted: [{ PriorityGranted: { player: 0 } }, 'Ana receives priority'],
