@@ -193,6 +193,8 @@ mod improvise;
 mod improvise_fuzz;
 mod impulse;
 mod impulse_fuzz;
+mod instead_fuzz;
+mod instead_search;
 mod keyword_counters;
 mod keyword_lines_fuzz;
 mod keywords_attack;

@@ -20,7 +20,7 @@ fn a_second_sentence_replaces_the_first_under_a_condition(#[case] text: &str) {
     let Ability::Spell { effects, targets } = read else {
         panic!("a spell ability");
     };
-    assert!(targets.is_empty());
+    assert_eq!(targets.len(), 0);
     let [
         Effect::If {
             then, otherwise, ..

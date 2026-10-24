@@ -768,6 +768,13 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
     }
     let found = Ref::Bound(bind.clone());
     let rest = &effects[count_of..];
+    if count_of == 1
+        && plural
+        && let Some(put) = split_put_text(rest, bind, who)
+    {
+        let text = text.replace(", reveal them", ", reveal those cards");
+        return Some((format!("{text}, {put}"), 5));
+    }
     match rest {
         [
             Effect::Move { what, to },
@@ -807,43 +814,44 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
         ] if count_of == 1 && *what == found && !plural && shuffler == who => {
             text.push_str(", then shuffle and put that card on top");
         }
-        [
-            Effect::Choose {
-                who: Ref::You,
-                from: Ref::Bound(from),
-                count: chosen,
-                bind: kept,
-                rest_as: Some(left),
-            },
-            Effect::Move {
-                what: Ref::Bound(first),
-                to,
-            },
-            Effect::Move {
-                what: Ref::Bound(others),
-                to: rest_to,
-            },
-            Effect::Shuffle { who: shuffler },
-            ..,
-        ] if count_of == 1
-            && plural
-            && *who == Ref::You
-            && from == bind
-            && [kept, left, first, others] == [KEPT, REST, KEPT, REST]
-            && chosen.is_one()
-            && shuffler == who =>
-        {
-            let kept_to = destination_text(to)?;
-            let rest_to = destination_text(rest_to)?;
-            let text = text.replace(", reveal them", ", reveal those cards");
-            return Some((
-                format!("{text}, put one {kept_to} and the other {rest_to}, then shuffle"),
-                5,
-            ));
-        }
         _ => return None,
     }
     Some((text, count_of * 2 + 1))
+}
+
+/// "put one onto the battlefield tapped and the other into your hand, then shuffle": the choice of one of the cards
+/// found by the search that bound `bind`, the move of it, the move of the others and the shuffle.
+fn split_put_text(rest: &[Effect], bind: &str, who: &Ref) -> Option<String> {
+    let [
+        Effect::Choose {
+            who: Ref::You,
+            from: Ref::Bound(from),
+            count: chosen,
+            bind: kept,
+            rest_as: Some(left),
+        },
+        Effect::Move {
+            what: Ref::Bound(first),
+            to,
+        },
+        Effect::Move {
+            what: Ref::Bound(others),
+            to: rest_to,
+        },
+        Effect::Shuffle { who: shuffler },
+        ..,
+    ] = rest
+    else {
+        return None;
+    };
+    let named = [kept, left, first, others] == [KEPT, REST, KEPT, REST];
+    (*who == Ref::You && from == bind && named && chosen.is_one() && shuffler == who)
+        .then_some(())?;
+    Some(format!(
+        "put one {} and the other {}, then shuffle",
+        destination_text(to)?,
+        destination_text(rest_to)?
+    ))
 }
 
 /// A look at the top cards, the choice of one of them for the hand and where the rest go.

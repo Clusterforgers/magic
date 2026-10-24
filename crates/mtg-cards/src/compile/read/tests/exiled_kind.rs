@@ -40,7 +40,7 @@ fn the_kind_of_the_exiled_card_decides_what_follows(#[case] text: &str) {
         panic!("an exile that binds and an If over the binding: {effects:?}");
     };
     assert_eq!(named, subject);
-    assert!(otherwise.is_empty());
+    assert_eq!(otherwise.len(), 0);
 }
 
 #[rstest]
