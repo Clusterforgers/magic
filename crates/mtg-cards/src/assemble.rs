@@ -518,6 +518,7 @@ fn needs_no_answer(effect: &Effect) -> bool {
 fn pays_with_activation(item: &CostItem) -> bool {
     let fixed = match item {
         CostItem::PayLife(amount)
+        | CostItem::Mill(amount)
         | CostItem::PayEnergy(amount)
         | CostItem::RemoveCounters { count: amount, .. } => {
             matches!(amount, Amount::Fixed(number) if *number > 0)

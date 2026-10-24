@@ -47,3 +47,104 @@ fn amounts_of_cards_drawn_read_and_write_back(
 ) {
     reads_as(text, kind, false, json);
 }
+
+#[test]
+fn probe_cost() {
+    let tokens = tokenize("for each card in target opponent's hand");
+    eprintln!("PROBE tokens {tokens:?}");
+    let mut reader = Reader::new(&tokens, false);
+    let each = super::amounts::for_each(&mut reader);
+    eprintln!(
+        "PROBE each {each:?} end={} targets={:?}",
+        reader.end(),
+        reader.targets
+    );
+    if let Some(each) = &each {
+        eprintln!("PROBE text {:?}", super::amounts::for_each_text(each));
+    }
+}
+
+#[test]
+fn probe() {
+    for (text, kind) in [
+        (
+            "Whenever this creature or equipped creature attacks, you gain 1 life.",
+            ClauseKind::Triggered,
+        ),
+        (
+            "Whenever this creature or equipped creature attacks, add {G}.",
+            ClauseKind::Triggered,
+        ),
+        (
+            "Whenever this creature attacks, add an amount of {G} equal to its power.",
+            ClauseKind::Triggered,
+        ),
+        (
+            "Whenever equipped creature attacks, add an amount of {G} equal to its power.",
+            ClauseKind::Triggered,
+        ),
+        (
+            "Whenever this creature attacks, add an amount of {G} equal to the greatest power among creatures you control.",
+            ClauseKind::Triggered,
+        ),
+        (
+            "Whenever Neheb deals combat damage to a player or planeswalker, you may discard any number of cards. If you do, draw that many cards and add that much {R}.",
+            ClauseKind::Triggered,
+        ),
+        (
+            "Whenever ~ deals combat damage to a player, you may discard a card. If you do, draw a card.",
+            ClauseKind::Triggered,
+        ),
+        ("{T}, Mill a card: Draw a card.", ClauseKind::Activated),
+        ("{T}, Discard a card: Add {C}.", ClauseKind::Activated),
+        ("{T}, Mill two cards: Add {C}.", ClauseKind::Activated),
+        (
+            "{T}: Target player adds one mana of any color.",
+            ClauseKind::Activated,
+        ),
+        ("Add {R} for each card in their hand.", ClauseKind::Spell),
+        (
+            "Target opponent loses 1 life for each card in their hand.",
+            ClauseKind::Spell,
+        ),
+        ("{T}, Mill a card: Add {C}.", ClauseKind::Activated),
+        (
+            "{T}, Mill a card: Target player adds one mana of any color.",
+            ClauseKind::Activated,
+        ),
+        (
+            "Add {R} for each card in target opponent's hand.",
+            ClauseKind::Spell,
+        ),
+        (
+            "Add {R} for each card in target opponent's hand. Until end of turn, you don't lose this mana as steps and phases end.",
+            ClauseKind::Spell,
+        ),
+        (
+            "Add {R} for each card in target opponent's hand. Until end of turn, you don't lose this mana as steps and phases end. Exile ~ with three time counters on it.",
+            ClauseKind::Spell,
+        ),
+        (
+            "{T}: Add {U} for each counter on ~. Spend this mana only to cast noncreature spells.",
+            ClauseKind::Activated,
+        ),
+        (
+            "{T}, Remove X +1/+1 counters from this creature: Add X mana of any one color.",
+            ClauseKind::Activated,
+        ),
+        (
+            "Devouring Monster — {T}, Remove X +1/+1 counters from this creature: Add X mana of any one color.",
+            ClauseKind::Activated,
+        ),
+        (
+            "Whenever this creature or equipped creature attacks, add an amount of {G} equal to its power. Until end of turn, you don't lose this mana as steps and phases end.",
+            ClauseKind::Triggered,
+        ),
+    ] {
+        let read = clause(text, kind, false);
+        eprintln!(
+            "PROBE {text}\n  => {}",
+            read.map_or("NONE".into(), |a| serde_json::to_string(&a).unwrap())
+        );
+    }
+}

@@ -1249,6 +1249,11 @@ fn equal_text(amount: &Amount) -> Option<String> {
             of: Ref::This,
             stat,
         } => Some(format!("~'s {}", stat_name(*stat)?)),
+        // The creature of the event, in a sentence of the trigger that names it already.
+        Amount::Stat {
+            of: Ref::Triggering,
+            stat,
+        } => Some(format!("its {}", stat_name(*stat)?)),
         other => defining::value_text(other),
     }
 }
@@ -1915,12 +1920,12 @@ impl Writer<'_> {
                 to: Destination::Hand,
             } => self.returned_to_hand(what).or_else(|| self.moved(effect))?,
             Effect::AddMana {
-                who: Ref::You,
+                who,
                 mana,
                 times,
                 only,
                 lasts,
-            } => add_text(mana, times, only, *lasts, "")?,
+            } => self.mana_added(who, (mana, times), only, *lasts)?,
             // "you get {E}{E}": energy is a counter on the player, written with its symbol.
             Effect::PutCounters { count, .. } if gets_energy(effect) => {
                 format!("you get {}", costs::energy_text(count)?)
@@ -2388,6 +2393,35 @@ impl Writer<'_> {
             rest = &rest[run..];
         }
         Some(clauses.join(" and "))
+    }
+
+    /// Mana added to a pool: "add {R}{R}" for you, "target player adds one mana of any color" for another player.
+    fn mana_added(
+        &mut self,
+        who: &Ref,
+        (mana, times): (&Produce, &Amount),
+        only: &[SpendOn],
+        lasts: ManaLasts,
+    ) -> Option<String> {
+        let mut added = add_text(mana, times, only, lasts, "")?;
+        // "for each card in target opponent's hand": the selector knows the owner only as the target.
+        if added.contains("target opponent's hand") {
+            if self.named {
+                return None;
+            }
+            self.named = true;
+            if self.target_is(|what| matches!(what, Targetable::Player)) {
+                added = added.replace("target opponent's hand", "target player's hand");
+            }
+        }
+        if *who == Ref::You {
+            return Some(added);
+        }
+        if matches!(mana, Produce::Instead { .. }) {
+            return None;
+        }
+        let rest = added.strip_prefix("add ")?;
+        Some(format!("{} adds {rest}", self.player(who)?))
     }
 
     /// Mana and the life gained with it as one sentence: "add {W}{W}{W} and you gain 3 life".

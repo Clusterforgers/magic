@@ -51,7 +51,9 @@ fn is_fixed(item: &CostItem) -> bool {
         matches!(amount, Amount::Fixed(number) if *number >= 0) || *amount == Amount::X
     };
     match item {
-        CostItem::PayLife(amount) | CostItem::PayEnergy(amount) => fixed(amount),
+        CostItem::PayLife(amount) | CostItem::PayEnergy(amount) | CostItem::Mill(amount) => {
+            fixed(amount)
+        }
         CostItem::RemoveCounters { count, .. }
         | CostItem::Sacrifice { count, .. }
         | CostItem::Discard { count, .. }
@@ -67,7 +69,9 @@ fn is_fixed(item: &CostItem) -> bool {
 /// Whether the amount of a part of a cost is the X announced.
 fn amount_is_x(item: &CostItem) -> bool {
     match item {
-        CostItem::PayLife(amount) | CostItem::PayEnergy(amount) => *amount == Amount::X,
+        CostItem::PayLife(amount) | CostItem::PayEnergy(amount) | CostItem::Mill(amount) => {
+            *amount == Amount::X
+        }
         CostItem::RemoveCounters { count, .. }
         | CostItem::Sacrifice { count, .. }
         | CostItem::Discard { count, .. }
@@ -662,7 +666,11 @@ impl<'a> Walker<'a> {
                     w.uses("Cost", &format!("{}.Counted", tag_of(item)));
                 }
                 match item {
-                    CostItem::PayLife(amount) | CostItem::PayEnergy(amount) => w.amount(amount),
+                    CostItem::PayLife(amount)
+                    | CostItem::PayEnergy(amount)
+                    | CostItem::Mill(amount) => {
+                        w.amount(amount);
+                    }
                     CostItem::RemoveCounters { count, .. } => {
                         w.at("count", |w| w.amount(count));
                     }
@@ -782,6 +790,7 @@ impl<'a> Walker<'a> {
             if matches!(
                 item,
                 CostItem::PayLife(_)
+                    | CostItem::Mill(_)
                     | CostItem::RemoveCounters { .. }
                     | CostItem::Sacrifice { .. }
                     | CostItem::Discard { .. }
