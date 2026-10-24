@@ -155,41 +155,8 @@ fn read_face(
             held: false,
         });
     }
-    let lines: Vec<&str> = pending
-        .iter()
-        .filter(|clause| clause.kind == ClauseKind::Spell)
-        .map(|clause| clause.text.as_str())
-        .collect();
-    let spell_text = lines.join("\n");
-    let counter_explained = pending
-        .iter()
-        .any(|clause| clause.kind == ClauseKind::Spell && clause.reminds_counter);
-    let spell_ability = if spell_text.is_empty() || counter_explained {
-        None
-    } else {
-        read::clause_with(&spell_text, ClauseKind::Spell, x_free, &own)
-    };
-    // A cost that counts targets needs the targets of the spell ability beside it: without them it is left to the table.
-    let has_targets = spell_ability
-        .as_ref()
-        .is_some_and(|ability| !ability.targets().is_empty());
-    if !has_targets {
-        unread_target_counts(&mut pending, !spell_text.is_empty() && spell_ability.is_none());
-    }
-    if spell_ability.is_none() && !counter_explained {
-        hold_back_by_unread_lines(&mut pending, x_free, &own);
-    }
-    if let Some(ability) = spell_ability {
-        let mut ability = Some(ability);
-        for clause in pending
-            .iter_mut()
-            .filter(|clause| clause.kind == ClauseKind::Spell)
-        {
-            clause.read = true;
-            clause.ability = ability.take();
-        }
-    }
-    if spell && spell_text.is_empty() {
+    let has_spell_lines = read_spell_lines(&mut pending, x_free, &own);
+    if spell && !has_spell_lines {
         // The modes of an instant or sorcery are its whole spell ability when no other line is.
         let mut modals = pending
             .iter_mut()
@@ -300,7 +267,10 @@ fn read_clause(
                 .into_iter();
             (block.next(), block.collect())
         }
-        ClauseKind::Triggered | ClauseKind::Activated | ClauseKind::Loyalty | ClauseKind::Static
+        ClauseKind::Triggered
+        | ClauseKind::Activated
+        | ClauseKind::Loyalty
+        | ClauseKind::Static
             if !reminds_counter =>
         {
             match read::clause_with(text, kind, x_free, own) {
@@ -335,6 +305,47 @@ fn unread_target_counts(pending: &mut [Pending], spell_unread: bool) {
             clause.held = spell_unread;
         }
     }
+}
+
+/// Reads the spell lines of a face as one `Spell` ability, which the first of them carries; whether the face has any
+/// spell line. When the spell does not read whole, the costs that count its targets wait for it and the lines that read
+/// alone are held back by the others.
+fn read_spell_lines(pending: &mut [Pending], x_free: bool, own: &read::Own) -> bool {
+    let lines: Vec<&str> = pending
+        .iter()
+        .filter(|clause| clause.kind == ClauseKind::Spell)
+        .map(|clause| clause.text.as_str())
+        .collect();
+    let spell_text = lines.join("\n");
+    let counter_explained = pending
+        .iter()
+        .any(|clause| clause.kind == ClauseKind::Spell && clause.reminds_counter);
+    let spell_ability = if spell_text.is_empty() || counter_explained {
+        None
+    } else {
+        read::clause_with(&spell_text, ClauseKind::Spell, x_free, own)
+    };
+    // A cost that counts targets needs the targets of the spell ability beside it: without them it is left to the table.
+    let has_targets = spell_ability
+        .as_ref()
+        .is_some_and(|ability| !ability.targets().is_empty());
+    if !has_targets {
+        unread_target_counts(pending, !spell_text.is_empty() && spell_ability.is_none());
+    }
+    if spell_ability.is_none() && !counter_explained {
+        hold_back_by_unread_lines(pending, x_free, own);
+    }
+    if let Some(ability) = spell_ability {
+        let mut ability = Some(ability);
+        for clause in pending
+            .iter_mut()
+            .filter(|clause| clause.kind == ClauseKind::Spell)
+        {
+            clause.read = true;
+            clause.ability = ability.take();
+        }
+    }
+    !spell_text.is_empty()
 }
 
 /// The spell lines of a spell that does not read whole: a line that reads on its own is held back by the others (the
@@ -1039,9 +1050,11 @@ mod tests {
     ) {
         let compiled = one("Jace", type_line, text);
         assert_eq!(status(&compiled), expected, "{text}");
-        let found = compiled.card.iter().flat_map(Card::abilities).filter(
-            |(_, ability)| matches!(ability, Ability::Loyalty { .. }),
-        );
+        let found = compiled
+            .card
+            .iter()
+            .flat_map(Card::abilities)
+            .filter(|(_, ability)| matches!(ability, Ability::Loyalty { .. }));
         assert_eq!(found.count(), loyalty, "{text}");
     }
 }

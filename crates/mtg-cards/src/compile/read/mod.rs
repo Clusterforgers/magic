@@ -226,7 +226,7 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         ClauseKind::Activated => abilities::activated(&mut reader)?,
         ClauseKind::Loyalty => abilities::loyalty(&mut reader)?,
         ClauseKind::Static => statics::ability(&mut reader)?,
-        _ => return None,
+        ClauseKind::Keyword => return None,
     };
     if !reader.end() {
         return None;
