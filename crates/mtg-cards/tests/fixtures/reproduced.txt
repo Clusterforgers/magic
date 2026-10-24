@@ -977,6 +977,7 @@ Shadowmage Infiltrator
 Shadowspear
 Shamanic Revelation
 Shambling Shell
+Sharding Sphinx
 Sheer Drop
 Sheltered by Ghosts
 Shenanigans
@@ -1056,6 +1057,7 @@ Starscape Cleric
 Steady Progress
 Steam Vents
 Steampath Charger
+Steel Overseer
 Steelburr Champion
 Steelclaw Lance
 Sticky Fingers

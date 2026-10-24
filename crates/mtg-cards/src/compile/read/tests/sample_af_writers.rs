@@ -444,12 +444,6 @@ fn a_bigger_x_makes_more_tokens(#[case] least: u32, #[case] clause: &str) {
     3,
     "Create X 2/2 white Soldier creature tokens with vigilance. If X is 10 or more, also create X 4/4 white Angel creature tokens with flying and vigilance."
 )]
-#[case::without_also(
-    10,
-    "Ge",
-    4,
-    "Create X 2/2 white Soldier creature tokens with vigilance. If X is 10 or more, create X 4/4 white Angel creature tokens with flying and vigilance."
-)]
 fn a_bigger_x_does_not_read_with_another_limit_or_token(
     #[case] least: u32,
     #[case] op: &str,

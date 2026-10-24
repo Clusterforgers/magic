@@ -63,7 +63,6 @@ mod unless;
 mod untap_lands;
 mod wheres;
 mod you_create;
-mod your_graveyard;
 
 use crate::ability::Ability;
 
@@ -129,5 +128,4 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     put_into::add(ability, texts);
     wheres::add(ability, texts);
     you_create::add(ability, texts);
-    your_graveyard::add(ability, texts);
 }

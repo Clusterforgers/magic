@@ -38,10 +38,14 @@ fn a_draw_by_the_controller_does_not_read_as_another_draw(#[case] clause: &str) 
 }
 
 const SECRETS: &str = r#"{"Triggered":{"when":{"SpellCast":{"what":[{"CastFrom":"Graveyard"}],"by":"You"}},"effects":[{"Draw":{}}]}}"#;
+const SECRETS_OWNED: &str = r#"{"Triggered":{"when":{"SpellCast":{"what":[{"CastFrom":"Graveyard"},{"OwnedBy":"You"}],"by":"You"}},"effects":[{"Draw":{}}]}}"#;
 const THEIRS: &str = r#"{"Triggered":{"when":{"SpellCast":{"what":[{"CastFrom":"Graveyard"}],"by":"Opponents"}},"effects":[{"Draw":{}}]}}"#;
 
 #[rstest]
-#[case::your_graveyard(SECRETS, "Whenever you cast a spell from your graveyard, draw a card.")]
+#[case::your_graveyard(
+    SECRETS_OWNED,
+    "Whenever you cast a spell from your graveyard, draw a card."
+)]
 #[case::any_graveyard(SECRETS, "Whenever you cast a spell from a graveyard, draw a card.")]
 fn a_cast_from_a_graveyard_names_the_graveyard_of_the_caster(
     #[case] json: &str,
