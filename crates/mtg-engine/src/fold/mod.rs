@@ -258,7 +258,8 @@ fn add_phases(state: &mut GameState, steps: &[Step]) -> Result<(), EngineError> 
     Ok(())
 }
 
-fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
+/// The events of the turn sequence: turns begin, extra turns and phases are added, steps begin.
+fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::TurnBegan {
             number,
@@ -288,6 +289,18 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             // Each combat damage step divides its damage afresh: a double striker divides twice.
             state.combat.clear_assignments();
         }
+        _ => {}
+    }
+    Ok(())
+}
+
+fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
+    match event {
+        Event::TurnBegan { .. }
+        | Event::ExtraTurnAdded { .. }
+        | Event::ExtraTurnSkipped { .. }
+        | Event::PhasesAdded { .. }
+        | Event::StepBegan { .. } => apply_turn(state, event)?,
         // `ManaBurned` is information in the log: the life it cost is its own `LifeLost`.
         Event::NothingToDo { .. }
         | Event::ManaBurned { .. }

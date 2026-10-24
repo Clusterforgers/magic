@@ -19,7 +19,7 @@ fn the_turn_view_names_the_extra_turns_to_every_seat(#[values(2, 3, 4)] seats: u
     for viewer in 0..seats {
         let view = TableView::of(&state, seat(viewer));
         assert!(!view.turn.extra);
-        assert!(view.turn.extra_turns.is_empty());
+        assert_eq!(view.turn.extra_turns, Vec::<PlayerId>::new());
         let json = serde_json::to_value(&view).unwrap();
         assert!(json["turn"].get("extra").is_none(), "left out while false");
         assert!(
@@ -90,7 +90,11 @@ fn a_turn_that_is_extra_says_so_to_every_seat(#[values(2, 4)] seats: usize) {
     for viewer in 0..seats {
         let view = TableView::of(&state, seat(viewer));
         assert!(view.turn.extra);
-        assert!(view.turn.extra_turns.is_empty(), "the turn was taken");
+        assert_eq!(
+            view.turn.extra_turns,
+            Vec::<PlayerId>::new(),
+            "the turn was taken"
+        );
         let json = serde_json::to_value(&view).unwrap();
         assert_eq!(json["turn"]["extra"], true);
     }

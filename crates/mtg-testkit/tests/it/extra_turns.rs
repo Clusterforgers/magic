@@ -7,7 +7,6 @@ use common::pid;
 use mtg_cards::effect::PhaseKind;
 use mtg_cards::refs::Ref;
 use mtg_core::ids::PlayerId;
-use mtg_engine::decision::DecisionKind;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Engine, EngineError, Event, replay};
@@ -97,7 +96,7 @@ fn extra_turns_come_right_after_this_one_and_the_latest_is_taken_first(
             .map(|(offset, seat, extra)| (START + offset, pid(*seat), *extra)),
     );
     assert_eq!(began, want);
-    assert!(driver.state().extra_turns().is_empty());
+    assert_eq!(driver.state().extra_turns(), []);
     // An extra turn opens no round: the rounds count the regular turns only.
     let rounds: Vec<_> = seen.iter().map(|b| (b.extra, b.round)).collect();
     for pair in rounds.windows(2) {
@@ -248,7 +247,7 @@ fn a_player_who_has_left_loses_the_extra_turn() -> Result<(), ScriptError> {
         order,
         [(0, pid(0), false), (1, pid(1), true), (2, pid(1), false)]
     );
-    assert!(driver.state().extra_turns().is_empty());
+    assert_eq!(driver.state().extra_turns(), []);
     Ok(())
 }
 
@@ -362,7 +361,7 @@ fn the_combat_phases_of_a_turn_are_counted_and_each_declares_attackers() -> Resu
     }
     reach(&mut driver, Step::Main2, 1)?;
     assert_eq!(driver.state().turn().combats(), 3);
-    assert!(driver.state().turn().phases_ahead().is_empty());
+    assert_eq!(driver.state().turn().phases_ahead(), []);
     reach(&mut driver, Step::End, 1)?;
     let declared = driver
         .engine()
@@ -391,7 +390,7 @@ fn the_next_turn_resets_the_added_phases_and_the_combat_count() -> Result<(), Sc
     );
     driver.idle_until(START + 1, Step::Main1)?;
     let turn = driver.state().turn();
-    assert!(turn.phases_ahead().is_empty());
+    assert_eq!(turn.phases_ahead(), []);
     assert_eq!(turn.combats(), 0);
     assert!(!turn.is_extra());
     Ok(())
