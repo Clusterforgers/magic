@@ -1,0 +1,19 @@
+{
+  "oracle_id": "895527a6-e3b2-454d-a3be-c0036630ec73",
+  "name": "Body Double",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Body Double",
+      "oracle_fingerprint": "a9e4e01b79362dd45146ed788677e015",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "AsCopy": { "of": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }
+          }
+        }
+      ]
+    }
+  ]
+}

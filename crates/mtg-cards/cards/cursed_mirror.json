@@ -1,0 +1,31 @@
+{
+  "oracle_id": "4d67e2a7-4aa7-44cc-853b-500d7aac046d",
+  "name": "Cursed Mirror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cursed Mirror",
+      "oracle_fingerprint": "8d2c2f6387b496f1a0bd168a7e03f830",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }],
+                "except": [{ "AddKeyword": "Haste" }],
+                "until_end_of_turn": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

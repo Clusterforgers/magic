@@ -121,6 +121,7 @@ Blightwidow
 Bloodbraid Elf
 Bloodghast
 Bloom Hulk
+Body Double
 Bog Wraith
 Boggart Ram-Gang
 Boiling Earth
@@ -192,6 +193,7 @@ Cliffgate
 Clifftop Lookout
 Clive's Hideaway
 Clone
+Clone Legion
 Cloud Sprite
 Cloudfin Raptor
 Cloudskate
@@ -240,6 +242,7 @@ Curse of Verbosity
 Curse of Vitality
 Curse of the Forsaken
 Curse of the Nightly Hunt
+Cursed Mirror
 Curtains' Call
 Custodi Lich
 Custodi Soulbinders
@@ -655,6 +658,7 @@ Mirari's Wake
 Mire's Malice
 Mirran Bardiche
 Mirror Image
+Mirrorweave
 Mishra's Workshop
 Mistmeadow Skulk
 Mizzium Mortars
@@ -681,6 +685,7 @@ Myr Retriever
 Myriad Landscape
 Mystic Gate
 Nameless Inversion
+Nanogene Conversion
 Nantuko Husk
 Nantuko Vigilante
 Nessian Asp
@@ -821,6 +826,7 @@ Rift Bolt
 Righteous Avengers
 Riptide Survivor
 Rising Miasma
+Rite of Replication
 Riveteers Requisitioner
 Rob the Archives
 Rocksteady, Mutant Marauder
@@ -1019,6 +1025,7 @@ Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Birth of Meletis
 The Modern Age // Vector Glider
+The Mycosynth Gardens
 The Seriema
 The Spear of Bashenga
 The Squadron Sinister
@@ -1097,6 +1104,7 @@ Vault 75: Middle School
 Vedalken Engineer
 Vengeful Vampire
 Vestige of Emrakul
+Vesuva
 Veteran's Powerblade
 Village Rites
 Viridian Corrupter

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "fb60739e-1dc3-481d-a056-ad72e665c680",
+  "name": "Rite of Replication",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rite of Replication",
+      "oracle_fingerprint": "8891fe28e09d3cabe67c6e90858d5290",
+      "abilities": [
+        { "Keyword": { "Kicker": "{5}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": { "CopyOf": { "of": { "Target": 0 } } },
+                        "count": 5
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
