@@ -194,11 +194,18 @@ pub fn other_wordings(texts: &[String]) -> Vec<String> {
         // Only the first joint, and only the one that is followed by a kind of token.
         (!after.contains(" and ")).then(|| format!("{head}{before}create {after}"))
     });
+    // A trigger may name who creates: "Whenever a land enchanted player controls enters, you create a Zombie token".
+    let named = texts
+        .iter()
+        .filter(|text| text.starts_with("Whenever ") || text.starts_with("When "))
+        .filter(|text| text.contains(", create "))
+        .map(|text| text.replacen(", create ", ", you create ", 1));
     let have = texts.iter().filter_map(|text| quoted_in_a_sentence(text));
     controllers
         .chain(again)
         .chain(pronoun_wordings(texts))
         .chain(have)
+        .chain(named)
         .collect()
 }
 

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "4234f07e-583f-40db-8b47-7e16c7316e19",
+  "name": "Elemental Mastery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elemental Mastery",
+      "oracle_fingerprint": "b074b7f55b4652531f71f46507bf4d0c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [
+                      {
+                        "CreateToken": {
+                          "token": {
+                            "Custom": {
+                              "name": "Elemental",
+                              "colors": ["Red"],
+                              "types": ["Creature"],
+                              "subtypes": ["Elemental"],
+                              "power": 1,
+                              "toughness": 1,
+                              "abilities": [{ "Keyword": "Haste" }]
+                            }
+                          },
+                          "count": { "Stat": { "of": "This", "stat": "Power" } },
+                          "as": "elementals"
+                        }
+                      },
+                      {
+                        "DelayedTrigger": {
+                          "when": { "StepBegins": { "step": "End" } },
+                          "effects": [{ "Exile": { "what": { "Bound": "elementals" } } }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

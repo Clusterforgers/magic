@@ -240,6 +240,7 @@ Curse of Verbosity
 Curse of Vitality
 Curse of the Forsaken
 Curse of the Nightly Hunt
+Curse of the Restless Dead
 Curtains' Call
 Custodi Lich
 Custodi Soulbinders

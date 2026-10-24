@@ -1,0 +1,25 @@
+{
+  "id": "687133cb-3754-475c-9e21-b6a33aa58bb0",
+  "oracle_id": "8cbf0173-2349-4205-b720-378643c347a4",
+  "name": "Idolized",
+  "lang": "en",
+  "layout": "normal",
+  "set": "pip",
+  "collector_number": "17",
+  "rarity": "rare",
+  "released_at": "2024-03-08",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature has \"Whenever this creature attacks alone, it gets +X/+X until end of turn, where X is the number of nonland permanents you control.\"",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

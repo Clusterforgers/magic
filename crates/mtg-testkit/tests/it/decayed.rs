@@ -5,15 +5,33 @@ use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
 use mtg_cards::keyword::Keyword;
+use mtg_engine::characteristics::controller_of;
 use mtg_engine::decision::DecisionKind;
+use mtg_engine::keywords::keywords_of;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{GameSetup, replay};
-use mtg_testkit::cards::{free_creature, keyworded};
-use mtg_testkit::{Driver, Scenario, ScriptError, ready};
+use mtg_testkit::cards::{forest, free_creature, keyworded};
+use mtg_testkit::corpus::card;
+use mtg_testkit::{Driver, Scenario, ScriptError, enchanting, ready};
 use rstest::rstest;
 
 use crate::common::{name_of, names, pid};
+
+/// Passes priority until the blockers are asked for, or the step is past them (no creature can block).
+fn to_blockers(driver: &mut Driver) -> Result<(), ScriptError> {
+    for _ in 0..24 {
+        let past = !matches!(
+            driver.state().turn().step(),
+            Step::DeclareAttackers | Step::DeclareBlockers
+        );
+        if past || matches!(driver.decision()?.kind, DecisionKind::DeclareBlockers(_)) {
+            break;
+        }
+        driver.pass()?;
+    }
+    Ok(())
+}
 
 fn zombie() -> Arc<CardDefinition> {
     keyworded("Zombie", 2, 2, &[Keyword::Decayed])
@@ -67,6 +85,7 @@ fn a_creature_with_decayed_is_offered_no_block(
         vec![zombie(), free_creature("Bear", 2, 2)],
     ))?;
     driver.attack(&[("Raider", 1)])?;
+    to_blockers(&mut driver)?;
     assert_eq!(offered(&driver), ["Bear"]);
     Ok(())
 }
@@ -81,6 +100,7 @@ fn a_lone_creature_with_decayed_leaves_the_block_unasked(
         vec![zombie()],
     ))?;
     driver.attack(&[("Raider", 1)])?;
+    to_blockers(&mut driver)?;
     // No creature can block: the declaration is not asked for.
     assert!(!matches!(
         driver.decision()?.kind,
@@ -119,6 +139,7 @@ fn a_creature_with_decayed_is_sacrificed_at_the_end_of_combat_it_attacked_in(
     let mut driver = Driver::from_scenario(game())?;
     let attacks: Vec<(&str, usize)> = attackers.iter().map(|name| (*name, 1)).collect();
     driver.attack(&attacks)?;
+    to_blockers(&mut driver)?;
     if matches!(driver.decision()?.kind, DecisionKind::DeclareBlockers(_)) {
         driver.block(blocks)?;
     }
@@ -146,8 +167,96 @@ fn a_creature_with_decayed_that_does_not_attack_is_left_alone(
         vec![],
     ))?;
     driver.attack(&[("Raider", 1)])?;
+    to_blockers(&mut driver)?;
     driver.pass_until(Step::Main2)?;
     assert!(names(driver.state(), Zone::Battlefield).contains(&"Zombie".to_owned()));
-    assert!(names(driver.state(), Zone::Graveyard(pid(0))).is_empty());
+    assert_eq!(
+        names(driver.state(), Zone::Graveyard(pid(0))),
+        Vec::<String>::new()
+    );
+    Ok(())
+}
+
+/// How many Zombies with decayed seat `seat` controls.
+fn decayed_zombies(driver: &Driver, seat: usize) -> usize {
+    let state = driver.state();
+    state
+        .zone(Zone::Battlefield)
+        .iter()
+        .filter_map(|id| state.object(*id))
+        .filter(|object| object.card().name == "Zombie")
+        .filter(|object| controller_of(state, object.id()) == Some(pid(seat)))
+        .filter(|object| keywords_of(state, object.id()).contains(&&Keyword::Decayed))
+        .count()
+}
+
+/// Passes priority until the stack is empty (at most a few rounds).
+fn resolve_all(driver: &mut Driver) -> Result<(), ScriptError> {
+    for _ in 0..24 {
+        if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
+            return Ok(());
+        }
+        driver.pass()?;
+    }
+    Err(ScriptError::Stuck("the stack".into()))
+}
+
+fn libraries(mut scenario: Scenario, seats: usize) -> Scenario {
+    for seat in 0..seats {
+        scenario = scenario.library(seat, (0..12).map(|_| free_creature("Filler", 1, 1)));
+    }
+    scenario
+}
+
+#[rstest]
+fn jadar_makes_a_decayed_zombie_at_the_end_step_only_while_it_has_none(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let game = || {
+        libraries(
+            Scenario::new(seats)
+                .battlefield(0, [ready(card("Jadar, Ghoulcaller of Nephalia").unwrap())]),
+            seats,
+        )
+    };
+    let setup = game().setup().unwrap();
+    let mut driver = Driver::from_scenario(game())?;
+    driver.idle_until(1, Step::End)?;
+    resolve_all(&mut driver)?;
+    assert_eq!(decayed_zombies(&driver, 0), 1);
+    // At its next end step it controls a creature with decayed, so nothing is made.
+    driver.idle_until(1 + u32::try_from(seats).unwrap(), Step::End)?;
+    resolve_all(&mut driver)?;
+    assert_eq!(decayed_zombies(&driver, 0), 1);
+    replays(&driver, &setup);
+    Ok(())
+}
+
+/// Seat `lander` plays a land while Curse of the Restless Dead of seat 0 enchants seat 1: how many Zombies with decayed
+/// seat 0 controls.
+#[rstest]
+#[case::the_enchanted_player_plays_a_land(1, 1)]
+#[case::the_curses_controller_plays_one(0, 0)]
+fn curse_of_the_restless_dead_makes_a_decayed_zombie_for_a_land_of_the_enchanted_player(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] lander: usize,
+    #[case] zombies: usize,
+) -> Result<(), ScriptError> {
+    let game = || {
+        let curse = enchanting(ready(card("Curse of the Restless Dead").unwrap()), 1);
+        libraries(
+            Scenario::new(seats)
+                .at(2, lander, Step::Main1)
+                .battlefield(0, [curse])
+                .hand(lander, [forest()]),
+            seats,
+        )
+    };
+    let setup = game().setup().unwrap();
+    let mut driver = Driver::from_scenario(game())?;
+    driver.play_land("Forest")?;
+    resolve_all(&mut driver)?;
+    assert_eq!(decayed_zombies(&driver, 0), zombies);
+    replays(&driver, &setup);
     Ok(())
 }

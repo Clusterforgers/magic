@@ -110,7 +110,15 @@ fn both_creatures_deal_damage_equal_to_their_power_to_each_other_once(
     #[case] theirs_fate: Fate,
     #[case] gain: i32,
 ) -> Result<(), ScriptError> {
-    let game = || table(seats, foe, vec![brawl("Brawl").unwrap()], mine.clone(), theirs.clone());
+    let game = || {
+        table(
+            seats,
+            foe,
+            vec![brawl("Brawl").unwrap()],
+            mine.clone(),
+            theirs.clone(),
+        )
+    };
     let setup = game().setup().unwrap();
     let mut driver = Driver::from_scenario(game())?;
     let (mine_id, theirs_id) = (driver.id_of(MINE)?, driver.id_of(THEIRS)?);
@@ -132,7 +140,8 @@ fn both_creatures_deal_damage_equal_to_their_power_to_each_other_once(
 
 /// The damage events of the log and whether any was combat damage (a fight is not).
 #[test]
-fn a_fight_is_damage_outside_combat_dealt_by_each_creature_to_the_other() -> Result<(), ScriptError> {
+fn a_fight_is_damage_outside_combat_dealt_by_each_creature_to_the_other() -> Result<(), ScriptError>
+{
     let mut driver = Driver::from_scenario(table(
         2,
         1,

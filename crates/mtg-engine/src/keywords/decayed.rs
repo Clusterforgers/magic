@@ -84,10 +84,11 @@ mod tests {
         assert_eq!(*what, Selector::this());
         let [
             Effect::DelayedTrigger {
-                when: TriggerPattern::StepBegins {
-                    step: Step::EndCombat,
-                    ..
-                },
+                when:
+                    TriggerPattern::StepBegins {
+                        step: Step::EndCombat,
+                        ..
+                    },
                 once: true,
                 effects,
             },

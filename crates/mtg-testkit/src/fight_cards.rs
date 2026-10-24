@@ -13,11 +13,11 @@ use mtg_engine::GameSetup;
 use mtg_engine::format::Normal;
 use mtg_engine::rng::GameRng;
 
-use crate::cards::{bear, burn, cost, keyworded_creature, land};
+use crate::cards::{bear, burn, cost, free_creature, keyworded_creature, land};
 use crate::corpus::{self, CorpusError};
 
 /// Lands in a fight deck: five colours in turn.
-const LANDS: usize = 22;
+const LANDS: usize = 25;
 
 /// Cards of the corpus the fight deck holds, with how many of each.
 pub const CORPUS_CARDS: &[(&str, usize)] = &[
@@ -26,7 +26,18 @@ pub const CORPUS_CARDS: &[(&str, usize)] = &[
     ("Giant Growth", 2),
     ("Mending Hands", 1),
     ("Doom Blade", 1),
+    ("Jadar, Ghoulcaller of Nephalia", 1),
+    ("Curse of the Restless Dead", 2),
+    ("Level Up", 1),
+    ("Idolized", 1),
+    ("Elemental Mastery", 1),
 ];
+
+/// The spells whose resolution is a fight.
+pub const FIGHT_SPELLS: &[&str] = &["Brawl", "Warbriar Blessing"];
+
+/// The creature cards of the deck that have decayed.
+pub const DECAYED_CARDS: &[&str] = &["Zombie Husk"];
 
 fn rules(json: &str) -> Result<Ability, CorpusError> {
     serde_json::from_str(json).map_err(|error| CorpusError::Data(format!("{json}: {error}")))
@@ -59,18 +70,37 @@ pub fn fight_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusE
     for (card, copies) in [
         (brawl("Brawl")?, 4),
         (burn("Spark", 2), 2),
-        (bear(), 6),
+        (bear(), 4),
+        (free_creature("Ogre Brute", 3, 3), 4),
         (
-            keyworded_creature("Pit Viper", 0, &[Color::Green], 1, 1, &[Keyword::Deathtouch]),
+            keyworded_creature(
+                "Pit Viper",
+                0,
+                &[Color::Green],
+                1,
+                1,
+                &[Keyword::Deathtouch],
+            ),
             3,
         ),
         (
-            keyworded_creature("Blood Knight", 0, &[Color::White], 2, 2, &[Keyword::Lifelink]),
+            keyworded_creature(
+                "Blood Knight",
+                0,
+                &[Color::White],
+                2,
+                2,
+                &[Keyword::Lifelink],
+            ),
             3,
         ),
         (
             keyworded_creature("Wall", 0, &[Color::Blue], 0, 4, &[Keyword::Defender]),
             2,
+        ),
+        (
+            keyworded_creature("Zombie Husk", 0, &[Color::Black], 2, 2, &[Keyword::Decayed]),
+            4,
         ),
     ] {
         deck.extend(std::iter::repeat_n(card, copies));
