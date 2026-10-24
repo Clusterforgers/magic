@@ -8,7 +8,8 @@ use mtg_cards::CardDefinition;
 use mtg_cards::spend::ManaLasts;
 use mtg_core::card::CardType;
 use mtg_core::mana::{ManaCost, ManaType};
-use mtg_engine::decision::DecisionKind;
+use mtg_engine::choose::CardsChoice;
+use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::events::Event;
 use mtg_engine::mana::ManaPool;
 use mtg_engine::turn::Step;
@@ -288,5 +289,66 @@ fn damage_dealt_is_the_mana_added_by_photon(
     assert_eq!(kept, 2);
     let life = driver.state().player(pid(1)).unwrap().life();
     assert_eq!(life, 18);
+    Ok(())
+}
+
+/// Crews the Vehicle with the first creature the activation asks for and lets the activation resolve.
+fn crew(driver: &mut Driver, name: &str) -> Result<(), ScriptError> {
+    let offered = driver.offered_abilities(name)?;
+    let [index] = offered.as_slice() else {
+        return Err(ScriptError::Stuck(format!("{name} offers {offered:?}")));
+    };
+    driver.begin_ability(name, *index)?;
+    for _ in 0..40 {
+        match driver.decision()?.kind.clone() {
+            DecisionKind::ChooseCards(options) => {
+                let ids = options.from.iter().take(options.min as usize).copied();
+                driver.answer(Answer::ChooseCards(CardsChoice(ids.collect())))?;
+            }
+            _ if driver.state().stack().is_empty() && driver.state().resolving().is_none() => {
+                return Ok(());
+            }
+            _ => {
+                driver.answer_passively()?;
+            }
+        }
+    }
+    Err(ScriptError::Stuck("the crew".into()))
+}
+
+#[rstest]
+fn a_crewed_plow_adds_mana_that_stays_and_gains_life(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut scenario = Scenario::new(seats).at(1, 0, Step::Main1).battlefield(
+        0,
+        [
+            ready(card("Colossal Plow").unwrap()),
+            ready(free_creature("Giant", 6, 6)),
+        ],
+    );
+    for seat in 1..seats {
+        scenario =
+            scenario.battlefield(seat, [ready(free_creature(&format!("Wall {seat}"), 0, 9))]);
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    crew(&mut driver, "Colossal Plow")?;
+    attack(&mut driver, "Colossal Plow")?;
+    let held = pool(&driver);
+    assert_eq!(held.total(), 3);
+    assert_eq!(kept_turn(&held, ManaType::White), 3);
+    assert_eq!(driver.state().player(pid(0)).unwrap().life(), 23);
+    let seen = walk(&mut driver)?;
+    assert!(
+        seen.iter()
+            .filter(|(turn, _, _)| *turn == 1)
+            .all(|(_, _, total)| *total == 3),
+        "three mana in every step of the turn: {seen:?}"
+    );
+    assert!(
+        seen.iter()
+            .filter(|(turn, _, _)| *turn == 2)
+            .all(|(_, _, total)| *total == 0)
+    );
     Ok(())
 }

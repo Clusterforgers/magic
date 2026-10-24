@@ -113,6 +113,7 @@ The payment rules are in [engine.md](engine.md); the wire facts are:
 - `PayChoice::Complete(Payment)` sends part of a payment (floating mana and taps) for the engine to finish. A rejected answer leaves the decision pending.
 
 - Mana that may be spent only on some things is told in the pool (`ManaPool.restricted`, one entry for each mana with what it allows: a public fact like the pool) and in the events (`ManaAdded.only`, `ManaSpent.restricted`); a payment names it in `Payment.restricted`, and `PayOptions.spend` says what the payment is for. All of them are optional on the wire.
+- Mana that stays past the step is public too: `ManaPool.kept` (`Kept`: the mana lost with the combat phase and with the turn, by type, a part of `counts`), `Restricted.lasts` and the events `ManaAdded.lasts` and `ManaPoolEmptied.through`; all are left out while they are the step.
 - Help in a payment is offered beside the mana sources: `PayOptions.convoke` (each creature with the colours it can pay beside {1}), `PayOptions.improvise` (the artifacts that can pay {1}) and `PayOptions.delve` (the cards of the graveyard); `Payment.convoke` (a creature and the colour it pays, none for {1}), `Payment.improvise` and `Payment.delve` name what is used. All are left out while empty. The taps are public events and the cards exiled leave a graveyard every seat sees.
 
 - `ManaCost` is `Array<ManaSymbol>` in canonical order (shapes in the generated `ManaSymbol.ts`).
