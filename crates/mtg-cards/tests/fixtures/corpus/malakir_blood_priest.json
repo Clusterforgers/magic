@@ -1,0 +1,25 @@
+{
+  "id": "bbbd64da-6071-49f4-87aa-066209ec1ae9",
+  "oracle_id": "3a3cb6fe-24ef-4c09-8ff8-f303fc472a8b",
+  "name": "Malakir Blood-Priest",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "760",
+  "rarity": "common",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Vampire Cleric",
+  "oracle_text": "When this creature enters, each opponent loses X life and you gain X life, where X is the number of creatures in your party. (Your party consists of up to one each of Cleric, Rogue, Warrior, and Wizard.)",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

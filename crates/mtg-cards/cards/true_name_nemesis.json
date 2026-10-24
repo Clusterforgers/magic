@@ -1,0 +1,25 @@
+{
+  "oracle_id": "112322ad-8f66-4cd4-98a1-f425d61a69ce",
+  "name": "True-Name Nemesis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "True-Name Nemesis",
+      "oracle_fingerprint": "53d9e12ff9cce4cd497c9b48bd27f177",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "Player" }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": { "Protection": [{ "ControlledBy": "Chosen" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

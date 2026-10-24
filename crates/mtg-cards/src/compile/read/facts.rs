@@ -38,6 +38,7 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Condition> {
         .or_else(|| r.attempt(exiled_with_it))
         .or_else(|| r.attempt(counter_this_turn))
         .or_else(|| r.attempt(died_under_you))
+        .or_else(|| r.attempt(full_party))
 }
 
 /// What `died_under_you` reads, written back.
@@ -84,6 +85,12 @@ fn died_under_you(r: &mut Reader<'_>) -> Option<Condition> {
         },
         number,
     )
+}
+
+/// "you have a full party": the party of four roles (CR 700.8) is complete.
+fn full_party(r: &mut Reader<'_>) -> Option<Condition> {
+    r.words("you have a full party").then_some(())?;
+    at_least(Amount::Party(Ref::You), 4)
 }
 
 /// The cards exiled with the card, as hideaway links them.
@@ -244,6 +251,9 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
             .collect()
     };
     match (left, op) {
+        (Amount::Party(Ref::You), Cmp::Ge) if number == 4 => {
+            vec!["you have a full party".to_owned()]
+        }
         (
             Amount::Tallied {
                 who: Ref::You,

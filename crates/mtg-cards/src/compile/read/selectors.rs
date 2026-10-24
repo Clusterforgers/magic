@@ -431,6 +431,9 @@ fn protection_from(r: &mut Reader<'_>) -> Option<Keyword> {
     if r.static_grant && r.words("creatures of the chosen type") {
         return Some(Keyword::Protection(chosen_creatures()));
     }
+    if r.static_grant && r.words("the chosen player") {
+        return Some(Keyword::Protection(chosen_player()));
+    }
     if let Some(quality) = r.peek_word().and_then(keywords::quality) {
         r.skip();
         return Some(Keyword::Protection(quality));
@@ -440,6 +443,11 @@ fn protection_from(r: &mut Reader<'_>) -> Option<Keyword> {
     Some(Keyword::Protection(Selector(vec![Pred::Subtype(Subtype(
         name,
     ))])))
+}
+
+/// The objects the player the controller chose controls.
+fn chosen_player() -> Selector {
+    Selector(vec![Pred::ControlledBy(Ref::Chosen)])
 }
 
 /// The creatures of the type the controller chose.
@@ -455,6 +463,9 @@ fn protection_word(quality: &Selector) -> Option<String> {
     }
     if *quality == chosen_creatures() {
         return Some("creatures of the chosen type".to_owned());
+    }
+    if *quality == chosen_player() {
+        return Some("the chosen player".to_owned());
     }
     match quality.0.as_slice() {
         [Pred::ChosenColor] => Some("the chosen color".to_owned()),

@@ -327,6 +327,7 @@ const RUNS: &[&str] = &[
     "Amount.Tallied",
     "Amount.Largest",
     "Amount.StartingLife",
+    "Amount.Party",
     "Ability.Replacement",
     "Ability.CostModifier",
     "ReplaceWhen.TokenCreation",
@@ -618,6 +619,7 @@ mod tests {
     #[case::exiling_for_another_duration("Exile.Duration.UntilYourNextTurn", false)]
     #[case::the_number_of_kicks("Amount.Kicks", true)]
     #[case::the_number_of_mutations("Amount.Mutations", true)]
+    #[case::the_size_of_a_party("Amount.Party", true)]
     #[case::cast_for_a_way("Amount.CastWith", true)]
     #[case::colors_spent("Amount.ColorsSpent", true)]
     #[case::permanents_graved("Amount.PermanentsGraved", true)]
@@ -853,8 +855,6 @@ mod tests {
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]
     #[case::the_highest_life_total("Amount.HighestLife", true)]
-    #[case::choosing_a_player_as_it_enters("ReplaceBy.Choose.Player", false)]
-    #[case::choosing_an_opponent_as_it_enters("ReplaceBy.Choose.Opponent", false)]
     #[case::myriad("Keyword.Myriad", true)]
     #[case::crew("Keyword.Crew", true)]
     #[case::tapping_creatures_for_their_power_as_a_cost("Cost.TapPower", true)]

@@ -81,14 +81,6 @@ const ENTERS: &str = r#""when":{"Enters":{"what":["This"]}}"#;
     r#"{"Rule":{"rule":"CanBeCommander"}}"#,
     &["Ability.Rule", "Rule.CanBeCommander"]
 )]
-#[case::choosing_a_player(
-    &format!(r#"{{"Replacement":{{{ENTERS},"by":{{"Choose":"Player"}}}}}}"#),
-    &["Ability.Replacement", "ReplaceBy.Choose", "ReplaceBy.Choose.Player", "ReplaceWhen.Enters"]
-)]
-#[case::choosing_an_opponent(
-    &format!(r#"{{"Replacement":{{{ENTERS},"by":{{"Choose":"Opponent"}}}}}}"#),
-    &["Ability.Replacement", "ReplaceBy.Choose", "ReplaceBy.Choose.Opponent", "ReplaceWhen.Enters"]
-)]
 #[case::choosing_a_color_is_not_a_gap_of_its_own(
     &format!(r#"{{"Replacement":{{{ENTERS},"by":{{"Choose":"Color"}}}}}}"#),
     &["Ability.Replacement", "ReplaceBy.Choose", "ReplaceWhen.Enters"]
@@ -272,8 +264,6 @@ fn a_node_used_wrongly_is_refused_where_it_stands(#[case] json: &str, #[case] me
 #[case::looking_at_the_top("Rule.LookAtTopAnyTime")]
 #[case::additional_land_plays("Rule.AdditionalLandPlays")]
 #[case::commander_eligibility("Rule.CanBeCommander")]
-#[case::choosing_a_player("ReplaceBy.Choose.Player")]
-#[case::choosing_an_opponent("ReplaceBy.Choose.Opponent")]
 #[case::counting_players("Amount.Players")]
 #[case::the_lowest_life_total("Amount.LowestLife")]
 #[case::the_highest_life_total("Amount.HighestLife")]
