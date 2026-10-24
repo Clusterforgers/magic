@@ -1154,6 +1154,10 @@ fn join_list(items: &[String]) -> String {
 /// "a creature or planeswalker", "an artifact": what a player sacrifices.
 fn sacrifice_text(filter: &Selector) -> Option<String> {
     let text = phrase_text(filter, Form::Subject)?;
+    // "another permanent" has its own determiner.
+    if text.starts_with("another ") {
+        return Some(text);
+    }
     Some(format!("{} {text}", article(&text)))
 }
 

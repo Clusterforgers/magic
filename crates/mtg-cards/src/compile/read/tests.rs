@@ -271,6 +271,7 @@ mod reveal_until;
 mod riot;
 mod sample_af_writers;
 mod sample_gl2_writers;
+mod sample_gl3_writers;
 mod sample_gl_writers;
 mod sample_mr_writers;
 mod search_by_controller;
