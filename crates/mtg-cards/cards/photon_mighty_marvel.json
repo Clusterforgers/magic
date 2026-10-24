@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c46d6f42-5e50-4c0d-8908-360337285f83",
+  "name": "Photon, Mighty Marvel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Photon, Mighty Marvel",
+      "oracle_fingerprint": "6063d186f62b255e6a4f60e0abae8be6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "AddMana": { "mana": { "AnyColor": "Triggering" }, "lasts": "Turn" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "0b5f7a1b-fbb9-4659-8fcb-7822dc0263bc",
+  "name": "Curse of the Restless Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of the Restless Dead",
+      "oracle_fingerprint": "c7ae25189e86ad233f213e2c74195872",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "AttachedPlayer" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Decayed" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

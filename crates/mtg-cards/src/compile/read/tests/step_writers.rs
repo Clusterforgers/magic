@@ -1,5 +1,54 @@
-//! Goal: the writers of the proposal checker give the oracle wording of a step on a comparison of the creature of an event with the card and the step taken otherwise ("put a +1/+1 counter on that creature if its power is less than ~'s power. Otherwise, ..."), and of a choice of two modes of one target that differ in a phrase ("target creature gets +2/-2 or -2/+2 until end of turn"), and a wrong relation, characteristic, step, target or duration never reads back.
+//! Goal: the writers of the proposal checker give the oracle wording of a step on a comparison of the creature of an event with the card and the step taken otherwise ("put a +1/+1 counter on that creature if its power is less than ~'s power. Otherwise, ..."), of a choice of two modes of one target that differ in a phrase ("target creature gets +2/-2 or -2/+2 until end of turn") and of a bigger step on a second count ("If seven or more creatures died this turn, instead ..."), and a wrong relation, characteristic, step, count, target or duration never reads back.
 use super::*;
+
+fn died(count: u32) -> String {
+    format!(
+        r#"{{"Compare":{{"left":{{"Tallied":{{"who":"EachPlayer","what":"CreaturesDied"}}}},"op":"Ge","right":{count}}}}}"#
+    )
+}
+
+fn chant(first: u32, second: u32, more: &str, usual: &str) -> String {
+    format!(
+        r#"{{"Triggered":{{"when":{{"StepBegins":{{"step":"End","whose":"You"}}}},"if":{},"effects":[{{"If":{{"condition":{},"then":{more},"otherwise":{usual}}}}}]}}}}"#,
+        died(first),
+        died(second)
+    )
+}
+
+const SEVEN_CARDS: &str = r#"[{"Draw":{"count":7}},{"LoseLife":{"amount":7}}]"#;
+const ONE_CARD: &str = r#"[{"Draw":{}},{"LoseLife":{"amount":1}}]"#;
+const CHANT: &str = "At the beginning of your end step, if a creature died this turn, you draw a card and you lose 1 life. If seven or more creatures died this turn, instead you draw seven cards and you lose 7 life.";
+
+#[test]
+fn a_bigger_step_on_a_second_count_is_written_as_the_oracle_words_it() {
+    assert!(written(&chant(1, 7, SEVEN_CARDS, ONE_CARD), CHANT));
+}
+
+#[rstest]
+#[case::another_second_count(
+    "At the beginning of your end step, if a creature died this turn, you draw a card and you lose 1 life. If six or more creatures died this turn, instead you draw seven cards and you lose 7 life."
+)]
+#[case::another_bigger_step(
+    "At the beginning of your end step, if a creature died this turn, you draw a card and you lose 1 life. If seven or more creatures died this turn, instead you draw seven cards and you lose 6 life."
+)]
+#[case::another_usual_step(
+    "At the beginning of your end step, if a creature died this turn, you draw a card and you lose 2 life. If seven or more creatures died this turn, instead you draw seven cards and you lose 7 life."
+)]
+#[case::another_first_count(
+    "At the beginning of your end step, if two or more creatures died this turn, you draw a card and you lose 1 life. If seven or more creatures died this turn, instead you draw seven cards and you lose 7 life."
+)]
+#[case::without_instead(
+    "At the beginning of your end step, if a creature died this turn, you draw a card and you lose 1 life. If seven or more creatures died this turn, you draw seven cards and you lose 7 life."
+)]
+#[case::the_usual_step_alone(
+    "At the beginning of your end step, if a creature died this turn, you draw a card and you lose 1 life."
+)]
+fn a_bigger_step_on_a_second_count_does_not_read_as_another_pair_of_steps(#[case] clause: &str) {
+    assert!(
+        !written(&chant(1, 7, SEVEN_CARDS, ONE_CARD), clause),
+        "{clause}"
+    );
+}
 
 /// Whether some wording the checker accepts for the rules is the clause.
 fn written(json: &str, clause: &str) -> bool {

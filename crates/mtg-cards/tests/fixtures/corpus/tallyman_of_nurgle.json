@@ -1,0 +1,28 @@
+{
+  "id": "72ce155e-af65-47f9-8967-6608bd69ee55",
+  "oracle_id": "7cc4a635-8730-4018-a8fd-b29fb5479928",
+  "name": "Tallyman of Nurgle",
+  "lang": "en",
+  "layout": "normal",
+  "set": "40k",
+  "collector_number": "60",
+  "rarity": "rare",
+  "released_at": "2022-10-07",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3,
+  "type_line": "Creature — Astartes Warrior",
+  "oracle_text": "Lifelink\nThe Seven-fold Chant — At the beginning of your end step, if a creature died this turn, you draw a card and you lose 1 life. If seven or more creatures died this turn, instead you draw seven cards and you lose 7 life.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Lifelink",
+    "The Seven-fold Chant"
+  ]
+}

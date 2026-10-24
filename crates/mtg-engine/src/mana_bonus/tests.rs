@@ -104,6 +104,7 @@ fn using_a_source_adds_the_bonus_with_the_tap_and_triggers_nothing() {
         mana: G,
         source: Some(forest),
         only: Vec::new(),
+        lasts: mtg_cards::spend::ManaLasts::Step,
     };
     assert_eq!(
         events,

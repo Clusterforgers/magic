@@ -1,0 +1,28 @@
+{
+  "oracle_id": "9ae26054-caf4-47a3-b4bb-3dc14a634740",
+  "name": "Vashta Nerada",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vashta Nerada",
+      "oracle_fingerprint": "e78dcd019c5cd4a8540666e55029f860",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        { "Keyword": "Shadow" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

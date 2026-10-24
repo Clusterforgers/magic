@@ -1,0 +1,31 @@
+{
+  "oracle_id": "690bd111-5b32-4156-b650-9afad3d6ef3d",
+  "name": "Clone Legion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clone Legion",
+      "oracle_fingerprint": "f2d0cefbba95b687ba88cd83f3ba398e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": {
+                        "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

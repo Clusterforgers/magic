@@ -34,6 +34,10 @@ fn activated(text: &str) -> Option<Ability> {
     "Create a 2/2 black Zombie creature token with first strike.",
     r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Zombie","colors":["Black"],"types":["Creature"],"subtypes":["Zombie"],"power":2,"toughness":2,"abilities":[{"Keyword":"FirstStrike"}]}}}}]}}"#
 )]
+#[case::decayed(
+    "Create a 2/2 black Zombie creature token with decayed.",
+    r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Zombie","colors":["Black"],"types":["Creature"],"subtypes":["Zombie"],"power":2,"toughness":2,"abilities":[{"Keyword":"Decayed"}]}}}}]}}"#
+)]
 #[case::counted_by_x(
     "Create X 1/1 white Soldier creature tokens with lifelink, where X is the number of creatures you control.",
     r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Soldier","colors":["White"],"types":["Creature"],"subtypes":["Soldier"],"power":1,"toughness":1,"abilities":[{"Keyword":"Lifelink"}]}},"count":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}]}}"#
@@ -165,7 +169,7 @@ fn the_keywords_of_the_vocabulary_also_read_in_a_pump_and_a_selector(#[case] tex
 #[case::a_keyword_with_a_number(
     "Create a 1/1 colorless Phyrexian Mite artifact creature token with toxic 1."
 )]
-#[case::a_keyword_the_dsl_lacks("Create a 2/2 black Zombie creature token with decayed.")]
+#[case::a_keyword_the_dsl_lacks("Create a 2/2 black Zombie creature token with unleash.")]
 #[case::a_keyword_the_vocabulary_lacks("Create a 1/1 white Soldier creature token with flanking.")]
 #[case::protection("Create a 1/1 white Knight creature token with protection from red.")]
 #[case::a_predefined_token("Create a Treasure token with flying.")]

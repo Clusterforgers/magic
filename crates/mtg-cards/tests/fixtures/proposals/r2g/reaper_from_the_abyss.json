@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"StepBegins":{"step":"End"}},"if":{"Compare":{"left":{"Tallied":{"who":"EachPlayer","what":"CreaturesDied"}},"op":"Ge","right":1}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"Not":{"Subtype":"Demon"}}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}]}]}

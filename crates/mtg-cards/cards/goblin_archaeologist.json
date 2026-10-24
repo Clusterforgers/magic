@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7d61dd63-7c39-4d43-ba8e-a4e1b98c2192",
+  "name": "Goblin Archaeologist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Archaeologist",
+      "oracle_fingerprint": "e13e9b9b0e10fb91bb6fed82712db2e1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [
+                    { "Destroy": { "what": { "Target": 0 } } },
+                    { "Untap": { "what": "This" } }
+                  ],
+                  "lose": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

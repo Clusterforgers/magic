@@ -1,0 +1,46 @@
+{
+  "oracle_id": "7d679591-f8ea-4c4c-ab98-7b9e3438cf57",
+  "name": "Primaris Eliminator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primaris Eliminator",
+      "oracle_fingerprint": "cd3656b3af0a3290bc11a148fe46275d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "label": "Executioner Round",
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "label": "Hyperfrag Round",
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                            },
+                            "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

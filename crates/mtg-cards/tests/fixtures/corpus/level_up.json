@@ -1,0 +1,26 @@
+{
+  "id": "d4398907-17d2-4fad-bfa9-56925fb75834",
+  "oracle_id": "88cd43ce-b168-45a4-8d29-6cac5ab42857",
+  "name": "Level Up",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tmc",
+  "collector_number": "31",
+  "rarity": "rare",
+  "released_at": "2026-03-06",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nWhen this Aura enters, put a +1/+1 counter on enchanted creature.\nEnchanted creature has \"Whenever this creature attacks, double the number of +1/+1 counters on it. Then if it has power 10 or greater, draw a card.\"",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant",
+    "Double"
+  ]
+}

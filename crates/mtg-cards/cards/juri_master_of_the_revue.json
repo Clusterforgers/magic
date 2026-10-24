@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3364bad6-6d0a-4141-b410-86e3d9e1916e",
+  "name": "Juri, Master of the Revue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Juri, Master of the Revue",
+      "oracle_fingerprint": "31d994349da14c955d24a514e650615d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 //! `Effect::AddMana`: mana goes into a player's pool (CR 106.4).
 
 use mtg_cards::effect::{Effect, Produce};
-use mtg_cards::spend::SpendOn;
+use mtg_cards::spend::{ManaLasts, SpendOn};
 use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
@@ -47,6 +47,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         mana,
         times,
         only,
+        lasts,
     } = effect
     else {
         return Err(wrong_effect("AddMana"));
@@ -107,6 +108,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                         mana,
                         source,
                         only: only.clone(),
+                        lasts: *lasts,
                     }));
                 }
             }
@@ -126,6 +128,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                                 mana: mana_of(*color),
                                 source,
                                 only: only.clone(),
+                                lasts: *lasts,
                             },
                             usize::try_from(*each).unwrap_or(0).saturating_mul(times),
                         )
@@ -160,6 +163,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 times,
                 source,
                 only,
+                lasts: *lasts,
             };
             return choose_list(cx, &added, lists);
         }
@@ -238,6 +242,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 mana: kind,
                 source,
                 only: only.clone(),
+                lasts: *lasts,
             },
             usize::try_from(each).unwrap_or(0),
         ));
@@ -251,6 +256,7 @@ struct Added<'a> {
     times: usize,
     source: Option<ObjectId>,
     only: &'a [SpendOn],
+    lasts: ManaLasts,
 }
 
 /// Each addition asks its player to pick one of `lists` ("Add {W}{W}, {W}{U}, or {U}{U}") and adds all the mana of the
@@ -298,6 +304,7 @@ fn choose_list(
             mana,
             source: added.source,
             only: added.only.to_vec(),
+            lasts: added.lasts,
         }));
     }
     Ok(Run::events(events))
@@ -408,7 +415,8 @@ mod tests {
                 player: ME,
                 mana: ManaType::Green,
                 source: Some(source),
-                only: Vec::new()
+                only: Vec::new(),
+                lasts: mtg_cards::spend::ManaLasts::Step,
             }]
         );
     }

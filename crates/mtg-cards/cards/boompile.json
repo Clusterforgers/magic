@@ -1,0 +1,25 @@
+{
+  "oracle_id": "85b8902f-2515-4ded-b28a-a83334f089f1",
+  "name": "Boompile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boompile",
+      "oracle_fingerprint": "9ac027bebceae78dbc73d2bf07a395e6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [{ "Destroy": { "what": { "Each": [{ "Not": { "Type": "Land" } }] } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

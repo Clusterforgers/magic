@@ -1,0 +1,28 @@
+{
+  "id": "53b1bbce-db5b-41a5-ab0a-22c3cd4cfd8e",
+  "oracle_id": "4cdf524a-1a99-4143-823b-d3c5c867c580",
+  "name": "Colossal Plow",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nec",
+  "collector_number": "148",
+  "rarity": "uncommon",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "mana_cost": "{2}",
+  "cmc": 2,
+  "type_line": "Artifact — Vehicle",
+  "oracle_text": "Whenever this Vehicle attacks, add {W}{W}{W} and you gain 3 life. Until end of turn, you don't lose this mana as steps and phases end.\nCrew 6 (Tap any number of creatures you control with total power 6 or more: This Vehicle becomes an artifact creature until end of turn.)",
+  "power": "6",
+  "toughness": "3",
+  "colors": [],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Crew"
+  ],
+  "produced_mana": [
+    "W"
+  ]
+}

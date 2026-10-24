@@ -13,7 +13,7 @@
 use std::cmp::Reverse;
 use std::collections::BTreeMap;
 
-use mtg_cards::spend::SpendOn;
+use mtg_cards::spend::{ManaLasts, SpendOn};
 use mtg_core::ids::ObjectId;
 use mtg_core::mana::{ManaCost, ManaSymbol, ManaType, PHYREXIAN_LIFE};
 use serde::{Deserialize, Serialize};
@@ -37,6 +37,29 @@ pub struct ManaPool {
     // Boxed so a decision that holds a pool stays small.
     #[allow(clippy::box_collection)]
     restricted: Option<Box<Vec<Restricted>>>,
+    /// Of `counts`, the mana that outlasts the step; a public fact, like the pool.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Kept>", optional))]
+    kept: Option<Box<Kept>>,
+}
+
+/// The mana of a pool without a restriction that stays past the end of the step, by type in the order of `ManaPool.counts`.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct Kept {
+    /// Mana that is lost as the combat phase ends.
+    pub combat_end: [u32; 6],
+    /// Mana that is lost as the turn ends.
+    pub turn_end: [u32; 6],
+}
+
+impl Kept {
+    fn is_empty(&self) -> bool {
+        self.combat_end
+            .iter()
+            .chain(&self.turn_end)
+            .all(|held| *held == 0)
+    }
 }
 
 impl ManaPool {
@@ -67,26 +90,54 @@ impl ManaPool {
         self.counts[mana.index()] += 1;
     }
 
-    /// Adds one `mana` that may be spent only on `only`; with nothing listed it may be spent on anything.
-    pub(crate) fn add_restricted(&mut self, mana: ManaType, only: Vec<SpendOn>) {
-        if only.is_empty() {
-            self.add(mana);
-        } else {
+    /// The mana without a restriction that outlasts the step, if any.
+    pub fn kept(&self) -> Option<&Kept> {
+        self.kept.as_deref()
+    }
+
+    /// Adds one `mana` that may be spent only on `only` and stays as long as `lasts` says; with nothing listed it may be spent on anything.
+    pub(crate) fn add_restricted(&mut self, mana: ManaType, only: Vec<SpendOn>, lasts: ManaLasts) {
+        if !only.is_empty() {
             self.restricted
                 .get_or_insert_with(Box::default)
-                .push(Restricted { mana, only });
+                .push(Restricted { mana, only, lasts });
+            return;
+        }
+        self.add(mana);
+        let kept = self.kept.get_or_insert_with(Box::default);
+        match lasts {
+            ManaLasts::Step => {}
+            ManaLasts::Combat => kept.combat_end[mana.index()] += 1,
+            ManaLasts::Turn => kept.turn_end[mana.index()] += 1,
+        }
+        self.tidy_kept();
+    }
+
+    /// Drops the record of kept mana once it holds none, so equal pools are equal.
+    fn tidy_kept(&mut self) {
+        if self.kept.as_deref().is_some_and(Kept::is_empty) {
+            self.kept = None;
         }
     }
 
-    /// Removes one `mana` that may be spent on anything; false (and no change) if there is none.
+    /// Removes one `mana` that may be spent on anything, the mana that goes soonest first; false (and no change) if there is none.
     pub(crate) fn spend(&mut self, mana: ManaType) -> bool {
-        match self.counts[mana.index()].checked_sub(1) {
-            Some(left) => {
-                self.counts[mana.index()] = left;
-                true
+        let at = mana.index();
+        let Some(left) = self.counts[at].checked_sub(1) else {
+            return false;
+        };
+        self.counts[at] = left;
+        if let Some(kept) = self.kept.as_mut() {
+            if kept.combat_end[at] + kept.turn_end[at] > left {
+                if kept.combat_end[at] > 0 {
+                    kept.combat_end[at] -= 1;
+                } else {
+                    kept.turn_end[at] -= 1;
+                }
             }
-            None => false,
+            self.tidy_kept();
         }
+        true
     }
 
     /// Removes one mana equal to `unit`; false (and no change) if there is none.
@@ -107,9 +158,46 @@ impl ManaPool {
         }
     }
 
-    pub(crate) fn clear(&mut self) {
-        self.counts = [0; 6];
-        self.restricted = None;
+    /// Empties the pool of the mana that lasts no longer than `through`: at the end of a step the mana of the step, at
+    /// the end of a phase more, at the end of the turn all.
+    pub(crate) fn empty(&mut self, through: ManaLasts) {
+        let kept = self.kept.take();
+        let held = |lasts: ManaLasts, at: usize| match (&kept, lasts) {
+            (Some(kept), ManaLasts::Combat) if through < ManaLasts::Combat => kept.combat_end[at],
+            (Some(kept), ManaLasts::Turn) if through < ManaLasts::Turn => kept.turn_end[at],
+            _ => 0,
+        };
+        let mut left = Kept::default();
+        for at in 0..6 {
+            left.combat_end[at] = held(ManaLasts::Combat, at);
+            left.turn_end[at] = held(ManaLasts::Turn, at);
+            self.counts[at] = left.combat_end[at] + left.turn_end[at];
+        }
+        self.kept = Some(Box::new(left));
+        self.tidy_kept();
+        if let Some(units) = self.restricted.as_mut() {
+            units.retain(|unit| unit.lasts > through);
+            if units.is_empty() {
+                self.restricted = None;
+            }
+        }
+    }
+
+    /// The shortest lifetime that takes out of the pool all that `empty(through)` would, so a log names only the
+    /// lifetimes that went.
+    pub fn least_through(&self, through: ManaLasts) -> ManaLasts {
+        let all = self.emptying(through);
+        [ManaLasts::Step, ManaLasts::Combat]
+            .into_iter()
+            .find(|shorter| *shorter < through && self.emptying(*shorter) == all)
+            .unwrap_or(through)
+    }
+
+    /// How much mana `empty(through)` would take out of the pool.
+    pub fn emptying(&self, through: ManaLasts) -> u32 {
+        let mut left = self.clone();
+        left.empty(through);
+        self.total().saturating_sub(left.total())
     }
 
     /// What `spend` may use of the pool: the mana without a restriction and the restricted mana it allows.
@@ -1086,6 +1174,7 @@ fn split_spent(spent: Vec<ManaType>, payment: &Payment, sources: &[ManaOption]) 
             units.extend(option.made().into_iter().map(|mana| Restricted {
                 mana,
                 only: option.only.clone(),
+                lasts: ManaLasts::Step,
             }));
         }
     }

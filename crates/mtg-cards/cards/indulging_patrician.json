@@ -1,0 +1,28 @@
+{
+  "oracle_id": "189131b7-ed59-4750-a4ed-453e4497a5c8",
+  "name": "Indulging Patrician",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Indulging Patrician",
+      "oracle_fingerprint": "758ec9bb153da0be058a3e9aff2db192",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Vigilance"},{"Keyword":{"Ward":[{"Sacrifice":{"filter":[{"Compare":{"stat":"ManaValue","op":"Ge","to":1}}]}}]}},{"Activated":{"cost":["Tap"],"effects":[{"CreateToken":{"token":{"Custom":{"name":"Eldrazi","colors":[],"types":["Creature"],"subtypes":["Eldrazi"],"power":10,"toughness":10}}}}]}}]}]}

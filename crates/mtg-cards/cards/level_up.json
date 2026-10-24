@@ -1,0 +1,49 @@
+{
+  "oracle_id": "88cd43ce-b168-45a4-8d29-6cac5ab42857",
+  "name": "Level Up",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Level Up",
+      "oracle_fingerprint": "196fe11ae970a37afe1bc41ee0f30332",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "PutCounters": { "on": "Attached", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "effects": [
+                      { "MultiplyCounters": { "on": "This", "counter": "+1/+1" } },
+                      {
+                        "If": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "Stat": { "of": "This", "stat": "Power" } },
+                              "op": "Ge",
+                              "right": 10
+                            }
+                          },
+                          "then": [{ "Draw": {} }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

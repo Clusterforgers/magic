@@ -301,7 +301,6 @@ fn the_card_itself_becomes_a_copy_of_another_target_creature() {
 }
 
 #[rstest]
-#[case::no_duration("Whenever ~ attacks, it becomes a copy of another target creature.")]
 #[case::another_duration(
     "Whenever ~ attacks, it becomes a copy of another target creature until your next turn."
 )]
@@ -322,9 +321,6 @@ fn the_card_itself_becomes_a_copy_of_another_target_creature() {
 )]
 #[case::another_player(
     "Whenever ~ attacks, it becomes a copy of another target player until end of turn."
-)]
-#[case::an_exception(
-    "Whenever ~ attacks, it becomes a copy of another target creature until end of turn, except it has flying."
 )]
 fn near_misses_of_becoming_a_copy_of_another_creature_stay_unread(#[case] text: &str) {
     assert_eq!(trigger(text), None, "{text}");

@@ -4,6 +4,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use mtg_cards::ability::{Ability, Timing};
 use mtg_cards::keyword::Keyword;
+use mtg_cards::spend::ManaLasts;
 use mtg_cards::value::CounterKind;
 use mtg_core::card::{CardType, Supertype};
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -17,6 +18,7 @@ use mtg_engine::companions::CompanionStage;
 use mtg_engine::counters::CountersChanged;
 use mtg_engine::effects::Duration;
 use mtg_engine::keywords::{is_indestructible, keywords_of};
+use mtg_engine::mana::Kept;
 use mtg_engine::object::{GameObject, ObjectKind, ObjectRef, PermanentState};
 use mtg_engine::player::Player;
 use mtg_engine::resolve::Scope;
@@ -608,6 +610,8 @@ pub struct InvariantChecker {
     expected_pool: Vec<[i64; 6]>,
     /// The restricted mana each pool holds, by the history of what was added and spent.
     expected_restricted: Vec<Vec<Restricted>>,
+    /// The mana without a restriction that outlasts the step, by the history of what was added and spent.
+    expected_kept: Vec<Vec<(ManaType, ManaLasts)>>,
     expected_damage: BTreeMap<ObjectId, u32>,
     expected_object_counters: BTreeMap<ObjectId, BTreeMap<CounterKind, i64>>,
     expected_player_counters: BTreeMap<PlayerId, BTreeMap<CounterKind, i64>>,
@@ -671,6 +675,7 @@ impl InvariantChecker {
             expected_life: shadow.players().iter().map(Player::life).collect(),
             expected_pool: vec![[0; 6]; shadow.players().len()],
             expected_restricted: vec![Vec::new(); shadow.players().len()],
+            expected_kept: vec![Vec::new(); shadow.players().len()],
             expected_damage,
             expected_object_counters,
             expected_player_counters,
@@ -936,14 +941,21 @@ impl InvariantChecker {
     fn account(&mut self, event: &Event) -> Result<(), Violation> {
         match event {
             Event::ManaAdded {
-                player, mana, only, ..
+                player,
+                mana,
+                only,
+                lasts,
+                ..
             } => {
                 self.adjust_pool(*player, *mana, 1)?;
                 if !only.is_empty() {
                     self.held_restricted(*player)?.push(Restricted {
                         mana: *mana,
                         only: only.clone(),
+                        lasts: *lasts,
                     });
+                } else if *lasts != ManaLasts::Step {
+                    self.held_kept(*player)?.push((*mana, *lasts));
                 }
                 self.check_pool(*player)
             }
@@ -966,13 +978,11 @@ impl InvariantChecker {
                     };
                     held.remove(at);
                 }
+                self.spend_kept(*player)?;
                 self.check_pool(*player)
             }
-            Event::ManaPoolEmptied { player } => {
-                if let Some(cells) = self.expected_pool.get_mut(player.index()) {
-                    *cells = [0; 6];
-                }
-                self.held_restricted(*player)?.clear();
+            Event::ManaPoolEmptied { player, through } => {
+                self.empty_pool(*player, *through)?;
                 self.check_pool(*player)
             }
             Event::DamageDealt {
@@ -1295,6 +1305,64 @@ impl InvariantChecker {
         Ok(())
     }
 
+    /// The kept mana the history says `player` holds.
+    fn held_kept(
+        &mut self,
+        player: PlayerId,
+    ) -> Result<&mut Vec<(ManaType, ManaLasts)>, Violation> {
+        self.expected_kept
+            .get_mut(player.index())
+            .ok_or_else(|| Violation::Mana(format!("unknown {player:?}")))
+    }
+
+    /// After mana is spent, the kept mana the pool can no longer hold is the mana that goes soonest.
+    fn spend_kept(&mut self, player: PlayerId) -> Result<(), Violation> {
+        for mana in ManaType::ALL {
+            let held = self.expected_pool[player.index()][mana.index()];
+            let restricted = self
+                .held_restricted(player)?
+                .iter()
+                .filter(|u| u.mana == mana)
+                .count();
+            let plain = usize::try_from(held)
+                .unwrap_or(0)
+                .saturating_sub(restricted);
+            let kept = self.held_kept(player)?;
+            while kept.iter().filter(|(m, _)| *m == mana).count() > plain {
+                let Some(at) = kept
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, (m, _))| *m == mana)
+                    .min_by_key(|(_, (_, lasts))| *lasts)
+                    .map(|(at, _)| at)
+                else {
+                    break;
+                };
+                kept.remove(at);
+            }
+        }
+        Ok(())
+    }
+
+    /// The pool of `player` after the mana that lasts no longer than `through` is gone, as the history says.
+    fn empty_pool(&mut self, player: PlayerId, through: ManaLasts) -> Result<(), Violation> {
+        self.held_restricted(player)?
+            .retain(|unit| unit.lasts > through);
+        self.held_kept(player)?
+            .retain(|(_, lasts)| *lasts > through);
+        let mut cells = [0i64; 6];
+        for unit in self.held_restricted(player)?.iter() {
+            cells[unit.mana.index()] += 1;
+        }
+        for (mana, _) in self.held_kept(player)?.iter() {
+            cells[mana.index()] += 1;
+        }
+        if let Some(held) = self.expected_pool.get_mut(player.index()) {
+            *held = cells;
+        }
+        Ok(())
+    }
+
     /// The restricted mana the history says `player` holds.
     fn held_restricted(&mut self, player: PlayerId) -> Result<&mut Vec<Restricted>, Violation> {
         self.expected_restricted
@@ -1353,6 +1421,20 @@ impl InvariantChecker {
                     return Err(Violation::Mana(format!(
                         "{player:?}: the pool holds {:?} restricted, history says {history:?}",
                         pool.restricted()
+                    )));
+                }
+                let mut kept = Kept::default();
+                for (mana, lasts) in self.expected_kept.get(player.index()).into_iter().flatten() {
+                    match lasts {
+                        ManaLasts::Combat => kept.combat_end[mana.index()] += 1,
+                        ManaLasts::Turn => kept.turn_end[mana.index()] += 1,
+                        ManaLasts::Step => {}
+                    }
+                }
+                if pool.kept().cloned().unwrap_or_default() != kept {
+                    return Err(Violation::Mana(format!(
+                        "{player:?}: the pool keeps {:?}, history says {kept:?}",
+                        pool.kept()
                     )));
                 }
                 Ok(())

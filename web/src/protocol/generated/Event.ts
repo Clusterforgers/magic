@@ -21,6 +21,7 @@ import type { EffectId } from "./EffectId";
 import type { GameResult } from "./GameResult";
 import type { LibraryLooked } from "./LibraryLooked";
 import type { LossReason } from "./LossReason";
+import type { ManaLasts } from "./ManaLasts";
 import type { ManaType } from "./ManaType";
 import type { ManualAction } from "./ManualAction";
 import type { NothingToDo } from "./NothingToDo";
@@ -187,7 +188,11 @@ source: ObjectId | null,
 /**
  * What the mana may be spent on; left out means anything.
  */
-only?: Array<SpendOn>, } } | { "ManaSpent": { 
+only?: Array<SpendOn>, 
+/**
+ * How long it stays in the pool; left out means until the step ends.
+ */
+lasts?: ManaLasts, } } | { "ManaSpent": { 
 /**
  * Whose pool.
  */
@@ -203,7 +208,11 @@ restricted?: Array<Restricted>, } } | { "ManaPoolEmptied": {
 /**
  * Whose pool.
  */
-player: PlayerId, } } | { "ManaBurned": { 
+player: PlayerId, 
+/**
+ * The longest-lasting mana that went: all that lasts no longer than this; left out means the mana of the step.
+ */
+through?: ManaLasts, } } | { "ManaBurned": { 
 /**
  * Whose pool.
  */
@@ -566,7 +575,27 @@ player: PlayerId, } } | { "Learned": {
 /**
  * Who learned.
  */
-player: PlayerId, } } | { "Proliferated": { 
+player: PlayerId, } } | { "DieRolled": { 
+/**
+ * Who rolled.
+ */
+player: PlayerId, 
+/**
+ * How many faces the die has.
+ */
+sides: number, 
+/**
+ * The number rolled, from 1 to `sides`.
+ */
+result: number, } } | { "CoinFlipped": { 
+/**
+ * Who flipped.
+ */
+player: PlayerId, 
+/**
+ * The flip was won.
+ */
+won: boolean, } } | { "Proliferated": { 
 /**
  * Who proliferated.
  */

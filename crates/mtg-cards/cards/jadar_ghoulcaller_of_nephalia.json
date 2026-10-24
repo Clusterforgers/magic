@@ -1,0 +1,48 @@
+{
+  "oracle_id": "fb3defc0-c93a-4423-9ff9-c399f8a8ef1f",
+  "name": "Jadar, Ghoulcaller of Nephalia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jadar, Ghoulcaller of Nephalia",
+      "oracle_fingerprint": "69cfd9928c8ae16e5dad2d69c7b19872",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "HasKeyword": "Decayed" }
+                  ]
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Decayed" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

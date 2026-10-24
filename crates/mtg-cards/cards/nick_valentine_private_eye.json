@@ -1,0 +1,43 @@
+{
+  "oracle_id": "5663288a-7300-4e1b-8fb0-43c467709fe5",
+  "name": "Nick Valentine, Private Eye",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nick Valentine, Private Eye",
+      "oracle_fingerprint": "76d231e47fbeb5440e9538b93009374d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CantBeBlockedBy": [{ "Not": { "Type": "Artifact" } }] }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      "Other",
+                      { "Type": "Artifact" },
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" }
+                    ],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "May": { "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

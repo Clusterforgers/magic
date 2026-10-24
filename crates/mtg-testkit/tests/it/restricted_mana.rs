@@ -106,6 +106,7 @@ fn restricted_mana_floats_with_what_it_allows_and_leaves_with_the_pool() -> Resu
     let one = Restricted {
         mana: ManaType::Colorless,
         only: artifacts(),
+        lasts: mtg_cards::spend::ManaLasts::Step,
     };
     assert_eq!(spent, Some((vec![ManaType::Colorless], vec![one.clone()])));
     let pool = driver.state().player(pid(0)).unwrap().mana().clone();
@@ -159,6 +160,7 @@ fn a_manual_payment_names_the_restricted_mana_it_spends() -> Result<(), ScriptEr
     let unit = Restricted {
         mana: ManaType::Colorless,
         only: artifacts(),
+        lasts: mtg_cards::spend::ManaLasts::Step,
     };
     let right = Payment {
         restricted: vec![unit.clone(), unit.clone()],

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4f945baa-40a9-4494-b2f9-f1926f3fec84",
+  "name": "Ruinous Intrusion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruinous Intrusion",
+      "oracle_fingerprint": "6e664d2130eefb6e9d98c932b518311a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "PutCounters": {
+                  "on": { "Target": 1 },
+                  "counter": "+1/+1",
+                  "count": { "Stat": { "of": { "Bound": "exiled" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"ControlledBy":"Opponents"}],"from":"Battlefield","to":"Graveyard"}},"effects":[{"May":{"effects":[{"GainLife":{"amount":3}}]}}]}},{"Triggered":{"when":{"Discarded":{"by":"Opponents"}},"effects":[{"May":{"effects":[{"GainLife":{"amount":3}}]}}]}}]}]}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "920445ab-0ac2-4de7-bc1c-f5e58eb4424c",
+  "name": "Sangromancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sangromancer",
+      "oracle_fingerprint": "71487f3bddbb1a89832b68f12b05bce8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "GainLife": { "amount": 3 } }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "Opponents" } },
+            "effects": [{ "May": { "effects": [{ "GainLife": { "amount": 3 } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

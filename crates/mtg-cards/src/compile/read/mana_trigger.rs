@@ -7,7 +7,7 @@ use super::tokens::Reader;
 use crate::effect::{Effect, Produce};
 use crate::mana_trigger::ManaTrigger;
 use crate::refs::{Pred, Ref, Selector};
-use crate::spend::SpendOn;
+use crate::spend::{ManaLasts, SpendOn};
 use crate::trigger::TriggerPattern;
 use crate::value::Amount;
 
@@ -61,6 +61,7 @@ pub fn effects(r: &mut Reader<'_>, when: &TriggerPattern) -> Option<Vec<Effect>>
         mana,
         times: Amount::one(),
         only: Vec::<SpendOn>::new(),
+        lasts: ManaLasts::Step,
     }])
 }
 

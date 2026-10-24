@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"Opponents"},{"Compare":{"stat":"Power","op":"Lt","to":{"Stat":{"of":"This","stat":"Power"}}}}]},"mods":["Goaded"]}}]}]}

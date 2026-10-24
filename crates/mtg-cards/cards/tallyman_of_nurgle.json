@@ -1,0 +1,41 @@
+{
+  "oracle_id": "7cc4a635-8730-4018-a8fd-b29fb5479928",
+  "name": "Tallyman of Nurgle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tallyman of Nurgle",
+      "oracle_fingerprint": "15661f4b8e5c8482b719cb3ce77387e8",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [{ "Draw": { "count": 7 } }, { "LoseLife": { "amount": 7 } }],
+                  "otherwise": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

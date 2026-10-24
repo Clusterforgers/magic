@@ -17,6 +17,7 @@ pub mod card_grant_cards;
 pub mod cards;
 pub mod cascade_cards;
 pub mod cast_way_cards;
+pub mod chance_cards;
 pub mod change_cards;
 pub mod choice_cards;
 pub mod cipher_cards;
@@ -49,6 +50,7 @@ pub mod expect;
 pub mod extra_cost_cards;
 pub mod face_cards;
 pub mod family_cards;
+pub mod fight_cards;
 pub mod flip_cards;
 pub mod foretell_cards;
 pub mod free_cast_cards;
@@ -126,6 +128,7 @@ pub use bot::RandomBot;
 pub use card_grant_cards::card_grants_fuzz_setup;
 pub use cascade_cards::cascade_fuzz_setup;
 pub use cast_way_cards::cast_way_fuzz_setup;
+pub use chance_cards::{CHANCE_CARDS, chance_fuzz_setup};
 pub use change_cards::change_fuzz_setup;
 pub use choice_cards::choice_fuzz_setup;
 pub use cipher_cards::cipher_fuzz_setup;
@@ -135,7 +138,9 @@ pub use commander_cards::{
 };
 pub use companion_cards::companion_fuzz_setup;
 pub use conditional_static_cards::conditional_static_fuzz_setup;
-pub use copy_cards::{copy_fuzz_setup, copy_shapes_fuzz_setup, spell_copy_fuzz_setup};
+pub use copy_cards::{
+    copy_fuzz_setup, copy_shapes_fuzz_setup, copy_wording_fuzz_setup, spell_copy_fuzz_setup,
+};
 pub use copy_keyword_cards::copy_keywords_fuzz_setup;
 pub use cost_cards::cost_fuzz_setup;
 pub use cost_choice_cards::{COST_CHOICE_CARDS, cost_choice_fuzz_setup};
@@ -161,6 +166,7 @@ pub use exile_until_cards::{EXILE_UNTIL_CARDS, SPENT_CARDS, exile_until_fuzz_set
 pub use extra_cost_cards::extra_cost_fuzz_setup;
 pub use face_cards::face_fuzz_setup;
 pub use family_cards::families_fuzz_setup;
+pub use fight_cards::fight_fuzz_setup;
 pub use flip_cards::{FLIP_CARDS, flip_fuzz_setup};
 pub use foretell_cards::foretell_fuzz_setup;
 pub use free_cast_cards::{FREE_CAST_CARDS, STRIVE_CARDS, free_cast_fuzz_setup};

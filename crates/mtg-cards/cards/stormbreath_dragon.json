@@ -1,0 +1,40 @@
+{
+  "oracle_id": "7a770865-9383-45aa-883f-21ee649d1ea3",
+  "name": "Stormbreath Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stormbreath Dragon",
+      "oracle_fingerprint": "9f358b5ddc3f175d8b6faa3f545da74e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        { "Keyword": { "Protection": [{ "Color": "White" }] } },
+        { "Activated": { "cost": "{5}{R}{R}", "effects": [{ "Monstrosity": { "count": 3 } }] } },
+        {
+          "Triggered": {
+            "when": { "BecomesMonstrous": { "what": ["This"] } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Bound": "opponent" },
+                        "amount": {
+                          "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "opponent" } }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

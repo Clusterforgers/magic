@@ -179,6 +179,27 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
         ) if number == 1 => vec!["you gained life this turn".to_owned()],
         (
             Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::LifeGainedTotal,
+            },
+            Cmp::Ge,
+        ) if number > 1 => counted(&|n| format!("you gained {n} or more life this turn")),
+        (
+            Amount::Tallied {
+                who: Ref::EachPlayer,
+                what: TurnTally::CreaturesDied,
+            },
+            Cmp::Ge,
+        ) if number == 1 => vec!["a creature died this turn".to_owned()],
+        (
+            Amount::Tallied {
+                who: Ref::EachPlayer,
+                what: TurnTally::CreaturesDied,
+            },
+            Cmp::Ge,
+        ) if number > 1 => counted(&|n| format!("{n} or more creatures died this turn")),
+        (
+            Amount::Tallied {
                 who: Ref::Opponents,
                 what: TurnTally::DamageTaken,
             },

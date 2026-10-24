@@ -1,0 +1,19 @@
+{
+  "oracle_id": "4001b868-ada1-43f4-92e2-27ab0e80c913",
+  "name": "Vesuva",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vesuva",
+      "oracle_fingerprint": "da9121a9c6374dba2be1a300e9e7a52f",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "AsCopy": { "of": [{ "Type": "Land" }], "tapped": true } }
+          }
+        }
+      ]
+    }
+  ]
+}

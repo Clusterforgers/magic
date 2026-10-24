@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"End","whose":"You"}},"targets":[{"what":{"Object":[{"Type":"Planeswalker"},"Other",{"ControlledBy":"You"}]}}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":"loyalty"}}]}},{"Loyalty":{"cost":{"Minus":3},"effects":[{"Draw":{"count":"X"}},{"DealDamage":{"to":"Opponents","amount":"X"}}]}}]}]}

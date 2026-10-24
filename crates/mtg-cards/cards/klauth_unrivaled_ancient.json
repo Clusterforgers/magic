@@ -1,0 +1,35 @@
+{
+  "oracle_id": "8cefa5d6-5151-4e75-8b72-f210a4c751ea",
+  "name": "Klauth, Unrivaled Ancient",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Klauth, Unrivaled Ancient",
+      "oracle_fingerprint": "841827ddfd426c6a051c188f946a4f33",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyCombination": {
+                      "count": {
+                        "Total": { "of": [{ "Type": "Creature" }, "Attacking"], "stat": "Power" }
+                      }
+                    }
+                  },
+                  "only": [{ "Spell": {} }],
+                  "lasts": "Turn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

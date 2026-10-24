@@ -609,6 +609,7 @@ mod tests {
                 mana: ManaType::Red,
                 source: None,
                 only: Vec::new(),
+                lasts: mtg_cards::spend::ManaLasts::Step,
             },
         )
         .unwrap();

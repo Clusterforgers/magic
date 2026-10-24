@@ -76,6 +76,11 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             let resolving = resolving_mut(state)?;
             resolving.position.clone_from(position);
             for (name, targets) in bound {
+                // A repeat frees the names its body bound before its next pass, so they may be bound again.
+                if let Some(cleared) = name.strip_prefix(crate::resolve::CLEAR) {
+                    resolving.bindings.remove(cleared);
+                    continue;
+                }
                 if let Some(old) = resolving.bindings.insert(name.clone(), targets.clone())
                     && !renews(&old, targets)
                 {

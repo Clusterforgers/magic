@@ -222,6 +222,8 @@ pub enum Keyword {
     Ravenous,
     /// Riot (CR 702.136): as it enters, its controller chooses a +1/+1 counter on it or haste for as long as they control it; each instance chooses on its own.
     Riot,
+    /// Decayed (CR 702.147): the creature can't block, and when it attacks it is sacrificed at end of combat.
+    Decayed,
     /// Jump-start (CR 702.133): the card may be cast from a graveyard by discarding a card in addition to its other costs, and is then exiled.
     JumpStart,
     /// Retrace (CR 702.81): the card may be cast from a graveyard by discarding a land card in addition to its other costs.
@@ -441,6 +443,7 @@ impl Keyword {
         "Station",
         "Ravenous",
         "Riot",
+        "Decayed",
         "Jump-start",
         "Retrace",
         "Embalm",
@@ -581,6 +584,7 @@ impl Keyword {
             Keyword::Station => "Station",
             Keyword::Ravenous => "Ravenous",
             Keyword::Riot => "Riot",
+            Keyword::Decayed => "Decayed",
             Keyword::JumpStart => "Jump-start",
             Keyword::Retrace => "Retrace",
             Keyword::Embalm(_) => "Embalm",
@@ -769,6 +773,7 @@ mod tests {
             Keyword::Station,
             Keyword::Ravenous,
             Keyword::Riot,
+            Keyword::Decayed,
             Keyword::JumpStart,
             Keyword::Retrace,
             Keyword::Embalm(Cost::default()),

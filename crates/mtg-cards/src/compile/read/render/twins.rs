@@ -1,12 +1,14 @@
 //! Wordings the oracle text uses for an event or a subject that the data states with one more predicate than the plain
 //! wording has: the ability is written without it and the words are added where the oracle puts them ("enters from a
 //! graveyard", "enters untapped", "casts a spell from a graveyard", "this creature and land creatures you control",
-//! "Each planeswalker you control enters with an additional loyalty counter on it"), and the nouns the oracle says
-//! as one word ("outlaws").
+//! "Each planeswalker you control enters with an additional loyalty counter on it", "..., if a creature died this turn,
+//! you draw a card. If seven or more creatures died this turn, instead you draw seven cards."), and the nouns the oracle
+//! says as one word ("outlaws").
 
 use super::variants;
 use crate::ability::Ability;
 use crate::compile::read::triggers::subject_text;
+use crate::effect::Effect;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::{Amount, Condition};
@@ -29,7 +31,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         itself_and_a_group(ability),
         group_enters_with_a_counter(ability),
     ];
-    let mut found = Vec::new();
+    let mut found = instead_when_more(ability);
     for (plain, edit) in twins.into_iter().flatten() {
         found.extend(variants(&plain).iter().filter_map(|text| edit(text)));
     }
@@ -42,6 +44,62 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         })
         .collect();
     texts.extend(said);
+}
+
+/// The ability with other effects and another intervening "if".
+fn with_effects(ability: &Ability, condition: Option<Condition>, steps: &[Effect]) -> Ability {
+    let mut twin = ability.clone();
+    if let Ability::Triggered {
+        intervening_if,
+        effects,
+        ..
+    } = &mut twin
+    {
+        if condition.is_some() {
+            *intervening_if = condition;
+        }
+        *effects = steps.to_vec();
+    }
+    twin
+}
+
+/// "..., if a creature died this turn, you draw a card. If seven or more creatures died this turn, instead you draw
+/// seven cards.": a trigger with an intervening "if" whose one step does a bigger thing on a second count.
+fn instead_when_more(ability: &Ability) -> Vec<String> {
+    let Ability::Triggered {
+        intervening_if: Some(_),
+        effects,
+        ..
+    } = ability
+    else {
+        return Vec::new();
+    };
+    let [
+        Effect::If {
+            condition,
+            then,
+            otherwise,
+        },
+    ] = effects.as_slice()
+    else {
+        return Vec::new();
+    };
+    if then.is_empty() || otherwise.is_empty() {
+        return Vec::new();
+    }
+    let more = variants(&with_effects(ability, Some(condition.clone()), then));
+    let mut found = Vec::new();
+    for usual in variants(&with_effects(ability, None, otherwise)) {
+        for bigger in &more {
+            if let Some((condition, step)) = bigger
+                .split_once(", if ")
+                .and_then(|(_, rest)| rest.split_once(", "))
+            {
+                found.push(format!("{usual} If {condition}, instead {step}"));
+            }
+        }
+    }
+    found
 }
 
 /// The ability with another event.

@@ -11,7 +11,7 @@ use crate::ability::{Ability, LoyaltyCost, Timing};
 use crate::assemble::{MANA_WAYS, PLAIN_MANA_ABILITY, mana_shape, plain_mana_ability};
 use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
-use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
+use crate::effect::{Destination, DieRow, Effect, Mode, Order, Place, Produce, TokenRef};
 use crate::keyword::Keyword;
 use crate::modify::{Duration, GameRule, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
@@ -1410,7 +1410,86 @@ impl<'a> Walker<'a> {
     }
 
     fn effect_list(&mut self, field: &str, list: &[Effect], top: bool) {
+        self.effect_list_with(field, list, top, None);
+    }
+
+    /// What a reference names: a player, an object, or either when it is a name or a target of either kind.
+    fn kind_of(&self, r: &Ref) -> Kind {
+        match r {
+            Ref::You
+            | Ref::Opponents
+            | Ref::EachPlayer
+            | Ref::AttachedPlayer
+            | Ref::Monarch
+            | Ref::Promised
+            | Ref::Attacked
+            | Ref::MostLife
+            | Ref::Defending
+            | Ref::ControllerOf(_)
+            | Ref::OwnerOf(_) => Kind::Player,
+            Ref::This | Ref::Attached | Ref::Paid | Ref::Each(_) => Kind::Object,
+            Ref::Target(index) => self
+                .scope
+                .targets
+                .get(usize::from(*index))
+                .map_or(Kind::Either, |t| t.0),
+            Ref::Bound(name) => self.scope.lookup(name).unwrap_or(Kind::Either),
+            Ref::Triggering => Kind::Either,
+        }
+    }
+
+    /// `RepeatEach`: the list it repeats over and the body, which sees the name of the one a pass is for.
+    fn repeat_each(&mut self, over: &Ref, bind: &str, effects: &[Effect]) {
+        self.at("over", |w| w.reference(over, Kind::Either));
+        let kind = self.kind_of(over);
+        if effects.is_empty() {
+            self.problem("a repeat with nothing to do");
+        }
+        self.effect_list_with("effects", effects, false, Some((bind, kind)));
+    }
+
+    /// `RollDice`: a die of at least two faces and rows that each hold a range of totals.
+    fn roll_dice(&mut self, who: &Ref, sides: u32, plus: &Amount, results: &[DieRow]) {
+        self.at("who", |w| w.reference(who, Kind::Player));
+        if sides < 2 {
+            self.problem("a die has at least two sides");
+        }
+        self.at("plus", |w| w.amount(plus));
+        if results.is_empty() {
+            self.problem("a roll with no result to read");
+        }
+        for (i, row) in results.iter().enumerate() {
+            self.at(format!("results[{i}]"), |w| {
+                if row.to.is_some_and(|to| to < row.from) {
+                    w.problem("a row ends below where it starts");
+                }
+                w.effect_list("effects", &row.effects, false);
+            });
+        }
+    }
+
+    /// `FlipCoin`: a flip whose result does something.
+    fn flip_coin(&mut self, who: &Ref, win: &[Effect], lose: &[Effect]) {
+        self.at("who", |w| w.reference(who, Kind::Player));
+        if win.is_empty() && lose.is_empty() {
+            self.problem("a flip whose result does nothing");
+        }
+        self.effect_list("win", win, false);
+        self.effect_list("lose", lose, false);
+    }
+
+    /// An effect list in a scope of its own, with the name of a repeat pass bound when there is one.
+    fn effect_list_with(
+        &mut self,
+        field: &str,
+        list: &[Effect],
+        top: bool,
+        pass: Option<(&str, Kind)>,
+    ) {
         self.scope.names.push(BTreeMap::new());
+        if let Some((name, kind)) = pass {
+            self.at("as", |w| w.bind(name, kind));
+        }
         let saved = (self.after, self.after_may);
         for (i, effect) in list.iter().enumerate() {
             let only = top && list.len() == 1;
@@ -1736,6 +1815,7 @@ impl<'a> Walker<'a> {
                 mana,
                 times,
                 only,
+                lasts,
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 if only.iter().any(|on| matches!(on, SpendOn::Spell(f) | SpendOn::Ability(f) if f.types.iter().any(|t| f.without.contains(t)))) {
@@ -1743,6 +1823,9 @@ impl<'a> Walker<'a> {
                 }
                 if !only.is_empty() {
                     w.uses("Effect", "AddMana.Restricted");
+                }
+                if !lasts.is_step() {
+                    w.uses("Effect", "AddMana.Lasts");
                 }
                 w.at("mana", |w| w.produce(mana));
                 w.at("times", |w| w.amount(times));
@@ -1756,6 +1839,18 @@ impl<'a> Walker<'a> {
                 w.at("from", |w| w.reference(from, Kind::Either));
                 w.at("count", |w| w.amount(count));
             }
+            Effect::RepeatEach {
+                over,
+                bind,
+                effects,
+            } => w.repeat_each(over, bind, effects),
+            Effect::RollDice {
+                who,
+                sides,
+                plus,
+                results,
+            } => w.roll_dice(who, *sides, plus, results),
+            Effect::FlipCoin { who, win, lose } => w.flip_coin(who, win, lose),
             Effect::MultiplyCounters { on, factor, .. } => {
                 w.at("on", |w| w.reference(on, Kind::Either));
                 if *factor < 2 {
@@ -2453,7 +2548,7 @@ impl<'a> Walker<'a> {
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");
             }
-            ReplaceBy::AsCopy { of, except } => {
+            ReplaceBy::AsCopy { of, except, .. } => {
                 if !enters {
                     self.problem("only an `Enters` event is entered as a copy");
                 }
