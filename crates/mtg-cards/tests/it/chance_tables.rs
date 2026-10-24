@@ -36,7 +36,7 @@ fn creature(text: &str) -> PrintedCard {
 fn table(abilities: &[Ability]) -> Vec<(u32, Option<u32>)> {
     abilities
         .iter()
-        .flat_map(|ability| ability.effects())
+        .flat_map(Ability::effects)
         .find_map(|effect| match effect {
             Effect::RollDice { results, .. } => {
                 Some(results.iter().map(|row| (row.from, row.to)).collect())
@@ -121,7 +121,7 @@ fn a_roll_without_rows_is_a_roll_alone() {
     let compiled = compile(&creature(ROLL));
     let made = compiled.card.as_ref().expect("the card compiles");
     assert_eq!(made.impl_status, ImplStatus::Full, "{compiled:?}");
-    assert!(table(&made.faces[0].abilities).is_empty());
+    assert_eq!(table(&made.faces[0].abilities), []);
 }
 
 const ELEMENTAL: &str = r#"{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"RollDice":{"sides":20,"results":[{"from":1,"to":9,"effects":[{"Sacrifice":{"who":"EachPlayer","filter":[]}}]},{"from":10,"to":19,"effects":[{"Sacrifice":{"who":"Opponents","filter":[]}}]},{"from":20,"to":20,"effects":[{"Sacrifice":{"who":"Opponents","filter":[],"count":2}}]}]}}]}}]}]}"#;

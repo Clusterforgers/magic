@@ -280,7 +280,7 @@ fn whole_clauses_of_cards_are_read(#[case] text: &str) {
 #[case::the_wrong_verb_form("Whenever ~ or another Elf you control enter, draw a card.")]
 #[case::no_verb("Whenever ~ or another creature you control, draw a card.")]
 #[case::a_plural_group("Whenever ~ or other Elves you control die, draw a card.")]
-#[case::an_unread_effect("Whenever ~ or another creature you control dies, flip two coins.")]
+#[case::an_unread_effect("Whenever ~ or another creature you control dies, flip a coin.")]
 #[case::no_effect("Whenever ~ or another creature you control dies,")]
 fn near_misses_stay_unread(#[case] text: &str) {
     assert_eq!(trigger(text), None, "{text:?}");

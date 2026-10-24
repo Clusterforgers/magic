@@ -42,6 +42,7 @@ fn a_coin_flip_reads_with_the_branch_of_each_result(
     "{T}: Flip a coin. If you win the flip, draw a card. If you lose, gain 1 life.",
     ClauseKind::Activated
 )]
+#[case::a_flip_that_does_nothing("{T}: Flip a coin.", ClauseKind::Activated)]
 #[case::two_coins(
     "{T}: Flip two coins. If you win the flip, draw a card.",
     ClauseKind::Activated

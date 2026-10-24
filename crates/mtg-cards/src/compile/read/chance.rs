@@ -35,6 +35,8 @@ pub fn flip(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             lose = effects;
         }
     }
+    // A flip whose result does nothing is no effect of a card (its "wins a coin flip" triggers are other constructs).
+    (!win.is_empty() || !lose.is_empty()).then_some(())?;
     Some(vec![Effect::FlipCoin { who, win, lose }])
 }
 
@@ -137,7 +139,7 @@ pub fn rows(ability: &Ability) -> Vec<DieRow> {
     let mut copy = ability.clone();
     effects_of(&mut copy)
         .and_then(|effects| tail_roll(effects))
-        .map(|results| std::mem::take(results))
+        .map(std::mem::take)
         .unwrap_or_default()
 }
 

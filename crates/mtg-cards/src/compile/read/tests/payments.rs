@@ -86,7 +86,7 @@ fn a_payment_by_the_player_of_an_event_reads_and_writes_back(#[case] text: &str)
 #[case::no_if_you_do("You may pay {1}. Draw a card.")]
 #[case::if_you_dont("You may pay {1}. If you don't, draw a card.")]
 #[case::nothing_after("You may pay {1}. If you do,")]
-#[case::an_unread_effect("You may pay {1}. If you do, flip two coins.")]
+#[case::an_unread_effect("You may pay {1}. If you do, flip a coin.")]
 #[case::another_player("Target player may pay {1}. If you do, draw a card.")]
 #[case::tap("You may tap an untapped creature you control. If you do, draw a card.")]
 #[case::life_the_game_counted("You may pay life equal to its power. If you do, draw a card.")]

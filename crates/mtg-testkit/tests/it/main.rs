@@ -64,6 +64,7 @@ mod commander_objects;
 mod common;
 mod companion;
 mod companion_fuzz;
+mod compiled_chance;
 mod concede;
 mod concede_mid_cast;
 mod conditional_statics;
