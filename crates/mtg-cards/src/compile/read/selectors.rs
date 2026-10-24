@@ -566,6 +566,17 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
             return Some(pred);
         }
         let stat = stat_word(r)?;
+        // The damage that triggered the ability: "mana value less than or equal to that damage".
+        if stat == StatKind::ManaValue
+            && r.triggered
+            && r.words("less than or equal to that damage")
+        {
+            return Some(Pred::Compare {
+                stat,
+                op: Cmp::Le,
+                to: Amount::Triggering,
+            });
+        }
         // "mana value X or less": the X of the card's own cost.
         let to = if r.x_free && !r.x_unpaid && r.word("x") {
             Amount::X
@@ -651,6 +662,11 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             Pred::HasKeyword(keyword) => format!("without {}", keyword_text(keyword)?),
             _ => return None,
         },
+        Pred::Compare {
+            stat: StatKind::ManaValue,
+            op: Cmp::Le,
+            to: Amount::Triggering,
+        } => "with mana value less than or equal to that damage".to_owned(),
         Pred::Compare { stat, op, to } => {
             let number = match to {
                 Amount::Fixed(number) => number.to_string(),

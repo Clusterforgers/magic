@@ -99,7 +99,7 @@ pub struct Choices {
     /// The game picked the modes with the next substream of its random source ("choose one at random"): the event
     /// that carries these choices spends the substream.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
-    #[cfg_attr(feature = "ts", ts(optional))]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub random_modes: bool,
     /// The value of X, which outlives the spell (CR 107.3).
     #[serde(default, skip_serializing_if = "Option::is_none")]

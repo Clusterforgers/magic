@@ -1287,6 +1287,7 @@ fn pipeline_events() -> Vec<Event> {
     let target = Target::Object(ObjectRef { id: b, counter: 1 });
     let choices = Choices {
         modes: vec![1],
+        random_modes: true,
         x: Some(3),
         targets: vec![vec![target, Target::Player(player)]],
         division: vec![(target, 2)],
