@@ -1,0 +1,28 @@
+{
+  "oracle_id": "bff9105f-d8d4-4412-88d9-c9697581ebe9",
+  "name": "Electrosiphon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Electrosiphon",
+      "oracle_fingerprint": "e216b137bdd096a511fda6f253f60fdb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "PutCounters": {
+                  "on": "You",
+                  "counter": { "Other": "energy" },
+                  "count": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

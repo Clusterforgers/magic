@@ -1,0 +1,20 @@
+{
+  "oracle_id": "2fc6305e-e75e-478a-826b-49f655ed832c",
+  "name": "Avatar of Slaughter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avatar of Slaughter",
+      "oracle_fingerprint": "02e0cd8168444942ca706192132096d9",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }] },
+            "mods": [{ "AddKeyword": "DoubleStrike" }]
+          }
+        },
+        { "Rule": { "rule": { "MustAttack": { "Each": [{ "Type": "Creature" }] } } } }
+      ]
+    }
+  ]
+}

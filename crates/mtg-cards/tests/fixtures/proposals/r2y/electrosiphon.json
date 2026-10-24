@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":["Spell"]}}],"effects":[{"Counter":{"what":{"Target":0}}},{"PutCounters":{"on":"You","counter":{"Other":"energy"},"count":{"Stat":{"of":{"Target":0},"stat":"ManaValue"}}}}]}}]}]}

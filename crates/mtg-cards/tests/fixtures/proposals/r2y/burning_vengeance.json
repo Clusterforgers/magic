@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"SpellCast":{"what":[{"CastFrom":"Graveyard"},{"OwnedBy":"You"}],"by":"You"}},"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":2}}]}}]}]}

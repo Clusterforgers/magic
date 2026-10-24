@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"AsCopy":{"of":[{"Type":"Enchantment"},{"ControlledBy":"You"}],"except":[{"GrantAbility":{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"May":{"effects":[{"Exile":{"what":"This","as":"self"}},{"Move":{"what":{"Bound":"self"},"to":{"Battlefield":{}}}}]}}]}}}]}}}}]}]}

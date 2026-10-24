@@ -1,0 +1,37 @@
+{
+  "oracle_id": "82f18e7d-5c42-47c4-8e74-3fccc9b7b1f0",
+  "name": "Ancient Stirrings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancient Stirrings",
+      "oracle_fingerprint": "22f49b59b836d1ea5b94a79ea7d1b2a6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, "Colorless"]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

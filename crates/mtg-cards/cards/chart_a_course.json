@@ -1,0 +1,32 @@
+{
+  "oracle_id": "05878e49-93ad-4144-9c50-a0bb86126c2e",
+  "name": "Chart a Course",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chart a Course",
+      "oracle_fingerprint": "bf7c8cd684783fc5f9153323dca46a4b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                      "op": "Lt",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Discard": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

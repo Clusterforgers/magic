@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Search":{"filter":[{"Type":"Creature"}],"count":{"min":0,"max":3},"as":"found"}},{"Move":{"what":{"Bound":"found"},"to":"Graveyard"}},{"Shuffle":{}}]}}]}]}

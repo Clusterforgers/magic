@@ -1,0 +1,20 @@
+{
+  "oracle_id": "debce64a-18bd-42f5-9e85-158c2242e9e9",
+  "name": "Deepglow Skate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deepglow Skate",
+      "oracle_fingerprint": "403bebfbeca2903c7e9c4bf2ac9bdae7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [] }, "bounds": { "min": 0, "max": null } }],
+            "effects": [{ "MultiplyCounters": { "on": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

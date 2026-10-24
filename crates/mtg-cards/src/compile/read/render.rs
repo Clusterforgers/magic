@@ -23,6 +23,7 @@ mod has_counter;
 mod instead;
 mod library_steps;
 mod loyalty;
+mod may_flicker;
 mod may_have;
 mod multi;
 mod opponent_picks;
@@ -1895,7 +1896,10 @@ impl Writer<'_> {
             [choose @ Effect::Choose { .. }, moved @ Effect::Move { .. }] => {
                 format!("you may {}", put_onto::put_onto_text(choose, moved)?)
             }
-            _ => self.may_have(effects).or_else(|| self.may_do(effects))?,
+            _ => self
+                .may_have(effects)
+                .or_else(|| self.may_do(effects))
+                .or_else(|| may_flicker::text(effects))?,
         })
     }
 

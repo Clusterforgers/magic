@@ -1,0 +1,26 @@
+{
+  "oracle_id": "54d7d7f8-22cd-4859-b203-924d248b422b",
+  "name": "Commander's Insight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Commander's Insight",
+      "oracle_fingerprint": "29dec0b7b6651ed30c9bf640663358e6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Draw": {
+                  "who": { "Target": 0 },
+                  "count": { "Sum": ["X", { "CommanderCasts": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

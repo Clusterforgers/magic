@@ -157,6 +157,7 @@ Broodbirth Viper
 Broodcaller Scourge
 Broodhatch Nantuko
 Broodstar
+Buried Alive
 Cached Defenses
 Cackling Counterpart
 Cadaverous Bloom

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Discarded":{"what":[],"by":"You"}},"effects":[{"May":{"effects":[{"Exile":{"what":"Triggering","as":"card"}},{"Rule":{"rule":{"MayCast":{"from":"Exile","only":{"Bound":"card"},"play":true}},"duration":"UntilEndOfTurn"}}]}}]}}]}]}

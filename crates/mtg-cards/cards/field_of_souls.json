@@ -1,0 +1,41 @@
+{
+  "oracle_id": "4d7a5b14-8fce-41f2-a0d5-fff3d15f41f6",
+  "name": "Field of Souls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Field of Souls",
+      "oracle_fingerprint": "77efd943663bef458bda2a93ee078eff",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "OwnedBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

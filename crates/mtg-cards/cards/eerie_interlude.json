@@ -1,0 +1,34 @@
+{
+  "oracle_id": "0634091a-a74c-4cea-b6d1-7324a725554a",
+  "name": "Eerie Interlude",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eerie Interlude",
+      "oracle_fingerprint": "db498d4fb8df4a0b08b178de9e552bf8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[]},"bounds":{"min":0,"max":null}}],"effects":[{"MultiplyCounters":{"on":{"Target":0}}}]}}]}]}
