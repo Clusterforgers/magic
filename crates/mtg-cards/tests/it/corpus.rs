@@ -282,6 +282,13 @@ fn keywords_in_the_data_appear_in_the_oracle_text() {
                         "{}: the text has no typecycling",
                         card.name
                     );
+                } else if let Ability::Keyword(Keyword::PartnerGroup(group)) = ability {
+                    // A partner group is printed as `Partner—Character select`.
+                    assert!(
+                        text.contains(&format!("partner—{}", group.to_lowercase())),
+                        "{}: the text has no partner group",
+                        card.name
+                    );
                 } else if let Ability::Keyword(Keyword::EquipTo { .. }) = ability {
                     // An equip with a restriction is printed as `Equip legendary creature`.
                     assert!(

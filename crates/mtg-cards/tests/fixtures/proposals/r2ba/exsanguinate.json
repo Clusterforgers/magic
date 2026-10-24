@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"LoseLife":{"who":"Opponents","amount":"X"}},{"GainLife":{"amount":{"Tallied":{"who":"Opponents","what":"LifeLost"}}}}]}}]}]}

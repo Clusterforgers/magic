@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"AnyOf":[{"Subtype":"Mutant"},{"Subtype":"Ninja"},{"Subtype":"Turtle"}]},{"ControlledBy":"You"}],"to":"Battlefield"}},"effects":[{"CreateToken":{"token":{"Named":"clue"}}}]}},{"Keyword":{"PartnerGroup":"Character select"}}]}]}

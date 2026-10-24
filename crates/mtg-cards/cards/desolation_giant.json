@@ -1,0 +1,36 @@
+{
+  "oracle_id": "c23aaf6d-151e-481a-a345-ca00c14940d1",
+  "name": "Desolation Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desolation Giant",
+      "oracle_fingerprint": "4e9f1847e31ee50f78f6b3e225f8e8c8",
+      "abilities": [
+        { "Keyword": { "Kicker": "{W}{W}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }, "Other"] } } }],
+                  "otherwise": [
+                    {
+                      "Destroy": {
+                        "what": {
+                          "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

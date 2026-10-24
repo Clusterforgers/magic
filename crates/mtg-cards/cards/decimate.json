@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a4e5693f-12a0-451e-818d-d6efc7b4ed25",
+  "name": "Decimate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Decimate",
+      "oracle_fingerprint": "ac65d05ede57115c1c67d6cb37d1a3f6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              { "what": { "Object": [{ "Type": "Enchantment" }] } },
+              { "what": { "Object": [{ "Type": "Land" }] } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "Destroy": { "what": { "Target": 1 } } },
+              { "Destroy": { "what": { "Target": 2 } } },
+              { "Destroy": { "what": { "Target": 3 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

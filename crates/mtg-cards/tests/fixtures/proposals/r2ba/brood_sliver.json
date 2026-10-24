@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"DealsDamage":{"source":[{"Subtype":"Sliver"}],"to":"EachPlayer","combat":true}},"effects":[{"May":{"who":{"ControllerOf":"Triggering"},"effects":[{"CreateToken":{"who":{"ControllerOf":"Triggering"},"token":{"Custom":{"name":"Sliver","types":["Creature"],"subtypes":["Sliver"],"power":1,"toughness":1}}}}]}}]}}]}]}

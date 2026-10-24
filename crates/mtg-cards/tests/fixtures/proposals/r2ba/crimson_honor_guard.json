@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Trample"},{"Triggered":{"when":{"StepBegins":{"step":"End"}},"effects":[{"If":{"condition":{"Compare":{"left":{"Count":[{"Commander":null},{"ControlledBy":"Triggering"}]},"op":"Eq","right":0}},"then":[{"DealDamage":{"source":"This","to":"Triggering","amount":4}}]}}]}}]}]}

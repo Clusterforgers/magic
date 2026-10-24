@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]}}],"effects":[{"Move":{"what":{"Target":0},"to":{"Battlefield":{}}}},{"If":{"condition":{"Matches":{"subject":{"Target":0},"selector":[{"Subtype":"Angel"}]}},"then":[{"PutCounters":{"on":{"Target":0},"counter":"+1/+1","count":2}}]}}]}}]}]}

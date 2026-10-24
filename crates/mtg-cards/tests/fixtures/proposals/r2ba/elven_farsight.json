@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Scry":{"count":3}},{"May":{"effects":[{"LookAtTop":{"as":"top"}},{"Reveal":{"what":{"Bound":"top"}}},{"If":{"condition":{"Matches":{"subject":{"Bound":"top"},"selector":[{"Type":"Creature"}]}},"then":[{"Draw":{}}]}}]}}]}}]}]}

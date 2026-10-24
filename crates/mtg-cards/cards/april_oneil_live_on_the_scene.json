@@ -1,0 +1,34 @@
+{
+  "oracle_id": "4900c157-8d9f-4f92-aaca-5246b6e2832e",
+  "name": "April O'Neil, Live on the Scene",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "April O'Neil, Live on the Scene",
+      "oracle_fingerprint": "9f4ea2f65eb44c9eb754fe4a5de1db5a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Subtype": "Mutant" },
+                      { "Subtype": "Ninja" },
+                      { "Subtype": "Turtle" }
+                    ]
+                  },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        { "Keyword": { "PartnerGroup": "Character select" } }
+      ]
+    }
+  ]
+}

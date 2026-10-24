@@ -1,0 +1,29 @@
+{
+  "oracle_id": "1c2cc166-dc59-44ce-86d5-ed6013b0bf67",
+  "name": "Dusk Urchins",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dusk Urchins",
+      "oracle_fingerprint": "56b470ec7d8c338c9312b15b77109c09",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "-1/-1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Draw": { "count": { "Counters": { "on": "This", "counter": "-1/-1" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

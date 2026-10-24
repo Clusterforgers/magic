@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":{"Object":[{"Type":"Artifact"}]},"bounds":{"min":0,"max":1}}],"effects":[{"Destroy":{"what":{"Target":0}}},{"If":{"condition":"Performed","then":[{"Draw":{"who":{"ControllerOf":{"Target":0}}}}]}}]}}]}]}

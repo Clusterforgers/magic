@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"RepeatEach":{"over":"EachPlayer","as":"player","effects":[{"Sacrifice":{"who":{"Bound":"player"},"filter":[{"Not":"Colorless"}],"count":{"Count":[{"Not":"Colorless"},{"ControlledBy":{"Bound":"player"}}]}}}]}}]}}]}]}

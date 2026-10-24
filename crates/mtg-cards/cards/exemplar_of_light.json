@@ -1,0 +1,27 @@
+{
+  "oracle_id": "9ad730b5-8950-4215-9319-387e2970dd22",
+  "name": "Exemplar of Light",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exemplar of Light",
+      "oracle_fingerprint": "e23a8bcbdd3210575dcdba1548c50d4e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "CountersPut": { "what": ["This"], "counter": "+1/+1" } },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

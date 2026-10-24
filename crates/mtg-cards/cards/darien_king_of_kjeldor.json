@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d05336cb-6157-47e7-942f-43becd67a5bf",
+  "name": "Darien, King of Kjeldor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Darien, King of Kjeldor",
+      "oracle_fingerprint": "bd7ea45cee2cfddf6955a01a1898bb5a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Soldier",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Soldier"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": "Triggering"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

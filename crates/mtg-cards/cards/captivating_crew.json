@@ -1,0 +1,39 @@
+{
+  "oracle_id": "1049bc06-83de-4ed6-ae38-f259e5038a95",
+  "name": "Captivating Crew",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captivating Crew",
+      "oracle_fingerprint": "8866ca0ce310ba353e77a7399531ee65",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{R}",
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

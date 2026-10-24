@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"In":"Graveyard"}]}}],"effects":[{"Move":{"what":{"Target":0},"to":{"Battlefield":{"under":"You"}}}},{"Continuous":{"affected":{"Target":0},"mods":[{"AddKeyword":"Indestructible"}],"duration":"Forever"}},{"If":{"condition":"YourTurn","then":[{"Scry":{"count":2}}]}}]}}]}]}

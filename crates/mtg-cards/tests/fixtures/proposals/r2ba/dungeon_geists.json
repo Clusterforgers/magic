@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}}],"effects":[{"Tap":{"what":{"Target":0}}},{"Continuous":{"affected":{"Target":0},"mods":["DoesntUntap"],"duration":"WhileSourceOnBattlefield"}}]}}]}]}

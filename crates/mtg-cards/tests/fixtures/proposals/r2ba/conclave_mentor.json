@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"CountersPut":{"on":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"counter":"+1/+1"}},"by":{"Add":1}}},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"effects":[{"GainLife":{"amount":{"Stat":{"of":"This","stat":"Power"}}}}]}}]}]}

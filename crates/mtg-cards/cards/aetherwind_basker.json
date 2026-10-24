@@ -1,0 +1,47 @@
+{
+  "oracle_id": "d9ec9a4f-0644-47c5-bc09-1201d5251bde",
+  "name": "Aetherwind Basker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aetherwind Basker",
+      "oracle_fingerprint": "92c255726c779edfaf75fce9dfec1f46",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "You",
+                  "counter": { "Other": "energy" },
+                  "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayEnergy": 1 }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

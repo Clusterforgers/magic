@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"This","mods":["CantBlock"]}},{"Activated":{"cost":"{1}{B}","condition":{"Compare":{"left":{"Tallied":{"who":"You","what":"Attackers"}},"op":"Ge","right":1}},"from":"Graveyard","effects":[{"Move":{"what":"This","to":{"Battlefield":{}}}}]}}]}]}

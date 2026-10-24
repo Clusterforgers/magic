@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"FirstStrike"},{"Keyword":"Menace"},{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"ControlledBy":"Opponents"}],"from":"Battlefield","to":"Graveyard"}},"effects":[{"LoseLife":{"who":{"ControllerOf":"Triggering"},"amount":2}}]}}]}]}

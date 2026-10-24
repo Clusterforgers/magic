@@ -1,0 +1,37 @@
+{
+  "oracle_id": "9d7624ea-ffff-470b-928b-bbac66ddbd1c",
+  "name": "Act of Aggression",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Act of Aggression",
+      "oracle_fingerprint": "4a70c437f9bcfb1d693a5ffe34e98ef2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

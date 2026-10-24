@@ -1,0 +1,37 @@
+{
+  "oracle_id": "8ba36878-0816-44c7-b543-8ebfc28c2ecd",
+  "name": "Angelic Destiny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angelic Destiny",
+      "oracle_fingerprint": "e4b705224145b31a4bc081f315dc8427",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 4, "toughness": 4 } },
+              { "AddKeyword": "Flying" },
+              { "AddKeyword": "FirstStrike" },
+              { "AddSubtype": "Angel" }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

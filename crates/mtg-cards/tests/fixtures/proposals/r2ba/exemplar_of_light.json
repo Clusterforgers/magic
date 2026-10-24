@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"LifeGained":{"who":"You"}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}},{"Triggered":{"when":{"CountersPut":{"what":["This"],"counter":"+1/+1"}},"limit":"OncePerTurn","effects":[{"Draw":{}}]}}]}]}

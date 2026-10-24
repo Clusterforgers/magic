@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3ba19659-461f-482c-b882-b4fca7d5d1f8",
+  "name": "Assault Intercessor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Assault Intercessor",
+      "oracle_fingerprint": "0cb7db4d2d907858bd1d0dc2551ba393",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

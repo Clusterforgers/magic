@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Draw":{}},{"Discard":{"who":"Opponents"}}]}},{"Triggered":{"when":{"Surveilled":{"who":"You"}},"effects":[{"Move":{"what":"This","to":"Hand"}}]}}]}]}

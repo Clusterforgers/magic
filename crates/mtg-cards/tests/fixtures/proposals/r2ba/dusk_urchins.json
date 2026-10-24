@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"AnyOf":[{"Attacks":{"what":["This"]}},{"Blocks":{"what":["This"]}}]},"effects":[{"PutCounters":{"on":"This","counter":"-1/-1"}}]}},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"effects":[{"Draw":{"count":{"Counters":{"on":"This","counter":"-1/-1"}}}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Exile":{"what":{"Each":[{"Subtype":"Zombie"}]}}},{"Move":{"what":{"Each":[{"Type":"Creature"},{"Subtype":"Human"},{"In":"Graveyard"},{"OwnedBy":"You"}]},"to":{"Battlefield":{}}}}]}}]}]}

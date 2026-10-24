@@ -1250,6 +1250,10 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::Discarded { what, by } if what.is_empty() => {
             Some(format!("Whenever {} a card", player_verb(by, "discard")?))
         }
+        TriggerPattern::Discarded { what, by } if what.0 == [Pred::Other] => Some(format!(
+            "Whenever {} another card",
+            player_verb(by, "discard")?
+        )),
         TriggerPattern::Cycled { what, by } => cycled_text(what, by),
         TriggerPattern::PlayerAttacked { who } => {
             let (subject, be) = match who {

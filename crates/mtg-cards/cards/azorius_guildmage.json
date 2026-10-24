@@ -1,0 +1,27 @@
+{
+  "oracle_id": "16f61f69-cdde-4b6c-b855-c74db9038ceb",
+  "name": "Azorius Guildmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Azorius Guildmage",
+      "oracle_fingerprint": "7e01ce4846d7da3b95d2f54fc18d0a46",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{W}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "targets": [{ "what": { "Object": [{ "Ability": "Activated" }] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

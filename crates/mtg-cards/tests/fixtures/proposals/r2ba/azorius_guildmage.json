@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":"{2}{W}","targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Tap":{"what":{"Target":0}}}]}},{"Activated":{"cost":"{2}{U}","targets":[{"what":{"Object":[{"Ability":"Activated"}]}}],"effects":[{"Counter":{"what":{"Target":0}}}]}}]}]}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "cad09970-14c8-4d80-82fe-6c855efb0191",
+  "name": "Bloodsoaked Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodsoaked Champion",
+      "oracle_fingerprint": "e9e6771ccb52140afe31a58a1ed022d7",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

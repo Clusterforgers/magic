@@ -1,0 +1,44 @@
+{
+  "oracle_id": "c7a98058-b40d-4d74-9b97-6f04adf3c684",
+  "name": "Dawn to Dusk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dawn to Dusk",
+      "oracle_fingerprint": "5ee641a3a9218c851df236a982b8b930",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Enchantment" },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

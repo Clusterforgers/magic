@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"End"}},"effects":[{"RepeatEach":{"over":"EachPlayer","as":"player","effects":[{"Continuous":{"affected":{"Each":[{"OwnedBy":{"Bound":"player"}},{"Not":"Token"}]},"mods":[{"SetController":{"Bound":"player"}}],"duration":"Forever"}}]}}]}}]}]}

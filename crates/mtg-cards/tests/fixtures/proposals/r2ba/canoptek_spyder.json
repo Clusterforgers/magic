@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"ZoneChange":{"what":["Other",{"ControlledBy":"You"},{"Not":"Token"},{"Type":"Artifact"},{"AnyOf":[{"Type":"Creature"},{"Subtype":"Vehicle"}]}],"to":"Battlefield"}},"effects":[{"Draw":{}}]}}]}]}

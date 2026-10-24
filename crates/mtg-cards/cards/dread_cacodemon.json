@@ -1,0 +1,31 @@
+{
+  "oracle_id": "1d34e78e-4fe9-44e1-88d3-a98fd64555a9",
+  "name": "Dread Cacodemon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dread Cacodemon",
+      "oracle_fingerprint": "b95b5929019349cb085e769d335a72d6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "CastFrom": "Hand" }] } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                }
+              },
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

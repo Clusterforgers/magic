@@ -1,0 +1,26 @@
+{
+  "oracle_id": "04858b93-0a2a-44d0-942d-7fadf589cbb7",
+  "name": "Curator of Mysteries",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curator of Mysteries",
+      "oracle_fingerprint": "c931bf068b083b2a1678c2f68fd92ec4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Cycled": { "what": ["Other"], "by": "You" } },
+                { "Discarded": { "what": ["Other"], "by": "You" } }
+              ]
+            },
+            "effects": [{ "Scry": {} }]
+          }
+        },
+        { "Keyword": { "Cycling": "{U}" } }
+      ]
+    }
+  ]
+}

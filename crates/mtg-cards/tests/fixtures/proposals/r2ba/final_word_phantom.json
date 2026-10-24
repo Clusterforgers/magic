@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flash"},{"Keyword":"Flying"},{"Rule":{"rule":{"MayCast":{"flash":true}},"condition":{"All":[{"Step":"End"},{"Not":"YourTurn"}]}}}]}]}

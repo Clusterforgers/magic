@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Trample"},{"Keyword":"Haste"},{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},"Other",{"ControlledBy":"You"}],"to":"Battlefield"}},"effects":[{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":{"Stat":{"of":"This","stat":"Power"}},"toughness":0}}],"duration":"UntilEndOfTurn"}}]}}]}]}

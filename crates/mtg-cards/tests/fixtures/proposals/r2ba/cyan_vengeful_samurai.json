@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"CostModifier":{"applies_to":["This"],"change":"Reduce","mana":"{1}","per":{"Count":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]}}},{"Keyword":"DoubleStrike"},{"Triggered":{"when":{"Batch":{"ZoneChange":{"what":[{"Type":"Creature"},{"OwnedBy":"You"}],"from":"Graveyard"}}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}}]}]}

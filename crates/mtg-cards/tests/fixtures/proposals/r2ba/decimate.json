@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Artifact"}]}},{"what":{"Object":[{"Type":"Creature"}]}},{"what":{"Object":[{"Type":"Enchantment"}]}},{"what":{"Object":[{"Type":"Land"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}},{"Destroy":{"what":{"Target":1}}},{"Destroy":{"what":{"Target":2}}},{"Destroy":{"what":{"Target":3}}}]}}]}]}

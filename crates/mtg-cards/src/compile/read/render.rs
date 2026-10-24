@@ -38,6 +38,7 @@ mod populated;
 mod put_onto;
 mod revealed;
 mod shuffled_in;
+mod stolen;
 mod switched;
 mod target_counts;
 mod those;
@@ -2298,6 +2299,7 @@ impl Writer<'_> {
             .or_else(|| revealed::text(effects))
             .or_else(|| self.mill_then_hand(effects))
             .or_else(|| Self::untapped_and_controlled(effects))
+            .or_else(|| self.stolen(effects))
             .or_else(|| self.owner_shuffles(effects))
             // Populate is two steps and one word.
             .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))

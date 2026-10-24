@@ -1,0 +1,37 @@
+{
+  "oracle_id": "5a2fa420-c27f-4c14-b285-e0bb2828e053",
+  "name": "Cyan, Vengeful Samurai",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cyan, Vengeful Samurai",
+      "oracle_fingerprint": "104ecedfad68d7b01ae4e6502cc77b49",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+            }
+          }
+        },
+        { "Keyword": "DoubleStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
+                  "from": "Graveyard"
+                }
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Keyword":"Deathtouch"},{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"Not":"Token"},{"ControlledBy":"You"}],"from":"Battlefield","to":"Graveyard"}},"effects":[{"DelayedTrigger":{"when":{"StepBegins":{"step":"End"}},"effects":[{"Move":{"what":"Triggering","to":{"Battlefield":{"under":"You"}}}}]}}]}}]}]}

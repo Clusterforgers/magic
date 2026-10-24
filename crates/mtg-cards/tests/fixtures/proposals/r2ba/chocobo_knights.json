@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"PlayerAttacks":{"by":"You","at":"Opponents"}},"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},{"HasCounter":{"Other":"x"}}]},"mods":[{"AddKeyword":"DoubleStrike"}],"duration":"UntilEndOfTurn"}}]}}]}]}

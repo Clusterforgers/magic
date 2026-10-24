@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Defender"},{"Keyword":"Flying"},{"Replacement":{"when":{"Damage":{"to":{"Each":[]},"combat":true}},"by":"Prevent"}}]}]}

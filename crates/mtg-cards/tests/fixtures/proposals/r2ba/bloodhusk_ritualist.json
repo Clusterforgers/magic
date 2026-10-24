@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Multikicker":"{B}"}},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":"Opponent"}],"effects":[{"Discard":{"who":{"Target":0},"count":"Kicks"}}]}}]}]}

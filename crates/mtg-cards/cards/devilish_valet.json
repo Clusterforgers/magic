@@ -1,0 +1,41 @@
+{
+  "oracle_id": "e1e0dc37-20c9-4236-ae01-e0891ce83afb",
+  "name": "Devilish Valet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Devilish Valet",
+      "oracle_fingerprint": "ceedd2be4f7f6ccbf9bb66e7c0fd0884",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "This", "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a2fe5937-212c-4e71-8d6e-f408b38100aa",
+  "name": "Conclave Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conclave Mentor",
+      "oracle_fingerprint": "e683129275f2eb94cf989cfa95e68716",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "counter": "+1/+1"
+              }
+            },
+            "by": { "Add": 1 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "GainLife": { "amount": { "Stat": { "of": "This", "stat": "Power" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

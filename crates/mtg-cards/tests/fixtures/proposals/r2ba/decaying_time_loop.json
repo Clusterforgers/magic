@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]},"as":"discarded"}},{"Draw":{"count":{"Count":[{"Is":{"Bound":"discarded"}}]}}}]}},{"Keyword":"Retrace"}]}]}

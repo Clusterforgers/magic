@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"targets":[{"what":"Player"}],"effects":[{"Draw":{"count":{"Count":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":{"Target":0}}]}}},{"LoseLife":{"amount":{"Count":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":{"Target":0}}]}}}]}}]}]}

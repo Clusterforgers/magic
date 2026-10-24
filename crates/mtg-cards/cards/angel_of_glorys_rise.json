@@ -1,0 +1,35 @@
+{
+  "oracle_id": "c6a606af-ea08-4cd9-bfd9-60d76e232e85",
+  "name": "Angel of Glory's Rise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angel of Glory's Rise",
+      "oracle_fingerprint": "c081cb01faae698a7be398124d57b109",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "Subtype": "Zombie" }] } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Subtype": "Human" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

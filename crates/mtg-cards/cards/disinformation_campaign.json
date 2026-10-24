@@ -1,0 +1,25 @@
+{
+  "oracle_id": "1dd336b0-9b13-4180-b80a-e8ba5d63d04f",
+  "name": "Disinformation Campaign",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disinformation Campaign",
+      "oracle_fingerprint": "41f4a71ee50c1c12ddf2850dab7f65c8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }, { "Discard": { "who": "Opponents" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Surveilled": { "who": "You" } },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

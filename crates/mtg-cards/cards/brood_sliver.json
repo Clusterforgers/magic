@@ -1,0 +1,47 @@
+{
+  "oracle_id": "6b1d178f-9713-4dcf-920b-ddf2c94cc427",
+  "name": "Brood Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brood Sliver",
+      "oracle_fingerprint": "680f50c2fe393441796151eda7a17afa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Subtype": "Sliver" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "who": { "ControllerOf": "Triggering" },
+                        "token": {
+                          "Custom": {
+                            "name": "Sliver",
+                            "types": ["Creature"],
+                            "subtypes": ["Sliver"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
