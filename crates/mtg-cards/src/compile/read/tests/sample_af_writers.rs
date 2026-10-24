@@ -523,7 +523,7 @@ fn a_group_and_a_rule_for_another_group_are_not_one_sentence(
     #[case] attackers: String,
 ) {
     let (first, second) = avatar(&statics, &attackers);
-    assert!(static_pair_texts(&first, &second).is_empty());
+    assert_eq!(static_pair_texts(&first, &second), Vec::<String>::new());
 }
 
 #[test]
@@ -535,7 +535,7 @@ fn a_group_that_must_attack_with_a_condition_is_not_joined() {
     let second = ability(&format!(
         r#"{{"Rule":{{"rule":{{"MustAttack":{group}}}}}}}"#
     ));
-    assert!(static_pair_texts(&first, &second).is_empty());
+    assert_eq!(static_pair_texts(&first, &second), Vec::<String>::new());
 }
 
 /// "At the beginning of your upkeep, you may exile ~. If you do, return it to the battlefield under its owner's control."
