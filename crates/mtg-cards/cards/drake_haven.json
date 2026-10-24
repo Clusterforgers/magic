@@ -1,0 +1,42 @@
+{
+  "oracle_id": "86d3def3-53fa-4cad-bb25-d3275af1e3f5",
+  "name": "Drake Haven",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drake Haven",
+      "oracle_fingerprint": "4c331a971a5bab9595ddbd1719545ef8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "AnyOf": [{ "Cycled": { "by": "You" } }, { "Discarded": { "by": "You" } }] },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Drake",
+                            "colors": ["Blue"],
+                            "types": ["Creature"],
+                            "subtypes": ["Drake"],
+                            "power": 2,
+                            "toughness": 2,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

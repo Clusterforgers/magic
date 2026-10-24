@@ -15,6 +15,7 @@ mod instead;
 mod loyalty;
 mod may_have;
 mod multi;
+mod oracle_only;
 mod put_onto;
 mod those;
 
@@ -348,6 +349,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     event_wordings::add(ability, &mut texts);
     those::add(ability, &mut texts);
     super::shortened::add(&mut texts);
+    oracle_only::add(ability, &mut texts);
     texts
 }
 

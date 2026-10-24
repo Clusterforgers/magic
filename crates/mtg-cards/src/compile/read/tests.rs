@@ -238,6 +238,7 @@ mod multiply_counters;
 mod mutations;
 mod named_tokens;
 mod number_of;
+mod oracle_only_writers;
 mod paid_reads;
 mod pay;
 mod payments;

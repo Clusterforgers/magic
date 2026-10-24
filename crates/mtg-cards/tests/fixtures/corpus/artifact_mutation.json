@@ -1,0 +1,25 @@
+{
+  "id": "fed09083-a259-4ab5-bb85-aeab9d0b1f7c",
+  "oracle_id": "e77e8768-3ea8-44f9-aba6-1e023e006946",
+  "name": "Artifact Mutation",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ncc",
+  "collector_number": "326",
+  "rarity": "rare",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{R}{G}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Destroy target artifact. It can't be regenerated. Create X 1/1 green Saproling creature tokens, where X is that artifact's mana value.",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": []
+}
