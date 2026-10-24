@@ -563,14 +563,12 @@ impl<'a> Walker<'a> {
     }
 
     fn bounds(&mut self, bounds: &Bounds) {
-        if let Some(Amount::Fixed(max)) = &bounds.max
-            && i64::from(bounds.min) > i64::from(*max)
+        if let (Some(min), Some(Amount::Fixed(max))) = (bounds.fixed_min(), &bounds.max)
+            && i64::from(min) > i64::from(*max)
         {
-            self.problem(format!(
-                "the minimum {} is above the maximum {max}",
-                bounds.min
-            ));
+            self.problem(format!("the minimum {min} is above the maximum {max}"));
         }
+        self.at("min", |w| w.amount(&bounds.min));
         if let Some(max) = &bounds.max {
             self.at("max", |w| w.amount(max));
         }
@@ -1682,6 +1680,11 @@ impl<'a> Walker<'a> {
                 if let Some(rest) = rest_as {
                     w.at("rest_as", |w| w.bind(rest, Kind::Object));
                 }
+            }
+            Effect::ChooseAtRandom { from, count, bind } => {
+                w.at("from", |w| w.reference(from, Kind::Object));
+                w.at("count", |w| w.amount(count));
+                w.at("as", |w| w.bind(bind, Kind::Object));
             }
             Effect::Attach { what, to } => {
                 w.at("what", |w| w.reference(what, Kind::Object));

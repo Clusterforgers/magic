@@ -44,7 +44,9 @@ fn sentences(r: &mut Reader<'_>, restricted: bool) -> Option<Vec<Effect>> {
     let binds: Vec<&str> = effects
         .iter()
         .filter_map(|effect| match effect {
-            Effect::Choose { bind, .. } => Some(bind.as_str()),
+            Effect::Choose { bind, .. } | Effect::ChooseAtRandom { bind, .. } => {
+                Some(bind.as_str())
+            }
             _ => None,
         })
         .collect();

@@ -1,5 +1,8 @@
 //! Goal: cards that change zones by a choice read and write back as the oracle words them: cards of a graveyard returned to the hand or the battlefield (any number, a type, a subtype, a mana value, tapped), taken from another graveyard under the player's control, a graveyard exiled, and a card put from the hand onto the battlefield; every other owner, destination or count stays with the table.
 use super::*;
+use crate::effect::Effect;
+use crate::refs::Bounds;
+use crate::value::Amount;
 
 fn trigger(text: &str) -> Option<Ability> {
     clause(text, ClauseKind::Triggered, false)
@@ -241,6 +244,78 @@ fn that_many_is_the_amount_of_a_trigger_and_not_of_a_spell(#[case] text: &str) {
 fn an_activated_put_from_the_hand_needs_its_may() {
     assert_eq!(
         activated("{3}, {T}: Put a land card from your hand onto the battlefield tapped."),
+        None
+    );
+}
+
+#[rstest]
+#[case::cards_from_the_graveyard(
+    "Return X target creature cards from your graveyard to the battlefield."
+)]
+#[case::bounced_permanents("Return X target nonland permanents to their owners' hands.")]
+#[case::outlaws("Return X target outlaw creature cards from your graveyard to the battlefield.")]
+#[case::a_subtype_of_cards("Return X target Elf cards from your graveyard to your hand.")]
+fn an_exact_count_of_x_targets_reads_and_writes_back(#[case] text: &str) {
+    let read = golden(text, ClauseKind::Spell, true);
+    let Ability::Spell { targets, .. } = &read else {
+        panic!("a spell");
+    };
+    assert_eq!(targets[0].bounds, Bounds::exactly(&Amount::X), "{text}");
+}
+
+#[rstest]
+#[case::one_card("Return a card at random from your graveyard to your hand.", false)]
+#[case::an_instant_or_sorcery(
+    "Return an instant or sorcery card at random from your graveyard to your hand.",
+    false
+)]
+#[case::a_subtype_card(
+    "Return a Zombie creature card at random from your graveyard to the battlefield.",
+    false
+)]
+#[case::two_cards("Return two cards at random from your graveyard to your hand.", false)]
+#[case::x_cards("Return X cards at random from your graveyard to your hand.", true)]
+fn a_pick_at_random_from_a_graveyard_reads_and_writes_back(#[case] text: &str, #[case] x: bool) {
+    let read = golden(text, ClauseKind::Spell, x);
+    let Ability::Spell { effects, targets } = &read else {
+        panic!("a spell");
+    };
+    assert!(targets.is_empty(), "{text}");
+    assert!(
+        matches!(
+            effects.as_slice(),
+            [Effect::ChooseAtRandom { .. }, Effect::Move { .. }]
+        ),
+        "{text}"
+    );
+}
+
+#[rstest]
+#[case::at_the_upkeep(
+    "At the beginning of your upkeep, return an instant or sorcery card at random from your graveyard to your hand."
+)]
+fn a_pick_at_random_reads_in_a_trigger(#[case] text: &str) {
+    golden(text, ClauseKind::Triggered, false);
+}
+
+#[rstest]
+#[case::from_a_hand("Return a card at random from your hand to your graveyard.")]
+#[case::from_the_opponents_graveyard(
+    "Return a card at random from an opponent's graveyard to your hand."
+)]
+#[case::to_the_library("Return a card at random from your graveyard to the top of your library.")]
+fn other_picks_at_random_stay_with_the_table(#[case] text: &str) {
+    assert_eq!(clause(text, ClauseKind::Spell, false), None, "{text}");
+}
+
+#[test]
+fn x_targets_need_an_x_in_the_cost() {
+    assert_eq!(
+        clause(
+            "Return X target creature cards from your graveyard to the battlefield.",
+            ClauseKind::Spell,
+            false
+        ),
         None
     );
 }

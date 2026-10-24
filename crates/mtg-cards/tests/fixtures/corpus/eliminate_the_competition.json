@@ -1,0 +1,23 @@
+{
+  "id": "e6e54953-0d6d-4f65-85cb-d26e66a76dce",
+  "oracle_id": "26e549c0-a08b-475b-9138-6dde175cdf55",
+  "name": "Eliminate the Competition",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "179",
+  "rarity": "rare",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "As an additional cost to cast this spell, sacrifice X creatures.\nDestroy X target creatures.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

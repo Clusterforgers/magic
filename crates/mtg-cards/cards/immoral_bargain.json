@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c82cc78b-ffd6-4f72-881d-85913830feb2",
+  "name": "Immoral Bargain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Immoral Bargain",
+      "oracle_fingerprint": "b65a66137bf06510524fb7c2627f28fe",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }], "count": "X" } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

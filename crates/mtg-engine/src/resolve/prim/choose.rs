@@ -1,6 +1,7 @@
 //! `Effect::Choose`: a player chooses some of a set of players or objects and binds what they chose.
 
 use mtg_cards::effect::Effect;
+use mtg_cards::value::Amount;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::wrong_effect;
@@ -34,12 +35,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .filter(|player| cx.state().is_alive(*player))
         .collect();
     let total = candidates.len();
-    let min = usize::try_from(count.min).unwrap_or(usize::MAX).min(total);
+    let min = at_most(cx, &count.min, total)?;
     let most = match &count.max {
         None => total,
-        Some(amount) => usize::try_from(cx.scope.amount(amount)?.max(0))
-            .unwrap_or(usize::MAX)
-            .min(total),
+        Some(amount) => at_most(cx, amount, total)?,
     }
     .max(min);
     let players: Vec<PlayerId> = candidates.iter().filter_map(|t| t.player()).collect();
@@ -117,6 +116,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         snapshots: Vec::new(),
         next: Next::Sibling,
     })
+}
+
+/// The amount as a count, no more than `total`.
+fn at_most(cx: &Cx<'_>, amount: &Amount, total: usize) -> Result<usize, ResolveError> {
+    let count = usize::try_from(cx.scope.amount(amount)?.max(0)).unwrap_or(usize::MAX);
+    Ok(count.min(total))
 }
 
 #[cfg(test)]

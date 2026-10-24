@@ -1,0 +1,23 @@
+{
+  "id": "77e28743-3694-48ef-9f16-0a3a4ff7e934",
+  "oracle_id": "e5387fc7-c3b3-4933-bffa-580ad793c7ab",
+  "name": "Distorting Wake",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c14",
+  "collector_number": "107",
+  "rarity": "rare",
+  "released_at": "2014-11-07",
+  "digital": false,
+  "mana_cost": "{X}{U}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Return X target nonland permanents to their owners' hands.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}
