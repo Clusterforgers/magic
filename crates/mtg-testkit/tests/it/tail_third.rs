@@ -673,7 +673,7 @@ fn a_land_asks_whether_to_reveal_a_card_and_enters_untapped_only_when_it_does(
             cards
         );
     } else {
-        assert!(revealed.is_empty());
+        assert_eq!(revealed.len(), 0);
     }
     assert_eq!(
         replay(&setup, driver.engine().events())
