@@ -1,0 +1,33 @@
+{
+  "oracle_id": "0f7f841a-1913-4396-9c94-bbd49dfdb9d1",
+  "name": "Festercreep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Festercreep",
+      "oracle_fingerprint": "92d616973bce41150a2e66f70cea2371",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, { "RemoveCounters": { "counter": "+1/+1" } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Other"] },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

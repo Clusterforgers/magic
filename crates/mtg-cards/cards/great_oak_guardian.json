@@ -1,0 +1,37 @@
+{
+  "oracle_id": "5dba7746-c087-4ec1-92ca-ab9882dea24d",
+  "name": "Great Oak Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Great Oak Guardian",
+      "oracle_fingerprint": "f896dad7cdf6dad61520b207a70ac8e2",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Untap": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

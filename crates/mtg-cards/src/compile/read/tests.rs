@@ -180,6 +180,7 @@ mod compound;
 mod conditions;
 mod copies;
 mod copy_attacks;
+mod copy_counts;
 mod copy_groups;
 mod copy_leftovers;
 mod copy_supertypes;
@@ -241,6 +242,7 @@ mod mass_moves;
 mod may;
 mod model_writers;
 mod modes;
+mod modes_both;
 mod monarch;
 mod multiply_counters;
 mod mutations;
@@ -255,6 +257,7 @@ mod per_opponent_writers;
 mod persistent_mana;
 mod player_event_writers;
 mod player_keywords;
+mod populate_tails;
 mod prevention;
 mod pump_wordings;
 mod put_back;
@@ -269,8 +272,11 @@ mod reveal;
 mod reveal_cast_writers;
 mod reveal_until;
 mod riot;
+mod sample_af2_writers;
 mod sample_af_writers;
+mod sample_gl2_writers;
 mod sample_gl_writers;
+mod sample_mr2_writers;
 mod sample_mr_writers;
 mod sample_sz_two_writers;
 mod search_by_controller;
@@ -292,6 +298,7 @@ mod sz_more_writers;
 mod sz_writers;
 mod tail_alone;
 mod tail_pairs;
+mod tail_third;
 mod tap_and_mill;
 mod target_pair_writers;
 mod this_or_another;
@@ -673,9 +680,6 @@ mod damage {
     #[case::no_amount("~ deals damage to any target.")]
     #[case::not_the_card("Target creature deals 3 damage to any target.")]
     #[case::it("It deals 3 damage to any target.")]
-    #[case::fights(
-        "Target creature you control deals damage equal to its power to target creature you don't control."
-    )]
     fn near_misses_stay_unread(#[case] text: &str) {
         assert_eq!(spell(text), None, "{text}");
     }

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "3701ed34-a97c-4d7b-a15a-4faec02ef24b",
+  "name": "Pack Leader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pack Leader",
+      "oracle_fingerprint": "6100b5dd72af75e7420d0da38b30f003",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Dog" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Each": [{ "Subtype": "Dog" }, { "ControlledBy": "You" }] },
+                      "combat": true
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

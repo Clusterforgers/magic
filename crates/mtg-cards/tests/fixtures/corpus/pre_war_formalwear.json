@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "db08975d-ae6e-43b2-8170-79f12149ad83",
+  "oracle_id": "c5782f70-05c6-4df9-812d-7ecbe2dbaaff",
+  "multiverse_ids": [],
+  "tcgplayer_id": 674607,
+  "cardmarket_id": 868468,
+  "name": "Pre-War Formalwear",
+  "lang": "en",
+  "released_at": "2026-01-26",
+  "uri": "https://api.scryfall.com/cards/db08975d-ae6e-43b2-8170-79f12149ad83",
+  "scryfall_uri": "https://scryfall.com/card/sld/2450/pre-war-formalwear?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:57:52Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/b/db08975d-ae6e-43b2-8170-79f12149ad83.jpg?1783904272",
+    "normal": "https://cards.scryfall.io/normal/front/d/b/db08975d-ae6e-43b2-8170-79f12149ad83.jpg?1783904272",
+    "large": "https://cards.scryfall.io/large/front/d/b/db08975d-ae6e-43b2-8170-79f12149ad83.jpg?1783904272",
+    "png": "https://cards.scryfall.io/png/front/d/b/db08975d-ae6e-43b2-8170-79f12149ad83.png?1783904272",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/b/db08975d-ae6e-43b2-8170-79f12149ad83.jpg?1783904272",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/b/db08975d-ae6e-43b2-8170-79f12149ad83.jpg?1783904272",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/b/db08975d-ae6e-43b2-8170-79f12149ad83.webp?1783904272",
+    "grid": "https://cards.scryfall.io/grid/front/d/b/db08975d-ae6e-43b2-8170-79f12149ad83.webp?1783904272",
+    "display": "https://cards.scryfall.io/display/front/d/b/db08975d-ae6e-43b2-8170-79f12149ad83.webp?1783904272",
+    "art": "https://cards.scryfall.io/art/front/d/b/db08975d-ae6e-43b2-8170-79f12149ad83.webp?1783904272",
+    "crop": "https://cards.scryfall.io/crop/front/d/b/db08975d-ae6e-43b2-8170-79f12149ad83.webp?1783904272",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/b/db08975d-ae6e-43b2-8170-79f12149ad83.jpg?1783904272"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "When this Equipment enters, return target creature card with mana value 3 or less from your graveyard to the battlefield and attach this Equipment to it.\nEquipped creature gets +2/+2 and has vigilance.\nEquip {3}",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Equip"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "4d92a8a7-ccb0-437d-abdc-9d70fc5ed672",
+  "set": "sld",
+  "set_name": "Secret Lair Drop",
+  "set_type": "box",
+  "set_uri": "https://api.scryfall.com/sets/4d92a8a7-ccb0-437d-abdc-9d70fc5ed672",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asld&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/sld?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/db08975d-ae6e-43b2-8170-79f12149ad83/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac5782f70-05c6-4df9-812d-7ecbe2dbaaff&unique=prints",
+  "collector_number": "2450",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Pauline Voss",
+  "artist_ids": [
+    "d0d814a5-f4bc-4383-afe5-a3f329b68dce"
+  ],
+  "illustration_id": "834c578f-f8be-4e3e-934e-4da31c75d7f3",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "inverted"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 5937,
+  "prices": {
+    "usd": "2.48",
+    "usd_foil": "3.16",
+    "usd_etched": null,
+    "eur": "4.25",
+    "eur_foil": "6.54",
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPre-War%2BFormalwear",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPre-War%2BFormalwear",
+    "edhrec": "https://edhrec.com/route/?cc=Pre-War+Formalwear"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F674607%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=868468&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Pre-War+Formalwear&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

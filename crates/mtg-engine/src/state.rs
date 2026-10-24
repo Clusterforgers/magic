@@ -87,6 +87,8 @@ pub(crate) enum Tally {
     Drawn,
     /// A spell cast.
     Cast,
+    /// An instant or sorcery spell cast (counted for the player).
+    CastInstantOrSorcery,
     /// Life gained, once for each event.
     Gained,
     /// An object declared as an attacker (counted for the object).
@@ -95,7 +97,8 @@ pub(crate) enum Tally {
     Targeted,
     /// An object dealt damage, once for each event (counted for the object).
     Damaged,
-    /// A card put into a graveyard by a discard (counted for the card as it lies there, and for the player who discarded it).
+    /// A card put into a graveyard by a discard (counted for the card as it lies there, and for the player who discarded
+    /// it, once for each discard).
     Discarded,
     /// A permanent put into a graveyard from the battlefield (counted for its owner, gravestorm).
     Graved,
@@ -149,6 +152,8 @@ pub(crate) struct Tallies {
     pub(crate) monarch_began: Option<PlayerId>,
     /// The creatures tapped to crew or saddle a permanent, as (permanent, saddled, creature).
     pub(crate) crews: BTreeSet<(ObjectRef, bool, ObjectRef)>,
+    /// The objects that dealt damage to an object this turn, as (the object damaged, the source of the damage).
+    pub(crate) damaged_by: BTreeSet<(ObjectRef, ObjectRef)>,
     /// The modes the abilities chose, as (source, where the ability comes from, its index, the mode).
     pub(crate) modes: BTreeSet<(ObjectRef, AbilitySource, usize, usize)>,
 }
@@ -466,6 +471,19 @@ impl GameState {
         self.tallies.objects.get(&key).copied().unwrap_or(0)
     }
 
+    /// Records that `source` dealt damage to the permanent `victim` this turn.
+    pub(crate) fn note_damaged_by(&mut self, victim: ObjectId, source: ObjectId) {
+        let reference = |id: ObjectId| self.object(id).map(GameObject::reference);
+        if let (Some(victim), Some(source)) = (reference(victim), reference(source)) {
+            self.tallies.damaged_by.insert((victim, source));
+        }
+    }
+
+    /// Whether `source` dealt damage to `victim` this turn.
+    pub(crate) fn damaged_by(&self, victim: ObjectRef, source: ObjectRef) -> bool {
+        self.tallies.damaged_by.contains(&(victim, source))
+    }
+
     /// Whether `creature` was tapped this turn to crew (`saddle` false) or saddle (true) `permanent`.
     pub(crate) fn crewed_by(
         &self,
@@ -638,6 +656,9 @@ impl Hash for GameState {
         }
         if !self.tallies.crews.is_empty() {
             self.tallies.crews.hash(state);
+        }
+        if !self.tallies.damaged_by.is_empty() {
+            self.tallies.damaged_by.hash(state);
         }
         if !self.tallies.modes.is_empty() {
             self.tallies.modes.hash(state);

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Draw":{}}]}},{"Triggered":{"when":{"SpellCast":{"what":[{"Type":"Creature"}],"by":"You"}},"from":"Graveyard","effects":[{"Pay":{"cost":"{G}{G}","paid":[{"Move":{"what":"This","to":"Hand"}}]}}]}}]}]}

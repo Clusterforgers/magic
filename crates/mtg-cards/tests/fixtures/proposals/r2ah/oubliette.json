@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"PhaseOut":{"what":{"Target":0}}}]}}]}]}

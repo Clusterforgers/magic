@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}},{"Activated":{"cost":[{"TapPermanents":{"filter":[{"Type":"Creature"},{"Supertype":"Legendary"}]}}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}]}]}

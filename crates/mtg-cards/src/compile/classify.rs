@@ -86,7 +86,10 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
         ClauseKind::Triggered
     } else if is_activated(body) {
         ClauseKind::Activated
-    } else if (body.starts_with("Choose ") && body.contains('\u{2014}')) || body == "Spree" {
+    } else if (body.starts_with("Choose ")
+        && (body.contains('\u{2014}') || body.ends_with(", you may choose both instead.")))
+        || body == "Spree"
+    {
         ClauseKind::Modal
     } else if spell && !is_spell_rule(body) {
         ClauseKind::Spell
@@ -290,6 +293,10 @@ mod tests {
     )]
     #[case::spree(
         "Spree\n+ {1} \u{2014} Draw a card.\n+ {2} \u{2014} Gain 2 life.",
+        Modal
+    )]
+    #[case::both_for_a_commander(
+        "Choose one. If you control a commander as you cast this spell, you may choose both instead.\n\u{2022} A.\n\u{2022} B.",
         Modal
     )]
     fn modal_spells(#[case] text: &str, #[case] expected: ClauseKind) {

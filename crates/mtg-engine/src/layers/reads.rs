@@ -143,6 +143,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::This
         | Ref::Target(_)
         | Ref::Triggering
+        | Ref::Dealer
         | Ref::Attached
         | Ref::AttachedPlayer
         | Ref::Monarch
@@ -194,7 +195,9 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::ExiledWith(who)
         | Pred::EncodedWith(who)
         | Pred::Crewed(who)
-        | Pred::Saddled(who) => reads_of_ref(who),
+        | Pred::Saddled(who)
+        | Pred::DamagedBy(who)
+        | Pred::SameCard(who) => reads_of_ref(who),
         Pred::Type(_) => Traits::TYPES,
         Pred::Subtype(_) | Pred::ChosenSubtype => Traits::SUBTYPES,
         Pred::SharesSubtype(who) => Traits::SUBTYPES.or(reads_of_ref(who)),

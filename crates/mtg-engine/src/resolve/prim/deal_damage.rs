@@ -19,14 +19,16 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::DealDamage { source, to, amount } = effect else {
         return Err(wrong_effect("DealDamage"));
     };
-    let recipients = cx.scope.refs(to)?;
-    let amounts = cx.scope.amounts_for(amount, &recipients)?;
     let source = match source {
         None => cx.scope.source,
-        Some(named) => cx.scope.objects(named)?.first().copied().ok_or_else(|| {
-            ResolveError::Invalid("the source of the damage is not an object".into())
-        })?,
+        Some(named) => match cx.scope.objects(named)?.first().copied() {
+            Some(object) => object,
+            // A creature that is no longer a legal target deals no damage; the spell does the rest (CR 608.2b).
+            None => return Ok(Run::events(Vec::new())),
+        },
     };
+    let recipients = cx.scope.refs(to)?;
+    let amounts = cx.scope.amounts_for(amount, &recipients)?;
     // A source that has left deals its damage as it was: with the keywords and under the controller it had.
     let dealer = match cx.scope.snapshot_of(source) {
         Some(shot) => Dealer::known(shot),

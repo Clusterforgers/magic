@@ -1,0 +1,36 @@
+{
+  "oracle_id": "19bb51dd-2b93-45f0-927d-bbafddadd0a3",
+  "name": "Aura Mutation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aura Mutation",
+      "oracle_fingerprint": "9b8febd7ef16288cc557db8ba9c7c8db",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

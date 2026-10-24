@@ -368,7 +368,7 @@ fn a_state_trigger_triggers_again_once_its_ability_has_left_the_stack(
                 ability: trigger.ability,
                 origin: trigger.origin,
                 delayed: None,
-                cause: trigger.cause.clone(),
+                cause: Box::new(trigger.cause.clone()),
             };
             apply_event(&mut game, &removed).unwrap();
         }

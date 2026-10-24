@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}],"effects":[{"Exile":{"what":{"Target":0},"as":"gone"}},{"Move":{"what":{"Bound":"gone"},"to":{"Battlefield":{}}}}]}},{"Keyword":{"Flashback":"{3}{U}"}}]}]}

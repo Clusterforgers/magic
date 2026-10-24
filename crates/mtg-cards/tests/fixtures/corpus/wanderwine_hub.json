@@ -1,0 +1,26 @@
+{
+  "cmc": 0.0,
+  "collector_number": "280",
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "colors": [],
+  "digital": false,
+  "id": "ccec69de-7203-4810-a8ec-8748705ee3a2",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "",
+  "name": "Wanderwine Hub",
+  "oracle_id": "c3b46bd6-b3ef-452d-a916-995c44f1da07",
+  "oracle_text": "As this land enters, you may reveal a Merfolk card from your hand. If you don't, this land enters tapped.\n{T}: Add {W} or {U}.",
+  "produced_mana": [
+    "U",
+    "W"
+  ],
+  "rarity": "rare",
+  "released_at": "2007-10-12",
+  "set": "lrw",
+  "type_line": "Land"
+}

@@ -110,6 +110,7 @@ pub mod split_second_cards;
 pub mod static_cards;
 pub mod station_cards;
 pub mod tail_cards;
+pub mod third_cards;
 pub mod trigger_cards;
 pub mod triggered_cards;
 pub mod umbra_cards;
@@ -147,8 +148,8 @@ pub use commander_cards::{
 pub use companion_cards::companion_fuzz_setup;
 pub use conditional_static_cards::conditional_static_fuzz_setup;
 pub use copy_cards::{
-    copy_attack_fuzz_setup, copy_fuzz_setup, copy_shapes_fuzz_setup, copy_wording_fuzz_setup,
-    spell_copy_fuzz_setup,
+    copy_attack_fuzz_setup, copy_count_fuzz_setup, copy_fuzz_setup, copy_shapes_fuzz_setup,
+    copy_wording_fuzz_setup, spell_copy_fuzz_setup,
 };
 pub use copy_keyword_cards::copy_keywords_fuzz_setup;
 pub use cost_cards::cost_fuzz_setup;
@@ -242,6 +243,7 @@ pub use split_second_cards::split_second_fuzz_setup;
 pub use static_cards::statics_fuzz_setup;
 pub use station_cards::station_fuzz_setup;
 pub use tail_cards::tail_fuzz_setup;
+pub use third_cards::third_fuzz_setup;
 pub use triggered_cards::triggered_fuzz_setup;
 pub use umbra_cards::umbra_fuzz_setup;
 pub use upkeep_cards::upkeep_fuzz_setup;

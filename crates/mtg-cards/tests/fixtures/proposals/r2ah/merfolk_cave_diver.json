@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Explored":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}},"effects":[{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":0}},"CantBeBlocked"],"duration":"UntilEndOfTurn"}}]}}]}]}

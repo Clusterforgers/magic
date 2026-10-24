@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Choose":{"from":{"Each":[{"Type":"Creature"}]},"count":{"min":0,"max":1},"as":"kept","rest_as":"rest"}},{"Destroy":{"what":{"Bound":"rest"}}}]}}]}]}

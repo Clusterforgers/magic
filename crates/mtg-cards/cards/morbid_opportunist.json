@@ -1,0 +1,28 @@
+{
+  "oracle_id": "322f44f0-e6da-4ee0-b474-e7d5e9a461c5",
+  "name": "Morbid Opportunist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Morbid Opportunist",
+      "oracle_fingerprint": "afe0c6c06de3eeb81a6892fe70da69cf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": ["Other", { "Type": "Creature" }],
+                  "from": "Battlefield",
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

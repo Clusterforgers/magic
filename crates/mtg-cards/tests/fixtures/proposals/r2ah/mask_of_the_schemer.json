@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"DealsDamage":{"source":[{"Is":"Attached"}],"to":"EachPlayer","combat":true}},"effects":[{"Connive":{"what":"Attached"}}]}},{"Keyword":{"Equip":"{2}"}}]}]}

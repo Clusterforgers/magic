@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"Choose":"Color"}}},{"Triggered":{"when":{"SpellCast":{"what":["ChosenColor"]}},"effects":[{"May":{"effects":[{"GainLife":{"amount":1}}]}}]}},{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"ChosenColor":1}}}]}}]}]}

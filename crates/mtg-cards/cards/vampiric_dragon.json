@@ -1,0 +1,33 @@
+{
+  "oracle_id": "e8941499-2b31-417b-b2d2-10a144826703",
+  "name": "Vampiric Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vampiric Dragon",
+      "oracle_fingerprint": "1def220267fefeb5fb459c99119af3e1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

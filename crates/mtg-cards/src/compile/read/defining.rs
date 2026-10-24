@@ -6,6 +6,7 @@
 
 use mtg_core::color::Color;
 
+use super::amounts::{count_word, number_word};
 use super::counters;
 use super::selectors::{Form, color, color_name, phrase, phrase_in, phrase_text, stat_word};
 use super::tokens::Reader;
@@ -77,6 +78,16 @@ pub(super) fn value(r: &mut Reader<'_>) -> Option<Amount> {
 
 fn part(r: &mut Reader<'_>) -> Option<Amount> {
     if let Some(number) = r.number() {
+        return Some(Amount::Fixed(i32::try_from(number).ok()?));
+    }
+    // "one plus the number of ...": a number named in words begins a sum.
+    if let Some(number) = r.attempt(|r| {
+        let word = r.peek_word().filter(|word| !matches!(*word, "a" | "an"))?;
+        let number = number_word(word)?;
+        r.skip();
+        r.lookahead(|r| r.need("plus"))?;
+        Some(number)
+    }) {
         return Some(Amount::Fixed(i32::try_from(number).ok()?));
     }
     if r.word("twice") {
@@ -263,6 +274,20 @@ fn sentence(power: &Amount, toughness: &Amount) -> Option<String> {
     ))
 }
 
+/// The wordings of a count: `value_text`, and the sum that begins with a number as a word ("one plus the number of ...").
+pub(super) fn value_texts(amount: &Amount) -> Vec<String> {
+    let Some(text) = value_text(amount) else {
+        return Vec::new();
+    };
+    let digits = text.chars().take_while(char::is_ascii_digit).count();
+    let word = text[digits..]
+        .starts_with(" plus ")
+        .then(|| text[..digits].parse::<u32>().ok().and_then(count_word))
+        .flatten()
+        .map(|word| format!("{word}{}", &text[digits..]));
+    [Some(text), word].into_iter().flatten().collect()
+}
+
 pub(super) fn value_text(amount: &Amount) -> Option<String> {
     let Amount::Sum(parts) = amount else {
         return counting_text(amount);
@@ -384,8 +409,8 @@ fn counted_text(selector: &Selector) -> Option<String> {
 /// "creatures that died this turn" (every player), "nontoken creatures put into your graveyard from the battlefield
 /// this turn" (yours): the creatures the game counted as they left the battlefield, after "the number of".
 fn died(r: &mut Reader<'_>) -> Option<Amount> {
-    if r.words("cards you've drawn this turn") {
-        return Some(drawn());
+    if let Some(done) = r.attempt(|r| you_did(r, false)) {
+        return Some(done);
     }
     let what = if r.word("nontoken") {
         TurnTally::NontokenCreaturesDied
@@ -408,12 +433,34 @@ fn died(r: &mut Reader<'_>) -> Option<Amount> {
     Some(Amount::Tallied { who, what })
 }
 
-/// The cards the player drew this turn.
-fn drawn() -> Amount {
-    Amount::Tallied {
-        who: Ref::You,
-        what: TurnTally::Drawn,
-    }
+/// What the player did this turn that the game counts, as a card words it: the noun of the plural (the singular after
+/// "for each" drops its "s") and the words after it.
+const YOU_DID: [(TurnTally, &str, &str); 3] = [
+    (TurnTally::Drawn, "card", "you've drawn this turn"),
+    (TurnTally::Discarded, "card", "you've discarded this turn"),
+    (
+        TurnTally::InstantsAndSorceriesCast,
+        "instant and sorcery spell",
+        "you've cast this turn",
+    ),
+];
+
+/// "cards you've drawn this turn", "cards you've discarded this turn", "instant and sorcery spells you've cast this
+/// turn" (the singular after "for each"): the count the game kept for the player.
+fn you_did(r: &mut Reader<'_>, each: bool) -> Option<Amount> {
+    YOU_DID
+        .iter()
+        .find(|(_, noun, tail)| r.words(&format!("{noun}{} {tail}", if each { "" } else { "s" })))
+        .map(|(what, ..)| Amount::Tallied {
+            who: Ref::You,
+            what: *what,
+        })
+}
+
+/// What `you_did` read, written back.
+fn you_did_text(what: TurnTally, each: bool) -> Option<String> {
+    let (_, noun, tail) = YOU_DID.iter().find(|(found, ..)| *found == what)?;
+    Some(format!("{noun}{} {tail}", if each { "" } else { "s" }))
 }
 
 /// The tally of the creatures that died while the player controlled them, in place of the one counted by owner.
@@ -426,8 +473,8 @@ const fn under(what: TurnTally) -> TurnTally {
 
 /// "creature put into your graveyard from the battlefield this turn" or "card you've drawn this turn", after "for each".
 pub(super) fn died_each(r: &mut Reader<'_>) -> Option<Amount> {
-    if r.words("card you've drawn this turn") {
-        return Some(drawn());
+    if let Some(done) = r.attempt(|r| you_did(r, true)) {
+        return Some(done);
     }
     let what = if r.word("nontoken") {
         TurnTally::NontokenCreaturesDied
@@ -453,9 +500,8 @@ pub(super) fn died_text(amount: &Amount, each: bool) -> Option<String> {
     let Amount::Tallied { who, what } = amount else {
         return None;
     };
-    if *what == TurnTally::Drawn {
-        let noun = if each { "card" } else { "cards" };
-        return (*who == Ref::You).then(|| format!("{noun} you've drawn this turn"));
+    if let Some(text) = you_did_text(*what, each) {
+        return (*who == Ref::You).then_some(text);
     }
     let kind = match what {
         TurnTally::CreaturesDied | TurnTally::CreaturesDiedUnder => "",

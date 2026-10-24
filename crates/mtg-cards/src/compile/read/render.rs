@@ -3,6 +3,7 @@
 //! player in a row are one compound sentence; the readers take ", then" between two steps as the
 //! same sequence.
 
+mod af_steps;
 mod all_graveyards;
 mod and_lists;
 mod bound;
@@ -17,6 +18,7 @@ mod each_target;
 mod either;
 mod exiled_cast;
 mod exiled_until;
+mod flicker_targets;
 mod free_casts;
 mod from_graveyard;
 mod graveyards;
@@ -44,6 +46,7 @@ mod those;
 mod together;
 mod token_attach;
 mod twins;
+mod two_targets;
 mod untapped;
 
 use super::activations;
@@ -62,7 +65,7 @@ use super::counters;
 use super::create;
 use super::defining;
 use super::draws;
-use super::effects::{BACK, RETURNED, dead_card, returns_itself};
+use super::effects::{BACK, RETURNED, dead_card, other_dead_card, returns_itself};
 use super::event_wordings;
 use super::exiled_kind;
 use super::flicker;
@@ -345,6 +348,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     pronouns::you_after_the_attached(ability, &mut texts);
     pronouns::they(ability, &mut texts);
     pronouns::of_the_group(ability, &mut texts);
+    pronouns::that_creature_after_an_attach(ability, &mut texts);
     // A trigger about damage the source deals may say "it deals" for the source (Questing Beast).
     if matches!(
         ability,
@@ -687,17 +691,23 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
             modes,
             at_random,
             once_each_turn,
+            all_if,
         },
     ] = effects
     {
         if !targets.is_empty() || modes.len() < 2 {
             return Vec::new();
         }
-        return choices::texts(choose, modes, *at_random, *once_each_turn)
-            .into_iter()
-            .chain(either::texts(choose, modes))
-            .map(|text| vec![text])
-            .collect();
+        return choices::texts(
+            choose,
+            modes,
+            (*at_random, *once_each_turn),
+            all_if.as_ref(),
+        )
+        .into_iter()
+        .chain(either::texts(choose, modes))
+        .map(|text| vec![text])
+        .collect();
     }
     // Bit `at` of a mask joins the effect after the one at `at` to it; a long list is tried whole
     // and apart only.
@@ -1546,7 +1556,7 @@ impl Writer<'_> {
     /// Whether the counters are put on a player other than you (the energy of "you get {E}{E}" has its own wording).
     fn player_gets(&self, on: &Ref) -> bool {
         match on {
-            Ref::Opponents => true,
+            Ref::Opponents | Ref::EachPlayer => true,
             Ref::Target(0) => {
                 self.target_is(|what| matches!(what, Targetable::Player | Targetable::Opponent))
             }
@@ -1561,7 +1571,7 @@ impl Writer<'_> {
             Ref::This => Some("~".to_owned()),
             Ref::Attached => Some("enchanted creature".to_owned()),
             // The creature that attacks enchanted player.
-            Ref::Triggering => Some("it".to_owned()),
+            Ref::Triggering | Ref::Dealer => Some("it".to_owned()),
             Ref::Bound(name) if name == TOKENS && self.made.is_some() => Some(
                 if self.made == Some(true) {
                     "it"
@@ -1690,10 +1700,14 @@ impl Writer<'_> {
 
     /// "return target card from your graveyard to your hand", "return target creature to its owner's hand".
     fn returned_to_hand(&mut self, what: &Ref) -> Option<String> {
-        if *what == Ref::This || *what == dead_card() {
+        if *what == other_dead_card() {
+            Some("return it to its owner's hand".to_owned())
+        } else if *what == Ref::This || *what == dead_card() {
             Some("return ~ to its owner's hand".to_owned())
         } else if self.in_your_graveyard(what) {
             Some(format!("return {} to your hand", self.object(what)?))
+        } else if self.in_another_graveyard(what) {
+            Some(format!("return {} to its owner's hand", self.object(what)?))
         } else if self.is_a_permanent(what) || self.are_permanents(what) {
             let tail = if self.at_most_one(what) {
                 "its owner's hand"
@@ -1915,6 +1929,7 @@ impl Writer<'_> {
             }
             _ => self
                 .may_have(effects)
+                .or_else(|| self.may_have_lose(effects))
                 .or_else(|| self.may_do(effects))
                 .or_else(|| may_flicker::text(effects))?,
         })
@@ -2280,6 +2295,7 @@ impl Writer<'_> {
             .or_else(|| self.mill_then_change(effects))
             .or_else(|| self.move_instead(effects))
             .or_else(|| self.either_way(effects))
+            .or_else(|| self.flicker_targets(effects))
             .or_else(|| self.counter_or_not(effects))
             .or_else(|| self.chosen_then_group(effects))
             .or_else(|| opponent_picks::text(effects))
@@ -2294,6 +2310,7 @@ impl Writer<'_> {
             .or_else(|| revealed::text(effects))
             .or_else(|| self.mill_then_hand(effects))
             .or_else(|| Self::untapped_and_controlled(effects))
+            .or_else(|| self.af_steps(effects))
             .or_else(|| self.owner_shuffles(effects))
             // Populate is two steps and one word.
             .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "14104a52-c4e8-4755-8196-7fa5c5a35f36",
+  "name": "Duneblast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Duneblast",
+      "oracle_fingerprint": "1cc740f803a16fb03dedf358a7696e43",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept",
+                  "rest_as": "rest"
+                }
+              },
+              { "Destroy": { "what": { "Bound": "rest" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

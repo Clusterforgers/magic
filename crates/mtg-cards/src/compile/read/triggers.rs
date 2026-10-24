@@ -79,6 +79,19 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
             to: Some(ZoneKind::Graveyard),
             ..
         } if what.0 == [Pred::This] => return Some(Ref::This),
+        // The creature that deals the damage is "it": "Whenever a Vampire you control deals combat damage to a player".
+        TriggerPattern::DealsDamage { source, to, .. }
+            if !source.0.is_empty()
+                && !source
+                    .0
+                    .iter()
+                    .any(|pred| matches!(pred, Pred::This | Pred::Is(_)))
+                && to
+                    .as_ref()
+                    .is_none_or(|to| matches!(to, Ref::EachPlayer | Ref::Opponents | Ref::You)) =>
+        {
+            return Some(Ref::Dealer);
+        }
         // "Whenever ~ or another creature you control enters": the permanent that entered, the card included.
         TriggerPattern::AnyOf(patterns)
             if patterns.iter().all(|pattern| {
@@ -822,10 +835,11 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
 }
 
 /// The alternative costs a permanent or spell can be asked about: "its prowl cost was paid".
-const PAID_WAYS: [(&str, CastWay); 3] = [
+const PAID_WAYS: [(&str, CastWay); 4] = [
     ("prowl", CastWay::Prowl),
     ("mayhem", CastWay::Mayhem),
     ("spectacle", CastWay::Spectacle),
+    ("madness", CastWay::Madness),
 ];
 
 /// "its prowl cost was paid", or "this spell's prowl cost was paid" with `spell`: it was cast for that alternative cost.

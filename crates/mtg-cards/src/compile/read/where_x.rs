@@ -165,15 +165,20 @@ pub(super) fn counted(r: &mut Reader<'_>) -> Option<Amount> {
     }
 }
 
-/// Reads the where clause that ends a sentence and puts its amount where the effects have X.
-pub(super) fn bind(r: &mut Reader<'_>, effects: &[Effect]) -> Option<Vec<Effect>> {
-    let amount = match clause(r)? {
-        Named::Stat(whose, stat) => Amount::Stat {
+/// Reads the where clause that ends a sentence into the amount it names.
+pub(super) fn amount(r: &mut Reader<'_>) -> Option<Amount> {
+    match clause(r)? {
+        Named::Stat(whose, stat) => Some(Amount::Stat {
             of: object(r, &whose)?,
             stat,
-        },
-        Named::Counted(amount) => amount,
-    };
+        }),
+        Named::Counted(amount) => Some(amount),
+    }
+}
+
+/// Reads the where clause that ends a sentence and puts its amount where the effects have X.
+pub(super) fn bind(r: &mut Reader<'_>, effects: &[Effect]) -> Option<Vec<Effect>> {
+    let amount = amount(r)?;
     put_in(&effects.to_vec(), &amount)
 }
 
@@ -391,21 +396,20 @@ fn counted_wordings(json: &Value) -> Vec<String> {
     let Ok(amount) = serde_json::from_value::<Amount>(count.clone()) else {
         return Vec::new();
     };
-    let Some(said) = defining::value_text(&amount) else {
-        return Vec::new();
-    };
+    let saids = defining::value_texts(&amount);
     let Some(replaced) = with_x(json.clone(), count) else {
         return Vec::new();
     };
-    let tail = format!(", where X is {said}");
-    render::variants(&replaced)
-        .iter()
-        .flat_map(|text| {
-            insert(text, &tail)
-                .into_iter()
-                .chain(equal_to_forms(text, &said))
-        })
-        .collect()
+    let texts = render::variants(&replaced);
+    let mut found = Vec::new();
+    for said in &saids {
+        let tail = format!(", where X is {said}");
+        for text in &texts {
+            found.extend(insert(text, &tail));
+            found.extend(equal_to_forms(text, said));
+        }
+    }
+    found
 }
 
 /// The wordings of an ability with one characteristic of an object or one count as its amount, in the sentence that

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}},{"what":{"Object":[{"Type":"Creature"},{"Not":{"Is":{"Target":0}}}]}}],"effects":[{"DealDamage":{"source":{"Target":0},"to":{"Target":1},"amount":{"Stat":{"of":{"Target":0},"stat":"Power"}}}}]}}]}]}

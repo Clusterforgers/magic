@@ -1,0 +1,26 @@
+{
+  "cmc": 0.0,
+  "collector_number": "271",
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "colors": [],
+  "digital": false,
+  "id": "9e4afa65-7933-4a64-b50f-a9a9f832b112",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "",
+  "name": "Secluded Glen",
+  "oracle_id": "09f52275-99e6-45e0-b2db-cafe26d5fb91",
+  "oracle_text": "As this land enters, you may reveal a Faerie card from your hand. If you don't, this land enters tapped.\n{T}: Add {U} or {B}.",
+  "produced_mana": [
+    "B",
+    "U"
+  ],
+  "rarity": "rare",
+  "released_at": "2007-10-12",
+  "set": "lrw",
+  "type_line": "Land"
+}

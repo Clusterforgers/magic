@@ -1,0 +1,165 @@
+{
+  "object": "card",
+  "id": "2da11337-ceb2-4744-9696-c06fec2f2daa",
+  "oracle_id": "b31026fe-faad-49b3-93b0-1324e32bb816",
+  "multiverse_ids": [
+    652068
+  ],
+  "mtgo_id": 132559,
+  "tcgplayer_id": 539452,
+  "cardmarket_id": 757605,
+  "name": "Liberty Prime, Recharged",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/2da11337-ceb2-4744-9696-c06fec2f2daa",
+  "scryfall_uri": "https://scryfall.com/card/pip/5/liberty-prime-recharged?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:42Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/d/2da11337-ceb2-4744-9696-c06fec2f2daa.jpg?1783912422",
+    "normal": "https://cards.scryfall.io/normal/front/2/d/2da11337-ceb2-4744-9696-c06fec2f2daa.jpg?1783912422",
+    "large": "https://cards.scryfall.io/large/front/2/d/2da11337-ceb2-4744-9696-c06fec2f2daa.jpg?1783912422",
+    "png": "https://cards.scryfall.io/png/front/2/d/2da11337-ceb2-4744-9696-c06fec2f2daa.png?1783912422",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/d/2da11337-ceb2-4744-9696-c06fec2f2daa.jpg?1783912422",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/d/2da11337-ceb2-4744-9696-c06fec2f2daa.jpg?1783912422",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/d/2da11337-ceb2-4744-9696-c06fec2f2daa.webp?1783912422",
+    "grid": "https://cards.scryfall.io/grid/front/2/d/2da11337-ceb2-4744-9696-c06fec2f2daa.webp?1783912422",
+    "display": "https://cards.scryfall.io/display/front/2/d/2da11337-ceb2-4744-9696-c06fec2f2daa.webp?1783912422",
+    "art": "https://cards.scryfall.io/art/front/2/d/2da11337-ceb2-4744-9696-c06fec2f2daa.webp?1783912422",
+    "crop": "https://cards.scryfall.io/crop/front/2/d/2da11337-ceb2-4744-9696-c06fec2f2daa.webp?1783912422",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/d/2da11337-ceb2-4744-9696-c06fec2f2daa.jpg?1783912422"
+  },
+  "mana_cost": "{2}{U}{R}{W}",
+  "cmc": 5.0,
+  "type_line": "Legendary Artifact Creature — Robot",
+  "oracle_text": "Vigilance, trample, haste\nWhenever Liberty Prime attacks or blocks, sacrifice it unless you pay {E}{E} (two energy counters).\n{2}, {T}, Sacrifice an artifact: You get {E}{E} and draw a card.",
+  "power": "8",
+  "toughness": "8",
+  "colors": [
+    "R",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Vigilance",
+    "Haste",
+    "Trample"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "2a794202-875f-4397-a8de-9722c8d78448",
+      "component": "combo_piece",
+      "name": "Energy Reserve",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/2a794202-875f-4397-a8de-9722c8d78448"
+    },
+    {
+      "object": "related_card",
+      "id": "bca7aa89-f7c0-471b-ab16-c0664f535942",
+      "component": "combo_piece",
+      "name": "Liberty Prime, Recharged",
+      "type_line": "Legendary Artifact Creature — Robot",
+      "uri": "https://api.scryfall.com/cards/bca7aa89-f7c0-471b-ab16-c0664f535942"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": false,
+  "finishes": [
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2da11337-ceb2-4744-9696-c06fec2f2daa/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab31026fe-faad-49b3-93b0-1324e32bb816&unique=prints",
+  "collector_number": "5",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "\"Democracy is nonnegotiable.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Pascal Quidault",
+  "artist_ids": [
+    "aabbf32e-5330-403a-8a99-a653c050e263"
+  ],
+  "illustration_id": "a50d7668-2fae-4b91-ade1-ac8950ad2a93",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 7935,
+  "prices": {
+    "usd": null,
+    "usd_foil": "0.31",
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": "0.42",
+    "tix": "1.20"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652068&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLiberty%2BPrime%252C%2BRecharged",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLiberty%2BPrime%252C%2BRecharged",
+    "edhrec": "https://edhrec.com/route/?cc=Liberty+Prime%2C+Recharged"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F539452%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=757605&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132559?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

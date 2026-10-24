@@ -365,6 +365,11 @@ pub struct Reader<'a> {
     pub that_player: bool,
     /// Whether the event of the trigger is about one permanent: "that permanent's controller" is who controls it.
     pub that_permanent: bool,
+    /// Whether the event of the trigger is another player's permanent entering, so "that player" is its controller.
+    pub that_controller: bool,
+    /// Whether the event of the trigger is another creature put into a graveyard, so "it" in what the card does is
+    /// that card in the graveyard, a new object (`effects::other_dead_card`).
+    pub others_died: bool,
     /// Whether the event of the trigger is the card itself entering, attacking or dealing damage: "it" in a keyword
     /// action ("it explores") is the card.
     pub acts_itself: bool,
@@ -425,6 +430,8 @@ impl<'a> Reader<'a> {
             it: None,
             that_player: false,
             that_permanent: false,
+            that_controller: false,
+            others_died: false,
             acts_itself: false,
             subtypes: Vec::new(),
             power: None,
@@ -631,12 +638,14 @@ impl<'a> Reader<'a> {
 
     /// Reads with `read`; when it fails the reader is where it was, with the same targets.
     pub fn attempt<T>(&mut self, read: impl FnOnce(&mut Self) -> Option<T>) -> Option<T> {
-        let (at, targets, it) = (self.at, self.targets.len(), self.it.clone());
+        let (at, targets, it, where_x) =
+            (self.at, self.targets.len(), self.it.clone(), self.where_x);
         let found = read(self);
         if found.is_none() {
             self.at = at;
             self.targets.truncate(targets);
             self.it = it;
+            self.where_x = where_x;
         }
         found
     }

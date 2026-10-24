@@ -3,6 +3,7 @@
 use super::Writer;
 use crate::effect::Effect;
 use crate::modify::Duration;
+use crate::refs::Ref;
 
 impl Writer<'_> {
     /// "you may have target creature get +2/+2 until end of turn": the pump the player may choose to give.
@@ -23,6 +24,18 @@ impl Writer<'_> {
             pump.replacen(" gets ", " get ", 1)
                 .replacen(" gains ", " gain ", 1)
                 .replacen(" becomes ", " become ", 1)
+        ))
+    }
+
+    /// "you may have that player lose 1 life": the controller of the creature that entered loses life by the player's choice.
+    pub(super) fn may_have_lose(&mut self, effects: &[Effect]) -> Option<String> {
+        let [Effect::LoseLife { who, amount }] = effects else {
+            return None;
+        };
+        (*who == Ref::ControllerOf(Box::new(Ref::Triggering))).then_some(())?;
+        Some(format!(
+            "you may have that player lose {}",
+            self.life(amount)?
         ))
     }
 

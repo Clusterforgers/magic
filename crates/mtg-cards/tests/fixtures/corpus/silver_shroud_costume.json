@@ -1,0 +1,22 @@
+{
+  "cmc": 2.0,
+  "collector_number": "915",
+  "color_identity": [],
+  "colors": [],
+  "digital": false,
+  "id": "49c85e36-de89-4fc0-8058-1eb5bf319c2d",
+  "keywords": [
+    "Equip",
+    "Flash"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}",
+  "name": "Silver Shroud Costume",
+  "oracle_id": "b40138c3-48bc-4825-ae48-5fea95304088",
+  "oracle_text": "Flash\nWhen this Equipment enters, attach it to target creature you control. That creature gains shroud until end of turn. (It can't be the target of spells or abilities.)\nEquipped creature can't be blocked.\nEquip {3}",
+  "rarity": "rare",
+  "released_at": "2026-01-26",
+  "set": "sld",
+  "type_line": "Artifact — Equipment"
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":["Other",{"Not":"Token"},{"Subtype":"Elf"},{"OwnedBy":"You"}],"from":"Battlefield","to":"Graveyard"}},"effects":[{"May":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Elf Warrior","colors":["Green"],"types":["Creature"],"subtypes":["Elf","Warrior"],"power":1,"toughness":1}}}}]}}]}}]}]}
