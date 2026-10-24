@@ -1,0 +1,42 @@
+{
+  "oracle_id": "b6c8ac69-daa7-4e2e-a1d9-439731a81870",
+  "name": "Jace's Archivist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jace's Archivist",
+      "oracle_fingerprint": "b41df9c2cc2ebe94f6421483680ae048",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "effects": [
+              {
+                "Discard": {
+                  "who": "EachPlayer",
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "EachPlayer" }] },
+                  "as": "discarded"
+                }
+              },
+              {
+                "Draw": {
+                  "who": "EachPlayer",
+                  "count": {
+                    "Largest": {
+                      "who": "EachPlayer",
+                      "of": [
+                        { "In": "Graveyard" },
+                        { "Is": { "Bound": "discarded" } },
+                        { "OwnedBy": "You" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

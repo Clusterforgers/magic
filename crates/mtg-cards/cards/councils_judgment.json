@@ -1,0 +1,34 @@
+{
+  "oracle_id": "acf4d685-a718-42f7-9a7a-dee069ae8db2",
+  "name": "Council's Judgment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Council's Judgment",
+      "oracle_fingerprint": "b1c46e4d6d68d337ec41e30eea51e82f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Vote": {
+                  "options": {
+                    "Of": {
+                      "Each": [
+                        { "In": "Battlefield" },
+                        { "Not": { "Type": "Land" } },
+                        { "Not": { "ControlledBy": "You" } }
+                      ]
+                    }
+                  },
+                  "as": "chosen"
+                }
+              },
+              { "Exile": { "what": { "Bound": "chosen" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

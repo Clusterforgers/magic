@@ -1,0 +1,42 @@
+{
+  "oracle_id": "7bbc5f3a-f8fb-47e8-837e-ce319bc489de",
+  "name": "Whispering Madness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whispering Madness",
+      "oracle_fingerprint": "c58bdcb953f4ef90bac633631d7c759c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Discard": {
+                  "who": "EachPlayer",
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "EachPlayer" }] },
+                  "as": "discarded"
+                }
+              },
+              {
+                "Draw": {
+                  "who": "EachPlayer",
+                  "count": {
+                    "Largest": {
+                      "who": "EachPlayer",
+                      "of": [
+                        { "In": "Graveyard" },
+                        { "Is": { "Bound": "discarded" } },
+                        { "OwnedBy": "You" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Cipher" }
+      ]
+    }
+  ]
+}

@@ -11,7 +11,7 @@ use crate::ability::{Ability, LoyaltyCost, Timing};
 use crate::assemble::{MANA_WAYS, PLAIN_MANA_ABILITY, mana_shape, plain_mana_ability};
 use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
-use crate::effect::{Destination, DieRow, Effect, Mode, Order, Place, Produce, TokenRef};
+use crate::effect::{Destination, DieRow, Effect, Mode, Order, Place, Produce, TokenRef, VoteFor};
 use crate::keyword::Keyword;
 use crate::modify::{Duration, GameRule, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
@@ -486,7 +486,7 @@ impl<'a> Walker<'a> {
                     self.at(format!("[{i}]"), |w| w.amount(part));
                 }
             }
-            Amount::Times { of, .. } => {
+            Amount::Times { of, .. } | Amount::Half { of, .. } => {
                 self.amounting = Amounting::of(sharing);
                 self.at("of", |w| w.amount(of));
             }
@@ -1473,6 +1473,35 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// `Vote`: at least two named choices that are names of their own, or the players or objects to vote for with the
+    /// name of the winners.
+    fn vote(&mut self, options: &VoteFor, secret: bool, bind: Option<&str>) {
+        match options {
+            VoteFor::Named(names) => {
+                if names.len() < 2 {
+                    self.problem("a vote has at least two choices");
+                }
+                if bind.is_some() {
+                    self.problem("a vote on named choices binds the choices, not a winner");
+                }
+                for name in names {
+                    self.at("options", |w| w.bind(name, Kind::Player));
+                }
+            }
+            VoteFor::Of(of) => {
+                if secret {
+                    self.problem("only a vote on named choices is secret");
+                }
+                self.at("options", |w| w.reference(of, Kind::Either));
+                let kind = self.kind_of(of);
+                match bind {
+                    Some(name) => self.at("as", |w| w.bind(name, kind)),
+                    None => self.problem("a vote on players or objects names its winners"),
+                }
+            }
+        }
+    }
+
     /// `FlipCoin`: a flip whose result does something.
     fn flip_coin(&mut self, who: &Ref, win: &[Effect], lose: &[Effect]) {
         self.at("who", |w| w.reference(who, Kind::Player));
@@ -1614,10 +1643,18 @@ impl<'a> Walker<'a> {
             Effect::Draw { who, count }
             | Effect::Mill { who, count }
             | Effect::Scry { who, count }
-            | Effect::Surveil { who, count }
-            | Effect::Discard { who, count, .. } => {
+            | Effect::Surveil { who, count } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
+            }
+            Effect::Discard {
+                who, count, bind, ..
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("count", |w| w.amount(count));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
             }
             Effect::LookAtTop { who, count, bind } | Effect::ExileTop { who, count, bind } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
@@ -1856,6 +1893,11 @@ impl<'a> Walker<'a> {
                 results,
             } => w.roll_dice(who, *sides, plus, results),
             Effect::FlipCoin { who, win, lose } => w.flip_coin(who, win, lose),
+            Effect::Vote {
+                options,
+                secret,
+                bind,
+            } => w.vote(options, *secret, bind.as_deref()),
             Effect::MultiplyCounters { on, factor, .. } => {
                 w.at("on", |w| w.reference(on, Kind::Either));
                 if *factor < 2 {
@@ -3711,6 +3753,30 @@ mod tests {
     #[case::bound_twice(
         r#"{"Spell":{"effects":[{"LookAtTop":{"as":"top"}},{"LookAtTop":{"as":"top"}}]}}"#,
         "`top` is already bound"
+    )]
+    #[case::a_vote_with_one_choice(
+        r#"{"Spell":{"effects":[{"Vote":{"options":{"Named":["only"]}}}]}}"#,
+        "faces[0].abilities[0].Spell.effects[0].Vote: a vote has at least two choices"
+    )]
+    #[case::a_vote_on_names_that_binds_a_winner(
+        r#"{"Spell":{"effects":[{"Vote":{"options":{"Named":["a","b"]},"as":"won"}}]}}"#,
+        "faces[0].abilities[0].Spell.effects[0].Vote: a vote on named choices binds the choices, not a winner"
+    )]
+    #[case::a_vote_on_objects_with_no_winner_named(
+        r#"{"Spell":{"effects":[{"Vote":{"options":{"Of":{"Each":[]}}}}]}}"#,
+        "faces[0].abilities[0].Spell.effects[0].Vote: a vote on players or objects names its winners"
+    )]
+    #[case::a_secret_vote_on_objects(
+        r#"{"Spell":{"effects":[{"Vote":{"options":{"Of":{"Each":[]}},"secret":true,"as":"won"}}]}}"#,
+        "faces[0].abilities[0].Spell.effects[0].Vote: only a vote on named choices is secret"
+    )]
+    #[case::a_vote_name_bound_twice(
+        r#"{"Spell":{"effects":[{"Vote":{"options":{"Named":["a","b"]}}},{"Vote":{"options":{"Named":["b","c"]}}}]}}"#,
+        "`b` is already bound"
+    )]
+    #[case::the_name_of_a_choice_is_a_name(
+        r#"{"Spell":{"effects":[{"Vote":{"options":{"Named":["Time","knowledge"]}}}]}}"#,
+        "`Time` is not a name"
     )]
     #[case::bad_name(
         r#"{"Spell":{"effects":[{"LookAtTop":{"as":"Top Cards"}}]}}"#,

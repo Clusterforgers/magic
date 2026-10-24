@@ -22,6 +22,8 @@ impl Writer<'_> {
             return Some((sentences, 1 + used));
         }
         self.exile_and_return_later(effects)
+            .or_else(|| Writer::return_itself_later(effects))
+            .or_else(|| self.exile_chosen_from_graveyard(effects))
     }
 
     /// The creation and the sentence that acts on its tokens, and the number of effects they cover.

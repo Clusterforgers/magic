@@ -55,7 +55,7 @@ impl Policy<'_> {
                         ChoiceOption::Label(label) => {
                             self.types.first().is_some_and(|want| label == want)
                         }
-                        ChoiceOption::Player(_) => false,
+                        ChoiceOption::Player(_) | ChoiceOption::Secret(_) => false,
                     })
                     .expect("the choice the table makes is on offer");
                 if matches!(options.options[at], ChoiceOption::Label(_)) {

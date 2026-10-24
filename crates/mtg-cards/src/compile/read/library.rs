@@ -4,7 +4,7 @@
 
 use std::fmt::Write;
 
-use mtg_core::card::{CardType, Subtype};
+use mtg_core::card::{CardType, Subtype, Supertype};
 
 use super::amounts::{count_word, number_word};
 use super::defining;
@@ -98,8 +98,14 @@ fn one_type(r: &mut Reader<'_>) -> Option<CardType> {
     Some(found)
 }
 
+/// "and/or", which a list of several cards ends with as "or" does.
+fn and_or(r: &mut Reader<'_>) -> bool {
+    r.attempt(|r| (r.word("and") && r.punct('/') && r.word("or")).then_some(()))
+        .is_some()
+}
+
 /// The items of a list as a card words it: "Plains", "Plains or Island", "Forest, Plains, or Island" (the comma
-/// before "or" only in a list of three or more).
+/// before "or" only in a list of three or more), also with "and/or" for "or".
 fn listed<T>(
     r: &mut Reader<'_>,
     mut item: impl FnMut(&mut Reader<'_>) -> Option<T>,
@@ -108,7 +114,7 @@ fn listed<T>(
     loop {
         let more = r.attempt(|r| {
             let comma = r.punct(',');
-            let or = r.word("or");
+            let or = r.word("or") || and_or(r);
             (comma || or).then_some(())?;
             Some((comma, or, item(r)?))
         });
@@ -156,6 +162,9 @@ pub(super) fn filter(r: &mut Reader<'_>, plural: bool) -> Option<Selector> {
     }
     r.word(if plural { "cards" } else { "card" })
         .then_some(())?;
+    if plural && let Some(lands) = r.attempt(|r| lands_and_or(r, &preds)) {
+        return Some(lands);
+    }
     if let Some(extra) = r.attempt(|r| {
         suffix(r, Form::Subject)
             .filter(|pred| matches!(pred, Pred::Compare { .. } | Pred::HasKeyword(_)))
@@ -163,6 +172,66 @@ pub(super) fn filter(r: &mut Reader<'_>, plural: bool) -> Option<Selector> {
         preds.push(extra);
     }
     Some(Selector(preds))
+}
+
+/// The land types that are not basic, which "basic land cards and/or ... cards" can name.
+const OTHER_LAND_TYPES: [&str; 9] = [
+    "Desert",
+    "Gate",
+    "Town",
+    "Lair",
+    "Locus",
+    "Mine",
+    "Power-Plant",
+    "Tower",
+    "Cave",
+];
+
+/// The land cards that are basic or of other land types: "basic land cards and/or Desert cards", read after the
+/// first "cards" as `[Land, AnyOf [Basic, Desert]]`, since a Desert, a Gate or a Town is a land.
+fn lands_and_or(r: &mut Reader<'_>, read: &[Pred]) -> Option<Selector> {
+    (read
+        == [
+            Pred::Supertype(Supertype::Basic),
+            Pred::Type(CardType::Land),
+        ])
+    .then_some(())?;
+    and_or(r).then_some(())?;
+    let names = listed(r, subtype)?;
+    names
+        .iter()
+        .all(|name| OTHER_LAND_TYPES.contains(&name.as_str()))
+        .then_some(())?;
+    r.word("cards").then_some(())?;
+    let mut kinds = vec![Pred::Supertype(Supertype::Basic)];
+    kinds.extend(names.into_iter().map(|name| Pred::Subtype(Subtype(name))));
+    Some(Selector(vec![
+        Pred::Type(CardType::Land),
+        Pred::AnyOf(kinds),
+    ]))
+}
+
+/// The words of `lands_and_or`: "basic land cards and/or Desert cards".
+fn lands_and_or_text(filter: &Selector) -> Option<String> {
+    let [Pred::Type(CardType::Land), Pred::AnyOf(kinds)] = filter.0.as_slice() else {
+        return None;
+    };
+    let [Pred::Supertype(Supertype::Basic), others @ ..] = kinds.as_slice() else {
+        return None;
+    };
+    let names: Option<Vec<String>> = others
+        .iter()
+        .map(|kind| match kind {
+            Pred::Subtype(Subtype(name)) => Some(name.clone()),
+            _ => None,
+        })
+        .collect();
+    let names = names.filter(|names| !names.is_empty())?;
+    let list = match names.as_slice() {
+        [one] => one.clone(),
+        many => list_text(many),
+    };
+    Some(format!("basic land cards and/or {list} cards"))
 }
 
 /// "a basic land card", "up to two Forest cards", "any number of Dragon creature cards".
@@ -233,6 +302,38 @@ pub fn search_by_controller(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     searched_by(r, who, true)
 }
 
+/// ", and put one onto the battlefield tapped and the other into your hand, then shuffle": the player chooses one of
+/// the cards found for the first place and the rest go to the second; the choice and the two moves. The shuffle is read
+/// here ("then shuffle", also as a sentence of its own: "Then shuffle.") and left to the caller to add.
+fn split_put(r: &mut Reader<'_>, found: &Ref) -> Option<Vec<Effect>> {
+    let and = r.word("and");
+    r.need("put one")?;
+    let first = found_destination(r)?;
+    r.need("and the")?;
+    (r.word("other") || r.word("rest")).then_some(())?;
+    let rest = found_destination(r)?;
+    // "and put" is worded after "reveal those cards" with a comma and the shuffle in a sentence of its own.
+    (r.punct(',') || (and && r.punct('.'))).then_some(())?;
+    r.need("then shuffle")?;
+    Some(vec![
+        Effect::Choose {
+            who: Ref::You,
+            from: found.clone(),
+            count: Bounds::default(),
+            bind: KEPT.to_owned(),
+            rest_as: Some(REST.to_owned()),
+        },
+        Effect::Move {
+            what: Ref::Bound(KEPT.to_owned()),
+            to: first,
+        },
+        Effect::Move {
+            what: Ref::Bound(REST.to_owned()),
+            to: rest,
+        },
+    ])
+}
+
 /// The search of `who` and the move of what they find: "search your library for ..." for you, "search their library
 /// for ..." for another player.
 fn searched_by(r: &mut Reader<'_>, who: Ref, optional: bool) -> Option<Vec<Effect>> {
@@ -262,7 +363,14 @@ fn searched_by(r: &mut Reader<'_>, who: Ref, optional: bool) -> Option<Vec<Effec
     if !(counted && r.punct('.')) {
         r.punct(',').then_some(())?;
     }
-    let effects = if r.need("then shuffle and put").is_some() {
+    let split = (who == Ref::You && plural && searches.len() == 1)
+        .then(|| r.attempt(|r| split_put(r, &found[0])))
+        .flatten();
+    let effects = if let Some(mut steps) = split {
+        searches.append(&mut steps);
+        searches.push(shuffle);
+        searches
+    } else if r.need("then shuffle and put").is_some() {
         (!plural).then_some(())?;
         pronoun(r, false)?;
         r.need("on top")?;
@@ -452,6 +560,9 @@ fn names_text(pred: &Pred) -> Option<(u8, String)> {
 /// The filter of a search as the card words it, without its count: "basic land card",
 /// "Plains or Island cards", "creature card with mana value 3 or less".
 pub(super) fn filter_text(filter: &Selector, plural: bool) -> Option<String> {
+    if plural && let Some(lands) = lands_and_or_text(filter) {
+        return Some(lands);
+    }
     let (mut head, mut tail) = (Vec::new(), Vec::new());
     let mut stage = 0;
     for pred in &filter.0 {
@@ -566,6 +677,27 @@ pub fn other_wordings(texts: &[String]) -> Vec<String> {
         if that != *text {
             found.push(that.clone());
         }
+        // "put one ... and the rest ...", also with "and put" after "reveal those cards" and the shuffle in a sentence of
+        // its own.
+        if text.contains(", put one ") && text.contains(" and the other ") {
+            let rest = text.replacen(" and the other ", " and the rest ", 1);
+            found.push(rest.replacen(", put one ", ", and put one ", 1).replacen(
+                ", then shuffle",
+                ". Then shuffle",
+                1,
+            ));
+            found.push(rest);
+        }
+        // "and/or" for "or" between the kinds of a list of cards.
+        if let Some(listed) = text.split(" library for ").nth(1) {
+            let kinds = listed.split(" cards").next().unwrap_or_default();
+            if listed.contains(" cards") && kinds.contains(" or ") && !kinds.contains(" and/or ") {
+                let mixed = kinds
+                    .replace(", or ", ", and/or ")
+                    .replace(" or ", " and/or ");
+                found.push(text.replacen(kinds, &mixed, 1));
+            }
+        }
         // "put those cards", or the put in a sentence of its own, after a count that a where clause names.
         if text.contains(", where X is ") {
             found.push(text.replacen(", put them ", ", put those cards ", 1));
@@ -639,6 +771,13 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
     }
     let found = Ref::Bound(bind.clone());
     let rest = &effects[count_of..];
+    if count_of == 1
+        && plural
+        && let Some(put) = split_put_text(rest, bind, who)
+    {
+        let text = text.replace(", reveal them", ", reveal those cards");
+        return Some((format!("{text}, {put}"), 5));
+    }
     match rest {
         [
             Effect::Move { what, to },
@@ -681,6 +820,41 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
         _ => return None,
     }
     Some((text, count_of * 2 + 1))
+}
+
+/// "put one onto the battlefield tapped and the other into your hand, then shuffle": the choice of one of the cards
+/// found by the search that bound `bind`, the move of it, the move of the others and the shuffle.
+fn split_put_text(rest: &[Effect], bind: &str, who: &Ref) -> Option<String> {
+    let [
+        Effect::Choose {
+            who: Ref::You,
+            from: Ref::Bound(from),
+            count: chosen,
+            bind: kept,
+            rest_as: Some(left),
+        },
+        Effect::Move {
+            what: Ref::Bound(first),
+            to,
+        },
+        Effect::Move {
+            what: Ref::Bound(others),
+            to: rest_to,
+        },
+        Effect::Shuffle { who: shuffler },
+        ..,
+    ] = rest
+    else {
+        return None;
+    };
+    let named = [kept, left, first, others] == [KEPT, REST, KEPT, REST];
+    (*who == Ref::You && from == bind && named && chosen.is_one() && shuffler == who)
+        .then_some(())?;
+    Some(format!(
+        "put one {} and the other {}, then shuffle",
+        destination_text(to)?,
+        destination_text(rest_to)?
+    ))
 }
 
 /// A look at the top cards, the choice of one of them for the hand and where the rest go.

@@ -1,0 +1,22 @@
+{
+  "cmc": 5.0,
+  "collector_number": "408",
+  "color_identity": [],
+  "colors": [],
+  "digital": false,
+  "id": "a1fc07f5-170f-43a1-9f65-a3f702655226",
+  "keywords": [
+    "Equip",
+    "Living weapon"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{5}",
+  "name": "Scytheclaw",
+  "oracle_id": "a75ddd9c-2574-46e9-ac85-58082789ff3e",
+  "oracle_text": "Living weapon (When this Equipment enters, create a 0/0 black Phyrexian Germ creature token, then attach this to it.)\nEquipped creature gets +1/+1.\nWhenever equipped creature deals combat damage to a player, that player loses half their life, rounded up.\nEquip {3}",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "set": "cmm",
+  "type_line": "Artifact — Equipment"
+}

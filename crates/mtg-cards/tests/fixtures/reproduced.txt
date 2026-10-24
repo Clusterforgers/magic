@@ -197,6 +197,7 @@ Chomping Kavu
 Chromanticore
 Chromatic Lantern
 Circle of Dreams Druid
+Circuitous Route
 Citadel Gate
 Citanul Hierophants
 Clash of Titans
@@ -233,6 +234,7 @@ Cormela, Glamour Thief
 Coruscation Mage
 Counterspell
 Courser of Kruphix
+Court of Grace
 Cram Session
 Creeping Tar Pit
 Crib Swap
@@ -243,6 +245,7 @@ Crucible of Worlds
 Crucible of the Spirit Dragon
 Crypt Ghast
 Crystal Quarry
+Cultivate
 Curate
 Curse of Bounty
 Curse of Conformity
@@ -301,6 +304,7 @@ Dire Fleet Interloper
 Direct Current
 Disciple of Griselbrand
 Disembowel
+Dismantling Blow
 Disrupt Decorum
 Distorting Wake
 Dockside Extortionist
@@ -387,6 +391,7 @@ Fallen Ideal
 Familiar Ground
 Famine
 Fanatic of Rhonas
+Far Wanderings
 Faramir, Steward of Gondor
 Favorable Winds
 Fear of Failed Tests
@@ -442,6 +447,7 @@ Garruk, Primal Hunter
 Gavony Dawnguard
 Gemhide Sliver
 Gemrazer
+General's Enforcer
 Generous Ent
 Genesis Storm
 Gerrard's Wisdom
@@ -568,6 +574,7 @@ Insatiable Hemophage
 Inspired Sphinx
 Inspiring Statuary
 Intelligence Bobblehead
+Into the Roil
 Intrepid Rabbit
 Invading Manticore
 Invisible Force Field
@@ -578,6 +585,7 @@ Ivory Mask
 Ixalli's Lorekeeper
 Izzet Charm
 Jace Beleren
+Jace's Archivist
 Jacked Rabbit
 Jadelight Ranger
 Jagged Barrens
@@ -610,6 +618,7 @@ Knight of Dusk's Shadow
 Knight of the Last Breath
 Knights of the Black Rose
 Knowledge Is Power
+Kodama's Reach
 Kolaghan Skirmisher
 Kolvori, God of Kinship // The Ringhart Crest
 Kongming, "Sleeping Dragon"
@@ -640,6 +649,7 @@ Light Up the Stage
 Lightning Bolt
 Lignify
 Liliana's Standard Bearer
+Lion Sash
 Liquimetal Torque
 Lita, Little Orphan Amphibian
 Lithoform Engine
@@ -669,6 +679,7 @@ Mana Bloom
 Manabarbs
 Manaweft Sliver
 Manor Gate
+Map the Frontier
 Map the Wastes
 Marchesa's Emissary
 Mardu Devotee
@@ -823,6 +834,7 @@ Predator Dragon
 Prey Upon
 Pridemalkin
 Priest of the Crossing
+Primal Growth
 Primal Might
 Primaris Eliminator
 Primeval Protector
@@ -842,6 +854,7 @@ Pygmy Kavu
 Quantum Misalignment
 Quest for the Goblin Lord
 Questing Beast
+Quietus Spike
 Rabble Rousing
 Radical Idea
 Raffine's Informant
@@ -872,6 +885,7 @@ Reiterate
 Rejuvenation Chamber
 Relentless Advance
 Relentless Skaabs
+Relic of Progenitus
 Relic of Sauron
 Remorseful Cleric
 Renewed Faith
@@ -930,10 +944,13 @@ Savage Ventmaw
 Saw It Coming
 Sawtusk Demolisher
 Scatter to the Winds
+Scavenging Ooze
 Scheming Aspirant
 Scorn-Blade Berserker
+Scrabbling Claws
 Scrapshooter
 Scuzzback Marauders
+Scytheclaw
 Sea Gate
 Sea Gate Wreckage
 Secluded Courtyard
@@ -949,6 +966,7 @@ Servant of the Conduit
 Shacklegeist
 Shadowmage Infiltrator
 Shadowspear
+Shamanic Revelation
 Shambling Shell
 Sheer Drop
 Sheltered by Ghosts
@@ -1103,8 +1121,10 @@ Thassa, God of the Sea
 The Birth of Meletis
 The Celestus
 The Gaffer
+The Locust God
 The Modern Age // Vector Glider
 The Mycosynth Gardens
+The Scorpion God
 The Seriema
 The Spear of Bashenga
 The Squadron Sinister
@@ -1189,6 +1209,7 @@ Vanguard Suppressor
 Vanishing Verse
 Vanishment
 Vanquish the Horde
+Vastwood Surge
 Vault 75: Middle School
 Vedalken Engineer
 Vengeful Vampire
@@ -1228,6 +1249,7 @@ Weigh Down
 Weirding Wood
 Whir of Invention
 Whisperer of the Wilds
+Whispering Madness
 Whispering Snitch
 White Auracite
 Wickersmith's Tools
@@ -1236,6 +1258,7 @@ Wild Wasteland
 Wilderness Elemental
 Windborn Muse
 Windbrisk Heights
+Windfall
 Winged Boots
 Winged Words
 Wings of the Guard
@@ -1255,6 +1278,7 @@ Zanikev Locust
 Zendikar Farguide
 Zendikar Resurgent
 Zhang Fei, Fierce Warrior
+Zimone, Quandrix Prodigy
 Zodiac Goat
 Zoetic Cavern
 Zombie Master
