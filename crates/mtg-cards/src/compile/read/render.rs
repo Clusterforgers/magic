@@ -2393,6 +2393,14 @@ impl Writer<'_> {
                     ("those tokens".to_owned(), true)
                 }
             }
+            // The target a sentence before named is "it" ("Put two +1/+1 counters on target creature. It gains vigilance").
+            Ref::Target(0)
+                if self.named
+                    && self.single(affected)
+                    && self.target_is(|what| matches!(what, Targetable::Object(_))) =>
+            {
+                ("it".to_owned(), false)
+            }
             Ref::Target(0)
                 if self.at_most_one(affected)
                     && self.target_is(|what| matches!(what, Targetable::Object(_))) =>

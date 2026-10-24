@@ -137,6 +137,27 @@ fn other_events_make_creatures_fight(#[case] text: &str, #[case] json: &str) {
     reads_as(text, ClauseKind::Triggered, false, json);
 }
 
+/// "It" after a sentence about the one target is that target, not the permanent of the event.
+#[test]
+fn it_after_a_counter_on_the_target_is_the_target() {
+    reads_as(
+        "Whenever a land you control enters, put two +1/+1 counters on target creature you control. It gains vigilance until end of turn.",
+        ClauseKind::Triggered,
+        false,
+        r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Land"},{"ControlledBy":"You"}],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":"+1/+1","count":2}},{"Continuous":{"affected":{"Target":0},"mods":[{"AddKeyword":"Vigilance"}],"duration":"UntilEndOfTurn"}}]}}"#,
+    );
+}
+
+#[test]
+fn it_after_an_untap_of_the_target_is_the_target() {
+    reads_as(
+        "Untap target creature you control. It gains vigilance until end of turn.",
+        ClauseKind::Spell,
+        false,
+        r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}],"effects":[{"Untap":{"what":{"Target":0}}},{"Continuous":{"affected":{"Target":0},"mods":[{"AddKeyword":"Vigilance"}],"duration":"UntilEndOfTurn"}}]}}"#,
+    );
+}
+
 #[rstest]
 #[case::a_creature_in_a_graveyard(
     "Target creature you control fights target creature card in a graveyard."

@@ -186,7 +186,6 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 #[case::it_stays_tapped(
     "Tap target creature. It doesn't untap during its controller's next untap step."
 )]
-#[case::a_gift("Untap target creature you control. It gains vigilance until end of turn.")]
 #[case::a_pronoun("Untap it.")]
 #[case::a_pronoun_to_tap("Tap it.")]
 #[case::enchanted("Tap enchanted creature.")]
