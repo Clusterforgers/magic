@@ -192,6 +192,7 @@ fn a_new_turn_starts_the_count_again() {
     let turn = Event::TurnBegan {
         number: 2,
         active: FOE,
+        extra: false,
     };
     let next = fold(&first, &[turn]);
     assert_eq!(fired(&next, &[crew]), 1, "the first of the new turn");

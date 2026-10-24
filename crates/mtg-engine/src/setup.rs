@@ -414,6 +414,7 @@ impl GameState {
             objects,
             ceased: BTreeMap::new(),
             zones,
+            extra_turns: Vec::new(),
             turn: TurnState {
                 number: turn.0,
                 active: turn.1,
@@ -424,6 +425,10 @@ impl GameState {
                 } else {
                     (turn.0 - 1) / u32::try_from(seats).unwrap_or(u32::MAX).max(1) + 1
                 },
+                regular: turn.1,
+                extra: false,
+                combats: 0,
+                ahead: Vec::new(),
             },
             priority: None,
             combat: CombatState::default(),

@@ -654,6 +654,7 @@ fn a_permanent_that_changes_hands_is_held_back_until_its_new_controller_has_had_
         &[Event::TurnBegan {
             number: 3,
             active: ME,
+            extra: false,
         }],
     );
     assert!(!sick(&game), "seat 0's turn began with it in their control");

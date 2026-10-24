@@ -240,6 +240,7 @@ fn a_new_turn_starts_the_count_again(#[case] when: &str, #[case] act: Act) {
     let turn = Event::TurnBegan {
         number: 2,
         active: FOE,
+        extra: false,
     };
     let next = fold(&first, &[turn]);
     assert!(next.tallies.players.is_empty() && next.tallies.objects.is_empty());
@@ -360,6 +361,7 @@ fn the_condition_forgets_the_counters_of_an_earlier_turn() {
     let turn = Event::TurnBegan {
         number: 2,
         active: FOE,
+        extra: false,
     };
     let next = fold(&put, &[turn]);
     assert_eq!(fired(&next, &[end_step()]), 0, "the next turn");

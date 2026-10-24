@@ -213,6 +213,7 @@ pub(crate) fn next(state: &GameState) -> Progress {
         Event::TurnBegan {
             number: 1,
             active: state.first_player(),
+            extra: false,
         },
         Event::StepBegan { step: Step::Untap },
     ])

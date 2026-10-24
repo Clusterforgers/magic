@@ -723,7 +723,11 @@ mod tests {
 
     fn turn(number: u32, active: PlayerId) -> [Event; 2] {
         [
-            Event::TurnBegan { number, active },
+            Event::TurnBegan {
+                number,
+                active,
+                extra: false,
+            },
             Event::StepBegan { step: Step::Untap },
         ]
     }

@@ -157,6 +157,8 @@ const RUNS: &[&str] = &[
     "Effect.Transform",
     "Effect.Flip",
     "Effect.WinGame",
+    "Effect.ExtraTurn",
+    "Effect.AddPhase",
     "Effect.Surveil",
     "Effect.Proliferate",
     "Effect.Goad",
@@ -717,7 +719,8 @@ mod tests {
     #[case::convoking("Keyword.Convoke", true)]
     #[case::delving("Keyword.Delve", true)]
     #[case::time_travelling("Effect.TimeTravel", false)]
-    #[case::extra_turns("Effect.ExtraTurn", false)]
+    #[case::extra_turns("Effect.ExtraTurn", true)]
+    #[case::added_phases("Effect.AddPhase", true)]
     #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]
     #[case::a_choice_of_lists_of_mana("Effect.AddMana.OneOfLists", true)]
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]

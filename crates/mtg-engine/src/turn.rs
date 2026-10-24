@@ -1,5 +1,7 @@
 //! Turn structure: phases, steps and the per-turn counters.
 
+use std::hash::{Hash, Hasher};
+
 use mtg_core::ids::PlayerId;
 use serde::{Deserialize, Serialize};
 
@@ -16,6 +18,19 @@ pub enum Phase {
     PostcombatMain,
     /// End step and cleanup.
     Ending,
+}
+
+impl Phase {
+    /// The step the next phase of the regular sequence begins with; `None` after the ending phase.
+    pub const fn next_start(self) -> Option<Step> {
+        match self {
+            Phase::Beginning => Some(Step::Main1),
+            Phase::PrecombatMain => Some(Step::BeginCombat),
+            Phase::Combat => Some(Step::Main2),
+            Phase::PostcombatMain => Some(Step::End),
+            Phase::Ending => None,
+        }
+    }
 }
 
 /// A step or main phase of a turn, in turn order.
@@ -100,14 +115,55 @@ impl Step {
     }
 }
 
+/// An extra turn waiting to be taken (CR 500.7).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct ExtraTurn {
+    /// Who takes it.
+    pub player: PlayerId,
+    /// Whether its untap step is skipped.
+    pub skip_untap: bool,
+}
+
 /// Where the game is within the turn sequence.
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TurnState {
     pub(crate) number: u32,
     pub(crate) active: PlayerId,
     pub(crate) step: Step,
     pub(crate) lands_played: u32,
     pub(crate) round: u32,
+    /// The seat whose regular turn this is: an extra turn keeps the seat it was added after, so the turn order goes on
+    /// from there (CR 500.7).
+    pub(crate) regular: PlayerId,
+    /// Whether this turn is an extra turn.
+    pub(crate) extra: bool,
+    /// The combat phases begun so far this turn.
+    pub(crate) combats: u32,
+    /// The phases still to begin when the added ones come after the current phase (CR 500.8), each as the step it
+    /// begins with, the added ones first and the phase of the regular sequence they hold up last; empty while the
+    /// turn runs its regular sequence.
+    pub(crate) ahead: Vec<Step>,
+}
+
+// The fields a game without extra turns or phases never sets add nothing, so such a game hashes as it did before.
+impl Hash for TurnState {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.number.hash(state);
+        self.active.hash(state);
+        self.step.hash(state);
+        self.lands_played.hash(state);
+        self.round.hash(state);
+        if self.regular != self.active || self.extra {
+            self.regular.hash(state);
+            self.extra.hash(state);
+        }
+        if self.combats > 1 {
+            self.combats.hash(state);
+        }
+        if !self.ahead.is_empty() {
+            self.ahead.hash(state);
+        }
+    }
 }
 
 impl TurnState {
@@ -129,6 +185,26 @@ impl TurnState {
     /// Lands the active player has played this turn.
     pub const fn lands_played(&self) -> u32 {
         self.lands_played
+    }
+
+    /// Whether this turn is an extra turn (CR 500.7).
+    pub const fn is_extra(&self) -> bool {
+        self.extra
+    }
+
+    /// The seat whose regular turn this is; for an extra turn, the seat it was added after.
+    pub const fn regular(&self) -> PlayerId {
+        self.regular
+    }
+
+    /// The combat phases begun so far this turn, the current one included.
+    pub const fn combats(&self) -> u32 {
+        self.combats
+    }
+
+    /// The phases that begin after the current one before the regular sequence goes on, each as its first step (CR 500.8).
+    pub fn phases_ahead(&self) -> &[Step] {
+        &self.ahead
     }
 
     /// The round of the turn, from 1: a round is one turn of each seat in play, from the first player's seat round to

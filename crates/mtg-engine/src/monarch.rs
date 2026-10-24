@@ -233,6 +233,7 @@ mod tests {
             &Event::TurnBegan {
                 number: 2,
                 active: PlayerId(1),
+                extra: false,
             },
         )
         .unwrap();
@@ -246,6 +247,7 @@ mod tests {
             &Event::TurnBegan {
                 number: 3,
                 active: PlayerId(2),
+                extra: false,
             },
         )
         .unwrap();

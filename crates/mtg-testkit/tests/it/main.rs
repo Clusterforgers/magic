@@ -152,6 +152,7 @@ mod exile_until;
 mod exile_until_fuzz;
 mod explore;
 mod extra_costs;
+mod extra_turns;
 mod fabricate_learn;
 mod face_rules;
 mod faces;

@@ -40,7 +40,7 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 68] = [
+const TEMPLATES: [Template; 70] = [
     modal::modal,
     super::chance::flip,
     super::chance::roll,
@@ -66,6 +66,8 @@ const TEMPLATES: [Template; 68] = [
     super::actions::goad,
     super::manifest::manifest,
     draws::wheel,
+    super::turns::extra_turn,
+    super::turns::added_phases,
     super::day_night::becomes,
     super::day_night::toggle,
     player_effect,
@@ -655,6 +657,7 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
             who,
             count: points(r)?,
         },
+        "take" | "takes" => super::turns::extra_turns(r, &who)?,
         "win" | "wins" => {
             r.need("the game")?;
             Effect::WinGame { who }

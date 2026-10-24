@@ -289,6 +289,7 @@ fn a_new_turn_starts_the_count_again_and_each_player_counts_alone() {
     let turn = Event::TurnBegan {
         number: 2,
         active: FOE,
+        extra: false,
     };
     let next = fold(&first, &[turn]);
     assert_eq!(fired(&next, &[draw(&next, ME)]), 0, "the first of the turn");

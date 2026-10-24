@@ -21,6 +21,14 @@ active: PlayerId,
  */
 active_left?: boolean, 
 /**
+ * Whether the turn is an extra turn (CR 500.7); left out otherwise.
+ */
+extra?: boolean, 
+/**
+ * The players who still have an extra turn to take, the one taken first last; left out when there is none.
+ */
+extra_turns?: Array<PlayerId>, 
+/**
  * The current step.
  */
 step: Step, 

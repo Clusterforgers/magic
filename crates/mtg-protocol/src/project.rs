@@ -463,6 +463,12 @@ impl TableView {
                 number: turn.number(),
                 active: turn.active(),
                 active_left: state.stage() == Stage::Turns && state.active_player().is_none(),
+                extra: turn.is_extra(),
+                extra_turns: state
+                    .extra_turns()
+                    .iter()
+                    .map(|extra| extra.player)
+                    .collect(),
                 step: turn.step(),
                 lands_played: turn.lands_played(),
                 day_night: state.day_night(),

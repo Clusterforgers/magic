@@ -1850,9 +1850,17 @@ impl<'a> Walker<'a> {
             | Effect::Proliferate { who }
             | Effect::BecomeMonarch { who }
             | Effect::TimeTravel { who }
-            | Effect::Learn { who }
-            | Effect::ExtraTurn { who } => {
+            | Effect::Learn { who } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
+            }
+            Effect::ExtraTurn { who, count, .. } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("count", |w| w.amount(count));
+            }
+            Effect::AddPhase { phases } => {
+                if phases.is_empty() {
+                    w.problem("an added phase list names no phase");
+                }
             }
             Effect::Move { what, to } => {
                 w.at("what", |w| w.reference(what, Kind::Object));

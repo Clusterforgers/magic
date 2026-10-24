@@ -106,7 +106,11 @@ pub(crate) fn given(kind: GiftKind) -> Vec<Effect> {
         GiftKind::Food => token(TokenRef::Named("food".to_owned()), false),
         GiftKind::TappedFish => token(creature("Fish", 1), true),
         GiftKind::Octopus => token(creature("Octopus", 8), false),
-        GiftKind::ExtraTurn => Effect::ExtraTurn { who },
+        GiftKind::ExtraTurn => Effect::ExtraTurn {
+            who,
+            count: Amount::one(),
+            skip_untap: false,
+        },
     }]
 }
 

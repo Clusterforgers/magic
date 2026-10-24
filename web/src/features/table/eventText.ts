@@ -544,7 +544,17 @@ function describePublic(event: Event, n: EventNames): LogLine {
     return line(`${n.card(object)} enters attacking ${attackTarget(target, n)}`)
   }
   if ('TurnBegan' in event) {
-    return line(`Turn ${event.TurnBegan.number} begins: ${n.seat(event.TurnBegan.active)}'s turn`)
+    const { number, active, extra } = event.TurnBegan
+    return line(`Turn ${number} begins: ${n.seat(active)}'s ${extra ? 'extra turn' : 'turn'}`)
+  }
+  if ('ExtraTurnAdded' in event) {
+    return line(`${n.seat(event.ExtraTurnAdded.player)} takes an extra turn after this one`)
+  }
+  if ('ExtraTurnSkipped' in event) {
+    return quiet(`${n.seat(event.ExtraTurnSkipped.player)} skips an extra turn`)
+  }
+  if ('PhasesAdded' in event) {
+    return line(`${event.PhasesAdded.steps.length} additional phase(s) follow this phase`)
   }
   if ('StepBegan' in event) return quiet(`${STEP_LABEL[event.StepBegan.step]} begins`)
   if ('NothingToDo' in event) {
