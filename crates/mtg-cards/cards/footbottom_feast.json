@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0a35df9d-80a0-4b6f-91d5-dad980af47e1",
+  "name": "Footbottom Feast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Footbottom Feast",
+      "oracle_fingerprint": "543cf6b68d7e5e17ba543ce9041713e0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

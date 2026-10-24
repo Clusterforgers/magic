@@ -1,0 +1,28 @@
+{
+  "oracle_id": "fbff7452-1da4-4cd0-8247-a625e4b4da2b",
+  "name": "Crystal Chimes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crystal Chimes",
+      "oracle_fingerprint": "d7e604045f6d473ee5c1110a13fde238",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, { "Type": "Enchantment" }]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

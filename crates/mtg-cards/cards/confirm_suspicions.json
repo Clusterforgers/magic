@@ -1,0 +1,22 @@
+{
+  "oracle_id": "a30d076b-c942-45e4-b943-3749ce955291",
+  "name": "Confirm Suspicions",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Confirm Suspicions",
+      "oracle_fingerprint": "b18d9de284a13630aee67a0ad3e7cd41",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "CreateToken": { "token": { "Named": "clue" }, "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

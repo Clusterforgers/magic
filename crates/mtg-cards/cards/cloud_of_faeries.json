@@ -1,0 +1,30 @@
+{
+  "oracle_id": "adc1f3b4-cce7-42c9-a208-dbab1d1924f5",
+  "name": "Cloud of Faeries",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloud of Faeries",
+      "oracle_fingerprint": "a0be8926768ab9636fd93ef65eb2c39e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "lands"
+                }
+              },
+              { "Untap": { "what": { "Bound": "lands" } } }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

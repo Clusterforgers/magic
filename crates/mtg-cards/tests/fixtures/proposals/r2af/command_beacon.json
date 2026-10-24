@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]}}}]}},{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"Move":{"what":{"Each":["Commander",{"OwnedBy":"You"},{"In":"Command"}]},"to":"Hand"}}]}}]}]}

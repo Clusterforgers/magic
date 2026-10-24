@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e66b12ff-45da-46dc-9148-bd8ea9b7fde0",
+  "name": "Angelic Chorus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angelic Chorus",
+      "oracle_fingerprint": "aa35ef09f21e1109b4ccf30e95073422",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "GainLife": { "amount": { "Stat": { "of": "Triggering", "stat": "Toughness" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

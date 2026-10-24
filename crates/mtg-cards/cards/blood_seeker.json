@@ -1,0 +1,32 @@
+{
+  "oracle_id": "41087db6-34c4-4e2b-9f54-5e4488ca9c0b",
+  "name": "Blood Seeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Seeker",
+      "oracle_fingerprint": "1b1415d4f4724eed1c0f165ac9f15b4f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

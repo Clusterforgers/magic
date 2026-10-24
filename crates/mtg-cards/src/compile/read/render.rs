@@ -3,6 +3,7 @@
 //! player in a row are one compound sentence; the readers take ", then" between two steps as the
 //! same sequence.
 
+mod af_steps;
 mod all_graveyards;
 mod and_lists;
 mod bound;
@@ -43,6 +44,7 @@ mod those;
 mod together;
 mod token_attach;
 mod twins;
+mod two_targets;
 mod untapped;
 
 use super::activations;
@@ -2289,6 +2291,7 @@ impl Writer<'_> {
             .or_else(|| revealed::text(effects))
             .or_else(|| self.mill_then_hand(effects))
             .or_else(|| Self::untapped_and_controlled(effects))
+            .or_else(|| self.af_steps(effects))
             .or_else(|| self.owner_shuffles(effects))
             // Populate is two steps and one word.
             .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))

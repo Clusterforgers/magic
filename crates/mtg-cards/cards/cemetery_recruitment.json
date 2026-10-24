@@ -1,0 +1,35 @@
+{
+  "oracle_id": "07792d72-d5db-41b9-871c-e720e12ce659",
+  "name": "Cemetery Recruitment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cemetery Recruitment",
+      "oracle_fingerprint": "b62fd847219f5b74f56425872045b7a1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": [{ "Subtype": "Zombie" }] }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

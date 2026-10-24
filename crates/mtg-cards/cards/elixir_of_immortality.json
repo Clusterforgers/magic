@@ -1,0 +1,28 @@
+{
+  "oracle_id": "204b71fc-4d5f-40dd-903d-56c733171d84",
+  "name": "Elixir of Immortality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elixir of Immortality",
+      "oracle_fingerprint": "277dc92a87e339917aa422d6cf752a19",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              { "GainLife": { "amount": 5 } },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
