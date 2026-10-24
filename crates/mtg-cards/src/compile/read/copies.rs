@@ -21,7 +21,7 @@ use super::triggers::article;
 use crate::ability::Ability;
 use crate::effect::{Effect, TokenRef};
 use crate::modify::Modification;
-use crate::refs::{Bounds, Pred, Ref, Selector};
+use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable};
 use crate::trigger::{ReplaceBy, ReplaceWhen, Step, TriggerPattern};
 use crate::value::Amount;
 
@@ -115,7 +115,16 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// group holds; the noun after "that" is the group's one card type, else "permanent".
 fn each_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("for each")?;
-    let from = phrase(r, Form::Count)?;
+    let mut from = phrase(r, Form::Count)?;
+    // "For each creature target player controls": the group of the player the spell targets.
+    if r.targets.is_empty() && r.words("target player controls") {
+        r.targets.push(TargetSpec {
+            what: Targetable::Player,
+            bounds: Bounds::default(),
+            divide: None,
+        });
+        from.0.push(Pred::ControlledBy(Ref::Target(0)));
+    }
     from.0
         .iter()
         .any(|pred| matches!(pred, Pred::ControlledBy(_)))

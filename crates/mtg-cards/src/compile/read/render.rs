@@ -36,6 +36,7 @@ use super::event_wordings;
 use super::flicker;
 use super::group_copies;
 use super::group_pump;
+use super::kicked_copies;
 use super::lands;
 use super::library;
 use super::manifest;
@@ -818,6 +819,18 @@ fn written(
             start += 2;
             continue;
         }
+        // A token copy and the same copy made more times when the spell was kicked are two sentences.
+        if let Some((one, _, many)) = effects[start..]
+            .first()
+            .and_then(kicked_copies::is_kicked_copy)
+            && let Some(first) = writer.copy_token(one, false)
+        {
+            unsplit(mask, start, 1)?;
+            sentences.push(first);
+            sentences.push(kicked_copies::more_text(many)?);
+            start += 1;
+            continue;
+        }
         // A group that becomes a copy of the target, after a sentence that chooses it or not.
         if let [copy @ Effect::BecomeCopy { .. }, ..] = &effects[start..]
             && group_copies::is_group_copy(copy)
@@ -1567,6 +1580,10 @@ impl Writer<'_> {
             return None;
         };
         if let Ref::Each(selector) = of {
+            // The player of "creature target player controls" is the target, named by the group.
+            if selector.0.contains(&Pred::ControlledBy(Ref::Target(0))) {
+                self.named = true;
+            }
             return if delayed {
                 None
             } else {

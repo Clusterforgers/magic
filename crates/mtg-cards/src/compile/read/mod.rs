@@ -49,6 +49,7 @@ mod facts;
 mod flicker;
 mod group_copies;
 mod group_pump;
+mod kicked_copies;
 mod lands;
 mod levels;
 mod library;
