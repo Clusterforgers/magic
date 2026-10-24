@@ -94,6 +94,24 @@ fn is_block(text: &str) -> bool {
     head.starts_with("LEVEL ") || head.contains(": Level ") || station
 }
 
+/// Whether a clause is a row of the table of a die roll: a range of totals, then `|` ("1—9 | ...", "15+ | ...", "20 | ...").
+fn is_die_row(text: &str) -> bool {
+    text.lines()
+        .next()
+        .and_then(|head| head.split_once(" | "))
+        .is_some_and(|(range, _)| {
+            range.starts_with(|c: char| c.is_ascii_digit())
+                && range
+                    .chars()
+                    .all(|c| c.is_ascii_digit() || c == '—' || c == '+')
+        })
+}
+
+/// Whether an ability rolls a die, in any of its effect lists.
+fn rolls_dice(ability: &Ability) -> bool {
+    serde_json::to_string(ability).is_ok_and(|json| json.contains("\"RollDice\""))
+}
+
 /// A keyword without the abilities a Backup lists, which the following clauses give it.
 fn bare(keyword: &Keyword) -> Keyword {
     match keyword {
@@ -165,6 +183,7 @@ impl<'a> Pairer<'a> {
         self.static_pairs();
         self.exact();
         self.leftovers();
+        self.tables();
         let face = self.face;
         Paired {
             clauses: self
@@ -316,6 +335,27 @@ impl<'a> Pairer<'a> {
         }
     }
 
+    /// The rows of the table of a die roll (`1—9 | ...`) stand for the ability of the clause before them when it rolls.
+    fn tables(&mut self) {
+        for at in 1..self.slots.len() {
+            if self.slots[at].state.is_some() || !is_die_row(&self.slots[at].clause.text) {
+                continue;
+            }
+            let rolls = match &self.slots[at - 1].state {
+                Some(
+                    ClauseState::Reads { ability }
+                    | ClauseState::Unwritten { ability, .. }
+                    | ClauseState::Differs { ability, .. },
+                ) => self.abilities.get(*ability).is_some_and(rolls_dice),
+                _ => false,
+            };
+            if rolls {
+                let state = self.slots[at - 1].state.clone();
+                self.slots[at].state = state;
+            }
+        }
+    }
+
     /// The abilities left take the next clause of their kind, as a mismatch or a construct without a writer.
     fn leftovers(&mut self) {
         let abilities = self.abilities;
@@ -440,5 +480,35 @@ fn unmatched(ability: &Ability, at: usize, wanted: &str, clause: &str) -> Clause
             ability: at,
             construct: blame::construct(ability),
         },
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: a row of the table of a die roll is told from other clauses by its range of totals and its bar, whatever the range looks like, and only an ability that rolls a die owns the rows after its clause.
+    use rstest::rstest;
+
+    use super::*;
+
+    #[rstest]
+    #[case::a_range("1—9 | Each player sacrifices a permanent of their choice.", true)]
+    #[case::a_single_total("20 | Each opponent sacrifices two permanents.", true)]
+    #[case::an_open_range("15+ | Scry X, then draw X cards.", true)]
+    #[case::the_first_line_only("1—14 | Draw X cards.\nSecond line", true)]
+    #[case::no_bar("1—9 Each player sacrifices a permanent.", false)]
+    #[case::words_before_the_bar("Siege Monster — When this creature enters, roll a d20.", false)]
+    #[case::no_range(" | Draw a card.", false)]
+    #[case::a_name_before_the_bar("Level | 3", false)]
+    fn rows_are_told_by_their_range_and_bar(#[case] text: &str, #[case] row: bool) {
+        assert_eq!(is_die_row(text), row);
+    }
+
+    #[rstest]
+    #[case::rolls(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep"}},"effects":[{"RollDice":{"sides":4,"results":[{"from":1,"effects":[{"Draw":{}}]}]}}]}}"#, true)]
+    #[case::inside_a_repeat(r#"{"Spell":{"effects":[{"RepeatEach":{"over":"EachPlayer","as":"p","effects":[{"RollDice":{"sides":6,"results":[{"from":1,"effects":[{"Draw":{}}]}]}}]}}]}}"#, true)]
+    #[case::does_not_roll(r#"{"Spell":{"effects":[{"FlipCoin":{"win":[{"Draw":{}}]}}]}}"#, false)]
+    fn an_ability_that_rolls_owns_the_rows(#[case] json: &str, #[case] rolls: bool) {
+        let ability: Ability = serde_json::from_str(json).unwrap();
+        assert_eq!(rolls_dice(&ability), rolls);
     }
 }
