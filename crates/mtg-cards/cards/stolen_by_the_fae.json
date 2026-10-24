@@ -1,0 +1,46 @@
+{
+  "oracle_id": "5bafd0e0-8bf8-4e06-a54a-81cc6cc4bdb7",
+  "name": "Stolen by the Fae",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stolen by the Fae",
+      "oracle_fingerprint": "8a316963aa8d2d55cb5441f769ac421e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Faerie",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Faerie"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

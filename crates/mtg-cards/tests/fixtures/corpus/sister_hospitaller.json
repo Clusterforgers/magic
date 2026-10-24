@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "fb086307-b089-45ba-81d3-789ed35dc5b8",
+  "oracle_id": "06c39c1c-0e34-4ef0-bd06-23245cb9cc59",
+  "multiverse_ids": [
+    580963
+  ],
+  "mtgo_id": 108754,
+  "tcgplayer_id": 286549,
+  "cardmarket_id": 675732,
+  "name": "Sister Hospitaller",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/fb086307-b089-45ba-81d3-789ed35dc5b8",
+  "scryfall_uri": "https://scryfall.com/card/40k/141/sister-hospitaller?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:33:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/b/fb086307-b089-45ba-81d3-789ed35dc5b8.jpg?1783920833",
+    "normal": "https://cards.scryfall.io/normal/front/f/b/fb086307-b089-45ba-81d3-789ed35dc5b8.jpg?1783920833",
+    "large": "https://cards.scryfall.io/large/front/f/b/fb086307-b089-45ba-81d3-789ed35dc5b8.jpg?1783920833",
+    "png": "https://cards.scryfall.io/png/front/f/b/fb086307-b089-45ba-81d3-789ed35dc5b8.png?1783920833",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/b/fb086307-b089-45ba-81d3-789ed35dc5b8.jpg?1783920833",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/b/fb086307-b089-45ba-81d3-789ed35dc5b8.jpg?1783920833",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/b/fb086307-b089-45ba-81d3-789ed35dc5b8.webp?1783920833",
+    "grid": "https://cards.scryfall.io/grid/front/f/b/fb086307-b089-45ba-81d3-789ed35dc5b8.webp?1783920833",
+    "display": "https://cards.scryfall.io/display/front/f/b/fb086307-b089-45ba-81d3-789ed35dc5b8.webp?1783920833",
+    "art": "https://cards.scryfall.io/art/front/f/b/fb086307-b089-45ba-81d3-789ed35dc5b8.webp?1783920833",
+    "crop": "https://cards.scryfall.io/crop/front/f/b/fb086307-b089-45ba-81d3-789ed35dc5b8.webp?1783920833",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/b/fb086307-b089-45ba-81d3-789ed35dc5b8.jpg?1783920833"
+  },
+  "mana_cost": "{4}{W}{B}",
+  "cmc": 6.0,
+  "type_line": "Creature — Human Cleric",
+  "oracle_text": "Medicus Ministorum — When this creature enters, return target creature card from your graveyard to the battlefield. You gain life equal to its mana value.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Medicus Ministorum"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set": "40k",
+  "set_name": "Warhammer 40,000 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A40k&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/40k?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fb086307-b089-45ba-81d3-789ed35dc5b8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A06c39c1c-0e34-4ef0-bd06-23245cb9cc59&unique=prints",
+  "collector_number": "141",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Ours is to honour the martyr, tend the fallen, defend the innocent, and walk always in the light.\"\n—*The Hospitaller's Book of Hours*",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Games Workshop",
+  "artist_ids": [
+    "9456da4e-410b-4932-8bf3-a69a2da3cdc9"
+  ],
+  "illustration_id": "caf93d11-90f7-4e58-87ce-8f7f963491d2",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 6265,
+  "preview": {
+    "source": "PleasantKenobi",
+    "source_uri": "https://www.youtube.com/watch?v=cZUMys8LVis",
+    "previewed_at": "2022-09-16"
+  },
+  "prices": {
+    "usd": "12.77",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "12.31",
+    "eur_foil": null,
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580963&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSister%2BHospitaller",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSister%2BHospitaller",
+    "edhrec": "https://edhrec.com/route/?cc=Sister+Hospitaller"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F286549%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=675732&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/108754?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "192f3c8a-1120-4f7f-ae0f-fe9bde59cd08",
+  "name": "Telling Time",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Telling Time",
+      "oracle_fingerprint": "bc4466245865c75028f2c5e7a958c134",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "others" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              { "Choose": { "from": { "Bound": "others" }, "as": "ontop", "rest_as": "bottomed" } },
+              { "Move": { "what": { "Bound": "ontop" }, "to": { "Library": { "place": "Top" } } } },
+              {
+                "Move": {
+                  "what": { "Bound": "bottomed" },
+                  "to": { "Library": { "place": "Bottom" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

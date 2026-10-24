@@ -11,6 +11,7 @@ mod delayed;
 mod divided;
 mod each_target;
 mod either;
+mod exiled_cast;
 mod exiled_until;
 mod free_casts;
 mod from_graveyard;
@@ -2242,6 +2243,7 @@ impl Writer<'_> {
             .or_else(|| untapped::text(effects))
             .or_else(|| free_casts::text(effects))
             .or_else(|| self.opponent_exiles(effects))
+            .or_else(|| self.opponent_exiles_for_the_turn(effects))
             .or_else(|| populated::text(effects))
             .or_else(|| revealed::text(effects))
             .or_else(|| self.owner_shuffles(effects))
@@ -2545,7 +2547,13 @@ impl Writer<'_> {
             _ => return None,
         };
         if let [Modification::CantBeBlocked] = mods {
-            return Some(format!("{subject} can't be blocked this turn"));
+            return match duration {
+                Duration::UntilEndOfTurn => Some(format!("{subject} can't be blocked this turn")),
+                Duration::UntilYourNextTurn => {
+                    Some(format!("until your next turn, {subject} can't be blocked"))
+                }
+                _ => None,
+            };
         }
         if duration == Duration::UntilEndOfTurn
             && matches!(

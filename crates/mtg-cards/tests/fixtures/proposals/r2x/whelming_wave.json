@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Move":{"what":{"Each":[{"Type":"Creature"},{"Not":{"AnyOf":[{"Subtype":"Kraken"},{"Subtype":"Leviathan"},{"Subtype":"Octopus"},{"Subtype":"Serpent"}]}}]},"to":"Hand"}}]}}]}]}

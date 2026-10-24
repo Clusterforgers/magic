@@ -1,0 +1,35 @@
+{
+  "oracle_id": "1093fdb6-bd4f-46a8-92e3-5aa46b52bb4f",
+  "name": "Weathered Wayfarer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Weathered Wayfarer",
+      "oracle_fingerprint": "4a6b5f20ab24c699459d2c609dab69ca",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Gt",
+                "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "effects": [
+              { "Search": { "filter": [{ "Type": "Land" }], "reveal": true, "as": "land" } },
+              { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

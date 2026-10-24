@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7182e6f4-6caf-474a-8759-13c56f391bef",
+  "name": "Sigil Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sigil Captain",
+      "oracle_fingerprint": "9c82a3cc48b0a32daf6482b731e4d577",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "if": {
+              "Matches": {
+                "subject": "Triggering",
+                "selector": [
+                  { "Compare": { "stat": "Power", "op": "Eq", "to": 1 } },
+                  { "Compare": { "stat": "Toughness", "op": "Eq", "to": 1 } }
+                ]
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

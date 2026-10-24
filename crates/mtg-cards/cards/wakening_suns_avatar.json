@@ -1,0 +1,26 @@
+{
+  "oracle_id": "3c2aec69-ffd9-4a34-888c-58adbbb99bb5",
+  "name": "Wakening Sun's Avatar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wakening Sun's Avatar",
+      "oracle_fingerprint": "1d49db184879ee4c4ddae1e22c272ccc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "CastFrom": "Hand" }] } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Not": { "Subtype": "Dinosaur" } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

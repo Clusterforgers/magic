@@ -1,0 +1,27 @@
+{
+  "oracle_id": "eeb6f5eb-0e16-468e-9dfe-6ec8d8172f86",
+  "name": "Storm's Wrath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm's Wrath",
+      "oracle_fingerprint": "dedbda23a3706440b837358a4fb8b7be",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                  },
+                  "amount": 4
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

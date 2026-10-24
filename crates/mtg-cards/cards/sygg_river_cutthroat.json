@@ -1,0 +1,26 @@
+{
+  "oracle_id": "cd4db500-0017-46c6-be94-1bf48f686b6a",
+  "name": "Sygg, River Cutthroat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sygg, River Cutthroat",
+      "oracle_fingerprint": "f06ee98f4cf32f6aa81c5f022b2b2fbf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"DealsDamage":{"source":[{"Subtype":"Sliver"}],"to":"EachPlayer","combat":true}},"effects":[{"May":{"who":{"ControllerOf":"Triggering"},"effects":[{"Draw":{"who":{"ControllerOf":"Triggering"}}}]}}]}}]}]}

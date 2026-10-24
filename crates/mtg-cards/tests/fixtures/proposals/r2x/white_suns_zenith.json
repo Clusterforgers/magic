@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Cat","colors":["White"],"types":["Creature"],"subtypes":["Cat"],"power":2,"toughness":2}},"count":"X"}},{"Move":{"what":"This","to":{"Library":{"place":"Shuffled"}}}}]}}]}]}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "986ae327-f433-4c58-93dc-afc544b9bfcb",
+  "name": "Steel Overseer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steel Overseer",
+      "oracle_fingerprint": "43052f8212b0fa57a1f99d1b1a28ed39",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      { "Type": "Artifact" },
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

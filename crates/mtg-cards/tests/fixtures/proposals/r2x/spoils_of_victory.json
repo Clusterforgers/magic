@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Search":{"filter":[{"AnyOf":[{"Subtype":"Plains"},{"Subtype":"Island"},{"Subtype":"Swamp"},{"Subtype":"Mountain"},{"Subtype":"Forest"}]}],"as":"land"}},{"Move":{"what":{"Bound":"land"},"to":{"Battlefield":{}}}},{"Shuffle":{}}]}}]}]}

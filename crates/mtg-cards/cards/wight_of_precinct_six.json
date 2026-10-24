@@ -1,0 +1,38 @@
+{
+  "oracle_id": "6397c046-4c59-4f0b-9b44-2a804eb95edf",
+  "name": "Wight of Precinct Six",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wight of Precinct Six",
+      "oracle_fingerprint": "7b9b47c22ea7af360da6aec6f399ff5e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Opponents" }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Opponents" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

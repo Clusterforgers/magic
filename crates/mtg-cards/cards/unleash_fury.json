@@ -1,0 +1,34 @@
+{
+  "oracle_id": "4eaa100c-f1ef-4a2b-9370-5dad7f3a95f2",
+  "name": "Unleash Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unleash Fury",
+      "oracle_fingerprint": "b647abc1dd4b382ada98cd3518c793c4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

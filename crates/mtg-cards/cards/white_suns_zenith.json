@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ea4a9299-c2b3-4092-89dd-28142b203d60",
+  "name": "White Sun's Zenith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "White Sun's Zenith",
+      "oracle_fingerprint": "93de0ec3aeec0701d56987a73dcce50f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cat",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Cat"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": "X"
+                }
+              },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

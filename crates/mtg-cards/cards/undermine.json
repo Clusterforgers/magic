@@ -1,0 +1,22 @@
+{
+  "oracle_id": "6bcfe240-c165-49f2-a90a-be05c05498a1",
+  "name": "Undermine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undermine",
+      "oracle_fingerprint": "ad955c706791d623e996033285fb173c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "LoseLife": { "who": { "ControllerOf": { "Target": 0 } }, "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

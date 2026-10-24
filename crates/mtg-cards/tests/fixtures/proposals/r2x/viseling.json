@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"Opponents"}},"effects":[{"DealDamage":{"to":"Triggering","amount":{"Sum":[{"Count":[{"In":"Hand"},{"OwnedBy":"Triggering"}]},-4]}}}]}}]}]}

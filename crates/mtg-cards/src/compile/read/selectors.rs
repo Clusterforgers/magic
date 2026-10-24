@@ -305,6 +305,7 @@ pub(super) fn adjective_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::Other => "other".to_owned(),
         Pred::Supertype(Supertype::Legendary) => "legendary".to_owned(),
         Pred::Supertype(Supertype::Basic) => "basic".to_owned(),
+        Pred::Not(inner) if **inner == outlaw() => "non-outlaw".to_owned(),
         Pred::Not(inner) => match &**inner {
             Pred::Color(color) => format!("non{}", color_name(*color)),
             Pred::Type(card_type) => format!("non{}", type_name(*card_type)),

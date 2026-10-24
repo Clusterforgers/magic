@@ -1,0 +1,52 @@
+{
+  "oracle_id": "8ddfc283-c9b4-41a5-af88-cf0068e986cc",
+  "name": "Swan Song",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swan Song",
+      "oracle_fingerprint": "4b60ea4fa89aa23092bce7a6ddc9813d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    {
+                      "AnyOf": [
+                        { "Type": "Enchantment" },
+                        { "Type": "Instant" },
+                        { "Type": "Sorcery" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

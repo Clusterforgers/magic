@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "f37d5938-9c8f-4203-8f3f-d6e89ced28ef",
+  "oracle_id": "ad7b9db0-e061-4360-9b81-0408d18d971d",
+  "multiverse_ids": [
+    402078
+  ],
+  "mtgo_id": 58371,
+  "mtgo_foil_id": 58372,
+  "tcgplayer_id": 105302,
+  "cardmarket_id": 284746,
+  "name": "Ugin's Insight",
+  "lang": "en",
+  "released_at": "2015-10-02",
+  "uri": "https://api.scryfall.com/cards/f37d5938-9c8f-4203-8f3f-d6e89ced28ef",
+  "scryfall_uri": "https://scryfall.com/card/bfz/87/ugins-insight?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:23:26Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/3/f37d5938-9c8f-4203-8f3f-d6e89ced28ef.jpg?1783938206",
+    "normal": "https://cards.scryfall.io/normal/front/f/3/f37d5938-9c8f-4203-8f3f-d6e89ced28ef.jpg?1783938206",
+    "large": "https://cards.scryfall.io/large/front/f/3/f37d5938-9c8f-4203-8f3f-d6e89ced28ef.jpg?1783938206",
+    "png": "https://cards.scryfall.io/png/front/f/3/f37d5938-9c8f-4203-8f3f-d6e89ced28ef.png?1783938206",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/3/f37d5938-9c8f-4203-8f3f-d6e89ced28ef.jpg?1783938206",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/3/f37d5938-9c8f-4203-8f3f-d6e89ced28ef.jpg?1783938206",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/3/f37d5938-9c8f-4203-8f3f-d6e89ced28ef.webp?1783938206",
+    "grid": "https://cards.scryfall.io/grid/front/f/3/f37d5938-9c8f-4203-8f3f-d6e89ced28ef.webp?1783938206",
+    "display": "https://cards.scryfall.io/display/front/f/3/f37d5938-9c8f-4203-8f3f-d6e89ced28ef.webp?1783938206",
+    "art": "https://cards.scryfall.io/art/front/f/3/f37d5938-9c8f-4203-8f3f-d6e89ced28ef.webp?1783938206",
+    "crop": "https://cards.scryfall.io/crop/front/f/3/f37d5938-9c8f-4203-8f3f-d6e89ced28ef.webp?1783938206",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/3/f37d5938-9c8f-4203-8f3f-d6e89ced28ef.jpg?1783938206"
+  },
+  "mana_cost": "{3}{U}{U}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Scry X, where X is the greatest mana value among permanents you control, then draw three cards.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Scry"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "91719374-7ac5-4afa-ada8-5da964dcf1d4",
+  "set": "bfz",
+  "set_name": "Battle for Zendikar",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/91719374-7ac5-4afa-ada8-5da964dcf1d4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abfz&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bfz?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f37d5938-9c8f-4203-8f3f-d6e89ced28ef/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aad7b9db0-e061-4360-9b81-0408d18d971d&unique=prints",
+  "collector_number": "87",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"You speak to me of the threat of Ulamog. But do not forget: they came as three.\"\n—Ugin, to Jace Beleren",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tyler Jacobson",
+  "artist_ids": [
+    "522af130-8db4-4b4b-950c-6e2b246339cf"
+  ],
+  "illustration_id": "81f4ea0d-0ae4-405a-830a-e478019fdc7c",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 9231,
+  "penny_rank": 10274,
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": "0.32",
+    "usd_etched": null,
+    "eur": "0.16",
+    "eur_foil": "0.41",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=402078&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DUgin%2527s%2BInsight",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DUgin%2527s%2BInsight",
+    "edhrec": "https://edhrec.com/route/?cc=Ugin%27s+Insight"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F105302%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=284746&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/58371?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

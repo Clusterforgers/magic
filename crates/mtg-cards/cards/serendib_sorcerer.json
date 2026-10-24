@@ -1,0 +1,28 @@
+{
+  "oracle_id": "73a59b03-168e-472e-bbb1-cabd782ea014",
+  "name": "Serendib Sorcerer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serendib Sorcerer",
+      "oracle_fingerprint": "0d066981b48c77444e3b13b8cbdf0f44",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPT": { "power": 0, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
