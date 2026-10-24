@@ -1523,10 +1523,7 @@ impl Writer<'_> {
                 count,
             } => {
                 let counters = counters::text(counter, count)?;
-                format!(
-                    "remove {counters} from {}",
-                    self.counter_place(from, false)?
-                )
+                format!("remove {counters} from {}", self.counter_place(from, true)?)
             }
             Effect::MultiplyCounters {
                 on,

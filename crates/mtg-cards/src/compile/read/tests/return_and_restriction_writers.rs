@@ -1,4 +1,4 @@
-//! Goal: the writers of the proposal checker give the oracle wording of a restriction that lasts the turn ("Target creature can't attack or block this turn."), of the top card of the library exiled whatever a later step calls it, and of a card returned from the graveyard to the battlefield with its counters, alone or after a surveil, and a wrong subject, duration, count, zone or counter never reads back.
+//! Goal: the writers of the proposal checker give the oracle wording of a restriction that lasts the turn ("Target creature can't attack or block this turn."), of the top card of the library exiled whatever a later step calls it, of a card returned from the graveyard to the battlefield with its counters, alone or after a surveil, and of counters removed from each object of a group, and a wrong subject, duration, count, zone or counter never reads back.
 use super::*;
 
 /// Whether some wording the checker accepts for the rules is the clause.
@@ -183,6 +183,49 @@ fn a_card_chosen_from_the_graveyard_is_returned_to_the_battlefield(
 )]
 fn a_returned_card_does_not_read_as_another_zone_counter_or_card(#[case] clause: &str) {
     assert!(!written(&returned(WITH_FINALITY, ""), clause), "{clause}");
+}
+
+fn remove_from(group: &str, counter: &str, count: u32) -> String {
+    format!(
+        r#"{{"Spell":{{"effects":[{{"RemoveCounters":{{"from":{{"Each":{group}}},"counter":"{counter}","count":{count}}}}}]}}}}"#
+    )
+}
+
+#[rstest]
+#[case::one(
+    r#"[{"Type":"Creature"}]"#,
+    "+1/+1",
+    1,
+    "Remove a +1/+1 counter from each creature."
+)]
+#[case::two(
+    r#"[{"Type":"Creature"},{"ControlledBy":"You"}]"#,
+    "-1/-1",
+    2,
+    "Remove two -1/-1 counters from each creature you control."
+)]
+fn counters_are_removed_from_each_object_of_a_group(
+    #[case] group: &str,
+    #[case] counter: &str,
+    #[case] count: u32,
+    #[case] clause: &str,
+) {
+    assert!(
+        written(&remove_from(group, counter, count), clause),
+        "{clause}"
+    );
+}
+
+#[rstest]
+#[case::the_other_kind("Remove a -1/-1 counter from each creature.")]
+#[case::the_other_count("Remove two +1/+1 counters from each creature.")]
+#[case::one_creature("Remove a +1/+1 counter from target creature.")]
+#[case::your_creatures("Remove a +1/+1 counter from each creature you control.")]
+fn counters_removed_from_a_group_do_not_read_as_another_kind_count_or_group(#[case] clause: &str) {
+    assert!(
+        !written(&remove_from(r#"[{"Type":"Creature"}]"#, "+1/+1", 1), clause),
+        "{clause}"
+    );
 }
 
 #[test]
