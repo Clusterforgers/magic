@@ -24,4 +24,17 @@ impl Writer<'_> {
                 .replacen(" gains ", " gain ", 1)
         ))
     }
+
+    /// "you may gain 3 life", "you may draw a card and lose 1 life": the steps of one choice, each with "you" understood.
+    pub(super) fn may_do(&mut self, effects: &[Effect]) -> Option<String> {
+        let mut steps = Vec::with_capacity(effects.len());
+        for effect in effects {
+            let text = self.effect(effect)?;
+            steps.push(
+                text.strip_prefix("you ")
+                    .map_or(text.clone(), str::to_owned),
+            );
+        }
+        (!steps.is_empty()).then(|| format!("you may {}", super::join_list(&steps)))
+    }
 }

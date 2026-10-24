@@ -637,6 +637,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         }
         Pred::Not(inner) => match &**inner {
             Pred::HasKeyword(keyword) => format!("without {}", keyword_text(keyword)?),
+            Pred::CastFrom(ZoneKind::Hand) => "from anywhere other than your hand".to_owned(),
             _ => return None,
         },
         Pred::Compare { stat, op, to } => {
@@ -1231,7 +1232,9 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         } else if let Some(found) = type_preds(pred) {
             // A second card type before the noun qualifies it: "artifact creatures".
             if !types.is_empty() {
-                if !form.plural() || types.len() != 1 || found.len() != 1 {
+                // A singular noun takes a second type only as "artifact creature".
+                let creature = found.contains(&CardType::Creature);
+                if (!form.plural() && !creature) || types.len() != 1 || found.len() != 1 {
                     return None;
                 }
                 kinds.append(&mut types);
@@ -1284,9 +1287,39 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         [token, spell, card, commander_noun, bare],
         plural,
     ));
-    words.extend(suffixes);
+    words.extend(without_list(suffixes));
     words.extend(zone);
     Some(words.join(" "))
+}
+
+/// Several "without ..." suffixes are one: "creatures without flying or islandwalk".
+fn without_list(suffixes: Vec<String>) -> Vec<String> {
+    let lacks: Vec<&str> = suffixes
+        .iter()
+        .filter_map(|suffix| suffix.strip_prefix("without "))
+        .collect();
+    if lacks.len() < 2 {
+        return suffixes;
+    }
+    let joined = format!("without {}", join_or(&lacks));
+    let mut merged = Vec::with_capacity(suffixes.len());
+    for suffix in &suffixes {
+        if !suffix.starts_with("without ") {
+            merged.push(suffix.clone());
+        } else if !merged.contains(&joined) {
+            merged.push(joined.clone());
+        }
+    }
+    merged
+}
+
+/// "a or b", "a, b, or c".
+fn join_or(items: &[&str]) -> String {
+    match items {
+        [first, second] => format!("{first} or {second}"),
+        [rest @ .., last] => format!("{}, or {last}", rest.join(", ")),
+        [] => String::new(),
+    }
 }
 
 /// The predicates after `pred` that name the zone of a card, said as the card words it: "from your graveyard", "in your

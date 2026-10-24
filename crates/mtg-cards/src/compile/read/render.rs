@@ -6,12 +6,14 @@
 mod bound;
 mod created;
 mod damage_by;
+mod delayed;
 mod divided;
 mod from_graveyard;
 mod graveyards;
 mod instead;
 mod loyalty;
 mod may_have;
+mod multi;
 mod put_onto;
 mod those;
 
@@ -334,6 +336,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     texts.extend(where_x::equal_to_wordings(ability));
     event_wordings::add(ability, &mut texts);
     those::add(ability, &mut texts);
+    super::shortened::add(&mut texts);
     texts
 }
 
@@ -493,7 +496,15 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             let Some(head) = trigger_head(when, intervening_if.as_ref()) else {
                 return Vec::new();
             };
-            let heads = head_wordings(head);
+            // A number in the condition is a word or digits ("if you gained 3 or more life this turn").
+            let numerals: Vec<Vec<String>> = intervening_if
+                .iter()
+                .flat_map(super::facts::texts)
+                .skip(1)
+                .map(|fact| vec![head[0].clone(), format!("if {fact},")])
+                .collect();
+            let mut heads = head_wordings(head);
+            heads.extend(numerals);
             alternatives(targets, effects)
                 .iter()
                 .flat_map(|sentences| {
@@ -591,8 +602,11 @@ pub(super) fn capitalize(text: &str) -> String {
 /// The ways the effects can be written as sentences, without their first capital and period: the
 /// effects of one player in a row may be joined into one sentence, in any run of them.
 pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Vec<String>> {
-    if targets.len() > 1 || effects.is_empty() {
+    if effects.is_empty() {
         return Vec::new();
+    }
+    if targets.len() > 1 {
+        return multi::alternatives(targets, effects);
     }
     if let [
         Effect::Modal {
@@ -1390,6 +1404,17 @@ impl Writer<'_> {
             })
     }
 
+    /// Whether the counters are put on a player other than you (the energy of "you get {E}{E}" has its own wording).
+    fn player_gets(&self, on: &Ref) -> bool {
+        match on {
+            Ref::Opponents => true,
+            Ref::Target(0) => {
+                self.target_is(|what| matches!(what, Targetable::Player | Targetable::Opponent))
+            }
+            _ => false,
+        }
+    }
+
     /// The object counters are put on, taken from or moved: "~", one target, or (with `several`) "each
     /// creature you control".
     fn counter_place(&mut self, place: &Ref, several: bool) -> Option<String> {
@@ -1423,6 +1448,11 @@ impl Writer<'_> {
     /// +1/+1 counter from target creature onto ~".
     fn counters(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
+            // A player gets counters: "target player gets four rad counters", "each opponent gets a poison counter".
+            Effect::PutCounters { on, counter, count } if self.player_gets(on) => {
+                let player = self.player(on)?;
+                format!("{player} gets {}", counters::text(counter, count)?)
+            }
             Effect::PutCounters { on, counter, count } => {
                 // "put a +1/+1 counter on target creature for each Elf you control"
                 let (each, tail) = match counted_parts(count) {
@@ -1714,7 +1744,7 @@ impl Writer<'_> {
                 [choose @ Effect::Choose { .. }, moved @ Effect::Move { .. }] => {
                     format!("you may {}", put_onto::put_onto_text(choose, moved)?)
                 }
-                _ => self.may_have(effects)?,
+                _ => self.may_have(effects).or_else(|| self.may_do(effects))?,
             },
             Effect::Pay {
                 who,
@@ -1733,6 +1763,12 @@ impl Writer<'_> {
             Effect::Exile {
                 what,
                 bind: None,
+                duration: None,
+            } => Some(format!("exile {}", self.object(what)?)),
+            // A target exiled and bound for a later step ("the mana value of the permanent exiled this way").
+            Effect::Exile {
+                what: what @ Ref::Target(_),
+                bind: Some(_),
                 duration: None,
             } => Some(format!("exile {}", self.object(what)?)),
             Effect::Exile {
@@ -1947,10 +1983,9 @@ impl Writer<'_> {
             ([], [inner]) => {
                 let happens = self.effect(inner)?;
                 let payer = self.player(who)?;
-                Some(format!(
-                    "{happens} {}",
-                    payments::unless_text(&payer, who, cost)?
-                ))
+                let unless = payments::unless_text(&payer, who, cost)
+                    .or_else(|| payments::unless_sacrifice_text(who, cost))?;
+                Some(format!("{happens} {unless}"))
             }
             ([_, ..], []) if *who == Ref::You => {
                 let mut texts = Vec::new();

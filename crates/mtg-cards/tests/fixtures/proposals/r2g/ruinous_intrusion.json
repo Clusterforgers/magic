@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"AnyOf":[{"Type":"Artifact"},{"Type":"Enchantment"}]}]}},{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}],"effects":[{"Exile":{"what":{"Target":0},"as":"exiled"}},{"PutCounters":{"on":{"Target":1},"counter":"+1/+1","count":{"Stat":{"of":{"Bound":"exiled"},"stat":"ManaValue"}}}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"PutCounters":{"on":"You","counter":{"Other":"energy"},"count":2}}]}},{"Triggered":{"when":{"SpellCast":{"what":[{"Not":{"CastFrom":"Hand"}}],"by":"You"}},"effects":[{"DealDamage":{"to":"Opponents","amount":1}}]}}]}]}

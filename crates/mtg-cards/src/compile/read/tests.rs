@@ -195,6 +195,7 @@ mod damage_wordings;
 mod defining;
 mod draws;
 mod each_pump;
+mod effect_writers;
 mod enchanted_player;
 mod entered_this_turn;
 mod enters;

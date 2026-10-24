@@ -309,6 +309,15 @@ fn counters_texts(condition: &Condition) -> Vec<String> {
     if written_elsewhere(counter) {
         return Vec::new();
     }
+    // A player holds counters without "on it": "defending player has a rad counter".
+    if *on == Ref::Defending {
+        let held = if number == 1 {
+            format!("{} {kind} counter", super::triggers::article(kind))
+        } else {
+            format!("{} or more {kind} counters", quantity_text(number))
+        };
+        return vec![format!("defending player has {held}")];
+    }
     let held = if number == 1 {
         format!("{} {kind} counter on it", super::triggers::article(kind))
     } else {
