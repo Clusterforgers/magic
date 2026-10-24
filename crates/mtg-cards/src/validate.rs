@@ -1701,7 +1701,6 @@ impl<'a> Walker<'a> {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }
             }
-            Effect::BecomeDayNight { .. } => {}
             Effect::Shuffle { who }
             | Effect::WinGame { who }
             | Effect::Proliferate { who }
@@ -1827,7 +1826,8 @@ impl<'a> Walker<'a> {
                     w.problem("a card can be a commander by a static ability, not by an effect");
                 }
             }),
-            Effect::Crewed { .. } => {}
+            Effect::Crewed { .. }
+            | Effect::BecomeDayNight { .. } => {}
             Effect::BecomeLevel { level } => {
                 if *level < 2 {
                     w.problem("a Class starts at level 1 and gains level 2 or more");

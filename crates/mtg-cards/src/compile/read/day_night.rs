@@ -122,13 +122,14 @@ pub fn changes(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     Some(TriggerPattern::DayNightChanges { to: Some(to) })
 }
 
-/// The event `changes` reads, written back after "Whenever".
-pub const fn changes_text(to: Option<DayNight>) -> &'static str {
-    match to {
+/// The event `changes` reads, written back.
+pub fn changes_text(to: Option<DayNight>) -> String {
+    let change = match to {
         None => "day becomes night or night becomes day",
         Some(DayNight::Day) => "night becomes day",
         Some(DayNight::Night) => "day becomes night",
-    }
+    };
+    format!("Whenever {change}")
 }
 
 /// "If it's neither day nor night, it becomes day as ~ enters.": the card starts the day as it enters.

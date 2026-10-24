@@ -311,13 +311,8 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
     // Permanents tapped in this batch whose mana has not been added yet: tapping for mana is the tap that adds it.
     let mut tapped = Vec::new();
     for (at, event) in events.iter().enumerate() {
-        let later = &events[at + 1..];
-        let look = Look {
-            pre,
-            post,
-            earlier: &events[..at],
-            later,
-        };
+        let look = Look::at(pre, post, events, at);
+        let later = look.later;
         if let Some(moved) = moved(pre, event, post) {
             found.push(moved);
         }
@@ -488,6 +483,18 @@ struct Look<'a> {
     post: &'a GameState,
     earlier: &'a [Event],
     later: &'a [Event],
+}
+
+impl<'a> Look<'a> {
+    /// The place of `events[at]` in its batch.
+    fn at(pre: &'a GameState, post: &'a GameState, events: &'a [Event], at: usize) -> Self {
+        Look {
+            pre,
+            post,
+            earlier: &events[..at],
+            later: &events[at + 1..],
+        }
+    }
 }
 
 /// How many counters of the kind `on` held before the change: those it holds after the batch, less this change and the

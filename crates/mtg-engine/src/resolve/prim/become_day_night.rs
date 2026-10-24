@@ -84,7 +84,7 @@ mod tests {
             assert_eq!(event, &Event::DayNightChanged { to: wanted });
             apply_event(&mut game, event).unwrap();
         }
-        assert_eq!(game.day_night(), Some(wanted).filter(|_| logged).or(now));
+        assert_eq!(game.day_night(), if logged { Some(wanted) } else { now });
     }
 
     #[test]

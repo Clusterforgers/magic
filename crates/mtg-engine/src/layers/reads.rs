@@ -264,7 +264,6 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         Condition::Matches { subject, selector } => {
             reads_of_ref(subject).or(reads_of_selector(selector))
         }
-        Condition::IsDay | Condition::IsNight | Condition::NeitherDayNorNight => Traits::NONE,
         Condition::YourTurn => Traits::CONTROL,
         Condition::NewlyControlled(what) => reads_of_ref(what).or(Traits::CONTROL),
         Condition::Kicked
@@ -272,6 +271,9 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::AdditionalCostPaid
         | Condition::CastWith(_)
         | Condition::ManaSpent(_)
+        | Condition::IsDay
+        | Condition::IsNight
+        | Condition::NeitherDayNorNight
         | Condition::Performed => Traits::NONE,
         Condition::Monarch(who)
         | Condition::MonarchAtTurnStart(who)
