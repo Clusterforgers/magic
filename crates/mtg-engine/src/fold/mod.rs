@@ -230,8 +230,6 @@ fn begin_turn(state: &mut GameState, number: u32, active: PlayerId) {
 
 fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
-        // Each random choice spends a substream of the generator, as a shuffle does.
-        Event::ChosenAtRandom { .. } => state.rng_index += 1,
         Event::TurnBegan { number, active } => begin_turn(state, *number, *active),
         Event::StepBegan { step } => {
             state.turn.step = *step;
@@ -249,6 +247,10 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Bolstered { .. }
         | Event::Learned { .. }
         | Event::Proliferated { .. } => {}
+        // Each random pick, roll and flip spends a substream of the generator, as a shuffle does.
+        Event::ChosenAtRandom { .. } | Event::DieRolled { .. } | Event::CoinFlipped { .. } => {
+            state.rng_index += 1;
+        }
         Event::Cycled { player, .. } => state.tally(*player, Tally::Cycled),
         Event::PriorityGranted { player } => {
             state.priority = Some(PriorityState {

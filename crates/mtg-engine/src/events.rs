@@ -601,6 +601,22 @@ pub enum Event {
         /// Who learned.
         player: PlayerId,
     },
+    /// A player rolled a die (CR 706): the number came from the game's random stream, which the roll moved on by one.
+    DieRolled {
+        /// Who rolled.
+        player: PlayerId,
+        /// How many faces the die has.
+        sides: u32,
+        /// The number rolled, from 1 to `sides`.
+        result: u32,
+    },
+    /// A player flipped a coin (CR 705): the flip came from the game's random stream, which it moved on by one.
+    CoinFlipped {
+        /// Who flipped.
+        player: PlayerId,
+        /// The flip was won.
+        won: bool,
+    },
     /// A player proliferated (CR 701.34): the counters it gave are the `CountersChanged` events that follow it.
     Proliferated {
         /// Who proliferated.
@@ -847,6 +863,8 @@ impl Event {
             | Event::MonarchChanged { .. }
             | Event::CitysBlessingGained { .. }
             | Event::Learned { .. }
+            | Event::DieRolled { .. }
+            | Event::CoinFlipped { .. }
             | Event::Proliferated { .. }
             | Event::PriorityGranted { .. }
             | Event::PriorityPassed { .. }

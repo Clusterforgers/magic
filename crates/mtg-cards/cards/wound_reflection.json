@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b09206a4-8b73-4125-8b79-53f6fd511b16",
+  "name": "Wound Reflection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wound Reflection",
+      "oracle_fingerprint": "8cae9e3b14fa6d2deb55a117126ae905",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "opponent" },
+                        "amount": {
+                          "Tallied": { "who": { "Bound": "opponent" }, "what": "LifeLost" }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

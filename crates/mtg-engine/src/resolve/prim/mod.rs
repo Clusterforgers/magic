@@ -43,6 +43,7 @@ mod extra_turn;
 mod fabricate;
 mod fight;
 mod flip;
+mod flip_coin;
 mod gain_life;
 mod goad;
 mod if_then;
@@ -64,8 +65,10 @@ mod proliferate;
 mod put_counters;
 mod regenerate;
 mod remove_counters;
+mod repeat_each;
 mod reveal;
 mod reveal_until;
+mod roll_dice;
 mod rule;
 mod sacrifice;
 mod scry;
@@ -167,6 +170,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::May { .. } => may::run(cx, effect),
         Effect::Pay { .. } => pay::run(cx, effect),
         Effect::Modal { .. } => modal::run(cx, effect),
+        Effect::RepeatEach { .. } => repeat_each::run(cx, effect),
+        Effect::RollDice { .. } => roll_dice::run(cx, effect),
+        Effect::FlipCoin { .. } => flip_coin::run(cx, effect),
     }
 }
 
@@ -205,7 +211,8 @@ mod tests {
         {"Shield":{"when":{"Damage":{}},"by":"Prevent","duration":"UntilEndOfTurn"}},
         {"DelayedTrigger":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[]}},
         {"If":{"condition":"YourTurn","then":[]}}, {"May":{"effects":[]}}, {"Pay":{"cost":"{1}"}},
-        {"Modal":{"modes":[]}}
+        {"Modal":{"modes":[]}}, {"RepeatEach":{"over":"EachPlayer","as":"each","effects":[{"Draw":{}}]}},
+        {"RollDice":{"sides":6,"results":[{"from":1,"effects":[]}]}}, {"FlipCoin":{"win":[]}}
     ]"#;
 
     fn tag(effect: &Effect) -> String {
@@ -219,7 +226,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 71, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 74, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -323,5 +330,8 @@ mod tests {
         "Effect.May",
         "Effect.Pay",
         "Effect.Modal",
+        "Effect.RepeatEach",
+        "Effect.RollDice",
+        "Effect.FlipCoin",
     ];
 }

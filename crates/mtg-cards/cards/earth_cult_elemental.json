@@ -1,0 +1,42 @@
+{
+  "oracle_id": "043d8dee-379f-4706-ad47-0bb562717007",
+  "name": "Earth-Cult Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Earth-Cult Elemental",
+      "oracle_fingerprint": "11764a3f50dee7c5a7c076fbf01f3e42",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 9,
+                      "effects": [{ "Sacrifice": { "who": "EachPlayer", "filter": [] } }]
+                    },
+                    {
+                      "from": 10,
+                      "to": 19,
+                      "effects": [{ "Sacrifice": { "who": "Opponents", "filter": [] } }]
+                    },
+                    {
+                      "from": 20,
+                      "to": 20,
+                      "effects": [{ "Sacrifice": { "who": "Opponents", "filter": [], "count": 2 } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

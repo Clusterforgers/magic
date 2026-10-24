@@ -1,0 +1,35 @@
+{
+  "oracle_id": "7e6ca948-a66d-46a9-9174-ac7b75d7b348",
+  "name": "Mutalith Vortex Beast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mutalith Vortex Beast",
+      "oracle_fingerprint": "738313361a1c3b3d89d9fb7cbc1355c9",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "FlipCoin": {
+                        "win": [{ "Draw": {} }],
+                        "lose": [{ "DealDamage": { "to": { "Bound": "opponent" }, "amount": 3 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

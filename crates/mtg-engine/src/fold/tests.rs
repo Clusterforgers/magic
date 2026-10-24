@@ -601,6 +601,32 @@ fn a_name_is_bound_again_only_to_the_objects_it_named_after_they_moved_on(
     );
 }
 
+#[test]
+fn a_cleared_name_is_bound_again_and_one_that_is_not_cleared_is_not() {
+    let mut game = game();
+    game.resolving = Some(crate::resolve::Resolving::begin(totem_id(&game)));
+    let player = |n: u64| vec![Target::Player(PlayerId(n))];
+    let step = |bound: Vec<(String, Vec<Target>)>| Event::StepDone {
+        position: vec![1],
+        bound,
+        snapshots: Vec::new(),
+    };
+    fold(&mut game, &[step(vec![("x".to_owned(), player(0))])]);
+    let freed = step(vec![
+        ("~clear:x".to_owned(), Vec::new()),
+        ("x".to_owned(), player(1)),
+    ]);
+    fold(&mut game, &[freed]);
+    assert_eq!(game.resolving().unwrap().bindings()["x"], player(1));
+    // Clearing a name nothing bound is nothing.
+    fold(
+        &mut game,
+        &[step(vec![("~clear:y".to_owned(), Vec::new())])],
+    );
+    assert!(!game.resolving().unwrap().bindings().contains_key("y"));
+    assert!(apply_event(&mut game, &step(vec![("x".to_owned(), player(2))])).is_err());
+}
+
 #[rstest]
 #[case::untapped_under_its_owner(false, 0)]
 #[case::tapped_under_its_owner(true, 0)]
