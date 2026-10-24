@@ -1,0 +1,27 @@
+{
+  "oracle_id": "134d5b82-7940-4b33-a922-7f9d1f403e50",
+  "name": "Lotus Field",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lotus Field",
+      "oracle_fingerprint": "8135724945b69a58da5aa9c3550913c1",
+      "abilities": [
+        { "Keyword": "Hexproof" },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Land" }], "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 3 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

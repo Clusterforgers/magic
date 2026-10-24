@@ -1,0 +1,48 @@
+{
+  "oracle_id": "a8ddea1c-8d80-49c1-a5b4-630d5e51d66e",
+  "name": "Hapatra, Vizier of Poisons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hapatra, Vizier of Poisons",
+      "oracle_fingerprint": "dfdc44145a34e15cc4d2aedb99f6f2bd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "CountersPut": { "what": [{ "Type": "Creature" }], "counter": "-1/-1" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Snake",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Snake"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Deathtouch" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

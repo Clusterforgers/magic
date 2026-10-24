@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"SpellCast":{"what":[{"Not":{"CastFrom":"Hand"}}],"by":"You"}},"effects":[{"CreateToken":{"token":{"Named":"food"}}}]}},{"Keyword":"DoctorsCompanion"}]}]}

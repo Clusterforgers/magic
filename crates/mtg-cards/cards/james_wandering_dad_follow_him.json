@@ -1,0 +1,37 @@
+{
+  "oracle_id": "8c90b558-de07-4689-9427-da68d823c2e8",
+  "name": "James, Wandering Dad // Follow Him",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "James, Wandering Dad",
+      "oracle_fingerprint": "8b1089fe619a0c1aaf6c7ba51cece241",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless", "Colorless"] },
+                  "only": [{ "Ability": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Follow Him",
+      "oracle_fingerprint": "c3c75a92673cb4f5dcd9df7d9ee34f4c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" }, "count": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

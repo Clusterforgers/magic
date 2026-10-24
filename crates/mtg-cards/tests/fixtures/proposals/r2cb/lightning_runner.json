@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"DoubleStrike"},{"Keyword":"Haste"},{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"PutCounters":{"on":"You","counter":{"Other":"energy"},"count":2}},{"Pay":{"cost":[{"PayEnergy":8}],"paid":[{"Untap":{"what":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}}},{"AddPhase":{"phases":["Combat"]}}]}}]}}]}]}

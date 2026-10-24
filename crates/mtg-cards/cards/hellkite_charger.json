@@ -1,0 +1,31 @@
+{
+  "oracle_id": "d4f28a4b-d821-4132-bdec-4c528318f8e2",
+  "name": "Hellkite Charger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellkite Charger",
+      "oracle_fingerprint": "6e1118ce35bfecee5898bcd8604f0729",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{5}{R}{R}",
+                  "paid": [
+                    { "Untap": { "what": { "Each": [{ "Type": "Creature" }, "Attacking"] } } },
+                    { "AddPhase": { "phases": ["Combat"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

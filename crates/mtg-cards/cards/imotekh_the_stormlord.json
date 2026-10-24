@@ -1,0 +1,71 @@
+{
+  "oracle_id": "425fea06-76ec-4cd9-bd3b-750504fd7fd2",
+  "name": "Imotekh the Stormlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imotekh the Stormlord",
+      "oracle_fingerprint": "2d77fe2d7d2da3a255c4b7ea9d63593b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Artifact" }, { "OwnedBy": "You" }],
+                  "from": "Graveyard"
+                }
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Necron Warrior",
+                      "colors": ["Black"],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Necron", "Warrior"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "Type": "Creature" },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Menace" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

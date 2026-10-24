@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Trample"},{"Keyword":"BattleCry"},{"Triggered":{"when":{"SpellCast":{"what":[{"Not":{"CastFrom":"Hand"}}],"by":"You"}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Alien Warrior","colors":["Red"],"types":["Creature"],"subtypes":["Alien","Warrior"],"power":2,"toughness":2}}}}]}}]}]}

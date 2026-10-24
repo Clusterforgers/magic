@@ -1,0 +1,42 @@
+{
+  "oracle_id": "5d814b0b-82e8-4145-87e1-4fed44d16465",
+  "name": "Lone Revenant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lone Revenant",
+      "oracle_fingerprint": "7f90d664a7dc3d9c81a86564a5705003",
+      "abilities": [
+        { "Keyword": "Hexproof" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["Other", { "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "as": "kept"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

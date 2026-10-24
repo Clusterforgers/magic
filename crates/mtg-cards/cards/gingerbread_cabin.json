@@ -1,0 +1,35 @@
+{
+  "oracle_id": "fa98c367-0312-49c6-abef-72e5ead4cc7d",
+  "name": "Gingerbread Cabin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gingerbread Cabin",
+      "oracle_fingerprint": "dd6076c0a8b16a305a206224a4d5cfd8",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": { "Count": [{ "Subtype": "Forest" }, "Other", { "ControlledBy": "You" }] },
+                  "op": "Ge",
+                  "right": 3
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "This", "selector": ["Untapped"] } },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

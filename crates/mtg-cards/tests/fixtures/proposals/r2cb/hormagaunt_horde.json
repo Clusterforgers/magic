@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Ravenous"},{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Land"},{"ControlledBy":"You"}],"to":"Battlefield"}},"from":"Graveyard","effects":[{"Pay":{"cost":[{"Mana":"{2}{G}"}],"paid":[{"Move":{"what":"This","to":"Hand"}}]}}]}}]}]}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "f8c2a972-e38f-47e5-a355-6f30ad09b1ae",
+  "name": "Losheel, Clockwork Scholar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Losheel, Clockwork Scholar",
+      "oracle_fingerprint": "e066d014c8db459ad4a0b24e767c0631",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": {
+                  "Each": [
+                    { "Type": "Artifact" },
+                    { "Type": "Creature" },
+                    "Attacking",
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "combat": true
+              }
+            },
+            "by": "Prevent"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [
+                    { "Type": "Artifact" },
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" }
+                  ],
+                  "to": "Battlefield"
+                }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

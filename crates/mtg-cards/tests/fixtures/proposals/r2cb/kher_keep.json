@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]}}}]}},{"Activated":{"cost":[{"Mana":"{1}{R}"},"Tap"],"effects":[{"CreateToken":{"token":{"Custom":{"name":"Kobolds of Kher Keep","colors":["Red"],"types":["Creature"],"subtypes":["Kobold"],"power":0,"toughness":1}}}}]}}]}]}

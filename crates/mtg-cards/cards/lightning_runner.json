@@ -1,0 +1,36 @@
+{
+  "oracle_id": "2f82b232-21ff-44cc-bc35-0999a1d1c52f",
+  "name": "Lightning Runner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightning Runner",
+      "oracle_fingerprint": "0cbe925e58235b0460222d580f8dbc33",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } },
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 8 }],
+                  "paid": [
+                    {
+                      "Untap": {
+                        "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                      }
+                    },
+                    { "AddPhase": { "phases": ["Combat"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

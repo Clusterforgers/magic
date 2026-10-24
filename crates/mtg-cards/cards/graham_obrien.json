@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7986908d-8af2-465a-8597-26e92ca2f1c9",
+  "name": "Graham O'Brien",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Graham O'Brien",
+      "oracle_fingerprint": "97ed92f650a72147547ad25d9c98e94f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "CastFrom": "Hand" } }], "by": "You" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        { "Keyword": "DoctorsCompanion" }
+      ]
+    }
+  ]
+}

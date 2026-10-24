@@ -1,0 +1,49 @@
+{
+  "oracle_id": "44bffa3e-4d31-4f9b-829c-e2066ab2f641",
+  "name": "Honored Dreyleader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Honored Dreyleader",
+      "oracle_fingerprint": "7cc95d27a4d5c76ed079658ca917d5ed",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Count": [
+                      "Other",
+                      { "AnyOf": [{ "Subtype": "Squirrel" }, { "Subtype": "Food" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  "Other",
+                  { "AnyOf": [{ "Subtype": "Squirrel" }, { "Subtype": "Food" }] },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Keyword":"Haste"},{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"Pay":{"cost":[{"Mana":"{5}{R}{R}"}],"paid":[{"Untap":{"what":{"Each":[{"Type":"Creature"},"Attacking"]}}},{"AddPhase":{"phases":["Combat"]}}]}}]}}]}]}

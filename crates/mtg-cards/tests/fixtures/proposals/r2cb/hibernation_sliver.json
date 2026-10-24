@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":{"Each":[{"Subtype":"Sliver"}]},"mods":[{"GrantAbility":{"Activated":{"cost":[{"PayLife":2}],"effects":[{"Move":{"what":"This","to":"Hand"}}]}}}]}}]}]}

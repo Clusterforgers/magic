@@ -1,0 +1,35 @@
+{
+  "oracle_id": "fb084141-cb80-479e-b5d4-114c1f31eb6c",
+  "name": "Generous Patron",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Generous Patron",
+      "oracle_fingerprint": "3adbb6240e500524ce85f216162c0c00",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": ["Other", { "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "CountersPut": {
+                "what": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

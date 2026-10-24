@@ -19,6 +19,12 @@ mod bare;
 mod battalion;
 mod blink;
 mod bounce_all;
+mod c4_attack_token;
+mod c4_aura_becomes;
+mod c4_counters_you_put;
+mod c4_prevent_combat;
+mod c4_support;
+mod c4_swaps;
 mod cant_countered;
 mod cant_unless;
 mod cast_condition;
@@ -243,6 +249,16 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_more(ability, texts);
 }
 
+/// The wordings of the fourth sample of the names G to L.
+fn add_c4_gl(ability: &Ability, texts: &mut Vec<String>) {
+    c4_attack_token::add(ability, texts);
+    c4_aura_becomes::add(ability, texts);
+    c4_counters_you_put::add(ability, texts);
+    c4_prevent_combat::add(ability, texts);
+    c4_support::add(ability, texts);
+    c4_swaps::add(ability, texts);
+}
+
 /// The wordings of the modules after `counters_put`, in a function of their own to keep each under the line limit.
 fn add_more(ability: &Ability, texts: &mut Vec<String>) {
     discard_play::add(ability, texts);
@@ -315,6 +331,7 @@ fn add_more(ability: &Ability, texts: &mut Vec<String>) {
     without_counter::add(ability, texts);
     you_create::add(ability, texts);
     third_sample_of_m_to_r(ability, texts);
+    add_c4_gl(ability, texts);
 }
 
 /// The wordings of the third sample of the names M to R.

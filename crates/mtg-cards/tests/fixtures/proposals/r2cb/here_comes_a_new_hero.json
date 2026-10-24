@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"Player"},{"what":{"Object":[{"Type":"Creature"},{"Compare":{"stat":"ManaValue","op":"Le","to":"X"}}]},"bounds":{"min":0,"max":1}}],"effects":[{"Draw":{"who":{"Target":0},"count":"X"}},{"CreateToken":{"token":{"CopyOf":{"of":{"Target":1}}}}}]}}]}]}

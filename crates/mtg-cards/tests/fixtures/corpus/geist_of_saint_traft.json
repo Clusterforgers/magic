@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "541b9d55-f237-4ff2-9e47-c58a381f0633",
+  "oracle_id": "4304035c-c3e4-4a19-aa1f-92a83d8aed1f",
+  "multiverse_ids": [
+    545775
+  ],
+  "mtgo_id": 95084,
+  "tcgplayer_id": 254066,
+  "cardmarket_id": 584135,
+  "name": "Geist of Saint Traft",
+  "lang": "en",
+  "released_at": "2021-11-19",
+  "uri": "https://api.scryfall.com/cards/541b9d55-f237-4ff2-9e47-c58a381f0633",
+  "scryfall_uri": "https://scryfall.com/card/voc/155/geist-of-saint-traft?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:42:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/4/541b9d55-f237-4ff2-9e47-c58a381f0633.jpg?1783924944",
+    "normal": "https://cards.scryfall.io/normal/front/5/4/541b9d55-f237-4ff2-9e47-c58a381f0633.jpg?1783924944",
+    "large": "https://cards.scryfall.io/large/front/5/4/541b9d55-f237-4ff2-9e47-c58a381f0633.jpg?1783924944",
+    "png": "https://cards.scryfall.io/png/front/5/4/541b9d55-f237-4ff2-9e47-c58a381f0633.png?1783924944",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/4/541b9d55-f237-4ff2-9e47-c58a381f0633.jpg?1783924944",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/4/541b9d55-f237-4ff2-9e47-c58a381f0633.jpg?1783924944",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/4/541b9d55-f237-4ff2-9e47-c58a381f0633.webp?1783924944",
+    "grid": "https://cards.scryfall.io/grid/front/5/4/541b9d55-f237-4ff2-9e47-c58a381f0633.webp?1783924944",
+    "display": "https://cards.scryfall.io/display/front/5/4/541b9d55-f237-4ff2-9e47-c58a381f0633.webp?1783924944",
+    "art": "https://cards.scryfall.io/art/front/5/4/541b9d55-f237-4ff2-9e47-c58a381f0633.webp?1783924944",
+    "crop": "https://cards.scryfall.io/crop/front/5/4/541b9d55-f237-4ff2-9e47-c58a381f0633.webp?1783924944",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/4/541b9d55-f237-4ff2-9e47-c58a381f0633.jpg?1783924944"
+  },
+  "mana_cost": "{1}{W}{U}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Spirit Cleric",
+  "oracle_text": "Hexproof (This creature can't be the target of spells or abilities your opponents control.)\nWhenever Geist of Saint Traft attacks, create a 4/4 white Angel creature token with flying that's tapped and attacking. Exile that token at end of combat.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Hexproof"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "e6dd9a8a-3b80-4c1c-9d44-7f998164dbcc",
+      "component": "token",
+      "name": "Angel",
+      "type_line": "Token Creature — Angel",
+      "uri": "https://api.scryfall.com/cards/e6dd9a8a-3b80-4c1c-9d44-7f998164dbcc"
+    },
+    {
+      "object": "related_card",
+      "id": "541b9d55-f237-4ff2-9e47-c58a381f0633",
+      "component": "combo_piece",
+      "name": "Geist of Saint Traft",
+      "type_line": "Legendary Creature — Spirit Cleric",
+      "uri": "https://api.scryfall.com/cards/541b9d55-f237-4ff2-9e47-c58a381f0633"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "restricted",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "b2e444f7-41e6-4172-ba01-47d91d5e7bbc",
+  "set": "voc",
+  "set_name": "Crimson Vow Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/b2e444f7-41e6-4172-ba01-47d91d5e7bbc",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Avoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/voc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/541b9d55-f237-4ff2-9e47-c58a381f0633/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4304035c-c3e4-4a19-aa1f-92a83d8aed1f&unique=prints",
+  "collector_number": "155",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Igor Kieryluk",
+  "artist_ids": [
+    "9c3e9d17-509f-485c-9360-46d897ce716b"
+  ],
+  "illustration_id": "c4678bcb-1895-46a3-a2ab-d35a8a138d1a",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 12630,
+  "penny_rank": 1379,
+  "prices": {
+    "usd": "0.34",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.54",
+    "eur_foil": null,
+    "tix": "1.39"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=545775&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGeist%2Bof%2BSaint%2BTraft",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGeist%2Bof%2BSaint%2BTraft",
+    "edhrec": "https://edhrec.com/route/?cc=Geist+of+Saint+Traft"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F254066%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=584135&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/95084?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

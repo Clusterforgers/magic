@@ -1,0 +1,46 @@
+{
+  "oracle_id": "aff21bd1-87b0-409c-bfad-08f3690ef220",
+  "name": "Killmonger, Ruthless Usurper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Killmonger, Ruthless Usurper",
+      "oracle_fingerprint": "70b0e363c88b93a81ebb5c00dfbb0c11",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [{ "Type": "Artifact" }, { "ControlledBy": "Defending" }]
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "Sacrifice": { "who": "Triggering", "filter": [{ "Type": "Artifact" }] } },
+              { "CreateToken": { "token": { "Named": "treasure" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
