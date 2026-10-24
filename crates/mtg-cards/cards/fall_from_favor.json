@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e89e1fae-bac3-4cc0-a233-24b9e08a5290",
+  "name": "Fall from Favor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fall from Favor",
+      "oracle_fingerprint": "a2aa1b5b648ff2cb0c5739fbbf0cf159",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": "Attached" } }, { "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": ["DoesntUntap"],
+            "condition": { "Not": { "Monarch": { "ControllerOf": "Attached" } } }
+          }
+        }
+      ]
+    }
+  ]
+}

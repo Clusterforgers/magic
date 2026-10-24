@@ -1,0 +1,29 @@
+{
+  "oracle_id": "00284955-0a1b-4939-9567-a7d34cbcee51",
+  "name": "Hua Tuo, Honored Physician",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hua Tuo, Honored Physician",
+      "oracle_fingerprint": "adb50e57a669978f790584db80a6ef6d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": { "All": ["YourTurn", "BeforeAttackers"] },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

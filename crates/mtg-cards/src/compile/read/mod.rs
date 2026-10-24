@@ -30,6 +30,7 @@ mod batches;
 mod becomes;
 mod card_grants;
 mod cast;
+mod chance;
 mod changes;
 mod chapters;
 mod choices;
@@ -54,6 +55,7 @@ mod flicker;
 mod group_copies;
 mod group_pump;
 mod instead_pairs;
+mod joined;
 mod kicked_copies;
 mod lands;
 mod levels;
@@ -71,7 +73,9 @@ mod prevention;
 mod pronouns;
 mod random_moves;
 mod render;
+mod repeat;
 mod replacements;
+mod restrictions;
 mod reveal;
 mod reveal_until;
 mod selectors;
@@ -90,9 +94,12 @@ mod token_binds;
 mod tokens;
 mod transform;
 mod triggers;
+mod untap_rules;
+mod vote;
 mod where_x;
 mod zone_moves;
 
+pub use chance::{add_row as add_die_row, die_row, ends_in_roll, row_texts as die_row_texts};
 pub use chapters::block as chapter_block;
 pub use class::block as class_block;
 pub use levels::block as level_block;
@@ -177,6 +184,19 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
         .iter()
         .any(|written| same_text(written, text))
         .then_some(found)
+}
+
+/// A line of the table of a die roll ("1—9 | Each player sacrifices a permanent of their choice.") as a row: its totals and
+/// the spell that follows the bar, which names no target.
+pub fn die_row_of(text: &str, x_free: bool, own: &Own) -> Option<crate::effect::DieRow> {
+    let (from, to, body) = chance::die_row(text)?;
+    let Ability::Spell { targets, effects } = clause_with(body, ClauseKind::Spell, x_free, own)?
+    else {
+        return None;
+    };
+    targets
+        .is_empty()
+        .then_some(crate::effect::DieRow { from, to, effects })
 }
 
 /// What the readers know of the face a clause is on besides its text.
