@@ -1,0 +1,44 @@
+{
+  "oracle_id": "cd11c27b-9368-4622-bc5a-2e0b993cc42b",
+  "name": "Mystic Confluence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mystic Confluence",
+      "oracle_fingerprint": "55c0b1fc64267680979d984484800baa",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 3, "max": 3 },
+                  "repeat": true,
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": ["Spell"] } }],
+                      "effects": [
+                        {
+                          "Pay": {
+                            "who": { "ControllerOf": { "Target": 0 } },
+                            "cost": "{3}",
+                            "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    { "effects": [{ "Draw": {} }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

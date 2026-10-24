@@ -1,0 +1,44 @@
+{
+  "oracle_id": "b31026fe-faad-49b3-93b0-1324e32bb816",
+  "name": "Liberty Prime, Recharged",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liberty Prime, Recharged",
+      "oracle_fingerprint": "827786067fc90c60b06aeba98abc4efb",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 2 }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

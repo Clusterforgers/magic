@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5d11ada1-6459-4a91-bd10-66673dc1ad3c",
+  "name": "Mistmeadow Vanisher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mistmeadow Vanisher",
+      "oracle_fingerprint": "9e655aa51c8b593e3281d36ff69c259f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }, { "Not": "Token" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "gone" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "gone" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

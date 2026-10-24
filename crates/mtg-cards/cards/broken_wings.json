@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5e316864-d55c-496f-8f46-773567896864",
+  "name": "Broken Wings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Broken Wings",
+      "oracle_fingerprint": "bdd75ebd1cab2fadcf69dfebe2203fb8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": [{ "Type": "Artifact" }] },
+                    { "Object": [{ "Type": "Enchantment" }] },
+                    { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

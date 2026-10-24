@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Kicker":"{1}{G}"}},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"if":"Kicked","targets":[{"what":{"Object":[{"Not":{"Type":"Creature"}}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}]}]}

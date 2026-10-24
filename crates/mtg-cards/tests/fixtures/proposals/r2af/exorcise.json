@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Either":[{"Object":[{"Type":"Artifact"}]},{"Object":[{"Type":"Enchantment"}]},{"Object":[{"Type":"Creature"},{"Compare":{"stat":"Power","op":"Ge","to":4}}]}]}}],"effects":[{"Exile":{"what":{"Target":0}}}]}}]}]}

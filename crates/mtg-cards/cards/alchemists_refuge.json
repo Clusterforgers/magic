@@ -1,0 +1,27 @@
+{
+  "oracle_id": "357ed28b-899f-404b-94ff-6fb2ef81d87b",
+  "name": "Alchemist's Refuge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alchemist's Refuge",
+      "oracle_fingerprint": "5837e5954075585558673ed59028c04a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}{G}" }, "Tap"],
+            "effects": [
+              { "Rule": { "rule": { "MayCast": { "flash": true } }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

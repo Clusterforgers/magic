@@ -1,0 +1,60 @@
+{
+  "oracle_id": "0fd114c4-092b-4e28-b0dc-ef529f3bc73e",
+  "name": "Jeska's Will",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jeska's Will",
+      "oracle_fingerprint": "8ed9d6e3b52bbe5d7ee22436266d7d59",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "all_if": {
+                    "Compare": {
+                      "left": { "Count": ["Commander", { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "AddMana": {
+                            "mana": { "Fixed": ["Red"] },
+                            "times": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "ExileTop": { "count": 3, "as": "impulse" } },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MayCast": {
+                                "from": "Exile",
+                                "only": { "Bound": "impulse" },
+                                "play": true
+                              }
+                            },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

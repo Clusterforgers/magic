@@ -1,0 +1,67 @@
+{
+  "oracle_id": "52680471-a407-418b-9e74-c32308322772",
+  "name": "Gallifrey Stands",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gallifrey Stands",
+      "oracle_fingerprint": "3dec0cd0712ef4868587b66fcd204a2c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, { "Subtype": "Doctor" }]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            { "Type": "Creature" },
+                            { "Subtype": "Doctor" }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Doctor" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 13
+                    }
+                  },
+                  "then": [{ "WinGame": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

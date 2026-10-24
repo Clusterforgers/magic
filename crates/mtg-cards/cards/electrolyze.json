@@ -1,0 +1,22 @@
+{
+  "oracle_id": "07b222d7-24f2-4994-9004-ff6672ebe161",
+  "name": "Electrolyze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Electrolyze",
+      "oracle_fingerprint": "d4b363746c257f45232bae758c1b46c9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 1, "max": 2 }, "divide": 2 }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

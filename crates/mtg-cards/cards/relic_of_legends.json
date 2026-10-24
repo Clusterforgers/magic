@@ -1,0 +1,31 @@
+{
+  "oracle_id": "4d9554de-c005-41ab-a941-39328ebff9de",
+  "name": "Relic of Legends",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Relic of Legends",
+      "oracle_fingerprint": "5987336180d43db90361b98a0ce02e04",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "TapPermanents": {
+                  "filter": [{ "Type": "Creature" }, { "Supertype": "Legendary" }]
+                }
+              }
+            ],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

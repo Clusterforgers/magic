@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"WithCounters":{"counter":"+1/+1","count":1}}}},{"Activated":{"cost":[{"Mana":"{1}{B}"},{"RemoveCounters":{"counter":"+1/+1","count":1}}],"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},"Other"]},"mods":[{"ModifyPT":{"power":-1,"toughness":-1}}],"duration":"UntilEndOfTurn"}}]}}]}]}

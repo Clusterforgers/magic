@@ -1,0 +1,25 @@
+{
+  "oracle_id": "f25351e3-539b-4bbc-b92d-6480acf4d722",
+  "name": "City of Brass",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "City of Brass",
+      "oracle_fingerprint": "167319c71b168e1cc8348d001429c2f8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [{ "DealDamage": { "to": "You", "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

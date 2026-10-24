@@ -3,6 +3,7 @@
 //! player in a row are one compound sentence; the readers take ", then" between two steps as the
 //! same sequence.
 
+mod af_steps;
 mod all_graveyards;
 mod and_lists;
 mod bound;
@@ -17,6 +18,7 @@ mod each_target;
 mod either;
 mod exiled_cast;
 mod exiled_until;
+mod flicker_targets;
 mod free_casts;
 mod from_graveyard;
 mod graveyards;
@@ -44,6 +46,7 @@ mod those;
 mod together;
 mod token_attach;
 mod twins;
+mod two_targets;
 mod untapped;
 
 use super::activations;
@@ -688,17 +691,23 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
             modes,
             at_random,
             once_each_turn,
+            all_if,
         },
     ] = effects
     {
         if !targets.is_empty() || modes.len() < 2 {
             return Vec::new();
         }
-        return choices::texts(choose, modes, *at_random, *once_each_turn)
-            .into_iter()
-            .chain(either::texts(choose, modes))
-            .map(|text| vec![text])
-            .collect();
+        return choices::texts(
+            choose,
+            modes,
+            (*at_random, *once_each_turn),
+            all_if.as_ref(),
+        )
+        .into_iter()
+        .chain(either::texts(choose, modes))
+        .map(|text| vec![text])
+        .collect();
     }
     // Bit `at` of a mask joins the effect after the one at `at` to it; a long list is tried whole
     // and apart only.
@@ -1547,7 +1556,7 @@ impl Writer<'_> {
     /// Whether the counters are put on a player other than you (the energy of "you get {E}{E}" has its own wording).
     fn player_gets(&self, on: &Ref) -> bool {
         match on {
-            Ref::Opponents => true,
+            Ref::Opponents | Ref::EachPlayer => true,
             Ref::Target(0) => {
                 self.target_is(|what| matches!(what, Targetable::Player | Targetable::Opponent))
             }
@@ -1697,10 +1706,9 @@ impl Writer<'_> {
             Some("return ~ to its owner's hand".to_owned())
         } else if self.in_your_graveyard(what) {
             Some(format!("return {} to your hand", self.object(what)?))
-        } else if self.is_a_permanent(what)
-            || self.are_permanents(what)
-            || self.in_another_graveyard(what)
-        {
+        } else if self.in_another_graveyard(what) {
+            Some(format!("return {} to its owner's hand", self.object(what)?))
+        } else if self.is_a_permanent(what) || self.are_permanents(what) {
             let tail = if self.at_most_one(what) {
                 "its owner's hand"
             } else {
@@ -2287,6 +2295,7 @@ impl Writer<'_> {
             .or_else(|| self.mill_then_change(effects))
             .or_else(|| self.move_instead(effects))
             .or_else(|| self.either_way(effects))
+            .or_else(|| self.flicker_targets(effects))
             .or_else(|| self.counter_or_not(effects))
             .or_else(|| self.chosen_then_group(effects))
             .or_else(|| opponent_picks::text(effects))
@@ -2301,6 +2310,7 @@ impl Writer<'_> {
             .or_else(|| revealed::text(effects))
             .or_else(|| self.mill_then_hand(effects))
             .or_else(|| Self::untapped_and_controlled(effects))
+            .or_else(|| self.af_steps(effects))
             .or_else(|| self.owner_shuffles(effects))
             // Populate is two steps and one word.
             .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))

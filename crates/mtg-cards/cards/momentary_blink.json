@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a3ec6b5d-08ec-4ae0-b1db-c4b87a1849c7",
+  "name": "Momentary Blink",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Momentary Blink",
+      "oracle_fingerprint": "f222b74d81d4d4d7f19d51f7ce815451",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "gone" } },
+              { "Move": { "what": { "Bound": "gone" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{3}{U}" } }
+      ]
+    }
+  ]
+}

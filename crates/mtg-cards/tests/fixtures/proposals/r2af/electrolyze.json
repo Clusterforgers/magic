@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"AnyTarget","bounds":{"min":1,"max":2},"divide":2}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"Divided"}},{"Draw":{}}]}}]}]}

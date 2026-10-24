@@ -87,6 +87,8 @@ pub(crate) enum Tally {
     Drawn,
     /// A spell cast.
     Cast,
+    /// An instant or sorcery spell cast (counted for the player).
+    CastInstantOrSorcery,
     /// Life gained, once for each event.
     Gained,
     /// An object declared as an attacker (counted for the object).
@@ -95,7 +97,8 @@ pub(crate) enum Tally {
     Targeted,
     /// An object dealt damage, once for each event (counted for the object).
     Damaged,
-    /// A card put into a graveyard by a discard (counted for the card as it lies there, and for the player who discarded it).
+    /// A card put into a graveyard by a discard (counted for the card as it lies there, and for the player who discarded
+    /// it, once for each discard).
     Discarded,
     /// A permanent put into a graveyard from the battlefield (counted for its owner, gravestorm).
     Graved,

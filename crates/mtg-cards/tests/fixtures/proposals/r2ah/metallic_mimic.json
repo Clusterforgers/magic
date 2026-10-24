@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"Choose":"CreatureType"}}},{"Replacement":{"when":{"Enters":{"what":[{"Type":"Creature"},{"ControlledBy":"You"},"Other","ChosenSubtype"]}},"by":{"WithCounters":{"counter":"+1/+1","count":1}}}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Menace"},{"Triggered":{"when":{"AttacksPlayer":{"what":[{"Type":"Creature"}],"at":"Opponents"}},"effects":[{"LoseLife":{"who":"Attacked","amount":1}}]}}]}]}

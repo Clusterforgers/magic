@@ -1,0 +1,22 @@
+{
+  "oracle_id": "66051196-53ea-4461-b241-205df9395b3b",
+  "name": "Infectious Inquiry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infectious Inquiry",
+      "oracle_fingerprint": "9ebd89dc977949b117a92b11beb5554e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              { "LoseLife": { "amount": 2 } },
+              { "PutCounters": { "on": "Opponents", "counter": "poison" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
