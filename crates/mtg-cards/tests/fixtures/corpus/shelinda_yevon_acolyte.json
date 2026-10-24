@@ -1,0 +1,29 @@
+{
+  "id": "6f2cec5d-50ea-4d0f-8925-eba06222d015",
+  "oracle_id": "b06c9a4b-f309-45b3-ae5b-0ce3f067a5cb",
+  "name": "Shelinda, Yevon Acolyte",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fic",
+  "collector_number": "94",
+  "rarity": "rare",
+  "released_at": "2025-06-13",
+  "digital": false,
+  "mana_cost": "{G}{W}",
+  "cmc": 2,
+  "type_line": "Legendary Creature — Human Cleric",
+  "oracle_text": "Lifelink\nWhenever another creature you control enters, put a +1/+1 counter on that creature if its power is less than Shelinda's power. Otherwise, put a +1/+1 counter on Shelinda.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Lifelink"
+  ]
+}

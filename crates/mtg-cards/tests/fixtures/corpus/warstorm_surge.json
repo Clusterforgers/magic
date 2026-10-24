@@ -1,0 +1,23 @@
+{
+  "id": "dbe1bfe0-0be7-496d-94db-e8028d4d9493",
+  "oracle_id": "42fb1a1c-ab3d-4cdc-a6ff-a591f7481583",
+  "name": "Warstorm Surge",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "815",
+  "rarity": "rare",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "{5}{R}",
+  "cmc": 6,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever a creature you control enters, it deals damage equal to its power to any target.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "ea168acc-22a1-4ba5-affd-fb813b93535a",
+  "name": "Oath of Gideon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oath of Gideon",
+      "oracle_fingerprint": "cbc703d3bbab4c6f3ffba433bbea4efc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Kor Ally",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Kor", "Ally"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": { "what": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] }
+            },
+            "by": { "WithCounters": { "counter": "loyalty", "count": 1 } }
+          }
+        }
+      ]
+    }
+  ]
+}

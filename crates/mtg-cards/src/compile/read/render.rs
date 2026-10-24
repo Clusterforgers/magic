@@ -7,13 +7,16 @@ mod bound;
 mod created;
 mod damage_by;
 mod divided;
+mod either;
 mod from_graveyard;
 mod graveyards;
 mod instead;
 mod loyalty;
 mod may_have;
+mod otherwise;
 mod put_onto;
 mod those;
+mod twins;
 
 use super::activations;
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
@@ -335,6 +338,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     texts.extend(where_x::equal_to_wordings(ability));
     event_wordings::add(ability, &mut texts);
     those::add(ability, &mut texts);
+    twins::add(ability, &mut texts);
     texts
 }
 
@@ -608,6 +612,7 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
         }
         return choices::texts(choose, modes)
             .into_iter()
+            .chain(either::texts(choose, modes))
             .map(|text| vec![text])
             .collect();
     }
@@ -1729,6 +1734,12 @@ impl Writer<'_> {
     /// An exile with no binding: "exile target creature", and "... until ~ leaves the battlefield" with the duration.
     fn exiled(&mut self, effect: &Effect) -> Option<String> {
         match effect {
+            // The card of a trigger that put it into a graveyard is "it" in what that trigger does about it.
+            Effect::Exile {
+                what,
+                bind: None,
+                duration: None,
+            } if *what == dead_card() => Some("exile it".to_owned()),
             Effect::Exile {
                 what,
                 bind: None,
@@ -1967,6 +1978,7 @@ impl Writer<'_> {
         self.explore_twice(effects)
             .or_else(|| self.mill_then_change(effects))
             .or_else(|| self.move_instead(effects))
+            .or_else(|| self.either_way(effects))
             .or_else(|| wheel_text(effects))
             // Populate is two steps and one word.
             .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))

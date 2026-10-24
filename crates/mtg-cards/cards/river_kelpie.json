@@ -1,0 +1,31 @@
+{
+  "oracle_id": "ef5c93ae-91e0-4edb-b8a3-1171a3694bb8",
+  "name": "River Kelpie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "River Kelpie",
+      "oracle_fingerprint": "27da697a2d41521e55bcc09f923377d7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Graveyard", "to": "Battlefield" } },
+                { "ZoneChange": { "what": ["Other"], "from": "Graveyard", "to": "Battlefield" } }
+              ]
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "CastFrom": "Graveyard" }] } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Keyword": "Persist" }
+      ]
+    }
+  ]
+}
