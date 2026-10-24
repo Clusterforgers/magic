@@ -157,6 +157,16 @@ impl CounterKind {
     }
 }
 
+/// Whether it is day or night (CR 726.1).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum DayNight {
+    /// It is day.
+    Day,
+    /// It is night.
+    Night,
+}
+
 /// What the game counts for a player in a turn.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum TurnTally {
@@ -575,6 +585,12 @@ pub enum Condition {
     MonarchAtTurnStart(Ref),
     /// The player has the city's blessing (CR 702.131).
     CitysBlessing(Ref),
+    /// It is day (CR 726): "if it's day".
+    IsDay,
+    /// It is night (CR 726): "if it's night".
+    IsNight,
+    /// It is neither day nor night (CR 726.2): before a card or a permanent with daybound or nightbound has made it day.
+    NeitherDayNorNight,
     /// The referenced permanents are controlled by the controller and came under their control since their last turn began (echo, CR 702.30a): read in the upkeep, once that turn has begun.
     NewlyControlled(Ref),
     /// The referenced Class compares to the level this way (CR 716.2): a Class that has gained no level is level 1.

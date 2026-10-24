@@ -8,7 +8,7 @@ use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;
 use mtg_cards::refs::{Ref, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
-use mtg_cards::value::{Amount, CounterKind};
+use mtg_cards::value::{Amount, CounterKind, DayNight};
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
@@ -378,6 +378,34 @@ fn becoming_the_monarch_triggers_for_the_players_the_pattern_names_and_names_the
     if expected == 1 {
         assert_eq!(found[0].cause.subjects, vec![Target::Player(player)]);
     }
+}
+
+#[rstest]
+#[case::any_change_from_day(r#"{"DayNightChanges":{}}"#, Some(DayNight::Day), &[DayNight::Night], 1)]
+#[case::any_change_from_night(r#"{"DayNightChanges":{}}"#, Some(DayNight::Night), &[DayNight::Day], 1)]
+#[case::the_first_day_is_no_change(r#"{"DayNightChanges":{}}"#, None, &[DayNight::Day], 0)]
+#[case::the_first_night_is_no_change(r#"{"DayNightChanges":{}}"#, None, &[DayNight::Night], 0)]
+#[case::the_same_again_is_no_change(r#"{"DayNightChanges":{}}"#, Some(DayNight::Day), &[DayNight::Day], 0)]
+#[case::night_becomes_day_from_night(r#"{"DayNightChanges":{"to":"Day"}}"#, Some(DayNight::Night), &[DayNight::Day], 1)]
+#[case::night_becomes_day_not_from_neither(r#"{"DayNightChanges":{"to":"Day"}}"#, None, &[DayNight::Day], 0)]
+#[case::night_becomes_day_not_the_other_way(r#"{"DayNightChanges":{"to":"Day"}}"#, Some(DayNight::Day), &[DayNight::Night], 0)]
+#[case::day_becomes_night_from_day(r#"{"DayNightChanges":{"to":"Night"}}"#, Some(DayNight::Day), &[DayNight::Night], 1)]
+#[case::day_becomes_night_not_the_other_way(r#"{"DayNightChanges":{"to":"Night"}}"#, Some(DayNight::Night), &[DayNight::Day], 0)]
+#[case::two_changes_in_one_batch_each_follow_the_last(r#"{"DayNightChanges":{}}"#, Some(DayNight::Day), &[DayNight::Night, DayNight::Day], 2)]
+#[case::the_first_day_then_night_in_one_batch(r#"{"DayNightChanges":{}}"#, None, &[DayNight::Day, DayNight::Night], 1)]
+fn day_and_night_changing_triggers_for_a_change_between_the_two_and_not_for_the_first_day(
+    #[case] when: &str,
+    #[case] now: Option<DayNight>,
+    #[case] changes: &[DayNight],
+    #[case] expected: usize,
+) {
+    let mut pre = board(when);
+    pre.day_night = now;
+    let events: Vec<Event> = changes
+        .iter()
+        .map(|to| Event::DayNightChanged { to: *to })
+        .collect();
+    assert_eq!(fires(&pre, &events).len(), expected);
 }
 
 #[rstest]

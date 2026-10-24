@@ -10,7 +10,7 @@ use std::collections::BTreeMap;
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{AbilityKind, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
-use mtg_cards::value::{Amount, CastWay, Condition, CounterKind, StatKind, TurnTally};
+use mtg_cards::value::{Amount, CastWay, Condition, CounterKind, DayNight, StatKind, TurnTally};
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -1338,6 +1338,9 @@ impl<'a> Scope<'a> {
                 .players(who)?
                 .iter()
                 .any(|player| self.state.has_citys_blessing(*player)),
+            Condition::IsDay => self.state.day_night() == Some(DayNight::Day),
+            Condition::IsNight => self.state.day_night() == Some(DayNight::Night),
+            Condition::NeitherDayNorNight => self.state.day_night().is_none(),
             Condition::YourTurn => self.state.turn().active() == self.controller,
             Condition::Level { of, op, level } => {
                 let named = self.objects(of)?;
@@ -2166,6 +2169,31 @@ mod tests {
         if let Some(seat) = monarch {
             let player = PlayerId::from_index(seat);
             crate::fold::apply_event(&mut game, &Event::MonarchChanged { player }).unwrap();
+        }
+        let condition: Condition = serde_json::from_str(json).unwrap();
+        assert_eq!(scope(&game).holds(&condition), Ok(holds));
+    }
+
+    #[rstest]
+    #[case::day_when_neither(r#""IsDay""#, None, false)]
+    #[case::day_when_day(r#""IsDay""#, Some(DayNight::Day), true)]
+    #[case::day_when_night(r#""IsDay""#, Some(DayNight::Night), false)]
+    #[case::night_when_neither(r#""IsNight""#, None, false)]
+    #[case::night_when_day(r#""IsNight""#, Some(DayNight::Day), false)]
+    #[case::night_when_night(r#""IsNight""#, Some(DayNight::Night), true)]
+    #[case::neither_when_neither(r#""NeitherDayNorNight""#, None, true)]
+    #[case::neither_when_day(r#""NeitherDayNorNight""#, Some(DayNight::Day), false)]
+    #[case::neither_when_night(r#""NeitherDayNorNight""#, Some(DayNight::Night), false)]
+    #[case::not_day_is_night_or_neither(r#"{"Not":"IsDay"}"#, Some(DayNight::Night), true)]
+    #[case::not_night_when_neither(r#"{"Not":"IsNight"}"#, None, true)]
+    fn the_day_and_night_conditions_read_the_designation(
+        #[case] json: &str,
+        #[case] now: Option<DayNight>,
+        #[case] holds: bool,
+    ) {
+        let mut game = game();
+        if let Some(to) = now {
+            crate::fold::apply_event(&mut game, &Event::DayNightChanged { to }).unwrap();
         }
         let condition: Condition = serde_json::from_str(json).unwrap();
         assert_eq!(scope(&game).holds(&condition), Ok(holds));

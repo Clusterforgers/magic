@@ -10,7 +10,7 @@ use crate::modify::{CastPermission, Duration, GameRule, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, ZoneKind};
 use crate::spend::SpendOn;
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
-use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind, StatKind};
+use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind, DayNight, StatKind};
 
 // serde's `skip_serializing_if` hands out a reference, so these take one.
 #[allow(clippy::trivially_copy_pass_by_ref)]
@@ -546,6 +546,11 @@ pub enum Effect {
         /// Who becomes it.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
+    },
+    /// It becomes day or night (CR 726.3): the designation changes, and nothing happens when it already is that.
+    BecomeDayNight {
+        /// What it becomes.
+        to: DayNight,
     },
     /// The player amasses (CR 701.47): counters go on an Army they control, a new 0/0 Army token if they have none.
     Amass {

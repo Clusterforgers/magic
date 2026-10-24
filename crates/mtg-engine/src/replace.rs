@@ -589,6 +589,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::Choose(_)
         | ReplaceBy::PayLifeOrTapped(_)
         | ReplaceBy::Devour { .. }
+        | ReplaceBy::DayIfNeither
         | ReplaceBy::Riot
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         // Not run yet: a card that uses it is not Verified.
@@ -1316,6 +1317,7 @@ impl Pass<'_> {
                                 | ReplaceBy::WithCounters { .. }
                                 | ReplaceBy::Devour { .. }
                                 | ReplaceBy::Riot
+                                | ReplaceBy::DayIfNeither
                         )
                     )
                 });
@@ -1587,6 +1589,10 @@ impl Pass<'_> {
             }
             (ReplaceBy::Riot, Unit::Enter { object, controller }) => {
                 return self.riot(at, *object, *controller, applied);
+            }
+            (ReplaceBy::DayIfNeither, Unit::Enter { .. }) => {
+                self.day_if_neither(at, applied);
+                return Ok(Applied::Done);
             }
             (_, Unit::Enter { object, controller }) => {
                 return self.enter(at, candidate, by, *object, *controller, applied);
@@ -2467,6 +2473,8 @@ fn zone_word(zone: Zone) -> &'static str {
         Zone::Command(_) => "the command zone",
     }
 }
+
+mod day;
 
 mod dredge;
 

@@ -11,7 +11,7 @@ use mtg_cards::ability::{Ability, Limit};
 use mtg_cards::mana_trigger::mana_trigger;
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
-use mtg_cards::value::CounterKind;
+use mtg_cards::value::{CounterKind, DayNight};
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{DelayedId, Triggered, x_read};
@@ -137,6 +137,11 @@ enum Happened {
     Surveilled { player: PlayerId, nth: u32 },
     /// A player became the monarch.
     BecameMonarch { player: PlayerId },
+    /// The game became day or night, which it was `from` (neither at the first change).
+    DayNightChanged {
+        from: Option<DayNight>,
+        to: DayNight,
+    },
     /// A player proliferated.
     Proliferated { player: PlayerId },
     /// A creature explored.
@@ -307,7 +312,12 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
     let mut tapped = Vec::new();
     for (at, event) in events.iter().enumerate() {
         let later = &events[at + 1..];
-        let look = Look { pre, post, later };
+        let look = Look {
+            pre,
+            post,
+            earlier: &events[..at],
+            later,
+        };
         if let Some(moved) = moved(pre, event, post) {
             found.push(moved);
         }
@@ -471,11 +481,12 @@ fn loss_ordinal(look: Look<'_>, player: PlayerId, amount: u32) -> u32 {
     ordinal(look.post, look.later, player, Tally::Losses)
 }
 
-/// Where an event stands in its batch: the state before the batch, the state after it and the events that follow the event.
+/// Where an event stands in its batch: the state before the batch, the state after it and the events that come before and after the event.
 #[derive(Clone, Copy)]
 struct Look<'a> {
     pre: &'a GameState,
     post: &'a GameState,
+    earlier: &'a [Event],
     later: &'a [Event],
 }
 
@@ -717,6 +728,18 @@ fn about_players_and_permanents(
             nth: ordinal(look.post, look.later, surveilled.player, Tally::Surveilled),
         }),
         Event::MonarchChanged { player } => found.push(Happened::BecameMonarch { player: *player }),
+        Event::DayNightChanged { to } => found.push(Happened::DayNightChanged {
+            from: look
+                .earlier
+                .iter()
+                .rev()
+                .find_map(|earlier| match earlier {
+                    Event::DayNightChanged { to } => Some(Some(*to)),
+                    _ => None,
+                })
+                .unwrap_or_else(|| look.pre.day_night()),
+            to: *to,
+        }),
         Event::Proliferated { player } => found.push(Happened::Proliferated { player: *player }),
         Event::Amassed { player, .. } => found.push(Happened::Amassed { player: *player }),
         Event::Bolstered { player, .. } => found.push(Happened::Bolstered { player: *player }),
@@ -1043,6 +1066,14 @@ fn matching_event(
             (by(who, player) && picks(what, card)?)
                 .then(|| cause(state, vec![Target::Player(*player), Target::Object(card)]))
         }
+        (
+            TriggerPattern::DayNightChanges { to: wanted },
+            Happened::DayNightChanged {
+                from: Some(from),
+                to,
+            },
+        ) => (from != to && wanted.is_none_or(|wanted| wanted == *to))
+            .then(|| cause(state, Vec::new())),
         _ => matching_permanents(pattern, happened, scope),
     }
 }
