@@ -1546,7 +1546,9 @@ fn chosen_protection(mods: &[Modification]) -> bool {
             matches!(
                 modification,
                 Modification::AddKeyword(Keyword::Protection(Selector(preds)))
-                    if preds.contains(&Pred::ChosenColor) || preds.contains(&Pred::ChosenSubtype)
+                    if preds.contains(&Pred::ChosenColor)
+                        || preds.contains(&Pred::ChosenSubtype)
+                        || preds.contains(&Pred::ControlledBy(Ref::Chosen))
             )
         })
 }

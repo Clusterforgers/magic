@@ -1,0 +1,25 @@
+{
+  "id": "9b3b1ef0-a653-4adb-8112-82d4822446b4",
+  "oracle_id": "c4f3a6c6-a123-43ad-9513-d65fbff10d02",
+  "name": "Spoils of Adventure",
+  "lang": "en",
+  "layout": "normal",
+  "set": "znr",
+  "collector_number": "237",
+  "rarity": "uncommon",
+  "released_at": "2020-09-25",
+  "digital": false,
+  "mana_cost": "{4}{W}{U}",
+  "cmc": 6.0,
+  "type_line": "Instant",
+  "oracle_text": "This spell costs {1} less to cast for each creature in your party. (Your party consists of up to one each of Cleric, Rogue, Warrior, and Wizard.)\nYou gain 3 life and draw three cards.",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": []
+}

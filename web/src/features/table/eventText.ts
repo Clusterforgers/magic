@@ -462,7 +462,7 @@ function describePublic(event: Event, n: EventNames): LogLine {
     const chose =
       chosen === undefined
         ? ''
-        : `, choosing ${'Color' in chosen ? chosen.Color.toLowerCase() : chosen.CreatureType}`
+        : `, choosing ${'Color' in chosen ? chosen.Color.toLowerCase() : 'Player' in chosen ? n.seat(chosen.Player) : chosen.CreatureType}`
     return quiet(
       `${n.card(object)} enters${tapped ? ' tapped' : ''} under ${n.seat(controller)}'s control${chose}`,
     )

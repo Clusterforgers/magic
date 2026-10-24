@@ -2439,7 +2439,7 @@ impl Pass<'_> {
         controller: PlayerId,
         kind: EntersChoice,
     ) -> Result<Asked<Option<Chosen>>, EngineError> {
-        let options = self.options_of(kind);
+        let options = self.options_of(kind, controller);
         let picked = match options.as_slice() {
             [] => None,
             [only] => Some(only.clone()),
@@ -2478,15 +2478,15 @@ impl Pass<'_> {
                 }
             },
         };
-        Ok(Asked::Got(picked.and_then(|option| match option {
-            ChoiceOption::Color(color) => Some(Chosen::Color(color)),
-            ChoiceOption::Label(name) => Some(Chosen::CreatureType(Subtype(name))),
-            ChoiceOption::Player(_) => None,
+        Ok(Asked::Got(picked.map(|option| match option {
+            ChoiceOption::Color(color) => Chosen::Color(color),
+            ChoiceOption::Label(name) => Chosen::CreatureType(Subtype(name)),
+            ChoiceOption::Player(player) => Chosen::Player(player),
         })))
     }
 
     /// What a player may choose as a permanent enters: the five colours (less the one a choice excludes), or the creature types of the cards in the game.
-    fn options_of(&self, kind: EntersChoice) -> Vec<ChoiceOption> {
+    fn options_of(&self, kind: EntersChoice, controller: PlayerId) -> Vec<ChoiceOption> {
         match kind {
             EntersChoice::Color => Color::ALL
                 .iter()
@@ -2510,9 +2510,19 @@ impl Pass<'_> {
                 types.dedup();
                 types.into_iter().map(ChoiceOption::Label).collect()
             }
-            // The engine does not offer a player yet: no option, so nothing is chosen (`ReplaceBy.Choose.Player` and
-            // `.Opponent` keep every card that uses them out of the game).
-            EntersChoice::Player | EntersChoice::Opponent => Vec::new(),
+            EntersChoice::Player => self
+                .state
+                .turn_order_from(controller)
+                .into_iter()
+                .map(ChoiceOption::Player)
+                .collect(),
+            EntersChoice::Opponent => self
+                .state
+                .turn_order_from(controller)
+                .into_iter()
+                .filter(|player| *player != controller)
+                .map(ChoiceOption::Player)
+                .collect(),
         }
     }
 }

@@ -143,6 +143,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Attached
         | Ref::AttachedPlayer
         | Ref::Monarch
+        | Ref::Chosen
         | Ref::Promised
         | Ref::Defending
         | Ref::Attacked
@@ -250,6 +251,10 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         }
         Amount::CardTypes(of) => reads_of_selector(of).or(Traits::TYPES),
         Amount::Largest { who, of } => reads_of_ref(who).or(reads_of_selector(of)),
+        Amount::Party(who) => reads_of_ref(who)
+            .or(Traits::SUBTYPES)
+            .or(Traits::CONTROL)
+            .or(Traits::TYPES),
     }
 }
 
