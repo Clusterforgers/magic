@@ -76,6 +76,7 @@ mod copies_fuzz;
 mod copy_cards;
 mod copy_dies;
 mod copy_effects;
+mod copy_exiles_itself;
 mod copy_groups;
 mod copy_keywords;
 mod copy_keywords_fuzz;
