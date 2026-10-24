@@ -5,13 +5,13 @@ use crate::common::casting::{lands, pay};
 use crate::common::pid;
 use std::sync::Arc;
 
+use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::Cost;
+use mtg_cards::effect::Effect;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::Ref;
 use mtg_cards::value::Amount;
-use mtg_cards::CardDefinition;
-use mtg_cards::effect::Effect;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::ids::ObjectId;
@@ -69,7 +69,10 @@ fn assert_replays(driver: &Driver) {
 /// The bound of the question how many times the replicate cost is paid.
 fn most_payments(driver: &Driver) -> Option<u32> {
     let DecisionKind::ChooseNumber(options) = &driver.decision().unwrap().kind else {
-        panic!("the payments are asked: {}", driver.decision().unwrap().kind.name());
+        panic!(
+            "the payments are asked: {}",
+            driver.decision().unwrap().kind.name()
+        );
     };
     options.max
 }
@@ -189,7 +192,9 @@ fn tapped_daleks(driver: &Driver) -> usize {
         .filter(|id| {
             state.object(**id).is_some_and(|object| {
                 object.card().name.starts_with("Dalek")
-                    && object.permanent().is_some_and(|permanent| permanent.tapped())
+                    && object
+                        .permanent()
+                        .is_some_and(|permanent| permanent.tapped())
             })
         })
         .count()
