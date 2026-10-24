@@ -249,17 +249,37 @@ pub enum Targetable {
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Bounds {
-    /// The fewest allowed.
-    #[serde(default = "Bounds::one_min")]
-    pub min: u32,
+    /// The fewest allowed; an amount for "X target creatures".
+    #[serde(default = "Amount::one")]
+    pub min: Amount,
     /// The most allowed; `null` means any number.
     #[serde(default = "Bounds::one_max")]
     pub max: Option<Amount>,
 }
 
 impl Bounds {
-    const fn one_min() -> u32 {
-        1
+    /// Between none and `max`: "up to two", and every number when `max` is `None`.
+    pub const fn up_to(max: Option<Amount>) -> Bounds {
+        Bounds {
+            min: Amount::Fixed(0),
+            max,
+        }
+    }
+
+    /// Exactly `count`, a number or an amount such as X.
+    pub fn exactly(count: &Amount) -> Bounds {
+        Bounds {
+            min: count.clone(),
+            max: Some(count.clone()),
+        }
+    }
+
+    /// The least as a number, when it is fixed.
+    pub fn fixed_min(&self) -> Option<u32> {
+        match self.min {
+            Amount::Fixed(min) => Some(u32::try_from(min).unwrap_or(0)),
+            _ => None,
+        }
     }
 
     // serde's `default` must return the field's own type, which is an `Option` here.
@@ -277,8 +297,8 @@ impl Bounds {
 impl Default for Bounds {
     fn default() -> Self {
         Bounds {
-            min: 1,
-            max: Some(Amount::Fixed(1)),
+            min: Amount::one(),
+            max: Some(Amount::one()),
         }
     }
 }
@@ -351,7 +371,7 @@ mod tests {
         );
         let any = TargetSpec {
             what: Targetable::AnyTarget,
-            bounds: Bounds { min: 0, max: None },
+            bounds: Bounds::up_to(None),
             divide: Some(Amount::Fixed(2)),
         };
         let json = serde_json::to_string(&any).unwrap();

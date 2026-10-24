@@ -1,0 +1,25 @@
+{
+  "id": "31a147bb-37ef-4a52-82e2-160a53323516",
+  "oracle_id": "2de6c3d9-1759-40a2-99c6-8cbe17b4bcdd",
+  "name": "Entreat the Dead",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c18",
+  "collector_number": "15",
+  "rarity": "rare",
+  "released_at": "2018-08-10",
+  "digital": false,
+  "mana_cost": "{X}{X}{B}{B}{B}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Return X target creature cards from your graveyard to the battlefield.\nMiracle {X}{B}{B} (You may cast this card for its miracle cost when you draw it if it's the first card you drew this turn.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Miracle"
+  ]
+}

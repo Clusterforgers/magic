@@ -20,10 +20,7 @@ pub(super) fn second_bind(first: &str) -> String {
 
 /// "Up to one" card: each search of a pair that shares a type finds at most one.
 fn up_to_one() -> Bounds {
-    Bounds {
-        min: 0,
-        max: Some(Amount::one()),
-    }
+    Bounds::up_to(Some(Amount::one()))
 }
 
 /// What the second search leaves out: the card the first found.
@@ -56,10 +53,7 @@ pub(super) fn read(
         preds.push(leaves_out(first));
         return Some((count.clone(), (Selector(preds), Bounds::default())));
     }
-    let two = Bounds {
-        min: 0,
-        max: Some(Amount::Fixed(2)),
-    };
+    let two = Bounds::up_to(Some(Amount::Fixed(2)));
     (*count == two && filter.0 == basic_lands()).then_some(())?;
     r.words("that share a land type").then_some(())?;
     let mut preds = filter.0.clone();

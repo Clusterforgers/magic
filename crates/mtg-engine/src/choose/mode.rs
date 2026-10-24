@@ -169,9 +169,9 @@ fn label_of(mode: &Mode, card: Option<&str>) -> Option<String> {
 pub(crate) fn enough_modes(modal: &Modal<'_>, available: u32) -> bool {
     // A mode that may repeat can be chosen as often as is wanted, so one legal mode is enough.
     if modal.repeat {
-        available > 0 || modal.choose.min == 0
+        available > 0 || modal.choose.fixed_min() == Some(0)
     } else {
-        available >= modal.choose.min
+        available >= modal.choose.fixed_min().unwrap_or(0)
     }
 }
 
@@ -199,7 +199,7 @@ pub(crate) fn mode_options(
         })
         .collect();
     let available = u32::try_from(modes.len()).unwrap_or(u32::MAX);
-    let min = modal.choose.min;
+    let min = modal.choose.fixed_min().unwrap_or(0);
     if !enough_modes(modal, available) {
         return None;
     }

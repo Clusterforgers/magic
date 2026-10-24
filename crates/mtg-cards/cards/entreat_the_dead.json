@@ -1,0 +1,27 @@
+{
+  "oracle_id": "2de6c3d9-1759-40a2-99c6-8cbe17b4bcdd",
+  "name": "Entreat the Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Entreat the Dead",
+      "oracle_fingerprint": "9ae232eed2bb357c3989ca1204f6d29f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        },
+        { "Keyword": { "Miracle": "{X}{B}{B}" } }
+      ]
+    }
+  ]
+}

@@ -497,6 +497,12 @@ pub enum Event {
     Surveilled(Surveilled),
     /// A player revealed cards.
     Revealed(Revealed),
+    /// Cards of a public zone were picked at random with the next substream of the generator (CR 701.24 for a shuffle,
+    /// CR 608.2c for the choice): the cards picked, in the order they were drawn.
+    ChosenAtRandom {
+        /// The cards picked.
+        cards: Vec<ObjectId>,
+    },
     /// Cards of a library were put on its bottom.
     LibraryBottomed {
         /// Whose library.
@@ -872,6 +878,7 @@ impl Event {
             | Event::CompanionRevealed { .. }
             | Event::LibraryLooked(_)
             | Event::CardsFound(_)
+            | Event::ChosenAtRandom { .. }
             | Event::Revealed(_) => Vec::new(),
             Event::CountersChanged(changed) => changed
                 .on

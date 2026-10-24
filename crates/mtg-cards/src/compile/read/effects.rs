@@ -38,7 +38,7 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 55] = [
+const TEMPLATES: [Template; 56] = [
     modal::modal,
     super::spent::sacrifice_unless,
     super::actions::fight,
@@ -60,6 +60,7 @@ const TEMPLATES: [Template; 55] = [
     player_effect,
     super::damage::damage,
     super::zone_moves::exile_graveyard,
+    super::random_moves::from_graveyard,
     removal,
     super::flicker::exile_and_return,
     super::becomes::creature,
@@ -297,10 +298,7 @@ fn put_back(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         r.need("in any order")?;
         Some(Order::Chosen)
     };
-    let count = Bounds {
-        min: number,
-        max: Some(Amount::Fixed(i32::try_from(number).ok()?)),
-    };
+    let count = Bounds::exactly(&Amount::Fixed(i32::try_from(number).ok()?));
     let from = Selector(vec![Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]);
     Some(vec![
         Effect::Choose {
@@ -720,7 +718,7 @@ fn return_any_number(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         Effect::Choose {
             who: Ref::You,
             from: Ref::Each(from),
-            count: Bounds { min: 0, max: None },
+            count: Bounds::up_to(None),
             bind: RETURNED.to_owned(),
             rest_as: None,
         },
@@ -834,10 +832,7 @@ pub(super) fn up_to_one_object(r: &mut Reader<'_>) -> Option<Ref> {
     r.attempt(|r| {
         let what = target(r)?;
         let spec = r.targets.first()?;
-        let bounds = Bounds {
-            min: 0,
-            max: Some(Amount::Fixed(1)),
-        };
+        let bounds = Bounds::up_to(Some(Amount::Fixed(1)));
         (matches!(spec.what, Targetable::Object(_)) && spec.bounds == bounds).then_some(what)
     })
 }

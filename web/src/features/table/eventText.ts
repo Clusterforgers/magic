@@ -454,6 +454,9 @@ function describePublic(event: Event, n: EventNames): LogLine {
     const { player, cards: bottomed } = event.LibraryBottomed
     return line(`${n.seat(player)} puts ${cards(bottomed.length)} on the bottom of their library`)
   }
+  if ('ChosenAtRandom' in event) {
+    return line(`${event.ChosenAtRandom.cards.map((id) => n.card(id)).join(', ')} is picked at random`)
+  }
   if ('Entered' in event) {
     const { object, tapped, controller, chosen } = event.Entered
     const chose =

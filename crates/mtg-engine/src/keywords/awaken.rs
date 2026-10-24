@@ -46,7 +46,7 @@ pub(crate) fn awakened(card: &GameObject, rules: Arc<Ability>) -> Arc<Ability> {
             Pred::ControlledBy(Ref::You),
         ])),
         bounds: Bounds {
-            min: 1,
+            min: Amount::one(),
             max: Some(Amount::CastWith(CastWay::Awaken)),
         },
         divide: None,

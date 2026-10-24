@@ -1,0 +1,24 @@
+{
+  "oracle_id": "e5387fc7-c3b3-4933-bffa-580ad793c7ab",
+  "name": "Distorting Wake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Distorting Wake",
+      "oracle_fingerprint": "4c3c1589b7c6d420f46e0563594cb970",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

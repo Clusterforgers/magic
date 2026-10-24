@@ -1,4 +1,4 @@
-//! Goal: "return target card from your graveyard to your hand" reads into a move to the hand with the card's zone and owner in the target, alone, with a card type, in a trigger and after "you may", and "return a land you control to its owner's hand" reads as a choice and a move; any other place, owner, count or destination stays with the table.
+//! Goal: "return target card from your graveyard to your hand" reads into a move to the hand with the card's zone and owner in the target, alone, with a card type, in a trigger (mandatory when the text has no "may") and after "you may", and "return a land you control to its owner's hand" reads as a choice and a move; any other place, owner, count or destination stays with the table.
 use super::*;
 
 fn trigger(text: &str) -> Option<Ability> {
@@ -29,6 +29,17 @@ fn eternal_witness_reads_in_the_shape_of_its_file() {
         ClauseKind::Triggered,
         false,
         r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"In":"Graveyard"},{"OwnedBy":"You"}]}}],"effects":[{"May":{"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}}]}}]}}"#,
+    );
+}
+
+#[test]
+fn timeless_witness_returns_the_card_without_a_choice() {
+    // The Oracle text has no "may": the trigger is mandatory (CR 603.5 makes only "may" effects optional).
+    reads_as(
+        "When this creature enters, return target card from your graveyard to your hand.",
+        ClauseKind::Triggered,
+        false,
+        r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"In":"Graveyard"},{"OwnedBy":"You"}]}}],"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}}]}}"#,
     );
 }
 

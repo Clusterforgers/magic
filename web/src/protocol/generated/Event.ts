@@ -474,7 +474,11 @@ player: PlayerId,
 /**
  * How much, at least 1.
  */
-amount: number, } } | { "CountersChanged": CountersChanged } | { "TokenCreated": TokenCreated } | { "LibraryLooked": LibraryLooked } | { "CardsFound": CardsFound } | { "Scried": Scried } | { "Surveilled": Surveilled } | { "Revealed": Revealed } | { "LibraryBottomed": { 
+amount: number, } } | { "CountersChanged": CountersChanged } | { "TokenCreated": TokenCreated } | { "LibraryLooked": LibraryLooked } | { "CardsFound": CardsFound } | { "Scried": Scried } | { "Surveilled": Surveilled } | { "Revealed": Revealed } | { "ChosenAtRandom": { 
+/**
+ * The cards picked.
+ */
+cards: Array<ObjectId>, } } | { "LibraryBottomed": { 
 /**
  * Whose library.
  */
