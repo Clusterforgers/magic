@@ -1,0 +1,25 @@
+{
+  "cmc": 2.0,
+  "collector_number": "210",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "430b96aa-7bb0-4d2b-b265-9c4987db28a2",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{W}",
+  "name": "Suture Priest",
+  "oracle_id": "c4d36522-3ace-4bfb-bf2d-1a366f458698",
+  "oracle_text": "Whenever another creature you control enters, you may gain 1 life.\nWhenever a creature an opponent controls enters, you may have that player lose 1 life.",
+  "power": "1",
+  "rarity": "common",
+  "released_at": "2023-04-21",
+  "set": "moc",
+  "toughness": "1",
+  "type_line": "Creature — Phyrexian Cleric"
+}

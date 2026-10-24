@@ -122,6 +122,10 @@ pub struct Cause {
     #[serde(default, skip_serializing_if = "is_zero")]
     #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
     pub amount: u32,
+    /// The object that did it (`Ref::Dealer`): the source of the damage; none for any other event.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub source: Option<ObjectRef>,
 }
 
 #[allow(clippy::trivially_copy_pass_by_ref)]

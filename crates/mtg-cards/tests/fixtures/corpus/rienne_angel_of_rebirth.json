@@ -1,0 +1,31 @@
+{
+  "cmc": 5.0,
+  "collector_number": "166",
+  "color_identity": [
+    "G",
+    "R",
+    "W"
+  ],
+  "colors": [
+    "G",
+    "R",
+    "W"
+  ],
+  "digital": false,
+  "id": "78660bdf-0edb-4fd0-a737-1c95f93cced1",
+  "keywords": [
+    "Flying"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{R}{G}{W}",
+  "name": "Rienne, Angel of Rebirth",
+  "oracle_id": "1ef2415f-f88f-41fb-b084-ea52631a60c1",
+  "oracle_text": "Flying\nOther multicolored creatures you control get +1/+0.\nWhenever another multicolored creature you control dies, return it to its owner's hand at the beginning of the next end step.",
+  "power": "5",
+  "rarity": "mythic",
+  "released_at": "2022-09-09",
+  "set": "dmc",
+  "toughness": "4",
+  "type_line": "Legendary Creature — Angel"
+}

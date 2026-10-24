@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c3b46bd6-b3ef-452d-a916-995c44f1da07",
+  "name": "Wanderwine Hub",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wanderwine Hub",
+      "oracle_fingerprint": "657347d58485ca5138fb5f551a725921",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "RevealOrTapped": [{ "Subtype": "Merfolk" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["White", "Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

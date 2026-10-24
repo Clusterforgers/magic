@@ -2,7 +2,7 @@
 //! under its owner's control at the beginning of the next end step."
 
 use super::{Destination, Effect, Ref, Writer};
-use crate::compile::read::effects::{LATER, dead_card};
+use crate::compile::read::effects::{LATER, dead_card, other_dead_card};
 use crate::refs::Bounds;
 use crate::trigger::{Step, TriggerPattern};
 
@@ -109,9 +109,14 @@ impl Writer<'_> {
             return None;
         };
         let itself = *from == Ref::This || *from == dead_card();
-        (itself && bind == LATER && moved == bind && *count == Bounds::default()).then_some(())?;
+        let other = *from == other_dead_card();
+        ((itself || other) && bind == LATER && moved == bind && *count == Bounds::default())
+            .then_some(())?;
+        let card = if other { "it" } else { "~" };
         Some((
-            vec!["return ~ to its owner's hand at the beginning of the next end step".to_owned()],
+            vec![format!(
+                "return {card} to its owner's hand at the beginning of the next end step"
+            )],
             2,
         ))
     }

@@ -40,7 +40,7 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 66] = [
+const TEMPLATES: [Template; 68] = [
     modal::modal,
     super::chance::flip,
     super::chance::roll,
@@ -48,6 +48,8 @@ const TEMPLATES: [Template; 66] = [
     super::repeat::each_player,
     super::spent::sacrifice_unless,
     super::actions::fight,
+    super::actions::bite,
+    cast::free_cast_from_hand,
     super::actions::attach,
     cast::discover_sentence,
     cast::exile_until,
@@ -295,6 +297,14 @@ fn may(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// "you may gain 1 life", "you may lose 1 life": the life change is the one choice.
 fn may_life(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let effect = match r.take_word()? {
+        // The controller of the creature that entered: "you may have that player lose 1 life".
+        "have" if r.that_controller => {
+            r.need("that player lose")?;
+            Effect::LoseLife {
+                who: Ref::ControllerOf(Box::new(Ref::Triggering)),
+                amount: life(r)?,
+            }
+        }
         "gain" => Effect::GainLife {
             who: Ref::You,
             amount: life(r)?,
@@ -714,7 +724,7 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("return")?;
     // The permanent itself once the ability has spoken of the card: "return it to its owner's hand" (a card that
     // returns from the graveyard says its name, and is the table's).
-    if r.it == Some(Ref::This) && r.word("it") {
+    if (r.it == Some(Ref::This) || r.others_died) && r.word("it") {
         return itself_to_hand(r);
     }
     // The card by its name: "return ~ to its owner's hand".
@@ -773,7 +783,13 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// since is not returned).
 fn itself_to_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("to its owner's hand")?;
-    let card = if r.died { dead_card() } else { Ref::This };
+    let card = if r.died {
+        dead_card()
+    } else if r.others_died {
+        other_dead_card()
+    } else {
+        Ref::This
+    };
     if !r.words("at the beginning of the next end step") {
         return Some(vec![Effect::Move {
             what: card,
@@ -922,6 +938,15 @@ fn shuffle_itself(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// the graveyard (it is a new object there, so `This` alone names the one that left).
 pub fn dead_card() -> Ref {
     Ref::Each(Selector(vec![Pred::In(ZoneKind::Graveyard), Pred::This]))
+}
+
+/// The card of another creature that went to a graveyard, which is "it" in what the card does about it: that card in the
+/// graveyard, a new object found again by its card.
+pub fn other_dead_card() -> Ref {
+    Ref::Each(Selector(vec![
+        Pred::In(ZoneKind::Graveyard),
+        Pred::SameCard(Ref::Triggering),
+    ]))
 }
 
 /// Whether "return ~ from your graveyard" comes next: the card returns itself, so the ability works from there.
@@ -1106,7 +1131,8 @@ pub(super) fn subject(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
     }
     // "Whenever ~ attacks, it gets +1/+1 until end of turn."
     if let Some(it) = r.it.clone()
-        && (r.word("it") || (it == Ref::Triggering && r.words("that creature")))
+        && (r.word("it")
+            || (matches!(it, Ref::Triggering | Ref::Target(_)) && r.words("that creature")))
     {
         return Some((it, false));
     }

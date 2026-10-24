@@ -22,7 +22,7 @@
                 "combat": true
               }
             },
-            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+            "effects": [{ "PutCounters": { "on": "Dealer", "counter": "+1/+1" } }]
           }
         },
         { "Keyword": { "Madness": "{2}{R}" } }

@@ -369,3 +369,45 @@ pub fn text(effect: &Effect) -> Option<String> {
         _ => return None,
     })
 }
+
+/// The name the spell chosen to be cast for free from the hand is bound to.
+pub const FROM_HAND: &str = "spell";
+
+/// "You may cast a spell with mana value 4 or less from your hand without paying its mana cost.": the player chooses at
+/// most one nonland card of their hand, and casts it for free.
+pub fn free_cast_from_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("you may cast a spell")?;
+    let limit = r.attempt(|r| {
+        r.need("with mana value")?;
+        let count = points(r)?;
+        r.need("or less").map(|()| count)
+    });
+    r.need("from your hand without paying its mana cost")?;
+    let mut from = vec![
+        Pred::In(ZoneKind::Hand),
+        Pred::OwnedBy(Ref::You),
+        Pred::Not(Box::new(Pred::Type(CardType::Land))),
+    ];
+    from.extend(limit.map(|to| Pred::Compare {
+        stat: StatKind::ManaValue,
+        op: Cmp::Le,
+        to,
+    }));
+    Some(vec![
+        Effect::Choose {
+            who: Ref::You,
+            from: Ref::Each(Selector(from)),
+            count: Bounds::up_to(Some(Amount::Fixed(1))),
+            bind: FROM_HAND.to_owned(),
+            rest_as: None,
+        },
+        Effect::CastFromZone {
+            who: Ref::You,
+            what: Ref::Bound(FROM_HAND.to_owned()),
+            free: true,
+            play: false,
+            way: None,
+            otherwise: Vec::new(),
+        },
+    ])
+}

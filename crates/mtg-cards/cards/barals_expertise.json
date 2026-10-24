@@ -1,0 +1,43 @@
+{
+  "oracle_id": "a1cdcb8c-1e12-4d39-aa4a-db678a80df9c",
+  "name": "Baral's Expertise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baral's Expertise",
+      "oracle_fingerprint": "d2f5dbc08928db8f3d4e1b8ebd500c25",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" },
+                      { "Not": { "Type": "Land" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "spell"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "spell" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -349,6 +349,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.WithCounters",
     "ReplaceBy.Choose",
     "ReplaceBy.PayLifeOrTapped",
+    "ReplaceBy.RevealOrTapped",
     "ReplaceBy.AsCopy",
     "Keyword.Partner",
     "Keyword.PartnerWith",

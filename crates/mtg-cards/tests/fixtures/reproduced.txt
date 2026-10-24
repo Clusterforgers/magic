@@ -30,6 +30,7 @@ Altar's Reap
 Ambitious Aetherborn
 Anafenza, Kin-Tree Spirit
 Ancestral Vision
+Ancient Amphitheater
 Ancient Hydra
 Ancient Stone Idol
 Ancient Ziggurat
@@ -65,6 +66,7 @@ Atlantean Skirmisher
 Atmospheric Greenhouse
 Atzocan Seer
 Augury Raven
+Auntie's Hovel
 Aura Gnarlid
 Auriok Champion
 Authority of the Consuls
@@ -88,6 +90,7 @@ Banisher Priest
 Banishing Light
 Banishing Stroke
 Banshee of the Dread Choir
+Baral's Expertise
 Barbed Batterfist
 Bard's Bow
 Basalt Monolith
@@ -125,6 +128,7 @@ Blazing Sunsteel
 Blight Mamba
 Blight Pile
 Blightwidow
+Blood Seeker
 Bloodbraid Elf
 Bloodghast
 Bloom Hulk
@@ -356,6 +360,7 @@ Eldrazi Conscription
 Eldritch Immunity
 Electric Revelation
 Electro's Bolt
+Electrodominance
 Elegant Edgecrafters
 Eliminate the Competition
 Elven Ambush
@@ -421,6 +426,7 @@ Firmament Sage
 Fists of Flame
 Flame Jab
 Flamebraider
+Flamekin Village
 Flamerush Rider
 Flatline
 Flawless Maneuver
@@ -471,6 +477,7 @@ Giant Growth
 Gift of Paradise
 Gilded Goose
 Gilded Lotus
+Gilt-Leaf Palace
 Girder Goons
 Glimpse of Freedom
 Glint-Sleeve Artisan
@@ -594,6 +601,7 @@ Invisible Force Field
 Invisible Stalker
 Iridescent Vinelasher
 Iron League Steed
+It's Clobberin' Time!
 Ivory Mask
 Ixalli's Lorekeeper
 Izzet Charm
@@ -758,6 +766,7 @@ Muddle the Mixture
 Mukotai Ambusher
 Mulldrifter
 Murderous Cut
+Murmuring Bosk
 Muscle Sliver
 Mutavault
 Mycoloth
@@ -768,6 +777,7 @@ Nameless Inversion
 Nanogene Conversion
 Nantuko Husk
 Nantuko Vigilante
+Necropolis Regent
 Nessian Asp
 Nettlecyst
 New Horizons
@@ -850,9 +860,11 @@ Pouncing Shoreshark
 Powder Ganger
 Prava of the Steel Legion
 Predator Dragon
+Predator Ooze
 Prey Upon
 Pridemalkin
 Priest of the Crossing
+Primal Beyond
 Primal Growth
 Primal Might
 Primaris Eliminator
@@ -880,6 +892,7 @@ Raffine's Informant
 Rafter Demon
 Raging Goblinoids
 Rakdos Headliner
+Rakish Heir
 Rally the Ranks
 Rambling Possum
 Ramos, Dragon Engine
@@ -921,9 +934,11 @@ Rhox Faithmender
 Rhys the Redeemed
 Rhystic Study
 Riders of Gavony
+Rienne, Angel of Rebirth
 Rift Bolt
 Righteous Avengers
 Riptide Survivor
+Rishkar's Expertise
 Rising Miasma
 Rite of Replication
 River of Tears
@@ -975,6 +990,7 @@ Scytheclaw
 Sea Gate
 Sea Gate Wreckage
 Secluded Courtyard
+Secluded Glen
 Second Harvest
 Seedglaive Mentor
 Seeds of Renewal
@@ -987,6 +1003,7 @@ Servant of the Conduit
 Shacklegeist
 Shadowmage Infiltrator
 Shadowspear
+Shaman of the Great Hunt
 Shamanic Revelation
 Shambling Shell
 Sharding Sphinx
@@ -1002,6 +1019,8 @@ Siege Wurm
 Sigiled Paladin
 Sigiled Sentinel
 Silhana Ledgewalker
+Silver Shroud Costume
+Silversmote Ghoul
 Silverwing Squadron
 Sinister Sabotage
 Sinister Starfish
@@ -1072,6 +1091,7 @@ Steampath Charger
 Steel Overseer
 Steelburr Champion
 Steelclaw Lance
+Stensia Masquerade
 Sticky Fingers
 Stitched Drake
 Stoke the Flames
@@ -1107,10 +1127,12 @@ Sunhome Stalwart
 Sunken Ruins
 Sunrise Cavalier
 Suntouched Myr
+Super Combo
 Supreme Verdict
 Surgehacker Mech
 Surreal Memoir
 Susurian Dirgecraft
+Suture Priest
 Swarm Intelligence
 Swarm, Being of Bees
 Swiftfoot Boots
@@ -1232,6 +1254,7 @@ Valiant Rescuer
 Valkyrie Harbinger
 Valley Rannet
 Vampire Cutthroat
+Vampiric Dragon
 Vanguard Seraph
 Vanguard Suppressor
 Vanishing Verse
@@ -1261,6 +1284,7 @@ Vorrac Battlehorns
 Vulshok Splitter
 Walking Ballista
 Wanderbrine Preacher
+Wanderwine Hub
 Waning Wurm
 War Balloon
 Warbriar Blessing

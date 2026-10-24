@@ -1,0 +1,59 @@
+{
+  "oracle_id": "4a75ef46-c5ae-4b1a-a681-d439b01f6731",
+  "name": "It's Clobberin' Time!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "It's Clobberin' Time!",
+      "oracle_fingerprint": "c9339cab732b24002316486724de4f3e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        },
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "source": { "Target": 0 },
+                            "to": { "Target": 1 },
+                            "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Rebound" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "34a1eb04-08f6-49d8-a1d1-b987a76bd8b1",
+  "name": "Flamekin Village",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flamekin Village",
+      "oracle_fingerprint": "9d48cc4e37d3c46a69cc06bb1a5a4f14",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "RevealOrTapped": [{ "Subtype": "Elemental" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

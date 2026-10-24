@@ -1,0 +1,30 @@
+{
+  "oracle_id": "42b9d383-3fe2-4fc8-ab86-f80a288d502b",
+  "name": "Murmuring Bosk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Murmuring Bosk",
+      "oracle_fingerprint": "0e5a5d9bcd697d9ba1d9fbefcd3d044d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "RevealOrTapped": [{ "Subtype": "Treefolk" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["White", "Black"] } } },
+              { "DealDamage": { "to": "You", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

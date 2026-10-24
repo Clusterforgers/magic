@@ -1,0 +1,29 @@
+{
+  "cmc": 8.0,
+  "collector_number": "158",
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "colors": [
+    "B",
+    "R"
+  ],
+  "digital": false,
+  "id": "6bf8eff8-6b39-4e5e-b8a9-1da53e837809",
+  "keywords": [
+    "Flying"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{6}{B}{R}",
+  "name": "Vampiric Dragon",
+  "oracle_id": "e8941499-2b31-417b-b2d2-10a144826703",
+  "oracle_text": "Flying\nWhenever a creature dealt damage by this creature this turn dies, put a +1/+1 counter on this creature.\n{1}{R}: This creature deals 1 damage to target creature.",
+  "power": "5",
+  "rarity": "rare",
+  "released_at": "2021-11-19",
+  "set": "voc",
+  "toughness": "5",
+  "type_line": "Creature — Vampire Dragon"
+}

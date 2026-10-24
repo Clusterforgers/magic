@@ -1,0 +1,25 @@
+{
+  "cmc": 2.0,
+  "collector_number": "34",
+  "color_identity": [
+    "G"
+  ],
+  "colors": [
+    "G"
+  ],
+  "digital": false,
+  "id": "52bed0d4-3bcf-4770-b9c9-2a1d0666d220",
+  "keywords": [
+    "Replicate"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{G}",
+  "name": "Super Combo",
+  "oracle_id": "68555673-2833-459a-b415-e2805f837778",
+  "oracle_text": "Replicate {2} (When you cast this spell, copy it for each time you paid its replicate cost. You may choose new targets for the copies.)\nTarget creature you control deals damage equal to its power to target creature an opponent controls.",
+  "rarity": "rare",
+  "released_at": "2026-03-06",
+  "set": "tmc",
+  "type_line": "Sorcery"
+}

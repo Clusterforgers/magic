@@ -257,7 +257,12 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             DamageTarget::Player(id) => {
                 damage_player(state, *source, *id, (*amount, *form, *toxic))?;
             }
-            DamageTarget::Object(id) => damage_object(state, *id, *amount, *deathtouch, *form)?,
+            DamageTarget::Object(id) => {
+                damage_object(state, *id, *amount, *deathtouch, *form)?;
+                if *amount > 0 {
+                    state.note_damaged_by(*id, *source);
+                }
+            }
         },
         Event::CombatEnded => state.combat = CombatState::default(),
         Event::JoinedAttack { object, target } => join_attack(state, *object, *target)?,
