@@ -1,0 +1,35 @@
+{
+  "oracle_id": "872bebff-720d-459b-8f86-fb9129a8d1fb",
+  "name": "Svyelun of Sea and Sky",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Svyelun of Sea and Sky",
+      "oracle_fingerprint": "6786e7f6bf8f087287bfbc094f2c1e0a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Merfolk" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        },
+        {
+          "Triggered": { "when": { "Attacks": { "what": ["This"] } }, "effects": [{ "Draw": {} }] }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Merfolk" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Ward": "{1}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

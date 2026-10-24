@@ -1,0 +1,67 @@
+{
+  "oracle_id": "77d5f298-06b4-49d1-9b33-f1f176665ba2",
+  "name": "Transpose",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Transpose",
+      "oracle_fingerprint": "e2fd93fe252e7acb17415f9fceefb460",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": {} },
+              { "Discard": {} },
+              { "LoseLife": { "amount": 1 } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "This", "selector": [{ "CastFrom": "Hand" }] }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Wizard",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Wizard"],
+                            "power": 0,
+                            "toughness": 1,
+                            "abilities": [
+                              {
+                                "Triggered": {
+                                  "when": {
+                                    "SpellCast": {
+                                      "what": [{ "Not": { "Type": "Creature" } }],
+                                      "by": "You"
+                                    }
+                                  },
+                                  "effects": [
+                                    {
+                                      "DealDamage": {
+                                        "source": "This",
+                                        "to": "Opponents",
+                                        "amount": 1
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Rebound" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "ce7753e0-2838-49c2-acd0-80b534f43bad",
+  "oracle_id": "0e3246ef-e0b4-49bc-a715-b69c4b6be461",
+  "multiverse_ids": [
+    676072
+  ],
+  "mtgo_id": 131023,
+  "tcgplayer_id": 579113,
+  "cardmarket_id": 788910,
+  "name": "Skola Grovedancer",
+  "lang": "en",
+  "released_at": "2024-09-27",
+  "uri": "https://api.scryfall.com/cards/ce7753e0-2838-49c2-acd0-80b534f43bad",
+  "scryfall_uri": "https://scryfall.com/card/dsc/199/skola-grovedancer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:26:41Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/e/ce7753e0-2838-49c2-acd0-80b534f43bad.jpg?1783909601",
+    "normal": "https://cards.scryfall.io/normal/front/c/e/ce7753e0-2838-49c2-acd0-80b534f43bad.jpg?1783909601",
+    "large": "https://cards.scryfall.io/large/front/c/e/ce7753e0-2838-49c2-acd0-80b534f43bad.jpg?1783909601",
+    "png": "https://cards.scryfall.io/png/front/c/e/ce7753e0-2838-49c2-acd0-80b534f43bad.png?1783909601",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/e/ce7753e0-2838-49c2-acd0-80b534f43bad.jpg?1783909601",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/e/ce7753e0-2838-49c2-acd0-80b534f43bad.jpg?1783909601",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/e/ce7753e0-2838-49c2-acd0-80b534f43bad.webp?1783909601",
+    "grid": "https://cards.scryfall.io/grid/front/c/e/ce7753e0-2838-49c2-acd0-80b534f43bad.webp?1783909601",
+    "display": "https://cards.scryfall.io/display/front/c/e/ce7753e0-2838-49c2-acd0-80b534f43bad.webp?1783909601",
+    "art": "https://cards.scryfall.io/art/front/c/e/ce7753e0-2838-49c2-acd0-80b534f43bad.webp?1783909601",
+    "crop": "https://cards.scryfall.io/crop/front/c/e/ce7753e0-2838-49c2-acd0-80b534f43bad.webp?1783909601",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/e/ce7753e0-2838-49c2-acd0-80b534f43bad.jpg?1783909601"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Enchantment Creature — Satyr Druid",
+  "oracle_text": "Whenever a land card is put into your graveyard from anywhere, you gain 1 life.\n{2}{G}: Mill a card. (Put the top card of your library into your graveyard.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Mill"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "4c822528-83c3-42c7-8708-dd1d37166819",
+  "set": "dsc",
+  "set_name": "Duskmourn: House of Horror Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/4c822528-83c3-42c7-8708-dd1d37166819",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dsc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ce7753e0-2838-49c2-acd0-80b534f43bad/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0e3246ef-e0b4-49bc-a715-b69c4b6be461&unique=prints",
+  "collector_number": "199",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"From the ashes of last night's revel, I bring the dawn of new growth.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Josh Hass",
+  "artist_ids": [
+    "8fa1fdf0-96d6-46f4-a7ff-b1c0257c3735"
+  ],
+  "illustration_id": "a9b2422a-8171-4ddb-95d4-ed39eeabc23b",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 12781,
+  "penny_rank": 13396,
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": null,
+    "tix": "0.05"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=676072&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSkola%2BGrovedancer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSkola%2BGrovedancer",
+    "edhrec": "https://edhrec.com/route/?cc=Skola+Grovedancer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F579113%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=788910&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/131023?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

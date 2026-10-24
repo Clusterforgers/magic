@@ -1,0 +1,45 @@
+{
+  "oracle_id": "c4d05f64-d1bb-4725-81ba-baf737f3066c",
+  "name": "Vengeful Regrowth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vengeful Regrowth",
+      "oracle_fingerprint": "8cc3bcb5dfe69411b16b09517fc77976",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Land" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "tapped": true } } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Plant Warrior",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Plant", "Warrior"],
+                      "power": 4,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Reach" }]
+                    }
+                  },
+                  "count": { "TargetCount": 0 }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{6}{G}{G}" } }
+      ]
+    }
+  ]
+}

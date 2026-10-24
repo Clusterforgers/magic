@@ -1,0 +1,43 @@
+{
+  "oracle_id": "4f5f2792-0cc4-4caa-b798-2ee9597f2524",
+  "name": "Sigarda's Aid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sigarda's Aid",
+      "oracle_fingerprint": "d708aebc5f5055ed4290fbe799c2075b",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] }],
+                "flash": true
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "Attach": { "what": "Triggering", "to": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

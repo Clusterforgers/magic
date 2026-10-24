@@ -1,0 +1,25 @@
+{
+  "oracle_id": "0e3246ef-e0b4-49bc-a715-b69c4b6be461",
+  "name": "Skola Grovedancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skola Grovedancer",
+      "oracle_fingerprint": "b5cfbcf4dd06ba4837799c71ed75cb3e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "OwnedBy": "You" }],
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        },
+        { "Activated": { "cost": "{2}{G}", "effects": [{ "Mill": {} }] } }
+      ]
+    }
+  ]
+}

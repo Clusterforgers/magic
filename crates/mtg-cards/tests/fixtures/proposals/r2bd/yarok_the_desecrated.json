@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Deathtouch"},{"Keyword":"Lifelink"},{"Rule":{"rule":{"TriggerAgain":{"cause":{"ZoneChange":{"what":[],"to":"Battlefield"}}}}}}]}]}

@@ -48,6 +48,9 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             Targetable::AnyTarget => Some(format!("each of up to {count} targets")),
             Targetable::Object(selector) => phrase_text(selector, Form::Targets)
                 .map(|group| format!("each of up to {count} target {group}")),
+            Targetable::Either(kinds) => {
+                either_group(kinds).map(|group| format!("each of up to {count} target {group}"))
+            }
             _ => None,
         },
     ) else {
@@ -63,6 +66,20 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             .filter(|text| text.contains(&from))
             .map(|text| text.replacen(&from, &into, 1)),
     );
+}
+
+/// "creatures and/or planeswalkers" for targets of several kinds of objects.
+fn either_group(kinds: &[Targetable]) -> Option<String> {
+    let groups: Option<Vec<String>> = kinds
+        .iter()
+        .map(|kind| match kind {
+            Targetable::Object(selector) => phrase_text(selector, Form::Targets),
+            _ => None,
+        })
+        .collect();
+    groups
+        .filter(|groups| groups.len() > 1)
+        .map(|groups| groups.join(" and/or "))
 }
 
 /// The target specifications of an ability that has them.

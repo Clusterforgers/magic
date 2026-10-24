@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7df43670-c948-464d-9bb9-db672e755f0c",
+  "name": "Singer of Swift Rivers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Singer of Swift Rivers",
+      "oracle_fingerprint": "2e99f67c9c446712a8cc69c872abf1f9",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "shield" } } }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "MayCast": { "what": [{ "Subtype": "Merfolk" }], "flash": true } } } }
+      ]
+    }
+  ]
+}

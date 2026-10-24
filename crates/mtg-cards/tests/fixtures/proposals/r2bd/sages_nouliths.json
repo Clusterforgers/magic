@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"JobSelect"},{"Static":{"affected":"Attached","mods":[{"ModifyPT":{"power":1,"toughness":0}},{"GrantAbility":{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":{"Object":[{"Type":"Creature"},"Attacking"]}}],"effects":[{"Untap":{"what":{"Target":0}}}]}}},{"AddSubtype":"Cleric"}]}},{"Keyword":{"Equip":"{3}"}}]}]}

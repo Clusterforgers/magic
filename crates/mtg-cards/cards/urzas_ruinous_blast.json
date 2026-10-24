@@ -1,0 +1,26 @@
+{
+  "oracle_id": "978e0d87-3ff2-4a73-916c-ff0dc0ab2797",
+  "name": "Urza's Ruinous Blast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urza's Ruinous Blast",
+      "oracle_fingerprint": "aee08a8ec1fdc6182bf828b089b061fb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [{ "Not": { "Type": "Land" } }, { "Not": { "Supertype": "Legendary" } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

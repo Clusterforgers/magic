@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Rule":{"rule":{"MayCast":{"what":[{"Type":"Creature"}],"flash":true}}}},{"Triggered":{"when":{"Batch":{"ZoneChange":{"what":[{"Type":"Creature"},{"ControlledBy":"You"},"Other"],"from":"Battlefield"}}},"limit":"OncePerTurn","effects":[{"CreateToken":{"token":{"Named":"clue"}}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Menace"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Mill":{"count":3}},{"PutCounters":{"on":"This","counter":"+1/+1","count":{"Sum":[{"Count":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]},{"Count":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]}]}}}]}}]}]}

@@ -1,0 +1,61 @@
+{
+  "oracle_id": "6cac6f76-f3c6-4b00-a468-166b07853401",
+  "name": "Shifting Ceratops",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shifting Ceratops",
+      "oracle_fingerprint": "f296d5e3d7667b74f291a824a6a366c7",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        { "Keyword": { "Protection": [{ "Color": "Blue" }] } },
+        {
+          "Activated": {
+            "cost": "{G}",
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Reach" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Trample" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Haste" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

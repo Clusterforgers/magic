@@ -1,0 +1,153 @@
+{
+  "object": "card",
+  "id": "053183e7-b505-49d2-b614-b704e984cb1a",
+  "oracle_id": "3d28e89d-d5e2-46b1-8dd2-d808b78f08fe",
+  "multiverse_ids": [
+    649967
+  ],
+  "mtgo_id": 122812,
+  "tcgplayer_id": 535713,
+  "cardmarket_id": 753263,
+  "name": "Unshakable Tail",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/053183e7-b505-49d2-b614-b704e984cb1a",
+  "scryfall_uri": "https://scryfall.com/card/mkc/29/unshakable-tail?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:24:04Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/5/053183e7-b505-49d2-b614-b704e984cb1a.jpg?1783913044",
+    "normal": "https://cards.scryfall.io/normal/front/0/5/053183e7-b505-49d2-b614-b704e984cb1a.jpg?1783913044",
+    "large": "https://cards.scryfall.io/large/front/0/5/053183e7-b505-49d2-b614-b704e984cb1a.jpg?1783913044",
+    "png": "https://cards.scryfall.io/png/front/0/5/053183e7-b505-49d2-b614-b704e984cb1a.png?1783913044",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/5/053183e7-b505-49d2-b614-b704e984cb1a.jpg?1783913044",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/5/053183e7-b505-49d2-b614-b704e984cb1a.jpg?1783913044",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/5/053183e7-b505-49d2-b614-b704e984cb1a.webp?1783913044",
+    "grid": "https://cards.scryfall.io/grid/front/0/5/053183e7-b505-49d2-b614-b704e984cb1a.webp?1783913044",
+    "display": "https://cards.scryfall.io/display/front/0/5/053183e7-b505-49d2-b614-b704e984cb1a.webp?1783913044",
+    "art": "https://cards.scryfall.io/art/front/0/5/053183e7-b505-49d2-b614-b704e984cb1a.webp?1783913044",
+    "crop": "https://cards.scryfall.io/crop/front/0/5/053183e7-b505-49d2-b614-b704e984cb1a.webp?1783913044",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/5/053183e7-b505-49d2-b614-b704e984cb1a.jpg?1783913044"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Zombie Detective",
+  "oracle_text": "When this creature enters and at the beginning of your upkeep, surveil 1.\nWhenever one or more creature cards are put into your graveyard from your library, investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")\n{2}, Sacrifice a Clue: Return this card from your graveyard to your hand.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Surveil",
+    "Investigate"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "ee424409-b1bf-4de2-ada6-47b9199cd572",
+      "component": "combo_piece",
+      "name": "Unshakable Tail",
+      "type_line": "Creature — Zombie Detective",
+      "uri": "https://api.scryfall.com/cards/ee424409-b1bf-4de2-ada6-47b9199cd572"
+    },
+    {
+      "object": "related_card",
+      "id": "ef607895-d6d2-44ab-a6b4-84af55fce593",
+      "component": "token",
+      "name": "Clue",
+      "type_line": "Token Artifact — Clue",
+      "uri": "https://api.scryfall.com/cards/ef607895-d6d2-44ab-a6b4-84af55fce593"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set": "mkc",
+  "set_name": "Murders at Karlov Manor Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/053183e7-b505-49d2-b614-b704e984cb1a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3d28e89d-d5e2-46b1-8dd2-d808b78f08fe&unique=prints",
+  "collector_number": "29",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Sean Murray",
+  "artist_ids": [
+    "aa53c0ff-b486-4291-bef3-656343547811"
+  ],
+  "illustration_id": "9119c449-9867-4fd3-a302-cc10242b280a",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 7836,
+  "prices": {
+    "usd": "0.34",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.25",
+    "eur_foil": null,
+    "tix": "3.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=649967&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DUnshakable%2BTail",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DUnshakable%2BTail",
+    "edhrec": "https://edhrec.com/route/?cc=Unshakable+Tail"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F535713%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=753263&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/122812?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

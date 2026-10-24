@@ -1,0 +1,39 @@
+{
+  "oracle_id": "740f9ab2-fc94-4abc-82b4-6b53116bf1a4",
+  "name": "Yawgmoth's Vile Offering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yawgmoth's Vile Offering",
+      "oracle_fingerprint": "c065cef813759ef72e3c122f0f960aa1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } },
+              { "Destroy": { "what": { "Target": 1 } } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

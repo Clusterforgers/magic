@@ -1,0 +1,54 @@
+{
+  "oracle_id": "b545e26f-2034-409c-80cc-51b72e75e6e4",
+  "name": "Thwart the Grave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thwart the Grave",
+      "oracle_fingerprint": "f4d3516d626e760b4ae4bcd8419cc41d",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Party": "You" }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Cleric" },
+                        { "Subtype": "Rogue" },
+                        { "Subtype": "Warrior" },
+                        { "Subtype": "Wizard" }
+                      ]
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Target": 1 }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

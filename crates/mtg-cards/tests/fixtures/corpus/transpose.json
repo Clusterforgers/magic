@@ -1,0 +1,154 @@
+{
+  "object": "card",
+  "id": "66392b0e-8691-42a4-bc84-03b017174a73",
+  "oracle_id": "77d5f298-06b4-49d1-9b33-f1f176665ba2",
+  "multiverse_ids": [],
+  "resource_id": "7B8894BB72FE9487D0071A5953749ED597CE22DE24D599D372CEEF537F8FBF00",
+  "mtgo_id": 140095,
+  "tcgplayer_id": 631226,
+  "cardmarket_id": 824584,
+  "name": "Transpose",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/66392b0e-8691-42a4-bc84-03b017174a73",
+  "scryfall_uri": "https://scryfall.com/card/fic/52/transpose?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:32:36Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/6/66392b0e-8691-42a4-bc84-03b017174a73.jpg?1783906356",
+    "normal": "https://cards.scryfall.io/normal/front/6/6/66392b0e-8691-42a4-bc84-03b017174a73.jpg?1783906356",
+    "large": "https://cards.scryfall.io/large/front/6/6/66392b0e-8691-42a4-bc84-03b017174a73.jpg?1783906356",
+    "png": "https://cards.scryfall.io/png/front/6/6/66392b0e-8691-42a4-bc84-03b017174a73.png?1783906356",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/6/66392b0e-8691-42a4-bc84-03b017174a73.jpg?1783906356",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/6/66392b0e-8691-42a4-bc84-03b017174a73.jpg?1783906356",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/6/66392b0e-8691-42a4-bc84-03b017174a73.webp?1783906356",
+    "grid": "https://cards.scryfall.io/grid/front/6/6/66392b0e-8691-42a4-bc84-03b017174a73.webp?1783906356",
+    "display": "https://cards.scryfall.io/display/front/6/6/66392b0e-8691-42a4-bc84-03b017174a73.webp?1783906356",
+    "art": "https://cards.scryfall.io/art/front/6/6/66392b0e-8691-42a4-bc84-03b017174a73.webp?1783906356",
+    "crop": "https://cards.scryfall.io/crop/front/6/6/66392b0e-8691-42a4-bc84-03b017174a73.webp?1783906356",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/6/66392b0e-8691-42a4-bc84-03b017174a73.jpg?1783906356"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Draw a card, then discard a card. You lose 1 life. If this spell was cast from your hand, create a 0/1 black Wizard creature token with \"Whenever you cast a noncreature spell, this token deals 1 damage to each opponent.\"\nRebound (If you cast this spell from your hand, exile it as it resolves. At the beginning of your next upkeep, you may cast this card from exile without paying its mana cost.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Rebound"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "04ae24bf-0b24-4996-afae-7bf9f9d7471c",
+      "component": "token",
+      "name": "Wizard",
+      "type_line": "Token Creature — Wizard",
+      "uri": "https://api.scryfall.com/cards/04ae24bf-0b24-4996-afae-7bf9f9d7471c"
+    },
+    {
+      "object": "related_card",
+      "id": "51cb61ab-0508-4668-8680-051d38df7ccb",
+      "component": "combo_piece",
+      "name": "Transpose",
+      "type_line": "Instant",
+      "uri": "https://api.scryfall.com/cards/51cb61ab-0508-4668-8680-051d38df7ccb"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/66392b0e-8691-42a4-bc84-03b017174a73/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A77d5f298-06b4-49d1-9b33-f1f176665ba2&unique=prints",
+  "collector_number": "52",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Toni Infante",
+  "artist_ids": [
+    "958bbc4a-3420-439a-b261-c988b8e4b580"
+  ],
+  "illustration_id": "0ee19faf-5eda-4d42-b160-1f1ca061d3f9",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "ffxiv",
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 2649,
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.49",
+    "eur_foil": null,
+    "tix": "2.63"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTranspose",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTranspose",
+    "edhrec": "https://edhrec.com/route/?cc=Transpose"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F631226%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824584&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/140095?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Cascade"},{"Spell":{"effects":[{"DealDamage":{"to":{"Each":[{"AnyOf":[{"Type":"Creature"},{"Type":"Planeswalker"}]},{"ControlledBy":"Opponents"}]},"amount":{"Tallied":{"who":"You","what":"SpellsCast"}}}}]}}]}]}

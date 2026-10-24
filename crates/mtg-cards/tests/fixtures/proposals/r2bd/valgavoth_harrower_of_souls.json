@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Keyword":{"Ward":[{"PayLife":2}]}},{"Triggered":{"when":{"Nth":{"event":{"LifeLost":{"who":"Opponents"}},"nth":1}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}},{"Draw":{}}]}}]}]}

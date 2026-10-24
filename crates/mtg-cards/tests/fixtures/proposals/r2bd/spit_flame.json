@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"DealDamage":{"source":"This","to":{"Target":0},"amount":4}}]}},{"Triggered":{"when":{"ZoneChange":{"what":[{"Subtype":"Dragon"},{"ControlledBy":"You"}],"to":"Battlefield"}},"from":"Graveyard","effects":[{"Pay":{"cost":"{R}","paid":[{"Move":{"what":"This","to":"Hand"}}]}}]}}]}]}

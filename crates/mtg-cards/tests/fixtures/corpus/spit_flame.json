@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "5fb4fa09-2864-4973-aa49-088043f6a6d1",
+  "oracle_id": "f63278e0-3c67-421d-87ce-67725e5e74df",
+  "multiverse_ids": [
+    696390
+  ],
+  "mtgo_id": 138405,
+  "tcgplayer_id": 624943,
+  "cardmarket_id": 819307,
+  "name": "Spit Flame",
+  "lang": "en",
+  "released_at": "2025-04-11",
+  "uri": "https://api.scryfall.com/cards/5fb4fa09-2864-4973-aa49-088043f6a6d1",
+  "scryfall_uri": "https://scryfall.com/card/tdc/234/spit-flame?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T01:44:19Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/f/5fb4fa09-2864-4973-aa49-088043f6a6d1.jpg?1783907059",
+    "normal": "https://cards.scryfall.io/normal/front/5/f/5fb4fa09-2864-4973-aa49-088043f6a6d1.jpg?1783907059",
+    "large": "https://cards.scryfall.io/large/front/5/f/5fb4fa09-2864-4973-aa49-088043f6a6d1.jpg?1783907059",
+    "png": "https://cards.scryfall.io/png/front/5/f/5fb4fa09-2864-4973-aa49-088043f6a6d1.png?1783907059",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/f/5fb4fa09-2864-4973-aa49-088043f6a6d1.jpg?1783907059",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/f/5fb4fa09-2864-4973-aa49-088043f6a6d1.jpg?1783907059",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/f/5fb4fa09-2864-4973-aa49-088043f6a6d1.webp?1783907059",
+    "grid": "https://cards.scryfall.io/grid/front/5/f/5fb4fa09-2864-4973-aa49-088043f6a6d1.webp?1783907059",
+    "display": "https://cards.scryfall.io/display/front/5/f/5fb4fa09-2864-4973-aa49-088043f6a6d1.webp?1783907059",
+    "art": "https://cards.scryfall.io/art/front/5/f/5fb4fa09-2864-4973-aa49-088043f6a6d1.webp?1783907059",
+    "crop": "https://cards.scryfall.io/crop/front/5/f/5fb4fa09-2864-4973-aa49-088043f6a6d1.webp?1783907059",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/f/5fb4fa09-2864-4973-aa49-088043f6a6d1.jpg?1783907059"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Spit Flame deals 4 damage to target creature.\nWhenever a Dragon you control enters, you may pay {R}. If you do, return this card from your graveyard to your hand.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+  "set": "tdc",
+  "set_name": "Tarkir: Dragonstorm Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atdc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tdc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5fb4fa09-2864-4973-aa49-088043f6a6d1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af63278e0-3c67-421d-87ce-67725e5e74df&unique=prints",
+  "collector_number": "234",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Rahn",
+  "artist_ids": [
+    "7742047e-0f80-4c0f-a530-d07460165e86"
+  ],
+  "illustration_id": "4a47b35f-dce3-443a-8d5f-b126d22fc3fc",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 4578,
+  "penny_rank": 9233,
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.25",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=696390&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSpit%2BFlame",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSpit%2BFlame",
+    "edhrec": "https://edhrec.com/route/?cc=Spit+Flame"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F624943%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=819307&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/138405?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

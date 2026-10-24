@@ -1,0 +1,42 @@
+{
+  "oracle_id": "b1a3b2ab-d9f8-4a0a-b2e2-aaa9989b2e41",
+  "name": "Surtland Elementalist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surtland Elementalist",
+      "oracle_fingerprint": "251273fa6075c91a93bf9dd4ce6c035d",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              { "OneOf": [[{ "RevealFromHand": { "filter": [{ "Subtype": "Giant" }] } }], "{2}"] }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "spell"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "spell" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

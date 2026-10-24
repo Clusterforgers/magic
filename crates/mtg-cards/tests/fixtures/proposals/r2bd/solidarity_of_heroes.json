@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"CostModifier":{"applies_to":["This"],"change":"Increase","mana":"{1}{G}","per":{"Sum":[{"TargetCount":0},-1]}}},{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0,"max":null}}],"effects":[{"MultiplyCounters":{"on":{"Target":0},"counter":"+1/+1"}}]}}]}]}

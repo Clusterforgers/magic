@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "43208437-9341-4bea-a1e0-556d9a5cb25b",
+  "oracle_id": "7df43670-c948-464d-9bb9-db672e755f0c",
+  "multiverse_ids": [
+    640058
+  ],
+  "mtgo_id": 119202,
+  "tcgplayer_id": 525900,
+  "cardmarket_id": 743475,
+  "name": "Singer of Swift Rivers",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/43208437-9341-4bea-a1e0-556d9a5cb25b",
+  "scryfall_uri": "https://scryfall.com/card/lcc/98/singer-of-swift-rivers?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:38:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/3/43208437-9341-4bea-a1e0-556d9a5cb25b.jpg?1783913905",
+    "normal": "https://cards.scryfall.io/normal/front/4/3/43208437-9341-4bea-a1e0-556d9a5cb25b.jpg?1783913905",
+    "large": "https://cards.scryfall.io/large/front/4/3/43208437-9341-4bea-a1e0-556d9a5cb25b.jpg?1783913905",
+    "png": "https://cards.scryfall.io/png/front/4/3/43208437-9341-4bea-a1e0-556d9a5cb25b.png?1783913905",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/3/43208437-9341-4bea-a1e0-556d9a5cb25b.jpg?1783913905",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/3/43208437-9341-4bea-a1e0-556d9a5cb25b.jpg?1783913905",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/3/43208437-9341-4bea-a1e0-556d9a5cb25b.webp?1783913905",
+    "grid": "https://cards.scryfall.io/grid/front/4/3/43208437-9341-4bea-a1e0-556d9a5cb25b.webp?1783913905",
+    "display": "https://cards.scryfall.io/display/front/4/3/43208437-9341-4bea-a1e0-556d9a5cb25b.webp?1783913905",
+    "art": "https://cards.scryfall.io/art/front/4/3/43208437-9341-4bea-a1e0-556d9a5cb25b.webp?1783913905",
+    "crop": "https://cards.scryfall.io/crop/front/4/3/43208437-9341-4bea-a1e0-556d9a5cb25b.webp?1783913905",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/3/43208437-9341-4bea-a1e0-556d9a5cb25b.jpg?1783913905"
+  },
+  "mana_cost": "{1}{G}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Merfolk Shaman",
+  "oracle_text": "Flash\nWhen this creature enters, put a shield counter on another target creature you control. (If it would be dealt damage or destroyed, remove a shield counter from it instead.)\nYou may cast Merfolk spells as though they had flash.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Flash"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set": "lcc",
+  "set_name": "The Lost Caverns of Ixalan Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/43208437-9341-4bea-a1e0-556d9a5cb25b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7df43670-c948-464d-9bb9-db672e755f0c&unique=prints",
+  "collector_number": "98",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Gabor Szikszai",
+  "artist_ids": [
+    "44c3877f-8771-43dc-9e40-f4c765f59d2e"
+  ],
+  "illustration_id": "9c3fd1d9-3eda-4ce1-9b9e-a9695e980ceb",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 6144,
+  "preview": {
+    "source": "Star City Games",
+    "source_uri": "https://www.youtube.com/watch?v=3upC_Mg2YxQ",
+    "previewed_at": "2023-11-01"
+  },
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.39",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=640058&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSinger%2Bof%2BSwift%2BRivers",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSinger%2Bof%2BSwift%2BRivers",
+    "edhrec": "https://edhrec.com/route/?cc=Singer+of+Swift+Rivers"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F525900%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743475&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/119202?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

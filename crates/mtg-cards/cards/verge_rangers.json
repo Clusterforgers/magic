@@ -1,0 +1,32 @@
+{
+  "oracle_id": "aece819e-3678-48bc-9677-d06ebfa58b4e",
+  "name": "Verge Rangers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Verge Rangers",
+      "oracle_fingerprint": "c08e5730badd762888ccc4d4c96410ff",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": [{ "Type": "Land" }], "from": "Library", "play": true } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Gt",
+                "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

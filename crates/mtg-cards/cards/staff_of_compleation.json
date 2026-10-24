@@ -1,0 +1,29 @@
+{
+  "oracle_id": "11c7662f-e688-40a6-98fd-6ae89d231b44",
+  "name": "Staff of Compleation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Staff of Compleation",
+      "oracle_fingerprint": "bccf94fc7c484845afb094483b72899e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayLife": 1 }],
+            "targets": [{ "what": { "Object": [{ "OwnedBy": "You" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayLife": 2 }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        { "Activated": { "cost": ["Tap", { "PayLife": 3 }], "effects": [{ "Proliferate": {} }] } },
+        { "Activated": { "cost": ["Tap", { "PayLife": 4 }], "effects": [{ "Draw": {} }] } },
+        { "Activated": { "cost": "{5}", "effects": [{ "Untap": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

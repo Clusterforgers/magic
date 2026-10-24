@@ -287,6 +287,7 @@ mod statics;
 mod stations;
 mod step_writers;
 mod strive;
+mod sz3_writers;
 mod sz_more_writers;
 mod sz_writers;
 mod tail_alone;

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "9c2fd3a3-96f2-4e84-85a9-77698c2f83aa",
+  "name": "Volcanic Salvo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Volcanic Salvo",
+      "oracle_fingerprint": "413c2a76f52adc4c8dc5d22d01497c8f",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Total": {
+                "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "stat": "Power"
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": [{ "Type": "Creature" }] },
+                    { "Object": [{ "Type": "Planeswalker" }] }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 6 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

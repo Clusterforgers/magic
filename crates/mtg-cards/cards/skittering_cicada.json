@@ -1,0 +1,37 @@
+{
+  "oracle_id": "ac141679-6ada-49a8-b225-d1a20c3838db",
+  "name": "Skittering Cicada",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skittering Cicada",
+      "oracle_fingerprint": "ca83bafc715896705996186cacf30681",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Rule": { "rule": { "MayCast": { "what": ["Colorless"], "flash": true } } } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["Colorless"], "by": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddKeyword": "Trample" },
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                        "toughness": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
