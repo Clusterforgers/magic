@@ -102,7 +102,11 @@ fn rionya_makes_one_token_and_one_more_for_each_instant_or_sorcery_cast_this_tur
     driver.pass_until(Step::BeginCombat)?;
     aim(&mut driver, "Ally")?;
     let copies = tokens_named(&driver, "Ally");
-    assert_eq!(copies.len(), 1 + spells, "one plus the {spells} spells cast");
+    assert_eq!(
+        copies.len(),
+        1 + spells,
+        "one plus the {spells} spells cast"
+    );
     assert!(copies.iter().all(|id| hasty(&driver, *id)), "with haste");
     assert_eq!(named(&driver, "Ally").len(), copies.len() + 1);
     replays(&driver, &setup);
@@ -117,9 +121,7 @@ fn rionya_makes_one_token_and_one_more_for_each_instant_or_sorcery_cast_this_tur
 }
 
 #[rstest]
-fn rionya_does_not_count_a_creature_spell(
-    #[values(2, 4)] seats: usize,
-) -> Result<(), ScriptError> {
+fn rionya_does_not_count_a_creature_spell(#[values(2, 4)] seats: usize) -> Result<(), ScriptError> {
     let hand = ["Lightning Bolt", "Monastery Swiftspear"];
     let permanents = ["Rionya, Fire Dancer", "Ally"];
     let mut driver = Driver::from_scenario(table(seats, &hand, &permanents))?;
@@ -156,7 +158,11 @@ fn living_laser_makes_a_token_for_each_card_discarded_that_enters_attacking_and_
     driver.attack(&[("Living Laser", 1)])?;
     settle(&mut driver)?;
     let copies = tokens_named(&driver, "Living Laser");
-    assert_eq!(copies.len(), discarded, "one for each of the {discarded} discards");
+    assert_eq!(
+        copies.len(),
+        discarded,
+        "one for each of the {discarded} discards"
+    );
     for id in &copies {
         let object = driver.state().object(*id).unwrap();
         assert!(object.permanent().unwrap().tapped(), "tapped");
@@ -213,7 +219,15 @@ fn ghired_populates_a_token_that_enters_tapped_and_attacking(
         .iter()
         .find(|id| attackers.iter().any(|attacker| attacker.object() == **id))
         .expect("the copy attacks");
-    assert!(driver.state().object(*new).unwrap().permanent().unwrap().tapped());
+    assert!(
+        driver
+            .state()
+            .object(*new)
+            .unwrap()
+            .permanent()
+            .unwrap()
+            .tapped()
+    );
     replays(&driver, &setup);
     Ok(())
 }
