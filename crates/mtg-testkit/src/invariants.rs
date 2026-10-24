@@ -827,7 +827,7 @@ impl InvariantChecker {
         let restored = match event {
             Event::ZoneChanged {
                 object,
-                from: Zone::Battlefield,
+                from: Zone::Battlefield | Zone::PhasedOut,
                 ..
             }
             | Event::CreatureDied { object, .. } => self
@@ -1026,9 +1026,10 @@ impl InvariantChecker {
                 Ok(())
             }
             // An object that leaves the battlefield is another object when it comes back (CR 400.7), with no damage.
+            // A phased-out permanent is on the battlefield too, so one moved by hand loses everything the same way.
             Event::ZoneChanged {
                 object,
-                from: Zone::Battlefield,
+                from: Zone::Battlefield | Zone::PhasedOut,
                 ..
             }
             | Event::CreatureDied { object, .. } => {

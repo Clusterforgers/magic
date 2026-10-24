@@ -25,7 +25,8 @@ use crate::wording;
 use crate::zones::Zone;
 
 /// The objects the reference stands for that are still the ones it named, once each, in the order named. An ability
-/// or a spell on the stack does not move by this effect.
+/// or a spell on the stack does not move by this effect, nor does a permanent that is phased out: it is treated as
+/// though it does not exist (CR 702.26b).
 fn movers<'a>(
     cx: &'a Cx<'_>,
     what: &mtg_cards::refs::Ref,
@@ -36,7 +37,7 @@ fn movers<'a>(
         let object = state.object(named.id).filter(|object| {
             object.counter() == named.counter
                 && object.kind() != ObjectKind::Ability
-                && object.zone() != Zone::Stack
+                && !matches!(object.zone(), Zone::Stack | Zone::PhasedOut)
         });
         if let Some(object) = object
             && !found.iter().any(|seen| seen.id() == object.id())
@@ -379,7 +380,7 @@ fn into_libraries(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a move sends each object named to its owner's hand or graveyard or into its owner's library on top, on the bottom or shuffled in; cards put into one library together are put in the order their owner chooses, asked only when there are two or more, and the log leaves the library in exactly that order; an object already in place stays, a stale one or a spell on the stack is passed over, a move from the battlefield carries what it was, a card put onto the battlefield enters untapped or tapped under its owner or the player named while an instant or sorcery card and a permanent already there stay, and an order the engine does not play is refused by name; a transforming double-faced card put onto the battlefield transformed comes in back face up as one object with the mana value of its front face, and any other card stays where it is.
+    //! Goal: a move sends each object named to its owner's hand or graveyard or into its owner's library on top, on the bottom or shuffled in; cards put into one library together are put in the order their owner chooses, asked only when there are two or more, and the log leaves the library in exactly that order; an object already in place stays, a stale one or a spell on the stack is passed over, a move from the battlefield carries what it was, a card put onto the battlefield enters untapped or tapped under its owner or the player named while an instant or sorcery card and a permanent already there stay, a permanent that is phased out does not move at all, and an order the engine does not play is refused by name; a transforming double-faced card put onto the battlefield transformed comes in back face up as one object with the mana value of its front face, and any other card stays where it is.
     use rstest::rstest;
 
     use std::sync::Arc;
@@ -580,6 +581,28 @@ mod tests {
         assert_eq!(snapshots.len(), 1);
         assert_eq!(snapshots[0].id, wolf);
         assert_eq!(snapshots[0].zone, Zone::Battlefield);
+    }
+
+    #[rstest]
+    #[case::hand(r#""Hand""#)]
+    #[case::graveyard(r#""Graveyard""#)]
+    #[case::library(TOP)]
+    #[case::battlefield(r#"{"Battlefield":{}}"#)]
+    fn a_permanent_that_is_phased_out_does_not_move(#[case] there: &str) {
+        let mut game = game();
+        let wolf = game.zone(Zone::Battlefield)[1];
+        apply_event(
+            &mut game,
+            &Event::PermanentPhasedOut {
+                object: wolf,
+                controller: ME,
+                indirect: false,
+            },
+        )
+        .unwrap();
+        let (events, snapshots) =
+            done(run_with(&game, &[wolf], Vec::new(), &moving(there)).unwrap());
+        assert_eq!((events, snapshots.len()), (Vec::new(), 0));
     }
 
     #[test]

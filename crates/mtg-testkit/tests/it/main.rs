@@ -337,6 +337,7 @@ mod riot;
 mod rules_fuzz;
 mod rules_games;
 mod saga;
+mod saga_phasing;
 mod saga_transform;
 mod search_counts;
 mod search_effects;

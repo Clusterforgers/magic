@@ -16,7 +16,8 @@ use crate::zones::Zone;
 /// is in. Every move carries `ZoneCause::Exiled` and the step carries what the object was. Indestructible does not
 /// matter. An ability, which is not an object that changes zones, the spell that is resolving (unless the effect names it as
 /// `This`, "Exile ~.": it leaves the stack by its own effect and no graveyard move follows), an object already in exile,
-/// one that has changed zones since it was named and a name that repeats are passed over. The effect's `as` name
+/// a permanent that is phased out, one that has changed zones since it was named and a name that repeats are passed
+/// over. The effect's `as` name
 /// holds the objects exiled as the objects they become in exile (CR 400.7), so a later step can return them.
 ///
 /// With the duration `WhileSourceOnBattlefield` ("until ~ leaves the battlefield") the move carries the source in its
@@ -60,7 +61,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         let resolving_spell = object.zone() == Zone::Stack
             && object.id() == cx.resolving.object()
             && !matches!(what, Ref::This);
-        if object.kind() == ObjectKind::Ability || resolving_spell || object.zone() == Zone::Exile {
+        // A phased-out permanent is treated as though it does not exist (CR 702.26b): an ability already on the stack
+        // cannot exile it, so "exile this, then return it" leaves it phased out with its counters.
+        if object.kind() == ObjectKind::Ability
+            || resolving_spell
+            || matches!(object.zone(), Zone::Exile | Zone::PhasedOut)
+        {
             continue;
         }
         snapshots.extend(snapshot(state, object.id()));
@@ -88,7 +94,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: an exile moves each object it names that is still where it was named to exile, from the battlefield, a graveyard, a hand, a library or the stack, all together, with the cause and as the object was, whether or not it is indestructible; abilities, the resolving spell (unless it exiles itself by name), objects already exiled, names of objects that have changed zones and names that repeat are passed over; a chosen target is exiled while it is legal and the steps after it still read it as it was; the objects exiled are bound to the effect name as the objects they become in exile.
+    //! Goal: an exile moves each object it names that is still where it was named to exile, from the battlefield, a graveyard, a hand, a library or the stack, all together, with the cause and as the object was, whether or not it is indestructible; abilities, the resolving spell (unless it exiles itself by name), objects already exiled, permanents that are phased out, names of objects that have changed zones and names that repeat are passed over; a chosen target is exiled while it is legal and the steps after it still read it as it was; the objects exiled are bound to the effect name as the objects they become in exile.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -350,6 +356,37 @@ mod tests {
             .collect();
         assert_eq!(moves, expected);
         assert_eq!(shots, expected.iter().map(|m| m.0).collect::<Vec<_>>());
+    }
+
+    #[rstest]
+    #[case::as_this(r#"{"Exile":{"what":"This"}}"#)]
+    #[case::as_a_bound_name(r#"{"Exile":{"what":{"Bound":"them"}}}"#)]
+    #[case::as_a_target(r#"{"Exile":{"what":{"Target":0}}}"#)]
+    fn a_permanent_that_is_phased_out_is_not_exiled_by_a_name_that_still_names_it(
+        #[case] json: &str,
+    ) {
+        let mut game = game();
+        let source = named(&game, "Source");
+        apply_event(
+            &mut game,
+            &Event::PermanentPhasedOut {
+                object: source.id,
+                controller: ME,
+                indirect: false,
+            },
+        )
+        .unwrap();
+        let bindings: Bindings = [("them".to_owned(), vec![Target::Object(source)])].into();
+        let run = run_with(
+            &game,
+            None,
+            &bindings,
+            vec![vec![Target::Object(source)]],
+            &[on(r#"[{"Type":"Creature"}]"#)],
+            &effect(json),
+        )
+        .unwrap();
+        assert_eq!(exiled(run).0, []);
     }
 
     #[test]
