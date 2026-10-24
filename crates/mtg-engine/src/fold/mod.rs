@@ -135,6 +135,8 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::CopyCeased { object } => crate::copies::fold_card_ceased(state, *object),
         Event::AbilityCopied(copy) => crate::copies::fold_ability(state, copy),
         Event::CopyEnded { object } => crate::copies::fold_ended(state, *object),
+        Event::Prepared { object } => set_prepared(state, *object, true),
+        Event::Unprepared { object } => set_prepared(state, *object, false),
         Event::Crewed { .. } => tally_crewed(state, event),
         // The change follows as events of its own; the action only restarts the round, so the other seats see it.
         Event::ManualAction { .. } => {
@@ -261,8 +263,6 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::PriorityPassed { player } => pass_priority(state, *player)?,
         Event::Transformed { object, face } => set_face(state, *object, *face)?,
         Event::Flipped { object } => flip(state, *object)?,
-        Event::Prepared { object } => set_prepared(state, *object, true)?,
-        Event::Unprepared { object } => set_prepared(state, *object, false)?,
         Event::DayNightChanged { .. }
         | Event::MonarchChanged { .. }
         | Event::CitysBlessingGained { .. } => designate(state, event),

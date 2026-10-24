@@ -17,7 +17,7 @@ use crate::events::Event;
 use crate::faces;
 use crate::fold::apply_event;
 use crate::mana::{ManaOption, ManaPool};
-use crate::object::{GameObject, ObjectRef};
+use crate::object::{GameObject, ObjectRef, PermanentState};
 use crate::state::GameState;
 use crate::ways;
 use crate::zones::Zone;
@@ -31,7 +31,7 @@ fn prepared_permanent(state: &GameState, player: PlayerId, id: ObjectId) -> Opti
     state.object(id).filter(|object| {
         object.zone() == Zone::Battlefield
             && object.whole_card().layout == Layout::Prepare
-            && object.permanent().is_some_and(|held| held.prepared())
+            && object.permanent().is_some_and(PermanentState::prepared)
             && controller_of_object(state, object) == player
     })
 }
@@ -107,7 +107,7 @@ pub(crate) fn permanent_of(state: &GameState, copy: &GameObject) -> Option<Objec
         .filter(|object| {
             object.counter() == of.counter
                 && object.zone() == Zone::Battlefield
-                && object.permanent().is_some_and(|held| held.prepared())
+                && object.permanent().is_some_and(PermanentState::prepared)
         })
         .map(GameObject::reference)
 }

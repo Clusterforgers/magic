@@ -2201,6 +2201,7 @@ impl Writer<'_> {
             } => format!("attach ~ to {}", self.object(to)?),
             Effect::Transform { what } => format!("transform {}", self.object(what)?),
             Effect::Flip { what } => format!("flip {}", self.object(what)?),
+            Effect::Prepare { .. } => super::prepare::becomes_prepared_text(effect)?,
             Effect::If {
                 condition: Condition::Not(_),
                 ..

@@ -11,6 +11,7 @@ Accomplished Automaton
 Adaptive Snapjaw
 Adorned Pouncer
 Adriana, Captain of the Guard
+Adventurous Eater // Have a Bite
 Aeromunculus
 Aether Gale
 Aether Hub
@@ -291,6 +292,7 @@ Deep Analysis
 Deep Forest Hermit
 Deepfathom Skulker
 Deeproot Waters
+Defacing Duskmage // Vandal's Edit
 Defile
 Delver of Secrets // Insectile Aberration
 Demolition Field
@@ -347,6 +349,7 @@ Echo Mage
 Echo Storm
 Echoes of the Kin Tree
 Eel Umbra
+Eiganjo Dynastorian // Replenish
 Elder Owyn Lyons
 Eldrazi Conscription
 Eldritch Immunity
@@ -476,6 +479,7 @@ Gluttonous Troll
 Gnarled Professor
 Gnarlwood Dryad
 Goblin Chieftain
+Goblin Glasswright // Craft with Pride
 Goblin Spy
 Goblin War Buggy
 Goblin-town Flunkies
@@ -615,6 +619,7 @@ Kessig Wolf Run
 Kingpin's Pet
 Kinjalli's Sunwing
 Kinsbaile Courier
+Kirol, History Buff // Pack a Punch
 Kitchen Finks
 Klauth, Unrivaled Ancient
 Knight of Dusk's Shadow

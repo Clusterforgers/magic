@@ -1,0 +1,45 @@
+{
+  "oracle_id": "09b7ea91-2620-4c45-af3c-60bbeab89966",
+  "name": "Eiganjo Dynastorian // Replenish",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eiganjo Dynastorian",
+      "oracle_fingerprint": "0f76c4cd3c1920ae5c28dbade5d026f3",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at_least": 2
+              }
+            },
+            "effects": [{ "Prepare": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Replenish",
+      "oracle_fingerprint": "14bd2bbdf10b577c8a31f79080c25b74",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "Type": "Enchantment" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

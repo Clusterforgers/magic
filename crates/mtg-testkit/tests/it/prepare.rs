@@ -3,6 +3,7 @@
 
 use mtg_core::ids::ObjectId;
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice, PriorityAction};
+use mtg_engine::object::PermanentState;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, apply_event};
@@ -39,7 +40,7 @@ fn prepared(driver: &Driver, id: ObjectId) -> bool {
         .state()
         .object(id)
         .and_then(|object| object.permanent())
-        .is_some_and(|held| held.prepared())
+        .is_some_and(PermanentState::prepared)
 }
 
 /// Seat 0 holds a Soothing Owl and two Plains in the first main phase; the Owl is cast and has entered.

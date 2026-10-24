@@ -41,7 +41,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 26] = [
+const TEMPLATES: [Template; 27] = [
     entering,
     entering_tapped_if,
     group_enters_tapped,
@@ -51,6 +51,7 @@ const TEMPLATES: [Template; 26] = [
     copies::enters_as_copy,
     as_entering,
     super::day_night::starts_the_day,
+    super::prepare::enters_prepared,
     rule,
     super::player_keywords::ability,
     lands::from_a_zone,
@@ -1184,6 +1185,7 @@ pub fn texts(ability: &Ability) -> Vec<String> {
 fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> {
     match (by, condition) {
         (ReplaceBy::Tapped, None) => vec!["~ enters tapped".to_owned()],
+        (ReplaceBy::EntersPrepared, None) => vec!["~ enters prepared".to_owned()],
         (ReplaceBy::Tapped, Some(Condition::Not(held))) => holds_texts(held)
             .into_iter()
             .map(|held| format!("~ enters tapped unless {held}"))
