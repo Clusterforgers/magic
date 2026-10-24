@@ -57,6 +57,7 @@ use super::flicker;
 use super::group_copies;
 use super::group_pump;
 use super::instead_pairs;
+use super::joined;
 use super::kicked_copies;
 use super::lands;
 use super::library;
@@ -352,6 +353,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     let more = group_pump::wordings(ability, &texts);
     texts.extend(more);
     let more = changes::wordings(&texts);
+    texts.extend(more);
+    let more = joined::wordings(&texts);
     texts.extend(more);
     let counted = where_x::wordings(ability);
     let pronouns = create::pronoun_wordings(&counted);

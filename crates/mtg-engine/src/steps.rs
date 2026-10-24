@@ -60,6 +60,7 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
                     .filter(|id| {
                         active.is_some()
                             && controller_of(state, **id) == active
+                            && !crate::characteristics::doesnt_untap(state, **id)
                             && state
                                 .object(**id)
                                 .and_then(GameObject::permanent)
