@@ -369,6 +369,9 @@ fn counted_text(selector: &Selector) -> Option<String> {
 /// "creatures that died this turn" (every player), "nontoken creatures put into your graveyard from the battlefield
 /// this turn" (yours): the creatures the game counted as they left the battlefield, after "the number of".
 fn died(r: &mut Reader<'_>) -> Option<Amount> {
+    if r.words("cards you've drawn this turn") {
+        return Some(drawn());
+    }
     let what = if r.word("nontoken") {
         TurnTally::NontokenCreaturesDied
     } else {
@@ -384,8 +387,19 @@ fn died(r: &mut Reader<'_>) -> Option<Amount> {
     Some(Amount::Tallied { who, what })
 }
 
-/// "creature put into your graveyard from the battlefield this turn", after "for each".
+/// The cards the player drew this turn.
+fn drawn() -> Amount {
+    Amount::Tallied {
+        who: Ref::You,
+        what: TurnTally::Drawn,
+    }
+}
+
+/// "creature put into your graveyard from the battlefield this turn" or "card you've drawn this turn", after "for each".
 pub(super) fn died_each(r: &mut Reader<'_>) -> Option<Amount> {
+    if r.words("card you've drawn this turn") {
+        return Some(drawn());
+    }
     let what = if r.word("nontoken") {
         TurnTally::NontokenCreaturesDied
     } else {
@@ -404,6 +418,10 @@ pub(super) fn died_text(amount: &Amount, each: bool) -> Option<String> {
     let Amount::Tallied { who, what } = amount else {
         return None;
     };
+    if *what == TurnTally::Drawn {
+        let noun = if each { "card" } else { "cards" };
+        return (*who == Ref::You).then(|| format!("{noun} you've drawn this turn"));
+    }
     let kind = match what {
         TurnTally::CreaturesDied => "",
         TurnTally::NontokenCreaturesDied => "nontoken ",

@@ -75,6 +75,15 @@ fn this_turn(r: &mut Reader<'_>) -> Option<Condition> {
             1,
         );
     }
+    if r.words("you played a land this turn") {
+        return at_least(
+            Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::LandsPlayed,
+            },
+            1,
+        );
+    }
     if r.words("you attacked with") {
         let number = quantity(r).filter(|number| *number > 1)?;
         r.need("or more creatures this turn")?;
@@ -177,6 +186,13 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
             },
             Cmp::Ge,
         ) if number == 1 => vec!["you gained life this turn".to_owned()],
+        (
+            Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::LandsPlayed,
+            },
+            Cmp::Ge,
+        ) if number == 1 => vec!["you played a land this turn".to_owned()],
         (
             Amount::Tallied {
                 who: Ref::You,

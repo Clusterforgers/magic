@@ -394,6 +394,7 @@ Fight Rigging
 Finch Formation
 Fire-Lit Thicket
 Firestorm Hellkite
+Fists of Flame
 Flame Jab
 Flamebraider
 Flatline
@@ -579,6 +580,7 @@ Klauth, Unrivaled Ancient
 Knight of Dusk's Shadow
 Knight of the Last Breath
 Knights of the Black Rose
+Knowledge Is Power
 Kolaghan Skirmisher
 Kolvori, God of Kinship // The Ringhart Crest
 Kongming, "Sleeping Dragon"
@@ -590,6 +592,7 @@ Krosan Cloudscraper
 Krosan Colossus
 Krosan Grip
 Krosan Verge
+Kydele, Chosen of Kruphix
 Lat-Nam Adept
 Latchkey Faerie
 Laughing Mad
@@ -844,6 +847,7 @@ Righteous Avengers
 Riptide Survivor
 Rising Miasma
 Rite of Replication
+River of Tears
 Riveteers Requisitioner
 Rob the Archives
 Rocksteady, Mutant Marauder
@@ -1109,6 +1113,9 @@ Universal Automaton
 Universal Surveillance
 Unstable Molecule Suit
 Urabrask the Hidden
+Urza's Mine
+Urza's Power Plant
+Urza's Tower
 Uthros Research Craft
 Uthros Scanship
 Utopia Sprawl

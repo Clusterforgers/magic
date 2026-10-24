@@ -1,0 +1,27 @@
+{
+  "oracle_id": "5fca0ce6-e6ba-4319-b3c4-b4d48901e9b4",
+  "name": "Kydele, Chosen of Kruphix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kydele, Chosen of Kruphix",
+      "oracle_fingerprint": "2f49ae9abc98f97f91c97642136e241c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "times": { "Tallied": { "who": "You", "what": "Drawn" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

@@ -683,6 +683,12 @@ fn counter_on_it(r: &mut Reader<'_>) -> Option<CounterKind> {
 pub fn subtype(r: &mut Reader<'_>) -> Option<String> {
     r.attempt(|r| {
         let name = r.name()?;
+        if let Some(whole) = r.attempt(|r| {
+            let second = r.name()?;
+            super::subtypes::is_two_word_land(name, second).then(|| format!("{name} {second}"))
+        }) {
+            return Some(whole);
+        }
         r.is_subtype(name).then(|| name.to_owned())
     })
 }

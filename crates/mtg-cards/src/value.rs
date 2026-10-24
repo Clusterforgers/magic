@@ -185,6 +185,10 @@ pub enum TurnTally {
     CreaturesDied,
     /// The same without the tokens ("for each nontoken creature put into your graveyard from the battlefield this turn").
     NontokenCreaturesDied,
+    /// The cards the player drew this turn ("for each card you've drawn this turn").
+    Drawn,
+    /// The lands the player played this turn: a land put onto the battlefield by an effect is not played (CR 305.1).
+    LandsPlayed,
 }
 
 /// A number, fixed or worked out when the effect runs.

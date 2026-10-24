@@ -224,6 +224,7 @@ mod library;
 mod life;
 mod life_gain;
 mod lords;
+mod mana_leftovers;
 mod mana_spent;
 mod mana_triggers;
 mod mana_wordings;

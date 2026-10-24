@@ -170,6 +170,7 @@ fn land_played(
         permanent.face = face;
     }
     state.turn.lands_played += 1;
+    state.tally(player, Tally::LandsPlayed);
     reset_passes(state);
     Ok(())
 }

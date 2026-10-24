@@ -248,7 +248,11 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
 /// What must hold for a permanent not to enter tapped: one thing, or several joined by "or" ("you have two or more
 /// opponents or a player has 13 or less life").
 pub(super) fn holds(r: &mut Reader<'_>) -> Option<Condition> {
-    let mut any = vec![held(r)?];
+    let first = held(r)?;
+    if let Some(all) = r.attempt(|r| and_also(r, &first)) {
+        return Some(all);
+    }
+    let mut any = vec![first];
     while let Some(next) = r.attempt(|r| {
         r.need("or")?;
         held(r)
@@ -260,6 +264,35 @@ pub(super) fn holds(r: &mut Reader<'_>) -> Option<Condition> {
     } else {
         Some(Condition::Any(any))
     }
+}
+
+/// "and an Urza's Power-Plant" after "you control an Urza's Mine": more kinds of permanent the same player controls, the
+/// verb said once; all of them must be controlled.
+fn and_also(r: &mut Reader<'_>, first: &Condition) -> Option<Condition> {
+    let Condition::Compare {
+        left: Amount::Count(Selector(preds)),
+        op: Cmp::Ge,
+        right: Amount::Fixed(1),
+    } = first
+    else {
+        return None;
+    };
+    let who = preds.iter().find_map(|pred| match pred {
+        Pred::ControlledBy(who) => Some(who.clone()),
+        _ => None,
+    })?;
+    let mut all = vec![first.clone()];
+    while r.word("and") {
+        (r.word("a") || r.word("an")).then_some(())?;
+        let mut kind = one_kind(r)?.0;
+        kind.push(Pred::ControlledBy(who.clone()));
+        all.push(Condition::Compare {
+            left: Amount::Count(Selector(kind)),
+            op: Cmp::Ge,
+            right: Amount::Fixed(1),
+        });
+    }
+    (all.len() > 1).then_some(Condition::All(all))
 }
 
 /// One thing that can hold: what a player controls, how many opponents there are, or how low a life total is.

@@ -147,6 +147,14 @@ impl Subtype {
     pub fn is_creature_type(&self) -> bool {
         !OTHER_TYPES.contains(&self.0.as_str())
     }
+
+    /// The two land types a name of two words stands for: "Urza's Mine" is the types "Urza's" and "Mine" (CR 205.3i),
+    /// so a permanent is it when it has both.
+    pub fn two_word_land(&self) -> Option<(Subtype, Subtype)> {
+        let (first, second) = self.0.split_once(' ')?;
+        (first == "Urza's" && matches!(second, "Mine" | "Power-Plant" | "Tower"))
+            .then(|| (Subtype(first.to_owned()), Subtype(second.to_owned())))
+    }
 }
 
 #[cfg(test)]
@@ -170,6 +178,18 @@ mod tests {
         }
         for other in ["Forest", "Equipment", "Aura", "Treasure", "Saga", "Siege"] {
             assert!(!Subtype(other.into()).is_creature_type(), "{other}");
+        }
+    }
+
+    #[test]
+    fn a_land_type_of_two_words_is_two_types() {
+        let tower = Subtype("Urza's Tower".into()).two_word_land();
+        assert_eq!(
+            tower,
+            Some((Subtype("Urza's".into()), Subtype("Tower".into())))
+        );
+        for other in ["Tower", "Urza's", "Time Lord", "Urza's Saga", "Mine"] {
+            assert_eq!(Subtype(other.into()).two_word_land(), None, "{other}");
         }
     }
 

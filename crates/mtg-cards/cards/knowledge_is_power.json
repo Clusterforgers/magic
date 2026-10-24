@@ -1,0 +1,26 @@
+{
+  "oracle_id": "8806ee05-10d5-4492-b672-2f6bcab94be0",
+  "name": "Knowledge Is Power",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knowledge Is Power",
+      "oracle_fingerprint": "b0274548a5966d882d736c9b19a082e3",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Tallied": { "who": "You", "what": "Drawn" } },
+                  "toughness": { "Tallied": { "who": "You", "what": "Drawn" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e05abb6b-e9f4-4d9e-ad1e-7805ebc09914",
+  "name": "Fists of Flame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fists of Flame",
+      "oracle_fingerprint": "aa8bc3b89887fb6c17d474bf2d5d2054",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Draw": {} },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddKeyword": "Trample" },
+                    {
+                      "ModifyPT": {
+                        "power": { "Tallied": { "who": "You", "what": "Drawn" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

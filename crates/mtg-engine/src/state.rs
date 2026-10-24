@@ -126,6 +126,8 @@ pub(crate) enum Tally {
     Countered,
     /// Life gained, by the amount (counted for the player).
     GainedTotal,
+    /// A land played from a hand or another zone (counted for the player).
+    LandsPlayed,
 }
 
 /// The events counted in the turn so far.

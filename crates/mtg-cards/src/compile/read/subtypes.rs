@@ -440,6 +440,13 @@ const SUBTYPES: [&str; 435] = [
     "Zubera",
 ];
 
+/// Whether the two names, in order, are one land of two words ("Urza's Mine"), which the tokenizer reads as two names.
+pub fn is_two_word_land(first: &str, second: &str) -> bool {
+    mtg_core::card::Subtype(format!("{first} {second}"))
+        .two_word_land()
+        .is_some()
+}
+
 /// Whether the word is a subtype, as it is written (capitalized).
 pub fn is_subtype(word: &str) -> bool {
     SUBTYPES.binary_search(&word).is_ok()
