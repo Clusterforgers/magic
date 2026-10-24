@@ -12,6 +12,7 @@ mod graveyards;
 mod instead;
 mod loyalty;
 mod may_have;
+mod oracle_only;
 mod put_onto;
 mod those;
 
@@ -335,6 +336,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     texts.extend(where_x::equal_to_wordings(ability));
     event_wordings::add(ability, &mut texts);
     those::add(ability, &mut texts);
+    oracle_only::add(ability, &mut texts);
     texts
 }
 

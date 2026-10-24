@@ -1,0 +1,23 @@
+{
+  "id": "365336b4-92ee-429d-8f18-4624cba5469d",
+  "oracle_id": "f5f0deb0-070a-45b6-9b81-0bc8143f3040",
+  "name": "Jaya's Immolating Inferno",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmr",
+  "collector_number": "415",
+  "rarity": "rare",
+  "released_at": "2020-11-20",
+  "digital": false,
+  "mana_cost": "{X}{R}{R}",
+  "cmc": 2.0,
+  "type_line": "Legendary Sorcery",
+  "oracle_text": "(You may cast a legendary sorcery only if you control a legendary creature or planeswalker.)\nJaya's Immolating Inferno deals X damage to each of up to three targets.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

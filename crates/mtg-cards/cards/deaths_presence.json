@@ -1,0 +1,36 @@
+{
+  "oracle_id": "d0db5996-f749-48d2-8fb3-a69104113828",
+  "name": "Death's Presence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death's Presence",
+      "oracle_fingerprint": "dfe5fb9c729cc38478a454f91eedc89a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

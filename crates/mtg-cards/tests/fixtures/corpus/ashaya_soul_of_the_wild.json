@@ -1,0 +1,25 @@
+{
+  "id": "0a74b4e6-f6c9-4fef-a83c-a285a541e720",
+  "oracle_id": "162572f2-1757-42e9-bd97-e6bd9a762c0e",
+  "name": "Ashaya, Soul of the Wild",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "170",
+  "rarity": "mythic",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{3}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Elemental",
+  "oracle_text": "Ashaya's power and toughness are each equal to the number of lands you control.\nNontoken creatures you control are Forest lands in addition to their other types. (They're still affected by summoning sickness.)",
+  "power": "*",
+  "toughness": "*",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

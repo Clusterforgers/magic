@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"This","mods":[{"SetPT":{"power":{"Count":[{"Type":"Land"},{"ControlledBy":"You"}]},"toughness":{"Count":[{"Type":"Land"},{"ControlledBy":"You"}]}}}],"defining":true}},{"Static":{"affected":{"Each":[{"Type":"Creature"},{"Not":"Token"},{"ControlledBy":"You"}]},"mods":[{"AddType":"Land"},{"AddSubtype":"Forest"}]}}]}]}

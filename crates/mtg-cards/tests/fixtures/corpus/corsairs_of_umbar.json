@@ -1,0 +1,27 @@
+{
+  "id": "159727a9-0bc4-497d-8fb2-4a66923726d8",
+  "oracle_id": "edc74fb9-a368-4f73-8147-f318a32a3d06",
+  "name": "Corsairs of Umbar",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ltc",
+  "collector_number": "19",
+  "rarity": "rare",
+  "released_at": "2023-06-23",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Pirate",
+  "oracle_text": "{2}{U}: Target Goblin, Orc, or Pirate can't be blocked this turn.\nWhenever this creature deals combat damage to a player, amass Orcs 3. (Put three +1/+1 counters on an Army you control. It's also an Orc. If you don't control an Army, create a 0/0 black Orc Army creature token first.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Amass"
+  ]
+}
