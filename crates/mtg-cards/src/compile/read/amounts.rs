@@ -51,7 +51,7 @@ pub fn count_word(number: u32) -> Option<&'static str> {
 /// How many cards: "a card", "two cards", "X cards".
 pub fn cards(r: &mut Reader<'_>) -> Option<Amount> {
     r.attempt(|r| {
-        if r.ability && r.words("that many") {
+        if r.ability && r.triggered && r.words("that many") {
             return (r.word("card") || r.word("cards")).then_some(Amount::Triggering);
         }
         let count = if r.x() {
@@ -80,9 +80,10 @@ pub fn cards_counted(r: &mut Reader<'_>) -> Option<Amount> {
     })
 }
 
-/// How many points of life, damage or scrying: digits, X, or "that much" (what the trigger's event was).
+/// How many points of life, damage or scrying: digits, X, or "that much" (what the trigger's event was; a spell
+/// that counts an earlier amount of its own, as in "You gain that much life" after a loss, is left to the table).
 pub fn points(r: &mut Reader<'_>) -> Option<Amount> {
-    if r.words("that much") {
+    if r.triggered && r.words("that much") {
         return Some(Amount::Triggering);
     }
     if r.x() {

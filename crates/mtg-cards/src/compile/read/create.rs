@@ -341,7 +341,7 @@ fn group(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
     let legend = r.attempt(legendary);
     let quantity = if legend.is_some() {
         Quantity::Number(1)
-    } else if r.ability && r.words("that many") {
+    } else if r.ability && r.triggered && r.words("that many") {
         Quantity::ThatMany
     } else if r.words("a number of") {
         Quantity::NumberOf
