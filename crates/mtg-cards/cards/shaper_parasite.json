@@ -1,0 +1,51 @@
+{
+  "oracle_id": "0f5da28f-b97c-45d5-87d4-b8ba8638ca8f",
+  "name": "Shaper Parasite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shaper Parasite",
+      "oracle_fingerprint": "004a52ca08366bbf31ea90651fc0a183",
+      "abilities": [
+        { "Keyword": { "Morph": "{2}{U}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": 2, "toughness": -2 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": -2, "toughness": 2 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

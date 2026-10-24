@@ -14,6 +14,11 @@ export type Choices = {
  */
 modes?: Array<number>, 
 /**
+ * The game picked the modes with the next substream of its random source ("choose one at random"): the event
+ * that carries these choices spends the substream.
+ */
+random_modes?: boolean, 
+/**
  * The value of X, which outlives the spell (CR 107.3).
  */
 x?: number, 

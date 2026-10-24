@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Graveyard","to":"Battlefield"}},"effects":[{"Draw":{"count":2}},{"LoseLife":{"amount":2}}]}},{"Keyword":{"Unearth":"{4}{B}"}}]}]}

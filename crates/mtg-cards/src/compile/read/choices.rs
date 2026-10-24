@@ -58,11 +58,26 @@ fn bullets(mode: &Mode) -> Vec<String> {
 
 /// "choose one —" and a bullet line for each mode, in every wording of each mode; the last bullet has no period, which the
 /// sentence that holds the text adds.
-pub(super) fn texts(choose: &Bounds, modes: &[Mode]) -> Vec<String> {
+pub(super) fn texts(
+    choose: &Bounds,
+    modes: &[Mode],
+    at_random: bool,
+    once_each_turn: bool,
+) -> Vec<String> {
     let Some(header) = header(choose, modes.len()) else {
         return Vec::new();
     };
-    let mut texts = vec![header];
+    // "choose one at random —" and "choose one that hasn't been chosen this turn —", which a card may end with a period.
+    let one = header.starts_with("choose one ") && choose.is_one();
+    let mut texts = match (at_random, once_each_turn) {
+        (false, false) => vec![header],
+        (true, false) if one => vec![format!("choose one at random {DASH}")],
+        (false, true) if one => vec![
+            format!("choose one that hasn't been chosen this turn {DASH}"),
+            "choose one that hasn't been chosen this turn.".to_owned(),
+        ],
+        _ => return Vec::new(),
+    };
     for (at, mode) in modes.iter().enumerate() {
         let lines = bullets(mode);
         let stop = if at + 1 == modes.len() { "" } else { "." };

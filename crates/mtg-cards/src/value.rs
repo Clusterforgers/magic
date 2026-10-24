@@ -339,7 +339,7 @@ pub enum Amount {
     StartingLife(Ref),
     /// The amount of the event that triggered the ability ("that much", "that many", "the damage dealt"): the damage
     /// dealt, the life gained or lost, the counters put or removed; for a batch ("one or more") how many of its events
-    /// the pattern found.
+    /// the pattern found, and for a batch of damage the damage dealt in all.
     Triggering,
 }
 

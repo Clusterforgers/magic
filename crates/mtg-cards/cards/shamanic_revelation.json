@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d1d171de-1c6d-4fb9-817a-9c689c709f3d",
+  "name": "Shamanic Revelation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shamanic Revelation",
+      "oracle_fingerprint": "f9508c301bb10873ef4f100a735b2ad4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 4,
+                      "of": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

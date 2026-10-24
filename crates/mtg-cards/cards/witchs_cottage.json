@@ -1,0 +1,50 @@
+{
+  "oracle_id": "6c8f276e-4e7b-4974-ab02-9356cc0ffb2b",
+  "name": "Witch's Cottage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Witch's Cottage",
+      "oracle_fingerprint": "af003536685e439daa15ff133558faa1",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": { "Count": [{ "Subtype": "Swamp" }, "Other", { "ControlledBy": "You" }] },
+                  "op": "Ge",
+                  "right": 3
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "This", "selector": ["Untapped"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

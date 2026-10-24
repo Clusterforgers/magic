@@ -1,0 +1,33 @@
+{
+  "oracle_id": "42fb1a1c-ab3d-4cdc-a6ff-a591f7481583",
+  "name": "Warstorm Surge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warstorm Surge",
+      "oracle_fingerprint": "4edc0d247676dd552e56f55d2dd0632a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Triggering",
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

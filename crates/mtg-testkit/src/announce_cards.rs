@@ -120,6 +120,8 @@ pub fn split_charm(name: &str) -> Arc<CardDefinition> {
                     max: Some(Amount::Fixed(1)),
                 },
                 repeat: false,
+                at_random: false,
+                once_each_turn: false,
                 modes: vec![
                     Mode {
                         label: Some("Split".to_owned()),
