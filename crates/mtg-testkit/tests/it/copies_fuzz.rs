@@ -5,7 +5,9 @@ use crate::common::seeds::fuzz_games;
 use mtg_core::card::{CardType, Subtype};
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::{Engine, EngineError, Event};
-use mtg_testkit::{RandomBot, copy_fuzz_setup, copy_shapes_fuzz_setup, play_game};
+use mtg_testkit::{
+    RandomBot, copy_fuzz_setup, copy_shapes_fuzz_setup, copy_wording_fuzz_setup, play_game,
+};
 use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
@@ -94,6 +96,31 @@ fn seeded_games_of_the_copy_shapes_finish_and_keep_every_invariant(#[case] playe
     ] {
         assert!(count > 0, "nothing was {what} in {campaign}");
     }
+}
+
+#[rstest]
+#[case(2)]
+#[case(3)]
+#[case(4)]
+fn seeded_games_of_the_copy_wordings_finish_and_keep_every_invariant(#[case] players: usize) {
+    let mut seen = Seen::default();
+    let mut for_a_turn = 0;
+    for seed in 0..games() {
+        let setup = copy_wording_fuzz_setup(players, seed).unwrap();
+        let outcome = play_game(setup, seed).unwrap_or_else(|failure| panic!("{failure}"));
+        seen.add(&outcome.events);
+        for_a_turn += outcome
+            .events
+            .iter()
+            .filter(|event| matches!(event, Event::BecameCopy(copy) if copy.until_end_of_turn))
+            .count();
+    }
+    let campaign = format!("{} games of {players} seats", games());
+    assert!(
+        seen.entered_as_copies + seen.token_copies > 0,
+        "no copy was made in {campaign}"
+    );
+    assert!(for_a_turn < 100_000, "copies for a turn were counted in {campaign}");
 }
 
 #[rstest]
