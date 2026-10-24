@@ -38,6 +38,7 @@ mod cast_kinds;
 mod cast_permissions;
 mod cast_self;
 mod cast_way_fuzz;
+mod chance_fuzz;
 mod checkpoint;
 mod choice_fuzz;
 mod choose_cards;

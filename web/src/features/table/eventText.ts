@@ -498,6 +498,14 @@ function describePublic(event: Event, n: EventNames): LogLine {
   if ('MonarchChanged' in event) return line(`${n.seat(event.MonarchChanged.player)} becomes the monarch`)
   if ('Proliferated' in event) return line(`${n.seat(event.Proliferated.player)} proliferates`)
   if ('Learned' in event) return line(`${n.seat(event.Learned.player)} learns`)
+  if ('DieRolled' in event) {
+    const { player, sides, result } = event.DieRolled
+    return line(`${n.seat(player)} rolls a d${sides}: ${result}`)
+  }
+  if ('CoinFlipped' in event) {
+    const { player, won } = event.CoinFlipped
+    return line(`${n.seat(player)} ${won ? 'wins' : 'loses'} a coin flip`)
+  }
   if ('CitysBlessingGained' in event) {
     return line(`${n.seat(event.CitysBlessingGained.player)} gets the city's blessing`)
   }

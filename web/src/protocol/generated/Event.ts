@@ -562,7 +562,27 @@ player: PlayerId, } } | { "Learned": {
 /**
  * Who learned.
  */
-player: PlayerId, } } | { "Proliferated": { 
+player: PlayerId, } } | { "DieRolled": { 
+/**
+ * Who rolled.
+ */
+player: PlayerId, 
+/**
+ * How many faces the die has.
+ */
+sides: number, 
+/**
+ * The number rolled, from 1 to `sides`.
+ */
+result: number, } } | { "CoinFlipped": { 
+/**
+ * Who flipped.
+ */
+player: PlayerId, 
+/**
+ * The flip was won.
+ */
+won: boolean, } } | { "Proliferated": { 
 /**
  * Who proliferated.
  */

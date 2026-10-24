@@ -868,6 +868,15 @@ mod tests {
                 object: t.hand,
                 choices: Choices::default(),
             },
+            Event::DieRolled {
+                player: OWNER,
+                sides: 20,
+                result: 7,
+            },
+            Event::CoinFlipped {
+                player: OTHER,
+                won: true,
+            },
         ];
         for event in &events {
             for viewer in [OWNER, OTHER] {
