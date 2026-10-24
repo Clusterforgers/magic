@@ -1,0 +1,27 @@
+{
+  "id": "cdb8d320-fecc-42c2-b9d8-a9f6dd44b36d",
+  "oracle_id": "c7f1a49a-cc22-432f-bf3e-50ba61982b87",
+  "name": "Sewer Nemesis",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "771",
+  "rarity": "rare",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Horror",
+  "oracle_text": "As this creature enters, choose a player.\nSewer Nemesis's power and toughness are each equal to the number of cards in the chosen player's graveyard.\nWhenever the chosen player casts a spell, that player mills a card.",
+  "power": "*",
+  "toughness": "*",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Mill"
+  ]
+}

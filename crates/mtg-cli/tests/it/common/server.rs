@@ -18,6 +18,8 @@ pub struct Request {
     pub path: String,
     /// Header names (as sent) and values.
     pub headers: Vec<(String, String)>,
+    /// The body, as far as `Content-Length` announces it.
+    pub body: Vec<u8>,
     /// When the server read it, on the runtime's clock.
     pub at: Instant,
 }
@@ -29,6 +31,11 @@ impl Request {
             .iter()
             .find(|(key, _)| key.eq_ignore_ascii_case(name))
             .map(|(_, value)| value.as_str())
+    }
+
+    /// The body as text.
+    pub fn body_text(&self) -> String {
+        String::from_utf8_lossy(&self.body).into_owned()
     }
 
     /// The offset a `Range: bytes=N-` header asks for.
@@ -240,20 +247,35 @@ async fn read_request(stream: &mut TcpStream) -> Option<Request> {
         }
         head.extend_from_slice(&chunk[..read]);
     }
-    let text = String::from_utf8_lossy(&head).into_owned();
+    let end = head.windows(4).position(|window| window == b"\r\n\r\n")? + 4;
+    let text = String::from_utf8_lossy(&head[..end]).into_owned();
     let mut lines = text.split("\r\n");
     let mut first = lines.next()?.split(' ');
     let method = first.next()?.to_owned();
     let path = first.next()?.to_owned();
-    let headers = lines
+    let headers: Vec<(String, String)> = lines
         .take_while(|line| !line.is_empty())
         .filter_map(|line| line.split_once(':'))
         .map(|(name, value)| (name.trim().to_owned(), value.trim().to_owned()))
         .collect();
+    let length = headers
+        .iter()
+        .find(|(name, _)| name.eq_ignore_ascii_case("content-length"))
+        .and_then(|(_, value)| value.parse::<usize>().ok())
+        .unwrap_or(0);
+    let mut body = head[end..].to_vec();
+    while body.len() < length {
+        let read = stream.read(&mut chunk).await.ok()?;
+        if read == 0 {
+            break;
+        }
+        body.extend_from_slice(&chunk[..read]);
+    }
     Some(Request {
         method,
         path,
         headers,
+        body,
         at: Instant::now(),
     })
 }
@@ -263,6 +285,7 @@ fn reason(status: u16) -> &'static str {
         200 => "OK",
         206 => "Partial Content",
         304 => "Not Modified",
+        401 => "Unauthorized",
         404 => "Not Found",
         416 => "Range Not Satisfiable",
         429 => "Too Many Requests",

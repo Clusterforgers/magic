@@ -128,6 +128,9 @@ pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
         if let Some(counted) = r.attempt(counters::counted) {
             return Some(counted);
         }
+        if r.words("creature in your party") {
+            return Some(Amount::Party(Ref::You));
+        }
         if r.word("opponent") {
             // "Equipped creature gets +1/+0 for each opponent you have."
             r.words("you have");
@@ -256,6 +259,7 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
             }
         }
         Amount::Players(Ref::Opponents) => "opponent".to_owned(),
+        Amount::Party(Ref::You) => "creature in your party".to_owned(),
         Amount::CommanderCasts(Ref::You) => {
             "time you've cast your commander from the command zone this game".to_owned()
         }
