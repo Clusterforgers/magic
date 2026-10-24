@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"LifeGained":{"who":"You"}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}}]}]}

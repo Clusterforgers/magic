@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"Attached","mods":[{"ModifyPT":{"power":{"Count":[{"Type":"Artifact"},{"ControlledBy":"You"}]},"toughness":0}}]}},{"Activated":{"cost":"{B}{B}","targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}],"effects":[{"Attach":{"what":"This","to":{"Target":0}}}]}},{"Keyword":{"Equip":"{1}"}}]}]}

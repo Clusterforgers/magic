@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3f347ebf-e0d2-4ae0-ad84-df7a460404e0",
+  "name": "Coral Atoll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coral Atoll",
+      "oracle_fingerprint": "46b1c911c467873e6bd281a393c6fb10",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ReturnToHand": { "filter": [{ "Subtype": "Island" }, "Untapped"] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless", "Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

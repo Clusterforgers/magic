@@ -1,0 +1,51 @@
+{
+  "oracle_id": "bd002797-a545-4bee-88bf-b878436e7cca",
+  "name": "Brokers Hideout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brokers Hideout",
+      "oracle_fingerprint": "872d1cd1084418efffb0f09f28ec3cbc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Supertype": "Basic" },
+                          {
+                            "AnyOf": [
+                              { "Subtype": "Forest" },
+                              { "Subtype": "Plains" },
+                              { "Subtype": "Island" }
+                            ]
+                          }
+                        ],
+                        "as": "land"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "land" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} },
+                    { "GainLife": { "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
