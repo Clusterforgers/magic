@@ -311,6 +311,7 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 Ref::AttachedPlayer => "enchanted player",
                 Ref::You => "you",
                 Ref::Monarch => "the monarch",
+                Ref::Chosen => "the chosen player",
                 _ => "a player",
             };
             (format!("{} attacks {whom}", subject(what)), false)
@@ -371,6 +372,7 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 Ref::You => "your",
                 Ref::Opponents => "an opponent's",
                 Ref::Monarch => "the monarch's",
+                Ref::Chosen => "the chosen player's",
                 _ => "each",
             };
             let when = if *step == Step::BeginCombat {

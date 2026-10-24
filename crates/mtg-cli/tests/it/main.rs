@@ -12,3 +12,5 @@ mod fetch_scryfall;
 mod forge_check;
 mod ingest;
 mod ingest_printings;
+mod propose;
+mod propose_http;

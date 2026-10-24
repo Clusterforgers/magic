@@ -84,7 +84,7 @@ fn mix(state: u64) -> u64 {
 }
 
 /// The place of a card in the seed's order: its oracle id (FNV-1a) mixed with the seed.
-fn rank(seed: u64, oracle_id: &str) -> u64 {
+pub(crate) fn rank(seed: u64, oracle_id: &str) -> u64 {
     let hash = oracle_id
         .bytes()
         .fold(0xcbf2_9ce4_8422_2325_u64, |hash, byte| {

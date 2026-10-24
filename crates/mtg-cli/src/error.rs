@@ -109,6 +109,9 @@ pub enum CliError {
     /// The settings cannot be used.
     #[error("{0}")]
     Config(String),
+    /// The model could not be asked.
+    #[error("model: {0}")]
+    Model(#[from] crate::propose::model::ModelError),
     /// A file could not be read or written.
     #[error("{}: {source}", path.display())]
     Io {
