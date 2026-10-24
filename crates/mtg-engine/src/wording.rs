@@ -7,7 +7,7 @@
 use mtg_cards::effect::Effect;
 use mtg_cards::refs::{AbilityKind, Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::trigger::{Step, TriggerPattern};
-use mtg_cards::value::{Amount, CastWay, Cmp, Condition, StatKind};
+use mtg_cards::value::{Amount, CastWay, Cmp, Condition, DayNight, StatKind};
 use mtg_core::ids::PlayerId;
 
 /// "a" or "an" ahead of `word`.
@@ -414,6 +414,14 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} become{s} the monarch"), false)
         }
+        TriggerPattern::DayNightChanges { to } => (
+            match to {
+                None => "day becomes night or night becomes day".to_owned(),
+                Some(DayNight::Day) => "night becomes day".to_owned(),
+                Some(DayNight::Night) => "day becomes night".to_owned(),
+            },
+            false,
+        ),
         TriggerPattern::Proliferated { who: by } => {
             let (name, s) = who(by);
             (format!("{name} proliferate{s}"), false)
@@ -1344,6 +1352,15 @@ mod tests {
     #[case::an_opponent_becomes_the_monarch(
         r#"{"BecomesMonarch":{"who":"Opponents"}}"#,
         "Whenever an opponent becomes the monarch"
+    )]
+    #[case::day_or_night_changes(
+        r#"{"DayNightChanges":{}}"#,
+        "Whenever day becomes night or night becomes day"
+    )]
+    #[case::night_becomes_day(r#"{"DayNightChanges":{"to":"Day"}}"#, "Whenever night becomes day")]
+    #[case::day_becomes_night(
+        r#"{"DayNightChanges":{"to":"Night"}}"#,
+        "Whenever day becomes night"
     )]
     #[case::you_proliferate(r#"{"Proliferated":{"who":"You"}}"#, "Whenever you proliferate")]
     #[case::you_amass(r#"{"Amassed":{"who":"You"}}"#, "Whenever you amass")]

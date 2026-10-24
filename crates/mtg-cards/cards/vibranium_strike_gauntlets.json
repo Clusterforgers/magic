@@ -1,0 +1,43 @@
+{
+  "oracle_id": "4a9d36eb-db72-459a-8de9-6d04a1d7563c",
+  "name": "Vibranium Strike Gauntlets",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vibranium Strike Gauntlets",
+      "oracle_fingerprint": "bb1069f244556674e69b791de6db4a06",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 3, "toughness": 0 } },
+              { "AddKeyword": "Trample" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                    },
+                    "effects": [{ "Draw": {} }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

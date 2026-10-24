@@ -1,0 +1,47 @@
+{
+  "oracle_id": "436501ca-0998-43fc-975f-87c2d34caab3",
+  "name": "Ultron, Unlimited",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ultron, Unlimited",
+      "oracle_fingerprint": "febe32d4253a30f091df398fad0f01d4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "Connive": { "what": "This" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Connived": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Robot Villain",
+                            "types": ["Artifact", "Creature"],
+                            "subtypes": ["Robot", "Villain"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

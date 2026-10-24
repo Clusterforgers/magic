@@ -1,0 +1,25 @@
+{
+  "cmc": 3.0,
+  "collector_number": "195",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "3213c1f9-bff5-4629-a0b6-0c81ccf6c80d",
+  "keywords": [
+    "Equip"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{W}",
+  "name": "Maul of the Skyclaves",
+  "oracle_id": "088a1f56-198c-41a1-b244-ec1c7a771041",
+  "oracle_text": "When this Equipment enters, attach it to target creature you control.\nEquipped creature gets +2/+2 and has flying and first strike.(It deals combat damage before creatures without first strike.)\nEquip {2}{W}{W}",
+  "rarity": "rare",
+  "released_at": "2023-04-21",
+  "set": "moc",
+  "type_line": "Artifact — Equipment"
+}

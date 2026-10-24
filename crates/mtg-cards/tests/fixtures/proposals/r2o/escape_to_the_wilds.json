@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"ExileTop":{"count":5,"as":"impulse"}},{"Rule":{"rule":{"MayCast":{"from":"Exile","only":{"Bound":"impulse"},"play":true}},"duration":"UntilEndOfYourNextTurn"}},{"Rule":{"rule":{"AdditionalLandPlays":{"who":"You","count":1}},"duration":"UntilEndOfTurn"}}]}}]}]}

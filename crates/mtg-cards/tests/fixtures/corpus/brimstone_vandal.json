@@ -1,0 +1,27 @@
+{
+  "id": "10addf9a-daca-4b84-a9d3-f98f7b955af9",
+  "oracle_id": "7af23925-6d32-407d-9a99-a57b2ebb63ac",
+  "name": "Brimstone Vandal",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mid",
+  "collector_number": "130",
+  "rarity": "common",
+  "released_at": "2021-09-24",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Devil",
+  "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nIf it's neither day nor night, it becomes day as this creature enters.\nWhenever day becomes night or night becomes day, this creature deals 1 damage to each opponent.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Menace"
+  ]
+}

@@ -62,6 +62,8 @@ fn a_choice_in_a_trigger_reads_in_the_shape_of_the_hand_written_files(
 #[case("Destroy target creature. You may draw a card.")]
 #[case("~ deals 2 damage to any target. You may draw a card.")]
 #[case("You may draw a card. If you do, discard a card.")]
+#[case("You may gain 3 life.")]
+#[case("You may lose 1 life.")]
 fn more_oracle_wordings_in_a_spell_read_and_write_back(#[case] text: &str) {
     golden(text, ClauseKind::Spell, false);
 }
@@ -80,6 +82,8 @@ fn more_oracle_wordings_in_a_spell_read_and_write_back(#[case] text: &str) {
 #[case("When ~ enters, you may draw a card. If you do, discard a card.")]
 #[case("Whenever ~ attacks or blocks, you may draw a card. If you do, discard a card.")]
 #[case("Whenever an opponent casts a spell, you may draw a card.")]
+#[case("Whenever another creature enters, you may gain 1 life.")]
+#[case("Whenever a creature an opponent controls enters, you may lose 1 life.")]
 fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
     let rest = text.split_once(" \u{2014} ").map_or(text, |(_, rest)| rest);
     assert_eq!(
@@ -99,7 +103,8 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 #[case::a_pump("You may target creature gets +2/+2 until end of turn.")]
 #[case::damage("You may ~ deals 2 damage to any target.")]
 #[case::have("You may have target creature get +2/+2 until end of turn.")]
-#[case::life("You may gain 3 life.")]
+#[case::gain_with_another_step("You may gain 3 life and draw a card.")]
+#[case::life_of_another_player("Target player may gain 3 life.")]
 #[case::or("You may draw a card or discard a card.")]
 #[case::nothing("You may.")]
 #[case::no_step("You may")]

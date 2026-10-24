@@ -121,7 +121,7 @@ async fn status_shows_the_rows_and_the_latest_runs_of_a_loaded_database(pool: Pg
     .unwrap();
     let text = database_report(&db, "db.example:5432/magic").await;
     assert!(
-        text.contains("compiled rules: 9 cards (6 full, 3 partial)"),
+        text.contains("compiled rules: 10 cards (6 full, 4 partial)"),
         "{text}"
     );
 }

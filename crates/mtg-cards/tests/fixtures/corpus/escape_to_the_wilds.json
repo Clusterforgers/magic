@@ -1,0 +1,25 @@
+{
+  "id": "889cdc42-fae3-4dda-9cf0-697730ef00e3",
+  "oracle_id": "45a8c126-5396-4736-a37e-460a50706a98",
+  "name": "Escape to the Wilds",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoc",
+  "collector_number": "115",
+  "rarity": "rare",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "{3}{R}{G}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Exile the top five cards of your library. You may play cards exiled this way until the end of your next turn.\nYou may play an additional land this turn.",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": []
+}
