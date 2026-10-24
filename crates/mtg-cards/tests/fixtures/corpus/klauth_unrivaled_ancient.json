@@ -26,5 +26,12 @@
   "keywords": [
     "Flying",
     "Haste"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
   ]
 }
