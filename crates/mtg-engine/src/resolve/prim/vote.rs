@@ -46,7 +46,11 @@ fn named(cx: &Cx<'_>, names: &[String], secret: bool) -> Result<Run, ResolveErro
         .collect();
     let text = format!(
         "Vote for {}.",
-        names.iter().map(|n| shown(n)).collect::<Vec<_>>().join(" or ")
+        names
+            .iter()
+            .map(|n| shown(n))
+            .collect::<Vec<_>>()
+            .join(" or ")
     );
     let voters = voters(cx);
     let choosers: Vec<OptionChooser> = voters
@@ -140,7 +144,11 @@ fn of(cx: &Cx<'_>, of: &mtg_cards::refs::Ref, bind: &str) -> Result<Run, Resolve
             Picked::Done(taken) => taken
                 .into_iter()
                 .flat_map(|(_, cards)| cards)
-                .filter_map(|id| candidates.iter().find(|t| t.object().is_some_and(|o| o.id == id)))
+                .filter_map(|id| {
+                    candidates
+                        .iter()
+                        .find(|t| t.object().is_some_and(|o| o.id == id))
+                })
                 .copied()
                 .collect(),
         }
@@ -168,5 +176,116 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         (VoteFor::Of(_), None) => Err(ResolveError::Invalid(
             "a vote on players or objects names its winners".into(),
         )),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: a vote asks the controller first and then the others in turn order whoever is the active player, offers the named choices (face down for a secret vote), keeps every tied leader and nothing else, and refuses a secret vote on players or objects, a vote on them that names no winner and another effect, by name.
+    use rstest::rstest;
+
+    use super::*;
+    use crate::decision::DecisionKind;
+    use crate::fixtures::{creature, state};
+    use crate::resolve::{Resolving, Scope};
+    use crate::state::GameState;
+
+    fn game(seats: usize) -> GameState {
+        state(
+            vec![vec![]; seats],
+            std::iter::once(vec![creature("Source", 1, 1)])
+                .chain(std::iter::repeat_n(vec![], seats - 1))
+                .collect(),
+        )
+    }
+
+    fn play(game: &GameState, controller: u64, effect: &str) -> Result<Run, ResolveError> {
+        let source = game
+            .object(game.zone(crate::zones::Zone::Battlefield)[0])
+            .unwrap();
+        let resolving = Resolving::begin(source.id());
+        let cx = Cx {
+            scope: Scope::announcing(game, PlayerId(controller), source.reference()),
+            resolving: &resolving,
+        };
+        run(&cx, &serde_json::from_str(effect).unwrap())
+    }
+
+    const NAMED: &str = r#"{"Vote":{"options":{"Named":["time","knowledge"]}}}"#;
+
+    #[rstest]
+    #[case::the_active_player_controls_it(0, 0)]
+    #[case::another_seat_controls_it(1, 1)]
+    #[case::the_last_seat_controls_it(2, 2)]
+    fn the_controller_votes_first(#[case] controller: u64, #[case] first: u64) {
+        let Run::Ask(decision) = play(&game(3), controller, NAMED).unwrap() else {
+            panic!("a vote asks the first voter");
+        };
+        assert_eq!(decision.player, PlayerId(first));
+    }
+
+    #[rstest]
+    #[case::open(NAMED, false)]
+    #[case::secret(
+        r#"{"Vote":{"options":{"Named":["time","knowledge"]},"secret":true}}"#,
+        true
+    )]
+    fn named_choices_are_offered_with_their_words_face_down_when_secret(
+        #[case] json: &str,
+        #[case] secret: bool,
+    ) {
+        let Run::Ask(decision) = play(&game(2), 0, json).unwrap() else {
+            panic!("a vote asks the first voter");
+        };
+        let DecisionKind::ChooseOption(options) = decision.kind else {
+            panic!("named choices are options");
+        };
+        let want = |word: &str| {
+            if secret {
+                ChoiceOption::Secret(word.to_owned())
+            } else {
+                ChoiceOption::Label(word.to_owned())
+            }
+        };
+        assert_eq!(options.options, [want("time"), want("knowledge")]);
+        assert_eq!(options.text, "Vote for time or knowledge.");
+    }
+
+    #[rstest]
+    #[case::no_votes(&[], &[])]
+    #[case::one_vote(&[3], &[3])]
+    #[case::a_clear_leader(&[1, 2, 2, 3], &[2])]
+    #[case::a_tie_keeps_both_in_the_order_they_were_voted_for(&[2, 1, 1, 2], &[2, 1])]
+    #[case::everyone_different(&[1, 2, 3], &[1, 2, 3])]
+    fn the_leaders_are_those_with_the_most_votes_each_once(
+        #[case] votes: &[u64],
+        #[case] leading: &[u64],
+    ) {
+        let targets: Vec<Target> = votes.iter().map(|n| Target::Player(PlayerId(*n))).collect();
+        let want: Vec<Target> = leading
+            .iter()
+            .map(|n| Target::Player(PlayerId(*n)))
+            .collect();
+        assert_eq!(leaders(&targets), want);
+    }
+
+    #[rstest]
+    #[case::secret_on_players(
+        r#"{"Vote":{"options":{"Of":"EachPlayer"},"secret":true,"as":"won"}}"#
+    )]
+    #[case::no_name_for_the_winners(r#"{"Vote":{"options":{"Of":"EachPlayer"}}}"#)]
+    fn a_vote_on_players_that_cannot_be_played_is_refused(#[case] json: &str) {
+        assert!(matches!(
+            play(&game(2), 0, json),
+            Err(ResolveError::Invalid(_))
+        ));
+    }
+
+    #[test]
+    fn another_effect_is_refused_by_name() {
+        assert!(matches!(
+            play(&game(2), 0, r#"{"Draw":{}}"#),
+            Err(ResolveError::Invalid(message)) if message.contains("Vote")
+        ));
     }
 }

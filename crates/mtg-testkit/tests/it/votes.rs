@@ -81,7 +81,10 @@ fn seats_in_order(seats: usize) -> Vec<PlayerId> {
 /// The answer that picks the card named `wanted` among the cards offered.
 fn pick(decision: &Decision, driver: &Driver, wanted: &str) -> Answer {
     let DecisionKind::ChooseCards(options) = &decision.kind else {
-        panic!("a vote on cards asks for cards, not {}", decision.kind.name());
+        panic!(
+            "a vote on cards asks for cards, not {}",
+            decision.kind.name()
+        );
     };
     let chosen = options
         .from
@@ -140,15 +143,30 @@ fn councils_judgment_exiles_what_has_the_most_votes_or_ties_for_it(
         offered.sort();
         let mut want = foes.clone();
         want.sort();
-        assert_eq!(offered, want, "only the nonland permanents the caster does not control");
+        assert_eq!(
+            offered, want,
+            "only the nonland permanents the caster does not control"
+        );
         pick(decision, driver, votes[decision.player.index()])
     })?;
-    assert_eq!(asked, seats_in_order(seats), "the caster first, then turn order");
-    assert_eq!(voted(&driver), seats_in_order(seats), "every vote is told, in order");
+    assert_eq!(
+        asked,
+        seats_in_order(seats),
+        "the caster first, then turn order"
+    );
+    assert_eq!(
+        voted(&driver),
+        seats_in_order(seats),
+        "every vote is told, in order"
+    );
     let mut want: Vec<String> = exiled.iter().map(|n| (*n).to_owned()).collect();
     want.sort();
     assert_eq!(names_in(&driver, Zone::Exile), want);
-    let mut left: Vec<String> = foes.iter().filter(|f| !exiled.contains(&f.as_str())).cloned().collect();
+    let mut left: Vec<String> = foes
+        .iter()
+        .filter(|f| !exiled.contains(&f.as_str()))
+        .cloned()
+        .collect();
     left.sort();
     for foe in &left {
         assert!(
@@ -181,7 +199,10 @@ fn magister_of_worth_returns_creatures_on_grace_and_destroys_them_otherwise(
     let mut scenario = Scenario::new(seats).hand_named(0, ["Magister of Worth"]);
     for seat in 0..seats {
         scenario = scenario
-            .graveyard(seat, [free_creature(&format!("Dead {seat}"), 1, 1), island()])
+            .graveyard(
+                seat,
+                [free_creature(&format!("Dead {seat}"), 1, 1), island()],
+            )
             .battlefield(
                 seat,
                 if seat == 0 {
@@ -208,7 +229,11 @@ fn magister_of_worth_returns_creatures_on_grace_and_destroys_them_otherwise(
         assert_eq!(options.options.len(), 2, "grace or condemnation");
         Answer::ChooseOption(OptionChoice(votes[decision.player.index()]))
     })?;
-    assert_eq!(asked, seats_in_order(seats), "the caster first, then turn order");
+    assert_eq!(
+        asked,
+        seats_in_order(seats),
+        "the caster first, then turn order"
+    );
     let told: Vec<(PlayerId, Choice)> = driver
         .engine()
         .events()
@@ -225,15 +250,30 @@ fn magister_of_worth_returns_creatures_on_grace_and_destroys_them_otherwise(
     let field = names_in(&driver, Zone::Battlefield);
     if grace {
         for seat in 0..seats {
-            assert!(field.contains(&format!("Dead {seat}")), "Dead {seat} returns");
+            assert!(
+                field.contains(&format!("Dead {seat}")),
+                "Dead {seat} returns"
+            );
             assert!(field.contains(&format!("Bear {seat}")), "Bear {seat} lives");
-            assert!(names_in(&driver, Zone::Graveyard(pid(seat))).iter().all(|n| n != &format!("Dead {seat}")));
+            assert!(
+                names_in(&driver, Zone::Graveyard(pid(seat)))
+                    .iter()
+                    .all(|n| n != &format!("Dead {seat}"))
+            );
         }
     } else {
-        assert!(field.contains(&"Magister of Worth".to_owned()), "the Magister stays");
+        assert!(
+            field.contains(&"Magister of Worth".to_owned()),
+            "the Magister stays"
+        );
         for seat in 0..seats {
-            assert!(!field.contains(&format!("Bear {seat}")), "Bear {seat} is destroyed");
-            assert!(names_in(&driver, Zone::Graveyard(pid(seat))).contains(&format!("Dead {seat}")));
+            assert!(
+                !field.contains(&format!("Bear {seat}")),
+                "Bear {seat} is destroyed"
+            );
+            assert!(
+                names_in(&driver, Zone::Graveyard(pid(seat))).contains(&format!("Dead {seat}"))
+            );
         }
     }
     replays(&driver);
@@ -262,10 +302,7 @@ fn custodi_squire_returns_the_cards_with_the_most_votes(
                 island(),
             ],
         )
-        .battlefield(
-            0,
-            (0..5).map(|_| ready(plains())).collect::<Vec<_>>(),
-        );
+        .battlefield(0, (0..5).map(|_| ready(plains())).collect::<Vec<_>>());
     if seats > 1 {
         scenario = scenario.graveyard(1, [free_creature("Foe Grave", 3, 3)]);
     }
@@ -277,7 +314,11 @@ fn custodi_squire_returns_the_cards_with_the_most_votes(
         };
         let mut offered: Vec<String> = options.from.iter().map(|id| name(driver, *id)).collect();
         offered.sort();
-        assert_eq!(offered, ["Grave A", "Grave B"], "creature cards of the caster's graveyard only");
+        assert_eq!(
+            offered,
+            ["Grave A", "Grave B"],
+            "creature cards of the caster's graveyard only"
+        );
         pick(decision, driver, votes[decision.player.index()])
     })?;
     assert_eq!(asked, seats_in_order(seats));
@@ -299,7 +340,10 @@ fn a_secret_ballot_draws_a_card_for_each_heads_vote(
     let scenario = Scenario::new(seats)
         .hand(0, [secret_ballot("Ballot")])
         .battlefield(0, [ready(island())])
-        .library(0, (0..10).map(|n| free_creature(&format!("Card {n}"), 1, 1)));
+        .library(
+            0,
+            (0..10).map(|n| free_creature(&format!("Card {n}"), 1, 1)),
+        );
     let mut driver = Driver::from_scenario(scenario)?;
     driver.cast("Ballot")?;
     let asked = play_out(&mut driver, |decision, _| {
@@ -322,7 +366,15 @@ fn a_secret_ballot_draws_a_card_for_each_heads_vote(
         .engine()
         .events()
         .iter()
-        .filter(|event| matches!(event, Event::ChoiceMade { choice: Choice::Vote(_), .. }))
+        .filter(|event| {
+            matches!(
+                event,
+                Event::ChoiceMade {
+                    choice: Choice::Vote(_),
+                    ..
+                }
+            )
+        })
         .count();
     assert_eq!(secret, seats, "each vote is logged as cast face down");
     replays(&driver);
